@@ -2,185 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3D73D7E69
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EAFF3D7E6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbhG0TUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 15:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbhG0TUV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:20:21 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F24C0613C1;
-        Tue, 27 Jul 2021 12:20:20 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id i10so14097968pla.3;
-        Tue, 27 Jul 2021 12:20:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uO7kQ42xSTAH3+3Dd4r+058TnMUPwUJwWEreFhwbiJ4=;
-        b=XrG6NfXeZJF2h4g6w7+A3bstUDqrEF6qjbBGUEjH4N8/44iFl0VC3sMUocTpGbGzut
-         dzKBjRuWT6Oi+cWY9jnprPf9Nth5xSEZqmmW4V2K8glOA3ocQ+L7iHqOcvkKj6xwVuwy
-         IKR0JsgSbUvDhozXTRrL5Y0ofAgbXnmityuRrS+Ssq8LNfc0Bk7lg6LgE2UeCGPv4OwS
-         0ZcKxpE/IeOOHNMZB8KFg0lwU+GsdSFFQg2zs4wabdICMOh5x0oWrAJiITfXknn8+JMa
-         oe2gDrqX375oEST4VKrT6XfARbuTeR2leeTFM5z05Qk+8j8LBtmjTFyOVfPwRbssqK/4
-         gydA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uO7kQ42xSTAH3+3Dd4r+058TnMUPwUJwWEreFhwbiJ4=;
-        b=aW48ZayuqS2hjTW6G7IBCz/B3bDnXYVcT4q2NyLolqExr3ZEb9z2av6iStfny3vHM/
-         nVxIhNG0zpw4y9Y+pw/LNXCzppoCw7UpH/9oGxRoLBSGOLO1keoUk82e54ZxammNJ4IA
-         F/f++D1rrrs4fqFHEZKbeJdarhngi8DV8Trat7k3/Z2R0IWXUuBhb+IOY6AtGiAM8ESu
-         UcCqyCBklGVyTtroA2S3v6MKeRhMVI2yIhlhG+MavkltD+5UrpSs3znEXxdFWyuxdNkI
-         HyNTdnkfBOEclyTWljeuv7a2eDHAzL1HxbNQjf5HMcmrGyXXsAJCo/Xo2ob8QMtuuZIF
-         tZBQ==
-X-Gm-Message-State: AOAM5323CCYFcWzdW2QApqnz9vSkWbfTo1ZDQbnGzNXciDs8IzcFeQvZ
-        DJsXo7AqX9HS/gmOIbtVexc=
-X-Google-Smtp-Source: ABdhPJyx+Om6fO6BkBy8rKT1fjJbR3aHCZ09gTN9jElT1zRxPVnyyxJl0kW2X0Z3cXJU0fejK+/5qQ==
-X-Received: by 2002:a17:90a:d816:: with SMTP id a22mr16713760pjv.180.1627413620528;
-        Tue, 27 Jul 2021 12:20:20 -0700 (PDT)
-Received: from localhost.localdomain ([2402:e280:2130:198:9b25:1cfb:9ff3:2a8f])
-        by smtp.gmail.com with ESMTPSA id f7sm4317096pfc.111.2021.07.27.12.20.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 12:20:20 -0700 (PDT)
-From:   Benjamin Philip <benjamin.philip495@gmail.com>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Benjamin Philip <benjamin.philip495@gmail.com>
-Subject: [PATCH 4/4] staging: sm750fb: Rename vScreen to v_screen in lynxfb_crtc
-Date:   Wed, 28 Jul 2021 00:49:53 +0530
-Message-Id: <52db14bfc2f39e246aed7fdf866845a72e503b36.1627413010.git.benjamin.philip495@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1627413010.git.benjamin.philip495@gmail.com>
-References: <cover.1627413010.git.benjamin.philip495@gmail.com>
+        id S232062AbhG0TUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 15:20:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230382AbhG0TUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 15:20:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEB3D60F6E;
+        Tue, 27 Jul 2021 19:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627413631;
+        bh=hTGVaodY29yUtp6G87AgDwoDVfCcHApIoO+h2gZfE7s=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=lWnNbxuhxqlvJWwmUgNT+U1VRgjdgvRlZVnkQZfWChf5cxAK1zM/To0BDWDvFExmz
+         RVb1IacBhl/4VLcTkfem1vSQsliOq8CMUiizwgzNvTFXLoXDduouOpHcIA38jau1XL
+         xxX6JijHLHPbr1CLvtXuiyBuuR7x8ODio8xemD6vSvJJiHLmRqWj2qDBGro/RMFTDq
+         5ATD8s1mBL+9fcvrmDBjtfLS917+3zwzDRD+fr+ml94WXj3q73z190XmJnhFZSTbRG
+         DPzG0ASVM+q1/VffWXsbd5GEaoyLKT66dCnd8StKlshSp2kLXrZAXAmN89qZQoXZ6I
+         EwAFc8iTwkS0A==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1627306847-25308-3-git-send-email-rajpat@codeaurora.org>
+References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org> <1627306847-25308-3-git-send-email-rajpat@codeaurora.org>
+Subject: Re: [PATCH V4 2/4] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Rajesh Patil <rajpat@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajesh Patil <rajpat@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 27 Jul 2021 12:20:30 -0700
+Message-ID: <162741363048.2368309.1689681966672627944@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct lynxfb_crtc has a member named vScreen. This name is
-CamelCase and is frowned upon. This commit renames it to v_screen
-and makes the necessary changes for the module to build.
+Quoting Rajesh Patil (2021-07-26 06:40:45)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
+com/sc7280.dtsi
+> index ca6e36b..455e58f 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -520,6 +520,25 @@
+> =20
+>                 };
+> =20
+> +               qup_opp_table: qup-opp-table {
 
-This change also fixes the following checkpatch CHECKs:
+Surely this can live underneath a qup node parallel to the i2c and spi
+devices?
 
-CHECK: Avoid CamelCase: <vScreen>
-454: FILE: sm750.c:454:
-+		memset_io(crtc->vScreen, 0x0, crtc->vidmem_size);
-
-CHECK: Avoid CamelCase: <vScreen>
-136: FILE: sm750.h:136:
-+	unsigned char __iomem *vScreen; /* virtual address of on_screen */
-
-Signed-off-by: Benjamin Philip <benjamin.philip495@gmail.com>
----
- drivers/staging/sm750fb/sm750.c | 18 +++++++++---------
- drivers/staging/sm750fb/sm750.h |  2 +-
- 2 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
-index 202d8f47365c..dbd1159a2ef0 100644
---- a/drivers/staging/sm750fb/sm750.c
-+++ b/drivers/staging/sm750fb/sm750.c
-@@ -451,7 +451,7 @@ static int __maybe_unused lynxfb_resume(struct device *dev)
- 		crtc = &par->crtc;
- 		cursor = &crtc->cursor;
- 		memset_io(cursor->vstart, 0x0, cursor->size);
--		memset_io(crtc->vScreen, 0x0, crtc->vidmem_size);
-+		memset_io(crtc->v_screen, 0x0, crtc->vidmem_size);
- 		lynxfb_ops_set_par(info);
- 		fb_set_suspend(info, 0);
- 	}
-@@ -463,7 +463,7 @@ static int __maybe_unused lynxfb_resume(struct device *dev)
- 		crtc = &par->crtc;
- 		cursor = &crtc->cursor;
- 		memset_io(cursor->vstart, 0x0, cursor->size);
--		memset_io(crtc->vScreen, 0x0, crtc->vidmem_size);
-+		memset_io(crtc->v_screen, 0x0, crtc->vidmem_size);
- 		lynxfb_ops_set_par(info);
- 		fb_set_suspend(info, 0);
- 	}
-@@ -615,27 +615,27 @@ static int sm750fb_set_drv(struct lynxfb_par *par)
- 		output->paths = sm750_pnc;
- 		crtc->channel = sm750_primary;
- 		crtc->o_screen = 0;
--		crtc->vScreen = sm750_dev->pvMem;
-+		crtc->v_screen = sm750_dev->pvMem;
- 		pr_info("use simul primary mode\n");
- 		break;
- 	case sm750_simul_sec:
- 		output->paths = sm750_pnc;
- 		crtc->channel = sm750_secondary;
- 		crtc->o_screen = 0;
--		crtc->vScreen = sm750_dev->pvMem;
-+		crtc->v_screen = sm750_dev->pvMem;
- 		break;
- 	case sm750_dual_normal:
- 		if (par->index == 0) {
- 			output->paths = sm750_panel;
- 			crtc->channel = sm750_primary;
- 			crtc->o_screen = 0;
--			crtc->vScreen = sm750_dev->pvMem;
-+			crtc->v_screen = sm750_dev->pvMem;
- 		} else {
- 			output->paths = sm750_crt;
- 			crtc->channel = sm750_secondary;
- 			/* not consider of padding stuffs for o_screen,need fix */
- 			crtc->o_screen = sm750_dev->vidmem_size >> 1;
--			crtc->vScreen = sm750_dev->pvMem + crtc->o_screen;
-+			crtc->v_screen = sm750_dev->pvMem + crtc->o_screen;
- 		}
- 		break;
- 	case sm750_dual_swap:
-@@ -643,7 +643,7 @@ static int sm750fb_set_drv(struct lynxfb_par *par)
- 			output->paths = sm750_panel;
- 			crtc->channel = sm750_secondary;
- 			crtc->o_screen = 0;
--			crtc->vScreen = sm750_dev->pvMem;
-+			crtc->v_screen = sm750_dev->pvMem;
- 		} else {
- 			output->paths = sm750_crt;
- 			crtc->channel = sm750_primary;
-@@ -651,7 +651,7 @@ static int sm750fb_set_drv(struct lynxfb_par *par)
- 			 * need fix
- 			 */
- 			crtc->o_screen = sm750_dev->vidmem_size >> 1;
--			crtc->vScreen = sm750_dev->pvMem + crtc->o_screen;
-+			crtc->v_screen = sm750_dev->pvMem + crtc->o_screen;
- 		}
- 		break;
- 	default:
-@@ -801,7 +801,7 @@ static int lynxfb_set_fbinfo(struct fb_info *info, int index)
- 			    crtc->line_pad);
- 
- 	info->pseudo_palette = &par->pseudo_palette[0];
--	info->screen_base = crtc->vScreen;
-+	info->screen_base = crtc->v_screen;
- 	pr_debug("screen_base vaddr = %p\n", info->screen_base);
- 	info->screen_size = line_length * var->yres_virtual;
- 	info->flags = FBINFO_FLAG_DEFAULT | 0;
-diff --git a/drivers/staging/sm750fb/sm750.h b/drivers/staging/sm750fb/sm750.h
-index 8952154739ac..aff69661c8e6 100644
---- a/drivers/staging/sm750fb/sm750.h
-+++ b/drivers/staging/sm750fb/sm750.h
-@@ -133,7 +133,7 @@ struct lynx_cursor {
- 
- struct lynxfb_crtc {
- 	unsigned char __iomem *v_cursor; /* virtual address of cursor */
--	unsigned char __iomem *vScreen; /* virtual address of on_screen */
-+	unsigned char __iomem *v_screen; /* virtual address of on_screen */
- 	int o_cursor; /* cursor address offset in vidmem */
- 	int o_screen; /* onscreen address offset in vidmem */
- 	int channel;/* which channel this crtc stands for*/
--- 
-2.31.1
-
+> +                       compatible =3D "operating-points-v2";
+> +
+> +                       opp-75000000 {
+> +                               opp-hz =3D /bits/ 64 <75000000>;
+> +                               required-opps =3D <&rpmhpd_opp_low_svs>;
+> +                       };
+> +
+> +                       opp-100000000 {
+> +                               opp-hz =3D /bits/ 64 <100000000>;
+> +                               required-opps =3D <&rpmhpd_opp_svs>;
+> +                       };
+> +
+> +                       opp-128000000 {
+> +                               opp-hz =3D /bits/ 64 <128000000>;
+> +                               required-opps =3D <&rpmhpd_opp_nom>;
+> +                       };
+> +               };
+> +
+>                 qupv3_id_0: geniqup@9c0000 {
+>                         compatible =3D "qcom,geni-se-qup";
+>                         reg =3D <0 0x009c0000 0 0x2000>;
