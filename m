@@ -2,89 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA6E3D6B10
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60513D6B0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhGZXu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 19:50:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:60690 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233843AbhGZXuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 19:50:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BBD61FB;
-        Mon, 26 Jul 2021 17:30:53 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 991933F73D;
-        Mon, 26 Jul 2021 17:30:51 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 01:30:04 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Ali Saidi <alisaidi@amazon.com>,
-        Jon Nettleton <jon@solid-run.com>
-Subject: Re: [PATCH v3 2/2] hwrng: Add Arm SMCCC TRNG based driver
-Message-ID: <20210727013004.4caca28f@slackpad.fritz.box>
-In-Reply-To: <20210726223738.GM4670@sirena.org.uk>
-References: <20210726175610.3311-1-andre.przywara@arm.com>
-        <20210726175610.3311-3-andre.przywara@arm.com>
-        <20210726223738.GM4670@sirena.org.uk>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S234422AbhGZXt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 19:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233843AbhGZXtx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 19:49:53 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC67C061757;
+        Mon, 26 Jul 2021 17:30:20 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id k65so13189897yba.13;
+        Mon, 26 Jul 2021 17:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WlahV91siRimjn5Od4QMmgRdTNqfaI93h5YP2ufAleM=;
+        b=bRRDCCRM8Ysc/7n8ReGL7u0AZT6YqOT90xC4edP0CLn9VnnVFxzKJTY+nfBRtYZo+7
+         fkNyQ/On/WId3txLmG5Lw4YuqaAAvAvUc1hcAsGQUfhkUd2tuQBMJuiAXdolDAswX9WT
+         O+XaP8eKp0EcvzsoaH6LOZt5/AwckAt3RXDlHqJH9RSc2xyC12nOO6OYNpS4difxYyHY
+         RpB85toIYVM7AxfOUwaShKbkBUsEqt3mcrVOCk1jB6w/0OVpmG+e9uG3zKQHFbeZB+vo
+         gspifWERbt31O4wtJeqVNxgaQxupY5TUqHeq5i+JErPIKZ4aGknytJ3lzryKAGfnw7HQ
+         F5nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WlahV91siRimjn5Od4QMmgRdTNqfaI93h5YP2ufAleM=;
+        b=PV/RzWzMG1aqZ/G4QIPvMu15APdK3h1VFon4299I4Yfv+ivArg1LgOSGv8s4pe9DTp
+         vCMOSzpMk/ODTtOfp2fumdFT8r4Ae0x6u26LDR6Yg3QPajMVCT+icp4OA/D74Rbuo8xs
+         H2R319K2hpDKYtpgDSdHLddt2tcTvQD2lP0fCgIN4iTq/DPe9UGRO4ctK+NY/8gTJSq8
+         GU4gu/Ooeq36XDGs6qOHORp37Yiet16WNyZYGD90FL346JLHB8jAO2tbHvqDhGBKnAt/
+         VMVmsfVkcgQjA7dX83CEQv3KPYzuiSHeLW7H6ij48DqPpW2sJ41xP94lofnCkGsB9+kP
+         tONQ==
+X-Gm-Message-State: AOAM530gbHw3zokM0SSsHE3UzqHh655KbIV3kj4y4qs+4QDY810M4ZM3
+        0zERmFJ/lQtxjfkSH98JsDv2dlGaqPf3vZNDRjI=
+X-Google-Smtp-Source: ABdhPJxZXKGNSaIrmlXFd3lcCt8NDgz2o2kpO2hUE/I853+pYfA0WyPWplCnDd23A21flqbjJWotxIXUBVpOWxpK1xk=
+X-Received: by 2002:a25:8205:: with SMTP id q5mr27524628ybk.440.1627345819451;
+ Mon, 26 Jul 2021 17:30:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210721093832.78081-1-desmondcheongzx@gmail.com> <20210721093832.78081-2-desmondcheongzx@gmail.com>
+In-Reply-To: <20210721093832.78081-2-desmondcheongzx@gmail.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Mon, 26 Jul 2021 17:30:08 -0700
+Message-ID: <CABBYNZLus8GyPuTp4jmAeSEdsYTZ-4gK6OvGXqcABhci8tBOwA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] Bluetooth: fix inconsistent lock state in SCO
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, matthieu.baerts@tessares.net,
+        stefan@datenfreihafen.org,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        skhan@linuxfoundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 23:37:38 +0100
-Mark Brown <broonie@kernel.org> wrote:
+Hi Desmond,
 
-> On Mon, Jul 26, 2021 at 06:56:10PM +0100, Andre Przywara wrote:
-> 
-> > +static int smccc_trng_init(struct hwrng *rng)
-> > +{
-> > +	return 0;
-> > +}  
-> 
-> If this can be empty (looking at the core it seems like it can) then
-> best just remove it.
+On Wed, Jul 21, 2021 at 2:39 AM Desmond Cheong Zhi Xi
+<desmondcheongzx@gmail.com> wrote:
+>
+> Syzbot reported an inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock
+> usage in sco_conn_del and sco_sock_timeout that could lead to
+> deadlocks.
+>
+> This inconsistent lock state can also happen in sco_conn_ready,
+> rfcomm_connect_ind, and bt_accept_enqueue.
+>
+> The issue is that these functions take a spin lock on the socket with
+> interrupts enabled, but sco_sock_timeout takes the lock in an IRQ
+> context. This could lead to deadlocks:
+>
+>        CPU0
+>        ----
+>   lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>   <Interrupt>
+>     lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
 
-Ah, you are right! Actually this is explicitly mentioned in the
-struct hwrng comments. Thanks for the heads up.
+Having a second look at this, it does seem this is due to use of
+sk->sk_timer which apparently run its callback on IRQ context, so I
+wonder if wouldn't be a better idea to switch to a delayed_work to
+avoid having to deal with the likes of local_bh_disable, in fact it
+seems we have been misusing it since the documentation says it is for
+sock cleanup not for handling things like SNDTIMEO, we don't really
+use it for other socket types so I wonder when we start using
+delayed_work we forgot about sco.c.
 
-> 
-> > +	platform_set_drvdata(pdev, trng);
-> > +	ret = devm_hwrng_register(&pdev->dev, trng);
-> > +	if (!ret)
-> > +		dev_info(&pdev->dev,
-> > +			 "ARM SMCCC TRNG firmware random number generator\n");  
-> 
-> Is the log message needed given that we're not announcing any version
-> information here or anything?  A brief sampling of other drivers
-> suggests it's not a standard thing for the subsystem.
+>  *** DEADLOCK ***
+>
+> We fix this by ensuring that local bh is disabled before calling
+> bh_lock_sock.
+>
+> After doing this, we additionally need to protect sco_conn_lock by
+> disabling local bh.
+>
+> This is necessary because sco_conn_del makes a call to sco_chan_del
+> while holding on to the sock lock, and sco_chan_del itself makes a
+> call to sco_conn_lock. If sco_conn_lock is held elsewhere with
+> interrupts enabled, there could still be a
+> slock-AF_BLUETOOTH-BTPROTO_SCO --> &conn->lock#2 lock inversion as
+> follows:
+>
+>         CPU0                    CPU1
+>         ----                    ----
+>    lock(&conn->lock#2);
+>                                 local_irq_disable();
+>                                 lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>                                 lock(&conn->lock#2);
+>    <Interrupt>
+>      lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>
+>   *** DEADLOCK ***
+>
+> Although sco_conn_del disables local bh before calling sco_chan_del,
+> we can still wrap the calls to sco_conn_lock in sco_chan_del, with
+> local_bh_disable/enable as this pair of functions are reentrant.
+>
+> Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+> Tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> ---
+>  net/bluetooth/sco.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>
+> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+> index 3bd41563f118..34f3419c3330 100644
+> --- a/net/bluetooth/sco.c
+> +++ b/net/bluetooth/sco.c
+> @@ -140,10 +140,12 @@ static void sco_chan_del(struct sock *sk, int err)
+>         BT_DBG("sk %p, conn %p, err %d", sk, conn, err);
+>
+>         if (conn) {
+> +               local_bh_disable();
+>                 sco_conn_lock(conn);
+>                 conn->sk = NULL;
+>                 sco_pi(sk)->conn = NULL;
+>                 sco_conn_unlock(conn);
+> +               local_bh_enable();
+>
+>                 if (conn->hcon)
+>                         hci_conn_drop(conn->hcon);
+> @@ -167,16 +169,22 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
+>         BT_DBG("hcon %p conn %p, err %d", hcon, conn, err);
+>
+>         /* Kill socket */
+> +       local_bh_disable();
+>         sco_conn_lock(conn);
+>         sk = conn->sk;
+>         sco_conn_unlock(conn);
+> +       local_bh_enable();
+>
+>         if (sk) {
+>                 sock_hold(sk);
+> +
+> +               local_bh_disable();
+>                 bh_lock_sock(sk);
+>                 sco_sock_clear_timer(sk);
+>                 sco_chan_del(sk, err);
+>                 bh_unlock_sock(sk);
+> +               local_bh_enable();
+> +
+>                 sco_sock_kill(sk);
+>                 sock_put(sk);
+>         }
+> @@ -202,6 +210,7 @@ static int sco_chan_add(struct sco_conn *conn, struct sock *sk,
+>  {
+>         int err = 0;
+>
+> +       local_bh_disable();
+>         sco_conn_lock(conn);
+>         if (conn->sk)
+>                 err = -EBUSY;
+> @@ -209,6 +218,7 @@ static int sco_chan_add(struct sco_conn *conn, struct sock *sk,
+>                 __sco_chan_add(conn, sk, parent);
+>
+>         sco_conn_unlock(conn);
+> +       local_bh_enable();
+>         return err;
+>  }
+>
+> @@ -303,9 +313,11 @@ static void sco_recv_frame(struct sco_conn *conn, struct sk_buff *skb)
+>  {
+>         struct sock *sk;
+>
+> +       local_bh_disable();
+>         sco_conn_lock(conn);
+>         sk = conn->sk;
+>         sco_conn_unlock(conn);
+> +       local_bh_enable();
+>
+>         if (!sk)
+>                 goto drop;
+> @@ -420,10 +432,12 @@ static void __sco_sock_close(struct sock *sk)
+>                 if (sco_pi(sk)->conn->hcon) {
+>                         sk->sk_state = BT_DISCONN;
+>                         sco_sock_set_timer(sk, SCO_DISCONN_TIMEOUT);
+> +                       local_bh_disable();
+>                         sco_conn_lock(sco_pi(sk)->conn);
+>                         hci_conn_drop(sco_pi(sk)->conn->hcon);
+>                         sco_pi(sk)->conn->hcon = NULL;
+>                         sco_conn_unlock(sco_pi(sk)->conn);
+> +                       local_bh_enable();
+>                 } else
+>                         sco_chan_del(sk, ECONNRESET);
+>                 break;
+> @@ -1084,21 +1098,26 @@ static void sco_conn_ready(struct sco_conn *conn)
+>
+>         if (sk) {
+>                 sco_sock_clear_timer(sk);
+> +               local_bh_disable();
+>                 bh_lock_sock(sk);
+>                 sk->sk_state = BT_CONNECTED;
+>                 sk->sk_state_change(sk);
+>                 bh_unlock_sock(sk);
+> +               local_bh_enable();
+>         } else {
+> +               local_bh_disable();
+>                 sco_conn_lock(conn);
+>
+>                 if (!conn->hcon) {
+>                         sco_conn_unlock(conn);
+> +                       local_bh_enable();
+>                         return;
+>                 }
+>
+>                 parent = sco_get_sock_listen(&conn->hcon->src);
+>                 if (!parent) {
+>                         sco_conn_unlock(conn);
+> +                       local_bh_enable();
+>                         return;
+>                 }
+>
+> @@ -1109,6 +1128,7 @@ static void sco_conn_ready(struct sco_conn *conn)
+>                 if (!sk) {
+>                         bh_unlock_sock(parent);
+>                         sco_conn_unlock(conn);
+> +                       local_bh_enable();
+>                         return;
+>                 }
+>
+> @@ -1131,6 +1151,7 @@ static void sco_conn_ready(struct sco_conn *conn)
+>                 bh_unlock_sock(parent);
+>
+>                 sco_conn_unlock(conn);
+> +               local_bh_enable();
+>         }
+>  }
+>
+> --
+> 2.25.1
+>
 
-Yeah, that was indeed more a leftover of the version print. I
-thought about querying the version again explicitly, but this would
-have brought back the SMCCC calls that I could so nicely delete. Plus,
-the hwrng driver is just a (secondary) user of this interface, I think
-announcing the version should be done in smccc.c. Which is probably
-beyond the scope of this patch.
 
-Now thinking about this, there would probably be some value in making
-the TRNG UUID somehow available, as this can be used to identify flawed
-implementations (general problems in the hardware or backend bugs). But
-this should be some query-able interface, rather than some line in
-dmesg. Any ideas? Might be beyond the scope of this series, though...
-
-Cheers,
-Andre
+-- 
+Luiz Augusto von Dentz
