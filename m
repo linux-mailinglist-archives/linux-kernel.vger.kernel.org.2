@@ -2,138 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D643D7745
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D9C3D770E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237374AbhG0NrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:47:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47290 "EHLO mail.kernel.org"
+        id S236624AbhG0NpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:45:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:39180 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237119AbhG0Nqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:46:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F227061ACF;
-        Tue, 27 Jul 2021 13:46:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627393598;
-        bh=OcI4JLWx9byD07inpb1StFBsTxVVAV4+ZA6Ud/7IWqc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVT2dvu9tXOcQI5W1b/Q5YDjC2RcNJUxcs1M55bPMSpnkkEZOSG36fr5zbItOaJjv
-         pPxqDtmZOwIdVf/bJLtqgj7ndZThW9MC0MPcjoORHr89k87Iyd23sl71V3q76RFUgu
-         WUFT9ke9qzK7iCqiOlvMmmxKXWTZekCRG7sOe6cgGQuVzc4b13SGIhPEt14IiR9rTV
-         gkT5UiCxl4/o2j9ap4thAHG3AtUba15YX3mrioCMN34HrWESlKfLsCfkpFUfaEBM4M
-         G2Sh34O0wbicgOR2eGCxX2JDcZnwjyOtREmH7aGM+GFVUuwBbXKubCEFQn4FS+MYvQ
-         499PkYvm9JCmg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH net-next v3 22/31] sb1000: use ndo_siocdevprivate
-Date:   Tue, 27 Jul 2021 15:45:08 +0200
-Message-Id: <20210727134517.1384504-23-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210727134517.1384504-1-arnd@kernel.org>
-References: <20210727134517.1384504-1-arnd@kernel.org>
+        id S236576AbhG0NpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:45:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 394DC1FB;
+        Tue, 27 Jul 2021 06:45:14 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D8BCF3F66F;
+        Tue, 27 Jul 2021 06:45:11 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 14:45:09 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        mcgrof@kernel.org, Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Paul Turner <pjt@google.com>,
+        Quentin Perret <qperret@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] sched/uclamp: Introduce a method to transform UCLAMP_MIN
+ into BOOST
+Message-ID: <20210727134509.j2fhimhp4dht3hir@e107158-lin.cambridge.arm.com>
+References: <20210721075751.542-1-xuewen.yan94@gmail.com>
+ <d8e14c3c-0eab-2d4d-693e-fb647c7f7c8c@arm.com>
+ <CAB8ipk9rO7majqxo0eTnPf5Xs-c4iF8TPQqonCjv6sCd2J6ONA@mail.gmail.com>
+ <20210726171716.jow6qfbxx6xr5q3t@e107158-lin.cambridge.arm.com>
+ <CAB8ipk9cZ4amrarQSN9TtqEwc42RFM1cBUGsTYKuF0maRFx4Zw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAB8ipk9cZ4amrarQSN9TtqEwc42RFM1cBUGsTYKuF0maRFx4Zw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Xuewen
 
-The private sb1000 ioctl commands all work correctly in
-compat mode. Change the to ndo_siocdevprivate as a cleanup.
+On 07/27/21 20:16, Xuewen Yan wrote:
+> Hi Qais
+> 
+> On Tue, Jul 27, 2021 at 1:17 AM Qais Yousef <qais.yousef@arm.com> wrote:
+> >
+> > > > >
+> > > > > The uclamp can clamp the util within uclamp_min and uclamp_max,
+> > > > > it is benifit to some tasks with small util, but for those tasks
+> > > > > with middle util, it is useless.
+> >
+> > It's not really useless, it works as it's designed ;-)
+> 
+> Yes, my expression problem...
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/sb1000.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+No worries, I understood what you meant. But I had to highlight that this is
+the intended design behavior :-)
 
-diff --git a/drivers/net/sb1000.c b/drivers/net/sb1000.c
-index e88af978f63c..f01c9db01b16 100644
---- a/drivers/net/sb1000.c
-+++ b/drivers/net/sb1000.c
-@@ -78,7 +78,8 @@ struct sb1000_private {
- /* prototypes for Linux interface */
- extern int sb1000_probe(struct net_device *dev);
- static int sb1000_open(struct net_device *dev);
--static int sb1000_dev_ioctl (struct net_device *dev, struct ifreq *ifr, int cmd);
-+static int sb1000_siocdevprivate(struct net_device *dev, struct ifreq *ifr,
-+				 void __user *data, int cmd);
- static netdev_tx_t sb1000_start_xmit(struct sk_buff *skb,
- 				     struct net_device *dev);
- static irqreturn_t sb1000_interrupt(int irq, void *dev_id);
-@@ -135,7 +136,7 @@ MODULE_DEVICE_TABLE(pnp, sb1000_pnp_ids);
- static const struct net_device_ops sb1000_netdev_ops = {
- 	.ndo_open		= sb1000_open,
- 	.ndo_start_xmit		= sb1000_start_xmit,
--	.ndo_do_ioctl		= sb1000_dev_ioctl,
-+	.ndo_siocdevprivate	= sb1000_siocdevprivate,
- 	.ndo_stop		= sb1000_close,
- 	.ndo_set_mac_address 	= eth_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
-@@ -987,7 +988,8 @@ sb1000_open(struct net_device *dev)
- 	return 0;					/* Always succeed */
- }
- 
--static int sb1000_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
-+static int sb1000_siocdevprivate(struct net_device *dev, struct ifreq *ifr,
-+				 void __user *data, int cmd)
- {
- 	char* name;
- 	unsigned char version[2];
-@@ -1011,7 +1013,7 @@ static int sb1000_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- 		stats[2] = dev->stats.rx_packets;
- 		stats[3] = dev->stats.rx_errors;
- 		stats[4] = dev->stats.rx_dropped;
--		if(copy_to_user(ifr->ifr_data, stats, sizeof(stats)))
-+		if (copy_to_user(data, stats, sizeof(stats)))
- 			return -EFAULT;
- 		status = 0;
- 		break;
-@@ -1019,21 +1021,21 @@ static int sb1000_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- 	case SIOCGCMFIRMWARE:		/* get firmware version */
- 		if ((status = sb1000_get_firmware_version(ioaddr, name, version, 1)))
- 			return status;
--		if(copy_to_user(ifr->ifr_data, version, sizeof(version)))
-+		if (copy_to_user(data, version, sizeof(version)))
- 			return -EFAULT;
- 		break;
- 
- 	case SIOCGCMFREQUENCY:		/* get frequency */
- 		if ((status = sb1000_get_frequency(ioaddr, name, &frequency)))
- 			return status;
--		if(put_user(frequency, (int __user *) ifr->ifr_data))
-+		if (put_user(frequency, (int __user *)data))
- 			return -EFAULT;
- 		break;
- 
- 	case SIOCSCMFREQUENCY:		/* set frequency */
- 		if (!capable(CAP_NET_ADMIN))
- 			return -EPERM;
--		if(get_user(frequency, (int __user *) ifr->ifr_data))
-+		if (get_user(frequency, (int __user *)data))
- 			return -EFAULT;
- 		if ((status = sb1000_set_frequency(ioaddr, name, frequency)))
- 			return status;
-@@ -1042,14 +1044,14 @@ static int sb1000_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- 	case SIOCGCMPIDS:			/* get PIDs */
- 		if ((status = sb1000_get_PIDs(ioaddr, name, PID)))
- 			return status;
--		if(copy_to_user(ifr->ifr_data, PID, sizeof(PID)))
-+		if (copy_to_user(data, PID, sizeof(PID)))
- 			return -EFAULT;
- 		break;
- 
- 	case SIOCSCMPIDS:			/* set PIDs */
- 		if (!capable(CAP_NET_ADMIN))
- 			return -EPERM;
--		if(copy_from_user(PID, ifr->ifr_data, sizeof(PID)))
-+		if (copy_from_user(PID, data, sizeof(PID)))
- 			return -EFAULT;
- 		if ((status = sb1000_set_PIDs(ioaddr, name, PID)))
- 			return status;
--- 
-2.29.2
+> 
+> >
+> > As Dietmar highlighted, you need to pick a higher boost value that gives you
+> > the best perf/watt for your use case.
+> >
+> > I assume that this is a patch in your own Android 5.4 kernel, right? I'm not
+> 
+> Yes, the patch indeed is used in my own Android12 with kernel5.4.
+> 
+> > aware of any such patch in Android Common Kernel. If it's there, do you mind
+> > pointing me to the gerrit change that introduced it?
+> 
+> emmm, sorry I kind of understand what that means.  Your means is  what
+> I need to do is to send this patch to google?
 
+Oh no. I meant if you are *not* carrying this patch in your own, I'd appreciate
+getting a link to when it was merged into Google' tree. But you already said
+you carry this patch on your own kernel, so there's nothing to do :)
+
+> 
+> >
+> > > Because the kernel used in Android do not have the schedtune, and the
+> > > uclamp can not
+> > > boost all the util, and this is the reason for the design of the patch.
+> >
+> > Do you have a specific workload in mind here that is failing? It would help if
+> > you can explain in detail the mode of failure you're seeing to help us
+> > understand the problem better.
+> 
+> The patch has has been working with me for a while, I can redo this
+> data, but this might take a while :)
+
+But there must have been a reason you introduced it in the first place, what
+was that reason?
+
+> 
+> > >
+> > > >
+> > > > > Scenario:
+> > > > > if the task_util = 200, {uclamp_min, uclamp_max} = {100, 1024}
+> > > > >
+> > > > > without patch:
+> > > > > clamp_util = 200;
+> > > > >
+> > > > > with patch:
+> > > > > clamp_util = 200 + (100 / 1024) * (1024 - 200) = 280;
+> >
+> > If a task util was 200, how long does it take for it to reach 280? Why do you
+> > need to have this immediate boost value applied and can't wait for this time to
+> > lapse? I'm not sure, but ramping up by 80 points shouldn't take *that* long,
+> > but don't quote me on this :-)
+> 
+> Here is just one example to illustrate that , with this patch, It also
+> can boost the util which in {UCLAMP_MIN, UCLAMP_MAX}...
+> 
+> >
+> > > >
+> > > > The same could be achieved by using {uclamp_min, uclamp_max} = {280, 1024}?
+> > >
+> > > Yes, for per-task, that is no problem, but for per-cgroup, most times,
+> > > we can not always only put the special task into the cgroup.
+> > > For example, in Android , there is a cgroup named "top-app", often all
+> > > the threads of a app would be put into it.
+> > > But, not all threads of this app need to be boosted, if we set the
+> > > uclamp_min too big, the all the small task would be clamped to
+> > > uclamp_min,
+> > > the power consumption would be increased, howerever, if setting the
+> > > uclamp_min smaller, the performance may be increased.
+> > > Such as:
+> > > a task's util is 50,  {uclamp_min, uclamp_max} = {100, 1024}
+> > > the boost_util =  50 + (100 / 1024) * (1024 - 50) = 145;
+> > > but if we set {uclamp_min, uclamp_max} = {280, 1024}, without patch:
+> > > the clamp_util = 280.
+> >
+> > I assume {uclamp_min, uclamp_max} = {145, 1024} is not good enough because you
+> > want this 200 task to be boosted to 280. One can argue that not all tasks at
+> > 200 need to be boosted to 280 too. So the question is, like above, what type
+> > of tasks that are failing here and how do you observe this failure? It seems
+> > there's a class of performance critical tasks that need this fast boosting.
+> > Can't you identify them and boost them individually?
+> 
+> Yes, the best way to do that is boosting them individually, but
+> usually, it may not be so easy...
+
+Yes I appreciate that, but cgroup is a coarse grain controller. Even with your
+approach, you will still have to find the best compromise because some tasks
+will get more boosting than they really need to and waste power even with your
+approach.
+
+For best outcome with uclamp; the cgroup should be used to specify the minimum
+performance requirement of a class of tasks, then use the per-task API to fine
+tune the settings for specific tasks.
+
+I appreciate it'll take time to get there, but this is the best way forward.
+
+If you have a specific use case that's failing, it will still be good to share
+the details to think more if there's something we can do about it at the kernel
+level.
+
+Thanks
+
+--
+Qais Yousef
