@@ -2,80 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 469093D758F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7613C3D758E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236577AbhG0NGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:06:20 -0400
-Received: from smtpbg128.qq.com ([106.55.201.39]:35111 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232106AbhG0NGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:06:19 -0400
-X-QQ-mid: bizesmtp36t1627391151tb3rx6qe
-Received: from ficus.lan (unknown [171.223.99.141])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 27 Jul 2021 21:05:50 +0800 (CST)
-X-QQ-SSF: 01000000002000B0C000B00A0000000
-X-QQ-FEAT: WKaXkSLX6oMcnFHmi/bUi/JKgOUhJWvHZy4rPPiea5kL3CmU6xw7gYJmM+CGb
-        WbPyvFq9FjHxXiDbY9f2t5EbshO0k2bn+6YY3BWzvfmNKcyaWr+vatfNb79AOQPnotbzMVw
-        eqKLULw4i/uLXDS/Fky3Ct3rMXskrIj02k6MS2owUdwhtezf7bogjM61ViwE+3zAB6OSHIv
-        OzAGAVyeirOTk1/jvJrrG9C66amaxbIlNDq6EVeL/BB/574FLiV2BRDyGn9W7DDy9XbIgrb
-        RygyqT1hWNePBw9u020fAu98CYbxMrhIx0/DSdLFKfZFUBfbVYtWm+oDvC3xScK6qIDdMIl
-        2xwI1pxFtZ8DvP4LlPgQ5AYYzx6eA==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     linux@armlinux.org.uk
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] ARM: scoop: move EXPORT_SYMBOLs to follow their funcs
-Date:   Tue, 27 Jul 2021 21:05:47 +0800
-Message-Id: <20210727130547.141310-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S236572AbhG0NGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:06:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56145 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232106AbhG0NGA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:06:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627391160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4iyFwz7NDHGpvmEymRU+iBXixcU4YZHYlAfb7sMtL3w=;
+        b=XGNeMs/HU8jTRHXuz80L2QpyB6b/1sJL2Ds1f9HfxWA5Xo/GVMOk3YdUSm0epa5SKqo/7b
+        UmivixvA9yPdCiLNessmCsTtYhfXfYIL0SlJu9AZd1b9YklyqcyhA1cCwELHfHwgAeTuMb
+        6DitITzb7aDKKYQTig+Qd4w6H+5BBQk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-3Gxch96uPMajIDtQMTua6w-1; Tue, 27 Jul 2021 09:05:56 -0400
+X-MC-Unique: 3Gxch96uPMajIDtQMTua6w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 743DC1932481;
+        Tue, 27 Jul 2021 13:05:54 +0000 (UTC)
+Received: from starship (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 627FA5C1B4;
+        Tue, 27 Jul 2021 13:05:49 +0000 (UTC)
+Message-ID: <714b56eb83e94aca19e35a8c258e6f28edc0a60d.camel@redhat.com>
+Subject: Re: [PATCH v2 8/8] KVM: x86: hyper-v: Deactivate APICv only when
+ AutoEOI feature is in use
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ben Gardon <bgardon@google.com>
+Date:   Tue, 27 Jul 2021 16:05:48 +0300
+In-Reply-To: <YPnBxHwMJkTSBHfC@google.com>
+References: <20210713142023.106183-1-mlevitsk@redhat.com>
+         <20210713142023.106183-9-mlevitsk@redhat.com>
+         <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
+         <YPXJQxLaJuoF6aXl@google.com>
+         <64ed28249c1895a59c9f2e2aa2e4c09a381f69e5.camel@redhat.com>
+         <YPnBxHwMJkTSBHfC@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Usually, EXPORT_SYMBOLs should immediately follow their functions or
-variables.
+On Thu, 2021-07-22 at 19:06 +0000, Sean Christopherson wrote:
+> +Ben
+> 
+> On Thu, Jul 22, 2021, Maxim Levitsky wrote:
+> > On Mon, 2021-07-19 at 18:49 +0000, Sean Christopherson wrote:
+> > > On Sun, Jul 18, 2021, Maxim Levitsky wrote:
+> > > > I am more inclined to fix this by just tracking if we hold the srcu
+> > > > lock on each VCPU manually, just as we track the srcu index anyway,
+> > > > and then kvm_request_apicv_update can use this to drop the srcu
+> > > > lock when needed.
+> > > 
+> > > The entire approach of dynamically adding/removing the memslot seems doomed to
+> > > failure, and is likely responsible for the performance issues with AVIC, e.g. a
+> > > single vCPU temporarily inhibiting AVIC will zap all SPTEs _twice_; on disable
+> > > and again on re-enable.
+> > > 
+> > > Rather than pile on more gunk, what about special casing the APIC access page
+> > > memslot in try_async_pf()?  E.g. zap the GFN in avic_update_access_page() when
+> > > disabling (and bounce through kvm_{inc,dec}_notifier_count()), and have the page
+> > > fault path skip directly to MMIO emulation without caching the MMIO info.  It'd
+> > > also give us a good excuse to rename try_async_pf() :-)
+> > > 
+> > > If lack of MMIO caching is a performance problem, an alternative solution would
+> > > be to allow caching but add a helper to zap the MMIO SPTE and request all vCPUs to
+> > > clear their cache.
+> > > 
+> > > It's all a bit gross, especially hijacking the mmu_notifier path, but IMO it'd be
+> > > less awful than the current memslot+SRCU mess.
+> > 
+> > Hi!
+> > 
+> > I am testing your approach and it actually works very well! I can't seem to break it.
+> > 
+> > Could you explain why do I need to do something with kvm_{inc,dec}_notifier_count()) ?
+> 
+> Glad you asked, there's one more change needed.  kvm_zap_gfn_range() currently
+> takes mmu_lock for read, but it needs to take mmu_lock for write for this case
+> (more way below).
+> 
+> The existing users, update_mtrr() and kvm_post_set_cr0(), are a bit sketchy.  The
+> whole thing is a grey area because KVM is trying to ensure it honors the guest's
+> UC memtype for non-coherent DMA, but the inputs (CR0 and MTRRs) are per-vCPU,
+> i.e. for it to work correctly, the guest has to ensure all running vCPUs do the
+> same transition.  So in practice there's likely no observable bug, but it also
+> means that taking mmu_lock for read is likely pointless, because for things to
+> work the guest has to serialize all running vCPUs.
+> 
+> Ben, any objection to taking mmu_lock for write in kvm_zap_gfn_range()?  It would
+> effectively revert commit 6103bc074048 ("KVM: x86/mmu: Allow zap gfn range to
+> operate under the mmu read lock"); see attached patch.  And we could even bump
+> the notifier count in that helper, e.g. on top of the attached:
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index b607e8763aa2..7174058e982b 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5568,6 +5568,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+> 
+>         write_lock(&kvm->mmu_lock);
+> 
+> +       kvm_inc_notifier_count(kvm, gfn_start, gfn_end);
+> +
+>         if (kvm_memslots_have_rmaps(kvm)) {
+>                 for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+>                         slots = __kvm_memslots(kvm, i);
+> @@ -5598,6 +5600,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+>         if (flush)
+>                 kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
+> 
+> +       kvm_dec_notifier_count(kvm, gfn_start, gfn_end);
+> +
+>         write_unlock(&kvm->mmu_lock);
+>  }
+> 
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/arm/common/scoop.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+I understand what you mean now. I thought that I need to change to code of the
+kvm_inc_notifier_count/kvm_dec_notifier_count.
 
-diff --git a/arch/arm/common/scoop.c b/arch/arm/common/scoop.c
-index 6edb961bd6c1..746919c18bb1 100644
---- a/arch/arm/common/scoop.c
-+++ b/arch/arm/common/scoop.c
-@@ -49,6 +49,7 @@ void reset_scoop(struct device *dev)
- 	iowrite16(0x0000, sdev->base + SCOOP_ISR);  /* 1C */
- 	iowrite16(0x0000, sdev->base + SCOOP_IRM);
- }
-+EXPORT_SYMBOL(reset_scoop);
- 
- static void __scoop_gpio_set(struct scoop_dev *sdev,
- 			unsigned offset, int value)
-@@ -126,15 +127,13 @@ unsigned short read_scoop_reg(struct device *dev, unsigned short reg)
- 	struct scoop_dev *sdev = dev_get_drvdata(dev);
- 	return ioread16(sdev->base + reg);
- }
-+EXPORT_SYMBOL(read_scoop_reg);
- 
- void write_scoop_reg(struct device *dev, unsigned short reg, unsigned short data)
- {
- 	struct scoop_dev *sdev = dev_get_drvdata(dev);
- 	iowrite16(data, sdev->base + reg);
- }
--
--EXPORT_SYMBOL(reset_scoop);
--EXPORT_SYMBOL(read_scoop_reg);
- EXPORT_SYMBOL(write_scoop_reg);
- 
- #ifdef CONFIG_PM
--- 
-2.32.0
+
+
+
+> 
+> 
+> 
+> Back to Maxim's original question...
+> 
+> Elevating mmu_notifier_count and bumping mmu_notifier_seq will will handle the case
+> where APICv is being disabled while a different vCPU is concurrently faulting in a
+> new mapping for the APIC page.  E.g. it handles this race:
+> 
+>  vCPU0                                 vCPU1
+>                                        apic_access_memslot_enabled = true;
+>  			               #NPF on APIC
+> 			               apic_access_memslot_enabled==true, proceed with #NPF
+>  apic_access_memslot_enabled = false 
+>  kvm_zap_gfn_range(APIC);
+>                                        __direct_map(APIC)
+> 
+>  mov [APIC], 0 <-- succeeds, but KVM wants to intercept to emulate
+
+I understand this now. I guess this can't happen with original memslot disable
+which I guess has the needed locking and flushing to avoid this.
+(I didnt' study the code in depth thought)
+
+> 
+> 
+> 
+> The elevated mmu_notifier_count and/or changed mmu_notifier_seq will cause vCPU1
+> to bail and resume the guest without fixing the #NPF.  After acquiring mmu_lock,
+> vCPU1 will see the elevated mmu_notifier_count (if kvm_zap_gfn_range() is about
+> to be called, or just finised) and/or a modified mmu_notifier_seq (after the
+> count was decremented).
+> 
+> This is why kvm_zap_gfn_range() needs to take mmu_lock for write.  If it's allowed
+> to run in parallel with the page fault handler, there's no guarantee that the
+> correct apic_access_memslot_enabled will be observed.
+
+I understand now.
+
+So, Paolo, Ben Gardon, what do you think. Do you think this approach is feasable?
+Do you agree to revert the usage of the read lock?
+
+I will post a new series using this approach very soon, since I already have
+msot of the code done.
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> 	if (is_tdp_mmu_fault)
+> 		read_lock(&vcpu->kvm->mmu_lock);
+> 	else
+> 		write_lock(&vcpu->kvm->mmu_lock);
+> 
+> 	if (!is_noslot_pfn(pfn) && mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, hva)) <--- look here!
+> 		goto out_unlock;
+> 
+> 	if (is_tdp_mmu_fault)
+> 		r = kvm_tdp_mmu_map(vcpu, gpa, error_code, map_writable, max_level,
+> 				    pfn, prefault);
+> 	else
+> 		r = __direct_map(vcpu, gpa, error_code, map_writable, max_level, pfn,
+> 				 prefault, is_tdp);
+
 
