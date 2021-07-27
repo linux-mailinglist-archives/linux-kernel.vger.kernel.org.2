@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C653D76F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6193D76FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236885AbhG0Nj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
+        id S236879AbhG0Nkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbhG0Nj4 (ORCPT
+        with ESMTP id S232314AbhG0Nko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:39:56 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3094CC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:39:56 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d1so8534123pll.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:39:56 -0700 (PDT)
+        Tue, 27 Jul 2021 09:40:44 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CBDC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:40:44 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id y4so12136806ilp.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:40:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0EuAdJ2j3Xy0wD/MXKwZ/PwZTNMmcTB1bfhzXbegpT8=;
-        b=OeyAi2UTKTWbVp/qMcrINmfyO/LiUfMC5mKML0fs/Se/Osx2AXIKqsFoml0FtAfvZU
-         wXu2X/iGWw/iqftzqKLG9r5kHy4YXAJZEwh2FIJw1FPF20pxUpihuExFJS3XkxJKEJg5
-         cIPdejsvCQ1OI1oR0AAcM8cXthGlaeC+ZHA60kPxdItf4zktXNVg8FwQHl9d45gqr6RW
-         Trva3LvqGr4yfXLnZy+LhWKmQ6OR/Oykg1QMcJk9Ncwy0kc4XZu0BnpUmRnDjaX4m9Gx
-         ONNtIo8lA8GfBiJgpRjloIHldM1SN7Q2JdkUz54XQFS/NT924wl+TzlSOPU4zLtVj6mh
-         Ej2w==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QJojNdCNRZdeObtsdoaPzzj/IMsZp6P9O1kQugt1wqE=;
+        b=XO6Dflo3jfQxB+ZjvaKObEax0uqfNoBdNWv4uPuHWMz3JVC94vavSgNOZfwad7WFK+
+         6BqDKAPrvF5NbnboVNkt/ucxU9z0ncfICAFLEwMye6SlkKgkx2/de5SPelrUQU0cPKv/
+         UDw655RUl31r9icQLn45hsNbqVw45T/psE3HhU8Eq0pcOay0J56ZJiRWPhKmaTwMOmbZ
+         nRDMZ2CY2fK2pUufh6Ja0307DNBHFZBl56DRDboTaHRDyxQ0CnLJukYZRg31tAfxirCN
+         wWp7CK2i2KpJtYIWKzxtX2wCpXkjc3ymzRjLgoCPDRU97fhDkEutDe1MG4BuhIKPZo2q
+         LSYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0EuAdJ2j3Xy0wD/MXKwZ/PwZTNMmcTB1bfhzXbegpT8=;
-        b=N4HYQeW7CpoK3nkpgqeQYXxri0gZIZziq79bN6EsRkpkLu94Zoolye8NcjWFfF00au
-         NCiL6XeYNKDH5/RDJyK3A74ocLteq79S4ExpSZ8zujOfw4zBuI7l+bbrG9VN/X5dD3EX
-         +Ck6K/HeAjbSbxLoD5oaSBfmHkbVbgbCBjI0Qa8kCaW4atIJUVRzkeK68mm76Dbewsdj
-         N6O/rlmB/ojfNjb5mpp2gE3aJ+CUHZK+kiSCnz0lGLJyI1KGBi1hCyYK71+MoNarzpf1
-         XtFruclYpV9KLHiFM202UW3Q5CgDKP4FvId37WiMNVthsWys3Y8ZrvvYDdNnDRgigstx
-         1TPQ==
-X-Gm-Message-State: AOAM533S+to0qQMj2OFGohTZDol9CgX12MiLLD6sG+eIGhQjlVifbMa3
-        F7nYocRhXmcaCn7x5qzLH27Cx3pzXwAyiHXso1bMjw==
-X-Google-Smtp-Source: ABdhPJzBfHNbdE8QZCQo1KfFkwCTH8KqVgtlNH0zqRZJ1iKnUGTO5j5NK3RgzPw2/D0tchJpoenEbqHB1cxeOgLzLhQ=
-X-Received: by 2002:a17:902:6ac9:b029:12c:3bac:8d78 with SMTP id
- i9-20020a1709026ac9b029012c3bac8d78mr5117123plt.34.1627393195692; Tue, 27 Jul
- 2021 06:39:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QJojNdCNRZdeObtsdoaPzzj/IMsZp6P9O1kQugt1wqE=;
+        b=Ptq9d4bb041d38TUKEMcdaRXn0PnfpjiKPfxgCBAkPYKQlAlEYVw6o0/exdRTLmmhu
+         LQ1a5n/xVIcwofSjQ+B0PZNpR2dOEv7cOdylRdKoEVZ+/zk5vtxqWNCoWLo8CGj7655X
+         7KvY9Sv0b575wGAManJovxo4yUSUQOhkz3pxEvZA+UhROFc6g3VAAuP/WGZAwWaXecvA
+         YOELfq/Wo0M4NPb9geTdNaMRvQdkoQFicJTE2T27sjc20lRuusyjzxuDMMJwHxF5F5xk
+         8OIsVg5xIYdp1IGC6DfqFP+CmNMRka0aU8hkUj3yC4zpjtvf0VR/motU8/J/TJFRChVR
+         Vhyw==
+X-Gm-Message-State: AOAM530NC9L6IZHs3UxgmOLcK7tW3/ysn2ARzaTDpAI8us5cSyGkkmg/
+        VISUFwmr1gZIv1fxaG+JoVeQ/EhTlPdINA==
+X-Google-Smtp-Source: ABdhPJyWOJJLJx2IeJbv+UMqbCtDpwaYJjnSAw1w2Y1nSyjQpBYZbTvHwYh1lpSqHhwjPVAQnG7nDA==
+X-Received: by 2002:a05:6e02:12ab:: with SMTP id f11mr17030876ilr.200.1627393243454;
+        Tue, 27 Jul 2021 06:40:43 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id r198sm2342266ior.7.2021.07.27.06.40.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 06:40:42 -0700 (PDT)
+Subject: Re: [PATCH net-next 0/4] net: ipa: kill IPA_VALIDATION
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210726174010.396765-1-elder@linaro.org>
+ <YP/rFwvIHOvIwMNO@unreal> <5b97f7b1-f65f-617e-61b4-2fdc5f08bc3e@linaro.org>
+ <YQACaxKhxDFZSCF3@unreal>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <07765bd2-eade-ee52-fa18-56f2e573461a@linaro.org>
+Date:   Tue, 27 Jul 2021 08:40:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210718043034.76431-1-zhengqi.arch@bytedance.com> <20210718043034.76431-4-zhengqi.arch@bytedance.com>
-In-Reply-To: <20210718043034.76431-4-zhengqi.arch@bytedance.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 27 Jul 2021 21:39:17 +0800
-Message-ID: <CAMZfGtWjunhRYQNW4u4Rea8N+csKPvzUmKfgUBnWBdJdagjs-g@mail.gmail.com>
-Subject: Re: [PATCH 3/7] mm: remove redundant smp_wmb()
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQACaxKhxDFZSCF3@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 12:31 PM Qi Zheng <zhengqi.arch@bytedance.com> wrote:
->
-> The smp_wmb() which is in the __pte_alloc() is used to
-> ensure all ptes setup is visible before the pte is made
-> visible to other CPUs by being put into page tables. We
-> only need this when the pte is actually populated, so
-> move it to pte_install(). __pte_alloc_kernel(),
-> __p4d_alloc(), __pud_alloc() and __pmd_alloc() are similar
-> to this case.
->
-> We can also defer smp_wmb() to the place where the pmd entry
-> is really populated by preallocated pte. There are two kinds
-> of user of preallocated pte, one is filemap & finish_fault(),
-> another is THP. The former does not need another smp_wmb()
-> because the smp_wmb() has been done by pte_install().
-> Fortunately, the latter also does not need another smp_wmb()
-> because there is already a smp_wmb() before populating the
-> new pte when the THP use preallocated pte to split huge pmd.
+On 7/27/21 7:56 AM, Leon Romanovsky wrote:
+>> In any case I take your point.  I will now add to my task list
+>> a review of these spots.  I'd like to be sure an error message
+>> *is*  reported at an appropriate level up the chain of callers so
+>> I can always identify the culprit in the a WARN_ON() fires (even
+>> though it should never
+>>   happen).  And in each case I'll evaluate
+>> whether returning is better than not.
+> You can, but users don't :). So if it is valid but error flow, that
+> needs user awareness, simply print something to the dmesg with *_err()
+> prints.
 
-s/use/uses a/g
-s/split huge/split a huge/g
+For some reason you seem to care about users.
 
->
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+I guess the WARN stack trace tells me where it comes from.
+This would be an invalid error flow, and should never happen.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+I'll still plan to review each of these again.
+
+> BTW, I'm trying to untangle some of the flows in net/core/devlink.c
+> and such if(WARN()) pattern is even harmful, because it is very hard to
+> understand when that error is rare/non-exist/real.
+
+That's what assert() is for, but we've already had that
+discussion :)
+
+					-Alex
