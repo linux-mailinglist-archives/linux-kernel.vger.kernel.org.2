@@ -2,85 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739683D74B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC353D74BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236347AbhG0MEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:04:15 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:58922 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbhG0MEO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:04:14 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A88A81C0B76; Tue, 27 Jul 2021 14:04:13 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 14:04:13 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Evan Green <evgreen@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH v2] mm: Enable suspend-only swap spaces
-Message-ID: <20210727120413.GB32265@duo.ucw.cz>
-References: <20210709105012.v2.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
- <YOvpVRSMJe8NQuS2@dhcp22.suse.cz>
- <30dddfb1-388c-a593-0987-73e821216da9@redhat.com>
- <YO55ZIrgkLXI4BbS@dhcp22.suse.cz>
- <b84dfb7b-9ae7-8cd7-ce65-0b1952e30e8e@redhat.com>
+        id S236447AbhG0MIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:08:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231877AbhG0MIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 08:08:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E73D61A38;
+        Tue, 27 Jul 2021 12:07:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627387680;
+        bh=/pDNMzFS+Mxit0n/scgZVo8ALxfKu5yarVzdhGl0duk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OZr+hbj/gUtIITczNWEZJrlhOAnG4Rz+A1677XGcOEq5Dff2MHdi1BkXff/v0pp5R
+         ZIfP1KFYDbcpqcb7hedvwWvs2AjIWvPWUtjdVQNTRzjl+oeyoje2PPiDvaFreEvQxb
+         ApSXrMMhJwYxRE+8u6cpFQYTIMRoqulsm0GFcgYk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH v2] fs: make d_path-like functions all have unsigned size
+Date:   Tue, 27 Jul 2021 14:07:54 +0200
+Message-Id: <20210727120754.1091861-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="QKdGvSO+nmPlgiQ/"
-Content-Disposition: inline
-In-Reply-To: <b84dfb7b-9ae7-8cd7-ce65-0b1952e30e8e@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4979; h=from:subject; bh=/pDNMzFS+Mxit0n/scgZVo8ALxfKu5yarVzdhGl0duk=; b=owGbwMvMwCRo6H6F97bub03G02pJDAn/v4tPX5H3/KHA/hyxy/qf7f33Hmn+xryo42+M+b9sicgr akJ+HbEsDIJMDLJiiixftvEc3V9xSNHL0PY0zBxWJpAhDFycAjCRtVsYFsx7/UPDzf+5iXZi358X8h sXF7heLGWYn5FtyKKyLOr8hGBW7zw25kXmKRNPAwA=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When running static analysis tools to find where signed values could
+potentially wrap the family of d_path() functions turn out to trigger a
+lot of mess.  In evaluating the code, all of these usages seem safe, but
+pointer math is involved so if a negative number is ever somehow passed
+into these functions, memory can be traversed backwards in ways not
+intended.
 
---QKdGvSO+nmPlgiQ/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Resolve all of the abuguity by just making "size" an unsigned value,
+which takes the guesswork out of everything involved.
 
-Hi!
+Reported-by: Jordy Zomer <jordy@pwning.systems>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+changes since v1:
+	- add 'size' name to function prototypes
+	- change struct prepend_buffer's size field to also be unsigned
 
-> Let's take a look at hibernate() callers:
->=20
-> drivers/mfd/tps65010.c: calls hibernate() from IRQ contex, based on HW
->                         event
+ fs/d_path.c            | 16 ++++++++--------
+ include/linux/dcache.h | 16 ++++++++--------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
-No it does not. Look again.
+diff --git a/fs/d_path.c b/fs/d_path.c
+index 23a53f7b5c71..73b7ea17a330 100644
+--- a/fs/d_path.c
++++ b/fs/d_path.c
+@@ -10,7 +10,7 @@
+ 
+ struct prepend_buffer {
+ 	char *buf;
+-	int len;
++	unsigned int len;
+ };
+ #define DECLARE_BUFFER(__name, __buf, __len) \
+ 	struct prepend_buffer __name = {.buf = __buf + __len, .len = __len}
+@@ -182,7 +182,7 @@ static int prepend_path(const struct path *path,
+  */
+ char *__d_path(const struct path *path,
+ 	       const struct path *root,
+-	       char *buf, int buflen)
++	       char *buf, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buf, buflen);
+ 
+@@ -193,7 +193,7 @@ char *__d_path(const struct path *path,
+ }
+ 
+ char *d_absolute_path(const struct path *path,
+-	       char *buf, int buflen)
++	       char *buf, unsigned int buflen)
+ {
+ 	struct path root = {};
+ 	DECLARE_BUFFER(b, buf, buflen);
+@@ -230,7 +230,7 @@ static void get_fs_root_rcu(struct fs_struct *fs, struct path *root)
+  *
+  * "buflen" should be positive.
+  */
+-char *d_path(const struct path *path, char *buf, int buflen)
++char *d_path(const struct path *path, char *buf, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buf, buflen);
+ 	struct path root;
+@@ -266,7 +266,7 @@ EXPORT_SYMBOL(d_path);
+ /*
+  * Helper function for dentry_operations.d_dname() members
+  */
+-char *dynamic_dname(struct dentry *dentry, char *buffer, int buflen,
++char *dynamic_dname(struct dentry *dentry, char *buffer, unsigned int buflen,
+ 			const char *fmt, ...)
+ {
+ 	va_list args;
+@@ -284,7 +284,7 @@ char *dynamic_dname(struct dentry *dentry, char *buffer, int buflen,
+ 	return memcpy(buffer, temp, sz);
+ }
+ 
+-char *simple_dname(struct dentry *dentry, char *buffer, int buflen)
++char *simple_dname(struct dentry *dentry, char *buffer, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buffer, buflen);
+ 	/* these dentries are never renamed, so d_lock is not needed */
+@@ -328,7 +328,7 @@ static char *__dentry_path(const struct dentry *d, struct prepend_buffer *p)
+ 	return extract_string(&b);
+ }
+ 
+-char *dentry_path_raw(const struct dentry *dentry, char *buf, int buflen)
++char *dentry_path_raw(const struct dentry *dentry, char *buf, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buf, buflen);
+ 
+@@ -337,7 +337,7 @@ char *dentry_path_raw(const struct dentry *dentry, char *buf, int buflen)
+ }
+ EXPORT_SYMBOL(dentry_path_raw);
+ 
+-char *dentry_path(const struct dentry *dentry, char *buf, int buflen)
++char *dentry_path(const struct dentry *dentry, char *buf, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buf, buflen);
+ 
+diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+index 9e23d33bb6f1..c93ac4e39566 100644
+--- a/include/linux/dcache.h
++++ b/include/linux/dcache.h
+@@ -295,14 +295,14 @@ static inline unsigned d_count(const struct dentry *dentry)
+ /*
+  * helper function for dentry_operations.d_dname() members
+  */
+-extern __printf(4, 5)
+-char *dynamic_dname(struct dentry *, char *, int, const char *, ...);
+-
+-extern char *__d_path(const struct path *, const struct path *, char *, int);
+-extern char *d_absolute_path(const struct path *, char *, int);
+-extern char *d_path(const struct path *, char *, int);
+-extern char *dentry_path_raw(const struct dentry *, char *, int);
+-extern char *dentry_path(const struct dentry *, char *, int);
++__printf(4, 5)
++char *dynamic_dname(struct dentry *, char *, unsigned int size , const char *, ...);
++
++char *__d_path(const struct path *, const struct path *, char *, unsigned int size);
++char *d_absolute_path(const struct path *, char *, unsigned int size);
++char *d_path(const struct path *, char *, unsigned int size);
++char *dentry_path_raw(const struct dentry *, char *, unsigned int size);
++char *dentry_path(const struct dentry *, char *, unsigned int size);
+ 
+ /* Allocation counts.. */
+ 
+-- 
+2.32.0
 
-> kernel/power/autosleep.c: calls hibernate() when it thinks it might be
->  			  a good time to go to sleep
-
-Ok, you are right, it is there. But I don't believe anyone uses this
-configuration.
-
-Best regards,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---QKdGvSO+nmPlgiQ/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYP/2PQAKCRAw5/Bqldv6
-8t0DAKCr+H62AWwU7hlQPxiFE3r6Q/k46wCgqJGkAHYArzZ/clI1dsQrc9Vij0o=
-=6EnC
------END PGP SIGNATURE-----
-
---QKdGvSO+nmPlgiQ/--
