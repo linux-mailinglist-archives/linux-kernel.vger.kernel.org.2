@@ -2,98 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58E53D7A50
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336503D7A58
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237139AbhG0P6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:58:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhG0P6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:58:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B86C61B74;
-        Tue, 27 Jul 2021 15:58:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627401527;
-        bh=vUa6Jna0zUTd6Uw7Z4XNACsOiEzakenAQJAeppBnSXo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ynqup3Z3gPkMsba2JDfWI8oyZ+MvFIL5skXhmgg/N/YS5WPhlIKLA4AG1Tv0D+4ZL
-         V4XnScC2VZnI8GM5eLis2JS/nrBFoKHAzDOmbsXWGLMryjwCygF+DBFQP7Pz2QL/oY
-         n41gcTiC5E/y//CoZSYOF/jhAClf7y0DC8DSzk0c=
-Date:   Tue, 27 Jul 2021 17:58:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     kernelci-members@groups.io
-Cc:     "kernelci@groups.io" <kernelci@groups.io>,
-        automated-testing@lists.yoctoproject.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernelci-tsc@groups.io" <kernelci-tsc@groups.io>
-Subject: Re: [kernelci-members] KernelCI working group: Web Dashboard
-Message-ID: <YQAtNc4R1K3o6rxb@kroah.com>
-References: <f3874e7d-ccfe-4a2d-d054-9b7bf9e8b44d@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f3874e7d-ccfe-4a2d-d054-9b7bf9e8b44d@collabora.com>
+        id S237112AbhG0P76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:59:58 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1554 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229569AbhG0P75 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 11:59:57 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16RFgG7e033051;
+        Tue, 27 Jul 2021 11:59:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=XaSc/Wt3VOhRhYRfb4ziMBSu9t/ZtvP7pymZ+cQcG8o=;
+ b=HGrRnaEZuHSMkTR5XfQ17e3NAW5fuO7Y/B0Pi+6OG/ght2od7Us5/RTO1pclvAtqqHwn
+ 9ZSfhfQhEjPThDRAKCCrm0GejjLwL8nY19QkeJpBjExY/qwUpoeff4SDIX6FjhKf0dQN
+ nGZbwerkJpY4ufCKC2qBeR/ifxrxkZLE880kGbSJ3cMesxHHqSnrysKE9+U/z1lQBOpy
+ dYwx1QHpx4hnE2/Cv7NP+yQySsyqI1TFK4Wa3dTOyaqQpiIFHnZ1mIjEAw/ifSd9kv5N
+ 2wF0muInuxubV7jPHUGkKXaGWnpYR+VFvR/YLc78sG1w1pR/xhKPual9v6J79heSBQ0A SQ== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2kbd55yx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jul 2021 11:59:54 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16RFwMJ8007585;
+        Tue, 27 Jul 2021 15:59:53 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma04dal.us.ibm.com with ESMTP id 3a235n1trb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jul 2021 15:59:53 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16RFxqGM30015966
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Jul 2021 15:59:52 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CA85A28068;
+        Tue, 27 Jul 2021 15:59:52 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A1A628059;
+        Tue, 27 Jul 2021 15:59:52 +0000 (GMT)
+Received: from v0005c16 (unknown [9.211.139.59])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Jul 2021 15:59:52 +0000 (GMT)
+Message-ID: <600b3bc1cdd570b0954f7a61865975f3f3158c90.camel@linux.ibm.com>
+Subject: Re: [PATCH] i2c: mux: pca954x: Support multiple devices on a single
+ reset line
+From:   Eddie James <eajames@linux.ibm.com>
+To:     Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Date:   Tue, 27 Jul 2021 10:59:51 -0500
+In-Reply-To: <997d20b4-457c-17ba-e9bf-193132768afa@axentia.se>
+References: <20210505215918.45720-1-eajames@linux.ibm.com>
+         <997d20b4-457c-17ba-e9bf-193132768afa@axentia.se>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 7mK_MrH5vxyFrILPGfV8PtFV_McVdRaL
+X-Proofpoint-GUID: 7mK_MrH5vxyFrILPGfV8PtFV_McVdRaL
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-27_10:2021-07-27,2021-07-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ suspectscore=0 malwarescore=0 impostorscore=0 adultscore=0
+ lowpriorityscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107270093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:54:46PM +0100, Guillaume Tucker wrote:
-> Last year's KernelCI Community Survey[1] showed the importance of
-> having a good web dashboard.  About 70% of respondents would use
-> one if it provided the information they needed efficiently.
-> While other things are arguably even more important, such as
-> testing patches from mailing lists, replying to stable reviews
-> and sending email reports directly to contributors in a "natural"
-> workflow, the web dashboard has been a sticking point for a
-> while.
+On Fri, 2021-05-07 at 00:08 +0200, Peter Rosin wrote:
+> Hi!
 > 
-> There have been several attempts at solving this problem, using
-> Elastic Stack and Grafana among other things, but there isn't a
-> single framework able to directly provide an off-the-shelf
-> solution to the community's needs.  In fact, the first issue is
-> the lack of understanding of these needs: who wants to use the
-> web dashboard, and how?  Then, how does one translate those needs
-> into a user interface?  Doing this requires skills that engineers
-> who regularly contribute to KernelCI typically don't have.  As
-> such, a dedicated working group is being created in order to fill
-> this gap.
+> On 2021-05-05 23:59, Eddie James wrote:
+> > Some systems connect several PCA954x devices to a single reset
+> > GPIO. For
+> > these devices to get out of reset and probe successfully, only the
+> > first
+> > device probed should change the GPIO. Add this functionality by
+> > checking
+> > for EBUSY when getting the GPIO fails. Then, retry getting the GPIO
+> > with
+> > the non-exclusive flag and wait for the reset line to drop. This
+> > prevents
+> > the later probes from proceding while the device is still reset.
 > 
-> The aim is to coordinate efforts and try to follow best practices
-> to make steady progress and avoid repeating the same mistakes.
-> Most likely, we will need some help from proper web developers
-> who aren't part of the usual KernelCI community.  This may be
-> facilitated by the KernelCI LF project budget if approved by the
-> governing board.
+> (nit: proceeding)
 > 
-> In order to get started, we would need to have maybe 3 to 5
-> people available to focus on this.  It doesn't necessarily mean a
-> lot of hours spent but actions to be carried out on a daily or
-> weekly basis.  So far we have Gustavo Padovan as our new KernelCI
-> Project Manager and a few people have expressed interest but we
-> still need formal confirmation.
-> 
-> 
-> Here's a GitHub project dedicated to the new web dashboard:
-> 
->   https://github.com/orgs/kernelci/projects/4
-> 
-> I've created a couple of issues to get started about user
-> stories, and some initial milestones as a basic skeleton:
-> 
->   https://github.com/kernelci/kernelci-project/milestones
-> 
-> 
-> This is ultimately a community-driven effort to address the needs
-> of the kernel community.  Please share any thoughts you may have
-> on this, whether you want to add some user stories, share some
-> expertise, be officially in the working group or take part in
-> this effort in any other way.
+> The patch assumes that all muxes with interconnected resets are only
+> ever reset "in symphony". But there is no guarantee anywhere that
+> this
+> actually holds.
 
-How do we "join" the working group?  I'm willing to help out from the
-"user who will use this a lot and complain about things that do not
-work well" point of view :)
+Thanks for your comments Peter, you are quite right, this won't do.
+I've finally come back around to this and will send a new patch that
+handles it differently - please let me know what you think.
 
-thanks,
+Thanks!
+Eddie
 
-greg k-h
+> 
+> So, I don't see how this can be safe. Sure, it may very well work in
+> the
+> majority of cases, but it seems very dangerous. If one instance
+> resets
+> muxes controlled by other instances, any cached value is destroyed in
+> those instances and anything can happen. Sure, if you have HW like
+> this,
+> then you have what you have. But I don't see any good way to handle
+> this case in an elegant way. If this scheme is allowed the dangers of
+> relying on it at minimum needs to be documented.
+> 
+> And what if the second instance reads the gpio just a few ns after
+> the
+> reset is released? The first instance waits for 1us before proceeding
+> to give the chip some time to recover from the reset, but that
+> respite
+> may be lost to other instances.
+> 
+> What if the first instance does the reset but then fails the probe
+> later,
+> possibly because the chip isn't there, but then other instances
+> manages
+> to time their probe just so that the gpio is busy at the right point,
+> and then proceeds without holding a reference to the gpio. Then the
+> first
+> instance also lets go of the gpio and you end up with a bunch of
+> instances
+> relying on a pin that noone holds a reference to. Or, yet another
+> instance
+> enters the picture and finds the gpio free and pulls a reset behind
+> the
+> back of the intermediate instances which have already proceeded.
+> 
+> Or am I reading something wrong?
+> 
+> Cheers,
+> Peter
+> 
+
