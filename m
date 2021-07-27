@@ -2,135 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CF43D7C07
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679EF3D7C0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhG0RSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 13:18:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44179 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229801AbhG0RSO (ORCPT
+        id S230222AbhG0RTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 13:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229837AbhG0RTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:18:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627406293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GItFTNdxoCOFqJnaC/RgM2WlI5Q/FndONkm0DD1Ya6k=;
-        b=MLoCOxM188VQSmEfAO/GS3vPTkb+VZIbS+jieJc9a9Ttq7tJ4oc4x1XzUPyy99uekO4OF5
-        R6gh5R/HgLD7Wj4YLvYVLvJ9tyk5p16db5YzF4HbAlBMID3EdN9PEjCfHUuppv8rUU7I/4
-        DVNDKXQN6vh7z2vIkZ28ayc6FDBlDGc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-331-ZIIE8D6tMy-pUUKieNbxxw-1; Tue, 27 Jul 2021 13:18:11 -0400
-X-MC-Unique: ZIIE8D6tMy-pUUKieNbxxw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C10BD192FDA2;
-        Tue, 27 Jul 2021 17:18:10 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7182160243;
-        Tue, 27 Jul 2021 17:18:10 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com
-Subject: [PATCH 2/2] KVM: Don't take mmu_lock for range invalidation unless necessary
-Date:   Tue, 27 Jul 2021 13:18:08 -0400
-Message-Id: <20210727171808.1645060-3-pbonzini@redhat.com>
-In-Reply-To: <20210727171808.1645060-1-pbonzini@redhat.com>
-References: <20210727171808.1645060-1-pbonzini@redhat.com>
+        Tue, 27 Jul 2021 13:19:05 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11653C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:19:04 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id m9so16849689ljp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EMKWXZtE5RzPWua1cq/oXCQ10pVyhkDWH2JkBv8IzRE=;
+        b=WDylNfEoqUnBJgtw5pd2YnP89bIdjwjaAHabyeAKLlcxUC35meTxrsF9izCvbb5Icw
+         7VPug7fz6lRT5Q2DPJRTS4rqbbAd/whmzeu0r6ho8LHAUHjN5m8DO1EmORbCTQXGF7cf
+         vJoeBKx1gi63AHPmkm4/4TwsArRZ5NP6TtQLpH4HTM2nxgN6MOBj/VIqFSBug1sCGK69
+         zxl0NuvTI+g0EOt9VSIMVje0CxHI570XIeqt/nouCUSF9X+oHkTUykWu6GbiijAEJQoL
+         2s84nezCRx+bjmt6OAcKVdryjdZvni4JTVQ7+X+QpfppmCLiO1TFEt9n/ImLAjydxX8u
+         wz8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EMKWXZtE5RzPWua1cq/oXCQ10pVyhkDWH2JkBv8IzRE=;
+        b=gNSy9mdve7sZMg/qb0YreM5fDRJBu/4zu6Gu3ukQTGSlczvFgWyshJu6c9Baz69wj+
+         HYvHHEWsbUGBy/slGzgtwdLeNBASMHpf3wJ2WvTH/nHakUCrODZ08VBpIMXo+6VtCsEE
+         Mvhkcat9bzkRVkhntILqWDGSVba0trpPXGRdUnTdEDbB12MzCBqsxyuNfIcIhI73rNSm
+         /DLcGBCKtReLUb1FY2USUNrYCxfYOivbyZPTnkPU8sayUdmhP6UwYRZZXrosHtgl+MRw
+         DDYXe4oGCVJaidiqkcnWfT5gJsaS+Y1rIL1gQ8YAIoZBlHhn4y5ZjqAfv6kiAfsF31AR
+         YSYw==
+X-Gm-Message-State: AOAM5305oaqRFQnuVfpHMfrAMbmVIshasxA+BSao7VI/btPziAWzdKws
+        rDdcF3/GQ0ehVg1UfoekQHEgQYWUa3/AYg==
+X-Google-Smtp-Source: ABdhPJyRpUWScg+dO+hqpBI6/lrusL5mh299ENzytzR1KCmx8DwDzev4pUnPm/k7xL1JggxRjD7BOg==
+X-Received: by 2002:a05:651c:10a2:: with SMTP id k2mr16075335ljn.89.1627406342156;
+        Tue, 27 Jul 2021 10:19:02 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id g1sm373727lfb.300.2021.07.27.10.19.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 10:19:01 -0700 (PDT)
+Subject: Re: [PATCH] clk: qcom: dispcc-sm8250: Add additional parent clocks
+ for DP
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210721224610.3035258-1-bjorn.andersson@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <963af972-5061-5375-aee3-34c0571975d8@linaro.org>
+Date:   Tue, 27 Jul 2021 20:19:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210721224610.3035258-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+On 22/07/2021 01:46, Bjorn Andersson wrote:
+> The clock controller has two additional clock source pairs, in order to
+> support more than a single DisplayPort PHY. List these, so it's possible
+> to describe them all.
+> 
+> Also drop the unnecessary freq_tbl for the link clock sources, to allow
+> these parents to be used.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Avoid taking mmu_lock for .invalidate_range_{start,end}() notifications
-that are unrelated to KVM.  This is possible now that memslot updates are
-blocked from range_start() to range_end(); that ensures that lock elision
-happens in both or none, and therefore that mmu_notifier_count updates
-(which must occur while holding mmu_lock for write) are always paired
-across start->end.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Based on patches originally written by Ben Gardon.
+> ---
+>   drivers/clk/qcom/dispcc-sm8250.c | 22 ++++++++++++----------
+>   1 file changed, 12 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
+> index 601c7c0ba483..bf9ffe1a1cf4 100644
+> --- a/drivers/clk/qcom/dispcc-sm8250.c
+> +++ b/drivers/clk/qcom/dispcc-sm8250.c
+> @@ -26,6 +26,10 @@ enum {
+>   	P_DISP_CC_PLL1_OUT_MAIN,
+>   	P_DP_PHY_PLL_LINK_CLK,
+>   	P_DP_PHY_PLL_VCO_DIV_CLK,
+> +	P_DPTX1_PHY_PLL_LINK_CLK,
+> +	P_DPTX1_PHY_PLL_VCO_DIV_CLK,
+> +	P_DPTX2_PHY_PLL_LINK_CLK,
+> +	P_DPTX2_PHY_PLL_VCO_DIV_CLK,
+>   	P_EDP_PHY_PLL_LINK_CLK,
+>   	P_EDP_PHY_PLL_VCO_DIV_CLK,
+>   	P_DSI0_PHY_PLL_OUT_BYTECLK,
+> @@ -98,12 +102,20 @@ static const struct parent_map disp_cc_parent_map_0[] = {
+>   	{ P_BI_TCXO, 0 },
+>   	{ P_DP_PHY_PLL_LINK_CLK, 1 },
+>   	{ P_DP_PHY_PLL_VCO_DIV_CLK, 2 },
+> +	{ P_DPTX1_PHY_PLL_LINK_CLK, 3 },
+> +	{ P_DPTX1_PHY_PLL_VCO_DIV_CLK, 4 },
+> +	{ P_DPTX2_PHY_PLL_LINK_CLK, 5 },
+> +	{ P_DPTX2_PHY_PLL_VCO_DIV_CLK, 6 },
+>   };
+>   
+>   static const struct clk_parent_data disp_cc_parent_data_0[] = {
+>   	{ .fw_name = "bi_tcxo" },
+>   	{ .fw_name = "dp_phy_pll_link_clk" },
+>   	{ .fw_name = "dp_phy_pll_vco_div_clk" },
+> +	{ .fw_name = "dptx1_phy_pll_link_clk" },
+> +	{ .fw_name = "dptx1_phy_pll_vco_div_clk" },
+> +	{ .fw_name = "dptx2_phy_pll_link_clk" },
+> +	{ .fw_name = "dptx2_phy_pll_vco_div_clk" },
+>   };
+>   
+>   static const struct parent_map disp_cc_parent_map_1[] = {
+> @@ -269,20 +281,11 @@ static struct clk_rcg2 disp_cc_mdss_dp_aux_clk_src = {
+>   	},
+>   };
+>   
+> -static const struct freq_tbl ftbl_disp_cc_mdss_dp_link1_clk_src[] = {
+> -	F(162000000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	F(270000000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	F(540000000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	F(810000000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	{ }
+> -};
+> -
+>   static struct clk_rcg2 disp_cc_mdss_dp_link1_clk_src = {
+>   	.cmd_rcgr = 0x220c,
+>   	.mnd_width = 0,
+>   	.hid_width = 5,
+>   	.parent_map = disp_cc_parent_map_0,
+> -	.freq_tbl = ftbl_disp_cc_mdss_dp_link1_clk_src,
+>   	.clkr.hw.init = &(struct clk_init_data){
+>   		.name = "disp_cc_mdss_dp_link1_clk_src",
+>   		.parent_data = disp_cc_parent_data_0,
+> @@ -296,7 +299,6 @@ static struct clk_rcg2 disp_cc_mdss_dp_link_clk_src = {
+>   	.mnd_width = 0,
+>   	.hid_width = 5,
+>   	.parent_map = disp_cc_parent_map_0,
+> -	.freq_tbl = ftbl_disp_cc_mdss_dp_link1_clk_src,
+>   	.clkr.hw.init = &(struct clk_init_data){
+>   		.name = "disp_cc_mdss_dp_link_clk_src",
+>   		.parent_data = disp_cc_parent_data_0,
+> 
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- virt/kvm/kvm_main.c | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index c64a7de60846..a96cbe24c688 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -496,17 +496,6 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
- 
- 	idx = srcu_read_lock(&kvm->srcu);
- 
--	/* The on_lock() path does not yet support lock elision. */
--	if (!IS_KVM_NULL_FN(range->on_lock)) {
--		locked = true;
--		KVM_MMU_LOCK(kvm);
--
--		range->on_lock(kvm, range->start, range->end);
--
--		if (IS_KVM_NULL_FN(range->handler))
--			goto out_unlock;
--	}
--
- 	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
- 		slots = __kvm_memslots(kvm, i);
- 		kvm_for_each_memslot(slot, slots) {
-@@ -538,6 +527,10 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
- 			if (!locked) {
- 				locked = true;
- 				KVM_MMU_LOCK(kvm);
-+				if (!IS_KVM_NULL_FN(range->on_lock))
-+					range->on_lock(kvm, range->start, range->end);
-+				if (IS_KVM_NULL_FN(range->handler))
-+					break;
- 			}
- 			ret |= range->handler(kvm, &gfn_range);
- 		}
-@@ -546,7 +539,6 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
- 	if (range->flush_on_ret && (ret || kvm->tlbs_dirty))
- 		kvm_flush_remote_tlbs(kvm);
- 
--out_unlock:
- 	if (locked)
- 		KVM_MMU_UNLOCK(kvm);
- 
-@@ -605,8 +597,13 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
- 
- 	/*
- 	 * .change_pte() must be surrounded by .invalidate_range_{start,end}(),
-+	 * If mmu_notifier_count is zero, then start() didn't find a relevant
-+	 * memslot and wasn't forced down the slow path; rechecking here is
-+	 * unnecessary.
- 	 */
- 	WARN_ON_ONCE(!READ_ONCE(kvm->mn_active_invalidate_count));
-+	if (!kvm->mmu_notifier_count)
-+		return;
- 
- 	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_set_spte_gfn);
- }
-@@ -1398,7 +1395,8 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
- 
- 	/*
- 	 * Do not store the new memslots while there are invalidations in
--	 * progress (preparatory change for the next commit).
-+	 * progress, otherwise the locking in invalidate_range_start and
-+	 * invalidate_range_end will be unbalanced.
- 	 */
- 	spin_lock(&kvm->mn_invalidate_lock);
- 	prepare_to_rcuwait(&kvm->mn_memslots_update_rcuwait);
 -- 
-2.27.0
-
+With best wishes
+Dmitry
