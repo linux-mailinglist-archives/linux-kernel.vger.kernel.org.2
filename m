@@ -2,196 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458F13D79C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830343D79CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237051AbhG0P22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33234 "EHLO
+        id S237126AbhG0P2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237139AbhG0PZu (ORCPT
+        with ESMTP id S237278AbhG0P1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:25:50 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D02C0617BA
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:25:20 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id 129so12707685qkg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:25:20 -0700 (PDT)
+        Tue, 27 Jul 2021 11:27:54 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31826C061796
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:26:19 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id o61so4472505qvo.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kycIfl94BWOjfFMzSRGtEoWUIk1Jet/dpDk6BSkSujI=;
-        b=GMh+pJ51nGqKocaP2RML6oUkQ6B1xnjUGeAdhaEmqVtZAaMen3q+CDPaCP3IYDK0jJ
-         qjUuIB4QHo+Lm4UiaJh3RUvO691vx+eoxtSHD0gD806UemhEWfyVSdh/u0WWQ7LnvRjk
-         aRZPxFVk87S8y0m/z+LmWM2QywjnzQsZCucfq+hFhdrZisdou6ItHN09H70g9NOouE7R
-         doDi3tOEKieuEZb6GnyywUmvmqxFVigB9lyV1jHtk5rgCc6u/Xullx+Sswp8tyOtJNAJ
-         AUJczJLotoXQl4aF769VuN7MEQKy3z3zLZdPqme5DqtOWeKnjg8fU4p6ukHcHtAOrGJ+
-         qXGg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NTgXzfWkyhtq+zizJ+5C4IeWyVCNim2DsO4Exn10eZ4=;
+        b=RZquX77R97F8WPn8wsK/LwjqatshA+IACrSjuFTechlit8HSk8i3OlCsWM65AzTqky
+         98VpTeESoFH+CaquMhXWI5OmSCZpRMVkkFHCaJeI2bVL1+IYy2y0F4sUBNnmmVNL+fUp
+         IyVUNup26gEFGwMsVjSdtKPLKpvoUmo4IRIOCnm3Of2MygrJDmK3zqEUyIbbNalYtum5
+         l5KIXosS+hmRiQG53VL6795qgbL4s8UQL67FL+Sbvxt2ldN6xYjkDUz1oT9NS0ACFjs1
+         QoD3Ry7EodhejtmfF5hOuM9ddEnZhBdxm6JiOvP9uXeyApY2JIiUoI/KlMAmo/eQ7qeH
+         8krA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kycIfl94BWOjfFMzSRGtEoWUIk1Jet/dpDk6BSkSujI=;
-        b=e8M7rXzRbXvAWrSoUgaGOLHoKFMWeuovdjMXxviM/fFaV/63i72Gu0NSw7iJJ9DcFk
-         uKVFuIlSoToOct99zXc28Aaz+WecnLqwjHG4hZ2WlRm/YKV6MJlMiNT6Smn6xsYzzXgn
-         jhg9ESHBdLEOEH9TvDieRPoMfK1fOfLARRZKC5NaPLViUcvBnDUapN0S9WDYv7u5mUDm
-         i8dINizoP+80fyPotZmk3bbdx64YhJb6prcFHO9YpavOX7X+bMLKNV7q+98amptWVgFD
-         2kz9EOvKYsjoV/AR9I1YZ0QtKknba4xbGwPnCUS31qgdhmY9wOTlml4WbxpcPHnPbqqE
-         K/xQ==
-X-Gm-Message-State: AOAM531gKv9zph5fpqAl6XUSqIHM/RwN3kR5FT8zrwumU4Xa+4eQs+fv
-        B9c4wBCb80VT+WSoRi/Ku62Baw==
-X-Google-Smtp-Source: ABdhPJzoeNlwxVvSYbPgsZt6m0XxvaHdTUZD6yrkTePVOk64Kact//1gGceaWVO0tSEcySSjY+pLtw==
-X-Received: by 2002:a05:620a:2f5:: with SMTP id a21mr22634440qko.36.1627399519596;
-        Tue, 27 Jul 2021 08:25:19 -0700 (PDT)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id q4sm1539663qtr.20.2021.07.27.08.25.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NTgXzfWkyhtq+zizJ+5C4IeWyVCNim2DsO4Exn10eZ4=;
+        b=i9Rk6BUE22dgPxpy9rp1jLpvln9PnhTbTrQ4MmzmvGoOa06+9jluJbreE03O29x43j
+         1+4dD7j4C1P5IveqwHJFKpR58el91dAYeg37rBqeEmP4XsBHpNbUAczWQHk1NY1pPlHs
+         9acSqhQ2kwegy/Olp4LEtdj/LVeq0fj6qpDZ0XLiU+uagdVbhCd/0/KKRqHObsFFo3SO
+         T8QT94jIMzk7nn3t7poztztXLZ6fq4npg/7DEhSpRGG+/UR6h3akU3spvaGZYaaFY/T4
+         Ao4cZp0LwFEMaT7xxXdeksk6sZChfrAgRCmiV4cClHYWOXkrA/RLGOcH6hnFrvnz3B5s
+         OHfg==
+X-Gm-Message-State: AOAM530PMqKz7cf83BrsIOXiUmR21xKqhs2hLE6xLrGojng3+mLgqUqv
+        dbtPsx2ZRhM9Hhnh8TWsEUo=
+X-Google-Smtp-Source: ABdhPJzdZJs3dURsJI5yvsNHjIbX5IGUE3uyFGtU6jwBwtFdq4Qe9lVJ5CAMuAPTU0wHUDq/j/sJTA==
+X-Received: by 2002:ad4:46ed:: with SMTP id h13mr6960486qvw.56.1627399578245;
+        Tue, 27 Jul 2021 08:26:18 -0700 (PDT)
+Received: from localhost ([12.28.44.171])
+        by smtp.gmail.com with ESMTPSA id f2sm1513767qth.11.2021.07.27.08.26.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 08:25:19 -0700 (PDT)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        rjw@rjwysocki.net, robh+dt@kernel.org
-Cc:     steev@kali.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [Patch v4 6/6] dt-bindings: thermal: Add dt binding for QCOM LMh
-Date:   Tue, 27 Jul 2021 11:25:12 -0400
-Message-Id: <20210727152512.1098329-7-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210727152512.1098329-1-thara.gopinath@linaro.org>
-References: <20210727152512.1098329-1-thara.gopinath@linaro.org>
+        Tue, 27 Jul 2021 08:26:17 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 08:26:16 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Andrea Merello <andrea.merello@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrea Merello <andrea.merello@iit.it>
+Subject: Re: [PATCH v1 1/1] bitmap.h: add const modifier to
+ bitmap_next_[set/clear]_region() argument
+Message-ID: <YQAlmBEGIaChYgeW@yury-ThinkPad>
+References: <20210727094441.9815-1-andrea.merello@gmail.com>
+ <YP/ymvrd1zV7z6rF@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YP/ymvrd1zV7z6rF@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dt binding documentation to describe Qualcomm
-Limits Management Hardware node.
+On Tue, Jul 27, 2021 at 02:48:42PM +0300, Andy Shevchenko wrote:
+> On Tue, Jul 27, 2021 at 11:44:41AM +0200, Andrea Merello wrote:
+> > Those two functions don't modify the bitmap, so their bitmap argument
+> > should be const. This patch add this.
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
+Thanks Andrea.
 
-v3->v4:
-	- Changed dt property qcom,lmh-cpu-id to qcom,lmh-cpu and made it
-	  a phandle pointing to the cpu node instead of a number as per
-	  Rob Herring's review comments.
-	- Added suffix -millicelsius to all temperature properties as per
-	  Rob Herring's review comments.
-	- Dropped unnecessary #includes in the example as pointed out by Bjorn.
-	- Other minor fixes.
+Acked-by: Yury Norov <yury.norov@gmail.com>
 
- .../devicetree/bindings/thermal/qcom-lmh.yaml | 100 ++++++++++++++++++
- 1 file changed, 100 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+> Constification is always a good thing. No objections from me,
+> although Yuri is doing something with them in one of his patch series.
 
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
-new file mode 100644
-index 000000000000..0978f458b9ec
---- /dev/null
-+++ b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
-@@ -0,0 +1,100 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright 2021 Linaro Ltd.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/thermal/qcom-lmh.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Limits Management Hardware(LMh)
-+
-+maintainers:
-+  - Thara Gopinath <thara.gopinath@linaro.org>
-+
-+description:
-+  Limits Management Hardware(LMh) is a hardware infrastructure on some
-+  Qualcomm SoCs that can enforce temperature and current limits as
-+  programmed by software for certain IPs like CPU.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,sdm845-lmh
-+
-+  reg:
-+    items:
-+      - description: core registers
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  '#interrupt-cells':
-+    const: 1
-+
-+  interrupt-controller: true
-+
-+  qcom,lmh-cpu:
-+    description:
-+      phandle of the first cpu in the LMh cluster
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  qcom,lmh-temp-arm-millicelsius:
-+    description:
-+      An integer expressing temperature threshold at which the LMh thermal
-+      FSM is engaged.
-+    $ref: /schemas/types.yaml#/definitions/int32
-+
-+  qcom,lmh-temp-low-millicelsius:
-+    description:
-+      An integer expressing temperature threshold at which the state machine
-+      will attempt to remove frequency throttling.
-+    $ref: /schemas/types.yaml#/definitions/int32
-+
-+  qcom,lmh-temp-high-millicelsius:
-+    description:
-+      An integer expressing temperature threshold at which the state machine
-+      will attempt to throttle the frequency.
-+    $ref: /schemas/types.yaml#/definitions/int32
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - #interrupt-cells
-+  - interrupt-controller
-+  - qcom,lmh-cpu
-+  - qcom,lmh-temp-arm-millicelsius
-+  - qcom,lmh-temp-low-millicelsius
-+  - qcom,lmh-temp-high-millicelsius
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    lmh_cluster1: lmh@17d70800 {
-+      compatible = "qcom,sdm845-lmh";
-+      reg = <0x17d70800 0x401>;
-+      interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-+      qcom,lmh-cpu = <&CPU4>;
-+      qcom,lmh-temp-arm-millicelsius = <65000>;
-+      qcom,lmh-temp-low-millicelsius = <94500>;
-+      qcom,lmh-temp-high-millicelsius = <95000>;
-+      interrupt-controller;
-+      #interrupt-cells = <1>;
-+    };
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    lmh_cluster0: lmh@17d78800 {
-+      compatible = "qcom,sdm845-lmh";
-+      reg = <0x17d78800 0x401>;
-+      interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-+      qcom,lmh-cpu = <&CPU0>;
-+      qcom,lmh-temp-arm-millicelsius = <65000>;
-+      qcom,lmh-temp-low-millicelsius = <94500>;
-+      qcom,lmh-temp-high-millicelsius = <95000>;
-+      interrupt-controller;
-+      #interrupt-cells = <1>;
-+    };
-+  - |
--- 
-2.25.1
+I try to remove those two because in practice they bring more mess
+than good. All real use-cases for bitmap_next_{set,clear}_region 
+relate to iterating the whole bitmap, ie nobody just wants to find a
+next region. Untill recently there was only a single user of the API,
+so I easily reworked the code to use find_first_bit/find_next bit and
+by chance return faster.
 
+https://github.com/norov/linux/commit/1c870b5c3fcd2eea9b351a1e0af8d1e93be78e1e
+
+Recently in next-20210716, there appeared another user in fs/btrfs/extent_io.c:
+find_next_dirty_byte(). The fun is that in that case the length of bitmap
+is 16 bit, so it's probably simpler to return the bitmap by value,
+instead of calling prologue code up to 8 times. Anyways, I'll contact
+authors of the find_next_dirty_byte() and ask if it's possible to rework
+their code. 
+ 
+> Yuri, do you have a public repo / branch that people can base their changes to
+> bitmap stuff against of?
+
+I collected not yet upstreamed bitmap patches here:
+
+https://github.com/norov/linux/commits/bitmap-20210716
+
+Please let me know if you believe we need a more official branch for
+bitmaps. I'd encourage people to review what we already have and
+upstream it.
+
+Thanks,
+Yury
+
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
+> > ---
+> >  include/linux/bitmap.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> > index a36cfcec4e77..ea4a8f1a2545 100644
+> > --- a/include/linux/bitmap.h
+> > +++ b/include/linux/bitmap.h
+> > @@ -458,7 +458,7 @@ static inline void bitmap_replace(unsigned long *dst,
+> >  		__bitmap_replace(dst, old, new, mask, nbits);
+> >  }
+> >  
+> > -static inline void bitmap_next_clear_region(unsigned long *bitmap,
+> > +static inline void bitmap_next_clear_region(const unsigned long *bitmap,
+> >  					    unsigned int *rs, unsigned int *re,
+> >  					    unsigned int end)
+> >  {
+> > @@ -466,7 +466,7 @@ static inline void bitmap_next_clear_region(unsigned long *bitmap,
+> >  	*re = find_next_bit(bitmap, end, *rs + 1);
+> >  }
+> >  
+> > -static inline void bitmap_next_set_region(unsigned long *bitmap,
+> > +static inline void bitmap_next_set_region(const unsigned long *bitmap,
+> >  					  unsigned int *rs, unsigned int *re,
+> >  					  unsigned int end)
+> >  {
+> > -- 
+> > 2.17.1
+> > 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
