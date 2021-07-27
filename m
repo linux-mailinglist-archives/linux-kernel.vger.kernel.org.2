@@ -2,129 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084353D700F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF3D3D7012
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235797AbhG0HLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        id S235735AbhG0HLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235612AbhG0HLE (ORCPT
+        with ESMTP id S235409AbhG0HLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:11:04 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E24C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:11:03 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 68-20020a9d0f4a0000b02904b1f1d7c5f4so11579730ott.9
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:11:03 -0700 (PDT)
+        Tue, 27 Jul 2021 03:11:52 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AD9C061757;
+        Tue, 27 Jul 2021 00:11:53 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id f14-20020a05600c154eb02902519e4abe10so1075766wmg.4;
+        Tue, 27 Jul 2021 00:11:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T4jXR1i3kQRbLOtYJPUwTyuXvag/F8LgWkncG8JS3kw=;
-        b=ez4vH2iSyB0oa1ojnnUH/oppE2vInZw2DCUOsIJMczkkbCo0ZS4HOfnR+wwt08JB1/
-         7q1jjUTru/9XpQaSTbBlRwAZtowDWooKcMqnfiEfIf1Dr8CKgwrQCM/qlxXAhd7KKXkf
-         rU7MWbV7FnnRDNoOH5oR5N8n5zhUCreFiQaVQaR+w5K5l34zgfnqfD8MBJGoWoqZfyfM
-         Nu7zTgE2WC5ZGRr6Pevcop7KacBGQyqippbdLEG86KFE9yVcfj4cdhkbsSXLb+YuJG6O
-         AfhzUPokeRZQcTgonnXM/FDIkMgo7udEpWmVphlhnRQSPhM0vZsM21fHWLj//wG5unao
-         Tukg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=sxFcXJToDZMWgKe9LXihsrB1La88hBN0XlIyclx9/f4=;
+        b=lEwkbL1rJM3F+mDQtqOuqfdOKPbBUOy0nmusGJjX0L5q1YZx4htOz5BKUJfkjr0piO
+         CY09atvv4CfAk0NzHPj9jUDGJOSCtbJNnxqJyC9tbWfiHqlBNYMUDNKX4KIwZmFJOaW2
+         qTTlAUaE1yMSabskDSytArp1jmYkizKRsVZueOY/3G1p+GghiUTGbmouLXY6zHnunsjO
+         s8FT3oi0Wfiqo6Fs1W3THmkyZDlTpxmz3ZOe+atFKCudwAcB3tqM4PSwO7pPnYwXq1cs
+         SGGOjMe1KVNTvXj+XsJ84gOdHT/ZsmBvWMr7VgLf9oOjAoQGWQ6XqOvNoAOxblkgd10m
+         dxBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T4jXR1i3kQRbLOtYJPUwTyuXvag/F8LgWkncG8JS3kw=;
-        b=sYsH9UMjVRfE76rAT4DyKpwh4LL6NTkAVHOHcoxclnm45/TCwMr7i5gNVQpavzhRmz
-         luIxDkF0HEyh18FQytLLydSH0+c5X6kBRkuSH0SDmGiA9hBdadNJAZYwXCjgSgiTxMNg
-         QQFtP6cngP7/ZtBpTzDgiishZ7Z3EaFNXPprVIKSEi3oog3Nw82ktLJ6JLI//Rl4W5vQ
-         xq5kl2q8dV62N4iMPceETSBmKFvtGbfy3xxg9nvPVlx63iN+KZ8kcKtQzIHsRyuIlBci
-         OeEDv7HTyeqK/y9H8ToI+rJcucFhrTQ3rYpnT8CkVSqgYfaU9TivcopNRSDpvv7tKMK4
-         SBJg==
-X-Gm-Message-State: AOAM531bUI27ljCkRv/PttSRriJ1xYonimg8b1x/HwOAakbrkDokI7EP
-        ESw1hsN3smpo77RMNrWA1jqtStv+44BOr60EM5O89Q==
-X-Google-Smtp-Source: ABdhPJzcx3FBzoI6gvI0bU/P3mLzZFisd8fyRX2ATyO+zv46x7mk7zcvY5u+dCccKFE1pqsqiD0miKrhnqQkq6ZE20Q=
-X-Received: by 2002:a9d:d04:: with SMTP id 4mr15077003oti.251.1627369862852;
- Tue, 27 Jul 2021 00:11:02 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=sxFcXJToDZMWgKe9LXihsrB1La88hBN0XlIyclx9/f4=;
+        b=Chj/xoHuYvn+lRZa98PMaOuqXCToiQ6S25bIy5RosUviLZHnCttSep1dfhNm39Z55B
+         6oWH2qZVqXX8heCon6mmstYbOurdlv8Qb+s/qn4tvoZ04JmCQDZRAkmGxNbytHGy6eY/
+         wahtajjEXMu82nJoGj3Wkz5CDozQ4q160aI4nVIbUbnsOCWMtUSQrGzHcvt87iHJMUJ8
+         COEwdJ75p62CwPkEvTw/lTPGTk7FZJLuOhvdGzoc52r3odsMPFE1i3VCoEVq7b7F+vaw
+         1JuyG+hraZppKwv0jfomhJeEtplScdDN4cwMAbe3d4CTyc/hFLskQIxeTLiLBYgL2pOK
+         pgAA==
+X-Gm-Message-State: AOAM532eMzu4j7/EVXkzSo1t36TuBP5bxoO/ckraz86ku3uTRp5/nuUW
+        WNOQgKQPI86JowI+6ioq41olzUXOqsA=
+X-Google-Smtp-Source: ABdhPJz/MgnHtkxYirTPDve81q42RkzbN1vyC5mjRajaoM6gwdEzfJ2NEGQCc32h6XQNzHYHd+Rkxg==
+X-Received: by 2002:a7b:c108:: with SMTP id w8mr20709070wmi.99.1627369911654;
+        Tue, 27 Jul 2021 00:11:51 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:ae22:6310:9a31:9877? ([2a02:908:1252:fb60:ae22:6310:9a31:9877])
+        by smtp.gmail.com with ESMTPSA id m9sm881309wrz.75.2021.07.27.00.11.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 00:11:51 -0700 (PDT)
+Subject: Re: [RFC 1/4] dma-fence: Add deadline awareness
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210726233854.2453899-1-robdclark@gmail.com>
+ <20210726233854.2453899-2-robdclark@gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <50b181fe-6605-b7ac-36a6-8bcda2930e6f@gmail.com>
+Date:   Tue, 27 Jul 2021 09:11:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210727040021.21371-1-Kuan-Ying.Lee@mediatek.com> <20210727040021.21371-2-Kuan-Ying.Lee@mediatek.com>
-In-Reply-To: <20210727040021.21371-2-Kuan-Ying.Lee@mediatek.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 27 Jul 2021 09:10:51 +0200
-Message-ID: <CANpmjNM03Pag9OvBBVnWnSBePRxsT+BvZtBwrh_61Qzmvp+dvA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kasan, mm: reset tag when access metadata
-To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Cc:     Nicholas Tang <nicholas.tang@mediatek.com>,
-        Andrew Yang <andrew.yang@mediatek.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210726233854.2453899-2-robdclark@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc Catalin
-
-On Tue, 27 Jul 2021 at 06:00, Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com> wrote:
+Am 27.07.21 um 01:38 schrieb Rob Clark:
+> From: Rob Clark <robdclark@chromium.org>
 >
-> Hardware tag-based KASAN doesn't use compiler instrumentation, we
-> can not use kasan_disable_current() to ignore tag check.
+> Add a way to hint to the fence signaler of an upcoming deadline, such as
+> vblank, which the fence waiter would prefer not to miss.  This is to aid
+> the fence signaler in making power management decisions, like boosting
+> frequency as the deadline approaches and awareness of missing deadlines
+> so that can be factored in to the frequency scaling.
 >
-> Thus, we need to reset tags when accessing metadata.
->
-> Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-
-This looks reasonable, but the patch title is not saying this is
-kmemleak, nor does the description say what the problem is. What
-problem did you encounter? Was it a false positive?
-
-Perhaps this should have been "kmemleak, kasan: reset pointer tags to
-avoid false positives" ?
-
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
->  mm/kmemleak.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>   drivers/dma-buf/dma-fence.c | 39 +++++++++++++++++++++++++++++++++++++
+>   include/linux/dma-fence.h   | 17 ++++++++++++++++
+>   2 files changed, 56 insertions(+)
 >
-> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-> index 228a2fbe0657..73d46d16d575 100644
-> --- a/mm/kmemleak.c
-> +++ b/mm/kmemleak.c
-> @@ -290,7 +290,7 @@ static void hex_dump_object(struct seq_file *seq,
->         warn_or_seq_printf(seq, "  hex dump (first %zu bytes):\n", len);
->         kasan_disable_current();
->         warn_or_seq_hex_dump(seq, DUMP_PREFIX_NONE, HEX_ROW_SIZE,
-> -                            HEX_GROUP_SIZE, ptr, len, HEX_ASCII);
-> +                            HEX_GROUP_SIZE, kasan_reset_tag((void *)ptr), len, HEX_ASCII);
->         kasan_enable_current();
->  }
->
-> @@ -1171,7 +1171,7 @@ static bool update_checksum(struct kmemleak_object *object)
->
->         kasan_disable_current();
->         kcsan_disable_current();
-> -       object->checksum = crc32(0, (void *)object->pointer, object->size);
-> +       object->checksum = crc32(0, kasan_reset_tag((void *)object->pointer), object->size);
->         kasan_enable_current();
->         kcsan_enable_current();
->
-> @@ -1246,7 +1246,7 @@ static void scan_block(void *_start, void *_end,
->                         break;
->
->                 kasan_disable_current();
-> -               pointer = *ptr;
-> +               pointer = *(unsigned long *)kasan_reset_tag((void *)ptr);
->                 kasan_enable_current();
->
->                 untagged_ptr = (unsigned long)kasan_reset_tag((void *)pointer);
-> --
-> 2.18.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210727040021.21371-2-Kuan-Ying.Lee%40mediatek.com.
+> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+> index ce0f5eff575d..2e0d25ab457e 100644
+> --- a/drivers/dma-buf/dma-fence.c
+> +++ b/drivers/dma-buf/dma-fence.c
+> @@ -910,6 +910,45 @@ dma_fence_wait_any_timeout(struct dma_fence **fences, uint32_t count,
+>   }
+>   EXPORT_SYMBOL(dma_fence_wait_any_timeout);
+>   
+> +
+> +/**
+> + * dma_fence_set_deadline - set desired fence-wait deadline
+> + * @fence:    the fence that is to be waited on
+> + * @deadline: the time by which the waiter hopes for the fence to be
+> + *            signaled
+> + *
+> + * Inform the fence signaler of an upcoming deadline, such as vblank, by
+> + * which point the waiter would prefer the fence to be signaled by.  This
+> + * is intended to give feedback to the fence signaler to aid in power
+> + * management decisions, such as boosting GPU frequency if a periodic
+> + * vblank deadline is approaching.
+> + */
+> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t deadline)
+> +{
+> +	unsigned long flags;
+> +
+> +	if (dma_fence_is_signaled(fence))
+> +		return;
+> +
+> +	spin_lock_irqsave(fence->lock, flags);
+> +
+> +	/* If we already have an earlier deadline, keep it: */
+> +	if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags) &&
+> +	    ktime_before(fence->deadline, deadline)) {
+> +		spin_unlock_irqrestore(fence->lock, flags);
+> +		return;
+> +	}
+> +
+> +	fence->deadline = deadline;
+> +	set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags);
+> +
+> +	spin_unlock_irqrestore(fence->lock, flags);
+> +
+> +	if (fence->ops->set_deadline)
+> +		fence->ops->set_deadline(fence, deadline);
+> +}
+> +EXPORT_SYMBOL(dma_fence_set_deadline);
+> +
+>   /**
+>    * dma_fence_init - Initialize a custom fence.
+>    * @fence: the fence to initialize
+> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+> index 6ffb4b2c6371..4e6cfe4e6fbc 100644
+> --- a/include/linux/dma-fence.h
+> +++ b/include/linux/dma-fence.h
+> @@ -88,6 +88,7 @@ struct dma_fence {
+>   		/* @timestamp replaced by @rcu on dma_fence_release() */
+>   		struct rcu_head rcu;
+>   	};
+> +	ktime_t deadline;
+
+Mhm, adding the flag sounds ok to me but I'm a bit hesitating adding the 
+deadline as extra field here.
+
+We tuned the dma_fence structure intentionally so that it is only 64 bytes.
+
+Regards,
+Christian.
+
+>   	u64 context;
+>   	u64 seqno;
+>   	unsigned long flags;
+> @@ -99,6 +100,7 @@ enum dma_fence_flag_bits {
+>   	DMA_FENCE_FLAG_SIGNALED_BIT,
+>   	DMA_FENCE_FLAG_TIMESTAMP_BIT,
+>   	DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
+> +	DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+>   	DMA_FENCE_FLAG_USER_BITS, /* must always be last member */
+>   };
+>   
+> @@ -261,6 +263,19 @@ struct dma_fence_ops {
+>   	 */
+>   	void (*timeline_value_str)(struct dma_fence *fence,
+>   				   char *str, int size);
+> +
+> +	/**
+> +	 * @set_deadline:
+> +	 *
+> +	 * Callback to allow a fence waiter to inform the fence signaler of an
+> +	 * upcoming deadline, such as vblank, by which point the waiter would
+> +	 * prefer the fence to be signaled by.  This is intended to give feedback
+> +	 * to the fence signaler to aid in power management decisions, such as
+> +	 * boosting GPU frequency.
+> +	 *
+> +	 * This callback is optional.
+> +	 */
+> +	void (*set_deadline)(struct dma_fence *fence, ktime_t deadline);
+>   };
+>   
+>   void dma_fence_init(struct dma_fence *fence, const struct dma_fence_ops *ops,
+> @@ -586,6 +601,8 @@ static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
+>   	return ret < 0 ? ret : 0;
+>   }
+>   
+> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t deadline);
+> +
+>   struct dma_fence *dma_fence_get_stub(void);
+>   struct dma_fence *dma_fence_allocate_private_stub(void);
+>   u64 dma_fence_context_alloc(unsigned num);
+
