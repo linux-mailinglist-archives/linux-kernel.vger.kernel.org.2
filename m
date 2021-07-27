@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F453D7E99
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E0C3D7EA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbhG0TpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 15:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36996 "EHLO
+        id S232449AbhG0Tqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 15:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhG0TpJ (ORCPT
+        with ESMTP id S231873AbhG0Tqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:45:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AB3C061757;
-        Tue, 27 Jul 2021 12:45:09 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627415107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H8/IIU+aB1t6TDYNpxasWarmhkT94jFM3Vp8vz2AmpY=;
-        b=T8aHoqTIldcfrnPdk4L9Tj9tc7CQmBgEoezkPhu55BKUewqL+/xxrx3PUWfJvpC2dCYVPk
-        Zz2VNcpEU1SHgNsEXkSW/YV9fxF+/PeF2G42Z91jL+nhBJaV3Ub96G7LC6gQVhkmiVUiNf
-        Yr14MgUhO0e3RdPGf5Al48z4GVu4zfDe2ELEULCy5WaN61T7co9h1o2+L3I0qZUhyFjLqC
-        9LkXZ7pPqOcNDX6y78UB7mQQfGFyN4k1Y4ekpJcrJHEgP0Xn3idPabLXfxzItKobJ92Qfa
-        SUWfIAgtucxVQr+rPWyl4XDENEOQlEHVmWr0b3/sZGcjJPEtDOZWTJZb6Y9RHg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627415107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H8/IIU+aB1t6TDYNpxasWarmhkT94jFM3Vp8vz2AmpY=;
-        b=lVhT3s25TqlbzgFLFU2veorcFeYbC2iFjLnzRAIfrxdIRPnACKriiPB2FthXsjzl7cbM9I
-        YH2sWh6/ElS2PhCg==
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rt-users@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH 0/3] sched: migrate_disable() vs per-CPU access safety checks
-In-Reply-To: <20210721115118.729943-1-valentin.schneider@arm.com>
-References: <20210721115118.729943-1-valentin.schneider@arm.com>
-Date:   Tue, 27 Jul 2021 21:45:07 +0200
-Message-ID: <87tukfpmm4.ffs@nanos.tec.linutronix.de>
+        Tue, 27 Jul 2021 15:46:36 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2343C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:46:32 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id a13so122738iol.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H4OUebZ7xitrsOEWvGlbAq60KdqQlbMc/4TH+h2BBVw=;
+        b=dUDbHhGhsRAve6ItU2zgUbk46iQhfwU+vtplrbsG4NlNTq75r8BghZ8oV2DmpXrjD9
+         jjqVmoPUVOTXZGANfcSDwjejio+kiXzPHJHeo0uFAG7AOAy0QZhmju5qQkgOLJjjZ99X
+         lvjZbfrC3faSU2VRavDIMzQTFCo5VOj3yc7TKN71G7pFuCvZv2mtcg7ELus4RNNqP9k1
+         q0SKJ2bAWadNDkjFYpb9BNDx2teOr7WmPc5gZfuAL2JYy1wsut5byKLEPDFNbPDag9oK
+         Mr1IJmlK1uRrgwNUmdo072d4ZGfoar7EgnNmKU5yn+5L1K5x8w1kAk3voj0JzWjyhNef
+         AsRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H4OUebZ7xitrsOEWvGlbAq60KdqQlbMc/4TH+h2BBVw=;
+        b=aZ/RSCHQWHT0Q+N6CsIMvvLz/+fPL/PYIuin9tuuS/0f5p/bRtfZ9wlhe6WRWvrqt0
+         U2l/dOx27P4Qj8cP0pgJTcEx3tuk/Qf6c7LHgbltPgGU4iiQ+ZXAlu5WKWTLagh1E1gK
+         UeXaEREGx7gYKtGOTzfp6T11By0y7PfsL3UUzxJaxGLYurIxxwrpq5DIiESpZ+AeCx9B
+         Zwkgwi0DWg/TZYqS2p1exgQSAONnGpLZvq5QOE53110BaTyXswoFipT/S+wtJRuDLOxO
+         dRpMGF0rmwe/7dOJ0IHZzK1j0XU2OMb8vtIjCN+C5DaciO3udmEekKD423Fhungy1+Ur
+         EjKQ==
+X-Gm-Message-State: AOAM531FDgIEOAmXBlxzl244i8v7PasiPLVT67x5YRfcrjc5XAZ1khfN
+        8TvIhLZyTO2kdgvGfZXdAy2XXg==
+X-Google-Smtp-Source: ABdhPJzK4J5zLorijuI14ZaGYRNIrelsae+mhmJKow9OD7css3/0rfdUHtJa2DgF6rtcFoWQeY51Dw==
+X-Received: by 2002:a6b:7905:: with SMTP id i5mr20670143iop.175.1627415192317;
+        Tue, 27 Jul 2021 12:46:32 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id c1sm2443014ils.21.2021.07.27.12.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 12:46:31 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/4] net: ipa: IPA interrupt cleanup
+Date:   Tue, 27 Jul 2021 14:46:25 -0500
+Message-Id: <20210727194629.841131-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21 2021 at 12:51, Valentin Schneider wrote:
-> Hi folks,
->
-> I've hit a few warnings when taking v5.13-rt1 out for a spin on my arm64
-> Juno. Those are due to regions that become preemptible under PREEMPT_RT, but
-> remain safe wrt per-CPU accesses due to migrate_disable() + a sleepable lock.
->
-> This adds a helper that looks at not just preemptability but also affinity and
-> migrate disable, and plasters the warning sites.
+The first patch in this series makes all IPA interrupt handling be
+done in a threaded context.  The remaining ones refactor some code
+to simplify that threaded handler function.
 
-Nice!
+					-Alex
 
-I just pulled that into the RT queue and it will show up with the next
-release.
+Alex Elder (4):
+  net: ipa: make IPA interrupt handler threaded only
+  net: ipa: clear disabled IPA interrupt conditions
+  net: ipa: get rid of some unneeded IPA interrupt code
+  net: ipa: kill ipa_interrupt_process_all()
 
-Thanks,
+ drivers/net/ipa/ipa_interrupt.c | 57 +++++++++++----------------------
+ 1 file changed, 19 insertions(+), 38 deletions(-)
 
-        tglx
+-- 
+2.27.0
+
