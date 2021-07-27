@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012593D7282
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75A23D7285
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbhG0KDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:03:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236170AbhG0KCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:02:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9205D61220;
-        Tue, 27 Jul 2021 10:02:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627380163;
-        bh=MsMayYRx4rdKjycC9Cn2M4QS2CiYgnOqhSGXE5/Tias=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QFEx9PxzfT6IBlvp0bqYM1g29NmTfJktSOcqJLhgonliTCaEwBDCMIHayEjzp2G/t
-         Y4ajBxrXXaPvbqP+W5obj6yZWF+l2lOvS3nLuLQEs46GOeDiBt1cGJfoktu208q0B3
-         hhVsPSfSd4HdQgQsyg8tjvbsEXfuqiu258n/UL+k=
-Date:   Tue, 27 Jul 2021 12:02:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 0/5] kernfs: proposed locking and concurrency
- improvement
-Message-ID: <YP/ZwYrtx+h/a/Ez@kroah.com>
-References: <162642752894.63632.5596341704463755308.stgit@web.messagingengine.com>
+        id S236127AbhG0KEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:04:00 -0400
+Received: from mail-vs1-f52.google.com ([209.85.217.52]:46912 "EHLO
+        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236021AbhG0KD7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:03:59 -0400
+Received: by mail-vs1-f52.google.com with SMTP id e4so6776979vsr.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 03:03:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U1Rltp5aC928hhgEXj95boe/DWxuoVxGBX01uUMCHls=;
+        b=HharK82HdWjQczNqCnToDKK2tBEaLHJ0M9RDgTCK+ek6cUowJgD3u81P82qD0YO9E8
+         q0aQRAHxtsLQPCgrKC+AuOqxtv9PJfITQqFQWz7M/qiXmkNynMK0YznZ3EImhTECS2ZD
+         qqXUTGbK41T59toTkW7nRUvcSq7Cza5K+ilakLByfX6bx5kxSJHQ65gvn88pAJMIBssO
+         7kQsf0LydnNY8QTPR4qtxvr53Fsv2xncOA6ZSjgKsX0qmlIiwc3rUqWCg0ntYdlIm5fj
+         +wZGhNv09u1wm4AFbstrGsx32AoS6txUwAl4lHw0q9uEpv5XYOR03DoPsZ/ovXXk8s8x
+         jXUw==
+X-Gm-Message-State: AOAM530YH+hz6FR0ECpU/i7NDpxycgW8XhMk12KpE8sgFHyytBzAiEZV
+        N6TIO22wBSlAj2ZcxxVNh9BqhQneiza8T3cGGJc=
+X-Google-Smtp-Source: ABdhPJxrB7YF93pARYWhq+2Ajrw4bqt9huLpzoSpNbmxJxMepUSMaydScT3Hmera1LH4J+8mRlnO3JUVKm36A07jUaY=
+X-Received: by 2002:a05:6102:2828:: with SMTP id ba8mr15660407vsb.18.1627380238791;
+ Tue, 27 Jul 2021 03:03:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162642752894.63632.5596341704463755308.stgit@web.messagingengine.com>
+References: <20210727093015.1225107-1-javierm@redhat.com>
+In-Reply-To: <20210727093015.1225107-1-javierm@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Jul 2021 12:03:47 +0200
+Message-ID: <CAMuHMdXXoHLO=jsjb+xtW7GDQsvu8Zuz=JmbaEXT49w5o4SJ9A@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/firmware: fix SYSFB depends to prevent build failures
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 05:28:13PM +0800, Ian Kent wrote:
-> There have been a few instances of contention on the kernfs_mutex during
-> path walks, a case on very large IBM systems seen by myself, a report by
-> Brice Goglin and followed up by Fox Chen, and I've since seen a couple
-> of other reports by CoreOS users.
-> 
-> The common thread is a large number of kernfs path walks leading to
-> slowness of path walks due to kernfs_mutex contention.
-> 
-> The problem being that changes to the VFS over some time have increased
-> it's concurrency capabilities to an extent that kernfs's use of a mutex
-> is no longer appropriate. There's also an issue of walks for non-existent
-> paths causing contention if there are quite a few of them which is a less
-> common problem.
-> 
-> This patch series is relatively straight forward.
-> 
-> All it does is add the ability to take advantage of VFS negative dentry
-> caching to avoid needless dentry alloc/free cycles for lookups of paths
-> that don't exit and change the kernfs_mutex to a read/write semaphore.
-> 
-> The patch that tried to stay in VFS rcu-walk mode during path walks has
-> been dropped for two reasons. First, it doesn't actually give very much
-> improvement and, second, if there's a place where mistakes could go
-> unnoticed it would be in that path. This makes the patch series simpler
-> to review and reduces the likelihood of problems going unnoticed and
-> popping up later.
-> 
-> Changes since v7:
-> - remove extra tab in helper kernfs_dir_changed.
-> - fix thinko adding an unnecessary kernfs_inc_rev() in kernfs_rename_ns().
+Hi Javier,
 
-Thanks for sticking with this, I've applied this to my testing branch
-and let's see how 0-day does with it :)
+On Tue, Jul 27, 2021 at 11:33 AM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> The Generic System Framebuffers support is built when the COMPILE_TEST
+> option is enabled. But this wrongly assumes that all the architectures
+> declare a struct screen_info.
+>
+> This is true for most architectures, but at least the following do not:
+> arc, m68k, microblaze, openrisc, parisc and s390.
+>
+> By attempting to make this compile testeable on all architectures, it
+> leads to linking errors as reported by the kernel test robot for parisc:
+>
+>   All errors (new ones prefixed by >>):
+>
+>      hppa-linux-ld: drivers/firmware/sysfb.o: in function `sysfb_init':
+>      (.init.text+0x24): undefined reference to `screen_info'
+>   >> hppa-linux-ld: (.init.text+0x28): undefined reference to `screen_info'
+>
+> To prevent these errors only allow sysfb to be built on systems that are
+> going to need it, which are x86 BIOS and EFI.
+>
+> The EFI Kconfig symbol is used instead of (ARM || ARM64 || RISC) because
+> some of these architectures only declare a struct screen_info if EFI is
+> enabled. And also, because the SYSFB code is only used for EFI on these
+> architectures. For !EFI the "simple-framebuffer" device is registered by
+> OF when parsing the Device Tree Blob (if a DT node for this was defined).
+>
+> Fixes: d391c5827107 ("drivers/firmware: move x86 Generic System Framebuffers support")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-greg k-h
+Thanks for your patch!
+
+> --- a/drivers/firmware/Kconfig
+> +++ b/drivers/firmware/Kconfig
+> @@ -254,7 +254,7 @@ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+>  config SYSFB
+>         bool
+>         default y
+> -       depends on X86 || ARM || ARM64 || RISCV || COMPILE_TEST
+> +       depends on X86 || EFI
+
+Thanks, much better.
+Still, now this worm is crawling out of the X86 can, I'm wondering
+why this option is so important that it has to default to y?
+It is not just a dependency for SYSFB_SIMPLEFB, but also causes the
+inclusion of drivers/firmware/sysfb.c.
+
+>
+>  config SYSFB_SIMPLEFB
+>         bool "Mark VGA/VBE/EFI FB as generic system framebuffer"
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
