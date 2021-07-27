@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A503D76F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7F93D76DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236882AbhG0Nje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36584 "EHLO
+        id S232366AbhG0Ned (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236576AbhG0Njc (ORCPT
+        with ESMTP id S232255AbhG0Neb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:39:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B30C061757;
-        Tue, 27 Jul 2021 06:39:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SvJgypLsn2Yu019XvY5aZgrSVnoahMm/wBmKaM/UYD8=; b=hLQPanqJHf8DHFegslat7Um+aw
-        4aWns23p/yQyiiDqt6NPS8rzymkpVxh7pSudbQuYvkIfVeUzuwGZj+9tJfzX3f4YWtDkHUU1xFlh8
-        MwPuwF+BcFmEamsNeo+g2+xxrnPWMqNIreOC86zq74FcdcfqPuoKm7rDJ+DdnAojnWJfq5fjFrlKg
-        P3pRG5r9J7xWcjtiU7Ey5hDhXJT++MGTfDX+uRAas8MXE+U73roHocrTuUpPQ5wFfOG2+XetmYaXa
-        aeaWIDhrBZDF5E9Glv264OMmMKrY9O7JEzksGxb6eNW7xbeEEtuqHyXUhCYPtbJGGI9iRjogB/Quq
-        keArqh6w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8NCe-00F2gn-Vm; Tue, 27 Jul 2021 13:33:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9440430005A;
-        Tue, 27 Jul 2021 15:33:00 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7CF92213986E4; Tue, 27 Jul 2021 15:33:00 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 15:33:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>, bristot@redhat.com,
-        bsegall@google.com, dietmar.eggemann@arm.com, joshdon@google.com,
-        juri.lelli@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
-        rostedt@goodmis.org, valentin.schneider@arm.com,
-        vincent.guittot@linaro.org
-Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
-Message-ID: <YQALDHw7Cr+vbeqN@hirez.programming.kicks-ass.net>
-References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
- <20210707123402.13999-1-borntraeger@de.ibm.com>
- <20210707123402.13999-2-borntraeger@de.ibm.com>
- <20210723093523.GX3809@techsingularity.net>
+        Tue, 27 Jul 2021 09:34:31 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E0BC061757;
+        Tue, 27 Jul 2021 06:34:31 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id ca5so5399871pjb.5;
+        Tue, 27 Jul 2021 06:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CORRlFb0KftgV7g3EzAHQ31zcHSimEVwYrbwkTtU9jE=;
+        b=V9YwmZho4zxmv4SV6IHOOd6O6yTvV4h6X7/DrxlKjDcN1TV8qjPcl+p2ZAaLP/BPZK
+         FLX3/zDJg4xjUKl2rqs3FXSS90FRLvhvxxUtVkNSzn6klxhTrwYd/9NpXYdUUZ3aIywY
+         qetup8MwzSPksCgUC+XHQGt+I2jwyBVz0fe3aRPpdajLDCx2bjSsTg9i9xncuZaW6z5d
+         3dQrb1JQsKJhdU1uIqFEz6otSo7ApGYhalXhrIamuefHE/GPTnzuq2kA1+odIxq4/A74
+         QESNJ2WHjZpd71M9PSSRCFv9ZfyuAWgi76kDhhbzzvsHXVyOV/gEOpuhaTJMt+ZNZkdt
+         7Stw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CORRlFb0KftgV7g3EzAHQ31zcHSimEVwYrbwkTtU9jE=;
+        b=ThnAe5NtjVxlnWKUV2nrf987szOwIh+GaRtApXHy178tPSRiy7h2HKCIPwL4tFC1up
+         fUAYjspmHsAhhgs+05DFp/pWF08I7cKvjMOR7y/jq8guhy/42/kKN99i579uYW+0gJmr
+         tna8i7uMJoaZklUtJUXZq3sn7J9975115oB78WCEIUDQAR6SStqVA/AhA9L3NlyIrDcT
+         Z9NpuJ2Bo10fbDvnfMvNz7XOpPjouGvG2JQpe51EXjnyMS64WO8OeWQfTpXvyYU/Qbm/
+         SX6jNxED/aVAKotJpwvSn7rfyiQW7Qe3v1BijYF+CnZJAAwmmbsJ0km5LeU2gKJP0j+k
+         I2NQ==
+X-Gm-Message-State: AOAM530TcWq+6pzLHGIlTikdu/2VNDEL2qOrEJjxzTXQvycW2zSmb4Mz
+        c4L5Mb5qrfo8LUYKjRCmKJc=
+X-Google-Smtp-Source: ABdhPJyvsSx3iYVjwLa9cpIMgOmW58gopop3hnMqKS19vcMI61SnRdfY0j0WsnunrB8vG99Uyf94WA==
+X-Received: by 2002:a17:90b:a4c:: with SMTP id gw12mr2840876pjb.187.1627392871429;
+        Tue, 27 Jul 2021 06:34:31 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id e23sm3743921pfd.26.2021.07.27.06.34.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 06:34:30 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     mhiramat@kernel.org, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net
+Cc:     Punit Agrawal <punitagrawal@gmail.com>,
+        linux-kernel@vger.kernel.org, guoren@kernel.org,
+        linux-csky@vger.kernel.org
+Subject: [PATCH v2 0/5] kprobes: Bugfix and improvements
+Date:   Tue, 27 Jul 2021 22:34:21 +0900
+Message-Id: <20210727133426.2919710-1-punitagrawal@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210723093523.GX3809@techsingularity.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 10:35:23AM +0100, Mel Gorman wrote:
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 44c452072a1b..ddc0212d520f 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4522,7 +4522,8 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
->  			se = second;
->  	}
->  
-> -	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
-> +	if (cfs_rq->next &&
-> +	    (cfs_rq->skip == left || wakeup_preempt_entity(cfs_rq->next, left) < 1)) {
->  		/*
->  		 * Someone really wants this to run. If it's not unfair, run it.
->  		 */
+Hi,
 
-With a little more context this function reads like:
+This is the second posting of patches previously posted at
+[0]. Although the patches were reviewed / acked in the previous cycle
+but for some didn't end up getting picked up for this cycle.
 
-	se = left;
+This posting rebases the patches to 5.14-rc3 and makes some minor
+improvements to the commit log in Patch 1. I've also added the tags as
+appropriate from the previous posting.
 
-	if (cfs_rq->skip && cfs_rq->skip == se) {
-		...
-+		if (cfs_rq->next && (cfs_rq->skip == left || ...))
+It would be great if the patches can be picked up this time around.
 
-If '...' doesn't change @left (afaict it doesn't), then your change (+)
-is equivalent to '&& true', or am I reading things wrong?
+Thanks,
+Punit
+
+
+[0] https://lore.kernel.org/linux-csky/20210609105019.3626677-1-punitagrawal@gmail.com/
+
+Punit Agrawal (5):
+  kprobes: Do not use local variable when creating debugfs file
+  kprobes: Use helper to parse boolean input from userspace
+  kprobe: Simplify prepare_kprobe() by dropping redundant version
+  csky: ftrace: Drop duplicate implementation of
+    arch_check_ftrace_location()
+  kprobes: Make arch_check_ftrace_location static
+
+ arch/csky/kernel/probes/ftrace.c |  7 ----
+ include/linux/kprobes.h          |  7 ++--
+ kernel/kprobes.c                 | 58 ++++++++++----------------------
+ 3 files changed, 23 insertions(+), 49 deletions(-)
+
+-- 
+2.30.2
+
