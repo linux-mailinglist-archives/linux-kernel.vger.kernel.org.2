@@ -2,133 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43463D7F2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42F63D7F32
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhG0UYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
+        id S232027AbhG0UZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhG0UYC (ORCPT
+        with ESMTP id S230409AbhG0UZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:24:02 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF57C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:24:01 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id az7so34095qkb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:24:01 -0700 (PDT)
+        Tue, 27 Jul 2021 16:25:03 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0360BC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:25:02 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id hp25so725292ejc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QfPPqr+n6W+oUQ7/MwzdsdcC0Gicejjjwi/Du2DCqTA=;
-        b=XpHI84232rdkuSzMsqVAF5iRv/K72DtUpS3KizlTGfOTGPOR07J64LnHUfNMUT75RW
-         DM4VtVHZDDeO1oxnzj2xw56fwkcNgfxt1zMlRtwrguhO2W2/Y8aALY97r3yWI1YDb6PS
-         3J2GUeYNY3GGMz1xLOgX4UB8AFl2Y9WM2ChVE9FGwvGv4UFkDUu99xWkvHU+cHsLMUVt
-         +uuxH67j6CAG/T5hXzjyqbIDpbegkFL8SgxES+xOMWrmyeBYih/xKWqHXi19zI3TEGfc
-         /O94F5ISztNiyqQoh9O9PdHi+13ZsvZLick/uyq0fXsCn1ppP6cyo/6iqXOno/AdItjJ
-         lc4w==
+        bh=AI4/qExA29kX+ZlXltNVAZTRQGQesnOkv1LSMsqDoFE=;
+        b=tMYiXAyZOrO7jqe0mTC780X3prSp0zEIc5UIe9x5NT/7FjDTK+Hma1zn1YIl1W2d45
+         QSQDseRJsug/Fwjfy7i5tM4QcBnOwEsQO2afVU+XcUptoga+iBhn60589PbGhCtVyIgm
+         7l7UWRaJJ4v/My45utwSxpuvyLz9bipEBO6MCbd5I3gcYQk0lkX66JVmRhIuzYEGd9xW
+         yae9RLXadL2POqaY+DwHxXz/yKewwNaE82o0hlrDw75vMI/kRQxGr9aekTwFP6B9679s
+         ccOUh+cCzx/dhsglwq6dvjeg/SFEmPhkzAYaYK8Fp/7jB6Qltja/baDANcs3BdzFqPby
+         WtVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QfPPqr+n6W+oUQ7/MwzdsdcC0Gicejjjwi/Du2DCqTA=;
-        b=fj4aC8J1wqeYA3ENQOk1oARjwNJqa3DDsD5t9bnHdEMcxMZcagAuQJAK1LidXapbqL
-         1RpLvets/CtUZw7c/Xd32ALh1USdSmqZ4yO+Miko6qZjUGlFeyg5XV/r0NgTNow3pqze
-         HjnQ4Ji3UUgu/ckseh1XtlSlrS8oKs+t3mXxQMCu4FZP1arK+t0eponLaO/PqyMBobzQ
-         DbhDe6XPFM8sV04aCD3O/jhaAEjSYlCXC8F9JvMgFiQP4Ot71EUhyaMlbfk5vFgL1mqd
-         wIakvyGetLj1A3KzR/NfiOdx8azy0v3yVKx7FqHN5kJSS2+zn3lT1d0O8vGlleSkVgL2
-         sWEw==
-X-Gm-Message-State: AOAM531YInml+yA2x0xwWgVfJrfVJNoc4WWsH1tSCI/JoFKt/Gv7X/eX
-        1Vw4e/vgGOQ7vgoaPcoE8XTMAgwtHRQ5Aqv/akC17Q==
-X-Google-Smtp-Source: ABdhPJziICUuoZA7coSdlp5SMWI078kDN24e/pjIHCqcPMNTNC+4Q2ifhW+pIQTgetZDn2GLvcqPzUrSPsbQ5BkpmxM=
-X-Received: by 2002:a37:46d0:: with SMTP id t199mr14173981qka.416.1627417440209;
- Tue, 27 Jul 2021 13:24:00 -0700 (PDT)
+        bh=AI4/qExA29kX+ZlXltNVAZTRQGQesnOkv1LSMsqDoFE=;
+        b=SCkstgpc6B6ZvItC/o4ck+gh8r7mlAFl7mn03qqLviTXcMAi8h27AxtlQSha7CxHeO
+         cXkz2Q16UJFp7JT5lMHiaAF1ucXSJJ2uN5BFfgXq90EeNsNUQ3RwxLyrzqWJUNbkAloK
+         SI/zK38LizY6D/fYlvSepQ9UuYh17+KIMhEj1CpD3KT68frqlZHxO1q1SiUZMfOGQC4q
+         Yjwh0CtU+TbH4aisLdTLtYtzfU0QTj6OtUz1QTYnroDRpPXNC68nh/u9EDa5hmzK86eL
+         p0LCaeUvTTU/SAJxLmQ8TRV0ICfn5ZAYGhJrye3i3yvLTIabRdD931eKz0I3QfXczRnI
+         UCBw==
+X-Gm-Message-State: AOAM532ASBJPSLIZSAhBpsKE4mwswnfJMpAOMBT1dxT/Q5CtZihsqI+i
+        xqKt9hcoujxiEjyHV2yHil54OOdaIuMAZDc8fgp6
+X-Google-Smtp-Source: ABdhPJw5XiHIHg6ae8uV3WrVdFrxw1uvMxCloM4AI8JGRZKEEHOrSXAfx185ENkDdDaMeEbQ9KhcFwvY6OSTrZEcBro=
+X-Received: by 2002:a17:906:468d:: with SMTP id a13mr24138094ejr.419.1627417500385;
+ Tue, 27 Jul 2021 13:25:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <01383a8751e97ef826ef2adf93bfde3a08195a43.1626693859.git.cdleonard@gmail.com>
- <e2215577-2dc5-9669-20b8-91c7700fa987@gmail.com> <CA+HUmGhtPHbT=aBLS_Ny_t802s3RWaE+tupd4T8U9x50eW3JXg@mail.gmail.com>
- <3afe618a-e848-83c3-2cc5-6ad66f3ef44b@gmail.com>
-In-Reply-To: <3afe618a-e848-83c3-2cc5-6ad66f3ef44b@gmail.com>
-From:   Francesco Ruggeri <fruggeri@arista.com>
-Date:   Tue, 27 Jul 2021 13:23:49 -0700
-Message-ID: <CA+HUmGgwvn7uPfoKqy1extwEksAXOcTf2trDX8dcYGtdeppebQ@mail.gmail.com>
-Subject: Re: [RFC] tcp: Initial support for RFC5925 auth option
-To:     Leonard Crestez <cdleonard@gmail.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Yuchung Cheng <ycheng@google.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-crypto@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        Salam Noureddine <noureddine@arista.com>,
-        Bob Gilligan <gilligan@arista.com>,
-        Dmitry Safonov <dima@arista.com>
+References: <20210714091747.2814370-1-morbo@google.com> <20210726201924.3202278-1-morbo@google.com>
+ <20210726201924.3202278-2-morbo@google.com> <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
+ <YP+ZOx8BETgufxBS@kroah.com> <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
+ <YP+ql3QFYnefR/Cf@kroah.com> <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com>
+ <YQBJfAuMJhvd2TcJ@kroah.com> <20210727201328.GY1583@gate.crashing.org> <CAGG=3QVWxdYnjZshsYVwf+jVj8Mb9=44SZA64cL0g414JncWGw@mail.gmail.com>
+In-Reply-To: <CAGG=3QVWxdYnjZshsYVwf+jVj8Mb9=44SZA64cL0g414JncWGw@mail.gmail.com>
+From:   Bill Wendling <morbo@google.com>
+Date:   Tue, 27 Jul 2021 13:24:49 -0700
+Message-ID: <CAGG=3QUgnahba_-6hk6VoZW4T3a_Qa2KTBx4+DswNf_KBEWOmw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 11:06 AM Leonard Crestez <cdleonard@gmail.com> wrote:
+On Tue, Jul 27, 2021 at 1:22 PM Bill Wendling <morbo@google.com> wrote:
 >
->
->
-> On 7/27/21 6:05 AM, Francesco Ruggeri wrote:
-> > Hi Leonard,
+> On Tue, Jul 27, 2021 at 1:17 PM Segher Boessenkool
+> <segher@kernel.crashing.org> wrote:
 > >
-> > thanks for taking on this task!
+> > On Tue, Jul 27, 2021 at 07:59:24PM +0200, Greg Kroah-Hartman wrote:
+> > > On Tue, Jul 27, 2021 at 10:39:49AM -0700, Nick Desaulniers wrote:
+> > > > I think warn_unused_result should only really be used for functions
+> > > > where the return value should be used 100% of the time.
+> > >
+> > > I too want a shiny new pony.
+> > >
+> > > But here in the real world, sometimes you have functions that for 99% of
+> > > the users, you do want them to check the return value, but when you use
+> > > them in core code or startup code, you "know" you are safe to ignore the
+> > > return value.
+> > >
+> > > That is the case here.  We have other fun examples of where people have
+> > > tried to add error handling to code that runs at boot that have actually
+> > > introduced security errors and they justify it with "but you have to
+> > > check error values!"
+> > >
+> > > > If there are
+> > > > cases where it's ok to not check the return value, consider not using
+> > > > warn_unused_result on function declarations.
+> > >
+> > > Ok, so what do you do when you have a function like this where 99.9% of
+> > > the users need to check this?  Do I really need to write a wrapper
+> > > function just for it so that I can use it "safely" in the core code
+> > > instead?
+> > >
+> > > Something like:
+> > >
+> > > void do_safe_thing_and_ignore_the_world(...)
+> > > {
+> > >       __unused int error;
+> > >
+> > >       error = do_thing(...);
+> > > }
+> > >
+> > > Or something else to get the compiler to be quiet about error being set
+> > > and never used?
 > >
-> >> I'm especially interested in feedback regarding ABI and testing.
+> > The simplest is to write
+> >         if (do_thing()) {
+> >                 /* Nothing here, we can safely ignore the return value
+> >                  * here, because of X and Y and I don't know, I have no
+> >                  * idea actually why we can in this example.  Hopefully
+> >                  * in real code people do have a good reason :-)
+> >                  */
+> >         }
 > >
-> > I noticed that the TCP connection identifier is not part of the
-> > representation of the MKT (tcp_authopt_key_info).
-> > This could cause some issues if, for example 2 MKTs with different
-> > <remote IP, remote TCP port> in the TCP connection identifier but same
-> > KeyID (recv_id) are installed on a socket. In that case
-> > tcp_authopt_inbound_key_lookup() may not pick the correct MKT for the
-> > connection. Matching incoming segments only based on recv_id may not
-> > comply with the RFC.
-> > I think there may be other cases where TCP connection identifiers may
-> > be needed to resolve conflicts, but I have to look at your patch in
-> > more detail.
+> > which should work in *any* compiler, doesn't need any extension, is
+> > quite elegant, and encourages documenting why we ignore the return
+> > value here.
+> >
+> Or better still, use sysfs_create_link_nowarn() instead of
+> sysfs_create_link(). We'll just have to take the "__must_check"
+> attribute off the sysfs_create_link_nowarn() declaration.
 >
-> The RFC doesn't specify what the "tcp connection identifier" needs to
-> contains so for this first version nothing was implemented.
->
-> Looking at MD5 support in linux the initial commit only supported
-> binding keys to addresses and only relatively support was added for
-> address prefixes and interfaces. Remote ports still have no effect.
->
-> I think adding explicit address binding for TCP-AO would be sufficient,
-> this can be enhanced later. The most typical usecase for TCP auth is to
-> connect with a BGP peer with a fixed IP address.
->
-> As far as I understand this only actually matters for SYN packets where
-> you want a single listen socket to accept client using overlapping
-> keyids. For an active connection userspace can only add keys for the
-> upcoming destination.
-
-The RFC does not seem to put any restrictions on the MKTs used with a
-TCP connection, except that every segment must match at most one MKT,
-where the matching is done on the socket pair and for incoming
-segments on the KeyID, and for outgoing segments by designating a
-desired MKT.
-If I understand what you suggest for the initial commit, socket pair
-matching would not be done, and user level (together with out-of-band
-coordination between peers) would be responsible for making sure that
-the segments' socket pairs are consistent with the implied socket
-pairs of the MKTs on the socket. Failure to do that would be
-considered a misconfiguration and would result in undefined behavior.
-Is that correct?
-Even if the MKT's socket pair is not used in the initial commit, would
-it help having it in the API, to avoid future incompatibilities with
-user level? Or would it be understood that user level code using the
-initial commit may have to change with future commits?
+Strike that. I mistook the nowarn.
+-bw
