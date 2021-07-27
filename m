@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3F93D7D19
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15773D7D1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhG0SIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:08:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhG0SIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:08:43 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77447C061757;
-        Tue, 27 Jul 2021 11:08:42 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so5499395pjb.3;
-        Tue, 27 Jul 2021 11:08:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8hbMtFweUxVxc+r/mIdp40F7u14TjsmtdgBO9LYV8/I=;
-        b=s/MMZZOjwMHmYKZKO5zujliHjzCiH2HYmaBfHrUgAq6TB5lVdvFrg9ZeI3Lum236I5
-         UU1t4l8trprAiijYjv9CgK3HlvOgAkiO++6ZJA5vg7rep/vQJ5Brf6daOZEJHIjCs00J
-         /ukCjDgStxzQR6W21ZgU3oiVjoRTZJzOjZLMtiso6aekfO5w7Bkr26kabmNsVwTCBfOE
-         pde4x6OnTCs0zfSyeiXToQ8/QtdUZm9HOrUVsMclxChNZx94FI2XB/uWqqGgq0J/mPpg
-         bYF22wMijzq3/7RcvF2c5sJs2hjkJthCbcFNym7/p0Yy4k+Vbtag/FKh0UML8JMoFhHg
-         /Z/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8hbMtFweUxVxc+r/mIdp40F7u14TjsmtdgBO9LYV8/I=;
-        b=sb8jvqCevHF2snkE5hz1RYgjlIBj2T5EEs8cwUXPec+I8D3UbaxiTyuTJZaUKCpMbw
-         VqunnbeLn2OOaouwztBcbti2rVLW8uR2H0PKE1Lcnrmq8sYvn6RvL/ZvgULgpCJB8Qrb
-         KSjEeECv5tNXibnSiG/CfKjyh1NnByzdjTzzg27cp9g6HmFe5JUW6czel61DiIsG81Pu
-         tAMh4T9dpxdwQ40cwUt4y2lohJUw5nveJfL6lQ3tSfm6+kPZpGTnOb8sCuSmowwfVHpc
-         QXulPrMhm+XYl4hNDUXB8hxfMwm+tZeP/zx9dQpMgfiuU1UdrlZ725a+pu8+xDcVPJuS
-         fVdw==
-X-Gm-Message-State: AOAM5319GjR4By/BK1G7MLKbRG7aX+1UrBQuROPzIw+pNKSvhsyMcZcj
-        ZsMqB0nI+WvZufDZOWs9zskt1nCtmok=
-X-Google-Smtp-Source: ABdhPJx2AdYpEAEBPfjvRpzJsbMXfU+s5Hf1c8fmLgc39Ju/SZopc/vOHx+x04jml5ph55dg6EbiCw==
-X-Received: by 2002:a17:90a:bf0a:: with SMTP id c10mr23342223pjs.59.1627409321617;
-        Tue, 27 Jul 2021 11:08:41 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id j13sm4178393pjl.1.2021.07.27.11.08.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 11:08:41 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/168] 5.10.54-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210726165240.137482144@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <61951dfa-c241-e846-b56e-0173b2637521@gmail.com>
-Date:   Tue, 27 Jul 2021 11:08:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230186AbhG0SKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:10:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229453AbhG0SKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 14:10:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A0B060F4F;
+        Tue, 27 Jul 2021 18:10:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627409433;
+        bh=eAQ6Y5NFEbqzK+Qxa6eEtOaPVZxtmmYG8Cp8wn4awk0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZUdLTBGArL4F4dnHexEQOVZW0mHKBsiDWS3JVNmUjI74QPdj4B6Ri+jpbUV/xu6vi
+         eR6EWfI50nJjGQ/Ud9qNfpzAu7g5qbFLSRBRr9LLgHzuiDlwmyBpqwt1rksx5FXj+W
+         RjKFbP2JQp0zt2oawjyukgEhkFC/vYhsgmCrBT3mOYBm8yz2k/zHY5fu0Lw8eMA6dD
+         wF3F28tyugzeNkNeGJ3McDWo3mCY7B/yGl/Vawcltq99rALZWYg5zEeeydatefT0q2
+         kA0irLtyHyn9i0FTjNibDfHiuOyP/Jund7o+A26RksFueTTT9tcVaYWmuBPYjuV6j3
+         xcNbI/axou1ew==
+Date:   Tue, 27 Jul 2021 19:10:27 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 01/16] KVM: arm64: Generalise VM features into a set of
+ flags
+Message-ID: <20210727181026.GA19173@willie-the-truck>
+References: <20210715163159.1480168-1-maz@kernel.org>
+ <20210715163159.1480168-2-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210726165240.137482144@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715163159.1480168-2-maz@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 10:06 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.54 release.
-> There are 168 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Jul 15, 2021 at 05:31:44PM +0100, Marc Zyngier wrote:
+> We currently deal with a set of booleans for VM features,
+> while they could be better represented as set of flags
+> contained in an unsigned long, similarily to what we are
+> doing on the CPU side.
 > 
-> Responses should be made by Wed, 28 Jul 2021 16:52:14 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/include/asm/kvm_host.h | 12 +++++++-----
+>  arch/arm64/kvm/arm.c              |  5 +++--
+>  arch/arm64/kvm/mmio.c             |  3 ++-
+>  3 files changed, 12 insertions(+), 8 deletions(-)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.54-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 41911585ae0c..4add6c27251f 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -122,7 +122,10 @@ struct kvm_arch {
+>  	 * should) opt in to this feature if KVM_CAP_ARM_NISV_TO_USER is
+>  	 * supported.
+>  	 */
+> -	bool return_nisv_io_abort_to_user;
+> +#define KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER	0
+> +	/* Memory Tagging Extension enabled for the guest */
+> +#define KVM_ARCH_FLAG_MTE_ENABLED			1
+> +	unsigned long flags;
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+One downside of packing all these together is that updating 'flags' now
+requires an atomic rmw sequence (i.e. set_bit()). Then again, that's
+probably for the best anyway given that kvm_vm_ioctl_enable_cap() looks
+like it doesn't hold any locks.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+>  	/*
+>  	 * VM-wide PMU filter, implemented as a bitmap and big enough for
+> @@ -133,9 +136,6 @@ struct kvm_arch {
+>  
+>  	u8 pfr0_csv2;
+>  	u8 pfr0_csv3;
+> -
+> -	/* Memory Tagging Extension enabled for the guest */
+> -	bool mte_enabled;
+>  };
+>  
+>  struct kvm_vcpu_fault_info {
+> @@ -777,7 +777,9 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
+>  #define kvm_arm_vcpu_sve_finalized(vcpu) \
+>  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
+>  
+> -#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
+> +#define kvm_has_mte(kvm)					\
+> +	(system_supports_mte() &&				\
+> +	 test_bit(KVM_ARCH_FLAG_MTE_ENABLED, &(kvm)->arch.flags))
+
+Not an issue with this patch, but I just noticed that the
+system_supports_mte() check is redundant here as we only allow the flag to
+be set if that's already the case.
+
+Will
