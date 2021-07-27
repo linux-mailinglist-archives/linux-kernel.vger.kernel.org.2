@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A90C3D74AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095323D74AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236500AbhG0MBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:01:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231863AbhG0MBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:01:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7116661A38;
-        Tue, 27 Jul 2021 12:01:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627387292;
-        bh=H6GBvjIm6gs/iLbLE96kn/VqKHUusHV0IfYP8LTdKuc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=anIocG4OWAwzmllx6ZRPVFzCiFPqZzRXWMI8tjJGgbGhWa1ObkMmscUx6T1ORakn8
-         cQRKCsQ032g5Iw7F/t3V9TuBudHnysG4NPSNkG80hA0/rVy8scMpMofQIz8Gy/+/Ua
-         O54CC2fWELD3+m2hETwm2vGztpZXlHMmnFgkP8CROD9PkXrvCXCKY+7jNgiB2y/li/
-         4iPxXXADcVdBDq+1NANnmkO+Vj+ur/AUKXgaINkjp2Qf6juZG6aYlh4QgM87qx5v37
-         Sz0OJDgOSNYPpXnm4mby2Sbl+MO2iYMhXa1rdvu71mGh0/FfxzFYr7D7RbrXzkEm3R
-         ZxVaSpt4epHUg==
-Date:   Tue, 27 Jul 2021 13:01:22 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Zack Rusin <zackr@vmware.com>
-Subject: Re: linux-next: manual merge of the drm-misc tree with the drm-next
- tree
-Message-ID: <20210727120122.GR4670@sirena.org.uk>
-References: <20210727111448.1443-1-broonie@kernel.org>
- <CAKMK7uFNFOTrcLbFW3eoziPaZaH9JFKJe1AVvJGT6wU_rqfUeA@mail.gmail.com>
+        id S236508AbhG0MBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:01:37 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:58336 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236312AbhG0MBg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 08:01:36 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6BBB41C0B76; Tue, 27 Jul 2021 14:01:35 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 14:01:35 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Evan Green <evgreen@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alexs@kernel.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH v2] mm: Enable suspend-only swap spaces
+Message-ID: <20210727120135.GA32265@duo.ucw.cz>
+References: <20210709105012.v2.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
+ <YOvpVRSMJe8NQuS2@dhcp22.suse.cz>
+ <30dddfb1-388c-a593-0987-73e821216da9@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RpDyejMaDGJhP2PU"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uFNFOTrcLbFW3eoziPaZaH9JFKJe1AVvJGT6wU_rqfUeA@mail.gmail.com>
-X-Cookie: Vini, vidi, Linux!
+In-Reply-To: <30dddfb1-388c-a593-0987-73e821216da9@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---RpDyejMaDGJhP2PU
+--7JfCtLOvnd9MIVvH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 27, 2021 at 01:41:30PM +0200, Daniel Vetter wrote:
-> On Tue, Jul 27, 2021 at 1:15 PM Mark Brown <broonie@kernel.org> wrote:
+Hi!
 
-> > Today's linux-next merge of the drm-misc tree got a conflict in:
+> > Could you expand some more on why a strict exclusion is really
+> > necessary? I do understand that one might not want to have swap storage
+> > available all the time but considering that swapon is really a light
+> > operation so something like the following should be a reasonable
+> > workaround, no?
+> > 	swapon storage/file
+> > 	s2disk
+> > 	swapoff storage
+>=20
+> I'm certainly not a hibernation expert, but I'd guess this can also be
+> triggered by HW events, so from the kernel and not only from user space
+> where your workaround would apply.
 
-> >   drivers/gpu/drm/vmwgfx/vmwgfx_drv.h
+I should know about hibernation, and I'm not aware of any case where
+we do hibernation from kernel. Userspace should be always involved.
 
-> > between commit:
+Best regards,
+								Pavel
 
-> >   ebc9ac7c3dfe ("drm/vmwgfx: Update device headers")
+--=20
+http://www.livejournal.com/~pavelmachek
 
-> > from the drm-next tree and commit:
-
-> >   be4f77ac6884 ("drm/vmwgfx: Cleanup fifo mmio handling")
-
-> > from the drm-misc tree.
-
-> I got confused for a bit how we managed a conflict here because vmwgfx
-> flows drm-misc.git -> drm.git -> linus. The 2nd patch is in
-> drm-misc-fixes, which makes sense, not in drm-misc-next like I assumed
-> at first drm-misc means.
-
-I probably misidentified the tree when I was reporting things TBH -
-there's so many DRM trees and they're constantly generating conflicts
-that I sometimes rush through it a bit, especially for the simpler ones
-like this.
-
---RpDyejMaDGJhP2PU
+--7JfCtLOvnd9MIVvH
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD/9ZEACgkQJNaLcl1U
-h9By1Af+JO44Ehk6vlvcgLV8W9uQiouHcojGdJQaD4MHuFGlDy46R3h/TuTDrb0M
-nj5AC8yfcJx4joEF9hVYXQEWXP9LKut4afpJjpeSy/vpFsV1xmlHkKo8AtAO8Urb
-osfKHwSQwwljQ+chkXP6v2zEX3DrzoscSXgJO/F9WqPLlXnWpTR4v3FVaiiIt2ob
-FLb5367epKV1dSre54YYba4BDCz0EyOL5FpL/v3RQsQ3MUfPUqFVIMPF22fVJYTS
-M2m0EKEPhFPR1Gu/mYGNKPfBXygQeIwBmg6voBj9WHoHBegcZzBe2yWzWsPe5Xh5
-9VBig7YPnN3wLDpIQelbXU33OSnY4w==
-=L+/4
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYP/1nwAKCRAw5/Bqldv6
+8pHjAJ44gAydZJxSbawcNsnD0Vx7XPnYNQCeOFPhMYsWI6XozIkeaEayJDVpRxc=
+=XzQI
 -----END PGP SIGNATURE-----
 
---RpDyejMaDGJhP2PU--
+--7JfCtLOvnd9MIVvH--
