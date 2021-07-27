@@ -2,133 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177453D7089
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA783D7090
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235827AbhG0HqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:46:16 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:45384 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235675AbhG0Hpz (ORCPT
+        id S235852AbhG0Hqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235629AbhG0Hqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:45:55 -0400
-X-UUID: 87635f62e5434238bf905967941fe625-20210727
-X-UUID: 87635f62e5434238bf905967941fe625-20210727
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <cheng-jui.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 297846516; Tue, 27 Jul 2021 15:45:50 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 27 Jul 2021 15:45:49 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 27 Jul 2021 15:45:49 +0800
-From:   Cheng Jui Wang <cheng-jui.wang@mediatek.com>
-To:     <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <clang-built-linux@googlegroups.com>
-CC:     <paulmck@kernel.org>, <josh@joshtriplett.org>,
-        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-        <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
-        <matthias.bgg@gmail.com>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>, <wsd_upstream@mediatek.com>,
-        <eason-yh.lin@mediatek.com>,
-        Cheng Jui Wang <cheng-jui.wang@mediatek.com>
-Subject: [PATCH] rcu: Add missing unlock in rcu_print_task_stall
-Date:   Tue, 27 Jul 2021 15:45:42 +0800
-Message-ID: <20210727074542.25095-1-cheng-jui.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 27 Jul 2021 03:46:51 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F41C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:46:51 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id b9so13160825wrx.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:46:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5Tj5EO2Uw4drdfwULeG32UobpBcCgtAwxyIhcAogS7Y=;
+        b=dKtGiz6+y1uaAObIVBdw27gbnD01fqnHeO+vrDtF8Ngf4Aw7GTonH/D4V52DPjfRq6
+         yUpvOl/juZhlUiZimzO+5qAlow/z8751ty9Vw+n9ryNB9FSMZuGJxZnEaOn3z+fs9CQx
+         g6zEEHM1VidMR1tOrMPJU6vuu+KAan57jDQksRDVb5fOYHr429mS8MO5h0Uv1KgmLCOp
+         ioKcoARUzj5+EzrfylKgsJigJIMnEFDJO5VPc9JsWL9Sdjw3UJNUSvg+zbNBIR3iTyzv
+         ixIYR8g/DLQScjPgED1hrWwmYO9GCXVDPDckQGZyRhrXrTtofNwlX0hdpjOYKeURLKvA
+         DsPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5Tj5EO2Uw4drdfwULeG32UobpBcCgtAwxyIhcAogS7Y=;
+        b=ay10S0iS/uxRQM1uI1pe9hdua086DXVM2gvt7gu9iEx9nJ1R/aBXf9Owtn7i0JuSzy
+         AsxAFeezsV+EUlAPK7aILBjKFY1sCmqIvuK4q0GyTpXheMzioXEbO1n/BunVtjtsMdD+
+         x7voraWmyYzDU7nU8zhSe6K1gjH14vmy4zPogAcdQ1M42xP5IZI2YTkRNeH7Q4i1CICM
+         O2/5js6G/l9NmNYsQWZeKzxnNIblv80349pUmmxwwl6WMvUbUojzwcxBqqcctefxjYd0
+         wgxmGQg0NuX5Bw7uK1A20xUaoZXXaDjTMXaeUy3Pt6PCJqa1ha1TQe8gw1L3mH7JgMic
+         tOFQ==
+X-Gm-Message-State: AOAM5309WlUw00RVOxTZodV9LsUVP+S8bPDTREnlBzEh2W65yVNj9mN1
+        PBYcHu1jAoUDgWub9XWyI6bedqLfVsEvqk2B2SonFg==
+X-Google-Smtp-Source: ABdhPJzR7dAUKysXNeo6YdC8BFA8JDb8P26N5c43+WSIM2Pm+5ds99zvIdZRuJeJ2IToDJ1Jhba+9yHjvwEsH0eUiHc=
+X-Received: by 2002:a5d:6da9:: with SMTP id u9mr22941000wrs.7.1627372010283;
+ Tue, 27 Jul 2021 00:46:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210723094422.2150313-1-jens.wiklander@linaro.org>
+ <20210723094422.2150313-2-jens.wiklander@linaro.org> <87zgud1giz.wl-maz@kernel.org>
+In-Reply-To: <87zgud1giz.wl-maz@kernel.org>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Tue, 27 Jul 2021 09:46:39 +0200
+Message-ID: <CAHUa44EhP5NCH6S27+Af8ePxAup9nJnrwGr_nMRUFumXOTh7uQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] docs: staging/tee.rst: add a section on OP-TEE notifications
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We encouterd a deadlock with following lockdep warning. The
-rcu_print_task_stall is supposed to release rnp->lock, but may just
-return without unlock.
+On Fri, Jul 23, 2021 at 12:16 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Fri, 23 Jul 2021 10:44:17 +0100,
+> Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> >
+> > Adds a section on notifications used by OP-TEE, synchronous and
+> > asynchronous.
+> >
+> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > ---
+> >  Documentation/staging/tee.rst | 27 +++++++++++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> >
+> > diff --git a/Documentation/staging/tee.rst b/Documentation/staging/tee.rst
+> > index 4d4b5f889603..37bdd097336f 100644
+> > --- a/Documentation/staging/tee.rst
+> > +++ b/Documentation/staging/tee.rst
+> > @@ -184,6 +184,33 @@ order to support device enumeration. In other words, OP-TEE driver invokes this
+> >  application to retrieve a list of Trusted Applications which can be registered
+> >  as devices on the TEE bus.
+> >
+> > +OP-TEE notifications
+> > +--------------------
+> > +
+> > +There are two kinds of notifications that secure world can use to make
+> > +normal world aware of some event.
+> > +
+> > +1. Synchronous notifications delivered with ``OPTEE_RPC_CMD_NOTIFICATION``
+> > +   using the ``OPTEE_RPC_NOTIFICATION_SEND`` parameter.
+> > +2. Asynchronous notifications delivered with a combination of a non-secure
+> > +   interrupt and a fast call from the non-secure interrupt handler.
+> > +
+> > +Synchronous notifications are limited by depending on RPC for delivery,
+> > +this is only usable when secure world is entered with a yielding call via
+> > +``OPTEE_SMC_CALL_WITH_ARG``. This excludes such notifications from secure
+> > +world interrupt handlers.
+> > +
+> > +An asynchronous notification is delivered via a non-secure interrupt to an
+> > +interrupt handler registered in the OP-TEE driver. The actual notification
+> > +value are retrieved with the fast call ``OPTEE_SMC_GET_ASYNC_NOTIF_VALUE``.
+> > +
+> > +One notification value ``OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_BOTTOM_HALF`` has a
+> > +special meaning. When this value is received it means that normal world is
+> > +supposed to make a yielding call ``OPTEE_MSG_CMD_DO_BOTTOM_HALF``. This
+> > +call is done from the thread assisting the interrupt handler. This is a
+> > +building block for OP-TEE OS in secure world to implement the top half and
+> > +bottom half style of device drivers.
+> > +
+>
+> What I find missing here is a description of the trigger for this
+> interrupt, and how it influences the way the kernel drivers interacts
+> with the secure side:
+>
+> - if it is edge triggered, this is 'fire and forget'. The interrupt
+>   will be consumed by the kernel handler, and whether it eventually
+>   calls into the secure side has no impact on the interrupt flow.
+>
+> - if it is level triggered, then the interrupt may be asserted until
+>   the kernel calls into the secure side, which may then drop the line
+>   level if no other requests are pending.
+>
+> These are evidently two very different flows, and you need to pick a
+> side. Note that not all interrupt controllers support both signalling
+> modes, so you are likely to leave something behind. Or you can try and
+> support both flows, but that may make the driver slightly more
+> complex.
+>
+> Either way, this needs specifying, here and in the DT binding.
 
-	if (!rcu_preempt_blocked_readers_cgp(rnp))
-		return 0;
+In the example I'm using a level triggered interrupt which is
+triggered by writing to GICD_ISPENDR by secure world. Reading of
+GICC_IAR should clear the interrupt, the GICv2 reference manual is
+quite clear on that. So, if I understand it correctly, it will for
+this purpose work in the same way as an edge triggered interrupt. If
+this wouldn't be the case in some configuration and the interrupt must
+be cleared by some other action that would be a job for the receiver
+of OPTEE_SMC_GET_ASYNC_NOTIF_VALUE, that is, a secure world problem.
+The normal world flow should be the same.
 
-Add missing unlock before return to fix it.
+Now that we describe the interrupt configuration in device tree it
+must use something that mirrors the secure world expectations. I don't
+see a point in restricting what's allowed as long it doesn't need code
+changes in the kernel too. Does this make any sense?
 
-============================================
-WARNING: possible recursive locking detected
-5.10.43
---------------------------------------------
-swapper/7/0 is trying to acquire lock:
-ffffffc01268c018 (rcu_node_0){-.-.}-{2:2}, at: rcu_dump_cpu_stacks+0x94/0x138
+If I just expand a bit above explaining that the interrupt handler
+must call OPTEE_SMC_GET_ASYNC_NOTIF_VALUE as part of clearing the
+interrupt even if it might be cleared anyway in some configurations.
+Would that make it more clear, good enough even :-) ?
 
-but task is already holding lock:
-ffffffc01268c018 (rcu_node_0){-.-.}-{2:2}, at: check_cpu_stall+0x34c/0x6f8
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(rcu_node_0);
-  lock(rcu_node_0);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-1 lock held by swapper/7/0:
- #0: ffffffc01268c018 (rcu_node_0){-.-.}-{2:2},  at: check_cpu_stall+0x34c/0x6f8
-
-stack backtrace:
-CPU: 7 PID: 0 Comm: swapper/7
-Call trace:
- dump_backtrace.cfi_jt+0x0/0x8
- show_stack+0x1c/0x2c
- dump_stack_lvl+0xd8/0x16c
- validate_chain+0x2124/0x2d34
- __lock_acquire+0x7e4/0xed4
- lock_acquire+0x114/0x394
- _raw_spin_lock_irqsave+0x88/0xd4
- rcu_dump_cpu_stacks+0x94/0x138
- check_cpu_stall+0x498/0x6f8
- rcu_sched_clock_irq+0xd4/0x214
- update_process_times+0xb4/0xf4
- tick_sched_timer+0x98/0x110
- __hrtimer_run_queues+0x19c/0x2bc
- hrtimer_interrupt+0x10c/0x3a8
- arch_timer_handler_phys+0x5c/0x98
- handle_percpu_devid_irq+0xe0/0x2a8
- __handle_domain_irq+0xd0/0x19c
- gic_handle_irq+0x6c/0x134
- el1_irq+0xe0/0x1c0
- arch_cpu_idle+0x1c/0x30
- default_idle_call+0x58/0xcc
- do_idle.llvm.13807299673429836468+0x118/0x2e8
- cpu_startup_entry+0x28/0x2c
- secondary_start_kernel+0x1d0/0x23c
-
-Signed-off-by: Cheng Jui Wang <cheng-jui.wang@mediatek.com>
----
- kernel/rcu/tree_stall.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 6c76988cc019..3dc464d4d9a5 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -267,8 +267,10 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 	struct task_struct *ts[8];
- 
- 	lockdep_assert_irqs_disabled();
--	if (!rcu_preempt_blocked_readers_cgp(rnp))
-+	if (!rcu_preempt_blocked_readers_cgp(rnp)) {
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		return 0;
-+	}
- 	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
- 	       rnp->level, rnp->grplo, rnp->grphi);
- 	t = list_entry(rnp->gp_tasks->prev,
--- 
-2.18.0
-
+Thanks,
+Jens
