@@ -2,117 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EEB3D763C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7A23D7658
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237442AbhG0NZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:25:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237058AbhG0NWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:22:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1451961AA8;
-        Tue, 27 Jul 2021 13:20:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627392040;
-        bh=AKWERcjtrAvwWQy4q8XKeRbtEAr4BgA0Qm2Sbx46Vao=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UYxDYR6rR6pMNRFikTMmWDXvcP4MztxriaDogPqyig0zW/k5V8uT9KrWsnYEMbuWZ
-         C4LuDwKrLGyo7L7b5dEQUMBPVFjqrdQMpJ/SNag1JFjrKRG3vnPTMd4zf3v9DxgZTd
-         h3WtaOyU2nCBJFzy4538GJi2c/z3uVIET0ByYNJGz2u5xQIWByg9A4FffSiLbORiQJ
-         9nrYgrbXhi5kZg9+1bDkYp8Q6hY/FPn/TbqIqQPkkd7DjOxMGxV0HV2uZfBCgMTSwf
-         tDLBC9Cj303JP7KzMiloL25bmXKJ27CRFWblL/lxl5FQ265fFrdfjsgEHZotiLQ786
-         EFA5IJMSl7csA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pravin B Shelar <pshelar@ovn.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 3/3] net: Fix zero-copy head len calculation.
-Date:   Tue, 27 Jul 2021 09:20:36 -0400
-Message-Id: <20210727132036.835981-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210727132036.835981-1-sashal@kernel.org>
-References: <20210727132036.835981-1-sashal@kernel.org>
+        id S236720AbhG0N1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:27:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60503 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236686AbhG0NWw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:22:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627392172;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KcIg/Lx6Su2LCnsmswDEv7xCBQIvYa+umdLL3a2VScU=;
+        b=exHVs1HlJVDnVSvagK5HoKwsdc2t+D672aRIb4rRULTH46iktcOwauyD4Yd+EllF9CnJKD
+        gdHSYONUHKr5Q6RO57tJKblh9qzQzFTLD4KtDJUaVcaPAbqRFsRZGo5ToYTy/D+WvdhHLJ
+        3Azq4AAAe3xsA4YC7b0iO61ccnyrWNw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-PnSYT2r1PBKHEOFBQ3xmEQ-1; Tue, 27 Jul 2021 09:22:48 -0400
+X-MC-Unique: PnSYT2r1PBKHEOFBQ3xmEQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D70BF760CE;
+        Tue, 27 Jul 2021 13:22:45 +0000 (UTC)
+Received: from starship (unknown [10.40.192.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F34196A90B;
+        Tue, 27 Jul 2021 13:22:41 +0000 (UTC)
+Message-ID: <654e0b6aa25c15ef8907813b6ab17681c7f12f5f.camel@redhat.com>
+Subject: Re: [PATCH v2 5/8] KVM: x86: APICv: fix race in
+ kvm_request_apicv_update on SVM
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Date:   Tue, 27 Jul 2021 16:22:40 +0300
+In-Reply-To: <e8acf99c-0e3b-f0cc-c8ad-53074420d734@redhat.com>
+References: <20210713142023.106183-1-mlevitsk@redhat.com>
+         <20210713142023.106183-6-mlevitsk@redhat.com>
+         <e8acf99c-0e3b-f0cc-c8ad-53074420d734@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pravin B Shelar <pshelar@ovn.org>
+On Tue, 2021-07-27 at 00:34 +0200, Paolo Bonzini wrote:
+> On 13/07/21 16:20, Maxim Levitsky wrote:
+> > +	mutex_lock(&vcpu->kvm->apicv_update_lock);
+> > +
+> >  	vcpu->arch.apicv_active = kvm_apicv_activated(vcpu->kvm);
+> >  	kvm_apic_update_apicv(vcpu);
+> >  	static_call(kvm_x86_refresh_apicv_exec_ctrl)(vcpu);
+> > @@ -9246,6 +9248,8 @@ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu)
+> >  	 */
+> >  	if (!vcpu->arch.apicv_active)
+> >  		kvm_make_request(KVM_REQ_EVENT, vcpu);
+> > +
+> > +	mutex_unlock(&vcpu->kvm->apicv_update_lock);
+> 
+> Does this whole piece of code need the lock/unlock?  Does it work and/or 
+> make sense to do the unlock immediately after mutex_lock()?  This makes 
+> it clearer that the mutex is being to synchronize against the requestor.
 
-[ Upstream commit a17ad0961706244dce48ec941f7e476a38c0e727 ]
+Yes, I do need to hold the mutex for the whole duration.
 
-In some cases skb head could be locked and entire header
-data is pulled from skb. When skb_zerocopy() called in such cases,
-following BUG is triggered. This patch fixes it by copying entire
-skb in such cases.
-This could be optimized incase this is performance bottleneck.
+The requester does the following:
 
----8<---
-kernel BUG at net/core/skbuff.c:2961!
-invalid opcode: 0000 [#1] SMP PTI
-CPU: 2 PID: 0 Comm: swapper/2 Tainted: G           OE     5.4.0-77-generic #86-Ubuntu
-Hardware name: OpenStack Foundation OpenStack Nova, BIOS 1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:skb_zerocopy+0x37a/0x3a0
-RSP: 0018:ffffbcc70013ca38 EFLAGS: 00010246
-Call Trace:
- <IRQ>
- queue_userspace_packet+0x2af/0x5e0 [openvswitch]
- ovs_dp_upcall+0x3d/0x60 [openvswitch]
- ovs_dp_process_packet+0x125/0x150 [openvswitch]
- ovs_vport_receive+0x77/0xd0 [openvswitch]
- netdev_port_receive+0x87/0x130 [openvswitch]
- netdev_frame_hook+0x4b/0x60 [openvswitch]
- __netif_receive_skb_core+0x2b4/0xc90
- __netif_receive_skb_one_core+0x3f/0xa0
- __netif_receive_skb+0x18/0x60
- process_backlog+0xa9/0x160
- net_rx_action+0x142/0x390
- __do_softirq+0xe1/0x2d6
- irq_exit+0xae/0xb0
- do_IRQ+0x5a/0xf0
- common_interrupt+0xf/0xf
-
-Code that triggered BUG:
-int
-skb_zerocopy(struct sk_buff *to, struct sk_buff *from, int len, int hlen)
-{
-        int i, j = 0;
-        int plen = 0; /* length of skb->head fragment */
-        int ret;
-        struct page *page;
-        unsigned int offset;
-
-        BUG_ON(!from->head_frag && !hlen);
-
-Signed-off-by: Pravin B Shelar <pshelar@ovn.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/core/skbuff.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 7665154c85c2..58989a5ba362 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -2243,8 +2243,11 @@ skb_zerocopy_headlen(const struct sk_buff *from)
+1. Take the mutex
  
- 	if (!from->head_frag ||
- 	    skb_headlen(from) < L1_CACHE_BYTES ||
--	    skb_shinfo(from)->nr_frags >= MAX_SKB_FRAGS)
-+	    skb_shinfo(from)->nr_frags >= MAX_SKB_FRAGS) {
- 		hlen = skb_headlen(from);
-+		if (!hlen)
-+			hlen = from->len;
-+	}
+2. Kick all the vCPUs out of the guest mode with KVM_REQ_EVENT
+   At that point all these vCPUs will be (or soon will be) stuck on the mutex
+   and guaranteed to be outside of the guest mode.
+   which is exactly what I need to avoid them entering the guest
+   mode as long as the AVIC's memslot state is not up to date.
+
+3. Update kvm->arch.apicv_inhibit_reasons. I removed the cmpchg loop
+   since it is now protected under the lock anyway.
+   This step doesn't have to be done at this point, but should be done while mutex is held
+   so that there is no need to cmpchg and such.
+
+   This itself isn't the justification for the mutex.
  
- 	if (skb_has_frag_list(from))
- 		hlen = from->len;
--- 
-2.30.2
+4. Update the memslot
+ 
+5. Release the mutex.
+   Only now all other vCPUs are permitted to enter the guest mode again
+   (since only now the memslot is up to date)
+   and they will also update their per-vcpu AVIC enablement prior to entering it.
+ 
+ 
+I think it might be possible to avoid the mutex, but I am not sure if this is worth it:
+ 
+First of all, the above sync sequence is only really needed when we enable AVIC.
+
+(Because from the moment we enable the memslot and to the moment the vCPU enables the AVIC,
+it must not be in guest mode as otherwise it will access the dummy page in the memslot
+without VMexit, instead of going through AVIC vmexit/acceleration.
+ 
+The other way around is OK. IF we disable the memslot, and a vCPU still has a enabled AVIC, 
+it will just get a page fault which will be correctly emulated as APIC read/write by
+the MMIO page fault.
+ 
+If I had a guarantee that when I enable the memslot (either as it done today or
+using the kvm_zap_gfn_range (which I strongly prefer), would always raise a TLB
+flush request on all vCPUs, then I could (ab)use that request to update local
+AVIC state.
+ 
+Or I can just always check if local AVIC state matches the memslot and update
+if it doesn't prior to guest mode entry.
+ 
+I still think I would prefer a mutex to be 100% sure that there are no races,
+since the whole AVIC disablement isn't something that is done often anyway.
+ 
+Best regards,
+	Maxim Levitsky
+
+> 
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index ed4d1581d502..ba5d5d9ebc64 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -943,6 +943,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
+> >   	mutex_init(&kvm->irq_lock);
+> >   	mutex_init(&kvm->slots_lock);
+> >   	mutex_init(&kvm->slots_arch_lock);
+> > +	mutex_init(&kvm->apicv_update_lock);
+> >   	INIT_LIST_HEAD(&kvm->devices);
+> >   
+> >   	BUILD_BUG_ON(KVM_MEM_SLOTS_NUM > SHRT_MAX);
+> > 
+> 
+> Please add comments above fields that are protected by this lock 
+> (anything but apicv_inhibit_reasons?), and especially move it to kvm->arch.
+I agree, I will do this.
+
+
+> 
+> Paolo
+
 
