@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C71B3D8074
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418CB3D8078
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhG0VEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 17:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        id S232653AbhG0VFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbhG0VEl (ORCPT
+        with ESMTP id S231368AbhG0VFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:04:41 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8509C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 14:04:39 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id q15-20020a25820f0000b029055bb0981111so187318ybk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 14:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=383gaVpNqlLkwS7v7dVHihUUC0Gv0oWfLHlkAgvdKtc=;
-        b=j1BwDdTCAHvo8p19/DxegI7QQhlKp/5CfyEqSk/JqE0Ah/yrEe9/ujq1YvA9uMUGtT
-         s7ZvMK6JhxQABF6gLpPTBTK1Z727kuGPeInai4V0Nff8rznvB5h3jBis9++XNyk8c7Ni
-         EJ56pAQ/GP2qf1h/aTtxmNNAvw+7bpHwwWGHFOyrQ7R+3cfKs085fFSTBRZqv8vi24KM
-         ZB4LKJZ0K74pNcW3rMuLGf1n2xKa4W85Rxsepq9o411cgbPjiHFtpU6fp/nejCr0j/9q
-         1HEE/d1bl77oPgczD5pt5bVTPgBg92XClcqtpWKI8wjPY5DCWhS8M9ARGdraOywJDo+L
-         XSag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=383gaVpNqlLkwS7v7dVHihUUC0Gv0oWfLHlkAgvdKtc=;
-        b=bbDPS44lPH5g4lxARmzkIynYXao+JBr+9R8AMPJS+SxmBChGZt3Dkm9jgKKwLB5FPx
-         mCqcSen6I1Ad+hK1fnU4zaoesOJKnmRbZeApopFGnjcTqkWLxeDbrJDJtZuzcYPijvzs
-         xJckZaYBdimXVKP3qfY5m00Hqof139HJ3hKz4dvBDscOwzwmr7PqYYBMLYyz6Sf3ebVj
-         RTZ0RNTCDlAaYIwVld9K/mguWITo3qmsu2y1+6NN/B8Mp8sBX+j/Be7I5bTCqQbBc7jT
-         RvcTckgrHahCU083UEfTnqee4ax3F6TDrRpuHkbzeTVIDbKqsKdeD9mdMPWnnjYjzGeK
-         0mqQ==
-X-Gm-Message-State: AOAM532w8S2jeYgMsbaEudIfiIwtBrGFNF/PDGVRk7PS6rpap4Ct4qO0
-        9Rqhew/vQo6/xy9X6RgG7Afhg7jjp2Re7fOhfQ==
-X-Google-Smtp-Source: ABdhPJxVdnGte2RRUJ4ePeRr9hD5UMVYaIPxTP1VdrcyDyum2tar+QObrWSDt2chazY4j1MINrjfyFMuPHDOq3op+g==
-X-Received: from michaelfsun.mtv.corp.google.com ([2620:15c:202:201:4e82:4fa2:fd10:e771])
- (user=michaelfsun job=sendgmr) by 2002:a25:b993:: with SMTP id
- r19mr35118195ybg.445.1627419878924; Tue, 27 Jul 2021 14:04:38 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 14:04:35 -0700
-Message-Id: <20210727140425.1.I1ac63dde4853d7b38a018b20b3d6d3d539378df3@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH] Bluetooth: btusb: Enable MSFT extension for TyphoonPeak,
- GarfieldPeak, and WCN6855 controllers
-From:   Michael Sun <michaelfsun@google.com>
-To:     linux-bluetooth@vger.kernel.org
-Cc:     Chethan T N <chethan.tumkur.narayan@intel.com>,
-        Michael Sun <michaelfsun@google.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 27 Jul 2021 17:05:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15C5C061757;
+        Tue, 27 Jul 2021 14:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=NO0RGVu+XndYKUq3uNCgF+Kta6CYfhtwRahspvD+83o=; b=LHPi7HOMmKXpl/JTivGeHL+Uc/
+        gubaL8xVK/zdLXCvONaAPiqG5U2sYv8n1bPlDYE/POrSnQYVhIscyxFVGD6H0COPC/fziMsUFIpy6
+        YqheJe1AcA8FtncDzpDzfKvjP5LmVPCsOAJktFaVYBi5pardy6QnQF8Y7A9ucqqfsEYbyX4GC1uM+
+        T9oKfls5/9bUIs7HSJJBJ+hQU814fh9DNJMxovTxGoGgsmSCzk8Ia+uUs/7Qn7CUJz3WGCb12FBt4
+        9kDgGiiaP45Yr75bFU/HFyCEt7ab0t6jWoolqzcgttG+Odq5YouAKuyPkkgAqtrPdy3SAzhRwFLbJ
+        9sc5tW7Q==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8UGA-00GMRO-TV; Tue, 27 Jul 2021 21:05:07 +0000
+Subject: Re: [PATCH v4 19/19] auxdisplay: ht16k33: Add LED support
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210727140459.3767788-1-geert@linux-m68k.org>
+ <20210727140459.3767788-20-geert@linux-m68k.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5b70f272-eec9-0ff7-1bd2-bf1659b10e9c@infradead.org>
+Date:   Tue, 27 Jul 2021 14:05:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210727140459.3767788-20-geert@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chethan T N <chethan.tumkur.narayan@intel.com>
+On 7/27/21 7:04 AM, Geert Uytterhoeven wrote:
+> Instantiate a single LED based on the "led" subnode in DT.
+> This allows the user to control display brightness and blinking (backed
+> by hardware support) through the LED class API and triggers, and exposes
+> the display color.  The LED will be named
+> "auxdisplay:<color>:<function>".
+> 
+> When running in dot-matrix mode and if no "led" subnode is found, the
+> driver falls back to the traditional backlight mode, to preserve
+> backwards compatibility.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> v4:
+>   - Add missing select LEDS_CLASS,
+> 
+> v3:
+>   - Remove unneeded C++ comment,
+>   - Use "err" instead of "error" to be consistent with existing driver
+>     naming style,
+>   - Make the creation of the LED device dependent on the presence of the
+>     "led" subnode in DT, so it can be used in dot-matrix mode too.
+>   - Use led_init_data() and devm_led_classdev_register_ext() to retrieve
+>     all LED properties from DT, instead of manual LED name construction
+>     based on just the "color" property,
+> 
+> v2:
+>   - Use "auxdisplay" instead of DRIVER_NAME in LED name.
 
-The Intel TyphoonPeak, GarfieldPeak and Qualcomm WCN6855 Bluetooth
-controllers support the Microsoft vendor extension, enable them by
-setting VsMsftOpCode accordingly.
+Hi Geert,
 
-Signed-off-by: Chethan T N <chethan.tumkur.narayan@intel.com>
-Signed-off-by: Michael Sun <michaelfsun@google.com>
----
+Since LEDS_CLASS depends on NEW_LEDS, does this also need to
+select NEW_LEDS?
 
- drivers/bluetooth/btusb.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+and similar for INPUT_MATRIXKMAP: it depends on INPUT.
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 5f8d9b1628af..b68511b7e07a 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3016,6 +3016,17 @@ static int btusb_setup_intel_newgen(struct hci_dev *hdev)
- 	btintel_version_info_tlv(hdev, &version);
- 
- finish:
-+	/* All Intel new genration controllers support the Microsoft vendor
-+	 * extension are using 0xFC1E for VsMsftOpCode.
-+	 */
-+	switch (INTEL_HW_VARIANT(version.cnvi_bt)) {
-+	case 0x17:
-+	case 0x18:
-+	case 0x19:
-+		hci_set_msft_opcode(hdev, 0xFC1E);
-+		break;
-+	}
-+
- 	/* Set the event mask for Intel specific vendor events. This enables
- 	 * a few extra events that are useful during general operation. It
- 	 * does not enable any debugging related events.
-@@ -4710,6 +4721,7 @@ static int btusb_probe(struct usb_interface *intf,
- 		hdev->set_bdaddr = btusb_set_bdaddr_wcn6855;
- 		hdev->cmd_timeout = btusb_qca_cmd_timeout;
- 		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
-+		hci_set_msft_opcode(hdev, 0xFD70);
- 	}
- 
- 	if (id->driver_info & BTUSB_AMP) {
+However, selecting (enabling) an entire subsystem is not a
+preferable thing to do.
+
+> ---
+>  drivers/auxdisplay/Kconfig   |   1 +
+>  drivers/auxdisplay/ht16k33.c | 124 ++++++++++++++++++++++++++++++-----
+>  2 files changed, 108 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
+> index 42fc7b155de09dbc..7436b9a4edbe5450 100644
+> --- a/drivers/auxdisplay/Kconfig
+> +++ b/drivers/auxdisplay/Kconfig
+> @@ -176,6 +176,7 @@ config HT16K33
+>  	select FB_SYS_IMAGEBLIT
+>  	select INPUT_MATRIXKMAP
+>  	select FB_BACKLIGHT
+> +	select LEDS_CLASS
+>  	select LINEDISP
+>  	help
+>  	  Say yes here to add support for Holtek HT16K33, RAM mapping 16*8
+
+thanks.
 -- 
-2.32.0.432.gabb21c7263-goog
+~Randy
 
