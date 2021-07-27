@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE533D7992
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D2B3D7996
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbhG0PTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:19:34 -0400
-Received: from mail.netline.ch ([148.251.143.180]:38575 "EHLO
-        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232600AbhG0PTd (ORCPT
+        id S236817AbhG0PUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232600AbhG0PUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:19:33 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by netline-mail3.netline.ch (Postfix) with ESMTP id 6C5C220201D;
-        Tue, 27 Jul 2021 17:19:31 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
-Received: from netline-mail3.netline.ch ([127.0.0.1])
-        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id BF3nS1YJscyH; Tue, 27 Jul 2021 17:19:31 +0200 (CEST)
-Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
-        by netline-mail3.netline.ch (Postfix) with ESMTPA id 4135A20201A;
-        Tue, 27 Jul 2021 17:19:30 +0200 (CEST)
-Received: from localhost ([::1])
-        by thor with esmtp (Exim 4.94.2)
-        (envelope-from <michel@daenzer.net>)
-        id 1m8Orh-000qpp-E5; Tue, 27 Jul 2021 17:19:29 +0200
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Matthew Brost <matthew.brost@intel.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-References: <20210726233854.2453899-1-robdclark@gmail.com>
- <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
- <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-Message-ID: <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
-Date:   Tue, 27 Jul 2021 17:19:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 27 Jul 2021 11:20:30 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28ABAC061757;
+        Tue, 27 Jul 2021 08:20:30 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id f18-20020a05600c4e92b0290253c32620e7so1912200wmq.5;
+        Tue, 27 Jul 2021 08:20:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2g0Z5T/kJig7GSFBfzqqFvjtQDsXphUXlySVJdVzeEw=;
+        b=PazBalT289ywavG6jiOOxp/zFekc+czI8xvz76OV777MaNF+17QFiwpeyo2f0WtA1T
+         qWFkUHc12u5SA+HkjRs1gZlafF2YYYGy6AMBRquSs94zX6gy3vnXn1cL4GdqPtPzgKtm
+         UaqkOXKtyaRO4dBk4KIPRKO4ClnhDpk0+HFk5AAb0nT6VvG/YB0wGIEonQeNv9Z6S8kf
+         jcSjNEJIzTD1WI6pLXfdlkujeRHi6MpSjQjTxZ/08z6u2+nXOB9XK8Tf9XKqCH86hZy2
+         VvTBUTCi497thnvoPf7iBrIXdfgNTTb1fD7dpmwkfg5tQmIAxMeHo3PjMhoDyzPCSDQU
+         /cog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2g0Z5T/kJig7GSFBfzqqFvjtQDsXphUXlySVJdVzeEw=;
+        b=Ea2XukABiFeo5Wm34F39D/nx9W1M0EFrvmG041nFpm4Vux472czJQ6XQUbWo0/0I4v
+         MOYqXRJLPryKUOt2HMj2YxsSb0c4Zw5Y6kOYNhNeAQshkPdxlA1HdnvayyJjIEYqPssQ
+         I5Y6etyV5YngGeOJRNpphjU1GG8yy19Yb0vkfPYLSfuIsrX3iAw5ebWLT9w7VkDLgIQL
+         d5Ph7S4rrTSj4vIdbqR3eY7PtjQoD7CSXbiZ8bg/fWxxMxR+o4pz1uYs9X0Y4D6x0Dqr
+         hKChZUcpKPQasJbSdlTyGJy6LnUyTuYecVEDkjnpzr4wVpEWsJ0gVQbaxRguGFRq4thV
+         8rWw==
+X-Gm-Message-State: AOAM532LbDifmbtqmtFwvPMOrP5S08ORVQrKSZlGJnc7aaO7hlkbPkXA
+        qoC8/DVSZ+c6IUHKTgDSDK+Pbjuz2GjrXdZ2
+X-Google-Smtp-Source: ABdhPJyflMtMPkBLLlxiM9NLzNoLE7/SrtHZZeliauUtrDuSUtoMYlS1MDTvDU0o1FudNOitvKri6g==
+X-Received: by 2002:a1c:acca:: with SMTP id v193mr4686356wme.107.1627399228422;
+        Tue, 27 Jul 2021 08:20:28 -0700 (PDT)
+Received: from localhost.localdomain (189.red-83-51-242.dynamicip.rima-tde.net. [83.51.242.189])
+        by smtp.gmail.com with ESMTPSA id w185sm3372393wmb.11.2021.07.27.08.20.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Jul 2021 08:20:28 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     linux-gpio@vger.kernel.org
+Cc:     linus.walleij@linaro.org, gregory.0xf0@gmail.com,
+        bgolaszewski@baylibre.com, f.fainelli@gmail.com,
+        matthias.bgg@gmail.com, opensource@vdorst.com,
+        andy.shevchenko@gmail.com, git@johnthomson.fastmail.com.au,
+        neil@brown.name, hofrat@osadl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] gpiolib: convert 'devprop_gpiochip_set_names' to support multiple gpiochip banks per device
+Date:   Tue, 27 Jul 2021 17:20:23 +0200
+Message-Id: <20210727152026.31019-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-27 5:12 p.m., Rob Clark wrote:
-> On Tue, Jul 27, 2021 at 7:50 AM Michel Dänzer <michel@daenzer.net> wrote:
->>
->> On 2021-07-27 1:38 a.m., Rob Clark wrote:
->>> From: Rob Clark <robdclark@chromium.org>
->>>
->>> Based on discussion from a previous series[1] to add a "boost" mechanism
->>> when, for example, vblank deadlines are missed.  Instead of a boost
->>> callback, this approach adds a way to set a deadline on the fence, by
->>> which the waiter would like to see the fence signalled.
->>>
->>> I've not yet had a chance to re-work the drm/msm part of this, but
->>> wanted to send this out as an RFC in case I don't have a chance to
->>> finish the drm/msm part this week.
->>>
->>> Original description:
->>>
->>> In some cases, like double-buffered rendering, missing vblanks can
->>> trick the GPU into running at a lower frequence, when really we
->>> want to be running at a higher frequency to not miss the vblanks
->>> in the first place.
->>>
->>> This is partially inspired by a trick i915 does, but implemented
->>> via dma-fence for a couple of reasons:
->>>
->>> 1) To continue to be able to use the atomic helpers
->>> 2) To support cases where display and gpu are different drivers
->>>
->>> [1] https://patchwork.freedesktop.org/series/90331/
->>
->> Unfortunately, none of these approaches will have the full intended effect once Wayland compositors start waiting for client buffers to become idle before using them for an output frame (to prevent output frames from getting delayed by client work). See https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1880 (shameless plug :) for a proof of concept of this for mutter. The boost will only affect the compositor's own GPU work, not the client work (which means no effect at all for fullscreen apps where the compositor can scan out the client buffers directly).
->>
-> 
-> I guess you mean "no effect at all *except* for fullscreen..."?
+There are some unfortunate cases where the DT representation
+of the device and the Linux internal representation differs.
+Such drivers for devices are forced to implement a custom function
+to avoid the core code 'devprop_gpiochip_set_names' to be executed
+since in any other case every gpiochip inside will got repeated
+names through its internal gpiochip banks. To avoid this antipattern
+this changes are introduced trying to adapt core 'devprop_gpiochip_set_names'
+to get a correct behaviour for every single situation.
 
-I meant what I wrote: The compositor will wait for the next buffer to become idle, so there's no boost from this mechanism for the client drawing to that buffer. And since the compositor does no drawing of its own in this case, there's no boost from that either.
+This series introduces a new 'offset' field in the gpiochip structure
+that can be used for those unfortunate drivers that must define multiple
+gpiochips per device.
 
+Drivers affected by this situation are also updated. These are
+'gpio-mt7621' and 'gpio-brcmstb'.
 
-> I'd perhaps recommend that wayland compositors, in cases where only a
-> single layer is changing, not try to be clever and just push the
-> update down to the kernel.
+Motivation for this series available at [0].
 
-Even just for the fullscreen direct scanout case, that would require some kind of atomic KMS API extension to allow queuing multiple page flips for the same CRTC.
+Thanks in advance for your feedback.
 
-For other cases, this would also require a mechanism to cancel a pending atomic commit, for when another surface update comes in before the compositor's deadline, which affects the previously single updating surface as well.
+Best regards,
+    Sergio Paracuellos
 
+Changes in v3:
+  - Reflow a string literal to be on one line in PATCH 1/3.
+  - reflow commit messages PATCH 2/3 and PATCH 3/3 to occupy a little bit
+    more available space per line.
+
+Changes in v2:
+  - Address Gregory Fong comments in v1 of the series [1].
+  - Collect Andy Shevchenko Reviewed-by for the series.
+  - Collect Gregory Fong Acked-by for PATCH 3/3.
+
+[0]: https://lkml.org/lkml/2021/6/26/198
+[1]: https://lkml.org/lkml/2021/7/8/47
+
+Sergio Paracuellos (3):
+  gpiolib: convert 'devprop_gpiochip_set_names' to support multiple
+    gpiochip banks per device
+  gpio: mt7621: support gpio-line-names property
+  gpio: brcmstb: remove custom 'brcmstb_gpio_set_names'
+
+ drivers/gpio/gpio-brcmstb.c | 45 +------------------------------------
+ drivers/gpio/gpio-mt7621.c  |  1 +
+ drivers/gpio/gpiolib.c      | 32 +++++++++++++++++++++-----
+ include/linux/gpio/driver.h |  4 ++++
+ 4 files changed, 33 insertions(+), 49 deletions(-)
 
 -- 
-Earthling Michel Dänzer               |               https://redhat.com
-Libre software enthusiast             |             Mesa and X developer
+2.25.1
+
