@@ -2,94 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2F03D71C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9225F3D71C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236080AbhG0JOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:14:14 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:50991 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235940AbhG0JON (ORCPT
+        id S235978AbhG0JPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:15:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51866 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235940AbhG0JPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:14:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1627377254; x=1658913254;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=pmL2u0pxNrKXvS4hIf8AmQFxND+OwrHLSSu25nKLwqg=;
-  b=OONNfSjLJrDdQRE1Y5EBWvqoX9RD58YHBsd5QsMq1B8wLDqOFe1FoeSo
-   IHeMnYjpVceVNc/kjVUO3y6zw3d6F4kM4M1WqJoc4UPiyXnmq6IpjVXWj
-   l9BVUFgs8QAQruR2seu2ohxu54aBqfjsw6YKknR2iToesaIDCCSBBH+ub
-   VGEDX2wkVBmdmPXL646iWWvlVoSR2PG2+UpMVhnJ2xflqormOsDAoAlVE
-   FTC6BBkRRd119q4dJEhJGoSkTTCKT1DhIe4y19jAeEdSATwD0D5D5Rsl6
-   RyXkO7KlHI+87Vb8ZT6+Jb/4EKVnIeBBLvC5PnqCu282YJvl6ZJ/vpGZ8
-   g==;
-IronPort-SDR: PVaNFV0JX0JMoala1VarmJMZl3qTf6twL1DRW++N41Qy7zyJU0Cal6plT/L1srcNvr3uAXzJGf
- ff/DFjyKg+gzfhyc39PXELDwJGxcCKgiXIck0J3tg6HUzY6MieBWD6etdBw7VNVNGd5uVzy6A1
- bu8iMkCqc/doWcau9kKAvEnAUBKjyMSSDumf90JmXHPsO3c2dbZ7uqxvN056cDr++/kBzJPici
- 37F73iOGK2FKYR3+FmeB6Np/OUm3ga8K5YAtotjwyLCGtyBLbev0It0FhDuV0C8TSKmKx65wjM
- Hk4d8r0gjpayaPV5jA7t+HVP
-X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; 
-   d="scan'208";a="63715936"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jul 2021 02:14:13 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 02:14:12 -0700
-Received: from ness.home (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Tue, 27 Jul 2021 02:14:11 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: [PATCH] ARM: dts: at91: sama5d4_xplained: change the key code of the gpio key
-Date:   Tue, 27 Jul 2021 11:13:51 +0200
-Message-ID: <20210727091351.44475-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 27 Jul 2021 05:15:38 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 862FC200E5;
+        Tue, 27 Jul 2021 09:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627377337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xb68m5dHAKR0PH/2cvLJWdoZvjz2UPvyTRQe435BQg8=;
+        b=osSoRLMgc+ypLi2F6EFUg8jgbpY/EBCs8Dmo9MNWFt3N6JudyWlJSZOHMROOE5ZGluEZgQ
+        6WrVbrbypShi0GNKFI641Zq5J3OF0+KvEaGnej4/GYCRGTS8FFG3WBLTOmq9U9b/YpqkpT
+        YBLA1WF5SMUxJJnGakeWp+VHvlxGNaU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627377337;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xb68m5dHAKR0PH/2cvLJWdoZvjz2UPvyTRQe435BQg8=;
+        b=3qauaXYm1eYovoaT0uz5z18OcXJEejFwdzcyciDgwb+oG2g8TElHP8q1xoAUBuzdEBVCR5
+        viqcvs6dEeqLBUDg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 58BBA133DE;
+        Tue, 27 Jul 2021 09:15:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id cViwFLnO/2CJLQAAGKfGzw
+        (envelope-from <tzimmermann@suse.de>); Tue, 27 Jul 2021 09:15:37 +0000
+Subject: Re: [PATCH] efi: sysfb_efi: fix build when EFI is not set
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Mark Brown <broonie@kernel.org>, linux-next@vger.kernel.org
+References: <20210727050447.7339-1-rdunlap@infradead.org>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <aefba212-1e08-9994-6d6e-6db292bf9db6@suse.de>
+Date:   Tue, 27 Jul 2021 11:15:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20210727050447.7339-1-rdunlap@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="0RCxopRs9DF6c7HQAMBrIYe4QeHSjEThh"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ludovic Desroches <ludovic.desroches@microchip.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0RCxopRs9DF6c7HQAMBrIYe4QeHSjEThh
+Content-Type: multipart/mixed; boundary="NXt3eb7tog0K2DhmRA1oDM5VMlY2jRIyP";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,
+ Javier Martinez Canillas <javierm@redhat.com>,
+ Mark Brown <broonie@kernel.org>, linux-next@vger.kernel.org
+Message-ID: <aefba212-1e08-9994-6d6e-6db292bf9db6@suse.de>
+Subject: Re: [PATCH] efi: sysfb_efi: fix build when EFI is not set
+References: <20210727050447.7339-1-rdunlap@infradead.org>
+In-Reply-To: <20210727050447.7339-1-rdunlap@infradead.org>
 
-Having a button code and not a key code causes issues with libinput.
-udev won't set ID_INPUT_KEY. If it is forced, then it causes a bug
-within libinput.
+--NXt3eb7tog0K2DhmRA1oDM5VMlY2jRIyP
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
- arch/arm/boot/dts/at91-sama5d4_xplained.dts | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hi
 
-diff --git a/arch/arm/boot/dts/at91-sama5d4_xplained.dts b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
-index 541779af049f..d241c24f0d83 100644
---- a/arch/arm/boot/dts/at91-sama5d4_xplained.dts
-+++ b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
-@@ -7,6 +7,7 @@
-  */
- /dts-v1/;
- #include "sama5d4.dtsi"
-+#include <dt-bindings/input/input.h>
- 
- / {
- 	model = "Atmel SAMA5D4 Xplained";
-@@ -250,7 +251,7 @@ gpio_keys {
- 		pb_user1 {
- 			label = "pb_user1";
- 			gpios = <&pioE 8 GPIO_ACTIVE_HIGH>;
--			linux,code = <0x100>;
-+			linux,code = <KEY_PROG1>;
- 			wakeup-source;
- 		};
- 	};
--- 
-2.32.0
+Am 27.07.21 um 07:04 schrieb Randy Dunlap:
+> When # CONFIG_EFI is not set, there are 2 definitions of
+> sysfb_apply_efi_quirks(). The stub from sysfb.h should be used
+> and the __init function from sysfb_efi.c should not be used.
+>=20
+> ../drivers/firmware/efi/sysfb_efi.c:337:13: error: redefinition of =E2=80=
+=98sysfb_apply_efi_quirks=E2=80=99
+>   __init void sysfb_apply_efi_quirks(struct platform_device *pd)
+>               ^~~~~~~~~~~~~~~~~~~~~~
+> In file included from ../drivers/firmware/efi/sysfb_efi.c:26:0:
+> ../include/linux/sysfb.h:65:20: note: previous definition of =E2=80=98s=
+ysfb_apply_efi_quirks=E2=80=99 was here
+>   static inline void sysfb_apply_efi_quirks(struct platform_device *pd)=
 
+>                      ^~~~~~~~~~~~~~~~~~~~~~
+>=20
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: linux-efi@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Javier Martinez Canillas <javierm@redhat.com>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-next@vger.kernel.org
+
+Thanks for the patch. It should have a fixes line
+
+ > dim fixes 8633ef82f101c040427b57d4df7b706261420b94
+
+Fixes: 8633ef82f101 ("drivers/firmware: consolidate EFI framebuffer=20
+setup for all arches")
+
+
+=2E.. and maybe a few more of the CCs below
+
+Cc: Javier Martinez Canillas <javierm@redhat.com>
+
+Cc: Borislav Petkov <bp@suse.de>
+
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+
+Cc: Ard Biesheuvel <ardb@kernel.org>
+
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Cc: Linus Walleij <linus.walleij@linaro.org>
+
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+Cc: John Stultz <john.stultz@linaro.org>
+
+Cc: Colin Ian King <colin.king@canonical.com>
+
+Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
+
+Cc: Sudeep Holla <sudeep.holla@arm.com>
+
+Cc: Maxime Ripard <maxime@cerno.tech>
+
+Cc: linux-efi@vger.kernel.org
+
+Cc: linux-riscv@lists.infradead.org
+
+
+Best regards
+Thomas
+
+> ---
+>   drivers/firmware/efi/sysfb_efi.c |    2 ++
+>   1 file changed, 2 insertions(+)
+>=20
+> --- linext-20210726.orig/drivers/firmware/efi/sysfb_efi.c
+> +++ linext-20210726/drivers/firmware/efi/sysfb_efi.c
+> @@ -332,6 +332,7 @@ static const struct fwnode_operations ef
+>   	.add_links =3D efifb_add_links,
+>   };
+>  =20
+> +#ifdef CONFIG_EFI
+>   static struct fwnode_handle efifb_fwnode;
+>  =20
+>   __init void sysfb_apply_efi_quirks(struct platform_device *pd)
+> @@ -354,3 +355,4 @@ __init void sysfb_apply_efi_quirks(struc
+>   		pd->dev.fwnode =3D &efifb_fwnode;
+>   	}
+>   }
+> +#endif
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--NXt3eb7tog0K2DhmRA1oDM5VMlY2jRIyP--
+
+--0RCxopRs9DF6c7HQAMBrIYe4QeHSjEThh
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmD/zrgFAwAAAAAACgkQlh/E3EQov+B2
+og/7BYM2si7NL1hDIJB8rYBrta2i9u1ew55fC5EuI7RnQkmsUI+xLddnSu0vYg13xoXXP2TodApl
+VAUPHtbkYdKPlqlYMXScUi9t6iCfraElh41EIapWG3r0PRDgkdLtMmLzHatEChFiEJp32ydFzdPm
+xzFwTctOObTNdjqpRwDYDIH1CNdQYpnyzF29F83Cshe8JjIrt9uRf61jp6gKMKYY1YaHpxXkVb/t
+QCyiL1cgP2obQyrTuTogUd5tMCljyYliKCHqI+l7pz1zPLv1c7JyrMQtg0m+0aNHfaUsPYVamnRb
+EaJdBBd17Axh7B3XInD6GFYx4oIq5CX42hiLAm+Ov8qbvsNF2cF0j+94KtXUqpUaIgI3y15+FbMw
+dQb8RefgWQJDj0Dhgl1ULmjYh/mImRkJuRtYpoZNbFvrcxCJK4Y5Sl+KA7puj7TEJ4a4ls/s4nXH
+UOQl8PYzzR93P0C1m72jqCoNnLR6p5kwxDZPIt9MzGc20EZ8vi3lrYASvtxFKEn/GS02cY8Xhx0w
+r5walgfbLu4jpD+PP83sxF6jUsaRyVECG8ld9/MboEty51Chj9UcPp7xHLIICfv4yAMIw5ZWeVYC
+hGyrw4v42Z7QL/QIzHOjIibughA/avWJ6f2H17lpRfpP4fx76bXLB8iV9uHBSXJRN8bQKD/sNRVx
+jrU=
+=Jqd2
+-----END PGP SIGNATURE-----
+
+--0RCxopRs9DF6c7HQAMBrIYe4QeHSjEThh--
