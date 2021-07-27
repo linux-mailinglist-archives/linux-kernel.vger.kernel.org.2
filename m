@@ -2,149 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830343D79CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AD93D7A4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237126AbhG0P2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237278AbhG0P1y (ORCPT
+        id S237062AbhG0P60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:58:26 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:47596 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229537AbhG0P6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:27:54 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31826C061796
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:26:19 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id o61so4472505qvo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:26:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NTgXzfWkyhtq+zizJ+5C4IeWyVCNim2DsO4Exn10eZ4=;
-        b=RZquX77R97F8WPn8wsK/LwjqatshA+IACrSjuFTechlit8HSk8i3OlCsWM65AzTqky
-         98VpTeESoFH+CaquMhXWI5OmSCZpRMVkkFHCaJeI2bVL1+IYy2y0F4sUBNnmmVNL+fUp
-         IyVUNup26gEFGwMsVjSdtKPLKpvoUmo4IRIOCnm3Of2MygrJDmK3zqEUyIbbNalYtum5
-         l5KIXosS+hmRiQG53VL6795qgbL4s8UQL67FL+Sbvxt2ldN6xYjkDUz1oT9NS0ACFjs1
-         QoD3Ry7EodhejtmfF5hOuM9ddEnZhBdxm6JiOvP9uXeyApY2JIiUoI/KlMAmo/eQ7qeH
-         8krA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NTgXzfWkyhtq+zizJ+5C4IeWyVCNim2DsO4Exn10eZ4=;
-        b=i9Rk6BUE22dgPxpy9rp1jLpvln9PnhTbTrQ4MmzmvGoOa06+9jluJbreE03O29x43j
-         1+4dD7j4C1P5IveqwHJFKpR58el91dAYeg37rBqeEmP4XsBHpNbUAczWQHk1NY1pPlHs
-         9acSqhQ2kwegy/Olp4LEtdj/LVeq0fj6qpDZ0XLiU+uagdVbhCd/0/KKRqHObsFFo3SO
-         T8QT94jIMzk7nn3t7poztztXLZ6fq4npg/7DEhSpRGG+/UR6h3akU3spvaGZYaaFY/T4
-         Ao4cZp0LwFEMaT7xxXdeksk6sZChfrAgRCmiV4cClHYWOXkrA/RLGOcH6hnFrvnz3B5s
-         OHfg==
-X-Gm-Message-State: AOAM530PMqKz7cf83BrsIOXiUmR21xKqhs2hLE6xLrGojng3+mLgqUqv
-        dbtPsx2ZRhM9Hhnh8TWsEUo=
-X-Google-Smtp-Source: ABdhPJzdZJs3dURsJI5yvsNHjIbX5IGUE3uyFGtU6jwBwtFdq4Qe9lVJ5CAMuAPTU0wHUDq/j/sJTA==
-X-Received: by 2002:ad4:46ed:: with SMTP id h13mr6960486qvw.56.1627399578245;
-        Tue, 27 Jul 2021 08:26:18 -0700 (PDT)
-Received: from localhost ([12.28.44.171])
-        by smtp.gmail.com with ESMTPSA id f2sm1513767qth.11.2021.07.27.08.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 08:26:17 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 08:26:16 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Andrea Merello <andrea.merello@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org,
+        Tue, 27 Jul 2021 11:58:24 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16R501c1028545;
+        Tue, 27 Jul 2021 10:57:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=FyAhOEWl+YeTFxeCh3K/9ygpjimOlhxxgM8BuepYUfo=;
+ b=exuAFiDG8CxhUWpSOEaceXYJ3cvIEGi/wZJDBhxTXrvDuhxiU1ZgLdjnJ0Z0vNIZ0WwW
+ XqVOlxevsEVev728TCGKElQdY9RO5RiHLxDd9r+5Zb0XJO5q+cBdEgjX2ZJuua/xqKf4
+ zulCKhJiqYgJNWVfj/VHHdiAF78yLw3ZapFWJdaGmGD0tJ7AhcCBOC9LYBGED3mAzd5h
+ hIzrj0c1rr/0LmDTXdedz2+Czs2KxtJTNNunpv8kUbNT+lUvLjtW1ji1pklTSx59ONeh
+ rkI5Zmtn0mgQ1h7Wwm3pOMCrX4ELOIInGolPo0dM0AZRkBFMwv0FCkgavnzQZglPyMHQ MA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3a233y9921-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 27 Jul 2021 10:57:44 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 27 Jul
+ 2021 16:27:38 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Tue, 27 Jul 2021 16:27:38 +0100
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.56])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1069E45D;
+        Tue, 27 Jul 2021 15:27:38 +0000 (UTC)
+Subject: Re: [PATCH v1 1/1] lib/test_scanf: Handle n_bits == 0 in random tests
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>, <linux-kernel@vger.kernel.org>
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrea Merello <andrea.merello@iit.it>
-Subject: Re: [PATCH v1 1/1] bitmap.h: add const modifier to
- bitmap_next_[set/clear]_region() argument
-Message-ID: <YQAlmBEGIaChYgeW@yury-ThinkPad>
-References: <20210727094441.9815-1-andrea.merello@gmail.com>
- <YP/ymvrd1zV7z6rF@smile.fi.intel.com>
+        kernel test robot <oliver.sang@intel.com>
+References: <20210727150132.28920-1-andriy.shevchenko@linux.intel.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <db516512-2f52-9526-f5f5-0571061c5990@opensource.cirrus.com>
+Date:   Tue, 27 Jul 2021 16:27:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YP/ymvrd1zV7z6rF@smile.fi.intel.com>
+In-Reply-To: <20210727150132.28920-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: _UJ7O4EqP6jH5X5dLHNdgYXwCJBDNd8u
+X-Proofpoint-GUID: _UJ7O4EqP6jH5X5dLHNdgYXwCJBDNd8u
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
+ phishscore=0 malwarescore=0 bulkscore=0 clxscore=1011 mlxlogscore=814
+ mlxscore=0 adultscore=0 spamscore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2107270096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 02:48:42PM +0300, Andy Shevchenko wrote:
-> On Tue, Jul 27, 2021 at 11:44:41AM +0200, Andrea Merello wrote:
-> > Those two functions don't modify the bitmap, so their bitmap argument
-> > should be const. This patch add this.
-
-Thanks Andrea.
-
-Acked-by: Yury Norov <yury.norov@gmail.com>
-
-> Constification is always a good thing. No objections from me,
-> although Yuri is doing something with them in one of his patch series.
-
-I try to remove those two because in practice they bring more mess
-than good. All real use-cases for bitmap_next_{set,clear}_region 
-relate to iterating the whole bitmap, ie nobody just wants to find a
-next region. Untill recently there was only a single user of the API,
-so I easily reworked the code to use find_first_bit/find_next bit and
-by chance return faster.
-
-https://github.com/norov/linux/commit/1c870b5c3fcd2eea9b351a1e0af8d1e93be78e1e
-
-Recently in next-20210716, there appeared another user in fs/btrfs/extent_io.c:
-find_next_dirty_byte(). The fun is that in that case the length of bitmap
-is 16 bit, so it's probably simpler to return the bitmap by value,
-instead of calling prologue code up to 8 times. Anyways, I'll contact
-authors of the find_next_dirty_byte() and ask if it's possible to rework
-their code. 
- 
-> Yuri, do you have a public repo / branch that people can base their changes to
-> bitmap stuff against of?
-
-I collected not yet upstreamed bitmap patches here:
-
-https://github.com/norov/linux/commits/bitmap-20210716
-
-Please let me know if you believe we need a more official branch for
-bitmaps. I'd encourage people to review what we already have and
-upstream it.
-
-Thanks,
-Yury
-
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On 27/07/2021 16:01, Andy Shevchenko wrote:
+> UBSAN reported (via LKP)
 > 
-> > Signed-off-by: Andrea Merello <andrea.merello@iit.it>
-> > ---
-> >  include/linux/bitmap.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> > index a36cfcec4e77..ea4a8f1a2545 100644
-> > --- a/include/linux/bitmap.h
-> > +++ b/include/linux/bitmap.h
-> > @@ -458,7 +458,7 @@ static inline void bitmap_replace(unsigned long *dst,
-> >  		__bitmap_replace(dst, old, new, mask, nbits);
-> >  }
-> >  
-> > -static inline void bitmap_next_clear_region(unsigned long *bitmap,
-> > +static inline void bitmap_next_clear_region(const unsigned long *bitmap,
-> >  					    unsigned int *rs, unsigned int *re,
-> >  					    unsigned int end)
-> >  {
-> > @@ -466,7 +466,7 @@ static inline void bitmap_next_clear_region(unsigned long *bitmap,
-> >  	*re = find_next_bit(bitmap, end, *rs + 1);
-> >  }
-> >  
-> > -static inline void bitmap_next_set_region(unsigned long *bitmap,
-> > +static inline void bitmap_next_set_region(const unsigned long *bitmap,
-> >  					  unsigned int *rs, unsigned int *re,
-> >  					  unsigned int end)
-> >  {
-> > -- 
-> > 2.17.1
-> > 
+> [   11.021349][    T1] UBSAN: shift-out-of-bounds in lib/test_scanf.c:275:51
+> [   11.022782][    T1] shift exponent 32 is too large for 32-bit type 'unsigned int'
 > 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+> When n_bits == 0, the shift is out of range. Switch code to use GENMASK
+> to handle this case.
 > 
+> Fixes: 50f530e176ea ("lib: test_scanf: Add tests for sscanf number conversion")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+
+Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+
+Sorry about that. Would have been sensible to use GENMASK anyway.
