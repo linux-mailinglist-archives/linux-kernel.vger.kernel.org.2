@@ -2,222 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4293D7399
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E3A3D739B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236320AbhG0Kqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236169AbhG0Kqa (ORCPT
+        id S236293AbhG0Ksi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:48:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24891 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236169AbhG0Ksh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:46:30 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B03C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 03:46:30 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id b9so13792308wrx.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 03:46:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DW59eJtYhMdAs/hV0pWYKOp7WsTITzUqBJ8Pl1MmYvU=;
-        b=tg4jkLBJTXjnJTkM0mFlT+n1KUtRKrnP5yWho1AsMhjyhI+V3uaSwltg0vd+DEz/7q
-         hp5Tu3sO8Q0VbbBjQXJLbr2wfwW1WU/mp7ka8hDtYXkTeuT6VdVBBsRuQ6Wy6r5pkSe8
-         tJrGL3ze5fUiSzX8Jc8cIfwmYmCXrbnkdXbmLgR7crl/2XdQtrGHa5ZN1ffjJO3Jtv/e
-         3FElbM9IMB8lqRVwglD9AcxDHpBg5ge8wkWnS4rpot2AUIJv04tMUo2zzHqCKRE4nmlM
-         WKLCg2AbVzYxRHkbcrUCJZ+cOCa8iA09ZLjlyZJYpEC4AmWAlyeDCpEAinpKE8u13bJe
-         eA9w==
+        Tue, 27 Jul 2021 06:48:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627382916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O/2pcW3cgupuTPX8yXQI9/9/2BekgqwjZaOJikbyWFc=;
+        b=iYnLvVGt5DrJLznJ0qB+dOYOYI7QLssfQ8ECohsIOPEDJ2q3xde8xQgEFgdpxgHC+UoFlC
+        txaN5ZUTTraofhES6/uhu3yuKt8qj8Yw6YOPphBcu39h9kwKP9DIv4K1e6zY/fVylxhfIY
+        Xw4xNpTYzz9PNxMQpquT+LNJyhJsZ8g=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-AXq4Rs2uPQ-p0ynyVo0QkA-1; Tue, 27 Jul 2021 06:48:35 -0400
+X-MC-Unique: AXq4Rs2uPQ-p0ynyVo0QkA-1
+Received: by mail-wm1-f70.google.com with SMTP id a1-20020a7bc1c10000b0290225338d8f53so1197848wmj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 03:48:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DW59eJtYhMdAs/hV0pWYKOp7WsTITzUqBJ8Pl1MmYvU=;
-        b=AwQbAF9+tSepuITQRlNoBf8PW2akVXXqkuHs6SRHAvKx0Tqa/MuDS9FbP0b1+Pafrg
-         PwWKYedzXb1wB/eM1R0sVZwhJV1xcNe+lFZELv39bHCI3L4QcpOZE4sG3hdBcHBEZPpm
-         GhBtVLAICyNw5QAbxfQBTIvn8iAiT10GM/Ur0ZJZ7sdzTEQx0Ok8ab/hNozLEjjhTf9E
-         Ur82e3lpOTRzVytvZQOZDJVmjIHJMR433ilMoaz0dzPUmT/Gk3M5ogWU+Gh67Z9k2dct
-         BklkuGxgVbQfS3QOWsYgEwAz8XTVl4H37A/WShRM6VURLh1IwNlCPbllL51z8dFNbOUp
-         Udnw==
-X-Gm-Message-State: AOAM531uKM5Su/P0eJ0hJLF2AVqTrrWN0BapMW6sJ3GFU0HfUQ/Nh3DB
-        682Rx6ra10FjkcqlvrEqmWWXDKJxVnYVzsdjRkSIQg==
-X-Google-Smtp-Source: ABdhPJylAQRQbO/omIdAEgQZKm8teWyQVWFnL90fXyrj3+ZaUOYW4mpHHqwp9KUDwYHWK618hRaFoATAZ1plmrFeaLg=
-X-Received: by 2002:adf:fb92:: with SMTP id a18mr23982590wrr.182.1627382788716;
- Tue, 27 Jul 2021 03:46:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
- <20210723124611.3828908-8-suzuki.poulose@arm.com> <CAJ9a7Vi28GuPUx8jvGoYhqBRzWanwhiLJJuLnaZuPj46g3ex2w@mail.gmail.com>
- <064baefd-1213-1e54-20a0-b28f7565a810@arm.com>
-In-Reply-To: <064baefd-1213-1e54-20a0-b28f7565a810@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Tue, 27 Jul 2021 11:46:18 +0100
-Message-ID: <CAJ9a7VgEfx=BREdo23EW60c8W-FXNPrkDjAbiXA-wOi-cm_D8A@mail.gmail.com>
-Subject: Re: [PATCH v2 07/10] coresight: trbe: Do not truncate buffer on IRQ
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        tamas.zsoldos@arm.com, Al Grant <al.grant@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        jinlmao@qti.qualcomm.com, James Clark <james.clark@arm.com>,
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=O/2pcW3cgupuTPX8yXQI9/9/2BekgqwjZaOJikbyWFc=;
+        b=rFZ/C6YTnjvyp2v8lSP6CzYyVYqg2jgVlmBngAcAIoEqTlT3x88jHSw6STmPUX8YAE
+         uTKl+O4O7FQD7OLDR2Zgw6bA2ySYhDRH87E3oG4Zax8Rpng2NTfhR/4fKhA/z+xcswBR
+         B1xjexgcok/d5p2bow5K1qibDztWsfY07Tth3ZPh2QhIhsHiHIQ93HrmsIbq/Y1VswY9
+         4hiGzJbMbQiA711PV2QSewG0/679/AlSlPHEQKrbf9MmxFPj6lDVjJP5j8PQkopBYEP2
+         cHIUElaJsJm+9b/svqrav2IO5dumjc4EbnQ1vqJPpGnOKkdX0huRU8dCamt7Ehl5oSq6
+         eJGA==
+X-Gm-Message-State: AOAM530Yu8bWS0VOXISGmSukr9YEq0MzrorzgyvER+3uUd9eXZ0lEufD
+        LersM87l0oR43hldV6dAz5Zup54oQLGCr9UTQNdng7+2nbikncKPdTvG30slje2VdGTApRpym5T
+        rayErW6/IsT1jcyW5PwbEOBwI
+X-Received: by 2002:adf:ffd1:: with SMTP id x17mr23450686wrs.411.1627382914444;
+        Tue, 27 Jul 2021 03:48:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwx7D8VgREuvxcUInc1/rAk2Wt3I8CEj7XBxdIg12UMW/NzZjfwAgXsWDNMrvc3kX29hlf5EQ==
+X-Received: by 2002:adf:ffd1:: with SMTP id x17mr23450669wrs.411.1627382914251;
+        Tue, 27 Jul 2021 03:48:34 -0700 (PDT)
+Received: from [192.168.1.136] ([79.116.5.179])
+        by smtp.gmail.com with ESMTPSA id h4sm2866493wru.2.2021.07.27.03.48.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 03:48:33 -0700 (PDT)
+Message-ID: <7b2d6bf91d30c007e19a7d2cbddcb2460e72d163.camel@redhat.com>
+Subject: Re: [patch 1/4] add basic task isolation prctl interface
+From:   nsaenzju@redhat.com
+To:     Marcelo Tosatti <mtosatti@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Nitesh Lal <nilal@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
+        Alex Belits <abelits@marvell.com>, Peter Xu <peterx@redhat.com>
+Date:   Tue, 27 Jul 2021 12:48:33 +0200
+In-Reply-To: <20210727104119.551607458@fuller.cnet>
+References: <20210727103803.464432924@fuller.cnet>
+         <20210727104119.551607458@fuller.cnet>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Suzuki,
+On Tue, 2021-07-27 at 07:38 -0300, Marcelo Tosatti wrote:
+> +Isolation mode (PR_ISOL_MODE):
+> +------------------------------
+> +
+> +- PR_ISOL_MODE_NONE (arg4): no per-task isolation (default mode).
+> +  PR_ISOL_EXIT sets mode to PR_ISOL_MODE_NONE.
+> +
+> +- PR_ISOL_MODE_NORMAL (arg4): applications can perform system calls normally,
+> +  and in case of interruption events, the notifications can be collected
+> +  by BPF programs.
+> +  In this mode, if system calls are performed, deferred actions initiated
+> +  by the system call will be executed before return to userspace.
+> +
+> +Other modes, which for example send signals upon interruptions events,
+> +can be implemented.
 
-On Mon, 26 Jul 2021 at 17:01, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->
-> Hi Mike,
->
-> On 26/07/2021 13:34, Mike Leach wrote:
-> > Hi Suzuki,
-> >
-> > On Fri, 23 Jul 2021 at 13:46, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
-> >>
-> >> The TRBE driver marks the AUX buffer as TRUNCATED when we get an IRQ
-> >> on FILL event. This has rather unwanted side-effect of the event
-> >> being disabled when there may be more space in the ring buffer.
-> >>
-> >> So, instead of TRUNCATE we need a different flag to indicate
-> >> that the trace may have lost a few bytes (i.e from the point of
-> >> generating the FILL event until the IRQ is consumed). Anyways, the
-> >> userspace must use the size from RECORD_AUX headers to restrict
-> >> the "trace" decoding.
-> >>
-> >> Using PARTIAL flag causes the perf tool to generate the
-> >> following warning:
-> >>
-> >>    Warning:
-> >>    AUX data had gaps in it XX times out of YY!
-> >>
-> >>    Are you running a KVM guest in the background?
-> >>
-> >> which is pointlessly scary for a user. The other remaining options
-> >> are :
-> >>    - COLLISION - Use by SPE to indicate samples collided
-> >>    - Add a new flag - Specifically for CoreSight, doesn't sound
-> >>      so good, if we can re-use something.
-> >>
-> >
-> > What is the user visible behaviour when using COLLISION?
->
-> If you meant a Warning from the perf tool (similar to TRUNCATE or
-> PARTIAL), the answer is none. We could add one in the perf tool
-> if you think this is necessary.
->
-
-I do - the problem is that we have replaced a visible warning with a
-silent failure.
-
-While we agree that the side effects of TRUNCATE mean it unfeasible as
-a solution here - at least the PARTIAL message does give some
-indication.
-The average perf user is going to rely on the output from the tool -
-if there is no warning they will assume all is good, but they have
-possible non-contiguous trace and no indication of such.
-
-Since we are using a collision flag  in a particular context - i.e.
-coresight trace - we have the chance to provide an appropriate message
-for this context.
-
-> > The TRUNCATE warning is at least accurate - even if the KVM thing is
-> > something of a red herring.
->
-
-Sorry - I meant PARTIAL here - but the comment stands otherwise.
-
->
-> > It is easier to explain a "scary" warning, than try to debug someones
-> > problems if perf is silent or misleading when using the COLLISION
-> > flag.
->
-> The RECORD_AUX still has this flag. So, if someone really wanted to
-> know how many times the TRBE fired the IRQ and thus potentially lost a
-> few bytes of the trace, they could always look at this.
->
-
-They could - but how would they know that they needed to - what
-indicators would they have that the trace was not continuous?
-The point of the perf tool is that it presents an accurate picture to
-the user, based on the data collected. Most users aren't going to
-start digging into the intricacies of the perf data file formats and
-nor should they have to.
-
-> Definitely this is not something similar to "TRUNCATED", which we
-> realized the hard way, nor the PARTIAL. But the perf tool could
-> report something similar. Please remember that the perf tool always
-> uses the "size" field from the RECORD_AUX to limit the trace decoding.
->
-> So, I am not sure how this could create new problems.
->
-
-There is no issue with decode - but if a user is investigating a
-problem using trace, they need to be aware that some trace might be
-dropped.
-That way they can take mitigating action.
-
-Regards
-
-Mike
-
-> Suzuki
->
-> >
-> > Regards
-> >
-> > Mike
-> >
-> >
-> >> Given that we don't already use the "COLLISION" flag, the above
-> >> behavior can be notified using this flag for CoreSight.
-> >>
-> >> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> >> Cc: James Clark <james.clark@arm.com>
-> >> Cc: Mike Leach <mike.leach@linaro.org>
-> >> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> >> Cc: Leo Yan <leo.yan@linaro.org>
-> >> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >> ---
-> >>   drivers/hwtracing/coresight/coresight-trbe.c | 4 ++--
-> >>   1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> >> index 503bea0137ae..d50f142e86d1 100644
-> >> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> >> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> >> @@ -615,7 +615,7 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
-> >>                   * for correct size. Also, mark the buffer truncated.
-> >>                   */
-> >>                  write = get_trbe_limit_pointer();
-> >> -               perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
-> >> +               perf_aux_output_flag(handle, PERF_AUX_FLAG_COLLISION);
-> >>          }
-> >>
-> >>          offset = write - base;
-> >> @@ -708,7 +708,7 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
-> >>           * collection upon the WRAP event, without stopping the source.
-> >>           */
-> >>          perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW |
-> >> -                                    PERF_AUX_FLAG_TRUNCATED);
-> >> +                                    PERF_AUX_FLAG_COLLISION);
-> >>          perf_aux_output_end(handle, size);
-> >>          event_data = perf_aux_output_begin(handle, event);
-> >>          if (!event_data) {
-> >> --
-> >> 2.24.1
-> >>
-> >
-> >
->
-
+Shouldn't this be a set of flags that enable specific isolation features?
+Something the likes of 'PR_ISOL_QUIESCE_ON_EXIT'. Modes seem more restrictive
+and too much of a commitment. If we merge MODE_NORMAL as is, we won't be able
+to tweak/extend its behaviour in the future.
 
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Nicolás Sáenz
+
