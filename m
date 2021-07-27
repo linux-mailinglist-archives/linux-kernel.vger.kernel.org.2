@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1353D71DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AC63D71DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236054AbhG0JYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:24:17 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40022 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235897AbhG0JYQ (ORCPT
+        id S236064AbhG0J0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235946AbhG0J0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:24:16 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A0DB41C0B76; Tue, 27 Jul 2021 11:24:15 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 11:24:15 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/46] 4.4.277-rc2 review
-Message-ID: <20210727092415.GC9154@duo.ucw.cz>
-References: <20210727061334.372078412@linuxfoundation.org>
+        Tue, 27 Jul 2021 05:26:08 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AB0C061757;
+        Tue, 27 Jul 2021 02:26:07 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id n2so14443532eda.10;
+        Tue, 27 Jul 2021 02:26:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xHWSK2tc3IOr1iy+M8bgv8eKBmME6SgNYXmp9ttzvlU=;
+        b=lxDvXpG7lMyMTYZPhAZjfpc6h7RREPbuCpThDFxvF8lefgSOfB2UTYAk4TNgB0GRar
+         UB/dAVnxOiIVMlkAgGfuSuOV9C7igefg38w1e/j81DVtp+qEooK4TuETimrarUKSMvVT
+         o+r/fZAIHiD+g6dSNdLd7l0Z7s98746WbBjFk0o9rlN3ZNdbc2t8lHdzrttJXVsjG0mU
+         RSpFocBxJ2/tsnfXBuB5aKBv10HAgVYyArz0LqRodd/Vi/DfBHAf4WD2bsT1cZ17vLx3
+         mT72GFuson6H+On5M+b1EP10bpJUMCfwBV+G3HKjbcBVWIEhVUvMt9v1g8qIpeJxyd3A
+         gF9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=xHWSK2tc3IOr1iy+M8bgv8eKBmME6SgNYXmp9ttzvlU=;
+        b=MqdnDhdN8UiyiTHGfWO8d1WNMS8fBr1pL8NizGfBSvEbUn48cdlm9lXSzYNwSv2Nrh
+         UbvesguIKf93+dn0XtSkjEloGwSCfv8pbEPOuM02n82YH1SimLrqZNba1Ubl9cQK0FvO
+         ZAwionJPWaYp/LbTv8oC1YYkRDyzJUp1fq8OzhN7MbhGLwyWQU7B9ncnJJljqKjp132n
+         kSl+DLbqeO5GGg9ApzJtd3Wf+1RWX80XPTigQHy3dfo6eWBXSoG2LnRN4WUYkS8NUgJc
+         4LV4FuUSSoTh/RJkn/KwzqZxtvKn1kY7mP+x+9DABpyqr754b4c47D8eF41tMhOetBC3
+         18oA==
+X-Gm-Message-State: AOAM530ORGsA0KJUb5YxgcE4uYr9xE9SD0JQTMBToBimpcUjyvOPbl33
+        wpoImVOUCHe3bbcpvwdOkaw64c8V1WMtRC9M
+X-Google-Smtp-Source: ABdhPJw+0KyN73exnuGiqYvoAZb44BQ1o/ALw/bDnqlaOF1s4RguKyUdz26T/ck61XM0QaE6KZ+Upw==
+X-Received: by 2002:aa7:cc83:: with SMTP id p3mr22745797edt.365.1627377966153;
+        Tue, 27 Jul 2021 02:26:06 -0700 (PDT)
+Received: from stitch.. ([82.192.166.82])
+        by smtp.gmail.com with ESMTPSA id g3sm692369ejp.2.2021.07.27.02.26.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 02:26:05 -0700 (PDT)
+Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] BeagleV Starlight reset support
+Date:   Tue, 27 Jul 2021 11:25:50 +0200
+Message-Id: <20210727092554.1059305-1-kernel@esmil.dk>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
-Content-Disposition: inline
-In-Reply-To: <20210727061334.372078412@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds reset support to the BeagleV Starlight board[1], and
+converts the TPS65086 PMIC device tree binding to YAML while at it.
 
---1SQmhf2mF2YjsYvc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Support for the StarFive JH7100 RISC-V SoC on the board is not yet
+upstreamed, but is actively worked on so it should only be a matter of
+time before that happens.
 
-Hi!
+v2:
+- Use generic node name in dt example, tps65086@5e -> pmic@5e.
+- Andrew F. Davis' email address no longer works and noone else has
+  stepped up, so add myself as dt binding maintainer since I at least
+  care that it isn't removed.
+- Change the mfd cell name from tps65086-restart to tps65086-reset.
+- Split adding the mfd cell name to the mfd driver into its own patch.
+- Add Rob and Sebastian's acks to the relevant patches.
 
-> This is the start of the stable review cycle for the 4.4.277 release.
-> There are 46 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+[1] https://github.com/beagleboard/beaglev-starlight
 
-CIP testing did not find any problems here:
+Emil Renner Berthing (4):
+  dt-bindings: mfd: convert tps65086.txt to YAML
+  mfd: tps65086: Make interrupt line optional
+  power: reset: Add TPS65086 restart driver
+  mfd: tps65086: Add cell entry for reset driver
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y
+ .../devicetree/bindings/mfd/ti,tps65086.yaml  | 124 ++++++++++++++++++
+ .../devicetree/bindings/mfd/tps65086.txt      |  54 --------
+ drivers/mfd/tps65086.c                        |  22 ++--
+ drivers/power/reset/Kconfig                   |   6 +
+ drivers/power/reset/Makefile                  |   1 +
+ drivers/power/reset/tps65086-restart.c        |  98 ++++++++++++++
+ 6 files changed, 241 insertions(+), 64 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,tps65086.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mfd/tps65086.txt
+ create mode 100644 drivers/power/reset/tps65086-restart.c
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+-- 
+2.32.0
 
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---1SQmhf2mF2YjsYvc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYP/QvwAKCRAw5/Bqldv6
-8jXTAKC8YQHrTfxj84sbDSE9BA/2GcbiOQCgkiAKhta18xlnZYXK0gONvl2kxa8=
-=pyjl
------END PGP SIGNATURE-----
-
---1SQmhf2mF2YjsYvc--
