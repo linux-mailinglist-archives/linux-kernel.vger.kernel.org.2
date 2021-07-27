@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386C13D7E5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DA23D7E62
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhG0TRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 15:17:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16170 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229945AbhG0TRO (ORCPT
+        id S231932AbhG0TUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 15:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230387AbhG0TUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:17:14 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16RJCSEB017230;
-        Tue, 27 Jul 2021 15:16:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=S9WrCfkjSuekFZGHC4uhqiuih4pXzbHlc84xouUPS30=;
- b=XtVP3aKZR9Z1pNXNGsp2zrrSA1oIVqlmYRUJPfycxAbVOkY5aZf+STUn9HLRwdindj3l
- KayU7gSPFJF6TUFinKMIcypSlccNbLBBnSnc5ruZiyqnwmDoIislOsDVW4Te5vaOGJgZ
- b7kywMaOLrCGDMZRY+uKUt0OzvUQ34KEsan0jAdmN9/yBt+/+HMJBKo75rsn7qBS8mun
- gUQarU41NbCVnlybtddgQtb3CoZX8pZTDN0LmYM7pXhSRrMOgI/YBhMS1NwBf8j2iz9x
- emQXUe5DEH1yYeh2sRn1AWomHCowoydRrg2Gdsd2bZqQNw5BzKMv2r6i+GFg1iZ0otVG Dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2qtvg9j2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 15:16:01 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16RJFBjg028792;
-        Tue, 27 Jul 2021 15:16:00 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2qtvg9h1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 15:16:00 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16RIumuQ029158;
-        Tue, 27 Jul 2021 19:15:58 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 3a235kgdeu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 19:15:58 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16RJFthW28377476
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Jul 2021 19:15:55 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF014A405F;
-        Tue, 27 Jul 2021 19:15:54 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD9DBA4057;
-        Tue, 27 Jul 2021 19:15:53 +0000 (GMT)
-Received: from osiris (unknown [9.145.19.157])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 27 Jul 2021 19:15:53 +0000 (GMT)
-Date:   Tue, 27 Jul 2021 21:15:52 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v5 4/6] mm: simplify compat numa syscalls
-Message-ID: <YQBbaNqfBzX+pf1t@osiris>
-References: <20210727144859.4150043-1-arnd@kernel.org>
- <20210727144859.4150043-5-arnd@kernel.org>
- <YQBB9yteAwtG2xyp@osiris>
- <CAK8P3a3itgCyc4jDBodTOcwG+XXsDYspZqQVBmy88cGXevY5Yw@mail.gmail.com>
- <YQBSpxZR4P/Phpf1@osiris>
- <CAK8P3a0WT36Lg4nRBWx_kqb9yKj0mHx8gTdzCsDfrx1tQSEqbA@mail.gmail.com>
+        Tue, 27 Jul 2021 15:20:10 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C130C061757;
+        Tue, 27 Jul 2021 12:20:09 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id l19so1314515pjz.0;
+        Tue, 27 Jul 2021 12:20:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LHDDmMV915NlqVzU6Fz/0FX3KRO8YEAV5C4ehYloHEU=;
+        b=tfKwMgeABBSvgWX+IvJ17zJcPJedYVLMFvoY0kv7zHDGEEVyGO1ZxXOQ/U5RygTnRh
+         Ll7px7rHAT3A3JDs5Uz0SJH86MQ80+D00Hrza5J9Qh0cdtrbEZ/P6+0/2XY4BAC9bw8e
+         yAEEPw016EIROUxGdVx4XkCBA4MYkhjR0kBVeC0cgB2bEYLPAMOeDk+YpPzrecRHO8En
+         IsDHHk1fpf2D5jvlJxWrV2tD7QMifkxlyfeI54APeCk+tYce4s8K2HNBzN85IVwQQLxp
+         yLqcjgWK88OhEAbamqwN7hc0KVDpbSSvRssb5IbY9tKxQAaQ9tzEcBTGw8kYYTMrJQuQ
+         AUfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LHDDmMV915NlqVzU6Fz/0FX3KRO8YEAV5C4ehYloHEU=;
+        b=H5ON1Q6he5VqPprQEoL1npfEFN6ePpz/Fkq+N2/V/J2kA5NB9NBhntZb7T9jLrRyqp
+         a0Fr8E8ARNijHS473b2A0meWqR+s5MjIeCG+elreGpUah1u15ilPx1eU4b/if09eyWiY
+         Nv5MxJov10sjp67Vzxo5Aj3N3XrIy3PI4TvJJJgPKYB0bWc+aq/Rb4mPTe1UA67shkt0
+         +acY133xPAfmA6nSMJlv8ojBDlj9BOM9AQvsv7xDRmDzY7l3HKECiClBR/15s07eBGS1
+         zWna5exboNtnskR+9AwtEklsVf7Mon9fzdg9PPZFwyQ4I2szRR8kjn4ii/hB0Ghbw3+s
+         0QmQ==
+X-Gm-Message-State: AOAM530421lZQgZ5zvdiLCOA1K8KQ87v3aeAKHY9qkOTIaatPzh+HXsJ
+        I/y3ERJ2XphAeN9cZOB0hL4=
+X-Google-Smtp-Source: ABdhPJyMiOXY8pB7EwQqfVIsk+O8h5ZHty+pDmFkHEk0+/ShwQ9k7FNWEwvdBGSYHrfBKCfVQbnE+Q==
+X-Received: by 2002:a63:ee06:: with SMTP id e6mr24851846pgi.374.1627413608648;
+        Tue, 27 Jul 2021 12:20:08 -0700 (PDT)
+Received: from localhost.localdomain ([2402:e280:2130:198:9b25:1cfb:9ff3:2a8f])
+        by smtp.gmail.com with ESMTPSA id f7sm4317096pfc.111.2021.07.27.12.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 12:20:08 -0700 (PDT)
+From:   Benjamin Philip <benjamin.philip495@gmail.com>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Benjamin Philip <benjamin.philip495@gmail.com>
+Subject: [PATCH 0/4] staging: sm750fb: Remove CamelCase in lynxfb_crtc
+Date:   Wed, 28 Jul 2021 00:49:49 +0530
+Message-Id: <cover.1627413010.git.benjamin.philip495@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0WT36Lg4nRBWx_kqb9yKj0mHx8gTdzCsDfrx1tQSEqbA@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -XM2aaOHmahf3GNtvPV0YNUK2TjKX7f3
-X-Proofpoint-ORIG-GUID: TkiykJPEd5k1niuESQpMFCol9mhqnTsf
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-27_13:2021-07-27,2021-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- adultscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=984 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107270113
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 08:49:40PM +0200, Arnd Bergmann wrote:
-> On Tue, Jul 27, 2021 at 8:38 PM Heiko Carstens <hca@linux.ibm.com> wrote:
-> >
-> > -268  common    mbind                   sys_mbind                       compat_sys_mbind
-> > -269  common    get_mempolicy           sys_get_mempolicy               compat_sys_get_mempolicy
-> > -270  common    set_mempolicy           sys_set_mempolicy               compat_sys_set_mempolicy
-> > +268  common    mbind                   sys_mbind                       sys_mbind
-> > +269  common    get_mempolicy           sys_get_mempolicy               sys_get_mempolicy
-> > +270  common    set_mempolicy           sys_set_mempolicy               sys_set_mempolicy
-> >
-> > would remove compat_ptr() conversion from nmask above if I'm not mistaken.
-> 
-> Maybe I'm misremembering how compat syscalls work on s390. Doesn't
-> SYSCALL_DEFINEx(sys_mbind) still create two entry points __s390x_sys_mbind()
-> and __s390_sys_mbind() with different argument conversion (__SC_CAST vs
-> __SC_COMPAT_CAST)? I thought that was the whole point of the macros.
+This patchset (as the subject implies) renames some struct members to follow
+the snake_case naming convention from CamelCase. By doing so, it also fixes
+2 checkpatch CHECKs.
 
-You are remembering correctly, probably because you implemented it ;)
-I totally forgot - sorry for the noise!
+To test it, I have checked if the module builds, which it does. I have also
+ensured that checkpatch.pl does not issue any new warnings.
+
+Also, is this patchset fine or should I have clubbed it into one big commit,
+Greg?
+
+Thanks,
+Benjamin Philip
+
+Benjamin Philip (4):
+  staging: sm750fb: Rename oScreen to o_screen in lynxfb_crtc
+  staging: sm750fb: Rename oCursor to o_cursor in lynxfb_crtc
+  staging: sm750fb: Rename vCursor to v_cursor in lynxfb_crtc
+  staging: sm750fb: Rename vScreen to v_screen in lynxfb_crtc
+
+ drivers/staging/sm750fb/sm750.c    | 44 ++++++++++-----------
+ drivers/staging/sm750fb/sm750.h    |  8 ++--
+ drivers/staging/sm750fb/sm750_hw.c | 62 +++++++++++++++---------------
+ 3 files changed, 57 insertions(+), 57 deletions(-)
+
+-- 
+2.31.1
+
