@@ -2,63 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0133D7DB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDC23D7DC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhG0ScX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:32:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34604 "EHLO mail.kernel.org"
+        id S231616AbhG0Sdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:33:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229593AbhG0ScV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:32:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5642460F9D;
-        Tue, 27 Jul 2021 18:32:20 +0000 (UTC)
+        id S229453AbhG0Sds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 14:33:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DB0360E08;
+        Tue, 27 Jul 2021 18:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627410740;
-        bh=SbKJxgORSL3OHTajOsbI4rDNzTp7WUtwzo59AKVBWnY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YL3cgO4C5fn730SSD5MqaDcnknogE1r8OKuo3F/qbP39alo7tXYrsYwE+nHn+09qj
-         +wybqn9Vt16lq+MvzvQMaK7StUb+9Fx+TBl96hdGTmd86QKafOt2aaJbHZzYcwtWS4
-         qMIlm00118caZUQcuW26pxm1zNDjErKhX5lt4JWj56vaUPNhlkLZSKlJNjKeK8dt42
-         o5qIXvzt0AsbUrRCDqYo1r2jSokrHdIgL+hw9PQTQplWokX5mUnKh0HyvxAjs9t+40
-         msk2wLXPYHgZMyzDHwXfS+8BkhayLw9zvCfLstZ3fD2dRcW0t1tbyFAVLHGFGrrw0J
-         n/tIHpIAM20bw==
-Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bill Wendling <morbo@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org
-References: <20210714091747.2814370-1-morbo@google.com>
- <20210726201924.3202278-1-morbo@google.com>
- <20210726201924.3202278-2-morbo@google.com>
- <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
- <YP+ZOx8BETgufxBS@kroah.com>
- <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
- <YP+ql3QFYnefR/Cf@kroah.com>
- <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <0fcf5740-2e0f-4da7-be58-77822df54f81@kernel.org>
-Date:   Tue, 27 Jul 2021 11:32:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        s=k20201202; t=1627410828;
+        bh=IoOC+f1m/YhQqNhVUFsH6+csX5fiqfZsvIU8e2BPats=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=I+ocGSufKazh8ZWpBPK2NYgfV15CZu1lN7aB7iX5rdq/oG245Q9cPh7r+PqFTF1IN
+         5zJQIt/S+A9KaOP3u9WZenlj5LIQf+fPc9dWewKAO4WKvLdwa5TEGvMpisR/ZdniC9
+         HoKT8IVkSjL/0i1kNskDZTkao/4Rtt5cXyoxyiytToHv3Alm8xwyaZOwUJKCA6y5SS
+         y+tctTnQ42+QHitTpj3oBkc2JaYarLOTW5Q4hmMbkNaYWmeP1Cxi5ExUhptgnk1xa7
+         bnlnwGUsyiUdQPka0I+bJIM0e/flrc4w46vrFT6nARv6V2DLoxNAB6Wf/AoCjQQ2dV
+         cD60pwL9n38BQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210627185538.690277-3-iskren.chernev@gmail.com>
+References: <20210627185538.690277-1-iskren.chernev@gmail.com> <20210627185538.690277-3-iskren.chernev@gmail.com>
+Subject: Re: [PATCH v2 2/2] clk: qcom: Add Global Clock controller (GCC) driver for SM6115
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Date:   Tue, 27 Jul 2021 11:33:46 -0700
+Message-ID: <162741082663.2368309.12852214008454271169@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/2021 10:39 AM, 'Nick Desaulniers' via Clang Built Linux wrote:
-> Isn't -Wunused-but-set-variable enabled only for W=1 builds?
+Quoting Iskren Chernev (2021-06-27 11:55:38)
+> diff --git a/drivers/clk/qcom/gcc-sm6115.c b/drivers/clk/qcom/gcc-sm6115.c
+> new file mode 100644
+> index 000000000000..e3c830b33dec
+> --- /dev/null
+> +++ b/drivers/clk/qcom/gcc-sm6115.c
+> @@ -0,0 +1,3623 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/reset-controller.h>
 
-Maybe Bill's tree does not have commit 885480b08469 ("Makefile: Move 
--Wno-unused-but-set-variable out of GCC only block"), which disables the 
-warning for clang just like GCC for regular builds?
+Should be clk-provider.h in this list as well.
 
-Cheers,
-Nathan
+> +
+> +#include <dt-bindings/clock/qcom,gcc-sm6115.h>
+> +
+> +#include "clk-alpha-pll.h"
+> +#include "clk-branch.h"
+> +#include "clk-pll.h"
+> +#include "clk-rcg.h"
+> +#include "clk-regmap.h"
+> +#include "clk-regmap-divider.h"
+> +#include "common.h"
+> +#include "gdsc.h"
+> +#include "reset.h"
+> +
+> +enum {
+> +       P_BI_TCXO,
+> +       P_CORE_BI_PLL_TEST_SE,
+> +       P_GPLL0_OUT_AUX2,
+> +       P_GPLL0_OUT_EARLY,
+> +       P_GPLL10_OUT_MAIN,
+> +       P_GPLL11_OUT_AUX,
+> +       P_GPLL11_OUT_AUX2,
+> +       P_GPLL11_OUT_MAIN,
+> +       P_GPLL3_OUT_EARLY,
+> +       P_GPLL3_OUT_MAIN,
+> +       P_GPLL4_OUT_MAIN,
+> +       P_GPLL6_OUT_EARLY,
+> +       P_GPLL6_OUT_MAIN,
+> +       P_GPLL7_OUT_MAIN,
+> +       P_GPLL8_OUT_EARLY,
+> +       P_GPLL8_OUT_MAIN,
+> +       P_GPLL9_OUT_EARLY,
+> +       P_GPLL9_OUT_MAIN,
+> +       P_SLEEP_CLK,
+> +};
+> +
+> +static const struct parent_map gcc_parent_map_0[] =3D {
+> +       { P_BI_TCXO, 0 },
+> +       { P_GPLL0_OUT_EARLY, 1 },
+> +       { P_GPLL0_OUT_AUX2, 2 },
+> +       { P_CORE_BI_PLL_TEST_SE, 7 },
+> +};
+> +
+> +static const char * const gcc_parent_names_0[] =3D {
+
+Please use struct clk_parent_data instead of these arrays of strings.
+
+> +       "bi_tcxo",
+> +       "gpll0",
+> +       "gpll0_out_aux2",
+> +       "core_bi_pll_test_se",
+> +};
+
+And add newlines between structs.
+
+> +static const char * const gcc_parent_names_0_ao[] =3D {
+> +       "bi_tcxo_ao",
+> +       "gpll0",
+> +       "gpll0_out_aux2",
+> +       "core_bi_pll_test_se",
+> +};
+> +
