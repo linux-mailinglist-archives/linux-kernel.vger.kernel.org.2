@@ -2,305 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006883D7764
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591883D777F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237270AbhG0Nrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:47:53 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3502 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237171AbhG0Nqw (ORCPT
+        id S236838AbhG0Ntu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236699AbhG0Ntj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:46:52 -0400
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GYyPY75Bfz6BB29;
-        Tue, 27 Jul 2021 21:31:45 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 15:46:49 +0200
-Received: from localhost (10.47.8.150) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 27 Jul
- 2021 14:46:48 +0100
-Date:   Tue, 27 Jul 2021 14:46:22 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     kernel test robot <lkp@intel.com>
-CC:     Puranjay Mohan <puranjay12@gmail.com>,
-        <Michael.Hennerich@analog.com>, <alexandru.ardelean@analog.com>,
-        <jic23@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lars@metafoo.de>, <Dragos.Bogdan@analog.com>,
-        <Darius.Berghe@analog.com>, <kbuild-all@lists.01.org>
-Subject: Re: [PATCH v4 2/2] iio: accel: Add driver support for ADXL355
-Message-ID: <20210727144622.00006d94@Huawei.com>
-In-Reply-To: <202107271937.8vfzyty1-lkp@intel.com>
-References: <20210727051627.12234-3-puranjay12@gmail.com>
-        <202107271937.8vfzyty1-lkp@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Tue, 27 Jul 2021 09:49:39 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C71C0619E0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:47:38 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b0a9:7e88:5ca4:551a])
+        by xavier.telenet-ops.be with bizsmtp
+        id aDnb250021fSPfK01Dnbz1; Tue, 27 Jul 2021 15:47:37 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m8NQk-001Pbz-Ll; Tue, 27 Jul 2021 15:47:34 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m8NQk-00Fnh8-9y; Tue, 27 Jul 2021 15:47:34 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Sam Ravnborg <sam@ravnborg.org>, Maxime Ripard <mripard@kernel.org>
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2 0/5] video: fbdev: ssd1307fb: Optimizations and improvements
+Date:   Tue, 27 Jul 2021 15:47:25 +0200
+Message-Id: <20210727134730.3765898-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.8.150]
-X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 19:45:46 +0800
-kernel test robot <lkp@intel.com> wrote:
+	Hi all,
 
-> Hi Puranjay,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on iio/togreg]
-> [also build test WARNING on linus/master v5.14-rc3 next-20210726]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Puranjay-Mohan/iio-accel-add-support-for-ADXL355/20210727-131822
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-> config: openrisc-randconfig-s031-20210727 (attached as .config)
-> compiler: or1k-linux-gcc (GCC) 10.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-341-g8af24329-dirty
->         # https://github.com/0day-ci/linux/commit/a0ad8ce87d3d3357c64f98bec48b75d07b961da8
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Puranjay-Mohan/iio-accel-add-support-for-ADXL355/20210727-131822
->         git checkout a0ad8ce87d3d3357c64f98bec48b75d07b961da8
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=openrisc 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> sparse warnings: (new ones prefixed by >>)
-> >> drivers/iio/accel/adxl355_core.c:204:16: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be32 [usertype] regval @@     got int @@  
->    drivers/iio/accel/adxl355_core.c:204:16: sparse:     expected restricted __be32 [usertype] regval
->    drivers/iio/accel/adxl355_core.c:204:16: sparse:     got int
-> >> drivers/iio/accel/adxl355_core.c:341:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be16 [usertype] out @@     got int @@  
->    drivers/iio/accel/adxl355_core.c:341:29: sparse:     expected restricted __be16 [usertype] out
->    drivers/iio/accel/adxl355_core.c:341:29: sparse:     got int
-> 
-> vim +204 drivers/iio/accel/adxl355_core.c
-> 
->    195	
->    196	static int adxl355_read_axis(struct adxl355_data *data, u8 addr)
->    197	{
->    198		__be32 regval;
->    199		int ret;
->    200	
->    201		ret = regmap_bulk_read(data->regmap, addr, data->transf_buf, 3);
->    202		if (ret < 0)
->    203			return ret;
->  > 204		regval = data->transf_buf[0] + (data->transf_buf[1] << 8)  
->    205					     + (data->transf_buf[2] << 16);
+This patch series optimizes console operations on ssd1307fb, after the
+customary fixes and cleanups.
 
-Note that you can almost certainly use something like get_unaligned_be24(data->transf_buf)
-here, though current code is some mixture of hand unwinding the endianness
-and calling a standard function to do it.
+Currently, each screen update triggers an I2C transfer of all screen
+data, up to 1 KiB of data for a 128x64 display, which takes at least 20
+ms in Fast mode.  While many displays are smaller, and thus require less
+data to be transferred, 20 ms is still an optimistic value, as the
+actual data transfer may be much slower, especially on bitbanged I2C
+drivers.  After this series, the amount of data transfer is reduced, as
+fillrect, copyarea, and imageblit only update the rectangle that
+changed.
 
->    206	
->    207		return be32_to_cpu(regval) >> 8;
->    208	}
->    209	
->    210	static int adxl355_find_match(const int (*freq_tbl)[2], const int n,
->    211				      const int val, const int val2)
->    212	{
->    213		int i;
->    214	
->    215		for (i = 0; i < n; i++) {
->    216			if (freq_tbl[i][0] == val && freq_tbl[i][1] == val2)
->    217				return i;
->    218		}
->    219	
->    220		return -EINVAL;
->    221	}
->    222	
->    223	static int adxl355_set_odr(struct adxl355_data *data,
->    224				   enum adxl355_odr odr)
->    225	{
->    226		int ret = 0;
->    227	
->    228		mutex_lock(&data->lock);
->    229	
->    230		if (data->odr == odr)
->    231			goto out_unlock;
->    232	
->    233		ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
->    234		if (ret < 0)
->    235			goto out_unlock;
->    236	
->    237		ret = regmap_update_bits(data->regmap, ADXL355_FILTER,
->    238					 ADXL355_FILTER_ODR_MSK,
->    239					 FIELD_PREP(ADXL355_FILTER_ODR_MSK, odr));
->    240		if (ret < 0)
->    241			goto out_unlock;
->    242	
->    243		data->odr = odr;
->    244		adxl355_fill_3db_frequency_table(data);
->    245	
->    246	out_unlock:
->    247		ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
->    248		mutex_unlock(&data->lock);
->    249		return ret;
->    250	}
->    251	
->    252	static int adxl355_set_hpf_3db(struct adxl355_data *data,
->    253				       enum adxl355_hpf_3db hpf)
->    254	{
->    255		int ret = 0;
->    256	
->    257		mutex_lock(&data->lock);
->    258	
->    259		if (data->hpf_3db == hpf)
->    260			goto out_unlock;
->    261	
->    262		ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
->    263		if (ret < 0)
->    264			goto out_unlock;
->    265	
->    266		ret = regmap_update_bits(data->regmap, ADXL355_FILTER,
->    267					 ADXL355_FILTER_HPF_MSK,
->    268					 FIELD_PREP(ADXL355_FILTER_HPF_MSK, hpf));
->    269		if (!ret)
->    270			data->hpf_3db = hpf;
->    271	
->    272	out_unlock:
->    273		ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
->    274		mutex_unlock(&data->lock);
->    275		return ret;
->    276	}
->    277	
->    278	static int adxl355_set_calibbias(struct adxl355_data *data,
->    279					 int channel2, int calibbias)
->    280	{
->    281		int ret = 0;
->    282	
->    283		data->transf_buf[0] = (calibbias >> 8) & 0xFF;
->    284		data->transf_buf[1] = calibbias & 0xFF;
->    285		data->transf_buf[2] = 0;
->    286	
->    287		mutex_lock(&data->lock);
->    288	
->    289		ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
->    290		if (ret < 0)
->    291			goto out_unlock;
->    292	
->    293		switch (channel2) {
->    294		case IIO_MOD_X:
->    295			ret = regmap_bulk_write(data->regmap, ADXL355_OFFSET_X_H,
->    296						data->transf_buf, 2);
->    297			if (ret < 0)
->    298				goto out_unlock;
->    299			data->x_calibbias = calibbias;
->    300			break;
->    301		case IIO_MOD_Y:
->    302			ret = regmap_bulk_write(data->regmap, ADXL355_OFFSET_Y_H,
->    303						data->transf_buf, 2);
->    304			if (ret < 0)
->    305				goto out_unlock;
->    306			data->y_calibbias = calibbias;
->    307			break;
->    308		case IIO_MOD_Z:
->    309			ret = regmap_bulk_write(data->regmap, ADXL355_OFFSET_Z_H,
->    310						data->transf_buf, 2);
->    311			if (ret < 0)
->    312				goto out_unlock;
->    313			data->z_calibbias = calibbias;
->    314			break;
->    315		default:
->    316			ret = -EINVAL;
->    317			break;
->    318		}
->    319	
->    320	out_unlock:
->    321		ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
->    322		mutex_unlock(&data->lock);
->    323		return ret;
->    324	}
->    325	
->    326	static int adxl355_read_raw(struct iio_dev *indio_dev,
->    327				    struct iio_chan_spec const *chan,
->    328				    int *val, int *val2, long mask)
->    329	{
->    330		struct adxl355_data *data = iio_priv(indio_dev);
->    331		int ret;
->    332		__be16 out;
->    333	
->    334		switch (mask) {
->    335		case IIO_CHAN_INFO_RAW:
->    336			switch (chan->type) {
->    337			case IIO_TEMP:
->    338				ret = adxl355_get_temp_data(data, chan->address);
->    339				if (ret < 0)
->    340					return ret;
->  > 341				out = (data->transf_buf[1] << 8) + data->transf_buf[0];  
->    342				*val = be16_to_cpu(out);
->    343	
->    344				return IIO_VAL_INT;
->    345			case IIO_ACCEL:
->    346				ret = adxl355_read_axis(data, chan->address);
->    347				if (ret < 0)
->    348					return ret;
->    349				*val = sign_extend32(ret >> (chan->scan_type.shift),
->    350						     chan->scan_type.realbits - 1);
->    351				return IIO_VAL_INT;
->    352			default:
->    353				return -EINVAL;
->    354			}
->    355	
->    356		case IIO_CHAN_INFO_SCALE:
->    357			switch (chan->type) {
->    358			case IIO_TEMP:
->    359				*val = TEMP_SCALE_VAL;
->    360				*val2 = TEMP_SCALE_VAL2;
->    361				return IIO_VAL_INT_PLUS_MICRO;
->    362			case IIO_ACCEL:
->    363				*val = 0;
->    364				*val2 = ADXL355_NSCALE;
->    365				return IIO_VAL_INT_PLUS_NANO;
->    366			default:
->    367				return -EINVAL;
->    368			}
->    369		case IIO_CHAN_INFO_OFFSET:
->    370			*val = TEMP_OFFSET_VAL;
->    371			*val2 = TEMP_OFFSET_VAL2;
->    372			return IIO_VAL_INT_PLUS_MICRO;
->    373		case IIO_CHAN_INFO_CALIBBIAS:
->    374			if (chan->channel2 == IIO_MOD_X)
->    375				*val = data->x_calibbias;
->    376			else if (chan->channel2 == IIO_MOD_Y)
->    377				*val = data->y_calibbias;
->    378			else
->    379				*val = data->z_calibbias;
->    380			*val = sign_extend32(*val, 15);
->    381			return IIO_VAL_INT;
->    382		case IIO_CHAN_INFO_SAMP_FREQ:
->    383			*val = adxl355_odr_table[data->odr][0];
->    384			*val2 = adxl355_odr_table[data->odr][1];
->    385			return IIO_VAL_INT_PLUS_MICRO;
->    386		case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
->    387			*val = data->adxl355_hpf_3db_table[data->hpf_3db][0];
->    388			*val2 = data->adxl355_hpf_3db_table[data->hpf_3db][1];
->    389			return IIO_VAL_INT_PLUS_MICRO;
->    390		default:
->    391			return -EINVAL;
->    392		}
->    393	}
->    394	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+Changes compared to v1[1]:
+  - Add Acked-by,
+  - Use two separate helpers instead of a single combined helper,
+  - Reorder operands in DIV_ROUND_UP() to improve readability.
 
+This has been tested on an Adafruit FeatherWing OLED with an SSD1306
+controller and a 128x32 OLED, connected to an OrangeCrab ECP5 FPGA board
+running a 64 MHz VexRiscv RISC-V softcore, where it reduced the CPU
+usage for blinking the cursor from more than 70% to ca. 10%.
+
+Thanks for applying!
+
+[1] https://lore.kernel.org/dri-devel/20210714145804.2530727-1-geert@linux-m68k.org
+
+Geert Uytterhoeven (5):
+  video: fbdev: ssd1307fb: Propagate errors via
+    ssd1307fb_update_display()
+  video: fbdev: ssd1307fb: Simplify ssd1307fb_update_display()
+  video: fbdev: ssd1307fb: Extract ssd1307fb_set_{col,page}_range()
+  video: fbdev: ssd1307fb: Optimize screen updates
+  video: fbdev: ssd1307fb: Cache address ranges
+
+ drivers/video/fbdev/ssd1307fb.c | 151 ++++++++++++++++++++++----------
+ 1 file changed, 104 insertions(+), 47 deletions(-)
+
+-- 
+2.25.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
