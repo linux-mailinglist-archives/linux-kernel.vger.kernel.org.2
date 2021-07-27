@@ -2,157 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A833D79E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47593D79F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237088AbhG0PfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237130AbhG0PdI (ORCPT
+        id S237123AbhG0PiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:38:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27035 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232511AbhG0Phu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:33:08 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEF1C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:33:04 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id l11so12440418iln.4
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:33:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2XSUgUmh1XmhyeIYFwsZM0972t6Q/ERgdKcfAvWCsXo=;
-        b=WoBVP+ShhYBW3XIRtEoFeKDAxYRg7LAooItgUc/qCO5rbpT8S1SGveANY6QZow8HVV
-         1+hIz1ESdPIESI7nrWboMNbTJ5mQMsx82jvKEW9JV8YQll6kJkdxKFKzVgHskt4HiTj0
-         Ge3yAY65ZpFqupTShyti2NRxkrPatOLXsbYy4=
+        Tue, 27 Jul 2021 11:37:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627400269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vR2+7tmtikD9aIM6qjbjOrZOpZBl/Ki+iH8B5KQL91A=;
+        b=VaC6KzdQDapk5gJvtTdBypIZgiL+Ob08wQ0h+erEKgREaL7LFq0G4runqdIqmpS0TFmXDA
+        gkKj8aj5MFa4JwlBtqOqtxYAVty2xZBKIhbNnjF75AClTFWckVkatjmiGOzJqtVM8pFwx/
+        S+Ubj4ytZdXE+g0HUypt1aqShvlNPLk=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-556-1km7plL9OB6K-y7Voq8UyQ-1; Tue, 27 Jul 2021 11:37:48 -0400
+X-MC-Unique: 1km7plL9OB6K-y7Voq8UyQ-1
+Received: by mail-qv1-f72.google.com with SMTP id b6-20020a0cbf460000b02902dbb4e0a8f2so9005402qvj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:37:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2XSUgUmh1XmhyeIYFwsZM0972t6Q/ERgdKcfAvWCsXo=;
-        b=IjS8emtQgmN0YIGybZ0tIUlrvz6e9mQL0Y3yuZBVUvbkjGS2fEl9sjCPYAL+7uObYU
-         eQ1x6t2CmGEp6KBySexW4kyBsa/imS1JSbppMbTe/rBJrgi47Kyjokx3aPMthtwjnHU+
-         K7vlPSO1d/FpGBnrwcckEfAZe+eesllv17fn0ywZ2ZWtt6Lcxst+CifDYSsRT4UnZkGc
-         uihQXdO5RBQEFRVOceHJuUV97zxfEvk8rhHiRlcARCFR6yb5g5gjMnkiTWhhqSn92Dg8
-         w9hGDbKpwCLdBVy3Z6UH9S87AR+D3sF93manPXItFDmAnmfmI0gbLQTg4RLBUwIG5zyz
-         YCqg==
-X-Gm-Message-State: AOAM532PxFT2kuioq2n/r5BeqFxMCOGgw/lk5y84STyXzvCV6/rHCxDs
-        bdBSsU8JC6t5tzjHxwVnLrhBxK+zFv1lb3YK1dFVVg==
-X-Google-Smtp-Source: ABdhPJyp0rjZXaaLN68ns6YbN2+CaZ3yGgUttI6artx6AYKOdKEPRd2tdFT3EnbvCIWSuwrhGLn45TPUXvRSHT8R1Gk=
-X-Received: by 2002:a92:6f0a:: with SMTP id k10mr16658190ilc.105.1627399983576;
- Tue, 27 Jul 2021 08:33:03 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=vR2+7tmtikD9aIM6qjbjOrZOpZBl/Ki+iH8B5KQL91A=;
+        b=ZB0281GZKTH46oJ8XHc+huNYc7tMNCbhLdGkyejV+M8FHhRX6V+Iq/DRAR3NWji6OD
+         IDSOUM5qE0kyef3kvGw3OHdE//fUtwazw7VdNaeckIjocvBFC4hkDSG3+Ln96ff3AkFm
+         cNK8XwsFhsLzzD/0w8jyFuXchhDaxUlIbn6loQNyJ8h929Tqhun3JoUhqoTl2jQzVB5I
+         KZVCTRBJWzX65D+vAmslgJLsrs84ryfA8+SjbxMrAMk2z6FPdZICoBCFY7S50fb4Vyy2
+         +hloSB/BFReBupOJ+7nJrpGtAycvvsBln39y4C7JAqbZ5FYYWLd+k5GmXwCcReC/bfOD
+         qLfg==
+X-Gm-Message-State: AOAM530Fmq8NFBuBuGZTWhtmmOilqh20KLgsMsjTtxYTHoHzqVCz8R7R
+        bFY2MGfopXoh2dkyxfRs6ZIuWzqQj3y7sqcpSE8tHMQg4xVnOjgCG5cz1SEMVlSp8JrR4E2gqKp
+        K+kHsClH+sA1GTRZZiO+1Qj2kNRSR8hfN/dkXol9V
+X-Received: by 2002:a05:6214:2ca:: with SMTP id g10mr23499931qvu.44.1627400267793;
+        Tue, 27 Jul 2021 08:37:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4wb9VdRM/n+1TXNm1vLueStF5mK2PArTHU3m5lyvUWaaXl4LQ6PF/Pl40ZIhO0efwe9ZwqeHRGm7QMoLXa6U=
+X-Received: by 2002:a05:6214:2ca:: with SMTP id g10mr23499920qvu.44.1627400267624;
+ Tue, 27 Jul 2021 08:37:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726233854.2453899-1-robdclark@gmail.com> <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
- <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com> <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
-In-Reply-To: <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
-From:   Rob Clark <robdclark@chromium.org>
-Date:   Tue, 27 Jul 2021 08:37:13 -0700
-Message-ID: <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-To:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <000000000000c3366805c7e33a92@google.com> <20210725012825.1790-1-hdanton@sina.com>
+In-Reply-To: <20210725012825.1790-1-hdanton@sina.com>
+From:   Miklos Szeredi <mszeredi@redhat.com>
+Date:   Tue, 27 Jul 2021 17:37:36 +0200
+Message-ID: <CAOssrKdqbOr0jeE1pYqkWnFysVbdi+H7sfoc3c4CaiqBUqQz_g@mail.gmail.com>
+Subject: Re: [syzbot] possible deadlock in pipe_lock (5)
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        syzbot <syzbot+579885d1a9a833336209@syzkaller.appspotmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        syzkaller-bugs@googlegroups.com, viro <viro@zeniv.linux.org.uk>
+Content-Type: multipart/mixed; boundary="000000000000dc534905c81ca6a7"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 8:19 AM Michel D=C3=A4nzer <michel@daenzer.net> wro=
-te:
+--000000000000dc534905c81ca6a7
+Content-Type: text/plain; charset="UTF-8"
+
+On Sun, Jul 25, 2021 at 3:31 AM Hillf Danton <hdanton@sina.com> wrote:
 >
-> On 2021-07-27 5:12 p.m., Rob Clark wrote:
-> > On Tue, Jul 27, 2021 at 7:50 AM Michel D=C3=A4nzer <michel@daenzer.net>=
- wrote:
-> >>
-> >> On 2021-07-27 1:38 a.m., Rob Clark wrote:
-> >>> From: Rob Clark <robdclark@chromium.org>
-> >>>
-> >>> Based on discussion from a previous series[1] to add a "boost" mechan=
-ism
-> >>> when, for example, vblank deadlines are missed.  Instead of a boost
-> >>> callback, this approach adds a way to set a deadline on the fence, by
-> >>> which the waiter would like to see the fence signalled.
-> >>>
-> >>> I've not yet had a chance to re-work the drm/msm part of this, but
-> >>> wanted to send this out as an RFC in case I don't have a chance to
-> >>> finish the drm/msm part this week.
-> >>>
-> >>> Original description:
-> >>>
-> >>> In some cases, like double-buffered rendering, missing vblanks can
-> >>> trick the GPU into running at a lower frequence, when really we
-> >>> want to be running at a higher frequency to not miss the vblanks
-> >>> in the first place.
-> >>>
-> >>> This is partially inspired by a trick i915 does, but implemented
-> >>> via dma-fence for a couple of reasons:
-> >>>
-> >>> 1) To continue to be able to use the atomic helpers
-> >>> 2) To support cases where display and gpu are different drivers
-> >>>
-> >>> [1] https://patchwork.freedesktop.org/series/90331/
-> >>
-> >> Unfortunately, none of these approaches will have the full intended ef=
-fect once Wayland compositors start waiting for client buffers to become id=
-le before using them for an output frame (to prevent output frames from get=
-ting delayed by client work). See https://gitlab.gnome.org/GNOME/mutter/-/m=
-erge_requests/1880 (shameless plug :) for a proof of concept of this for mu=
-tter. The boost will only affect the compositor's own GPU work, not the cli=
-ent work (which means no effect at all for fullscreen apps where the compos=
-itor can scan out the client buffers directly).
-> >>
+> On Sat, 24 Jul 2021 12:07:20 -0700
+> >syzbot found the following issue on:
 > >
-> > I guess you mean "no effect at all *except* for fullscreen..."?
+> >HEAD commit:    8cae8cd89f05 seq_file: disallow extremely large seq buffer..
+> >git tree:       upstream
+> >console output: https://syzkaller.appspot.com/x/log.txt?x=1083e8cc300000
+> >kernel config:  https://syzkaller.appspot.com/x/.config?x=7273c75708b55890
+> >dashboard link: https://syzkaller.appspot.com/bug?extid=579885d1a9a833336209
+> >syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163905f2300000
+> >C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=165bd0ea300000
+> >
+> >The issue was bisected to:
+> >
+> >commit 82a763e61e2b601309d696d4fa514c77d64ee1be
+> >Author: Miklos Szeredi <mszeredi@redhat.com>
+> >Date:   Mon Dec 14 14:26:14 2020 +0000
+> >
+> >    ovl: simplify file splice
 >
-> I meant what I wrote: The compositor will wait for the next buffer to bec=
-ome idle, so there's no boost from this mechanism for the client drawing to=
- that buffer. And since the compositor does no drawing of its own in this c=
-ase, there's no boost from that either.
 >
->
-> > I'd perhaps recommend that wayland compositors, in cases where only a
-> > single layer is changing, not try to be clever and just push the
-> > update down to the kernel.
->
-> Even just for the fullscreen direct scanout case, that would require some=
- kind of atomic KMS API extension to allow queuing multiple page flips for =
-the same CRTC.
->
-> For other cases, this would also require a mechanism to cancel a pending =
-atomic commit, for when another surface update comes in before the composit=
-or's deadline, which affects the previously single updating surface as well=
-.
->
+> If this commit is innocent then is it false positive lockdep warning again,
+> given another report [1]?
 
-Well, in the end, there is more than one compositor out there.. and if
-some wayland compositors are going this route, they can also implement
-the same mechanism in userspace using the sysfs that devfreq exports.
+Appears to be legit.
 
-But it sounds simpler to me for the compositor to have a sort of "game
-mode" for fullscreen games.. I'm less worried about UI interactive
-workloads, boosting the GPU freq upon sudden activity after a period
-of inactivity seems to work reasonably well there.
+Attached partial revert + sync with ovl_write_iter() should fix it
+(fingers crossed).
 
-BR,
--R
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+master
 
->
-> --
-> Earthling Michel D=C3=A4nzer               |               https://redhat=
-.com
-> Libre software enthusiast             |             Mesa and X developer
+Thanks,
+Miklos
+
+--000000000000dc534905c81ca6a7
+Content-Type: text/x-patch; charset="US-ASCII"; name="ovl-fix-deadlock-in-splice-write.patch"
+Content-Disposition: attachment; 
+	filename="ovl-fix-deadlock-in-splice-write.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_krm81ag60>
+X-Attachment-Id: f_krm81ag60
+
+ZGlmZiAtLWdpdCBhL2ZzL292ZXJsYXlmcy9maWxlLmMgYi9mcy9vdmVybGF5ZnMvZmlsZS5jCmlu
+ZGV4IDRkNTNkM2I3ZTVmZS4uZDA4MWZhYTU1ZTgzIDEwMDY0NAotLS0gYS9mcy9vdmVybGF5ZnMv
+ZmlsZS5jCisrKyBiL2ZzL292ZXJsYXlmcy9maWxlLmMKQEAgLTM5Miw2ICszOTIsNTEgQEAgc3Rh
+dGljIHNzaXplX3Qgb3ZsX3dyaXRlX2l0ZXIoc3RydWN0IGtpb2NiICppb2NiLCBzdHJ1Y3QgaW92
+X2l0ZXIgKml0ZXIpCiAJcmV0dXJuIHJldDsKIH0KIAorLyoKKyAqIENhbGxpbmcgaXRlcl9maWxl
+X3NwbGljZV93cml0ZSgpIGRpcmVjdGx5IGZyb20gb3ZlcmxheSdzIGZfb3AgbWF5IGRlYWRsb2Nr
+CisgKiBkdWUgdG8gbG9jayBvcmRlciBpbnZlcnNpb24gYmV0d2VlbiBwaXBlLT5tdXRleCBpbiBp
+dGVyX2ZpbGVfc3BsaWNlX3dyaXRlKCkKKyAqIGFuZCBmaWxlX3N0YXJ0X3dyaXRlKHJlYWwuZmls
+ZSkgaW4gb3ZsX3dyaXRlX2l0ZXIoKS4KKyAqCisgKiBTbyBkbyBldmVyeXRoaW5nIG92bF93cml0
+ZV9pdGVyKCkgZG9lcyBhbmQgY2FsbCBpdGVyX2ZpbGVfc3BsaWNlX3dyaXRlKCkgb24KKyAqIHRo
+ZSByZWFsIGZpbGUuCisgKi8KK3N0YXRpYyBzc2l6ZV90IG92bF9zcGxpY2Vfd3JpdGUoc3RydWN0
+IHBpcGVfaW5vZGVfaW5mbyAqcGlwZSwgc3RydWN0IGZpbGUgKm91dCwKKwkJCQlsb2ZmX3QgKnBw
+b3MsIHNpemVfdCBsZW4sIHVuc2lnbmVkIGludCBmbGFncykKK3sKKwlzdHJ1Y3QgZmQgcmVhbDsK
+Kwljb25zdCBzdHJ1Y3QgY3JlZCAqb2xkX2NyZWQ7CisJc3RydWN0IGlub2RlICppbm9kZSA9IGZp
+bGVfaW5vZGUob3V0KTsKKwlzdHJ1Y3QgaW5vZGUgKnJlYWxpbm9kZSA9IG92bF9pbm9kZV9yZWFs
+KGlub2RlKTsKKwlzc2l6ZV90IHJldDsKKworCWlub2RlX2xvY2soaW5vZGUpOworCS8qIFVwZGF0
+ZSBtb2RlICovCisJb3ZsX2NvcHlhdHRyKHJlYWxpbm9kZSwgaW5vZGUpOworCXJldCA9IGZpbGVf
+cmVtb3ZlX3ByaXZzKG91dCk7CisJaWYgKHJldCkKKwkJZ290byBvdXRfdW5sb2NrOworCisJcmV0
+ID0gb3ZsX3JlYWxfZmRnZXQob3V0LCAmcmVhbCk7CisJaWYgKHJldCkKKwkJZ290byBvdXRfdW5s
+b2NrOworCisJb2xkX2NyZWQgPSBvdmxfb3ZlcnJpZGVfY3JlZHMoaW5vZGUtPmlfc2IpOworCWZp
+bGVfc3RhcnRfd3JpdGUocmVhbC5maWxlKTsKKworCXJldCA9IGl0ZXJfZmlsZV9zcGxpY2Vfd3Jp
+dGUocGlwZSwgcmVhbC5maWxlLCBwcG9zLCBsZW4sIGZsYWdzKTsKKworCWZpbGVfZW5kX3dyaXRl
+KHJlYWwuZmlsZSk7CisJLyogVXBkYXRlIHNpemUgKi8KKwlvdmxfY29weWF0dHIocmVhbGlub2Rl
+LCBpbm9kZSk7CisJcmV2ZXJ0X2NyZWRzKG9sZF9jcmVkKTsKKwlmZHB1dChyZWFsKTsKKworb3V0
+X3VubG9jazoKKwlpbm9kZV91bmxvY2soaW5vZGUpOworCisJcmV0dXJuIHJldDsKK30KKwogc3Rh
+dGljIGludCBvdmxfZnN5bmMoc3RydWN0IGZpbGUgKmZpbGUsIGxvZmZfdCBzdGFydCwgbG9mZl90
+IGVuZCwgaW50IGRhdGFzeW5jKQogewogCXN0cnVjdCBmZCByZWFsOwpAQCAtNjAzLDcgKzY0OCw3
+IEBAIGNvbnN0IHN0cnVjdCBmaWxlX29wZXJhdGlvbnMgb3ZsX2ZpbGVfb3BlcmF0aW9ucyA9IHsK
+IAkuZmFkdmlzZQk9IG92bF9mYWR2aXNlLAogCS5mbHVzaAkJPSBvdmxfZmx1c2gsCiAJLnNwbGlj
+ZV9yZWFkICAgID0gZ2VuZXJpY19maWxlX3NwbGljZV9yZWFkLAotCS5zcGxpY2Vfd3JpdGUgICA9
+IGl0ZXJfZmlsZV9zcGxpY2Vfd3JpdGUsCisJLnNwbGljZV93cml0ZSAgID0gb3ZsX3NwbGljZV93
+cml0ZSwKIAogCS5jb3B5X2ZpbGVfcmFuZ2UJPSBvdmxfY29weV9maWxlX3JhbmdlLAogCS5yZW1h
+cF9maWxlX3JhbmdlCT0gb3ZsX3JlbWFwX2ZpbGVfcmFuZ2UsCg==
+--000000000000dc534905c81ca6a7--
+
