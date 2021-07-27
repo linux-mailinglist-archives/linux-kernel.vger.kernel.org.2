@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FE13D7775
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443563D7793
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237108AbhG0Nsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:48:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237549AbhG0Nrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:47:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60441619F5;
-        Tue, 27 Jul 2021 13:47:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627393654;
-        bh=p8LnftZhZgD85kdOqArZWnpzvxx9HnLHlrz8ygUVkXE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J9RLsGuPNuLPwMZRXz1VRfSlOA+GkzoRlwcnCpJnJOr1fOnINoC/JWm7/r38Qd2DE
-         MPTKdgSu7/Gxb6bayos7HQpGLJxTgYXmxGZpk5pZHHPUJoESETDLKRx9OaVg/lufPH
-         eA/255LmZBHrTR3sOtvpcp3St0G9T5oBlKvZ63V8=
-Date:   Tue, 27 Jul 2021 15:47:32 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: Re: [PATCH v3 0/7] staging: rtl8188eu: replace driver with better
- version
-Message-ID: <YQAOdEz9GfhpCeBZ@kroah.com>
-References: <20210724001055.1613840-1-phil@philpotter.co.uk>
- <YQAE1q9ZWRPHqfK5@kroah.com>
- <CAA=Fs0nwOBUoCSbwzaE7TTQab_BZcCy2SL1RJby+Hmo=URw_Pg@mail.gmail.com>
+        id S232560AbhG0Nzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232185AbhG0Nzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:55:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECABC061757;
+        Tue, 27 Jul 2021 06:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l4bB1NlxVXKcS4LQH7ZeuR6Hp+on28hni4p/W0kSjD4=; b=oNBSHh/gHXG3Z45AYhgsq+WS9p
+        eK3d75tBcu835JmU9D3E0+CNOwhAI3icsXwtzMWlgPhe5EZSK9qUO8RUOZwHIM8OyibmnLxmEUG0g
+        AKMZWpoOIBkah6xZnXUsKIjhlbIxlvFtQW8Q1VLSLzIbXISvBgkqB7yRYzi3xpuUaG/75QpKxLTKn
+        0goXwnJ6MEKbCHFftBPhwIHzWrHIOF8jN5GbNMbk0CtEmWX6S2LaOsUHD1KMs2Vsz4M6MMsvB78Mk
+        boKi0VSeKtI2CojJPZ6Lgb3wUv2A2I4Zp+xbWQDPzLX+RxY6wrYecuPuqzfr+ON/qXkKWhwXScxqB
+        nH07UwCA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8NWR-00F4Fh-RU; Tue, 27 Jul 2021 13:53:50 +0000
+Date:   Tue, 27 Jul 2021 14:53:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jordy Zomer <jordy@pwning.systems>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v2] fs: make d_path-like functions all have unsigned size
+Message-ID: <YQAP1/N5hudsmbu6@casper.infradead.org>
+References: <20210727120754.1091861-1-gregkh@linuxfoundation.org>
+ <YP/+g/L6+tLWjx/l@smile.fi.intel.com>
+ <YQAClXqyLhztLcm4@kroah.com>
+ <YQAGvTZPex3mxrD/@casper.infradead.org>
+ <YQAKj4LFifmlVi0q@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA=Fs0nwOBUoCSbwzaE7TTQab_BZcCy2SL1RJby+Hmo=URw_Pg@mail.gmail.com>
+In-Reply-To: <YQAKj4LFifmlVi0q@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 02:25:34PM +0100, Phillip Potter wrote:
-> On Tue, 27 Jul 2021 at 14:06, Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sat, Jul 24, 2021 at 01:10:48AM +0100, Phillip Potter wrote:
-> > > I had to break this patchset up a bit to get around the file size limits
-> > > on the mailing list, and also I removed the hostapd stuff which is
-> > > userspace related and therefore not required.
-> > >
-> > > The driver currently in staging is older and less functional than the
-> > > version on Larry Finger's GitHub account, based upon v4.1.4_6773.20130222.
-> > > This series of patches therefore:
-> > >
-> > > (1) Removes the current driver from staging.
-> > > (2) Imports the GitHub version mentioned above in its place.
-> >
-> > Let's do (2) first before worrying about (1), given that we can't get a
-> > version of (2) that actually builds yet :)
-> >
-> > thanks,
-> >
-> > greg k-h
+On Tue, Jul 27, 2021 at 03:30:55PM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Jul 27, 2021 at 02:14:37PM +0100, Matthew Wilcox wrote:
+> > On Tue, Jul 27, 2021 at 02:56:53PM +0200, Greg Kroah-Hartman wrote:
+> > > And my mistake from earlier, size_t is the same as unsigned int, not
+> > > unsigned long.
+> > 
+> > No.
+> > 
+> > include/linux/types.h:typedef __kernel_size_t           size_t;
+> > 
+> > include/uapi/asm-generic/posix_types.h:
+> > 
+> > #ifndef __kernel_size_t
+> > #if __BITS_PER_LONG != 64
+> > typedef unsigned int    __kernel_size_t;
+> > #else
+> > typedef __kernel_ulong_t __kernel_size_t;
+> > #endif
+> > #endif
+> > 
+> > size_t is an unsigned long on 64-bit, unless otherwise defined by the
+> > arch.
 > 
-> Dear Greg,
+> ugh, ok, so there really is a problem, as we have a size_t value being
+> passed in as an int, and then it could be treated as a negative value
+> for some fun pointer math to copy buffers around.
 > 
-> I'm confused - v3 patchset builds fine for me after applying in
-> sequence from 1 to 7?
+> How is this not causing problems now already?  Are we just getting
+> lucky?
 
-Why does kbuild report problems?
+include/uapi/linux/limits.h:#define PATH_MAX        4096        /* # chars in a path name including nul */
 
-Anyway, please let's just add the new driver in a new directory, get it
-building, and then we can remove the old one.  That way patches will
-continue to work and there's no confusion when backporting patches as
-the code bases are different.
-
-thanks,
-
-greg k-h
+Clearly some places aren't checking that, but _in principle_, you
+aren't supposed to be able to create a pathname longer than that.
