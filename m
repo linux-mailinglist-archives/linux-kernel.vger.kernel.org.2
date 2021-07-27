@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC77E3D8002
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A8D3D803E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbhG0U7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
+        id S233448AbhG0VA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232643AbhG0U7T (ORCPT
+        with ESMTP id S232614AbhG0U7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:59:19 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C442BC061199
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:59:11 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so6565168pja.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:59:11 -0700 (PDT)
+        Tue, 27 Jul 2021 16:59:43 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66323C0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:59:13 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id k4-20020a17090a5144b02901731c776526so6580118pjm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:59:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=A8VL5uTwi2ok0xQG2fExEpX5b43uBzp5tHuj3L/R+N0=;
-        b=MuVA98uzyFghrpeCefbkYMobO8SHDZI2jc808l40HzcktA/z0DyZWg3UUrPxY2jQTx
-         1ed5PTEGwVLj+gUQNU9VV6/Wlgw5nfs0KfrxNrYxZJIzih6b5CYNoj6jQnfqqe/aF7CG
-         Kag8EJWSgFoDxhRz+uHbAHJSq3YzIYRwaQERY=
+        bh=VM7uWZbkUfYnHDd5ZNIAVnDbZvywZy43PN6h2gF7C7c=;
+        b=oBkhd6x8PpRaO8QoO+UEqARpklYQ85EbQwaaqZSpUTzsIkrs1pGiuH526VcUurLUkS
+         +gkvSbxFz3vGB1BF1YQeauyWi9ev8hnzhng3t5uiTcBEZberDOU2lSJPBM+aa6yDkfTe
+         HmjxMNfk6GT/foIn5FNaX7+ENNmF5UhcQ22mM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=A8VL5uTwi2ok0xQG2fExEpX5b43uBzp5tHuj3L/R+N0=;
-        b=CZRz2P0SD5E6v4wQzqLtM0Oy8Log+7j+kQqu8SewHCBLgrxVUU3SuGucLlJNwXrrDr
-         SVKSZxbMw/+zwBPZnZC/N2F2cUIiQt9xYlRTOznhXXWI59S0GCMyJkh6JRlZ4Ov7qxIW
-         il4HqR+oWh2KGbWfmHkPhaAhl7vpwHyQDW+GkeCztyIeWCCQUJKKW7ghLtRDPwdxRYVp
-         CUtuTpvRM3yTUMslKUG+ZdTH5Fy729XAQ4UFxaySB7rbkOrnLaJbLAkt3LCB6n8PWtvu
-         A8FoSxiKVR1qVPvt/TIUa0cwa8dyhU9FtShpZm3OU0dPtHvt7beHDdlMRQmWfFlFyZbG
-         7E6A==
-X-Gm-Message-State: AOAM530n6NNN69WGSpW04ab5FyHor5mP9FWaE7Q3FTG0tmzcpw6RlUN2
-        WNRjtJExMYjAjHeCFwxGxPKv2g==
-X-Google-Smtp-Source: ABdhPJwK/hlVX3ijEELPaVNGs5CqZ9MYVDpKWehXzD8lK279R3qnfEziD46RtfTuI5da/TZ/A7j89A==
-X-Received: by 2002:a17:90a:1196:: with SMTP id e22mr5942936pja.168.1627419551358;
-        Tue, 27 Jul 2021 13:59:11 -0700 (PDT)
+        bh=VM7uWZbkUfYnHDd5ZNIAVnDbZvywZy43PN6h2gF7C7c=;
+        b=GzS7rL4iXhtZHzgnATWWwX57CTu+CitXd0js9TOYZUehlcI7Jh3hdSRtkfvj1WggWJ
+         rQmFNpEqZImLDr73HsVT25Css6juQtoyJTJBMlGbhpFZZkUh+ZmNU3Pc8cQ4zeWTejyo
+         Z6yONSz72mgJis2CsK9GZ/dC5hZNIdaYYNu61ZtJLcFTJQ+5tZNVn5yeasMF6coBw83V
+         gRbqszrGwP+c3L2501lrI0d2DClkDD+hPFpjcfHic7Gb6j6CSHI/8/YJMi7kDAfPu+eT
+         iU/q3EZrOMee3CPFiBFN2V4iLZ4g+4R9lhcRnkAEiVdJOtKceyae5mtd8OSAwKMlfXjh
+         E7kQ==
+X-Gm-Message-State: AOAM53231S+wLKOA6qxZ+j6SjVPcUhX6nPDx5VqNuUkcTI9CWs5FBBD0
+        HI9evPfvRaCLWTOa7PQuNAWx1Q==
+X-Google-Smtp-Source: ABdhPJzvwIujwX2h82eYkbdvoMbJ+ZJVnzoCXczVsCM4H67j0yiuDjVnUU+OKLLA11yr/7OVmcSq6g==
+X-Received: by 2002:a63:b4d:: with SMTP id a13mr22272005pgl.404.1627419552873;
+        Tue, 27 Jul 2021 13:59:12 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h18sm3550930pjv.21.2021.07.27.13.59.08
+        by smtp.gmail.com with ESMTPSA id e23sm3796816pjt.8.2021.07.27.13.59.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 13:59:11 -0700 (PDT)
+        Tue, 27 Jul 2021 13:59:09 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     linux-hardening@vger.kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Keith Packard <keithpac@amazon.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -56,71 +57,74 @@ Cc:     Kees Cook <keescook@chromium.org>,
         netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
         linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH 27/64] HID: cp2112: Use struct_group() for memcpy() region
-Date:   Tue, 27 Jul 2021 13:58:18 -0700
-Message-Id: <20210727205855.411487-28-keescook@chromium.org>
+Subject: [PATCH 28/64] compiler_types.h: Remove __compiletime_object_size()
+Date:   Tue, 27 Jul 2021 13:58:19 -0700
+Message-Id: <20210727205855.411487-29-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210727205855.411487-1-keescook@chromium.org>
 References: <20210727205855.411487-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2121; h=from:subject; bh=K97nJ7xl1U2miGBKe3f4iGnBB6d79/ydjDfoar50c1k=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhAHOGJiERxKe5UaB/DWAoZsHfj6ZstGRywspA5cbo qbU/Sa2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQBzhgAKCRCJcvTf3G3AJviXD/ 0awF1xyojK4bdkGTsWWYC5EaCkxQXolbhn5I4Bt5LTgBerDVUkkQ+0hbx3KTd6J1shKe33O721L80q ZPSzA6XO1IU4jEh9ESD0vy/BbcwUB240/GjH7pokMgs1tY/ASfazVm5pEoVQ2XMbM9ttTkxD6cKwl2 wD3CaaTKSXRB54J1wY/RbfKchhBz/awcZEkaPX+V5MH128VNgQWftdwl6k4zkukMyTgQqqtcQEDxLG 2PXGR01tGWiZG4zcq6j0qKS9hF+YMV3vNRTD11FlkXkpCJa/stjQqYc3X+5SMk4CRzfl/Y8cOb2ori taM7ib/LTTXf/XdYjP8mkve4OB2F547uGMmQY02c0e401LtZTJR+BdjWQtnzweLMCU7bZWFnvUt/RI 4cqv3FXHI7G3rsq/9s9nQOPzyX1g6CKdhXSGgnS6F75W6n3LHmhYa9TRe7Q9yzYq+fQMiHisjUkftb iTEIUCDgO5rrzjGJ+PX3mtU2ZT4MbYy9wphEFnW76pP0WmYvf85gMWFUBXxjM3D3zkrPguys6E4LcZ Otlv5886DjdrIVDbh5s3k6JVcDviF5vEmyocVX7Gu/d9l7lhKm805IufyFMpTdxERMUq7Hv4ROE4Ex QkBYn0Udw21OjJBLXDJldGRan/1A1k6mjEOu8Q1mHNN3JiXDko0nT/TA1CHQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2278; h=from:subject; bh=26+UkQF9u4QR73rE2ugmnkAtGgRJVqdRH0gVQ+miGJI=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhAHOGx79zwuZNTkBGJbxUTLtc6LvVjffViSXdghqh ZCh8w1mJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQBzhgAKCRCJcvTf3G3AJoOuD/ 9QhIBj8Ac1dYCQqsKDnl8+GV1Fmwz5NE+vrrmgysyx4iAIh5Hi9gSJVcciJHuWfxsYbsfjbgYy0kX1 fb3zQvUIkMQIB2igKikLexaw/u/aMZvCk9Z5omDCckYav5xDMDxop57SAnRwDmI5ma37g307rYAPXK 3MKhIW4uQWUEg9VD//gprsbS2OpIiwxkghySrauZU6lUWDXOFDxi3e7AnfeRnLBMm5P9R7uYb1c63i CCLVixc36sEWt5n1A3nVhugbXoR7XhzcCKsn6dHqVUwhOr0WC1NiDHg09PcpuJ/iyIKZftDHqUPqg6 5qiwdJ4fNBuagx0+hD1UYhVyC4D8uCcU5JbpSaMhqA5ruisKG07SgLC2mW64QD5KC1l5vxwssi27Ef 7z6+Z9XE9eAIUfHNMPoPePEDUngERmhsvmWGVOt9xejvTsuIr7a0dLku55mNRDgPOr3kKzwatg+19w b9l9CzMUNItXijvnyBQc/Vqy1SAb0lYpmUGz8MBzs95DcaaAGbaZmpWiUWaHQ5s823F8qG3r/1SSM/ zjI2/ycPgCzFufboCXRAyrLfLL7g8dxi7bDg8lAiPKcigIIGX0UbyaLeH8fulCViw1XPIwojOh5Gqh 6Oqz9uM0LoNmL8ecwuaSepH7hTO/bHW05UdooSY1mofMkUQTUBDoMmiCWncw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+Since all compilers support __builtin_object_size(), and there is only
+one user of __compiletime_object_size, remove it to avoid the needless
+indirection. This lets Clang reason about check_copy_size() correctly.
 
-Use struct_group() in struct cp2112_string_report around members report,
-length, type, and string, so they can be referenced together. This will
-allow memcpy() and sizeof() to more easily reason about sizes, improve
-readability, and avoid future warnings about writing beyond the end of
-report.
-
-"pahole" shows no size nor member offset changes to struct
-cp2112_string_report.  "objdump -d" shows no meaningful object
-code changes (i.e. only source line number induced differences.)
-
+Link: https://github.com/ClangBuiltLinux/linux/issues/1179
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/hid/hid-cp2112.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ include/linux/compiler-gcc.h   | 2 --
+ include/linux/compiler_types.h | 4 ----
+ include/linux/thread_info.h    | 2 +-
+ 3 files changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/hid/hid-cp2112.c b/drivers/hid/hid-cp2112.c
-index 477baa30889c..e6ee453c7cfc 100644
---- a/drivers/hid/hid-cp2112.c
-+++ b/drivers/hid/hid-cp2112.c
-@@ -129,10 +129,12 @@ struct cp2112_xfer_status_report {
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index cb9217fc60af..01985821944b 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -41,8 +41,6 @@
  
- struct cp2112_string_report {
- 	u8 dummy;		/* force .string to be aligned */
--	u8 report;		/* CP2112_*_STRING */
--	u8 length;		/* length in bytes of everyting after .report */
--	u8 type;		/* USB_DT_STRING */
--	wchar_t string[30];	/* UTF16_LITTLE_ENDIAN string */
-+	struct_group_attr(contents, __packed,
-+		u8 report;		/* CP2112_*_STRING */
-+		u8 length;		/* length in bytes of everyting after .report */
-+		u8 type;		/* USB_DT_STRING */
-+		wchar_t string[30];	/* UTF16_LITTLE_ENDIAN string */
-+	);
- } __packed;
+ #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
  
- /* Number of times to request transfer status before giving up waiting for a
-@@ -986,8 +988,8 @@ static ssize_t pstr_show(struct device *kdev,
- 	u8 length;
- 	int ret;
+-#define __compiletime_object_size(obj) __builtin_object_size(obj, 0)
+-
+ #define __compiletime_warning(message) __attribute__((__warning__(message)))
+ #define __compiletime_error(message) __attribute__((__error__(message)))
  
--	ret = cp2112_hid_get(hdev, attr->report, &report.report,
--			     sizeof(report) - 1, HID_FEATURE_REPORT);
-+	ret = cp2112_hid_get(hdev, attr->report, (u8 *)&report.contents,
-+			     sizeof(report.contents), HID_FEATURE_REPORT);
- 	if (ret < 3) {
- 		hid_err(hdev, "error reading %s string: %d\n", kattr->attr.name,
- 			ret);
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index e4ea86fc584d..c43308b0a9a9 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -290,10 +290,6 @@ struct ftrace_likely_data {
+ 	(sizeof(t) == sizeof(char) || sizeof(t) == sizeof(short) || \
+ 	 sizeof(t) == sizeof(int) || sizeof(t) == sizeof(long))
+ 
+-/* Compile time object size, -1 for unknown */
+-#ifndef __compiletime_object_size
+-# define __compiletime_object_size(obj) -1
+-#endif
+ #ifndef __compiletime_warning
+ # define __compiletime_warning(message)
+ #endif
+diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
+index 0999f6317978..ad0c4e041030 100644
+--- a/include/linux/thread_info.h
++++ b/include/linux/thread_info.h
+@@ -203,7 +203,7 @@ static inline void copy_overflow(int size, unsigned long count)
+ static __always_inline __must_check bool
+ check_copy_size(const void *addr, size_t bytes, bool is_source)
+ {
+-	int sz = __compiletime_object_size(addr);
++	int sz = __builtin_object_size(addr, 0);
+ 	if (unlikely(sz >= 0 && sz < bytes)) {
+ 		if (!__builtin_constant_p(bytes))
+ 			copy_overflow(sz, bytes);
 -- 
 2.30.2
 
