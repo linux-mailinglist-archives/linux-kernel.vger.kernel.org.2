@@ -2,72 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392DE3D7C98
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64E03D7C9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhG0Rvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 13:51:37 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:34305 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhG0Rvg (ORCPT
+        id S230185AbhG0RwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 13:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhG0Rv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:51:36 -0400
-Received: by mail-wm1-f49.google.com with SMTP id l4-20020a05600c1d04b02902506f89ad2dso2389220wms.1;
-        Tue, 27 Jul 2021 10:51:34 -0700 (PDT)
+        Tue, 27 Jul 2021 13:51:58 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5AEC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:51:57 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id h2so23196274lfu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OBk5RRCD2iLIhOK5co1TZE5o+SAQV6EEDJtV9mSx3y4=;
+        b=cHnY7pFfsAdkQyfJFNg5EaWUnAvGvmdR6YdJ+HmkdJ6abnT5bydaZvX2wtF+ok6nr4
+         7AGzXW9dGdx60YszoBA4wNaFmE747x3Kk2TBtM5CDprIKnApwqYEvPDQPEyogBzV7JX7
+         14joPYpiwvuQTijyCdwG44D45lS6M1/RP7VVs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LwYScmPim6tE/MDgrbNvahN0e/2bkCVHKdvM2oDO2hU=;
-        b=MtrhHyH1EXKfrApBmzExmtJ81J/XnuL7XiVCbcmvQKkxG+hXLKeZCmEfNXGbpWjY62
-         rX13lbYIsJ/+Vp4+lD3YnCoytkiz5++QgdO+fDn6ZGS1+kIuDLeXuiNl/IKOyg9N95uf
-         SVFif8+8w+kXY8FGi+ldJGBX/CFY38eq6OxTKW+1PkVtzYqhLO5WD+qx+VMcMLC4wiif
-         AH9neasCeL8+g+0ajfeGUCBXy5aAgSJeREzCcpD3EWxxdevIgqSwRMVBP0dSP4FQn7oH
-         fYJWzZn5H/nH92iR/BIOKOCREACoR7ect04U+4QEKzLd4XWDXYhkT++jEwMxLnIyB0c7
-         3aDQ==
-X-Gm-Message-State: AOAM531zNZGoisjifNMTs2SH0cvfMU2nLGYTxVgKFB3dppdtTMB3ZUGo
-        Bdxv3EC3fS5ttfEZIFz7YP4=
-X-Google-Smtp-Source: ABdhPJy+SrPjL/YKIxWhTGnciEmNbBdAW4RbjazaOxiclSAaBLaCvL9GcuSp5o4NuE7F0px1tOP/ug==
-X-Received: by 2002:a05:600c:4308:: with SMTP id p8mr5485552wme.45.1627408294068;
-        Tue, 27 Jul 2021 10:51:34 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id q22sm3675211wmc.16.2021.07.27.10.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 10:51:33 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 17:51:31 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        nunodasneves@linux.microsoft.com
-Subject: Re: [PATCH v3] hyperv: root partition faults writing to VP ASSIST
- MSR PAGE
-Message-ID: <20210727175131.364fxm667marijdk@liuwe-devbox-debian-v2>
-References: <20210727104044.28078-1-kumarpraveen@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OBk5RRCD2iLIhOK5co1TZE5o+SAQV6EEDJtV9mSx3y4=;
+        b=aKcgutnLKlnw89o6DxUiBCZBgY/hI46bDi+orTJNpq6I/e7coMgEIBB1zxC7YBCqeW
+         FEY+Y9lpgEAZ4DtlcoKLZ6kKBZaBF1BwVZGBybwtFHNlhwgkHrm6XFyF5bYRzh+fgtBL
+         uJWQD8PWtRmelBOfc+GDkHjXFLmJvvfl7Kz4L0rqjpMWCR+a3hwS51/N/L4TQEIN41Xb
+         FZ+kDpZI/l2AtwwODis4Py66S32GWCBjN8nIgTMV0Aozg14LJT7zETbN9u8s+PHuKa+2
+         klfNbZg0NhpShmS4mwsf0VFCWESvWBYjoSMDuOU9a6ZHZu+POo6VxM6IjLRKkr7dSf93
+         JHtg==
+X-Gm-Message-State: AOAM533H9/nk9uB+D+ZveI9CNXrj+TOZ+mmj4EDS7oGHa1rT/AMKu65L
+        Er4F7ak6KZrrOR7RWob/jdTUPhvlbOwlOLEnhsA=
+X-Google-Smtp-Source: ABdhPJyG/vsQGbjkdLU8+iKoUb5fCOmnhdoPCTeTisZD4Ru9zQHUZdczU45zGoOpxUTU4fJndo2VlA==
+X-Received: by 2002:ac2:54b8:: with SMTP id w24mr17316630lfk.593.1627408316221;
+        Tue, 27 Jul 2021 10:51:56 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id p16sm352597lfr.122.2021.07.27.10.51.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 10:51:55 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id u20so16685216ljo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:51:54 -0700 (PDT)
+X-Received: by 2002:a2e:81c4:: with SMTP id s4mr15961914ljg.251.1627408314168;
+ Tue, 27 Jul 2021 10:51:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727104044.28078-1-kumarpraveen@linux.microsoft.com>
+References: <20210724193449.361667-1-agruenba@redhat.com> <20210724193449.361667-2-agruenba@redhat.com>
+ <CAHk-=whodi=ZPhoJy_a47VD+-aFtz385B4_GHvQp8Bp9NdTKUg@mail.gmail.com>
+ <03e0541400e946cf87bc285198b82491@AcuMS.aculab.com> <CAHc6FU4N7vz+jfoUSa45Mr_F0Ht0_PXroWoc5UNkMgFmpKLaNw@mail.gmail.com>
+In-Reply-To: <CAHc6FU4N7vz+jfoUSa45Mr_F0Ht0_PXroWoc5UNkMgFmpKLaNw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 27 Jul 2021 10:51:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whemWRZRDDvHnesBbTo1hO2qkWkMtGUSfPvEOq7kAfouQ@mail.gmail.com>
+Message-ID: <CAHk-=whemWRZRDDvHnesBbTo1hO2qkWkMtGUSfPvEOq7kAfouQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/8] iov_iter: Introduce iov_iter_fault_in_writeable helper
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:10:44PM +0530, Praveen Kumar wrote:
-[...]
->  
-> @@ -170,9 +185,21 @@ static int hv_cpu_die(unsigned int cpu)
->  
->  	hv_common_cpu_die(cpu);
->  
-> -	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
-> +	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
->  		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
->  
+On Tue, Jul 27, 2021 at 4:14 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+>
+> On Tue, Jul 27, 2021 at 11:30 AM David Laight <David.Laight@aculab.com> wrote:
+> >
+> > Is it actually worth doing any more than ensuring the first byte
+> > of the buffer is paged in before entering the block that has
+> > to disable page faults?
+>
+> We definitely do want to process as many pages as we can, especially
+> if allocations are involved during a write.
 
-The content of the MSR should be preserved; otherwise you hit the same
-fault for root kernel.
+Yeah, from an efficiency standpoint, once you start walking page
+tables, it's probably best to just handle as much as you can.
 
-Wei.
+But once you get an error, I don't think it should be "everything is bad".
+
+This is a bit annoying, because while *most* users really just want
+that "everything is good", *some* users might just want to handle the
+partial success case.
+
+It's why "copy_to/from_user()" returns the number of bytes *not*
+written, rather than -EFAULT like get/put_user(). 99% of all users
+just want to know "did I write all bytes" (and then checking for a
+zero return is a simple and cheap verification of "everything was
+ok").
+
+But then very occasionally, you hit a case where you actually want to
+know how much of a copy worked. It's rare, but it happens, and the
+read/write system calls tend to be the main user of it.
+
+And yes, the fact that "copy_to/from_user()" doesn't return an error
+(like get/put_user() does) has confused people many times over the
+years. It's annoying, but it's required by those (few) users that
+really do want to handle that partial case.
+
+I think this iov_iter_fault_in_readable/writeable() case should do the same.
+
+And no, it's not new to Andreas' patch. iov_iter_fault_in_readable()
+is doing the "everything has to be good" thing already.
+
+Which maybe implies that nobody cares about partial reads/writes. Or
+it's very very rare - I've seen code that handles page faults in user
+space, but it's admittedly been some very special CPU
+simulator/emulator checkpointing stuff.
+
+               Linus
