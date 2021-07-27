@@ -2,69 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED8A3D7319
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05B43D732C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236241AbhG0KY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:24:59 -0400
-Received: from muru.com ([72.249.23.125]:55854 "EHLO muru.com"
+        id S236288AbhG0KZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:25:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:37220 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236292AbhG0KYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:24:05 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id DA87E8171;
-        Tue, 27 Jul 2021 10:24:21 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>
-Subject: [PATCH 6/6] crypto: omap-sham - drop pm_runtime_irqsafe() usage
-Date:   Tue, 27 Jul 2021 13:23:39 +0300
-Message-Id: <20210727102339.49141-6-tony@atomide.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210727102339.49141-1-tony@atomide.com>
-References: <20210727102339.49141-1-tony@atomide.com>
+        id S236186AbhG0KZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:25:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0245E1FB;
+        Tue, 27 Jul 2021 03:25:58 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 513083F73D;
+        Tue, 27 Jul 2021 03:25:56 -0700 (PDT)
+Subject: Re: [PATCH] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to
+ system pm callbacks
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        srimuc <srimuc@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <955a3034-f7e7-f8f9-4abd-b65efbfbb404@arm.com>
+Date:   Tue, 27 Jul 2021 11:25:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b0a3d8986a76 ("crypto: omap-sham - Use pm_runtime_irq_safe()") added
-the use of pm_runtime_irq_safe() as pm_runtime_get_sync() was called
-from a tasklet.
+On 2021-07-27 10:33, Sai Prakash Ranjan wrote:
+> Some clocks for SMMU can have parent as XO such as gpu_cc_hub_cx_int_clk
+> of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states in
+> such cases, we would need to drop the XO clock vote in unprepare call and
+> this unprepare callback for XO is in RPMh (Resource Power Manager-Hardened)
+> clock driver which controls RPMh managed clock resources for new QTI SoCs
+> and is a blocking call.
+> 
+> Given we cannot have a sleeping calls such as clk_bulk_prepare() and
+> clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
+> operations like map and unmap can be in atomic context and are in fast
+> path, add this prepare and unprepare call to drop the XO vote only for
+> system pm callbacks since it is not a fast path and we expect the system
+> to enter deep sleep states with system pm as opposed to runtime pm.
+> 
+> This is a similar sequence of clock requests (prepare,enable and
+> disable,unprepare) in arm-smmu probe and remove.
 
-We now use the crypto engine queue instead of a custom queue since
-commit 33c3d434d91 ("crypto: omap-sham - convert to use crypto engine").
+Nope. We call arm_smmu_rpm_get(), which may resume the device, from 
+atomic contexts. clk_prepare() may sleep. This doesn't work.
 
-We want to drop the use of pm_runtime_irq_safe() in general as it takes a
-permanent usage count on the parent device causing issues for power
-management.
+Robin.
 
-Based on testing with CONFIG_DEBUG_ATOMIC_SLEEP=y, modprobe omap-sham,
-followed by modprobe tcrypt sec=1 mode=423, I have not been able to
-reproduce the scheduling while atomic issue seen earlier with current
-kernels and we can just drop the call to pm_runtime_irq_safe().
-
-Cc: Lokesh Vutla <lokeshvutla@ti.com>
-Cc: Tero Kristo <kristo@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/crypto/omap-sham.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
---- a/drivers/crypto/omap-sham.c
-+++ b/drivers/crypto/omap-sham.c
-@@ -2113,7 +2113,6 @@ static int omap_sham_probe(struct platform_device *pdev)
- 	dd->fallback_sz = OMAP_SHA_DMA_THRESHOLD;
- 
- 	pm_runtime_enable(dev);
--	pm_runtime_irq_safe(dev);
- 
- 	err = pm_runtime_get_sync(dev);
- 	if (err < 0) {
--- 
-2.32.0
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> Co-developed-by: Rajendra Nayak <rnayak@codeaurora.org>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 20 ++++++++++++++++++--
+>   1 file changed, 18 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> index d3c6f54110a5..9561ba4c5d39 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -2277,6 +2277,13 @@ static int __maybe_unused arm_smmu_runtime_suspend(struct device *dev)
+>   
+>   static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
+>   {
+> +	int ret;
+> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
+> +
+> +	ret = clk_bulk_prepare(smmu->num_clks, smmu->clks);
+> +	if (ret)
+> +		return ret;
+> +
+>   	if (pm_runtime_suspended(dev))
+>   		return 0;
+>   
+> @@ -2285,10 +2292,19 @@ static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
+>   
+>   static int __maybe_unused arm_smmu_pm_suspend(struct device *dev)
+>   {
+> +	int ret = 0;
+> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
+> +
+>   	if (pm_runtime_suspended(dev))
+> -		return 0;
+> +		goto clk_unprepare;
+>   
+> -	return arm_smmu_runtime_suspend(dev);
+> +	ret = arm_smmu_runtime_suspend(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +clk_unprepare:
+> +	clk_bulk_unprepare(smmu->num_clks, smmu->clks);
+> +	return ret;
+>   }
+>   
+>   static const struct dev_pm_ops arm_smmu_pm_ops = {
+> 
