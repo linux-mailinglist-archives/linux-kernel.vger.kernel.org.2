@@ -2,86 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501D43D7BF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D723D7C01
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhG0RNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 13:13:35 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55400 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhG0RN1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:13:27 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 033C11F43362
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: [PATCH v2 2/2] char: tpm: cr50_i2c: convert to new probe interface
-Date:   Tue, 27 Jul 2021 20:13:13 +0300
-Message-Id: <20210727171313.2452236-2-adrian.ratiu@collabora.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210727171313.2452236-1-adrian.ratiu@collabora.com>
-References: <20210727171313.2452236-1-adrian.ratiu@collabora.com>
+        id S230030AbhG0RRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 13:17:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229453AbhG0RRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 13:17:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7630560FEE;
+        Tue, 27 Jul 2021 17:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627406244;
+        bh=BFC7TqihRIQPk6jsa0tydoz7BsGJuFoq0xn43KgBiEQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CO87DMlnYPPfeSPoUeELhrZWoMrOYJOFABPcipLb/mB9908DIqQXHCqjQzZ15KNfY
+         Ar/YGZof9JpEzmeKJ+EidiH1r3snXpnqBmh2ZB0FuNK3BuSUjo3+sVdtxBz0WC2SaD
+         jkb0qNcKYq92w5oj6+QIAKE80xDeetBk3nQogVUBUeekI8IJBmB6WF99wNMFQ1tw0Q
+         m/7UFU3fNFpRDmkMhb7H5nYRL5NcSAqqJlB8S0m1AbzNfiD/ikPMV/TInv06Lg9Ln4
+         AIPbnvT9VFeF9FbWPYAfdcpxZIzWUWElJFAUvcUYrX3bNdf+DkqXElceWVKoR8gsRT
+         7kHhfbL64boMQ==
+Date:   Tue, 27 Jul 2021 10:17:22 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [f2fs-dev] [PATCH v4] f2fs: change fiemap way in printing
+ compression chunk
+Message-ID: <YQA/orZ5wXjwWeyy@google.com>
+References: <20210726041819.2059593-1-daeho43@gmail.com>
+ <f9555521-8878-2d46-36f1-3032bb8bbc0a@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f9555521-8878-2d46-36f1-3032bb8bbc0a@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Way back when this driver was written the I2C framework
-used to insist an ID table be defined even if the driver
-did not use it in favor of ACPI/OF matching, so it was
-added just to placate the hard I2C framework requirement.
+On 07/27, Chao Yu wrote:
+> On 2021/7/26 12:18, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> > 
+> > When we print out a discontinuous compression chunk, it shows like a
+> > continuous chunk now. To show it more correctly, I've changed the way of
+> > printing fiemap info like below. Plus, eliminated NEW_ADDR(-1) in fiemap
+> > info, since it is not in fiemap user api manual.
+> > 
+> > Let's assume 16KB compression cluster.
+> > 
+> > <before>
+> >     Logical          Physical         Length           Flags
+> > 0:  0000000000000000 00000002c091f000 0000000000004000 1008
+> > 1:  0000000000004000 00000002c0920000 0000000000004000 1008
+> >    ...
+> > 9:  0000000000034000 0000000f8c623000 0000000000004000 1008
+> > 10: 0000000000038000 000000101a6eb000 0000000000004000 1008
+> > 
+> > <after>
+> > 0:  0000000000000000 00000002c091f000 0000000000004000 1008
+> > 1:  0000000000004000 00000002c0920000 0000000000004000 1008
+> >    ...
+> > 9:  0000000000034000 0000000f8c623000 0000000000001000 1008
+> > 10: 0000000000035000 000000101a6ea000 0000000000003000 1008
+> > 11: 0000000000038000 000000101a6eb000 0000000000002000 1008
+> > 12: 000000000003a000 00000002c3544000 0000000000002000 1008
+> > 
+> > Flags
+> > 0x1000 => FIEMAP_EXTENT_MERGED
+> > 0x0008 => FIEMAP_EXTENT_ENCODED
+> > 
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > Tested-by: Eric Biggers <ebiggers@google.com>
+> > 
+> > ---
+> > v4: initialized count_in_cluster
+> > v3: fix the missing last extent flag issue
+> > v2: changed the print format
+> > ---
+> >   fs/f2fs/data.c | 75 ++++++++++++++++++++++++++++----------------------
+> >   1 file changed, 42 insertions(+), 33 deletions(-)
+> > 
+> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > index 3a01a1b50104..1a716c3b5457 100644
+> > --- a/fs/f2fs/data.c
+> > +++ b/fs/f2fs/data.c
+> > @@ -1843,8 +1843,9 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> >   	u64 logical = 0, phys = 0, size = 0;
+> >   	u32 flags = 0;
+> >   	int ret = 0;
+> > -	bool compr_cluster = false;
+> > +	bool compr_cluster = false, compr_appended;
+> >   	unsigned int cluster_size = F2FS_I(inode)->i_cluster_size;
+> > +	unsigned int count_in_cluster = 0;
+> >   	loff_t maxbytes;
+> >   	if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
+> > @@ -1892,15 +1893,17 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> >   	map.m_next_pgofs = &next_pgofs;
+> >   	map.m_seg_type = NO_CHECK_TYPE;
+> > -	if (compr_cluster)
+> > -		map.m_len = cluster_size - 1;
+> > +	if (compr_cluster) {
+> > +		map.m_lblk += 1;
+> > +		map.m_len = cluster_size - count_in_cluster;
+> > +	}
+> >   	ret = f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_FIEMAP);
+> >   	if (ret)
+> >   		goto out;
+> >   	/* HOLE */
+> > -	if (!(map.m_flags & F2FS_MAP_FLAGS)) {
+> > +	if (!compr_cluster && !(map.m_flags & F2FS_MAP_FLAGS)) {
+> >   		start_blk = next_pgofs;
+> >   		if (blks_to_bytes(inode, start_blk) < blks_to_bytes(inode,
+> > @@ -1910,6 +1913,14 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> >   		flags |= FIEMAP_EXTENT_LAST;
+> >   	}
+> > +	compr_appended = false;
+> > +	/* In a case of compressed cluster, append this to the last extent */
+> > +	if (compr_cluster && ((map.m_flags & F2FS_MAP_UNWRITTEN) ||
+> > +			!(map.m_flags & F2FS_MAP_FLAGS))) {
+> > +		compr_appended = true;
+> > +		goto skip_fill;
+> > +	}
+> > +
+> >   	if (size) {
+> >   		flags |= FIEMAP_EXTENT_MERGED;
+> >   		if (IS_ENCRYPTED(inode))
+> > @@ -1926,38 +1937,36 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> >   	if (start_blk > last_blk)
+> >   		goto out;
+> > -	if (compr_cluster) {
+> > -		compr_cluster = false;
+> > -
+> > -
+> > -		logical = blks_to_bytes(inode, start_blk - 1);
+> > -		phys = blks_to_bytes(inode, map.m_pblk);
+> > -		size = blks_to_bytes(inode, cluster_size);
+> > -
+> > -		flags |= FIEMAP_EXTENT_ENCODED;
+> > -
+> > -		start_blk += cluster_size - 1;
+> > -
+> > -		if (start_blk > last_blk)
+> > -			goto out;
+> > -
+> > -		goto prep_next;
+> > -	}
+> > -
+> > +skip_fill:
+> >   	if (map.m_pblk == COMPRESS_ADDR) {
+> 
+> Looks good, but one more thing I concern is how about detecting and
+> returning -EFSCORRUPTED for below corrupted metadata cases:
+> - [COMPRESS_ADDR, blkaddr, COMPRESS_ADDR, NEW_ADDR]
+> - [blkaddr, COMPRESS_ADDR, NULL_ADDR, NULL_ADDR]
 
-This is no longer the case so we can drop the table and
-also convert the driver to the new probe interface.
+Do we really need to catch this in fiemap? What about giving the current
+layout with warning message and setting NEED_FSCK?
 
-Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
----
- drivers/char/tpm/tpm_tis_i2c_cr50.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-index 44dde2fbe2fb..c89278103703 100644
---- a/drivers/char/tpm/tpm_tis_i2c_cr50.c
-+++ b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-@@ -639,12 +639,6 @@ static const struct tpm_class_ops cr50_i2c = {
- 	.req_canceled = &tpm_cr50_i2c_req_canceled,
- };
- 
--static const struct i2c_device_id cr50_i2c_table[] = {
--	{"cr50_i2c", 0},
--	{}
--};
--MODULE_DEVICE_TABLE(i2c, cr50_i2c_table);
--
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id cr50_i2c_acpi_id[] = {
- 	{ "GOOG0005", 0 },
-@@ -670,8 +664,7 @@ MODULE_DEVICE_TABLE(of, of_cr50_i2c_match);
-  * - 0:		Success.
-  * - -errno:	A POSIX error code.
-  */
--static int tpm_cr50_i2c_probe(struct i2c_client *client,
--			      const struct i2c_device_id *id)
-+static int tpm_cr50_i2c_probe(struct i2c_client *client)
- {
- 	struct tpm_i2c_cr50_priv_data *priv;
- 	struct device *dev = &client->dev;
-@@ -774,8 +767,7 @@ static int tpm_cr50_i2c_remove(struct i2c_client *client)
- static SIMPLE_DEV_PM_OPS(cr50_i2c_pm, tpm_pm_suspend, tpm_pm_resume);
- 
- static struct i2c_driver cr50_i2c_driver = {
--	.id_table = cr50_i2c_table,
--	.probe = tpm_cr50_i2c_probe,
-+	.probe_new = tpm_cr50_i2c_probe,
- 	.remove = tpm_cr50_i2c_remove,
- 	.driver = {
- 		.name = "cr50_i2c",
--- 
-2.32.0
-
+> 
+> Thanks,
+> 
+> >   		compr_cluster = true;
+> > -		start_blk++;
+> > -		goto prep_next;
+> > -	}
+> > -
+> > -	logical = blks_to_bytes(inode, start_blk);
+> > -	phys = blks_to_bytes(inode, map.m_pblk);
+> > -	size = blks_to_bytes(inode, map.m_len);
+> > -	flags = 0;
+> > -	if (map.m_flags & F2FS_MAP_UNWRITTEN)
+> > -		flags = FIEMAP_EXTENT_UNWRITTEN;
+> > +		count_in_cluster = 1;
+> > +	} else if (compr_appended) {
+> > +		unsigned int appended_blks = cluster_size -
+> > +						count_in_cluster + 1;
+> > +		size += blks_to_bytes(inode, appended_blks);
+> > +		start_blk += appended_blks;
+> > +		compr_cluster = false;
+> > +	} else {
+> > +		logical = blks_to_bytes(inode, start_blk);
+> > +		phys = __is_valid_data_blkaddr(map.m_pblk) ?
+> > +			blks_to_bytes(inode, map.m_pblk) : 0;
+> > +		size = blks_to_bytes(inode, map.m_len);
+> > +		flags = 0;
+> > +
+> > +		if (compr_cluster) {
+> > +			flags = FIEMAP_EXTENT_ENCODED;
+> > +			count_in_cluster += map.m_len;
+> > +			if (count_in_cluster == cluster_size) {
+> > +				compr_cluster = false;
+> > +				size += blks_to_bytes(inode, 1);
+> > +			}
+> > +		} else if (map.m_flags & F2FS_MAP_UNWRITTEN) {
+> > +			flags = FIEMAP_EXTENT_UNWRITTEN;
+> > +		}
+> > -	start_blk += bytes_to_blks(inode, size);
+> > +		start_blk += bytes_to_blks(inode, size);
+> > +	}
+> >   prep_next:
+> >   	cond_resched();
+> > 
