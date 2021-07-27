@@ -2,98 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142843D7001
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084353D700F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235741AbhG0HJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60538 "EHLO
+        id S235797AbhG0HLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234803AbhG0HJ4 (ORCPT
+        with ESMTP id S235612AbhG0HLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:09:56 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E3CC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:09:57 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 204F922234;
-        Tue, 27 Jul 2021 09:09:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1627369794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EOJFW/hcqRz7AGRgmL25IuiXB0pKdensyRUsdiGJkUc=;
-        b=FRBttgS1hRR69hjIKmi0XFB4cO3NI6oDhr6RpxoZAuCt0K7N0h3I9jS9ueGlrgYQ70SFNu
-        btGz4vze57Q466VTcBdC8Qwa82G8pu13diNNG7qBhRojLDvUdaA44WJcXGVvycpAA576I1
-        919MAB1DGYKZ9Tqvx1NmFVn7172rwyw=
+        Tue, 27 Jul 2021 03:11:04 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E24C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:11:03 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 68-20020a9d0f4a0000b02904b1f1d7c5f4so11579730ott.9
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T4jXR1i3kQRbLOtYJPUwTyuXvag/F8LgWkncG8JS3kw=;
+        b=ez4vH2iSyB0oa1ojnnUH/oppE2vInZw2DCUOsIJMczkkbCo0ZS4HOfnR+wwt08JB1/
+         7q1jjUTru/9XpQaSTbBlRwAZtowDWooKcMqnfiEfIf1Dr8CKgwrQCM/qlxXAhd7KKXkf
+         rU7MWbV7FnnRDNoOH5oR5N8n5zhUCreFiQaVQaR+w5K5l34zgfnqfD8MBJGoWoqZfyfM
+         Nu7zTgE2WC5ZGRr6Pevcop7KacBGQyqippbdLEG86KFE9yVcfj4cdhkbsSXLb+YuJG6O
+         AfhzUPokeRZQcTgonnXM/FDIkMgo7udEpWmVphlhnRQSPhM0vZsM21fHWLj//wG5unao
+         Tukg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T4jXR1i3kQRbLOtYJPUwTyuXvag/F8LgWkncG8JS3kw=;
+        b=sYsH9UMjVRfE76rAT4DyKpwh4LL6NTkAVHOHcoxclnm45/TCwMr7i5gNVQpavzhRmz
+         luIxDkF0HEyh18FQytLLydSH0+c5X6kBRkuSH0SDmGiA9hBdadNJAZYwXCjgSgiTxMNg
+         QQFtP6cngP7/ZtBpTzDgiishZ7Z3EaFNXPprVIKSEi3oog3Nw82ktLJ6JLI//Rl4W5vQ
+         xq5kl2q8dV62N4iMPceETSBmKFvtGbfy3xxg9nvPVlx63iN+KZ8kcKtQzIHsRyuIlBci
+         OeEDv7HTyeqK/y9H8ToI+rJcucFhrTQ3rYpnT8CkVSqgYfaU9TivcopNRSDpvv7tKMK4
+         SBJg==
+X-Gm-Message-State: AOAM531bUI27ljCkRv/PttSRriJ1xYonimg8b1x/HwOAakbrkDokI7EP
+        ESw1hsN3smpo77RMNrWA1jqtStv+44BOr60EM5O89Q==
+X-Google-Smtp-Source: ABdhPJzcx3FBzoI6gvI0bU/P3mLzZFisd8fyRX2ATyO+zv46x7mk7zcvY5u+dCccKFE1pqsqiD0miKrhnqQkq6ZE20Q=
+X-Received: by 2002:a9d:d04:: with SMTP id 4mr15077003oti.251.1627369862852;
+ Tue, 27 Jul 2021 00:11:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 27 Jul 2021 09:09:53 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync flags of mt25ql02g and
- mt25qu02g with other mt25q
-In-Reply-To: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
-References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210727040021.21371-1-Kuan-Ying.Lee@mediatek.com> <20210727040021.21371-2-Kuan-Ying.Lee@mediatek.com>
+In-Reply-To: <20210727040021.21371-2-Kuan-Ying.Lee@mediatek.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 27 Jul 2021 09:10:51 +0200
+Message-ID: <CANpmjNM03Pag9OvBBVnWnSBePRxsT+BvZtBwrh_61Qzmvp+dvA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kasan, mm: reset tag when access metadata
+To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Cc:     Nicholas Tang <nicholas.tang@mediatek.com>,
+        Andrew Yang <andrew.yang@mediatek.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-07-23 13:27, schrieb Matthias Schiffer:
-> All mt25q variants have the same features.
-> 
-> Unlike the smaller variants, no n25q with 2G exists, so we don't need 
-> to
-> match on the extended ID to distinguish n25q and mt25q series for these
-> models.
++Cc Catalin
 
-But why shouldn't we? What if there will be another flash with
-the same first three id bytes?
+On Tue, 27 Jul 2021 at 06:00, Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com> wrote:
+>
+> Hardware tag-based KASAN doesn't use compiler instrumentation, we
+> can not use kasan_disable_current() to ignore tag check.
+>
+> Thus, we need to reset tags when accessing metadata.
+>
+> Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
 
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+This looks reasonable, but the patch title is not saying this is
+kmemleak, nor does the description say what the problem is. What
+problem did you encounter? Was it a false positive?
+
+Perhaps this should have been "kmemleak, kasan: reset pointer tags to
+avoid false positives" ?
+
 > ---
->  drivers/mtd/spi-nor/micron-st.c | 6 +++---
+>  mm/kmemleak.c | 6 +++---
 >  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/micron-st.c 
-> b/drivers/mtd/spi-nor/micron-st.c
-> index c224e59820a1..d5baa8762c8d 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -181,11 +181,11 @@ static const struct flash_info st_parts[] = {
->  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
->  			      NO_CHIP_ERASE) },
->  	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
-> -			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
-> -			      NO_CHIP_ERASE) },
-
-This bothers me. I'm not sure how this will work. I see that
-chip erase is command 0xc7, but both the new and the old flash
-just supports 0xc3 (DIE ERASE). Did you test these changes?
-
-> +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
->  	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096,
->  			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-> -			      SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> 
->  	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
->  	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
-
--michael
+>
+> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+> index 228a2fbe0657..73d46d16d575 100644
+> --- a/mm/kmemleak.c
+> +++ b/mm/kmemleak.c
+> @@ -290,7 +290,7 @@ static void hex_dump_object(struct seq_file *seq,
+>         warn_or_seq_printf(seq, "  hex dump (first %zu bytes):\n", len);
+>         kasan_disable_current();
+>         warn_or_seq_hex_dump(seq, DUMP_PREFIX_NONE, HEX_ROW_SIZE,
+> -                            HEX_GROUP_SIZE, ptr, len, HEX_ASCII);
+> +                            HEX_GROUP_SIZE, kasan_reset_tag((void *)ptr), len, HEX_ASCII);
+>         kasan_enable_current();
+>  }
+>
+> @@ -1171,7 +1171,7 @@ static bool update_checksum(struct kmemleak_object *object)
+>
+>         kasan_disable_current();
+>         kcsan_disable_current();
+> -       object->checksum = crc32(0, (void *)object->pointer, object->size);
+> +       object->checksum = crc32(0, kasan_reset_tag((void *)object->pointer), object->size);
+>         kasan_enable_current();
+>         kcsan_enable_current();
+>
+> @@ -1246,7 +1246,7 @@ static void scan_block(void *_start, void *_end,
+>                         break;
+>
+>                 kasan_disable_current();
+> -               pointer = *ptr;
+> +               pointer = *(unsigned long *)kasan_reset_tag((void *)ptr);
+>                 kasan_enable_current();
+>
+>                 untagged_ptr = (unsigned long)kasan_reset_tag((void *)pointer);
+> --
+> 2.18.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210727040021.21371-2-Kuan-Ying.Lee%40mediatek.com.
