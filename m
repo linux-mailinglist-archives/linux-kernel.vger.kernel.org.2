@@ -2,104 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0366D3D6F57
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C673D6E7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 07:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235775AbhG0GV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
+        id S235073AbhG0F6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 01:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235687AbhG0GVY (ORCPT
+        with ESMTP id S235378AbhG0F57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:21:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D35EC061757;
-        Mon, 26 Jul 2021 23:21:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=sXn6CESfDSf/BahsG4NV3slh6uN4B0wtJRs8tnEF8cc=; b=b6S5pZ8YZugLlKe23xpGWHEacK
-        rJWFacoPQ3SENX6BdORb9E1EIGc3LOWsE4ye1Qz6Rgq8/Nm3MTBVab03nLghvWmodnV7qRD/VegZO
-        Nc/IupSnMO3IfYbYzoZfwNNn6+yeGi8Y9YCGFlDZf0azTLuBnqAl1oQSpOrj0Sv6yVgM5lSwRDmY8
-        CvuIBF+Gw8qXu+JOy3a1xNdamEzFlMT5ihM9JsuTIU4tNaPw6O1G0ro4vkSOVq80/VRw9U8bPwnD9
-        ZoylSuD5dOIsCODz+KtfXbKyAbewoSj1qW04vbX289FEkjHB5VScjCZC0CcqgX3S4Rg5yJ//TUaz3
-        0lXuV9kw==;
-Received: from [2001:4bb8:184:87c5:b7fb:1299:a9e5:ff56] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8GP5-00EjY8-Up; Tue, 27 Jul 2021 06:18:08 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geoff Levand <geoff@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Mike Snitzer <snitzer@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        ceph-devel@vger.kernel.org, linux-arch@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 13/15] block: use memcpy_from_bvec in __blk_queue_bounce
+        Tue, 27 Jul 2021 01:57:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47AFC061371
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 22:56:48 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1m8G57-00061A-NF; Tue, 27 Jul 2021 07:56:45 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1m8G56-00069i-OQ; Tue, 27 Jul 2021 07:56:44 +0200
 Date:   Tue, 27 Jul 2021 07:56:44 +0200
-Message-Id: <20210727055646.118787-14-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210727055646.118787-1-hch@lst.de>
-References: <20210727055646.118787-1-hch@lst.de>
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     alexandru.tachici@analog.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org
+Subject: Re: [PATCH v2 1/7] ethtool: Add 10base-T1L link mode entries
+Message-ID: <20210727055644.yqwskkr4htcmwzem@pengutronix.de>
+References: <20210712130631.38153-1-alexandru.tachici@analog.com>
+ <20210712130631.38153-2-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210712130631.38153-2-alexandru.tachici@analog.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 07:54:45 up 236 days, 20:01, 12 users,  load average: 0.17, 0.07,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rewrite the actual bounce buffering loop in __blk_queue_bounce to that
-the memcpy_to_bvec helper can be used to perform the data copies.
+On Mon, Jul 12, 2021 at 04:06:25PM +0300, alexandru.tachici@analog.com wrote:
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
+> 
+> Add entries for the 10base-T1L full and half duplex supported modes.
+> 
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+> ---
+>  drivers/net/phy/phy-core.c   | 4 +++-
+>  include/uapi/linux/ethtool.h | 2 ++
+>  net/ethtool/common.c         | 2 ++
+>  3 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
+> index 2870c33b8975..fd9c83ce10fc 100644
+> --- a/drivers/net/phy/phy-core.c
+> +++ b/drivers/net/phy/phy-core.c
+> @@ -13,7 +13,7 @@
+>   */
+>  const char *phy_speed_to_str(int speed)
+>  {
+> -	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 92,
+> +	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 94,
+>  		"Enum ethtool_link_mode_bit_indices and phylib are out of sync. "
+>  		"If a speed or mode has been added please update phy_speed_to_str "
+>  		"and the PHY settings array.\n");
+> @@ -176,6 +176,8 @@ static const struct phy_setting settings[] = {
+>  	/* 10M */
+>  	PHY_SETTING(     10, FULL,     10baseT_Full		),
+>  	PHY_SETTING(     10, HALF,     10baseT_Half		),
+> +	PHY_SETTING(     10, FULL,     10baseT1L_Full		),
+> +	PHY_SETTING(     10, HALF,     10baseT1L_Half		),
+>  };
+>  #undef PHY_SETTING
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
----
- block/bounce.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+IEEE 802.3cg-2019 do not define half duplex support for T1L, only for
+T1S. IMO, 10baseT1L_Half can be dropped.
 
-diff --git a/block/bounce.c b/block/bounce.c
-index 7e9e666c04dc..05fc7148489d 100644
---- a/block/bounce.c
-+++ b/block/bounce.c
-@@ -239,24 +239,19 @@ void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig)
- 	 * because the 'bio' is single-page bvec.
- 	 */
- 	for (i = 0, to = bio->bi_io_vec; i < bio->bi_vcnt; to++, i++) {
--		struct page *page = to->bv_page;
-+		struct page *bounce_page;
- 
--		if (!PageHighMem(page))
-+		if (!PageHighMem(to->bv_page))
- 			continue;
- 
--		to->bv_page = mempool_alloc(&page_pool, GFP_NOIO);
--		inc_zone_page_state(to->bv_page, NR_BOUNCE);
-+		bounce_page = mempool_alloc(&page_pool, GFP_NOIO);
-+		inc_zone_page_state(bounce_page, NR_BOUNCE);
- 
- 		if (rw == WRITE) {
--			char *vto, *vfrom;
--
--			flush_dcache_page(page);
--
--			vto = page_address(to->bv_page) + to->bv_offset;
--			vfrom = kmap_atomic(page) + to->bv_offset;
--			memcpy(vto, vfrom, to->bv_len);
--			kunmap_atomic(vfrom);
-+			flush_dcache_page(to->bv_page);
-+			memcpy_from_bvec(page_address(bounce_page), to);
- 		}
-+		to->bv_page = bounce_page;
- 	}
- 
- 	trace_block_bio_bounce(*bio_orig);
+
+> diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
+> index 67aa7134b301..8a905466d7dc 100644
+> --- a/include/uapi/linux/ethtool.h
+> +++ b/include/uapi/linux/ethtool.h
+> @@ -1659,6 +1659,8 @@ enum ethtool_link_mode_bit_indices {
+>  	ETHTOOL_LINK_MODE_400000baseCR4_Full_BIT	 = 89,
+>  	ETHTOOL_LINK_MODE_100baseFX_Half_BIT		 = 90,
+>  	ETHTOOL_LINK_MODE_100baseFX_Full_BIT		 = 91,
+> +	ETHTOOL_LINK_MODE_10baseT1L_Half_BIT		 = 92,
+> +	ETHTOOL_LINK_MODE_10baseT1L_Full_BIT		 = 93,
+>  	/* must be last entry */
+>  	__ETHTOOL_LINK_MODE_MASK_NBITS
+>  };
+> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+> index f9dcbad84788..5b93d888fd83 100644
+> --- a/net/ethtool/common.c
+> +++ b/net/ethtool/common.c
+> @@ -199,6 +199,8 @@ const char link_mode_names[][ETH_GSTRING_LEN] = {
+>  	__DEFINE_LINK_MODE_NAME(400000, CR4, Full),
+>  	__DEFINE_LINK_MODE_NAME(100, FX, Half),
+>  	__DEFINE_LINK_MODE_NAME(100, FX, Full),
+> +	__DEFINE_LINK_MODE_NAME(10, T1L, Half),
+> +	__DEFINE_LINK_MODE_NAME(10, T1L, Full),
+>  };
+>  static_assert(ARRAY_SIZE(link_mode_names) == __ETHTOOL_LINK_MODE_MASK_NBITS);
+>  
+> -- 
+> 2.25.1
+> 
+> 
+
 -- 
-2.30.2
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
