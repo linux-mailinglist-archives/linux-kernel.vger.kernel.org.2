@@ -2,104 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0C43D6CF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5493D6CF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbhG0C6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:58:43 -0400
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:39840 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235138AbhG0C6m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:58:42 -0400
-Received: by mail-pl1-f172.google.com with SMTP id e5so12257123pld.6;
-        Mon, 26 Jul 2021 20:39:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sZkIhanFYkY2vIMYu6ANcE0looF7hlq8r4h6+faW4J0=;
-        b=FBg4Yi9D1YHrAeIzMzFXtaFFR3iQE0or8//6sJoCuKdMC3rRio2ALmvaMx7f3u+NPw
-         rvimvexGMpFRRUSpwOtQuV4cqsmjqB+C2LSSfi2mJpD1ZdWPNW7iAqoQvBMXyNJAaj/q
-         e7bz0T+kljeT/uY15kqH+cuoxiZqlL4GHzM2DDwUtGRnTrfe0WIdaX6hoxnGWBS+h8Ek
-         UHDBgFW+UqVhKnAwDY7JcXSXKDzEUla+BqA+jIBAYzHHH0OHSYS/UxNI8T3yxM56hPTc
-         CSRLuUIbee0/AzhtOBZgfBiSoSCNKA+LOXlr+CPSdLn49OUM7yPtLHH0O2O2mi6bsE50
-         VFoQ==
-X-Gm-Message-State: AOAM532FDVgIx6mlriiSfWA3I3w0/Wxzx/9b99l7sn4TwE0xAGknEXnc
-        efkSY5zqTInJ8tQMKCryi4o=
-X-Google-Smtp-Source: ABdhPJwcN/DeItXsgz5Ve8vngqdPqGw3Q61lpvRxCQzLQN1T3d5HD2d+CXKNqI1w2Wzx+037CnbA1g==
-X-Received: by 2002:aa7:9ec3:0:b029:32b:4eb5:4bad with SMTP id r3-20020aa79ec30000b029032b4eb54badmr20957694pfq.6.1627357147654;
-        Mon, 26 Jul 2021 20:39:07 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:d009:b5bd:a16e:1de3? ([2601:647:4000:d7:d009:b5bd:a16e:1de3])
-        by smtp.gmail.com with ESMTPSA id b3sm1585811pfi.179.2021.07.26.20.39.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 20:39:07 -0700 (PDT)
-Subject: Re: [PATCH v2] scsi: Fix the issue that the disk capacity set to zero
-To:     lijinlin3@huawei.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     john.garry@huawei.com, yanaijie@huawei.com, linfeilong@huawei.com,
-        wubo40@huawei.com
-References: <20210727034455.1494960-1-lijinlin3@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <54403480-2a57-ba54-57eb-927d706cafed@acm.org>
-Date:   Mon, 26 Jul 2021 20:39:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234810AbhG0C7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:59:50 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:42904 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234608AbhG0C7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 22:59:44 -0400
+Received: from BC-Mail-EX08.internal.baidu.com (unknown [172.31.51.48])
+        by Forcepoint Email with ESMTPS id 62CBB2F1BE2BD92E2D04;
+        Tue, 27 Jul 2021 11:40:08 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-EX08.internal.baidu.com (172.31.51.48) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Tue, 27 Jul 2021 11:40:08 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 27 Jul 2021 11:40:07 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <alex.williamson@redhat.com>, <cohuck@redhat.com>, <jgg@ziepe.ca>,
+        <eric.auger@redhat.com>, <kevin.tian@intel.com>,
+        <giovanni.cabiddu@intel.com>, <mgurtovoy@nvidia.com>,
+        <jannh@google.com>
+CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Cai Huoqing <caihuoqing@baidu.com>
+Subject: [PATCH] vfio: Add "#ifdef CONFIG_MMU" for vma operations
+Date:   Tue, 27 Jul 2021 11:40:00 +0800
+Message-ID: <20210727034000.547-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210727034455.1494960-1-lijinlin3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex12.internal.baidu.com (172.31.51.52) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 8:44 PM, lijinlin3@huawei.com wrote:
-> From: lijinlin <lijinlin3@huawei.com>
-> 
-> After add physical volumes to a volume group through vgextend, kernel
-> will rescan partitions, which will read the capacity of the device.
-> If the device status is set to offline through sysfs at this time,
-> read capacity command will return a result which the host byte is
-> DID_NO_CONNECT, the capacity of the device will be set to zero in
-> read_capacity_error(). However, the capacity of the device can't be
-> reread after reset the device status to running, is still zero.
-> 
-> Fix this issue by rescan device when the device state changes to
-> SDEV_RUNNING.
-> 
-> Signed-off-by: lijinlin <lijinlin3@huawei.com>
-> Signed-off-by: Wu Bo <wubo40@huawei.com>
-> ---
->  drivers/scsi/scsi_sysfs.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-> index 32489d25158f..ae9bfc658203 100644
-> --- a/drivers/scsi/scsi_sysfs.c
-> +++ b/drivers/scsi/scsi_sysfs.c
-> @@ -807,11 +807,14 @@ store_state_field(struct device *dev, struct device_attribute *attr,
->  	mutex_lock(&sdev->state_mutex);
->  	ret = scsi_device_set_state(sdev, state);
->  	/*
-> -	 * If the device state changes to SDEV_RUNNING, we need to run
-> -	 * the queue to avoid I/O hang.
-> +	 * If the device state changes to SDEV_RUNNING, we need to
-> +	 * rescan the device to revalidate it, and run the queue to
-> +	 * avoid I/O hang.
->  	 */
-> -	if (ret == 0 && state == SDEV_RUNNING)
-> +	if (ret == 0 && state == SDEV_RUNNING) {
-> +		scsi_rescan_device(dev);
->  		blk_mq_run_hw_queues(sdev->request_queue, true);
-> +	}
->  	mutex_unlock(&sdev->state_mutex);
->  
->  	return ret == 0 ? count : -EINVAL;
+Add "#ifdef CONFIG_MMU",
+because vma mmap and vm_operations_struct depend on MMU
 
-In the future, please mention what has been changed between v1 and v2
-under the three dashes ("---"). Anyway:
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/vfio/pci/vfio_pci.c | 4 ++++
+ drivers/vfio/vfio.c         | 8 ++++++++
+ 2 files changed, 12 insertions(+)
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index 318864d52837..d49b27f15a3f 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -1559,6 +1559,7 @@ static int __vfio_pci_add_vma(struct vfio_pci_device *vdev,
+  * Zap mmaps on open so that we can fault them in on access and therefore
+  * our vma_list only tracks mappings accessed since last zap.
+  */
++#ifdef CONFIG_MMU
+ static void vfio_pci_mmap_open(struct vm_area_struct *vma)
+ {
+ 	zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);
+@@ -1701,6 +1702,7 @@ static int vfio_pci_mmap(struct vfio_device *core_vdev, struct vm_area_struct *v
+ 
+ 	return 0;
+ }
++#endif /* CONFIG_MMU */
+ 
+ static void vfio_pci_request(struct vfio_device *core_vdev, unsigned int count)
+ {
+@@ -1875,7 +1877,9 @@ static const struct vfio_device_ops vfio_pci_ops = {
+ 	.ioctl		= vfio_pci_ioctl,
+ 	.read		= vfio_pci_read,
+ 	.write		= vfio_pci_write,
++#ifdef CONFIG_MMU
+ 	.mmap		= vfio_pci_mmap,
++#endif /* CONFIG_MMU */
+ 	.request	= vfio_pci_request,
+ 	.match		= vfio_pci_match,
+ };
+diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+index 02cc51ce6891..2fb2de8d4d13 100644
+--- a/drivers/vfio/vfio.c
++++ b/drivers/vfio/vfio.c
+@@ -1182,6 +1182,7 @@ static ssize_t vfio_fops_write(struct file *filep, const char __user *buf,
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_MMU
+ static int vfio_fops_mmap(struct file *filep, struct vm_area_struct *vma)
+ {
+ 	struct vfio_container *container = filep->private_data;
+@@ -1194,6 +1195,7 @@ static int vfio_fops_mmap(struct file *filep, struct vm_area_struct *vma)
+ 
+ 	return ret;
+ }
++#endif /* CONFIG_MMU */
+ 
+ static const struct file_operations vfio_fops = {
+ 	.owner		= THIS_MODULE,
+@@ -1203,7 +1205,9 @@ static const struct file_operations vfio_fops = {
+ 	.write		= vfio_fops_write,
+ 	.unlocked_ioctl	= vfio_fops_unl_ioctl,
+ 	.compat_ioctl	= compat_ptr_ioctl,
++#ifdef CONFIG_MMU
+ 	.mmap		= vfio_fops_mmap,
++#endif /* CONFIG_MMU */
+ };
+ 
+ /**
+@@ -1601,6 +1605,7 @@ static ssize_t vfio_device_fops_write(struct file *filep,
+ 	return device->ops->write(device, buf, count, ppos);
+ }
+ 
++#ifdef CONFIG_MMU
+ static int vfio_device_fops_mmap(struct file *filep, struct vm_area_struct *vma)
+ {
+ 	struct vfio_device *device = filep->private_data;
+@@ -1610,6 +1615,7 @@ static int vfio_device_fops_mmap(struct file *filep, struct vm_area_struct *vma)
+ 
+ 	return device->ops->mmap(device, vma);
+ }
++#endif /* CONFIG_MMU */
+ 
+ static const struct file_operations vfio_device_fops = {
+ 	.owner		= THIS_MODULE,
+@@ -1618,7 +1624,9 @@ static const struct file_operations vfio_device_fops = {
+ 	.write		= vfio_device_fops_write,
+ 	.unlocked_ioctl	= vfio_device_fops_unl_ioctl,
+ 	.compat_ioctl	= compat_ptr_ioctl,
++#ifdef CONFIG_MMU
+ 	.mmap		= vfio_device_fops_mmap,
++#endif /* CONFIG_MMU */
+ };
+ 
+ /**
+-- 
+2.25.1
+
