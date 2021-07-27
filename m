@@ -2,194 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752F83D7252
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349C43D7256
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236114AbhG0JsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:48:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59509 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235990AbhG0JsL (ORCPT
+        id S236046AbhG0Jum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:50:42 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:52179 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235950AbhG0Jul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:48:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627379291;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lcHYy4rfAcV2BB+JWTtejLxqwQCZQnvr/lBGXuRnna0=;
-        b=NjSNlINiuMFr/Z9u2lDAN+76rmLcFucfsLniDFUv3Bojt2a195W7EOWW/qSOoPoHmJRRDL
-        70jjAjE+R5MoP9frs9s6IGhcabmbk8NbupiHo+8fFIhPK9AcRlKBrl5uYKzWt2KV3ap7YE
-        bVhEKtII9TygHwS7IwgI3QqrrVhei/w=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-IapEEis5NUC4oMQuFGYzUA-1; Tue, 27 Jul 2021 05:48:10 -0400
-X-MC-Unique: IapEEis5NUC4oMQuFGYzUA-1
-Received: by mail-wm1-f71.google.com with SMTP id o67-20020a1ca5460000b0290223be6fd23dso924560wme.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:48:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=lcHYy4rfAcV2BB+JWTtejLxqwQCZQnvr/lBGXuRnna0=;
-        b=qBo034aDp1didJPixh3eaKoGrIjpmWqDg+g9QDi7Ew2VxYLrElnltzU04MYwPmfZXW
-         MnDIOJ6889cvWbaY7vQD4wHbkjRmKO8inKNlxW8nfAmNQJqD+O/uzaf/775MLNH5jGJy
-         Q5Y+V7/j2PIeqDjkAuSjkouvzILoQzLU/7SsLmUu9fVk5gt96nsIZ7CW+uBVUaxu5IMy
-         PgUkCB2NVZam9XwJMQSFqDQmzEZ2oKHhahEW5StgrvjkDv/UdFnH05jdEEXDQfoyA85V
-         gCWs2jrvr6KGhjP1Z8RDR6OIpohvT+LijFnmGfXuJsTpsJ8sQp8goqs7uJ1iHrGnc+TM
-         ZdbQ==
-X-Gm-Message-State: AOAM530r9hUB/OCYqK79dQbJP9PVTwS75ROBG9VB9ZXpu6uSTvKG70uR
-        NECSfimkXnN3Pp8nzEKHuFiJJAIW6uiKObPcUCePCKbQwTHQ3QNI9lTmrNMy6cT3XPJ8C1Jr4nu
-        fbDryrdRnApp4hsYgry6FL8YZ
-X-Received: by 2002:adf:fbce:: with SMTP id d14mr23630131wrs.236.1627379288825;
-        Tue, 27 Jul 2021 02:48:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyW+5bsug3BLc5GikuPVa91Lj121RhsP8kBvehx197gg7taI+A14JR9q78R+cw9t8XabRPdHg==
-X-Received: by 2002:adf:fbce:: with SMTP id d14mr23630096wrs.236.1627379288633;
-        Tue, 27 Jul 2021 02:48:08 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23c36.dip0.t-ipconnect.de. [79.242.60.54])
-        by smtp.gmail.com with ESMTPSA id e3sm2719905wrw.51.2021.07.27.02.48.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 02:48:08 -0700 (PDT)
-To:     Evan Green <evgreen@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-api@vger.kernel.org, Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210726171106.v4.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v4] mm: Enable suspend-only swap spaces
-Message-ID: <d6668437-5c3b-2dff-bb95-4e3132d13711@redhat.com>
-Date:   Tue, 27 Jul 2021 11:48:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 27 Jul 2021 05:50:41 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id AC4333200921;
+        Tue, 27 Jul 2021 05:50:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 27 Jul 2021 05:50:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-id:content-type:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=J3f2eYP/ypsMclzmndLPiDcKO9gMzTgRakt9f1pTvUg=; b=ioG4IDXG
+        Anz/sJRnt6VaB5HnV6qUmyr7uuV29HlVhBu9Xm1yrHhGolhiLHr0rL6bBs2/cD0D
+        PBGwhlXBOfL0WFqeWWMAfV2AB+Thcghu9eLnwECGhYbeKJb3H/uOimPRugYECtDB
+        WZhdT/dDfue90eJdph0GPlKMLVpbI9pc+9hbME9xeFQOwJ3oSuTdD7prfxZ9VFtI
+        kGkuWG+cFOgP3uiIEU3Gtno3YLyfPFXrJG7M2Mc9bdpLQ7/PGgVUlAi+lZfgZi+J
+        /2yaGGdF6je0giF60J+FX3r78y1+XMb4cREbu1B8QNNx4fnNk8hAoied0Si/VVCV
+        ruFxXZRhrm39LA==
+X-ME-Sender: <xms:79b_YEJ94qRyzKucpzPBInJUiCu6PSF7JDx1jSPzf_P2oNClHoy9Nw>
+    <xme:79b_YEK9xq02f3Lgq7l61TghPt-oVJC4FnG0aJG3L_ccwlfJEh1jh7yDh0-CLWZP_
+    jTxVG9pkkOOALUPI_U>
+X-ME-Received: <xmr:79b_YEs54DfL_ExZ015DBzC8ogREg4Uzwa0zlMCP5mjs_EvZMxH1C3XaqJcSQvyvES_fF1LieaU88JflOsxYMT8ZHWEI6HeIpro>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeejgdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
+    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:79b_YBYz-V0dHBW1gpxxJJ3kFnkujo54QJ6dmxVjRq-HoIwl8gS8OQ>
+    <xmx:79b_YLZIjE8aWs_gGELOuZbTmBI95FpvpMmNcR1JTyvzpdDaRkvusw>
+    <xmx:79b_YNAVvUTw7_kU-ZSHEuHraEBQo9qgd4Uu0xRhSYYUA5cueehqAw>
+    <xmx:8Nb_YKl2V6s2ugSLqtHHGf0A8h7XCjq2dAaSKfkmwvPB2Hr_JV7uXQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 27 Jul 2021 05:50:36 -0400 (EDT)
+Date:   Tue, 27 Jul 2021 19:50:39 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 1/5] nubus: Simplify check in remove callback
+In-Reply-To: <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de>
+Message-ID: <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
+References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de> <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210726171106.v4.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; BOUNDARY="-1463811774-245338131-1627379007=:27"
+Content-ID: <7a42c831-acd5-2e2f-28c2-99efc32374e2@nippy.intranet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.07.21 02:12, Evan Green wrote:
-> Add a new SWAP_FLAG_HIBERNATE_ONLY that adds a swap region but refuses
-> to allow generic swapping to it. This region can still be wired up for
-> use in suspend-to-disk activities, but will never have regular pages
-> swapped to it. This flag will be passed in by utilities like swapon(8),
-> usage would probably look something like: swapon -o hibernate /dev/sda2.
-> 
-> Currently it's not possible to enable hibernation without also enabling
-> generic swap for a given area. One semi-workaround for this is to delay
-> the call to swapon() until just before attempting to hibernate, and then
-> call swapoff() just after hibernate completes. This is somewhat kludgy,
-> and also doesn't really work to keep swap out of the hibernate region.
-> When hibernate begins, it starts by allocating a large chunk of memory
-> for itself. This often ends up forcing a lot of data out into swap. By
-> this time the hibernate region is eligible for generic swap, so swap
-> ends up leaking into the hibernate region even with the workaround.
-> 
-> There are a few reasons why usermode might want to be able to
-> exclusively steer swap and hibernate. One reason relates to SSD wearing.
-> Hibernate's endurance and speed requirements are different from swap.
-> It may for instance be advantageous to keep hibernate in primary
-> storage, but put swap in an SLC namespace. These namespaces are faster
-> and have better endurance, but cost 3-4x in terms of capacity.
-> Exclusively steering hibernate and swap enables system designers to
-> accurately partition their storage without either wearing out their
-> primary storage, or overprovisioning their fast swap area.
-> 
-> Another reason to allow exclusive steering has to do with security.
-> The requirements for designing systems with resilience against
-> offline attacks are different between swap and hibernate. Swap
-> effectively requires a dictionary of hashes, as pages can be added and
-> removed arbitrarily, whereas hibernate only needs a single hash for the
-> entire image. If you've set up block-level integrity for swap and
-> image-level integrity for hibernate, then allowing swap blocks to
-> possibly leak out to the hibernate region is problematic, since it
-> creates swap pages not protected by any integrity.
-> 
-> Swap regions with SWAP_FLAG_HIBERNATE_ONLY set will not appear in
-> /proc/meminfo under SwapTotal and SwapFree, since they are not usable as
-> general swap. These regions do still appear in /proc/swaps.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Right, and they also don't account towards the memory overcommit 
-calculations.
+---1463811774-245338131-1627379007=:27
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <eb76bb50-e32-3e93-cf95-e39ea524d11f@nippy.intranet>
 
-Thanks for extending the patch description!
+On Tue, 27 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
 
-[...]
+> The driver core only calls a remove callback when the device was
+> successfully bound (aka probed) before. So dev->driver is never NULL.
+>=20
 
-> +	if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY) {
-> +		if (IS_ENABLED(CONFIG_HIBERNATION)) {
-> +			if (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS)
-> +				return -EINVAL;
-> +
-> +		} else {
-> +			return -EINVAL;
-> +		}
-> +	}
+Are you sure dev->driver is non-NULL for the lifetime of the device?
+A quick glance at device_reprobe() makes me wonder about that.
 
-We could do short
+> Apart from that, the compiler might already assume dev->driver being
+> non-NULL after to_nubus_driver(dev->driver) was called.
+>=20
 
-if ((swap_flags & SWAP_FLAG_HIBERNATE_ONLY) &&
-      (!IS_ENABLED(CONFIG_HIBERNATION) ||
-       (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS)))
-	return -EINVAL;
+I don't understand how a compiler can make that assumption. But then, I=20
+don't know why compilers do a lot of the things they do...
 
-or
-
-if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY))
-	if (!IS_ENABLED(CONFIG_HIBERNATION) ||
-             (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS))
-		return -EINVAL;
-
-> +
->   	if (!capable(CAP_SYS_ADMIN))
->   		return -EPERM;
->   
-> @@ -3335,16 +3366,20 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->   	if (swap_flags & SWAP_FLAG_PREFER)
->   		prio =
->   		  (swap_flags & SWAP_FLAG_PRIO_MASK) >> SWAP_FLAG_PRIO_SHIFT;
-> +
-> +	if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY)
-> +		p->flags |= SWP_HIBERNATE_ONLY;
->   	enable_swap_info(p, prio, swap_map, cluster_info, frontswap_map);
->   
-> -	pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s\n",
-> +	pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s%s\n",
->   		p->pages<<(PAGE_SHIFT-10), name->name, p->prio,
->   		nr_extents, (unsigned long long)span<<(PAGE_SHIFT-10),
->   		(p->flags & SWP_SOLIDSTATE) ? "SS" : "",
->   		(p->flags & SWP_DISCARDABLE) ? "D" : "",
->   		(p->flags & SWP_AREA_DISCARD) ? "s" : "",
->   		(p->flags & SWP_PAGE_DISCARD) ? "c" : "",
-> -		(frontswap_map) ? "FS" : "");
-> +		(frontswap_map) ? "FS" : "",
-> +		(p->flags & SWP_HIBERNATE_ONLY) ? "H" : "");
->   
->   	mutex_unlock(&swapon_mutex);
->   	atomic_inc(&proc_poll_event);
-> 
-
-Looks like the cleanest alternative to me, as long as we don't want to 
-invent new interfaces.
-
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> ---
+>  drivers/nubus/bus.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
+> index d9d04f27f89b..17fad660032c 100644
+> --- a/drivers/nubus/bus.c
+> +++ b/drivers/nubus/bus.c
+> @@ -33,7 +33,7 @@ static void nubus_device_remove(struct device *dev)
+>  {
+>  =09struct nubus_driver *ndrv =3D to_nubus_driver(dev->driver);
+> =20
+> -=09if (dev->driver && ndrv->remove)
+> +=09if (ndrv->remove)
+>  =09=09ndrv->remove(to_nubus_board(dev));
+>  }
+> =20
+>=20
+---1463811774-245338131-1627379007=:27--
