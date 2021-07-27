@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1895F3D7CFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B9B3D7D01
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhG0SBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:01:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59641 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229962AbhG0SBW (ORCPT
+        id S231796AbhG0SBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231640AbhG0SBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:01:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627408882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l3ve2LBl56pycpmfaPjVOw8bmB5e513L10q/E/QV624=;
-        b=MDLz+FGeaEoRAOop+I2WPhQIiBEpOdEUtaF3IUfR7ZxGA6qJnshjDGAD4l0ikzeLlBXSbl
-        FfUQecF3ZnoSInmjI/y7U8Zqp1+JkZi+xR30pP5qWnNDe7XnCHKLY0AxuMVsigF3hPi96o
-        9psN6hZRE8g3w/F0IchiG2BzMVOLqhk=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-DYz3pAuEPi6F5NfwwShdzA-1; Tue, 27 Jul 2021 14:01:20 -0400
-X-MC-Unique: DYz3pAuEPi6F5NfwwShdzA-1
-Received: by mail-ot1-f70.google.com with SMTP id j16-20020a05683015d0b02904d6c4f8a8a3so5542454otr.22
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 11:01:20 -0700 (PDT)
+        Tue, 27 Jul 2021 14:01:33 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAE6C061757;
+        Tue, 27 Jul 2021 11:01:32 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id c9so9423339qkc.13;
+        Tue, 27 Jul 2021 11:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C9JFZTd7epxUdjz5mjCcqtw1DnTZsiEL+OlgWPM6KCc=;
+        b=IoaADvWZXTGElquatyuM1cZEFGGGzZWpRqIIK6tB6ehOKJQWjnvwefzWttbet79vt9
+         iN17kvEVk5WSVP95WOCNgJRMZZlc/VPPkR0Wtc1/SqzEfcHm8GpyR0sNE4gphc8qKqEA
+         QVPlOfM+L38cbzRX1rMG6SCybdw7JZo/MBmDpyed28u48s1Qbs71x9NXU24AfrYSXIVE
+         6mmVDqth3aNBkLsFCP8TzUDOOBSCoL8pRlCmTsCIV8sKiqAbugFcC3NHMVJlr4tWa1Kl
+         r/0B3SI0ukZFWC26dHwnj8AItbtw25FbVZkfROBpvdVyZoOCSPi8MA3ycB3CVvLsWaJZ
+         ZfZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=l3ve2LBl56pycpmfaPjVOw8bmB5e513L10q/E/QV624=;
-        b=afd29VudQlQtIEFws6MD0JbBI37J6QDf9sien0QsMiwlmFCZKAMe051KJz+XixCNaY
-         +pafjV5GcLD9ZYh5QK2GFKryY0UDwbIA3uOS0TexM6dC4aNqR4ci/Ui9FLUwt1lgK+FN
-         9ttytHizLf2ctWSd23Cj/q0+/nOR9KMzqAbYcGl9iJ6EsteCfawW8ECemeQDxis/AZLc
-         xtnWDo6V/CubJUXwJbm7+7Xix4WaI1mXR7AJU98KmtUGMiZIstvg0xpyAyWy0y8T0ONX
-         waKkOZHbgc9L8yJYm3JutEsaS/TmZYLQAtt24qYbgJgM93QSMXHTtyE9vEyEFNveLIcw
-         aR1A==
-X-Gm-Message-State: AOAM530OdbncqxGf+W75qfwYWjlXHSrmszeSqoJ6d16Y//rpI6NhMoH6
-        cE1biP910S/IqilQWQflpiW2YxEXt/+OtF4GTr0ifLCYpa80KRlwgX9FhSScAJVWWaWmH0clps6
-        5R20amMNfYdbujtlNb3bqPz82
-X-Received: by 2002:a05:6830:1290:: with SMTP id z16mr16147238otp.28.1627408879833;
-        Tue, 27 Jul 2021 11:01:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxceHuuEWZyk5OIY/tJfuObz6ctGzXsZrPVW7DXIyY1hsrLGqacGF+MYgp+dgviBsUHRwmow==
-X-Received: by 2002:a05:6830:1290:: with SMTP id z16mr16147135otp.28.1627408878209;
-        Tue, 27 Jul 2021 11:01:18 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id y76sm664344oie.55.2021.07.27.11.01.17
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=C9JFZTd7epxUdjz5mjCcqtw1DnTZsiEL+OlgWPM6KCc=;
+        b=Wok76ul1cdnKw4R2HqkidcNkgZQRO/wmKJwzG9BFfZja6dp4aS71/y249YvppBmz8r
+         jCSg5FmiLpXnz/Z69HDTJ0Cwo948J9nCVwlWeqXvED/FcFPi1JVfWEKwbiEngPaIZ/Re
+         rcRygunWGVmHFJb5XExxoR5qJA9lZuIez20LJdN9XjhQn9mhXF8IyvB6PIkd/SZTFCxu
+         CRmKTb/8LmTkR6hI6cRqHTVtwm8qNrFjzuAL6tps16q4PVIwPMkynm//cE0CypgMwO36
+         u5pE2Aj49AwHYZ6iqzpkOHpqEVjaNIeJeaEof/fBxWKGXQPkponG3OL9/LdQ7f9WFHUK
+         h4gQ==
+X-Gm-Message-State: AOAM530bJ6PYNK5n4Z8NOTcXOwTXUbo+ba8b4WCFVfqWKkKNnQv/IEA4
+        gGweso9KvkzvQvnU30PSSj0=
+X-Google-Smtp-Source: ABdhPJxI3C6Ng5zNwARRpt0d+yL94eDevch4mT+Lz+u/PqLpEMU8aatQCQOffxCIXWzWiwNiTSxihA==
+X-Received: by 2002:a37:a3cd:: with SMTP id m196mr23548500qke.121.1627408891461;
+        Tue, 27 Jul 2021 11:01:31 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n5sm2134436qkp.116.2021.07.27.11.01.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 11:01:17 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 12:01:16 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     Cai Huoqing <caihuoqing@baidu.com>, jgg@ziepe.ca,
-        eric.auger@redhat.com, kevin.tian@intel.com,
-        giovanni.cabiddu@intel.com, mgurtovoy@nvidia.com, jannh@google.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio: Add "#ifdef CONFIG_MMU" for vma operations
-Message-ID: <20210727120116.61ba8e25.alex.williamson@redhat.com>
-In-Reply-To: <877dhb4svx.fsf@redhat.com>
-References: <20210727034000.547-1-caihuoqing@baidu.com>
-        <877dhb4svx.fsf@redhat.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Tue, 27 Jul 2021 11:01:31 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 27 Jul 2021 11:01:29 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/119] 4.19.199-rc3 review
+Message-ID: <20210727180129.GD1721083@roeck-us.net>
+References: <20210727112108.341674321@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727112108.341674321@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 18:35:14 +0200
-Cornelia Huck <cohuck@redhat.com> wrote:
-
-> On Tue, Jul 27 2021, Cai Huoqing <caihuoqing@baidu.com> wrote:
+On Tue, Jul 27, 2021 at 01:21:48PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.199 release.
+> There are 119 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > Add "#ifdef CONFIG_MMU",
-> > because vma mmap and vm_operations_struct depend on MMU  
+> Responses should be made by Thu, 29 Jul 2021 11:20:50 +0000.
+> Anything received after that time might be too late.
 > 
-> vfio_pci already depends on MMU -- what problems are you trying to fix?
 
-Exactly my question, we silenced the randconfig builds without
-CONFIG_MMU in commit 2a55ca373501 ("vfio/pci: zap_vma_ptes() needs
-MMU").  Surely there are prototypes for vma_area_struct regardless of
-CONFIG_MMU and vfio-core having an mmap callback has no dependency on
-vm_operations_struct.  Thanks,
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 431 pass: 431 fail: 0
 
-Alex
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+Guenter
