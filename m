@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CF63D7455
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB813D742A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236473AbhG0L0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 07:26:05 -0400
-Received: from mail.hostpark.net ([212.243.197.30]:36594 "EHLO
-        mail.hostpark.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbhG0L0D (ORCPT
+        id S236414AbhG0LRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 07:17:33 -0400
+Received: from mail-vs1-f44.google.com ([209.85.217.44]:35581 "EHLO
+        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236212AbhG0LRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:26:03 -0400
-X-Greylist: delayed 559 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Jul 2021 07:26:02 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.hostpark.net (Postfix) with ESMTP id C000A163CB;
-        Tue, 27 Jul 2021 13:16:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=elsoft.ch; h=
-        content-transfer-encoding:content-type:content-type:in-reply-to
-        :mime-version:user-agent:date:date:message-id:organization:from
-        :from:references:subject:subject:received:received; s=sel2011a;
-         t=1627384600; bh=nnN5lZfFj9MppOjkb9i1D7D+MJTulP6KsKyauxX4sGo=; b=
-        eESr91MaPfXJrnskyOyzLqbm1XhuG04+D86JOWAVA9IL+sGz+lm0QWKyU4w/uMqN
-        UtKagNjJkDUuFIxWMwQ4LjBgm83pypHT4iXjnISq80yy/DmbNIiNBbLiJjvo2pto
-        ATTm0dxI5+bH/WdJaLzFKkDefW0DncAPjodyFFWUTSk=
-X-Virus-Scanned: by Hostpark/NetZone Mailprotection at hostpark.net
-Received: from mail.hostpark.net ([127.0.0.1])
-        by localhost (mail1.hostpark.net [127.0.0.1]) (amavisd-new, port 10224)
-        with ESMTP id b9k2yq6cDK1n; Tue, 27 Jul 2021 13:16:40 +0200 (CEST)
-Received: from customer (localhost [127.0.0.1])
-        by mail.hostpark.net (Postfix) with ESMTPA id 3348E164A0;
-        Tue, 27 Jul 2021 13:16:40 +0200 (CEST)
-Subject: Re: [PATCH 10/14] peci: Add peci-cpu driver
-To:     Iwona Winiarska <iwona.winiarska@intel.com>,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Cc:     linux-aspeed@lists.ozlabs.org, linux-doc@vger.kernel.org,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, x86@kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        Tony Luck <tony.luck@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-References: <20210712220447.957418-1-iwona.winiarska@intel.com>
- <20210712220447.957418-11-iwona.winiarska@intel.com>
-From:   =?UTF-8?Q?David_M=c3=bcller_=28ELSOFT_AG=29?= <d.mueller@elsoft.ch>
-Openpgp: preference=signencrypt
-Organization: ELSOFT AG
-Message-ID: <26dbd0d3-c326-96a5-2ec7-4fc3387865e9@elsoft.ch>
-Date:   Tue, 27 Jul 2021 13:16:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:52.0) Gecko/20100101 Firefox/52.0
- SeaMonkey/2.49.5
+        Tue, 27 Jul 2021 07:17:31 -0400
+Received: by mail-vs1-f44.google.com with SMTP id p13so6912679vsg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 04:17:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L6KUNJv2uoXrIO9Z94cPI6QCbRXnZyOGViaOY2yoHjk=;
+        b=mAWlOa+Zl9akLbOaF18EijYQjEi8dMThsv26ABPeIDXQSX8qXlBxnWFF4sJMj1ib/q
+         2zreO3Q+iqS47memtGjDbYbCJsgLIuX56B16OXhZlDBK+9JD2944ts7DnXpWmZOPccfe
+         07Ub1+3kB1gq8xxOxoOoW/sZMpAI5lak8Jk8ZBi990Z5ilb0XukLQTz8bvqCvUD0/SOm
+         JrcrojbnQBuRKvpEyiCDNjgqD2FFYnU5y9CVAKa2y9IrB46cvrhdAnU6UzGSo3FRfx4v
+         EK4fxYnDZAwqTy3ya9SYnwZZeVuXO18gVp5lbub76pz8u1Rgu0JW6quSaNtE8TGU5+fN
+         OGgA==
+X-Gm-Message-State: AOAM5334Hzh3LvoOJz1mifEwL/rUja+P06dqyZcj14A8OuJE5zsrC9ao
+        LeOsW7r5NSAt58BlUbd5aLgojv45mgJQWigmtXc=
+X-Google-Smtp-Source: ABdhPJzdJc/SjKstfuXj+nsFalKzdo9cYKN9WJguuDhjSXSUMFsd/595b57U+p6vypuiCz2+dHf3+igq1LjTvgJflcc=
+X-Received: by 2002:a05:6102:2828:: with SMTP id ba8mr15836833vsb.18.1627384650666;
+ Tue, 27 Jul 2021 04:17:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210712220447.957418-11-iwona.winiarska@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20210727093015.1225107-1-javierm@redhat.com> <CAMuHMdXXoHLO=jsjb+xtW7GDQsvu8Zuz=JmbaEXT49w5o4SJ9A@mail.gmail.com>
+ <f9df82c9-1e1a-d657-d712-312f5f17cab0@redhat.com>
+In-Reply-To: <f9df82c9-1e1a-d657-d712-312f5f17cab0@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Jul 2021 13:17:19 +0200
+Message-ID: <CAMuHMdVh4XgXeaLXXTmPxMuWM4C1mTDnhSmDmff6T37PwNxupg@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/firmware: fix SYSFB depends to prevent build failures
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Iwona Winiarska wrote:
+Hi Javier,
 
-> +static const struct peci_device_id peci_cpu_device_ids[] = {
-> +	{ /* Haswell Xeon */
-> +		.family	= 6,
-> +		.model	= INTEL_FAM6_HASWELL_X,
-> +		.data	= "hsx",
-> +	},
-> +	{ /* Broadwell Xeon */
-> +		.family	= 6,
-> +		.model	= INTEL_FAM6_BROADWELL_X,
-> +		.data	= "bdx",
-> +	},
-> +	{ /* Broadwell Xeon D */
-> +		.family	= 6,
-> +		.model	= INTEL_FAM6_BROADWELL_D,
-> +		.data	= "skxd",
+On Tue, Jul 27, 2021 at 12:22 PM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> On 7/27/21 12:03 PM, Geert Uytterhoeven wrote:
+> >> --- a/drivers/firmware/Kconfig
+> >> +++ b/drivers/firmware/Kconfig
+> >> @@ -254,7 +254,7 @@ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+> >>  config SYSFB
+> >>         bool
+> >>         default y
+> >> -       depends on X86 || ARM || ARM64 || RISCV || COMPILE_TEST
+> >> +       depends on X86 || EFI
+> >
+> > Thanks, much better.
+> > Still, now this worm is crawling out of the X86 can, I'm wondering
+> > why this option is so important that it has to default to y?
+> > It is not just a dependency for SYSFB_SIMPLEFB, but also causes the
+> > inclusion of drivers/firmware/sysfb.c.
+> >
+>
+> It defaults to yes because drivers/firmware/sysfb.c contains the logic
+> to register a "simple-framebuffer" device (or "efi-framebuffer" if the
+> CONFIG_SYSFB_SIMPLEFB Kconfig symbol is not enabled).
+>
+> Not enabling this, would mean that a platform device to match a driver
+> supporting the EFI GOP framebuffer (e.g: simple{drm,fb} or efifb) will
+> not be registered. Which will lead to not having an early framebuffer.
 
-I think this should read "bdxd" as "skxd" does not exist in the
-cputemp/dimmtemp drivers.
+Do all (embedded) EFI systems have a frame buffer?
+
+Perhaps SYSFB should be selected by SYSFB_SIMPLEFB, FB_VESA,
+and FB_EFI?
+
+> The logic used to be in drivers/firmware/efi/efi-init.c, that's built
+> in if CONFIG_EFI is enabled. We just consolidated both X86 and EFI:
+>
+> https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8633ef82f101
+
+Thanks, I'm aware of that commit, as I was just about to reply to it,
+when I saw the patch is this thread ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
