@@ -2,221 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499CD3D6EEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97B43D6EF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235327AbhG0GNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234489AbhG0GNh (ORCPT
+        id S235672AbhG0GO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:14:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30743 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235657AbhG0GOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:13:37 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CC7C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 23:13:36 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id h2so19852519lfu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 23:13:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qtV66mPBOICd0niHb4ln/iGi4usPkFqWQFHLSINsub0=;
-        b=cOmWwIFETgru8e4AdPx+dFmsg85ZoTmSefbNbpHsKNmKSLSgAxzFfR/nXh9Omyq/Qm
-         wFwvsW+tQkzUxG1kTrsG0OYlm+LeUQ5+oJlaY1GXn4Px6iOQPBNDi8z7m7TieVIsWkRm
-         dhG3XQLDyc8YxgyyDXb8NlyVh4BFpShPIhl0NXKDjCk4H9GhX/M6m0D6KVzaTXDBxSp0
-         08lDLdIgW7LsnZ8obA82mZYQ3z+mYoQgYmAEOVaxk/WTN5FHP0JnS5K6Qo8pYWvUiFoW
-         mLXcQWGPfdBIuDwLvZPlDDyIiswnOnwaaVkoaywwwhr1sm79EbrpzqL7nPa0FbAG+/Gk
-         iKRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qtV66mPBOICd0niHb4ln/iGi4usPkFqWQFHLSINsub0=;
-        b=q6yxvlx3ZsSPqY+i+B1VWQchkJzS7geRsKmXXr6aZM5J5IYQM32aUAzadjns0ZUN7E
-         6MQ2AlnS3mfbOWkdUeALAYrNhgmo5mt1I+zToA8AFcns9YKZA1Sco2hV44gLspv8ZawX
-         AYwt6H4M8ok8GADRuV+3JctobuHoUoAXWAJTZC7d3SUH8MIstyGAtUFzC0nfqLoNWpR3
-         OuGjVZeXzEBwEkKaeUM7rCftPb41pjlV94DXexoE8ZJB2btm39F5CbZQpqQwwpQykB+g
-         znhWvdH4zzy+yEc6QIMEQF5KYSMH7yoriX4RpbHiKHcB6UHqZXqBn2tFrOaTZdGuaHdK
-         0l6A==
-X-Gm-Message-State: AOAM532+8TX01JY7l56AmVQBOe5wPSG4ZfnvD6dpKu0gDOE7+S83B67u
-        CqLx33IYT9y9F300bfAkeI0tVE5fxxWbX7Mn2ydzGw==
-X-Google-Smtp-Source: ABdhPJyAyvwQR8UaOSTZDaNDxwnwAgHu/AV1oH8Kk9clOQfv7bJ2HuPS5iFALay7AT8ciEpjRtiNp2q08RuQ//5HXAQ=
-X-Received: by 2002:a05:6512:4017:: with SMTP id br23mr15778003lfb.113.1627366414760;
- Mon, 26 Jul 2021 23:13:34 -0700 (PDT)
+        Tue, 27 Jul 2021 02:14:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627366462;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+foQI4ZSsPugMdNXFeoThHY1y2soLUHl8MsBlGsSC9w=;
+        b=VZjIH65RteOPDJ1SiOkiLrEOe5j8tQazxSkThcqW2v5XzPVOYglXmdkZ2U5BZGcAz3tXDS
+        XfG1O5fN1UNQoL54jOlOEJmeAO6IlrcvD/igP0SboxGMcqhHclg4RYxCRHEGlyuXyfJ9nT
+        5tuV+qaceJkoN5ypkAA6MjorwrQyCO4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-5jVv41_vN4Sao7o0MMzQKg-1; Tue, 27 Jul 2021 02:14:21 -0400
+X-MC-Unique: 5jVv41_vN4Sao7o0MMzQKg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8806D100E420;
+        Tue, 27 Jul 2021 06:14:19 +0000 (UTC)
+Received: from gshan.redhat.com (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 60234687D5;
+        Tue, 27 Jul 2021 06:14:13 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        gerald.schaefer@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+        christophe.leroy@csgroup.eu, cai@lca.pw, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+Subject: [PATCH v4 00/12] mm/debug_vm_pgtable: Enhancements
+Date:   Tue, 27 Jul 2021 14:13:49 +0800
+Message-Id: <20210727061401.592616-1-gshan@redhat.com>
 MIME-Version: 1.0
-References: <20210722121757.1944658-1-jens.wiklander@linaro.org>
- <CAFA6WYMgWizZoJmk7U0g8zP7Jf_SHLXi3ydMCg2iH5HEQmF=zw@mail.gmail.com>
- <20210726105400.2li4fj223u3vajly@bogus> <CAFA6WYPJChHggVyeQKe9vi8fHpN-Ddq6Bf7DHe2ZpG9BUmvFMw@mail.gmail.com>
- <CAHUa44Guj5bu_tYsyLDzMJ==mtL+SaKT_vEG8Nz2VGcPuOx25g@mail.gmail.com>
-In-Reply-To: <CAHUa44Guj5bu_tYsyLDzMJ==mtL+SaKT_vEG8Nz2VGcPuOx25g@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 27 Jul 2021 11:43:23 +0530
-Message-ID: <CAFA6WYPZHuEoaxo=05qfbNQ_gamPuMA4+=2giC88DK=RkMLgOg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] Add FF-A support in OP-TEE driver
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        Sughosh Ganu <sughosh.ganu@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 at 20:55, Jens Wiklander <jens.wiklander@linaro.org> wrote:
->
-> Hi Sumit,
->
-> On Mon, Jul 26, 2021 at 1:41 PM Sumit Garg <sumit.garg@linaro.org> wrote:
-> >
-> > On Mon, 26 Jul 2021 at 16:25, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > >
-> > > On Mon, Jul 26, 2021 at 03:59:36PM +0530, Sumit Garg wrote:
-> > > > Hi Jens,
-> > > >
-> > > > On Thu, 22 Jul 2021 at 17:48, Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> > > > >
-> > > > > Hi all,
-> > > > >
-> > > > > This adds supports for the OP-TEE driver to communicate with secure world
-> > > > > using FF-A [1] as transport.
-> > > > >
-> > > > > There is one change to the TEE subsystem with "tee: add sec_world_id to
-> > > > > struct tee_shm" to add support for holding globally unique handle assigned
-> > > > > by the FF-A. This is a field that I believe could useful for the AMDTEE
-> > > > > driver too.
-> > > > >
-> > > > > For communication the OP-TEE message protocol is still used, but with a new
-> > > > > type of memory reference, struct optee_msg_param_fmem, to carry the
-> > > > > information needed by FF-A. The OP-TEE driver is refactored internally with
-> > > > > to sets of callbacks, one for the old SMC based communication and another
-> > > > > set with FF-A as transport. The functions relating to the SMC based ABI
-> > > > > are moved to smc_abi.c while the FF-A based ABI is added in a ffa_abi.c.
-> > > > >
-> > > > > There is also a difference in how the drivers are instantiated. With the
-> > > > > SMC based transport we have a platform driver, module_platform_driver(),
-> > > > > today which we're keeping as is for this configuration. In a FF-A system we
-> > > > > have a FF-A driver, module_ffa_driver(), instead.
-> > > > >
-> > > > > The OP-TEE driver can be compiled for both targets at the same time and
-> > > > > it's up to runtime configuration (device tree or ACPI) to decide how it's
-> > > > > initialized. Note that it's only the old SMC based driver instance that
-> > > > > need device tree or ACPI to initialize. The FF-A based driver relies on the
-> > > > > FF-A bus instead.
-> > > > >
-> > > > > This can be tested QEMU
-> > > > > The repo for SPMC at S-EL1 retrieved by
-> > > > > repo init -u https://github.com/jenswi-linaro/manifest.git -m
-> > > > > qemu_v8.xml -b ffav4_spmc
-> > > > > repo sync
-> > > > > # Then checkout the branch optee_ffa_v3 from
-> > > > > # git://git.linaro.org/people/jens.wiklander/linux-tee.git
-> > > > > # in the linux directory
-> > > > >
-> > > > > To build do:
-> > > > > cd build
-> > > > > make toolchains
-> > > > > make all
-> > > > >
-> > > > > To boot:
-> > > > > make run-only
-> > > > >
-> > > > > Test with xtest, perhaps only with the command "xtest 1004" in case you're
-> > > > > not interested in too many tests.
-> > > >
-> > > > Thanks Jens for sharing instructions to test this feature. So I tried
-> > > > to reproduce using following repo versions:
-> > > >
-> > > > linux-tee, branch: optee_ffa_v3
-> > > > trusted-firmware-a, branch: ffav4_sel1_spmc
-> > > > build, branch: ffav4_spmc
-> > > >
-> > > > and rest of the repos synced to the latest version as per upstream
-> > > > qemu_v8.xml [1] but I don't see OP-TEE driver being probed during boot
-> > > > [2]. Am I missing something?
-> > > >
-> > > > [1] https://github.com/OP-TEE/manifest/blob/master/qemu_v8.xml
-> > > > [2]
-> > > > Welcome to Buildroot, type root or test to login
-> > > > buildroot login: root
-> > > > # dmesg | grep optee
-> > > >
-> > >
-> > > Do you see ARM FF-A driver initialised successfully ?
-> > > You must see "ARM FF-A Version 1.0 found" or something similar based on
-> > > the actual version supported.
-> > >
-> > > If so, can you check if the partitions are correctly populated by
-> > > the driver using the discover API.
-> > >
-> > > $ grep "" /sys/bus/arm_ffa/devices/*/uuid
-> > >
-> > > If uuid reads zeros, then the devices are populated, just the matching
-> > > driver is not found(due to the workaround for v1.0 spec)
-> > >
-> >
-> > It turns out to be an issue with my build environment, I re-built from
-> > scratch and I could see OP-TEE being probed successfully:
-> >
-> > # dmesg | grep FF-A
-> > [    0.356382] ARM FF-A: Version 1.0 found
-> > #
-> > # cat /sys/bus/arm_ffa/devices/arm-ffa-8001/uuid
-> > 486178e0-e7f8-11e3-bc5e-0002a5d5c51b
-> > #
-> > # dmesg | grep optee
-> > [    4.991472] optee: revision 3.14 (49dbb9ef)
-> > [    5.010110] optee: initialized driver
-> > #
->
-> That's good.
->
-> > From xtest logs it looks like the pseudo TA interface isn't working for me:
-> >
-> > * regression_1001 Core self tests
-> >  - 1001 -   skip test, pseudo TA not found
-> >   regression_1001 OK
-> >
-> > * regression_1002 PTA parameters
-> >  - 1002 -   skip test, pseudo TA not found
-> >   regression_1002 OK
-> >
-> > * regression_1003 Core internal read/write mutex
-> >  - 1003 -   skip test, pseudo TA not found
-> >   regression_1003 OK
->
-> The test PTAs are disabled by default.
->
+There are couple of issues with current implementations and this series
+tries to resolve the issues:
 
-Ah, I missed the CFG_ENABLE_EMBEDDED_TESTS option in OP-TEE. BTW, I
-think it should be enabled for OP-TEE Qemu build as we mostly use it
-as a test platform.
+  (a) All needed information are scattered in variables, passed to various
+      test functions. The code is organized in pretty much relaxed fashion.
 
-> >
-> > Similarly, pseudo TAs acting as TEE bus devices doesn't work as well
-> > as I see following devices directory being empty:
-> >
-> > # ls /sys/bus/tee/devices/
-> > #
-> >
-> > As otherwise with OP-TEE SMC ABI, we should have at least the default
-> > pseudo TA [1] kernel device there.
-> >
-> > So is pseudo TA functional with this new FF-A interface?
->
-> Yes, everything is supposed to work.
->
+  (b) The page isn't allocated from buddy during page table entry modifying
+      tests. The page can be invalid, conflicting to the implementations
+      of set_xxx_at() on ARM64. The target page is accessed so that the iCache
+      can be flushed when execution permission is given on ARM64. Besides,
+      the target page can be unmapped and access to it causes kernel crash.
 
-So yes, xtest and TEE kernel bus framework works for me as well with
-this new FF-A interface. FWIW:
+"struct pgtable_debug_args" is introduced to address issue (a). For issue
+(b), the used page is allocated from buddy in page table entry modifying
+tests. The corresponding tets will be skipped if we fail to allocate the
+(huge) page. For other test cases, the original page around to kernel
+symbol (@start_kernel) is still used.
 
-Tested-by: Sumit Garg <sumit.garg@linaro.org>
+The patches are organized as below. PATCH[2-10] could be combined to one
+patch, but it will make the review harder:
 
--Sumit
+  PATCH[1] introduces "struct pgtable_debug_args" as place holder of all
+           needed information. With it, the old and new implementation
+           can coexist.
+  PATCH[2-10] uses "struct pgtable_debug_args" in various test functions.
+  PATCH[11] removes the unused code for old implementation.
+  PATCH[12] fixes the issue of corrupted page flag for ARM64
 
-> Cheers,
-> Jens
+Changelog
+=========
+v4:
+   * Determine the page allocation method according to
+     MAX_ORDER                                                   (Anshuman)
+   * Move existing comments to init_args()                       (Anshuman)
+   * Code refactoring as suggested by Anshuman                   (Anshuman)
+   * Improved commit log and add comments for flush_dcache_page()
+     in PATCH[v4 12/12]                                          (Anshuman)
+   * Address misc comments                                       (Anshuman)
+v3:
+   * Fix the warning caused by allocating more pages than
+     (1 << (MAX_ORDER - 1)) in init_args()                       (syzbot)
+   * Fix build warning by dropping unused variables in separate
+     patches                                                     (0-day)
+   * Missed "WARN_ON(!pud_none(pud))" in pud_huge_tests() in
+     PATCH[v2 09/12]                                             (0-day)
+   * Fix the subjects for PATCH[05/12] and PATCH[09/12]          (Gavin)
+v2:
+   * Rename struct vm_pgtable_debug to struct pgtable_debug_args.
+     The parameter name to various test functions are renamed
+     to "@args"                                                  (Anshuman)
+   * Code changes as suggested by Anshuman                       (Anshuman)
+
+Gavin Shan (12):
+  mm/debug_vm_pgtable: Introduce struct pgtable_debug_args
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in basic tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in leaf and
+    savewrite tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in protnone and
+    devmap tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in soft_dirty and
+    swap tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in migration and
+    thp tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PTE modifying
+    tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PMD modifying
+    tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PUD modifying
+    tests
+  mm/debug_vm_pgtable: Use struct pgtable_debug_args in PGD and P4D
+    modifying tests
+  mm/debug_vm_pgtable: Remove unused code
+  mm/debug_vm_pgtable: Fix corrupted page flag
+
+ mm/debug_vm_pgtable.c | 919 ++++++++++++++++++++++++++----------------
+ 1 file changed, 566 insertions(+), 353 deletions(-)
+
+-- 
+2.23.0
+
