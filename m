@@ -2,149 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B393E3D7A9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B1D3D7AA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhG0QLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhG0QLv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:11:51 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7785C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 09:11:51 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b0a9:7e88:5ca4:551a])
-        by michel.telenet-ops.be with bizsmtp
-        id aGBq250021fSPfK06GBqeU; Tue, 27 Jul 2021 18:11:50 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m8PgL-001S8F-Jt; Tue, 27 Jul 2021 18:11:49 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m8PgK-00FrAy-TW; Tue, 27 Jul 2021 18:11:48 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] dt-bindings: auxdisplay: arm-charlcd: Convert to json-schema
-Date:   Tue, 27 Jul 2021 18:11:41 +0200
-Message-Id: <4a63caa4136e8a31e82c7d75bb6f273498e8cccf.1627402256.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S229687AbhG0QNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:13:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229441AbhG0QNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 12:13:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF12461B73;
+        Tue, 27 Jul 2021 16:13:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627402381;
+        bh=BsgalBQRjr9OM3p/5B+TnVmcmwuTiffeQ0hoAgpA37w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Kg9kn2d/XfVub6+9LSxjDfeaF9gciX+7s07+9Hf9uD3ebG0YGhO3Yjdf1guU+WVpA
+         4LTydNtpzlAC/r3SaLAbwTkYqJ7Q4iwjOpwq6QQsYfH96K4tN/2eW9Es1qpTluLMcp
+         o/z+7jOEhMMa1qLB5SVnhJyNYsM84/H5ARvPTRPTyMm+ZWj2AkUx+QxfQKBAGtnQQ2
+         U+jX3KWLYYDWsAWuwr9kPODXAPFPlGOnT5mmoY6GQmSGTyHo/TIV0pq+PybNHeOwEn
+         5z0aNJiz/84RGJQt9aVXIFKjCEmr6ZjyY+XituzebZQ57vgsE1rc4sCkVvbUB3QbfI
+         HKmbP1y85Y1nA==
+Date:   Tue, 27 Jul 2021 11:12:59 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH v6 0/8] PCI: hv: Support host bridge probing on ARM64
+Message-ID: <20210727161259.GA718226@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726180657.142727-1-boqun.feng@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the ARM Versatile Character LCD Device Tree binding documentation
-to json-schema.
+On Tue, Jul 27, 2021 at 02:06:49AM +0800, Boqun Feng wrote:
+> Hi,
+> 
+> This is the v6 for the preparation of virtual PCI support on Hyper-V
+> ARM64, Previous versions:
+> 
+> v1:	https://lore.kernel.org/lkml/20210319161956.2838291-1-boqun.feng@gmail.com/
+> v2:	https://lore.kernel.org/lkml/20210503144635.2297386-1-boqun.feng@gmail.com/
+> v3:	https://lore.kernel.org/lkml/20210609163211.3467449-1-boqun.feng@gmail.com/
+> v4:	https://lore.kernel.org/lkml/20210714102737.198432-1-boqun.feng@gmail.com/
+> v5:	https://lore.kernel.org/lkml/20210720134429.511541-1-boqun.feng@gmail.com/
 
-Correct compatible value.
-Document missing properties.
+Thanks for these; they're very handy for archaeology later.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- .../auxdisplay/arm,versatile-lcd.yaml         | 44 +++++++++++++++++++
- .../bindings/auxdisplay/arm-charlcd.txt       | 18 --------
- MAINTAINERS                                   |  2 +-
- 3 files changed, 45 insertions(+), 19 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/auxdisplay/arm,versatile-lcd.yaml
- delete mode 100644 Documentation/devicetree/bindings/auxdisplay/arm-charlcd.txt
+> Changes since last version:
+> 
+> *	Rebase to 5.14-rc3
 
-diff --git a/Documentation/devicetree/bindings/auxdisplay/arm,versatile-lcd.yaml b/Documentation/devicetree/bindings/auxdisplay/arm,versatile-lcd.yaml
-new file mode 100644
-index 0000000000000000..5d02bd032a85fe61
---- /dev/null
-+++ b/Documentation/devicetree/bindings/auxdisplay/arm,versatile-lcd.yaml
-@@ -0,0 +1,44 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/auxdisplay/arm,versatile-lcd.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ARM Versatile Character LCD
-+
-+maintainers:
-+  - Linus Walleij <linus.walleij@linaro.org>
-+  - Rob Herring <robh@kernel.org>
-+
-+description:
-+  This binding defines the character LCD interface found on ARM Versatile AB
-+  and PB reference platforms.
-+
-+properties:
-+  compatible:
-+    const: arm,versatile-lcd
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    lcd@10008000 {
-+            compatible = "arm,versatile-lcd";
-+            reg = <0x10008000 0x1000>;
-+    };
-diff --git a/Documentation/devicetree/bindings/auxdisplay/arm-charlcd.txt b/Documentation/devicetree/bindings/auxdisplay/arm-charlcd.txt
-deleted file mode 100644
-index e28e2aac47f156c6..0000000000000000
---- a/Documentation/devicetree/bindings/auxdisplay/arm-charlcd.txt
-+++ /dev/null
-@@ -1,18 +0,0 @@
--ARM Versatile Character LCD
-------------------------------------------------------
--This binding defines the character LCD interface found on ARM Versatile AB
--and PB reference platforms.
--
--Required properties:
--- compatible : "arm,versatile-clcd"
--- reg : Location and size of character LCD registers
--
--Optional properties:
--- interrupts - single interrupt for character LCD. The character LCD can
--  operate in polled mode without an interrupt.
--
--Example:
--	lcd@10008000 {
--		compatible = "arm,versatile-lcd";
--		reg = <0x10008000 0x1000>;
--	};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a8afc9238fd8e164..25901ecab560e3bf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1382,7 +1382,7 @@ F:	Documentation/devicetree/bindings/arm/arm,integrator.yaml
- F:	Documentation/devicetree/bindings/arm/arm,realview.yaml
- F:	Documentation/devicetree/bindings/arm/arm,versatile.yaml
- F:	Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml
--F:	Documentation/devicetree/bindings/auxdisplay/arm-charlcd.txt
-+F:	Documentation/devicetree/bindings/auxdisplay/arm,versatile-lcd.yaml
- F:	Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
- F:	Documentation/devicetree/bindings/i2c/i2c-versatile.txt
- F:	Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
--- 
-2.25.1
-
+Just FYI, it's not a problem that you rebased, but it's not necessary.
+These will be applied to a topic branch from v5.14-rc1 anyway.
