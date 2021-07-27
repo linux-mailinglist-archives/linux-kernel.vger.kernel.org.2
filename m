@@ -2,116 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFAE3D76D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A413D76C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237069AbhG0NcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:32:14 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:10217 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236960AbhG0Nap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:30:45 -0400
-X-IronPort-AV: E=Sophos;i="5.84,273,1620658800"; 
-   d="scan'208";a="88920787"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 27 Jul 2021 22:30:44 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 48C5A4270492;
-        Tue, 27 Jul 2021 22:30:41 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v4 3/3] arm64: dts: renesas: r9a07g044: Add CANFD node
-Date:   Tue, 27 Jul 2021 14:30:22 +0100
-Message-Id: <20210727133022.634-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210727133022.634-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210727133022.634-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S237299AbhG0Nbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:31:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236827AbhG0Na4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:30:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FC7A61A61;
+        Tue, 27 Jul 2021 13:30:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627392656;
+        bh=dxaQw/xuCLmsummPPWWr8Km+zLNtYNzzPr/WRkXIVZU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JrSiPVui0U7qmCjWn16WdPqKgZLBXxN+0fBYVMRjOHehjStMtMizAAWZ37Wp1tyh4
+         VwkKya08Oba026Ye5a9DMROlDBqefrQxJUdPB5auBiY3JFLuaoO9DtA5iEdyFxkfdS
+         0pMBnqbZLK9+jRzN6VOcyYYhnZ+g/ledwovn7TGc=
+Date:   Tue, 27 Jul 2021 15:30:55 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jordy Zomer <jordy@pwning.systems>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v2] fs: make d_path-like functions all have unsigned size
+Message-ID: <YQAKj4LFifmlVi0q@kroah.com>
+References: <20210727120754.1091861-1-gregkh@linuxfoundation.org>
+ <YP/+g/L6+tLWjx/l@smile.fi.intel.com>
+ <YQAClXqyLhztLcm4@kroah.com>
+ <YQAGvTZPex3mxrD/@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQAGvTZPex3mxrD/@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add CANFD node to R9A07G044 (RZ/G2L) SoC DTSI.
+On Tue, Jul 27, 2021 at 02:14:37PM +0100, Matthew Wilcox wrote:
+> On Tue, Jul 27, 2021 at 02:56:53PM +0200, Greg Kroah-Hartman wrote:
+> > And my mistake from earlier, size_t is the same as unsigned int, not
+> > unsigned long.
+> 
+> No.
+> 
+> include/linux/types.h:typedef __kernel_size_t           size_t;
+> 
+> include/uapi/asm-generic/posix_types.h:
+> 
+> #ifndef __kernel_size_t
+> #if __BITS_PER_LONG != 64
+> typedef unsigned int    __kernel_size_t;
+> #else
+> typedef __kernel_ulong_t __kernel_size_t;
+> #endif
+> #endif
+> 
+> size_t is an unsigned long on 64-bit, unless otherwise defined by the
+> arch.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/r9a07g044.dtsi | 41 ++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ugh, ok, so there really is a problem, as we have a size_t value being
+passed in as an int, and then it could be treated as a negative value
+for some fun pointer math to copy buffers around.
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-index 9a7489dc70d1..51655c09f1f8 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-@@ -13,6 +13,13 @@
- 	#address-cells = <2>;
- 	#size-cells = <2>;
- 
-+	/* External CAN clock - to be overridden by boards that provide it */
-+	can_clk: can {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <0>;
-+	};
-+
- 	/* clock can be either from exclk or crystal oscillator (XIN/XOUT) */
- 	extal_clk: extal {
- 		compatible = "fixed-clock";
-@@ -89,6 +96,40 @@
- 			status = "disabled";
- 		};
- 
-+		canfd: can@10050000 {
-+			compatible = "renesas,r9a07g044-canfd", "renesas,rzg2l-canfd";
-+			reg = <0 0x10050000 0 0x8000>;
-+			interrupts = <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 427 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 428 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 429 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "g_err", "g_recc",
-+					  "ch0_err", "ch0_rec", "ch0_trx",
-+					  "ch1_err", "ch1_rec", "ch1_trx";
-+			clocks = <&cpg CPG_MOD R9A07G044_CANFD_PCLK>,
-+				 <&cpg CPG_CORE R9A07G044_CLK_P0_DIV2>,
-+				 <&can_clk>;
-+			clock-names = "fck", "canfd", "can_clk";
-+			assigned-clocks = <&cpg CPG_CORE R9A07G044_CLK_P0_DIV2>;
-+			assigned-clock-rates = <50000000>;
-+			resets = <&cpg R9A07G044_CANFD_RSTP_N>,
-+				 <&cpg R9A07G044_CANFD_RSTC_N>;
-+			reset-names = "rstp_n", "rstc_n";
-+			power-domains = <&cpg>;
-+			status = "disabled";
-+
-+			channel0 {
-+				status = "disabled";
-+			};
-+			channel1 {
-+				status = "disabled";
-+			};
-+		};
-+
- 		i2c0: i2c@10058000 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--- 
-2.17.1
+How is this not causing problems now already?  Are we just getting
+lucky?
 
+thanks,
+
+greg k-h
