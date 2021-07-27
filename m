@@ -2,60 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC51B3D819B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E653D81A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234672AbhG0VTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 17:19:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36692 "EHLO mail.kernel.org"
+        id S235237AbhG0VUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:20:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234494AbhG0VR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:17:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AF02260F6E;
-        Tue, 27 Jul 2021 21:17:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627420675;
-        bh=fgnjCpOpLiQQL/G2O9SE5PG4/gtnXh929fAXHD1gBDA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=L631o5+ePeCz/NARLUTemRKmHJs7RvSlMU8DRRbqBBFsbwFtpBQUFDZiEdT1VLwTD
-         KiMut36ccQsDjIZITcx6Tv9b7rR2GRbaouu/IPzxM7KCQDWqSAT6D1JCxo1aY8oU05
-         T71izMJ5RoZr4NIqZGGBZoxXpDFRl8H65V7jfWHmIMbFtxVtM6F62t180nvi80mLM0
-         Z2bT4h3WvdcAK2cmjS90IiwHPK/5n0vxNMCGEO6UsRBlMoWO14NRCoEm9Wvj/oX6I4
-         PbBEA8yLHuWO6nLqEu5JvL95ehBM2Drk2/TOKYJcd5gMBBm+40X16/b2S5JWeNGoI8
-         DIB1crsA9mb1w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9C4C5609CC;
-        Tue, 27 Jul 2021 21:17:55 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210726231035.GA2109238@nvidia.com>
-References: <20210726231035.GA2109238@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210726231035.GA2109238@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: dc6afef7e14252c5ca5b8a8444946cb4b75b0aa0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7d549995d4e0d99b68e8a7793a0d23da6fc40fe8
-Message-Id: <162742067558.21413.9676120194086838340.pr-tracker-bot@kernel.org>
-Date:   Tue, 27 Jul 2021 21:17:55 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S235006AbhG0VT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 17:19:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 164DA60FED;
+        Tue, 27 Jul 2021 21:18:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1627420713;
+        bh=vrsuZUHarGNvf9RdkDQpMyk5mA0/4F4hlnHq6SdM+Yw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qoIRcerJm+iTqJT9RloyT7tYKD6oJtvJujrDY8t/CzTccbun57NT0AcoKigxcEjGx
+         Md+6GcyQ1Vlwhsv1TZQuW0bkvZ5yVMEo8ZTuJJPYgm31Aa6/RrtCAA2v3CNr6nMyYf
+         k8B81r2ZMW3WQgfd61GdIQuR4X6iJlorspY+PtRE=
+Date:   Tue, 27 Jul 2021 14:18:32 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Evan Green <evgreen@chromium.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-api@vger.kernel.org, Alex Shi <alexs@kernel.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+Subject: Re: [PATCH v4] mm: Enable suspend-only swap spaces
+Message-Id: <20210727141832.86695e7181eb10c6e8fd0191@linux-foundation.org>
+In-Reply-To: <CAE=gft7567-2Lq7raJKrOpQ8UAvXTFWwPci=_GCRPET3nS=9SA@mail.gmail.com>
+References: <20210726171106.v4.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
+        <d6668437-5c3b-2dff-bb95-4e3132d13711@redhat.com>
+        <6ff28cfe-1107-347b-0327-ad36e256141b@redhat.com>
+        <CAE=gft7567-2Lq7raJKrOpQ8UAvXTFWwPci=_GCRPET3nS=9SA@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Jul 2021 20:10:35 -0300:
+On Tue, 27 Jul 2021 09:31:33 -0700 Evan Green <evgreen@chromium.org> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+> > Pavel just mentioned uswsusp, and I wonder if it would be a possible
+> > alternative to this patch.
+> 
+> I think you're right that it would be possible to isolate the
+> hibernate image with uswsusp if you avoid using the SNAPSHOT_*SWAP*
+> ioctls. But I'd expect performance to suffer noticeably, since now
+> every page is making a round trip out to usermode and back. I'd still
+> very much use the HIBERNATE_ONLY flag if it were accepted, I think
+> there's value to it.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7d549995d4e0d99b68e8a7793a0d23da6fc40fe8
+The uswsusp option makes your patch a performance optimization rather
+than a feature-add.  And we do like to see quantitative testing results
+when considering a performance optimization.  Especially when the
+performance optimization is a bit icky, putting special-case testing
+all over the place, maintenance cost, additional testing effort, etc.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+I do think that diligence demands that we quantify the difference.  Is
+this a thing you can help with?
