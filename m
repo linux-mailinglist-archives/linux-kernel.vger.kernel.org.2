@@ -2,124 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B6E3D6FBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736473D6FC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235653AbhG0Gyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:54:38 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:43573 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234349AbhG0Gyd (ORCPT
+        id S235679AbhG0Gzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234349AbhG0Gzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:54:33 -0400
-Received: by mail-wm1-f53.google.com with SMTP id m20-20020a05600c4f54b029024e75a15716so1568909wmq.2;
-        Mon, 26 Jul 2021 23:54:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aaW7cFw+oCFWM/dmmy7Fk93SXTQV0wxby9I/PRxiL4c=;
-        b=mm+Lxm8cVSQOnilaLWWRArZ4654l0xlZSyBHgyDaMhy0+F43HIuhyue/KPMcnTIvEc
-         E/VNDDCiMtJDEga4sSgz9XJTBf2MUxoC7+CWF6drYIxhVEBw4k2aK+kX7Ft9+VPFGFxG
-         SyvobGT3hAHjaMHAZwyl3DGoIdQARN8JTyu5e+ro0i6Enqs02PUt2oAVafRQs/MU087f
-         RZ+Q25ujjKKAVbWUdkzwEYLFI4rXfkNHRSsEuph9gJpW0ELyb40ZHNVHOEdN/HkCYjbk
-         SaifLrPsUCqWILB7y1nLjFyfue5dBK05HZG9P5clWY2rsiYypuLQaE1TcQ6syT8WjsfM
-         lBFg==
-X-Gm-Message-State: AOAM532JtP36Q+YCBHWFkxBOBt2ZL/RIN6bPO3MWlRGEw0PP0kxNAXTe
-        tkQ/GSGU8F4418Fnfd1hUOiu6cSfFXW5Yw==
-X-Google-Smtp-Source: ABdhPJxIWCHbsXVIVvCyRBAf9hyz35xq2EdGm1WfHnZDkv4s9+x7rYlA1/oYB3fZBZCaca8Y+ES5vA==
-X-Received: by 2002:a7b:ce08:: with SMTP id m8mr2518480wmc.21.1627368872670;
-        Mon, 26 Jul 2021 23:54:32 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id v15sm1738843wmj.39.2021.07.26.23.54.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 23:54:31 -0700 (PDT)
-Subject: Re: [PATCH v7 09/10] memcg: enable accounting for tty-related objects
-To:     Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-References: <6f21a0e0-bd36-b6be-1ffa-0dc86c06c470@virtuozzo.com>
- <cover.1627362057.git.vvs@virtuozzo.com>
- <b8baa04f-e789-0321-b39d-07c5696ff755@virtuozzo.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <1eef95fe-6172-796e-edd1-095545da6e74@kernel.org>
-Date:   Tue, 27 Jul 2021 08:54:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 27 Jul 2021 02:55:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6B8C061757;
+        Mon, 26 Jul 2021 23:55:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7KMq2+jcB6YY9vgnn3lHstykTQ5w8Jynl0Css7fXju4=; b=QxWtqTcavr9FiRdPY3+Gz0qwpL
+        19U78vOHJqIO3qKHxF5FnMeAVEKBc9iW/O2/KP3miLRpnN5ED0ICroruKyuwBXjlX6sh8eDW7EsMW
+        dXRrI750D4Y2pVTrfwUdZ1HAKE5wrEvyBp0BA6idpVnHfuEXsu4Pgxe0VomMaH6N9aZSiVKsxG8by
+        YXX048XDoqy/WLkomvELM+1ZdBOWf6WmGwxczgGXV7a/l9t78k/iqWgKJUo0eze1zmkh5XhgY8jze
+        6GAXhI0ZQHOJU2P31LzY3BJ5gvtyq97uFPeeKI/18PnpdJa+tAuobR+UnForVehWEO6OvaHjlv+eR
+        fN49w6CA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8GzA-00ElSs-BE; Tue, 27 Jul 2021 06:54:50 +0000
+Date:   Tue, 27 Jul 2021 07:54:40 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+Message-ID: <YP+tsMvpr7afAXl8@infradead.org>
+References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+ <20210719193503.793910-3-akrowiak@linux.ibm.com>
+ <20210721164550.5402fe1c.pasic@linux.ibm.com>
+ <c3b80f79-6795-61ce-2dd1-f4cc7110e417@linux.ibm.com>
+ <20210723162625.59cead27.pasic@linux.ibm.com>
+ <5380652f-e68f-bbd0-10c0-c7d541065843@linux.ibm.com>
+ <20210726223628.4d7759bf.pasic@linux.ibm.com>
+ <20210726220317.GA1721383@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <b8baa04f-e789-0321-b39d-07c5696ff755@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726220317.GA1721383@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27. 07. 21, 7:34, Vasily Averin wrote:
-> At each login the user forces the kernel to create a new terminal and
-> allocate up to ~1Kb memory for the tty-related structures.
+On Mon, Jul 26, 2021 at 07:03:17PM -0300, Jason Gunthorpe wrote:
+> On Mon, Jul 26, 2021 at 10:36:28PM +0200, Halil Pasic wrote:
 > 
-> By default it's allowed to create up to 4096 ptys with 1024 reserve for
-> initial mount namespace only and the settings are controlled by host admin.
+> > You may end up with open and close running interleaved. What I'
+> > trying to say is, to my best knowledge, normally there is no
+> > you have to close it before you open it again rule for files.
 > 
-> Though this default is not enough for hosters with thousands
-> of containers per node. Host admin can be forced to increase it
-> up to NR_UNIX98_PTY_MAX = 1<<20.
+> This is an existing bug in this driver, I've fixed in the reflck series.
 > 
-> By default container is restricted by pty mount_opt.max = 1024,
-> but admin inside container can change it via remount. As a result,
-> one container can consume almost all allowed ptys
-> and allocate up to 1Gb of unaccounted memory.
-> 
-> It is not enough per-se to trigger OOM on host, however anyway, it allows
-> to significantly exceed the assigned memcg limit and leads to troubles
-> on the over-committed node.
-> 
-> It makes sense to account for them to restrict the host's memory
-> consumption from inside the memcg-limited container.
-> 
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->   drivers/tty/tty_io.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-> index 26debec..e787f6f 100644
-> --- a/drivers/tty/tty_io.c
-> +++ b/drivers/tty/tty_io.c
-> @@ -1493,7 +1493,7 @@ void tty_save_termios(struct tty_struct *tty)
->   	/* Stash the termios data */
->   	tp = tty->driver->termios[idx];
->   	if (tp == NULL) {
-> -		tp = kmalloc(sizeof(*tp), GFP_KERNEL);
-> +		tp = kmalloc(sizeof(*tp), GFP_KERNEL_ACCOUNT);
+> open_device/close_device will not run concurrently, or out of order,
+> afer it is fixed.
 
-termios are not saved for PTYs (TTY_DRIVER_RESET_TERMIOS). Am I missing 
-something?
+Btw, while I've got all your attention, I've been struggling a bit with
+how that SET_KVM notifier is supposed to work.
 
->   		if (tp == NULL)
->   			return;
->   		tty->driver->termios[idx] = tp;
-> @@ -3119,7 +3119,7 @@ struct tty_struct *alloc_tty_struct(struct tty_driver *driver, int idx)
->   {
->   	struct tty_struct *tty;
->   
-> -	tty = kzalloc(sizeof(*tty), GFP_KERNEL);
-> +	tty = kzalloc(sizeof(*tty), GFP_KERNEL_ACCOUNT);
->   	if (!tty)
->   		return NULL;
->   
-> 
+The i915 gvt code simplify assumes the notification registration hits
+the case of KVM already being active, and gets away with that as at
+least qemu ensures that the KVM_DEV_VFIO_GROUP_ADD has been called before
+the device FDs are opened.  Is that something we could generalize and
+never allow to actually notify for SET_KVM with non-null data beeing
+called at runtime and avoid the locking entirely?
 
-thanks,
--- 
-js
-suse labs
+Similarly the removal case is a little weird: with Jason's work to only
+call a release function on the last reference drop which solves a lot
+of concurrency issues nicely  this still creates a nasty corner case
+with a sideband release under weird locking rules.   What prevents the
+vfio core from simply holding a refefeence to the struct kvm as long as
+the device is open to close that hole?
