@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F5D3D7F56
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7D03D7F5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhG0Uif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:38:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231133AbhG0Uic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:38:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65FBF6056B;
-        Tue, 27 Jul 2021 20:38:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627418312;
-        bh=m4pTLRxNjQ5nrW4+WylpHblD4H7E+5v4AVz71ixTU7U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jFFIcxi7MiAGoX1FaofoGp1RfNm/xlAaCEtXz2oOyuj+wsOwyHZt7ziSZWTza7yVA
-         yuvEvuL0XvwoePf25ipmXSDhc9RArOpGOt5oPIx8udzt71emuyQhyFp8ILQEMnYePk
-         ihKjfE4b9WZab2EG3TkDTO+EokRokdHIPIy30oy1BwLm+1ITa88OmWHjZ0nnYRfHXR
-         Z3OJ6vNOZSPoYjfkxd8i2NTt6yywGFWGJ48lA0To48MMezxXV2HtcvtT6gknQxWBLj
-         aG9g5xniVbVSNGtbGWs7KR0iKogwE3+FRA3RZWMml3ZdcuXK6u4rLnzaycTqneD1Cb
-         nh9xtn0nMtvGw==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matt Turner <mattst88@gmail.com>
-Cc:     Michael Cree <mcree@orcon.net.nz>, Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org
-Subject: [PATCH] alpha: register early reserved memory in memblock
-Date:   Tue, 27 Jul 2021 23:38:24 +0300
-Message-Id: <20210727203824.12312-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S231726AbhG0UjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231631AbhG0Ui6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 16:38:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366DAC061757;
+        Tue, 27 Jul 2021 13:38:58 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627418336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=XrDU59J2chpqqCbqiqs6ep6N/JCC9F6maT4GjD59HFg=;
+        b=jTE/ZIuhOTfR8FQx+kS0I276+IP4amFfrt9i66ikwlve94UltC+YX0xdcDJtujfK7UvmnN
+        61s0yAm5fvWvNBSVZJmUMvrvSMas2KelOWBsnsZoowFowxskqP8D+o2KiWEvTI3k9JdL3d
+        LNVYcjtx/gSnM2QVGp6sWvBDdBZy96e9vsM35o7vZpC4gLqESS6jKf1Z6oDDjbIHuwheaB
+        65zOoeuGQJXwjz3+GKVy9LOQKtQ1ZHmMPDVajdP4COraqVgDtP8W98iiHlFs3kYp+NUmxs
+        NIyYjtJ6tvlB4H4yugFr4J9NYA6rAbXzIyDpkLEjw2zHqA5uPud8C3yGSF8Uig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627418336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=XrDU59J2chpqqCbqiqs6ep6N/JCC9F6maT4GjD59HFg=;
+        b=LG5DrvckwlNy7Zdo7uKtPW0SmeOo4w737W6WcII54oSotqWOrCEdWT3T0tkRxhFKV369rG
+        CkAUgdsLoFfRXcDw==
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Kevin Tian <kevin.tian@intel.com>,
+        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org
+Subject: Re: [patch 0/8] PCI/MSI, x86: Cure a couple of inconsistencies
+In-Reply-To: <20210722214350.GA349746@bjorn-Precision-5520>
+Date:   Tue, 27 Jul 2021 22:38:56 +0200
+Message-ID: <87sfzz331b.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Bjorn,
 
-The memory reserved by console/PALcode or non-volatile memory is not added
-to memblock.memory.
+On Thu, Jul 22 2021 at 16:43, Bjorn Helgaas wrote:
+> On Wed, Jul 21, 2021 at 09:11:26PM +0200, Thomas Gleixner wrote:
+>> A recent discussion about the PCI/MSI management for virtio unearthed a
+>> violation of the MSI-X specification vs. writing the MSI-X message: under
+>> certain circumstances the entry is written without being masked.
+>> 
+>> While looking at that and the related violation of the x86 non-remapped
+>> interrupt affinity mechanism a few other issues were discovered by
+>> inspection.
+>> 
+>> The following series addresses these.
+>> 
+>> Note this does not fix the virtio issue, but while staring at the above
+>> problems I came up with a plan to address this. I'm still trying to
+>> convince myself that I can get away without sprinkling locking all over the
+>> place, so don't hold your breath that this will materialize tomorrow.
+>> 
+>> The series is also available from git:
+>> 
+>>     git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git irq/msi
+>> 
+>> Thanks,
+>> 
+>> 	tglx
+>> ---
+>>  arch/x86/kernel/apic/io_apic.c |    6 +-
+>>  arch/x86/kernel/apic/msi.c     |   11 +++-
+>>  arch/x86/kernel/hpet.c         |    2 
+>>  drivers/pci/msi.c              |   98 +++++++++++++++++++++++++++--------------
+>>  include/linux/irq.h            |    2 
+>>  kernel/irq/chip.c              |    5 +-
+>>  6 files changed, 85 insertions(+), 39 deletions(-)
+>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com> for the PCI pieces.
+>
+> I'm happy to take the whole series via PCI, given an x86 ack.  Or you
+> can merge with my ack.
 
-Since commit fa3354e4ea39 (mm: free_area_init: use maximal zone PFNs rather
-than zone sizes) the initialization of the memory map relies on the
-accuracy of memblock.memory to properly calculate zone sizes. The holes in
-memblock.memory caused by absent regions reserved by the firmware cause
-incorrect initialization of struct pages which leads to BUG() during the
-initial page freeing:
+Let me repost it first with the various review comments fixed. I'm also
+having a fix for the VFIO muck in the pipeline which will be based on
+this and also requires changes to the irq core. Let me think about the
+best way to get this routed.
 
-BUG: Bad page state in process swapper  pfn:2ffc53
-page:fffffc000ecf14c0 refcount:0 mapcount:1 mapping:0000000000000000 index:0x0
-flags: 0x0()
-raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-page dumped because: nonzero mapcount
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.7.0-03841-gfa3354e4ea39-dirty #26
-       fffffc0001b5bd68 fffffc0001b5be80 fffffc00011cd148 fffffc000ecf14c0
-       fffffc00019803df fffffc0001b5be80 fffffc00011ce340 fffffc000ecf14c0
-       0000000000000000 fffffc0001b5be80 fffffc0001b482c0 fffffc00027d6618
-       fffffc00027da7d0 00000000002ff97a 0000000000000000 fffffc0001b5be80
-       fffffc00011d1abc fffffc000ecf14c0 fffffc0002d00000 fffffc0001b5be80
-       fffffc0001b2350c 0000000000300000 fffffc0001b48298 fffffc0001b482c0
-Trace:
-[<fffffc00011cd148>] bad_page+0x168/0x1b0
-[<fffffc00011ce340>] free_pcp_prepare+0x1e0/0x290
-[<fffffc00011d1abc>] free_unref_page+0x2c/0xa0
-[<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
-[<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
-[<fffffc000101001c>] _stext+0x1c/0x20
+Thanks,
 
-Fix this by registering the reserved ranges in memblock.memory.
+        tglx
 
-Link: https://lore.kernel.org/lkml/20210726192311.uffqnanxw3ac5wwi@ivybridge
-Fixes: fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than zone sizes")
-Reported-by: Matt Turner <mattst88@gmail.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/alpha/kernel/setup.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
-index 7d56c217b235..b4fbbba30aa2 100644
---- a/arch/alpha/kernel/setup.c
-+++ b/arch/alpha/kernel/setup.c
-@@ -319,18 +319,19 @@ setup_memory(void *kernel_end)
- 		       i, cluster->usage, cluster->start_pfn,
- 		       cluster->start_pfn + cluster->numpages);
- 
--		/* Bit 0 is console/PALcode reserved.  Bit 1 is
--		   non-volatile memory -- we might want to mark
--		   this for later.  */
--		if (cluster->usage & 3)
--			continue;
--
- 		end = cluster->start_pfn + cluster->numpages;
- 		if (end > max_low_pfn)
- 			max_low_pfn = end;
- 
- 		memblock_add(PFN_PHYS(cluster->start_pfn),
- 			     cluster->numpages << PAGE_SHIFT);
-+
-+		/* Bit 0 is console/PALcode reserved.  Bit 1 is
-+		   non-volatile memory -- we might want to mark
-+		   this for later.  */
-+		if (cluster->usage & 3)
-+			memblock_reserve(PFN_PHYS(cluster->start_pfn),
-+				         cluster->numpages << PAGE_SHIFT);
- 	}
- 
- 	/*
-
-base-commit: d8079fac168168b25677dc16c00ffaf9fb7df723
--- 
-2.28.0
 
