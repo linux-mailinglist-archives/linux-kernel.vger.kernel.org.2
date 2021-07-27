@@ -2,77 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7063D6F8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E2F3D6F93
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235577AbhG0GkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:40:04 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:56166 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234349AbhG0GkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:40:02 -0400
-Received: from BC-Mail-Ex14.internal.baidu.com (unknown [172.31.51.54])
-        by Forcepoint Email with ESMTPS id 674A8B6713C6F3DA0DD3;
-        Tue, 27 Jul 2021 14:39:58 +0800 (CST)
-Received: from BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) by
- BC-Mail-Ex14.internal.baidu.com (172.31.51.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Tue, 27 Jul 2021 14:39:58 +0800
-Received: from BJHW-Mail-Ex15.internal.baidu.com ([100.100.100.38]) by
- BJHW-Mail-Ex15.internal.baidu.com ([100.100.100.38]) with mapi id
- 15.01.2308.014; Tue, 27 Jul 2021 14:39:58 +0800
-From:   "Li,Rongqing" <lirongqing@baidu.com>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     Wanpeng Li <kernellwp@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: =?utf-8?B?562U5aSNOiDnrZTlpI06IFtQQVRDSF0gS1ZNOiBDb25zaWRlciBTTVQgaWRs?=
- =?utf-8?Q?e_status_when_halt_polling?=
-Thread-Topic: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIEtWTTogQ29uc2lkZXIgU01UIGlkbGUgc3RhdHVz?=
- =?utf-8?Q?_when_halt_polling?=
-Thread-Index: AQHXfr4fbqZtloIq0E2JewUw/QgE86tOkBDQgABUwoCABqQwgIAA3MfA
-Date:   Tue, 27 Jul 2021 06:39:58 +0000
-Message-ID: <e68a267a328648c484132bafd022671c@baidu.com>
-References: <20210722035807.36937-1-lirongqing@baidu.com>
- <CANRm+Cx-5Yyxx5A4+qkYa01MG4BCdwXPd++bmxzOid+XL267cQ@mail.gmail.com>
- <4efe4fdb91b747da93d7980c10d016c9@baidu.com> <YP9gkSk+CHdKLP/Q@google.com>
-In-Reply-To: <YP9gkSk+CHdKLP/Q@google.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.193.253]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S235409AbhG0Gla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:41:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234349AbhG0Gl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 02:41:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1522B610CC;
+        Tue, 27 Jul 2021 06:41:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627368089;
+        bh=AoyWoF1D5doHgtd19s96Flzqjdd4xHkWhHEHb4V+3qs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cUo++3tvzYTMJSncnVs5K7CLlUKIzSM74Espnl1hzcqqZrcRKEkNx0OegX7xpU+46
+         aMkSJFBNVOU1GuCvpquKtcNX9symC83F561NqnNLsiaRY0I/vPrtIDHghJZxl+H0p+
+         SGi20GHhFrhKlmCYn31XidHMigIpvv4LaQFv+ckY=
+Date:   Tue, 27 Jul 2021 08:41:27 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bill Wendling <morbo@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
+Message-ID: <YP+ql3QFYnefR/Cf@kroah.com>
+References: <20210714091747.2814370-1-morbo@google.com>
+ <20210726201924.3202278-1-morbo@google.com>
+ <20210726201924.3202278-2-morbo@google.com>
+ <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
+ <YP+ZOx8BETgufxBS@kroah.com>
+ <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0KPiDlj5Hku7bkuro6IFNlYW4gQ2hyaXN0b3Bo
-ZXJzb24gPHNlYW5qY0Bnb29nbGUuY29tPg0KPiDlj5HpgIHml7bpl7Q6IDIwMjHlubQ35pyIMjfm
-l6UgOToyNg0KPiDmlLbku7bkuro6IExpLFJvbmdxaW5nIDxsaXJvbmdxaW5nQGJhaWR1LmNvbT4N
-Cj4g5oqE6YCBOiBXYW5wZW5nIExpIDxrZXJuZWxsd3BAZ21haWwuY29tPjsgUGFvbG8gQm9uemlu
-aQ0KPiA8cGJvbnppbmlAcmVkaGF0LmNvbT47IEluZ28gTW9sbmFyIDxtaW5nb0ByZWRoYXQuY29t
-PjsgUGV0ZXIgWmlqbHN0cmENCj4gPHBldGVyekBpbmZyYWRlYWQub3JnPjsga3ZtIDxrdm1Admdl
-ci5rZXJuZWwub3JnPjsgTEtNTA0KPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4NCj4g
-5Li76aKYOiBSZTog562U5aSNOiBbUEFUQ0hdIEtWTTogQ29uc2lkZXIgU01UIGlkbGUgc3RhdHVz
-IHdoZW4gaGFsdCBwb2xsaW5nDQo+IA0KPiBSYXRoZXIgdGhhbiBkaXNhbGxvd2luZyBoYWx0LXBv
-bGxpbmcgZW50aXJlbHksIG9uIHg4NiBpdCBzaG91bGQgYmUgc3VmZmljaWVudCB0bw0KPiBzaW1w
-bHkgaGF2ZSB0aGUgaGFyZHdhcmUgdGhyZWFkIHlpZWxkIHRvIGl0cyBzaWJsaW5nKHMpIHZpYSBQ
-QVVTRS4gIEl0IHByb2JhYmx5DQo+IHdvbid0IGdldCBiYWNrIGFsbCBwZXJmb3JtYW5jZSwgYnV0
-IEkgd291bGQgZXhwZWN0IGl0IHRvIGJlIGNsb3NlLg0KPiANCj4gVGhpcyBjb21waWxlcyBvbiBh
-bGwgS1ZNIGFyY2hpdGVjdHVyZXMsIGFuZCBBRkFJQ1QgdGhlIGludGVuZGVkIHVzYWdlIG9mDQo+
-IGNwdV9yZWxheCgpIGlzIGlkZW50aWNhbCBmb3IgYWxsIGFyY2hpdGVjdHVyZXMuDQo+IA0KDQpS
-ZWFzb25hYmxlLCB0aGFua3MsIEkgd2lsbCByZXNlbmQgaXQNCg0KLUxpDQoNCg0KPiBkaWZmIC0t
-Z2l0IGEvdmlydC9rdm0va3ZtX21haW4uYyBiL3ZpcnQva3ZtL2t2bV9tYWluLmMgaW5kZXgNCj4g
-Njk4MGRhYmU5ZGY1Li5hMDdlY2IzYzY3ZmIgMTAwNjQ0DQo+IC0tLSBhL3ZpcnQva3ZtL2t2bV9t
-YWluLmMNCj4gKysrIGIvdmlydC9rdm0va3ZtX21haW4uYw0KPiBAQCAtMzExMSw2ICszMTExLDcg
-QEAgdm9pZCBrdm1fdmNwdV9ibG9jayhzdHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUpDQo+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgZ290byBvdXQ7DQo+ICAgICAgICAgICAgICAgICAgICAg
-ICAgIH0NCj4gICAgICAgICAgICAgICAgICAgICAgICAgcG9sbF9lbmQgPSBjdXIgPSBrdGltZV9n
-ZXQoKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgY3B1X3JlbGF4KCk7DQo+ICAgICAgICAg
-ICAgICAgICB9IHdoaWxlIChrdm1fdmNwdV9jYW5fcG9sbChjdXIsIHN0b3ApKTsNCj4gICAgICAg
-ICB9DQo+IA0KDQo=
+On Mon, Jul 26, 2021 at 11:15:52PM -0700, Bill Wendling wrote:
+> On Mon, Jul 26, 2021 at 10:27 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> > On Mon, Jul 26, 2021 at 01:47:33PM -0700, Nathan Chancellor wrote:
+> > > + Greg and Rafael as the maintainer and reviewer of drivers/base/module.c
+> > > respectively, drop everyone else.
+> >
+> > Odd no one cc:ed us originally, I guess they didn't want the patch ever
+> > merged?  :(
+> >
+> > >
+> > > Original post:
+> > >
+> > > https://lore.kernel.org/r/20210726201924.3202278-2-morbo@google.com/
+> > >
+> > > On 7/26/2021 1:19 PM, 'Bill Wendling' via Clang Built Linux wrote:
+> > > > Fix the following build warning:
+> > > >
+> > > >    drivers/base/module.c:36:6: error: variable 'no_warn' set but not used [-Werror,-Wunused-but-set-variable]
+> > > >          int no_warn;
+> >
+> > That's not going to be a good warning to ever have the kernel use due to
+> > how lots of hardware works (i.e. we need to do a read after a write but
+> > we can throw the read away as it does not matter).
+> >
+> >
+> > > >
+> > > > This variable is used to remove another warning, but causes a warning
+> > > > itself. Mark it as 'unused' to avoid that.
+> > > >
+> > > > Signed-off-by: Bill Wendling <morbo@google.com>
+> > >
+> > > Even though they evaluate to the same thing, it might be worth using
+> > > "__always_unused" here because it is :)
+> >
+> > But it is not unused, the value is written into it.
+> >
+> I believe that only matters if the variable is marked "volatile".
+
+"volatile" means nothing anymore, never use it or even think about it
+again please :)
+
+> Otherwise, the variable itself is never used. A "variable that's
+> written to but not read from," in fact, is the whole reason for the
+> warning.
+
+But that is ok!  Sometimes you need to do this with hardware (like all
+PCI devices).  This is a legitimate code flow for many hardware types
+and if a C compiler thinks that this is not ok, then it is broken.
+
+So be VERY careful when changing drivers based on this warning.  Because
+of this, I do not think you can enable it over the whole kernel without
+causing major problems in some areas.
+
+But that is independent of this specific issue you are trying to patch
+here, I say this to warn you of a number of stupid places where people
+have tried to "optimize away" reads based on this compiler warning in
+drivers, and we have had to add them back because it broke
+functionality.
+
+> > So this isn't ok, sometimes we want to write to variables but never care
+> > about the value, that does not mean the compiler should complain about
+> > it.
+> >
+> Typically, if you don't care about the return value, you simply don't
+> assign it to a variable (cf. printf). However, the functions that
+> assign to "no_warn" have the "warn_unused_result" attribute. The fact
+> that the variable is named "no_warn" seems to indicate that it's meant
+> to remain unused, even if it probably should be checked.
+
+These functions have warn_unused_result set on them because for 99% of
+the time, I want the value to be checked.  But as you can see in this
+use, as per the comments in the code, we do not care about the result
+for a very good reason.  So we just assign it to a variable to make the
+compiler quiet.
+
+> Would you rather the warning be turned off on some level?
+
+Which warning?
+
+The code here, as-is, is correct.  We already have 1 compiler warning
+work around in place, do you want to add another one?  How many can we
+stack on top of each other?
+
+And again, why did you not cc: the maintainers of this code for this
+change?  That's not good...
+
+thanks,
+
+greg k-h
