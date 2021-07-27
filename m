@@ -2,400 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68893D8389
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F19B3D83A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbhG0W72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 18:59:28 -0400
-Received: from mx0b-00268f01.pphosted.com ([148.163.159.192]:20584 "EHLO
-        mx0b-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233328AbhG0W7U (ORCPT
+        id S233397AbhG0XEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 19:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232314AbhG0XES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 18:59:20 -0400
-Received: from pps.filterd (m0165121.ppops.net [127.0.0.1])
-        by mx0b-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16RMsFHf028496;
-        Tue, 27 Jul 2021 22:58:11 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
-        by mx0b-00268f01.pphosted.com with ESMTP id 3a2nwus7gj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 22:58:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DU2XufI/do1/ZKC32cCSA5nOp6kKXkIRUeicjjklil1ScQT4t/w5rXm0E8rszCYTlHkytekgPU49LfX3Kj4cJ9zq8KicUN3pemx70MvMAYb1UmjKiPPw5qYxNtgMIVJc6IZ9t2Kz8s+Q8QA0V+6ps/wcv17jD5nuIniBysIID6UsHGbtex3v9b9GmpPANmkkCkd4pEikdq+Ljs201v/Dcc46F2McjwIS6V8mXf6rdWS5Msme95qmVTKatm//GnUn1jRB9tBVr3+b2QvH6QuVQBlSnCofhFYUSCjqNcBkcmZqqlOPuUhlg7ui9ohavzeV70sdGqFuSpAPLazkOk0KQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aC0phhDDegkSrWPEI7SGs2TirsIHR0Rto/d7m+MIlSk=;
- b=HdpPevVnXD7ripg4cZcZ3PM/eQnNxVZfWtd72/Y+K0fdz4B0JbPKnEZmUaYlq/K/znDkDB7gJ4njvEMu44q0HRiuv7FRJS2xHLpHrAmIp5V7qnxLq4yo9N5PznfjL6CH/QlpKMEigu/Y4VCLqUhXb3GGnVa3JUOn5D+8dDGk9O7yV344b5CrVLYyYHTWt7dR4CFd2s7SUhMTe6Izg5v+EqnhyMC3WAySu8e8YylcLIRcA0BEOZbQYPvk6Sn6w9byrWdPZdpZ2tPeR1HyyFVOHlVlWzIRD8oIQfWecImOWCTFgcS2AardunlwhALpKvHIoQ4N+O/9MEolHlzmbO7HaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
- dkim=pass header.d=equinix.com; arc=none
+        Tue, 27 Jul 2021 19:04:18 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B89C061757;
+        Tue, 27 Jul 2021 16:04:18 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d1so372380pll.1;
+        Tue, 27 Jul 2021 16:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aC0phhDDegkSrWPEI7SGs2TirsIHR0Rto/d7m+MIlSk=;
- b=AHDI+OYH2SYhyq9+Fpyr92khm50DsZ3Pt9DE5qkaMdz30kXXcOVmXr0FSRrL6ctbyBDucY6VaV1MV+JPcW8aHyW1uWMZZrPFIu9yWzAIuXbtW0lvx5+SvPFzoLFirp96RLhwlJpck8T5uSY4GgTzCG9bi6AtSyXs1OuwiTcKxf4=
-Received: from DM8PR04MB8007.namprd04.prod.outlook.com (2603:10b6:5:314::20)
- by DM8PR04MB7781.namprd04.prod.outlook.com (2603:10b6:8:33::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.28; Tue, 27 Jul
- 2021 22:58:09 +0000
-Received: from DM8PR04MB8007.namprd04.prod.outlook.com
- ([fe80::953d:f9ec:b2cc:ca2b]) by DM8PR04MB8007.namprd04.prod.outlook.com
- ([fe80::953d:f9ec:b2cc:ca2b%5]) with mapi id 15.20.4373.018; Tue, 27 Jul 2021
- 22:58:09 +0000
-From:   Zev Weiss <zweiss@equinix.com>
-To:     Iwona Winiarska <iwona.winiarska@intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH 13/14] docs: hwmon: Document PECI drivers
-Thread-Topic: [PATCH 13/14] docs: hwmon: Document PECI drivers
-Thread-Index: AQHXgzrekgBvAebmGEm7GzBex72boQ==
-Date:   Tue, 27 Jul 2021 22:58:08 +0000
-Message-ID: <20210727225808.GU8018@packtop>
-References: <20210712220447.957418-1-iwona.winiarska@intel.com>
- <20210712220447.957418-14-iwona.winiarska@intel.com>
-In-Reply-To: <20210712220447.957418-14-iwona.winiarska@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=equinix.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0bba6f10-afe4-4ab8-75e8-08d9515200bb
-x-ms-traffictypediagnostic: DM8PR04MB7781:
-x-microsoft-antispam-prvs: <DM8PR04MB778175FB39490C7A30F4AB4CC3E99@DM8PR04MB7781.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: l7/94EGyOHMo0Sbsj4Qqf/RkoGWiN7Lcro/G2+kdMMVPsBqUIM7P9sxRN22CKqP3UaYPp/d7mgzEmPTqt80FS/KpAp5gCPT3WvfZ7VE1N7QYO5RKcl2qNJbhlEYIWD5CHDUZK/Z5OBaPKq6TfVxsivJCZJENQQTLXT82L36kcYNSyWfY4IsJRNDLNMcGPThqBQIOmMkrlnU0psMSs6BPc2mR+C3cGbFtrOTi8tOjgoxnklSIxHF+S/C39T6dPUFcC9AiG+W+N+HGAzfgPU4Y6Dd3vYOmqKxCrVEaxq/lqquNGs/udBpExNB7hAdDyR6hoKw4Se7MqwZb+Ui3/f/ZUrF3FBQ9S/nhh/MGDfORkhdQ9g5N9P3jpLJi2OfSP/GhBvUeQAioW+iCmXU+Le4KxFvXIKUz11NGON69tcIT9TijdNfRPv7x/ufDVyigSM8HmR1GCysS3m9jfC7VSaxLe7I8Vqes6+zb5aRmBrzaSkAY2J+aHKytF9LUCReg6igqgCFAtmW2e1TwMh3uvf6lrB28I0R8Ru/sVmxvG+1Bk2pzzboxTWhej2msneWCPcP5U5CTOsB4+a045tty6tozxYunwaGxSZh92emmA1UNxXxJgFkyus81dmrCKrDLXurVqTsYeBbc1G93705AaaRx/uYzlCMVgOPUuXA6cyZSvw115KD3VB1jXJDaixfE+y3NWke1azOJU4XCnrPj7prn9UTMWTFzzuk5u2y0liq+IVVbdRHfmXedfEvJLkJK2JX4FN26u1s7G5KdPEn128lU8pAFbBQ6hNt4/e2eijYIaqedcC9YK/pL0rYEHNCF5Va8ORVmyjcGgVGncoLR8ASLCg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8007.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(376002)(366004)(136003)(396003)(39860400002)(83380400001)(86362001)(7416002)(71200400001)(478600001)(966005)(33716001)(38100700002)(64756008)(6916009)(76116006)(8676002)(5660300002)(54906003)(38070700005)(19273905006)(2906002)(91956017)(66476007)(4326008)(316002)(1076003)(186003)(66946007)(8936002)(6512007)(6486002)(6506007)(9686003)(26005)(122000001)(66556008)(66446008)(33656002)(562404015)(563064011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?U1YfAFhb52Ge7HW1Xo78LDQVWimqYO8c0Ojq8PJlHWvhdhT7WcBpolvs1YeD?=
- =?us-ascii?Q?AXOh6+ujcIOfvJUSxvZAIFHREvcpegkBozeZiez3Y0bI21HrPR1oxZ1UvaIz?=
- =?us-ascii?Q?C4zJJpIMIUJIgMSsIquS6HVrk2lwXNqyuKjbsWohbkXcTDWuIlftRMzD7Wme?=
- =?us-ascii?Q?C9AMnZl3zWfwe2SNVEGJ/IRkjHozsbfBerY7sq9D3oeYCbYOOeZl64M7dgVW?=
- =?us-ascii?Q?OnLp4FCn0CvanyY0R06A81JtAx2+72R9B7VlBb8OadwNiB0RqlmRjeKCMejC?=
- =?us-ascii?Q?54t6iM6g/zrGfE82VDwWAqH62MO4LzjA+1uMqlk5XuqkiN6Nmo/wtqPB6IFK?=
- =?us-ascii?Q?XdxN8ZoFGPWGV6b7QJKpTKFRpCjXqr0Ic9KkjxZqW3F+ndCEY7I/rQAjwxO5?=
- =?us-ascii?Q?iQOAPXH0fsHy7Wxm6bdg8YqBliH4PCYE/pQZAcUpf5GqygNnsmXbiYmnxVVk?=
- =?us-ascii?Q?BPDDPzMDHHDnn29wQo69GrGc7EdPCVV5YVW+GZuTSL4ZPlhX7mGarJ4mWOiC?=
- =?us-ascii?Q?whpue+OlUUHaB1KUaETIGaUsZ9P3FL+oD32rJVL/R1WO7uk/+Zk6lI8l4bh2?=
- =?us-ascii?Q?MVGYSR1eUx8t3MEZw3NbqejWpdmdPIAVoZUoanToTSZPdL9J1KY+IpgzVEN8?=
- =?us-ascii?Q?u2gJWvOWkVkmXobwPNupYXoTMCxgcUe1zwVkPIaxcrvQwk3+Oq5yBWXlca2S?=
- =?us-ascii?Q?8pNzUN8GhX98w7gZ7xzlAN3rCkFEX/vNqIOVKNtrUouDI8mBttG9r1CYSjrs?=
- =?us-ascii?Q?HYMOeyInTwZkXJnHb2w3zl99P/Kd7LxaHQVGf2m2xYZbhHW3QzmhzIGhTVQn?=
- =?us-ascii?Q?C+tGj4smGBZ4Pv6h7GUda36WErFDOYmlNqek693aQ1JQvmpQu7+zqF+ZBk+P?=
- =?us-ascii?Q?lCjbUUFhLqWnOSYB5Eobq4jjNw0kIfRPNxzEBFP37G5uXHNZzxfqmvEuN8w1?=
- =?us-ascii?Q?o1ghlqYUEHzZ3c8oy/WaSwO1zXXND2UJv1k/CD2rVYS25vNZVBWndrob5e+j?=
- =?us-ascii?Q?rXVD+K4DEbkS5h2x8s6Jxm9BHlDZ8X/07YGVh4fwOHtUR1JP+ccxzicCSOd2?=
- =?us-ascii?Q?8vlMLsLS811G3qpzuSgEu++Wu9RDmKr7EfQ3FXrOnWaBXl1ABKbCgNGIAwIZ?=
- =?us-ascii?Q?rw9oZaBDP58BQVZRSXkrrD7Fstb3bhrUwwcsiiJ1of1mT4fMkldJVywemu55?=
- =?us-ascii?Q?lAGGyDGB1a9+lksX4TOSeluhJGRLEh6G6AQ8627CGs7wCFFGFzTMQac8NC5F?=
- =?us-ascii?Q?/UC/mYSWMb1MqXdd5Pe6kMDTtoQ2o08vOmhDbUK0o6+WsWgUiAMQ5Om2adzr?=
- =?us-ascii?Q?1RUwANFa7h1a5vM4+5D6vomI?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <90875CD98B22454EAF3ADDC38406D3ED@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q3ZJt+Wpnzbxyfl1rdsalqa7Ct7UoX9NXUeeObi4Y4g=;
+        b=c6YCWWROhD0FeAZm0Dic2NUHxwvyOkwaMUYE8oS2cYbXoVCGiRdur5HTKseH4TjHtJ
+         A67kz1aTSUyVeHoLnShSXy6z1LOqaar9Q/RnwzvOPvOpWULU64ta1SixyADQFQ9kATLk
+         XsDb90i9cEEHLC+zNVqNoj1khucGmEo3AwI70td5Eg5uoX6xvVikbIH3vauOz031Dm30
+         S/14ODQCKaJzhKjPZ5ehlGy6kVw2kokYVVJZ9za1uftXdv2Yyt0e0NK1nGZElSV+HItS
+         2GAQtfWpNf7UCOaq1/pUx1j9HtYCm5PlXRZ0sOqTlp5n/xtz7UO2UrYnwjFQ4Dlebk3T
+         pFGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q3ZJt+Wpnzbxyfl1rdsalqa7Ct7UoX9NXUeeObi4Y4g=;
+        b=sqx2vnCokRSbouV8nDae9ygsVfgOZ/u/3pEgi6usfriYzspocsyKkTbsfoSGI2uMwo
+         NE5rvno5Jc/zeRIT1N/tIDxejDrC2NCki7McVSpXbSIeXcXnYG+POUinhtcQH1BP78m7
+         mQ1vmlajAbn0QJqOOHg+7O3cIVfjWaMfS0fRIfKUJuAv2Uck4oIkHZGRQ9P1oR8TZ4kT
+         /Wjis2hEJwS+SwMR3wt5shErdJFSuFylqbUajzGNUhZRgPadgMAtlODgQlgmSa6YGPtu
+         F6IYxqIjeXX0B/7Jo2vFBH3uWcltmy3j00WOePSvVz67qJxl/xuuJ2reu0x9uJA1QqDS
+         gVoQ==
+X-Gm-Message-State: AOAM5300KqLqfOvqjvxTVljjCkbo1GZmXbrk5olhrSpExVva3czTTInC
+        fB/KlJyD/7+y29PZDi6Y9Ts=
+X-Google-Smtp-Source: ABdhPJyJlP0MjkBgCPy6VGqrPj+M2BMq0J0HLZtHoJGS++DTXr8bHlp9kOIKbYtR3Vjfu2200WDtIg==
+X-Received: by 2002:a63:510d:: with SMTP id f13mr22412790pgb.308.1627427057634;
+        Tue, 27 Jul 2021 16:04:17 -0700 (PDT)
+Received: from localhost.localdomain ([189.6.25.18])
+        by smtp.gmail.com with ESMTPSA id d22sm4112594pfq.177.2021.07.27.16.04.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 16:04:16 -0700 (PDT)
+From:   =?UTF-8?q?Jos=C3=A9=20Aquiles=20Guedes=20de=20Rezende?= 
+        <jjoseaquiless@gmail.com>
+To:     Jiri Pirko <jiri@nvidia.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brendanhiggins@google.com, dlatypov@google.com,
+        davidgow@google.com, linux-kselftest@vger.kernel.org,
+        ~lkcamp/patches@lists.sr.ht,
+        =?UTF-8?q?Jos=C3=A9=20Aquiles=20Guedes=20de=20Rezende?= 
+        <jjoseaquiless@gmail.com>,
+        Matheus Henrique de Souza Silva 
+        <matheushenriquedesouzasilva@protonmail.com>
+Subject: [PATCH] lib: use of kunit in test_parman.c
+Date:   Tue, 27 Jul 2021 19:58:48 -0300
+Message-Id: <20210727225847.22185-1-jjoseaquiless@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-OriginatorOrg: equinix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8007.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bba6f10-afe4-4ab8-75e8-08d9515200bb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2021 22:58:09.0034
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: z6crMN5QNyu2R3rCXzdfZhA5Dov98p9Nysq5JP2i2N6av8cP42nY2xwBl+azLuJ6PfLNxUMa5tSdUevjJsdmNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB7781
-X-Proofpoint-GUID: c073w2vP-sLS6ZjpMDN2HWids-UCRkWz
-X-Proofpoint-ORIG-GUID: c073w2vP-sLS6ZjpMDN2HWids-UCRkWz
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-27_14:2021-07-27,2021-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- impostorscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0
- clxscore=1015 bulkscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107270132
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 05:04:46PM CDT, Iwona Winiarska wrote:
->From: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->
->Add documentation for peci-cputemp driver that provides DTS thermal
->readings for CPU packages and CPU cores and peci-dimmtemp driver that
->provides DTS thermal readings for DIMMs.
->
->Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->Co-developed-by: Iwona Winiarska <iwona.winiarska@intel.com>
->Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
->Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->---
-> Documentation/hwmon/index.rst         |  2 +
-> Documentation/hwmon/peci-cputemp.rst  | 93 +++++++++++++++++++++++++++
-> Documentation/hwmon/peci-dimmtemp.rst | 58 +++++++++++++++++
-> MAINTAINERS                           |  2 +
-> 4 files changed, 155 insertions(+)
-> create mode 100644 Documentation/hwmon/peci-cputemp.rst
-> create mode 100644 Documentation/hwmon/peci-dimmtemp.rst
->
->diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
->index bc01601ea81a..cc76b5b3f791 100644
->--- a/Documentation/hwmon/index.rst
->+++ b/Documentation/hwmon/index.rst
->@@ -154,6 +154,8 @@ Hardware Monitoring Kernel Drivers
->    pcf8591
->    pim4328
->    pm6764tr
->+   peci-cputemp
->+   peci-dimmtemp
->    pmbus
->    powr1220
->    pxe1610
->diff --git a/Documentation/hwmon/peci-cputemp.rst b/Documentation/hwmon/pe=
-ci-cputemp.rst
->new file mode 100644
->index 000000000000..d3a218ba810a
->--- /dev/null
->+++ b/Documentation/hwmon/peci-cputemp.rst
->@@ -0,0 +1,93 @@
->+.. SPDX-License-Identifier: GPL-2.0-only
->+
->+Kernel driver peci-cputemp
->+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
->+
->+Supported chips:
->+	One of Intel server CPUs listed below which is connected to a PECI bus.
->+		* Intel Xeon E5/E7 v3 server processors
->+			Intel Xeon E5-14xx v3 family
->+			Intel Xeon E5-24xx v3 family
->+			Intel Xeon E5-16xx v3 family
->+			Intel Xeon E5-26xx v3 family
->+			Intel Xeon E5-46xx v3 family
->+			Intel Xeon E7-48xx v3 family
->+			Intel Xeon E7-88xx v3 family
->+		* Intel Xeon E5/E7 v4 server processors
->+			Intel Xeon E5-16xx v4 family
->+			Intel Xeon E5-26xx v4 family
->+			Intel Xeon E5-46xx v4 family
->+			Intel Xeon E7-48xx v4 family
->+			Intel Xeon E7-88xx v4 family
->+		* Intel Xeon Scalable server processors
->+			Intel Xeon D family
->+			Intel Xeon Bronze family
->+			Intel Xeon Silver family
->+			Intel Xeon Gold family
->+			Intel Xeon Platinum family
->+
->+	Datasheet: Available from http://www.intel.com/design/literature.htm
->+
->+Author: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->+
->+Description
->+-----------
->+
->+This driver implements a generic PECI hwmon feature which provides Digita=
-l
->+Thermal Sensor (DTS) thermal readings of the CPU package and CPU cores th=
-at are
->+accessible via the processor PECI interface.
->+
->+All temperature values are given in millidegree Celsius and will be measu=
-rable
->+only when the target CPU is powered on.
->+
->+Sysfs interface
->+-------------------
->+
->+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->+temp1_label		"Die"
->+temp1_input		Provides current die temperature of the CPU package.
->+temp1_max		Provides thermal control temperature of the CPU package
->+			which is also known as Tcontrol.
->+temp1_crit		Provides shutdown temperature of the CPU package which
->+			is also known as the maximum processor junction
->+			temperature, Tjmax or Tprochot.
->+temp1_crit_hyst		Provides the hysteresis value from Tcontrol to Tjmax of
->+			the CPU package.
->+
->+temp2_label		"DTS"
->+temp2_input		Provides current DTS temperature of the CPU package.
+Convert the parman test module to use the KUnit test framework.
+This makes thetest clearer by leveraging KUnit's assertion macros
+and test case definitions,as well as helps standardize on a testing framework.
 
-Would this be a good place to note the slightly counter-intuitive nature
-of DTS readings?  i.e. add something along the lines of "The DTS sensor
-produces a delta relative to Tjmax, so negative values are normal and
-values approaching zero are hot."  (In my experience people who aren't
-already familiar with it tend to think something's wrong when a CPU
-temperature reading shows -50C.)
+Co-developed-by: Matheus Henrique de Souza Silva <matheushenriquedesouzasilva@protonmail.com>
+Signed-off-by: Matheus Henrique de Souza Silva <matheushenriquedesouzasilva@protonmail.com>
+Signed-off-by: José Aquiles Guedes de Rezende <jjoseaquiless@gmail.com>
+---
+ lib/test_parman.c | 145 +++++++++++++++++++---------------------------
+ 1 file changed, 60 insertions(+), 85 deletions(-)
 
->+temp2_max		Provides thermal control temperature of the CPU package
->+			which is also known as Tcontrol.
->+temp2_crit		Provides shutdown temperature of the CPU package which
->+			is also known as the maximum processor junction
->+			temperature, Tjmax or Tprochot.
->+temp2_crit_hyst		Provides the hysteresis value from Tcontrol to Tjmax of
->+			the CPU package.
->+
->+temp3_label		"Tcontrol"
->+temp3_input		Provides current Tcontrol temperature of the CPU
->+			package which is also known as Fan Temperature target.
->+			Indicates the relative value from thermal monitor trip
->+			temperature at which fans should be engaged.
->+temp3_crit		Provides Tcontrol critical value of the CPU package
->+			which is same to Tjmax.
->+
->+temp4_label		"Tthrottle"
->+temp4_input		Provides current Tthrottle temperature of the CPU
->+			package. Used for throttling temperature. If this value
->+			is allowed and lower than Tjmax - the throttle will
->+			occur and reported at lower than Tjmax.
->+
->+temp5_label		"Tjmax"
->+temp5_input		Provides the maximum junction temperature, Tjmax of the
->+			CPU package.
->+
->+temp[6-N]_label		Provides string "Core X", where X is resolved core
->+			number.
->+temp[6-N]_input		Provides current temperature of each core.
->+temp[6-N]_max		Provides thermal control temperature of the core.
->+temp[6-N]_crit		Provides shutdown temperature of the core.
->+temp[6-N]_crit_hyst	Provides the hysteresis value from Tcontrol to Tjmax =
-of
->+			the core.
+diff --git a/lib/test_parman.c b/lib/test_parman.c
+index 35e32243693c..bd5010f0a412 100644
+--- a/lib/test_parman.c
++++ b/lib/test_parman.c
+@@ -41,6 +41,8 @@
+ #include <linux/err.h>
+ #include <linux/random.h>
+ #include <linux/parman.h>
++#include <linux/sched.h>
++#include <kunit/test.h>
+ 
+ #define TEST_PARMAN_PRIO_SHIFT 7 /* defines number of prios for testing */
+ #define TEST_PARMAN_PRIO_COUNT BIT(TEST_PARMAN_PRIO_SHIFT)
+@@ -91,12 +93,14 @@ struct test_parman {
+ 
+ static int test_parman_resize(void *priv, unsigned long new_count)
+ {
++	struct kunit *test = current->kunit_test;
+ 	struct test_parman *test_parman = priv;
+ 	struct test_parman_item **prio_array;
+ 	unsigned long old_count;
+ 
+ 	prio_array = krealloc(test_parman->prio_array,
+ 			      ITEM_PTRS_SIZE(new_count), GFP_KERNEL);
++	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, prio_array);
+ 	if (new_count == 0)
+ 		return 0;
+ 	if (!prio_array)
+@@ -214,42 +218,39 @@ static void test_parman_items_fini(struct test_parman *test_parman)
+ 	}
+ }
+ 
+-static struct test_parman *test_parman_create(const struct parman_ops *ops)
++static int test_parman_create(struct kunit *test)
+ {
+ 	struct test_parman *test_parman;
+ 	int err;
+ 
+-	test_parman = kzalloc(sizeof(*test_parman), GFP_KERNEL);
+-	if (!test_parman)
+-		return ERR_PTR(-ENOMEM);
++	test_parman = kunit_kzalloc(test, sizeof(*test_parman), GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, test_parman);
++
+ 	err = test_parman_resize(test_parman, TEST_PARMAN_BASE_COUNT);
+-	if (err)
+-		goto err_resize;
+-	test_parman->parman = parman_create(ops, test_parman);
+-	if (!test_parman->parman) {
+-		err = -ENOMEM;
+-		goto err_parman_create;
+-	}
++	KUNIT_ASSERT_EQ(test, err, 0);
++
++	test_parman->parman = parman_create(&test_parman_lsort_ops, test_parman);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, test_parman->parman);
++
+ 	test_parman_rnd_init(test_parman);
+ 	test_parman_prios_init(test_parman);
+ 	test_parman_items_init(test_parman);
+ 	test_parman->run_budget = TEST_PARMAN_RUN_BUDGET;
+-	return test_parman;
+-
+-err_parman_create:
+-	test_parman_resize(test_parman, 0);
+-err_resize:
+-	kfree(test_parman);
+-	return ERR_PTR(err);
++	test->priv = test_parman;
++	return 0;
+ }
+ 
+-static void test_parman_destroy(struct test_parman *test_parman)
++static void test_parman_destroy(struct kunit *test)
+ {
++	struct test_parman *test_parman = test->priv;
++
++	if (!test_parman)
++		return;
+ 	test_parman_items_fini(test_parman);
+ 	test_parman_prios_fini(test_parman);
+ 	parman_destroy(test_parman->parman);
+ 	test_parman_resize(test_parman, 0);
+-	kfree(test_parman);
++	kunit_kfree(test, test_parman);
+ }
+ 
+ static bool test_parman_run_check_budgets(struct test_parman *test_parman)
+@@ -265,8 +266,9 @@ static bool test_parman_run_check_budgets(struct test_parman *test_parman)
+ 	return true;
+ }
+ 
+-static int test_parman_run(struct test_parman *test_parman)
++static void test_parman_run(struct kunit *test)
+ {
++	struct test_parman *test_parman = test->priv;
+ 	unsigned int i = test_parman_rnd_get(test_parman);
+ 	int err;
+ 
+@@ -281,8 +283,8 @@ static int test_parman_run(struct test_parman *test_parman)
+ 			err = parman_item_add(test_parman->parman,
+ 					      &item->prio->parman_prio,
+ 					      &item->parman_item);
+-			if (err)
+-				return err;
++			KUNIT_ASSERT_EQ(test, err, 0);
++
+ 			test_parman->prio_array[item->parman_item.index] = item;
+ 			test_parman->used_items++;
+ 		} else {
+@@ -294,22 +296,19 @@ static int test_parman_run(struct test_parman *test_parman)
+ 		}
+ 		item->used = !item->used;
+ 	}
+-	return 0;
+ }
+ 
+-static int test_parman_check_array(struct test_parman *test_parman,
+-				   bool gaps_allowed)
++static void test_parman_check_array(struct kunit *test, bool gaps_allowed)
+ {
+ 	unsigned int last_unused_items = 0;
+ 	unsigned long last_priority = 0;
+ 	unsigned int used_items = 0;
+ 	int i;
++	struct test_parman *test_parman = test->priv;
+ 
+-	if (test_parman->prio_array_limit < TEST_PARMAN_BASE_COUNT) {
+-		pr_err("Array limit is lower than the base count (%lu < %lu)\n",
+-		       test_parman->prio_array_limit, TEST_PARMAN_BASE_COUNT);
+-		return -EINVAL;
+-	}
++	KUNIT_ASSERT_GE_MSG(test, test_parman->prio_array_limit, TEST_PARMAN_BASE_COUNT,
++		"Array limit is lower than the base count (%lu < %lu)\n",
++		test_parman->prio_array_limit, TEST_PARMAN_BASE_COUNT);
+ 
+ 	for (i = 0; i < test_parman->prio_array_limit; i++) {
+ 		struct test_parman_item *item = test_parman->prio_array[i];
+@@ -318,77 +317,53 @@ static int test_parman_check_array(struct test_parman *test_parman,
+ 			last_unused_items++;
+ 			continue;
+ 		}
+-		if (last_unused_items && !gaps_allowed) {
+-			pr_err("Gap found in array even though they are forbidden\n");
+-			return -EINVAL;
+-		}
++
++		KUNIT_ASSERT_FALSE_MSG(test, last_unused_items && !gaps_allowed,
++			"Gap found in array even though they are forbidden\n");
+ 
+ 		last_unused_items = 0;
+ 		used_items++;
+ 
+-		if (item->prio->priority < last_priority) {
+-			pr_err("Item belongs under higher priority then the last one (current: %lu, previous: %lu)\n",
+-			       item->prio->priority, last_priority);
+-			return -EINVAL;
+-		}
+-		last_priority = item->prio->priority;
++		KUNIT_ASSERT_GE_MSG(test, item->prio->priority, last_priority,
++			"Item belongs under higher priority then the last one (current: %lu, previous: %lu)\n",
++			item->prio->priority, last_priority);
+ 
+-		if (item->parman_item.index != i) {
+-			pr_err("Item has different index in compare to where it actually is (%lu != %d)\n",
+-			       item->parman_item.index, i);
+-			return -EINVAL;
+-		}
+-	}
++		last_priority = item->prio->priority;
+ 
+-	if (used_items != test_parman->used_items) {
+-		pr_err("Number of used items in array does not match (%u != %u)\n",
+-		       used_items, test_parman->used_items);
+-		return -EINVAL;
+-	}
++		KUNIT_ASSERT_EQ_MSG(test, item->parman_item.index, (unsigned long)i,
++			"Item has different index in compare to where it actually is (%lu != %d)\n",
++			item->parman_item.index, i);
+ 
+-	if (last_unused_items >= TEST_PARMAN_RESIZE_STEP_COUNT) {
+-		pr_err("Number of unused item at the end of array is bigger than resize step (%u >= %lu)\n",
+-		       last_unused_items, TEST_PARMAN_RESIZE_STEP_COUNT);
+-		return -EINVAL;
+ 	}
+ 
+-	pr_info("Priority array check successful\n");
++	KUNIT_ASSERT_EQ_MSG(test, used_items, test_parman->used_items,
++		"Number of used items in array does not match (%u != %u)\n",
++		used_items, test_parman->used_items);
+ 
+-	return 0;
++	KUNIT_ASSERT_LT_MSG(test, (unsigned long)last_unused_items, TEST_PARMAN_RESIZE_STEP_COUNT,
++		"Number of unused item at the end of array is bigger than resize step (%u >= %lu)\n",
++		last_unused_items, TEST_PARMAN_RESIZE_STEP_COUNT);
+ }
+ 
+-static int test_parman_lsort(void)
++static void test_parman_lsort(struct kunit *test)
+ {
+-	struct test_parman *test_parman;
+-	int err;
+-
+-	test_parman = test_parman_create(&test_parman_lsort_ops);
+-	if (IS_ERR(test_parman))
+-		return PTR_ERR(test_parman);
+-
+-	err = test_parman_run(test_parman);
+-	if (err)
+-		goto out;
+-
+-	err = test_parman_check_array(test_parman, false);
+-	if (err)
+-		goto out;
+-out:
+-	test_parman_destroy(test_parman);
+-	return err;
++	test_parman_run(test);
++	test_parman_check_array(test, false);
+ }
+ 
+-static int __init test_parman_init(void)
+-{
+-	return test_parman_lsort();
+-}
++static struct kunit_case parman_test_case[] = {
++	KUNIT_CASE(test_parman_lsort),
++	{}
++};
+ 
+-static void __exit test_parman_exit(void)
+-{
+-}
++static struct kunit_suite parman_test_suite = {
++	.name = "parman",
++	.init = test_parman_create,
++	.exit = test_parman_destroy,
++	.test_cases = parman_test_case,
++};
+ 
+-module_init(test_parman_init);
+-module_exit(test_parman_exit);
++kunit_test_suite(parman_test_suite);
+ 
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Jiri Pirko <jiri@mellanox.com>");
+-- 
+2.32.0
 
-I only see *_label and *_input for the per-core temperature sensors, no
-*_max, *_crit, or *_crit_hyst.
-
->+
->+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->diff --git a/Documentation/hwmon/peci-dimmtemp.rst b/Documentation/hwmon/p=
-eci-dimmtemp.rst
->new file mode 100644
->index 000000000000..1778d9317e43
->--- /dev/null
->+++ b/Documentation/hwmon/peci-dimmtemp.rst
->@@ -0,0 +1,58 @@
->+.. SPDX-License-Identifier: GPL-2.0
->+
->+Kernel driver peci-dimmtemp
->+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
->+
->+Supported chips:
->+	One of Intel server CPUs listed below which is connected to a PECI bus.
->+		* Intel Xeon E5/E7 v3 server processors
->+			Intel Xeon E5-14xx v3 family
->+			Intel Xeon E5-24xx v3 family
->+			Intel Xeon E5-16xx v3 family
->+			Intel Xeon E5-26xx v3 family
->+			Intel Xeon E5-46xx v3 family
->+			Intel Xeon E7-48xx v3 family
->+			Intel Xeon E7-88xx v3 family
->+		* Intel Xeon E5/E7 v4 server processors
->+			Intel Xeon E5-16xx v4 family
->+			Intel Xeon E5-26xx v4 family
->+			Intel Xeon E5-46xx v4 family
->+			Intel Xeon E7-48xx v4 family
->+			Intel Xeon E7-88xx v4 family
->+		* Intel Xeon Scalable server processors
->+			Intel Xeon D family
->+			Intel Xeon Bronze family
->+			Intel Xeon Silver family
->+			Intel Xeon Gold family
->+			Intel Xeon Platinum family
->+
->+	Datasheet: Available from http://www.intel.com/design/literature.htm
->+
->+Author: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->+
->+Description
->+-----------
->+
->+This driver implements a generic PECI hwmon feature which provides Digita=
-l
->+Thermal Sensor (DTS) thermal readings of DIMM components that are accessi=
-ble
->+via the processor PECI interface.
-
-I had thought "DTS" referred to a fairly specific sensor in the CPU; is
-the same term also used for DIMM temp sensors or is the mention of it
-here a copy/paste error?
-
->+
->+All temperature values are given in millidegree Celsius and will be measu=
-rable
->+only when the target CPU is powered on.
->+
->+Sysfs interface
->+-------------------
->+
->+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->+
->+temp[N]_label		Provides string "DIMM CI", where C is DIMM channel and
->+			I is DIMM index of the populated DIMM.
->+temp[N]_input		Provides current temperature of the populated DIMM.
->+temp[N]_max		Provides thermal control temperature of the DIMM.
->+temp[N]_crit		Provides shutdown temperature of the DIMM.
->+
->+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->+
->+Note:
->+	DIMM temperature attributes will appear when the client CPU's BIOS
->+	completes memory training and testing.
->diff --git a/MAINTAINERS b/MAINTAINERS
->index 35ba9e3646bd..d16da127bbdc 100644
->--- a/MAINTAINERS
->+++ b/MAINTAINERS
->@@ -14509,6 +14509,8 @@ M:	Iwona Winiarska <iwona.winiarska@intel.com>
-> R:	Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-> L:	linux-hwmon@vger.kernel.org
-> S:	Supported
->+F:	Documentation/hwmon/peci-cputemp.rst
->+F:	Documentation/hwmon/peci-dimmtemp.rst
-> F:	drivers/hwmon/peci/
->
-> PECI SUBSYSTEM
->--=20
->2.31.1
->=
