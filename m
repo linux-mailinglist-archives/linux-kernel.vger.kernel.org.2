@@ -2,136 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA953D737A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD713D7372
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236263AbhG0KmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:42:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36186 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236279AbhG0KmI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:42:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627382528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=Qbz0iV5ut2He5qOAXTSp9B5zgu81FGfYA1TCbdLaM8M=;
-        b=THe/XMKzGbNHddbmCOuqaJcK6K1Lp1A0SJXvj4QhaaSCJQb1DjGotEbEyfiOYOV5JKfBq9
-        Xj07/3CdS87PgZgUxPry+xp8qZez0wQgbGHbeCVtbzJs1+gvSMTdXvOBEtvEPqDxTzFKY0
-        vCc89Rfuac/WH+0xPZN+ljNC0wLhF9w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-IPsNAgluPhWNJxLLnC0UPw-1; Tue, 27 Jul 2021 06:42:07 -0400
-X-MC-Unique: IPsNAgluPhWNJxLLnC0UPw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45862363AB;
-        Tue, 27 Jul 2021 10:42:06 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0DBDD10074E5;
-        Tue, 27 Jul 2021 10:41:58 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id B18DC4179BB2; Tue, 27 Jul 2021 07:41:49 -0300 (-03)
-Message-ID: <20210727104119.714831752@fuller.cnet>
-User-Agent: quilt/0.66
-Date:   Tue, 27 Jul 2021 07:38:07 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Nitesh Lal <nilal@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@marvell.com>,
-        Peter Xu <peterx@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [patch 4/4] mm: vmstat_refresh: avoid queueing work item if cpu stats are clean
-References: <20210727103803.464432924@fuller.cnet>
+        id S236227AbhG0KjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:39:10 -0400
+Received: from muru.com ([72.249.23.125]:55926 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236104AbhG0KjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:39:06 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 3600D80F0;
+        Tue, 27 Jul 2021 10:39:24 +0000 (UTC)
+Date:   Tue, 27 Jul 2021 13:39:05 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] serial: 8250: 8250_omap: Fix possible interrupt storm
+Message-ID: <YP/iSZpJ5AIJV70Z@atomide.com>
+References: <20210511151955.28071-1-vigneshr@ti.com>
+ <YJ008MjjewRUTn9Z@kroah.com>
+ <YLCCJzkkB4N7LTQS@atomide.com>
+ <e5b35370-bf2d-7295-e2fd-9aee5bbc3296@ti.com>
+ <0ad948ac-f669-3d6d-5eca-4ca48d47d6a3@siemens.com>
+ <56c5d73f-741c-2643-1c79-6dc13ebb05c7@ti.com>
+ <YOylnHudkwcHHEeZ@surfacebook.localdomain>
+ <0ae7e313-1ed7-f1be-e8a7-edd1286277a5@ti.com>
+ <CAHp75Vcxtk0f2KRSL8gh2mz-AYE7Kav6co8N8XMbsvtyLohG5w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vcxtk0f2KRSL8gh2mz-AYE7Kav6co8N8XMbsvtyLohG5w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not necessary to queue work item to run refresh_vm_stats 
-on a remote CPU if that CPU has no dirty stats and no per-CPU
-allocations for remote nodes.
+* Andy Shevchenko <andy.shevchenko@gmail.com> [210713 09:14]:
+> On Tue, Jul 13, 2021 at 11:54 AM Vignesh Raghavendra <vigneshr@ti.com> wrote:
+> > On 7/13/21 1:57 AM, andy@surfacebook.localdomain wrote:
+> > > Tue, Jun 22, 2021 at 11:53:38AM +0530, Vignesh Raghavendra kirjoitti:
+> 
+> ...
+> 
+> > > https://lore.kernel.org/linux-serial/20170206233000.3021-1-dianders@chromium.org/
+> >
+> > I am not sure if reading UART_LSR is a good idea in the above patch.
+> > Some flags in LSR register are cleared on read (at least that's the case
+> > for UARTs on TI SoCs) and thus can result in loss of error/FIFO status
+> > information.
+> >
+> > > https://lore.kernel.org/linux-serial/1440015124-28393-1-git-send-email-california.l.sullivan@intel.com/
+> >
+> > Looks like this never made it.
+> 
+> Forgot to react to the above. Yes, they never made it because I
+> believe due to the exact reason you mentioned above. Also California
+> set up different experiments IIRC and it shows that the problem didn;t
+> fully disappear with his approach. But maybe yours will work better
+> (at least it's not the first time I have seen it on different hardware
+> according to people's contributions).
 
-This fixes sosreport hang (which uses vmstat_refresh) with 
-spinning SCHED_FIFO process.
+Not sure if this is the same issue with noisy lines, but see also the
+following in case it's related:
 
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+[PATCH 2/2] serial: 8250_omap: Handle optional overrun-throttle-ms property
 
-Index: linux-2.6-vmstat-update/mm/vmstat.c
-===================================================================
---- linux-2.6-vmstat-update.orig/mm/vmstat.c
-+++ linux-2.6-vmstat-update/mm/vmstat.c
-@@ -1826,17 +1826,40 @@ static bool need_update(int cpu)
- }
- 
- #ifdef CONFIG_PROC_FS
--static void refresh_vm_stats(struct work_struct *work)
-+static bool need_drain_remote_zones(int cpu)
-+{
-+#ifdef CONFIG_NUMA
-+	struct zone *zone;
-+
-+	for_each_populated_zone(zone) {
-+		struct per_cpu_pages __percpu *pcp = zone->per_cpu_pageset;
-+
-+		if (!pcp->count)
-+			continue;
-+
-+		if (!pcp->expire)
-+			continue;
-+		if (zone_to_nid(zone) == cpu_to_node(cpu))
-+			continue;
-+
-+		return true;
-+	}
-+#endif
-+
-+	return false;
-+}
-+
-+static long refresh_vm_stats(void *arg)
- {
- 	refresh_cpu_vm_stats(true);
-+	return 0;
- }
- 
- int vmstat_refresh(struct ctl_table *table, int write,
- 		   void *buffer, size_t *lenp, loff_t *ppos)
- {
- 	long val;
--	int err;
--	int i;
-+	int i, cpu;
- 
- 	/*
- 	 * The regular update, every sysctl_stat_interval, may come later
-@@ -1850,9 +1873,15 @@ int vmstat_refresh(struct ctl_table *tab
- 	 * transiently negative values, report an error here if any of
- 	 * the stats is negative, so we know to go looking for imbalance.
- 	 */
--	err = schedule_on_each_cpu(refresh_vm_stats);
--	if (err)
--		return err;
-+	get_online_cpus();
-+	for_each_online_cpu(cpu) {
-+		if (need_update(cpu) || need_drain_remote_zones(cpu))
-+			work_on_cpu(cpu, refresh_vm_stats, NULL);
-+
-+		cond_resched();
-+	}
-+	put_online_cpus();
-+
- 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
- 		/*
- 		 * Skip checking stats known to go negative occasionally.
+Also available at [0] below.
 
+Regards,
 
+Tony
+
+[0] https://lore.kernel.org/linux-omap/20210727103533.51547-1-tony@atomide.com/T/#m5f9da26c32503f2937d3d5977310ca337fa0cb5a
