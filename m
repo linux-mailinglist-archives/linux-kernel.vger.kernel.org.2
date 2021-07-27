@@ -2,167 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28973D8254
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2963D825B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbhG0WMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 18:12:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232544AbhG0WMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 18:12:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F12D660F91;
-        Tue, 27 Jul 2021 22:12:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627423951;
-        bh=JmlO7NqEbIM/TL0jd6rOqhVW4sfGZez92xGKe85sQVw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=TPppmHPF3T4i72EyZIxEWd5zLWm6L8yy7b8BDO4L8eZEcTIcQyB1ZIPmJve8+oPhI
-         CtNiuSvqUUvUQT1dHyx1t0XXpJOoKhXWnLdjigHU6g3zfT2CZ/Khm0mDgyBNZUEm7I
-         pCvehKX8lKgxibVBjYIGFgBZWWAQQraxUxZ3nVhuI+7RFdgtcaXPkkr/v5Hx6U85n8
-         /K7s3DniClWi5XZt9tAe71MWd5dJrBoUV0BhgPudYb0F7o9KKj1IiMmxF/YDj1qrzF
-         /9PiF7WqRVgsL5pscNHSuudaDBwUqCfUJSk2l/pwc1vUVonYTbnUdf6sq6k1blhKIR
-         geLZcFXNun/3w==
-Date:   Tue, 27 Jul 2021 17:12:29 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 1/8] PCI: Add pcie_reset_flr to follow calling
- convention of other reset methods
-Message-ID: <20210727221229.GA750669@bjorn-Precision-5520>
+        id S232340AbhG0WRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 18:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231706AbhG0WRC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 18:17:02 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C93CC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 15:17:01 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so1472129pjd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 15:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P1d9rZ1oYibIdHcSFP8OH769BC+V4C1W5//f6yOaEyc=;
+        b=LS83kkwUb+IGU887vVihaCeocobOMswJ2zbDSo6QbCumBxka3rMnfNk+UDoOV8j0Fz
+         rDizPV7rSAr8ulto+OqWlJAfPYqDS9RojyXNAl+SLClg1PnZPRf4naI7UTLphMmoH8XL
+         0hNNzCgG8/144+auWDESC0+3ZidmvcWYpVIRnOUa8uw9lsZ4U1VFY8zWURolgT7gLQfG
+         Dfby7F6+/rtTQxjFn6LsqsX7pohOvUEmLY6R5snTwFdZsrVCTiPoN6GL0v1G0E2KVw+s
+         zbFZZmo8CQwCKf0eIQgmmpV58+A+TIKMUlLJb7BiqjY8WGJypNUfgG4TK3H3lmTEaU6p
+         Q/VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P1d9rZ1oYibIdHcSFP8OH769BC+V4C1W5//f6yOaEyc=;
+        b=lhTaaNn7jfzC/6I8GqhEDwaZP4TfBxFK7LqOLpWsy/NXGHpkPxspdTmuRP+YeHAt7b
+         /dioAgvQjyI/Z3LHFodJqDt0hfwUNZjBjjXER1yuqi65g+y/q825xCw3t3QxmVqI+vG1
+         hO1dDs9geiqvVX8x1U1x0Zt5FZjNWrsQzRBGE/2q52Qbo8AIewzH694thATgflkhOskl
+         Nik6snS11CAB1s4T6k9dKHLc4+3f0E5cmvJgqNiAUVex1yWbVcBMVX7PXleVSTCx/TOp
+         nW8bOaM3E2kdvIEH8/RDuof7BpCzLRmo/XSaCoQQ4d3LKw/pqx4CZCr8yNPbOoIlwN9L
+         lZPg==
+X-Gm-Message-State: AOAM531ZKfRLG5fLfAd++ox24ZLZmL7KqHnKE2fHp/3SSJusaZjlZiZo
+        cFyZU3bTe14Kv+7BM+dB/aU=
+X-Google-Smtp-Source: ABdhPJxWFhl0R6uivd9of6xzOQF30aYFleE1PTX+ZKeuyZQxGt0wy/4WWKx3OrVQGfKlyRcpzUwOJw==
+X-Received: by 2002:a65:4286:: with SMTP id j6mr26146974pgp.10.1627424220879;
+        Tue, 27 Jul 2021 15:17:00 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id y139sm4752532pfb.107.2021.07.27.15.16.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 15:17:00 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 06:16:56 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: stacktrace: fix dump_backtrace/walk_stackframe
+ with NULL task
+Message-ID: <20210727221656.wq3ponbzhvftfxc5@mail.google.com>
+References: <20210627092659.46193-1-changbin.du@gmail.com>
+ <20210628134404.4c470112@xhacker.debian>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210709123813.8700-2-ameynarkhede03@gmail.com>
+In-Reply-To: <20210628134404.4c470112@xhacker.debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 06:08:06PM +0530, Amey Narkhede wrote:
-> Add has_pcie_flr bitfield in struct pci_dev to indicate support for PCIe
-> FLR to avoid reading PCI_EXP_DEVCAP multiple times.
+On Mon, Jun 28, 2021 at 01:44:04PM +0800, Jisheng Zhang wrote:
+> On Sun, 27 Jun 2021 17:26:59 +0800
+> Changbin Du <changbin.du@gmail.com> wrote:
 > 
-> Currently there is separate function pcie_has_flr() to probe if PCIe FLR
-> is supported by the device which does not match the calling convention
-> followed by reset methods which use second function argument to decide
-> whether to probe or not. Add new function pcie_reset_flr() that follows
-> the calling convention of reset methods.
 > 
-> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> ---
->  drivers/crypto/cavium/nitrox/nitrox_main.c |  4 +-
->  drivers/pci/pci.c                          | 59 +++++++++++-----------
->  drivers/pci/pcie/aer.c                     | 12 ++---
->  drivers/pci/probe.c                        |  6 ++-
->  drivers/pci/quirks.c                       |  9 ++--
->  include/linux/pci.h                        |  3 +-
->  6 files changed, 45 insertions(+), 48 deletions(-)
+> > 
+> > 
+> > Some places try to show backtrace with NULL task, and expect the task is
+> > 'current'. For example, dump_stack()->show_stack(NULL,...). So the
+> > stacktrace code should take care of this case.
 > 
-> diff --git a/drivers/crypto/cavium/nitrox/nitrox_main.c b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> index facc8e6bc..15d6c8452 100644
-> --- a/drivers/crypto/cavium/nitrox/nitrox_main.c
-> +++ b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> @@ -306,9 +306,7 @@ static int nitrox_device_flr(struct pci_dev *pdev)
->  		return -ENOMEM;
->  	}
->  
-> -	/* check flr support */
-> -	if (pcie_has_flr(pdev))
-> -		pcie_flr(pdev);
-> +	pcie_reset_flr(pdev, 0);
+> I fixed this issue one week ago:
+> 
+> http://lists.infradead.org/pipermail/linux-riscv/2021-June/007258.html
 
-I'm not really a fan of exposing the "probe" argument outside
-drivers/pci/.  I think this would be the only occurrence.  Is there a
-way to avoid that?
-
-Can we just make pcie_flr() do the equivalent of pcie_has_flr()
-internally?
-
->  static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
->  {
-> -	if (!pcie_has_flr(dev))
-> -		return -ENOTTY;
-> +	int ret = pcie_reset_flr(dev, probe);
->  
->  	if (probe)
-> -		return 0;
-> -
-> -	pcie_flr(dev);
-> +		return ret;
->  
->  	msleep(250);
-
-Can we structure this like the following?  I think it's easier to
-understand.
-
-  if (probe)
-    return pcie_reset_flr(dev, 1);
-
-  pcie_reset_flr(dev, 0);
-  msleep(250);
-  return 0;
-
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index c20211e59..d432428fd 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -337,6 +337,7 @@ struct pci_dev {
->  	u8		msi_cap;	/* MSI capability offset */
->  	u8		msix_cap;	/* MSI-X capability offset */
->  	u8		pcie_mpss:3;	/* PCIe Max Payload Size Supported */
-> +	u8		has_pcie_flr:1; /* PCIe FLR supported */
-
-Let's add a devcap member instead.  Then we can use it for some
-ASPM-related things as well.  We *could* use it to replace pcie_mpss,
-since that comes from PCI_EXP_DEVCAP, too, but for now I think it's
-easier to just keep it because it's encoded, and some drivers and
-quirks use it so it would be a fair amount of work to change that.
-Example patch below that could become the first in the series.
+I still see this issue on mainline. Is your fix merged? Thanks!
 
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index aacf575c15cf..5a99061ea53a 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4635,8 +4635,7 @@ bool pcie_has_flr(struct pci_dev *dev)
- 	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
- 		return false;
- 
--	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
--	return cap & PCI_EXP_DEVCAP_FLR;
-+	return dev->devcap & PCI_EXP_DEVCAP_FLR;
- }
- EXPORT_SYMBOL_GPL(pcie_has_flr);
- 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 79177ac37880..52ae26bcc68c 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -1498,8 +1498,8 @@ void set_pcie_port_type(struct pci_dev *pdev)
- 	pdev->pcie_cap = pos;
- 	pci_read_config_word(pdev, pos + PCI_EXP_FLAGS, &reg16);
- 	pdev->pcie_flags_reg = reg16;
--	pci_read_config_word(pdev, pos + PCI_EXP_DEVCAP, &reg16);
--	pdev->pcie_mpss = reg16 & PCI_EXP_DEVCAP_PAYLOAD;
-+	pci_read_config_dword(pdev, pos + PCI_EXP_DEVCAP, &pdev->devcap);
-+	pdev->pcie_mpss = pdev->devcap & PCI_EXP_DEVCAP_PAYLOAD;
- 
- 	parent = pci_upstream_bridge(pdev);
- 	if (!parent)
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 540b377ca8f6..294d1c857a57 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -334,6 +334,7 @@ struct pci_dev {
- 	struct pci_dev  *rcec;          /* Associated RCEC device */
- #endif
- 	u8		pcie_cap;	/* PCIe capability offset */
-+	u32		devcap;		/* PCIe Device Capabilities */
- 	u8		msi_cap;	/* MSI capability offset */
- 	u8		msix_cap;	/* MSI-X capability offset */
- 	u8		pcie_mpss:3;	/* PCIe Max Payload Size Supported */
+-- 
+Cheers,
+Changbin Du
