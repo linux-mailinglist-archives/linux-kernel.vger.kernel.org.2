@@ -2,124 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EAA3D70D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBDB3D70E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235933AbhG0IHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
+        id S235897AbhG0IKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235917AbhG0IHK (ORCPT
+        with ESMTP id S235629AbhG0IKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:07:10 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7543FC061757;
-        Tue, 27 Jul 2021 01:07:10 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id q15so19352392ybu.2;
-        Tue, 27 Jul 2021 01:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F+KcL7dXJ7D+nJ0tqj3mxzvtr9CifwH+o213FLhP+90=;
-        b=OCpS/XTLoi9+PoX/DP+w8tt/iyNKr+IVeLA/BdoCYS0/zLJn1oHX4fmJAzfxkA2uAw
-         SF0v0nNK+qEhyilM9zpd2OBm6dA78fvzS4otFIHYIzSmB8+mlXExzoUgW2H+LtcpOIG7
-         BiDJHMA7+oaRYkH3N+cCSbhBhTCaa4U/C/QFYl0m8qNEhlYkCWp36GTJRqNQYwE7iSKf
-         mz+j+rcXVUJ29oHAjVUzNPBHwHCqkBAj97GLKwrgAzPe+/0P2q00CidT8N00Uv+EXo37
-         cJU2qhdMeH2F4SFPQGmD/GW3K0ZFtzpFSdqaLWBQlrtpXs1A0EDG97cKduuLAzB9wL1c
-         8DPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F+KcL7dXJ7D+nJ0tqj3mxzvtr9CifwH+o213FLhP+90=;
-        b=dIdMYHC+EtKAIIuHuopXGE/CzFvBu92XH21YfDFLLsv5G/TEA5Aa0MqNFxpvl7o3UN
-         OtVDJ2mlSBb222exCmElzOKsZUefPBt5a3JtiVVChjaApR8IHRI53sTf0axe/5GtXitq
-         kmqwoy5rSFo1OGhlpM12xGw4t/YWG1+7glN7hjZUvfEJOQvAN+p4gj9DJdsilmwGI9GQ
-         zNYl71CclNkaNDsxef+3tYqPmahHlXjEKfaV/7hSKMK9ygeF5qBOJPZ58AY92hdQJNXn
-         1WFuTJ0EdE2EytALX6ZOkG/DShFnV0lLWA7nf+oOG146cNRD1Tztuf72pWOjnvdv1WHE
-         Jatg==
-X-Gm-Message-State: AOAM531KWToUYnPlvwVr+TvhM5uVNZ0lWiqzyNqG82KKIQHeQykHf7Qk
-        MkXl5VagrHjPoDIfSIGnjTys5zoS2uBb7AEDwRY=
-X-Google-Smtp-Source: ABdhPJxDdIl3vPRyEk27KSNLAP01FPQ1VB7lbBTDmDcYYYZ/WeGI2XtHsbDdLuJSqkD38EyLa/Wzgoj9a6tzgkuZ2ao=
-X-Received: by 2002:a25:e404:: with SMTP id b4mr29884451ybh.426.1627373229775;
- Tue, 27 Jul 2021 01:07:09 -0700 (PDT)
+        Tue, 27 Jul 2021 04:10:32 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F544C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:10:32 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m8I92-0006l5-74; Tue, 27 Jul 2021 10:08:56 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m8I8u-0005sq-D8; Tue, 27 Jul 2021 10:08:48 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m8I8u-0004Ek-Be; Tue, 27 Jul 2021 10:08:48 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Finn Thain <fthain@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        netdev@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        =?UTF-8?q?Samuel=20Iglesias=20Gons=C3=A1lvez?= 
+        <siglesias@igalia.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        linux-sh@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 0/5] Some cleanups after making bus_type::remove return void
+Date:   Tue, 27 Jul 2021 10:08:35 +0200
+Message-Id: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210726182850.14328-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210726182850.14328-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <1627335750.959093.914062.nullmailer@robh.at.kernel.org>
-In-Reply-To: <1627335750.959093.914062.nullmailer@robh.at.kernel.org>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 27 Jul 2021 09:06:43 +0100
-Message-ID: <CA+V-a8vOG+-r7_ddp-3eWu1tSjfvWrheMMXY75TDrmD+mdRR3w@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: iio: adc: Add binding documentation
- for Renesas RZ/G2L A/D converter
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hello,
 
-On Mon, Jul 26, 2021 at 10:42 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, 26 Jul 2021 19:28:48 +0100, Lad Prabhakar wrote:
-> > Add binding documentation for Renesas RZ/G2L A/D converter block.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > ---
-> >  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 134 ++++++++++++++++++
-> >  1 file changed, 134 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
-> >
->
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> Error: Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.example.dts:26.28-29 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1418: dt_binding_check] Error 2
-> \ndoc reference errors (make refcheckdocs):
->
-> See https://patchwork.ozlabs.org/patch/1510163
->
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
->
-The base patch series required for this path is v5.14-rc2. (I had
-mentioned it in the cover letter, maybe I should have added a note
-here too)
+while working on the patch set that made bus_type::remove return void I
+noticed a few things that could be improved. This series addresses
+these. Apart from a simple conflict between the two zorro patches there
+are no interdependencies between these patches. I created them on top of
+Greg's bus_remove_return_void-5.15 tag[1]. There might be further
+(probably simple) conflicts if they are applied based on an earlier
+commit.
 
-Sorry for the inconvenience.
+So it should be easily possible to let these patches go in through their
+usual maintainer trees. So please if you're a maintainer state if you
+prefer to take the patches yourself or if you prefer that Greg takes
+them together.
 
-Cheers,
-Prabhakar
+Best regards
+Uwe
 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
->
+[1] available at
+
+	git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/bus_remove_return_void-5.15
+
+    see https://lore.kernel.org/lkml/YPkwQwf0dUKnGA7L@kroah.com
+
+Uwe Kleine-König (5):
+  nubus: Simplify check in remove callback
+  nubus: Make struct nubus_driver::remove return void
+  sh: superhyway: Simplify check in remove callback
+  zorro: Simplify remove callback
+  zorro: Drop useless (and hardly used) .driver member in struct
+    zorro_dev
+
+ drivers/net/ethernet/8390/mac8390.c     |  3 +--
+ drivers/net/ethernet/natsemi/macsonic.c |  4 +---
+ drivers/nubus/bus.c                     |  2 +-
+ drivers/sh/superhyway/superhyway.c      |  2 +-
+ drivers/zorro/zorro-driver.c            | 13 ++++---------
+ include/linux/nubus.h                   |  2 +-
+ include/linux/zorro.h                   |  1 -
+ 7 files changed, 9 insertions(+), 18 deletions(-)
+
+
+base-commit: fc7a6209d5710618eb4f72a77cd81b8d694ecf89
+-- 
+2.30.2
+
