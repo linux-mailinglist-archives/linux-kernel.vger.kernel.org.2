@@ -2,204 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7089B3D7375
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE50D3D7380
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236250AbhG0KlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:41:22 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41666 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236104AbhG0KlV (ORCPT
+        id S236378AbhG0KnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:43:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39121 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236241AbhG0KnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:41:21 -0400
-Received: from localhost.localdomain (unknown [223.178.63.20])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E3A19203F736;
-        Tue, 27 Jul 2021 03:41:17 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E3A19203F736
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1627382481;
-        bh=blgG5ZQertzB80NxUoxAYt3za0qaegyKHtCgIEBljl8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pAJuapn3h29JMCDay09ek0xzpPAcI5dm2eNP5PKKRskU9GfrNhnvMV+ZSCZ3uDH9N
-         92sg/IXsVT/W82bp+SK5XmpwxI2+EIwuJZxB1Ug1iZC/gsNt+xAtWjihdAz2GaIb9S
-         2d2kYy78FnrQ1WojbjgJQgX7PWh19WcLi1GBThC8=
-From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
-To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        nunodasneves@linux.microsoft.com
-Subject: [PATCH v3] hyperv: root partition faults writing to VP ASSIST MSR PAGE
-Date:   Tue, 27 Jul 2021 16:10:44 +0530
-Message-Id: <20210727104044.28078-1-kumarpraveen@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 27 Jul 2021 06:43:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627382595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LK/Cw9dtZ2TMRxaIdRMYKSYbv2+yKBDFm/qg6Jb2IIs=;
+        b=W4uYqbIMMQM5OzS5gKle1RFbHbujjuxladaMmdFqFUHEvKnJWaWdGbiqG1bwwj2luJa0mS
+        4uTe1eLh2jtcaiWrM3gALD9bwS9IhcBRftlIlFu3uuTYPpdwbQD58MQWrIQwjW6n/58XsD
+        3TPaoxFtMXsuy12PPQ1lv8/2FcBAsn8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-juWnEyWsPUWdMamXg_wqJA-1; Tue, 27 Jul 2021 06:43:14 -0400
+X-MC-Unique: juWnEyWsPUWdMamXg_wqJA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 921A0107ACF5;
+        Tue, 27 Jul 2021 10:43:12 +0000 (UTC)
+Received: from T590 (ovpn-12-42.pek2.redhat.com [10.72.12.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0762C10023B0;
+        Tue, 27 Jul 2021 10:43:05 +0000 (UTC)
+Date:   Tue, 27 Jul 2021 18:43:04 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-mq-sched: Fix blk_mq_sched_alloc_tags() error
+ handling
+Message-ID: <YP/jOJZTFM2llXyC@T590>
+References: <1627378373-148090-1-git-send-email-john.garry@huawei.com>
+ <YP/atlyuacbHF/sp@T590>
+ <e0c47dfe-4774-358d-6e1d-22fa98865d57@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e0c47dfe-4774-358d-6e1d-22fa98865d57@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For Root partition the VP assist pages are pre-determined by the
-hypervisor. The Root kernel is not allowed to change them to
-different locations. And thus, we are getting below stack as in
-current implementation Root is trying to perform write to specific
-MSR.
+On Tue, Jul 27, 2021 at 11:30:00AM +0100, John Garry wrote:
+> On 27/07/2021 11:06, Ming Lei wrote:
+> > On Tue, Jul 27, 2021 at 05:32:53PM +0800, John Garry wrote:
+> > > If the blk_mq_sched_alloc_tags() -> blk_mq_alloc_rqs() call fails, then we
+> > > call blk_mq_sched_free_tags() -> blk_mq_free_rqs().
+> > > 
+> > > It is incorrect to do so, as any rqs would have already been freed in the
+> > > blk_mq_alloc_rqs() call.
+> > > 
+> > > Fix by calling blk_mq_free_rq_map() only directly.
+> > > 
+> > > Fixes: 6917ff0b5bd41 ("blk-mq-sched: refactor scheduler initialization")
+> > > Signed-off-by: John Garry <john.garry@huawei.com>
+> > 
+> > Not sure it is one fix, because blk_mq_free_rqs() does nothing when
+> > ->static_rqs[] isn't filled, so 'Fixes' tag isn't needed, IMO.
+> 
+> I actually experimented by returning an error from blk_mq_sched_alloc_tags()
+> -> blk_mq_alloc_rqs() at the function entry point, and it crashes:
+> 
+> [8.118419]
+> ==================================================================
+> [8.125677] BUG: KASAN: null-ptr-deref in blk_mq_free_rqs+0x170/0x380
 
-[ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
-write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
-(native_write_msr+0x4/0x30)
-[ 2.784867] Call Trace:
-[ 2.791507] hv_cpu_init+0xf1/0x1c0
-[ 2.798144] ? hyperv_report_panic+0xd0/0xd0
-[ 2.804806] cpuhp_invoke_callback+0x11a/0x440
-[ 2.811465] ? hv_resume+0x90/0x90
-[ 2.818137] cpuhp_issue_call+0x126/0x130
-[ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
-[ 2.831427] ? hyperv_report_panic+0xd0/0xd0
-[ 2.838075] ? hyperv_report_panic+0xd0/0xd0
-[ 2.844723] ? hv_resume+0x90/0x90
-[ 2.851375] __cpuhp_setup_state+0x3d/0x90
-[ 2.858030] hyperv_init+0x14e/0x410
-[ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
-[ 2.871349] apic_intr_mode_init+0x8b/0x100
-[ 2.878017] x86_late_time_init+0x20/0x30
-[ 2.884675] start_kernel+0x459/0x4fb
-[ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
+OK, looks it is caused by un-initialized &tags->page_list, then it is fine
+to mark it as fixes.
 
-Since, the hypervisor already provides the VP assist page for root
-partition, we need to memremap the memory from hypervisor for root
-kernel to use. The mapping is done in hv_cpu_init during bringup and
-is unmaped in hv_cpu_die during teardown.
-
-Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
----
- arch/x86/hyperv/hv_init.c          | 61 +++++++++++++++++++++---------
- arch/x86/include/asm/hyperv-tlfs.h |  9 +++++
- 2 files changed, 53 insertions(+), 17 deletions(-)
-
-changelog:
-v1: initial patch
-v2: commit message changes, removal of HV_MSR_APIC_ACCESS_AVAILABLE
-    check and addition of null check before reading the VP assist MSR
-    for root partition
-v3: added new data structure to handle VP ASSIST MSR page and done
-    handling in hv_cpu_init and hv_cpu_die
-
----
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 6f247e7e07eb..b859e42b4943 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -44,6 +44,7 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
- 
- static int hv_cpu_init(unsigned int cpu)
- {
-+	union hv_vp_assist_msr_contents msr;
- 	struct hv_vp_assist_page **hvp = &hv_vp_assist_page[smp_processor_id()];
- 	int ret;
- 
-@@ -54,27 +55,41 @@ static int hv_cpu_init(unsigned int cpu)
- 	if (!hv_vp_assist_page)
- 		return 0;
- 
--	/*
--	 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's Section
--	 * 5.2.1 "GPA Overlay Pages"). Here it must be zeroed out to make sure
--	 * we always write the EOI MSR in hv_apic_eoi_write() *after* the
--	 * EOI optimization is disabled in hv_cpu_die(), otherwise a CPU may
--	 * not be stopped in the case of CPU offlining and the VM will hang.
--	 */
--	if (!*hvp) {
--		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
-+	if (hv_root_partition) {
-+		/*
-+		 * For Root partition we get the hypervisor provided VP ASSIST
-+		 * PAGE, instead of allocating a new page.
-+		 */
-+		rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-+
-+		/* remapping to root partition address space */
-+		if (!*hvp)
-+			*hvp = memremap(msr.guest_physical_address <<
-+					HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT,
-+					PAGE_SIZE, MEMREMAP_WB);
-+	} else {
-+		/*
-+		 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's
-+		 * Section 5.2.1 "GPA Overlay Pages"). Here it must be zeroed
-+		 * out to make sure we always write the EOI MSR in
-+		 * hv_apic_eoi_write() *after* theEOI optimization is disabled
-+		 * in hv_cpu_die(), otherwise a CPU may not be stopped in the
-+		 * case of CPU offlining and the VM will hang.
-+		 */
-+		if (!*hvp)
-+			*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
-+
- 	}
- 
--	if (*hvp) {
--		u64 val;
-+	WARN_ON(!(*hvp));
- 
--		val = vmalloc_to_pfn(*hvp);
--		val = (val << HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT) |
--			HV_X64_MSR_VP_ASSIST_PAGE_ENABLE;
-+	if (*hvp) {
-+		if (!hv_root_partition)
-+			msr.guest_physical_address = vmalloc_to_pfn(*hvp);
- 
--		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, val);
-+		msr.enable = 1;
-+		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
- 	}
--
- 	return 0;
- }
- 
-@@ -170,9 +185,21 @@ static int hv_cpu_die(unsigned int cpu)
- 
- 	hv_common_cpu_die(cpu);
- 
--	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
-+	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
- 		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
- 
-+		if (hv_root_partition) {
-+			/*
-+			 * For Root partition the VP ASSIST page is mapped to
-+			 * hypervisor provided page, and thus, we unmap the
-+			 * page here and nullify it, so that in future we have
-+			 * correct page address mapped in hv_cpu_init
-+			 */
-+			memunmap(hv_vp_assist_page[cpu]);
-+			hv_vp_assist_page[cpu] = NULL;
-+		}
-+	}
-+
- 	if (hv_reenlightenment_cb == NULL)
- 		return 0;
- 
-diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-index f1366ce609e3..2e4e87046aa7 100644
---- a/arch/x86/include/asm/hyperv-tlfs.h
-+++ b/arch/x86/include/asm/hyperv-tlfs.h
-@@ -288,6 +288,15 @@ union hv_x64_msr_hypercall_contents {
- 	} __packed;
- };
- 
-+union hv_vp_assist_msr_contents {
-+	u64 as_uint64;
-+	struct {
-+		u64 enable:1;
-+		u64 reserved:11;
-+		u64 guest_physical_address:52;
-+	} __packed;
-+};
-+
- struct hv_reenlightenment_control {
- 	__u64 vector:8;
- 	__u64 reserved1:8;
 -- 
-2.25.1
+Ming
 
