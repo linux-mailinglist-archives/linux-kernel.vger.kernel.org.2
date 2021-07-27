@@ -2,198 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127B03D733F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2573D7343
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236284AbhG0KaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:30:24 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3499 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhG0KaX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:30:23 -0400
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GYt2t2lZFz6GDBh;
-        Tue, 27 Jul 2021 18:15:18 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 27 Jul 2021 12:30:20 +0200
-Received: from [10.47.80.220] (10.47.80.220) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 27 Jul
- 2021 11:30:20 +0100
-Subject: Re: [PATCH] blk-mq-sched: Fix blk_mq_sched_alloc_tags() error
- handling
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <osandov@fb.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1627378373-148090-1-git-send-email-john.garry@huawei.com>
- <YP/atlyuacbHF/sp@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <e0c47dfe-4774-358d-6e1d-22fa98865d57@huawei.com>
-Date:   Tue, 27 Jul 2021 11:30:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S236280AbhG0Kbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:31:55 -0400
+Received: from muru.com ([72.249.23.125]:55864 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231745AbhG0Kbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:31:53 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 451BD80F0;
+        Tue, 27 Jul 2021 10:32:10 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dario Binacchi <dariobin@libero.it>
+Subject: [PATCH 1/2] serial: omap: Disable PM runtime autoidle to remove pm_runtime_irq_safe()
+Date:   Tue, 27 Jul 2021 13:31:48 +0300
+Message-Id: <20210727103149.51175-1-tony@atomide.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <YP/atlyuacbHF/sp@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.220]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2021 11:06, Ming Lei wrote:
-> On Tue, Jul 27, 2021 at 05:32:53PM +0800, John Garry wrote:
->> If the blk_mq_sched_alloc_tags() -> blk_mq_alloc_rqs() call fails, then we
->> call blk_mq_sched_free_tags() -> blk_mq_free_rqs().
->>
->> It is incorrect to do so, as any rqs would have already been freed in the
->> blk_mq_alloc_rqs() call.
->>
->> Fix by calling blk_mq_free_rq_map() only directly.
->>
->> Fixes: 6917ff0b5bd41 ("blk-mq-sched: refactor scheduler initialization")
->> Signed-off-by: John Garry <john.garry@huawei.com>
-> 
-> Not sure it is one fix, because blk_mq_free_rqs() does nothing when
-> ->static_rqs[] isn't filled, so 'Fixes' tag isn't needed, IMO.
+We want to remove the use of pm_runtime_irq_safe() from serial drivers
+to allow making PM runtime handling generic. Let's simplify things by
+disabling PM runtime autoidle for omap-serial as this driver has been
+deprecated for years because of the 8250_omap driver.
 
-I actually experimented by returning an error from 
-blk_mq_sched_alloc_tags() -> blk_mq_alloc_rqs() at the function entry 
-point, and it crashes:
+There are still some omap-serial users that seem to hang on to it for
+some unknown rs485 reasons it seems. But presumably those folks do not
+need PM runtime autoidle with omap-serial, and hopefully can just move
+to using 8250_omap driver instead.
 
-[8.118419] 
-==================================================================
-[8.125677] BUG: KASAN: null-ptr-deref in blk_mq_free_rqs+0x170/0x380
-[8.132158] Read of size 8 at addr 0000000000000020 by task swapper/0/1
-[8.138806]
-[8.140297] CPU: 9 PID: 1 Comm: swapper/0 Not tainted 
-5.14.0-rc3-gf17b9ea98148 #113
-[8.147997] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon D05 
-IT21 Nemo 2.0 RC0 04/18/2018
-[8.157177] Call trace:
-[8.159628]  dump_backtrace+0x0/0x2bc
-[8.163312]  show_stack+0x1c/0x2c
-[8.166643]  dump_stack_lvl+0x68/0x84
-[8.170325]  kasan_report+0x12c/0x24c
-[8.174005]  __asan_load8+0x98/0xd4
-[8.177508]  blk_mq_free_rqs+0x170/0x380
-[8.181450]  blk_mq_init_sched+0x604/0x6e0
-[8.185567]  elevator_init_mq+0x134/0x220
-[8.189596]  __device_add_disk+0x28c/0x520
-[8.193714]  device_add_disk+0x18/0x24
-[8.197481]  loop_add+0x300/0x360
-[8.200811]  loop_init+0xf4/0x120
-[8.204142]  do_one_initcall+0xa8/0x270
-[8.207995]  kernel_init_freeable+0x2c4/0x34c
-[8.212376]  kernel_init+0x28/0x140
-[8.215880]  ret_from_fork+0x10/0x18
-[8.219472] 
-==================================================================
-[8.226728] Disabling lock debugging due to kernel taint
-[8.232074] Unable to handle kernel NULL pointer dereference at virtual 
-address 0000000000000020
-[8.240919] Mem abort info:
-[8.243727]   ESR = 0x96000004
-[8.246797]   EC = 0x25: DABT (current EL), IL = 32 bits
-[8.252141]   SET = 0, FnV = 0
-[8.255210]   EA = 0, S1PTW = 0
-[8.258367]   FSC = 0x04: level 0 translation fault
-[8.263272] Data abort info:
-[8.266165]   ISV = 0, ISS = 0x00000004
-[8.270021]   CM = 0, WnR = 0
-[8.272998] [0000000000000020] user address but active_mm is swapper
-[8.279387] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[8.284987] Modules linked in:
-[8.288055] CPU: 9 PID: 1 Comm: swapper/0 Tainted: GB 
-5.14.0-rc3-gf17b9ea98148 #113
-[8.297149] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon D05 
-IT21 Nemo 2.0 RC0 04/18/2018
-[8.306329] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-[8.312366] pc : blk_mq_free_rqs+0x170/0x380
-[8.316657] lr : blk_mq_free_rqs+0x170/0x380
-[8.320947] sp : ffff8000164f7ae0
-[8.324273] x29: ffff8000164f7ae0 x28: ffff00105340e960 x27: ffff001053418650
-[8.331455] x26: ffff00105340c1e4 x25: ffff00105340c1a0 x24: ffff8000116e0860
-[8.338636] x23: ffff00104a679400 x22: ffff00104a6b4c00 x21: fffffffffffff000
-[8.345817] x20: 0000000000000000 x19: fffffffffffffff8 x18: 0000000000000000
-[8.352996] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-[8.360175] x14: 0000000000000000 x13: 746e696174206c65 x12: ffff6002db693ff9
-[8.367355] x11: 1fffe002db693ff8 x10: ffff6002db693ff8 x9 : dfff800000000000
-[8.374536] x8 : ffff0016db49ffc0 x7 : 0000000000000001 x6 : 00009ffd2496c008
-[8.381716] x5 : ffff0016db49ffc0 x4 : dfff800000000000 x3 : ffff8000115b29d4
-[8.388896] x2 : 0000000000000007 x1 : ffff0410019e8000 x0 : 0000000000000001
-[8.396076] Call trace:
-[8.398528]  blk_mq_free_rqs+0x170/0x380
-[8.402470]  blk_mq_init_sched+0x604/0x6e0
-[8.406587]  elevator_init_mq+0x134/0x220
-[8.410614]  __device_add_disk+0x28c/0x520
-[8.414732]  device_add_disk+0x18/0x24
-[8.418500]  loop_add+0x300/0x360
-[8.421828]  loop_init+0xf4/0x120
-[8.425157]  do_one_initcall+0xa8/0x270
-[8.429009]  kernel_init_freeable+0x2c4/0x34c
-[8.433388]  kernel_init+0x28/0x140
-[8.436891]  ret_from_fork+0x10/0x18
-[8.440487] Code: 9100a260 d346feb5 8b153035 97f287e9 (f9401676)
-[8.446710] ---[ end trace 66db82d449431dd1 ]--
+For 8250_omap driver, we will eventually move to use generic serial
+layer PM based on patches done by Andy Shevchenko to remove
+pm_runtime_irq_safe() usage.
 
-That's even if I include "blk-mq: Change rqs check in blk_mq_free_rqs()" 
-in my other series.
+Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Dario Binacchi <dariobin@libero.it>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/tty/serial/omap-serial.c | 75 +-------------------------------
+ 1 file changed, 2 insertions(+), 73 deletions(-)
 
-The crash seems to be in blk_mq_clear_rq_mapping(), which much newer 
-than 6917ff0b5bd41. But I'd still leave the Fixes tag.
-
-> 
->>
->> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
->> index c838d81ac058..0f006cabfd91 100644
->> --- a/block/blk-mq-sched.c
->> +++ b/block/blk-mq-sched.c
->> @@ -515,17 +515,6 @@ void blk_mq_sched_insert_requests(struct blk_mq_hw_ctx *hctx,
->>   	percpu_ref_put(&q->q_usage_counter);
->>   }
->>   
->> -static void blk_mq_sched_free_tags(struct blk_mq_tag_set *set,
->> -				   struct blk_mq_hw_ctx *hctx,
->> -				   unsigned int hctx_idx)
->> -{
->> -	if (hctx->sched_tags) {
->> -		blk_mq_free_rqs(set, hctx->sched_tags, hctx_idx);
->> -		blk_mq_free_rq_map(hctx->sched_tags, set->flags);
->> -		hctx->sched_tags = NULL;
->> -	}
->> -}
->> -
->>   static int blk_mq_sched_alloc_tags(struct request_queue *q,
->>   				   struct blk_mq_hw_ctx *hctx,
->>   				   unsigned int hctx_idx)
->> @@ -539,8 +528,10 @@ static int blk_mq_sched_alloc_tags(struct request_queue *q,
->>   		return -ENOMEM;
->>   
->>   	ret = blk_mq_alloc_rqs(set, hctx->sched_tags, hctx_idx, q->nr_requests);
->> -	if (ret)
->> -		blk_mq_sched_free_tags(set, hctx, hctx_idx);
->> +	if (ret) {
->> +		blk_mq_free_rq_map(hctx->sched_tags, set->flags);
->> +		hctx->sched_tags = NULL;
->> +	}
-> 
-> The patch itself looks fine:
-> 
-> Reviewed-by: Ming Lei <ming.lei@redhat.com>
-> 
-> 
-> 
-
-cheers
-
-> .
-> 
-
+diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
+--- a/drivers/tty/serial/omap-serial.c
++++ b/drivers/tty/serial/omap-serial.c
+@@ -276,11 +276,8 @@ static void serial_omap_enable_ms(struct uart_port *port)
+ 
+ 	dev_dbg(up->port.dev, "serial_omap_enable_ms+%d\n", up->port.line);
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	up->ier |= UART_IER_MSI;
+ 	serial_out(up, UART_IER, up->ier);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static void serial_omap_stop_tx(struct uart_port *port)
+@@ -288,8 +285,6 @@ static void serial_omap_stop_tx(struct uart_port *port)
+ 	struct uart_omap_port *up = to_uart_omap_port(port);
+ 	int res;
+ 
+-	pm_runtime_get_sync(up->dev);
+-
+ 	/* Handle RS-485 */
+ 	if (port->rs485.flags & SER_RS485_ENABLED) {
+ 		if (up->scr & OMAP_UART_SCR_TX_EMPTY) {
+@@ -330,21 +325,15 @@ static void serial_omap_stop_tx(struct uart_port *port)
+ 		up->ier &= ~UART_IER_THRI;
+ 		serial_out(up, UART_IER, up->ier);
+ 	}
+-
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static void serial_omap_stop_rx(struct uart_port *port)
+ {
+ 	struct uart_omap_port *up = to_uart_omap_port(port);
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	up->ier &= ~(UART_IER_RLSI | UART_IER_RDI);
+ 	up->port.read_status_mask &= ~UART_LSR_DR;
+ 	serial_out(up, UART_IER, up->ier);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
+@@ -399,8 +388,6 @@ static void serial_omap_start_tx(struct uart_port *port)
+ 	struct uart_omap_port *up = to_uart_omap_port(port);
+ 	int res;
+ 
+-	pm_runtime_get_sync(up->dev);
+-
+ 	/* Handle RS-485 */
+ 	if (port->rs485.flags & SER_RS485_ENABLED) {
+ 		/* Fire THR interrupts when FIFO is below trigger level */
+@@ -421,8 +408,6 @@ static void serial_omap_start_tx(struct uart_port *port)
+ 		up->rs485_tx_filter_count = 0;
+ 
+ 	serial_omap_enable_ier_thri(up);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static void serial_omap_throttle(struct uart_port *port)
+@@ -430,13 +415,10 @@ static void serial_omap_throttle(struct uart_port *port)
+ 	struct uart_omap_port *up = to_uart_omap_port(port);
+ 	unsigned long flags;
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	spin_lock_irqsave(&up->port.lock, flags);
+ 	up->ier &= ~(UART_IER_RLSI | UART_IER_RDI);
+ 	serial_out(up, UART_IER, up->ier);
+ 	spin_unlock_irqrestore(&up->port.lock, flags);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static void serial_omap_unthrottle(struct uart_port *port)
+@@ -444,13 +426,10 @@ static void serial_omap_unthrottle(struct uart_port *port)
+ 	struct uart_omap_port *up = to_uart_omap_port(port);
+ 	unsigned long flags;
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	spin_lock_irqsave(&up->port.lock, flags);
+ 	up->ier |= UART_IER_RLSI | UART_IER_RDI;
+ 	serial_out(up, UART_IER, up->ier);
+ 	spin_unlock_irqrestore(&up->port.lock, flags);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static unsigned int check_modem_status(struct uart_omap_port *up)
+@@ -576,7 +555,6 @@ static irqreturn_t serial_omap_irq(int irq, void *dev_id)
+ 	int max_count = 256;
+ 
+ 	spin_lock(&up->port.lock);
+-	pm_runtime_get_sync(up->dev);
+ 
+ 	do {
+ 		iir = serial_in(up, UART_IIR);
+@@ -616,8 +594,6 @@ static irqreturn_t serial_omap_irq(int irq, void *dev_id)
+ 
+ 	tty_flip_buffer_push(&up->port.state->port);
+ 
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ 	up->port_activity = jiffies;
+ 
+ 	return ret;
+@@ -629,13 +605,11 @@ static unsigned int serial_omap_tx_empty(struct uart_port *port)
+ 	unsigned long flags;
+ 	unsigned int ret = 0;
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	dev_dbg(up->port.dev, "serial_omap_tx_empty+%d\n", up->port.line);
+ 	spin_lock_irqsave(&up->port.lock, flags);
+ 	ret = serial_in(up, UART_LSR) & UART_LSR_TEMT ? TIOCSER_TEMT : 0;
+ 	spin_unlock_irqrestore(&up->port.lock, flags);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
++
+ 	return ret;
+ }
+ 
+@@ -645,10 +619,7 @@ static unsigned int serial_omap_get_mctrl(struct uart_port *port)
+ 	unsigned int status;
+ 	unsigned int ret = 0;
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	status = check_modem_status(up);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ 
+ 	dev_dbg(up->port.dev, "serial_omap_get_mctrl+%d\n", up->port.line);
+ 
+@@ -680,7 +651,6 @@ static void serial_omap_set_mctrl(struct uart_port *port, unsigned int mctrl)
+ 	if (mctrl & TIOCM_LOOP)
+ 		mcr |= UART_MCR_LOOP;
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	old_mcr = serial_in(up, UART_MCR);
+ 	old_mcr &= ~(UART_MCR_LOOP | UART_MCR_OUT2 | UART_MCR_OUT1 |
+ 		     UART_MCR_DTR | UART_MCR_RTS);
+@@ -696,9 +666,6 @@ static void serial_omap_set_mctrl(struct uart_port *port, unsigned int mctrl)
+ 		up->efr &= ~UART_EFR_RTS;
+ 	serial_out(up, UART_EFR, up->efr);
+ 	serial_out(up, UART_LCR, lcr);
+-
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static void serial_omap_break_ctl(struct uart_port *port, int break_state)
+@@ -707,7 +674,6 @@ static void serial_omap_break_ctl(struct uart_port *port, int break_state)
+ 	unsigned long flags;
+ 
+ 	dev_dbg(up->port.dev, "serial_omap_break_ctl+%d\n", up->port.line);
+-	pm_runtime_get_sync(up->dev);
+ 	spin_lock_irqsave(&up->port.lock, flags);
+ 	if (break_state == -1)
+ 		up->lcr |= UART_LCR_SBC;
+@@ -715,8 +681,6 @@ static void serial_omap_break_ctl(struct uart_port *port, int break_state)
+ 		up->lcr &= ~UART_LCR_SBC;
+ 	serial_out(up, UART_LCR, up->lcr);
+ 	spin_unlock_irqrestore(&up->port.lock, flags);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static int serial_omap_startup(struct uart_port *port)
+@@ -788,8 +752,6 @@ static int serial_omap_startup(struct uart_port *port)
+ 
+ 	serial_out(up, UART_OMAP_WER, up->wer);
+ 
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ 	up->port_activity = jiffies;
+ 	return 0;
+ }
+@@ -801,7 +763,6 @@ static void serial_omap_shutdown(struct uart_port *port)
+ 
+ 	dev_dbg(up->port.dev, "serial_omap_shutdown+%d\n", up->port.line);
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	/*
+ 	 * Disable interrupts from this port
+ 	 */
+@@ -825,8 +786,7 @@ static void serial_omap_shutdown(struct uart_port *port)
+ 	if (serial_in(up, UART_LSR) & UART_LSR_DR)
+ 		(void) serial_in(up, UART_RX);
+ 
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
++	pm_runtime_put_sync(up->dev);
+ 	free_irq(up->port.irq, up);
+ 	dev_pm_clear_wake_irq(up->dev);
+ }
+@@ -896,7 +856,6 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	 * Ok, we're now changing the port state. Do it with
+ 	 * interrupts disabled.
+ 	 */
+-	pm_runtime_get_sync(up->dev);
+ 	spin_lock_irqsave(&up->port.lock, flags);
+ 
+ 	/*
+@@ -1096,8 +1055,6 @@ serial_omap_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	serial_omap_set_mctrl(&up->port, up->port.mctrl);
+ 
+ 	spin_unlock_irqrestore(&up->port.lock, flags);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ 	dev_dbg(up->port.dev, "serial_omap_set_termios+%d\n", up->port.line);
+ }
+ 
+@@ -1110,7 +1067,6 @@ serial_omap_pm(struct uart_port *port, unsigned int state,
+ 
+ 	dev_dbg(up->port.dev, "serial_omap_pm+%d\n", up->port.line);
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
+ 	efr = serial_in(up, UART_EFR);
+ 	serial_out(up, UART_EFR, efr | UART_EFR_ECB);
+@@ -1120,9 +1076,6 @@ serial_omap_pm(struct uart_port *port, unsigned int state,
+ 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_B);
+ 	serial_out(up, UART_EFR, efr);
+ 	serial_out(up, UART_LCR, 0);
+-
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static void serial_omap_release_port(struct uart_port *port)
+@@ -1202,11 +1155,8 @@ static void serial_omap_poll_put_char(struct uart_port *port, unsigned char ch)
+ {
+ 	struct uart_omap_port *up = to_uart_omap_port(port);
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	wait_for_xmitr(up);
+ 	serial_out(up, UART_TX, ch);
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ }
+ 
+ static int serial_omap_poll_get_char(struct uart_port *port)
+@@ -1214,7 +1164,6 @@ static int serial_omap_poll_get_char(struct uart_port *port)
+ 	struct uart_omap_port *up = to_uart_omap_port(port);
+ 	unsigned int status;
+ 
+-	pm_runtime_get_sync(up->dev);
+ 	status = serial_in(up, UART_LSR);
+ 	if (!(status & UART_LSR_DR)) {
+ 		status = NO_POLL_CHAR;
+@@ -1224,9 +1173,6 @@ static int serial_omap_poll_get_char(struct uart_port *port)
+ 	status = serial_in(up, UART_RX);
+ 
+ out:
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+-
+ 	return status;
+ }
+ 
+@@ -1309,8 +1255,6 @@ serial_omap_console_write(struct console *co, const char *s,
+ 	unsigned int ier;
+ 	int locked = 1;
+ 
+-	pm_runtime_get_sync(up->dev);
+-
+ 	local_irq_save(flags);
+ 	if (up->port.sysrq)
+ 		locked = 0;
+@@ -1343,8 +1287,6 @@ serial_omap_console_write(struct console *co, const char *s,
+ 	if (up->msr_saved_flags)
+ 		check_modem_status(up);
+ 
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ 	if (locked)
+ 		spin_unlock(&up->port.lock);
+ 	local_irq_restore(flags);
+@@ -1403,8 +1345,6 @@ serial_omap_config_rs485(struct uart_port *port, struct serial_rs485 *rs485)
+ 	unsigned int mode;
+ 	int val;
+ 
+-	pm_runtime_get_sync(up->dev);
+-
+ 	/* Disable interrupts from this port */
+ 	mode = up->ier;
+ 	up->ier = 0;
+@@ -1438,9 +1378,6 @@ serial_omap_config_rs485(struct uart_port *port, struct serial_rs485 *rs485)
+ 		serial_out(up, UART_OMAP_SCR, up->scr);
+ 	}
+ 
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+-
+ 	return 0;
+ }
+ 
+@@ -1737,11 +1674,7 @@ static int serial_omap_probe(struct platform_device *pdev)
+ 		omap_up_info->autosuspend_timeout = -1;
+ 
+ 	device_init_wakeup(up->dev, true);
+-	pm_runtime_use_autosuspend(&pdev->dev);
+-	pm_runtime_set_autosuspend_delay(&pdev->dev,
+-			omap_up_info->autosuspend_timeout);
+ 
+-	pm_runtime_irq_safe(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	pm_runtime_get_sync(&pdev->dev);
+@@ -1755,12 +1688,9 @@ static int serial_omap_probe(struct platform_device *pdev)
+ 	if (ret != 0)
+ 		goto err_add_port;
+ 
+-	pm_runtime_mark_last_busy(up->dev);
+-	pm_runtime_put_autosuspend(up->dev);
+ 	return 0;
+ 
+ err_add_port:
+-	pm_runtime_dont_use_autosuspend(&pdev->dev);
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	cpu_latency_qos_remove_request(&up->pm_qos_request);
+@@ -1778,7 +1708,6 @@ static int serial_omap_remove(struct platform_device *dev)
+ 
+ 	uart_remove_one_port(&serial_omap_reg, &up->port);
+ 
+-	pm_runtime_dont_use_autosuspend(up->dev);
+ 	pm_runtime_put_sync(up->dev);
+ 	pm_runtime_disable(up->dev);
+ 	cpu_latency_qos_remove_request(&up->pm_qos_request);
+-- 
+2.32.0
