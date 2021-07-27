@@ -2,170 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0843D6F13
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272403D6F70
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235635AbhG0GRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:17:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54172 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234928AbhG0GRO (ORCPT
+        id S235510AbhG0G2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234349AbhG0G2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:17:14 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16R6DtCQ020751;
-        Tue, 27 Jul 2021 02:17:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=8XeYG3yg7Vf01LhGV5Z7bYY22GMqXf1CPu6wzVsB1Bw=;
- b=AZfa2557qPr1YpYZlnyMIx50kjsTSzuPoOe2XJBJqPGvM1QBQihdzbyH9JY7CiDidF96
- 2cH1GmSTibYpOyrZ/c9/Gl8QASw8E9gt4AKNffMlmXZC0+9fTN6zUklsKNUvPrX6Xlmp
- 5vxNQuQgKBKxIibXhmhlUIMd9XANIZC2HkOymFZ6bBEzLJz+mWiHtLxfyTd2CF179m0O
- JQgIKRTQmWLCeJClEJuoqknSsJ6M8q4gYlOz+Q2PZcPK/eYD0dwOogv1d0Zdy+FYN/dB
- qa6uIi/CXatupy05awUrmBincG7YjEEh1JEgCd6mrCwtVaLXJ1gn9knvAMavhuWPmGv8 cg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2cph02pj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 02:17:02 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16R6E1g9020876;
-        Tue, 27 Jul 2021 02:17:01 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2cph02p9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 02:17:01 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16R62PBG004810;
-        Tue, 27 Jul 2021 06:17:01 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma03dal.us.ibm.com with ESMTP id 3a235nhbx3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 06:17:01 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16R6H0oJ31457626
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Jul 2021 06:17:00 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5F58FAC05E;
-        Tue, 27 Jul 2021 06:17:00 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EEFA3AC066;
-        Tue, 27 Jul 2021 06:16:59 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.85.71.190])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 27 Jul 2021 06:16:59 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 4A24D2E4A4C; Tue, 27 Jul 2021 11:46:56 +0530 (IST)
-Date:   Tue, 27 Jul 2021 11:46:56 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     "Pratik R. Sampat" <psampat@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, pratik.r.sampat@gmail.com
-Subject: Re: [PATCH] cpufreq:powernv: Fix init_chip_info initialization in
- numa=off
-Message-ID: <20210727061656.GA10282@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <20210726170758.61041-1-psampat@linux.ibm.com>
+        Tue, 27 Jul 2021 02:28:08 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44619C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 23:28:09 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id c16so9041488plh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 23:28:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C0G+NqzAvfTHBs08uzNiyXIWeT1GpRd5xZS7if6Ooo4=;
+        b=FrPUfnll9HAo8rg3rm1L8BgZvinjoYNWLsCe8VF6qjOOpOkkykOA87p1JbNe/822c3
+         BwYbIlrg8BRC6k8XpCLXK+/4ZGkbcaGyfWweHzMUeNy8zaiBIcCZtPG/J3ppVZWCHF+K
+         VpZsA6Wd3wtvbSnt484EkAVs2ZPXD/LAUHRdzPQMCRxmaHp5KuJNXJ2u3QuIJmEqK5Yb
+         nbJuWO6wvlAUDc+XnhL8dwUCbZsRep7k4YnwN1BPkQeZA8PzKMK5MNN98jUF0oc0ISsV
+         athIfcL1cNF89Rt5dKWaJ2tKqjh6+bvpmVTwg7X5vJjnTRrLIGrfU6SBSfP+SrzZ5dQK
+         pB5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C0G+NqzAvfTHBs08uzNiyXIWeT1GpRd5xZS7if6Ooo4=;
+        b=lJuhIpOwpJkAGpKZegYhVeOz05NxYp1AKx5+0F+BQ10L3DbWClR40jLmV4IS5yRJUV
+         k72RP6EKRzpvCnhHoKjelLRKTy7/qLxL7BfjtSBDXNgOabaZxkfzjT85T6rOSq7sNb3f
+         /pkDt6gPRV0Onj38SGSnogizOrQky+eYLl0QvHUUKIAUTJWIZrsqho0rtMgN2UpInVw8
+         lLyagfSFBTFUoExkScwL9MD7cz4Tmlj5rtVaFhYj4jXD/a3dgnt68bxAlZd+FY/Jokjv
+         a6mOFc8nrgEW4G/iIpMALMXobvnO5LWvzMscOlNFhoYF0bOUXJr1vLNX11Tbd4T5vfFU
+         FvrQ==
+X-Gm-Message-State: AOAM533J2om49pXPBgHzYDpkZjSg89MRrGR9IxbjU+btdrIlgKa6A8uu
+        5HFUtthmU1is6oNoUZj8iQ74Hpsbd2hAe2SVlz25Fg==
+X-Google-Smtp-Source: ABdhPJzuYi4yIxwR2z/828VWqqpEpUF8Kpv2lA+SMK6YDA0+3Ql9hzanK7UNiIoyuHmfgc7y3xVI6zP3wXj+lYX+3Ic=
+X-Received: by 2002:a05:6a00:1508:b029:332:3aab:d842 with SMTP id
+ q8-20020a056a001508b02903323aabd842mr21474337pfu.59.1627367288681; Mon, 26
+ Jul 2021 23:28:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726170758.61041-1-psampat@linux.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: TBFUlIHCqR60qHwztg6isWZ6lxfaWg_M
-X-Proofpoint-GUID: JOA9zxu-8QY3hhlblipMVVHkB5WwXOxu
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-27_04:2021-07-27,2021-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0 malwarescore=0
- spamscore=0 adultscore=0 suspectscore=0 impostorscore=0 clxscore=1011
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107270035
+References: <20210714091800.42645-1-songmuchun@bytedance.com>
+ <20210714091800.42645-2-songmuchun@bytedance.com> <cf279a44-2a1a-6385-8230-86e083e11ba0@oracle.com>
+In-Reply-To: <cf279a44-2a1a-6385-8230-86e083e11ba0@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 27 Jul 2021 14:27:31 +0800
+Message-ID: <CAMZfGtUtk9uyO7v0v94YqLaHhrZ-CoFvVH60n54apib7PHPcKw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mm: introduce PAGEFLAGS_MASK to replace ((1UL <<
+ NR_PAGEFLAGS) - 1)
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 10:37:57PM +0530, Pratik R. Sampat wrote:
-> In the numa=off kernel command-line configuration init_chip_info() loops
-> around the number of chips and attempts to copy the cpumask of that node
-> which is NULL for all iterations after the first chip.
-> 
-> Hence, store the cpu mask for each chip instead of derving cpumask from
-> node while populating the "chips" struct array and copy that to the
-> chips[i].mask
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
-> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
-> Reported-by: Shirisha Ganta <shirisha.ganta1@ibm.com>
-> ---
->  drivers/cpufreq/powernv-cpufreq.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-> index 005600cef273..8ec10d9aed8f 100644
-> --- a/drivers/cpufreq/powernv-cpufreq.c
-> +++ b/drivers/cpufreq/powernv-cpufreq.c
-> @@ -1046,12 +1046,20 @@ static int init_chip_info(void)
->  	unsigned int *chip;
->  	unsigned int cpu, i;
->  	unsigned int prev_chip_id = UINT_MAX;
-> +	cpumask_t *chip_cpu_mask;
->  	int ret = 0;
-> 
->  	chip = kcalloc(num_possible_cpus(), sizeof(*chip), GFP_KERNEL);
->  	if (!chip)
->  		return -ENOMEM;
-> 
-> +	/* Allocate a chip cpu mask large enough to fit mask for all chips */
-> +	chip_cpu_mask = kcalloc(32, sizeof(cpumask_t), GFP_KERNEL);
+On Tue, Jul 27, 2021 at 5:04 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 7/14/21 2:17 AM, Muchun Song wrote:
+> > Instead of hard-coding ((1UL << NR_PAGEFLAGS) - 1) everywhere, introducing
+> > PAGEFLAGS_MASK to make the code clear to get the page flags.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  include/linux/page-flags.h      | 4 +++-
+> >  include/trace/events/page_ref.h | 4 ++--
+> >  lib/test_printf.c               | 2 +-
+> >  lib/vsprintf.c                  | 2 +-
+> >  4 files changed, 7 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > index 5922031ffab6..358d3f6fa976 100644
+> > --- a/include/linux/page-flags.h
+> > +++ b/include/linux/page-flags.h
+> > @@ -178,6 +178,8 @@ enum pageflags {
+> >       PG_reported = PG_uptodate,
+> >  };
+> >
+> > +#define PAGEFLAGS_MASK               (~((1UL << NR_PAGEFLAGS) - 1))
+>
+> Can you explain why you chose this definition instead of
+>
+> #define PAGEFLAGS_MASK          ((1UL << NR_PAGEFLAGS) - 1)
+>
+> and mostly use ~PAGEFLAGS_MASK below?
 
-I suppose by 32 you mean the maximum number of chips possible. You
-could use a #define for that.
+Hi Mike,
 
-Otherwise, the patch looks good to me.
+Actually, I learned from PAGE_MASK. So I thought the macro
+like xxx_MASK should be the format of 0x00...00ff...ff. I don't
+know if this is an unwritten rule. Please correct me if I am
+wrong.
 
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Thanks.
 
-
-
-> +	if (!chip_cpu_mask) {
-> +		ret = -ENOMEM;
-> +		goto free_and_return;
-> +	}
-> +
->  	for_each_possible_cpu(cpu) {
->  		unsigned int id = cpu_to_chip_id(cpu);
-> 
-> @@ -1059,22 +1067,25 @@ static int init_chip_info(void)
->  			prev_chip_id = id;
->  			chip[nr_chips++] = id;
->  		}
-> +		cpumask_set_cpu(cpu, &chip_cpu_mask[nr_chips-1]);
->  	}
-> 
->  	chips = kcalloc(nr_chips, sizeof(struct chip), GFP_KERNEL);
->  	if (!chips) {
->  		ret = -ENOMEM;
-> -		goto free_and_return;
-> +		goto out_chip_cpu_mask;
->  	}
-> 
->  	for (i = 0; i < nr_chips; i++) {
->  		chips[i].id = chip[i];
-> -		cpumask_copy(&chips[i].mask, cpumask_of_node(chip[i]));
-> +		cpumask_copy(&chips[i].mask, &chip_cpu_mask[i]);
->  		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
->  		for_each_cpu(cpu, &chips[i].mask)
->  			per_cpu(chip_info, cpu) =  &chips[i];
->  	}
-> 
-> +out_chip_cpu_mask:
-> +	kfree(chip_cpu_mask);
->  free_and_return:
->  	kfree(chip);
->  	return ret;
-> -- 
-> 2.31.1
-> 
+> --
+> Mike Kravetz
