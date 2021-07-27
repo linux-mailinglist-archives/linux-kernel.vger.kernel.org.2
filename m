@@ -2,152 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2873D7AF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869E93D7B38
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhG0Qa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:30:28 -0400
-Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:23809
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229489AbhG0Qa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:30:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R9V+uHL4D4EKnSEpSrgEHzPtAVdd3tY0iT52/3+fZZxEjYKSrarB8JGuvTNGEEWFtqZTu94v200TIwsPQEaiyljo5MBtoIJh/Y5AmL1626MAzjv5+j2oknzeuqkAxFmUkewD3B3BgD1fb+HR5xxSKa72f4khd/RSvyX5Q8pFmGLLGnVLsfU6D/TFeMD5wsPDDIRI8I53jZotX5CI2cuqaS9jg6ZEwkCCgbf7jX4hZO37inkamv4nnUhcyzw1rUxGD955gnmaiaRx5eJnTPnKAlt5FyWCHGRrZzpqFroGPT3Ku2WqjC+Qwty97K9HxZWsJds56c11os6S7zJb58PHsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tJ6jJ1I9XjoE4aBS+4nUO5uzcQ+/h6NKn/+VTZKF3kM=;
- b=PwR+W74/s0AW7+6aYn0quFUWroVOh8mgiwJ+J3IqIH8mPdIQD40gbevWL/X9bLODxRqoUU7ZQ/nOoJ6qJ6K3SqON1P/drtXsUsYzsDZPVo4BOKSMsnDTYD0cUJouOtNzdjuUZ5HWeJSbGPgxpAkMyY7fh3Dft1mJDE4yCSyOiXSJThAmka0z5SM1sMpjiljrm9Ch4e76p1cJN/8ZEChf/5IeVRc1HHVXbUBJFPoM1TzYRACVwilMnkCFDUzGGDRieneuBGmiBl3uDX4wZBvRcJf8WT+znFfzwsYSjpwmcauVFRzu4mimf5r0bwRYMa6FsZMTz5ziZJuD6Ifa+EUWVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tJ6jJ1I9XjoE4aBS+4nUO5uzcQ+/h6NKn/+VTZKF3kM=;
- b=jLK5ngpyCkWdiiC3LUf9g1zR9kZaDnpj+e3+ss+C2u78lh8GJWn8ZLc0nZyiF/qiXK4DyC+0nUF4FvoaAOgCi0d2iloU4IpKB0jps6MlxAtatoP7Qh09NPCg1ZIy4+7i+Pan8T6hz/wyWBXESuRNG2vwOZKiv/RoHot6k02Ltm75aXF+5JFm0CduW6x5KPMrNftAGn37DhxRCs0e6S6Axh1F/gk/3PgRqlpr4qPwbrjAXuERQHNV7OZM5giXG93UMot72uaZBLVR7BrwF4r0EdkNJuDm3UYgZcyM2QI/dyLyX4TZ5FFMqKk2l6GzSTVqIrAxhQ2Kod3rDs11NLWcwg==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5351.namprd12.prod.outlook.com (2603:10b6:208:317::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Tue, 27 Jul
- 2021 16:30:26 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%4]) with mapi id 15.20.4352.031; Tue, 27 Jul 2021
- 16:30:26 +0000
-Date:   Tue, 27 Jul 2021 13:30:24 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Doug Ledford <dledford@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v3 27/31] dev_ioctl: split out ndo_eth_ioctl
-Message-ID: <20210727163024.GA2164561@nvidia.com>
-References: <20210727134517.1384504-1-arnd@kernel.org>
- <20210727134517.1384504-28-arnd@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727134517.1384504-28-arnd@kernel.org>
-X-ClientProxiedBy: MN2PR12CA0027.namprd12.prod.outlook.com
- (2603:10b6:208:a8::40) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S229593AbhG0QkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhG0QkB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 12:40:01 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5D3C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 09:40:00 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id p21so9068428edi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 09:40:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tjzeUVvJswvcHGT2fbToSFt2ojNAWbzdCIBHmZESzEA=;
+        b=Zi0pWiQP3DUB+TIDfmSW2Vzimjnj6sQSfgbliH9BOWJ1PnGcT0BhpKm/lV9iDTk3XW
+         NTSsg0DQACe+l/jGdeBGe6mlp+wW4X7YozLHvV6cYfHcP5xCEc6My3/QdtrrkoSfna9u
+         Gzcw83SoCyk30haw8/ONsjvc7VHwgcpcglQYo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tjzeUVvJswvcHGT2fbToSFt2ojNAWbzdCIBHmZESzEA=;
+        b=eeyIXqFv/hKqGKernEc+ODvhACaZuihdDXR3EWMvQ7lgoJ9yzWwL7kRgitTCJHuYz5
+         z3AaUV5B9Pt1xKOaT6gVoyEEWc/QAfp04wpO2liEm+EgBowJeoR+QVc0RJ4af4rwX06I
+         eaqDCS4AO0ue00VmXUTRpHKFXraBKvQvAnaYJMzr4Stzs7pO+puhe6Ybw0pKGC5RrGW4
+         caE+/eYJe6POaKOdl1Gs1gcPPje5sDXCLooOK0oMID/FwKK3wdTPrRMJzAsT3b3+RCi4
+         wOaaZ83utzhmPwI6envMluyQS2dvsjldxsbyYv9OhFjLFSmIItr/95eoJekfP0ZtzYJW
+         ks6A==
+X-Gm-Message-State: AOAM532J+XsCJjzqYhrozQBLSHiIAe1nBtej6uI26oNIqTdXpAG7XHBx
+        deLRdwix1gPY8rPDYd5LAVY4ATc1j7hv3BdS
+X-Google-Smtp-Source: ABdhPJzAmbktJLB2cugz9HzVvwpQnGKRWFm5lnpyVLazNBv+E8VsIgV7N/fu1OY/JFUqjbSNNpi+OQ==
+X-Received: by 2002:a05:6402:524b:: with SMTP id t11mr28661085edd.361.1627403998394;
+        Tue, 27 Jul 2021 09:39:58 -0700 (PDT)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id gx11sm1076013ejc.33.2021.07.27.09.39.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 09:39:58 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id u12so16198375eds.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 09:39:58 -0700 (PDT)
+X-Received: by 2002:a2e:90c4:: with SMTP id o4mr16333375ljg.28.1627403529209;
+ Tue, 27 Jul 2021 09:32:09 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR12CA0027.namprd12.prod.outlook.com (2603:10b6:208:a8::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25 via Frontend Transport; Tue, 27 Jul 2021 16:30:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m8PyK-009577-Iv; Tue, 27 Jul 2021 13:30:24 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 011b09d0-705c-48cc-cf71-08d9511bd6c9
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5351:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5351DC9C4CDD1F09FB455A3BC2E99@BL1PR12MB5351.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4wo2HprDq00vIXuPj3Gj5mI2nvitjB07ehHvVjQtG1+hxrcDsYthqRYbKlHV56LLtcfROAv4Fl0v42gabeKPEuHhnmXDTjwWBSav+ja3QVHZHchSBe6gkjuMdPWvaLsA0Lpa/1Ok50MG4jyx+7LNctXDOMb/hBPmkccINZwBZJPUzco765YxfR7F7XnkKfxK6wmNjoVWILomuAxLhm3kUGNNx9fpDXXCNDtqOY0slT9c3aZZGr1OMLnoffoJAx2mkcoa8gCLNiF4fSSm2F1n5ZcU5Lr6Q/YsfJ8HrY8km3VhwauE9Lr5/fNCGnP2LB+YXKilLT4XfiMltEvA26olwsDs5RHNsSf13Q9wXQjW/v212Dcx2Qsp0KvdpE9GxRFt10wC8eW+VL2Oj/8mxQCRr34IsagudKLEp+zI73EldOGPZqYgZ1rWaQx4AeLU5COEVWeygOd/fcBeC7JiWonAJidSk2oxICbuVGI7JpJi+FnZYajl/c3EheJP74TnpH1Iy+gqusff/UtQ1tTUJqV5VnPuy/TTB3yRT0TydG4pZKhgEIXY2d6sK8Gr9paMg1G7V2yIwXJk127+xMNs7jIDwh4WdD8LM1rPitp0GBihQSONPPRz+UMGePyBvHtr4yaYRuONmhbpkScJ31fNUt/TuA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(39860400002)(376002)(54906003)(36756003)(5660300002)(4326008)(6916009)(9746002)(38100700002)(426003)(86362001)(66476007)(33656002)(66556008)(9786002)(2616005)(186003)(7416002)(66946007)(1076003)(8936002)(2906002)(26005)(316002)(478600001)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lelGCpRm1EX+O58aagZcbSMp5MlhYAEwe57D8xaO5Jglj6awUTayhIoR/OjD?=
- =?us-ascii?Q?DbN/7PoVVoMsjQklcaLyTgatz+FPUiq/ctbrS+d9lP7hKhwOZpL45FkeDOKq?=
- =?us-ascii?Q?FGJomBuPUZRdvIQHS1cTugfnRC1Cgq0Ybj8mAJdxF5UdCLtm2z6iLTTWhVmV?=
- =?us-ascii?Q?FnWlDnEaOO7761wxyJPJ3+Sie2wIMWDWrz21OO/DUU8nn+JATMu8NCakNOQ1?=
- =?us-ascii?Q?kv6Y+X7HPmYG3FbVKD2LI2hl5PnoB9jrlJPWwJbPIHMhJA0hwii5/iVTbOjW?=
- =?us-ascii?Q?0Lz+xuDco+H/dRLfiJMA+cKCINHJto3faL2W4h+9QNQUuX4mvH6pd7ApPyh/?=
- =?us-ascii?Q?IOjKnovmaeixYehkMkTyKmL2URtYw8rpScjLmLvd0+Y/Btt2JJeCLhzEsZ9F?=
- =?us-ascii?Q?w/B8M24rNmiKI5BThWqXFsdlsgfS/NYfILgFlQi3V32w5py0oh/KXxQT580H?=
- =?us-ascii?Q?fg+Oc9YczquXM4s2e0I8ZhnsPN3KkrFYA+kmZothBUg6GaM7mLPZwwyKZfQg?=
- =?us-ascii?Q?ZKGGZXlBifVjLaH0htdpt+ZkTQq91xPak4GNWWd0z4XkUkDuxQgGnmftACTX?=
- =?us-ascii?Q?HAzi2ajl2JOlW1iIUjMT2capOR9OKh3hX1u34kziR4JpLwBqBszifmWB2n1G?=
- =?us-ascii?Q?Bc55b06jG/RL12uuauqOAfI9e3tIsDneCYWdjCvNwFHFmYxX7W3NpHNGbn1s?=
- =?us-ascii?Q?BhPaRU8JeeuJHj7b5wN7fH6O8x9B4BxAVM2nP9YZryRtudmk3oe0kuIE6B/H?=
- =?us-ascii?Q?XhpSZ/PX21LuE+fWGyb2LDOq/5omERMwhxZHTgHBl+tPxlQTVzliYmXCER88?=
- =?us-ascii?Q?mFnBg6Rmq/Zq6pObfs4J+Py4d2gI5dXs5s8BonH2KwoZq0xxAL5uD0/NaS2d?=
- =?us-ascii?Q?qK9HlHObzPD9d8n1PlaK6Y2urk7PO5FxWDLvgCcvcrvifTGLKn0rk2DkqeqO?=
- =?us-ascii?Q?W4f6x49wilHIgyEEwl+mM+EWIoLPsmzF+JSkSLUeCI01rlONdeT5CA2ZSraT?=
- =?us-ascii?Q?Dc1Lyrk+KVxbMWg1Cq6ST1h6voOm/P7kd9BwLmSeNCshHo3Zm9a7Wndp5bek?=
- =?us-ascii?Q?reoY61UiLpWYu95Ez1bbxu9fIYDzZEXNETep873HqBrtEII9KbBJ7C70nMGL?=
- =?us-ascii?Q?Bq0uy0t2tMVkfDwP3+SVZrYhrRoS9OQfZ9DQMhVx6K7dTj10hhsmByj5XGLU?=
- =?us-ascii?Q?EBYys1pnDw2tt67UBv9b1luDvTkmf4NoxjgCRawJxdqUqVeNMuL3H1u1zJnC?=
- =?us-ascii?Q?HKa6ZwWaYu81kcxrIL1k08sf/CtO5sskFoyKtdTcPtd/Cp8qvKGOCvaJHBKp?=
- =?us-ascii?Q?P7QZx9fMTua6PIg5wJeoW530?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 011b09d0-705c-48cc-cf71-08d9511bd6c9
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2021 16:30:26.3264
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QhIWna88ej/lhkWZPNN+JRxV5X1HeFYM+Wph64rwhBjj5k/MVJ4kuRAklzfyNxPB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5351
+References: <20210726171106.v4.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
+ <d6668437-5c3b-2dff-bb95-4e3132d13711@redhat.com> <6ff28cfe-1107-347b-0327-ad36e256141b@redhat.com>
+In-Reply-To: <6ff28cfe-1107-347b-0327-ad36e256141b@redhat.com>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Tue, 27 Jul 2021 09:31:33 -0700
+X-Gmail-Original-Message-ID: <CAE=gft7567-2Lq7raJKrOpQ8UAvXTFWwPci=_GCRPET3nS=9SA@mail.gmail.com>
+Message-ID: <CAE=gft7567-2Lq7raJKrOpQ8UAvXTFWwPci=_GCRPET3nS=9SA@mail.gmail.com>
+Subject: Re: [PATCH v4] mm: Enable suspend-only swap spaces
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-api@vger.kernel.org, Alex Shi <alexs@kernel.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 03:45:13PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Most users of ndo_do_ioctl are ethernet drivers that implement
-> the MII commands SIOCGMIIPHY/SIOCGMIIREG/SIOCSMIIREG, or hardware
-> timestamping with SIOCSHWTSTAMP/SIOCGHWTSTAMP.
-> 
-> Separate these from the few drivers that use ndo_do_ioctl to
-> implement SIOCBOND, SIOCBR and SIOCWANDEV commands.
-> 
-> This is a purely cosmetic change intended to help readers find
-> their way through the implementation.
-> 
-> Cc: Doug Ledford <dledford@redhat.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-> Cc: Veaceslav Falico <vfalico@gmail.com>
-> Cc: Andy Gospodarek <andy@greyhouse.net>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Vivien Didelot <vivien.didelot@gmail.com>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Vladimir Oltean <olteanv@gmail.com>
-> Cc: Leon Romanovsky <leon@kernel.org>
-> Cc: linux-rdma@vger.kernel.org
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->  Documentation/networking/netdevices.rst       |  4 ++
->  Documentation/networking/timestamping.rst     |  6 +--
->  drivers/infiniband/ulp/ipoib/ipoib_main.c     |  8 ++--
+On Tue, Jul 27, 2021 at 5:21 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 27.07.21 11:48, David Hildenbrand wrote:
+> > On 27.07.21 02:12, Evan Green wrote:
+> >> Add a new SWAP_FLAG_HIBERNATE_ONLY that adds a swap region but refuses
+> >> to allow generic swapping to it. This region can still be wired up for
+> >> use in suspend-to-disk activities, but will never have regular pages
+> >> swapped to it. This flag will be passed in by utilities like swapon(8),
+> >> usage would probably look something like: swapon -o hibernate /dev/sda2.
+> >>
+> >> Currently it's not possible to enable hibernation without also enabling
+> >> generic swap for a given area. One semi-workaround for this is to delay
+> >> the call to swapon() until just before attempting to hibernate, and then
+> >> call swapoff() just after hibernate completes. This is somewhat kludgy,
+> >> and also doesn't really work to keep swap out of the hibernate region.
+> >> When hibernate begins, it starts by allocating a large chunk of memory
+> >> for itself. This often ends up forcing a lot of data out into swap. By
+> >> this time the hibernate region is eligible for generic swap, so swap
+> >> ends up leaking into the hibernate region even with the workaround.
+> >>
+> >> There are a few reasons why usermode might want to be able to
+> >> exclusively steer swap and hibernate. One reason relates to SSD wearing.
+> >> Hibernate's endurance and speed requirements are different from swap.
+> >> It may for instance be advantageous to keep hibernate in primary
+> >> storage, but put swap in an SLC namespace. These namespaces are faster
+> >> and have better endurance, but cost 3-4x in terms of capacity.
+> >> Exclusively steering hibernate and swap enables system designers to
+> >> accurately partition their storage without either wearing out their
+> >> primary storage, or overprovisioning their fast swap area.
+> >>
+> >> Another reason to allow exclusive steering has to do with security.
+> >> The requirements for designing systems with resilience against
+> >> offline attacks are different between swap and hibernate. Swap
+> >> effectively requires a dictionary of hashes, as pages can be added and
+> >> removed arbitrarily, whereas hibernate only needs a single hash for the
+> >> entire image. If you've set up block-level integrity for swap and
+> >> image-level integrity for hibernate, then allowing swap blocks to
+> >> possibly leak out to the hibernate region is problematic, since it
+> >> creates swap pages not protected by any integrity.
+> >>
+> >> Swap regions with SWAP_FLAG_HIBERNATE_ONLY set will not appear in
+> >> /proc/meminfo under SwapTotal and SwapFree, since they are not usable as
+> >> general swap. These regions do still appear in /proc/swaps.
+> >
+> > Right, and they also don't account towards the memory overcommit
+> > calculations.
+> >
+> > Thanks for extending the patch description!
 
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+No problem, thanks for all the brainwaves directed at this.
 
-ipoib is a convoluted, but this transform looks OK
+> >
+> > [...]
+> >
+> >> +    if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY) {
+> >> +            if (IS_ENABLED(CONFIG_HIBERNATION)) {
+> >> +                    if (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS)
+> >> +                            return -EINVAL;
+> >> +
+> >> +            } else {
+> >> +                    return -EINVAL;
+> >> +            }
+> >> +    }
+> >
+> > We could do short
+> >
+> > if ((swap_flags & SWAP_FLAG_HIBERNATE_ONLY) &&
+> >        (!IS_ENABLED(CONFIG_HIBERNATION) ||
+> >         (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS)))
+> >       return -EINVAL;
+> >
+> > or
+> >
+> > if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY))
+> >       if (!IS_ENABLED(CONFIG_HIBERNATION) ||
+> >               (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS))
+> >               return -EINVAL;
+> >
+> >> +
+> >>      if (!capable(CAP_SYS_ADMIN))
+> >>              return -EPERM;
+> >>
+> >> @@ -3335,16 +3366,20 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+> >>      if (swap_flags & SWAP_FLAG_PREFER)
+> >>              prio =
+> >>                (swap_flags & SWAP_FLAG_PRIO_MASK) >> SWAP_FLAG_PRIO_SHIFT;
+> >> +
+> >> +    if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY)
+> >> +            p->flags |= SWP_HIBERNATE_ONLY;
+> >>      enable_swap_info(p, prio, swap_map, cluster_info, frontswap_map);
+> >>
+> >> -    pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s\n",
+> >> +    pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s%s\n",
+> >>              p->pages<<(PAGE_SHIFT-10), name->name, p->prio,
+> >>              nr_extents, (unsigned long long)span<<(PAGE_SHIFT-10),
+> >>              (p->flags & SWP_SOLIDSTATE) ? "SS" : "",
+> >>              (p->flags & SWP_DISCARDABLE) ? "D" : "",
+> >>              (p->flags & SWP_AREA_DISCARD) ? "s" : "",
+> >>              (p->flags & SWP_PAGE_DISCARD) ? "c" : "",
+> >> -            (frontswap_map) ? "FS" : "");
+> >> +            (frontswap_map) ? "FS" : "",
+> >> +            (p->flags & SWP_HIBERNATE_ONLY) ? "H" : "");
+> >>
+> >>      mutex_unlock(&swapon_mutex);
+> >>      atomic_inc(&proc_poll_event);
+> >>
+> >
+> > Looks like the cleanest alternative to me, as long as we don't want to
+> > invent new interfaces.
+> >
+> > Acked-by: David Hildenbrand <david@redhat.com>
+> >
+>
+> Pavel just mentioned uswsusp, and I wonder if it would be a possible
+> alternative to this patch.
 
-Jason
+I think you're right that it would be possible to isolate the
+hibernate image with uswsusp if you avoid using the SNAPSHOT_*SWAP*
+ioctls. But I'd expect performance to suffer noticeably, since now
+every page is making a round trip out to usermode and back. I'd still
+very much use the HIBERNATE_ONLY flag if it were accepted, I think
+there's value to it.
+
+-Evan
