@@ -2,214 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE26C3D7E35
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CFF3D7E32
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231958AbhG0TAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 15:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
+        id S231818AbhG0TAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 15:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhG0TAo (ORCPT
+        with ESMTP id S230182AbhG0TAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:00:44 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4817C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:00:43 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id q6so510143oiw.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:00:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fYGKLH2SgAMa80yTiG4bFU3GsKrGRgA34J7Dev7x+rU=;
-        b=xL62K6dOLLMIwoHIp2G0bPmyrqI+lDkDfv3po0DiDXcxRBxfSuUC8lDq6X9VsJeCF9
-         QuEXb76Vr2ZG0D3mdtxDF2Eyt+egoqaB4mxP3DsFen5lP+TZ5MGkULtTM4QBa8Kdb3zE
-         AcFdjBpFb/ZhWl49yo9eUXp4O/evaiqSx3jCI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fYGKLH2SgAMa80yTiG4bFU3GsKrGRgA34J7Dev7x+rU=;
-        b=s2hM3Q0sU+/CduHLCH4LB4/sE43PcqSLf3DL6hg4BjsvHdmaFk5ygUMuNA0koL8NYe
-         rai57Vs5hpqfeXNy+2Vd0tDYHtaKSVNJfWAtSViO7dxidJ5dm+pBuTv0dPBfB+YT/TLT
-         vCN7m0R2rF53rBdjXQS78y+XQDsN5K3w3uxWsyswAUEVXqZFSZX+G9jfbX1vEaOKFRzm
-         YWg/eNSzoFl+k8VIVKr34qwd6rRnHCVrUbzRsCioGq35d4AjYN2KaMIfT6VJyHYs9sCo
-         z0HlNDDzyRjWaLeO7esDopR2aIOyrTmV1v127uimV+LdzhhIJUiKSSpNzbUcI9UbPvOC
-         b3AA==
-X-Gm-Message-State: AOAM533MJygTo2pKfR+lkAOaCKKMiyxMXUgVLzreDcrEW6lhSujW7caJ
-        JYVH7kMV1pq/aRhX9wW4h2zitg==
-X-Google-Smtp-Source: ABdhPJxqdOOz+tMCEb/1DbeyMqlSCbF3DyI1dSE0BciIltK+55JRRLTNF7EIpB2R64w+UZNzw9tVeA==
-X-Received: by 2002:aca:accf:: with SMTP id v198mr15948296oie.14.1627412441833;
-        Tue, 27 Jul 2021 12:00:41 -0700 (PDT)
-Received: from localhost.localdomain (65-36-81-87.static.grandenetworks.net. [65.36.81.87])
-        by smtp.gmail.com with ESMTPSA id i10sm248897ood.48.2021.07.27.12.00.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Jul 2021 12:00:41 -0700 (PDT)
-From:   Kyle Bowman <kbowman@cloudflare.com>
-Cc:     kernel-team@cloudflare.com, Alex Forster <aforster@cloudflare.com>,
-        Kyle Bowman <kbowman@cloudflare.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH] netfilter: xt_NFLOG: allow 128 character log prefixes
-Date:   Tue, 27 Jul 2021 14:00:00 -0500
-Message-Id: <20210727190001.914-1-kbowman@cloudflare.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 27 Jul 2021 15:00:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF13C061757;
+        Tue, 27 Jul 2021 12:00:34 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 19:00:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627412430;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hjXqd+8WALUAXb/KLRjFz68ozAL0V3ApCcpw58bV/6g=;
+        b=Hz8E+Ga31/sFe2JSkrtSreMwKexs4S/nTKA7Nucg4JJ06r6GCYb+UDMcOUSmMLKAEpGx1+
+        AkU5jzCGgKySUeSZKtFqpZGzxqTYQ9X6VYf/dV2MX54wJ+63UmE/X+qtGIJ6D3Ugn+goJF
+        wzOo8wBEFS+2xp013AX3mMYAmLr1UTYeDSMpjWgVNMo+MlKVfoxnYdAIzYvje8MQJ/2vij
+        bPXRp0sLcnCIMQem8HCnFspOHDQFZa3LNZsImehVWGzwNBzc/XhC0BNAFgRnDNnT6q2nUJ
+        728v1WuzYLO7AzxIUrAdLO9HCQ5ikJBRAaXceSKRlAcz6uFOwa0kDAXDYQPQcA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627412430;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hjXqd+8WALUAXb/KLRjFz68ozAL0V3ApCcpw58bV/6g=;
+        b=3CmNbDmHkGsB7y2g+mUzdW9PW30EEJS5hQRBZe3Ibp2hMEGNfeHLk/zvf2FtWByS3hY8CP
+        rgedoZQdquKmdjAg==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] timers: Move clearing of base::timer_running
+ under base:: Lock
+Cc:     syzbot+aa7c2385d46c5eba0b89@syzkaller.appspotmail.com,
+        syzbot+abea4558531bae1ba9fe@syzkaller.appspotmail.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        stable@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
+References: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Message-ID: <162741242945.395.1178547166318427399.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Forster <aforster@cloudflare.com>
+The following commit has been merged into the timers/urgent branch of tip:
 
-nftables defines NF_LOG_PREFIXLEN as 128 characters, while iptables
-limits the NFLOG prefix to 64 characters. In order to eventually make
-the two consistent, introduce a v1 target revision of xt_NFLOG that
-allows userspace to provide a 128 character NFLOG prefix.
+Commit-ID:     bb7262b295472eb6858b5c49893954794027cd84
+Gitweb:        https://git.kernel.org/tip/bb7262b295472eb6858b5c49893954794027cd84
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sun, 06 Dec 2020 22:40:07 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 27 Jul 2021 20:57:44 +02:00
 
-Signed-off-by: Alex Forster <aforster@cloudflare.com>
-Signed-off-by: Kyle Bowman <kbowman@cloudflare.com>
+timers: Move clearing of base::timer_running under base:: Lock
+
+syzbot reported KCSAN data races vs. timer_base::timer_running being set to
+NULL without holding base::lock in expire_timers().
+
+This looks innocent and most reads are clearly not problematic, but
+Frederic identified an issue which is:
+
+ int data = 0;
+
+ void timer_func(struct timer_list *t)
+ {
+    data = 1;
+ }
+
+ CPU 0                                            CPU 1
+ ------------------------------                   --------------------------
+ base = lock_timer_base(timer, &flags);           raw_spin_unlock(&base->lock);
+ if (base->running_timer != timer)                call_timer_fn(timer, fn, baseclk);
+   ret = detach_if_pending(timer, base, true);    base->running_timer = NULL;
+ raw_spin_unlock_irqrestore(&base->lock, flags);  raw_spin_lock(&base->lock);
+
+ x = data;
+
+If the timer has previously executed on CPU 1 and then CPU 0 can observe
+base->running_timer == NULL and returns, assuming the timer has completed,
+but it's not guaranteed on all architectures. The comment for
+del_timer_sync() makes that guarantee. Moving the assignment under
+base->lock prevents this.
+
+For non-RT kernel it's performance wise completely irrelevant whether the
+store happens before or after taking the lock. For an RT kernel moving the
+store under the lock requires an extra unlock/lock pair in the case that
+there is a waiter for the timer, but that's not the end of the world.
+
+Reported-by: syzbot+aa7c2385d46c5eba0b89@syzkaller.appspotmail.com
+Reported-by: syzbot+abea4558531bae1ba9fe@syzkaller.appspotmail.com
+Fixes: 030dcdd197d7 ("timers: Prepare support for PREEMPT_RT")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lore.kernel.org/r/87lfea7gw8.fsf@nanos.tec.linutronix.de
+Cc: stable@vger.kernel.org
 ---
- include/uapi/linux/netfilter/xt_NFLOG.h | 11 ++++
- net/netfilter/xt_NFLOG.c                | 73 +++++++++++++++++++++----
- 2 files changed, 73 insertions(+), 11 deletions(-)
+ kernel/time/timer.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/netfilter/xt_NFLOG.h b/include/uapi/linux/netfilter/xt_NFLOG.h
-index 517809771909..3f1119a2e522 100644
---- a/include/uapi/linux/netfilter/xt_NFLOG.h
-+++ b/include/uapi/linux/netfilter/xt_NFLOG.h
-@@ -3,6 +3,7 @@
- #define _XT_NFLOG_TARGET
-
- #include <linux/types.h>
-+#include <linux/netfilter/nf_log.h>
-
- #define XT_NFLOG_DEFAULT_GROUP		0x1
- #define XT_NFLOG_DEFAULT_THRESHOLD	0
-@@ -22,4 +23,14 @@ struct xt_nflog_info {
- 	char		prefix[64];
- };
-
-+struct xt_nflog_info_v1 {
-+	/* 'len' will be used iff you set XT_NFLOG_F_COPY_LEN in flags */
-+	__u32	len;
-+	__u16	group;
-+	__u16	threshold;
-+	__u16	flags;
-+	__u16	pad;
-+	char	prefix[NF_LOG_PREFIXLEN];
-+};
-+
- #endif /* _XT_NFLOG_TARGET */
-diff --git a/net/netfilter/xt_NFLOG.c b/net/netfilter/xt_NFLOG.c
-index fb5793208059..82279a6be0ff 100644
---- a/net/netfilter/xt_NFLOG.c
-+++ b/net/netfilter/xt_NFLOG.c
-@@ -39,6 +39,28 @@ nflog_tg(struct sk_buff *skb, const struct xt_action_param *par)
- 	return XT_CONTINUE;
- }
-
-+static unsigned int
-+nflog_tg_v1(struct sk_buff *skb, const struct xt_action_param *par)
-+{
-+	const struct xt_nflog_info_v1 *info = par->targinfo;
-+	struct net *net = xt_net(par);
-+	struct nf_loginfo li;
-+
-+	li.type		     = NF_LOG_TYPE_ULOG;
-+	li.u.ulog.copy_len   = info->len;
-+	li.u.ulog.group	     = info->group;
-+	li.u.ulog.qthreshold = info->threshold;
-+	li.u.ulog.flags	     = 0;
-+
-+	if (info->flags & XT_NFLOG_F_COPY_LEN)
-+		li.u.ulog.flags |= NF_LOG_F_COPY_LEN;
-+
-+	nf_log_packet(net, xt_family(par), xt_hooknum(par), skb, xt_in(par),
-+		      xt_out(par), &li, "%s", info->prefix);
-+
-+	return XT_CONTINUE;
-+}
-+
- static int nflog_tg_check(const struct xt_tgchk_param *par)
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 9eb11c2..e3d2c23 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1265,8 +1265,10 @@ static inline void timer_base_unlock_expiry(struct timer_base *base)
+ static void timer_sync_wait_running(struct timer_base *base)
  {
- 	const struct xt_nflog_info *info = par->targinfo;
-@@ -51,30 +73,59 @@ static int nflog_tg_check(const struct xt_tgchk_param *par)
- 	return nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
+ 	if (atomic_read(&base->timer_waiters)) {
++		raw_spin_unlock_irq(&base->lock);
+ 		spin_unlock(&base->expiry_lock);
+ 		spin_lock(&base->expiry_lock);
++		raw_spin_lock_irq(&base->lock);
+ 	}
  }
-
-+static int nflog_tg_check_v1(const struct xt_tgchk_param *par)
-+{
-+	const struct xt_nflog_info_v1 *info = par->targinfo;
-+
-+	if (info->flags & ~XT_NFLOG_MASK)
-+		return -EINVAL;
-+	if (info->prefix[sizeof(info->prefix) - 1] != '\0')
-+		return -EINVAL;
-+
-+	return nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
-+}
-+
- static void nflog_tg_destroy(const struct xt_tgdtor_param *par)
- {
- 	nf_logger_put(par->family, NF_LOG_TYPE_ULOG);
+ 
+@@ -1457,14 +1459,14 @@ static void expire_timers(struct timer_base *base, struct hlist_head *head)
+ 		if (timer->flags & TIMER_IRQSAFE) {
+ 			raw_spin_unlock(&base->lock);
+ 			call_timer_fn(timer, fn, baseclk);
+-			base->running_timer = NULL;
+ 			raw_spin_lock(&base->lock);
++			base->running_timer = NULL;
+ 		} else {
+ 			raw_spin_unlock_irq(&base->lock);
+ 			call_timer_fn(timer, fn, baseclk);
++			raw_spin_lock_irq(&base->lock);
+ 			base->running_timer = NULL;
+ 			timer_sync_wait_running(base);
+-			raw_spin_lock_irq(&base->lock);
+ 		}
+ 	}
  }
-
--static struct xt_target nflog_tg_reg __read_mostly = {
--	.name       = "NFLOG",
--	.revision   = 0,
--	.family     = NFPROTO_UNSPEC,
--	.checkentry = nflog_tg_check,
--	.destroy    = nflog_tg_destroy,
--	.target     = nflog_tg,
--	.targetsize = sizeof(struct xt_nflog_info),
--	.me         = THIS_MODULE,
-+static void nflog_tg_destroy_v1(const struct xt_tgdtor_param *par)
-+{
-+	nf_logger_put(par->family, NF_LOG_TYPE_ULOG);
-+}
-+
-+static struct xt_target nflog_tg_reg[] __read_mostly = {
-+	{
-+		.name       = "NFLOG",
-+		.revision   = 0,
-+		.family     = NFPROTO_UNSPEC,
-+		.checkentry = nflog_tg_check,
-+		.destroy    = nflog_tg_destroy,
-+		.target     = nflog_tg,
-+		.targetsize = sizeof(struct xt_nflog_info),
-+		.me         = THIS_MODULE,
-+	},
-+	{
-+		.name       = "NFLOG",
-+		.revision   = 1,
-+		.family     = NFPROTO_UNSPEC,
-+		.checkentry = nflog_tg_check_v1,
-+		.destroy    = nflog_tg_destroy_v1,
-+		.target     = nflog_tg_v1,
-+		.targetsize = sizeof(struct xt_nflog_info_v1),
-+		.me         = THIS_MODULE,
-+	}
- };
-
- static int __init nflog_tg_init(void)
- {
--	return xt_register_target(&nflog_tg_reg);
-+	return xt_register_targets(nflog_tg_reg, ARRAY_SIZE(nflog_tg_reg));
- }
-
- static void __exit nflog_tg_exit(void)
- {
--	xt_unregister_target(&nflog_tg_reg);
-+	xt_unregister_targets(nflog_tg_reg, ARRAY_SIZE(nflog_tg_reg));
- }
-
- module_init(nflog_tg_init);
---
-2.32.0
