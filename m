@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF51A3D6CDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0C43D6CF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235052AbhG0C4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:56:09 -0400
-Received: from smtprelay0205.hostedemail.com ([216.40.44.205]:42904 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234990AbhG0C4I (ORCPT
+        id S235128AbhG0C6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:58:43 -0400
+Received: from mail-pl1-f172.google.com ([209.85.214.172]:39840 "EHLO
+        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235138AbhG0C6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:56:08 -0400
-Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 95DA41835109D;
-        Tue, 27 Jul 2021 03:36:32 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 8CDEC2448B5;
-        Tue, 27 Jul 2021 03:36:31 +0000 (UTC)
-Message-ID: <45ccb9e8c610678e72f461b1e9d61de0a4c9bc79.camel@perches.com>
-Subject: Re: [PATCH v2] platform/x86/intel: Move Intel PMT drivers to new
- subfolder
-From:   Joe Perches <joe@perches.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>, hdegoede@redhat.com,
-        mgross@linux.intel.com, andriy.shevchenko@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Date:   Mon, 26 Jul 2021 20:36:30 -0700
-In-Reply-To: <20210727022550.3083745-1-david.e.box@linux.intel.com>
-References: <20210727022550.3083745-1-david.e.box@linux.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Mon, 26 Jul 2021 22:58:42 -0400
+Received: by mail-pl1-f172.google.com with SMTP id e5so12257123pld.6;
+        Mon, 26 Jul 2021 20:39:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sZkIhanFYkY2vIMYu6ANcE0looF7hlq8r4h6+faW4J0=;
+        b=FBg4Yi9D1YHrAeIzMzFXtaFFR3iQE0or8//6sJoCuKdMC3rRio2ALmvaMx7f3u+NPw
+         rvimvexGMpFRRUSpwOtQuV4cqsmjqB+C2LSSfi2mJpD1ZdWPNW7iAqoQvBMXyNJAaj/q
+         e7bz0T+kljeT/uY15kqH+cuoxiZqlL4GHzM2DDwUtGRnTrfe0WIdaX6hoxnGWBS+h8Ek
+         UHDBgFW+UqVhKnAwDY7JcXSXKDzEUla+BqA+jIBAYzHHH0OHSYS/UxNI8T3yxM56hPTc
+         CSRLuUIbee0/AzhtOBZgfBiSoSCNKA+LOXlr+CPSdLn49OUM7yPtLHH0O2O2mi6bsE50
+         VFoQ==
+X-Gm-Message-State: AOAM532FDVgIx6mlriiSfWA3I3w0/Wxzx/9b99l7sn4TwE0xAGknEXnc
+        efkSY5zqTInJ8tQMKCryi4o=
+X-Google-Smtp-Source: ABdhPJwcN/DeItXsgz5Ve8vngqdPqGw3Q61lpvRxCQzLQN1T3d5HD2d+CXKNqI1w2Wzx+037CnbA1g==
+X-Received: by 2002:aa7:9ec3:0:b029:32b:4eb5:4bad with SMTP id r3-20020aa79ec30000b029032b4eb54badmr20957694pfq.6.1627357147654;
+        Mon, 26 Jul 2021 20:39:07 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:d009:b5bd:a16e:1de3? ([2601:647:4000:d7:d009:b5bd:a16e:1de3])
+        by smtp.gmail.com with ESMTPSA id b3sm1585811pfi.179.2021.07.26.20.39.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 20:39:07 -0700 (PDT)
+Subject: Re: [PATCH v2] scsi: Fix the issue that the disk capacity set to zero
+To:     lijinlin3@huawei.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     john.garry@huawei.com, yanaijie@huawei.com, linfeilong@huawei.com,
+        wubo40@huawei.com
+References: <20210727034455.1494960-1-lijinlin3@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <54403480-2a57-ba54-57eb-927d706cafed@acm.org>
+Date:   Mon, 26 Jul 2021 20:39:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 8CDEC2448B5
-X-Spam-Status: No, score=-0.16
-X-Stat-Signature: ctnwfp3onemo6gessdmzijbbuqdtizuu
-X-Rspamd-Server: rspamout02
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+Btk9cYTe4JtrpZlbIX6LKl0DX3OWuH7E=
-X-HE-Tag: 1627356991-794102
+In-Reply-To: <20210727034455.1494960-1-lijinlin3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-26 at 19:25 -0700, David E. Box wrote:
-> Move all Intel Platform Monitoring Technology drivers to
-> drivers/platform/x86/intel/pmt.
-[]
-> diff --git a/MAINTAINERS b/MAINTAINERS
-[]
-> @@ -9494,7 +9494,7 @@ INTEL PMT DRIVER
->  M:	"David E. Box" <david.e.box@linux.intel.com>
->  S:	Maintained
->  F:	drivers/mfd/intel_pmt.c
-> -F:	drivers/platform/x86/intel_pmt_*
-> +F:	drivers/platform/x86/intel/pmt/*
+On 7/26/21 8:44 PM, lijinlin3@huawei.com wrote:
+> From: lijinlin <lijinlin3@huawei.com>
+> 
+> After add physical volumes to a volume group through vgextend, kernel
+> will rescan partitions, which will read the capacity of the device.
+> If the device status is set to offline through sysfs at this time,
+> read capacity command will return a result which the host byte is
+> DID_NO_CONNECT, the capacity of the device will be set to zero in
+> read_capacity_error(). However, the capacity of the device can't be
+> reread after reset the device status to running, is still zero.
+> 
+> Fix this issue by rescan device when the device state changes to
+> SDEV_RUNNING.
+> 
+> Signed-off-by: lijinlin <lijinlin3@huawei.com>
+> Signed-off-by: Wu Bo <wubo40@huawei.com>
+> ---
+>  drivers/scsi/scsi_sysfs.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+> index 32489d25158f..ae9bfc658203 100644
+> --- a/drivers/scsi/scsi_sysfs.c
+> +++ b/drivers/scsi/scsi_sysfs.c
+> @@ -807,11 +807,14 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+>  	mutex_lock(&sdev->state_mutex);
+>  	ret = scsi_device_set_state(sdev, state);
+>  	/*
+> -	 * If the device state changes to SDEV_RUNNING, we need to run
+> -	 * the queue to avoid I/O hang.
+> +	 * If the device state changes to SDEV_RUNNING, we need to
+> +	 * rescan the device to revalidate it, and run the queue to
+> +	 * avoid I/O hang.
+>  	 */
+> -	if (ret == 0 && state == SDEV_RUNNING)
+> +	if (ret == 0 && state == SDEV_RUNNING) {
+> +		scsi_rescan_device(dev);
+>  		blk_mq_run_hw_queues(sdev->request_queue, true);
+> +	}
+>  	mutex_unlock(&sdev->state_mutex);
+>  
+>  	return ret == 0 ? count : -EINVAL;
 
-Unless you are suggesting you are not maintainer of any files
-in any subdirectories below this directory, you should not use
-a *
+In the future, please mention what has been changed between v1 and v2
+under the three dashes ("---"). Anyway:
 
-F:	drivers/platform/x86/intel/pmt/
-
-> diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-[]
-> @@ -7,3 +7,4 @@
->  obj-$(CONFIG_INTEL_CHT_INT33FE)		+= int33fe/
->  obj-$(CONFIG_INTEL_SKL_INT3472)		+= int3472/
->  obj-$(CONFIG_INTEL_PMC_CORE)		+= pmc/
-> +obj-y					+= pmt/
-
-This seems odd.  Perhaps:
-
-obj-$(CONFIG_PMT_CLASS)				+= pmt/
-
-?
-
-
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
