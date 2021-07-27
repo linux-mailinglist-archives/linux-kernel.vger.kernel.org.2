@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130493D6D84
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6993D6D87
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbhG0Ei1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 00:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
+        id S235041AbhG0EjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 00:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbhG0EiZ (ORCPT
+        with ESMTP id S231932AbhG0EjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 00:38:25 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8282EC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:38:25 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gv20-20020a17090b11d4b0290173b9578f1cso1935348pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:38:25 -0700 (PDT)
+        Tue, 27 Jul 2021 00:39:16 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4449BC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:39:17 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id c16so8783124plh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:39:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hCM6aDqQlj672QNNN33XxbB1KA2gsQSovUNFK/0sjFg=;
-        b=DrDU/26Z3jIjjNMzkvdGR9rNb1RDbCZPotepcGCH0snHc/AmzgHXAzzH0SdjaQ1mPy
-         GY84SAdyMr7tNwk6wdulckqzhOojnOhPlp/dW/054ErgQUwYUzUSNHZfm7Pks2+gHnFQ
-         klizi6BgKspN3ulK9gCMxeE/OjsQa4b5VJpiY=
+        bh=PXqkOOR1pOtYMzsgwXDzf42bCaKreSWxIwhWwvEeqtI=;
+        b=AG59QGBYG2d8MJl+DmYb3WwVZKqVqgzyq3bnKbAV3gdhJeC91VtLz4113YUwJCoQO2
+         Ct39sGCQGldasZApaM/KRIgysBJ9pVrgbJOVYVEgnlU1m/CalsRwAnIXsQNVX/lFkB+N
+         bLBfyxvcMlkA0M8Dq7eyk8XbnByWU0n/wYTRg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hCM6aDqQlj672QNNN33XxbB1KA2gsQSovUNFK/0sjFg=;
-        b=DCqKPRKgeW8N+Bo4U/eN1QXsLKE5QYpQvQitNn98iGGAebxYhmgvyK1t3pTNqf+DWH
-         0r8p8BcfBZL7Tc8uCm6f1AqD2vvaZiRGHqlzv96cPNV/vpec/cKYBM9XeMGgad+gGb9o
-         Mh+1atqa0bH1Qkw1BHaJ53mah6BNJX4YYz2LNhQClu0SG37q3RXj+Vbj/EzsQGtAU2+t
-         rOnQ+qzVcvTo/MMU5+3pyckvjsIk8zyXRyKUtNXJpjClwuateLhYAr4qbQxXSL4eXdGp
-         5FcHgfrIOvxH+Wo42uAVRv5WepYUIAxSfVY4FqdcHPpZOGaZ5XnMNSNWTYRtOC+ZwjZZ
-         MtVA==
-X-Gm-Message-State: AOAM533LpdMQ9WepXnhRl9EeNXdM7IPDyTTcJT6CGTKMTncw6O2iqFdl
-        pivJ2kjVaX9PdoClZaF1yeK7VMir9S/h85sNwbNRvw==
-X-Google-Smtp-Source: ABdhPJw1I0ipQcf1mUHF8PpOYbrM0NpOo6vsm3gZYflpD3/0aDHJFNjYHGyNJztuit7nHdXSI3z60HYGFeYYm9x7nKY=
-X-Received: by 2002:aa7:81d8:0:b029:308:1d33:a5fa with SMTP id
- c24-20020aa781d80000b02903081d33a5famr20861701pfn.55.1627360705046; Mon, 26
- Jul 2021 21:38:25 -0700 (PDT)
+        bh=PXqkOOR1pOtYMzsgwXDzf42bCaKreSWxIwhWwvEeqtI=;
+        b=lsetBfy2nXgfOSLu2SYNmnKav6vkM0BzidPOos5GA3AM/cPBOfr7kBnc22P/wLMsGI
+         GSib25TJQeXp6c9hWFqJOW7PtmMGFnPH+ErKtjj9+KLxNgJNTSqhw33dizKuPo/GXYgl
+         pUPMaM0CpY/xMJFqtvLxzi7h6yjbGTxL2pftWfbgqlmlcPax0un2JqqLMRc4r5cIQi8B
+         6Jo/BfdNAZbI2JENvPTtn5CjQoGUONk3TQPu6hpfOLacIp+UlcnMLiiZlTdmGunf1sBa
+         ILpVxL0uiv8Tff4/2bDUxpvSryuVHTSNQmuWTf8/36S7vIEDea1K+OYV1Eo3to4XyN/7
+         6+1Q==
+X-Gm-Message-State: AOAM5329b9SrCK5uEnul/1SPGQmL+VHbs4roerZvkQJc5qR3AGMLFEqk
+        JMd3zTcBp9i8y98lIrCmRMVzGYkZ83CnJmZipczh2g==
+X-Google-Smtp-Source: ABdhPJzk2XckOwQ6RCK2+Om3VQvLRLUz2rIVS0DubiOZfADOQ28pfm6zggkraLwAfixhBtKFGDUi7GmMyCICb0wLD1U=
+X-Received: by 2002:a63:8f04:: with SMTP id n4mr21076455pgd.317.1627360756729;
+ Mon, 26 Jul 2021 21:39:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726105719.15793-1-chun-jie.chen@mediatek.com> <20210726105719.15793-9-chun-jie.chen@mediatek.com>
-In-Reply-To: <20210726105719.15793-9-chun-jie.chen@mediatek.com>
+References: <20210726105719.15793-1-chun-jie.chen@mediatek.com> <20210726105719.15793-10-chun-jie.chen@mediatek.com>
+In-Reply-To: <20210726105719.15793-10-chun-jie.chen@mediatek.com>
 From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Tue, 27 Jul 2021 12:38:13 +0800
-Message-ID: <CAATdQgDxBeDCHKy52XCk8bGNA=fcMFMMf9Q5SZZ4L5SZO9xdYQ@mail.gmail.com>
-Subject: Re: [v14 08/21] clk: mediatek: Add mtk_clk_simple_probe() to simplify
- clock providers
+Date:   Tue, 27 Jul 2021 12:39:05 +0800
+Message-ID: <CAATdQgAGEqDyPJ7bnPsCow+BAFYJMdOs_mk8XCkz5Yy66x07mw@mail.gmail.com>
+Subject: Re: [v14 09/21] clk: mediatek: Add MT8192 basic clocks support
 To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
 Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -71,12 +69,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 7:00 PM Chun-Jie Chen
+On Mon, Jul 26, 2021 at 7:03 PM Chun-Jie Chen
 <chun-jie.chen@mediatek.com> wrote:
 >
-> Most of subsystem clock providers only need to register clock gates
-> in their probe() function.
-> To reduce the duplicated code by add a generic function.
+> Add MT8192 basic clock providers, include topckgen, apmixedsys,
+> infracfg and pericfg.
 >
 > Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 > Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
