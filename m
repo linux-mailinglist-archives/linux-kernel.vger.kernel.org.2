@@ -2,241 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0893D7C29
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C48F33D7C30
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhG0RbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 13:31:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhG0RbA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:31:00 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D06C061757;
-        Tue, 27 Jul 2021 10:31:00 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id a26so22922787lfr.11;
-        Tue, 27 Jul 2021 10:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=WmlkGbrkM3a2AT1p/6eYnuGLhgp+ub6+Yuxgg6oi8yY=;
-        b=ki2TicAWtsulBl81ZFe/Oh/bTHmtGyZaSnGcbCQPoZJTrtibOgW5Yany3+1UZxsxqd
-         A3huph0k55HtDLbEeqsZPvVHZLI614dX0aePNJkMNrq+l39yK1ePuBUD0rxQy7Rbdtpt
-         ozynXhzsJlh7BQDCgbc9QDK81xtpvopDWltT+9iK6WDxgEJGTYzc3t9cJogKB2L57FVh
-         1VUYiAQg0kHpYrj15i+uIhJU0tIQWe2Gzzd5Czk7NPRnx8+KrTT0Nk1DK6WIbGB4fmZQ
-         MxD4+/sIjcDgxFZvHIAlO+VPlIvQdkt+t6vU3BgkhUO0DuEoLQYXYnZw/NXW8jfZfGWv
-         rW5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=WmlkGbrkM3a2AT1p/6eYnuGLhgp+ub6+Yuxgg6oi8yY=;
-        b=frO7P3KXAf1nRjpNjExisvXPG+aZnCouffs4nLHt8SYBcWtCBhg0UP/uYGTkWIsyJK
-         /41LiK5/bwosTclmYStMCC3XV3ji/xvdSpUV8K5+2IYt5nfpJio6M13rEusqFXID8P8K
-         j/Quj9rz/imfFBqFab4kw8cXn82pxx9PbkBO0aT95d5jfzG9EMwR40Q7A3a131R8i3KB
-         ogZyOMLxTnP8xAuZoLraFimTDfGFl0xakrGF7ee36URK8qKY053zdFXrSXFv1OFz8BzO
-         ZwsDvGc3Thsp3ArsVsxxBhGMIyAmLDOf0jxDWV+4UGbsPGhY+opcTK8a+ACXbb+rRFnL
-         8arQ==
-X-Gm-Message-State: AOAM530T7qicWjiKqjm34qIa1AA/YlsfsQqLC8xo5wHWxVx2kJRbV7os
-        vwVbNwZSoW23oiBfgualejI=
-X-Google-Smtp-Source: ABdhPJxzK1adGqAHxZULx6sENBEuammItjvYBZv89tuUdbChr/yZtAAzZiikAjqXQXXwpWLz/2nG5w==
-X-Received: by 2002:ac2:5e9a:: with SMTP id b26mr17876604lfq.362.1627407058841;
-        Tue, 27 Jul 2021 10:30:58 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.227.213])
-        by smtp.gmail.com with ESMTPSA id n28sm346380lfh.176.2021.07.27.10.30.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 10:30:58 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 20:30:56 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     syzbot <syzbot+9cd5837a045bbee5b810@syzkaller.appspotmail.com>,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] net: xfrm: fix shift-out-of-bounce
-Message-ID: <20210727203056.377e5758@gmail.com>
-In-Reply-To: <202107280113.ykJy6Oc4-lkp@intel.com>
-References: <20210727174318.53806d27@gmail.com>
-        <202107280113.ykJy6Oc4-lkp@intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        id S229497AbhG0RcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 13:32:17 -0400
+Received: from mail-bn8nam12on2043.outbound.protection.outlook.com ([40.107.237.43]:61921
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229453AbhG0RcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 13:32:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jrNOTWNl5fPh83dHBzqdsFHLMQ4eWA38Gw4GrcdkTwkfjIBEJjaX3o8ylrQH2l69Cnc93au7JIT1ozMPQ7zYfObSRoHhtCp+Q3EXJSqCK3jNACGu5LgO74MrvXto6lh0KtaIYbBYEgAJLUrqpc8ymT4xcTvbXYrXCBSLz4tdvdO6Fja9CfIF0VbExVrHqsgPDnWc1f8atZAJM2iVjgni1Wzu4wEkI4Y6UECYEHRUBFs1TJEmo4igpbZxRO5hteVb9aCRL0legMxoF348VNSDHWtuygMpnUId4hx+q3T3wG0pVKNCiIT3QyGckDHbuj8WvJVGYm7vuWNR+aL9n6X7kg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Huqoj5F3QztvjVsip8hrc/b8mYSbpzWx2AHB2vIsP5s=;
+ b=acZxNjQb0AjRAXYZDhODmLUX4mVRXRGNsUSuvvT+g9FphuZEdgmA5bMLqBoabdk/za9s6z1yuatjhJ8NmdtDkbzISgxCx8Fqd2KIFVTCJkbpe+y7RhUitYBSuxiC8KRdKrOzUiToqGOLtgbr3VUm42aW3QgPhtgtElimcqPFgXTXa8y3MlMg1t9IutzwNX4KJkwydjXrkNy4vT1HCN0xeLzSXU+NQvX84hTseD63yi40Np+fdqlsgM9TN1SK/Ou5RMKRr6Wh1gUH+Kl9VO8deVzrn0IlUFeDJef87ZrUvW9mCjc3b+C834/OehKq+CyLbUAu2XhgFfguyOuEiVHwQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Huqoj5F3QztvjVsip8hrc/b8mYSbpzWx2AHB2vIsP5s=;
+ b=mlT/o5+y8zFSYbNJnxwNLfHnoPfYWEvZRd+x3mTBawbXuwhOD3ahoPE8X5LLSWmF5Vdch9wa8mCQgYJyaazRXSsvLOuSHbnz9pY++ua2XJtuEiTHz0E8llPyEpRwNmgjZfY33RoxoZWyp19CIu8/qmMrmdXkf5a0KF0huS9zKR/lcwYHHSDMt/qy5oVfVYnOhQ5wCmo0A4+7Iwwu2SFJmvagS8vpSRkJ2DFiM/nfzXif0ERNiuo/jDMKgbUJ5wyitJK4owfEKBhQoHtvi8+MFR+Vw3oliIzc7JVQDXQkQn0rqlNormrT54/DHbHsJK1lE8FiWHahoVdWwi6MLPnpkQ==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5223.namprd12.prod.outlook.com (2603:10b6:208:315::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.26; Tue, 27 Jul
+ 2021 17:32:11 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482%4]) with mapi id 15.20.4352.031; Tue, 27 Jul 2021
+ 17:32:11 +0000
+Date:   Tue, 27 Jul 2021 14:32:09 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] vfio/mdev: don't warn if ->request is not set
+Message-ID: <20210727173209.GG1721383@nvidia.com>
+References: <20210726143524.155779-1-hch@lst.de>
+ <20210726143524.155779-3-hch@lst.de>
+ <87zgu93sxz.fsf@redhat.com>
+ <20210726230906.GD1721383@nvidia.com>
+ <20210726172831.3a7978fd.alex.williamson@redhat.com>
+ <87wnpc47j3.fsf@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wnpc47j3.fsf@redhat.com>
+X-ClientProxiedBy: BL1PR13CA0215.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::10) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/w+5mWJ0hzkLOGrIDgVYQu8r"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0215.namprd13.prod.outlook.com (2603:10b6:208:2bf::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.7 via Frontend Transport; Tue, 27 Jul 2021 17:32:10 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m8Qw5-0095yn-PF; Tue, 27 Jul 2021 14:32:09 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5aee5555-fbe0-43c9-e621-08d9512476d7
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5223:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB52233DB5BA46E2B67791CB87C2E99@BL1PR12MB5223.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gyFbCPGPnT4JYbh1FMa/MuYkoNVRFRK5cwY6y4HnIYY/ovsg+dnoJyR9aKMCio9y+YSuNj3VOKIj03l0BD2r8+j3U2BwVusQwD6WTM38rGfB18FDVsCvvPyQZp1KLHCwLVCD4PKwJQ9deZUTSkZgxKwYRSLMUyws14FI7IB8ov1PVkP058rLM+Cy7+ybYq2xRTLOEMKQjpgBr3vtt2AroITTM0j44xyMNF9fMJgp/EtglFWJTpv48FD2P2yyp950c3cKtKI6c6E8z6ryipDj83ac0HpbwighVOav+1CMCUaJNB51xAlJve39t7zOF9dJC9Tfaf3skz53eEVdHLzzk89hRQwlQccxygNovXggfQf0LiBqSamVIGoTMDkG5kbGs0BPDdfhBy5eyd7u84cXg6dl5F712qxpTpu6rNNiHczFNpOa8steWgUnc2nsek0EG9F57bPv+/2Za1lgikw9tW729AhL/0viTZZ40b9qGRCg9O5U2drO0tYT/Kq0T9oqZkLK0lnlFmhjk7+w88jVPWPkxVtpu9grPIKCq8erkQAtloP28Ov2oi+cFieJXyER/vI1C7OJGrMXqqkwkKiFL3kazM9sKffZ1cWDj2nQPCGj4B3szFAbEdAJUDqLFV8lj1ejyt/BgDGLxyK8hNdUIg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(5660300002)(38100700002)(26005)(508600001)(2906002)(9786002)(4326008)(8676002)(1076003)(36756003)(186003)(54906003)(66946007)(9746002)(66476007)(33656002)(66556008)(2616005)(8936002)(6916009)(426003)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RTOzOREUoGEZ1h6P6qQG3kt/PuUHjLVhj6pgrIlKS9NVNJmGKVfTcsj85RH5?=
+ =?us-ascii?Q?Wknh8pUWNrAhsjV/Mb0/7fyku90IuBFWkimjjN4Afy/k3UHxN9Q19oo6JwTk?=
+ =?us-ascii?Q?57FwINlI0ozEf2FxYvXYqxUX+iDZs0nyWDh8uQ6yanUmKCVtlbynkeYTXDNa?=
+ =?us-ascii?Q?NEVHDF8xmrw8gPKeWkCsfNuWg2zGFF2mgo1mvtdhtpx3ckZhhM7KATKnlaO4?=
+ =?us-ascii?Q?j0Np7n5TINyfjZCVGx4R/vrH8ebA9iMFkdr1JYgVGG8BAbbUUnzs8erGxkCV?=
+ =?us-ascii?Q?YG5QN1EIdxgBGVJBPvrJDY1XZqFPRYb0ShuTgxpz5GyVVqMN1+hQwamm4T3I?=
+ =?us-ascii?Q?onQEIlVPqUPmtvJHo2OmHO1LN/X/6kIbMk8ebAURv8ZUnJUqVAf+LMMMs4vi?=
+ =?us-ascii?Q?A3NjrdBpaS2G3m3ac6DO0uP3ohPyPZUNfXqidybuQyi2zs5JeBetQnJ03GD6?=
+ =?us-ascii?Q?WCUouJP/3qJbFWlF+erSVnUfUNvZHSOQPLqYuCykAVGPoRPVftT4AldR2zFb?=
+ =?us-ascii?Q?eNQMG6rc49YZPq/6ocuRv+XImeVdGzAQawJTAjEnnaQ0pK2wWF+SLCXVCVms?=
+ =?us-ascii?Q?9UiyBiy3WYtTl5VAAmx3tlIVrX9trdxDUtRRcFkai8Ph4q7fKLC787YmlxI/?=
+ =?us-ascii?Q?JE01Cgmy/af0iYwjNW7zNHZeMR1wMJz5UY+ChK/Z34AUErFAMNRNvZ3CzkUu?=
+ =?us-ascii?Q?alMDYxY3dACJc1A0rb700MMOMjG/DjBkWYo5mG9F/7KHePtDdFt85TyN1f8A?=
+ =?us-ascii?Q?j3FNCZ+uCRqTv3hg//nSmxqGC7lJwo1UTGC7oQTB6eHcJdp88zMYvM0I8ql+?=
+ =?us-ascii?Q?jYKkc3WR6SXrm38FwUvq7zG0Q1g7Gj75sL6ClJzzKsLYhOutkckfV8kuNcip?=
+ =?us-ascii?Q?QGM1QkRhryR0rpbHm616MKKcGLwJpbfyRtjIJhaX2qcdOFYMVi7dNejfVV4r?=
+ =?us-ascii?Q?SoEFjK+FOEZdjR8FvJro56srgkuEjqf0BrItWX8xIrNUN2luKZ5yKuWvVAJz?=
+ =?us-ascii?Q?fHPc7DakvhBmcjzFDWxHb4MZUAWmpyu/tVVBO7zg+2j8vbdKMgyneibMbkcJ?=
+ =?us-ascii?Q?b/rjj62JDXgJFC+9g7QaZC4v3RyYCDt1gfZTYpp9XApEbtrWd6/EgLR99HwY?=
+ =?us-ascii?Q?aM+WjeKDGrtk/tguKa6VeTtf94lbZAL1nHlh0kkYEQUvpjGNcN9bm/gKc3Vo?=
+ =?us-ascii?Q?ljksahyhKzokSbQkqw0GviHu7PtvRHMmxE4vjSMMJP2uDkzY7yMJwXFayK5I?=
+ =?us-ascii?Q?DtFlb9d/70riXNEPiSk6boBrCorE88klDwyb6cS0mExoq7FfPDTChtJ0PJ/3?=
+ =?us-ascii?Q?NZGEmbVTt6ZnevDBMeH6S75m?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5aee5555-fbe0-43c9-e621-08d9512476d7
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2021 17:32:11.2044
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: g3d3aAq1hg2i22rqUCI5K24jT1DOabXXg6DFO6ITt+n6ZaxOS1ZFFSmqqYp8dU4i
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5223
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/w+5mWJ0hzkLOGrIDgVYQu8r
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Wed, 28 Jul 2021 01:25:18 +0800
-kernel test robot <lkp@intel.com> wrote:
-
-> Hi Pavel,
+On Tue, Jul 27, 2021 at 08:04:16AM +0200, Cornelia Huck wrote:
+> On Mon, Jul 26 2021, Alex Williamson <alex.williamson@redhat.com> wrote:
 > 
-> Thank you for the patch! Yet something to improve:
+> > On Mon, 26 Jul 2021 20:09:06 -0300
+> > Jason Gunthorpe <jgg@nvidia.com> wrote:
+> >
+> >> On Mon, Jul 26, 2021 at 07:07:04PM +0200, Cornelia Huck wrote:
+> >> 
+> >> > But I wonder why nobody else implements this? Lack of surprise removal?  
+> >> 
+> >> The only implementation triggers an eventfd that seems to be the same
+> >> eventfd as the interrupt..
+> >> 
+> >> Do you know how this works in userspace? I'm surprised that the
+> >> interrupt eventfd can trigger an observation that the kernel driver
+> >> wants to be unplugged?
+> >
+> > I think we're talking about ccw, but I see QEMU registering separate
+> > eventfds for each of the 3 IRQ indexes and the mdev driver specifically
+> > triggering the req_trigger...?  Thanks,
+> >
+> > Alex
 > 
-> [auto build test ERROR on ipsec-next/master]
-> [also build test ERROR on next-20210726]
-> [cannot apply to ipsec/master net-next/master net/master
-> sparc-next/master v5.14-rc3] [If your patch is applied to the wrong
-> git tree, kindly drop us a note. And when submitting patch, we
-> suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:
-> https://github.com/0day-ci/linux/commits/Pavel-Skripkin/net-xfrm-fix-shift-out-of-bounce/20210727-224549
-> base:
-> https://git.kernel.org/pub/scm/linux/kernel/git/klassert/ipsec-next.git
-> master config: s390-randconfig-r034-20210727 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project
-> c658b472f3e61e1818e1909bf02f3d65470018a5) reproduce (this is a W=1
-> build): wget
-> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
-> -O ~/bin/make.cross chmod +x ~/bin/make.cross # install s390 cross
-> compiling tool for clang build # apt-get install
-> binutils-s390x-linux-gnu #
-> https://github.com/0day-ci/linux/commit/0d1cb044926e3d81c86b5add2eeaf38c7aec7f90
-> git remote add linux-review https://github.com/0day-ci/linux git
-> fetch --no-tags linux-review
-> Pavel-Skripkin/net-xfrm-fix-shift-out-of-bounce/20210727-224549 git
-> checkout 0d1cb044926e3d81c86b5add2eeaf38c7aec7f90 # save the attached
-> .config to linux build tree mkdir build_dir
-> COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross
-> O=build_dir ARCH=s390 SHELL=/bin/bash net/xfrm/
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from net/xfrm/xfrm_user.c:22:
->    In file included from include/linux/skbuff.h:31:
->    In file included from include/linux/dma-mapping.h:10:
->    In file included from include/linux/scatterlist.h:9:
->    In file included from arch/s390/include/asm/io.h:75:
->    include/asm-generic/io.h:464:31: warning: performing pointer
-> arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] val = __raw_readb(PCI_IOBASE + addr);
-> ~~~~~~~~~~ ^ include/asm-generic/io.h:477:61: warning: performing
-> pointer arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] val = __le16_to_cpu((__le16
-> __force)__raw_readw(PCI_IOBASE + addr)); ~~~~~~~~~~ ^
-> include/uapi/linux/byteorder/big_endian.h:36:59: note: expanded from
-> macro '__le16_to_cpu' #define __le16_to_cpu(x) __swab16((__force
-> __u16)(__le16)(x)) ^ include/uapi/linux/swab.h:102:54: note: expanded
-> from macro '__swab16' #define __swab16(x)
-> (__u16)__builtin_bswap16((__u16)(x)) ^
->    In file included from net/xfrm/xfrm_user.c:22:
->    In file included from include/linux/skbuff.h:31:
->    In file included from include/linux/dma-mapping.h:10:
->    In file included from include/linux/scatterlist.h:9:
->    In file included from arch/s390/include/asm/io.h:75:
->    include/asm-generic/io.h:490:61: warning: performing pointer
-> arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] val = __le32_to_cpu((__le32
-> __force)__raw_readl(PCI_IOBASE + addr)); ~~~~~~~~~~ ^
-> include/uapi/linux/byteorder/big_endian.h:34:59: note: expanded from
-> macro '__le32_to_cpu' #define __le32_to_cpu(x) __swab32((__force
-> __u32)(__le32)(x)) ^ include/uapi/linux/swab.h:115:54: note: expanded
-> from macro '__swab32' #define __swab32(x)
-> (__u32)__builtin_bswap32((__u32)(x)) ^
->    In file included from net/xfrm/xfrm_user.c:22:
->    In file included from include/linux/skbuff.h:31:
->    In file included from include/linux/dma-mapping.h:10:
->    In file included from include/linux/scatterlist.h:9:
->    In file included from arch/s390/include/asm/io.h:75:
->    include/asm-generic/io.h:501:33: warning: performing pointer
-> arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] __raw_writeb(value, PCI_IOBASE + addr);
-> ~~~~~~~~~~ ^ include/asm-generic/io.h:511:59: warning: performing
-> pointer arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] __raw_writew((u16
-> __force)cpu_to_le16(value), PCI_IOBASE + addr); ~~~~~~~~~~ ^
-> include/asm-generic/io.h:521:59: warning: performing pointer
-> arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] __raw_writel((u32
-> __force)cpu_to_le32(value), PCI_IOBASE + addr); ~~~~~~~~~~ ^
-> include/asm-generic/io.h:609:20: warning: performing pointer
-> arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] readsb(PCI_IOBASE + addr, buffer, count);
-> ~~~~~~~~~~ ^ include/asm-generic/io.h:617:20: warning: performing
-> pointer arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] readsw(PCI_IOBASE + addr, buffer, count);
-> ~~~~~~~~~~ ^ include/asm-generic/io.h:625:20: warning: performing
-> pointer arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] readsl(PCI_IOBASE + addr, buffer, count);
-> ~~~~~~~~~~ ^ include/asm-generic/io.h:634:21: warning: performing
-> pointer arithmetic on a null pointer has undefined behavior
-> [-Wnull-pointer-arithmetic] writesb(PCI_IOBASE + addr, buffer,
-> count); ~~~~~~~~~~ ^ include/asm-generic/io.h:643:21: warning:
-> performing pointer arithmetic on a null pointer has undefined
-> behavior [-Wnull-pointer-arithmetic] writesw(PCI_IOBASE + addr,
-> buffer, count); ~~~~~~~~~~ ^ include/asm-generic/io.h:652:21:
-> warning: performing pointer arithmetic on a null pointer has
-> undefined behavior [-Wnull-pointer-arithmetic] writesl(PCI_IOBASE +
-> addr, buffer, count); ~~~~~~~~~~ ^
-> >> net/xfrm/xfrm_user.c:1975:54: error: expected ';' after expression
->            dirmask = (1 << up->dirmask) & XFRM_POL_DEFAULT_MASK
->                                                                ^
->                                                                ;
+> Exactly, ccw has a trigger for normal I/O interrupts, CRW (machine
+> checks), and this one.
 
-Oops :) Thank you, kernel test robot.
+If it is a dedicated eventfd for 'device being removed' why is it in
+the CCW implementation and not core code?
 
-#syz test
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+Is PCI doing the same?
 
-
-With regards,
-Pavel Skripkin
-
-
-
---MP_/w+5mWJ0hzkLOGrIDgVYQu8r
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0001-net-xfrm-fix-shift-out-of-bounce.patch
-
-From e7cf3838979bf3079a511b6809e971945f50eb25 Mon Sep 17 00:00:00 2001
-From: Pavel Skripkin <paskripkin@gmail.com>
-Date: Tue, 27 Jul 2021 17:38:24 +0300
-Subject: [PATCH] net: xfrm: fix shift-out-of-bounce
-
-We need to check up->dirmask to avoid shift-out-of-bounce bug,
-since up->dirmask comes from userspace.
-
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/xfrm/xfrm_user.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index acc3a0dab331..4a7bb169314e 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -1966,9 +1966,14 @@ static int xfrm_set_default(struct sk_buff *skb, struct nlmsghdr *nlh,
- {
- 	struct net *net = sock_net(skb->sk);
- 	struct xfrm_userpolicy_default *up = nlmsg_data(nlh);
--	u8 dirmask = (1 << up->dirmask) & XFRM_POL_DEFAULT_MASK;
-+	u8 dirmask;
- 	u8 old_default = net->xfrm.policy_default;
- 
-+	if (up->dirmask >= sizeof(up->action) * 8)
-+		return -EINVAL;
-+
-+	dirmask = (1 << up->dirmask) & XFRM_POL_DEFAULT_MASK;
-+
- 	net->xfrm.policy_default = (old_default & (0xff ^ dirmask))
- 				    | (up->action << up->dirmask);
- 
--- 
-2.32.0
-
-
---MP_/w+5mWJ0hzkLOGrIDgVYQu8r--
+Jason 
