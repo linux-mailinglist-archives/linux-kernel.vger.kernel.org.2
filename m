@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06103D70B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC033D70BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235629AbhG0H7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:59:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235675AbhG0H7x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:59:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627372793;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/EIq4hrAP0Ac0pX1HeyNfiwT/0BIOEO0auXFwtqoKwk=;
-        b=RzWYwwJW0HI5LovkIL/n3eKTaJxruFQFZsnR+6nAOLc2j7Rglx9g3B3OO8/iwDMO3JJluO
-        bF9JqQ1V+P0JXy/QYLC698r4I7KJ8h8D419mWyLo6CPGB4Ma8XiPupjqQ/cqL7TbSRhrfT
-        0m1snXyA+r3o2E6pOolbXbCf7ywX2q0=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-VtHXY_ebMMGZG17Ja4wxjQ-1; Tue, 27 Jul 2021 03:59:52 -0400
-X-MC-Unique: VtHXY_ebMMGZG17Ja4wxjQ-1
-Received: by mail-ed1-f72.google.com with SMTP id u25-20020aa7d8990000b02903bb6a903d90so3382675edq.17
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:59:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/EIq4hrAP0Ac0pX1HeyNfiwT/0BIOEO0auXFwtqoKwk=;
-        b=VVvmfyiDQT0kd+WduwZfVNz5CZds9/EJfQ22/Iq0349XsOJQfbDvNpAP0atgbQOIu9
-         UpQ3VDrguo2ND7hYXwllRg5BiepxOBWQDMBxQ4yGvJIs2pTdQls7/BSqAdZZ2CqhOfZI
-         0DD/qV1MrPEuujprngrIGX+QZ/i7Akgf0uwgBfKUWcnBps+iY9IofN6/MoPZCtZv4XLZ
-         Wqa88R5siEAC8Dt6Tq2l2tqmPElatDMduMsC/mj1lZBaABaClLFcWmZ72F3Q8T4B0HQI
-         gLcGrGDNXeU56mGOvPUPnRBbrRoSAPUu4Br5QCh/pSjjGng9Ivw9LGzUdvVtTwFSZI8j
-         SUbg==
-X-Gm-Message-State: AOAM531nfiOLNrSDR5UhivdU4KT2PoRnaXkWCBQkmq+4fUgKFYNRg++0
-        wP9hK9REJMXnHhqRLyq1lWFqXfJ4eUWJrLW6aN6/ruZA2ce3Qt6N8LNCr5qrV/PsiT7n+WpeYju
-        S8Xy4vwXk8qrI0jGgV/ZFGWG0
-X-Received: by 2002:a05:6402:12c3:: with SMTP id k3mr11211306edx.11.1627372791441;
-        Tue, 27 Jul 2021 00:59:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwlCvS56tYgLWOzqJ8Wh70Fht2s02iJ7M5DydMmq9uVJaSBBqYQBS2qw7251aRYo+dt+iun8A==
-X-Received: by 2002:a05:6402:12c3:: with SMTP id k3mr11211285edx.11.1627372791319;
-        Tue, 27 Jul 2021 00:59:51 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id i14sm613214eja.91.2021.07.27.00.59.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 00:59:50 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 09:59:48 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v1 0/7] virtio/vsock: introduce MSG_EOR flag for
- SEQPACKET
-Message-ID: <20210727075948.yl4w3foqa6rp4obg@steredhat>
-References: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
+        id S235874AbhG0IBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:01:12 -0400
+Received: from david.siemens.de ([192.35.17.14]:52299 "EHLO david.siemens.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235675AbhG0IBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 04:01:11 -0400
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 16R80LnR028664
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Jul 2021 10:00:22 +0200
+Received: from md1za8fc.ad001.siemens.net ([167.87.2.134])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 16R80Jbi010200;
+        Tue, 27 Jul 2021 10:00:19 +0200
+Date:   Tue, 27 Jul 2021 10:00:18 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>, <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>, xenomai@xenomai.org
+Subject: Re: sched: Unexpected reschedule of offline CPU#2!
+Message-ID: <20210727100018.19d61165@md1za8fc.ad001.siemens.net>
+In-Reply-To: <alpine.DEB.2.21.1908172219470.1923@nanos.tec.linutronix.de>
+References: <20190727164450.GA11726@roeck-us.net>
+        <20190729093545.GV31381@hirez.programming.kicks-ass.net>
+        <alpine.DEB.2.21.1907291156170.1791@nanos.tec.linutronix.de>
+        <20190729101349.GX31381@hirez.programming.kicks-ass.net>
+        <alpine.DEB.2.21.1907291235580.1791@nanos.tec.linutronix.de>
+        <20190729104745.GA31398@hirez.programming.kicks-ass.net>
+        <20190729205059.GA1127@roeck-us.net>
+        <alpine.DEB.2.21.1908161217380.1873@nanos.tec.linutronix.de>
+        <20190816193208.GA29478@roeck-us.net>
+        <alpine.DEB.2.21.1908172219470.1923@nanos.tec.linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 07:31:33PM +0300, Arseny Krasnov wrote:
->	This patchset implements support of MSG_EOR bit for SEQPACKET
->AF_VSOCK sockets over virtio transport.
->	Idea is to distinguish concepts of 'messages' and 'records'.
->Message is result of sending calls: 'write()', 'send()', 'sendmsg()'
->etc. It has fixed maximum length, and it bounds are visible using
->return from receive calls: 'read()', 'recv()', 'recvmsg()' etc.
->Current implementation based on message definition above.
->	Record has unlimited length, it consists of multiple message,
->and bounds of record are visible via MSG_EOR flag returned from
->'recvmsg()' call. Sender passes MSG_EOR to sending system call and
->receiver will see MSG_EOR when corresponding message will be processed.
->	To support MSG_EOR new bit was added along with existing
->'VIRTIO_VSOCK_SEQ_EOR': 'VIRTIO_VSOCK_SEQ_EOM'(end-of-message) - now it
->works in the same way as 'VIRTIO_VSOCK_SEQ_EOR'. But 'VIRTIO_VSOCK_SEQ_EOR'
->is used to mark 'MSG_EOR' bit passed from userspace.
+Was this ever resolved and if so can someone please point me to the
+patches? I started digging a bit but could not yet find how that
+continued.
 
-At this point it's probably better to rename the old flag, so we stay 
-compatible.
+I am seeing similar or maybe the same problem on 4.19.192 with the
+ipipe patch from the xenomai project applied.
 
-What happens if one of the two peers does not support MSG_EOR handling, 
-while the other does?
+regards,
+Henning
 
-I'll do a closer review in the next few days.
+Am Sat, 17 Aug 2019 22:21:48 +0200
+schrieb Thomas Gleixner <tglx@linutronix.de>:
 
-Thanks,
-Stefano
+> On Fri, 16 Aug 2019, Guenter Roeck wrote:
+> > On Fri, Aug 16, 2019 at 12:22:22PM +0200, Thomas Gleixner wrote:  
+> > > diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+> > > index 75fea0d48c0e..625627b1457c 100644
+> > > --- a/arch/x86/kernel/process.c
+> > > +++ b/arch/x86/kernel/process.c
+> > > @@ -601,6 +601,7 @@ void stop_this_cpu(void *dummy)
+> > >  	/*
+> > >  	 * Remove this CPU:
+> > >  	 */
+> > > +	set_cpu_active(smp_processor_id(), false);
+> > >  	set_cpu_online(smp_processor_id(), false);
+> > >  	disable_local_APIC();
+> > >  	mcheck_cpu_clear(this_cpu_ptr(&cpu_info));
+> > >   
+> > No luck. The problem is still seen with this patch applied on top of
+> > the mainline kernel (commit a69e90512d9def6).  
+> 
+> Yeah, was a bit too naive ....
+> 
+> We actually need to do the full cpuhotplug dance for a regular
+> reboot. In the panic case, there is nothing we can do about. I'll
+> have a look tomorrow.
+> 
+> Thanks,
+> 
+> 	tglx
 
