@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D843D78AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659F33D78B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236732AbhG0Om7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 10:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51402 "EHLO
+        id S236889AbhG0On0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 10:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232432AbhG0Om6 (ORCPT
+        with ESMTP id S232432AbhG0OnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 10:42:58 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292A9C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 07:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AkaBNPYXPSH5QJ9u4d74khubMTmlV7qCcVkpVnXkH6c=; b=B7Hl2VPksWfIo72jKQsjVRfnNf
-        o7Y9idx/haNq4838PpWgvohXJVAmCOhjTF9To668mPk4Jc9kNdGvSQo4rWuEDngn96bapceYxJIdn
-        F7JOClN8imgyLebuR6apGwD7e/WTbL+C9jeSMWRhbQqSslH5xkeRa6pD7r8X2WOGuxdgboTK8riiT
-        K1J+0Jns4lYcq2A7L8wvohBzjqbj3JEHwg9IvybN5juVC8nf+pAdOblSCLo2i2QZSfLs8hm4TV0Is
-        AgbgT4//szySyi6ghQIMAnPIeKflxHrBJ/x+4u8mHe4nfbO6+a4XLBV16GqiJ38MRGrqbQP0e7n5i
-        uiM+0F8A==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8OIA-00F4rK-CM; Tue, 27 Jul 2021 14:42:46 +0000
-Date:   Tue, 27 Jul 2021 07:42:46 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Bruno Goncalves <bgoncalv@redhat.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        akpm@linux-foundation.org, bp@alien8.de, corbet@lwn.net,
-        gregkh@linuxfoundation.org, jeyu@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        torvalds@linux-foundation.org, Dave Young <dyoung@redhat.com>
-Subject: Re: [PATCH v3 1/2] init/initramfs.c: do unpacking asynchronously
-Message-ID: <YQAbZhCwLS7vb/ag@bombadil.infradead.org>
-References: <87sg04p315.fsf@oc8242746057.ibm.com>
- <edb79b68-6dd0-ced5-17a0-fda7516d3529@rasmusvillemoes.dk>
- <CA+QYu4pDGHj--z6yUrkhFs7oW-LUrY23i+-vKJwLPWaCO=z4vA@mail.gmail.com>
- <YQAQFMDMk09wS6Qv@bombadil.infradead.org>
- <CA+QYu4qSw_W=hdOARxjfisRjx4Lpy-MSe1ZovfUtVb2GGMynkg@mail.gmail.com>
- <YQAWc/6I6MnOGZn1@bombadil.infradead.org>
- <CA+QYu4ofYOqcuCYohFnYYO+XhAjKfpyGQ4KJr5vE4Fo=whv7UA@mail.gmail.com>
+        Tue, 27 Jul 2021 10:43:24 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4C2C0613C1;
+        Tue, 27 Jul 2021 07:43:22 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id d17so22178728lfv.0;
+        Tue, 27 Jul 2021 07:43:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=LvguakZhljJ6qsltWl9Xtfz0TMtM4W2dtQG1XypA974=;
+        b=rv3QNcVnds0tQICQRm4SgSmF7d0MGCrWGBrwaGu87Ux6eYDsDJwUOXCgfSlDKBQjfU
+         ikZmEaexAEySC0iUndVEtCAK83Du4dhLWaVDsfwfE38fbPb7O1zzbzy7CUGBIl0rsZXi
+         Benjv+25SvBGssKvr7/rYgRURVhUWxbGpp8AA5QY3iZxmLJlY0YBq3GCTW2kaFY6EcTk
+         Ja84eavN2Vqj5X7GnoS8s1946e9tLH2TGC3GniC+vH+X4J+CxUS8/VoDgM6oahxjd63W
+         /8SuEXa/TVi7BxJImIQJZO9fUD0no38oVH7/r9ykhCyskTvR7eBBt+Bortl7bqmhI62e
+         QjUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=LvguakZhljJ6qsltWl9Xtfz0TMtM4W2dtQG1XypA974=;
+        b=sLmZDZ3oYGzsdauLSgVbl72MuYhs1SElW+MI4yBr0TarXvceLW9oMqK1ownQsy8edz
+         1Q0RI72jlbei4/1HA96vMhlnkhh8t1R9UZ69k8L+9BXn1Y5V4Ihve2qID0TYVKyyMhHt
+         V5hIuhJ482ss0ijB/oPm1Yiq6ANrUKxgdJbVzdjm8inoJO7YEB7ATBHPYxijuHVGUx43
+         GxJ/TBUvZo1C5J2ERxd/k63b5FXJmqfPPQU34/jV9DgL+Dfftv6Zi1QCif6z5OtA84c3
+         WXtQWMeBBPOjuMwLapX5epumWyjDtGWEtlDOgS4+UPxbTa3P1Xhb5wIr7A0ZM6kvTZHh
+         tppw==
+X-Gm-Message-State: AOAM533Vrm9Vj2JPN/6nAJT3LfjDBFCZyCOHv8z/I4YZTmTa0ukHg1vJ
+        S/K1r0pToPq1kwX7irFHd7I=
+X-Google-Smtp-Source: ABdhPJwcFkF5a0cuZJ1xWDxQkTqYNVhza1PTfDih4HBjGFkT2XaZmevO74FY0lyjY5u8x4x2LNAUEw==
+X-Received: by 2002:a19:7512:: with SMTP id y18mr16764455lfe.533.1627397001190;
+        Tue, 27 Jul 2021 07:43:21 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.213])
+        by smtp.gmail.com with ESMTPSA id i16sm311661lfg.139.2021.07.27.07.43.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 07:43:20 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 17:43:18 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     syzbot <syzbot+9cd5837a045bbee5b810@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in xfrm_set_default
+Message-ID: <20210727174318.53806d27@gmail.com>
+In-Reply-To: <0000000000004f5de905c81a45e7@google.com>
+References: <0000000000004f5de905c81a45e7@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+QYu4ofYOqcuCYohFnYYO+XhAjKfpyGQ4KJr5vE4Fo=whv7UA@mail.gmail.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: multipart/mixed; boundary="MP_/UMAwpennY/SnMSMQPwA2e3u"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:27:08PM +0200, Bruno Goncalves wrote:
-> On Tue, Jul 27, 2021 at 4:21 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > On Tue, Jul 27, 2021 at 04:12:54PM +0200, Bruno Goncalves wrote:
-> > > On Tue, Jul 27, 2021 at 3:55 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > > >
-> > > > On Tue, Jul 27, 2021 at 09:31:54AM +0200, Bruno Goncalves wrote:
-> > > > > On Mon, Jul 26, 2021 at 1:46 PM Rasmus Villemoes
-> > > > > <linux@rasmusvillemoes.dk> wrote:
-> > > > > >
-> > > > > > On 24/07/2021 09.46, Alexander Egorenkov wrote:
-> > > > > > > Hello,
-> > > > > > >
-> > > > > > > since e7cb072eb988 ("init/initramfs.c: do unpacking asynchronously"), we
-> > > > > > > started seeing the following problem on s390 arch regularly:
-> > > > > > >
-> > > > > > > [    5.039734] wait_for_initramfs() called before rootfs_initcalls
-> > > >
-> > > > So some context here, which might help.
-> > > >
-> > > > The initramfs_cookie is initialized until a a rootfs_initcall() is
-> > > > called, in this case populate_rootfs(). The code is small, so might
-> > > > as well include it:
-> > > >
-> > > > static int __init populate_rootfs(void)
-> > > > {
-> > > >         initramfs_cookie = async_schedule_domain(do_populate_rootfs, NULL,
-> > > >                                                  &initramfs_domain);
-> > > >         if (!initramfs_async)
-> > > >                 wait_for_initramfs();
-> > > >         return 0;
-> > > > }
-> > > > rootfs_initcall(populate_rootfs);
-> > > >
-> > > > The warning you see comes from a situation where a wait_for_initramfs()
-> > > > gets called but we haven't yet initialized initramfs_cookie.  There are
-> > > > only a few calls for wait_for_initramfs() in the kernel, and the only
-> > > > thing I can think of is that somehow s390 may rely on a usermode helper
-> > > > early on, but not every time.
-> > > >
-> > > > What umh calls does s390 issue?
-> > > >
-> > > > > Unfortunately, we haven't been able to find the root cause, but since
-> > > > > June 23rd we haven't hit this panic...
-> > > > >
-> > > > > Btw, this panic we were hitting only when testing kernels from "scsi"
-> > > > > and "block" trees.
-> > > >
-> > > > Do you use drdb maybe?
-> > >
-> > > No, the machines we were able to reproduce the problem don't have drdb.
-> >
-> > Are there *any* umh calls early on boot on the s390 systems? If so
-> > chances are that is the droid you are looking for.
-> 
-> Sorry Luis,
-> 
-> I was just replying the question mentioning an old thread
-> (https://lore.kernel.org/lkml/CA+QYu4qxf2CYe2gC6EYnOHXPKS-+cEXL=MnUvqRFaN7W1i6ahQ@mail.gmail.com/T/#u)
-> on ppc64le.
-> 
-> regarding the "umh" it doesn't show anything on ppc64le boot.
+--MP_/UMAwpennY/SnMSMQPwA2e3u
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-There is not a single pr_*() call on kernel/umh.c, and so unless the
-respective ppc64le / s390 umh callers have a print, we won't know if you
-really did use a print.
+On Tue, 27 Jul 2021 05:47:21 -0700
+syzbot <syzbot+9cd5837a045bbee5b810@syzkaller.appspotmail.com> wrote:
 
-Can you reproduce the failure? How often?
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    90d856e71443 Add linux-next specific files for
+> 20210723 git tree:       linux-next
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=133fd00a300000 kernel
+> config:  https://syzkaller.appspot.com/x/.config?x=298516715f6ad5cd
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=9cd5837a045bbee5b810
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU
+> Binutils for Debian) 2.35.1 syz repro:
+> https://syzkaller.appspot.com/x/repro.syz?x=1263bba6300000 C
+> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1066b4d4300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the
+> commit: Reported-by:
+> syzbot+9cd5837a045bbee5b810@syzkaller.appspotmail.com
+> 
+> netlink: 228 bytes leftover after parsing attributes in process
+> `syz-executor669'.
+> ================================================================================
 
-  Luis
+
+The first thing that comes in mind is to check up->dirmask value
+
+
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master 
+
+
+With regards,
+Pavel Skripkin
+
+
+
+--MP_/UMAwpennY/SnMSMQPwA2e3u
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0001-net-xfrm-fix-shift-out-of-bounce.patch
+
+From 30db223b1f724ca241c7fa15769d0c65eada3b66 Mon Sep 17 00:00:00 2001
+From: Pavel Skripkin <paskripkin@gmail.com>
+Date: Tue, 27 Jul 2021 17:38:24 +0300
+Subject: [PATCH] net: xfrm: fix shift-out-of-bounce
+
+We need to check up->dirmask to avoid shift-out-of-bounce bug,
+since up->dirmask comes from userspace.
+
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ net/xfrm/xfrm_user.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+index acc3a0dab331..5f3fe2295519 100644
+--- a/net/xfrm/xfrm_user.c
++++ b/net/xfrm/xfrm_user.c
+@@ -1966,9 +1966,14 @@ static int xfrm_set_default(struct sk_buff *skb, struct nlmsghdr *nlh,
+ {
+ 	struct net *net = sock_net(skb->sk);
+ 	struct xfrm_userpolicy_default *up = nlmsg_data(nlh);
+-	u8 dirmask = (1 << up->dirmask) & XFRM_POL_DEFAULT_MASK;
++	u8 dirmask;
+ 	u8 old_default = net->xfrm.policy_default;
+ 
++	if (up->dirmask >= sizeof(up->action) * 8)
++		return -EINVAL;
++
++	dirmask = (1 << up->dirmask) & XFRM_POL_DEFAULT_MASK
++
+ 	net->xfrm.policy_default = (old_default & (0xff ^ dirmask))
+ 				    | (up->action << up->dirmask);
+ 
+-- 
+2.32.0
+
+
+--MP_/UMAwpennY/SnMSMQPwA2e3u--
