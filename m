@@ -2,200 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9613D74F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFD13D74F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236546AbhG0MVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:21:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46871 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231956AbhG0MVc (ORCPT
+        id S236525AbhG0MWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:22:38 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51822 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231945AbhG0MWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:21:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627388491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 27 Jul 2021 08:22:37 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C92402010E;
+        Tue, 27 Jul 2021 12:22:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627388556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LN9VGkVetG/NwFHIx+rWl4d+U3ZCuABiM4oRqn8aEJM=;
-        b=J20JhjZX5LvALQSZzPZgmxrJFn9+hHNgFOcJlzqvwGN29tlpwbzuiE3KMYZ7sQi9Nfi52S
-        gWRnWstJaOnUthE5X5Yo71CYBwdCfcLa+xtyUHe0qnCKxsOh5H9R1BZtJUXm/4naBsRJ0a
-        6UkUROnqV7p43lXcoKGPNQ1DoEu0Gng=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-127-pa9KM71GMFO_r_Hqkhd4PQ-1; Tue, 27 Jul 2021 08:21:30 -0400
-X-MC-Unique: pa9KM71GMFO_r_Hqkhd4PQ-1
-Received: by mail-wm1-f71.google.com with SMTP id o26-20020a05600c511ab0290252d0248251so1296867wms.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 05:21:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=LN9VGkVetG/NwFHIx+rWl4d+U3ZCuABiM4oRqn8aEJM=;
-        b=qmb/7ziCiBjvpnCmNV2WJG7WBfiJCiGUmiYg7lMbSHq7EVFv7TyI23sOouXTZQ6BV4
-         aL2sLjGALHjoCY8qbqIUpYPl232pjJ4Gv/jtw/24/8PO092Rafza85aqEvJ0qavtRNxW
-         UliRXK46MW7uGEBtxXidpts/yapwCK0ebLYyC3krZdChqKzI0Rh6cJdR1bnmIzKUrtDJ
-         OS/C+bazxK8keNWfY0nYnlZSyPs/uWKxKH28SKa/PPlOO95rYdBsJp5LTnVSu50oH1CO
-         aT42IhWBUjp6g7eWU2wfAui9/5QtHeGFY3i9NzaPsnLDT5y8Y0KKp3Pawq7GJLyxLl5j
-         ZSfw==
-X-Gm-Message-State: AOAM533m2bF0mijkQT4VKWI3z8qPKFMtnenNvaJebVbick9ClQGTAWP4
-        G0pDLiwrC1VXP7KEmUA6YJ9iEC5CikfqFn4KeRTlItewFid8RjvEe0ImHTbCf6tgJCQLckRr17h
-        Evc39YYd7w7ban8wQp14S7X49
-X-Received: by 2002:a05:600c:19cb:: with SMTP id u11mr3860756wmq.1.1627388489322;
-        Tue, 27 Jul 2021 05:21:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQnNIw4yzhbK/hXIiowJKU9c6Yhf3WFk7FQBEZQiomOdMaGA+TgOqmsNh4ypiuVnQyMVEu/g==
-X-Received: by 2002:a05:600c:19cb:: with SMTP id u11mr3860731wmq.1.1627388489098;
-        Tue, 27 Jul 2021 05:21:29 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23c36.dip0.t-ipconnect.de. [79.242.60.54])
-        by smtp.gmail.com with ESMTPSA id k9sm3199009wrc.6.2021.07.27.05.21.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 05:21:28 -0700 (PDT)
-Subject: Re: [PATCH v4] mm: Enable suspend-only swap spaces
-From:   David Hildenbrand <david@redhat.com>
-To:     Evan Green <evgreen@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-api@vger.kernel.org, Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210726171106.v4.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
- <d6668437-5c3b-2dff-bb95-4e3132d13711@redhat.com>
-Organization: Red Hat
-Message-ID: <6ff28cfe-1107-347b-0327-ad36e256141b@redhat.com>
-Date:   Tue, 27 Jul 2021 14:21:27 +0200
+        bh=FhSGMq7tsjdfqb7/t5p2DvbOChFLPsCT3Y6+zkWRChw=;
+        b=drooZA9RHdejzN/hjfmZw7+rh7uQDPObeOlpJ0RTDivO+SA0+VvlGdZykyq6ohmk9CWw5F
+        wKhZ9IMO7qNpzYCgzVnqDEG17NUmoWOawZaulid9cKBPKnwc8fe6KC0qF8dJdwOfkq1rRe
+        Q9bD+AEEBpDO04X33fHNcx8LqZq6fsM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627388556;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FhSGMq7tsjdfqb7/t5p2DvbOChFLPsCT3Y6+zkWRChw=;
+        b=yrQhWrvOHC4v3aLtpu6TA3ebbclssktj/cKmBgZVbO3ULD0fIx5Bq6Gqq/C7ng5yyyMCvo
+        jiRWE1H8T8zyDxCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F2B413B77;
+        Tue, 27 Jul 2021 12:22:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZwwDJoz6/2AiLgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 27 Jul 2021 12:22:36 +0000
+Subject: Re: [PATCH] mm: slub: Fix slub_debug disablement for list of slabs
+To:     Vijayanand Jitta <vjitta@codeaurora.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        vinmenon@codeaurora.org
+References: <1626176750-13099-1-git-send-email-vjitta@codeaurora.org>
+ <bf2a8571-325c-6d94-0d5a-f6df71ae0c4f@suse.cz>
+ <e0442add-dcf0-57d7-2298-3459136673af@codeaurora.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <8a3d992a-473a-467b-28a0-4ad2ff60ab82@suse.cz>
+Date:   Tue, 27 Jul 2021 14:22:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <d6668437-5c3b-2dff-bb95-4e3132d13711@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <e0442add-dcf0-57d7-2298-3459136673af@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.07.21 11:48, David Hildenbrand wrote:
-> On 27.07.21 02:12, Evan Green wrote:
->> Add a new SWAP_FLAG_HIBERNATE_ONLY that adds a swap region but refuses
->> to allow generic swapping to it. This region can still be wired up for
->> use in suspend-to-disk activities, but will never have regular pages
->> swapped to it. This flag will be passed in by utilities like swapon(8),
->> usage would probably look something like: swapon -o hibernate /dev/sda2.
+On 7/27/21 6:43 AM, Vijayanand Jitta wrote:
+> 
+> 
+> On 7/27/2021 4:02 AM, Vlastimil Babka wrote:
+>> On 7/13/21 1:45 PM, vjitta@codeaurora.org wrote:
+>>> From: Vijayanand Jitta <vjitta@codeaurora.org>
+>>>
+>>> Consider the scenario where CONFIG_SLUB_DEBUG_ON is set
+>>> and we would want to disable slub_debug for few slabs.
+>>> Using boot parameter with slub_debug=-,slab_name syntax
+>>> doesn't work as expected i.e; only disabling debugging for
+>>> the specified list of slabs, instead it disables debugging
+>>> for all slabs. Fix this.
+>>>
+>>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
 >>
->> Currently it's not possible to enable hibernation without also enabling
->> generic swap for a given area. One semi-workaround for this is to delay
->> the call to swapon() until just before attempting to hibernate, and then
->> call swapoff() just after hibernate completes. This is somewhat kludgy,
->> and also doesn't really work to keep swap out of the hibernate region.
->> When hibernate begins, it starts by allocating a large chunk of memory
->> for itself. This often ends up forcing a lot of data out into swap. By
->> this time the hibernate region is eligible for generic swap, so swap
->> ends up leaking into the hibernate region even with the workaround.
->>
->> There are a few reasons why usermode might want to be able to
->> exclusively steer swap and hibernate. One reason relates to SSD wearing.
->> Hibernate's endurance and speed requirements are different from swap.
->> It may for instance be advantageous to keep hibernate in primary
->> storage, but put swap in an SLC namespace. These namespaces are faster
->> and have better endurance, but cost 3-4x in terms of capacity.
->> Exclusively steering hibernate and swap enables system designers to
->> accurately partition their storage without either wearing out their
->> primary storage, or overprovisioning their fast swap area.
->>
->> Another reason to allow exclusive steering has to do with security.
->> The requirements for designing systems with resilience against
->> offline attacks are different between swap and hibernate. Swap
->> effectively requires a dictionary of hashes, as pages can be added and
->> removed arbitrarily, whereas hibernate only needs a single hash for the
->> entire image. If you've set up block-level integrity for swap and
->> image-level integrity for hibernate, then allowing swap blocks to
->> possibly leak out to the hibernate region is problematic, since it
->> creates swap pages not protected by any integrity.
->>
->> Swap regions with SWAP_FLAG_HIBERNATE_ONLY set will not appear in
->> /proc/meminfo under SwapTotal and SwapFree, since they are not usable as
->> general swap. These regions do still appear in /proc/swaps.
+>> Would the following work too, and perhaps be easier to follow?
 > 
-> Right, and they also don't account towards the memory overcommit
-> calculations.
+> Right, the below change would also work and its easier to follow as you
+> said. We can go with this.
 > 
-> Thanks for extending the patch description!
-> 
-> [...]
-> 
->> +	if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY) {
->> +		if (IS_ENABLED(CONFIG_HIBERNATION)) {
->> +			if (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS)
->> +				return -EINVAL;
->> +
->> +		} else {
->> +			return -EINVAL;
->> +		}
->> +	}
-> 
-> We could do short
-> 
-> if ((swap_flags & SWAP_FLAG_HIBERNATE_ONLY) &&
->        (!IS_ENABLED(CONFIG_HIBERNATION) ||
->         (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS)))
-> 	return -EINVAL;
-> 
-> or
-> 
-> if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY))
-> 	if (!IS_ENABLED(CONFIG_HIBERNATION) ||
->               (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS))
-> 		return -EINVAL;
-> 
->> +
->>    	if (!capable(CAP_SYS_ADMIN))
->>    		return -EPERM;
->>    
->> @@ -3335,16 +3366,20 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->>    	if (swap_flags & SWAP_FLAG_PREFER)
->>    		prio =
->>    		  (swap_flags & SWAP_FLAG_PRIO_MASK) >> SWAP_FLAG_PRIO_SHIFT;
->> +
->> +	if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY)
->> +		p->flags |= SWP_HIBERNATE_ONLY;
->>    	enable_swap_info(p, prio, swap_map, cluster_info, frontswap_map);
->>    
->> -	pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s\n",
->> +	pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s%s\n",
->>    		p->pages<<(PAGE_SHIFT-10), name->name, p->prio,
->>    		nr_extents, (unsigned long long)span<<(PAGE_SHIFT-10),
->>    		(p->flags & SWP_SOLIDSTATE) ? "SS" : "",
->>    		(p->flags & SWP_DISCARDABLE) ? "D" : "",
->>    		(p->flags & SWP_AREA_DISCARD) ? "s" : "",
->>    		(p->flags & SWP_PAGE_DISCARD) ? "c" : "",
->> -		(frontswap_map) ? "FS" : "");
->> +		(frontswap_map) ? "FS" : "",
->> +		(p->flags & SWP_HIBERNATE_ONLY) ? "H" : "");
->>    
->>    	mutex_unlock(&swapon_mutex);
->>    	atomic_inc(&proc_poll_event);
->>
-> 
-> Looks like the cleanest alternative to me, as long as we don't want to
-> invent new interfaces.
-> 
-> Acked-by: David Hildenbrand <david@redhat.com>
-> 
+> Reviewed-by: Vijayanand Jitta <vjitta@codeaurora.org>
 
-Pavel just mentioned uswsusp, and I wonder if it would be a possible 
-alternative to this patch.
+Thanks! Here's the full patch
+----8<----
+From 81a225fe31e53701902bb4caa9ab1524eb044cbc Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Tue, 13 Jul 2021 17:15:50 +0530
+Subject: [PATCH] mm: slub: fix slub_debug disabling for list of slabs
 
+Vijayanand Jitta reports:
+
+  Consider the scenario where CONFIG_SLUB_DEBUG_ON is set
+  and we would want to disable slub_debug for few slabs.
+  Using boot parameter with slub_debug=-,slab_name syntax
+  doesn't work as expected i.e; only disabling debugging for
+  the specified list of slabs. Instead it disables debugging
+  for all slabs, which is wrong.
+
+This patch fixes it by delaying the moment when the global slub_debug flags
+variable is updated. In case a "slub_debug=-,slab_name" has been passed, the
+global flags remain as initialized (depending on CONFIG_SLUB_DEBUG_ON enabled
+or disabled) and are not simply reset to 0.
+
+Reported-by: Vijayanand Jitta <vjitta@codeaurora.org>
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Vijayanand Jitta <vjitta@codeaurora.org>
+---
+ mm/slub.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index 090fa14628f9..024f49706386 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1400,12 +1400,13 @@ parse_slub_debug_flags(char *str, slab_flags_t *flags, char **slabs, bool init)
+ static int __init setup_slub_debug(char *str)
+ {
+ 	slab_flags_t flags;
++	slab_flags_t global_flags;
+ 	char *saved_str;
+ 	char *slab_list;
+ 	bool global_slub_debug_changed = false;
+ 	bool slab_list_specified = false;
+ 
+-	slub_debug = DEBUG_DEFAULT_FLAGS;
++	global_flags = DEBUG_DEFAULT_FLAGS;
+ 	if (*str++ != '=' || !*str)
+ 		/*
+ 		 * No options specified. Switch on full debugging.
+@@ -1417,7 +1418,7 @@ static int __init setup_slub_debug(char *str)
+ 		str = parse_slub_debug_flags(str, &flags, &slab_list, true);
+ 
+ 		if (!slab_list) {
+-			slub_debug = flags;
++			global_flags = flags;
+ 			global_slub_debug_changed = true;
+ 		} else {
+ 			slab_list_specified = true;
+@@ -1426,16 +1427,18 @@ static int __init setup_slub_debug(char *str)
+ 
+ 	/*
+ 	 * For backwards compatibility, a single list of flags with list of
+-	 * slabs means debugging is only enabled for those slabs, so the global
+-	 * slub_debug should be 0. We can extended that to multiple lists as
++	 * slabs means debugging is only changed for those slabs, so the global
++	 * slub_debug should be unchanged (0 or DEBUG_DEFAULT_FLAGS, depending
++	 * on CONFIG_SLUB_DEBUG_ON). We can extended that to multiple lists as
+ 	 * long as there is no option specifying flags without a slab list.
+ 	 */
+ 	if (slab_list_specified) {
+ 		if (!global_slub_debug_changed)
+-			slub_debug = 0;
++			global_flags = slub_debug;
+ 		slub_debug_string = saved_str;
+ 	}
+ out:
++	slub_debug = global_flags;
+ 	if (slub_debug != 0 || slub_debug_string)
+ 		static_branch_enable(&slub_debug_enabled);
+ 	else
 -- 
-Thanks,
-
-David / dhildenb
+2.32.0
 
