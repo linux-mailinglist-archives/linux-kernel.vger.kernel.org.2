@@ -2,64 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70DB3D6B0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA6E3D6B10
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234266AbhGZXtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 19:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233843AbhGZXtS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 19:49:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8162EC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 17:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=6/7oKEVA4rxlQh0qVL5S1Rb1EZhJFDFyuVZPPnpRFwo=; b=xi6o0OraLioiJI1KLH+Hek9JFa
-        EzaOwOd1Dx7NIcnoB9ogazIjnonOzp/m2VfvzJtsz6ElGkCk557BKQB53Nigjh/1vmsn56hf4nVmd
-        PIGi8AtEd4bQea02Q5e73K35RxETXd+8dz8h0cRtlYBU+c6Jdr+f0PoEBV0uYN56X5VpQkpR4rOj/
-        4RECyjY40zFFys6BvReOTg04T0yLlhUTL+Z+WiENpNsrDOF3sw6DETQJQHmsMBflkolLfUaZp+qY0
-        Bsx+DeLLAXFgWbCm66uHkKuYFsiwKFGO7brbkYKHhCP241MBMXDG9HPzoZMq/JtO9z3tciSIbmAlx
-        /8/B1Fbg==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8Aye-00ChiZ-S6; Tue, 27 Jul 2021 00:29:44 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Quentin Casasnovas <quentin.casasnovas@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] scripts: check_extable: fix typo in user error message
-Date:   Mon, 26 Jul 2021 17:29:43 -0700
-Message-Id: <20210727002943.29774-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S234444AbhGZXu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 19:50:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:60690 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233843AbhGZXuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 19:50:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BBD61FB;
+        Mon, 26 Jul 2021 17:30:53 -0700 (PDT)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 991933F73D;
+        Mon, 26 Jul 2021 17:30:51 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 01:30:04 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Ali Saidi <alisaidi@amazon.com>,
+        Jon Nettleton <jon@solid-run.com>
+Subject: Re: [PATCH v3 2/2] hwrng: Add Arm SMCCC TRNG based driver
+Message-ID: <20210727013004.4caca28f@slackpad.fritz.box>
+In-Reply-To: <20210726223738.GM4670@sirena.org.uk>
+References: <20210726175610.3311-1-andre.przywara@arm.com>
+        <20210726175610.3311-3-andre.przywara@arm.com>
+        <20210726223738.GM4670@sirena.org.uk>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo ("and" should be "an") in an error message.
+On Mon, 26 Jul 2021 23:37:38 +0100
+Mark Brown <broonie@kernel.org> wrote:
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Quentin Casasnovas <quentin.casasnovas@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- scripts/check_extable.sh |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon, Jul 26, 2021 at 06:56:10PM +0100, Andre Przywara wrote:
+> 
+> > +static int smccc_trng_init(struct hwrng *rng)
+> > +{
+> > +	return 0;
+> > +}  
+> 
+> If this can be empty (looking at the core it seems like it can) then
+> best just remove it.
 
---- linux-next-20210723.orig/scripts/check_extable.sh
-+++ linux-next-20210723/scripts/check_extable.sh
-@@ -4,7 +4,7 @@
- 
- obj=$1
- 
--file ${obj} | grep -q ELF || (echo "${obj} is not and ELF file." 1>&2 ; exit 0)
-+file ${obj} | grep -q ELF || (echo "${obj} is not an ELF file." 1>&2 ; exit 0)
- 
- # Bail out early if there isn't an __ex_table section in this object file.
- objdump -hj __ex_table ${obj} 2> /dev/null > /dev/null
+Ah, you are right! Actually this is explicitly mentioned in the
+struct hwrng comments. Thanks for the heads up.
+
+> 
+> > +	platform_set_drvdata(pdev, trng);
+> > +	ret = devm_hwrng_register(&pdev->dev, trng);
+> > +	if (!ret)
+> > +		dev_info(&pdev->dev,
+> > +			 "ARM SMCCC TRNG firmware random number generator\n");  
+> 
+> Is the log message needed given that we're not announcing any version
+> information here or anything?  A brief sampling of other drivers
+> suggests it's not a standard thing for the subsystem.
+
+Yeah, that was indeed more a leftover of the version print. I
+thought about querying the version again explicitly, but this would
+have brought back the SMCCC calls that I could so nicely delete. Plus,
+the hwrng driver is just a (secondary) user of this interface, I think
+announcing the version should be done in smccc.c. Which is probably
+beyond the scope of this patch.
+
+Now thinking about this, there would probably be some value in making
+the TRNG UUID somehow available, as this can be used to identify flawed
+implementations (general problems in the hardware or backend bugs). But
+this should be some query-able interface, rather than some line in
+dmesg. Any ideas? Might be beyond the scope of this series, though...
+
+Cheers,
+Andre
