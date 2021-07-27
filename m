@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8273D756A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CF43D756B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236559AbhG0M47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:56:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232039AbhG0M46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:56:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2CB6608FB;
-        Tue, 27 Jul 2021 12:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627390617;
-        bh=tEJsYPPcR7cQdHztouI8BN/CYyZy8H9dTPZbM0CbK5s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zwYskLKOUJOnB/sL0WtJ4BQ7iz8UBAEfyUg5i3Y4iZ/GI8h9jK0kMmYNkBGQ6CI0G
-         y1LSFPKY6NqvI9i08NplBPZADPCR7r+kW0jxICs0KZFt2sAvVURCcHRlrebwnV74l6
-         XT9ra5IYUZ1rKorDMcCuzjjCosHmnE7tOP7K0NHg=
-Date:   Tue, 27 Jul 2021 14:56:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jordy Zomer <jordy@pwning.systems>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v2] fs: make d_path-like functions all have unsigned size
-Message-ID: <YQAClXqyLhztLcm4@kroah.com>
-References: <20210727120754.1091861-1-gregkh@linuxfoundation.org>
- <YP/+g/L6+tLWjx/l@smile.fi.intel.com>
+        id S236566AbhG0M5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:57:24 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21355 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232039AbhG0M5Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 08:57:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1627390641; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=Ph09f6rm2jcNN4IR0E5c2MFbFILqJFuVJwwa13nyIgNk2zLM1cbayWyeoBs3RhqC6Sd9D/cN1SgQ177xGHJSwnBaZTjUS9vy/XKiBh24ThxEFjp18OuEIFCW9AZnt6ALLL+15b9LQ2Phry0+y4kbYhAaKx6SQVjKdA0gi+T992s=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1627390641; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=U3cO4WuqdcXOSb6ekH15gDiYlvqP0dTXsEWCt7m7MZA=; 
+        b=BY81B/5YdJmWx4nDi38wstGUQ2xfO9Mg0iTQMWwStR6hP/Q7lX9pJl/PNn9+gBotI3KanA2FZyC0PC33w5xQb7bPM9Aic8ulq+Sd9hQscCOUgx6xxcRpdYfzNnSklnkghCOWdU2GI66H4x12jeaKFKlqjCnXFNWSUhvlcTnXpcU=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1627390641;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
+        bh=U3cO4WuqdcXOSb6ekH15gDiYlvqP0dTXsEWCt7m7MZA=;
+        b=PQCwMaDqBqA4KOs89/0+QBRkWD2sWHk6b1lhA93S1665TvJ8GSTz+8yR8cd1j+p9
+        0iuvyO5DqKbO8x9edYDw/UTpOQSKeIszaEUk4Ndk11AQpyoh6wGgBbwloxXYax8XpyT
+        8TfTe1W5Bz7v5SQx098++e6sCCFhYXKKtScK2TG0=
+Received: from anirudhrb.com (49.207.59.170 [49.207.59.170]) by mx.zohomail.com
+        with SMTPS id 1627390638851237.21820913776628; Tue, 27 Jul 2021 05:57:18 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 18:27:06 +0530
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+de271708674e2093097b@syzkaller.appspotmail.com
+Subject: Re: [PATCH v7 2/2] firmware_loader: fix use-after-free in
+ firmware_fallback_sysfs
+Message-ID: <YQACopP/tRsLFQVJ@anirudhrb.com>
+References: <20210724121134.6364-1-mail@anirudhrb.com>
+ <20210724121134.6364-3-mail@anirudhrb.com>
+ <20210726182721.3no7ql73ggttdiyx@garbanzo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YP/+g/L6+tLWjx/l@smile.fi.intel.com>
+In-Reply-To: <20210726182721.3no7ql73ggttdiyx@garbanzo>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 03:39:31PM +0300, Andy Shevchenko wrote:
-> On Tue, Jul 27, 2021 at 02:07:54PM +0200, Greg Kroah-Hartman wrote:
-> > When running static analysis tools to find where signed values could
-> > potentially wrap the family of d_path() functions turn out to trigger a
-> > lot of mess.  In evaluating the code, all of these usages seem safe, but
-> > pointer math is involved so if a negative number is ever somehow passed
-> > into these functions, memory can be traversed backwards in ways not
-> > intended.
+On Mon, Jul 26, 2021 at 11:27:21AM -0700, Luis Chamberlain wrote:
+> On Sat, Jul 24, 2021 at 05:41:34PM +0530, Anirudh Rayabharam wrote:
+> > This use-after-free happens when a fw_priv object has been freed but
+> > hasn't been removed from the pending list (pending_fw_head). The next
+> > time fw_load_sysfs_fallback tries to insert into the list, it ends up
+> > accessing the pending_list member of the previoiusly freed fw_priv.
 > > 
-> > Resolve all of the abuguity by just making "size" an unsigned value,
-> > which takes the guesswork out of everything involved.
+> > The root cause here is that all code paths that abort the fw load
+> > don't delete it from the pending list. For example:
+> > 
+> > 	_request_firmware()
+> > 	  -> fw_abort_batch_reqs()
+> > 	      -> fw_state_aborted()
+> > 
+> > To fix this, delete the fw_priv from the list in __fw_set_state() if
+> > the new state is DONE or ABORTED. This way, all aborts will remove
+> > the fw_priv from the list. Accordingly, remove calls to list_del_init
+> > that were being made before calling fw_state_(aborted|done).
+> > 
+> > Also, in fw_load_sysfs_fallback, don't add the fw_priv to the pending
+> > list if it is already aborted. Instead, just jump out and return early.
+> > 
+> > Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
+> > Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
+> > Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
 > 
-> Are you sure it's correct change?
+> Curious, how do you get syzbot to test this, I mean your custom tree?
+
+Don't need a custom tree. You can send syzbot the git url of an existing
+tree (such as linux-next or Linus' tree) and a patch to apply on that
+tree before testing. This is documented here:
+
+https://github.com/google/syzkaller/blob/master/docs/syzbot.md#testing-patches
+
+Of course, using a custom tree is also possible.
+
 > 
-> Look into extract_string() implementation.
+> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 > 
-> 	if (likely(p->len >= 0))
-> 		return p->buf;
-> 	return ERR_PTR(-ENAMETOOLONG);
+> With the changes Shua requested being made:
+
+I'll implement Shua's suggestions and send a new version.
+
+Thanks!
+
+	- Anirudh.
+
 > 
-> Your change makes it equal to
+> Acked-by: Luis Chamberlain <mcgrof@kernel.org>
 > 
-> 	return p->buf;
-> 
-> if I'm not mistaken.
-
-Yes it does, you are right.  So now we don't need to check the wrap
-there :)
-
-So this code is explicitly wanting the value to wrap into a negative
-value to check for problems, didn't expect that.
-
-Still feels very fragile, if you look at the documentation for __d_path,
-it says:
-	"buflen" should be positive.
-and if you look at who calls it, they are all passing in an unsigned
-value, seq_path_root() uses a size_t as buflen.  What's the issues
-involved there when size_t is a unsigned value going into a signed int?
-
-And my mistake from earlier, size_t is the same as unsigned int, not
-unsigned long.
-
-Anyway, this code feels subtle and tricky here, such that parsing tools
-warn "hey, something might be wrong here, check it out!"
-
-I'm not set on changing prepend_buffer->len, but I will not complain if
-it is, but we might want to have a different check in extract_string()
-and prepend() to verify that p->len does not go bigger than
-MAX_SOMETHING?
-
-But in the end, you are right, this version of the patch is not ok, all
-of the checks for len being < 0 are now moot, gotta love the fact that
-gcc didn't say squat about that :(
-
-thanks,
-
-greg k-h
+>   Luis
