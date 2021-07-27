@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92BD3D7A1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B803D3D7A23
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237123AbhG0PrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:47:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:52240 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237069AbhG0PrF (ORCPT
+        id S237144AbhG0Pru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:47:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32240 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236978AbhG0Prt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:47:05 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627400824;
+        Tue, 27 Jul 2021 11:47:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627400869;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H51/ZMeUA6zob6PAMZW3rybS6Qc5B+5JqVVSJ4UAVf0=;
-        b=bJ5MjfbMALMw7FCxm5YowjNggn76UJj28M4xw6Qo0rDyxK7BzaEAsn2pAEIW/UiF5E69K4
-        MSvmwiaHkAn0NFOyZWfNnkrkuH06jp4hUq8eeI6W5pyj/GKOJpRcILQQHVSYdCO9CxduaH
-        SdCjpSQZA7dNgZNwbaZI8vmugr8h5xjtOGOs8sqH5GnSzvwkdQmXg1CBwHsCuFmaId98R6
-        jjx2jhfKqd4Wycm4l+NxdIQEApMz/eQB9Lg75bpBud+a+DWqid6zh2zh1FUuHRXN5qAMdA
-        u/yNb7lp8XAwR9IT5pxmP2g4v2vkBceO0IWErztzuTaBfKPM923gq1Aiq+1A2w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627400824;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H51/ZMeUA6zob6PAMZW3rybS6Qc5B+5JqVVSJ4UAVf0=;
-        b=/S3LjABpVWj4DP84AjSomx06YKOk/MUBldyezeByvu0w+xxFk7gaF+YVUTGoxekMqc4xkk
-        R+L7EKZx1RSWnvCQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH] lib/nmi_backtrace: Serialize even messages about idle CPUs
-In-Reply-To: <20210727080939.27193-1-pmladek@suse.com>
-References: <20210727080939.27193-1-pmladek@suse.com>
-Date:   Tue, 27 Jul 2021 17:53:04 +0206
-Message-ID: <87r1fjiwsn.fsf@jogness.linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ralyV5G7XJkmcT2GXx/j2umoacDKJ2ppZ813mNupf+4=;
+        b=dtYbpuTirxw7kAVCL6T7vnMVebrHTokm8g/kasznvWYXjTbQDzcX3om2+xukz7jiRvuatr
+        6PxhONbuNoVF6PPZMi7M0v31Bauw9nmtjqGta77QVo/1xfxMqjau0I8icauswo8iNJfxUo
+        VbjAgrxBt4El4vdW372Mc6pNNz3MYIY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-212--tPwhjigM7-Tm0m0FAyATw-1; Tue, 27 Jul 2021 11:47:45 -0400
+X-MC-Unique: -tPwhjigM7-Tm0m0FAyATw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2DDA18C8C00;
+        Tue, 27 Jul 2021 15:47:40 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8A6965D9FC;
+        Tue, 27 Jul 2021 15:47:40 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 16RFldMM011955;
+        Tue, 27 Jul 2021 11:47:39 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 16RFlb1u011951;
+        Tue, 27 Jul 2021 11:47:37 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Tue, 27 Jul 2021 11:47:37 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Zhongwei Cai <sunrise_l@sjtu.edu.cn>,
+        Mingkai Dong <mingkaidong@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>
+cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>, nvdimm@lists.linux.dev
+Subject: [RFC v4] nvfs: a filesystem for persistent memory
+Message-ID: <alpine.LRH.2.02.2107270946180.876@file01.intranet.prod.int.rdu2.redhat.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-27, Petr Mladek <pmladek@suse.com> wrote:
-> The commit 55d6af1d66885059ffc2a ("lib/nmi_backtrace: explicitly serialize
-> banner and regs") serialized backtraces from more CPUs using the re-entrant
-> printk_printk_cpu lock. It was a preparation step for removing the obsolete
-> nmi_safe buffers.
->
-> The single-line messages about idle CPUs were not serialized against other
-> CPUs and might appear in the middle of backtrace from another CPU,
-> for example:
->
-> [56394.590068] NMI backtrace for cpu 2
-> [56394.590069] CPU: 2 PID: 444 Comm: systemd-journal Not tainted 5.14.0-rc1-default+ #268
-> [56394.590071] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-> [56394.590072] RIP: 0010:lock_is_held_type+0x0/0x120
-> [56394.590071] NMI backtrace for cpu 0 skipped: idling at native_safe_halt+0xb/0x10
-> [56394.590076] Code: a2 38 ff 0f 0b 8b 44 24 04 eb bd 48 8d ...
-> [56394.590077] RSP: 0018:ffffab02c07c7e68 EFLAGS: 00000246
-> [56394.590079] RAX: 0000000000000000 RBX: ffff9a7bc0ec8a40 RCX: ffffffffaab8eb40
->
-> It might cause confusion what CPU the following lines belongs to and
-> whether the backtraces are really serialized.
+Hi
 
-I originally implemented this, but later decided against it because it
-causes idle CPUs to begin busy-waiting in NMI context in order to log a
-single line saying they are idle. If the user is aware that there is
-only 1 line for the idle message, then the user knows that it isn't
-causing a problem for reading the stack trace.
+I announce a new version of NVFS - a filesystem for persistent memory.
+You can download it at:
+	http://people.redhat.com/~mpatocka/nvfs/
+	git://leontynka.twibright.com/nvfs.git
+Description of the filesystem layout:
+	http://people.redhat.com/~mpatocka/nvfs/INTERNALS
 
-When triggering many such dumps on systems with many CPUs where this
-patch is applied, it seemed like I was making the whole system work
-awfully hard for something that should be trivial.
 
-Considering that dump_stack() and show_regs() should be fast and we are
-only dumping to the lockless buffer, it is probably OK to be doing all
-the busy-waiting. Once atomic consoles are introduced, it will have
-quite an impact here, but atomic consoles are mostly only active on
-system crash, so I think that would be OK as well.
+Changes since the last release:
 
-Feel free to add:
+* updated for the kernels 5.13 and 5.14-rc
 
-Reviewed-by: John Ogness <john.ogness@linutronix.de>
+* add the ability to export the NVFS filesystem over NFS:
+	- each directory contains a pointer to its parent directory 
+	- add the 'generation' field to inodes
+	- the ability to open files by inode numbers
+
+* fixed some endianity conversions
+
+* fixed some sparse warnings
+
+* fixed a bug in extended attributes
+
+Mikulas
+
