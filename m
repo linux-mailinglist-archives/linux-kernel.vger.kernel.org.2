@@ -2,131 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42F63D7F32
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CAE3D7F38
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhG0UZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
+        id S232335AbhG0U0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhG0UZD (ORCPT
+        with ESMTP id S232140AbhG0U0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:25:03 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0360BC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:25:02 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id hp25so725292ejc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:25:01 -0700 (PDT)
+        Tue, 27 Jul 2021 16:26:07 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C36C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:26:07 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id a26so23812160lfr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:26:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AI4/qExA29kX+ZlXltNVAZTRQGQesnOkv1LSMsqDoFE=;
-        b=tMYiXAyZOrO7jqe0mTC780X3prSp0zEIc5UIe9x5NT/7FjDTK+Hma1zn1YIl1W2d45
-         QSQDseRJsug/Fwjfy7i5tM4QcBnOwEsQO2afVU+XcUptoga+iBhn60589PbGhCtVyIgm
-         7l7UWRaJJ4v/My45utwSxpuvyLz9bipEBO6MCbd5I3gcYQk0lkX66JVmRhIuzYEGd9xW
-         yae9RLXadL2POqaY+DwHxXz/yKewwNaE82o0hlrDw75vMI/kRQxGr9aekTwFP6B9679s
-         ccOUh+cCzx/dhsglwq6dvjeg/SFEmPhkzAYaYK8Fp/7jB6Qltja/baDANcs3BdzFqPby
-         WtVg==
+        bh=5W7I5NJ7607nekgTVXMsjnvhBYEaNIc7ZnBD14nK1Lw=;
+        b=SGmBbFjeBkkvg5TnrRW6wDpFH1NZFsjj8NeVunkx64lh+U9JXSYPNskR7ozV0UkJEJ
+         zBkDxxdXq8bKevyGTMDR9q1g71RKl/lQjTPgnbPUIYWM4jMQVRggD6l7pJBWGfEAsUAf
+         3xZI07lQmMXYSGk0PzGduvG7h5rGYaMFS2LXhIFUO3U4xQOLH4Y9dXb48ZCxiObAxxxJ
+         CbO2ELTV6ZtUc0gkzVDRdYACFOpF2yjIXvG22ko/tFt/xDkhAWh8uqJW59JPlYdZlBZ6
+         0KiO+dFjPFwHlfpo0/W1UpYFdGkksBsrQleck17dEYzoYLZxgeGW65qqOcakT1bLQpSH
+         ixOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AI4/qExA29kX+ZlXltNVAZTRQGQesnOkv1LSMsqDoFE=;
-        b=SCkstgpc6B6ZvItC/o4ck+gh8r7mlAFl7mn03qqLviTXcMAi8h27AxtlQSha7CxHeO
-         cXkz2Q16UJFp7JT5lMHiaAF1ucXSJJ2uN5BFfgXq90EeNsNUQ3RwxLyrzqWJUNbkAloK
-         SI/zK38LizY6D/fYlvSepQ9UuYh17+KIMhEj1CpD3KT68frqlZHxO1q1SiUZMfOGQC4q
-         Yjwh0CtU+TbH4aisLdTLtYtzfU0QTj6OtUz1QTYnroDRpPXNC68nh/u9EDa5hmzK86eL
-         p0LCaeUvTTU/SAJxLmQ8TRV0ICfn5ZAYGhJrye3i3yvLTIabRdD931eKz0I3QfXczRnI
-         UCBw==
-X-Gm-Message-State: AOAM532ASBJPSLIZSAhBpsKE4mwswnfJMpAOMBT1dxT/Q5CtZihsqI+i
-        xqKt9hcoujxiEjyHV2yHil54OOdaIuMAZDc8fgp6
-X-Google-Smtp-Source: ABdhPJw5XiHIHg6ae8uV3WrVdFrxw1uvMxCloM4AI8JGRZKEEHOrSXAfx185ENkDdDaMeEbQ9KhcFwvY6OSTrZEcBro=
-X-Received: by 2002:a17:906:468d:: with SMTP id a13mr24138094ejr.419.1627417500385;
- Tue, 27 Jul 2021 13:25:00 -0700 (PDT)
+        bh=5W7I5NJ7607nekgTVXMsjnvhBYEaNIc7ZnBD14nK1Lw=;
+        b=T1RcacOh97xppiBkGSvr0Vss1BTM2/O8zqvlAyc0KafJp27w5ahKep4oq/4wQAtYlO
+         b4jI1HQfw3yd9XSVQ/vCjMeR3gxIdNCx/R5mgs/J7FMQfz4C/RkaBj6gvgJO0kDuNDij
+         hlnRMGA/NX5bBL11plNsonEUt6fxEYCpPRoLDeAV1lHG480KOC+Q8L8nNB09FRuc7nln
+         dHpMblp5dMqDZyPygtyRhmZJvJCnSuVx4rVVK6Lfu/SjqNJx1tztz21AOyQPH6SOgN7P
+         5xLtmJtjTXIrMIPWVkOGT1Vrf/f2Y4TI9fbUtdd3V2LaBMmI7RjJCkISz/B9qebaAHKq
+         M0Dg==
+X-Gm-Message-State: AOAM533k1J3fUuGr5hdsfiELKmxvkg+9OwCXPOTHypOTVMD80BV4PvBG
+        Cwg8pM7o3ACF6TQYIgjQI5+u1fXNLTB2WEPngylwDA==
+X-Google-Smtp-Source: ABdhPJwqrozlM71o/YWycrk4nFXhaQSolQceA5mTAAHS5NoeqVcyVBzNsPdOTSbtGWnIJUkr9LvsHBgHBJBrEUh0hWM=
+X-Received: by 2002:a05:6512:3e0c:: with SMTP id i12mr17532275lfv.122.1627417565216;
+ Tue, 27 Jul 2021 13:26:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210714091747.2814370-1-morbo@google.com> <20210726201924.3202278-1-morbo@google.com>
- <20210726201924.3202278-2-morbo@google.com> <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
- <YP+ZOx8BETgufxBS@kroah.com> <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
- <YP+ql3QFYnefR/Cf@kroah.com> <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com>
- <YQBJfAuMJhvd2TcJ@kroah.com> <20210727201328.GY1583@gate.crashing.org> <CAGG=3QVWxdYnjZshsYVwf+jVj8Mb9=44SZA64cL0g414JncWGw@mail.gmail.com>
-In-Reply-To: <CAGG=3QVWxdYnjZshsYVwf+jVj8Mb9=44SZA64cL0g414JncWGw@mail.gmail.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Tue, 27 Jul 2021 13:24:49 -0700
-Message-ID: <CAGG=3QUgnahba_-6hk6VoZW4T3a_Qa2KTBx4+DswNf_KBEWOmw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org
+References: <20210718130748.230758-1-paul@crapouillou.net> <CAKwvOdkVEa-CxbVschn5Tnh7-Ynvzcz+zChhP3LL3Q745wE7_A@mail.gmail.com>
+ <7YIIWQ.1TU3IBLL4KNC2@crapouillou.net> <20210721161719.GA9805@alpha.franken.de>
+In-Reply-To: <20210721161719.GA9805@alpha.franken.de>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 27 Jul 2021 13:25:54 -0700
+Message-ID: <CAKwvOdmAxEUdSM-6g+pGHLdtzm1sRDoiPqMP_hWNLM9E4Kp7Dg@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Avoid macro redefinitions
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Cercueil <paul@crapouillou.net>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        list@opendingux.net, Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 1:22 PM Bill Wendling <morbo@google.com> wrote:
+On Wed, Jul 21, 2021 at 9:17 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
 >
-> On Tue, Jul 27, 2021 at 1:17 PM Segher Boessenkool
-> <segher@kernel.crashing.org> wrote:
+> On Mon, Jul 19, 2021 at 11:10:55PM +0100, Paul Cercueil wrote:
+> > > >   #ifndef TOOLCHAIN_SUPPORTS_VIRT
+> > >
+> > > Same question for GAS version support for virt?
+> > > Documentation/process/changes.rst
+> > > says GNU binutils 2.23+ is required for building the kernel.
+> > > If we still need to support, have you tested this change on such an
+> > > older version of GNU binutils?
 > >
-> > On Tue, Jul 27, 2021 at 07:59:24PM +0200, Greg Kroah-Hartman wrote:
-> > > On Tue, Jul 27, 2021 at 10:39:49AM -0700, Nick Desaulniers wrote:
-> > > > I think warn_unused_result should only really be used for functions
-> > > > where the return value should be used 100% of the time.
-> > >
-> > > I too want a shiny new pony.
-> > >
-> > > But here in the real world, sometimes you have functions that for 99% of
-> > > the users, you do want them to check the return value, but when you use
-> > > them in core code or startup code, you "know" you are safe to ignore the
-> > > return value.
-> > >
-> > > That is the case here.  We have other fun examples of where people have
-> > > tried to add error handling to code that runs at boot that have actually
-> > > introduced security errors and they justify it with "but you have to
-> > > check error values!"
-> > >
-> > > > If there are
-> > > > cases where it's ok to not check the return value, consider not using
-> > > > warn_unused_result on function declarations.
-> > >
-> > > Ok, so what do you do when you have a function like this where 99.9% of
-> > > the users need to check this?  Do I really need to write a wrapper
-> > > function just for it so that I can use it "safely" in the core code
-> > > instead?
-> > >
-> > > Something like:
-> > >
-> > > void do_safe_thing_and_ignore_the_world(...)
-> > > {
-> > >       __unused int error;
-> > >
-> > >       error = do_thing(...);
-> > > }
-> > >
-> > > Or something else to get the compiler to be quiet about error being set
-> > > and never used?
-> >
-> > The simplest is to write
-> >         if (do_thing()) {
-> >                 /* Nothing here, we can safely ignore the return value
-> >                  * here, because of X and Y and I don't know, I have no
-> >                  * idea actually why we can in this example.  Hopefully
-> >                  * in real code people do have a good reason :-)
-> >                  */
-> >         }
-> >
-> > which should work in *any* compiler, doesn't need any extension, is
-> > quite elegant, and encourages documenting why we ignore the return
-> > value here.
-> >
-> Or better still, use sysfs_create_link_nowarn() instead of
-> sysfs_create_link(). We'll just have to take the "__must_check"
-> attribute off the sysfs_create_link_nowarn() declaration.
+> > I have no idea about virt support - I hope Thomas can answer this.
 >
-Strike that. I mistook the nowarn.
--bw
+> virt support was added in 2.24 and xpa in 2.25. So we still need the
+> TOOLCHAIN defines for it.
+
+Ah, ok then. Thanks for finding that.  Perhaps Paul you can note that
+in the v2 that removes the commented out line, then we should be good
+to go?
+-- 
+Thanks,
+~Nick Desaulniers
