@@ -2,64 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B099B3D6DA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DFF3D6DA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235205AbhG0EpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 00:45:03 -0400
-Received: from relay.sw.ru ([185.231.240.75]:35166 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235147AbhG0EpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 00:45:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=/+c65/gT4Io1ufXamU1e2psgnYkOi5vjG8kGJF++OHo=; b=Ui+jyG8CSoRsIhhdk
-        CgYVGe+dD8MtMbyE9CEOdC4C2Toq4wq6hHORYH5UyU1pz03B+ZK3/1TFXc3+X96ZASFPJ/fWQFcdu
-        mFeW/8GMwrtOgRkkMWE3BsNlLXvF5m+1Ntd1aA6IZ9l+D+Kb4qH/GtNobsZES4dxVFFlLZm8/HzNk
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m8ExW-005LMz-8H; Tue, 27 Jul 2021 07:44:50 +0300
-Subject: Re: [PATCH v6 00/16] memcg accounting from OpenVZ
-To:     David Miller <davem@davemloft.net>
-Cc:     akpm@linux-foundation.org, tj@kernel.org, cgroups@vger.kernel.org,
-        mhocko@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        guro@fb.com, shakeelb@google.com, nglaive@gmail.com,
-        viro@zeniv.linux.org.uk, adobriyan@gmail.com, avagin@gmail.com,
-        bp@alien8.de, christian.brauner@ubuntu.com, dsahern@kernel.org,
-        0x7f454c46@gmail.com, edumazet@google.com, ebiederm@xmission.com,
-        gregkh@linuxfoundation.org, yoshfuji@linux-ipv6.org, hpa@zytor.com,
-        mingo@redhat.com, kuba@kernel.org, bfields@fieldses.org,
-        jlayton@kernel.org, axboe@kernel.dk, jirislaby@kernel.org,
-        ktkhai@virtuozzo.com, oleg@redhat.com, serge@hallyn.com,
-        tglx@linutronix.de, lizefan.x@bytedance.com,
-        netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <9bf9d9bd-03b1-2adb-17b4-5d59a86a9394@virtuozzo.com>
- <fdb0666c-7b8e-2062-64f4-5bef64fad950@virtuozzo.com>
- <20210726.225931.53899469422140706.davem@davemloft.net>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <6f21a0e0-bd36-b6be-1ffa-0dc86c06c470@virtuozzo.com>
-Date:   Tue, 27 Jul 2021 07:44:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235030AbhG0EqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 00:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229563AbhG0EqI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 00:46:08 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2D2C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:46:08 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d17so14336325plh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lQui5Bn1AetwvRytXDb4JDYFQOZL+N4GRQAdei53URs=;
+        b=Th5t3G/Ufa2Ob7SpZUUyIAqxOzwb4tOZFM+k1JoB0DhM88V1pL4Yr0MkoWzKCRp8OS
+         tqH8uIZnwJTKC1IkFWUfKxGxMcqRPyUn6Tqb4bCPhxgQgSaqQuyODZ7itTLs/L8/O/AD
+         F6uVySNBTaE7l2hLFTzeKgys751X40fDx1XBE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lQui5Bn1AetwvRytXDb4JDYFQOZL+N4GRQAdei53URs=;
+        b=M1+EQQAZZSahzYcfDz0/qXm6ZVd0P+MIe/YgbV+SfU37KI6JbXSsf6ip+BTsdh3Wh4
+         gBGR+zQjc90LQ95OwRVD6F6JxDJw0wu1nO8YhsG31EEONxV3AzPtPUeddKKMysRQ0HmJ
+         4kSiA4KqGZtPvDoBSG7GcKVBOUHgDErUOmpcn4g1OovMDd4XUBcTEK77emBzJ9RCOB/A
+         HJam7pCRcX5iBzIm7jqv/6dtAbVWQ9cGNS8zXBJf7lHayVKWjXKOhcVRlwG+f34aQ9yS
+         r7eVTmmlCJkbIWQzP6dZHkWq7qWhl0+dcDeza2zfzK1xEkpbPTXut0pRkMNSULP12KjA
+         batQ==
+X-Gm-Message-State: AOAM530GCswngbmRyPQ4nsTRFMjnDLHv7ubr9LdY9Hio6cBNmGCJ/0wV
+        +A1MrO50GM3fJJIrNGv4kuLWX3n/AB/h0CuBanN10Q==
+X-Google-Smtp-Source: ABdhPJyHwFZ5Iqv3unP+z+8lBwV8+TrKOxTRo0U3vA0SXeGCBVMXgm55Ilu8NwejZFEDdz1+OD/t38J49y/2dvAffKs=
+X-Received: by 2002:a17:90b:2251:: with SMTP id hk17mr2395627pjb.126.1627361167866;
+ Mon, 26 Jul 2021 21:46:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210726.225931.53899469422140706.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210726105719.15793-1-chun-jie.chen@mediatek.com> <20210726105719.15793-19-chun-jie.chen@mediatek.com>
+In-Reply-To: <20210726105719.15793-19-chun-jie.chen@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Tue, 27 Jul 2021 12:45:57 +0800
+Message-ID: <CAATdQgDeXHhFQY8ktOYTaeZGUTuNrJOSuPSC5kuBASS7_8hsgw@mail.gmail.com>
+Subject: Re: [v14 18/21] clk: mediatek: Add MT8192 msdc clock support
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/21 12:59 AM, David Miller wrote:
-> 
-> This series does not apply cleanly to net-next, please respin.
+On Mon, Jul 26, 2021 at 7:00 PM Chun-Jie Chen
+<chun-jie.chen@mediatek.com> wrote:
+>
+> Add MT8192 msdc and msdc top clock providers
+>
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
 
-Dear David,
-I found that you have already approved net-related patches of this series and included them into net-next.
-So I'll respin v7 without these patches.
+Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
 
-Thank you,
-	Vasily Averin
+(snip)
