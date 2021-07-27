@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DD43D6D03
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACFA3D6D05
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234803AbhG0DHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 23:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
+        id S234824AbhG0DJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 23:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbhG0DHX (ORCPT
+        with ESMTP id S234809AbhG0DJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 23:07:23 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BAAC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:47:49 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id nb11so19925744ejc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:47:49 -0700 (PDT)
+        Mon, 26 Jul 2021 23:09:04 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0EEC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:49:31 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id ga41so19745832ejc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:49:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nId3EryuDVVIw/l/VpympL9hOCFnfteI56eFXtNB8IY=;
-        b=I/rkzhGxZPcWLLrDMh4uMGpggD6T5BC7IXHXiM48P6d83E+q2//8XwOSVtaCxL4Mzp
-         Gff//cRFbhjsr9eP+0Bm8EbPB2zVHkXhLYIM8MmaSZuJLPPLUJX0SB5Jk7OXQhs0jaRL
-         MOBr1BpJi53dEi1oOBkM57lwMOIc7DcQ3EaOqTl7DSCPLPiTgbutxL5MW+mTWbq891VJ
-         T+Opa9om1K6D4KBRmbm/4fwha2APTKeFjo62fXe8Uvl/AltvOiSobP52gAKoJTadA6mU
-         BQdo/gShFwWzTD6/C7rAZdQdRAlXD9A9LRoYDTRZbf7OwMIzm3fa2BinOsw3/7o4vgs7
-         +wvQ==
+        bh=VpLCH8i7gCpJey27/mvGMaFIhXVVT1m8mh82Ruty9ss=;
+        b=yW81CH7lqOqxC8Scp/WY6mmK8Kgt5C+EijGLLTcwu9Y06jyxCd3m6lvMpI/3sgCnfc
+         R6Rknv0sbcp1F5sGYii1jaa70wglYwqtXMDwFRPgjGRfMTphfFfCy1Q2DNpkXE91884O
+         OnCYga3Il5Ip8lKpAjnb32lYKdRDY/hz5F7u1UZtq5bG+/SDehIaPcCRMWmHAlrZV0Js
+         Suq5xnFE3FpoZsKN2KppExY3ZK7ygz01ASn5sBkc/k4QUgjqS0xcVfIOa79bwUoIyjmI
+         M+yuBCLXECBBT2fBLkCh5LfmIFR0eqZXDjiBGUofoTOfIw/Jkwe/4GrT9bVKxEjw152T
+         wW7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nId3EryuDVVIw/l/VpympL9hOCFnfteI56eFXtNB8IY=;
-        b=qFZcimWoymB4KSSBG1EIIJgy53m5lQknpf9MxqXlqDW1oLzYbxb/8rml35BkVhVMPu
-         DCWKhWJnO9Ia3QM3Z8ORzOuLVVPhNnN0IdoIDlR3FFvd64RPSeibLuEuJ4NMMiQwpTba
-         L9Ncjv7lxgfRzK0OyaMAsmKpzB9zmsEna0fVsDWqnUs2hdem5QMwH06XoPpQl/AZLq0m
-         rjGn8VQ/0UVEZGmYNM7pEFKViz4OAFx1n74ahjYIuo2qKtcY9Da4AQDaXWBw1S+7kORI
-         e6vAfqnp5y77pRj07eBw8ePBvxdRcGekONM08mnCJ3veGbYc57lpbVzcxYKXzjYuz2yG
-         Y3pQ==
-X-Gm-Message-State: AOAM5312m/AqtJouFK45/g8Ti/aqs0CJ6WY21AOeIQe+wwZWP+TwmfEy
-        O0iTp5tWTjVTFsEzFbuH1tZ/xTKXKm3fYBIAobRuFQ==
-X-Google-Smtp-Source: ABdhPJw/83V0W6bq05thAnl23kZdD0BQtxuVPPxsfMpLm2e16D+7VZilbomSI3HljuQu6OmE+moi98rHUQYjqQd9wT8=
-X-Received: by 2002:a17:906:af02:: with SMTP id lx2mr7091139ejb.133.1627357668324;
- Mon, 26 Jul 2021 20:47:48 -0700 (PDT)
+        bh=VpLCH8i7gCpJey27/mvGMaFIhXVVT1m8mh82Ruty9ss=;
+        b=GpPOGFBSJYJY6QB6bD4dsCEKJ7pNXw+SQkNp1VWeL27FXJjpSJYdk81RJJ8lZ7MlPs
+         XQIfKq196wH+Aqsshuw2IHn3tMb+R5W2EXfoaG73ge7+upFE9FOtw4gbZZ42EtIII0oe
+         n+zFMyq3Pvg+eINCcRI1nE03b/dxBmtV01Nj4Fg4MFBcTqYDoEdd6/RTiUe23Yt3147o
+         /8v2LLjy637/yCZbXJ5WKgV2ac+OFMc6o5b1G/T+WVxXXigBcImYAOOV7/ZAF/jO/uHS
+         ekvyDKkv+x4a/lkaO25yEXgJcy5K33dYW5NUjRQFBc8Vlfst4rKCaJo8Ck1b3UR1am8G
+         +6fQ==
+X-Gm-Message-State: AOAM533DACJkIfJxi1kQfyAnMCaFQjm1y62pOXOkorwIFjoxkIa2ut5B
+        1+HJU/W6dKSKtH5GVQnKae/qPuAtvL9v/tSM20yuiw==
+X-Google-Smtp-Source: ABdhPJywJKyZVSHTxSkKleiscIisK5+YmFGUR7HMWOxInQL6D6Je5QCbQqjZvIu5zcLy1QLrnR234wpdZAg9z2p1W6w=
+X-Received: by 2002:a17:906:40d1:: with SMTP id a17mr6366003ejk.503.1627357770176;
+ Mon, 26 Jul 2021 20:49:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726153824.868160836@linuxfoundation.org>
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
 From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 27 Jul 2021 09:17:37 +0530
-Message-ID: <CA+G9fYtKbCnGTMJod3PYEmcUHYLhj-WHS-rKQNCiWw7DvdVzjQ@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/60] 4.9.277-rc1 review
+Date:   Tue, 27 Jul 2021 09:19:19 +0530
+Message-ID: <CA+G9fYvKUnzAph-kNsc45v1vF9DLK5NgYONdue4q-Zuw1S3oVQ@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/47] 4.4.277-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 at 21:13, Greg Kroah-Hartman
+On Mon, 26 Jul 2021 at 21:11, Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
-> This is the start of the stable review cycle for the 4.9.277 release.
-> There are 60 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 4.4.277 release.
+> There are 47 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
@@ -78,17 +78,18 @@ On Mon, 26 Jul 2021 at 21:13, Greg Kroah-Hartman
 > Anything received after that time might be too late.
 >
 > The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.277-rc1.gz
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.277-rc1.gz
 > or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
 > and the diffstat can be found below.
 >
 > thanks,
 >
 > greg k-h
 
-perf build failed on 4.19, 4.14, 4.9 and 4.4 due to this error for
-all the architectures.
+
+perf build failed on 4.19, 4.14, 4.9 and 4.4 due to these warnings / errors
+for all the architectures.
 
 > Riccardo Mancini <rickyman7@gmail.com>
 >     perf test session_topology: Delete session->evlist
