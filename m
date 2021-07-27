@@ -2,270 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3796A3D7BE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A0D3D7BEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhG0RMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 13:12:23 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:36776 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhG0RMW (ORCPT
+        id S230047AbhG0RNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 13:13:30 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55396 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhG0RNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:12:22 -0400
-Received: from [192.168.1.87] (unknown [223.178.63.20])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 568A720B36E0;
-        Tue, 27 Jul 2021 10:12:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 568A720B36E0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1627405941;
-        bh=SA1uytTohfPS09vx4QO/TWTuenLvg33aFqdSrqEIIWs=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=HFePqSvJZ9P2MN0jt3Rlcy7DBfZ98Nn/hZm95j8sO6h/iWvgNZY8vGlAi505sg9RK
-         QoHvllIEl6SGhtY7L5J3akAfJuNxdb5Bt7Qux/GojR/pt0QnqZdr8D23+Iw6RN0h/X
-         ofscgWfjNgiJqFYPKB3ui5BIEbPm+NW27IngAE9o=
-Subject: Re: [PATCH v3] hyperv: root partition faults writing to VP ASSIST MSR
- PAGE
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        "nunodasneves@linux.microsoft.com" <nunodasneves@linux.microsoft.com>
-References: <20210727104044.28078-1-kumarpraveen@linux.microsoft.com>
- <MW4PR21MB20021A51BE9960E10C08FE6FC0E99@MW4PR21MB2002.namprd21.prod.outlook.com>
-From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Message-ID: <1a14d92d-c666-72ba-6c2d-e4385e36a056@linux.microsoft.com>
-Date:   Tue, 27 Jul 2021 22:42:15 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 27 Jul 2021 13:13:25 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 6DFF91F43360
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, stable@vger.kernel.org
+Subject: [PATCH v2 1/2] char: tpm: Kconfig: remove bad i2c cr50 select
+Date:   Tue, 27 Jul 2021 20:13:12 +0300
+Message-Id: <20210727171313.2452236-1-adrian.ratiu@collabora.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <MW4PR21MB20021A51BE9960E10C08FE6FC0E99@MW4PR21MB2002.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-07-2021 22:15, Sunil Muthuswamy wrote:
-> From: Praveen Kumar <kumarpraveen@linux.microsoft.com> Sent: Tuesday, July 27, 2021 3:41 AM
->>
->> For Root partition the VP assist pages are pre-determined by the
->> hypervisor. The Root kernel is not allowed to change them to
->> different locations. And thus, we are getting below stack as in
->> current implementation Root is trying to perform write to specific
->> MSR.
->>
->> [ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
->> write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
->> (native_write_msr+0x4/0x30)
->> [ 2.784867] Call Trace:
->> [ 2.791507] hv_cpu_init+0xf1/0x1c0
->> [ 2.798144] ? hyperv_report_panic+0xd0/0xd0
->> [ 2.804806] cpuhp_invoke_callback+0x11a/0x440
->> [ 2.811465] ? hv_resume+0x90/0x90
->> [ 2.818137] cpuhp_issue_call+0x126/0x130
->> [ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
->> [ 2.831427] ? hyperv_report_panic+0xd0/0xd0
->> [ 2.838075] ? hyperv_report_panic+0xd0/0xd0
->> [ 2.844723] ? hv_resume+0x90/0x90
->> [ 2.851375] __cpuhp_setup_state+0x3d/0x90
->> [ 2.858030] hyperv_init+0x14e/0x410
->> [ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
->> [ 2.871349] apic_intr_mode_init+0x8b/0x100
->> [ 2.878017] x86_late_time_init+0x20/0x30
->> [ 2.884675] start_kernel+0x459/0x4fb
->> [ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
->>
->> Since, the hypervisor already provides the VP assist page for root
->> partition, we need to memremap the memory from hypervisor for root
->> kernel to use. The mapping is done in hv_cpu_init during bringup and
->> is unmaped in hv_cpu_die during teardown.
->>
->> Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
->> ---
->>  arch/x86/hyperv/hv_init.c          | 61 +++++++++++++++++++++---------
->>  arch/x86/include/asm/hyperv-tlfs.h |  9 +++++
->>  2 files changed, 53 insertions(+), 17 deletions(-)
->>
->> changelog:
->> v1: initial patch
->> v2: commit message changes, removal of HV_MSR_APIC_ACCESS_AVAILABLE
->>     check and addition of null check before reading the VP assist MSR
->>     for root partition
->> v3: added new data structure to handle VP ASSIST MSR page and done
->>     handling in hv_cpu_init and hv_cpu_die
->>
->> ---
->> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
->> index 6f247e7e07eb..b859e42b4943 100644
->> --- a/arch/x86/hyperv/hv_init.c
->> +++ b/arch/x86/hyperv/hv_init.c
->> @@ -44,6 +44,7 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
->>
->>  static int hv_cpu_init(unsigned int cpu)
->>  {
->> +	union hv_vp_assist_msr_contents msr;
->>  	struct hv_vp_assist_page **hvp = &hv_vp_assist_page[smp_processor_id()];
->>  	int ret;
->>
->> @@ -54,27 +55,41 @@ static int hv_cpu_init(unsigned int cpu)
->>  	if (!hv_vp_assist_page)
->>  		return 0;
-> 
-> Not related to this code, but I am not sure about the usefulness of this NULL check as
-> we have already accessed this pointer above. If it was NULL, things would already
-> blow up.
-> 
-What I understood, hvp will point to "hv_vp_assist_page stack address + smp_processor_id()"
-So, we are good, and this NULL check is required, as in when we de-reference the location, later in the code, it may fault.
-Please do correct me if my understanding is wrong here. Thanks.
+This fixes a minor bug which went unnoticed during the initial
+driver upstreaming review: TCG_CR50 does not exist in mainline
+kernels, so remove it.
 
->>
->> -	/*
->> -	 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's Section
->> -	 * 5.2.1 "GPA Overlay Pages"). Here it must be zeroed out to make sure
->> -	 * we always write the EOI MSR in hv_apic_eoi_write() *after* the
->> -	 * EOI optimization is disabled in hv_cpu_die(), otherwise a CPU may
->> -	 * not be stopped in the case of CPU offlining and the VM will hang.
->> -	 */
->> -	if (!*hvp) {
->> -		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
->> +	if (hv_root_partition) {
->> +		/*
->> +		 * For Root partition we get the hypervisor provided VP ASSIST
->> +		 * PAGE, instead of allocating a new page.
->> +		 */
->> +		rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
->> +
->> +		/* remapping to root partition address space */
-> 
-> Better to leave out comments that are obvious from the code.
-> 
+Fixes: 3a253caaad11 ("char: tpm: add i2c driver for cr50")
+Cc: stable@vger.kernel.org
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+---
+ drivers/char/tpm/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-Sure will remove the comment here. Thanks.
-
->> +		if (!*hvp)
->> +			*hvp = memremap(msr.guest_physical_address <<
->> +					HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT,
->> +					PAGE_SIZE, MEMREMAP_WB);
->> +	} else {
->> +		/*
->> +		 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's
->> +		 * Section 5.2.1 "GPA Overlay Pages"). Here it must be zeroed
->> +		 * out to make sure we always write the EOI MSR in
->> +		 * hv_apic_eoi_write() *after* theEOI optimization is disabled
->> +		 * in hv_cpu_die(), otherwise a CPU may not be stopped in the
->> +		 * case of CPU offlining and the VM will hang.
->> +		 */
->> +		if (!*hvp)
->> +			*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
->> +
->>  	}
->>
->> -	if (*hvp) {
->> -		u64 val;
->> +	WARN_ON(!(*hvp));
->>
->> -		val = vmalloc_to_pfn(*hvp);
->> -		val = (val << HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT) |
->> -			HV_X64_MSR_VP_ASSIST_PAGE_ENABLE;
->> +	if (*hvp) {
->> +		if (!hv_root_partition)
->> +			msr.guest_physical_address = vmalloc_to_pfn(*hvp);
-> 
-> It's better to move this above in the else section where we are 'vmalloc' the page.
-> If you just check for the NULL for the page above and return if NULL, that should
-> clean up the code as well.
-> 
->>
-
-Ok, I was trying to make code cleaner, but I would have done better.
-
->> -		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, val);
->> +		msr.enable = 1;
-> 
-> We should also set the reserved bits to 0.
-> 
->> +		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
->>  	}
->> -
->>  	return 0;
->>  }
->>
->> @@ -170,9 +185,21 @@ static int hv_cpu_die(unsigned int cpu)
->>
->>  	hv_common_cpu_die(cpu);
->>
->> -	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
->> +	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
->>  		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
-> 
-> Its better to read the MSR, set the enable bit to 0 and write it back.
-> 
-
-Ok. probably this is the same code, which is being done in hv_cpu_init just with enable bit set to 0.
-Let me try of a API / macro which can be used.
-
->>
->> +		if (hv_root_partition) {
->> +			/*
->> +			 * For Root partition the VP ASSIST page is mapped to
->> +			 * hypervisor provided page, and thus, we unmap the
->> +			 * page here and nullify it, so that in future we have
->> +			 * correct page address mapped in hv_cpu_init
->> +			 */
->> +			memunmap(hv_vp_assist_page[cpu]);
->> +			hv_vp_assist_page[cpu] = NULL;
->> +		}
-> 
-> For the guest case, where are we freeing the page?
-> 
-
-Yes, this I have observed,and looks like we don't want to allocate the page every-time, instead reuse the same.
-If someone in the list can please provide some information or history behind this, it would give some insights. But for now,
-I am leaving it as it is.
-
->> +	}
->> +
->>  	if (hv_reenlightenment_cb == NULL)
->>  		return 0;
->>
->> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
->> index f1366ce609e3..2e4e87046aa7 100644
->> --- a/arch/x86/include/asm/hyperv-tlfs.h
->> +++ b/arch/x86/include/asm/hyperv-tlfs.h
->> @@ -288,6 +288,15 @@ union hv_x64_msr_hypercall_contents {
->>  	} __packed;
->>  };
->>
->> +union hv_vp_assist_msr_contents {
->> +	u64 as_uint64;
->> +	struct {
->> +		u64 enable:1;
->> +		u64 reserved:11;
->> +		u64 guest_physical_address:52;
-> 
-> 
-> This field contains the page frame number and not the physical address. It is also
-> better to drop the phrase 'guest' from the name as this applies to root as well.
-> 
-
-Ack.
-
-> - Sunil
-
-
-Regards,
-
-~Praveen.
-> 
+diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
+index 4308f9ca7a43..d6ba644f6b00 100644
+--- a/drivers/char/tpm/Kconfig
++++ b/drivers/char/tpm/Kconfig
+@@ -89,7 +89,6 @@ config TCG_TIS_SYNQUACER
+ config TCG_TIS_I2C_CR50
+ 	tristate "TPM Interface Specification 2.0 Interface (I2C - CR50)"
+ 	depends on I2C
+-	select TCG_CR50
+ 	help
+ 	  This is a driver for the Google cr50 I2C TPM interface which is a
+ 	  custom microcontroller and requires a custom i2c protocol interface
+-- 
+2.32.0
 
