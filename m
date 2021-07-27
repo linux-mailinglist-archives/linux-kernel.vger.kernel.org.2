@@ -2,250 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54053D784B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEE43D784F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236688AbhG0OPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 10:15:25 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:42918 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232136AbhG0OPX (ORCPT
+        id S236723AbhG0OQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 10:16:13 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:34630 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232437AbhG0OQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 10:15:23 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16RECIPI023444;
-        Tue, 27 Jul 2021 14:15:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=Ie/nr4+GoWy9PI3ltbgQ5GfgaF5KEhNOphtZNWP6ViI=;
- b=S19AnXpmYMB2swXRaMeNWvCoK7hf3uaTKrvhtfyDZPdDR2vELhW34tTVK/vp9GGbrN2Q
- PRfMrGy75IwuocgKIueRhIffrOT6nMVlMBY9Beg7huMKtqJVqkX14idxw0+9Gbm8S5eo
- Akp/1JvRBVwu7O+tnFjRar1kEIG322Ko/Su/NVS2wt4feVMN+TZDBFSB7IaECgh14vl+
- gduoJBdWljpAXySws4niP9fCJnM7ubzf3aVSBTYBTee5x2Wm9LPVsSksgN0IZdb9zdDF
- 5soYscw8axfGwKdRBKjQavx66dfuG2034o8RiaAw1LZVkXdT2VLg4Ytfa0bOntSWCZzm sw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=Ie/nr4+GoWy9PI3ltbgQ5GfgaF5KEhNOphtZNWP6ViI=;
- b=o0/ftFJ4VyN0fNi3bEwYeToysmjwCLuK1aQ+sOdklTnbGvg9yow8U9bnieS7DGRLp9wA
- Mjyql8KTOL72GBTiWY/AegliA79sa8jYQdzQq/qaaDibs1mTs79vbGRiJKghxLmPFGok
- ufGyhoWq6soSAaRVek9Gv9yL+ez8wK3ZnP8AjELCtcsYUF9iFzkFg7Fgo5AiPfJ43PTT
- 8IDZPGdGaK1H+E0aBaxzUd5VVx8JzqOYCIvFsdo62mSI/TmjhEPDKjouALRJpraEb7yk
- 7dlx/yyRA854nIVoAedhvBJGvsHW+b/w2KRnWC5PSWbz8KeOAZTKiYEdJottmaSlFIEl 3w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a23589wv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Jul 2021 14:15:16 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16REBg7d112260;
-        Tue, 27 Jul 2021 14:15:14 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2042.outbound.protection.outlook.com [104.47.57.42])
-        by aserp3030.oracle.com with ESMTP id 3a234ag7s0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Jul 2021 14:15:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YW/INpsVFz8ECpRZpm7jZikH8ylRKAaEeosb9/hr2adb3LSK/tvjl4/GdKVsm4xRQDcLC+XWLEiwA87yOwDCmIsATo4U6RqAvW3YdxovHBw/IOnrHZBWqnNqWSq8Ge82POmzK+D505DIoWos7sAI37mv0/Mqf8IGrKQMwwMucvRjsp2ly8M53BmGw4fqDYcq8BicLXJfo2brwO7iyuDKk86NnrcKbUofwySMaxQQ8gpQ12jdVnnhgiiBIMeWE+5lzJj0hcaX5ALxRW2aVu+Pw5cJnkn5Sovjl04CoX1R2atxObCH696Apd6T22xmM16wbKMSLpJWcjUyvNYp0Uwx3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ie/nr4+GoWy9PI3ltbgQ5GfgaF5KEhNOphtZNWP6ViI=;
- b=UZHtFKW+fkboaFUPbqSWC5RR+jlOabuNdsuRH0H7e2MrcUn9styGMLsrpHAsvyi9wM/4dup35MdHnK2wmF6VxwOjanMdkS7cqHszCyGlfqGYac1FfrmIg6VsZKvpsTs+bNSLpG9GYVmXfqQT8KZNCWdsZBUixh9Xh+CPdDXwDXQ9qXym2YsNA42YFTd4adXsyLfEgy3kPaKdAX+zIok6PxZ6moHJkh4zkZl0PKzVpw/EESDBgq+2LmEc0Fp50BwAbkYnfDtKCbiSMIV0yVI9K8twGA2uaoklo/YpuykgwhzQCbimUQKhm6bPtEb/sOBlKwFHpjtYpDk2Znr8wwF9IA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ie/nr4+GoWy9PI3ltbgQ5GfgaF5KEhNOphtZNWP6ViI=;
- b=ANHcetCaZJJmvWIEaobLehCdbskuYpgvJe5VkavRPorvm61J30cv4lIj3O+nLF73IImpwpmaXHaVJGoNkRG2lziGBEU6ypilhEkW4kQIoHHEXADxPYH+WPuwdD0SOdIqenUuUm6mXvbiYZ7rdRpnc70M4QxbRLrG37tqIsf1h3g=
-Authentication-Results: sina.com; dkim=none (message not signed)
- header.d=none;sina.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1821.namprd10.prod.outlook.com
- (2603:10b6:300:107::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Tue, 27 Jul
- 2021 14:15:13 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4352.031; Tue, 27 Jul 2021
- 14:15:12 +0000
-Date:   Tue, 27 Jul 2021 17:14:55 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+005037419ebdf14e1d87@syzkaller.appspotmail.com>,
-        igormtorrente@gmail.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] KASAN: use-after-free Read in em28xx_close_extension
-Message-ID: <20210727141455.GM1931@kadam>
-References: <000000000000d068cf05c716264c@google.com>
- <20210727100151.2051-1-hdanton@sina.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727100151.2051-1-hdanton@sina.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNXP275CA0029.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::17)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Tue, 27 Jul 2021 10:16:10 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:49264)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m8NsP-00DgF3-2x; Tue, 27 Jul 2021 08:16:09 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:48960 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m8NsN-003YiR-R6; Tue, 27 Jul 2021 08:16:08 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+        <20210708232522.3118208-3-ndesaulniers@google.com>
+        <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+        <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
+        <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
+        <CAK7LNATLy2F-2zkHm4ENSufBT_o5p=9jc5k1K-xOV8cQf7kKDw@mail.gmail.com>
+        <87r1fkizxl.fsf@disp2133>
+        <CAK7LNAS8Fz_kcwqzJD834QrSuWkkorHm4OZoGUhYsbKvJV=fJQ@mail.gmail.com>
+Date:   Tue, 27 Jul 2021 09:16:01 -0500
+In-Reply-To: <CAK7LNAS8Fz_kcwqzJD834QrSuWkkorHm4OZoGUhYsbKvJV=fJQ@mail.gmail.com>
+        (Masahiro Yamada's message of "Tue, 27 Jul 2021 19:10:02 +0900")
+Message-ID: <87v94vg7vi.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by JNXP275CA0029.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25 via Frontend Transport; Tue, 27 Jul 2021 14:15:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1bfaae0a-9e07-4082-6a9e-08d95108f2de
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1821:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB18217017EB6E2AD983B62BB18EE99@MWHPR10MB1821.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1091;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1y/bRyq2qZpR+sVuDTgKmfZNW74ws1dSDz9/HDGtddX1QJEAZof6NdAYAjL08gOqgpcO8KudHZLe/3h2Tt+Q7qm5dKAbLg8iobzMaFK1tObmhkeWLbelGzBVS3Fyz7/LKrESzkX83DGYXSEQGfXdjeDtswG4xCOI6H2ERZ2KlDPPDbypgBcb761fZ/e/ZJ1AT33NuvqeFCvl5zsOg9G5FBNe5oUKcKJzvCtwbh2dGgRt4suMfV4jt8nZYeNFd9fbszBgbBysHTLAA+TAhjg/t8imr3ANBtm6eRulGkzuyr2yhU6kZKHVFE8NRW/ROERP40/0BQAJqVwHKmFu0f2KoG2nUtRT2wqy1MS+FY3yWW5Ofcr4hqrvdX+guLgS9QBhp+kjBExjF3loh34WOPTkgG3whwGDIFxa+ZDu03BVL8Pmkh1t+VZFdJFyiw9cpcC6iMrCXqZbavVS0W4Ulqgtyz91ql5/71fUWz5+IeYHzCiCuRrsogd8uZjwuvzNk3C32H6/BvLq8KiZxzX6ACXfsSRqXke4seZYX97aXGiExe5tPk+/9UrnB1E62kZOuQavEliiVdoR6pSmV6dJx0/sU77SGSmrU+q/IK2P0BtWMOPDiWPMl1sqgJQIJz7tEpLqjFNaQLWkfzMwu8EFFuOrIqhC8Cpjy8/zvme3opLHILNgPLrfOZPy5WKF0be0m8DTgJV8XBRAvrFWNgJ5j/2Sjg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(39860400002)(376002)(136003)(2906002)(86362001)(9686003)(1076003)(55016002)(4326008)(8936002)(8676002)(478600001)(5660300002)(52116002)(6496006)(26005)(956004)(6666004)(33716001)(66946007)(38100700002)(33656002)(38350700002)(316002)(6916009)(83380400001)(186003)(66556008)(66476007)(44832011)(9576002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?w5aktA1pQfY64NGboZ+GJD1uWbokBPr1S78oxBPase5Oof2BZvbyubaHA1xg?=
- =?us-ascii?Q?Q1+iABYqbWPLMpa1vxbugv/+9SKYNu/nQmPQsnyZa7hcGeNoQ5XCNRR+kGJG?=
- =?us-ascii?Q?uk7sTEqoUYKbx7HItsEEHdlUOEy+O9SOyCt56BLLc0IK5p0d3iK9f78qZVtW?=
- =?us-ascii?Q?L6C6Aht1XRFoQwwDLh75HjjWFRo1W4gp0GAYYE828+4I1CFpYEh5O2FQ3Tl2?=
- =?us-ascii?Q?nxhGONKnAI66LiNU0LZFK1B5H844IKxzvXRCuJPagAUCbEhYMWTcgA97X4vj?=
- =?us-ascii?Q?kgpMMpyaqqUiwd8m+TaxXey99vZljUrBNwbSr0FqflJDMSnTfdNrTJhWvQvA?=
- =?us-ascii?Q?rqT10tzefsAyZMhFLjbgglsGe1Yvb352yvDyHBWgiMIqsbxYewEFWo0mxPS8?=
- =?us-ascii?Q?1eKS7zboaiG5ruie1aQbWwak+RIynFwPS2LOe48ejUgMYK7MSQE/xt/pQ+3/?=
- =?us-ascii?Q?4Yj/1WypY+Qcc2DawyscLGpY3KNR1aTP3f5sMtTTvI3+yd5PaKpBjRqXGTd3?=
- =?us-ascii?Q?6TR8KbuhVqs2mbjq2FBR2LnKHXVNotj3ugqcv0EDO6VyHHfS+r+LPiYi+gvE?=
- =?us-ascii?Q?/Mdamq9WI0PlofA6+WriPls1rp9suCWiaFyOWSKPABIwQ4V96ECowoEGtfcA?=
- =?us-ascii?Q?u4YorDgIDw8VKlH95NuaNYC83NZ2xF2blurt8UuhEXhHgOukQKBkeVKA/kFL?=
- =?us-ascii?Q?+/f8TcU/Pq2J49OanW5rw0d654l54LzsU9uZF+c5x3WdtawZRCJilT1ruMRd?=
- =?us-ascii?Q?pc3ihE3qhpQsz7shed6cnOKQh5ZCC7T3C07L35WZjervN1IzZfdUAOmDzEgw?=
- =?us-ascii?Q?C7zNzgamrtMX4Glzw9VskMpFv1AtHENKtqdtv6VL3VxwCOiovMegXPx4yTvh?=
- =?us-ascii?Q?PeLvnYmXMJUNEZ3i45DDsUA9wFw+brfyitLqbReWdb0QmOGhCJOEPjMQ6ZRg?=
- =?us-ascii?Q?4or3DIqKyD51dJc37GVlL2CAhJavB/UVzV+VOy8AkoT1Y9zELDB+EhP57QX9?=
- =?us-ascii?Q?Hejj8uaaALNpKqEl44FC+RUj/l0sTOWmW+hqwUNONtU74rn+nmyFACm4nT8x?=
- =?us-ascii?Q?AOjPOonb8j+RJe5VFKVLTx41eSFyrbJ/MfeRYn19VDgPeYIQMiym+BknWrGX?=
- =?us-ascii?Q?cQwFoR5yz/fH3Js3FYRLmX47RTEQVsgwqNUDIB+10aoxV+cQSa5GBRw7r6Ny?=
- =?us-ascii?Q?rIoOaJEohctJ3q0Z3L5NTE6WPT7EcSb9UEAun+ShUyZGOKz1jYpcXrw5VcXD?=
- =?us-ascii?Q?8sdbxlEYSHsEQtEN60cSdqkv1PvKOj5T6O9Qal+AlGVKvwdQK05998JrnYWh?=
- =?us-ascii?Q?axSKklpuv4KrSKLxPyPEjcz3?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bfaae0a-9e07-4082-6a9e-08d95108f2de
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2021 14:15:12.8185
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: An0j5FrSUfSKVs5EYLEOaMZXCovejS2igP+zg4BTNKSXKDrepV4voaKmx57CIS4RkAL4/yrFbUFCOeKOmHHljyE50yUooevbEnjxwC2w0l8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1821
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10057 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 spamscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107270085
-X-Proofpoint-GUID: dM8XJhSpNi3iX5cDF6Dd0P8G_eC3kIaz
-X-Proofpoint-ORIG-GUID: dM8XJhSpNi3iX5cDF6Dd0P8G_eC3kIaz
+Content-Type: text/plain
+X-XM-SPF: eid=1m8NsN-003YiR-R6;;;mid=<87v94vg7vi.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/A0yNJecA7Q20Vto//jCC4YwhQhHttrn4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4988]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Masahiro Yamada <masahiroy@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 627 ms - load_scoreonly_sql: 0.12 (0.0%),
+        signal_user_changed: 13 (2.0%), b_tie_ro: 11 (1.7%), parse: 1.94
+        (0.3%), extract_message_metadata: 26 (4.2%), get_uri_detail_list: 4.8
+        (0.8%), tests_pri_-1000: 22 (3.5%), tests_pri_-950: 1.67 (0.3%),
+        tests_pri_-900: 1.40 (0.2%), tests_pri_-90: 155 (24.7%), check_bayes:
+        137 (21.8%), b_tokenize: 13 (2.1%), b_tok_get_all: 8 (1.3%),
+        b_comp_prob: 3.7 (0.6%), b_tok_touch_all: 108 (17.2%), b_finish: 1.02
+        (0.2%), tests_pri_0: 382 (61.0%), check_dkim_signature: 0.80 (0.1%),
+        check_dkim_adsp: 3.2 (0.5%), poll_dns_idle: 1.01 (0.2%), tests_pri_10:
+        3.4 (0.5%), tests_pri_500: 15 (2.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for LLVM=1 LLVM_IAS=1
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 06:01:51PM +0800, Hillf Danton wrote:
-> Along the probe path,
-> 
-> em28xx_usb_probe
->   dev = kzalloc(sizeof(*dev), GFP_KERNEL);
->   retval = em28xx_init_dev(dev, udev, intf, nr);
->     em28xx_init_extension(dev);
->       em28xx_ir_init(struct em28xx *dev)
->         kref_get(&dev->ref);
-> 
->   kref_init(&dev->ref);
+Masahiro Yamada <masahiroy@kernel.org> writes:
 
-Good detective work.
+> On Tue, Jul 27, 2021 at 5:27 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> Masahiro Yamada <masahiroy@kernel.org> writes:
+>>
+>> > On Wed, Jul 21, 2021 at 4:58 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>> >>
+>> >> On Tue, Jul 20, 2021 at 7:43 PM Linus Torvalds
+>> >> <torvalds@linux-foundation.org> wrote:
+>> >> > On Tue, Jul 20, 2021 at 1:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>> >> >
+>> >> > We do most of the other heavy lifting in this area in Kconfig anyway,
+>> >> > why not add that compiler choice?
+>> >> >
+>> >> > Obviously it would be gated by the tests to see which compilers are
+>> >> > _installed_ (and that they are valid versions), so that it doesn't ask
+>> >> > stupid things ("do you want gcc or clang" when only one of them is
+>> >> > installed and/or viable).
+>> >>
+>> >> I don't see a good way of making Kconfig options both select the
+>> >> compiler and defining variables based on the compiler, since that
+>> >> would mean teaching Kconfig about re-evaluating all compiler
+>> >> dependent settings whenever the first option changes.
+>> >>
+>> >> I do have another idea that I think would work though.
+>> >>
+>> >> > Hmm? So then any "LLVM=1" thing would be about the "make config"
+>> >> > stage, not the actual build stage.
+>> >> >
+>> >> > (It has annoyed me for years that if you want to cross-compile, you
+>> >> > first have to do "make ARCH=xyz config" and then remember to do "make
+>> >> > ARCH=xyz" for the build too, but I cross-compile so seldom that I've
+>> >> > never really cared).
+>> >>
+>> >> The best thing that I have come up with is a pre-configure step, where
+>> >> an object tree gets seeded with a makefile fragment that gets included
+>> >> for any 'make' invocation. This would set 'ARCH=', 'CROSS_COMPILE',
+>> >> 'CC=' and possibly any other option that gets passed to 'make' as
+>> >> a variable and has to exist before calling 'make *config'.
+>> >
+>> >
+>> > There is no need to add a hook to include such makefile fragment(s).
+>> >
+>> > Quite opposite, you can put your Makefile (in a different filename)
+>> > that includes the top Makefile.
+>> >
+>> >
+>> > I think this is what people are already doing:
+>> >
+>> >
+>> > GNU Make looks for 'GNUmakefile', 'makefile', and 'Makefile'
+>> > in this order.
+>> >
+>> >
+>> > So, you can put 'GNUmakefile' with your favorite setups.
+>> >
+>> >
+>> > $ cat GNUmakefile
+>> > ARCH=arm64
+>> > CROSS_COMPILE=aarch64-linux-gnu-
+>> > CC=clang
+>> > include Makefile
+>>
+>> Very weird.
+>>
+>> I just tested this and it does not work.
+>> I did this:
+>>
+>> $ cat GNUmakefile
+>> ARCH = alpha
+>> CROSS_COMPILE = $(arch-prefix alpha)
+>> include Makefile
+>>
+>> In one of my build directories and the main makefile simply does not see
+>> the value of ARCH or CROSS_COMPILE I set.  I have confirmed that my
+>> GNUmakefile is being read, because everything breaks if I remove the
+>> include line.
+>>
+>> Does anyone have any ideas?
+>>
+>> Something so we don't have to specify all of these variables on the make
+>> command line would be nice.
+>>
+>> Eric
+>
+>
+> Worked for me.
+>
+> Could you tell me the exact steps you did?
+>
+>
+> This is my case:
+>
+> My kernel source tree is located at $HOME/ref/linux
+> alpha tool chains are located at $HOME/tools/alpha-10.1.0/bin
+>
+>
+>
+> I tried a simple GNUmakefile with 3 lines.
+>
+> You can see 'make' is building the alpha kernel
+>
+>
+> Please see below:
 
-I've created a Smatch check to try find these.  It uses the fact that
-Smatch creates a bunch of fake assignments to set all the struct members
-of "dev" to zero.  Then it uses the modification hook to find the
-kref_init().  Those are sort of new uses for those hooks so that's quite
-fun.
+Interesting.  That appears to work if I don't specify a build directory.
+Once I specify a build directory with O= it does not work.
 
-I'll test it out overnight and see how it works.
+When I am working on a change that affects multiple architectures
+I really want a build directory that is not my source tree so I can
+test small changes on multiple architectures without needing to rebuild
+everything.
 
-drivers/media/usb/em28xx/em28xx-cards.c:4086 em28xx_usb_probe() warn: kref has already been modifed (see line 3979)
-
-regards,
-dan carpenter
-
-#include "smatch.h"
-#include "smatch_slist.h"
-#include "smatch_extra.h"
-
-static int my_id;
-
-STATE(fresh);
-
-static int get_line(struct sm_state *sm)
-{
-	struct sm_state *tmp;
-	int line = 0;
-
-	FOR_EACH_PTR(sm->possible, tmp) {
-		if (tmp->state == &undefined &&
-		    tmp->line > line)
-			line = tmp->line;
-	} END_FOR_EACH_PTR(tmp);
-
-	if (!line)
-		return sm->line;
-	return line;
-}
-
-static void match_modify(struct sm_state *sm, struct expression *mod_expr)
-{
-	if (sm->state != &fresh &&
-	    mod_expr &&
-	    mod_expr->type == EXPR_CALL &&
-	    sym_name_is("kref_init", mod_expr->fn))
-		sm_warning("kref has already been modifed (see line %d)", get_line(sm));
-
-	set_state(my_id, sm->name, sm->sym, &undefined);
-}
-
-static bool is_alloc(struct expression *expr)
-{
-	static struct expression *ignore, *alloc_expr;
-	struct expression *right;
-
-	if (!expr || expr->type != EXPR_ASSIGNMENT || expr->op != '=')
-		return false;
-	if (expr == ignore)
-		return false;
-	if (expr == alloc_expr)
-		return true;
-	right = strip_expr(expr->right);
-	if (right->type == EXPR_CALL &&
-	    (sym_name_is("kzalloc", right->fn) ||
-	     sym_name_is("kmalloc", right->fn))) {
-		alloc_expr = expr;
-		return true;
-	}
-	ignore = expr;
-	return false;
-}
-
-static void match_assign(struct expression *expr)
-{
-	char *name;
-
-	if (!is_alloc(get_faked_expression()))
-		return;
-	name = expr_to_str(expr->left);
-	if (name && strstr(name, "refcount.refs.counter"))
-		set_state_expr(my_id, expr->left, &fresh);
-	free_string(name);
-}
-
-void check_kref_init_too_late(int id)
-{
-	my_id = id;
-
-	add_hook(&match_assign, ASSIGNMENT_HOOK_AFTER);
-	add_modification_hook(my_id, &match_modify);
-}
+Eric
