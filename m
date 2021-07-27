@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A083D7563
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FB33D7568
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236528AbhG0MzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:55:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3948 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232039AbhG0MzD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:55:03 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16RCfO9H099539;
-        Tue, 27 Jul 2021 08:54:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=rW1zEUuKvDuL0Ee74R7Cv0tiXi3AGSCkEJMUa6cnGaw=;
- b=I5wY3Og6UlCtTShbC40RyfI0gg2xjyMFCI6qcvq1stGYAxUOCkU3L/bH/kY1SXZfHjdt
- sOepC0QG9OJEX0IQzH/B5ALqWoobawSNV1xcV1PkJDQeZYRambUzX49qGJKXCKENV7WM
- zbdIoeJ87IYf6kT+DkbeCZfRF3opCQWe8n9ZeJ2gqkZDNUPk7u/gbIUyA8KqlGSa4A0F
- 2fufPpkH5/I6GYuH4WhcDgbp7O3n/ot9lc+/6ffSHowgsTJch5fmsRJqC13r/J0tkixt
- 49BasgayhL/p0cNHQwp6wx3X6wE0PUXNtCQHM8g0uYwiqQKsbYBJQnnFv4yZckQ9UuOj jA== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2j2u0unp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 08:54:24 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16RCsBCA003378;
-        Tue, 27 Jul 2021 12:54:23 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 3a235kr951-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 12:54:22 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16RCsJre26280240
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Jul 2021 12:54:19 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6150F42049;
-        Tue, 27 Jul 2021 12:54:19 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D510042042;
-        Tue, 27 Jul 2021 12:54:15 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.165.137])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 27 Jul 2021 12:54:15 +0000 (GMT)
-Subject: Re: [PATCH v2 1/1] s390/pv: fix the forcing of the swiotlb
-To:     Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        Halil Pasic <pasic@linux.ibm.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, stable@vger.kernel.org,
-        Claire Chang <tientzu@chromium.org>,
-        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Guenter Roeck <linux@roeck-us.net>
-References: <20210723231746.3964989-1-pasic@linux.ibm.com>
- <YPtejB62iu+iNrM+@fedora>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <a89f1add-b0fb-1069-cb30-78864e399b19@de.ibm.com>
-Date:   Tue, 27 Jul 2021 14:54:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236550AbhG0M4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:56:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232039AbhG0M4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 08:56:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A11DF608FB;
+        Tue, 27 Jul 2021 12:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627390575;
+        bh=kThALLVqBRLV7ik20Z89VlQJxb3y4aAAgY1LaiBL9zo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Es84RQPxAYEvM6pNLmFwZyHtMWo1zwpX8jxuh7IgLKzYCDewk/XewgRryXVk1RB3f
+         JJv/Ed1q0xFtbyDNpyuJl8U2vWF7IlJikEoeph2wyOMlCZlPpuM3TI+GE/Z456WKF5
+         4cju+nL9ltyRubHcbzOGKG3l72WpUsedW8jxgR7YG7uqDXW2BBC1cZS1uGVcuTKBsS
+         SJrU8APmdflza0nVJV5vgJ69+zllmQK+jTs/DAJqxTIcdjU+u3Jv+qa3PNzMKUv8vt
+         Auxo7j4BcoIMEVOMUHlkBEAIHI15h8T6Bz3YtRsgb2wxBPxzHR3Xv8n4ST9WOmd12V
+         +nd7CYH3RRdRg==
+Date:   Tue, 27 Jul 2021 15:56:11 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/4] net: ipa: kill IPA_VALIDATION
+Message-ID: <YQACaxKhxDFZSCF3@unreal>
+References: <20210726174010.396765-1-elder@linaro.org>
+ <YP/rFwvIHOvIwMNO@unreal>
+ <5b97f7b1-f65f-617e-61b4-2fdc5f08bc3e@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <YPtejB62iu+iNrM+@fedora>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: i9Zr-lv1wBkQV6w9MJeAAPuwGQc_9CBR
-X-Proofpoint-ORIG-GUID: i9Zr-lv1wBkQV6w9MJeAAPuwGQc_9CBR
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-27_07:2021-07-27,2021-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 spamscore=0 clxscore=1011 impostorscore=0 suspectscore=0
- phishscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107270073
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b97f7b1-f65f-617e-61b4-2fdc5f08bc3e@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 24.07.21 02:27, Konrad Rzeszutek Wilk wrote:
-> On Sat, Jul 24, 2021 at 01:17:46AM +0200, Halil Pasic wrote:
->> Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
->> swiotlb data bouncing") if code sets swiotlb_force it needs to do so
->> before the swiotlb is initialised. Otherwise
->> io_tlb_default_mem->force_bounce will not get set to true, and devices
->> that use (the default) swiotlb will not bounce despite switolb_force
->> having the value of SWIOTLB_FORCE.
->>
->> Let us restore swiotlb functionality for PV by fulfilling this new
->> requirement.
->>
->> This change addresses what turned out to be a fragility in
->> commit 64e1f0c531d1 ("s390/mm: force swiotlb for protected
->> virtualization"), which ain't exactly broken in its original context,
->> but could give us some more headache if people backport the broken
->> change and forget this fix.
->>
->> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
->> Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
->> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
->> Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
->> Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
->> Cc: stable@vger.kernel.org #5.3+
->>
->> ---
+On Tue, Jul 27, 2021 at 07:34:41AM -0500, Alex Elder wrote:
+> On 7/27/21 6:16 AM, Leon Romanovsky wrote:
+> > On Mon, Jul 26, 2021 at 12:40:06PM -0500, Alex Elder wrote:
+> >> A few months ago I proposed cleaning up some code that validates
+> >> certain things conditionally, arguing that doing so once is enough,
+> >> thus doing so always should not be necessary.
+> >>   https://lore.kernel.org/netdev/20210320141729.1956732-1-elder@linaro.org/
+> >> Leon Romanovsky felt strongly that this was a mistake, and in the
+> >> end I agreed to change my plans.
+> > 
+> > <...>
+> > 
+> >> The second patch fixes a bug that wasn't normally exposed because of
+> >> the conditional compilation (a reason Leon was right about this).
+> > 
+> > Thanks Alex,
+> > 
+> > If you want another anti pattern that is very popular in netdev, the following pattern is
+> > wrong by definition :):
+> > if (WARN_ON(...))
+> >   return ...
 > 
-> Picked it up and stuck it in linux-next with the other set of patches (Will's fixes).
+> I understand this reasoning.
+> 
+> I had it return an error if the WARN_ON() condition was true in cases
+> where the function returned a value and callers already handled errors.
+> I looked back at the patch and here is one of those cases:
+> 
+> gsi_channel_trans_alloc()
+> - If too many TREs are requested we do not want to allocate them
+>   from the pool, or it will cause further breakage.  By returning
+>   early, no transaction will be filled or committed, and an error
+>   message will (often) be reported, which will indicate the source
+>   of the error.  If any error occurs during initialization, we fail
+>   that whole process and everything should be cleaned up.  So in
+>   this case at least, returning if this ever occurred is better
+>   than allowing control to continue into the function.
+> 
+> In any case I take your point.  I will now add to my task list
+> a review of these spots.  I'd like to be sure an error message
+> *is* reported at an appropriate level up the chain of callers so
+> I can always identify the culprit in the a WARN_ON() fires (even
+> though it should never
+>  happen).  And in each case I'll evaluate
+> whether returning is better than not.
 
-Can you push out to kernel.org?
-  
+You can, but users don't :). So if it is valid but error flow, that
+needs user awareness, simply print something to the dmesg with *_err()
+prints.
+
+
+BTW, I'm trying to untangle some of the flows in net/core/devlink.c
+and such if(WARN()) pattern is even harmful, because it is very hard to
+understand when that error is rare/non-exist/real.
+
+Thanks
+
+> 
+> Thanks.
+> 
+> 					-Alex
+> 
+> > The WARN_*() macros are intended catch impossible flows, something that
+> > shouldn't exist. The idea that printed stack to dmesg and return to the
+> > caller will fix the situation is a very naive one. That stack already
+> > says that something very wrong in the system.
+> > 
+> > If such flow can be valid use "if(...) return ..", if not use plain
+> > WARN_ON(...).
+> > 
+> > Thanks
+> > 
+> 
