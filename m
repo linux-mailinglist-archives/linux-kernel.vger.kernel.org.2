@@ -2,222 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E833D7863
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F0F3D7872
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhG0OVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 10:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbhG0OVS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 10:21:18 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD2BC061757;
-        Tue, 27 Jul 2021 07:21:16 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so2461286wmb.5;
-        Tue, 27 Jul 2021 07:21:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BczT7ZyrFkAsdjN1jQUscCX71jhMFsPYTZ2EwZuJGnI=;
-        b=pH9cqLqPZE2JOS4NPl8FMME2xJGqCWbZRXc4ZftatLNOh+HwMJujmf2SmmRsNzKY1B
-         F+TdP+N+FqOBX7PWRa03TA/Uw1h/UGKd8lnjNhC2t2avK3D8ih3+qp3iLlC5pc7aBwOq
-         wknwZAY3xndcOr4l1Q4CLb2XleNa/ivCAK05rIhBTC6pOJ2TxoeH/s9tRTlq+Aej+s9g
-         TdkR0kDwVPz9rezJjcsXdox3OJzousXuPuGXkdQLQSb6pq2KczW17dRKpqy8KSP5NaJT
-         gIOWfA+926MXEvxW9ZTVC69hq+kWth7myyG0wc7XyGtTSA2TtjYmY3Qylipn80wKD6Yd
-         Twqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BczT7ZyrFkAsdjN1jQUscCX71jhMFsPYTZ2EwZuJGnI=;
-        b=MyIhVYto6+xX9FZLiWenOP+fdHbvDqMQ7qKm8ctQQdj7xREvv05x6gcv5QLK2VUYOg
-         bRPVCru6yPK0Ow0P/zzk0R3XYZds98eHtjBlOTPg6nj9ZE4aiHGqDZgWdAPwHPvRWmwS
-         RzzqxkWTcRWEIj3BW/th20+91Fe0O66X5oKPdpPJv79MEynSd6v1R7wYcWRYFByroxf4
-         yZYqjX9WMaRIl8ituyPNdQZ/OMfvY/FKZgULsDT+c/Y6SJYOGFz/qgRj6PRsGiNRNgKM
-         JB+4ckqTXVJZcv3HQZwQZeKsmQGlY2JqpxsDafU7zTlY8gTp4qspQGX9GhBR8tVk2f8g
-         mhVw==
-X-Gm-Message-State: AOAM533y/SuNTsCaYP/wjkUmOjU21LxO4aQ/pkU27wsIpjQQL0/LVdXk
-        1ssOytwW94TozsI1qZXhD3E76uvzf+YRN51PbyU=
-X-Google-Smtp-Source: ABdhPJyLHJioqCBgt/C/VONJpoX8G5sqCp3bgjzmqy2ko6oYKld58l9t1FtKkGfOU2wVxQrowpjzMjoedjvJJjTvJ8E=
-X-Received: by 2002:a05:600c:4401:: with SMTP id u1mr4561306wmn.49.1627395675495;
- Tue, 27 Jul 2021 07:21:15 -0700 (PDT)
+        id S232555AbhG0O1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 10:27:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232136AbhG0O1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 10:27:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F352761A80;
+        Tue, 27 Jul 2021 14:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627396025;
+        bh=v/tEQ3PQ1eef41dTT73R8Pz7a9kFv4BM4FDDufD4pWw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tjQz6Ms92du6kRrp3+vpMiIH8pBOZuRvlRsTvkDuQaOMFWnJmLB9eVNh0Tzzvqk1G
+         0HXXtlpKRgw8S3QISeSbIkKBc2fbzFj8F7hzOwEIEjNXI5680ZAhdlycEETd3k9kxm
+         MVWmKn3N6PYws2NssShV0TU4NNT8Slc1TGC63tZs=
+Date:   Tue, 27 Jul 2021 16:27:03 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     robh+dt@kernel.org, hminas@synopsys.com, paul@crapouillou.net,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com,
+        Dragan =?utf-8?B?xIxlxI1hdmFj?= <dragancecavac@yahoo.com>
+Subject: Re: [PATCH 2/2] USB: dwc2: Add OTG support for Ingenic SoCs.
+Message-ID: <YQAXt1pCFZqRm2ud@kroah.com>
+References: <1627116521-124612-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1627116521-124612-3-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-References: <20210726233854.2453899-1-robdclark@gmail.com> <20210726233854.2453899-2-robdclark@gmail.com>
- <50b181fe-6605-b7ac-36a6-8bcda2930e6f@gmail.com>
-In-Reply-To: <50b181fe-6605-b7ac-36a6-8bcda2930e6f@gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 27 Jul 2021 07:25:24 -0700
-Message-ID: <CAF6AEGuNxi_aeYE37FT3a-atCUWgepxs-9EwxMfpiMaU7wgqdQ@mail.gmail.com>
-Subject: Re: [RFC 1/4] dma-fence: Add deadline awareness
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1627116521-124612-3-git-send-email-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 12:11 AM Christian K=C3=B6nig
-<ckoenig.leichtzumerken@gmail.com> wrote:
->
-> Am 27.07.21 um 01:38 schrieb Rob Clark:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > Add a way to hint to the fence signaler of an upcoming deadline, such a=
-s
-> > vblank, which the fence waiter would prefer not to miss.  This is to ai=
-d
-> > the fence signaler in making power management decisions, like boosting
-> > frequency as the deadline approaches and awareness of missing deadlines
-> > so that can be factored in to the frequency scaling.
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >   drivers/dma-buf/dma-fence.c | 39 ++++++++++++++++++++++++++++++++++++=
-+
-> >   include/linux/dma-fence.h   | 17 ++++++++++++++++
-> >   2 files changed, 56 insertions(+)
-> >
-> > diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
-> > index ce0f5eff575d..2e0d25ab457e 100644
-> > --- a/drivers/dma-buf/dma-fence.c
-> > +++ b/drivers/dma-buf/dma-fence.c
-> > @@ -910,6 +910,45 @@ dma_fence_wait_any_timeout(struct dma_fence **fenc=
-es, uint32_t count,
-> >   }
-> >   EXPORT_SYMBOL(dma_fence_wait_any_timeout);
-> >
-> > +
-> > +/**
-> > + * dma_fence_set_deadline - set desired fence-wait deadline
-> > + * @fence:    the fence that is to be waited on
-> > + * @deadline: the time by which the waiter hopes for the fence to be
-> > + *            signaled
-> > + *
-> > + * Inform the fence signaler of an upcoming deadline, such as vblank, =
-by
-> > + * which point the waiter would prefer the fence to be signaled by.  T=
-his
-> > + * is intended to give feedback to the fence signaler to aid in power
-> > + * management decisions, such as boosting GPU frequency if a periodic
-> > + * vblank deadline is approaching.
-> > + */
-> > +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t deadline)
-> > +{
-> > +     unsigned long flags;
-> > +
-> > +     if (dma_fence_is_signaled(fence))
-> > +             return;
-> > +
-> > +     spin_lock_irqsave(fence->lock, flags);
-> > +
-> > +     /* If we already have an earlier deadline, keep it: */
-> > +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags) &&
-> > +         ktime_before(fence->deadline, deadline)) {
-> > +             spin_unlock_irqrestore(fence->lock, flags);
-> > +             return;
-> > +     }
-> > +
-> > +     fence->deadline =3D deadline;
-> > +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags);
-> > +
-> > +     spin_unlock_irqrestore(fence->lock, flags);
-> > +
-> > +     if (fence->ops->set_deadline)
-> > +             fence->ops->set_deadline(fence, deadline);
-> > +}
-> > +EXPORT_SYMBOL(dma_fence_set_deadline);
-> > +
-> >   /**
-> >    * dma_fence_init - Initialize a custom fence.
-> >    * @fence: the fence to initialize
-> > diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-> > index 6ffb4b2c6371..4e6cfe4e6fbc 100644
-> > --- a/include/linux/dma-fence.h
-> > +++ b/include/linux/dma-fence.h
-> > @@ -88,6 +88,7 @@ struct dma_fence {
-> >               /* @timestamp replaced by @rcu on dma_fence_release() */
-> >               struct rcu_head rcu;
-> >       };
-> > +     ktime_t deadline;
->
-> Mhm, adding the flag sounds ok to me but I'm a bit hesitating adding the
-> deadline as extra field here.
->
-> We tuned the dma_fence structure intentionally so that it is only 64 byte=
-s.
+On Sat, Jul 24, 2021 at 04:48:41PM +0800, 周琰杰 (Zhou Yanjie) wrote:
+> Add OTG support for the JZ4775 SoC, the JZ4780 SoC, the X1000
+> SoC, the X1600 SoC, the X1830 SoC, and the X2000 SoC. Introduce
+> support for disable Ingenic overcurrent detection, once selected
+> it enables GOTGCTL register bits VbvalidOvEn and VbvalidOvVal to
+> disable the VBUS overcurrent detection.
+> 
+> This patch is derived from Dragan Čečavac (in the kernel 3.18.3
+> tree of CI20). It is very useful for the MIPS Creator CI20 (r1).
+> Without this patch, OTG port of CI20 has a great probability to
+> face overcurrent warning, which breaks the OTG functionality.
+> 
+> Signed-off-by: Dragan Čečavac <dragancecavac@yahoo.com>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+>  drivers/usb/dwc2/core.c   |  9 +++++++++
+>  drivers/usb/dwc2/core.h   |  5 +++++
+>  drivers/usb/dwc2/params.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  3 files changed, 62 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc2/core.c b/drivers/usb/dwc2/core.c
+> index 272ae57..c35b2e2 100644
+> --- a/drivers/usb/dwc2/core.c
+> +++ b/drivers/usb/dwc2/core.c
+> @@ -1153,6 +1153,7 @@ static void dwc2_set_turnaround_time(struct dwc2_hsotg *hsotg)
+>  int dwc2_phy_init(struct dwc2_hsotg *hsotg, bool select_phy)
+>  {
+>  	u32 usbcfg;
+> +	u32 otgctl;
+>  	int retval = 0;
+>  
+>  	if ((hsotg->params.speed == DWC2_SPEED_PARAM_FULL ||
+> @@ -1187,6 +1188,14 @@ int dwc2_phy_init(struct dwc2_hsotg *hsotg, bool select_phy)
+>  		dwc2_writel(hsotg, usbcfg, GUSBCFG);
+>  	}
+>  
+> +	if (hsotg->params.deactivate_ingenic_overcurrent_detection) {
+> +		if (dwc2_is_host_mode(hsotg)) {
+> +			otgctl = readl(hsotg->regs + GOTGCTL);
+> +			otgctl |= GOTGCTL_VBVALOEN | GOTGCTL_VBVALOVAL;
+> +			writel(otgctl, hsotg->regs + GOTGCTL);
+> +		}
+> +	}
+> +
+>  	return retval;
+>  }
+>  
+> diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+> index ab6b815..e026d13 100644
+> --- a/drivers/usb/dwc2/core.h
+> +++ b/drivers/usb/dwc2/core.h
+> @@ -418,6 +418,10 @@ enum dwc2_ep0_state {
+>   *			detection using GGPIO register.
+>   *			0 - Deactivate the external level detection (default)
+>   *			1 - Activate the external level detection
+> + * @deactivate_ingenic_overcurrent_detection: Deactivate Ingenic overcurrent
+> + *			detection.
+> + *			0 - Activate the overcurrent detection (default)
 
-Hmm, then I guess you wouldn't be a fan of also adding an hrtimer?
+Having 0 as "active" is rough to handle over time.
 
-We could push the ktime_t (and timer) down into the derived fence
-class, but I think there is going to need to be some extra storage
-*somewhere*.. maybe the fence signaler could get away with just
-storing the nearest upcoming deadline per fence-context instead?
+All of the other options are "activate", so please, keep them the same
+if at all possible.
 
-BR,
--R
+thanks,
 
-> Regards,
-> Christian.
->
-> >       u64 context;
-> >       u64 seqno;
-> >       unsigned long flags;
-> > @@ -99,6 +100,7 @@ enum dma_fence_flag_bits {
-> >       DMA_FENCE_FLAG_SIGNALED_BIT,
-> >       DMA_FENCE_FLAG_TIMESTAMP_BIT,
-> >       DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
-> > +     DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
-> >       DMA_FENCE_FLAG_USER_BITS, /* must always be last member */
-> >   };
-> >
-> > @@ -261,6 +263,19 @@ struct dma_fence_ops {
-> >        */
-> >       void (*timeline_value_str)(struct dma_fence *fence,
-> >                                  char *str, int size);
-> > +
-> > +     /**
-> > +      * @set_deadline:
-> > +      *
-> > +      * Callback to allow a fence waiter to inform the fence signaler =
-of an
-> > +      * upcoming deadline, such as vblank, by which point the waiter w=
-ould
-> > +      * prefer the fence to be signaled by.  This is intended to give =
-feedback
-> > +      * to the fence signaler to aid in power management decisions, su=
-ch as
-> > +      * boosting GPU frequency.
-> > +      *
-> > +      * This callback is optional.
-> > +      */
-> > +     void (*set_deadline)(struct dma_fence *fence, ktime_t deadline);
-> >   };
-> >
-> >   void dma_fence_init(struct dma_fence *fence, const struct dma_fence_o=
-ps *ops,
-> > @@ -586,6 +601,8 @@ static inline signed long dma_fence_wait(struct dma=
-_fence *fence, bool intr)
-> >       return ret < 0 ? ret : 0;
-> >   }
-> >
-> > +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t deadline)=
-;
-> > +
-> >   struct dma_fence *dma_fence_get_stub(void);
-> >   struct dma_fence *dma_fence_allocate_private_stub(void);
-> >   u64 dma_fence_context_alloc(unsigned num);
->
+greg k-h
