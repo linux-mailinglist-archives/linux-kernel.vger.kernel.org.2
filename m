@@ -2,176 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81BD3D7AD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7F33D7ADA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhG0QWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:22:43 -0400
-Received: from mga18.intel.com ([134.134.136.126]:52915 "EHLO mga18.intel.com"
+        id S229732AbhG0QX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:23:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229441AbhG0QWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:22:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="199703415"
-X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
-   d="scan'208";a="199703415"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 09:22:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
-   d="scan'208";a="662888791"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by fmsmga006.fm.intel.com with ESMTP; 27 Jul 2021 09:22:40 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     rjw@rjwysocki.net, lenb@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Subject: [PATCH] ACPI: DPTF: Add new PCH FIVR methods
-Date:   Tue, 27 Jul 2021 09:22:40 -0700
-Message-Id: <20210727162240.425773-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
+        id S229441AbhG0QX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 12:23:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C769E61B93;
+        Tue, 27 Jul 2021 16:23:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627403007;
+        bh=Kmx4YqSFfCeTWZsfTwDQpSXyGw2cgAovhs1crpCknaM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=jrp4mUDoOskJf03UesWUpSZrUCr8fNLu7wyCmLjT2jhdI7FNnXF/FRx5bUVlV9jwN
+         gpLaLz0UJvVdBAInSPa2WYJPd2wXERH+GY26jqaa0YQZQKjUmL/inD+2gAINZEAvt1
+         FnI9tScDStvOpzQLhxnykVE15zUXqCRZqloNfIPE9+Idnjn4J6SN9kxppw0h4B+puN
+         4/9Q7zfvPqFJ8KTvESzj8oAJwypWGhl4g0qVHgKwP7ewWqHG20rZe8ldPkV4UAKaPU
+         DGsUdVc7bsAtQYsWEB7mtLLJcp8KAI9CeGc61UcnHdb5GS8saiOcvE/Hcr8V56QjQI
+         nlsl1RnEGJJsg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 902E55C099F; Tue, 27 Jul 2021 09:23:27 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 09:23:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 1/3] sched: Introduce is_pcpu_safe()
+Message-ID: <20210727162327.GA4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721115118.729943-1-valentin.schneider@arm.com>
+ <20210721115118.729943-2-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210721115118.729943-2-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some additional information is required for updating PCH FIVR values
-upon WiFi channel changes.
+On Wed, Jul 21, 2021 at 12:51:16PM +0100, Valentin Schneider wrote:
+> Some areas use preempt_disable() + preempt_enable() to safely access
+> per-CPU data. The PREEMPT_RT folks have shown this can also be done by
+> keeping preemption enabled and instead disabling migration (and acquiring a
+> sleepable lock, if relevant).
+> 
+> Introduce a helper which checks whether the current task can safely access
+> per-CPU data, IOW if the task's context guarantees the accesses will target
+> a single CPU. This accounts for preemption, CPU affinity, and migrate
+> disable - note that the CPU affinity check also mandates the presence of
+> PF_NO_SETAFFINITY, as otherwise userspace could concurrently render the
+> upcoming per-CPU access(es) unsafe.
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 
-New attributes added to the existing sysfs:
-fivr_switching_freq_mhz	: Get the FIVR switching control frequency.
-			  Uses ACPI method GFCS
-fivr_switching_fault_status: Read the FIVR switching frequency control
-			fault status. Uses ACPI method GFFS
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-ssc_clock_info : Presents SSC (spread spectrum clock) information for EMI
-(Electro magnetic interference) control. Use ACPI method GEMI. Refer
-to the description of GEMI method below.
-
-GFFS
-This ACPI method is used to read the FIVR switching frequency control
-fault status.
-Bits	Description
-[0:0]	Fault status when set to 1
-[31:1]	Reserved
-
-GFCS
-This ACPI method is used to read the FIVR switching control
-frequency.
-Bits	Description
-[11:0]	Actual Frequency = value * XTAL_FREQ / 128
-[31:12]	Reserved
-
-GEMI
-This ACPI method is used to read the programmed register value for EMI
-(Electro magnetic interference) control.
-
-Bits	Description
-[7:0]	Sets clock spectrum spread percentage:
-	0x00=0.2% , 0x3F=10%
-	1 LSB = 0.1% increase in spread (for
-	settings 0x01 thru 0x1C)
-	1 LSB = 0.2% increase in spread (for
-	settings 0x1E thru 0x3F)
-[8]	When set to 1, enables spread
-	spectrum clock
-[9]	0: Triangle mode. FFC frequency
-	walks around the Fcenter in a linear
-	fashion
-	1: Random walk mode. FFC frequency
-	changes randomly within the SSC
-	(Spread spectrum clock) range
-[10]	0: No white noise. 1: Add white noise
-	to spread waveform
-[11]	When 1, future writes are ignored.
-
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
-This commit was merged to 5.14 next tree, but later reverted. The
-problem was not in this commit but reading attributes in general. This
-is fixed by prior patch "ACPI: DPTF: Fix reading of attributes"
-
- Documentation/ABI/testing/sysfs-platform-dptf | 40 +++++++++++++++++++
- drivers/acpi/dptf/dptf_pch_fivr.c             |  9 +++++
- 2 files changed, 49 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-platform-dptf b/Documentation/ABI/testing/sysfs-platform-dptf
-index 141834342a4d..53c6b1000320 100644
---- a/Documentation/ABI/testing/sysfs-platform-dptf
-+++ b/Documentation/ABI/testing/sysfs-platform-dptf
-@@ -111,3 +111,43 @@ Contact:	linux-acpi@vger.kernel.org
- Description:
- 		(RW) The PCH FIVR (Fully Integrated Voltage Regulator) switching frequency in MHz,
- 		when FIVR clock is 38.4MHz.
-+
-+What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_freq_mhz
-+Date:		September, 2021
-+KernelVersion:	v5.15
-+Contact:	linux-acpi@vger.kernel.org
-+Description:
-+		(RO) Get the FIVR switching control frequency in MHz.
-+
-+What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fivr_switching_fault_status
-+Date:		September, 2021
-+KernelVersion:	v5.15
-+Contact:	linux-acpi@vger.kernel.org
-+Description:
-+		(RO) Read the FIVR switching frequency control fault status.
-+
-+What:		/sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/ssc_clock_info
-+Date:		September, 2021
-+KernelVersion:	v5.15
-+Contact:	linux-acpi@vger.kernel.org
-+Description:
-+		(RO) Presents SSC (spread spectrum clock) information for EMI
-+		(Electro magnetic interference) control. This is a bit mask.
-+		Bits	Description
-+		[7:0]	Sets clock spectrum spread percentage:
-+			0x00=0.2% , 0x3F=10%
-+			1 LSB = 0.1% increase in spread (for
-+			settings 0x01 thru 0x1C)
-+			1 LSB = 0.2% increase in spread (for
-+			settings 0x1E thru 0x3F)
-+		[8]	When set to 1, enables spread
-+			spectrum clock
-+		[9]	0: Triangle mode. FFC frequency
-+			walks around the Fcenter in a linear
-+			fashion
-+			1: Random walk mode. FFC frequency
-+			changes randomly within the SSC
-+			(Spread spectrum clock) range
-+		[10]	0: No white noise. 1: Add white noise
-+			to spread waveform
-+		[11]	When 1, future writes are ignored.
-diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c b/drivers/acpi/dptf/dptf_pch_fivr.c
-index 550b9081fcbc..f4e9c2ef2f88 100644
---- a/drivers/acpi/dptf/dptf_pch_fivr.c
-+++ b/drivers/acpi/dptf/dptf_pch_fivr.c
-@@ -90,15 +90,24 @@ static ssize_t name##_store(struct device *dev,\
- 
- PCH_FIVR_SHOW(freq_mhz_low_clock, GFC0)
- PCH_FIVR_SHOW(freq_mhz_high_clock, GFC1)
-+PCH_FIVR_SHOW(ssc_clock_info, GEMI)
-+PCH_FIVR_SHOW(fivr_switching_freq_mhz, GFCS)
-+PCH_FIVR_SHOW(fivr_switching_fault_status, GFFS)
- PCH_FIVR_STORE(freq_mhz_low_clock, RFC0)
- PCH_FIVR_STORE(freq_mhz_high_clock, RFC1)
- 
- static DEVICE_ATTR_RW(freq_mhz_low_clock);
- static DEVICE_ATTR_RW(freq_mhz_high_clock);
-+static DEVICE_ATTR_RO(ssc_clock_info);
-+static DEVICE_ATTR_RO(fivr_switching_freq_mhz);
-+static DEVICE_ATTR_RO(fivr_switching_fault_status);
- 
- static struct attribute *fivr_attrs[] = {
- 	&dev_attr_freq_mhz_low_clock.attr,
- 	&dev_attr_freq_mhz_high_clock.attr,
-+	&dev_attr_ssc_clock_info.attr,
-+	&dev_attr_fivr_switching_freq_mhz.attr,
-+	&dev_attr_fivr_switching_fault_status.attr,
- 	NULL
- };
- 
--- 
-2.31.1
-
+> ---
+>  include/linux/sched.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index efdbdf654876..7ce2d5c1ad55 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1707,6 +1707,16 @@ static inline bool is_percpu_thread(void)
+>  #endif
+>  }
+>  
+> +/* Is the current task guaranteed not to be migrated elsewhere? */
+> +static inline bool is_pcpu_safe(void)
+> +{
+> +#ifdef CONFIG_SMP
+> +	return !preemptible() || is_percpu_thread() || current->migration_disabled;
+> +#else
+> +	return true;
+> +#endif
+> +}
+> +
+>  /* Per-process atomic flags. */
+>  #define PFA_NO_NEW_PRIVS		0	/* May not gain new privileges. */
+>  #define PFA_SPREAD_PAGE			1	/* Spread page cache over cpuset */
+> -- 
+> 2.25.1
+> 
