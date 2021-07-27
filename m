@@ -2,155 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659F33D78B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E30F3D78B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236889AbhG0On0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 10:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232432AbhG0OnY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 10:43:24 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4C2C0613C1;
-        Tue, 27 Jul 2021 07:43:22 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id d17so22178728lfv.0;
-        Tue, 27 Jul 2021 07:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=LvguakZhljJ6qsltWl9Xtfz0TMtM4W2dtQG1XypA974=;
-        b=rv3QNcVnds0tQICQRm4SgSmF7d0MGCrWGBrwaGu87Ux6eYDsDJwUOXCgfSlDKBQjfU
-         ikZmEaexAEySC0iUndVEtCAK83Du4dhLWaVDsfwfE38fbPb7O1zzbzy7CUGBIl0rsZXi
-         Benjv+25SvBGssKvr7/rYgRURVhUWxbGpp8AA5QY3iZxmLJlY0YBq3GCTW2kaFY6EcTk
-         Ja84eavN2Vqj5X7GnoS8s1946e9tLH2TGC3GniC+vH+X4J+CxUS8/VoDgM6oahxjd63W
-         /8SuEXa/TVi7BxJImIQJZO9fUD0no38oVH7/r9ykhCyskTvR7eBBt+Bortl7bqmhI62e
-         QjUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=LvguakZhljJ6qsltWl9Xtfz0TMtM4W2dtQG1XypA974=;
-        b=sLmZDZ3oYGzsdauLSgVbl72MuYhs1SElW+MI4yBr0TarXvceLW9oMqK1ownQsy8edz
-         1Q0RI72jlbei4/1HA96vMhlnkhh8t1R9UZ69k8L+9BXn1Y5V4Ihve2qID0TYVKyyMhHt
-         V5hIuhJ482ss0ijB/oPm1Yiq6ANrUKxgdJbVzdjm8inoJO7YEB7ATBHPYxijuHVGUx43
-         GxJ/TBUvZo1C5J2ERxd/k63b5FXJmqfPPQU34/jV9DgL+Dfftv6Zi1QCif6z5OtA84c3
-         WXtQWMeBBPOjuMwLapX5epumWyjDtGWEtlDOgS4+UPxbTa3P1Xhb5wIr7A0ZM6kvTZHh
-         tppw==
-X-Gm-Message-State: AOAM533Vrm9Vj2JPN/6nAJT3LfjDBFCZyCOHv8z/I4YZTmTa0ukHg1vJ
-        S/K1r0pToPq1kwX7irFHd7I=
-X-Google-Smtp-Source: ABdhPJwcFkF5a0cuZJ1xWDxQkTqYNVhza1PTfDih4HBjGFkT2XaZmevO74FY0lyjY5u8x4x2LNAUEw==
-X-Received: by 2002:a19:7512:: with SMTP id y18mr16764455lfe.533.1627397001190;
-        Tue, 27 Jul 2021 07:43:21 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.227.213])
-        by smtp.gmail.com with ESMTPSA id i16sm311661lfg.139.2021.07.27.07.43.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 07:43:20 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 17:43:18 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     syzbot <syzbot+9cd5837a045bbee5b810@syzkaller.appspotmail.com>
-Cc:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in xfrm_set_default
-Message-ID: <20210727174318.53806d27@gmail.com>
-In-Reply-To: <0000000000004f5de905c81a45e7@google.com>
-References: <0000000000004f5de905c81a45e7@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        id S232493AbhG0Oni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 10:43:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236901AbhG0Ong (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 10:43:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB7AF61AFA;
+        Tue, 27 Jul 2021 14:43:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627397015;
+        bh=qFd46qxbPifoDl2lqdkdIoc082Sb+xM4m6IGi89yhls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TrvS+IYAOcf97227HS/Q9Iyyf5tkB/2yfsFhEMFuAHFI+ixOqywfPd1Vtsw7VHIlz
+         Py9PO/aNn53s3JvmhPUP/2gg1AZnjSk9FtIyjPIofOOeG8VjoUKk5dhJJN3poBzHaD
+         QolSTbbnuqdSmXgCoQGWapojJbW6nNLPzsbhfdfo=
+Date:   Tue, 27 Jul 2021 16:43:33 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     zohar@linux.ibm.com, mchehab+huawei@kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v2 02/12] diglim: Basic definitions
+Message-ID: <YQAblc+UuMq68jxu@kroah.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+ <20210726163700.2092768-3-roberto.sassu@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/UMAwpennY/SnMSMQPwA2e3u"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726163700.2092768-3-roberto.sassu@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/UMAwpennY/SnMSMQPwA2e3u
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Mon, Jul 26, 2021 at 06:36:50PM +0200, Roberto Sassu wrote:
+> --- /dev/null
+> +++ b/include/uapi/linux/diglim.h
+> @@ -0,0 +1,51 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/*
+> + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
+> + *
+> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+> + *
+> + * DIGLIM definitions exported to user space, useful for generating digest
+> + * lists.
+> + */
+> +
+> +#ifndef _UAPI__LINUX_DIGLIM_H
+> +#define _UAPI__LINUX_DIGLIM_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/hash_info.h>
+> +
+> +enum compact_types { COMPACT_KEY, COMPACT_PARSER, COMPACT_FILE,
+> +		     COMPACT_METADATA, COMPACT_DIGEST_LIST, COMPACT__LAST };
+> +
+> +enum compact_modifiers { COMPACT_MOD_IMMUTABLE, COMPACT_MOD__LAST };
+> +
+> +enum compact_actions { COMPACT_ACTION_IMA_MEASURED,
+> +		       COMPACT_ACTION_IMA_APPRAISED,
+> +		       COMPACT_ACTION_IMA_APPRAISED_DIGSIG,
+> +		       COMPACT_ACTION__LAST };
+> +
+> +enum ops { DIGEST_LIST_ADD, DIGEST_LIST_DEL, DIGEST_LIST_OP__LAST };
+> +
+> +/**
+> + * struct compact_list_hdr - header of the following concatenated digests
+> + * @version: version of the digest list
+> + * @_reserved: field reserved for future use
+> + * @type: type of digest list among enum compact_types
+> + * @modifiers: additional attributes among (1 << enum compact_modifiers)
 
-On Tue, 27 Jul 2021 05:47:21 -0700
-syzbot <syzbot+9cd5837a045bbee5b810@syzkaller.appspotmail.com> wrote:
+I do not understand this description, what does it mean?
 
-> Hello,
+> + * @algo: digest algorithm
+
+Is this also a #define or an enum?  Where is the list of them?
+
+> + * @count: number of digests
+> + * @datalen: length of concatenated digests
+
+Where does this count and length come into play as nothing else is in
+this structure?
+
+> + *
+> + * A digest list is a set of blocks composed by struct compact_list_hdr and
+> + * the following concatenated digests.
+> + */
+> +struct compact_list_hdr {
+> +	__u8 version;
+> +	__u8 _reserved;
+
+You MUST check this for 0 today, and document it above.  If not, you can
+never use it in the future.
+
+> +	__le16 type;
+> +	__le16 modifiers;
+> +	__le16 algo;
+> +	__le32 count;
+> +	__le32 datalen;
+> +} __packed;
+> +#endif /*_UAPI__LINUX_DIGLIM_H*/
+> -- 
+> 2.25.1
 > 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    90d856e71443 Add linux-next specific files for
-> 20210723 git tree:       linux-next
-> console output:
-> https://syzkaller.appspot.com/x/log.txt?x=133fd00a300000 kernel
-> config:  https://syzkaller.appspot.com/x/.config?x=298516715f6ad5cd
-> dashboard link:
-> https://syzkaller.appspot.com/bug?extid=9cd5837a045bbee5b810
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU
-> Binutils for Debian) 2.35.1 syz repro:
-> https://syzkaller.appspot.com/x/repro.syz?x=1263bba6300000 C
-> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1066b4d4300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the
-> commit: Reported-by:
-> syzbot+9cd5837a045bbee5b810@syzkaller.appspotmail.com
-> 
-> netlink: 228 bytes leftover after parsing attributes in process
-> `syz-executor669'.
-> ================================================================================
-
-
-The first thing that comes in mind is to check up->dirmask value
-
-
-#syz test
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master 
-
-
-With regards,
-Pavel Skripkin
-
-
-
---MP_/UMAwpennY/SnMSMQPwA2e3u
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0001-net-xfrm-fix-shift-out-of-bounce.patch
-
-From 30db223b1f724ca241c7fa15769d0c65eada3b66 Mon Sep 17 00:00:00 2001
-From: Pavel Skripkin <paskripkin@gmail.com>
-Date: Tue, 27 Jul 2021 17:38:24 +0300
-Subject: [PATCH] net: xfrm: fix shift-out-of-bounce
-
-We need to check up->dirmask to avoid shift-out-of-bounce bug,
-since up->dirmask comes from userspace.
-
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/xfrm/xfrm_user.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index acc3a0dab331..5f3fe2295519 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -1966,9 +1966,14 @@ static int xfrm_set_default(struct sk_buff *skb, struct nlmsghdr *nlh,
- {
- 	struct net *net = sock_net(skb->sk);
- 	struct xfrm_userpolicy_default *up = nlmsg_data(nlh);
--	u8 dirmask = (1 << up->dirmask) & XFRM_POL_DEFAULT_MASK;
-+	u8 dirmask;
- 	u8 old_default = net->xfrm.policy_default;
- 
-+	if (up->dirmask >= sizeof(up->action) * 8)
-+		return -EINVAL;
-+
-+	dirmask = (1 << up->dirmask) & XFRM_POL_DEFAULT_MASK
-+
- 	net->xfrm.policy_default = (old_default & (0xff ^ dirmask))
- 				    | (up->action << up->dirmask);
- 
--- 
-2.32.0
-
-
---MP_/UMAwpennY/SnMSMQPwA2e3u--
