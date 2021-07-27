@@ -2,78 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7036A3D746A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2303D746C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236511AbhG0Lfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 07:35:38 -0400
-Received: from mga14.intel.com ([192.55.52.115]:48450 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231781AbhG0Lff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:35:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="212145008"
-X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
-   d="scan'208";a="212145008"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 04:35:19 -0700
-X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
-   d="scan'208";a="498453641"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 04:35:17 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1m8LMc-0016dX-Fd; Tue, 27 Jul 2021 14:35:10 +0300
-Date:   Tue, 27 Jul 2021 14:35:10 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v1 1/1] media: ipu3-cio2: Drop reference on error path in
- cio2_bridge_connect_sensor()
-Message-ID: <YP/vbsXlsT8DOOy3@smile.fi.intel.com>
-References: <20210726084055.54887-1-andriy.shevchenko@linux.intel.com>
- <20210726114433.GB3@paasikivi.fi.intel.com>
- <CAHp75VfodVoyDkO4iEGcHw0TWm2g-QbjwXqoCpCr_fj_BXT9jw@mail.gmail.com>
- <20210726120335.GE3@paasikivi.fi.intel.com>
+        id S236521AbhG0Lfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 07:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231781AbhG0Lfu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 07:35:50 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AE7C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 04:35:49 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id q15so20142848ybu.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 04:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qco/AyihnJ5LF9OqcB7SLvxoAFgJ7udwLUJdc+kCzpo=;
+        b=OHQfAWwqSfJLysT2xL6FU2eutfu/bnXiRKUERsAljy4Uv81/MzxAEMW9OyxJokU5wr
+         W2dOvsHDPxN4CtC9uJV40eSOkvfgSWYxDoKsiPQ49Zi4GQDMqGwGJCzCm6xsJ0fAgq+d
+         H9iZvpX9NIbgNCGHa84OAKLaw7MLegBpB7/zaN6sOJN/vAGoT9ORbdQT6WNIF5SX43uJ
+         RmiSzf6JcPfkJQ46jZScHB5/m8Ue/cQvj4jquIP9RYh8xGds6LeiTd/V7hbBW9xouC5y
+         UITiIkzTBJ2wvgrAlPBi8+WUjghsteaOwPmsJErUiU5BFRjQ20bhzxZTyVY+iGlkxJcQ
+         EEvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qco/AyihnJ5LF9OqcB7SLvxoAFgJ7udwLUJdc+kCzpo=;
+        b=FQeBw9HAVT2U5JXDS25SX/3qYWEMox4xGQh89zwdcZn7QxbL0pWVu8uwV70AzdDS46
+         DunZJ+al7Aui05KHYV3pbx3X0RrNWMSZDgDoui2/0bNppDme1llH2v1/ZPvvxEBFmLrg
+         POV4/jsqYIpBp9p2LXgNojr36UcDDEIl5kWwbjGQcDi+pXfgF9ufb6OU7GILpZVq6vJD
+         YVd9/1HYiu2kk4HJqY9WOIl7r+du+p/cF7bsDeeMmHcXDFnshTAx+iBbRZ0WHUA5p75b
+         7delZsP+hRBverx+rAdLoT1e8+W+U3zZreyDH6ULoBzS3e544KPc2pyrgXN+2ygvUg9x
+         VhAw==
+X-Gm-Message-State: AOAM532XWOIs3sZn2G6dvCW5Ga+KK+I7wWKL/Nh9KHNMOiXSgJzAjarp
+        4Xf16kIfEkOxSJrmwNeUZJzTqZWuCnsjpecmABvgnA==
+X-Google-Smtp-Source: ABdhPJzfxtZ4mgMNBH40Q61Gql8DSCEAQWyHWZwB7JYUQpLZ3NY96M/waaOpz6NzjZRVOJBGFxHptQ/RrHpFlVuVv4E=
+X-Received: by 2002:a25:3750:: with SMTP id e77mr13079030yba.469.1627385748609;
+ Tue, 27 Jul 2021 04:35:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726120335.GE3@paasikivi.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210708070429.31871-1-sergio.paracuellos@gmail.com> <CAMhs-H9fbHMxxSaqMj=nyACAN6aDB-bYK1nF1dRh8a1krTdaZg@mail.gmail.com>
+In-Reply-To: <CAMhs-H9fbHMxxSaqMj=nyACAN6aDB-bYK1nF1dRh8a1krTdaZg@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 27 Jul 2021 13:35:38 +0200
+Message-ID: <CAMpxmJUQmdfesygysBHB=bx7tYqMyry9tSw6E4dOnatTNKcAug@mail.gmail.com>
+Subject: Re: [PATCH 0/3] gpiolib: convert 'devprop_gpiochip_set_names' to
+ support multiple gpiochip per device
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Gregory Fong <gregory.0xf0@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        NeilBrown <neil@brown.name>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 03:03:35PM +0300, Sakari Ailus wrote:
-> On Mon, Jul 26, 2021 at 02:55:51PM +0300, Andy Shevchenko wrote:
-> > On Mon, Jul 26, 2021 at 2:47 PM Sakari Ailus
-> > <sakari.ailus@linux.intel.com> wrote:
-> > > On Mon, Jul 26, 2021 at 11:40:55AM +0300, Andy Shevchenko wrote:
-> > 
-> > ...
-> > 
-> > > >  err_free_swnodes:
-> > > >       software_node_unregister_nodes(sensor->swnodes);
-> > > >  err_put_adev:
-> > > > -     acpi_dev_put(sensor->adev);
-> > > > +     acpi_dev_put(adev);
-> > >
-> > > adev is assigned to sensor->adev before goto so the two have the same
-> > > value. I have no problem with the patch though.
-> > 
-> > Are we reading the same version? Or am I missing something?
-> 
-> Ah. I noticed the adev assignment was removed (and added later) by the
-> other patch. Yeah, agreed; this one's needed.
+On Tue, Jul 27, 2021 at 8:02 AM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> On Thu, Jul 8, 2021 at 9:04 AM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> >
+> > There are some unfortunate cases where the DT representation
+> > of the device and the Linux internal representation differs.
+> > Such drivers for devices are forced to implement a custom function
+> > to avoid the core code 'devprop_gpiochip_set_names' to be executed
+> > since in any other case every gpiochip inside will got repeated
+> > names through its internal gpiochip banks. To avoid this antipattern
+> > this changes are introduced trying to adapt core 'devprop_gpiochip_set_names'
+> > to get a correct behaviour for every single situation.
+> >
+> > This series introduces a new 'offset' field in the gpiochip structure
+> > that can be used for those unfortunate drivers that must define multiple
+> > gpiochips per device.
+> >
+> > Drivers affected by this situation are also updated. These are
+> > 'gpio-mt7621' and 'gpio-brcmstb'.
+> >
+> > Motivation for this series available at [0].
+> >
+> > Thanks in advance for your feedback.
+> >
+> > Best regards,
+> >     Sergio Paracuellos
+> >
+> > [0]: https://lkml.org/lkml/2021/6/26/198
+> >
+> > Sergio Paracuellos (3):
+> >   gpiolib: convert 'devprop_gpiochip_set_names' to support multiple
+> >     gpiochip baks per device
+> >   gpio: mt7621: support gpio-line-names property
+> >   gpio: brcmstb: remove custom 'brcmstb_gpio_set_names'
+> >
+> >  drivers/gpio/gpio-brcmstb.c | 45 +------------------------------------
+> >  drivers/gpio/gpio-mt7621.c  |  1 +
+> >  drivers/gpio/gpiolib.c      | 34 +++++++++++++++++++++++-----
+> >  include/linux/gpio/driver.h |  4 ++++
+> >  4 files changed, 34 insertions(+), 50 deletions(-)
+>
+> Hi!
+>
+> Linus, Bartosz, any comments on this series?
+>
 
-Thanks! Can we have your tag?
+Looks good, but I was thinking you were going to address Gregory's
+points first and resend a v2?
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Bartosz
