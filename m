@@ -2,148 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47593D79F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE853D7A00
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237123AbhG0PiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:38:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27035 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232511AbhG0Phu (ORCPT
+        id S232511AbhG0Pkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:40:36 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:16574 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhG0Pkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:37:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627400269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vR2+7tmtikD9aIM6qjbjOrZOpZBl/Ki+iH8B5KQL91A=;
-        b=VaC6KzdQDapk5gJvtTdBypIZgiL+Ob08wQ0h+erEKgREaL7LFq0G4runqdIqmpS0TFmXDA
-        gkKj8aj5MFa4JwlBtqOqtxYAVty2xZBKIhbNnjF75AClTFWckVkatjmiGOzJqtVM8pFwx/
-        S+Ubj4ytZdXE+g0HUypt1aqShvlNPLk=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-1km7plL9OB6K-y7Voq8UyQ-1; Tue, 27 Jul 2021 11:37:48 -0400
-X-MC-Unique: 1km7plL9OB6K-y7Voq8UyQ-1
-Received: by mail-qv1-f72.google.com with SMTP id b6-20020a0cbf460000b02902dbb4e0a8f2so9005402qvj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:37:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vR2+7tmtikD9aIM6qjbjOrZOpZBl/Ki+iH8B5KQL91A=;
-        b=ZB0281GZKTH46oJ8XHc+huNYc7tMNCbhLdGkyejV+M8FHhRX6V+Iq/DRAR3NWji6OD
-         IDSOUM5qE0kyef3kvGw3OHdE//fUtwazw7VdNaeckIjocvBFC4hkDSG3+Ln96ff3AkFm
-         cNK8XwsFhsLzzD/0w8jyFuXchhDaxUlIbn6loQNyJ8h929Tqhun3JoUhqoTl2jQzVB5I
-         KZVCTRBJWzX65D+vAmslgJLsrs84ryfA8+SjbxMrAMk2z6FPdZICoBCFY7S50fb4Vyy2
-         +hloSB/BFReBupOJ+7nJrpGtAycvvsBln39y4C7JAqbZ5FYYWLd+k5GmXwCcReC/bfOD
-         qLfg==
-X-Gm-Message-State: AOAM530Fmq8NFBuBuGZTWhtmmOilqh20KLgsMsjTtxYTHoHzqVCz8R7R
-        bFY2MGfopXoh2dkyxfRs6ZIuWzqQj3y7sqcpSE8tHMQg4xVnOjgCG5cz1SEMVlSp8JrR4E2gqKp
-        K+kHsClH+sA1GTRZZiO+1Qj2kNRSR8hfN/dkXol9V
-X-Received: by 2002:a05:6214:2ca:: with SMTP id g10mr23499931qvu.44.1627400267793;
-        Tue, 27 Jul 2021 08:37:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx4wb9VdRM/n+1TXNm1vLueStF5mK2PArTHU3m5lyvUWaaXl4LQ6PF/Pl40ZIhO0efwe9ZwqeHRGm7QMoLXa6U=
-X-Received: by 2002:a05:6214:2ca:: with SMTP id g10mr23499920qvu.44.1627400267624;
- Tue, 27 Jul 2021 08:37:47 -0700 (PDT)
+        Tue, 27 Jul 2021 11:40:35 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 16RFdQxD020251;
+        Wed, 28 Jul 2021 00:39:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 16RFdQxD020251
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1627400367;
+        bh=3zPhroot46RHejpnFDk8fLbgEyTZ7afbXGsRLNI8Ohk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BRgdn7+9lc9pcKUYJl2vRPStgOkd5C73s28FmSUcJ4VPzrti52wI0nHAflZhN6bia
+         8Y7fPgV06rKYJgAIgWgR+fHNGhCK+zJ21NIjtQZCh42Lte2w/+kYYk22FgRMS7WPQR
+         M/iVl8gM/Huh3nj2mleoB80TUXACvdVjJKIjursLa2HCg/ZNeVL5QgGwQdEwdcUCZT
+         Y6WJ87rHXJa5/f1eE5Egh5lj1sEieDROFgHQXY+gLWnXtFuKhka//Azf2BQAIhJsxD
+         jrvQjeSjsBnAoFm2ytEyEM8fJy3hK6TRFMl7tZ8E0+DXMNYekeb+zhHPaFSOb+xy/n
+         2OzKdj2FJhmJw==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] scripts: make some scripts executable
+Date:   Wed, 28 Jul 2021 00:39:24 +0900
+Message-Id: <20210727153924.79473-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <000000000000c3366805c7e33a92@google.com> <20210725012825.1790-1-hdanton@sina.com>
-In-Reply-To: <20210725012825.1790-1-hdanton@sina.com>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Tue, 27 Jul 2021 17:37:36 +0200
-Message-ID: <CAOssrKdqbOr0jeE1pYqkWnFysVbdi+H7sfoc3c4CaiqBUqQz_g@mail.gmail.com>
-Subject: Re: [syzbot] possible deadlock in pipe_lock (5)
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        syzbot <syzbot+579885d1a9a833336209@syzkaller.appspotmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        syzkaller-bugs@googlegroups.com, viro <viro@zeniv.linux.org.uk>
-Content-Type: multipart/mixed; boundary="000000000000dc534905c81ca6a7"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000dc534905c81ca6a7
-Content-Type: text/plain; charset="UTF-8"
+Set the x bit to some scripts to make them directly executable.
 
-On Sun, Jul 25, 2021 at 3:31 AM Hillf Danton <hdanton@sina.com> wrote:
->
-> On Sat, 24 Jul 2021 12:07:20 -0700
-> >syzbot found the following issue on:
-> >
-> >HEAD commit:    8cae8cd89f05 seq_file: disallow extremely large seq buffer..
-> >git tree:       upstream
-> >console output: https://syzkaller.appspot.com/x/log.txt?x=1083e8cc300000
-> >kernel config:  https://syzkaller.appspot.com/x/.config?x=7273c75708b55890
-> >dashboard link: https://syzkaller.appspot.com/bug?extid=579885d1a9a833336209
-> >syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163905f2300000
-> >C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=165bd0ea300000
-> >
-> >The issue was bisected to:
-> >
-> >commit 82a763e61e2b601309d696d4fa514c77d64ee1be
-> >Author: Miklos Szeredi <mszeredi@redhat.com>
-> >Date:   Mon Dec 14 14:26:14 2020 +0000
-> >
-> >    ovl: simplify file splice
->
->
-> If this commit is innocent then is it false positive lockdep warning again,
-> given another report [1]?
+Especially, scripts/checkdeclares.pl is not hooked by anyone.
+It should be executable since it is tedious to type
+'perl scripts/checkdeclares.pl'.
 
-Appears to be legit.
+The original patch [1] set the x bit properly, but it was lost when
+it was merged as commit 21917bded72c ("scripts: a new script for
+checking duplicate struct declaration").
 
-Attached partial revert + sync with ovl_write_iter() should fix it
-(fingers crossed).
+[1] https://lore.kernel.org/lkml/20210401110943.1010796-1-wanjiabing@vivo.com/
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-master
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Thanks,
-Miklos
+ scripts/checkdeclares.pl               | 0
+ scripts/gcc-plugins/gen-random-seed.sh | 0
+ scripts/syscallnr.sh                   | 0
+ scripts/xen-hypercalls.sh              | 0
+ 4 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100644 => 100755 scripts/checkdeclares.pl
+ mode change 100644 => 100755 scripts/gcc-plugins/gen-random-seed.sh
+ mode change 100644 => 100755 scripts/syscallnr.sh
+ mode change 100644 => 100755 scripts/xen-hypercalls.sh
 
---000000000000dc534905c81ca6a7
-Content-Type: text/x-patch; charset="US-ASCII"; name="ovl-fix-deadlock-in-splice-write.patch"
-Content-Disposition: attachment; 
-	filename="ovl-fix-deadlock-in-splice-write.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_krm81ag60>
-X-Attachment-Id: f_krm81ag60
-
-ZGlmZiAtLWdpdCBhL2ZzL292ZXJsYXlmcy9maWxlLmMgYi9mcy9vdmVybGF5ZnMvZmlsZS5jCmlu
-ZGV4IDRkNTNkM2I3ZTVmZS4uZDA4MWZhYTU1ZTgzIDEwMDY0NAotLS0gYS9mcy9vdmVybGF5ZnMv
-ZmlsZS5jCisrKyBiL2ZzL292ZXJsYXlmcy9maWxlLmMKQEAgLTM5Miw2ICszOTIsNTEgQEAgc3Rh
-dGljIHNzaXplX3Qgb3ZsX3dyaXRlX2l0ZXIoc3RydWN0IGtpb2NiICppb2NiLCBzdHJ1Y3QgaW92
-X2l0ZXIgKml0ZXIpCiAJcmV0dXJuIHJldDsKIH0KIAorLyoKKyAqIENhbGxpbmcgaXRlcl9maWxl
-X3NwbGljZV93cml0ZSgpIGRpcmVjdGx5IGZyb20gb3ZlcmxheSdzIGZfb3AgbWF5IGRlYWRsb2Nr
-CisgKiBkdWUgdG8gbG9jayBvcmRlciBpbnZlcnNpb24gYmV0d2VlbiBwaXBlLT5tdXRleCBpbiBp
-dGVyX2ZpbGVfc3BsaWNlX3dyaXRlKCkKKyAqIGFuZCBmaWxlX3N0YXJ0X3dyaXRlKHJlYWwuZmls
-ZSkgaW4gb3ZsX3dyaXRlX2l0ZXIoKS4KKyAqCisgKiBTbyBkbyBldmVyeXRoaW5nIG92bF93cml0
-ZV9pdGVyKCkgZG9lcyBhbmQgY2FsbCBpdGVyX2ZpbGVfc3BsaWNlX3dyaXRlKCkgb24KKyAqIHRo
-ZSByZWFsIGZpbGUuCisgKi8KK3N0YXRpYyBzc2l6ZV90IG92bF9zcGxpY2Vfd3JpdGUoc3RydWN0
-IHBpcGVfaW5vZGVfaW5mbyAqcGlwZSwgc3RydWN0IGZpbGUgKm91dCwKKwkJCQlsb2ZmX3QgKnBw
-b3MsIHNpemVfdCBsZW4sIHVuc2lnbmVkIGludCBmbGFncykKK3sKKwlzdHJ1Y3QgZmQgcmVhbDsK
-Kwljb25zdCBzdHJ1Y3QgY3JlZCAqb2xkX2NyZWQ7CisJc3RydWN0IGlub2RlICppbm9kZSA9IGZp
-bGVfaW5vZGUob3V0KTsKKwlzdHJ1Y3QgaW5vZGUgKnJlYWxpbm9kZSA9IG92bF9pbm9kZV9yZWFs
-KGlub2RlKTsKKwlzc2l6ZV90IHJldDsKKworCWlub2RlX2xvY2soaW5vZGUpOworCS8qIFVwZGF0
-ZSBtb2RlICovCisJb3ZsX2NvcHlhdHRyKHJlYWxpbm9kZSwgaW5vZGUpOworCXJldCA9IGZpbGVf
-cmVtb3ZlX3ByaXZzKG91dCk7CisJaWYgKHJldCkKKwkJZ290byBvdXRfdW5sb2NrOworCisJcmV0
-ID0gb3ZsX3JlYWxfZmRnZXQob3V0LCAmcmVhbCk7CisJaWYgKHJldCkKKwkJZ290byBvdXRfdW5s
-b2NrOworCisJb2xkX2NyZWQgPSBvdmxfb3ZlcnJpZGVfY3JlZHMoaW5vZGUtPmlfc2IpOworCWZp
-bGVfc3RhcnRfd3JpdGUocmVhbC5maWxlKTsKKworCXJldCA9IGl0ZXJfZmlsZV9zcGxpY2Vfd3Jp
-dGUocGlwZSwgcmVhbC5maWxlLCBwcG9zLCBsZW4sIGZsYWdzKTsKKworCWZpbGVfZW5kX3dyaXRl
-KHJlYWwuZmlsZSk7CisJLyogVXBkYXRlIHNpemUgKi8KKwlvdmxfY29weWF0dHIocmVhbGlub2Rl
-LCBpbm9kZSk7CisJcmV2ZXJ0X2NyZWRzKG9sZF9jcmVkKTsKKwlmZHB1dChyZWFsKTsKKworb3V0
-X3VubG9jazoKKwlpbm9kZV91bmxvY2soaW5vZGUpOworCisJcmV0dXJuIHJldDsKK30KKwogc3Rh
-dGljIGludCBvdmxfZnN5bmMoc3RydWN0IGZpbGUgKmZpbGUsIGxvZmZfdCBzdGFydCwgbG9mZl90
-IGVuZCwgaW50IGRhdGFzeW5jKQogewogCXN0cnVjdCBmZCByZWFsOwpAQCAtNjAzLDcgKzY0OCw3
-IEBAIGNvbnN0IHN0cnVjdCBmaWxlX29wZXJhdGlvbnMgb3ZsX2ZpbGVfb3BlcmF0aW9ucyA9IHsK
-IAkuZmFkdmlzZQk9IG92bF9mYWR2aXNlLAogCS5mbHVzaAkJPSBvdmxfZmx1c2gsCiAJLnNwbGlj
-ZV9yZWFkICAgID0gZ2VuZXJpY19maWxlX3NwbGljZV9yZWFkLAotCS5zcGxpY2Vfd3JpdGUgICA9
-IGl0ZXJfZmlsZV9zcGxpY2Vfd3JpdGUsCisJLnNwbGljZV93cml0ZSAgID0gb3ZsX3NwbGljZV93
-cml0ZSwKIAogCS5jb3B5X2ZpbGVfcmFuZ2UJPSBvdmxfY29weV9maWxlX3JhbmdlLAogCS5yZW1h
-cF9maWxlX3JhbmdlCT0gb3ZsX3JlbWFwX2ZpbGVfcmFuZ2UsCg==
---000000000000dc534905c81ca6a7--
+diff --git a/scripts/checkdeclares.pl b/scripts/checkdeclares.pl
+old mode 100644
+new mode 100755
+diff --git a/scripts/gcc-plugins/gen-random-seed.sh b/scripts/gcc-plugins/gen-random-seed.sh
+old mode 100644
+new mode 100755
+diff --git a/scripts/syscallnr.sh b/scripts/syscallnr.sh
+old mode 100644
+new mode 100755
+diff --git a/scripts/xen-hypercalls.sh b/scripts/xen-hypercalls.sh
+old mode 100644
+new mode 100755
+-- 
+2.27.0
 
