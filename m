@@ -2,92 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA2E3D6B5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9EA3D6B62
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 03:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhG0ATE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 20:19:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhG0ATD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 20:19:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0964460F57;
-        Tue, 27 Jul 2021 00:59:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627347571;
-        bh=JhaVN5IfMdFXWWgSRfQeJuoGJgjwaZop9CUTnjtLZJY=;
+        id S234271AbhG0AUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 20:20:22 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:52056 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhG0AUV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 20:20:21 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7B0B7EE;
+        Tue, 27 Jul 2021 03:00:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1627347647;
+        bh=h6ed/QhzBLfd0GPoqqSOV/hXs491XnYeRSbJ5MoZhok=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eiGOvjL2h66Cmuz8vxkxeGAJR7rAM3fgTzeK8yEylTv4PVVyZdihL/PuwOcat1SBL
-         BVB2zwSMGjWXTJDWgRydQ0i30vLyozFFS7OdjrJhNL3MHmKnKsc1UjO+jnzr9yHez5
-         gF/MhPdQ6+7Uf1Q5RDzwoccmgNybM0I3+crSQVzw9OGF2Qq6ixnxx7MXeDQmYKN6Ha
-         U5comA6bOYP8DM51R7gx0aUQc2Z2OwVE00wg9vFa9QicVQ/ENo+n0RtrwudEVEo1+h
-         kdrmU+OC0imPq+pQVjRYN8xk9Rt5hG+3+DEAeb5eD9C3tEqxo7Pfvsc8WOjmiyLF1j
-         L0gLavyE8MHYA==
-Date:   Tue, 27 Jul 2021 01:59:22 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Ali Saidi <alisaidi@amazon.com>,
-        Jon Nettleton <jon@solid-run.com>
-Subject: Re: [PATCH v3 2/2] hwrng: Add Arm SMCCC TRNG based driver
-Message-ID: <20210727005922.GN4670@sirena.org.uk>
-References: <20210726175610.3311-1-andre.przywara@arm.com>
- <20210726175610.3311-3-andre.przywara@arm.com>
- <20210726223738.GM4670@sirena.org.uk>
- <20210727013004.4caca28f@slackpad.fritz.box>
+        b=XmvdmbvKT4T0Gl2GLgXHoQjqYzORw4Uo7rvmWDfK/PuFVaIquNHJXNRxSiKXAaK33
+         QQA82sQ0J6AzYYbW4UtBiEhZlOsIX9q9P93SbuLQuXKyJEqkUecvdQL2mHp4N+DMqR
+         CTDj9Za/Wy99D6HUhG0YOBAkpaLfwrrgLNzDEeVQ=
+Date:   Tue, 27 Jul 2021 04:00:42 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     shawnguo@kernel.org, devicetree@vger.kernel.org,
+        festevam@gmail.com, kernel@pengutronix.de, kernel@puri.sm,
+        krzk@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        m.felsch@pengutronix.de, mchehab@kernel.org,
+        phone-devel@vger.kernel.org, robh@kernel.org, slongerbeam@gmail.com
+Subject: Re: [PATCH v9 0/3] media: imx: add support for imx8mq MIPI RX
+Message-ID: <YP9aujiWH2Q/ghHK@pendragon.ideasonboard.com>
+References: <20210726082117.2423597-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xTKfHyrFnSV9DG3y"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210727013004.4caca28f@slackpad.fritz.box>
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210726082117.2423597-1-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Martin,
 
---xTKfHyrFnSV9DG3y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, Jul 26, 2021 at 10:21:14AM +0200, Martin Kepplinger wrote:
+> hi,
+> 
+> This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
+> 
+> It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
+> I test it using libcamera. Thanks to Laurent who helped a lot. I'm happy for
+> any feedback,
 
-On Tue, Jul 27, 2021 at 01:30:04AM +0100, Andre Przywara wrote:
+No more feedback from me :-) I'll take patches 1/3 and 2/3 in my tree
+and send a pull request.
 
-> Now thinking about this, there would probably be some value in making
-> the TRNG UUID somehow available, as this can be used to identify flawed
-> implementations (general problems in the hardware or backend bugs). But
-> this should be some query-able interface, rather than some line in
-> dmesg. Any ideas? Might be beyond the scope of this series, though...
+Shawn, could you please review 3/3 ?
 
-I guess you could append it to the name (eg, "SMCCC TRNG ${UUID}")
-though it'd be a bit of an eyesore if anyone displays that in UIs much?
+> revision history
+> ----------------
+> v9: (thank you Laurent)
+> * improve getting the esc clock rate for hs_settle
+> 
+> v8: (thank you Laurent)
+> * calculate hs_settle for any clk rate and mode
+> * add reviewed-by tag
+> https://lore.kernel.org/linux-media/20210723101217.1954805-1-martin.kepplinger@puri.sm/T/
+> 
+> v7: (thank you Laurent and Rob)
+> * fix the binding example (include the reset driver)
+> * use pm_runtime_resume_and_get()
+> * fix some logic in init_cfg()
+> * add some useful code comments and fix minor bits found by Laurent in v6
+> https://lore.kernel.org/linux-media/20210716102244.581182-1-martin.kepplinger@puri.sm/T/#t
+> 
+> v6: (thank you Laurent and Rob)
+> * add reviewed-by tag to binding
+> * statically allocate clk_bulk_data
+> * fix how the hs_settle value is applied
+> * remove s_power calls
+> * remove the link_setup() callback implementation and make the link immutable
+> * more cleanups according to Laurents' review from v5
+> https://lore.kernel.org/linux-media/20210714111931.324485-1-martin.kepplinger@puri.sm/
+> 
+> v5: (thank you Laurent)
+> * fix reset usage by using the already supported reset controller driver
+> * remove clko2 (totally unrelated clock / had been included by accident)
+> * rename pxl clock to ui
+> https://lore.kernel.org/linux-media/20210618095753.114557-1-martin.kepplinger@puri.sm/
+> 
+> v4: (thank you Rob and Marco)
+> * create fsl,mipi-phy-gpr custom dt property instead of confusing "phy"
+> * add imx8mq-specific compatibile to imx8mq.dtsi for future use
+> https://lore.kernel.org/linux-media/20210614121522.2944593-1-martin.kepplinger@puri.sm/
+> 
+> v3: (thank you, Rob and Laurent)
+> among minor other things according to v2 review, changes include:
+> * better describe the clocks
+> * rename DT property "phy-reset" to "reset" and "phy-gpr" to "phy"
+> https://lore.kernel.org/linux-media/20210608104128.1616028-1-martin.kepplinger@puri.sm/T/#t
+> 
+> v2: (thank you, Dan and Guido)
+> among fixes according to v1 reviews, changes include:
+> * remove status property from dt-bindings example
+> * define a few bits in order to have less magic values
+> * use "imx8mq_mipi_csi_" as local function prefix
+> * read DT properties only during probe()
+> * remove dead code (log_status)
+> * add imx8mq_mipi_csi_release_icc()
+> * fix imx8mq_mipi_csi_init_icc()
+> https://lore.kernel.org/linux-media/20210531112326.90094-1-martin.kepplinger@puri.sm/
+> 
+> v1:
+> https://lore.kernel.org/linux-media/20210527075407.3180744-1-martin.kepplinger@puri.sm/T/#t
+> 
+> 
+> Martin Kepplinger (3):
+>   dt-bindings: media: document the nxp,imx8mq-mipi-csi2 receiver phy and
+>     controller
+>   media: imx: add a driver for i.MX8MQ mipi csi rx phy and controller
+>   arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
+> 
+>  .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 174 ++++
+>  arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 104 ++
+>  drivers/staging/media/imx/Makefile            |   1 +
+>  drivers/staging/media/imx/imx8mq-mipi-csi2.c  | 976 ++++++++++++++++++
+>  4 files changed, 1255 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+>  create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
 
-A separate version string queryable in parallel with name would be more
-work but possibly a bit more sensible, some other hardware entropy
-sources will have firmware version numbers or similar they could
-usefully report I expect.
+-- 
+Regards,
 
---xTKfHyrFnSV9DG3y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD/WmkACgkQJNaLcl1U
-h9DxSQf/SRmE+SMJ3GxdX20HOP2LsvMm9R5rJCf0HK/MQYavnz151pAb5OICJWLT
-YC0FOoXaXwAgzz1b8y3MkC+9aAV0d3eSvfGCpbEF7lQ4imCwjnXZPSjZZkLexRcj
-r+9yXM2U2iDKtUxrngwh2+OcZlaagC9oJYgxB9YhK+lkuxgsA9Y4PC7QzQ8I9nzN
-vgygd/7t4DV4cjadSUdmlcSYKuZlF4ORWUHIUb8KFbLYZ01PlAtcHwUXtXP+mL8S
-xK+H5YBAEoIoeSlYPirKHKyOgEnL9We0grsN0JhgPz04oLLLP2WeYBIwEm5w4iHn
-gTBNJ39Xlzeq7LOzWJ2I7W/CG2UQ8A==
-=Nq3c
------END PGP SIGNATURE-----
-
---xTKfHyrFnSV9DG3y--
+Laurent Pinchart
