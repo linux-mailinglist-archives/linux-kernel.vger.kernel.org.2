@@ -2,67 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86DA3D70B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06103D70B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235788AbhG0H5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:57:32 -0400
-Received: from mail-0301.mail-europe.com ([188.165.51.139]:41518 "EHLO
-        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235621AbhG0H5b (ORCPT
+        id S235629AbhG0H7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:59:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235675AbhG0H7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:57:31 -0400
-Date:   Tue, 27 Jul 2021 07:57:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1627372647;
-        bh=u3G2fqXXeibWLhXcsZ5/K1ahfoesTPk2yC7KcHsatq8=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=P7aHOGJuRFe6GY24c87woPSnvd4dK2TzwKgBAkzI5DlnSn4HlQErw0S62KFUnjUdE
-         Z/BLKqMOItmzsp4Z9nL1JMCi+7dkeGwmE3yd0o1gzFmlrwmECuWtXRKmHWY+p9Ni4l
-         mqi5+RIw+6XCIkueSeUIe73P3R/ZrIOJnmznnwVQ=
-To:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH] arm64: dts: qcom: msm8996: Change power domain for mdp_smmu
-Message-ID: <ziJMQ8GqduRgb0M8oiP0NHbAQYTdBU2gFjzyQxhmts@cp3-web-029.plabs.ch>
+        Tue, 27 Jul 2021 03:59:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627372793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/EIq4hrAP0Ac0pX1HeyNfiwT/0BIOEO0auXFwtqoKwk=;
+        b=RzWYwwJW0HI5LovkIL/n3eKTaJxruFQFZsnR+6nAOLc2j7Rglx9g3B3OO8/iwDMO3JJluO
+        bF9JqQ1V+P0JXy/QYLC698r4I7KJ8h8D419mWyLo6CPGB4Ma8XiPupjqQ/cqL7TbSRhrfT
+        0m1snXyA+r3o2E6pOolbXbCf7ywX2q0=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-VtHXY_ebMMGZG17Ja4wxjQ-1; Tue, 27 Jul 2021 03:59:52 -0400
+X-MC-Unique: VtHXY_ebMMGZG17Ja4wxjQ-1
+Received: by mail-ed1-f72.google.com with SMTP id u25-20020aa7d8990000b02903bb6a903d90so3382675edq.17
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:59:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/EIq4hrAP0Ac0pX1HeyNfiwT/0BIOEO0auXFwtqoKwk=;
+        b=VVvmfyiDQT0kd+WduwZfVNz5CZds9/EJfQ22/Iq0349XsOJQfbDvNpAP0atgbQOIu9
+         UpQ3VDrguo2ND7hYXwllRg5BiepxOBWQDMBxQ4yGvJIs2pTdQls7/BSqAdZZ2CqhOfZI
+         0DD/qV1MrPEuujprngrIGX+QZ/i7Akgf0uwgBfKUWcnBps+iY9IofN6/MoPZCtZv4XLZ
+         Wqa88R5siEAC8Dt6Tq2l2tqmPElatDMduMsC/mj1lZBaABaClLFcWmZ72F3Q8T4B0HQI
+         gLcGrGDNXeU56mGOvPUPnRBbrRoSAPUu4Br5QCh/pSjjGng9Ivw9LGzUdvVtTwFSZI8j
+         SUbg==
+X-Gm-Message-State: AOAM531nfiOLNrSDR5UhivdU4KT2PoRnaXkWCBQkmq+4fUgKFYNRg++0
+        wP9hK9REJMXnHhqRLyq1lWFqXfJ4eUWJrLW6aN6/ruZA2ce3Qt6N8LNCr5qrV/PsiT7n+WpeYju
+        S8Xy4vwXk8qrI0jGgV/ZFGWG0
+X-Received: by 2002:a05:6402:12c3:: with SMTP id k3mr11211306edx.11.1627372791441;
+        Tue, 27 Jul 2021 00:59:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwlCvS56tYgLWOzqJ8Wh70Fht2s02iJ7M5DydMmq9uVJaSBBqYQBS2qw7251aRYo+dt+iun8A==
+X-Received: by 2002:a05:6402:12c3:: with SMTP id k3mr11211285edx.11.1627372791319;
+        Tue, 27 Jul 2021 00:59:51 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id i14sm613214eja.91.2021.07.27.00.59.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 00:59:50 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 09:59:48 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v1 0/7] virtio/vsock: introduce MSG_EOR flag for
+ SEQPACKET
+Message-ID: <20210727075948.yl4w3foqa6rp4obg@steredhat>
+References: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MDP SMMU is powered by MMAGIC_MDSS_GDSC. Change power-domains to match.
+On Mon, Jul 26, 2021 at 07:31:33PM +0300, Arseny Krasnov wrote:
+>	This patchset implements support of MSG_EOR bit for SEQPACKET
+>AF_VSOCK sockets over virtio transport.
+>	Idea is to distinguish concepts of 'messages' and 'records'.
+>Message is result of sending calls: 'write()', 'send()', 'sendmsg()'
+>etc. It has fixed maximum length, and it bounds are visible using
+>return from receive calls: 'read()', 'recv()', 'recvmsg()' etc.
+>Current implementation based on message definition above.
+>	Record has unlimited length, it consists of multiple message,
+>and bounds of record are visible via MSG_EOR flag returned from
+>'recvmsg()' call. Sender passes MSG_EOR to sending system call and
+>receiver will see MSG_EOR when corresponding message will be processed.
+>	To support MSG_EOR new bit was added along with existing
+>'VIRTIO_VSOCK_SEQ_EOR': 'VIRTIO_VSOCK_SEQ_EOM'(end-of-message) - now it
+>works in the same way as 'VIRTIO_VSOCK_SEQ_EOR'. But 'VIRTIO_VSOCK_SEQ_EOR'
+>is used to mark 'MSG_EOR' bit passed from userspace.
 
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
----
- arch/arm64/boot/dts/qcom/msm8996.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+At this point it's probably better to rename the old flag, so we stay 
+compatible.
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qc=
-om/msm8996.dtsi
-index 78c55ca10ba9..dd241dc7c124 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -1998,7 +1998,7 @@ mdp_smmu: iommu@d00000 {
- =09=09=09=09 <&mmcc SMMU_MDP_AXI_CLK>;
- =09=09=09clock-names =3D "iface", "bus";
-=20
--=09=09=09power-domains =3D <&mmcc MDSS_GDSC>;
-+=09=09=09power-domains =3D <&mmcc MMAGIC_MDSS_GDSC>;
- =09=09};
-=20
- =09=09venus_smmu: iommu@d40000 {
---=20
-2.32.0
+What happens if one of the two peers does not support MSG_EOR handling, 
+while the other does?
 
+I'll do a closer review in the next few days.
+
+Thanks,
+Stefano
 
