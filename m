@@ -2,217 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E043D6AEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B983D6AF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234226AbhGZXgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 19:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234038AbhGZXgP (ORCPT
+        id S234319AbhGZXg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 19:36:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59385 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234266AbhGZXgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 19:36:15 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE501C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 17:16:42 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 48-20020a9d0bb30000b02904cd671b911bso11819383oth.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 17:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=tscrZBQstzzRaUL+UaPR6i4OEaBy+HrQhXGyWhtHbpY=;
-        b=I0bCa3Idkeu+p5K2AETrjGGnbJVU0B3Kdkogh8ZnX/Pg35bJ5u63zp1PpsZR4PUA71
-         pJvXM4Jz0xpHXLWmGg5smlJmSgXTQ1IRM4qgno2YoYyOBJ3LpB2LlPz6s+v/qRrjOvKD
-         hKDJtkmccFTnmNWnT0gIloYTbnGn5VN8AvSdQ=
+        Mon, 26 Jul 2021 19:36:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627345011;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yPKnHMawtn4+562UZeA0fPpbczZEHG0RBodp91MmPi0=;
+        b=FfIa3e+XVnew5oSoDaO8w3omK5kQNyND21jzYxdXn6j90vkBx7ZxF2qHJFesmnYxQ0oN3T
+        iaoUBKO9Llt/OLru90O2kojYnbNokRXovMoFhKqbSXD3kurckJ2RgxH3kU7ELjjpaJ3WEp
+        JyvZGrXr/QfaCEnzROiY3eDwa7Yo01M=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-5d5Y0Gn7O9u37RQU2xDo7g-1; Mon, 26 Jul 2021 20:16:50 -0400
+X-MC-Unique: 5d5Y0Gn7O9u37RQU2xDo7g-1
+Received: by mail-qv1-f71.google.com with SMTP id gm10-20020a056214268ab02902eaed054a57so9455003qvb.15
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 17:16:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=tscrZBQstzzRaUL+UaPR6i4OEaBy+HrQhXGyWhtHbpY=;
-        b=ovElY/DpQxjRMVuvnOa4KQFUykmcigJ0TJwrh0nJcoXPyuHgAis2RP6mu+Ktonk0Is
-         GIADR7f31hZ3K6aZe3GZv5mAj08iwMru+tB6A7tOQkfGalnx03vpF4lGQBGATXrvDM2B
-         mASxn2ckLJN1mvgTQA8H1zV2ruM1ZyJDufk4U7cgnRV1eJmF+WVTNG6FzlvnNH88alZq
-         xQBKLxaTxV+hPFUhPxHueprJ33nI3Ctor03jxvNhuLeZ9gAOAAoyYB/MuZwjrTkBL2Ot
-         CDz0tH0FSGV/FVMqDpi33lyJi0GriYgomz+ETpyMSrblLr4mYO7Y7StH8xjAYNVD+TFG
-         xeqA==
-X-Gm-Message-State: AOAM5338kNWc2Ei02FmwIw8tWcpWomYQVdUVtx0wQnqD43wko8vVhm3e
-        uBSLBmgDjy4kkBiUmsRPgBd4ZZyX7IAhkw6VmiJ/HQ==
-X-Google-Smtp-Source: ABdhPJz9DOthLfEXyaAywpN2zjLbyg7yP79QdEbJyK44iOYpg3YyBnI1HZX1Oyg1Cv6KyXuESXsA/iFNxu6OmeFGo9c=
-X-Received: by 2002:a9d:650e:: with SMTP id i14mr13685660otl.233.1627345002305;
- Mon, 26 Jul 2021 17:16:42 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 26 Jul 2021 20:16:41 -0400
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=yPKnHMawtn4+562UZeA0fPpbczZEHG0RBodp91MmPi0=;
+        b=ubEsTbtTDnqDhHrVU1CGkAg0b/Al2bZt7nRD/mNSgPu6NXVdndxUdcLx/neqZ46zcZ
+         eKEp526HbT6mQPTz/xjxaJLt3eXkpLvXZlT6U+Nt1tI6TwO79BGYaSRT+oheKInb6pTd
+         B0hW9mznP1qaDsfqjmblt1DAmQgHKh9LHowZMO5ua6jm4tQMWQA4EP0tmxpWviIgih3K
+         vcwoZTQKgKthgVm1t+djhcjqdFvYajmuogkVLhoqJIl5FLmOSEZywJedziTjTJqeSLCa
+         CGIPBNh7QB05SM7yE6WeWFRVSc5PzSVr7YOkJPHg2dErwnTW4gQtEYFYi+ra8xkxTAfu
+         LAJQ==
+X-Gm-Message-State: AOAM5314wnMcACW01nG89mQPZFAQotDGIWgjBwFLrviwFlR1mP8yQkfu
+        X50FDvZ2A0htzIy0bTuzts4k0efTX+rpMy2cXK7maRik1R6VdGQ+aJsFrjTFNxTO0d8kK9C0U/+
+        ifXJ4Uk2Xmh1HWi5DhTXiKQLG
+X-Received: by 2002:ae9:f805:: with SMTP id x5mr19675013qkh.373.1627345009396;
+        Mon, 26 Jul 2021 17:16:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqjOcBhQGktxAQ6u7Q5ZYN/xxQjZFe454padRp8KSuiQelvsXyA4IBy4NXrXABxwfTfV8QvA==
+X-Received: by 2002:ae9:f805:: with SMTP id x5mr19674997qkh.373.1627345009220;
+        Mon, 26 Jul 2021 17:16:49 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id w19sm852620qkb.66.2021.07.26.17.16.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 17:16:48 -0700 (PDT)
+Subject: Re: [PATCH] fpga: region: handle compat_id as an uuid
+To:     Russ Weight <russell.h.weight@intel.com>, hao.wu@intel.com,
+        mdf@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+References: <20210726202650.4074614-1-trix@redhat.com>
+ <6f30a4c6-61a0-bb57-9f13-bcad3f3589b8@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <ba28bac6-9c6d-de73-523f-b8ba4bef84de@redhat.com>
+Date:   Mon, 26 Jul 2021 17:16:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <1627147740-11590-1-git-send-email-akhilpo@codeaurora.org>
-References: <1627147740-11590-1-git-send-email-akhilpo@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 26 Jul 2021 20:16:41 -0400
-Message-ID: <CAE-0n52mEy1GReYwcVrffT2KOy4EHMHH-RyCJ_mmxhaeXwGdYA@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add gpu support
-To:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6f30a4c6-61a0-bb57-9f13-bcad3f3589b8@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Akhil P Oommen (2021-07-24 10:29:00)
-> Add the necessary dt nodes for gpu support in sc7280.
->
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> ---
-> This patch has dependency on the GPUCC bindings patch here:
-> https://patchwork.kernel.org/project/linux-arm-msm/patch/1619519590-3019-4-git-send-email-tdas@codeaurora.org/
 
-To avoid the dependency the plain numbers can be used.
+On 7/26/21 3:12 PM, Russ Weight wrote:
+> On 7/26/21 1:26 PM, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> An fpga region's compat_id is exported by the sysfs
+>> as a 128 bit hex string formed by concatenating two
+>> 64 bit values together.
+>>
+>> The only user of compat_id is dfl.  Its user library
+>> opae converts this value into a uuid.
+>>
+>> ex/
+>> $ cat /sys/class/fpga_region/region1/compat_id
+>> f3c9941350814aadbced07eb84a6d0bb
+>>
+>> Is reported as
+>> $ fpgainfo bmc
+>> ...
+>> Pr Interface Id                  : f3c99413-5081-4aad-bced-07eb84a6d0bb
+>>
+>> Storing a uuid as 2 64 bit values is vendor specific.
+>> And concatenating them together is vendor specific.
+>>
+>> It is better to store and print out as a vendor neutral uuid.
+>>
+>> Change fpga_compat_id from a struct to a union.
+>> Keep the old 64 bit values for dfl.
+>> Sysfs output is now
+>> f3c99413-5081-4aad-bced-07eb84a6d0bb
+> I'm fowarding feedback from Tim Whisonant, one of the OPAE userspace
+> developers:
+>
+> I think that this change to the sysfs for the compat_id node will
+> end up breaking the SDK, which does not expect the '-' characters to
+> be included when parsing the sysfs value. Currently, it is parsed as
+> a raw hex string without regard to any '-' characters. This goes for
+> any "guid" currently exported by sysfs and for what we read in the
+> device MMIO space.
+
+Yes, it will.
+
+And there are other places, like dfl-afu-main.c:afu_id_show()
+
+outputs raw hex that sdk turns into a uuid.
+
+
+Some options.
+
+If no one but dfl will ever use it, then v1 of patchset.
+
+If others can use it but don't want to change dfl, then v2 of patchset, 
+my favorite.
+
+Or this one for uuid for everyone, what have been v3 but changed too much.
+
+
+could dfl change generally to output uuid's to the sysfs ?
+
+this would be generally helpful and a one time disruption to the sdk.
+
+Tom
 
 >
-> Changes in v2:
-> - formatting update and removed a duplicate header (Stephan)
+> - Russ
 >
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 116 +++++++++++++++++++++++++++++++++++
->  1 file changed, 116 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 029723a..524a5e0 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -585,6 +586,121 @@
->                         #clock-cells = <1>;
->                 };
->
-> +               gpu@3d00000 {
-> +                       compatible = "qcom,adreno-635.0", "qcom,adreno";
-> +                       #stream-id-cells = <16>;
-> +                       reg = <0 0x03d00000 0 0x40000>,
-> +                             <0 0x03d9e000 0 0x1000>,
-> +                             <0 0x03d61000 0 0x800>;
-> +                       reg-names = "kgsl_3d0_reg_memory",
-> +                                   "cx_mem",
-> +                                   "cx_dbgc";
-> +                       interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
-> +                       iommus = <&adreno_smmu 0 0x401>;
-> +                       operating-points-v2 = <&gpu_opp_table>;
-> +                       qcom,gmu = <&gmu>;
-> +                       interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
-> +                       interconnect-names = "gfx-mem";
-> +
-> +                       gpu_opp_table: opp-table {
-> +                               compatible = "operating-points-v2";
-> +
-> +                               opp-550000000 {
-> +                                       opp-hz = /bits/ 64 <550000000>;
-> +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
-> +                                       opp-peak-kBps = <6832000>;
-> +                               };
-> +
-> +                               opp-450000000 {
-> +                                       opp-hz = /bits/ 64 <450000000>;
-> +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
-> +                                       opp-peak-kBps = <4068000>;
-> +                               };
-> +
-> +                               opp-315000000 {
-> +                                       opp-hz = /bits/ 64 <315000000>;
-> +                                       opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
-> +                                       opp-peak-kBps = <1804000>;
-> +                               };
-> +                       };
-> +               };
-> +
-> +               gmu: gmu@3d69000 {
-> +                       compatible="qcom,adreno-gmu-635.0", "qcom,adreno-gmu";
-> +                       reg = <0 0x03d6a000 0 0x34000>,
-> +                               <0 0x3de0000 0 0x10000>,
-> +                               <0 0x0b290000 0 0x10000>;
-> +                       reg-names = "gmu", "rscc", "gmu_pdc";
-> +                       interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "hfi", "gmu";
-> +                       clocks = <&gpucc GPU_CC_CX_GMU_CLK>,
-> +                                       <&gpucc GPU_CC_CXO_CLK>,
-> +                                       <&gcc GCC_DDRSS_GPU_AXI_CLK>,
-> +                                       <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
-> +                                       <&gpucc GPU_CC_AHB_CLK>,
-> +                                       <&gpucc GPU_CC_HUB_CX_INT_CLK>,
-> +                                       <&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>;
-> +                       clock-names = "gmu",
-> +                                     "cxo",
-> +                                     "axi",
-> +                                     "memnoc",
-> +                                     "ahb",
-> +                                     "hub",
-> +                                     "smmu_vote";
-> +                       power-domains = <&gpucc GPU_CC_CX_GDSC>,
-> +                                       <&gpucc GPU_CC_GX_GDSC>;
-> +                       power-domain-names = "cx",
-> +                                            "gx";
-> +                       iommus = <&adreno_smmu 5 0x400>;
-> +                       operating-points-v2 = <&gmu_opp_table>;
-> +
-> +                       gmu_opp_table: opp-table {
-> +                               compatible = "operating-points-v2";
-> +
-> +                               opp-200000000 {
-> +                                       opp-hz = /bits/ 64 <200000000>;
-> +                                       opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
-> +                               };
-> +                       };
-> +               };
-> +
-> +               adreno_smmu: iommu@3da0000 {
-> +                       compatible = "qcom,sc7280-smmu-500", "qcom,adreno-smmu", "arm,mmu-500";
-> +                       reg = <0 0x03da0000 0 0x20000>;
-> +                       #iommu-cells = <2>;
-> +                       #global-interrupts = <2>;
-> +                       interrupts = <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 675 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 686 IRQ_TYPE_LEVEL_HIGH>,
-> +                                       <GIC_SPI 687 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +                       clocks = <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
-> +                                       <&gcc GCC_GPU_SNOC_DVM_GFX_CLK>,
-> +                                       <&gpucc GPU_CC_AHB_CLK>,
-> +                                       <&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>,
-> +                                       <&gpucc GPU_CC_CX_GMU_CLK>,
-> +                                       <&gpucc GPU_CC_HUB_CX_INT_CLK>,
-> +                                       <&gpucc GPU_CC_HUB_AON_CLK>;
-> +                       clock-names = "gcc_gpu_memnoc_gfx_clk",
-> +                                       "gcc_gpu_snoc_dvm_gfx_clk",
-> +                                       "gpu_cc_ahb_clk",
-> +                                       "gpu_cc_hlos1_vote_gpu_smmu_clk",
-> +                                       "gpu_cc_cx_gmu_clk",
-> +                                       "gpu_cc_hub_cx_int_clk",
-> +                                       "gpu_cc_hub_aon_clk";
-> +
-> +                       power-domains = <&gpucc GPU_CC_CX_GDSC>;
-> +               };
-> +
->                 lpass_ag_noc: interconnect@3c40000 {
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>   .../ABI/testing/sysfs-class-fpga-region        |  4 ++--
+>>   drivers/fpga/dfl-fme-mgr.c                     |  8 ++++----
+>>   drivers/fpga/fpga-region.c                     |  4 +---
+>>   include/linux/fpga/fpga-mgr.h                  | 18 ++++++++++++------
+>>   include/linux/fpga/fpga-region.h               |  2 +-
+>>   5 files changed, 20 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-class-fpga-region b/Documentation/ABI/testing/sysfs-class-fpga-region
+>> index bc7ec644acc9a..241359fb74a55 100644
+>> --- a/Documentation/ABI/testing/sysfs-class-fpga-region
+>> +++ b/Documentation/ABI/testing/sysfs-class-fpga-region
+>> @@ -5,5 +5,5 @@ Contact:	Wu Hao <hao.wu@intel.com>
+>>   Description:	FPGA region id for compatibility check, e.g. compatibility
+>>   		of the FPGA reconfiguration hardware and image. This value
+>>   		is defined or calculated by the layer that is creating the
+>> -		FPGA region. This interface returns the compat_id value or
+>> -		just error code -ENOENT in case compat_id is not used.
+>> +		FPGA region. This interface returns a uuid value or just
+>> +		error code -ENOENT in case compat_id is not used.
+>> diff --git a/drivers/fpga/dfl-fme-mgr.c b/drivers/fpga/dfl-fme-mgr.c
+>> index d5861d13b3069..012b72712684c 100644
+>> --- a/drivers/fpga/dfl-fme-mgr.c
+>> +++ b/drivers/fpga/dfl-fme-mgr.c
+>> @@ -273,16 +273,16 @@ static const struct fpga_manager_ops fme_mgr_ops = {
+>>   };
+>>   
+>>   static void fme_mgr_get_compat_id(void __iomem *fme_pr,
+>> -				  struct fpga_compat_id *id)
+>> +				  union fpga_compat_id *id)
+>>   {
+>> -	id->id_l = readq(fme_pr + FME_PR_INTFC_ID_L);
+>> -	id->id_h = readq(fme_pr + FME_PR_INTFC_ID_H);
+>> +	id->id_l = cpu_to_be64(readq(fme_pr + FME_PR_INTFC_ID_L));
+>> +	id->id_h = cpu_to_be64(readq(fme_pr + FME_PR_INTFC_ID_H));
+>>   }
+>>   
+>>   static int fme_mgr_probe(struct platform_device *pdev)
+>>   {
+>>   	struct dfl_fme_mgr_pdata *pdata = dev_get_platdata(&pdev->dev);
+>> -	struct fpga_compat_id *compat_id;
+>> +	union fpga_compat_id *compat_id;
+>>   	struct device *dev = &pdev->dev;
+>>   	struct fme_mgr_priv *priv;
+>>   	struct fpga_manager *mgr;
+>> diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
+>> index a4838715221ff..f1083b5894635 100644
+>> --- a/drivers/fpga/fpga-region.c
+>> +++ b/drivers/fpga/fpga-region.c
+>> @@ -166,9 +166,7 @@ static ssize_t compat_id_show(struct device *dev,
+>>   	if (!region->compat_id)
+>>   		return -ENOENT;
+>>   
+>> -	return sprintf(buf, "%016llx%016llx\n",
+>> -		       (unsigned long long)region->compat_id->id_h,
+>> -		       (unsigned long long)region->compat_id->id_l);
+>> +	return sprintf(buf, "%pU\n", &region->compat_id->uuid);
+>>   }
+>>   
+>>   static DEVICE_ATTR_RO(compat_id);
+>> diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
+>> index ec2cd8bfceb00..b12f9994932e1 100644
+>> --- a/include/linux/fpga/fpga-mgr.h
+>> +++ b/include/linux/fpga/fpga-mgr.h
+>> @@ -10,6 +10,7 @@
+>>   
+>>   #include <linux/mutex.h>
+>>   #include <linux/platform_device.h>
+>> +#include <linux/uuid.h>
+>>   
+>>   struct fpga_manager;
+>>   struct sg_table;
+>> @@ -144,14 +145,19 @@ struct fpga_manager_ops {
+>>   #define FPGA_MGR_STATUS_FIFO_OVERFLOW_ERR	BIT(4)
+>>   
+>>   /**
+>> - * struct fpga_compat_id - id for compatibility check
+>> - *
+>> + * union fpga_compat_id - id for compatibility check
+>> + * Can be accessed as either:
+>> + * @uuid: the base uuid_t type
+>> + * or
+>>    * @id_h: high 64bit of the compat_id
+>>    * @id_l: low 64bit of the compat_id
+>>    */
+>> -struct fpga_compat_id {
+>> -	u64 id_h;
+>> -	u64 id_l;
+>> +union fpga_compat_id {
+>> +	uuid_t uuid;
+>> +	struct {
+>> +		u64 id_h;
+>> +		u64 id_l;
+>> +	};
+>>   };
+>>   
+>>   /**
+>> @@ -169,7 +175,7 @@ struct fpga_manager {
+>>   	struct device dev;
+>>   	struct mutex ref_mutex;
+>>   	enum fpga_mgr_states state;
+>> -	struct fpga_compat_id *compat_id;
+>> +	union fpga_compat_id *compat_id;
+>>   	const struct fpga_manager_ops *mops;
+>>   	void *priv;
+>>   };
+>> diff --git a/include/linux/fpga/fpga-region.h b/include/linux/fpga/fpga-region.h
+>> index 27cb706275dba..7cc2ee543efb4 100644
+>> --- a/include/linux/fpga/fpga-region.h
+>> +++ b/include/linux/fpga/fpga-region.h
+>> @@ -24,7 +24,7 @@ struct fpga_region {
+>>   	struct list_head bridge_list;
+>>   	struct fpga_manager *mgr;
+>>   	struct fpga_image_info *info;
+>> -	struct fpga_compat_id *compat_id;
+>> +	union fpga_compat_id *compat_id;
+>>   	void *priv;
+>>   	int (*get_bridges)(struct fpga_region *region);
+>>   };
 
-This node is 3c40000 and the one above is 3da0000. 3c comes before 3d.
-Please order nodes properly.
-
->                         reg = <0 0x03c40000 0 0xf080>;
->                         compatible = "qcom,sc7280-lpass-ag-noc";
