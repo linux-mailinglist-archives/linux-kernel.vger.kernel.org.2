@@ -2,143 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A693D70F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88193D70FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235951AbhG0ILa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:11:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235874AbhG0IL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:11:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE01A60527;
-        Tue, 27 Jul 2021 08:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627373487;
-        bh=zVqEdy3HT0nY8M2r7ytmalbkDZCkuC6kKnk5DTAldt4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qkONxAMBkplh6w8TVbdOBYTugIGhUMN5hMMUiDc07rH6uelsS8P7180mk4IL81jDN
-         irY84ozNrDsgpOxDqmffFLL2AwiwYFpRq0Ga+Nj+l4MIJUium7fqom5OLTQXUZ0TiN
-         RX0qQldnNwXPY9zdkwdugsy+h9gvSM3QVQYbaSYYN1bIo0tPShH7Xz7esdn0xMxmAB
-         GwhsidMKS+vfmqcE9Xgee4Nji1NIosmPKuu6zZZML+TtjhOHYc6QmKfs18gzNaL5e4
-         EOFtjT/mWoYRe1xytqVi6GjaimnBepLNu58XwjuD64gDlm61J4/ruvzKsXjZcXRX0B
-         uFKJxeCnWHM6A==
-Date:   Tue, 27 Jul 2021 10:11:22 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: Re: [PATCH v5 2/8] dt-bindings: phy: Add bindings for HiKey 970
- PCIe PHY
-Message-ID: <20210727101122.204b6b9e@coco.lan>
-In-Reply-To: <20210714174225.GA8988@workstation>
-References: <cover.1626157454.git.mchehab+huawei@kernel.org>
-        <baa7e71e13953b28a11fffdcef35195099feb7fd.1626157454.git.mchehab+huawei@kernel.org>
-        <20210714022649.GA1324196@robh.at.kernel.org>
-        <20210714091435.322d68b1@coco.lan>
-        <20210714174225.GA8988@workstation>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S235923AbhG0INg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Jul 2021 04:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235885AbhG0INf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 04:13:35 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28207C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:13:36 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1m8IDP-0007jS-2I; Tue, 27 Jul 2021 10:13:27 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1m8IDO-0007JH-02; Tue, 27 Jul 2021 10:13:26 +0200
+Message-ID: <145309b88353d4127c659dfabd374252cb2afc48.camel@pengutronix.de>
+Subject: Re: [PATCH v3 2/3] iio: adc: Add driver for Renesas RZ/G2L A/D
+ converter
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Date:   Tue, 27 Jul 2021 10:13:25 +0200
+In-Reply-To: <CA+V-a8shgfxffdOTj0cyxz36XVxGxUkq1obPJNOSc94BKUWung@mail.gmail.com>
+References: <20210726182850.14328-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+         <20210726182850.14328-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+         <f23358e3e040cc8522b259669ec61a22c5439394.camel@pengutronix.de>
+         <CA+V-a8shgfxffdOTj0cyxz36XVxGxUkq1obPJNOSc94BKUWung@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
+On Tue, 2021-07-27 at 09:02 +0100, Lad, Prabhakar wrote:
+[...]
+> > > +     ret = devm_add_action_or_reset(&pdev->dev,
+> > > +                                    rzg2l_adc_reset_assert, adc->adrstn);
+> > > +     if (ret) {
+> > > +             dev_err(&pdev->dev, "failed to register adrstn assert devm action, %d\n",
+> > > +                     ret);
+> > > +             return ret;
+> > > +     }
+> > 
+> > This is the wrong way around. Installing devres actions should be done
+> > after the thing they are supposed to revert in case of error. You should
+> > move this down below the reset_control_deassert(adc->adrstn).
+> > 
+> Ouch my understanding was, there won't be any harm in asserting the
+> reset line. Agree with will move this below
+> reset_control_deassert(adc->adrstn).
 
-Em Wed, 14 Jul 2021 23:12:25 +0530
-Manivannan Sadhasivam <mani@kernel.org> escreveu:
+You are probably right, but it's still better do it correctly. Just
+imagine one of the reset lines turns out to be shared later, or somebody
+else will look at this driver for inspiration.
 
-> I'm not sure about this. That fact that the PCIe device's PERST# signal
-> wired to different GPIOs doesn't mean that those GPIOs belong to the PHY.
-> Those GPIOs should be independent of the PCIe core controlled manually
-> by the driver.
-> 
-> I think this issue is somewhat similar to the one we are dealing on the
-> Qcom platforms [1] where each PCIe device uses a different GPIO and voltage
-> config to operate. And those need to be active for the link training to
-> succeed.
-> 
-> So perhaps we should aim for a common solution? The GPIO and voltage
-> layout should be described in DT for each port exposed by the SoC/board.
-> 
-> Thanks,
-> Mani
-> 
-> [1] https://lkml.org/lkml/2021/6/21/1524
-
-After re-visiting this issue, I'm starting to think that this should
-be mapped as something similar to:
-
-	pcie@xxxx {
-...
-		slot {
-			slot#1 {
-				// clock, power supply, reset pins, etc
-			}
-			slot#2 {
-				// clock, power supply, reset pins, etc
-			}
-...
-		}
-	};
-
-E. g. placing each specific PCIe device requirement inside the pcie
-or phy, as it should be up to the driver to initialize each PCIe 
-child-specific requirements when the hardware is ready for that.
-
----
-
-A longer explanation why this should be initialized during PHY
-power on sequence:
-
-On my tests with Kirin 970, there are some steps to be done before
-enabling the clocks and sending PERST# signals, plus some extra
-steps to run after PERST# is sent to all devices.
-
-While playing with PHY split, I noticed that Linux and/or the SoC
-is very sensitive to an specific probing order. If such order is
-not followed, an ARM SError happens and the Kernel panics
-with something similar to:
-
-  [    1.837458] SError Interrupt on CPU0, code 0xbf000002 -- SError
-  [    1.837462] CPU: 0 PID: 74 Comm: kworker/0:1 Not tainted 5.8.0+ #205
-  [    1.837463] Hardware name: HiKey970 (DT)
-  [    1.837465] Workqueue: events deferred_probe_work_func
-  [    1.837467] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-  [    1.837468] pc : _raw_spin_unlock_irqrestore+0x18/0x50
-  [    1.837469] lr : regmap_unlock_spinlock+0x14/0x20
-...
-  [    1.837507] Kernel panic - not syncing: Asynchronous SError Interrupt
-
-
-One example is with regards to the clocks required for the PCIe
-to work:
-
-	clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
-		 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
-		 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
-		 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
-		 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
-
-If them aren't initialized at the expected order, the Kernel
-hangs. The same applies to the slot-specific clocks.
-
-So, basically, the driver needs to initialize them on this
-sequence:
-
-	1. PHY ref clock;
-	2. APB sys and phy clock;
-	3. aclk and aux_clk;
-	<some settings at the PHY hardware>
-	4. slot-specific clocks.
-
-failing to follow a valid power-on sequence crashes the Kernel.
-
-
-Thanks,
-Mauro
+regards
+Philipp
