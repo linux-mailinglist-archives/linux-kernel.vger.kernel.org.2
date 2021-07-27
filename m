@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0628B3D7951
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C4B3D7952
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236703AbhG0PG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:06:27 -0400
-Received: from mail.efficios.com ([167.114.26.124]:36140 "EHLO
+        id S236977AbhG0PGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:06:30 -0400
+Received: from mail.efficios.com ([167.114.26.124]:36166 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbhG0PGV (ORCPT
+        with ESMTP id S232623AbhG0PGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:06:21 -0400
+        Tue, 27 Jul 2021 11:06:23 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 61C15350237;
-        Tue, 27 Jul 2021 11:06:21 -0400 (EDT)
+        by mail.efficios.com (Postfix) with ESMTP id B97DE350239;
+        Tue, 27 Jul 2021 11:06:22 -0400 (EDT)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Ss5ovKjgJl33; Tue, 27 Jul 2021 11:06:21 -0400 (EDT)
+        with ESMTP id b3zQ_Ns2nG44; Tue, 27 Jul 2021 11:06:22 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C309C33FF66;
+        by mail.efficios.com (Postfix) with ESMTP id E0A0C3501BF;
         Tue, 27 Jul 2021 11:06:20 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C309C33FF66
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E0A0C3501BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
         s=default; t=1627398380;
-        bh=ZwSxJkX1USdw84WJsqByGcd2s0tZ3larauw1AMP5ayA=;
+        bh=ZnXgM2nvBkJTpOGaG1EAE/i5K7sKv+uAoRWqqAmrgNY=;
         h=From:To:Date:Message-Id:MIME-Version;
-        b=faSggLucQDfYsZQpduGeqkLKLFSy0osbp+L7/Emvd9mhvbCyDxKAwgyMm6mcwgW3y
-         ZU9lbvk+ZOqkzt7V7VWb1Rk9GAwwdMuRvUBdG83G0dgCKARBK0HeALKdhm8GtnZ5Ny
-         JjemNDkjtfrF6aBhQW4jvl3708DtPzehx4uO01I5L5e1xZh9MqLrKSNA2rJaqlgAmk
-         vNevy/877E8MKDWt788wsFiXOloDhOV9OTOXliLVQke2XVIsRabZ65m9CeZMf7fyPQ
-         AGVrzICs6vu8RbC0cfnuIH1hCSTL65nvP62sDMYL3DMsiisB56b2webmZYqd7R+Ybe
-         6WLDr4OsexZag==
+        b=kbahAbJ1nPhIz75h9FwgFxkH5p7bp2IJjZnXCoCo8JQpxOuXnfFRGASUskmsv+KyM
+         qLsGzq1bviM1U1+bKa2yD0BzYJiPE3RNfAzNxel/hHS27x7bFK3l5+ERXzyjmy/0ex
+         yZ2wV4k5ro+ZxF8GRggEVxnkV5jWiboK6Y5x2Qbyyg/wAskCewJuvAYhaCkmVVNSR9
+         2P71RKOORU2lrTj6ptijy2Qg5kvl6gGJRyloQXDnd+Bk1K+jVBC+3BGc51tvqQcsaY
+         fMRNNsE6Fqhu73ojTI23aw2DThtChjbXPiicImuAquG/eXvSACArFdpxvcME7gMndy
+         KLFV7xnAGSMcg==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id KoVppCzpmatt; Tue, 27 Jul 2021 11:06:20 -0400 (EDT)
+        with ESMTP id RQC9x2itwhAp; Tue, 27 Jul 2021 11:06:20 -0400 (EDT)
 Received: from thinkos.etherlink (192-222-188-69.qc.cable.ebox.net [192.222.188.69])
-        by mail.efficios.com (Postfix) with ESMTPSA id 1C9AA350513;
+        by mail.efficios.com (Postfix) with ESMTPSA id 4217633FF62;
         Tue, 27 Jul 2021 11:06:20 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Steven Rostedt <rostedt@goodmis.org>,
@@ -48,9 +48,9 @@ To:     Steven Rostedt <rostedt@goodmis.org>,
         Stefan Metzmacher <metze@samba.org>
 Cc:     linux-kernel@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [RFC PATCH 2/3] Fix: tracepoint: static call function vs data state mismatch
-Date:   Tue, 27 Jul 2021 11:06:12 -0400
-Message-Id: <20210727150613.20886-3-mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH 3/3] Fix: tracepoint: rcu get state and cond sync for static call updates
+Date:   Tue, 27 Jul 2021 11:06:13 -0400
+Message-Id: <20210727150613.20886-4-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210727150613.20886-1-mathieu.desnoyers@efficios.com>
 References: <20210727150613.20886-1-mathieu.desnoyers@efficios.com>
@@ -60,202 +60,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a 1->0->1 callbacks transition, there is an issue with the new
-callback using the old callback's data.
+State transitions from 1->0->1 and N->2->1 callbacks require RCU
+synchronization. Rather than performing the RCU synchronization every
+time the state change occurs, which is quite slow when many tracepoints
+are registered in batch, instead keep a snapshot of the RCU state on the
+most recent transitions which belong to a chain, and conditionally wait
+for a grace period on the last transition of the chain if one g.p. has
+not elapsed since the last snapshot.
 
-Considering __DO_TRACE_CALL:
-
-        do {                                                            \
-                struct tracepoint_func *it_func_ptr;                    \
-                void *__data;                                           \
-                it_func_ptr =3D                                          =
- \
-                        rcu_dereference_raw((&__tracepoint_##name)->funcs=
-); \
-                if (it_func_ptr) {                                      \
-                        __data =3D (it_func_ptr)->data;                  =
- \
-
-----> [ delayed here on one CPU (e.g. vcpu preempted by the host) ]
-
-                        static_call(tp_func_##name)(__data, args);      \
-                }                                                       \
-        } while (0)
-
-It has loaded the tp->funcs of the old callback, so it will try to use th=
-e old
-data. This can be fixed by adding a RCU sync anywhere in the 1->0->1
-transition chain.
-
-On a N->2->1 transition, we need an rcu-sync because you may have a
-sequence of 3->2->1 (or 1->2->1) where the element 0 data is unchanged
-between 2->1, but was changed from 3->2 (or from 1->2), which may be
-observed by the static call. This can be fixed by adding an
-unconditional RCU sync in transition 2->1.
-
-A follow up fix will introduce a more lightweight scheme based on RCU
-get_state and cond_sync.
+This applies to both RCU and SRCU.
 
 [ Build tested only. ]
 
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 ---
- kernel/tracepoint.c | 100 +++++++++++++++++++++++++++++++++++---------
- 1 file changed, 80 insertions(+), 20 deletions(-)
+ kernel/tracepoint.c | 89 +++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 77 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 133b6454b287..a85e7dc8b490 100644
+index a85e7dc8b490..82f37045cd2b 100644
 --- a/kernel/tracepoint.c
 +++ b/kernel/tracepoint.c
-@@ -15,6 +15,13 @@
- #include <linux/sched/task.h>
- #include <linux/static_key.h>
+@@ -28,6 +28,49 @@ extern tracepoint_ptr_t __stop___tracepoints_ptrs[];
+ DEFINE_SRCU(tracepoint_srcu);
+ EXPORT_SYMBOL_GPL(tracepoint_srcu);
 =20
-+enum tp_func_state {
-+	TP_FUNC_0,
-+	TP_FUNC_1,
-+	TP_FUNC_2,
-+	TP_FUNC_N,
++enum tp_transition_sync {
++	TP_TRANSITION_SYNC_1_0_1,
++	TP_TRANSITION_SYNC_N_2_1,
++
++	_NR_TP_TRANSITION_SYNC,
 +};
 +
- extern tracepoint_ptr_t __start___tracepoints_ptrs[];
- extern tracepoint_ptr_t __stop___tracepoints_ptrs[];
-=20
-@@ -246,26 +253,29 @@ static void *func_remove(struct tracepoint_func **f=
-uncs,
- 	return old;
- }
-=20
--static void tracepoint_update_call(struct tracepoint *tp, struct tracepo=
-int_func *tp_funcs, bool sync)
-+/*
-+ * Count the number of functions (enum tp_func_state) in a tp_funcs arra=
-y.
-+ */
-+static enum tp_func_state nr_func_state(const struct tracepoint_func *tp=
-_funcs)
++struct tp_transition_snapshot {
++	unsigned long rcu;
++	unsigned long srcu;
++	bool ongoing;
++};
++
++/* Protected by tracepoints_mutex */
++static struct tp_transition_snapshot tp_transition_snapshot[_NR_TP_TRANS=
+ITION_SYNC];
++
++static void tp_rcu_get_state(enum tp_transition_sync sync)
 +{
-+	if (!tp_funcs)
-+		return TP_FUNC_0;
-+	if (!tp_funcs[1].func)
-+		return TP_FUNC_1;
-+	if (!tp_funcs[2].func)
-+		return TP_FUNC_2;
-+	return TP_FUNC_N;	/* 3 or more */
++	struct tp_transition_snapshot *snapshot =3D &tp_transition_snapshot[syn=
+c];
++
++	/* Keep the latest get_state snapshot. */
++	snapshot->rcu =3D get_state_synchronize_rcu();
++	snapshot->srcu =3D start_poll_synchronize_srcu(&tracepoint_srcu);
++	snapshot->ongoing =3D true;
 +}
 +
-+static void tracepoint_update_call(struct tracepoint *tp, struct tracepo=
-int_func *tp_funcs)
- {
- 	void *func =3D tp->iterator;
++static void tp_rcu_clear_ongoing(enum tp_transition_sync sync)
++{
++	tp_transition_snapshot[sync].ongoing =3D false;
++}
++
++static void tp_rcu_cond_sync(enum tp_transition_sync sync)
++{
++	struct tp_transition_snapshot *snapshot =3D &tp_transition_snapshot[syn=
+c];
++
++	if (!snapshot->ongoing)
++		return;
++	cond_synchronize_rcu(snapshot->rcu);
++	if (!poll_state_synchronize_srcu(&tracepoint_srcu, snapshot->srcu))
++		synchronize_srcu(&tracepoint_srcu);
++	snapshot->ongoing =3D false;
++}
++
+ /* Set to 1 to enable tracepoint debug output */
+ static const int tracepoint_debug;
 =20
- 	/* Synthetic events do not have static call sites */
- 	if (!tp->static_call_key)
- 		return;
--
--	if (!tp_funcs[1].func) {
-+	if (nr_func_state(tp_funcs) =3D=3D TP_FUNC_1)
- 		func =3D tp_funcs[0].func;
--		/*
--		 * If going from the iterator back to a single caller,
--		 * we need to synchronize with __DO_TRACE to make sure
--		 * that the data passed to the callback is the one that
--		 * belongs to that callback.
--		 */
--		if (sync)
--			tracepoint_synchronize_unregister();
--	}
--
- 	__static_call_update(tp->static_call_key, tp->static_call_tramp, func);
- }
-=20
-@@ -299,9 +309,31 @@ static int tracepoint_add_func(struct tracepoint *tp=
+@@ -311,6 +354,11 @@ static int tracepoint_add_func(struct tracepoint *tp=
 ,
- 	 * a pointer to it.  This array is referenced by __DO_TRACE from
- 	 * include/linux/tracepoint.h using rcu_dereference_sched().
  	 */
--	tracepoint_update_call(tp, tp_funcs, false);
--	rcu_assign_pointer(tp->funcs, tp_funcs);
--	static_key_enable(&tp->key);
-+	switch (nr_func_state(tp_funcs)) {
-+	case TP_FUNC_1:		/* 0->1 */
-+		/* Set static call to first function */
-+		tracepoint_update_call(tp, tp_funcs);
-+		/* Both iterator and static call handle NULL tp->funcs */
-+		rcu_assign_pointer(tp->funcs, tp_funcs);
-+		static_key_enable(&tp->key);
-+		break;
-+	case TP_FUNC_2:		/* 1->2 */
-+		/* Set iterator static call */
-+		tracepoint_update_call(tp, tp_funcs);
+ 	switch (nr_func_state(tp_funcs)) {
+ 	case TP_FUNC_1:		/* 0->1 */
 +		/*
-+		 * Iterator callback installed before updating tp->funcs.
-+		 * Requires ordering between RCU assign/dereference and
-+		 * static call update/call.
++		 * Make sure new static func never uses old data after a
++		 * 1->0->1 transition sequence.
 +		 */
-+		rcu_assign_pointer(tp->funcs, tp_funcs);
-+		break;
-+	case TP_FUNC_N:		/* N->N+1 (N>1) */
-+		rcu_assign_pointer(tp->funcs, tp_funcs);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		break;
-+	}
-=20
- 	release_probes(old);
- 	return 0;
-@@ -328,17 +360,45 @@ static int tracepoint_remove_func(struct tracepoint=
++		tp_rcu_cond_sync(TP_TRANSITION_SYNC_1_0_1);
+ 		/* Set static call to first function */
+ 		tracepoint_update_call(tp, tp_funcs);
+ 		/* Both iterator and static call handle NULL tp->funcs */
+@@ -326,9 +374,21 @@ static int tracepoint_add_func(struct tracepoint *tp=
+,
+ 		 * static call update/call.
+ 		 */
+ 		rcu_assign_pointer(tp->funcs, tp_funcs);
++		/*
++		 * Make sure static func never uses incorrect data after a
++		 * 1->...->2->1 transition sequence.
++		 */
++		if (tp_funcs[0].data !=3D old[0].data)
++			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
+ 		break;
+ 	case TP_FUNC_N:		/* N->N+1 (N>1) */
+ 		rcu_assign_pointer(tp->funcs, tp_funcs);
++		/*
++		 * Make sure static func never uses incorrect data after a
++		 * N->...->2->1 (N>1) transition sequence.
++		 */
++		if (tp_funcs[0].data !=3D old[0].data)
++			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
+ 		break;
+ 	default:
+ 		WARN_ON_ONCE(1);
+@@ -372,29 +432,34 @@ static int tracepoint_remove_func(struct tracepoint=
  *tp,
- 		/* Failed allocating new tp_funcs, replaced func with stub */
- 		return 0;
-=20
--	if (!tp_funcs) {
-+	switch (nr_func_state(tp_funcs)) {
-+	case TP_FUNC_0:		/* 1->0 */
- 		/* Removed last function */
- 		if (tp->unregfunc && static_key_enabled(&tp->key))
- 			tp->unregfunc();
-=20
- 		static_key_disable(&tp->key);
-+		/* Set iterator static call */
-+		tracepoint_update_call(tp, tp_funcs);
-+		/* Both iterator and static call handle NULL tp->funcs */
-+		rcu_assign_pointer(tp->funcs, NULL);
-+		/*
-+		 * Make sure new func never uses old data after a 1->0->1
-+		 * transition sequence.
-+		 * Considering that transition 0->1 is the common case
-+		 * and don't have rcu-sync, issue rcu-sync after
-+		 * transition 1->0 to break that sequence by waiting for
-+		 * readers to be quiescent.
-+		 */
-+		tracepoint_synchronize_unregister();
-+		break;
-+	case TP_FUNC_1:		/* 2->1 */
+ 		/* Both iterator and static call handle NULL tp->funcs */
+ 		rcu_assign_pointer(tp->funcs, NULL);
+ 		/*
+-		 * Make sure new func never uses old data after a 1->0->1
+-		 * transition sequence.
+-		 * Considering that transition 0->1 is the common case
+-		 * and don't have rcu-sync, issue rcu-sync after
+-		 * transition 1->0 to break that sequence by waiting for
+-		 * readers to be quiescent.
++		 * Make sure new static func never uses old data after a
++		 * 1->0->1 transition sequence.
+ 		 */
+-		tracepoint_synchronize_unregister();
++		tp_rcu_get_state(TP_TRANSITION_SYNC_1_0_1);
+ 		break;
+ 	case TP_FUNC_1:		/* 2->1 */
  		rcu_assign_pointer(tp->funcs, tp_funcs);
--	} else {
-+		/*
-+		 * On 2->1 transition, RCU sync is needed before setting
-+		 * static call to first callback, because the observer
-+		 * may have loaded any prior tp->funcs after the last one
-+		 * associated with an rcu-sync.
-+		 */
-+		tracepoint_synchronize_unregister();
-+		/* Set static call to first function */
-+		tracepoint_update_call(tp, tp_funcs);
-+		break;
-+	case TP_FUNC_N:		/* N->N-1 (N>2) */
+ 		/*
+-		 * On 2->1 transition, RCU sync is needed before setting
+-		 * static call to first callback, because the observer
+-		 * may have loaded any prior tp->funcs after the last one
+-		 * associated with an rcu-sync.
++		 * Make sure static func never uses incorrect data after a
++		 * N->...->2->1 (N>2) transition sequence.
+ 		 */
+-		tracepoint_synchronize_unregister();
++		if (tp_funcs[0].data !=3D old[0].data) {
++			tracepoint_synchronize_unregister();
++			tp_rcu_clear_ongoing(TP_TRANSITION_SYNC_N_2_1);
++		} else {
++			tp_rcu_cond_sync(TP_TRANSITION_SYNC_N_2_1);
++		}
+ 		/* Set static call to first function */
+ 		tracepoint_update_call(tp, tp_funcs);
+ 		break;
+ 	case TP_FUNC_N:		/* N->N-1 (N>2) */
  		rcu_assign_pointer(tp->funcs, tp_funcs);
--		tracepoint_update_call(tp, tp_funcs,
--				       tp_funcs[0].data !=3D old[0].data);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		break;
- 	}
- 	release_probes(old);
- 	return 0;
++		/*
++		 * Make sure static func never uses incorrect data after a
++		 * N->...->2->1 (N>2) transition sequence.
++		 */
++		if (tp_funcs[0].data !=3D old[0].data)
++			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
+ 		break;
+ 	default:
+ 		WARN_ON_ONCE(1);
 --=20
 2.20.1
 
