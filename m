@@ -2,119 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A80B3D6F08
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0843D6F13
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235296AbhG0GQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235063AbhG0GQG (ORCPT
+        id S235635AbhG0GRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:17:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54172 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234928AbhG0GRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:16:06 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3315EC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 23:16:06 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id x90so7493920ede.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 23:16:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tSvAlOWxEIRF8a5C8ywowBQChrZ2YBJxoLkazd7wXek=;
-        b=h/K4jENWHwQMchT88GLoXiRAkOV4YFgI3pc1+RnvDNIq8SkKcRENVlXM0BLJIkWFir
-         3nHF7YTlArlshOuhgbbW9oPKG9HdYiqw1qCxBmDa/Can58xbusrbCWy5QcrCi0OfD/sA
-         9PiXtRAm1877kD9LCrM36joOfraXaNJJ0o30Mtwg0qsgsjv3V0Hts5VcXGH5tJKzMCa1
-         QGSNLJBGt1IdvQulv0mtcGhKQntIRgN75R4UaPkwnvQKN2xFa4xT//JUI/fP//HxwKuS
-         pY8XnyNhDMKlxDh570s8IoANd9euNLYW9jjndlwRMlCDn9hIROJwhFWYvofGLNBCgDjv
-         cWDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tSvAlOWxEIRF8a5C8ywowBQChrZ2YBJxoLkazd7wXek=;
-        b=q3zHgLA4yG9+LFPeAKN8t6uGcRHA2hzmQT8AK84kzw87OmK0jCHbwogr+MnicyjIdE
-         9bnfJatx10TUdzjE09vPjMbG45nO5u7L/AUXxdCU0Voedvdt7qNvu8Lw86abfu5aGnOd
-         ahAqTObDWd2P7MaoRG3bm2TaBGmgEhDUf2Ns6fim2dX1hPtBXKM8C5wJGdrRlB8MSXLk
-         wqnQgMbVyWlszGz0sZXBRjkiui8cR5V8SPEDn4F5765mFQaCJyHUqqTyB7lw4F8fb478
-         CNRE4nb8MnAY2jxpDF4LZ8fZyCQIrqBVRKWjp9YAw6jQzavrLp3sC7ribb/Jq1HARIAl
-         9kmg==
-X-Gm-Message-State: AOAM531rVLOuRU6gU20FSqKDf5I6o8yXbgab5CZ5cjAMO3ecW0OGBOLR
-        0t4oJmW1zY4MwC2gnB3ggDH248oqjcdt6vzyN0nA
-X-Google-Smtp-Source: ABdhPJyJUIRvq2jumZJTdpTEmsSEJlMyAxOKCj+EvoVEdDrjoBWz4G593vkcSIEO1kS9pBv+8/sA4c7JJaWs8/vvRIA=
-X-Received: by 2002:a05:6402:27d2:: with SMTP id c18mr25855641ede.261.1627366564124;
- Mon, 26 Jul 2021 23:16:04 -0700 (PDT)
+        Tue, 27 Jul 2021 02:17:14 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16R6DtCQ020751;
+        Tue, 27 Jul 2021 02:17:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=8XeYG3yg7Vf01LhGV5Z7bYY22GMqXf1CPu6wzVsB1Bw=;
+ b=AZfa2557qPr1YpYZlnyMIx50kjsTSzuPoOe2XJBJqPGvM1QBQihdzbyH9JY7CiDidF96
+ 2cH1GmSTibYpOyrZ/c9/Gl8QASw8E9gt4AKNffMlmXZC0+9fTN6zUklsKNUvPrX6Xlmp
+ 5vxNQuQgKBKxIibXhmhlUIMd9XANIZC2HkOymFZ6bBEzLJz+mWiHtLxfyTd2CF179m0O
+ JQgIKRTQmWLCeJClEJuoqknSsJ6M8q4gYlOz+Q2PZcPK/eYD0dwOogv1d0Zdy+FYN/dB
+ qa6uIi/CXatupy05awUrmBincG7YjEEh1JEgCd6mrCwtVaLXJ1gn9knvAMavhuWPmGv8 cg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2cph02pj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jul 2021 02:17:02 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16R6E1g9020876;
+        Tue, 27 Jul 2021 02:17:01 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2cph02p9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jul 2021 02:17:01 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16R62PBG004810;
+        Tue, 27 Jul 2021 06:17:01 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03dal.us.ibm.com with ESMTP id 3a235nhbx3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jul 2021 06:17:01 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16R6H0oJ31457626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Jul 2021 06:17:00 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F58FAC05E;
+        Tue, 27 Jul 2021 06:17:00 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EEFA3AC066;
+        Tue, 27 Jul 2021 06:16:59 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.85.71.190])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Jul 2021 06:16:59 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 4A24D2E4A4C; Tue, 27 Jul 2021 11:46:56 +0530 (IST)
+Date:   Tue, 27 Jul 2021 11:46:56 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     "Pratik R. Sampat" <psampat@linux.ibm.com>
+Cc:     mpe@ellerman.id.au, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, pratik.r.sampat@gmail.com
+Subject: Re: [PATCH] cpufreq:powernv: Fix init_chip_info initialization in
+ numa=off
+Message-ID: <20210727061656.GA10282@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20210726170758.61041-1-psampat@linux.ibm.com>
 MIME-Version: 1.0
-References: <20210714091747.2814370-1-morbo@google.com> <20210726201924.3202278-1-morbo@google.com>
- <20210726201924.3202278-2-morbo@google.com> <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
- <YP+ZOx8BETgufxBS@kroah.com>
-In-Reply-To: <YP+ZOx8BETgufxBS@kroah.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Mon, 26 Jul 2021 23:15:52 -0700
-Message-ID: <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726170758.61041-1-psampat@linux.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TBFUlIHCqR60qHwztg6isWZ6lxfaWg_M
+X-Proofpoint-GUID: JOA9zxu-8QY3hhlblipMVVHkB5WwXOxu
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-27_04:2021-07-27,2021-07-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ spamscore=0 adultscore=0 suspectscore=0 impostorscore=0 clxscore=1011
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107270035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 10:27 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Mon, Jul 26, 2021 at 01:47:33PM -0700, Nathan Chancellor wrote:
-> > + Greg and Rafael as the maintainer and reviewer of drivers/base/module.c
-> > respectively, drop everyone else.
->
-> Odd no one cc:ed us originally, I guess they didn't want the patch ever
-> merged?  :(
->
-> >
-> > Original post:
-> >
-> > https://lore.kernel.org/r/20210726201924.3202278-2-morbo@google.com/
-> >
-> > On 7/26/2021 1:19 PM, 'Bill Wendling' via Clang Built Linux wrote:
-> > > Fix the following build warning:
-> > >
-> > >    drivers/base/module.c:36:6: error: variable 'no_warn' set but not used [-Werror,-Wunused-but-set-variable]
-> > >          int no_warn;
->
-> That's not going to be a good warning to ever have the kernel use due to
-> how lots of hardware works (i.e. we need to do a read after a write but
-> we can throw the read away as it does not matter).
->
->
-> > >
-> > > This variable is used to remove another warning, but causes a warning
-> > > itself. Mark it as 'unused' to avoid that.
-> > >
-> > > Signed-off-by: Bill Wendling <morbo@google.com>
-> >
-> > Even though they evaluate to the same thing, it might be worth using
-> > "__always_unused" here because it is :)
->
-> But it is not unused, the value is written into it.
->
-I believe that only matters if the variable is marked "volatile".
-Otherwise, the variable itself is never used. A "variable that's
-written to but not read from," in fact, is the whole reason for the
-warning.
+On Mon, Jul 26, 2021 at 10:37:57PM +0530, Pratik R. Sampat wrote:
+> In the numa=off kernel command-line configuration init_chip_info() loops
+> around the number of chips and attempts to copy the cpumask of that node
+> which is NULL for all iterations after the first chip.
+> 
+> Hence, store the cpu mask for each chip instead of derving cpumask from
+> node while populating the "chips" struct array and copy that to the
+> chips[i].mask
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
+> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+> Reported-by: Shirisha Ganta <shirisha.ganta1@ibm.com>
+> ---
+>  drivers/cpufreq/powernv-cpufreq.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
+> index 005600cef273..8ec10d9aed8f 100644
+> --- a/drivers/cpufreq/powernv-cpufreq.c
+> +++ b/drivers/cpufreq/powernv-cpufreq.c
+> @@ -1046,12 +1046,20 @@ static int init_chip_info(void)
+>  	unsigned int *chip;
+>  	unsigned int cpu, i;
+>  	unsigned int prev_chip_id = UINT_MAX;
+> +	cpumask_t *chip_cpu_mask;
+>  	int ret = 0;
+> 
+>  	chip = kcalloc(num_possible_cpus(), sizeof(*chip), GFP_KERNEL);
+>  	if (!chip)
+>  		return -ENOMEM;
+> 
+> +	/* Allocate a chip cpu mask large enough to fit mask for all chips */
+> +	chip_cpu_mask = kcalloc(32, sizeof(cpumask_t), GFP_KERNEL);
 
-> So this isn't ok, sometimes we want to write to variables but never care
-> about the value, that does not mean the compiler should complain about
-> it.
->
-Typically, if you don't care about the return value, you simply don't
-assign it to a variable (cf. printf). However, the functions that
-assign to "no_warn" have the "warn_unused_result" attribute. The fact
-that the variable is named "no_warn" seems to indicate that it's meant
-to remain unused, even if it probably should be checked.
+I suppose by 32 you mean the maximum number of chips possible. You
+could use a #define for that.
 
-Would you rather the warning be turned off on some level?
+Otherwise, the patch looks good to me.
 
--bw
+Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+
+
+
+> +	if (!chip_cpu_mask) {
+> +		ret = -ENOMEM;
+> +		goto free_and_return;
+> +	}
+> +
+>  	for_each_possible_cpu(cpu) {
+>  		unsigned int id = cpu_to_chip_id(cpu);
+> 
+> @@ -1059,22 +1067,25 @@ static int init_chip_info(void)
+>  			prev_chip_id = id;
+>  			chip[nr_chips++] = id;
+>  		}
+> +		cpumask_set_cpu(cpu, &chip_cpu_mask[nr_chips-1]);
+>  	}
+> 
+>  	chips = kcalloc(nr_chips, sizeof(struct chip), GFP_KERNEL);
+>  	if (!chips) {
+>  		ret = -ENOMEM;
+> -		goto free_and_return;
+> +		goto out_chip_cpu_mask;
+>  	}
+> 
+>  	for (i = 0; i < nr_chips; i++) {
+>  		chips[i].id = chip[i];
+> -		cpumask_copy(&chips[i].mask, cpumask_of_node(chip[i]));
+> +		cpumask_copy(&chips[i].mask, &chip_cpu_mask[i]);
+>  		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
+>  		for_each_cpu(cpu, &chips[i].mask)
+>  			per_cpu(chip_info, cpu) =  &chips[i];
+>  	}
+> 
+> +out_chip_cpu_mask:
+> +	kfree(chip_cpu_mask);
+>  free_and_return:
+>  	kfree(chip);
+>  	return ret;
+> -- 
+> 2.31.1
+> 
