@@ -2,189 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111BB3D795E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDB73D7966
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236939AbhG0PI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:08:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232328AbhG0PI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:08:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE1D561B22;
-        Tue, 27 Jul 2021 15:08:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627398507;
-        bh=r1VSYpNzhzOjFrdIwXO7XZ/o6DWg1islt0qNrbNpaz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DWHQyKWkwlkZHr602J/saSjSZMdEa1yZXIG/ZSZ+IqIe5QcFbrb/ARFJ4UuEU1SV3
-         gIdDqWBkj5T7196S3urGL1h5//u317iGqovWgLKBYzmcnjZqthq8fttzuqxsCt9iVI
-         yNd8ym1BVovzpkESXJHlUrS1E7Zag5syTPZRIFKiciIYf+d67S4cd8ZkkIq91oTM6l
-         5V7g7d6/+vxnDzKD3gOu+m0eq3nbWxOVdFbXRypvSDMltcGAanPmH2Vhk9jiMbgpRJ
-         bCN/JDdC4v+EibiJ/V7VcVDhpotBN4vVQtNK1gIF3+dGmz5YDz027Y/f7zgMRAEsqq
-         Yv9pRa21Zi2sA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DF71E403F2; Tue, 27 Jul 2021 12:08:22 -0300 (-03)
-Date:   Tue, 27 Jul 2021 12:08:22 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf beauty: Reuse the generic switch.
-Message-ID: <YQAhZp/tCDhYEp6L@kernel.org>
-References: <20210513060441.408507-1-irogers@google.com>
+        id S236860AbhG0PJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232328AbhG0PJF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 11:09:05 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F76AC061757;
+        Tue, 27 Jul 2021 08:09:04 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id q68so7278179vsb.9;
+        Tue, 27 Jul 2021 08:09:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LODqsW/1ngmYUbMgNby00su93F62N06Tj3ly3YeQuu8=;
+        b=uo8EQXgRWZ9JsCmhbvecIDs7UFt6gf45CbCLSX89gZvV05cpmDYxsq4q7djWl6V+zv
+         RkgcAww9e48cgedaDiYGy02wM6kOUabDZzKSOrB31bbE+qFVKW5wTMGAYjBn1mf5DpWr
+         2oQ21yT7d62nU5z5J6s16lUG3MHh+DNe4tyltIBZ1VdrRNHemFSaB+zLGofVcnPaLM5R
+         O96ZpxwwUhKy31BZ8EmmKLYFXdPQb5c/A4b74K3NjhEGlRPs3TCA3AcUyjze3WRIx7FO
+         1xItwyCGYoHFcV4xBDB2Kk7/N7dVwwbx65UvTuZtUUwy3hHr7ooX3uHVbjcGJ4VvB4e8
+         333Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LODqsW/1ngmYUbMgNby00su93F62N06Tj3ly3YeQuu8=;
+        b=fXD508Rjg6xy7S4butY5P5TUg6JxGBwqIXzID1SFQ42YvO8FPQ2zxUcmt71Rw2fdAD
+         an1169E7pM2dBR0rU2jSwMp2U2g1xNFm2YiKZheOdC5Rz0XVYq6rlpvRd0eZyclKImnP
+         KCwJZDkFFujDKRPuJhlyHj9DFzWLzngIYX2vgKkTAvfq+CcnDV8/Okxk6RQ5QYkBGzEw
+         Hyxx1FtYz3Yhh1NF4GoP7dIpfLF0dWTaZjAGsfCEVVYBERRdLeyEMIqz+E+W1yLcgVZQ
+         U+AGT8xOL7Th5Rq2YxLJVpksSSRgZ5H3kGg8kEydUvBgNOz4xdt0FVym43wy9f9wFp9g
+         fxIQ==
+X-Gm-Message-State: AOAM530kVhtSKfYC8AjNZdXdcFQ45GVHbqVGNClH0p4MmAoNLvUX+XOW
+        AV4FiI581zZPpnktxdfBNrAEfTjAPi0O92nQ20c=
+X-Google-Smtp-Source: ABdhPJxoQ+xAJ8pctlldjhc+igE6bcD64Yold6eElIL6035jZ3l7JenxM765onZHshhoQQPNf/7SwtAONt5EOwCGMKY=
+X-Received: by 2002:a67:e94c:: with SMTP id p12mr16820940vso.28.1627398541870;
+ Tue, 27 Jul 2021 08:09:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210513060441.408507-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210727144816.8697-1-sergio.paracuellos@gmail.com>
+ <20210727144816.8697-4-sergio.paracuellos@gmail.com> <CAHp75Ve9eYNbs=uBsVvFdkpU1vLXB8Fy4NpFbaWV1g59vfrenw@mail.gmail.com>
+In-Reply-To: <CAHp75Ve9eYNbs=uBsVvFdkpU1vLXB8Fy4NpFbaWV1g59vfrenw@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Tue, 27 Jul 2021 17:08:50 +0200
+Message-ID: <CAMhs-H_Lubu2dLeSX=Q+0FAwnZ-qB6a88r=p0EfWGcE9noMpLg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] gpio: brcmstb: remove custom 'brcmstb_gpio_set_names'
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Gregory Fong <gregory.0xf0@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        NeilBrown <neil@brown.name>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, May 12, 2021 at 11:04:41PM -0700, Ian Rogers escreveu:
-> Previously the code would see if, for example,
-> tools/perf/arch/arm/include/uapi/asm/errno.h exists and if not generate
+On Tue, Jul 27, 2021 at 5:07 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Tue, Jul 27, 2021 at 5:48 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> >
+> > Gpiolib core code has been updated to support setting
+> > friendly names through properly 'gpio-line-names'.
+> > Instead of redefine behaviour here to skip the core
+> > to be executed, just properly assign the desired offset
+> > per bank to get in the core the expected behaviour.
+>
+> Since it will be a v3, reflow commit messages to occupy a little bit
+> more available space (per line). Something ~72-75 characters per line
+> is good balance.
 
-If tools/arch/arm/include/uapi/asm/errno.h exists, drop that 'perf/'
-after 'tools/':
+Sure.
 
-⬢[acme@toolbox perf]$ ls -la tools/arch/*/include/uapi/asm/errno.h
--rw-r--r--. 1 acme acme 5434 Jul 15 16:17 tools/arch/alpha/include/uapi/asm/errno.h
--rw-r--r--. 1 acme acme 5792 Jul 15 16:17 tools/arch/mips/include/uapi/asm/errno.h
--rw-r--r--. 1 acme acme 5764 Jul 15 16:17 tools/arch/parisc/include/uapi/asm/errno.h
--rw-r--r--. 1 acme acme  278 Jul 15 16:17 tools/arch/powerpc/include/uapi/asm/errno.h
--rw-r--r--. 1 acme acme 5539 Jul 15 16:17 tools/arch/sparc/include/uapi/asm/errno.h
--rw-r--r--. 1 acme acme   31 Jul 15 16:17 tools/arch/x86/include/uapi/asm/errno.h
-⬢[acme@toolbox perf]$
-
-I added the steps needed to translate your description to verify
-everything and added as committer notes.
-
-Thanks, applied as:
-
-commit b22cc9a6701143fb1fee397e0c2088ee0473340a
-Author: Ian Rogers <irogers@google.com>
-Date:   Wed May 12 23:04:41 2021 -0700
-
-    perf beauty: Reuse the generic arch errno switch
-    
-    Previously the code would see if, for example,
-    tools/perf/arch/arm/include/uapi/asm/errno.h exists and if not generate
-    a "generic" switch statement using the asm-generic/errno.h.
-    
-    This creates multiple identical "generic" switch statements before the
-    default generic switch statement for an unknown architecture.
-    
-    By simplifying the archlist to be only for architectures that are not
-    "generic" the amount of generated code can be reduced from 14 down to 6
-    functions.
-    
-    Remove the special case of x86, instead reverse the architecture names
-    so that it comes first.
-    
-    Committer testing:
-    
-      $ tools/perf/trace/beauty/arch_errno_names.sh gcc tools > before
-    
-    Apply this patch and:
-    
-      $ tools/perf/trace/beauty/arch_errno_names.sh gcc tools > after
-    
-    14 arches down to 6, that are the ones with an explicit errno.h file:
-    
-      $ ls -1 tools/arch/*/include/uapi/asm/errno.h
-      tools/arch/alpha/include/uapi/asm/errno.h
-      tools/arch/mips/include/uapi/asm/errno.h
-      tools/arch/parisc/include/uapi/asm/errno.h
-      tools/arch/powerpc/include/uapi/asm/errno.h
-      tools/arch/sparc/include/uapi/asm/errno.h
-      tools/arch/x86/include/uapi/asm/errno.h
-      $
-    
-      $ diff -u4 before after
-      @@ -2099,32 +987,16 @@
-       const char *arch_syscalls__strerrno(const char *arch, int err)
-       {
-            if (!strcmp(arch, "x86"))
-                    return errno_to_name__x86(err);
-      -     if (!strcmp(arch, "alpha"))
-      -             return errno_to_name__alpha(err);
-      -     if (!strcmp(arch, "arc"))
-      -             return errno_to_name__arc(err);
-      -     if (!strcmp(arch, "arm"))
-      -             return errno_to_name__arm(err);
-      -     if (!strcmp(arch, "arm64"))
-      -             return errno_to_name__arm64(err);
-      -     if (!strcmp(arch, "csky"))
-      -             return errno_to_name__csky(err);
-      -     if (!strcmp(arch, "mips"))
-      -             return errno_to_name__mips(err);
-      -     if (!strcmp(arch, "parisc"))
-      -             return errno_to_name__parisc(err);
-      -     if (!strcmp(arch, "powerpc"))
-      -             return errno_to_name__powerpc(err);
-      -     if (!strcmp(arch, "riscv"))
-      -             return errno_to_name__riscv(err);
-      -     if (!strcmp(arch, "s390"))
-      -             return errno_to_name__s390(err);
-      -     if (!strcmp(arch, "sh"))
-      -             return errno_to_name__sh(err);
-            if (!strcmp(arch, "sparc"))
-                    return errno_to_name__sparc(err);
-      -     if (!strcmp(arch, "xtensa"))
-      -             return errno_to_name__xtensa(err);
-      +     if (!strcmp(arch, "powerpc"))
-      +             return errno_to_name__powerpc(err);
-      +     if (!strcmp(arch, "parisc"))
-      +             return errno_to_name__parisc(err);
-      +     if (!strcmp(arch, "mips"))
-      +             return errno_to_name__mips(err);
-      +     if (!strcmp(arch, "alpha"))
-      +             return errno_to_name__alpha(err);
-            return errno_to_name__generic(err);
-       }
-    
-    The rest of the patch is the removal of the errno_to_name__generic()
-    unneeded clones.
-    
-    Signed-off-by: Ian Rogers <irogers@google.com>
-    Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-    Cc: Jiri Olsa <jolsa@redhat.com>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Namhyung Kim <namhyung@kernel.org>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Link: http://lore.kernel.org/lkml/20210513060441.408507-1-irogers@google.com
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-diff --git a/tools/perf/trace/beauty/arch_errno_names.sh b/tools/perf/trace/beauty/arch_errno_names.sh
-index 9f9ea45cddc4384c..2c5f72fa81087956 100755
---- a/tools/perf/trace/beauty/arch_errno_names.sh
-+++ b/tools/perf/trace/beauty/arch_errno_names.sh
-@@ -87,14 +87,13 @@ cat <<EoHEADER
- 
- EoHEADER
- 
--# Create list of architectures and ignore those that do not appear
--# in tools/perf/arch
-+# Create list of architectures that have a specific errno.h.
- archlist=""
--for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | grep -v x86 | sort); do
--	test -d $toolsdir/perf/arch/$arch && archlist="$archlist $arch"
-+for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort -r); do
-+	test -f $toolsdir/arch/$arch/include/uapi/asm/errno.h && archlist="$archlist $arch"
- done
- 
--for arch in x86 $archlist generic; do
-+for arch in generic $archlist; do
- 	process_arch "$arch"
- done
--create_arch_errno_table_func "x86 $archlist" "generic"
-+create_arch_errno_table_func "$archlist" "generic"
+Thanks,
+    Sergio Paracuellos
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
