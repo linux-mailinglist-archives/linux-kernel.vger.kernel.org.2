@@ -2,174 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC353D74BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D503D74C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236447AbhG0MIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:08:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231877AbhG0MIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:08:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E73D61A38;
-        Tue, 27 Jul 2021 12:07:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627387680;
-        bh=/pDNMzFS+Mxit0n/scgZVo8ALxfKu5yarVzdhGl0duk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OZr+hbj/gUtIITczNWEZJrlhOAnG4Rz+A1677XGcOEq5Dff2MHdi1BkXff/v0pp5R
-         ZIfP1KFYDbcpqcb7hedvwWvs2AjIWvPWUtjdVQNTRzjl+oeyoje2PPiDvaFreEvQxb
-         ApSXrMMhJwYxRE+8u6cpFQYTIMRoqulsm0GFcgYk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v2] fs: make d_path-like functions all have unsigned size
-Date:   Tue, 27 Jul 2021 14:07:54 +0200
-Message-Id: <20210727120754.1091861-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
+        id S236509AbhG0MIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:08:45 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7880 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231868AbhG0MIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 08:08:45 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GYwTQ3j1dz80PK;
+        Tue, 27 Jul 2021 20:04:58 +0800 (CST)
+Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 27 Jul 2021 20:08:42 +0800
+Received: from [10.174.179.2] (10.174.179.2) by dggema773-chm.china.huawei.com
+ (10.1.198.217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 27
+ Jul 2021 20:08:41 +0800
+Subject: Re: [PATCH v2] scsi: Fix the issue that the disk capacity set to zero
+To:     John Garry <john.garry@huawei.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <bvanassche@acm.org>, <yanaijie@huawei.com>,
+        <linfeilong@huawei.com>, <wubo40@huawei.com>
+References: <20210727034455.1494960-1-lijinlin3@huawei.com>
+ <21370ef0-88c0-e0b7-6099-4e3ee7af502f@huawei.com>
+From:   lijinlin <lijinlin3@huawei.com>
+Message-ID: <b507879a-8bfe-ed3e-dba6-328d349d2f1f@huawei.com>
+Date:   Tue, 27 Jul 2021 20:08:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4979; h=from:subject; bh=/pDNMzFS+Mxit0n/scgZVo8ALxfKu5yarVzdhGl0duk=; b=owGbwMvMwCRo6H6F97bub03G02pJDAn/v4tPX5H3/KHA/hyxy/qf7f33Hmn+xryo42+M+b9sicgr akJ+HbEsDIJMDLJiiixftvEc3V9xSNHL0PY0zBxWJpAhDFycAjCRtVsYFsx7/UPDzf+5iXZi358X8h sXF7heLGWYn5FtyKKyLOr8hGBW7zw25kXmKRNPAwA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+In-Reply-To: <21370ef0-88c0-e0b7-6099-4e3ee7af502f@huawei.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.2]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema773-chm.china.huawei.com (10.1.198.217)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running static analysis tools to find where signed values could
-potentially wrap the family of d_path() functions turn out to trigger a
-lot of mess.  In evaluating the code, all of these usages seem safe, but
-pointer math is involved so if a negative number is ever somehow passed
-into these functions, memory can be traversed backwards in ways not
-intended.
+On 2021/7/27 16:48, John Garry wrote:
+> On 27/07/2021 04:44, lijinlin3@huawei.com wrote:
+>> From: lijinlin <lijinlin3@huawei.com>
+>>
+>> After add physical volumes to a volume group through vgextend, kernel
+>> will rescan partitions, which will read the capacity of the device.
+>> If the device status is set to offline through sysfs at this time,
+>> read capacity command will return a result which the host byte is
+>> DID_NO_CONNECT, the capacity of the device will be set to zero in
+>> read_capacity_error(). However, the capacity of the device can't be
+>> reread after reset the device status to running, is still zero.
+>>
+>> Fix this issue by rescan device when the device state changes to
+>> SDEV_RUNNING.
+>>
+>> Signed-off-by: lijinlin <lijinlin3@huawei.com>
+>> Signed-off-by: Wu Bo <wubo40@huawei.com>
+>> ---
+>>   drivers/scsi/scsi_sysfs.c | 9 ++++++---
+>>   1 file changed, 6 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+>> index 32489d25158f..ae9bfc658203 100644
+>> --- a/drivers/scsi/scsi_sysfs.c
+>> +++ b/drivers/scsi/scsi_sysfs.c
+>> @@ -807,11 +807,14 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+>>       mutex_lock(&sdev->state_mutex);
+>>       ret = scsi_device_set_state(sdev, state);
+>>       /*
+>> -     * If the device state changes to SDEV_RUNNING, we need to run
+>> -     * the queue to avoid I/O hang.
+>> +     * If the device state changes to SDEV_RUNNING, we need to
+>> +     * rescan the device to revalidate it, and run the queue to
+>> +     * avoid I/O hang.
+>>        */
+>> -    if (ret == 0 && state == SDEV_RUNNING)
+>> +    if (ret == 0 && state == SDEV_RUNNING) {
+>> +        scsi_rescan_device(dev);
+>>           blk_mq_run_hw_queues(sdev->request_queue, true);
+> 
+> I am wondering does any of this need to be done with the device state mutex held?
+> 
+> Thanks,
+> John
 
-Resolve all of the abuguity by just making "size" an unsigned value,
-which takes the guesswork out of everything involved.
+To ensure that the rescan is invoked only in the running state.
 
-Reported-by: Jordy Zomer <jordy@pwning.systems>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-changes since v1:
-	- add 'size' name to function prototypes
-	- change struct prepend_buffer's size field to also be unsigned
+Thanks.
 
- fs/d_path.c            | 16 ++++++++--------
- include/linux/dcache.h | 16 ++++++++--------
- 2 files changed, 16 insertions(+), 16 deletions(-)
-
-diff --git a/fs/d_path.c b/fs/d_path.c
-index 23a53f7b5c71..73b7ea17a330 100644
---- a/fs/d_path.c
-+++ b/fs/d_path.c
-@@ -10,7 +10,7 @@
- 
- struct prepend_buffer {
- 	char *buf;
--	int len;
-+	unsigned int len;
- };
- #define DECLARE_BUFFER(__name, __buf, __len) \
- 	struct prepend_buffer __name = {.buf = __buf + __len, .len = __len}
-@@ -182,7 +182,7 @@ static int prepend_path(const struct path *path,
-  */
- char *__d_path(const struct path *path,
- 	       const struct path *root,
--	       char *buf, int buflen)
-+	       char *buf, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buf, buflen);
- 
-@@ -193,7 +193,7 @@ char *__d_path(const struct path *path,
- }
- 
- char *d_absolute_path(const struct path *path,
--	       char *buf, int buflen)
-+	       char *buf, unsigned int buflen)
- {
- 	struct path root = {};
- 	DECLARE_BUFFER(b, buf, buflen);
-@@ -230,7 +230,7 @@ static void get_fs_root_rcu(struct fs_struct *fs, struct path *root)
-  *
-  * "buflen" should be positive.
-  */
--char *d_path(const struct path *path, char *buf, int buflen)
-+char *d_path(const struct path *path, char *buf, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buf, buflen);
- 	struct path root;
-@@ -266,7 +266,7 @@ EXPORT_SYMBOL(d_path);
- /*
-  * Helper function for dentry_operations.d_dname() members
-  */
--char *dynamic_dname(struct dentry *dentry, char *buffer, int buflen,
-+char *dynamic_dname(struct dentry *dentry, char *buffer, unsigned int buflen,
- 			const char *fmt, ...)
- {
- 	va_list args;
-@@ -284,7 +284,7 @@ char *dynamic_dname(struct dentry *dentry, char *buffer, int buflen,
- 	return memcpy(buffer, temp, sz);
- }
- 
--char *simple_dname(struct dentry *dentry, char *buffer, int buflen)
-+char *simple_dname(struct dentry *dentry, char *buffer, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buffer, buflen);
- 	/* these dentries are never renamed, so d_lock is not needed */
-@@ -328,7 +328,7 @@ static char *__dentry_path(const struct dentry *d, struct prepend_buffer *p)
- 	return extract_string(&b);
- }
- 
--char *dentry_path_raw(const struct dentry *dentry, char *buf, int buflen)
-+char *dentry_path_raw(const struct dentry *dentry, char *buf, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buf, buflen);
- 
-@@ -337,7 +337,7 @@ char *dentry_path_raw(const struct dentry *dentry, char *buf, int buflen)
- }
- EXPORT_SYMBOL(dentry_path_raw);
- 
--char *dentry_path(const struct dentry *dentry, char *buf, int buflen)
-+char *dentry_path(const struct dentry *dentry, char *buf, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buf, buflen);
- 
-diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index 9e23d33bb6f1..c93ac4e39566 100644
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -295,14 +295,14 @@ static inline unsigned d_count(const struct dentry *dentry)
- /*
-  * helper function for dentry_operations.d_dname() members
-  */
--extern __printf(4, 5)
--char *dynamic_dname(struct dentry *, char *, int, const char *, ...);
--
--extern char *__d_path(const struct path *, const struct path *, char *, int);
--extern char *d_absolute_path(const struct path *, char *, int);
--extern char *d_path(const struct path *, char *, int);
--extern char *dentry_path_raw(const struct dentry *, char *, int);
--extern char *dentry_path(const struct dentry *, char *, int);
-+__printf(4, 5)
-+char *dynamic_dname(struct dentry *, char *, unsigned int size , const char *, ...);
-+
-+char *__d_path(const struct path *, const struct path *, char *, unsigned int size);
-+char *d_absolute_path(const struct path *, char *, unsigned int size);
-+char *d_path(const struct path *, char *, unsigned int size);
-+char *dentry_path_raw(const struct dentry *, char *, unsigned int size);
-+char *dentry_path(const struct dentry *, char *, unsigned int size);
- 
- /* Allocation counts.. */
- 
--- 
-2.32.0
-
+> 
+>> +    }
+>>       mutex_unlock(&sdev->state_mutex);
+>>         return ret == 0 ? count : -EINVAL;
+>>
+> 
+> .
