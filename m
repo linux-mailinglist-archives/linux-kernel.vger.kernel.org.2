@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747BE3D8225
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FED3D8229
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232757AbhG0Vwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 17:52:49 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:36800 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbhG0Vws (ORCPT
+        id S232643AbhG0Vx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:53:56 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35914 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232142AbhG0Vxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:52:48 -0400
-Received: from netfilter.org (bl11-146-165.dsl.telepac.pt [85.244.146.165])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 213D4642B2;
-        Tue, 27 Jul 2021 23:52:16 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 23:52:40 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Alex Forster <aforster@cloudflare.com>
-Cc:     Kyle Bowman <kbowman@cloudflare.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [PATCH] netfilter: xt_NFLOG: allow 128 character log prefixes
-Message-ID: <20210727215240.GA25043@salvia>
-References: <20210727190001.914-1-kbowman@cloudflare.com>
- <20210727195459.GA15181@salvia>
- <CAKxSbF0tjY7EV=OOyfND8CxSmusfghvURQYnBxMz=DoNtGrfSg@mail.gmail.com>
- <20210727211029.GA17432@salvia>
- <CAKxSbF1bMzTc8sTQLFZpeY5XsymL+njKaTJOCb93RT6aj2NPVw@mail.gmail.com>
- <20210727212730.GA20772@salvia>
- <CAKxSbF3ZLjFo2TaWATCA8L-xQOEppUOhveybgtQrma=SjVoCeg@mail.gmail.com>
+        Tue, 27 Jul 2021 17:53:55 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1D78F1C0B76; Tue, 27 Jul 2021 23:53:54 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 23:53:53 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/119] 4.19.199-rc3 review
+Message-ID: <20210727215353.GA25534@duo.ucw.cz>
+References: <20210727112108.341674321@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
 Content-Disposition: inline
-In-Reply-To: <CAKxSbF3ZLjFo2TaWATCA8L-xQOEppUOhveybgtQrma=SjVoCeg@mail.gmail.com>
+In-Reply-To: <20210727112108.341674321@linuxfoundation.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:44:42PM -0500, Alex Forster wrote:
-> > I'm not refering to nftables, I'm refering to iptables-nft.
-> 
-> Possibly I'm misunderstanding. Here's a realistic-ish example of a
-> rule we might install:
-> 
->     iptables -A INPUT -d 11.22.33.44/32 -m bpf --bytecode "43,0 0 0
-> 0,48 0 0 0,...sic..." -m statistic --mode random --probability 0.0001
-> -j NFLOG --nflog-prefix "drop 10000 c37904a83b344404
-> e4ec6050966d4d2f9952745de09d1308"
-> 
-> Is there a way to install such a rule with an nflog prefix that is >63 chars?
 
-Yes, you can update iptables-nft to use nft_log instead of xt_LOG,
-that requires no kernel upgrades and it will work with older kernels.
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> This is the start of the stable review cycle for the 4.19.199 release.
+> There are 119 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--r5Pyd7+fXNt84Ff3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYQCAcQAKCRAw5/Bqldv6
+8g1qAJ4w6joOoZ/MJA0uYJwUPBletcLXkACfbKnYJGdBsRN4URkN4FWBSh30GPQ=
+=ZzKU
+-----END PGP SIGNATURE-----
+
+--r5Pyd7+fXNt84Ff3--
