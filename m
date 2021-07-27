@@ -2,169 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5313D739D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7089B3D7375
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236352AbhG0KtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:49:14 -0400
-Received: from dd38112.kasserver.com ([85.13.154.158]:54154 "EHLO
-        dd38112.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236169AbhG0KtM (ORCPT
+        id S236250AbhG0KlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:41:22 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:41666 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236104AbhG0KlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:49:12 -0400
-X-Greylist: delayed 516 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Jul 2021 06:49:12 EDT
-Received: from dd38112.kasserver.com (dd0806.kasserver.com [85.13.161.252])
-        by dd38112.kasserver.com (Postfix) with ESMTPSA id A03301F01285;
-        Tue, 27 Jul 2021 12:40:35 +0200 (CEST)
+        Tue, 27 Jul 2021 06:41:21 -0400
+Received: from localhost.localdomain (unknown [223.178.63.20])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E3A19203F736;
+        Tue, 27 Jul 2021 03:41:17 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E3A19203F736
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1627382481;
+        bh=blgG5ZQertzB80NxUoxAYt3za0qaegyKHtCgIEBljl8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pAJuapn3h29JMCDay09ek0xzpPAcI5dm2eNP5PKKRskU9GfrNhnvMV+ZSCZ3uDH9N
+         92sg/IXsVT/W82bp+SK5XmpwxI2+EIwuJZxB1Ug1iZC/gsNt+xAtWjihdAz2GaIb9S
+         2d2kYy78FnrQ1WojbjgJQgX7PWh19WcLi1GBThC8=
+From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
+To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        nunodasneves@linux.microsoft.com
+Subject: [PATCH v3] hyperv: root partition faults writing to VP ASSIST MSR PAGE
+Date:   Tue, 27 Jul 2021 16:10:44 +0530
+Message-Id: <20210727104044.28078-1-kumarpraveen@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="=_41a65840431285888d34d7f3c360d11e"
-X-SenderIP: 89.144.219.199
-User-Agent: ALL-INKL Webmail 2.11
-Subject: [PATCH] drivers core: Fix oops when driver probe fails
-From:   "Filip Schauer" <filip@mg6.at>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Message-Id: <20210727104035.A03301F01285@dd38112.kasserver.com>
-Date:   Tue, 27 Jul 2021 12:40:35 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For Root partition the VP assist pages are pre-determined by the
+hypervisor. The Root kernel is not allowed to change them to
+different locations. And thus, we are getting below stack as in
+current implementation Root is trying to perform write to specific
+MSR.
 
-This is a multi-part message in MIME format  --  Dies ist eine mehrteilige Nachricht im MIME-Format
---=_41a65840431285888d34d7f3c360d11e
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=ISO-8859-1
+[ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
+write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
+(native_write_msr+0x4/0x30)
+[ 2.784867] Call Trace:
+[ 2.791507] hv_cpu_init+0xf1/0x1c0
+[ 2.798144] ? hyperv_report_panic+0xd0/0xd0
+[ 2.804806] cpuhp_invoke_callback+0x11a/0x440
+[ 2.811465] ? hv_resume+0x90/0x90
+[ 2.818137] cpuhp_issue_call+0x126/0x130
+[ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
+[ 2.831427] ? hyperv_report_panic+0xd0/0xd0
+[ 2.838075] ? hyperv_report_panic+0xd0/0xd0
+[ 2.844723] ? hv_resume+0x90/0x90
+[ 2.851375] __cpuhp_setup_state+0x3d/0x90
+[ 2.858030] hyperv_init+0x14e/0x410
+[ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
+[ 2.871349] apic_intr_mode_init+0x8b/0x100
+[ 2.878017] x86_late_time_init+0x20/0x30
+[ 2.884675] start_kernel+0x459/0x4fb
+[ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
 
-dma_range_map is freed to early, which might cause an oops when
-a driver probe fails.
- Call trace:
-  is_free_buddy_page+0xe4/0x1d4
-  __free_pages+0x2c/0x88
-  dma_free_contiguous+0x64/0x80
-  dma_direct_free+0x38/0xb4
-  dma_free_attrs+0x88/0xa0
-  dmam_release+0x28/0x34
-  release_nodes+0x78/0x8c
-  devres_release_all+0xa8/0x110
-  really_probe+0x118/0x2d0
-  __driver_probe_device+0xc8/0xe0
-  driver_probe_device+0x54/0xec
-  __driver_attach+0xe0/0xf0
-  bus_for_each_dev+0x7c/0xc8
-  driver_attach+0x30/0x3c
-  bus_add_driver+0x17c/0x1c4
-  driver_register+0xc0/0xf8
-  __platform_driver_register+0x34/0x40
-  ...
+Since, the hypervisor already provides the VP assist page for root
+partition, we need to memremap the memory from hypervisor for root
+kernel to use. The mapping is done in hv_cpu_init during bringup and
+is unmaped in hv_cpu_die during teardown.
 
-This issue is introduced by commit d0243bbd5dd3 ("drivers core:
-Free dma_range_map when driver probe failed"). It frees
-dma_range_map before the call to devres_release_all, which is too
-early. The solution is to free dma_range_map only after
-devres_release_all.
-
-Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe
-failed")
-Signed-off-by: Filip Schauer <filip@mg6.at>
+Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
 ---
- drivers/base/dd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/hyperv/hv_init.c          | 61 +++++++++++++++++++++---------
+ arch/x86/include/asm/hyperv-tlfs.h |  9 +++++
+ 2 files changed, 53 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index daeb9b5763ae..437cd61343b2 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -653,8 +653,6 @@ static int really_probe(struct device *dev, struct
-device_driver *drv)
- 	else if (drv->remove)
- 		drv->remove(dev);
- probe_failed:
-- kfree(dev->dma_range_map);
-- dev->dma_range_map = NULL;
- 	if (dev->bus)
- 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
- 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
-@@ -662,6 +660,8 @@ static int really_probe(struct device *dev, struct
-device_driver *drv)
- 	device_links_no_driver(dev);
- 	devres_release_all(dev);
- 	arch_teardown_dma_ops(dev);
-+ kfree(dev->dma_range_map);
-+ dev->dma_range_map = NULL;
- 	driver_sysfs_remove(dev);
- 	dev->driver = NULL;
- 	dev_set_drvdata(dev, NULL);
+changelog:
+v1: initial patch
+v2: commit message changes, removal of HV_MSR_APIC_ACCESS_AVAILABLE
+    check and addition of null check before reading the VP assist MSR
+    for root partition
+v3: added new data structure to handle VP ASSIST MSR page and done
+    handling in hv_cpu_init and hv_cpu_die
+
+---
+diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+index 6f247e7e07eb..b859e42b4943 100644
+--- a/arch/x86/hyperv/hv_init.c
++++ b/arch/x86/hyperv/hv_init.c
+@@ -44,6 +44,7 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
+ 
+ static int hv_cpu_init(unsigned int cpu)
+ {
++	union hv_vp_assist_msr_contents msr;
+ 	struct hv_vp_assist_page **hvp = &hv_vp_assist_page[smp_processor_id()];
+ 	int ret;
+ 
+@@ -54,27 +55,41 @@ static int hv_cpu_init(unsigned int cpu)
+ 	if (!hv_vp_assist_page)
+ 		return 0;
+ 
+-	/*
+-	 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's Section
+-	 * 5.2.1 "GPA Overlay Pages"). Here it must be zeroed out to make sure
+-	 * we always write the EOI MSR in hv_apic_eoi_write() *after* the
+-	 * EOI optimization is disabled in hv_cpu_die(), otherwise a CPU may
+-	 * not be stopped in the case of CPU offlining and the VM will hang.
+-	 */
+-	if (!*hvp) {
+-		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
++	if (hv_root_partition) {
++		/*
++		 * For Root partition we get the hypervisor provided VP ASSIST
++		 * PAGE, instead of allocating a new page.
++		 */
++		rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
++
++		/* remapping to root partition address space */
++		if (!*hvp)
++			*hvp = memremap(msr.guest_physical_address <<
++					HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT,
++					PAGE_SIZE, MEMREMAP_WB);
++	} else {
++		/*
++		 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's
++		 * Section 5.2.1 "GPA Overlay Pages"). Here it must be zeroed
++		 * out to make sure we always write the EOI MSR in
++		 * hv_apic_eoi_write() *after* theEOI optimization is disabled
++		 * in hv_cpu_die(), otherwise a CPU may not be stopped in the
++		 * case of CPU offlining and the VM will hang.
++		 */
++		if (!*hvp)
++			*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
++
+ 	}
+ 
+-	if (*hvp) {
+-		u64 val;
++	WARN_ON(!(*hvp));
+ 
+-		val = vmalloc_to_pfn(*hvp);
+-		val = (val << HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT) |
+-			HV_X64_MSR_VP_ASSIST_PAGE_ENABLE;
++	if (*hvp) {
++		if (!hv_root_partition)
++			msr.guest_physical_address = vmalloc_to_pfn(*hvp);
+ 
+-		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, val);
++		msr.enable = 1;
++		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
+ 	}
+-
+ 	return 0;
+ }
+ 
+@@ -170,9 +185,21 @@ static int hv_cpu_die(unsigned int cpu)
+ 
+ 	hv_common_cpu_die(cpu);
+ 
+-	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
++	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
+ 		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
+ 
++		if (hv_root_partition) {
++			/*
++			 * For Root partition the VP ASSIST page is mapped to
++			 * hypervisor provided page, and thus, we unmap the
++			 * page here and nullify it, so that in future we have
++			 * correct page address mapped in hv_cpu_init
++			 */
++			memunmap(hv_vp_assist_page[cpu]);
++			hv_vp_assist_page[cpu] = NULL;
++		}
++	}
++
+ 	if (hv_reenlightenment_cb == NULL)
+ 		return 0;
+ 
+diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+index f1366ce609e3..2e4e87046aa7 100644
+--- a/arch/x86/include/asm/hyperv-tlfs.h
++++ b/arch/x86/include/asm/hyperv-tlfs.h
+@@ -288,6 +288,15 @@ union hv_x64_msr_hypercall_contents {
+ 	} __packed;
+ };
+ 
++union hv_vp_assist_msr_contents {
++	u64 as_uint64;
++	struct {
++		u64 enable:1;
++		u64 reserved:11;
++		u64 guest_physical_address:52;
++	} __packed;
++};
++
+ struct hv_reenlightenment_control {
+ 	__u64 vector:8;
+ 	__u64 reserved1:8;
 -- 
 2.25.1
 
-
---=_41a65840431285888d34d7f3c360d11e
-Content-Transfer-Encoding: 7bit
-Content-Type: text/x-diff; charset=us-ascii;
- name=unknown
-Content-Disposition: attachment;
- filename=unknown
-
-dma_range_map is freed to early, which might cause an oops when
-a driver probe fails.
- Call trace:
-  is_free_buddy_page+0xe4/0x1d4
-  __free_pages+0x2c/0x88
-  dma_free_contiguous+0x64/0x80
-  dma_direct_free+0x38/0xb4
-  dma_free_attrs+0x88/0xa0
-  dmam_release+0x28/0x34
-  release_nodes+0x78/0x8c
-  devres_release_all+0xa8/0x110
-  really_probe+0x118/0x2d0
-  __driver_probe_device+0xc8/0xe0
-  driver_probe_device+0x54/0xec
-  __driver_attach+0xe0/0xf0
-  bus_for_each_dev+0x7c/0xc8
-  driver_attach+0x30/0x3c
-  bus_add_driver+0x17c/0x1c4
-  driver_register+0xc0/0xf8
-  __platform_driver_register+0x34/0x40
-  ...
-
-This issue is introduced by commit d0243bbd5dd3 ("drivers core:
-Free dma_range_map when driver probe failed"). It frees
-dma_range_map before the call to devres_release_all, which is too
-early. The solution is to free dma_range_map only after
-devres_release_all.
-
-Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe failed")
-Signed-off-by: Filip Schauer <filip@mg6.at>
----
- drivers/base/dd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index daeb9b5763ae..437cd61343b2 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -653,8 +653,6 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- 	else if (drv->remove)
- 		drv->remove(dev);
- probe_failed:
--	kfree(dev->dma_range_map);
--	dev->dma_range_map = NULL;
- 	if (dev->bus)
- 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
- 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
-@@ -662,6 +660,8 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- 	device_links_no_driver(dev);
- 	devres_release_all(dev);
- 	arch_teardown_dma_ops(dev);
-+	kfree(dev->dma_range_map);
-+	dev->dma_range_map = NULL;
- 	driver_sysfs_remove(dev);
- 	dev->driver = NULL;
- 	dev_set_drvdata(dev, NULL);
--- 
-2.25.1
-
-
---=_41a65840431285888d34d7f3c360d11e--
