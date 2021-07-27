@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397C63D70CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9489B3D70D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235936AbhG0IFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:05:47 -0400
-Received: from relay.sw.ru ([185.231.240.75]:55596 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235679AbhG0ICu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:02:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=W5ZkylOW4aorWqYoZgdy9OUAHDEpy8dU4QmNRvPVlOs=; b=Yj12nar4kB+x0tcn9
-        97g0z8UReUWtZBd8M7TK4t+EblgWkMtLRxzEGpJndlo5lJBaTOwX6Ie72E40Rk0K8jA0cK/uuB36K
-        LvHZgC3Qjsg3GnIS9NTYCQTgU7QuHIYd0xtpICYl/ho2irAdnFnf2UYH2M9kP6NIg+CLeRnurfSpY
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m8I2q-005M9I-NF; Tue, 27 Jul 2021 11:02:32 +0300
-Subject: Re: [PATCH v7 09/10] memcg: enable accounting for tty-related objects
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     cgroups@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S235896AbhG0IGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:06:54 -0400
+Received: from mail-40141.protonmail.ch ([185.70.40.141]:34763 "EHLO
+        mail-40141.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235918AbhG0IGs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 04:06:48 -0400
+X-Greylist: delayed 1473 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Jul 2021 04:06:48 EDT
+Date:   Tue, 27 Jul 2021 08:06:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1627373192;
+        bh=VzDTyoxLHHM58hrWTk1Yt2r4mVw6ytJJfV18mXrVqjE=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=wuvI0iad7Gi4yC8JL6rqo2ynTzhMndXr6H3XY1BPkFmp+cse+5MEhPWxDN9X5GIaV
+         wZQae4W2f3Iz+CZ2cejBFo+HMG8xkcY1KDfJ1Fl7XznTEdSxdnUwxE/1vngn88gbek
+         YdarbgdokeB2Kc/h2NodAdWhaBKRxqyhOKBMkyYs=
+To:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         linux-kernel@vger.kernel.org
-References: <6f21a0e0-bd36-b6be-1ffa-0dc86c06c470@virtuozzo.com>
- <cover.1627362057.git.vvs@virtuozzo.com>
- <b8baa04f-e789-0321-b39d-07c5696ff755@virtuozzo.com>
- <1eef95fe-6172-796e-edd1-095545da6e74@kernel.org>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <d42bd2a3-74a0-163f-6e3a-ad702f6d2817@virtuozzo.com>
-Date:   Tue, 27 Jul 2021 11:02:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH] arm64: dts: qcom: msm8996: Add blsp2_i2c3
+Message-ID: <6qg4HkrclPyAcIF0MUN7hNVjz9VdppvGD8GeT2k@cp3-web-029.plabs.ch>
 MIME-Version: 1.0
-In-Reply-To: <1eef95fe-6172-796e-edd1-095545da6e74@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/21 9:54 AM, Jiri Slaby wrote:
-> On 27. 07. 21, 7:34, Vasily Averin wrote:
->> At each login the user forces the kernel to create a new terminal and
->> allocate up to ~1Kb memory for the tty-related structures.
->>
->> By default it's allowed to create up to 4096 ptys with 1024 reserve for
->> initial mount namespace only and the settings are controlled by host admin.
->>
->> Though this default is not enough for hosters with thousands
->> of containers per node. Host admin can be forced to increase it
->> up to NR_UNIX98_PTY_MAX = 1<<20.
->>
->> By default container is restricted by pty mount_opt.max = 1024,
->> but admin inside container can change it via remount. As a result,
->> one container can consume almost all allowed ptys
->> and allocate up to 1Gb of unaccounted memory.
->>
->> It is not enough per-se to trigger OOM on host, however anyway, it allows
->> to significantly exceed the assigned memcg limit and leads to troubles
->> on the over-committed node.
->>
->> It makes sense to account for them to restrict the host's memory
->> consumption from inside the memcg-limited container.
->>
->> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
->> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> ---
->>   drivers/tty/tty_io.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
->> index 26debec..e787f6f 100644
->> --- a/drivers/tty/tty_io.c
->> +++ b/drivers/tty/tty_io.c
->> @@ -1493,7 +1493,7 @@ void tty_save_termios(struct tty_struct *tty)
->>       /* Stash the termios data */
->>       tp = tty->driver->termios[idx];
->>       if (tp == NULL) {
->> -        tp = kmalloc(sizeof(*tp), GFP_KERNEL);
->> +        tp = kmalloc(sizeof(*tp), GFP_KERNEL_ACCOUNT);
-> 
-> termios are not saved for PTYs (TTY_DRIVER_RESET_TERMIOS). Am I missing something?
+Add a node for blsp2_i2c3 which is used for type-C port control chips
+and speaker codecs on some devices.
+  =20
+Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+---
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 32 +++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-No, you are right, I've missed this.
-Typical terminals inside containers use TTY_DRIVER_RESET_TERMIOS flag and therefore do not save termios.
-So its accounting have near-to-zero impact in real life.
-I'll prepare fixup to drop GFP_KERNEL_ACCOUNT here.
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qc=
+om/msm8996.dtsi
+index 044db4ad2f3e..0cde4b7f863e 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -1340,6 +1340,20 @@ blsp2_uart3_4pins_sleep: blsp2-uart2-4pins-sleep {
+ =09=09=09=09bias-disable;
+ =09=09=09};
+=20
++=09=09=09blsp2_i2c3_default: blsp2-i2c3 {
++=09=09=09=09pins =3D "gpio51", "gpio52";
++=09=09=09=09function =3D "blsp_i2c9";
++=09=09=09=09drive-strength =3D <16>;
++=09=09=09=09bias-disable;
++=09=09=09};
++
++=09=09=09blsp2_i2c3_sleep: blsp2-i2c3-sleep {
++=09=09=09=09pins =3D "gpio51", "gpio52";
++=09=09=09=09function =3D "gpio";
++=09=09=09=09drive-strength =3D <2>;
++=09=09=09=09bias-disable;
++=09=09=09};
++
+ =09=09=09wcd_intr_default: wcd-intr-default{
+ =09=09=09=09pins =3D "gpio54";
+ =09=09=09=09function =3D "gpio";
+@@ -3023,6 +3037,24 @@ blsp2_i2c2: i2c@75b6000 {
+ =09=09=09status =3D "disabled";
+ =09=09};
+=20
++=09=09blsp2_i2c3: i2c@75b7000 {
++=09=09=09compatible =3D "qcom,i2c-qup-v2.2.1";
++=09=09=09reg =3D <0x075b7000 0x1000>;
++=09=09=09interrupts =3D <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
++=09=09=09clocks =3D <&gcc GCC_BLSP2_AHB_CLK>,
++=09=09=09=09<&gcc GCC_BLSP2_QUP3_I2C_APPS_CLK>;
++=09=09=09clock-names =3D "iface", "core";
++=09=09=09clock-frequency =3D <400000>;
++=09=09=09pinctrl-names =3D "default", "sleep";
++=09=09=09pinctrl-0 =3D <&blsp2_i2c3_default>;
++=09=09=09pinctrl-1 =3D <&blsp2_i2c3_sleep>;
++=09=09=09dmas =3D <&blsp2_dma 16>, <&blsp2_dma 17>;
++=09=09=09dma-names =3D "tx", "rx";
++=09=09=09#address-cells =3D <1>;
++=09=09=09#size-cells =3D <0>;
++=09=09=09status =3D "disabled";
++=09=09};
++
+ =09=09blsp2_i2c5: i2c@75b9000 {
+ =09=09=09compatible =3D "qcom,i2c-qup-v2.2.1";
+ =09=09=09reg =3D <0x75b9000 0x1000>;
+--=20
+2.32.0
 
-Thank you very much,
-	Vasily Averin
-
->>           if (tp == NULL)
->>               return;
->>           tty->driver->termios[idx] = tp;
->> @@ -3119,7 +3119,7 @@ struct tty_struct *alloc_tty_struct(struct tty_driver *driver, int idx)
->>   {
->>       struct tty_struct *tty;
->>   -    tty = kzalloc(sizeof(*tty), GFP_KERNEL);
->> +    tty = kzalloc(sizeof(*tty), GFP_KERNEL_ACCOUNT);
->>       if (!tty)
->>           return NULL;
->>  
-> 
-> thanks,
 
