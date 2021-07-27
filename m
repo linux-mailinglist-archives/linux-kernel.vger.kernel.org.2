@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FB33D7568
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8273D756A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236550AbhG0M4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:56:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47204 "EHLO mail.kernel.org"
+        id S236559AbhG0M47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:56:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232039AbhG0M4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:56:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A11DF608FB;
-        Tue, 27 Jul 2021 12:56:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627390575;
-        bh=kThALLVqBRLV7ik20Z89VlQJxb3y4aAAgY1LaiBL9zo=;
+        id S232039AbhG0M46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 08:56:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2CB6608FB;
+        Tue, 27 Jul 2021 12:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627390617;
+        bh=tEJsYPPcR7cQdHztouI8BN/CYyZy8H9dTPZbM0CbK5s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Es84RQPxAYEvM6pNLmFwZyHtMWo1zwpX8jxuh7IgLKzYCDewk/XewgRryXVk1RB3f
-         JJv/Ed1q0xFtbyDNpyuJl8U2vWF7IlJikEoeph2wyOMlCZlPpuM3TI+GE/Z456WKF5
-         4cju+nL9ltyRubHcbzOGKG3l72WpUsedW8jxgR7YG7uqDXW2BBC1cZS1uGVcuTKBsS
-         SJrU8APmdflza0nVJV5vgJ69+zllmQK+jTs/DAJqxTIcdjU+u3Jv+qa3PNzMKUv8vt
-         Auxo7j4BcoIMEVOMUHlkBEAIHI15h8T6Bz3YtRsgb2wxBPxzHR3Xv8n4ST9WOmd12V
-         +nd7CYH3RRdRg==
-Date:   Tue, 27 Jul 2021 15:56:11 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/4] net: ipa: kill IPA_VALIDATION
-Message-ID: <YQACaxKhxDFZSCF3@unreal>
-References: <20210726174010.396765-1-elder@linaro.org>
- <YP/rFwvIHOvIwMNO@unreal>
- <5b97f7b1-f65f-617e-61b4-2fdc5f08bc3e@linaro.org>
+        b=zwYskLKOUJOnB/sL0WtJ4BQ7iz8UBAEfyUg5i3Y4iZ/GI8h9jK0kMmYNkBGQ6CI0G
+         y1LSFPKY6NqvI9i08NplBPZADPCR7r+kW0jxICs0KZFt2sAvVURCcHRlrebwnV74l6
+         XT9ra5IYUZ1rKorDMcCuzjjCosHmnE7tOP7K0NHg=
+Date:   Tue, 27 Jul 2021 14:56:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jordy Zomer <jordy@pwning.systems>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v2] fs: make d_path-like functions all have unsigned size
+Message-ID: <YQAClXqyLhztLcm4@kroah.com>
+References: <20210727120754.1091861-1-gregkh@linuxfoundation.org>
+ <YP/+g/L6+tLWjx/l@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5b97f7b1-f65f-617e-61b4-2fdc5f08bc3e@linaro.org>
+In-Reply-To: <YP/+g/L6+tLWjx/l@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 07:34:41AM -0500, Alex Elder wrote:
-> On 7/27/21 6:16 AM, Leon Romanovsky wrote:
-> > On Mon, Jul 26, 2021 at 12:40:06PM -0500, Alex Elder wrote:
-> >> A few months ago I proposed cleaning up some code that validates
-> >> certain things conditionally, arguing that doing so once is enough,
-> >> thus doing so always should not be necessary.
-> >>   https://lore.kernel.org/netdev/20210320141729.1956732-1-elder@linaro.org/
-> >> Leon Romanovsky felt strongly that this was a mistake, and in the
-> >> end I agreed to change my plans.
+On Tue, Jul 27, 2021 at 03:39:31PM +0300, Andy Shevchenko wrote:
+> On Tue, Jul 27, 2021 at 02:07:54PM +0200, Greg Kroah-Hartman wrote:
+> > When running static analysis tools to find where signed values could
+> > potentially wrap the family of d_path() functions turn out to trigger a
+> > lot of mess.  In evaluating the code, all of these usages seem safe, but
+> > pointer math is involved so if a negative number is ever somehow passed
+> > into these functions, memory can be traversed backwards in ways not
+> > intended.
 > > 
-> > <...>
-> > 
-> >> The second patch fixes a bug that wasn't normally exposed because of
-> >> the conditional compilation (a reason Leon was right about this).
-> > 
-> > Thanks Alex,
-> > 
-> > If you want another anti pattern that is very popular in netdev, the following pattern is
-> > wrong by definition :):
-> > if (WARN_ON(...))
-> >   return ...
+> > Resolve all of the abuguity by just making "size" an unsigned value,
+> > which takes the guesswork out of everything involved.
 > 
-> I understand this reasoning.
+> Are you sure it's correct change?
 > 
-> I had it return an error if the WARN_ON() condition was true in cases
-> where the function returned a value and callers already handled errors.
-> I looked back at the patch and here is one of those cases:
+> Look into extract_string() implementation.
 > 
-> gsi_channel_trans_alloc()
-> - If too many TREs are requested we do not want to allocate them
->   from the pool, or it will cause further breakage.  By returning
->   early, no transaction will be filled or committed, and an error
->   message will (often) be reported, which will indicate the source
->   of the error.  If any error occurs during initialization, we fail
->   that whole process and everything should be cleaned up.  So in
->   this case at least, returning if this ever occurred is better
->   than allowing control to continue into the function.
+> 	if (likely(p->len >= 0))
+> 		return p->buf;
+> 	return ERR_PTR(-ENAMETOOLONG);
 > 
-> In any case I take your point.  I will now add to my task list
-> a review of these spots.  I'd like to be sure an error message
-> *is* reported at an appropriate level up the chain of callers so
-> I can always identify the culprit in the a WARN_ON() fires (even
-> though it should never
->  happen).  And in each case I'll evaluate
-> whether returning is better than not.
+> Your change makes it equal to
+> 
+> 	return p->buf;
+> 
+> if I'm not mistaken.
 
-You can, but users don't :). So if it is valid but error flow, that
-needs user awareness, simply print something to the dmesg with *_err()
-prints.
+Yes it does, you are right.  So now we don't need to check the wrap
+there :)
 
+So this code is explicitly wanting the value to wrap into a negative
+value to check for problems, didn't expect that.
 
-BTW, I'm trying to untangle some of the flows in net/core/devlink.c
-and such if(WARN()) pattern is even harmful, because it is very hard to
-understand when that error is rare/non-exist/real.
+Still feels very fragile, if you look at the documentation for __d_path,
+it says:
+	"buflen" should be positive.
+and if you look at who calls it, they are all passing in an unsigned
+value, seq_path_root() uses a size_t as buflen.  What's the issues
+involved there when size_t is a unsigned value going into a signed int?
 
-Thanks
+And my mistake from earlier, size_t is the same as unsigned int, not
+unsigned long.
 
-> 
-> Thanks.
-> 
-> 					-Alex
-> 
-> > The WARN_*() macros are intended catch impossible flows, something that
-> > shouldn't exist. The idea that printed stack to dmesg and return to the
-> > caller will fix the situation is a very naive one. That stack already
-> > says that something very wrong in the system.
-> > 
-> > If such flow can be valid use "if(...) return ..", if not use plain
-> > WARN_ON(...).
-> > 
-> > Thanks
-> > 
-> 
+Anyway, this code feels subtle and tricky here, such that parsing tools
+warn "hey, something might be wrong here, check it out!"
+
+I'm not set on changing prepend_buffer->len, but I will not complain if
+it is, but we might want to have a different check in extract_string()
+and prepend() to verify that p->len does not go bigger than
+MAX_SOMETHING?
+
+But in the end, you are right, this version of the patch is not ok, all
+of the checks for len being < 0 are now moot, gotta love the fact that
+gcc didn't say squat about that :(
+
+thanks,
+
+greg k-h
