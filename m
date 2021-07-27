@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588A63D7F49
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0123D7F4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhG0UbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:31:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230409AbhG0UbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:31:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41C7660F9D;
-        Tue, 27 Jul 2021 20:31:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627417870;
-        bh=ZkhS55XggLNssuCIBqtuPZ0Y/L4fu7HoNPrNXlSi3H0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kKbLYUkTlJrXfrhwcbofYMAT0Aop2PvcbQtZ3pTZQaKI/9fg5uvByY+V8OB2YlbXx
-         avrb24K+NrF9IHGKq/o/X1sMrUrrklEKceLo8l6bU/JEHpI2KKjmjZIaoS2XVo/oiM
-         XDM7rHWLlnYEoitiYzA4eUr4o+eg5Yz4WpFSfHgXUKqiQZF7Gezex3PzxwyqbZTopi
-         983GFo307ij96rxx1kGXi3dtJYQ82IKTPrsVT4vB0MVbJZiwOfPBv5SZB9nd/CVNR9
-         HPW/mRcDVq2/13wN9Jc3Vix0UXlMOXWjV+Oi9HnYcfznmCoC/RKCh3u0pleSI8s1mK
-         3y5NnRcetNDBw==
-Received: by mail-ed1-f43.google.com with SMTP id z26so201850edr.0;
-        Tue, 27 Jul 2021 13:31:10 -0700 (PDT)
-X-Gm-Message-State: AOAM531EIoykfp3aiB5j3mM90YqUhMBFhEwFRwgjzY4do3dtR2Ktu2dr
-        tZWdlX1HubQ1Zrnpqr5y7vcrfDVwSTENiEmsYg==
-X-Google-Smtp-Source: ABdhPJyj1o0RiCXcDt0UK5f2hKJR4DHqtubY4gmn20A+p9mszuTSkyEL1stsRYSj+yi431oxWeSE4QZmZUQ3HMqG0mg=
-X-Received: by 2002:a05:6402:1a4c:: with SMTP id bf12mr14265859edb.137.1627417868821;
- Tue, 27 Jul 2021 13:31:08 -0700 (PDT)
+        id S232376AbhG0Udl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232340AbhG0Udk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 16:33:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0769C061757;
+        Tue, 27 Jul 2021 13:33:39 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627418016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7bwL+YWPClOHPAbCYq9eO/M7snV0sY4DJkhl01JPF6I=;
+        b=lu/MhhKXofy5wDWE1ihim+/K4hwUXRFNgFLJgNGjat2U3GUn0TAF4do0caQo1HiOOiGAef
+        p4r6+evhN7kgXIY3CuYBTvleYP3bA2EHDpa5ABZgT5bv0oE59znznIc8p0S7kTBMOFjXBb
+        cNpXmnibW8aMH4ORDakUB6b9eI2Xgui1GpttIU0a1bqB4oIGcSrAmFfPxVZt1OEAJveA7o
+        lc1HHmgvkjVl7XrYrmlkL0sFWRoABs7WFg+jYGmNb9eW5PZn+jFbD+sCwlkPnypjBVrjVP
+        k0AmbNPpLCYpQeN50HB2pdDlaVZB2GBGQSd6mef2CUyi/h53yml3l87pWfP8Cg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627418016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7bwL+YWPClOHPAbCYq9eO/M7snV0sY4DJkhl01JPF6I=;
+        b=RYbxHGnNV+ydR92vBxc088kQrI124dRVQ7hlX7bIye33Jwt/xbSzwKP8Y6jQWtzI7NQYje
+        KjV4RrUsImHYjdDw==
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Kevin Tian <kevin.tian@intel.com>,
+        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org
+Subject: Re: [patch 1/8] PCI/MSI: Enable and mask MSIX early
+In-Reply-To: <20210722214329.GA349464@bjorn-Precision-5520>
+References: <20210722214329.GA349464@bjorn-Precision-5520>
+Date:   Tue, 27 Jul 2021 22:33:35 +0200
+Message-ID: <87r1fjpkdc.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210726182850.14328-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210726182850.14328-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210726182850.14328-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 27 Jul 2021 14:30:57 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJXYJjPXUGEGqmiXB0o=40SjdizG6JhRbVCkjpqCZG2bQ@mail.gmail.com>
-Message-ID: <CAL_JsqJXYJjPXUGEGqmiXB0o=40SjdizG6JhRbVCkjpqCZG2bQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: iio: adc: Add binding documentation
- for Renesas RZ/G2L A/D converter
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 12:31 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->
-> Add binding documentation for Renesas RZ/G2L A/D converter block.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> ---
->  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 134 ++++++++++++++++++
->  1 file changed, 134 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+On Thu, Jul 22 2021 at 16:43, Bjorn Helgaas wrote:
+> s/MSIX/MSI-X/ in subject
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Sure.
+
+> On Wed, Jul 21, 2021 at 09:11:27PM +0200, Thomas Gleixner wrote:
+>> The ordering of MSI-X enable in hardware is disfunctional:
+>
+> s/disfunctional/dysfunctional/, isn't English wonderful ;)
+
+Yes and I'm never going to master it.
+
+>>  1) MSI-X is disabled in the control register
+>>  2) Various setup functions
+>>  3) pci_msi_setup_msi_irqs() is invoked which ends up accessing
+>>     the MSI-X table entries
+>>  4) MSI-X is enabled and masked in the control register with the
+>>     comment that enabling is required for some hardware to access
+>>     the MSI-X table
+>> 
+>> #4 obviously contradicts #3. The history of this is an issue with the NIU
+>
+> Annoyingly, if you "git rebase" and reword this commit log, it drops
+> this line and the one a few lines below because they start with "#".
+> Should be obvious, but took me a few iterations to see what was
+> happening.
+
+Cute.
+
+Thanks,
+
+        tglx
