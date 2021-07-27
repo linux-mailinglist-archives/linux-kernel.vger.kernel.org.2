@@ -2,106 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9489B3D70D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EAA3D70D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235896AbhG0IGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:06:54 -0400
-Received: from mail-40141.protonmail.ch ([185.70.40.141]:34763 "EHLO
-        mail-40141.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235918AbhG0IGs (ORCPT
+        id S235933AbhG0IHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235917AbhG0IHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:06:48 -0400
-X-Greylist: delayed 1473 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Jul 2021 04:06:48 EDT
-Date:   Tue, 27 Jul 2021 08:06:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1627373192;
-        bh=VzDTyoxLHHM58hrWTk1Yt2r4mVw6ytJJfV18mXrVqjE=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=wuvI0iad7Gi4yC8JL6rqo2ynTzhMndXr6H3XY1BPkFmp+cse+5MEhPWxDN9X5GIaV
-         wZQae4W2f3Iz+CZ2cejBFo+HMG8xkcY1KDfJ1Fl7XznTEdSxdnUwxE/1vngn88gbek
-         YdarbgdokeB2Kc/h2NodAdWhaBKRxqyhOKBMkyYs=
-To:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH] arm64: dts: qcom: msm8996: Add blsp2_i2c3
-Message-ID: <6qg4HkrclPyAcIF0MUN7hNVjz9VdppvGD8GeT2k@cp3-web-029.plabs.ch>
+        Tue, 27 Jul 2021 04:07:10 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7543FC061757;
+        Tue, 27 Jul 2021 01:07:10 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id q15so19352392ybu.2;
+        Tue, 27 Jul 2021 01:07:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F+KcL7dXJ7D+nJ0tqj3mxzvtr9CifwH+o213FLhP+90=;
+        b=OCpS/XTLoi9+PoX/DP+w8tt/iyNKr+IVeLA/BdoCYS0/zLJn1oHX4fmJAzfxkA2uAw
+         SF0v0nNK+qEhyilM9zpd2OBm6dA78fvzS4otFIHYIzSmB8+mlXExzoUgW2H+LtcpOIG7
+         BiDJHMA7+oaRYkH3N+cCSbhBhTCaa4U/C/QFYl0m8qNEhlYkCWp36GTJRqNQYwE7iSKf
+         mz+j+rcXVUJ29oHAjVUzNPBHwHCqkBAj97GLKwrgAzPe+/0P2q00CidT8N00Uv+EXo37
+         cJU2qhdMeH2F4SFPQGmD/GW3K0ZFtzpFSdqaLWBQlrtpXs1A0EDG97cKduuLAzB9wL1c
+         8DPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F+KcL7dXJ7D+nJ0tqj3mxzvtr9CifwH+o213FLhP+90=;
+        b=dIdMYHC+EtKAIIuHuopXGE/CzFvBu92XH21YfDFLLsv5G/TEA5Aa0MqNFxpvl7o3UN
+         OtVDJ2mlSBb222exCmElzOKsZUefPBt5a3JtiVVChjaApR8IHRI53sTf0axe/5GtXitq
+         kmqwoy5rSFo1OGhlpM12xGw4t/YWG1+7glN7hjZUvfEJOQvAN+p4gj9DJdsilmwGI9GQ
+         zNYl71CclNkaNDsxef+3tYqPmahHlXjEKfaV/7hSKMK9ygeF5qBOJPZ58AY92hdQJNXn
+         1WFuTJ0EdE2EytALX6ZOkG/DShFnV0lLWA7nf+oOG146cNRD1Tztuf72pWOjnvdv1WHE
+         Jatg==
+X-Gm-Message-State: AOAM531KWToUYnPlvwVr+TvhM5uVNZ0lWiqzyNqG82KKIQHeQykHf7Qk
+        MkXl5VagrHjPoDIfSIGnjTys5zoS2uBb7AEDwRY=
+X-Google-Smtp-Source: ABdhPJxDdIl3vPRyEk27KSNLAP01FPQ1VB7lbBTDmDcYYYZ/WeGI2XtHsbDdLuJSqkD38EyLa/Wzgoj9a6tzgkuZ2ao=
+X-Received: by 2002:a25:e404:: with SMTP id b4mr29884451ybh.426.1627373229775;
+ Tue, 27 Jul 2021 01:07:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210726182850.14328-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210726182850.14328-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <1627335750.959093.914062.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1627335750.959093.914062.nullmailer@robh.at.kernel.org>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 27 Jul 2021 09:06:43 +0100
+Message-ID: <CA+V-a8vOG+-r7_ddp-3eWu1tSjfvWrheMMXY75TDrmD+mdRR3w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: iio: adc: Add binding documentation
+ for Renesas RZ/G2L A/D converter
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a node for blsp2_i2c3 which is used for type-C port control chips
-and speaker codecs on some devices.
-  =20
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
----
- arch/arm64/boot/dts/qcom/msm8996.dtsi | 32 +++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+Hi Rob,
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qc=
-om/msm8996.dtsi
-index 044db4ad2f3e..0cde4b7f863e 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -1340,6 +1340,20 @@ blsp2_uart3_4pins_sleep: blsp2-uart2-4pins-sleep {
- =09=09=09=09bias-disable;
- =09=09=09};
-=20
-+=09=09=09blsp2_i2c3_default: blsp2-i2c3 {
-+=09=09=09=09pins =3D "gpio51", "gpio52";
-+=09=09=09=09function =3D "blsp_i2c9";
-+=09=09=09=09drive-strength =3D <16>;
-+=09=09=09=09bias-disable;
-+=09=09=09};
-+
-+=09=09=09blsp2_i2c3_sleep: blsp2-i2c3-sleep {
-+=09=09=09=09pins =3D "gpio51", "gpio52";
-+=09=09=09=09function =3D "gpio";
-+=09=09=09=09drive-strength =3D <2>;
-+=09=09=09=09bias-disable;
-+=09=09=09};
-+
- =09=09=09wcd_intr_default: wcd-intr-default{
- =09=09=09=09pins =3D "gpio54";
- =09=09=09=09function =3D "gpio";
-@@ -3023,6 +3037,24 @@ blsp2_i2c2: i2c@75b6000 {
- =09=09=09status =3D "disabled";
- =09=09};
-=20
-+=09=09blsp2_i2c3: i2c@75b7000 {
-+=09=09=09compatible =3D "qcom,i2c-qup-v2.2.1";
-+=09=09=09reg =3D <0x075b7000 0x1000>;
-+=09=09=09interrupts =3D <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
-+=09=09=09clocks =3D <&gcc GCC_BLSP2_AHB_CLK>,
-+=09=09=09=09<&gcc GCC_BLSP2_QUP3_I2C_APPS_CLK>;
-+=09=09=09clock-names =3D "iface", "core";
-+=09=09=09clock-frequency =3D <400000>;
-+=09=09=09pinctrl-names =3D "default", "sleep";
-+=09=09=09pinctrl-0 =3D <&blsp2_i2c3_default>;
-+=09=09=09pinctrl-1 =3D <&blsp2_i2c3_sleep>;
-+=09=09=09dmas =3D <&blsp2_dma 16>, <&blsp2_dma 17>;
-+=09=09=09dma-names =3D "tx", "rx";
-+=09=09=09#address-cells =3D <1>;
-+=09=09=09#size-cells =3D <0>;
-+=09=09=09status =3D "disabled";
-+=09=09};
-+
- =09=09blsp2_i2c5: i2c@75b9000 {
- =09=09=09compatible =3D "qcom,i2c-qup-v2.2.1";
- =09=09=09reg =3D <0x75b9000 0x1000>;
---=20
-2.32.0
+On Mon, Jul 26, 2021 at 10:42 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, 26 Jul 2021 19:28:48 +0100, Lad Prabhakar wrote:
+> > Add binding documentation for Renesas RZ/G2L A/D converter block.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> >  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 134 ++++++++++++++++++
+> >  1 file changed, 134 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+> >
+>
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> Error: Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.example.dts:26.28-29 syntax error
+> FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.example.dt.yaml] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1418: dt_binding_check] Error 2
+> \ndoc reference errors (make refcheckdocs):
+>
+> See https://patchwork.ozlabs.org/patch/1510163
+>
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+>
+The base patch series required for this path is v5.14-rc2. (I had
+mentioned it in the cover letter, maybe I should have added a note
+here too)
 
+Sorry for the inconvenience.
 
+Cheers,
+Prabhakar
+
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
+>
