@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2223D6C74
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DD43D6D03
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbhG0Cia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:38:30 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:12309 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbhG0Ci3 (ORCPT
+        id S234803AbhG0DHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 23:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234513AbhG0DHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:38:29 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GYhj138VWz7yCY;
-        Tue, 27 Jul 2021 11:14:13 +0800 (CST)
-Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 11:18:55 +0800
-Received: from localhost.huawei.com (10.175.124.27) by
- dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 27 Jul 2021 11:18:54 +0800
-From:   <lijinlin3@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <john.garry@huawei.com>, <bvanassche@acm.org>,
-        <yanaijie@huawei.com>, <linfeilong@huawei.com>,
-        <wubo40@huawei.com>, <lijinlin3@huawei.com>
-Subject: [PATCH v2] scsi: Fix the issue that the disk capacity set to zero
-Date:   Tue, 27 Jul 2021 11:44:55 +0800
-Message-ID: <20210727034455.1494960-1-lijinlin3@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 26 Jul 2021 23:07:23 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BAAC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:47:49 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id nb11so19925744ejc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nId3EryuDVVIw/l/VpympL9hOCFnfteI56eFXtNB8IY=;
+        b=I/rkzhGxZPcWLLrDMh4uMGpggD6T5BC7IXHXiM48P6d83E+q2//8XwOSVtaCxL4Mzp
+         Gff//cRFbhjsr9eP+0Bm8EbPB2zVHkXhLYIM8MmaSZuJLPPLUJX0SB5Jk7OXQhs0jaRL
+         MOBr1BpJi53dEi1oOBkM57lwMOIc7DcQ3EaOqTl7DSCPLPiTgbutxL5MW+mTWbq891VJ
+         T+Opa9om1K6D4KBRmbm/4fwha2APTKeFjo62fXe8Uvl/AltvOiSobP52gAKoJTadA6mU
+         BQdo/gShFwWzTD6/C7rAZdQdRAlXD9A9LRoYDTRZbf7OwMIzm3fa2BinOsw3/7o4vgs7
+         +wvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nId3EryuDVVIw/l/VpympL9hOCFnfteI56eFXtNB8IY=;
+        b=qFZcimWoymB4KSSBG1EIIJgy53m5lQknpf9MxqXlqDW1oLzYbxb/8rml35BkVhVMPu
+         DCWKhWJnO9Ia3QM3Z8ORzOuLVVPhNnN0IdoIDlR3FFvd64RPSeibLuEuJ4NMMiQwpTba
+         L9Ncjv7lxgfRzK0OyaMAsmKpzB9zmsEna0fVsDWqnUs2hdem5QMwH06XoPpQl/AZLq0m
+         rjGn8VQ/0UVEZGmYNM7pEFKViz4OAFx1n74ahjYIuo2qKtcY9Da4AQDaXWBw1S+7kORI
+         e6vAfqnp5y77pRj07eBw8ePBvxdRcGekONM08mnCJ3veGbYc57lpbVzcxYKXzjYuz2yG
+         Y3pQ==
+X-Gm-Message-State: AOAM5312m/AqtJouFK45/g8Ti/aqs0CJ6WY21AOeIQe+wwZWP+TwmfEy
+        O0iTp5tWTjVTFsEzFbuH1tZ/xTKXKm3fYBIAobRuFQ==
+X-Google-Smtp-Source: ABdhPJw/83V0W6bq05thAnl23kZdD0BQtxuVPPxsfMpLm2e16D+7VZilbomSI3HljuQu6OmE+moi98rHUQYjqQd9wT8=
+X-Received: by 2002:a17:906:af02:: with SMTP id lx2mr7091139ejb.133.1627357668324;
+ Mon, 26 Jul 2021 20:47:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema773-chm.china.huawei.com (10.1.198.217)
-X-CFilter-Loop: Reflected
+References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 27 Jul 2021 09:17:37 +0530
+Message-ID: <CA+G9fYtKbCnGTMJod3PYEmcUHYLhj-WHS-rKQNCiWw7DvdVzjQ@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/60] 4.9.277-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijinlin <lijinlin3@huawei.com>
+On Mon, 26 Jul 2021 at 21:13, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.277 release.
+> There are 60 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.277-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-After add physical volumes to a volume group through vgextend, kernel
-will rescan partitions, which will read the capacity of the device.
-If the device status is set to offline through sysfs at this time,
-read capacity command will return a result which the host byte is
-DID_NO_CONNECT, the capacity of the device will be set to zero in
-read_capacity_error(). However, the capacity of the device can't be
-reread after reset the device status to running, is still zero.
+perf build failed on 4.19, 4.14, 4.9 and 4.4 due to this error for
+all the architectures.
 
-Fix this issue by rescan device when the device state changes to
-SDEV_RUNNING.
+> Riccardo Mancini <rickyman7@gmail.com>
+>     perf test session_topology: Delete session->evlist
 
-Signed-off-by: lijinlin <lijinlin3@huawei.com>
-Signed-off-by: Wu Bo <wubo40@huawei.com>
----
- drivers/scsi/scsi_sysfs.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-index 32489d25158f..ae9bfc658203 100644
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -807,11 +807,14 @@ store_state_field(struct device *dev, struct device_attribute *attr,
- 	mutex_lock(&sdev->state_mutex);
- 	ret = scsi_device_set_state(sdev, state);
- 	/*
--	 * If the device state changes to SDEV_RUNNING, we need to run
--	 * the queue to avoid I/O hang.
-+	 * If the device state changes to SDEV_RUNNING, we need to
-+	 * rescan the device to revalidate it, and run the queue to
-+	 * avoid I/O hang.
- 	 */
--	if (ret == 0 && state == SDEV_RUNNING)
-+	if (ret == 0 && state == SDEV_RUNNING) {
-+		scsi_rescan_device(dev);
- 		blk_mq_run_hw_queues(sdev->request_queue, true);
-+	}
- 	mutex_unlock(&sdev->state_mutex);
- 
- 	return ret == 0 ? count : -EINVAL;
--- 
-2.27.0
+perf-in.o: In function `session_write_header':
+tools/perf/tests/topology.c:55: undefined reference to `evlist__delete'
+collect2: error: ld returned 1 exit status
 
+ref:
+https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-4.19/DISTRO=lkft,MACHINE=intel-corei7-64,label=docker-buster-lkft/893/console
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+--
+Linaro LKFT
+https://lkft.linaro.org
