@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA54E3D6E31
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 07:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C3F3D6E34
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 07:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235476AbhG0Ff4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 01:35:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47496 "EHLO mail.kernel.org"
+        id S235328AbhG0FhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 01:37:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234997AbhG0Ffa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 01:35:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 553D0610E5;
-        Tue, 27 Jul 2021 05:35:30 +0000 (UTC)
+        id S234867AbhG0FhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 01:37:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A6A60F90;
+        Tue, 27 Jul 2021 05:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627364130;
-        bh=QZn3Y/5lDoT1CB5x1bzBxI7iva5uev1ci/Z3NrJyvcQ=;
+        s=korg; t=1627364219;
+        bh=jKzvWPkfAb5WuJ+G+O/MkNwGWFDdzaWqwH/aj0q3pLY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ccFT+eHKP9bc15BaEMLa0POjMZRlzJJ/bNL6ZlM0iKkYA2E8+J4RecniBbiKJMcJt
-         yO6L9yEahBpHTQyKj3ulr5lRfoWTq528otNILO+BEik6p5573scCcYY5hsxQFPtkiv
-         EKEJighbKoKHmGImych7iaIwt8bDWRy17Hv1rsf8=
-Date:   Tue, 27 Jul 2021 07:35:28 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?dGNzX2tlcm5lbCjohb7orq/kupHlhoXmoLjlvIDlj5HogIUp?= 
-        <tcs_kernel@tencent.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>,
-        "yepeilin.cs@gmail.com" <yepeilin.cs@gmail.com>,
-        "penguin-kernel@I-love.SAKURA.ne.jp" 
-        <penguin-kernel@i-love.sakura.ne.jp>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "george.kennedy@oracle.com" <george.kennedy@oracle.com>,
-        "ducheng2@gmail.com" <ducheng2@gmail.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [Internet]Re: [PATCH] fbcon: Out-Of-Bounds write in
- sys_imageblit, add range check
-Message-ID: <YP+bINav7znIU6xF@kroah.com>
-References: <D5DF8A1C-5FA2-426B-AAB4-3199AEA0A02E@tencent.com>
- <YP68cQ4WVVusCv0N@ravnborg.org>
- <28F2D8E8-B519-40F6-B6CD-98A0FAD67CD7@tencent.com>
+        b=KV5v64dIM/ubl9YEgS5klpW6aX+UNPdQNMevrLRrkfsqlgrEZVIFH0L3i1GvEtuc8
+         o15JBE9O1SliTbYPwIBIMvURoGru1Val0sZaKlef6mwOurjg5FNGkZ18US6j09tIHU
+         8f2qjFaahvc0gO0CP5vgEjcZm9fV1Vc+8nZekfMM=
+Date:   Tue, 27 Jul 2021 07:36:56 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Jordy Zomer <jordy@pwning.systems>, netdev@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] crypto: ccm - avoid negative wrapping of integers
+Message-ID: <YP+beE4NGUCDIQHR@kroah.com>
+References: <20210726170120.410705-1-jordy@pwning.systems>
+ <YP7udzoj4vVQHlYv@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <28F2D8E8-B519-40F6-B6CD-98A0FAD67CD7@tencent.com>
+In-Reply-To: <YP7udzoj4vVQHlYv@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 01:53:13AM +0000, tcs_kernel(腾讯云内核开发者) wrote:
-> yres and vyres can be controlled by user mode paramaters, and cause p->vrows to become a negative value. While this value be passed to real_y function, the ypos will be out of screen range.
-> This is an out-of-bounds write bug.
-> I think updatescrollmode is the right place to validate values supplied by a user ioctl, because only here makes --operation,and 0 is a legal value before that.
-
-Please wrap your changelog text.
-
+On Mon, Jul 26, 2021 at 10:18:47AM -0700, Eric Biggers wrote:
+> On Mon, Jul 26, 2021 at 07:01:20PM +0200, Jordy Zomer wrote:
+> > Set csize to unsigned int to avoid it from wrapping as a negative number (since format input sends an unsigned integer to this function). This would also result in undefined behavior in the left shift when msg len is checked, potentially resulting in a buffer overflow in the memcpy call.
+> > 
+> > Signed-off-by: Jordy Zomer <jordy@pwning.systems>
+> > ---
+> > To address was corrected, and ccm was added to the topic to indicate that this is just for ccm.
+> > 
+> >  crypto/ccm.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/crypto/ccm.c b/crypto/ccm.c
+> > index 6b815ece51c6..e14201edf9db 100644
+> > --- a/crypto/ccm.c
+> > +++ b/crypto/ccm.c
+> > @@ -66,7 +66,7 @@ static inline struct crypto_ccm_req_priv_ctx *crypto_ccm_reqctx(
+> >  	return (void *)PTR_ALIGN((u8 *)aead_request_ctx(req), align + 1);
+> >  }
+> >  
+> > -static int set_msg_len(u8 *block, unsigned int msglen, int csize)
+> > +static int set_msg_len(u8 *block, unsigned int msglen, unsigned int csize)
+> >  {
+> >  	__be32 data;
 > 
-> Signed-off-by: Tencent Cloud System tcs_kernel@tencent.com
+> This isn't necessarily a bad change, but the value of csize is clearly in
+> [1, 256] if you read format_input(), and in fact is in [2, 8] if you read the
+> whole file, so please don't claim this is actually fixing anything, as it's not.
 
-That is not the name of a person :(
-
-And the format isn't correct, so there's nothing we can do with this
-patch, and the patch itself is corrupted and could not be applied :(
-
-Also, what about checking these values earlier?  How can the value be 0
-earlier and be acceptable?  Putting bounds on the user-provided values
-would be much easier, right?
+Oh that was not obvious at all, I looked at that for a long time and
+missed the place where this was checked earlier.  Perhaps just make
+csize here a u8 and that would take away all question about what is
+happening?
 
 thanks,
 
