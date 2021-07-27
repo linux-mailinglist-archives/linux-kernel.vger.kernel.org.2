@@ -2,131 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078213D8406
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F333D840A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbhG0X3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 19:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233258AbhG0X32 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 19:29:28 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00767C061760;
-        Tue, 27 Jul 2021 16:29:26 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id 184so510220qkh.1;
-        Tue, 27 Jul 2021 16:29:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Csc8wT/95G9747ozFthDCH/y0the7872d54YDDPRcbw=;
-        b=R8lSn+PkPn1WSVxtrB4LEJ7u2NOHgF3okdWNJ7xzOeyy+7P9UTaQvTDvHgOadoWXd+
-         TjrIpwi5jM/N2LoG24fvC2kAzzpO0ewfd8z04v3nyGbssOOgHD7FlJBUBe76gMsFkPsY
-         vj5fla4/G3G+z4DcMWna13jiFz+93+9GdDBojaaNVBHjty/oeMSCUb7pc1Vfnq2GyGKb
-         jq2XbnoDxnGX39jsIGyaRfuccYgoIIs8PS0+fu5lS6pOREKGOznsj96qpMMlEbT9X+md
-         oaCXrySgTc99/VnYmddL/5nMjfKfC7lv83cXA7Wh41DSseJhsDCHAyZtEevK9qOGBB0R
-         Er7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Csc8wT/95G9747ozFthDCH/y0the7872d54YDDPRcbw=;
-        b=JXTvnHC7JOfhEgtzpMZyXbcf1h4fdtnz00KfUv+u7lrU09mRiH7SCS7BOT53CZD7LX
-         4iwklvYUfi7OtIMMKnVOQ1T4mErX9YlfgVwxVe0s22ICRWox/oRgsXXhVcbFDLMSJY7r
-         WTN/BSip3QOw0Dlu72U/ptQt1Cz7/TlKVBnJkDf7RXwqvqgrYTdRjBjuFLfcAPEEyXaX
-         diZ9t3tSsJeM16bofCemzCO4/FEJZEGuWSZ6XC4k5q4GKgsUAjFRQdSo5OH1r8bn7Nz/
-         XmwSHW3g+coKmxfhCmH5DfFVSRsaN1GZILszh/GUBP5dNWmVlCok0jJLoLbcLZxwNrXc
-         sNJw==
-X-Gm-Message-State: AOAM532b5/q7C49ESrNytHWEt8bMDap5AsddRBpBaPgIQ7c0r03lXEJR
-        ffBgvgTrPTqRyxmgZ2yqWA0=
-X-Google-Smtp-Source: ABdhPJzw3Glsh4KII0L97nq3gobiOH4Z1doCcqH+8rVV3Qtokh+NZCPlAx9NogU/F9cHuH3KOA5vRQ==
-X-Received: by 2002:a37:66d6:: with SMTP id a205mr24218043qkc.422.1627428566232;
-        Tue, 27 Jul 2021 16:29:26 -0700 (PDT)
-Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id p188sm2380514qka.114.2021.07.27.16.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 16:29:25 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, lars@metafoo.de,
-        Michael.Hennerich@analog.com, jic23@kernel.org,
-        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v4 5/5] iio: adc: ad7949: use devm managed functions
-Date:   Tue, 27 Jul 2021 19:29:06 -0400
-Message-Id: <20210727232906.980769-6-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.30.1.489.g328c10930387
-In-Reply-To: <20210727232906.980769-1-liambeguin@gmail.com>
-References: <20210727232906.980769-1-liambeguin@gmail.com>
+        id S233258AbhG0Xa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 19:30:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232745AbhG0Xa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 19:30:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4CF760FE7;
+        Tue, 27 Jul 2021 23:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627428627;
+        bh=C+hq6qoVwouKkZahhd4EeTOs3dFZy6RWX6t25IskRfY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=oUoxzdzwJhoALmsycWC7djvElgH91p+1NvuikzzLGHIXdpUbX/yvT2dN9PornItps
+         JCPKr0FLkyXoze6OFR9wLxOaME35C8ckoNvcRRMu+ESi3NVSzF6W5RyeDznuhPtVU5
+         MbhdHy12fYJL7ln+lKENMAwrg4y5BqTC9rkHB24km/NK5zMM5kO5d4wEq3payvTuVA
+         WLoyIeKA3J93HOL23gqTxO1XGz3pKlup2gQi5oL8zeJMutiDoq5B8iqC5rgSdaCX2r
+         AaFXifFyIH3plcaXIJQimN6K3M99SLT4/q9gWWyUvANyQgJJoSebIIGmz/SeqMYCQZ
+         h0ZAS3QLGVcbw==
+Date:   Tue, 27 Jul 2021 18:30:25 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v10 6/8] PCI: Setup ACPI fwnode early and at the same
+ time with OF
+Message-ID: <20210727233025.GA756574@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709123813.8700-7-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
+On Fri, Jul 09, 2021 at 06:08:11PM +0530, Amey Narkhede wrote:
+> From: Shanker Donthineni <sdonthineni@nvidia.com>
+> 
+> The pci_dev objects are created through two mechanisms 1) during PCI
+> bus scan and 2) from I/O Virtualization. The fwnode in pci_dev object
+> is being set at different places depends on the type of firmware used,
+> device creation mechanism, and acpi_pci_bridge_d3() WAR.
 
-Switch to devm_iio_device_register to finalize devm migration.
-This removes the use for iio_device_unregister() and since
-mutex_destroy() is not necessary here, remove it altogether.
+WAR?
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
----
- drivers/iio/adc/ad7949.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
-index eaea8f5e87d8..29a87a12e551 100644
---- a/drivers/iio/adc/ad7949.c
-+++ b/drivers/iio/adc/ad7949.c
-@@ -452,34 +452,16 @@ static int ad7949_spi_probe(struct spi_device *spi)
- 	ret = ad7949_spi_init(ad7949_adc);
- 	if (ret) {
- 		dev_err(dev, "enable to init this device: %d\n", ret);
--		goto err;
-+		return ret;
- 	}
- 
--	ret = iio_device_register(indio_dev);
--	if (ret) {
-+	ret = devm_iio_device_register(dev, indio_dev);
-+	if (ret)
- 		dev_err(dev, "fail to register iio device: %d\n", ret);
--		goto err;
--	}
--
--	return 0;
--
--err:
--	mutex_destroy(&ad7949_adc->lock);
- 
- 	return ret;
- }
- 
--static int ad7949_spi_remove(struct spi_device *spi)
--{
--	struct iio_dev *indio_dev = spi_get_drvdata(spi);
--	struct ad7949_adc_chip *ad7949_adc = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--	mutex_destroy(&ad7949_adc->lock);
--
--	return 0;
--}
--
- static const struct of_device_id ad7949_spi_of_id[] = {
- 	{ .compatible = "adi,ad7949" },
- 	{ .compatible = "adi,ad7682" },
-@@ -502,7 +484,6 @@ static struct spi_driver ad7949_spi_driver = {
- 		.of_match_table	= ad7949_spi_of_id,
- 	},
- 	.probe	  = ad7949_spi_probe,
--	.remove   = ad7949_spi_remove,
- 	.id_table = ad7949_spi_id,
- };
- module_spi_driver(ad7949_spi_driver);
--- 
-2.30.1.489.g328c10930387
-
+> The software features which have a dependency on ACPI fwnode properties
+> and need to be handled before device_add() will not work. One use case,
+> the software has to check the existence of _RST method to support ACPI
+> based reset method.
+> 
+> This patch does the two changes in order to provide fwnode consistently.
+>  - Set ACPI and OF fwnodes from pci_setup_device().
+>  - Remove pci_set_acpi_fwnode() in acpi_pci_bridge_d3().
+> 
+> After this patch, ACPI/OF firmware properties are visible at the same
+> time during the early stage of pci_dev setup. And also call sites should
+> be able to use firmware agnostic functions device_property_xxx() for the
+> early PCI quirks in the future.
+> 
+> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+> ---
+>  drivers/pci/pci-acpi.c | 1 -
+>  drivers/pci/probe.c    | 7 ++++---
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> index eaddbf701..dae021322 100644
+> --- a/drivers/pci/pci-acpi.c
+> +++ b/drivers/pci/pci-acpi.c
+> @@ -952,7 +952,6 @@ static bool acpi_pci_bridge_d3(struct pci_dev *dev)
+>  		return false;
+>  
+>  	/* Assume D3 support if the bridge is power-manageable by ACPI. */
+> -	pci_set_acpi_fwnode(dev);
+>  	adev = ACPI_COMPANION(&dev->dev);
+>  
+>  	if (adev && acpi_device_power_manageable(adev))
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index c272e23db..c911d6a5c 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -1790,6 +1790,9 @@ int pci_setup_device(struct pci_dev *dev)
+>  	dev->error_state = pci_channel_io_normal;
+>  	set_pcie_port_type(dev);
+>  
+> +	pci_set_of_node(dev);
+> +	pci_set_acpi_fwnode(dev);
+> +
+>  	pci_dev_assign_slot(dev);
+>  
+>  	/*
+> @@ -1925,6 +1928,7 @@ int pci_setup_device(struct pci_dev *dev)
+>  	default:				    /* unknown header */
+>  		pci_err(dev, "unknown header type %02x, ignoring device\n",
+>  			dev->hdr_type);
+> +		pci_release_of_node(dev);
+>  		return -EIO;
+>  
+>  	bad:
+> @@ -2352,10 +2356,7 @@ static struct pci_dev *pci_scan_device(struct pci_bus *bus, int devfn)
+>  	dev->vendor = l & 0xffff;
+>  	dev->device = (l >> 16) & 0xffff;
+>  
+> -	pci_set_of_node(dev);
+> -
+>  	if (pci_setup_device(dev)) {
+> -		pci_release_of_node(dev);
+>  		pci_bus_put(dev->bus);
+>  		kfree(dev);
+>  		return NULL;
+> -- 
+> 2.32.0
+> 
