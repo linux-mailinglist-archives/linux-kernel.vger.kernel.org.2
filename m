@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF29D3D70A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7ECA3D70A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235885AbhG0Hya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:54:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29725 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235890AbhG0Hy3 (ORCPT
+        id S235906AbhG0Hz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:55:26 -0400
+Received: from mail-vs1-f54.google.com ([209.85.217.54]:34596 "EHLO
+        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235890AbhG0HzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:54:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627372468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=msI4RjMytbP1n7F7yoVvayHHN7FThjzPJmiZOR0CDww=;
-        b=HiioyW9V6mNgQmyq04TOLuK6VP7ciAjFusqxRaOJwMO7a4AzEev1cVj7scPOA74AS07e6z
-        OJVCJj30tt1bB99HOsPBUgVtvvCF7YW8a41E9P/llhxeFIS4t3kuow2iq7NfvUZpLPOMYo
-        GqKIfzcSe5Az0lYScURYQY3aSNFlHxI=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-51-rShpu7JoOL-DOqFoqeEQEw-1; Tue, 27 Jul 2021 03:54:27 -0400
-X-MC-Unique: rShpu7JoOL-DOqFoqeEQEw-1
-Received: by mail-wr1-f71.google.com with SMTP id s8-20020a5d42480000b02901404c442853so5671481wrr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:54:26 -0700 (PDT)
+        Tue, 27 Jul 2021 03:55:25 -0400
+Received: by mail-vs1-f54.google.com with SMTP id y18so6695604vsc.1;
+        Tue, 27 Jul 2021 00:55:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=msI4RjMytbP1n7F7yoVvayHHN7FThjzPJmiZOR0CDww=;
-        b=WYUbzfBe1Ca/IWpPyA9X4gvRS06l3FHNxUJVNqFxhbasIWvr8N/OmAgnrvPJnWCan4
-         taUeOJ58jr6cj6kU7yTqZX7Ffi3XoJLI612xLEYX2A1Jl1wOZGZbYS9Nsri8wr5F11kZ
-         frnKWLNSgnMKD+THZQDJoIS1tGefAeSiysPd2/gQdk1dPXWHbn9zERFH7YGm5kDfTUND
-         5YH/Qqxg09ZbHCPTzd0JlClkUcv5+2Bjls8/rHLfwIvO+wKqIpvoB9uUZ5Coy6WmISMg
-         isntHUAXq0oVCPw4AmMhn7a1RDPqTkY6he2BbBNojbnmqhmk5og4sL2mqAc2UXcsllG7
-         bmIw==
-X-Gm-Message-State: AOAM531ckfnhk1pbEPlRyAqdbaYpW/Bi2Lmk3bn5THn8E0KkY57yFv2I
-        qAarmmz+Rg40gSCOTXz2VqqkOfiqR3LHCc+5AYeOF95NAGFoUA2zMzvSIfmBZhI1h5YFzLfmwRF
-        D2vKG9m4bScuStn4AeiRXEi+i
-X-Received: by 2002:a1c:cc05:: with SMTP id h5mr2750546wmb.5.1627372465941;
-        Tue, 27 Jul 2021 00:54:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxs3kNtwhKpPWdmwpsLv1on90CJ6AInc7UOF2HuXnQYNpNtZo7URlKNGEOuIDGFM2r1G3RPMg==
-X-Received: by 2002:a1c:cc05:: with SMTP id h5mr2750536wmb.5.1627372465738;
-        Tue, 27 Jul 2021 00:54:25 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id p22sm1716714wmq.44.2021.07.27.00.54.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 00:54:25 -0700 (PDT)
-Subject: Re: [PATCH] efi: sysfb_efi: fix build when EFI is not set
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Mark Brown <broonie@kernel.org>, linux-next@vger.kernel.org
-References: <20210727050447.7339-1-rdunlap@infradead.org>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <9aa81fd9-359d-fc30-2969-50b8c7677f9f@redhat.com>
-Date:   Tue, 27 Jul 2021 09:54:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9pv0Mfi+cKjdrDoWz9Rec/UJjvSyq7O+mu5kO7UGzN8=;
+        b=dod+eGFqIphjkO/ZWLQv+EULTBo/u7y0Z2S4c/geWwDEIjfxu9XiOPjPAArMxGevW1
+         9Vw0x4mt3x4xYCwz9ArLs6y9hDCj3W2fNlp8vvKV6GASyrfZM0UGV2yyH1hPtURubQns
+         SbPZvyGD2iS8Z4bnj3iyTef34qJ9aIryhu4/OouvTG1WUlPQlLADSgAHM4Bul0kOX20x
+         1c34fGnUSyH8h3sBZQ9q5OpxT1gKXq2x0vzBCIeOW5h99wu5sil7yMNSVzywqvDkrf+U
+         MCNCA6q8vpgtwpFYpMnNa9Aks/IKyrSuLHoFFEEGQ24nuxSLgXMBcCDEOBE1ek6q9qjQ
+         rqkw==
+X-Gm-Message-State: AOAM530oj+IZ+YWBn9YkiKA9H2Bo3SKliMYdGElntQ6sBRUO4weYsZMf
+        wqIzHKzkGNjM4PutbwSmb3F9omYygLwQQdgoI78=
+X-Google-Smtp-Source: ABdhPJwUAZPGx2BHHBkEv4ba5/SIZrCbq1DOT4PMkSmrS9hsNFm5jgL/jcz++rg3rSdNjZKQaxO1AHKE+2HyH0CpmCM=
+X-Received: by 2002:a05:6102:321c:: with SMTP id r28mr15392078vsf.40.1627372525463;
+ Tue, 27 Jul 2021 00:55:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210727050447.7339-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+ <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
+ <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
+ <CAK7LNATLy2F-2zkHm4ENSufBT_o5p=9jc5k1K-xOV8cQf7kKDw@mail.gmail.com>
+ <87r1fkizxl.fsf@disp2133> <CAMuHMdVzNFqAdxK+QTp7ub7LyhDL_3GbVMoAah_s3nGuJ5JN_Q@mail.gmail.com>
+ <CAK8P3a2kb2Zzgd1wvi4m2fJeHWA9aONXUriEVfnsOfYTquJ3eA@mail.gmail.com>
+In-Reply-To: <CAK8P3a2kb2Zzgd1wvi4m2fJeHWA9aONXUriEVfnsOfYTquJ3eA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Jul 2021 09:55:14 +0200
+Message-ID: <CAMuHMdWDDM5pugT8KkP7cRQ4jOGJ43aUO1mic16Bsiv5eN7+Tg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/21 7:04 AM, Randy Dunlap wrote:
-> When # CONFIG_EFI is not set, there are 2 definitions of
-> sysfb_apply_efi_quirks(). The stub from sysfb.h should be used
-> and the __init function from sysfb_efi.c should not be used.
-> 
-> ../drivers/firmware/efi/sysfb_efi.c:337:13: error: redefinition of ‘sysfb_apply_efi_quirks’
->  __init void sysfb_apply_efi_quirks(struct platform_device *pd)
->              ^~~~~~~~~~~~~~~~~~~~~~
-> In file included from ../drivers/firmware/efi/sysfb_efi.c:26:0:
-> ../include/linux/sysfb.h:65:20: note: previous definition of ‘sysfb_apply_efi_quirks’ was here
->  static inline void sysfb_apply_efi_quirks(struct platform_device *pd)
->                     ^~~~~~~~~~~~~~~~~~~~~~
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: linux-efi@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Javier Martinez Canillas <javierm@redhat.com>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-next@vger.kernel.org
-> ---
->  drivers/firmware/efi/sysfb_efi.c |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> --- linext-20210726.orig/drivers/firmware/efi/sysfb_efi.c
-> +++ linext-20210726/drivers/firmware/efi/sysfb_efi.c
-> @@ -332,6 +332,7 @@ static const struct fwnode_operations ef
->  	.add_links = efifb_add_links,
->  };
->  
-> +#ifdef CONFIG_EFI
->  static struct fwnode_handle efifb_fwnode;
->  
->  __init void sysfb_apply_efi_quirks(struct platform_device *pd)
-> @@ -354,3 +355,4 @@ __init void sysfb_apply_efi_quirks(struc
->  		pd->dev.fwnode = &efifb_fwnode;
->  	}
->  }
-> +#endif
-> 
+Hi Arnd,
 
-Thanks for the patch.
+On Tue, Jul 27, 2021 at 9:49 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> On Tue, Jul 27, 2021 at 9:07 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Mon, Jul 26, 2021 at 10:27 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> > > Masahiro Yamada <masahiroy@kernel.org> writes:
+> > > > On Wed, Jul 21, 2021 at 4:58 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > >
+> > > Does anyone have any ideas?
+> > >
+> > > Something so we don't have to specify all of these variables on the make
+> > > command line would be nice.
+> >
+> > Just including the main Makefile does not work.
+> > That's why I went with the more convoluted solution in
+> > https://lore.kernel.org/linux-kbuild/CAMuHMdXJBqrpzaSNDJgic14ESiHV6cCcb_5E-st6iniXdmm9_g@mail.gmail.com/
+>
+> This is roughly what I use as well, but it does have the downside that
+> it confuses
+> the inner 'make' when you build multiple targets in parallel, e.g.
+>
+> make -skj30 kernel/ mm/ init/
+>
+> works with the normal Makefile, but fails spectacularly with my nested
+> GNUmakefile because it starts multiple sub-processes that each try to
+> build the same preparation files (I did not try your version).
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+Seems to work fine with mine...
 
-Best regards,
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
