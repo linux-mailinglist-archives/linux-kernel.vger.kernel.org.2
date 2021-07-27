@@ -2,159 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1461C3D7A8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83233D7A93
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhG0QJl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Jul 2021 12:09:41 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3505 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhG0QJk (ORCPT
+        id S229632AbhG0QKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhG0QKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:09:40 -0400
-Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GZ1j705Wqz6J6hg;
-        Wed, 28 Jul 2021 00:00:27 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 18:09:38 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Tue, 27 Jul 2021 18:09:37 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC][PATCH v2 02/12] diglim: Basic definitions
-Thread-Topic: [RFC][PATCH v2 02/12] diglim: Basic definitions
-Thread-Index: AQHXgjyicwJtnSjv/UmZEg8zsJLYTqtWxYuAgAAn86D//+j9AIAAI3yw
-Date:   Tue, 27 Jul 2021 16:09:37 +0000
-Message-ID: <4746947088404edaa31594fb095a6e46@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
- <20210726163700.2092768-3-roberto.sassu@huawei.com>
- <YQAblc+UuMq68jxu@kroah.com> <e87ba6f452254067a5eb6d58937d65d1@huawei.com>
- <YQApyqP7J/8GpItS@kroah.com>
-In-Reply-To: <YQApyqP7J/8GpItS@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 27 Jul 2021 12:10:46 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8833FC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 09:10:46 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b0a9:7e88:5ca4:551a])
+        by albert.telenet-ops.be with bizsmtp
+        id aGAk2500G1fSPfK06GAkik; Tue, 27 Jul 2021 18:10:44 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m8PfI-001S4y-1d; Tue, 27 Jul 2021 18:10:44 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m8PfH-00Fr8E-Lg; Tue, 27 Jul 2021 18:10:43 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] dt-bindings: auxdisplay: img-ascii-lcd: Convert to json-schema
+Date:   Tue, 27 Jul 2021 18:10:34 +0200
+Message-Id: <6e74aa466d39ddc9abe502e054d04e8cc7b76b40.1627402094.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> Sent: Tuesday, July 27, 2021 5:44 PM
-> On Tue, Jul 27, 2021 at 03:35:16PM +0000, Roberto Sassu wrote:
-> > > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > > Sent: Tuesday, July 27, 2021 4:44 PM
-> > > On Mon, Jul 26, 2021 at 06:36:50PM +0200, Roberto Sassu wrote:
-> > > > --- /dev/null
-> > > > +++ b/include/uapi/linux/diglim.h
-> > > > @@ -0,0 +1,51 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > > +/*
-> > > > + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
-> > > > + *
-> > > > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > + *
-> > > > + * DIGLIM definitions exported to user space, useful for generating
-> digest
-> > > > + * lists.
-> > > > + */
-> > > > +
-> > > > +#ifndef _UAPI__LINUX_DIGLIM_H
-> > > > +#define _UAPI__LINUX_DIGLIM_H
-> > > > +
-> > > > +#include <linux/types.h>
-> > > > +#include <linux/hash_info.h>
-> > > > +
-> > > > +enum compact_types { COMPACT_KEY, COMPACT_PARSER,
-> > > COMPACT_FILE,
-> > > > +		     COMPACT_METADATA, COMPACT_DIGEST_LIST,
-> > > COMPACT__LAST };
-> > > > +
-> > > > +enum compact_modifiers { COMPACT_MOD_IMMUTABLE,
-> > > COMPACT_MOD__LAST };
-> > > > +
-> > > > +enum compact_actions { COMPACT_ACTION_IMA_MEASURED,
-> > > > +		       COMPACT_ACTION_IMA_APPRAISED,
-> > > > +		       COMPACT_ACTION_IMA_APPRAISED_DIGSIG,
-> > > > +		       COMPACT_ACTION__LAST };
-> > > > +
-> > > > +enum ops { DIGEST_LIST_ADD, DIGEST_LIST_DEL,
-> DIGEST_LIST_OP__LAST };
-> > > > +
-> > > > +/**
-> > > > + * struct compact_list_hdr - header of the following concatenated
-> digests
-> > > > + * @version: version of the digest list
-> > > > + * @_reserved: field reserved for future use
-> > > > + * @type: type of digest list among enum compact_types
-> > > > + * @modifiers: additional attributes among (1 << enum
-> compact_modifiers)
-> > >
-> > > I do not understand this description, what does it mean?
-> >
-> > Hi Greg
-> >
-> > yes, it is not very clear.
-> >
-> > @modifiers is a bitmask where each bit corresponds to a different
-> > attribute. enum compact_modifiers defines which bit position is
-> > assigned to each attribute.
-> 
-> Watch out with endian issues and bitmasks...  Anyway, please document
-> this.
-> 
-> >
-> > > > + * @algo: digest algorithm
-> > >
-> > > Is this also a #define or an enum?  Where is the list of them?
-> >
-> > @algo is an enum defined in include/uapi/linux/hash_info.h.
-> 
-> Please say that.
-> 
-> > > > + * @count: number of digests
-> > > > + * @datalen: length of concatenated digests
-> > >
-> > > Where does this count and length come into play as nothing else is in
-> > > this structure?
-> >
-> > Each digest list must begin with this structure. From it, the parser knows
-> > how much data it should expect afterwards. After the data, there could be
-> > another or more blocks of this structure and following data.
-> 
-> Ah, that was not obvious at all :)
-> 
-> Why do you not have a __u8 data[]; type field as the last one here for
-> that memory so you can access it easier?
+Convert the Device Tree binding documentation for ASCII LCD displays on
+Imagination Technologies boards to json-schema.
 
-After the digest list is parsed, I'm accessing the digest with the offset from
-the beginning of the digest list. If the offset was relative to the header, it could
-have been useful. I could add the new field, but I'm afraid of the incompatibility
-with existing tools that we have.
+Drop bogus regmap property.
+Add example.
 
-Thanks
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ .../bindings/auxdisplay/img,ascii-lcd.yaml    | 54 +++++++++++++++++++
+ .../bindings/auxdisplay/img-ascii-lcd.txt     | 17 ------
+ MAINTAINERS                                   |  2 +-
+ 3 files changed, 55 insertions(+), 18 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml
+ delete mode 100644 Documentation/devicetree/bindings/auxdisplay/img-ascii-lcd.txt
 
-Roberto
+diff --git a/Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml b/Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml
+new file mode 100644
+index 0000000000000000..66e54f12f40f2f78
+--- /dev/null
++++ b/Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml
+@@ -0,0 +1,54 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/auxdisplay/img,ascii-lcd.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ASCII LCD displays on Imagination Technologies boards
++
++maintainers:
++  - Paul Burton <paulburton@kernel.org>
++
++properties:
++  compatible:
++    enum:
++      - img,boston-lcd
++      - mti,malta-lcd
++      - mti,sead3-lcd
++
++  reg:
++    maxItems: 1
++
++  offset:
++    description:
++      Offset in bytes to the LCD registers within the system controller
++
++required:
++  - compatible
++
++oneOf:
++  - required:
++      - reg
++  - required:
++      - offset
++
++if:
++  properties:
++    compatible:
++      contains:
++        const: img,boston-lcd
++then:
++  required:
++    - reg
++else:
++  required:
++    - offset
++
++additionalProperties: false
++
++examples:
++  - |
++    lcd: lcd@17fff000 {
++            compatible = "img,boston-lcd";
++            reg = <0x17fff000 0x8>;
++    };
+diff --git a/Documentation/devicetree/bindings/auxdisplay/img-ascii-lcd.txt b/Documentation/devicetree/bindings/auxdisplay/img-ascii-lcd.txt
+deleted file mode 100644
+index b69bb68992fdf2a7..0000000000000000
+--- a/Documentation/devicetree/bindings/auxdisplay/img-ascii-lcd.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-Binding for ASCII LCD displays on Imagination Technologies boards
+-
+-Required properties:
+-- compatible : should be one of:
+-    "img,boston-lcd"
+-    "mti,malta-lcd"
+-    "mti,sead3-lcd"
+-
+-Required properties for "img,boston-lcd":
+-- reg : memory region locating the device registers
+-
+-Required properties for "mti,malta-lcd" or "mti,sead3-lcd":
+-- regmap: phandle of the system controller containing the LCD registers
+-- offset: offset in bytes to the LCD registers within the system controller
+-
+-The layout of the registers & properties of the display are determined
+-from the compatible string, making this binding somewhat trivial.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7c2ca9c3809f0104..a8afc9238fd8e164 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9063,7 +9063,7 @@ F:	drivers/usb/atm/ueagle-atm.c
+ IMGTEC ASCII LCD DRIVER
+ M:	Paul Burton <paulburton@kernel.org>
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/auxdisplay/img-ascii-lcd.txt
++F:	Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml
+ F:	drivers/auxdisplay/img-ascii-lcd.c
+ 
+ IMGTEC IR DECODER DRIVER
+-- 
+2.25.1
 
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> greg k-h
