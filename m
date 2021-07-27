@@ -2,158 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70C83D7B54
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E45B3D7B6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhG0Qr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:47:29 -0400
-Received: from mail-pj1-f53.google.com ([209.85.216.53]:41751 "EHLO
-        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhG0Qr2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:47:28 -0400
-Received: by mail-pj1-f53.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so5750639pjd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 09:47:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=01OAR8To3ZcJ4vpFCydcbHByeaZ86l3QJWSODV86wfw=;
-        b=LcRmV7BEuFZWS8MNJ/ia+ubWuY0KFKcBh5wj1Vez10UZr8v+DjizwEBrdJ7p4Rhmms
-         c2GoqISd5dRDzs1Lmw9M7RiJ68kWtbKYJUnmTogbdwKbBpQ2fYo3mcVRuD2edzKjvFOR
-         dcZAazwWIJE3B8rAFb01UbzVXeAJ/CZ70Py1BHjdihsS9SO7VLnjTUV91vNdsETrxwL5
-         1+Z3QqjCM5jq5Tulfb1rq1eWAgS0CLcb3XirJjGsUfnTAFLo7sywlKIFFkGX/GQoO+5T
-         vL4eCQQC1OtnyeTh/oBeh2h8PArNhTFaL8mydFMKxCxUwNteUJBBcHmTSCZtzjqhqN81
-         5hIg==
-X-Gm-Message-State: AOAM532oBqZ8S5f19ZC6QWQ7PYIApbd44vGwTzFF/loVQFHHATzvtPoa
-        gDhd+DlreGX79mGjOpPhgZBbZGxHoqqxeY+U
-X-Google-Smtp-Source: ABdhPJwYVs7GDk8Z8AcfLb+yMMUJ6ADhr7eZUZ8VQ9Nl2gbuDw+lZ2ejc2bGd6VTfj48ntf7+a/PpA==
-X-Received: by 2002:a63:fb08:: with SMTP id o8mr24245628pgh.72.1627404447187;
-        Tue, 27 Jul 2021 09:47:27 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:245b:3f73:a2af:af2f])
-        by smtp.gmail.com with ESMTPSA id c83sm4404335pfb.164.2021.07.27.09.47.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 09:47:26 -0700 (PDT)
-From:   Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH 2/4] configfs: Fix writing at a non-zero offset
-To:     Bodo Stroesser <bostroesser@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Yanko Kaneti <yaneti@declera.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-References: <20210723212353.896343-1-bvanassche@acm.org>
- <20210723212353.896343-3-bvanassche@acm.org>
- <7bee65ce-f5f1-a525-c72d-221b5d23cf3e@gmail.com>
- <d12f24b6-7066-f9bb-1b88-6cc23c9c45c1@acm.org>
- <4055ca70-7669-d00d-7c08-86fe75a3d377@gmail.com>
- <618b2bdc-282b-0a1d-1fc5-020cf80d7a7e@acm.org>
- <c9cb1f3b-0b3b-c571-4a51-e647f3c1e90a@gmail.com>
- <ab190c50-8c87-b215-1432-056c81bcd656@acm.org>
- <fec30933-46b1-1085-1af1-1fd0d2265981@gmail.com>
-Message-ID: <a3ba73e5-ffd1-887e-acd9-11f537db27e0@acm.org>
-Date:   Tue, 27 Jul 2021 09:47:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230230AbhG0Qv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:51:58 -0400
+Received: from mga12.intel.com ([192.55.52.136]:33393 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229494AbhG0Qv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 12:51:57 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="192081321"
+X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
+   d="scan'208";a="192081321"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 09:51:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
+   d="scan'208";a="498873264"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 27 Jul 2021 09:51:56 -0700
+Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
+        by linux.intel.com (Postfix) with ESMTP id 635AC58086A;
+        Tue, 27 Jul 2021 09:51:56 -0700 (PDT)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     hdegoede@redhat.com, mgross@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, joe@perches.com
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH v3] platform/x86/intel: Move Intel PMT drivers to new subfolder
+Date:   Tue, 27 Jul 2021 09:49:28 -0700
+Message-Id: <20210727164928.3171521-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <fec30933-46b1-1085-1af1-1fd0d2265981@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/21 12:27 AM, Bodo Stroesser wrote:
-> What I meant is, that changing the source code in such a way, that
-> writing a buffer in multiple writes works in general, could cause
-> trouble in case userspace uses this.
-> 
-> But for special syscall sequences your changes still change the result
-> on existing configfs files. Example:
-> 
-> 1) userspace program opens qfull_time_out
-> 2) userspace program writes "90", count=2 to set timeout to 90 sec
-> 3) userspace again wants to change timeout, so it writes "55", count=2
-> 
-> Before the changes we end up with timeout being 55 seconds. After the
-> change - due to data gathering - we finally have timeout 9055 seconds.
+Move all Intel Platform Monitoring Technology drivers to
+drivers/platform/x86/intel/pmt.
 
-Hi Bodo,
-
-How about replacing patches 1 and 2 from this series with the patch below?
-Do you agree that this patch is sufficient to restore the behavior from
-kernel v5.13 and before?
-
-Thanks,
-
-Bart.
-
-Subject: [PATCH 1/3] configfs: Restore the kernel v5.13 text attribute write behavior
-
-Instead of writing at the offset specified by the write() system call,
-always write at offset zero.
-
-Cc: Bodo Stroesser <bostroesser@gmail.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: Yanko Kaneti <yaneti@declera.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Reported-by: Bodo Stroesser <bostroesser@gmail.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-  fs/configfs/file.c | 20 ++++++++------------
-  1 file changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-index 5a0be9985bae..8adf6250b207 100644
---- a/fs/configfs/file.c
-+++ b/fs/configfs/file.c
-@@ -177,12 +177,11 @@ static ssize_t configfs_bin_read_iter(struct kiocb *iocb, struct iov_iter *to)
-  	return retval;
-  }
+V3:	Fix folder in MAINTAINERS and build flag in Makefile as suggested by
+	Joe Perches
 
--/* Fill [buffer, buffer + pos) with data coming from @from. */
--static int fill_write_buffer(struct configfs_buffer *buffer, loff_t pos,
-+/* Fill @buffer with data coming from @from. */
-+static int fill_write_buffer(struct configfs_buffer *buffer,
-  			     struct iov_iter *from)
-  {
--	loff_t to_copy;
--	int copied;
-+	int to_copy, copied;
-  	u8 *to;
+V2:	Remove 'pmt' prefix on files as suggested by Andy.
 
-  	if (!buffer->page)
-@@ -190,11 +189,8 @@ static int fill_write_buffer(struct configfs_buffer *buffer, loff_t pos,
-  	if (!buffer->page)
-  		return -ENOMEM;
+ MAINTAINERS                                   |  2 +-
+ drivers/platform/x86/Kconfig                  | 36 -----------------
+ drivers/platform/x86/Makefile                 |  3 --
+ drivers/platform/x86/intel/Kconfig            |  1 +
+ drivers/platform/x86/intel/Makefile           |  1 +
+ drivers/platform/x86/intel/pmt/Kconfig        | 40 +++++++++++++++++++
+ drivers/platform/x86/intel/pmt/Makefile       | 12 ++++++
+ .../{intel_pmt_class.c => intel/pmt/class.c}  |  2 +-
+ .../{intel_pmt_class.h => intel/pmt/class.h}  |  0
+ .../pmt/crashlog.c}                           |  2 +-
+ .../pmt/telemetry.c}                          |  2 +-
+ 11 files changed, 58 insertions(+), 43 deletions(-)
+ create mode 100644 drivers/platform/x86/intel/pmt/Kconfig
+ create mode 100644 drivers/platform/x86/intel/pmt/Makefile
+ rename drivers/platform/x86/{intel_pmt_class.c => intel/pmt/class.c} (99%)
+ rename drivers/platform/x86/{intel_pmt_class.h => intel/pmt/class.h} (100%)
+ rename drivers/platform/x86/{intel_pmt_crashlog.c => intel/pmt/crashlog.c} (99%)
+ rename drivers/platform/x86/{intel_pmt_telemetry.c => intel/pmt/telemetry.c} (99%)
 
--	to_copy = SIMPLE_ATTR_SIZE - 1 - pos;
--	if (to_copy <= 0)
--		return 0;
--	to = buffer->page + pos;
--	copied = copy_from_iter(to, to_copy, from);
-+	to = buffer->page;
-+	copied = copy_from_iter(to, SIMPLE_ATTR_SIZE - 1, from);
-  	buffer->needs_read_fill = 1;
-  	/* if buf is assumed to contain a string, terminate it by \0,
-  	 * so e.g. sscanf() can scan the string easily */
-@@ -227,14 +223,14 @@ static ssize_t configfs_write_iter(struct kiocb *iocb, struct iov_iter *from)
-  {
-  	struct file *file = iocb->ki_filp;
-  	struct configfs_buffer *buffer = file->private_data;
--	ssize_t len;
-+	int len;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ffed30dc86b0..bcf1e91fd5df 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9494,7 +9494,7 @@ INTEL PMT DRIVER
+ M:	"David E. Box" <david.e.box@linux.intel.com>
+ S:	Maintained
+ F:	drivers/mfd/intel_pmt.c
+-F:	drivers/platform/x86/intel_pmt_*
++F:	drivers/platform/x86/intel/pmt/
+ 
+ INTEL PRO/WIRELESS 2100, 2200BG, 2915ABG NETWORK CONNECTION SUPPORT
+ M:	Stanislav Yakovlev <stas.yakovlev@gmail.com>
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index cae72922f448..f06ccd00f6c4 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1184,42 +1184,6 @@ config INTEL_MRFLD_PWRBTN
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called intel_mrfld_pwrbtn.
+ 
+-config INTEL_PMT_CLASS
+-	tristate
+-	help
+-	  The Intel Platform Monitoring Technology (PMT) class driver provides
+-	  the basic sysfs interface and file hierarchy used by PMT devices.
+-
+-	  For more information, see:
+-	  <file:Documentation/ABI/testing/sysfs-class-intel_pmt>
+-
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called intel_pmt_class.
+-
+-config INTEL_PMT_TELEMETRY
+-	tristate "Intel Platform Monitoring Technology (PMT) Telemetry driver"
+-	depends on MFD_INTEL_PMT
+-	select INTEL_PMT_CLASS
+-	help
+-	  The Intel Platform Monitory Technology (PMT) Telemetry driver provides
+-	  access to hardware telemetry metrics on devices that support the
+-	  feature.
+-
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called intel_pmt_telemetry.
+-
+-config INTEL_PMT_CRASHLOG
+-	tristate "Intel Platform Monitoring Technology (PMT) Crashlog driver"
+-	depends on MFD_INTEL_PMT
+-	select INTEL_PMT_CLASS
+-	help
+-	  The Intel Platform Monitoring Technology (PMT) crashlog driver provides
+-	  access to hardware crashlog capabilities on devices that support the
+-	  feature.
+-
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called intel_pmt_crashlog.
+-
+ config INTEL_PUNIT_IPC
+ 	tristate "Intel P-Unit IPC Driver"
+ 	help
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 43d36f8c36f1..d517d5cbc9ca 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -128,9 +128,6 @@ obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)		+= intel-uncore-frequency.o
+ obj-$(CONFIG_INTEL_BXTWC_PMIC_TMU)	+= intel_bxtwc_tmu.o
+ obj-$(CONFIG_INTEL_CHTDC_TI_PWRBTN)	+= intel_chtdc_ti_pwrbtn.o
+ obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
+-obj-$(CONFIG_INTEL_PMT_CLASS)		+= intel_pmt_class.o
+-obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= intel_pmt_telemetry.o
+-obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= intel_pmt_crashlog.o
+ obj-$(CONFIG_INTEL_PUNIT_IPC)		+= intel_punit_ipc.o
+ obj-$(CONFIG_INTEL_SCU_IPC)		+= intel_scu_ipc.o
+ obj-$(CONFIG_INTEL_SCU_PCI)		+= intel_scu_pcidrv.o
+diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
+index 8ca021785f67..0b238026c082 100644
+--- a/drivers/platform/x86/intel/Kconfig
++++ b/drivers/platform/x86/intel/Kconfig
+@@ -19,5 +19,6 @@ if X86_PLATFORM_DRIVERS_INTEL
+ source "drivers/platform/x86/intel/int33fe/Kconfig"
+ source "drivers/platform/x86/intel/int3472/Kconfig"
+ source "drivers/platform/x86/intel/pmc/Kconfig"
++source "drivers/platform/x86/intel/pmt/Kconfig"
+ 
+ endif # X86_PLATFORM_DRIVERS_INTEL
+diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
+index 49962f4dfdec..a740af2a0939 100644
+--- a/drivers/platform/x86/intel/Makefile
++++ b/drivers/platform/x86/intel/Makefile
+@@ -7,3 +7,4 @@
+ obj-$(CONFIG_INTEL_CHT_INT33FE)		+= int33fe/
+ obj-$(CONFIG_INTEL_SKL_INT3472)		+= int3472/
+ obj-$(CONFIG_INTEL_PMC_CORE)		+= pmc/
++obj-$(CONFIG_INTEL_PMT_CLASS)		+= pmt/
+diff --git a/drivers/platform/x86/intel/pmt/Kconfig b/drivers/platform/x86/intel/pmt/Kconfig
+new file mode 100644
+index 000000000000..d630f883a717
+--- /dev/null
++++ b/drivers/platform/x86/intel/pmt/Kconfig
+@@ -0,0 +1,40 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Intel Platform Monitoring Technology drivers
++#
++
++config INTEL_PMT_CLASS
++	tristate
++	help
++	  The Intel Platform Monitoring Technology (PMT) class driver provides
++	  the basic sysfs interface and file hierarchy used by PMT devices.
++
++	  For more information, see:
++	  <file:Documentation/ABI/testing/sysfs-class-intel_pmt>
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called intel_pmt_class.
++
++config INTEL_PMT_TELEMETRY
++	tristate "Intel Platform Monitoring Technology (PMT) Telemetry driver"
++	depends on MFD_INTEL_PMT
++	select INTEL_PMT_CLASS
++	help
++	  The Intel Platform Monitory Technology (PMT) Telemetry driver provides
++	  access to hardware telemetry metrics on devices that support the
++	  feature.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called intel_pmt_telemetry.
++
++config INTEL_PMT_CRASHLOG
++	tristate "Intel Platform Monitoring Technology (PMT) Crashlog driver"
++	depends on MFD_INTEL_PMT
++	select INTEL_PMT_CLASS
++	help
++	  The Intel Platform Monitoring Technology (PMT) crashlog driver provides
++	  access to hardware crashlog capabilities on devices that support the
++	  feature.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called intel_pmt_crashlog.
+diff --git a/drivers/platform/x86/intel/pmt/Makefile b/drivers/platform/x86/intel/pmt/Makefile
+new file mode 100644
+index 000000000000..019103ee6522
+--- /dev/null
++++ b/drivers/platform/x86/intel/pmt/Makefile
+@@ -0,0 +1,12 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Makefile for linux/drivers/platform/x86/intel/pmt
++# Intel Platform Monitoring Technology Drivers
++#
++
++pmt_class-objs				+= class.o
++obj-$(CONFIG_INTEL_PMT_CLASS)		+= pmt_class.o
++pmt_telemetry-objs			+= telemetry.o
++obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= pmt_telemetry.o
++pmt_crashlog-objs			+= crashlog.o
++obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= pmt_crashlog.o
+diff --git a/drivers/platform/x86/intel_pmt_class.c b/drivers/platform/x86/intel/pmt/class.c
+similarity index 99%
+rename from drivers/platform/x86/intel_pmt_class.c
+rename to drivers/platform/x86/intel/pmt/class.c
+index c86ff15b1ed5..659b1073033c 100644
+--- a/drivers/platform/x86/intel_pmt_class.c
++++ b/drivers/platform/x86/intel/pmt/class.c
+@@ -13,7 +13,7 @@
+ #include <linux/mm.h>
+ #include <linux/pci.h>
+ 
+-#include "intel_pmt_class.h"
++#include "class.h"
+ 
+ #define PMT_XA_START		0
+ #define PMT_XA_MAX		INT_MAX
+diff --git a/drivers/platform/x86/intel_pmt_class.h b/drivers/platform/x86/intel/pmt/class.h
+similarity index 100%
+rename from drivers/platform/x86/intel_pmt_class.h
+rename to drivers/platform/x86/intel/pmt/class.h
+diff --git a/drivers/platform/x86/intel_pmt_crashlog.c b/drivers/platform/x86/intel/pmt/crashlog.c
+similarity index 99%
+rename from drivers/platform/x86/intel_pmt_crashlog.c
+rename to drivers/platform/x86/intel/pmt/crashlog.c
+index 56963ceb6345..1c1021f04d3c 100644
+--- a/drivers/platform/x86/intel_pmt_crashlog.c
++++ b/drivers/platform/x86/intel/pmt/crashlog.c
+@@ -15,7 +15,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/overflow.h>
+ 
+-#include "intel_pmt_class.h"
++#include "class.h"
+ 
+ #define DRV_NAME		"pmt_crashlog"
+ 
+diff --git a/drivers/platform/x86/intel_pmt_telemetry.c b/drivers/platform/x86/intel/pmt/telemetry.c
+similarity index 99%
+rename from drivers/platform/x86/intel_pmt_telemetry.c
+rename to drivers/platform/x86/intel/pmt/telemetry.c
+index 9b95ef050457..a58843360fbf 100644
+--- a/drivers/platform/x86/intel_pmt_telemetry.c
++++ b/drivers/platform/x86/intel/pmt/telemetry.c
+@@ -15,7 +15,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/overflow.h>
+ 
+-#include "intel_pmt_class.h"
++#include "class.h"
+ 
+ #define TELEM_DEV_NAME		"pmt_telemetry"
+ 
+-- 
+2.25.1
 
-  	mutex_lock(&buffer->mutex);
--	len = fill_write_buffer(buffer, iocb->ki_pos, from);
-+	len = fill_write_buffer(buffer, from);
-  	if (len > 0)
-  		len = flush_write_buffer(file, buffer, len);
-  	if (len > 0)
--		iocb->ki_pos += len;
-+		iocb->ki_pos = len;
-  	mutex_unlock(&buffer->mutex);
-  	return len;
-  }
