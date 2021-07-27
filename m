@@ -2,99 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC1C3D72F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBE33D72FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236236AbhG0KTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:19:38 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:54981 "EHLO
+        id S236240AbhG0KWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:22:38 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:48821 "EHLO
         wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236131AbhG0KTg (ORCPT
+        by vger.kernel.org with ESMTP id S236166AbhG0KW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:19:36 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 063C93200910;
-        Tue, 27 Jul 2021 06:19:35 -0400 (EDT)
+        Tue, 27 Jul 2021 06:22:28 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 42CE1320014C;
+        Tue, 27 Jul 2021 06:22:28 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 27 Jul 2021 06:19:36 -0400
+  by compute3.internal (MEProxy); Tue, 27 Jul 2021 06:22:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-id:content-type:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=QmLMBA6Xti0HU0XKBmTE0w8Hds9Nrr+uYvql2a6fe88=; b=QxRjhR41
-        g4n0z4jYVLmHonJgX3FNAJaMIEF/NoXCx1TlH2QsMb02JXL0ezFhzjmk39nDOQ1h
-        VQ+ZReEi0jbBoxB5i3I4C68X0k66e3A/wfCWZcUeQ7OkT+lnoadN8++d3Qy7TDmE
-        FYHD+jXQykY0fMU2PIZAAPXs48WmG2vo0L6XqCyGxY+CPgN/4ym+DE7+tpjNcrNw
-        wU6aCNs2IJ9c1Ol5UiiKURuCHO1O8p6aVGIlyZFv+tamoXX4kCOoYGuFDeS5z/Ic
-        Kjd5PVxfVdWbIps3VRPyirHZQOUbHztBt0s29j8ryluUd/5vTFrt8II1aht5bd8B
-        e2AWboh90cOVAg==
-X-ME-Sender: <xms:tt3_YIltJaOVvEJ0rNKTS-5CBCTeDzisc1oGWXWhnfn6Fuq1Ogv4Ww>
-    <xme:tt3_YH3Vmid0eYzfUDk_QB0u9qwX87c252ukyAtDwnAjWIX-sJ-rLIvrAMJ0fuxxX
-    Hhyatoa9XfNlhgO19c>
-X-ME-Received: <xmr:tt3_YGqMVyUJ4RGhtQOwYNhWXBxCRCmh3DMlNakMhaCAMNo_Yu17Ee4m93B2i-eKz7r2LmH50PCgkBda216qpgBcnAAqosKVBbg>
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=JllDc+
+        mQc+fGsx2EtwgCRO3Sz4y7k8DZECXEF7ykUOI=; b=ogzvAVA4Fg5ruX06uIHei5
+        GiiMHCqvEkO3may9i2dxwhw/J4g4m1bt1wtiE2dBNXbuhpWOttiLZ3lvoz1vK83T
+        dpWDmi9dRjcFUrQnkz8WllBE1iEvcvoRLXDdyFH+KtihbypRSsNfbhJCUmVlJv0F
+        zSdE0y5xYgaAV+VSZ6E9jipVlv7Vo/moaVah53ptqx3d2P48981NX0FpzLaVDTPC
+        0VI4OYKrHl7jX3p9Fo+3cjmR5CNsPF74HQRCWtlGYvaybXfq627SwdHzuapb/V8K
+        A3Wa8x8wLy/7aZt3e4ve2PEAllkgKQr7FIS1Fo/kSJ+QBd4AO11B+4/yLWhAfjeA
+        ==
+X-ME-Sender: <xms:Y97_YD1Y75P1jKczGp58XZbcKUQ7uTuBRGk2FgcS_Xf7d6PhQSsraA>
+    <xme:Y97_YCF8YYxfucFuQ1230otyQTCUjduJtFYXDdXUCFRQwtq_urz_Ytr1_zkrLUaJq
+    Zc3gKn5gtkllIjDn8s>
+X-ME-Received: <xmr:Y97_YD7Y0144RFlup9fi0CgKvO90TRZG1cqYmWur-unoAOHfT3mRl7mK8BUt7ckrBIlPq47PTRVvjc0_Pc1mjQWIGQ6uQwCyR88>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeejgddvudcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
+    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
     rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:tt3_YElxCTGW4-w531ASY3g03z02vRrNHpL3473-G9psAQKNSdLlXw>
-    <xmx:tt3_YG2WXFbtPmJppa_ARnFdBFjmQzxnZg26EY1oTM_XkdcsMQUlqQ>
-    <xmx:tt3_YLuW9KcOeWFSMB4Oz84zsDiCVDodY59ukPwS9lPusI8oDVS1wg>
-    <xmx:t93_YLz41GPvB3Hk5MIq00pNy1WdEV0ejmDJBm1sYILr6OC7sUuHrw>
+    gvrhhnpeekveevtdekfedtfefhvdfgleelfefhtdefieetjeejvefghfdufeejkeehgfeu
+    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdr
+    ohhrgh
+X-ME-Proxy: <xmx:Y97_YI0yhhZR6ON2vzm4Ejomsu0RSOOUnsRXjbqwHDKpS62BGtZRJA>
+    <xmx:Y97_YGH4zUQLv7cWtICs0XKRmwJphuHKEauz189eu4-sICL8_DiTsw>
+    <xmx:Y97_YJ-DLPEZUJoRvdHgnQ68zJqwnP8fTY_WR1a-o096fjMy6bywNg>
+    <xmx:Y97_YLRQoa02qOVfDn5N_Q2C7QFZvzeVL2nG9RmitILqFznudQL4UA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Jul 2021 06:19:32 -0400 (EDT)
-Date:   Tue, 27 Jul 2021 20:19:35 +1000 (AEST)
+ 27 Jul 2021 06:22:25 -0400 (EDT)
+Date:   Tue, 27 Jul 2021 20:21:52 +1000 (AEST)
 From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH 1/5] nubus: Simplify check in remove callback
-In-Reply-To: <CAMuHMdX=K4S3Yd_ybd5C3e40XefMf5kHs1tWs1+VKTgiWEWEDg@mail.gmail.com>
-Message-ID: <194b351c-bae-27a-1875-9ad3c47292e@linux-m68k.org>
-References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de> <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de> <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org> <CAMuHMdX=K4S3Yd_ybd5C3e40XefMf5kHs1tWs1+VKTgiWEWEDg@mail.gmail.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+cc:     linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][CFT] signal handling fixes
+In-Reply-To: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
+Message-ID: <5622d120-1b89-6898-d091-8b4ceff6418@linux-m68k.org>
+References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463811774-894125592-1627380959=:28"
-Content-ID: <4a49a1b2-e172-446c-be33-62c34c8bdc97@nippy.intranet>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Sun, 25 Jul 2021, Al Viro wrote:
 
----1463811774-894125592-1627380959=:28
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <c0f951ce-205b-e695-f5ba-a13ce3cf542d@nippy.intranet>
+> 
+> 	The series is on top of 5.14-rc1; it lives in
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #untested.m68k
+> Individual patches in followups...
+> 
+> 	_Very_ lightly tested on aranym; no real hardware to test it on.
+> Any help with review and testing would be very welcome.
+> 
 
-On Tue, 27 Jul 2021, Geert Uytterhoeven wrote:
-
-> On Tue, Jul 27, 2021 at 11:50 AM Finn Thain <fthain@linux-m68k.org> wrote=
-:
-> > On Tue, 27 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
-> > > Apart from that, the compiler might already assume dev->driver being=
-=20
-> > > non-NULL after to_nubus_driver(dev->driver) was called.
-> >
-> > I don't understand how a compiler can make that assumption. But then,=
-=20
-> > I don't know why compilers do a lot of the things they do...
->=20
-> It is one of those recent optimizations people have been complaining=20
-> about.  Once you have dereferenced a pointer, compilers may remove all=20
-> further NULL-checks, assuming they can't happen, as the code would have=
-=20
-> crashed anyway before due to the dereference.
-
-But that's the point -- there is no dereference, just pointer arithmetic.
-
-> Good luck running on bare metal with RAM at zero ;-)
-
-Quite.
----1463811774-894125592-1627380959=:28--
+I can test this branch on a Motorola 68040 machine I have here. Can you 
+advise how to get decent code coverage? Maybe there's a package out there 
+with a signal-heavy test suite? Maybe I need a break point in a signal 
+handler? Or perhaps just send ^C to a process running under strace?
