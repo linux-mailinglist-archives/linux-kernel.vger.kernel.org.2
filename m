@@ -2,72 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FED3D8229
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6A83D822C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhG0Vx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 17:53:56 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:35914 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232142AbhG0Vxz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:53:55 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1D78F1C0B76; Tue, 27 Jul 2021 23:53:54 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 23:53:53 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 000/119] 4.19.199-rc3 review
-Message-ID: <20210727215353.GA25534@duo.ucw.cz>
-References: <20210727112108.341674321@linuxfoundation.org>
+        id S232809AbhG0Vy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:54:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232013AbhG0Vy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 17:54:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2864960F91;
+        Tue, 27 Jul 2021 21:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627422867;
+        bh=JWPqEvdUD8XWRfGIETHhThBzPZ1y5KHckWrOO7MNCm4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Nx+y9acfxSoGNyQY0DdES7IM4xXVKE9r5oQfyovMOz1Y2d+RX2RSJYC3Um0X4JCSP
+         IFc5HwrefhyZ7QjYB4ZrqjGp7psXCAUTRyX+nyF9AScBAJ+JppIGSmH/yJq+qvfPnG
+         DwVExajkTWQDgFxC2XwsDCRwz3K1tlW5pbcwN43lfo1qMTITa/4vwjvgLIG7Ttnwhj
+         q28lMq0WhFtuB++DzOsriqmRwLpLHA06vSn8+6rkpExAof89eOEe7G6A89QuRiS5do
+         P7k6yJWPzgRjzHMVcC68oHyx9chVI3HfRjLvBoWjj3w0eol54qV/J+SY5E7cEkXSGj
+         oHHZ4jYHj/0cg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
-Content-Disposition: inline
-In-Reply-To: <20210727112108.341674321@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210717112742.7196-1-digetx@gmail.com>
+References: <20210717112742.7196-1-digetx@gmail.com>
+Subject: Re: [PATCH v1] clk: tegra: Implement disable_unused() of tegra_clk_sdmmc_mux_ops
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Date:   Tue, 27 Jul 2021 14:54:24 -0700
+Message-ID: <162742286477.2368309.2790017158875617305@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Dmitry Osipenko (2021-07-17 04:27:42)
+> Implement disable_unused() callback of tegra_clk_sdmmc_mux_ops to fix
+> imbalanced disabling of the unused MMC clock on Tegra210 Jetson Nano.
+>=20
+> Fixes: c592c8a28f58 ("clk: tegra: Fix refcounting of gate clocks")
+> Reported-by: Jon Hunter <jonathanh@nvidia.com> # T210 Nano
+> Tested-by: Jon Hunter <jonathanh@nvidia.com> # T210 Nano
+> Acked-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
 
---r5Pyd7+fXNt84Ff3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> This is the start of the stable review cycle for the 4.19.199 release.
-> There are 119 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-
-CIP testing did not find any problems here:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.19.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---r5Pyd7+fXNt84Ff3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYQCAcQAKCRAw5/Bqldv6
-8g1qAJ4w6joOoZ/MJA0uYJwUPBletcLXkACfbKnYJGdBsRN4URkN4FWBSh30GPQ=
-=ZzKU
------END PGP SIGNATURE-----
-
---r5Pyd7+fXNt84Ff3--
+Applied to clk-fixes
