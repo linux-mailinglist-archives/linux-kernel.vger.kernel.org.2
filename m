@@ -2,201 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EFB3D7D4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C546E3D7D63
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhG0SSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhG0SSX (ORCPT
+        id S231479AbhG0S0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:26:52 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:38663 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231200AbhG0S0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:18:23 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CFCC061760;
-        Tue, 27 Jul 2021 11:18:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/wH+bt150laCfivNWd1GtrgcQyf1VwVgzN2kPwmqJJo=; b=ygtKXlWcjHlUArlv1um/OmOXYP
-        ZBHc9FJo2URjB5RY2d5YCaJVQcVt/r5ahSiyAYk1yfF60HXKutJrRaQ5kETGpuJks00upJ2c+1GxY
-        Ft0aVq6Ky73sFv8zCSMaqYVrjioU1dQ50B2qjpDbth2cXoZi+D28IrxI7lBbzvMmI9b2i+F/TVVnM
-        ca22l0qbtwpUXOrAR1tVRryUoEkdLdJkOn/+OIZTs+PyGc2DzIIlG/8b7wPp+in4mVN6M5JSlQ0Rf
-        WJbzRobfmiXqZBnC5n4y9DCeRqOls44TUVvgahtJB0/ryljBg2QrpWQjV/kmgd0aqfyb0OBS5/fZS
-        fZOkE4mg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8ReV-00FndS-RP; Tue, 27 Jul 2021 18:18:03 +0000
-Date:   Tue, 27 Jul 2021 11:18:03 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andriin@fb.com" <andriin@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "atenart@kernel.org" <atenart@kernel.org>,
-        "alobakin@pm.me" <alobakin@pm.me>,
-        "weiwan@google.com" <weiwan@google.com>,
-        "ap420073@gmail.com" <ap420073@gmail.com>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "ngupta@vflare.org" <ngupta@vflare.org>,
-        "sergey.senozhatsky.work@gmail.com" 
-        <sergey.senozhatsky.work@gmail.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "mbenes@suse.com" <mbenes@suse.com>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "jikos@kernel.org" <jikos@kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Douglas Gilbert <dgilbert@interlog.com>,
-        Hannes Reinecke <hare@suse.de>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] kernel/module: add documentation for try_module_get()
-Message-ID: <YQBN2/K4Ne5orgzS@bombadil.infradead.org>
-References: <20210722221905.1718213-1-mcgrof@kernel.org>
- <dbf27fa2f8864e1d91f7015249b1a5f1@AcuMS.aculab.com>
- <YQBCvKgH481C7o1c@bombadil.infradead.org>
- <YQBGemOIF4sp/ges@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQBGemOIF4sp/ges@kroah.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+        Tue, 27 Jul 2021 14:26:49 -0400
+Received: by mail-il1-f182.google.com with SMTP id h18so195241ilc.5;
+        Tue, 27 Jul 2021 11:26:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=2ZN+Os4KcblXwXlTL5vzGACuV2+/v2kG3feRmGVKyCo=;
+        b=BRzHPIoDVKNnF+bu6IZ/d3FagDEFXVA0zSgzabCx4LooKpQX3bTf+mR4KdcAzI1FYy
+         bnpoVL4KEZiZa8H+9D7PslSOtTiqTiYF9IEa1A0z+E35hBlsaKHMFo7R18rxweDKZHqa
+         whOhD54HRVGeg+Wv5WTwOJwIkU8P44QkCs+g0A4j2R/fEZnGiHC+mfwAJgZvjAfK/Qez
+         RNjoqjCsNNVvUF/hJPo/crFdz2JFpA0a9dM38H3Fgnks76s72TknnN8Mb4GG3hAcMdeC
+         KADI1pgXxqXR933G804S/e7NnssuZPDgX6x++vNBq38rQ0erhewmrPSEoyT5imLUOe7o
+         1u0w==
+X-Gm-Message-State: AOAM533KHYu2IKBCdmQSCuqRd059x+pgRXFgsFHVIpY1CUfXXGdpRdk8
+        alhJMwZobAtFDaAfTE+D2w==
+X-Google-Smtp-Source: ABdhPJxJ2NYaxQ1nbNMMl3dkF0KXaLypDNB2gEo4iR1RWB0PAxHYmIYgSOJlEvITbTdqjse0NV4VtA==
+X-Received: by 2002:a92:dc8a:: with SMTP id c10mr17390858iln.48.1627410408071;
+        Tue, 27 Jul 2021 11:26:48 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id h13sm2066103ila.44.2021.07.27.11.26.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 11:26:47 -0700 (PDT)
+Received: (nullmailer pid 3210656 invoked by uid 1000);
+        Tue, 27 Jul 2021 18:26:35 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        steev@kali.org, robh+dt@kernel.org, viresh.kumar@linaro.org,
+        devicetree@vger.kernel.org, rui.zhang@intel.com, rjw@rjwysocki.net
+In-Reply-To: <20210727152512.1098329-7-thara.gopinath@linaro.org>
+References: <20210727152512.1098329-1-thara.gopinath@linaro.org> <20210727152512.1098329-7-thara.gopinath@linaro.org>
+Subject: Re: [Patch v4 6/6] dt-bindings: thermal: Add dt binding for QCOM LMh
+Date:   Tue, 27 Jul 2021 12:26:35 -0600
+Message-Id: <1627410395.886153.3210655.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 07:46:34PM +0200, gregkh@linuxfoundation.org wrote:
-> On Tue, Jul 27, 2021 at 10:30:36AM -0700, Luis Chamberlain wrote:
-> > On Sat, Jul 24, 2021 at 12:15:10PM +0000, David Laight wrote:
-> > > From: Luis Chamberlain
-> > > > Sent: 22 July 2021 23:19
-> > > > 
-> > > > There is quite a bit of tribal knowledge around proper use of
-> > > > try_module_get() and that it must be used only in a context which
-> > > > can ensure the module won't be gone during the operation. Document
-> > > > this little bit of tribal knowledge.
-> > > > 
-> > > ...
-> > > 
-> > > Some typos.
-> > > 
-> > > > +/**
-> > > > + * try_module_get - yields to module removal and bumps reference count otherwise
-> > > > + * @module: the module we should check for
-> > > > + *
-> > > > + * This can be used to check if userspace has requested to remove a module,
-> > >                                                            a module be removed
-> > > > + * and if so let the caller give up. Otherwise it takes a reference count to
-> > > > + * ensure a request from userspace to remove the module cannot happen.
-> > > > + *
-> > > > + * Care must be taken to ensure the module cannot be removed during
-> > > > + * try_module_get(). This can be done by having another entity other than the
-> > > > + * module itself increment the module reference count, or through some other
-> > > > + * means which gaurantees the module could not be removed during an operation.
-> > >                   guarantees
-> > > > + * An example of this later case is using this call in a sysfs file which the
-> > > > + * module created. The sysfs store / read file operation is ensured to exist
-> > >                                                             ^^^^^^^^^^^^^^^^^^^
-> > > Not sure what that is supposed to mean.
-> > 
-> > I'll clarify further. How about:
-> > 
-> > The sysfs store / read file operations are gauranteed to exist using
-> > kernfs's active reference (see kernfs_active()).
+On Tue, 27 Jul 2021 11:25:12 -0400, Thara Gopinath wrote:
+> Add dt binding documentation to describe Qualcomm
+> Limits Management Hardware node.
 > 
-> But that has nothing to do with module reference counts.  kernfs knows
-> nothing about modules.
-
-Yes but we are talking about sysfs files which the module creates. So
-but inference again, an active reference protects a module.
-
-> > > So there is a potentially horrid race:
-> > > The module unload is going to do:
-> > > 	driver_data->module_ref = 0;
-> > > and elsewhere there'll be:
-> > > 	ref = driver_data->module_ref;
-> > > 	if (!ref || !try_module_get(ref))
-> > > 		return -error;
-> > > 
-> > > You have to have try_module_get() to allow the module unload
-> > > function to sleep.
-> > > But the above code still needs a driver lock to ensure the
-> > > unload code doesn't race with the try_module_get() and the
-> > > 'ref' be invalidated before try_module_get() looks at it.
-> > > (eg if an interrupt defers processing.)
-> > > 
-> > > So there can be no 'yielding'.
-> > 
-> > Oh but there is. Consider access to a random sysfs file 'add_new_device'
-> > which takes as input a name, for driver foo, and so foo's
-> > add_new_foobar_device(name="bar") is called. Unless sysfs file
-> > "yields" by using try_module_get() before trying to add a new
-> > foo device called "bar", it will essentially be racing with the
-> > exit routine of module foo, and depending on how locking is implemented
-> > (most drivers get it wrong), this easily leads to crashes.
-> > 
-> > In fact, this documentation patch was motivated by my own solution to a
-> > possible deadlock when sysfs is used. Using the same example above, if
-> > the same sysfs file uses *any* lock, which is *also* used on the exit
-> > routine, you can easily trigger a deadlock. This can happen for example
-> > by the lock being obtained by the removal routine, then the sysfs file
-> > gets called, waits for the lock to complete, then the module's exit
-> > routine starts cleaning up and removing sysfs files, but we won't be
-> > able to remove the sysfs file (due to kernefs active reference) until
-> > the sysfs file complets, but it cannot complete because the lock is
-> > already held.
-> > 
-> > Yes, this is a generic problem. Yes I have proof [0]. Yes, a generic
-> > solution has been proposed [1], and because Greg is not convinced and I
-> > need to move on with life, I am suggesting a temporary driver specific
-> > solution (to which Greg is still NACK'ing, without even proposing any
-> > alternatives) [2].
-> > 
-> > [0] https://lkml.kernel.org/r/20210703004632.621662-5-mcgrof@kernel.org
-> > [1] https://lkml.kernel.org/r/20210401235925.GR4332@42.do-not-panic.com 
-> > [2] https://lkml.kernel.org/r/20210723174919.ka3tzyre432uilf7@garbanzo
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
 > 
-> My problem with your proposed solution is that it is still racy, you can
-> not increment your own module reference count from 0 -> 1 and expect it
-> to work properly.  You need external code to do that somewhere.
+> v3->v4:
+> 	- Changed dt property qcom,lmh-cpu-id to qcom,lmh-cpu and made it
+> 	  a phandle pointing to the cpu node instead of a number as per
+> 	  Rob Herring's review comments.
+> 	- Added suffix -millicelsius to all temperature properties as per
+> 	  Rob Herring's review comments.
+> 	- Dropped unnecessary #includes in the example as pointed out by Bjorn.
+> 	- Other minor fixes.
+> 
+>  .../devicetree/bindings/thermal/qcom-lmh.yaml | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+> 
 
-You are not providing *any* proof for this. And even so, I believe I
-have clarified as best as possible how a kernfs active reference
-implicitly protects the module when we are talking about sysfs files.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> Now trying to tie sysfs files to the modules that own them would be
-> nice, but as we have seen, that way lies way too many kernel changes,
-> right?
+yamllint warnings/errors:
 
-It's not a one-liner fix. Yes.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml: required:3: None is not of type 'string'
+	from schema $id: http://json-schema.org/draft-07/schema#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml: ignoring, error in schema: required: 3
+warning: no schema found in file: ./Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+Documentation/devicetree/bindings/thermal/qcom-lmh.example.dt.yaml:0:0: /example-0/lmh@17d70800: failed to match any schema with compatible: ['qcom,sdm845-lmh']
+Documentation/devicetree/bindings/thermal/qcom-lmh.example.dt.yaml:0:0: /example-1/lmh@17d78800: failed to match any schema with compatible: ['qcom,sdm845-lmh']
+\ndoc reference errors (make refcheckdocs):
 
-> Hm, maybe.  Did we think about this from the kobj_attribute level?  If
-> we use the "wrapper" logic there and the use of the macros we already
-> have for attributes, we might be able to get the module pointer directly
-> "for free".
->
-> Did we try that?
+See https://patchwork.ozlabs.org/patch/1510556
 
-That was my hope. I tried that first. Last year in November I determined
-kernfs is kobject stupid. But more importantly *neither* are struct device
-specific, so neither of them have semantics for modules or even devices.
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-> this thread has been going on for so long I can't
-> remember anymore...
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-Please...
+pip3 install dtschema --upgrade
 
-  Luis
+Please check and re-submit.
+
