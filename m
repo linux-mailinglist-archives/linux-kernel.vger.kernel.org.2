@@ -2,115 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991703D6EDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC80E3D6EE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235614AbhG0GLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:11:07 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:15298 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235589AbhG0GKy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:10:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627366254; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=mGArwDTjXra5T2pzBW7Oz+IaFD5IRPeuL9dvd7Qx/g4=; b=LqNXeC0XxlHpOgrk9vnFsTL3zzMVLpp2Y4G8xsuFxy2Q5g01Z5eaNi0jxWTfN6iQ24/UYrtC
- lisPUKVgc2rRI05BdcnNY4/r/ifj1CbCZXX3QknSR1RQ6y2VB5AA1LBV+ya8NBdC3LNZMmfB
- 1zVXlM181VAOPVbumyhDxUMPyaE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60ffa36a9771b05b248831e3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Jul 2021 06:10:50
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7B1A5C433F1; Tue, 27 Jul 2021 06:10:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55400C433F1;
-        Tue, 27 Jul 2021 06:10:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 55400C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Hin-Tak Leung <htl10@users.sourceforge.net>
-Cc:     Herton Ronaldo Krzesinski <herton@canonical.com>,
-        Larry Finger <larry.finger@lwfinger.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, gregkh@linuxfoundation.org,
-        Salah Triki <salah.triki@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] wireless: rtl8187: replace udev with usb_get_dev()
-References: <20210724183457.GA470005@pc>
-        <53895498.1259278.1627160074135@mail.yahoo.com>
-Date:   Tue, 27 Jul 2021 09:10:45 +0300
-In-Reply-To: <53895498.1259278.1627160074135@mail.yahoo.com> (Hin-Tak Leung's
-        message of "Sat, 24 Jul 2021 20:54:34 +0000 (UTC)")
-Message-ID: <87im0wguca.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S234673AbhG0GM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:12:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233553AbhG0GM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 02:12:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2612460551;
+        Tue, 27 Jul 2021 06:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627366346;
+        bh=+MeKFzpNWS3o65+98lA2iIWwmUvQdXff746vqMsz0J4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HwAvU0X4A07MajG3WuyfCv6HzlCMTXBuMBHClSN3hUkg1bGqtXudZmiBrE2wa7Vqy
+         khq11hzUf7IG0/EkNkHYfMHMAQHSurtmAGDfiB5JgjAJtHSnxNtDu+SHLvg0AiwNOM
+         0XDElNJ+cR1G+H7moYaCvaCH+CWZDu5PKIB1sU4c=
+Date:   Tue, 27 Jul 2021 08:12:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/120] 4.19.199-rc1 review
+Message-ID: <YP+jx2hxYK0zcvcd@kroah.com>
+References: <20210726153832.339431936@linuxfoundation.org>
+ <20210726193553.GB2686017@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210726193553.GB2686017@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hin-Tak Leung <htl10@users.sourceforge.net> writes:
+On Mon, Jul 26, 2021 at 12:35:53PM -0700, Guenter Roeck wrote:
+> On Mon, Jul 26, 2021 at 05:37:32PM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 4.19.199 release.
+> > There are 120 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
+> > Anything received after that time might be too late.
+> > 
+> 
+> perf fails to build:
+> 
+> builtin-script.c: In function ‘perf_script__exit’:
+> builtin-script.c:2212:2: error: implicit declaration of function ‘perf_thread_map__put’; did you mean ‘thread_map__put’?
+> 
+> builtin-script.c:2212:2: error: nested extern declaration of ‘perf_thread_map__put’ [-Werror=nested-externs]
+> builtin-script.c:2213:2: error: implicit declaration of function ‘perf_cpu_map__put’; did you mean ‘perf_mmap__put’?
 
-> On Saturday, 24 July 2021, 19:35:12 BST, Salah Triki <salah.triki@gmail.com> wrote:
->
->> Replace udev with usb_get_dev() in order to make code cleaner.
->
->> Signed-off-by: Salah Triki <salah.triki@gmail.com>
->> ---
->> drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c | 4 +---
->> 1 file changed, 1 insertion(+), 3 deletions(-)
->
->> diff --git a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
-> b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
->> index eb68b2d3caa1..30bb3c2b8407 100644
->> --- a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
->> +++ b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
->> @@ -1455,9 +1455,7 @@ static int rtl8187_probe(struct usb_interface *intf,
->
->>     SET_IEEE80211_DEV(dev, &intf->dev);
->>     usb_set_intfdata(intf, dev);
->> -    priv->udev = udev;
->> -
->> -    usb_get_dev(udev);
->> +    priv->udev = usb_get_dev(udev);
->
->>     skb_queue_head_init(&priv->rx_queue);
->
->> -- 
->> 2.25.1
->
-> It is not cleaner - the change is not functionally equivalent. Before
-> the change, the reference count is increased after the assignment; and
-> after the change, before the assignment. So my question is, does the
-> reference count increasing a little earlier matters? What can go wrong
-> between very short time where the reference count increases, and
-> priv->udev not yet assigned? I think there might be a race condition
-> where the probbe function is called very shortly twice. Especially if
-> the time of running the reference count function is non-trivial.
->
-> Larry, what do you think? 
+I'll go fix this one up as well...
 
-BTW, please don't use HTML in emails. Our lists drop all HTML mail (and
-for a good reason).
+thanks,
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+greg k-h
