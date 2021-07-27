@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2393D6A7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836C13D6AC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234251AbhGZXVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 19:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233770AbhGZXVL (ORCPT
+        id S234263AbhGZX1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 19:27:32 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:2520 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233843AbhGZX1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 19:21:11 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2549C061757;
-        Mon, 26 Jul 2021 17:01:39 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id e14so13704984plh.8;
-        Mon, 26 Jul 2021 17:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=lUWjZQDXW1+VGvHm1XsC8R6KR/u25Shxim64XwKLYOc=;
-        b=uEhXO1WKKa7U5w07vZoUVJ/G/ZV0UXZnLHN+HefwplYIosDp46zvWVaF5zcladnDl0
-         F1nbjGv2t4jWtqGGiRG0rdinfdhPbH+ju8ESVkunzvISrjCeI8Y3FsRHRjFfTbVeS7qP
-         JwgK2gHQD3pbb147K11UE2cWhy76+Evp2R7apig9CdVjHhpWqn3TPhIwtvaMkC+p+F1T
-         XEzgDlicBT7LmNMOtbhe9YwOJC4YNiMdAgf05Rzdr69LitvupORdrpqEZxj1jpqebNUy
-         j7iD12JdTxUrhttr9rMF7kUomYJWVX5MftPwDb71rMtxmoEMjmXAFhnBSboSRiKWxW7r
-         uYfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=lUWjZQDXW1+VGvHm1XsC8R6KR/u25Shxim64XwKLYOc=;
-        b=uJdQ2yuGDOdGUdwdru2Ew7gatGMRji7ViDqHnEUCs37DC0aWrpayxoLJ0NCbnmy0dW
-         TNtpJ2EbpM/89HbZ/CaGDIyCE0vX44yPBjF0P+S9hUullMfuYbLFGSJP/o8YHrOBqxSd
-         3/3COBHFVVfCJcU5fN8UEWGA/QJTii4qWzbvVDSRy5MxxoE1U3I2UzY5wS7B5AVMsy1E
-         yjsjKO+R0O0zMiZZY7wM0ihknIo5wIR+jwHkl1wuypKG4iCE7G0a6HlTZRRMXtRKXfvd
-         2YINzznDqdbbaXEVYihHwJ5b8tWImxvd9w3R5DgNxaSv+Nvn/pnoXgNyq1FroiWfbYee
-         DrIg==
-X-Gm-Message-State: AOAM530W6/jn0Yxe+t1Ep+zrfbRJKiLNNH/mk3+acsSzqO7gI3Hmc1Hp
-        vhnD6larKFMmLMCg6b15lgk=
-X-Google-Smtp-Source: ABdhPJxhNVQEpYqpNVd+k+C8FWNhN3WAWtV7aOMjjnpGW0pDOnJKwzW14lIHVW7BwU7gDICkPua42w==
-X-Received: by 2002:a62:1bc7:0:b029:328:f2c:8ff1 with SMTP id b190-20020a621bc70000b02903280f2c8ff1mr20156762pfb.18.1627344098894;
-        Mon, 26 Jul 2021 17:01:38 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id q21sm981911pgk.71.2021.07.26.17.01.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Jul 2021 17:01:38 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH v2 46/46] KVM: x86: Preserve guest's CR0.CD/NW on INIT
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <CAAeT=FzGDUr8MK5Uf3jyUxtf+2jCf=bgG760L0mjjM3vRsXKSg@mail.gmail.com>
-Date:   Mon, 26 Jul 2021 17:01:36 -0700
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, KVM <kvm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A41676B6-2E9F-4F8E-B91E-8F9A077A2FA8@gmail.com>
-References: <20210713163324.627647-1-seanjc@google.com>
- <20210713163324.627647-47-seanjc@google.com>
- <CAAeT=FzGDUr8MK5Uf3jyUxtf+2jCf=bgG760L0mjjM3vRsXKSg@mail.gmail.com>
-To:     Reiji Watanabe <reijiw@google.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Mon, 26 Jul 2021 19:27:31 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16R02dJB009873;
+        Tue, 27 Jul 2021 00:07:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2021-07-09;
+ bh=b5DkrcWqLQZxmjE/yC8G9x3pPclYWR6dZfCV7/oGyt8=;
+ b=s5c132hjkTEwVgSeE/NT+XC9P97cgwaqsCqZnWdWPPfcADDL/8FGLkNHhESFFI7wg4Dn
+ KSFZ1yBDvDcNmq+YQ7LhdnzUggFnXnKhiAH2oa8YLi3V7UVE0AkffsIcYSaDekGOHiK9
+ zSmNVfxA6LLuLJLtOw4mbz0UAbkoT+duHgmQLq9UHQFi3FT3MHde1FYDUecnJSzD2irQ
+ iAGodV5khyEWANQAQAG6tFXAVw05cqNzpe8gnn74mzi1zRLSJLLhoMUBIjJu92Q8nPva
+ ITxUmUBJ6zxGzPq0V7lMLlN3VRYdOs76bD4Ahv/zQ990ov2+1QTQCuk2LENPKEK9QrAg aQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=b5DkrcWqLQZxmjE/yC8G9x3pPclYWR6dZfCV7/oGyt8=;
+ b=WkFj0xU+wutVZkxgNN2htqD8ldSJqTlc4ioyYN8HEjZpK9zw5KHit13BA9vfsuJ2MUmx
+ aYBx81qpVNqoeXUncObWCm7zvV3VPHSlO1t63fFhm5/UH83jMkHAYgllAcBjEvQrUu/D
+ KbfVTchu9WPitIc8Dezg7laM4Kss/ZBdvncYZ2QDQV5JeR8YQew4mk0CtiSInK44o+b7
+ ReE2mHBokz7mFT2my3uZaXQKGqxXA4HD2+X8JdbwJCoAQoT8RKxtF2rXQy08sF/40FWJ
+ V1j4FBHGfC11ZwQ9imnIqmmA33tFO2crxJ0CToAbFBy6OR4Vq+n6HEQbxXfr/JWBEdf8 NQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a234n0e90-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Jul 2021 00:07:39 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16R07bCA031100;
+        Tue, 27 Jul 2021 00:07:38 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 3a2349c9r9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Jul 2021 00:07:38 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 16R07bIr031075;
+        Tue, 27 Jul 2021 00:07:37 GMT
+Received: from manjaro.in.oracle.com (dhcp-10-191-222-3.vpn.oracle.com [10.191.222.3])
+        by aserp3030.oracle.com with ESMTP id 3a2349c9hn-1;
+        Tue, 27 Jul 2021 00:07:24 +0000
+From:   Harshvardhan Jha <harshvardhan.jha@oracle.com>
+To:     ericvh@gmail.com
+Cc:     lucho@ionkov.net, asmadeus@codewreck.org, davem@davemloft.net,
+        kuba@kernel.org, v9fs-developer@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Harshvardhan Jha <harshvardhan.jha@oracle.com>
+Subject: [PATCH] 9p/xen: Fix end of loop tests for list_for_each_entry
+Date:   Tue, 27 Jul 2021 05:37:10 +0530
+Message-Id: <20210727000709.225032-1-harshvardhan.jha@oracle.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <alpine.DEB.2.21.2107261654130.10122@sstabellini-ThinkPad-T480s>
+References: <alpine.DEB.2.21.2107261654130.10122@sstabellini-ThinkPad-T480s>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: clMVn-w0eemomDdiBljtF4wnrzKtlAdl
+X-Proofpoint-GUID: clMVn-w0eemomDdiBljtF4wnrzKtlAdl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch addresses the following problems:
+ - priv can never be NULL, so this part of the check is useless
+ - if the loop ran through the whole list, priv->client is invalid and
+it is more appropriate and sufficient to check for the end of
+list_for_each_entry loop condition.
 
-> On Jul 19, 2021, at 9:37 PM, Reiji Watanabe <reijiw@google.com> wrote:
->=20
-> On Tue, Jul 13, 2021 at 9:35 AM Sean Christopherson =
-<seanjc@google.com> wrote:
->>=20
->> Preserve CR0.CD and CR0.NW on INIT instead of forcing them to '1', as
->> defined by both Intel's SDM and AMD's APM.
->>=20
->> Note, current versions of Intel's SDM are very poorly written with
->> respect to INIT behavior.  Table 9-1. "IA-32 and Intel 64 Processor
->> States Following Power-up, Reset, or INIT" quite clearly lists =
-power-up,
->> RESET, _and_ INIT as setting CR0=3D60000010H, i.e. CD/NW=3D1.  But =
-the SDM
->> then attempts to qualify CD/NW behavior in a footnote:
->>=20
->>  2. The CD and NW flags are unchanged, bit 4 is set to 1, all other =
-bits
->>     are cleared.
->>=20
->> Presumably that footnote is only meant for INIT, as the RESET case =
-and
->> especially the power-up case are rather non-sensical.  Another =
-footnote
->> all but confirms that:
->>=20
->>  6. Internal caches are invalid after power-up and RESET, but left
->>     unchanged with an INIT.
->>=20
->> Bare metal testing shows that CD/NW are indeed preserved on INIT =
-(someone
->> else can hack their BIOS to check RESET and power-up :-D).
->>=20
->> Reported-by: Reiji Watanabe <reijiw@google.com>
->> Signed-off-by: Sean Christopherson <seanjc@google.com>
->=20
-> Reviewed-by: Reiji Watanabe <reijiw@google.com>
->=20
-> Thank you for the fix and checking the CD/NW with the bare metal =
-testing.
+Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
+---
+ net/9p/trans_xen.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Interesting.
-
-Is there a kvm-unit-test to reproduce the issue by any chance?
+diff --git a/net/9p/trans_xen.c b/net/9p/trans_xen.c
+index f4fea28e05da..3ec1a51a6944 100644
+--- a/net/9p/trans_xen.c
++++ b/net/9p/trans_xen.c
+@@ -138,7 +138,7 @@ static bool p9_xen_write_todo(struct xen_9pfs_dataring *ring, RING_IDX size)
+ 
+ static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
+ {
+-	struct xen_9pfs_front_priv *priv = NULL;
++	struct xen_9pfs_front_priv *priv;
+ 	RING_IDX cons, prod, masked_cons, masked_prod;
+ 	unsigned long flags;
+ 	u32 size = p9_req->tc.size;
+@@ -151,7 +151,7 @@ static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
+ 			break;
+ 	}
+ 	read_unlock(&xen_9pfs_lock);
+-	if (!priv || priv->client != client)
++	if (list_entry_is_head(priv, &xen_9pfs_devs, list))
+ 		return -EINVAL;
+ 
+ 	num = p9_req->tc.tag % priv->num_rings;
+-- 
+2.32.0
 
