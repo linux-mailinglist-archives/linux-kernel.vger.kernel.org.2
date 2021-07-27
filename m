@@ -2,116 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935FC3D70E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A693D70F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235930AbhG0IJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:09:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42100 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235897AbhG0IJp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:09:45 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id CCF5D22147;
-        Tue, 27 Jul 2021 08:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627373384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=l3J5b8QbDgU0K5MZo+qrKZXn6byTBMzPXTKYGNQx9tM=;
-        b=hPmHwd4jmLn1ezjnNJ+ZUQGilN6yAuajkmRChQi4/rfEapHVEx6UNBCihN0ucLaOXbztI/
-        AGMkliQcbkujlGnwcCV7EAdQQj/MDbybr0QlaiXNKXLR9cFotIfR+6nsE6csFnjJYXSgVC
-        SFTOjbwzfcsTO8MkiZMHmDXWO0lC07Y=
-Received: from alley.suse.cz (unknown [10.100.224.162])
-        by relay2.suse.de (Postfix) with ESMTP id 83ED7A3B84;
-        Tue, 27 Jul 2021 08:09:44 +0000 (UTC)
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Subject: [PATCH] lib/nmi_backtrace: Serialize even messages about idle CPUs
-Date:   Tue, 27 Jul 2021 10:09:39 +0200
-Message-Id: <20210727080939.27193-1-pmladek@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S235951AbhG0ILa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:11:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235874AbhG0IL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 04:11:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE01A60527;
+        Tue, 27 Jul 2021 08:11:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627373487;
+        bh=zVqEdy3HT0nY8M2r7ytmalbkDZCkuC6kKnk5DTAldt4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qkONxAMBkplh6w8TVbdOBYTugIGhUMN5hMMUiDc07rH6uelsS8P7180mk4IL81jDN
+         irY84ozNrDsgpOxDqmffFLL2AwiwYFpRq0Ga+Nj+l4MIJUium7fqom5OLTQXUZ0TiN
+         RX0qQldnNwXPY9zdkwdugsy+h9gvSM3QVQYbaSYYN1bIo0tPShH7Xz7esdn0xMxmAB
+         GwhsidMKS+vfmqcE9Xgee4Nji1NIosmPKuu6zZZML+TtjhOHYc6QmKfs18gzNaL5e4
+         EOFtjT/mWoYRe1xytqVi6GjaimnBepLNu58XwjuD64gDlm61J4/ruvzKsXjZcXRX0B
+         uFKJxeCnWHM6A==
+Date:   Tue, 27 Jul 2021 10:11:22 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
+Subject: Re: [PATCH v5 2/8] dt-bindings: phy: Add bindings for HiKey 970
+ PCIe PHY
+Message-ID: <20210727101122.204b6b9e@coco.lan>
+In-Reply-To: <20210714174225.GA8988@workstation>
+References: <cover.1626157454.git.mchehab+huawei@kernel.org>
+        <baa7e71e13953b28a11fffdcef35195099feb7fd.1626157454.git.mchehab+huawei@kernel.org>
+        <20210714022649.GA1324196@robh.at.kernel.org>
+        <20210714091435.322d68b1@coco.lan>
+        <20210714174225.GA8988@workstation>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 55d6af1d66885059ffc2a ("lib/nmi_backtrace: explicitly serialize
-banner and regs") serialized backtraces from more CPUs using the re-entrant
-printk_printk_cpu lock. It was a preparation step for removing the obsolete
-nmi_safe buffers.
+Hi Mani,
 
-The single-line messages about idle CPUs were not serialized against other
-CPUs and might appear in the middle of backtrace from another CPU,
-for example:
+Em Wed, 14 Jul 2021 23:12:25 +0530
+Manivannan Sadhasivam <mani@kernel.org> escreveu:
 
-[56394.590068] NMI backtrace for cpu 2
-[56394.590069] CPU: 2 PID: 444 Comm: systemd-journal Not tainted 5.14.0-rc1-default+ #268
-[56394.590071] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-[56394.590072] RIP: 0010:lock_is_held_type+0x0/0x120
-[56394.590071] NMI backtrace for cpu 0 skipped: idling at native_safe_halt+0xb/0x10
-[56394.590076] Code: a2 38 ff 0f 0b 8b 44 24 04 eb bd 48 8d ...
-[56394.590077] RSP: 0018:ffffab02c07c7e68 EFLAGS: 00000246
-[56394.590079] RAX: 0000000000000000 RBX: ffff9a7bc0ec8a40 RCX: ffffffffaab8eb40
+> I'm not sure about this. That fact that the PCIe device's PERST# signal
+> wired to different GPIOs doesn't mean that those GPIOs belong to the PHY.
+> Those GPIOs should be independent of the PCIe core controlled manually
+> by the driver.
+> 
+> I think this issue is somewhat similar to the one we are dealing on the
+> Qcom platforms [1] where each PCIe device uses a different GPIO and voltage
+> config to operate. And those need to be active for the link training to
+> succeed.
+> 
+> So perhaps we should aim for a common solution? The GPIO and voltage
+> layout should be described in DT for each port exposed by the SoC/board.
+> 
+> Thanks,
+> Mani
+> 
+> [1] https://lkml.org/lkml/2021/6/21/1524
 
-It might cause confusion what CPU the following lines belongs to and
-whether the backtraces are really serialized.
+After re-visiting this issue, I'm starting to think that this should
+be mapped as something similar to:
 
-Prevent the confusion and serialize also the single line message against
-other CPUs.
+	pcie@xxxx {
+...
+		slot {
+			slot#1 {
+				// clock, power supply, reset pins, etc
+			}
+			slot#2 {
+				// clock, power supply, reset pins, etc
+			}
+...
+		}
+	};
 
-Fixes: 55d6af1d66885059ffc2a ("lib/nmi_backtrace: explicitly serialize banner and regs")
-Signed-off-by: Petr Mladek <pmladek@suse.com>
+E. g. placing each specific PCIe device requirement inside the pcie
+or phy, as it should be up to the driver to initialize each PCIe 
+child-specific requirements when the hardware is ready for that.
+
 ---
-I have got a bit confused by the bactraces from all CPUs when I pushed
-the patchset removing printk_safe buffers and double checked the behavior.
 
-I propose this patch to avoid the confusion. I send it as a separate patch
-to avoid another re-spin/delay of the non-trivial patchset.
+A longer explanation why this should be initialized during PHY
+power on sequence:
 
-The patch is against printk/linux.git, branch rework/printk_safe-removal.
+On my tests with Kirin 970, there are some steps to be done before
+enabling the clocks and sending PERST# signals, plus some extra
+steps to run after PERST# is sent to all devices.
 
- lib/nmi_backtrace.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+While playing with PHY split, I noticed that Linux and/or the SoC
+is very sensitive to an specific probing order. If such order is
+not followed, an ARM SError happens and the Kernel panics
+with something similar to:
 
-diff --git a/lib/nmi_backtrace.c b/lib/nmi_backtrace.c
-index 9813a983d024..f9e89001b52e 100644
---- a/lib/nmi_backtrace.c
-+++ b/lib/nmi_backtrace.c
-@@ -89,22 +89,22 @@ bool nmi_cpu_backtrace(struct pt_regs *regs)
- 	unsigned long flags;
- 
- 	if (cpumask_test_cpu(cpu, to_cpumask(backtrace_mask))) {
-+		/*
-+		 * Allow nested NMI backtraces while serializing
-+		 * against other CPUs.
-+		 */
-+		printk_cpu_lock_irqsave(flags);
- 		if (!READ_ONCE(backtrace_idle) && regs && cpu_in_idle(instruction_pointer(regs))) {
- 			pr_warn("NMI backtrace for cpu %d skipped: idling at %pS\n",
- 				cpu, (void *)instruction_pointer(regs));
- 		} else {
--			/*
--			 * Allow nested NMI backtraces while serializing
--			 * against other CPUs.
--			 */
--			printk_cpu_lock_irqsave(flags);
- 			pr_warn("NMI backtrace for cpu %d\n", cpu);
- 			if (regs)
- 				show_regs(regs);
- 			else
- 				dump_stack();
--			printk_cpu_unlock_irqrestore(flags);
- 		}
-+		printk_cpu_unlock_irqrestore(flags);
- 		cpumask_clear_cpu(cpu, to_cpumask(backtrace_mask));
- 		return true;
- 	}
--- 
-2.26.2
+  [    1.837458] SError Interrupt on CPU0, code 0xbf000002 -- SError
+  [    1.837462] CPU: 0 PID: 74 Comm: kworker/0:1 Not tainted 5.8.0+ #205
+  [    1.837463] Hardware name: HiKey970 (DT)
+  [    1.837465] Workqueue: events deferred_probe_work_func
+  [    1.837467] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
+  [    1.837468] pc : _raw_spin_unlock_irqrestore+0x18/0x50
+  [    1.837469] lr : regmap_unlock_spinlock+0x14/0x20
+...
+  [    1.837507] Kernel panic - not syncing: Asynchronous SError Interrupt
 
+
+One example is with regards to the clocks required for the PCIe
+to work:
+
+	clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
+		 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
+		 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
+		 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
+		 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
+
+If them aren't initialized at the expected order, the Kernel
+hangs. The same applies to the slot-specific clocks.
+
+So, basically, the driver needs to initialize them on this
+sequence:
+
+	1. PHY ref clock;
+	2. APB sys and phy clock;
+	3. aclk and aux_clk;
+	<some settings at the PHY hardware>
+	4. slot-specific clocks.
+
+failing to follow a valid power-on sequence crashes the Kernel.
+
+
+Thanks,
+Mauro
