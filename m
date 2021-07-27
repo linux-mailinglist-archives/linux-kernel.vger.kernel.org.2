@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA9E3D82FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE60D3D82F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbhG0WbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 18:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
+        id S232689AbhG0Wax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 18:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232774AbhG0WbA (ORCPT
+        with ESMTP id S232198AbhG0Wav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 18:31:00 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85810C061757;
-        Tue, 27 Jul 2021 15:30:59 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id b21so600572ljo.13;
-        Tue, 27 Jul 2021 15:30:59 -0700 (PDT)
+        Tue, 27 Jul 2021 18:30:51 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBF4C061757;
+        Tue, 27 Jul 2021 15:30:48 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id t128so1259414oig.1;
+        Tue, 27 Jul 2021 15:30:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L+E6/1WGpQqvA+EADiDAbiFLjjUPDw0vrRx5au2t65g=;
-        b=J78RlBreAC21dntY/Rlam+7rV7dTIib/TfkejglbDCzwFU95TGQC9LvvZYf+yPB/1o
-         TgNEt7xHPsE4fibbhOyPN5uV7czPc1I7m+0ox7+pcvQM432BY8eTOZphforbHl+db9Uv
-         k/IOECa2uCl0TKn1lu2KoTkeIZ3V0UtvceY+zkBEhhJvvMFzgDpqlc7FQJNVxeK/Y5Fs
-         DV1qqpi4Q245SHiYuONl+uV+HG+q2rYMaZ9kTtDNE1pEK/3RmLuEPQ3RJReUNTuOqeyr
-         9S2Q3kXdK5nKr9Alqytg6lsW0e230w56oZGYJWFGBwuDYMrw5usY+UzVBxJ3e0CWlGTI
-         lcmg==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TM+0hfl782kZ94bU2+mpLOzzj7zbvQhOg+LQO69XhJk=;
+        b=OnZ0m3U6tk3aCgWWTpT1MeD5/y+cwwRGzbM1zoIOCsQa4Vm9x21ssaUT8KnrIx+bhB
+         Wa4U8xGQ285YoMNgnePTt2oCAcFoa8EIx3hrP27YcLLsbYrem2nEpOrbnmPnPX0ir/Ic
+         V51k/BxJeVFK/eNOf91oJ90M75vlYzafc5fjuq+9/rO8ZtxNzXPK1thYL0Dwh0Tn2olv
+         SivSSSssPuoXELYpGRGeF7OTsoxb6Cx0zu/1/SiPhOUEi34dJjExAZbJyPC9Z46LMBVp
+         AhzMesAzkabVEr5OAd/P4rBe8czDEUBkikopbW0OPFtJ2NPn2COjgAV4AOGkH4MMFPaQ
+         1nfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L+E6/1WGpQqvA+EADiDAbiFLjjUPDw0vrRx5au2t65g=;
-        b=ACZ/jlu7wyUOp+IcN4AeaX+Yc0Dy6ptG+uGSx5laBetW7fwGPpcmVZgEwQ34eGQATo
-         AMwj3pcjmGZfuEDMxJt5P2x4EDoZM6hToaRV11KacVhiCihZ9Kz+XcrV+qoWOLD5L2C5
-         9l6oYVvxcMOYD3Xr8cJgbGLIjnZtfX+an7Ms7sNPINCej02KzJIvJHQehPJSa5Z7JmFZ
-         RDcw4syANQ7U9LfDHWfgELiN22r9J08auiMqb6Y9kTqmdlak4QoVgKv+9a4hkJOIMdZf
-         XP8GEadP2ltqznucRqoeBADdwRIrK+vZZCBXQ87GIMkyuuSn/sS+hhhJCJSUBFqhQRT1
-         FM+A==
-X-Gm-Message-State: AOAM532RTJIznSUNv+Qv/jemXoTltbSZ+dAzjJgMFOVPJ9h+A1xFi/V9
-        mEBQTtpqCN9W4DS7Brakk0s=
-X-Google-Smtp-Source: ABdhPJwgVRm3p1aqRcx5IbMn3SDg97OoSvKcwEwEIc3doDM0yRdZHT5mcbuFuURVvGhFii199E7FTg==
-X-Received: by 2002:a2e:9843:: with SMTP id e3mr16633724ljj.498.1627425057984;
-        Tue, 27 Jul 2021 15:30:57 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id h15sm406200lfv.45.2021.07.27.15.30.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 15:30:57 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 3/3] watchdog: mpc8xxx_wdt: Constify static struct watchdog_ops
-Date:   Wed, 28 Jul 2021 00:30:42 +0200
-Message-Id: <20210727223042.48150-4-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210727223042.48150-1-rikard.falkeborn@gmail.com>
-References: <20210727223042.48150-1-rikard.falkeborn@gmail.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TM+0hfl782kZ94bU2+mpLOzzj7zbvQhOg+LQO69XhJk=;
+        b=GNatqslYyovwt59XqOC+19IUTiuOic4t7U9leDpu70u8DHHyk7c1UilrR4HBNBTo6Z
+         9T1Hp2dG5uVGshXJbpWMRr5wK3/4HrVDhDp5fKPcINh8HpTAtD9/mm0azc+MI6dmIvaF
+         U6M5M/WjFerrFko2cYXh4V/d4VpA+3O11dPrr6kCCtcbawArcBFsKABfCoPsBiT5vFwG
+         EArKoeF+njCVDw/hcrsC+674BLEI42mvaqWJiffCmBAA1wgWCb0H2cXtyT4NBMxMgfw+
+         FWjCci+TqGbUl3Sofm5UOoHGzOxxyRm+fbpErne9ptpLK+u/P7uIo0qrdVkKWbNT31DX
+         TLVw==
+X-Gm-Message-State: AOAM532ykbS4Vz9X0JCEgXxHLm68W32LcyRQpKImA1SBLn9gxEkTDH2j
+        KkAdS9PCTPU/0kidMVXQT34=
+X-Google-Smtp-Source: ABdhPJz1wrwXjwcPUI1kIk1ky0ig9jrAicZ/h11+lv2H2/uL4SXlKLhoPqS89RPsBt2E7Mkq8bcgCQ==
+X-Received: by 2002:aca:d505:: with SMTP id m5mr4174267oig.5.1627425047828;
+        Tue, 27 Jul 2021 15:30:47 -0700 (PDT)
+Received: from localhost.localdomain (cpe-24-31-246-181.kc.res.rr.com. [24.31.246.181])
+        by smtp.gmail.com with ESMTPSA id c16sm783982otd.18.2021.07.27.15.30.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 15:30:46 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: [PATCH 07/64] staging: rtl8192e: Use struct_group() for memcpy()
+ region
+To:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-8-keescook@chromium.org>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <fa3a9a2f-b611-7fe4-9359-88fa51239765@lwfinger.net>
+Date:   Tue, 27 Jul 2021 17:30:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210727205855.411487-8-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct mpc8xxx_wdt_ops is only assigned to the ops pointer in the
-watchdog_device struct, which is a pointer to const struct watchdog_ops.
-Make it const to allow the compiler to put it in read-only memory.
+On 7/27/21 3:57 PM, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy(), memmove(), and memset(), avoid
+> intentionally writing across neighboring fields.
+> 
+> Use struct_group() around members addr1, addr2, and addr3 in struct
+> rtllib_hdr_4addr, and members qui, qui_type, qui_subtype, version,
+> and ac_info in struct rtllib_qos_information_element, so they can be
+> referenced together. This will allow memcpy() and sizeof() to more easily
+> reason about sizes, improve readability, and avoid future warnings about
+> writing beyond the end of addr1 and qui.
+> 
+> "pahole" shows no size nor member offset changes to struct
+> rtllib_hdr_4addr nor struct rtllib_qos_information_element. "objdump -d"
+> shows no meaningful object code changes (i.e. only source line number
+> induced differences and optimizations).
+> 
+> Signed-off-by: Kees Cook<keescook@chromium.org>
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/watchdog/mpc8xxx_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Tested-by: Larry Finger <Larry.Finger@lwfinger.net>
+Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
 
-diff --git a/drivers/watchdog/mpc8xxx_wdt.c b/drivers/watchdog/mpc8xxx_wdt.c
-index 2f7ded32e878..1c569be72ea2 100644
---- a/drivers/watchdog/mpc8xxx_wdt.c
-+++ b/drivers/watchdog/mpc8xxx_wdt.c
-@@ -118,7 +118,7 @@ static struct watchdog_info mpc8xxx_wdt_info = {
- 	.identity = "MPC8xxx",
- };
- 
--static struct watchdog_ops mpc8xxx_wdt_ops = {
-+static const struct watchdog_ops mpc8xxx_wdt_ops = {
- 	.owner = THIS_MODULE,
- 	.start = mpc8xxx_wdt_start,
- 	.ping = mpc8xxx_wdt_ping,
--- 
-2.32.0
+Looks good.
+
+Larry
 
