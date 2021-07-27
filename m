@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE9E3D83C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49A83D83C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhG0XN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 19:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56718 "EHLO
+        id S233074AbhG0XPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 19:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbhG0XNZ (ORCPT
+        with ESMTP id S232314AbhG0XPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 19:13:25 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22551C061757;
-        Tue, 27 Jul 2021 16:13:24 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id b6so2266101pji.4;
-        Tue, 27 Jul 2021 16:13:24 -0700 (PDT)
+        Tue, 27 Jul 2021 19:15:39 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67916C061757;
+        Tue, 27 Jul 2021 16:15:38 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id r17so387328lfe.2;
+        Tue, 27 Jul 2021 16:15:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IJH4q6xKknpFCnME1MQ4rrc80QVCXZj1Kd8DIZ0/IhQ=;
-        b=RDDPk3g21uOn+gvEHvobhce6lQTn5Mq7nQNxDeFycx7c7RXn4xjZnyH/omdaeMk+O3
-         bFAWs+7yxxqhCqLCMsJ9sgGr14Zxo6uVYqApMj6C2S+6L0Bw7EBgdo1njMLa8WAV8j9J
-         Ydz92yY4SQZTpCctVQbhovhNiiHXHyRauzBeaWX0GqXod0tb7Hdi6/G0wflkCGXrHI55
-         7IpHNYSWY2V4emWWdKAT8srhjlCD2DbZUZKyDpHDOxKfYjQLd/nXsOKBJ8Qq2NvtGlT6
-         kmNTnk0xrhQsqfyd8Hho/kLvsqw+ahDCLptTC8ne7eLn7FTy7xsE1rioaqbOe64k++oF
-         Ku2Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mIJ+KVW6QLPkxmUFt/vZs8q/s59o5S/PRGcj+YzDTD4=;
+        b=i7vLKT+bGLiW5/vMeJSuk+5BuC5Wy3gGVWVslg2gQprrd5cNyu+nke3FF64WmGNUlE
+         M+fkn7hdPFXHY7XKxqfyb4xHvj37licW7zfkh6QJoa6+kRWp1tYqOnuPyOL86/LBMf9i
+         Pn6K7N+gWN8kk3JgZgVwrQrx7gUyWpxkZ8yK2VFYK5TwF40wr4UlVVOheDzKpnH+lMdM
+         wVcmTlZfi5Pl8gyK3dMs5F4802pY+YzKYyb8vtA7pYUbLBDfHM4Zo0xOD5JVWbyokUfs
+         Pq0bz0E+RpLdnUnufgpIqDOW/pEdf1OUSSm0MXEMr/jXU9F4rNv4PbWlJvd8pA6CZGU2
+         hALw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=IJH4q6xKknpFCnME1MQ4rrc80QVCXZj1Kd8DIZ0/IhQ=;
-        b=o03IGDPAbzEQXslSu1Z0+9r1Sbb6QCM72eJrQOVq+NZ9Mjfsv73e9EJnRl5xsuNrMi
-         vbArEfdKcYrDXgVykLiSPtx7o8CaWZGqx83NazNr0uebtTXQnwMfq5QRCvtOGkQIXhFq
-         wpRWHHMZVz9NeswJpm34KuKncDT/+379GmBAuc8JED//ONxFBPjmWPlWKU8vZkHnQrq4
-         Ja0nYzHkxjkHffcDPBfPtYXcBu1Ty/7NXMDnFKi66PLLx8Dgtd7n/sOb4CO7njFfA5pD
-         DIoKUarcRrTjoLKf/34q5YVPiSsJW/4b0z/8YjdkkNXvfGdwNrxU8nk7ZphZz+heoct5
-         VcoQ==
-X-Gm-Message-State: AOAM530I6QVprKcJJ5YzZly+Z6a+6HVKSwmc2YyupbrlPDNrF6iqqbes
-        x14Q9AIrhVwAkccbojqmn2VyNkN9VBo=
-X-Google-Smtp-Source: ABdhPJw7ZJUYZvGDREE8f3L7AQhb0lBZFKoBC+rMUzXEn0SUupttLTCzixCk4o5VCsGhaE+mAvbqkA==
-X-Received: by 2002:a63:d311:: with SMTP id b17mr25427653pgg.332.1627427603103;
-        Tue, 27 Jul 2021 16:13:23 -0700 (PDT)
-Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
-        by smtp.gmail.com with ESMTPSA id x189sm5563989pfx.99.2021.07.27.16.13.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 16:13:22 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 27 Jul 2021 13:13:21 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     cgroups@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH cgroup/for-5.14-fixes] cgroup: rstat: fix A-A deadlock on
- 32bit around u64_stats_sync
-Message-ID: <YQCTEYhcxKccOamq@slm.duckdns.org>
-References: <YQCREXMBq1EPoQWu@slm.duckdns.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mIJ+KVW6QLPkxmUFt/vZs8q/s59o5S/PRGcj+YzDTD4=;
+        b=bi8tUDYmrLWDsr0iyMRC4WONPidUILcHhFrtKQTTDgQCYwVZAIjwC+pao3q0VpRtNN
+         VPV07Jl4ZKT/gw43bea+08/L4SPVkBhNwhPPmQvK2VOz0G9zv+FqtsL6bAA0y8RRk+2k
+         9PWIJmhnkmv2nQj21cdSNEngvgCk1yki1pBw/sdjPuDYUw/lJtJ6ZM/naocTgyZppino
+         V0x46TwEfC0MqrlH6vRKxqRljg3YebkcWrMZUIfeQGyEv++/WQX3R23Kzwr3/ldIzQri
+         MG/7HmOtJDZsu0WxBT2Z+3RuczMaBKys0E6hn/cPuSTliOudnj/jZ9ijfW0zdxA5qxVT
+         ngng==
+X-Gm-Message-State: AOAM531+whTSA8yao+k7imE+XhIUQhkkX6qQmlt6WCnzYW4+rVXAIDls
+        CwPMYncAxZbNjMo1yGF8xwFwGX8krPDiYrv2at4=
+X-Google-Smtp-Source: ABdhPJzQkhitpGoeS0R1UVlvigOzqrXxAVhoTtJZ2DYc/dhV8+x6MNA6w8QvBKEOg/vBlpVTq8+/SpEE6jB2prXT92w=
+X-Received: by 2002:a05:6512:400b:: with SMTP id br11mr18195956lfb.36.1627427736772;
+ Tue, 27 Jul 2021 16:15:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQCREXMBq1EPoQWu@slm.duckdns.org>
+References: <20210727152026.31019-1-sergio.paracuellos@gmail.com> <20210727152026.31019-2-sergio.paracuellos@gmail.com>
+In-Reply-To: <20210727152026.31019-2-sergio.paracuellos@gmail.com>
+From:   Gregory Fong <gregory.0xf0@gmail.com>
+Date:   Tue, 27 Jul 2021 16:15:06 -0700
+Message-ID: <CADtm3G5vMnFzxZV2hijZ3daVOgJ=0MnMJmkLyxe0+bNew5g_TA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] gpiolib: convert 'devprop_gpiochip_set_names' to
+ support multiple gpiochip banks per device
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        f.fainelli@gmail.com, matthias.bgg@gmail.com,
+        opensource@vdorst.com, andy.shevchenko@gmail.com,
+        git@johnthomson.fastmail.com.au, neil@brown.name, hofrat@osadl.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 01:04:49PM -1000, Tejun Heo wrote:
-> 0fa294fb1985 ("cgroup: Replace cgroup_rstat_mutex with a spinlock") added
-> cgroup_rstat_flush_irqsafe() allowing flushing to happen from the irq
-> context. However, rstat paths use u64_stats_sync to synchronize access to
-> 64bit stat counters on 32bit machines. u64_stats_sync is implemented using
-> seq_lock and trying to read from an irq context can lead to A-A deadlock if
-> the irq happens to interrupt the stat update.
-> 
-> Fix it by using the irqsafe variants - u64_stats_update_begin_irqsave() and
-> u64_stats_update_end_irqrestore() - in the update paths. Note that none of
-> this matters on 64bit machines. All these are just for 32bit SMP setups.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Reported-by: Rik van Riel <riel@surriel.com>
+On Tue, Jul 27, 2021 at 8:20 AM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> The default gpiolib-of implementation does not work with the multiple
+> gpiochip banks per device structure used for example by the gpio-mt7621
+> and gpio-brcmstb drivers. To fix these kind of situations driver code
+> is forced to fill the names to avoid the gpiolib code to set names
+> repeated along the banks. Instead of continue with that antipattern
+> fix the gpiolib core function to get expected behaviour for every
+> single situation adding a field 'offset' in the gpiochip structure.
+> Doing in this way, we can assume this offset will be zero for normal
+> driver code where only one gpiochip bank per device is used but
+> can be set explicitly in those drivers that really need more than
+> one gpiochip.
+>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Applying this to cgroup/for-5.14-fixes with stable tag added.
+One minor comment below, then this looks great:
+Reviewed-by: Gregory Fong <gregory.0xf0@gmail.com>
 
-Thanks.
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+>  drivers/gpio/gpiolib.c      | 32 +++++++++++++++++++++++++++-----
+>  include/linux/gpio/driver.h |  4 ++++
+>  2 files changed, 31 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 27c07108496d..84ed4b73fa3e 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -382,10 +382,18 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+>         if (count < 0)
+>                 return 0;
+>
+> -       if (count > gdev->ngpio) {
+> -               dev_warn(&gdev->dev, "gpio-line-names is length %d but should be at most length %d",
+> -                        count, gdev->ngpio);
+> -               count = gdev->ngpio;
+> +       /*
+> +        * When offset is set in the driver side we assume the driver internally
+> +        * is using more than one gpiochip per the same device. We have to stop
+> +        * setting friendly names if the specified ones with 'gpio-line-names'
+> +        * are less than the offset in the device itself. This means all the
+> +        * lines are not present for every single pin within all the internal
+> +        * gpiochips.
+> +        */
+> +       if (count <= chip->offset) {
+> +               dev_warn(&gdev->dev, "gpio-line-names too short (length %d) cannot map names for the gpiochip at offset %u\n",
 
--- 
-tejun
+nit: there should be some punctuation after "(length %d)", otherwise
+with parentheticals removed it reads as
+
+"gpio-line-names too short cannot map names ..."
+
+but we need to provide a space between these thoughts for clarity.  A
+comma should be ok:
+
+"gpio-line-names too short (length %d), cannot map names ..."
+
+Best regards,
+Gregory
