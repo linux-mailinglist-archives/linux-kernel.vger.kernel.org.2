@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBEF3D6FE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6C33D6FE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbhG0HFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
+        id S235778AbhG0HFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235725AbhG0HFp (ORCPT
+        with ESMTP id S235753AbhG0HFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:05:45 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B176C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:05:45 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id m1so16484249pjv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:05:45 -0700 (PDT)
+        Tue, 27 Jul 2021 03:05:48 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1286C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:05:48 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ca5so4091874pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:05:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/pKNnVPAqe3m77IYg2BW7KYO05OH4I/d04wCbZzUH8Y=;
-        b=deEc+YCPLUl1qYuzL/5yeGDCSkYw2uvX9PIDiTg14+7pzytPC3ssoeC7UVaEiFgusJ
-         gQkRfNBoATxWa/EFFzus9u0tT5bzs794AnsqZzech2idTbiM4OP0Vt4fOBI3PQsd09pm
-         ezvo79A/V5yY/402RZkg5MKme4x7GLmb/Qaeg=
+        bh=uXIygArbnqshrZ8S+Y5OwiBL87kWbue240bYBuorW3c=;
+        b=fWHIWJuiMKWEzPCJOjS1fS+g7jvxzqH39dlKbeXPL1OjPydIRUx+rMqLqyUUPlDS1m
+         VGPcRE+JmbKgwfQr5OlieFG05xoWPQZERlmF5nNVI4rigScHPKJ9qL4Sh3JLHh/IdPg0
+         qDutNSxcMfCoR5jLmrcWfqqSS8YH0xf+SE9oY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/pKNnVPAqe3m77IYg2BW7KYO05OH4I/d04wCbZzUH8Y=;
-        b=IFIiKg8SZ8rZUB5IRB0X26u9Q9CuJI9ACXRV8f2eFNVZV2VGeHlJDayyBCuk9U8LVp
-         wHR9fMG0fK5hXLO4UmtfDktcrsowUE5Ep7fG2qvDpQIg1bu7coD7+js+jeR6nre2Xg4O
-         1kJrhkAPbiO6VMgCt8rDQOrCNHEUkSoMRWb+xic+4ris0eeY5CCP27VU9JP/Bjxp8CkG
-         0KZl5zasf99Y03dHDxt2079e2xq/yxvMJDYk+OK1WXtwrQz5M3ahSvT2DGz8Xeq9O8lJ
-         8doiJCe7qBWN+rjPTkDlmSTYFrB+Ac8Ew1ttFz87BnySYcDrM3vCQv0bm7FjdFlEXonW
-         o0Ng==
-X-Gm-Message-State: AOAM531BixS36fwbV/cZ+K6W/OztM1v8AVZJwJKUaRYFwFGCmb7aw8bK
-        Ds1HBz1ClJqtB7fpopgpLJvtkQ==
-X-Google-Smtp-Source: ABdhPJwFsD+xCVJnOjF5KLgueGLdDuFkPVuJfLWK/3E/taVevFdXQw0E49cN0WFAybNSIB62yPmS1g==
-X-Received: by 2002:a62:7bd1:0:b029:336:ea94:6650 with SMTP id w200-20020a627bd10000b0290336ea946650mr21269729pfc.48.1627369545163;
-        Tue, 27 Jul 2021 00:05:45 -0700 (PDT)
+        bh=uXIygArbnqshrZ8S+Y5OwiBL87kWbue240bYBuorW3c=;
+        b=petI7zfo+v0m7BCqEp5h1V9woQwozEbiLtY1hDD0eFslK6nbrMoCle/ve+asd5WbNp
+         QkvG4epSHU8k2Dc79s/amKtZ6xy57i3pw2Oiz0YOTA3S0Eiho5JNPT691l+qLI8/CgG+
+         8Cy8X29o+P8vka5vmibEVkTqNvQ4FosmOHmwqOhaSGj26XF1hN3Y1n3DKLO985w4ws/L
+         I1a6GME1czigyuxj1O9AFLVlVoMl5oMHoEPpSXUuVucMNtBTEp5tH2M0/zRVNOB4Vaul
+         Sfcs4gZ7z839eOKLXBhwl8WAc4tlpgAc481AUWXB3kGviqxEakr+AqjQXgsDwwJt6CiP
+         jw4w==
+X-Gm-Message-State: AOAM533hK2IR6BzYGFqzYt7tencbS1cYCLKe2YEiBytRcp1ZMNXr2/UX
+        0rPYxyy79nzdPwyjp1b6zSs+tw==
+X-Google-Smtp-Source: ABdhPJylcX1n9taGQPxHFyDQgk7Hzs2dqqWqE7W7MQIyorOgEeUg1TIMjphpNMuqj/wYBkgD0SdH9g==
+X-Received: by 2002:a63:d04:: with SMTP id c4mr22626121pgl.368.1627369548584;
+        Tue, 27 Jul 2021 00:05:48 -0700 (PDT)
 Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:ba3e:509b:495:ec84])
-        by smtp.gmail.com with ESMTPSA id 30sm2343447pgq.31.2021.07.27.00.05.42
+        by smtp.gmail.com with ESMTPSA id 30sm2343447pgq.31.2021.07.27.00.05.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 00:05:44 -0700 (PDT)
+        Tue, 27 Jul 2021 00:05:48 -0700 (PDT)
 From:   Sergey Senozhatsky <senozhatsky@chromium.org>
 To:     Tomasz Figa <tfiga@chromium.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>
@@ -54,9 +54,9 @@ Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv4 4/8] videobuf2: move cache_hints handling to allocators
-Date:   Tue, 27 Jul 2021 16:05:13 +0900
-Message-Id: <20210727070517.443167-5-senozhatsky@chromium.org>
+Subject: [PATCHv4 5/8] videobuf2: add V4L2_MEMORY_FLAG_NON_COHERENT flag
+Date:   Tue, 27 Jul 2021 16:05:14 +0900
+Message-Id: <20210727070517.443167-6-senozhatsky@chromium.org>
 X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
 In-Reply-To: <20210727070517.443167-1-senozhatsky@chromium.org>
 References: <20210727070517.443167-1-senozhatsky@chromium.org>
@@ -66,92 +66,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This moves cache hints handling from videobuf2 core down
-to allocators level, because allocators do the sync/flush
-caches eventually and may take better decisions. Besides,
-allocators already decide whether cache sync/flush should
-be done or can be skipped. This patch moves the scattered
-buffer cache sync logic to one common place.
+By setting or clearing V4L2_MEMORY_FLAG_NON_COHERENT flag
+user-space should be able to hint vb2 that either a non-coherent
+(if supported) or coherent memory should be used for the buffer
+allocation.
 
 Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 ---
- drivers/media/common/videobuf2/videobuf2-core.c       | 6 ------
- drivers/media/common/videobuf2/videobuf2-dma-contig.c | 6 ++++++
- drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 6 ++++++
- 3 files changed, 12 insertions(+), 6 deletions(-)
+ .../userspace-api/media/v4l/buffer.rst        | 40 ++++++++++++++++++-
+ .../media/v4l/vidioc-reqbufs.rst              |  5 ++-
+ include/uapi/linux/videodev2.h                |  2 +
+ 3 files changed, 43 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 76210c006958..55af63d54f23 100644
---- a/drivers/media/common/videobuf2/videobuf2-core.c
-+++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -328,9 +328,6 @@ static void __vb2_buf_mem_prepare(struct vb2_buffer *vb)
- 		return;
+diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
+index e991ba73d873..4638ec64db00 100644
+--- a/Documentation/userspace-api/media/v4l/buffer.rst
++++ b/Documentation/userspace-api/media/v4l/buffer.rst
+@@ -676,8 +676,6 @@ Buffer Flags
  
- 	vb->synced = 1;
--	if (vb->skip_cache_sync_on_prepare)
--		return;
+     \normalsize
+ 
+-.. _memory-flags:
 -
- 	for (plane = 0; plane < vb->num_planes; ++plane)
- 		call_void_memop(vb, prepare, vb->planes[plane].mem_priv);
- }
-@@ -347,9 +344,6 @@ static void __vb2_buf_mem_finish(struct vb2_buffer *vb)
- 		return;
+ enum v4l2_memory
+ ================
  
- 	vb->synced = 0;
--	if (vb->skip_cache_sync_on_finish)
--		return;
--
- 	for (plane = 0; plane < vb->num_planes; ++plane)
- 		call_void_memop(vb, finish, vb->planes[plane].mem_priv);
- }
-diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index 019c3843dc6d..1e218bc440c6 100644
---- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-@@ -101,6 +101,9 @@ static void vb2_dc_prepare(void *buf_priv)
- 	struct vb2_dc_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
+@@ -701,6 +699,44 @@ enum v4l2_memory
+       - 4
+       - The buffer is used for :ref:`DMA shared buffer <dmabuf>` I/O.
  
-+	if (buf->vb->skip_cache_sync_on_prepare)
-+		return;
++.. _memory-flags:
 +
- 	if (!sgt)
- 		return;
- 
-@@ -112,6 +115,9 @@ static void vb2_dc_finish(void *buf_priv)
- 	struct vb2_dc_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
-+	if (buf->vb->skip_cache_sync_on_finish)
-+		return;
++Memory Consistency Flags
++------------------------
 +
- 	if (!sgt)
- 		return;
- 
-diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-index 50265080cfc8..33ee63a99139 100644
---- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-@@ -204,6 +204,9 @@ static void vb2_dma_sg_prepare(void *buf_priv)
- 	struct vb2_dma_sg_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
-+	if (buf->vb->skip_cache_sync_on_prepare)
-+		return;
++.. raw:: latex
 +
- 	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
- }
- 
-@@ -212,6 +215,9 @@ static void vb2_dma_sg_finish(void *buf_priv)
- 	struct vb2_dma_sg_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
-+	if (buf->vb->skip_cache_sync_on_finish)
-+		return;
++    \small
 +
- 	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
- }
++.. tabularcolumns:: |p{7.0cm}|p{2.1cm}|p{8.4cm}|
++
++.. cssclass:: longtable
++
++.. flat-table::
++    :header-rows:  0
++    :stub-columns: 0
++    :widths:       3 1 4
++
++    * .. _`V4L2-MEMORY-FLAG-NON-COHERENT`:
++
++      - ``V4L2_MEMORY_FLAG_NON_COHERENT``
++      - 0x00000001
++      - A buffer is allocated either in coherent (it will be automatically
++	coherent between the CPU and the bus) or non-coherent memory. The
++	latter can provide performance gains, for instance the CPU cache
++	sync/flush operations can be avoided if the buffer is accessed by the
++	corresponding device only and the CPU does not read/write to/from that
++	buffer. However, this requires extra care from the driver -- it must
++	guarantee memory consistency by issuing a cache flush/sync when
++	consistency is needed. If this flag is set V4L2 will attempt to
++	allocate the buffer in non-coherent memory. The flag takes effect
++	only if the buffer is used for :ref:`memory mapping <mmap>` I/O and the
++	queue reports the :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS
++	<V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS>` capability.
++
++.. raw:: latex
++
++    \normalsize
  
+ Timecodes
+ =========
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+index 50ea72043bb0..e59306aba2b0 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+@@ -158,8 +158,9 @@ aborting or finishing any DMA in progress, an implicit
+       - This capability is set by the driver to indicate that the queue supports
+         cache and memory management hints. However, it's only valid when the
+         queue is used for :ref:`memory mapping <mmap>` streaming I/O. See
+-        :ref:`V4L2_BUF_FLAG_NO_CACHE_INVALIDATE <V4L2-BUF-FLAG-NO-CACHE-INVALIDATE>` and
+-        :ref:`V4L2_BUF_FLAG_NO_CACHE_CLEAN <V4L2-BUF-FLAG-NO-CACHE-CLEAN>`.
++        :ref:`V4L2_BUF_FLAG_NO_CACHE_INVALIDATE <V4L2-BUF-FLAG-NO-CACHE-INVALIDATE>`,
++        :ref:`V4L2_BUF_FLAG_NO_CACHE_CLEAN <V4L2-BUF-FLAG-NO-CACHE-CLEAN>` and
++        :ref:`V4L2_MEMORY_FLAG_NON_COHERENT <V4L2-MEMORY-FLAG-NON-COHERENT>`.
+ 
+ .. raw:: latex
+ 
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 9260791b8438..9d11e1d9c934 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -956,6 +956,8 @@ struct v4l2_requestbuffers {
+ 	__u32			reserved[1];
+ };
+ 
++#define V4L2_MEMORY_FLAG_NON_COHERENT			(1 << 0)
++
+ /* capabilities for struct v4l2_requestbuffers and v4l2_create_buffers */
+ #define V4L2_BUF_CAP_SUPPORTS_MMAP			(1 << 0)
+ #define V4L2_BUF_CAP_SUPPORTS_USERPTR			(1 << 1)
 -- 
 2.32.0.432.gabb21c7263-goog
 
