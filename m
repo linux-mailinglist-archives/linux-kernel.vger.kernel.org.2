@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B4B3D7296
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934D63D729A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236180AbhG0KHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:07:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48158 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236169AbhG0KG6 (ORCPT
+        id S236192AbhG0KHo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Jul 2021 06:07:44 -0400
+Received: from mail-vk1-f170.google.com ([209.85.221.170]:43951 "EHLO
+        mail-vk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236046AbhG0KHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:06:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627380418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wBIadlePi1nhhZbqCiG2KIXwtjptI0cXgbqATL0nsZI=;
-        b=J652FDBB48kPQ7peTE8LbeZvxw0vOwU9Mz7+I2FN3Y+0HRRVXMILA+FK6qcPPVTUV6lw/h
-        ZisDLOu07o5r3pxWjhOZGbrqjM3P4IFW4+Dw8i/xSfynJw64thJd0Kqdqqx5Wbp3Hvk77E
-        eVqGGaJk6iws6V00VDCJ8FiHJWBSEN8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-dHXDFyHZNze4RbAXe7PVww-1; Tue, 27 Jul 2021 06:06:55 -0400
-X-MC-Unique: dHXDFyHZNze4RbAXe7PVww-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B2F61853027;
-        Tue, 27 Jul 2021 10:06:54 +0000 (UTC)
-Received: from T590 (ovpn-12-42.pek2.redhat.com [10.72.12.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B733C5DAA5;
-        Tue, 27 Jul 2021 10:06:48 +0000 (UTC)
-Date:   Tue, 27 Jul 2021 18:06:46 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, osandov@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-mq-sched: Fix blk_mq_sched_alloc_tags() error
- handling
-Message-ID: <YP/atlyuacbHF/sp@T590>
-References: <1627378373-148090-1-git-send-email-john.garry@huawei.com>
+        Tue, 27 Jul 2021 06:07:42 -0400
+Received: by mail-vk1-f170.google.com with SMTP id f4so2647705vkb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 03:07:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FCUItsUrNsIOTE4P27lKrABY3CasfpkaGPUBOlpzuIA=;
+        b=l5cbLd0rlEV7fZYYmBg0uGIZpN3otccZX7MlUkd0ToiAwyDqmBzd2FxbNP4NYbuRdz
+         2gz3BLIMIAHnXLq1cdMGfvoSwNRH3goDqob5RGVu+1Tg1YQePb6ufIlVamBOH6ToqTU6
+         cY6cXgx9qatgH0E89b8jCzp27jRqIBBN04BSfPBWpVwpjLReT5hqlAcGXb8ADFqAdcbs
+         BFJes9JTX2d9UV+AlyeuWfoEXqq2/FveB0mVIWgU7SYgnPTBqJe6/1SZJ8+6UoY27JTC
+         WY54hpgD6IhJCdDdyylJKAjP47+iDI0ILoeYEy71HfJ/xHh0g8HXz5O4qvv6M/Dir0M/
+         CSmg==
+X-Gm-Message-State: AOAM531W/Oc88GMfuEn839+Lu5W4SM38ay/jobTUNCZqBbZ/MqGcbx/Q
+        uSPD5ruaNDF6TD/IwrixMutSwCiKmRowMdT3MoznlCE5xXM=
+X-Google-Smtp-Source: ABdhPJyJZ2K2v5gkPcV5lyHX5OJ6ojes2JgkZC6Nxg8yjXVY0y3Yn43EJt4tI1HaIXLl75DtR+ZLBeyBHpoziXGZOkM=
+X-Received: by 2002:ac5:c956:: with SMTP id s22mr13658214vkm.2.1627380461341;
+ Tue, 27 Jul 2021 03:07:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1627378373-148090-1-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
+ <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de> <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
+In-Reply-To: <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Jul 2021 12:07:30 +0200
+Message-ID: <CAMuHMdX=K4S3Yd_ybd5C3e40XefMf5kHs1tWs1+VKTgiWEWEDg@mail.gmail.com>
+Subject: Re: [PATCH 1/5] nubus: Simplify check in remove callback
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 05:32:53PM +0800, John Garry wrote:
-> If the blk_mq_sched_alloc_tags() -> blk_mq_alloc_rqs() call fails, then we
-> call blk_mq_sched_free_tags() -> blk_mq_free_rqs().
-> 
-> It is incorrect to do so, as any rqs would have already been freed in the
-> blk_mq_alloc_rqs() call.
-> 
-> Fix by calling blk_mq_free_rq_map() only directly.
-> 
-> Fixes: 6917ff0b5bd41 ("blk-mq-sched: refactor scheduler initialization")
-> Signed-off-by: John Garry <john.garry@huawei.com>
+Hi Finn,
 
-Not sure it is one fix, because blk_mq_free_rqs() does nothing when
-->static_rqs[] isn't filled, so 'Fixes' tag isn't needed, IMO.
+On Tue, Jul 27, 2021 at 11:50 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> On Tue, 27 Jul 2021, Uwe Kleine-König wrote:
+> > Apart from that, the compiler might already assume dev->driver being
+> > non-NULL after to_nubus_driver(dev->driver) was called.
+>
+> I don't understand how a compiler can make that assumption. But then, I
+> don't know why compilers do a lot of the things they do...
 
-> 
-> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-> index c838d81ac058..0f006cabfd91 100644
-> --- a/block/blk-mq-sched.c
-> +++ b/block/blk-mq-sched.c
-> @@ -515,17 +515,6 @@ void blk_mq_sched_insert_requests(struct blk_mq_hw_ctx *hctx,
->  	percpu_ref_put(&q->q_usage_counter);
->  }
->  
-> -static void blk_mq_sched_free_tags(struct blk_mq_tag_set *set,
-> -				   struct blk_mq_hw_ctx *hctx,
-> -				   unsigned int hctx_idx)
-> -{
-> -	if (hctx->sched_tags) {
-> -		blk_mq_free_rqs(set, hctx->sched_tags, hctx_idx);
-> -		blk_mq_free_rq_map(hctx->sched_tags, set->flags);
-> -		hctx->sched_tags = NULL;
-> -	}
-> -}
-> -
->  static int blk_mq_sched_alloc_tags(struct request_queue *q,
->  				   struct blk_mq_hw_ctx *hctx,
->  				   unsigned int hctx_idx)
-> @@ -539,8 +528,10 @@ static int blk_mq_sched_alloc_tags(struct request_queue *q,
->  		return -ENOMEM;
->  
->  	ret = blk_mq_alloc_rqs(set, hctx->sched_tags, hctx_idx, q->nr_requests);
-> -	if (ret)
-> -		blk_mq_sched_free_tags(set, hctx, hctx_idx);
-> +	if (ret) {
-> +		blk_mq_free_rq_map(hctx->sched_tags, set->flags);
-> +		hctx->sched_tags = NULL;
-> +	}
+It is one of those recent optimizations people have been complaining
+about.  Once you have dereferenced a pointer, compilers may remove
+all further NULL-checks, assuming they can't happen, as the code
+would have crashed anyway before due to the dereference.
+Good luck running on bare metal with RAM at zero ;-)
 
-The patch itself looks fine:
+Gr{oetje,eeting}s,
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-Thanks,
-Ming
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
