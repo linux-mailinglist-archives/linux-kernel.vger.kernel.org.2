@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2483D8571
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A9D3D8574
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbhG1BeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232926AbhG1BeH (ORCPT
+        id S234516AbhG1BfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:35:11 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:42372 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234015AbhG1BfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:34:07 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFC4C061757;
-        Tue, 27 Jul 2021 18:34:05 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id w10so272822qtj.3;
-        Tue, 27 Jul 2021 18:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ESeIPTS91F+xbzWWUrKYtYdUuWj/eolcxwSojut3luM=;
-        b=G2TUjLjc0k83E9TVyRVmaRadsAn7Z8GEiOcjHLnLA0Frqk8DfTnwMEhc+ziwiXkj1S
-         eZEZaFVelfaK0J4qjW9gAPtkRM5j1Ay6onxio9CQ80kuyfMzbwLiDHCbWxSAxgna8Z7/
-         xMDP2G0GM2QH6s80y83cPiFt5ED2mm8RfYvNuL7hJImg1m0R54RIzJ1wTx5Fj4pYkBBx
-         zBy2IR/lxtS9wsDX1rnHJDMvN5euXKZcWHFU9PHc/VJugX29+hTxjCXMxelWgixdq1GC
-         kF7+jEXxcxpfT7Izt+RuXjxZHDO1k2PxO/S9T13wozIYVLL4HvwvPn0uCkrFmLJZb48z
-         IQrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ESeIPTS91F+xbzWWUrKYtYdUuWj/eolcxwSojut3luM=;
-        b=KHo0MtGupeu15fF3F68Mr7hUr1gedzlcXkthTPHP9X11tG5yC5Ln0hZxYBKPHYOP9T
-         0kNdQrcfE++XayHOCYuSUImWMYa1J4Z62mDLG25oz1mSKLnuJ/KhZ20f8ZN23GSVY221
-         Gg0xb6x0QjPqz/JC71+3WZS1mviXkOLoiM9bmnTtNsodsBeCXvpO1ukfcoh6F2SqwH2m
-         N9qmprrwH5EFl7Qzs2dH29mlN562xl90MtStEadC+Iexo7dq2zK0Rgk0EZ05gN+vwbD4
-         XTnYJhbFnCAP4EOtMlj0KDlOcB2b4doXbWVTkzqdJA5i4CkMunh5HtneTnXTsaOU9bIb
-         zAiA==
-X-Gm-Message-State: AOAM5306Uw9dI2BPTUFPPe32kzNF66Li4jZrnMbJSXOCFY8FK0z6p0J0
-        c1fbKFAkJN2mlyGeP6mKJw==
-X-Google-Smtp-Source: ABdhPJx0thwuLZ4+tvyoLjwt6F5ZXn3u9dYqRc8BI2cGH8+FphyWyuGgMH5h9+9N8jfd0tYxRzGXdQ==
-X-Received: by 2002:ac8:110e:: with SMTP id c14mr22267122qtj.76.1627436044968;
-        Tue, 27 Jul 2021 18:34:04 -0700 (PDT)
-Received: from bytedance.attlocal.net (ec2-52-52-7-82.us-west-1.compute.amazonaws.com. [52.52.7.82])
-        by smtp.gmail.com with ESMTPSA id n5sm2741054qkp.116.2021.07.27.18.34.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 18:34:04 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Shuah Khan <shuah@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>,
-        Peilin Ye <peilin.ye@bytedance.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH RESEND net-next 2/2] tc-testing: Add control-plane selftest for skbmod SKBMOD_F_ECN option
-Date:   Tue, 27 Jul 2021 18:33:40 -0700
-Message-Id: <1a2701d93dece40f515a869362be63ae03abbe93.1627434177.git.peilin.ye@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <f5bd3c60662ec0982cccd8951990796b87d1f985.1627434177.git.peilin.ye@bytedance.com>
-References: <f5bd3c60662ec0982cccd8951990796b87d1f985.1627434177.git.peilin.ye@bytedance.com>
+        Tue, 27 Jul 2021 21:35:09 -0400
+X-UUID: 83ffc371ee0242f1a9a5e03b4eae63e0-20210728
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=tystcQCeK1JokSJpr3jNYbyoX8+NJdw5MNRuzT9Nl1s=;
+        b=B5YTcTWL9N2Ccfi/OHpSmHeQ1b5DSpNGkjNIucKMFWfNzier6BvpJ/OC9il7NL3B1NQCPxjNGQXCW/WBvxH/c0kJv8QuGKkvSn7x024/8rJD8bSMUJFrkBNlpLXaBwnQhuMB2iSh92KC0Hcv0bLiz67/4HtV0FlyXwJ4I3krgP8=;
+X-UUID: 83ffc371ee0242f1a9a5e03b4eae63e0-20210728
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2004428482; Wed, 28 Jul 2021 09:35:05 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs06n1.mediatek.inc
+ (172.21.101.129) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 28 Jul
+ 2021 09:35:05 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 28 Jul 2021 09:35:03 +0800
+Message-ID: <1627436103.31194.3.camel@mhfsdcap03>
+Subject: Re: [PATCH 1/2] phy: introduce phy mode PHY_MODE_UART and
+ phy_get_mode_ext()
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>
+CC:     <linux-phy@lists.infradead.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Ainge Hsu <ainge.hsu@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Date:   Wed, 28 Jul 2021 09:35:03 +0800
+In-Reply-To: <1627383013-4535-1-git-send-email-macpaul.lin@mediatek.com>
+References: <1627383013-4535-1-git-send-email-macpaul.lin@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <peilin.ye@bytedance.com>
-
-Recently we added a new option, SKBMOD_F_ECN, to tc-skbmod(8).  Add a
-control-plane selftest for it.
-
-Depends on kernel patch "net/sched: act_skbmod: Add SKBMOD_F_ECN option
-support", as well as iproute2 patch "tc/skbmod: Introduce SKBMOD_F_ECN
-option".
-
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
----
- .../tc-testing/tc-tests/actions/skbmod.json   | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/tools/testing/selftests/tc-testing/tc-tests/actions/skbmod.json b/tools/testing/selftests/tc-testing/tc-tests/actions/skbmod.json
-index 6eb4c4f97060..742f2290973e 100644
---- a/tools/testing/selftests/tc-testing/tc-tests/actions/skbmod.json
-+++ b/tools/testing/selftests/tc-testing/tc-tests/actions/skbmod.json
-@@ -417,5 +417,29 @@
-         "teardown": [
-             "$TC actions flush action skbmod"
-         ]
-+    },
-+    {
-+        "id": "fe09",
-+        "name": "Add skbmod action to mark ECN bits",
-+        "category": [
-+            "actions",
-+            "skbmod"
-+        ],
-+        "setup": [
-+            [
-+                "$TC actions flush action skbmod",
-+                0,
-+                1,
-+                255
-+            ]
-+        ],
-+        "cmdUnderTest": "$TC actions add action skbmod ecn",
-+        "expExitCode": "0",
-+        "verifyCmd": "$TC actions get action skbmod index 1",
-+        "matchPattern": "action order [0-9]*: skbmod pipe ecn",
-+        "matchCount": "1",
-+        "teardown": [
-+            "$TC actions flush action skbmod"
-+        ]
-     }
- ]
--- 
-2.20.1
+T24gVHVlLCAyMDIxLTA3LTI3IGF0IDE4OjUwICswODAwLCBNYWNwYXVsIExpbiB3cm90ZToNCj4g
+U29tZSBlbWJlZGRlZCBwbGF0Zm9ybSBzaGFyZWQgUElOcyBiZXR3ZWVuIFVTQiBhbmQgVUFSVC4N
+Cj4gDQo+IEZvciBleGFtcGxlLCBzb21lIHBob25lIHdpbGwgdXNlIHNwZWNpYWwgY2FibGUgZGV0
+ZWN0aW9uIGluIGJvb3QgbG9hZGVyDQo+IHRvIHN3aXRjaCBVU0IgcG9ydCBmdW5jdGlvbiBpbnRv
+IFVBUlQgbW9kZS4gSGVuY2UgS2VybmVsIG5lZWQgdG8gcXVlcnkNCj4gdGhlIGhhcmR3YXJlIHN0
+YXRlIGZyb20gUEhZIHJlZ2lzdGVycyB0byBjb25maXJtIHRoZSBpbml0aWFsemF0aW9uIGZsb3cN
+Cj4gZm9yIFBIWSBhbmQgVVNCIGRyaXZlci4NCj4gDQo+IFRvIHN1cHBvcnQgdGhpcyBraW5kIG9m
+IFBJTiBzd2l0Y2gsIG5ldyBQSFkgTU9ERSBhbmQgcXVlcnkgQVBJIGlzDQo+IHJlcXVpcmVkLiBI
+ZXJlIHdlIGludHJvZHVjZSBhIG5ldyBQSFkgbW9kZTogUEhZX01PREVfVUFSVC4NCj4gDQo+IEFQ
+SSBwaHlfZ2V0X21vZGVfZXh0KCkgY2FuIGJlIHVzZWQgdG8gcXVlcnkgdGhlIE1PREUgZnJvbSBo
+YXJkd2FyZQ0KPiBpbnN0ZWFkIG9mIHJlYWRpbmcgaXQgZnJvbSBwaHkgYXR0cmlidXRlcy4NCj4g
+DQo+IFNpZ25lZC1vZmYtYnk6IE1hY3BhdWwgTGluIDxtYWNwYXVsLmxpbkBtZWRpYXRlay5jb20+
+DQo+IC0tLQ0KPiAgZHJpdmVycy9waHkvcGh5LWNvcmUuYyAgfCAgIDE3ICsrKysrKysrKysrKysr
+KysrDQo+ICBpbmNsdWRlL2xpbnV4L3BoeS9waHkuaCB8ICAgIDMgKysrDQo+ICAyIGZpbGVzIGNo
+YW5nZWQsIDIwIGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BoeS9w
+aHktY29yZS5jIGIvZHJpdmVycy9waHkvcGh5LWNvcmUuYw0KPiBpbmRleCBjY2I1NzViLi5iOGY2
+NTM5IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3BoeS9waHktY29yZS5jDQo+ICsrKyBiL2RyaXZl
+cnMvcGh5L3BoeS1jb3JlLmMNCj4gQEAgLTM3Myw2ICszNzMsMjMgQEAgaW50IHBoeV9zZXRfbW9k
+ZV9leHQoc3RydWN0IHBoeSAqcGh5LCBlbnVtIHBoeV9tb2RlIG1vZGUsIGludCBzdWJtb2RlKQ0K
+PiAgfQ0KPiAgRVhQT1JUX1NZTUJPTF9HUEwocGh5X3NldF9tb2RlX2V4dCk7DQo+ICANCj4gK2lu
+dCBwaHlfZ2V0X21vZGVfZXh0KHN0cnVjdCBwaHkgKnBoeSkNCj4gK3sNCj4gKwlpbnQgcmV0Ow0K
+PiArDQo+ICsJaWYgKCFwaHkgfHwgIXBoeS0+b3BzLT5nZXRfbW9kZV9leHQpDQo+ICsJCXJldHVy
+biAwOw0KPiArDQo+ICsJbXV0ZXhfbG9jaygmcGh5LT5tdXRleCk7DQo+ICsJcmV0ID0gcGh5LT5v
+cHMtPmdldF9tb2RlX2V4dChwaHkpOw0KPiArCWlmICghcmV0KQ0KPiArCQlyZXQgPSBwaHktPmF0
+dHJzLm1vZGU7DQo+ICsJbXV0ZXhfdW5sb2NrKCZwaHktPm11dGV4KTsNCj4gKw0KPiArCXJldHVy
+biByZXQ7DQo+ICt9DQo+ICtFWFBPUlRfU1lNQk9MX0dQTChwaHlfZ2V0X21vZGVfZXh0KTsNCj4g
+Kw0KPiAgaW50IHBoeV9zZXRfbWVkaWEoc3RydWN0IHBoeSAqcGh5LCBlbnVtIHBoeV9tZWRpYSBt
+ZWRpYSkNCj4gIHsNCj4gIAlpbnQgcmV0Ow0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9w
+aHkvcGh5LmggYi9pbmNsdWRlL2xpbnV4L3BoeS9waHkuaA0KPiBpbmRleCAwZWQ0MzRkLi43ZDMy
+YzZiIDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L3BoeS9waHkuaA0KPiArKysgYi9pbmNs
+dWRlL2xpbnV4L3BoeS9waHkuaA0KPiBAQCAtMzQsNiArMzQsNyBAQCBlbnVtIHBoeV9tb2RlIHsN
+Cj4gIAlQSFlfTU9ERV9VU0JfREVWSUNFX0hTLA0KPiAgCVBIWV9NT0RFX1VTQl9ERVZJQ0VfU1Ms
+DQo+ICAJUEhZX01PREVfVVNCX09URywNCj4gKwlQSFlfTU9ERV9VQVJULA0KPiAgCVBIWV9NT0RF
+X1VGU19IU19BLA0KPiAgCVBIWV9NT0RFX1VGU19IU19CLA0KPiAgCVBIWV9NT0RFX1BDSUUsDQo+
+IEBAIC03MCw2ICs3MSw3IEBAIGVudW0gcGh5X21lZGlhIHsNCj4gICAqIEBwb3dlcl9vbjogcG93
+ZXJpbmcgb24gdGhlIHBoeQ0KPiAgICogQHBvd2VyX29mZjogcG93ZXJpbmcgb2ZmIHRoZSBwaHkN
+Cj4gICAqIEBzZXRfbW9kZTogc2V0IHRoZSBtb2RlIG9mIHRoZSBwaHkNCj4gKyAqIEBnZXRfbW9k
+ZV9leHQ6IGdldCB0aGUgZXh0ZW50ZWQgbW9kZSBvZiB0aGUgcGh5DQo+ICAgKiBAc2V0X21lZGlh
+OiBzZXQgdGhlIG1lZGlhIHR5cGUgb2YgdGhlIHBoeSAob3B0aW9uYWwpDQo+ICAgKiBAc2V0X3Nw
+ZWVkOiBzZXQgdGhlIHNwZWVkIG9mIHRoZSBwaHkgKG9wdGlvbmFsKQ0KPiAgICogQHJlc2V0OiBy
+ZXNldHRpbmcgdGhlIHBoeQ0KPiBAQCAtODMsNiArODUsNyBAQCBzdHJ1Y3QgcGh5X29wcyB7DQo+
+ICAJaW50CSgqcG93ZXJfb24pKHN0cnVjdCBwaHkgKnBoeSk7DQo+ICAJaW50CSgqcG93ZXJfb2Zm
+KShzdHJ1Y3QgcGh5ICpwaHkpOw0KPiAgCWludAkoKnNldF9tb2RlKShzdHJ1Y3QgcGh5ICpwaHks
+IGVudW0gcGh5X21vZGUgbW9kZSwgaW50IHN1Ym1vZGUpOw0KPiArCWludAkoKmdldF9tb2RlX2V4
+dCkoc3RydWN0IHBoeSAqcGh5KTsNCj4gIAlpbnQJKCpzZXRfbWVkaWEpKHN0cnVjdCBwaHkgKnBo
+eSwgZW51bSBwaHlfbWVkaWEgbWVkaWEpOw0KPiAgCWludAkoKnNldF9zcGVlZCkoc3RydWN0IHBo
+eSAqcGh5LCBpbnQgc3BlZWQpOw0KPiAgDQphZGQgcHJvdG90eXBlIG9mIHBoeV9nZXRfbW9kZV9l
+eHQoc3RydWN0IHBoeSAqcGh5KSBmb3IgYm90aCBjYXNlcyB0aGF0DQpDT05GSUdfR0VORVJJQ19Q
+SFkgaXMgZW5hYmxlZCBvciBub3QgaW4gbGludXgvcGh5L3BoeS5oDQoNCg==
 
