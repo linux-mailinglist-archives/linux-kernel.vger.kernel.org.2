@@ -2,181 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AF93D9678
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060543D967B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhG1URZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:17:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32993 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230289AbhG1URY (ORCPT
+        id S231409AbhG1US1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:18:27 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:41988 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhG1US0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:17:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627503441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wTOlYUXV1991ysqsQVTTRBs/M2N2Bgatu9whcUKn5SQ=;
-        b=jCvp91L5D/GQ4ecSaIm1kIfvg0dHk769Bflkag6kB98ka0BSv5mw+JqXMnBnrtMlxVmqOF
-        vKZGgKeto07mzMKejl8tQm53Rz8sjR/lMRMAmGjgPSlxYGUIgMCc/zSZ/p99Uc60jEm6ES
-        n5p9tQbz5leVoQvfxg5iOob0KdXs6H0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-224-IAm_WTxIM1GnTXCQtsoZ4g-1; Wed, 28 Jul 2021 16:17:20 -0400
-X-MC-Unique: IAm_WTxIM1GnTXCQtsoZ4g-1
-Received: by mail-wr1-f71.google.com with SMTP id s16-20020adfdb100000b0290140a25efc6dso1345461wri.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:17:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wTOlYUXV1991ysqsQVTTRBs/M2N2Bgatu9whcUKn5SQ=;
-        b=FFdMHxgJ/RwUtFZ7EdgUaO2qJTqVmFnK3RKcrfJe7nk0Vr943g4tzdwPtAeux/BqFV
-         00T5uUpQ2plYodMd33fFkoP89FPp6hjw5JrO1tFXHLgse942seDphDJlhHqVqiwAgTjo
-         38gkFfvvadqATeqHAZY+jW+yIMVqT/lAshHFDYd5JeClHvZkPm026RZZ+309dXdGoR6E
-         qlixerX1A8SXnbVh6IEy2Sf9ZsMf6BRbhYIvbYphFPTTOCM4w3t3pGw5pG7RLdTSSKPo
-         XFHrwF/tAgtZb+ZIgcP1iuQ0UkUwuRRx04njULlgj2GSGsQLwM3JBBIAz4mTqWWqQY66
-         qMTQ==
-X-Gm-Message-State: AOAM531X2L87jHzLY6Wj64Fje9gclICW4scbuFdINoI/xDc5dPG78Ll0
-        qpEeTjYqGSQZyUQotVBQGwOgWgW0W8029udXoxiX18x9RbOB5ixzkqjLMOMiTzNQ1jNB9sCvGXZ
-        2AdRBjngwedSnpY8qVpkbukAM
-X-Received: by 2002:a1c:f203:: with SMTP id s3mr10636160wmc.138.1627503439160;
-        Wed, 28 Jul 2021 13:17:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4laX2t23/QMPtmnKUWVnbHiRG9Z3USBKI5x2FQCZXJ4d/XfePp95Zz7/zDTpeOZKyxINrdw==
-X-Received: by 2002:a1c:f203:: with SMTP id s3mr10636132wmc.138.1627503438865;
-        Wed, 28 Jul 2021 13:17:18 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id n8sm806164wrx.46.2021.07.28.13.17.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 13:17:18 -0700 (PDT)
-To:     Jia He <justin.he@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org, nd@arm.com
-References: <20210728082226.22161-1-justin.he@arm.com>
- <20210728082226.22161-2-justin.he@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] device-dax: use fallback nid when numa_node is invalid
-Message-ID: <fc31c6ab-d147-10c0-7678-d820bc8ec96e@redhat.com>
-Date:   Wed, 28 Jul 2021 22:17:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Wed, 28 Jul 2021 16:18:26 -0400
+Received: from [192.168.86.36] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 0BFCB20B36E0;
+        Wed, 28 Jul 2021 13:18:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0BFCB20B36E0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1627503504;
+        bh=8VjrjYQKrOT17RDifYWaDqoWrFEqj1Yk42rjWoibe7M=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=G2JcZwGvwJfr6vKJZMUtIkEn/M+HVCbDXqob6BeE4lPpletGmHoCc6ZBCJnYI/VC6
+         RrLSxW5xjI0bY6V52F3Rhp0zGN5kTBMc3XfuSXZg/IX1YErwEZDlefkmVdbHLu1Jeb
+         S8E4GCme+oZxzUfGwyMwNCP0ZGW4aEw8nataKnpc=
+Subject: Re: [PATCH] KVM: SVM: delay svm_vcpu_init_msrpm after svm->vmcb is
+ initialized
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20210726165843.1441132-1-pbonzini@redhat.com>
+ <87zgu76ary.fsf@vitty.brq.redhat.com>
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+Message-ID: <1d82501c-05fd-deff-9652-790cde052644@linux.microsoft.com>
+Date:   Wed, 28 Jul 2021 16:18:21 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210728082226.22161-2-justin.he@arm.com>
+In-Reply-To: <87zgu76ary.fsf@vitty.brq.redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.21 10:22, Jia He wrote:
-> Previously, numa_off was set unconditionally in dummy_numa_init()
-> even with a fake numa node. Then ACPI set node id as NUMA_NO_NODE(-1)
-> after acpi_map_pxm_to_node() because it regards numa_off as turning
-> off the numa node. Hence dev_dax->target_node is NUMA_NO_NODE on
-> arm64 with fake numa.
-> 
-> Without this patch, pmem can't be probed as a RAM device on arm64 if
-> SRAT table isn't present:
->    $ndctl create-namespace -fe namespace0.0 --mode=devdax --map=dev -s 1g -a 64K
->    kmem dax0.0: rejecting DAX region [mem 0x240400000-0x2bfffffff] with invalid node: -1
->    kmem: probe of dax0.0 failed with error -22
-> 
-> This fixes it by using fallback memory_add_physaddr_to_nid() as nid.
-> 
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->   drivers/dax/kmem.c | 36 ++++++++++++++++++++----------------
->   1 file changed, 20 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-> index ac231cc36359..749674909e51 100644
-> --- a/drivers/dax/kmem.c
-> +++ b/drivers/dax/kmem.c
-> @@ -46,20 +46,7 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
->   	struct dax_kmem_data *data;
->   	int rc = -ENOMEM;
->   	int i, mapped = 0;
-> -	int numa_node;
-> -
-> -	/*
-> -	 * Ensure good NUMA information for the persistent memory.
-> -	 * Without this check, there is a risk that slow memory
-> -	 * could be mixed in a node with faster memory, causing
-> -	 * unavoidable performance issues.
-> -	 */
-> -	numa_node = dev_dax->target_node;
-> -	if (numa_node < 0) {
-> -		dev_warn(dev, "rejecting DAX region with invalid node: %d\n",
-> -				numa_node);
-> -		return -EINVAL;
-> -	}
-> +	int numa_node = dev_dax->target_node, new_node;
->   
->   	data = kzalloc(struct_size(data, res, dev_dax->nr_range), GFP_KERNEL);
->   	if (!data)
-> @@ -104,6 +91,20 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
->   		 */
->   		res->flags = IORESOURCE_SYSTEM_RAM;
->   
-> +		/*
-> +		 * Ensure good NUMA information for the persistent memory.
-> +		 * Without this check, there is a risk but not fatal that slow
-> +		 * memory could be mixed in a node with faster memory, causing
-> +		 * unavoidable performance issues. Furthermore, fallback node
-> +		 * id can be used when numa_node is invalid.
-> +		 */
-> +		if (numa_node < 0) {
-> +			new_node = memory_add_physaddr_to_nid(range.start);
-> +			dev_info(dev, "changing nid from %d to %d for DAX region %pR\n",
-> +				numa_node, new_node, res);
-> +			numa_node = new_node;
-> +		}
-> +
->   		/*
->   		 * Ensure that future kexec'd kernels will not treat
->   		 * this as RAM automatically.
-> @@ -141,6 +142,7 @@ static void dev_dax_kmem_remove(struct dev_dax *dev_dax)
->   	int i, success = 0;
->   	struct device *dev = &dev_dax->dev;
->   	struct dax_kmem_data *data = dev_get_drvdata(dev);
-> +	int numa_node = dev_dax->target_node;
->   
->   	/*
->   	 * We have one shot for removing memory, if some memory blocks were not
-> @@ -156,8 +158,10 @@ static void dev_dax_kmem_remove(struct dev_dax *dev_dax)
->   		if (rc)
->   			continue;
->   
-> -		rc = remove_memory(dev_dax->target_node, range.start,
-> -				range_len(&range));
-> +		if (numa_node < 0)
-> +			numa_node = memory_add_physaddr_to_nid(range.start);
-> +
-> +		rc = remove_memory(numa_node, range.start, range_len(&range));
->   		if (rc == 0) {
->   			release_resource(data->res[i]);
->   			kfree(data->res[i]);
-> 
 
-Note that this patch conflicts with:
+On 7/27/2021 11:23 AM, Vitaly Kuznetsov wrote:
+> Paolo Bonzini <pbonzini@redhat.com> writes:
+>
+>> Right now, svm_hv_vmcb_dirty_nested_enlightenments has an incorrect
+>> dereference of vmcb->control.reserved_sw before the vmcb is checked
+>> for being non-NULL.  The compiler is usually sinking the dereference
+>> after the check; instead of doing this ourselves in the source,
+>> ensure that svm_hv_vmcb_dirty_nested_enlightenments is only called
+>> with a non-NULL VMCB.
+>>
+>> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>> Cc: Vineeth Pillai <viremana@linux.microsoft.com>
+>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+>> [Untested for now due to issues with my AMD machine. - Paolo]
+Finally got hold of an AMD machine and tested nested virt: windows on 
+linux on
+windows with the patches applied. Did basic boot and minimal verification.
 
-https://lkml.kernel.org/r/20210723125210.29987-7-david@redhat.com
+Tested-by: Vineeth Pillai <viremana@linux.microsoft.com>
 
-But nothing fundamental. Determining a single NID is similar to how I'm 
-handling it for ACPI:
-
-https://lkml.kernel.org/r/20210723125210.29987-6-david@redhat.com
-
--- 
 Thanks,
-
-David / dhildenb
+Vineeth
 
