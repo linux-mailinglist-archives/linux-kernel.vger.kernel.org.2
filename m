@@ -2,131 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0D13D8A66
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78613D8A5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235604AbhG1JNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235520AbhG1JNo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:13:44 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F88BC0613CF;
-        Wed, 28 Jul 2021 02:13:43 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id f13so1923304plj.2;
-        Wed, 28 Jul 2021 02:13:43 -0700 (PDT)
+        id S235465AbhG1JNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:13:30 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:47878 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231392AbhG1JN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 05:13:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6m4UZEx/kYzeDD67ywCPsN6+L14vcm0XjCn8vgnR0gs=;
-        b=iC6z8Qctytr3DWMW26XBlXyJXmcX9mHqtGYg7L6xD94wbl7ajzQi5zIilGaoIAsNBu
-         ZN7L0JWLQB0NsyAQiW+JqWlOT1mTbK4f+uOaBNUne3qrnSByPi9LK4eaUGHE6oXAo+tw
-         7gXczYP9K2NW9xgp4RU0Wn0tG7xRBm8dvpW/t/+zJk+V0r1Lb6GZzxN+922cNAK3aV+j
-         lKtMq4xZPZfiDze9gJjeELttGZiHW7K0jpIUX7aPHQVSLXgmQga/VBWMx7C7W9UDTxml
-         zt0rZuogVBn8QhRnDgl2my8YDzXxJUe2Cy1wtm27Z5pRU6koXTuaHQgUeJXb1z/uUgVX
-         Qrbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6m4UZEx/kYzeDD67ywCPsN6+L14vcm0XjCn8vgnR0gs=;
-        b=PUjkq5B1sWa0E3dOPmT2GEukvgq/pSjuUldr3TjQu3lRiIwYQxuPURmRXaZ0DogowA
-         zrW/T0LEZRAi54f3kqG57fP+eDcFwOuBP1LbtbTKmD82awpzp+juGaD83SO8WnkoIRTo
-         zGl/kIjF8f8/6TghFUMa2+veeVAHguLPspshtfF9fRAor+3WX6Avu7CLof1XAhkzJ4XC
-         8dWcg8duXeBi4Sx2KvIEemb+fAHszFyIwWIy8/zjt/vKgKZTfw0aQc0OXuyNybN9qrcu
-         q4w9+p7ySHJpxDpQIRt6nDVmPDVzi1yqBaEWS8zD3oS4ZxtUyIhaZ0seXb1cVk1ql4ur
-         gRug==
-X-Gm-Message-State: AOAM532ZDkGtX55k0RKd7AfriGSxKt6icOHLQj4q/j4k6fyD2VPWq4au
-        TF5zKbF+0ENBPH7Huhv1sqMC/hrZQhsx4ksxs/8=
-X-Google-Smtp-Source: ABdhPJyyR2mCT0pEZEhhVsDOslGMUTe+AfTMeNLSOODQi5iwax+TD6tMAXsYw27Coe070sKnGki21opJt2OQkPeCxzA=
-X-Received: by 2002:a17:902:ac90:b029:12c:e7a:c183 with SMTP id
- h16-20020a170902ac90b029012c0e7ac183mr14859743plr.21.1627463622505; Wed, 28
- Jul 2021 02:13:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210723075858.376378-1-andrew@aj.id.au> <CAHp75VeQML7njMZ6x8kC-ZJVexC1xJ6n1cB3JneVMAVfuOJgWw@mail.gmail.com>
- <d019990e-a725-4ef5-bb54-aadee9d18b86@www.fastmail.com>
-In-Reply-To: <d019990e-a725-4ef5-bb54-aadee9d18b86@www.fastmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 28 Jul 2021 12:13:06 +0300
-Message-ID: <CAHp75Vc2W+WmwNj1AvH6EiT_80c+5gADV9QzK+asHxpd1Ucppw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/6] leds: Fix pca955x GPIO pin mappings
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Pavel Machek <pavel@ucw.cz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1627463608; x=1658999608;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=VmBPPTZ8bhFZDfegDEBiHT1SYm+WxAR9KXbK4aFnuTg=;
+  b=KZG7e46Ih2DMy8+tQVGgW6lWPTqRNfwzf1TK7WYmwOdwbK/P2HKufcCM
+   HpQlZfzGLdKBZgmvb/jQ0DiV/reb1cb088V0vGZq8xaLAVakTUWC8qekx
+   581Cu9kpMHd6cE41s0PDdHRKfFvTjFMYNSDYKvtiHkVD1qaTpClGwu4hI
+   GQdF+HbYEKMjTcCFwMoRO1NsxHO0upF6nQhFDb2ts2OwaKmPq4HZBZxia
+   rlk/jSt9dKLGUWtqrfustha9D+HoVouHMz7sNNQ+5FWPR11PddlgOp/Xe
+   7jbprnpdMlJmpawSLziTpBSGf1RYPYBVR500AKVeaQK/P0Z+d/i64AcqY
+   A==;
+X-IronPort-AV: E=Sophos;i="5.84,275,1620684000"; 
+   d="scan'208";a="18684613"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 28 Jul 2021 11:13:27 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Wed, 28 Jul 2021 11:13:27 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Wed, 28 Jul 2021 11:13:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1627463607; x=1658999607;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=VmBPPTZ8bhFZDfegDEBiHT1SYm+WxAR9KXbK4aFnuTg=;
+  b=SkIatp3WCVYaiF3hMVJP+axNjZs6lqcA3sc8JwIIj64iGMKEigaqb0nJ
+   5n+wHGnpgETmx6ZQovDQa8w5H5NRdIveAjnRwxx9vnful+FTAhlghh35c
+   9xYlMWwolG98fiqEbVdZg0XLywrD7ogtEiWtfq3VM7WOQkDkFgxaufH/L
+   O4YfAJDfPQhPPZBripcKyJaz/2ecuNah8TFmb5aWB9aJXgoz1nWVei1w+
+   M0ENpt1uSx14suUaVov+T7bBMeDvecyLpY19uOCtB+KnwXEk2ZWv4H94D
+   d0942HCuJXq+OgbyoiihN2SwSr4zQVVjuTPgfBk2Z+POqygtTgpI7ImeE
+   A==;
+X-IronPort-AV: E=Sophos;i="5.84,275,1620684000"; 
+   d="scan'208";a="18684612"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 28 Jul 2021 11:13:27 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 62B1D280070;
+        Wed, 28 Jul 2021 11:13:27 +0200 (CEST)
+Message-ID: <fa7965d2ab94b8dd256450e27e36ebe368750f3f.camel@ew.tq-group.com>
+Subject: Re: [PATCH] regmap: do not call regmap_debugfs_init() from
+ regmap_attach_dev()
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        David Lechner <david@lechnology.com>,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 28 Jul 2021 11:13:25 +0200
+In-Reply-To: <20210727170856.GA4670@sirena.org.uk>
+References: <20210726073627.31589-1-matthias.schiffer@ew.tq-group.com>
+         <20210726114751.GE4670@sirena.org.uk>
+         <7b54590fddf167744fa2574d8815130608f8e063.camel@ew.tq-group.com>
+         <20210726121140.GH4670@sirena.org.uk>
+         <45bb83c5ba33d479e1634e3a9efafcca5691fd9e.camel@ew.tq-group.com>
+         <20210726184805.GK4670@sirena.org.uk>
+         <b42ce068884cf6bcf471425a30bc4e17711037b3.camel@ew.tq-group.com>
+         <20210727170856.GA4670@sirena.org.uk>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 8:43 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> On Fri, 23 Jul 2021, at 17:45, Andy Shevchenko wrote:
-> > On Friday, July 23, 2021, Andrew Jeffery <andrew@aj.id.au> wrote:
+[adding syscon maintainers to CC again]
 
-> > > This series does a bunch of crimes, so it's an RFC. I'm cross-posting to the
-> > > pinctrl/GPIO and LEDs lists because the PCA955x devices impact all of them. What
-> > > needs fixing is the leds-pca955x driver's failure to map the GPIO numberspace to
-> > > the pin numberspace of the PCA955x devices. The series solves that by
-> > > implementing pinctrl and pinmux in the leds-pca955x driver.
-> > >
-> > > Things I'm unsure about:
-> > >
-> > > 1. Patch 1: The pinctrl_gpio_as_pin() API feels a bit dirty, not sure what
-> > >    others thoughts are on that (Linus?).
-> > >
-> > > 2. Patch 2: I've added a new callback to hook the entirety of the pinctrl map
-> > >    parsing rather than supplying a subnode-specific callback. This was necessary
-> > >    to handle the PCA955x devicetree binding in a backwards compatible way.
-> > >
-> > > 3. Patch 4: The PCA955x devices don't actually have any pinmux hardware, but the
-> > >    properties of the pinctrl/pinmux subsystems in the kernel map nicely onto the
-> > >    problem we have. But it's quite a bit of code...
-> > >
-> > > 4. Patch 6: I also lost a bunch of time to overlooking the get_group_pins()
-> > >    callback for pinctrl, and it seems odd to me that it isn't required.
-> > >
-> > > Please review!
-> >
-> >
-> > Sounds like a hack.
->
-> Yes, possibly. Feedback like this is why I sent the series as an RFC.
->
-> > I was briefly looking into patches 1-4 and suddenly
-> > realized that the fix can be similar as in PCA9685 (PWM), I.e. we
-> > always have chips for the entire pin space and one may map them
-> > accordingly, requested in one realm (LED) in the other (GPIO)
-> > automatically is BUSY. Or I missed the point?
->
-> No, you haven't missed the point. I will look at the PCA9685 driver.
->
-> That said, my goal was to implement the behaviour intended by the
-> existing binding (i.e. fix a bug).
+On Tue, 2021-07-27 at 18:08 +0100, Mark Brown wrote:
+> * PGP Signed by an unknown key
+> 
+> On Tue, Jul 27, 2021 at 02:24:17PM +0200, Matthias Schiffer wrote:
+> > On Mon, 2021-07-26 at 19:48 +0100, Mark Brown wrote:
+> > > The whole point here is to move the debugfs directory so if any fix
+> > > stops that happening it's not really viable.
+> > Looking at the history, I assume this already broke with cffa4b2122f5
+> > ("regmap: debugfs: Fix a memory leak when calling regmap_attach_dev").
+> > This is why the kernel is trying to recreate the "dummy" debugfs
+> > directory on my system when regmap_attach_dev() is called by imx-
+> > pinctrl.
+> 
+> Right, before that we'd just overwrite the existing name.
+> 
+> > I'm not convinced that the behaviour before that commit was strictly
+> > better - when regmap_debugfs_init() was called for the second time, the
+> > new debugfs paths would be created, but the old ones were never
+> > removed, they just leaked.
+> 
+> There's definitely a memory leak, although unless you're instantiating a
+> lot of these devices it's going to be hard to notice.
+> 
+> > The thing on which I need clarification is whether it is okay to bind a
+> > device to these shared regmaps at all:
+> > There is nothing preventing two different drivers from calling
+> > regmap_attach_dev() on the same regmap (AFAICT, this is actually
+> > happening when both imx_rproc and reset-imx7 are enabled, as both use
+> > the same syscon "SRC").
+> 
+> It's OK for one device to do it, but it should probably be the core
+> syscon code not some random driver that happens to talk to the syscon.
+> All the current users look at least somewhat suspicious unless they
+> somehow coordinate with each other in ways that I can't determine.
 
-Okay, so it implies that this used to work at some point. What has
-changed from that point? Why can't we simply fix the culprit commit?
+The core syscon driver doesn't create a device anymore for regmaps
+obtained using syscon_node_to_regmap() etc. since bdb0066df96e ("mfd:
+syscon: Decouple syscon interface from platform devices") - so there is
+no device the regmap could be bound to here.
 
-> However, userspace would never have
-> got the results it expected with the existing driver implementation, so
-> I guess you could argue that no such (useful) userspace exists. Given
-> that, we could adopt the strategy of always defining a gpiochip
-> covering the whole pin space, and parts of the devicetree binding just
-> become redundant.
+(in fact, the platform_driver part of the syscon driver could have been
+removed a while ago as suggested in that commit's description, as
+nothing is using it anymore sice ~2018 - I'll send a patch to do that
+later)
 
-I'm lost now. GPIO has its own userspace ABI, how does it work right
-now in application to this chip?
+With no device available to own the regmap, leaving it unset seems
+better to me than allowing an arbitrary consumer of the syscon regmap
+to claim ownership.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+> > What I'm trying to find out here is if there are any legitimate users
+> > of regmap_attach_dev(). If there aren't any, we can remove the API and
+> > don't need to fix it.
+> 
+> There's a definite use case for it.  What's probably more interesting
+> is if we have any users that create regmaps without a device, currently
+> I can't seem to find any though it's possible my greps weren't good
+> enough to spot them.  
+
+`git grep 'regmap_init[^(]*(NULL'` gives me 5 places, one of them being
+in the mentioned syscon driver (which in turn is used by 200~300 of
+other drivers). There might be others where NULL isn't passed directly.
+
+
