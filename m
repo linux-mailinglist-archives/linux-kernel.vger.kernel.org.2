@@ -2,156 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502663D9253
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A803D9257
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhG1Psq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhG1Prc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:47:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F07C061757;
-        Wed, 28 Jul 2021 08:47:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dWH66FbuISrHAWbtQ6UDd+p/YsYudn82c1xwjXqOHGo=; b=oxOuPgQSAEqIQ9vJpZYBFdw7At
-        oe7WAs2BgV2OkxQPPcE4LtmJndG0ocMYUoN5+6Tg65fN5eM6UAqQKjRSRaKHA5uNaUeqy7fdb82HX
-        eCfsEcHGxQrOEUIz/9u6hQmqrjvsbTETGnIuxa4N8IWthBLNf7UtoYrn+5EKVgka6CJesmEd+7J+X
-        fdCT7tTDfzGJfXvHJZJoWlFjNtZenvLXr6VdQ6r/c0efMW+CJyv8OyTjddynr3oPQpnt+P42H1I5d
-        hC4CzTivsa0QeOgESzpY9pcH9VhUrTiQo9Yo51By1GM6aKGmKhZseQe0GyW0SGOMsLrHabnrw/is5
-        0Ela9u9Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8lkP-00GDLp-Fu; Wed, 28 Jul 2021 15:45:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9F74230022A;
-        Wed, 28 Jul 2021 17:45:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8B4472CD20653; Wed, 28 Jul 2021 17:45:27 +0200 (CEST)
-Date:   Wed, 28 Jul 2021 17:45:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Zhu Lingshan <lingshan.zhu@intel.com>
-Cc:     pbonzini@redhat.com, bp@alien8.de, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, kan.liang@linux.intel.com, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com
-Subject: Re: [PATCH V9 00/18] KVM: x86/pmu: Add *basic* support to enable
- guest PEBS via DS
-Message-ID: <YQF7lwM6qzYso0Gg@hirez.programming.kicks-ass.net>
-References: <20210722054159.4459-1-lingshan.zhu@intel.com>
+        id S229946AbhG1Pul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:50:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237163AbhG1Puh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:50:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA21C6101B;
+        Wed, 28 Jul 2021 15:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627487404;
+        bh=Ay0Yvd7KQlvZfhdRdxA0T07GbvNQffMW7YmqzubhdxM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MLdxG8zRMgtQdukhEjI9JeorYv5vj6yHNkFePINDNBwEIiYgg7IwpGCQ0IWbzefAl
+         qvMB4w8q16p6QkiEJDO5y/UuLJhnHwIGdKVG63HZEkp96ACL2lnuigYdwETPrnxYoY
+         bO7LhtLMfgJHP0SeiJ/VEh2i3iXD7+5Yw8gUlsPI+ZdphD/EEldilIr07R/HHSaC4O
+         h5tznyEpDBC4C0q0EWH/w0iBzHA9NAypdNElE6pZFWMP6LFJL6y6Ci/l2M4bDMpiTM
+         +9l5gUoQMnQ5l+X0AJMva2l+GHSL7hZ0xgC+/x74IBefidx+7kMs0Ftd+7adOBE+8I
+         KvkbMesD6YdnQ==
+Date:   Wed, 28 Jul 2021 10:50:02 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v1 1/1] PCI: keystone: Use device_get_match_data()
+Message-ID: <20210728155002.GA822338@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210722054159.4459-1-lingshan.zhu@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210728105558.23871-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 01:41:41PM +0800, Zhu Lingshan wrote:
-> The guest Precise Event Based Sampling (PEBS) feature can provide an
-> architectural state of the instruction executed after the guest instruction
-> that exactly caused the event. It needs new hardware facility only available
-> on Intel Ice Lake Server platforms. This patch set enables the basic PEBS
-> feature for KVM guests on ICX.
+On Wed, Jul 28, 2021 at 01:55:58PM +0300, Andy Shevchenko wrote:
+> Instead of manipulations with OF APIs, use device_get_match_data().
 > 
-> We can use PEBS feature on the Linux guest like native:
+> While at it, drop of_match_ptr() completely and make compiler happy,
+> otherwise it complains:
 > 
->    # echo 0 > /proc/sys/kernel/watchdog (on the host)
->    # perf record -e instructions:ppp ./br_instr a
->    # perf record -c 100000 -e instructions:pp ./br_instr a
+>   pci-keystone.c:1069:34: warning: ‘ks_pcie_of_match’ defined but not used [-Wunused-const-variable=]
 
-Why does the host need to disable the watchdog? IIRC ICL has multiple
-PEBS capable counters. Also, I think the watchdog ends up on a fixed
-counter by default anyway.
+These are two separate things and I'd prefer two separate patches.
 
-> Like Xu (17):
->   perf/core: Use static_call to optimize perf_guest_info_callbacks
->   perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
->   perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
->   perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
->   KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
->   KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
->   KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
->   KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
->   KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR counter
->   KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
->   KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive PEBS
->   KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
->   KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
->   KVM: x86/pmu: Disable guest PEBS temporarily in two rare situations
->   KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
->   KVM: x86/cpuid: Refactor host/guest CPU model consistency check
->   KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
+I have a to-do item on my list to replace of_match_device(), as you
+did here.  I originally suggested replacing with
+device_get_match_data(), but I think Rob prefers
+of_device_get_match_data() because there's really no benefit to the
+extra indirection of device_get_match_data().  These are not drivers
+that may potentially be used with either ACPI or OF; they're just OF.
+
+Either way, I'd like to see a patch that does this for all drivers in
+drivers/pci/controller/ at the same time so they get slightly more
+consistent.
+
+Same for the .of_match_table update; a good change that I'd like to
+apply universally.  It looks like pcie-spear13xx.c, pcie-armada8k.c,
+pci-ftpci100.c, pci-v3-semi.c, pci-xgene.c, pcie-iproc-platform.c also
+have the same issue.
+
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/pci/controller/dwc/pci-keystone.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 > 
-> Peter Zijlstra (Intel) (1):
->   x86/perf/core: Add pebs_capable to store valid PEBS_COUNTER_MASK value
-
-Looks good:
-
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-How do we want to route this, all through the KVM tree?
-
-One little nit I had; would something like the below (on top perhaps)
-make the code easier to read?
-
----
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3921,9 +3921,12 @@ static struct perf_guest_switch_msr *int
- 	struct kvm_pmu *kvm_pmu = (struct kvm_pmu *)data;
- 	u64 intel_ctrl = hybrid(cpuc->pmu, intel_ctrl);
- 	u64 pebs_mask = cpuc->pebs_enabled & x86_pmu.pebs_capable;
-+	int global_ctrl, pebs_enable;
- 
- 	*nr = 0;
--	arr[(*nr)++] = (struct perf_guest_switch_msr){
-+
-+	global_ctrl = (*nr)++;
-+	arr[global_ctrl] = (struct perf_guest_switch_msr){
- 		.msr = MSR_CORE_PERF_GLOBAL_CTRL,
- 		.host = intel_ctrl & ~cpuc->intel_ctrl_guest_mask,
- 		.guest = intel_ctrl & (~cpuc->intel_ctrl_host_mask | ~pebs_mask),
-@@ -3966,23 +3969,23 @@ static struct perf_guest_switch_msr *int
- 		};
- 	}
- 
--	arr[*nr] = (struct perf_guest_switch_msr){
-+	pebs_enable = (*nr)++;
-+	arr[pebs_enable] = (struct perf_guest_switch_msr){
- 		.msr = MSR_IA32_PEBS_ENABLE,
- 		.host = cpuc->pebs_enabled & ~cpuc->intel_ctrl_guest_mask,
- 		.guest = pebs_mask & ~cpuc->intel_ctrl_host_mask,
- 	};
- 
--	if (arr[*nr].host) {
-+	if (arr[pebs_enable].host) {
- 		/* Disable guest PEBS if host PEBS is enabled. */
--		arr[*nr].guest = 0;
-+		arr[pebs_enable].guest = 0;
- 	} else {
- 		/* Disable guest PEBS for cross-mapped PEBS counters. */
--		arr[*nr].guest &= ~kvm_pmu->host_cross_mapped_mask;
-+		arr[pebs_enable].guest &= ~kvm_pmu->host_cross_mapped_mask;
- 		/* Set hw GLOBAL_CTRL bits for PEBS counter when it runs for guest */
--		arr[0].guest |= arr[*nr].guest;
-+		arr[global_ctrl].guest |= arr[pebs_enable].guest;
- 	}
- 
--	++(*nr);
- 	return arr;
- }
- 
-
-
-
+> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+> index bde3b2824e89..f36ea618a248 100644
+> --- a/drivers/pci/controller/dwc/pci-keystone.c
+> +++ b/drivers/pci/controller/dwc/pci-keystone.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/of_pci.h>
+>  #include <linux/phy/phy.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/property.h>
+>  #include <linux/regmap.h>
+>  #include <linux/resource.h>
+>  #include <linux/signal.h>
+> @@ -1091,7 +1092,6 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct device_node *np = dev->of_node;
+>  	const struct ks_pcie_of_data *data;
+> -	const struct of_device_id *match;
+>  	enum dw_pcie_device_mode mode;
+>  	struct dw_pcie *pci;
+>  	struct keystone_pcie *ks_pcie;
+> @@ -1108,8 +1108,7 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
+>  	int irq;
+>  	int i;
+>  
+> -	match = of_match_device(of_match_ptr(ks_pcie_of_match), dev);
+> -	data = (struct ks_pcie_of_data *)match->data;
+> +	data = device_get_match_data(dev);
+>  	if (!data)
+>  		return -EINVAL;
+>  
+> @@ -1309,7 +1308,7 @@ static struct platform_driver ks_pcie_driver __refdata = {
+>  	.remove = __exit_p(ks_pcie_remove),
+>  	.driver = {
+>  		.name	= "keystone-pcie",
+> -		.of_match_table = of_match_ptr(ks_pcie_of_match),
+> +		.of_match_table = ks_pcie_of_match,
+>  	},
+>  };
+>  builtin_platform_driver(ks_pcie_driver);
+> -- 
+> 2.30.2
+> 
