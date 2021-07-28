@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BFB3D8905
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5862F3D8909
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhG1Hlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233277AbhG1Hln (ORCPT
+        id S234417AbhG1Hnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:43:43 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12323 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232691AbhG1Hnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:41:43 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2DCC061757;
-        Wed, 28 Jul 2021 00:41:42 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so2962240pjh.3;
-        Wed, 28 Jul 2021 00:41:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3gyKs31H8DmWFPMAtNTmsj5Y1115XQKa+6v265+MF98=;
-        b=QPu+Xan/QfEel2lNwA6ZQhbMilq9UteGKnrllrkZPvNwLRhg0S3qj4s90qHn2xz5l8
-         gTSMklmYaUeB6fQPHQZHVY9jPgtLDojxLzKnpdRSZioEB7reKaZgUPaMaIZ9eed02LuH
-         PpJy0MsbsyXcon9DIIBmRgTe4UZ9bSc93nUgMeheh7F99nvyA5VCd4LCEPyJf1lSRwf0
-         xjzGAPFL+1bDLKkPhTczAZtX5/upHfbIdvsDahSHga7KNj7W1A6bfjRrtqgHIHX30G4z
-         8CaicVMaFgOhxTm1spcOTKAuqHil3FpknfxE9g0U9NbnlUOPYHw65wPWYlaNKuR8ueZH
-         OxTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=3gyKs31H8DmWFPMAtNTmsj5Y1115XQKa+6v265+MF98=;
-        b=RixPIpWngY0omGymjCT/WJZbAcgVrTX0Bq+DgW6Kcp3TuckkFOW8Zig3fpNf5YX2EX
-         ArvnVe6VNq8URdlfWOBtexFvUn0GGetd02HirfdqwizxbtNnQtemEVodxNayNozO1eJZ
-         quPFMjC5roTeQjfj3sU2wmoLM4yD8KtannJZ1+WI3bKjMODEtv/BDHI6kgKNjvvX7uTd
-         WmgPhtHiS/iwjKK7CVfCfEUMATx90V2FGfP2Cumco5Q+LnG+iYJvT6eqGHlLi6bxGCXU
-         Pz7m9hVe6cvlCnXamsJwvi/zDgGDW06hZQEnetK7obQ95QrtSZnWVWhBm9kZiPIDsJYW
-         +A/w==
-X-Gm-Message-State: AOAM530258c8U3cR4oGzhC/R7Qe+xlQGpLZTQoiNFey+D2eccIIhNdjT
-        UuV4+4Zo9oyIFp+rLrQu9OY=
-X-Google-Smtp-Source: ABdhPJzlHENqMVVGhp6QfQiRNFBo4bVChcVgOZ4iDyoLYi5WaZre5bP2oK0YfEh38riCyflQczQMBQ==
-X-Received: by 2002:a17:902:8648:b029:129:dda4:ddc2 with SMTP id y8-20020a1709028648b0290129dda4ddc2mr22168302plt.4.1627458102256;
-        Wed, 28 Jul 2021 00:41:42 -0700 (PDT)
-Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
-        by smtp.gmail.com with ESMTPSA id x14sm6540101pfq.143.2021.07.28.00.41.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 00:41:41 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 27 Jul 2021 21:41:40 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     viro@zeniv.linux.org.uk, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
-Message-ID: <YQEKNPrrOuyxTarN@mtj.duckdns.org>
-References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
- <YP8ovYqISzKC43mt@mtj.duckdns.org>
- <b2ff6f80-8ec6-e260-ec42-2113e8ce0a18@gmail.com>
- <YQA1D1GRiF9+px/s@mtj.duckdns.org>
- <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
+        Wed, 28 Jul 2021 03:43:42 -0400
+Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GZQWz266wz8036;
+        Wed, 28 Jul 2021 15:38:55 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by dggeme766-chm.china.huawei.com
+ (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 28
+ Jul 2021 15:43:38 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <christophe.jaillet@wanadoo.fr>, <gustavoars@kernel.org>,
+        <tanghui20@huawei.com>
+CC:     <netdev@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
+Date:   Wed, 28 Jul 2021 15:43:13 +0800
+Message-ID: <20210728074313.272055-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme766-chm.china.huawei.com (10.3.19.112)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:17:08AM +0800, brookxu wrote:
-> Yeah we can adjust file-max through sysctl, but in many cases we adjust it according
-> to the actual load of the machine, not for abnormal tasks. Another problem is that in
-> practical applications, kmem_limit will cause some minor problems. In many cases,
-> kmem_limit is disabled. Limit_in_bytes mainly counts user pages and pagecache, which
-> may cause files_cache to be out of control. In this case, if file-max is set to MAX,
-> we may have a risk in the abnormal scene, which prevents us from recovering from the
-> abnormal scene. Maybe I missed something.
+Replace pci_enable_device() with pcim_enable_device(),
+pci_disable_device() and pci_release_regions() will be
+called in release automatically.
 
-Kmem control is always on in cgroup2 and has been in wide production use for
-years now. If there are problems with it, we need to fix them. That really
-doesn't justify adding another feature.
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/net/ethernet/dec/tulip/winbond-840.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Thanks.
-
+diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
+index f6ff1f76eacb..1876f15dd827 100644
+--- a/drivers/net/ethernet/dec/tulip/winbond-840.c
++++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
+@@ -357,7 +357,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	int i, option = find_cnt < MAX_UNITS ? options[find_cnt] : 0;
+ 	void __iomem *ioaddr;
+ 
+-	i = pci_enable_device(pdev);
++	i = pcim_enable_device(pdev);
+ 	if (i) return i;
+ 
+ 	pci_set_master(pdev);
+@@ -379,7 +379,7 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ 	ioaddr = pci_iomap(pdev, TULIP_BAR, netdev_res_size);
+ 	if (!ioaddr)
+-		goto err_out_free_res;
++		goto err_out_netdev;
+ 
+ 	for (i = 0; i < 3; i++)
+ 		((__le16 *)dev->dev_addr)[i] = cpu_to_le16(eeprom_read(ioaddr, i));
+@@ -458,8 +458,6 @@ static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ err_out_cleardev:
+ 	pci_iounmap(pdev, ioaddr);
+-err_out_free_res:
+-	pci_release_regions(pdev);
+ err_out_netdev:
+ 	free_netdev (dev);
+ 	return -ENODEV;
+@@ -1526,7 +1524,6 @@ static void w840_remove1(struct pci_dev *pdev)
+ 	if (dev) {
+ 		struct netdev_private *np = netdev_priv(dev);
+ 		unregister_netdev(dev);
+-		pci_release_regions(pdev);
+ 		pci_iounmap(pdev, np->base_addr);
+ 		free_netdev(dev);
+ 	}
 -- 
-tejun
+2.17.1
+
