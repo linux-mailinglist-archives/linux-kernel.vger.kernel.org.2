@@ -2,257 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0E13D8CDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D13863D8CE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235924AbhG1Lhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbhG1Lhl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:37:41 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660D9C061757;
-        Wed, 28 Jul 2021 04:37:40 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id b128so1186322wmb.4;
-        Wed, 28 Jul 2021 04:37:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=x7dQKoEiN4Y7R3Tqb5Hw/QxBWYnx2kMDibC8HqvNYe4=;
-        b=IttcygM3lgAOG/DzUraZ/ph9DjRhdhcm5mywlsUE9uoi0hMi4ryiY6GYOw2NXFL0QZ
-         f+FLjUVvyBXKIUuUHnSENXxwfLGAfSfLOyEk2l6ZT4uqTjMKSru+JMQZDA0lRdDcJ0Un
-         Ky68Bg+47k8jjNNTIIA6Mnsvovkft0l8tw4lJbiSeSqYeVgZLy2hiR4iJRMdeIgMbVgt
-         UEBa4xAV+YV/cd+RTnVA26DEaXihYJTj6EGgiZRDl2iW95RciZ2Q0gDwN8hrC/GH3umN
-         Kd2QsMLjmile4nDz7TXWy715pQWt+XAtCOlsUfcquwdtteXSuTFXZi8xFa6yM57dH+pI
-         JMxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=x7dQKoEiN4Y7R3Tqb5Hw/QxBWYnx2kMDibC8HqvNYe4=;
-        b=HoBUoABVu9A5p01GZKZbPzMKmKzOtUx7jpcir2upbEMRWwi8x2E0+rOOuYHyO8PQWX
-         D76RbYOnkr5wFOMjXQ+kZzzc3iUrH+QYXU3eLBEZn97XtV+tkbTAwiCtUjUxb2cbn5Vg
-         OmhK06yFsl2Fetv0wKCX3qVeJGTCNiqQ7sKgTX8jB+yYW3zZArC0XbZZraX1UVZLU0Gq
-         JnHnbTlceemAoIyAv/Y1p198pmRHxzmD/IZVRpDUIEIydvM2T1tK0j5eyW7qNEBB5/3c
-         0965D0SPq5XqlIfwFdxxJbRm4s3zlSXAGwknZlHQmGFfsZKKPLVPjs4ZRbiDI6MlYJjP
-         MaRQ==
-X-Gm-Message-State: AOAM531IV26fAzogrO4oaj7rgTSQoV3jfPrBoXQmPTt3i7is1ANgpbsI
-        XVP/4FF4IEZ8ajc3FPB7VV2r0Y5L4LI=
-X-Google-Smtp-Source: ABdhPJyhlRuWNCGP/fuxPdZohPZ4g+6Dy16iPJvG307/5zbdd028y8U6Li7ED60kcXewkVk/1E6s0A==
-X-Received: by 2002:a7b:c181:: with SMTP id y1mr19380231wmi.82.1627472258968;
-        Wed, 28 Jul 2021 04:37:38 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:6a5d:b580:2891:cbac? ([2a02:908:1252:fb60:6a5d:b580:2891:cbac])
-        by smtp.gmail.com with ESMTPSA id n11sm377546wrs.81.2021.07.28.04.37.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 04:37:38 -0700 (PDT)
-Subject: Re: [RFC 1/4] dma-fence: Add deadline awareness
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210726233854.2453899-1-robdclark@gmail.com>
- <20210726233854.2453899-2-robdclark@gmail.com>
- <50b181fe-6605-b7ac-36a6-8bcda2930e6f@gmail.com>
- <CAF6AEGuNxi_aeYE37FT3a-atCUWgepxs-9EwxMfpiMaU7wgqdQ@mail.gmail.com>
- <9edd7083-e6b3-b230-c273-8f2fbe76ca17@amd.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <703dc9c3-5657-432e-ca0b-25bdd67a2abd@gmail.com>
-Date:   Wed, 28 Jul 2021 13:37:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234651AbhG1Lin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:38:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232530AbhG1Lim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:38:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6960160F0F;
+        Wed, 28 Jul 2021 11:38:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627472320;
+        bh=Ed2M1byFas5CO43HSA9Lq5GBOUwZSeoYtuJfi8LoAV4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KDURb2ySdRAfjvo5j+UgIFVDMo8Jf/RpF6G2uDWbhGYHKOiaPzSfoiEh0yaplfv0g
+         kEAG1j/cpuKFNqw77gKIo9+BVgANKIN5GTqO3CMqxeCraVRgK7/1dgN3QWZPxlTtmx
+         3o2qz7sOYjDQLfZdA5F4fbGw3/jh3X05P/59fLuxh/YDRW8FDWyQqW9vny+B6V8n4i
+         kzeLN83EfE39JDVQGiPotb7KnIHjTAt2SG9S/eBmWmfdleRDuPQnHI4G14CEBs/SYC
+         xi7nJ/usEEG1N4rzkWnq0L4oUoTBMUz1Fkp7xjA8VUpzVaRPmKlme36grvz2SqELAT
+         l10Ls+6ecP5ZQ==
+Date:   Wed, 28 Jul 2021 13:38:35 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     <zohar@linux.ibm.com>, <gregkh@linuxfoundation.org>,
+        <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH v2 03/12] diglim: Objects
+Message-ID: <20210728133835.2e55e0eb@coco.lan>
+In-Reply-To: <20210726163700.2092768-4-roberto.sassu@huawei.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+        <20210726163700.2092768-4-roberto.sassu@huawei.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <9edd7083-e6b3-b230-c273-8f2fbe76ca17@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 28.07.21 um 09:03 schrieb Christian König:
-> Am 27.07.21 um 16:25 schrieb Rob Clark:
->> On Tue, Jul 27, 2021 at 12:11 AM Christian König
->> <ckoenig.leichtzumerken@gmail.com> wrote:
->>> Am 27.07.21 um 01:38 schrieb Rob Clark:
->>>> From: Rob Clark <robdclark@chromium.org>
->>>>
->>>> Add a way to hint to the fence signaler of an upcoming deadline, 
->>>> such as
->>>> vblank, which the fence waiter would prefer not to miss. This is to 
->>>> aid
->>>> the fence signaler in making power management decisions, like boosting
->>>> frequency as the deadline approaches and awareness of missing 
->>>> deadlines
->>>> so that can be factored in to the frequency scaling.
->>>>
->>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
->>>> ---
->>>>    drivers/dma-buf/dma-fence.c | 39 
->>>> +++++++++++++++++++++++++++++++++++++
->>>>    include/linux/dma-fence.h   | 17 ++++++++++++++++
->>>>    2 files changed, 56 insertions(+)
->>>>
->>>> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
->>>> index ce0f5eff575d..2e0d25ab457e 100644
->>>> --- a/drivers/dma-buf/dma-fence.c
->>>> +++ b/drivers/dma-buf/dma-fence.c
->>>> @@ -910,6 +910,45 @@ dma_fence_wait_any_timeout(struct dma_fence 
->>>> **fences, uint32_t count,
->>>>    }
->>>>    EXPORT_SYMBOL(dma_fence_wait_any_timeout);
->>>>
->>>> +
->>>> +/**
->>>> + * dma_fence_set_deadline - set desired fence-wait deadline
->>>> + * @fence:    the fence that is to be waited on
->>>> + * @deadline: the time by which the waiter hopes for the fence to be
->>>> + *            signaled
->>>> + *
->>>> + * Inform the fence signaler of an upcoming deadline, such as 
->>>> vblank, by
->>>> + * which point the waiter would prefer the fence to be signaled 
->>>> by.  This
->>>> + * is intended to give feedback to the fence signaler to aid in power
->>>> + * management decisions, such as boosting GPU frequency if a periodic
->>>> + * vblank deadline is approaching.
->>>> + */
->>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t 
->>>> deadline)
->>>> +{
->>>> +     unsigned long flags;
->>>> +
->>>> +     if (dma_fence_is_signaled(fence))
->>>> +             return;
->>>> +
->>>> +     spin_lock_irqsave(fence->lock, flags);
->>>> +
->>>> +     /* If we already have an earlier deadline, keep it: */
->>>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags) &&
->>>> +         ktime_before(fence->deadline, deadline)) {
->>>> +             spin_unlock_irqrestore(fence->lock, flags);
->>>> +             return;
->>>> +     }
->>>> +
->>>> +     fence->deadline = deadline;
->>>> +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags);
->>>> +
->>>> +     spin_unlock_irqrestore(fence->lock, flags);
->>>> +
->>>> +     if (fence->ops->set_deadline)
->>>> +             fence->ops->set_deadline(fence, deadline);
->>>> +}
->>>> +EXPORT_SYMBOL(dma_fence_set_deadline);
->>>> +
->>>>    /**
->>>>     * dma_fence_init - Initialize a custom fence.
->>>>     * @fence: the fence to initialize
->>>> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
->>>> index 6ffb4b2c6371..4e6cfe4e6fbc 100644
->>>> --- a/include/linux/dma-fence.h
->>>> +++ b/include/linux/dma-fence.h
->>>> @@ -88,6 +88,7 @@ struct dma_fence {
->>>>                /* @timestamp replaced by @rcu on 
->>>> dma_fence_release() */
->>>>                struct rcu_head rcu;
->>>>        };
->>>> +     ktime_t deadline;
->>> Mhm, adding the flag sounds ok to me but I'm a bit hesitating adding 
->>> the
->>> deadline as extra field here.
->>>
->>> We tuned the dma_fence structure intentionally so that it is only 64 
->>> bytes.
->> Hmm, then I guess you wouldn't be a fan of also adding an hrtimer?
->>
->> We could push the ktime_t (and timer) down into the derived fence
->> class, but I think there is going to need to be some extra storage
->> *somewhere*.. maybe the fence signaler could get away with just
->> storing the nearest upcoming deadline per fence-context instead?
->
-> I would just push that into the driver instead.
->
-> You most likely don't want the deadline per fence anyway in complex 
-> scenarios, but rather per frame. And a frame is usually composed from 
-> multiple fences.
+Em Mon, 26 Jul 2021 18:36:51 +0200
+Roberto Sassu <roberto.sassu@huawei.com> escreveu:
 
-Thinking more about it we could probably kill the spinlock pointer and 
-make the flags 32bit if we absolutely need that here.
+> Define the objects to manage digest lists:
+> 
+> - digest_list_item: a digest list loaded into the kernel;
+> - digest_list_item_ref: a reference to a digest list;
+> - digest_item: a digest of a digest list.
+> 
+> Also define some helpers for the objects. More information can be found in
+> Documentation/security/diglim/implementation.rst.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  .../security/diglim/implementation.rst        | 105 ++++++++++++++
+>  MAINTAINERS                                   |   1 +
+>  security/integrity/diglim/diglim.h            | 134 ++++++++++++++++++
+>  3 files changed, 240 insertions(+)
+>  create mode 100644 security/integrity/diglim/diglim.h
+> 
+> diff --git a/Documentation/security/diglim/implementation.rst b/Documentation/security/diglim/implementation.rst
+> index 59a180b3bb3f..6002049612a1 100644
+> --- a/Documentation/security/diglim/implementation.rst
+> +++ b/Documentation/security/diglim/implementation.rst
+> @@ -95,3 +95,108 @@ with digest lists:
+>  
+>  - ``DIGEST_LIST_ADD``: the digest list is being added;
+>  - ``DIGEST_LIST_DEL``: the digest list is being deleted.
+> +
+> +
+> +Objects
+> +-------
+> +
+> +This section defines the objects to manage digest lists.
+> +
+> +.. kernel-doc:: security/integrity/diglim/diglim.h
+> +
+> +They are represented in the following class diagram:
+> +
+> +::
+> +
+> + digest_offset,
+> + hdr_offset---------------+
+> +                          |
+> +                          |
+> + +------------------+     |     +----------------------+
+> + | digest_list_item |--- N:1 ---| digest_list_item_ref |
+> + +------------------+           +----------------------+
+> +                                           |
+> +                                          1:N
+> +                                           |
+> +                                    +-------------+
+> +                                    | digest_item |
+> +                                    +-------------+
+> +
+> +A ``digest_list_item`` is associated to one or multiple
+> +``digest_list_item_ref``, one for each digest it contains. However,
+> +a ``digest_list_item_ref`` is associated to only one ``digest_list_item``,
+> +as it represents a single location within a specific digest list.
+> +
+> +Given that a ``digest_list_item_ref`` represents a single location, it is
+> +associated to only one ``digest_item``. However, a ``digest_item`` can have
+> +multiple references (as it might appears multiple times within the same
+> +digest list or in different digest lists, if it is duplicated).
+> +
+> +All digest list references are stored for a given digest, so that a query
+> +result can include the OR of the modifiers and actions of each referenced
+> +digest list.
+> +
+> +The relationship between the described objects can be graphically
+> +represented as:
+> +
+> +::
 
-But I still don't see the need for that, especially since most drivers 
-probably won't implement it.
+Just merge "::" at the previous line (everywhere).
 
-Regards,
-Christian.
+> +
+> + Hash table            +-------------+         +-------------+
+> + PARSER      +-----+   | digest_item |         | digest_item |
+> + FILE        | key |-->|             |-->...-->|             |
+> + METADATA    +-----+   |ref0|...|refN|         |ref0|...|refN|
+> +                       +-------------+         +-------------+
+> +            ref0:         |                               | refN:
+> +            digest_offset | +-----------------------------+ digest_offset
+> +            hdr_offset    | |                               hdr_offset
+> +                          | |
+> +                          V V
+> +                     +--------------------+
+> +                     |  digest_list_item  |
+> +                     |                    |
+> +                     | size, buf, actions |
+> +                     +--------------------+
+> +                          ^
+> +                          |
+> + Hash table            +-------------+         +-------------+
+> + DIGEST_LIST +-----+   |ref0         |         |ref0         |
+> +             | key |-->|             |-->...-->|             |
+> +             +-----+   | digest_item |         | digest_item |
+> +                       +-------------+         +-------------+
+> +
+> +The reference for the digest of the digest list differs from the references
+> +for the other digest types. ``digest_offset`` and ``hdr_offset`` are set to
+> +zero, so that the digest of the digest list is retrieved from the
+> +``digest_list_item`` structure directly (see ``get_digest()`` below).
+> +
+> +Finally, this section defines useful helpers to access a digest or the
+> +header the digest belongs to. For example:
+> +
+> +::
+> +
+> + static inline struct compact_list_hdr *get_hdr(
+> +                                      struct digest_list_item *digest_list,
+> +                                      loff_t hdr_offset)
 
->
-> Regards,
-> Christian.
->
->>
->> BR,
->> -R
->>
->>> Regards,
->>> Christian.
->>>
->>>>        u64 context;
->>>>        u64 seqno;
->>>>        unsigned long flags;
->>>> @@ -99,6 +100,7 @@ enum dma_fence_flag_bits {
->>>>        DMA_FENCE_FLAG_SIGNALED_BIT,
->>>>        DMA_FENCE_FLAG_TIMESTAMP_BIT,
->>>>        DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
->>>> +     DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
->>>>        DMA_FENCE_FLAG_USER_BITS, /* must always be last member */
->>>>    };
->>>>
->>>> @@ -261,6 +263,19 @@ struct dma_fence_ops {
->>>>         */
->>>>        void (*timeline_value_str)(struct dma_fence *fence,
->>>>                                   char *str, int size);
->>>> +
->>>> +     /**
->>>> +      * @set_deadline:
->>>> +      *
->>>> +      * Callback to allow a fence waiter to inform the fence 
->>>> signaler of an
->>>> +      * upcoming deadline, such as vblank, by which point the 
->>>> waiter would
->>>> +      * prefer the fence to be signaled by.  This is intended to 
->>>> give feedback
->>>> +      * to the fence signaler to aid in power management 
->>>> decisions, such as
->>>> +      * boosting GPU frequency.
->>>> +      *
->>>> +      * This callback is optional.
->>>> +      */
->>>> +     void (*set_deadline)(struct dma_fence *fence, ktime_t deadline);
->>>>    };
->>>>
->>>>    void dma_fence_init(struct dma_fence *fence, const struct 
->>>> dma_fence_ops *ops,
->>>> @@ -586,6 +601,8 @@ static inline signed long dma_fence_wait(struct 
->>>> dma_fence *fence, bool intr)
->>>>        return ret < 0 ? ret : 0;
->>>>    }
->>>>
->>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t 
->>>> deadline);
->>>> +
->>>>    struct dma_fence *dma_fence_get_stub(void);
->>>>    struct dma_fence *dma_fence_allocate_private_stub(void);
->>>>    u64 dma_fence_context_alloc(unsigned num);
->
+I would write this to avoid ending a line with an open parenthesis. You could,
+for instance, write it as:
 
+	static inline struct compact_list_hdr *
+	get_hdr(struct digest_list_item *digest_list,
+		off_t hdr_offset)
+
+if you also want to avoid to have a line bigger than 80 columns.
+
+> + {
+> +         return (struct compact_list_hdr *)(digest_list->buf + hdr_offset);
+> + }
+> +
+> +the header can be obtained by summing the address of the digest list buffer
+> +in the ``digest_list_item`` structure with ``hdr_offset``.
+> +
+> +Similarly:
+> +
+> +::
+> +
+> + static inline u8 *get_digest(struct digest_list_item *digest_list,
+> +                              loff_t digest_offset, loff_t hdr_offset)
+> + {
+> +         /* Digest list digest is stored in a different place. */
+> +         if (!digest_offset)
+> +                 return digest_list->digest;
+> +         return digest_list->buf + digest_offset;
+> + }
+> +
+> +the digest can be obtained by summing the address of the digest list buffer
+> +with ``digest_offset`` (except for the digest lists, where the digest is
+> +stored in the ``digest`` field of the ``digest_list_item`` structure).
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f61f5239468a..f7592d41367d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5462,6 +5462,7 @@ F:	Documentation/security/diglim/implementation.rst
+>  F:	Documentation/security/diglim/index.rst
+>  F:	Documentation/security/diglim/introduction.rst
+>  F:	include/uapi/linux/diglim.h
+> +F:	security/integrity/diglim/diglim.h
+>  
+>  DIOLAN U2C-12 I2C DRIVER
+>  M:	Guenter Roeck <linux@roeck-us.net>
+> diff --git a/security/integrity/diglim/diglim.h b/security/integrity/diglim/diglim.h
+> new file mode 100644
+> index 000000000000..578253d7e1d1
+> --- /dev/null
+> +++ b/security/integrity/diglim/diglim.h
+> @@ -0,0 +1,134 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2005,2006,2007,2008 IBM Corporation
+> + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
+> + *
+> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+> + *
+> + * Definitions only used inside DIGLIM.
+> + */
+> +
+> +#ifndef __DIGLIM_INTERNAL_H
+> +#define __DIGLIM_INTERNAL_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/crypto.h>
+> +#include <linux/fs.h>
+> +#include <linux/security.h>
+> +#include <linux/hash.h>
+> +#include <linux/tpm.h>
+> +#include <linux/audit.h>
+> +#include <crypto/hash_info.h>
+> +#include <linux/hash_info.h>
+> +#include <uapi/linux/diglim.h>
+> +
+> +#define MAX_DIGEST_SIZE 64
+> +#define HASH_BITS 10
+> +#define DIGLIM_HTABLE_SIZE (1 << HASH_BITS)
+> +
+> +/**
+> + * struct digest_list_item - a digest list loaded into the kernel
+> + *
+> + * @size: size of the digest list buffer
+> + * @buf: digest list buffer
+> + * @digest: digest of the digest list
+> + * @label: label used to identify the digest list (e.g. file name)
+> + * @actions: actions performed on the digest list
+> + * @algo: digest algorithm
+> + */
+> +struct digest_list_item {
+> +	loff_t size;
+> +	u8 *buf;
+> +	u8 digest[64];
+> +	const char *label;
+> +	u8 actions;
+> +	enum hash_algo algo;
+> +};
+> +
+> +/**
+> + * struct digest_list_item_ref - a reference to a digest list
+> + *
+> + * @list: linked list pointers
+> + * @digest_list: pointer to struct digest_list_item
+> + * @digest_offset: offset of the digest in the referenced digest list
+> + * @hdr_offset: offset of the header the digest refers to in the digest list
+> + */
+> +struct digest_list_item_ref {
+> +	struct list_head list;
+> +	struct digest_list_item *digest_list;
+> +	u32 digest_offset;
+> +	u32 hdr_offset;
+> +};
+> +
+> +/**
+> + * struct digest_item - a digest of a digest list
+> + *
+> + * @hnext: pointers of the hash table
+> + * @refs: linked list of struct digest_list_item_ref
+> + */
+> +struct digest_item {
+> +	struct hlist_node hnext;
+> +	struct list_head refs;
+> +};
+> +
+
+
+> +struct h_table {
+> +	unsigned long len;
+> +	struct hlist_head queue[DIGLIM_HTABLE_SIZE];
+> +};
+> +
+> +static inline unsigned int hash_key(u8 *digest)
+> +{
+> +	return (digest[0] | digest[1] << 8) % DIGLIM_HTABLE_SIZE;
+> +}
+> +
+> +static inline struct compact_list_hdr *get_hdr(
+> +					struct digest_list_item *digest_list,
+> +					loff_t hdr_offset)
+
+Same here with regards to open parenthesis.
+
+> +{
+> +	return (struct compact_list_hdr *)(digest_list->buf + hdr_offset);
+> +}
+> +
+> +static inline enum hash_algo get_algo(struct digest_list_item *digest_list,
+> +				      loff_t digest_offset, loff_t hdr_offset)
+> +{
+> +	/* Digest list digest algorithm is stored in a different place. */
+> +	if (!digest_offset)
+> +		return digest_list->algo;
+> +
+> +	return get_hdr(digest_list, hdr_offset)->algo;
+> +}
+> +
+> +static inline u8 *get_digest(struct digest_list_item *digest_list,
+> +			     loff_t digest_offset, loff_t hdr_offset)
+> +{
+> +	/* Digest list digest is stored in a different place. */
+> +	if (!digest_offset)
+> +		return digest_list->digest;
+> +
+> +	return digest_list->buf + digest_offset;
+> +}
+> +
+> +static inline struct compact_list_hdr *get_hdr_ref(
+> +					struct digest_list_item_ref *ref)
+> +{
+> +	return get_hdr(ref->digest_list, ref->hdr_offset);
+> +}
+> +
+> +static inline enum hash_algo get_algo_ref(struct digest_list_item_ref *ref)
+> +{
+> +	/* Digest list digest algorithm is stored in a different place. */
+> +	if (!ref->digest_offset)
+> +		return ref->digest_list->algo;
+> +
+> +	return get_hdr_ref(ref)->algo;
+> +}
+> +
+> +static inline u8 *get_digest_ref(struct digest_list_item_ref *ref)
+> +{
+> +	/* Digest list digest is stored in a different place. */
+> +	if (!ref->digest_offset)
+> +		return ref->digest_list->digest;
+> +
+> +	return ref->digest_list->buf + ref->digest_offset;
+> +}
+
+I would also document the above static inline functions and 
+struct h_table.
+
+> +#endif /*__DIGLIM_INTERNAL_H*/
+
+
+
+Thanks,
+Mauro
