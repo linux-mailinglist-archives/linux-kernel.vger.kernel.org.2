@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42603D9560
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B407C3D9566
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhG1Shk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhG1Shj (ORCPT
+        id S229755AbhG1Sjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:39:39 -0400
+Received: from mail.efficios.com ([167.114.26.124]:44918 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhG1Sjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:37:39 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75923C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:37:37 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso5449083pjo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=U/GUsHiEOi8pxx5BgkWQTDzqvSb76Y9K2dEa3vpQ2Ew=;
-        b=bEB2XxcUOEeJcy8i/cl6wtbs8VTUqJWxy5q6ELQJfiH3MWg7tTFr3J8MAH4UCbj3iY
-         96CcsaP75w6R3VmXObi/aZOddKA7ILsBAle+0VekhsgEQDrB1grYlhzmOH0vA0LmDiyy
-         HuVH+lZhAg6z7ttsa+VaL1s6wj3cAnHidYeX2Wsw+X9Or2E3A5Zb9NIrkfC1+B8N9rY4
-         KhL5j+aH/5iYC3+OKu0zRocNPdB00ZYp3X3jQtCYbh894F1mfhRydjdEQPgGZREk6dYx
-         V+ZnGO8qmh6tHwzxr8XgI+izgSWjHQisosM/hCC4ucXAdjCyhVGVUV37xHb/1TXb4qy9
-         bkog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=U/GUsHiEOi8pxx5BgkWQTDzqvSb76Y9K2dEa3vpQ2Ew=;
-        b=kDtCWuUVci3nN3MHfpNO2WtIL+XKUmJuMs/FDwAtJVWmi1njxAGpbbTiNtZq9RdH4Z
-         9jlacmNI1QCJ+VNejSKRRSv37Yw4J52uzrHX5VrhsRpeEUAeALl0UDIbfPJn7HSK2qlb
-         q+yygg7ndffQvYkvBhzDA7X4QbN4vZyai6UnNoK1IBq37RfDVwEb2e28qm9QQF0I/LuY
-         0M7BrNr0yLjyDrFetUvWZlzBXNGJb8inNosqTBSvm3uaVyEJ/evtnkI8ZLyqbHISvqw9
-         4lOVOT2MZgfIPaEVZqMLKQ83QHvRYvJjbOPW3K7ZVmaQg/ZcQ2XJ3M1OTn4ZNchxc4di
-         1kRw==
-X-Gm-Message-State: AOAM5310Q6HxktHh9NQGvCP5zFZN8wYRtyWB9KgFAlO/xzphkCT4+Ekm
-        GTloQfRWZZlXXyB1DBf7g0w=
-X-Google-Smtp-Source: ABdhPJygT5kY4Hvlg3aGDih8JDsDffrs3sZtH2XQFUbSav9nzRcJOojn5hMrR0Prd3c5qrIiH2JA7w==
-X-Received: by 2002:a17:902:d217:b029:105:e265:65c7 with SMTP id t23-20020a170902d217b0290105e26565c7mr1051678ply.16.1627497457076;
-        Wed, 28 Jul 2021 11:37:37 -0700 (PDT)
-Received: from localhost.localdomain ([122.161.51.5])
-        by smtp.googlemail.com with ESMTPSA id t71sm559021pgd.7.2021.07.28.11.37.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 11:37:36 -0700 (PDT)
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     nsaenz@kernel.org, gregkh@linuxfoundation.org,
-        stefan.wahren@i2se.com
-Cc:     dan.carpenter@oracle.com, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] staging: vchiq: Add details to $CONFIG_VCHIQ_CDEV help text
-Date:   Thu, 29 Jul 2021 00:07:17 +0530
-Message-Id: <9c9c128b41e31d6bebe646e052aa05c44b19eb83.1627495116.git.ojaswin98@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1627495116.git.ojaswin98@gmail.com>
-References: <cover.1627495116.git.ojaswin98@gmail.com>
+        Wed, 28 Jul 2021 14:39:37 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 2E49835A77D;
+        Wed, 28 Jul 2021 14:39:35 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id n02ovKwUYEnp; Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id B663935AD8F;
+        Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B663935AD8F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1627497574;
+        bh=hz4Q+TDB5rKobUuxQy5ZrYWwx6dobvw3AwtQ5A09sxQ=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=hybXLNeSX4F8QWh02WrntuVw2aSEorcUb2Zy5+eFJUj3GQEy44043OFQuhHRpVx7l
+         eZt1IJnR1fX/Lf2uVSkoarq4fKh0lCRU/JThK1YC7aUfn2N3d62ZCLZLtf/UEalVtE
+         s0xusAmIeIHGAzJB+mfSw3ld9Mv6kcy32MCcTym99JCr/3KnjvGWQWuHbr7Kqtjj3Z
+         gCqraywaJ63J/zACnguQbJD90gXnjEoOEgde9BabE47L/gpJGw926B6GLNmIZXiywl
+         QAAKKSufs3LT96uGaqiLP84ac64FotNk1sSTiVKvzguhGOq/Dxb1dMlzw+/cla1rEp
+         ueS76JReT5l1Q==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id VxW4LVHMI1Yv; Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 9EAA835A77B;
+        Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
+Date:   Wed, 28 Jul 2021 14:39:34 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     paulmck <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>
+Message-ID: <1066702992.9268.1627497574534.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CAHk-=wiLZYvjcj=ztF9tF0df8mSGKXwbCdxxy-JnoaE72VY5tQ@mail.gmail.com>
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1> <20210721202127.2129660-4-paulmck@kernel.org> <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1> <CAHk-=wjwZzi=Lqsre8C8C4YJiVQNdNnco7jkLq=ohePSPA9JCA@mail.gmail.com> <1810346528.8990.1627495925037.JavaMail.zimbra@efficios.com> <CAHk-=wiLZYvjcj=ztF9tF0df8mSGKXwbCdxxy-JnoaE72VY5tQ@mail.gmail.com>
+Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and
+ updates
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
+Thread-Topic: Weaken ->dynticks accesses and updates
+Thread-Index: hdFDzu6BlE5e7R9k0VH579R89nPurg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some details to the Kconfig definition of $CONFIG_VCHIQ_CDEV to help
-make the motive behind it a bit more clear.
+----- On Jul 28, 2021, at 2:32 PM, Linus Torvalds torvalds@linux-foundation.org wrote:
 
-Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
----
- drivers/staging/vc04_services/Kconfig | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+> On Wed, Jul 28, 2021 at 11:12 AM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>>
+>> Are the percpu atomics you have in mind different from what is found in
+>> Documentation/core-api/this_cpu_ops.rst ?
+>>
+>> Namely this_cpu_add_return(pcp, val) in this case.
+> 
+> Nope.
+> 
+> Those are only "CPU-atomic", ie atomic wrt interrupts etc.
+> 
+> The RCU code wants SMP-atomic, and it's mainly that we *could* do the
+> addressing more efficiently.
 
-diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
-index 2b70c37cdd09..cb02d8a4cb74 100644
---- a/drivers/staging/vc04_services/Kconfig
-+++ b/drivers/staging/vc04_services/Kconfig
-@@ -25,8 +25,12 @@ config VCHIQ_CDEV
- 	bool "VCHIQ Character Driver"
- 	default y
- 	help
--		Enable the creation of VCHIQ character driver to help
--		communicate with the Videocore platform.
-+		Enable the creation of VCHIQ character driver to help communicate
-+		with the VideoCore platform. The cdev exposes ioctls used by
-+		userspace libraries and testing tools to interact with VideoCore.
-+		This can be set to 'N' if the VideoCore communication is not needed
-+		by userspace but only by other kernel modules (like bcm2835-audio).
-+		If not sure, set this to 'Y'.
- 
- endif
- 
+OK, so combining the addressing tricks of this_cpu operations with
+smp-atomic operations (e.g. LOCK prefix on x86). It may indeed become
+worthwhile given enough users, and fast enough atomic operations.
+
+Thanks,
+
+Mathieu
+
 -- 
-2.25.1
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
