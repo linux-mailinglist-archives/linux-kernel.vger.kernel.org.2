@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60A63D9791
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AF03D978D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhG1VbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 17:31:13 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:22192 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbhG1VbL (ORCPT
+        id S231827AbhG1Va7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 17:30:59 -0400
+Received: from smtprelay0175.hostedemail.com ([216.40.44.175]:43824 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230156AbhG1Va6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 17:31:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627507869; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=8GU+vW43+wxy/H5qJZhHIaz/iH3IimVPeFMIf+S1X7A=; b=FlvDZsaAQZb5uhhkjB6+Uc5wJiQql3SqcS7TYggmLyIxhEp3GkaMKCgUMYl/+TwHCcUMQq8o
- r1SEdtDASx1IbaN0/qDVPuY2jc7a16upJFv8ZWGPm4HA/cutb7sLXZSigUIhTbX1gkKExdn1
- 5BVYXv0ejaJGJhIJcqy3QzflQC8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6101cc99e31d882d183fbee5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 21:31:05
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B36D7C433F1; Wed, 28 Jul 2021 21:31:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19695C433F1;
-        Wed, 28 Jul 2021 21:31:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 19695C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dp: update is_connected status base on sink count at dp_pm_resume()
+        Wed, 28 Jul 2021 17:30:58 -0400
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id B560E180D0797;
+        Wed, 28 Jul 2021 21:30:55 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 640A113D99;
+        Wed, 28 Jul 2021 21:30:55 +0000 (UTC)
+MIME-Version: 1.0
 Date:   Wed, 28 Jul 2021 14:30:54 -0700
-Message-Id: <1627507854-16733-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>
+Subject: Re: patch suggestion: Kconfig symbols
+In-Reply-To: <09db53b9-7edf-44fc-c6b7-7c4e9198a2d4@infradead.org>
+References: <295b8f8c-4264-9f32-6723-9d2d574021ac@infradead.org>
+ <e77e2329bdafdbea538be0d7edb8a9d7d3e45990.camel@perches.com>
+ <09db53b9-7edf-44fc-c6b7-7c4e9198a2d4@infradead.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <733d2747b67a8a172333b51bacbf77fe@perches.com>
+X-Sender: joe@perches.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.79
+X-Stat-Signature: 1rkzgomx86n88r4rw5msropwwmhpsboi
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 640A113D99
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/hNJ9eNNNyc+Lzlm6mkIzHlx1pO20mbns=
+X-HE-Tag: 1627507855-712796
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently at dp_pm_resume() is_connected state is decided base on hpd connection
-status only. This will put is_connected in wrongly "true" state at the scenario
-that dongle attached to DUT but without hmdi cable connecting to it. Fix this
-problem by adding read sink count from dongle and decided is_connected state base
-on both sink count and hpd connection status.
+On 2021-07-28 12:41, Randy Dunlap wrote:
+> On 7/28/21 8:37 AM, Joe Perches wrote:
+>> On Mon, 2021-07-26 at 17:21 -0700, Randy Dunlap wrote:
+>>> Running scripts/checkkconfigsymbols.py reports several hundred (maybe 
+>>> thousand)
+>>> Kconfig symbols that are used questionably. Lots of these are false 
+>>> positives
+>>> but lots of the remainder could use some cleaning up.
+>> []
+>>> False positive example:
+>>> 
+>>> XCHOFFLD_MEM
+>>> Referencing files: drivers/scsi/qla2xxx/qla_mbx.c
+>>> Similar symbols: OF_PMEM, CXL_MEM, CXL_PMEM
+>>> 
+>>> The Referencing source file does this:
+>>> #define CONFIG_XCHOFFLD_MEM	0x3
+>>> 
+>>> which is legitimate, so no change is needed.
+>> 
+>> Legitimate is perhaps dubious.
+>> 
+>> It might be better if Kconfig has exclusive use of CONFIG_<foo> naming 
+>> so
+>> renaming all the other existing CONFIG_<foo> defines might be 
+>> appropriate.
+> 
+> I would prefer that as well -- maybe 15 years ago.
+> But I think it's too invasive to make that change now.
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+I do not think it's that invasive.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 2b660e9..9bcb261 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1308,6 +1308,17 @@ static int dp_display_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int dp_get_sink_count(struct dp_display_private *dp)
-+{
-+	u8 sink_count;
-+
-+	sink_count = drm_dp_read_sink_count(dp->aux);
-+	if (sink_count < 0)
-+		return 0;
-+
-+	return sink_count;
-+}
-+
- static int dp_pm_resume(struct device *dev)
- {
- 	struct platform_device *pdev = to_platform_device(dev);
-@@ -1327,14 +1338,22 @@ static int dp_pm_resume(struct device *dev)
- 
- 	dp_catalog_ctrl_hpd_config(dp->catalog);
- 
--	status = dp_catalog_link_is_connected(dp->catalog);
-+	/*
-+	 * set sink to normal operation mode -- D0
-+	 * before dpcd read
-+	 */
-+	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
- 
-+	if ((status = dp_catalog_link_is_connected(dp->catalog)))
-+		dp->link->sink_count = dp_get_sink_count(dp);
-+	else
-+		dp->link->sink_count = 0;
- 	/*
- 	 * can not declared display is connected unless
- 	 * HDMI cable is plugged in and sink_count of
- 	 * dongle become 1
- 	 */
--	if (status && dp->link->sink_count)
-+	if (dp->link->sink_count)
- 		dp->dp_display.is_connected = true;
- 	else
- 		dp->dp_display.is_connected = false;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+It's something that doesn't have to be done immediately either.
 
+It's not too many macro defines and not too many uses of those defines.
