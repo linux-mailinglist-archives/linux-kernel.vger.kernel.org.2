@@ -2,66 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398C73D96C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9DE3D96D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbhG1UaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231126AbhG1UaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:30:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3EA2C60F45;
-        Wed, 28 Jul 2021 20:30:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627504205;
-        bh=tQVIUSpXgbl4/RWPNrQFzv/Jv9j02FBGnc23zK/XCLc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qluJ2bWN+q5LN8Hu2yn/5AqzRxoED0mbtjsz3VW5ntxAT1iadNIEeEt13qaghV3mM
-         QSmFjbyWwihp3NdR1iShQ2bwkQ1ESQlR3AGqeQeLuPXhVNMy+yrTXl1s01RG3aeXuZ
-         /JKmVavb/58AdwdWL/b0ysnZ7LCplKgtXnX4mst1kSHmRoCHfLVsesT7vSlX7AnlNa
-         XilEOtFuBGsPGXFHtHZGZrfMvRVTgDFI5UxOZ8uQ+toUSMX31DZlW80v9E4BlLWEy/
-         TNiRa340Yk1vjf4g9M7N7cG7nQnHHCqGDo0t742yob3K7r19A8j/LHwPdtf3BbYmam
-         Zq6m6O8LHztCQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 33A8160A6C;
-        Wed, 28 Jul 2021 20:30:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231428AbhG1UhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhG1UhM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 16:37:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8CCC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=a2nnb4Mp8S24aWxbtXWtMrIAvjYYvj79i33PXyGGISc=; b=RQfrrtvn0KH4CtgS77upac10DA
+        rj6uwLcmyLT499KCXtZfze5huDX0qohtpuTeXaotOtHfojuGzGcQcsdnHPxHfxU+cltqOfx4gUqWW
+        HFcbuTyR4cD4P2xyRzxFTQhWzJrIZ/8bEY9pXzXZRI8NbdwWcdN00pVtWp+o/CQoeKVggy8QuB12Y
+        OeaJxdDfncdmbS6zqUrolU9e/pWVViYUBwrym+erSGzU/2kznwpv7d7+QHt8j4eZ86uAskMMfqiAp
+        uMAFG2Gf9Mcr8SK6ONunwW5of3FUUdfHQbc2jfAVtWidqTSn1YtAYtGQDxhwbPZAleZgg3C4Z4ZuI
+        P7NI2VwQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8qIf-002K4c-4o; Wed, 28 Jul 2021 20:37:09 +0000
+Date:   Wed, 28 Jul 2021 13:37:09 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     rafael@kernel.org, skhan@linuxfoundation.org,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v8 0/2] firmware_loader: fix uaf in
+ firmware_fallback_sysfs
+Message-ID: <YQG/9RPgETxF08Vz@bombadil.infradead.org>
+References: <20210728085107.4141-1-mail@anirudhrb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Documentation: networking: add ioam6-sysctl into index
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162750420520.29434.16308677128075780058.git-patchwork-notify@kernel.org>
-Date:   Wed, 28 Jul 2021 20:30:05 +0000
-References: <20210728155912.9293-1-src.res@email.cn>
-In-Reply-To: <20210728155912.9293-1-src.res@email.cn>
-To:     Hu Haowen <src.res@email.cn>
-Cc:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728085107.4141-1-mail@anirudhrb.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Jul 28, 2021 at 02:21:05PM +0530, Anirudh Rayabharam wrote:
+> This series fixes the use after free in firmware_fallback_sysfs reported by
+> syzbot at: 
+> https://syzkaller.appspot.com/bug?extid=de271708674e2093097b
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Greg,
 
-On Wed, 28 Jul 2021 23:59:12 +0800 you wrote:
-> Append ioam6-sysctl to toctree in order to get rid of building warnings.
-> 
-> Signed-off-by: Hu Haowen <src.res@email.cn>
-> ---
->  Documentation/networking/index.rst | 1 +
->  1 file changed, 1 insertion(+)
+With Shua's review ammeded, this series is ready to be queued up, finally.
 
-Here is the summary with links:
-  - Documentation: networking: add ioam6-sysctl into index
-    https://git.kernel.org/netdev/net-next/c/883d71a55e96
+Anirudh, thanks for following up on all these iterations!
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+  Luis
