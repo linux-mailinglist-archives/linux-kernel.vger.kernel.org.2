@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256FC3D9221
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347143D923D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235714AbhG1Phj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:37:39 -0400
-Received: from smtprelay0210.hostedemail.com ([216.40.44.210]:46454 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230400AbhG1Phb (ORCPT
+        id S229780AbhG1Pit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229880AbhG1Pis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:37:31 -0400
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id E08D08384364;
-        Wed, 28 Jul 2021 15:37:28 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id E75A51E04DC;
-        Wed, 28 Jul 2021 15:37:27 +0000 (UTC)
-Message-ID: <e77e2329bdafdbea538be0d7edb8a9d7d3e45990.camel@perches.com>
-Subject: Re: patch suggestion: Kconfig symbols
-From:   Joe Perches <joe@perches.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>
-Date:   Wed, 28 Jul 2021 08:37:26 -0700
-In-Reply-To: <295b8f8c-4264-9f32-6723-9d2d574021ac@infradead.org>
-References: <295b8f8c-4264-9f32-6723-9d2d574021ac@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Wed, 28 Jul 2021 11:38:48 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3AFC061757;
+        Wed, 28 Jul 2021 08:38:45 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso10666963pjq.2;
+        Wed, 28 Jul 2021 08:38:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DHb1viiq/M1erLr2X07zcQ77mhbJoJfUhPFzGDRbbgk=;
+        b=eCuSx67rfqyMOyriSQb1ffa/WuN7WKoJYkCifLb4icEiL3Na9lr1lgBva/EV3IsW1j
+         SC9BTzDRtxiJrFSJabc9C2jIqi0Mtyl42GPLBULan6SY56jK364YbFbOJwS4pR5ae3Ts
+         azWrICO+Ts7LoJwkmgYNcXI6IS6OqjD5CA9ohdhhq3ob/kql5wHVkXBi5alr5MqT4tg+
+         NWm0++pZ/XJbL04cDL4YZR6SS/6TqRu82e98h8+C6Q9DdnxJNxiK73ypXVpVYAmrCnko
+         GgOoPUP/0ncWvxHFncNrSuribzkOrjsWtplELgnujfG+9iWLyn1es1Q6WMNsem+f7lWO
+         X0tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=DHb1viiq/M1erLr2X07zcQ77mhbJoJfUhPFzGDRbbgk=;
+        b=UJ38o5uygs222FsvRi0w229j2dnnRhdQUb3o4CkCL5tyo/9prtS4qWIg87zV7D/ZRy
+         rRfBrMLesNqxvjl8Jz74mGNLP3X3OJJJ6ATzx2HuuQsTZLtElpvsVQRv3F4NehKVFQ2Z
+         T6MmAduVWcu0eR6c1ukfMXOhaOdqeMvSyiNaI64ewM3muDL9s8uXw4nVgCEWA820R2nL
+         ZJ/VvmrASN63N3ivXX+C+AU3Kf5LDjSmYUMKadfFDKT5cgbJ93KVReCI837BbmON0WRE
+         PXyz+lqGYQtUArdlAbkNmGcpVAqM3DdF6NchmG/p4y5EV3B9zOAhQMBqZJJZlkMyVRUH
+         kmsw==
+X-Gm-Message-State: AOAM5320GXcoj2YKr3R014bt/gtsUHv2wfROxTdgnOeeUcXo3+9DHbdf
+        rK2b7Qcg7OvglzPYYw9iIxE=
+X-Google-Smtp-Source: ABdhPJxAJ6n0FO1TcmsdoSCEaC1XspNv7XkZHHNHeyT9JJfKfQxQ+5RKqYotOFj+A5tEEgr7BH8fCQ==
+X-Received: by 2002:a63:6f8c:: with SMTP id k134mr387286pgc.35.1627486724843;
+        Wed, 28 Jul 2021 08:38:44 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:3784])
+        by smtp.gmail.com with ESMTPSA id f4sm82823pgi.68.2021.07.28.08.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 08:38:44 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 28 Jul 2021 05:38:39 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     viro@zeniv.linux.org.uk, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
+Message-ID: <YQF5/8Zb/iY5DS7f@mtj.duckdns.org>
+References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
+ <YP8ovYqISzKC43mt@mtj.duckdns.org>
+ <b2ff6f80-8ec6-e260-ec42-2113e8ce0a18@gmail.com>
+ <YQA1D1GRiF9+px/s@mtj.duckdns.org>
+ <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
+ <YQEKNPrrOuyxTarN@mtj.duckdns.org>
+ <ed8824d5-0557-7d38-97bd-18d6795faa55@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: E75A51E04DC
-X-Spam-Status: No, score=0.09
-X-Stat-Signature: 5qy31or89zijdnzzji1i1rkhscozjti7
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18FCgSRglZtDtTA2N1byAEZIZJGv29Lhfk=
-X-HE-Tag: 1627486647-572440
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed8824d5-0557-7d38-97bd-18d6795faa55@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-26 at 17:21 -0700, Randy Dunlap wrote:
-> Running scripts/checkkconfigsymbols.py reports several hundred (maybe thousand)
-> Kconfig symbols that are used questionably. Lots of these are false positives
-> but lots of the remainder could use some cleaning up.
-[]
-> False positive example:
-> 
-> XCHOFFLD_MEM
-> Referencing files: drivers/scsi/qla2xxx/qla_mbx.c
-> Similar symbols: OF_PMEM, CXL_MEM, CXL_PMEM
-> 
-> The Referencing source file does this:
-> #define CONFIG_XCHOFFLD_MEM	0x3
-> 
-> which is legitimate, so no change is needed.
+Hello,
 
-Legitimate is perhaps dubious.
+On Wed, Jul 28, 2021 at 05:47:05PM +0800, brookxu wrote:
+> But considering stability issues(k8s), There are still many production environments use
+> cgroup v1 without kmem. If kmem is enabled, due to the relatively large granularity
+> of kmem, this feature can also prevent the abnormal open behavior from making the entire
+> container unavailable? but I currently do not have this scenario.
 
-It might be better if Kconfig has exclusive use of CONFIG_<foo> naming so
-renaming all the other existing CONFIG_<foo> defines might be appropriate.
+Now we are repeating the same points. This simply doesn't justify adding a
+user-facing feature that we have to maintain for eternity.
 
-$ git grep -P '^\s*#\s*define\s+CONFIG_[A-Z]+\b'
-arch/alpha/kernel/smc37c93x.c:#define CONFIG_CONTROL            0x02
-arch/sh/drivers/pci/ops-sh4.c:#define CONFIG_CMD(bus, devfn, where) \
-arch/sh/include/asm/smc37c93x.h:#define CONFIG_PORT             0x3f0
-arch/sh/include/asm/smc37c93x.h:#define CONFIG_ENTER            0x55
-arch/sh/include/asm/smc37c93x.h:#define CONFIG_EXIT             0xaa
-arch/sparc/kernel/pcic.c:#define CONFIG_CMD(bus, device_fn, where) (0x80000000 | (((unsigned int)bus) << 16) | (((unsigned int)device_fn) << 8) | (where & ~3))
-arch/um/drivers/mconsole_kern.h:#define CONFIG_CHUNK(str, size, current, chunk, end) \
-drivers/atm/he.h:#define CONFIG_RSRA            0x00000
-drivers/atm/he.h:#define CONFIG_RCMLBM          0x08000
-drivers/atm/he.h:#define CONFIG_RCMABR          0x0d800
-drivers/atm/he.h:#define CONFIG_RSRB            0x0e000
-drivers/atm/he.h:#define CONFIG_TSRA            0x00000
-drivers/atm/he.h:#define CONFIG_TSRB            0x08000
-drivers/atm/he.h:#define CONFIG_TSRC            0x0c000
-drivers/atm/he.h:#define CONFIG_TSRD            0x0e000
-drivers/atm/he.h:#define CONFIG_TMABR           0x0f000
-drivers/atm/he.h:#define CONFIG_TPDBA           0x10000
-drivers/comedi/drivers/ni_at_a2150.c:#define CONFIG_REG         0x0
-drivers/crypto/atmel-i2c.h:#define CONFIG_ZONE                  0
-drivers/dma/idxd/perfmon.h:#define CONFIG_RESET         0x0000000000000001
-drivers/gpu/drm/amd/amdgpu/sid.h:#define        CONFIG_MEMSIZE                                  0x150A
-drivers/gpu/drm/amd/amdgpu/sid.h:#define CONFIG_CNTL    0x1509
-drivers/gpu/drm/radeon/cikd.h:#define   CONFIG_MEMSIZE                                  0x5428
-drivers/gpu/drm/radeon/evergreend.h:#define     CONFIG_MEMSIZE                                  0x5428
-drivers/gpu/drm/radeon/nid.h:#define    CONFIG_MEMSIZE                                  0x5428
-drivers/gpu/drm/radeon/r600d.h:#define  CONFIG_MEMSIZE                                  0x5428
-drivers/gpu/drm/radeon/r600d.h:#define CONFIG_CNTL                                      0x5424
-drivers/gpu/drm/radeon/rv515d.h:#define CONFIG_MEMSIZE                  0x00F8
-drivers/gpu/drm/radeon/rv770d.h:#define CONFIG_MEMSIZE                                  0x5428
-drivers/gpu/drm/radeon/sid.h:#define    CONFIG_MEMSIZE                                  0x5428
-drivers/macintosh/therm_adt746x.c:#define CONFIG_REG   0x40
-drivers/memory/ti-aemif.c:#define CONFIG_MASK   (TA(TA_MAX) | \
-drivers/mtd/spi-nor/controllers/aspeed-smc.c:#define CONFIG_REG                 0x0
-drivers/net/ethernet/smsc/smc91x.h:#define CONFIG_REG(lp)       SMC_REG(lp, 0x0000,     1)
-drivers/net/ethernet/smsc/smc91x.h:#define CONFIG_GPCNTRL       0x0400  // Inverse value drives pin nCNTRL
-drivers/net/ethernet/smsc/smc91x.h:#define CONFIG_DEFAULT       (CONFIG_EPH_POWER_EN)
-drivers/pcmcia/cs_internal.h:#define CONFIG_LOCKED              0x01
-drivers/pinctrl/mvebu/pinctrl-dove.c:#define CONFIG_PMU BIT(4)
-drivers/staging/vt6655/device_cfg.h:#define CONFIG_PATH            "/etc/vntconfiguration.dat"
-drivers/staging/vt6656/device.h:#define CONFIG_PATH                     "/etc/vntconfiguration.dat"
-drivers/thermal/qcom/tsens-8960.c:#define CONFIG_ADDR           0x3640
-drivers/thermal/qcom/tsens-8960.c:#define CONFIG_MASK           0xf
-drivers/usb/host/xhci.h:#define CONFIG_CIE              (1 << 9)
-drivers/video/fbdev/geode/display_gx1.h:#define CONFIG_GCR  0xb8
-tools/power/x86/intel-speed-select/isst.h:#define CONFIG_TDP                            0x7f
-tools/power/x86/intel-speed-select/isst.h:#define CONFIG_CLOS                           0xd0
-tools/testing/selftests/powerpc/copyloops/asm/ppc_asm.h:#define CONFIG_ALTIVEC
-tools/testing/selftests/powerpc/stringloops/asm/ppc_asm.h:#define CONFIG_ALTIVEC
-tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h:#define CONFIG_SMP
-tools/virtio/linux/kernel.h:#define CONFIG_SMP
+Thanks.
 
-
+-- 
+tejun
