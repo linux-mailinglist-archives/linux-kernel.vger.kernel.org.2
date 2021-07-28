@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7533D8C47
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511EB3D8C4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236058AbhG1Kyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:54:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55080 "EHLO mail.kernel.org"
+        id S234103AbhG1K4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:56:02 -0400
+Received: from mga14.intel.com ([192.55.52.115]:51552 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231994AbhG1Kyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:54:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B77CD60F9B;
-        Wed, 28 Jul 2021 10:54:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627469677;
-        bh=sq4z9TbkFj1mPktqjg2N583d+O6EFUCt3T0Pf9NUTq8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vRJu7BzrHbzAV6CQduG7Njpqur3wD1j7T9P1/8b7pW1swxCnnP+SH7nUpEk/+mFA+
-         onhe0R4FUztFOkXWTkIu596UNv73QRu+fDY08kkJw58aZ0DCu6G3VMKsnBVWhwMobj
-         cMA+wuY1IH8WHMIlO+JwzoVlOhi4+Et/mYnsqRFHoap1OY12Hi3Hy9QCw1zZ4FiwN7
-         i1K+X0I2JsE1j1kSkT1RRUMNqhsardHFHaV2uT0+houghhwrwHtGxtpfEWEr2qIA0G
-         7ShqM84BMG6xsOtBxrM0k5VA1ADoFcKnpjQm4f7axN5cq//Net0QQW4WAJbxpAKqZQ
-         pQLVwpd2JfI+w==
-From:   Mark Brown <broonie@kernel.org>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Date:   Wed, 28 Jul 2021 11:54:23 +0100
-Message-Id: <20210728105423.1064-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S236134AbhG1Kzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 06:55:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="212365218"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="212365218"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 03:55:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="417728466"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 28 Jul 2021 03:55:32 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 28C0DD7; Wed, 28 Jul 2021 13:56:01 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] PCI: keystone: Use device_get_match_data()
+Date:   Wed, 28 Jul 2021 13:55:58 +0300
+Message-Id: <20210728105558.23871-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Instead of manipulations with OF APIs, use device_get_match_data().
 
-Today's linux-next merge of the net-next tree got a conflict in:
+While at it, drop of_match_ptr() completely and make compiler happy,
+otherwise it complains:
 
-  drivers/nfc/s3fwrn5/firmware.c
+  pci-keystone.c:1069:34: warning: ‘ks_pcie_of_match’ defined but not used [-Wunused-const-variable=]
 
-between commit:
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pci/controller/dwc/pci-keystone.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-  801e541c79bb ("nfc: s3fwrn5: fix undefined parameter values in dev_err()")
+diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+index bde3b2824e89..f36ea618a248 100644
+--- a/drivers/pci/controller/dwc/pci-keystone.c
++++ b/drivers/pci/controller/dwc/pci-keystone.c
+@@ -24,6 +24,7 @@
+ #include <linux/of_pci.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
+ #include <linux/resource.h>
+ #include <linux/signal.h>
+@@ -1091,7 +1092,6 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 	const struct ks_pcie_of_data *data;
+-	const struct of_device_id *match;
+ 	enum dw_pcie_device_mode mode;
+ 	struct dw_pcie *pci;
+ 	struct keystone_pcie *ks_pcie;
+@@ -1108,8 +1108,7 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
+ 	int irq;
+ 	int i;
+ 
+-	match = of_match_device(of_match_ptr(ks_pcie_of_match), dev);
+-	data = (struct ks_pcie_of_data *)match->data;
++	data = device_get_match_data(dev);
+ 	if (!data)
+ 		return -EINVAL;
+ 
+@@ -1309,7 +1308,7 @@ static struct platform_driver ks_pcie_driver __refdata = {
+ 	.remove = __exit_p(ks_pcie_remove),
+ 	.driver = {
+ 		.name	= "keystone-pcie",
+-		.of_match_table = of_match_ptr(ks_pcie_of_match),
++		.of_match_table = ks_pcie_of_match,
+ 	},
+ };
+ builtin_platform_driver(ks_pcie_driver);
+-- 
+2.30.2
 
-from the net tree and commit:
-
-  a0302ff5906a ("nfc: s3fwrn5: remove unnecessary label")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-diff --cc drivers/nfc/s3fwrn5/firmware.c
-index 1340fab9565e,1421ffd46d9a..000000000000
---- a/drivers/nfc/s3fwrn5/firmware.c
-+++ b/drivers/nfc/s3fwrn5/firmware.c
-@@@ -421,10 -421,9 +421,9 @@@ int s3fwrn5_fw_download(struct s3fwrn5_
-  
-  	tfm = crypto_alloc_shash("sha1", 0, 0);
-  	if (IS_ERR(tfm)) {
-- 		ret = PTR_ERR(tfm);
-  		dev_err(&fw_info->ndev->nfc_dev->dev,
- -			"Cannot allocate shash (code=%d)\n", ret);
- +			"Cannot allocate shash (code=%ld)\n", PTR_ERR(tfm));
-- 		goto out;
-+ 		return PTR_ERR(tfm);
-  	}
-  
-  	ret = crypto_shash_tfm_digest(tfm, fw->image, image_size, hash_data);
