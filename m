@@ -2,231 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4340F3D98F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423AC3D98EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhG1WcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:32:11 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:34434 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232281AbhG1WcJ (ORCPT
+        id S232514AbhG1WcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232383AbhG1WcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:32:09 -0400
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 16SMVfq4017859;
-        Thu, 29 Jul 2021 07:31:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 16SMVfq4017859
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627511502;
-        bh=wAswa070vEKRoyVc6FZv3d3dc7yd9+nXOyHmSmKAIkE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XxBChTB0xtEJ7/3xf1RI5d7M1NeQI9lFBgeuYDFObL3hvyJF6sd8it/t+tVZdkGze
-         zFPvYsi5syFmTq6yzstxGkN0FwwqerLE55X3OtD2ORHGFMVHtSRM1KYkA2Op2N+Wxo
-         8Uhqf2voVbE3pLGf8RksCXm/xCChXsiJfaRuidzHRanO3XqsWMoWfDiXE5entZE192
-         IqfeLM2rgKoLw/gIdGpRwF8NbjuysqYviPTRos9wjf9C3DC1QV+AGn/2lKPi8D69c9
-         LCnnH7jPvuPvZ0k3OBziPluDjUBb7PR2KtOiW/3flwOBlfc7f8tUECIPKo7HK33b88
-         1ThLUkvX9wA7A==
-X-Nifty-SrcIP: [209.85.216.49]
-Received: by mail-pj1-f49.google.com with SMTP id mt6so7408224pjb.1;
-        Wed, 28 Jul 2021 15:31:41 -0700 (PDT)
-X-Gm-Message-State: AOAM5312psqpzOdoZXIZK420VtQNzZVrU7CgPK+1KaU82FIg1q9waW8D
-        eszZzdYK9HcbVikivKltCrtc7BSWWUflQXFx3V8=
-X-Google-Smtp-Source: ABdhPJw8ua+Q/dLtyBbcz85em397uyo6W9C7I+fwUpnfOqhZTwNAUaU/ICrzuQR5MToSmd0udC8x9nNClmsVRSOzGgo=
-X-Received: by 2002:a17:902:e28a:b029:12c:13e9:1166 with SMTP id
- o10-20020a170902e28ab029012c13e91166mr1788249plc.47.1627511500998; Wed, 28
- Jul 2021 15:31:40 -0700 (PDT)
+        Wed, 28 Jul 2021 18:32:00 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C10C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 15:31:56 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso6231987pjf.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 15:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4EOLGfIgju2Hvli/6D/hx+/lwjRcH7NCagC19mzzbto=;
+        b=Gb2lWfRRrZOCipzLboTCyd8ip2X5sq8STvhzVnNOKAdq7jJ6uEfSFYPOZ72YDwVjrL
+         MihCSGQvz9HHyLoJ+CWwfGQbVD3snRPPtI66AJGAylng4Mm8Ety+Kct7YXrDpLD0lU3x
+         smoI8LLyZQj4usYW6mQZK55CZUbz4ovZZfFul7UKu8eBWvat00CdoAOA0sqknqJ+vsZ4
+         mMId10tDUIfnpHVMG14BYAzC0XLD8xBYruSEWDIiMf2lje4qm/9MDsaw0ZeHunX1Rid/
+         Me/2A0gc5AaJ2kDXW3qTyTnbfYH322ZeFX15Pxu02PZFj4CUSqZ9OVqIiJ+RW/WIfrtp
+         OpnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4EOLGfIgju2Hvli/6D/hx+/lwjRcH7NCagC19mzzbto=;
+        b=ICEi7nkp6Q0MY31ZEI4x48YRth20gQFWSaNeUuBmCVSLpQepx27n8qU1FoKHhHjwHI
+         TuPZeRImtSmOrwpE4Kri0B91eYexarm1dJAj4oKn9kk09Nmj7CoH2G3+xrma+DIPBJUD
+         tJbA1ovA5IV8yGKpe4Dgp7dKRe2PPF53nGVhs++oxjW9H8z836SBGCnSPyP4UYdS0VzH
+         BH+sNk0SUafC8X2FOqMi6M5QkLJVnK25y8fc0aXZjwrZqenLrbmRl3Z+sqaEj0GkylJp
+         RRZzA4NDRxcVIsZbeYT7UxXlPZxomLAzL2jSmahr4Dl5Po5k6p1+etMy3mWHO87b/xEt
+         w9dQ==
+X-Gm-Message-State: AOAM530N1B5pBtXZT8N3RdbJr7hHdaCLXV++g2jpdigkEDQamDW7OKWT
+        2K+c1ZPxCjJ4U2pOqS7EZQZhhSAAc8DfIg==
+X-Google-Smtp-Source: ABdhPJyST6XeGLZhicf1sD0ee9ilIj+7CH1GqxSzZY42vuYPnjF9ZCYbt4p1c061Ll+/9L5OqLkUUQ==
+X-Received: by 2002:aa7:938c:0:b029:32a:1725:a3d7 with SMTP id t12-20020aa7938c0000b029032a1725a3d7mr1900553pfe.64.1627511516184;
+        Wed, 28 Jul 2021 15:31:56 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id s36sm984091pgk.64.2021.07.28.15.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 15:31:55 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 22:31:51 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 9/9] KVM: X86: Optimize zapping rmap
+Message-ID: <YQHa1xuNKhqRr4Fq@google.com>
+References: <20210625153214.43106-1-peterx@redhat.com>
+ <20210625153419.43671-1-peterx@redhat.com>
+ <YQHOdhMoFW821HAu@google.com>
+ <YQHTocEdMzsJQuzL@t490s>
 MIME-Version: 1.0
-References: <20210708232522.3118208-1-ndesaulniers@google.com>
- <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
- <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
- <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
- <CAK7LNATLy2F-2zkHm4ENSufBT_o5p=9jc5k1K-xOV8cQf7kKDw@mail.gmail.com>
- <87r1fkizxl.fsf@disp2133> <CAK7LNAS8Fz_kcwqzJD834QrSuWkkorHm4OZoGUhYsbKvJV=fJQ@mail.gmail.com>
- <87v94vg7vi.fsf@disp2133> <CAK7LNASbegX=9yBDktuK5iXhhB=wNP_kbdh4dnJMXSmV=XwHOw@mail.gmail.com>
- <87lf5rfvdc.fsf@disp2133>
-In-Reply-To: <87lf5rfvdc.fsf@disp2133>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 29 Jul 2021 07:31:04 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASWxmzfbPiWp9YTy6eRK5ephDsP8OYCJwba4VXT9os2BA@mail.gmail.com>
-Message-ID: <CAK7LNASWxmzfbPiWp9YTy6eRK5ephDsP8OYCJwba4VXT9os2BA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
- LLVM=1 LLVM_IAS=1
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQHTocEdMzsJQuzL@t490s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 3:46 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Masahiro Yamada <masahiroy@kernel.org> writes:
->
-> > On Tue, Jul 27, 2021 at 11:16 PM Eric W. Biederman
-> > <ebiederm@xmission.com> wrote:
-> >>
-> >> Masahiro Yamada <masahiroy@kernel.org> writes:
-> >>
-> >> > On Tue, Jul 27, 2021 at 5:27 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >> >>
-> >> >> Masahiro Yamada <masahiroy@kernel.org> writes:
-> >> >>
-> >> >> > On Wed, Jul 21, 2021 at 4:58 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >> >> >>
-> >> >> >> On Tue, Jul 20, 2021 at 7:43 PM Linus Torvalds
-> >> >> >> <torvalds@linux-foundation.org> wrote:
-> >> >> >> > On Tue, Jul 20, 2021 at 1:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >> >> >> >
-> >> >> >> > We do most of the other heavy lifting in this area in Kconfig anyway,
-> >> >> >> > why not add that compiler choice?
-> >> >> >> >
-> >> >> >> > Obviously it would be gated by the tests to see which compilers are
-> >> >> >> > _installed_ (and that they are valid versions), so that it doesn't ask
-> >> >> >> > stupid things ("do you want gcc or clang" when only one of them is
-> >> >> >> > installed and/or viable).
-> >> >> >>
-> >> >> >> I don't see a good way of making Kconfig options both select the
-> >> >> >> compiler and defining variables based on the compiler, since that
-> >> >> >> would mean teaching Kconfig about re-evaluating all compiler
-> >> >> >> dependent settings whenever the first option changes.
-> >> >> >>
-> >> >> >> I do have another idea that I think would work though.
-> >> >> >>
-> >> >> >> > Hmm? So then any "LLVM=1" thing would be about the "make config"
-> >> >> >> > stage, not the actual build stage.
-> >> >> >> >
-> >> >> >> > (It has annoyed me for years that if you want to cross-compile, you
-> >> >> >> > first have to do "make ARCH=xyz config" and then remember to do "make
-> >> >> >> > ARCH=xyz" for the build too, but I cross-compile so seldom that I've
-> >> >> >> > never really cared).
-> >> >> >>
-> >> >> >> The best thing that I have come up with is a pre-configure step, where
-> >> >> >> an object tree gets seeded with a makefile fragment that gets included
-> >> >> >> for any 'make' invocation. This would set 'ARCH=', 'CROSS_COMPILE',
-> >> >> >> 'CC=' and possibly any other option that gets passed to 'make' as
-> >> >> >> a variable and has to exist before calling 'make *config'.
-> >> >> >
-> >> >> >
-> >> >> > There is no need to add a hook to include such makefile fragment(s).
-> >> >> >
-> >> >> > Quite opposite, you can put your Makefile (in a different filename)
-> >> >> > that includes the top Makefile.
-> >> >> >
-> >> >> >
-> >> >> > I think this is what people are already doing:
-> >> >> >
-> >> >> >
-> >> >> > GNU Make looks for 'GNUmakefile', 'makefile', and 'Makefile'
-> >> >> > in this order.
-> >> >> >
-> >> >> >
-> >> >> > So, you can put 'GNUmakefile' with your favorite setups.
-> >> >> >
-> >> >> >
-> >> >> > $ cat GNUmakefile
-> >> >> > ARCH=arm64
-> >> >> > CROSS_COMPILE=aarch64-linux-gnu-
-> >> >> > CC=clang
-> >> >> > include Makefile
-> >> >>
-> >> >> Very weird.
-> >> >>
-> >> >> I just tested this and it does not work.
-> >> >> I did this:
-> >> >>
-> >> >> $ cat GNUmakefile
-> >> >> ARCH = alpha
-> >> >> CROSS_COMPILE = $(arch-prefix alpha)
-> >> >> include Makefile
-> >> >>
-> >> >> In one of my build directories and the main makefile simply does not see
-> >> >> the value of ARCH or CROSS_COMPILE I set.  I have confirmed that my
-> >> >> GNUmakefile is being read, because everything breaks if I remove the
-> >> >> include line.
-> >> >>
-> >> >> Does anyone have any ideas?
-> >> >>
-> >> >> Something so we don't have to specify all of these variables on the make
-> >> >> command line would be nice.
-> >> >>
-> >> >> Eric
-> >> >
-> >> >
-> >> > Worked for me.
-> >> >
-> >> > Could you tell me the exact steps you did?
-> >> >
-> >> >
-> >> > This is my case:
-> >> >
-> >> > My kernel source tree is located at $HOME/ref/linux
-> >> > alpha tool chains are located at $HOME/tools/alpha-10.1.0/bin
-> >> >
-> >> >
-> >> >
-> >> > I tried a simple GNUmakefile with 3 lines.
-> >> >
-> >> > You can see 'make' is building the alpha kernel
-> >> >
-> >> >
-> >> > Please see below:
-> >>
-> >> Interesting.  That appears to work if I don't specify a build directory.
-> >> Once I specify a build directory with O= it does not work.
-> >>
-> >> When I am working on a change that affects multiple architectures
-> >> I really want a build directory that is not my source tree so I can
-> >> test small changes on multiple architectures without needing to rebuild
-> >> everything.
-> >>
-> >> Eric
-> >
-> >
-> > Ah, OK.
-> > When you specify O= option, Kbuild will
-> > invoke sub-make.
-> > So you need to add 'export' to the
-> > variables.
-> >
-> > Please see the following modified version.
->
-> Yes. That does seem to work and be simpler.
->
-> Is there any chance we can get the command that generates the Makefile
-> in the build directory to include variables like ARCH and CROSS_COMPILE
-> in the Makefile as well?  Just so they don't need to be set by hand to
-> the same value every time?
->
-> Eric
+On Wed, Jul 28, 2021, Peter Xu wrote:
+> On Wed, Jul 28, 2021 at 09:39:02PM +0000, Sean Christopherson wrote:
+> > On Fri, Jun 25, 2021, Peter Xu wrote:
+> > Why implement this as a generic method with a callback?  gcc is suprisingly
+> > astute in optimizing callback(), but I don't see the point of adding a complex
+> > helper that has a single caller, and is extremely unlikely to gain new callers.
+> > Or is there another "zap everything" case I'm missing?
+> 
+> No other case; it's just that pte_list_*() helpers will be more self-contained.
 
+Eh, but this flow is as much about rmaps as it is about pte_list.
 
-I am OK to document this small tip
-in Documentation/kbuild/ if it is useful,
-but am reluctant to add any code to
-generate custom Makefile or GNUmakefile.
+> If that'll be a performance concern, no objection to hard code it.
 
-It is highly user-dependent after all.
+It's more about unnecessary complexity than it is about performance, e.g. gcc-10
+generates identical code for both version (which did surprise the heck out of me).
 
-If we merged the code to set up ARCH=...
-and CROSS_COMPILE=...,
-somebody would send a patch
-"I need LLVM=1 in my GNUmakefile", then
-another person, "I want CC=clang", and so on.
+If we really want to isolate pte_list_destroy(), I would vote for something like
+this (squashed in).   pte_list_remove() already calls mmu_spte_clear_track_bits(),
+so that particular separation of concerns has already gone out the window.
 
-You can edit it by yourself.
-
-
--- 
-Best Regards
-Masahiro Yamada
+ 
+-/* Return true if rmap existed and callback called, false otherwise */
+-static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
+-                            void (*callback)(u64 *sptep))
++static bool pte_list_destroy(struct kvm_rmap_head *rmap_head)
+ {
+        struct pte_list_desc *desc, *next;
+        int i;
+@@ -1013,20 +1011,16 @@ static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
+                return false;
+ 
+        if (!(rmap_head->val & 1)) {
+-               if (callback)
+-                       callback((u64 *)rmap_head->val);
++               mmu_spte_clear_track_bits((u64 *)rmap_head->val);
+                goto out;
+        }
+ 
+        desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
+-
+-       while (desc) {
+-               if (callback)
+-                       for (i = 0; i < desc->spte_count; i++)
+-                               callback(desc->sptes[i]);
++       for ( ; desc; desc = next) {
++               for (i = 0; i < desc->spte_count; i++)
++                       mmu_spte_clear_track_bits(desc->sptes[i]);
+                next = desc->more;
+                mmu_free_pte_list_desc(desc);
+-               desc = next;
+        }
+ out:
+        /* rmap_head is meaningless now, remember to reset it */
+@@ -1422,22 +1416,17 @@ static bool rmap_write_protect(struct kvm_vcpu *vcpu, u64 gfn)
+        return kvm_mmu_slot_gfn_write_protect(vcpu->kvm, slot, gfn, PG_LEVEL_4K);
+ }
+ 
+-static void mmu_spte_clear_track_bits_cb(u64 *sptep)
+-{
+-       mmu_spte_clear_track_bits(sptep);
+-}
+-
+ static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+                          const struct kvm_memory_slot *slot)
+ {
+-       return pte_list_destroy(rmap_head, mmu_spte_clear_track_bits_cb);
++       return pte_list_destroy(rmap_head);
+ }
+ 
+ static bool kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+                            struct kvm_memory_slot *slot, gfn_t gfn, int level,
+                            pte_t unused)
+ {
+-       return kvm_zap_rmapp(kvm, rmap_head, slot);
++       return pte_list_destroy(rmap_head);
+ }
+ 
+ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
