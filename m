@@ -2,172 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2F13D8A54
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8183D8A55
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235393AbhG1JLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231539AbhG1JLY (ORCPT
+        id S235419AbhG1JML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:12:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39739 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231392AbhG1JMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:11:24 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927EAC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:11:22 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id x14so2178057edr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:11:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kHu9+6E3zn3Ify2B2lOQHD4xYOeH4mkuojnrDPfbLrs=;
-        b=tJRTn0Aw/Lz17zLOr8JStE7vmiULzbTCrgxSRnWNqfUASOmkZmaLj5z3FFVeJbj8W6
-         keHsK+fCOsoJIXgFQ06EVUIW0w7lNcrdg6qUG2f8MSrnNHIap9h1pge9AMWCZQJeea1D
-         wnnr7+G5JRCZXhJtirmftEY7nnGBj5gUYFYr47XV7ym0W8JXhEgxkqy/yaxrZaqITyAZ
-         XttsmbesVwsrApKaXMtzbGwZHwl0LBywoMutXyNYc30Gfp9tJCbA3/JjEtsRWsRhqPCY
-         5NJOhP3MK6kkQnrBo8fovNHPHD1BRwZLbv7/XnJxK276wdqzZWTZs6b620gtZfOMYLbI
-         286A==
+        Wed, 28 Jul 2021 05:12:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627463529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0UzH6ZtjqmvVUuUbDJrNe1a0MEljpB5/Wj9MuReAgFQ=;
+        b=SQ3JPvoPLWWWBnZxb4ZkwQl/h29378XklNCuOdh1RMa32lAOIzputNde4rESae4VcnH0xX
+        bTQi/gyvCCdGuGCDB386VZTPYB4j6FmC0RNf3Nc7kTh2rXBXLOIsfNQMJmoeSGXp4qzPwZ
+        wMIRlTMKSDcSuPGJ7SpBmXuSNiAW1WA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-268-O70NxKX7MU2nGnqBTAWj4w-1; Wed, 28 Jul 2021 05:12:07 -0400
+X-MC-Unique: O70NxKX7MU2nGnqBTAWj4w-1
+Received: by mail-wm1-f71.google.com with SMTP id r2-20020a05600c35c2b029023a3f081487so690379wmq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:12:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kHu9+6E3zn3Ify2B2lOQHD4xYOeH4mkuojnrDPfbLrs=;
-        b=BT/S/gt+N/nElosSVfRcX++7QKlSZAwT1ZuzHEY2MsfvuzK5o8i/tlmC+TdRPxSOQn
-         nusqN4VuH+FYAtkS4mqCz9aRkkgSwVGGRQYwvEDNUcVcZ7JNOE30MZhzDnGpv4y+D47x
-         IVWmh8cD4+RhFF5OgMFjN5VwwCcrdm6nWEr2WtbIn0eNicLXj58RUtbqd61l/TGklETu
-         TxG5G8qwfmrTfamFqUNAn8pqxJ7YBdbB4nI53krbvANPFTc3JSbHL6aqiLo7mbVTzqeU
-         UL3y2x5cwoSBEid8V5+wVstYKPyNXavAeYAcTmWqoepqAkYWC7+zvGe8znZFWj2oN0bq
-         al6Q==
-X-Gm-Message-State: AOAM532GGp/p/tX9Q5sC2QOfN7nKm051HhHCFlvtZFe8vsN+JMEZVrep
-        S5lhEtxsMmGyOBiFkpasYwJLymsNLao=
-X-Google-Smtp-Source: ABdhPJwrPbMTSNU5gFEP1jlzNu8I+TKcA5TYvt7qK1Ujs40LBiGwvrtIU/lVznzUnGeDXkBa9XMzJw==
-X-Received: by 2002:aa7:c7c2:: with SMTP id o2mr33022193eds.166.1627463481178;
-        Wed, 28 Jul 2021 02:11:21 -0700 (PDT)
-Received: from localhost.localdomain (host-79-26-32-124.retail.telecomitalia.it. [79.26.32.124])
-        by smtp.gmail.com with ESMTPSA id p18sm2322828edu.8.2021.07.28.02.11.20
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0UzH6ZtjqmvVUuUbDJrNe1a0MEljpB5/Wj9MuReAgFQ=;
+        b=Sn8U9+3jB5kqSOz4c2ax5o9yxCQSF64x768ORMtA2H82re72eoOigkmhqJyjh0Flgl
+         74YkGz+y3d/ro9pWTdb+6axc0vW5e57PQi0bo7gW6jpibZBQQm2GcZCBjBJY1JeDwTvh
+         TyZFUEtol5Ic0SFkmxaTYu/5Uylcx0q45XgfVkEU5Ts0NDsEI04mv+wYebYiv2lg+own
+         9Lt6cWgHjREl55/EsOtLQtg0aRj78l9ym/X/pI08aAS+8EworVB3HYEEi9pIUmc96vRy
+         pi4ZCbnIM8mvRAQz6sJApZGlY3WPhq4NCZLZdPPwIe+j5vHzTMpZcGdPGFWFKnNeLGW1
+         fJeg==
+X-Gm-Message-State: AOAM531ZON3+cMbAaebL7IIW0tZlsvJPFKiYlPyJH4B8lrOwfdamZ4HN
+        Jp3ZrKaMYbnKv7DcAak5dxKJYDcP6jyZET166vYWk1jRakPFA8l903aeIVz4ykGYFXrloDpSmP2
+        zQoPYofPCqLuAZiCtD2MZCDeW
+X-Received: by 2002:adf:c549:: with SMTP id s9mr21973038wrf.344.1627463526301;
+        Wed, 28 Jul 2021 02:12:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyumsHnT1GKl2elOyAhhf314GbGfQralP7R/j8jmkmIxn/sH3udBNPAxF2OBzas20rWrb9kEQ==
+X-Received: by 2002:adf:c549:: with SMTP id s9mr21973015wrf.344.1627463526061;
+        Wed, 28 Jul 2021 02:12:06 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.58.124])
+        by smtp.gmail.com with ESMTPSA id f11sm5109982wmb.14.2021.07.28.02.12.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 02:11:20 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v2] staging: rtl8723bs: core: Fix incorrect type in assignment
-Date:   Wed, 28 Jul 2021 11:11:17 +0200
-Message-Id: <20210728091117.6235-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 28 Jul 2021 02:12:05 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 11:12:03 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] sched: Don't report SCHED_FLAG_SUGOV in
+ sched_getattr()
+Message-ID: <YQEfY730Sjkr3w+Y@localhost.localdomain>
+References: <20210727101103.2729607-1-qperret@google.com>
+ <20210727101103.2729607-3-qperret@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727101103.2729607-3-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse warnings: incorrect type in assignment (different base types).
+Hi Quentin,
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+On 27/07/21 11:11, Quentin Perret wrote:
+> SCHED_FLAG_SUGOV is supposed to be a kernel-only flag that userspace
+> cannot interact with. However, sched_getattr() currently reports it
+> in sched_flags if called on a sugov worker even though it is not
+> actually defined in a UAPI header. To avoid this, make sure to
+> clean-up the sched_flags field in sched_getattr() before returning to
+> userspace.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  kernel/sched/core.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 2d9ff40f4661..d8f489dcc383 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -7535,6 +7535,7 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pid, struct sched_attr __user *, uattr,
+>  		kattr.sched_priority = p->rt_priority;
+>  	else
+>  		kattr.sched_nice = task_nice(p);
+> +	kattr.sched_flags &= SCHED_FLAG_ALL;
 
-v1 --> v2:
-Fix incorrect indentation of the fields of a union. Problem detected by
-Greg Kroah-Hartman.
+Maybe we can do this in the previous patch so that it's kept confined to
+deadline bits?
 
- drivers/staging/rtl8723bs/core/rtw_security.c | 31 +++++++++++--------
- 1 file changed, 18 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index a99f439328f1..8b507f6a447e 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -35,8 +35,10 @@ const char *security_type_str(u8 value)
- */
- void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
- {																	/*  exclude ICV */
--
--	unsigned char crc[4];
-+	union {
-+		__le32 f0;
-+		unsigned char f1[4];
-+	} crc;
- 
- 	signed int	curfragnum, length;
- 	u32 keylength;
-@@ -69,18 +71,18 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 
- 				length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
- 
--				*((__le32 *)crc) = ~crc32_le(~0, payload, length);
-+				crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length));
- 
- 				arc4_setkey(ctx, wepkey, 3 + keylength);
- 				arc4_crypt(ctx, payload, payload, length);
--				arc4_crypt(ctx, payload + length, crc, 4);
-+				arc4_crypt(ctx, payload + length, crc.f1, 4);
- 
- 			} else {
- 				length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
--				*((__le32 *)crc) = ~crc32_le(~0, payload, length);
-+				crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length));
- 				arc4_setkey(ctx, wepkey, 3 + keylength);
- 				arc4_crypt(ctx, payload, payload, length);
--				arc4_crypt(ctx, payload + length, crc, 4);
-+				arc4_crypt(ctx, payload + length, crc.f1, 4);
- 
- 				pframe += pxmitpriv->frag_len;
- 				pframe = (u8 *)round_up((SIZE_PTR)(pframe), 4);
-@@ -121,7 +123,7 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
- 		arc4_crypt(ctx, payload, payload,  length);
- 
- 		/* calculate icv and compare the icv */
--		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-+		*((u32 *)crc) = ~crc32_le(~0, payload, length - 4);
- 
- 	}
- }
-@@ -464,7 +466,10 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 	u32 pnh;
- 	u8 rc4key[16];
- 	u8   ttkey[16];
--	u8 crc[4];
-+	union {
-+		__le32 f0;
-+		u8 f1[4];
-+	} crc;
- 	u8   hw_hdr_offset = 0;
- 	signed int			curfragnum, length;
- 
-@@ -506,19 +511,19 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 
- 				if ((curfragnum+1) == pattrib->nr_frags) {	/* 4 the last fragment */
- 					length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
--					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
-+					crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length));
- 
- 					arc4_setkey(ctx, rc4key, 16);
- 					arc4_crypt(ctx, payload, payload, length);
--					arc4_crypt(ctx, payload + length, crc, 4);
-+					arc4_crypt(ctx, payload + length, crc.f1, 4);
- 
- 				} else {
- 					length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
--					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
-+					crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length));
- 
- 					arc4_setkey(ctx, rc4key, 16);
- 					arc4_crypt(ctx, payload, payload, length);
--					arc4_crypt(ctx, payload + length, crc, 4);
-+					arc4_crypt(ctx, payload + length, crc.f1, 4);
- 
- 					pframe += pxmitpriv->frag_len;
- 					pframe = (u8 *)round_up((SIZE_PTR)(pframe), 4);
-@@ -618,7 +623,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
- 			arc4_setkey(ctx, rc4key, 16);
- 			arc4_crypt(ctx, payload, payload, length);
- 
--			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-+			*((u32 *)crc) = ~crc32_le(~0, payload, length - 4);
- 
- 			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
- 			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
--- 
-2.32.0
+Thanks,
+Juri
 
