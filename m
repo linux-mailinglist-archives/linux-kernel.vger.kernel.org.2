@@ -2,205 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61853D9182
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56393D918A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235615AbhG1PIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:08:05 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:44577 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235546AbhG1PIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:08:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627484882; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Reply-To: Sender;
- bh=sj2A2zR3rcI8P9VUMF3/9Yk8xk+GhmmV1rwmsS/dDMU=; b=mC3qGMR2gROfN8/EHK4FGKlgas4yi5oZ0mb3nu897gdZS2fpQVWWwQ5pqocuHek3zeHPQV9S
- USLI0cyq9WrFVJ5I7tcaN9HzuN7pTAPvSDfkg7g10qSkmlw78xJHCiGtRIhv//DOM/ugydSe
- IuxBXlLr1z/lyE2Y03IEy0/1vJw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 610172c5b653fbdadd4e6ad5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 15:07:48
- GMT
-Sender: bcain=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 33600C433F1; Wed, 28 Jul 2021 15:07:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from BCAIN (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bcain)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 497DBC433F1;
-        Wed, 28 Jul 2021 15:07:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 497DBC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
-Reply-To: <bcain@codeaurora.org>
-From:   "Brian Cain" <bcain@codeaurora.org>
-To:     "'Nathan Chancellor'" <nathan@kernel.org>,
-        "'Andrew Morton'" <akpm@linux-foundation.org>
-Cc:     "'Nick Desaulniers'" <ndesaulniers@google.com>,
-        <linux-hexagon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>,
-        "'Manning, Sid'" <sidneym@quicinc.com>
-References: <20210728001729.1960182-1-nathan@kernel.org>
-In-Reply-To: <20210728001729.1960182-1-nathan@kernel.org>
-Subject: RE: [PATCH] hexagon: Clean up timer-regs.h
-Date:   Wed, 28 Jul 2021 10:07:45 -0500
-Message-ID: <03bc01d783c2$52e6f200$f8b4d600$@codeaurora.org>
+        id S237050AbhG1PKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:10:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235670AbhG1PIq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:08:46 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93032C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:08:41 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so1913709wmd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y0Oxv7FSNFEltVg4Evcp+IiFZ6zdpGchbxfgnaolaO8=;
+        b=Tz31OFTwL+yRNaj/JrXEOOjFyy+JEpDVpYCEMQQmHIpLnwMFuIG+HUb5PLYw9GPGSW
+         VxlhbmIrkhF0ZcX9emVfLMt8vtjOx7wJXzTJ5ACPsNLZr818iBjdSsGNVA6hErwNBmdd
+         h6MdeMT08aJ86+oj83tjmr+MogrMzwGsKiDvGEwXjHf9VH42jIizSHyoafXsLKvLeaH1
+         zj4jyPQY0Be+WCy7v32PIEhUK/alwxNrTPOgyO4PQtT0rCK5XXlvmpAy9qbi76nQjPbw
+         itQuzoaC1uOcV7+n6tqVIAI77XIXpEe9mALXndbOdSLMlUPqMNyN18tWEllWEuDVLxgi
+         NMvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Y0Oxv7FSNFEltVg4Evcp+IiFZ6zdpGchbxfgnaolaO8=;
+        b=XCGHmnrsW7DMlAwwdTaiwGmgXsFVyBvdfDHY2Tzce+qdoUcp+AbuubJFRLRvYvYTA/
+         sCkdz7Rp/Zse1bXv2UlZsAdb16q8SyyNoXhmhYHaRwe4k9/ogLb0RDhm7EPONZLGa4c6
+         4L1lEr19+fjkkw2VxDdHi76wQ1sa0m3EF8zQ+JDjuKrfrsyrGJo/ygUxkrj1t6uABxsq
+         dRiVC/2gNbpZtOs2cFgYzyVwtlLbjf8Tyz6Lk3qCqHtBPJV0yvllyC9UoI9SEEGZRMkB
+         nrK8Cx1OVm8aVGXm6ht//dSPnTWmn2AsKtO8ULYpyHXpQzHOnwewSDVvzyMis5d/lKys
+         805g==
+X-Gm-Message-State: AOAM533LfYWL9HXrCjn33NEhgiAYVK+8CP7kGCKM1BKrcAIJyIpF2UvG
+        p94y9plAPpZ6VxrKwZWDrEhqiw==
+X-Google-Smtp-Source: ABdhPJz9/1JRRhO2jzvXgHlf/omHSHLO2FSaTH9Cryo2mHZyi9st2t5VNn5Lb2L7iEypP4bk7girCw==
+X-Received: by 2002:a1c:2282:: with SMTP id i124mr177672wmi.166.1627484919970;
+        Wed, 28 Jul 2021 08:08:39 -0700 (PDT)
+Received: from [10.1.3.29] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id a191sm277151wme.15.2021.07.28.08.08.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 08:08:23 -0700 (PDT)
+Subject: Re: [PATCH v2] PCI: DWC: meson: add 256 bytes MRRS quirk
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Artem Lapkin <email2tema@gmail.com>
+Cc:     yue.wang@Amlogic.com, khilman@baylibre.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        jbrunet@baylibre.com, christianshewitt@gmail.com,
+        martin.blumenstingl@googlemail.com, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+References: <20210727194323.GA725763@bjorn-Precision-5520>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <63838b21-3073-0b07-53d3-b85d6e89f0eb@baylibre.com>
+Date:   Wed, 28 Jul 2021 17:08:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
+In-Reply-To: <20210727194323.GA725763@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-us
-Thread-Index: AQHsvcFl/v/yGvN+KqOPEWg6PsqxiKsuCMEw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Nathan Chancellor <nathan@kernel.org>
-...
-> When building allmodconfig, there is a warning about TIMER_ENABLE being
-> redefined:
-> 
->  drivers/clocksource/timer-oxnas-rps.c:39:9: warning: 'TIMER_ENABLE'
->  macro redefined [-Wmacro-redefined]
->  #define TIMER_ENABLE            BIT(7)
->          ^
->  arch/hexagon/include/asm/timer-regs.h:13:9: note: previous definition
->  is here
->  #define TIMER_ENABLE            0
->          ^
->  1 warning generated.
-> 
-> The values in this header are only used in one file each, if they are
-> used at all. Remove the header and sink all of the constants into their
-> respective files.
-> 
-> TCX0_CLK_RATE is only used in arch/hexagon/include/asm/timex.h
-> 
-> TIMER_ENABLE, RTOS_TIMER_INT, RTOS_TIMER_REGS_ADDR are only used in
-> arch/hexagon/kernel/time.c.
-> 
-> SLEEP_CLK_RATE and TIMER_CLR_ON_MATCH have both been unused since
-> the
-> file's introduction in commit 71e4a47f32f4 ("Hexagon: Add time and timer
-> functions").
-> 
-> TIMER_ENABLE is redefined as BIT(0) so the shift is moved into the
-> definition, rather than its use.
-> 
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->  arch/hexagon/include/asm/timer-regs.h | 26 --------------------------
->  arch/hexagon/include/asm/timex.h      |  3 +--
->  arch/hexagon/kernel/time.c            | 12 ++++++++++--
->  3 files changed, 11 insertions(+), 30 deletions(-)
->  delete mode 100644 arch/hexagon/include/asm/timer-regs.h
-> 
-> diff --git a/arch/hexagon/include/asm/timer-regs.h
-> b/arch/hexagon/include/asm/timer-regs.h
-> deleted file mode 100644
-> index ee6c61423a05..000000000000
-> --- a/arch/hexagon/include/asm/timer-regs.h
-> +++ /dev/null
-> @@ -1,26 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0-only */
-> -/*
-> - * Timer support for Hexagon
-> - *
-> - * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
-> - */
-> -
-> -#ifndef _ASM_TIMER_REGS_H
-> -#define _ASM_TIMER_REGS_H
-> -
-> -/*  This stuff should go into a platform specific file  */
-> -#define TCX0_CLK_RATE		19200
-> -#define TIMER_ENABLE		0
-> -#define TIMER_CLR_ON_MATCH	1
-> -
-> -/*
-> - * 8x50 HDD Specs 5-8.  Simulator co-sim not fixed until
-> - * release 1.1, and then it's "adjustable" and probably not defaulted.
-> - */
-> -#define RTOS_TIMER_INT		3
-> -#ifdef CONFIG_HEXAGON_COMET
-> -#define RTOS_TIMER_REGS_ADDR	0xAB000000UL
-> -#endif
-> -#define SLEEP_CLK_RATE		32000
-> -
-> -#endif
-> diff --git a/arch/hexagon/include/asm/timex.h
-> b/arch/hexagon/include/asm/timex.h
-> index 8d4ec76fceb4..dfe69e118b2b 100644
-> --- a/arch/hexagon/include/asm/timex.h
-> +++ b/arch/hexagon/include/asm/timex.h
-> @@ -7,11 +7,10 @@
->  #define _ASM_TIMEX_H
-> 
->  #include <asm-generic/timex.h>
-> -#include <asm/timer-regs.h>
->  #include <asm/hexagon_vm.h>
-> 
->  /* Using TCX0 as our clock.  CLOCK_TICK_RATE scheduled to be removed. */
-> -#define CLOCK_TICK_RATE              TCX0_CLK_RATE
-> +#define CLOCK_TICK_RATE              19200
-> 
->  #define ARCH_HAS_READ_CURRENT_TIMER
-> 
-> diff --git a/arch/hexagon/kernel/time.c b/arch/hexagon/kernel/time.c
-> index feffe527ac92..febc95714d75 100644
-> --- a/arch/hexagon/kernel/time.c
-> +++ b/arch/hexagon/kernel/time.c
-> @@ -17,9 +17,10 @@
->  #include <linux/of_irq.h>
->  #include <linux/module.h>
-> 
-> -#include <asm/timer-regs.h>
->  #include <asm/hexagon_vm.h>
-> 
-> +#define TIMER_ENABLE		BIT(0)
-> +
->  /*
->   * For the clocksource we need:
->   *	pcycle frequency (600MHz)
-> @@ -33,6 +34,13 @@ cycles_t	pcycle_freq_mhz;
->  cycles_t	thread_freq_mhz;
->  cycles_t	sleep_clk_freq;
-> 
-> +/*
-> + * 8x50 HDD Specs 5-8.  Simulator co-sim not fixed until
-> + * release 1.1, and then it's "adjustable" and probably not defaulted.
-> + */
-> +#define RTOS_TIMER_INT		3
-> +#define RTOS_TIMER_REGS_ADDR	0xAB000000UL
-> +
->  static struct resource rtos_timer_resources[] = {
->  	{
->  		.start	= RTOS_TIMER_REGS_ADDR,
-> @@ -80,7 +88,7 @@ static int set_next_event(unsigned long delta, struct
-> clock_event_device *evt)
->  	iowrite32(0, &rtos_timer->clear);
-> 
->  	iowrite32(delta, &rtos_timer->match);
-> -	iowrite32(1 << TIMER_ENABLE, &rtos_timer->enable);
-> +	iowrite32(TIMER_ENABLE, &rtos_timer->enable);
->  	return 0;
->  }
-> 
-> 
-> base-commit: 7d549995d4e0d99b68e8a7793a0d23da6fc40fe8
+Hi,
 
-Acked-by: Brian Cain <bcain@codeaurora.org>
+
+On 27/07/2021 21:43, Bjorn Helgaas wrote:
+> On Tue, Jul 27, 2021 at 10:30:00AM +0800, Artem Lapkin wrote:
+>> 256 bytes maximum read request size. They can't handle
+>> anything larger than this. So force this limit on
+>> any devices attached under these ports.
+> 
+> This needs to say whether this is a functional or a performance issue.
+> 
+> If it's a functional issue, i.e., if meson signals an error or abort
+> when it receives a read request for > 256 bytes, we need to explain
+> exactly what happens.
+> 
+> If it's a performance issue, we need to explain why MRRS affects
+> performance and that this is an optimization.
+> 
+>> Come-from: https://lkml.org/lkml/2021/6/18/160
+>> Come-from: https://lkml.org/lkml/2021/6/19/19
+> 
+> Please use lore.kernel.org URLs instead.  The lore URLs are a little
+> uglier, but are more functional, more likely to continue working, and
+> avoid the ads.  These are:
+> 
+>   https://lore.kernel.org/r/20210618230132.GA3228427@bjorn-Precision-5520
+>   https://lore.kernel.org/r/20210619063952.2008746-1-art@khadas.com
+> 
+>> It only affects PCIe in P2P, in non-P2P is will certainly affect
+>> transfers on the internal SoC/Processor/Chip internal bus/fabric.
+> 
+> This needs to explain how a field in a PCIe TLP affects transfers on
+> these non-PCIe fabrics.
+> 
+>> These quirks are currently implemented in the
+>> controller driver and only applies when the controller has been probed
+>> and to each endpoint detected on this particular controller.
+>>
+>> Continue having separate quirks for each controller if the core
+>> isn't the right place to handle MPS/MRRS.
+> 
+> I see similar code in dwc/pci-keystone.c.  Does this problem actually
+> affect *all* DesignWare-based controllers?
+> 
+> If so, we should put the workaround in the common dwc code, e.g.,
+> pcie-designware.c or similar.  
+> 
+> It also seems to affect pci-loongson.c (not DesignWare-based).  Is
+> there some reason it has the same problem, e.g., does loongson contain
+> DesignWare IP, or does it use the same non-PCIe fabric?
+
+As my reply on the previous thread, the Synopsys IP can be configured with a
+maximum TLP packet to AXI transaction size, which is hardcoded AFAIK Amlogic
+doesn't explicit it. And it doesn't seem we can read the value.
+
+This means is a TPL size if higher than this maximum packet size, the IP will
+do multiple AXI transactions, and this can reduce the system overall performance.
+
+The problem is that it affects the P2P transactions aswell, which can support any MPS/MRRS.
+But honestly, it's not a big deal on a PCIe 2.0 1x system only designed for NVMe and basic
+PCIe devices.
+
+The fun part is that the pci=pcie_bus_perf kerne cmdline solves this already,
+isn't there any possibility to force pcie_bus_perf for a particular root port ?
+
+Neil
+
+> 
+>>>> Neil
+>>
+>> Signed-off-by: Artem Lapkin <art@khadas.com>
+>> ---
+>>  drivers/pci/controller/dwc/pci-meson.c | 31 ++++++++++++++++++++++++++
+>>  1 file changed, 31 insertions(+)
+>>
+>> diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+>> index 686ded034..1498950de 100644
+>> --- a/drivers/pci/controller/dwc/pci-meson.c
+>> +++ b/drivers/pci/controller/dwc/pci-meson.c
+>> @@ -466,6 +466,37 @@ static int meson_pcie_probe(struct platform_device *pdev)
+>>  	return ret;
+>>  }
+>>  
+>> +static void meson_mrrs_limit_quirk(struct pci_dev *dev)
+>> +{
+>> +	struct pci_bus *bus = dev->bus;
+>> +	int mrrs, mrrs_limit = 256;
+>> +	static const struct pci_device_id bridge_devids[] = {
+>> +		{ PCI_DEVICE(PCI_VENDOR_ID_SYNOPSYS, PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3) },
+> 
+> I don't really believe that PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3 is the
+> only device affected here.  Is this related to the Meson root port, or
+> is it related to a PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3 on a plug-in card?
+> I guess the former, since you're searching upward for a root port.
+> 
+> So why is this limited to PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3?
+> 
+>> +		{ 0, },
+>> +	};
+>> +
+>> +	/* look for the matching bridge */
+>> +	while (!pci_is_root_bus(bus)) {
+>> +		/*
+>> +		 * 256 bytes maximum read request size. They can't handle
+>> +		 * anything larger than this. So force this limit on
+>> +		 * any devices attached under these ports.
+>> +		 */
+>> +		if (!pci_match_id(bridge_devids, bus->self)) {
+>> +			bus = bus->parent;
+>> +			continue;
+>> +		}
+>> +
+>> +		mrrs = pcie_get_readrq(dev);
+>> +		if (mrrs > mrrs_limit) {
+>> +			pci_info(dev, "limiting MRRS %d to %d\n", mrrs, mrrs_limit);
+>> +			pcie_set_readrq(dev, mrrs_limit);
+>> +		}
+>> +		break;
+>> +	}
+>> +}
+>> +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_mrrs_limit_quirk);
+>> +
+>>  static const struct of_device_id meson_pcie_of_match[] = {
+>>  	{
+>>  		.compatible = "amlogic,axg-pcie",
+>> -- 
+>> 2.25.1
+>>
 
