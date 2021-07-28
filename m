@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C843D9700
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BF53D9702
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhG1UrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:47:11 -0400
+        id S231740AbhG1UrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:47:13 -0400
 Received: from mga01.intel.com ([192.55.52.88]:60186 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231488AbhG1UrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231576AbhG1UrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Jul 2021 16:47:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="234634464"
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="234634465"
 X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="234634464"
+   d="scan'208";a="234634465"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 13:47:01 -0700
 X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="506679887"
+   d="scan'208";a="506679889"
 Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
   by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 13:47:01 -0700
 From:   Tony Luck <tony.luck@intel.com>
@@ -26,9 +26,9 @@ To:     Sean Christopherson <seanjc@google.com>,
         Dave Hansen <dave.hansen@intel.com>
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v3 6/7] x86/sgx: Add hook to error injection address validation
-Date:   Wed, 28 Jul 2021 13:46:52 -0700
-Message-Id: <20210728204653.1509010-7-tony.luck@intel.com>
+Subject: [PATCH v3 7/7] x86/sgx: Add documentation for SGX memory errors
+Date:   Wed, 28 Jul 2021 13:46:53 -0700
+Message-Id: <20210728204653.1509010-8-tony.luck@intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210728204653.1509010-1-tony.luck@intel.com>
 References: <20210719182009.1409895-1-tony.luck@intel.com>
@@ -39,63 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGX reserved memory does not appear in the standard address maps.
-
-Add hook to call into the SGX code to check if an address is located
-in SGX memory.
-
-There are other challenges in injecting errors into SGX. Update the
-documentation with a sequence of operations to inject.
+Error handling is a bit different for SGX pages. Add a section describing
+how asynchronous and consumed errors are handled and the two new
+debugfs files that show the count and list of pages with uncorrected
+memory errors.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
- .../firmware-guide/acpi/apei/einj.rst         | 19 +++++++++++++++++++
- drivers/acpi/apei/einj.c                      |  3 ++-
- 2 files changed, 21 insertions(+), 1 deletion(-)
+ Documentation/x86/sgx.rst | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/Documentation/firmware-guide/acpi/apei/einj.rst b/Documentation/firmware-guide/acpi/apei/einj.rst
-index c042176e1707..55e2331a6438 100644
---- a/Documentation/firmware-guide/acpi/apei/einj.rst
-+++ b/Documentation/firmware-guide/acpi/apei/einj.rst
-@@ -181,5 +181,24 @@ You should see something like this in dmesg::
-   [22715.834759] EDAC sbridge MC3: PROCESSOR 0:306e7 TIME 1422553404 SOCKET 0 APIC 0
-   [22716.616173] EDAC MC3: 1 CE memory read error on CPU_SrcID#0_Channel#0_DIMM#0 (channel:0 slot:0 page:0x12345 offset:0x0 grain:32 syndrome:0x0 -  area:DRAM err_code:0001:0090 socket:0 channel_mask:1 rank:0)
- 
-+Special notes for injection into SGX enclaves:
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index dd0ac96ff9ef..461bd1daa565 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -250,3 +250,29 @@ user wants to deploy SGX applications both on the host and in guests
+ on the same machine, the user should reserve enough EPC (by taking out
+ total virtual EPC size of all SGX VMs from the physical EPC size) for
+ host SGX applications so they can run with acceptable performance.
 +
-+There may be a separate BIOS setup option to enable SGX injection.
++Uncorrected memory errors
++=========================
++Systems that support machine check recovery and have local machine
++check delivery enabled can recover from uncorrected memory errors in
++many situations.
 +
-+The injection process consists of setting some special memory controller
-+trigger that will inject the error on the next write to the target
-+address. But the h/w prevents any software outside of an SGX enclave
-+from accessing enclave pages (even BIOS SMM mode).
++Errors in SGX pages that are not currently in use will prevent those
++pages from being allocated.
 +
-+The following sequence can be used:
-+  1) Determine physical address of enclave page
-+  2) Use "notrigger=1" mode to inject (this will setup
-+     the injection address, but will not actually inject)
-+  3) Enter the enclave
-+  4) Store data to the virtual address matching physical address from step 1
-+  5) Execute CLFLUSH for that virtual address
-+  6) Spin delay for 250ms
-+  7) Read from the virtual address. This will trigger the error
++Errors asynchronously reported against active SGX pages will simply note
++that the page has an error. If the enclave terminates without accessing
++the page Linux will not return it to the free list for reallocation.
 +
- For more information about EINJ, please refer to ACPI specification
- version 4.0, section 17.5 and ACPI 5.0, section 18.6.
-diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
-index 2882450c443e..cd7cffc955bf 100644
---- a/drivers/acpi/apei/einj.c
-+++ b/drivers/acpi/apei/einj.c
-@@ -544,7 +544,8 @@ static int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
- 	    ((region_intersects(base_addr, size, IORESOURCE_SYSTEM_RAM, IORES_DESC_NONE)
- 				!= REGION_INTERSECTS) &&
- 	     (region_intersects(base_addr, size, IORESOURCE_MEM, IORES_DESC_PERSISTENT_MEMORY)
--				!= REGION_INTERSECTS)))
-+				!= REGION_INTERSECTS) &&
-+	     !sgx_is_epc_page(base_addr)))
- 		return -EINVAL;
- 
- inject:
++When an uncorrected memory error is consumed from within an enclave the
++h/w will mark that enclave so that it cannot be re-entered.  Linux will
++send a SIGBUS to the current task.
++
++In addition to console log entries from processing the machine check or
++corrected machine check interrupt, Linux also provides debugfs files to
++indicate the number of SGX enclave pages that have reported errors and
++the physical addresses of each page:
++
++/sys/kernel/debug/sgx/poison_page_count
++
++/sys/kernel/debug/sgx/poison_page_list
 -- 
 2.29.2
 
