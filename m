@@ -2,193 +2,385 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD233D8CFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871213D8D00
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235764AbhG1Lpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:45:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232530AbhG1Lpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:45:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C144860524;
-        Wed, 28 Jul 2021 11:45:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627472751;
-        bh=9LzmloFr9ISei0EYqupkTDZ9dmXO3ySd3AZkPy2LZNk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i75TZKM6FRBbzHcUkXzf5AXkbybNzPbqkQTSG4/taGGYEmHjNXk0TG29BP4tne+6p
-         5IYKPnLMSHH14Rovl9CEjK8ZmoenHEl85YGXXLVrKG8Lc03eE7bnoZpl4lbQET0d4h
-         FwRB7qHHXxPyaUp13ZzksAPjOBk42SL4E6yUqZCnHgvbuIzF3nk0gXjXrDx9bR/lhl
-         0kM4x2P7dosfcyKhOi7t6PWl5tNKDfKwUgStwf1Hj8puVOJFg9XYXjbqbGr3kxMu9v
-         p4hqJn8VNQf5xjYO/Wu5VtjZf8D2/rPURTbQmzcU0OuPUcCZ3TC6z+F3A18jS4wSxv
-         U3qDSSkY6RU7g==
-Date:   Wed, 28 Jul 2021 13:45:48 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     nsaenzju@redhat.com, linux-kernel@vger.kernel.org,
-        Nitesh Lal <nilal@redhat.com>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@marvell.com>,
-        Peter Xu <peterx@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 1/4] add basic task isolation prctl interface
-Message-ID: <20210728114548.GA293265@lothringen>
-References: <20210727103803.464432924@fuller.cnet>
- <20210727104119.551607458@fuller.cnet>
- <7b2d6bf91d30c007e19a7d2cbddcb2460e72d163.camel@redhat.com>
- <20210727110050.GA502360@fuller.cnet>
- <a020a45ddea10956938f59bd235b88fe873d0e98.camel@redhat.com>
- <20210727130930.GB283787@lothringen>
- <20210727145209.GA518735@fuller.cnet>
- <20210727234539.GH283787@lothringen>
- <20210728093707.GA3242@fuller.cnet>
+        id S234784AbhG1LrZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 07:47:25 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3513 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232530AbhG1LrX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:47:23 -0400
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GZWqy444Gz6DJ1L;
+        Wed, 28 Jul 2021 19:38:06 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Jul 2021 13:47:20 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Wed, 28 Jul 2021 13:47:20 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC][PATCH v2 03/12] diglim: Objects
+Thread-Topic: [RFC][PATCH v2 03/12] diglim: Objects
+Thread-Index: AQHXgjyiFQdFlX/ScUuc4hKoun1GQatYJDKAgAAjiqA=
+Date:   Wed, 28 Jul 2021 11:47:19 +0000
+Message-ID: <5a88c43c35a54dc6ba83880b4e16a148@huawei.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+        <20210726163700.2092768-4-roberto.sassu@huawei.com>
+ <20210728133835.2e55e0eb@coco.lan>
+In-Reply-To: <20210728133835.2e55e0eb@coco.lan>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728093707.GA3242@fuller.cnet>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 06:37:07AM -0300, Marcelo Tosatti wrote:
-> On Wed, Jul 28, 2021 at 01:45:39AM +0200, Frederic Weisbecker wrote:
-> > On Tue, Jul 27, 2021 at 11:52:09AM -0300, Marcelo Tosatti wrote:
-> > > The meaning of isolated is specified as follows:
-> > > 
-> > > Isolation features
-> > > ==================
-> > > 
-> > > - prctl(PR_ISOL_GET, ISOL_SUP_FEATURES, 0, 0, 0) returns the supported
-> > > features as a return value.
-> > > 
-> > > - prctl(PR_ISOL_SET, ISOL_FEATURES, bitmask, 0, 0) enables the features in
-> > > the bitmask.
-> > > 
-> > > - prctl(PR_ISOL_GET, ISOL_FEATURES, 0, 0, 0) returns the currently
-> > > enabled features.
-> > 
-> > So what are the ISOL_FEATURES here? A mode that we enter such as flush
-> > vmstat _everytime_ we resume to userpace after (and including) this prctl() ?
+> From: Mauro Carvalho Chehab [mailto:mchehab+huawei@kernel.org]
+> Sent: Wednesday, July 28, 2021 1:39 PM
+> Em Mon, 26 Jul 2021 18:36:51 +0200
+> Roberto Sassu <roberto.sassu@huawei.com> escreveu:
 > 
-> ISOL_FEATURES is just the "command" type (which you can get and set).
+> > Define the objects to manage digest lists:
+> >
+> > - digest_list_item: a digest list loaded into the kernel;
+> > - digest_list_item_ref: a reference to a digest list;
+> > - digest_item: a digest of a digest list.
+> >
+> > Also define some helpers for the objects. More information can be found in
+> > Documentation/security/diglim/implementation.rst.
+> >
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > ---
+> >  .../security/diglim/implementation.rst        | 105 ++++++++++++++
+> >  MAINTAINERS                                   |   1 +
+> >  security/integrity/diglim/diglim.h            | 134 ++++++++++++++++++
+> >  3 files changed, 240 insertions(+)
+> >  create mode 100644 security/integrity/diglim/diglim.h
+> >
+> > diff --git a/Documentation/security/diglim/implementation.rst
+> b/Documentation/security/diglim/implementation.rst
+> > index 59a180b3bb3f..6002049612a1 100644
+> > --- a/Documentation/security/diglim/implementation.rst
+> > +++ b/Documentation/security/diglim/implementation.rst
+> > @@ -95,3 +95,108 @@ with digest lists:
+> >
+> >  - ``DIGEST_LIST_ADD``: the digest list is being added;
+> >  - ``DIGEST_LIST_DEL``: the digest list is being deleted.
+> > +
+> > +
+> > +Objects
+> > +-------
+> > +
+> > +This section defines the objects to manage digest lists.
+> > +
+> > +.. kernel-doc:: security/integrity/diglim/diglim.h
+> > +
+> > +They are represented in the following class diagram:
+> > +
+> > +::
+> > +
+> > + digest_offset,
+> > + hdr_offset---------------+
+> > +                          |
+> > +                          |
+> > + +------------------+     |     +----------------------+
+> > + | digest_list_item |--- N:1 ---| digest_list_item_ref |
+> > + +------------------+           +----------------------+
+> > +                                           |
+> > +                                          1:N
+> > +                                           |
+> > +                                    +-------------+
+> > +                                    | digest_item |
+> > +                                    +-------------+
+> > +
+> > +A ``digest_list_item`` is associated to one or multiple
+> > +``digest_list_item_ref``, one for each digest it contains. However,
+> > +a ``digest_list_item_ref`` is associated to only one ``digest_list_item``,
+> > +as it represents a single location within a specific digest list.
+> > +
+> > +Given that a ``digest_list_item_ref`` represents a single location, it is
+> > +associated to only one ``digest_item``. However, a ``digest_item`` can have
+> > +multiple references (as it might appears multiple times within the same
+> > +digest list or in different digest lists, if it is duplicated).
+> > +
+> > +All digest list references are stored for a given digest, so that a query
+> > +result can include the OR of the modifiers and actions of each referenced
+> > +digest list.
+> > +
+> > +The relationship between the described objects can be graphically
+> > +represented as:
+> > +
+> > +::
 > 
-> The bitmask would include ISOL_F_QUIESCE_ON_URET, so:
-> 
-> - bitmask = ISOL_F_QUIESCE_ON_URET;
-> - prctl(PR_ISOL_SET, ISOL_FEATURES, bitmask, 0, 0) enables the features in
-> the bitmask.
+> Just merge "::" at the previous line (everywhere).
 
-But does it quiesce once or for every further uret?
+Ok.
 
+> > +
+> > + Hash table            +-------------+         +-------------+
+> > + PARSER      +-----+   | digest_item |         | digest_item |
+> > + FILE        | key |-->|             |-->...-->|             |
+> > + METADATA    +-----+   |ref0|...|refN|         |ref0|...|refN|
+> > +                       +-------------+         +-------------+
+> > +            ref0:         |                               | refN:
+> > +            digest_offset | +-----------------------------+ digest_offset
+> > +            hdr_offset    | |                               hdr_offset
+> > +                          | |
+> > +                          V V
+> > +                     +--------------------+
+> > +                     |  digest_list_item  |
+> > +                     |                    |
+> > +                     | size, buf, actions |
+> > +                     +--------------------+
+> > +                          ^
+> > +                          |
+> > + Hash table            +-------------+         +-------------+
+> > + DIGEST_LIST +-----+   |ref0         |         |ref0         |
+> > +             | key |-->|             |-->...-->|             |
+> > +             +-----+   | digest_item |         | digest_item |
+> > +                       +-------------+         +-------------+
+> > +
+> > +The reference for the digest of the digest list differs from the references
+> > +for the other digest types. ``digest_offset`` and ``hdr_offset`` are set to
+> > +zero, so that the digest of the digest list is retrieved from the
+> > +``digest_list_item`` structure directly (see ``get_digest()`` below).
+> > +
+> > +Finally, this section defines useful helpers to access a digest or the
+> > +header the digest belongs to. For example:
+> > +
+> > +::
+> > +
+> > + static inline struct compact_list_hdr *get_hdr(
+> > +                                      struct digest_list_item *digest_list,
+> > +                                      loff_t hdr_offset)
 > 
-> - quiesce_bitmap = prctl(PR_ISOL_GET, PR_ISOL_SUP_QUIESCE_CFG, 0, 0, 0)
->   (1)
+> I would write this to avoid ending a line with an open parenthesis. You could,
+> for instance, write it as:
 > 
->   (returns the supported actions to be quiesced).
+> 	static inline struct compact_list_hdr *
+> 	get_hdr(struct digest_list_item *digest_list,
+> 		off_t hdr_offset)
 > 
-> - prctl(PR_ISOL_SET, PR_ISOL_QUIESCE_CFG, quiesce_bitmask, 0, 0) _sets_
-> the actions to be quiesced (2)
-> 
-> If an application does not modify "quiesce_bitmask" between 
-> points (1) and (2) above, it will enable quiescing of all
-> "features" the kernel supports.
+> if you also want to avoid to have a line bigger than 80 columns.
 
-I don't get the difference between ISOL_FEATURES and PR_ISOL_QUIESCE_CFG.
+Ok.
 
+> > + {
+> > +         return (struct compact_list_hdr *)(digest_list->buf + hdr_offset);
+> > + }
+> > +
+> > +the header can be obtained by summing the address of the digest list buffer
+> > +in the ``digest_list_item`` structure with ``hdr_offset``.
+> > +
+> > +Similarly:
+> > +
+> > +::
+> > +
+> > + static inline u8 *get_digest(struct digest_list_item *digest_list,
+> > +                              loff_t digest_offset, loff_t hdr_offset)
+> > + {
+> > +         /* Digest list digest is stored in a different place. */
+> > +         if (!digest_offset)
+> > +                 return digest_list->digest;
+> > +         return digest_list->buf + digest_offset;
+> > + }
+> > +
+> > +the digest can be obtained by summing the address of the digest list buffer
+> > +with ``digest_offset`` (except for the digest lists, where the digest is
+> > +stored in the ``digest`` field of the ``digest_list_item`` structure).
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index f61f5239468a..f7592d41367d 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -5462,6 +5462,7 @@ F:
+> 	Documentation/security/diglim/implementation.rst
+> >  F:	Documentation/security/diglim/index.rst
+> >  F:	Documentation/security/diglim/introduction.rst
+> >  F:	include/uapi/linux/diglim.h
+> > +F:	security/integrity/diglim/diglim.h
+> >
+> >  DIOLAN U2C-12 I2C DRIVER
+> >  M:	Guenter Roeck <linux@roeck-us.net>
+> > diff --git a/security/integrity/diglim/diglim.h
+> b/security/integrity/diglim/diglim.h
+> > new file mode 100644
+> > index 000000000000..578253d7e1d1
+> > --- /dev/null
+> > +++ b/security/integrity/diglim/diglim.h
+> > @@ -0,0 +1,134 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (C) 2005,2006,2007,2008 IBM Corporation
+> > + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
+> > + *
+> > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+> > + *
+> > + * Definitions only used inside DIGLIM.
+> > + */
+> > +
+> > +#ifndef __DIGLIM_INTERNAL_H
+> > +#define __DIGLIM_INTERNAL_H
+> > +
+> > +#include <linux/types.h>
+> > +#include <linux/crypto.h>
+> > +#include <linux/fs.h>
+> > +#include <linux/security.h>
+> > +#include <linux/hash.h>
+> > +#include <linux/tpm.h>
+> > +#include <linux/audit.h>
+> > +#include <crypto/hash_info.h>
+> > +#include <linux/hash_info.h>
+> > +#include <uapi/linux/diglim.h>
+> > +
+> > +#define MAX_DIGEST_SIZE 64
+> > +#define HASH_BITS 10
+> > +#define DIGLIM_HTABLE_SIZE (1 << HASH_BITS)
+> > +
+> > +/**
+> > + * struct digest_list_item - a digest list loaded into the kernel
+> > + *
+> > + * @size: size of the digest list buffer
+> > + * @buf: digest list buffer
+> > + * @digest: digest of the digest list
+> > + * @label: label used to identify the digest list (e.g. file name)
+> > + * @actions: actions performed on the digest list
+> > + * @algo: digest algorithm
+> > + */
+> > +struct digest_list_item {
+> > +	loff_t size;
+> > +	u8 *buf;
+> > +	u8 digest[64];
+> > +	const char *label;
+> > +	u8 actions;
+> > +	enum hash_algo algo;
+> > +};
+> > +
+> > +/**
+> > + * struct digest_list_item_ref - a reference to a digest list
+> > + *
+> > + * @list: linked list pointers
+> > + * @digest_list: pointer to struct digest_list_item
+> > + * @digest_offset: offset of the digest in the referenced digest list
+> > + * @hdr_offset: offset of the header the digest refers to in the digest list
+> > + */
+> > +struct digest_list_item_ref {
+> > +	struct list_head list;
+> > +	struct digest_list_item *digest_list;
+> > +	u32 digest_offset;
+> > +	u32 hdr_offset;
+> > +};
+> > +
+> > +/**
+> > + * struct digest_item - a digest of a digest list
+> > + *
+> > + * @hnext: pointers of the hash table
+> > + * @refs: linked list of struct digest_list_item_ref
+> > + */
+> > +struct digest_item {
+> > +	struct hlist_node hnext;
+> > +	struct list_head refs;
+> > +};
+> > +
 > 
-> Application can, however, modify quiesce_bitmap to its preference.
 > 
-> Flushing vmstat _everytime_ you resume to userspace is enabled only
-> _after_ prctl(PR_ISOL_ENTER, 0, 0, 0, 0) is performed (which happens 
-> only when isolation is fully configured with the PR_ISOL_SET calls).
-> OK, will better document that.
+> > +struct h_table {
+> > +	unsigned long len;
+> > +	struct hlist_head queue[DIGLIM_HTABLE_SIZE];
+> > +};
+> > +
+> > +static inline unsigned int hash_key(u8 *digest)
+> > +{
+> > +	return (digest[0] | digest[1] << 8) % DIGLIM_HTABLE_SIZE;
+> > +}
+> > +
+> > +static inline struct compact_list_hdr *get_hdr(
+> > +					struct digest_list_item *digest_list,
+> > +					loff_t hdr_offset)
+> 
+> Same here with regards to open parenthesis.
+> 
+> > +{
+> > +	return (struct compact_list_hdr *)(digest_list->buf + hdr_offset);
+> > +}
+> > +
+> > +static inline enum hash_algo get_algo(struct digest_list_item *digest_list,
+> > +				      loff_t digest_offset, loff_t hdr_offset)
+> > +{
+> > +	/* Digest list digest algorithm is stored in a different place. */
+> > +	if (!digest_offset)
+> > +		return digest_list->algo;
+> > +
+> > +	return get_hdr(digest_list, hdr_offset)->algo;
+> > +}
+> > +
+> > +static inline u8 *get_digest(struct digest_list_item *digest_list,
+> > +			     loff_t digest_offset, loff_t hdr_offset)
+> > +{
+> > +	/* Digest list digest is stored in a different place. */
+> > +	if (!digest_offset)
+> > +		return digest_list->digest;
+> > +
+> > +	return digest_list->buf + digest_offset;
+> > +}
+> > +
+> > +static inline struct compact_list_hdr *get_hdr_ref(
+> > +					struct digest_list_item_ref *ref)
+> > +{
+> > +	return get_hdr(ref->digest_list, ref->hdr_offset);
+> > +}
+> > +
+> > +static inline enum hash_algo get_algo_ref(struct digest_list_item_ref *ref)
+> > +{
+> > +	/* Digest list digest algorithm is stored in a different place. */
+> > +	if (!ref->digest_offset)
+> > +		return ref->digest_list->algo;
+> > +
+> > +	return get_hdr_ref(ref)->algo;
+> > +}
+> > +
+> > +static inline u8 *get_digest_ref(struct digest_list_item_ref *ref)
+> > +{
+> > +	/* Digest list digest is stored in a different place. */
+> > +	if (!ref->digest_offset)
+> > +		return ref->digest_list->digest;
+> > +
+> > +	return ref->digest_list->buf + ref->digest_offset;
+> > +}
+> 
+> I would also document the above static inline functions and
+> struct h_table.
 
-Yes please, I'm completely confused :o)
+Ok.
 
-> 
-> > If so I'd rather call that ISOL_MODE because feature is too general.
-> 
-> Well, in the first patchset, there was one "mode" implemented (but
-> it was possible to implement different modes in the future).
-> 
-> This would allow for example easier integration of "full task isolation"
-> patchset type of functionality, disallowing syscalls.
-> 
-> I think we'd like to keep that, so i'll keep the previous distinct modes
-> (but allow configuration of individual features on the bitmap).
+Thanks
 
-And I also don't see how such modes differ from configuration of individual
-features on the bitmap.
+Roberto
 
-> > > - prctl(PR_ISOL_GET, PR_ISOL_QUIESCE_CFG, 0, 0, 0) returns
-> > > the currently enabled actions to be quiesced.
-> > > 
-> > > #define ISOL_F_QUIESCE_VMSTAT_SYNC      (1<<0)
-> > > #define ISOL_F_QUIESCE_NOHZ_FULL        (1<<1)
-> > > #define ISOL_F_QUIESCE_DEFER_TLB_FLUSH  (1<<2)
-> > 
-> > And then PR_ISOL_QUIESCE_CFG is a oneshot operation that applies only upon
-> > return to this ctrl, right? If so perhaps this should be called just
-> > ISOL_QUIESCE or ISOL_QUIESCE_ONCE or ISOL_REQ ?
-> 
-> There was no one-shot operation implemented in the first patchset. What
-> application would do to achieve that is:
-> 
-> 1. Configure isolation with PR_ISOL_SET (say configure mode which 
-> allows system calls, and when a system call happens, flush all deferred
-> actions on return to userspace).
-> 
-> 2. prctl(PR_ISOL_ENTER, 0, 0, 0, 0) (this actually enables the flushing, 
-> and tags the task_struct as isolated). Here we can transfer this information
-> from per-task to per-CPU data, for example, to be able to implement 
-> other features such as deferred TLB flushing.
-> 
-> On return from this prctl(), deferrable actions are flushed.
-> 
-> 3. latency sensitive loop, with no system calls.
-> 
-> 4. some event which requires system calls is noticed:
->    prctl(PR_ISOL_EXIT, 0, 0, 0, 0)
->    (this would untag task_struct as isolated).
-> 
-> 5. perform system calls A, B, C, D (with no flushing of vmstat, 
-> for example).
-> 
-> 6. jmp to 2.
-> 
-> So there is a problem with this logic, which is that one would like
-> certain isolation functionality to remain enabled between points 4
-> and 6 (for example, blocking CPU hotplug or other blockable activities
-> that would cause interruptions).
-> 
-> One way to achieve this would be to replace PR_ISOL_ENTER/PR_ISOL_EXIT
-> with PR_ISOL_ENABLE, which accepts a bitmask:
-> 
-> 1. Configure isolation with PR_ISOL_SET (say configure mode which 
-> allows system calls, and when a system call happens, flush all deferred
-> actions on return to userspace).
-> 
-> 2. enabled_bitmask = ISOL_F_QUIESCE_ON_URET|ISOL_F_BLOCK_INTERRUPTORS;
->    prctl(PR_ISOL_ENABLE, enabled_bitmask, 0, 0, 0)
-> 
-> On return from this prctl(), deferrable actions are flushed.
-> 
-> 3. latency sensitive loop, with no system calls.
-> 
-> 4. some event which requires system calls is noticed:
-> 
->    prctl(PR_ISOL_ENABLE, ISOL_F_BLOCK_INTERRUPTORS, 0, 0, 0)
->    (this would clear ISOL_F_QUIESCE_ON_URET, so no flushing
->     is performed on return from system calls).
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
 
-So PR_ISOL_ENABLE is a way to perform action when some sort of kernel entry
-happens. Then we take actions when that happens (signal, warn, etc...).
-
-I guess we'll need to define what kind of kernel entry, and what kind of
-response need to happen. Ok that's a whole issue of its own that we'll need
-to handle seperately.
-
-Thanks.
+> > +#endif /*__DIGLIM_INTERNAL_H*/
+> 
+> 
+> 
+> Thanks,
+> Mauro
