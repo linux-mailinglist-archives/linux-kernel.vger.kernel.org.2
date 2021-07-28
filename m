@@ -2,180 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D473D9819
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093AC3D981A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhG1WBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:01:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42623 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231668AbhG1WBL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:01:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627509669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pKidz3FSMJhJcIlYfT3swxoQS+3hE6AXtJkM+UemTX0=;
-        b=YlYXn6X9nsDPoelomEWSTO/uo2Y1i4od8aOYS5AInAvgK/7dLvKDOARtUUOX4M0quy5b29
-        PzCg+y9tPLFIZ1Z5ewF6LOrnq4YqRHFV4iLV/mHvlz+n4EeXadnF03LcxJT2EU++fcLjii
-        TldvoYY4sIKTrsdWQln8c/h5A93SANI=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-I6hf7BPxNNyfh3qnpmfO-w-1; Wed, 28 Jul 2021 18:01:07 -0400
-X-MC-Unique: I6hf7BPxNNyfh3qnpmfO-w-1
-Received: by mail-qk1-f200.google.com with SMTP id x12-20020a05620a14acb02903b8f9d28c19so2436718qkj.23
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 15:01:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pKidz3FSMJhJcIlYfT3swxoQS+3hE6AXtJkM+UemTX0=;
-        b=GouTPtwf1KxHL1d/B1fPKLheQfkfJgSlqogml1gPa66IMwvwi/WFhAvVif+Cy///Dd
-         7KreWc0mbN8BShIZfSnnGom9BoyMkWRLpfxNWopLLkTEOBhC5OdCFgcztYBKmbP5idGZ
-         a24rJYSPrS5q0vhmCthiBuZ7CJB1PNG1HmYYeteMPm4C1U0ZqYGWE6NjaC+oz1WE7woY
-         VdHKFBNzT+yJSnjd/4LqMI8kPvKFtgafbT/qK31tArwTp2SepHucDqGtl7FlP4Rf3DS2
-         yblht6ycYfSuhLo1asgxYho2CQWv4KRWB4i6vANtIZeWC0D0JIBT9ZO1m5RKgaZEEAwe
-         6bxg==
-X-Gm-Message-State: AOAM530gc4tGqG3b4yvfIELhzCJ9CIxSXH2H+dUQ6MOAAbvnSW2frI03
-        U6/PDveaBxVF4KffD+HGXD7b5SKRLXs94ZjTosidHTS0hBpfVUxH2jzz9kyesw9kaNgoQljDKUz
-        3N2IJ2jhPY3qCNVPU1HLUSPvu
-X-Received: by 2002:a05:6214:21ee:: with SMTP id p14mr2277315qvj.8.1627509667469;
-        Wed, 28 Jul 2021 15:01:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxVYy91ZfI5zoJBEKJ3Yd5LRP0ae3BUZQqzdPCj6QgqrfTkFjRd1wt7FFWnSP8Q2X1IkxR3pg==
-X-Received: by 2002:a05:6214:21ee:: with SMTP id p14mr2277294qvj.8.1627509667289;
-        Wed, 28 Jul 2021 15:01:07 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id o63sm680309qkf.4.2021.07.28.15.01.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 15:01:06 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 18:01:05 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 9/9] KVM: X86: Optimize zapping rmap
-Message-ID: <YQHTocEdMzsJQuzL@t490s>
-References: <20210625153214.43106-1-peterx@redhat.com>
- <20210625153419.43671-1-peterx@redhat.com>
- <YQHOdhMoFW821HAu@google.com>
+        id S232078AbhG1WBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:01:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231668AbhG1WBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:01:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BF6E60F5E;
+        Wed, 28 Jul 2021 22:01:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627509699;
+        bh=eT1ZYBz1kwcqDTxbLvzyK/4f/qPZ0QCHOcZMPByW5y0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=abA7RTUyN/hXppfCfRb6ywSxGoiOkGSVe/n0+PWvd8OLQkmiM691COMzZYC/qO9cU
+         z5VtYefEq9b8ZJpuZ4yKPSuvr5k/B0PK8KLFlGF3hiRH4o8e/qR0p2TgUixgromYnF
+         RYgM9pbxUFXo4d8Rn2Acw/W1emcZyOFThFMzVufoQyyuddm/3IrGj6evxNQ+NU19Ek
+         iXdgSSyYvpaNzTZshWBz8KyZpFn6IpF23c07BS5MHlfEwiknl0msaTRww6zDSFTJ5U
+         dpldAlQo9OkIBsw0pObRlvcv4Wxjj8aLEobuVyLfczrKfUIP/uhPNMPgkw/YTgUqMT
+         5NJdXY7/Rx8cw==
+Date:   Thu, 29 Jul 2021 00:01:37 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 2/3] rcu/nocb: Check for migratability rather than pure
+ preemptability
+Message-ID: <20210728220137.GD293265@lothringen>
+References: <20210721115118.729943-1-valentin.schneider@arm.com>
+ <20210721115118.729943-3-valentin.schneider@arm.com>
+ <20210727230814.GC283787@lothringen>
+ <87pmv2kzbd.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQHOdhMoFW821HAu@google.com>
+In-Reply-To: <87pmv2kzbd.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 09:39:02PM +0000, Sean Christopherson wrote:
-> On Fri, Jun 25, 2021, Peter Xu wrote:
-> > Using rmap_get_first() and rmap_remove() for zapping a huge rmap list could be
-> > slow.  The easy way is to travers the rmap list, collecting the a/d bits and
-> > free the slots along the way.
-> > 
-> > Provide a pte_list_destroy() and do exactly that.
-> > 
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 45 +++++++++++++++++++++++++++++++-----------
-> >  1 file changed, 33 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index ba0258bdebc4..45aac78dcabc 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -1014,6 +1014,38 @@ unsigned int pte_list_count(struct kvm_rmap_head *rmap_head)
-> >  	return count;
-> >  }
-> >  
-> > +/* Return true if rmap existed and callback called, false otherwise */
-> > +static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
-> > +			     int (*callback)(u64 *sptep))
-> > +{
-> > +	struct pte_list_desc *desc, *next;
-> > +	int i;
-> > +
-> > +	if (!rmap_head->val)
-> > +		return false;
-> > +
-> > +	if (!(rmap_head->val & 1)) {
-> > +		if (callback)
-> > +			callback((u64 *)rmap_head->val);
-> > +		goto out;
-> > +	}
-> > +
-> > +	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
-> > +
-> > +	while (desc) {
-> > +		if (callback)
-> > +			for (i = 0; i < desc->spte_count; i++)
-> > +				callback(desc->sptes[i]);
-> > +		next = desc->more;
-> > +		mmu_free_pte_list_desc(desc);
-> > +		desc = next;
+On Wed, Jul 28, 2021 at 08:34:14PM +0100, Valentin Schneider wrote:
+> On 28/07/21 01:08, Frederic Weisbecker wrote:
+> > On Wed, Jul 21, 2021 at 12:51:17PM +0100, Valentin Schneider wrote:
+> >> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> >> ---
+> >>  kernel/rcu/tree_plugin.h | 3 +--
+> >>  1 file changed, 1 insertion(+), 2 deletions(-)
+> >>
+> >> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> >> index ad0156b86937..6c3c4100da83 100644
+> >> --- a/kernel/rcu/tree_plugin.h
+> >> +++ b/kernel/rcu/tree_plugin.h
+> >> @@ -70,8 +70,7 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+> >>              !(lockdep_is_held(&rcu_state.barrier_mutex) ||
+> >>                (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
+> >>                rcu_lockdep_is_held_nocb(rdp) ||
+> >> -		  (rdp == this_cpu_ptr(&rcu_data) &&
+> >> -		   !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())) ||
+> >> +		  (rdp == this_cpu_ptr(&rcu_data) && is_pcpu_safe()) ||
+> >
+> > I fear that won't work. We really need any caller of rcu_rdp_is_offloaded()
+> > on the local rdp to have preemption disabled and not just migration disabled,
+> > because we must protect against concurrent offloaded state changes.
+> >
+> > The offloaded state is changed by a workqueue that executes on the target rdp.
+> >
+> > Here is a practical example where it matters:
+> >
+> >            CPU 0
+> >            -----
+> >            // =======> task rcuc running
+> >            rcu_core {
+> >              rcu_nocb_lock_irqsave(rdp, flags) {
+> >                    if (!rcu_segcblist_is_offloaded(rdp->cblist)) {
+> >                      // is not offloaded right now, so it's going
+> >                        // to just disable IRQs. Oh no wait:
+> >            // preemption
+> >            // ========> workqueue running
+> >            rcu_nocb_rdp_offload();
+> >            // ========> task rcuc resume
+> >                      local_irq_disable();
+> >                    }
+> >                }
+> >              ....
+> >                      rcu_nocb_unlock_irqrestore(rdp, flags) {
+> >                    if (rcu_segcblist_is_offloaded(rdp->cblist)) {
+> >                        // is offloaded right now so:
+> >                        raw_spin_unlock_irqrestore(rdp, flags);
+> >
+> > And that will explode because that's an impaired unlock on nocb_lock.
 > 
-> Alternatively, 
+> Harumph, that doesn't look good, thanks for pointing this out.
 > 
-> 	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
-> 	for ( ; desc; desc = next) {
-> 		for (i = 0; i < desc->spte_count; i++)
-> 			mmu_spte_clear_track_bits((u64 *)rmap_head->val);
-> 		next = desc->more;
-> 		mmu_free_pte_list_desc(desc);
-> 	}
+> AFAICT PREEMPT_RT doesn't actually require to disable softirqs here (since
+> it forces RCU callbacks on the RCU kthreads), but disabled softirqs seem to
+> be a requirement for much of the underlying functions and even some of the
+> callbacks (delayed_put_task_struct() ~> vfree() pays close attention to
+> in_interrupt() for instance).
 > 
-> > +	}
-> > +out:
-> > +	/* rmap_head is meaningless now, remember to reset it */
-> > +	rmap_head->val = 0;
-> > +	return true;
-> 
-> Why implement this as a generic method with a callback?  gcc is suprisingly
-> astute in optimizing callback(), but I don't see the point of adding a complex
-> helper that has a single caller, and is extremely unlikely to gain new callers.
-> Or is there another "zap everything" case I'm missing?
+> Now, if the offloaded state was (properly) protected by a local_lock, do
+> you reckon we could then keep preemption enabled?
 
-No other case; it's just that pte_list_*() helpers will be more self-contained.
-If that'll be a performance concern, no objection to hard code it.
+I guess we could take such a local lock on the update side
+(rcu_nocb_rdp_offload) and then take it on rcuc kthread/softirqs
+and maybe other places.
+
+But we must make sure that rcu_core() is preempt-safe from a general perspective
+in the first place. From a quick glance I can't find obvious issues...yet.
+
+Paul maybe you can see something?
 
 > 
-> E.g. why not this?
-> 
-> static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> 			  const struct kvm_memory_slot *slot)
-> {
-> 	struct pte_list_desc *desc, *next;
-> 	int i;
-> 
-> 	if (!rmap_head->val)
-> 		return false;
-> 
-> 	if (!(rmap_head->val & 1)) {
-> 		mmu_spte_clear_track_bits((u64 *)rmap_head->val);
-> 		goto out;
-> 	}
-> 
-> 	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
-> 	for ( ; desc; desc = next) {
-> 		for (i = 0; i < desc->spte_count; i++)
-> 			mmu_spte_clear_track_bits(desc->sptes[i]);
-> 		next = desc->more;
-> 		mmu_free_pte_list_desc(desc);
-> 	}
-> out:
-> 	/* rmap_head is meaningless now, remember to reset it */
-> 	rmap_head->val = 0;
-> 	return true;
-> }
+> From a naive outsider PoV, rdp->nocb_lock looks like a decent candidate,
+> but it's a *raw* spinlock (I can't tell right now whether changing this is
+> a horrible idea or not), and then there's
 
-Looks good, but so far I've no strong opinion on this.  I'll leave it for Paolo
-to decide.
+Yeah that's not possible, nocb_lock is too low level and has to be called with
+IRQs disabled. So if we take that local_lock solution, we need a new lock.
 
-Thanks!
-
--- 
-Peter Xu
-
+Thanks.
