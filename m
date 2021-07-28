@@ -2,66 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5C43D855F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB693D8563
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234579AbhG1Bak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
+        id S234645AbhG1Bbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbhG1Baj (ORCPT
+        with ESMTP id S234450AbhG1Bbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:30:39 -0400
+        Tue, 27 Jul 2021 21:31:36 -0400
 Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737F5C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:30:38 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id c16so731739plh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:30:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92A5C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:31:35 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id e21so745996pla.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:31:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=NEon500ynSMY4Nx1JkJ0WhIvnHZ2zrzoczFG2c6TlkE=;
-        b=L1pTZHLWV9EUK/WKK2vzd1LrKbA0rKMC8b6f5MFCh/bnMJGMtfvMUJaLcwWWInVnK3
-         5wyVMCQ97HCSv2rT4LfnbLrwDQciKneOVVWmgtZfh0KYG4WE+7hnUrHPMy8jGptHPl3t
-         SwHM34ecuaBTo+1iymtZex9mDYZP46z51cyN0t+PSKpXDMWSY+VlIiVEWWTjAI32IOwX
-         Z1cc4WxG4Pc+MhRzPo4jN2z9tEspHjhZ/R8fE+fi3ZZMVCJIgUVjajESOBxJrsp62Rf1
-         nOflJAFb1gKHRJieBmNUznM5z5kXaYOvGzHaaOxEWN2p00c9UK0fFr9ZeP6YRGzVLdyv
-         Ddmg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yHc64D7GeFGFvPKcL3/klEXdsXGAyEbOGkW4X7dqYZk=;
+        b=fhSYS231qJ3sqkIYNi8KPw8MsfS0+ziEaNeUJJgkWRoGnsw+X6Zela3vLGucwxsOnQ
+         T/2eQecJMaDAtj1/fJv4pRgNYPjG5MBwhmQRzKVK7XHucRr9VlsyFnemk7Az0cFRvaoj
+         SXA55eSG8LWFjpI5M4/vVkrChJvWZRFUIvXxtX/YyI6Hetmvo8xUU0IsYqW0uPaYORh+
+         7fbNsmk6bU1nDAoUQ8bBanH/4Fg5DnH45lOS4h8rnJCcsSof3DVR671BuFi4Ezu9qGFc
+         pniezhy1QlK6TDYbbPRo+6/gzTozJcEPXqbmDtUTOLhYVoF+8NtbsE0cFeksRw7VSH/K
+         7dzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=NEon500ynSMY4Nx1JkJ0WhIvnHZ2zrzoczFG2c6TlkE=;
-        b=dYI5Q+vYYwXE0YEEfcYLFxdE4Cv5LY0Xtb+t0r4p3ysBBZRBny6i8/tC9lhUfjh+5t
-         hgoeKrnpeiBh0U6Zg1vLC4Vl0IkDT7FxitrwqF8SbgEpEbCV8q+hS99fDoMuv0HoKdIy
-         NH90NRj/+vrs1Ol651P/WfeL4wjHchiXF6DcPVJJIfKEtPGRVqmpwPZ81QMoSNsQwpqb
-         1E68CRM0NK2uJE2cng/hZcDE+FNmJ9d4+aw2OpJDPwdY6k7yhE96bBeGpd+lCMUmlAYx
-         RuckyHVCpTEnE2Z9uz567ECqwuHrkDq+y4MLBuJUG8kZ7GsLLuPv/TNQXaJU6vF4XY7C
-         j/Wg==
-X-Gm-Message-State: AOAM532rWS9rciO1qbmvfFPk/6AiLD+OZKPPpak93i6o5vLEks3M3Kci
-        8DNQpaMQYn+e8Y+mLBkz01kFxxSUjl2c6uLM
-X-Google-Smtp-Source: ABdhPJyvMaCZv/e6Vz7urn/jIG/vOGcKtAoA+VK/OTA4np90BOzzU6+y9N4p8I0FLN2QoWpWq0AVdg==
-X-Received: by 2002:a63:1621:: with SMTP id w33mr26091053pgl.291.1627435837707;
-        Tue, 27 Jul 2021 18:30:37 -0700 (PDT)
+        bh=yHc64D7GeFGFvPKcL3/klEXdsXGAyEbOGkW4X7dqYZk=;
+        b=O3AncalYOwxyPqGETxeraPiSmPeAa7OC26v2+sGdxQxnBhlea5J5nFWIchbp8umfXS
+         VYoIlXqfVX0fqcMh4wSlskY7GwDfZPtGnBGCLXsGS3Q4WkfqyzYrM+s+92kAxvfwcFRh
+         eDe8PkxciQTd6DnfdlsqJherErnk9jqM5/tknLEWqCW5ELUBn0P/glOYCZweJcEnpONA
+         5w326ugc7rZAjBBKXgAaBcNw5/pdiISssdlbd8YRgPLlNkRQY6agUp7owFmBBr57bp/K
+         2d2k6oiZ0onvNStP4yciGMLvDhdjGFi238aUdYv1bjkYN6F/1tNdtkdAs8lBgpu9xwNG
+         LehA==
+X-Gm-Message-State: AOAM53060OZFuZ8KtdO5JQeFwMq8ZWeRjKBhDrzGAq92m6Nhhui9Rx8H
+        TvUhTxE5LrWw5jFzW9shBHI0EQ==
+X-Google-Smtp-Source: ABdhPJzWMYJQkYrSLemCw68WHvxxx2yrrdVHcAiwavOx0x2TeSqkNy6ZylLwTbIdJTyjO+rAuqNUqw==
+X-Received: by 2002:a62:b414:0:b029:317:52d:7fd5 with SMTP id h20-20020a62b4140000b0290317052d7fd5mr25840599pfn.30.1627435895354;
+        Tue, 27 Jul 2021 18:31:35 -0700 (PDT)
 Received: from [192.168.1.116] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id s7sm4926070pfk.12.2021.07.27.18.30.36
+        by smtp.gmail.com with ESMTPSA id a16sm5054336pfo.66.2021.07.27.18.31.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 18:30:37 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] ata: sata_dwc_460ex: No need to call phy_exit()
- befre phy_init()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210727125130.19977-1-andriy.shevchenko@linux.intel.com>
+        Tue, 27 Jul 2021 18:31:34 -0700 (PDT)
+Subject: Re: switch the block layer to use kmap_local_page v3
+To:     Christoph Hellwig <hch@lst.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ceph-devel@vger.kernel.org, linux-arch@vger.kernel.org
+References: <20210727055646.118787-1-hch@lst.de>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a16f1ce1-243b-e12b-3d48-01c2695234cf@kernel.dk>
-Date:   Tue, 27 Jul 2021 19:30:34 -0600
+Message-ID: <eba0b98f-5b0e-32c4-3b09-fa1946192517@kernel.dk>
+Date:   Tue, 27 Jul 2021 19:31:30 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210727125130.19977-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210727055646.118787-1-hch@lst.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,11 +78,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/21 6:51 AM, Andy Shevchenko wrote:
-> Last change to device managed APIs cleaned up error path to simple phy_exit()
-> call, which in some cases has been executed with NULL parameter. This per se
-> is not a problem, but rather logical misconception: no need to free resource
-> when it's for sure has not been allocated yet. Fix the driver accordingly.
+On 7/26/21 11:56 PM, Christoph Hellwig wrote:
+> Hi all,
+> 
+> this series switches the core block layer code and all users of the
+> existing bvec kmap helpers to use kmap_local_page.  Drivers that
+> currently use open coded kmap_atomic calls will converted in a follow
+> on series.
+> 
+> To do so a new kunmap variant is added that calls
+> flush_kernel_dcache_page.  I'm not entirely sure where to call
+> flush_dcache_page vs flush_kernel_dcache_page, so I've tried to follow
+> the documentation here, but additional feedback would be welcome.
+> 
+> Note that the ps3disk has a minir conflict with the
+> flush_kernel_dcache_page removal in linux-next through the -mm tree.
+> I had hoped that change would go into 5.14, but it seems like it is
+> being held for 5.15.
 
 Applied for 5.15, thanks.
 
