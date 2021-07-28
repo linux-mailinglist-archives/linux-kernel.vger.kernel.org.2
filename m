@@ -2,96 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE763D877F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B4C3D8781
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233857AbhG1Fxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 01:53:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51728 "EHLO mail.kernel.org"
+        id S234008AbhG1Fzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 01:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229814AbhG1Fxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 01:53:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28F2960F91;
-        Wed, 28 Jul 2021 05:53:51 +0000 (UTC)
+        id S229814AbhG1Fza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 01:55:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFCEE60F91;
+        Wed, 28 Jul 2021 05:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627451633;
-        bh=OLVO5xJIhwHiX7AgTyp2l1mNWBfyWHe5OjPiCsJ891k=;
-        h=References:From:To:Cc:Subject:In-reply-to:Date:From;
-        b=sSZ3Q+zosGSU3L8V950HNs4eIgUXdoiCEfbxfpuvRyspPyZ1jCdh/sljW36z3tT0m
-         pTNMGkpLOuT79IrXDEvQy6/dPShiNsJiIgKbUrvURm8YoQP7+ldi9xlNTXZn0XE35m
-         Ak/PFwJMn8GZVOiXyJmpwfVc8+aaV/tfg+wNyPv3kTBTdQBDe6bLqgvXLuD1CFmh7m
-         GV4+qFcs3uHdaBlq6HDIatibTa++J0A7CHDaqR7AXPYD+mwC9eyt6BCnZGTR9tBX5K
-         S/jgHFwDP10Jb6Mu/YLfT7qStpTO2Byaejv/51GD8L1IneifQjW8Esg7wBhZnATYlB
-         G0HUf0LUwRWMA==
-References: <1620716636-12422-1-git-send-email-wcheng@codeaurora.org>
- <87tun9g01v.fsf@kernel.org>
- <2675db9e-0cab-06b5-2986-0b4456a1f040@codeaurora.org>
- <5156238d-c1d8-a0d3-47af-8b52467fd071@codeaurora.org>
- <fc346f3c-6e3d-b96c-d64a-2ae4cf4218d4@codeaurora.org>
- <87v954xjoz.fsf@kernel.org>
- <3c55dd4f-5ebd-3730-7428-cb15235465a7@codeaurora.org>
-User-agent: mu4e 1.4.15; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     gregkh@linuxfoundation.org, peter.chen@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org
-Subject: Re: [PATCH v2] usb: dwc3: gadget: Replace
- list_for_each_entry_safe() if using giveback
-In-reply-to: <3c55dd4f-5ebd-3730-7428-cb15235465a7@codeaurora.org>
-Date:   Wed, 28 Jul 2021 08:53:49 +0300
-Message-ID: <87pmv3t24y.fsf@kernel.org>
+        s=k20201202; t=1627451729;
+        bh=CHutfR66EytynydQX6I7FYroM0McZFhjdSGnOcWRUMI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lOgx1/5HtC7kDH/DMOqVu6bijNc2yaE0cA6Fx29IHRiaTMg0nDkdQsEAoLlVmH0E0
+         TyT/NRV+eCELg7neljgY9xwSfPEAfRLuT4lnwv3G4yUGifCbqDk3Zx6n8LQ/HRcpqH
+         OGsnzibBYI4BGEIpTqy2pIDJuAGJ4aMEzgF8XDX1UrdTAm3criwO/Upcjlho1am4EC
+         4qCSAG0xroWT2UDESyvdfy/JsEbBaEpIHNZmPWxX9sN1HMe7jPDUfrv3unELOQCTn6
+         0ZaSvVDP27V3HfK9NiJBbsZ+C20udsF8Fg5v2Iwc4Fxb/K8oY7tAqy+xnYUlZTJsyi
+         DXVcSZmlJswnw==
+Date:   Wed, 28 Jul 2021 11:25:23 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sanjay R Mehta <Sanju.Mehta@amd.com>
+Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
+        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
+        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
+        mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v10 1/3] dmaengine: ptdma: Initial driver for the AMD
+ PTDMA
+Message-ID: <YQDxSwT0DYqEf0z5@matsya>
+References: <1624207298-115928-1-git-send-email-Sanju.Mehta@amd.com>
+ <1624207298-115928-2-git-send-email-Sanju.Mehta@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624207298-115928-2-git-send-email-Sanju.Mehta@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20-06-21, 11:41, Sanjay R Mehta wrote:
 
-Hi Wesley,
+> +static irqreturn_t pt_core_irq_handler(int irq, void *data)
+> +{
+> +	struct pt_device *pt = data;
+> +	struct pt_cmd_queue *cmd_q = &pt->cmd_q;
+> +	u32 status;
+> +	bool err = true;
+> +
+> +	pt_core_disable_queue_interrupts(pt);
+> +
+> +	status = ioread32(cmd_q->reg_interrupt_status);
+> +	if (status) {
+> +		cmd_q->int_status = status;
+> +		cmd_q->q_status = ioread32(cmd_q->reg_status);
+> +		cmd_q->q_int_status = ioread32(cmd_q->reg_int_status);
+> +
+> +		/* On error, only save the first error value */
+> +		if ((status & INT_ERROR) && !cmd_q->cmd_error) {
+> +			cmd_q->cmd_error = CMD_Q_ERROR(cmd_q->q_status);
+> +			err = false;
+> +		}
+> +
+> +		/* Acknowledge the interrupt */
+> +		iowrite32(status, cmd_q->reg_interrupt_status);
+> +	}
+> +
+> +	pt_core_enable_queue_interrupts(pt);
+> +
+> +	return err ? IRQ_HANDLED : IRQ_NONE;
 
-Wesley Cheng <wcheng@codeaurora.org> writes:
->>>>> Sorry for the late response.  So I tried with a list_replace_init() to
->>>>> within the list_for_each_entry_safe() loop to update tmp w/ the
->>>>> cancelled_list list head, but the issue was still observed.  This is
->>>>> because we can't replace the reference the loop already has stored in
->>>>> tmp, which is simply updated as the current item on the next iteration.
->>>>>
->>>>> I believe this is what you were trying to achieve?
->>>>>
->>>> Was wondering if you had any further inputs on this change?  As
->>>> mentioned, I tried a few things with list_replace_init(), which did not
->>>> work.
->>>>
->>>
->>> Sorry for the ping.  Is this change OK to add as is?  We've been running
->>> into this instance pretty frequently during our testing, so just wanted
->>> to close on the proper changes being merged upstream.
->> 
->> The idea is this:
->> 
->> 	struct list_head	local;
->> 
->>         spin_lock_irq(&lock);
->>         list_replace_init(&dwc->cancelled_list, &local);
->>         spin_unlock_irq(&lock);
->> 
->> 	list_for_each_entry_safe(req, tmp, &local, list) {
->>         	/* ... */
->> 	}
->> 
->> It looks to me this should work fine, no? You can also follow what
->> drivers/usb/core/hcd.c is doing in usb_giveback_urb_bh() and restarting
->> if dwc->cancelled_list is not empty after list_for_each_entry_safe().
->> 
->> Can you give that one a shot?
->> 
->
-> Great, thanks for this suggestion!  Now I understand what you were
-> referring to.  I gave this a try and it works well.  Will prepare a
-> change to replace both places with list_replace_init()
+On err you should not return IRQ_NONE. IRQ_NONE means "interrupt was not
+from this device or was not handled"
 
-this is great news :-) Thanks for trying it out
+Error is handled here!
+
+> +static struct pt_device *pt_alloc_struct(struct device *dev)
+> +{
+> +	struct pt_device *pt;
+> +
+> +	pt = devm_kzalloc(dev, sizeof(*pt), GFP_KERNEL);
+> +
+> +	if (!pt)
+> +		return NULL;
+> +	pt->dev = dev;
+> +
+> +	INIT_LIST_HEAD(&pt->cmd);
+> +
+> +	snprintf(pt->name, MAX_PT_NAME_LEN, "pt-%s", dev_name(dev));
+
+what is this name used for? Why not use dev_name everywhere?
+
+> +static int pt_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> +{
+> +	struct pt_device *pt;
+> +	struct pt_msix *pt_msix;
+> +	struct device *dev = &pdev->dev;
+> +	void __iomem * const *iomap_table;
+> +	int bar_mask;
+> +	int ret = -ENOMEM;
+> +
+> +	pt = pt_alloc_struct(dev);
+> +	if (!pt)
+> +		goto e_err;
+> +
+> +	pt_msix = devm_kzalloc(dev, sizeof(*pt_msix), GFP_KERNEL);
+> +	if (!pt_msix)
+> +		goto e_err;
+> +
+> +	pt->pt_msix = pt_msix;
+> +	pt->dev_vdata = (struct pt_dev_vdata *)id->driver_data;
+> +	if (!pt->dev_vdata) {
+> +		ret = -ENODEV;
+> +		dev_err(dev, "missing driver data\n");
+> +		goto e_err;
+> +	}
+> +
+> +	ret = pcim_enable_device(pdev);
+> +	if (ret) {
+> +		dev_err(dev, "pcim_enable_device failed (%d)\n", ret);
+> +		goto e_err;
+> +	}
+> +
+> +	bar_mask = pci_select_bars(pdev, IORESOURCE_MEM);
+> +	ret = pcim_iomap_regions(pdev, bar_mask, "ptdma");
+> +	if (ret) {
+> +		dev_err(dev, "pcim_iomap_regions failed (%d)\n", ret);
+> +		goto e_err;
+> +	}
+> +
+> +	iomap_table = pcim_iomap_table(pdev);
+> +	if (!iomap_table) {
+> +		dev_err(dev, "pcim_iomap_table failed\n");
+> +		ret = -ENOMEM;
+> +		goto e_err;
+> +	}
+> +
+> +	pt->io_regs = iomap_table[pt->dev_vdata->bar];
+> +	if (!pt->io_regs) {
+> +		dev_err(dev, "ioremap failed\n");
+> +		ret = -ENOMEM;
+> +		goto e_err;
+> +	}
+> +
+> +	ret = pt_get_irqs(pt);
+> +	if (ret)
+> +		goto e_err;
+> +
+> +	pci_set_master(pdev);
+> +
+> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(48));
+> +	if (ret) {
+> +		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
+> +		if (ret) {
+> +			dev_err(dev, "dma_set_mask_and_coherent failed (%d)\n",
+> +				ret);
+> +			goto e_err;
+> +		}
+> +	}
+> +
+> +	dev_set_drvdata(dev, pt);
+> +
+> +	if (pt->dev_vdata)
+> +		ret = pt_core_init(pt);
+> +
+> +	if (ret)
+> +		goto e_err;
+> +
+> +	return 0;
+> +
+> +e_err:
+> +	dev_err(dev, "initialization failed\n");
+
+log the err code, that is very useful!
+
+> +	/* Register addresses for queue */
+> +	void __iomem *reg_control;
+> +	void __iomem *reg_tail_lo;
+> +	void __iomem *reg_head_lo;
+> +	void __iomem *reg_int_enable;
+> +	void __iomem *reg_interrupt_status;
+> +	void __iomem *reg_status;
+> +	void __iomem *reg_int_status;
+> +	void __iomem *reg_dma_status;
+> +	void __iomem *reg_dma_read_status;
+> +	void __iomem *reg_dma_write_status;
+
+this looks like pointer to registers, wont it make sense to keep base
+ptr and use offset to read..?
+
+Looking at pt_init_cmdq_regs(), i think that seems to be the case. Why
+waste so much memory by having so many pointers?
+
+
+> +	u32 qcontrol; /* Cached control register */
+> +
+> +	/* Status values from job */
+> +	u32 int_status;
+> +	u32 q_status;
+> +	u32 q_int_status;
+> +	u32 cmd_error;
+> +} ____cacheline_aligned;
+> +
+> +struct pt_device {
+> +	struct list_head entry;
+> +
+> +	unsigned int ord;
+
+Unused?
 
 -- 
-balbi
+~Vinod
