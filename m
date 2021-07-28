@@ -2,70 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E4F3D8AA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29F03D8AA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235584AbhG1JaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49806 "EHLO mail.kernel.org"
+        id S235473AbhG1JcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235573AbhG1JaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:30:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C5B7E60F9E;
-        Wed, 28 Jul 2021 09:30:05 +0000 (UTC)
+        id S231392AbhG1Jb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 05:31:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C34760F6D;
+        Wed, 28 Jul 2021 09:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627464605;
-        bh=78UH4qs9amkD7Y0zC390ms7kf9EJk2n6+azlfFWCHpI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=TdxtBCDAEnkTzX3JrfkJITk7WaKMpPXwSdPbBzMmn61fLny5GYxp9UYYsC1iDiiki
-         atffj0sEzmdfWHwP0LVo3jGUYKEKzm54jPXDU9n8AJ76x0hmgIlgQwZoOQ41CzB7tT
-         hfIlnl+6j4ALDTD9tC0WuAQHNV96bz4XzNgouCIIuDUgn0w0QxUd1EEmWigf76sKEu
-         t36RWkCxNWRRTCaRx48iPF/pS/D06cKWfmwZq9CjBMeHJSic+rl9E/nqsG18fQzUCh
-         a97fV0KWqycd56ZPhKrr2zfgL+p/MAa8460ZDJdctDi4J+avrzwh+7x9mX2fZpFr+A
-         FdRNneaNd3LBA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B83F5609E8;
-        Wed, 28 Jul 2021 09:30:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1627464717;
+        bh=9SasO8pvmJqP3IwdBZP3mWUA+TfEYlcFAekW9WY4gds=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=QfFHBDIrd6j6WQhajeF+53TL907IYyjdLgIH0wMbMQNBznmfWfxZmdPyrvxgsZYnB
+         8brJMcrIrzR12LPT/xr3D52C4i/MoRcSSagLFAcyy7NSwUyMjihIEPlLw8wQR7i4vh
+         qsXOe5NgGxWBAP1/cAEEP2jpry7OjbORE0A+kHTx1RKMzL3s/4OnneoxQVHzygWeJv
+         cvdmRhS4QgWZB27WIEWbKYIZYJ9sceIjNor84zsbAgi2nuCT5f+AEIY9D9LULrk4DD
+         zzBf67oi9K6CQvQR6TlZZwsP6JJb7F0/90N29Hr+jh64a2XNv20dwVxdZrAR4QO23I
+         nGK1rzlmg9uSw==
+Date:   Wed, 28 Jul 2021 11:31:54 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usbhid: free raw_report buffers in usbhid_stop
+In-Reply-To: <20210623184030.17281-1-mail@anirudhrb.com>
+Message-ID: <nycvar.YFH.7.76.2107281131460.8253@cbobk.fhfr.pm>
+References: <20210623184030.17281-1-mail@anirudhrb.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] nfc: nfcsim: fix use after free during module unload
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162746460574.7734.11456826869103789563.git-patchwork-notify@kernel.org>
-Date:   Wed, 28 Jul 2021 09:30:05 +0000
-References: <20210728064909.5356-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210728064909.5356-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, 24 Jun 2021, Anirudh Rayabharam wrote:
 
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Wed, 28 Jul 2021 08:49:09 +0200 you wrote:
-> There is a use after free memory corruption during module exit:
->  - nfcsim_exit()
->   - nfcsim_device_free(dev0)
->     - nfc_digital_unregister_device()
->       This iterates over command queue and frees all commands,
->     - dev->up = false
->     - nfcsim_link_shutdown()
->       - nfcsim_link_recv_wake()
->         This wakes the sleeping thread nfcsim_link_recv_skb().
+> Free the unsent raw_report buffers when the device is removed.
 > 
-> [...]
+> Fixes a memory leak reported by syzbot at:
+> https://syzkaller.appspot.com/bug?id=7b4fa7cb1a7c2d3342a2a8a6c53371c8c418ab47
+> 
+> Reported-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
+> Tested-by: syzbot+47b26cd837ececfc666d@syzkaller.appspotmail.com
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 
-Here is the summary with links:
-  - nfc: nfcsim: fix use after free during module unload
-    https://git.kernel.org/netdev/net/c/5e7b30d24a5b
+Applied, thank you.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+-- 
+Jiri Kosina
+SUSE Labs
 
