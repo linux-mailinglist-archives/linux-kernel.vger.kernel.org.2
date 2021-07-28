@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D697E3D916E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B303D916D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236954AbhG1O50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:57:26 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7885 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235546AbhG1O5Y (ORCPT
+        id S236889AbhG1O5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235546AbhG1O5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:57:24 -0400
-Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZc9W5rdCz80gr;
-        Wed, 28 Jul 2021 22:53:35 +0800 (CST)
-Received: from huawei.com (10.175.104.82) by dggeme766-chm.china.huawei.com
- (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 28
- Jul 2021 22:57:20 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <cl@linux.com>, <penberg@kernel.org>, <guro@fb.com>,
-        <rientjes@google.com>, <iamjoonsoo.kim@lge.com>,
-        <akpm@linux-foundation.org>, <vbabka@suse.cz>,
-        <hannes@cmpxchg.org>, <shakeelb@google.com>, <ast@kernel.org>,
-        <wangkefeng.wang@huawei.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] mm/memcg: fix NULL pointer dereference in memcg_slab_free_hook()
-Date:   Wed, 28 Jul 2021 22:56:55 +0800
-Message-ID: <20210728145655.274476-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 28 Jul 2021 10:57:06 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8393CC061757;
+        Wed, 28 Jul 2021 07:57:04 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id q18so2832091ile.9;
+        Wed, 28 Jul 2021 07:57:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e2ywKCAyW5iOo3TdeL4LGysC3w1acIn4LADsFzbMsMA=;
+        b=LmKgLak9fidSbx+hsVMK04ZqjeFal/L/sWVRHPUbfKyYpAF/FL5spbTmGeZD7MgHAl
+         5eKMIgEflypQwCqPRdpVG+ohHTvVL0gBPbAuOm+9PrzqU+/ObXpT9ut0SBxUdL8zmnHI
+         OPsmcDAzTcTcJWQIB749Hk8BpJbIVEZ07oaLxPd7XcdWRrnfTvHjB0BJrna7ADRoLGjZ
+         n+P/gZUano47GrIg207NeiAQuBa6oQ24nHw/HJsegM188NC5ZcZvJv9JqoG//qye24Z3
+         WrrGadOWX2X3AHUZIgCS/4wEBiOmnnDhciABNrJS19nIl7rlcCXgi4f3NxtLO6aAt1Kd
+         kWcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e2ywKCAyW5iOo3TdeL4LGysC3w1acIn4LADsFzbMsMA=;
+        b=mezx2VdC9ZqYRAxnaMTufBGyNtkT535Ygdu9+PWwyTtqrdM+YVwWknU5Ymw7gcBdoj
+         9soJmDg/4U7c2t1Pm0tgJtOc4bb3XYDYSybme9to3Y7FqCO/WVuJ1CnJuELKLCVs2F0G
+         ym/QbIK/VLx2aScNJ/jSu9g6bVv0mVc6OHfRSULl5uQ7g9Ua8ufOxXf6V2l5il9nqm2x
+         Vo0YK2Lop+ArfhKMIm9Ac0o2FTkrEJNVjAuf6Iu8HRFWQptR41VctfC0x7IGBLm+Elas
+         DwA5PnCjELD3ZcOwOaPODiLayBdKP5oRUx8rFBFdyHzVCEhrXCl58kdUzXnX889tDkQ2
+         RXwA==
+X-Gm-Message-State: AOAM530kuQ77CtFW2fpcxuRDsA+FwMb5WVq2MQRhmcSIJ6eh3VdwIMGZ
+        HA6h6X9cFtICOf0uyMjaOK0=
+X-Google-Smtp-Source: ABdhPJywbWBVLY6qHpI7Oc9lffXNu0yIXkEG1M1rAmTYABJuf5ipVoG372N5iVxALJi3BqYFfoigxA==
+X-Received: by 2002:a05:6e02:ecd:: with SMTP id i13mr199143ilk.182.1627484223888;
+        Wed, 28 Jul 2021 07:57:03 -0700 (PDT)
+Received: from localhost ([12.28.44.171])
+        by smtp.gmail.com with ESMTPSA id x4sm78028ilj.52.2021.07.28.07.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 07:57:03 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 07:57:02 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Marc Zyngier <maz@kernel.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 0/3] for_each_*_bit: move to find.h and reconsider
+Message-ID: <YQFwPtKOtlN6Cigg@yury-ThinkPad>
+References: <20210618195735.55933-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618195735.55933-1-yury.norov@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I use kfree_rcu() to free a large memory allocated by
-kmalloc_node(), the following dump occurs.
+Ping?
 
-BUG: kernel NULL pointer dereference, address: 0000000000000020
-[...]
-Oops: 0000 [#1] SMP
-[...]
-Workqueue: events kfree_rcu_work
-RIP: 0010:__obj_to_index include/linux/slub_def.h:182 [inline]
-RIP: 0010:obj_to_index include/linux/slub_def.h:191 [inline]
-RIP: 0010:memcg_slab_free_hook+0x120/0x260 mm/slab.h:363
-[...]
-Call Trace:
- kmem_cache_free_bulk+0x58/0x630 mm/slub.c:3293
- kfree_bulk include/linux/slab.h:413 [inline]
- kfree_rcu_work+0x1ab/0x200 kernel/rcu/tree.c:3300
- process_one_work+0x207/0x530 kernel/workqueue.c:2276
- worker_thread+0x320/0x610 kernel/workqueue.c:2422
- kthread+0x13d/0x160 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-When kmalloc_node() a large memory, page is allocated, not slab,
-so when freeing memory via kfree_rcu(), this large memory should not
-be used by memcg_slab_free_hook(), because memcg_slab_free_hook() is
-is used for slab.
-
-Using page_objcgs_check() instead of page_objcgs() in
-memcg_slab_free_hook() to fix this bug.
-
-Fixes: 270c6a71460e ("mm: memcontrol/slab: Use helpers to access slab page's memcg_data")
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
-v1->v2: Use page_objcgs_check() to fix this bug
- mm/slab.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/slab.h b/mm/slab.h
-index 67e06637ff2e..59db4797acd4 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -339,7 +339,7 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
- 			continue;
- 
- 		page = virt_to_head_page(p[i]);
--		objcgs = page_objcgs(page);
-+		objcgs = page_objcgs_check(page);
- 		if (!objcgs)
- 			continue;
- 
--- 
-2.17.1
-
+On Fri, Jun 18, 2021 at 12:57:32PM -0700, Yury Norov wrote:
+> for_each_bit() macro family uses find_bit() functions, so it's better
+> to have for_each_bit() and find_bit() functions in the same header. 
+> 
+> This series puts for_each_bit() to a proper place and optimizes its
+> usage over the kernel.
+> 
+> The series is based on this:
+> https://lore.kernel.org/linux-arch/20210612123639.329047-1-yury.norov@gmail.com/
+> 
+> The full series can be found here:
+> https://github.com/norov/linux/commits/bm-final
+> 
+> Yury Norov (3):
+>   include/linux: move for_each_bit() macros from bitops.h to find.h
+>   find: micro-optimize for_each_{set,clear}_bit()
+>   Replace for_each_*_bit_from() with for_each_*_bit() where appropriate
+> 
+>  arch/x86/kernel/apic/vector.c         |  4 ++--
+>  drivers/gpu/drm/etnaviv/etnaviv_gpu.c |  4 ++--
+>  drivers/hwmon/ltc2992.c               |  3 +--
+>  include/linux/bitops.h                | 34 ---------------------------
+>  include/linux/find.h                  | 34 +++++++++++++++++++++++++++
+>  5 files changed, 39 insertions(+), 40 deletions(-)
+> 
+> -- 
+> 2.30.2
