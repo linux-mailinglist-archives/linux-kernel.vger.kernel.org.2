@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA04B3D9287
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC893D9289
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237371AbhG1P70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:59:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:59326 "EHLO foss.arm.com"
+        id S237321AbhG1P71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:59:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:59348 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237369AbhG1P7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:59:21 -0400
+        id S237363AbhG1P7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:59:23 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1B19106F;
-        Wed, 28 Jul 2021 08:59:19 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB3CE1FB;
+        Wed, 28 Jul 2021 08:59:21 -0700 (PDT)
 Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1CFCD3F70D;
-        Wed, 28 Jul 2021 08:59:17 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 109E33F70D;
+        Wed, 28 Jul 2021 08:59:19 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux-foundation.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
         john.garry@huawei.com, dianders@chromium.org,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH v2 08/24] iommu/rockchip: Drop IOVA cookie management
-Date:   Wed, 28 Jul 2021 16:58:29 +0100
-Message-Id: <9baf515beb326882a1cadf65c832c7ef330f3128.1627468309.git.robin.murphy@arm.com>
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Subject: [PATCH v2 09/24] iommu/sprd: Drop IOVA cookie management
+Date:   Wed, 28 Jul 2021 16:58:30 +0100
+Message-Id: <7aa0f8aece44391df4dd5d8d1a780f3d3ef2a1a2.1627468309.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1627468308.git.robin.murphy@arm.com>
 References: <cover.1627468308.git.robin.murphy@arm.com>
@@ -38,53 +38,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The core code bakes its own cookies now.
 
-CC: Heiko Stuebner <heiko@sntech.de>
+CC: Chunyan Zhang <chunyan.zhang@unisoc.com>
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 ---
- drivers/iommu/rockchip-iommu.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ drivers/iommu/sprd-iommu.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
-index 9febfb7f3025..c24561f54f32 100644
---- a/drivers/iommu/rockchip-iommu.c
-+++ b/drivers/iommu/rockchip-iommu.c
-@@ -1074,10 +1074,6 @@ static struct iommu_domain *rk_iommu_domain_alloc(unsigned type)
- 	if (!rk_domain)
+diff --git a/drivers/iommu/sprd-iommu.c b/drivers/iommu/sprd-iommu.c
+index 73dfd9946312..2bc1de6e823d 100644
+--- a/drivers/iommu/sprd-iommu.c
++++ b/drivers/iommu/sprd-iommu.c
+@@ -144,11 +144,6 @@ static struct iommu_domain *sprd_iommu_domain_alloc(unsigned int domain_type)
+ 	if (!dom)
  		return NULL;
  
--	if (type == IOMMU_DOMAIN_DMA &&
--	    iommu_get_dma_cookie(&rk_domain->domain))
--		goto err_free_domain;
+-	if (iommu_get_dma_cookie(&dom->domain)) {
+-		kfree(dom);
+-		return NULL;
+-	}
 -
- 	/*
- 	 * rk32xx iommus use a 2 level pagetable.
- 	 * Each level1 (dt) and level2 (pt) table has 1024 4-byte entries.
-@@ -1085,7 +1081,7 @@ static struct iommu_domain *rk_iommu_domain_alloc(unsigned type)
- 	 */
- 	rk_domain->dt = (u32 *)get_zeroed_page(GFP_KERNEL | GFP_DMA32);
- 	if (!rk_domain->dt)
--		goto err_put_cookie;
-+		goto err_free_domain;
+ 	spin_lock_init(&dom->pgtlock);
  
- 	rk_domain->dt_dma = dma_map_single(dma_dev, rk_domain->dt,
- 					   SPAGE_SIZE, DMA_TO_DEVICE);
-@@ -1106,9 +1102,6 @@ static struct iommu_domain *rk_iommu_domain_alloc(unsigned type)
+ 	dom->domain.geometry.aperture_start = 0;
+@@ -161,7 +156,6 @@ static void sprd_iommu_domain_free(struct iommu_domain *domain)
+ {
+ 	struct sprd_iommu_domain *dom = to_sprd_domain(domain);
  
- err_free_dt:
- 	free_page((unsigned long)rk_domain->dt);
--err_put_cookie:
--	if (type == IOMMU_DOMAIN_DMA)
--		iommu_put_dma_cookie(&rk_domain->domain);
- err_free_domain:
- 	kfree(rk_domain);
- 
-@@ -1137,8 +1130,6 @@ static void rk_iommu_domain_free(struct iommu_domain *domain)
- 			 SPAGE_SIZE, DMA_TO_DEVICE);
- 	free_page((unsigned long)rk_domain->dt);
- 
--	if (domain->type == IOMMU_DOMAIN_DMA)
--		iommu_put_dma_cookie(&rk_domain->domain);
- 	kfree(rk_domain);
+-	iommu_put_dma_cookie(domain);
+ 	kfree(dom);
  }
  
 -- 
