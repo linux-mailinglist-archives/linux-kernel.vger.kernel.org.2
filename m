@@ -2,87 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE963D9010
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555063D9014
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236392AbhG1OGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:06:37 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:50104 "EHLO gloria.sntech.de"
+        id S236585AbhG1OHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:07:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233439AbhG1OGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:06:36 -0400
-Received: from [95.90.166.74] (helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1m8kCc-0005wH-22; Wed, 28 Jul 2021 16:06:30 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peter Geis <pgwipeout@gmail.com>
-Subject: Re: [PATCH 6/9] arm64: dts: rockchip: add missing rk3568 cru phandles
-Date:   Wed, 28 Jul 2021 16:06:29 +0200
-Message-ID: <13247009.uLZWGnKmhe@diego>
-In-Reply-To: <20210728135534.703028-7-pgwipeout@gmail.com>
-References: <20210728135534.703028-1-pgwipeout@gmail.com> <20210728135534.703028-7-pgwipeout@gmail.com>
+        id S233439AbhG1OHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 10:07:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D77C660C3F;
+        Wed, 28 Jul 2021 14:07:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627481256;
+        bh=LFYS6sxKo4PXSjLsok+9iz45Dtwvy535c2NhhiC2Xns=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lEGczgVx0B7ZJJb4fPb7mzKYbGQabtOleGviPcDuArvy1Ga2ORPEvjxIZSIanS1tl
+         nOl3TnVAZKBxiS8x54uHzRUGYodTdTptKOMEl4qiWHQ0Y7SihkEL/7qhJ2ElCQr7dN
+         voY36cffiVRpQBvdvltHLkAl4FWG5w8XIdaX/RZ1AVOhtrfXUwjGO2QdKI3w/TTi97
+         7uR2fYcbhonBkAki/sAdgJ0qAZJEccqw3AvHaMNIT9nhzPTQKfUnu/NHeRnKymsS78
+         Jacbpb3vtDNfJxFLD0GYE+FMG+ILJUcRIPSNFxiZbbf4PfA0Nr26WFM4vDYKEjhDDw
+         53ATmgxqj2iHA==
+Date:   Wed, 28 Jul 2021 10:07:34 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.13 07/19] ipv6: allocate enough headroom in
+ ip6_finish_output2()
+Message-ID: <YQFkpo140o/fy56p@sashalap>
+References: <20210723035721.531372-1-sashal@kernel.org>
+ <20210723035721.531372-7-sashal@kernel.org>
+ <2b57c728-3ef2-aeba-2ff3-ff2555fb6ee3@virtuozzo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <2b57c728-3ef2-aeba-2ff3-ff2555fb6ee3@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Fri, Jul 23, 2021 at 09:03:33AM +0300, Vasily Averin wrote:
+>this patch is incomplete, and requires following fixup
+>https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2d85a1b31dde84038ea07ad825c3d8d3e71f4344
 
-Am Mittwoch, 28. Juli 2021, 15:55:31 CEST schrieb Peter Geis:
-> The grf and pmugrf phandles are necessary for the pmucru and cru to
-> modify clocks. Add these phandles to permit adjusting the clock rates
-> and muxes.
-> 
-> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> ---
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> index 0905fac0726a..8ba0516eedd8 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> @@ -218,6 +218,8 @@ grf: syscon@fdc60000 {
->  	pmucru: clock-controller@fdd00000 {
->  		compatible = "rockchip,rk3568-pmucru";
->  		reg = <0x0 0xfdd00000 0x0 0x1000>;
-> +		rockchip,grf = <&grf>;
-> +		rockchip,pmugrf = <&pmugrf>;
+I've grabbed it too, thanks!
 
-I don't think the pmucru needs both and in fact the mainline
-clock driver should just reference its specific grf at all, i.e.
-	pmucru -> pmugrf (via the rockchip,grf handle)
-	cru -> grf
-
-I've not seen anything breaking this scope so far.
-
-
-Heiko
-
->  		#clock-cells = <1>;
->  		#reset-cells = <1>;
->  	};
-> @@ -225,6 +227,7 @@ pmucru: clock-controller@fdd00000 {
->  	cru: clock-controller@fdd20000 {
->  		compatible = "rockchip,rk3568-cru";
->  		reg = <0x0 0xfdd20000 0x0 0x1000>;
-> +		rockchip,grf = <&grf>;
->  		#clock-cells = <1>;
->  		#reset-cells = <1>;
->  	};
-> 
-
-
-
-
+-- 
+Thanks,
+Sasha
