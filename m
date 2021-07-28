@@ -2,109 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704083D8ADC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897833D8AEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235768AbhG1Jjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbhG1Jjo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:39:44 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B9DC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:39:42 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id m20-20020a05600c4f54b029024e75a15716so1225798wmq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:39:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QWYajFnJCJzmpzKrv7hbKbuFIci/pVSRegRGjTua7O0=;
-        b=l4TDshnGaVaNrCBGz8USyiAQ/yncxv/XGJmIm83yOaQhEbSiv6MgQ0QJVX9q8GoIxo
-         rRKVKidZIyrdNbEUfzBB6KYwXo6V60OvulGJsQoVAsRds6rVkfV7lg0Xwo9OkZAxp5+k
-         Jj/8TXE6FWFG22hxnjLOEze2aPxuayJTXsAz9uTxpmMf8dWwKKCjRRlfNutNKjVyhhYy
-         mvhGCWeu4Lbe9UjToKlMPmPCRV/G/wF7sZtLthWg7rw/bc+Qe6vl2wZ9qlrS4RW2lwPf
-         PxjmtuPKeoORfhmF0R+9Ra6qbReEZvmemcqMyO6o2h4q14x4ZjR5DagzwqTdV9KFqPs4
-         QngA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QWYajFnJCJzmpzKrv7hbKbuFIci/pVSRegRGjTua7O0=;
-        b=IcaVLExcqgNTfi+2PjdGwEXdeta5wVNnpDwzm5aWMyy6p+Jgz+5TyNe7NheSzi/0AB
-         0LAKg9OvMvRmpC3ttsgQRTVijS0tWxJAsrGRNGzAQdZR97euRbxCizkYn40Z74NpZ9R3
-         LFGVTjM0Htx8J91eJiDwGtebz6+CxLg0SMLRe6pdb2L7l/rex8EjqeZ6KUrCuWspQ+6n
-         iXSTXDQhfVqgydMM/7oxoITASpVI5lWSMswJoJxoR9OY3NaIRm5vxLzRw+SCAJWfG/M1
-         40bulOsjEqiODuuRvgxRr7H1x6WmD/cGr5NQYMlA0dvZnRuusAC4UZvA0SXo/9m+T0oV
-         ai7w==
-X-Gm-Message-State: AOAM530N7hD2Gbh6Hba/g72dg6ksvblqpaIKq0b0rdLA+e39tGdcl7ZH
-        K11mrJ0PBIFhT/Pqke/nLJDjmA==
-X-Google-Smtp-Source: ABdhPJzhsvzLPo4Nt7Hmn+qOvVsLPt2BEWNVD5b8YV6t1d2ULZjZ2dvIJp0YfMIxuAPZN6651KmPYA==
-X-Received: by 2002:a1c:4e10:: with SMTP id g16mr8507098wmh.66.1627465180964;
-        Wed, 28 Jul 2021 02:39:40 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:20cb:dab7:97bc:c682])
-        by smtp.gmail.com with ESMTPSA id m14sm5943663wrs.56.2021.07.28.02.39.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 02:39:40 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 10:39:38 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        id S235897AbhG1JkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:40:13 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:35445 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235845AbhG1JkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 05:40:09 -0400
+Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 3458F61E5FE02;
+        Wed, 28 Jul 2021 11:40:07 +0200 (CEST)
+Subject: Re: [RFC][PATCH] hwmon: (pmbus) Support 4th PSU temperature sensor
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     Guohan Lu <lguohan@gmail.com>,
+        Madhava Reddy Siddareddygari <msiddare@cisco.com>,
+        Venkat Garigipati <venkatg@cisco.com>,
+        Billie Alsup <balsup@cisco.com>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] sched: Don't report SCHED_FLAG_SUGOV in
- sched_getattr()
-Message-ID: <YQEl2t2RgaB9eEOZ@google.com>
-References: <20210727101103.2729607-1-qperret@google.com>
- <20210727101103.2729607-3-qperret@google.com>
- <YQEfY730Sjkr3w+Y@localhost.localdomain>
+References: <20210728093815.8395-1-pmenzel@molgen.mpg.de>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <87b2221c-ce6e-0aa0-f6f1-b11506c453d8@molgen.mpg.de>
+Date:   Wed, 28 Jul 2021 11:40:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQEfY730Sjkr3w+Y@localhost.localdomain>
+In-Reply-To: <20210728093815.8395-1-pmenzel@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 28 Jul 2021 at 11:12:03 (+0200), Juri Lelli wrote:
-> Hi Quentin,
-> 
-> On 27/07/21 11:11, Quentin Perret wrote:
-> > SCHED_FLAG_SUGOV is supposed to be a kernel-only flag that userspace
-> > cannot interact with. However, sched_getattr() currently reports it
-> > in sched_flags if called on a sugov worker even though it is not
-> > actually defined in a UAPI header. To avoid this, make sure to
-> > clean-up the sched_flags field in sched_getattr() before returning to
-> > userspace.
-> > 
-> > Signed-off-by: Quentin Perret <qperret@google.com>
-> > ---
-> >  kernel/sched/core.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 2d9ff40f4661..d8f489dcc383 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -7535,6 +7535,7 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pid, struct sched_attr __user *, uattr,
-> >  		kattr.sched_priority = p->rt_priority;
-> >  	else
-> >  		kattr.sched_nice = task_nice(p);
-> > +	kattr.sched_flags &= SCHED_FLAG_ALL;
-> 
-> Maybe we can do this in the previous patch so that it's kept confined to
-> deadline bits?
+Dear Linux folks,
 
-That works too, it just felt like this could happen again if we start
-using non-standard flags outside of deadline for any reason at some
-point in the future. But no strong opinion really.
 
-Cheers,
-Quentin
+Am 28.07.21 um 11:38 schrieb Paul Menzel:
+> From: Madhava Reddy Siddareddygari <msiddare@cisco.com>
+> 
+> PSU650W has four temperature sensors, while the pmbus driver currently
+> only support three temperature sensors.
+> 
+> So, support a fourth temp sensor, i. e. PSU outlet temperature sensor,
+> by copying what is done for temperature sensor 3, and use register 0xDF.
+> 
+> PSU650W is based on LITE-ON vendor.
+> LITE-ON MFG part numbers for the PSU are PS-2651-3SB5 Z and PS-2651-3SA5 Z.
+> 
+> Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
+> Signed-off-by: Venkat Garigipati <venkatg@cisco.com>
+> Cc: Billie Alsup <balsup@cisco.com>
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> ---
+> This as a RFC, as we know 0xDF is a manufacturer specific register, and
+> cannot be added to the PMBus core driver. It was submitted to SONiC [1]
+> by Cisco engineers.
+> 
+> It’d be great if the maintainers [could] suggest how to easily implement a
+
+I meant *could* instead of *good*.
+
+> custom driver for that PSU?
+
+
+Kind regards,
+
+Paul
+
+
+> [1]: https://github.com/Azure/sonic-linux-kernel/pull/214
+> 
+>   drivers/hwmon/pmbus/pmbus.c      |  4 +++-
+>   drivers/hwmon/pmbus/pmbus.h      |  3 +++
+>   drivers/hwmon/pmbus/pmbus_core.c | 38 ++++++++++++++++++++++++++++++++
+>   3 files changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/pmbus/pmbus.c b/drivers/hwmon/pmbus/pmbus.c
+> index d0d386990af5..df2a782a1105 100644
+> --- a/drivers/hwmon/pmbus/pmbus.c
+> +++ b/drivers/hwmon/pmbus/pmbus.c
+> @@ -60,8 +60,10 @@ static void pmbus_find_sensor_groups(struct i2c_client *client,
+>   		info->func[0] |= PMBUS_HAVE_TEMP2;
+>   	if (pmbus_check_word_register(client, 0, PMBUS_READ_TEMPERATURE_3))
+>   		info->func[0] |= PMBUS_HAVE_TEMP3;
+> +	if (pmbus_check_word_register(client, 0, PMBUS_READ_TEMPERATURE_4))
+> +		info->func[0] |= PMBUS_HAVE_TEMP4;
+>   	if (info->func[0] & (PMBUS_HAVE_TEMP | PMBUS_HAVE_TEMP2
+> -			     | PMBUS_HAVE_TEMP3)
+> +			     | PMBUS_HAVE_TEMP3 | PMBUS_HAVE_TEMP4)
+>   	    && pmbus_check_byte_register(client, 0,
+>   					 PMBUS_STATUS_TEMPERATURE))
+>   			info->func[0] |= PMBUS_HAVE_STATUS_TEMP;
+> diff --git a/drivers/hwmon/pmbus/pmbus.h b/drivers/hwmon/pmbus/pmbus.h
+> index e0aa8aa46d8c..1522c8c7cade 100644
+> --- a/drivers/hwmon/pmbus/pmbus.h
+> +++ b/drivers/hwmon/pmbus/pmbus.h
+> @@ -135,6 +135,8 @@ enum pmbus_regs {
+>   	PMBUS_MFR_MAX_TEMP_2		= 0xC1,
+>   	PMBUS_MFR_MAX_TEMP_3		= 0xC2,
+>   
+> +	PMBUS_READ_TEMPERATURE_4	= 0xDF,
+> +
+>   /*
+>    * Virtual registers.
+>    * Useful to support attributes which are not supported by standard PMBus
+> @@ -401,6 +403,7 @@ enum pmbus_sensor_classes {
+>   #define PMBUS_HAVE_PWM12	BIT(20)
+>   #define PMBUS_HAVE_PWM34	BIT(21)
+>   #define PMBUS_HAVE_SAMPLES	BIT(22)
+> +#define PMBUS_HAVE_TEMP4	BIT(23)
+>   
+>   #define PMBUS_PHASE_VIRTUAL	BIT(30)	/* Phases on this page are virtual */
+>   #define PMBUS_PAGE_VIRTUAL	BIT(31)	/* Page is virtual */
+> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+> index 776ee2237be2..b084b5ba6d45 100644
+> --- a/drivers/hwmon/pmbus/pmbus_core.c
+> +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> @@ -1810,6 +1810,32 @@ static const struct pmbus_limit_attr temp_limit_attrs3[] = {
+>   	},
+>   };
+>   
+> +static const struct pmbus_limit_attr temp_limit_attrs4[] = {
+> +	{
+> +		.reg = PMBUS_UT_WARN_LIMIT,
+> +		.low = true,
+> +		.attr = "min",
+> +		.alarm = "min_alarm",
+> +		.sbit = PB_TEMP_UT_WARNING,
+> +	}, {
+> +		.reg = PMBUS_UT_FAULT_LIMIT,
+> +		.low = true,
+> +		.attr = "lcrit",
+> +		.alarm = "lcrit_alarm",
+> +		.sbit = PB_TEMP_UT_FAULT,
+> +	}, {
+> +		.reg = PMBUS_OT_WARN_LIMIT,
+> +		.attr = "max",
+> +		.alarm = "max_alarm",
+> +		.sbit = PB_TEMP_OT_WARNING,
+> +	}, {
+> +		.reg = PMBUS_OT_FAULT_LIMIT,
+> +		.attr = "crit",
+> +		.alarm = "crit_alarm",
+> +		.sbit = PB_TEMP_OT_FAULT,
+> +	}
+> +};
+> +
+>   static const struct pmbus_sensor_attr temp_attributes[] = {
+>   	{
+>   		.reg = PMBUS_READ_TEMPERATURE_1,
+> @@ -1847,6 +1873,18 @@ static const struct pmbus_sensor_attr temp_attributes[] = {
+>   		.gbit = PB_STATUS_TEMPERATURE,
+>   		.limit = temp_limit_attrs3,
+>   		.nlimit = ARRAY_SIZE(temp_limit_attrs3),
+> +	}, {
+> +		.reg = PMBUS_READ_TEMPERATURE_4,
+> +		.class = PSC_TEMPERATURE,
+> +		.paged = true,
+> +		.update = true,
+> +		.compare = true,
+> +		.func = PMBUS_HAVE_TEMP4,
+> +		.sfunc = PMBUS_HAVE_STATUS_TEMP,
+> +		.sbase = PB_STATUS_TEMP_BASE,
+> +		.gbit = PB_STATUS_TEMPERATURE,
+> +		.limit = temp_limit_attrs4,
+> +		.nlimit = ARRAY_SIZE(temp_limit_attrs4),
+>   	}
+>   };
+>   
+> 
