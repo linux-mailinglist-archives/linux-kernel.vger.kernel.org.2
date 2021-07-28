@@ -2,309 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7DE3D925B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0657A3D925D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236646AbhG1Pxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:53:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44131 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229622AbhG1PxX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:53:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627487601;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z7mu6yWWAqbDn/RK/FJ1DcEPhTX3MkESxVIuSo8NOYs=;
-        b=V3rKa8nZQAvuTK64cu8uBBfaZFwqTS5wU3X2XdgtdDyvubP37/kJ1wUVPHHs43oZx72Is4
-        Mgcq8vrVqnH6NjMvv/2LUcD69lkOcAco7tcLtLVoaR4Jz6oakdlFNXppoCpA4CbUh2QkWC
-        XKd6iXc0F7yBOlmE1ffaIq3T3267wVs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-fTZXa_ExOUCgW8P00Jp7dg-1; Wed, 28 Jul 2021 11:53:17 -0400
-X-MC-Unique: fTZXa_ExOUCgW8P00Jp7dg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A27C8100A605;
-        Wed, 28 Jul 2021 15:53:15 +0000 (UTC)
-Received: from T590 (ovpn-12-35.pek2.redhat.com [10.72.12.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BC23D5D6A1;
-        Wed, 28 Jul 2021 15:53:05 +0000 (UTC)
-Date:   Wed, 28 Jul 2021 23:53:05 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org,
-        David Jeffery <djeffery@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: New warning in nvme_setup_discard
-Message-ID: <YQF9YRSdRc+eVD1c@T590>
-References: <4729812.CpyZKHjjVO@natalenko.name>
- <17691292.WCMSeNvH9h@natalenko.name>
- <YQAtL5i0pjlnBpHV@T590>
- <3180854.nXyytZ0Y3r@natalenko.name>
+        id S236794AbhG1Px5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:53:57 -0400
+Received: from m32-153.88.com ([43.250.32.153]:48956 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229622AbhG1Pxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:53:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=From:To:Date; bh=Gv7KUucopsmsqIQxT+x1MtsOiHITozTqojHrK
+        PHgZ7c=; b=FYRYN70tEgYKctiU8TZiGJjBqyx1V9Z+jdT2CI5bjVlpYZzY0wRyS
+        pLyAUj7E86QqZh495ODeiqZYEFhFG701bM0JyGQf9hYTwhU7emzJG/PVMyLwdnHh
+        sJ7rR3XXEG7QpuE8gk+R4S8ffzD3WKFkl13gd3AOkPpwwqZTAju5QU=
+Received: from localhost.localdomain (unknown [113.251.14.68])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgCnJqeLfQFhVvsMAA--.44841S2;
+        Wed, 28 Jul 2021 23:53:48 +0800 (CST)
+From:   Hu Haowen <src.res@email.cn>
+To:     wsa@kernel.org
+Cc:     linux-i2c@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Documentation: i2c: add i2c-sysfs into index
+Date:   Wed, 28 Jul 2021 23:53:46 +0800
+Message-Id: <20210728155346.8941-1-src.res@email.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3180854.nXyytZ0Y3r@natalenko.name>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-CM-TRANSID: GiKnCgCnJqeLfQFhVvsMAA--.44841S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5-7k0a2IF6w4kM7kC6x804xWl1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
+        x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWU
+        JVW8JwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04
+        k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F4UJr1UMxC20s026xCaFVCjc4AY6r1j
+        6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
+        AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
+        2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
+        C2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
+        nUUI43ZEXa7IUnLSdPUUUUU==
+X-Originating-IP: [113.251.14.68]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 03:44:06PM +0200, Oleksandr Natalenko wrote:
-> Hello.
-> 
-> On úterý 27. července 2021 17:58:39 CEST Ming Lei wrote:
-> > BTW, can you test the following patch? which is another approach on the same
-> > issue with other benefits.
-> > 
-> > From c853e7ed05a75f631da5b7952b9a989983437819 Mon Sep 17 00:00:00 2001
-> > From: Ming Lei <ming.lei@redhat.com>
-> > Date: Mon, 7 Jun 2021 16:03:51 +0800
-> > Subject: [PATCH 2/2] block: support bio merge for multi-range discard
-> > 
-> > So far multi-range discard treats each bio as one segment(range) of single
-> > discard request. This way becomes not efficient if lots of small sized
-> > discard bios are submitted, and one example is raid456.
-> > 
-> > Support bio merge for multi-range discard for improving lots of small
-> > sized discard bios.
-> > 
-> > Turns out it is easy to support it:
-> > 
-> > 1) always try to merge bio first
-> > 
-> > 2) run into multi-range discard only if bio merge can't be done
-> > 
-> > 3) add rq_for_each_discard_range() for retrieving each range(segment)
-> > of discard request
-> > 
-> > Reported-by: Wang Shanker <shankerwangmiao@gmail.com>
-> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> > ---
-> >  block/blk-merge.c          | 12 ++++-----
-> >  drivers/block/virtio_blk.c |  9 ++++---
-> >  drivers/nvme/host/core.c   |  8 +++---
-> >  include/linux/blkdev.h     | 51 ++++++++++++++++++++++++++++++++++++++
-> >  4 files changed, 66 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/block/blk-merge.c b/block/blk-merge.c
-> > index bcdff1879c34..65210e9a8efa 100644
-> > --- a/block/blk-merge.c
-> > +++ b/block/blk-merge.c
-> > @@ -724,10 +724,10 @@ static inline bool blk_discard_mergable(struct request
-> > *req) static enum elv_merge blk_try_req_merge(struct request *req,
-> >  					struct request *next)
-> >  {
-> > -	if (blk_discard_mergable(req))
-> > -		return ELEVATOR_DISCARD_MERGE;
-> > -	else if (blk_rq_pos(req) + blk_rq_sectors(req) == blk_rq_pos(next))
-> > +	if (blk_rq_pos(req) + blk_rq_sectors(req) == blk_rq_pos(next))
-> >  		return ELEVATOR_BACK_MERGE;
-> > +	else if (blk_discard_mergable(req))
-> > +		return ELEVATOR_DISCARD_MERGE;
-> > 
-> >  	return ELEVATOR_NO_MERGE;
-> >  }
-> > @@ -908,12 +908,12 @@ bool blk_rq_merge_ok(struct request *rq, struct bio
-> > *bio)
-> > 
-> >  enum elv_merge blk_try_merge(struct request *rq, struct bio *bio)
-> >  {
-> > -	if (blk_discard_mergable(rq))
-> > -		return ELEVATOR_DISCARD_MERGE;
-> > -	else if (blk_rq_pos(rq) + blk_rq_sectors(rq) == bio->bi_iter.bi_sector)
-> > +	if (blk_rq_pos(rq) + blk_rq_sectors(rq) == bio->bi_iter.bi_sector)
-> >  		return ELEVATOR_BACK_MERGE;
-> >  	else if (blk_rq_pos(rq) - bio_sectors(bio) == bio->bi_iter.bi_sector)
-> >  		return ELEVATOR_FRONT_MERGE;
-> > +	else if (blk_discard_mergable(rq))
-> > +		return ELEVATOR_DISCARD_MERGE;
-> >  	return ELEVATOR_NO_MERGE;
-> >  }
-> > 
-> > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> > index b9fa3ef5b57c..970cb0d8acaa 100644
-> > --- a/drivers/block/virtio_blk.c
-> > +++ b/drivers/block/virtio_blk.c
-> > @@ -116,7 +116,6 @@ static int virtblk_setup_discard_write_zeroes(struct
-> > request *req, bool unmap) unsigned short segments =
-> > blk_rq_nr_discard_segments(req);
-> >  	unsigned short n = 0;
-> >  	struct virtio_blk_discard_write_zeroes *range;
-> > -	struct bio *bio;
-> >  	u32 flags = 0;
-> > 
-> >  	if (unmap)
-> > @@ -138,9 +137,11 @@ static int virtblk_setup_discard_write_zeroes(struct
-> > request *req, bool unmap) range[0].sector = cpu_to_le64(blk_rq_pos(req));
-> >  		n = 1;
-> >  	} else {
-> > -		__rq_for_each_bio(bio, req) {
-> > -			u64 sector = bio->bi_iter.bi_sector;
-> > -			u32 num_sectors = bio->bi_iter.bi_size >> SECTOR_SHIFT;
-> > +		struct req_discard_range r;
-> > +
-> > +		rq_for_each_discard_range(r, req) {
-> > +			u64 sector = r.sector;
-> > +			u32 num_sectors = r.size >> SECTOR_SHIFT;
-> > 
-> >  			range[n].flags = cpu_to_le32(flags);
-> >  			range[n].num_sectors = cpu_to_le32(num_sectors);
-> > diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> > index 24bcae88587a..4b0a39360ce9 100644
-> > --- a/drivers/nvme/host/core.c
-> > +++ b/drivers/nvme/host/core.c
-> > @@ -813,7 +813,7 @@ static blk_status_t nvme_setup_discard(struct nvme_ns
-> > *ns, struct request *req, {
-> >  	unsigned short segments = blk_rq_nr_discard_segments(req), n = 0;
-> >  	struct nvme_dsm_range *range;
-> > -	struct bio *bio;
-> > +	struct req_discard_range r;
-> > 
-> >  	/*
-> >  	 * Some devices do not consider the DSM 'Number of Ranges' field when
-> > @@ -835,9 +835,9 @@ static blk_status_t nvme_setup_discard(struct nvme_ns
-> > *ns, struct request *req, range = page_address(ns->ctrl->discard_page);
-> >  	}
-> > 
-> > -	__rq_for_each_bio(bio, req) {
-> > -		u64 slba = nvme_sect_to_lba(ns, bio->bi_iter.bi_sector);
-> > -		u32 nlb = bio->bi_iter.bi_size >> ns->lba_shift;
-> > +	rq_for_each_discard_range(r, req) {
-> > +		u64 slba = nvme_sect_to_lba(ns, r.sector);
-> > +		u32 nlb = r.size >> ns->lba_shift;
-> > 
-> >  		if (n < segments) {
-> >  			range[n].cattr = cpu_to_le32(0);
-> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > index d66d0da72529..bd9d22269a7b 100644
-> > --- a/include/linux/blkdev.h
-> > +++ b/include/linux/blkdev.h
-> > @@ -1007,6 +1007,57 @@ static inline unsigned int blk_rq_stats_sectors(const
-> > struct request *rq) return rq->stats_sectors;
-> >  }
-> > 
-> > +struct req_discard_range {
-> > +	sector_t	sector;
-> > +	unsigned int	size;
-> > +
-> > +	/*
-> > +	 * internal field: driver don't use it, and it always points to
-> > +	 * next bio to be processed
-> > +	 */
-> > +	struct bio *__bio;
-> > +};
-> > +
-> > +static inline void req_init_discard_range_iter(const struct request *rq,
-> > +		struct req_discard_range *range)
-> > +{
-> > +	range->__bio = rq->bio;
-> > +}
-> > +
-> > +/* return true if @range stores one valid discard range */
-> > +static inline bool req_get_discard_range(struct req_discard_range *range)
-> > +{
-> > +	struct bio *bio;
-> > +
-> > +	if (!range->__bio)
-> > +		return false;
-> > +
-> > +	bio = range->__bio;
-> > +	range->sector = bio->bi_iter.bi_sector;
-> > +	range->size = bio->bi_iter.bi_size;
-> > +	range->__bio = bio->bi_next;
-> > +
-> > +	while (range->__bio) {
-> > +		struct bio *bio = range->__bio;
-> > +
-> > +		if (range->sector + (range->size >> SECTOR_SHIFT) !=
-> > +				bio->bi_iter.bi_sector)
-> > +			break;
-> > +
-> > +		/*
-> > +		 * ->size won't overflow because req->__data_len is defined
-> > +		 *  as 'unsigned int'
-> > +		 */
-> > +		range->size += bio->bi_iter.bi_size;
-> > +		range->__bio = bio->bi_next;
-> > +	}
-> > +	return true;
-> > +}
-> > +
-> > +#define rq_for_each_discard_range(range, rq) \
-> > +	for (req_init_discard_range_iter((rq), &range); \
-> > +			req_get_discard_range(&range);)
-> > +
-> >  #ifdef CONFIG_BLK_DEV_ZONED
-> > 
-> >  /* Helper to convert BLK_ZONE_ZONE_XXX to its string format XXX */
-> 
-> Do I have to revert the previous one and apply this one? If so, with this one the issue is triggered pretty quick:
+Append i2c-sysfs to toctree in order to get rid of building warnings.
 
-Yeah, the previous one needs to be reverted.
+Signed-off-by: Hu Haowen <src.res@email.cn>
+---
+ Documentation/i2c/index.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> ```
-> kernel: ------------[ cut here ]------------
-> kernel: WARNING: CPU: 20 PID: 490 at drivers/nvme/host/core.c:850 nvme_setup_discard+0x1b9/0x220
-
-Can you collect debug log by applying the following patch against the
-last one?
-
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 8780e4aa9df2..fbd8a68c619b 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -828,6 +828,24 @@ static inline void nvme_setup_flush(struct nvme_ns *ns,
- 	cmnd->common.nsid = cpu_to_le32(ns->head->ns_id);
- }
+diff --git a/Documentation/i2c/index.rst b/Documentation/i2c/index.rst
+index 8b76217e370a..6270f1fd7d4e 100644
+--- a/Documentation/i2c/index.rst
++++ b/Documentation/i2c/index.rst
+@@ -17,6 +17,7 @@ Introduction
+    busses/index
+    i2c-topology
+    muxes/i2c-mux-gpio
++   i2c-sysfs
  
-+static inline void blk_dump_rq(const struct request *req)
-+{
-+	struct bio *bio;
-+	int i = 0;
-+
-+	printk("dump req %p(f:%x, seg: %d)\n", req, req->cmd_flags,
-+			req->nr_phys_segments);
-+
-+	__rq_for_each_bio(bio, req) {
-+		printk("%d-%p: %hx/%hx %llu %u\n",
-+                       i++, bio,
-+                       bio->bi_flags, bio->bi_opf,
-+                       (unsigned long long)bio->bi_iter.bi_sector,
-+                       bio->bi_iter.bi_size>>9);
-+	}
-+}
-+
-+
- static blk_status_t nvme_setup_discard(struct nvme_ns *ns, struct request *req,
- 		struct nvme_command *cmnd)
- {
-@@ -868,6 +886,8 @@ static blk_status_t nvme_setup_discard(struct nvme_ns *ns, struct request *req,
- 	}
- 
- 	if (WARN_ON_ONCE(n != segments)) {
-+		printk("%s: ranges %u segments %u\n", __func__, n, segments);
-+		blk_dump_rq(req);
- 		if (virt_to_page(range) == ns->ctrl->discard_page)
- 			clear_bit_unlock(0, &ns->ctrl->discard_page_busy);
- 		else
-
-
-Thanks,
-Ming
+ Writing device drivers
+ ======================
+-- 
+2.25.1
 
