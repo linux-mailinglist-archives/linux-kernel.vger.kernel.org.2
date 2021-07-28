@@ -2,102 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2083D8B32
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93B93D8B34
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235784AbhG1J5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235755AbhG1J53 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:57:29 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A254EC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:57:26 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id b7so1753724wri.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:57:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wsImX0QCKZ1a8ZsZDJcjcgOC51nSy6JYTDJeExquDdw=;
-        b=wI24ddW+o7m9CfmveCoei5saTwmvZmLzn8kYOeThOCd8JsribeKelLrfzUVY+4MvbF
-         IooGSDuKJZzxFqONKRGZQ6OByO7nL+m+t8KmjPjwJIBTjsuQk4GgvTH4bjJkZ2mrqcAC
-         HDRBeeSTakhNaPs7f2/5o7TXDRP5VmTbYUu9reUYnLDOkt4r7o878kV65u+lDWBUoCaR
-         2lYQFYUnZdDlmXVduxGxRP1GMLVkzNqldWx2T5NRICzQDx9InyKYtm4PUv48RCbtxMlb
-         DdYtdtYXXQ55UvkHMdlDvAE9WnDJUlanfQkOyfmxM9kbQylUC7RpIZzw472WQ5Jxb11w
-         ii2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wsImX0QCKZ1a8ZsZDJcjcgOC51nSy6JYTDJeExquDdw=;
-        b=hRnZ41gDaKByEpUZCZPsCHe7JmIm3P1LQsSvzxfLhoequZRIXUL2izJ6iP8lkbmBNF
-         B0pXOO/bekBd1N0MKzmRQ18txI7aFDq5SznR1jt9gslT+LnqmnFfVkZ1VUB7dpQrfEZ0
-         npb3c048jsK/TNSoXlGOQbtbYTQar/WWExYo5yXt4MCj4vE/5V4nSK1qd1Z3Jop5hhUF
-         41ssv+S37Q5c87IkGzbyL/v4ZJtekmVKSTFI58a9BsSKM5QdZMsYda2niAFVDJ3gSD9Z
-         87ib+V21r/GA4qbyK0CwiG5POCJg4wmt7hSntpfRdkNBNnGHIclzH1Prs3AZ/EFXAHdP
-         qPjw==
-X-Gm-Message-State: AOAM532bJpoh95IjIfkalbXaUvI8KWPjZlmYeXY0RgIP9sioebb/RAdK
-        glbRgtjfpHgYBy2bfCJXW6nbTg==
-X-Google-Smtp-Source: ABdhPJxCpOb9sdXUE6ib46KA5RuGDnCQ7NiCqQWjvFQEvzVoQuIUQTmYeBml9yHtemOMVPBUwJwPiA==
-X-Received: by 2002:a5d:522a:: with SMTP id i10mr7632890wra.280.1627466245194;
-        Wed, 28 Jul 2021 02:57:25 -0700 (PDT)
-Received: from [10.10.6.131] ([109.120.209.55])
-        by smtp.googlemail.com with ESMTPSA id a2sm4157939wrn.95.2021.07.28.02.57.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 02:57:24 -0700 (PDT)
-Subject: Re: [PATCH v5 0/3] Intra-refresh period control
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        nicolas.dufresne@collabora.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-References: <20210622113958.809173-1-stanimir.varbanov@linaro.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <7f0ac52c-25c0-cd03-253a-f6fa4aeb9dcc@linaro.org>
-Date:   Wed, 28 Jul 2021 12:57:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210622113958.809173-1-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235809AbhG1J5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:57:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235776AbhG1J5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 05:57:34 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4623360E78;
+        Wed, 28 Jul 2021 09:57:33 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m8gJf-001V9M-4p; Wed, 28 Jul 2021 10:57:31 +0100
+Date:   Wed, 28 Jul 2021 10:57:30 +0100
+Message-ID: <8735ryep6d.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 04/16] KVM: arm64: Add MMIO checking infrastructure
+In-Reply-To: <20210727181107.GC19173@willie-the-truck>
+References: <20210715163159.1480168-1-maz@kernel.org>
+        <20210715163159.1480168-5-maz@kernel.org>
+        <20210727181107.GC19173@willie-the-truck>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, qperret@google.com, dbrazdil@google.com, vatsa@codeaurora.org, sdonthineni@nvidia.com, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On Tue, 27 Jul 2021 19:11:08 +0100,
+Will Deacon <will@kernel.org> wrote:
+> 
+> On Thu, Jul 15, 2021 at 05:31:47PM +0100, Marc Zyngier wrote:
+> > Introduce the infrastructure required to identify an IPA region
+> > that is expected to be used as an MMIO window.
+> > 
+> > This include mapping, unmapping and checking the regions. Nothing
+> > calls into it yet, so no expected functional change.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm64/include/asm/kvm_host.h |   2 +
+> >  arch/arm64/include/asm/kvm_mmu.h  |   5 ++
+> >  arch/arm64/kvm/mmu.c              | 115 ++++++++++++++++++++++++++++++
+> >  3 files changed, 122 insertions(+)
+> > 
+> > diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> > index 4add6c27251f..914c1b7bb3ad 100644
+> > --- a/arch/arm64/include/asm/kvm_host.h
+> > +++ b/arch/arm64/include/asm/kvm_host.h
+> > @@ -125,6 +125,8 @@ struct kvm_arch {
+> >  #define KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER	0
+> >  	/* Memory Tagging Extension enabled for the guest */
+> >  #define KVM_ARCH_FLAG_MTE_ENABLED			1
+> > +	/* Gues has bought into the MMIO guard extension */
+> > +#define KVM_ARCH_FLAG_MMIO_GUARD			2
+> >  	unsigned long flags;
+> >  
+> >  	/*
+> > diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+> > index b52c5c4b9a3d..f6b8fc1671b3 100644
+> > --- a/arch/arm64/include/asm/kvm_mmu.h
+> > +++ b/arch/arm64/include/asm/kvm_mmu.h
+> > @@ -170,6 +170,11 @@ phys_addr_t kvm_mmu_get_httbr(void);
+> >  phys_addr_t kvm_get_idmap_vector(void);
+> >  int kvm_mmu_init(u32 *hyp_va_bits);
+> >  
+> > +/* MMIO guard */
+> > +bool kvm_install_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa);
+> > +bool kvm_remove_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa);
+> > +bool kvm_check_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa);
+> > +
+> >  static inline void *__kvm_vector_slot2addr(void *base,
+> >  					   enum arm64_hyp_spectre_vector slot)
+> >  {
+> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> > index 3155c9e778f0..638827c8842b 100644
+> > --- a/arch/arm64/kvm/mmu.c
+> > +++ b/arch/arm64/kvm/mmu.c
+> > @@ -1120,6 +1120,121 @@ static void handle_access_fault(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa)
+> >  		kvm_set_pfn_accessed(pte_pfn(pte));
+> >  }
+> >  
+> > +#define MMIO_NOTE	('M' << 24 | 'M' << 16 | 'I' << 8 | '0')
+> 
+> Although this made me smile, maybe we should carve up the bit space a bit
+> more carefully ;) Also, you know somebody clever will "fix" that typo to
+> 'O'!
 
-Could you please review this v5.
+They'll get to keep the pieces when the whole thing breaks!
 
-On 6/22/21 2:39 PM, Stanimir Varbanov wrote:
-> Changes since v4:
->  * added new patch to document control zero value meaning (1/3)
->  * updated document for intra-refresh period (2/3)
+More seriously, happy to have a more elaborate allocation scheme. For
+the purpose of this series, it really doesn't matter.
+
+> Quentin, as the other user of this stuff at the moment, how do you see the
+> annotation space being allocated? Feels like we should have some 'type'
+> bits which decide how to parse the rest of the entry.
 > 
-> regards,
-> Stan
+> > +
+> > +bool kvm_install_ioguard_page(struct kvm_vcpu *vcpu, gpa_t ipa)
+> > +{
+> > +	struct kvm_mmu_memory_cache *memcache;
+> > +	struct kvm_memory_slot *memslot;
+> > +	int ret, idx;
+> > +
+> > +	if (!test_bit(KVM_ARCH_FLAG_MMIO_GUARD, &vcpu->kvm->arch.flags))
+> > +		return false;
+> > +
+> > +	/* Must be page-aligned */
+> > +	if (ipa & ~PAGE_MASK)
+> > +		return false;
+> > +
+> > +	/*
+> > +	 * The page cannot be in a memslot. At some point, this will
+> > +	 * have to deal with device mappings though.
+> > +	 */
+> > +	idx = srcu_read_lock(&vcpu->kvm->srcu);
+> > +	memslot = gfn_to_memslot(vcpu->kvm, ipa >> PAGE_SHIFT);
+> > +	srcu_read_unlock(&vcpu->kvm->srcu, idx);
 > 
-> Stanimir Varbanov (3):
->   docs: ext-ctrls-codec: Document cyclic intra-refresh zero control
->     value
->   media: v4l2-ctrls: Add intra-refresh period control
->   venus: venc: Add support for intra-refresh period
+> What does this memslot check achieve? A new memslot could be added after
+> you've checked, no?
+
+If you start allowing S2 annotations to coexist with potential memory
+mappings, you're in for trouble. The faulting logic will happily
+overwrite the annotation, and that's probably not what you want.
+
+As for new (or moving) memslots, I guess they should be checked
+against existing annotations.
+
 > 
->  .../media/v4l/ext-ctrls-codec.rst             | 19 +++++++++++++-
->  drivers/media/platform/qcom/venus/core.h      |  1 +
->  drivers/media/platform/qcom/venus/venc.c      | 26 +++++++++++++++++++
->  .../media/platform/qcom/venus/venc_ctrls.c    | 14 +++++-----
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  2 ++
->  include/uapi/linux/v4l2-controls.h            |  1 +
->  6 files changed, 55 insertions(+), 8 deletions(-)
+> > +/* Assumes mmu_lock taken */
 > 
+> You can use a lockdep assertion for that!
+
+Sure.
+
+Thanks,
+
+	M.
 
 -- 
-regards,
-Stan
+Without deviation from the norm, progress is not possible.
