@@ -2,357 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9BB3D8F78
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C99003D8F7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236874AbhG1Nrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:47:33 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:3026 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236652AbhG1No5 (ORCPT
+        id S236662AbhG1Nru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236316AbhG1NrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:44:57 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S5XUr4014335;
-        Wed, 28 Jul 2021 08:44:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=yVqEmPZxiL8drklmk0pAesV5mI/FqvN84HmgOLrlxJo=;
- b=I6tNMckLpyrY1z5yWBWlMRPrc9mZVwSxc0uU8ZM5JIT4L5BVGOiiYK4GOHEB8hX1QpvH
- OsAG2luhKta2El+i67XGbMAubVEswDbmVamr3BF56mMlfhu4EkL+JjED1DAaCT8MnYwv
- 3YR4hYkZvKC2OdnKRLt6w6w8o2Tl0TRu7+61gVFGOvTptPR9L8y0yN8Rp3CT/IDK1qhC
- ueum5Yrnvmh54aBaOIwGbqWjhJ3eeArEPHxqkcLUmwjXLZt7s9EhxAMJ2JC06wji+jx+
- CjDJHGq277fIdm4epyMm/xjjUHdf0d5VEiWfL2/05F8m0aJEdOzIq6OfXCVjKnaUREwj Qg== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3a30q20fx9-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 28 Jul 2021 08:44:44 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 28 Jul
- 2021 14:44:38 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 28 Jul 2021 14:44:38 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9268946E;
-        Wed, 28 Jul 2021 13:44:38 +0000 (UTC)
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH v2 27/27] ALSA: hda/cs8409: Unmute/Mute codec when stream starts/stops
-Date:   Wed, 28 Jul 2021 14:44:08 +0100
-Message-ID: <20210728134408.369396-28-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
-References: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
+        Wed, 28 Jul 2021 09:47:08 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2DFC061384
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 06:46:44 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id q2so3157653ljq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 06:46:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SbWIYXYlrIPDpsel0NzGQa0M/lKslwVGPnq1gOvws3s=;
+        b=O+3cJ5Ny3Jt5pm3gKn6uFapk06ecZ8zmNJJFkasy6gvYmV+/PvmCc1EWKbi47JA4wM
+         iI07bBX2++Uks7vTfNMXJZoXQEb2GBTWyR87oodpuyLh9jFjkRb1pzXJhHbQ8X843pV3
+         zT/aYQ248Wy5t/D5obB9CytgSfYQWf//T61JM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SbWIYXYlrIPDpsel0NzGQa0M/lKslwVGPnq1gOvws3s=;
+        b=K6kHgJXjQQbbagSNW7GESZLAhQlkhq0oz+oAoQ20tpd0EEs2FKreFBgcH+oAPtQhuh
+         FNp7KuEmjYGn9qV43L9xqTClrpJPwQoZNyZvHylSfBqC8mwnLJtr2K03WengoB0rPR3Q
+         SOGHu4GVeCb6UYjGKDyB1e5IKtWbNEiwJToTea+8cWeJmh6bholik1ZrRWZLejD3jaMB
+         Q1bF+LGAuwMGY///0Jr47eztnJkEXnxGAZ87891GLXzgnB/QdOGqUc6y1ebFt5TsLWNI
+         5nZFcJH0G9qMoW+4znij5WCbhKHgNGGZ+x83E6uD1kOVvQPzw4Wbgukb5pDB750lWSge
+         N2qg==
+X-Gm-Message-State: AOAM530OfOphgfr6vpm1AEAUh2kg3qNcRVgOXB/LfmOst9TNiartUfvC
+        mvaZEfWdJloC3F8jFrjJOdnMSg==
+X-Google-Smtp-Source: ABdhPJwQYbSnMyafZuFr56LBbsjZEKxOPiGV0sH9yHwQ9Mx0aBeLbbpNtiwIWEO3aFIywmWGnaMvEQ==
+X-Received: by 2002:a2e:934f:: with SMTP id m15mr18513447ljh.208.1627480002943;
+        Wed, 28 Jul 2021 06:46:42 -0700 (PDT)
+Received: from prevas-ravi.prevas.se ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id q10sm8624lfm.5.2021.07.28.06.46.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 06:46:42 -0700 (PDT)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Cc:     torvalds@linux-foundation.org,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Bruno Goncalves <bgoncalv@redhat.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] init: move usermodehelper_enable() to populate_rootfs()
+Date:   Wed, 28 Jul 2021 15:46:37 +0200
+Message-Id: <20210728134638.329060-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: t-waweEa4XHz3Kia3YUgNJX0hZgq2m_U
-X-Proofpoint-GUID: t-waweEa4XHz3Kia3YUgNJX0hZgq2m_U
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
- adultscore=0 clxscore=1015 spamscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107280077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+Currently, usermodehelper is enabled right before PID1 starts going
+through the initcalls. However, any call of a usermodehelper from a
+pure_, core_, postcore_, arch_, subsys_ or fs_ initcall is futile, as
+there is no filesystem contents yet.
 
-Codec is muted on init, and then unmuted when the stream starts.
+Up until commit e7cb072eb988 ("init/initramfs.c: do unpacking
+asynchronously"), such calls, whether via some request_module(), a
+legacy uevent "/sbin/hotplug" notification or something else, would
+just fail silently with (presumably) -ENOENT from
+kernel_execve(). However, that commit introduced the
+wait_for_initramfs() synchronization hook which must be called from
+the usermodehelper exec path right before the kernel_execve, in order
+that request_module() et al done from *after* rootfs_initcall()
+time (i.e. device_ and late_ initcalls) would continue to find a
+populated initramfs as they used to.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Any call of wait_for_initramfs() done before the unpacking has been
+scheduled (i.e. before rootfs_initcall time) must just return
+immediately [and let the caller find an empty file system] in order
+not to deadlock the machine. I mistakenly thought, and my limited
+testing confirmed, that there were no such calls, so I added a
+pr_warn_once() in wait_for_initramfs(). It turns out that one can
+indeed hit request_module() as well as kobject_uevent_env() during
+those early init calls, leading to a user-visible warning in the
+kernel log emitted consistently for certain configurations.
 
-Changes in v2:
-- No changes
+We could just remove the pr_warn_once(), but I think it's better to
+postpone enabling the usermodehelper framework until there is at least
+some chance of finding the executable. That is also a little more
+efficient in that a lot of work done in umh.c will be elided. However,
+it does change the error seen by those early callers from -ENOENT to
+-EBUSY, so there is a risk of a regression if any caller care about
+the exact error value.
 
+Reported-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+Reported-by: Bruno Goncalves <bgoncalv@redhat.com>
+Reported-by: Heiner Kallweit <hkallweit1@gmail.com>
+Fixes: e7cb072eb988 ("init/initramfs.c: do unpacking asynchronously")
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 ---
- sound/pci/hda/patch_cs8409-tables.c |  20 ++---
- sound/pci/hda/patch_cs8409.c        | 123 +++++++++++++++++++++++-----
- sound/pci/hda/patch_cs8409.h        |   7 ++
- 3 files changed, 120 insertions(+), 30 deletions(-)
+ init/initramfs.c   | 2 ++
+ init/main.c        | 1 -
+ init/noinitramfs.c | 2 ++
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index a9a0b8e3b2a9..0fb0a428428b 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -81,7 +81,7 @@ static const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
- 	{ 0x1010, 0xB0 },
- 	{ 0x1D01, 0x00 },
- 	{ 0x1D02, 0x06 },
--	{ 0x1D03, 0x00 },
-+	{ 0x1D03, 0x9F },
- 	{ 0x1107, 0x01 },
- 	{ 0x1009, 0x02 },
- 	{ 0x1007, 0x03 },
-@@ -111,8 +111,8 @@ static const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
- 	{ 0x2901, 0x01 },
- 	{ 0x1101, 0x0A },
- 	{ 0x1102, 0x84 },
--	{ 0x2301, 0x00 },
--	{ 0x2303, 0x00 },
-+	{ 0x2301, 0x3F },
-+	{ 0x2303, 0x3F },
- 	{ 0x2302, 0x3f },
- 	{ 0x2001, 0x03 },
- 	{ 0x1B75, 0xB6 },
-@@ -284,7 +284,7 @@ static const struct cs8409_i2c_param dolphin_c0_init_reg_seq[] = {
- 	{ 0x1010, 0xB0 },
- 	{ 0x1D01, 0x00 },
- 	{ 0x1D02, 0x06 },
--	{ 0x1D03, 0x00 },
-+	{ 0x1D03, 0x9F },
- 	{ 0x1107, 0x01 },
- 	{ 0x1009, 0x02 },
- 	{ 0x1007, 0x03 },
-@@ -309,8 +309,8 @@ static const struct cs8409_i2c_param dolphin_c0_init_reg_seq[] = {
- 	{ 0x1101, 0x0A },
- 	{ 0x1102, 0x84 },
- 	{ 0x2001, 0x03 },
--	{ 0x2301, 0x00 },
--	{ 0x2303, 0x00 },
-+	{ 0x2301, 0x3F },
-+	{ 0x2303, 0x3F },
- 	{ 0x2302, 0x3f },
- 	{ 0x1B75, 0xB6 },
- 	{ 0x1B73, 0xC2 },
-@@ -340,7 +340,7 @@ static const struct cs8409_i2c_param dolphin_c1_init_reg_seq[] = {
- 	{ 0x1010, 0xB0 },
- 	{ 0x1D01, 0x00 },
- 	{ 0x1D02, 0x06 },
--	{ 0x1D03, 0x00 },
-+	{ 0x1D03, 0x9F },
- 	{ 0x1107, 0x01 },
- 	{ 0x1009, 0x02 },
- 	{ 0x1007, 0x03 },
-@@ -365,8 +365,8 @@ static const struct cs8409_i2c_param dolphin_c1_init_reg_seq[] = {
- 	{ 0x1101, 0x0E },
- 	{ 0x1102, 0x84 },
- 	{ 0x2001, 0x01 },
--	{ 0x2301, 0x00 },
--	{ 0x2303, 0x00 },
-+	{ 0x2301, 0x3F },
-+	{ 0x2303, 0x3F },
- 	{ 0x2302, 0x3f },
- 	{ 0x1B75, 0xB6 },
- 	{ 0x1B73, 0xC2 },
-@@ -377,7 +377,7 @@ static const struct cs8409_i2c_param dolphin_c1_init_reg_seq[] = {
- 	{ 0x1112, 0x00 },
- 	{ 0x1113, 0x80 },
- 	{ 0x1C03, 0xC0 },
--	{ 0x1101, 0x02 },
-+	{ 0x1101, 0x06 },
- 	{ 0x1316, 0xff },
- 	{ 0x1317, 0xff },
- 	{ 0x1318, 0xff },
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 0baed8bebfbb..bd81004fc81e 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -454,6 +454,38 @@ int cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uc
+diff --git a/init/initramfs.c b/init/initramfs.c
+index af27abc59643..a842c0544745 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -15,6 +15,7 @@
+ #include <linux/mm.h>
+ #include <linux/namei.h>
+ #include <linux/init_syscalls.h>
++#include <linux/umh.h>
+ 
+ static ssize_t __init xwrite(struct file *file, const char *p, size_t count,
+ 		loff_t *pos)
+@@ -727,6 +728,7 @@ static int __init populate_rootfs(void)
+ {
+ 	initramfs_cookie = async_schedule_domain(do_populate_rootfs, NULL,
+ 						 &initramfs_domain);
++	usermodehelper_enable();
+ 	if (!initramfs_async)
+ 		wait_for_initramfs();
  	return 0;
+diff --git a/init/main.c b/init/main.c
+index f5b8246e8aa1..d5c5542fe142 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1387,7 +1387,6 @@ static void __init do_basic_setup(void)
+ 	driver_init();
+ 	init_irq_proc();
+ 	do_ctors();
+-	usermodehelper_enable();
+ 	do_initcalls();
  }
  
-+static void cs42l42_mute(struct sub_codec *cs42l42, int vol_type,
-+	unsigned int chs, bool mute)
-+{
-+	if (mute) {
-+		if (vol_type == CS42L42_VOL_DAC) {
-+			if (chs & BIT(0))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHA, 0x3f);
-+			if (chs & BIT(1))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHB, 0x3f);
-+		} else if (vol_type == CS42L42_VOL_ADC) {
-+			if (chs & BIT(0))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_AMIC_VOL, 0x9f);
-+		}
-+	} else {
-+		if (vol_type == CS42L42_VOL_DAC) {
-+			if (chs & BIT(0))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHA,
-+					-(cs42l42->vol[CS42L42_DAC_CH0_VOL_OFFSET])
-+					& CS42L42_REG_HS_VOL_MASK);
-+			if (chs & BIT(1))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHB,
-+					-(cs42l42->vol[CS42L42_DAC_CH1_VOL_OFFSET])
-+					& CS42L42_REG_HS_VOL_MASK);
-+		} else if (vol_type == CS42L42_VOL_ADC) {
-+			if (chs & BIT(0))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_AMIC_VOL,
-+					cs42l42->vol[CS42L42_ADC_VOL_OFFSET]
-+					& CS42L42_REG_AMIC_VOL_MASK);
-+		}
-+	}
-+}
-+
- int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
+diff --git a/init/noinitramfs.c b/init/noinitramfs.c
+index 3d62b07f3bb9..d1d26b93d25c 100644
+--- a/init/noinitramfs.c
++++ b/init/noinitramfs.c
+@@ -10,6 +10,7 @@
+ #include <linux/kdev_t.h>
+ #include <linux/syscalls.h>
+ #include <linux/init_syscalls.h>
++#include <linux/umh.h>
+ 
+ /*
+  * Create a simple rootfs that is similar to the default initramfs
+@@ -18,6 +19,7 @@ static int __init default_rootfs(void)
  {
- 	struct hda_codec *codec = snd_kcontrol_chip(kctrl);
-@@ -465,25 +497,20 @@ int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uc
+ 	int err;
  
- 	switch (ofs) {
- 	case CS42L42_VOL_DAC:
--		if (chs & BIT(0)) {
-+		if (chs & BIT(0))
- 			cs42l42->vol[ofs] = *valp;
--			cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHA,
--					 -(cs42l42->vol[ofs]) & CS42L42_REG_HS_VOL_MASK);
--		}
- 		if (chs & BIT(1)) {
--			ofs++;
- 			valp++;
--			cs42l42->vol[ofs] = *valp;
--			cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHB,
--					 -(cs42l42->vol[ofs]) & CS42L42_REG_HS_VOL_MASK);
-+			cs42l42->vol[ofs + 1] = *valp;
- 		}
-+		if (spec->playback_started)
-+			cs42l42_mute(cs42l42, CS42L42_VOL_DAC, chs, false);
- 		break;
- 	case CS42L42_VOL_ADC:
--		if (chs & BIT(0)) {
-+		if (chs & BIT(0))
- 			cs42l42->vol[ofs] = *valp;
--			cs8409_i2c_write(cs42l42, CS42L42_REG_AMIC_VOL,
--					 cs42l42->vol[ofs] & CS42L42_REG_AMIC_VOL_MASK);
--		}
-+		if (spec->capture_started)
-+			cs42l42_mute(cs42l42, CS42L42_VOL_ADC, chs, false);
- 		break;
- 	default:
- 		break;
-@@ -492,6 +519,64 @@ int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uc
- 	return 0;
- }
- 
-+static void cs42l42_playback_pcm_hook(struct hda_pcm_stream *hinfo,
-+				   struct hda_codec *codec,
-+				   struct snd_pcm_substream *substream,
-+				   int action)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+	struct sub_codec *cs42l42;
-+	int i;
-+	bool mute;
-+
-+	switch (action) {
-+	case HDA_GEN_PCM_ACT_PREPARE:
-+		mute = false;
-+		spec->playback_started = 1;
-+		break;
-+	case HDA_GEN_PCM_ACT_CLEANUP:
-+		mute = true;
-+		spec->playback_started = 0;
-+		break;
-+	default:
-+		return;
-+	}
-+
-+	for (i = 0; i < spec->num_scodecs; i++) {
-+		cs42l42 = spec->scodecs[i];
-+		cs42l42_mute(cs42l42, CS42L42_VOL_DAC, 0x3, mute);
-+	}
-+}
-+
-+static void cs42l42_capture_pcm_hook(struct hda_pcm_stream *hinfo,
-+				   struct hda_codec *codec,
-+				   struct snd_pcm_substream *substream,
-+				   int action)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+	struct sub_codec *cs42l42;
-+	int i;
-+	bool mute;
-+
-+	switch (action) {
-+	case HDA_GEN_PCM_ACT_PREPARE:
-+		mute = false;
-+		spec->capture_started = 1;
-+		break;
-+	case HDA_GEN_PCM_ACT_CLEANUP:
-+		mute = true;
-+		spec->capture_started = 0;
-+		break;
-+	default:
-+		return;
-+	}
-+
-+	for (i = 0; i < spec->num_scodecs; i++) {
-+		cs42l42 = spec->scodecs[i];
-+		cs42l42_mute(cs42l42, CS42L42_VOL_ADC, 0x3, mute);
-+	}
-+}
-+
- /* Configure CS42L42 slave codec for jack autodetect */
- static void cs42l42_enable_jack_detect(struct sub_codec *cs42l42)
- {
-@@ -637,14 +722,6 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
- 	/* Clear interrupts, by reading interrupt status registers */
- 	cs8409_i2c_bulk_read(cs42l42, irq_regs, ARRAY_SIZE(irq_regs));
- 
--	/* Restore Volumes after Resume */
--	cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHA,
--			 -(cs42l42->vol[1]) & CS42L42_REG_HS_VOL_MASK);
--	cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHB,
--			 -(cs42l42->vol[2]) & CS42L42_REG_HS_VOL_MASK);
--	cs8409_i2c_write(cs42l42, CS42L42_REG_AMIC_VOL,
--			 cs42l42->vol[0] & CS42L42_REG_AMIC_VOL_MASK);
--
- 	if (cs42l42->full_scale_vol)
- 		cs8409_i2c_write(cs42l42, 0x2001, 0x01);
- 
-@@ -897,6 +974,9 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		/* Fix Sample Rate to 48kHz */
- 		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
- 		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
-+		/* add hooks */
-+		spec->gen.pcm_playback_hook = cs42l42_playback_pcm_hook;
-+		spec->gen.pcm_capture_hook = cs42l42_capture_pcm_hook;
- 		/* Set initial DMIC volume to -26 dB */
- 		snd_hda_codec_amp_init_stereo(codec, CS8409_CS42L42_DMIC_ADC_PIN_NID,
- 					      HDA_INPUT, 0, 0xff, 0x19);
-@@ -1092,6 +1172,9 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
- 		/* Fix Sample Rate to 48kHz */
- 		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
- 		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
-+		/* add hooks */
-+		spec->gen.pcm_playback_hook = cs42l42_playback_pcm_hook;
-+		spec->gen.pcm_capture_hook = cs42l42_capture_pcm_hook;
- 		snd_hda_gen_add_kctl(&spec->gen, "Headphone Playback Volume",
- 				     &cs42l42_dac_volume_mixer);
- 		snd_hda_gen_add_kctl(&spec->gen, "Mic Capture Volume", &cs42l42_adc_volume_mixer);
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 09987daa9cbf..207315ad5bf6 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -280,6 +280,10 @@ enum {
- 	CS42L42_VOL_DAC,
- };
- 
-+#define CS42L42_ADC_VOL_OFFSET			(CS42L42_VOL_ADC)
-+#define CS42L42_DAC_CH0_VOL_OFFSET		(CS42L42_VOL_DAC)
-+#define CS42L42_DAC_CH1_VOL_OFFSET		(CS42L42_VOL_DAC + 1)
-+
- struct cs8409_i2c_param {
- 	unsigned int addr;
- 	unsigned int value;
-@@ -327,6 +331,9 @@ struct cs8409_spec {
- 	unsigned int dev_addr;
- 	struct delayed_work i2c_clk_work;
- 
-+	unsigned int playback_started:1;
-+	unsigned int capture_started:1;
-+
- 	/* verb exec op override */
- 	int (*exec_verb)(struct hdac_device *dev, unsigned int cmd, unsigned int flags,
- 			 unsigned int *res);
++	usermodehelper_enable();
+ 	err = init_mkdir("/dev", 0755);
+ 	if (err < 0)
+ 		goto out;
 -- 
-2.25.1
+2.31.1
 
