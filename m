@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8323D91B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34593D91B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237034AbhG1PUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
+        id S237174AbhG1PUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235574AbhG1PUS (ORCPT
+        with ESMTP id S235574AbhG1PUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:20:18 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42830C061757;
-        Wed, 28 Jul 2021 08:20:17 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id p145so3494279ybg.6;
-        Wed, 28 Jul 2021 08:20:17 -0700 (PDT)
+        Wed, 28 Jul 2021 11:20:36 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706D4C061757;
+        Wed, 28 Jul 2021 08:20:34 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id w17so4502046ybl.11;
+        Wed, 28 Jul 2021 08:20:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=C9e4N76VZyEvVhCoJ57+DYxJLCF2oxGdBxIJxV6PGVU=;
-        b=CFgFbL44s+UPKBdiA2vhX8GjtA7RaAE2vpOFqAxLycDqjTP64RMRTWR7qrqUNYHiYq
-         DL6eaVMJ1jwNsLi6mS7RhBy0UyU4TNoVwTVZ+uvWpCeCGdgTqkXlN9FePkQ0Lh4/aEBF
-         JWPCx08mcGnGFnVtt3JIGHWEfBFeTlCRM1taZdRyyb81ehxgy1fJ9bdanexy8PtQgurQ
-         1OMusjT7ycl/Eszzk8ah31ZIqsDCKTSzb/MUWN6oNALiYg+n7WU8IWwn1QKs/80qSAvi
-         2+TOaMRuVwT+HCX+VDtiRj4Fl3mockQVaNT51tcgE0jFjIliUokh/9z548h1/JFkIOha
-         +eMw==
+         :cc;
+        bh=o9J+anRamv6ZCWPr2DTuO0dYhbRAoT47jmndMUGMGBQ=;
+        b=UggwyPzjXdcBMG8TySoKOtZjIhO8R7LZQMde0mv/Gh+M/kY52rug4sfyhs4EJ3Acmn
+         vkO9JOmwfywaRhuqBidq7oQb9C1iv9OY+559Io/YjxITg/Yrjm9fhkpFz1gQyxMyeePz
+         Rie0EgTdmG/NeVFLZBxbX9TbcSeTiEEGJFiEpuWzEnlEJp+LOrV9AgNeeSS4Sel/blEK
+         GpK1msonPpPyX0gwWSHgJiMcOzniahcpCNu3se0JmcmqSZuoGCqMbieqSkhRz2NQC7zp
+         mQWYSZD84d93iU7awOz5YNASVssf7jhaLLIAjRFRW5C35lCHwMjUQWvbcNJ+H7DHzNSM
+         xHlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=C9e4N76VZyEvVhCoJ57+DYxJLCF2oxGdBxIJxV6PGVU=;
-        b=jlPjHEQnZUZZQtPPxN06ppJpW9U8Pi2nTje/wngXsMoydel9Ifg+SO3bcpu0/Sft10
-         hzgwVDuE0BiFwWji3gqjoEXttmK1ntfwecVTqnUnTuDnd4OdeOrpq0Rj81LWn0B5BrBe
-         JRL5j2hVOVaF9sd9AsW8RjIMe8JvecOeQ4q1U81RBEUOjlrzK4SThi4S4RVg1Mo557tg
-         YI3RBwyJNNeAxArY/0cbAJr2GfYWeummf4bjEWoy3nrJ8LMqFKToeZWo4HkyYgfTduFc
-         yYNyZH/SVsx++uaKzPnmOzLZ5XP+FwCIlbRfEViHmuQvBn0zjTO8BZYIEGIvG2Qtg8gO
-         Vgvw==
-X-Gm-Message-State: AOAM532Cr8VZRykqmdHqlJszFMOXVj1RDaw5KG2N0J5bEEWIa5mgGfTN
-        QKpaOnXbC+23ciyAi+obmTqyP5vLSgFRJCoBL0g=
-X-Google-Smtp-Source: ABdhPJyU3e/C/5c1p9vu84o+w1Z8Xd+bdL5IDbjuLp5JPTUVvRN7Jgosu43o7A0ZYvayBICL1tceMp6z5a5uBGrDI4o=
-X-Received: by 2002:a5b:303:: with SMTP id j3mr227992ybp.433.1627485616549;
- Wed, 28 Jul 2021 08:20:16 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=o9J+anRamv6ZCWPr2DTuO0dYhbRAoT47jmndMUGMGBQ=;
+        b=Fhhz6j/RbOC7Gc8AthgNs7tKIdCgXvR/UFfahx3Djslvzv03CDMIex0PgmsdGnQPGW
+         U9Tc0xwZ7L7+ar+a/GiQypxD+O+t7yzYwR3Y/o5LVZmdk5BdmbqmWC+hhu4vYEK+quM1
+         1KB2ZTy/jHCZryAwEgb0sgceF9/gWoLuKk3dEfDNsBL+Kw7YwgKquM/3TYEHUVX7NSM4
+         q0LXjMR7uzewl5iZRphY3z9aRSz0BcyWzkmH50CulloMeRRcHvlK9lvEOa2hO7ym686V
+         XzffcNw4QYqd2IJg2wE0fTvb14YGElVWMNl1uOjcPEeoFpa2yRmneZF+J3Py4OR5O+53
+         mmyQ==
+X-Gm-Message-State: AOAM532kqMgEsrad58SmG6GCvfX3z7GeYBB+kDoucuzaYLXV7UOYt31d
+        c7t6H06ht31y0HcDSnkQtxDBovFkb6nnfhgw8lQ=
+X-Google-Smtp-Source: ABdhPJwHvxq0H0nZe5Ndm0BwQ5cEN3PjYE0YO7anNFQzBR78w7F1CnBqZGfrYvOK7HLhsRcHm3GfAYkaLn2SJYAY+TQ=
+X-Received: by 2002:a25:808b:: with SMTP id n11mr293584ybk.141.1627485633743;
+ Wed, 28 Jul 2021 08:20:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210728122606.697619-1-pgwipeout@gmail.com> <20210728122606.697619-4-pgwipeout@gmail.com>
- <3733382.QJadu78ljV@diego>
-In-Reply-To: <3733382.QJadu78ljV@diego>
+References: <20210728122606.697619-1-pgwipeout@gmail.com> <20210728122606.697619-2-pgwipeout@gmail.com>
+ <fc6d5b02-707b-aa0e-9ef0-2984bbb1f5b8@gmail.com>
+In-Reply-To: <fc6d5b02-707b-aa0e-9ef0-2984bbb1f5b8@gmail.com>
 From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 28 Jul 2021 11:20:03 -0400
-Message-ID: <CAMdYzYpcqJHedu=xBBLC60j1wcFQ9zL1R73ahKy33RjUnw2xKA@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/9] dt-bindings: usb: generic-ohci: increase maximum clocks
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+Date:   Wed, 28 Jul 2021 11:20:21 -0400
+Message-ID: <CAMdYzYoB0t6dB7BuZv7AFOQ7oYLbbPVQNybRxM_2y8MDTfXmyA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/9] dt-bindings: soc: rockchip: add rk3568-usb2phy-grf
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
         Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
         arm-mail-list <linux-arm-kernel@lists.infradead.org>,
@@ -61,52 +61,40 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-phy@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:59 AM Heiko St=C3=BCbner <heiko@sntech.de> wrote=
-:
+On Wed, Jul 28, 2021 at 10:36 AM Johan Jonker <jbx6244@gmail.com> wrote:
 >
 > Hi Peter,
 >
-> Am Mittwoch, 28. Juli 2021, 14:26:00 CEST schrieb Peter Geis:
-> > The rk3568 generic ohci controller has four clocks.
-> > Increase the maximum clocks in the documentation to account for this.
+> On 7/28/21 2:25 PM, Peter Geis wrote:
+> > Add the documentation for the rk3568-usb2phy-grf node, which is separate
+> > from the usb2phy node on this chip.
 > >
 > > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
 > > ---
-> >  Documentation/devicetree/bindings/usb/generic-ohci.yaml | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >  Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
-> > diff --git a/Documentation/devicetree/bindings/usb/generic-ohci.yaml b/=
-Documentation/devicetree/bindings/usb/generic-ohci.yaml
-> > index 569777a76c90..850996e6f451 100644
-> > --- a/Documentation/devicetree/bindings/usb/generic-ohci.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/generic-ohci.yaml
-> > @@ -59,7 +59,7 @@ properties:
-> >
-> >    clocks:
-> >      minItems: 1
-> > -    maxItems: 3
-> > +    maxItems: 4
-> >      description: |
-> >        In case the Renesas R-Car Gen3 SoCs:
-> >          - if a host only channel: first clock should be host.
-> >
+> > diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> > index fa010df51a5c..3b0e06b6ea61 100644
+> > --- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> > +++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> > @@ -16,6 +16,7 @@ properties:
+> >            - enum:
+> >                - rockchip,rk3288-sgrf
 >
-> In the patch adding the usb nodes, I see that this 4th clock references
-> the clock generated inside usbphy itself.
+> >                - rockchip,rv1108-usbgrf
+> > +              - rockchip,rk3568-usb2phy-grf
 >
-> Does the usb controller actually use that or is this just a way to
-> enable the usbphy clock, which in that case should maybe just happen
-> on phy-power-on in the phy driver?
+> Could you sort this in alphabetical order?
 
-I'll check if it works without it.
+Will do, thanks.
 
 >
->
-> Heiko
->
->
+> >            - const: syscon
+> >        - items:
+> >            - enum:
+> >
