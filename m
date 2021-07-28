@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC74D3D8615
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 05:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DCE3D8625
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 05:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233631AbhG1D2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 23:28:01 -0400
-Received: from smtprelay0203.hostedemail.com ([216.40.44.203]:45788 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233481AbhG1D16 (ORCPT
+        id S233955AbhG1Djy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 23:39:54 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58020 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233481AbhG1Djw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 23:27:58 -0400
-Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 62999181D6044;
-        Wed, 28 Jul 2021 03:27:56 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id AFAA31124F6;
-        Wed, 28 Jul 2021 03:27:53 +0000 (UTC)
-Message-ID: <9cdabb360fccefd516af3395cc0e485b8786e16b.camel@perches.com>
-Subject: Re: [PATCH v5 14/14] MAINTAINERS: add NXP IMX8Q VPU CODEC V4L2
- driver entry
-From:   Joe Perches <joe@perches.com>
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
-        shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de
-Cc:     hverkuil-cisco@xs4all.nl, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, aisheng.dong@nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Tue, 27 Jul 2021 20:27:52 -0700
-In-Reply-To: <6b6a77088f2bfc7ed6ca7418ee0c029fcac8ce96.1627353315.git.ming.qian@nxp.com>
-References: <cover.1627353315.git.ming.qian@nxp.com>
-         <6b6a77088f2bfc7ed6ca7418ee0c029fcac8ce96.1627353315.git.ming.qian@nxp.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Tue, 27 Jul 2021 23:39:52 -0400
+X-UUID: 06901bbc26b9437287306031bd83b926-20210728
+X-UUID: 06901bbc26b9437287306031bd83b926-20210728
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <tinghan.shen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 44931842; Wed, 28 Jul 2021 11:39:46 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 28 Jul 2021 11:39:45 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 28 Jul 2021 11:39:45 +0800
+From:   Tinghan Shen <tinghan.shen@mediatek.com>
+To:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
+        <mathieu.poirier@linaro.org>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <tzungbi@google.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Tinghan Shen <tinghan.shen@mediatek.com>
+Subject: [PATCH 0/4] Mediatek MT8195 SCP support
+Date:   Wed, 28 Jul 2021 11:39:26 +0800
+Message-ID: <20210728033930.5269-1-tinghan.shen@mediatek.com>
+X-Mailer: git-send-email 2.15.GIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.59
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: AFAA31124F6
-X-Stat-Signature: foj4j8ssn934grob4hyesgiacfxjwirp
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18laeUvp1+hAzihRHMHUdeghjhXbsHTJ3I=
-X-HE-Tag: 1627442873-934484
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-27 at 11:20 +0800, Ming Qian wrote:
-> Add NXP IMX8Q VPU CODEC v4l2 driver entry
-[]
-> diff --git a/MAINTAINERS b/MAINTAINERS
-[]
-> @@ -12600,6 +12600,16 @@ L:	linux-nfc@lists.01.org (moderated for non-subscribers)
->  S:	Supported
->  F:	drivers/nfc/nxp-nci
->  
-> +NXP IMX8Q VPU CODEC V4L2 DRIVER
-> +M:	Ming Qian <ming.qian@nxp.com>
-> +M:	Shijie Qin <shijie.qin@nxp.com>
-> +M:	Zhou Peng <eagle.zhou@nxp.com>
-> +L:	linux-media@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/media/nxp,imx8q-vpu.yaml
-> +F:	drivers/media/platform/imx/vpu-8q
+Changes since v2:
+- Add compatible for mt8192
+- Convert mtk,scp.txt to mtk,scp.yaml 
+- Refine clock checking method
 
-Should have a trailing /
+Changes since v1:
+- Fix missing 'compatible' line in binding document
 
-F:	drivers/media/platform/imx/vpu-8q/
+Tinghan Shen (4):
+  dt-bindings: remoteproc: mediatek: Add binding for mt8195 scp
+  dt-bindings: remoteproc: mediatek: Add binding for mt8192 scp
+  dt-bindings: remoteproc: mediatek: Convert mtk,scp to json-schema
+  remoteproc: mediatek: Support mt8195 scp
 
-> +F:	include/uapi/linux/imx_vpu.h
-> +
->  OBJAGG
->  M:	Jiri Pirko <jiri@nvidia.com>
->  L:	netdev@vger.kernel.org
+ .../bindings/remoteproc/mtk,scp.txt           | 36 --------
+ .../bindings/remoteproc/mtk,scp.yaml          | 85 +++++++++++++++++++
+ drivers/remoteproc/mtk_scp.c                  |  3 +-
+ 3 files changed, 87 insertions(+), 37 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,scp.txt
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
 
+-- 
+2.18.0
 
