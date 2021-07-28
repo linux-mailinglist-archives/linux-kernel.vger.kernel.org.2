@@ -2,140 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E44F3D98D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9333D98E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhG1W2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232710AbhG1W2a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:28:30 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CDAC08E816
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 15:27:28 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1m8s1P-0004d1-BN; Thu, 29 Jul 2021 00:27:27 +0200
-Subject: Re: [RFC PATCH v1] fscrypt: support encrypted and trusted keys
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210727144349.11215-1-a.fatoum@pengutronix.de>
- <20210728222243.4wqs64pqngzzii3b@kernel.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <3d0a380b-ea75-6c99-0515-0988d6ecab1c@pengutronix.de>
-Date:   Thu, 29 Jul 2021 00:27:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232530AbhG1W3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:29:41 -0400
+Received: from mga18.intel.com ([134.134.136.126]:45854 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232143AbhG1W3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:29:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="199978962"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="199978962"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 15:29:36 -0700
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="581021240"
+Received: from shuangho-mobl1.amr.corp.intel.com (HELO [10.212.219.154]) ([10.212.219.154])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 15:29:35 -0700
+Subject: Re: [PATCH v3 4/7] x86/sgx: Add SGX infrastructure to recover from
+ poison
+To:     Tony Luck <tony.luck@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210719182009.1409895-1-tony.luck@intel.com>
+ <20210728204653.1509010-1-tony.luck@intel.com>
+ <20210728204653.1509010-5-tony.luck@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <3534daf5-fae5-a85c-e198-c0b73e44ece4@intel.com>
+Date:   Wed, 28 Jul 2021 15:29:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210728222243.4wqs64pqngzzii3b@kernel.org>
+In-Reply-To: <20210728204653.1509010-5-tony.luck@intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jarkko,
+On 7/28/21 1:46 PM, Tony Luck wrote:
+> +int sgx_memory_failure(unsigned long pfn, int flags)
+> +{
+...
+> +	page->flags |= SGX_EPC_PAGE_POISON;
 
-On 29.07.21 00:22, Jarkko Sakkinen wrote:
-> On Tue, Jul 27, 2021 at 04:43:49PM +0200, Ahmad Fatoum wrote:
->> For both v1 and v2 key setup mechanisms, userspace supplies the raw key
->> material to the kernel after which it is never again disclosed to
->> userspace.
->>
->> Use of encrypted and trusted keys offers stronger guarantees:
->> The key material is generated within the kernel and is never disclosed to
->> userspace in clear text and, in the case of trusted keys, can be
->> directly rooted to a trust source like a TPM chip.
->>
->> Add support for trusted and encrypted keys by repurposing
->> fscrypt_add_key_arg::raw to hold the key description when the new
->> FSCRYPT_KEY_ARG_TYPE_DESC flag is supplied. The location of the flag
->> was previously reserved and enforced by ioctl code to be zero, so this
->> change won't break backwards compatibility.
->>
->> Corresponding userspace patches are available for fscryptctl:
->> https://github.com/google/fscryptctl/pull/23
->>
->> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->> ---
->> key_extract_material used by this patch is added in
->> <cover.b2fdd70b830d12853b12a12e32ceb0c8162c1346.1626945419.git-series.a.fatoum@pengutronix.de>
->> which still awaits feedback.
->>
->> Sending this RFC out anyway to get some feedback from the fscrypt
->> developers whether this is the correct way to go about it.
->>
->> To: "Theodore Y. Ts'o" <tytso@mit.edu>
->> To: Jaegeuk Kim <jaegeuk@kernel.org>
->> To: Eric Biggers <ebiggers@kernel.org>
->> Cc: Jarkko Sakkinen <jarkko@kernel.org>
->> Cc: James Morris <jmorris@namei.org>
->> Cc: "Serge E. Hallyn" <serge@hallyn.com>
->> Cc: James Bottomley <jejb@linux.ibm.com>
->> Cc: Mimi Zohar <zohar@linux.ibm.com>
->> Cc: Sumit Garg <sumit.garg@linaro.org>
->> Cc: David Howells <dhowells@redhat.com>
->> Cc: linux-fscrypt@vger.kernel.org
->> Cc: linux-crypto@vger.kernel.org
->> Cc: linux-integrity@vger.kernel.org
->> Cc: linux-security-module@vger.kernel.org
->> Cc: keyrings@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> ---
->>  Documentation/filesystems/fscrypt.rst | 24 ++++++++---
->>  fs/crypto/keyring.c                   | 59 ++++++++++++++++++++++++---
->>  include/uapi/linux/fscrypt.h          | 16 +++++++-
->>  3 files changed, 87 insertions(+), 12 deletions(-)
->>
->> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
->> index 44b67ebd6e40..83738af2afa3 100644
->> --- a/Documentation/filesystems/fscrypt.rst
->> +++ b/Documentation/filesystems/fscrypt.rst
->> @@ -681,11 +681,15 @@ It can be executed on any file or directory on the target filesystem,
->>  but using the filesystem's root directory is recommended.  It takes in
->>  a pointer to struct fscrypt_add_key_arg, defined as follows::
->>  
->> +    #define FSCRYPT_KEY_ADD_RAW_ASIS		0
->> +    #define FSCRYPT_KEY_ADD_RAW_DESC		1
-> 
-> Would be nice to have these documented.
+Is this safe outside of any locks?
 
-They have explanatory comments in the uAPI header. The Documentation file
-purposefully omits these comments and describes each field separately after
-the code block. I am just following suit.
+I see the reclaimer doing things like:
 
-FWIW, I intend to drop these flags for v2 anyway.
+                epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
 
-Cheers,
-Ahmad
+I'd worry that this code and other non-atomic epc_page->flags
+manipulation could trample on each other.
 
-> 
-> /Jarkko
-> 
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+This might need to some some atomic bit manipulation *and* convert all
+the other epc_page->flags users.
