@@ -2,113 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1493D89BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCFE3D89C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235070AbhG1I1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:27:05 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:45957 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234495AbhG1I1E (ORCPT
+        id S235272AbhG1I2U convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 04:28:20 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:31080 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235215AbhG1I2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:27:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UhEA0ga_1627460820;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UhEA0ga_1627460820)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 28 Jul 2021 16:27:01 +0800
-Subject: Re: [PATCH] virtio-console: avoid DMA from vmalloc area
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Amit Shah <amit@kernel.org>, gregkh <gregkh@linuxfoundation.org>,
-        Omar Sandoval <osandov@fb.com>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210727131217.15092-1-xianting.tian@linux.alibaba.com>
- <CAK8P3a15ykABd61Rad5iaZtGN=-+Guk0CNyCMK3XD7TgubG7hg@mail.gmail.com>
- <be29127d-8cec-c7b8-ac96-4da94198dc03@linux.alibaba.com>
- <CAK8P3a1O02Ho2dM3F+bUXf9Ze8uRKYzY5fFmRGpszUXg_nrH4w@mail.gmail.com>
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-Message-ID: <0d03a42b-b46c-408f-17a4-b6c094c0c29e@linux.alibaba.com>
-Date:   Wed, 28 Jul 2021 16:27:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Wed, 28 Jul 2021 04:28:18 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-11-xmCxCxZxO7ayZHiHESiNOw-1; Wed, 28 Jul 2021 09:28:14 +0100
+X-MC-Unique: xmCxCxZxO7ayZHiHESiNOw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Wed, 28 Jul 2021 09:28:11 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Wed, 28 Jul 2021 09:28:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Luis Chamberlain' <mcgrof@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "tj@kernel.org" <tj@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andriin@fb.com" <andriin@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "atenart@kernel.org" <atenart@kernel.org>,
+        "alobakin@pm.me" <alobakin@pm.me>,
+        "weiwan@google.com" <weiwan@google.com>,
+        "ap420073@gmail.com" <ap420073@gmail.com>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        "ngupta@vflare.org" <ngupta@vflare.org>,
+        "sergey.senozhatsky.work@gmail.com" 
+        <sergey.senozhatsky.work@gmail.com>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "mbenes@suse.com" <mbenes@suse.com>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "jikos@kernel.org" <jikos@kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Douglas Gilbert <dgilbert@interlog.com>,
+        "Hannes Reinecke" <hare@suse.de>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] kernel/module: add documentation for try_module_get()
+Thread-Topic: [PATCH] kernel/module: add documentation for try_module_get()
+Thread-Index: AQHXf0eaxD6lEmY4bU6QViNa8xuU1KtSAuiAgAVRuyeAALu/4A==
+Date:   Wed, 28 Jul 2021 08:28:11 +0000
+Message-ID: <6054c136290346d581e276abbb2e3ff1@AcuMS.aculab.com>
+References: <20210722221905.1718213-1-mcgrof@kernel.org>
+ <dbf27fa2f8864e1d91f7015249b1a5f1@AcuMS.aculab.com>
+ <YQBCvKgH481C7o1c@bombadil.infradead.org> <YQBGemOIF4sp/ges@kroah.com>
+ <YQBN2/K4Ne5orgzS@bombadil.infradead.org> <YQBSutZfhqfTzKQa@kroah.com>
+ <YQByfUaDaXCUqrlo@bombadil.infradead.org>
+In-Reply-To: <YQByfUaDaXCUqrlo@bombadil.infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1O02Ho2dM3F+bUXf9Ze8uRKYzY5fFmRGpszUXg_nrH4w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+...
+> sysfs files are safe to use try_module_get() because once they are
+> active a removal of the file cannot happen, and so removal will wait.
 
-在 2021/7/28 下午3:25, Arnd Bergmann 写道:
-> On Wed, Jul 28, 2021 at 4:59 AM Xianting Tian
-> <xianting.tian@linux.alibaba.com> wrote:
->> Arnd, thanks for your quick reply,
->>
->> As we know put_chars() of virtio-console is registered to hvc framework.
->> I go throughed the code, actually there are totally three places that
->> put_chars() is called in hvc driver,  but only 1 has issue which is
->> fixed by commit c4baad5029.
-> Ah, good. Knowing what the callers are definitely helps. ;-)
->
->> So I think the scenario that the buf is from "ioremap(), kmap_atomic() ,
->> fixmap, loadable module" doesn't exist for virtio-console.
->> If there is something wrong about above description, please correct me,
->> thanks.
-> The description is good then.
->
->> Three places that put_chars() is called in hvc driver:
->> 1， it is on stack buf,  it is not ok for dma
->>       hvc_console_print():
->>           char c[N_OUTBUF] __ALIGNED__;
->>           cons_ops[index]->put_chars(vtermnos[index], c, i);
->>
->> 2， just one byte, no issue for dma
->>       static void hvc_poll_put_char(struct tty_driver *driver, int line,
->> char ch)
->>       {
->>           struct tty_struct *tty = driver->ttys[0];
->>           struct hvc_struct *hp = tty->driver_data;
->>           int n;
->>
->>           do {
->>               n = hp->ops->put_chars(hp->vtermno, &ch, 1);
->>           } while (n <= 0);
->>       }
-> This is actually the same as the first, taking the address of a
-> function argument forces it onto the stack.
->
->> 3,  hp->outbuf is allocated in hvc_alloc() via kzalloc(), no issue for dma
->>       static int hvc_push(struct hvc_struct *hp)
->>       {
->>           int n;
->>
->>           n = hp->ops->put_chars(hp->vtermno, hp->outbuf, hp->n_outbuf);
->>           …
->>       }
-> ok.
->
-> I have a new question then: are there any other hvc backends that do
-> DMA, or is the virtio-console driver the only one? If there are any others,
-> I think this should better be fixed in the hvc framework, by changing it
-> to never pass stack data into the put_chars() function in the first place.
->
-> It may be possible to just use the 'hp->n_outbuf' buffer in all three cases.
+I doubt it.
 
-thanks,
+If the module_remove() function removes sysfs nodes then (something
+like) this has to happen.
 
-I checked several hvc backends, like drivers/tty/hvc/hvc_riscv_sbi.c, 
-drivers/tty/hvc/hvc_iucv.c, drivers/tty/hvc/hvc_rtas.c, they don't use dma.
+1) rmmod (or similar) tries to remove the module.
+2) The reference count is zero so the remove is allowed.
+3) Something tries to access a sysfs node in the module.
+3a) If sysfs knew the nodes were in a module it could use
+    try_module_get() to ensure the module wasn't being unloaded.
+    Failure would cause the sysfs access to fail.
+    But I'm not sure it does, and in any case it doesn't help.
+3b) The sysfs thread calls into the module code and waits on a mutex.
+3c) The rmmod thread gets around to calling into sysfs to remove the nodes.
 
-I not finished all hvc backends check yet. But I think even if all hvc 
-backends don't use dma currently, it is still possible that the hvc 
-backend using dma will be added in the furture.
+At this point we hit the standard 'deregistering a callback' issue.
+Exactly the same issue affects removal of per-device sysfs node
+from a driver's .remove function.
 
-So I agree with you it should better be fixed in the hvc framework, 
-solve the issue in the first place.
+Typically this is solved by making the deregister routing sleep
+until all the callbacks have completed.
 
-Looking forward to your reply.
+So this would require functions like SYSFS_REMOVE_GROUP() and
+hwmon_device_unregister() to be allowed to sleep and not be
+called with any locks (of any kind) held that the callback
+functions acquire.
 
->
->         Arnd
+The module reference count is irrelevant.
+
+	David
+
+    
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
