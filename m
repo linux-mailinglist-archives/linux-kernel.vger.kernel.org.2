@@ -2,73 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B873D9920
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84CC3D9925
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhG1W5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:57:15 -0400
-Received: from mga12.intel.com ([192.55.52.136]:16510 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232163AbhG1W5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:57:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="192359420"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="192359420"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 15:57:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="517824202"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Jul 2021 15:57:08 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 28 Jul 2021 15:57:07 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 28 Jul 2021 15:57:07 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
- Wed, 28 Jul 2021 15:57:07 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Hansen, Dave" <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
- pages
-Thread-Topic: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
- pages
-Thread-Index: AQHXg/G3voDWmDqCq06DL34grJaPratZaKWA//+WanA=
-Date:   Wed, 28 Jul 2021 22:57:07 +0000
-Message-ID: <f2685d7c8dc14792a4e0f9807f742ea6@intel.com>
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
- <20210728204653.1509010-2-tony.luck@intel.com>
- <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
-In-Reply-To: <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232272AbhG1W6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:58:03 -0400
+Received: from mail.blitar.go.id ([103.148.208.194]:44792 "EHLO
+        mail.blitarkota.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232163AbhG1W6C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:58:02 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.blitarkota.go.id (Postfix) with ESMTP id 4D69F542EF9;
+        Thu, 29 Jul 2021 05:57:14 +0700 (WIB)
+Received: from mail.blitarkota.go.id ([127.0.0.1])
+        by localhost (mail.blitarkota.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id g_mnnaFlv9Vt; Thu, 29 Jul 2021 05:57:14 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.blitarkota.go.id (Postfix) with ESMTP id DCC83542EF6;
+        Thu, 29 Jul 2021 05:57:13 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.blitarkota.go.id DCC83542EF6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blitarkota.go.id;
+        s=9A007E36-2400-11EA-BC1D-4C7ACDE6EBEB; t=1627513034;
+        bh=FKD7qwP2hkcHuU/J9rV/G6AWRigbSX47VZkRuxgOCVA=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=RtJ+eS9/1lo7HFvEscOlfVe7T4QzqRZltTU1Cklli7N4gfeKYWJ9zwoYH5g28DD4X
+         6pYNktHrq8Mfde14vMObVRmCv2jk9ZMM7AyLg6fw7Ba34EuIt7koOfYDf6yq7Ii0aY
+         qtd43u4KWZFOWa8TdN7ZVLYcaOJzzuLBt9x11lBZhKqI+p7gI4Cpg5rHj0RjOxm6FT
+         3Li3iKM1IBtekcKH2l6P83+RsVFRyu1VX7ROPrdKI7teZfnQ/y0im5SEDruKC40Nqf
+         5Ut1LO0VtDvfRDiPpb5tMbILASxYhmKTQKSxcATj/4Sba/pxJ94ebIweZ+Db9lm/3J
+         u8Ou3WswC5+qQ==
+X-Virus-Scanned: amavisd-new at mail.blitarkota.go.id
+Received: from mail.blitarkota.go.id ([127.0.0.1])
+        by localhost (mail.blitarkota.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id TEq9_VQG8KE8; Thu, 29 Jul 2021 05:57:13 +0700 (WIB)
+Received: from mail.blitarkota.go.id (mx1.blitar.go.id [192.168.99.194])
+        by mail.blitarkota.go.id (Postfix) with ESMTP id BCB11542EF7;
+        Thu, 29 Jul 2021 05:57:12 +0700 (WIB)
+Date:   Thu, 29 Jul 2021 05:57:12 +0700 (WIB)
+From:   Stronghill Capital Loans Service <tkn-blitar1@blitarkota.go.id>
+Reply-To: info_stronghillcapitalloansservi@aol.com
+Message-ID: <743323659.58287.1627513032746.JavaMail.zimbra@blitarkota.go.id>
+Subject: Fast Cash
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.99.194]
+X-Mailer: Zimbra 8.8.12_GA_3866 (zclient/8.8.12_GA_3866)
+Thread-Index: /PTumNWkdTFbDe32qFllEyF97qg4fA==
+Thread-Topic: Fast Cash
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBXb3VsZG4ndCBpdCBiZSBzYWZlciB0byBkbyBzb21ldGhpbmcgbGlrZToNCj4NCj4JcGFnZS0+
-b3duZXIgPSBvd25lciA/IG93bmVyIDogKHZvaWQgKiktMTsNCj4NCj4gLTEgaXMgbm9uLU5VTEws
-IGJ1dCBhbHNvIGludmFsaWQsIHdoaWNoIG1ha2VzIGl0IGhhcmRlciBmb3IgdXMgdG8gcG9rZQ0K
-PiBvdXJzZWx2ZXMgaW4gdGhlIGV5ZS4NCg0KRG9lcyBMaW51eCBoYXZlIHNvbWUgI2RlZmluZSBJ
-TlZBTElEX1BPSU5URVIgdGhpbmcgdGhhdA0KcHJvdmlkZXMgYSBndWFyYW50ZWVkIGJhZCAoZS5n
-LiBub24tY2Fub25pY2FsKSB2YWx1ZT8NCg0KKHZvaWQgKiktMSBzZWVtcyBoYWNreS4NCg0KLVRv
-bnkNCg==
+Do you need a Loan @ 2% P.A? Mail us your: Names,Home Add,Mob No,Email id,Amount Needed,Loan Duration,Occupation :If you are interested kindly contact us via email for more details.
