@@ -2,125 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BF33D89AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D38C3D89B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235240AbhG1IWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:22:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:52560 "EHLO foss.arm.com"
+        id S235307AbhG1IWv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 04:22:51 -0400
+Received: from aposti.net ([89.234.176.197]:43998 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234484AbhG1IWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:22:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16686101E;
-        Wed, 28 Jul 2021 01:22:40 -0700 (PDT)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B71EC3F73D;
-        Wed, 28 Jul 2021 01:22:37 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org, nd@arm.com,
-        Jia He <justin.he@arm.com>
-Subject: [PATCH] device-dax: use fallback nid when numa_node is invalid
-Date:   Wed, 28 Jul 2021 16:22:26 +0800
-Message-Id: <20210728082226.22161-2-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210728082226.22161-1-justin.he@arm.com>
-References: <20210728082226.22161-1-justin.he@arm.com>
+        id S235169AbhG1IWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 04:22:50 -0400
+Date:   Wed, 28 Jul 2021 09:22:34 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 3/3] dma: jz4780: Add support for the MDMA in the
+ JZ4760(B)
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, list@opendingux.net
+Message-Id: <ML4YWQ.2MOPKABT5JGC1@crapouillou.net>
+In-Reply-To: <YQEERH97pngKbTiG@matsya>
+References: <20210718122024.204907-1-paul@crapouillou.net>
+        <20210718122024.204907-3-paul@crapouillou.net> <YQEERH97pngKbTiG@matsya>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, numa_off was set unconditionally in dummy_numa_init()
-even with a fake numa node. Then ACPI set node id as NUMA_NO_NODE(-1)
-after acpi_map_pxm_to_node() because it regards numa_off as turning
-off the numa node. Hence dev_dax->target_node is NUMA_NO_NODE on
-arm64 with fake numa.
+Hi Vinod,
 
-Without this patch, pmem can't be probed as a RAM device on arm64 if
-SRAT table isn't present:
-  $ndctl create-namespace -fe namespace0.0 --mode=devdax --map=dev -s 1g -a 64K
-  kmem dax0.0: rejecting DAX region [mem 0x240400000-0x2bfffffff] with invalid node: -1
-  kmem: probe of dax0.0 failed with error -22
+Le mer., juil. 28 2021 at 12:46:20 +0530, Vinod Koul <vkoul@kernel.org> 
+a écrit :
+> On 18-07-21, 13:20, Paul Cercueil wrote:
+>>  The JZ4760 and JZ4760B SoCs have two regular DMA controllers with 6
+>>  channels each. They also have an extra DMA controller named MDMA
+>>  with only 2 channels, that only supports memcpy operations.
+> 
+> It is dmaengine not dma:
+> 
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   drivers/dma/dma-jz4780.c | 22 ++++++++++++++++++++--
+>>   1 file changed, 20 insertions(+), 2 deletions(-)
+>> 
+>>  diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+>>  index d71bc7235959..eed505e3cce2 100644
+>>  --- a/drivers/dma/dma-jz4780.c
+>>  +++ b/drivers/dma/dma-jz4780.c
+>>  @@ -93,6 +93,7 @@
+>>   #define JZ_SOC_DATA_PER_CHAN_PM		BIT(2)
+>>   #define JZ_SOC_DATA_NO_DCKES_DCKEC	BIT(3)
+>>   #define JZ_SOC_DATA_BREAK_LINKS		BIT(4)
+>>  +#define JZ_SOC_DATA_ONLY_MEMCPY		BIT(5)
+> 
+> Why -ve logic? Looks like MEMCPY is eveywhere and only peripheral is 
+> not
+> there at few SoC, so use JZ_SOC_DATA_PERIPHERAL
 
-This fixes it by using fallback memory_add_physaddr_to_nid() as nid.
+That means touching every other jz4780_dma_soc_data structure in a 
+patch that's focused on one SoC. That means a messy patch, and I don't 
+like that.
 
-Suggested-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Jia He <justin.he@arm.com>
----
- drivers/dax/kmem.c | 36 ++++++++++++++++++++----------------
- 1 file changed, 20 insertions(+), 16 deletions(-)
+Negative logic is a problem if it makes it harder to understand, I 
+don't think it's the case here. Besides, we already have 
+JZ_SOC_DATA_NO_DCKES_DCKEC.
 
-diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-index ac231cc36359..749674909e51 100644
---- a/drivers/dax/kmem.c
-+++ b/drivers/dax/kmem.c
-@@ -46,20 +46,7 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- 	struct dax_kmem_data *data;
- 	int rc = -ENOMEM;
- 	int i, mapped = 0;
--	int numa_node;
--
--	/*
--	 * Ensure good NUMA information for the persistent memory.
--	 * Without this check, there is a risk that slow memory
--	 * could be mixed in a node with faster memory, causing
--	 * unavoidable performance issues.
--	 */
--	numa_node = dev_dax->target_node;
--	if (numa_node < 0) {
--		dev_warn(dev, "rejecting DAX region with invalid node: %d\n",
--				numa_node);
--		return -EINVAL;
--	}
-+	int numa_node = dev_dax->target_node, new_node;
- 
- 	data = kzalloc(struct_size(data, res, dev_dax->nr_range), GFP_KERNEL);
- 	if (!data)
-@@ -104,6 +91,20 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- 		 */
- 		res->flags = IORESOURCE_SYSTEM_RAM;
- 
-+		/*
-+		 * Ensure good NUMA information for the persistent memory.
-+		 * Without this check, there is a risk but not fatal that slow
-+		 * memory could be mixed in a node with faster memory, causing
-+		 * unavoidable performance issues. Furthermore, fallback node
-+		 * id can be used when numa_node is invalid.
-+		 */
-+		if (numa_node < 0) {
-+			new_node = memory_add_physaddr_to_nid(range.start);
-+			dev_info(dev, "changing nid from %d to %d for DAX region %pR\n",
-+				numa_node, new_node, res);
-+			numa_node = new_node;
-+		}
-+
- 		/*
- 		 * Ensure that future kexec'd kernels will not treat
- 		 * this as RAM automatically.
-@@ -141,6 +142,7 @@ static void dev_dax_kmem_remove(struct dev_dax *dev_dax)
- 	int i, success = 0;
- 	struct device *dev = &dev_dax->dev;
- 	struct dax_kmem_data *data = dev_get_drvdata(dev);
-+	int numa_node = dev_dax->target_node;
- 
- 	/*
- 	 * We have one shot for removing memory, if some memory blocks were not
-@@ -156,8 +158,10 @@ static void dev_dax_kmem_remove(struct dev_dax *dev_dax)
- 		if (rc)
- 			continue;
- 
--		rc = remove_memory(dev_dax->target_node, range.start,
--				range_len(&range));
-+		if (numa_node < 0)
-+			numa_node = memory_add_physaddr_to_nid(range.start);
-+
-+		rc = remove_memory(numa_node, range.start, range_len(&range));
- 		if (rc == 0) {
- 			release_resource(data->res[i]);
- 			kfree(data->res[i]);
--- 
-2.17.1
+Cheers,
+-Paul
+
+>> 
+>>   /**
+>>    * struct jz4780_dma_hwdesc - descriptor structure read by the DMA 
+>> controller.
+>>  @@ -896,8 +897,10 @@ static int jz4780_dma_probe(struct 
+>> platform_device *pdev)
+>>   	dd = &jzdma->dma_device;
+>> 
+>>   	dma_cap_set(DMA_MEMCPY, dd->cap_mask);
+>>  -	dma_cap_set(DMA_SLAVE, dd->cap_mask);
+>>  -	dma_cap_set(DMA_CYCLIC, dd->cap_mask);
+>>  +	if (!(soc_data->flags & JZ_SOC_DATA_ONLY_MEMCPY)) {
+>>  +		dma_cap_set(DMA_SLAVE, dd->cap_mask);
+>>  +		dma_cap_set(DMA_CYCLIC, dd->cap_mask);
+>>  +	}
+> 
+> and set this if JZ_SOC_DATA_PERIPHERAL is set?
+> 
+>> 
+>>   	dd->dev = dev;
+>>   	dd->copy_align = DMAENGINE_ALIGN_4_BYTES;
+>>  @@ -1018,12 +1021,25 @@ static const struct jz4780_dma_soc_data 
+>> jz4760_dma_soc_data = {
+>>   	.flags = JZ_SOC_DATA_PER_CHAN_PM | JZ_SOC_DATA_NO_DCKES_DCKEC,
+>>   };
+>> 
+>>  +static const struct jz4780_dma_soc_data jz4760_mdma_soc_data = {
+>>  +	.nb_channels = 2,
+>>  +	.transfer_ord_max = 6,
+>>  +	.flags = JZ_SOC_DATA_PER_CHAN_PM | JZ_SOC_DATA_NO_DCKES_DCKEC |
+>>  +		 JZ_SOC_DATA_ONLY_MEMCPY,
+>>  +};
+>>  +
+>>   static const struct jz4780_dma_soc_data jz4760b_dma_soc_data = {
+>>   	.nb_channels = 5,
+>>   	.transfer_ord_max = 6,
+>>   	.flags = JZ_SOC_DATA_PER_CHAN_PM,
+>>   };
+>> 
+>>  +static const struct jz4780_dma_soc_data jz4760b_mdma_soc_data = {
+>>  +	.nb_channels = 2,
+>>  +	.transfer_ord_max = 6,
+>>  +	.flags = JZ_SOC_DATA_PER_CHAN_PM | JZ_SOC_DATA_ONLY_MEMCPY,
+>>  +};
+>>  +
+>>   static const struct jz4780_dma_soc_data jz4770_dma_soc_data = {
+>>   	.nb_channels = 6,
+>>   	.transfer_ord_max = 6,
+>>  @@ -1052,7 +1068,9 @@ static const struct of_device_id 
+>> jz4780_dma_dt_match[] = {
+>>   	{ .compatible = "ingenic,jz4740-dma", .data = 
+>> &jz4740_dma_soc_data },
+>>   	{ .compatible = "ingenic,jz4725b-dma", .data = 
+>> &jz4725b_dma_soc_data },
+>>   	{ .compatible = "ingenic,jz4760-dma", .data = 
+>> &jz4760_dma_soc_data },
+>>  +	{ .compatible = "ingenic,jz4760-mdma", .data = 
+>> &jz4760_mdma_soc_data },
+>>   	{ .compatible = "ingenic,jz4760b-dma", .data = 
+>> &jz4760b_dma_soc_data },
+>>  +	{ .compatible = "ingenic,jz4760b-mdma", .data = 
+>> &jz4760b_mdma_soc_data },
+>>   	{ .compatible = "ingenic,jz4770-dma", .data = 
+>> &jz4770_dma_soc_data },
+>>   	{ .compatible = "ingenic,jz4780-dma", .data = 
+>> &jz4780_dma_soc_data },
+>>   	{ .compatible = "ingenic,x1000-dma", .data = &x1000_dma_soc_data 
+>> },
+>>  --
+>>  2.30.2
+> 
+> --
+> ~Vinod
+
 
