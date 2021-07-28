@@ -2,110 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2303D9391
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26EDE3D9395
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhG1Qtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
+        id S230213AbhG1QuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhG1Qtu (ORCPT
+        with ESMTP id S230025AbhG1QuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:49:50 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A47C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:49:48 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id t68so2847612qkf.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:49:48 -0700 (PDT)
+        Wed, 28 Jul 2021 12:50:03 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF02C061757;
+        Wed, 28 Jul 2021 09:50:01 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id a93so5063819ybi.1;
+        Wed, 28 Jul 2021 09:50:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=maine.edu; s=google;
-        h=from:date:to:cc:subject:message-id:mime-version;
-        bh=nJXlLpkTlQG+j2g9fJu+5AVUSl9pOmwqtryvrpLl9zY=;
-        b=SOta93O7KDpbZ3/CfSY3Gv+++hKDiwL0eTalIh/EVOWVeYaMLHjpCpVRsTgbMUBAvT
-         MPJLDPNwinLSvJFNEhKj/4Wc3hAZqcHlU/QDG2y0cHnsDGtmBmVFmIvRQ1CRut6Dsme3
-         kgWHYqXrnLAAhNdVQZIQ7CMwPYvDQWXdvYc3A=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=otNTlDwa87Ct7KnwMnmWEklfb8eXN/ybU6dmwmB/y4k=;
+        b=Hz1c+rC6UucgzDlm5ZjYdqfckks0A1P9uuWsr0puCpQLwdw5cahcJNSxTYc99NBr/N
+         u+tW+C8g2d6CK7OT5A0pPor1ZXJJMo6VvHMSmYeyyYmfv2y5L7cseFltdcWLDv/BpP2S
+         iNS0Sd+jp2XBZVH98iLn4WdYtSdrEkq4WcCWNv9EEC95pleo3vI3QDgsBMZCHS3MsAKr
+         pD4rxKYfzjZuxwKGaxoskZLB58c7NIsVw6OmCXllHGZ62oTcRNtcGIpgqBlB7avcmp6/
+         aXu9YiOvi82wkh651hshpX5nrd0wVp8YXLSg3ITLV7qR/9OW2YqsVfdaFXDM974hZfK7
+         PkDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version;
-        bh=nJXlLpkTlQG+j2g9fJu+5AVUSl9pOmwqtryvrpLl9zY=;
-        b=IpUTboNiWBMjDgnv6MreAPTonjozKORoNw75FVhv7zDHmENxO2j1bKYZhlIuLmTau6
-         wIppMIyq11mJZaPgz3sn9gTiVqLZRDRwNk2xtrx/M7bzoP50b/EqUdAr487RbTYuWMqD
-         k17+pv3xowcq/DDrNnd0l3qz6b5D1w6xC7eHran8YnEWISIO3HEihpRToPyl4qfSvnAa
-         h0LAg3yB3sMpp90i7dH0S6osrBxqXxEZXsuFAYl3UBScKZY+IT1Aprqatmrf/A2HVUCI
-         GMA1mXFr5C5YHXDKYNRQKCrIlQ29l73oh5mxb/ECmFw1+ywF8PCjJwp06fsXrWq1mYio
-         LCrg==
-X-Gm-Message-State: AOAM530/7fhVpFTjOW0NlgZ2w82jP/HDvqWrasrs1Fo68yBgMgRW4b0k
-        ucbhX3N4vKXWXU87D29GLtBhfGGfivdE6g==
-X-Google-Smtp-Source: ABdhPJznoC6po0xd33YGlKPu+hTq1bF0rajM+XbF2VTq87GhRpdDzXEcsJsILoUwXhMSGbGwis6PGg==
-X-Received: by 2002:a37:a04a:: with SMTP id j71mr587084qke.424.1627490987778;
-        Wed, 28 Jul 2021 09:49:47 -0700 (PDT)
-Received: from macbook-air-3.local (weaver.eece.maine.edu. [130.111.218.23])
-        by smtp.gmail.com with ESMTPSA id a127sm268955qkc.121.2021.07.28.09.49.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 09:49:47 -0700 (PDT)
-From:   Vince Weaver <vincent.weaver@maine.edu>
-X-Google-Original-From: Vince Weaver <vince@maine.edu>
-Date:   Wed, 28 Jul 2021 12:49:43 -0400 (EDT)
-To:     linux-kernel@vger.kernel.org
-cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [perf] fuzzer triggers unchecked MSR access error: WRMSR to 0x318
-Message-ID: <37881148-a43e-5fd4-817c-a875adc7a15f@maine.edu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=otNTlDwa87Ct7KnwMnmWEklfb8eXN/ybU6dmwmB/y4k=;
+        b=rE44zhC2MQP4hiPrLgc2lFj2zOX/wCrSm3/UxkQ3QEFVi81T9zY197AJPnHT3yBAD/
+         6v4TKSPjp5mX4TdpDOBaM5lsNfV46HEFlx7dFmiAg5oj1yfNXiSvYCID60FncZ0uV8Ju
+         TfVWdL3s5l/kpk8vXVEK1VcDUDQ/MLJwQ+Q0StgziIRvWwfpl5b29Pm9cwO46mQklqBx
+         uH+uUo6jLQVo2WXdhrfuVjlAPIxSl7yBXSUi7eIy8JUm+QPuSlEPkJbIB3Uv28ytG6E2
+         +B8E4lXD28/rqvPIInie8ScqbG2X+X+Ss8uWK70YrojjSToF3dD8nC4f6d8WnxcePwPF
+         yxqQ==
+X-Gm-Message-State: AOAM532T3Av8/koXFPjvpy2p00Zsb0AFEoICruad23C1tyu9tIQ34Bec
+        IpLScUtf5ZIbsuG8YfjrLf5csIYpjcvds2puXK8=
+X-Google-Smtp-Source: ABdhPJw1TruNXS+01KTW3gp+Fe37RtD+n7CfbVJq7xUSj403ji3R82e0709hZow8OpZrbJQoYJR41H7iUFiOiVkK5UM=
+X-Received: by 2002:a25:3c5:: with SMTP id 188mr701558ybd.437.1627491000573;
+ Wed, 28 Jul 2021 09:50:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210728135534.703028-1-pgwipeout@gmail.com> <13247009.uLZWGnKmhe@diego>
+ <CAMdYzYqR+ocrXQi8TOHY0Yd2oULXuPgE_QnbcuQSw=BoaumBKA@mail.gmail.com>
+ <6063626.MhkbZ0Pkbq@diego> <CAMdYzYqz-i1X2oORi6SjSqi6_KwRcbt2u04+cVxcSonX9gxOew@mail.gmail.com>
+In-Reply-To: <CAMdYzYqz-i1X2oORi6SjSqi6_KwRcbt2u04+cVxcSonX9gxOew@mail.gmail.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Wed, 28 Jul 2021 12:49:47 -0400
+Message-ID: <CAMdYzYrj7PdvmfvSNV5B3=aDrAx1VUO2=w8vgVprBE1qiEZP3A@mail.gmail.com>
+Subject: Re: [PATCH 6/9] arm64: dts: rockchip: add missing rk3568 cru phandles
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On Wed, Jul 28, 2021 at 11:16 AM Peter Geis <pgwipeout@gmail.com> wrote:
+>
+> On Wed, Jul 28, 2021 at 10:41 AM Heiko St=C3=BCbner <heiko@sntech.de> wro=
+te:
+> >
+> > Am Mittwoch, 28. Juli 2021, 16:18:49 CEST schrieb Peter Geis:
+> > > On Wed, Jul 28, 2021 at 10:06 AM Heiko St=C3=BCbner <heiko@sntech.de>=
+ wrote:
+> > > >
+> > > > Hi Peter,
+> > > >
+> > > > Am Mittwoch, 28. Juli 2021, 15:55:31 CEST schrieb Peter Geis:
+> > > > > The grf and pmugrf phandles are necessary for the pmucru and cru =
+to
+> > > > > modify clocks. Add these phandles to permit adjusting the clock r=
+ates
+> > > > > and muxes.
+> > > > >
+> > > > > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> > > > > ---
+> > > > >  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 3 +++
+> > > > >  1 file changed, 3 insertions(+)
+> > > > >
+> > > > > diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm6=
+4/boot/dts/rockchip/rk356x.dtsi
+> > > > > index 0905fac0726a..8ba0516eedd8 100644
+> > > > > --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> > > > > +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> > > > > @@ -218,6 +218,8 @@ grf: syscon@fdc60000 {
+> > > > >       pmucru: clock-controller@fdd00000 {
+> > > > >               compatible =3D "rockchip,rk3568-pmucru";
+> > > > >               reg =3D <0x0 0xfdd00000 0x0 0x1000>;
+> > > > > +             rockchip,grf =3D <&grf>;
+> > > > > +             rockchip,pmugrf =3D <&pmugrf>;
+> > > >
+> > > > I don't think the pmucru needs both and in fact the mainline
+> > > > clock driver should just reference its specific grf at all, i.e.
+> > > >         pmucru -> pmugrf (via the rockchip,grf handle)
+> > > >         cru -> grf
+> > > >
+> > > > I've not seen anything breaking this scope so far.
+> > >
+> > > I thought the same thing as well, but for some reason the driver
+> > > refuses to apply assigned-clocks to the plls unless these are all
+> > > present.
+> > > If the driver can get these assignments automatically eventually,
+> > > perhaps it's a loading order issue?
+> > >
+> > > Thinking about it, it's probably the grf and pmugrf haven't probed
+> > > when the driver is attempting to assign these, and tying them togethe=
+r
+> > > forces the probe to happen first.
+> >
+> > though nothing references the regular grf from the pmucru I think.
+> >
+> > I.e. the pmucru PLL read their lock state from RK3568_PMU_MODE_CON
+> >
+> > The rk3568 reuses the pll_rk3328-type which in turn is a modified pll_r=
+k3036
+> > and uses their ops. Which in turn means the pll shouldn't access the GR=
+F at
+> > all, as it uses the pll's own register to check the locked state.
+> >
+> > Can you try to change clk-pll.c from
+> >
+> >         switch (pll_type) {
+> >         case pll_rk3036:
+> >         case pll_rk3328:
+> >                 if (!pll->rate_table || IS_ERR(ctx->grf))
+> >                         init.ops =3D &rockchip_rk3036_pll_clk_norate_op=
+s;
+> > ...
+> > to
+> >         switch (pll_type) {
+> >         case pll_rk3036:
+> >         case pll_rk3328:
+> >                 if (!pll->rate_table)
+> >                         init.ops =3D &rockchip_rk3036_pll_clk_norate_op=
+s;
+> >
+> > similar to rk3399?
+>
+> Thanks, I'll test this!
 
-ther perf_fuzzer on current linux-git on a Haswell system triggers the 
-following.
+Confirmed this fixed the issue for the rk3566, so as long as it
+doesn't break rk3328 this works.
+I'll include the patch in the next series.
 
-I've truncated the call chain, as it goes on for quite a while, let me 
-know if you want/need more information.
-
-Vince
-
-[32694.087403] unchecked MSR access error: WRMSR to 0x318 (tried to write 0x0000000000000000) at rIP: 0xffffffff8106f854 (native_write_msr+0x4/0x20)
-[32694.101374] Call Trace:
-[32694.103974]  perf_clear_dirty_counters+0x86/0x100
-[32694.109027]  switch_mm_irqs_off+0x1d0/0x430
-[32694.113498]  __schedule+0x29f/0x1490
-[32694.117300]  ? cr4_update_irqsoff+0x2a/0x30
-[32694.121762]  ? switch_mm_irqs_off+0x1ba/0x430
-[32694.126418]  ? rcu_eqs_exit.constprop.0+0x2e/0x60
-[32694.131515]  ? cpuidle_enter_state+0xb7/0x350
-[32694.136152]  schedule_idle+0x26/0x40
-[32694.139974]  do_idle+0x16e/0x280
-[32694.143421]  cpu_startup_entry+0x19/0x20
-[32694.147643]  secondary_startup_64_no_verify+0xb0/0xbb
-[32694.973583] Call Trace:
-[32694.976215]  perf_clear_dirty_counters+0x86/0x100
-[32694.981290]  switch_mm_irqs_off+0x1d0/0x430
-[32694.985797]  __schedule+0x29f/0x1490
-[32694.989664]  ? cr4_update_irqsoff+0x2a/0x30
-[32694.994134]  ? switch_mm_irqs_off+0x1ba/0x430
-[32694.998789]  ? rcu_eqs_exit.constprop.0+0x2e/0x60
-[32695.003831]  ? cpuidle_enter_state+0xb7/0x350
-[32695.008521]  schedule_idle+0x26/0x40
-[32695.012362]  do_idle+0x16e/0x280
-[32695.015838]  cpu_startup_entry+0x19/0x20
-[32695.020041]  secondary_startup_64_no_verify+0xb0/0xbb
-[32695.126530] Call Trace:
-[32695.129184]  perf_clear_dirty_counters+0x86/0x100
-[32695.134268]  switch_mm_irqs_off+0x1d0/0x430
-[32695.138757]  __schedule+0x29f/0x1490
-[32695.142577]  ? tick_nohz_get_sleep_length+0x6b/0xa0
-[32695.147806]  ? rcu_eqs_exit.constprop.0+0x2e/0x60
-[32695.152806]  ? cpuidle_enter_state+0xb7/0x350
-[32695.157500]  schedule_idle+0x26/0x40
-[32695.161342]  do_idle+0x16e/0x280
-[32695.164798]  cpu_startup_entry+0x19/0x20
-[32695.169010]  secondary_startup_64_no_verify+0xb0/0xbb
-
+>
+> >
+> > Heiko
+> >
+> > > > >               #clock-cells =3D <1>;
+> > > > >               #reset-cells =3D <1>;
+> > > > >       };
+> > > > > @@ -225,6 +227,7 @@ pmucru: clock-controller@fdd00000 {
+> > > > >       cru: clock-controller@fdd20000 {
+> > > > >               compatible =3D "rockchip,rk3568-cru";
+> > > > >               reg =3D <0x0 0xfdd20000 0x0 0x1000>;
+> > > > > +             rockchip,grf =3D <&grf>;
+> > > > >               #clock-cells =3D <1>;
+> > > > >               #reset-cells =3D <1>;
+> > > > >       };
+> > > > >
+> > > >
+> > > >
+> > > >
+> > > >
+> > >
+> >
+> >
+> >
+> >
