@@ -2,139 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236703D9151
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF1B3D9155
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237507AbhG1Oyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237501AbhG1OyV (ORCPT
+        id S237040AbhG1Oz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:55:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:36246 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236626AbhG1OzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:54:21 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2119BC06179E
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:54:02 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id 185so3288593iou.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3gMnfS3ZVPibbkuXLiFXnyctHVfxY7ctQKEATYt20pA=;
-        b=pfmsI8yptPK+F+zbmH/P7nV1g0VhxrPr4niolekbbZBhxJKGiaFoWV2z2gtp8YBtC7
-         PKMaIyED6eHRroP2XLWVBXV5hAF+lKLqHegvbZHaC/fAmPL/JBtUjhFxawliGMz0+EJx
-         Mj8QAwJGOBXV9qnQ7Ua/11wG+BDQfvKf9eXDFp2JLKJT9YKO2vz6vcoxgaNaDTXVXmfz
-         l6rvfe2XRfLurX73zSvO0YRTdc7F7p+AgGlaSeYUkCcQVPodx6KwUYdWmnR8G/FBPWm2
-         LlFGgGgEl4/WVjDxN+67QjYe8llra2D5rWRw9fnFmVvn4lQ80dXid0o7OKrAbMqR40U8
-         Dk3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3gMnfS3ZVPibbkuXLiFXnyctHVfxY7ctQKEATYt20pA=;
-        b=QER3eUNOg2tssi3BPJ2aJinNMxVclRlUGM8ScWcr5lBTeCx6Di8SyHPej3gSwS5n5d
-         n+GZ9kHsVjYvf35PgjuLybornppCLA/6k/YSi2srM9uYxeDjAerO5khBSUwH1za9xW3u
-         bAWM9BtJKbUewv/pJg47Cq/kQaPovbiCctBM+PaWm9pR2+8EVrmh30jI/r+4zH25VK9t
-         Dh6InSVDdDPAzV8s67HKIch4K5gK8t6vFC3dLctxw4VnpCa/fXt6O4vn5Bilh/SYrYy1
-         bhFXGqsvPh4Tt7qe+qqF+HPeTKPYc01Sfm/hhXYysn5BtUzGgDUYamw6xxQAT1Jm6Scq
-         f+Kw==
-X-Gm-Message-State: AOAM532JLJRGsPMHrmqQ40Ir/8W8G00STHkGKPSohbme1fl8/MQyT2O3
-        BDbPzVa12Lf1OjWq0dp3jGQ=
-X-Google-Smtp-Source: ABdhPJzpQUvdbUtjfJxPYliS4bX5IStD7eNoTlr0g9fri9SnONMUP20BEeUNbq8EbE2zJltLlDmmmw==
-X-Received: by 2002:a6b:b24e:: with SMTP id b75mr24185896iof.94.1627484041557;
-        Wed, 28 Jul 2021 07:54:01 -0700 (PDT)
-Received: from localhost ([12.28.44.171])
-        by smtp.gmail.com with ESMTPSA id a1sm79496ilp.1.2021.07.28.07.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 07:54:01 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 07:53:59 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, linux@rasmusvillemoes.dk, rafael@kernel.org,
-        rdunlap@infradead.org, agordeev@linux.ibm.com, sbrivio@redhat.com,
-        jianpeng.ma@intel.com, valentin.schneider@arm.com,
-        peterz@infradead.org, bristot@redhat.com, guodong.xu@linaro.org,
-        tangchengchang@huawei.com, prime.zeng@hisilicon.com,
-        yangyicong@huawei.com, tim.c.chen@linux.intel.com,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v7 0/4] use bin_attribute to break the size limitation of
- cpumap ABI
-Message-ID: <YQFvhyAggX1fUm2t@yury-ThinkPad>
-References: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
- <YQFebNhDUD4VPN/P@kroah.com>
+        Wed, 28 Jul 2021 10:55:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627484108; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=Ep08OHNA6cPjguVx+7EyjN81zK8S0EpKX+rpXN2XyL4=; b=kXeerlg5yu9Acqb/CYHp7O1EKn04tR9WP7DibB+PIZVvWc4r3pEM04uVe5s5gJUKwMxybZl8
+ CXtDnPZFic5igbpbJtG118ZzsYdb7jGyNXQuxXnZEJE2Ha9QthZEpSjkYYxHI0UamER8IdmF
+ HOhCrlsTvdkGIIo6UjxkO6FZ41U=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 61016fb9b653fbdadd3e24d5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 14:54:49
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D33CAC43148; Wed, 28 Jul 2021 14:54:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DD15C43144;
+        Wed, 28 Jul 2021 14:54:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9DD15C43144
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Christian Lamparter <chunkeey@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-wireless@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] intersil: remove obsolete prism54 wireless driver
+References: <20210713054025.32006-1-lukas.bulwahn@gmail.com>
+        <20210715220644.2d2xfututdoimszm@garbanzo>
+        <6f490ee6-4879-cac5-d351-112f21c6b23f@gmail.com>
+        <87mtq8guh7.fsf@codeaurora.org>
+        <YP//NPZbVXZ5efZJ@bombadil.infradead.org>
+Date:   Wed, 28 Jul 2021 17:54:40 +0300
+In-Reply-To: <YP//NPZbVXZ5efZJ@bombadil.infradead.org> (Luis Chamberlain's
+        message of "Tue, 27 Jul 2021 05:42:28 -0700")
+Message-ID: <87pmv2fpzj.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQFebNhDUD4VPN/P@kroah.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 03:41:00PM +0200, Greg KH wrote:
-> On Thu, Jul 15, 2021 at 11:58:52PM +1200, Barry Song wrote:
-> > v7:
-> >   - update doc in code for new APIs according to the comments of
-> >     Andy Shevchenko;
-> >   - other minor cleanup and commit log fix according to the comments
-> >     of Andy Shevchenko
-> 
-> I'm lost to tell if this is the latest version or if there are more
-> changes?  Can you send this again with the latest changes so I can
-> review it?
+Luis Chamberlain <mcgrof@kernel.org> writes:
 
-Barry, Greg,
+> On Tue, Jul 27, 2021 at 09:07:48AM +0300, Kalle Valo wrote:
+>> Christian Lamparter <chunkeey@gmail.com> writes:
+>> 
+>> > On 16/07/2021 00:06, Luis Chamberlain wrote:
+>> >> On Tue, Jul 13, 2021 at 07:40:25AM +0200, Lukas Bulwahn wrote:
+>> >>> Commit 1d89cae1b47d ("MAINTAINERS: mark prism54 obsolete") indicated the
+>> >>> prism54 driver as obsolete in July 2010.
+>> >>>
+>> >>> Now, after being exposed for ten years to refactoring, general tree-wide
+>> >>> changes and various janitor clean-up, it is really time to delete the
+>> >>> driver for good.
+>> >>>
+>> >>> This was discovered as part of a checkpatch evaluation, investigating all
+>> >>> reports of checkpatch's WARNING:OBSOLETE check.
+>> >>>
+>> >>> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+>> >>> ---
+>> >
+>> > noted. Farewell.
+>> 
+>> How do we know that there are no users left? It's surprising how ancient
+>> hardware some people use. Is the driver broken or what?
+>> 
+>> (Reads commit 1d89cae1b47d)
+>> 
+>> Ah, p54 is supposed to replace prism54. Does that include all the
+>> hardware supported by prism54?
+>
+> There was a one off chipset someone told me about long ago that p54
+> didn't work for. But that persond disappeared from the face of the
+> earth. Additionally, distributions have been blacklisting prism54
+> for years now.
+>
+>> If yes, that should be clearly documented
+>> in the commit log and I can add that.
+>
+> Agreed. Feel free to quote the above.
 
-If you decide to keep bitmap_print_to_buf in lib/bitmap.c, could you
-please add the following patch to the series.
+Thanks, will do.
 
-Thanks,
-Yury
-
-
-From 58602766dc2877d2103a334db6c2c2e1e6b8c89b Mon Sep 17 00:00:00 2001
-From: Yury Norov <yury.norov@gmail.com>
-Date: Wed, 28 Jul 2021 07:39:30 -0700
-Subject: [PATCH] bitmap: extend comment to bitmap_print_to_buf
-
-Extend comment to new function to warn potential users about caveats.
-
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- lib/bitmap.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 56bcffe2fa8c..b9f557ca668c 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -545,6 +545,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
-  * mainly serves bin_attribute which doesn't work with exact one page, and it
-  * can break the size limit of converted decimal list and hexadecimal bitmask.
-  *
-+ * WARNING!
-+ *
-+ * This function is not a replacement for sprintf() or bitmap_print_to_pagebuf().
-+ * It is intended to workaround sysfs limitations discussed above and should be
-+ * used carefully in general case for the following reasons:
-+ *  - Time complexity is O(nbits^2/count), comparing to O(nbits) for snprintf().
-+ *  - Memory complexity is O(nbits), comparing to O(1) for snprintf().
-+ *  - @off and @count are NOT offset and number of bits to print.
-+ *  - If printing part of bitmap as list, the resulting string is not a correct
-+ *    list representation of bitmap. Particularly, some bits within or out of
-+ *    related interval may be erroneously set or unset. The format of the string
-+ *    may be broken, so bitmap_parselist() may fail parsing it.
-+ *  - If printing the whole bitmap as list by parts, user must ensure the order
-+ *    of calls of the function such that the offset is incremented linearly.
-+ *  - If printing the whole bitmap as list by parts, user must keep bitmap
-+ *    unchanged between the very first and very last call. Otherwise concatenated
-+ *    result may be incorrect, and format may be broken.
-+ *
-  * Returns the number of characters actually printed to @buf
-  */
- int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
 -- 
-2.30.2
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
