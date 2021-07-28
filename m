@@ -2,125 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701D73D945E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AD93D9464
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhG1RfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhG1RfW (ORCPT
+        id S229727AbhG1Rg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:36:59 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:38871 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhG1Rg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:35:22 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C44C061757;
-        Wed, 28 Jul 2021 10:35:19 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ca5so6214428pjb.5;
-        Wed, 28 Jul 2021 10:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3PzlsUS0qKWXyNmKIehGk56GXadOKQkGPpY5nA01M/I=;
-        b=UwXvtSjRMoZIbi3eoNKm/tPsmFZ+JpRfMx5b+4rKRH4Ia2lLUf8wHGodjcMziHB+3g
-         lEnzwX4Ndn0Ywzg4RVBd1PuH0fc0VQ3gLXt1UfYdRt1JV0YkVziGRS5/cS3AYrTX6Cls
-         3Gdda5h+6rsdjMwnuytW3VCJMKNC4vnMnbS9ChrB7qfbuRf73PX6HNcDSfVc7E5c1zQF
-         9uhIcHwBvfCEwDSj676Gl0Xoujvaq1UTNNXtl993bViGjYpP8rkcdqxhh/C7j2JsBdmv
-         4fTLMp9U9eNTdiS6hqDjhgeevGdWeEnORPP4s1qZ7DMErEg8htSOW94RcFTpco8MITu+
-         Rjyg==
+        Wed, 28 Jul 2021 13:36:57 -0400
+Received: by mail-io1-f50.google.com with SMTP id a13so3849607iol.5;
+        Wed, 28 Jul 2021 10:36:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3PzlsUS0qKWXyNmKIehGk56GXadOKQkGPpY5nA01M/I=;
-        b=RffxUnVdLPmtv5MV1xrC+ofqvbeX834hzNuHUbllYhL18zseZGLc3vPUYGqFfWH4AI
-         Oa/wzVLAOb1rwZ/4SMGbygZVXhkHWS8Y4TueMfKk5jx6W6h7A3TjeFTWK0ywn3EhQp/t
-         MxTKkPJWzpiICMiT/fDhNHW+iEc7DZ4dgq2oMzBh9lxDJ6Eskr1WlI9XtDSDgvhnzZeQ
-         jrrzRnBHpwj8TbkJXisLJrRdhvC6N7Hu/2JBTHHopr1AH8kXJGfTiGj8O+mNIOfK3I2v
-         7u4VgVuKnwi22INwtng1Q8952HT/UL+dm8dIfmQopt6PE1DLk31yg2PygSr3vZZvASjl
-         x30Q==
-X-Gm-Message-State: AOAM530oQ3dBcCmEMhQug9G5+zEClGs+nIWNLRPZtHQjHD73yM02zLCV
-        Ec+PwWjEfo0YelZcc5OppjI=
-X-Google-Smtp-Source: ABdhPJxOEwT+loZNOJgRL23B6PkDaDEGYi2cDA47+4M+bsFE6K5S4GZj5+TYsC60xeAwTPRRQVnu7g==
-X-Received: by 2002:a17:90b:1896:: with SMTP id mn22mr840485pjb.148.1627493718316;
-        Wed, 28 Jul 2021 10:35:18 -0700 (PDT)
-Received: from localhost ([49.32.196.184])
-        by smtp.gmail.com with ESMTPSA id p17sm6649958pjz.16.2021.07.28.10.35.17
+         :mime-version:content-disposition:in-reply-to;
+        bh=+ZuWCSGhI9p946I5meiTY9tIujdg9WTVzTMSIiS4wvA=;
+        b=rowxeJEt+7OrmigRlYQ3zs+P/C7VbmZCElTDPQy5iCzPggHdHESNG6dyrq8npDdHba
+         J4sY55w1qCt+kFd0JKch0eHQUQuFSYwuxC94qeNcNKyE1sEepZhi1RXn6xaxqrkEbhuj
+         UK+sWXGDW2sC905LbxWEIp/gW5CzNmwhDDDtETRCRPOEA+mY5XO42OTk75vARY1Atp4/
+         U5At/FC+NBDRXRAJvVOU4YORAie1Ix7NZj1JN0PIDLFo6XidpkJUi0lXu7HFJ52kYbxg
+         EohXwEOToPpYGQh2LIEAOfoA8TJwlVzfDlCgwNNQDusorvrkc/A0fznckltUcuoBoNZH
+         Fphw==
+X-Gm-Message-State: AOAM531mAJpkbF9qwIe2cZGdkl5ocnBNg2Ptbsx4thCdblWB+bVLUqp7
+        fkCQ7t1iXlWTA+9gIeZaWA==
+X-Google-Smtp-Source: ABdhPJxCmh3UPQcqE4Y7EaPT/8ZYwkH97oksdw+d/L95duJC5Jdb6zChMU6kTNaWH9jRrV8yythhsw==
+X-Received: by 2002:a05:6638:289:: with SMTP id c9mr876595jaq.14.1627493814569;
+        Wed, 28 Jul 2021 10:36:54 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id g4sm335630ilc.11.2021.07.28.10.36.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 10:35:17 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 23:05:14 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 8/8] PCI: Change the type of probe argument in reset
- functions
-Message-ID: <20210728173514.77yiv2vjvjpf6ao5@archlinux>
-References: <20210709123813.8700-9-ameynarkhede03@gmail.com>
- <20210727222255.GA751984@bjorn-Precision-5520>
+        Wed, 28 Jul 2021 10:36:53 -0700 (PDT)
+Received: (nullmailer pid 1298058 invoked by uid 1000);
+        Wed, 28 Jul 2021 17:36:49 -0000
+Date:   Wed, 28 Jul 2021 11:36:49 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     bjorn.andersson@linaro.org, broonie@kernel.org,
+        plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
+        perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        bgoswami@codeaurora.org
+Subject: Re: [PATCH v2 04/16] ASoC: qcom: dt-bindings: add bindings Audio
+ Processing manager
+Message-ID: <20210728173649.GA1290628@robh.at.kernel.org>
+References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
+ <20210714153039.28373-5-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210727222255.GA751984@bjorn-Precision-5520>
+In-Reply-To: <20210714153039.28373-5-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/27 05:22PM, Bjorn Helgaas wrote:
-> On Fri, Jul 09, 2021 at 06:08:13PM +0530, Amey Narkhede wrote:
-> > Introduce a new enum pci_reset_mode_t to make the context of probe argument
-> > in reset functions clear and the code easier to read.  Change the type of
-> > probe argument in functions which implement reset methods from int to
-> > pci_reset_mode_t to make the intent clear.
->
-> Not sure adding an enum and a PCI_RESET_MODE_MAX seems worth it to me.
-> It's really a boolean parameter, and I'd be happy to change it to a
-> bool.  But I don't think it's worth checking against
-> PCI_RESET_MODE_MAX unless we need more than two options.
->
-Is it okay to use PCI_RESET_PROBE and PCI_RESET_DO_RESET as bool.
-That would be less confusing than directly using true/false.
+On Wed, Jul 14, 2021 at 04:30:27PM +0100, Srinivas Kandagatla wrote:
+> This patch adds bindings support for Qualcomm Audio Processing Manager
+> service in Audio DSP.
+> 
+> Audio Process Manager is one of the static service in DSP which is
+> responsible for Command/response handling, graph Management
+> and Control/Event management between modules.
 
-Thanks,
-Amey
+This all looks fairly similar to the prior Qcom audio binding(s). It 
+would be nice to not see this all re-invented.
 
-> > Add a new line in return statement of pci_reset_bus_function().
->
-> Drop this line, since I don't think it's correct and there's no need
-> to describe whitespace changes anyway.
->
-> > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> > Suggested-by: Krzysztof Wilczyński <kw@linux.com>
-> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
->
-> > @@ -306,7 +306,7 @@ static int nitrox_device_flr(struct pci_dev *pdev)
-> >  		return -ENOMEM;
-> >  	}
-> >
-> > -	pcie_reset_flr(pdev, 0);
-> > +	pcie_reset_flr(pdev, PCI_RESET_DO_RESET);
-> >
-> >  	pci_restore_state(pdev);
-> >
->
-> > @@ -526,7 +526,7 @@ static void octeon_destroy_resources(struct octeon_device *oct)
-> >  			oct->irq_name_storage = NULL;
-> >  		}
-> >  		/* Soft reset the octeon device before exiting */
-> > -		if (!pcie_reset_flr(oct->pci_dev, 1))
-> > +		if (!pcie_reset_flr(oct->pci_dev, PCI_RESET_PROBE))
-> >  			octeon_pci_flr(oct);
-> >  		else
-> >  			cn23xx_vf_ask_pf_to_do_flr(oct);
->
-> > +typedef enum pci_reset_mode {
-> > +	PCI_RESET_DO_RESET,
-> > +	PCI_RESET_PROBE,
-> > +	PCI_RESET_MODE_MAX,
-> > +} pci_reset_mode_t;
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,q6apm.yaml | 87 +++++++++++++++++++
+>  include/dt-bindings/sound/qcom,q6apm.h        |  8 ++
+>  2 files changed, 95 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
+>  create mode 100644 include/dt-bindings/sound/qcom,q6apm.h
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
+> new file mode 100644
+> index 000000000000..6f27567523a9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/sound/qcom,q6apm.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm Audio Process Manager binding
+> +
+> +maintainers:
+> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> +
+> +description: |
+> +  This binding describes the Qualcomm Audio Process Manager service in DSP
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,q6apm
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+> +#APM Services
+> +patternProperties:
+> +  'apm@[0-9]+$':
+
+This means '.*apm' for the node name. Did you need a '^'?
+
+> +    type: object
+> +    description:
+> +      APM devices use subnodes for services.
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - qcom,q6apm-dais
+> +          - qcom,q6apm-bedais
+> +
+> +      iommus:
+> +        maxItems: 1
+> +
+> +      "#sound-dai-cells":
+> +        const: 1
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +      - '#sound-dai-cells'
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    gpr {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        gprservice@1 {
+> +          compatible = "qcom,q6apm";
+> +          reg = <1>;
+> +
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          apm@1 {
+> +            compatible = "qcom,q6apm-dais";
+> +            #sound-dai-cells = <1>;
+> +            reg = <1>;
+> +          };
+> +
+> +          apm@2 {
+> +            compatible = "qcom,q6apm-bedais";
+> +            #sound-dai-cells = <1>;
+> +            reg = <2>;
+> +          };
+> +        };
+> +    };
+> diff --git a/include/dt-bindings/sound/qcom,q6apm.h b/include/dt-bindings/sound/qcom,q6apm.h
+> new file mode 100644
+> index 000000000000..3c3987eb6e95
+> --- /dev/null
+> +++ b/include/dt-bindings/sound/qcom,q6apm.h
+> @@ -0,0 +1,8 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __DT_BINDINGS_Q6_APM_H__
+> +#define __DT_BINDINGS_Q6_APM_H__
+> +
+> +/* Audio Process Manager (APM) virtual ports IDs */
+> +#include <dt-bindings/sound/qcom,q6afe.h>
+
+Why add this indirection? Rename the file if you need something to cover 
+both.
+
+> +
+> +#endif /* __DT_BINDINGS_Q6_APM_H__ */
+> -- 
+> 2.21.0
+> 
+> 
