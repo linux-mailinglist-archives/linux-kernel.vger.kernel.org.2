@@ -2,125 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2749A3D889C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335213D889F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234635AbhG1HLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:11:43 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15999 "EHLO m43-7.mailgun.net"
+        id S234254AbhG1HMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:12:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233293AbhG1HLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:11:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627456300; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=813rZu0o4l/+ANEq2PXBvIY1vR/Z/a/QCl8CyrWAoA4=; b=GsIC1GITpdxV69550tUrYBedS7NvZKfcvG7xTfpmxGlj2h8bYUcors36YICcnPBIY8k378cv
- +EzlKTGSgdyZyeLBSndI3wY4h6OsnO5/VxcMhvC/AShewyPBwotz/zWt3xfOvR8+RJC9zFEo
- kZkAuxo53NOANYCgMBMPplaCq1w=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6101032bb653fbdaddcb087c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 07:11:39
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 65AE7C43217; Wed, 28 Jul 2021 07:11:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6312C433D3;
-        Wed, 28 Jul 2021 07:11:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E6312C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Rajat Asthana <rajatasthana4@gmail.com>
-Cc:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ath9k_htc: Add a missing spin_lock_init()
-References: <20210727214358.466397-1-rajatasthana4@gmail.com>
-Date:   Wed, 28 Jul 2021 10:11:32 +0300
-In-Reply-To: <20210727214358.466397-1-rajatasthana4@gmail.com> (Rajat
-        Asthana's message of "Wed, 28 Jul 2021 03:13:58 +0530")
-Message-ID: <87y29qgbff.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S233293AbhG1HMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 03:12:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C66060F0F;
+        Wed, 28 Jul 2021 07:12:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627456342;
+        bh=iMvhET50/bGdhMyxG8vbSsorMy/0jrvOPd5iwP0GAoo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ccXN74JDL/v6FIZxfjFuTE6yafTxFqw2/qEdFjDFCsLED7psxQXeWJUgIBvE5QUC9
+         5JuN2TuiexCN/YM6pPO6++fEFJeETHr5XUR9Yzvfxit0chQGYDVrgMbu6ffYZuH62a
+         7pYjp/2OD2MBs1aIMDpzAw5JDgLu8ZnCwo1cx+2Sk4AWPh0LZrMi7O6LcOstsfncW9
+         aXibNcYryXTcEVNFwrGSRoSJO660vGOUUvaaSpSghr9i3tMxqIXq1649Sbo3Y/0Pbm
+         PDQAhjYSnt+PaOUcdkW/lbQ6KBSBjuCHg0U3ZZMAxXETgtbqlmbNQXNOx4DQxxB3Or
+         EpsN7sl+r+GgQ==
+Date:   Wed, 28 Jul 2021 12:42:18 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, tony@atomide.com, nm@ti.com
+Subject: Re: [PATCH] dmaengine: of-dma: router_xlate to return -EPROBE_DEFER
+ if controller is not yet available
+Message-ID: <YQEDUkY3BHV2OqRR@matsya>
+References: <20210717190021.21897-1-peter.ujfalusi@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210717190021.21897-1-peter.ujfalusi@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rajat Asthana <rajatasthana4@gmail.com> writes:
+On 17-07-21, 22:00, Peter Ujfalusi wrote:
+> If the router_xlate can not find the controller in the available DMA
+> devices then it should return with -EPORBE_DEFER in a same way as the
+> of_dma_request_slave_channel() does.
+> 
+> The issue can be reproduced if the event router is registered before the
+> DMA controller itself and a driver would request for a channel before the
+> controller is registered.
+> In of_dma_request_slave_channel():
+> 1. of_dma_find_controller() would find the dma_router
+> 2. ofdma->of_dma_xlate() would fail and returned NULL
+> 3. -ENODEV is returned as error code
+> 
+> with this patch we would return in this case the correct -EPROBE_DEFER and
+> the client can try to request the channel later.
 
-> Syzkaller reported a lockdep warning on non-initialized spinlock:
->
-> INFO: trying to register non-static key.
-> The code is fine but needs lockdep annotation, or maybe
-> you didn't initialize this object before use?
-> turning off the locking correctness validator.
-> CPU: 0 PID: 10 Comm: ksoftirqd/0 Not tainted 5.13.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x143/0x1db lib/dump_stack.c:120
->  assign_lock_key kernel/locking/lockdep.c:937 [inline]
->  register_lock_class+0x1077/0x1180 kernel/locking/lockdep.c:1249
->  __lock_acquire+0x102/0x5230 kernel/locking/lockdep.c:4781
->  lock_acquire kernel/locking/lockdep.c:5512 [inline]
->  lock_acquire+0x19d/0x700 kernel/locking/lockdep.c:5477
->  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
->  _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
->  spin_lock_bh include/linux/spinlock.h:359 [inline]
->  ath9k_wmi_event_tasklet+0x231/0x3f0 drivers/net/wireless/ath/ath9k/wmi.c:172
->  tasklet_action_common.constprop.0+0x201/0x2e0 kernel/softirq.c:784
->  __do_softirq+0x1b0/0x944 kernel/softirq.c:559
->  run_ksoftirqd kernel/softirq.c:921 [inline]
->  run_ksoftirqd+0x21/0x50 kernel/softirq.c:913
->  smpboot_thread_fn+0x3ec/0x870 kernel/smpboot.c:165
->  kthread+0x38c/0x460 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->
-> We missed a spin_lock_init() in ath9k_wmi_event_tasklet() when the wmi
-> event is WMI_TXSTATUS_EVENTID. Placing this init here instead of
-> ath9k_init_wmi() is fine mainly because we need this spinlock when the
-> event is WMI_TXSTATUS_EVENTID and hence it should be initialized when it
-> is needed.
->
-> Signed-off-by: Rajat Asthana <rajatasthana4@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath9k/wmi.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/net/wireless/ath/ath9k/wmi.c b/drivers/net/wireless/ath/ath9k/wmi.c
-> index fe29ad4b9023..446b7ca459df 100644
-> --- a/drivers/net/wireless/ath/ath9k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath9k/wmi.c
-> @@ -169,6 +169,7 @@ void ath9k_wmi_event_tasklet(struct tasklet_struct *t)
->  					     &wmi->drv_priv->fatal_work);
->  			break;
->  		case WMI_TXSTATUS_EVENTID:
-> +			spin_lock_init(&priv->tx.tx_lock);
->  			spin_lock_bh(&priv->tx.tx_lock);
->  			if (priv->tx.flags & ATH9K_HTC_OP_TX_DRAIN) {
->  				spin_unlock_bh(&priv->tx.tx_lock);
-
-This is not making sense to me. You need to elaborate in the commit log
-a lot more why this is "fine". For example, what happens when there are
-multiple WMI_TXSTATUS_EVENTID events?
-
-Did you test this on a real device?
+Applied, thanks
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+~Vinod
