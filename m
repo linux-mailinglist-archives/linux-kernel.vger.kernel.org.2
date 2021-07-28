@@ -2,84 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861583D8C72
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5FB3D8C6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236033AbhG1LFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:05:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55644 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhG1LFj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:05:39 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7418D1FF88;
-        Wed, 28 Jul 2021 11:05:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627470337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GOykOnev2OKwH7zGa/ujn988oGAsj2Lxft3mdvsvMWQ=;
-        b=HuBe5Qo8P4HXSbjareNeEzbDKXvbOzaYboIh5oYS/TJSdGtu2k0EZCPUJST60cdijhaaJr
-        sXqm6GvTJp0GhP+AVg/hAmhrL713g1m29P/uzifVP8OrEBj66IXEXjUTK6/MyR+VACd5u/
-        y3f5/7Wg/fyblrCRTQ9edk+xAjBvu8Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627470337;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GOykOnev2OKwH7zGa/ujn988oGAsj2Lxft3mdvsvMWQ=;
-        b=GBdU0qvyiVseGe1r6+CESQSsoVxU2o7lrlAvWkeNSRy+oKybiVlIPdjB/4hI92mJSGAoPM
-        sZqr102ODFCgSUAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 373E513983;
-        Wed, 28 Jul 2021 11:05:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id /dQqCwE6AWF3NAAAGKfGzw
-        (envelope-from <jroedel@suse.de>); Wed, 28 Jul 2021 11:05:37 +0000
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [BUG] crypto: ccp: random crashes after kexec on AMD with PSP
- since commit 97f9ac3d
-From:   =?utf-8?B?SsO2cmcgUsO2ZGVs?= <jroedel@suse.de>
-In-Reply-To: <YQB3B1RMhPqcrqzW@xanadu.blop.info>
-Date:   Wed, 28 Jul 2021 13:05:36 +0200
-Cc:     linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Gary Hook <gary.hook@amd.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F2C0BD57-3DC3-436F-98F3-44D85F9DEBC4@suse.de>
-References: <YQB3B1RMhPqcrqzW@xanadu.blop.info>
-To:     Lucas Nussbaum <lucas.nussbaum@inria.fr>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        id S234416AbhG1LEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:04:55 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:40611 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231994AbhG1LEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:04:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1627470293;
+  x=1659006293;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=xAwcql3/jqc11a3K8vx0HFLQ+MboOeW719h4Q37llfI=;
+  b=SiGxHhUc/mCVxGLUi71ApumMygMFMxevmWSJ5WavVzvE231AautbiPKM
+   +TRjLZR6uZUb2GeFMruSMDNs7Pdn0B8A0/02akpuwG1YANEdBS7FzcjAm
+   +tAfIA3V/ahKkSvUX8CUbvJC7Y8ytD6FYYK1/pK2mp4xZpKYYWgfHh8hs
+   ZnXVTKAXbUoUQz3N4SI3JRjhVqXNxA+97iXlNiohPmpIb/zu5udJpW+Vb
+   IXq8nUJEzUkcU+7MCLrBVrNDMV3AMBTUWs1qucNsuLMbMP5yWduUJvNMn
+   hQOvDeLnXHlKF40COhDVL00td52mUfwfrY5C5TzK5T5wV8YENDAMLbTaG
+   w==;
+Subject: Re: [PATCH] tpm: Add Upgrade/Reduced mode support for TPM2 modules
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        kernel <kernel@axis.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210719133717.18797-1-borysmn@axis.com>
+ <20210727025828.giynspbcz7zdmosa@kernel.org>
+From:   Borys Movchan <borysmn@axis.com>
+Message-ID: <7f67f4ec-5d68-5134-6529-93eaf3921571@axis.com>
+Date:   Wed, 28 Jul 2021 13:06:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210727025828.giynspbcz7zdmosa@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail07w.axis.com
+ (10.20.40.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/27/21 4:58 AM, Jarkko Sakkinen wrote:
+> On Mon, Jul 19, 2021 at 03:37:17PM +0200, Borys Movchan wrote:
+> > On some systems, especially embedded, TPM might start in
+> > Upgrade/Reduced mode due to the previous failure of a firmware
+> > upgrade process. Allow the TPM driver to handle such situations
+> > properly. Enables a possibility for userspace application to
+> > finalize TPM upgrade or recovery if required.
+>
+>
+> Please add short explanation what you mean by upgrade/reduced mode.
+>
+> Maybe for clarity speak about upgrade mode.
 
-> Am 27.07.2021 um 23:13 schrieb Lucas Nussbaum =
-<lucas.nussbaum@inria.fr>:
->=20
-> It is worth noting that there was prior work about getting kexec to
-> work with PSP/SEV (commit f8903b3e, "crypto: ccp - fix the SEV probe =
-in
-> kexec boot path=E2=80=9C).
+I have send v2 patch with updated commit message and some notes.
 
-This patch adds the TMR memory for the PSP. I guess a reboot-notifier is =
-needed which shuts the PSP down and flushes all caches.
+Hope that would be more clear.
 
-Regards,
+>
+> >
+> > Signed-off-by: Borys Movchan <borysmn@axis.com>
+> > ---
+> >  drivers/char/tpm/tpm-chip.c | 23 +++++++++++++++--------
+> >  drivers/char/tpm/tpm2-cmd.c | 12 ++++++++++--
+> >  include/linux/tpm.h         |  1 +
+> >  3 files changed, 26 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> > index ddaeceb7e109..ff2367c447fb 100644
+> > --- a/drivers/char/tpm/tpm-chip.c
+> > +++ b/drivers/char/tpm/tpm-chip.c
+> > @@ -574,20 +574,25 @@ static int tpm_get_pcr_allocation(struct 
+> tpm_chip *chip)
+> >  int tpm_chip_register(struct tpm_chip *chip)
+> >  {
+> >        int rc;
+> > +     bool limited_mode = false;
+> >
+> >        rc = tpm_chip_start(chip);
+> >        if (rc)
+> >                return rc;
+> >        rc = tpm_auto_startup(chip);
+> > -     if (rc) {
+> > +     if (rc == -EIO) {
+> > +             limited_mode = true;
+> > +     } else if (rc) {
+> >                tpm_chip_stop(chip);
+> >                return rc;
+> >        }
+> >
+> > -     rc = tpm_get_pcr_allocation(chip);
+> > -     tpm_chip_stop(chip);
+> > -     if (rc)
+> > -             return rc;
+> > +     if (!limited_mode) {
+> > +             rc = tpm_get_pcr_allocation(chip);
+> > +             tpm_chip_stop(chip);
+> > +             if (rc)
+> > +                     return rc;
+> > +     }
+> >
+> >        tpm_sysfs_add_device(chip);
+> >
+> > @@ -595,9 +600,11 @@ int tpm_chip_register(struct tpm_chip *chip)
+> >
+> >        tpm_add_ppi(chip);
+> >
+> > -     rc = tpm_add_hwrng(chip);
+> > -     if (rc)
+> > -             goto out_ppi;
+> > +     if (!limited_mode) {
+> > +             rc = tpm_add_hwrng(chip);
+> > +             if (rc)
+> > +                     goto out_ppi;
+> > +     }
+> >
+> >        rc = tpm_add_char_device(chip);
+> >        if (rc)
+> > diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
+> > index a25815a6f625..7468353ed67d 100644
+> > --- a/drivers/char/tpm/tpm2-cmd.c
+> > +++ b/drivers/char/tpm/tpm2-cmd.c
+> > @@ -718,7 +718,8 @@ static int tpm2_startup(struct tpm_chip *chip)
+> >   *                     sequence
+> >   * @chip: TPM chip to use
+> >   *
+> > - * Returns 0 on success, < 0 in case of fatal error.
+> > + * Returns 0 on success, -ENODEV in case of fatal error,
+> > + *       -EIO in case of Reduced/Upgrade mode
+> >   */
+> >  int tpm2_auto_startup(struct tpm_chip *chip)
+> >  {
+> > @@ -729,7 +730,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
+> >                goto out;
+> >
+> >        rc = tpm2_do_selftest(chip);
+> > -     if (rc && rc != TPM2_RC_INITIALIZE)
+> > +     if (rc == TPM2_RC_UPGRADE) {
+> > +             rc = -EIO;
+> > +             goto out;
+> > +     } else if (rc && rc != TPM2_RC_INITIALIZE)
+> >                goto out;
+> >
+> >        if (rc == TPM2_RC_INITIALIZE) {
+> > @@ -743,6 +747,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
+> >        }
+> >
+> >        rc = tpm2_get_cc_attrs_tbl(chip);
+> > +     if (rc) { /* Succeeded until here, but failed -> reduced mode */
+> > +             rc = -EIO;
+> > +             goto out;
+> > +     }
+> >
+> >  out:
+> >        if (rc > 0)
+> > diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> > index aa11fe323c56..e873c42907f0 100644
+> > --- a/include/linux/tpm.h
+> > +++ b/include/linux/tpm.h
+> > @@ -207,6 +207,7 @@ enum tpm2_return_codes {
+> >        TPM2_RC_INITIALIZE      = 0x0100, /* RC_VER1 */
+> >        TPM2_RC_FAILURE         = 0x0101,
+> >        TPM2_RC_DISABLED        = 0x0120,
+> > +     TPM2_RC_UPGRADE         = 0x012D,
+> >        TPM2_RC_COMMAND_CODE    = 0x0143,
+> >        TPM2_RC_TESTING         = 0x090A, /* RC_WARN */
+> >        TPM2_RC_REFERENCE_H0    = 0x0910,
+> > --
+> > 2.20.1
+> >
+> >
+>
+> /Jarkko
 
-J=C3=B6rg=
+Kind regards,
+
+Borys
+
