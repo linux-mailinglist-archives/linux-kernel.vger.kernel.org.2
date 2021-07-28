@@ -2,202 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBE33D90ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE743D90EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236805AbhG1Ov5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:51:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:58114 "EHLO foss.arm.com"
+        id S236719AbhG1OvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:51:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:58082 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235345AbhG1Ov4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:51:56 -0400
+        id S235345AbhG1OvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 10:51:05 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E8131042;
-        Wed, 28 Jul 2021 07:51:54 -0700 (PDT)
-Received: from bogus (unknown [10.57.37.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8235B3F70D;
-        Wed, 28 Jul 2021 07:51:50 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 15:50:33 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
-        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
-        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
-        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: Re: [PATCH v6 11/17] firmware: arm_scmi: Make SCMI transports
- configurable
-Message-ID: <20210728145033.wpobgpxane2t2brc@bogus>
-References: <20210712141833.6628-1-cristian.marussi@arm.com>
- <20210712141833.6628-12-cristian.marussi@arm.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86FDB1042;
+        Wed, 28 Jul 2021 07:51:03 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8FDC63F70D;
+        Wed, 28 Jul 2021 07:51:01 -0700 (PDT)
+Subject: Re: [PATCH 01/16] KVM: arm64: Generalise VM features into a set of
+ flags
+To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+References: <20210715163159.1480168-1-maz@kernel.org>
+ <20210715163159.1480168-2-maz@kernel.org>
+ <20210727181026.GA19173@willie-the-truck> <875ywuepxv.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <716fffdb-580a-bc70-478a-a54912a77c82@arm.com>
+Date:   Wed, 28 Jul 2021 15:51:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712141833.6628-12-cristian.marussi@arm.com>
+In-Reply-To: <875ywuepxv.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 03:18:27PM +0100, Cristian Marussi wrote:
-> Add configuration options to be able to select which SCMI transports have
-> to be compiled into the SCMI stack.
+On 28/07/2021 10:41, Marc Zyngier wrote:
+> On Tue, 27 Jul 2021 19:10:27 +0100,
+> Will Deacon <will@kernel.org> wrote:
+>>
+>> On Thu, Jul 15, 2021 at 05:31:44PM +0100, Marc Zyngier wrote:
+>>> We currently deal with a set of booleans for VM features,
+>>> while they could be better represented as set of flags
+>>> contained in an unsigned long, similarily to what we are
+>>> doing on the CPU side.
+>>>
+>>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>>> ---
+>>>  arch/arm64/include/asm/kvm_host.h | 12 +++++++-----
+>>>  arch/arm64/kvm/arm.c              |  5 +++--
+>>>  arch/arm64/kvm/mmio.c             |  3 ++-
+>>>  3 files changed, 12 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>>> index 41911585ae0c..4add6c27251f 100644
+>>> --- a/arch/arm64/include/asm/kvm_host.h
+>>> +++ b/arch/arm64/include/asm/kvm_host.h
+>>> @@ -122,7 +122,10 @@ struct kvm_arch {
+>>>  	 * should) opt in to this feature if KVM_CAP_ARM_NISV_TO_USER is
+>>>  	 * supported.
+>>>  	 */
+>>> -	bool return_nisv_io_abort_to_user;
+>>> +#define KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER	0
+>>> +	/* Memory Tagging Extension enabled for the guest */
+>>> +#define KVM_ARCH_FLAG_MTE_ENABLED			1
+>>> +	unsigned long flags;
+>>
+>> One downside of packing all these together is that updating 'flags' now
+>> requires an atomic rmw sequence (i.e. set_bit()). Then again, that's
+>> probably for the best anyway given that kvm_vm_ioctl_enable_cap() looks
+>> like it doesn't hold any locks.
 > 
-> Mailbox and SMC are by default enabled if their related dependencies are
-> satisfied.
+> That, and these operations are supposed to be extremely rare anyway.
 > 
-> While doing that move all SCMI related config options in their own
-> dedicated submenu.
+>>
+>>>  	/*
+>>>  	 * VM-wide PMU filter, implemented as a bitmap and big enough for
+>>> @@ -133,9 +136,6 @@ struct kvm_arch {
+>>>  
+>>>  	u8 pfr0_csv2;
+>>>  	u8 pfr0_csv3;
+>>> -
+>>> -	/* Memory Tagging Extension enabled for the guest */
+>>> -	bool mte_enabled;
+>>>  };
+>>>  
+>>>  struct kvm_vcpu_fault_info {
+>>> @@ -777,7 +777,9 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
+>>>  #define kvm_arm_vcpu_sve_finalized(vcpu) \
+>>>  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
+>>>  
+>>> -#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
+>>> +#define kvm_has_mte(kvm)					\
+>>> +	(system_supports_mte() &&				\
+>>> +	 test_bit(KVM_ARCH_FLAG_MTE_ENABLED, &(kvm)->arch.flags))
+>>
+>> Not an issue with this patch, but I just noticed that the
+>> system_supports_mte() check is redundant here as we only allow the flag to
+>> be set if that's already the case.
 > 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
-> Used a BUILD_BUG_ON() to avoid the scenario where SCMI is configured
-> without any transport. Coul dnot do in any other way in Kconfig due to
-> circular dependencies.
-> 
-> This will be neeed later on to add new Virtio based transport and
-> optionally exclude other transports.
-> ---
->  drivers/firmware/Kconfig           | 34 +--------------
->  drivers/firmware/arm_scmi/Kconfig  | 70 ++++++++++++++++++++++++++++++
->  drivers/firmware/arm_scmi/Makefile |  4 +-
->  drivers/firmware/arm_scmi/common.h |  4 +-
->  drivers/firmware/arm_scmi/driver.c |  6 ++-
->  5 files changed, 80 insertions(+), 38 deletions(-)
->  create mode 100644 drivers/firmware/arm_scmi/Kconfig
-> 
-> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> index 1db738d5b301..8d41f73f5395 100644
-> --- a/drivers/firmware/Kconfig
-> +++ b/drivers/firmware/Kconfig
-> @@ -6,39 +6,7 @@
->  
->  menu "Firmware Drivers"
->  
-> -config ARM_SCMI_PROTOCOL
-> -	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
-> -	depends on ARM || ARM64 || COMPILE_TEST
-> -	depends on MAILBOX || HAVE_ARM_SMCCC_DISCOVERY
-> -	help
-> -	  ARM System Control and Management Interface (SCMI) protocol is a
-> -	  set of operating system-independent software interfaces that are
-> -	  used in system management. SCMI is extensible and currently provides
-> -	  interfaces for: Discovery and self-description of the interfaces
-> -	  it supports, Power domain management which is the ability to place
-> -	  a given device or domain into the various power-saving states that
-> -	  it supports, Performance management which is the ability to control
-> -	  the performance of a domain that is composed of compute engines
-> -	  such as application processors and other accelerators, Clock
-> -	  management which is the ability to set and inquire rates on platform
-> -	  managed clocks and Sensor management which is the ability to read
-> -	  sensor data, and be notified of sensor value.
-> -
-> -	  This protocol library provides interface for all the client drivers
-> -	  making use of the features offered by the SCMI.
-> -
-> -config ARM_SCMI_POWER_DOMAIN
-> -	tristate "SCMI power domain driver"
-> -	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-> -	default y
-> -	select PM_GENERIC_DOMAINS if PM
-> -	help
-> -	  This enables support for the SCMI power domains which can be
-> -	  enabled or disabled via the SCP firmware
-> -
-> -	  This driver can also be built as a module.  If so, the module
-> -	  will be called scmi_pm_domain. Note this may needed early in boot
-> -	  before rootfs may be available.
-> +source "drivers/firmware/arm_scmi/Kconfig"
->  
->  config ARM_SCPI_PROTOCOL
->  	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
-> diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-> new file mode 100644
-> index 000000000000..479fc8a3533e
-> --- /dev/null
-> +++ b/drivers/firmware/arm_scmi/Kconfig
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +menu "ARM System Control and Management Interface Protocol"
-> +
-> +config ARM_SCMI_PROTOCOL
-> +	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
-> +	depends on ARM || ARM64 || COMPILE_TEST
-> +	help
-> +	  ARM System Control and Management Interface (SCMI) protocol is a
-> +	  set of operating system-independent software interfaces that are
-> +	  used in system management. SCMI is extensible and currently provides
-> +	  interfaces for: Discovery and self-description of the interfaces
-> +	  it supports, Power domain management which is the ability to place
-> +	  a given device or domain into the various power-saving states that
-> +	  it supports, Performance management which is the ability to control
-> +	  the performance of a domain that is composed of compute engines
-> +	  such as application processors and other accelerators, Clock
-> +	  management which is the ability to set and inquire rates on platform
-> +	  managed clocks and Sensor management which is the ability to read
-> +	  sensor data, and be notified of sensor value.
-> +
-> +	  This protocol library provides interface for all the client drivers
-> +	  making use of the features offered by the SCMI.
-> +
+> It allows us to save a memory access if system_supports_mte() is false
+> (it is eventually implemented as a static key). On the other hand,
+> there is so much inlining due to it being a non-final cap that we
+> probably lose on that too...
 
-May be you can add if condition here to remove the depends on ARM_SCMI_PROTOCOL
+My original logic was that system_supports_mte() checks
+IS_ENABLED(CONFIG_ARM64_MTE) - so this enables the code guarded with
+kvm_has_mte() to be compiled out if CONFIG_ARM64_MTE is disabled.
 
-if ARM_SCMI_PROTOCOL
+Indeed it turns at we currently rely on this (with CONFIG_ARM64_MTE
+disabled):
 
-> +config ARM_SCMI_HAVE_TRANSPORT
-> +	bool
-> +	help
-> +	  This declares whether at least one SCMI transport has been configured.
-> +	  Used to trigger a build bug when trying to build SCMI without any
-> +	  configured transport.
-> +
-> +config ARM_SCMI_TRANSPORT_MAILBOX
-> +	bool "SCMI transport based on Mailbox"
-> +	depends on ARM_SCMI_PROTOCOL && MAILBOX
+aarch64-linux-gnu-ld: arch/arm64/kvm/mmu.o: in function `sanitise_mte_tags':
+/home/stepri01/work/linux/arch/arm64/kvm/mmu.c:887: undefined reference to `mte_clear_page_tags'
+aarch64-linux-gnu-ld: arch/arm64/kvm/guest.o: in function `kvm_vm_ioctl_mte_copy_tags':
+/home/stepri01/work/linux/arch/arm64/kvm/guest.c:1066: undefined reference to `mte_copy_tags_to_user'
+aarch64-linux-gnu-ld: /home/stepri01/work/linux/arch/arm64/kvm/guest.c:1074: undefined reference to `mte_copy_tags_from_user'
 
-And drop ARM_SCMI_PROTOCOL above
+Obviously we could pull just the IS_ENABLED() into kvm_has_mte() instead.
 
-> +	select ARM_SCMI_HAVE_TRANSPORT
-> +	default y
-
-Do we need a user visible choice if it is always default on ?
-
-> +	help
-> +	  Enable mailbox based transport for SCMI.
-> +
-> +	  If you want the ARM SCMI PROTOCOL stack to include support for a
-> +	  transport based on mailboxes, answer Y.
-> +	  A matching DT entry will also be needed to indicate the effective
-> +	  presence of this kind of transport.
-> +
-
-I would drop the above comment on matching DT.
-
-> +config ARM_SCMI_TRANSPORT_SMC
-> +	bool "SCMI transport based on SMC"
-> +	depends on ARM_SCMI_PROTOCOL && HAVE_ARM_SMCCC_DISCOVERY
-
-Ditto
-
-> +	select ARM_SCMI_HAVE_TRANSPORT
-> +	default y
-> +	help
-> +	  Enable SMC based transport for SCMI.
-> +
-> +	  If you want the ARM SCMI PROTOCOL stack to include support for a
-> +	  transport based on SMC, answer Y.
-> +	  A matching DT entry will also be needed to indicate the effective
-> +	  presence of this kind of transport.
-> +
-
-endif #ARM_SCMI_PROTOCOL
-
--- 
-Regards,
-Sudeep
+Steve
