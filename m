@@ -2,152 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EE43D85AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109C93D85B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234342AbhG1Bui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbhG1Bug (ORCPT
+        id S233426AbhG1BzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:55:22 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33138 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232926AbhG1BzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:50:36 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F471C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:50:35 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id k4-20020a17090a5144b02901731c776526so7592279pjm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:50:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Uxwg9y2D5FscAC8WTII8k+Fl1MaCKaIyqWX2425pbwg=;
-        b=LrIioahOxuG0Yy87ee4V5QkSIPXjkcKgctqXOSVmOvUvbl3AGJicrLW+CgQjr1Drb9
-         2+LoeVSx6hMKWQ3vNE2BnohqbgXg5IYeiV7M4xOT5JsYW83C6ivu5hTcWryqGo7UZRdo
-         H7BcuPUaJ6KHTDmRelDadDBO+fGgawogS5vN8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Uxwg9y2D5FscAC8WTII8k+Fl1MaCKaIyqWX2425pbwg=;
-        b=VRyRYP2Uwf0+NHKL7Kdhsbg/S0deAg6XnCIOT9FNou9k448AR4mQQWGzeYERUCQ4cJ
-         t7kz5KYCM5XkWcHukgYiaGrvDXW5F9JKHP3Ee8etoFjEr39VBm/gUI+OAkTO3xIcH9wI
-         0d9UU7Wfx1NveQS2xZK37yT0obxcjBnCFXB6NEHsVwqrvGq9PuxLldfvwaYTUdaJ0gAx
-         6amVgkI1AFAGVtbqu4vFu5JrHXV2gE0k2JX4RJMfwyO4S+1KcYvGywI7xTuw5OlO5D5p
-         NXSywHQKbjM2dwS8qwGxkRaEeQPnEadEYkwkcU5NKtQBZZR77gMf5saqeyoUX5Do9kMF
-         w34g==
-X-Gm-Message-State: AOAM530iMStSAiKnKfcmjeiLzts7XPsAEfRusWsAylw2y0BrHmd3gSg1
-        g3XYqXYqou4IWiiRsSAYeRz2ew==
-X-Google-Smtp-Source: ABdhPJyheVx5T5IFdDGIlFJGMqu67VgDnTIUx7vGl5lFj0tDG77pOvHSTj72nmspZwOompBVxs+mRA==
-X-Received: by 2002:a17:90a:bb0d:: with SMTP id u13mr25562521pjr.88.1627437035064;
-        Tue, 27 Jul 2021 18:50:35 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s193sm5105347pfc.183.2021.07.27.18.50.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 18:50:34 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 18:50:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-hardening@vger.kernel.org,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 01/64] media: omap3isp: Extract struct group for memcpy()
- region
-Message-ID: <202107271849.00A81539B@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-2-keescook@chromium.org>
- <20210728005546.GA35706@embeddedor>
+        Tue, 27 Jul 2021 21:55:20 -0400
+X-UUID: c9f6666089d143e29dc82dc39c2571b9-20210728
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=58L+Btku+CwzhUYReBlGJltfCSXj2Yn897i2au2OlSc=;
+        b=U3BkHUMIA6xzBNrS69NkBtSsd9K2Vvwn7zUNA76F6quugxZ+TRJNO3tHkWnnYdoL53IWdNTJRIGOZpb7dxPx0o/SK0bR2EEoAia3TZoJVmi41Jl+2hBe8WE+OeYPokh2A0glX0yXwy1Vi2cog2K8cwtP6i5uDdak7jbzX4EZSpU=;
+X-UUID: c9f6666089d143e29dc82dc39c2571b9-20210728
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 24134824; Wed, 28 Jul 2021 09:55:17 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs06n2.mediatek.inc
+ (172.21.101.130) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 28 Jul
+ 2021 09:55:16 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 28 Jul 2021 09:55:14 +0800
+Message-ID: <1627437314.31194.13.camel@mhfsdcap03>
+Subject: Re: [PATCH 2/2] phy: mediatek: phy-mtk-tphy: support USB2UART switch
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>
+CC:     <linux-phy@lists.infradead.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Ainge Hsu <ainge.hsu@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Date:   Wed, 28 Jul 2021 09:55:14 +0800
+In-Reply-To: <1627383013-4535-2-git-send-email-macpaul.lin@mediatek.com>
+References: <1627383013-4535-1-git-send-email-macpaul.lin@mediatek.com>
+         <1627383013-4535-2-git-send-email-macpaul.lin@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728005546.GA35706@embeddedor>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 07:55:46PM -0500, Gustavo A. R. Silva wrote:
-> On Tue, Jul 27, 2021 at 01:57:52PM -0700, Kees Cook wrote:
-> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > field bounds checking for memcpy(), memmove(), and memset(), avoid
-> > intentionally writing across neighboring fields.  Wrap the target region
-> > in a common named structure. This additionally fixes a theoretical
-> > misalignment of the copy (since the size of "buf" changes between 64-bit
-> > and 32-bit, but this is likely never built for 64-bit).
-> > 
-> > FWIW, I think this code is totally broken on 64-bit (which appears to
-> > not be a "real" build configuration): it would either always fail (with
-> > an uninitialized data->buf_size) or would cause corruption in userspace
-> > due to the copy_to_user() in the call path against an uninitialized
-> > data->buf value:
-> > 
-> > omap3isp_stat_request_statistics_time32(...)
-> >     struct omap3isp_stat_data data64;
-> >     ...
-> >     omap3isp_stat_request_statistics(stat, &data64);
-> > 
-> > int omap3isp_stat_request_statistics(struct ispstat *stat,
-> >                                      struct omap3isp_stat_data *data)
-> >     ...
-> >     buf = isp_stat_buf_get(stat, data);
-> > 
-> > static struct ispstat_buffer *isp_stat_buf_get(struct ispstat *stat,
-> >                                                struct omap3isp_stat_data *data)
-> > ...
-> >     if (buf->buf_size > data->buf_size) {
-> >             ...
-> >             return ERR_PTR(-EINVAL);
-> >     }
-> >     ...
-> >     rval = copy_to_user(data->buf,
-> >                         buf->virt_addr,
-> >                         buf->buf_size);
-> > 
-> > Regardless, additionally initialize data64 to be zero-filled to avoid
-> > undefined behavior.
-> > 
-> > Fixes: 378e3f81cb56 ("media: omap3isp: support 64-bit version of omap3isp_stat_data")
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  drivers/media/platform/omap3isp/ispstat.c |  5 +--
-> >  include/uapi/linux/omap3isp.h             | 44 +++++++++++++++++------
-> >  2 files changed, 36 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/media/platform/omap3isp/ispstat.c b/drivers/media/platform/omap3isp/ispstat.c
-> > index 5b9b57f4d9bf..ea8222fed38e 100644
-> > --- a/drivers/media/platform/omap3isp/ispstat.c
-> > +++ b/drivers/media/platform/omap3isp/ispstat.c
-> > @@ -512,7 +512,7 @@ int omap3isp_stat_request_statistics(struct ispstat *stat,
-> >  int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
-> >  					struct omap3isp_stat_data_time32 *data)
-> >  {
-> > -	struct omap3isp_stat_data data64;
-> > +	struct omap3isp_stat_data data64 = { };
-> >  	int ret;
-> >  
-> >  	ret = omap3isp_stat_request_statistics(stat, &data64);
-> > @@ -521,7 +521,8 @@ int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
-> >  
-> >  	data->ts.tv_sec = data64.ts.tv_sec;
-> >  	data->ts.tv_usec = data64.ts.tv_usec;
-> > -	memcpy(&data->buf, &data64.buf, sizeof(*data) - sizeof(data->ts));
-> > +	data->buf = (uintptr_t)data64.buf;
-> > +	memcpy(&data->frame, &data64.buf, sizeof(data->frame));
-> 
-> I think this should be:
-> 
-> 	memcpy(..., &data64.frame, ...);
-> 
-> instead.
+T24gVHVlLCAyMDIxLTA3LTI3IGF0IDE4OjUwICswODAwLCBNYWNwYXVsIExpbiB3cm90ZToNCj4g
+U29tZSBlbWJlZGRlZCBwbGF0Zm9ybSBzaGFyZWQgUElOcyBiZXR3ZWVuIFVTQiBhbmQgVUFSVC4N
+Cj4gRm9yIGV4YW1wbGUsIHNvbWUgcGhvbmUgd2lsbCB1c2Ugc3BlY2lhbCBjYWJsZSBkZXRlY3Rp
+b24gaW4gYm9vdCBsb2FkZXINCj4gdG8gc3dpdGNoIFVTQiBwb3J0IGZ1bmN0aW9uIGludG8gVUFS
+VCBtb2RlLg0KPiANCj4gVGhpcyBwYXRjaCBzdXBwb3J0IFVTQjJVQVJUIHN3aXRjaCBmdW5jdGlv
+biBpbiBwaHktbXRrLXRwaHkuDQo+IDEuIEltcGxlbWVudCBVU0IyVUFSVCBzd2l0Y2ggQVBJIHN1
+cHBvcnQgaW4gcGh5LW10ay10cGh5Lg0KPiAyLiBVc2UgUEhZX01PREVfVUFSVCBzdXBwb3J0IGFj
+Y29yZGluZyB0byBuZXcgbW9kZSBpbiBwaHkuaC4NCj4gMy4gVXNlIG10a19waHlfZ2V0X21vZGVf
+ZXh0KCkgdG8gcXVlcnkgdGhlIGN1cnJlbnQgTU9ERSBmcm9tIGhhcmR3YXJlLg0KPiANCj4gU2ln
+bmVkLW9mZi1ieTogTWFjcGF1bCBMaW4gPG1hY3BhdWwubGluQG1lZGlhdGVrLmNvbT4NCj4gLS0t
+DQo+ICBkcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHkuYyB8ICAxMTQgKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAxMTQgaW5zZXJ0
+aW9ucygrKQ0KPiANCnRpdGxlOiBwbGVhc2UgdXNlICJwaHk6IHBoeS1tdGstdHBoeTogLi4uIiAg
+YXMgb3RoZXIgcGF0Y2hlcw0KDQoNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGh5L21lZGlhdGVr
+L3BoeS1tdGstdHBoeS5jIGIvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay10cGh5LmMNCj4g
+aW5kZXggY2RiY2M0OS4uYTdkZmVlYyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9waHkvbWVkaWF0
+ZWsvcGh5LW10ay10cGh5LmMNCj4gKysrIGIvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay10
+cGh5LmMNCj4gQEAgLTY4LDYgKzY4LDcgQEANCj4gICNkZWZpbmUgUEE2X1JHX1UyX1NRVEhfVkFM
+KHgpCSgweGYgJiAoeCkpDQo+ICANCj4gICNkZWZpbmUgVTNQX1UyUEhZQUNSNAkJMHgwMjANCj4g
+KyNkZWZpbmUgUDJDX1JHX1VTQjIwX0RNXzEwMEtfRU4JCUJJVCgxNykNCj4gICNkZWZpbmUgUDJD
+X1JHX1VTQjIwX0dQSU9fQ1RMCQlCSVQoOSkNCj4gICNkZWZpbmUgUDJDX1VTQjIwX0dQSU9fTU9E
+RQkJQklUKDgpDQo+ICAjZGVmaW5lIFAyQ19VMl9HUElPX0NUUl9NU0sJKFAyQ19SR19VU0IyMF9H
+UElPX0NUTCB8IFAyQ19VU0IyMF9HUElPX01PREUpDQo+IEBAIC03Niw2ICs3NywxMiBAQA0KPiAg
+I2RlZmluZSBQMkNfUkdfU0lGX1UyUExMX0ZPUkNFX09OCUJJVCgyNCkNCj4gIA0KPiAgI2RlZmlu
+ZSBVM1BfVTJQSFlEVE0wCQkweDA2OA0KPiArI2RlZmluZSBQMkNfUkdfVUFSVF9NT0RFCQlHRU5N
+QVNLKDMxLCAzMCkNCj4gKyNkZWZpbmUgUDJDX1JHX1VBUlRfTU9ERV9WQUwoeCkJCSgoMHgzICYg
+KHgpKSA8PCAzMCkNCj4gKyNkZWZpbmUgUDJDX1JHX1VBUlRfTU9ERV9PRkVUCQkoMzApDQo+ICsj
+ZGVmaW5lIFAyQ19GT1JDRV9VQVJUX0kJCUJJVCgyOSkNCj4gKyNkZWZpbmUgUDJDX0ZPUkNFX1VB
+UlRfQklBU19FTgkJQklUKDI4KQ0KPiArI2RlZmluZSBQMkNfRk9SQ0VfVUFSVF9UWF9PRQkJQklU
+KDI3KQ0KPiAgI2RlZmluZSBQMkNfRk9SQ0VfVUFSVF9FTgkJQklUKDI2KQ0KPiAgI2RlZmluZSBQ
+MkNfRk9SQ0VfREFUQUlOCQlCSVQoMjMpDQo+ICAjZGVmaW5lIFAyQ19GT1JDRV9ETV9QVUxMRE9X
+TgkJQklUKDIxKQ0KPiBAQCAtOTgsNiArMTA1LDggQEANCj4gIAkJUDJDX1JHX0RQUFVMTERPV04g
+fCBQMkNfUkdfVEVSTVNFTCkNCj4gIA0KPiAgI2RlZmluZSBVM1BfVTJQSFlEVE0xCQkweDA2Qw0K
+PiArI2RlZmluZSBQMkNfUkdfVUFSVF9CSUFTX0VOCQlCSVQoMTgpDQo+ICsjZGVmaW5lIFAyQ19S
+R19VQVJUX1RYX09FCQlCSVQoMTcpDQo+ICAjZGVmaW5lIFAyQ19SR19VQVJUX0VOCQkJQklUKDE2
+KQ0KPiAgI2RlZmluZSBQMkNfRk9SQ0VfSURESUcJCUJJVCg5KQ0KPiAgI2RlZmluZSBQMkNfUkdf
+VkJVU1ZBTElECQlCSVQoNSkNCj4gQEAgLTYwMCw2ICs2MDksOTAgQEAgc3RhdGljIHZvaWQgdTJf
+cGh5X2luc3RhbmNlX2V4aXQoc3RydWN0IG10a190cGh5ICp0cGh5LA0KPiAgCX0NCj4gIH0NCj4g
+IA0KPiArc3RhdGljIHZvaWQgdTJfcGh5X2luc3RhbmNlX3NldF9tb2RlXzJ1YXJ0KHN0cnVjdCB1
+MnBoeV9iYW5rcyAqdTJfYmFua3MpDQo+ICt7DQo+ICsJdTMyIHRtcDsNCj4gKw0KPiArCS8qIENs
+ZWFyIFBBNl9SR19VMl9CQzExX1NXX0VOICovDQpyZW1vdmUgdGhlIGNvbW1lbnRzDQo+ICsJdG1w
+ID0gcmVhZGwodTJfYmFua3MtPmNvbSArIFUzUF9VU0JQSFlBQ1I2KTsNCj4gKwl0bXAgJj0gfihQ
+QTZfUkdfVTJfQkMxMV9TV19FTik7DQo+ICsJd3JpdGVsKHRtcCwgdTJfYmFua3MtPmNvbSArIFUz
+UF9VU0JQSFlBQ1I2KTsNCj4gKw0KPiArCS8qIFNldCBQMkNfUkdfU1VTUEVORE0gKi8NCj4gKwl0
+bXAgPSByZWFkbCh1Ml9iYW5rcy0+Y29tICsgVTNQX1UyUEhZRFRNMCk7DQo+ICsJdG1wIHw9IFAy
+Q19SR19TVVNQRU5ETTsNCj4gKwl3cml0ZWwodG1wLCB1Ml9iYW5rcy0+Y29tICsgVTNQX1UyUEhZ
+RFRNMCk7DQo+ICsNCj4gKwkvKiBTZXQgUDJDX0ZPUkNFX1NVU1BFTkRNICovDQo+ICsJdG1wID0g
+cmVhZGwodTJfYmFua3MtPmNvbSArIFUzUF9VMlBIWURUTTApOw0KPiArCXRtcCB8PSBQMkNfRk9S
+Q0VfU1VTUEVORE07DQo+ICsJd3JpdGVsKHRtcCwgdTJfYmFua3MtPmNvbSArIFUzUF9VMlBIWURU
+TTApOw0KPiArDQo+ICsJLyogQ2xlYXIgYW5kIFNldCBQMkNfUkdfVUFSVF9NT0RFIHRvIDInYjAx
+ICovDQo+ICsJdG1wID0gcmVhZGwodTJfYmFua3MtPmNvbSArIFUzUF9VMlBIWURUTTApOw0KPiAr
+CXRtcCAmPSB+KFAyQ19SR19VQVJUX01PREUpOw0KPiArCXRtcCB8PSBQMkNfUkdfVUFSVF9NT0RF
+X1ZBTCgweDEpOw0KPiArCXdyaXRlbCh0bXAsIHUyX2JhbmtzLT5jb20gKyBVM1BfVTJQSFlEVE0w
+KTsNCj4gKw0KPiArCS8qIENsZWFyIFAyQ19GT1JDRV9VQVJUX0kgKi8NCj4gKwl0bXAgPSByZWFk
+bCh1Ml9iYW5rcy0+Y29tICsgVTNQX1UyUEhZRFRNMCk7DQo+ICsJdG1wICY9IH4oUDJDX0ZPUkNF
+X1VBUlRfSSk7DQo+ICsJd3JpdGVsKHRtcCwgdTJfYmFua3MtPmNvbSArIFUzUF9VMlBIWURUTTAp
+Ow0KPiArDQo+ICsJLyogU2V0IFAyQ19GT1JDRV9VQVJUX0JJQVNfRU4gKi8NCj4gKwl0bXAgPSBy
+ZWFkbCh1Ml9iYW5rcy0+Y29tICsgVTNQX1UyUEhZRFRNMCk7DQo+ICsJdG1wIHw9IFAyQ19GT1JD
+RV9VQVJUX0JJQVNfRU47DQo+ICsJd3JpdGVsKHRtcCwgdTJfYmFua3MtPmNvbSArIFUzUF9VMlBI
+WURUTTApOw0KPiArDQo+ICsJLyogU2V0IFAyQ19GT1JDRV9VQVJUX1RYX09FICovDQo+ICsJdG1w
+ID0gcmVhZGwodTJfYmFua3MtPmNvbSArIFUzUF9VMlBIWURUTTApOw0KPiArCXRtcCB8PSBQMkNf
+Rk9SQ0VfVUFSVF9UWF9PRTsNCj4gKwl3cml0ZWwodG1wLCB1Ml9iYW5rcy0+Y29tICsgVTNQX1Uy
+UEhZRFRNMCk7DQo+ICsNCj4gKwkvKiBTZXQgUDJDX0ZPUkNFX1VBUlRfRU4gKi8NCj4gKwl0bXAg
+PSByZWFkbCh1Ml9iYW5rcy0+Y29tICsgVTNQX1UyUEhZRFRNMCk7DQo+ICsJdG1wIHw9IFAyQ19G
+T1JDRV9VQVJUX0VOOw0KPiArCXdyaXRlbCh0bXAsIHUyX2JhbmtzLT5jb20gKyBVM1BfVTJQSFlE
+VE0wKTsNCj4gKw0KPiArCS8qIFNldCBQMkNfUkdfVUFSVF9CSUFTX0VOICovDQo+ICsJdG1wID0g
+cmVhZGwodTJfYmFua3MtPmNvbSArIFUzUF9VMlBIWURUTTApOw0KPiArCXRtcCB8PSBQMkNfUkdf
+VUFSVF9CSUFTX0VOOw0KPiArCXdyaXRlbCh0bXAsIHUyX2JhbmtzLT5jb20gKyBVM1BfVTJQSFlE
+VE0wKTsNCj4gKw0KPiArCS8qIFNldCBQMkNfUkdfVUFSVF9UWF9PRSAqLw0KPiArCXRtcCA9IHJl
+YWRsKHUyX2JhbmtzLT5jb20gKyBVM1BfVTJQSFlEVE0wKTsNCj4gKwl0bXAgfD0gUDJDX1JHX1VB
+UlRfVFhfT0U7DQo+ICsJd3JpdGVsKHRtcCwgdTJfYmFua3MtPmNvbSArIFUzUF9VMlBIWURUTTAp
+Ow0KPiArDQo+ICsJLyogU2V0IFAyQ19SR19VQVJUX0VOICovDQo+ICsJdG1wID0gcmVhZGwodTJf
+YmFua3MtPmNvbSArIFUzUF9VMlBIWURUTTApOw0KPiArCXRtcCB8PSBQMkNfUkdfVUFSVF9FTjsN
+Cj4gKwl3cml0ZWwodG1wLCB1Ml9iYW5rcy0+Y29tICsgVTNQX1UyUEhZRFRNMCk7DQo+ICsNCj4g
+KwkvKiBTZXQgUDJDX1JHX1VTQjIwX0RNXzEwMEtfRU4gKi8NCj4gKwl0bXAgPSByZWFkbCh1Ml9i
+YW5rcy0+Y29tICsgVTNQX1UyUEhZQUNSNCk7DQo+ICsJdG1wIHw9IFAyQ19SR19VU0IyMF9ETV8x
+MDBLX0VOOw0KPiArCXdyaXRlbCh0bXAsIHUyX2JhbmtzLT5jb20gKyBVM1BfVTJQSFlBQ1I0KTsN
+Cj4gKw0KPiArCS8qIENsZWFyIFAyQ19SR19ETVBVTExET1dOLCBQMkNfUkdfRFBQVUxMRE9XTiAq
+Lw0KPiArCXRtcCA9IHJlYWRsKHUyX2JhbmtzLT5jb20gKyBVM1BfVTJQSFlEVE0wKTsNCj4gKwl0
+bXAgJj0gfihQMkNfUkdfRFBQVUxMRE9XTiB8IFAyQ19SR19ETVBVTExET1dOKTsNCj4gKwl3cml0
+ZWwodG1wLCB1Ml9iYW5rcy0+Y29tICsgVTNQX1UyUEhZRFRNMCk7DQo+ICt9DQo+ICsNCj4gK3N0
+YXRpYyBpbnQgdTJfcGh5X2luc3RhbmNlX2dldF9tb2RlX2V4dChzdHJ1Y3QgbXRrX3RwaHkgKnRw
+aHksIHN0cnVjdCBtdGtfcGh5X2luc3RhbmNlICppbnN0YW5jZSkNCj4gK3sNCj4gKwlzdHJ1Y3Qg
+dTJwaHlfYmFua3MgKnUyX2JhbmtzID0gJmluc3RhbmNlLT51Ml9iYW5rczsNCj4gKwl1MzIgdG1w
+Ow0KPiArDQo+ICsJdG1wID0gcmVhZGwodTJfYmFua3MtPmNvbSArIFUzUF9VMlBIWURUTTApOw0K
+PiArDQo+ICsJaWYgKCh0bXAgJiBQMkNfUkdfVUFSVF9NT0RFKSA+PiBQMkNfUkdfVUFSVF9NT0RF
+X09GRVQpDQo+ICsJCXJldHVybiBQSFlfTU9ERV9VQVJUOw0KPiArCWVsc2UNCj4gKwkJcmV0dXJu
+IFBIWV9NT0RFX1VTQl9PVEc7DQo+ICt9DQo+ICsNCj4gIHN0YXRpYyB2b2lkIHUyX3BoeV9pbnN0
+YW5jZV9zZXRfbW9kZShzdHJ1Y3QgbXRrX3RwaHkgKnRwaHksDQo+ICAJCQkJICAgICBzdHJ1Y3Qg
+bXRrX3BoeV9pbnN0YW5jZSAqaW5zdGFuY2UsDQo+ICAJCQkJICAgICBlbnVtIHBoeV9tb2RlIG1v
+ZGUpDQo+IEBAIC02MDksNiArNzAyLDkgQEAgc3RhdGljIHZvaWQgdTJfcGh5X2luc3RhbmNlX3Nl
+dF9tb2RlKHN0cnVjdCBtdGtfdHBoeSAqdHBoeSwNCj4gIA0KPiAgCXRtcCA9IHJlYWRsKHUyX2Jh
+bmtzLT5jb20gKyBVM1BfVTJQSFlEVE0xKTsNCj4gIAlzd2l0Y2ggKG1vZGUpIHsNCj4gKwljYXNl
+IFBIWV9NT0RFX1VBUlQ6DQo+ICsJCXUyX3BoeV9pbnN0YW5jZV9zZXRfbW9kZV8ydWFydCh1Ml9i
+YW5rcyk7DQpIb3cgZG8geW91IHVzZSB0aGlzIGhlbHBlcj8NCg0KQ2FuIHdlIHN3aXRjaCBiYWNr
+IHRvIHVzYiBwaHkgbW9kZSBpZiBzd2l0Y2hpbmcgdG8gdWFydD8NCldoZW4gc3dpdGNoIHRvIHVh
+cnQgbW9kZSwgaWYgdGhlIGhvc3Qgc3VwcG9ydHMgbXVsdGktcG9ydHMsIGl0IHdpbGwNCmNhdXNl
+IHRoZSBob3N0IGNhbid0IGVudGVyIHNsZWVwIG1vZGUgYW55bW9yZS4NCg0KPiArCQlyZXR1cm47
+DQo+ICAJY2FzZSBQSFlfTU9ERV9VU0JfREVWSUNFOg0KPiAgCQl0bXAgfD0gUDJDX0ZPUkNFX0lE
+RElHIHwgUDJDX1JHX0lERElHOw0KPiAgCQlicmVhazsNCj4gQEAgLTkzMyw2ICsxMDI5LDEwIEBA
+IHN0YXRpYyBpbnQgbXRrX3BoeV9pbml0KHN0cnVjdCBwaHkgKnBoeSkNCj4gIAkJcmV0dXJuIHJl
+dDsNCj4gIAl9DQo+ICANCj4gKwlyZXQgPSB1Ml9waHlfaW5zdGFuY2VfZ2V0X21vZGVfZXh0KHRw
+aHksIGluc3RhbmNlKTsNCj4gKwlpZiAocmV0ID09IFBIWV9NT0RFX1VBUlQpDQo+ICsJCXJldHVy
+biAwOw0KPiArDQo+ICAJc3dpdGNoIChpbnN0YW5jZS0+dHlwZSkgew0KPiAgCWNhc2UgUEhZX1RZ
+UEVfVVNCMjoNCj4gIAkJdTJfcGh5X2luc3RhbmNlX2luaXQodHBoeSwgaW5zdGFuY2UpOw0KPiBA
+QCAtOTk2LDYgKzEwOTYsMTkgQEAgc3RhdGljIGludCBtdGtfcGh5X2V4aXQoc3RydWN0IHBoeSAq
+cGh5KQ0KPiAgCXJldHVybiAwOw0KPiAgfQ0KPiAgDQo+ICtzdGF0aWMgaW50IG10a19waHlfZ2V0
+X21vZGVfZXh0KHN0cnVjdCBwaHkgKnBoeSkNCj4gK3sNCj4gKwlzdHJ1Y3QgbXRrX3BoeV9pbnN0
+YW5jZSAqaW5zdGFuY2UgPSBwaHlfZ2V0X2RydmRhdGEocGh5KTsNCj4gKwlzdHJ1Y3QgbXRrX3Rw
+aHkgKnRwaHkgPSBkZXZfZ2V0X2RydmRhdGEocGh5LT5kZXYucGFyZW50KTsNCj4gKwlpbnQgcmV0
+Ow0KPiArDQo+ICsJcmV0ID0gMDsNCj4gKwlpZiAoaW5zdGFuY2UtPnR5cGUgPT0gUEhZX1RZUEVf
+VVNCMikNCj4gKwkJcmV0ID0gdTJfcGh5X2luc3RhbmNlX2dldF9tb2RlX2V4dCh0cGh5LCBpbnN0
+YW5jZSk7DQo+ICsNCj4gKwlyZXR1cm4gcmV0Ow0KPiArfQ0KPiArDQo+ICBzdGF0aWMgaW50IG10
+a19waHlfc2V0X21vZGUoc3RydWN0IHBoeSAqcGh5LCBlbnVtIHBoeV9tb2RlIG1vZGUsIGludCBz
+dWJtb2RlKQ0KPiAgew0KPiAgCXN0cnVjdCBtdGtfcGh5X2luc3RhbmNlICppbnN0YW5jZSA9IHBo
+eV9nZXRfZHJ2ZGF0YShwaHkpOw0KPiBAQCAtMTA2MCw2ICsxMTczLDcgQEAgc3RhdGljIHN0cnVj
+dCBwaHkgKm10a19waHlfeGxhdGUoc3RydWN0IGRldmljZSAqZGV2LA0KPiAgCS5wb3dlcl9vbgk9
+IG10a19waHlfcG93ZXJfb24sDQo+ICAJLnBvd2VyX29mZgk9IG10a19waHlfcG93ZXJfb2ZmLA0K
+PiAgCS5zZXRfbW9kZQk9IG10a19waHlfc2V0X21vZGUsDQo+ICsJLmdldF9tb2RlX2V4dAk9IG10
+a19waHlfZ2V0X21vZGVfZXh0LA0KPiAgCS5vd25lcgkJPSBUSElTX01PRFVMRSwNCj4gIH07DQo+
+ICANCg0K
 
-Whoops; thanks! This is what I get for temporarily silencing the
-read-overflow warnings. :)
-
--Kees
-
--- 
-Kees Cook
