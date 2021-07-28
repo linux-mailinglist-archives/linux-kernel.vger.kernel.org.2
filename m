@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C3E3D95AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE7C3D954D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhG1S77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:59:59 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:24982 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229565AbhG1S74 (ORCPT
+        id S229691AbhG1SaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhG1SaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:59:56 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16SArwea015791;
-        Wed, 28 Jul 2021 13:59:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=EGSW0TwfIT+GMxavIP78M2ErEcV0sbtlNTgmieySSak=;
- b=RI5Z9RwJz2wSoIcwio8LhoCnsQHohf01Mp4ZF/5fFrmu1NlVxQr3MHfcXHppJidIzEjN
- dNTbrmikP35AwDdDBD3jKyxt4slXLhl4Se+TT31VApGymMAxLcuhpJTwkLzFbr8plhfq
- Ozs7c+LAYo6f+/QUPAYaY6FJQcu3cKshiX75LmrQdqv8Hbf6NLq7c6dh23BALEweKEi+
- 9TbApERBPgNtljCp+zHV4Ib2qeBTsAXchwPFYvqmO9FAX+11JBAaR7p9jc14REkhn3iO
- VUktebKqwcDvbafANYqxp6veLEYDrb7mHFzvn867ArmbAfscvAEl9r84F2DsbPi0mIe5 Rw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3a30q20usw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 28 Jul 2021 13:59:39 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 28 Jul
- 2021 19:29:30 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 28 Jul 2021 19:29:30 +0100
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.56])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 57B7A2BA;
-        Wed, 28 Jul 2021 18:29:30 +0000 (UTC)
-Subject: Re: [PATCH] ASoC: dapm: Revert "use component prefix when checking
- widget names"
-To:     Mark Brown <broonie@kernel.org>
-CC:     <pierre-louis.bossart@linux.intel.com>,
-        <rander.wang@linux.intel.com>, <shumingf@realtek.com>,
-        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210703125034.24655-1-rf@opensource.cirrus.com>
- <20210705165041.GC4574@sirena.org.uk>
- <a882a9e0-db05-2f89-abb9-8b308ccb56c8@opensource.cirrus.com>
- <20210728160948.GE4670@sirena.org.uk>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <a59d60bf-6bbc-c65f-bd77-2b1bc98b0d22@opensource.cirrus.com>
-Date:   Wed, 28 Jul 2021 19:29:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 28 Jul 2021 14:30:06 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97821C061757;
+        Wed, 28 Jul 2021 11:30:03 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id a93so5576451ybi.1;
+        Wed, 28 Jul 2021 11:30:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y95ajZGFXcI2xcNt97PSRH6Nx3noubDMmxeuFO9Gk2o=;
+        b=bNDvnmWEOW5mJA2nX6+TwYm+WfU/8VI/sTK0FcMohSw8ezYb31tiy3T70kSUl334Ry
+         xdeiM/EpCKCyiSFMi0u1Kd+2OZWOal7irKJG+ep4Hq3B2pAdfGd8jzWBHpoPxfxhnG3L
+         LvReE8RPlv9ta5ns0axwZXOeWMyDvKqQWNykLBTW1r0aG3vPCkIMdr2Uj5mug8kuUQJb
+         EptKzl+PZMeRqA1KD4VG6evHWDZ8VxKQ08W6x5iMvu0tLmfMMKMxXC0crResOblZuc+D
+         oB1CgZ/PDqBr3LXRjwIJoN9kV8K+9m9Y4v2F1qQD9LiRgLmN5hp8BY6sVfCAMB5dsOvO
+         JbUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y95ajZGFXcI2xcNt97PSRH6Nx3noubDMmxeuFO9Gk2o=;
+        b=KzZ8tsb/3FZ7R5n4As3cQASJmiQNh7eCaeV9kD2g6qyfBYKBlpSyjjExVDm42ZIVvJ
+         UjDgxVYneoeHKAr2o+tSfb3i9vo74Atu0uxd/zHv8xirgJgJXZwgnvuQmko0zFAqHCtQ
+         9PjIoUAViefM1EAELgelryYoq+6/LEDEfP5+9ADFjYDGR7/QxdEPn0z29cfUD76W4aVG
+         LCHuR3BxiH2m5TJYs2lgi+jhPJVM1l3GXyGCWBxLA0puiAEzgPmgW5dLgH/0yJQ23N2P
+         s+0UgNFYQqCWg+Tss4gRHfOIJQDsowz48V2kd5vtL1mBiLFNjUP6a55O33OsMYs85ybS
+         9/Eg==
+X-Gm-Message-State: AOAM530O5JVKWS+m0pUrAXpQOyRNSEvWeIOEEy0HOpQ1IGo/NADc18ox
+        PshqXAOttiM2SudUbaYySEIJwbkalQId+a9uh2R1ohmFfFjvRA==
+X-Google-Smtp-Source: ABdhPJz8AaPKzA6NAbKDMFvIaMMGEpaICIrpzm6ZaC0jVYadagMj+meR/xZJdBaq+MGpF5RxyIfm4Ihl6OkuyeK+hrc=
+X-Received: by 2002:a5b:48f:: with SMTP id n15mr1368515ybp.457.1627497002716;
+ Wed, 28 Jul 2021 11:30:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210728160948.GE4670@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: MQqvYS1TpwSz0d8KkpV4ovc0L2R-oIS4
-X-Proofpoint-GUID: MQqvYS1TpwSz0d8KkpV4ovc0L2R-oIS4
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
- adultscore=0 clxscore=1015 spamscore=0 mlxlogscore=519 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107280109
+References: <20210728161020.3905-1-michael.riesch@wolfvision.net>
+ <20210728161020.3905-3-michael.riesch@wolfvision.net> <YQGaAFvqqc7wXrWD@lunn.ch>
+In-Reply-To: <YQGaAFvqqc7wXrWD@lunn.ch>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Wed, 28 Jul 2021 14:29:50 -0400
+Message-ID: <CAMdYzYo8zf0wjtAxTuYQnZQsBtw38prNuAA0j0sBEamcbzZbfA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: rockchip: rk3568-evb1-v10: add ethernet support
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Michael Riesch <michael.riesch@wolfvision.net>,
+        devicetree@vger.kernel.org,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Liang Chen <cl@rock-chips.com>, Simon Xue <xxm@rock-chips.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2021 17:09, Mark Brown wrote:
-> On Thu, Jul 22, 2021 at 10:55:23AM +0100, Richard Fitzgerald wrote:
-> 
->> I don't mind if someone wants to change the core dapm functions if that
->> is generally useful, providing that it also updates all callers of those
->> functions to still work.
-> 
->> Changing the behaviour of core code to fix the Realtek driver without
->> updating other callers of those functions is a problem.
-> 
-> The thing here is that nobody would have thought that that any caller
-> would have been open coding this stuff like the component things were,
+On Wed, Jul 28, 2021 at 1:55 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Wed, Jul 28, 2021 at 06:10:20PM +0200, Michael Riesch wrote:
+> > +&gmac0 {
+> > +     phy-mode = "rgmii";
+>
+> ...
+> > +
+> > +     tx_delay = <0x3c>;
+> > +     rx_delay = <0x2f>;
+>
+> Hi Michael
+>
+> In general, we try to have the PHY introduce the RGMII delays, not the
+> MAC. Did you try
+>
+> phy-mode = "rgmii-id";
+>
+> and remove these delay values? It is hard for me to say if that will
+> work because i've no idea what 0x3c and 0x2f means? Are they
+> equivalent to 2ns?
 
-On the contrary, since that was the only way to use these functions with
-a prefixed component it's entirely possible that there is code already
-adding the prefix. Why would you expect nobody has ever written code
-that works?
+Unfortunately the driver and TRM are both rather non-specific as to
+how this works.
+The driver sets the tx_delay to 0x30 and rx_delay to 0x10 if these
+values are not defined, or sets them both to 0 in case of rgmii_id.
 
-> it's simply the wrong abstraction level to be implementing something
+Generally all rockchip boards use this value instead of the rgmii_id,
+I imagine because it's more consistent to tune here than the hit or
+miss support of the phy drivers.
+The usual course of action is to test to find the lowest and highest
+working values and take the median value to plug in here.
 
-Ok, but that doesn't mean that it could never have happened.
-
-> like this so people wouldn't think of auditing the callers to find uses
-
-I don't think that it's either safe or desirable to skip checking how
-callers use functionality that you want to change. My understanding of
-Linux development protocol was that if you make a change that affects
-other code, you are responsible for updating that other code to match.
-Regardless of whether you agree with how that other code was
-implemented. It creates a lot of overhead for everyone if it's ok to
-make changes without trying to fix up other code that is affected by
-that change.
+>
+>      Andrew
