@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB043D8BAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446893D8BAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235573AbhG1K0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:26:19 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52686
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229574AbhG1K0R (ORCPT
+        id S235787AbhG1K1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232113AbhG1K1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:26:17 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C49E13F32F;
-        Wed, 28 Jul 2021 10:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627467974;
-        bh=RzFO0WvxXjGz6K02P8hc8WjBrShTRvNxHsMes42WDWA=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=V35G4kXwPgcaICMLJz8EqKIbR/HJ6Megt927S7f3dYO9prJmBXboiO8tdXxvbvrAs
-         Lv8dHjB21kw7JPywxiagv6LMDyTy6FyM9BZtGAUpjYzGs5UuJyo+J6EYAprJv03POp
-         hjKftKHMgV+0eCQRl9Wo3qGeeM2dCPkzpfUyXjUtNUIf2f59ZgMz/mXSvmB5TEHNLC
-         XWUaEXlbVPJAp72XDgKgZzLRCHYZjv8h49KLpNwsg7yxUfnznpvc9lzi6HGvLEYQyD
-         TXsZZYPgtbUmlzXcGrqt46wWVPksf5teQ0bQLwdxwZH0qkmyo0Zd4i4nvXo9806eEc
-         PGYg6zLAaYeqA==
-From:   Colin King <colin.king@canonical.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Alchemy: Fix spelling contraction "cant" -> "can't"
-Date:   Wed, 28 Jul 2021 11:26:12 +0100
-Message-Id: <20210728102612.171012-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 28 Jul 2021 06:27:02 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAB5C061757;
+        Wed, 28 Jul 2021 03:27:00 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id n10so2113115plf.4;
+        Wed, 28 Jul 2021 03:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=BCXW7rimMR0GK6oVAu3Jqw5jfi+9WgPrGlYLOAnOXuk=;
+        b=NY6Oyz1rOc8R4xy0XKCuvPfbb9M9p4rP9C6xkq/g0KcR++sMqIofv+Gyga1taYpfhh
+         58hYyfd1h3a/6/ttb5Gh5IZ3kebtWGtUlWjG5S85TsEhSWpjOKzOMNM6yNA34+kGmXSU
+         BWbEt2JaAr/2hw7syFyAXH5o4za9iRfravoTzEuFa5ei8Aw3R5rjf+Bv5RNrzlGj6Yy8
+         hrYa9utubMVL5NLKrpJ0sDNg1/ZJOMAg3OjQXyVnNXWR/+A47NTFQoYa7MQrrEJ3oQ2U
+         RDHJnGc102j3X62BNd8pYOok4VW7mlsQk0NmYkLmG8OC+aafKnLlC1YT31rkE3drhd+o
+         J8tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=BCXW7rimMR0GK6oVAu3Jqw5jfi+9WgPrGlYLOAnOXuk=;
+        b=luvVa7GrOp7JLIPcm2rGFWJqfB7a5hcdrHALLo9ZBmNupX5WBZvoNvC9xeBlkU2XAZ
+         k/oOKtR4StAQbs3cJrnT8lIP5ZFQTjf7Zw0rh8aKaSORnLdD/UG48GdowUBz+9zPvyMs
+         MaXZhTP7lL+K7LS6hi7n0t4jYRRnVYU1umi2FWujDFA0347aDYICWZ842dG5UBnvXwBi
+         10qh2RY1Eqao3yHwADarpsD1ByAx+gu01oGQZkYkP1gYwSBjeelDtnRi6dKjWNQrlYzJ
+         3vcm1EUvWViDzc1o5QVCN8cx+yYW/hbJKNWckHi+MgWIT2NR900y3O0c7/dGCXptvbny
+         8Qzw==
+X-Gm-Message-State: AOAM530wdILw0XoogL63URxlYwBliuYWJvk5VRSB0dVzD5+5W39xfTZv
+        CRhoMNlZBKsuGnjWugW134vHdVobDsni7Sr/4oCQraayW5E=
+X-Google-Smtp-Source: ABdhPJwHh76x/sYcHfqaNbckyTVS0PFSuyFKvqLRDQYXBOzPoFd1LxCCs7Wk7cwwA4QFCapV94Rb7RM46pRkU8ygHgE=
+X-Received: by 2002:a62:cd8b:0:b029:356:3484:b7f1 with SMTP id
+ o133-20020a62cd8b0000b02903563484b7f1mr27768281pfg.73.1627468019865; Wed, 28
+ Jul 2021 03:26:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 28 Jul 2021 13:26:20 +0300
+Message-ID: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
+Subject: LED subsystem lagging maintenance
+To:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>, Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi!
 
-There is a spelling mistake in a pr_warn message. Fix it.
+I have noticed that in the last couple of cycles the LED subsystem is
+a bit laggish in terms of maintenance (*). I think it's time that
+someone can help Pavel to sort things out.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- arch/mips/alchemy/devboards/db1200.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In any case, I wonder if we have any kind of procedure for what to do
+in such cases. Do we need to assume that the subsystem is in a
+(pre-)orphaned state? If so, who is the best to take care of patch
+flow?
 
-diff --git a/arch/mips/alchemy/devboards/db1200.c b/arch/mips/alchemy/devboards/db1200.c
-index 421d651433b6..1864eb935ca5 100644
---- a/arch/mips/alchemy/devboards/db1200.c
-+++ b/arch/mips/alchemy/devboards/db1200.c
-@@ -835,7 +835,7 @@ int __init db1200_dev_setup(void)
- 	if (!IS_ERR(c)) {
- 		pfc = clk_round_rate(c, 50000000);
- 		if ((pfc < 1) || (abs(50000000 - pfc) > 2500000))
--			pr_warn("DB1200: cant get I2C close to 50MHz\n");
-+			pr_warn("DB1200: can't get I2C close to 50MHz\n");
- 		else
- 			clk_set_rate(c, pfc);
- 		clk_prepare_enable(c);
+*) e.g. I have a series against a few drivers in LED with actual fixes
+and it is missed v5.13 (okay, that time Pavel had comments which I
+have addressed at ~rc7 time frame), missed v5.14 and seems on the
+curve to miss v5.15.
+
+P.S. I Cc'ed lately active, AFAICS, in that area people + Greg for his opinion.
+
 -- 
-2.31.1
-
+With Best Regards,
+Andy Shevchenko
