@@ -2,112 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F943D89B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1493D89BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235111AbhG1IX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:23:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235070AbhG1IXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:23:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C665A6052B;
-        Wed, 28 Jul 2021 08:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627460633;
-        bh=JoL5rq4g2TYiFcHdBW5n8r5L+GbGCJK1HloPFAw/yUk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NOAhwpI1yPbejtEhoQx7rMG5w0ynfAtNeucI9UbyeChRmeQVvakqDG1A44DWowXGJ
-         wZ+sZtaUi3E2gdgtPeBn49xdLz3LRpqnpeB4z/RDeT+JysJgLKv4nheODa+m+1MiV2
-         kEGwDolaplwBmgxM8VETT2V0mF9REOyEi8ykMxNk4egw+kI++oJD67gmzPoLuOIH2N
-         MTP5TiPJvsM6sXxThfwlOIc5MxRIGBLDEGWuxpVUR48WLnk1kfwqFADsML0ao33JDq
-         PXeW6Rny1ggVRPV4QEQdiORxCKoP9D6q/5DzrqwUgqFrWfkaNQ2BVm2FGPHmSJb9RT
-         jEVdaFNFOtpHg==
-Date:   Wed, 28 Jul 2021 13:53:48 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
-Cc:     Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: at_xdmac: use module_platform_driver
-Message-ID: <YQEUFADKhGtzz++g@matsya>
-References: <20210625090042.17085-1-clement.leger@bootlin.com>
- <YQD/skGeS0rzYS5P@matsya>
- <20210728093831.27430737@fixe.home>
+        id S235070AbhG1I1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:27:05 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:45957 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234495AbhG1I1E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 04:27:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UhEA0ga_1627460820;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UhEA0ga_1627460820)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 28 Jul 2021 16:27:01 +0800
+Subject: Re: [PATCH] virtio-console: avoid DMA from vmalloc area
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Amit Shah <amit@kernel.org>, gregkh <gregkh@linuxfoundation.org>,
+        Omar Sandoval <osandov@fb.com>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210727131217.15092-1-xianting.tian@linux.alibaba.com>
+ <CAK8P3a15ykABd61Rad5iaZtGN=-+Guk0CNyCMK3XD7TgubG7hg@mail.gmail.com>
+ <be29127d-8cec-c7b8-ac96-4da94198dc03@linux.alibaba.com>
+ <CAK8P3a1O02Ho2dM3F+bUXf9Ze8uRKYzY5fFmRGpszUXg_nrH4w@mail.gmail.com>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <0d03a42b-b46c-408f-17a4-b6c094c0c29e@linux.alibaba.com>
+Date:   Wed, 28 Jul 2021 16:27:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <CAK8P3a1O02Ho2dM3F+bUXf9Ze8uRKYzY5fFmRGpszUXg_nrH4w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210728093831.27430737@fixe.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-07-21, 09:38, Clément Léger wrote:
-> Le Wed, 28 Jul 2021 12:26:50 +0530,
-> Vinod Koul <vkoul@kernel.org> a écrit :
-> 
-> > On 25-06-21, 11:00, Clément Léger wrote:
-> > > The driver was previously probed with platform_driver_probe. This
-> > > does not allow the driver to be probed again later if probe function
-> > > returns -EPROBE_DEFER. This patch replace the use of
-> > > platform_driver_probe with module_platform_driver which allows that.
-> > > 
-> > > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-> > > ---
-> > >  drivers/dma/at_xdmac.c | 6 +-----
-> > >  1 file changed, 1 insertion(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-> > > index 64a52bf4d737..109a4c0895f4 100644
-> > > --- a/drivers/dma/at_xdmac.c
-> > > +++ b/drivers/dma/at_xdmac.c
-> > > @@ -2238,11 +2238,7 @@ static struct platform_driver
-> > > at_xdmac_driver = { }
-> > >  };
-> > >  
-> > > -static int __init at_xdmac_init(void)
-> > > -{
-> > > -	return platform_driver_probe(&at_xdmac_driver,
-> > > at_xdmac_probe); -}
-> > > -subsys_initcall(at_xdmac_init);
-> > > +module_platform_driver(at_xdmac_driver);  
-> > 
-> > You are also changing the init call here, there is a reason why
-> > dmaengine drivers are subsys_initcall.. have you tested this?
-> > 
-> 
-> I understood that the subsys initcall was there to probe the DMA driver
-> earlier than other drivers (at least I guess this was the reason). I
 
-That is correct
+åœ¨ 2021/7/28 ä¸‹åˆ3:25, Arnd Bergmann å†™é“:
+> On Wed, Jul 28, 2021 at 4:59 AM Xianting Tian
+> <xianting.tian@linux.alibaba.com> wrote:
+>> Arnd, thanks for your quick reply,
+>>
+>> As we know put_chars() of virtio-console is registered to hvc framework.
+>> I go throughed the code, actually there are totally three places that
+>> put_chars() is called in hvc driver,  but only 1 has issue which is
+>> fixed by commit c4baad5029.
+> Ah, good. Knowing what the callers are definitely helps. ;-)
+>
+>> So I think the scenario that the buf is from "ioremap(), kmap_atomic() ,
+>> fixmap, loadable module" doesn't exist for virtio-console.
+>> If there is something wrong about above description, please correct me,
+>> thanks.
+> The description is good then.
+>
+>> Three places that put_chars() is called in hvc driver:
+>> 1ï¼Œ it is on stack buf,  it is not ok for dma
+>>       hvc_console_print():
+>>           char c[N_OUTBUF] __ALIGNED__;
+>>           cons_ops[index]->put_chars(vtermnos[index], c, i);
+>>
+>> 2ï¼Œ just one byte, no issue for dma
+>>       static void hvc_poll_put_char(struct tty_driver *driver, int line,
+>> char ch)
+>>       {
+>>           struct tty_struct *tty = driver->ttys[0];
+>>           struct hvc_struct *hp = tty->driver_data;
+>>           int n;
+>>
+>>           do {
+>>               n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+>>           } while (n <= 0);
+>>       }
+> This is actually the same as the first, taking the address of a
+> function argument forces it onto the stack.
+>
+>> 3,  hp->outbuf is allocated in hvc_alloc() via kzalloc(), no issue for dma
+>>       static int hvc_push(struct hvc_struct *hp)
+>>       {
+>>           int n;
+>>
+>>           n = hp->ops->put_chars(hp->vtermno, hp->outbuf, hp->n_outbuf);
+>>           â€¦
+>>       }
+> ok.
+>
+> I have a new question then: are there any other hvc backends that do
+> DMA, or is the virtio-console driver the only one? If there are any others,
+> I think this should better be fixed in the hvc framework, by changing it
+> to never pass stack data into the put_chars() function in the first place.
+>
+> It may be possible to just use the 'hp->n_outbuf' buffer in all three cases.
 
-> also tested it and can confirm you this works as expected on my
-> platform (sama5d2_xplained and sama5d27_som1).
-> 
-> In my configuration, the clocks are provided using SCMI and the SCMI
-> driver probes them later than other drivers. 
+thanks,
 
-Heh, clocks should get probed even earlier
+I checked several hvc backends, like drivers/tty/hvc/hvc_riscv_sbi.c, 
+drivers/tty/hvc/hvc_iucv.c, drivers/tty/hvc/hvc_rtas.c, they don't use dma.
 
-> With the current subsys_initcall, platform_driver_probe calls
-> __platform_driver_probe which will eventually calls platform_probe.
-> This one will fails because SCMI clocks are not available at this time.
-> And as said in the kernel doc, __platform_driver_probe is incompatible
-> with deferred probing. This leads to failure of all drivers that needs
-> DMA channels provbided by at_xdmac.
-> 
-> With module_platform_driver, the at_xdmac driver is correctly probed
-> again later and all drivers that depends on DMA channels provided by
-> this one are also correctly probed. The deferred probing mechanism seems
-> to do its job correctly (at least in my case).
+I not finished all hvc backends check yet. But I think even if all hvc 
+backends don't use dma currently, it is still possible that the hvc 
+backend using dma will be added in the furture.
 
-OK would then recommend making it like module_platform_driver ie remove
-platform_driver_probe, so the defer probe would work, but keep the init
-at subsys level. That should work for you while keeping this sane for
-folks that dont need this
+So I agree with you it should better be fixed in the hvc framework, 
+solve the issue in the first place.
 
--- 
-~Vinod
+Looking forward to your reply.
+
+>
+>         Arnd
