@@ -2,145 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FBB3D96EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3693D96FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhG1UlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:41:07 -0400
-Received: from mail-co1nam11on2065.outbound.protection.outlook.com ([40.107.220.65]:63041
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231126AbhG1UlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:41:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DGkjgkZI3bb6dcdsAsZ2322adqaSt7ySX/UuITdqBpjNC214VckuYQUQKvaOsqPWdvpzGkkdO93H3DR4o3B8tGhZ+9t2NjJOeceBiv4rptEHwItGefd+QUvqdbpUyPp6/oNQ5dzTemgmMIjVSmX80za25JjFClZu3LOnHj0F3wOQ1fMu27v2PvaTsPvH0WI+7T+VmHL3manqo7VUY2/f1bT1gYob46unfkX8Nmh5od6mhNnY7rzznxV07MrQV/Jf3/FAxanuM8uBQXlIZXmxWjeOH8p1ogYRhHwFPfiLWJVV9P1Ag4qy9teCbfxl1GsEE6jJWUqpxm9lsX/48REnxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=COIM1J0sibEdE7Yx3uTC3MBxlyjrQ1nm+A964HxlJK8=;
- b=Ik7X3PJZQqtBuElUBFy97wsX947MogzczTYa+G00hGB2WKp/JwwByHyVPLlWnV52oDXmLP907DMS4tedcHNW6A1Jaw3GXSccHAJl8GVBf9wm9pzU5oCxjusEKzQtYlr4ZCJQkVb8SgbJeTPIhNEbD0HBuzCNU82S+fbe3B3qXRcpuN3ipQRhmbajYsTmcyz85aFVQlNZCICxEnpORrVglTs4hcQdGaWxCjE8ZPqABBjTkBiu+0X/A4MXJnyzOcgjqD54uZw386HqOL9oibYul9W0tXILXcplvxIhuj4ESSCl0JGCNJXNX8BSkU0ay98bABatj8SF8PSdtmThINtpmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=COIM1J0sibEdE7Yx3uTC3MBxlyjrQ1nm+A964HxlJK8=;
- b=ewicHirv0N7hPKQnA+mr3rhgqcZoPGSvojeSfP/Vwa8OZgQjdX3sFOP213VTv2pSv8n+VgQF2mC/N/Kijzo2cbwn6rTeLdmXnhpMekD25DNBYTRIGD93HGO2xlPilvtZT8o3YYgovV4C79rdxRWTus6MyDncHfr7HW43SBNy+8M=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM8PR12MB5397.namprd12.prod.outlook.com (2603:10b6:8:38::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4352.26; Wed, 28 Jul 2021 20:41:02 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::73:2581:970b:3208]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::73:2581:970b:3208%3]) with mapi id 15.20.4373.020; Wed, 28 Jul 2021
- 20:41:02 +0000
-Subject: Re: [PATCH] crypto: ccp: shutdown SEV firmware on kexec
-To:     Brijesh Singh <brijesh.singh@amd.com>, linux-crypto@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, lucas.nussbaum@inria.fr,
-        stable@kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Rientjes <rientjes@google.com>
-References: <20210728151521.5319-1-brijesh.singh@amd.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <1feda157-49a5-ed19-44ea-d3f2936cc07e@amd.com>
-Date:   Wed, 28 Jul 2021 15:41:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210728151521.5319-1-brijesh.singh@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0204.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::29) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        id S231673AbhG1Uom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231594AbhG1Uol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 16:44:41 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F072C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:44:38 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id k1so4172961plt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JKhYNwVtUcp4ro2cn3vBpepmIsUitpS2N9O0Akilpxs=;
+        b=TjRNT1lBPk9nMKLFJP4cYldUWDOJ85jWLeh7Fm6QUt+euyu2F9X+/9RhdzUaAaCk6c
+         68wNsxdZrCHj9MPFrP1HymbrqMOHz+YW1bkHcj2b3ZvOZ4J3pGKpUWN8B7qaoxRb+DmC
+         RPs0AegkISl8MzmjBNr7uM8kqWmkuDsEI4tuk4bRBjxQVntvR/zwCz6MyMWN+lxQM0sJ
+         e3JRPxfoVMRzZLhjMfXyGIGAi3YTfTV9rWX3MCO2xwsbeCUxg7icDHuiOzfmfOL0Jqnr
+         3JcZ1DvHH82smpwmExd9Bt7WUP0DN5GrgXX6TCvXuLcTllJj9sMR1Eyrg7zVplWQ4ONa
+         tKNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JKhYNwVtUcp4ro2cn3vBpepmIsUitpS2N9O0Akilpxs=;
+        b=Z/ucBY0U4kM6INCQZg9HmaiB3WD+dlCWQ8jXVxRbKa9JmM5NgSyYe1w4w9pWlxgleH
+         U7n0sG2FkBE3NIMFE3Cx+9ys/8Ir4A07gfuGmhMgecGYh6j2pgDQpwRfKZp/+d1XTlSr
+         4ZHnwCrZO1Nk24tXaYrOSmqTkeQ14OCmlxs4a+XXqkdW6QOsUUMRoV1rDoLdR1DaMMCG
+         de/mZQ/JkBU7neQyPxh78OTOPpNyhxCM25JKVCb8ODQDl2Hh2IbJgb0Eo2rh7F4+GlXl
+         XkD9QYQaioVirc/HC1dIxD/KRvC4KSCn7u/MLpsta3uvy6fIHTiDegsnDO/r1AU2s8Ik
+         TkNg==
+X-Gm-Message-State: AOAM530FEfpz7OZRdaICSVZPPjhJIeZ7c8bMrIOkqt/gshdAMjRiorzj
+        y48Q3Dy+/fKZ/bjSKaHmwnHLag==
+X-Google-Smtp-Source: ABdhPJwDNqv6/oCIErCVMa6h8MNsSlG+xcG3LueWac7TWFNwnvzRDteRSi0D00QGsumG2dN8bfz86Q==
+X-Received: by 2002:a63:4423:: with SMTP id r35mr685414pga.358.1627505077700;
+        Wed, 28 Jul 2021 13:44:37 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id on9sm6637907pjb.47.2021.07.28.13.44.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 13:44:37 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 20:44:33 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Reiji Watanabe <reijiw@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, KVM <kvm@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 46/46] KVM: x86: Preserve guest's CR0.CD/NW on INIT
+Message-ID: <YQHBsbHYayhSJOSz@google.com>
+References: <20210713163324.627647-1-seanjc@google.com>
+ <20210713163324.627647-47-seanjc@google.com>
+ <CAAeT=FzGDUr8MK5Uf3jyUxtf+2jCf=bgG760L0mjjM3vRsXKSg@mail.gmail.com>
+ <A41676B6-2E9F-4F8E-B91E-8F9A077A2FA8@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.241] (165.204.77.1) by SA0PR11CA0204.namprd11.prod.outlook.com (2603:10b6:806:1bc::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend Transport; Wed, 28 Jul 2021 20:41:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f906779f-edea-436a-c0b4-08d952080362
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5397:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM8PR12MB5397639A06AAAE9F78E13377ECEA9@DM8PR12MB5397.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:260;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8J9jE202ulMnwh96CTcBxZhxdqUbnoNuMY11xabD8DOGAxVaWmCiqmBvOGTqVIbzOcID8PzG/pkMHGf7F+DT3KP6n9uwt+adkqIjAJ7VKT++HYteA/xUPMVc9xCfkZol3g1OciZ6euIrN17epwW+2rJtd/viZlf1aiNXFnJJbYQN/hLhoMeFMgePdOsmIAwGjesWAmKHkSrZ3pvZk0xxPONQh+cpqUhufgmM5VTlKSwpr1xP4A2AzywL3Yz/zbv5NTTpp2xhhzrbveo1E003/PqzRkc0d3KG9sknnS7xAsTXVvj3ryGEcLs+H8DgIyAuUBefmWUQxZpDzczji7gjZyUCk1KdVkwttfE1J1msv9zGykn6OVOP/HgJF8eL3j3tYP5nt2HLLI9IIXcoLFHYqsrcvcFxD+WbjdAyUGxrrwgnoypWgCb0niwMs0Ydtsy4AaoWLuyEO0N3bT8296Yb/bs8nJd9TrTClhnyFGlujKFNM+ImZ05Q9QBZf+JO4uPNFuQivHZjMwASNbdEcU5lA1uVfUxV14PMcBuEK5x1S0awiKjFaoETjBN1jSgz4dXeLJtkcjn3XY3eifZnELihvuCTNhkCreD0tRG5mN/K2rCP2VjR4OuyCJtXjtt/QKk5dX+ejJlQ6gKFDZJ8i5oNu3QD+jgvfGs8zv45602atHtcCftbG7hgATQ6GWI+p1S2TzU8ypTQy8Ohh4QYtUi+EpfOuAQvQTqHqTqHZHlSIsc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(186003)(66946007)(54906003)(316002)(86362001)(956004)(5660300002)(83380400001)(31696002)(26005)(2906002)(2616005)(66556008)(66476007)(4326008)(31686004)(38100700002)(53546011)(508600001)(8936002)(36756003)(16576012)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dVJMVUwyOVNPQnBwMzZ2clM0RG91WTQ0dWpVZkUweVdMUWRlbmsrUGRnWmEz?=
- =?utf-8?B?SGlFQ3k1VVhKOGlVRUdpODcxUm1QL0tpdHF3bkh1UUFjMEJ4MlJFUTBSY0tC?=
- =?utf-8?B?Sno2ckdKMy9ZV0VxazllVzcvbHJhUHNRN0drQ1Q0Z290VGg1N2Y3T09PZFZt?=
- =?utf-8?B?YWFtZDFFZ2VUZWE0Y1B2eFVURmZWcjVOcTI1ZC9sQnpVQ1FIazV5K3J2UitZ?=
- =?utf-8?B?OXlQMmpVbUdIRmlSRlV0S3hneXZBYk9RaW1BdjVFUlVrNHptYi9FVTRRZXhw?=
- =?utf-8?B?Ukg0UXRVWExRL1g4Zlh6bkFIcklOMUJub2MyVnRXdWtwclNWYjFkNkVKcUpS?=
- =?utf-8?B?eTZwZ0pHMVJoMjJMMkkyaEx1ZjJTVjgvcUFsQnhrWXhxYm81K1dESkY2K1Bj?=
- =?utf-8?B?S0tGc1Y2S0lrV3FqWWM5OVZ2ZmsvLzNrOER3dWNiM2JQQzZhYi9hejhTSUsw?=
- =?utf-8?B?OURRVFl5c2FMWVc0dUNJL1pXUVBpT0w4eUpBKzdLTVRCaEFOUysydDRCa3hW?=
- =?utf-8?B?d1lyUFJkTUNRUmhRN1lHSXVZTDdOR3NtRWNyQjVNVnZTcVEwM1lqY09YdmhO?=
- =?utf-8?B?aE1wZTBTYnV6NHIvN0RCUVU5Z0VvV09uOE1RWnlsTXNDMUl2YlUrTDZWWHhB?=
- =?utf-8?B?UDdTQzQybGcyUndHcjB0Tld3VzA5RDViMmRYTkU3cUZ4QTNhWFdvanVvUGhw?=
- =?utf-8?B?WW5jQ3V0ckkyckVzc1A4UFQ5T0ZiVExmSG9mUFZGS0hjWFpRZzlPQllwS0dK?=
- =?utf-8?B?aXgwNzZuWTdDNnphZTJRNC93elorMG1rTElYY3A0K0lOYlZpd1VkQXRDRFd4?=
- =?utf-8?B?Z080ZWRtK0RyYzZ1TTJsdTlobCtDZEs0UjF6azdpNVhwUGlmc1JMN3BIaS90?=
- =?utf-8?B?Q2hDZW8yamZPRjFremRGUmdjZUxQK2ZhRDNvQ3NRVzJpVFpneXNXRFZhbmRS?=
- =?utf-8?B?a3NHZlRkOC9Cc0dFemhHTHB3SU9uZFlFWTZHU2tpeEpUS2RCRmpMZFhRVVAr?=
- =?utf-8?B?TGNBS3ZvT2R3a2QrUGlKWC84SFYrTFphcHZjVlFrMGFpNzhKdUYzcGZ4VWh3?=
- =?utf-8?B?aSt4SVBYdWdRYktrSTF4SmdJSC9QbzRBbGQzelloU1AxSjVMcTF3RS9zR2RN?=
- =?utf-8?B?bC9GeDZhNHhkRGNrS0VWb1lvN0J4RmJYYWJZeGczNXJwdE9aNVlOMFlST1pw?=
- =?utf-8?B?ZVhvZE03aUR4ay9EOEhTbjkzMHgwYUpGNW42UXVTcXJpT2R2T3FOMi9nbEl0?=
- =?utf-8?B?b1ZZZHhlZDFUbmxERWl4UnJCVzRDMHFyRkpMWGRIVUxheUdGRnBFSjlpb1or?=
- =?utf-8?B?THRXWXRQcnRmUGhVaHl6YVU3djU2ZWdJSlIwWDRicko5NUhGSUdPb3Rjcms3?=
- =?utf-8?B?eXVKMkFaTForaXh0NUVZTGpvWS84dmJCVTV4SVd1enB4M0J3bnFUYzVSZmM1?=
- =?utf-8?B?VHRYY0xvWDR2QUpvSlhpNWROYmZOR3p6NGc4Yy9ScW11WDVVdVJRRmI1aUFG?=
- =?utf-8?B?cVgxTlh6aDhrRWJxNzNVR2M3ZlByYWhUdlFLNXBtZTlRczJQdXptb1dCZTgx?=
- =?utf-8?B?MlhSZ1hQRjM0VmtYR0VsU1EyZE8waWhpRGRlbWhHZWtsQjFXeU1WSlR6NFRu?=
- =?utf-8?B?NmFDSEYvSWxnK1VpRGt5UDM3YTJlMmNZbTI2Z2wzcTJtK0lIcHBUWE1aR0tz?=
- =?utf-8?B?cHgyNitISmNSdEtkNm5COUZ0SXJ5MTBzeHA0TC83azJQa2JEOXQzRnA4Z0pQ?=
- =?utf-8?Q?LpN/5gveUXxWUWxTVp1juaY+7XiJZMJ5SlauPao?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f906779f-edea-436a-c0b4-08d952080362
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 20:41:02.1766
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HcDj1ySQCiGN8SAzbHlLGyubGA3fFzt5kp0pv6TkkLGBlZjxU+81axIuczRM5/GUtII71mQHBlLEadDJm4PpJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5397
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <A41676B6-2E9F-4F8E-B91E-8F9A077A2FA8@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 10:15 AM, Brijesh Singh wrote:
-> The commit 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the
-> PSP driver") added support to allocate Trusted Memory Region (TMR)
-> used during the SEV-ES firmware initialization. The TMR gets locked
-> during the firmware initialization and unlocked during the shutdown.
-> While the TMR is locked, access to it is disallowed.
+On Mon, Jul 26, 2021, Nadav Amit wrote:
 > 
-> Currently, the CCP driver does not shutdown the firmware during the
-> kexec reboot, leaving the TMR memory locked.
+> > On Jul 19, 2021, at 9:37 PM, Reiji Watanabe <reijiw@google.com> wrote:
+> > 
+> > On Tue, Jul 13, 2021 at 9:35 AM Sean Christopherson <seanjc@google.com> wrote:
+> >> 
+> >> Preserve CR0.CD and CR0.NW on INIT instead of forcing them to '1', as
+> >> defined by both Intel's SDM and AMD's APM.
+> >> 
+> >> Note, current versions of Intel's SDM are very poorly written with
+> >> respect to INIT behavior.  Table 9-1. "IA-32 and Intel 64 Processor
+> >> States Following Power-up, Reset, or INIT" quite clearly lists power-up,
+> >> RESET, _and_ INIT as setting CR0=60000010H, i.e. CD/NW=1.  But the SDM
+> >> then attempts to qualify CD/NW behavior in a footnote:
+> >> 
+> >>  2. The CD and NW flags are unchanged, bit 4 is set to 1, all other bits
+> >>     are cleared.
+> >> 
+> >> Presumably that footnote is only meant for INIT, as the RESET case and
+> >> especially the power-up case are rather non-sensical.  Another footnote
+> >> all but confirms that:
+> >> 
+> >>  6. Internal caches are invalid after power-up and RESET, but left
+> >>     unchanged with an INIT.
+> >> 
+> >> Bare metal testing shows that CD/NW are indeed preserved on INIT (someone
+> >> else can hack their BIOS to check RESET and power-up :-D).
+> >> 
+> >> Reported-by: Reiji Watanabe <reijiw@google.com>
+> >> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > 
+> > Reviewed-by: Reiji Watanabe <reijiw@google.com>
+> > 
+> > Thank you for the fix and checking the CD/NW with the bare metal testing.
 > 
-> Register a callback to shutdown the SEV firmware on the kexec boot.
+> Interesting.
 > 
-> Fixes: 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the PSP driver")
-> Reported-by: Lucas Nussbaum <lucas.nussbaum@inria.fr>
-> Tested-by: Lucas Nussbaum <lucas.nussbaum@inria.fr>
-> Cc: <stable@kernel.org>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Joerg Roedel <jroedel@suse.de>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David Rientjes <rientjes@google.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Is there a kvm-unit-test to reproduce the issue by any chance?
 
-Acked-by: Tom Lendacky <thomas.lendacky@gmail.com>
-
-> ---
->  drivers/crypto/ccp/sev-dev.c | 49 +++++++++++++++++-------------------
->  drivers/crypto/ccp/sp-pci.c  | 12 +++++++++
->  2 files changed, 35 insertions(+), 26 deletions(-)
-> 
+No :-/
