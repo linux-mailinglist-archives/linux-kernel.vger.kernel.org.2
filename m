@@ -2,139 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE703D8CA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEF83D8CA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234565AbhG1LWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:22:07 -0400
-Received: from mail-yb1-f176.google.com ([209.85.219.176]:36556 "EHLO
-        mail-yb1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232165AbhG1LWG (ORCPT
+        id S234678AbhG1LW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232165AbhG1LWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:22:06 -0400
-Received: by mail-yb1-f176.google.com with SMTP id j77so1342164ybj.3;
-        Wed, 28 Jul 2021 04:22:04 -0700 (PDT)
+        Wed, 28 Jul 2021 07:22:25 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0006AC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 04:22:23 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so3647705pjh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 04:22:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1D2l4hNhHsS2iormCyA3EgfKp4hZF3DC2mQohMFaQrw=;
+        b=mRWCtO3QfbgUfq1l3wAePMNB/g+xsC+QJ6CrIDSnWa5k4kHNMhcrRg0jZ0PTZUAv73
+         vtBwXxUYgNwibNP1kEQWPuzl4W5+KatrRxBBUIkKcUlnB6EPJfdtRdHLiafEUQe8cDiy
+         YnUoVclJMbGMFiNag+YigMOJuz4Zl8PB/PHbq4MDg54brZYAdWKAM7Xz4uSrhlPnCwR5
+         WkCsMXPB00MzBAGSYZ+1m7bVEgJMfxsi7h8kPwyaPNVlBbbHQJ63eguYlqv8yyLEqXcc
+         yWsAp95MfBrUsq5yTf4L605iUolelboXl8aj2s5LuOHAEkra+9svFwKa6kbfR34gxiIX
+         cZig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9C90hpgYkE4biTrUIzNHDYYty+iOjCgfF4PS52t6ewo=;
-        b=F6pJPrvdCieXriMEBuqgIXnPrNl6PtcJpZiaoh3GGXKuHZowv6plgRKI2uRH93Lbfh
-         AKiAwfdG+sAvdvz1Wpwib/UQtps7ej/ius40I1HAKzkcAhliU1gtoKLmE2vr6kJQPo7Y
-         w+Lattr/kY729rVR0sddKt0LSBYh1cxJjYDiHws0sidf7/AfPCzRyaHnMAM5CsjPic/f
-         1cb/0wXiw7VsbQo7zjt2AT7NFqHvCVKAWayp7D0J+2UkB3pjQavxpWMHkCa7kL/CayA3
-         UC+G5v+80KNR6PwPjXbq/LecM0JUr50Vf+7kRLDxEbZMxsi+xZjgAJDuCeigCGsvAktm
-         vRJg==
-X-Gm-Message-State: AOAM533zp8NXxWGhVujmsuzCr6KClIbetHx1Dh4GWuEW0mWed+WusCLR
-        aHH59FAc6+6cqry5Ejslj7X65oa3YQ0iucKCICk=
-X-Google-Smtp-Source: ABdhPJyMKN9A7vWkH92nGKXoClZVP7xtHJgjDzAKw67iBSQKKzU7V2Oom+eEuE5m1MWc9u5CTXApe/NPMo7j7l4w0a4=
-X-Received: by 2002:a25:1e89:: with SMTP id e131mr9659175ybe.90.1627471323751;
- Wed, 28 Jul 2021 04:22:03 -0700 (PDT)
+        bh=1D2l4hNhHsS2iormCyA3EgfKp4hZF3DC2mQohMFaQrw=;
+        b=bGLZ5XUUSp5S4zD0YToo/BJ41NBbGQb7FhYXSViid6Nw3Cy6bvmNy3Ik1DwvBKo+Ji
+         mZ4UOQTNlwv22XlwZJw7cJXxJJs4GMC0UVsHguB/JIDywvAuGUcAohkqb8CiD/LMjPhr
+         fif+pKMqiRwKlQWrChDkG5LVchqAfcS2gFiLohT33lko/hzO9kWs4gMdRGwrmdLe4hzm
+         F7oVwyGAAQjaeoraGko+/IJMSRF/5nPHgJLMRKDKybIm6yiIfpLlkti3gEKfmznV138c
+         cEA++Rr/ctEx4vnSFvhVPqijamdYsqxYpMbA7flURMDpL/G+Ov6HVbs0YFtsw+VksAac
+         aSkA==
+X-Gm-Message-State: AOAM532UY4E4NlYALaiMVJ/uZdgnKP0eGeSe/Zmlpyzy36OrA/ayEYi0
+        HHg2nbz55CokzDVkiM0l0SgnRhRB+K82d8DnqDZnlA==
+X-Google-Smtp-Source: ABdhPJxRTQH8bd2Jy7w5i3uoVa+5yBl6+Cvkkf47mQcZ7rm/SCosKY77pYTlkrX7FoD/GLCQR0gUe7K0QuCrb6lhMRA=
+X-Received: by 2002:a17:90a:604b:: with SMTP id h11mr23151924pjm.220.1627471343428;
+ Wed, 28 Jul 2021 04:22:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210701002037.912625-1-drew@beagleboard.org> <20210701002037.912625-3-drew@beagleboard.org>
- <8c59105d32a9936f8806501ecd20e044@walle.cc> <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
- <20210726071124.GA9184@x1> <dad13b899b69436acc1804b7c3438639@walle.cc>
- <20210727052851.GA3147871@x1> <ff76b62927e3f5f016f6c4c11ca16ccf@walle.cc>
- <CANBLGczfrmv1tzFm=Fu6B_S8nZ=ckwd3DOBkN4x7BUZtAg7bdw@mail.gmail.com> <a15823a88515f944cad6d77bdd65555c@walle.cc>
-In-Reply-To: <a15823a88515f944cad6d77bdd65555c@walle.cc>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Wed, 28 Jul 2021 13:21:52 +0200
-Message-ID: <CANBLGcyN9TVp6UghJMpc4hULz4e+OPux0fEwfQoJrixxO4rcuA@mail.gmail.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO driver
-To:     Michael Walle <michael@walle.cc>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
+References: <20210705081724.168523-1-hsinyi@chromium.org>
+In-Reply-To: <20210705081724.168523-1-hsinyi@chromium.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 28 Jul 2021 13:22:12 +0200
+Message-ID: <CAG3jFyuT09KOG9Xn-wbrr2DSOB=jSRvBVj96Vx4ja0PQWPKh6g@mail.gmail.com>
+Subject: Re: [PATCH] media: ov8856: Set default mbus format but allow caller
+ to alter
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 at 13:19, Michael Walle <michael@walle.cc> wrote:
-> Am 2021-07-28 12:59, schrieb Emil Renner Berthing:
-> > On Wed, 28 Jul 2021 at 11:49, Michael Walle <michael@walle.cc> wrote:
-> >> Hi Drew,
-> >> Am 2021-07-27 07:28, schrieb Drew Fustini:
-> >> [..]
-> >> >> > > Drew please look at drivers/gpio/gpio-ftgpio010.c for an example
-> >> >> > > of GPIO_GENERIC calling bgpio_init() in probe().
-> >> >> >
-> >> >> > Thank you for the suggestion. However, I am not sure that will work for
-> >> >> > this SoC.
-> >> >> >
-> >> >> > The GPIO registers are described in section 12 of JH7100 datasheet [1]
-> >> >> > and I don't think they fit the expectation of gpio-mmio.c because there
-> >> >> > is a seperate register for each GPIO line for output data value and
-> >> >> > output enable.
-> >> >> >
-> >> >> > There are 64 output data config registers which are 4 bytes wide. There
-> >> >> > are 64 output enable config registers which are 4 bytes wide too. Output
-> >> >> > data and output enable registers for a given GPIO pad are contiguous.
-> >> >> > GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54 while GPIO1_DOUT_CFG
-> >> >> > is 0x58 and GPIO1_DOEN_CFG is 0x5C. The stride between GPIO pads is
-> >> >> > effectively 8, which yields the formula: GPIOn_DOUT_CFG is 0x50+8n.
-> >> >> > Similarly, GPIO0_DOEN_CFG is 0x54 and thus GPIOn_DOEN_CFG is 0x54+8n.
-> >> >> >
-> >> >> > However, GPIO input data does use just one bit for each line. GPIODIN_0
-> >> >> > at 0x48 covers GPIO[31:0] and GPIODIN_1 at 0x4c covers GPIO[63:32].
-> >>
-> >> Mh, I'm not sure I'm understanding the datasheet/registers. _DOUT_CFG
-> >> and _DOEN_CFG seem to specify the pad where this GPIO is mapped to.
-> >> Shouldn't this be some kind of pinctrl then? Apparently you can map
-> >> any GPIO number to any output pad, no? Or at least to all pads
-> >> which are described in Table 11-2. What happens if two different GPIOs
-> >> are mapped to the same pad? Bit 31 in these _CFG seems to be an invert
-> >> bit, but what does it invert?
-> >>
-> >> Similar, the input GPIOs are connected to an output pad by all the
-> >> GPI_*_CFG registers.
-> >>
-> >> To me it seems, that there two multiplexers for each GPIO, where
-> >> you can connect any GPIOn to any input pad and output pad. Sound
-> >> like a huge overkill. I must be missing something here.
-> >>
-> >> But what puzzles me the most, where do I set the actual GPIO output
-> >> value?
-> >
-> > Yeah, it's a little confusing. The DOUT registers choose between a
-> > number of
-> > signals from various peripherals to control the output value of the
-> > pin. Similarly
-> > the DOEN registers chose between a number of signals to control the
-> > output
-> > enable of the pin. However, two of those signals are special in that
-> > they are
-> > constant 0 or constant 1. This is how you control the output value and
-> > output
-> > enable from software like a regular GPIO.
-> >
-> > You're completely right though. This ought to be managed by a proper
-> > pinctrl
-> > driver, and I'm working on one here:
-> > https://github.com/esmil/linux/commits/beaglev-pinctrl
->
-> Ahh, I see. So for the non-gpio function you have to set a value other
-> than 0 or 1, correct?
->
-> And as an implementation detail you have to set the corresponding OE
-> pin if the non-gpio function will need a tristate pin (or whatever).
->
-> So, the _DOUT_CFG will actually be shared between the pinctrl and the
-> gpio driver, right? (I haven't done anything with pinctrl, so this might
-> be a stupid question).
+Hey Hsin-Yi,
 
-No, not a stupid question. You've got that exactly right.
+Thanks for looking into this.
 
-/Emil
+On Mon, 5 Jul 2021 at 10:17, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> Setting the value of V_WIN_OFF (0x3818) from 0x02 to 0x01 to use GRBG
+> format still results in wrong color output if data is tuned in BGGR mode
+> before.
+>
+> Set default mbus format for the supported modes, but allow the caller of
+> set(get)_fmt to change the bayer format between BGGR and GRBG.
+>
+> Set the default mbus format for 3264x2448 (and 1632x1224) to BGGR as the
+> data sheet states the value of this reg should be 0x02 by default.
+>
+> If new modes are added in the future, they can add the
+> mipi_data_mbus_{format} settings into bayer_offset_configs to adjust their
+> offset regs.
+>
+> Fixes: 2984b0ddd557 ("media: ov8856: Configure sensor for GRBG Bayer for all modes")
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  drivers/media/i2c/ov8856.c | 83 +++++++++++++++++++++++++++++++++-----
+>  1 file changed, 72 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+> index 88e19f30d3762..5aac76cca6801 100644
+> --- a/drivers/media/i2c/ov8856.c
+> +++ b/drivers/media/i2c/ov8856.c
+> @@ -107,6 +107,11 @@ static const char * const ov8856_supply_names[] = {
+>         "dvdd",         /* Digital core power */
+>  };
+>
+> +enum {
+> +       OV8856_MEDIA_BUS_FMT_SBGGR10_1X10,
+> +       OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
+> +};
+> +
+>  struct ov8856_reg {
+>         u16 address;
+>         u8 val;
+> @@ -145,6 +150,9 @@ struct ov8856_mode {
+>
+>         /* Number of data lanes */
+>         u8 data_lanes;
+> +
+> +       /* Default MEDIA_BUS_FMT for this mode */
+> +       u32 default_mbus_index;
+>  };
+>
+>  struct ov8856_mipi_data_rates {
+> @@ -1055,7 +1063,7 @@ static const struct ov8856_reg lane_4_mode_3264x2448[] = {
+>                 {0x3810, 0x00},
+>                 {0x3811, 0x04},
+>                 {0x3812, 0x00},
+> -               {0x3813, 0x01},
+> +               {0x3813, 0x02},
+>                 {0x3814, 0x01},
+>                 {0x3815, 0x01},
+>                 {0x3816, 0x00},
+> @@ -1259,7 +1267,7 @@ static const struct ov8856_reg lane_4_mode_1632x1224[] = {
+>                 {0x3810, 0x00},
+>                 {0x3811, 0x02},
+>                 {0x3812, 0x00},
+> -               {0x3813, 0x01},
+> +               {0x3813, 0x02},
+>                 {0x3814, 0x03},
+>                 {0x3815, 0x01},
+>                 {0x3816, 0x00},
+> @@ -1372,6 +1380,19 @@ static const struct ov8856_reg lane_4_mode_1632x1224[] = {
+>                 {0x5e10, 0xfc}
+>  };
+>
+> +static const struct ov8856_reg mipi_data_mbus_sbggr10_1x10[] = {
+> +       {0x3813, 0x02},
+> +};
+> +
+> +static const struct ov8856_reg mipi_data_mbus_sgrbg10_1x10[] = {
+> +       {0x3813, 0x01},
+> +};
+> +
+> +static const u32 ov8856_mbus_codes[] = {
+> +       MEDIA_BUS_FMT_SBGGR10_1X10,
+> +       MEDIA_BUS_FMT_SGRBG10_1X10
+> +};
+> +
+>  static const char * const ov8856_test_pattern_menu[] = {
+>         "Disabled",
+>         "Standard Color Bar",
+> @@ -1380,6 +1401,17 @@ static const char * const ov8856_test_pattern_menu[] = {
+>         "Bottom-Top Darker Color Bar"
+>  };
+>
+> +static const struct ov8856_reg_list bayer_offset_configs[] = {
+> +       [OV8856_MEDIA_BUS_FMT_SBGGR10_1X10] = {
+> +               .num_of_regs = ARRAY_SIZE(mipi_data_mbus_sbggr10_1x10),
+> +               .regs = mipi_data_mbus_sbggr10_1x10,
+> +       },
+> +       [OV8856_MEDIA_BUS_FMT_SGRBG10_1X10] = {
+> +               .num_of_regs = ARRAY_SIZE(mipi_data_mbus_sgrbg10_1x10),
+> +               .regs = mipi_data_mbus_sgrbg10_1x10,
+> +       }
+> +};
+> +
+>  struct ov8856 {
+>         struct v4l2_subdev sd;
+>         struct media_pad pad;
+> @@ -1399,6 +1431,9 @@ struct ov8856 {
+>         /* Current mode */
+>         const struct ov8856_mode *cur_mode;
+>
+> +       /* Application specified mbus format */
+> +       u32 cur_mbus_index;
+> +
+>         /* To serialize asynchronus callbacks */
+>         struct mutex mutex;
+>
+> @@ -1450,6 +1485,7 @@ static const struct ov8856_lane_cfg lane_cfg_2 = {
+>                 },
+>                 .link_freq_index = 0,
+>                 .data_lanes = 2,
+> +               .default_mbus_index = OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
+>         },
+>         {
+>                 .width = 1640,
+> @@ -1464,6 +1500,7 @@ static const struct ov8856_lane_cfg lane_cfg_2 = {
+>                 },
+>                 .link_freq_index = 1,
+>                 .data_lanes = 2,
+> +               .default_mbus_index = OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
+>         }}
+>  };
+>
+> @@ -1499,6 +1536,7 @@ static const struct ov8856_lane_cfg lane_cfg_4 = {
+>                         },
+>                         .link_freq_index = 0,
+>                         .data_lanes = 4,
+> +                       .default_mbus_index = OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
+>                 },
+>                 {
+>                         .width = 1640,
+> @@ -1513,6 +1551,7 @@ static const struct ov8856_lane_cfg lane_cfg_4 = {
+>                         },
+>                         .link_freq_index = 1,
+>                         .data_lanes = 4,
+> +                       .default_mbus_index = OV8856_MEDIA_BUS_FMT_SGRBG10_1X10,
+>                 },
+>                 {
+>                         .width = 3264,
+> @@ -1527,6 +1566,7 @@ static const struct ov8856_lane_cfg lane_cfg_4 = {
+>                         },
+>                         .link_freq_index = 0,
+>                         .data_lanes = 4,
+> +                       .default_mbus_index = OV8856_MEDIA_BUS_FMT_SBGGR10_1X10,
+>                 },
+>                 {
+>                         .width = 1632,
+> @@ -1541,6 +1581,7 @@ static const struct ov8856_lane_cfg lane_cfg_4 = {
+>                         },
+>                         .link_freq_index = 1,
+>                         .data_lanes = 4,
+> +                       .default_mbus_index = OV8856_MEDIA_BUS_FMT_SBGGR10_1X10,
+>                 }}
+>  };
+>
+> @@ -1904,12 +1945,21 @@ static int ov8856_init_controls(struct ov8856 *ov8856)
+>         return 0;
+>  }
+>
+> -static void ov8856_update_pad_format(const struct ov8856_mode *mode,
+> +static void ov8856_update_pad_format(struct ov8856 *ov8856,
+> +                                    const struct ov8856_mode *mode,
+>                                      struct v4l2_mbus_framefmt *fmt)
+>  {
+> +       int index;
+> +
+>         fmt->width = mode->width;
+>         fmt->height = mode->height;
+> -       fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+> +       for (index = 0; index < ARRAY_SIZE(ov8856_mbus_codes); ++index)
+> +               if (ov8856_mbus_codes[index] == fmt->code)
+> +                       break;
+> +       if (index == ARRAY_SIZE(ov8856_mbus_codes))
+> +               index = mode->default_mbus_index;
+> +       fmt->code = ov8856_mbus_codes[index];
+> +       ov8856->cur_mbus_index = index;
+>         fmt->field = V4L2_FIELD_NONE;
+>  }
+>
+> @@ -1935,6 +1985,13 @@ static int ov8856_start_streaming(struct ov8856 *ov8856)
+>                 return ret;
+>         }
+>
+> +       reg_list = &bayer_offset_configs[ov8856->cur_mbus_index];
+> +       ret = ov8856_write_reg_list(ov8856, reg_list);
+> +       if (ret) {
+> +               dev_err(&client->dev, "failed to set mbus format");
+> +               return ret;
+> +       }
+> +
+>         ret = __v4l2_ctrl_handler_setup(ov8856->sd.ctrl_handler);
+>         if (ret)
+>                 return ret;
+> @@ -2096,7 +2153,7 @@ static int ov8856_set_format(struct v4l2_subdev *sd,
+>                                       fmt->format.height);
+>
+>         mutex_lock(&ov8856->mutex);
+> -       ov8856_update_pad_format(mode, &fmt->format);
+> +       ov8856_update_pad_format(ov8856, mode, &fmt->format);
+>         if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
+>                 *v4l2_subdev_get_try_format(sd, sd_state, fmt->pad) = fmt->format;
+>         } else {
+> @@ -2140,7 +2197,7 @@ static int ov8856_get_format(struct v4l2_subdev *sd,
+>                                                           sd_state,
+>                                                           fmt->pad);
+>         else
+> -               ov8856_update_pad_format(ov8856->cur_mode, &fmt->format);
+> +               ov8856_update_pad_format(ov8856, ov8856->cur_mode, &fmt->format);
+>
+>         mutex_unlock(&ov8856->mutex);
+>
+> @@ -2151,11 +2208,10 @@ static int ov8856_enum_mbus_code(struct v4l2_subdev *sd,
+>                                  struct v4l2_subdev_state *sd_state,
+>                                  struct v4l2_subdev_mbus_code_enum *code)
+>  {
+> -       /* Only one bayer order GRBG is supported */
+> -       if (code->index > 0)
+> +       if (code->index >= ARRAY_SIZE(ov8856_mbus_codes))
+>                 return -EINVAL;
+>
+> -       code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+> +       code->code = ov8856_mbus_codes[code->index];
+>
+>         return 0;
+>  }
+> @@ -2165,11 +2221,15 @@ static int ov8856_enum_frame_size(struct v4l2_subdev *sd,
+>                                   struct v4l2_subdev_frame_size_enum *fse)
+>  {
+>         struct ov8856 *ov8856 = to_ov8856(sd);
+> +       int index;
+>
+>         if (fse->index >= ov8856->modes_size)
+>                 return -EINVAL;
+>
+> -       if (fse->code != MEDIA_BUS_FMT_SGRBG10_1X10)
+> +       for (index = 0; index < ARRAY_SIZE(ov8856_mbus_codes); ++index)
+> +               if (fse->code == ov8856_mbus_codes[index])
+> +                       break;
+> +       if (index == ARRAY_SIZE(ov8856_mbus_codes))
+>                 return -EINVAL;
+>
+>         fse->min_width = ov8856->priv_lane->supported_modes[fse->index].width;
+> @@ -2185,7 +2245,7 @@ static int ov8856_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+>         struct ov8856 *ov8856 = to_ov8856(sd);
+>
+>         mutex_lock(&ov8856->mutex);
+> -       ov8856_update_pad_format(&ov8856->priv_lane->supported_modes[0],
+> +       ov8856_update_pad_format(ov8856, &ov8856->priv_lane->supported_modes[0],
+>                                  v4l2_subdev_get_try_format(sd, fh->state, 0));
+>         mutex_unlock(&ov8856->mutex);
+>
+> @@ -2425,6 +2485,7 @@ static int ov8856_probe(struct i2c_client *client)
+>
+>         mutex_init(&ov8856->mutex);
+>         ov8856->cur_mode = &ov8856->priv_lane->supported_modes[0];
+> +       ov8856->cur_mbus_index = ov8856->cur_mode->default_mbus_index;
+>         ret = ov8856_init_controls(ov8856);
+>         if (ret) {
+>                 dev_err(&client->dev, "failed to init controls: %d", ret);
+> --
+> 2.32.0.93.g670b81a890-goog
+>
+
+Looks good to me.
+
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
