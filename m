@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2133D9855
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700C23D9856
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhG1WWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:22:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54050 "EHLO mail.kernel.org"
+        id S232198AbhG1WXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:23:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232022AbhG1WWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:22:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 071B261019;
-        Wed, 28 Jul 2021 22:22:44 +0000 (UTC)
+        id S232022AbhG1WXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:23:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2482861019;
+        Wed, 28 Jul 2021 22:23:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627510965;
-        bh=j+LzmXUtSJPFBAH+9hQlIoYTHJxJKbuBPn8YylxDQqc=;
+        s=k20201202; t=1627511015;
+        bh=7leYzEKTO72ulBPDz/mgh+DcPVqVRolcwyFWqDqo9IU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QckIa4S93w+Qg3Iw3yokMJlLjd08JmqqXmv5D5sCDBsQhJTBxYmk24O9QYuwzYtDg
-         4I/YSOYf6Z+O2AxGq3WND6/ndPh10gZqUhHDbAV3EepVJNLDCSdal5X9uHzYaB4Ff1
-         pPwMhg7YghjWvvCMdStVRTUfw5tLoXSPlOD/G79bcfbY9AWT9XgT8DVZzBy7i83Hx9
-         w2QGeeO4iTwyeeuRpjIsk1Hh0b5p17GtYH404zu9AAcPHKEikjh4uoQYctRI6tgSDk
-         0B4pU/QPpJaSnrQ3pRMJhotyMhfZc7HWExTNE0m9QcJm4KoOHKw/NbK47BY6V67gTY
-         UVadGHRyG5GIQ==
-Date:   Thu, 29 Jul 2021 01:22:43 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1] fscrypt: support encrypted and trusted keys
-Message-ID: <20210728222243.4wqs64pqngzzii3b@kernel.org>
-References: <20210727144349.11215-1-a.fatoum@pengutronix.de>
+        b=ArOyjbf5QGrNOWYvt/INH53Y9I4ux9FxbaP6tx589HA/38DQLCDVV946md4fAlv2O
+         JhZWuphwPUJt6ZblFwXVs9Pv6jvsky0TnK9EPqad3hGo8vI0jwjnL3/uFjbYFE/T9p
+         saVO98tXbh9rOHbu7QRVZPscxR6beRqdSC9EUBj65RkqkFabD3xySla35OWbs2Da9U
+         E/rmNdtyE2ZMqVxQEiHti0iRImWs+LoOdW06NjIS1WFAlX5HqefRyjQUPYPyXmYjad
+         dNPtnTEMFN8+l6mPye3AgMErOW17V2Z7scL3Ri2e6YJtsMD3KiktWi4JMEuu4r6IHQ
+         KOfjiIHcnDRbQ==
+Date:   Thu, 29 Jul 2021 00:23:33 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, tglx@linutronix.de,
+        peterz@infradead.org, rostedt@goodmis.org, dhowells@redhat.com,
+        edumazet@google.com, fweisbec@gmail.com, oleg@redhat.com,
+        joel@joelfernandes.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+Message-ID: <20210728222333.GE293265@lothringen>
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-4-paulmck@kernel.org>
+ <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
+ <YQG//899pPl2JIWw@localhost>
+ <20210728204720.GN4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210727144349.11215-1-a.fatoum@pengutronix.de>
+In-Reply-To: <20210728204720.GN4397@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:43:49PM +0200, Ahmad Fatoum wrote:
-> For both v1 and v2 key setup mechanisms, userspace supplies the raw key
-> material to the kernel after which it is never again disclosed to
-> userspace.
+On Wed, Jul 28, 2021 at 01:47:20PM -0700, Paul E. McKenney wrote:
+> On Wed, Jul 28, 2021 at 01:37:19PM -0700, Josh Triplett wrote:
+> > On Wed, Jul 28, 2021 at 10:37:15AM -0700, Paul E. McKenney wrote:
+> > > This change makes the memory ordering requirements
+> > > more evident, and it might well also speed up the to-idle and from-idle
+> > > fastpaths on some architectures.
+> > 
+> > Cleaning up the memory ordering requirements certainly seems worthwhile.
+> > But is there any straightforward benchmark that might quantify the
+> > "might well also speed up" here? How much does weakening the memory
+> > ordering buy us, in practice?
 > 
-> Use of encrypted and trusted keys offers stronger guarantees:
-> The key material is generated within the kernel and is never disclosed to
-> userspace in clear text and, in the case of trusted keys, can be
-> directly rooted to a trust source like a TPM chip.
-> 
-> Add support for trusted and encrypted keys by repurposing
-> fscrypt_add_key_arg::raw to hold the key description when the new
-> FSCRYPT_KEY_ARG_TYPE_DESC flag is supplied. The location of the flag
-> was previously reserved and enforced by ioctl code to be zero, so this
-> change won't break backwards compatibility.
-> 
-> Corresponding userspace patches are available for fscryptctl:
-> https://github.com/google/fscryptctl/pull/23
-> 
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> ---
-> key_extract_material used by this patch is added in
-> <cover.b2fdd70b830d12853b12a12e32ceb0c8162c1346.1626945419.git-series.a.fatoum@pengutronix.de>
-> which still awaits feedback.
-> 
-> Sending this RFC out anyway to get some feedback from the fscrypt
-> developers whether this is the correct way to go about it.
-> 
-> To: "Theodore Y. Ts'o" <tytso@mit.edu>
-> To: Jaegeuk Kim <jaegeuk@kernel.org>
-> To: Eric Biggers <ebiggers@kernel.org>
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: James Bottomley <jejb@linux.ibm.com>
-> Cc: Mimi Zohar <zohar@linux.ibm.com>
-> Cc: Sumit Garg <sumit.garg@linaro.org>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: linux-fscrypt@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-integrity@vger.kernel.org
-> Cc: linux-security-module@vger.kernel.org
-> Cc: keyrings@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  Documentation/filesystems/fscrypt.rst | 24 ++++++++---
->  fs/crypto/keyring.c                   | 59 ++++++++++++++++++++++++---
->  include/uapi/linux/fscrypt.h          | 16 +++++++-
->  3 files changed, 87 insertions(+), 12 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-> index 44b67ebd6e40..83738af2afa3 100644
-> --- a/Documentation/filesystems/fscrypt.rst
-> +++ b/Documentation/filesystems/fscrypt.rst
-> @@ -681,11 +681,15 @@ It can be executed on any file or directory on the target filesystem,
->  but using the filesystem's root directory is recommended.  It takes in
->  a pointer to struct fscrypt_add_key_arg, defined as follows::
->  
-> +    #define FSCRYPT_KEY_ADD_RAW_ASIS		0
-> +    #define FSCRYPT_KEY_ADD_RAW_DESC		1
+> None that I know of!
 
-Would be nice to have these documented.
+I know two:
 
-/Jarkko
+1) The whole debate makes us review again (and again) the memory ordering
+   requirements in RCU VS dynticks-idle, which can only be good to enforce
+   correctness.
+
+2) The more we weaken the ordering, the better we grasp and understand the
+   underlying ordering requirements. Unnecessary full memory barriers tend to
+   obfuscate our ordering expectations, making the code less self-explanatory.
+
+3) I have terrible ideas to remove a full barrier in the dynticks idle path
+   that should work in practice but not in theory and therefore I'm never going
+   to talk about it unless everyone in the room is drunk.
+
