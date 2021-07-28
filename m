@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A52D3D921D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E8E3D923A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237123AbhG1PgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:36:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48226 "EHLO mail.kernel.org"
+        id S237157AbhG1PiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:38:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:58884 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235710AbhG1PgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:36:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96D9060EB2;
-        Wed, 28 Jul 2021 15:36:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627486564;
-        bh=R7+ExG2cGt1JjNkEYM6JWYU8bpH3ZX043RBskfp7S+s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=X1J5lvqv0UtM7s22u6Bcz7C7RX4lnKQ/cRgdlBlycimDRR1PxDr5W1NwqMUVg/l+g
-         v1xEA0JXds/ShOYGwygyj+BO4Ndp5wKd5+ZcgIZMBOHR6UvQc2QVbMDu/Jkp9qazMY
-         PlKS8G1Pz2TxeBveHBBfqCrDovXdba2jnojGQlDZ85HvCjDor5pRCInIuhZ+f/TFC8
-         87bFjbO4o7Rp/Y1S1MTa5eXKA6i2S+dxfLiPs6HmuAXWsOdAgkFa5ghHL8LSAYD3Fn
-         A5yCZl7tAQI4xx3WqAo03ddRHPvcpA1zpegA+z/RA7U+LVB8J9HYiQYKxjekHxs3dL
-         LpTBi9a6nMrTQ==
-Date:   Wed, 28 Jul 2021 10:36:03 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 4/8] PCI/sysfs: Allow userspace to query and set
- device reset mechanism
-Message-ID: <20210728153603.GA821650@bjorn-Precision-5520>
+        id S229979AbhG1PiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:38:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A5B61FB;
+        Wed, 28 Jul 2021 08:38:08 -0700 (PDT)
+Received: from bogus (unknown [10.57.37.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F1C83F70D;
+        Wed, 28 Jul 2021 08:38:04 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 16:36:47 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
+        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v6 15/17] firmware: arm_scmi: Add optional
+ link_supplier() transport op
+Message-ID: <20210728153647.llr6bfhyja5ezkth@bogus>
+References: <20210712141833.6628-1-cristian.marussi@arm.com>
+ <20210712141833.6628-16-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210728012740.GA90475@rocinante>
+In-Reply-To: <20210712141833.6628-16-cristian.marussi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 03:27:40AM +0200, Krzysztof Wilczyński wrote:
+On Mon, Jul 12, 2021 at 03:18:31PM +0100, Cristian Marussi wrote:
+> From: Peter Hilber <peter.hilber@opensynergy.com>
+> 
+> Some transports are also effectively registered with other kernel subsystem
+> in order to be properly probed and initialized; as a consequence such kind
+> of transports, and their related devices, might still not have been probed
+> and initialized at the time the main SCMI core driver is probed.
+> 
+> Add an optional .link_supplier() transport operation which can be used by
+> the core SCMI stack to dynamically check if the transport is ready and
+> dynamically link its device to the platform instance device.
+>
 
-> > > +	options = kstrndup(buf, count, GFP_KERNEL);
-> > 
-> > I assume the kstrndup() is because strsep() writes into the buffer?
-> 
-> Yes, Amey added kstrndup() in v6 following my recommendation as per:
-> 
->   https://lore.kernel.org/linux-pci/20210606125800.GA76573@rocinante.localdomain/
-> 
-> This was to avoid removing the const quantifier through a type cast
-> given that the signature of the function denotes that the buffer is
-> a pointer to immutable string, as per:
-> 
->   https://elixir.bootlin.com/linux/v5.14-rc3/source/include/linux/device/driver.h#L137
+To be precise,
 
-Ah, right, thanks!  Definitely prefer not to cast away the constness.
+s/platform instance device/SCMI platform instance device
 
-I guess the strings here are short (<100 chars max), so no big deal to
-duplicate them.  Sorry for the noise!
+-- 
+Regards,
+Sudeep
