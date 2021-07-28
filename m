@@ -2,96 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511EB3D8C4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423C63D8C50
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhG1K4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:56:02 -0400
-Received: from mga14.intel.com ([192.55.52.115]:51552 "EHLO mga14.intel.com"
+        id S236105AbhG1K4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:56:04 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:42319 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236134AbhG1Kzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236069AbhG1Kzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Jul 2021 06:55:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="212365218"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="212365218"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 03:55:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="417728466"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 28 Jul 2021 03:55:32 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 28C0DD7; Wed, 28 Jul 2021 13:56:01 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] PCI: keystone: Use device_get_match_data()
-Date:   Wed, 28 Jul 2021 13:55:58 +0300
-Message-Id: <20210728105558.23871-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1627469751;
+  x=1659005751;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=exMO1CjlI492RauDLoVsuVOqHJtnXLvleQim1mQfQRs=;
+  b=ayVldceoAEqJ8nxvFNiVjo0tbTER0iD+BH6nh5uYFJpHTqmnc1ZVIB4i
+   D6q7Kx/tN43ku0sOthD/q0pA3VSBJaAXsHdYc5HWtklsdwjZWgrP0CV+F
+   zj6xPV17n+E8GaECtEwGMt0y6uVm3SJjO4A2h98atMTGUHW3TtBpp6KfG
+   18DfPjp5kTngCYLLTvZQzqv9PM5Cx2cTosA3vU8sFA4J2yZsn4jHHsWVu
+   HYvhbtm6LVscNnhlV294bDZT8MQNn1XFzi0ZxEeIBTI8l4JPGoi7g+4Zo
+   BeS1zZQp70/mIoyuOlgG461+w97Yi236c6PIHUCYdvcQCeq9Zr91tV5Pp
+   w==;
+From:   Borys Movchan <borysmn@axis.com>
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <kernel@axis.com>, Borys Movchan <borysmn@axis.com>,
+        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] tpm: Add Upgrade/Reduced mode support for TPM2 modules
+Date:   Wed, 28 Jul 2021 12:57:30 +0200
+Message-ID: <20210728105730.10170-1-borysmn@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail07w.axis.com
+ (10.20.40.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of manipulations with OF APIs, use device_get_match_data().
+If something went wrong during the TPM firmware upgrade,
+like power failure or the firmware image file get corrupted,
+the TPM might end up in Upgrade or Failure mode upon the
+next start. The state is persistent between the TPM power
+cycle/restart.
 
-While at it, drop of_match_ptr() completely and make compiler happy,
-otherwise it complains:
+According to TPM specification:
+ * If the TPM is in Upgrade mode, it will answer with
+   TPM2_RC_UPGRADE to all commands except Field Upgrade
+   related ones.
+ * If the TPM is in Failure mode, it will allow performing
+   TPM initialization but will not provide any crypto
+   operations. Will happily respond to Field Upgrade calls.
 
-  pci-keystone.c:1069:34: warning: ‘ks_pcie_of_match’ defined but not used [-Wunused-const-variable=]
+The fix adds the possibility to detect an active state of
+the TPM and gives the user-space a chance to finish the
+firmware upgrade/recover the TPM.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Borys Movchan <borysmn@axis.com>
 ---
- drivers/pci/controller/dwc/pci-keystone.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index bde3b2824e89..f36ea618a248 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -24,6 +24,7 @@
- #include <linux/of_pci.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- #include <linux/resource.h>
- #include <linux/signal.h>
-@@ -1091,7 +1092,6 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct device_node *np = dev->of_node;
- 	const struct ks_pcie_of_data *data;
--	const struct of_device_id *match;
- 	enum dw_pcie_device_mode mode;
- 	struct dw_pcie *pci;
- 	struct keystone_pcie *ks_pcie;
-@@ -1108,8 +1108,7 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
- 	int irq;
- 	int i;
+Notes:
+    v2: The terms are changed to match the ones used in the TPM specification.
+    Rework the commit message to provide more details regarding TPM
+    behavior in Failure/Upgrade mode.
+
+    The TPM specification describes TPM behavior in Upgrade mode very clearly.
+    Things are a bit more complex if we are talking about Failure mode.
+    The TPM behavior in this mode is highly vendor-specific. Although, there
+    is one thing clearly described in the TPM specification and can be relied
+    on to detect the Failure state: in Failure mode, the TPM doesn't provide
+    any crypto operations. Including access to attributes and configuration
+    registers.
+    It seems persistent between different TPM manufacturers, at least to the
+    degree I was able to verify.
+
+ drivers/char/tpm/tpm-chip.c | 23 +++++++++++++++--------
+ drivers/char/tpm/tpm2-cmd.c | 12 ++++++++++--
+ include/linux/tpm.h         |  1 +
+ 3 files changed, 26 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+index ddaeceb7e109..ff2367c447fb 100644
+--- a/drivers/char/tpm/tpm-chip.c
++++ b/drivers/char/tpm/tpm-chip.c
+@@ -574,20 +574,25 @@ static int tpm_get_pcr_allocation(struct tpm_chip *chip)
+ int tpm_chip_register(struct tpm_chip *chip)
+ {
+ 	int rc;
++	bool limited_mode = false;
  
--	match = of_match_device(of_match_ptr(ks_pcie_of_match), dev);
--	data = (struct ks_pcie_of_data *)match->data;
-+	data = device_get_match_data(dev);
- 	if (!data)
- 		return -EINVAL;
+ 	rc = tpm_chip_start(chip);
+ 	if (rc)
+ 		return rc;
+ 	rc = tpm_auto_startup(chip);
+-	if (rc) {
++	if (rc == -EIO) {
++		limited_mode = true;
++	} else if (rc) {
+ 		tpm_chip_stop(chip);
+ 		return rc;
+ 	}
  
-@@ -1309,7 +1308,7 @@ static struct platform_driver ks_pcie_driver __refdata = {
- 	.remove = __exit_p(ks_pcie_remove),
- 	.driver = {
- 		.name	= "keystone-pcie",
--		.of_match_table = of_match_ptr(ks_pcie_of_match),
-+		.of_match_table = ks_pcie_of_match,
- 	},
- };
- builtin_platform_driver(ks_pcie_driver);
+-	rc = tpm_get_pcr_allocation(chip);
+-	tpm_chip_stop(chip);
+-	if (rc)
+-		return rc;
++	if (!limited_mode) {
++		rc = tpm_get_pcr_allocation(chip);
++		tpm_chip_stop(chip);
++		if (rc)
++			return rc;
++	}
+ 
+ 	tpm_sysfs_add_device(chip);
+ 
+@@ -595,9 +600,11 @@ int tpm_chip_register(struct tpm_chip *chip)
+ 
+ 	tpm_add_ppi(chip);
+ 
+-	rc = tpm_add_hwrng(chip);
+-	if (rc)
+-		goto out_ppi;
++	if (!limited_mode) {
++		rc = tpm_add_hwrng(chip);
++		if (rc)
++			goto out_ppi;
++	}
+ 
+ 	rc = tpm_add_char_device(chip);
+ 	if (rc)
+diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
+index a25815a6f625..7468353ed67d 100644
+--- a/drivers/char/tpm/tpm2-cmd.c
++++ b/drivers/char/tpm/tpm2-cmd.c
+@@ -718,7 +718,8 @@ static int tpm2_startup(struct tpm_chip *chip)
+  *                     sequence
+  * @chip: TPM chip to use
+  *
+- * Returns 0 on success, < 0 in case of fatal error.
++ * Returns 0 on success, -ENODEV in case of fatal error,
++ *	    -EIO in case of Reduced/Upgrade mode
+  */
+ int tpm2_auto_startup(struct tpm_chip *chip)
+ {
+@@ -729,7 +730,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
+ 		goto out;
+ 
+ 	rc = tpm2_do_selftest(chip);
+-	if (rc && rc != TPM2_RC_INITIALIZE)
++	if (rc == TPM2_RC_UPGRADE) {
++		rc = -EIO;
++		goto out;
++	} else if (rc && rc != TPM2_RC_INITIALIZE)
+ 		goto out;
+ 
+ 	if (rc == TPM2_RC_INITIALIZE) {
+@@ -743,6 +747,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
+ 	}
+ 
+ 	rc = tpm2_get_cc_attrs_tbl(chip);
++	if (rc) { /* Succeeded until here, but failed -> reduced mode */
++		rc = -EIO;
++		goto out;
++	}
+ 
+ out:
+ 	if (rc > 0)
+diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+index aa11fe323c56..e873c42907f0 100644
+--- a/include/linux/tpm.h
++++ b/include/linux/tpm.h
+@@ -207,6 +207,7 @@ enum tpm2_return_codes {
+ 	TPM2_RC_INITIALIZE	= 0x0100, /* RC_VER1 */
+ 	TPM2_RC_FAILURE		= 0x0101,
+ 	TPM2_RC_DISABLED	= 0x0120,
++	TPM2_RC_UPGRADE		= 0x012D,
+ 	TPM2_RC_COMMAND_CODE    = 0x0143,
+ 	TPM2_RC_TESTING		= 0x090A, /* RC_WARN */
+ 	TPM2_RC_REFERENCE_H0	= 0x0910,
 -- 
-2.30.2
+2.20.1
 
