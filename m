@@ -2,69 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8C33D92A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AC63D928D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237586AbhG1QAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:00:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:59632 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237492AbhG1P7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:59:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC1F41424;
-        Wed, 28 Jul 2021 08:59:48 -0700 (PDT)
-Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6669C3F70D;
-        Wed, 28 Jul 2021 08:59:47 -0700 (PDT)
-From:   Robin Murphy <robin.murphy@arm.com>
-To:     joro@8bytes.org, will@kernel.org
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
-        john.garry@huawei.com, dianders@chromium.org
-Subject: [PATCH v2 24/24] iommu: Only log strictness for DMA domains
-Date:   Wed, 28 Jul 2021 16:58:45 +0100
-Message-Id: <b2da9ba999b54acded9198cf92cf9b7d0fce1b45.1627468310.git.robin.murphy@arm.com>
+        id S237435AbhG1P7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:59:31 -0400
+Received: from [43.250.32.171] ([43.250.32.171]:10547 "EHLO email.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237358AbhG1P7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:59:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=From:To:Date; bh=+0wI7mv8XUU8mTLbxor4A/f7cmasr0sNeQo/+
+        h10VfE=; b=Lzl9S29cJ09P3Nnj9lH4xUNIMgRrLqjq79yqXJQcdL+ahOnSRRf21
+        ca1Gpju7Ix7thIicLtYFZLFqbTytF2wJMK8Jlzqy/uT325oOk2rbXnARMyMcQMFw
+        RYFC7RxBYIa70mmAtkCZJOhVm5eYV5nDUg8Or3fFOyxaBa4xFMeh2g=
+Received: from localhost.localdomain (unknown [113.251.14.68])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgDn9QTQfgFhsjoLAA--.39671S2;
+        Wed, 28 Jul 2021 23:59:13 +0800 (CST)
+From:   Hu Haowen <src.res@email.cn>
+To:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net
+Cc:     netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Documentation: networking: add ioam6-sysctl into index
+Date:   Wed, 28 Jul 2021 23:59:12 +0800
+Message-Id: <20210728155912.9293-1-src.res@email.cn>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1627468308.git.robin.murphy@arm.com>
-References: <cover.1627468308.git.robin.murphy@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LCKnCgDn9QTQfgFhsjoLAA--.39671S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5-7k0a2IF6w4kM7kC6x804xWl1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
+        x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWU
+        JVW8JwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04
+        k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F4UJr1UMxC20s026xCaFVCjc4AY6r1j
+        6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
+        AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
+        2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
+        C2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
+        nUUI43ZEXa7IUnLSdPUUUUU==
+X-Originating-IP: [113.251.14.68]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When passthrough is enabled, the default strictness policy becomes
-irrelevant, since any subsequent runtime override to a DMA domain type
-now embodies an explicit choice of strictness as well. Save on noise by
-only logging the default policy when it is meaningfully in effect.
+Append ioam6-sysctl to toctree in order to get rid of building warnings.
 
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Hu Haowen <src.res@email.cn>
 ---
- drivers/iommu/iommu.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ Documentation/networking/index.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index be399d630953..87d7b299436e 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -144,10 +144,11 @@ static int __init iommu_subsys_init(void)
- 		(iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
- 			"(set via kernel command line)" : "");
- 
--	pr_info("DMA domain TLB invalidation policy: %s mode %s\n",
--		iommu_dma_strict ? "strict" : "lazy",
--		(iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
--			"(set via kernel command line)" : "");
-+	if (!iommu_default_passthrough())
-+		pr_info("DMA domain TLB invalidation policy: %s mode %s\n",
-+			iommu_dma_strict ? "strict" : "lazy",
-+			(iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
-+				"(set via kernel command line)" : "");
- 
- 	return 0;
- }
+diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
+index e9ce55992aa9..a91a2739f8ed 100644
+--- a/Documentation/networking/index.rst
++++ b/Documentation/networking/index.rst
+@@ -57,6 +57,7 @@ Contents:
+    gen_stats
+    gtp
+    ila
++   ioam6-sysctl
+    ipddp
+    ip_dynaddr
+    ipsec
 -- 
 2.25.1
 
