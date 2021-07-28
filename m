@@ -2,214 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC1D3D8863
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B113D87BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbhG1G6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 02:58:35 -0400
-Received: from gateway30.websitewelcome.com ([192.185.146.7]:23545 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234242AbhG1G6e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 02:58:34 -0400
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id A6F71C1BD
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 01:12:11 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 8cnbmfcNKK61i8cnbmt2je; Wed, 28 Jul 2021 01:12:11 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/gCRywG3p9gdzDsdnfCiyJuRt7hlhcIRTlf1DfYGxQk=; b=VcIfYrm9dG72K/ZQdtfuvuRlxT
-        V3vj8YAhGaZx/cGjli4zOBFYlJLoXo0Vsd02K5fRjcNQP9NIaIESg+YOXV99qTCB2Yo/O/8WHP1ds
-        tXZbD1nJiwP3eEvBBTiZUo+VuIrDMlwm0ktVaXENnRTX4JuI9vlmD7ltgDRPbsHiRknznvoYhhE9n
-        E8MtFRCudEt5DeNW0MrlXGslPCSnGcfJ5OUAGOu7TVmX7V7cwyVfPVrDjuE3onf3wAwUBuIo0NmMx
-        IpJTghBwcX95Gj2Ml9t6eR6MSITfuKehPikhPibC8RrQ3I91RzhVBZtQ0/pRauPtwPnnaJk7AevGt
-        aQE41uZw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:44814 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1m8cna-003PI6-Vi; Wed, 28 Jul 2021 01:12:11 -0500
-Subject: Re: [PATCH 19/64] ip: Use struct_group() for memcpy() regions
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-20-keescook@chromium.org> <YQDxaYrHu0PeBIuX@kroah.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <baead202-569f-775f-348c-aa64e69f03ed@embeddedor.com>
-Date:   Wed, 28 Jul 2021 01:14:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234134AbhG1GPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 02:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233574AbhG1GPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 02:15:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C914460295;
+        Wed, 28 Jul 2021 06:15:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627452920;
+        bh=UZLbpTMkNJx9XNrLl9ORaFnwVlTNF/WZnt0ahFZqB9w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=co2TwQ8IRyzoFn91SVBLuzHs23MNwMnTcu4yp+1ZXeehNtSxkUhP0FED2noKTaWXw
+         e2WH/pO18L3JFSP6ggiYXWCGp6AMqufWtXSrMCXE5nsY9AYY7Z+4y8XQWWbbSpMIIt
+         CPjxw7U7TlG9lzMf4JcZERJUbtbOY4pm7oCzQpb4mGhRmjFxmIHN+yONeMuNK9LAPn
+         O8Akf6p8bKxvPcq4Yet8+bgaqrSNJ5Na6Pn0S1LP3PYJnSNsK84ZDYlYm5VvajYyxF
+         qsbbq4fD500cbGKYU9CJkVHA0EfkaaIfTptuilSSw41Uw1dPC7XSt3PYw7C+3/YiU7
+         EJ6t3TSpkotjA==
+Date:   Wed, 28 Jul 2021 11:45:16 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sanjay R Mehta <Sanju.Mehta@amd.com>
+Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
+        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
+        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
+        mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v10 2/3] dmaengine: ptdma: register PTDMA controller as a
+ DMA resource
+Message-ID: <YQD19B4A/l/ZyySZ@matsya>
+References: <1624207298-115928-1-git-send-email-Sanju.Mehta@amd.com>
+ <1624207298-115928-3-git-send-email-Sanju.Mehta@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <YQDxaYrHu0PeBIuX@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1m8cna-003PI6-Vi
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:44814
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624207298-115928-3-git-send-email-Sanju.Mehta@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20-06-21, 11:41, Sanjay R Mehta wrote:
+> From: Sanjay R Mehta <sanju.mehta@amd.com>
+> 
+> Register ptdma queue to Linux dmaengine framework as general-purpose
+> DMA channels.
 
+Mostly looks good, one question below:
 
-On 7/28/21 00:55, Greg Kroah-Hartman wrote:
-> On Tue, Jul 27, 2021 at 01:58:10PM -0700, Kees Cook wrote:
->> In preparation for FORTIFY_SOURCE performing compile-time and run-time
->> field bounds checking for memcpy(), memmove(), and memset(), avoid
->> intentionally writing across neighboring fields.
->>
->> Use struct_group() in struct flowi4, struct ipv4hdr, and struct ipv6hdr
->> around members saddr and daddr, so they can be referenced together. This
->> will allow memcpy() and sizeof() to more easily reason about sizes,
->> improve readability, and avoid future warnings about writing beyond the
->> end of saddr.
->>
->> "pahole" shows no size nor member offset changes to struct flowi4.
->> "objdump -d" shows no meaningful object code changes (i.e. only source
->> line number induced differences.)
->>
->> Note that since this is a UAPI header, struct_group() has been open
->> coded.
->>
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->> ---
->>  include/net/flow.h            |  6 ++++--
->>  include/uapi/linux/if_ether.h | 12 ++++++++++--
->>  include/uapi/linux/ip.h       | 12 ++++++++++--
->>  include/uapi/linux/ipv6.h     | 12 ++++++++++--
->>  net/core/flow_dissector.c     | 10 ++++++----
->>  net/ipv4/ip_output.c          |  6 ++----
->>  6 files changed, 42 insertions(+), 16 deletions(-)
->>
->> diff --git a/include/net/flow.h b/include/net/flow.h
->> index 6f5e70240071..f1a3b6c8eae2 100644
->> --- a/include/net/flow.h
->> +++ b/include/net/flow.h
->> @@ -81,8 +81,10 @@ struct flowi4 {
->>  #define flowi4_multipath_hash	__fl_common.flowic_multipath_hash
->>  
->>  	/* (saddr,daddr) must be grouped, same order as in IP header */
->> -	__be32			saddr;
->> -	__be32			daddr;
->> +	struct_group(addrs,
->> +		__be32			saddr;
->> +		__be32			daddr;
->> +	);
->>  
->>  	union flowi_uli		uli;
->>  #define fl4_sport		uli.ports.sport
->> diff --git a/include/uapi/linux/if_ether.h b/include/uapi/linux/if_ether.h
->> index a0b637911d3c..8f5667b2ea92 100644
->> --- a/include/uapi/linux/if_ether.h
->> +++ b/include/uapi/linux/if_ether.h
->> @@ -163,8 +163,16 @@
->>  
->>  #if __UAPI_DEF_ETHHDR
->>  struct ethhdr {
->> -	unsigned char	h_dest[ETH_ALEN];	/* destination eth addr	*/
->> -	unsigned char	h_source[ETH_ALEN];	/* source ether addr	*/
->> +	union {
->> +		struct {
->> +			unsigned char h_dest[ETH_ALEN];	  /* destination eth addr */
->> +			unsigned char h_source[ETH_ALEN]; /* source ether addr	  */
->> +		};
->> +		struct {
->> +			unsigned char h_dest[ETH_ALEN];	  /* destination eth addr */
->> +			unsigned char h_source[ETH_ALEN]; /* source ether addr	  */
->> +		} addrs;
-> 
-> A union of the same fields in the same structure in the same way?
-> 
-> Ah, because struct_group() can not be used here?  Still feels odd to see
-> in a userspace-visible header.
-> 
->> +	};
->>  	__be16		h_proto;		/* packet type ID field	*/
->>  } __attribute__((packed));
->>  #endif
->> diff --git a/include/uapi/linux/ip.h b/include/uapi/linux/ip.h
->> index e42d13b55cf3..33647a37e56b 100644
->> --- a/include/uapi/linux/ip.h
->> +++ b/include/uapi/linux/ip.h
->> @@ -100,8 +100,16 @@ struct iphdr {
->>  	__u8	ttl;
->>  	__u8	protocol;
->>  	__sum16	check;
->> -	__be32	saddr;
->> -	__be32	daddr;
->> +	union {
->> +		struct {
->> +			__be32	saddr;
->> +			__be32	daddr;
->> +		} addrs;
->> +		struct {
->> +			__be32	saddr;
->> +			__be32	daddr;
->> +		};
-> 
-> Same here (except you named the first struct addrs, not the second,
-> unlike above).
-> 
-> 
->> +	};
->>  	/*The options start here. */
->>  };
->>  
->> diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
->> index b243a53fa985..1c26d32e733b 100644
->> --- a/include/uapi/linux/ipv6.h
->> +++ b/include/uapi/linux/ipv6.h
->> @@ -130,8 +130,16 @@ struct ipv6hdr {
->>  	__u8			nexthdr;
->>  	__u8			hop_limit;
->>  
->> -	struct	in6_addr	saddr;
->> -	struct	in6_addr	daddr;
->> +	union {
->> +		struct {
->> +			struct	in6_addr	saddr;
->> +			struct	in6_addr	daddr;
->> +		} addrs;
->> +		struct {
->> +			struct	in6_addr	saddr;
->> +			struct	in6_addr	daddr;
->> +		};
-> 
-> addrs first?  Consistancy is key :)
+> +static struct pt_dma_desc *pt_alloc_dma_desc(struct pt_dma_chan *chan,
+> +					     unsigned long flags)
+> +{
+> +	struct pt_dma_desc *desc;
+> +
+> +	desc = kmem_cache_zalloc(chan->pt->dma_desc_cache, GFP_NOWAIT);
+> +	if (!desc)
+> +		return NULL;
+> +
+> +	vchan_tx_prep(&chan->vc, &desc->vd, flags);
+> +
+> +	desc->pt = chan->pt;
+> +	desc->issued_to_hw = 0;
+> +	desc->status = DMA_IN_PROGRESS;
 
-I think addrs should be second. In general, I think all newly added
-non-anonymous structures should be second.
+where is this descriptor freed?
 
-Thanks
---
-Gustavo
+-- 
+~Vinod
