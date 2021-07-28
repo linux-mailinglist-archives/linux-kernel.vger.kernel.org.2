@@ -2,100 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4EB3D89F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0203D89FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbhG1Irf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S234604AbhG1IsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhG1Ire (ORCPT
+        with ESMTP id S229574AbhG1IsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:47:34 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D7AC061757;
-        Wed, 28 Jul 2021 01:47:33 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so1312439ota.11;
-        Wed, 28 Jul 2021 01:47:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mj+6onJ5YCrGEwa+OUlRe/rsn1CusgezZwhDmz7NI9g=;
-        b=QbywKMqDBE2vyLGvddwKLvEEqPYtYiP3KuLnBqSbk/reeT/yJKLmp+2pGPy1CzN2tU
-         YosFnFUjFJnJiVu2bZ2PHFo1VbGF+xD7bgcTdyX9tN0iCiy0PDPbMSD5MeqYdz8uTBY9
-         zbAGxVhPOAuyXVCN5l2rBNacN9h8QsmrEEo3jf8CXyvKbCuXnMIez7YF/nWdu5i5STdI
-         Niy4RYY6GsSIFn5wg8E5h7B3v7lQhY27ggHOwZjd38aaDUY8Jq0Vo+N25s1LPJcGKTC/
-         fTodhzcfijSudfAaxvR+CHbWYv55iNEbxOeuSZAkKreFiX6SozBK2M+4NN3dTuHh17NY
-         T1pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mj+6onJ5YCrGEwa+OUlRe/rsn1CusgezZwhDmz7NI9g=;
-        b=ZoeAElpB0CiGi0+qSUS5ruofnzEU/J3iDeL6cpbvHb1IMTMaCBXAz7/7dLgaeiXCpU
-         gee7o9HZx6PUiZboOitGzjBbDOXnqrlaImIT+Kdg8YcUnEkcAL16wTCpeNiT1MU0rWKi
-         nfMdJ1E1P9CiMRHROBbgNvbiANN2Uf+QwNSvqwe90s5vXdkyFNfrpBMAL4fk/0yu0WLL
-         GSy/YUuWVxAJw+dlsiMW0B4SpWLStxBw1Oe6/tSam/Nndcos0ncDFHZjJh654KcjD+s8
-         JqZ47JSVaW0WIrhlgi1u2hDgfs3Rqh5sQ2j1p6hYTQ0O48QlYov2GZmoxCVZKGi7eQLi
-         T7cA==
-X-Gm-Message-State: AOAM531/StrHinsvgOFT42u7zVQk0oOzQNphOAJnPfcXWpHp169lWnJJ
-        nmYeKQrux1Xy2YTMi4X2nl0XtcBfUvefKqmXhF0=
-X-Google-Smtp-Source: ABdhPJyTdb7oER2azfgjeqt4WdAGg6eOms+MJ2WoWxr9GEQkVXuK60ACrXuJ/QqNL6CNBrr6qYi+l1txUCDAqqvnjjQ=
-X-Received: by 2002:a9d:27a4:: with SMTP id c33mr18699138otb.281.1627462053217;
- Wed, 28 Jul 2021 01:47:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210726105719.15793-1-chun-jie.chen@mediatek.com>
- <20210726105719.15793-3-chun-jie.chen@mediatek.com> <162740843452.2368309.13157283201271440368@swboyd.mtv.corp.google.com>
-In-Reply-To: <162740843452.2368309.13157283201271440368@swboyd.mtv.corp.google.com>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Wed, 28 Jul 2021 10:47:21 +0200
-Message-ID: <CAFqH_51D0A_Oht785cxvWjuNFYgLL25-qX1QEpLhWBARtTgVMA@mail.gmail.com>
-Subject: Re: [v14 02/21] dt-bindings: ARM: Mediatek: Add mmsys document
- binding for MT8192
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
+        Wed, 28 Jul 2021 04:48:08 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18B8C061757;
+        Wed, 28 Jul 2021 01:48:07 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 38E131F4328D
+Subject: Re: renesas/master bisection:
+ baseline-nfs.bootrr.rockchip-usb2phy0-probed on rk3399-gru-kevin
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     kernelci-results@groups.io, Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Maciej Matuszczyk <maccraft123mc@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Jacob Chen <jacob2.chen@rock-chips.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Cameron Nemo <cnemo@tutanota.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
         Rob Herring <robh+dt@kernel.org>,
+        Yifeng Zhao <yifeng.zhao@rock-chips.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Collabora Kernel ML <kernel@collabora.com>
+References: <61002766.1c69fb81.8f53.9f6a@mx.google.com>
+ <c52f6cfb-1316-dd6a-46fa-17abfcc4bf18@collabora.com>
+ <CAMuHMdUi_=xnvYFgiWXxSyrfoMn0JJCcH+TXFUh+1JUf=4u87A@mail.gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <2fc2b898-434c-3288-2052-70b1e1427b39@collabora.com>
+Date:   Wed, 28 Jul 2021 09:48:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdUi_=xnvYFgiWXxSyrfoMn0JJCcH+TXFUh+1JUf=4u87A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chun-Jie and Stephen,
+On 28/07/2021 09:17, Geert Uytterhoeven wrote:
+> Hi Guillaume et al,
+> 
+> On Wed, Jul 28, 2021 at 8:05 AM Guillaume Tucker
+> <guillaume.tucker@collabora.com> wrote:
+>> Please see the bisection report below about usb2phy failing to
+>> probe on rk3399-gru-kevin.
+>>
+>> Reports aren't automatically sent to the public while we're
+>> trialing new bisection features on kernelci.org but this one
+>> looks valid.
+> 
+> Thanks for your report!
+> 
+>> The bisection was run in the Renesas tree but the same regression
+>> is present in mainline for both usb2phy0 and usb2phy1 devices:
+> 
+> Exactly, the faulty commit is part of v5.14-rc1.
+> 
+>>> Breaking commit found:
+>>>
+>>> -------------------------------------------------------------------------------
+>>> commit 8c3d64251ac5c5a3d10364f6b07d3603ac1e7b4a
+>>> Author: Johan Jonker <jbx6244@gmail.com>
+>>> Date:   Tue Jun 1 18:47:59 2021 +0200
+>>>
+>>>     arm64: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
+> 
+> P.S. KernelCI is sending lots of reports to linux-reneas-soc[1] for
+>      (a) issues on non-Renesas platforms[2], and
 
-Missatge de Stephen Boyd <sboyd@kernel.org> del dia dt., 27 de jul.
-2021 a les 19:54:
->
-> Quoting Chun-Jie Chen (2021-07-26 03:57:00)
-> > This patch adds the mmsys document binding for MT8192 SoC.
-> >
-> > Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> > Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> > Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > ---
->
-> Applied to clk-next
->
+One thing to distinguish here is that changes in a tree like the
+Renesas one might actually break other platforms, even if it
+seems unlikely.  But the improvement explained below addresses
+this issue.
 
-This will conflict in linux-next as the binding was already converted
-to yaml. See
+>      (b) issues not originating in the renesas-devel tree, like this one.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml?id=63e1125e6bb8eae3cd20292f6a10ee421dd574ae
+That is just because I found the bisection report from the
+Renesas tree before getting one from mainline.  As we're manually
+triaging reports, I mentioned it in my email.  And you're right,
+we would need to take this into account before having all the
+bisection reports sent automatically.
 
-Thanks,
-  Enric
+> Suggestions for improvement:
+>   1. If a regression is detected in an upstream tree, there is no
+>      need to report it for downstream trees, unless it affects
+>      the downstream tree, or originated there.
 
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+That's right, we're working on an improvement to be able to
+detect "2nd order" regressions, that is to say new failures in a
+branch relatively to new failures in an upstream branch.  That
+would be typically mainline or stable, but sometimes a subsystem
+specific one.
+
+>   2. If a regression is detected for a platform, there is no need
+>      to report it for different platform trees, unless it originated
+>      there.
+> 
+> BTW, I do look at the reports for Renesas platforms, but usually I
+> don't see what's wrong, and the same platform works fine locally.
+
+Until this has been improved, maybe we can just stop sending
+email reports to linux-reneas-soc if they're mostly noise.  The
+bisections will still run and reports like this one are sent to
+the people and lists who are related to the changes in the patch
+rather than the git tree so it's always relevant to them.
+
+> Note that yesterday and today I get "Error while loading data from the
+> server (error code: 500). Please contact the website administrator".
+
+Yes that's because the Mongo DB service keeps crashing.  It's a
+sysadmin issue that should hopefully get resolved soon, sorry for
+the inconvenience.
+
+
+Thanks for your feedback.
+
+Best wishes,
+Guillaume
+
+> [1] https://lore.kernel.org/linux-renesas-soc/?q=kernelci.org
+> [2] https://lore.kernel.org/linux-renesas-soc/60ff86ff.1c69fb81.dfe6f.6a7c@mx.google.com/
+
