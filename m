@@ -2,201 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1F83D976E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A483D9777
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhG1VRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 17:17:47 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:53666 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhG1VRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 17:17:46 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1m8qvj-00086Y-Gz; Wed, 28 Jul 2021 23:17:31 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>, Peter Geis <pgwipeout@gmail.com>,
-        cl@rock-chips.com, kever.yang@rock-chips.com
-Cc:     Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/8] arm64: dts: rockchip: add rk3568 tsadc nodes
-Date:   Wed, 28 Jul 2021 23:17:30 +0200
-Message-ID: <3091522.BEx9A2HvPv@diego>
-In-Reply-To: <20210728180034.717953-6-pgwipeout@gmail.com>
-References: <20210728180034.717953-1-pgwipeout@gmail.com> <20210728180034.717953-6-pgwipeout@gmail.com>
+        id S231782AbhG1VVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 17:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231574AbhG1VVB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 17:21:01 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABB1C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:20:59 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so12152511pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aCyc2NHOkXGYgjWDmf3vrpmk18fLyVZYd3TxhaXnnVE=;
+        b=c6JhMXofkbZ/uaPvfVmC6SEcmKM0PLQ2hKLp4lpFf6E2UFDYQlwI/ajPz92HBukVL7
+         3/1t8J3CHxk2Aet0zavrHIrdOV/PTcRtHuZqcxaB93hxu9KzN4rGasiScmM1vQ+xqHu9
+         bo2q7n30yNJeOR5zYMX4yKUhbVxnmxalSrXXg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aCyc2NHOkXGYgjWDmf3vrpmk18fLyVZYd3TxhaXnnVE=;
+        b=Z+tzwykNX+GLpsAEcwgTMh5ZP4Fvt1/3wgB0ns0uMZXcC3D2UxbK71suwPmA1ONGiN
+         GTPwmakus6kRh4vnUY6scgEA7wru77b/db1hPzXjTMvzNUu1BcdD7YBvkgR3qL5tns8u
+         yFeCopaSliIgHpPjVJSRoxdMhhRLeiHUcCPZvt79NRZucvtIVklJIyvuSgGpszDz2GRY
+         Gvjf87iE0VfUrEJDcLBJQZJmFGyIKSUqTkHVdA2keVrh/2MbSaIqjkrq4GegX4vxH64p
+         Tsab15CVc6HZGEEpxoUjDyLOFYcXl2DgHU1eVadoN0c3y4pOL7rUX519eMf0QrWdEmOv
+         8TpA==
+X-Gm-Message-State: AOAM531Yuogbfb7PPGObHSl47PzuNuEsuRHFcj0/MEERGidmbrmM5jMo
+        sDnqQEPHEsXK72lfqqegY15zsw==
+X-Google-Smtp-Source: ABdhPJzpO25ftXdScE+c4moZZIlui/WRunFKdsAHPmjZnWME7bUVC0iDZFA0lX1SRi/VgP0KbMAlxA==
+X-Received: by 2002:a17:90a:a78d:: with SMTP id f13mr1677183pjq.206.1627507258658;
+        Wed, 28 Jul 2021 14:20:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l2sm908060pfc.157.2021.07.28.14.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 14:20:57 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 14:20:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 02/64] mac80211: Use flex-array for radiotap header bitmap
+Message-ID: <202107281407.52EA0088@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-3-keescook@chromium.org>
+ <20210728073556.GP1931@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728073556.GP1931@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter, Kever,
+On Wed, Jul 28, 2021 at 10:35:56AM +0300, Dan Carpenter wrote:
+> On Tue, Jul 27, 2021 at 01:57:53PM -0700, Kees Cook wrote:
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memcpy(), memmove(), and memset(), avoid
+> > intentionally writing across neighboring fields.
+> > 
+> > The it_present member of struct ieee80211_radiotap_header is treated as a
+> > flexible array (multiple u32s can be conditionally present). In order for
+> > memcpy() to reason (or really, not reason) about the size of operations
+> > against this struct, use of bytes beyond it_present need to be treated
+> > as part of the flexible array. Add a union/struct to contain the new
+> > "bitmap" member, for use with trailing presence bitmaps and arguments.
+> > 
+> > Additionally improve readability in the iterator code which walks
+> > through the bitmaps and arguments.
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  include/net/ieee80211_radiotap.h | 24 ++++++++++++++++++++----
+> >  net/mac80211/rx.c                |  2 +-
+> >  net/wireless/radiotap.c          |  5 ++---
+> >  3 files changed, 23 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/include/net/ieee80211_radiotap.h b/include/net/ieee80211_radiotap.h
+> > index c0854933e24f..101c1e961032 100644
+> > --- a/include/net/ieee80211_radiotap.h
+> > +++ b/include/net/ieee80211_radiotap.h
+> > @@ -39,10 +39,26 @@ struct ieee80211_radiotap_header {
+> >  	 */
+> >  	__le16 it_len;
+> >  
+> > -	/**
+> > -	 * @it_present: (first) present word
+> > -	 */
+> > -	__le32 it_present;
+> > +	union {
+> > +		/**
+> > +		 * @it_present: (first) present word
+> > +		 */
+> > +		__le32 it_present;
+> > +
+> > +		struct {
+> > +			/* The compiler makes it difficult to overlap
+> > +			 * a flex-array with an existing singleton,
+> > +			 * so we're forced to add an empty named
+> > +			 * variable here.
+> > +			 */
+> > +			struct { } __unused;
+> > +
+> > +			/**
+> > +			 * @bitmap: all presence bitmaps
+> > +			 */
+> > +			__le32 bitmap[];
+> > +		};
+> > +	};
+> >  } __packed;
+> 
+> This patch is so confusing...
 
-Am Mittwoch, 28. Juli 2021, 20:00:31 CEST schrieb Peter Geis:
-> Add the thermal and tsadc nodes to the rk3568 device tree.
-> There are two sensors, one for the cpu, one for the gpu.
+Yeah, I agree. I tried a few ways, and was unhappy with all of them. :P
+
 > 
-> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> ---
->  .../boot/dts/rockchip/rk3568-pinctrl.dtsi     |  7 ++
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi      | 70 +++++++++++++++++++
->  2 files changed, 77 insertions(+)
+> Btw, after the end of the __le32 data there is a bunch of other le64,
+> u8 and le16 data so the struct is not accurate or complete.
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
-> index a588ca95ace2..3b1efaf2646e 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
-> @@ -2420,6 +2420,13 @@ spi3m1_cs1: spi3m1-cs1 {
->  	};
+> It might be better to re-write this as something like this:
+> 
+> diff --git a/include/net/ieee80211_radiotap.h b/include/net/ieee80211_radiotap.h
+> index c0854933e24f..0cb5719e9668 100644
+> --- a/include/net/ieee80211_radiotap.h
+> +++ b/include/net/ieee80211_radiotap.h
+> @@ -42,7 +42,10 @@ struct ieee80211_radiotap_header {
+>  	/**
+>  	 * @it_present: (first) present word
+>  	 */
+> -	__le32 it_present;
+> +	struct {
+> +		__le32 it_present;
+> +		char buff[];
+> +	} data;
+>  } __packed;
+
+Hm, yes, I can try this. I attempted something similar without the
+"only a struct" part; I was trying to avoid the identifier churn, but I
+guess seeing it again, it's not _that_ bad. :P
+
 >  
->  	tsadc {
-> +		/omit-if-no-ref/
-> +		tsadc_pin: tsadc-pin {
-> +			rockchip,pins =
-> +				/* tsadc_pin */
-> +				<0 RK_PA1 0 &pcfg_pull_none>;
-> +		};
-> +
-
-The rk3568-pinctrl.dtsi is autogenerated on Rockchip's side and I don't
-want to break that unnecessarily ;-) .
-
-So the question below is more for Kever and Liang:
-
-The tsadc on most mainline Rockchip socs uses the additional init-pinctrl
-to set the pin to gpio mode before the tsadc probes and only to the shutdown
-function after the tsadc has probed sucessfully. This prevents the
-shutdown firing before the tsadc actually attached to the pin function.
-
-Is it possible to fit the above addition pin setting in the database you
-have as base for the autogeneration?
-
-
-Thanks
-Heiko
-
-
-
-
-
->  		/omit-if-no-ref/
->  		tsadcm0_shut: tsadcm0-shut {
->  			rockchip,pins =
-> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> index fbd9f1c366ff..c74072941da1 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> @@ -50,6 +50,7 @@ cpu0: cpu@0 {
->  			compatible = "arm,cortex-a55";
->  			reg = <0x0 0x0>;
->  			clocks = <&scmi_clk 0>;
-> +			#cooling-cells = <2>;
->  			enable-method = "psci";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> @@ -58,6 +59,7 @@ cpu1: cpu@100 {
->  			device_type = "cpu";
->  			compatible = "arm,cortex-a55";
->  			reg = <0x0 0x100>;
-> +			#cooling-cells = <2>;
->  			enable-method = "psci";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> @@ -66,6 +68,7 @@ cpu2: cpu@200 {
->  			device_type = "cpu";
->  			compatible = "arm,cortex-a55";
->  			reg = <0x0 0x200>;
-> +			#cooling-cells = <2>;
->  			enable-method = "psci";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> @@ -74,6 +77,7 @@ cpu3: cpu@300 {
->  			device_type = "cpu";
->  			compatible = "arm,cortex-a55";
->  			reg = <0x0 0x300>;
-> +			#cooling-cells = <2>;
->  			enable-method = "psci";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> @@ -773,6 +777,72 @@ uart9: serial@fe6d0000 {
->  		status = "disabled";
->  	};
+>  /* version is always 0 */
+> diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+> index 771921c057e8..9cc891364a07 100644
+> --- a/net/mac80211/rx.c
+> +++ b/net/mac80211/rx.c
+> @@ -328,7 +328,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
 >  
-> +	thermal_zones: thermal-zones {
-> +		cpu_thermal: cpu-thermal {
-> +			polling-delay-passive = <100>;
-> +			polling-delay = <1000>;
-> +
-> +			thermal-sensors = <&tsadc 0>;
-> +
-> +			trips {
-> +				cpu_alert0: cpu_alert0 {
-> +					temperature = <70000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				cpu_alert1: cpu_alert1 {
-> +					temperature = <75000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				cpu_crit: cpu_crit {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu_alert0>;
-> +					cooling-device =
-> +						<&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		gpu_thermal: gpu-thermal {
-> +			polling-delay-passive = <20>; /* milliseconds */
-> +			polling-delay = <1000>; /* milliseconds */
-> +
-> +			thermal-sensors = <&tsadc 1>;
-> +		};
-> +	};
-> +
-> +	tsadc: tsadc@fe710000 {
-> +		compatible = "rockchip,rk3568-tsadc";
-> +		reg = <0x0 0xfe710000 0x0 0x100>;
-> +		interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
-> +		assigned-clocks = <&cru CLK_TSADC_TSEN>, <&cru CLK_TSADC>;
-> +		assigned-clock-rates = <17000000>, <700000>;
-> +		clocks = <&cru CLK_TSADC>, <&cru PCLK_TSADC>;
-> +		clock-names = "tsadc", "apb_pclk";
-> +		resets = <&cru SRST_TSADC>, <&cru SRST_P_TSADC>,
-> +			 <&cru SRST_TSADCPHY>;
-> +		reset-names = "tsadc", "tsadc-apb", "tsadc-phy";
-> +		rockchip,grf = <&grf>;
-> +		rockchip,hw-tshut-temp = <95000>;
-> +		pinctrl-names = "init", "default", "sleep";
-> +		pinctrl-0 = <&tsadc_pin>;
-> +		pinctrl-1 = <&tsadc_shutorg>;
-> +		pinctrl-2 = <&tsadc_pin>;
-> +		#thermal-sensor-cells = <1>;
-> +		status = "disabled";
-> +	};
-> +
->  	saradc: saradc@fe720000 {
->  		compatible = "rockchip,rk3568-saradc", "rockchip,rk3399-saradc";
->  		reg = <0x0 0xfe720000 0x0 0x100>;
-> 
+>  	rthdr = skb_push(skb, rtap_len);
+>  	memset(rthdr, 0, rtap_len - rtap.len - rtap.pad);
+> -	it_present = &rthdr->it_present;
+> +	it_present = (__le32 *)&rthdr->data;
 
+Hm, interesting way to avoid angering the compiler during the later
+it_present++ updates. This is subtle ... a passer-by may not understand
+why this isn't just "it_present = &rthdr->data.it_present".
 
+I think this is okay with a comment added. I'll give this a spin.
+Thanks!
 
+-Kees
 
+>  
+>  	/* radiotap header, set always present flags */
+>  	rthdr->it_len = cpu_to_le16(rtap_len);
+> @@ -372,7 +372,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  			ieee80211_calculate_rx_timestamp(local, status,
+>  							 mpdulen, 0),
+>  			pos);
+> -		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_TSFT);
+> +		rthdr->data.it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_TSFT);
+>  		pos += 8;
+>  	}
+>  
+> @@ -396,7 +396,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  		*pos = 0;
+>  	} else {
+>  		int shift = 0;
+> -		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_RATE);
+> +		rthdr->data.it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_RATE);
+>  		if (status->bw == RATE_INFO_BW_10)
+>  			shift = 1;
+>  		else if (status->bw == RATE_INFO_BW_5)
+> @@ -432,7 +432,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  	if (ieee80211_hw_check(&local->hw, SIGNAL_DBM) &&
+>  	    !(status->flag & RX_FLAG_NO_SIGNAL_VAL)) {
+>  		*pos = status->signal;
+> -		rthdr->it_present |=
+> +		rthdr->data.it_present |=
+>  			cpu_to_le32(1 << IEEE80211_RADIOTAP_DBM_ANTSIGNAL);
+>  		pos++;
+>  	}
+> @@ -459,7 +459,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  	if (status->encoding == RX_ENC_HT) {
+>  		unsigned int stbc;
+>  
+> -		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_MCS);
+> +		rthdr->data.it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_MCS);
+>  		*pos++ = local->hw.radiotap_mcs_details;
+>  		*pos = 0;
+>  		if (status->enc_flags & RX_ENC_FLAG_SHORT_GI)
+> @@ -482,7 +482,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  		/* ensure 4 byte alignment */
+>  		while ((pos - (u8 *)rthdr) & 3)
+>  			pos++;
+> -		rthdr->it_present |=
+> +		rthdr->data.it_present |=
+>  			cpu_to_le32(1 << IEEE80211_RADIOTAP_AMPDU_STATUS);
+>  		put_unaligned_le32(status->ampdu_reference, pos);
+>  		pos += 4;
+> @@ -510,7 +510,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  	if (status->encoding == RX_ENC_VHT) {
+>  		u16 known = local->hw.radiotap_vht_details;
+>  
+> -		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_VHT);
+> +		rthdr->data.it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_VHT);
+>  		put_unaligned_le16(known, pos);
+>  		pos += 2;
+>  		/* flags */
+> @@ -553,7 +553,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  		u16 accuracy = 0;
+>  		u8 flags = IEEE80211_RADIOTAP_TIMESTAMP_FLAG_32BIT;
+>  
+> -		rthdr->it_present |=
+> +		rthdr->data.it_present |=
+>  			cpu_to_le32(1 << IEEE80211_RADIOTAP_TIMESTAMP);
+>  
+>  		/* ensure 8 byte alignment */
+> @@ -642,7 +642,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  		/* ensure 2 byte alignment */
+>  		while ((pos - (u8 *)rthdr) & 1)
+>  			pos++;
+> -		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE);
+> +		rthdr->data.it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE);
+>  		memcpy(pos, &he, sizeof(he));
+>  		pos += sizeof(he);
+>  	}
+> @@ -652,13 +652,13 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  		/* ensure 2 byte alignment */
+>  		while ((pos - (u8 *)rthdr) & 1)
+>  			pos++;
+> -		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE_MU);
+> +		rthdr->data.it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE_MU);
+>  		memcpy(pos, &he_mu, sizeof(he_mu));
+>  		pos += sizeof(he_mu);
+>  	}
+>  
+>  	if (status->flag & RX_FLAG_NO_PSDU) {
+> -		rthdr->it_present |=
+> +		rthdr->data.it_present |=
+>  			cpu_to_le32(1 << IEEE80211_RADIOTAP_ZERO_LEN_PSDU);
+>  		*pos++ = status->zero_length_psdu_type;
+>  	}
+> @@ -667,7 +667,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+>  		/* ensure 2 byte alignment */
+>  		while ((pos - (u8 *)rthdr) & 1)
+>  			pos++;
+> -		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_LSIG);
+> +		rthdr->data.it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_LSIG);
+>  		memcpy(pos, &lsig, sizeof(lsig));
+>  		pos += sizeof(lsig);
+>  	}
+> diff --git a/net/wireless/radiotap.c b/net/wireless/radiotap.c
+> index 36f1b59a78bf..f7852024c011 100644
+> --- a/net/wireless/radiotap.c
+> +++ b/net/wireless/radiotap.c
+> @@ -114,11 +114,10 @@ int ieee80211_radiotap_iterator_init(
+>  	iterator->_rtheader = radiotap_header;
+>  	iterator->_max_length = get_unaligned_le16(&radiotap_header->it_len);
+>  	iterator->_arg_index = 0;
+> -	iterator->_bitmap_shifter = get_unaligned_le32(&radiotap_header->it_present);
+> +	iterator->_bitmap_shifter = get_unaligned_le32(&radiotap_header->data.it_present);
+>  	iterator->_arg = (uint8_t *)radiotap_header + sizeof(*radiotap_header);
+>  	iterator->_reset_on_ext = 0;
+> -	iterator->_next_bitmap = &radiotap_header->it_present;
+> -	iterator->_next_bitmap++;
+> +	iterator->_next_bitmap = (__le32 *)&radiotap_header->data.buff;
+>  	iterator->_vns = vns;
+>  	iterator->current_namespace = &radiotap_ns;
+>  	iterator->is_radiotap_ns = 1;
+
+-- 
+Kees Cook
