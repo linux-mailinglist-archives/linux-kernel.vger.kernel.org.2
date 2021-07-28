@@ -2,289 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49593D89CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027523D89D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbhG1Icp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:32:45 -0400
-Received: from mga18.intel.com ([134.134.136.126]:64992 "EHLO mga18.intel.com"
+        id S234467AbhG1IeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:34:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234311AbhG1Ico (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:32:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="199834456"
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="199834456"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 01:32:42 -0700
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="517333914"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.30.133]) ([10.255.30.133])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 01:32:40 -0700
-Subject: Re: drivers/hv/channel_mgmt.c:785:22: warning: Assigned value is
- garbage or undefined [clang-analyzer-core.uninitialized.Assign]
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>
-References: <202107251901.GJvlsBLV-lkp@intel.com>
- <39c4fa80-f65e-50c3-5706-809d4a2a2c9b@intel.com>
- <MN2PR21MB12955120969469392059D597CAE89@MN2PR21MB1295.namprd21.prod.outlook.com>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <073e1edc-4f41-f272-83e9-0927c27b3e61@intel.com>
-Date:   Wed, 28 Jul 2021 16:32:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S233339AbhG1IeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 04:34:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41E56600D4;
+        Wed, 28 Jul 2021 08:34:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627461255;
+        bh=SExZlI1R5ZcozuGWrw7VFlxMzcsp3vIAT3KbFbBhwFA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gcoZc32iKlfva/hkJUebAPCunmbpmNIlZJJDA5ejq9pljJwfprq2vrUrwaUH2TbcY
+         W9Xi9ZlrTlExejnGyEbFJVtLszFYWc57AExWwBy2iUh5mRgtSpUsjb+6mz1NKAxjVa
+         sKo33JgxbsojydSh8QjvdFf74L/509ILlVmniUFs=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.277
+Date:   Wed, 28 Jul 2021 10:34:12 +0200
+Message-Id: <162746125213932@kroah.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <MN2PR21MB12955120969469392059D597CAE89@MN2PR21MB1295.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I'm announcing the release of the 4.4.277 kernel.
 
+All users of the 4.4 kernel series must upgrade.
 
-On 7/27/2021 12:02 AM, Haiyang Zhang wrote:
-> 
-> 
->> -----Original Message-----
->> From: kernel test robot <rong.a.chen@intel.com>
->> Sent: Sunday, July 25, 2021 11:43 PM
->> To: Haiyang Zhang <haiyangz@microsoft.com>
->> Cc: kbuild-all@lists.01.org; LKML <linux-kernel@vger.kernel.org>; Wei
->> Liu <wei.liu@kernel.org>; Michael Kelley <mikelley@microsoft.com>
->> Subject: drivers/hv/channel_mgmt.c:785:22: warning: Assigned value is
->> garbage or undefined [clang-analyzer-core.uninitialized.Assign]
->>
->>
->> Hi Haiyang,
->>
->> First bad commit (maybe != root cause):
->>
->> tree:
->> https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.ke
->> rnel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.git&amp;d
->> ata=04%7C01%7Chaiyangz%40microsoft.com%7Cb1a7f087851b48a29bf308d94fe7849
->> 0%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C637628680585035821%7CUnkn
->> own%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLC
->> JXVCI6Mn0%3D%7C1000&amp;sdata=6LkKnX%2BXhjmhh4m%2BzJ7y0JeQcwvwHw8NZP%2Bv
->> aXSdZV0%3D&amp;reserved=0 master
->> head:   d8079fac168168b25677dc16c00ffaf9fb7df723
->> commit: 7c9ff3deeee61b253715dcf968a6307af148c9b2 Drivers: hv: vmbus: Fix
->> duplicate CPU assignments within a device
->> date:   6 days ago
->> :::::: branch date: 11 hours ago
->> :::::: commit date: 6 days ago
->> config: x86_64-randconfig-c001-20210725 (attached as .config)
->> compiler: clang version 13.0.0
->> (https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithu
->> b.com%2Fllvm%2Fllvm-
->> project&amp;data=04%7C01%7Chaiyangz%40microsoft.com%7Cb1a7f087851b48a29b
->> f308d94fe78490%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C637628680585
->> 035821%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBT
->> iI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=MKdTDUGKunqVOWEwafejDKuW0mpeN
->> aP1ssqiv4SBvzQ%3D&amp;reserved=0
->> 3f2c1e99e44d028d5e9dd685f3c568f2661f2f68)
->> reproduce (this is a W=1 build):
->>           wget
->> https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fraw.gi
->> thubusercontent.com%2Fintel%2Flkp-
->> tests%2Fmaster%2Fsbin%2Fmake.cross&amp;data=04%7C01%7Chaiyangz%40microso
->> ft.com%7Cb1a7f087851b48a29bf308d94fe78490%7C72f988bf86f141af91ab2d7cd011
->> db47%7C1%7C0%7C637628680585035821%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLj
->> AwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=gu
->> Hq8MagK88xMw%2F6ZxmhQExnmLoIlYLma4QR1gmUYdM%3D&amp;reserved=0
->> -O ~/bin/make.cross
->>           chmod +x ~/bin/make.cross
->>           # install x86_64 cross compiling tool for clang build
->>           # apt-get install binutils-x86-64-linux-gnu
->>           #
->> https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.ke
->> rnel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.git%2Fcom
->> mit%2F%3Fid%3D7c9ff3deeee61b253715dcf968a6307af148c9b2&amp;data=04%7C01%
->> 7Chaiyangz%40microsoft.com%7Cb1a7f087851b48a29bf308d94fe78490%7C72f988bf
->> 86f141af91ab2d7cd011db47%7C1%7C0%7C637628680585035821%7CUnknown%7CTWFpbG
->> Zsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D
->> %7C1000&amp;sdata=N24YX%2FPLzONY5gKOu1U93%2B7uK4jm%2BIQYZzfA6z8FPHo%3D&a
->> mp;reserved=0
->>           git remote add linus
->> https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.ke
->> rnel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.git&amp;d
->> ata=04%7C01%7Chaiyangz%40microsoft.com%7Cb1a7f087851b48a29bf308d94fe7849
->> 0%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C637628680585035821%7CUnkn
->> own%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLC
->> JXVCI6Mn0%3D%7C1000&amp;sdata=6LkKnX%2BXhjmhh4m%2BzJ7y0JeQcwvwHw8NZP%2Bv
->> aXSdZV0%3D&amp;reserved=0
->>           git fetch --no-tags linus master
->>           git checkout 7c9ff3deeee61b253715dcf968a6307af148c9b2
->>           # save the attached .config to linux build tree
->>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross
->> clang-analyzer ARCH=x86_64 If you fix the issue, kindly add following
->> tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->>
->> clang-analyzer warnings: (new ones prefixed by >>)
->>                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
->>      drivers/hid/hid-core.c:1601:3: note: Taking false branch
->>                      if (field->logical_minimum < 0) /* signed values */
->>                      ^
->>      drivers/hid/hid-core.c:1605:44: note: Passing value via 4th
->> parameter 'n'
->>                              implement(hid, data, offset + n * size, size,
->>                                                                      ^~~~
->>      drivers/hid/hid-core.c:1605:4: note: Calling 'implement'
->>                              implement(hid, data, offset + n * size, size,
->>
->> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>      drivers/hid/hid-core.c:1421:15: note: Assuming 'n' is <= 32
->>              if (unlikely(n > 32)) {
->>                           ^
->>      include/linux/compiler.h:78:42: note: expanded from macro 'unlikely'
->>      # define unlikely(x)    __builtin_expect(!!(x), 0)
->>                                                  ^
->>      drivers/hid/hid-core.c:1421:2: note: Taking false branch
->>              if (unlikely(n > 32)) {
->>              ^
->>      drivers/hid/hid-core.c:1425:13: note: Assuming 'n' is >= 32
->>              } else if (n < 32) {
->>                         ^~~~~~
->>      drivers/hid/hid-core.c:1425:9: note: Taking false branch
->>              } else if (n < 32) {
->>                     ^
->>      drivers/hid/hid-core.c:1437:30: note: Passing the value 32 via 3rd
->> parameter 'n'
->>              __implement(report, offset, n, value);
->>                                          ^
->>      drivers/hid/hid-core.c:1437:2: note: Calling '__implement'
->>              __implement(report, offset, n, value);
->>              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>      drivers/hid/hid-core.c:1400:9: note: Assuming the condition is false
->>              while (n - bits_to_set >= 0) {
->>                     ^~~~~~~~~~~~~~~~~~~~
->>      drivers/hid/hid-core.c:1400:2: note: Loop condition is false.
->> Execution continues on line 1411
->>              while (n - bits_to_set >= 0) {
->>              ^
->>      drivers/hid/hid-core.c:1411:6: note: 'n' is 32
->>              if (n) {
->>                  ^
->>      drivers/hid/hid-core.c:1411:2: note: Taking true branch
->>              if (n) {
->>              ^
->>      drivers/hid/hid-core.c:1412:22: note: The result of the left shift
->> is undefined due to shifting by '32', which is greater or equal to the
->> width of type 'unsigned int'
->>                      u8 bit_mask = ((1U << n) - 1);
->>                                         ^  ~
->>      drivers/hid/hid-core.c:1984:3: warning: Value stored to 'len' is
->> never read [clang-analyzer-deadcode.DeadStores]
->>                      len += sprintf(buf + len, "%shidraw%d", len ? "," :
->> "",
->>                      ^
->> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>      drivers/hid/hid-core.c:1984:3: note: Value stored to 'len' is never
->> read
->>                      len += sprintf(buf + len, "%shidraw%d", len ? "," :
->> "",
->>                      ^
->> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>      Suppressed 5 warnings (5 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      6 warnings generated.
->>      Suppressed 6 warnings (6 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      6 warnings generated.
->>      Suppressed 6 warnings (6 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      7 warnings generated.
->>      Suppressed 7 warnings (7 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      4 warnings generated.
->>      Suppressed 4 warnings (4 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      4 warnings generated.
->>      Suppressed 4 warnings (4 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      4 warnings generated.
->>      Suppressed 4 warnings (4 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      4 warnings generated.
->>      Suppressed 4 warnings (4 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      4 warnings generated.
->>      Suppressed 4 warnings (4 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      4 warnings generated.
->>      Suppressed 4 warnings (4 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      4 warnings generated.
->>      Suppressed 4 warnings (4 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      5 warnings generated.
->>      Suppressed 5 warnings (5 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      4 warnings generated.
->>      Suppressed 4 warnings (4 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      3 warnings generated.
->>      Suppressed 3 warnings (3 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      9 warnings generated.
->>      Suppressed 9 warnings (8 in non-user code, 1 with check filters).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      5 warnings generated.
->>      Suppressed 5 warnings (5 in non-user code).
->>      Use -header-filter=.* to display errors from all non-system headers.
->> Use -system-headers to display errors from system headers as well.
->>      6 warnings generated.
->>>> drivers/hv/channel_mgmt.c:785:22: warning: Assigned value is garbage
->>>> or undefined [clang-analyzer-core.uninitialized.Assign]
->>              channel->target_cpu = target_cpu;
->>                                  ^
-> 
-> The for-loop before the assignment is always executed,
-> because ncpu = num_online_cpus() > 0:
-> 	for (i = 1; i <= ncpu + 1; i++) {
-> 
-> So the variable is assigned before Line 785:
-> 		target_cpu = cpumask_first(available_mask);
-> 
-> And, the following code ensures the available_mask is not empty:
-> 		if (cpumask_weight(alloced_mask) ==
-> 		    cpumask_weight(cpumask_of_node(numa_node))) {
-> 			/*
-> 			 * We have cycled through all the CPUs in the node;
-> 			 * reset the alloced map.
-> 			 */
-> 			cpumask_clear(alloced_mask);
-> 		}
-> 
-> So the robot warning above can be ignored.
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Thanks for the detailed explanation, please just ignore it.
+thanks,
 
-Best Regards,
-Rong Chen
+greg k-h
 
-> 
-> Thanks,
-> - Haiyang
-> 
+------------
+
+ Makefile                                           |    2 
+ arch/arm/boot/dts/bcm63138.dtsi                    |    2 
+ arch/arm/boot/dts/bcm7445-bcm97445svmb.dts         |    4 
+ arch/arm/boot/dts/bcm7445.dtsi                     |    2 
+ arch/arm/boot/dts/bcm963138dvt.dts                 |    4 
+ arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi       |    5 -
+ arch/arm/mach-imx/suspend-imx53.S                  |    4 
+ arch/powerpc/kvm/book3s_rtas.c                     |   25 +++++
+ arch/s390/include/asm/ftrace.h                     |    1 
+ arch/s390/kernel/ftrace.c                          |    2 
+ arch/s390/kernel/mcount.S                          |    4 
+ arch/s390/net/bpf_jit_comp.c                       |    2 
+ arch/x86/include/asm/fpu/internal.h                |   30 +------
+ arch/x86/kernel/fpu/xstate.c                       |   37 +++++++-
+ drivers/iio/accel/bma180.c                         |   75 +++++++++++------
+ drivers/media/pci/ngene/ngene-core.c               |    2 
+ drivers/media/pci/ngene/ngene.h                    |   14 +--
+ drivers/memory/fsl_ifc.c                           |    4 
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c     |   21 +---
+ drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c |    6 -
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c    |    1 
+ drivers/net/ethernet/intel/igb/igb_main.c          |    9 +-
+ drivers/net/ethernet/moxa/moxart_ether.c           |    4 
+ drivers/net/ethernet/ti/tlan.c                     |    3 
+ drivers/scsi/aic7xxx/aic7xxx_core.c                |    2 
+ drivers/scsi/scsi_transport_iscsi.c                |   90 +++++++--------------
+ drivers/target/target_core_sbc.c                   |   35 +++-----
+ drivers/thermal/thermal_core.c                     |    2 
+ drivers/usb/core/hub.c                             |   68 +++++++++++++--
+ drivers/usb/core/quirks.c                          |    4 
+ drivers/usb/host/max3421-hcd.c                     |   44 +++-------
+ drivers/usb/host/xhci-hub.c                        |    3 
+ drivers/usb/renesas_usbhs/fifo.c                   |    7 +
+ drivers/usb/serial/cp210x.c                        |    5 -
+ drivers/usb/serial/option.c                        |    3 
+ drivers/usb/storage/unusual_uas.h                  |    7 +
+ fs/btrfs/inode.c                                   |    2 
+ fs/proc/base.c                                     |    2 
+ include/net/dst_metadata.h                         |    4 
+ include/net/ip6_route.h                            |    2 
+ kernel/sched/fair.c                                |    4 
+ kernel/trace/ring_buffer.c                         |   28 +++++-
+ net/caif/caif_socket.c                             |    3 
+ net/decnet/af_decnet.c                             |   27 ++----
+ net/ipv4/tcp_ipv4.c                                |    4 
+ net/ipv4/tcp_output.c                              |    1 
+ net/ipv6/tcp_ipv6.c                                |   19 +++-
+ net/ipv6/xfrm6_output.c                            |    2 
+ net/netrom/nr_timer.c                              |   20 ++--
+ scripts/mkcompile_h                                |   14 ++-
+ sound/isa/sb/sb16_csp.c                            |    4 
+ tools/perf/tests/bpf.c                             |    2 
+ tools/perf/util/probe-file.c                       |    4 
+ 53 files changed, 402 insertions(+), 273 deletions(-)
+
+Aleksandr Loktionov (1):
+      igb: Check if num of q_vectors is smaller than max before array access
+
+Christophe JAILLET (1):
+      iavf: Fix an error handling path in 'iavf_probe()'
+
+Colin Ian King (2):
+      scsi: aic7xxx: Fix unintentional sign extension issue on left shift of u8
+      s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
+
+David Sterba (1):
+      btrfs: compression: don't try to compress if we don't have enough pages
+
+Dmitry Bogdanov (1):
+      scsi: target: Fix protect handling in WRITE SAME(32)
+
+Doug Berger (1):
+      net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
+
+Eric Dumazet (2):
+      tcp: annotate data races around tp->mtu_info
+      ipv6: tcp: drop silly ICMPv6 packet too big messages
+
+Florian Fainelli (1):
+      net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+
+Greg Kroah-Hartman (2):
+      Revert "memory: fsl_ifc: fix leak of IO mapping on probe failure"
+      Linux 4.4.277
+
+Gustavo A. R. Silva (1):
+      media: ngene: Fix out-of-bounds bug in ngene_command_config_free_buf()
+
+Haoran Luo (1):
+      tracing: Fix bug in rb_per_cpu_empty() that might cause deadloop.
+
+Ian Ray (1):
+      USB: serial: cp210x: fix comments for GE CS1000
+
+John Keeping (1):
+      USB: serial: cp210x: add ID for CEL EM3588 USB ZigBee stick
+
+Jonathan Neuschäfer (1):
+      ARM: imx: pm-imx5: Fix references to imx5_cpu_suspend_info
+
+Julian Sikorski (1):
+      USB: usb-storage: Add LaCie Rugged USB3-FW to IGNORE_UAS
+
+Linus Walleij (1):
+      iio: accel: bma180: Use explicit member assignment
+
+Marcelo Henrique Cerri (1):
+      proc: Avoid mixing integer types in mem_rw()
+
+Marco De Marco (1):
+      USB: serial: option: add support for u-blox LARA-R6 family
+
+Mark Tomlinson (1):
+      usb: max-3421: Prevent corruption of freed memory
+
+Mathias Nyman (2):
+      xhci: Fix lost USB 2 remote wake
+      usb: hub: Disable USB 3 device initiated lpm if exit latency is too high
+
+Matthias Maennich (1):
+      kbuild: mkcompile_h: consider timestamp if KBUILD_BUILD_TIMESTAMP is set
+
+Mike Christie (1):
+      scsi: iscsi: Fix iface sysfs attr detection
+
+Nguyen Dinh Phi (1):
+      netrom: Decrease sock refcount when sock timers expire
+
+Nicholas Piggin (1):
+      KVM: PPC: Book3S: Fix H_RTAS rets buffer overflow
+
+Odin Ugedal (1):
+      sched/fair: Fix CFS bandwidth hrtimer expiry type
+
+Pavel Skripkin (2):
+      net: moxa: fix UAF in moxart_mac_probe
+      net: ti: fix UAF in tlan_remove_one
+
+Primoz Fiser (1):
+      ARM: dts: imx6: phyFLEX: Fix UART hardware flow control
+
+Rafał Miłecki (2):
+      ARM: brcmstb: dts: fix NAND nodes names
+      ARM: dts: BCM63xx: Fix NAND nodes names
+
+Riccardo Mancini (2):
+      perf test bpf: Free obj_buf
+      perf probe-file: Delete namelist in del_events() on the error path
+
+Stephan Gerhold (1):
+      iio: accel: bma180: Fix BMA25x bandwidth register values
+
+Taehee Yoo (1):
+      net: validate lwtstate->data before returning from skb_tunnel_info()
+
+Takashi Iwai (1):
+      ALSA: sb: Fix potential ABBA deadlock in CSP driver
+
+Thomas Gleixner (1):
+      x86/fpu: Make init_fpstate correct with optimized XSAVE
+
+Vadim Fedorenko (1):
+      net: ipv6: fix return value of ip6_skb_dst_mtu
+
+Vasily Gorbik (1):
+      s390/ftrace: fix ftrace_update_ftrace_func implementation
+
+Vincent Palatin (1):
+      Revert "USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem"
+
+Yajun Deng (1):
+      net: decnet: Fix sleeping inside in af_decnet
+
+Yang Yingliang (1):
+      thermal/core: Correct function name thermal_zone_device_unregister()
+
+Yoshihiro Shimoda (1):
+      usb: renesas_usbhs: Fix superfluous irqs happen after usb_pkt_pop()
+
+Ziyang Xuan (1):
+      net: fix uninit-value in caif_seqpkt_sendmsg
+
