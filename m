@@ -2,296 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CB33D9445
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEBF3D944D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhG1R0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbhG1RZ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:25:59 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B09C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:25:57 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id b21so3941641ljo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:25:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p27TKDYYHFYhqzphe1Tkc5vZ8HgmZG7DuroJKQvx2Sk=;
-        b=WWj/mDctJd0LpDmEI37j9jLpw6K4K1KbxlqbiEIUddGBG3xkRVf1C+tV6dUf4WWRSr
-         VJi0DBlFdu2SJfYzD1ksSUAhoYx3PCYc74k5DkjZEs631HteGfoI+v2tS548JkmuZy/D
-         X+1lvGD8/v5s4G1AR1UxzcCbI0vPoVn83L6w0P7Wza/pY/LT4ikvuZSsRUjdQ3373GjZ
-         YCWt+1RZ4v40k+5n0psTFV8Np2qwpEbN3wPdEvLYjfnD8t8kdpdCDg5Vg91rUfSx0IKV
-         js9DFL7PvV/2t3aoAA/ZXRJoT2F12PJJPWAdkkdq+K3aQiyF9grX9B64vBdJW5EF0wuE
-         Wddw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p27TKDYYHFYhqzphe1Tkc5vZ8HgmZG7DuroJKQvx2Sk=;
-        b=C3UtrHK8M8AsUs4HLTh3guQFujaHveBlx6+Qz4uBmwylm0uhxKx+RwXI56VaLHrHDt
-         y988l1XMv7a7xz4Hsc3v0zmv5TRAaRPVOOBnSnsZoOobSeioXzacZW3inDpKGyPqgZWr
-         k8Gs+7DGHs174tg0LOM7FBLRsQ7hQZu0X/FgLaxywm0T4mWjb3c0ngEgFKCSAiTOeAzc
-         yJBY8uvHGBauBPFyw719kmM4kNhxE7mLF4mhAWX4KysTlqXP0Db3hghKVmGUGvo5WiXH
-         c12EnV4NzOuFcfAg7b3mFVNTQO7jlfbIPYxMTUEAvjV3UTC8EvUNIIngMuasq+TeVPRC
-         VY8A==
-X-Gm-Message-State: AOAM532mVHEaAz2KjtMtzErS+fgh3iBvIrFkuZ/3XCJ0LK6HbeeTNc5/
-        cBNxrMvM1o1N0p4+BJrm+mc=
-X-Google-Smtp-Source: ABdhPJwk6hc8tfxVgzbhLBEds+OOA+ylsWUJ6Hpwt7z/ofZyVmY0/X3MdFSq2Ltpe5M+UiHNIh04oQ==
-X-Received: by 2002:a2e:9794:: with SMTP id y20mr477915lji.417.1627493155518;
-        Wed, 28 Jul 2021 10:25:55 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id p28sm55974lfo.117.2021.07.28.10.25.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 10:25:55 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] ASoC: samsung: Constify static snd_soc_ops
-Date:   Wed, 28 Jul 2021 19:25:48 +0200
-Message-Id: <20210728172548.234943-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S230437AbhG1R1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:27:09 -0400
+Received: from mga17.intel.com ([192.55.52.151]:34381 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229567AbhG1R1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:27:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="192992985"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="192992985"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 10:27:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="506618581"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Jul 2021 10:27:05 -0700
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 28 Jul 2021 10:27:04 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Wed, 28 Jul 2021 10:27:04 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Wed, 28 Jul 2021 10:27:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tq/aORYyySXesj7t63kP4+jiH8RYEwV8iW4dFHKulesMlKTa1v5ChN2f8Qg/Nd/fkebqBjzZ0tVJzzof4fCayfwt7KV7Ga7puVDxS9bvfh9i2Gb8DC0OxGOm9zi5dsX3FaK1p3awBQjstEH33BZeEskOdI8FZl5N8GI1r0HyqdSLuFmq5YU64Pwpbv0ZzsVdhkYJq1EC0LiUM7tLaUnNMLc8woxfEoKnHmMEkJSDkAhkuOhM82x6WFfRwpfApQ3N01ErC754h5c9EVZ31I6gpOZ+7GeRq31XSxRbsdXGtJAE/DMFHKNIBai1c8h1T3sSHSNNDuFl2aj6rZ2S68k47g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YWsp51Cqo23hfLAjq+g17/nU9cn+0R025t54y7jcE0Q=;
+ b=VsY/Xl/yjMEpXgVi+MITXCN3YS1cp2yewYekF0smQPx0Zm8PZ1yAnS5piqi71cdmD27DyHoFG3ny/piKnC9LhT5LWuH7cAgz5asrNfBJjswhMQ1PsRylAYfv2kvv4gG84V24a1BiCvZVXaScfar0L3+35doQbqHRH36HGuMHRxuJ9AEmWkw/KZBQXzYbZFnIKxPitAK+OJGkjZnmWCVc7S3sBgOqLddlRNEcMQXU7F1LItbqOgToC8bn/EBMMBPg6qkU0ePZt+7pMmuqVP1gllTeAOBDBfEK61pvdhTnibVvOq1unG7rCSH4doTHVKB63nBTGmXIa+2GGrggpRVKew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YWsp51Cqo23hfLAjq+g17/nU9cn+0R025t54y7jcE0Q=;
+ b=BsX22qJjlGQs1kKTav3Dw971jbILVi8gTn1q1G+2Ir0eVnn3i+53LuwmK4/4E9zU5MdsduQvY3gnBqkKb+ichVNX4ZMmeV06GbBHZzOr9prtMMbHFoN1IY8YC1DgFqAnQttCXhV7xZwvK06Q9agqN7+AlEBRZ4fw8gDgDtKL9qQ=
+Received: from MW3PR11MB4523.namprd11.prod.outlook.com (2603:10b6:303:5b::16)
+ by MWHPR11MB1341.namprd11.prod.outlook.com (2603:10b6:300:2b::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Wed, 28 Jul
+ 2021 17:27:02 +0000
+Received: from MW3PR11MB4523.namprd11.prod.outlook.com
+ ([fe80::a87d:ca62:f143:7464]) by MW3PR11MB4523.namprd11.prod.outlook.com
+ ([fe80::a87d:ca62:f143:7464%9]) with mapi id 15.20.4352.031; Wed, 28 Jul 2021
+ 17:27:02 +0000
+From:   "Kammela, Gayatri" <gayatri.kammela@intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     Hans de Goede <hdegoede@redhat.com>,
+        "Gross, Mark" <mark.gross@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Subject: RE: linux-next: build failure after merge of the drivers-x86 tree
+Thread-Topic: linux-next: build failure after merge of the drivers-x86 tree
+Thread-Index: AQHXg9B9PLJaZUpSKkmHJ0/J20jq06tYnNyAgAAGjRA=
+Date:   Wed, 28 Jul 2021 17:27:02 +0000
+Message-ID: <MW3PR11MB45238F497A4960B3D8FE60A7F2EA9@MW3PR11MB4523.namprd11.prod.outlook.com>
+References: <20210728164847.46855-1-broonie@kernel.org>
+ <CAHp75VcP2V2j_ZHtc9y9Jw527E8PZaoFngsXD3oA0Yvmm=L4SA@mail.gmail.com>
+In-Reply-To: <CAHp75VcP2V2j_ZHtc9y9Jw527E8PZaoFngsXD3oA0Yvmm=L4SA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.6.100.41
+dlp-reaction: no-action
+dlp-product: dlpe-windows
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7fa79633-01b8-4fcc-3c1f-08d951ece9f8
+x-ms-traffictypediagnostic: MWHPR11MB1341:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB13414AE7ACCB6CBEE2F86E87F2EA9@MWHPR11MB1341.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0QmGEOxg2uHwVRulGXEmJpNDQK3ZjbojVMfnVMW3KrPPk6Kh0q+cHH7Bk381Gu1jwgOmqovjw7bfK0w81xDVtl69ydIujXFR86BbVR7h7nPWiI9Ibat0Ibv5xoiSMChY11amwEwHYdhT/6dETijYU6nIcfRt4v5+ES5QexJiihxiMHdH00F2Zk/f0by7es6Hkr7gu+hAPRYCcHAEO3e6lxwI4b2c+uDpmvFG/efzvgbe5KbaPGXjChHTOhPiPXQ0ocbzvBCHCYfoBTCTXgJvKafoIHUF4lIi0rL05558n/is4nTptl424oTqbvLArSj/M096kbf+wRqWouHuJ9q3P2mf4c3rMxo7CVY9WzOvKkNfYqSf0/2xRFlfwXoB9KJ1I2RS3MMedsFqLasUbxtlLAT5oQuRqrLcHpNDU85p8I3ObNS72EKoURKLvty4/lcEfNo6RMqLH0Om5QRKde79YWDcX8d1h5pIf4x/nOWAC5qBa54FOmhL8q58dmrESZpLs/xpuHyo9ow3IaAw/QYgG5Wo6o2802m4rQcGHTEZVb95iw+DDE4Y9xQUrdBZFiioGMG0bVAg/b4FCs+PRBYlI4Kq/Z4L/xdTVWbRsbZSxHI9E9pTBrhpKeO23XjABie/9a47jEL+Dj8/0JnduzRFuQFY8cpNTt0vaAAr0OZM1QBMnmthvLJiretiOMw75OZpGQKMGhPzm/aNXOOEWnKhow==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4523.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(7696005)(55016002)(9686003)(5660300002)(38100700002)(122000001)(186003)(6506007)(76116006)(316002)(8936002)(66946007)(26005)(33656002)(66556008)(66446008)(64756008)(66476007)(53546011)(2906002)(86362001)(110136005)(71200400001)(508600001)(52536014)(8676002)(4326008)(54906003)(38070700005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YWk3ai9EblJCKzlMc1ZQbThOVUhBazZFSloxL1VNS3p5VGt1am84ZDM0eW9M?=
+ =?utf-8?B?QzhPVzVnMGNxaFpEYXA5SHBmWkNpR29NT3BnY3RIdDh0c3hZL1NHdThGZ1hH?=
+ =?utf-8?B?b04zZXBncy9iT1ZGbVZLUzhKS2tZSjF5NkUzdU9tN1h4cnZNMjl1NFJMS1hI?=
+ =?utf-8?B?VE8xNWpBM2U3N1d0VkF4eDZjZTN2VUN6ekNoQnJ4dlNoWkQ0L1pIYkYzYVVt?=
+ =?utf-8?B?WS9ZL3puOGtUZzd1dFpHdXI3R2tneDVWMmQvR3RaMWVGSzdyNStDVmo5cGhs?=
+ =?utf-8?B?YnNvcTI5aEd5U1BsbXliSmJwYWdnVXdhYXV3bXNiVm1aV0ZDNllNNkhmMWpM?=
+ =?utf-8?B?RFFFanpQU2lHZjR3azJJUmhzOU5pcFp1RkROQXkzVm9wQStyQTlpbHBDeUZn?=
+ =?utf-8?B?MjJyZDNYNzJYU0NCNUNaaEZzbVdpcGJHOGsyUmdHUzBIM2RZQnUrMm1IdzVL?=
+ =?utf-8?B?cEZqOU9ZSEhUc0FsWnFVRTJKdXE4WnNleUFHV3UydEpLY0NjdWcxNFJ5VWcw?=
+ =?utf-8?B?UFF5NUxzR21UMXIwcGRXVlYrNVpmTW1SWHdOd0NtWG9UWUozOGt3d1RvSnZL?=
+ =?utf-8?B?L2ttZE96VWpBWGhNR3lrTk51MisyWWtxSDFMcE85UTcvc3o2SkJybkx0OTZL?=
+ =?utf-8?B?bCtTYmE4bTJvTnMrTXZPSFVlSk9xZWxRR1kxQ1BLd2xOZWdKaXdLSTlnaU9W?=
+ =?utf-8?B?VnBYRXhtWGM4dnVCT24zNVdWQ1Nacm9tbW5CMThsTW9jcCt6R0NWVGJkVkc5?=
+ =?utf-8?B?STc2bHNINTV5Z1NxVEpYdXY5STU3cG8xWFFiTm5Hc3hQRjJIYVZUZXYwYTMz?=
+ =?utf-8?B?MlFOSVphYkNYcktvOXF4M242ZVFsVUQ1S1o3MkdDOXltdEE4eVB4bHowU0s0?=
+ =?utf-8?B?anJMYWY3R00vTHM4L1JhQ1lzUDg1U2VQYVRIMUszOW9MN1BIcjRNUVB6d3ZD?=
+ =?utf-8?B?dkVwQndKZFhqbVB6TU5nUUdmaGlEMHVGWlRPMTNPYjFBNDZ1QkM3OTQ5blVI?=
+ =?utf-8?B?RldaSk01eTRPNzd2WGZmL1FpakRhVGJSTDdBNkRuV2g1OWswM3FibnFhb0pi?=
+ =?utf-8?B?cnFBNWdDRWNkNW93dUdwcEVsWDVDMUxGeVpRbmZUNGZnV0lrejNtOHlQKzgy?=
+ =?utf-8?B?M1pzaTY0cndBclFiRERGR3ZhL1ZyWitVb3gvUzd4Zjl1YmVMSTlYRG1DMm41?=
+ =?utf-8?B?STdFYWszUVNSWUhuRkMvRjBPWGQvS0FwODYrdDIzZ2xtZFNGbHpaL2dlclNW?=
+ =?utf-8?B?Y1lCU0hYSGFZVDNKcnNERHNVR21YbUwrZFNYTTVJb0NZUFYxZ0Y2VENlKy9I?=
+ =?utf-8?B?Vnc4M0ZBaW9sclZjNUw1UWx2TG5POXpLa2ZuckpBd3Z3eDVjQXoxMm9RZUxz?=
+ =?utf-8?B?T2hXWHhqcldTblhVU3h1OThzc2ZPSmxseWg1YmNSdXNIbjBaazNtYVZYb0pY?=
+ =?utf-8?B?Z0FXRzBORURhZWhKaW9neDE5NE44em1QdDBRbkVtaUpKd255RVM4dWxPc1BY?=
+ =?utf-8?B?b0ttYlo4em1NOGtna0RQZ0FaNGdiS01rSGc4akRBNXJ2NEZ2bVpWYVVhTVlu?=
+ =?utf-8?B?eGJyRyszZ3ZLbHNDdmVrVVlLazJJSGdTRnBpT3diTlp4VDdDLzBVbzRuZ1pQ?=
+ =?utf-8?B?S2NVdno5dzZweU1UNHR5My95MW1WaXVOYVVaVUt4RUJjY1BlYm0rOGZzYVh0?=
+ =?utf-8?B?OW9XZDlqKzlaVVlGN3A4M3VqSEZEaStvUTdVTmwyMGtMdEVPN0tRbmpXbHBJ?=
+ =?utf-8?Q?0jzoJuUe5cvRddYqWw=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4523.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fa79633-01b8-4fcc-3c1f-08d951ece9f8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2021 17:27:02.7992
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: a/1Z/684/zDtSyAyDmT7ndf+Yeqfun2ZvTqSWDH4Zy2ZpRkhA+WvE119b8oJiTkfIH2/rMBAnMh0dmT4eKSAXFrhDGcWFo5FKsA3V9TkTVg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1341
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are only assigned to the ops field in the snd_soc_dai_link struct
-which is a pointer to const struct snd_soc_ops. Make them const to allow
-the compiler to put them in read-only memory.
-
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- sound/soc/samsung/aries_wm8994.c   | 2 +-
- sound/soc/samsung/arndale.c        | 4 ++--
- sound/soc/samsung/h1940_uda1380.c  | 2 +-
- sound/soc/samsung/littlemill.c     | 2 +-
- sound/soc/samsung/midas_wm1811.c   | 2 +-
- sound/soc/samsung/neo1973_wm8753.c | 4 ++--
- sound/soc/samsung/rx1950_uda1380.c | 2 +-
- sound/soc/samsung/smartq_wm8987.c  | 2 +-
- sound/soc/samsung/smdk_wm8580.c    | 2 +-
- sound/soc/samsung/smdk_wm8994.c    | 2 +-
- sound/soc/samsung/smdk_wm8994pcm.c | 2 +-
- sound/soc/samsung/tm2_wm5110.c     | 6 +++---
- sound/soc/samsung/tobermory.c      | 2 +-
- 13 files changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/sound/soc/samsung/aries_wm8994.c b/sound/soc/samsung/aries_wm8994.c
-index 0ac5956ba270..313ab650f8d9 100644
---- a/sound/soc/samsung/aries_wm8994.c
-+++ b/sound/soc/samsung/aries_wm8994.c
-@@ -310,7 +310,7 @@ static int aries_hw_free(struct snd_pcm_substream *substream)
- /*
-  * Main DAI operations
-  */
--static struct snd_soc_ops aries_ops = {
-+static const struct snd_soc_ops aries_ops = {
- 	.hw_params = aries_hw_params,
- 	.hw_free = aries_hw_free,
- };
-diff --git a/sound/soc/samsung/arndale.c b/sound/soc/samsung/arndale.c
-index 28587375813a..606ac5e33a8e 100644
---- a/sound/soc/samsung/arndale.c
-+++ b/sound/soc/samsung/arndale.c
-@@ -48,7 +48,7 @@ static int arndale_rt5631_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops arndale_rt5631_ops = {
-+static const struct snd_soc_ops arndale_rt5631_ops = {
- 	.hw_params = arndale_rt5631_hw_params,
- };
- 
-@@ -80,7 +80,7 @@ static int arndale_wm1811_hw_params(struct snd_pcm_substream *substream,
- 					rclk + 1, SND_SOC_CLOCK_IN);
- }
- 
--static struct snd_soc_ops arndale_wm1811_ops = {
-+static const struct snd_soc_ops arndale_wm1811_ops = {
- 	.hw_params = arndale_wm1811_hw_params,
- };
- 
-diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
-index 8aa78ff640f5..c994e67d1eaf 100644
---- a/sound/soc/samsung/h1940_uda1380.c
-+++ b/sound/soc/samsung/h1940_uda1380.c
-@@ -112,7 +112,7 @@ static int h1940_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops h1940_ops = {
-+static const struct snd_soc_ops h1940_ops = {
- 	.startup	= h1940_startup,
- 	.hw_params	= h1940_hw_params,
- };
-diff --git a/sound/soc/samsung/littlemill.c b/sound/soc/samsung/littlemill.c
-index a1ff1400857e..390f2dd735ad 100644
---- a/sound/soc/samsung/littlemill.c
-+++ b/sound/soc/samsung/littlemill.c
-@@ -130,7 +130,7 @@ static int littlemill_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops littlemill_ops = {
-+static const struct snd_soc_ops littlemill_ops = {
- 	.hw_params = littlemill_hw_params,
- };
- 
-diff --git a/sound/soc/samsung/midas_wm1811.c b/sound/soc/samsung/midas_wm1811.c
-index 1f9a553edf19..a2019535a0b1 100644
---- a/sound/soc/samsung/midas_wm1811.c
-+++ b/sound/soc/samsung/midas_wm1811.c
-@@ -129,7 +129,7 @@ static int midas_aif1_hw_params(struct snd_pcm_substream *substream,
- 	return midas_start_fll1(rtd, pll_out);
- }
- 
--static struct snd_soc_ops midas_aif1_ops = {
-+static const struct snd_soc_ops midas_aif1_ops = {
- 	.hw_params = midas_aif1_hw_params,
- };
- 
-diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
-index 9266070e0181..c98b68567a89 100644
---- a/sound/soc/samsung/neo1973_wm8753.c
-+++ b/sound/soc/samsung/neo1973_wm8753.c
-@@ -106,7 +106,7 @@ static int neo1973_hifi_hw_free(struct snd_pcm_substream *substream)
- /*
-  * Neo1973 WM8753 HiFi DAI opserations.
-  */
--static struct snd_soc_ops neo1973_hifi_ops = {
-+static const struct snd_soc_ops neo1973_hifi_ops = {
- 	.hw_params = neo1973_hifi_hw_params,
- 	.hw_free = neo1973_hifi_hw_free,
- };
-@@ -158,7 +158,7 @@ static int neo1973_voice_hw_free(struct snd_pcm_substream *substream)
- 	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0, 0, 0);
- }
- 
--static struct snd_soc_ops neo1973_voice_ops = {
-+static const struct snd_soc_ops neo1973_voice_ops = {
- 	.hw_params = neo1973_voice_hw_params,
- 	.hw_free = neo1973_voice_hw_free,
- };
-diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
-index 400a7f77c711..6ea1c8cc9167 100644
---- a/sound/soc/samsung/rx1950_uda1380.c
-+++ b/sound/soc/samsung/rx1950_uda1380.c
-@@ -62,7 +62,7 @@ static struct snd_soc_jack_gpio hp_jack_gpios[] = {
- 	},
- };
- 
--static struct snd_soc_ops rx1950_ops = {
-+static const struct snd_soc_ops rx1950_ops = {
- 	.startup	= rx1950_startup,
- 	.hw_params	= rx1950_hw_params,
- };
-diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
-index c95629becbc3..cee39ad16667 100644
---- a/sound/soc/samsung/smartq_wm8987.c
-+++ b/sound/soc/samsung/smartq_wm8987.c
-@@ -70,7 +70,7 @@ static int smartq_hifi_hw_params(struct snd_pcm_substream *substream,
- /*
-  * SmartQ WM8987 HiFi DAI operations.
-  */
--static struct snd_soc_ops smartq_hifi_ops = {
-+static const struct snd_soc_ops smartq_hifi_ops = {
- 	.hw_params = smartq_hifi_hw_params,
- };
- 
-diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
-index ed753a2f202e..78703d095a6f 100644
---- a/sound/soc/samsung/smdk_wm8580.c
-+++ b/sound/soc/samsung/smdk_wm8580.c
-@@ -86,7 +86,7 @@ static int smdk_hw_params(struct snd_pcm_substream *substream,
- /*
-  * SMDK WM8580 DAI operations.
-  */
--static struct snd_soc_ops smdk_ops = {
-+static const struct snd_soc_ops smdk_ops = {
- 	.hw_params = smdk_hw_params,
- };
- 
-diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
-index 39a7a449f554..7661b637946d 100644
---- a/sound/soc/samsung/smdk_wm8994.c
-+++ b/sound/soc/samsung/smdk_wm8994.c
-@@ -73,7 +73,7 @@ static int smdk_hw_params(struct snd_pcm_substream *substream,
- /*
-  * SMDK WM8994 DAI operations.
-  */
--static struct snd_soc_ops smdk_ops = {
-+static const struct snd_soc_ops smdk_ops = {
- 	.hw_params = smdk_hw_params,
- };
- 
-diff --git a/sound/soc/samsung/smdk_wm8994pcm.c b/sound/soc/samsung/smdk_wm8994pcm.c
-index a01640576f71..029448f5bedb 100644
---- a/sound/soc/samsung/smdk_wm8994pcm.c
-+++ b/sound/soc/samsung/smdk_wm8994pcm.c
-@@ -85,7 +85,7 @@ static int smdk_wm8994_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops smdk_wm8994_pcm_ops = {
-+static const struct snd_soc_ops smdk_wm8994_pcm_ops = {
- 	.hw_params = smdk_wm8994_pcm_hw_params,
- };
- 
-diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
-index 84c2c63d5a87..a2c77e6defec 100644
---- a/sound/soc/samsung/tm2_wm5110.c
-+++ b/sound/soc/samsung/tm2_wm5110.c
-@@ -126,7 +126,7 @@ static int tm2_aif1_hw_params(struct snd_pcm_substream *substream,
- 	return tm2_start_sysclk(rtd->card);
- }
- 
--static struct snd_soc_ops tm2_aif1_ops = {
-+static const struct snd_soc_ops tm2_aif1_ops = {
- 	.hw_params = tm2_aif1_hw_params,
- };
- 
-@@ -200,7 +200,7 @@ static int tm2_aif2_hw_free(struct snd_pcm_substream *substream)
- 	return ret;
- }
- 
--static struct snd_soc_ops tm2_aif2_ops = {
-+static const struct snd_soc_ops tm2_aif2_ops = {
- 	.hw_params = tm2_aif2_hw_params,
- 	.hw_free = tm2_aif2_hw_free,
- };
-@@ -254,7 +254,7 @@ static int tm2_hdmi_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops tm2_hdmi_ops = {
-+static const struct snd_soc_ops tm2_hdmi_ops = {
- 	.hw_params = tm2_hdmi_hw_params,
- };
- 
-diff --git a/sound/soc/samsung/tobermory.c b/sound/soc/samsung/tobermory.c
-index c962d2c2a7f7..15223d860cb7 100644
---- a/sound/soc/samsung/tobermory.c
-+++ b/sound/soc/samsung/tobermory.c
-@@ -105,7 +105,7 @@ static int tobermory_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops tobermory_ops = {
-+static const struct snd_soc_ops tobermory_ops = {
- 	.hw_params = tobermory_hw_params,
- };
- 
--- 
-2.32.0
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBbmR5IFNoZXZjaGVua28gPGFu
+ZHkuc2hldmNoZW5rb0BnbWFpbC5jb20+DQo+IFNlbnQ6IFdlZG5lc2RheSwgSnVseSAyOCwgMjAy
+MSAxMDowMiBBTQ0KPiBUbzogTWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPg0KPiBDYzog
+SGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT47IEdyb3NzLCBNYXJrDQo+IDxtYXJr
+Lmdyb3NzQGludGVsLmNvbT47IEthbW1lbGEsIEdheWF0cmkgPGdheWF0cmkua2FtbWVsYUBpbnRl
+bC5jb20+Ow0KPiBSYWpuZWVzaCBCaGFyZHdhaiA8aXJlbmljLnJham5lZXNoQGdtYWlsLmNvbT47
+IExpbnV4IEtlcm5lbCBNYWlsaW5nIExpc3QNCj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmc+OyBMaW51eCBOZXh0IE1haWxpbmcgTGlzdCA8bGludXgtDQo+IG5leHRAdmdlci5rZXJuZWwu
+b3JnPjsgUGxhdGZvcm0gRHJpdmVyIDxwbGF0Zm9ybS1kcml2ZXItDQo+IHg4NkB2Z2VyLmtlcm5l
+bC5vcmc+DQo+IFN1YmplY3Q6IFJlOiBsaW51eC1uZXh0OiBidWlsZCBmYWlsdXJlIGFmdGVyIG1l
+cmdlIG9mIHRoZSBkcml2ZXJzLXg4NiB0cmVlDQo+IA0KPiBPbiBXZWQsIEp1bCAyOCwgMjAyMSBh
+dCA3OjQ5IFBNIE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JvdGU6DQo+ID4NCj4g
+PiBIaSBhbGwsDQo+ID4NCj4gPiBBZnRlciBtZXJnaW5nIHRoZSBkcml2ZXJzLXg4NiB0cmVlLCB0
+b2RheSdzIGxpbnV4LW5leHQgYnVpbGQNCj4gPiAoeDg2IGFsbG1vZGNvbmZpZykgZmFpbGVkIGxp
+a2UgdGhpczoNCj4gPg0KPiA+IGVycm9yOiB0aGUgZm9sbG93aW5nIHdvdWxkIGNhdXNlIG1vZHVs
+ZSBuYW1lIGNvbmZsaWN0Og0KPiA+ICAgZHJpdmVycy9taXNjL2MycG9ydC9jb3JlLmtvDQo+ID4g
+ICBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9pbnRlbC9wbWMvY29yZS5rbw0KPiA+DQo+ID4gQ2F1c2Vk
+IGJ5IGNvbW1pdA0KPiA+DQo+ID4gICAyOTAzNmZjYzkyYjIyZCAoInBsYXRmb3JtL3g4Ni9pbnRl
+bDogaW50ZWxfcG1jX2NvcmU6IE1vdmUNCj4gPiBpbnRlbF9wbWNfY29yZSogZmlsZXMgdG8gcG1j
+IHN1YmZvbGRlciIpDQo+ID4NCj4gPiBTaW5jZSB0aGVyZSB3YXMgbm90aGluZyBpbiB0aGUgYnJh
+bmNoIHllc3RlcmRheSBJJ3ZlIGp1c3QgZHJvcHBlZCB0aGUNCj4gPiB0cmVlIGVudGlyZWx5Lg0K
+PiANCj4gWWVhaCwgUE1DIE1ha2VmaWxlIHNob3VsZCBrZWVwIHRoZSBvYmplY3QgbmFtZSB0aGUg
+c2FtZSwgc29tZXRoaW5nIGxpa2UNCj4gDQo+IG9iai0kKC4uLl9QTUNfLi4uKSArPSBpbnRlbF9w
+bWNfLi4uLm8NCj4gaW50ZWwtcG1jXy4uLi15IDo9IGNvcmUubyAuLi4NCj4gDQpIaSBBbmR5IGFu
+ZCBNYXJrLA0KV2UndmUgZm91bmQgdGhlIGlzc3VlIG9uIG91ciBzaWRlIGFzIHdlbGwgYW5kIHBs
+YW5uaW5nIHRvIHB1c2ggdGhlIGZpeCBzb29uLiBXb3VsZCB5b3UgcHJlZmVyIHRvIGhhdmUgdGhl
+IHdob2xlIHBhdGNoIHNlcmllcyByZWRvbmUgb3IganVzdCB0aGUgZml4ID8NCg0KPiANCj4gLS0N
+Cj4gV2l0aCBCZXN0IFJlZ2FyZHMsDQo+IEFuZHkgU2hldmNoZW5rbw0K
