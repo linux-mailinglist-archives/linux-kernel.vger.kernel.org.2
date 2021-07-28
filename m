@@ -2,128 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEE03D88AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3906D3D88B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234563AbhG1HQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:16:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233732AbhG1HQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:16:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0650160F93;
-        Wed, 28 Jul 2021 07:16:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627456587;
-        bh=x0xcvQaq9O32Nso7pIl+O6xyOtevShOSKrCBXswXPXg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O/NTRx+isUoN0Lv+rgz6j5o45+43BtRQUES2zsp/QQGZcqbRi4WjQfzzM5JPdacwW
-         QkTowxaah7QCMacjilrpYLDnY5Q2a+S1mmggW/2WG6Ur9Wr6g4h4am/Isc60Ag6dpq
-         7lwle47pO0XoFe37HKoBncAzLIDVOU1Vwt1zkU9s8/bkE6EHC9vmpB5kvaud12yknW
-         ompwuV7hTHZUQYWawL6B2yY3zl5Ypc8GN+7RKIoTQ/nUgqVunhnWKnDJZAHZBlJDub
-         uyP7FDyRZpAfAowA/9iUrwNnXDXDoqDm7muGJHDj7gRnJX8ggw4SZ9nC+Z6LXNW7E4
-         ujQUGM3MNCQ7w==
-Date:   Wed, 28 Jul 2021 12:46:20 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, list@opendingux.net
-Subject: Re: [PATCH 3/3] dma: jz4780: Add support for the MDMA in the
- JZ4760(B)
-Message-ID: <YQEERH97pngKbTiG@matsya>
-References: <20210718122024.204907-1-paul@crapouillou.net>
- <20210718122024.204907-3-paul@crapouillou.net>
+        id S234056AbhG1HR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233514AbhG1HR4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 03:17:56 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B530BC061757;
+        Wed, 28 Jul 2021 00:17:54 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id k4-20020a17090a5144b02901731c776526so8585617pjm.4;
+        Wed, 28 Jul 2021 00:17:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3yaaS3JLY21cSUlUIBnVL92bVsoKHJcMONY3wQ1+GHg=;
+        b=o4l+/yfZgd2HI4LgKpHeqUjSxsmR2lVYt+sIic+jht/iskxJnViUnmhIWd+TY2QAHk
+         /WS8buct57FdOo/fwpaNUDEW0CkLl6uAa/yDutMeYVhEFTB8f1t9h7dQuIENHmZwsydt
+         IcmfVH7bASlFLz6PpMXlOLd0oSqYJTRBv+5dNPSomM8JUePa/GALJALQ204XlzNGNQUg
+         /4t1gplyO9ioinLXTqe75V7OCv8XshRQpEryqOmrzDRJuV4nn0dK6NICysQOalzQc7qf
+         DxLx5NfQyLizTKUSPguMjcHBDQJYCP3Rvwdu+R7kLcYxYcwCBjsMuAqFZ7CYFgcJnVsd
+         /q9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3yaaS3JLY21cSUlUIBnVL92bVsoKHJcMONY3wQ1+GHg=;
+        b=af7ebZnPsQjs4Ll7bynMUgYgaL4EJaMUsCIfKvC1csp/00I1d1kz0bcb+GKjqZoZE2
+         Y6mFTvF7eQZODFhXspn0MsFbO2z3/TmQz44W91wvgMpClkuacewleOeCnhiEmXXX5hPA
+         hkDZ76t67aaIRgIglO3sj1aUOwGyKOamrRAkCz1NCJvIwgHTG01E29BB0oCpForO7xNv
+         +wLmr6bE4Y/pbtn95E7RjaposVOl8MJwuhV82Coc40m8W7VcTxhQa8zsw88ujU6x7Nje
+         t2LnmA+5c4hv+Ioxmdwj6xRLiJ7Le2ADxtNxhpFeYdIVMc+jHOqxjKVtJ2m4zhyfqWk0
+         ou1g==
+X-Gm-Message-State: AOAM533zmNVn5omoWAiOXgHXSIynP7Z4ph3ffweAwFL28/I+uv1jKiFS
+        RW6yjUDNKwyln8dPQaEjWp0=
+X-Google-Smtp-Source: ABdhPJyQZb5uZe7dzb4A/dIPnDwIn9+KdPIj9WTtytNdpEyXgWlYNyGlzQUP1jcnM8V28jcOsAlXbg==
+X-Received: by 2002:a65:4d4c:: with SMTP id j12mr27232288pgt.311.1627456674140;
+        Wed, 28 Jul 2021 00:17:54 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id i13sm6100563pfr.79.2021.07.28.00.17.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 00:17:53 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+Subject: [PATCH v4] Bluetooth: schedule SCO timeouts with delayed_work
+Date:   Wed, 28 Jul 2021 15:17:21 +0800
+Message-Id: <20210728071721.411669-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210718122024.204907-3-paul@crapouillou.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-07-21, 13:20, Paul Cercueil wrote:
-> The JZ4760 and JZ4760B SoCs have two regular DMA controllers with 6
-> channels each. They also have an extra DMA controller named MDMA
-> with only 2 channels, that only supports memcpy operations.
+struct sock.sk_timer should be used as a sock cleanup timer. However,
+SCO uses it to implement sock timeouts.
 
-It is dmaengine not dma:
+This causes issues because struct sock.sk_timer's callback is run in
+an IRQ context, and the timer callback function sco_sock_timeout takes
+a spin lock on the socket. However, other functions such as
+sco_conn_del, sco_conn_ready, rfcomm_connect_ind, and
+bt_accept_enqueue also take the spin lock with interrupts enabled.
 
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/dma/dma-jz4780.c | 22 ++++++++++++++++++++--
->  1 file changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
-> index d71bc7235959..eed505e3cce2 100644
-> --- a/drivers/dma/dma-jz4780.c
-> +++ b/drivers/dma/dma-jz4780.c
-> @@ -93,6 +93,7 @@
->  #define JZ_SOC_DATA_PER_CHAN_PM		BIT(2)
->  #define JZ_SOC_DATA_NO_DCKES_DCKEC	BIT(3)
->  #define JZ_SOC_DATA_BREAK_LINKS		BIT(4)
-> +#define JZ_SOC_DATA_ONLY_MEMCPY		BIT(5)
+This inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock usage could
+lead to deadlocks as reported by Syzbot [1]:
+       CPU0
+       ----
+  lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+  <Interrupt>
+    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
 
-Why -ve logic? Looks like MEMCPY is eveywhere and only peripheral is not
-there at few SoC, so use JZ_SOC_DATA_PERIPHERAL
->  
->  /**
->   * struct jz4780_dma_hwdesc - descriptor structure read by the DMA controller.
-> @@ -896,8 +897,10 @@ static int jz4780_dma_probe(struct platform_device *pdev)
->  	dd = &jzdma->dma_device;
->  
->  	dma_cap_set(DMA_MEMCPY, dd->cap_mask);
-> -	dma_cap_set(DMA_SLAVE, dd->cap_mask);
-> -	dma_cap_set(DMA_CYCLIC, dd->cap_mask);
-> +	if (!(soc_data->flags & JZ_SOC_DATA_ONLY_MEMCPY)) {
-> +		dma_cap_set(DMA_SLAVE, dd->cap_mask);
-> +		dma_cap_set(DMA_CYCLIC, dd->cap_mask);
-> +	}
+To fix this, we use delayed work to implement SCO sock timouts
+instead. This allows us to avoid taking the spin lock on the socket in
+an IRQ context, and corrects the misuse of struct sock.sk_timer.
 
-and set this if JZ_SOC_DATA_PERIPHERAL is set?
+Link: https://syzkaller.appspot.com/bug?id=9089d89de0502e120f234ca0fc8a703f7368b31e [1]
+Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+---
 
->  
->  	dd->dev = dev;
->  	dd->copy_align = DMAENGINE_ALIGN_4_BYTES;
-> @@ -1018,12 +1021,25 @@ static const struct jz4780_dma_soc_data jz4760_dma_soc_data = {
->  	.flags = JZ_SOC_DATA_PER_CHAN_PM | JZ_SOC_DATA_NO_DCKES_DCKEC,
->  };
->  
-> +static const struct jz4780_dma_soc_data jz4760_mdma_soc_data = {
-> +	.nb_channels = 2,
-> +	.transfer_ord_max = 6,
-> +	.flags = JZ_SOC_DATA_PER_CHAN_PM | JZ_SOC_DATA_NO_DCKES_DCKEC |
-> +		 JZ_SOC_DATA_ONLY_MEMCPY,
-> +};
-> +
->  static const struct jz4780_dma_soc_data jz4760b_dma_soc_data = {
->  	.nb_channels = 5,
->  	.transfer_ord_max = 6,
->  	.flags = JZ_SOC_DATA_PER_CHAN_PM,
->  };
->  
-> +static const struct jz4780_dma_soc_data jz4760b_mdma_soc_data = {
-> +	.nb_channels = 2,
-> +	.transfer_ord_max = 6,
-> +	.flags = JZ_SOC_DATA_PER_CHAN_PM | JZ_SOC_DATA_ONLY_MEMCPY,
-> +};
-> +
->  static const struct jz4780_dma_soc_data jz4770_dma_soc_data = {
->  	.nb_channels = 6,
->  	.transfer_ord_max = 6,
-> @@ -1052,7 +1068,9 @@ static const struct of_device_id jz4780_dma_dt_match[] = {
->  	{ .compatible = "ingenic,jz4740-dma", .data = &jz4740_dma_soc_data },
->  	{ .compatible = "ingenic,jz4725b-dma", .data = &jz4725b_dma_soc_data },
->  	{ .compatible = "ingenic,jz4760-dma", .data = &jz4760_dma_soc_data },
-> +	{ .compatible = "ingenic,jz4760-mdma", .data = &jz4760_mdma_soc_data },
->  	{ .compatible = "ingenic,jz4760b-dma", .data = &jz4760b_dma_soc_data },
-> +	{ .compatible = "ingenic,jz4760b-mdma", .data = &jz4760b_mdma_soc_data },
->  	{ .compatible = "ingenic,jz4770-dma", .data = &jz4770_dma_soc_data },
->  	{ .compatible = "ingenic,jz4780-dma", .data = &jz4780_dma_soc_data },
->  	{ .compatible = "ingenic,x1000-dma", .data = &x1000_dma_soc_data },
-> -- 
-> 2.30.2
+Hi,
 
+As suggested, this patch addresses the inconsistent lock state while
+avoiding having to deal with local_bh_disable.
+
+Now that sco_sock_timeout is no longer run in IRQ context, it might
+be the case that bh_lock_sock is no longer needed to sync between
+SOFTIRQ and user contexts, so we can switch to lock_sock.
+
+I'm not too certain about this, or if there's any benefit to using
+lock_sock instead, so I've left that out of this patch.
+
+v3 -> v4:
+- Switch to using delayed_work to schedule SCO sock timeouts instead
+of using local_bh_disable. As suggested by Luiz Augusto von Dentz.
+
+v2 -> v3:
+- Split SCO and RFCOMM code changes, as suggested by Luiz Augusto von
+Dentz.
+- Simplify local bh disabling in SCO by using local_bh_disable/enable
+inside sco_chan_del since local_bh_disable/enable pairs are reentrant.
+
+v1 -> v2:
+- Instead of pulling out the clean-up code out from sco_chan_del and
+using it directly in sco_conn_del, disable local softirqs for relevant
+sections.
+- Disable local softirqs more thoroughly for instances of
+bh_lock_sock/bh_lock_sock_nested in the bluetooth subsystem.
+Specifically, the calls in af_bluetooth.c and rfcomm/sock.c are now made
+with local softirqs disabled as well.
+
+Best wishes,
+Desmond
+
+ net/bluetooth/sco.c | 39 ++++++++++++++++++++++++---------------
+ 1 file changed, 24 insertions(+), 15 deletions(-)
+
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index 3bd41563f118..b6dd16153d38 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -48,6 +48,8 @@ struct sco_conn {
+ 	spinlock_t	lock;
+ 	struct sock	*sk;
+ 
++	struct delayed_work	sk_timer;
++
+ 	unsigned int    mtu;
+ };
+ 
+@@ -74,9 +76,11 @@ struct sco_pinfo {
+ #define SCO_CONN_TIMEOUT	(HZ * 40)
+ #define SCO_DISCONN_TIMEOUT	(HZ * 2)
+ 
+-static void sco_sock_timeout(struct timer_list *t)
++static void sco_sock_timeout(struct work_struct *work)
+ {
+-	struct sock *sk = from_timer(sk, t, sk_timer);
++	struct sco_conn *conn = container_of(work, struct sco_conn,
++					     sk_timer.work);
++	struct sock *sk = conn->sk;
+ 
+ 	BT_DBG("sock %p state %d", sk, sk->sk_state);
+ 
+@@ -89,16 +93,18 @@ static void sco_sock_timeout(struct timer_list *t)
+ 	sock_put(sk);
+ }
+ 
+-static void sco_sock_set_timer(struct sock *sk, long timeout)
++static void sco_sock_set_timer(struct sock *sk, struct delayed_work *work,
++			       long timeout)
+ {
+ 	BT_DBG("sock %p state %d timeout %ld", sk, sk->sk_state, timeout);
+-	sk_reset_timer(sk, &sk->sk_timer, jiffies + timeout);
++	cancel_delayed_work(work);
++	schedule_delayed_work(work, timeout);
+ }
+ 
+-static void sco_sock_clear_timer(struct sock *sk)
++static void sco_sock_clear_timer(struct sock *sk, struct delayed_work *work)
+ {
+ 	BT_DBG("sock %p state %d", sk, sk->sk_state);
+-	sk_stop_timer(sk, &sk->sk_timer);
++	cancel_delayed_work(work);
+ }
+ 
+ /* ---- SCO connections ---- */
+@@ -174,7 +180,7 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
+ 	if (sk) {
+ 		sock_hold(sk);
+ 		bh_lock_sock(sk);
+-		sco_sock_clear_timer(sk);
++		sco_sock_clear_timer(sk, &conn->sk_timer);
+ 		sco_chan_del(sk, err);
+ 		bh_unlock_sock(sk);
+ 		sco_sock_kill(sk);
+@@ -193,6 +199,8 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
+ 	sco_pi(sk)->conn = conn;
+ 	conn->sk = sk;
+ 
++	INIT_DELAYED_WORK(&conn->sk_timer, sco_sock_timeout);
++
+ 	if (parent)
+ 		bt_accept_enqueue(parent, sk, true);
+ }
+@@ -260,11 +268,11 @@ static int sco_connect(struct sock *sk)
+ 		goto done;
+ 
+ 	if (hcon->state == BT_CONNECTED) {
+-		sco_sock_clear_timer(sk);
++		sco_sock_clear_timer(sk, &conn->sk_timer);
+ 		sk->sk_state = BT_CONNECTED;
+ 	} else {
+ 		sk->sk_state = BT_CONNECT;
+-		sco_sock_set_timer(sk, sk->sk_sndtimeo);
++		sco_sock_set_timer(sk, &conn->sk_timer, sk->sk_sndtimeo);
+ 	}
+ 
+ done:
+@@ -419,7 +427,8 @@ static void __sco_sock_close(struct sock *sk)
+ 	case BT_CONFIG:
+ 		if (sco_pi(sk)->conn->hcon) {
+ 			sk->sk_state = BT_DISCONN;
+-			sco_sock_set_timer(sk, SCO_DISCONN_TIMEOUT);
++			sco_sock_set_timer(sk, &sco_pi(sk)->conn->sk_timer,
++					   SCO_DISCONN_TIMEOUT);
+ 			sco_conn_lock(sco_pi(sk)->conn);
+ 			hci_conn_drop(sco_pi(sk)->conn->hcon);
+ 			sco_pi(sk)->conn->hcon = NULL;
+@@ -443,7 +452,8 @@ static void __sco_sock_close(struct sock *sk)
+ /* Must be called on unlocked socket. */
+ static void sco_sock_close(struct sock *sk)
+ {
+-	sco_sock_clear_timer(sk);
++	if (sco_pi(sk)->conn)
++		sco_sock_clear_timer(sk, &sco_pi(sk)->conn->sk_timer);
+ 	lock_sock(sk);
+ 	__sco_sock_close(sk);
+ 	release_sock(sk);
+@@ -500,8 +510,6 @@ static struct sock *sco_sock_alloc(struct net *net, struct socket *sock,
+ 
+ 	sco_pi(sk)->setting = BT_VOICE_CVSD_16BIT;
+ 
+-	timer_setup(&sk->sk_timer, sco_sock_timeout, 0);
+-
+ 	bt_sock_link(&sco_sk_list, sk);
+ 	return sk;
+ }
+@@ -1036,7 +1044,8 @@ static int sco_sock_shutdown(struct socket *sock, int how)
+ 
+ 	if (!sk->sk_shutdown) {
+ 		sk->sk_shutdown = SHUTDOWN_MASK;
+-		sco_sock_clear_timer(sk);
++		if (sco_pi(sk)->conn)
++			sco_sock_clear_timer(sk, &sco_pi(sk)->conn->sk_timer);
+ 		__sco_sock_close(sk);
+ 
+ 		if (sock_flag(sk, SOCK_LINGER) && sk->sk_lingertime &&
+@@ -1083,7 +1092,7 @@ static void sco_conn_ready(struct sco_conn *conn)
+ 	BT_DBG("conn %p", conn);
+ 
+ 	if (sk) {
+-		sco_sock_clear_timer(sk);
++		sco_sock_clear_timer(sk, &conn->sk_timer);
+ 		bh_lock_sock(sk);
+ 		sk->sk_state = BT_CONNECTED;
+ 		sk->sk_state_change(sk);
 -- 
-~Vinod
+2.25.1
+
