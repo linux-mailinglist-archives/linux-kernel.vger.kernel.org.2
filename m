@@ -2,127 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2623D9497
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B663D9487
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhG1Rwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:52:39 -0400
-Received: from liame.vimja.email ([185.85.124.156]:51013 "EHLO
-        liame.vimja.email" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhG1Rwi (ORCPT
+        id S230194AbhG1Rrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:47:52 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61116 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhG1Rrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:52:38 -0400
-X-Greylist: delayed 360 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Jul 2021 13:52:37 EDT
-Received: from authenticated-user (liame.vimja.email [185.85.124.156])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Wed, 28 Jul 2021 13:47:51 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 1bac0f76ef49d9c3; Wed, 28 Jul 2021 19:47:48 +0200
+Received: from kreacher.localnet (89-64-80-148.dynamic.chello.pl [89.64.80.148])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by liame.vimja.email (Postfix) with ESMTPSA id 48CB33F307
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 19:46:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=vimja.email; s=mail;
-        t=1627494392; bh=q7ZSWMIaeHfrouOjyXxOm8kGC9Ef7xw//sHDmbzy3Zw=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=LU/tEGnb/1rDnYxLQ+m/Nrn9YWb0Yh/Pin8TddUfh+8ss2C3pYmBqf6ab9jeyippj
-         kGCiUSxouEE8ndAoJZmm5pu99JK7x8KiQiZQg2sGenE32YXHtimlvMA5x4wdIcqlis
-         2Z4RmXMTE6RtEdxSMz6+Z+8MI8EMlF36kbDRBMAMTuirkGapZepHm5qhjzfkc6Jd0Z
-         TobTG3FKo9VOVnwpSxAutNVsBPELLsuIzK3P3DLcIyifWwmvC3xRxdN9SYi1ivv5i/
-         FqaP47PofOlmf9Icn7LebIW6oRzciIj5RXFujIZfFYtbMnhu0LgFlY0fKD5cqBX3jh
-         y5WzYIFrs12EA==
-Date:   Wed, 28 Jul 2021 19:46:32 +0200
-From:   Niklaus vimja Hofer <lkml@vimja.email>
-To:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
- ROM state
-Message-ID: <YQGX+HdjGCfpUper@pcsm1501.honet.lan>
-Mail-Followup-To: LKML <linux-kernel@vger.kernel.org>
-References: <20210712060912.995381202@linuxfoundation.org>
- <20210712060916.499546891@linuxfoundation.org>
- <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
- <YPMUu+kNu0GZeQQ1@kroah.com>
- <YPM0IE8U7oDSVbvd@epycbox.lan>
- <CAFxkdAr7KHgx3etpia8_OdFySP-1HQVW=2LL6Vu=UO4Jh1dW5w@mail.gmail.com>
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5DCDA660547;
+        Wed, 28 Jul 2021 19:47:47 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
+Date:   Wed, 28 Jul 2021 19:47:46 +0200
+Message-ID: <2178828.iZASKD2KPV@kreacher>
+In-Reply-To: <CAJZ5v0jashhvE4vRNAft1qfZ_Ud==tG1Yh29ad7BSfhk5xjx4A@mail.gmail.com>
+References: <1867445.PYKUYFuaPT@kreacher> <000801d78322$e9b94980$bd2bdc80$@telus.net> <CAJZ5v0jashhvE4vRNAft1qfZ_Ud==tG1Yh29ad7BSfhk5xjx4A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFxkdAr7KHgx3etpia8_OdFySP-1HQVW=2LL6Vu=UO4Jh1dW5w@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.80.148
+X-CLIENT-HOSTNAME: 89-64-80-148.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrgeelgdeliecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdektddrudegkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrudegkedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopegushhmhihthhhivghssehtvghluhhsrdhnvghtpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, 2021-07-19 10:28, Justin Forbes wrote:
-> On Sat, Jul 17, 2021 at 2:48 PM Moritz Fischer <mdf@kernel.org> wrote:
+On Wednesday, July 28, 2021 3:52:51 PM CEST Rafael J. Wysocki wrote:
+> On Tue, Jul 27, 2021 at 10:06 PM Doug Smythies <dsmythies@telus.net> wrote:
 > >
-> > On Sat, Jul 17, 2021 at 07:34:51PM +0200, Greg Kroah-Hartman wrote:
-> > > On Sat, Jul 17, 2021 at 08:39:19AM -0500, Justin Forbes wrote:
-> > > > On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > From: Moritz Fischer <mdf@kernel.org>
-> > > > >
-> > > > > commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
-> > > > >
-> > > > > The ROM load sometimes seems to return an unknown status
-> > > > > (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
-> > > > >
-> > > > > If the ROM load indeed failed this leads to failures when trying to
-> > > > > communicate with the controller later on.
-> > > > >
-> > > > > Attempt to load firmware using RAM load in those cases.
-> > > > >
-> > > > > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Cc: Mathias Nyman <mathias.nyman@intel.com>
-> > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > Cc: Vinod Koul <vkoul@kernel.org>
-> > > > > Tested-by: Vinod Koul <vkoul@kernel.org>
-> > > > > Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> > > > > Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> > > > > Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
-> > > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > >
-> > > >
-> > > > After sending out 5.12.17 for testing, we had a user complain that all
-> > > > of their USB devices disappeared with the error:
-> > > >
-> > > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
-> > > > for renesas_usb_fw.mem failed with error -2
-> > > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
-> > > > Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
-> > > >
-> > > > After first assuming that something was missing in the backport to
-> > > > 5.12, I had the user try 5.13.2, and then 5.14-rc1. Both of those
-> > > > failed in the same way, so it is not working in the current Linus tree
-> > > > either.  Reverting this patch fixed the issue.
+> > Hi Rafael,
+> >
+> > Further to my reply of 2021.07.04  on this, I have
+> > continued to work with and test this patch set.
+> >
+> > On 2021.06.02 11:14 Rafael J. Wysocki wrote:
+> >
+> > >This series of patches addresses some theoretical shortcoming in the
+> > > TEO (Timer Events Oriented) cpuidle governor by reworking its idle
+> > > state selection logic to some extent.
 > > >
-> > > Can you send a revert for this so I can get that into Linus's tree and
-> > > then all stable releases as well?
+> > > Patches [1-2/5] are introductory cleanups and the substantial changes are
+> > > made in patches [3-4/5] (please refer to the changelogs of these two
+> > > patches for details).  The last patch only deals with documentation.
 > > >
-> > > thanks,
-> > >
-> > > greg k-h
+> > > Even though this work is mostly based on theoretical considerations, it
+> > > shows a measurable reduction of the number of cases in which the shallowest
+> > > idle state is selected while it would be more beneficial to select a deeper
+> > > one or the deepest idle state is selected while it would be more beneficial to
+> > > select a shallower one, which should be a noticeable improvement.
 > >
-> > Me or Justin? I can do it. This is annoying my system doesn't work
-> > without this :-(
+> > I am concentrating in the idle state 0 and 1 area.
+> > When I disable idle state 0, the expectation is its
+> > usage will fall to idle state 1. It doesn't.
 > >
-> > Back to the drawing board I guess ...
+> > Conditions:
+> > CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
+> > HWP: disabled
+> > CPU frequency scaling driver: intel_pstate, active
+> > CPU frequency scaling governor: performance.
+> > Idle configuration: As a COMETLAKE processor, with 4 idle states.
+> > Sample time for below: 1 minute.
+> > Workflow: Cross core named pipe token passing, 12 threads.
 > >
-> > Justin, any idea if your customer had the eeprom populated and
-> > programmed or not, just as additional datapoint.
+> > Kernel 5.14-rc3: idle: teo governor
+> >
+> > All idle states enabled: PASS
+> > Processor: 97 watts
+> > Idle state 0 entries: 811151
+> > Idle state 1 entries: 140300776
+> > Idle state 2 entries: 889
+> > Idle state 3 entries: 8
+> >
+> > Idle state 0 disabled: FAIL <<<<<
+> > Processor: 96 watts
+> > Idle state 0 entries: 0
+> > Idle state 1 entries: 65599283
+> > Idle state 2 entries: 364399
+> > Idle state 3 entries: 65112651
 > 
-> I am not sure, but I did have another user chime in on the bug saying
-> the test kernel with the revert fixed their system as well. It was a
-> T14s AMD
-> Generation_1. The original reporter had a ASUS System Product
-> Name/PRIME H370M-PLUS, BIOS 2801 04/13/2021.
+> This looks odd.
+> 
+> Thanks for the report, I'll take a look at this.
 
-This solved the same issue on my T14 AMD Gen 1 (non-s variant). I was
-using 5.13.5 where it was not working and I was able to observe the same
-error message in `dmesg`. Reverted the patch, recompiled, rebooted and
-now it's working just fine.
+I have found an issue in the code that may be responsible for the
+observed behavior and should be addressed by the appended patch (not
+tested yet).
 
-Sincerely
--- 
-Niklaus 'vimja' Hofer
-ig@vimja.email
-xmpp: vimja@xmpp.honet.ch
+Basically, the "disabled" check in the second loop over states in
+teo_select() needs to exclude the first enabled state, because
+there are no more states to check after that.
+
+Plus the time span check needs to be done when the given state
+is about to be selected, because otherwise the function may end up
+returning a state for which the sums are too low.
+
+Thanks!
+
+---
+ drivers/cpuidle/governors/teo.c |   26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
+
+Index: linux-pm/drivers/cpuidle/governors/teo.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/teo.c
++++ linux-pm/drivers/cpuidle/governors/teo.c
+@@ -404,25 +404,27 @@ static int teo_select(struct cpuidle_dri
+ 			intercept_sum += bin->intercepts;
+ 			recent_sum += bin->recent;
+ 
+-			if (dev->states_usage[i].disable)
++			if (dev->states_usage[i].disable && i > idx0)
+ 				continue;
+ 
+ 			span_ns = teo_middle_of_bin(i, drv);
+-			if (!teo_time_ok(span_ns)) {
+-				/*
+-				 * The current state is too shallow, so select
+-				 * the first enabled deeper state.
+-				 */
+-				duration_ns = last_enabled_span_ns;
+-				idx = last_enabled_idx;
+-				break;
+-			}
+ 
+ 			if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
+ 			    (!alt_intercepts ||
+ 			     2 * intercept_sum > idx_intercept_sum)) {
+-				idx = i;
+-				duration_ns = span_ns;
++				if (!teo_time_ok(span_ns) ||
++				    dev->states_usage[i].disable) {
++					/*
++					 * The current state is too shallow or
++					 * disabled, so select the first enabled
++					 * deeper state.
++					 */
++					duration_ns = last_enabled_span_ns;
++					idx = last_enabled_idx;
++				} else {
++					idx = i;
++					duration_ns = span_ns;
++				}
+ 				break;
+ 			}
+ 
+
+
+
