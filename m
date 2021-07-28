@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A123D977D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104333D9781
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhG1VWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 17:22:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231126AbhG1VWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 17:22:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19AD260462;
-        Wed, 28 Jul 2021 21:22:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627507369;
-        bh=mC6lLtZPy3lFUz2DCHyydD1HsrkcO+Ge8lfn/foE4Fs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JJO4cfSwqJD3300iyEpLW8xUHz0MfRNetJzAmgA/z36ZOMuEp3jEA8la4CNC/vdg1
-         cqTCO/vOpcB16aV03AuQd+YtERggVRIQR+kbI08YFj7RrPVEsNqhwHzzsHyTmT5ZhX
-         EGcbJcYsMpynfkb13HQkx6qw9AHtt3nFxcO0Q5WZw4cunP1TGdwdOv+shb0jaHh6K8
-         XjqcPC+j2MUCHiKk3M/22CSQYxFJCujDJsNQw1cdkgi1eMrf5KPy0QFnUaFihyC/9H
-         JqgRvRex3jyOg/5Er/gaTYOPfJ5/h9bEAPg90czA0bpMFwmU9OQAd2gsf1JbbMWL5D
-         I6cZdHOJj08BA==
-Date:   Wed, 28 Jul 2021 23:22:47 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     nsaenzju@redhat.com, linux-kernel@vger.kernel.org,
-        Nitesh Lal <nilal@redhat.com>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@marvell.com>,
-        Peter Xu <peterx@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 1/4] add basic task isolation prctl interface
-Message-ID: <20210728212247.GC293265@lothringen>
-References: <20210727104119.551607458@fuller.cnet>
- <7b2d6bf91d30c007e19a7d2cbddcb2460e72d163.camel@redhat.com>
- <20210727110050.GA502360@fuller.cnet>
- <a020a45ddea10956938f59bd235b88fe873d0e98.camel@redhat.com>
- <20210727130930.GB283787@lothringen>
- <20210727145209.GA518735@fuller.cnet>
- <20210727234539.GH283787@lothringen>
- <20210728093707.GA3242@fuller.cnet>
- <20210728114548.GA293265@lothringen>
- <20210728132134.GA10515@fuller.cnet>
+        id S231720AbhG1V0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 17:26:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62746 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231350AbhG1V03 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 17:26:29 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SKgYV5063231;
+        Wed, 28 Jul 2021 17:26:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=pLS2lErT2fxR1TK7pQpFYdPd5+XswloO6NK1p3OTW8Q=;
+ b=SBjOxqKjzoMEYRPul7KP6RtvKDVCn+vusEFvW8QfnrnxFXTHZ6cSHxB8o8bORxXbqDT8
+ 8sCBRvOCwU9QHWSEMcsZ0Ou1oAd1fcYRwRSBBOaJsLKN0oCoL8bOSYPBsCJwyjjIOV35
+ tg8qJ/qoXKjbDPCzCGcZ1S4ozcBwyN5lVzB68UsLqnfaouTfBKL6rqqCFFndEyDHu+Wl
+ Kz2EkDEPFE2ZAuqPGC81SO+ru8m3tpkj8BrkdZXuoOYSwMnNVdZjKKp1LOF4ajk1S3ug
+ 9gukEbVr2sR0jWdLBpPyDkXE49vfIUOU4V4B0ujEno/USUeOlPHSrNlhWyX89iSG2qWY DQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3egv97dx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 17:26:00 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16SL6koB182723;
+        Wed, 28 Jul 2021 17:26:00 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3egv97de-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 17:25:59 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16SJlli9018273;
+        Wed, 28 Jul 2021 21:25:58 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3a235yhae8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 21:25:58 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16SLPskF33292662
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Jul 2021 21:25:54 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 93D32AE045;
+        Wed, 28 Jul 2021 21:25:54 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2BE10AE051;
+        Wed, 28 Jul 2021 21:25:54 +0000 (GMT)
+Received: from vm.lan (unknown [9.145.77.113])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Jul 2021 21:25:54 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH 0/2] s390/ftrace: implement hotpatching
+Date:   Wed, 28 Jul 2021 23:25:44 +0200
+Message-Id: <20210728212546.128248-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728132134.GA10515@fuller.cnet>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: FBz1S0ZvsguIaGDOHcrie7qMaI5yFGge
+X-Proofpoint-ORIG-GUID: ZyivTSG0XhVJmD_oZdYPkfdjGJ_uWsLN
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-28_10:2021-07-27,2021-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=614 phishscore=0 clxscore=1011
+ impostorscore=0 bulkscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107280113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:21:34AM -0300, Marcelo Tosatti wrote:
-> > > ISOL_FEATURES is just the "command" type (which you can get and set).
-> > > 
-> > > The bitmask would include ISOL_F_QUIESCE_ON_URET, so:
-> > > 
-> > > - bitmask = ISOL_F_QUIESCE_ON_URET;
-> > > - prctl(PR_ISOL_SET, ISOL_FEATURES, bitmask, 0, 0) enables the features in
-> > > the bitmask.
-> > 
-> > But does it quiesce once or for every further uret?
-> 
-> For every uret, while ISOL_F_QUIESCE_ON_URET is enabled through 
-> prctl(PR_ISOL_ENABLE, enabled_bitmask, 0, 0, 0).
+Hello,
 
-Ok.
+This series implements the stop_machine()-less ftrace code patching
+for s390. It's trickier than that of e.g. Intel, because the only
+on-the-fly code patching allowed by s390 is changing a mask of a
+conditional branch instruction. Patch 1 contains a new common code hook
+that we need for that, patch 2 contains the actual implementation as
+well as explanation of all the small details.
 
-> 
-> > > - quiesce_bitmap = prctl(PR_ISOL_GET, PR_ISOL_SUP_QUIESCE_CFG, 0, 0, 0)
-> > >   (1)
-> > > 
-> > >   (returns the supported actions to be quiesced).
-> > > 
-> > > - prctl(PR_ISOL_SET, PR_ISOL_QUIESCE_CFG, quiesce_bitmask, 0, 0) _sets_
-> > > the actions to be quiesced (2)
-> > > 
-> > > If an application does not modify "quiesce_bitmask" between 
-> > > points (1) and (2) above, it will enable quiescing of all
-> > > "features" the kernel supports.
-> > 
-> > I don't get the difference between ISOL_FEATURES and PR_ISOL_QUIESCE_CFG.
-> 
-> prctl(PR_ISOL_SET, cmd, ...) is intented to accept different types of "command" 
-> variables (including ones for new features which are not known at this
-> time).
-> 
->  - prctl(PR_ISOL_SET, ISOL_FEATURES, bitmask, 0, 0) enables the features in
->    the bitmask
-> 
->    (which might now be superceded by 
-> 
->    prctl(PR_ISOL_ENABLE, ISOL_F_QUIESCE_ON_URET, 0, 0, 0))
-> 
-> - prctl(PR_ISOL_SET, PR_ISOL_QUIESCE_CFG, bitmask, 0, 0) configures
-> quiescing of which subsystem/feature is performed:
-> 
-> 	#define ISOL_F_QUIESCE_VMSTAT_SYNC      (1<<0)
-> 	#define ISOL_F_QUIESCE_NOHZ_FULL        (1<<1)
-> 	#define ISOL_F_QUIESCE_DEFER_TLB_FLUSH  (1<<2)
+We would like to take this series through the s390 tree, and we need a
+review on the patch 1 for that. Could you please take a look?
 
-Ok but...I still don't get the difference between ISOL_FEATURES and
-PR_ISOL_QUIESCE_CFG :-)
+Best regards,
+Ilya
 
-> > So PR_ISOL_ENABLE is a way to perform action when some sort of kernel entry
-> > happens. Then we take actions when that happens (signal, warn, etc...).
-> > 
-> > I guess we'll need to define what kind of kernel entry, and what kind of
-> > response need to happen. Ok that's a whole issue of its own that we'll need
-> > to handle seperately.
-> > 
-> > Thanks.
-> 
-> In fact, why one can't use SECCOMP for syscall blocking?
+Ilya Leoshkevich (2):
+  ftrace: Introduce ftrace_need_init_nop()
+  s390/ftrace: implement hotpatching
 
-Heh! Good point!
+ arch/s390/include/asm/ftrace.h     |  46 +------
+ arch/s390/include/asm/ftrace.lds.h |  21 +++
+ arch/s390/include/asm/module.h     |   8 ++
+ arch/s390/kernel/ftrace.c          | 207 ++++++++++++++++++++++++++---
+ arch/s390/kernel/ftrace.h          |  24 ++++
+ arch/s390/kernel/module.c          |  45 +++++++
+ arch/s390/kernel/vmlinux.lds.S     |   2 +
+ include/linux/ftrace.h             |  16 +++
+ kernel/trace/ftrace.c              |   4 +-
+ 9 files changed, 314 insertions(+), 59 deletions(-)
+ create mode 100644 arch/s390/include/asm/ftrace.lds.h
+ create mode 100644 arch/s390/kernel/ftrace.h
+
+-- 
+2.31.1
+
