@@ -2,64 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C34B3D97D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A803D97D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhG1Vwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 17:52:33 -0400
-Received: from relay02.th.seeweb.it ([5.144.164.163]:51865 "EHLO
-        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbhG1Vwa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 17:52:30 -0400
-Received: from localhost.localdomain (83.6.168.174.neoplus.adsl.tpnet.pl [83.6.168.174])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 38CC31FABA;
-        Wed, 28 Jul 2021 23:52:26 +0200 (CEST)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] remoteproc: q6v5_pas: Add sdm660 ADSP PIL compatible
-Date:   Wed, 28 Jul 2021 23:52:12 +0200
-Message-Id: <20210728215212.18217-2-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210728215212.18217-1-konrad.dybcio@somainline.org>
-References: <20210728215212.18217-1-konrad.dybcio@somainline.org>
+        id S231944AbhG1Vxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 17:53:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231126AbhG1Vxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 17:53:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C22B360F12;
+        Wed, 28 Jul 2021 21:53:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627509229;
+        bh=mMGfOJluYIDS3/nO6Lgq23HtvXrSdqzsgg2XCOX+cT8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TVG+aDHxdx/L1HlP2teZEGlGhY3BaRKeD5Sm8Y4d/40oRXy9BZVainSYdZGI50B7t
+         09TcFoMvlcJ2ghVNuprwS9YHWygH/vFqzPBynQJ0ztkC50oXCsTPmQ2Hf3VmVGd8cK
+         24JC17Ac2wUhLe1cNRn4R3iZxSthC7tFbUbP/yS/430bcX/SR4GSquNWAJX39byp/B
+         XTuo1hJy0AjkhRz5aDdO0tN0FEhKcxPLgDGA2fZoE+i77CItJupSlCUZTxzTGjJOHC
+         QMZEjDoO981DmZArRwqvSlMxjJJyfaWVfF6vfaBrMrDLHlVQoOwXgo6xKp4Z6UHxDV
+         K58Ax2GamtuIQ==
+Date:   Thu, 29 Jul 2021 00:53:46 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] char: tpm: Kconfig: remove bad i2c cr50 select
+Message-ID: <20210728215346.rmgvn4woou4iehqx@kernel.org>
+References: <20210727171313.2452236-1-adrian.ratiu@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727171313.2452236-1-adrian.ratiu@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This chipset seems to work fine with the "generic" configuration.
+On Tue, Jul 27, 2021 at 08:13:12PM +0300, Adrian Ratiu wrote:
+> This fixes a minor bug which went unnoticed during the initial
+> driver upstreaming review: TCG_CR50 does not exist in mainline
+> kernels, so remove it.
+> 
+> Fixes: 3a253caaad11 ("char: tpm: add i2c driver for cr50")
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> ---
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- drivers/remoteproc/qcom_q6v5_pas.c | 1 +
- 1 file changed, 1 insertion(+)
+These are missing changelog. I guess tags are added, and nothing else?
 
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index a79bee901e9b..88c9e8b19795 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -833,6 +833,7 @@ static const struct of_device_id adsp_of_match[] = {
- 	{ .compatible = "qcom,sc8180x-adsp-pas", .data = &sm8150_adsp_resource},
- 	{ .compatible = "qcom,sc8180x-cdsp-pas", .data = &sm8150_cdsp_resource},
- 	{ .compatible = "qcom,sc8180x-mpss-pas", .data = &sc8180x_mpss_resource},
-+	{ .compatible = "qcom,sdm660-adsp-pil", .data = &adsp_resource_init},
- 	{ .compatible = "qcom,sdm845-adsp-pas", .data = &adsp_resource_init},
- 	{ .compatible = "qcom,sdm845-cdsp-pas", .data = &cdsp_resource_init},
- 	{ .compatible = "qcom,sdx55-mpss-pas", .data = &sdx55_mpss_resource},
--- 
-2.32.0
-
+/Jarkko
