@@ -2,166 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B663D9487
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8A53D9489
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhG1Rrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:47:52 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:61116 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhG1Rrv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:47:51 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 1bac0f76ef49d9c3; Wed, 28 Jul 2021 19:47:48 +0200
-Received: from kreacher.localnet (89-64-80-148.dynamic.chello.pl [89.64.80.148])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 5DCDA660547;
-        Wed, 28 Jul 2021 19:47:47 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
-Date:   Wed, 28 Jul 2021 19:47:46 +0200
-Message-ID: <2178828.iZASKD2KPV@kreacher>
-In-Reply-To: <CAJZ5v0jashhvE4vRNAft1qfZ_Ud==tG1Yh29ad7BSfhk5xjx4A@mail.gmail.com>
-References: <1867445.PYKUYFuaPT@kreacher> <000801d78322$e9b94980$bd2bdc80$@telus.net> <CAJZ5v0jashhvE4vRNAft1qfZ_Ud==tG1Yh29ad7BSfhk5xjx4A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.148
-X-CLIENT-HOSTNAME: 89-64-80-148.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrgeelgdeliecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdektddrudegkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrudegkedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopegushhmhihthhhivghssehtvghluhhsrdhnvghtpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+        id S230431AbhG1RsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:48:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229603AbhG1RsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:48:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1101C60BD3;
+        Wed, 28 Jul 2021 17:48:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627494484;
+        bh=zJNVgN+xahnnWGgOOWDc5c7Gu7lpHDGbq3pJpEEs838=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=lfI5iu+2wBXJcaThViLxr7hsM2098jam8AzzdmEYynoFOxp8HZo5+e6dCRpHe45TB
+         WOv+yNw3ij9a8uSWiXq4DmkeuGNL5w0IxKblWFoliYQBMc05qT81hZPami/B7bULAe
+         idXd07XtQTtFJnkksK//diIXlWBK7bE247wiX6KC7lxu3Wu5Z7zR//B9ChR8dntMhu
+         eZblUM9hMuo86EZhI9sphKYRaGTsCj8Bo+H8RrlaWuj7wnnW0Hk9vrktV479Q32NAT
+         XfSRvnD2yVWVwtKm36WYjZtt40mLDKhK/9uPHjS6qnYds5zJka+34vUjKQ9GlK8E/Z
+         J784ebuXhtjIQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 005FE609E8;
+        Wed, 28 Jul 2021 17:48:03 +0000 (UTC)
+Subject: Re: [GIT PULL] platform-drivers-x86 for 5.14-2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <093f84b2-d058-40f1-e888-1cafe1846b12@redhat.com>
+References: <093f84b2-d058-40f1-e888-1cafe1846b12@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <093f84b2-d058-40f1-e888-1cafe1846b12@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.14-2
+X-PR-Tracked-Commit-Id: 2b2c66f607d00d17f879c0d946d44340bfbdc501
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: dfe495362c9b27e48a2b2ca81aed0ea754762b23
+Message-Id: <162749448394.17712.17332927825584892402.pr-tracker-bot@kernel.org>
+Date:   Wed, 28 Jul 2021 17:48:03 +0000
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, July 28, 2021 3:52:51 PM CEST Rafael J. Wysocki wrote:
-> On Tue, Jul 27, 2021 at 10:06 PM Doug Smythies <dsmythies@telus.net> wrote:
-> >
-> > Hi Rafael,
-> >
-> > Further to my reply of 2021.07.04  on this, I have
-> > continued to work with and test this patch set.
-> >
-> > On 2021.06.02 11:14 Rafael J. Wysocki wrote:
-> >
-> > >This series of patches addresses some theoretical shortcoming in the
-> > > TEO (Timer Events Oriented) cpuidle governor by reworking its idle
-> > > state selection logic to some extent.
-> > >
-> > > Patches [1-2/5] are introductory cleanups and the substantial changes are
-> > > made in patches [3-4/5] (please refer to the changelogs of these two
-> > > patches for details).  The last patch only deals with documentation.
-> > >
-> > > Even though this work is mostly based on theoretical considerations, it
-> > > shows a measurable reduction of the number of cases in which the shallowest
-> > > idle state is selected while it would be more beneficial to select a deeper
-> > > one or the deepest idle state is selected while it would be more beneficial to
-> > > select a shallower one, which should be a noticeable improvement.
-> >
-> > I am concentrating in the idle state 0 and 1 area.
-> > When I disable idle state 0, the expectation is its
-> > usage will fall to idle state 1. It doesn't.
-> >
-> > Conditions:
-> > CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-> > HWP: disabled
-> > CPU frequency scaling driver: intel_pstate, active
-> > CPU frequency scaling governor: performance.
-> > Idle configuration: As a COMETLAKE processor, with 4 idle states.
-> > Sample time for below: 1 minute.
-> > Workflow: Cross core named pipe token passing, 12 threads.
-> >
-> > Kernel 5.14-rc3: idle: teo governor
-> >
-> > All idle states enabled: PASS
-> > Processor: 97 watts
-> > Idle state 0 entries: 811151
-> > Idle state 1 entries: 140300776
-> > Idle state 2 entries: 889
-> > Idle state 3 entries: 8
-> >
-> > Idle state 0 disabled: FAIL <<<<<
-> > Processor: 96 watts
-> > Idle state 0 entries: 0
-> > Idle state 1 entries: 65599283
-> > Idle state 2 entries: 364399
-> > Idle state 3 entries: 65112651
-> 
-> This looks odd.
-> 
-> Thanks for the report, I'll take a look at this.
+The pull request you sent on Wed, 28 Jul 2021 12:34:28 +0200:
 
-I have found an issue in the code that may be responsible for the
-observed behavior and should be addressed by the appended patch (not
-tested yet).
+> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.14-2
 
-Basically, the "disabled" check in the second loop over states in
-teo_select() needs to exclude the first enabled state, because
-there are no more states to check after that.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/dfe495362c9b27e48a2b2ca81aed0ea754762b23
 
-Plus the time span check needs to be done when the given state
-is about to be selected, because otherwise the function may end up
-returning a state for which the sums are too low.
+Thank you!
 
-Thanks!
-
----
- drivers/cpuidle/governors/teo.c |   26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
-
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -404,25 +404,27 @@ static int teo_select(struct cpuidle_dri
- 			intercept_sum += bin->intercepts;
- 			recent_sum += bin->recent;
- 
--			if (dev->states_usage[i].disable)
-+			if (dev->states_usage[i].disable && i > idx0)
- 				continue;
- 
- 			span_ns = teo_middle_of_bin(i, drv);
--			if (!teo_time_ok(span_ns)) {
--				/*
--				 * The current state is too shallow, so select
--				 * the first enabled deeper state.
--				 */
--				duration_ns = last_enabled_span_ns;
--				idx = last_enabled_idx;
--				break;
--			}
- 
- 			if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
- 			    (!alt_intercepts ||
- 			     2 * intercept_sum > idx_intercept_sum)) {
--				idx = i;
--				duration_ns = span_ns;
-+				if (!teo_time_ok(span_ns) ||
-+				    dev->states_usage[i].disable) {
-+					/*
-+					 * The current state is too shallow or
-+					 * disabled, so select the first enabled
-+					 * deeper state.
-+					 */
-+					duration_ns = last_enabled_span_ns;
-+					idx = last_enabled_idx;
-+				} else {
-+					idx = i;
-+					duration_ns = span_ns;
-+				}
- 				break;
- 			}
- 
-
-
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
