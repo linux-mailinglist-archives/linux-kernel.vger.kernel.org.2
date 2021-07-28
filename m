@@ -2,53 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EF13D8B62
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458653D8B5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhG1KGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:06:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232539AbhG1KEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:04:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01A7160F23;
-        Wed, 28 Jul 2021 10:04:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627466659;
-        bh=yooTXTZnTDsYMB+aJApq848hzJTObpgXG66PkViLdZ0=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=kyroEidLXlujgMXg4ylalSLctNVpMbSR7g22Ws2BUj/82slrLdW/69SkUIawJ0HnE
-         d1S0mx/3iNypR+5Hk6Nj1QdvIM+3mOGaNn7adWGLHaxAy3H1X4exi3nu5Xzcc0jh9N
-         58sxyEO98IdZzXSkV2UKwTpjkJOjYs8wtJUUYfS1lYKFA5z1FrAnMpNBTrj0AQjsW5
-         /TDjBtKJkIrjMywRlIxyLNGouOK7Zc1NqTNep/CIpzE7r0V5K7RT6eeSL6S1IIKhDR
-         qfuRjAMpVqHUCtqVg5HdVueDCRVj1PhMVz0SpdyEeSWrGGGQLF7kFzJJshaE+dqYyq
-         z7WwcrHlh8Grg==
-Date:   Wed, 28 Jul 2021 12:04:17 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-15?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
-cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] HID: magicmouse: register power supply
-In-Reply-To: <20210728095803.GA31924@elementary-os.localdomain>
-Message-ID: <nycvar.YFH.7.76.2107281204050.8253@cbobk.fhfr.pm>
-References: <20210522180611.314300-1-jose.exposito89@gmail.com> <nycvar.YFH.7.76.2106241532511.18969@cbobk.fhfr.pm> <20210625170834.GA9573@elementary-os.localdomain> <nycvar.YFH.7.76.2107281134430.8253@cbobk.fhfr.pm>
- <20210728095803.GA31924@elementary-os.localdomain>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S233734AbhG1KEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231635AbhG1KEk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 06:04:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B8C061757;
+        Wed, 28 Jul 2021 03:04:38 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627466677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TkHd2f4fC/74J+JKUk+4OaEyf2hpuX0DoqcIuoep3hU=;
+        b=RfzmdcSZ1gvdH4+gbaDqeETPGo9b32ue2BP7VTvwFsv6efvPeGtIS2oOyD9zuquvmch17P
+        X0MEt7Gee/x828/X+vxEYxPxz1i+u/3beedH1HG6jKdlaISh/wAmjXGNXYUznsvl04TmN+
+        WCk18WpjDKIFGlP9NCfudWELRjpK4kRPTpKgK8abpzmWEcJ+XIZHAc2opiwN8mJcY/s/+O
+        Iw/rvsrcZmTnSfzltljVcueURRY2DraI3uQYK5QB0TGYbFV4Tm6qTKSHPPvwZOhM8RJ+l/
+        B01/M3ZH5kTZ1ggdlyTwuwHSBbOV2XAnpxkslBHVGOlTSz2ZSC2n8DjO/4rb5A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627466677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TkHd2f4fC/74J+JKUk+4OaEyf2hpuX0DoqcIuoep3hU=;
+        b=2YEyF/PBVedVWzyRDGXOOq65MLCywIkrPeCWfhiy65v8L3CxJzcz3K3V10DAba5JZRXP5H
+        555Wp/iqAYV20eCg==
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     "Raj\, Ashok" <ashok.raj@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
+Subject: Re: [patch 2/8] PCI/MSI: Mask all unused MSI-X entries
+In-Reply-To: <8735s631hq.wl-maz@kernel.org>
+References: <20210721191126.274946280@linutronix.de> <20210721192650.268814107@linutronix.de> <20210721222313.GC676232@otc-nc-03> <87zgufnuks.ffs@nanos.tec.linutronix.de> <8735s631hq.wl-maz@kernel.org>
+Date:   Wed, 28 Jul 2021 12:04:37 +0200
+Message-ID: <87eebi3gay.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021, José Expósito wrote:
+On Thu, Jul 22 2021 at 14:46, Marc Zyngier wrote:
+> On Wed, 21 Jul 2021 23:57:55 +0100,
+> Thomas Gleixner <tglx@linutronix.de> wrote:
+>> msix_mask_all() is invoked before the msi descriptors are
+>> allocated. msi_desc::masked is actually a misnomer because it's not like
+>> the name suggests a boolean representing the masked state. It's caching
+>> the content of the PCI_MSIX_ENTRY_VECTOR_CTRL part of the corresponding
+>> table entry. Right now this is just using bit 0 (the mask bit), but is
+>> that true forever? So we actually should rename that member to
+>> vector_ctrl or such.
+>
+> To follow-up with this forward looking statement, should we only keep
+> bit 0 when reading PCI_MSIX_ENTRY_VECTOR_CTRL? I.e.:
+>
+> 	entry->masked = (readl(addr + PCI_MSIX_ENTRY_VECTOR_CTRL) &
+> 			 PCI_MSIX_ENTRY_CTRL_MASKBIT);
+>
+> Or do we want to cache the whole register? In which case I'm all for
+> the suggesting renaming (though 'masked' is shared with the old-school
+> multi-MSI).
 
-> So, if you don't mind, I'd prefer not to apply this patchset yet until I 
-> figure out a better solution on v3.
+We want to cache the whole register because that's what we need to write
+when the mask bit is toggled.
 
-Thanks for the heads up. I am dropping it for now.
+Thanks,
 
--- 
-Jiri Kosina
-SUSE Labs
-
+        tglx
