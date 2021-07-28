@@ -2,113 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF103D99B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453923D99B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhG1XrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:47:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58012 "EHLO mail.kernel.org"
+        id S232800AbhG1XsT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 19:48:19 -0400
+Received: from mga18.intel.com ([134.134.136.126]:51286 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232641AbhG1XrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:47:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A32160249;
-        Wed, 28 Jul 2021 23:47:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627516029;
-        bh=3+i6c0OAdyQ8BvDYvkVzd0unkM2ave1GFxFyqFjfQ+I=;
-        h=Date:From:To:Subject:From;
-        b=BDutStOEZcfNn6JuncP+EOcGAX4YQn2/9V96ij2TbtGu0dF9qBVKoqrKHwF0eKWEh
-         XJrCRP1/Zd4FW+o3Pzm6hWpq1kiK5iG+/cAidNxKCtai4jqCRsZCK1KafTJACupls8
-         WnxY5LkzSGnUMspaejl7Vf30imVks96j6ekEvVbeJKFPt+/m+T9yk2ual4Qu3D+6r1
-         bulG4ZcC2+p5RIiF9XtUM36AshPYGcHxvKRbOXK7XWICFVR58pm+r6vaHKcsr/D3P4
-         jmyCvqcdsd3nnBH7OQCFPaPGxCd0+j0+r952DLllPBG3m8bDmQuLk1C0plx4WJ10BF
-         jgjAAwOLg4vMQ==
-Date:   Thu, 29 Jul 2021 00:46:58 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Tree for Jul 28
-Message-ID: <20210728234658.GI4670@sirena.org.uk>
+        id S232641AbhG1XsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:48:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="199988469"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="199988469"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 16:48:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="464860836"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga008.jf.intel.com with ESMTP; 28 Jul 2021 16:48:16 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 28 Jul 2021 16:48:15 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 28 Jul 2021 16:48:14 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
+ Wed, 28 Jul 2021 16:48:14 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>
+CC:     Jarkko Sakkinen <jarkko@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
+ pages
+Thread-Topic: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
+ pages
+Thread-Index: AQHXg/G3voDWmDqCq06DL34grJaPratZaKWA//+WanCAAHqDAIAABZsA//+MGqA=
+Date:   Wed, 28 Jul 2021 23:48:14 +0000
+Message-ID: <b05acb65cebc4718a5cc2503ced7455d@intel.com>
+References: <20210719182009.1409895-1-tony.luck@intel.com>
+ <20210728204653.1509010-1-tony.luck@intel.com>
+ <20210728204653.1509010-2-tony.luck@intel.com>
+ <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
+ <f2685d7c8dc14792a4e0f9807f742ea6@intel.com>
+ <fd8f8e79-f63f-7d6f-277e-1ad08ab7b6b8@intel.com>
+ <YQHpGq0GyAsYpE+D@google.com>
+In-Reply-To: <YQHpGq0GyAsYpE+D@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Iovxle6z3WGVZjcj"
-Content-Disposition: inline
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> -       epc_page = sgx_alloc_epc_page(NULL, true);
+> +       epc_page = sgx_alloc_epc_page(va_page, true);
 
---Iovxle6z3WGVZjcj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Providing a real value for the owner seems much better than all the hacks
+to invent a value to use instead of NULL.
 
-Hi all,
+Can you add a "Signed-off-by"? Then I'll replace my part 0001 with your version.
 
-Changes since 20210727:
+-Tony
 
-The net-next tree gained a conflict with the net tree.
-
-There was a build failure in the amdgpu tree, I am using the version
-=66rom 20210727.
-
-The devicetree tree gained a conflict with the clk tree.
-
-The drivers-x86 tree gained a build failure and was dropped entirely as
-there had been no previous changes in it since the merge window.
-
-Non-merge commits (relative to Linus' tree): 3887
- 3986 files changed, 205251 insertions(+), 67330 deletions(-)
-
-----------------------------------------------------------------------------
-
-I have created today's linux-next tree at
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-(patches will be at http://www.kernel.org/pub/linux/kernel/next/ if/when
-I get kup working).  If you are tracking the linux-next tree using git,
-you should not use "git pull" to do so as that will try to merge the new
-linux-next release with the old one.  You should use "git fetch" and
-checkout or reset to the new master.
-
-You can see which trees have been included by looking in the Next/Trees
-file in the source.  There are also quilt-import.log and merge.log
-files in the Next directory.  Between each merge, the tree was built
-with an arm64 defconfig, an allmodconfig for x86_64, a
-multi_v7_defconfig for arm and a native build of tools/perf. After
-the final fixups (if any), I do an x86_64 modules_install followed by
-builds for x86_64 allnoconfig, arm64 allnoconfig, and htmldocs.
-
-Below is a summary of the state of the merge.
-
-I am currently merging 333 trees (counting Linus' and 90 trees of bug
-fix patches pending for the current merge release).
-
-Stats about the size of the tree over time can be seen at
-http://neuling.org/linux-next-size.html .
-
-Status of Stephen's local build tests will be at
-http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-advice about cross compilers/configs that work, we are always open to
-add more builds.
-
-Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-Gortmaker for triage and bug fixes.
-
---Iovxle6z3WGVZjcj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEB7HEACgkQJNaLcl1U
-h9B6Cgf+OVJN0AxcvqHpMmLINM/GKN5/1bo1kUjfxc1mscpe7rZYrjL7swd+i9Wu
-kk81K+gr46867vftGDpCCW645GdhwBRh/SEds3ae6cQCgUqtMyWSl4DLFsSdLpMh
-d5VUnk2XDioG6F51Sm4yuKy/RgEVbrtyXWiJQf6CLjmliT3BdZJSPSEbDc7JAJCk
-amanViTsv3Lt42vp7ZLDGfOI3JWy/Bxh5w439wPKUbtULx0aYwmkvD4NMk8x/pTK
-itZmOw4zne8tol8/Sms9D1JaaCsqfDhFvZX0AjotamK2M78uR/5E3mxoKwguhmYr
-x9v/omOPFAiyxwnA9ejqOGNaoDtQ+g==
-=cAlc
------END PGP SIGNATURE-----
-
---Iovxle6z3WGVZjcj--
+[Just need to coax you into re-writing all the other parts for me now :-) ]
