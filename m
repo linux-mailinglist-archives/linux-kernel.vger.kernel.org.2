@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F7D3D921A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A52D3D921D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236854AbhG1Pe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:34:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:58818 "EHLO foss.arm.com"
+        id S237123AbhG1PgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:36:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235622AbhG1Pe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:34:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 330901FB;
-        Wed, 28 Jul 2021 08:34:56 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D6DA03F70D;
-        Wed, 28 Jul 2021 08:34:53 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 16:34:51 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        mcgrof@kernel.org, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Paul Turner <pjt@google.com>,
-        Quentin Perret <qperret@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] sched/uclamp: Introduce a method to transform UCLAMP_MIN
- into BOOST
-Message-ID: <20210728153451.2s4ftzs5u4go7qlm@e107158-lin.cambridge.arm.com>
-References: <20210721075751.542-1-xuewen.yan94@gmail.com>
- <d8e14c3c-0eab-2d4d-693e-fb647c7f7c8c@arm.com>
- <CAB8ipk9rO7majqxo0eTnPf5Xs-c4iF8TPQqonCjv6sCd2J6ONA@mail.gmail.com>
- <20210726171716.jow6qfbxx6xr5q3t@e107158-lin.cambridge.arm.com>
- <CAB8ipk9cZ4amrarQSN9TtqEwc42RFM1cBUGsTYKuF0maRFx4Zw@mail.gmail.com>
- <20210727134509.j2fhimhp4dht3hir@e107158-lin.cambridge.arm.com>
- <CAB8ipk8bKe_PxKaXdpqa62soC9_uqTDZMoWU3fi8DUBOD8uErg@mail.gmail.com>
+        id S235710AbhG1PgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:36:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96D9060EB2;
+        Wed, 28 Jul 2021 15:36:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627486564;
+        bh=R7+ExG2cGt1JjNkEYM6JWYU8bpH3ZX043RBskfp7S+s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=X1J5lvqv0UtM7s22u6Bcz7C7RX4lnKQ/cRgdlBlycimDRR1PxDr5W1NwqMUVg/l+g
+         v1xEA0JXds/ShOYGwygyj+BO4Ndp5wKd5+ZcgIZMBOHR6UvQc2QVbMDu/Jkp9qazMY
+         PlKS8G1Pz2TxeBveHBBfqCrDovXdba2jnojGQlDZ85HvCjDor5pRCInIuhZ+f/TFC8
+         87bFjbO4o7Rp/Y1S1MTa5eXKA6i2S+dxfLiPs6HmuAXWsOdAgkFa5ghHL8LSAYD3Fn
+         A5yCZl7tAQI4xx3WqAo03ddRHPvcpA1zpegA+z/RA7U+LVB8J9HYiQYKxjekHxs3dL
+         LpTBi9a6nMrTQ==
+Date:   Wed, 28 Jul 2021 10:36:03 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v10 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210728153603.GA821650@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAB8ipk8bKe_PxKaXdpqa62soC9_uqTDZMoWU3fi8DUBOD8uErg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210728012740.GA90475@rocinante>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/28/21 09:40, Xuewen Yan wrote:
-> Hi Qais
+On Wed, Jul 28, 2021 at 03:27:40AM +0200, Krzysztof Wilczyński wrote:
+
+> > > +	options = kstrndup(buf, count, GFP_KERNEL);
+> > 
+> > I assume the kstrndup() is because strsep() writes into the buffer?
 > 
-> Thanks for your patient reply, and I have got that I need to do more
-> work in uclamp to balance the performance and power, especially in
-> per-task API.
-> And If there is any progress in the future, I hope to keep
-> communicating with you.
+> Yes, Amey added kstrndup() in v6 following my recommendation as per:
+> 
+>   https://lore.kernel.org/linux-pci/20210606125800.GA76573@rocinante.localdomain/
+> 
+> This was to avoid removing the const quantifier through a type cast
+> given that the signature of the function denotes that the buffer is
+> a pointer to immutable string, as per:
+> 
+>   https://elixir.bootlin.com/linux/v5.14-rc3/source/include/linux/device/driver.h#L137
 
-Sounds good :)
+Ah, right, thanks!  Definitely prefer not to cast away the constness.
 
-Thanks!
-
---
-Qais Yousef
+I guess the strings here are short (<100 chars max), so no big deal to
+duplicate them.  Sorry for the noise!
