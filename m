@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8C13D9706
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8F13D9704
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhG1UrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:47:18 -0400
-Received: from mga01.intel.com ([192.55.52.88]:60188 "EHLO mga01.intel.com"
+        id S231911AbhG1UrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:47:16 -0400
+Received: from mga01.intel.com ([192.55.52.88]:60186 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231633AbhG1UrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231637AbhG1UrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Jul 2021 16:47:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="234634459"
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="234634460"
 X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="234634459"
+   d="scan'208";a="234634460"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 13:47:01 -0700
 X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="506679872"
+   d="scan'208";a="506679874"
 Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
   by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 13:47:01 -0700
 From:   Tony Luck <tony.luck@intel.com>
@@ -26,9 +26,9 @@ To:     Sean Christopherson <seanjc@google.com>,
         Dave Hansen <dave.hansen@intel.com>
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC pages
-Date:   Wed, 28 Jul 2021 13:46:47 -0700
-Message-Id: <20210728204653.1509010-2-tony.luck@intel.com>
+Subject: [PATCH v3 2/7] x86/sgx: Add infrastructure to identify SGX EPC pages
+Date:   Wed, 28 Jul 2021 13:46:48 -0700
+Message-Id: <20210728204653.1509010-3-tony.luck@intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210728204653.1509010-1-tony.luck@intel.com>
 References: <20210719182009.1409895-1-tony.luck@intel.com>
@@ -39,70 +39,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGX EPC pages go through the following life cycle:
+X86 machine check architecture reports a physical address when there
+is a memory error. Handling that error requires a method to determine
+whether the physical address reported is in any of the areas reserved
+for EPC pages by BIOS.
 
-	DIRTY ---> FREE ---> IN-USE --\
-                    ^                 |
-                    \-----------------/
+Add an end_phys_addr field to the sgx_epc_section structure and a
+new function sgx_paddr_to_page() that searches all such structures
+and returns the struct sgx_epc_page pointer if the address is an EPC
+page. This function is only intended for use within SGX code.
 
-Recovery action for poison for a DIRTY or FREE page is simple. Just
-make sure never to allocate the page. IN-USE pages need some extra
-handling.
-
-It would be good to use the sgx_epc_page->owner field as an indicator
-of where an EPC page is currently in that cycle (owner != NULL means
-the EPC page is IN-USE). But there is one caller, sgx_alloc_va_page(),
-that calls with NULL.
-
-Make the following changes:
-
-1) Change the type of "owner" to "void *" (it can have other types
-   besides "struct sgx_encl_page *).
-2) Add a check to sgx_free_epc_page(). If the caller specified the
-   owner as NULL, then set the owner field to self-reference the
-   SGX epc page itself.
-3) Reset owner to NULL in sgx_free_epc_page().
+Export a function sgx_is_epc_page() that simply reports whether an
+address is an EPC page for use elsewhere in the kernel.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
- arch/x86/kernel/cpu/sgx/main.c | 3 ++-
- arch/x86/kernel/cpu/sgx/sgx.h  | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/sgx/main.c | 24 ++++++++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/sgx.h  |  1 +
+ 2 files changed, 25 insertions(+)
 
 diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 63d3de02bbcc..17d09186a6c2 100644
+index 17d09186a6c2..ce40c010c9cb 100644
 --- a/arch/x86/kernel/cpu/sgx/main.c
 +++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -581,7 +581,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
- 	for ( ; ; ) {
- 		page = __sgx_alloc_epc_page();
- 		if (!IS_ERR(page)) {
--			page->owner = owner;
-+			page->owner = owner ? owner : page;
- 			break;
- 		}
+@@ -649,6 +649,7 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 	}
  
-@@ -624,6 +624,7 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
+ 	section->phys_addr = phys_addr;
++	section->end_phys_addr = phys_addr + size - 1;
  
- 	spin_lock(&node->lock);
+ 	for (i = 0; i < nr_pages; i++) {
+ 		section->pages[i].section = index;
+@@ -660,6 +661,29 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 	return true;
+ }
  
-+	page->owner = NULL;
- 	list_add_tail(&page->list, &node->free_page_list);
- 	sgx_nr_free_pages++;
- 
++static struct sgx_epc_page *sgx_paddr_to_page(u64 paddr)
++{
++	struct sgx_epc_section *section;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
++		section = &sgx_epc_sections[i];
++
++		if (paddr < section->phys_addr || paddr > section->end_phys_addr)
++			continue;
++
++		return &section->pages[PFN_DOWN(paddr - section->phys_addr)];
++	}
++
++	return NULL;
++}
++
++bool sgx_is_epc_page(u64 paddr)
++{
++	return !!sgx_paddr_to_page(paddr);
++}
++EXPORT_SYMBOL_GPL(sgx_is_epc_page);
++
+ /**
+  * A section metric is concatenated in a way that @low bits 12-31 define the
+  * bits 12-31 of the metric and @high bits 0-19 define the bits 32-51 of the
 diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 4628acec0009..4e1a410b8a62 100644
+index 4e1a410b8a62..226b081a4d05 100644
 --- a/arch/x86/kernel/cpu/sgx/sgx.h
 +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -29,7 +29,7 @@
- struct sgx_epc_page {
- 	unsigned int section;
- 	unsigned int flags;
--	struct sgx_encl_page *owner;
-+	void *owner;
- 	struct list_head list;
- };
- 
+@@ -50,6 +50,7 @@ struct sgx_numa_node {
+  */
+ struct sgx_epc_section {
+ 	unsigned long phys_addr;
++	unsigned long end_phys_addr;
+ 	void *virt_addr;
+ 	struct sgx_epc_page *pages;
+ 	struct sgx_numa_node *node;
 -- 
 2.29.2
 
