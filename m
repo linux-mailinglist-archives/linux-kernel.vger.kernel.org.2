@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6825F3D9168
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D697E3D916E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237070AbhG1O4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:56:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23004 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237358AbhG1O4X (ORCPT
+        id S236954AbhG1O50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:57:26 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7885 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235546AbhG1O5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:56:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627484181;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=it5Te9P2fE9hEACV7bmI0ZQUC4eOMZ6L7HHf6MGR5Mo=;
-        b=gqvKyC+oxaz04/LupRrVhApxsAbNgvSUJrWeGJC4ogPu16glJkj9wAr9H2Gnh7brvC5MIV
-        aeX6zn23o+v4t9/5ecRKiaNInBbUQKwdXBOvnVrDzlX7IR+8u+wHLIajIC8AHXkKuyQKSx
-        YntlWJhdU5QrhqNWLKFoIxgk6YF9hf0=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-oBR2cllCP0uo2zSGPUj_iA-1; Wed, 28 Jul 2021 10:56:20 -0400
-X-MC-Unique: oBR2cllCP0uo2zSGPUj_iA-1
-Received: by mail-qk1-f200.google.com with SMTP id q9-20020a05620a0c89b02903ba3e0f08d7so1800927qki.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:56:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=it5Te9P2fE9hEACV7bmI0ZQUC4eOMZ6L7HHf6MGR5Mo=;
-        b=Ad1eOhj4M8dTAp8LhLmjpxbzLywBPOT83IN4KkLCXdNkYrzcly8zBB5Z237rgSiWaP
-         M+NihSbbfemTk6SpPx/jqHADzNmNWxoKCX/Wu2URnYTyvNjpB5olB98E5mAW4uzYPUnQ
-         +HFISwtcTiNoLKaTnfj/7PV4G5Ni8RQ4DvddKxd+TQxUr/fZS3++vGWCT4Gc8YH9d3ts
-         OeRkglqMBxDy2KkmwepRDrJSqk4Avq2Vzx9/QGD0pSsZ6cpzFu74Prqz6pRgMf5IpueT
-         iRHFjV9vReQF18i+XQ9IbFJT3sz/mQQoiPhQ5VG//m2SI1eOClIC5943TzZF/0cSlznt
-         Z6Jw==
-X-Gm-Message-State: AOAM5318Ze7K//FIcu6NVMFz5MQ/Ksg1AOp5+WCDLRBqlssj/JNZftJz
-        p71g5xDurwBjOXwADagH5SFxhyPV3Vq5ljz2hz3UvSimYu5RB+Ma14wfKgML7fPZdezSjzHVVfM
-        tajU/7bSpH0ki/8o8uGctCG5V
-X-Received: by 2002:a05:622a:104b:: with SMTP id f11mr23864107qte.134.1627484179604;
-        Wed, 28 Jul 2021 07:56:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx7m6DREgWBE6Hlfac89TKVr/iCoUvG1oqWqS55n/ROdB1Bdnlx4nra3hys5EdZ7ULEdaF4Dw==
-X-Received: by 2002:a05:622a:104b:: with SMTP id f11mr23864096qte.134.1627484179449;
-        Wed, 28 Jul 2021 07:56:19 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s81sm104241qka.82.2021.07.28.07.56.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 07:56:19 -0700 (PDT)
-Subject: Re: [PATCH v13 0/4] Intel MAX10 BMC Secure Update Driver
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Wu, Hao" <hao.wu@intel.com>
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, matthew.gerlach@intel.com,
-        richard.gong@intel.com
-References: <20210727225859.153572-1-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <65ed311d-a492-413e-33a8-f64e9c41e7c2@redhat.com>
-Date:   Wed, 28 Jul 2021 07:56:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 28 Jul 2021 10:57:24 -0400
+Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZc9W5rdCz80gr;
+        Wed, 28 Jul 2021 22:53:35 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by dggeme766-chm.china.huawei.com
+ (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 28
+ Jul 2021 22:57:20 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <cl@linux.com>, <penberg@kernel.org>, <guro@fb.com>,
+        <rientjes@google.com>, <iamjoonsoo.kim@lge.com>,
+        <akpm@linux-foundation.org>, <vbabka@suse.cz>,
+        <hannes@cmpxchg.org>, <shakeelb@google.com>, <ast@kernel.org>,
+        <wangkefeng.wang@huawei.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] mm/memcg: fix NULL pointer dereference in memcg_slab_free_hook()
+Date:   Wed, 28 Jul 2021 22:56:55 +0800
+Message-ID: <20210728145655.274476-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210727225859.153572-1-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme766-chm.china.huawei.com (10.3.19.112)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Russ
-> Russ Weight (4):
->    fpga: m10bmc-sec: create max10 bmc secure update driver
->    fpga: m10bmc-sec: expose max10 flash update count
->    fpga: m10bmc-sec: expose max10 canceled keys in sysfs
+When I use kfree_rcu() to free a large memory allocated by
+kmalloc_node(), the following dump occurs.
 
-Since sec-mgr is taking a long time, I am looking at splitting out parts 
-we can agree on.
+BUG: kernel NULL pointer dereference, address: 0000000000000020
+[...]
+Oops: 0000 [#1] SMP
+[...]
+Workqueue: events kfree_rcu_work
+RIP: 0010:__obj_to_index include/linux/slub_def.h:182 [inline]
+RIP: 0010:obj_to_index include/linux/slub_def.h:191 [inline]
+RIP: 0010:memcg_slab_free_hook+0x120/0x260 mm/slab.h:363
+[...]
+Call Trace:
+ kmem_cache_free_bulk+0x58/0x630 mm/slub.c:3293
+ kfree_bulk include/linux/slab.h:413 [inline]
+ kfree_rcu_work+0x1ab/0x200 kernel/rcu/tree.c:3300
+ process_one_work+0x207/0x530 kernel/workqueue.c:2276
+ worker_thread+0x320/0x610 kernel/workqueue.c:2422
+ kthread+0x13d/0x160 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-These 3 patches are a new dfl specific driver and do not depend on sec-mgr.
+When kmalloc_node() a large memory, page is allocated, not slab,
+so when freeing memory via kfree_rcu(), this large memory should not
+be used by memcg_slab_free_hook(), because memcg_slab_free_hook() is
+is used for slab.
 
-Here is a poc on char-misc-next, splitting them and moving them before 
-sec-mgr
+Using page_objcgs_check() instead of page_objcgs() in
+memcg_slab_free_hook() to fix this bug.
 
-https://github.com/trixirt/linux-next/commits/sec-mgr-reorder
+Fixes: 270c6a71460e ("mm: memcontrol/slab: Use helpers to access slab page's memcg_data")
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+v1->v2: Use page_objcgs_check() to fix this bug
+ mm/slab.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Moritz, Hao
-
-Could these 3 patches go into fpga-next now ?
-
-Tom
-
-
->    fpga: m10bmc-sec: add max10 secure update functions
+diff --git a/mm/slab.h b/mm/slab.h
+index 67e06637ff2e..59db4797acd4 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -339,7 +339,7 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
+ 			continue;
+ 
+ 		page = virt_to_head_page(p[i]);
+-		objcgs = page_objcgs(page);
++		objcgs = page_objcgs_check(page);
+ 		if (!objcgs)
+ 			continue;
+ 
+-- 
+2.17.1
 
