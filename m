@@ -2,70 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060543D967B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044C73D967E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhG1US1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:18:27 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41988 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhG1US0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:18:26 -0400
-Received: from [192.168.86.36] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0BFCB20B36E0;
-        Wed, 28 Jul 2021 13:18:23 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0BFCB20B36E0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1627503504;
-        bh=8VjrjYQKrOT17RDifYWaDqoWrFEqj1Yk42rjWoibe7M=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=G2JcZwGvwJfr6vKJZMUtIkEn/M+HVCbDXqob6BeE4lPpletGmHoCc6ZBCJnYI/VC6
-         RrLSxW5xjI0bY6V52F3Rhp0zGN5kTBMc3XfuSXZg/IX1YErwEZDlefkmVdbHLu1Jeb
-         S8E4GCme+oZxzUfGwyMwNCP0ZGW4aEw8nataKnpc=
-Subject: Re: [PATCH] KVM: SVM: delay svm_vcpu_init_msrpm after svm->vmcb is
- initialized
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20210726165843.1441132-1-pbonzini@redhat.com>
- <87zgu76ary.fsf@vitty.brq.redhat.com>
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-Message-ID: <1d82501c-05fd-deff-9652-790cde052644@linux.microsoft.com>
-Date:   Wed, 28 Jul 2021 16:18:21 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231512AbhG1USf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:18:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231268AbhG1USe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 16:18:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F313861038;
+        Wed, 28 Jul 2021 20:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627503512;
+        bh=1ED6y3YxJU324Y8RqrYP/nxRNq8UxmVvZM4iuBgaSLI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=bPREx7m+u/T4ac4EuoTvz1nb41tmh306+KQdf3t+gZoHlv1w/mCy7D4hrcYrZt8d2
+         4glsA6/h4hdpiMZqVAiGGsCGvkK3QC4dWhOJ9xChnX0kASfV8qMnmdla8YXqabe7I/
+         Ayw85LCahi1p3ZKQOqXO0AtA+VEJRXbM1ZvHSUv6kkLftLgaKqDP5OuZ6tkPiY4LmY
+         Gz0lrufbMBb+0TShlvThxKoWm/XTr5p6vzL3Rit6mOz8JiU49EZ86LySe7B5dOx+sj
+         hzzUpA2nv1EBEHrJ9hr1ZGfvyxCRL++RbagfKOZ3HYHz1MKluv5Ib/Alp1ZTR+5U6R
+         rqoRsJYPC8vsQ==
+Date:   Wed, 28 Jul 2021 15:18:30 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v10 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210728201830.GA845737@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <87zgu76ary.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728185831.isdqa5t5oxxjfhnv@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/27/2021 11:23 AM, Vitaly Kuznetsov wrote:
-> Paolo Bonzini <pbonzini@redhat.com> writes:
+On Thu, Jul 29, 2021 at 12:28:31AM +0530, Amey Narkhede wrote:
+> On 21/07/28 01:13PM, Bjorn Helgaas wrote:
+> > On Wed, Jul 28, 2021 at 11:29:50PM +0530, Amey Narkhede wrote:
+> > > On 21/07/27 06:28PM, Bjorn Helgaas wrote:
+> > > > On Fri, Jul 09, 2021 at 06:08:09PM +0530, Amey Narkhede wrote:
+> > > > > Add reset_method sysfs attribute to enable user to query and set user
+> > > > > preferred device reset methods and their ordering.
+> > > > >
+> > > > > Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> > > > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > > > ---
+> > > > >  Documentation/ABI/testing/sysfs-bus-pci |  19 +++++
+> > > > >  drivers/pci/pci-sysfs.c                 | 103 ++++++++++++++++++++++++
+> > > > >  2 files changed, 122 insertions(+)
+> > > > >
+> > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> > > > > index ef00fada2..43f4e33c7 100644
+> > > > > --- a/Documentation/ABI/testing/sysfs-bus-pci
+> > > > > +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> > > > > @@ -121,6 +121,25 @@ Description:
+> > > > >  		child buses, and re-discover devices removed earlier
+> > > > >  		from this part of the device tree.
+> > > > >
+> > > > > +What:		/sys/bus/pci/devices/.../reset_method
+> > > > > +Date:		March 2021
+> > > > > +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
+> > > > > +Description:
+> > > > > +		Some devices allow an individual function to be reset
+> > > > > +		without affecting other functions in the same slot.
+> > > > > +
+> > > > > +		For devices that have this support, a file named
+> > > > > +		reset_method will be present in sysfs. Initially reading
+> > > > > +		this file will give names of the device supported reset
+> > > > > +		methods and their ordering. After write, this file will
+> > > > > +		give names and ordering of currently enabled reset methods.
+> > > > > +		Writing the name or comma separated list of names of any of
+> > > > > +		the device supported reset methods to this file will set
+> > > > > +		the reset methods and their ordering to be used when
+> > > > > +		resetting the device. Writing empty string to this file
+> > > > > +		will disable ability to reset the device and writing
+> > > > > +		"default" will return to the original value.
+> > > > > +
+> > > > >  What:		/sys/bus/pci/devices/.../reset
+> > > > >  Date:		July 2009
+> > > > >  Contact:	Michael S. Tsirkin <mst@redhat.com>
+> > > >
+> > > [...]
+> > >
+> > > > > +		int i;
+> > > > > +
+> > > > > +		if (sysfs_streq(name, ""))
+> > > > > +			continue;
+> > > > > +
+> > > > > +		name = strim(name);
+> > > > > +
+> > > > > +		for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
+> > > > > +			if (sysfs_streq(name, pci_reset_fn_methods[i].name) &&
+> > > > > +			    !pci_reset_fn_methods[i].reset_fn(pdev, 1)) {
+> > > > > +				reset_methods[n++] = i;
+> > > >
+> > > > Can we build this directly in pdev->reset_methods[] so we don't need
+> > > > the memcpy() below?
+> > > >
+> > > This is to avoid writing partial values directly to dev->reset_methods.
+> > > So for example if user writes flr,unsupported_value then
+> > > dev->reset_methods should not be modified even though flr is valid reset
+> > > method in this example to avoid partial writes. Either operation(in this
+> > > case writing supported reset methods to reset_method attr) succeeds
+> > > completely or it fails othewise.
+> >
+> > I guess the question is, if somebody writes
+> >
+> >   flr junk bus
+> >
+> > and we set the supported methods to "flr bus", is that OK?  It seems
+> > OK to me; obviously we have to protect ourselves from attack, but
+> > over-zealous checking can make things unnecessarily complicated.
 >
->> Right now, svm_hv_vmcb_dirty_nested_enlightenments has an incorrect
->> dereference of vmcb->control.reserved_sw before the vmcb is checked
->> for being non-NULL.  The compiler is usually sinking the dereference
->> after the check; instead of doing this ourselves in the source,
->> ensure that svm_hv_vmcb_dirty_nested_enlightenments is only called
->> with a non-NULL VMCB.
->>
->> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->> Cc: Vineeth Pillai <viremana@linux.microsoft.com>
->> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
->> [Untested for now due to issues with my AMD machine. - Paolo]
-Finally got hold of an AMD machine and tested nested virt: windows on 
-linux on
-windows with the patches applied. Did basic boot and minimal verification.
+> The problem is once we encounter "junk" we return -EINVAL so in your
+> example we only set flr.
 
-Tested-by: Vineeth Pillai <viremana@linux.microsoft.com>
+We're still talking about whether we need the memcpy().  We can decide
+whether it's the right thing to return -EINVAL if we encounter "junk".
 
-Thanks,
-Vineeth
-
+Maybe it's OK if we set it to "flr" and ignore everything after
+"junk"?  Or maybe it's OK to ignore unsupported values and set it to
+"flr bus"?
