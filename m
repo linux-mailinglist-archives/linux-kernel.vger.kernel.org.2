@@ -2,125 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF163D98C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E44F3D98D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbhG1W11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:27:27 -0400
-Received: from m-r1.th.seeweb.it ([5.144.164.170]:51339 "EHLO
-        m-r1.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbhG1W0p (ORCPT
+        id S233094AbhG1W2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232710AbhG1W2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:26:45 -0400
-Received: from localhost.localdomain (83.6.168.174.neoplus.adsl.tpnet.pl [83.6.168.174])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id EAB911FAEC;
-        Thu, 29 Jul 2021 00:26:35 +0200 (CEST)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Wed, 28 Jul 2021 18:28:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CDAC08E816
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 15:27:28 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1m8s1P-0004d1-BN; Thu, 29 Jul 2021 00:27:27 +0200
+Subject: Re: [RFC PATCH v1] fscrypt: support encrypted and trusted keys
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 39/39] arm64: dts: qcom: sdm630: Add DMA to I2C hosts
-Date:   Thu, 29 Jul 2021 00:25:42 +0200
-Message-Id: <20210728222542.54269-40-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210728222542.54269-1-konrad.dybcio@somainline.org>
-References: <20210728222542.54269-1-konrad.dybcio@somainline.org>
+References: <20210727144349.11215-1-a.fatoum@pengutronix.de>
+ <20210728222243.4wqs64pqngzzii3b@kernel.org>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <3d0a380b-ea75-6c99-0515-0988d6ecab1c@pengutronix.de>
+Date:   Thu, 29 Jul 2021 00:27:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210728222243.4wqs64pqngzzii3b@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DMA properties to I2C hosts to allow for DMA transfers.
+Hello Jarkko,
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- arch/arm64/boot/dts/qcom/sdm630.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+On 29.07.21 00:22, Jarkko Sakkinen wrote:
+> On Tue, Jul 27, 2021 at 04:43:49PM +0200, Ahmad Fatoum wrote:
+>> For both v1 and v2 key setup mechanisms, userspace supplies the raw key
+>> material to the kernel after which it is never again disclosed to
+>> userspace.
+>>
+>> Use of encrypted and trusted keys offers stronger guarantees:
+>> The key material is generated within the kernel and is never disclosed to
+>> userspace in clear text and, in the case of trusted keys, can be
+>> directly rooted to a trust source like a TPM chip.
+>>
+>> Add support for trusted and encrypted keys by repurposing
+>> fscrypt_add_key_arg::raw to hold the key description when the new
+>> FSCRYPT_KEY_ARG_TYPE_DESC flag is supplied. The location of the flag
+>> was previously reserved and enforced by ioctl code to be zero, so this
+>> change won't break backwards compatibility.
+>>
+>> Corresponding userspace patches are available for fscryptctl:
+>> https://github.com/google/fscryptctl/pull/23
+>>
+>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>> ---
+>> key_extract_material used by this patch is added in
+>> <cover.b2fdd70b830d12853b12a12e32ceb0c8162c1346.1626945419.git-series.a.fatoum@pengutronix.de>
+>> which still awaits feedback.
+>>
+>> Sending this RFC out anyway to get some feedback from the fscrypt
+>> developers whether this is the correct way to go about it.
+>>
+>> To: "Theodore Y. Ts'o" <tytso@mit.edu>
+>> To: Jaegeuk Kim <jaegeuk@kernel.org>
+>> To: Eric Biggers <ebiggers@kernel.org>
+>> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+>> Cc: James Morris <jmorris@namei.org>
+>> Cc: "Serge E. Hallyn" <serge@hallyn.com>
+>> Cc: James Bottomley <jejb@linux.ibm.com>
+>> Cc: Mimi Zohar <zohar@linux.ibm.com>
+>> Cc: Sumit Garg <sumit.garg@linaro.org>
+>> Cc: David Howells <dhowells@redhat.com>
+>> Cc: linux-fscrypt@vger.kernel.org
+>> Cc: linux-crypto@vger.kernel.org
+>> Cc: linux-integrity@vger.kernel.org
+>> Cc: linux-security-module@vger.kernel.org
+>> Cc: keyrings@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> ---
+>>  Documentation/filesystems/fscrypt.rst | 24 ++++++++---
+>>  fs/crypto/keyring.c                   | 59 ++++++++++++++++++++++++---
+>>  include/uapi/linux/fscrypt.h          | 16 +++++++-
+>>  3 files changed, 87 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+>> index 44b67ebd6e40..83738af2afa3 100644
+>> --- a/Documentation/filesystems/fscrypt.rst
+>> +++ b/Documentation/filesystems/fscrypt.rst
+>> @@ -681,11 +681,15 @@ It can be executed on any file or directory on the target filesystem,
+>>  but using the filesystem's root directory is recommended.  It takes in
+>>  a pointer to struct fscrypt_add_key_arg, defined as follows::
+>>  
+>> +    #define FSCRYPT_KEY_ADD_RAW_ASIS		0
+>> +    #define FSCRYPT_KEY_ADD_RAW_DESC		1
+> 
+> Would be nice to have these documented.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index 004df7a6eb6c..312f16efd91d 100644
---- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -1802,6 +1802,8 @@ blsp_i2c1: i2c@c175000 {
- 					<&gcc GCC_BLSP1_AHB_CLK>;
- 			clock-names = "core", "iface";
- 			clock-frequency = <400000>;
-+			dmas = <&blsp1_dma 4>, <&blsp1_dma 5>;
-+			dma-names = "tx", "rx";
- 
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&i2c1_default>;
-@@ -1820,6 +1822,8 @@ blsp_i2c2: i2c@c176000 {
- 				 <&gcc GCC_BLSP1_AHB_CLK>;
- 			clock-names = "core", "iface";
- 			clock-frequency = <400000>;
-+			dmas = <&blsp1_dma 6>, <&blsp1_dma 7>;
-+			dma-names = "tx", "rx";
- 
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&i2c2_default>;
-@@ -1838,6 +1842,8 @@ blsp_i2c3: i2c@c177000 {
- 				 <&gcc GCC_BLSP1_AHB_CLK>;
- 			clock-names = "core", "iface";
- 			clock-frequency = <400000>;
-+			dmas = <&blsp1_dma 8>, <&blsp1_dma 9>;
-+			dma-names = "tx", "rx";
- 
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&i2c3_default>;
-@@ -1856,6 +1862,8 @@ blsp_i2c4: i2c@c178000 {
- 				 <&gcc GCC_BLSP1_AHB_CLK>;
- 			clock-names = "core", "iface";
- 			clock-frequency = <400000>;
-+			dmas = <&blsp1_dma 10>, <&blsp1_dma 11>;
-+			dma-names = "tx", "rx";
- 
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&i2c4_default>;
-@@ -1902,6 +1910,8 @@ blsp_i2c5: i2c@c1b5000 {
- 				 <&gcc GCC_BLSP2_AHB_CLK>;
- 			clock-names = "core", "iface";
- 			clock-frequency = <400000>;
-+			dmas = <&blsp2_dma 4>, <&blsp2_dma 5>;
-+			dma-names = "tx", "rx";
- 
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&i2c5_default>;
-@@ -1920,6 +1930,8 @@ blsp_i2c6: i2c@c1b6000 {
- 				 <&gcc GCC_BLSP2_AHB_CLK>;
- 			clock-names = "core", "iface";
- 			clock-frequency = <400000>;
-+			dmas = <&blsp2_dma 6>, <&blsp2_dma 7>;
-+			dma-names = "tx", "rx";
- 
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&i2c6_default>;
-@@ -1938,6 +1950,8 @@ blsp_i2c7: i2c@c1b7000 {
- 				 <&gcc GCC_BLSP2_AHB_CLK>;
- 			clock-names = "core", "iface";
- 			clock-frequency = <400000>;
-+			dmas = <&blsp2_dma 8>, <&blsp2_dma 9>;
-+			dma-names = "tx", "rx";
- 
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&i2c7_default>;
-@@ -1956,6 +1970,8 @@ blsp_i2c8: i2c@c1b8000 {
- 				 <&gcc GCC_BLSP2_AHB_CLK>;
- 			clock-names = "core", "iface";
- 			clock-frequency = <400000>;
-+			dmas = <&blsp2_dma 10>, <&blsp2_dma 11>;
-+			dma-names = "tx", "rx";
- 
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&i2c8_default>;
+They have explanatory comments in the uAPI header. The Documentation file
+purposefully omits these comments and describes each field separately after
+the code block. I am just following suit.
+
+FWIW, I intend to drop these flags for v2 anyway.
+
+Cheers,
+Ahmad
+
+> 
+> /Jarkko
+> 
+
+
 -- 
-2.32.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
