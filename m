@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4313D92A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7683D92A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237477AbhG1QAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:00:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:59526 "EHLO foss.arm.com"
+        id S237506AbhG1QAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:00:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:59542 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237442AbhG1P7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:59:40 -0400
+        id S237505AbhG1P7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:59:41 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33F89113E;
-        Wed, 28 Jul 2021 08:59:38 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC2A7D6E;
+        Wed, 28 Jul 2021 08:59:39 -0700 (PDT)
 Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B8C763F70D;
-        Wed, 28 Jul 2021 08:59:36 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 799E73F70D;
+        Wed, 28 Jul 2021 08:59:38 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux-foundation.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
         john.garry@huawei.com, dianders@chromium.org
-Subject: [PATCH v2 18/24] iommu: Express DMA strictness via the domain type
-Date:   Wed, 28 Jul 2021 16:58:39 +0100
-Message-Id: <50bee17e9248ccfccb33a10238210d4ff4f4cf4d.1627468309.git.robin.murphy@arm.com>
+Subject: [PATCH v2 19/24] iommu: Expose DMA domain strictness via sysfs
+Date:   Wed, 28 Jul 2021 16:58:40 +0100
+Message-Id: <dd26592103c7613ef9fdff703d0d2ed2df8305c2.1627468310.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1627468308.git.robin.murphy@arm.com>
 References: <cover.1627468308.git.robin.murphy@arm.com>
@@ -35,117 +35,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the iommu_get_dma_strict() indirection and pipe the
-information through the domain type from the beginning. Besides
-the flow simplification this also has several nice side-effects:
-
- - Automatically implies strict mode for untrusted devices by
-   virtue of their IOMMU_DOMAIN_DMA override.
- - Ensures that we only end up using flush queues for drivers
-   which are aware of them and can actually benefit.
- - Allows us to handle flush queue init failure by falling back
-   to strict mode instead of leaving it to possibly blow up later.
+The sysfs interface for default domain types exists primarily so users
+can choose the performance/security tradeoff relevant to their own
+workload. As such, the choice between the policies for DMA domains fits
+perfectly as an additional point on that scale - downgrading a
+particular device from a strict default to non-strict may be enough to
+let it reach the desired level of performance, while still retaining
+more peace of mind than with a wide-open identity domain. Now that we've
+abstracted non-strict mode as a distinct type of DMA domain, allow it to
+be chosen through the user interface as well.
 
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  2 +-
- drivers/iommu/arm/arm-smmu/arm-smmu.c       |  2 +-
- drivers/iommu/dma-iommu.c                   |  9 +++++----
- drivers/iommu/iommu.c                       | 12 +++---------
- include/linux/iommu.h                       |  1 -
- 5 files changed, 10 insertions(+), 16 deletions(-)
+ Documentation/ABI/testing/sysfs-kernel-iommu_groups | 2 ++
+ drivers/iommu/iommu.c                               | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index a1f0d83d1eb5..19400826eba7 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2175,7 +2175,7 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
- 		.iommu_dev	= smmu->dev,
- 	};
- 
--	if (!iommu_get_dma_strict(domain))
-+	if (domain->type == IOMMU_DOMAIN_DMA_FQ)
- 		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
- 
- 	pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 936c5e9d5e82..109e4723f9f5 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -765,7 +765,7 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
- 		.iommu_dev	= smmu->dev,
- 	};
- 
--	if (!iommu_get_dma_strict(domain))
-+	if (domain->type == IOMMU_DOMAIN_DMA_FQ)
- 		pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
- 
- 	if (smmu->impl && smmu->impl->init_context) {
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 8b3545c01077..7f3968865387 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -363,13 +363,14 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
- 
- 	init_iova_domain(iovad, 1UL << order, base_pfn);
- 
--	if (!cookie->fq_domain && !dev_is_untrusted(dev) &&
--	    domain->ops->flush_iotlb_all && !iommu_get_dma_strict(domain)) {
-+	if (domain->type == IOMMU_DOMAIN_DMA_FQ && !cookie->fq_domain) {
- 		if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
--					  iommu_dma_entry_dtor))
-+					  iommu_dma_entry_dtor)) {
- 			pr_warn("iova flush queue initialization failed\n");
--		else
-+			domain->type = IOMMU_DOMAIN_DMA;
-+		} else {
- 			cookie->fq_domain = domain;
-+		}
- 	}
- 
- 	return iova_reserve_iommu_regions(dev, domain);
+diff --git a/Documentation/ABI/testing/sysfs-kernel-iommu_groups b/Documentation/ABI/testing/sysfs-kernel-iommu_groups
+index eae2f1c1e11e..43ba764ba5b7 100644
+--- a/Documentation/ABI/testing/sysfs-kernel-iommu_groups
++++ b/Documentation/ABI/testing/sysfs-kernel-iommu_groups
+@@ -42,6 +42,8 @@ Description:	/sys/kernel/iommu_groups/<grp_id>/type shows the type of default
+ 		========  ======================================================
+ 		DMA       All the DMA transactions from the device in this group
+ 		          are translated by the iommu.
++		DMA-FQ    As above, but using batched invalidation to lazily
++		          remove translations after use.
+ 		identity  All the DMA transactions from the device in this group
+ 		          are not translated by the iommu.
+ 		auto      Change to the type the device was booted with.
 diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 982545234cf3..eecb5657de69 100644
+index eecb5657de69..5a08e0806cbb 100644
 --- a/drivers/iommu/iommu.c
 +++ b/drivers/iommu/iommu.c
-@@ -136,6 +136,9 @@ static int __init iommu_subsys_init(void)
- 		}
- 	}
- 
-+	if (!iommu_default_passthrough() && !iommu_dma_strict)
-+		iommu_def_domain_type = IOMMU_DOMAIN_DMA_FQ;
-+
- 	pr_info("Default domain type: %s %s\n",
- 		iommu_domain_type_str(iommu_def_domain_type),
- 		(iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
-@@ -357,15 +360,6 @@ void iommu_set_dma_strict(void)
- 	iommu_dma_strict = true;
- }
- 
--bool iommu_get_dma_strict(struct iommu_domain *domain)
--{
--	/* only allow lazy flushing for DMA domains */
--	if (domain->type == IOMMU_DOMAIN_DMA)
--		return iommu_dma_strict;
--	return true;
--}
--EXPORT_SYMBOL_GPL(iommu_get_dma_strict);
--
- static ssize_t iommu_group_attr_show(struct kobject *kobj,
- 				     struct attribute *__attr, char *buf)
- {
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 046ba4d54cd2..edfe2fdb8368 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -498,7 +498,6 @@ int iommu_set_pgtable_quirks(struct iommu_domain *domain,
- 		unsigned long quirks);
- 
- void iommu_set_dma_strict(void);
--bool iommu_get_dma_strict(struct iommu_domain *domain);
- 
- extern int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
- 			      unsigned long iova, int flags);
+@@ -3265,6 +3265,8 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
+ 		req_type = IOMMU_DOMAIN_IDENTITY;
+ 	else if (sysfs_streq(buf, "DMA"))
+ 		req_type = IOMMU_DOMAIN_DMA;
++	else if (sysfs_streq(buf, "DMA-FQ"))
++		req_type = IOMMU_DOMAIN_DMA_FQ;
+ 	else if (sysfs_streq(buf, "auto"))
+ 		req_type = 0;
+ 	else
 -- 
 2.25.1
 
