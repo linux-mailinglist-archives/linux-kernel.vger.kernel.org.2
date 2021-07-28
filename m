@@ -2,153 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67D83D9423
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933BE3D9426
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhG1RRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:17:08 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:51648 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhG1RRH (ORCPT
+        id S230301AbhG1RSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:18:14 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:35365 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhG1RSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:17:07 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:59210)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m8nB3-007bZg-85; Wed, 28 Jul 2021 11:17:05 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:42676 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m8nB2-00AYDX-2C; Wed, 28 Jul 2021 11:17:04 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Alexey Gladkov <legion@kernel.org>, linux-kernel@vger.kernel.org
-References: <20210721125233.1041429-1-svens@linux.ibm.com>
-Date:   Wed, 28 Jul 2021 12:16:56 -0500
-In-Reply-To: <20210721125233.1041429-1-svens@linux.ibm.com> (Sven Schnelle's
-        message of "Wed, 21 Jul 2021 14:52:33 +0200")
-Message-ID: <875ywucq9j.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 28 Jul 2021 13:18:12 -0400
+Received: by mail-io1-f51.google.com with SMTP id y9so3803653iox.2;
+        Wed, 28 Jul 2021 10:18:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MhCaJJI/FxwbAqWqGNqDCa1/ELrQ+ncelMrX8vBhF+Y=;
+        b=criz/h4CsvfMp4GUEPIe+RwgtxejctrjF/KarL2ju/0660pDqMy2OjZsGsFpBzE8LD
+         T00tgvx15y6WvHPSl0OKr9HrUj1IktyO0GlOPquUAYE6bbF7ajqbz/Oyf+bkcl9Sx7P9
+         qSeOCAqzUxJKxYdgJChPBX/PvGL1YeuSq4okBG8AmBrwmHB1NqL+2o+JXweWD/eTJDIa
+         6dwT4eNWoxVM7shyFwU+8TUZwReVwbBhqBW0MW+V17FeTkN7E4YBRWTCkgAQ7EJK5teA
+         6w8wEZHlgP5JN0lieGIUpcvrSx6dleIY1MeP3YhxrePkvdYdAaLTwVks45BcWti9lawV
+         vVPw==
+X-Gm-Message-State: AOAM532uoZFwEih92oGv0ayP9ABChR/4IFI0T6GWFqt94baPui5UR0P1
+        MZRQ5INCEhkxBdb01+N8og==
+X-Google-Smtp-Source: ABdhPJzYD5vrsFQa6LZr+r7UlHykUF0j1thT7fabyZOU1+d+F/lp7UhiifIfk02RMe2Ub3JiO29hVA==
+X-Received: by 2002:a5e:dc48:: with SMTP id s8mr386481iop.133.1627492690365;
+        Wed, 28 Jul 2021 10:18:10 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id l5sm388932ion.44.2021.07.28.10.18.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 10:18:09 -0700 (PDT)
+Received: (nullmailer pid 1269234 invoked by uid 1000);
+        Wed, 28 Jul 2021 17:18:07 -0000
+Date:   Wed, 28 Jul 2021 11:18:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michael Auchter <michael.auchter@ni.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+Subject: Re: [PATCH v2 3/3] dt-bindings: extcon: usbc-tusb320: Add TUSB320L
+ compatible string
+Message-ID: <20210728171807.GA1269122@robh.at.kernel.org>
+References: <a4rEWQfScKM8Y0B7u0NXSAdvKC6Xzesp1OWGUYjeWaA@cp3-web-016.plabs.ch>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1m8nB2-00AYDX-2C;;;mid=<875ywucq9j.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+cqmwLDUxsvtTMPwYR17iocWyqZlJ6gyI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4962]
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Sven Schnelle <svens@linux.ibm.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 520 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 10 (2.0%), b_tie_ro: 9 (1.7%), parse: 0.87 (0.2%),
-         extract_message_metadata: 3.3 (0.6%), get_uri_detail_list: 1.46
-        (0.3%), tests_pri_-1000: 3.2 (0.6%), tests_pri_-950: 1.19 (0.2%),
-        tests_pri_-900: 0.94 (0.2%), tests_pri_-90: 72 (13.8%), check_bayes:
-        70 (13.5%), b_tokenize: 6 (1.2%), b_tok_get_all: 5 (1.0%),
-        b_comp_prob: 1.65 (0.3%), b_tok_touch_all: 54 (10.4%), b_finish: 0.81
-        (0.2%), tests_pri_0: 410 (78.8%), check_dkim_signature: 0.49 (0.1%),
-        check_dkim_adsp: 2.6 (0.5%), poll_dns_idle: 0.77 (0.1%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 8 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2] ucounts: add missing data type changes
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4rEWQfScKM8Y0B7u0NXSAdvKC6Xzesp1OWGUYjeWaA@cp3-web-016.plabs.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sven Schnelle <svens@linux.ibm.com> writes:
-
-> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
-> changed the data type of ucounts/ucounts_max to long, but missed to
-> adjust a few other places. This is noticeable on big endian platforms
-> from user space because the /proc/sys/user/max_*_names files all
-> contain 0.
-
-As far as this goes I don't have any problem with this patch.
-
-However it looks like you missed
-fs/notify/inotify_user.c:inotify_table[].
-
-Any chance you can add to the patch that verify things look ok and send
-version 3?
-
-Thanks,
-Eric
-
-
-> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
-> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+On Tue, 27 Jul 2021 09:57:15 +0000, Yassine Oudjana wrote:
+> Add a compatible string for TUSB320L.
+> 
+> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
 > ---
->  fs/notify/fanotify/fanotify_user.c | 10 ++++++----
->  kernel/ucount.c                    | 16 ++++++++--------
->  2 files changed, 14 insertions(+), 12 deletions(-)
->
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index 64864fb40b40..6576657a1a25 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -58,18 +58,20 @@ struct ctl_table fanotify_table[] = {
->  	{
->  		.procname	= "max_user_groups",
->  		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
-> -		.maxlen		= sizeof(int),
-> +		.maxlen		= sizeof(long),
->  		.mode		= 0644,
-> -		.proc_handler	= proc_dointvec_minmax,
-> +		.proc_handler	= proc_doulongvec_minmax,
->  		.extra1		= SYSCTL_ZERO,
-> +		.extra2		= SYSCTL_INT_MAX,
->  	},
->  	{
->  		.procname	= "max_user_marks",
->  		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS],
-> -		.maxlen		= sizeof(int),
-> +		.maxlen		= sizeof(long),
->  		.mode		= 0644,
-> -		.proc_handler	= proc_dointvec_minmax,
-> +		.proc_handler	= proc_doulongvec_minmax,
->  		.extra1		= SYSCTL_ZERO,
-> +		.extra2		= SYSCTL_INT_MAX,
->  	},
->  	{
->  		.procname	= "max_queued_events",
-> diff --git a/kernel/ucount.c b/kernel/ucount.c
-> index 87799e2379bd..f852591e395c 100644
-> --- a/kernel/ucount.c
-> +++ b/kernel/ucount.c
-> @@ -58,14 +58,14 @@ static struct ctl_table_root set_root = {
->  	.permissions = set_permissions,
->  };
->  
-> -#define UCOUNT_ENTRY(name)				\
-> -	{						\
-> -		.procname	= name,			\
-> -		.maxlen		= sizeof(int),		\
-> -		.mode		= 0644,			\
-> -		.proc_handler	= proc_dointvec_minmax,	\
-> -		.extra1		= SYSCTL_ZERO,		\
-> -		.extra2		= SYSCTL_INT_MAX,	\
-> +#define UCOUNT_ENTRY(name)					\
-> +	{							\
-> +		.procname	= name,				\
-> +		.maxlen		= sizeof(long),			\
-> +		.mode		= 0644,				\
-> +		.proc_handler	= proc_doulongvec_minmax,	\
-> +		.extra1		= SYSCTL_ZERO,			\
-> +		.extra2		= SYSCTL_INT_MAX,		\
->  	}
->  static struct ctl_table user_table[] = {
->  	UCOUNT_ENTRY("max_user_namespaces"),
+>  .../devicetree/bindings/extcon/extcon-usbc-tusb320.yaml       | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+
+
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
+
+If a tag was not added on purpose, please state why and what changed.
+
