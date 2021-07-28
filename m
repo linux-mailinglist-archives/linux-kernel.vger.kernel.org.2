@@ -2,115 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664A13D9092
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCAC3D90A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237192AbhG1O1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236837AbhG1O0z (ORCPT
+        id S237754AbhG1ObP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:31:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17266 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236977AbhG1O0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:26:55 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FBEC0617A2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:26:32 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id a7so3278078ljq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5wW7GGfnHW+FbXjPW0YXEzsBymKiCMQ5XbTjvh/KboQ=;
-        b=lauEEuiRYW1T8KlRcC7+C3wNCVNPsohJ7h2lpG0RrO/VvQ9Z1WVCAu777ngIlXaqsl
-         Yh7tG9FxqeSO7oXmknKzZNOZD7eXVmt6nhKs/+vzagJhZPoe9STykeXLRj9yY5JXM4CO
-         +Hd78QFe1WvCxy8vxXdrz8XOOtKmdZYinT4/RuGtDMSYORrhhEgi0ex85rtQ9BBEdkDK
-         sXJNyV9g+f86FYTZaT7aQanIsIDpcV7AA6ara+QbpgkDKfCV39N6bnquJzUtgnqZ6XKO
-         HMKzbHyGoVNIzYkQfE4hJS/ZSwhIwGkqqWILdxIGo4ByD1LF40gUZ4qiZ2Uoq+eJ1xdb
-         VxnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5wW7GGfnHW+FbXjPW0YXEzsBymKiCMQ5XbTjvh/KboQ=;
-        b=qgVYlpDfXDfBN4pHfbdrlQ1jGH80FkjqRd1V9h6MHmRw4fdUgisU49xDRD27wGjPdi
-         i6CnYlmMwgys7VpKcbP+B2SIv0DqO28Y1D70cSUKzwXkpNomgfP/ctj0mgO7k/hTo1Ib
-         JrXa0WsYKMxoiA6UNcVQbV9QJ6Wkcsm2l5BnIbDanRFBQwu5+V2XBhrS2j5aL49YCFT0
-         kplQNVu1Dh3kQIOsO/5bAcwfxl+CTZSlz9iANwsYGd5WhkS1MAyhuNEDnHAwh47yhFB9
-         8GRl1i9TJtn9oQicid9/T0M12CN5O+FQR6o3POqMM/gfB353Ek8Hr0XSOySc8dAiVF4+
-         hG1g==
-X-Gm-Message-State: AOAM532QbUuwj2DcBezwypTqD6HLSuXFWPFkWhVfoSiBxcwJVNUGBBUW
-        o2G7jVitymGl8HqFa29pmwK6AWYR0R7ZgSdi6+KwNQ==
-X-Google-Smtp-Source: ABdhPJzOM17jqW7FCFdGqhUip/b+GcfgAIxToJpxbmMfaRL0XlMbu+nlvXxP3Dtu8D+2E+e3tW8wWZDZLJY4GiAk8n0=
-X-Received: by 2002:a05:651c:1213:: with SMTP id i19mr85583lja.81.1627482390698;
- Wed, 28 Jul 2021 07:26:30 -0700 (PDT)
+        Wed, 28 Jul 2021 10:26:45 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SENN8A021105;
+        Wed, 28 Jul 2021 10:26:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=38gFOKTrICW/O1vPT+e3nGr/ypCZAcQ7LGuzZZqEV8Y=;
+ b=PBgMWLiGdfYVD6PzDXd8A0/vZBDcNxH10MMW8YB80iCRDhX1B7kswmQHq6hU9bDDmzER
+ 80kB5GeK20fM0q1+MPJg/9evrByHyWFPJu+OyYynTB8rolCl/NdhMNUYOEykd7TXbwqv
+ 4ZVHCKj+wVdtkyRBE+Rk92xCWE2cZbyXV0bhMekT5kWM8YqOETKs9QF/9hm9lT7ycabf
+ lzfLq2Y6xccdR+4eNQ/oCrOZFFDVVy67yFKSgIpqG6ZmxbCqwPclXDu81MLRudCk2ai9
+ zdMtFG03gzr6scZKAtmPZv04YrVmG6dHMezlgjtveDjew5N9AJwBXNsoSYobTTpnZGZu 6A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a35rb6ebw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 10:26:43 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16SENsxj022885;
+        Wed, 28 Jul 2021 10:26:43 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a35rb6eb3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 10:26:43 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16SEJ6aM011264;
+        Wed, 28 Jul 2021 14:26:40 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 3a235kgr58-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 14:26:40 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16SEQbR230736860
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Jul 2021 14:26:37 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 51DBAA4057;
+        Wed, 28 Jul 2021 14:26:37 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E486FA4065;
+        Wed, 28 Jul 2021 14:26:36 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.9.194])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Jul 2021 14:26:36 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 01/13] KVM: s390: pv: avoid stall notifications for some UVCs
+Date:   Wed, 28 Jul 2021 16:26:19 +0200
+Message-Id: <20210728142631.41860-2-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210728142631.41860-1-imbrenda@linux.ibm.com>
+References: <20210728142631.41860-1-imbrenda@linux.ibm.com>
 MIME-Version: 1.0
-References: <20210728091348.272714-1-wanghai38@huawei.com> <YQFaPwYzzy0UPzNI@dhcp22.suse.cz>
- <e9ad7775-2df2-fdb3-cfa9-6c1c265142f5@huawei.com>
-In-Reply-To: <e9ad7775-2df2-fdb3-cfa9-6c1c265142f5@huawei.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 28 Jul 2021 07:26:19 -0700
-Message-ID: <CALvZod7a36w7Hht4yrozTMx4gdNxZ7mzi+MeaD-yuv69rxYY7Q@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcg: fix NULL pointer dereference in memcg_slab_free_hook()
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Wang Hai <wanghai38@huawei.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: SEkbtfQ3kIXHROiIromPa2DXfBf-bk8q
+X-Proofpoint-GUID: pjtvj0adBZWtOQzEl3a15SQaRcURU-sr
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-28_08:2021-07-27,2021-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 spamscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
+ impostorscore=0 priorityscore=1501 adultscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107280079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 7:21 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
->
-> On 2021/7/28 21:23, Michal Hocko wrote:
-> > On Wed 28-07-21 17:13:48, Wang Hai wrote:
-> >> When I use kfree_rcu() to free a large memory allocated by
-> >> kmalloc_node(), the following dump occurs.
-> >>
-> >> BUG: kernel NULL pointer dereference, address: 0000000000000020
-> >> [...]
-> >> Oops: 0000 [#1] SMP
-> >> [...]
-> >> Workqueue: events kfree_rcu_work
-> >> RIP: 0010:__obj_to_index include/linux/slub_def.h:182 [inline]
-> >> RIP: 0010:obj_to_index include/linux/slub_def.h:191 [inline]
-> >> RIP: 0010:memcg_slab_free_hook+0x120/0x260 mm/slab.h:363
-> >> [...]
-> >> Call Trace:
-> >>   kmem_cache_free_bulk+0x58/0x630 mm/slub.c:3293
-> >>   kfree_bulk include/linux/slab.h:413 [inline]
-> >>   kfree_rcu_work+0x1ab/0x200 kernel/rcu/tree.c:3300
-> >>   process_one_work+0x207/0x530 kernel/workqueue.c:2276
-> >>   worker_thread+0x320/0x610 kernel/workqueue.c:2422
-> >>   kthread+0x13d/0x160 kernel/kthread.c:313
-> >>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> >>
-> >> When kmalloc_node() a large memory, page is allocated, not slab,
-> >> so when freeing memory via kfree_rcu(), this large memory should not
-> >> be used by memcg_slab_free_hook(), because memcg_slab_free_hook() is
-> >> is used for slab.
-> >>
-> >> So in this case, there is no need to do anything with this large
-> >> page in memcg_slab_free_hook(), just skip it.
-> >>
-> >> Fixes: 270c6a71460e ("mm: memcontrol/slab: Use helpers to access slab page's memcg_data")
-> > Are you sure that this commit is really breaking the code. Unless I have
-> Yes, we confirmed that this commit introduces the bug.
-> > missed something there shouldn't be any real change wrt. large
-> > allocations here. page_has_obj_cgroups is just a different name for what
-> > what page_objcgs is giving us.
->
-> maybe we could simply use page_objcgs_check to fix the issue ? we will
-> check it again.
+Improve make_secure_pte to avoid stalls when the system is heavily
+overcommitted. This was especially problematic in kvm_s390_pv_unpack,
+because of the loop over all pages that needed unpacking.
 
-You will see the same crash with page_objcgs_check as well.
+Also fix kvm_s390_pv_init_vm to avoid stalls when the system is heavily
+overcommitted.
+
+Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+---
+ arch/s390/kernel/uv.c | 11 ++++++++---
+ arch/s390/kvm/pv.c    |  2 +-
+ 2 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+index aeb0a15bcbb7..fd0faa51c1bb 100644
+--- a/arch/s390/kernel/uv.c
++++ b/arch/s390/kernel/uv.c
+@@ -196,11 +196,16 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
+ 	if (!page_ref_freeze(page, expected))
+ 		return -EBUSY;
+ 	set_bit(PG_arch_1, &page->flags);
+-	rc = uv_call(0, (u64)uvcb);
++	rc = __uv_call(0, (u64)uvcb);
+ 	page_ref_unfreeze(page, expected);
+-	/* Return -ENXIO if the page was not mapped, -EINVAL otherwise */
+-	if (rc)
++	/*
++	 * Return -ENXIO if the page was not mapped, -EINVAL for other errors.
++	 * If busy or partially completed, return -EAGAIN.
++	 */
++	if (rc == 1)
+ 		rc = uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
++	else if (rc > 1)
++		rc = -EAGAIN;
+ 	return rc;
+ }
+ 
+diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+index c8841f476e91..e007df11a2fe 100644
+--- a/arch/s390/kvm/pv.c
++++ b/arch/s390/kvm/pv.c
+@@ -196,7 +196,7 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
+ 	uvcb.conf_base_stor_origin = (u64)kvm->arch.pv.stor_base;
+ 	uvcb.conf_virt_stor_origin = (u64)kvm->arch.pv.stor_var;
+ 
+-	cc = uv_call(0, (u64)&uvcb);
++	cc = uv_call_sched(0, (u64)&uvcb);
+ 	*rc = uvcb.header.rc;
+ 	*rrc = uvcb.header.rrc;
+ 	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x",
+-- 
+2.31.1
+
