@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642503D920D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC0D3D920E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237240AbhG1Pco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S237292AbhG1Pcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235622AbhG1Pcn (ORCPT
+        with ESMTP id S237270AbhG1Pcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:32:43 -0400
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1317C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:32:41 -0700 (PDT)
-Received: by mail-wm1-x349.google.com with SMTP id j204-20020a1c23d50000b029024e75a15714so1088543wmj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:32:41 -0700 (PDT)
+        Wed, 28 Jul 2021 11:32:46 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0876C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:32:43 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id c41-20020a05600c4a29b0290253935d0f82so1516488wmp.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:32:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=woxBdtlGB6zB1Cvm58/DELTClL+Pi4ueOkLDe2VMF2M=;
-        b=epz07g1EaavCivdoVuxcYOGCNXaoqnHhC/UGhLJRF+Pky/IvXdl3JWJ/nFWpj1Ynvf
-         KjegyFAa2rqJf5VkvBzIf5tCpmdFnEuEi+3GKS+sfYVz+flelYUipvnrD5flmnVoNSdp
-         HYObj4QGfiMOQmAIe3/I4itJkSqJwj8bKMkVQhbx8UQejc84bFjgnN//b2YSK0Shovvv
-         3TSYIRoZRvbXhh+oXXVNHCOqLH/Neby0qKwUGuDd+xPKZOK21+GKxBiI4nRE4D8Ba8dS
-         O7SJsrFOZwe9huviD1vNwjgYFKYApbdca566DIHnHOgoMQmwf7QVMBBFhB6CARGzEuDw
-         sotQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=wsuCFl3zJw45VJsq2CCpitdGwDgZYGVgJGVdlnAA78Y=;
+        b=H8AiMx+L6JXn5Q+T+lMqgWRxobIRqr1+MD1xsZdr4m6FSo/4YE+a379Kuo8gyFA44C
+         VJH3lsBWEIBwuqw4RWtBjV/tN0ISN2k68TGgN8BSEKrL0hD+GIIpEmg7bAQ3PxjKkBUS
+         lmm/xrYOZ1ljLtSJwWL/yt3uv5QLcvQPySXsZGT/ev7ua1Z27AkwLUbkQNm6RG4rnl5+
+         TkDkcFzqPQz/VFhensW0nxv8xcGF5dBu/mwQdIA+v/wiqyydrUvaAxKqNGg0FX6QRFOZ
+         FEghjQ51cpIQVaISj8htiqpUP7Fpkh/kpbqUVbJJgN+xGUBdgVaH7cUvOkKQoqG4Xps1
+         +P5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=woxBdtlGB6zB1Cvm58/DELTClL+Pi4ueOkLDe2VMF2M=;
-        b=kEXl0v8u7qqqzkuRL2y0v6LB40jQ5zv88EpKH0G6hX2Vxh0Dj5VwOk6CASzUOrSZWB
-         HvUprURyTyQyyv1MOeZJqC8Dvz4paSq+wyPqq6pEbxS4vZutYw6EsAbWKF/D2E4apm7x
-         hnEKYM3H8yb1MZHrcqdQx8O5swg0HH70Y84jmkKNKV3avoXj7M2vGs9OIXezmQxS6vXI
-         ubkkp/VJcfqyvIvJyHLGbQjfFTByFlFVhMf8MLF+x252cfV+4DeguC6tJeNeM4CCQ874
-         kOn9nM5GhDYg5l8jBeYdq/KKtixDy1sm6lJlszrSwIfRs8LMIo1cUB47fGLuW+Y+e1VI
-         HRRg==
-X-Gm-Message-State: AOAM53168FptbpIskvRAazRUR0MT56UEQTgZT+eFeql5bB1cWyX04Tid
-        ItkETK6f3f4weE7BgHIvt8VFR2BDxPt+EQ==
-X-Google-Smtp-Source: ABdhPJxcC9G+bs+7QxWK7qVmeijPTYfUQ0BkmUenPrMR4B9UrgEdp6IuwoWBJPGRXAZh21n0pgqNMUrPMGxJ/g==
-X-Received: from dbrazdil.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:7f9b])
- (user=dbrazdil job=sendgmr) by 2002:a1c:7c04:: with SMTP id
- x4mr331814wmc.48.1627486360245; Wed, 28 Jul 2021 08:32:40 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 15:32:30 +0000
-Message-Id: <20210728153232.1018911-1-dbrazdil@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=wsuCFl3zJw45VJsq2CCpitdGwDgZYGVgJGVdlnAA78Y=;
+        b=ovcsqtj41VeUlP7Av+bD0Qe/oQMyIEGlWbGOjMqKmHaFaZNQ8cclLMWI3BbHzCEIna
+         gxv13F5eelAb/BE/nFHeoAgjWjDmOWQ7gv7UUmGtVyBTg1RpRm+tEpGaoRl2ceBDZJfX
+         AJ5dWr1kz5gsX6cjgYaHqx4/eA+uoh8Zr9dDq1XVVwv/Y5dLiTKInHBAQdX7cjfprxQk
+         w1rUm1SGv1WC/BN3gEqARVA04b0Ndrv1aJSXJ78n2KvIH2dy51njdBhxB7FOFPud/GLA
+         179MV/jfA0LQkM/lVpvanMrVnHvgABMCz8jhkobmzYh4qFjOHhw6W+YoZKSGs8nM/fsp
+         CaJQ==
+X-Gm-Message-State: AOAM532NjTtnVbgpUCHHK6scK16i/PXE7EAZxWmz98gWSSWbwpLf9GEi
+        2TmvnAgpADE8vl62Vkc8vd7JQ19JKsmBAQ==
+X-Google-Smtp-Source: ABdhPJxuEfipJsCbHRn1LIm1ICWET52ttWIgJnQxaUq0o234lBR+T/9ot6YarV6e8XqcOQE6CGdknEA+TvYf8A==
+X-Received: from dbrazdil.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:7f9b])
+ (user=dbrazdil job=sendgmr) by 2002:a7b:cb4d:: with SMTP id
+ v13mr10176875wmj.68.1627486362229; Wed, 28 Jul 2021 08:32:42 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 15:32:31 +0000
+In-Reply-To: <20210728153232.1018911-1-dbrazdil@google.com>
+Message-Id: <20210728153232.1018911-2-dbrazdil@google.com>
 Mime-Version: 1.0
+References: <20210728153232.1018911-1-dbrazdil@google.com>
 X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH 0/2] Fix off-by-one in range_is_memory
+Subject: [PATCH 1/2] KVM: arm64: Fix off-by-one in range_is_memory
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
@@ -63,16 +67,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, here is an off-by-one bug fix and a very minor improvement for
-the range_is_memory function in hyp.
+Hyp checks whether an address range only covers RAM by checking the
+start/endpoints against a list of memblock_region structs. However,
+the endpoint here is exclusive but internally is treated as inclusive.
+Fix the off-by-one error that caused valid address ranges to be
+rejected.
 
-David Brazdil (2):
-  KVM: arm64: Fix off-by-one in range_is_memory
-  KVM: arm64: Minor optimization of range_is_memory
+Cc: Quentin Perret <qperret@google.com>
+Fixes: 90134ac9cabb6 ("KVM: arm64: Protect the .hyp sections from the host")
+Signed-off-by: David Brazdil <dbrazdil@google.com>
+---
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/arm64/kvm/hyp/nvhe/mem_protect.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
+diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+index d938ce95d3bd..a6ce991b1467 100644
+--- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
++++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+@@ -193,7 +193,7 @@ static bool range_is_memory(u64 start, u64 end)
+ {
+ 	struct kvm_mem_range r1, r2;
+ 
+-	if (!find_mem_range(start, &r1) || !find_mem_range(end, &r2))
++	if (!find_mem_range(start, &r1) || !find_mem_range(end - 1, &r2))
+ 		return false;
+ 	if (r1.start != r2.start)
+ 		return false;
 -- 
 2.32.0.432.gabb21c7263-goog
 
