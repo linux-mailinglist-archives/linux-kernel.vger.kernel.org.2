@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5985F3D8682
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 06:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9446A3D8540
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhG1ET0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 00:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
+        id S233181AbhG1BVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhG1ETY (ORCPT
+        with ESMTP id S233008AbhG1BVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 00:19:24 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A489C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 21:19:22 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d2so474014qto.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 21:19:22 -0700 (PDT)
+        Tue, 27 Jul 2021 21:21:36 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF578C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:21:34 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so1874454pjh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:21:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=98gtSXDc7ZlTP8DOpD7xPPrbBz6KU/i+LtjlbzvHQbE=;
-        b=k0X6UEjkKBfbAFH6JYFJNMOfoQuDUk6MYWgifJN2pAnWZnEeGST5bE74ezH/a4Ew8m
-         l7+Ha5ZJzvssBw6MkI6+vJItvzys74w8MoJNkyeBcDGKwsmKCY+QW8vmmd26oCSfTTJt
-         AaJvOxs7IhcR+nfQJONeDTeW+x1tB+jLz2umb27g8Lv5R7R5wa2TySBJWuj/TmkwXGRP
-         VpIhPpKFi4ws1+9QWtJ/4237wxnTJbmRpT4wolmwZclF9yYVJCqyIiY82cByYOx34VNl
-         OUYMFTOTln5FSaElAUSKa/6uujrTsBgBpsPW2W6CWfScvptbn1fhKlsAOsHNe0Di95/I
-         aVGQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qb6AmUun9APuPrgzQxqKUIOoVaaUXmZ7gAzLjwZEots=;
+        b=J1d4jufgbTDIilvtvajEVip/DQBZZaoteqloKCVqCncgADyy/7p+Sy7M+xFjGsKqsh
+         JsYLj4SGbO0kcXmd28grb1CRmsyQC30p/YzuMKh0/ymzJ+xogDXu1HRj6fCaJpHl+8cB
+         VWP8qHJTf/lrWjQtW5woxf6YwW8OOv13pntps=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=98gtSXDc7ZlTP8DOpD7xPPrbBz6KU/i+LtjlbzvHQbE=;
-        b=DKC7BDI7PME959xntUdwhc/HPxKU6pLhzVytrTKNxIOkY5RcZXk/TLumaeaDg2Jdad
-         +9K7nC7Keqg43ZhzVHivpzIPC5mv4FYQ7OjIJwZYBEI+qLjjMSlL4SDPcWh2bVH6pZgq
-         ZkKduqr5Q9ZAWJ7ssvcHeqdw+gkWezl7OyWd38M/cn3j+aG/Np/7wZKz/8PnJXGw7Atq
-         uhH32usdEbBdiCZ0LLjzqwCLmVYq89HVzvwG58jTIkMW039GVdEj5LGU+KZh2n905naF
-         Qcv4kxPaO2UuxA8qxwzGdZujYOtx/OS4ZceQXeqhGaeIrUWna1SBHQ9z5L9YJSAJZZal
-         JWTA==
-X-Gm-Message-State: AOAM5305OiEzrLc0EWtFfXwe9xodiyAkZPmc8+Xr1RM9wml1Xbpdk6Nk
-        lMfF03LTUROzrsQsqvzd9LqU4Dp4efxVpJwhHiQ=
-X-Google-Smtp-Source: ABdhPJzpRxaeYMeDLeO8zgqFYNb5J+g+FY8Gr9FLuWekwpckk/L7lwKzlbgsAza9R5n6NqJdrQnj4LbbOWpJUBlWZXs=
-X-Received: by 2002:ac8:7c54:: with SMTP id o20mr13378070qtv.142.1627445961649;
- Tue, 27 Jul 2021 21:19:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qb6AmUun9APuPrgzQxqKUIOoVaaUXmZ7gAzLjwZEots=;
+        b=e0qkT/S8A/xmyRusvgW/uDdOwyW4DShkSKsskhNrECuLQOaBuMB4rDSV/e5G5GzXEZ
+         /mrdPsgJFY1LJCKTH2+mNGCf/mmdjjacwY7k2FWzBVKALJ/nSFxiDiLYkqq+LvRZNtNo
+         zrpLPGdK+SYODh9DANvTZ6mTc+ZrMYUvc1Hxh6DlFQxJt4l4A6kFhvpmluZkyIaNVpyv
+         WpOhxzVtP5qCPXzc29EbgEC/uqCYYg1u2EA3FMnuMvnSIrNhFthm8kqIa2uhv8cYZ04w
+         ZCKqouG1Aui9TG2JLBdmmiJwPk0VjPCWoQWuI4lvXNstEbMfAl7kpfGf4192WNN28+c6
+         XJ0A==
+X-Gm-Message-State: AOAM532GfXy0J7AhijDeZtjlcdWWaGCltYjYnOsWbDhQFrX6LpcQEYtn
+        NvRm3dNUEf1YdypD5BYYcQ1yzA==
+X-Google-Smtp-Source: ABdhPJwiVrFwcUA4wc6qcaXZTfTgMANGRyCc4k5ykDEYlJd0wxkyOpdvIDZci6McVQSa8l1PIpzHCA==
+X-Received: by 2002:a17:903:30c3:b029:12c:1bf3:68d7 with SMTP id s3-20020a17090330c3b029012c1bf368d7mr11610278plc.73.1627435294347;
+        Tue, 27 Jul 2021 18:21:34 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:ba3e:509b:495:ec84])
+        by smtp.gmail.com with ESMTPSA id y28sm5080048pff.137.2021.07.27.18.21.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 18:21:33 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 10:21:29 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/nmi_backtrace: Serialize even messages about idle
+ CPUs
+Message-ID: <YQCxGfFUMKfcUPgK@google.com>
+References: <20210727080939.27193-1-pmladek@suse.com>
+ <87r1fjiwsn.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <CAEsQvctJDnsaRTXAGAJ6==juKazoo2=AJrWabLzqE=jCfg5EEA@mail.gmail.com>
- <20210727102744.30364-1-chihhao.chen@mediatek.com> <CAEsQvcuOQ_Tg0bRbsegECdBUsGxa61ei9-Z2bRbGvQ9FmEUPbA@mail.gmail.com>
-In-Reply-To: <CAEsQvcuOQ_Tg0bRbsegECdBUsGxa61ei9-Z2bRbGvQ9FmEUPbA@mail.gmail.com>
-From:   Geraldo Nascimento <geraldogabriel@gmail.com>
-Date:   Wed, 28 Jul 2021 01:19:13 +0000
-Message-ID: <CAEsQvcvMVCptNss0iSB1uk1vu7PNdyO5c3jzHbi3HvRELi5Jdw@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
-To:     chihhao chen <chihhao.chen@mediatek.com>
-Cc:     alsa-devel@alsa-project.org, damien@zamaudio.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        tiwai@suse.com, Takashi Iwai <tiwai@suse.de>,
-        wsd_upstream@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r1fjiwsn.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Chihhao, please try the below patch and perform another echo test.
+On (21/07/27 17:53), John Ogness wrote:
+> On 2021-07-27, Petr Mladek <pmladek@suse.com> wrote:
+> > The commit 55d6af1d66885059ffc2a ("lib/nmi_backtrace: explicitly serialize
+> > banner and regs") serialized backtraces from more CPUs using the re-entrant
+> > printk_printk_cpu lock. It was a preparation step for removing the obsolete
+> > nmi_safe buffers.
+> >
+> > The single-line messages about idle CPUs were not serialized against other
+> > CPUs and might appear in the middle of backtrace from another CPU,
+> > for example:
+> >
+> > [56394.590068] NMI backtrace for cpu 2
+> > [56394.590069] CPU: 2 PID: 444 Comm: systemd-journal Not tainted 5.14.0-rc1-default+ #268
+> > [56394.590071] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+> > [56394.590072] RIP: 0010:lock_is_held_type+0x0/0x120
+> > [56394.590071] NMI backtrace for cpu 0 skipped: idling at native_safe_halt+0xb/0x10
+> > [56394.590076] Code: a2 38 ff 0f 0b 8b 44 24 04 eb bd 48 8d ...
+> > [56394.590077] RSP: 0018:ffffab02c07c7e68 EFLAGS: 00000246
+> > [56394.590079] RAX: 0000000000000000 RBX: ffff9a7bc0ec8a40 RCX: ffffffffaab8eb40
+> >
+> > It might cause confusion what CPU the following lines belongs to and
+> > whether the backtraces are really serialized.
+> 
+> I originally implemented this, but later decided against it because it
+> causes idle CPUs to begin busy-waiting in NMI context in order to log a
+> single line saying they are idle. If the user is aware that there is
+> only 1 line for the idle message, then the user knows that it isn't
+> causing a problem for reading the stack trace.
+
+I agree, but don't have any strong opinion against the patch.
+
+> Feel free to add:
 >
-> Let us know if the echo test works or if it still fails and please
-> remember to share with us the relevant dmesg logs.
->
+> Reviewed-by: John Ogness <john.ogness@linutronix.de>
 
-Chihhao Chen,
-
-when I said echo test I meant just test the device and observe if
-there are noises related to incorrect clock setting.
-
-
-I then realized a bit too late that probably in your programming
-culture "echo test" refers to the whole technique you used to hook the
-kernel and debug the issue to produce the fix.
-
-If you call that technique "echo test" I'm sorry, I didn't know it was
-called that way.
-
-
-I just meant to briefly test to hear if there is noise even when the
-clock parameters are correctly hardcoded.
-
-My intent with that patch is to try to prove there's a firmware bug in
-action just like Takashi Iwai suggested.
-
-
-My apologies,
-Geraldo Nascimento
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
