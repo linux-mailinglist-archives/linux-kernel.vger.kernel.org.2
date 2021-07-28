@@ -2,113 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3693D96FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C133D9703
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhG1Uom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhG1Uol (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:44:41 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F072C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:44:38 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id k1so4172961plt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:44:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JKhYNwVtUcp4ro2cn3vBpepmIsUitpS2N9O0Akilpxs=;
-        b=TjRNT1lBPk9nMKLFJP4cYldUWDOJ85jWLeh7Fm6QUt+euyu2F9X+/9RhdzUaAaCk6c
-         68wNsxdZrCHj9MPFrP1HymbrqMOHz+YW1bkHcj2b3ZvOZ4J3pGKpUWN8B7qaoxRb+DmC
-         RPs0AegkISl8MzmjBNr7uM8kqWmkuDsEI4tuk4bRBjxQVntvR/zwCz6MyMWN+lxQM0sJ
-         e3JRPxfoVMRzZLhjMfXyGIGAi3YTfTV9rWX3MCO2xwsbeCUxg7icDHuiOzfmfOL0Jqnr
-         3JcZ1DvHH82smpwmExd9Bt7WUP0DN5GrgXX6TCvXuLcTllJj9sMR1Eyrg7zVplWQ4ONa
-         tKNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JKhYNwVtUcp4ro2cn3vBpepmIsUitpS2N9O0Akilpxs=;
-        b=Z/ucBY0U4kM6INCQZg9HmaiB3WD+dlCWQ8jXVxRbKa9JmM5NgSyYe1w4w9pWlxgleH
-         U7n0sG2FkBE3NIMFE3Cx+9ys/8Ir4A07gfuGmhMgecGYh6j2pgDQpwRfKZp/+d1XTlSr
-         4ZHnwCrZO1Nk24tXaYrOSmqTkeQ14OCmlxs4a+XXqkdW6QOsUUMRoV1rDoLdR1DaMMCG
-         de/mZQ/JkBU7neQyPxh78OTOPpNyhxCM25JKVCb8ODQDl2Hh2IbJgb0Eo2rh7F4+GlXl
-         XkD9QYQaioVirc/HC1dIxD/KRvC4KSCn7u/MLpsta3uvy6fIHTiDegsnDO/r1AU2s8Ik
-         TkNg==
-X-Gm-Message-State: AOAM530FEfpz7OZRdaICSVZPPjhJIeZ7c8bMrIOkqt/gshdAMjRiorzj
-        y48Q3Dy+/fKZ/bjSKaHmwnHLag==
-X-Google-Smtp-Source: ABdhPJwDNqv6/oCIErCVMa6h8MNsSlG+xcG3LueWac7TWFNwnvzRDteRSi0D00QGsumG2dN8bfz86Q==
-X-Received: by 2002:a63:4423:: with SMTP id r35mr685414pga.358.1627505077700;
-        Wed, 28 Jul 2021 13:44:37 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id on9sm6637907pjb.47.2021.07.28.13.44.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 13:44:37 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 20:44:33 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Reiji Watanabe <reijiw@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, KVM <kvm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 46/46] KVM: x86: Preserve guest's CR0.CD/NW on INIT
-Message-ID: <YQHBsbHYayhSJOSz@google.com>
-References: <20210713163324.627647-1-seanjc@google.com>
- <20210713163324.627647-47-seanjc@google.com>
- <CAAeT=FzGDUr8MK5Uf3jyUxtf+2jCf=bgG760L0mjjM3vRsXKSg@mail.gmail.com>
- <A41676B6-2E9F-4F8E-B91E-8F9A077A2FA8@gmail.com>
+        id S231873AbhG1UrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:47:14 -0400
+Received: from mga01.intel.com ([192.55.52.88]:60188 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231585AbhG1UrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 16:47:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="234634458"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="234634458"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 13:47:01 -0700
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="506679869"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 13:47:01 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v3 0/7] Basic recovery for machine checks inside SGX
+Date:   Wed, 28 Jul 2021 13:46:46 -0700
+Message-Id: <20210728204653.1509010-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210719182009.1409895-1-tony.luck@intel.com>
+References: <20210719182009.1409895-1-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A41676B6-2E9F-4F8E-B91E-8F9A077A2FA8@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021, Nadav Amit wrote:
-> 
-> > On Jul 19, 2021, at 9:37 PM, Reiji Watanabe <reijiw@google.com> wrote:
-> > 
-> > On Tue, Jul 13, 2021 at 9:35 AM Sean Christopherson <seanjc@google.com> wrote:
-> >> 
-> >> Preserve CR0.CD and CR0.NW on INIT instead of forcing them to '1', as
-> >> defined by both Intel's SDM and AMD's APM.
-> >> 
-> >> Note, current versions of Intel's SDM are very poorly written with
-> >> respect to INIT behavior.  Table 9-1. "IA-32 and Intel 64 Processor
-> >> States Following Power-up, Reset, or INIT" quite clearly lists power-up,
-> >> RESET, _and_ INIT as setting CR0=60000010H, i.e. CD/NW=1.  But the SDM
-> >> then attempts to qualify CD/NW behavior in a footnote:
-> >> 
-> >>  2. The CD and NW flags are unchanged, bit 4 is set to 1, all other bits
-> >>     are cleared.
-> >> 
-> >> Presumably that footnote is only meant for INIT, as the RESET case and
-> >> especially the power-up case are rather non-sensical.  Another footnote
-> >> all but confirms that:
-> >> 
-> >>  6. Internal caches are invalid after power-up and RESET, but left
-> >>     unchanged with an INIT.
-> >> 
-> >> Bare metal testing shows that CD/NW are indeed preserved on INIT (someone
-> >> else can hack their BIOS to check RESET and power-up :-D).
-> >> 
-> >> Reported-by: Reiji Watanabe <reijiw@google.com>
-> >> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > 
-> > Reviewed-by: Reiji Watanabe <reijiw@google.com>
-> > 
-> > Thank you for the fix and checking the CD/NW with the bare metal testing.
-> 
-> Interesting.
-> 
-> Is there a kvm-unit-test to reproduce the issue by any chance?
+Changes since v2:
 
-No :-/
+Jarkko:
+	1) Don't provide a dummy non-NULL value for "owner" of new SGX EPC
+	   pages at the call site. Instead change sgx_alloc_epc_page() to
+	   provide a non-NULL value.
+	2) Add description of the new debugfs files to sgx.rst
+	   [Added a whole section on uncorrected memory errors]
+
+Tony Luck (7):
+  x86/sgx: Provide indication of life-cycle of EPC pages
+  x86/sgx: Add infrastructure to identify SGX EPC pages
+  x86/sgx: Initial poison handling for dirty and free pages
+  x86/sgx: Add SGX infrastructure to recover from poison
+  x86/sgx: Hook sgx_memory_failure() into mainline code
+  x86/sgx: Add hook to error injection address validation
+  x86/sgx: Add documentation for SGX memory errors
+
+ .../firmware-guide/acpi/apei/einj.rst         |  19 +++
+ Documentation/x86/sgx.rst                     |  26 ++++
+ arch/x86/include/asm/set_memory.h             |   4 +
+ arch/x86/kernel/cpu/sgx/main.c                | 134 +++++++++++++++++-
+ arch/x86/kernel/cpu/sgx/sgx.h                 |   6 +-
+ drivers/acpi/apei/einj.c                      |   3 +-
+ include/linux/mm.h                            |  15 ++
+ mm/memory-failure.c                           |  19 ++-
+ 8 files changed, 216 insertions(+), 10 deletions(-)
+
+
+base-commit: ff1176468d368232b684f75e82563369208bc371
+-- 
+2.29.2
+
