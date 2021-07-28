@@ -2,148 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02763D8BFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BB83D8BFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235922AbhG1KiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhG1KiI (ORCPT
+        id S235939AbhG1Kif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:38:35 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14032 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236007AbhG1KiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:38:08 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7651FC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 03:38:07 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id v3so929769uau.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 03:38:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ppF9hsuApA1gAdtp04EoScTyC9qpS+x6as3y4xQpHnc=;
-        b=vFfg09wRfvg1ngcWXs+miTYupLNW1VwZMJvYDgLL7QbAI0OfUBuyy5+DLuRcmFapfq
-         1J6VCh2JwpP+b7DJiQawtdZXxGOF8Uqqtgd6+jPlDs80GK3V0ByC87/go3MjplD4KiAr
-         +OX1JFBLpDDYKPeE0z03CX8Dy13smOFiINSkbo0i6f1rFqdab7MOzw/uFyEl6EAqPYKc
-         gIh1LSblkZ3X8ooX9iPL8XrOKDqCR3ABZDgH6rcOeuH/QqaL4Wh5EQk9svqVDEVlVTFW
-         HNWdB5Qt1STo03x+O1VSAWoChDZ+QfyCUaztu0/Ktu9PSV4ApD/SQ+KXmSN7z8lNcLlv
-         qCgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ppF9hsuApA1gAdtp04EoScTyC9qpS+x6as3y4xQpHnc=;
-        b=dvI5YVeysUQeY6Rw4gclSDTYjyegu1JXMrt8paYGX7z2vWdFjP7oT9J0IiyRRPUBal
-         s34k8ps7lUM6LnIawnjzEyjchnPyAisj1MN2UcMaXE4nKkapRmYVeNkfDuCBv92k3fhp
-         aaVfJF/+sNekOPqJMZely7fyqZaikLYlK3MWXMnjsLoQZMIR0fPcjW5WQsRcAEbBat7g
-         5SiZtATle9xgNuHFzw4vIp/pwklzODL1kXJKM4iD6MejKBd3CshsR9THabVH9AtHYuiA
-         Fai93XY4kJyPjm7tt1c22XR4kCt9f5XRAqe3Fq61sFXk3JW0eBlPRI2QmUiQmrJE1+U5
-         sLGA==
-X-Gm-Message-State: AOAM531pYo5XzJrmy8cSg6sB9yJJajvPEH2WLd7L/dqcHR5XnLO91P8F
-        11gOh2YtkO0CTi/KCtQt7ExruGPYmlZgO1cjdVJUtg==
-X-Google-Smtp-Source: ABdhPJzxcI8UBH87MdK5EwRFxa2AeKU4k/QodZislgrtkcbfcyk7nkqYkeT7cnej+TISOCeVJnCPuzaWWtkohho790k=
-X-Received: by 2002:ab0:76d0:: with SMTP id w16mr22128615uaq.15.1627468686420;
- Wed, 28 Jul 2021 03:38:06 -0700 (PDT)
+        Wed, 28 Jul 2021 06:38:25 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SAXs3A004097;
+        Wed, 28 Jul 2021 06:38:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : cc :
+ subject : in-reply-to : in-reply-to : references : date : message-id :
+ mime-version : content-type; s=pp1;
+ bh=GLHGz1FXxIhQ3XhDOzPPegQx13bF4kzSMFW01F22ZNM=;
+ b=G30xu61jkJPek22b46lZ6aFxw1xkzwnHlTqFwSpy64bdjwsrPuO6z5ZcppgSP5hXejvZ
+ Qlq0ByH1j7iN1XH6bb+WI0ExMEF+m93Wb3bf3hcUSleYpHOX784ySmiJrGB6A9/aDAoh
+ 3uTxEQTHDdhOL9v56Jq49032Z/ZhfstsEi4gYnx5BwcPsdGuIqkBlWg6A5Vt3oMLV44/
+ a+CCZswrLFNCbk1LUYBpabpbsnIcX65Vhyu+mkRQdMomM6m7YtALP5XgNpNz99bB2Bjb
+ Cz08jepfkmIPwpooivIPwxAxGjbVhDvjU8Q8W0zqTYNbPd/vOBH73UsPb84TBKHWwz7C aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a35dcgm7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 06:38:15 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16SAY6cD005414;
+        Wed, 28 Jul 2021 06:38:15 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a35dcgm5m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 06:38:15 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16SAameH013742;
+        Wed, 28 Jul 2021 10:38:12 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 3a235kh01j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 10:38:12 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16SAc9IN26214682
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Jul 2021 10:38:09 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0921C42059;
+        Wed, 28 Jul 2021 10:38:09 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6ECB4205E;
+        Wed, 28 Jul 2021 10:38:08 +0000 (GMT)
+Received: from localhost (unknown [9.171.23.245])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Jul 2021 10:38:08 +0000 (GMT)
+From:   Alexander Egorenkov <egorenar@linux.ibm.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Bruno Goncalves <bgoncalv@redhat.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        akpm@linux-foundation.org, bp@alien8.de, corbet@lwn.net,
+        gregkh@linuxfoundation.org, jeyu@kernel.org,
+        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        torvalds@linux-foundation.org, Dave Young <dyoung@redhat.com>
+Subject: Re: [PATCH v3 1/2] init/initramfs.c: do unpacking asynchronously
+In-Reply-To: <YQAQFMDMk09wS6Qv@bombadil.infradead.org>
+In-Reply-To: 
+References: <87sg04p315.fsf@oc8242746057.ibm.com>
+ <edb79b68-6dd0-ced5-17a0-fda7516d3529@rasmusvillemoes.dk>
+ <CA+QYu4pDGHj--z6yUrkhFs7oW-LUrY23i+-vKJwLPWaCO=z4vA@mail.gmail.com>
+ <YQAQFMDMk09wS6Qv@bombadil.infradead.org>
+Date:   Wed, 28 Jul 2021 12:38:08 +0200
+Message-ID: <87pmv2g1v3.fsf@oc8242746057.ibm.com>
 MIME-Version: 1.0
-References: <20210728073700.120449-1-suleiman@google.com> <YQEQ9zdlBrgpOukj@hirez.programming.kicks-ass.net>
- <20210728103253.GB7633@fuller.cnet>
-In-Reply-To: <20210728103253.GB7633@fuller.cnet>
-From:   Suleiman Souhlal <suleiman@google.com>
-Date:   Wed, 28 Jul 2021 19:37:55 +0900
-Message-ID: <CABCjUKDscba-HjgHuodkWmBYKM+jmv1EkDrxXAZteP3kf1Qv-Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] KVM: Support Heterogeneous RT VCPU Configurations.
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Suleiman Souhlal <ssouhlal@freebsd.org>,
-        Joel Fernandes <joelaf@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        kvm@vger.kernel.org, Nitesh Narayan Lal <nitesh@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: okvylCCKtII6JnkUWIkNJJLuwowrJmSr
+X-Proofpoint-GUID: JG9nErZ17zV5vNk2QRDrKdn4U2vX4oTA
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-28_07:2021-07-27,2021-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 clxscore=1015 mlxlogscore=999 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107280058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 7:34 PM Marcelo Tosatti <mtosatti@redhat.com> wrote:
->
-> On Wed, Jul 28, 2021 at 10:10:31AM +0200, Peter Zijlstra wrote:
-> > On Wed, Jul 28, 2021 at 04:36:58PM +0900, Suleiman Souhlal wrote:
-> > > Hello,
-> > >
-> > > This series attempts to solve some issues that arise from
-> > > having some VCPUs be real-time while others aren't.
-> > >
-> > > We are trying to play media inside a VM on a desktop environment
-> > > (Chromebooks), which requires us to have some tasks in the guest
-> > > be serviced at real-time priority on the host so that the media
-> > > can be played smoothly.
-> > >
-> > > To achieve this, we give a VCPU real-time priority on the host
-> > > and use isolcpus= to ensure that only designated tasks are allowed
-> > > to run on the RT VCPU.
-> >
-> > WTH do you need isolcpus for that? What's wrong with cpusets?
-> >
-> > > In order to avoid priority inversions (for example when the RT
-> > > VCPU preempts a non-RT that's holding a lock that it wants to
-> > > acquire), we dedicate a host core to the RT vcpu: Only the RT
-> > > VCPU is allowed to run on that CPU, while all the other non-RT
-> > > cores run on all the other host CPUs.
-> > >
-> > > This approach works on machines that have a large enough number
-> > > of CPUs where it's possible to dedicate a whole CPU for this,
-> > > but we also have machines that only have 2 CPUs and doing this
-> > > on those is too costly.
-> > >
-> > > This patch series makes it possible to have a RT VCPU without
-> > > having to dedicate a whole host core for it.
-> > > It does this by making it so that non-RT VCPUs can't be
-> > > preempted if they are in a critical section, which we
-> > > approximate as having interrupts disabled or non-zero
-> > > preempt_count. Once the VCPU is found to not be in a critical
-> > > section anymore, it will give up the CPU.
-> > > There measures to ensure that preemption isn't delayed too
-> > > many times.
-> > >
-> > > (I realize that the hooks in the scheduler aren't very
-> > > tasteful, but I couldn't figure out a better way.
-> > > SVM support will be added when sending the patch for
-> > > inclusion.)
-> > >
-> > > Feedback or alternatives are appreciated.
-> >
-> > This is disguisting and completely wrecks the host scheduling. You're
-> > placing guest over host, that's fundamentally wrong.
-> >
-> > NAK!
-> >
-> > If you want co-ordinated RT scheduling, look at paravirtualized deadline
-> > scheduling.
->
-> Peter, not sure what exactly are you thinking of? (to solve this
-> particular problem with pv deadline scheduling).
->
-> Shouldnt it be possible to, through paravirt locks, boost the priority
-> of the non-RT vCPU (when locking fails in the -RT vCPU) ?
+Luis Chamberlain <mcgrof@kernel.org> writes:
 
-Unfortunately paravirt locks doesn't work in this configuration
-because sched_yield() doesn't work across scheduling classes (non-RT
-vs RT). :-(
+> On Tue, Jul 27, 2021 at 09:31:54AM +0200, Bruno Goncalves wrote:
+>> On Mon, Jul 26, 2021 at 1:46 PM Rasmus Villemoes
+>> <linux@rasmusvillemoes.dk> wrote:
+>> >
+>> > On 24/07/2021 09.46, Alexander Egorenkov wrote:
+>> > > Hello,
+>> > >
+>> > > since e7cb072eb988 ("init/initramfs.c: do unpacking asynchronously"), we
+>> > > started seeing the following problem on s390 arch regularly:
+>> > >
+>> > > [    5.039734] wait_for_initramfs() called before rootfs_initcalls
+>
+> So some context here, which might help.
+>
+> The initramfs_cookie is initialized until a a rootfs_initcall() is
+> called, in this case populate_rootfs(). The code is small, so might
+> as well include it:
+>
+> static int __init populate_rootfs(void)
+> {
+> 	initramfs_cookie = async_schedule_domain(do_populate_rootfs, NULL,
+> 						 &initramfs_domain);
+> 	if (!initramfs_async)
+> 		wait_for_initramfs();
+> 	return 0;
+> }                                                                               
+> rootfs_initcall(populate_rootfs);
+>
+> The warning you see comes from a situation where a wait_for_initramfs()
+> gets called but we haven't yet initialized initramfs_cookie.  There are
+> only a few calls for wait_for_initramfs() in the kernel, and the only
+> thing I can think of is that somehow s390 may rely on a usermode helper
+> early on, but not every time.
+>
+> What umh calls does s390 issue?
+>
+>> Unfortunately, we haven't been able to find the root cause, but since
+>> June 23rd we haven't hit this panic...
+>> 
+>> Btw, this panic we were hitting only when testing kernels from "scsi"
+>> and "block" trees.
+>
+> Do you use drdb maybe?
+>
+>   Luis
 
--- Suleiman
+You are right, it looks like wait_for_initramfs() is being triggered by drbg:
+
+[    3.396467]  [<00000001f8d917e4>] call_usermodehelper_exec+0x44/0x1c8
+[    3.396470]  [<00000001f8da5524>] __request_module+0x17c/0x3d0
+[    3.396473]  [<00000001f93b4808>] crypto_alg_mod_lookup+0x228/0x290
+[    3.396475]  [<00000001f93b4aae>] crypto_alloc_tfm_node+0x5e/0x158
+[    3.396477]  [<00000001f93bbe14>] crypto_alloc_shash+0x34/0x40
+[    3.396480]  [<00000001f93d2ee2>] drbg_init_hash_kernel+0x3a/0x100
+[    3.396482]  [<00000001f93d306e>] drbg_alloc_state+0xc6/0x280
+[    3.396484]  [<00000001f93d33d8>] drbg_kcapi_seed+0x1b0/0x310
+[    3.396486]  [<00000001f93d1884>] crypto_rng_reset+0x5c/0xe0
+[    3.396488]  [<00000001f93c1750>] alg_test_drbg+0x300/0x478
+[    3.396490]  [<00000001f93c0934>] alg_test+0x304/0x530
+[    3.396493]  [<00000001f93bedb8>] cryptomgr_test+0x68/0x70
+[    3.396495]  [<00000001f8d9f40c>] kthread+0x14c/0x160
+[    3.396497]  [<00000001f8d2af14>] __ret_from_fork+0x3c/0x58
+[    3.396500]  [<00000001f984c86a>] ret_from_fork+0xa/0x30
+
+Regards
+Alex
