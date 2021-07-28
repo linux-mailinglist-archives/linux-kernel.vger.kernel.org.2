@@ -2,114 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD963D9353
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C575A3D9356
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhG1Qia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
+        id S230095AbhG1Qip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhG1Qi0 (ORCPT
+        with ESMTP id S229537AbhG1Qio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:38:26 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7258C061757;
-        Wed, 28 Jul 2021 09:38:23 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id d18so5103804lfb.6;
-        Wed, 28 Jul 2021 09:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=77K73dksEpmGlJUjpwNW6l4lVOW4JLj+w9GUtsUnAX4=;
-        b=ulOuYdlbzRHWBrNH0SiwEqP8deil/czWYniaORknPDBTvPk11hYuAeN0x8UP0YckBc
-         GVXuoXsWYEaeYiorylmqdg4F5RlJqzRqy1hI01VabcyhgpKh3mrexBWcF/z03gBkp9kX
-         1IrKQeQdLk6yAFBhmJdafQev4hLboHLzwi20IpQQHfuUsXxLKjEEvb5IX4vXclSnGUBp
-         Lc3XW2RwTudUoANoDbka9ITPNVDjtybn3eQF4cOXSS1uHEHJVMg2CWYD5z5WWnedKmM4
-         yEJa4AF3yf0NSGrRFv1VyY0yccyB5NuRKROoLurvE4azjJwtNErrdjg9zKYepoxKlWv5
-         lYNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=77K73dksEpmGlJUjpwNW6l4lVOW4JLj+w9GUtsUnAX4=;
-        b=Lr43/5fxRL2QpzgI0OUYBvjezXZmQZIjdSXk+NudLN7QE5z0pLOnkNiONSJFlkhey4
-         sXqJvFSvCiCQi9sVuPyDL/ZP995JJkcUTUA7jKWyiu+Sapx4/l0Eanoj5uMnyUXk1mtE
-         01GuAPog8RvHIS7iZpM0EPFZjZcQ4jF3xE1hlS0UEUshlhnKgcftHw/JBDFGW7Qt4i9A
-         J2dkZRsmlBdPp9jpesnU7gxLNCCzzFBu5U9vIk7Bbc4xJCt1031UXtZ2rGINC3xE+WC5
-         NInGeTTWa8LbUU6N4hYMXqWIhDm87JLb9cFNIeWoKkPKenwDAsWwNA+mENyBUNltuPDJ
-         rwvA==
-X-Gm-Message-State: AOAM531JwTrs7hDpWX6zCIkzt5mxiCjChGAtKy5s4SeHYYwKRoRf+OkI
-        HOqhL9vJskgoc/yn6tg/hug=
-X-Google-Smtp-Source: ABdhPJyej1AktIotkBnpEVyH6gJAn59DFYy2Ner1i6FFpNiG1r/Q+UQb3CcJBMUE2jbC1m9sg/Xu4Q==
-X-Received: by 2002:a19:c758:: with SMTP id x85mr319786lff.609.1627490302133;
-        Wed, 28 Jul 2021 09:38:22 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.227.213])
-        by smtp.gmail.com with ESMTPSA id w17sm43590lfu.304.2021.07.28.09.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 09:38:21 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+9cd5837a045bbee5b810@syzkaller.appspotmail.com
-Subject: [PATCH next] net: xfrm: fix shift-out-of-bounce
-Date:   Wed, 28 Jul 2021 19:38:18 +0300
-Message-Id: <20210728163818.10744-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 28 Jul 2021 12:38:44 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665E5C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:38:42 -0700 (PDT)
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 8D779B5CC4B;
+        Wed, 28 Jul 2021 18:38:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1627490317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=92HAja+6ylk1CkWQqfTzssCgzq601utGLzS4LG/waJY=;
+        b=QDVveqDzDznKs7hnbj0dSRjwMf7sUNae8/DEuVqWKqlg8QdyP1j+WlY21ghfH5uKVIdXVh
+        0kPvUiaDOq+BYbYYyhYCDKvMpF2CT58LbyFwi9IcrqFe0Bca6IagWLtKISt1jWxnobAzuJ
+        xwfrh8yFnJbyRIxAnxx9m66t4HXnecE=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        David Jeffery <djeffery@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: New warning in nvme_setup_discard
+Date:   Wed, 28 Jul 2021 18:38:36 +0200
+Message-ID: <4560968.zrxKzTJTGe@natalenko.name>
+In-Reply-To: <YQF9YRSdRc+eVD1c@T590>
+References: <4729812.CpyZKHjjVO@natalenko.name> <3180854.nXyytZ0Y3r@natalenko.name> <YQF9YRSdRc+eVD1c@T590>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to check up->dirmask to avoid shift-out-of-bounce bug,
-since up->dirmask comes from userspace.
+Hello.
 
-Also, added XFRM_USERPOLICY_DIRMASK_MAX constant to uapi to inform
-user-space that up->dirmask has maximum possible value
+On st=C5=99eda 28. =C4=8Dervence 2021 17:53:05 CEST Ming Lei wrote:
+> Can you collect debug log by applying the following patch against the
+> last one?
 
-Fixes: 2d151d39073a ("xfrm: Add possibility to set the default to block if we have no policy")
-Reported-and-tested-by: syzbot+9cd5837a045bbee5b810@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- include/uapi/linux/xfrm.h | 1 +
- net/xfrm/xfrm_user.c      | 7 ++++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+Yes, please see below.
 
-diff --git a/include/uapi/linux/xfrm.h b/include/uapi/linux/xfrm.h
-index 6e8095106192..b96c1ea7166d 100644
---- a/include/uapi/linux/xfrm.h
-+++ b/include/uapi/linux/xfrm.h
-@@ -514,6 +514,7 @@ struct xfrm_user_offload {
- #define XFRM_OFFLOAD_INBOUND	2
- 
- struct xfrm_userpolicy_default {
-+#define XFRM_USERPOLICY_DIRMASK_MAX	(sizeof(__u8) * 8)
- 	__u8				dirmask;
- 	__u8				action;
- };
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index acc3a0dab331..03b66d154b2b 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -1966,9 +1966,14 @@ static int xfrm_set_default(struct sk_buff *skb, struct nlmsghdr *nlh,
- {
- 	struct net *net = sock_net(skb->sk);
- 	struct xfrm_userpolicy_default *up = nlmsg_data(nlh);
--	u8 dirmask = (1 << up->dirmask) & XFRM_POL_DEFAULT_MASK;
-+	u8 dirmask;
- 	u8 old_default = net->xfrm.policy_default;
- 
-+	if (up->dirmask >= XFRM_USERPOLICY_DIRMASK_MAX)
-+		return -EINVAL;
-+
-+	dirmask = (1 << up->dirmask) & XFRM_POL_DEFAULT_MASK;
-+
- 	net->xfrm.policy_default = (old_default & (0xff ^ dirmask))
- 				    | (up->action << up->dirmask);
- 
--- 
-2.32.0
+> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> index 8780e4aa9df2..fbd8a68c619b 100644
+> --- a/drivers/nvme/host/core.c
+> +++ b/drivers/nvme/host/core.c
+> @@ -828,6 +828,24 @@ static inline void nvme_setup_flush(struct nvme_ns *=
+ns,
+> cmnd->common.nsid =3D cpu_to_le32(ns->head->ns_id);
+>  }
+>=20
+> +static inline void blk_dump_rq(const struct request *req)
+> +{
+> +	struct bio *bio;
+> +	int i =3D 0;
+> +
+> +	printk("dump req %p(f:%x, seg: %d)\n", req, req->cmd_flags,
+> +			req->nr_phys_segments);
+> +
+> +	__rq_for_each_bio(bio, req) {
+> +		printk("%d-%p: %hx/%hx %llu %u\n",
+> +                       i++, bio,
+> +                       bio->bi_flags, bio->bi_opf,
+> +                       (unsigned long long)bio->bi_iter.bi_sector,
+> +                       bio->bi_iter.bi_size>>9);
+> +	}
+> +}
+> +
+> +
+>  static blk_status_t nvme_setup_discard(struct nvme_ns *ns, struct request
+> *req, struct nvme_command *cmnd)
+>  {
+> @@ -868,6 +886,8 @@ static blk_status_t nvme_setup_discard(struct nvme_ns
+> *ns, struct request *req, }
+>=20
+>  	if (WARN_ON_ONCE(n !=3D segments)) {
+> +		printk("%s: ranges %u segments %u\n", __func__, n, segments);
+> +		blk_dump_rq(req);
+>  		if (virt_to_page(range) =3D=3D ns->ctrl->discard_page)
+>  			clear_bit_unlock(0, &ns->ctrl->discard_page_busy);
+>  		else
+
+```
+WARNING: CPU: 17 PID: 821 at drivers/nvme/host/core.c:868 nvme_setup_discar=
+d+0x1c6/0x220
+=E2=80=A6
+CPU: 17 PID: 821 Comm: kworker/17:1H Not tainted 5.13.0-pf4 #1
+Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIOS 3601 05/26/20=
+21
+Workqueue: kblockd blk_mq_run_work_fn
+RIP: 0010:nvme_setup_discard+0x1c6/0x220
+Code: 8b a0 40 0b 00 00 4c 2b 25 f7 ff d7 00 49 c1 fc 06 49 c1 e4 0c 4c 03 =
+25 f8 ff d7 00 4c 89 e5 48 85 d2 0f 85 9b fe ff ff 31 d2 <0f> 0b 48 c7 c6 e=
+0 a8 10 8b 41 0f b7 cd 48 c7 c7 af 09 40 8b e8 14
+RSP: 0018:ffffafa884517bf0 EFLAGS: 00010297
+RAX: ffff91602f5b20d0 RBX: ffff915e05743c00 RCX: 0000000000080000
+RDX: 000000000000000f RSI: 0000000028445c00 RDI: 000000000000000f
+RBP: ffff91602f5b2000 R08: 000000000b366000 R09: ffff91602f5b2000
+R10: 000000000000002d R11: fefefefefefefeff R12: ffff91602f5b2000
+R13: 000000000000000e R14: ffff915e18c77000 R15: ffff915e18c77148
+=46S:  0000000000000000(0000) GS:ffff91650ee40000(0000) knlGS:0000000000000=
+000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00001c90b36879a8 CR3: 000000010d18c000 CR4: 0000000000350ee0
+Call Trace:
+ nvme_setup_cmd+0x2e4/0x6a0
+ nvme_queue_rq+0x79/0xc90
+ blk_mq_dispatch_rq_list+0x15c/0x810
+ __blk_mq_do_dispatch_sched+0xca/0x320
+ __blk_mq_sched_dispatch_requests+0x14d/0x190
+ blk_mq_sched_dispatch_requests+0x2f/0x60
+ blk_mq_run_work_fn+0x43/0xc0
+ process_one_work+0x24e/0x430
+ worker_thread+0x54/0x4d0
+ kthread+0x1b3/0x1e0
+ ret_from_fork+0x22/0x30
+=2D--[ end trace bd51917eae1d7201 ]---
+nvme_setup_discard: ranges 15 segments 14
+dump req 000000002c6a085b(f:3, seg: 14)
+0-000000002c3297c7: f80/3 675773440 1024
+1-0000000098edb2a8: b80/3 188319744 1024
+2-00000000f58e3b18: b80/3 675775488 1024
+3-00000000f6670c5a: b80/3 188129280 2048
+4-00000000ea371a88: b80/3 675585024 2048
+5-00000000e9cec043: b80/3 188140544 2048
+6-000000006e1126e6: b80/3 675596288 2048
+7-000000009466f937: b80/3 188327936 2048
+8-000000003c9e2ccd: b80/3 675783680 2048
+9-00000000ab322c68: b80/3 188329984 2048
+10-00000000eb2b3fb6: b80/3 675785728 2048
+11-00000000aa19f73d: b80/3 188098560 4096
+12-00000000dd2f8682: b80/3 675554304 4096
+13-0000000072f20a8c: b80/3 188112896 1024
+14-00000000559ba401: b80/3 675568640 1024
+blk_update_request: I/O error, dev nvme1n1, sector 675773440 op 0x3:(DISCAR=
+D) flags 0x0 phys_seg 14 prio class 0
+nvme_setup_discard: ranges 45 segments 48
+dump req 00000000f96fdd7c(f:3, seg: 48)
+0-00000000180da7f3: f82/3 188316672 1024
+1-00000000d2d0828e: b82/3 675774464 1024
+2-000000000c4882eb: b82/3 645145600 1024
+3-000000009d701d1e: b82/3 188318720 1024
+4-000000000b9e8e53: b82/3 675776512 1024
+5-00000000c73ca145: b82/3 157696000 1024
+6-00000000e22bbe77: b82/3 188320768 1024
+7-0000000054696401: b82/3 675777536 1024
+8-0000000016bc968c: b82/3 188321792 1024
+9-000000006e25f763: b82/3 675779584 1024
+10-00000000340df89d: b82/3 157765632 1024
+11-0000000046522f81: b82/3 188323840 1024
+12-00000000fa9a368c: b82/3 675780608 1024
+13-0000000093af3f87: b82/3 188128256 1024
+14-000000008585ce43: b82/3 675587072 1024
+15-0000000044f73721: b82/3 188132352 1024
+16-000000006c9df2f2: b82/3 675589120 1024
+17-00000000c6f4ba8b: b82/3 675594240 1024
+18-000000001f5dbb5e: b82/3 188138496 1024
+19-000000001de03037: b82/3 188139520 1024
+20-00000000a307ccef: b82/3 645164032 1024
+21-0000000018da5076: b82/3 675598336 1024
+22-0000000033cdeaf5: b82/3 188143616 1024
+23-00000000ecf3d07a: b82/3 675600384 1024
+24-00000000e86b10f4: b82/3 188144640 1024
+25-00000000ba439495: b82/3 157726720 1024
+26-0000000027fcd176: b82/3 641614848 1024
+27-0000000014182edf: b82/3 157728768 1024
+28-00000000194e904f: b82/3 157731840 1024
+29-000000002ea97c9e: b82/3 675787776 1024
+30-000000004d5c6130: b82/3 188332032 1024
+31-0000000058639801: b82/3 675788800 1024
+32-000000003dd731c7: b82/3 675789824 1024
+33-00000000f6f8a09e: b82/3 645190656 1024
+34-000000002d4c6b21: b82/3 188334080 1024
+35-000000007ea3ba79: b82/3 675790848 1024
+36-00000000011db072: b82/3 188064768 1024
+37-00000000e31f9da8: b82/3 188067840 1024
+38-000000006baa465a: b82/3 188097536 1024
+39-00000000a870893c: b82/3 675559424 1024
+40-000000004105bc56: b82/3 188103680 1024
+41-00000000e75709b5: b82/3 675560448 1024
+42-00000000e08f7e0a: b82/3 675566592 1024
+43-0000000020218f1b: b82/3 188110848 1024
+44-000000004bb5880a: b82/3 188111872 1024
+45-00000000e6632009: b82/3 675569664 1024
+46-0000000029e61303: b82/3 188114944 1024
+47-000000006f66801c: b82/3 675571712 1024
+blk_update_request: I/O error, dev nvme1n1, sector 188316672 op 0x3:(DISCAR=
+D) flags 0x0 phys_seg 48 prio class 0
+nvme_setup_discard: ranges 73 segments 75
+dump req 00000000b51b828c(f:3, seg: 75)
+0-000000009c966abb: b82/3 675772416 1024
+1-00000000d0b7b912: f80/3 675773440 1024
+2-00000000c38e02dd: b80/3 188319744 1024
+3-0000000043a53b40: b80/3 675775488 1024
+4-000000009b5569c4: b80/3 188129280 2048
+5-0000000066d31f07: b80/3 675585024 2048
+6-000000006ff6d59f: b80/3 188140544 2048
+7-00000000f39f9bdb: b80/3 675596288 2048
+8-00000000929b3cff: b80/3 188327936 2048
+9-0000000034c64365: b80/3 675783680 2048
+10-000000004c508955: b80/3 188329984 2048
+11-00000000fc9b9d0a: b80/3 675785728 2048
+12-000000002a402a6c: b80/3 188098560 4096
+13-0000000008074d32: b80/3 675554304 4096
+14-0000000018d76730: b80/3 188112896 1024
+15-000000003a12b456: b80/3 675568640 1024
+16-00000000285092ed: b82/3 610962432 1024
+17-000000005f714a72: b82/3 188342272 1024
+18-00000000794c5e57: b82/3 611005440 1024
+19-00000000630a4c01: b82/3 153951232 1024
+20-00000000ffa4369f: b82/3 675798016 1024
+21-00000000521f4eda: b82/3 188348416 1024
+22-0000000041b3ca89: b82/3 17291264 1024
+23-00000000e9c2e9f0: b82/3 17362944 1024
+24-000000008f2954da: b82/3 599607296 1024
+25-00000000805912ef: b82/3 611051520 1024
+26-000000008533232e: b82/3 188336128 1024
+27-00000000f9c0f9ae: b82/3 174541824 1024
+28-00000000552ad7fc: b82/3 188318720 1024
+29-000000009971d59c: b82/3 157689856 1024
+30-0000000001ef1cc6: b82/3 675774464 1024
+31-0000000037eddacb: b82/3 188320768 1024
+32-00000000a2c8dd24: b82/3 645151744 1024
+33-000000003e4d7ac7: b82/3 675776512 1024
+34-000000000cb417af: b82/3 188321792 1024
+35-0000000056c3e342: b82/3 675777536 1024
+36-00000000ab22b292: b82/3 188323840 1024
+37-0000000069b44eba: b82/3 645221376 1024
+38-00000000a35eafb0: b82/3 675779584 1024
+39-00000000f71cf77d: b82/3 188324864 1024
+40-0000000011ba1e4e: b82/3 675584000 1024
+41-0000000012ec22d4: b82/3 188131328 1024
+42-00000000acf89f36: b82/3 675588096 1024
+43-000000007fdfa2fc: b82/3 188133376 1024
+44-000000006ae8f6de: b82/3 188138496 1024
+45-00000000c86eaa59: b82/3 675594240 1024
+46-00000000cbeecf93: b82/3 675595264 1024
+47-0000000002061627: b82/3 157708288 1024
+48-00000000c6c0e9fb: b82/3 188142592 1024
+49-00000000aca0a548: b82/3 675599360 1024
+50-00000000cf220d06: b82/3 188144640 1024
+51-000000007a9bdfd3: b82/3 675600384 1024
+52-000000009c6129de: b82/3 645182464 1024
+53-000000006744fe84: b82/3 154159104 1024
+54-00000000217342e3: b82/3 645184512 1024
+55-00000000bc5fea55: b82/3 645187584 1024
+56-00000000eb6093bd: b82/3 188332032 1024
+57-0000000056371b99: b82/3 675787776 1024
+58-0000000080e53e1e: b82/3 188333056 1024
+59-0000000020cc4aa0: b82/3 188334080 1024
+60-00000000dfb62a3e: b82/3 157734912 1024
+61-00000000ff41dcf5: b82/3 675789824 1024
+62-0000000042c2746d: b82/3 188335104 1024
+63-00000000192eebcb: b82/3 675520512 1024
+64-000000008725b451: b82/3 675523584 1024
+65-00000000893843dc: b82/3 675553280 1024
+66-00000000eab256cb: b82/3 188103680 1024
+67-0000000046ef0487: b82/3 675559424 1024
+68-000000000228f430: b82/3 188104704 1024
+69-00000000386e9a99: b82/3 188110848 1024
+70-000000008ced777c: b82/3 675566592 1024
+71-000000008a5f9e82: b82/3 675567616 1024
+72-0000000065da8656: b82/3 188113920 1024
+73-00000000c938ac22: b82/3 675570688 1024
+74-00000000c67c0e32: b82/3 188115968 1024
+75-00000000646e12f4: b82/3 675760128 1024
+76-0000000054aa9d13: b82/3 188305408 1024
+blk_update_request: I/O error, dev nvme0n1, sector 675772416 op 0x3:(DISCAR=
+D) flags 0x0 phys_seg 75 prio class 0
+nvme_setup_discard: ranges 5 segments 6
+dump req 00000000a157e475(f:3, seg: 6)
+0-000000004fc95770: f82/3 189429760 1024
+1-000000003d5f4d39: b82/3 189432832 1024
+2-000000003e3a5606: b82/3 676889600 1024
+3-00000000d5b2b48e: b82/3 189433856 1024
+4-00000000101795a9: b82/3 189434880 1024
+5-000000001c3c352f: b82/3 184399872 1024
+blk_update_request: I/O error, dev nvme1n1, sector 189429760 op 0x3:(DISCAR=
+D) flags 0x0 phys_seg 6 prio class 0
+nvme_setup_discard: ranges 2 segments 3
+dump req 00000000e17a5886(f:3, seg: 3)
+0-000000007af7af24: b82/3 188352512 1024
+1-000000003af3dbc9: f80/3 188353536 1024
+2-00000000c4e5d7e7: b80/3 675809280 1024
+3-00000000cb04663c: b82/3 675810304 1024
+blk_update_request: I/O error, dev nvme1n1, sector 188352512 op 0x3:(DISCAR=
+D) flags 0x0 phys_seg 3 prio class 0
+nvme_setup_discard: ranges 2 segments 3
+dump req 00000000ad5525bd(f:3, seg: 3)
+0-000000005cf09cca: b82/3 188348416 1024
+1-0000000018cc2558: f80/3 188349440 1024
+2-00000000c4c2a716: b80/3 675805184 1024
+3-00000000a8908f6c: b82/3 675806208 1024
+blk_update_request: I/O error, dev nvme1n1, sector 188348416 op 0x3:(DISCAR=
+D) flags 0x0 phys_seg 3 prio class 0
+nvme_setup_discard: ranges 2 segments 3
+dump req 00000000f96fdd7c(f:3, seg: 3)
+0-000000009d4e946d: b82/3 189264896 1024
+1-00000000d5eee140: f80/3 189265920 2048
+2-00000000d84f9e26: b80/3 676721664 2048
+3-0000000099245351: b82/3 676723712 1024
+blk_update_request: I/O error, dev nvme1n1, sector 189264896 op 0x3:(DISCAR=
+D) flags 0x0 phys_seg 3 prio class 0
+nvme_setup_discard: ranges 48 segments 49
+dump req 0000000034977ea1(f:3, seg: 49)
+0-00000000e4cae23d: f82/3 676881408 1024
+1-0000000068dc7629: b82/3 676885504 1024
+2-00000000f049ea5a: b82/3 676888576 1024
+3-00000000c20d2ce8: b82/3 189433856 1024
+4-000000004c139e91: b82/3 676889600 1024
+5-0000000091100457: b82/3 676890624 1024
+6-0000000076b82d71: b82/3 671855616 1024
+7-000000003003717f: b82/3 144389120 1024
+8-00000000f664d7bc: b82/3 188355584 1024
+9-0000000004dffa3c: b82/3 675811328 1024
+10-00000000333580c6: b82/3 188356608 1024
+11-00000000b69a3602: b82/3 631820288 1024
+12-00000000736b0c31: b80/3 188353536 1024
+13-0000000007888c71: b80/3 675809280 1024
+14-0000000003614d26: b82/3 675808256 1024
+15-000000001a7ae177: b82/3 188354560 1024
+16-000000008ab11bbd: b82/3 631758848 1024
+17-00000000998c6d3c: b82/3 675807232 1024
+18-0000000056d675a4: b82/3 188352512 1024
+19-00000000854a6b1e: b80/3 188349440 1024
+20-000000000b49b05e: b80/3 675805184 1024
+21-000000008acc3b01: b82/3 675804160 1024
+22-00000000315cb886: b82/3 188350464 1024
+23-0000000086fb9348: b82/3 175320064 1024
+24-000000006233dfd4: b82/3 188591104 1024
+25-000000008022c2e2: b82/3 676046848 1024
+26-000000002388ff7a: b82/3 188592128 1024
+27-0000000024e54dc9: b82/3 188590080 1024
+28-00000000e1706a07: b82/3 670319616 1024
+29-00000000f5308dfc: b82/3 189270016 1024
+30-00000000c005ae85: b80/3 189265920 2048
+31-00000000a98ed3a6: b80/3 676721664 2048
+32-000000003e7e01e1: b82/3 676720640 1024
+33-000000003e9b0c86: b82/3 189267968 1024
+34-00000000802b8160: b82/3 676716544 1024
+35-00000000adf4fab8: b82/3 189257728 1024
+36-000000007136233a: b82/3 676713472 1024
+37-0000000085a35fca: b82/3 189258752 1024
+38-000000008c8ed35f: b82/3 676710400 1024
+39-00000000567baa73: b82/3 189255680 1024
+40-0000000041ff7157: b82/3 676711424 1024
+41-00000000fb3f4cd8: b82/3 189249536 1024
+42-000000002efa7248: b82/3 676705280 1024
+43-00000000a53bc3cb: b82/3 189239296 1024
+44-000000006e6456e9: b82/3 676691968 1024
+45-00000000f0fa291b: b82/3 676690944 1024
+46-000000008b814484: b82/3 189234176 1024
+47-00000000f3fa7f80: b82/3 676686848 1024
+48-00000000e34ea3ca: b82/3 676679680 1024
+blk_update_request: I/O error, dev nvme0n1, sector 676881408 op 0x3:(DISCAR=
+D) flags 0x0 phys_seg 49 prio class 0
+nvme_setup_discard: ranges 9 segments 10
+dump req 0000000066d1c6c7(f:3, seg: 10)
+0-000000006f9c1d2b: f82/3 95788032 1024
+1-000000005592941a: b82/3 155664384 1024
+2-00000000180b2bab: b80/3 186275840 2048
+3-00000000485a4757: b80/3 673731584 2048
+4-00000000fcc93dcb: b82/3 673733632 1024
+5-0000000089e0acd8: b80/3 186273792 1024
+6-0000000005896717: b80/3 673729536 1024
+7-00000000f264b15c: b82/3 186272768 1024
+8-000000009684f15b: b82/3 673730560 1024
+9-000000003a2a57b4: b82/3 175249408 1024
+blk_update_request: I/O error, dev nvme1n1, sector 95788032 op 0x3:(DISCARD=
+) flags 0x0 phys_seg 10 prio class 0
+```
+
+Thanks.
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+
 
