@@ -2,87 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BF53D9702
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB7F3D9708
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbhG1UrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:47:13 -0400
-Received: from mga01.intel.com ([192.55.52.88]:60186 "EHLO mga01.intel.com"
+        id S231952AbhG1UrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:47:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231576AbhG1UrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:47:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="234634465"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="234634465"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 13:47:01 -0700
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="506679889"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 13:47:01 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v3 7/7] x86/sgx: Add documentation for SGX memory errors
-Date:   Wed, 28 Jul 2021 13:46:53 -0700
-Message-Id: <20210728204653.1509010-8-tony.luck@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210728204653.1509010-1-tony.luck@intel.com>
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
+        id S231585AbhG1UrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 16:47:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D29946023D;
+        Wed, 28 Jul 2021 20:47:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627505240;
+        bh=sUr9rUMhKmkWqkvIgSpyknDGwP3uVqdQ3DgS/1MhoDU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hlPrHFlKqp1KEi8yeYEu4CFuqn+n3pv6Nv8u+qx/kqIrC4S5VI3oOvRZCP4wtqcX4
+         6cIkMOcqeNBLlScKgKLlSQdal4mG9Q5GkFHqVgYeVjsgZ8YogFqmrcYdL9mGti/YUu
+         lrlRj8P5QV/sFFUtumc5tyzfjtdnQXxmo2se32vrghw15834KkOj2DZHZtWt/c8nLe
+         UMsP27sNIEGuoAvuU1VAyDBGnIsv/XFwjDhph43+Fq9xJy9P+VCDMmuTr5y+/FTRcn
+         ecnlRgUkQxeVWa3UR7KG7Svom0IltQ6bcp4uAkKRX1RaZQJGhKO4glfFUIuGsMbqPY
+         d8PhryUM3Dviw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id ACB355C048D; Wed, 28 Jul 2021 13:47:20 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 13:47:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+Message-ID: <20210728204720.GN4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-4-paulmck@kernel.org>
+ <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
+ <YQG//899pPl2JIWw@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQG//899pPl2JIWw@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Error handling is a bit different for SGX pages. Add a section describing
-how asynchronous and consumed errors are handled and the two new
-debugfs files that show the count and list of pages with uncorrected
-memory errors.
+On Wed, Jul 28, 2021 at 01:37:19PM -0700, Josh Triplett wrote:
+> On Wed, Jul 28, 2021 at 10:37:15AM -0700, Paul E. McKenney wrote:
+> > This change makes the memory ordering requirements
+> > more evident, and it might well also speed up the to-idle and from-idle
+> > fastpaths on some architectures.
+> 
+> Cleaning up the memory ordering requirements certainly seems worthwhile.
+> But is there any straightforward benchmark that might quantify the
+> "might well also speed up" here? How much does weakening the memory
+> ordering buy us, in practice?
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- Documentation/x86/sgx.rst | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+None that I know of!
 
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index dd0ac96ff9ef..461bd1daa565 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -250,3 +250,29 @@ user wants to deploy SGX applications both on the host and in guests
- on the same machine, the user should reserve enough EPC (by taking out
- total virtual EPC size of all SGX VMs from the physical EPC size) for
- host SGX applications so they can run with acceptable performance.
-+
-+Uncorrected memory errors
-+=========================
-+Systems that support machine check recovery and have local machine
-+check delivery enabled can recover from uncorrected memory errors in
-+many situations.
-+
-+Errors in SGX pages that are not currently in use will prevent those
-+pages from being allocated.
-+
-+Errors asynchronously reported against active SGX pages will simply note
-+that the page has an error. If the enclave terminates without accessing
-+the page Linux will not return it to the free list for reallocation.
-+
-+When an uncorrected memory error is consumed from within an enclave the
-+h/w will mark that enclave so that it cannot be re-entered.  Linux will
-+send a SIGBUS to the current task.
-+
-+In addition to console log entries from processing the machine check or
-+corrected machine check interrupt, Linux also provides debugfs files to
-+indicate the number of SGX enclave pages that have reported errors and
-+the physical addresses of each page:
-+
-+/sys/kernel/debug/sgx/poison_page_count
-+
-+/sys/kernel/debug/sgx/poison_page_list
--- 
-2.29.2
-
+							Thanx, Paul
