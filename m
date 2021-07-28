@@ -2,283 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE3D3D8C5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9423D9311
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235655AbhG1LAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:00:05 -0400
-Received: from mail-yb1-f170.google.com ([209.85.219.170]:39744 "EHLO
-        mail-yb1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbhG1LAB (ORCPT
+        id S229744AbhG1QWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhG1QWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:00:01 -0400
-Received: by mail-yb1-f170.google.com with SMTP id p145so2145769ybg.6;
-        Wed, 28 Jul 2021 03:59:59 -0700 (PDT)
+        Wed, 28 Jul 2021 12:22:01 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5D9C061757;
+        Wed, 28 Jul 2021 09:22:00 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id a20so3368053plm.0;
+        Wed, 28 Jul 2021 09:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PjFMyGog5Kk6w/B+NJeAnfvDqGwKc9dCqiMHykctlXk=;
+        b=JmoZJ8uDIuwiDq+O+GwPIqafjzKCxHBvP57xGcOyjx1ykJ6cgnqKaQYB5BOb7MLvOI
+         A3B2Ub92ZwEabH4G1SGWd/qsTrkuadaPZxenVLnhvA53GIUU2qDoSwKXgSUOEYDhzAeo
+         MIfwtEzhLE0XLVRYmIsz42SZLvrh74quuJ0/ADWpFAl9cieQwQdO1jEQCXRH2Delx8wj
+         MmpsBg60VsFh2EF13uXxRwW/e9v3LON7WbF2p+/SK49f/lYgU93B4+Pei6xr/w+d7o+U
+         hnadD7au+qoYytri5aD2P/HmxWnVB021haedCtsniuut56Ni/mUhXYLOxd9w4hwJRHzK
+         LnNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wK3igtRs0a7wGjLFT3gZUhZkPeDXJ85qIk/XHsByfrU=;
-        b=AAStnxK3D8SCMIbXdamgnpbiWIgW1M6THo48VRWk5QfZOxmc6CmibXotXq2ORKCgxc
-         /hKvzBGEkrg/82jX4hHnnZQS8ygBCx/GRSEidUqRcuxRll6VMLNP69qQBHqZieXFLxhL
-         dLLXSv2aSjb+cdqLZK17OZRgMroim0aMwh95nmmLhPZxmyu4tbsc2D1V/s1cT0umzBbd
-         Hox+lm7xt16qxvWMrfKO/gbMjYe9iZJb7rOEepA3WAjpys1DeADlJ7hd5Foum06Jezoa
-         JtmCiI/fufm6uVFQm6UN6QurVxchmi5KrC6ZS0L9kRw/ZXItF7cyR4qbSO7uHdupSsFK
-         e6ZQ==
-X-Gm-Message-State: AOAM530Mp13/TykRvvac3SnvP7H/TYWkcbRKgWlHEfLvYPvtLu6HZUB8
-        NGbrZLMH7Edn5HqdmV+wXrDPRwKI38B/tdz6hSc=
-X-Google-Smtp-Source: ABdhPJwjDN2mrpV1R+yvCVMRahNLwZriEIfAN5OpTIoTNiGi6ItP95KozcUWDXM1LM6S6WqWlWVIPIHi4t51psQ27g4=
-X-Received: by 2002:a25:bc2:: with SMTP id 185mr24767014ybl.23.1627469999187;
- Wed, 28 Jul 2021 03:59:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PjFMyGog5Kk6w/B+NJeAnfvDqGwKc9dCqiMHykctlXk=;
+        b=VCB/E0q9yWZlZpqWvfTg4j+7QZRq+ikC3o5xXBZYeZoeknVNiSrqpiH0UHmLV1zpHO
+         9+SlJcQvv8NMT+yBZNLIDUxHFJcdbAZd34uVGrhh/Qp7GiXsQ8zokDOtRLD8jpFUl031
+         wPsBmG19nD3vhR/idq5IiCcqlDrjQESGEuJjgDperq9xPWecye2kTNQL8iUq5TPZAQRO
+         SjrFLDF8qU/NsQoCCDwjFFdgHrnpU3L68w8cnPgfhNpUlnH3FWYauGZBrfQE8pFQKiQ0
+         HJsmJ2VkidTXpThlql5RFvIvR1oftppjD21o9Lg7XXwXRBe0mkLvW/L9/r02LrUftdT6
+         NPvA==
+X-Gm-Message-State: AOAM531MwvOrZgXHpV/cX8i18W34Ut+xXbrgXygTX/mtwCya6utWL0Sg
+        j442QNFuGI+093PSt5lJGW4IgNmMhsYdEzuwibV/Tg==
+X-Google-Smtp-Source: ABdhPJxksvMXgmArLGnue2C+oR8/58W4RNWbiJKmoc84SzeWKCtYRHBqnDJPFQPyBc6bJl/VhtzIRQ==
+X-Received: by 2002:a17:90a:17cd:: with SMTP id q71mr556987pja.117.1627489319641;
+        Wed, 28 Jul 2021 09:21:59 -0700 (PDT)
+Received: from localhost.localdomain ([2405:204:828b:a80e:e12:9310:6b88:a724])
+        by smtp.gmail.com with ESMTPSA id j5sm214323pgg.41.2021.07.28.09.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 09:21:59 -0700 (PDT)
+From:   Siddharth Manthan <siddharth.manthan@gmail.com>
+To:     jic23@kernel.org
+Cc:     robh+dt@kernel.org, nikita@trvn.ru, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        ktsai@capellamicro.com, lars@metafoo.de,
+        Siddharth Manthan <siddharth.manthan@gmail.com>
+Subject: [PATCH 1/2] dt-bindings: Add bindings for Capella cm3323 Ambient Light Sensor
+Date:   Wed, 28 Jul 2021 16:30:47 +0530
+Message-Id: <20210728110048.14593-1-siddharth.manthan@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210701002037.912625-1-drew@beagleboard.org> <20210701002037.912625-3-drew@beagleboard.org>
- <8c59105d32a9936f8806501ecd20e044@walle.cc> <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
- <20210726071124.GA9184@x1> <dad13b899b69436acc1804b7c3438639@walle.cc>
- <20210727052851.GA3147871@x1> <ff76b62927e3f5f016f6c4c11ca16ccf@walle.cc>
-In-Reply-To: <ff76b62927e3f5f016f6c4c11ca16ccf@walle.cc>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Wed, 28 Jul 2021 12:59:48 +0200
-Message-ID: <CANBLGczfrmv1tzFm=Fu6B_S8nZ=ckwd3DOBkN4x7BUZtAg7bdw@mail.gmail.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO driver
-To:     Michael Walle <michael@walle.cc>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 at 11:49, Michael Walle <michael@walle.cc> wrote:
-> Hi Drew,
-> Am 2021-07-27 07:28, schrieb Drew Fustini:
-> [..]
-> >> > > Drew please look at drivers/gpio/gpio-ftgpio010.c for an example
-> >> > > of GPIO_GENERIC calling bgpio_init() in probe().
-> >> >
-> >> > Thank you for the suggestion. However, I am not sure that will work for
-> >> > this SoC.
-> >> >
-> >> > The GPIO registers are described in section 12 of JH7100 datasheet [1]
-> >> > and I don't think they fit the expectation of gpio-mmio.c because there
-> >> > is a seperate register for each GPIO line for output data value and
-> >> > output enable.
-> >> >
-> >> > There are 64 output data config registers which are 4 bytes wide. There
-> >> > are 64 output enable config registers which are 4 bytes wide too. Output
-> >> > data and output enable registers for a given GPIO pad are contiguous.
-> >> > GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54 while GPIO1_DOUT_CFG
-> >> > is 0x58 and GPIO1_DOEN_CFG is 0x5C. The stride between GPIO pads is
-> >> > effectively 8, which yields the formula: GPIOn_DOUT_CFG is 0x50+8n.
-> >> > Similarly, GPIO0_DOEN_CFG is 0x54 and thus GPIOn_DOEN_CFG is 0x54+8n.
-> >> >
-> >> > However, GPIO input data does use just one bit for each line. GPIODIN_0
-> >> > at 0x48 covers GPIO[31:0] and GPIODIN_1 at 0x4c covers GPIO[63:32].
->
-> Mh, I'm not sure I'm understanding the datasheet/registers. _DOUT_CFG
-> and _DOEN_CFG seem to specify the pad where this GPIO is mapped to.
-> Shouldn't this be some kind of pinctrl then? Apparently you can map
-> any GPIO number to any output pad, no? Or at least to all pads
-> which are described in Table 11-2. What happens if two different GPIOs
-> are mapped to the same pad? Bit 31 in these _CFG seems to be an invert
-> bit, but what does it invert?
->
-> Similar, the input GPIOs are connected to an output pad by all the
-> GPI_*_CFG registers.
->
-> To me it seems, that there two multiplexers for each GPIO, where
-> you can connect any GPIOn to any input pad and output pad. Sound
-> like a huge overkill. I must be missing something here.
->
-> But what puzzles me the most, where do I set the actual GPIO output
-> value?
+Update trivial-devices.yaml with Capella cm3323 Ambient Light Sensor
+description.
 
-Yeah, it's a little confusing. The DOUT registers choose between a number of
-signals from various peripherals to control the output value of the
-pin. Similarly
-the DOEN registers chose between a number of signals to control the output
-enable of the pin. However, two of those signals are special in that they are
-constant 0 or constant 1. This is how you control the output value and output
-enable from software like a regular GPIO.
+Signed-off-by: Siddharth Manthan <siddharth.manthan@gmail.com>
+---
+This patch was previously sent using outlook email provider. Unfortunately
+I had no knowledge of outlook being banned from mailing lists. I am
+resending these patches using gmail. Please ignore the previous patches.
 
-You're completely right though. This ought to be managed by a proper pinctrl
-driver, and I'm working on one here:
-https://github.com/esmil/linux/commits/beaglev-pinctrl
+ Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> >> I'd say, that should work with the .reg_mask_xlate of the gpio-regmap.
-> >>
-> >> -michael
-> >
-> > Thanks, yes, I think trying to figure out how .reg_mask_xlate would
-> > need
-> > to work this SoC.  I believe these are the only two implementations.
-> >
-> > From drivers/gpio/gpio-regmap.c:
-> >
-> >   static int gpio_regmap_simple_xlate(struct gpio_regmap *gpio,
-> >                                     unsigned int base, unsigned int offset,
-> >                                     unsigned int *reg, unsigned int *mask)
-> >   {
-> >         unsigned int line = offset % gpio->ngpio_per_reg;
-> >         unsigned int stride = offset / gpio->ngpio_per_reg;
-> >
-> >         *reg = base + stride * gpio->reg_stride;
-> >         *mask = BIT(line);
-> >
-> >         return 0;
-> >   }
-> >
-> > From drivers/pinctrl/bcm/pinctrl-bcm63xx.c:
-> >
-> >   static int bcm63xx_reg_mask_xlate(struct gpio_regmap *gpio,
-> >                                   unsigned int base, unsigned int offset,
-> >                                   unsigned int *reg, unsigned int *mask)
-> >   {
-> >         unsigned int line = offset % BCM63XX_BANK_GPIOS;
-> >         unsigned int stride = offset / BCM63XX_BANK_GPIOS;
-> >
-> >         *reg = base - stride * BCM63XX_BANK_SIZE;
-> >         *mask = BIT(line);
-> >
-> >         return 0;
-> >   }
-> >
-> > Let's say a driver calls gpio_regmap_set(chip, 0, 5) to set line 5 to
-> > value 1.
-> >
-> > I believe this would result in call to:
-> >
-> >   gpio->reg_mask_xlate(gpio, gpio->reg_set_base, 5, &reg, &mask)
-> >
-> > Then this would be called to set the register:
-> >
-> >   regmap_update_bits(gpio->regmap, reg, mask, mask);
-> >
-> > From datasheet section 12 [1], there are 64 output data registers which
-> > are 4 bytes wide. There are 64 output enable registers which are also 4
-> > bytes wide too. Output data and output enable registers for a GPIO line
-> > are contiguous. Thus GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54.
-> > The forumla is GPIOn_DOUT_CFG is 0x50+8n and GPIOn_DOEN_CFG is 0x54+8n.
-> > Thus for GPIO line 5:
-> >
-> >   GPIO5_DOUT_CFG is 0x50 + 0x28 = 0x78
-> >   GPIO5_DOEN_CFG is 0x54 + 0x28 = 0x7C
-> >
-> > Enable GPIO line 5 as output by writing 0x1 to 0x7C and set output
-> > value
-> > to 1 by writing 1 to 0x7C.
-> >
-> > Using gpio_regmap_simple_xlate() as a template, I am thinking through
-> > xlate for this gpio controller:
-> >
-> >
-> > static int gpio_regmap_starfive_xlate(struct gpio_regmap *gpio,
-> >                                     unsigned int base, unsigned int offset,
-> >                                     unsigned int *reg, unsigned int *mask)
-> > {
-> >       // reg_set_base is passed as base
-> >       // let reg_set_base = 0x50 (GPIO0_DOUT_CFG)
-> >       // let gpio->reg_stride = 8
-> >       // let offest = 5 (for gpio line 5)
-> >
-> >       *reg = base + offset * gpio->reg_stride;
-> >       // *reg = base:0x50 + offset:0x5 * reg_stride:0x8
-> >       // *reg = 0x50 + 0x28
-> >       // *reg=  0x78
-> >
-> >       // Each gpio line has a full register, not just a bit. To output
-> >       // a digital 1, then GPIO5_DOUT_CFG would be 0x1. To output
-> >       // digital 0, GPIO5_DOUT_CFG would be 0x0. Thus I think the mask
-> >       // should be the least significant bit.
-> >       *mask = BIT(1);
-> >
-> >       return 0;
-> > }
-> >
-> > Let's walk through what would happen if gpio_regmap_set() was the
-> > caller:
-> >
-> > static void gpio_regmap_set(struct gpio_chip *chip, unsigned int
-> > offset,
-> >                           int val)
-> > {
-> >       // for gpio line, offset = 5
-> >       // if want to set line 5 high, then val = 1
-> >       struct gpio_regmap *gpio = gpiochip_get_data(chip);
-> >
-> >       // reg_set_base would be set to 0x50 (GPIO0_DOUT_CFG)
-> >       unsigned int base = gpio_regmap_addr(gpio->reg_set_base);
-> >       unsigned int reg, mask;
-> >
-> >       gpio->reg_mask_xlate(gpio, base /* 0x50 */, offset /* 5 */, &reg,
-> > &mask);
-> >       if (val) /* if val is 1 */
-> >               regmap_update_bits(gpio->regmap, reg, mask, mask);
-> >               // if mask returned was 0x1, then this would set the
-> >               // bit 0 in GPIO5_DOUT_CFG
-> >       else /* if val is 0 */
-> >               regmap_update_bits(gpio->regmap, reg, mask, 0);
-> >               // if mask returned was 0x1, then this would clear
-> >               // bit 0 in GPIO5_DOUT_CFG
-> > }
-> >
-> > Now for the output enable register GPIO5_DOEN_CFG, the output driver is
-> > active low so 0x0 is actually enables output where as 0x1 disables
-> > output.  Thus maybe I need to add logic like:
-> >
-> >
-> > static int gpio_regmap_starfive_xlate(struct gpio_regmap *gpio,
-> >                                     unsigned int base, unsigned int offset,
-> >                                     unsigned int *reg, unsigned int *mask)
-> > {
-> >       <snip>
-> >       if (base == GPIO0_DOUT_CFG)
-> >               *mask = 0x1U;
-> >       else if (base == GPIO0_DOEN_CFG)
-> >               *bit = ~(0x1U);
-> >
-> >       return 0;
-> > }
-> >
-> > What do you think of that approach?
->
-> I'm also not opposed to add a new flag to gpio-regmap which
-> invert the value itself.
->
-> But the idea was that you can differentiate in _xlate() by the
-> base register offset, like you already did:
->
-> static int gpio_regmap_starfive_xlate(struct gpio_regmap *gpio,
->                                       unsigned int base, unsigned int offset,
->                                       unsigned int *reg, unsigned int *mask)
-> {
->         switch (base) {
->         case GPIO0_DOUT_CFG:
->                 /* do some custom mapping just for DOUT_CFG */
->         case GPIO0_DOEN_CFG:
->                 /* do some custom mapping just for DOEN_CFG */
->         default:
->                 /* do normal mapping */
-> }
->
-> > Are there any other examples of regmap xlate that I missed?
->
-> No there aren't much yet. Usually the simple one is enough.
->
-> -michael
->
-> > [1]
-> > https://github.com/starfive-tech/beaglev_doc/blob/main/JH7100%20Data%20Sheet%20V01.01.04-EN%20(4-21-2021).pdf
->
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index 919a4bf03a5a..39fb27561a7b 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -61,6 +61,8 @@ properties:
+           - capella,cm32181
+             # CM3232: Ambient Light Sensor
+           - capella,cm3232
++            # CM3323: Ambient Light Sensor
++          - capella,cm3323
+             # High-Precision Digital Thermometer
+           - dallas,ds1631
+             # Total-Elapsed-Time Recorder with Alarm
+-- 
+2.31.1
+
