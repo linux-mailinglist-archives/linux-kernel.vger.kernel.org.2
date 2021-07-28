@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711643D8740
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAFD3D8743
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhG1Foi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 01:44:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229814AbhG1Fog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 01:44:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF5F360F91;
-        Wed, 28 Jul 2021 05:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627451074;
-        bh=CYjhDYPNMH+Hg9kMhEDMaCiOh0Q61z7lbz39STzyZmg=;
+        id S233777AbhG1Fpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 01:45:39 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:47692 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232891AbhG1Fpi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 01:45:38 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6FDDDEE;
+        Wed, 28 Jul 2021 07:45:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1627451135;
+        bh=SHdFeGCCQ/sDHraMXKm6bZmYzkPYi/TuFkJK9P990Hg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HDpl0uUCU6bga5BodqjpnEYl0kd6HLLgTZMtAPfIgeBwnHH5uiF76teYESxc/N4P7
-         k/ovqM79T9eyqn6SgP7x6USscrXpWQGUwkqmkTAeIwXiTkI3zRy+yNsdBXldz1UQUJ
-         Hvi6qaBybDCmvB47KKVGK/LzMBZxd/Qe4TYGhA0A=
-Date:   Wed, 28 Jul 2021 07:44:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: core: Fix incorrect type in
- assignment
-Message-ID: <YQDuv2fIKtga0Blz@kroah.com>
-References: <20210728004223.15102-1-fmdefrancesco@gmail.com>
+        b=SIjc52b3eYG/7mWKEkGrNiErMGhWMQbQ7feSpqTH5TL1AV5imPpXWcMLVVCdW3mHu
+         1KvxV3Zf6gfi2UcPztL5kxEmciawrjJK8UgJv317FEeMh2BVUHAaqJj5nfEeizqQbB
+         WZSWwvT2/Jel3pGGbRlnEZtcs5169ureSLPSHx94=
+Date:   Wed, 28 Jul 2021 08:45:29 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     mchehab@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH V2] media: uvcvideo: Remove unused including
+ <linux/version.h>
+Message-ID: <YQDu+afJRtcTK/c0@pendragon.ideasonboard.com>
+References: <20210727092854.1006-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210728004223.15102-1-fmdefrancesco@gmail.com>
+In-Reply-To: <20210727092854.1006-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 02:42:23AM +0200, Fabio M. De Francesco wrote:
-> Fix sparse warning: incorrect type in assignment (different base types).
+Hi Cai,
+
+Thank you for the patch.
+
+On Tue, Jul 27, 2021 at 05:28:53PM +0800, Cai Huoqing wrote:
+> Remove including <linux/version.h> that don't need it.
 > 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> V1->V2: Split the patch in two.
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+
+Taken in my tree for v5.15. Thank you.
+
 > ---
->  drivers/staging/rtl8723bs/core/rtw_security.c | 31 +++++++++++--------
->  1 file changed, 18 insertions(+), 13 deletions(-)
+>  drivers/media/usb/uvc/uvc_driver.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-> index a99f439328f1..527f710c7658 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_security.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-> @@ -35,8 +35,10 @@ const char *security_type_str(u8 value)
->  */
->  void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
->  {																	/*  exclude ICV */
-> -
-> -	unsigned char crc[4];
-> +	union {
-> +	__le32 f0;
-> +	unsigned char f1[4];
-> +	} crc;
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> index 9a791d8ef200..b1b055784f8d 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -16,7 +16,6 @@
+>  #include <linux/videodev2.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/wait.h>
+> -#include <linux/version.h>
+>  #include <asm/unaligned.h>
+>  
+>  #include <media/v4l2-common.h>
 
-Odd indentation, are you sure this is right?
+-- 
+Regards,
 
-Please indent the fields by one more tab.
-
-thanks,
-
-greg k-h
+Laurent Pinchart
