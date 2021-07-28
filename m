@@ -2,60 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9DE3D96D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840563D96DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhG1UhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhG1UhM (ORCPT
+        id S231623AbhG1Uh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:37:29 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:59393 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231126AbhG1Uh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:37:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8CCC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=a2nnb4Mp8S24aWxbtXWtMrIAvjYYvj79i33PXyGGISc=; b=RQfrrtvn0KH4CtgS77upac10DA
-        rj6uwLcmyLT499KCXtZfze5huDX0qohtpuTeXaotOtHfojuGzGcQcsdnHPxHfxU+cltqOfx4gUqWW
-        HFcbuTyR4cD4P2xyRzxFTQhWzJrIZ/8bEY9pXzXZRI8NbdwWcdN00pVtWp+o/CQoeKVggy8QuB12Y
-        OeaJxdDfncdmbS6zqUrolU9e/pWVViYUBwrym+erSGzU/2kznwpv7d7+QHt8j4eZ86uAskMMfqiAp
-        uMAFG2Gf9Mcr8SK6ONunwW5of3FUUdfHQbc2jfAVtWidqTSn1YtAYtGQDxhwbPZAleZgg3C4Z4ZuI
-        P7NI2VwQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8qIf-002K4c-4o; Wed, 28 Jul 2021 20:37:09 +0000
-Date:   Wed, 28 Jul 2021 13:37:09 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     rafael@kernel.org, skhan@linuxfoundation.org,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v8 0/2] firmware_loader: fix uaf in
- firmware_fallback_sysfs
-Message-ID: <YQG/9RPgETxF08Vz@bombadil.infradead.org>
-References: <20210728085107.4141-1-mail@anirudhrb.com>
+        Wed, 28 Jul 2021 16:37:27 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id E37912B011CF;
+        Wed, 28 Jul 2021 16:37:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 28 Jul 2021 16:37:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        joshtriplett.org; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=fm1; bh=S2P
+        Y/gCouDsnhtUs0tus40I2EUyvx7oxWdFXqNb0GiY=; b=cxOaSAQGypolDmil1LN
+        LNLJvZGseVYVizr8wghHvKh2+yXEYqcxDKTCZZSuBMkMAgWMQOjawQ+0nADZMLbm
+        U+BA0BwU7Vo4XB5ZEhEGvtfkUsW24RNUmu+pw3DTo8oC1PW3yY7Q2Gbk5ox/rSUN
+        iOVE9Qhu0UTEcDshVsiJqJgN87bbgeqc7kR0YECL8dAMgqeVARqKtiNZLHl9oshb
+        AW9/6kg3j+SJaFxHS5J5gWf5C0ANHVIOOcvjnO0OR023O1f7AQPs/g63MOKqD5r2
+        kYMsj1KeWc/GpkwS9gSFkGx5MJXGIhPf343+mxrX6kBf8OF2Mhgr3FrSkSUUHL5j
+        75w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=S2PY/g
+        CouDsnhtUs0tus40I2EUyvx7oxWdFXqNb0GiY=; b=A1o3esHeZKs+bKdjblmwPS
+        ShVrlK5G8j/09UyQ5dt6pt1M5Vf1Xs4G6ehmba6X9XSSUdvP/y6+QZfLe5Z9TghM
+        tHBhMD4qvdzlC4beQl+JTbDdDY8tNCQCfN0q5K95CXDFL9EDD29P93MQ4lcuZOqK
+        ikUQNSNlDBg1I4HOe/b39LL3rGE++Nfb3/N6B8Tmb3YXqM7wbP+mfHK9ysM9dUEm
+        JVRN/Nr4lA2uS7cmO80j5kdKzMxC9hGHXtcgrFjXxX+m/LpRsqkE7R3HPo8o7Rry
+        gS1osYTpJ7vAO4LR8LJP3Y2imckOY3d3f/omFpD/IqXTvXn6aoKiIwtElunjaWkA
+        ==
+X-ME-Sender: <xms:AsABYRzBg7Bqraya8UyWCuNGPqCB17j_wP6NqtNZU5UMb7URM-XD5w>
+    <xme:AsABYRR9Xh39Kne-LzyD6itHfdT62m2Bhx38vO-RECptA25GQ2y092PeA_Pt3OhXx
+    Nl4GFmoR3e6huZ-5gE>
+X-ME-Received: <xmr:AsABYbWRawO8zYRxCySsjZnsb68r2L2d2wH89ioK05dQMzyNxecjm9sr4K8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeelgdduudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeflohhshhcu
+    vfhrihhplhgvthhtuceojhhoshhhsehjohhshhhtrhhiphhlvghtthdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepgedtgfefgefhveeglefgfeeigeduueehkeektdeuueetgfehffev
+    geeuieetheetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepjhhoshhhsehjohhshhhtrhhiphhlvghtthdrohhrgh
+X-ME-Proxy: <xmx:AsABYTgUdafyJniZ2VvXxPckDWmqbueE1booZM9baeEFybc88CcZHQ>
+    <xmx:AsABYTCw5-xAceqcSduLBt6zZLtV5lKZTOQWLHlSFmXxtPEO3YcTzg>
+    <xmx:AsABYcLAF5TQyxvHGbHNsfDndNa6xbGOqRI98JrWmYKUdV5BHh9dxg>
+    <xmx:A8ABYVS6S37Qze8Ej66sKymIlWleB2YzncwEpJvx5uJoxv33od-xKG18lI1R5jam>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 28 Jul 2021 16:37:20 -0400 (EDT)
+Date:   Wed, 28 Jul 2021 13:37:19 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+Message-ID: <YQG//899pPl2JIWw@localhost>
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-4-paulmck@kernel.org>
+ <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210728085107.4141-1-mail@anirudhrb.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 02:21:05PM +0530, Anirudh Rayabharam wrote:
-> This series fixes the use after free in firmware_fallback_sysfs reported by
-> syzbot at: 
-> https://syzkaller.appspot.com/bug?extid=de271708674e2093097b
+On Wed, Jul 28, 2021 at 10:37:15AM -0700, Paul E. McKenney wrote:
+> This change makes the memory ordering requirements
+> more evident, and it might well also speed up the to-idle and from-idle
+> fastpaths on some architectures.
 
-Greg,
-
-With Shua's review ammeded, this series is ready to be queued up, finally.
-
-Anirudh, thanks for following up on all these iterations!
-
-  Luis
+Cleaning up the memory ordering requirements certainly seems worthwhile.
+But is there any straightforward benchmark that might quantify the
+"might well also speed up" here? How much does weakening the memory
+ordering buy us, in practice?
