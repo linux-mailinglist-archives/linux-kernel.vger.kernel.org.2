@@ -2,107 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F19E3D8DC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76B63D8DCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234701AbhG1M2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 08:28:38 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:46624
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234847AbhG1M2g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 08:28:36 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id E09D23F327
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:28:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627475312;
-        bh=pjz5ZlEXm5/saRfrb523NAHPbJDjlGI5vzYthqGvyTg=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=CTaI9d3E0iQ3doVpK7fHBw+n5tkmrn1CFAqjpwA3Qq4f5AX3wUGGZENSsdPROlHFH
-         bAllWgxda9FRvWNjFezFJTDGCzGjI5flW6+R2t5FdOXDJsnBSG8wOFNLwdGYE7IQvb
-         3yI4V7ABiILtFhvMn08O9qG6SZdBwKY3EGOtpEyer9PEHAcDsjvoL4ZDI+ckVcs8BY
-         92xe35nMx3IjzGC5IO/w7Na1DgXu4f9BGYE4tYwEk8AEDccYsAmpv0UAXaix0PfRtU
-         c3FAdl3fTOe+PhPx8OWTrC0UGhKI09wkEUE4YBh/6MN4TuoEJ/6nIKzq+5wpnWBeib
-         y178bAFlzi/lA==
-Received: by mail-ed1-f70.google.com with SMTP id y39-20020a50bb2a0000b02903bc05daccbaso1176979ede.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 05:28:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pjz5ZlEXm5/saRfrb523NAHPbJDjlGI5vzYthqGvyTg=;
-        b=SCkgeAuTdYCBEVfIH9LgEJF+z+88KpCalPB5yN8ckPDoLbauvujqSqPy/zGV9w3In3
-         nVHCQ0hDzoMO0DNcyKUv26BHGbQJI295dLuXCH8StjTN9yrWox/9C9E62eztC/9NLKV0
-         I7IBFdpgaZWjwVG0+lS3ZDeeMv55+4VSpwM+NvimmHD9IMPfRQGUQlgTpoiCSEKaZzvK
-         /bEz9StC+twURgFO/sQ6L0WiWQ6q08Lor3ODDZwxy6GJj0pLn05nW5knlMife5Pe5kLb
-         08YS8kMspy2AlMejuLxrhqMFVMe3yEChHxPM1ZvTh2Z6j2wc9Yr5KqZw/ebK+Ota6Gik
-         f6OQ==
-X-Gm-Message-State: AOAM530BWsXlpP4EiEV8ZbgGBpullOTQKd1g4TwNu7hIMWSp9SWn1oix
-        acV+yQ+UVRnFwXZsmOpzonQf9n0/d6wR5lsbuDP2De1nE2LLYB6kgchc49fygJ6ybkhdGS+AELc
-        KrFhVI6lZ/jNpxd+t7d6fty/XiNUTGz/OzYU64UI8LQ==
-X-Received: by 2002:a17:907:1b29:: with SMTP id mp41mr27084490ejc.459.1627475309454;
-        Wed, 28 Jul 2021 05:28:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrZkbFHjhxagytS+B+3gMkKG8bcSUnDFbt3UuykPPqHmgx4NiLQjohYIgeoXseoiWDUoXG5w==
-X-Received: by 2002:a17:907:1b29:: with SMTP id mp41mr27084478ejc.459.1627475309295;
-        Wed, 28 Jul 2021 05:28:29 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id mh10sm2006470ejb.32.2021.07.28.05.28.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 05:28:28 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Krzysztof Opasiak <k.opasiak@samsung.com>,
-        wengjianfeng <wengjianfeng@yulong.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Cc:     kbuild-all@lists.01.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH] nfc: s3fwrn5: fix uninitialized ERRNO variable in probe error message
-Date:   Wed, 28 Jul 2021 14:28:08 +0200
-Message-Id: <20210728122808.156961-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S235231AbhG1M2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 08:28:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:55960 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235199AbhG1M2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 08:28:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A201D31B;
+        Wed, 28 Jul 2021 05:28:42 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4F1E3F70D;
+        Wed, 28 Jul 2021 05:28:39 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 13:28:37 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
+        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v6 05/17] firmware: arm_scmi: Add transport optional
+ init/exit support
+Message-ID: <20210728122837.GG6592@e120937-lin>
+References: <20210712141833.6628-1-cristian.marussi@arm.com>
+ <20210712141833.6628-6-cristian.marussi@arm.com>
+ <20210728114018.i7fquzpgfl4qv6tm@bogus>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728114018.i7fquzpgfl4qv6tm@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a0302ff5906a ("nfc: s3fwrn5: remove unnecessary label") removed
-assignment to "ret" variable but it is used right after in dev_err() in
-the error path.  This fixes clang warning:
+On Wed, Jul 28, 2021 at 12:40:18PM +0100, Sudeep Holla wrote:
+> On Mon, Jul 12, 2021 at 03:18:21PM +0100, Cristian Marussi wrote:
+> > Some SCMI transport could need to perform some transport specific setup
+> > before they can be used by the SCMI core transport layer: typically this
+> > early setup consists in registering with some other kernel subsystem.
+> > 
+> > Add the optional capability for a transport to provide a couple of .init
+> > and .exit functions that are assured to be called early during the SCMI
+> > core initialization phase, well before the SCMI core probing step.
+> > 
+> > [ Peter: Adapted RFC patch by Cristian for submission to upstream. ]
+> > Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+> > [ Cristian: Fixed scmi_transports_exit point of invocation ]
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> > v4 --> V5
+> > - removed useless pr_debug
+> > - moved scmi_transport_exit() invocation
+> > ---
 
-    drivers/nfc/s3fwrn5/firmware.c:424:3: warning: 3rd function call argument is an uninitialized value [clang-analyzer-core.CallAndMessage]
+Hi Sudeep,
 
-Fixes: a0302ff5906a ("nfc: s3fwrn5: remove unnecessary label")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+thanks for having a look.
 
----
+> >  drivers/firmware/arm_scmi/common.h |  8 +++++
+> >  drivers/firmware/arm_scmi/driver.c | 56 ++++++++++++++++++++++++++++++
+> >  2 files changed, 64 insertions(+)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> > index 7c2b9fd7e929..6bb734e0e3ac 100644
+> > --- a/drivers/firmware/arm_scmi/common.h
+> > +++ b/drivers/firmware/arm_scmi/common.h
+> > @@ -321,6 +321,12 @@ struct scmi_device *scmi_child_dev_find(struct device *parent,
+> >  /**
+> >   * struct scmi_desc - Description of SoC integration
+> >   *
+> > + * @init: An optional function that a transport can provide to initialize some
+> > + *	  transport-specific setup during SCMI core initialization, so ahead of
+> > + *	  SCMI core probing.
+> > + * @exit: An optional function that a transport can provide to de-initialize
+> > + *	  some transport-specific setup during SCMI core de-initialization, so
+> > + *	  after SCMI core removal.
+> >   * @ops: Pointer to the transport specific ops structure
+> >   * @max_rx_timeout_ms: Timeout for communication with SoC (in Milliseconds)
+> >   * @max_msg: Maximum number of messages that can be pending
+> > @@ -328,6 +334,8 @@ struct scmi_device *scmi_child_dev_find(struct device *parent,
+> >   * @max_msg_size: Maximum size of data per message that can be handled.
+> >   */
+> >  struct scmi_desc {
+> > +	int (*init)(void);
+> > +	void (*exit)(void);
+> 
+> Does it make sense to rename scmi_desc as scmi_transport or scmi_transport_desc ?
+> I reason I ask is plain init/exit here doesn't make sense. You can change it
+> to transport_init/exit if we don't want to rename the structure.
+> 
 
-Commit hash a0302ff5906a from net-next (not Linus' tree).
----
- drivers/nfc/s3fwrn5/firmware.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Yes indeed I'll rename these to transport_init/exit in V7.
 
-diff --git a/drivers/nfc/s3fwrn5/firmware.c b/drivers/nfc/s3fwrn5/firmware.c
-index 1421ffd46d9a..1e506f6be96e 100644
---- a/drivers/nfc/s3fwrn5/firmware.c
-+++ b/drivers/nfc/s3fwrn5/firmware.c
-@@ -421,9 +421,10 @@ int s3fwrn5_fw_download(struct s3fwrn5_fw_info *fw_info)
- 
- 	tfm = crypto_alloc_shash("sha1", 0, 0);
- 	if (IS_ERR(tfm)) {
-+		ret = PTR_ERR(tfm);
- 		dev_err(&fw_info->ndev->nfc_dev->dev,
- 			"Cannot allocate shash (code=%d)\n", ret);
--		return PTR_ERR(tfm);
-+		return ret;
- 	}
- 
- 	ret = crypto_shash_tfm_digest(tfm, fw->image, image_size, hash_data);
--- 
-2.27.0
+> >  	const struct scmi_transport_ops *ops;
+> 
+> I assume we don't want init/exit inside ops as it is shared with protocols ?
+> Looks good other than the above comment.
+> 
+
+It seemed to me that scmi_transport_ops were more related to an initialized
+instance of a transport and as such used when the scmi instance is probed or
+later, while these transport_init/exit are more general transport specific
+methods that have to be called, if provided, at scmi driver init, way before
+scmi_probe(), to allow for early transport inits, as an example virtio-scmi
+uses these to register at first with the virtio subsystem; so I kept them
+separated.
+
+Thanks,
+Cristian
 
