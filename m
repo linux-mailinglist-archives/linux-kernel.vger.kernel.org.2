@@ -2,135 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433493D88F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE35F3D88F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235011AbhG1HiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234976AbhG1HiQ (ORCPT
+        id S234399AbhG1HiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:38:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30407 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232691AbhG1HiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:38:16 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C3AC061760
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:38:13 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id v16-20020a0562140510b029032511e85975so1425187qvw.23
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=asLoTJNqDsfECIu06kGnrrPYYB9PZTwQlOwbk5q3NAY=;
-        b=qukG12Z/5Nrd4x0xu8iYn5S/7pdbbT9yVlD/dAdygZX9/E3KtDj1aTiTrta9NVNUQ1
-         E+Op3DmX9UhPs9Gil54NdVZwtGzEz36g5x1l6vva1RSX5V6jrOmKITvwF/+PIfeCTHZ2
-         5tZJS/ss5EflJYoLz8ZzxBDDAeW2YxAyT+R+vpchq3RJtcTWK23D3SL+4+D4jrDQNCbD
-         eGz+Vi6+dqBeI1HBbLb3doTUY1XKMpxDES4PMJ8xi3GeoHBkGrYwL89RlPuts9xTM1ee
-         gMiaeB3PukYt+hbONAJ5GzkJJXZzUlTR+4CDgZlultHHbNNxSwAqqSH/AmMf7dauH4xk
-         uzcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=asLoTJNqDsfECIu06kGnrrPYYB9PZTwQlOwbk5q3NAY=;
-        b=HWLu0UUkcesvNrmHtwOLVyEmSbrjsW3oyr6LF7hgLegZRVZ4lc0nbqHuSyJmkiZTSZ
-         bGYQtvKROy3FVrVivKITiQNjmnfRpgat6qgJE7VYOs0b/d5n7I7mryjUZISd6W7Tqkou
-         81pLiXac5HzMB3rInTtjW39Vl77BFQBqAgHkFAD+cCAVxGTdz2vFOdgEQ21AO0wSPP1s
-         gcOYYLyaomDgEty+W/n6G+Eo65lTHmoEWrrt48l2GDejiSQVYy4iKnDVduc0E693t4EI
-         1RzyDqcL7PKdaNkRH+4grNasaOHcwrVrYJRKc64K9Oy2TJ+O9Sow2kOP/6GdYOaIpgky
-         f/FQ==
-X-Gm-Message-State: AOAM530nYoSZ1rOi7zx1rbApwmy3BNXPbvPHgc+RcBDsSitCoqhi16nz
-        ibeIarisg3JX3ipNQvsHIQWl1R+MPZYWag==
-X-Google-Smtp-Source: ABdhPJx5VvLxvtRUc/taUqbearHx8itI0n4tywtAKoa5QJvM9uPJ919xyloKTTne7y5kiE3u02U5EN/OEdmD2Q==
-X-Received: from suleiman1.tok.corp.google.com ([2401:fa00:8f:203:44f4:48a1:aec5:6e5b])
- (user=suleiman job=sendgmr) by 2002:a05:6214:9d2:: with SMTP id
- dp18mr2657261qvb.46.1627457893101; Wed, 28 Jul 2021 00:38:13 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 16:37:00 +0900
-In-Reply-To: <20210728073700.120449-1-suleiman@google.com>
-Message-Id: <20210728073700.120449-3-suleiman@google.com>
-Mime-Version: 1.0
-References: <20210728073700.120449-1-suleiman@google.com>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [RFC PATCH 2/2] kvm,x86: Report preempt_count to host.
-From:   Suleiman Souhlal <suleiman@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     ssouhlal@FreeBSD.org, joelaf@google.com, senozhatsky@chromium.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 28 Jul 2021 03:38:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627457878;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=65Z8ZWIRBkX0VRMC+qLtByPlgxjiVH76+vN5XvSW6MQ=;
+        b=NHZ1DnHeLX24npvJUJlLKOWBtaE4+M2gJAuFtuANaUOESDu0CPkkg5qZlzCvRsNmCFq6hj
+        vuOYSHxciVHGHUqa78TYdOWon8qj7cphzO2UzJpVX7SHdVkGKS/vmg9+Q3U3d8IBjXeteF
+        kgK0eq4AM19KjMMh/JSALJmxi1eOI9k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-2UQmif5RMlKfIAAn1RswgA-1; Wed, 28 Jul 2021 03:37:55 -0400
+X-MC-Unique: 2UQmif5RMlKfIAAn1RswgA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26C9C107ACF5;
+        Wed, 28 Jul 2021 07:37:53 +0000 (UTC)
+Received: from [10.64.54.184] (vpn2-54-184.bne.redhat.com [10.64.54.184])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B34EB60862;
+        Wed, 28 Jul 2021 07:37:48 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v4 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
+        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
+        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
+References: <20210727061401.592616-1-gshan@redhat.com>
+ <20210727061401.592616-2-gshan@redhat.com>
+ <9977fea4-ff36-390a-3a5a-58f088dab111@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <e80d90d6-0ce0-72a6-7631-6815020cd419@redhat.com>
+Date:   Wed, 28 Jul 2021 17:38:01 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
+MIME-Version: 1.0
+In-Reply-To: <9977fea4-ff36-390a-3a5a-58f088dab111@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When KVM_PREEMPT_COUNT_REPORTING is enabled, the host can use
-preempt_count to determine if the guest is in a critical section,
-if it also has CONFIG_KVM_HETEROGENEOUS_RT enabled, in order to
-use heterogeneous RT VCPU configurations.
+Hi Anshuman,
 
-Signed-off-by: Suleiman Souhlal <suleiman@google.com>
----
- arch/x86/Kconfig      | 11 +++++++++++
- arch/x86/kernel/kvm.c | 10 ++++++++++
- 2 files changed, 21 insertions(+)
+On 7/28/21 5:32 PM, Anshuman Khandual wrote:
+> On 7/27/21 11:43 AM, Gavin Shan wrote:
+>> In debug_vm_pgtable(), there are many local variables introduced to
+>> track the needed information and they are passed to the functions for
+>> various test cases. It'd better to introduce a struct as place holder
+>> for these information. With it, what the tests functions need is the
+>> struct. In this way, the code is simplified and easier to be maintained.
+>>
+>> Besides, set_xxx_at() could access the data on the corresponding pages
+>> in the page table modifying tests. So the accessed pages in the tests
+>> should have been allocated from buddy. Otherwise, we're accessing pages
+>> that aren't owned by us. This causes issues like page flag corruption
+>> or kernel crash on accessing unmapped page when CONFIG_DEBUG_PAGEALLOC
+>> is enabled.
+>>
+>> This introduces "struct pgtable_debug_args". The struct is initialized
+>> and destroyed, but the information in the struct isn't used yet. It will
+>> be used in subsequent patches.
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   mm/debug_vm_pgtable.c | 280 +++++++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 279 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+>> index 1c922691aa61..8c7361643166 100644
+>> --- a/mm/debug_vm_pgtable.c
+>> +++ b/mm/debug_vm_pgtable.c
+>> @@ -58,6 +58,37 @@
+>>   #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
+>>   #define RANDOM_NZVALUE	GENMASK(7, 0)
+>>   
+>> +struct pgtable_debug_args {
+>> +	struct mm_struct	*mm;
+>> +	struct vm_area_struct	*vma;
+>> +
+>> +	pgd_t			*pgdp;
+>> +	p4d_t			*p4dp;
+>> +	pud_t			*pudp;
+>> +	pmd_t			*pmdp;
+>> +	pte_t			*ptep;
+>> +
+>> +	p4d_t			*start_p4dp;
+>> +	pud_t			*start_pudp;
+>> +	pmd_t			*start_pmdp;
+>> +	pgtable_t		start_ptep;
+>> +
+>> +	unsigned long		vaddr;
+>> +	pgprot_t		page_prot;
+>> +	pgprot_t		page_prot_none;
+>> +
+>> +	bool			is_contiguous_page;
+>> +	unsigned long		pud_pfn;
+>> +	unsigned long		pmd_pfn;
+>> +	unsigned long		pte_pfn;
+>> +
+>> +	unsigned long		fixed_pgd_pfn;
+>> +	unsigned long		fixed_p4d_pfn;
+>> +	unsigned long		fixed_pud_pfn;
+>> +	unsigned long		fixed_pmd_pfn;
+>> +	unsigned long		fixed_pte_pfn;
+>> +};
+>> +
+>>   static void __init pte_basic_tests(unsigned long pfn, int idx)
+>>   {
+>>   	pgprot_t prot = protection_map[idx];
+>> @@ -955,8 +986,249 @@ static unsigned long __init get_random_vaddr(void)
+>>   	return random_vaddr;
+>>   }
+>>   
+>> +static void __init destroy_args(struct pgtable_debug_args *args)
+>> +{
+>> +	struct page *page = NULL;
+>> +
+>> +	/* Free (huge) page */
+>> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>> +	    IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+>> +	    has_transparent_hugepage() &&
+>> +	    args->pud_pfn != ULONG_MAX) {
+>> +		if (args->is_contiguous_page) {
+>> +			free_contig_range(args->pud_pfn,
+>> +					  (1 << (HPAGE_PUD_SHIFT - PAGE_SHIFT)));
+>> +		} else {
+>> +			page = pfn_to_page(args->pud_pfn);
+>> +			__free_pages(page, HPAGE_PUD_SHIFT - PAGE_SHIFT);
+>> +		}
+>> +
+>> +		args->pud_pfn = ULONG_MAX;
+>> +		args->pmd_pfn = ULONG_MAX;
+>> +		args->pte_pfn = ULONG_MAX;
+>> +	}
+>> +
+>> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>> +	    has_transparent_hugepage() &&
+>> +	    args->pmd_pfn != ULONG_MAX) {
+>> +		if (args->is_contiguous_page) {
+>> +			free_contig_range(args->pmd_pfn, (1 << HPAGE_PMD_ORDER));
+>> +		} else {
+>> +			page = pfn_to_page(args->pmd_pfn);
+>> +			__free_pages(page, HPAGE_PMD_ORDER);
+>> +		}
+>> +
+>> +		args->pmd_pfn = ULONG_MAX;
+>> +		args->pte_pfn = ULONG_MAX;
+>> +	}
+>> +
+>> +	if (args->pte_pfn != ULONG_MAX) {
+>> +		page = pfn_to_page(args->pte_pfn);
+>> +		__free_pages(page, 0);
+>> +	}
+>> +
+>> +	/* Free page table entries */
+>> +	if (args->start_ptep) {
+>> +		pte_free(args->mm, args->start_ptep);
+>> +		mm_dec_nr_ptes(args->mm);
+>> +	}
+>> +
+>> +	if (args->start_pmdp) {
+>> +		pmd_free(args->mm, args->start_pmdp);
+>> +		mm_dec_nr_pmds(args->mm);
+>> +	}
+>> +
+>> +	if (args->start_pudp) {
+>> +		pud_free(args->mm, args->start_pudp);
+>> +		mm_dec_nr_puds(args->mm);
+>> +	}
+>> +
+>> +	if (args->start_p4dp)
+>> +		p4d_free(args->mm, args->p4dp);
+> 
+> 				     ^^^^ s/args->p4dp/args->start_p4dp ?
+> 
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 49270655e827..d8b62789df57 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -846,6 +846,17 @@ config PARAVIRT_TIME_ACCOUNTING
- config PARAVIRT_CLOCK
- 	bool
- 
-+config KVM_PREEMPT_COUNT_REPORTING
-+	bool "KVM preempt_count reporting to the host"
-+	depends on KVM_GUEST && PREEMPT_COUNT
-+	default n
-+	help
-+	  Select this option to enable KVM preempt_count reporting to the host,
-+	  which can be useful in cases where some VCPUs are RT and the rest
-+	  aren't.
-+
-+	  If in doubt, say N here.
-+
- config JAILHOUSE_GUEST
- 	bool "Jailhouse non-root cell support"
- 	depends on X86_64 && PCI
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index a26643dc6bd6..7ec53ea3f979 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -363,6 +363,16 @@ static void kvm_guest_cpu_init(void)
- 
- 	if (has_steal_clock)
- 		kvm_register_steal_time();
-+
-+#ifdef CONFIG_KVM_PREEMPT_COUNT_REPORTING
-+	if (kvm_para_has_feature(KVM_FEATURE_PREEMPT_COUNT)) {
-+		unsigned long pa;
-+
-+		pa = slow_virt_to_phys(this_cpu_ptr(&__preempt_count)) |
-+		    KVM_MSR_ENABLED;
-+		wrmsrl(MSR_KVM_PREEMPT_COUNT, pa);
-+	}
-+#endif
- }
- 
- static void kvm_pv_disable_apf(void)
--- 
-2.32.0.432.gabb21c7263-goog
+Yes, It should be "args->start_p4dp" here. I will correct it in v5
+after you finish review on v4.
+
+Thanks,
+Gavin
 
