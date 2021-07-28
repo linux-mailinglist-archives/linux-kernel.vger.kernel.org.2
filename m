@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A253D9573
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8480A3D9578
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhG1SoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhG1SoG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:44:06 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13688C061757;
-        Wed, 28 Jul 2021 11:44:04 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id f8so110381ilr.4;
-        Wed, 28 Jul 2021 11:44:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=wmPIkTYbBobxWST6LQmuVMQlTMfaFfpDWmYgKkRXHwc=;
-        b=B5HLLOOX3RBe9jiWrKNNMO2OKh7Ye4afxIPULkl2/NweBu6n3f9QZEtvc+T8uTyXJs
-         OTXXqCzXmRlkcJIAAet97y5NJoacWjw/hFxkxwMne/N3K5rpFRP0j3TP7Pm2/wtUObTI
-         pLPuHTgkvTuRi6uM4802fHY9BD93+6AbSOKrs0jcCbOAuyki/oKa9g78EPWJotWdflIo
-         kdnManes6HZ9PUjCiYkg4Ujs+jXgDezgqGTm1DAKvZ7bkPYqZD3DZdLxqO3czBSOXDbY
-         GLQW1snU4Y6Kd+dY/FUCKeCU7ZyskNjlA0qv1DSsJHnLEKvIW41MuPMeqNuYYybweBKy
-         B0Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=wmPIkTYbBobxWST6LQmuVMQlTMfaFfpDWmYgKkRXHwc=;
-        b=kFfkSugglJ7RZ6OXE7XaVmYuF/IY5TCRGjJKRCBkkrClpbAeZUOhe4HN3IXRj79O/m
-         wBkh9FTgo5SFCIHdA4xYJJjM/xq7OF33olbZ/YZv8NojxhA153Ti2FBL71tZwfR2NbbV
-         bH4TyLpT3nIxlFP73gvaah77aW9qhERbz1AjDIGqWqZsCzPTxMR9u785BjzQ0loNXsNR
-         6SQKjyLKRVAYC1R40+Wnhh/e49OxTHI6lR9wApVjwZwcw45ddJoydQNZv24uXIfD4HNe
-         T9ZmWsbfbcJvj/XxL4/skA/2KqNMLhT2D/R4cv8Mj9qA5x6Yj/Tq00i/mpbLlVV7Cy6j
-         xr6w==
-X-Gm-Message-State: AOAM533qVpwqd+LbwMLcjPPukfoY36yqMNBAXfbMB7sg4FDte/D7fWmz
-        AwNVzIKQyP2ZzG40Ok6s3E4=
-X-Google-Smtp-Source: ABdhPJxjF8hn46z7uMSWgrXBCCOHwY9FnQV4Lx9XbybrJHr6+L1a1SGwOi0acnFpWuIKW2M9nLGeqQ==
-X-Received: by 2002:a92:8747:: with SMTP id d7mr816819ilm.173.1627497843488;
-        Wed, 28 Jul 2021 11:44:03 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id n14sm425428ili.22.2021.07.28.11.44.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 11:44:03 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 11:43:55 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Jiang Wang <jiang.wang@bytedance.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Message-ID: <6101a56bf2a11_1e1ff620813@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAM_iQpVedTzRbf-bC7WuGMFYF=qnUxbnUdqJ9+FaxrTAn5DkTw@mail.gmail.com>
-References: <20210727001252.1287673-1-jiang.wang@bytedance.com>
- <20210727001252.1287673-3-jiang.wang@bytedance.com>
- <6100363add8a9_199a412089@john-XPS-13-9370.notmuch>
- <CAM_iQpVedTzRbf-bC7WuGMFYF=qnUxbnUdqJ9+FaxrTAn5DkTw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/5] af_unix: add unix_stream_proto for
- sockmap
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S230091AbhG1SqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:46:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229565AbhG1SqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 14:46:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 939516023B;
+        Wed, 28 Jul 2021 18:45:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627497958;
+        bh=AGvqkwV9OjaqEJNQNzy5jf5UNN74DbHUMIEiFgrsVGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kZSgyhG3eLa4XizSP156vF5jNbRODIEdiCvbS2XCrIX6ig5SPxb4vSBB+ScjHLGNs
+         KGq/UfdGENY1FNqUF378LulYtNJmI2I8JSquMYR+bbEsTsGGH22FLQZ8z+a6Xx9DqE
+         eeR2b61O16/Cq2233ylmgJwa7YoImmctEe3wTHEE=
+Date:   Wed, 28 Jul 2021 20:45:55 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ojaswin Mujoo <ojaswin98@gmail.com>
+Cc:     nsaenz@kernel.org, stefan.wahren@i2se.com,
+        dan.carpenter@oracle.com, phil@raspberrypi.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] staging: vchiq: Set $CONFIG_VCHIQ_CDEV to be enabled
+ by default
+Message-ID: <YQGl47Wpu7+SHIW+@kroah.com>
+References: <cover.1627495116.git.ojaswin98@gmail.com>
+ <70d91b0482e19d7551d3258ea54c970c1b996317.1627495116.git.ojaswin98@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70d91b0482e19d7551d3258ea54c970c1b996317.1627495116.git.ojaswin98@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cong Wang wrote:
-> On Tue, Jul 27, 2021 at 9:37 AM John Fastabend <john.fastabend@gmail.com> wrote:
-> > Do we really need an unhash hook for unix_stream? I'm doing some testing
-> > now to pull it out of TCP side as well. It seems to be an artifact of old
-> > code that is no longer necessary. On TCP side at least just using close()
-> > looks to be enough now.
+On Thu, Jul 29, 2021 at 12:07:16AM +0530, Ojaswin Mujoo wrote:
+> Before this config was defined, the cdev used to be created
+> unconditionally. When an earlier commit introduced this config, the
+> default behavior was set to disabled, which might surprise some
+> unsuspecting users.  Hence, make this config default to 'Y' to be more
+> backward consistent.
 > 
-> How do you handle the disconnection from remote without ->unhash()?
-
-Would close() not work for stream/dgram sockets?
-
+> Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
+> ---
+>  drivers/staging/vc04_services/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> For all stream sockets, we still only allow established sockets to stay
-> in sockmap, which means we have to remove it if it is disconnected
-> or closed.
+> diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
+> index 63caa6818d37..2b70c37cdd09 100644
+> --- a/drivers/staging/vc04_services/Kconfig
+> +++ b/drivers/staging/vc04_services/Kconfig
+> @@ -23,6 +23,7 @@ if BCM2835_VCHIQ
+>  
+>  config VCHIQ_CDEV
+>  	bool "VCHIQ Character Driver"
+> +	default y
 
-+1.
 
-> 
-> But it seems Jiang forgot to call ->unhash() when disconnecting.
+default y is only if the machine will not work without this option.
+Is that the case here?  If not, then please do not have this as the
+default.
 
-Aha so we need to add it in af_unix code I guess. Anyways looking forward
-to v2.
+thanks,
 
-Thanks.
+greg k-h
