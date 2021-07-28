@@ -2,122 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF1B3D8CF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0410B3D8CF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbhG1LoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:44:05 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:46189 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234537AbhG1LoD (ORCPT
+        id S234716AbhG1LpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:45:00 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:58827
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S234301AbhG1Lo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:44:03 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 24F1C580A7F;
-        Wed, 28 Jul 2021 07:44:02 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 28 Jul 2021 07:44:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=i5DEVqVLKNgvooEShC0umjdJ2dW
-        fZTwOs7vNdYKqxSQ=; b=0BgbYpq4IkNVoYqOUyBiLyBrAwGJVY+ln4bAgptazgh
-        1CwejsqIVFwUC5pUgsMwLIthCMtpqv/BfXjPCD0+neoCpQ16DAoNOI8WpsLSdeC6
-        sG/i4bfU2FIq86jLEYts4V5Bw/cvuxrsteJ4Fb1YIYsGW0Z7/Y2ShJdKKUTbeds4
-        12Ai1T9i78SnYMOpdQxXK31QuXdRcyNE2PzRu+/qPjQHMrSg6JHEz6ve53CiS8Ps
-        mdEVDPRhUVLIE4jiCXYMNXCuIYl1EHaWWFeufNK3zKm1N+RiYXp5FLvspRsW2jT8
-        DB5jbr3uSg1ebtxV3Ibz/xUz8KwjnkeWMBPkTcVrNpg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=i5DEVq
-        VLKNgvooEShC0umjdJ2dWfZTwOs7vNdYKqxSQ=; b=DlrXJzFSJVLHT3694RWKKa
-        OlHojgI5BVV+iNI8pCdMcrmf1lt7TnGGwo6mlK8gSh1LGhnP7IoZ+vq1irUCdw+g
-        uaNhlCE1LxZ9jLeStAHi38mVwS9BwuG0c5CwtF0nghxpzzopRj1WowOmS+a8/CEq
-        sY73sYnwNQwoHKrxhsTm0VXemSbkbjiA05NZCkS5X8WubrVEA1uOyOpfyL3C5Sl6
-        kcUO/8z7dGY0sb6i34/5swrFOD1Ga4fwDLs4/I9WZdIeBT9A6fTQrswk9XLFbmMS
-        NJopTmhKavqFLfXPGad5M0hRFgWCQksbfA8Gumaz/V4xkR2foO1wfhR2zGuzvDMg
-        ==
-X-ME-Sender: <xms:AEMBYZ_UTXRS6O6YxOgJ5R2tpeb3At2O-e1dcPWq3y9-dmXZUNrTig>
-    <xme:AEMBYdt9tJ7dPobH7ahYFRQTvv6DqIXUyCvDRN4ofR8WwhBPl-QVefNAMpq7f2g3C
-    dLEAwhwkoenxhCRbms>
-X-ME-Received: <xmr:AEMBYXCwMKOo-Zx1NCAwnS_fvGSAMPD3oP46Rf4RmYuGGQu3yxiP4P78oH3EQ7vYFcfeHCMdDdRwP6BbqeeirY25I_UKBvO2zTvJ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeelgdegudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:AEMBYdcrY0bw9gZLa1YkFX5CfeAal6XF581e-dgTraURedUB_9KAMg>
-    <xmx:AEMBYeOYFCp5U1JIr-xBMm15Z9Nhrknm2N7qvOmer6eli-LIsuwPyg>
-    <xmx:AEMBYfmmS7ikjrtw094UitImn-9XDk_2Ql8mhIyUeTbSGunOtVugRA>
-    <xmx:AkMBYVnb0OHWiHg4rcYuit3XgkrnLhlSTYlUegXEjlCWB8lk-D5zIg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 28 Jul 2021 07:43:59 -0400 (EDT)
-Date:   Wed, 28 Jul 2021 13:43:56 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Emma Anholt <emma@anholt.net>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 2/2] drm/vc4: hdmi: Remove unused struct
-Message-ID: <20210728114356.45atxmgchoh5dec5@gilmour>
-References: <20210707093632.1468127-1-maxime@cerno.tech>
- <20210707093632.1468127-2-maxime@cerno.tech>
- <CAPY8ntAAE+N79T7Q15URHRkGf+N6f2DKNjtyp+74AFjNdb3Prg@mail.gmail.com>
+        Wed, 28 Jul 2021 07:44:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pku.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=5e9Aou2yuG
+        jULlfSGQmTLEmlcOaCd6brcAIp0QNUc3Q=; b=lH/ELDpn9hliwI5XOkZlaGtUF0
+        697e91Qz85OvQzu3TCez9/ZPLBZUCvlhBSlRmbSJuYr68Ckz5Th4wrnUt7+ToQSk
+        gipsIgnOTQaZsuLM3x9t16cqBHuHvB/ZaFRmM3AeALL2hb1zpDBjBWWXrsxReDBR
+        NELGWgZcqZ0+xLxzw=
+Received: from lexp.lan (unknown [222.29.156.242])
+        by front01 (Coremail) with SMTP id 5oFpogBnFSQOQwFh9JhuAQ--.57948S2;
+        Wed, 28 Jul 2021 19:44:18 +0800 (CST)
+From:   Jiashuo Liang <liangjs@pku.edu.cn>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     linux-kernel@vger.kernel.org, Jiashuo Liang <liangjs@pku.edu.cn>
+Subject: [PATCH] x86/fault: Fix wrong signal when vsyscall fails with pkey
+Date:   Wed, 28 Jul 2021 19:44:13 +0800
+Message-Id: <20210728114413.287611-1-liangjs@pku.edu.cn>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xk3qsked5wiwxew6"
-Content-Disposition: inline
-In-Reply-To: <CAPY8ntAAE+N79T7Q15URHRkGf+N6f2DKNjtyp+74AFjNdb3Prg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: 5oFpogBnFSQOQwFh9JhuAQ--.57948S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw45Wr45JFyxCr4rWF47XFb_yoW5CF17pa
+        45Ca9xGFZ7Xrn09a95XryUuw1Svay7t3Wqkryxta4S9345Zr1rXr10vw48Xry7K3yvq3W7
+        JFWY9w1q9anrJw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9a1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
+        6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxE
+        wVAFwVW8KwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26w4UJr1UMxC20s026x
+        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
+        JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
+        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
+        Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
+        UvcSsGvfC2KfnxnUUI43ZEXa7VUbcdbUUUUUU==
+X-CM-SenderInfo: isqqijqrtqmio6sn3hxhgxhubq/1tbiAwEQBVPy7sYrGgAHso
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The function __bad_area_nosemaphore calls kernelmode_fixup_or_oops with
+parameter "signal" being "pkey", which will send a signal numbered "pkey".
 
---xk3qsked5wiwxew6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When emulating vsyscall, the kernel may fail to access user-given memory
+pages that are protected by pkey. In such a case, the kernel should send a
+SIGSEGV signal with si_code=SEGV_PKUERR and si_pkey=pkey.
 
-On Wed, Jul 28, 2021 at 12:01:34PM +0100, Dave Stevenson wrote:
-> On Wed, 7 Jul 2021 at 10:36, Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > Commit 91e99e113929 ("drm/vc4: hdmi: Register HDMI codec") removed the
-> > references to the vc4_hdmi_audio_component_drv structure, but not the
-> > structure itself resulting in a warning. Remove it.
-> >
-> > Fixes: 91e99e113929 ("drm/vc4: hdmi: Register HDMI codec")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
->=20
-> Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+So a new parameter "pkey" is added to kernelmode_fixup_or_oops to fix it.
 
-Applied, thanks!
-Maxime
+Signed-off-by: Jiashuo Liang <liangjs@pku.edu.cn>
+---
+ arch/x86/mm/fault.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
---xk3qsked5wiwxew6
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index b2eefdefc108..883294282e1e 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -710,7 +710,8 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
+ 
+ static noinline void
+ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+-			 unsigned long address, int signal, int si_code)
++			 unsigned long address, int signal, int si_code,
++			 u32 pkey)
+ {
+ 	WARN_ON_ONCE(user_mode(regs));
+ 
+@@ -735,8 +736,12 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+ 
+ 			set_signal_archinfo(address, error_code);
+ 
+-			/* XXX: hwpoison faults will set the wrong code. */
+-			force_sig_fault(signal, si_code, (void __user *)address);
++			if (si_code == SEGV_PKUERR) {
++				force_sig_pkuerr((void __user *)address, pkey);
++			} else {
++				/* XXX: hwpoison faults will set the wrong code. */
++				force_sig_fault(signal, si_code, (void __user *)address);
++			}
+ 		}
+ 
+ 		/*
+@@ -798,7 +803,8 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+ 	struct task_struct *tsk = current;
+ 
+ 	if (!user_mode(regs)) {
+-		kernelmode_fixup_or_oops(regs, error_code, address, pkey, si_code);
++		kernelmode_fixup_or_oops(regs, error_code, address,
++					 SIGSEGV, si_code, pkey);
+ 		return;
+ 	}
+ 
+@@ -930,7 +936,8 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
+ {
+ 	/* Kernel mode? Handle exceptions or die: */
+ 	if (!user_mode(regs)) {
+-		kernelmode_fixup_or_oops(regs, error_code, address, SIGBUS, BUS_ADRERR);
++		kernelmode_fixup_or_oops(regs, error_code, address,
++					 SIGBUS, BUS_ADRERR, 0);
+ 		return;
+ 	}
+ 
+@@ -1396,7 +1403,7 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 		 */
+ 		if (!user_mode(regs))
+ 			kernelmode_fixup_or_oops(regs, error_code, address,
+-						 SIGBUS, BUS_ADRERR);
++						 SIGBUS, BUS_ADRERR, 0);
+ 		return;
+ 	}
+ 
+@@ -1416,7 +1423,7 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 		return;
+ 
+ 	if (fatal_signal_pending(current) && !user_mode(regs)) {
+-		kernelmode_fixup_or_oops(regs, error_code, address, 0, 0);
++		kernelmode_fixup_or_oops(regs, error_code, address, 0, 0, 0);
+ 		return;
+ 	}
+ 
+@@ -1424,7 +1431,7 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 		/* Kernel mode? Handle exceptions or die: */
+ 		if (!user_mode(regs)) {
+ 			kernelmode_fixup_or_oops(regs, error_code, address,
+-						 SIGSEGV, SEGV_MAPERR);
++						 SIGSEGV, SEGV_MAPERR, 0);
+ 			return;
+ 		}
+ 
+-- 
+2.32.0
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYQFC/AAKCRDj7w1vZxhR
-xd2CAP4mDadHiXJx5q3SwTlgirzxV7iiapFkcxzUnMvR7riZqgD+MLpH/7goDQTx
-7mEM/yZfEZ3idqk11ewlUBlqunMdpQY=
-=AdMi
------END PGP SIGNATURE-----
-
---xk3qsked5wiwxew6--
