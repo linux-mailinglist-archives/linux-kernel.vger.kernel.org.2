@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0933D88C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEB63D88CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234852AbhG1H0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
+        id S234798AbhG1H1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231949AbhG1H0U (ORCPT
+        with ESMTP id S231949AbhG1H1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:26:20 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC456C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:26:19 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1m8dx8-0006Mb-Qy; Wed, 28 Jul 2021 09:26:06 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:7213:487e:ab4f:842a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 4AC2D659EF9;
-        Wed, 28 Jul 2021 07:26:05 +0000 (UTC)
-Date:   Wed, 28 Jul 2021 09:26:04 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     "Menon, Nishanth" <nm@ti.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>
-Subject: Re: [PATCH v2 0/6] CAN: Add support for CAN in AM65,J721e and AM64
-Message-ID: <20210728072604.ruev36qwx2x2krlu@pengutronix.de>
-References: <20210726101012.26983-1-a-govindraju@ti.com>
- <f5abf985-d953-a9cd-f6e6-ee86d3a0f398@ti.com>
+        Wed, 28 Jul 2021 03:27:31 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844A2C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:27:30 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso2932259pjo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:27:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YVR9sbQLb33YOGzYRf2bTmTHvepvD/Q+vwxljUmG580=;
+        b=AzGozxQcXtMP6nGNYlOkyz2xleTj/6ZP01vllEseoHzXDNx5oFdpQHeS94rQP3HjhX
+         TfFEQO5ylNuGiT4G0HAvGj8D9Q944JRT3sdR3XKSq3cE68vGCuSsFTRGjbz01LS+ol3Y
+         3OwVhT0FQxc1FpnmOl9tZGfCzZM3c32EwI7zrXMoCfOD6TD1BaVSXnSP3KQzRnifbR36
+         xxG/8UKa85qblQtWQhKHakVP1db/a+cPyrTpL+JFl/+cqBXngDnwzQPNID9A8tLYLT/y
+         6YwQdsmfUBWD0qR45RY9fKZWKJ7pgBZU3PytRMNjLF6GZs6MW7oBQ5CfcHbh4rmtfIS0
+         umWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YVR9sbQLb33YOGzYRf2bTmTHvepvD/Q+vwxljUmG580=;
+        b=eJ06bz+mc+MU96KP9iLfDWQUTEMCtGh4ar4Udq7ovNkWSMt54scxec2ZmNYYqMbn0h
+         +KmEzxz6UHSrXffz2JOPHDiQYGqUrz4QCwgu3FQOvvU5K9s+oe7LdaQlOfAiF8NDglfu
+         Hf5KCzY+pLQq0P+5hAVPScTnwwNwakbBjJkD+D03lWv+GwdRuizK3KMyQLMgz/Up0FTx
+         vKeqe3OrbBRXLVfD2PGtPlsp/eNfmbq+cTvXJi7XNJLjh7gdpGulf5Rqq9RB5mUcd44L
+         6pQGXyGCI+gDVoG7JYf3jlShpBxqEKa13C7I92wC/5fJ831fcnVOFh/jDKIQd7hTY7cp
+         worA==
+X-Gm-Message-State: AOAM5304YK2fHoXbZxRXIhUj0SqWQARcI3FZxNB82ahbxVuMZD/k/CXg
+        Ko41NgvXGJnH+umHL7beTE87i0zE+WTtoA==
+X-Google-Smtp-Source: ABdhPJyuPq0JFcSW8rSajJ356qD3eYgmicw56o5wQsqeDSl4K1FXVrNn2kEa8m9BgvTg79jqb1+hBg==
+X-Received: by 2002:a17:902:e28a:b029:12c:13e9:1166 with SMTP id o10-20020a170902e28ab029012c13e91166mr13740837plc.47.1627457250124;
+        Wed, 28 Jul 2021 00:27:30 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id v31sm6389910pgl.49.2021.07.28.00.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 00:27:29 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ran.xiaokai@zte.com.cn
+To:     christian.brauner@ubuntu.com, peterz@infradead.org,
+        tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Subject: [PATCH] set_user: add capability check when rlimit(RLIMIT_NPROC) exceeds
+Date:   Wed, 28 Jul 2021 00:26:29 -0700
+Message-Id: <20210728072629.530435-1-ran.xiaokai@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qjhroa3tm7qxtywg"
-Content-Disposition: inline
-In-Reply-To: <f5abf985-d953-a9cd-f6e6-ee86d3a0f398@ti.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
 
---qjhroa3tm7qxtywg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+in copy_process(): non root users but with capability CAP_SYS_RESOURCE
+or CAP_SYS_ADMIN will clean PF_NPROC_EXCEEDED flag even
+rlimit(RLIMIT_NPROC) exceeds. Add the same capability check logic here.
 
-On 28.07.2021 10:49:58, Aswath Govindraju wrote:
-> > The following series of patches add support for CAN in SoC's AM65, J721e
-> > and AM64.
-> >=20
-> > This patch series is dependent on [1] and [2] and I have requested for =
-an
-> > immutable tag from the Marc Kleine-Budde(maintainer of net tree).
+Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+---
+ kernel/sys.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I'm the maintainer of the "linux-can", not the "net" tree.
+diff --git a/kernel/sys.c b/kernel/sys.c
+index ef1a78f5d71c..72c7639e3c98 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -480,7 +480,8 @@ static int set_user(struct cred *new)
+ 	 * failure to the execve() stage.
+ 	 */
+ 	if (is_ucounts_overlimit(new->ucounts, UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC)) &&
+-			new_user != INIT_USER)
++			new_user != INIT_USER &&
++			!capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+ 		current->flags |= PF_NPROC_EXCEEDED;
+ 	else
+ 		current->flags &= ~PF_NPROC_EXCEEDED;
+-- 
+2.25.1
 
-> Here is the tag in [0] shared by Marc after applying patches [1] and
-> [2], linux-can-next-for-5.15-20210725,
->=20
-> [0] -
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/lo=
-g/?h=3Dlinux-can-next-for-5.15-20210725
-
-That tag has been merged by David Miller into the net-next tree.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/=
-?id=3Dd20e5880fe9df149a9159673d9fec57aab43ac61
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---qjhroa3tm7qxtywg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEBBokACgkQqclaivrt
-76mBDgf/fqptD4kLBB78HJyWa6U4mZI/QSm+ZckJV794i9Cmm0Pagn+cgGtNjsjq
-i7rOS5cJnUEJ3SGhJByvz97xqyqolXVjoGr/ZHufdH9PJ2HJo6JshGRiVutbzoJ2
-uy2YF8pRgUVPm4K+PKiTcXHk67CdbI3GoP+a+NU39/qkM+FfqP6IO2bk0mYDyrYF
-QmpZMXyHKf3xkt1xZMfMrgOA6yTOXfgrFhK8mZJqYK3kJdN/ByJ7x1wcL3aIjI0q
-QlPah/kcjJQB3Q7DCuTa3T1y0wGtQIhyzp8k1iKaxb6q+Zi96FvA8iVcZtXVUKNM
-lv9HpEOmss/wdbVQap6yQszISYr9GQ==
-=l/pF
------END PGP SIGNATURE-----
-
---qjhroa3tm7qxtywg--
