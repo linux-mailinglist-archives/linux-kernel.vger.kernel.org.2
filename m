@@ -2,196 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AD93D9464
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18ADC3D9465
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhG1Rg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:36:59 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:38871 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhG1Rg5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:36:57 -0400
-Received: by mail-io1-f50.google.com with SMTP id a13so3849607iol.5;
-        Wed, 28 Jul 2021 10:36:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+ZuWCSGhI9p946I5meiTY9tIujdg9WTVzTMSIiS4wvA=;
-        b=rowxeJEt+7OrmigRlYQ3zs+P/C7VbmZCElTDPQy5iCzPggHdHESNG6dyrq8npDdHba
-         J4sY55w1qCt+kFd0JKch0eHQUQuFSYwuxC94qeNcNKyE1sEepZhi1RXn6xaxqrkEbhuj
-         UK+sWXGDW2sC905LbxWEIp/gW5CzNmwhDDDtETRCRPOEA+mY5XO42OTk75vARY1Atp4/
-         U5At/FC+NBDRXRAJvVOU4YORAie1Ix7NZj1JN0PIDLFo6XidpkJUi0lXu7HFJ52kYbxg
-         EohXwEOToPpYGQh2LIEAOfoA8TJwlVzfDlCgwNNQDusorvrkc/A0fznckltUcuoBoNZH
-         Fphw==
-X-Gm-Message-State: AOAM531mAJpkbF9qwIe2cZGdkl5ocnBNg2Ptbsx4thCdblWB+bVLUqp7
-        fkCQ7t1iXlWTA+9gIeZaWA==
-X-Google-Smtp-Source: ABdhPJxCmh3UPQcqE4Y7EaPT/8ZYwkH97oksdw+d/L95duJC5Jdb6zChMU6kTNaWH9jRrV8yythhsw==
-X-Received: by 2002:a05:6638:289:: with SMTP id c9mr876595jaq.14.1627493814569;
-        Wed, 28 Jul 2021 10:36:54 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id g4sm335630ilc.11.2021.07.28.10.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 10:36:53 -0700 (PDT)
-Received: (nullmailer pid 1298058 invoked by uid 1000);
-        Wed, 28 Jul 2021 17:36:49 -0000
-Date:   Wed, 28 Jul 2021 11:36:49 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     bjorn.andersson@linaro.org, broonie@kernel.org,
-        plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
-        perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        bgoswami@codeaurora.org
-Subject: Re: [PATCH v2 04/16] ASoC: qcom: dt-bindings: add bindings Audio
- Processing manager
-Message-ID: <20210728173649.GA1290628@robh.at.kernel.org>
-References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
- <20210714153039.28373-5-srinivas.kandagatla@linaro.org>
+        id S230329AbhG1RhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:37:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229951AbhG1RhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:37:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1811E60ED4;
+        Wed, 28 Jul 2021 17:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627493836;
+        bh=0iMYYV7iDVe7l593Jo/mmoNw+nYiwUH3LIIfvq8gDz4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=BHWqdDiFhAzRB0QeopSuKhflh6/8cZE17NWJLiNRf29PkvmnLIZctEJ9PHSt8CVb1
+         rrpBMbksE+Yx8t9JzvOKguDJUioNmb30BPI18XZZ8FTtoLtyjcYXBKjxCoBK+hy/dn
+         yTPKenH9PTvjXpcBhxKJ4gm2Ks0RSQG2iBrcmdK0zeu7wqOA86n782wpwBGra1w+wR
+         GQ8zL51iFpv5PTHYc/1t+xc2qDBZgoKsifiN6IMOmRbt2Q8YzNHO9PL8FeIUC8+v8a
+         A0qgBXAVBbLjAZQfXgEYoNQjTued0zmrdfLJOJehvlgGeOpwHLjFfsOXctzVPAYkfm
+         5B/Wc2WHqPlYg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E43945C048D; Wed, 28 Jul 2021 10:37:15 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 10:37:15 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+Message-ID: <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-4-paulmck@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210714153039.28373-5-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210721202127.2129660-4-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 04:30:27PM +0100, Srinivas Kandagatla wrote:
-> This patch adds bindings support for Qualcomm Audio Processing Manager
-> service in Audio DSP.
-> 
-> Audio Process Manager is one of the static service in DSP which is
-> responsible for Command/response handling, graph Management
-> and Control/Event management between modules.
+Accesses to the rcu_data structure's ->dynticks field have always been
+fully ordered because it was not possible to prove that weaker ordering
+was safe.  However, with the removal of the rcu_eqs_special_set() function
+and the advent of the Linux-kernel memory model, it is now easy to show
+that two of the four original full memory barriers can be weakened to
+acquire and release operations.  The remaining pair must remain full
+memory barriers.  This change makes the memory ordering requirements
+more evident, and it might well also speed up the to-idle and from-idle
+fastpaths on some architectures.
 
-This all looks fairly similar to the prior Qcom audio binding(s). It 
-would be nice to not see this all re-invented.
+The following litmus test, adapted from one supplied off-list by Frederic
+Weisbecker, models the RCU grace-period kthread detecting an idle CPU
+that is concurrently transitioning to non-idle:
 
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../devicetree/bindings/sound/qcom,q6apm.yaml | 87 +++++++++++++++++++
->  include/dt-bindings/sound/qcom,q6apm.h        |  8 ++
->  2 files changed, 95 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
->  create mode 100644 include/dt-bindings/sound/qcom,q6apm.h
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
-> new file mode 100644
-> index 000000000000..6f27567523a9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
-> @@ -0,0 +1,87 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/sound/qcom,q6apm.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Qualcomm Audio Process Manager binding
-> +
-> +maintainers:
-> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> +
-> +description: |
-> +  This binding describes the Qualcomm Audio Process Manager service in DSP
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,q6apm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +#APM Services
-> +patternProperties:
-> +  'apm@[0-9]+$':
+	C dynticks-from-idle
 
-This means '.*apm' for the node name. Did you need a '^'?
+	{
+		DYNTICKS=0; (* Initially idle. *)
+	}
 
-> +    type: object
-> +    description:
-> +      APM devices use subnodes for services.
-> +
-> +    properties:
-> +      compatible:
-> +        enum:
-> +          - qcom,q6apm-dais
-> +          - qcom,q6apm-bedais
-> +
-> +      iommus:
-> +        maxItems: 1
-> +
-> +      "#sound-dai-cells":
-> +        const: 1
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - compatible
-> +      - reg
-> +      - '#sound-dai-cells'
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gpr {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        gprservice@1 {
-> +          compatible = "qcom,q6apm";
-> +          reg = <1>;
-> +
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +
-> +          apm@1 {
-> +            compatible = "qcom,q6apm-dais";
-> +            #sound-dai-cells = <1>;
-> +            reg = <1>;
-> +          };
-> +
-> +          apm@2 {
-> +            compatible = "qcom,q6apm-bedais";
-> +            #sound-dai-cells = <1>;
-> +            reg = <2>;
-> +          };
-> +        };
-> +    };
-> diff --git a/include/dt-bindings/sound/qcom,q6apm.h b/include/dt-bindings/sound/qcom,q6apm.h
-> new file mode 100644
-> index 000000000000..3c3987eb6e95
-> --- /dev/null
-> +++ b/include/dt-bindings/sound/qcom,q6apm.h
-> @@ -0,0 +1,8 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __DT_BINDINGS_Q6_APM_H__
-> +#define __DT_BINDINGS_Q6_APM_H__
-> +
-> +/* Audio Process Manager (APM) virtual ports IDs */
-> +#include <dt-bindings/sound/qcom,q6afe.h>
+	P0(int *X, int *DYNTICKS)
+	{
+		int dynticks;
+		int x;
 
-Why add this indirection? Rename the file if you need something to cover 
-both.
+		// Idle.
+		dynticks = READ_ONCE(*DYNTICKS);
+		smp_store_release(DYNTICKS, dynticks + 1);
+		smp_mb();
+		// Now non-idle
+		x = READ_ONCE(*X);
+	}
 
-> +
-> +#endif /* __DT_BINDINGS_Q6_APM_H__ */
-> -- 
-> 2.21.0
-> 
-> 
+	P1(int *X, int *DYNTICKS)
+	{
+		int dynticks;
+
+		WRITE_ONCE(*X, 1);
+		smp_mb();
+		dynticks = smp_load_acquire(DYNTICKS);
+	}
+
+	exists (1:dynticks=0 /\ 0:x=1)
+    
+Running "herd7 -conf linux-kernel.cfg dynticks-from-idle.litmus" verifies
+this transition, namely, showing that if the RCU grace-period kthread (P1)
+sees another CPU as idle (P0), then any memory access prior to the start
+of the grace period (P1's write to X) will be seen by any RCU read-side
+critical section following the to-non-idle transition (P0's read from X).
+This is a straightforward use of full memory barriers to force ordering
+in a store-buffering (SB) litmus test.
+
+The following litmus test, also adapted from the one supplied off-list
+by Frederic Weisbecker, models the RCU grace-period kthread detecting
+a non-idle CPU that is concurrently transitioning to idle:
+
+	C dynticks-into-idle
+
+	{
+		DYNTICKS=1; (* Initially non-idle. *)
+	}
+
+	P0(int *X, int *DYNTICKS)
+	{
+		int dynticks;
+
+		// Non-idle.
+		WRITE_ONCE(*X, 1);
+		dynticks = READ_ONCE(*DYNTICKS);
+		smp_store_release(DYNTICKS, dynticks + 1);
+		smp_mb();
+		// Now idle.
+	}
+
+	P1(int *X, int *DYNTICKS)
+	{
+		int x;
+		int dynticks;
+
+		smp_mb();
+		dynticks = smp_load_acquire(DYNTICKS);
+		x = READ_ONCE(*X);
+	}
+
+	exists (1:dynticks=2 /\ 1:x=0)
+
+Running "herd7 -conf linux-kernel.cfg dynticks-into-idle.litmus" verifies
+this transition, namely, showing that if the RCU grace-period kthread
+(P1) sees another CPU as newly idle (P0), then any pre-idle memory access
+(P0's write to X) will be seen by any code following the grace period
+(P1's read from X).  This is a simple release-acquire pair forcing
+ordering in a message-passing (MP) litmus test.
+
+Of course, if the grace-period kthread detects the CPU as non-idle,
+it will refrain from reporting a quiescent state on behalf of that CPU,
+so there are no ordering requirements from the grace-period kthread in
+that case.  However, other subsystems call rcu_is_idle_cpu() to check
+for CPUs being non-idle from an RCU perspective.  That case is also
+verified by the above litmus tests with the proviso that the sense of
+the low-order bit of the DYNTICKS counter be inverted.
+
+Unfortunately, on x86 smp_mb() is as expensive as a cache-local atomic
+increment.  This commit therefore weakens only the read from ->dynticks.
+However, the updates are abstracted into a rcu_dynticks_inc() function
+to ease any future changes that might be needed.
+
+[ paulmck: Apply Linus Torvalds feedback. ]
+
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 42a0032dd99f7..c87b3a271d65b 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -251,6 +251,15 @@ void rcu_softirq_qs(void)
+ 	rcu_tasks_qs(current, false);
+ }
+ 
++/*
++ * Increment the current CPU's rcu_data structure's ->dynticks field
++ * with ordering.  Return the new value.
++ */
++static noinstr unsigned long rcu_dynticks_inc(int incby)
++{
++	return arch_atomic_add_return(incby, this_cpu_ptr(&rcu_data.dynticks));
++}
++
+ /*
+  * Record entry into an extended quiescent state.  This is only to be
+  * called when not already in an extended quiescent state, that is,
+@@ -267,7 +276,7 @@ static noinstr void rcu_dynticks_eqs_enter(void)
+ 	 * next idle sojourn.
+ 	 */
+ 	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
+-	seq = arch_atomic_inc_return(&this_cpu_ptr(&rcu_data)->dynticks);
++	seq = rcu_dynticks_inc(1);
+ 	// RCU is no longer watching.  Better be in extended quiescent state!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & 0x1));
+ }
+@@ -286,7 +295,7 @@ static noinstr void rcu_dynticks_eqs_exit(void)
+ 	 * and we also must force ordering with the next RCU read-side
+ 	 * critical section.
+ 	 */
+-	seq = arch_atomic_inc_return(&this_cpu_ptr(&rcu_data)->dynticks);
++	seq = rcu_dynticks_inc(1);
+ 	// RCU is now watching.  Better not be in an extended quiescent state!
+ 	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & 0x1));
+@@ -308,7 +317,7 @@ static void rcu_dynticks_eqs_online(void)
+ 
+ 	if (atomic_read(&rdp->dynticks) & 0x1)
+ 		return;
+-	atomic_inc(&rdp->dynticks);
++	rcu_dynticks_inc(1);
+ }
+ 
+ /*
+@@ -318,7 +327,7 @@ static void rcu_dynticks_eqs_online(void)
+  */
+ static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
+ {
+-	return !(arch_atomic_read(&this_cpu_ptr(&rcu_data)->dynticks) & 0x1);
++	return !(atomic_read(this_cpu_ptr(&rcu_data.dynticks)) & 0x1);
+ }
+ 
+ /*
+@@ -327,7 +336,8 @@ static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
+  */
+ static int rcu_dynticks_snap(struct rcu_data *rdp)
+ {
+-	return atomic_add_return(0, &rdp->dynticks);
++	smp_mb();  // Fundamental RCU ordering guarantee.
++	return atomic_read_acquire(&rdp->dynticks);
+ }
+ 
+ /*
+@@ -391,12 +401,12 @@ bool rcu_dynticks_zero_in_eqs(int cpu, int *vp)
+  */
+ notrace void rcu_momentary_dyntick_idle(void)
+ {
+-	int special;
++	int seq;
+ 
+ 	raw_cpu_write(rcu_data.rcu_need_heavy_qs, false);
+-	special = atomic_add_return(2, &this_cpu_ptr(&rcu_data)->dynticks);
++	seq = rcu_dynticks_inc(2);
+ 	/* It is illegal to call this from idle state. */
+-	WARN_ON_ONCE(!(special & 0x1));
++	WARN_ON_ONCE(!(seq & 0x1));
+ 	rcu_preempt_deferred_qs(current);
+ }
+ EXPORT_SYMBOL_GPL(rcu_momentary_dyntick_idle);
