@@ -2,256 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8973D8F37
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018B13D8F3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236549AbhG1Ngj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:36:39 -0400
-Received: from mail-mw2nam12on2061.outbound.protection.outlook.com ([40.107.244.61]:37728
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236444AbhG1Ngi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:36:38 -0400
+        id S236589AbhG1NjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:39:05 -0400
+Received: from mga07.intel.com ([134.134.136.100]:9337 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236384AbhG1NjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 09:39:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="276449045"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="276449045"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 06:39:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="499225634"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga004.fm.intel.com with ESMTP; 28 Jul 2021 06:39:01 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 28 Jul 2021 06:39:00 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Wed, 28 Jul 2021 06:39:00 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Wed, 28 Jul 2021 06:39:00 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CfS+TlWLCB/izXtGFF0iedvF26ekTCu50YoWs6ttgsRiqCq4c6Cjd2sTGkSawh2DObewAVymxYSzCz/tvb7bcSmikoCQyxkZxQVqXTeSQ1Af++1jmUP+WhQlmttWRKcIejlVzWjRTnEtKM3JtnOcH0xR7ljtSyUJxzaSU9UIYgi64lV9dOsUElTAtDcAQ5tXgwstGPw83noz9afoZ4rPGQqXTSvdON2nTpLdsAan1k2pvgQrTgMfJqb13jKGajDWLUNYEXwoWeiVfB96H2bWISPH/iyPzWScjLpqlVvfDmLbRDNF/REVDIm2BgF/iznAsKuYG/lBEI7gGN6Tt+7usQ==
+ b=YsNforoJTD8R6migdLtDnYY3kS+pcQg5lKnHZz85zxAjZWyMczQrBpTT0gjSDTCpbddIwdns/RjDy2lEfDDJVBQ3RRnVdLPWfYhgCC6LX7ejuafRB3f2uliofxavWmDD/dvUXHOHUHpazmGTaKDfEI/SD9oET+kmbcimcEu07PZHXD2gj6/qj4yuiSguKEkVlD6bmvIB0V8J9kvOVnAW9Fz9/raUxRiNImokocWf4U1F/wehu8SmmqyqlQ6b0ToMExjYBnmBf3cWzbhszEWF0r18a3dy8XvXvoWlnUvifS4yxWlBRFBuTS1RG4/GTV7foZ7CmQRcvxI/aDE2KXOFIQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jdiu5wdWGcW3ewqNg9m7M9N5rFqo3iJWIca1lZ/2Zew=;
- b=X68LxV+ODn1XN8cDGdnIsBKkTRzuS82quid/DqG6VnsvIGsMt6X/fqtHWlIJJao1ssk9EklyltdUzyOhBXWYYtrbzg7nuwnAEOk0nIGAKT1BNaMcGa1ffvOuH1GTRV06vTl8DaOXWJ5adENW+jgFdPORrxwyIOCLyzg0cwS6yiUWqaJCRegYfQTkBcFvoJ8TmbygNKQ5mvGN7lhnFdYnr1gHzxC+K15zebg6oDsPsdsPhQWDxYsb9gxuLkESdaf9bIXop4MqlDjkpoML+CYV2FcTFfgg597Z1RzmreaOVQojwnsoTyGRSkJ9ZsY69atRz19gPhc0VnrtkqNk1VVRdg==
+ bh=8GfrOlCvpWwRpFMROyQYwdWHTcvkwgDHX5ndUmW02Ko=;
+ b=ErPAmHEXO6QnrHogzXEfNodDvd7kaYmEsHcMBqA5S9sNOBV3e1dwAusV1HhO2cKW8r5HxcRL8dARhzkDNoBNhUlPkt6vVvprpd2HQ6cY4WuzpAZkXi1oxfrK7VVPn/+vAcydJfR7XKiEVxieGmGD/Bm+7HaKzQxFqO+NvHdaf7d/iN64dIY5dAoEY0Z8rS6jAFLOzAn9FVwOmiKTJ42Epelj7OuyhOi4Cn/i4e/Di4w9gfjU/kKzbLwzf6xkmrBCyvwZ2/OkDnb0PuFP7wGNOGoWFZtzj7XgGXMKi0aFUGakHvNy5IqYaa3eI7Vpez1XFlN6raSPX3la3TLJDmoO1A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jdiu5wdWGcW3ewqNg9m7M9N5rFqo3iJWIca1lZ/2Zew=;
- b=kYJaZ3bH0dOPzrkm1mk12twMzPf4z7iVKeRTPLwnHlMvlP4IZENGR8Jn7tACmxJ3ALqXsmw9WPLv2ztrZjOhQXQkrk6U+VBcGFJZ5v7m9T5ic6p1NgHi3huMSrF0LtLSqmE77YZR3CeIYYFAFLIaggmpJ85wve3pi36eAANg5dU=
-Authentication-Results: inria.fr; dkim=none (message not signed)
- header.d=none;inria.fr; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SA0PR12MB4573.namprd12.prod.outlook.com (2603:10b6:806:9c::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Wed, 28 Jul
- 2021 13:36:34 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4373.019; Wed, 28 Jul 2021
- 13:36:34 +0000
-From:   Brijesh Singh <brijesh.singh@amd.com>
-To:     lucas.nussbaum@inria.fr
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jroedel@suse.de,
-        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org
-Subject: Re: [BUG] crypto: ccp: random crashes after kexec on AMD with PSP since commit 97f9ac3d
-Date:   Wed, 28 Jul 2021 08:36:13 -0500
-Message-Id: <20210728133613.28586-1-brijesh.singh@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <YQB3B1RMhPqcrqzW@xanadu.blop.info>
-References: <YQB3B1RMhPqcrqzW@xanadu.blop.info>
-Content-Type: text/plain
-X-ClientProxiedBy: SN4PR0201CA0014.namprd02.prod.outlook.com
- (2603:10b6:803:2b::24) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+ bh=8GfrOlCvpWwRpFMROyQYwdWHTcvkwgDHX5ndUmW02Ko=;
+ b=GY4NR6A7pzEXiox4UUbfoQhEqBPFvZ+gl3wpA6IefoNAEm3ZM+hFqhYD8OENY80KF1fnNDc5B1qosfdupoDoAG+kQFsfCUHi7VM1HLx664+stvn3vBs95Tlrvru92twct1P9U+sRIuoDzOUROP3954WwhDfod+jNQnUMhE4HFFY=
+Received: from DM4PR11MB5549.namprd11.prod.outlook.com (2603:10b6:5:388::7) by
+ DM5PR1101MB2123.namprd11.prod.outlook.com (2603:10b6:4:53::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4352.29; Wed, 28 Jul 2021 13:38:59 +0000
+Received: from DM4PR11MB5549.namprd11.prod.outlook.com
+ ([fe80::d4bb:d75e:3801:1b2d]) by DM4PR11MB5549.namprd11.prod.outlook.com
+ ([fe80::d4bb:d75e:3801:1b2d%9]) with mapi id 15.20.4373.019; Wed, 28 Jul 2021
+ 13:38:59 +0000
+From:   "Wang, Zhi A" <zhi.a.wang@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        "Greg KH" <gregkh@linuxfoundation.org>
+CC:     Christoph Hellwig <hch@lst.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Subject: RE: refactor the i915 GVT support
+Thread-Topic: refactor the i915 GVT support
+Thread-Index: AQHXfkkPR74j3PcQBUqzVfBaHB7ETatOyPlwgAATUQCAB+h0AIABoDZQ
+Date:   Wed, 28 Jul 2021 13:38:58 +0000
+Message-ID: <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
+References: <20210721155355.173183-1-hch@lst.de>
+ <DM4PR11MB55496531B246A4604FC86998CAE49@DM4PR11MB5549.namprd11.prod.outlook.com>
+ <20210722112636.wj277vqhg4dez5ug@sirius.home.kraxel.org>
+ <20210727121224.GA2145868@nvidia.com>
+In-Reply-To: <20210727121224.GA2145868@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7777033b-75b9-481b-e466-08d951cd0dd1
+x-ms-traffictypediagnostic: DM5PR1101MB2123:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR1101MB21231AAC7A9E1635C94771B9CAEA9@DM5PR1101MB2123.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fnErwjFtN0OkaU6aVFtAjgGrZ3hVpaP+1yb4KuTgGJW0+WTrGi6sc7WKIwCEa+Fh8OqRoZ7wILwbd+pK/FxtKZ6ICJmSc+uN0h60Fe+0Ie7Y5a760af0EhthBHRoW/j0rkHtRoPegHJ+yvI3rJqbX83TQejixssWZUp8wT8wlPrkeUsNFMvc8agASur/zV9PRdhR/w2DGAq/98aiu/Rrlmv5TtQ9c3vLPYn50R78DACS1LgHFYplIThxHPIEPHwi4bFJX2l4wyajdy8A/ix5sy5L4I1tJLAPlk2GjtsXbvQdykpK+tLQHiLAyDIjZlV4f3ygIowD4b3CDFXkL4zEAHUqxMW184PwBtpl5B+OdB7mLp9PPox17wpgmvVCs9DoXgW8fnBXobgYoQywzDi/fBcYNuhJRX1kvwPfcGgMIcAnNFMoWBGm7fUWYD/TOJj4sZRhHWdaJoXJwml5/dU7bYgkkeTG/Qf05U9nTdWYFgK6sZ9UQseMrT6PFvB+YvheoLDeluCypbtbo6+YiMoYLM941VpqeYjKD/vNxqKgwyjioWHhZelFZy6cw7SNxPNUh7AdlImPmTbWThB8kRQKrK27gpJpN+krpA7ArmuHBU3FcuFFBUzycJ9U0p9SZyqoNHmfi9RLYHMjcXTzDPfFMLQe1QRDKqi3wpxMBCAB0xWERRt3AyvJNYvDT8vac+gzq5Q/FKU17z3zeK+sLbYwWeZ7aaPqcLCrWbhbSYvIQtcSMMQJgT4HzcpYCMHpcSEAnhv3UrXIOmUXD7CIvElzvgQWU1q+ftvoW098WoeJtkY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5549.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(366004)(396003)(7696005)(33656002)(66946007)(316002)(86362001)(55016002)(53546011)(26005)(966005)(186003)(7416002)(83380400001)(8936002)(478600001)(54906003)(66556008)(76116006)(52536014)(6506007)(38100700002)(9686003)(66446008)(122000001)(4326008)(110136005)(8676002)(71200400001)(64756008)(2906002)(66476007)(5660300002)(38070700005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4DSMTfgF4pBZwEj7K74n0lqVnjovYOse121zAlW0nEPWZeAJrDVSKAPNXoEH?=
+ =?us-ascii?Q?XcPSNkWtW9VHt1CFm/pQ4uGlc66rgejktBHc2D4gHMLibivCbZdH43g7On3m?=
+ =?us-ascii?Q?VWsgRGIgOucWIcMojGX9Hd7fFcEhYi5gt6r1Or8rLuiZCBQPn1J6sLb5WIaT?=
+ =?us-ascii?Q?GQ0GLX9H75z6kf/SGeXufGqX6hUVb/RwoU2Iftr4GQVmni+cZrVYSILmODCr?=
+ =?us-ascii?Q?s8ojg6wdpE5skc+QVxma3coVPzULPiKQbtQqvHHDCjT9wRHTh2sgtQf/Hx6d?=
+ =?us-ascii?Q?gOGB4ctTSpf6DIIKeCSCD5yCTvBjwWvHg+kqDXkCo5XiYLOdhDhIvimrmHcX?=
+ =?us-ascii?Q?YkWzjFFBf1lThdnF5OI8n0EhS0rBwh041o6DFd4kLMjerusDGBa7HMH0X/pm?=
+ =?us-ascii?Q?wfObe7uqVX+xncPAx13iV6azhC4uHH34EVsMzwDaiZLZbv8btF4kjZDtjSNM?=
+ =?us-ascii?Q?A/a0Mrj/CQqeOEK7i55Jolx6cL1lD1n3Q04xv7+mEYvYxi4rvghEQS4kT92g?=
+ =?us-ascii?Q?dHQlAeZDMUOeyRoh0gAelr1reoFxdq4A/07EYJL8oIVRdGX4tFy2t4KxJonT?=
+ =?us-ascii?Q?io6bRiAaA7m/BEqiqyR01bEIQOWFlHlt2TIh69VeFHlzyvhrSmvbswNcaZx/?=
+ =?us-ascii?Q?+tNQuLjlgJWW5BBe8ip1FtCCXZeKzExpgPIu38ymGII+o20FZWv5k6iKDAL6?=
+ =?us-ascii?Q?TNOhwAf6oZXBvrZZ7KsL+P8WebYGD5BZEcm1nE2MUQAG+doDJ1M7FK0akEke?=
+ =?us-ascii?Q?IgHTH74ze1WGtx65o+EtH7mfAL5g88p/3XgcdYb7Vcc1LfO5bGqfGAYUdWVc?=
+ =?us-ascii?Q?nslxAuvPmVP5+RIkNcw06ikfikkexqoJvn+Y4TCnSN9pMOsOWfc40sXvaIkT?=
+ =?us-ascii?Q?hOYIr/zbNKPJR/QYnOpk195kHp0bCwkVbeMbmOhuHZUWR5o9QBHq4HjofOfK?=
+ =?us-ascii?Q?ZQ0U3V0NBtxAlTjLBSU8eKBG1RCzlbx7pABCLrAPwv5BCWBi9askZPYfENSs?=
+ =?us-ascii?Q?t49kbQ5TyA1CNszqA1GeM79X8lnilU1EtXBEmSYYC3tmmnub3ylW+WyY1Juq?=
+ =?us-ascii?Q?IjDVOu7L1cZOitNyUl/7jqz75DDknFAI/nkq5rp2UninCxpkXLIhXd9ohqHt?=
+ =?us-ascii?Q?eDHWjzr2pmKkV2Ccea8I+PcWQ7mv+S7qdym7vtKHd+OvDKCFRPfjh0OKdFhq?=
+ =?us-ascii?Q?xywa+1sr4BricD6HTWsCvWDG2UXLfgBR8KWM3Wv88XI9G83ZJdDc548g2IgP?=
+ =?us-ascii?Q?qM6ZEWapm8/pR74ARwUzcSLUApazW5Qv4C+IAHGBVvSbswe5clq0Q8/Dm4zK?=
+ =?us-ascii?Q?yPY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from sbrijesh-desktop.amd.com (165.204.77.1) by SN4PR0201CA0014.namprd02.prod.outlook.com (2603:10b6:803:2b::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 13:36:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 09fdc45d-4db9-4226-b02b-08d951ccb796
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4573:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4573DF6587F0EC27F0F09650E5EA9@SA0PR12MB4573.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:741;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3Zz/enjK3tQItxP1a0li5VuTnNV4anLXH2Squwu6P0m96QxEchbHsDYaIDI4Y3AvslcjonrSUUmJSeYJEVnJL5eN5yh1YDxaiagk/kSJ6dIUdFDyqfd4RUjNRDS8Ol/XiC5wKEpsqDYpzYNcmBQ1JFNUa4QIobcVmzycJM4vo4Q96Ecgtw0AvhVtFUfU9Thh/YHu/0cNqEs+g9PuZsC0hxbDMKtilf/vKQDHmMhbMThWjjC0RL6P3WbNmJ+6r+mXSHAy5RgISh7xtBMVnBYxqIYgVzTc7uEMl1L2Ub7Zc6LeicvWZ3g8NeMqPbfAli/exChVlRHkj8VKR7Yl315QnO2C1YGFSz5VwDi+LdOQd7xQoWxyWZl2tzqBs0GjicmM5FYg92HsPUDYoBstT5SQLMkX/wruHoFflvyOqkfZt/pHCQp1dMeQLlRePlt9ybJD/+juk1PjNjtGuGuYt+xfGwLO5L4deBNQ/YcHXn19UhDxbuyokA4Kn4jt9DTjtwLmtrDokVyD6rC6DK8Xf/IEHoGay4ZvcXV/lsGq33hM+sIQaBRCI3hxRh+liK5hvBVXUX9N2kZ+dlmGjZ66EBt4BUuBo09wz3Q23vnKAIviGm0Fy8lGo3ajLBLDbyr66kO6ae6bCFkzDoBMc08ComqkFehJvVIppsRwd1p628m3tU7wR++j1RN8fKDsGrv+CC4CUe/uHAUqilMXMhIWfuNRVw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(396003)(346002)(376002)(2616005)(956004)(36756003)(1076003)(478600001)(6486002)(2906002)(6916009)(8676002)(44832011)(8936002)(86362001)(66946007)(4326008)(5660300002)(83380400001)(53546011)(6666004)(26005)(38350700002)(52116002)(7696005)(66476007)(38100700002)(316002)(66556008)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8PVfNUueh0Za7W+4+zHmjxy3tQGD88PN7dwVfc7ijF8Kq9ZpmL0GNPcg3Y1F?=
- =?us-ascii?Q?O2smOjvl6V/AbHpXg8tbgi71YKIiQs0ysYUW2nNwuXBAlaj8fbbM0WiEjlML?=
- =?us-ascii?Q?hmsiwRI2Yc04dpo1jHY0IBn5lusNngRWzfuZntHZJJERoZiqQx7xRPh3Jr5o?=
- =?us-ascii?Q?HUhZXvdm/CJ7gEAlu6Bk4KH7Kkv/iv1z4Q9frASe7rX8VKIktmmLGnqU3FQV?=
- =?us-ascii?Q?BIjIfWHnQpYJ118kCF30RNYFIF5A2NldPZ6XAbbEKRAzQEnUJvHHYZq8hB1t?=
- =?us-ascii?Q?WY4nuWsERAOLvTM21bqBnUEbidm3x0138cYopnwYi3v8Er3f6RJ4OnlqK3Z5?=
- =?us-ascii?Q?sHdaNMc+ElE4nDocgfHjYdpqfnMdRdoJsnB1VXXhY3om3oSzyd9HFhmyaHUA?=
- =?us-ascii?Q?tmlsfk4fEUDUWhtP+fDjLvOeBWwWj6dmxN7a1wqZh9Gd6f86W1dSY0Ct405B?=
- =?us-ascii?Q?Z0ylpyHqAmy8KdfNsL9Df2ayXA7ud6tmlRrjwUASzQSEjsCFOd48xNiRz8lH?=
- =?us-ascii?Q?811WrguZNkaRJ/X2UDyAVN8WngzN4V9Vi3e6pGxr6RV3KqNrWsqAz9PFolYF?=
- =?us-ascii?Q?jPim+VJOkr5qZ5R4phnj/dWSjOWizcgtXK45jX5Iz2UlSLsa2ZmfyCJRf/V6?=
- =?us-ascii?Q?QobzvB8Vx8h1vS7sMthMUO0EOEKR4MNEsWYfaw5FmS143IumwGnPEPJlRMoM?=
- =?us-ascii?Q?nrAEWtl4J3+G/LtLYN9SGDyNbwWTYXBN7GfJiN9ciIKydhYePUoUYptPqlcx?=
- =?us-ascii?Q?KcYlxLp9Bd0pZbZXFugBbU89GeLAhCqBnxYQMgLi4NNg2UiBwzgRLspUCke3?=
- =?us-ascii?Q?abyu8mu95NTEG7MGq4TKXXaiLWFPlGn7/ZWtt/SAJ0FtgSTkmbSYrjxcaMv/?=
- =?us-ascii?Q?wKw23o6o9pZ+4WGmrSUmstla/9YPPtwWrzOgtqBnQs1V0eLHZH8tv8nwlZE3?=
- =?us-ascii?Q?bCoMbNwamAqo6thel48bh8nsmz4j5nrLGHqWtv+fuN8QHaLIj89ZcInmh/U8?=
- =?us-ascii?Q?w/t9CxbzVvEQ6cfEq+594qbZNdKaMvAJNvj3RnG7tYTMTo+vzwaw3LKYsGrz?=
- =?us-ascii?Q?oGiZTJirLOUS7gPi/I2jLfDUf4/ERAwsjAjEO3yuAOkA2573sAq09CT6aJeh?=
- =?us-ascii?Q?q9uIHjZykQ4vBc5qHMcuoSf09BGqiCy20Vsfinb03kww1thjKQT6nqD+DO1M?=
- =?us-ascii?Q?YT6/hN55sw1s3r2jWePyR3hkRSm2Fi/Ru5dT9WO/UtsvJZLPxaWRf1X01fJE?=
- =?us-ascii?Q?RiPyykBPBfkIgBq/nmMjj41VQ8Rt0U2utYimSMZNhPczIhmgEbbIFfVoRx18?=
- =?us-ascii?Q?X1TEKHp0svawrc0n2i/Vf6qm?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 09fdc45d-4db9-4226-b02b-08d951ccb796
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 13:36:34.7478
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5549.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7777033b-75b9-481b-e466-08d951cd0dd1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2021 13:38:59.0177
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1k+GmdeizBKS2ILo3m5KgZJKDphanY9oI5a7j07CCNKrr50yeyxwXsE/Mq215rMIw4kPd4LLZStrtjiIK1narQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4573
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2VFSMjyiMiAZI0hGoofwThZdLxd7z3Fg9RCdhJ2Wy7Ywc+ibfB/X1vHLCnKPojivcHyK0jiu9RTThiWvpuez7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2123
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lucas,
+Hi Jason:
 
->On several AMD systems, we see random crashes after kexec, during the
->boot of the new system (typically 1 out of 5 boots ends up with a
->crash).
+I guess those APIs you were talking about are KVM-only. For other hyperviso=
+rs, e.g. Xen, ARCN cannot use the APIs you mentioned. Not sure if you have =
+already noticed that VFIO is KVM-only right now.
 
->According to git bisect, the regression was introduced by commit
->97f9ac3d ("crypto: ccp - Add support for SEV-ES to the PSP driver"),
->included since 5.8-rc1. 5.14-rc3 is still affected.
+GVT-g is designed for many hypervisors not only KVM. In the design, we impl=
+emented an abstraction layer for different hypervisors. You can check the l=
+ink in the previous email which has an example of how the MPT module "xengt=
+" supports GVT-g running under Xen.=20
+For example, injecting a msi in VFIO/KVM is via playing with eventfd. But i=
+n Xen, we need to issue a hypercall from Dom0. So does others, like queryin=
+g mappings between GFN and HFN. Some GPU related emulation logic might be i=
+mplemented differently under different hypervisors because different hyperv=
+isors might provide not exact the APIs we want. That's the reason why they =
+get a callback in the MPT (yet not perfect.) =20
 
-Can you try the below patch and confirm whether it fixes the random
-crashes seen during the kexec.
+As you can see, to survive from this situation, we have to rely on an abstr=
+action layer so that we can prevent introducing coding blocks like in the c=
+ore logic:
 
-From: Brijesh Singh <brijesh.singh@amd.com>
-Date: Tue, 27 Jul 2021 21:48:25 -0500
-Subject: [PATCH] crypto: ccp: shutdown SEV firmware on kexec
+If (in_hypervisor_xen)
+	Issue hypercalls
+else if (in_hypervisor_kvm)
+	Play with eventfds.
+Else if (in_hypervisor_other)
+	xxxx
 
-The commit 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the
-PSP driver") added support to allocate Trusted Memory Region (TMR) that
-is used during the SEV-ES firmware initialization. The TMR memory region
-is locked by the firmware and access to it is disallowed by the x86
-software. The firmware SHUTDOWN command can be used to unlock the TMR.
+Thus some of the APIs have to be wrapped in the MPT module in GVT-g design.
 
-Fixes: 97f9ac3db6612 ("crypto: ccp - Add support for SEV-ES to the PSP driver")
-Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
----
- drivers/crypto/ccp/sev-dev.c | 49 +++++++++++++++++-------------------
- drivers/crypto/ccp/sp-pci.c  | 12 +++++++++
- 2 files changed, 35 insertions(+), 26 deletions(-)
+Sadly, not all customers are motivated or allowed to get their hypervisor-s=
+pecific modules into the kernel. We have a customer who runs GVT-g with the=
+ir private hypervisor. In this case, they don't want to get their "xxxgt" M=
+PT module into upstream since their hypervisor has been in the kernel yet. =
+Also, we have customers who ported the GVT-g to QNX which is another widely=
+ used commercial hypervisor in the industry. They can't get the "qnxgt" MPT=
+ module into upstream since it's not allowed.
 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 91808402e0bf..2ecb0e1f65d8 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -300,6 +300,9 @@ static int __sev_platform_shutdown_locked(int *error)
- 	struct sev_device *sev = psp_master->sev_data;
- 	int ret;
- 
-+	if (sev->state == SEV_STATE_UNINIT)
-+		return 0;
-+
- 	ret = __sev_do_cmd_locked(SEV_CMD_SHUTDOWN, NULL, error);
- 	if (ret)
- 		return ret;
-@@ -1019,6 +1022,20 @@ int sev_dev_init(struct psp_device *psp)
- 	return ret;
- }
- 
-+static void sev_firmware_shutdown(struct sev_device *sev)
-+{
-+	sev_platform_shutdown(NULL);
-+
-+	if (sev_es_tmr) {
-+		/* The TMR area was encrypted, flush it from the cache */
-+		wbinvd_on_all_cpus();
-+
-+		free_pages((unsigned long)sev_es_tmr,
-+			   get_order(SEV_ES_TMR_SIZE));
-+		sev_es_tmr = NULL;
-+	}
-+}
-+
- void sev_dev_destroy(struct psp_device *psp)
- {
- 	struct sev_device *sev = psp->sev_data;
-@@ -1026,6 +1043,8 @@ void sev_dev_destroy(struct psp_device *psp)
- 	if (!sev)
- 		return;
- 
-+	sev_firmware_shutdown(sev);
-+
- 	if (sev->misc)
- 		kref_put(&misc_dev->refcount, sev_exit);
- 
-@@ -1056,21 +1075,6 @@ void sev_pci_init(void)
- 	if (sev_get_api_version())
- 		goto err;
- 
--	/*
--	 * If platform is not in UNINIT state then firmware upgrade and/or
--	 * platform INIT command will fail. These command require UNINIT state.
--	 *
--	 * In a normal boot we should never run into case where the firmware
--	 * is not in UNINIT state on boot. But in case of kexec boot, a reboot
--	 * may not go through a typical shutdown sequence and may leave the
--	 * firmware in INIT or WORKING state.
--	 */
--
--	if (sev->state != SEV_STATE_UNINIT) {
--		sev_platform_shutdown(NULL);
--		sev->state = SEV_STATE_UNINIT;
--	}
--
- 	if (sev_version_greater_or_equal(0, 15) &&
- 	    sev_update_firmware(sev->dev) == 0)
- 		sev_get_api_version();
-@@ -1115,17 +1119,10 @@ void sev_pci_init(void)
- 
- void sev_pci_exit(void)
- {
--	if (!psp_master->sev_data)
--		return;
--
--	sev_platform_shutdown(NULL);
-+	struct sev_device *sev = psp_master->sev_data;
- 
--	if (sev_es_tmr) {
--		/* The TMR area was encrypted, flush it from the cache */
--		wbinvd_on_all_cpus();
-+	if (!sev)
-+		return;
- 
--		free_pages((unsigned long)sev_es_tmr,
--			   get_order(SEV_ES_TMR_SIZE));
--		sev_es_tmr = NULL;
--	}
-+	sev_firmware_shutdown(sev);
- }
-diff --git a/drivers/crypto/ccp/sp-pci.c b/drivers/crypto/ccp/sp-pci.c
-index 6fb6ba35f89d..9bcc1884c06a 100644
---- a/drivers/crypto/ccp/sp-pci.c
-+++ b/drivers/crypto/ccp/sp-pci.c
-@@ -241,6 +241,17 @@ static int sp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return ret;
- }
- 
-+static void sp_pci_shutdown(struct pci_dev *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct sp_device *sp = dev_get_drvdata(dev);
-+
-+	if (!sp)
-+		return;
-+
-+	sp_destroy(sp);
-+}
-+
- static void sp_pci_remove(struct pci_dev *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -371,6 +382,7 @@ static struct pci_driver sp_pci_driver = {
- 	.id_table = sp_pci_table,
- 	.probe = sp_pci_probe,
- 	.remove = sp_pci_remove,
-+	.shutdown = sp_pci_shutdown,
- 	.driver.pm = &sp_pci_pm_ops,
- };
- 
--- 
-2.17.1
+We do understand the situation and try to figure out a solution that can fu=
+lfill expectations from different people in the community and also customer=
+s.=20
 
+According to Greg KH's comments, we are collecting the requirements of MPT =
+modules from other open-source hypervisors in the kernel, e.g. ACRN, to see=
+ if they can get another MPT module into the kernel, which will show an exa=
+mple that how the MPT abstraction can benefit. Also, we are evaluating the =
+impact on our customers if we have to remove MPT abstraction in the kernel =
+because there is only one MPT module.=20
+
+Thanks so much for the comments.
+
+Thanks,
+Zhi.
+
+-----Original Message-----
+From: Jason Gunthorpe <jgg@nvidia.com>=20
+Sent: Tuesday, July 27, 2021 3:12 PM
+To: Gerd Hoffmann <kraxel@redhat.com>
+Cc: Wang, Zhi A <zhi.a.wang@intel.com>; Christoph Hellwig <hch@lst.de>; Jan=
+i Nikula <jani.nikula@linux.intel.com>; Joonas Lahtinen <joonas.lahtinen@li=
+nux.intel.com>; Vivi, Rodrigo <rodrigo.vivi@intel.com>; Zhenyu Wang <zhenyu=
+w@linux.intel.com>; intel-gfx@lists.freedesktop.org; intel-gvt-dev@lists.fr=
+eedesktop.org; linux-kernel@vger.kernel.org; dri-devel@lists.freedesktop.or=
+g
+Subject: Re: refactor the i915 GVT support
+
+On Thu, Jul 22, 2021 at 01:26:36PM +0200, Gerd Hoffmann wrote:
+>   Hi,
+>=20
+> > https://github.com/intel/gvt-linux/blob/topic/gvt-xengt/drivers/gpu/
+> > drm/i915/gvt/xengt.c
+>=20
+> > But it's hard for some customers to contribute their own "hypervisor"
+> > module to the upstream Linux kernel. I am thinking what would be a=20
+> > better solution here? The MPT layer in the kernel helps a lot for=20
+> > customers, but only one open-source "hypervisor" module is there in=20
+> > the kernel. That can confuse people which don't know the story.  One=20
+> > thing I was thinking is to put a document about the background and=20
+> > more description in the MPT headers. So it won't confuse more people.
+>=20
+> Getting the xengt module linked above merged into mainline would also=20
+> nicely explain why there are hypervisor modules.
+
+It would also be nice to explain why a GPU driver needs a hypervisor specif=
+ic shim like this in the first place.
+
+        enum hypervisor_type type;
+        int (*host_init)(struct device *dev, void *gvt, const void *ops);
+        void (*host_exit)(struct device *dev, void *gvt);
+        int (*attach_vgpu)(void *vgpu, unsigned long *handle);
+        void (*detach_vgpu)(void *vgpu);
+
+Doesn't vfio provide all this generically with notifiers?
+
+        int (*inject_msi)(unsigned long handle, u32 addr, u16 data);
+
+Isn't this one just an eventfd?
+
+        unsigned long (*from_virt_to_mfn)(void *p);
+        int (*read_gpa)(unsigned long handle, unsigned long gpa, void *buf,
+                        unsigned long len);
+        int (*write_gpa)(unsigned long handle, unsigned long gpa, void *buf=
+,
+                         unsigned long len);
+        unsigned long (*gfn_to_mfn)(unsigned long handle, unsigned long gfn=
+);
+
+        int (*dma_map_guest_page)(unsigned long handle, unsigned long gfn,
+                                  unsigned long size, dma_addr_t *dma_addr)=
+;
+        void (*dma_unmap_guest_page)(unsigned long handle, dma_addr_t dma_a=
+ddr);
+
+        int (*dma_pin_guest_page)(unsigned long handle, dma_addr_t dma_addr=
+);
+
+        int (*map_gfn_to_mfn)(unsigned long handle, unsigned long gfn,
+                              unsigned long mfn, unsigned int nr, bool map)=
+;
+        bool (*is_valid_gfn)(unsigned long handle, unsigned long gfn);
+
+Shouldn't the vfio page SW IOMMU do all of this generically?
+
+        int (*enable_page_track)(unsigned long handle, u64 gfn);
+        int (*disable_page_track)(unsigned long handle, u64 gfn);
+        int (*set_trap_area)(unsigned long handle, u64 start, u64 end,
+                             bool map);
+        int (*set_opregion)(void *vgpu);
+        int (*set_edid)(void *vgpu, int port_num);
+
+edid depends on hypervisor??
+
+        int (*get_vfio_device)(void *vgpu);
+        void (*put_vfio_device)(void *vgpu);
+
+Jason
