@@ -2,192 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4B53D97A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF503D97BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhG1VjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 17:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhG1VjK (ORCPT
+        id S231892AbhG1VqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 17:46:02 -0400
+Received: from mail-pj1-f49.google.com ([209.85.216.49]:40676 "EHLO
+        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230156AbhG1VqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 17:39:10 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11422C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:39:07 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so12222740pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:39:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1pCBBANwP4lCEROvCIglnNy/B+CbZOUBRLt1GZJf6U4=;
-        b=U3ZSEcMNZZa5frC7VPZvtq1I/O6wLdxNooyKXz8X92c9a+tebcMRUDAMYOIC+rbT1F
-         H3/aJkSS91GQJHq2q8U3PFnvNZpG0Nfzd1MVVCONCKfZbhQ/JzMDp4v3IP839G1JfLxL
-         mKnHkDRjtxkSfwNBK0N1kP8MluBl62wTH8x5BgTHwbtafsNZGUtd2Q0hqa4VO1pKj3Up
-         XpbU1u9HZND6dCSj4ocwi2J0aa7mZeHMsDkwpW9npNZQ0IS6uV2EyMsXKJnzC7CMeyIn
-         d+K1KOLHHhCTKcnLWi5jR/s2pwcg8wQyESqyZVi/CKQT4sOIYyGe+07d/GfjM5RqHesg
-         lrfQ==
+        Wed, 28 Jul 2021 17:46:00 -0400
+Received: by mail-pj1-f49.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so12204025pja.5;
+        Wed, 28 Jul 2021 14:45:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1pCBBANwP4lCEROvCIglnNy/B+CbZOUBRLt1GZJf6U4=;
-        b=BQMc8OvgPAqRpHyuzUbaed2ij3jTHZtBTnacVoBdmuCKr1Vr08WB6lmw6XSA11H1OU
-         yz3OvOh2GmqDdXyjrJDa4uThO/Tf03iHZgLqCf2w7eWhjPcb8tdwvM0L07rBoKJ5zCbp
-         lI1usck6sOt9k2zI2AUSwctlpMaHgd5WqYdZkMfRv/3Oj2YwvWe04RUU7W+pZHO/P09Y
-         uckVqjPtq+erGY4GHSsHP612VVThZaZ8Pqij9QGX7yVRI3WWgv+e8rdMwrEcaRyv6Mm/
-         ULmYZvV8SsrovJ/uhd97laplImvLErc0/wYIyaJJwejRnpOqSY87rxjse8li8uC94Q/9
-         XTmQ==
-X-Gm-Message-State: AOAM531PluxeIiuCIVlIIfN2x9Nt/0ujqD+yjYaBYov6XsnDM9qTvMEU
-        EFoGrNWE5cu3rq5Upj/+L7z9Dg==
-X-Google-Smtp-Source: ABdhPJxB2ycRY2M9KCVse9bpEuwUyGBIfWUCdkDU3uLL7JvY9I4LiJIFciuVE6EcVj7mBcCQItQuEw==
-X-Received: by 2002:a17:902:e051:b029:12b:4f40:7c7c with SMTP id x17-20020a170902e051b029012b4f407c7cmr1624118plx.20.1627508346346;
-        Wed, 28 Jul 2021 14:39:06 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p17sm7021082pjz.16.2021.07.28.14.39.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 14:39:05 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 21:39:02 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 9/9] KVM: X86: Optimize zapping rmap
-Message-ID: <YQHOdhMoFW821HAu@google.com>
-References: <20210625153214.43106-1-peterx@redhat.com>
- <20210625153419.43671-1-peterx@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XicekCZGMuTmx7BgzDuVSPZdtJx2YNBwg9Vgy0Mbawo=;
+        b=VsdJVD9iLYkTZckyM9peEdy+mj36F+LurPNiPrqbBO6rJKeUSWwHC90l6NckKkKhfo
+         zAy4Mz7RazjHVctU+QhA1AFPT+vWsk+WdTqR7QOCBeSQoHgVn+A/Z83IxjJr6j4hZXJs
+         0uerb8kXtF31NZkzAthE0gRaNV/BtrgQP0a589Xgj/oDHp4zPIQ1qp++TltPKeXqXwSJ
+         LC3BLPoTYx2M7VjImbGndHv2Tg79A0ywsKJE+PswfiIzKTRekyvR2uqAXbfSJ7LM+6qh
+         BdoqCYnLtO0vHhagqQedYZZt9KUcvywgBvk4gcJilvXFFwJRSowpP1T+oCYwNcLqQ6af
+         xo6w==
+X-Gm-Message-State: AOAM531C83eFuhpmkEosL4s1i1/EdD6jkGzrdl4onTfDWVAkaLu8VbqH
+        aiVm+XQTeQ5ZQnl90gUcZSU=
+X-Google-Smtp-Source: ABdhPJw8GLTntP9/607bFZm4hvTLuV2RygVm16ypIjamKfpthJMPHWWs51SpMIWNplCV818V7piMmg==
+X-Received: by 2002:a62:61c3:0:b029:35b:cb61:d2c3 with SMTP id v186-20020a6261c30000b029035bcb61d2c3mr1780844pfb.62.1627508758153;
+        Wed, 28 Jul 2021 14:45:58 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:3328:5f8d:f6e2:85ea])
+        by smtp.gmail.com with ESMTPSA id b15sm876167pgj.60.2021.07.28.14.45.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 14:45:57 -0700 (PDT)
+Subject: Re: [PATCH 48/64] drbd: Use struct_group() to zero algs
+To:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-49-keescook@chromium.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <1cc74e5e-8d28-6da4-244e-861eac075ca2@acm.org>
+Date:   Wed, 28 Jul 2021 14:45:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625153419.43671-1-peterx@redhat.com>
+In-Reply-To: <20210727205855.411487-49-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021, Peter Xu wrote:
-> Using rmap_get_first() and rmap_remove() for zapping a huge rmap list could be
-> slow.  The easy way is to travers the rmap list, collecting the a/d bits and
-> free the slots along the way.
+On 7/27/21 1:58 PM, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memset(), avoid intentionally writing across
+> neighboring fields.
 > 
-> Provide a pte_list_destroy() and do exactly that.
+> Add a struct_group() for the algs so that memset() can correctly reason
+> about the size.
 > 
-> Signed-off-by: Peter Xu <peterx@redhat.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  arch/x86/kvm/mmu/mmu.c | 45 +++++++++++++++++++++++++++++++-----------
->  1 file changed, 33 insertions(+), 12 deletions(-)
+>   drivers/block/drbd/drbd_main.c     | 3 ++-
+>   drivers/block/drbd/drbd_protocol.h | 6 ++++--
+>   drivers/block/drbd/drbd_receiver.c | 3 ++-
+>   3 files changed, 8 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index ba0258bdebc4..45aac78dcabc 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1014,6 +1014,38 @@ unsigned int pte_list_count(struct kvm_rmap_head *rmap_head)
->  	return count;
->  }
->  
-> +/* Return true if rmap existed and callback called, false otherwise */
-> +static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
-> +			     int (*callback)(u64 *sptep))
-> +{
-> +	struct pte_list_desc *desc, *next;
-> +	int i;
-> +
-> +	if (!rmap_head->val)
-> +		return false;
-> +
-> +	if (!(rmap_head->val & 1)) {
-> +		if (callback)
-> +			callback((u64 *)rmap_head->val);
-> +		goto out;
-> +	}
-> +
-> +	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
-> +
-> +	while (desc) {
-> +		if (callback)
-> +			for (i = 0; i < desc->spte_count; i++)
-> +				callback(desc->sptes[i]);
-> +		next = desc->more;
-> +		mmu_free_pte_list_desc(desc);
-> +		desc = next;
+> diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
+> index 55234a558e98..b824679cfcb2 100644
+> --- a/drivers/block/drbd/drbd_main.c
+> +++ b/drivers/block/drbd/drbd_main.c
+> @@ -729,7 +729,8 @@ int drbd_send_sync_param(struct drbd_peer_device *peer_device)
+>   	cmd = apv >= 89 ? P_SYNC_PARAM89 : P_SYNC_PARAM;
+>   
+>   	/* initialize verify_alg and csums_alg */
+> -	memset(p->verify_alg, 0, 2 * SHARED_SECRET_MAX);
+> +	BUILD_BUG_ON(sizeof(p->algs) != 2 * SHARED_SECRET_MAX);
+> +	memset(&p->algs, 0, sizeof(p->algs));
+>   
+>   	if (get_ldev(peer_device->device)) {
+>   		dc = rcu_dereference(peer_device->device->ldev->disk_conf);
+> diff --git a/drivers/block/drbd/drbd_protocol.h b/drivers/block/drbd/drbd_protocol.h
+> index dea59c92ecc1..a882b65ab5d2 100644
+> --- a/drivers/block/drbd/drbd_protocol.h
+> +++ b/drivers/block/drbd/drbd_protocol.h
+> @@ -283,8 +283,10 @@ struct p_rs_param_89 {
+>   
+>   struct p_rs_param_95 {
+>   	u32 resync_rate;
+> -	char verify_alg[SHARED_SECRET_MAX];
+> -	char csums_alg[SHARED_SECRET_MAX];
+> +	struct_group(algs,
+> +		char verify_alg[SHARED_SECRET_MAX];
+> +		char csums_alg[SHARED_SECRET_MAX];
+> +	);
+>   	u32 c_plan_ahead;
+>   	u32 c_delay_target;
+>   	u32 c_fill_target;
+> diff --git a/drivers/block/drbd/drbd_receiver.c b/drivers/block/drbd/drbd_receiver.c
+> index 1f740e42e457..6df2539e215b 100644
+> --- a/drivers/block/drbd/drbd_receiver.c
+> +++ b/drivers/block/drbd/drbd_receiver.c
+> @@ -3921,7 +3921,8 @@ static int receive_SyncParam(struct drbd_connection *connection, struct packet_i
+>   
+>   	/* initialize verify_alg and csums_alg */
+>   	p = pi->data;
+> -	memset(p->verify_alg, 0, 2 * SHARED_SECRET_MAX);
+> +	BUILD_BUG_ON(sizeof(p->algs) != 2 * SHARED_SECRET_MAX);
+> +	memset(&p->algs, 0, sizeof(p->algs));
 
-Alternatively, 
+Using struct_group() introduces complexity. Has it been considered not 
+to modify struct p_rs_param_95 and instead to use two memset() calls 
+instead of one (one memset() call per member)?
 
-	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
-	for ( ; desc; desc = next) {
-		for (i = 0; i < desc->spte_count; i++)
-			mmu_spte_clear_track_bits((u64 *)rmap_head->val);
-		next = desc->more;
-		mmu_free_pte_list_desc(desc);
-	}
+Thanks,
 
-> +	}
-> +out:
-> +	/* rmap_head is meaningless now, remember to reset it */
-> +	rmap_head->val = 0;
-> +	return true;
-
-Why implement this as a generic method with a callback?  gcc is suprisingly
-astute in optimizing callback(), but I don't see the point of adding a complex
-helper that has a single caller, and is extremely unlikely to gain new callers.
-Or is there another "zap everything" case I'm missing?
-
-E.g. why not this?
-
-static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-			  const struct kvm_memory_slot *slot)
-{
-	struct pte_list_desc *desc, *next;
-	int i;
-
-	if (!rmap_head->val)
-		return false;
-
-	if (!(rmap_head->val & 1)) {
-		mmu_spte_clear_track_bits((u64 *)rmap_head->val);
-		goto out;
-	}
-
-	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
-	for ( ; desc; desc = next) {
-		for (i = 0; i < desc->spte_count; i++)
-			mmu_spte_clear_track_bits(desc->sptes[i]);
-		next = desc->more;
-		mmu_free_pte_list_desc(desc);
-	}
-out:
-	/* rmap_head is meaningless now, remember to reset it */
-	rmap_head->val = 0;
-	return true;
-}
-
-> +}
-> +
->  static struct kvm_rmap_head *__gfn_to_rmap(gfn_t gfn, int level,
->  					   struct kvm_memory_slot *slot)
->  {
-> @@ -1403,18 +1435,7 @@ static bool rmap_write_protect(struct kvm_vcpu *vcpu, u64 gfn)
->  static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->  			  struct kvm_memory_slot *slot)
->  {
-> -	u64 *sptep;
-> -	struct rmap_iterator iter;
-> -	bool flush = false;
-> -
-> -	while ((sptep = rmap_get_first(rmap_head, &iter))) {
-> -		rmap_printk("spte %p %llx.\n", sptep, *sptep);
-> -
-> -		pte_list_remove(rmap_head, sptep);
-> -		flush = true;
-> -	}
-> -
-> -	return flush;
-> +	return pte_list_destroy(rmap_head, mmu_spte_clear_track_bits);
->  }
->  
->  static bool kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> -- 
-> 2.31.1
-> 
+Bart.
