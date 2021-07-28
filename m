@@ -2,158 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFC83D8639
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 05:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1745A3D8640
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 05:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234002AbhG1Drj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 23:47:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233500AbhG1Drh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 23:47:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16CCB60F9B;
-        Wed, 28 Jul 2021 03:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627444057;
-        bh=4OcC31ijvQFCJDYltPlZwhp8vwmKYtXpweFEQIPqsRw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M1wliU3vNkORLmrti8+u3OFBvg+3EcwasLg1sjUy7y4GZYIlgJ705tPXiyGDxhD/j
-         +UJginm8OAB8EevB+W3Ivggw5D1PzKIg0znOPHxpL6W2LKlhhDJ+ouQuYPKsYmj9Sw
-         b5abboJKh3rB1N+HJsQitUYApuAGvj722sED3Ntip2TuBvdz9mlQGMXDOLdJXG9/LH
-         JujcaRcHuFRCH4jta6B1EVeyzNhy8Tujo/qYkuknqsT/OP1qupm2FM+hYYrO5Ax0B1
-         NgHhG+OzGvaU0KU9sjMfGU2rL9MttPoEG2eqK8d0WDwgK9XC6rw4xy0+ETGWxsAhiW
-         k9LV+SUABg4pA==
-Date:   Tue, 27 Jul 2021 22:50:06 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 05/64] skbuff: Switch structure bounds to struct_group()
-Message-ID: <20210728035006.GD35706@embeddedor>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-6-keescook@chromium.org>
+        id S233702AbhG1DuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 23:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233500AbhG1DuY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 23:50:24 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F22CC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 20:50:22 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso2309820pjo.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 20:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FrYnTL9TwFuN1vt+KIlBzufA7x0qW3I2Fexno73Yt48=;
+        b=fhEo/9S/wQeVXZquGw+9zVLckVKnGYZh+T7rRsd6PhQg2LBRt1Ck8ZEKUrlUMzv3/1
+         8Y3sRPsi453vXiocWpkYZZhaVctDrrbvrS89J1RW26204oVmMFiY4+TVYFvwCYtvdmT9
+         s47YInBTw8O6N4tSznKwUSLhqr0B4PFo5WG93Vy3cCOOQf8exiEYzbcOd+hbIpqrvymB
+         b2WwbnhHXsuXOzZ5tQN8Tav9SDbybB70/3dguZkRkjFS/pcQ8hYfIdhR6v0/6odAsvgy
+         ZRKpNihXQAkh48QiYZjgUb1qtgh+7kzqWjmdcK6kBlFdyt9SMiJXPY9CdehNii/rjfh/
+         TfTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FrYnTL9TwFuN1vt+KIlBzufA7x0qW3I2Fexno73Yt48=;
+        b=hap/IXs5ytK4v/o+wvf+QE0IK+n99boBUjHHILycX/rqMpOgVy4x4jHeROYIcQLeTi
+         qBjmiYc1BglS19qichOXEgWeauI2Gx4W99T6v2OeNmQAe58kN2cl/7c8F2hYo8b9l/dV
+         XZ0IAmBrrb69NnCyic7/vKDWy4sR6i6le5n5MLR8Zhdw+WqJePoUkbVxK5DKR34rcMDz
+         b8PEJbkhLJcMI1Jrn5PiY1JszHaiRju1ss4u+yShSIU/oZwurZxYNOS/zQvstYpv6UCS
+         Pv6dX+J1WuM+MydDqjy/EUX4x9S0EdB56Z03rEODXGR3JWHyVGS7nRkFmuj9VqwskUUL
+         x37g==
+X-Gm-Message-State: AOAM532e4x9nIK718RJdohTI4RqGKR4R7J4hT1+he0xy1H/FRB4Iv3nZ
+        weIcMLAs/6HjeobGBfN94T7yGA==
+X-Google-Smtp-Source: ABdhPJx3iBpMT4fccV4pPERpT+6fYf5Q+S9trToOykb5i3f99E2pjH1+nxZ2W3L0Iyez+YUFa8FApQ==
+X-Received: by 2002:a63:6d84:: with SMTP id i126mr10689629pgc.97.1627444222026;
+        Tue, 27 Jul 2021 20:50:22 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id f4sm5784513pgs.3.2021.07.27.20.50.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 20:50:16 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 09:20:14 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
+        steev@kali.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [Patch v4 3/6] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
+ support
+Message-ID: <20210728035014.25mgvrpnraxfslq7@vireshk-i7>
+References: <20210727152512.1098329-1-thara.gopinath@linaro.org>
+ <20210727152512.1098329-4-thara.gopinath@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210727205855.411487-6-keescook@chromium.org>
+In-Reply-To: <20210727152512.1098329-4-thara.gopinath@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 01:57:56PM -0700, Kees Cook wrote:
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> intentionally writing across neighboring fields.
-> 
-> Replace the existing empty member position markers "headers_start" and
-> "headers_end" with a struct_group(). This will allow memcpy() and sizeof()
-> to more easily reason about sizes, and improve readability.
-> 
-> "pahole" shows no size nor member offset changes to struct sk_buff.
-> "objdump -d" shows no no meaningful object code changes (i.e. only source
-> line number induced differences and optimizations.)
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On 27-07-21, 11:25, Thara Gopinath wrote:
+> +static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
+> +{
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks
---
-Gustavo
-
-> ---
->  drivers/net/wireguard/queueing.h |  4 +---
->  include/linux/skbuff.h           |  9 ++++-----
->  net/core/skbuff.c                | 14 +++++---------
->  3 files changed, 10 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/net/wireguard/queueing.h b/drivers/net/wireguard/queueing.h
-> index 4ef2944a68bc..52da5e963003 100644
-> --- a/drivers/net/wireguard/queueing.h
-> +++ b/drivers/net/wireguard/queueing.h
-> @@ -79,9 +79,7 @@ static inline void wg_reset_packet(struct sk_buff *skb, bool encapsulating)
->  	u8 sw_hash = skb->sw_hash;
->  	u32 hash = skb->hash;
->  	skb_scrub_packet(skb, true);
-> -	memset(&skb->headers_start, 0,
-> -	       offsetof(struct sk_buff, headers_end) -
-> -		       offsetof(struct sk_buff, headers_start));
-> +	memset(&skb->headers, 0, sizeof(skb->headers));
->  	if (encapsulating) {
->  		skb->l4_hash = l4_hash;
->  		skb->sw_hash = sw_hash;
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index f19190820e63..b4032e9b130e 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -800,11 +800,10 @@ struct sk_buff {
->  	__u8			active_extensions;
->  #endif
->  
-> -	/* fields enclosed in headers_start/headers_end are copied
-> +	/* Fields enclosed in headers group are copied
->  	 * using a single memcpy() in __copy_skb_header()
->  	 */
-> -	/* private: */
-> -	__u32			headers_start[0];
-> +	struct_group(headers,
->  	/* public: */
->  
->  /* if you move pkt_type around you also must adapt those constants */
-> @@ -920,8 +919,8 @@ struct sk_buff {
->  	u64			kcov_handle;
->  #endif
->  
-> -	/* private: */
-> -	__u32			headers_end[0];
-> +	); /* end headers group */
+> +	/* In the unlikely case cpufreq is de-registered do not enable polling or h/w interrupt */
 > +
->  	/* public: */
->  
->  	/* These elements must be at the end, see alloc_skb() for details.  */
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index fc7942c0dddc..5f29c65507e0 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -987,12 +987,10 @@ void napi_consume_skb(struct sk_buff *skb, int budget)
->  }
->  EXPORT_SYMBOL(napi_consume_skb);
->  
-> -/* Make sure a field is enclosed inside headers_start/headers_end section */
-> +/* Make sure a field is contained by headers group */
->  #define CHECK_SKB_FIELD(field) \
-> -	BUILD_BUG_ON(offsetof(struct sk_buff, field) <		\
-> -		     offsetof(struct sk_buff, headers_start));	\
-> -	BUILD_BUG_ON(offsetof(struct sk_buff, field) >		\
-> -		     offsetof(struct sk_buff, headers_end));	\
-> +	BUILD_BUG_ON(offsetof(struct sk_buff, field) !=		\
-> +		     offsetof(struct sk_buff, headers.field));	\
->  
->  static void __copy_skb_header(struct sk_buff *new, const struct sk_buff *old)
->  {
-> @@ -1004,14 +1002,12 @@ static void __copy_skb_header(struct sk_buff *new, const struct sk_buff *old)
->  	__skb_ext_copy(new, old);
->  	__nf_copy(new, old, false);
->  
-> -	/* Note : this field could be in headers_start/headers_end section
-> +	/* Note : this field could be in the headers group.
->  	 * It is not yet because we do not want to have a 16 bit hole
->  	 */
->  	new->queue_mapping = old->queue_mapping;
->  
-> -	memcpy(&new->headers_start, &old->headers_start,
-> -	       offsetof(struct sk_buff, headers_end) -
-> -	       offsetof(struct sk_buff, headers_start));
-> +	memcpy(&new->headers, &old->headers, sizeof(new->headers));
->  	CHECK_SKB_FIELD(protocol);
->  	CHECK_SKB_FIELD(csum);
->  	CHECK_SKB_FIELD(hash);
-> -- 
-> 2.30.2
-> 
+> +	spin_lock(&data->throttle_lock);
+> +	if (data->cancel_throttle) {
+> +		spin_unlock(&data->throttle_lock);
+> +		return;
+> +	}
+> +	spin_unlock(&data->throttle_lock);
+> +
+> +	/*
+> +	 * If h/w throttled frequency is higher than what cpufreq has requested for, stop
+> +	 * polling and switch back to interrupt mechanism
+> +	 */
+> +
+> +	if (throttled_freq >= qcom_cpufreq_hw_get(cpumask_first(policy->cpus)))
+> +		/* Clear the existing interrupts and enable it back */
+> +		enable_irq(data->throttle_irq);
+> +	else
+> +		mod_delayed_work(system_highpri_wq, &data->throttle_work,
+> +				 msecs_to_jiffies(10));
+> +}
+
+> +static void qcom_cpufreq_hw_lmh_exit(struct qcom_cpufreq_data *data)
+> +{
+> +	if (data->throttle_irq <= 0)
+> +		return;
+> +
+> +	spin_lock(&data->throttle_lock);
+> +	data->cancel_throttle = true;
+> +	spin_unlock(&data->throttle_lock);
+> +	cancel_delayed_work_sync(&data->throttle_work);
+> +	free_irq(data->throttle_irq, data);
+> +}
+
+Lets see if we can still make it break :)
+
+CPU0                                            CPU1
+
+qcom_lmh_dcvs_notify()                          qcom_cpufreq_hw_lmh_exit()
+
+spin_unlock()
+                                                spin_lock(),
+                                                cancel_throttle = true
+                                                spin_unlock()
+
+                                                cancel_delayed_work_sync()
+mod_delayed_work()
+                                                free_irq()
+                                                kfree(data)
+qcom_lmh_dcvs_poll()
+Uses data.
+
+
+Sorry, locking is fun :)
+
+-- 
+viresh
