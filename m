@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453923D99B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AFC3D99C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbhG1XsT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 19:48:19 -0400
-Received: from mga18.intel.com ([134.134.136.126]:51286 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232641AbhG1XsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:48:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="199988469"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="199988469"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 16:48:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="464860836"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga008.jf.intel.com with ESMTP; 28 Jul 2021 16:48:16 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 28 Jul 2021 16:48:15 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 28 Jul 2021 16:48:14 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
- Wed, 28 Jul 2021 16:48:14 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>
-CC:     Jarkko Sakkinen <jarkko@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
- pages
-Thread-Topic: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
- pages
-Thread-Index: AQHXg/G3voDWmDqCq06DL34grJaPratZaKWA//+WanCAAHqDAIAABZsA//+MGqA=
-Date:   Wed, 28 Jul 2021 23:48:14 +0000
-Message-ID: <b05acb65cebc4718a5cc2503ced7455d@intel.com>
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
- <20210728204653.1509010-2-tony.luck@intel.com>
- <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
- <f2685d7c8dc14792a4e0f9807f742ea6@intel.com>
- <fd8f8e79-f63f-7d6f-277e-1ad08ab7b6b8@intel.com>
- <YQHpGq0GyAsYpE+D@google.com>
-In-Reply-To: <YQHpGq0GyAsYpE+D@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S232772AbhG1XyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:54:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40248 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232609AbhG1XyG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:54:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627516443;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1h6+SGK2Sn0dPBpEs5XgMlwlQ2+yF6kyESThFa4UTD8=;
+        b=R1HsExfcL9sgmzLY368m0/gVBm6lJRKcoEX7tqQ/F0XG4FZNJu0V2eaBnx5Mb9rAc/VV3j
+        zpYWa/tOTQfDOjqekGHuwLPPtnJpuIJXsjE8bcp8kksJEpVPKG0WPDq7aOM6GNsAul+Vir
+        z0In9pXe3fIhPVgk6cttqOZxOftXvYE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-aN550gYzOSiH0LMnfBhrdA-1; Wed, 28 Jul 2021 19:53:59 -0400
+X-MC-Unique: aN550gYzOSiH0LMnfBhrdA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F403C101C8B9;
+        Wed, 28 Jul 2021 23:53:57 +0000 (UTC)
+Received: from [10.64.54.184] (vpn2-54-184.bne.redhat.com [10.64.54.184])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1471569CBA;
+        Wed, 28 Jul 2021 23:53:52 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v4 06/12] mm/debug_vm_pgtable: Use struct
+ pgtable_debug_args in migration and thp tests
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
+        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
+        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
+References: <20210727061401.592616-1-gshan@redhat.com>
+ <20210727061401.592616-7-gshan@redhat.com>
+ <39de75d2-744a-9194-cbc2-14926b60e68e@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <7205bb91-4940-e625-1641-210a6ee767c8@redhat.com>
+Date:   Thu, 29 Jul 2021 09:54:06 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
+In-Reply-To: <39de75d2-744a-9194-cbc2-14926b60e68e@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -       epc_page = sgx_alloc_epc_page(NULL, true);
-> +       epc_page = sgx_alloc_epc_page(va_page, true);
+Hi Anshuman,
 
-Providing a real value for the owner seems much better than all the hacks
-to invent a value to use instead of NULL.
+On 7/28/21 9:08 PM, Anshuman Khandual wrote:
+> On 7/27/21 11:43 AM, Gavin Shan wrote:
+>> This uses struct pgtable_debug_args in the migration and thp test
+>> functions. It's notable that the pre-allocated page is used in
+>> swap_migration_tests() as set_pte_at() is used there.
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>>   mm/debug_vm_pgtable.c | 28 ++++++++++++++--------------
+>>   1 file changed, 14 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+>> index bc153cad9045..9136195efde3 100644
+>> --- a/mm/debug_vm_pgtable.c
+>> +++ b/mm/debug_vm_pgtable.c
+>> @@ -845,7 +845,7 @@ static void __init pmd_swap_tests(struct pgtable_debug_args *args)
+>>   static void __init pmd_swap_tests(struct pgtable_debug_args *args) { }
+>>   #endif /* CONFIG_ARCH_ENABLE_THP_MIGRATION */
+>>   
+>> -static void __init swap_migration_tests(void)
+>> +static void __init swap_migration_tests(struct pgtable_debug_args *args)
+>>   {
+>>   	struct page *page;
+>>   	swp_entry_t swp;
+>> @@ -861,9 +861,10 @@ static void __init swap_migration_tests(void)
+>>   	 * problematic. Lets allocate a dedicated page explicitly for this
+>>   	 * purpose that will be freed subsequently.
+>>   	 */
+>> -	page = alloc_page(GFP_KERNEL);
+>> +	page = (args->pte_pfn != ULONG_MAX) ?
+>> +	       pfn_to_page(args->pte_pfn) : NULL;
+>>   	if (!page) {
+>> -		pr_err("page allocation failed\n");
+>> +		pr_err("no page available\n");
+>>   		return;
+>>   	}
+> 
+> Please check for a valid page earlier in the function and return. Otherwise
+> this calls out the page unavailability (after starting the test), which is
+> inconsistent with all other functions like pxx_advanced_tests().
+> 
+> [    1.051633] debug_vm_pgtable: [pte_swap_tests           ]: Validating PTE swap
+> [    1.052697] debug_vm_pgtable: [pmd_swap_tests           ]: Validating PMD swap
+> [    1.053765] debug_vm_pgtable: [swap_migration_tests     ]: Validating swap migration <=====
+> [    1.054900] debug_vm_pgtable: [swap_migration_tests     ]: no page available         <=====
+> 
+> Should do this just before pr_info("Validating swap migration\n").
+> 
+> ......
+> page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
+> if (!page)
+> 	return;
+> .....
+> 
 
-Can you add a "Signed-off-by"? Then I'll replace my part 0001 with your version.
+Yes. The order of error messages are sticky to original implementation, but
+it'd better to be consistent with the new order we have in this series. I
+will adjust in v5.
 
--Tony
+Thanks,
+Gavin
 
-[Just need to coax you into re-writing all the other parts for me now :-) ]
