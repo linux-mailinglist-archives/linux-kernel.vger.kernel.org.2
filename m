@@ -2,90 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7444A3D8F7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFCC3D8F42
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236997AbhG1Nrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236876AbhG1NqW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:46:22 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E01C1C0617B0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 06:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=gSlg8rRsSXoJ0fWh8d+x+IcEx/wtHhvBcH
-        sY6dFKF0A=; b=ryb3fbKBlgKMA7reFRVg6exgROkuPU0THvFSabOvpO+g9BEPCX
-        tN1gXX639yATePUgxA9cf763wOW0BXsDGKGp5vIqIZ/VDL/51RF18sUhdf88n34S
-        CJ3CwbkrW1Jx1f7I6siaaXlQB5LQG3C3TEVFiPXfGrEt6dQhkFokIMefg=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3Tkx8XwFhDnNaAA--.1287S2;
-        Wed, 28 Jul 2021 21:45:32 +0800 (CST)
-Date:   Wed, 28 Jul 2021 21:39:34 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: stacktrace: fix dump_backtrace/walk_stackframe
- with NULL task
-Message-ID: <20210728213934.5a0ee52e@xhacker>
-In-Reply-To: <20210727221656.wq3ponbzhvftfxc5@mail.google.com>
-References: <20210627092659.46193-1-changbin.du@gmail.com>
-        <20210628134404.4c470112@xhacker.debian>
-        <20210727221656.wq3ponbzhvftfxc5@mail.google.com>
+        id S236900AbhG1Nj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:39:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235314AbhG1Nj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 09:39:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1582E60F9B;
+        Wed, 28 Jul 2021 13:39:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627479593;
+        bh=4OdhEgoy72ayOVqPMBW8RwgohEHFt0wPEe5LTOk/UBs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GQQstxouxk3H78OvzM2xnb4D22LC0VQxzKMZQuPdrMsjHjP7JJYQlFl5J6fdBNSS8
+         BQUHeAKnKskbSmp4WxMHeAV5MxcasQ3hFmOhbrEFZBPP5AdsYUcjbpmxSVIc/9Uads
+         P4Q/m5qPIsXP5iFEmasxN/oDyhRoz5ZhReaMW4IY=
+Date:   Wed, 28 Jul 2021 15:39:51 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Marek Kedzierski <mkedzier@redhat.com>,
+        Hui Zhu <teawater@gmail.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v2 3/9] drivers/base/memory: introduce "memory groups" to
+ logically group memory blocks
+Message-ID: <YQFeJ1P9wQvlqAz7@kroah.com>
+References: <20210723125210.29987-1-david@redhat.com>
+ <20210723125210.29987-4-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygA3Tkx8XwFhDnNaAA--.1287S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtw17GFW5WrWrXrW8KF1Dtrb_yoW3Gwc_Xr
-        Z3A3WDCrsrZrZ7Ca93Jr13ZryDKFW8Jr4rKw4v9r95Awn8G398JrnYkF1fJF1DKrn7ua43
-        Gr9xX3WFg342vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbrAYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        W3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8
-        JbIYCTnIWIevJa73UjIFyTuYvjxU7GYLDUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723125210.29987-4-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 06:16:56 +0800
-Changbin Du <changbin.du@gmail.com> wrote:
-
-> On Mon, Jun 28, 2021 at 01:44:04PM +0800, Jisheng Zhang wrote:
-> > On Sun, 27 Jun 2021 17:26:59 +0800
-> > Changbin Du <changbin.du@gmail.com> wrote:
-> > 
-> >   
-> > > 
-> > > 
-> > > Some places try to show backtrace with NULL task, and expect the task is
-> > > 'current'. For example, dump_stack()->show_stack(NULL,...). So the
-> > > stacktrace code should take care of this case.  
-> > 
-> > I fixed this issue one week ago:
-> > 
-> > http://lists.infradead.org/pipermail/linux-riscv/2021-June/007258.html  
+On Fri, Jul 23, 2021 at 02:52:04PM +0200, David Hildenbrand wrote:
+> In our "auto-movable" memory onlining policy, we want to make decisions
+> across memory blocks of a single memory device. Examples of memory devices
+> include ACPI memory devices (in the simplest case a single DIMM) and
+> virtio-mem. For now, we don't have a connection between a single memory
+> block device and the real memory device. Each memory device consists of
+> 1..X memory block devices.
 > 
-> I still see this issue on mainline. Is your fix merged? Thanks!
+> Let's logically group memory blocks belonging to the same memory device
+> in "memory groups". Memory groups can span multiple physical ranges and a
+> memory group itself does not contain any information regarding physical
+> ranges, only properties (e.g., "max_pages") necessary for improved memory
+> onlining.
+> 
+> Introduce two memory group types:
+> 
+> 1) Static memory group: E.g., a single ACPI memory device, consisting of
+>    1..X memory resources. A memory group consists of 1..Y memory blocks.
+>    The whole group is added/removed in one go. If any part cannot get
+>    offlined, the whole group cannot be removed.
+> 
+> 2) Dynamic memory group: E.g., a single virtio-mem device. Memory is
+>    dynamically added/removed in a fixed granularity, called a "unit",
+>    consisting of 1..X memory blocks. A unit is added/removed in one go.
+>    If any part of a unit cannot get offlined, the whole unit cannot be
+>    removed.
+> 
+> In case of 1) we usually want either all memory managed by ZONE_MOVABLE
+> or none. In case of 2) we usually want to have as many units as possible
+> managed by ZONE_MOVABLE. We want a single unit to be of the same type.
+> 
+> For now, memory groups are an internal concept that is not exposed to
+> user space; we might want to change that in the future, though.
+> 
+> add_memory() users can specify a mgid instead of a nid when passing
+> the MHP_NID_IS_MGID flag.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  drivers/base/memory.c          | 102 +++++++++++++++++++++++++++++++--
+>  include/linux/memory.h         |  46 ++++++++++++++-
+>  include/linux/memory_hotplug.h |   6 +-
+>  mm/memory_hotplug.c            |  11 +++-
+>  4 files changed, 158 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+> index 86ec2dc82fc2..42109e7fb0b5 100644
+> --- a/drivers/base/memory.c
+> +++ b/drivers/base/memory.c
+> @@ -82,6 +82,11 @@ static struct bus_type memory_subsys = {
+>   */
+>  static DEFINE_XARRAY(memory_blocks);
+>  
+> +/*
+> + * Memory groups, indexed by memory group identification (mgid).
+> + */
+> +static DEFINE_XARRAY_FLAGS(memory_groups, XA_FLAGS_ALLOC);
+> +
+>  static BLOCKING_NOTIFIER_HEAD(memory_chain);
+>  
+>  int register_memory_notifier(struct notifier_block *nb)
+> @@ -634,7 +639,8 @@ int register_memory(struct memory_block *memory)
+>  }
+>  
+>  static int init_memory_block(unsigned long block_id, unsigned long state,
+> -			     unsigned long nr_vmemmap_pages)
+> +			     unsigned long nr_vmemmap_pages,
+> +			     struct memory_group *group)
+>  {
+>  	struct memory_block *mem;
+>  	int ret = 0;
+> @@ -653,6 +659,11 @@ static int init_memory_block(unsigned long block_id, unsigned long state,
+>  	mem->nid = NUMA_NO_NODE;
+>  	mem->nr_vmemmap_pages = nr_vmemmap_pages;
+>  
+> +	if (group) {
+> +		mem->group = group;
+> +		refcount_inc(&group->refcount);
+> +	}
+> +
+>  	ret = register_memory(mem);
+>  
+>  	return ret;
+> @@ -671,7 +682,7 @@ static int add_memory_block(unsigned long base_section_nr)
+>  	if (section_count == 0)
+>  		return 0;
+>  	return init_memory_block(memory_block_id(base_section_nr),
+> -				 MEM_ONLINE, 0);
+> +				 MEM_ONLINE, 0,  NULL);
+>  }
+>  
+>  static void unregister_memory(struct memory_block *memory)
+> @@ -681,6 +692,11 @@ static void unregister_memory(struct memory_block *memory)
+>  
+>  	WARN_ON(xa_erase(&memory_blocks, memory->dev.id) == NULL);
+>  
+> +	if (memory->group) {
+> +		refcount_dec(&memory->group->refcount);
+> +		memory->group = NULL;
 
-Nope, the fix is missed twice. Palmer has added the fix patch into
-fix branch, I help it will be in next rc
+Who freed the memory for the group?
 
-Regards
+> +	}
+> +
+>  	/* drop the ref. we got via find_memory_block() */
+>  	put_device(&memory->dev);
+>  	device_unregister(&memory->dev);
+> @@ -694,7 +710,8 @@ static void unregister_memory(struct memory_block *memory)
+>   * Called under device_hotplug_lock.
+>   */
+>  int create_memory_block_devices(unsigned long start, unsigned long size,
+> -				unsigned long vmemmap_pages)
+> +				unsigned long vmemmap_pages,
+> +				struct memory_group *group)
+>  {
+>  	const unsigned long start_block_id = pfn_to_block_id(PFN_DOWN(start));
+>  	unsigned long end_block_id = pfn_to_block_id(PFN_DOWN(start + size));
+> @@ -707,7 +724,8 @@ int create_memory_block_devices(unsigned long start, unsigned long size,
+>  		return -EINVAL;
+>  
+>  	for (block_id = start_block_id; block_id != end_block_id; block_id++) {
+> -		ret = init_memory_block(block_id, MEM_OFFLINE, vmemmap_pages);
+> +		ret = init_memory_block(block_id, MEM_OFFLINE, vmemmap_pages,
+> +					group);
+>  		if (ret)
+>  			break;
+>  	}
+> @@ -891,3 +909,79 @@ int for_each_memory_block(void *arg, walk_memory_blocks_func_t func)
+>  	return bus_for_each_dev(&memory_subsys, NULL, &cb_data,
+>  				for_each_memory_block_cb);
+>  }
+> +
+> +static int register_memory_group(struct memory_group group)
+> +{
+> +	struct memory_group *new_group;
+> +	uint32_t mgid;
+> +	int ret;
+> +
+> +	if (!node_possible(group.nid))
+> +		return -EINVAL;
+> +
+> +	new_group = kzalloc(sizeof(group), GFP_KERNEL);
+> +	if (!new_group)
+> +		return -ENOMEM;
+> +	*new_group = group;
 
+You burried a memcpy here, why?  Please be explicit as this is now a
+dynamic structure.
+
+> +	refcount_set(&new_group->refcount, 1);
+
+Why not just use a kref?  You seem to be treating it as a kref would
+work, right?
+
+> +
+> +	ret = xa_alloc(&memory_groups, &mgid, new_group, xa_limit_31b,
+> +		       GFP_KERNEL);
+> +	if (ret)
+> +		kfree(new_group);
+> +	return ret ? ret : mgid;
+
+I hate ?: please spell this out:
+	if (ret)
+		return ret;
+	return mgid;
+
+There, more obvious and you can read it in 10 years when you have to go
+fix it up...
+
+
+
+> +}
+> +
+> +int register_static_memory_group(int nid, unsigned long max_pages)
+> +{
+> +	struct memory_group group = {
+> +		.nid = nid,
+> +		.s = {
+> +			.max_pages = max_pages,
+> +		},
+> +	};
+> +
+> +	if (!max_pages)
+> +		return -EINVAL;
+> +	return register_memory_group(group);
+> +}
+> +EXPORT_SYMBOL_GPL(register_static_memory_group);
+
+Let's make our global namespace a bit nicer:
+	memory_group_register_static()
+	memory_group_register_dynamic()
+
+and so on.  Use prefixes please, not suffixes.
+
+
+> +
+> +int register_dynamic_memory_group(int nid, unsigned long unit_pages)
+> +{
+> +	struct memory_group group = {
+> +		.nid = nid,
+> +		.is_dynamic = true,
+> +		.d = {
+> +			.unit_pages = unit_pages,
+> +		},
+> +	};
+> +
+> +	if (!unit_pages || !is_power_of_2(unit_pages) ||
+> +	    unit_pages < PHYS_PFN(memory_block_size_bytes()))
+> +		return -EINVAL;
+> +	return register_memory_group(group);
+> +}
+> +EXPORT_SYMBOL_GPL(register_dynamic_memory_group);
+> +
+> +int unregister_memory_group(int mgid)
+> +{
+> +	struct memory_group *group;
+> +
+> +	if (mgid < 0)
+> +		return -EINVAL;
+> +
+> +	group = xa_load(&memory_groups, mgid);
+> +	if (!group || refcount_read(&group->refcount) > 1)
+> +		return -EINVAL;
+> +
+> +	xa_erase(&memory_groups, mgid);
+> +	kfree(group);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(unregister_memory_group);
+
+memory_group_unregister()
+
+
+> +
+> +struct memory_group *get_memory_group(int mgid)
+> +{
+> +	return xa_load(&memory_groups, mgid);
+> +}
+
+Global function?
+
+
+> diff --git a/include/linux/memory.h b/include/linux/memory.h
+> index 97e92e8b556a..6e20a6174fe5 100644
+> --- a/include/linux/memory.h
+> +++ b/include/linux/memory.h
+> @@ -23,6 +23,42 @@
+>  
+>  #define MIN_MEMORY_BLOCK_SIZE     (1UL << SECTION_SIZE_BITS)
+>  
+> +struct memory_group {
+> +	/* Nid the whole group belongs to. */
+> +	int nid;
+
+What is a "nid"?
+
+> +	/* References from memory blocks + 1. */
+
+Blank line above this?
+
+And put the structure comments in proper kernel doc so that others can
+read them and we can verify it is correct over time.
+
+> +	refcount_t refcount;
+> +	/*
+> +	 * Memory group type: static vs. dynamic.
+> +	 *
+> +	 * Static: All memory in the group belongs to a single unit, such as,
+> +	 * a DIMM. All memory belonging to the group will be added in
+> +	 * one go and removed in one go -- it's static.
+> +	 *
+> +	 * Dynamic: Memory within the group is added/removed dynamically in
+> +	 * units of the specified granularity of at least one memory block.
+> +	 */
+> +	bool is_dynamic;
+> +
+> +	union {
+> +		struct {
+> +			/*
+> +			 * Maximum number of pages we'll have in this static
+> +			 * memory group.
+> +			 */
+> +			unsigned long max_pages;
+> +		} s;
+> +		struct {
+> +			/*
+> +			 * Unit in pages in which memory is added/removed in
+> +			 * this dynamic memory group. This granularity defines
+> +			 * the alignment of a unit in physical address space.
+> +			 */
+> +			unsigned long unit_pages;
+> +		} d;
+
+so is_dynamic determines which to use here?  Please be explicit.
+
+
+thanks,
+
+greg k-h
