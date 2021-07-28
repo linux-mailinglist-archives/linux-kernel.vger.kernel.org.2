@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26613D92A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2718D3D92A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237544AbhG1QAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:00:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:59576 "EHLO foss.arm.com"
+        id S237566AbhG1QAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:00:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:59596 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237517AbhG1P7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:59:45 -0400
+        id S237499AbhG1P7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:59:47 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C60713A1;
-        Wed, 28 Jul 2021 08:59:43 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 330F613D5;
+        Wed, 28 Jul 2021 08:59:45 -0700 (PDT)
 Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F0CB83F70D;
-        Wed, 28 Jul 2021 08:59:41 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AD6AC3F70D;
+        Wed, 28 Jul 2021 08:59:43 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux-foundation.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
         john.garry@huawei.com, dianders@chromium.org
-Subject: [PATCH v2 21/24] iommu/dma: Factor out flush queue init
-Date:   Wed, 28 Jul 2021 16:58:42 +0100
-Message-Id: <afdded2f32737757f2af3ee08e123798fa024cce.1627468310.git.robin.murphy@arm.com>
+Subject: [PATCH v2 22/24] iommu: Allow enabling non-strict mode dynamically
+Date:   Wed, 28 Jul 2021 16:58:43 +0100
+Message-Id: <de75b36b3b31cd328de3811c0725f3d0af448abc.1627468310.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1627468308.git.robin.murphy@arm.com>
 References: <cover.1627468308.git.robin.murphy@arm.com>
@@ -35,97 +35,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factor out flush queue setup from the initial domain init so that we
-can potentially trigger it from sysfs later on in a domain's lifetime.
+Allocating and enabling a flush queue is in fact something we can
+reasonably do while a DMA domain is active, without having to rebuild it
+from scratch. Thus we can allow a strict -> non-strict transition from
+sysfs without requiring to unbind the device's driver, which is of
+particular interest to users who want to make selective relaxations to
+critical devices like the one serving their root filesystem.
+
+Disabling and draining a queue also seems technically possible to
+achieve without rebuilding the whole domain, but would certainly be more
+involved. Furthermore there's not such a clear use-case for tightening
+up security *after* the device may already have done whatever it is that
+you don't trust it not to do, so we only consider the relaxation case.
 
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 ---
- drivers/iommu/dma-iommu.c | 30 ++++++++++++++++++++----------
- include/linux/dma-iommu.h |  9 ++++++---
- 2 files changed, 26 insertions(+), 13 deletions(-)
+ drivers/iommu/iommu.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 7f3968865387..304a3ec71223 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -310,6 +310,25 @@ static bool dev_is_untrusted(struct device *dev)
- 	return dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
- }
- 
-+int iommu_dma_init_fq(struct iommu_domain *domain)
-+{
-+	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-+
-+	if (domain->type != IOMMU_DOMAIN_DMA_FQ)
-+		return -EINVAL;
-+	if (cookie->fq_domain)
-+		return 0;
-+
-+	if (init_iova_flush_queue(&cookie->iovad, iommu_dma_flush_iotlb_all,
-+				  iommu_dma_entry_dtor)) {
-+		pr_warn("iova flush queue initialization failed\n");
-+		domain->type = IOMMU_DOMAIN_DMA;
-+		return -ENODEV;
-+	}
-+	cookie->fq_domain = domain;
-+	return 0;
-+}
-+
- /**
-  * iommu_dma_init_domain - Initialise a DMA mapping domain
-  * @domain: IOMMU domain previously prepared by iommu_get_dma_cookie()
-@@ -362,16 +381,7 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 25c1adc1ec67..be399d630953 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -3200,6 +3200,13 @@ static int iommu_change_dev_def_domain(struct iommu_group *group,
+ 		goto out;
  	}
  
- 	init_iova_domain(iovad, 1UL << order, base_pfn);
--
--	if (domain->type == IOMMU_DOMAIN_DMA_FQ && !cookie->fq_domain) {
--		if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
--					  iommu_dma_entry_dtor)) {
--			pr_warn("iova flush queue initialization failed\n");
--			domain->type = IOMMU_DOMAIN_DMA;
--		} else {
--			cookie->fq_domain = domain;
--		}
--	}
-+	iommu_dma_init_fq(domain);
- 
- 	return iova_reserve_iommu_regions(dev, domain);
- }
-diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
-index 758ca4694257..81ab647f1618 100644
---- a/include/linux/dma-iommu.h
-+++ b/include/linux/dma-iommu.h
-@@ -20,6 +20,7 @@ void iommu_put_dma_cookie(struct iommu_domain *domain);
- 
- /* Setup call for arch DMA mapping code */
- void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit);
-+int iommu_dma_init_fq(struct iommu_domain *domain);
- 
- /* The DMA API isn't _quite_ the whole story, though... */
- /*
-@@ -37,9 +38,6 @@ void iommu_dma_compose_msi_msg(struct msi_desc *desc,
- 
- void iommu_dma_get_resv_regions(struct device *dev, struct list_head *list);
- 
--void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
--		struct iommu_domain *domain);
--
- extern bool iommu_dma_forcedac;
- 
- #else /* CONFIG_IOMMU_DMA */
-@@ -54,6 +52,11 @@ static inline void iommu_setup_dma_ops(struct device *dev, u64 dma_base,
- {
- }
- 
-+static inline int iommu_dma_init_fq(struct iommu_domain *domain)
-+{
-+	return -EINVAL;
-+}
++	/* We can bring up a flush queue without tearing down the domain */
++	if (type == IOMMU_DOMAIN_DMA_FQ && prev_dom->type == IOMMU_DOMAIN_DMA) {
++		prev_dom->type = IOMMU_DOMAIN_DMA_FQ;
++		ret = iommu_dma_init_fq(prev_dom);
++		goto out;
++	}
 +
- static inline int iommu_get_dma_cookie(struct iommu_domain *domain)
- {
- 	return -ENODEV;
+ 	/* Sets group->default_domain to the newly allocated domain */
+ 	ret = iommu_group_alloc_default_domain(dev->bus, group, type);
+ 	if (ret)
+@@ -3240,9 +3247,9 @@ static int iommu_change_dev_def_domain(struct iommu_group *group,
+ }
+ 
+ /*
+- * Changing the default domain through sysfs requires the users to ubind the
+- * drivers from the devices in the iommu group. Return failure if this doesn't
+- * meet.
++ * Changing the default domain through sysfs requires the users to unbind the
++ * drivers from the devices in the iommu group, except for a DMA -> DMA-FQ
++ * transition. Return failure if this isn't met.
+  *
+  * We need to consider the race between this and the device release path.
+  * device_lock(dev) is used here to guarantee that the device release path
+@@ -3318,7 +3325,8 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
+ 
+ 	/* Check if the device in the group still has a driver bound to it */
+ 	device_lock(dev);
+-	if (device_is_bound(dev)) {
++	if (device_is_bound(dev) && !(req_type == IOMMU_DOMAIN_DMA_FQ &&
++	    group->default_domain->type == IOMMU_DOMAIN_DMA)) {
+ 		pr_err_ratelimited("Device is still bound to driver\n");
+ 		ret = -EBUSY;
+ 		goto out;
 -- 
 2.25.1
 
