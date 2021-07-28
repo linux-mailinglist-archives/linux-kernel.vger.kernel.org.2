@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5093D8B4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EB93D8B53
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235910AbhG1KAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235847AbhG1KAM (ORCPT
+        id S235778AbhG1KBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:01:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24441 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234649AbhG1KBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:00:12 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4C4C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 03:00:10 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 2F77822172;
-        Wed, 28 Jul 2021 12:00:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1627466408;
+        Wed, 28 Jul 2021 06:01:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627466466;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=u1GoZExlDzTQpKZA+eG2D88Yx9YFdj8G9GDiUD8vIq0=;
-        b=CPaVtWOQXWhptSMQBNQn6zwEqgjJ4u+oO/QSpZ0VsTQz85C+YCdPWXRe7Eg/Sg8SPosAZX
-        YS0pfTSLIK2/7A+EkwHGLSjzIZLKbvZ5wTZLSYRNXF6T23BLTGmEAFMUNSLBaYCUt4nEse
-        fQzIkaYV7oS7DuKGWP2MDx6EGtFE3iI=
+        bh=QuzMO/cl95LwiOj8k16xF3MZrsBqRw/bir3k0C2wtnc=;
+        b=KinP5rqTkVwukaKMoxKgoxYgx3vfw7PjpN1fXrRsAF4L39G/o6IVMpdv7JZ7e0IaPOE9MF
+        SW4GAxscgvT0VS/4A+tqyJag7M3JH7joyjHfx7kcJRjknx+C5XPXfPUhcdweWJ/p4UowRH
+        dRH6ZKTLMpdb513Os8HMnMv1Ex/0o6I=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-0Hc6J42tMDuXnyQXVKeeoQ-1; Wed, 28 Jul 2021 06:01:05 -0400
+X-MC-Unique: 0Hc6J42tMDuXnyQXVKeeoQ-1
+Received: by mail-ej1-f69.google.com with SMTP id pv7-20020a1709072087b02905119310d7b9so625857ejb.23
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 03:01:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QuzMO/cl95LwiOj8k16xF3MZrsBqRw/bir3k0C2wtnc=;
+        b=k9R6n9Zb4x1xmSlKnXu3s9MqpByS1ku6OdXmz1LkQEeDy5CqI2iay0GRb1s83radbY
+         0oJu4LB3onMiaMeEiQ748LCy1QxKdzxtA5jYAAOPDO2lAA5K4FTEIKE/vyWfZ/9/VeDT
+         r6zuDPhB07a5r7khGlCipzpXgKlpUiTKcOJYLcZFsN3yP4NaHNxM0LbreUhwMfVvTL3w
+         4MWFTxhpPl5ziVCJiT3hUDK1Gpf2P9qB/Of4DRrvDuRoEhtOhYdnLdk+vZrMrnhZH3ha
+         rgA7dA+C0kayTX5RMlG801ClwTjxGeeSWeL3DGLZGHkgrb20tclxVVc/V8ZmR3b52Vin
+         sGKg==
+X-Gm-Message-State: AOAM533sRcdFWeMV/jvmpQipDIvSeF54HUzf0NtuH21HCwaceBTfU8nS
+        4yQVVqHZEcbEGEu8YYdiZfkPYYAi2hjQjjvJY+aSYD9Mf48TdjOMm5nOdrcQN2hBuGSg//0qW0Z
+        1G4jfbHA4eYZQMM0hUyRa7Tof
+X-Received: by 2002:a17:906:3fc2:: with SMTP id k2mr26599127ejj.440.1627466464075;
+        Wed, 28 Jul 2021 03:01:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVcwMHCtCdr0aPIYRwLjFYJv7iO+jzCt+0kJrvrG0/uWXbRZAmf9MfRYi1NWkKv1x1u5n3hA==
+X-Received: by 2002:a17:906:3fc2:: with SMTP id k2mr26599116ejj.440.1627466463916;
+        Wed, 28 Jul 2021 03:01:03 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id qa34sm502153ejc.120.2021.07.28.03.01.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 03:01:03 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: gigabyte-wmi: add support for B550 Aorus
+ Elite V2
+To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+References: <20210726153630.65213-1-linux@weissschuh.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <bba2f992-d392-4087-c32d-ae60bf05d9ff@redhat.com>
+Date:   Wed, 28 Jul 2021 12:01:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 28 Jul 2021 12:00:07 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync flags of mt25ql02g and
- mt25qu02g with other mt25q
-In-Reply-To: <42380415413178b18e940ae80298c22c51275b95.camel@ew.tq-group.com>
-References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
- <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
- <42380415413178b18e940ae80298c22c51275b95.camel@ew.tq-group.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <cebfb4138908d085791c5c2fddca939d@walle.cc>
-X-Sender: michael@walle.cc
+In-Reply-To: <20210726153630.65213-1-linux@weissschuh.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-07-27 12:45, schrieb Matthias Schiffer:
-> On Tue, 2021-07-27 at 09:09 +0200, Michael Walle wrote:
-[..]
->> > --- a/drivers/mtd/spi-nor/micron-st.c
->> > +++ b/drivers/mtd/spi-nor/micron-st.c
->> > @@ -181,11 +181,11 @@ static const struct flash_info st_parts[] = {
->> >  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
->> >  			      NO_CHIP_ERASE) },
->> >  	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
->> > -			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
->> > -			      NO_CHIP_ERASE) },
->> 
->> This bothers me. I'm not sure how this will work. I see that
->> chip erase is command 0xc7, but both the new and the old flash
->> just supports 0xc3 (DIE ERASE). Did you test these changes?
+Hi,
+
+On 7/26/21 5:36 PM, Thomas Weißschuh wrote:
+> Reported as working here:
+> https://github.com/t-8ch/linux-gigabyte-wmi-driver/issues/1#issuecomment-879398883
 > 
-> Thanks for catching this. I overlooked that the 1G and 2G variants
-> don't support the same erase commands as the smaller versions after
-> all... It is possible that I only tested this with partitioned MTD, so
-> I didn't hit the whole-chip erase case.
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+I will also add this to the pdx86/fixes branch and include it in
+the pdx86 fixes pull-req for 5.14 which I plan to send to Linus soon.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+> ---
+>  drivers/platform/x86/gigabyte-wmi.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Which command should I use to test the chip erase? Will a `flash_erase
-> /dev/mtdX 0 0` trigger the correct operation?
+> diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
+> index 5529d7b0abea..fbb224a82e34 100644
+> --- a/drivers/platform/x86/gigabyte-wmi.c
+> +++ b/drivers/platform/x86/gigabyte-wmi.c
+> @@ -141,6 +141,7 @@ static u8 gigabyte_wmi_detect_sensor_usability(struct wmi_device *wdev)
+>  
+>  static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 AORUS ELITE"),
+> +	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 AORUS ELITE V2"),
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 GAMING X V2"),
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M AORUS PRO-P"),
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M DS3H"),
+> 
+> base-commit: ff1176468d368232b684f75e82563369208bc371
+> 
 
-I guess so. Looking at
-http://git.infradead.org/mtd-utils.git/blob/HEAD:/misc-utils/flash_erase.c#l226
-
-It seems you should see a different output for either erasing individual
-sectors or the whole chip (as long as the kernel doesn't the invidual
-block erase itself).
-
--michael
