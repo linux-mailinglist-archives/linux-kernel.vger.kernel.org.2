@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6753D8553
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEE13D855B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234214AbhG1B2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
+        id S234421AbhG1BaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233172AbhG1B2y (ORCPT
+        with ESMTP id S234447AbhG1BaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:28:54 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA332C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:28:53 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id gg10-20020a056214252ab02902f3a4c41d77so977341qvb.18
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:28:53 -0700 (PDT)
+        Tue, 27 Jul 2021 21:30:15 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E094C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:30:13 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id a20so803768plm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:30:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=u18JPqezBuNnCoS9PFQiyHRGpr77MWfIAMC88dhsA70=;
-        b=XA/bMzmpJv1aZioF0UgFDElW1oenUyZKbOW5vPa//F0t987N3CN0EOvslHkvH5FptR
-         OrUq5E7+2w5riexOS3CMUjCTO8JInrsl5XUxShn623JPAawQJ8OX9AUNve/BLGvBShOR
-         9Gw3wJBCutVoSTIx9VZmc49vPfi9bNm3F390QGEwNPhrDCIZaYZ+rCZusATkmhh1PJI5
-         fyeE65N4hAS5cJO/O0BPOtDp/7UTO6496KJCQnSQ5gS+Nvv5pcFsejlWZe4ueZhjtLs/
-         tvm4Cgs5XW2RnsbiRNFB5tksSGjeXERjV5crXXxsoPfbw2yXIKICB6TVAynhLltCpmEh
-         /CjA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F/W78E3w8bd3psxYX0IIxref8Eo+wzHY8m4KRkXjPMs=;
+        b=fSpVrx2KFTwbTxZxaxYBjKJ9a3HRRpiHfBG8wD07VjuWC7mdbYEQ/7GkiPoSY+/g36
+         +TtB+dCcoMKG1TPpgjH+W/O2nqputas/NPxb5d/iKCDtXteeWA5Muau5Hiw7k0rZrmBp
+         XaotHXeRLZbN2gC+C3tJaqkKc+t5iWRCRbObY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=u18JPqezBuNnCoS9PFQiyHRGpr77MWfIAMC88dhsA70=;
-        b=kL62agCcB5yYlWYYho3ioIMiIyN/I+6Ffag9XB6+hHoJCt1Xte9GhFmdB3zbfmC0ap
-         UQLlzdSTXuH1Ugn/EDIsAK7Hd6FTsDEyro5lQ3T7eD3YCRycYgl9PrqH158E+eZ2WspB
-         V8hP3FE+Nlppc7vVuOtXPchOyEjYcbiX4KPxcN24QKTfpyDhKa6YthNNwLn0rTptSzqI
-         /qPuRpSrvUsb8RbelFbcTkptn8JGWSxF1O/A+7CKeKGb62R6E2S8vTr3Qr0Xcdrd4zVZ
-         3YoxDAeIAvfusKBLWZRiDk+L8mwzCjyhK4V/FVmzvLDRwhesmq0BHrc8OkmQ4hGSHUTG
-         2moQ==
-X-Gm-Message-State: AOAM532Z3pGdOgs7BrPF9Pmnav8Fst8plimm4ZZ58++tvny0WmY3ibcS
-        3vRfKBMR1fukBdRI7SET43+U1qsYcqf+pVfUuxaa2Vre/MmFLxxglOYlGSh7FSacKGu72TSSeMZ
-        1bV0cWc9on+7ZAaMrGFLpAcz7m863cYgISq1hvX6WaMM5WLTGqvlLONFxOMhtdyoy3KJG1V7x
-X-Google-Smtp-Source: ABdhPJzqYH4lNsgQEofBqfJiBYrF4Z233J0dQBMPyZniOgW1YuRo0hZY0OzAqBLU5MovcbytOjsdXCBof3oB
-X-Received: from lighttop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2fcb])
- (user=paillon job=sendgmr) by 2002:a05:6214:529e:: with SMTP id
- kj30mr25896914qvb.32.1627435732820; Tue, 27 Jul 2021 18:28:52 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 18:27:43 -0700
-Message-Id: <20210728012743.1063928-1-paillon@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH] scsi: ufs: Allow async suspend/resume callbacks
-From:   Vincent Palomares <paillon@google.com>
-To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Cc:     Vincent Palomares <paillon@google.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F/W78E3w8bd3psxYX0IIxref8Eo+wzHY8m4KRkXjPMs=;
+        b=LfUhzPCNkhIonT8lsgsQUIH1OoKgrRO8IwaIv3p1NlH8AfwzFEIEKoU+4RHr81hnxt
+         xOn/aXhFwj4C2j4LAKakZ4u3eokMAEv234OQHePnlIud6oA/vQ1jFlKCVepSy9Btt9/H
+         NEHKUMpYUk9Th2GjCDrYHtnW8IyeoVY7RhpvEVkgvOgTzAe6IAW5rpdv3dSA7wmUNZwa
+         0mvOt76Ob5MgaeBkwFYOGHwMJ43YSjy8QwNhozN2CQ9YxjoZ3r3ZQlzxoCI2vUnWoTtF
+         VuhYnFSTTIuiADhAjMrh+yIcb0wIOZX/njNRtV7M8rYa9bdGPJavVK+ufHmUwda6f1DW
+         0pVQ==
+X-Gm-Message-State: AOAM533w8+jNuXaqi5zVmSE35oNxPYmPyO0D49gl1AdTKV+Al8tk/QYH
+        mz25tzmLoU2MXPoF4l/Ap66N1w==
+X-Google-Smtp-Source: ABdhPJwJtaC/+3L1bVkg9P8zv+anpCg9BvvGSgBVtWnX3lLVWENuhM7S6jL/vTi/ew8TMCXVE//XxA==
+X-Received: by 2002:a17:90a:ca93:: with SMTP id y19mr7226022pjt.142.1627435813032;
+        Tue, 27 Jul 2021 18:30:13 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r13sm5628761pgi.78.2021.07.27.18.30.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 18:30:12 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 18:30:11 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 33/64] lib: Introduce CONFIG_TEST_MEMCPY
+Message-ID: <202107271829.CE9BADDB@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-34-keescook@chromium.org>
+ <9827144a-dacf-61dc-d554-6c69434708de@acm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9827144a-dacf-61dc-d554-6c69434708de@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow UFS suspend/resume callbacks to run in parallel with other
-suspend/resume callbacks. This can recoup dozens of milliseconds on the
-resume path if UFS hardware needs to be powered back on.
+On Tue, Jul 27, 2021 at 04:31:03PM -0700, Bart Van Assche wrote:
+> On 7/27/21 1:58 PM, Kees Cook wrote:
+> > +static int __init test_memcpy_init(void)
+> > +{
+> > +	int err = 0;
+> > +
+> > +	err |= test_memcpy();
+> > +	err |= test_memmove();
+> > +	err |= test_memset();
+> > +
+> > +	if (err) {
+> > +		pr_warn("FAIL!\n");
+> > +		err = -EINVAL;
+> > +	} else {
+> > +		pr_info("all tests passed\n");
+> > +	}
+> > +
+> > +	return err;
+> > +}
+> > +
+> > +static void __exit test_memcpy_exit(void)
+> > +{ }
+> > +
+> > +module_init(test_memcpy_init);
+> > +module_exit(test_memcpy_exit);
+> > +MODULE_LICENSE("GPL");
+> 
+> Has it been considered to implement this test using the Kunit framework?
 
-Suspending and resuming asynchronously is safe to do so long as the driver
-callbacks only depend on resources made available by either a) parent
-devices or b) devices explicitly marked as suppliers with device_link_add.
+Good point! I will see if that works here; it would make sense to make
+this KUnit from the start.
 
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Bart Van Assche <bvanassche@acm.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Stanley Chu <stanley.chu@mediatek.com>
-Cc: Can Guo <cang@codeaurora.org>
-Cc: Asutosh Das <asutoshd@codeaurora.org>
-Cc: Avri Altman <avri.altman@wdc.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Vincent Palomares <paillon@google.com>
----
-
-Are there any suspend/resume dependencies for UFS drivers not tracked by
-the device parent relationship?
-
-drivers/scsi/ufs/ufshcd.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index b87ff68aa9aa..9ec5c308a0ea 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -9625,6 +9625,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- 	async_schedule(ufshcd_async_scan, hba);
- 	ufs_sysfs_add_nodes(hba->dev);
- 
-+	device_enable_async_suspend(dev);
- 	return 0;
- 
- free_tmf_queue:
 -- 
-2.32.0.432.gabb21c7263-goog
-
+Kees Cook
