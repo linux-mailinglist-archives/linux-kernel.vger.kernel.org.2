@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED97D3D965F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618B43D9663
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhG1UGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
+        id S231378AbhG1UHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhG1UGS (ORCPT
+        with ESMTP id S229878AbhG1UHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:06:18 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB10C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:06:16 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id i39-20020a9d17270000b02904cf73f54f4bso3379177ota.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:06:16 -0700 (PDT)
+        Wed, 28 Jul 2021 16:07:53 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9FEC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:07:50 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id y18so5266562oiv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:07:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=RgQV2POnTNhownKZPlBpXU10D8P77Sy5Oy1xD8WPPn0=;
-        b=FrrKJ3i9URl+r8rqdK4/pScXSbV1pGBeQ8X/yVyMtpzQL0IH9u2yLQz0LcljmC4zfk
-         nUsdiUtfPuoc/EVFZvUmVPinS7Zq09Y53PsMa6reMrjsSLxu9PRSvvVmaZj6PR/UQ2Xm
-         uNZoa2ol0vwgDymYyGv6Pt6E8VCyEHp5IzUaX0+r0NqPb8vUPmRIYOE9+F109f2Mo/+6
-         JPayvBjfHPPPJxMf5ij43EfzAjPnahmg/pwlKJ6j2fzO6P5XpydNC+2kwU6LwxpWbS4J
-         A92hqvW+Dr3AHch23CLzyF1aJFPoFezn0tiFrIAKnw9H/BZ6VKZUvcQQTQnn1MdszEt0
-         YQew==
+        bh=97hQfQK7XavPSltv9pN4yF2y5jNc7cIdloHZZGHQCvY=;
+        b=Z7jTTKBFGpWIxboKqwgJRsOZp1J+aWDmjni8p5+XEVDRVJmY29+ni5XltyAcjXJrPd
+         VKRiyGY2cxhdfvhTRdTJXxMi8S4rhnmsf7fgxGaIh3UvIFWi4IDtUyJAop5wHOt23ZWF
+         4DS/rBN4kxsmc5k3UIkqOFWLnzdGHlERYnLb/rN8QlBNhMpET6iELjrDWctsQitUPXGL
+         2sckHJR93BoAb3Tm7MNt5hGZ34d1TvqTBveiQqtTZfbncswKMzJrgB6ult5Anul6wbBt
+         IngUJZkLp/kFIdNqQ4EVmz2DH5drGaBqdJBFNlZL/yfplvskUs3XOZoFU1YNCvGzVSnO
+         EDgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RgQV2POnTNhownKZPlBpXU10D8P77Sy5Oy1xD8WPPn0=;
-        b=ckYBADu3N4wmMBKCFkZYXBrNdocCgX35mgtxz0eAh6M7jWmp7DR3/xu1qScwZluPAF
-         0oi+G98jmdMmY1mDz+tEWccmhFfUvKWsaWhmfXM6zDOpGMXPreCtSiF8q9EwZhsdyTxV
-         3f+rlH1SnH/uLAGpkDTccw4MpBW5iZdSSv2Lagb8Wz3iagCvvzprqszLXLWoK33+oHoz
-         ZoemJpHrnaz7zEb8jl4H/CoLDk72hyXNxB4lQ6EsDoM8Y9lVlK5raVT3lVRQXaRhuug/
-         HqluJ+eB1BLvyZ6jr3y0gZhZQ/ablEDg3kQBqTvmpDIvAI0R/xfoYio/JUO4RrxihCbO
-         3NdQ==
-X-Gm-Message-State: AOAM531zBbn9n67bKXZXJ6jVWQR9yIvqAqfyC4G6vkXoUwMZt/OwvhID
-        +3t1bBfvgo5rpJYUi5M9KDjcEg==
-X-Google-Smtp-Source: ABdhPJzQXfs+1VxjlRn+p1VmmVBgmBHUbC1ZA3IFjmSDDXTdl7sQL291fsv4jcT5kBuGPKI+wpkAoA==
-X-Received: by 2002:a9d:64d9:: with SMTP id n25mr1167735otl.174.1627502776188;
-        Wed, 28 Jul 2021 13:06:16 -0700 (PDT)
+        bh=97hQfQK7XavPSltv9pN4yF2y5jNc7cIdloHZZGHQCvY=;
+        b=OTdChzWI7nlQxv3zv14yE9BAl1UQ5buLhgSnVinB5SW0lL9snrAdZtbpBWAQUOVA6U
+         tz8SOblRR/LAdYyfU7eCC9EhNpzdwh0CaJefQacU4oN5C8jCn7IjZH2yCCqKgQYxK1TH
+         PHBakI2xGzeErsCshMOqIcanM3X2AKJkLs1mP90W34sBrVmNY5q0CtLteqelGKbmeKug
+         huHoSlc6VCSDXmoxSnJm8RW85mY3bFqbQE3lEFpWAzUSo1WQle0qDWEpMqiXayJoFyr/
+         Ys4Io2wetHeCGeJRxQCfA1mRaqyjmp47CrLNjcYLpR4Np51k2STX7V/aqF+Gufew0SEI
+         Wi1A==
+X-Gm-Message-State: AOAM531BBUWe2iepOQ+Ak9kZ6lSMQ9UbfhGVXwSKkNh2q0AGvXkse//v
+        bZLS4pjkIh58sXe2+dTMgeGGgA==
+X-Google-Smtp-Source: ABdhPJwD7U8+qAvbZ4kuKnlj7p/+LPIrjaNSnetymU4fcJ2ltcIGDeO08kf0oVPEIdx8JqShaVs4sA==
+X-Received: by 2002:aca:1e12:: with SMTP id m18mr7648287oic.95.1627502869900;
+        Wed, 28 Jul 2021 13:07:49 -0700 (PDT)
 Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n202sm203165oig.10.2021.07.28.13.06.15
+        by smtp.gmail.com with ESMTPSA id n1sm182047otk.34.2021.07.28.13.07.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 13:06:15 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 13:04:25 -0700
+        Wed, 28 Jul 2021 13:07:49 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 13:05:59 -0700
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
@@ -60,94 +60,91 @@ Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Andy Gross <agross@kernel.org>, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] PM: runtime: add devm_pm_runtime_enable helper
-Message-ID: <YQG4SVwUI21HugbG@ripper>
+Subject: Re: [PATCH v2 2/5] PM: clk: add devm_pm_clk_create helper
+Message-ID: <YQG4pz/z2nBNA+tJ@ripper>
 References: <20210728142445.774158-1-dmitry.baryshkov@linaro.org>
- <20210728142445.774158-2-dmitry.baryshkov@linaro.org>
+ <20210728142445.774158-3-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210728142445.774158-2-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20210728142445.774158-3-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed 28 Jul 07:24 PDT 2021, Dmitry Baryshkov wrote:
 
-> Add helper function handling typical driver action: call
-> pm_runtime_enable at the probe() time and disable it during remove().
+> Add devm_pm_clk_create helper, devres-enabled version of the
+> pm_clk_create(), which will call pm_clk_destroy at the correct time.
 > 
 
-This says what the patch does, but it doesn't say why we would like
-these helpers - i.e. the fact that it's quite common across the kernel
-to have error handlers and remove functions that simply has to do
-pm_runtime_disable().
+As with path 1, please describe why this is a good thing. (I definitely
+think it is, but I've been part of the discussion leading up to this
+patch)
 
 > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
->  drivers/base/power/runtime.c | 17 +++++++++++++++++
->  include/linux/pm_runtime.h   |  4 ++++
->  2 files changed, 21 insertions(+)
+>  drivers/base/power/clock_ops.c | 17 +++++++++++++++++
+>  include/linux/pm_clock.h       |  5 +++++
+>  2 files changed, 22 insertions(+)
 > 
-> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> index 8a66eaf731e4..ec94049442b9 100644
-> --- a/drivers/base/power/runtime.c
-> +++ b/drivers/base/power/runtime.c
-> @@ -1447,6 +1447,23 @@ void pm_runtime_enable(struct device *dev)
+> diff --git a/drivers/base/power/clock_ops.c b/drivers/base/power/clock_ops.c
+> index 0251f3e6e61d..4110c19c08dc 100644
+> --- a/drivers/base/power/clock_ops.c
+> +++ b/drivers/base/power/clock_ops.c
+> @@ -519,6 +519,23 @@ void pm_clk_destroy(struct device *dev)
 >  }
->  EXPORT_SYMBOL_GPL(pm_runtime_enable);
+>  EXPORT_SYMBOL_GPL(pm_clk_destroy);
 >  
-> +static void pm_runtime_disable_action(void *data)
+> +static void pm_clk_destroy_action(void *data)
 > +{
-> +	pm_runtime_disable(data);
+> +	pm_clk_destroy(data);
 > +}
 > +
-> +/**
-> + * devm_pm_runtime_enable - devres-enabled version of pm_runtime_enable.
 
-() on the function name.
-
-> + * @dev: Device to handle.
-
-Returns: 0 on success, negative errno on failure
+As this is an addition to the API, it deserves some kerneldoc.
 
 Regards,
 Bjorn
 
-> + */
-> +int devm_pm_runtime_enable(struct device *dev)
+> +int devm_pm_clk_create(struct device *dev)
 > +{
-> +	pm_runtime_enable(dev);
+> +	int ret;
 > +
-> +	return devm_add_action_or_reset(dev, pm_runtime_disable_action, dev);
+> +	ret = pm_clk_create(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_add_action_or_reset(dev, pm_clk_destroy_action, dev);
 > +}
-> +EXPORT_SYMBOL_GPL(devm_pm_runtime_enable);
+> +EXPORT_SYMBOL_GPL(devm_pm_clk_create);
 > +
 >  /**
->   * pm_runtime_forbid - Block runtime PM of a device.
->   * @dev: Device to handle.
-> diff --git a/include/linux/pm_runtime.h b/include/linux/pm_runtime.h
-> index aab8b35e9f8a..222da43b7096 100644
-> --- a/include/linux/pm_runtime.h
-> +++ b/include/linux/pm_runtime.h
-> @@ -59,6 +59,8 @@ extern void pm_runtime_put_suppliers(struct device *dev);
->  extern void pm_runtime_new_link(struct device *dev);
->  extern void pm_runtime_drop_link(struct device_link *link);
+>   * pm_clk_suspend - Disable clocks in a device's PM clock list.
+>   * @dev: Device to disable the clocks for.
+> diff --git a/include/linux/pm_clock.h b/include/linux/pm_clock.h
+> index 8ddc7860e131..ada3a0ab10bf 100644
+> --- a/include/linux/pm_clock.h
+> +++ b/include/linux/pm_clock.h
+> @@ -47,6 +47,7 @@ extern void pm_clk_remove(struct device *dev, const char *con_id);
+>  extern void pm_clk_remove_clk(struct device *dev, struct clk *clk);
+>  extern int pm_clk_suspend(struct device *dev);
+>  extern int pm_clk_resume(struct device *dev);
+> +extern int devm_pm_clk_create(struct device *dev);
+>  #else
+>  static inline bool pm_clk_no_clocks(struct device *dev)
+>  {
+> @@ -83,6 +84,10 @@ static inline void pm_clk_remove(struct device *dev, const char *con_id)
+>  static inline void pm_clk_remove_clk(struct device *dev, struct clk *clk)
+>  {
+>  }
+> +static inline int devm_pm_clk_create(struct device *dev)
+> +{
+> +	return -EINVAL;
+> +}
+>  #endif
 >  
-> +extern int devm_pm_runtime_enable(struct device *dev);
-> +
->  /**
->   * pm_runtime_get_if_in_use - Conditionally bump up runtime PM usage counter.
->   * @dev: Target device.
-> @@ -253,6 +255,8 @@ static inline void __pm_runtime_disable(struct device *dev, bool c) {}
->  static inline void pm_runtime_allow(struct device *dev) {}
->  static inline void pm_runtime_forbid(struct device *dev) {}
->  
-> +static inline int devm_pm_runtime_enable(struct device *dev) { return 0; }
-> +
->  static inline void pm_suspend_ignore_children(struct device *dev, bool enable) {}
->  static inline void pm_runtime_get_noresume(struct device *dev) {}
->  static inline void pm_runtime_put_noidle(struct device *dev) {}
+>  #ifdef CONFIG_HAVE_CLK
 > -- 
 > 2.30.2
 > 
