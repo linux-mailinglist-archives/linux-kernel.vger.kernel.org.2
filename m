@@ -2,151 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820053D99AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF103D99B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhG1Xot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbhG1Xos (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:44:48 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423D4C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:44:46 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id t21so4660485plr.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:44:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tIEw59iHMBzrooy5tG/1kAgE22g/jH7CuuEHVuy1wr0=;
-        b=CZ+DOXfSsm3oEh7nXvRFTxtMIbn7wy96G39QAKLMn+tFkZbCR33xFDaz2qiBxtaoS1
-         L69zU8I9Oi7MrQY1IPd+GjhYJ0gTnMZVKx8iTpfxpdRqnvRVnFkxtYzF/3hOPtylw7af
-         BmLi95cxc34OieRCmUTxztcn8eYjHOc1cbOBROItVMecgAf1IxYpogsisztyZFHyF4OO
-         PhCRHUkg/hVbCgapT6m4bpyG5Wnq+p1j0GJuBLRpzn/7HvYlXumAVhHzCyQd4mfDb1E+
-         Fs2cW3PesqbBr11WWuPwniuUcdQElKpZ9yiqjo+AewzlTVW9uzEyV3jbBxpO9P1aFUwb
-         gDuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tIEw59iHMBzrooy5tG/1kAgE22g/jH7CuuEHVuy1wr0=;
-        b=XbAp+5foNx1UJVhY2zSsu0JeOvHLjCKTf9J3lZB1tihSpTI3bT2WdmyH4eunsOAhTY
-         5SmuRXj7Dkpul0CMC/jsVEZYtbyt7Eoh/3q7uaHLbyIMX6S4xXA9ga4bkDhFusSQpVtb
-         dyS/P74onfvUZ6gqZvhiQaB7vwonx/6ETLGMgWoT9uNpCBp6E5fHI/Hg4cNI8wNrkP/U
-         eOAz1/57YXikuvWABGlgDBk7+qmi8i9Ggx7KsWfTYUXBfHzJKs8cVeuG06xl5UGxN0jJ
-         wRE10AI4x0t2fpc0IEFX7DXVer3L9VQlnJlyTYWQ4/uO7z99FI0FhisnnLn9+vY5shPz
-         hBwA==
-X-Gm-Message-State: AOAM5339Sp71j2drCsiIQmT7bsh17cASIO3Nc37JDaf7AqvEntgjwV39
-        apkxrlELFfCMhFizKlq25mML8Q==
-X-Google-Smtp-Source: ABdhPJxplMSU5vtmBx2c12v3bc5j35rRpRrJTDuiWezzamAXnUfgUXTYhNwuBZ4T2/pRSdbsc5MsWQ==
-X-Received: by 2002:a17:90a:8c01:: with SMTP id a1mr2209266pjo.42.1627515885443;
-        Wed, 28 Jul 2021 16:44:45 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f31sm1131486pgm.1.2021.07.28.16.44.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 16:44:44 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 23:44:41 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Zeng Guang <guang.zeng@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
-        Gao Chao <chao.gao@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-Subject: Re: [PATCH 1/6] x86/feat_ctl: Add new VMX feature, Tertiary
- VM-Execution control
-Message-ID: <YQHr6VvNOQclolfc@google.com>
-References: <20210716064808.14757-1-guang.zeng@intel.com>
- <20210716064808.14757-2-guang.zeng@intel.com>
+        id S232763AbhG1XrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:47:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232641AbhG1XrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:47:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A32160249;
+        Wed, 28 Jul 2021 23:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627516029;
+        bh=3+i6c0OAdyQ8BvDYvkVzd0unkM2ave1GFxFyqFjfQ+I=;
+        h=Date:From:To:Subject:From;
+        b=BDutStOEZcfNn6JuncP+EOcGAX4YQn2/9V96ij2TbtGu0dF9qBVKoqrKHwF0eKWEh
+         XJrCRP1/Zd4FW+o3Pzm6hWpq1kiK5iG+/cAidNxKCtai4jqCRsZCK1KafTJACupls8
+         WnxY5LkzSGnUMspaejl7Vf30imVks96j6ekEvVbeJKFPt+/m+T9yk2ual4Qu3D+6r1
+         bulG4ZcC2+p5RIiF9XtUM36AshPYGcHxvKRbOXK7XWICFVR58pm+r6vaHKcsr/D3P4
+         jmyCvqcdsd3nnBH7OQCFPaPGxCd0+j0+r952DLllPBG3m8bDmQuLk1C0plx4WJ10BF
+         jgjAAwOLg4vMQ==
+Date:   Thu, 29 Jul 2021 00:46:58 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Jul 28
+Message-ID: <20210728234658.GI4670@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Iovxle6z3WGVZjcj"
 Content-Disposition: inline
-In-Reply-To: <20210716064808.14757-2-guang.zeng@intel.com>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021, Zeng Guang wrote:
-> From: Robert Hoo <robert.hu@linux.intel.com>
-> 
-> New VMX capability MSR IA32_VMX_PROCBASED_CTLS3 conresponse to this new
-> VM-Execution control field. And it is 64bit allow-1 semantics, not like
-> previous capability MSRs 32bit allow-0 and 32bit allow-1. So with Tertiary
-> VM-Execution control field introduced, 2 vmx_feature leaves are introduced,
-> TERTIARY_CTLS_LOW and TERTIARY_CTLS_HIGH.
 
-...
+--Iovxle6z3WGVZjcj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  /*
->   * Note: If the comment begins with a quoted string, that string is used
-> @@ -43,6 +43,7 @@
->  #define VMX_FEATURE_RDTSC_EXITING	( 1*32+ 12) /* "" VM-Exit on RDTSC */
->  #define VMX_FEATURE_CR3_LOAD_EXITING	( 1*32+ 15) /* "" VM-Exit on writes to CR3 */
->  #define VMX_FEATURE_CR3_STORE_EXITING	( 1*32+ 16) /* "" VM-Exit on reads from CR3 */
-> +#define VMX_FEATURE_TER_CONTROLS	(1*32 + 17) /* "" Enable Tertiary VM-Execution Controls */
+Hi all,
 
-Maybe spell out TERTIARY?   SEC_CONTROLS is at least somewhat guessable, I doubt
-TERTIARY is the first thing that comes to mind for most people when seeing "TER" :-)
+Changes since 20210727:
 
->  #define VMX_FEATURE_CR8_LOAD_EXITING	( 1*32+ 19) /* "" VM-Exit on writes to CR8 */
->  #define VMX_FEATURE_CR8_STORE_EXITING	( 1*32+ 20) /* "" VM-Exit on reads from CR8 */
->  #define VMX_FEATURE_VIRTUAL_TPR		( 1*32+ 21) /* "vtpr" TPR virtualization, a.k.a. TPR shadow */
-> diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
-> index da696eb4821a..2e0272d127e4 100644
-> --- a/arch/x86/kernel/cpu/feat_ctl.c
-> +++ b/arch/x86/kernel/cpu/feat_ctl.c
-> @@ -15,6 +15,8 @@ enum vmx_feature_leafs {
->  	MISC_FEATURES = 0,
->  	PRIMARY_CTLS,
->  	SECONDARY_CTLS,
-> +	TERTIARY_CTLS_LOW,
-> +	TERTIARY_CTLS_HIGH,
->  	NR_VMX_FEATURE_WORDS,
->  };
->  
-> @@ -42,6 +44,13 @@ static void init_vmx_capabilities(struct cpuinfo_x86 *c)
->  	rdmsr_safe(MSR_IA32_VMX_PROCBASED_CTLS2, &ign, &supported);
->  	c->vmx_capability[SECONDARY_CTLS] = supported;
->  
-> +	/*
-> +	 * For tertiary execution controls MSR, it's actually a 64bit allowed-1.
-> +	 */
-> +	rdmsr_safe(MSR_IA32_VMX_PROCBASED_CTLS3, &ign, &supported);
-> +	c->vmx_capability[TERTIARY_CTLS_LOW] = ign;
-> +	c->vmx_capability[TERTIARY_CTLS_HIGH] = supported;
+The net-next tree gained a conflict with the net tree.
 
-Assuming only the lower 32 bits are going to be used for the near future (next
-few years), what about defining just TERTIARY_CTLS_LOW and then doing:
+There was a build failure in the amdgpu tree, I am using the version
+=66rom 20210727.
 
-	/*
-	 * Tertiary controls are 64-bit allowed-1, so unlikely other MSRs, the
-	 * upper bits are ignored (because they're not used, yet...).
-	 */
-	rdmsr_safe(MSR_IA32_VMX_PROCBASED_CTLS3, &supported, &ign);
-	c->vmx_capability[TERTIARY_CTLS_LOW] = supported;
+The devicetree tree gained a conflict with the clk tree.
 
-I.e. punt the ugliness issue down the road a few years.
+The drivers-x86 tree gained a build failure and was dropped entirely as
+there had been no previous changes in it since the merge window.
 
-> +
->  	rdmsr(MSR_IA32_VMX_PINBASED_CTLS, ign, supported);
->  	rdmsr_safe(MSR_IA32_VMX_VMFUNC, &ign, &funcs);
->  
-> -- 
-> 2.25.1
-> 
+Non-merge commits (relative to Linus' tree): 3887
+ 3986 files changed, 205251 insertions(+), 67330 deletions(-)
+
+----------------------------------------------------------------------------
+
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches will be at http://www.kernel.org/pub/linux/kernel/next/ if/when
+I get kup working).  If you are tracking the linux-next tree using git,
+you should not use "git pull" to do so as that will try to merge the new
+linux-next release with the old one.  You should use "git fetch" and
+checkout or reset to the new master.
+
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with an arm64 defconfig, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, arm64 allnoconfig, and htmldocs.
+
+Below is a summary of the state of the merge.
+
+I am currently merging 333 trees (counting Linus' and 90 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of Stephen's local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to
+add more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
+
+--Iovxle6z3WGVZjcj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEB7HEACgkQJNaLcl1U
+h9B6Cgf+OVJN0AxcvqHpMmLINM/GKN5/1bo1kUjfxc1mscpe7rZYrjL7swd+i9Wu
+kk81K+gr46867vftGDpCCW645GdhwBRh/SEds3ae6cQCgUqtMyWSl4DLFsSdLpMh
+d5VUnk2XDioG6F51Sm4yuKy/RgEVbrtyXWiJQf6CLjmliT3BdZJSPSEbDc7JAJCk
+amanViTsv3Lt42vp7ZLDGfOI3JWy/Bxh5w439wPKUbtULx0aYwmkvD4NMk8x/pTK
+itZmOw4zne8tol8/Sms9D1JaaCsqfDhFvZX0AjotamK2M78uR/5E3mxoKwguhmYr
+x9v/omOPFAiyxwnA9ejqOGNaoDtQ+g==
+=cAlc
+-----END PGP SIGNATURE-----
+
+--Iovxle6z3WGVZjcj--
