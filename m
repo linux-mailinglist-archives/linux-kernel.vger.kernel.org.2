@@ -2,119 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1583C3D8EAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1242D3D8EB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236185AbhG1NL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:11:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44385 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235204AbhG1NLy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:11:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627477912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=aQ+852563VaNS2uiQQ1GclOgDI9K53wVa6AHNRjzjGc=;
-        b=dBeYazUXrIeZ1qFTB5FR6T94DwPE78/YdVIgFBxpXeMlEfTGGH1M6VsYMX6xM0X4Wx3XLd
-        oOj55Y8LVMkxXYEgbdtEgzn9zYoeNuXl7lfgPJ9LUilV+naV4uT60FGudvhk9jMvYmExjG
-        CrZM64RKBaCPBLkmP7MsMNaAwHPAcfk=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-moGlsMOKP8So6bu32cf__g-1; Wed, 28 Jul 2021 09:11:48 -0400
-X-MC-Unique: moGlsMOKP8So6bu32cf__g-1
-Received: by mail-oo1-f72.google.com with SMTP id b7-20020a0568200247b02902691c6a5defso1170008ooe.15
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 06:11:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=aQ+852563VaNS2uiQQ1GclOgDI9K53wVa6AHNRjzjGc=;
-        b=gN6MlcpvOQB4BorEPD8Ryroy21nPkbXB1gEcJoguhekzD9DBGmyMu0gv5xeHSmZlC8
-         odlruILuLD0sHOM9tMcGW+cL7OimHNVzo5BJ6qSDAERrnR42bYxYOyPctWYf8WScpUPD
-         ZlG+pQDOlySltmLvP/SDovEMqDycRhQH9nZqbOZwGqNmxeUUJWsGANlcQ1ASKiM399/Q
-         sTY1gbPCY966j3uIDBMGshlyoltW+/GqhDaIJxy0A740cRMdWJPEShc+NN2xf1Zw3su+
-         FUf1LBuY8L+nupcNxCJHm3pbT8AXxhkzOwWaevpjCKlmmDlGxymFrN+ddMznfaWCvSPb
-         iXoA==
-X-Gm-Message-State: AOAM5325yrfNq9okkEsbFkAkw5w3Wpluqm8Zz0TeGn9MJ1+Tcj3hsaxp
-        cXJmRGB5QxsaSHc0rvn6JW6Cw3rqxNgOERHyrsIiipwcYjZat4RNugUskhoErqi7gbArToAIVJz
-        N7v9z1BK5QOi+efDYhF0+5pylFN3ipFt7reyXgFi/
-X-Received: by 2002:a05:6808:f14:: with SMTP id m20mr6522431oiw.179.1627477907589;
-        Wed, 28 Jul 2021 06:11:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzvN2DhEABGf6XGJGQDGziKffAt6QRZ1Z8QZ+dChmJRVX0ogfD1GUlprGwOCZBBXqP8rty9bjGtp4PQvXPze8g=
-X-Received: by 2002:a05:6808:f14:: with SMTP id m20mr6522418oiw.179.1627477907443;
- Wed, 28 Jul 2021 06:11:47 -0700 (PDT)
+        id S236295AbhG1NNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:13:41 -0400
+Received: from mail-bn8nam11on2064.outbound.protection.outlook.com ([40.107.236.64]:13858
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235301AbhG1NNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 09:13:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hkxtlxJYMjRYwNV4xT5v6x3Ls/mOIIt1y6becji2+muULL4bjtXXDWkO1XFRqzLtZl9TKEgq2f5ymkgIe31SZp2aT7t1KvmzYnp8ZP4MRhKQwKZU1Tx0BSrFdfjfKTNKhf8WzHVAUwo/1lsuxMKO1E/dTg39jKUW8m2+VYDVT4BqHDVg/OC3qISyMOzofH549bnzYNj9049IAPUo5IyAPn4B8+VCJ8ELXmQShrV++B+OUZhd3h8YTUROxPNpDdJu6QP1caQrAQQGoty7RRj5eX7se5beqKKq4OFP+GO59jAsYJRcMDjTg1ANDLVWJ3x6TVgSHb2gVyA9RSr3nwd5sQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N82mV6rA4m4gW6sClwqacQfhN31dxUKxzeYfq7TRgto=;
+ b=Nuk7yB9VtNm3HhXJCbogtV3CBDVYX/AVli/iIW4CtDHE6CFpjvOpmdLEla7lK0rfoTQMEG41GfR74oYZMuQS2D+rpWkPa+lR3pZCBaaPRbbdoJwkXOdrb+YZkafpbLw+doTmDRC3eCIbprWzwcoW3YNI46Hv7AWflbFBzGHxCPoKPLKQLbysd4tEYKu5UZENpWqF37AMepIiCW2QUaapCVvEDXLFd7ombyoj2xu+TM0NYpO4oRTcKH+trDKBFmhgo/iOaiwuEuXx92cbVBn7OPFgdOCUlUgeyUqQ7KMP+HI/ZVYGNyH2mBisRFrm+5Hgj/jHk78B2IJyypOUhgKDDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N82mV6rA4m4gW6sClwqacQfhN31dxUKxzeYfq7TRgto=;
+ b=Zr/Zz8GFj+JmVdAQ5d7P50kiWjT+l1JU0ddO/1CfAnSbGKVg+/pl53YUBVBSmo5Mf9HlzHCsK+o+mIYhgZn5iVNbWM52cA3JV8xKnP2GJhOgPlkSgoo+nfoywqz3889/DUZ8NhqT62v36xDRYZ2E3u5My8hm5hu76N+A/4fqvvE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4847.namprd12.prod.outlook.com (2603:10b6:208:1ba::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.26; Wed, 28 Jul
+ 2021 13:13:33 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4352.031; Wed, 28 Jul 2021
+ 13:13:33 +0000
+Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
+To:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@chromium.org>
+Cc:     Matthew Brost <matthew.brost@intel.com>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20210726233854.2453899-1-robdclark@gmail.com>
+ <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
+ <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
+ <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
+ <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
+ <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
+ <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com>
+Date:   Wed, 28 Jul 2021 15:13:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: AM0PR02CA0204.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28f::11) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-From:   Bruno Goncalves <bgoncalv@redhat.com>
-Date:   Wed, 28 Jul 2021 15:11:36 +0200
-Message-ID: <CA+QYu4oOgrb8n=Qyuky-M0dYPEo_HNMdbNuj2SF4a=aQTE_xvw@mail.gmail.com>
-Subject: WARNING: CPU: 112 PID: 2041 at kernel/sched/sched.h:1453
-To:     CKI Project <cki-project@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     nathan@kernel.org, Memory Management <mm-qe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:af99:e30a:2b7e:eda8] (2a02:908:1252:fb60:af99:e30a:2b7e:eda8) by AM0PR02CA0204.eurprd02.prod.outlook.com (2603:10a6:20b:28f::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 13:13:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8bddc64a-376a-454f-d7e8-08d951c9801a
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4847:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB484732E62E037EFA805B031B83EA9@MN2PR12MB4847.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /68wkhdYgd+fS4mtNztX6NPhz6k3vN3NqDZidkvUCqtWuthW7q5QARwXB2XW9SsCEcJQRisq/pZcEGG25cMxzMGLifDT4riDrHT0hjTm1heHtuo9IU2V7TR9QJeGI4IKu31fuFl0PJ2nIeZSRr/cjwp+E9o9+3h7VXK6B2g57vWMDIGUu9FlriN2dsi/U3NuWHijFqHWr4qLlr6MfjeqtZTY//cAmtlAxk7c629bedbJYT2O3MT04jTkh7eYZJHY3B4oFOox/MSbRIdbsuwuNMFOBvdhXTun0+Cyj4z1jnnA4Y2m0FXGImNWqnU1tpA1PsW+Y9AdXujvZ3caFjaVoJWXYxewKXKrj3bBFcvbe63sCjzSW5GwnSpkGeKUlRlhyXOC6/6f3i9Z+j7KeKgPVohADO+m1rRXOtcp9SPNYTCsf1zRT051UZHs37qkz1+yQNFzeaqaCZHAkclTuxVj/QwnkkGqBLBsRY76ztD3eJVLOPD753k2ZO1epQX+ovbVCmAbGsZkVxDvdXxfR7IPfgEmqAiiipeMfFWjvLqdLEX6ItFJVnHwuhs0ZE62WVaHzsv8sjtHL+GaeSFoq5a/i8S++5L9PuVIGz+AToDz+8VdJxbLO1gTUS1cGbio0gwfk+aGqJj8lbhSx1tAum5B+gRM6muAgZuurIiclxOVWzzjL686qt59j1ZP+YckNapsFFIPXQkE5u3a2knhcySHtEjKCraKs8jEKI7fU44/ZGb1kx3lZIWaynWaEp1xbjiar/FjjJmrxelmCKnKhmQKgbTvEHH3bF7VIi21WqT/+byugwRmU0T7a4CNoZAKEFzF
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(6486002)(4326008)(36756003)(2906002)(38100700002)(8676002)(66556008)(2616005)(83380400001)(86362001)(8936002)(45080400002)(478600001)(966005)(31686004)(186003)(66574015)(31696002)(6666004)(54906003)(5660300002)(66946007)(66476007)(110136005)(53546011)(7416002)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a05kMmFraFRZeHlVbVFtYUtEcjdEUncrbTZBNnJpMTJUVEJuaExDRG43eC94?=
+ =?utf-8?B?cjBORmo5QngzRmhlcXQwL25MQ1ZsbDdRMHoxM0ZnZmlzZmZOMFNUL0pqSUxj?=
+ =?utf-8?B?bENqZmNCblJzSTh2OHlCZGlKaTBEUzVFelkzQno5R1ViZVBxbnVSME51U0Nt?=
+ =?utf-8?B?ODRLclhCN0x4QXVSVVZJWEk1S0RlN1dHaEVxUzRBcUwrWWlqRVgzNzA5Q2lG?=
+ =?utf-8?B?Y0g5Y25ZbzZ1RzJYclFYRmJGNjdmbTBJU0tpQ0tYYUxEQ2lsa09Pa04vait6?=
+ =?utf-8?B?Y3JkRUQwUDFxNnFrTTBJU0Z4ZG9EVjFBUHQ0QUNuS3MvNFlndDh3SUQyNzN5?=
+ =?utf-8?B?Q2sxRW5iOEw0MWdXY1F1czRhZG5jeVZ6TTJBWnFZTHd4UWMrRVNjV0tuOWJo?=
+ =?utf-8?B?S0VIWUtvR0RxNVEyRUpkbEp4MlhpN1FvNHFoWG50Z0tTenRWL3Z5cVBlc2Vp?=
+ =?utf-8?B?bm9EZW9ZY0hLdlZJTFh3UkV1SWlPNFdnZkNEaGJEdTFsaTFjemVRc0FpMHhN?=
+ =?utf-8?B?RDFGd01xb3U1NFZ3NmZ0NWVKVWFMVlNyZWl2MGsrdGtld21FS1lrM21jWmNB?=
+ =?utf-8?B?K014Y2dTYXJtdFMyZGZRT2toU0k5dFlLVnlkQ0xGUU92MXNBMWZYemdMbGlt?=
+ =?utf-8?B?WlVSM2h4ZUNzUi9OL3FWdnNnU29ucDdNQnRYK3ZsQVg4UHpNelNEUUtxcmFp?=
+ =?utf-8?B?WC9aRWs1SWZQbVl0eDNVa2Z1Tkk2Q3U3dm9JMGc2SDljaWZ1Rk1CY2NMQTJw?=
+ =?utf-8?B?UGEvNmJsd05zUDR4Qy9mbU5vNmJnTmU2T2dhc2o5RGZSQk9lK25xdDlwTTI5?=
+ =?utf-8?B?aVBBUkpBVmpwemtYUWlObWVKbm1Ib3o2emQwOFZOTGtzenM2ZVhNaXFxZlR3?=
+ =?utf-8?B?S0ZkemRWR2FnM3lKamZPTnlLbFY3UFFnVkNCelRodERvdGpJdUd3enFFWm5X?=
+ =?utf-8?B?bUhIUTlpUVB5YnBaTkYzeUtrUmtRQ3JyQnJ5Q2lrRzlOV1F4RkRKS0lRRXRV?=
+ =?utf-8?B?Yk5DMCsrd2IvSEN4N1lueEZXeFptOHJWRkE2WmtncElwN2NhQWllbFBiMktJ?=
+ =?utf-8?B?V0NtUHB3NVhpOWhXUWVrMS9hVXlQWG9RdzN2U0I1dHA4NlVVdTJLN2I1RXRs?=
+ =?utf-8?B?eVVaaWRjWVI5bU05RE5nWEM0YitKNFIyV3RjQ3pLM3JuOUJTTEk4UlhDaHRw?=
+ =?utf-8?B?YlBZVjk4YUFnTVMyN1FDakNNbWd5c1ZNUHpWWnZPU0wvSVZ0dUFjeFVTamJ2?=
+ =?utf-8?B?cDYxUUNhTVh0U0RIOWk0Tkc1V1NyeXg1UFBVdlQ4Z3lBMHcwTUt4LzVtTGRn?=
+ =?utf-8?B?bDBqWVdFaGtFZHI0eXFKNjd5WEJwUitqeUdBVGhZK256MDZXRmMybngzTWpi?=
+ =?utf-8?B?clM3bGRWR1FMZEMwUys5ZTBKallCZXhoMXlDZTZEYkFaejV2RW1TcklKd1N3?=
+ =?utf-8?B?eENBSWYyOXRiZE50VWVlcDUzMGVSVS9oUzNwOThOZk8wSnJ2TlY5QW9lWURn?=
+ =?utf-8?B?MWp4RERub2xKaThJRDdVaHN6OGxSczVDeE5jK2lPcFppdGJQQ1kvbUorWWJk?=
+ =?utf-8?B?amhCUHREYzMvVHRlYXZ4eDRiUEh0QkYxSlFZUU1YdzhpVzRMZE11TnR5REVj?=
+ =?utf-8?B?ZHZXZi9DVUdUOERCb1JYK3JUSHlkeHVVMUd2eEJWemh2TXRwWktEZWV2dmFu?=
+ =?utf-8?B?N3d2bEwyR2xmZGdVUHlINW5vR0FGeGFyTVJqTTZNaFJyV21XaHhwbzdmWjhz?=
+ =?utf-8?B?UzU0ei94RmJpMk5RekN4YU5xaStIUDFoVzdsb0NsQmJvUHZQbHNRdklhaDZC?=
+ =?utf-8?B?eHRqbEtsTWZ4RWx4eGZZRmhYTHZybGdWVVdCQ2pLdHhoTEhTOWkvVmN1d0xG?=
+ =?utf-8?Q?kwr2QWkxbmXVE?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8bddc64a-376a-454f-d7e8-08d951c9801a
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 13:13:33.1393
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G9NLR0cpz72hr8y93UXSoRfr3b/dBcZOTArZT5r13mvdi+Crvdg0aDSw6f7JeGlK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4847
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Am 28.07.21 um 15:08 schrieb Michel Dänzer:
+> On 2021-07-28 1:36 p.m., Christian König wrote:
+>> Am 27.07.21 um 17:37 schrieb Rob Clark:
+>>> On Tue, Jul 27, 2021 at 8:19 AM Michel Dänzer <michel@daenzer.net> wrote:
+>>>> On 2021-07-27 5:12 p.m., Rob Clark wrote:
+>>>>> On Tue, Jul 27, 2021 at 7:50 AM Michel Dänzer <michel@daenzer.net> wrote:
+>>>>>> On 2021-07-27 1:38 a.m., Rob Clark wrote:
+>>>>>>> From: Rob Clark <robdclark@chromium.org>
+>>>>>>>
+>>>>>>> Based on discussion from a previous series[1] to add a "boost" mechanism
+>>>>>>> when, for example, vblank deadlines are missed.  Instead of a boost
+>>>>>>> callback, this approach adds a way to set a deadline on the fence, by
+>>>>>>> which the waiter would like to see the fence signalled.
+>>>>>>>
+>>>>>>> I've not yet had a chance to re-work the drm/msm part of this, but
+>>>>>>> wanted to send this out as an RFC in case I don't have a chance to
+>>>>>>> finish the drm/msm part this week.
+>>>>>>>
+>>>>>>> Original description:
+>>>>>>>
+>>>>>>> In some cases, like double-buffered rendering, missing vblanks can
+>>>>>>> trick the GPU into running at a lower frequence, when really we
+>>>>>>> want to be running at a higher frequency to not miss the vblanks
+>>>>>>> in the first place.
+>>>>>>>
+>>>>>>> This is partially inspired by a trick i915 does, but implemented
+>>>>>>> via dma-fence for a couple of reasons:
+>>>>>>>
+>>>>>>> 1) To continue to be able to use the atomic helpers
+>>>>>>> 2) To support cases where display and gpu are different drivers
+>>>>>>>
+>>>>>>> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.freedesktop.org%2Fseries%2F90331%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C269b2df3e1dc4f0b856d08d951c8c768%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630745091538563%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=eYaSOSS5wOngNAd9wufp5eWCx5GtAwo6GkultJgrjmA%3D&amp;reserved=0
+>>>>>> Unfortunately, none of these approaches will have the full intended effect once Wayland compositors start waiting for client buffers to become idle before using them for an output frame (to prevent output frames from getting delayed by client work). See https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.gnome.org%2FGNOME%2Fmutter%2F-%2Fmerge_requests%2F1880&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C269b2df3e1dc4f0b856d08d951c8c768%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630745091538563%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=1ZkOzLqbiKSyCixGZ0u7Hd%2Fc1YnUZub%2F%2Fx7RuEclFKg%3D&amp;reserved=0 (shameless plug :) for a proof of concept of this for mutter. The boost will only affect the compositor's own GPU work, not the client work (which means no effect at all for fullscreen apps where the compositor can scan out the client buffers directly).
+>>>>>>
+>>>>> I guess you mean "no effect at all *except* for fullscreen..."?
+>>>> I meant what I wrote: The compositor will wait for the next buffer to become idle, so there's no boost from this mechanism for the client drawing to that buffer. And since the compositor does no drawing of its own in this case, there's no boost from that either.
+>>>>
+>>>>
+>>>>> I'd perhaps recommend that wayland compositors, in cases where only a
+>>>>> single layer is changing, not try to be clever and just push the
+>>>>> update down to the kernel.
+>>>> Even just for the fullscreen direct scanout case, that would require some kind of atomic KMS API extension to allow queuing multiple page flips for the same CRTC.
+>>>>
+>>>> For other cases, this would also require a mechanism to cancel a pending atomic commit, for when another surface update comes in before the compositor's deadline, which affects the previously single updating surface as well.
+>>>>
+>>> Well, in the end, there is more than one compositor out there.. and if
+>>> some wayland compositors are going this route, they can also implement
+>>> the same mechanism in userspace using the sysfs that devfreq exports.
+>>>
+>>> But it sounds simpler to me for the compositor to have a sort of "game
+>>> mode" for fullscreen games.. I'm less worried about UI interactive
+>>> workloads, boosting the GPU freq upon sudden activity after a period
+>>> of inactivity seems to work reasonably well there.
+>> At least AMD hardware is already capable of flipping frames on GPU events like finishing rendering (or uploading etc).
+>>
+>> By waiting in userspace on the CPU before send the frame to the hardware you are completely killing of such features.
+>>
+>> For composing use cases that makes sense, but certainly not for full screen applications as far as I can see.
+> Even for fullscreen, the current KMS API only allows queuing a single page flip per CRTC, with no way to cancel or otherwise modify it. Therefore, a Wayland compositor has to set a deadline for the next refresh cycle, and when the deadline passes, it has to select the best buffer available for the fullscreen surface. To make sure the flip will not miss the next refresh cycle, the compositor has to pick an idle buffer. If it picks a non-idle buffer, and the pending rendering does not finish in time for vertical blank, the flip will be delayed by at least one refresh cycle, which results in visible stuttering.
+>
+> (Until the deadline passes, the Wayland compositor can't even know if a previously fullscreen surface will still be fullscreen for the next refresh cycle)
 
-Since this commit (Commit: 45312bd762d3 - Merge tag 'zonefs-5.14-rc2')
-we started to see the following call trace, it seems to be
-reproducible only on aarch64.
+Well then let's extend the KMS API instead of hacking together 
+workarounds in userspace.
 
-[  384.485614] ------------[ cut here ]------------
-[  384.490227] rq->clock_update_flags < RQCF_ACT_SKIP
-[  384.490232] WARNING: CPU: 112 PID: 2041 at
-kernel/sched/sched.h:1453 sub_running_bw.isra.0+0x190/0x1a0
-[  384.504312] Modules linked in: mlx5_ib ib_uverbs ib_core rfkill
-sunrpc acpi_ipmi ipmi_ssif mlx5_core mlxfw psample ipmi_devintf
-arm_cmn ipmi_msghandler arm_dsu_pmu cppc_cpufreq acpi_tad vfat fat
-fuse zram ip_tables x_tables xfs crct10dif_ce ghash_ce ast
-i2c_algo_bit drm_vram_helper sbsa_gwdt drm_kms_helper syscopyarea
-sysfillrect sysimgblt fb_sys_fops cec drm_ttm_helper ttm nvme
-nvme_core drm xgene_hwmon aes_neon_bs
-[  384.541165] CPU: 112 PID: 2041 Comm: sugov:112 Tainted: G        W
-       5.14.0-rc1 #1
-[  384.549244] Hardware name: WIWYNN Mt.Jade Server System
-B81.030Z1.0007/Mt.Jade Motherboard, BIOS 1.6.20210526 (SCP:
-1.06.20210526) 2021/05/26
-[  384.561922] pstate: 404000c9 (nZcv daIF +PAN -UAO -TCO BTYPE=--)
-[  384.567918] pc : sub_running_bw.isra.0+0x190/0x1a0
-[  384.572698] lr : sub_running_bw.isra.0+0x190/0x1a0
-[  384.577477] sp : ffff800024c4bb20
-[  384.580779] x29: ffff800024c4bb20 x28: 0000000000000000 x27: ffffb9a9bbe1d200
-[  384.587904] x26: 0000000000000074 x25: 0000000000000011 x24: ffffb9a9bdff9000
-[  384.595029] x23: ffff07ffb36fcaa0 x22: ffff401ee09b65c0 x21: ffffb9a9bbe1de00
-[  384.602153] x20: ffff401ee09a3360 x19: ffff401ee09b6f58 x18: 0000000000000000
-[  384.609277] x17: ffff867522f0c000 x16: ffff800010384000 x15: 0000000000000030
-[  384.616401] x14: 0000000000000000 x13: 50494b535f544341 x12: 5f46435152203c20
-[  384.623526] x11: ffff401ee04b0ea8 x10: ffff401ee021e068 x9 : ffffb9a9bbe4214c
-[  384.630650] x8 : 0000000000010ea8 x7 : ffff401ee01e0000 x6 : 0000000000017ffd
-[  384.637774] x5 : ffff401ee09a3490 x4 : 0000000000000001 x3 : ffff867522f0c000
-[  384.644898] x2 : ffff401ee09a3498 x1 : ffff07ffb53cc000 x0 : 0000000000000026
-[  384.652022] Call trace:
-[  384.654457]  sub_running_bw.isra.0+0x190/0x1a0
-[  384.658890]  migrate_task_rq_dl+0xf8/0x1e0
-[  384.662975]  set_task_cpu+0xa8/0x1f0
-[  384.666540]  try_to_wake_up+0x150/0x3d4
-[  384.670365]  wake_up_q+0x64/0xc0
-[  384.673582]  __up_write+0xd0/0x1c0
-[  384.676974]  up_write+0x4c/0x2b0
-[  384.680191]  cppc_set_perf+0x120/0x2d0
-[  384.683931]  cppc_cpufreq_set_target+0xe0/0x1a4 [cppc_cpufreq]
-[  384.689756]  __cpufreq_driver_target+0x74/0x140
-[  384.694277]  sugov_work+0x64/0x80
-[  384.697580]  kthread_worker_fn+0xe0/0x230
-[  384.701580]  kthread+0x138/0x140
-[  384.704797]  ret_from_fork+0x10/0x18
+Making such decisions is the responsibility of the kernel and not 
+userspace in my opinion.
 
+E.g. we could for example also need to reshuffle BOs so that a BO is 
+even scanout able. Userspace can't know about such stuff before hand 
+because the memory usage can change at any time.
 
-More logs can be found checking out dmesg logs on:
-https://arr-cki-prod-datawarehouse-public.s3.amazonaws.com/index.html?prefix=datawarehouse-public/2021/07/16/338525814/build_aarch64_redhat%3A1431434591/tests/storage_software_RAID_testing/
-https://arr-cki-prod-datawarehouse-public.s3.amazonaws.com/index.html?prefix=datawarehouse-public/2021/07/16/338525814/build_aarch64_redhat%3A1431434591/tests/xfstests_btrfs/
-https://arr-cki-prod-datawarehouse-public.s3.amazonaws.com/index.html?prefix=datawarehouse-public/2021/07/16/338525814/build_aarch64_redhat%3A1431434591/tests/xfstests_ext4/
-https://arr-cki-prod-datawarehouse-public.s3.amazonaws.com/index.html?prefix=datawarehouse-public/2021/07/16/338525814/build_aarch64_redhat%3A1431434591/tests/xfstests_xfs/
-
-Thank you,
-Bruno Goncalves
-
+Regards,
+Christian.
