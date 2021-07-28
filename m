@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA193D9443
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6033D9444
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhG1RZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:25:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53944 "EHLO mail.kernel.org"
+        id S230508AbhG1RZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:25:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:33984 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhG1RZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:25:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10B3061037;
-        Wed, 28 Jul 2021 17:25:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627493140;
-        bh=LOPa9M/VXLESqMP09wMrmR6ALvHacP6UNwwzwnDINFo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nKbnqqp7ZAL1TVU2KCxlMI0NE963f7igidLLFS54z9dWN91j7Ao5CQuouUHBqHl+g
-         dcCAZiIM9aFkGdraEMQt3hhUCMOEgfKMNRIoky6FMxnE649cPuDK6bWfWDEVGarh9T
-         FxFNSY5syj2f6ZruMOO1DLMGeDNpnypBzwP8XLuSsdWAZs1u8KJZTGNlOmMkIMZvM7
-         zm5vUf6Aa/0MGK9fr5zCGO3K/lbs0w/G/ucNmvsz7JI/kKz7gLFWCQVHKmo4IJ7R9F
-         +VuTBuQMxDL3G1VGL2SyJiQfd6JlsAaynGvHnnNYJdNn6XaMy2mvVku7PpBNgl0ZBH
-         Q4+FWgtC1mARg==
-Received: by mail-ej1-f48.google.com with SMTP id e19so5798805ejs.9;
-        Wed, 28 Jul 2021 10:25:39 -0700 (PDT)
-X-Gm-Message-State: AOAM530b2GOiAV5Xtz5Owsi/p+lgMCXO1Nl/iVXQSLFWcKCSa91+W1Ry
-        zhHv9dRXO6EGvc6RSstys/v1dOaf70ozX354pQ==
-X-Google-Smtp-Source: ABdhPJwjV6JnpxeDQO/A1R1Vv9Ly6bfQZtLChu6Kyy9z+4HlfXjFG80f0I7SA2bQNHDFom/M3452cC52BHRDuhUNS+s=
-X-Received: by 2002:a17:906:af7c:: with SMTP id os28mr507805ejb.341.1627493138663;
- Wed, 28 Jul 2021 10:25:38 -0700 (PDT)
+        id S229581AbhG1RZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:25:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 26C8F6D;
+        Wed, 28 Jul 2021 10:25:56 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3DFF63F66F;
+        Wed, 28 Jul 2021 10:25:53 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 18:25:46 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
+        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v6 08/17] firmware: arm_scmi: Add priv parameter to
+ scmi_rx_callback
+Message-ID: <20210728172546.GL6592@e120937-lin>
+References: <20210712141833.6628-1-cristian.marussi@arm.com>
+ <20210712141833.6628-9-cristian.marussi@arm.com>
+ <20210728142625.zbx7zbeffwsksjl5@bogus>
 MIME-Version: 1.0
-References: <20210710151034.32857-1-pgwipeout@gmail.com> <20210710151034.32857-5-pgwipeout@gmail.com>
- <20210715162131.GA1184545@robh.at.kernel.org> <CAMdYzYpXNdmHKBOOgC6DL-_7qrZyifnDPB=WuU0vAY8qPj1_ww@mail.gmail.com>
-In-Reply-To: <CAMdYzYpXNdmHKBOOgC6DL-_7qrZyifnDPB=WuU0vAY8qPj1_ww@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 28 Jul 2021 11:25:26 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJxutcEjDC6Fv1BTnsx6PqL1Th3hNfEOt+WeR8=cgK9ow@mail.gmail.com>
-Message-ID: <CAL_JsqJxutcEjDC6Fv1BTnsx6PqL1Th3hNfEOt+WeR8=cgK9ow@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/4] arm64: dts: rockchip: add basic dts for Pine64 Quartz64-A
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Liang Chen <cl@rock-chips.com>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728142625.zbx7zbeffwsksjl5@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 10:19 AM Peter Geis <pgwipeout@gmail.com> wrote:
->
-> On Thu, Jul 15, 2021 at 12:21 PM Rob Herring <robh@kernel.org> wrote:
+On Wed, Jul 28, 2021 at 03:26:25PM +0100, Sudeep Holla wrote:
+> On Mon, Jul 12, 2021 at 03:18:24PM +0100, Cristian Marussi wrote:
+> > Add a new opaque void *priv parameter to scmi_rx_callback which can be
+> > optionally provided by the transport layer when invoking scmi_rx_callback
+> > and that will be passed back to the transport layer in xfer->priv.
+> > 
+> > This can be used by transports that needs to keep track of their specific
+> > data structures together with the valid xfers.
 > >
-> > On Sat, 10 Jul 2021 11:10:34 -0400, Peter Geis wrote:
-> > > Add a basic dts for the Pine64 Quartz64 Model A Single Board Computer.
-> > > This board outputs on uart2 for debug.
-> > >
-> > > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> > > ---
-> > >  .../devicetree/bindings/arm/rockchip.yaml     |   5 +
-> > >  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
-> > >  .../boot/dts/rockchip/rk3566-quartz64-a.dts   | 321 ++++++++++++++++++
-> > >  3 files changed, 327 insertions(+)
-> > >  create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> > >
-> >
-> > Acked-by: Rob Herring <robh@kernel.org>
->
-> Thank you!
-> I need to split the dt-bindings out into a separate patch, and the
-> quartz64-a dts has some mild changes.
-> Are you okay with me using your ack still?
 
-Yes.
+Hi,
 
-Rob
+> 
+> This change looks simple but doesn't make sense on its own. I assume you don't
+> want to add all these in the patch making use of priv which makes sense. Not
+> sure if the next patch uses it, but I prefer to keep them as close as possible
+> if it is not too much of a hassle.
+> 
+
+Right, yes I'll move it close to 17/17 which is the actual user of this
+at the end.
+
+Thanks,
+Cristian
+
