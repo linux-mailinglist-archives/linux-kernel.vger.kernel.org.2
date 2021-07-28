@@ -2,285 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810943D8917
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538E43D8929
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234503AbhG1HsM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 03:48:12 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:39786 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234299AbhG1HsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:48:11 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GZQkc3T82zBBlF;
-        Wed, 28 Jul 2021 09:48:08 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zhO5PGMIrOxw; Wed, 28 Jul 2021 09:48:08 +0200 (CEST)
-Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GZQkc2DGBzBBkp;
-        Wed, 28 Jul 2021 09:48:08 +0200 (CEST)
-Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
-        id B9E1A8EA; Wed, 28 Jul 2021 09:53:27 +0200 (CEST)
-Received: from 37.165.138.29 ([37.165.138.29]) by messagerie.c-s.fr (Horde
- Framework) with HTTP; Wed, 28 Jul 2021 09:53:27 +0200
-Date:   Wed, 28 Jul 2021 09:53:26 +0200
-Message-ID: <20210728095326.Horde.k1npSPaQKh2i7W3XoBsdiQ3@messagerie.c-s.fr>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     shan.gavin@gmail.com, chuhu@redhat.com, akpm@linux-foundation.org,
-        will@kernel.org, catalin.marinas@arm.com, cai@lca.pw,
-        aneesh.kumar@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
-References: <20210727061401.592616-1-gshan@redhat.com>
- <20210727061401.592616-13-gshan@redhat.com>
-In-Reply-To: <20210727061401.592616-13-gshan@redhat.com>
-User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
-Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
+        id S234003AbhG1H4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233937AbhG1H4P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 03:56:15 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E14C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:56:14 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1m8eQA-0000sS-Kd; Wed, 28 Jul 2021 09:56:06 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:7213:487e:ab4f:842a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 99551659F8F;
+        Wed, 28 Jul 2021 07:56:03 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 09:56:02 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
+        mailhol.vincent@wanadoo.fr, socketcan@hartkopp.net,
+        b.krumboeck@gmail.com, haas@ems-wuensche.com, Stefan.Maetje@esd.eu,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] can: fix same memory leaks in can drivers
+Message-ID: <20210728075602.egmaxiqlkch6ujvj@pengutronix.de>
+References: <cover.1627311383.git.paskripkin@gmail.com>
+ <cover.1627404470.git.paskripkin@gmail.com>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kn4lllrif7pukgb2"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <cover.1627404470.git.paskripkin@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gavin Shan <gshan@redhat.com> a écrit :
 
-> In page table entry modifying tests, set_xxx_at() are used to populate
-> the page table entries. On ARM64, PG_arch_1 (PG_dcache_clean) flag is
-> set to the target page flag if execution permission is given. The logic
-> exits since commit 4f04d8f00545 ("arm64: MMU definitions"). The page
-> flag is kept when the page is free'd to buddy's free area list. However,
-> it will trigger page checking failure when it's pulled from the buddy's
-> free area list, as the following warning messages indicate.
->
->    BUG: Bad page state in process memhog  pfn:08000
->    page:0000000015c0a628 refcount:0 mapcount:0 \
->         mapping:0000000000000000 index:0x1 pfn:0x8000
->    flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
->    raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
->    raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->    page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
->
-> This fixes the issue by clearing PG_arch_1 through flush_dcache_page()
-> after set_xxx_at() is called. For architectures other than ARM64, the
-> unexpected overhead of cache flushing is acceptable.
->
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
+--kn4lllrif7pukgb2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Maybe a Fixes: tag would be good to have
+On 27.07.2021 19:59:12, Pavel Skripkin wrote:
+> Hi, Marc and can drivers maintainers/reviewers!
+>=20
+> A long time ago syzbot reported memory leak in mcba_usb can driver[1]. It=
+ was
+> using strange pattern for allocating coherent buffers, which was leading =
+to
+> memory leaks. I fixed this wrong pattern in mcba_usb driver and yesterday=
+ I got
+> a report, that mcba_usb stopped working since my commit. I came up with q=
+uick fix
+> and all started working well.
+>=20
+> There are at least 3 more drivers with this pattern, I decided to fix lea=
+ks
+> in them too, since code is actually the same (I guess, driver authors jus=
+t copy pasted
+> code parts). Each of following patches is combination of 91c02557174b
+> ("can: mcba_usb: fix memory leak in mcba_usb") and my yesterday fix [2].
+>=20
+>=20
+> Dear maintainers/reviewers, if You have one of these hardware pieces, ple=
+ase, test
+> these patches and report any errors you will find.
 
-And would it be possible to have this fix as first patch of the series  
-so that it can be applied to stable without applying the whole series ?
+Added to linux-can-next/testing.
 
-Christophe
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-> ---
->  mm/debug_vm_pgtable.c | 55 +++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 51 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index 162ff6329f7b..d2c2d23e542e 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -29,6 +29,8 @@
->  #include <linux/start_kernel.h>
->  #include <linux/sched/mm.h>
->  #include <linux/io.h>
-> +
-> +#include <asm/cacheflush.h>
->  #include <asm/pgalloc.h>
->  #include <asm/tlbflush.h>
->
-> @@ -119,19 +121,28 @@ static void __init pte_basic_tests(struct  
-> pgtable_debug_args *args, int idx)
->
->  static void __init pte_advanced_tests(struct pgtable_debug_args *args)
->  {
-> +	struct page *page;
->  	pte_t pte;
->
->  	/*
->  	 * Architectures optimize set_pte_at by avoiding TLB flush.
->  	 * This requires set_pte_at to be not used to update an
->  	 * existing pte entry. Clear pte before we do set_pte_at
-> +	 *
-> +	 * flush_dcache_page() is called after set_pte_at() to clear
-> +	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-> +	 * when it's released and page allocation check will fail when
-> +	 * the page is allocated again. For architectures other than ARM64,
-> +	 * the unexpected overhead of cache flushing is acceptable.
->  	 */
-> -	if (args->pte_pfn == ULONG_MAX)
-> +	page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
-> +	if (!page)
->  		return;
->
->  	pr_debug("Validating PTE advanced\n");
->  	pte = pfn_pte(args->pte_pfn, args->page_prot);
->  	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-> +	flush_dcache_page(page);
->  	ptep_set_wrprotect(args->mm, args->vaddr, args->ptep);
->  	pte = ptep_get(args->ptep);
->  	WARN_ON(pte_write(pte));
-> @@ -143,6 +154,7 @@ static void __init pte_advanced_tests(struct  
-> pgtable_debug_args *args)
->  	pte = pte_wrprotect(pte);
->  	pte = pte_mkclean(pte);
->  	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-> +	flush_dcache_page(page);
->  	pte = pte_mkwrite(pte);
->  	pte = pte_mkdirty(pte);
->  	ptep_set_access_flags(args->vma, args->vaddr, args->ptep, pte, 1);
-> @@ -155,6 +167,7 @@ static void __init pte_advanced_tests(struct  
-> pgtable_debug_args *args)
->  	pte = pfn_pte(args->pte_pfn, args->page_prot);
->  	pte = pte_mkyoung(pte);
->  	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-> +	flush_dcache_page(page);
->  	ptep_test_and_clear_young(args->vma, args->vaddr, args->ptep);
->  	pte = ptep_get(args->ptep);
->  	WARN_ON(pte_young(pte));
-> @@ -213,15 +226,24 @@ static void __init pmd_basic_tests(struct  
-> pgtable_debug_args *args, int idx)
->
->  static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
->  {
-> +	struct page *page;
->  	pmd_t pmd;
->  	unsigned long vaddr = args->vaddr;
->
->  	if (!has_transparent_hugepage())
->  		return;
->
-> -	if (args->pmd_pfn == ULONG_MAX)
-> +	page = (args->pmd_pfn != ULONG_MAX) ? pfn_to_page(args->pmd_pfn) : NULL;
-> +	if (!page)
->  		return;
->
-> +	/*
-> +	 * flush_dcache_page() is called after set_pmd_at() to clear
-> +	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-> +	 * when it's released and page allocation check will fail when
-> +	 * the page is allocated again. For architectures other than ARM64,
-> +	 * the unexpected overhead of cache flushing is acceptable.
-> +	 */
->  	pr_debug("Validating PMD advanced\n");
->  	/* Align the address wrt HPAGE_PMD_SIZE */
->  	vaddr &= HPAGE_PMD_MASK;
-> @@ -230,6 +252,7 @@ static void __init pmd_advanced_tests(struct  
-> pgtable_debug_args *args)
->
->  	pmd = pfn_pmd(args->pmd_pfn, args->page_prot);
->  	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
-> +	flush_dcache_page(page);
->  	pmdp_set_wrprotect(args->mm, vaddr, args->pmdp);
->  	pmd = READ_ONCE(*args->pmdp);
->  	WARN_ON(pmd_write(pmd));
-> @@ -241,6 +264,7 @@ static void __init pmd_advanced_tests(struct  
-> pgtable_debug_args *args)
->  	pmd = pmd_wrprotect(pmd);
->  	pmd = pmd_mkclean(pmd);
->  	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
-> +	flush_dcache_page(page);
->  	pmd = pmd_mkwrite(pmd);
->  	pmd = pmd_mkdirty(pmd);
->  	pmdp_set_access_flags(args->vma, vaddr, args->pmdp, pmd, 1);
-> @@ -253,6 +277,7 @@ static void __init pmd_advanced_tests(struct  
-> pgtable_debug_args *args)
->  	pmd = pmd_mkhuge(pfn_pmd(args->pmd_pfn, args->page_prot));
->  	pmd = pmd_mkyoung(pmd);
->  	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
-> +	flush_dcache_page(page);
->  	pmdp_test_and_clear_young(args->vma, vaddr, args->pmdp);
->  	pmd = READ_ONCE(*args->pmdp);
->  	WARN_ON(pmd_young(pmd));
-> @@ -339,21 +364,31 @@ static void __init pud_basic_tests(struct  
-> pgtable_debug_args *args, int idx)
->
->  static void __init pud_advanced_tests(struct pgtable_debug_args *args)
->  {
-> +	struct page *page;
->  	unsigned long vaddr = args->vaddr;
->  	pud_t pud;
->
->  	if (!has_transparent_hugepage())
->  		return;
->
-> -	if (args->pud_pfn == ULONG_MAX)
-> +	page = (args->pud_pfn != ULONG_MAX) ? pfn_to_page(args->pud_pfn) : NULL;
-> +	if (!page)
->  		return;
->
-> +	/*
-> +	 * flush_dcache_page() is called after set_pud_at() to clear
-> +	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-> +	 * when it's released and page allocation check will fail when
-> +	 * the page is allocated again. For architectures other than ARM64,
-> +	 * the unexpected overhead of cache flushing is acceptable.
-> +	 */
->  	pr_debug("Validating PUD advanced\n");
->  	/* Align the address wrt HPAGE_PUD_SIZE */
->  	vaddr &= HPAGE_PUD_MASK;
->
->  	pud = pfn_pud(args->pud_pfn, args->page_prot);
->  	set_pud_at(args->mm, vaddr, args->pudp, pud);
-> +	flush_dcache_page(page);
->  	pudp_set_wrprotect(args->mm, vaddr, args->pudp);
->  	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(pud_write(pud));
-> @@ -367,6 +402,7 @@ static void __init pud_advanced_tests(struct  
-> pgtable_debug_args *args)
->  	pud = pud_wrprotect(pud);
->  	pud = pud_mkclean(pud);
->  	set_pud_at(args->mm, vaddr, args->pudp, pud);
-> +	flush_dcache_page(page);
->  	pud = pud_mkwrite(pud);
->  	pud = pud_mkdirty(pud);
->  	pudp_set_access_flags(args->vma, vaddr, args->pudp, pud, 1);
-> @@ -382,6 +418,7 @@ static void __init pud_advanced_tests(struct  
-> pgtable_debug_args *args)
->  	pud = pfn_pud(args->pud_pfn, args->page_prot);
->  	pud = pud_mkyoung(pud);
->  	set_pud_at(args->mm, vaddr, args->pudp, pud);
-> +	flush_dcache_page(page);
->  	pudp_test_and_clear_young(args->vma, vaddr, args->pudp);
->  	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(pud_young(pud));
-> @@ -594,16 +631,26 @@ static void __init pgd_populate_tests(struct  
-> pgtable_debug_args *args) { }
->
->  static void __init pte_clear_tests(struct pgtable_debug_args *args)
->  {
-> +	struct page *page;
->  	pte_t pte = pfn_pte(args->pte_pfn, args->page_prot);
->
-> -	if (args->pte_pfn == ULONG_MAX)
-> +	page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
-> +	if (!page)
->  		return;
->
-> +	/*
-> +	 * flush_dcache_page() is called after set_pte_at() to clear
-> +	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-> +	 * when it's released and page allocation check will fail when
-> +	 * the page is allocated again. For architectures other than ARM64,
-> +	 * the unexpected overhead of cache flushing is acceptable.
-> +	 */
->  	pr_debug("Validating PTE clear\n");
->  #ifndef CONFIG_RISCV
->  	pte = __pte(pte_val(pte) | RANDOM_ORVALUE);
->  #endif
->  	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-> +	flush_dcache_page(page);
->  	barrier();
->  	pte_clear(args->mm, args->vaddr, args->ptep);
->  	pte = ptep_get(args->ptep);
-> --
-> 2.23.0
+--kn4lllrif7pukgb2
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEBDZAACgkQqclaivrt
+76kGfgf+JCMpV9+udOzCu5a3UQeqsAoFbNZyUEnFZWr8jBJZsa9kpytiMLzr1xnD
+5SF643QF1VO0b99a2yIO2YbtOP2gUNz8yVHodWoi4ajqDtTd+78OeFHeqAuocdek
+nsXe0Cbl5ljBOKFp6CQG+rQGw9CM6N1wT6TOCCT1IaML7b1IWF4xjdbh1YRT/WMs
+U1l6HPe08bdR1E60CWYv+C70063emyNRKus7kl4GrR1KwwyQbczySenNwwNizywb
+HomeMKqo+4DG7OotHrp77ethU670PaQCuZCx2mcpEoTVKImMjXluG/NmFuv5A2Cz
+zTgEsOQ+z4HkmrvpPPb01CPT8UFLFQ==
+=0UgU
+-----END PGP SIGNATURE-----
+
+--kn4lllrif7pukgb2--
