@@ -2,84 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFD83D8C8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD35F3D8C93
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbhG1LRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:17:06 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33656 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbhG1LRF (ORCPT
+        id S231340AbhG1LTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:19:19 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:49329 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234722AbhG1LTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:17:05 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A8DE91C0B7C; Wed, 28 Jul 2021 13:17:02 +0200 (CEST)
-Date:   Wed, 28 Jul 2021 13:17:02 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: LED subsystem lagging maintenance
-Message-ID: <20210728111701.GA894@amd>
-References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
- <20210728103551.GA31304@amd>
- <CAHp75VcrYRkzGwe=K98Augy=jb2RtWjiF6P6kietN8Lz7f_okA@mail.gmail.com>
+        Wed, 28 Jul 2021 07:19:18 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 703A622175;
+        Wed, 28 Jul 2021 13:19:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1627471154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7gd/q/9Efd319bq9/Xek1Wzgq86ZS5+DbyemxYnLNbM=;
+        b=EGpSJ0lCMS2uDVS4hfL0F5Grk6GKZ+3lPJ/TYuKdNMDwuYvMWSDoszzP1EX+m+yDFru2f5
+        3F8co3OoqPGVJseQSZIdrJ14thRZ0YXF/pZtqtIGqa/ygiS/qvbFc5pZTtZhXttCF5ZU2Z
+        5ckhGIXV7n5uZKmyyPAxw7CMAqV4vWM=
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcrYRkzGwe=K98Augy=jb2RtWjiF6P6kietN8Lz7f_okA@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 28 Jul 2021 13:19:14 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
+ driver
+In-Reply-To: <CANBLGczfrmv1tzFm=Fu6B_S8nZ=ckwd3DOBkN4x7BUZtAg7bdw@mail.gmail.com>
+References: <20210701002037.912625-1-drew@beagleboard.org>
+ <20210701002037.912625-3-drew@beagleboard.org>
+ <8c59105d32a9936f8806501ecd20e044@walle.cc>
+ <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
+ <20210726071124.GA9184@x1> <dad13b899b69436acc1804b7c3438639@walle.cc>
+ <20210727052851.GA3147871@x1> <ff76b62927e3f5f016f6c4c11ca16ccf@walle.cc>
+ <CANBLGczfrmv1tzFm=Fu6B_S8nZ=ckwd3DOBkN4x7BUZtAg7bdw@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <a15823a88515f944cad6d77bdd65555c@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 2021-07-28 12:59, schrieb Emil Renner Berthing:
+> On Wed, 28 Jul 2021 at 11:49, Michael Walle <michael@walle.cc> wrote:
+>> Hi Drew,
+>> Am 2021-07-27 07:28, schrieb Drew Fustini:
+>> [..]
+>> >> > > Drew please look at drivers/gpio/gpio-ftgpio010.c for an example
+>> >> > > of GPIO_GENERIC calling bgpio_init() in probe().
+>> >> >
+>> >> > Thank you for the suggestion. However, I am not sure that will work for
+>> >> > this SoC.
+>> >> >
+>> >> > The GPIO registers are described in section 12 of JH7100 datasheet [1]
+>> >> > and I don't think they fit the expectation of gpio-mmio.c because there
+>> >> > is a seperate register for each GPIO line for output data value and
+>> >> > output enable.
+>> >> >
+>> >> > There are 64 output data config registers which are 4 bytes wide. There
+>> >> > are 64 output enable config registers which are 4 bytes wide too. Output
+>> >> > data and output enable registers for a given GPIO pad are contiguous.
+>> >> > GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54 while GPIO1_DOUT_CFG
+>> >> > is 0x58 and GPIO1_DOEN_CFG is 0x5C. The stride between GPIO pads is
+>> >> > effectively 8, which yields the formula: GPIOn_DOUT_CFG is 0x50+8n.
+>> >> > Similarly, GPIO0_DOEN_CFG is 0x54 and thus GPIOn_DOEN_CFG is 0x54+8n.
+>> >> >
+>> >> > However, GPIO input data does use just one bit for each line. GPIODIN_0
+>> >> > at 0x48 covers GPIO[31:0] and GPIODIN_1 at 0x4c covers GPIO[63:32].
+>> 
+>> Mh, I'm not sure I'm understanding the datasheet/registers. _DOUT_CFG
+>> and _DOEN_CFG seem to specify the pad where this GPIO is mapped to.
+>> Shouldn't this be some kind of pinctrl then? Apparently you can map
+>> any GPIO number to any output pad, no? Or at least to all pads
+>> which are described in Table 11-2. What happens if two different GPIOs
+>> are mapped to the same pad? Bit 31 in these _CFG seems to be an invert
+>> bit, but what does it invert?
+>> 
+>> Similar, the input GPIOs are connected to an output pad by all the
+>> GPI_*_CFG registers.
+>> 
+>> To me it seems, that there two multiplexers for each GPIO, where
+>> you can connect any GPIOn to any input pad and output pad. Sound
+>> like a huge overkill. I must be missing something here.
+>> 
+>> But what puzzles me the most, where do I set the actual GPIO output
+>> value?
+> 
+> Yeah, it's a little confusing. The DOUT registers choose between a 
+> number of
+> signals from various peripherals to control the output value of the
+> pin. Similarly
+> the DOEN registers chose between a number of signals to control the 
+> output
+> enable of the pin. However, two of those signals are special in that 
+> they are
+> constant 0 or constant 1. This is how you control the output value and 
+> output
+> enable from software like a regular GPIO.
+> 
+> You're completely right though. This ought to be managed by a proper 
+> pinctrl
+> driver, and I'm working on one here:
+> https://github.com/esmil/linux/commits/beaglev-pinctrl
 
---CE+1k2dSO48ffgeK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ahh, I see. So for the non-gpio function you have to set a value other
+than 0 or 1, correct?
 
-Hi!
+And as an implementation detail you have to set the corresponding OE
+pin if the non-gpio function will need a tristate pin (or whatever).
 
-> Thanks for your _prompt_ response!
->=20
-> > > I have noticed that in the last couple of cycles the LED subsystem is
-> > > a bit laggish in terms of maintenance (*). I think it's time that
-> > > someone can help Pavel to sort things out.
-> > >
-> > > In any case, I wonder if we have any kind of procedure for what to do
-> > > in such cases. Do we need to assume that the subsystem is in a
-> > > (pre-)orphaned state? If so, who is the best to take care of patch
-> > > flow?
->=20
-> > To be honest, patches were not applied because they were not that
-> > important to begin with,
->=20
-> Reference counting disbalance is not critical, but what is then?
+So, the _DOUT_CFG will actually be shared between the pinctrl and the
+gpio driver, right? (I haven't done anything with pinctrl, so this might
+be a stupid question).
 
-Things with end-user impact. What is end-user impact here? How much
-memory is leaked in usual config?
-
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---CE+1k2dSO48ffgeK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEBPK0ACgkQMOfwapXb+vISRwCgm3B7k0uw3dg7Phcg20qqjuvT
-N5MAn0YZDFv5/PAha2lLj1lozaPTne/7
-=1zQ7
------END PGP SIGNATURE-----
-
---CE+1k2dSO48ffgeK--
+-michael
