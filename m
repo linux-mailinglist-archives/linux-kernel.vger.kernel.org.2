@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D803D8C1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A34F63D8C17
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235977AbhG1KpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:45:16 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:28978 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232736AbhG1KpO (ORCPT
+        id S235956AbhG1Kol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:44:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56509 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232609AbhG1Kod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:45:14 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S9sqNC011869;
-        Wed, 28 Jul 2021 05:44:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=GB3EbKE7hKlhl0c2XPYMf5voKtRwqX6e5b211MdPeTA=;
- b=j6c37jIz1+6BHc8bSMeBumHGuHSb1OjnQcLV8WwtAq3XfIwwsQfBRKgyNAavTlwWPZcw
- dvjfAqvZRoiEWS5dbZn3X+k4KH5Kr/wf/iopNVCmg7tj2TdGyD481kYhYrMDC3vxpn42
- S0vcuBVcL4gfRb9dwk5p9Zoxr6v4Dl4Z06Wk+Er8P5rJMXXpYdOREvSDyZyV0y0H1qgG
- 8d4vdGWijUqQ11sVlKh7lexK5jGWwudhX/v9vTee7keMnQwW2M/M/CsccOSZmBNO6bNn
- LCRhBcqsAWrK2ADO67fPIP+bcIA4rYDy71OdCco+NuKk5V2ZwxnCuyNqgatfI/0czttd xQ== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3a31m2r8mc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 28 Jul 2021 05:44:21 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 28 Jul
- 2021 11:44:19 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 28 Jul 2021 11:44:19 +0100
-Received: from aryzen.ad.cirrus.com (unknown [198.61.64.62])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2E9B12BA;
-        Wed, 28 Jul 2021 10:44:18 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Charles Keepax" <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-CC:     Simon Trimmer <simont@opensource.cirrus.com>,
-        James Schulman <james.schulman@cirrus.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Adam Brickman <Adam.Brickman@cirrus.com>,
-        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH] ASoC: wm_adsp: Let soc_cleanup_component_debugfs remove debugfs
-Date:   Wed, 28 Jul 2021 11:44:16 +0100
-Message-ID: <20210728104416.636591-1-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 28 Jul 2021 06:44:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627469071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wVPX76oa+ikEVer1UL4g4IfAB5UX3EuLtEsoXtArruM=;
+        b=CC6aYbCijMdrn5YCpKiVOY9ICYi2uvt/lUeXk0QJy6oxr/t5kZiWVJf/fMP0gKfi2weQgT
+        zvM6lWK0wEMYPytmw3myuB95jH9NRl49tvgrI0LT26LHjoAFXWsxLdW5j0AYRCp+6QlS13
+        /m4UcP8mXot5hU2D5mgoMPaPt+U20w0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-iRU8VLxPNjGFW0XI-jW7hw-1; Wed, 28 Jul 2021 06:44:30 -0400
+X-MC-Unique: iRU8VLxPNjGFW0XI-jW7hw-1
+Received: by mail-ej1-f70.google.com with SMTP id yl23-20020a17090693f7b029051a448bab28so668281ejb.17
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 03:44:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wVPX76oa+ikEVer1UL4g4IfAB5UX3EuLtEsoXtArruM=;
+        b=CaF3HaQyT7+n957ssGfLfht1UOc5YwT6M3xhbU4MVbLe3NAS8OOAL4hBtLi5pvszXe
+         fvvDy9883zI/QFUzZDbZbmg0ZqqwhUuuRGhTBmCviX295G7zeda5J9fa0JJ6UlSRY+dU
+         6ddKzwKUF35DvEvu6If7CvNqd6c/0CMfKuZ439tDnlyPiAtKDSVG0q+CnHmT38ijZzQJ
+         YeOvtBbdwfV1s6yNrFuCVekyEJuxFYEAIaBpN+FwfsJVrJXwkPgla+wUVVT47csrdGkP
+         mT0Bocvt4XvJiQTtavD8XzvXld/1uDgsVdZRFqhglqkJeyeLRLbGKBk17sviBobmJM4d
+         m3gg==
+X-Gm-Message-State: AOAM532tvOkFvcxn/Xy1dUvFEv7J0F6cz9HlBSekXGufZm9X/RyI0Q4W
+        ppsmhQNSxpDjsAAgeKDINCiLpRWKVOWUC0MsrSpWTkk3MWE4bbMmsw6YXHgGtyzQYTVFqc1oYWS
+        w/aO6DBP6OdvyemVS8mxqnIjq
+X-Received: by 2002:a17:906:2817:: with SMTP id r23mr26205724ejc.285.1627469069102;
+        Wed, 28 Jul 2021 03:44:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWcLtMBxOnIs64TlNoB0jmKwP4hUfZ5cywxkR9K10TtWPUd3iAhD3JxMJ1jDhe556eWIuu2A==
+X-Received: by 2002:a17:906:2817:: with SMTP id r23mr26205710ejc.285.1627469068919;
+        Wed, 28 Jul 2021 03:44:28 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id o14sm2472320eds.55.2021.07.28.03.44.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 03:44:28 -0700 (PDT)
+Subject: Re: LED subsystem lagging maintenance
+To:     Pavel Machek <pavel@ucw.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
+ <20210728103551.GA31304@amd>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <179c4bce-ce9b-c9a8-4f24-cb4b3397e0f0@redhat.com>
+Date:   Wed, 28 Jul 2021 12:44:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: q0AXOg9GFU2JVE_0alP0nzsjk3G96kY-
-X-Proofpoint-ORIG-GUID: q0AXOg9GFU2JVE_0alP0nzsjk3G96kY-
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=891 phishscore=0 spamscore=0
- clxscore=1011 mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107280059
+In-Reply-To: <20210728103551.GA31304@amd>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-soc_cleanup_component_debugfs will debugfs_remove_recursive
-the component->debugfs_root, so adsp doesn't need to also
-remove the same entry.
-By doing that adsp also creates a race with core component,
-which causes a NULL pointer dereference
+Hi,
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
----
- sound/soc/codecs/wm_adsp.c | 1 -
- 1 file changed, 1 deletion(-)
+On 7/28/21 12:35 PM, Pavel Machek wrote:
+> Hi!
+> 
+>> I have noticed that in the last couple of cycles the LED subsystem is
+>> a bit laggish in terms of maintenance (*). I think it's time that
+>> someone can help Pavel to sort things out.
+>>
+>> In any case, I wonder if we have any kind of procedure for what to do
+>> in such cases. Do we need to assume that the subsystem is in a
+>> (pre-)orphaned state? If so, who is the best to take care of patch
+>> flow?
+> 
+> To be honest, patches were not applied because they were not that
+> important to begin with, because of lacking explanation, and because
+> you pushed a bit too hard.
+> 
+> Yes, I'm quite busy in -rc1 to -rc3 timeframe with stable reviews. No,
+> LED subsystem is not orphaned.
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index b395df1eb72d..bbe27ab3b1fc 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -747,7 +747,6 @@ static void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
- static void wm_adsp2_cleanup_debugfs(struct wm_adsp *dsp)
- {
- 	wm_adsp_debugfs_clear(dsp);
--	debugfs_remove_recursive(dsp->debugfs_root);
- }
- #else
- static inline void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
--- 
-2.32.0
+It is good to hear that you are still actively maintaining the LED
+subsystem, thank you.
+
+This thread does remind me that I was planning on re-sending this
+LED patch which seems to have fallen through the cracks:
+
+https://lore.kernel.org/alsa-devel/20210221115208.105203-1-hdegoede@redhat.com/
+
+Can you pick this one up please? Or shall I resend it?
+
+Regards,
+
+Hans
 
