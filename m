@@ -2,135 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CFB3D8B7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411333D8B8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235902AbhG1KMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:12:51 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:53427 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232114AbhG1KMu (ORCPT
+        id S234238AbhG1KPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:15:05 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54838 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231282AbhG1KPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:12:50 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id 8gYQmHG4gXTlc8gYRmT2WA; Wed, 28 Jul 2021 12:12:48 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1627467168; bh=RHZJByB5leL9DQabKAKLwVitrU78TIsOgRxa6Y6vloI=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=IAaaBb/WNIyEoE/mE6TsMQMKcrniLCVMeZT55NqarfZREXbz7K6B4OZ3DGhfAdaae
-         /SkEof1EdxoMMleiknZl7yg92tTUlFI95mPTGVbgCjLXHpvzAcf5F1M7G4WYMANwnI
-         XtaoR2cmYGK5gepvzPaHjIhjn9kybOc2gJPho/k+lgrPxDlgcOr5QOs5vq7ckEoZRl
-         o7JXL6ifHoyDuHsR0Zr3MRBzroPNDvz1lLRceTAD4VcLHruAzF0dhRwfXoy7eIELI2
-         s9H4eVS4incibIFZdw6VXV6/q/3DjIAmMMqAUuNpup41R7Ru9bXZK08XGaF/0WTAZ0
-         FynCb7f29cOCA==
-Subject: Re: [PATCH v5 2/3] media: v4l2-ctrls: Add intra-refresh period
- control
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        nicolas.dufresne@collabora.com
-References: <20210622113958.809173-1-stanimir.varbanov@linaro.org>
- <20210622113958.809173-3-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <0429d350-0000-6f47-9d04-47ee3bbb26d7@xs4all.nl>
-Date:   Wed, 28 Jul 2021 12:12:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 28 Jul 2021 06:15:03 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 688A31C0B7C; Wed, 28 Jul 2021 12:15:01 +0200 (CEST)
+Date:   Wed, 28 Jul 2021 12:15:00 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 103/167] cifs: only write 64kb at a time when
+ fallocating a small region of a file
+Message-ID: <20210728101500.GC30574@amd>
+References: <20210726153839.371771838@linuxfoundation.org>
+ <20210726153842.851690981@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210622113958.809173-3-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNgoEdcOHTk8ieMLWZ3w1SMpoJikaRitewNHm5eDR0BycQIF8A8TOIru2mxQM+4HAbQ2e9YGSHXdQtVQcPW6X+i/VHghs0B5Blm4p1J7U2jPxQmCbu56
- Tgg523qLxkKisuDFWvZWkWfuCjq/f1pLQ4AMRenMi8Gdo+e15UbPlzdiPThwPH4bplF9ENY00O0YWDg9DpAUMWFXwZVHTCwj3Rz3NvA6OdB1uJeTlwMBven3
- K5+04rAjYPhgsZh1vr7PkJABA3UP443HdWYSw3MlyiZuVlX3U04douoUvNOTteEaZ0zQBj/mSgkzcvn05E/tqbktGUcckzLfmpp2/cjqClnt4xsNAAXOU9iZ
- UIfcRPuXZ/hjrV5R79t8DE+3gu/kRouMohr+VjryB4MwFZDpvSTo6Q/Tv0DnhbhuxAP7u9eM3WgLLvHLidBu1L1oxy9YMSS1wVpJEpG5aLg9nAr/wtecUjXp
- 9vYMAu4YQl+yDttJyeKmP6Q6axhbxw6YAVEqcw==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="pAwQNkOnpTn9IO2O"
+Content-Disposition: inline
+In-Reply-To: <20210726153842.851690981@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/2021 13:39, Stanimir Varbanov wrote:
-> Add a control to set intra-refresh period.
-> 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+--pAwQNkOnpTn9IO2O
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+Hi!
 
-	Hans
+> [ Upstream commit 2485bd7557a7edb4520b4072af464f0a08c8efe0 ]
+>=20
+> We only allow sending single credit writes through the SMB2_write() synch=
+ronous
+> api so split this into smaller chunks.
 
-> ---
->  .../userspace-api/media/v4l/ext-ctrls-codec.rst | 17 ++++++++++++++++-
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c       |  2 ++
->  include/uapi/linux/v4l2-controls.h              |  1 +
->  3 files changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index addf44b99dfa..64c76a3a1205 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -1175,9 +1175,24 @@ enum v4l2_mpeg_video_h264_entropy_mode -
->      macroblocks refreshed every frame. Each frame a successive set of
->      macroblocks is refreshed until the cycle completes and starts from
->      the top of the frame. Setting this control to zero means that
-> -    macroblocks will not be refreshed.
-> +    macroblocks will not be refreshed.  Note that this control will not
-> +    take effect when ``V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD`` control
-> +    is set to non zero value.
->      Applicable to H264, H263 and MPEG4 encoder.
->  
-> +``V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD (integer)``
-> +    Intra macroblock refresh period. This sets the period to refresh
-> +    the whole frame. In other words, this defines the number of frames
-> +    for which the whole frame will be intra-refreshed.  An example:
-> +    setting period to 1 means that the whole frame will be refreshed,
-> +    setting period to 2 means that the half of macroblocks will be
-> +    intra-refreshed on frameX and the other half of macroblocks
-> +    will be refreshed in frameX + 1 and so on. Setting the period to
-> +    zero means no period is specified.
-> +    Note that if the client sets this control to non zero value the
-> +    ``V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB`` control shall be
-> +    ignored. Applicable to H264 and HEVC encoders.
-> +
->  ``V4L2_CID_MPEG_VIDEO_FRAME_RC_ENABLE (boolean)``
->      Frame level rate control enable. If this control is disabled then
->      the quantization parameter for each frame type is constant and set
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> index b6344bbf1e00..421300e13a41 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> @@ -833,6 +833,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE:	return "Decoder Slice Interface";
->  	case V4L2_CID_MPEG_VIDEO_DECODER_MPEG4_DEBLOCK_FILTER:	return "MPEG4 Loop Filter Enable";
->  	case V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB:	return "Number of Intra Refresh MBs";
-> +	case V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD:		return "Intra Refresh Period";
->  	case V4L2_CID_MPEG_VIDEO_FRAME_RC_ENABLE:		return "Frame Level Rate Control Enable";
->  	case V4L2_CID_MPEG_VIDEO_MB_RC_ENABLE:			return "H264 MB Level Rate Control";
->  	case V4L2_CID_MPEG_VIDEO_HEADER_MODE:			return "Sequence Header Mode";
-> @@ -1258,6 +1259,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->  	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:
->  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
->  	case V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY:
-> +	case V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD:
->  		*type = V4L2_CTRL_TYPE_INTEGER;
->  		break;
->  	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index fdf97a6d7d18..5532b5f68493 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -435,6 +435,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
->  #define V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX		(V4L2_CID_CODEC_BASE+233)
->  #define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES		(V4L2_CID_CODEC_BASE+234)
->  #define V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR		(V4L2_CID_CODEC_BASE+235)
-> +#define V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD	(V4L2_CID_CODEC_BASE+236)
->  
->  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
->  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
-> 
+I'm not sure if this matters, but if len is ever zero, we'll return
+uninitialized value from the function.
 
+Best regards,
+								Pavel
+
+> +++ b/fs/cifs/smb2ops.c
+> @@ -3466,7 +3466,7 @@ static int smb3_simple_fallocate_write_range(unsign=
+ed int xid,
+>  					     char *buf)
+>  {
+>  	struct cifs_io_parms io_parms =3D {0};
+> -	int nbytes;
+> +	int rc, nbytes;
+>  	struct kvec iov[2];
+> =20
+>  	io_parms.netfid =3D cfile->fid.netfid;
+> @@ -3474,13 +3474,25 @@ static int smb3_simple_fallocate_write_range(unsi=
+gned int xid,
+>  	io_parms.tcon =3D tcon;
+>  	io_parms.persistent_fid =3D cfile->fid.persistent_fid;
+>  	io_parms.volatile_fid =3D cfile->fid.volatile_fid;
+> -	io_parms.offset =3D off;
+> -	io_parms.length =3D len;
+> =20
+> -	/* iov[0] is reserved for smb header */
+> -	iov[1].iov_base =3D buf;
+> -	iov[1].iov_len =3D io_parms.length;
+> -	return SMB2_write(xid, &io_parms, &nbytes, iov, 1);
+> +	while (len) {
+> +		io_parms.offset =3D off;
+> +		io_parms.length =3D len;
+> +		if (io_parms.length > SMB2_MAX_BUFFER_SIZE)
+> +			io_parms.length =3D SMB2_MAX_BUFFER_SIZE;
+> +		/* iov[0] is reserved for smb header */
+> +		iov[1].iov_base =3D buf;
+> +		iov[1].iov_len =3D io_parms.length;
+> +		rc =3D SMB2_write(xid, &io_parms, &nbytes, iov, 1);
+> +		if (rc)
+> +			break;
+> +		if (nbytes > len)
+> +			return -EINVAL;
+> +		buf +=3D nbytes;
+> +		off +=3D nbytes;
+> +		len -=3D nbytes;
+> +	}
+> +	return rc;
+>  }
+> =20
+>  static int smb3_simple_fallocate_range(unsigned int xid,
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--pAwQNkOnpTn9IO2O
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmEBLiQACgkQMOfwapXb+vKtgwCfaLJn28EwRPsIBgz2lNrVGS31
+v5cAnisWdXnEltPKtPv9nW0M6dtlOZHB
+=OwWV
+-----END PGP SIGNATURE-----
+
+--pAwQNkOnpTn9IO2O--
