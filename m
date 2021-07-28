@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D0F3D91CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880C73D91CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhG1PZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235457AbhG1PY7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:24:59 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DE4C061757;
-        Wed, 28 Jul 2021 08:24:57 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id m193so4551784ybf.9;
-        Wed, 28 Jul 2021 08:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5kNNnxvcaBvHSSfcwfCCGCG1lVimpt2MelDrvjqHWl8=;
-        b=G91420ry3Osot2/237recxoKA6RHaHJVe+4Irpl/gLX4XiMk0koOCpdVqTTAyVbx3N
-         Bti8KplTGrhMIbvO5R5350Q4nA8VvUnhmBooSy4NWZjAYeGA1Wh9bE6f2532jz1budUF
-         O8lmzpt50SbAYzl/5ZG2UhBwAnRIAIfccaJh3INHGlfx/PuDCHsGGIXNg1asBSkRsHz3
-         8/oAzWenfnrnfGYfNphGG+4/rKdp9RkK893csNKO+SM0Tr8MC6HdstgaedyYtnMPmL9e
-         2qSFFfMI4FPe4bBHpBfar3K1zYY6rbYCpvZj5TVtpEXbIpb1+aQbE715q2uf7lyQ0XOq
-         l09A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5kNNnxvcaBvHSSfcwfCCGCG1lVimpt2MelDrvjqHWl8=;
-        b=EGyayKifbxLt5mLfTQU1R/AqNcG8dq45QNjc1vipbWRZ3ZogGOV6xcz2nrPUU9LENK
-         OpX2Kh/xiSyLE6KduHcu+c9YxV8vr/whOW587KWpmFHoKAcHCa7u9Y1nZpxJATCxYtCQ
-         MIBtIsX9JwCl9W1Prts2x+p+0t6gJUu2hnwMG2g1cxo8JonB+9HadXdARIXj5IFIjXrx
-         RCcvd+fcSeIHeTfeoE8LOoWEwAQV6Tpn13MtzTAZHaeAP0N/KBW4O9WOIT04ik3Oo6pf
-         ttHviOUY8AhjQtRqVT00Bss6hp7Xg2KSi8a48G3L49OX1NdViVnhBxGO6rwKV3TsoeU5
-         ndng==
-X-Gm-Message-State: AOAM533YFuXTwCGN2aTNGz31CCm9JPN0ZYe0/zgoj5HbiZYF2ujLgsAf
-        TaW6GhdZS8I2RhE36yPfmPdGwfaUBFTEWgS+llE=
-X-Google-Smtp-Source: ABdhPJzKw6T2ii27sYldK7VEfZ/TTzvZA1kN5AuDUO0OdJ73j+brcpdTtJhZ8GmeijVQb8xNS/aQ5EBhbk48ObfEA+0=
-X-Received: by 2002:a25:3c5:: with SMTP id 188mr246815ybd.437.1627485896803;
- Wed, 28 Jul 2021 08:24:56 -0700 (PDT)
+        id S236946AbhG1PZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:25:14 -0400
+Received: from mga11.intel.com ([192.55.52.93]:33565 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235457AbhG1PZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:25:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="209575485"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="209575485"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 08:25:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="506511592"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Jul 2021 08:25:07 -0700
+Date:   Wed, 28 Jul 2021 23:25:07 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Widawsky, Ben" <ben.widawsky@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>
+Subject: Re: [PATCH v6 2/6] mm/memplicy: add page allocation function for
+ MPOL_PREFERRED_MANY policy
+Message-ID: <20210728152507.GE43486@shbuild999.sh.intel.com>
+References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
+ <1626077374-81682-3-git-send-email-feng.tang@intel.com>
+ <YQFQsnSt/DaWoQHV@dhcp22.suse.cz>
+ <20210728151810.GD43486@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-References: <20210728135534.703028-1-pgwipeout@gmail.com> <20210728135534.703028-2-pgwipeout@gmail.com>
- <10355864.nUPlyArG6x@diego>
-In-Reply-To: <10355864.nUPlyArG6x@diego>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 28 Jul 2021 11:24:44 -0400
-Message-ID: <CAMdYzYoUucnU+TG9-qtXdvpXZ8xtTwKuNKNDN5sgmQvsF8FX8g@mail.gmail.com>
-Subject: Re: [PATCH 1/9] dt-bindings: gpio: rockchip,gpio-bank: increase max clocks
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728151810.GD43486@shbuild999.sh.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:10 AM Heiko St=C3=BCbner <heiko@sntech.de> wrote=
-:
->
-> Hi Peter,
->
-> Am Mittwoch, 28. Juli 2021, 15:55:26 CEST schrieb Peter Geis:
-> > The rk356x adds a debounce clock to the gpio devices.
-> > Increase the maximum clocks to account for it.
-> >
-> > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
->
-> that binding change is also part of Jianqun's gpio driver series,
-> also adds clock descriptions for both and even got an Ack from Rob
-> already, so we should be going with that other variant ;-)
+On Wed, Jul 28, 2021 at 11:18:10PM +0800, Tang, Feng wrote:
+> On Wed, Jul 28, 2021 at 02:42:26PM +0200, Michal Hocko wrote:
+> > On Mon 12-07-21 16:09:30, Feng Tang wrote:
+> > > The semantics of MPOL_PREFERRED_MANY is similar to MPOL_PREFERRED,
+> > > that it will first try to allocate memory from the preferred node(s),
+> > > and fallback to all nodes in system when first try fails.
+> > > 
+> > > Add a dedicated function for it just like 'interleave' policy.
+> > > 
+> > > Link: https://lore.kernel.org/r/20200630212517.308045-9-ben.widawsky@intel.com
+> > > Suggested-by: Michal Hocko <mhocko@suse.com>
+> > > Co-developed-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> > 
+> > It would be better to squash this together with the actual user of the
+> > function added by the next patch.
+>  
+> Ok, will do
+> 
+> > > ---
+> > >  mm/mempolicy.c | 19 +++++++++++++++++++
+> > >  1 file changed, 19 insertions(+)
+> > > 
+> > > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> > > index 17b5800b7dcc..d17bf018efcc 100644
+> > > --- a/mm/mempolicy.c
+> > > +++ b/mm/mempolicy.c
+> > > @@ -2153,6 +2153,25 @@ static struct page *alloc_page_interleave(gfp_t gfp, unsigned order,
+> > >  	return page;
+> > >  }
+> > >  
+> > > +static struct page *alloc_page_preferred_many(gfp_t gfp, unsigned int order,
+> > > +						struct mempolicy *pol)
+> > 
+> > We likely want a node parameter to know which one we want to start with
+> > for locality. Callers should use policy_node for that.
+>  
+> Yes, locality should be considered, something like this?
+> 
+> 	int pnid, lnid = numa_node_id();
+> 
+> 	if (is_nodeset(lnid, &pol->nodes))
+> 		pnid = local_nid;
+> 	else
+> 		pnid = first_node(pol->nodes);
 
-Roger, I'll drop this for the next version, thanks!
+One further thought is, if local node is not in the nodemask,
+should we compare the distance of all the nodes in nodemask
+to the local node and chose the shortest? 
 
->
-> Heiko
->
-> > ---
-> >  Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.=
-yaml b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> > index d993e002cebe..489a5263a7a1 100644
-> > --- a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> > +++ b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> > @@ -22,7 +22,7 @@ properties:
-> >      maxItems: 1
-> >
-> >    clocks:
-> > -    maxItems: 1
-> > +    maxItems: 2
-> >
-> >    gpio-controller: true
-> >
-> >
->
->
->
->
+Thanks,
+Feng
+
+> 	page = __alloc_pages(((gfp | __GFP_NOWARN) & ~__GFP_DIRECT_RECLAIM),
+> 				order, pnid, &pol->nodes);
+> 	if (!page)
+> 		page = __alloc_pages(gfp, order, lnid, NULL);
+> 	return page;
+> 
