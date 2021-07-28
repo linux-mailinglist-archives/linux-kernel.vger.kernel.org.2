@@ -2,122 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676D23D8A43
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3B93D8A4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbhG1JGr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 05:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhG1JGq (ORCPT
+        id S234483AbhG1JIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:08:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44351 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230520AbhG1JIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:06:46 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9F7C061757;
-        Wed, 28 Jul 2021 02:06:45 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1m8fWN-00060Q-S5; Wed, 28 Jul 2021 11:06:35 +0200
-Date:   Wed, 28 Jul 2021 11:06:35 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
-        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
-        Blair Steven <blair.steven@alliedtelesis.co.nz>
-Subject: Re: [PATCH] net: netfilter: Fix port selection of FTP for
- NF_NAT_RANGE_PROTO_SPECIFIED
-Message-ID: <20210728090635.GB15121@breakpoint.cc>
-References: <20210728032134.21983-1-Cole.Dishington@alliedtelesis.co.nz>
+        Wed, 28 Jul 2021 05:08:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627463285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hzpX4Anju1g1uTE/VmLWDxyTDF0xzMb9RwOUSeDvum0=;
+        b=Fvd2BuEq/EYcTAQjftZm45bNQmwwtGPfJYafH3Ja15v7QIjDTf66OVEw7VPrdIxvqZ8AMs
+        KDe+S/VfkAmsf+Gl74uI66HGcXAYVnL8TurJPdCNlULl2qjoU4PCFXURnF1hrJE+A0+1vT
+        QEVIwFNMS1TM0PwVDYwvDnbxwN2fC7s=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-30-77Gch2hLOX2KdmqfAeFAIA-1; Wed, 28 Jul 2021 05:08:03 -0400
+X-MC-Unique: 77Gch2hLOX2KdmqfAeFAIA-1
+Received: by mail-ej1-f71.google.com with SMTP id ju25-20020a17090798b9b029058c24b55273so600024ejc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:08:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hzpX4Anju1g1uTE/VmLWDxyTDF0xzMb9RwOUSeDvum0=;
+        b=ekFdGTyMBdGROZ2O/0qU48HQMEH272T+V9Oj6x0U1ZJ1S7kWQGLr1qmUIo7KIr7KfQ
+         kHx2R8xxtQ2MBYukj4Mk8ddBof8kIdC9Tvo89/KgcAm4BWmvzttlsITw5I2kmYJ2MNTV
+         i1clcPpc9kojmFxJxarMH5C+zluwqPxcg3AOdonM2tSmCBRfrVXuDIuEXeeBO+TUGLWl
+         yRJswnVxDf8c9MOlFbF7ENkJ5ay6cv54jbkRicW6Dm4o60OW6h7nzPeDqwU5S7ZKfuM8
+         BwM6WHliUPvhDRtjnsusqsyoYIJKmW4Unkc/JqEH+Ec+HJnvXKKmqOzL3RVfKZxvdpTw
+         n/1g==
+X-Gm-Message-State: AOAM532gNFyZicudKJjn6e+ws9FfTjqyof+cG3vCXDa5bkeVkSKefqdd
+        +1374KO4obmAY33Nthqh8UUohmXrI6eDhmTVyeZQdLuIOH4aGxwaNB1US7rEOay0WK4rPiPO9Q3
+        eYOvlJUU9KTZ3WCTYnBL1BsLB
+X-Received: by 2002:a05:6402:3450:: with SMTP id l16mr32743556edc.358.1627463282713;
+        Wed, 28 Jul 2021 02:08:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxsUf6D4UqA78keeC1CvqRtWMLxpq2D9fXM93HChpsnw2Tl65AEmHpWTsw0oYo69Bkiv7LKeQ==
+X-Received: by 2002:a05:6402:3450:: with SMTP id l16mr32743539edc.358.1627463282599;
+        Wed, 28 Jul 2021 02:08:02 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id b13sm2326917ede.49.2021.07.28.02.08.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 02:08:02 -0700 (PDT)
+Subject: Re: [PATCH 1/2] acpi: Add acpi_init_properties to ACPI driver code
+To:     Michael Bottini <michael.a.bottini@linux.intel.com>,
+        rjw@rjwysocki.net, lenb@kernel.org, irenic.rajneesh@gmail.com,
+        david.e.box@linux.intel.com, mgross@linux.intel.com
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+References: <20210723202157.2425-1-michael.a.bottini@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d8e4f0f3-7282-50d4-16ac-2f67b210373c@redhat.com>
+Date:   Wed, 28 Jul 2021 11:08:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20210728032134.21983-1-Cole.Dishington@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210723202157.2425-1-michael.a.bottini@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
-> FTP port selection ignores specified port ranges (with iptables
-> masquerade --to-ports) when creating an expectation, based on
-> FTP commands PORT or PASV, for the data connection.
+Hi,
+
+On 7/23/21 10:21 PM, Michael Bottini wrote:
+> Some products in the field, like Intel Rocket Lake systems, contain
+> AML code that can modify _DSD properties after they have been
+> evaluated by ACPI init code. Therefore, there is a need for drivers
+> to be able to reevaluate _DSDs so that the updated property values can
+> be read. Export acpi_init_properties() for this purpose.
 > 
-> Co-developed-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
-> Signed-off-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
-> Co-developed-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
-> Signed-off-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
-> Co-developed-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
-> Signed-off-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
-> Signed-off-by: Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+> Signed-off-by: Michael Bottini <michael.a.bottini@linux.intel.com>
+
+My first instinct here is this is a firmware bug and we should
+go out of our way here to not support this and to instead apply
+pressure on the vendor to get the firmware fixed.
+
+Let me explain, the standard use of _DSD is to allow embedding
+open-firmware/devicetree style properties inside ACPI nodes.
+
+devicetree files, unlike AML contain static information, which
+is parsed once and only once.
+
+Allowing AML code to dynamically change _DSD results pretty
+much breaks this entire model.
+
+So I might be shooting from the hip a bit here:
+"no, just no". IOW nack.
+
+Regards,
+
+Hans
+
+
+
+
+
+
 > ---
+>  drivers/acpi/property.c | 1 +
+>  include/linux/acpi.h    | 6 ++++++
+>  2 files changed, 7 insertions(+)
 > 
-> Notes:
->     Currently with iptables -t nat -j MASQUERADE -p tcp --to-ports 10000-10005,
->     creating a passive ftp connection from a client will result in the control
->     connection being within the specified port range but the data connection being
->     outside of the range. This patch fixes this behaviour to have both connections
->     be in the specified range.
-> 
->  include/net/netfilter/nf_conntrack.h |  3 +++
->  net/netfilter/nf_nat_core.c          | 10 ++++++----
->  net/netfilter/nf_nat_ftp.c           | 26 ++++++++++++--------------
->  net/netfilter/nf_nat_helper.c        | 12 ++++++++----
->  4 files changed, 29 insertions(+), 22 deletions(-)
-> 
-> diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
-> index cc663c68ddc4..b98d5d04c7ab 100644
-> --- a/include/net/netfilter/nf_conntrack.h
-> +++ b/include/net/netfilter/nf_conntrack.h
-> @@ -24,6 +24,8 @@
+> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+> index e312ebaed8db..2c1f8cf1a8f0 100644
+> --- a/drivers/acpi/property.c
+> +++ b/drivers/acpi/property.c
+> @@ -432,6 +432,7 @@ void acpi_init_properties(struct acpi_device *adev)
+>  	if (!adev->data.pointer)
+>  		acpi_extract_apple_properties(adev);
+>  }
+> +EXPORT_SYMBOL(acpi_init_properties);
 >  
->  #include <net/netfilter/nf_conntrack_tuple.h>
+>  static void acpi_destroy_nondev_subnodes(struct list_head *list)
+>  {
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 72e4f7fd268c..57defc3bc9b9 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -716,6 +716,8 @@ static inline u64 acpi_arch_get_root_pointer(void)
 >  
-> +#include <uapi/linux/netfilter/nf_nat.h>
+>  int acpi_get_local_address(acpi_handle handle, u32 *addr);
+>  
+> +void acpi_init_properties(struct acpi_device *adev);
 > +
->  struct nf_ct_udp {
->  	unsigned long	stream_ts;
->  };
-> @@ -99,6 +101,7 @@ struct nf_conn {
+>  #else	/* !CONFIG_ACPI */
 >  
->  #if IS_ENABLED(CONFIG_NF_NAT)
->  	struct hlist_node	nat_bysource;
-> +	struct nf_nat_range2 range;
->  #endif
-
-Thats almost a 20% size increase of this structure.
-
-Could you try to rework it based on this?
-diff --git a/include/net/netfilter/nf_nat.h b/include/net/netfilter/nf_nat.h
---- a/include/net/netfilter/nf_nat.h
-+++ b/include/net/netfilter/nf_nat.h
-@@ -27,12 +27,18 @@ union nf_conntrack_nat_help {
- #endif
- };
- 
-+struct nf_conn_nat_range_info {
-+	union nf_conntrack_man_proto	min_proto;
-+	union nf_conntrack_man_proto	max_proto;
-+};
-+
- /* The structure embedded in the conntrack structure. */
- struct nf_conn_nat {
- 	union nf_conntrack_nat_help help;
- #if IS_ENABLED(CONFIG_NF_NAT_MASQUERADE)
- 	int masq_index;
- #endif
-+	struct nf_conn_nat_range_info range_info;
- };
- 
- /* Set up the info structure to map into this range. */
-
-... and then store the range min/max proto iff nf_nat_setup_info had
-NF_NAT_RANGE_PROTO_SPECIFIED flag set.
-
-I don't think there is a need to keep the information in nf_conn.
+>  #define acpi_disabled 1
+> @@ -976,6 +978,10 @@ static inline int acpi_get_local_address(acpi_handle handle, u32 *addr)
+>  	return -ENODEV;
+>  }
+>  
+> +static inline void acpi_init_properties(struct acpi_device *adev)
+> +{
+> +}
+> +
+>  #endif	/* !CONFIG_ACPI */
+>  
+>  #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+> 
 
