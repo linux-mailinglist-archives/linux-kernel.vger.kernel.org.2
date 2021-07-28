@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD623D8C62
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8333A3D8C64
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235873AbhG1LCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhG1LBy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:01:54 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB06C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 04:01:52 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id l11-20020a7bc34b0000b029021f84fcaf75so3993141wmj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 04:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bocNcom+XM+jt/yaZntODE+ELWnSFxGY5QcrB5KsPUU=;
-        b=EjbJeqOzTBHIOqmnkwnMCJkPUrOgbI1IDfEFz0L1gPOlX423R3Bt2ocdidAT+VWmPT
-         Pi2Lel7fGN3o97T/7SLFfgO62PvpQElzqmVC4VVxfc90ZviBK8Y3b/znKbdkyoGwVkbY
-         Acy9oYj8foz98GCWHzd0y4h+ToiiarJv0Z2h39nBAHAoPvbL68UNSEonqmvb573waTm4
-         iX+1WpMTiOYXtCbdZ84DWQMpKEpnhXwhnStBidT7VjDBA4a4b73r8yFAavmn8jUAprpg
-         Akkru7Qq9ywvQ3Hw4jcr5wJU+cCGnPBQ1PfAHxSvywxq5HkeHTxwvX30gf+Gc1umRfTa
-         ELxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bocNcom+XM+jt/yaZntODE+ELWnSFxGY5QcrB5KsPUU=;
-        b=IfwPv7jD9M6ZpEkix0+tl/OYOlHc8GegYWarm+6YTm8vvXWkOFsT6PDl0L+9W2Ser6
-         RJwhKeZJMiHe5MNzZIWK2l8AYJK3GWx5H3gOBmRsVxnvxUCguowGfJsuKjCukwMSQE1q
-         pLSNfBjDOEPsPw6l38PkigFiYcj0B7eYW8SbecEAh95IHBGHWsZLYrZ8Vmi1rWBy4dc7
-         9drv8l8qi69qkxv1zYf/9AyWqSfM3bk5pQtHsaRFvIKqxOjXAAiz9LcpX/KxLPN6WPOV
-         7g2f0oIcDDIcG9WNHQp1xnDrsYuGmIqOvjCHBfZQfu3OmKZ4Wo5o3XXKx1QOGsHxNHAq
-         7W+w==
-X-Gm-Message-State: AOAM530mQaW3PEKnvg6Uxk8/LgFZxn0st+6gyJyJW5GfOLbuOU9/T4dy
-        FyAWNWUig5GJznqhYA8n4QOL3wWTdfX/8wDExsL+jQ==
-X-Google-Smtp-Source: ABdhPJyna0vcoiKE/wYRcEVB8vIZ5PlgxSOy1HdpZLPd4BVX7GO8vBxp7RFPT0UZjP63w4uRBWo3MPTdKXzHObWSVC0=
-X-Received: by 2002:a05:600c:154a:: with SMTP id f10mr26212334wmg.183.1627470110734;
- Wed, 28 Jul 2021 04:01:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210707093632.1468127-1-maxime@cerno.tech> <20210707093632.1468127-2-maxime@cerno.tech>
-In-Reply-To: <20210707093632.1468127-2-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Wed, 28 Jul 2021 12:01:34 +0100
-Message-ID: <CAPY8ntAAE+N79T7Q15URHRkGf+N6f2DKNjtyp+74AFjNdb3Prg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/vc4: hdmi: Remove unused struct
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Emma Anholt <emma@anholt.net>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Maxime Ripard <mripard@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235979AbhG1LCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:02:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234181AbhG1LB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:01:56 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEBEA60F46;
+        Wed, 28 Jul 2021 11:01:55 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m8hJx-001Vuk-R3; Wed, 28 Jul 2021 12:01:53 +0100
+Date:   Wed, 28 Jul 2021 12:01:53 +0100
+Message-ID: <87tuked7mm.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 12/16] mm/ioremap: Add arch-specific callbacks on ioremap/iounmap calls
+In-Reply-To: <20210727181203.GG19173@willie-the-truck>
+References: <20210715163159.1480168-1-maz@kernel.org>
+        <20210715163159.1480168-13-maz@kernel.org>
+        <20210727181203.GG19173@willie-the-truck>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, qperret@google.com, dbrazdil@google.com, vatsa@codeaurora.org, sdonthineni@nvidia.com, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Jul 2021 at 10:36, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Commit 91e99e113929 ("drm/vc4: hdmi: Register HDMI codec") removed the
-> references to the vc4_hdmi_audio_component_drv structure, but not the
-> structure itself resulting in a warning. Remove it.
->
-> Fixes: 91e99e113929 ("drm/vc4: hdmi: Register HDMI codec")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+On Tue, 27 Jul 2021 19:12:04 +0100,
+Will Deacon <will@kernel.org> wrote:
+> 
+> On Thu, Jul 15, 2021 at 05:31:55PM +0100, Marc Zyngier wrote:
+> > Add a pair of hooks (ioremap_page_range_hook/iounmap_page_range_hook)
+> > that can be implemented by an architecture.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  include/linux/io.h |  3 +++
+> >  mm/ioremap.c       | 13 ++++++++++++-
+> >  mm/vmalloc.c       |  8 ++++++++
+> >  3 files changed, 23 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/io.h b/include/linux/io.h
+> > index 9595151d800d..0ffc265f114c 100644
+> > --- a/include/linux/io.h
+> > +++ b/include/linux/io.h
+> > @@ -21,6 +21,9 @@ void __ioread32_copy(void *to, const void __iomem *from, size_t count);
+> >  void __iowrite64_copy(void __iomem *to, const void *from, size_t count);
+> >  
+> >  #ifdef CONFIG_MMU
+> > +void ioremap_page_range_hook(unsigned long addr, unsigned long end,
+> > +			     phys_addr_t phys_addr, pgprot_t prot);
+> > +void iounmap_page_range_hook(phys_addr_t phys_addr, size_t size);
+> >  int ioremap_page_range(unsigned long addr, unsigned long end,
+> >  		       phys_addr_t phys_addr, pgprot_t prot);
+> >  #else
+> 
+> Can we avoid these hooks by instead not registering the regions proactively
+> in the guest and moving that logic to a fault handler which runs off the
+> back of the injected data abort? From there, we could check if the faulting
+> IPA is a memory address and register it as MMIO if not.
+> 
+> Dunno, you've spent more time than me thinking about this, but just
+> wondering if you'd had a crack at doing it that way, as it _seems_ simpler
+> to my naive brain.
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+I thought about it, but couldn't work out whether it was always
+possible for the guest to handle these faults (first access in an
+interrupt context, for example?).
 
-> ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c | 12 ------------
->  1 file changed, 12 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index 3165f39a4557..1bb06c872175 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -1403,18 +1403,6 @@ static const struct snd_soc_dapm_route vc4_hdmi_audio_routes[] = {
->         { "TX", NULL, "Playback" },
->  };
->
-> -static const struct snd_soc_component_driver vc4_hdmi_audio_component_drv = {
-> -       .name                   = "vc4-hdmi-codec-dai-component",
-> -       .dapm_widgets           = vc4_hdmi_audio_widgets,
-> -       .num_dapm_widgets       = ARRAY_SIZE(vc4_hdmi_audio_widgets),
-> -       .dapm_routes            = vc4_hdmi_audio_routes,
-> -       .num_dapm_routes        = ARRAY_SIZE(vc4_hdmi_audio_routes),
-> -       .idle_bias_on           = 1,
-> -       .use_pmdown_time        = 1,
-> -       .endianness             = 1,
-> -       .non_legacy_dai_naming  = 1,
-> -};
-> -
->  static const struct snd_soc_component_driver vc4_hdmi_audio_cpu_dai_comp = {
->         .name = "vc4-hdmi-cpu-dai-component",
->  };
-> --
-> 2.31.1
->
+Also, this changes the semantics of the protection this is supposed to
+offer: any access out of the RAM space will generate an abort, and the
+fault handler will grant MMIO forwarding for this page. Stray accesses
+that would normally be properly handled as fatal would now succeed and
+be forwarded to userspace, even if there was no emulated devices
+there.
+
+For this to work, we'd need to work out whether there is any existing
+device mapping that actually points to this page. And whether it
+actually is supposed to be forwarded to userspace. Do we have a rmap
+for device mappings?
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
