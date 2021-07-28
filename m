@@ -2,190 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B9D3D8A72
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347583D8A75
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbhG1JPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:15:19 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:31660 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234164AbhG1JPS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:15:18 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16S97xeI005207;
-        Wed, 28 Jul 2021 09:15:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=uBRkjZlYYDdNoPUkRuEzqVKzc7bNfow3yblGbH0Iges=;
- b=GSN/EeQnigVzJEPHLDoe0ClZcdu/pDlXYTrmFNW59i3Y7W/eHakdCmFhyijvkfU3CH7J
- x77bINh7kzN/ZcxRqE3gu2UTOlkK0iBqxgMP76dPUqUx9LXDvPtAkrsmcPGxNAXGWVDM
- TUolt/9pntxEXKOkaq4k7wU4GWl98jFaq/9ePMLB4aWSzM38H1uaAsoAkhsUONB9ZwDA
- BT42fmhm0vu37wk4TeFj/FKRvATdzDHF9PcWeuVPC5ubK0jTbsYr0O17ay/RrpjPAbFw
- 2jrzG/N+E3M2dIWCMakXEXqLxIsgjcbFrJRYysX92feIDnD0kv7cE+ZYl8eCbUykhD3y bg== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=uBRkjZlYYDdNoPUkRuEzqVKzc7bNfow3yblGbH0Iges=;
- b=TUiif95btzJzW5aGKMP7Bdwoc0F/4weZvEqxD5vcxMrQjh1hUMebAC5gckFkgzJ/PXCO
- YzIsYo9Bl1SOLXJVLbX5bmDzbucPSd5O7wzEaNgstpuu2ZS54iSWx+iRWgOuYf0LiTSm
- Lxr4OeM7glaxsJk23oI+oILVlt/H1PXua++NyqZY6spTdF8xz9YgtWE8KSo7y4f7LqNT
- GjNDd/A2TwUNRTlVKR6t2MkZlb7u7wRMSw8GHWe4/t9E/1ngpQB/OfxYGGzxqlPIBlyh
- /C8hvw3fbdvmqH5DR/yyPLjDrj+qroFvzHRZcfiqSyRkj392UYtGzT/7ex8cJYSvmHAA ZA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a234w42fp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Jul 2021 09:15:05 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16S9Ao2p175307;
-        Wed, 28 Jul 2021 09:15:03 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by userp3020.oracle.com with ESMTP id 3a234x8t9u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Jul 2021 09:15:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kSGY/Qj41ok6AYmd/xEfGamtJbqR13TXaEpCWWxiDzfIxH2NMMh2GpEjc5d586DZS8tDMAX9fy2njdWiPmMuz9xSuslc8+Jcd05tIWPFK25AoxGGzekhYfmTm9nfIWDFb5wFjR7VsUE/etIVMv+cKM1ba1uV3Jaa9R8n0lTTkstGCn/sHY1wDNhyFQQTrBg79i3mxOl3SZ86DfdSAx2Ryg6rn0UkT114dO0/Sbvsf0Tl0p0uglJGAQckttyJQfVRGQXyUbIRAirtenoCv/7H6Cp0LuDEM3AywE6Qwl4YHony+xVibdRyuK9rCII1xSzWJu4/VXguI1e7aziqSgl0kw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uBRkjZlYYDdNoPUkRuEzqVKzc7bNfow3yblGbH0Iges=;
- b=OkCEFw4MVktfAQzUKZXIgvuF1eUSt8fHUDU2e9ylwjHgj/gXKEIzbkv+Ij46e/Y6NhwTA0OjnIJF6xxbO8rDPA07Uz/KHB4RdCt33yVtfcj28fne2ks9NV1FCtDNfGSR5xDJox/DexclxvqB5zWosRwwSOVgyra7tH50yDV+PkPnwBshL8vLw4PnWEqFOter539+mhu7iHDENJVpYloyo0sLHR7mxxQrV0cytzNE44l/BXAwb2Zh/sIG41o7N58iCDhb8G250hrOr/I/xWW80TfA04FVDdmXHXuNnHkhbLOA9VANMVcuIkwL0O1L3BaH2o5BprQkwVXzjAqfcfV/WA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uBRkjZlYYDdNoPUkRuEzqVKzc7bNfow3yblGbH0Iges=;
- b=Pge/R+y3xcAEkFoIbmaQiD1vz+7B4uHim8vMFlbdSFah/+lRVZKmL93dnXem8jZjkRm7D3pGngUOQb0gYhvowBM4BfXOjEfVZlL+eetCeuGNsKayY0Ufkg8PwkBUYBbk0IXznexyDNKxWZOmCOOJGHrx68mtUKZd5I2X12y49/8=
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4658.namprd10.prod.outlook.com
- (2603:10b6:303:91::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Wed, 28 Jul
- 2021 09:15:01 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4352.032; Wed, 28 Jul 2021
- 09:15:01 +0000
-Date:   Wed, 28 Jul 2021 12:14:35 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     dsterba@suse.cz, Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        nborisov@suse.com
-Subject: Re: [PATCH 01/64] media: omap3isp: Extract struct group for memcpy()
- region
-Message-ID: <20210728091434.GQ1931@kadam>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-2-keescook@chromium.org>
- <20210728085921.GV5047@twin.jikos.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728085921.GV5047@twin.jikos.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JN2P275CA0010.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::22)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by JN2P275CA0010.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 09:14:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ec38b362-f2b6-493e-a258-08d951a82d82
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4658:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB46586EC97129754A6558351A8EEA9@CO1PR10MB4658.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VTNQgm/gYV57+vJtysoLh7qJb8Klrvu4qt09jCbAoJe110dvBpkeHmrn4UmoVB9qY1BY+trljrQ1XFNAe70CYGOnzhXwNYWGEBqi2PxgscgvcwBm3yUwpcSYpeD3ehL8llJ4HbRHf5u9Rm4O/A7w9Tx31tctNg2L8JnblevQ5eDmvIQymdsXh4/txvZ7mD8KNfAhMRZz3YeDUAUp+8cBPuyNu58GxoN23CT0qVJQhLVm52+XkAi2oPiXY3ATC5sUK2tgYTzbJqY9MwWGvs6FZ+yrAPSJp71gyzAaawJizzxHvoTYMi4s6ts1r+CWVsHScW/m3+ol8yMoRT8jwxo2CmNiu1Aflmrkvp/dkDrMAWX1NbIxFiUlVMzoEOiz+NgfUv2LhDbqFQpyQAgiAyKJ0Jdq5YXNQFq7HVO3xHDklNuGenWcl7YwPhz+2IPRXtzWu8zLkdlC2ReTVEk9y2etobrqdzMeX/nQOYMw48U9vDct1KYWKb7ROejPW8kNdEQFuEELSPxBqS+Vz6gU4FquwrPdPei/Y4V4uBlVfJlmsMx8maPQ+3HWYxL3SRiATHK0O3qZEQXkWMYxaK+AnDyOU1WeBs8zFtTfCeQbLL/AnviBrw6Ntgul8+sigmgriQVh+/nj06m+nHpjGzTf0yZ9w2dOS5iLt+xKbDhACpeudKW6L6c8vRWXUOgLM86qICZyY/NQOAu2xB/xFBaPZcpWB6iXrXGy/koGD79h7Skcj64AUaKDOowpSoV47bI1QRaEVXy01WBLfdjeSZHBN5Ibl8n4l2EE3CT4H0mAgKYXqIEDx19/AtkjXYWoce14kzFsVSIPWpP+TaDXAamkkOsaVA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(376002)(366004)(346002)(136003)(83380400001)(6496006)(52116002)(921005)(55016002)(33716001)(38350700002)(38100700002)(5660300002)(9686003)(186003)(316002)(44832011)(26005)(66556008)(966005)(66946007)(1076003)(33656002)(66476007)(2906002)(7416002)(86362001)(956004)(478600001)(110136005)(9576002)(6666004)(8676002)(8936002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eb7RhCFZJReG7kmLF16WNYdTXU5OHR2xELDlhxaol3Dv0pfh7Rwrom5t2U2F?=
- =?us-ascii?Q?JiAE99XQ2EVTalby6i93Qmw73AVkqJVsKX/OyRQXAnZGFEanVJECuaPiDKyu?=
- =?us-ascii?Q?j8nVom4ASpGxaFClMrdNNch2P0BzGaijcpQ72Mf+f9PGR9rQn+7+b+qysCLx?=
- =?us-ascii?Q?etC4MebBPbdqaJkkmjep1gG9I1fUvsABTDvs3ja7mM0PpfPzOfpk8A37W6vC?=
- =?us-ascii?Q?455QMBcM+YUKFc8FFYpseV9uIMW+9bmzq59HqdnNwhFDvYJlmVu3pV3W4PAe?=
- =?us-ascii?Q?s7oWuEqND1MR13FtRN287tygud2Oo3LjiVp2IDi9L0itj1MfBv9OTRN7ZDAm?=
- =?us-ascii?Q?+y64a7e3ZKONe7wYQQMmJfS3ZuqvqgecdWtCWsPXkPmIDiDpVbZZRGQsRjIP?=
- =?us-ascii?Q?FcUVX2Z5H7/etXy3GIuI7vPCrL2A7L/3GM30E+OMaDcY1P0Ne1J3pdxoidun?=
- =?us-ascii?Q?l1WE1ILTjyVWa2jOd88msucQjHSY4jMeQVCtU4cTuzwDk7J/oWz3gbZE9v9S?=
- =?us-ascii?Q?pU/gBrZyjl+FBNo0QPd8EqUOmLNqUUkmgBK8XX6v9ty1+i0SyGmcAAWe/h8G?=
- =?us-ascii?Q?Bl+6eIL9MqOD32AsBHE27dgztr1Jm9IwQK/yISlf5EYlgu2VL4iEEACQo+Ko?=
- =?us-ascii?Q?l0WUsiDYu3PW/ht4rPTLuVV6wVA/OfPhj8ojKak1051XeaZU0hi6PDayeG90?=
- =?us-ascii?Q?+DRxXXOAwWkxMv+WPZ1CVZiAGjSOOyLqZ6X92F7vl9KWucmyEd2aRjEa16Ks?=
- =?us-ascii?Q?iYmuTf6qNuYi7dRwaEQFJUooSHN0tN7o0x2imAQKwOhQIq3N43l3eTCtbXeY?=
- =?us-ascii?Q?Lril4DpIs4ecHnNLKfONhwCvpXFoxy0IP014IRecsMpQLZHwJ2M5vDHSKWkz?=
- =?us-ascii?Q?i3dts7mYrxMEWwV0GvlBMVT/Hl7wkwr4pq+h609+qcmEOY0RSkdvBHi2vvIu?=
- =?us-ascii?Q?oV9/duiw6iLb1t56jUzxI5TcDVDOX4UW5EAU98UhOdRRwZAh9Y2e7TbtjsrF?=
- =?us-ascii?Q?xDJuwUdIpN72NMd8CCAZHR1kAGZid5K89qCDGc1ABWb3xYWbqfu0ucqrdvnr?=
- =?us-ascii?Q?wfYnH1opGUcqYusTzMPDADeFON3tUOf8PXAVsYGyLzpmPIoXmgOsWCuZNCcK?=
- =?us-ascii?Q?LHUjfU0AMIte4coO35TRHJyiTkyFlZ7aBlgX96Tlduy1D6/UKXARNc2OsMi8?=
- =?us-ascii?Q?LVzHOZEziWbiFkEqCitl+zreLHPoIPvInXesWjogPv68c6PUTR+jBcttPyeq?=
- =?us-ascii?Q?DTp7QxuvfK+HilaS+4i9VYu/SucD1PYiedl8rTh+6TtoHiTcYUJaaxVVDbfk?=
- =?us-ascii?Q?mH4MXuXseKwqIBXy0hMyxDPW?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec38b362-f2b6-493e-a258-08d951a82d82
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 09:15:01.5463
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R72i7g9/I8+mtCoWZ/KaOn1hrwjy7rjPecVR5Qgmmv8+g9Kz6MdcuMzv2+2xkIb6dMCJ/fLC2Sa25fpn5QrCf6WXCy3mHRHvgu3nI7VRto8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4658
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10058 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 phishscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107280052
-X-Proofpoint-ORIG-GUID: O0u9XEyhEFqXzFqrr0nJzm6p2-mprUK7
-X-Proofpoint-GUID: O0u9XEyhEFqXzFqrr0nJzm6p2-mprUK7
+        id S235215AbhG1JQT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 05:16:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230520AbhG1JQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 05:16:18 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EC6D6023F;
+        Wed, 28 Jul 2021 09:16:17 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m8ffj-001Ud6-4P; Wed, 28 Jul 2021 10:16:15 +0100
+Date:   Wed, 28 Jul 2021 10:16:14 +0100
+Message-ID: <878s1qer35.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, kernelci-results@groups.io,
+        Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Maciej Matuszczyk <maccraft123mc@gmail.com>,
+        Jacob Chen <jacob2.chen@rock-chips.com>,
+        Sandy Huang <hjc@rock-chips.com>, linux-kernel@vger.kernel.org,
+        Chen-Yu Tsai <wens@csie.org>,
+        Cameron Nemo <cnemo@tutanota.com>, devicetree@vger.kernel.org,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yifeng Zhao <yifeng.zhao@rock-chips.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Collabora Kernel ML <kernel@collabora.com>
+Subject: Re: renesas/master bisection: baseline-nfs.bootrr.rockchip-usb2phy0-probed on rk3399-gru-kevin
+In-Reply-To: <cff1e2d1-ceee-eee8-de14-a268429acbc3@collabora.com>
+References: <61002766.1c69fb81.8f53.9f6a@mx.google.com>
+        <c52f6cfb-1316-dd6a-46fa-17abfcc4bf18@collabora.com>
+        <eb04c12b-414e-70a7-5dff-12da3eb98cd0@arm.com>
+        <cff1e2d1-ceee-eee8-de14-a268429acbc3@collabora.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: guillaume.tucker@collabora.com, robin.murphy@arm.com, kernelci-results@groups.io, jbx6244@gmail.com, heiko@sntech.de, enric.balletbo@collabora.com, maccraft123mc@gmail.com, jacob2.chen@rock-chips.com, hjc@rock-chips.com, linux-kernel@vger.kernel.org, wens@csie.org, cnemo@tutanota.com, devicetree@vger.kernel.org, zhangqing@rock-chips.com, helen.koike@collabora.com, zhengsq@rock-chips.com, ezequiel@collabora.com, robh+dt@kernel.org, yifeng.zhao@rock-chips.com, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, kernel@collabora.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:59:22AM +0200, David Sterba wrote:
-> >  drivers/media/platform/omap3isp/ispstat.c |  5 +--
-> >  include/uapi/linux/omap3isp.h             | 44 +++++++++++++++++------
-> >  2 files changed, 36 insertions(+), 13 deletions(-)
+On Wed, 28 Jul 2021 09:59:49 +0100,
+Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
+> 
+> On 28/07/2021 09:39, Robin Murphy wrote:
+> > Hi Guillaume,
 > > 
-> > diff --git a/drivers/media/platform/omap3isp/ispstat.c b/drivers/media/platform/omap3isp/ispstat.c
-> > index 5b9b57f4d9bf..ea8222fed38e 100644
-> > --- a/drivers/media/platform/omap3isp/ispstat.c
-> > +++ b/drivers/media/platform/omap3isp/ispstat.c
-> > @@ -512,7 +512,7 @@ int omap3isp_stat_request_statistics(struct ispstat *stat,
-> >  int omap3isp_stat_request_statistics_time32(struct ispstat *stat,
-> >  					struct omap3isp_stat_data_time32 *data)
-> >  {
-> > -	struct omap3isp_stat_data data64;
-> > +	struct omap3isp_stat_data data64 = { };
+> > Not sure what I did to get CC'd on this, but since I'm here...
 > 
-> Should this be { 0 } ?
+> You were listed by get_maintainer.pl for the patch found by the
+> bisection:
 > 
-> We've seen patches trying to switch from { 0 } to {  } but the answer
-> was that { 0 } is supposed to be used,
-> http://www.ex-parrot.com/~chris/random/initialise.html
+>   Robin Murphy <robin.murphy@arm.com> (authored:1/8=12%,added_lines:9/71=13%,removed_lines:16/41=39%,added_lines:11/45=24%,removed_lines:18/32=56%,authored:1/12=8%,added_lines:22/83=27%,removed_lines:29/69=42%)
 > 
-> (from https://lore.kernel.org/lkml/fbddb15a-6e46-3f21-23ba-b18f66e3448a@suse.com/)
+> Maybe the logic to automatically build the list of recipients
+> could look at those stats and apply some threshold if too many
+> people get listed because of small contributions to some files.
+> It's not a common issue though, usually the recipients are all
+> pretty relevant.
+> 
+> > On 2021-07-28 07:04, Guillaume Tucker wrote:
+> >> Please see the bisection report below about usb2phy failing to
+> >> probe on rk3399-gru-kevin.
+> >>
+> >> Reports aren't automatically sent to the public while we're
+> >> trialing new bisection features on kernelci.org but this one
+> >> looks valid.
+> >>
+> >> The bisection was run in the Renesas tree but the same regression
+> >> is present in mainline for both usb2phy0 and usb2phy1 devices:
+> >>
+> >>    https://linux.kernelci.org/test/plan/id/6100af012344eef9b85018f3/
+> >>    https://linux.kernelci.org/test/case/id/6100af012344eef9b85018fa/
+> >>
+> >> I don't see any errors in the logs, it looks like the driver is
+> >> just not probing.
+> > 
+> > What's the actual testcase for "rockchip-usb2phy0-probed"? If it's looking for a hard-coded path like "/sys/bus/platform/devices/ff770000.syscon:usb2-phy@e450/driver" then it can be expected to fail, since changing the node name is reflected in the device name.
+> 
+> Dang, you're right.  This is the test case:
+> 
+>   https://github.com/kernelci/bootrr/blob/main/boards/google%2Ckevin#L119
+> 
+> assert_driver_present rockchip-usb2phy-driver-present rockchip-usb2phy
+> assert_device_present rockchip-usb2phy0-probed rockchip-usb2phy ff770000.syscon:usb2-phy@e450
+> assert_device_present rockchip-usb2phy1-probed rockchip-usb2phy ff770000.syscon:usb2-phy@e460
+> 
+> Now that needs a conditional depending on the kernel version.  Or
+> we could try to make it more dynamic rather than with hard-coded
+> paths, but doing that has its own set of issues too.
 
-In the kernel we don't care about portability so much.  Use the = { }
-GCC extension.  If the first member of the struct is a pointer then
-Sparse will complain about = { 0 }.
+And this shows once more that DT churn has consequences: it breaks a
+userspace ABI. Changing userspace visible paths for the sake of
+keeping a build-time checker quiet seems counter-productive. My
+preference would be to just revert this patch, and instead have an
+annotation acknowledging the deviation from the 'standard' and keeping
+the checker at bay.
 
-I had a patch to make checkpatch.pl complain about = { 0 }; but my
-system died and I haven't transfered my postponed messages to the new
-system...
+Thanks,
 
-regards,
-dan carpenter
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
