@@ -2,64 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB1E3D8EF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E2A3D8F04
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236365AbhG1NYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:24:41 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:7319 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235324AbhG1NYk (ORCPT
+        id S236263AbhG1N1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:27:52 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:44293 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233315AbhG1N1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:24:40 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee661015a72652-a7e8d; Wed, 28 Jul 2021 21:24:02 +0800 (CST)
-X-RM-TRANSID: 2ee661015a72652-a7e8d
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee361015a6f432-7be9f;
-        Wed, 28 Jul 2021 21:24:02 +0800 (CST)
-X-RM-TRANSID: 2ee361015a6f432-7be9f
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     davem@davemloft.net, kuba@kernel.org, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] bcm63xx_enet: remove needless variable definitions
-Date:   Wed, 28 Jul 2021 21:24:56 +0800
-Message-Id: <20210728132456.2540-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Wed, 28 Jul 2021 09:27:49 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 96498580ACE;
+        Wed, 28 Jul 2021 09:27:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 28 Jul 2021 09:27:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=QNlSOB6XFbHWykgqVLPHDrgx3CK
+        E3KWvg12VK5u4qnc=; b=i771LHsL2XgcoWhBfBpDwu2ryEp6KMGG1CxT3wT4dtO
+        pKe5X8rx7UcI0l7zmUbwzHP6gR2bZgVOuF57usbKBjqfoV+S9yo+CT9be9bl0g4g
+        GsuyunBj0G7Yl2k8/AYF/dSB1i5FBWksENAxc3jgVb5pdxLs3RZ/1vL61RI1+gGZ
+        uscJ5LGxKpprZPUheIcvjVcBx5xUrb3auRLu/mk1bJn+2GCzGbJYeq60BRCp6t/d
+        rvnlAhhryMW5nips5Ai+NlVKpIUVAZM64OVOipkf3tjwz5vVCU2PZnu8aw3C4dPE
+        m4sNLwF9z2A3Gj3vV3jc2/91jEII6ydj9JfBDaCf3tg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=QNlSOB
+        6XFbHWykgqVLPHDrgx3CKE3KWvg12VK5u4qnc=; b=gKitsHKTvAPvou8vzx5Vh+
+        6lnGRVDkHp2bdI6Dqfhi1P6oCorIK9gXdBiUsccSU+5+elsVuDRIf3jpnjIAAot8
+        nJt+4w3/q1JCyA5nJ7MAGtrS/T/PZNJqWOh7l2IzjbnBu6GyRrhOM+ijXuj4YIjv
+        PA1/zEMa0k7QzI0fDkReqIJP8PhFXcyKe2lsVuJ/FXR70hOMBKRCPmKBO9wU41Jy
+        PsqBVcAqP9jL3w2leWXJiJLvOsyU/OVSmrx8oRFqrLFZo7QPUm5OpV649gp8PbUU
+        3PlGwFbVORndHaNtsu+rWaIiaUuwy4YsBYYL8u6RZOA7WkoFye5icgQtL6+At/Fg
+        ==
+X-ME-Sender: <xms:UVsBYUbNNfOvrBbTb3qlEoEzYdeNZRWyJl1SZcRZeOPXByvVyfCN-A>
+    <xme:UVsBYfZm0xwUu4LnbfYXE6YRU95fxuxyqkkfyJmhSc2oliTZUCbXCB0_vUbbId-Fe
+    poIBMEm2FV24bQ0IJg>
+X-ME-Received: <xmr:UVsBYe8yrGo0xOHgN7I_40m2WGpdduX59hLdHVcAW09rQ3tR_ynNmc1CuTTuQY6KuOa4Y5ZiFyxRbE0Ax9OZx8JVGkbJ-NRMnD36>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeelgdeiudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:UVsBYerVS5yakdCKH310Yv7s0QGoyUiYGSBCAht4-zwf1dJByK38mA>
+    <xmx:UVsBYfoUdgqXxf_4XtXReN818MWMXnwq_dDvxpNx38Hoi4xI6Y3iUg>
+    <xmx:UVsBYcQmfi5XbM89_V3bv5LLzIqTaneJx2V6ljbC9uBNgwAjQYt_RQ>
+    <xmx:U1sBYdjdLFBmf1B8Rk8wOprh73Y-l3ABrA948i1j0K14CDbH3UEF_w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 28 Jul 2021 09:27:44 -0400 (EDT)
+Date:   Wed, 28 Jul 2021 15:27:41 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Robert Foss <robert.foss@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 04/10] drm/bridge: Document the probe issue with MIPI-DSI
+ bridges
+Message-ID: <20210728132741.dzqqohi34cm56q6j@gilmour>
+References: <20210720134525.563936-1-maxime@cerno.tech>
+ <20210720134525.563936-5-maxime@cerno.tech>
+ <YPgNbVoNnq3fTMN2@phenom.ffwll.local>
+ <20210726151657.c46qmkdvqfhlg6ox@gilmour>
+ <YP/P9rJrZyk6zjsT@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xeh2a4js4i5wzele"
+Content-Disposition: inline
+In-Reply-To: <YP/P9rJrZyk6zjsT@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function bcm_enetsw_probe(), 'ret' will be assigned by
-bcm_enet_change_mtu(), so 'ret = 0' make no sense.
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/net/ethernet/broadcom/bcm63xx_enet.c | 1 -
- 1 file changed, 1 deletion(-)
+--xeh2a4js4i5wzele
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/ethernet/broadcom/bcm63xx_enet.c b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
-index 916824cca..509e10013 100644
---- a/drivers/net/ethernet/broadcom/bcm63xx_enet.c
-+++ b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
-@@ -2646,7 +2646,6 @@ static int bcm_enetsw_probe(struct platform_device *pdev)
- 	if (!res_mem || irq_rx < 0)
- 		return -ENODEV;
- 
--	ret = 0;
- 	dev = alloc_etherdev(sizeof(*priv));
- 	if (!dev)
- 		return -ENOMEM;
--- 
-2.20.1.windows.1
+Hi,
 
+On Tue, Jul 27, 2021 at 11:20:54AM +0200, Daniel Vetter wrote:
+> On Mon, Jul 26, 2021 at 05:16:57PM +0200, Maxime Ripard wrote:
+> > Hi Daniel,
+> >=20
+> > On Wed, Jul 21, 2021 at 02:05:01PM +0200, Daniel Vetter wrote:
+> > > On Tue, Jul 20, 2021 at 03:45:19PM +0200, Maxime Ripard wrote:
+> > > > Interactions between bridges, panels, MIPI-DSI host and the compone=
+nt
+> > > > framework are not trivial and can lead to probing issues when
+> > > > implementing a display driver. Let's document the various cases we =
+need
+> > > > too consider, and the solution to support all the cases.
+> > > >=20
+> > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > >=20
+> > > I still have this dream that eventually we resurrect a patch to add
+> > > device_link to bridges/panels (ideally automatically), to help with s=
+ome
+> > > of the suspend/resume issues around here.
+> > >=20
+> > > Will this make things worse?
+> > >=20
+> > > I think it'd be really good to figure that out with some coding, sinc=
+e if
+> > > we have incompatible solution to handle probe issues vs suspend/resume
+> > > issues, we're screwed.
+> > >=20
+> > > Atm the duct-tape is to carefully move things around between suspend =
+and
+> > > suspend_early hooks (and resume and resume_late) and hope it all work=
+s ...
+> >=20
+> > My initial idea to fix this was indeed to use device links. I gave up
+> > after a while since it doesn't look like there's a way to add a device
+> > link before either the bridge or encoder probes.
+> >=20
+> > Indeed the OF-Graph representation is device-specific, so it can't be
+> > generic, and if you need to probe to add that link, well, it's already
+> > too late for the probe ordering :)
+>=20
+> But don't we still need the device_link for suspend/resume and module
+> reload? All very annoying indeed anyway.
 
+I guess we would still need it for proper suspend and resume ordering
+(but I never really worked on that part, so I'm not sure), but it's a
+bit orthogonal to the issue here since those can be added after probe
 
+Maxime
+
+--xeh2a4js4i5wzele
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYQFbTQAKCRDj7w1vZxhR
+xSEmAPwOxQqXDdghNM0po6K1BOfqhKogINFRlAFlP5KeBW1/NAEA2aO57tmIfUAX
+GMjL4BMs5AuKDiq2tZVSX3PJcror+wg=
+=fRPC
+-----END PGP SIGNATURE-----
+
+--xeh2a4js4i5wzele--
