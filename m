@@ -2,153 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D333D95A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFD73D95A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhG1S6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45464 "EHLO
+        id S231397AbhG1S6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhG1S6h (ORCPT
+        with ESMTP id S229565AbhG1S6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:58:37 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFFBC061757;
-        Wed, 28 Jul 2021 11:58:35 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so11517217pja.5;
-        Wed, 28 Jul 2021 11:58:35 -0700 (PDT)
+        Wed, 28 Jul 2021 14:58:40 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662AAC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:58:38 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id y9so4084568iox.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H3d8ZU/3s9mJnVZ38Nbhf4c96oMtxjv/JXd1CeLPtLI=;
-        b=F7lAeSaIz2WZ5JhuPhWiOUVMltOuLas0bslRg9Jk92txIQ4p5iPL/ku2nO30QlNgos
-         FqHudcHLxQvVCvbl+qvoazCwFNVfKgBUsvSKMFvzm2VnZuSPCPXyrpBQ9SiAljxxskd6
-         50ftaKTJq7vTGp1Tz87AKjVnAv7UHA0MRnjFUDp9PhTumfyz0JMIVQGvlKeP42Btd+Wj
-         acmDX53fdAXhJgL6V1bsMlBEL7QM6tTuOYpxqCRtDVMnKk72U2JTrqS9r7LUWtEpoxkS
-         EP3KUvdm+aVX8o505wymbqIfanbGsTsyyrSp0OtDwfLc3e2nEH0zSc7rUoHtiHr14HNc
-         sG4A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UgJXRf6+3XgHXOkAGVUradMJnX44XHUoXK+yva5PRVE=;
+        b=uFfF3Lrh7g1ukNwto85c0hdyiTUJS1UM8jDHog2VUbqYksEJTzgSJ6abpmImv9Fg2o
+         eMyEA99KGMF5ZQF1+63ClOc8Sxll+fVILTgZmJVMsMSb9vR9KwinHX0nL+Sb6bQzgtC8
+         Dn+obQNVEFHqagS6WTMttmhg4WzLdXDV/BI/dRj+s5LedU4+LgANuMwEbh9EEh9842Qv
+         f82tH6lgvaRWDOo0r1jK8a2Kn30N4pVqe/h3L8tXgndFs78t5kytwkE/UFYBIWBKrqv0
+         8GJM4rI9jQC+JOByUWW3YU79ZCyXyFT/E2/AGk1PSKiPy+7kq2XU2zlMy3PPnTK2VaDm
+         DNKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H3d8ZU/3s9mJnVZ38Nbhf4c96oMtxjv/JXd1CeLPtLI=;
-        b=t/pCRGkgrckR4gCa7RwMN824RFnuvp7Ms49PIhosX8uynHbwffCxBPwT//mJk5I1Ya
-         CIg4EejIfWMVh73McctQIG6TnnmW+HDtw+xjuIOs1UIkxNZr38j7/yPuomw6YoZIYxsl
-         j+Tg0QBu/KZFHrfLmCaLSPyWkoT4pVEmpdmyt5vTWWwekA6Hw3rdgFNCMasuhg9QynsW
-         oWs9+amLKSdOukV5QZdMy9xtYnUKmZF4chiahhT6ZZe7joehGPUcT4MKg3fPAdJygpxH
-         jxtjJrVKZCiNReCwcumo5nJT1105gBqn8D0jaquzk7svZY/qwQVpya9jHZWAYzZ5PPJH
-         9qYA==
-X-Gm-Message-State: AOAM530eh/vv4AgTv/F30BZMQGB7s+yMrD3A79cgQbEW7csgrmkE1GPJ
-        dyxXTDvq+4nMjLud7JSimI4=
-X-Google-Smtp-Source: ABdhPJzQNiqXcE4gUcE6XA6V3tXwK65VrKZnHeVWRQSJYSYOw/rgTYvYyi5ft4CgJJNQQwDac6jsKQ==
-X-Received: by 2002:a65:5b4d:: with SMTP id y13mr353307pgr.84.1627498715124;
-        Wed, 28 Jul 2021 11:58:35 -0700 (PDT)
-Received: from localhost ([49.32.197.231])
-        by smtp.gmail.com with ESMTPSA id q13sm6563931pjq.10.2021.07.28.11.58.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UgJXRf6+3XgHXOkAGVUradMJnX44XHUoXK+yva5PRVE=;
+        b=Qz+ioDtFoi2gT1SFqWeOEoMn0cd6/zWTlBLN487uoCyCH+2r+IWtmbMPEBVDUzPBnS
+         lHKWf7f/4tV9NPZfLIeLodDNpcQ8MUM9Hy/JuiX67tZFmMuT/iBBBALpvrfh4KesUFZ1
+         OUv3wO6uVAQ4mr3AjLf9CkxQBY+5XBuHaV74vSZJo4cWNZwnpufICU9FaoVgNFPu2WRN
+         zO+xoCEZov7a0HPeePyVEpQJTAGTkjJrpftl5Y5RCkGl6Infb6vfxo+lhKHiPJXoS1Yr
+         +PRnEyfFw7doSHJgSGWSu9peip8dTcWGlS4nLku9li607nPS8Js4M6Vyd1DZUVGupEoL
+         N0Qw==
+X-Gm-Message-State: AOAM530S0MU0rLz7T4o8BhqBgfXPj8gTYWORgdDCVog/Y/m7n1IF3aZ1
+        BDH6wTextDVfXr8QZv/dPTS4LRa6skfSIQ==
+X-Google-Smtp-Source: ABdhPJyHUZgrAPEWeHqkAKF9fca84iwYaaQ4RsDOJvzRW1pi1GnHABNXm18YGtCSfOFtxa0PY3aLXw==
+X-Received: by 2002:a5d:8b8b:: with SMTP id p11mr742421iol.77.1627498717698;
+        Wed, 28 Jul 2021 11:58:37 -0700 (PDT)
+Received: from localhost ([12.28.44.171])
+        by smtp.gmail.com with ESMTPSA id p8sm538846iol.49.2021.07.28.11.58.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 11:58:34 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 00:28:31 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 4/8] PCI/sysfs: Allow userspace to query and set
- device reset mechanism
-Message-ID: <20210728185831.isdqa5t5oxxjfhnv@archlinux>
-References: <20210728175950.q75qcrfas5mcjych@archlinux>
- <20210728181333.GA836307@bjorn-Precision-5520>
+        Wed, 28 Jul 2021 11:58:37 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        Barry Song <song.bao.hua@hisilicon.com>
+Cc:     Yury Norov <yury.norov@gmail.com>, dave.hansen@intel.com,
+        linux@rasmusvillemoes.dk, rafael@kernel.org, rdunlap@infradead.org,
+        agordeev@linux.ibm.com, sbrivio@redhat.com, jianpeng.ma@intel.com,
+        valentin.schneider@arm.com, peterz@infradead.org,
+        bristot@redhat.com, guodong.xu@linaro.org,
+        tangchengchang@huawei.com, prime.zeng@hisilicon.com,
+        yangyicong@huawei.com, tim.c.chen@linux.intel.com,
+        linuxarm@huawei.com, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com
+Subject: [PATCH] bitmap: extend comment to bitmap_print_to_buf
+Date:   Wed, 28 Jul 2021 11:58:31 -0700
+Message-Id: <20210728185831.215079-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728181333.GA836307@bjorn-Precision-5520>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/28 01:13PM, Bjorn Helgaas wrote:
-> On Wed, Jul 28, 2021 at 11:29:50PM +0530, Amey Narkhede wrote:
-> > On 21/07/27 06:28PM, Bjorn Helgaas wrote:
-> > > On Fri, Jul 09, 2021 at 06:08:09PM +0530, Amey Narkhede wrote:
-> > > > Add reset_method sysfs attribute to enable user to query and set user
-> > > > preferred device reset methods and their ordering.
-> > > >
-> > > > Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
-> > > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > > > ---
-> > > >  Documentation/ABI/testing/sysfs-bus-pci |  19 +++++
-> > > >  drivers/pci/pci-sysfs.c                 | 103 ++++++++++++++++++++++++
-> > > >  2 files changed, 122 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> > > > index ef00fada2..43f4e33c7 100644
-> > > > --- a/Documentation/ABI/testing/sysfs-bus-pci
-> > > > +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> > > > @@ -121,6 +121,25 @@ Description:
-> > > >  		child buses, and re-discover devices removed earlier
-> > > >  		from this part of the device tree.
-> > > >
-> > > > +What:		/sys/bus/pci/devices/.../reset_method
-> > > > +Date:		March 2021
-> > > > +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
-> > > > +Description:
-> > > > +		Some devices allow an individual function to be reset
-> > > > +		without affecting other functions in the same slot.
-> > > > +
-> > > > +		For devices that have this support, a file named
-> > > > +		reset_method will be present in sysfs. Initially reading
-> > > > +		this file will give names of the device supported reset
-> > > > +		methods and their ordering. After write, this file will
-> > > > +		give names and ordering of currently enabled reset methods.
-> > > > +		Writing the name or comma separated list of names of any of
-> > > > +		the device supported reset methods to this file will set
-> > > > +		the reset methods and their ordering to be used when
-> > > > +		resetting the device. Writing empty string to this file
-> > > > +		will disable ability to reset the device and writing
-> > > > +		"default" will return to the original value.
-> > > > +
-> > > >  What:		/sys/bus/pci/devices/.../reset
-> > > >  Date:		July 2009
-> > > >  Contact:	Michael S. Tsirkin <mst@redhat.com>
-> > >
-> > [...]
-> >
-> > > > +		int i;
-> > > > +
-> > > > +		if (sysfs_streq(name, ""))
-> > > > +			continue;
-> > > > +
-> > > > +		name = strim(name);
-> > > > +
-> > > > +		for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
-> > > > +			if (sysfs_streq(name, pci_reset_fn_methods[i].name) &&
-> > > > +			    !pci_reset_fn_methods[i].reset_fn(pdev, 1)) {
-> > > > +				reset_methods[n++] = i;
-> > >
-> > > Can we build this directly in pdev->reset_methods[] so we don't need
-> > > the memcpy() below?
-> > >
-> > This is to avoid writing partial values directly to dev->reset_methods.
-> > So for example if user writes flr,unsupported_value then
-> > dev->reset_methods should not be modified even though flr is valid reset
-> > method in this example to avoid partial writes. Either operation(in this
-> > case writing supported reset methods to reset_method attr) succeeds
-> > completely or it fails othewise.
->
-> I guess the question is, if somebody writes
->
->   flr junk bus
->
-> and we set the supported methods to "flr bus", is that OK?  It seems
-> OK to me; obviously we have to protect ourselves from attack, but
-> over-zealous checking can make things unnecessarily complicated.
-The problem is once we encounter "junk" we return -EINVAL so in your
-example we only set flr.
+Extend comment to new function to warn potential users about caveats.
 
-Thanks,
-Amey
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ lib/bitmap.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/lib/bitmap.c b/lib/bitmap.c
+index 56bcffe2fa8c..b9f557ca668c 100644
+--- a/lib/bitmap.c
++++ b/lib/bitmap.c
+@@ -545,6 +545,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
+  * mainly serves bin_attribute which doesn't work with exact one page, and it
+  * can break the size limit of converted decimal list and hexadecimal bitmask.
+  *
++ * WARNING!
++ *
++ * This function is not a replacement for sprintf() or bitmap_print_to_pagebuf().
++ * It is intended to workaround sysfs limitations discussed above and should be
++ * used carefully in general case for the following reasons:
++ *  - Time complexity is O(nbits^2/count), comparing to O(nbits) for snprintf().
++ *  - Memory complexity is O(nbits), comparing to O(1) for snprintf().
++ *  - @off and @count are NOT offset and number of bits to print.
++ *  - If printing part of bitmap as list, the resulting string is not a correct
++ *    list representation of bitmap. Particularly, some bits within or out of
++ *    related interval may be erroneously set or unset. The format of the string
++ *    may be broken, so bitmap_parselist-like parser may fail parsing it.
++ *  - If printing the whole bitmap as list by parts, user must ensure the order
++ *    of calls of the function such that the offset is incremented linearly.
++ *  - If printing the whole bitmap as list by parts, user must keep bitmap
++ *    unchanged between the very first and very last call. Otherwise concatenated
++ *    result may be incorrect, and format may be broken.
++ *
+  * Returns the number of characters actually printed to @buf
+  */
+ int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+-- 
+2.30.2
+
