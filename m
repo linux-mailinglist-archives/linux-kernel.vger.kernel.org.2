@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312BF3D9360
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FF93D9361
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhG1Qmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:42:54 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:37591 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhG1Qmx (ORCPT
+        id S230163AbhG1QnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:43:12 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58028 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhG1QnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:42:53 -0400
-Received: by mail-oi1-f174.google.com with SMTP id u10so4476242oiw.4;
-        Wed, 28 Jul 2021 09:42:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hoahdUoTJmgO90Id083vGi+pQt/fW1gbAbXkiapC8Gg=;
-        b=oXdi/seVs4NEdkpOLj92I07GeM/4MkItYmLl6E1ZCl1Z3tq4ZgIwbs66kiF/IScMl7
-         jIv4BY0l81IbyYmgqi3MnZnm1WFxRDzc0ar6oBGQpzR6HqoVg/DPy8jjsqtn3yMM+UuV
-         I+DHNwdOs6conHQnX1q+Z8/UIV80/btldXLnVRrkYnzUuEHRYKhrj7qWXeOXGyERoXz1
-         kHsGhZbomjKaliqW1lnHz4TLbMVNpolrxj3VIadFDqFLa9X1rp24KEeWXNq6/9Zok6oR
-         PPjuppwWpYofms82v1ZeBhusZJbKtaKWpKLGURrdRwSna56U4mVE5lgjuvnWG1yVUr+s
-         OcEg==
-X-Gm-Message-State: AOAM533+yWzvqgHAxrbTpia/aGVd2Kn+An/UoO9Bgn+XzBm/Mkas5zKq
-        lvE3GJLczlACfwvE65S+RxEHljbyXZyoPyEXFw4=
-X-Google-Smtp-Source: ABdhPJwma7J+ihIe5z42Hi+xHSqTodcKxI1fqLDMHRGUvD99vtD/3Roejnt3z6RuFovlJ5Tmt1wT5C/xFjzJyyuist0=
-X-Received: by 2002:aca:3502:: with SMTP id c2mr7368957oia.157.1627490570388;
- Wed, 28 Jul 2021 09:42:50 -0700 (PDT)
+        Wed, 28 Jul 2021 12:43:11 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9AC4A22331;
+        Wed, 28 Jul 2021 16:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627490588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=03doPF0Hm9VX9+U1BaRb0OdFxpJZ53fMHg22McZ99ig=;
+        b=eaol6RxXf7+m2YKwFbYesAbm4xgVs/1VQcxOfo++HD7LxE1zGg6ukvWgka8lVscyStIBep
+        e6F0QMB3gKyfxylz7xo9HPQ0proQV82xTS1TyNw0T6g1c0hz0J+T4LZL2hYtLcrqG9dF85
+        db4KjKnW2o2SWDr5LuCOQWBurbOrTOs=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 918D4A3B83;
+        Wed, 28 Jul 2021 16:43:07 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 18:43:07 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Wang Hai <wanghai38@huawei.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        wangkefeng.wang@huawei.com, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm/memcg: fix NULL pointer dereference in
+ memcg_slab_free_hook()
+Message-ID: <YQGJG6BWQIYWeiK2@dhcp22.suse.cz>
+References: <20210728091348.272714-1-wanghai38@huawei.com>
+ <YQFaPwYzzy0UPzNI@dhcp22.suse.cz>
+ <CALvZod7PzQ8dCpcBr7F1eKCDWCZ+RhHCzHj3pC3QS_CJAYSfDw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210727161824.425564-1-srinivas.pandruvada@linux.intel.com>
-In-Reply-To: <20210727161824.425564-1-srinivas.pandruvada@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 28 Jul 2021 18:42:39 +0200
-Message-ID: <CAJZ5v0hBFOY2md2iB8TN7KGPBPZF4=vKdfwX0uN7DwLuhccf-w@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: DPTF: Fix reading of attributes
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7PzQ8dCpcBr7F1eKCDWCZ+RhHCzHj3pC3QS_CJAYSfDw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 6:18 PM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> The current assumption that methods to read PCH FIVR attributes will
-> return integer, is not correct. There is no good way to return integer
-> as negative numbers are also valid.
->
-> These read methods return a package of integers. The first integer returns
-> status, which is 0 on success and any other value for failure. When the
-> returned status is zero, then the second integer returns the actual value.
->
-> This change fixes this issue by replacing acpi_evaluate_integer() with
-> acpi_evaluate_object() and use acpi_extract_package() to extract results.
->
-> Fixes: 2ce6324eadb01 ("ACPI: DPTF: Add PCH FIVR participant driver")
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: stable@vger.kernel.org # 5.10+
+On Wed 28-07-21 07:10:26, Shakeel Butt wrote:
+> +Roman
+> 
+> On Wed, Jul 28, 2021 at 6:23 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 28-07-21 17:13:48, Wang Hai wrote:
+> > > When I use kfree_rcu() to free a large memory allocated by
+> > > kmalloc_node(), the following dump occurs.
+> > >
+> > > BUG: kernel NULL pointer dereference, address: 0000000000000020
+> > > [...]
+> > > Oops: 0000 [#1] SMP
+> > > [...]
+> > > Workqueue: events kfree_rcu_work
+> > > RIP: 0010:__obj_to_index include/linux/slub_def.h:182 [inline]
+> > > RIP: 0010:obj_to_index include/linux/slub_def.h:191 [inline]
+> > > RIP: 0010:memcg_slab_free_hook+0x120/0x260 mm/slab.h:363
+> > > [...]
+> > > Call Trace:
+> > >  kmem_cache_free_bulk+0x58/0x630 mm/slub.c:3293
+> > >  kfree_bulk include/linux/slab.h:413 [inline]
+> > >  kfree_rcu_work+0x1ab/0x200 kernel/rcu/tree.c:3300
+> > >  process_one_work+0x207/0x530 kernel/workqueue.c:2276
+> > >  worker_thread+0x320/0x610 kernel/workqueue.c:2422
+> > >  kthread+0x13d/0x160 kernel/kthread.c:313
+> > >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> > >
+> > > When kmalloc_node() a large memory, page is allocated, not slab,
+> > > so when freeing memory via kfree_rcu(), this large memory should not
+> > > be used by memcg_slab_free_hook(), because memcg_slab_free_hook() is
+> > > is used for slab.
+> > >
+> > > So in this case, there is no need to do anything with this large
+> > > page in memcg_slab_free_hook(), just skip it.
+> > >
+> > > Fixes: 270c6a71460e ("mm: memcontrol/slab: Use helpers to access slab page's memcg_data")
+> >
+> > Are you sure that this commit is really breaking the code. Unless I have
+> > missed something there shouldn't be any real change wrt. large
+> > allocations here. page_has_obj_cgroups is just a different name for what
+> > what page_objcgs is giving us.
+> 
+> Actually they are different. For MEMCG_DATA_KMEM page,
+> page_has_obj_cgroups() will return false while page_objcgs() on
+> non-VM_DEBUG kernels will return "struct obj_cgroup *" instead of
+> "struct obj_cgroup **".
 
-Applied as 5.14-rc material.
-
-I'll apply the [2/2[ when this one is merged.
-
-> ---
->  drivers/acpi/dptf/dptf_pch_fivr.c | 51 ++++++++++++++++++++++++++-----
->  1 file changed, 43 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/acpi/dptf/dptf_pch_fivr.c b/drivers/acpi/dptf/dptf_pch_fivr.c
-> index 5fca18296bf6..550b9081fcbc 100644
-> --- a/drivers/acpi/dptf/dptf_pch_fivr.c
-> +++ b/drivers/acpi/dptf/dptf_pch_fivr.c
-> @@ -9,6 +9,42 @@
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->
-> +struct pch_fivr_resp {
-> +       u64 status;
-> +       u64 result;
-> +};
-> +
-> +static int pch_fivr_read(acpi_handle handle, char *method, struct pch_fivr_resp *fivr_resp)
-> +{
-> +       struct acpi_buffer resp = { sizeof(struct pch_fivr_resp), fivr_resp};
-> +       struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> +       struct acpi_buffer format = { sizeof("NN"), "NN" };
-> +       union acpi_object *obj;
-> +       acpi_status status;
-> +       int ret = -EFAULT;
-> +
-> +       status = acpi_evaluate_object(handle, method, NULL, &buffer);
-> +       if (ACPI_FAILURE(status))
-> +               return ret;
-> +
-> +       obj = buffer.pointer;
-> +       if (!obj || obj->type != ACPI_TYPE_PACKAGE)
-> +               goto release_buffer;
-> +
-> +       status = acpi_extract_package(obj, &format, &resp);
-> +       if (ACPI_FAILURE(status))
-> +               goto release_buffer;
-> +
-> +       if (fivr_resp->status)
-> +               goto release_buffer;
-> +
-> +       ret = 0;
-> +
-> +release_buffer:
-> +       kfree(buffer.pointer);
-> +       return ret;
-> +}
-> +
->  /*
->   * Presentation of attributes which are defined for INT1045
->   * They are:
-> @@ -23,15 +59,14 @@ static ssize_t name##_show(struct device *dev,\
->                            char *buf)\
->  {\
->         struct acpi_device *acpi_dev = dev_get_drvdata(dev);\
-> -       unsigned long long val;\
-> -       acpi_status status;\
-> +       struct pch_fivr_resp fivr_resp;\
-> +       int status;\
->  \
-> -       status = acpi_evaluate_integer(acpi_dev->handle, #method,\
-> -                                      NULL, &val);\
-> -       if (ACPI_SUCCESS(status))\
-> -               return sprintf(buf, "%d\n", (int)val);\
-> -       else\
-> -               return -EINVAL;\
-> +       status = pch_fivr_read(acpi_dev->handle, #method, &fivr_resp);\
-> +       if (status)\
-> +               return status;\
-> +\
-> +       return sprintf(buf, "%llu\n", fivr_resp.result);\
->  }
->
->  #define PCH_FIVR_STORE(name, method) \
-> --
-> 2.31.1
->
+Right. Thanks for the clarification. I have missed that subtle
+difference.
+-- 
+Michal Hocko
+SUSE Labs
