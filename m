@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9446A3D8540
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92303D8542
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233181AbhG1BVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
+        id S233901AbhG1BWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233008AbhG1BVg (ORCPT
+        with ESMTP id S233008AbhG1BWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:21:36 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF578C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:21:34 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so1874454pjh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qb6AmUun9APuPrgzQxqKUIOoVaaUXmZ7gAzLjwZEots=;
-        b=J1d4jufgbTDIilvtvajEVip/DQBZZaoteqloKCVqCncgADyy/7p+Sy7M+xFjGsKqsh
-         JsYLj4SGbO0kcXmd28grb1CRmsyQC30p/YzuMKh0/ymzJ+xogDXu1HRj6fCaJpHl+8cB
-         VWP8qHJTf/lrWjQtW5woxf6YwW8OOv13pntps=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qb6AmUun9APuPrgzQxqKUIOoVaaUXmZ7gAzLjwZEots=;
-        b=e0qkT/S8A/xmyRusvgW/uDdOwyW4DShkSKsskhNrECuLQOaBuMB4rDSV/e5G5GzXEZ
-         /mrdPsgJFY1LJCKTH2+mNGCf/mmdjjacwY7k2FWzBVKALJ/nSFxiDiLYkqq+LvRZNtNo
-         zrpLPGdK+SYODh9DANvTZ6mTc+ZrMYUvc1Hxh6DlFQxJt4l4A6kFhvpmluZkyIaNVpyv
-         WpOhxzVtP5qCPXzc29EbgEC/uqCYYg1u2EA3FMnuMvnSIrNhFthm8kqIa2uhv8cYZ04w
-         ZCKqouG1Aui9TG2JLBdmmiJwPk0VjPCWoQWuI4lvXNstEbMfAl7kpfGf4192WNN28+c6
-         XJ0A==
-X-Gm-Message-State: AOAM532GfXy0J7AhijDeZtjlcdWWaGCltYjYnOsWbDhQFrX6LpcQEYtn
-        NvRm3dNUEf1YdypD5BYYcQ1yzA==
-X-Google-Smtp-Source: ABdhPJwiVrFwcUA4wc6qcaXZTfTgMANGRyCc4k5ykDEYlJd0wxkyOpdvIDZci6McVQSa8l1PIpzHCA==
-X-Received: by 2002:a17:903:30c3:b029:12c:1bf3:68d7 with SMTP id s3-20020a17090330c3b029012c1bf368d7mr11610278plc.73.1627435294347;
-        Tue, 27 Jul 2021 18:21:34 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:ba3e:509b:495:ec84])
-        by smtp.gmail.com with ESMTPSA id y28sm5080048pff.137.2021.07.27.18.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 18:21:33 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 10:21:29 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lib/nmi_backtrace: Serialize even messages about idle
- CPUs
-Message-ID: <YQCxGfFUMKfcUPgK@google.com>
-References: <20210727080939.27193-1-pmladek@suse.com>
- <87r1fjiwsn.fsf@jogness.linutronix.de>
+        Tue, 27 Jul 2021 21:22:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC915C061757;
+        Tue, 27 Jul 2021 18:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=j5GutQxzHEwJUpvD+PoxPI7xCYldNc9Co9wCdAd7+DY=; b=aJ5OQrFrVT0TyHsJE26cfHOC8M
+        mwn70MgmW1akXnWiL6397E4oDjB7HNT01RRKDF6LA2k7hIC4kL370GfIjdQbd7+LDtM0l/0YZwc0y
+        XAh4RE2kq5vJRbq8YKKNCQXu4qDUMeTtQzJx9CKGssWvxq4raEq0o7r7D+//fDfBKY/QVCIRQeRu+
+        v8BUlzXDLgYBAAenvopb80y5MnBrQLAuuk24enxKnx011RtSFLB95mPZvOxWxmL8FE+noCdDQi+Lq
+        gnxnu8PXnjIWk+gewSa0P4XN3HCyp2lKvCUmIh8qBQSM65HW9AOxVDi5bmxTiT2wLx1IFELXvJ8DL
+        g6/+BcWw==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8YGt-00GmwT-21; Wed, 28 Jul 2021 01:22:07 +0000
+Subject: Re: [PATCH] scripts: make some scripts executable
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210727153924.79473-1-masahiroy@kernel.org>
+ <YQAsth0TA3AwtxvK@kroah.com>
+ <CAK7LNAQM2WzfHdJhukiaeq=qYtJ7U8UbMZdFWSuAJG86bBVHnA@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <508c6a7a-0de1-a102-4a48-d29eae188511@infradead.org>
+Date:   Tue, 27 Jul 2021 18:22:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r1fjiwsn.fsf@jogness.linutronix.de>
+In-Reply-To: <CAK7LNAQM2WzfHdJhukiaeq=qYtJ7U8UbMZdFWSuAJG86bBVHnA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/07/27 17:53), John Ogness wrote:
-> On 2021-07-27, Petr Mladek <pmladek@suse.com> wrote:
-> > The commit 55d6af1d66885059ffc2a ("lib/nmi_backtrace: explicitly serialize
-> > banner and regs") serialized backtraces from more CPUs using the re-entrant
-> > printk_printk_cpu lock. It was a preparation step for removing the obsolete
-> > nmi_safe buffers.
-> >
-> > The single-line messages about idle CPUs were not serialized against other
-> > CPUs and might appear in the middle of backtrace from another CPU,
-> > for example:
-> >
-> > [56394.590068] NMI backtrace for cpu 2
-> > [56394.590069] CPU: 2 PID: 444 Comm: systemd-journal Not tainted 5.14.0-rc1-default+ #268
-> > [56394.590071] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-> > [56394.590072] RIP: 0010:lock_is_held_type+0x0/0x120
-> > [56394.590071] NMI backtrace for cpu 0 skipped: idling at native_safe_halt+0xb/0x10
-> > [56394.590076] Code: a2 38 ff 0f 0b 8b 44 24 04 eb bd 48 8d ...
-> > [56394.590077] RSP: 0018:ffffab02c07c7e68 EFLAGS: 00000246
-> > [56394.590079] RAX: 0000000000000000 RBX: ffff9a7bc0ec8a40 RCX: ffffffffaab8eb40
-> >
-> > It might cause confusion what CPU the following lines belongs to and
-> > whether the backtraces are really serialized.
+On 7/27/21 6:03 PM, Masahiro Yamada wrote:
+> On Wed, Jul 28, 2021 at 12:56 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>>
+>> On Wed, Jul 28, 2021 at 12:39:24AM +0900, Masahiro Yamada wrote:
+>>> Set the x bit to some scripts to make them directly executable.
+>>>
+>>> Especially, scripts/checkdeclares.pl is not hooked by anyone.
+>>> It should be executable since it is tedious to type
+>>> 'perl scripts/checkdeclares.pl'.>>>
+>>> The original patch [1] set the x bit properly, but it was lost when
+>>> it was merged as commit 21917bded72c ("scripts: a new script for
+>>> checking duplicate struct declaration").
+>>>
+>>> [1] https://lore.kernel.org/lkml/20210401110943.1010796-1-wanjiabing@vivo.com/
+>>>
+>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>>> ---
+>>>
+>>>  scripts/checkdeclares.pl               | 0
+>>>  scripts/gcc-plugins/gen-random-seed.sh | 0
+>>>  scripts/syscallnr.sh                   | 0
+>>>  scripts/xen-hypercalls.sh              | 0
+>>>  4 files changed, 0 insertions(+), 0 deletions(-)
+>>>  mode change 100644 => 100755 scripts/checkdeclares.pl
+>>>  mode change 100644 => 100755 scripts/gcc-plugins/gen-random-seed.sh
+>>>  mode change 100644 => 100755 scripts/syscallnr.sh
+>>>  mode change 100644 => 100755 scripts/xen-hypercalls.sh
+>>
+>> Please no, as other tools (i.e. patch), can not set mode bits, and some
+>> people still rely on patch in places.
+>>
+>> If these need to be called by other parts of the build, we should
+>> execute them properly, not rely on the mode settings.
+>>
+>> thanks,
+>>
+>> greg k-h
 > 
-> I originally implemented this, but later decided against it because it
-> causes idle CPUs to begin busy-waiting in NMI context in order to log a
-> single line saying they are idle. If the user is aware that there is
-> only 1 line for the idle message, then the user knows that it isn't
-> causing a problem for reading the stack trace.
+> 
+> I believe tools should be executable.
+> 
+> If the x bit were missing in scripts/checkpatch.pl
+> for example, we would need to run 'perl scripts/checkpatch.pl'
+> instead of 'scripts/checkpatch.pl'. That is annoying.
+> 
+> 
+> Most of the scripts under the scripts/ directory
+> are already executable, and we rely on that fact.
+> Some of them are run directly, and I do not hear
+> from anyone who complains about that.
+> 
+> 
+...
+> 
+> 
+> Even if it did not work on somebody's tools,
+> the diff files are provided for bug-fix
+> releases (for example, 5.13.x), not the entire source.
+> 
+> Developers (except Andrew Morton) use git
+> to merge patches like this, so I see no issue
+> on changing the mode.
 
-I agree, but don't have any strong opinion against the patch.
+Sure, once the changes are in a git tree, it's not an
+issue, so I don't see a problem with it.
+Someone may have to go a few weeks without such a change,
+but that's not a big deal.
 
-> Feel free to add:
->
-> Reviewed-by: John Ogness <john.ogness@linutronix.de>
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+-- 
+~Randy
+
