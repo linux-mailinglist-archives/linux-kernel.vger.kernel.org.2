@@ -2,253 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973FC3D8CC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CE73D8CCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236075AbhG1LbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234517AbhG1LbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:31:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8BB960724;
-        Wed, 28 Jul 2021 11:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627471868;
-        bh=GrTwMapp7eNH+1uVmCWGuecyOBz6cQ7nTF/0BCD/PFg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bNOYbnfQHcgpwd2cb+INWPFsKF6j5ddWbkqduDV+sfL5Mo1TcWRcdZq5Q0qdEQkeQ
-         MTjv7RKzZnYD/DaG7NhfiV02mjHtek9OEp8IjuhnC8jQwApDf99enFN35c8wpRRk/c
-         Nn5GiEPD7Btb81RTR98NZPn7cKCrw6ydvR2SjFDYc73B9EwM3eYsnUGaBaAhkxx5WA
-         BDk+1OcUckNp5Oal/UPuRB3yW/7QrP6PRW12aKIrjQpQXIA/kNhWk9R4dxZT2y+XT+
-         hDsywHF4PXdRaoyTJenNhODSrnh+MldMYYmotT9xfrzsd9prcHZKyK5Pf64dLiTjQh
-         3ZqCO0ft6hHkw==
-Date:   Wed, 28 Jul 2021 13:31:02 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     <zohar@linux.ibm.com>, <gregkh@linuxfoundation.org>,
-        <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC][PATCH v2 02/12] diglim: Basic definitions
-Message-ID: <20210728133102.339c7b8e@coco.lan>
-In-Reply-To: <20210726163700.2092768-3-roberto.sassu@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
-        <20210726163700.2092768-3-roberto.sassu@huawei.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S236106AbhG1Lc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234517AbhG1LcZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:32:25 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D6AC061757;
+        Wed, 28 Jul 2021 04:32:23 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so9535597pjb.0;
+        Wed, 28 Jul 2021 04:32:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cLjK74rSDii26o2+bmGEvFRa9gDgHeDosVZc4fFTb3A=;
+        b=mV0U6bextZQi7jhcgMXmmovxIQGBy9TYdBL7EzBCDpW4rSPaMPFQ2TEcENppq9NQ8r
+         R+SyfLV1OZSU1s4Mxjh/Byg6V0wCbiLW0Xd+gXOAJC9aRTORTqDo4JAZMljr4lH6O4IR
+         /eEiGlYEUsEDh3e2gPlb7xuBHN0azOfgTYrhnAMeYHo7DculIS0b4oKP2b9LeuubmOt2
+         LdNE13bTSA/BBwDDOfTrI24/VCEOPZnk38wI9cTqu8y3qBgjvCPTy+ynGUUnhPNT6it2
+         5yHhUmSrRK50CPq6G3GIR5lClnKdruJR6QLmU2zkO9/ZUAaoxVE/7mRtqAjtO+5jyex9
+         qUHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cLjK74rSDii26o2+bmGEvFRa9gDgHeDosVZc4fFTb3A=;
+        b=cvvh4DDnt+DzqVktL8RyaQtH5rZkhZscYYJX0GhzeUwqAY6E/Uc3r4JBKNI+FE+ww8
+         LvryjehlBFr8ePRMr3m82AhYmfs2x/sfjI/YLxJJqt6VHqkHLnOwuJKsFxtSQU7qyN9I
+         S5DUc4JmO4Ma6UeHFYKmbHVmXbEUdBoJfg4d+6d1o5oJ1yoFKbzYglwSDjc6iCPgA6Bi
+         NczXtzxNRnFltaAjp5ZK48mutmxUhdeCdVHeAheICj212ktDEtzqQQ18jhVRW2jHGq6U
+         AkIg3AdPtr6Cj1gZRf4kSK5Mv6LuX2Ww2PbMaWaiCQey0YafvaRJiWP8/pWMGHJQOppc
+         hr6A==
+X-Gm-Message-State: AOAM533tViHfVUJe4MJzZvhU+Dd/CgEnTVe6Q8h3JKSqtnh+l+RTwJ71
+        APdoGfi0jDV8oUVmCmYM+kzoQNDGWz4j0z9iFeQ=
+X-Google-Smtp-Source: ABdhPJx5H6W7k5XPlKtzhyHwyyXXs86IPgX+GmGETmLR+O7K4ve6SrhrPEP0U67IOjZOmPWGe1dAHHqkOUJTmhtM6qU=
+X-Received: by 2002:a62:84cb:0:b029:3a6:3dad:e271 with SMTP id
+ k194-20020a6284cb0000b02903a63dade271mr1302061pfd.40.1627471943109; Wed, 28
+ Jul 2021 04:32:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
+ <20210728103551.GA31304@amd> <CAHp75VcrYRkzGwe=K98Augy=jb2RtWjiF6P6kietN8Lz7f_okA@mail.gmail.com>
+ <20210728111701.GA894@amd>
+In-Reply-To: <20210728111701.GA894@amd>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 28 Jul 2021 14:31:43 +0300
+Message-ID: <CAHp75VdAN30qE_St3d3+6uy9m0tAJErAyobMoPAnPu3Pd3MXvA@mail.gmail.com>
+Subject: Re: LED subsystem lagging maintenance
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 26 Jul 2021 18:36:50 +0200
-Roberto Sassu <roberto.sassu@huawei.com> escreveu:
+On Wed, Jul 28, 2021 at 2:17 PM Pavel Machek <pavel@ucw.cz> wrote:
 
-> Introduce the basic definitions, exported to user space, to use digest
-> lists. The definitions, added to include/uapi/linux/diglim.h, are
-> documented in Documentation/security/diglim/implementation.rst.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  .../security/diglim/implementation.rst        | 97 +++++++++++++++++++
->  Documentation/security/diglim/index.rst       |  1 +
->  MAINTAINERS                                   |  2 +
->  include/uapi/linux/diglim.h                   | 51 ++++++++++
->  4 files changed, 151 insertions(+)
->  create mode 100644 Documentation/security/diglim/implementation.rst
->  create mode 100644 include/uapi/linux/diglim.h
-> 
-> diff --git a/Documentation/security/diglim/implementation.rst b/Documentation/security/diglim/implementation.rst
-> new file mode 100644
-> index 000000000000..59a180b3bb3f
-> --- /dev/null
-> +++ b/Documentation/security/diglim/implementation.rst
-> @@ -0,0 +1,97 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +Implementation
-> +==============
-> +
-> +This section describes the implementation of DIGLIM.
-> +
-> +
-> +Basic Definitions
-> +-----------------
-> +
-> +This section introduces the basic definitions required to use DIGLIM.
-> +
-> +
-> +Compact Digest List Format
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +
-> +.. kernel-doc:: include/uapi/linux/diglim.h
-> +   :identifiers: compact_list_hdr
-> +
-> +Compact Types
-> +.............
-> +
-> +Digests can be of different types:
-> +
-> +- ``COMPACT_PARSER``: digests of executables which are given the ability to
-> +  parse digest lists not in the compact format and to upload to the kernel
-> +  the digest list converted to the compact format;
-> +- ``COMPACT_FILE``: digests of regular files;
-> +- ``COMPACT_METADATA``: digests of file metadata (e.g. the digest
-> +  calculated by EVM to verify a portable signature);
-> +- ``COMPACT_DIGEST_LIST``: digests of digest lists (only used internally by
-> +  the kernel).
-> +
-> +Different users of DIGLIM might query digests with different compact types.
-> +For example, IMA would be interested in COMPACT_FILE, as it deals with
-> +regular files, while EVM would be interested in COMPACT_METADATA, as it
-> +verifies file metadata.
-> +
-> +
-> +Compact Modifiers
-> +.................
-> +
-> +Digests can also have specific attributes called modifiers (bit position):
-> +
-> +- ``COMPACT_MOD_IMMUTABLE``: file content or metadata should not be
-> +  modifiable.
-> +
-> +IMA might use this information to deny open for writing, or EVM to deny
-> +setxattr operations.
-> +
-> +
-> +Actions
-> +.......
-> +
-> +This section defines a set of possible actions that have been executed on
-> +the digest lists (bit position):
-> +
-> +- ``COMPACT_ACTION_IMA_MEASURED``: the digest list has been measured by
-> +  IMA;
-> +- ``COMPACT_ACTION_IMA_APPRAISED``: the digest list has been successfully
-> +  appraised by IMA;
-> +- ``COMPACT_ACTION_IMA_APPRAISED_DIGSIG``: the digest list has been
-> +  successfully appraised by IMA by verifying a digital signature.
-> +
-> +This information might help users of DIGLIM to decide whether to use the
-> +result of a queried digest.
-> +
-> +For example, if a digest belongs to a digest list that was not measured
-> +before, IMA should ignore the result of the query, as the measurement list
-> +sent to remote verifiers would lack which digests have been uploaded to the
-> +kernel.
-> +
-> +
-> +Compact Digest List Example
-> +...........................
-> +
-> +::
-> +
-> + version: 1, type: 2, modifiers: 0 algo: 4, count: 3, datalen: 96
-> + <SHA256 digest1><SHA256 digest2><SHA256 digest3>
-> + version: 1, type: 3, modifiers: 1 algo: 6, count: 2, datalen: 128
-> + <SHA512 digest1><SHA512 digest2>
-> +
-> +This digest list consists of two blocks. The first block contains three
-> +SHA256 digests of regular files. The second block contains two SHA512
-> +digests of immutable metadata.
-> +
-> +
-> +Compact Digest List Operations
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +
-> +Finally, this section defines the possible operations that can be performed
-> +with digest lists:
-> +
-> +- ``DIGEST_LIST_ADD``: the digest list is being added;
-> +- ``DIGEST_LIST_DEL``: the digest list is being deleted.
-> diff --git a/Documentation/security/diglim/index.rst b/Documentation/security/diglim/index.rst
-> index 0fc5ab019bc0..4771134c2f0d 100644
-> --- a/Documentation/security/diglim/index.rst
-> +++ b/Documentation/security/diglim/index.rst
-> @@ -9,3 +9,4 @@ Digest Lists Integrity Module (DIGLIM)
->  
->     introduction
->     architecture
-> +   implementation
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c914dadd7e65..f61f5239468a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5458,8 +5458,10 @@ L:	linux-integrity@vger.kernel.org
->  S:	Supported
->  T:	git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
->  F:	Documentation/security/diglim/architecture.rst
-> +F:	Documentation/security/diglim/implementation.rst
->  F:	Documentation/security/diglim/index.rst
->  F:	Documentation/security/diglim/introduction.rst
-> +F:	include/uapi/linux/diglim.h
->  
->  DIOLAN U2C-12 I2C DRIVER
->  M:	Guenter Roeck <linux@roeck-us.net>
-> diff --git a/include/uapi/linux/diglim.h b/include/uapi/linux/diglim.h
-> new file mode 100644
-> index 000000000000..8a33d1f0fefb
-> --- /dev/null
-> +++ b/include/uapi/linux/diglim.h
-> @@ -0,0 +1,51 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
-> + *
-> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> + *
-> + * DIGLIM definitions exported to user space, useful for generating digest
-> + * lists.
-> + */
-> +
-> +#ifndef _UAPI__LINUX_DIGLIM_H
-> +#define _UAPI__LINUX_DIGLIM_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/hash_info.h>
-> +
-> +enum compact_types { COMPACT_KEY, COMPACT_PARSER, COMPACT_FILE,
-> +		     COMPACT_METADATA, COMPACT_DIGEST_LIST, COMPACT__LAST };
-> +
-> +enum compact_modifiers { COMPACT_MOD_IMMUTABLE, COMPACT_MOD__LAST };
-> +
-> +enum compact_actions { COMPACT_ACTION_IMA_MEASURED,
-> +		       COMPACT_ACTION_IMA_APPRAISED,
-> +		       COMPACT_ACTION_IMA_APPRAISED_DIGSIG,
-> +		       COMPACT_ACTION__LAST };
-> +
-> +enum ops { DIGEST_LIST_ADD, DIGEST_LIST_DEL, DIGEST_LIST_OP__LAST };
-> +
-> +/**
-> + * struct compact_list_hdr - header of the following concatenated digests
-> + * @version: version of the digest list
-> + * @_reserved: field reserved for future use
-> + * @type: type of digest list among enum compact_types
-> + * @modifiers: additional attributes among (1 << enum compact_modifiers)
-> + * @algo: digest algorithm
-> + * @count: number of digests
-> + * @datalen: length of concatenated digests
-> + *
-> + * A digest list is a set of blocks composed by struct compact_list_hdr and
-> + * the following concatenated digests.
-> + */
-> +struct compact_list_hdr {
-> +	__u8 version;
-> +	__u8 _reserved;
-> +	__le16 type;
-> +	__le16 modifiers;
-> +	__le16 algo;
-> +	__le32 count;
-> +	__le32 datalen;
-> +} __packed;
-> +#endif /*_UAPI__LINUX_DIGLIM_H*/
+...
 
-Besides Greg's notes, I'm wondering why to enforce a particular
-endness here. I mean, this is uAPI. I would expect it to use the
-CPU endianness instead, in order to avoid uneeded conversions.
+> > > To be honest, patches were not applied because they were not that
+> > > important to begin with,
+> >
+> > Reference counting disbalance is not critical, but what is then?
+>
+> Things with end-user impact. What is end-user impact here? How much
+> memory is leaked in usual config?
 
-Thanks,
-Mauro
+Not sure what "usual" means, but if the user has a device in question,
+then it's struct fwnode_handle (7 pointers + u8, unpacked) per each
+modprobe. Taking into account that there are usually not so many of
+the same LED devices in the system  and the user rarely does
+rmmod/insmod cycle, I can say a few dozens of bytes.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
