@@ -2,206 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BE33D94EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0563D94EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhG1SDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:03:22 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:53781 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhG1SDT (ORCPT
+        id S230426AbhG1SEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhG1SEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:03:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627495398; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=n8zu2+yyYfKoRSknIfHiAcFCRFragvnkngkp+ZsvrDo=; b=OZ8lIJyC4/qianASqHdjxadJvs/nHeA2CUWYvqlMQ3W+k7ph+hCx60om6W4rpiAH8AwoaAsT
- 8KI10rlOCw+eO1A2wCRTitmqpiF/qaeyU5D/7dio3blbtbSgHytpj389wKX6kEq6NWEyt+gj
- ywxxNkFMXdiZgfXOSi9rzgyWBfM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 61019bcf17c2b4047d3fee24 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 18:02:55
- GMT
-Sender: collinsd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 80A93C433F1; Wed, 28 Jul 2021 18:02:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: collinsd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0620DC4338A;
-        Wed, 28 Jul 2021 18:02:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0620DC4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=collinsd@codeaurora.org
-From:   David Collins <collinsd@codeaurora.org>
-To:     Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     David Collins <collinsd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Subject: [RESEND PATCH] spmi: spmi-pmic-arb: fix irq_set_type race condition
-Date:   Wed, 28 Jul 2021 11:02:09 -0700
-Message-Id: <20210728180209.14764-1-collinsd@codeaurora.org>
-X-Mailer: git-send-email 2.17.1
+        Wed, 28 Jul 2021 14:04:21 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B494C061757;
+        Wed, 28 Jul 2021 11:04:19 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id z24so3099555qkz.7;
+        Wed, 28 Jul 2021 11:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JfbD5ep0NnF8FbqtBMbVTm96BShvDEthsXDXWrAdkOY=;
+        b=AEDT7MKE9yV9QqWU6GVh/K7nHxaQOcTXwQcgUkBYhtRXDbfrAJ68czr5H6jkh0Bat9
+         RuIMrhEWqBAkNaEMKviNJ8qxECGF4h+yILqxw/yrtzqMfjXz/7u6PdgqPejZ/7p/3Ue1
+         dMmHuNq8hjOhUt4ALnk00Pnp0g4ERTv6QF6Z8IOP0LZbl4L1K10v5UxGLqVdweyVFXgi
+         kr2x55fXzOC3VhzW86VneFM/cr7sTp5NYv79m6pICYHEPwouXxYftQu/9N1bUQRhHFTw
+         FU0GaQVop2t8Fn4iBtOmJaZ46i+Yvve/PysKq9xEB+ATJrB8x17c3W9eqUdPt8xlnkJw
+         bfKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=JfbD5ep0NnF8FbqtBMbVTm96BShvDEthsXDXWrAdkOY=;
+        b=oN0vAehIoplZuCYU6Z/7V1UzQ95K7ADUdRBEcEz23NQb2yV/HeOclLldFGlHMAUUyH
+         J1ERVF0iXF6R/IBTqPICY8blqjmBUM/T++4R39l4zzh2GgjVIfEn+p9EJmiQz9pDbNgJ
+         Zk9JZaeGDajfdQNSsF9fXmMw/YWGavMjOPf1xHLqUu50q2jjZHUNI289vKkWg2cFA1NM
+         YGORBK2j33cCxFKzN7KVBsawttvQACRruJQW8sYC6ByGlJwRkxo1pIhV/AKRoFqvkTaU
+         xIdzVNbJ7su+jgeckjUNPR5dTWsoDVt3TYXcCqNu4OAZ7tlZt8Hy5ArEdXVuEA8WF+1C
+         tOLQ==
+X-Gm-Message-State: AOAM533SGH1gfZTszqW5z45XjJGlD/fGG/JrMEQEb5FO6kpAN/OIoUpc
+        sWxKja4wjlmuzLjmDvoU4ag=
+X-Google-Smtp-Source: ABdhPJwz/qmvv9nYaWpTBUQlDI1rnXJGE8wEfJVgD8wPPsVRfpImcVoefrGkrtd7mKlWatBDNugmxw==
+X-Received: by 2002:a37:6ca:: with SMTP id 193mr912322qkg.484.1627495458512;
+        Wed, 28 Jul 2021 11:04:18 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d7sm238060qth.70.2021.07.28.11.04.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 11:04:17 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 28 Jul 2021 11:04:16 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] watchdog: sl28cpld_wdt: Constify static struct
+ watchdog_ops
+Message-ID: <20210728180416.GA1663715@roeck-us.net>
+References: <20210727223042.48150-1-rikard.falkeborn@gmail.com>
+ <20210727223042.48150-2-rikard.falkeborn@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727223042.48150-2-rikard.falkeborn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The qpnpint_irq_set_type() callback function configures the type
-(edge vs level) and polarity (high, low, or both) of a particular
-PMIC interrupt within a given peripheral.  To do this, it reads
-the three consecutive IRQ configuration registers, modifies the
-specified IRQ bit within the register values, and finally writes
-the three modified register values back to the PMIC.  While a
-spinlock is used to provide mutual exclusion on the SPMI bus
-during the register read and write calls, there is no locking
-around the overall read, modify, write sequence.  This opens up
-the possibility of a race condition if two tasks set the type of
-a PMIC IRQ within the same peripheral simultaneously.
+On Wed, Jul 28, 2021 at 12:30:40AM +0200, Rikard Falkeborn wrote:
+> The struct sl28cpld_wdt_ops is only assigned to the ops pointer in the
+> watchdog_device struct, which is a pointer to const struct watchdog_ops.
+> Make it const to allow the compiler to put it in read-only memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-When the race condition is encountered, both tasks will read the
-old value of the registers and IRQ bits set by one of the tasks
-will be dropped upon the register write of the other task.  This
-then leads to PMIC IRQs being enabled with an incorrect type and
-polarity configured.  Such misconfiguration can lead to an IRQ
-storm that overwhelms the system and causes it to crash.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-This race condition and IRQ storm have been observed when using
-a pair of pm8941-pwrkey devices to handle PMK8350 pwrkey and
-resin interrupts.  The independent devices probe asynchronously
-in parallel and can simultaneously request and configure PMIC
-IRQs in the same PMIC peripheral.
-
-For a good case, the IRQ configuration calls end up serialized
-due to timing deltas and the register read/write sequence looks
-like this:
-
-1. pwrkey probe: SPMI  read(0x1311): 0x00, 0x00, 0x00
-2. pwrkey probe: SPMI write(0x1311): 0x80, 0x80, 0x80
-3. resin probe:  SPMI  read(0x1311): 0x80, 0x80, 0x80
-4. resin probe:  SPMI write(0x1311): 0xC0, 0xC0, 0xC0
-
-The final register states after both devices have requested and
-enabled their respective IRQs is thus:
-
-0x1311: 0xC0
-0x1312: 0xC0
-0x1313: 0xC0
-0x1314: 0x00
-0x1315: 0xC0
-
-For a bad case, the IRQ configuration calls end up occurring
-simultaneously and the race condition is encountered.  The
-register read/write sequence then looks like this:
-
-1. pwrkey probe: SPMI  read(0x1311): 0x00, 0x00, 0x00
-2. resin probe:  SPMI  read(0x1311): 0x00, 0x00, 0x00
-3. pwrkey probe: SPMI write(0x1311): 0x80, 0x80, 0x80
-4. resin probe:  SPMI write(0x1311): 0x40, 0x40, 0x40
-
-In this case, the final register states after both devices have
-requested and enabled their respective IRQs is thus:
-
-0x1311: 0x40
-0x1312: 0x40
-0x1313: 0x40
-0x1314: 0x00
-0x1315: 0xC0
-
-This corresponds to the resin IRQ being configured for both
-rising and falling edges, as expected.  However, the pwrkey IRQ
-is misconfigured as level type with both polarity high and low
-set to disabled.  The PMIC IRQ triggering hardware treats this
-particular register configuration as if level low triggering is
-enabled.
-
-The raw pwrkey IRQ signal is low when the power key is not being
-pressed.  Thus, the pwrkey IRQ begins firing continuously in an
-IRQ storm.
-
-Fix the race condition by locking a spinlock for the duration of
-the read, modify, write sequence in the qpnpint_irq_set_type()
-function.
-
-Fixes: 67b563f1f258 ("spmi: pmic_arb: add support for interrupt handling")
-Signed-off-by: David Collins <collinsd@codeaurora.org>
----
- drivers/spmi/spmi-pmic-arb.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
-index bbbd311eda03..379ad6c1c14a 100644
---- a/drivers/spmi/spmi-pmic-arb.c
-+++ b/drivers/spmi/spmi-pmic-arb.c
-@@ -127,6 +127,7 @@ struct apid_data {
-  * @intr:		address of the SPMI interrupt control registers.
-  * @cnfg:		address of the PMIC Arbiter configuration registers.
-  * @lock:		lock to synchronize accesses.
-+ * @irq_lock:		lock to ensure mutual exclusion for IRQ type setting
-  * @channel:		execution environment channel to use for accesses.
-  * @irq:		PMIC ARB interrupt.
-  * @ee:			the current Execution Environment
-@@ -146,6 +147,7 @@ struct spmi_pmic_arb {
- 	void __iomem		*core;
- 	resource_size_t		core_size;
- 	raw_spinlock_t		lock;
-+	raw_spinlock_t		irq_lock;
- 	u8			channel;
- 	int			irq;
- 	u8			ee;
-@@ -600,10 +602,13 @@ static void qpnpint_irq_unmask(struct irq_data *d)
- 
- static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_type)
- {
-+	struct spmi_pmic_arb *pmic_arb = irq_data_get_irq_chip_data(d);
- 	struct spmi_pmic_arb_qpnpint_type type;
- 	irq_flow_handler_t flow_handler;
- 	u8 irq = hwirq_to_irq(d->hwirq);
-+	unsigned long flags;
- 
-+	raw_spin_lock_irqsave(&pmic_arb->irq_lock, flags);
- 	qpnpint_spmi_read(d, QPNPINT_REG_SET_TYPE, &type, sizeof(type));
- 
- 	if (flow_type & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
-@@ -616,8 +621,10 @@ static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_type)
- 		flow_handler = handle_edge_irq;
- 	} else {
- 		if ((flow_type & (IRQF_TRIGGER_HIGH)) &&
--		    (flow_type & (IRQF_TRIGGER_LOW)))
-+		    (flow_type & (IRQF_TRIGGER_LOW))) {
-+			raw_spin_unlock_irqrestore(&pmic_arb->irq_lock, flags);
- 			return -EINVAL;
-+		}
- 
- 		type.type &= ~BIT(irq); /* level trig */
- 		if (flow_type & IRQF_TRIGGER_HIGH)
-@@ -629,6 +636,8 @@ static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_type)
- 	}
- 
- 	qpnpint_spmi_write(d, QPNPINT_REG_SET_TYPE, &type, sizeof(type));
-+	raw_spin_unlock_irqrestore(&pmic_arb->irq_lock, flags);
-+
- 	irq_set_handler_locked(d, flow_handler);
- 
- 	return 0;
-@@ -1285,6 +1294,7 @@ static int spmi_pmic_arb_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, ctrl);
- 	raw_spin_lock_init(&pmic_arb->lock);
-+	raw_spin_lock_init(&pmic_arb->irq_lock);
- 
- 	ctrl->cmd = pmic_arb_cmd;
- 	ctrl->read_cmd = pmic_arb_read_cmd;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+> ---
+>  drivers/watchdog/sl28cpld_wdt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/sl28cpld_wdt.c b/drivers/watchdog/sl28cpld_wdt.c
+> index 2de93298475f..9ce456f09f73 100644
+> --- a/drivers/watchdog/sl28cpld_wdt.c
+> +++ b/drivers/watchdog/sl28cpld_wdt.c
+> @@ -108,7 +108,7 @@ static const struct watchdog_info sl28cpld_wdt_info = {
+>  	.identity = "sl28cpld watchdog",
+>  };
+>  
+> -static struct watchdog_ops sl28cpld_wdt_ops = {
+> +static const struct watchdog_ops sl28cpld_wdt_ops = {
+>  	.owner = THIS_MODULE,
+>  	.start = sl28cpld_wdt_start,
+>  	.stop = sl28cpld_wdt_stop,
+> -- 
+> 2.32.0
+> 
