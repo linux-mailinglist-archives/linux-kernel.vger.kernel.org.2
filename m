@@ -2,90 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3D73D925A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7DE3D925B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbhG1Pvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:51:41 -0400
-Received: from mail-io1-f41.google.com ([209.85.166.41]:46851 "EHLO
-        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhG1Pvk (ORCPT
+        id S236646AbhG1Pxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:53:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44131 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229622AbhG1PxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:51:40 -0400
-Received: by mail-io1-f41.google.com with SMTP id z7so2665121iog.13;
-        Wed, 28 Jul 2021 08:51:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=QGlRQ7YvLwv8K5AbN7ZnxnSoIhB/O2l82NrH2XfQAws=;
-        b=Mv6N5P9IxHdI/9yK8xG1g3OMplQOQVZoUao/p+6NUgmEBm7Vx8X+7fWZ7nJOlpgbEZ
-         OlKv0IziEvqdCTsPOptjnOcBlY4IBnNHnkdFGu13kPXALEIAoMwDyZpLIfQeUmOGcfsl
-         Cyz/FoRAp2xBAZ6e49qdjrGMTTklGDx8cGhPF1G9IRxWWE3Nf1RAadOlvhorV1hiXkOh
-         JTxveLtSfhoDi1vRsFfl0FTyOmpxspLREL6GAi9DMZCwYitQ4UizSWcGirY12wcX45Ui
-         Mav37uDp5PMKILvGNdPUVq1M30HC8sF0I8tIU0Yey6aGYe8PUkO2mHN7QZC+sLZrag+6
-         URQg==
-X-Gm-Message-State: AOAM533GvLFN/b3y/HV5yYFf3f4cg2GEaRH6iFyx04sRIV1J+JKyHuux
-        zfP981d9j7MyeLjGO3P9tA==
-X-Google-Smtp-Source: ABdhPJzaxRpaGHuNLWhFtE2F69DI0X2Ny22fQs48Z8P6xy+5OSHIaCODrcsxpUgXTInNv5LVA4hffg==
-X-Received: by 2002:a6b:1685:: with SMTP id 127mr99194iow.135.1627487498497;
-        Wed, 28 Jul 2021 08:51:38 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id t15sm238450iog.26.2021.07.28.08.51.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 08:51:37 -0700 (PDT)
-Received: (nullmailer pid 1132983 invoked by uid 1000);
-        Wed, 28 Jul 2021 15:51:35 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210728135534.703028-2-pgwipeout@gmail.com>
-References: <20210728135534.703028-1-pgwipeout@gmail.com> <20210728135534.703028-2-pgwipeout@gmail.com>
-Subject: Re: [PATCH 1/9] dt-bindings: gpio: rockchip,gpio-bank: increase max clocks
-Date:   Wed, 28 Jul 2021 09:51:35 -0600
-Message-Id: <1627487495.967642.1132982.nullmailer@robh.at.kernel.org>
+        Wed, 28 Jul 2021 11:53:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627487601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z7mu6yWWAqbDn/RK/FJ1DcEPhTX3MkESxVIuSo8NOYs=;
+        b=V3rKa8nZQAvuTK64cu8uBBfaZFwqTS5wU3X2XdgtdDyvubP37/kJ1wUVPHHs43oZx72Is4
+        Mgcq8vrVqnH6NjMvv/2LUcD69lkOcAco7tcLtLVoaR4Jz6oakdlFNXppoCpA4CbUh2QkWC
+        XKd6iXc0F7yBOlmE1ffaIq3T3267wVs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-fTZXa_ExOUCgW8P00Jp7dg-1; Wed, 28 Jul 2021 11:53:17 -0400
+X-MC-Unique: fTZXa_ExOUCgW8P00Jp7dg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A27C8100A605;
+        Wed, 28 Jul 2021 15:53:15 +0000 (UTC)
+Received: from T590 (ovpn-12-35.pek2.redhat.com [10.72.12.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BC23D5D6A1;
+        Wed, 28 Jul 2021 15:53:05 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 23:53:05 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        David Jeffery <djeffery@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: New warning in nvme_setup_discard
+Message-ID: <YQF9YRSdRc+eVD1c@T590>
+References: <4729812.CpyZKHjjVO@natalenko.name>
+ <17691292.WCMSeNvH9h@natalenko.name>
+ <YQAtL5i0pjlnBpHV@T590>
+ <3180854.nXyytZ0Y3r@natalenko.name>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3180854.nXyytZ0Y3r@natalenko.name>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 09:55:26 -0400, Peter Geis wrote:
-> The rk356x adds a debounce clock to the gpio devices.
-> Increase the maximum clocks to account for it.
+On Wed, Jul 28, 2021 at 03:44:06PM +0200, Oleksandr Natalenko wrote:
+> Hello.
 > 
-> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> ---
->  Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On úterý 27. července 2021 17:58:39 CEST Ming Lei wrote:
+> > BTW, can you test the following patch? which is another approach on the same
+> > issue with other benefits.
+> > 
+> > From c853e7ed05a75f631da5b7952b9a989983437819 Mon Sep 17 00:00:00 2001
+> > From: Ming Lei <ming.lei@redhat.com>
+> > Date: Mon, 7 Jun 2021 16:03:51 +0800
+> > Subject: [PATCH 2/2] block: support bio merge for multi-range discard
+> > 
+> > So far multi-range discard treats each bio as one segment(range) of single
+> > discard request. This way becomes not efficient if lots of small sized
+> > discard bios are submitted, and one example is raid456.
+> > 
+> > Support bio merge for multi-range discard for improving lots of small
+> > sized discard bios.
+> > 
+> > Turns out it is easy to support it:
+> > 
+> > 1) always try to merge bio first
+> > 
+> > 2) run into multi-range discard only if bio merge can't be done
+> > 
+> > 3) add rq_for_each_discard_range() for retrieving each range(segment)
+> > of discard request
+> > 
+> > Reported-by: Wang Shanker <shankerwangmiao@gmail.com>
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> >  block/blk-merge.c          | 12 ++++-----
+> >  drivers/block/virtio_blk.c |  9 ++++---
+> >  drivers/nvme/host/core.c   |  8 +++---
+> >  include/linux/blkdev.h     | 51 ++++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 66 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/block/blk-merge.c b/block/blk-merge.c
+> > index bcdff1879c34..65210e9a8efa 100644
+> > --- a/block/blk-merge.c
+> > +++ b/block/blk-merge.c
+> > @@ -724,10 +724,10 @@ static inline bool blk_discard_mergable(struct request
+> > *req) static enum elv_merge blk_try_req_merge(struct request *req,
+> >  					struct request *next)
+> >  {
+> > -	if (blk_discard_mergable(req))
+> > -		return ELEVATOR_DISCARD_MERGE;
+> > -	else if (blk_rq_pos(req) + blk_rq_sectors(req) == blk_rq_pos(next))
+> > +	if (blk_rq_pos(req) + blk_rq_sectors(req) == blk_rq_pos(next))
+> >  		return ELEVATOR_BACK_MERGE;
+> > +	else if (blk_discard_mergable(req))
+> > +		return ELEVATOR_DISCARD_MERGE;
+> > 
+> >  	return ELEVATOR_NO_MERGE;
+> >  }
+> > @@ -908,12 +908,12 @@ bool blk_rq_merge_ok(struct request *rq, struct bio
+> > *bio)
+> > 
+> >  enum elv_merge blk_try_merge(struct request *rq, struct bio *bio)
+> >  {
+> > -	if (blk_discard_mergable(rq))
+> > -		return ELEVATOR_DISCARD_MERGE;
+> > -	else if (blk_rq_pos(rq) + blk_rq_sectors(rq) == bio->bi_iter.bi_sector)
+> > +	if (blk_rq_pos(rq) + blk_rq_sectors(rq) == bio->bi_iter.bi_sector)
+> >  		return ELEVATOR_BACK_MERGE;
+> >  	else if (blk_rq_pos(rq) - bio_sectors(bio) == bio->bi_iter.bi_sector)
+> >  		return ELEVATOR_FRONT_MERGE;
+> > +	else if (blk_discard_mergable(rq))
+> > +		return ELEVATOR_DISCARD_MERGE;
+> >  	return ELEVATOR_NO_MERGE;
+> >  }
+> > 
+> > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> > index b9fa3ef5b57c..970cb0d8acaa 100644
+> > --- a/drivers/block/virtio_blk.c
+> > +++ b/drivers/block/virtio_blk.c
+> > @@ -116,7 +116,6 @@ static int virtblk_setup_discard_write_zeroes(struct
+> > request *req, bool unmap) unsigned short segments =
+> > blk_rq_nr_discard_segments(req);
+> >  	unsigned short n = 0;
+> >  	struct virtio_blk_discard_write_zeroes *range;
+> > -	struct bio *bio;
+> >  	u32 flags = 0;
+> > 
+> >  	if (unmap)
+> > @@ -138,9 +137,11 @@ static int virtblk_setup_discard_write_zeroes(struct
+> > request *req, bool unmap) range[0].sector = cpu_to_le64(blk_rq_pos(req));
+> >  		n = 1;
+> >  	} else {
+> > -		__rq_for_each_bio(bio, req) {
+> > -			u64 sector = bio->bi_iter.bi_sector;
+> > -			u32 num_sectors = bio->bi_iter.bi_size >> SECTOR_SHIFT;
+> > +		struct req_discard_range r;
+> > +
+> > +		rq_for_each_discard_range(r, req) {
+> > +			u64 sector = r.sector;
+> > +			u32 num_sectors = r.size >> SECTOR_SHIFT;
+> > 
+> >  			range[n].flags = cpu_to_le32(flags);
+> >  			range[n].num_sectors = cpu_to_le32(num_sectors);
+> > diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> > index 24bcae88587a..4b0a39360ce9 100644
+> > --- a/drivers/nvme/host/core.c
+> > +++ b/drivers/nvme/host/core.c
+> > @@ -813,7 +813,7 @@ static blk_status_t nvme_setup_discard(struct nvme_ns
+> > *ns, struct request *req, {
+> >  	unsigned short segments = blk_rq_nr_discard_segments(req), n = 0;
+> >  	struct nvme_dsm_range *range;
+> > -	struct bio *bio;
+> > +	struct req_discard_range r;
+> > 
+> >  	/*
+> >  	 * Some devices do not consider the DSM 'Number of Ranges' field when
+> > @@ -835,9 +835,9 @@ static blk_status_t nvme_setup_discard(struct nvme_ns
+> > *ns, struct request *req, range = page_address(ns->ctrl->discard_page);
+> >  	}
+> > 
+> > -	__rq_for_each_bio(bio, req) {
+> > -		u64 slba = nvme_sect_to_lba(ns, bio->bi_iter.bi_sector);
+> > -		u32 nlb = bio->bi_iter.bi_size >> ns->lba_shift;
+> > +	rq_for_each_discard_range(r, req) {
+> > +		u64 slba = nvme_sect_to_lba(ns, r.sector);
+> > +		u32 nlb = r.size >> ns->lba_shift;
+> > 
+> >  		if (n < segments) {
+> >  			range[n].cattr = cpu_to_le32(0);
+> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> > index d66d0da72529..bd9d22269a7b 100644
+> > --- a/include/linux/blkdev.h
+> > +++ b/include/linux/blkdev.h
+> > @@ -1007,6 +1007,57 @@ static inline unsigned int blk_rq_stats_sectors(const
+> > struct request *rq) return rq->stats_sectors;
+> >  }
+> > 
+> > +struct req_discard_range {
+> > +	sector_t	sector;
+> > +	unsigned int	size;
+> > +
+> > +	/*
+> > +	 * internal field: driver don't use it, and it always points to
+> > +	 * next bio to be processed
+> > +	 */
+> > +	struct bio *__bio;
+> > +};
+> > +
+> > +static inline void req_init_discard_range_iter(const struct request *rq,
+> > +		struct req_discard_range *range)
+> > +{
+> > +	range->__bio = rq->bio;
+> > +}
+> > +
+> > +/* return true if @range stores one valid discard range */
+> > +static inline bool req_get_discard_range(struct req_discard_range *range)
+> > +{
+> > +	struct bio *bio;
+> > +
+> > +	if (!range->__bio)
+> > +		return false;
+> > +
+> > +	bio = range->__bio;
+> > +	range->sector = bio->bi_iter.bi_sector;
+> > +	range->size = bio->bi_iter.bi_size;
+> > +	range->__bio = bio->bi_next;
+> > +
+> > +	while (range->__bio) {
+> > +		struct bio *bio = range->__bio;
+> > +
+> > +		if (range->sector + (range->size >> SECTOR_SHIFT) !=
+> > +				bio->bi_iter.bi_sector)
+> > +			break;
+> > +
+> > +		/*
+> > +		 * ->size won't overflow because req->__data_len is defined
+> > +		 *  as 'unsigned int'
+> > +		 */
+> > +		range->size += bio->bi_iter.bi_size;
+> > +		range->__bio = bio->bi_next;
+> > +	}
+> > +	return true;
+> > +}
+> > +
+> > +#define rq_for_each_discard_range(range, rq) \
+> > +	for (req_init_discard_range_iter((rq), &range); \
+> > +			req_get_discard_range(&range);)
+> > +
+> >  #ifdef CONFIG_BLK_DEV_ZONED
+> > 
+> >  /* Helper to convert BLK_ZONE_ZONE_XXX to its string format XXX */
 > 
+> Do I have to revert the previous one and apply this one? If so, with this one the issue is triggered pretty quick:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Yeah, the previous one needs to be reverted.
 
-yamllint warnings/errors:
+> 
+> ```
+> kernel: ------------[ cut here ]------------
+> kernel: WARNING: CPU: 20 PID: 490 at drivers/nvme/host/core.c:850 nvme_setup_discard+0x1b9/0x220
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.example.dt.yaml: gpio@2000a000: clocks: [[4294967295, 9]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.example.dt.yaml: gpio@2003c000: clocks: [[4294967295, 10]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-\ndoc reference errors (make refcheckdocs):
+Can you collect debug log by applying the following patch against the
+last one?
 
-See https://patchwork.ozlabs.org/patch/1510854
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 8780e4aa9df2..fbd8a68c619b 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -828,6 +828,24 @@ static inline void nvme_setup_flush(struct nvme_ns *ns,
+ 	cmnd->common.nsid = cpu_to_le32(ns->head->ns_id);
+ }
+ 
++static inline void blk_dump_rq(const struct request *req)
++{
++	struct bio *bio;
++	int i = 0;
++
++	printk("dump req %p(f:%x, seg: %d)\n", req, req->cmd_flags,
++			req->nr_phys_segments);
++
++	__rq_for_each_bio(bio, req) {
++		printk("%d-%p: %hx/%hx %llu %u\n",
++                       i++, bio,
++                       bio->bi_flags, bio->bi_opf,
++                       (unsigned long long)bio->bi_iter.bi_sector,
++                       bio->bi_iter.bi_size>>9);
++	}
++}
++
++
+ static blk_status_t nvme_setup_discard(struct nvme_ns *ns, struct request *req,
+ 		struct nvme_command *cmnd)
+ {
+@@ -868,6 +886,8 @@ static blk_status_t nvme_setup_discard(struct nvme_ns *ns, struct request *req,
+ 	}
+ 
+ 	if (WARN_ON_ONCE(n != segments)) {
++		printk("%s: ranges %u segments %u\n", __func__, n, segments);
++		blk_dump_rq(req);
+ 		if (virt_to_page(range) == ns->ctrl->discard_page)
+ 			clear_bit_unlock(0, &ns->ctrl->discard_page_busy);
+ 		else
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+Thanks,
+Ming
 
