@@ -2,83 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ADD3D92D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A023D92D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237178AbhG1QKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:10:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237424AbhG1QKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 944C76069E;
-        Wed, 28 Jul 2021 16:09:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627488599;
-        bh=kyZ1KJI1rvCVsOwDl/SsgMb6gh5MhG+3LuR4pAcoLeo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bctTfQbg6hhb45zejSKPM4EF4dwPXO9LmNNOcrSt74XQvCzmdxv2i57aZcTxZMdxh
-         sIM23GgU/BkCtIS4bbsYGhOu/51wLbcRW+jKBuwG5ZICo8rzPiE81875mhGPTe+Q/W
-         +r40gkbKslFaM1hy2s6rHv1/MpF++EckGvLxdjHDwYYw93Xd4n6Ko4whhY9yisvLlj
-         gl33LtCmHmOfiY+uCEZAz3W8lZKrEm1OgQRUqpcfFByLyyfTgI6MThsO2xrVpvynhH
-         IZFRzHeceysjvbed3exCnN7vzzIlK+5PsXnmXHW1NxUr9J4Dg6mQaXXomPqNK8B9Kz
-         ViYYughdvLrbA==
-Date:   Wed, 28 Jul 2021 17:09:48 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     pierre-louis.bossart@linux.intel.com, rander.wang@linux.intel.com,
-        shumingf@realtek.com, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: dapm: Revert "use component prefix when checking
- widget names"
-Message-ID: <20210728160948.GE4670@sirena.org.uk>
-References: <20210703125034.24655-1-rf@opensource.cirrus.com>
- <20210705165041.GC4574@sirena.org.uk>
- <a882a9e0-db05-2f89-abb9-8b308ccb56c8@opensource.cirrus.com>
+        id S237412AbhG1QK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:10:56 -0400
+Received: from mail-il1-f173.google.com ([209.85.166.173]:33617 "EHLO
+        mail-il1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237436AbhG1QKJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 12:10:09 -0400
+Received: by mail-il1-f173.google.com with SMTP id y4so3100860ilp.0;
+        Wed, 28 Jul 2021 09:10:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OCZVThIbf1ShScmnxV7KW8mpeH/qB15sH5W8oxF9Flw=;
+        b=n+fYXVnV7oXIOhsQYV9+CYPwdmB2ROubz9dhaf5IK+doqYRj79Kk5zy1ak6Hf3sMFF
+         ZYgqg6Qp7aynv13sehSJ74dr1MTvxD2j56d9YOFzEokgbk2af0kHrcb3isBq5ZaQwfJM
+         4yZrVPn6qyNJoKLQki/UWiAsB/6FuFZ5S/l18mici7lUCWIcxoBKl38NaEZTizqN0N1i
+         oKrhbTCM1fLMk61q9BGwcUqTPFaPMFl3riYDObL/CBWf9gTUpeMB5G1NGJ/5s2PfA90k
+         LOIO7uZlUjelEZSIJC0ZpmoxPhytvB29evr4zr1cASMZbvzGc3+WR6HEZNC8yUU9fcEl
+         agHg==
+X-Gm-Message-State: AOAM533saelKZsFtNXDo6AE4NJcrk6xBeye1Ew9P0PUQA4yj16VwjoZB
+        0RfrXKmYBUxVc3bnlhM6FQ==
+X-Google-Smtp-Source: ABdhPJxE3veSdmQ48nFHmou/1qK1TVA+w3ifTI7TRG6TpSuzPDoCqvN7s815GG+nzZ+cUao0iCffOQ==
+X-Received: by 2002:a92:3207:: with SMTP id z7mr386220ile.288.1627488606095;
+        Wed, 28 Jul 2021 09:10:06 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id b14sm194545ilr.45.2021.07.28.09.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 09:10:04 -0700 (PDT)
+Received: (nullmailer pid 1161592 invoked by uid 1000);
+        Wed, 28 Jul 2021 16:10:00 -0000
+Date:   Wed, 28 Jul 2021 10:10:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        rjw@rjwysocki.net, steev@kali.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [Patch v4 6/6] dt-bindings: thermal: Add dt binding for QCOM LMh
+Message-ID: <20210728161000.GA1153621@robh.at.kernel.org>
+References: <20210727152512.1098329-1-thara.gopinath@linaro.org>
+ <20210727152512.1098329-7-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Vx/N56bIaYnO6ICL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a882a9e0-db05-2f89-abb9-8b308ccb56c8@opensource.cirrus.com>
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210727152512.1098329-7-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 27, 2021 at 11:25:12AM -0400, Thara Gopinath wrote:
+> Add dt binding documentation to describe Qualcomm
+> Limits Management Hardware node.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+> 
+> v3->v4:
+> 	- Changed dt property qcom,lmh-cpu-id to qcom,lmh-cpu and made it
+> 	  a phandle pointing to the cpu node instead of a number as per
+> 	  Rob Herring's review comments.
+> 	- Added suffix -millicelsius to all temperature properties as per
+> 	  Rob Herring's review comments.
+> 	- Dropped unnecessary #includes in the example as pointed out by Bjorn.
+> 	- Other minor fixes.
+> 
+>  .../devicetree/bindings/thermal/qcom-lmh.yaml | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+> new file mode 100644
+> index 000000000000..0978f458b9ec
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+> @@ -0,0 +1,100 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright 2021 Linaro Ltd.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/thermal/qcom-lmh.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Limits Management Hardware(LMh)
+> +
+> +maintainers:
+> +  - Thara Gopinath <thara.gopinath@linaro.org>
+> +
+> +description:
+> +  Limits Management Hardware(LMh) is a hardware infrastructure on some
+> +  Qualcomm SoCs that can enforce temperature and current limits as
+> +  programmed by software for certain IPs like CPU.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,sdm845-lmh
+> +
+> +  reg:
+> +    items:
+> +      - description: core registers
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  '#interrupt-cells':
+> +    const: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  qcom,lmh-cpu:
+> +    description:
+> +      phandle of the first cpu in the LMh cluster
+> +    $ref: /schemas/types.yaml#/definitions/phandle
 
---Vx/N56bIaYnO6ICL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+'cpus' property is the somewhat standard way to reference a cpu.
 
-On Thu, Jul 22, 2021 at 10:55:23AM +0100, Richard Fitzgerald wrote:
+But you should already have cpu topology information, why do you need 
+this?
 
-> I don't mind if someone wants to change the core dapm functions if that
-> is generally useful, providing that it also updates all callers of those
-> functions to still work.
+> +
+> +  qcom,lmh-temp-arm-millicelsius:
+> +    description:
+> +      An integer expressing temperature threshold at which the LMh thermal
+> +      FSM is engaged.
+> +    $ref: /schemas/types.yaml#/definitions/int32
 
-> Changing the behaviour of core code to fix the Realtek driver without
-> updating other callers of those functions is a problem.
+Standard unit-suffixes already have a type.
 
-The thing here is that nobody would have thought that that any caller
-would have been open coding this stuff like the component things were,
-it's simply the wrong abstraction level to be implementing something
-like this so people wouldn't think of auditing the callers to find uses
-which might notice that prefixing suddenly worked.
+> +
+> +  qcom,lmh-temp-low-millicelsius:
+> +    description:
+> +      An integer expressing temperature threshold at which the state machine
+> +      will attempt to remove frequency throttling.
+> +    $ref: /schemas/types.yaml#/definitions/int32
+> +
+> +  qcom,lmh-temp-high-millicelsius:
+> +    description:
+> +      An integer expressing temperature threshold at which the state machine
+> +      will attempt to throttle the frequency.
+> +    $ref: /schemas/types.yaml#/definitions/int32
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - #interrupt-cells
+> +  - interrupt-controller
+> +  - qcom,lmh-cpu
+> +  - qcom,lmh-temp-arm-millicelsius
+> +  - qcom,lmh-temp-low-millicelsius
+> +  - qcom,lmh-temp-high-millicelsius
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    lmh_cluster1: lmh@17d70800 {
 
---Vx/N56bIaYnO6ICL
-Content-Type: application/pgp-signature; name="signature.asc"
+Drop unused labels.
 
------BEGIN PGP SIGNATURE-----
+> +      compatible = "qcom,sdm845-lmh";
+> +      reg = <0x17d70800 0x401>;
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEBgUsACgkQJNaLcl1U
-h9BMgQf+PalyhGjExV/oRAmKS31UCcBtye8lKsXrMc+XX4t3uWdkNkEXB/Sw1HDb
-vmWb46mGawRE/nQvNCYFCSh2NmSVL7lz0dGvTY72/X7TEhkVx8ceFoq/VL1m8NBM
-eXBPu2ww5VI8i02FYPo6s/DLnA9JHhKqFZZZq6PGTZy1fAUeCqYZFoMMSAchNle4
-LxDh5tO134EG151LJFTBCFKQFJsYxSW1nhznw/a9MqOnpcxacCsGzDSpGHmZ6/bm
-9bLxojsH60Bfw9HhDMvUYLmznpz8uBPgr2CB21dXhQWCioAKwzv8ufol7GMTWBhD
-RX/6urs3NmTgXmi0ICbce5MlQFlsgw==
-=sHcF
------END PGP SIGNATURE-----
+0x401 is an odd size...
 
---Vx/N56bIaYnO6ICL--
+> +      interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
+> +      qcom,lmh-cpu = <&CPU4>;
+> +      qcom,lmh-temp-arm-millicelsius = <65000>;
+> +      qcom,lmh-temp-low-millicelsius = <94500>;
+> +      qcom,lmh-temp-high-millicelsius = <95000>;
+> +      interrupt-controller;
+> +      #interrupt-cells = <1>;
+> +    };
+> +  - |
+
+Seems like this is 1 example, not 2.
+
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    lmh_cluster0: lmh@17d78800 {
+> +      compatible = "qcom,sdm845-lmh";
+> +      reg = <0x17d78800 0x401>;
+> +      interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+> +      qcom,lmh-cpu = <&CPU0>;
+> +      qcom,lmh-temp-arm-millicelsius = <65000>;
+> +      qcom,lmh-temp-low-millicelsius = <94500>;
+> +      qcom,lmh-temp-high-millicelsius = <95000>;
+> +      interrupt-controller;
+> +      #interrupt-cells = <1>;
+> +    };
+> +  - |
+> -- 
+> 2.25.1
+> 
+> 
