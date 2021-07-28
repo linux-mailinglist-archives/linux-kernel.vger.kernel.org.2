@@ -2,137 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859CA3D88A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEE03D88AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbhG1HQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231949AbhG1HQS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:16:18 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C08C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:16:17 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso8639634pjq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=45WqfKtom6mMVDJZgU9anEiSV/dtOZcbAPcrsmgXp/Q=;
-        b=FZlCmZkv/THnI53YoHYbLJNECMIOev++kpzCygpQUSY2TUVFIc97IlMwPUi5+xj9Qm
-         fa2dEPpzvDRV5nNoGAb+UALPCBkSbWmH4RoOXiOqkL3yScwzkLg3XWPTTUQ+jPUA4Hd1
-         c86UBFviCto/SzCpmh1vROarl2TyygxYBu3z0VhplHR4+kG9fduKGR0Z45W/snWImayl
-         D3UlxOQjvm3tTYBjxGaEnY/X9nO0FI/6z/cQeLlyM4Q+qN2LRalIHLb3oiXD/tgjPKPB
-         JW9p3orSmxJs50P/HTl5J0gFIdohXRBMS/1mFO8htV9Zqryj76Phe6f1cWG7w9fG8THL
-         /Jpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=45WqfKtom6mMVDJZgU9anEiSV/dtOZcbAPcrsmgXp/Q=;
-        b=O7TblMRTyyFBX2hKFdSODZ0DM6FDszP6Z38Thu6RzIiVo9QsmSlJq4FIbyBO9XVwfX
-         y8vNS2TZG4V5nskUTIFuWDrHfPigwR4V9a3awyvO+wwm3RbqulMtlnP6Bqok/19DLb0U
-         SzCvoRucCylTAdh4FhYx8kjmyKOs6OEzthjQQHegtlx4OL7xG9noEXDlOcspGhODwZH0
-         OixNwndwHZirpU12Le5JQrc5Es1PyBn0LklzDptGx/zHMeuq2mvmWV52+s/Vm0PXO3Md
-         7KO8+Yxxu9v/eBRicIbjVI9i+o7VVEbFJSdqiCMXYhK0Xx6lq6ZMhhDSGqtdUrY9hJPJ
-         zZ4Q==
-X-Gm-Message-State: AOAM532jvalTopG3iacQG9rOq+uJmbLX0HTF9dmGyTLDMr8N+4idnjKa
-        n9QNwiUQ9+pKlOyKu9CnNdI=
-X-Google-Smtp-Source: ABdhPJyC79iiS9JhjYhuuDKNm3YaFUJJiZxLSLj82BY0rnUqJ6UWBXZ9w002CvUgxJx3bvUJeWQ8VQ==
-X-Received: by 2002:a63:1913:: with SMTP id z19mr26869690pgl.315.1627456576994;
-        Wed, 28 Jul 2021 00:16:16 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.18])
-        by smtp.gmail.com with ESMTPSA id x14sm6421695pfq.143.2021.07.28.00.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 00:16:16 -0700 (PDT)
-From:   Kenneth Lee <nek.in.cn@gmail.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alex@ghiti.fr>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Kenneth Lee <liguozhu@hisilicon.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     guohanjun@huawei.com, wangzhou1@hisilicon.com
-Subject: [PATCH v2] riscv: fix the global name pfn_base confliction error
-Date:   Wed, 28 Jul 2021 15:15:57 +0800
-Message-Id: <20210728071557.400163-1-nek.in.cn@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S234563AbhG1HQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:16:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233732AbhG1HQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 03:16:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0650160F93;
+        Wed, 28 Jul 2021 07:16:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627456587;
+        bh=x0xcvQaq9O32Nso7pIl+O6xyOtevShOSKrCBXswXPXg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O/NTRx+isUoN0Lv+rgz6j5o45+43BtRQUES2zsp/QQGZcqbRi4WjQfzzM5JPdacwW
+         QkTowxaah7QCMacjilrpYLDnY5Q2a+S1mmggW/2WG6Ur9Wr6g4h4am/Isc60Ag6dpq
+         7lwle47pO0XoFe37HKoBncAzLIDVOU1Vwt1zkU9s8/bkE6EHC9vmpB5kvaud12yknW
+         ompwuV7hTHZUQYWawL6B2yY3zl5Ypc8GN+7RKIoTQ/nUgqVunhnWKnDJZAHZBlJDub
+         uyP7FDyRZpAfAowA/9iUrwNnXDXDoqDm7muGJHDj7gRnJX8ggw4SZ9nC+Z6LXNW7E4
+         ujQUGM3MNCQ7w==
+Date:   Wed, 28 Jul 2021 12:46:20 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Rob Herring <robh+dt@kernel.org>, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, list@opendingux.net
+Subject: Re: [PATCH 3/3] dma: jz4780: Add support for the MDMA in the
+ JZ4760(B)
+Message-ID: <YQEERH97pngKbTiG@matsya>
+References: <20210718122024.204907-1-paul@crapouillou.net>
+ <20210718122024.204907-3-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210718122024.204907-3-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kenneth Lee <liguozhu@hisilicon.com>
+On 18-07-21, 13:20, Paul Cercueil wrote:
+> The JZ4760 and JZ4760B SoCs have two regular DMA controllers with 6
+> channels each. They also have an extra DMA controller named MDMA
+> with only 2 channels, that only supports memcpy operations.
 
-RISCV uses a global variable pfn_base for page/pfn translation. But this
-is a common name and will be used elsewhere. In those cases, the
-page-pfn macros which refer to this name will be referred to the
-local/input variable instead. (such as in vfio_pin_pages_remote). This
-make everything wrong.
+It is dmaengine not dma:
 
-This patch changes the name from pfn_base to riscv_pfn_base to fix
-this problem
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/dma/dma-jz4780.c | 22 ++++++++++++++++++++--
+>  1 file changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+> index d71bc7235959..eed505e3cce2 100644
+> --- a/drivers/dma/dma-jz4780.c
+> +++ b/drivers/dma/dma-jz4780.c
+> @@ -93,6 +93,7 @@
+>  #define JZ_SOC_DATA_PER_CHAN_PM		BIT(2)
+>  #define JZ_SOC_DATA_NO_DCKES_DCKEC	BIT(3)
+>  #define JZ_SOC_DATA_BREAK_LINKS		BIT(4)
+> +#define JZ_SOC_DATA_ONLY_MEMCPY		BIT(5)
 
-Chagne from V1:
-	use riscv_pfn_base instead of riscv_global_pfn_base.
+Why -ve logic? Looks like MEMCPY is eveywhere and only peripheral is not
+there at few SoC, so use JZ_SOC_DATA_PERIPHERAL
+>  
+>  /**
+>   * struct jz4780_dma_hwdesc - descriptor structure read by the DMA controller.
+> @@ -896,8 +897,10 @@ static int jz4780_dma_probe(struct platform_device *pdev)
+>  	dd = &jzdma->dma_device;
+>  
+>  	dma_cap_set(DMA_MEMCPY, dd->cap_mask);
+> -	dma_cap_set(DMA_SLAVE, dd->cap_mask);
+> -	dma_cap_set(DMA_CYCLIC, dd->cap_mask);
+> +	if (!(soc_data->flags & JZ_SOC_DATA_ONLY_MEMCPY)) {
+> +		dma_cap_set(DMA_SLAVE, dd->cap_mask);
+> +		dma_cap_set(DMA_CYCLIC, dd->cap_mask);
+> +	}
 
-Signed-off-by: Kenneth Lee <liguozhu@hisilicon.com>
----
- arch/riscv/include/asm/page.h | 4 ++--
- arch/riscv/mm/init.c          | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+and set this if JZ_SOC_DATA_PERIPHERAL is set?
 
-diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-index cca8764aed83..c690e83bde23 100644
---- a/arch/riscv/include/asm/page.h
-+++ b/arch/riscv/include/asm/page.h
-@@ -79,8 +79,8 @@ typedef struct page *pgtable_t;
- #endif
- 
- #ifdef CONFIG_MMU
--extern unsigned long pfn_base;
--#define ARCH_PFN_OFFSET		(pfn_base)
-+extern unsigned long riscv_pfn_base;
-+#define ARCH_PFN_OFFSET		(riscv_pfn_base)
- #else
- #define ARCH_PFN_OFFSET		(PAGE_OFFSET >> PAGE_SHIFT)
- #endif /* CONFIG_MMU */
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index a14bf3910eec..788f12bb586b 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -228,8 +228,8 @@ static struct pt_alloc_ops _pt_ops __initdata;
- #define pt_ops _pt_ops
- #endif
- 
--unsigned long pfn_base __ro_after_init;
--EXPORT_SYMBOL(pfn_base);
-+unsigned long riscv_pfn_base __ro_after_init;
-+EXPORT_SYMBOL(riscv_pfn_base);
- 
- pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
- pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
-@@ -572,7 +572,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	kernel_map.va_kernel_pa_offset = kernel_map.virt_addr - kernel_map.phys_addr;
- #endif
- 
--	pfn_base = PFN_DOWN(kernel_map.phys_addr);
-+	riscv_pfn_base = PFN_DOWN(kernel_map.phys_addr);
- 
- 	/*
- 	 * Enforce boot alignment requirements of RV32 and
+>  
+>  	dd->dev = dev;
+>  	dd->copy_align = DMAENGINE_ALIGN_4_BYTES;
+> @@ -1018,12 +1021,25 @@ static const struct jz4780_dma_soc_data jz4760_dma_soc_data = {
+>  	.flags = JZ_SOC_DATA_PER_CHAN_PM | JZ_SOC_DATA_NO_DCKES_DCKEC,
+>  };
+>  
+> +static const struct jz4780_dma_soc_data jz4760_mdma_soc_data = {
+> +	.nb_channels = 2,
+> +	.transfer_ord_max = 6,
+> +	.flags = JZ_SOC_DATA_PER_CHAN_PM | JZ_SOC_DATA_NO_DCKES_DCKEC |
+> +		 JZ_SOC_DATA_ONLY_MEMCPY,
+> +};
+> +
+>  static const struct jz4780_dma_soc_data jz4760b_dma_soc_data = {
+>  	.nb_channels = 5,
+>  	.transfer_ord_max = 6,
+>  	.flags = JZ_SOC_DATA_PER_CHAN_PM,
+>  };
+>  
+> +static const struct jz4780_dma_soc_data jz4760b_mdma_soc_data = {
+> +	.nb_channels = 2,
+> +	.transfer_ord_max = 6,
+> +	.flags = JZ_SOC_DATA_PER_CHAN_PM | JZ_SOC_DATA_ONLY_MEMCPY,
+> +};
+> +
+>  static const struct jz4780_dma_soc_data jz4770_dma_soc_data = {
+>  	.nb_channels = 6,
+>  	.transfer_ord_max = 6,
+> @@ -1052,7 +1068,9 @@ static const struct of_device_id jz4780_dma_dt_match[] = {
+>  	{ .compatible = "ingenic,jz4740-dma", .data = &jz4740_dma_soc_data },
+>  	{ .compatible = "ingenic,jz4725b-dma", .data = &jz4725b_dma_soc_data },
+>  	{ .compatible = "ingenic,jz4760-dma", .data = &jz4760_dma_soc_data },
+> +	{ .compatible = "ingenic,jz4760-mdma", .data = &jz4760_mdma_soc_data },
+>  	{ .compatible = "ingenic,jz4760b-dma", .data = &jz4760b_dma_soc_data },
+> +	{ .compatible = "ingenic,jz4760b-mdma", .data = &jz4760b_mdma_soc_data },
+>  	{ .compatible = "ingenic,jz4770-dma", .data = &jz4770_dma_soc_data },
+>  	{ .compatible = "ingenic,jz4780-dma", .data = &jz4780_dma_soc_data },
+>  	{ .compatible = "ingenic,x1000-dma", .data = &x1000_dma_soc_data },
+> -- 
+> 2.30.2
+
 -- 
-2.25.1
-
+~Vinod
