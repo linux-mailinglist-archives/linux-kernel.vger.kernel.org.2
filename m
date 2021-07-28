@@ -2,144 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA8B3D8F2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0BB3D8F35
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236447AbhG1Nc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:32:59 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54190 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236495AbhG1Ncz (ORCPT
+        id S236437AbhG1Nfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:35:40 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:38951 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236320AbhG1Nfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:32:55 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 77FBCEE;
-        Wed, 28 Jul 2021 15:32:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1627479171;
-        bh=c1dkUuPXfClOIv5jpAqPkqsyfaPoUtpNHnoR7YUBKtE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JgCARYIVVkDVfEHmvs9gFM9xYM7j/CTlLRSZtKoKNqHJIs0AF6WwqQgMxUr03ru+P
-         ypa7AigHetwOwZZOaGKbE2sakovaTsIV6Ny//st1PPyyR+gwYKG/iCPI81o/tnAtk5
-         iwnjIUWpksVMQze9N4GnXsCRy6iR713Kq6mBzR0U=
-Date:   Wed, 28 Jul 2021 16:32:45 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     dafna.hirschfeld@collabora.com, shawnguo@kernel.org,
-        devicetree@vger.kernel.org, festevam@gmail.com,
-        kernel@pengutronix.de, kernel@puri.sm, krzk@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
-        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
-        slongerbeam@gmail.com, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v10 0/3] media: imx: add support for imx8mq MIPI RX
-Message-ID: <YQFcfbrTmGw4kZvQ@pendragon.ideasonboard.com>
-References: <20210728091245.231043-1-martin.kepplinger@puri.sm>
+        Wed, 28 Jul 2021 09:35:38 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id E402D580B89;
+        Wed, 28 Jul 2021 09:35:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 28 Jul 2021 09:35:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=W9clNQN5uDyZQ55X1bMgue4S4/1
+        Xdcf9dM8OuoUM0nQ=; b=nB0VmPq3DYC+cySpIdUPJsH/LS0+P9/Ph4Qr9ivb3oo
+        0zVHUt4KVitO0OodusrEUMZnwud1drOFrIElZ7Px/+wDVxE6A0086KoMvHsTDVIP
+        7+bDpLy5lfxYEc4sKXKTfVCYClfFx699kCyp6Hw8HlZm3GWFmqLg/HM3pur8BsEk
+        8R4+CrD1mgHIbw+QMh1xS/Gt5W1rTHXh9OWkG9xUDHcE6fJUVsC4d0gn1ihE3OZH
+        e+osiSQktMuxzAk5f09bT5ZOsXRAxaphKm1TXWcbQIT+iK/CbnLW/HoM8LJaGD4V
+        as93NE7bCG2Gqr4YiOKpn1JgjJZ5bwgBxcyCmB6iWyQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=W9clNQ
+        N5uDyZQ55X1bMgue4S4/1Xdcf9dM8OuoUM0nQ=; b=I8prGpLHw3q/FnMBCfD3q6
+        NomVyf5sOp5A4DcamVRqiez2I72DGurZs1raDUX2OOD0R/bgtPTo9UKzYx1U9P4y
+        MsUPHuYdJcEq0CAS+ENDBSQXUcEHlHYOOavCM73sut1EY1KHv/L3ni9YnyUZGmRD
+        4tMBKFt5PJYZFbdf1Inyeb3Vwi3Saph1Od75LWfydbhdddvRPB2jz2xC+R3qbApd
+        gsL7/nT1Gq4t/L3Kre0+Ce0ubEavtX56QLQhkvyL3ro0frTWtcbLBABmxP9DjTD4
+        mKmnRv5c1ds5hSO1KUxVRgiMO2BsPEfB2/qTHriJMSlxMWr1G6Scmjvl6lbTtFtg
+        ==
+X-ME-Sender: <xms:Jl0BYf15qDgUJxQ6u0y77XZVp_5Y7SjVnU_AohjiltDYnY64bC4OKw>
+    <xme:Jl0BYeFah6ANbkWNh73HxMxv5y3ttK_YprjhdXPQzRykoq3OWtvc-CfngBnA-JId4
+    XJwulIEKtDlLN4-lRk>
+X-ME-Received: <xmr:Jl0BYf4vFNKZh1L13LMPRBbY52JK8DIjYhwwTe5X8pnbGjhT-ENHCOmpdKe4M1HLjOFxYv_KM8qpDurUITa4sxQfZsaCOBHPyPw8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeelgdeifecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:Jl0BYU0PwlxcTCEVQwftjnBW9cfv7bH4TjU_Z-8RR-OXDmvrNfBDHg>
+    <xmx:Jl0BYSF2n_UWE0OWXxw2rU6XJ9W0rY-4NNZcpjwsh-r3j933x2ocXw>
+    <xmx:Jl0BYV-OWd7lmDxnejALBvdV-2An-XQUMYjILmxvj3wMXRNzhif6Zw>
+    <xmx:KF0BYeHXLam8_9ve3UtCZjFXjnHcvf36sonGIzH90C-hXh0wrBc1aw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 28 Jul 2021 09:35:33 -0400 (EDT)
+Date:   Wed, 28 Jul 2021 15:35:31 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH 04/10] drm/bridge: Document the probe issue with MIPI-DSI
+ bridges
+Message-ID: <20210728133531.yzamhx5fhrofxwee@gilmour>
+References: <20210720134525.563936-1-maxime@cerno.tech>
+ <20210720134525.563936-5-maxime@cerno.tech>
+ <CAMty3ZD5rpYHtW-Rs4i=XvBmiVEaeWNu1j=QE3mFJTjSPJTpxQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="utqwuarjxeuflrvb"
 Content-Disposition: inline
-In-Reply-To: <20210728091245.231043-1-martin.kepplinger@puri.sm>
+In-Reply-To: <CAMty3ZD5rpYHtW-Rs4i=XvBmiVEaeWNu1j=QE3mFJTjSPJTpxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
 
-On Wed, Jul 28, 2021 at 11:12:42AM +0200, Martin Kepplinger wrote:
-> hi,
-> 
-> This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
-> 
-> It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
-> I test it using libcamera. Thanks to Laurent who helped a lot. I'm happy for
-> any feedback,
+--utqwuarjxeuflrvb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for the series. I've submitted a pull request that contains
-patches 1/3 and 2/3.
+Hi Jagan,
 
-Shawn, Sascha, how would you like to handle 3/3 ?
+On Tue, Jul 27, 2021 at 03:12:09PM +0530, Jagan Teki wrote:
+> On Tue, Jul 20, 2021 at 7:15 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > Interactions between bridges, panels, MIPI-DSI host and the component
+> > framework are not trivial and can lead to probing issues when
+> > implementing a display driver. Let's document the various cases we need
+> > too consider, and the solution to support all the cases.
+> >
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > ---
+> >  Documentation/gpu/drm-kms-helpers.rst |  6 +++
+> >  drivers/gpu/drm/drm_bridge.c          | 60 +++++++++++++++++++++++++++
+> >  2 files changed, 66 insertions(+)
+> >
+> > diff --git a/Documentation/gpu/drm-kms-helpers.rst b/Documentation/gpu/=
+drm-kms-helpers.rst
+> > index 10f8df7aecc0..ec2f65b31930 100644
+> > --- a/Documentation/gpu/drm-kms-helpers.rst
+> > +++ b/Documentation/gpu/drm-kms-helpers.rst
+> > @@ -157,6 +157,12 @@ Display Driver Integration
+> >  .. kernel-doc:: drivers/gpu/drm/drm_bridge.c
+> >     :doc: display driver integration
+> >
+> > +Special Care with MIPI-DSI bridges
+> > +----------------------------------
+> > +
+> > +.. kernel-doc:: drivers/gpu/drm/drm_bridge.c
+> > +   :doc: special care dsi
+> > +
+> >  Bridge Operations
+> >  -----------------
+> >
+> > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> > index c9a950bfdfe5..81f8dac12367 100644
+> > --- a/drivers/gpu/drm/drm_bridge.c
+> > +++ b/drivers/gpu/drm/drm_bridge.c
+> > @@ -95,6 +95,66 @@
+> >   * documentation of bridge operations for more details).
+> >   */
+> >
+> > +/**
+> > + * DOC: special care dsi
+> > + *
+> > + * The interaction between the bridges and other frameworks involved in
+> > + * the probing of the display driver and the bridge driver can be
+> > + * challenging. Indeed, there's multiple cases that needs to be
+> > + * considered:
+> > + *
+> > + * - The display driver doesn't use the component framework and isn't a
+> > + *   MIPI-DSI host. In this case, the bridge driver will probe at some
+> > + *   point and the display driver should try to probe again by returni=
+ng
+> > + *   EPROBE_DEFER as long as the bridge driver hasn't probed.
+> > + *
+> > + * - The display driver doesn't use the component framework, but is a
+> > + *   MIPI-DSI host. The bridge device uses the MIPI-DCS commands to be
+> > + *   controlled. In this case, the bridge device is a child of the
+> > + *   display device and when it will probe it's assured that the displ=
+ay
+> > + *   device (and MIPI-DSI host) is present. The display driver will be
+> > + *   assured that the bridge driver is connected between the
+> > + *   &mipi_dsi_host_ops.attach and &mipi_dsi_host_ops.detach operation=
+s.
+> > + *   Therefore, it must run mipi_dsi_host_register() in its probe
+> > + *   function, and then run drm_bridge_attach() in its
+> > + *   &mipi_dsi_host_ops.attach hook.
+> > + *
+> > + * - The display driver uses the component framework and is a MIPI-DSI
+> > + *   host. The bridge device uses the MIPI-DCS commands to be
+> > + *   controlled. This is the same situation than above, and can run
+> > + *   mipi_dsi_host_register() in either its probe or bind hooks.
+> > + *
+> > + * - The display driver uses the component framework and is a MIPI-DSI
+> > + *   host. The bridge device uses a separate bus (such as I2C) to be
+> > + *   controlled. In this case, there's no correlation between the probe
+> > + *   of the bridge and display drivers, so care must be taken to avoid
+> > + *   an endless EPROBE_DEFER loop, with each driver waiting for the
+> > + *   other to probe.
+> > + *
+> > + * The ideal pattern to cover the last item (and all the others in the
+> > + * display driver case) is to split the operations like this:
+> > + *
+> > + * - In the display driver must run mipi_dsi_host_register() and
+> > + *   component_add in its probe hook. It will make sure that the
+> > + *   MIPI-DSI host sticks around, and that the driver's bind can be
+> > + *   called.
+> > + *
+> > + * - In its probe hook, the bridge driver must not try to find its
+> > + *   MIPI-DSI host or register as a MIPI-DSI device. As far as the
+> > + *   framework is concerned, it must only call drm_bridge_add().
+> > + *
+> > + * - In its bind hook, the display driver must try to find the bridge
+> > + *   and return -EPROBE_DEFER if it doesn't find it. If it's there, it
+> > + *   must call drm_bridge_attach(). The MIPI-DSI host is now functiona=
+l.
+>=20
+> There is an another problem occur for this scenario in the case of kms
+> hotplug driver, sun6i_mipi_dsi.c. When host attach wait till drm
+> device pointer found and drm device pointer would found only when bind
+> done, and bind would complete only when &drm_bridge_funcs.attach hooks
+> are complete. But, If DSI driver is fully bridge driven then this
+> attach in bind will trigger panel_bridge hook attach and at this point
+> we cannot get panel_bridge at all which indeed second attach would
+> would failed.
+>=20
+> This is one of the reason I'm trying to use drm_bridge_attach host
+> attach itself instead of component bind, not yet succeeded.
 
-> revision history
-> ----------------
-> v10: (thank you Dafna)
-> * improve send_level documentation.
-> * add some comments to 0x180 and 0x184
-> * after re-reading I could eliminate the unneeded setting of 0x184 (ignored
->   by setting 0x180 to 1).
-> 
-> v9: (thank you Laurent)
-> * improve getting the esc clock rate for hs_settle
-> https://lore.kernel.org/linux-media/20210726082117.2423597-1-martin.kepplinger@puri.sm/
-> 
-> v8: (thank you Laurent)
-> * calculate hs_settle for any clk rate and mode
-> * add reviewed-by tag
-> https://lore.kernel.org/linux-media/20210723101217.1954805-1-martin.kepplinger@puri.sm/T/
-> 
-> v7: (thank you Laurent and Rob)
-> * fix the binding example (include the reset driver)
-> * use pm_runtime_resume_and_get()
-> * fix some logic in init_cfg()
-> * add some useful code comments and fix minor bits found by Laurent in v6
-> https://lore.kernel.org/linux-media/20210716102244.581182-1-martin.kepplinger@puri.sm/T/#t
-> 
-> v6: (thank you Laurent and Rob)
-> * add reviewed-by tag to binding
-> * statically allocate clk_bulk_data
-> * fix how the hs_settle value is applied
-> * remove s_power calls
-> * remove the link_setup() callback implementation and make the link immutable
-> * more cleanups according to Laurents' review from v5
-> https://lore.kernel.org/linux-media/20210714111931.324485-1-martin.kepplinger@puri.sm/
-> 
-> v5: (thank you Laurent)
-> * fix reset usage by using the already supported reset controller driver
-> * remove clko2 (totally unrelated clock / had been included by accident)
-> * rename pxl clock to ui
-> https://lore.kernel.org/linux-media/20210618095753.114557-1-martin.kepplinger@puri.sm/
-> 
-> v4: (thank you Rob and Marco)
-> * create fsl,mipi-phy-gpr custom dt property instead of confusing "phy"
-> * add imx8mq-specific compatibile to imx8mq.dtsi for future use
-> https://lore.kernel.org/linux-media/20210614121522.2944593-1-martin.kepplinger@puri.sm/
-> 
-> v3: (thank you, Rob and Laurent)
-> among minor other things according to v2 review, changes include:
-> * better describe the clocks
-> * rename DT property "phy-reset" to "reset" and "phy-gpr" to "phy"
-> https://lore.kernel.org/linux-media/20210608104128.1616028-1-martin.kepplinger@puri.sm/T/#t
-> 
-> v2: (thank you, Dan and Guido)
-> among fixes according to v1 reviews, changes include:
-> * remove status property from dt-bindings example
-> * define a few bits in order to have less magic values
-> * use "imx8mq_mipi_csi_" as local function prefix
-> * read DT properties only during probe()
-> * remove dead code (log_status)
-> * add imx8mq_mipi_csi_release_icc()
-> * fix imx8mq_mipi_csi_init_icc()
-> https://lore.kernel.org/linux-media/20210531112326.90094-1-martin.kepplinger@puri.sm/
-> 
-> v1:
-> https://lore.kernel.org/linux-media/20210527075407.3180744-1-martin.kepplinger@puri.sm/T/#t
-> 
-> 
-> Martin Kepplinger (3):
->   dt-bindings: media: document the nxp,imx8mq-mipi-csi2 receiver phy and
->     controller
->   media: imx: add a driver for i.MX8MQ mipi csi rx phy and controller
->   arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
-> 
->  .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 174 +++
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 104 ++
->  drivers/staging/media/imx/Makefile            |   1 +
->  drivers/staging/media/imx/imx8mq-mipi-csi2.c  | 991 ++++++++++++++++++
->  4 files changed, 1270 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
->  create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
+I'm not really sure what you mean, but if you mention the code we have
+in the DSI driver to make sure we can probe without our panel, then it's
+not something that we really can support. Bridges cannot be hotplugged
+in DRM and having some inconsistencies between drivers (since none of
+them behave the same way there) and between what's plugged on the other
+side of the DSI bus feels weird.
 
--- 
-Regards,
+Maxime
 
-Laurent Pinchart
+--utqwuarjxeuflrvb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYQFdIwAKCRDj7w1vZxhR
+xXboAQDPd3516XTZxLz6b/R54mWo7oRQoZNppedrau7xd1FxAAD/WG/gX9F5lHP5
+3F16+6CsvvDV4X2i2GlzFEuQaaRImQM=
+=xE4I
+-----END PGP SIGNATURE-----
+
+--utqwuarjxeuflrvb--
