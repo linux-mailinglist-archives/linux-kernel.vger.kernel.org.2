@@ -2,63 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25303D881C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37443D881F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234804AbhG1GlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 02:41:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232798AbhG1GlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 02:41:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA8B16023E;
-        Wed, 28 Jul 2021 06:41:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627454479;
-        bh=56P83WlclwichTl6Z38luZ2iMK3+gEOYgDjb65V+lIk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RyFulSv1DKr+WMQoNMSADu/bvEL2Nt9m/j8r5jvKSLh5jGBe0pgTIj4j2kHvRaqiq
-         cqa3qzmYXurTLeQgm/jDQEpxNsvH/ufI5US3zham8t8FNmVEui6kSE+H9CKeuNpq36
-         x4opoXtu0wbNZ69pe/1t1danjGs4IfYhvpwS+YHI=
-Date:   Wed, 28 Jul 2021 08:41:17 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 19/64] ip: Use struct_group() for memcpy() regions
-Message-ID: <YQD8DcOeivPzLMkL@kroah.com>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-20-keescook@chromium.org>
- <YQDxaYrHu0PeBIuX@kroah.com>
- <baead202-569f-775f-348c-aa64e69f03ed@embeddedor.com>
- <YQD2/CA7zJU7MW6M@kroah.com>
- <e3193698-86d5-d529-e095-e09b4d52927b@embeddedor.com>
+        id S234285AbhG1Glu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 02:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232798AbhG1Gls (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 02:41:48 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96378C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 23:41:46 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id f26so2193131ybj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 23:41:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
+        b=ViKjKzeRuJkr7pUlUn+cLokKVycw1hKzq75+cs1xOKZcCsoapSZsT4bl65eKIlF268
+         94EQPinjfXnHQRhzu02V6IOe4/EuOPJ+DGYiSahA35YNNeRF4sP+01LD2R/zwrdJ790x
+         7ardYT6+RDFwyqDKoao9aAC3+dAKZVIyxj5gdNYCpo4yBY5GsMYITB429/Uxq6PQFyMd
+         vPiiTkYs7axrioSUC2XxDe9h4SnMP4rGxub67CV6T6MvK+8kInNOeHmZYu+4HJQEHqUO
+         n9efoeI1VODLlDlGbLTP60HgpFrsMZdCgSJmEBvtmGjw+hOSQ+pkRQocwl7LMETDHlxe
+         8DTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
+        b=d+XFvtkSoUp1kiXrCkpq9sPUwBhF1lELa37K0sp+90Sly0klK9seLpuglrnhhqIiNz
+         xPxCJF4oshSUJFopHIvIolv/MCy7YQkY7yDdKhY9HeWppaNPECwQLRBsy4qAi1d9xfmd
+         ZSA1vTqm9Ub17lLWCJdMqR9Tlytg70ysZV3mKSWkfPW6kmgg5VXW9dVnuzG/3PuTfPHU
+         Kaa7y3f1SMTJ3IuBfjyY9qfGpm/STj4LR9Ex6CJu7Pv0TZoFjUoGkNezfD/5Agl5/T8x
+         sXyV3v8eEKCPtQMs6JJojhtzXFY51rpLJUh68f8Iwc7aHxoJ+xdshMHMb520q7IYhQh/
+         s2wA==
+X-Gm-Message-State: AOAM5325VgWz9ptoJV3GavEnU+N6JSF8bLJcY72OPRasK5Uoaw1oi3Zc
+        sw+ZsHho+t2c5VD8FIfy+KKPkQnIpDTKFR728ks=
+X-Google-Smtp-Source: ABdhPJxd4cFJowFgphoFGqbExr5bQNYcJ8KL5MZrffJPN5Grl67Bl1x9AnZ1Eo1LyEb/zKbotesRsCn2I1vdOMQPjPE=
+X-Received: by 2002:a25:31c3:: with SMTP id x186mr32909991ybx.382.1627454505718;
+ Tue, 27 Jul 2021 23:41:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3193698-86d5-d529-e095-e09b4d52927b@embeddedor.com>
+Reply-To: godwinppter@gmail.com
+Sender: maxwellagusdin01@gmail.com
+Received: by 2002:a05:7010:a414:b029:c0:a0cd:92e3 with HTTP; Tue, 27 Jul 2021
+ 23:41:45 -0700 (PDT)
+From:   Godwin Pete <godwinnpeter@gmail.com>
+Date:   Wed, 28 Jul 2021 08:41:45 +0200
+X-Google-Sender-Auth: 5opngXsksPznI_2N0o63D5hijLE
+Message-ID: <CAO7tpggafHnUX0f1zg6pxCUTk73vX_Twzo4TfDeCo27NyUp71g@mail.gmail.com>
+Subject: Reply immediately
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 01:31:16AM -0500, Gustavo A. R. Silva wrote:
-> > Why not use a local version of the macro like was done in the DRM header
-> > file, to make it always work the same and more obvious what is
-> > happening?  If I were a userspace developer and saw the above, I would
-> > think that the kernel developers have lost it :)
-> 
-> Then don't take a look at this[1]. :p
-> 
-> --
-> Gustavo
-> 
-> [1] https://git.kernel.org/linus/c0a744dcaa29e9537e8607ae9c965ad936124a4d
+My good friend,
 
-That one at least looks a "little" different so maybe it could be seen
-as semi-reasonable :)
+I just want to know if you, can help me to transfer the amount of
+($6Million). After the transfer we have to share it, 50% for me, and
+50% for you. Please let me know if you can help me for more
+information in regards with the transfer. I hope you can work with me
+honestly?
+
+
+Thanks.
+
+Godwin Peter,
