@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0222B3D8B75
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9553D8B79
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbhG1KLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:11:40 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:49925 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231907AbhG1KLj (ORCPT
+        id S235863AbhG1KMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:12:47 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54638 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhG1KMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:11:39 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id 8gXHmHFT4XTlc8gXImT2Kq; Wed, 28 Jul 2021 12:11:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1627467096; bh=jjWSH+H0BTaVJaWIwjQLEitk8kA6uaV+3EF8jheXJSI=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=wEbWL88u3DWZ/zsF10CIJ/oetrEqizW5XDyJxP+4dRgZ+dvMrO4TmIC6+QQHLECFn
-         xYfdZCnkU3h0D1ImOz6TN5l3FpnaWUbEFUjjRh9oQvl5PgabhCLb6RKvtiieqJu8aA
-         TvhxKc98g59pccxNS5tI9djBoF2g1/lXmtVzoYmMNb7YAEgqGjWEsIL72fITo747YL
-         bNOsDn7Mmce7ssZzQsY6HWvUa47gbB6nHIctcd5zfoHGkTxGzGq2CSiWLcZt79p1r9
-         ZJmUCvSt6s/rrqu0/13snp1k+vgBbZKjlMBVuPL+dXWbUdTLsqYxu2L8FAvYKj+yeq
-         1VDrOqjGwFekg==
-Subject: Re: [PATCH v5 1/3] docs: ext-ctrls-codec: Document cyclic
- intra-refresh zero control value
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        nicolas.dufresne@collabora.com
-References: <20210622113958.809173-1-stanimir.varbanov@linaro.org>
- <20210622113958.809173-2-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <0f1070de-2f21-82b5-8dfc-98c3afeb6d6b@xs4all.nl>
-Date:   Wed, 28 Jul 2021 12:11:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 28 Jul 2021 06:12:46 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 91E7F1C0B7C; Wed, 28 Jul 2021 12:12:44 +0200 (CEST)
+Date:   Wed, 28 Jul 2021 12:12:44 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Wei Wang <weiwan@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 099/167] tcp: disable TFO blackhole logic by default
+Message-ID: <20210728101244.GB30574@amd>
+References: <20210726153839.371771838@linuxfoundation.org>
+ <20210726153842.719316961@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210622113958.809173-2-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfFTYbXBjCcVn17DyNej90g17OoXOYMTq/AVpA8C5siFQQlp0qvGFqBSUqMaj1Ee5WKfRyqsBtdFhJAtz+cVJppf9K8zpwdKxUBVcMd98iVSLa0AHKv/F
- KLvwL1jhWOo3856j/0VLNgEUAq1y0YkESxAj+duGtmHKElwjeIN6j8uzh6YeOCcQ4jWB2xMGG9SxfkwsB4G0fFW5aPkUG3lT2kuYcfiGHYw5FBbkeZVaMHQY
- Z0v3FH3CYm28Kjj7En9Vr1lLd/wn/oQ/s0A1KrMJ5sdAthXC9PXqtHDZvr6cg/WPs1Y0XSCVWvPREMQW+X/hQagoST0RjIfrq13k3v2+Fi9PIuB4YdVO+wbS
- J1mlUn53fDcMBxTgTHIntzJdDWl92sKhobU99IrxroU1NdB3tYe01NBhK9BpXnM8eoqLSjLIxftISGvPoLC+jekWpm64NZN61SpduMW78LMVFIqCInwZo7JY
- qvqf1yquI8jfP91ZXd2xrMh4nzwXae31baGNRg==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
+Content-Disposition: inline
+In-Reply-To: <20210726153842.719316961@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/2021 13:39, Stanimir Varbanov wrote:
-> In all drivers _CYCLIC_INTRA_REFRESH_MB default control value is zero
-> which means that the macroblocks will not be intra-refreshed. Document
-> this _CYCLIC_INTRA_REFRESH_MB control behaviour in control description.
-> 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+--RASg3xLB4tUQ4RcS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+Hi!
 
-	Hans
+> [ Upstream commit 213ad73d06073b197a02476db3a4998e219ddb06 ]
+>=20
+> Multiple complaints have been raised from the TFO users on the internet
+> stating that the TFO blackhole logic is too aggressive and gets falsely
+> triggered too often.
+> (e.g. https://blog.apnic.net/2021/07/05/tcp-fast-open-not-so-fast/)
+> Considering that most middleboxes no longer drop TFO packets, we decide
+> to disable the blackhole logic by setting
+> /proc/sys/net/ipv4/tcp_fastopen_blackhole_timeout_set to 0 by
+> default.
 
-> ---
->  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index 8c6e2a11ed95..addf44b99dfa 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -1174,7 +1174,9 @@ enum v4l2_mpeg_video_h264_entropy_mode -
->      Cyclic intra macroblock refresh. This is the number of continuous
->      macroblocks refreshed every frame. Each frame a successive set of
->      macroblocks is refreshed until the cycle completes and starts from
-> -    the top of the frame. Applicable to H264, H263 and MPEG4 encoder.
-> +    the top of the frame. Setting this control to zero means that
-> +    macroblocks will not be refreshed.
-> +    Applicable to H264, H263 and MPEG4 encoder.
->  
->  ``V4L2_CID_MPEG_VIDEO_FRAME_RC_ENABLE (boolean)``
->      Frame level rate control enable. If this control is disabled then
-> 
+I understand this makes sense for mainline, but should we have this in
+stable? Somebody may still be using broken middlebox with their
+"stable" server.
 
+Best regards,
+								Pavel
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--RASg3xLB4tUQ4RcS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmEBLZsACgkQMOfwapXb+vIwUQCgg6oiio4fPI8TXau28bne2vI4
+7m8AoITvFuvycFVOeeJptxNdTRQVsXhn
+=0QgD
+-----END PGP SIGNATURE-----
+
+--RASg3xLB4tUQ4RcS--
