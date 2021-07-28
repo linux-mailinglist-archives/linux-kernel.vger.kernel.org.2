@@ -2,112 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440163D994A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6174F3D9953
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhG1XMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:12:46 -0400
-Received: from mga07.intel.com ([134.134.136.100]:55857 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232392AbhG1XMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:12:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="276549632"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="276549632"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 16:12:42 -0700
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="581030981"
-Received: from shuangho-mobl1.amr.corp.intel.com (HELO [10.212.219.154]) ([10.212.219.154])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 16:12:41 -0700
-Subject: Re: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
- pages
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
- <20210728204653.1509010-2-tony.luck@intel.com>
- <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
- <f2685d7c8dc14792a4e0f9807f742ea6@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <fd8f8e79-f63f-7d6f-277e-1ad08ab7b6b8@intel.com>
-Date:   Wed, 28 Jul 2021 16:12:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232662AbhG1XOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232326AbhG1XOk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:14:40 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F11C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:14:37 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id l19so7587359pjz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:14:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cp/1gwQbxKm35mFKd4TC2EFL1W+EtjwqZdL50egUVws=;
+        b=g6KzbBrSxn/nD5fbAKhLB3KhfMjP/EBF+i23w0kpmbqop6NS+P75BVA3oYPWAQv5TN
+         jVsYj83mHem2R5QZIvfE5d5URqJJQjsLnk9ETh7AN/rE48OqfmjnQNOSXEPIuAu+rr1g
+         LBym6tSkzsztfvOHVLJCIdl6Clmjoz1sl02aM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cp/1gwQbxKm35mFKd4TC2EFL1W+EtjwqZdL50egUVws=;
+        b=Tu34w3wWorcdyoMMFQ8aGWkViHjYmwGReHMyFK3yYm/sSlAxToR9jfXD0IgCcYF4Qt
+         oGzg5/KkHE1Xo6giIVhJGdrAG3V07aIYIMGKTRlz6MJppCNlnsVQoFUzNZtzt2C6JudL
+         aN8IT1U2IN/qcR4p1JgyE0nKsWo95b7H7qJxM1jd0mixgpsZLJJiEqHgc3/UcljhLjSi
+         JEtTS94sszI0UdARAncE0mBtiMoie1uK8lF5KRKtUW1Rdu7S3jE9180mCwBR4Hd95v4U
+         RKMdu8G7pfyjy5A1AIyOpMLWvp/aviDatQPkRXtRspSdfwKp0KbyLhwaSWMCoOcjI4IU
+         NeRA==
+X-Gm-Message-State: AOAM531W5vDh8u2YfJGdq5cvmbLa+pspjCYtiFP70BPFSVufVRsobmct
+        zlg4ZpFMpg/c6zV2f5lLPXjK4Q==
+X-Google-Smtp-Source: ABdhPJx1kv+LtzCaHLxEQ+7p9oKRsC6DgKBut532PtzT8ERKet67b0w3z4Vqt6OM2ER7XfKqYAMq8Q==
+X-Received: by 2002:a63:5a08:: with SMTP id o8mr1175343pgb.120.1627514077222;
+        Wed, 28 Jul 2021 16:14:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 16sm1132146pfu.109.2021.07.28.16.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 16:14:36 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 16:14:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 02/64] mac80211: Use flex-array for radiotap header bitmap
+Message-ID: <202107281602.4D9ED671@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-3-keescook@chromium.org>
+ <20210728073556.GP1931@kadam>
 MIME-Version: 1.0
-In-Reply-To: <f2685d7c8dc14792a4e0f9807f742ea6@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728073556.GP1931@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 3:57 PM, Luck, Tony wrote:
->> Wouldn't it be safer to do something like:
->>
->> 	page->owner = owner ? owner : (void *)-1;
->>
->> -1 is non-NULL, but also invalid, which makes it harder for us to poke
->> ourselves in the eye.
-> Does Linux have some #define INVALID_POINTER thing that
-> provides a guaranteed bad (e.g. non-canonical) value?
+On Wed, Jul 28, 2021 at 10:35:56AM +0300, Dan Carpenter wrote:
+> On Tue, Jul 27, 2021 at 01:57:53PM -0700, Kees Cook wrote:
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memcpy(), memmove(), and memset(), avoid
+> > intentionally writing across neighboring fields.
+> > 
+> > The it_present member of struct ieee80211_radiotap_header is treated as a
+> > flexible array (multiple u32s can be conditionally present). In order for
+> > memcpy() to reason (or really, not reason) about the size of operations
+> > against this struct, use of bytes beyond it_present need to be treated
+> > as part of the flexible array. Add a union/struct to contain the new
+> > "bitmap" member, for use with trailing presence bitmaps and arguments.
+> > 
+> > Additionally improve readability in the iterator code which walks
+> > through the bitmaps and arguments.
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  include/net/ieee80211_radiotap.h | 24 ++++++++++++++++++++----
+> >  net/mac80211/rx.c                |  2 +-
+> >  net/wireless/radiotap.c          |  5 ++---
+> >  3 files changed, 23 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/include/net/ieee80211_radiotap.h b/include/net/ieee80211_radiotap.h
+> > index c0854933e24f..101c1e961032 100644
+> > --- a/include/net/ieee80211_radiotap.h
+> > +++ b/include/net/ieee80211_radiotap.h
+> > @@ -39,10 +39,26 @@ struct ieee80211_radiotap_header {
+> >  	 */
+> >  	__le16 it_len;
+> >  
+> > -	/**
+> > -	 * @it_present: (first) present word
+> > -	 */
+> > -	__le32 it_present;
+> > +	union {
+> > +		/**
+> > +		 * @it_present: (first) present word
+> > +		 */
+> > +		__le32 it_present;
+> > +
+> > +		struct {
+> > +			/* The compiler makes it difficult to overlap
+> > +			 * a flex-array with an existing singleton,
+> > +			 * so we're forced to add an empty named
+> > +			 * variable here.
+> > +			 */
+> > +			struct { } __unused;
+> > +
+> > +			/**
+> > +			 * @bitmap: all presence bitmaps
+> > +			 */
+> > +			__le32 bitmap[];
+> > +		};
+> > +	};
+> >  } __packed;
 > 
-> (void *)-1 seems hacky.
+> This patch is so confusing...
 
-ERR_PTR(-SOMETHING) wouldn't be too bad.  I guess it could even be:
+Right, unfortunately your patch doesn't work under the strict memcpy().
+:(
 
-	page->owner = ERR_PTR(SGX_EPC_PAGE_VA);
+Here are the constraints I navigated to come to the original patch I
+sent:
 
-and then:
+* I need to directly reference a flexible array for the it_present
+  pointer because pos is based on it, and the compiler thinks pos
+  walks off the end of the struct:
 
-#define SGX_EPC_PAGE_VA 0xffff...something...greppable
+	In function 'fortify_memcpy_chk',
+	    inlined from 'ieee80211_add_rx_radiotap_header' at net/mac80211/rx.c:652:3:
+	./include/linux/fortify-string.h:285:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()?  [-Wattribute-warning]
+	  285 |    __write_overflow_field();
+	      |    ^~~~~~~~~~~~~~~~~~~~~~~~
 
-I *thought* we had a file full of these magic values, but maybe I'm
-misremembering the uapi magic header.
+* It's churn/fragile to change the sizeof(), so I can't just do:
+	-	__le32 it_present;
+	+	__le32 it_bitmap[];
+
+* I want to use a union:
+	-	__le32 it_present;
+	+	union {
+	+		__le32 it_present;
+	+		__le32 it_bitmap[];
+	+	};
+* ... but I can't actually use a union because of compiler constraints
+  on flexible array members:
+	./include/net/ieee80211_radiotap.h:50:10: error: flexible array member in union
+	   50 |   __le32 it_optional[];
+	      |          ^~~~~~~~~~~
+
+* So I came to the horrible thing I original sent. :P
+
+If I could escape the __le32 *it_present incrementing, I could use a
+simple change:
+	 	__le32 it_present;
+	+	__le32 it_optional[];
+
+
+> Btw, after the end of the __le32 data there is a bunch of other le64,
+> u8 and le16 data so the struct is not accurate or complete.
+
+Hm, docs seem to indicate that the packet format is multiples of u32?
+*shrug*
+
+Hmpf.
+
+-Kees
+
+-- 
+Kees Cook
