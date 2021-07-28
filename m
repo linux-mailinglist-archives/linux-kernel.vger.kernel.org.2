@@ -2,199 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE2D3D8A02
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BBC3D8A0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234974AbhG1Iuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhG1Iuu (ORCPT
+        id S235274AbhG1Ivh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:51:37 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21394 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234655AbhG1Ivg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:50:50 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358E6C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 01:50:49 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1m8fH5-00087o-36; Wed, 28 Jul 2021 10:50:47 +0200
-Subject: Re: [RFC PATCH v1] fscrypt: support encrypted and trusted keys
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, git@andred.net,
-        Omar Sandoval <osandov@osandov.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-References: <20210727144349.11215-1-a.fatoum@pengutronix.de>
- <YQA2fHPwH6EsH9BR@sol.localdomain>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <367ea5bb-76cf-6020-cb99-91b5ca82d679@pengutronix.de>
-Date:   Wed, 28 Jul 2021 10:50:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 28 Jul 2021 04:51:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1627462290; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=Pi2KqZWuK18dhZOcGaixn0LZJgWdkezNxd8qBIbJZFG+iw/EEekkgrPsGIMi0tFbw118mPqRr4VXb0yH1Qsbu6ze5X1mC87FUG27jeSmmpnrr4AnUt4znClTTZdnmJXIEWR8oNcLrn4bN7XwuC/4LbWQAk0haZ4ZsZdCkmasFKs=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1627462290; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=ZG502c7KtdGTgFEv3R+joxM5QstperDpibzCKlU+jAY=; 
+        b=ae6WporXuPPrjLJ3wztVjYwIWkwgIpwEco1WI94e9D3HBHhihrZSGm/88ByLcgGHcpvNZ3D1NdOz2CCrJd/XGXljx6qF7ialsuDaQfuj1LgGd/QAdxHFYR6MUMJ0BjojpQOCpMHaovPcqMQalBB/KyURkk5NSC+nGVzXeKYFrBA=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1627462290;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=ZG502c7KtdGTgFEv3R+joxM5QstperDpibzCKlU+jAY=;
+        b=lS1XvwX3gAzHA4g/eFF4n6MDPueGgBpRsnS8mRqx3BiACndXi4qhqd+42WsUPXzF
+        L/hdQwThyriMXQxIUy0E4ONlxVGukUcamL9GSPM4d1EOpqrNbcw1+O30mUitMjU/N9Q
+        jLD2NE0JIfA4EU7Jyoe5SNj/QBeY3WPAL3GJ4P9g=
+Received: from localhost.localdomain (49.207.59.170 [49.207.59.170]) by mx.zohomail.com
+        with SMTPS id 1627462286332340.6254694070768; Wed, 28 Jul 2021 01:51:26 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
+        skhan@linuxfoundation.org
+Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v8 0/2] firmware_loader: fix uaf in firmware_fallback_sysfs
+Date:   Wed, 28 Jul 2021 14:21:05 +0530
+Message-Id: <20210728085107.4141-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <YQA2fHPwH6EsH9BR@sol.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Eric,
+This series fixes the use after free in firmware_fallback_sysfs reported by
+syzbot at: 
+https://syzkaller.appspot.com/bug?extid=de271708674e2093097b
 
-On 27.07.21 18:38, Eric Biggers wrote:
-> On Tue, Jul 27, 2021 at 04:43:49PM +0200, Ahmad Fatoum wrote:
->> For both v1 and v2 key setup mechanisms, userspace supplies the raw key
->> material to the kernel after which it is never again disclosed to
->> userspace.
->>
->> Use of encrypted and trusted keys offers stronger guarantees:
->> The key material is generated within the kernel and is never disclosed to
->> userspace in clear text and, in the case of trusted keys, can be
->> directly rooted to a trust source like a TPM chip.
-> 
-> Please include a proper justification for this feature
+The first patch gets rid of the -EAGAIN return since it doesn't make
+sense (see patch description for more info). The second patch goes on to
+actually fix the use after free issue.
 
-I've patches pending for extending trusted keys to wrap the key sealing
-functionality of the CAAM IP on NXP SoCs[1]. I want the kernel to
-generate key material in the factory, have the CAAM encrypt it using its
-undisclosed unique key and pass it to userspace as encrypted blob that is
-persisted to an unencrypted volume. The intention is to thwart offline
-decryption of an encrypted file system in an embedded system, where a
-passphrase can't be supplied by an end user.
+Changes in v8:
+1. Added/fixed some comments as suggested by Shuah
 
-Employing TPM and TEE trusted keys with this is already possible with
-dm-crypt, but I'd like this to be possible out-of-the-box with
-ubifs + fscrypt as well.
+Changes in v7:
+1. Don't move the error handling code from fw_load_sysfs_fallback
+   to fw_sysfs_wait_timeout to simplify the patch. Also, the move
+   is unnecessary.
 
-> and update the relevant
-> sections of Documentation/filesystems/fscrypt.rst to explain why someone would
-> want to use this feature and what it accomplishes.
+2. Fix the commit log for patch 1 as per Luis' suggestions.
 
-How about:
+Changes in v6:
+1. v5 didn't actually remove -EAGAIN. So, fixed that.
 
--  type "fscrypt-provisioning" whose payload is
-+  type "fscrypt-provisioning" or "trusted":
-+  "fscrypt-provisioning" keys have a payload of
-   struct fscrypt_provisioning_key_payload whose ``raw`` field contains
-   the raw key and whose ``type`` field matches ``key_spec.type``.
-   Since ``raw`` is variable-length, the total size of this key's
-   payload must be ``sizeof(struct fscrypt_provisioning_key_payload)``
--  plus the raw key size.  The process must have Search permission on
--  this key.
-+  plus the raw key size.
-+  For "trusted" keys, the payload is directly taken as the raw key.
+Changes in v5:
+1. Split the patch into two patches as discussed here:
+   https://lore.kernel.org/lkml/20210715232105.am4wsxfclj2ufjdw@garbanzo/
 
-+  The process must have Search permission on this key.
+Changes in v4:
+Documented the reasons behind the error codes returned from
+fw_sysfs_wait_timeout() as suggested by Luis Chamberlain.
 
--  Most users should leave this 0 and specify the raw key directly.
+Changes in v3:
+Modified the patch to incorporate suggestions by Luis Chamberlain in
+order to fix the root cause instead of applying a "band-aid" kind of
+fix.
+https://lore.kernel.org/lkml/20210403013143.GV4332@42.do-not-panic.com/
 
-+  Most users leave this 0 and specify the raw key directly.
--  The support for specifying a Linux keyring key is intended mainly to
+Changes in v2:
+1. Fixed 1 error and 1 warning (in the commit message) reported by
+checkpatch.pl. The error was regarding the format for referring to
+another commit "commit <sha> ("oneline")". The warning was for line
+longer than 75 chars.
 
--  allow re-adding keys after a filesystem is unmounted and re-mounted,
-+  "trusted" keys are useful to leverage kernel support for sealing and
-+  unsealing key material. Sealed keys can be persisted to unencrypted
-+  storage and later used to decrypt the file system without requiring
-+  userspace to know the raw key material.
-+  "fscrypt-provisioning" key support is intended mainly to allow
-+  re-adding keys after a filesystem is unmounted and re-mounted,
 
-> As-is, this feature doesn't seem to have a very strong justification.  Please
-> also see previous threads where this feature was discussed/requested:
-> https://lkml.kernel.org/linux-fscrypt/20180110124418.24385-1-git@andred.net/T/#u,
-> https://lkml.kernel.org/linux-fscrypt/20180118131359.8365-1-git@andred.net/T/#u,
-> https://lkml.kernel.org/linux-fscrypt/20200116193228.GA266386@vader/T/#u
+Anirudh Rayabharam (2):
+  firmware_loader: use -ETIMEDOUT instead of -EAGAIN in
+    fw_load_sysfs_fallback
+  firmware_loader: fix use-after-free in firmware_fallback_sysfs
 
-Thanks. I wasn't aware of the last one. I (re-)read them now. I hope
-this mail manages to address the concerns.
-
-(Also added original authors of these mail threads to CC)
-
-> Note that there are several design flaws with the encrypted and trusted key
-> types:
-> 
-> - By default, trusted keys are generated using the TPM's RNG rather than the
->   kernel's RNG, which places all trust in an unauditable black box.
-
-Patch to fix that awaits feedback on linux-integrity[2].
-
-> - trusted and encrypted keys aren't restricted to specific uses in the kernel
->   (like the fscrypt-provisioning key type is) but rather are general-purpose.
->   Hence, it may be possible to leak their contents to userspace by requesting
->   their use for certain algorithms/features, e.g. to encrypt a dm-crypt target
->   using a weak cipher that is vulnerable to key recovery attacks.
-
-The footgun is already there by allowing users to specify their own
-
-raw key. Users can already use $keyid for dm-crypt and then do
-
-  $ keyctl pipe $keyid | fscryptctl add_key /mnt
-
-The responsibility to not reuse key material already lies with the users,
-regardless if they handle the raw key material directly or indirectly via
-a trusted key description/ID.
-
-> - "encrypted" keys that use a master key of type "user" are supported, despite
->   these being easily obtainable in the clear by userspace providing their own
->   master key.  This violates one of the main design goals of "encrypted" keys.
-
-I care for trusted keys foremost, so I've no problems dropping the encrypted
-key support.
-
-> Also, using the "trusted" key type isn't necessary to achieve TPM-bound
-> encryption, as TPM binding can be handled in userspace instead.
-
-Trusted keys support TEE and hopefully CAAM soon as well. I don't want my
-userspace directly poking a DMA master.
-> So I really would like to see a proper justification for this feature, and have
-> it be properly documented.
-
-In light of the extended justification above, do you want me to respin with
-the proposed changes?
-
-> One comment on the UAPI below.
-
-> Why not just allow the key_id field to specify a "trusted" or "encrypted" key?
-> Why is it necessary for FS_IOC_ADD_ENCRYPTION_KEY to support two different ways
-> of looking up keyring keys -- by ID and by description?  Looking up by ID works
-> fine for "fscrypt-provisioning" keys; why are "trusted" and "encrypted" keys
-> different in this regard?
-
-Mixture of reading emails predating key_id and misunderstanding the API.
-key_id would be much cleaner indeed. I can change this for v2.
-
-Thanks for your review.
-
-[1]: https://lore.kernel.org/linux-integrity/655aab117f922320e2123815afb5bf3daeb7b8b3.1626885907.git-series.a.fatoum@pengutronix.de/
-[2]: https://lore.kernel.org/linux-integrity/cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de/T/#meaefcdc9ac091944ddadaebe0410c2325af0032e
-
-Cheers,
-Ahmad
-
-> 
-> - Eric
-> 
-
+ drivers/base/firmware_loader/fallback.c | 14 ++++++++------
+ drivers/base/firmware_loader/firmware.h | 10 +++++++++-
+ drivers/base/firmware_loader/main.c     |  2 ++
+ 3 files changed, 19 insertions(+), 7 deletions(-)
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.26.2
+
