@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACFC3D92B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457AB3D92F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237067AbhG1QDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:03:03 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:44810 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbhG1QDB (ORCPT
+        id S229612AbhG1QOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhG1QOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:03:01 -0400
-Received: by mail-io1-f48.google.com with SMTP id l18so3510155ioh.11;
-        Wed, 28 Jul 2021 09:02:58 -0700 (PDT)
+        Wed, 28 Jul 2021 12:14:39 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0CBC061765;
+        Wed, 28 Jul 2021 09:03:59 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id e21so3245029pla.5;
+        Wed, 28 Jul 2021 09:03:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DohKmaOm/zwQ2P9QFmgx3wEwck5+bB7sVxm44FsrpYE=;
+        b=XJ308Hi10yPx5xgCjRg89oRQt9zk7X1SMwWEKyWRdQMFc04fDasAkFE0aNK823E9fI
+         0JZxtWABF2MqVMVHzdf8+rypUR08hUFEpYBHEv25ECLB8OBqJDTxIVOSW5T7+hRTgHfG
+         TtxxYC2npCgjRkVHeD+CzhscLypIY4sRHuTsxpeJvDrCtPbyhYYBcVT8YoNxB1/x9trA
+         KQg1Shpwuj86F6q554eakcxyN8d8wx5ssoILn3fCnX4mXArXEw98TAtbfpCMp13SPCY0
+         ILw+OTyVL8rUirRXxgvI0BBx0bWmXKvI30zCKUH6bP9fUH/JFjFQ1fOOLY1NxzuQAgzg
+         n5Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AlrRt63O8LnOYD8MBx5zu+erqllBRCmDVTupX8LxCl4=;
-        b=lfX7bbMoMTuJxZPOf9YXFv/Yatv7dWC5pFw3isjDUU0A0BxbJ1Gv4jKcFX4R4NGG8L
-         fZrVhV1kiQAMfHuFa3h/K2TRxCFIfmKI0pSH0ZvEMUOxNvxxLkqpTu0xtCHSdJACDc4u
-         F/uH4t+lDlI78sOiwKDmGSwyhu6NWUOXclmS2QrMh0gECxDjK1bmcxxHWODXY+DUwKLX
-         vROkubl9eKaLo3KXeDU8emZB65/M8M+v/lIT8ndmCooZDtsruVL0Z7EfRpImf7FZM6+h
-         FYpf7AUIHI130io3Tl+7+HjhdaczzRnGTN0R/XV7/LFwmYf+jHDp0BMx7PdcD20pf53H
-         3E4A==
-X-Gm-Message-State: AOAM530t8SdSFgEdL2/55v6ilBMmHaoJUJgAVbmBTZyn3emFxTifu7s8
-        IspbFWMgwk6HxIqQA5UugA==
-X-Google-Smtp-Source: ABdhPJxgx+iXa8zZL6hdbpKKkzPoHiC+UmtuBd1XEyLj60qo3WskzKZEDMsDRQXw9uC0k+WDOaFnrQ==
-X-Received: by 2002:a05:6602:1814:: with SMTP id t20mr168381ioh.204.1627488178433;
-        Wed, 28 Jul 2021 09:02:58 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id z6sm159022ilz.54.2021.07.28.09.02.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 09:02:57 -0700 (PDT)
-Received: (nullmailer pid 1150584 invoked by uid 1000);
-        Wed, 28 Jul 2021 16:02:53 -0000
-Date:   Wed, 28 Jul 2021 10:02:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Prabhakar <prabhakar.csengg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 1/4] dt-bindings: pinctrl: renesas,rzg2l-pinctrl: Add
- DT bindings for RZ/G2L pinctrl
-Message-ID: <20210728160253.GA1150550@robh.at.kernel.org>
-References: <20210727112328.18809-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210727112328.18809-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DohKmaOm/zwQ2P9QFmgx3wEwck5+bB7sVxm44FsrpYE=;
+        b=cBQrNoBwacVFbOfn3aYUVMQ75ZxxOlD/igkmi/EvW4cx5USInG2GdPG3B96NEMENTl
+         /n7FpDuBoR9nU/wOwBix2d4qmnB0P9z6Z6YNGJ2lDsa9kpTW99qv/+ym4xShJGQn0iGv
+         hqFQerUyBYvf/zpltwuUATG8/Zqeyl0a1WIa+pb6KsWe1SJuU8SeWolvhIUQltBIhjHF
+         1jGGW9SNtmcA3ftADWMFHN10A4AXBhf+OI9bEvouSI4JUmJwzJBpxpSSZqpYdjPz4R6v
+         9gj+gtK3J0H9Pgj/wRhzXro4B2/4S28C9jrKgUM91IGjBEl32CCgdsuPohIqFDXJkIdM
+         xxyQ==
+X-Gm-Message-State: AOAM533vrE5iChoeF3dk/kiRxL1z7Nzp4Tyw1eeUl+yxZHAOdvKY+O2E
+        KDlfsWrkUhi1Nw4QzzPL6m9pjiugL2TdEFNM9fk=
+X-Google-Smtp-Source: ABdhPJxJ+G7hcyR34BEFUSBwCTPCdA8kqXedy8NMDhSH+aAbLbfKT/vM/3KcMZyZzV5eQJXwbPlWjHmpbyMJ2utj3gk=
+X-Received: by 2002:a17:90a:b10b:: with SMTP id z11mr5032438pjq.181.1627488238478;
+ Wed, 28 Jul 2021 09:03:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727112328.18809-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210728105558.23871-1-andriy.shevchenko@linux.intel.com> <20210728155002.GA822338@bjorn-Precision-5520>
+In-Reply-To: <20210728155002.GA822338@bjorn-Precision-5520>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 28 Jul 2021 19:03:18 +0300
+Message-ID: <CAHp75Vex4NffM_H0sK8LnyauMizmk3CjhKYurrcm==80K+qQ-Q@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] PCI: keystone: Use device_get_match_data()
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 12:23:25 +0100, Lad Prabhakar wrote:
-> Add device tree binding documentation and header file for Renesas
-> RZ/G2L pinctrl.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Hi Rob,
-> 
-> This patch requires the base series to be Linux 5.14-rc2(or +) or
-> the bots would complain about check failures
-> 
-> Cheers,
-> Prabhakar
-> ---
->  .../pinctrl/renesas,rzg2l-pinctrl.yaml        | 155 ++++++++++++++++++
->  include/dt-bindings/pinctrl/rzg2l-pinctrl.h   |  23 +++
->  2 files changed, 178 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
->  create mode 100644 include/dt-bindings/pinctrl/rzg2l-pinctrl.h
-> 
+On Wed, Jul 28, 2021 at 6:51 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> On Wed, Jul 28, 2021 at 01:55:58PM +0300, Andy Shevchenko wrote:
+> > Instead of manipulations with OF APIs, use device_get_match_data().
+> >
+> > While at it, drop of_match_ptr() completely and make compiler happy,
+> > otherwise it complains:
+> >
+> >   pci-keystone.c:1069:34: warning: =E2=80=98ks_pcie_of_match=E2=80=99 d=
+efined but not used [-Wunused-const-variable=3D]
+>
+> These are two separate things and I'd prefer two separate patches.
+>
+> I have a to-do item on my list to replace of_match_device(), as you
+> did here.  I originally suggested replacing with
+> device_get_match_data(), but I think Rob prefers
+> of_device_get_match_data() because there's really no benefit to the
+> extra indirection of device_get_match_data().  These are not drivers
+> that may potentially be used with either ACPI or OF; they're just OF.
+>
+> Either way, I'd like to see a patch that does this for all drivers in
+> drivers/pci/controller/ at the same time so they get slightly more
+> consistent.
+>
+> Same for the .of_match_table update; a good change that I'd like to
+> apply universally.  It looks like pcie-spear13xx.c, pcie-armada8k.c,
+> pci-ftpci100.c, pci-v3-semi.c, pci-xgene.c, pcie-iproc-platform.c also
+> have the same issue.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thanks for the review, I will drop this.
+
+--=20
+With Best Regards,
+Andy Shevchenko
