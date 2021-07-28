@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C063D94D8
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAA23D94D6
 	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhG1SBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
+        id S231259AbhG1SBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhG1SBA (ORCPT
+        with ESMTP id S229556AbhG1SBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Jul 2021 14:01:00 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D3BC061757;
-        Wed, 28 Jul 2021 11:00:57 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id a12so1990017qtb.2;
-        Wed, 28 Jul 2021 11:00:57 -0700 (PDT)
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43509C061764;
+        Wed, 28 Jul 2021 11:00:58 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id g6so1983059qvj.8;
+        Wed, 28 Jul 2021 11:00:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HjqNaCu5z632c2H6OSRidttZSmwX46gUM1DC3j7exUU=;
-        b=d4TQ5qxeRW8IhmFe1ZMqMdQ0ddtukgZDNvAqp2e7TuDKRmy/TxM38z44H4fP8T4lyn
-         oPYUxSQJYBqqkMadCcUojtTd+HjqOMNFch2TeL3nBhMN1TQfI3lr7ByEv6hCBj8MoLOr
-         GGf7+tmOJj8pJhkQ7NZj0buvHcG67PCN1Q+W3neepzoe2nbESKAJaiEyW9Otmr7hR8nP
-         ADfbezM5WhwxB3/eGj0NmwQpgfUFP7dCFO7b6LIK3BL/ZA/7OKvjJ8gJt/9X+cKxdP3S
-         hQY2lYe99f3sohxtKUWKvxszyogY6ivs71SWlSTde2URwGzB11NaNNtxureQrl+uv0iH
-         aMfA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vXk/J4q5mPEjnLuepFqEKq93BJsZukmkkBYD3V+Z3Tk=;
+        b=beFhaZVHfk7mxGVzvlrm0rAr2p1O/09MWnJmT0ut7HVMm6/cAi3kDjr9g+wxOuPF/w
+         59io64vS64AzA+1oeggt0h6Ua18feX03yXJj0NeUQlhAND2wrGoAqAaTsYoY6L9Udi3t
+         6u0Z//Phpn/Y9eC+AcrxmAiZvK2d39nkFcwoXMoH1+yE13kD0GdzyCU/21wTNchokQH8
+         2Kjn3hrmPGYQE0ah/xwM2u+yCSKCxXIFz4fCQjM3N5lkC+TdEfqDjsB5t/w2NqdkZjp3
+         6aQF8d45sVRRAWYJ7+qUXy26mY2vadhl3SV6kOnaHs+Se2R367o5v+B68PB0wOg15qo5
+         ZQMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HjqNaCu5z632c2H6OSRidttZSmwX46gUM1DC3j7exUU=;
-        b=HvGXlL5+pieV1I3a5CPMn+d8ghYtfts3Lf4gXlissAQAGJyyFj7bbUncJX0OfQw7Dc
-         qjKt4vxr7LVObQo5YZ+ZUAF0yGDtGVEriKMYSrxs5JEGiOHD4rKcJruDhEgJCFXTUfPs
-         v8L3kgPCosRZ9W57rfDw6I5QcnnQHn3hOAAQVT7DEI1Jq8i0Qik8YYmOyPBiiiuAntDf
-         rhNnFDi2rkW7cFepQpxxb/h5tj4KpvfrL1kVyn0yxiqqkMx5DGANng8NJYhz1zjq25NF
-         khXDrxINA+6czUoQUej0SVyf3/5qXnu2ISPE/GL8uqnmw3lHFmIuzFZWhY0KEJ8znMSR
-         mNyg==
-X-Gm-Message-State: AOAM533D23x942THd7J+WrQKjkN99PbhCxKcExtZp34MVX823tALjzjd
-        sM0OT1kB0aW4y+sB4bDc9PU=
-X-Google-Smtp-Source: ABdhPJx60cWu8UNF0XaLyoqMNCqTuJYTmTH41zklhgF7eZCQAw14sjuj4oPik3UPuJVH4/JQSxAHSg==
-X-Received: by 2002:ac8:6b99:: with SMTP id z25mr763728qts.150.1627495256568;
-        Wed, 28 Jul 2021 11:00:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vXk/J4q5mPEjnLuepFqEKq93BJsZukmkkBYD3V+Z3Tk=;
+        b=aG8D7qZVT3/QcJ2NDxb156/MlH/82RLeM0k8njEs62KXsC5789rL5KzIB8UYqVjLFi
+         1dTntKSiwWlx/QuSqz7aMEr4V1Olghigl6sezHB1xaPyXfMwHGJ3ih0IVZ8BCxUsA5uV
+         Au95sSbJFS50cZEUtypYJ6mZle3m8mjlCbcK88HSJFS/gF5RpXkX3jXP6aPdFxmXlYHL
+         3OPDyjUtpqm6vd2dDvbwZUqRyJdPBywyL+oe7sZ5hOKwkwySPvp6bSD/yVgIqhGvOCwR
+         nzcJVQY1K/jpkRkSJUR7HOyAlVmztgKuRUI6y7yAtcireOiL59jxGCUoQc9TLCoCNIyn
+         kU9A==
+X-Gm-Message-State: AOAM5327CzqDeTL/hmaNEBLysptgnW08YvoCQC6GkOTI1Ymw8Kgn6XUe
+        r838yzApdMgx/qMkBXiwfxE=
+X-Google-Smtp-Source: ABdhPJxR95vQmYlTzhJ3BscYKr/cpb85sYBj4WPecIGS8wdPNanrwNCUsJga5A8c4jDPranJBAoFAw==
+X-Received: by 2002:ad4:5bee:: with SMTP id k14mr1411561qvc.10.1627495257347;
+        Wed, 28 Jul 2021 11:00:57 -0700 (PDT)
 Received: from master-laptop.sparksnet ([2601:153:980:85b1:b58:2ae8:d75f:660a])
-        by smtp.gmail.com with ESMTPSA id r5sm223341qtm.75.2021.07.28.11.00.55
+        by smtp.gmail.com with ESMTPSA id r5sm223341qtm.75.2021.07.28.11.00.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 11:00:56 -0700 (PDT)
+        Wed, 28 Jul 2021 11:00:57 -0700 (PDT)
 From:   Peter Geis <pgwipeout@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh@kernel.org>,
-        Johan Jonker <jbx6244@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Liang Chen <cl@rock-chips.com>
 Cc:     Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: [PATCH v2 0/8] fixes and enablement for rk356x
-Date:   Wed, 28 Jul 2021 14:00:26 -0400
-Message-Id: <20210728180034.717953-1-pgwipeout@gmail.com>
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/8] arm64: dts: rockchip: fix rk3568 mbi-alias
+Date:   Wed, 28 Jul 2021 14:00:27 -0400
+Message-Id: <20210728180034.717953-2-pgwipeout@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210728180034.717953-1-pgwipeout@gmail.com>
+References: <20210728180034.717953-1-pgwipeout@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Morning,
+The mbi-alias incorrectly points to 0xfd100000 when it should point to
+0xfd410000.
+This fixes MSIs on rk3568.
 
-This series aims to fix some early issues with the rk356x and enable
-nodes that are currently supported by the available drivers.
+Fixes: a3adc0b9071d ("arm64: dts: rockchip: add core dtsi for RK3568
+SoC")
 
-1. fixes the mbi-alias, which points to the wrong location
-2. fixes the rockchip clk-pll to work without a grf node
-3. adds the gpio debounce clocks which are necessary for gpio to bind
-4. adds the common gmac1 node
-5. adds the tsadc nodes
-6. adjusts the gpll and ppll clocks to better support hardware
-7. enables the gmac1 on the Quartz64
-8. adds thermal support to the Quartz64
+Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changelog:
-v2:
-Drop "dt-bindings: gpio: rockchip,gpio-bank: increase max clocks"
-Drop "arm64: dts: rockchip: add missing rk3568 cru phandles"
-Add clk-pll fix patch as suggested by Heiko
-Move ethernet alias to Quartz64 board as suggested by Heiko
-Adjust tsadc pinctrl as suggested by Heiko and Johan
-Move tsadc mode and polarity to Quartz64 board
-
-Peter Geis (8):
-  arm64: dts: rockchip: fix rk3568 mbi-alias
-  clk: rockchip: fix clk-pll rk356x early pll init
-  arm64: dts: rockchip: add rk356x gpio debounce clocks
-  arm64: dts: rockchip: add rk356x gmac1 node
-  arm64: dts: rockchip: add rk3568 tsadc nodes
-  arm64: dts: rockchip: adjust rk3568 pll clocks
-  arm64: dts: rockchip: enable gmac node on quartz64-a
-  arm64: dts: rockchip: add thermal support to Quartz64 Model A
-
- .../boot/dts/rockchip/rk3566-quartz64-a.dts   |  71 ++++++++++
- .../boot/dts/rockchip/rk3568-pinctrl.dtsi     |   7 +
- arch/arm64/boot/dts/rockchip/rk356x.dtsi      | 131 +++++++++++++++++-
- drivers/clk/rockchip/clk-pll.c                |   2 +-
- 4 files changed, 204 insertions(+), 7 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+index 322971318d5a..f7ecdfd66f86 100644
+--- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+@@ -195,7 +195,7 @@ gic: interrupt-controller@fd400000 {
+ 		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
+ 		interrupt-controller;
+ 		#interrupt-cells = <3>;
+-		mbi-alias = <0x0 0xfd100000>;
++		mbi-alias = <0x0 0xfd410000>;
+ 		mbi-ranges = <296 24>;
+ 		msi-controller;
+ 	};
 -- 
 2.25.1
 
