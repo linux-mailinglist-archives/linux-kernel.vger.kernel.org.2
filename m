@@ -2,182 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6174F3D9953
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78833D9957
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbhG1XOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        id S232686AbhG1XPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbhG1XOk (ORCPT
+        with ESMTP id S232659AbhG1XO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:14:40 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F11C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:14:37 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id l19so7587359pjz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:14:37 -0700 (PDT)
+        Wed, 28 Jul 2021 19:14:58 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6C7C061757;
+        Wed, 28 Jul 2021 16:14:55 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id m11so2623544qtx.7;
+        Wed, 28 Jul 2021 16:14:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cp/1gwQbxKm35mFKd4TC2EFL1W+EtjwqZdL50egUVws=;
-        b=g6KzbBrSxn/nD5fbAKhLB3KhfMjP/EBF+i23w0kpmbqop6NS+P75BVA3oYPWAQv5TN
-         jVsYj83mHem2R5QZIvfE5d5URqJJQjsLnk9ETh7AN/rE48OqfmjnQNOSXEPIuAu+rr1g
-         LBym6tSkzsztfvOHVLJCIdl6Clmjoz1sl02aM=
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ND6P2qhhxVzhXD27q/VZREJKfmBf1qojaMwKs8f07mY=;
+        b=XrVW7J1cTd9w1mlMMY0ZbiDmfgJPrbRoiE5iN0tvZifsBRQoPA9by/jMhpCCik3TYr
+         xa3fRxfMPqrcQ3aAepboMRM79Nu64PNMUvxFQICiSsCknyoZwRVdxbT3avV093nctP90
+         RhAaT1C09DbBZ65GUtThHuhlwA3lGjMfZeracGWwuqsxx/qCyE58mlDFTQHYGgxQhISH
+         KCD3fG/ZwDD5E/HUm1is++QZqhwPKao0+CbZAR1T1ErQ0ngntBoOl9SdCd1EmFWqEcPU
+         bEhGWd24erECabie5RS/YrqFLs+38zxQPitLpYibuFCRWqiP9jfp4oRWvMODK1qbTc+X
+         3wfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cp/1gwQbxKm35mFKd4TC2EFL1W+EtjwqZdL50egUVws=;
-        b=Tu34w3wWorcdyoMMFQ8aGWkViHjYmwGReHMyFK3yYm/sSlAxToR9jfXD0IgCcYF4Qt
-         oGzg5/KkHE1Xo6giIVhJGdrAG3V07aIYIMGKTRlz6MJppCNlnsVQoFUzNZtzt2C6JudL
-         aN8IT1U2IN/qcR4p1JgyE0nKsWo95b7H7qJxM1jd0mixgpsZLJJiEqHgc3/UcljhLjSi
-         JEtTS94sszI0UdARAncE0mBtiMoie1uK8lF5KRKtUW1Rdu7S3jE9180mCwBR4Hd95v4U
-         RKMdu8G7pfyjy5A1AIyOpMLWvp/aviDatQPkRXtRspSdfwKp0KbyLhwaSWMCoOcjI4IU
-         NeRA==
-X-Gm-Message-State: AOAM531W5vDh8u2YfJGdq5cvmbLa+pspjCYtiFP70BPFSVufVRsobmct
-        zlg4ZpFMpg/c6zV2f5lLPXjK4Q==
-X-Google-Smtp-Source: ABdhPJx1kv+LtzCaHLxEQ+7p9oKRsC6DgKBut532PtzT8ERKet67b0w3z4Vqt6OM2ER7XfKqYAMq8Q==
-X-Received: by 2002:a63:5a08:: with SMTP id o8mr1175343pgb.120.1627514077222;
-        Wed, 28 Jul 2021 16:14:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 16sm1132146pfu.109.2021.07.28.16.14.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 16:14:36 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 16:14:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 02/64] mac80211: Use flex-array for radiotap header bitmap
-Message-ID: <202107281602.4D9ED671@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-3-keescook@chromium.org>
- <20210728073556.GP1931@kadam>
+        h=x-gm-message-state:sender:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ND6P2qhhxVzhXD27q/VZREJKfmBf1qojaMwKs8f07mY=;
+        b=QSrsIxDMi0XLDqJn2H6LY4Lw7VqmTiNGC3vHzFiPhVF1l8bpXmtZe8cV6tPxW0lNnD
+         lvrNL3UZqmf7rYKgem1Pq61TgzfHOE7Q0qJ9WShSgZEENXm2zsoUlGcPvZGURNaMsmzS
+         4/uywfUboQR4OwVPNGb8WO3o3Rz6uKMlLJSt77b8mdsNJvWVHUnnOOjo4AHbso0JDrbX
+         00QHtrcNJ0gv9RDdcOik+YPvIpscN92a+EPqWj4G5lxsUqRnI5/gnKfDabZdj+JQz9/U
+         R+OysUcuQGfqrBpNOEq1H2CjyGqXi9Wz4WFMjsvCsJZp1w0VXs0VkNS6H/YRhGpzqElj
+         d8rw==
+X-Gm-Message-State: AOAM532Zh0fdIKQ7hJJMOnr218DXiflsIAwuDQGPwT3Qx+pPTA3WOpoU
+        KwtwmRijEDfg1QkMhr9zJqA=
+X-Google-Smtp-Source: ABdhPJyo/28Q4MOpP2UJ3HddkSLkEDjlP/piWCl1SaA7cTIgZlN/rTxKx4Pf/otDtkSxYIZR9xEbIA==
+X-Received: by 2002:a05:622a:283:: with SMTP id z3mr1855229qtw.312.1627514094886;
+        Wed, 28 Jul 2021 16:14:54 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a5sm764298qkf.88.2021.07.28.16.14.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 16:14:54 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] hwmon: (pmbus/ibm-cffps) Fix write bits for LED control
+To:     Brandon Wyman <bjwyman@gmail.com>, Joel Stanley <joel@jms.id.au>,
+        openbmc@lists.ozlabs.org, Jean Delvare <jdelvare@suse.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eddie James <eajames@linux.ibm.com>
+References: <20210728224140.3672294-1-bjwyman@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <2517b3a8-6549-3ee6-76d3-6545a38cf6ea@roeck-us.net>
+Date:   Wed, 28 Jul 2021 16:14:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728073556.GP1931@kadam>
+In-Reply-To: <20210728224140.3672294-1-bjwyman@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:35:56AM +0300, Dan Carpenter wrote:
-> On Tue, Jul 27, 2021 at 01:57:53PM -0700, Kees Cook wrote:
-> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > field bounds checking for memcpy(), memmove(), and memset(), avoid
-> > intentionally writing across neighboring fields.
-> > 
-> > The it_present member of struct ieee80211_radiotap_header is treated as a
-> > flexible array (multiple u32s can be conditionally present). In order for
-> > memcpy() to reason (or really, not reason) about the size of operations
-> > against this struct, use of bytes beyond it_present need to be treated
-> > as part of the flexible array. Add a union/struct to contain the new
-> > "bitmap" member, for use with trailing presence bitmaps and arguments.
-> > 
-> > Additionally improve readability in the iterator code which walks
-> > through the bitmaps and arguments.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  include/net/ieee80211_radiotap.h | 24 ++++++++++++++++++++----
-> >  net/mac80211/rx.c                |  2 +-
-> >  net/wireless/radiotap.c          |  5 ++---
-> >  3 files changed, 23 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/include/net/ieee80211_radiotap.h b/include/net/ieee80211_radiotap.h
-> > index c0854933e24f..101c1e961032 100644
-> > --- a/include/net/ieee80211_radiotap.h
-> > +++ b/include/net/ieee80211_radiotap.h
-> > @@ -39,10 +39,26 @@ struct ieee80211_radiotap_header {
-> >  	 */
-> >  	__le16 it_len;
-> >  
-> > -	/**
-> > -	 * @it_present: (first) present word
-> > -	 */
-> > -	__le32 it_present;
-> > +	union {
-> > +		/**
-> > +		 * @it_present: (first) present word
-> > +		 */
-> > +		__le32 it_present;
-> > +
-> > +		struct {
-> > +			/* The compiler makes it difficult to overlap
-> > +			 * a flex-array with an existing singleton,
-> > +			 * so we're forced to add an empty named
-> > +			 * variable here.
-> > +			 */
-> > +			struct { } __unused;
-> > +
-> > +			/**
-> > +			 * @bitmap: all presence bitmaps
-> > +			 */
-> > +			__le32 bitmap[];
-> > +		};
-> > +	};
-> >  } __packed;
+On 7/28/21 3:41 PM, Brandon Wyman wrote:
+> From: "B. J. Wyman" <bjwyman@gmail.com>
 > 
-> This patch is so confusing...
+> When doing a PMBus write for the LED control on the IBM Common Form
+> Factor Power Supplies (ibm-cffps), the DAh command requires that bit 7
+> be low and bit 6 be high in order to indicate that you are truly
+> attempting to do a write.
+> 
+> Signed-off-by: B. J. Wyman <bjwyman@gmail.com>
 
-Right, unfortunately your patch doesn't work under the strict memcpy().
-:(
+Please be consistent and use "Brandon Wyman".
 
-Here are the constraints I navigated to come to the original patch I
-sent:
+Guenter
 
-* I need to directly reference a flexible array for the it_present
-  pointer because pos is based on it, and the compiler thinks pos
-  walks off the end of the struct:
+> ---
+>   drivers/hwmon/pmbus/ibm-cffps.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
+> index 5668d8305b78..df712ce4b164 100644
+> --- a/drivers/hwmon/pmbus/ibm-cffps.c
+> +++ b/drivers/hwmon/pmbus/ibm-cffps.c
+> @@ -50,9 +50,9 @@
+>   #define CFFPS_MFR_VAUX_FAULT			BIT(6)
+>   #define CFFPS_MFR_CURRENT_SHARE_WARNING		BIT(7)
+>   
+> -#define CFFPS_LED_BLINK				BIT(0)
+> -#define CFFPS_LED_ON				BIT(1)
+> -#define CFFPS_LED_OFF				BIT(2)
+> +#define CFFPS_LED_BLINK				(BIT(0) | BIT(6))
+> +#define CFFPS_LED_ON				(BIT(1) | BIT(6))
+> +#define CFFPS_LED_OFF				(BIT(2) | BIT(6))
+>   #define CFFPS_BLINK_RATE_MS			250
+>   
+>   enum {
+> 
 
-	In function 'fortify_memcpy_chk',
-	    inlined from 'ieee80211_add_rx_radiotap_header' at net/mac80211/rx.c:652:3:
-	./include/linux/fortify-string.h:285:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()?  [-Wattribute-warning]
-	  285 |    __write_overflow_field();
-	      |    ^~~~~~~~~~~~~~~~~~~~~~~~
-
-* It's churn/fragile to change the sizeof(), so I can't just do:
-	-	__le32 it_present;
-	+	__le32 it_bitmap[];
-
-* I want to use a union:
-	-	__le32 it_present;
-	+	union {
-	+		__le32 it_present;
-	+		__le32 it_bitmap[];
-	+	};
-* ... but I can't actually use a union because of compiler constraints
-  on flexible array members:
-	./include/net/ieee80211_radiotap.h:50:10: error: flexible array member in union
-	   50 |   __le32 it_optional[];
-	      |          ^~~~~~~~~~~
-
-* So I came to the horrible thing I original sent. :P
-
-If I could escape the __le32 *it_present incrementing, I could use a
-simple change:
-	 	__le32 it_present;
-	+	__le32 it_optional[];
-
-
-> Btw, after the end of the __le32 data there is a bunch of other le64,
-> u8 and le16 data so the struct is not accurate or complete.
-
-Hm, docs seem to indicate that the packet format is multiples of u32?
-*shrug*
-
-Hmpf.
-
--Kees
-
--- 
-Kees Cook
