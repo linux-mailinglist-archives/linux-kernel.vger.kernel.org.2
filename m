@@ -2,247 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F5D3D89ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84583D89EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235336AbhG1IkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:40:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:52796 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234207AbhG1Ij7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:39:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7BB41FB;
-        Wed, 28 Jul 2021 01:39:57 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50A933F73D;
-        Wed, 28 Jul 2021 01:39:54 -0700 (PDT)
-Subject: Re: renesas/master bisection:
- baseline-nfs.bootrr.rockchip-usb2phy0-probed on rk3399-gru-kevin
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        kernelci-results@groups.io, Johan Jonker <jbx6244@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     Maciej Matuszczyk <maccraft123mc@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Jacob Chen <jacob2.chen@rock-chips.com>,
-        Sandy Huang <hjc@rock-chips.com>, linux-kernel@vger.kernel.org,
-        Chen-Yu Tsai <wens@csie.org>,
-        Cameron Nemo <cnemo@tutanota.com>, devicetree@vger.kernel.org,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yifeng Zhao <yifeng.zhao@rock-chips.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Collabora Kernel ML <kernel@collabora.com>
-References: <61002766.1c69fb81.8f53.9f6a@mx.google.com>
- <c52f6cfb-1316-dd6a-46fa-17abfcc4bf18@collabora.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <eb04c12b-414e-70a7-5dff-12da3eb98cd0@arm.com>
-Date:   Wed, 28 Jul 2021 09:39:47 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235033AbhG1Ilv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234207AbhG1Ilu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 04:41:50 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D75C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 01:41:49 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id c7-20020a9d27870000b02904d360fbc71bso1294923otb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 01:41:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VCGN/WeXxsssAPjPbi75fC+4aFNT1qOx2HsJIWcUzsI=;
+        b=z35rX2Xn3bqzz0BumMXI11i9SJjhv8GyRuMv6c/sAlHul+wxZNquvpAoU1QA8oKpRa
+         4oBpJW0lJvr1oEaDj31IIO/jf/LhcVzrzmufPFLVce0SGUMLYF+d/AuiI9NQvN+UDJxM
+         04L0Q2vJBZcyD1aoQbtK6cW6gQLJF7KX86U1d5gAIFxJs43rykM9LM4roqusBHSXSx8s
+         dTnMV9bD1BqqNrL7HsNK1amUwBrJVkXXqHhqDfrq3zS2rvRKSaqSMWzX+Ha8CvSZTJR/
+         bOzNQ4AoXH3mcCdaZG+QFLLghJs0mt7xw+XyB16WQNnTl66ELwuP9YV0AYEcDGUTjiA3
+         L1ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VCGN/WeXxsssAPjPbi75fC+4aFNT1qOx2HsJIWcUzsI=;
+        b=DBnU/uU4pJ8McC+SjwhSMsjz3MP1jYZO7Tw/FtT0rtWRg7+7mTZE1jVgk+q97H8YLv
+         fBwGrMOlASw4jjzRcCum1UMqeJsWXhhNGXGDtzq/d2UaYmVIpyhm8Ck3/rz1s2hJY6fo
+         Vy/JGEzk98H1P+utuzMzorNVJSWj8rLLzk8cNy24jM2hi01XL8XCO5P7t+sy5Y9Y6VbK
+         rBcCTLf9MxZ5quVGAWbykw3lWNC5b4rrMyLgbbLjXjI8jBginCeUFa34P7aJ/+8iCB8S
+         us+86Me2M5JJwBmhFJwXjFXCfv67P3gkv5H/tl1h47F/MW62ny5YiBBBzObCrgSd599O
+         TShQ==
+X-Gm-Message-State: AOAM533+MY+2YhZRHll980hp71a1uNsaC6zSrvzsH40qQ6c5KiWn2y01
+        zltTra/gmZM46tKtp6MvToUkMynyDPJzPwUa0KziiQ==
+X-Google-Smtp-Source: ABdhPJxgMnrYpJnUb5T2xgkCoMmGLeyrF9R9dVxjGkZj0sgJQVoGHIBI9IASBT8ZlfLvsJv75ei/0ObmveIoHUsaNp0=
+X-Received: by 2002:a05:6830:242f:: with SMTP id k15mr18879422ots.72.1627461708597;
+ Wed, 28 Jul 2021 01:41:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c52f6cfb-1316-dd6a-46fa-17abfcc4bf18@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210722121757.1944658-1-jens.wiklander@linaro.org> <20210722121757.1944658-2-jens.wiklander@linaro.org>
+In-Reply-To: <20210722121757.1944658-2-jens.wiklander@linaro.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 28 Jul 2021 14:11:37 +0530
+Message-ID: <CAFA6WYPW3XQiXJSxsj_HDXZ_JPEx58hOZiZ1Yctn-r7FG6hUpg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] tee: add sec_world_id to struct tee_shm
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Jerome Forissier <jerome@forissier.org>,
+        Sughosh Ganu <sughosh.ganu@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guillaume,
+On Thu, 22 Jul 2021 at 17:48, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> Adds sec_world_id to struct tee_shm which describes a shared memory
+> object. sec_world_id can be used by a driver to store an id assigned by
+> secure world.
+>
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> ---
+>  include/linux/tee_drv.h | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
 
-Not sure what I did to get CC'd on this, but since I'm here...
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 
-On 2021-07-28 07:04, Guillaume Tucker wrote:
-> Please see the bisection report below about usb2phy failing to
-> probe on rk3399-gru-kevin.
-> 
-> Reports aren't automatically sent to the public while we're
-> trialing new bisection features on kernelci.org but this one
-> looks valid.
-> 
-> The bisection was run in the Renesas tree but the same regression
-> is present in mainline for both usb2phy0 and usb2phy1 devices:
-> 
->    https://linux.kernelci.org/test/plan/id/6100af012344eef9b85018f3/
->    https://linux.kernelci.org/test/case/id/6100af012344eef9b85018fa/
-> 
-> I don't see any errors in the logs, it looks like the driver is
-> just not probing.
+-Sumit
 
-What's the actual testcase for "rockchip-usb2phy0-probed"? If it's 
-looking for a hard-coded path like 
-"/sys/bus/platform/devices/ff770000.syscon:usb2-phy@e450/driver" then it 
-can be expected to fail, since changing the node name is reflected in 
-the device name.
-
-Robin.
-
-> Best wishes,
-> Guillaume
-> 
-> 
-> On 27/07/2021 16:33, KernelCI bot wrote:
->> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
->> * This automated bisection report was sent to you on the basis  *
->> * that you may be involved with the breaking commit it has      *
->> * found.  No manual investigation has been done to verify it,   *
->> * and the root cause of the problem may be somewhere else.      *
->> *                                                               *
->> * If you do send a fix, please include this trailer:            *
->> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
->> *                                                               *
->> * Hope this helps!                                              *
->> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
->>
->> renesas/master bisection: baseline-nfs.bootrr.rockchip-usb2phy0-probed on rk3399-gru-kevin
->>
->> Summary:
->>    Start:      42d1095acf6e Merge branch 'renesas-next', tag 'v5.14-rc3' into renesas-devel
->>    Plain log:  https://storage.kernelci.org/renesas/master/renesas-devel-2021-07-26-v5.14-rc3/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-collabora/baseline-nfs-rk3399-gru-kevin.txt
->>    HTML log:   https://storage.kernelci.org/renesas/master/renesas-devel-2021-07-26-v5.14-rc3/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-collabora/baseline-nfs-rk3399-gru-kevin.html
->>    Result:     8c3d64251ac5 arm64: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
->>
->> Checks:
->>    revert:     PASS
->>    verify:     PASS
->>
->> Parameters:
->>    Tree:       renesas
->>    URL:        https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git
->>    Branch:     master
->>    Target:     rk3399-gru-kevin
->>    CPU arch:   arm64
->>    Lab:        lab-collabora
->>    Compiler:   gcc-8
->>    Config:     defconfig+CONFIG_RANDOMIZE_BASE=y
->>    Test case:  baseline-nfs.bootrr.rockchip-usb2phy0-probed
->>
->> Breaking commit found:
->>
->> -------------------------------------------------------------------------------
->> commit 8c3d64251ac5c5a3d10364f6b07d3603ac1e7b4a
->> Author: Johan Jonker <jbx6244@gmail.com>
->> Date:   Tue Jun 1 18:47:59 2021 +0200
->>
->>      arm64: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
->>      
->>      The pattern: "^(|usb-|usb2-|usb3-|pci-|pcie-|sata-)phy(@[0-9a-f,]+)*$"
->>      in phy-provider.yaml has required "#phy-cells" for phy nodes.
->>      The "phy-cells" in rockchip-inno-usb2 nodes are located in subnodes.
->>      Rename the nodename to pattern "usb2phy@[0-9a-f]+$" to prevent
->>      notifications.
->>      
->>      make ARCH=arm64 dtbs_check
->>      DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/dtschema/schemas/
->>      phy/phy-provider.yaml
->>      
->>      Signed-off-by: Johan Jonker <jbx6244@gmail.com>
->>      Link: https://lore.kernel.org/r/20210601164800.7670-5-jbx6244@gmail.com
->>      Signed-off-by: Heiko Stuebner <heiko@sntech.de>
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
->> index 4e243d72e16f..248ebb61aa79 100644
->> --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
->> @@ -822,7 +822,7 @@
->>   		#address-cells = <1>;
->>   		#size-cells = <1>;
->>   
->> -		u2phy: usb2-phy@100 {
->> +		u2phy: usb2phy@100 {
->>   			compatible = "rockchip,px30-usb2phy";
->>   			reg = <0x100 0x20>;
->>   			clocks = <&pmucru SCLK_USBPHY_REF>;
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
->> index bc0bdc3d86ff..8c821acb21ff 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
->> @@ -819,7 +819,7 @@
->>   		#address-cells = <1>;
->>   		#size-cells = <1>;
->>   
->> -		u2phy: usb2-phy@100 {
->> +		u2phy: usb2phy@100 {
->>   			compatible = "rockchip,rk3328-usb2phy";
->>   			reg = <0x100 0x10>;
->>   			clocks = <&xin24m>;
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
->> index a2eba5357693..c1a253507ac4 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
->> @@ -1418,7 +1418,7 @@
->>   			status = "disabled";
->>   		};
->>   
->> -		u2phy0: usb2-phy@e450 {
->> +		u2phy0: usb2phy@e450 {
->>   			compatible = "rockchip,rk3399-usb2phy";
->>   			reg = <0xe450 0x10>;
->>   			clocks = <&cru SCLK_USB2PHY0_REF>;
->> @@ -1445,7 +1445,7 @@
->>   			};
->>   		};
->>   
->> -		u2phy1: usb2-phy@e460 {
->> +		u2phy1: usb2phy@e460 {
->>   			compatible = "rockchip,rk3399-usb2phy";
->>   			reg = <0xe460 0x10>;
->>   			clocks = <&cru SCLK_USB2PHY1_REF>;
->> -------------------------------------------------------------------------------
->>
->>
->> Git bisection log:
->>
->> -------------------------------------------------------------------------------
->> git bisect start
->> # good: [3b9234c27991cbe7e6f97f22c3c7fef521fe34d3] Merge branch 'renesas-arm-dt-for-v5.15' into renesas-devel
->> git bisect good 3b9234c27991cbe7e6f97f22c3c7fef521fe34d3
->> # bad: [42d1095acf6e228a6baeec100d31a57c0c4d7704] Merge branch 'renesas-next', tag 'v5.14-rc3' into renesas-devel
->> git bisect bad 42d1095acf6e228a6baeec100d31a57c0c4d7704
->> # good: [514798d36572fb8eba6ccff3de10c9615063a7f5] Merge tag 'clk-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux
->> git bisect good 514798d36572fb8eba6ccff3de10c9615063a7f5
->> # good: [a16d8644bad461bb073b92e812080ea6715ddf2b] Merge tag 'staging-5.14-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
->> git bisect good a16d8644bad461bb073b92e812080ea6715ddf2b
->> # good: [6e207b882159ed3e35a4cd4ff0fc155cce5e3cbc] Merge tag 'arm-soc-5.14' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
->> git bisect good 6e207b882159ed3e35a4cd4ff0fc155cce5e3cbc
->> # bad: [8b9cc17a46215af733c83bea36366419133dfa09] Merge tag 'scsi-misc' of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi
->> git bisect bad 8b9cc17a46215af733c83bea36366419133dfa09
->> # good: [f82c6e6dd149757022ba3ed8502d56201652fb0f] Merge tag 'v5.14-rockchip-dts32-1' of git://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip into arm/dt
->> git bisect good f82c6e6dd149757022ba3ed8502d56201652fb0f
->> # bad: [071e5aceebebf1d33b5c29ccfd2688ed39c60007] Merge tag 'arm-drivers-5.14' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
->> git bisect bad 071e5aceebebf1d33b5c29ccfd2688ed39c60007
->> # good: [1eb5f83ee936de6a69b2bcee95088a6e0ab7c202] Merge tag 'memory-controller-drv-tegra-5.14-2' of https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl into arm/drivers
->> git bisect good 1eb5f83ee936de6a69b2bcee95088a6e0ab7c202
->> # bad: [c21cc3d8927350db675957bb44633eea9607da85] Merge tag 'qcom-arm64-for-5.14-1' of https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux into arm/dt
->> git bisect bad c21cc3d8927350db675957bb44633eea9607da85
->> # bad: [e1d635bc94bce69e45a2d4e93c94178613e01229] arm64: dts: rockchip: add ir-receiver for rk3399-roc-pc
->> git bisect bad e1d635bc94bce69e45a2d4e93c94178613e01229
->> # good: [837188d49823230f47afdbbec7556740e89a8557] arm64: dts: rockchip: add #power-domain-cells to power domain nodes
->> git bisect good 837188d49823230f47afdbbec7556740e89a8557
->> # bad: [9fcf74b274a1dc5bcda37c34470061ef1e1130dd] arm64: dts: rockchip: add USB support to rk3308.dtsi
->> git bisect bad 9fcf74b274a1dc5bcda37c34470061ef1e1130dd
->> # good: [5a65adfa2ad1542f856fc7de3999d51f3a35d2e2] arm64: dts: rockchip: Add support for PCIe on helios64
->> git bisect good 5a65adfa2ad1542f856fc7de3999d51f3a35d2e2
->> # good: [18d5c7bf50c6d820c366c2a23d71d468b14c87d6] arm64: dts: rockchip: add rk817 codec to Odroid Go
->> git bisect good 18d5c7bf50c6d820c366c2a23d71d468b14c87d6
->> # bad: [8c3d64251ac5c5a3d10364f6b07d3603ac1e7b4a] arm64: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
->> git bisect bad 8c3d64251ac5c5a3d10364f6b07d3603ac1e7b4a
->> # first bad commit: [8c3d64251ac5c5a3d10364f6b07d3603ac1e7b4a] arm64: dts: rockchip: rename nodename for phy-rockchip-inno-usb2
->> -------------------------------------------------------------------------------
->>
->>
->> -=-=-=-=-=-=-=-=-=-=-=-
->> Groups.io Links: You receive all messages sent to this group.
->> View/Reply Online (#14460): https://groups.io/g/kernelci-results/message/14460
->> Mute This Topic: https://groups.io/mt/84484486/924702
->> Group Owner: kernelci-results+owner@groups.io
->> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
->> -=-=-=-=-=-=-=-=-=-=-=-
->>
->>
-> 
+> diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+> index 54269e47ac9a..1a29f0e66e13 100644
+> --- a/include/linux/tee_drv.h
+> +++ b/include/linux/tee_drv.h
+> @@ -196,7 +196,11 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+>   * @num_pages: number of locked pages
+>   * @dmabuf:    dmabuf used to for exporting to user space
+>   * @flags:     defined by TEE_SHM_* in tee_drv.h
+> - * @id:                unique id of a shared memory object on this device
+> + * @id:                unique id of a shared memory object on this device, shared
+> + *             with user space
+> + * @sec_world_id:
+> + *             secure world assigned id of this shared memory object, not
+> + *             used by all drivers
+>   *
+>   * This pool is only supposed to be accessed directly from the TEE
+>   * subsystem and from drivers that implements their own shm pool manager.
+> @@ -212,6 +216,7 @@ struct tee_shm {
+>         struct dma_buf *dmabuf;
+>         u32 flags;
+>         int id;
+> +       u64 sec_world_id;
+>  };
+>
+>  /**
+> --
+> 2.31.1
+>
