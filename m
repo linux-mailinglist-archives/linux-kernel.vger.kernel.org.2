@@ -2,113 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761153D8E2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8783D8E2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236130AbhG1Mra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 08:47:30 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51072 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235130AbhG1Mr2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 08:47:28 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B58FA22319;
-        Wed, 28 Jul 2021 12:47:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627476445; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EY9hnViqgNkITZKfwU8A+2DXRShAbB8e006BrNU9EUA=;
-        b=p/UNkGke6IeE6hvLVkNQT3mfouqZHYRvLlWkdaVdkw3vUpU1ih7lZuutI4zV3Hf8sPAhBB
-        oyAcN9O1Xzb/RsOHMnjNyBcu8IPM43Vpyf2V+Wi/3moXSQvxB4cPA9ZEAoMezQCueKLpYr
-        XQjwdTGzkzZvThjBdS1sig55zyTJYfU=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4FF98A3B81;
-        Wed, 28 Jul 2021 12:47:24 +0000 (UTC)
-Date:   Wed, 28 Jul 2021 14:47:23 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [PATCH v6 5/6] mm/mempolicy: Advertise new MPOL_PREFERRED_MANY
-Message-ID: <YQFR27gkFNqJqzGN@dhcp22.suse.cz>
-References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
- <1626077374-81682-6-git-send-email-feng.tang@intel.com>
+        id S235020AbhG1Mrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 08:47:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234759AbhG1Mrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 08:47:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C1B360FC0;
+        Wed, 28 Jul 2021 12:47:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627476453;
+        bh=bjFjDZ8cI3IDSCqI1y0kJWa2EkidjrwuaHkeMMXdfSY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CVvrUhOMARYWM5FAHXn4pAOCHUx80b85xBrVxz8ZYhhHKaobXdpz8jeT8t/kFbjCI
+         PNw4coTw9niEVPvy25NbvwINd8CvS1n6IshhNxw+7pbCyGzCYzhdP5AulUFTUujNMV
+         9N3WpXnRCjr4/k5HDh/p6UjDgHIzvoqVxy7+ifdKrDYPJ0ifnuSx42tWB/L9JQyCD1
+         LWMzbCoyMMRQCjT4D/1rPCXn0uqRJtxuXto7ebNbAJtO1s2hQvD9LLixhDTm/IlC1y
+         92KaPD9glDdgpuAd+zcFjG5DjIbIAplRA6LkV/p+oNvAQPOMENHWP7SPoshVqT33x3
+         YXHlVrN7OpPhA==
+Date:   Wed, 28 Jul 2021 14:47:28 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     <zohar@linux.ibm.com>, <gregkh@linuxfoundation.org>,
+        <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH v2 11/12] diglim: Remote Attestation
+Message-ID: <20210728144728.62ace280@sal.lan>
+In-Reply-To: <20210726163700.2092768-12-roberto.sassu@huawei.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+        <20210726163700.2092768-12-roberto.sassu@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626077374-81682-6-git-send-email-feng.tang@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12-07-21 16:09:33, Feng Tang wrote:
-> From: Ben Widawsky <ben.widawsky@intel.com>
+Em Mon, 26 Jul 2021 18:36:59 +0200
+Roberto Sassu <roberto.sassu@huawei.com> escreveu:
+
+> Add more information about remote attestation with IMA and DIGLIM in
+> Documentation/security/diglim/remote_attestation.rst.
 > 
-> Adds a new mode to the existing mempolicy modes, MPOL_PREFERRED_MANY.
-> 
-> MPOL_PREFERRED_MANY will be adequately documented in the internal
-> admin-guide with this patch. Eventually, the man pages for mbind(2),
-> get_mempolicy(2), set_mempolicy(2) and numactl(8) will also have text
-> about this mode. Those shall contain the canonical reference.
-> 
-> NUMA systems continue to become more prevalent. New technologies like
-> PMEM make finer grain control over memory access patterns increasingly
-> desirable. MPOL_PREFERRED_MANY allows userspace to specify a set of
-> nodes that will be tried first when performing allocations. If those
-> allocations fail, all remaining nodes will be tried. It's a straight
-> forward API which solves many of the presumptive needs of system
-> administrators wanting to optimize workloads on such machines. The mode
-> will work either per VMA, or per thread.
-> 
-> Link: https://lore.kernel.org/r/20200630212517.308045-13-ben.widawsky@intel.com
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 > ---
->  Documentation/admin-guide/mm/numa_memory_policy.rst | 16 ++++++++++++----
->  mm/mempolicy.c                                      |  7 +------
->  2 files changed, 13 insertions(+), 10 deletions(-)
+>  Documentation/security/diglim/index.rst       |  1 +
+>  .../security/diglim/remote_attestation.rst    | 87 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  3 files changed, 89 insertions(+)
+>  create mode 100644 Documentation/security/diglim/remote_attestation.rst
 > 
-> diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Documentation/admin-guide/mm/numa_memory_policy.rst
-> index 067a90a1499c..cd653561e531 100644
-> --- a/Documentation/admin-guide/mm/numa_memory_policy.rst
-> +++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
-> @@ -245,6 +245,14 @@ MPOL_INTERLEAVED
->  	address range or file.  During system boot up, the temporary
->  	interleaved system default policy works in this mode.
->  
-> +MPOL_PREFERRED_MANY
-> +        This mode specifies that the allocation should be attempted from the
-> +        nodemask specified in the policy. If that allocation fails, the kernel
-> +        will search other nodes, in order of increasing distance from the first
-> +        set bit in the nodemask based on information provided by the platform
-> +        firmware. It is similar to MPOL_PREFERRED with the main exception that
-> +        is an error to have an empty nodemask.
+> diff --git a/Documentation/security/diglim/index.rst b/Documentation/security/diglim/index.rst
+> index 4771134c2f0d..0f28c5ad71c0 100644
+> --- a/Documentation/security/diglim/index.rst
+> +++ b/Documentation/security/diglim/index.rst
+> @@ -10,3 +10,4 @@ Digest Lists Integrity Module (DIGLIM)
+>     introduction
+>     architecture
+>     implementation
+> +   remote_attestation
+> diff --git a/Documentation/security/diglim/remote_attestation.rst b/Documentation/security/diglim/remote_attestation.rst
+> new file mode 100644
+> index 000000000000..83fd7581c460
+> --- /dev/null
+> +++ b/Documentation/security/diglim/remote_attestation.rst
+> @@ -0,0 +1,87 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +Remote Attestation
+> +==================
+> +
+> +When a digest list is added or deleted through the ``digest_list_add`` or
+> +``digest_list_del`` interfaces, its buffer is sent to the IMA function
+> +``ima_measure_critical_data()``. The primary reason for it is to calculate
+> +the buffer digest, so that the digest list itself is searchable in the hash
+> +table.
+> +
+> +``ima_measure_critical_data()`` can be also used to create a new
+> +measurement entry each time this function is called, if there is an
+> +appropriate rule in the IMA policy. Given that this function is called
+> +during an addition or deletion of a digest list, a remote verifier can
+> +infer from the measurement list precise information about what has been
+> +uploaded to the kernel.
+> +
+> +To enable this functionality, the following rule must be added to the IMA
+> +policy:
+> +
+> +::
 
-I believe the target audience of this documents are users rather than
-kernel developers and for those the wording might be rather cryptic. I
-would rephrase like this
-	This mode specifices that the allocation should be preferrably
-	satisfied from the nodemask specified in the policy. If there is
-	a memory pressure on all nodes in the nodemask the allocation
-	can fall back to all existing numa nodes. This is effectively
-	MPOL_PREFERRED allowed for a mask rather than a single node.
+As commented on other patches at this series, you can merge :: at the
+previous text line, e. g.:
 
-With that or similar feel free to add
-Acked-by: Michal Hocko <mhocko@suse.com>
--- 
-Michal Hocko
-SUSE Labs
+	policy::
+
+does the same as:
+
+	policy:
+
+	::
+
+but it is nicer for text-only readers, IMO.
+
+> +
+> + measure func=CRITICAL_DATA label=diglim
+> +
+> +
+> +When a file is uploaded, the workflow and the resulting IMA measurement
+> +list are:
+> +
+> +.. code-block:: bash
+> +
+> + # echo $PWD/0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_list_add
+> + # echo $PWD/0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_list_del
+> + # cat /sys/kernel/security/integrity/ima/ascii_runtime_measurements
+> + ...
+> + 10 <template digest> ima-buf sha256:<buffer digest> add_file_0-file_list-compact-cat <buffer>
+> + 10 <template digest> ima-buf sha256:<buffer digest> del_file_0-file_list-compact-cat <buffer>
+> +
+> +When a buffer is uploaded, the workflow and the resulting IMA measurement
+> +list are:
+> +
+> +.. code-block:: bash
+> +
+> + # echo 0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_label
+> + # cat 0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_list_add
+> + # echo 0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_label
+> + # cat 0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_list_del
+> + # cat /sys/kernel/security/integrity/ima/ascii_runtime_measurements
+> + ...
+> + 10 <template digest> ima-buf sha256:<buffer digest> add_buffer_0-file_list-compact-cat <buffer>
+> + 10 <template digest> ima-buf sha256:<buffer digest> del_buffer_0-file_list-compact-cat <buffer>
+> +
+> +In the second case, the digest list label must be set explicitly, as the
+> +kernel cannot determine it by itself (in the first case it is derived from
+> +the name of the file uploaded).
+> +
+> +The confirmation that the digest list has been processed by IMA can be
+> +obtained by reading the ASCII representation of the digest list:
+> +
+> +.. code-block:: bash
+> +
+> + # cat /sys/kernel/security/integrity/diglim/digest_lists_loaded/sha256-<digest list digest>-0-file_list-compact-cat.ascii
+> + actions: 1, version: 1, algo: sha256, type: 2, modifiers: 1, count: 1, datalen: 32
+> + 87e5bd81850e11eeec2d3bb696b626b2a7f45673241cbbd64769c83580432869
+> +
+> +In this output, ``actions`` is set to 1 (``COMPACT_ACTION_IMA_MEASURED``
+> +bit set).
+> +
+> +
+> +DIGLIM guarantees that the information reported in the IMA measurement list
+> +is complete. If digest list loading is not recorded, digest query results
+> +are ignored by IMA. If the addition was recorded, deletion can be performed
+> +only if also the deletion is recorded. This can be seen in the following
+> +sequence of commands:
+> +
+> +.. code-block:: bash
+> +
+> + # echo 0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_label
+> + # cat 0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_list_add
+> + # echo 0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_label
+> + # /tmp/cat 0-file_list-compact-cat > /sys/kernel/security/integrity/diglim/digest_list_del
+> + diglim: actions mismatch, add: 1, del: 0
+> + diglim: unable to upload generated digest list
+> + /tmp/cat: write error: Invalid argument
+> +
+> +Digest list measurement is avoided with the execution of ``/tmp/cat``, for
+> +which a dont_measure rule was previously added in the IMA policy.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 0672128fae7f..a7c502685109 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5461,6 +5461,7 @@ F:	Documentation/security/diglim/architecture.rst
+>  F:	Documentation/security/diglim/implementation.rst
+>  F:	Documentation/security/diglim/index.rst
+>  F:	Documentation/security/diglim/introduction.rst
+> +F:	Documentation/security/diglim/remote_attestation.rst
+>  F:	include/linux/diglim.h
+>  F:	include/uapi/linux/diglim.h
+>  F:	security/integrity/diglim/diglim.h
