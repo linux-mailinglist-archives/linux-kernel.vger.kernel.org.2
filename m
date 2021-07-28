@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD07C3D8B4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5093D8B4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235899AbhG1KAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:00:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47791 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235741AbhG1J77 (ORCPT
+        id S235910AbhG1KAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235847AbhG1KAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:59:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627466398;
+        Wed, 28 Jul 2021 06:00:12 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4C4C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 03:00:10 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 2F77822172;
+        Wed, 28 Jul 2021 12:00:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1627466408;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rjrGUELJrum5Ji89g/7iaRnZY9OVtK3tF4vpedgBiQw=;
-        b=ZS8n+oZVnYeEF8JGG4UCnSx6dJ5g8ag6bd2xwxIaO12j24NfS97w6YviDlj5Rr0suTae2h
-        Oti+0R3rBtSiX+rm7xMgqooDPdbG3NfeIlfLQ8hYEARlrdEpX7L4cfBkfs2WOs09FpHGss
-        B38ILyarxwIpHnveioMg/Go6g3bsO7Y=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-2sMwyGl6NlW_sDQqo8Jp3g-1; Wed, 28 Jul 2021 05:59:57 -0400
-X-MC-Unique: 2sMwyGl6NlW_sDQqo8Jp3g-1
-Received: by mail-ej1-f71.google.com with SMTP id n9-20020a1709063789b02905854bda39fcso653472ejc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:59:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rjrGUELJrum5Ji89g/7iaRnZY9OVtK3tF4vpedgBiQw=;
-        b=jn3bnX+g4hTdqoOjgmj0u7ZFmWJ5XxvfUl96+TJaXRk8kKh79tJb1abMC4o4pXxkgl
-         geCLFDS4czpSYEt+tLqgtFf/uUWh4pxTRDKoHb0DFnykou5xml/DKJHLR7NvSf0VUtND
-         v7OazWEcUFVATS7JdnPboYwl8QkswRRP9wjvYGRVXd2kzJBYm49YfctaTCaJV9PoPTqb
-         cPL4l0+HWR5nBT4aY4P0I6pJCSBK2IzwJow1fb3/xLUU3kavTrO9i04t+q5OLXzW2rWu
-         ICsGafq2QPULGAUleGqAEEYI2wn7GvZdaTVx3kjJf1ajTRprp6dHQAqaN10knBwrai/J
-         97bw==
-X-Gm-Message-State: AOAM530sBkTV42YstkiIoddhXCr9EexQT5+XR4fgRY1O+2q5NjvZpjM0
-        sDmnbJdZw7piH3xU+iw6DnIChaXq4TzRueO1r3wJJKoBdULj3fmgd4ZquCJ3VWeRBrYNlJuo07/
-        WF8KucHIEZOECdrwNzEP+vN2uT4RS69pd/cl6ZT4/UekR/VZybbQTXUHyRbKCCzyko52RuI2My5
-        PX
-X-Received: by 2002:a17:907:97c9:: with SMTP id js9mr26616798ejc.109.1627466396034;
-        Wed, 28 Jul 2021 02:59:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+R9CtvMSrFv6XUecaVJPF6EkDx4k8me+9FoZ9YuZQCC0sy6c5eaUJPoGZ8dOhx+S85lT+Aw==
-X-Received: by 2002:a17:907:97c9:: with SMTP id js9mr26616781ejc.109.1627466395789;
-        Wed, 28 Jul 2021 02:59:55 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id g24sm1838086ejo.77.2021.07.28.02.59.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 02:59:55 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: intel-hid: add Alder Lake ACPI device ID
-To:     Ping Bao <pingbao@gmail.com>, Alex Hung <alex.hung@canonical.com>
-Cc:     Ping Bao <ping.a.bao@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "open list:INTEL HID EVENT DRIVER" 
-        <platform-driver-x86@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210721225615.20575-1-ping.a.bao@intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <49552fec-82b6-955f-584a-029e27c92d02@redhat.com>
-Date:   Wed, 28 Jul 2021 11:59:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=u1GoZExlDzTQpKZA+eG2D88Yx9YFdj8G9GDiUD8vIq0=;
+        b=CPaVtWOQXWhptSMQBNQn6zwEqgjJ4u+oO/QSpZ0VsTQz85C+YCdPWXRe7Eg/Sg8SPosAZX
+        YS0pfTSLIK2/7A+EkwHGLSjzIZLKbvZ5wTZLSYRNXF6T23BLTGmEAFMUNSLBaYCUt4nEse
+        fQzIkaYV7oS7DuKGWP2MDx6EGtFE3iI=
 MIME-Version: 1.0
-In-Reply-To: <20210721225615.20575-1-ping.a.bao@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 28 Jul 2021 12:00:07 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync flags of mt25ql02g and
+ mt25qu02g with other mt25q
+In-Reply-To: <42380415413178b18e940ae80298c22c51275b95.camel@ew.tq-group.com>
+References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+ <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+ <42380415413178b18e940ae80298c22c51275b95.camel@ew.tq-group.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <cebfb4138908d085791c5c2fddca939d@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 7/22/21 12:56 AM, Ping Bao wrote:
-> Alder Lake has a new ACPI ID for Intel HID event filter device.
+Am 2021-07-27 12:45, schrieb Matthias Schiffer:
+> On Tue, 2021-07-27 at 09:09 +0200, Michael Walle wrote:
+[..]
+>> > --- a/drivers/mtd/spi-nor/micron-st.c
+>> > +++ b/drivers/mtd/spi-nor/micron-st.c
+>> > @@ -181,11 +181,11 @@ static const struct flash_info st_parts[] = {
+>> >  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+>> >  			      NO_CHIP_ERASE) },
+>> >  	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
+>> > -			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+>> > -			      NO_CHIP_ERASE) },
+>> 
+>> This bothers me. I'm not sure how this will work. I see that
+>> chip erase is command 0xc7, but both the new and the old flash
+>> just supports 0xc3 (DIE ERASE). Did you test these changes?
 > 
-> Signed-off-by: Ping Bao <ping.a.bao@intel.com>
-
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-> ---
->  drivers/platform/x86/intel-hid.c | 1 +
->  1 file changed, 1 insertion(+)
+> Thanks for catching this. I overlooked that the 1G and 2G variants
+> don't support the same erase commands as the smaller versions after
+> all... It is possible that I only tested this with partitioned MTD, so
+> I didn't hit the whole-chip erase case.
 > 
-> diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
-> index 078648a9201b..e5fbe017f8e1 100644
-> --- a/drivers/platform/x86/intel-hid.c
-> +++ b/drivers/platform/x86/intel-hid.c
-> @@ -25,6 +25,7 @@ static const struct acpi_device_id intel_hid_ids[] = {
->  	{"INT33D5", 0},
->  	{"INTC1051", 0},
->  	{"INTC1054", 0},
-> +	{"INTC1070", 0},
->  	{"", 0},
->  };
->  MODULE_DEVICE_TABLE(acpi, intel_hid_ids);
-> 
+> Which command should I use to test the chip erase? Will a `flash_erase
+> /dev/mtdX 0 0` trigger the correct operation?
 
+I guess so. Looking at
+http://git.infradead.org/mtd-utils.git/blob/HEAD:/misc-utils/flash_erase.c#l226
+
+It seems you should see a different output for either erasing individual
+sectors or the whole chip (as long as the kernel doesn't the invidual
+block erase itself).
+
+-michael
