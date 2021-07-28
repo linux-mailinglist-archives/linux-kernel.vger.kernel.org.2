@@ -2,138 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A250F3D8535
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457893D84F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233994AbhG1BEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:04:52 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:40084 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbhG1BEu (ORCPT
+        id S233729AbhG1BC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233008AbhG1BCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:04:50 -0400
-X-Greylist: delayed 33857 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Jul 2021 21:04:50 EDT
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 16S14YgX006779;
-        Wed, 28 Jul 2021 10:04:34 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 16S14YgX006779
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627434274;
-        bh=yDN/9OCKinq2MFj0x4rcClHgXoJJbc1xUOy8iD5RPZU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fSAqCJS9XSgUstk2RU7Vu85Zv0q6GFMJcYYXu9xKGFUItOdeUJ+7X/NQhTA7N2dM7
-         kAL65qQkbSvHrZK2NUI/Vywjcd4ioUnBoLCSd5+tN4pwAerMIVAHXM4prmWRenxJHk
-         ppX9ouuxoi2dD+86m+jdqlw3x8oBO9YGkhZ7CazIDP5ZN3RHeclKqtkjugBsQZzDi6
-         u8h/6LZyd1C9G5q/HOFS+gDEDf+PASlooYwim2UnGW7iIUnsiCMIytFmNL1jla/+JW
-         M/NAGggRJ2SA9EdHRxSgmFRvasHCJWTfX1yvnhjwhjJW2gxPX34ysa/imTrs1vM5qg
-         us/taG8N5FQSg==
-X-Nifty-SrcIP: [209.85.216.44]
-Received: by mail-pj1-f44.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so1975620pjd.0;
-        Tue, 27 Jul 2021 18:04:34 -0700 (PDT)
-X-Gm-Message-State: AOAM531d5S6RvLrGPDcBtoXlglVMLVNCm3zHViMnIyTdm4AcekIMTgrJ
-        pDuvRZJS+tH3NPwNVsXBACHJOQU860NymYmtD2E=
-X-Google-Smtp-Source: ABdhPJzgdbOIho3ytX7bJKc52YJ2gk1DFQyIBRpkxje/mwkGDiSkPFyYQQBOTqV3w2MxdEnqsdP0NBwH4XjNuN8kSAI=
-X-Received: by 2002:a63:dd51:: with SMTP id g17mr2151312pgj.47.1627434273622;
- Tue, 27 Jul 2021 18:04:33 -0700 (PDT)
+        Tue, 27 Jul 2021 21:02:24 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565ADC061757;
+        Tue, 27 Jul 2021 18:02:23 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so1816324pjh.3;
+        Tue, 27 Jul 2021 18:02:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JnNg+LtmUtuMVbhwKpc+TsfLTbQ0CCjgGn2ha7kyTe4=;
+        b=jAEhX2vgfmLiBn/ABCM8HM+m6KEW9HsmuvIFt5Nb8Ze0p6OBtUT9v9SWOobzrxOPAJ
+         OPVve9cPQNN4lNlgltzg3wrLueqe9WyMCOkCtZ3LTyrMRPrT4mPxqrTFpjB4BrZGFTZz
+         W0WTXH2ZtlfGjZnEGUXMjgX3j3c/hvnwS/Cc/uwgWLoSkwM5R0iU1OT9ZxcYgTQJ3ZVw
+         gX1jdASZZs5Aza9+J13g7ZbHaqoL7/TARhxbAxwvFzB5mmt9d54oToIZukcX+rTg1k1O
+         25WAQ8Gg+3/bggl9+wYGch3j98a1XDMWOs2lvt+wszlrhRXtPoomRki1StVlkV6I6oqG
+         nGhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JnNg+LtmUtuMVbhwKpc+TsfLTbQ0CCjgGn2ha7kyTe4=;
+        b=EXl5Bq3k5BmmlHTHjCYw4Gy5c1sbUJXnTjBK51h2ptxeILSavgrcFkxn95twBehO2A
+         5PUmlnOz2MXWE1bhyFYVKgh5eGDHVqWzMMLJHytm4mQ4AlWcfLs4wt/pYN0kBhZ59sEl
+         pDJbbPJ4derEsi977bKAdJVx9+VEyCbIAKICGySqjtcXNU4Tm5SoHQEWqYFXeROU5GFc
+         /diSlOhRg79Gwhi1qe84dKMaGKmjzs1QTZw6AQlL12tqQ2kxEx9Ui90M2XTbTRcQiwif
+         fsCHWqD69AkjETGJhQkek03tWXY3rZ9KONSfUBpTJEkGh4F7BVxveFs6DGKCbZ9l6iZ5
+         IBCg==
+X-Gm-Message-State: AOAM533vTC65eXG/WkAiltCA3C1QrOOVqJezIx3lFHDgtRKnpa+DrG3C
+        owDh+npYlxHhCuf4LiIyWTs=
+X-Google-Smtp-Source: ABdhPJwE8048m0W7kGr6PrR8geRv+/5g1CPr5++AujkltYbWKD/aIwJ8tcj6XPlLbxcvsdGz2drG9A==
+X-Received: by 2002:a65:5bc6:: with SMTP id o6mr7933192pgr.2.1627434142666;
+        Tue, 27 Jul 2021 18:02:22 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id n17sm5405596pgj.93.2021.07.27.18.02.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 18:02:21 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Bernard Zhao <bernard@vivo.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Emma Anholt <emma@anholt.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linaro-mm-sig@lists.linaro.org (moderated list:DMA BUFFER SHARING
+        FRAMEWORK),
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        linux-kernel@vger.kernel.org (open list),
+        linux-media@vger.kernel.org (open list:DMA BUFFER SHARING FRAMEWORK),
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Subject: [PATCH v4 00/13] drm/msm: drm scheduler conversion and cleanups
+Date:   Tue, 27 Jul 2021 18:06:05 -0700
+Message-Id: <20210728010632.2633470-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210727153924.79473-1-masahiroy@kernel.org> <YQAsth0TA3AwtxvK@kroah.com>
-In-Reply-To: <YQAsth0TA3AwtxvK@kroah.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 28 Jul 2021 10:03:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQM2WzfHdJhukiaeq=qYtJ7U8UbMZdFWSuAJG86bBVHnA@mail.gmail.com>
-Message-ID: <CAK7LNAQM2WzfHdJhukiaeq=qYtJ7U8UbMZdFWSuAJG86bBVHnA@mail.gmail.com>
-Subject: Re: [PATCH] scripts: make some scripts executable
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 12:56 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jul 28, 2021 at 12:39:24AM +0900, Masahiro Yamada wrote:
-> > Set the x bit to some scripts to make them directly executable.
-> >
-> > Especially, scripts/checkdeclares.pl is not hooked by anyone.
-> > It should be executable since it is tedious to type
-> > 'perl scripts/checkdeclares.pl'.
-> >
-> > The original patch [1] set the x bit properly, but it was lost when
-> > it was merged as commit 21917bded72c ("scripts: a new script for
-> > checking duplicate struct declaration").
-> >
-> > [1] https://lore.kernel.org/lkml/20210401110943.1010796-1-wanjiabing@vivo.com/
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  scripts/checkdeclares.pl               | 0
-> >  scripts/gcc-plugins/gen-random-seed.sh | 0
-> >  scripts/syscallnr.sh                   | 0
-> >  scripts/xen-hypercalls.sh              | 0
-> >  4 files changed, 0 insertions(+), 0 deletions(-)
-> >  mode change 100644 => 100755 scripts/checkdeclares.pl
-> >  mode change 100644 => 100755 scripts/gcc-plugins/gen-random-seed.sh
-> >  mode change 100644 => 100755 scripts/syscallnr.sh
-> >  mode change 100644 => 100755 scripts/xen-hypercalls.sh
->
-> Please no, as other tools (i.e. patch), can not set mode bits, and some
-> people still rely on patch in places.
->
-> If these need to be called by other parts of the build, we should
-> execute them properly, not rely on the mode settings.
->
-> thanks,
->
-> greg k-h
+From: Rob Clark <robdclark@chromium.org>
 
+Conversion to gpu_scheduler, and bonus removal of
+drm_gem_object_put_locked()
 
-I believe tools should be executable.
+v2: Fix priority mixup (msm UAPI has lower numeric priority value as
+    higher priority, inverse of drm/scheduler) and add some comments
+    in the UAPI header to clarify.
 
-If the x bit were missing in scripts/checkpatch.pl
-for example, we would need to run 'perl scripts/checkpatch.pl'
-instead of 'scripts/checkpatch.pl'. That is annoying.
+    Now that we move active refcnt get into msm_gem_submit, add a
+    patch to mark all bos busy before pinning, to avoid evicting bos
+    used in same batch.
 
+    Fix bo locking for cmdstream dumping ($debugfs/n/{rd,hangrd})
 
-Most of the scripts under the scripts/ directory
-are already executable, and we rely on that fact.
-Some of them are run directly, and I do not hear
-from anyone who complains about that.
+v3: Add a patch to drop submit bo_list and instead use -EALREADY
+    to detect errors with same obj appearing multiple times in the
+    submit ioctl bos table.  Otherwise, with struct_mutex locking
+    dropped, we'd need to move insertion into and removal from
+    bo_list under the obj lock.
 
+v4: One last small tweak, drop unused wait_queue_head_t in
+    msm_fence_context
 
+Rob Clark (13):
+  drm/msm: Docs and misc cleanup
+  drm/msm: Small submitqueue creation cleanup
+  drm/msm: drop drm_gem_object_put_locked()
+  drm: Drop drm_gem_object_put_locked()
+  drm/msm/submit: Simplify out-fence-fd handling
+  drm/msm: Consolidate submit bo state
+  drm/msm: Track "seqno" fences by idr
+  drm/msm: Return ERR_PTR() from submit_create()
+  drm/msm: Conversion to drm scheduler
+  drm/msm: Drop submit bo_list
+  drm/msm: Drop struct_mutex in submit path
+  drm/msm: Utilize gpu scheduler priorities
+  drm/msm/gem: Mark active before pinning
 
-
-BTW, my 'patch' command on Ubuntu can handle the
-x bit.  Doesn't it work on your 'patch' ?
-
-
-masahiro@grover:~/x-bit-test$ ls -l test.sh
--rw-rw-r-- 1 masahiro masahiro 7 Jul 28 09:50 test.sh
-masahiro@grover:~/x-bit-test$ cat set-x.patch
-diff --git a/test.sh b/test.sh
-old mode 100644
-new mode 100755
-masahiro@grover:~/x-bit-test$ patch -p1 < set-x.patch
-patching file test.sh
-masahiro@grover:~/x-bit-test$ ls -l test.sh
--rwxr-xr-x 1 masahiro masahiro 7 Jul 28 09:51 test.sh
-
-
-
-Even if it did not work on somebody's tools,
-the diff files are provided for bug-fix
-releases (for example, 5.13.x), not the entire source.
-
-Developers (except Andrew Morton) use git
-to merge patches like this, so I see no issue
-on changing the mode.
+ drivers/gpu/drm/drm_gem.c                   |  22 --
+ drivers/gpu/drm/msm/Kconfig                 |   1 +
+ drivers/gpu/drm/msm/adreno/a5xx_debugfs.c   |   4 +-
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c       |   6 +-
+ drivers/gpu/drm/msm/adreno/a5xx_power.c     |   2 +-
+ drivers/gpu/drm/msm/adreno/a5xx_preempt.c   |   7 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c       |  12 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c       |   2 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c |   4 +-
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c     |   6 +-
+ drivers/gpu/drm/msm/msm_drv.c               |  30 +-
+ drivers/gpu/drm/msm/msm_fence.c             |  42 ---
+ drivers/gpu/drm/msm/msm_fence.h             |   3 -
+ drivers/gpu/drm/msm/msm_gem.c               |  94 +-----
+ drivers/gpu/drm/msm/msm_gem.h               |  47 +--
+ drivers/gpu/drm/msm/msm_gem_submit.c        | 344 ++++++++++++--------
+ drivers/gpu/drm/msm/msm_gpu.c               |  46 +--
+ drivers/gpu/drm/msm/msm_gpu.h               |  78 ++++-
+ drivers/gpu/drm/msm/msm_rd.c                |   6 +-
+ drivers/gpu/drm/msm/msm_ringbuffer.c        |  70 +++-
+ drivers/gpu/drm/msm/msm_ringbuffer.h        |  12 +
+ drivers/gpu/drm/msm/msm_submitqueue.c       |  53 ++-
+ include/drm/drm_gem.h                       |   2 -
+ include/uapi/drm/msm_drm.h                  |  14 +-
+ 24 files changed, 516 insertions(+), 391 deletions(-)
 
 -- 
-Best Regards
-Masahiro Yamada
+2.31.1
+
