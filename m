@@ -2,187 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5FB3D8C6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436813D8C77
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234416AbhG1LEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:04:55 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:40611 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231994AbhG1LEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:04:54 -0400
+        id S235992AbhG1LIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231994AbhG1LIj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:08:39 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C85CC061757;
+        Wed, 28 Jul 2021 04:08:38 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so9348661pja.5;
+        Wed, 28 Jul 2021 04:08:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1627470293;
-  x=1659006293;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=xAwcql3/jqc11a3K8vx0HFLQ+MboOeW719h4Q37llfI=;
-  b=SiGxHhUc/mCVxGLUi71ApumMygMFMxevmWSJ5WavVzvE231AautbiPKM
-   +TRjLZR6uZUb2GeFMruSMDNs7Pdn0B8A0/02akpuwG1YANEdBS7FzcjAm
-   +tAfIA3V/ahKkSvUX8CUbvJC7Y8ytD6FYYK1/pK2mp4xZpKYYWgfHh8hs
-   ZnXVTKAXbUoUQz3N4SI3JRjhVqXNxA+97iXlNiohPmpIb/zu5udJpW+Vb
-   IXq8nUJEzUkcU+7MCLrBVrNDMV3AMBTUWs1qucNsuLMbMP5yWduUJvNMn
-   hQOvDeLnXHlKF40COhDVL00td52mUfwfrY5C5TzK5T5wV8YENDAMLbTaG
-   w==;
-Subject: Re: [PATCH] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel <kernel@axis.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210719133717.18797-1-borysmn@axis.com>
- <20210727025828.giynspbcz7zdmosa@kernel.org>
-From:   Borys Movchan <borysmn@axis.com>
-Message-ID: <7f67f4ec-5d68-5134-6529-93eaf3921571@axis.com>
-Date:   Wed, 28 Jul 2021 13:06:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RaGdX69TfOUF+PA+iG3LI1pAqLNvsYxS1NTTMaqEKBo=;
+        b=AKvjPRgIeM2YflVn6Kb+Snz34nSZTkgEHfQj9L6q+lPpNPI/M69KTdvhyXdsPgbU9a
+         j3ULwI8FueA8h3Uh+/MTn2lUcZ2rFjXSLZq++FWb0AoFwV2HtPCvSCEr1ioBRS44ZiXQ
+         yIjoJE0ZUXLJGgU6Gae4S3cDp65yA3R+ZPnQHbDRCRry3aar0jOHIXm976UOn/dC9/Md
+         9uMguwZ1VigioKOI9wt7ae/LlPnDZR9TT+lolMgs5m+YX67SHR08CIDo14tcGqbCPmGG
+         x2lrYi3xh2x8eo6Yc7LsKgNtqyZ0xZN/8ndAQHvpNfOz/oNdX0xE6Jg6xQIZmAEYwEFk
+         V50w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RaGdX69TfOUF+PA+iG3LI1pAqLNvsYxS1NTTMaqEKBo=;
+        b=JHx7sipVV4Xu08eugmhX9nrdi4eXAcSdJVUvFCBTvC6Pab92EsQWYmRZKhvaYehOfs
+         Bya3i5aekfboCP6C9hP8tehtOjptmQKKar7JDxUHxJhPFxWX/+dwt8c+K7t0Bz3vYAVQ
+         ZlVnyQhUIuqn/gH8iurLzsIET7c2ra2VFUAbFiguSmmyyN++ZmfP9NIpGBilnrCfPlrO
+         9OUAC99LafZqtEvqBXnedFQE6/MYD8aIZ6ZYc0OliSyhFjeaM2NzScrwd8NAsvf7msQh
+         ZLtEDKZZ0XXo+q9HWRt+z0+jH+M86AJFBqeWAScNtaK1VTKMnG0+ZRlOsOmYcv5ghMZD
+         fZOQ==
+X-Gm-Message-State: AOAM5336o33fkfgiTJr2zPQcixY9QVJOLqBKo56PbtmTZ/l1aYKvra/D
+        dihIW8vc+h9etT9ulgu5RchXhV64aGgwd8duQZI=
+X-Google-Smtp-Source: ABdhPJwjjUD6gn//02i/musk032RNIg5zcsK5ykLCg6MxOtsxwc2zmGCleIuDO+JWdrLhVdIGbrkRjIn6INQwhjXVqE=
+X-Received: by 2002:a17:90a:7146:: with SMTP id g6mr1681484pjs.228.1627470517649;
+ Wed, 28 Jul 2021 04:08:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210727025828.giynspbcz7zdmosa@kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail07w.axis.com
- (10.20.40.13)
+References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
+ <20210728103551.GA31304@amd>
+In-Reply-To: <20210728103551.GA31304@amd>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 28 Jul 2021 14:07:58 +0300
+Message-ID: <CAHp75VcrYRkzGwe=K98Augy=jb2RtWjiF6P6kietN8Lz7f_okA@mail.gmail.com>
+Subject: Re: LED subsystem lagging maintenance
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/21 4:58 AM, Jarkko Sakkinen wrote:
-> On Mon, Jul 19, 2021 at 03:37:17PM +0200, Borys Movchan wrote:
-> > On some systems, especially embedded, TPM might start in
-> > Upgrade/Reduced mode due to the previous failure of a firmware
-> > upgrade process. Allow the TPM driver to handle such situations
-> > properly. Enables a possibility for userspace application to
-> > finalize TPM upgrade or recovery if required.
->
->
-> Please add short explanation what you mean by upgrade/reduced mode.
->
-> Maybe for clarity speak about upgrade mode.
+On Wed, Jul 28, 2021 at 1:35 PM Pavel Machek <pavel@ucw.cz> wrote:
 
-I have send v2 patch with updated commit message and some notes.
+Thanks for your _prompt_ response!
 
-Hope that would be more clear.
+> > I have noticed that in the last couple of cycles the LED subsystem is
+> > a bit laggish in terms of maintenance (*). I think it's time that
+> > someone can help Pavel to sort things out.
+> >
+> > In any case, I wonder if we have any kind of procedure for what to do
+> > in such cases. Do we need to assume that the subsystem is in a
+> > (pre-)orphaned state? If so, who is the best to take care of patch
+> > flow?
 
->
-> >
-> > Signed-off-by: Borys Movchan <borysmn@axis.com>
-> > ---
-> >  drivers/char/tpm/tpm-chip.c | 23 +++++++++++++++--------
-> >  drivers/char/tpm/tpm2-cmd.c | 12 ++++++++++--
-> >  include/linux/tpm.h         |  1 +
-> >  3 files changed, 26 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> > index ddaeceb7e109..ff2367c447fb 100644
-> > --- a/drivers/char/tpm/tpm-chip.c
-> > +++ b/drivers/char/tpm/tpm-chip.c
-> > @@ -574,20 +574,25 @@ static int tpm_get_pcr_allocation(struct 
-> tpm_chip *chip)
-> >  int tpm_chip_register(struct tpm_chip *chip)
-> >  {
-> >        int rc;
-> > +     bool limited_mode = false;
-> >
-> >        rc = tpm_chip_start(chip);
-> >        if (rc)
-> >                return rc;
-> >        rc = tpm_auto_startup(chip);
-> > -     if (rc) {
-> > +     if (rc == -EIO) {
-> > +             limited_mode = true;
-> > +     } else if (rc) {
-> >                tpm_chip_stop(chip);
-> >                return rc;
-> >        }
-> >
-> > -     rc = tpm_get_pcr_allocation(chip);
-> > -     tpm_chip_stop(chip);
-> > -     if (rc)
-> > -             return rc;
-> > +     if (!limited_mode) {
-> > +             rc = tpm_get_pcr_allocation(chip);
-> > +             tpm_chip_stop(chip);
-> > +             if (rc)
-> > +                     return rc;
-> > +     }
-> >
-> >        tpm_sysfs_add_device(chip);
-> >
-> > @@ -595,9 +600,11 @@ int tpm_chip_register(struct tpm_chip *chip)
-> >
-> >        tpm_add_ppi(chip);
-> >
-> > -     rc = tpm_add_hwrng(chip);
-> > -     if (rc)
-> > -             goto out_ppi;
-> > +     if (!limited_mode) {
-> > +             rc = tpm_add_hwrng(chip);
-> > +             if (rc)
-> > +                     goto out_ppi;
-> > +     }
-> >
-> >        rc = tpm_add_char_device(chip);
-> >        if (rc)
-> > diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-> > index a25815a6f625..7468353ed67d 100644
-> > --- a/drivers/char/tpm/tpm2-cmd.c
-> > +++ b/drivers/char/tpm/tpm2-cmd.c
-> > @@ -718,7 +718,8 @@ static int tpm2_startup(struct tpm_chip *chip)
-> >   *                     sequence
-> >   * @chip: TPM chip to use
-> >   *
-> > - * Returns 0 on success, < 0 in case of fatal error.
-> > + * Returns 0 on success, -ENODEV in case of fatal error,
-> > + *       -EIO in case of Reduced/Upgrade mode
-> >   */
-> >  int tpm2_auto_startup(struct tpm_chip *chip)
-> >  {
-> > @@ -729,7 +730,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
-> >                goto out;
-> >
-> >        rc = tpm2_do_selftest(chip);
-> > -     if (rc && rc != TPM2_RC_INITIALIZE)
-> > +     if (rc == TPM2_RC_UPGRADE) {
-> > +             rc = -EIO;
-> > +             goto out;
-> > +     } else if (rc && rc != TPM2_RC_INITIALIZE)
-> >                goto out;
-> >
-> >        if (rc == TPM2_RC_INITIALIZE) {
-> > @@ -743,6 +747,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
-> >        }
-> >
-> >        rc = tpm2_get_cc_attrs_tbl(chip);
-> > +     if (rc) { /* Succeeded until here, but failed -> reduced mode */
-> > +             rc = -EIO;
-> > +             goto out;
-> > +     }
-> >
-> >  out:
-> >        if (rc > 0)
-> > diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> > index aa11fe323c56..e873c42907f0 100644
-> > --- a/include/linux/tpm.h
-> > +++ b/include/linux/tpm.h
-> > @@ -207,6 +207,7 @@ enum tpm2_return_codes {
-> >        TPM2_RC_INITIALIZE      = 0x0100, /* RC_VER1 */
-> >        TPM2_RC_FAILURE         = 0x0101,
-> >        TPM2_RC_DISABLED        = 0x0120,
-> > +     TPM2_RC_UPGRADE         = 0x012D,
-> >        TPM2_RC_COMMAND_CODE    = 0x0143,
-> >        TPM2_RC_TESTING         = 0x090A, /* RC_WARN */
-> >        TPM2_RC_REFERENCE_H0    = 0x0910,
-> > --
-> > 2.20.1
-> >
-> >
->
-> /Jarkko
+> To be honest, patches were not applied because they were not that
+> important to begin with,
 
-Kind regards,
+Reference counting disbalance is not critical, but what is then?
 
-Borys
+> because of lacking explanation,
 
+According to the thread
+https://lore.kernel.org/linux-leds/20210529111935.3849707-1-andy.shevchenko@gmail.com/T/#u
+you haven't commented a word on them. Can you, please, elaborate?
+
+> and because
+> you pushed a bit too hard.
+
+Huh?!
+It was two month and nothing from you. Good that this thread does
+something about it.
+
+> Yes, I'm quite busy in -rc1 to -rc3 timeframe with stable reviews. No,
+> LED subsystem is not orphaned.
+
+Thank you!
+
+-- 
+With Best Regards,
+Andy Shevchenko
