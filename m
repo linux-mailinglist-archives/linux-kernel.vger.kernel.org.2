@@ -2,132 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1745A3D8640
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 05:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB203D8642
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 05:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbhG1DuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 23:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33450 "EHLO
+        id S233609AbhG1Dvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 23:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233500AbhG1DuY (ORCPT
+        with ESMTP id S233481AbhG1Dvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 23:50:24 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F22CC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 20:50:22 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso2309820pjo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 20:50:22 -0700 (PDT)
+        Tue, 27 Jul 2021 23:51:48 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73BEC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 20:51:46 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id f12so1440961ljn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 20:51:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FrYnTL9TwFuN1vt+KIlBzufA7x0qW3I2Fexno73Yt48=;
-        b=fhEo/9S/wQeVXZquGw+9zVLckVKnGYZh+T7rRsd6PhQg2LBRt1Ck8ZEKUrlUMzv3/1
-         8Y3sRPsi453vXiocWpkYZZhaVctDrrbvrS89J1RW26204oVmMFiY4+TVYFvwCYtvdmT9
-         s47YInBTw8O6N4tSznKwUSLhqr0B4PFo5WG93Vy3cCOOQf8exiEYzbcOd+hbIpqrvymB
-         b2WwbnhHXsuXOzZ5tQN8Tav9SDbybB70/3dguZkRkjFS/pcQ8hYfIdhR6v0/6odAsvgy
-         ZRKpNihXQAkh48QiYZjgUb1qtgh+7kzqWjmdcK6kBlFdyt9SMiJXPY9CdehNii/rjfh/
-         TfTg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dPiFfQJ2xtTLnyk6Fk4XG5GeGV4EVc1tB7y8d6OKc1k=;
+        b=CMH3lDIxw0ApJq8MbTN7wpeHcbI0wKpG+rv+G9q7EMMsNfIYa7vfGBD/zFBcglKwY7
+         0aikxbaN2vYUDBqiDcGTqfslu/fjCteLT40QMxNONyKvmnjjtnYJ+iXiMQobLSn0Oqgp
+         qfveUsNA9LLalicPs0E33qz1lBrucqDUCI/OM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FrYnTL9TwFuN1vt+KIlBzufA7x0qW3I2Fexno73Yt48=;
-        b=hap/IXs5ytK4v/o+wvf+QE0IK+n99boBUjHHILycX/rqMpOgVy4x4jHeROYIcQLeTi
-         qBjmiYc1BglS19qichOXEgWeauI2Gx4W99T6v2OeNmQAe58kN2cl/7c8F2hYo8b9l/dV
-         XZ0IAmBrrb69NnCyic7/vKDWy4sR6i6le5n5MLR8Zhdw+WqJePoUkbVxK5DKR34rcMDz
-         b8PEJbkhLJcMI1Jrn5PiY1JszHaiRju1ss4u+yShSIU/oZwurZxYNOS/zQvstYpv6UCS
-         Pv6dX+J1WuM+MydDqjy/EUX4x9S0EdB56Z03rEODXGR3JWHyVGS7nRkFmuj9VqwskUUL
-         x37g==
-X-Gm-Message-State: AOAM532e4x9nIK718RJdohTI4RqGKR4R7J4hT1+he0xy1H/FRB4Iv3nZ
-        weIcMLAs/6HjeobGBfN94T7yGA==
-X-Google-Smtp-Source: ABdhPJx3iBpMT4fccV4pPERpT+6fYf5Q+S9trToOykb5i3f99E2pjH1+nxZ2W3L0Iyez+YUFa8FApQ==
-X-Received: by 2002:a63:6d84:: with SMTP id i126mr10689629pgc.97.1627444222026;
-        Tue, 27 Jul 2021 20:50:22 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id f4sm5784513pgs.3.2021.07.27.20.50.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 20:50:16 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 09:20:14 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        steev@kali.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [Patch v4 3/6] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
- support
-Message-ID: <20210728035014.25mgvrpnraxfslq7@vireshk-i7>
-References: <20210727152512.1098329-1-thara.gopinath@linaro.org>
- <20210727152512.1098329-4-thara.gopinath@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dPiFfQJ2xtTLnyk6Fk4XG5GeGV4EVc1tB7y8d6OKc1k=;
+        b=hEBYJO73GUzJBO7DjECOc8zn4ssxOIjO0XfYncWCypV/AY8o8MBXFPzb4DvsgxioUl
+         N3VkEoxRIbuyWVUceo/j30eyKFjp7romNZ/sMcrNRYnUVj2+qDIO9sKCTw/IP+4sYvX0
+         Q7uK2vZFc4YQYiXNCJCrf1/0pfA1xs0UdSYf9wSuaUd2tFA4PZqiTPjdH8gInF0FNGfX
+         faAJyziSkx5vonfvEvBpZx4WNzVDJ1XSyhryVwi66eTvNDHlr+vns0wPsK/217ZiUl61
+         dxWav1OCa3jYBMZJm9nyMaEZZUuJqbdmslqVkw047HV4Ggg+T/WT1X/JBPIpBsFRIDZ3
+         Wfrw==
+X-Gm-Message-State: AOAM530O+WTx46FKshAdOX8B+f5/mdVRGgLtEuWHyNn8r//QLpAWizI1
+        wZ3uvUbitjK8ZUDCDSdrTJz/EZQ9HEMN1xpmstEERg==
+X-Google-Smtp-Source: ABdhPJzLWnYQVyj6OrEVmREn7Y+WP6t6ZFo2i0yfvhdDJ2Xe5swRDPGFoXEtohPBSMwNRt/CiJ6vviRwAgzc+JKy/As=
+X-Received: by 2002:a2e:9215:: with SMTP id k21mr18526007ljg.91.1627444305147;
+ Tue, 27 Jul 2021 20:51:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727152512.1098329-4-thara.gopinath@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210727112208.2508675-1-hsinyi@chromium.org> <20210727112208.2508675-2-hsinyi@chromium.org>
+In-Reply-To: <20210727112208.2508675-2-hsinyi@chromium.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 28 Jul 2021 11:51:34 +0800
+Message-ID: <CAGXv+5Hua63GZ839kQEscAXBeKPYTv_63E2pYNBw4jXz1B_PWA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: mt8173: elm: Use aliases to mmc nodes
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-07-21, 11:25, Thara Gopinath wrote:
-> +static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
-> +{
+Hi,
 
-> +	/* In the unlikely case cpufreq is de-registered do not enable polling or h/w interrupt */
+The subject for this patch wasn't tagged with v3. This might cause some
+issues with scripted tooling.
+
+On Tue, Jul 27, 2021 at 7:22 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> fa2d0aa96941 ("mmc: core: Allow setting slot index via device tree alias")
+> allows the use of aliases to number SD/MMC slots. This patch use aliases
+> to mmc nodes so the partition name for eMMC and SD card will be consistent
+> across boots.
+
+Device trees are supposed to be a description of the hardware and
+therefore should be implementation agnostic. The commit logs should be
+the same, unless the implementation details influenced the changes made.
+
+The MMC binding change already specified that aliases provide a way to
+assign fixed mmcN indices, so the log should reference the binding
+change commit instead.
+
+ChenYu
+
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+> ---
+> v2->v3: add more commit message.
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+> index 21452c51a20a8..d5a2cad39c9c7 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+> @@ -10,6 +10,12 @@
+>  #include "mt8173.dtsi"
+>
+>  / {
+> +       aliases {
+> +               mmc0 = &mmc0;
+> +               mmc1 = &mmc1;
+> +               mmc2 = &mmc3;
+> +       };
 > +
-> +	spin_lock(&data->throttle_lock);
-> +	if (data->cancel_throttle) {
-> +		spin_unlock(&data->throttle_lock);
-> +		return;
-> +	}
-> +	spin_unlock(&data->throttle_lock);
-> +
-> +	/*
-> +	 * If h/w throttled frequency is higher than what cpufreq has requested for, stop
-> +	 * polling and switch back to interrupt mechanism
-> +	 */
-> +
-> +	if (throttled_freq >= qcom_cpufreq_hw_get(cpumask_first(policy->cpus)))
-> +		/* Clear the existing interrupts and enable it back */
-> +		enable_irq(data->throttle_irq);
-> +	else
-> +		mod_delayed_work(system_highpri_wq, &data->throttle_work,
-> +				 msecs_to_jiffies(10));
-> +}
-
-> +static void qcom_cpufreq_hw_lmh_exit(struct qcom_cpufreq_data *data)
-> +{
-> +	if (data->throttle_irq <= 0)
-> +		return;
-> +
-> +	spin_lock(&data->throttle_lock);
-> +	data->cancel_throttle = true;
-> +	spin_unlock(&data->throttle_lock);
-> +	cancel_delayed_work_sync(&data->throttle_work);
-> +	free_irq(data->throttle_irq, data);
-> +}
-
-Lets see if we can still make it break :)
-
-CPU0                                            CPU1
-
-qcom_lmh_dcvs_notify()                          qcom_cpufreq_hw_lmh_exit()
-
-spin_unlock()
-                                                spin_lock(),
-                                                cancel_throttle = true
-                                                spin_unlock()
-
-                                                cancel_delayed_work_sync()
-mod_delayed_work()
-                                                free_irq()
-                                                kfree(data)
-qcom_lmh_dcvs_poll()
-Uses data.
-
-
-Sorry, locking is fun :)
-
--- 
-viresh
+>         memory@40000000 {
+>                 device_type = "memory";
+>                 reg = <0 0x40000000 0 0x80000000>;
+> --
+> 2.32.0.432.gabb21c7263-goog
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
