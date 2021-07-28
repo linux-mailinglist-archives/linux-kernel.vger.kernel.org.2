@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963343D8BEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F5A3D8BEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235915AbhG1Kfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:35:55 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:57190 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbhG1Kfy (ORCPT
+        id S235920AbhG1KgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:36:08 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:53378
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232231AbhG1KgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:35:54 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A50941C0B7C; Wed, 28 Jul 2021 12:35:52 +0200 (CEST)
-Date:   Wed, 28 Jul 2021 12:35:52 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: LED subsystem lagging maintenance
-Message-ID: <20210728103551.GA31304@amd>
-References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
+        Wed, 28 Jul 2021 06:36:06 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 286E63F245;
+        Wed, 28 Jul 2021 10:36:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627468564;
+        bh=X0DrZSFLZf175Lh2Gia6ktHZuwvpS8paTwWSPxV8GHA=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=T6Y2WsacwjCrVOGIAr0Do6u3JceM7xIZX3vQxqhljqaU74Qw8MZf9tQobWPEnxyTX
+         1emVK4+0r/5KP+BzYfWjEo/QG0dv5rm3Y0jJigCN5qLXd8DiM7eVbNKxpXJI4AteuR
+         NLsta805WyClfdupYkSPOBbQTHbYNtWyPoY8h2gJroexvxJOX6KWsTSY0kh0ghVPCR
+         eRxc8Y9JNozJ7ZQQVAU1MgHf3GvgbsmHIpoubS7RC7k4m598VZIpCLoP17M1dk4NyT
+         FFDZDM4o5kUgEa5u6AwVUYdQDQdkLg42eZtUqEhKqBcmF1/3XOgpoMxt353ZwkRYpI
+         uGemIUG0atygA==
+From:   Colin King <colin.king@canonical.com>
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: Intel: Fix spelling contraction "cant" -> "can't"
+Date:   Wed, 28 Jul 2021 11:36:02 +0100
+Message-Id: <20210728103602.171817-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There is a spelling mistake in a dev_err message. Fix it.
 
-Hi!
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/intel/atom/sst/sst_ipc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I have noticed that in the last couple of cycles the LED subsystem is
-> a bit laggish in terms of maintenance (*). I think it's time that
-> someone can help Pavel to sort things out.
->=20
-> In any case, I wonder if we have any kind of procedure for what to do
-> in such cases. Do we need to assume that the subsystem is in a
-> (pre-)orphaned state? If so, who is the best to take care of patch
-> flow?
+diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
+index a8a9aa0057d3..4e8382097e61 100644
+--- a/sound/soc/intel/atom/sst/sst_ipc.c
++++ b/sound/soc/intel/atom/sst/sst_ipc.c
+@@ -128,7 +128,7 @@ int sst_post_message_mrfld(struct intel_sst_drv *sst_drv_ctx,
+ 		while (header.p.header_high.part.busy) {
+ 			if (loop_count > 25) {
+ 				dev_err(sst_drv_ctx->dev,
+-					"sst: Busy wait failed, cant send this msg\n");
++					"sst: Busy wait failed, can't send this msg\n");
+ 				retval = -EBUSY;
+ 				goto out;
+ 			}
+-- 
+2.31.1
 
-To be honest, patches were not applied because they were not that
-important to begin with, because of lacking explanation, and because
-you pushed a bit too hard.
-
-Yes, I'm quite busy in -rc1 to -rc3 timeframe with stable reviews. No,
-LED subsystem is not orphaned.
-
-Best regards,
-
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---zYM0uCDKw75PZbzx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEBMwcACgkQMOfwapXb+vKyBACdHHzrt4xTc8c09wb+t5kxdxzp
-0hMAnjkyngryJ3F3XiI94JVCmstwlrho
-=u0Dy
------END PGP SIGNATURE-----
-
---zYM0uCDKw75PZbzx--
