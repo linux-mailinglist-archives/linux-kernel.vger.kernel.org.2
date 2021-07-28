@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42813D93C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAE23D9318
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhG1REC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:04:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21332 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229515AbhG1RD7 (ORCPT
+        id S229622AbhG1QXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhG1QXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:03:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627491837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DsHibXntA5nrdCKJ3pn/OIwa0FmfD/AJLSfptD0KLdY=;
-        b=h0uMlroN1SESeuWMbfAdRynyaKGaovE8S4Wr1qqh1H6qyPxaDAEF8bvF3zKnxUW87zisD+
-        AQSASAlL9Fj5QEc4Hc3gOxsH0mP4sDOCnHck7TSvhwoIRbYh0S+wNMhUGq0vse3u4LOs3t
-        6J3r3YkqSYm+GUaVkLiFrtBVuqRSNRc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-w4UBFodnMoa8M9yeBZxIqQ-1; Wed, 28 Jul 2021 13:03:56 -0400
-X-MC-Unique: w4UBFodnMoa8M9yeBZxIqQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B4FF1026201;
-        Wed, 28 Jul 2021 17:03:55 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3895310016F7;
-        Wed, 28 Jul 2021 17:03:48 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 83F644172EDB; Wed, 28 Jul 2021 13:21:21 -0300 (-03)
-Date:   Wed, 28 Jul 2021 13:21:21 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Nitesh Lal <nilal@redhat.com>
-Cc:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@marvell.com>,
-        Peter Xu <peterx@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 1/4] add basic task isolation prctl interface
-Message-ID: <20210728162121.GB24635@fuller.cnet>
-References: <7b2d6bf91d30c007e19a7d2cbddcb2460e72d163.camel@redhat.com>
- <20210727110050.GA502360@fuller.cnet>
- <a020a45ddea10956938f59bd235b88fe873d0e98.camel@redhat.com>
- <20210727130930.GB283787@lothringen>
- <20210727145209.GA518735@fuller.cnet>
- <20210727234539.GH283787@lothringen>
- <20210728093707.GA3242@fuller.cnet>
- <e0135b88dad323d0abd1ce05081e0b554421af7c.camel@redhat.com>
- <20210728131610.GA11900@fuller.cnet>
- <CAFki+LkQwoqVTKmgnwLQQM8ua-ixbLp8i+jUT6xF15k6X=89mw@mail.gmail.com>
+        Wed, 28 Jul 2021 12:23:44 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8D9C061757;
+        Wed, 28 Jul 2021 09:23:42 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id qk33so5458982ejc.12;
+        Wed, 28 Jul 2021 09:23:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:reply-to:from:subject:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=og7+V4BOs6plr/YGVQnX+404P8F5uFz/ISDuajxswv0=;
+        b=SC0VdSX/F/sOPmI3Q7YmCzFCdl4xqt7oa+7hod2kYnKT61yxCqweHv52cjGPgqMYEG
+         RcPLe47wvzr7VYoKT0BGePbN79leHnWxbtRqQ7SKjcaTKl9BuAZx6RsKhqc99DIh3vuI
+         l2/CRbRa3VMSZkHa2tgDqgSMSbMkjIt57ZAJuHIgeQwo9HNbQ3S6fqblouQ4te9ygmjJ
+         3scrhJkQFszM3oHw43uBp3Qye3qkEYtDqX7rGW5YbiSXNMVz7Flq1mNtL79NkljqGdwb
+         8VAeU8fx0K61LtprexwTE1B2wj7TdRm905zA3cETTZR2GVdr1VcfcQYr81iI2gk3bdqW
+         X11g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:reply-to:from:subject:cc:message-id:date
+         :user-agent:mime-version:content-transfer-encoding:content-language;
+        bh=og7+V4BOs6plr/YGVQnX+404P8F5uFz/ISDuajxswv0=;
+        b=ZwH2PsLj68jstp5rg5TWhSzGZ5fUNnzC7ukg/WuFUlGwtLd1+Mfu0F4gGhzJrEt+wM
+         ipjXPQtneVCQeNqhJFpS0HRSx1N4DuNXr82wic7fBEBN6hx1ljR8Guibmkqvr6/HfVxP
+         D/e+CngkVXW2M8+BZbN4r1CgmsmWuZUsR/3pRtDlFSGbOydPmihQhsYMS2IK0/Cmbg1c
+         vN9AuEv+u6Rf72VEb6mZXATOit8PpLb9TWwCem1mt0nxH4PDPN7thPW33xquG/Ohm7eN
+         oh9Pz9Fwz9HT6x/c40q/lhI7ipT4M+kBQvg8AQbPE6qukSTtqMG029JJqlNfZ5EB8nEl
+         duWQ==
+X-Gm-Message-State: AOAM5338Ef1iB1NeqCjE3iyNYdZlNROKpATLz4hGwnJ/cbuDMVvWj1nc
+        In+wDv2rgO9KWavcKUADW9o=
+X-Google-Smtp-Source: ABdhPJwN0gRL2jyJMYaqSosjMJgABzLSD6PtiDIEUqOq98x3mvzvPq+nXwfkMdfkmV81p3SfW/Xj7g==
+X-Received: by 2002:a17:906:43c9:: with SMTP id j9mr280384ejn.57.1627489420927;
+        Wed, 28 Jul 2021 09:23:40 -0700 (PDT)
+Received: from [192.168.0.114] ([37.239.218.3])
+        by smtp.gmail.com with ESMTPSA id n13sm69223ejk.97.2021.07.28.09.23.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 09:23:40 -0700 (PDT)
+To:     yanp.bugz@gmail.com
+Reply-To: cc64ac69-f4e5-3fc4-1362-ced7cf68119a@gmail.com
+From:   Mohammad Rasim <mohammad.rasim96@gmail.com>
+Subject: Re: [PATCH v26 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+Cc:     aaptel@suse.com, almaz.alexandrovich@paragon-software.com,
+        andy.lavr@gmail.com, anton@tuxera.com, dan.carpenter@oracle.com,
+        dsterba@suse.cz, ebiggers@kernel.org, hch@lst.de, joe@perches.com,
+        kari.argillander@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        mark@harmstone.com, nborisov@suse.com, oleksandr@natalenko.name,
+        pali@kernel.org, rdunlap@infradead.org, viro@zeniv.linux.org.uk,
+        willy@infradead.org
+Message-ID: <2f310e28-49fe-3206-40d9-0c8a729f9227@gmail.com>
+Date:   Wed, 28 Jul 2021 19:23:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFki+LkQwoqVTKmgnwLQQM8ua-ixbLp8i+jUT6xF15k6X=89mw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:00:01AM -0400, Nitesh Lal wrote:
-> > > A latency sensitive
-> > > application might be OK with the former but not with the latter.
-> >
-> > Two alternatives:
-> >
-> > 1) The pattern above, where particular subsystems that might interrupt
-> > the kernel are enabled automatically if the kernel supports it.
-> >
-> > Pros:
-> > Applications which implement this only need to be changed once,
-> > and can benefit from new kernel features.
-> >
-> > Applications can disable particular features if they turn
-> > out to be problematic.
-> >
-> > Cons:
-> > New features might break applications.
-> >
-> > 2) Force applications to enable each new feature individually.
-> >
-> > Pros: Won't cause regressions, kernel behaviour is explicitly
-> > controlled by userspace.
-> >
-> > Cons: Apps won't benefit from new features automatically.
-> >
-> > ---
-> >
-> > It seems to me 1) is preferred. Can also add a sysfs control to
-> > have a "default_isolation_feature" flag, which can be changed
-> > by a sysadmin in case a new feature is undesired.
-> >
-> > Thoughts?
-> >
-> >
-> The first option may work specifically with the sysfs interface that you
-> mentioned, however, IMHO (2) is safer than regressing the workloads. Also,
-> if the previously implemented controls are good enough for the workload
-> then there should not be a need to enable the new ones.
+Hi,
 
-OK, can set default_isolation_feature as 0 then, which admin can 
-configure to a non-default value. This would enable the new
-features only if the admin enables them.
+I've been using your ntfs driver for sometime now and it's great to 
+finally have a good driver for this FS, however i have problem where if 
+the power cuts off from my system while writing to the volume the 
+partition gets corrupted, this is expected of course but the problem is 
+that `ntfsfix` tool can't fix the partition and no matter how many times 
+i run it the system will always spits this in the kernel log when trying 
+to mount the partition:
 
-Thanks.
+     ntfs3: sdb1: volume is dirty and "force" flag is not set!
+
+if i boot to a windows 10 OS then the system is able to mount the volume 
+with no problem(even before running chkdsk on it), windows `chkdsk` 
+utility can find the errors and fix them, and i can reboot to linux to 
+use my partition again with no problem.
+
+it would be nice to have your filesystem utilites published on github so 
+we can use them with the current out of the tree driver
+
+
+Regards
 
