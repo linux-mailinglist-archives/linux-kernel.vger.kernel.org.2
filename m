@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792DB3D8544
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB583D8546
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234026AbhG1BWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233008AbhG1BWt (ORCPT
+        id S234251AbhG1BXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:23:38 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:57557 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234038AbhG1BXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:22:49 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A0CC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:22:48 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id mu13-20020a17090b388db02901769cf3d01aso1229259pjb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=KmGPLe7yWyGg+5xBmJJBJmFQBI3nGe2qI3u2htSZRc8=;
-        b=nuhUlmTMHBefTVNrgYI+UtWHFhAeUZ55sBhNa0QX9fumm4mflb1V6DbSoHCRW6t06r
-         onMeMgc+EcsYHFi0X4PcAOFTt1Ca4GWOMdzhbbiOrGVTrb0+gtM9N1DnIZxhXv8HlftC
-         DJSqiUVC7neopxxFodop5YR1Gled3AwZiXE7gKa9y/fs3sAr5ZECb/Puda3R9v+/bkI+
-         nb00mP95Ua0jnx3xuMqkU9/WGjDryEYGUuk5L5v/oC3oUWmi5Da3evvFfquWnPH15h+y
-         PKiZUtUG5Qb4p9eZ7PCfY2pcvyOh2brxBgAENIFwi2xJrsLT1ESfcW03z9V4K8U/cP8u
-         YJPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=KmGPLe7yWyGg+5xBmJJBJmFQBI3nGe2qI3u2htSZRc8=;
-        b=jma3MlQMHbpbA3J1uc3bPAEek70dBZ0IHekaGE7uz3fJuXOpXSkGnTyFb2hajaQPAl
-         ck7oXlPrmuyEb8EI6WHsGQWLVr++hrgVoj6TClCRtrf/dO+3MSV0YCM78yP6oKyIBVPO
-         NfNSiIA1S5UE+VOjjnr3Ufr/5zDyOZMkB/5ytzSE8+KwC1DqVTHgMRqERMfKIbLn3D4B
-         jqaU8MH6fS+uv0J1x8WRhNZF3BBpTcClRn+Kmwqse/RHHGaiGV27r4S+NoWqjnv6zHiY
-         rZXL/kLwNEpZ0qWsny89Fi3dYgyaoICW+p0/679ehn6Hs/0Buh2y9eIH/BbhRVgpU9Hd
-         VGDg==
-X-Gm-Message-State: AOAM530ecnvY5JcDnX1WB9FwPJJS9jp/7L/thrOLlAEo7W1xLIEa7L5+
-        6LquggcdBY5LL3qITvY43UaHGerMr7pMSA==
-X-Google-Smtp-Source: ABdhPJzw9SOwdwjV0WZ2MCa+P1MfPRGVFwKeQeenXU6wTjTUOggsSdYuRL9EvyC6Q1eQ/xQYrxL51Z0AKSHI7w==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:40e2:477f:2bc7:716c])
- (user=shakeelb job=sendgmr) by 2002:a17:90a:3489:: with SMTP id
- p9mr13744551pjb.4.1627435368045; Tue, 27 Jul 2021 18:22:48 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 18:22:43 -0700
-Message-Id: <20210728012243.3369123-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH] memcg: cleanup racy sum avoidance code
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 27 Jul 2021 21:23:36 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 759333200754;
+        Tue, 27 Jul 2021 21:23:34 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 27 Jul 2021 21:23:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=qcOAmK
+        Z6XlEpzxajr3df3EJ15DHZZ8RZdgiDKKttjE8=; b=bphnyQefhT87xYqE1Dz+S+
+        BCwnhIlGXpb30wU14kB5j38Bz+p3TaPn7/oReiMP0t7HefZlzMMMtTSZOIhQHnCQ
+        SpjD0QZh4PdYAipgYpWeq2Es0e5cXUWNTkM4ymvlwL9mHcp2mSP9fy9saHXwnzp9
+        gThzFyqSa1Debqy9sth+MA3Zj8R+nw5b5Pyl6gFsXnPriEWwBdRPe8KQVJXu+QFY
+        Zh2t57Dn2Tfquw2phHKsw4B6aydecKsosHWlUiISJdlOUroTRxx9W+RqERRfFDcP
+        6Y/5Ml+jK/WFVRxwOho57YAzgJXLfxO58C88ZDiy6/wm1fzmTm0yA5f0mtaqEckA
+        ==
+X-ME-Sender: <xms:lLEAYXclOqZgRjS46tWHY66lpVzl94T9RCKm45Yf2erVThV39bVtPg>
+    <xme:lLEAYdP5FAhaXnmeq9YPJxFy8Ind430wShQVn-cliOQiN_6LmPS98A2cqvkghoZKg
+    Hub-oO4vmuRB_Pv2h0>
+X-ME-Received: <xmr:lLEAYQhJRol931B0O0_Kp5LObpZkZQLgAd8LxI_DXeFjzZeq6sOznaj2J_wCWiMjn9oSbIyZS_rPvNLfslAMNgVfMsx03bFaFK4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeekgdefvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeekveevtdekfedtfefhvdfgleelfefhtdefieetjeejvefghfdufeejkeehgfeu
+    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdr
+    ohhrgh
+X-ME-Proxy: <xmx:lLEAYY-0zSCe0eEytEXlRXdlialLTSfwiev3qbYVVykYW5AIWJ-iZg>
+    <xmx:lLEAYTsf5nl9IdRJfTK4c1_REjoOH7ZHgdeyVeUiIcqZlVGq8FcNyw>
+    <xmx:lLEAYXHqVByZVm24f1Or_6WgzFPBc-K8pE8KWhTbwoJQH7HZlSdUyw>
+    <xmx:lrEAYc64YYkMZ3wl5WOzy3xblqCH0rXdXSLXuvWANRI9zhjfDj7wUA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 27 Jul 2021 21:23:29 -0400 (EDT)
+Date:   Wed, 28 Jul 2021 11:23:24 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+cc:     linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][CFT] signal handling fixes
+In-Reply-To: <YQAbTazP4/JB8Aas@zeniv-ca.linux.org.uk>
+Message-ID: <689cf6b8-e8fc-dc35-9d47-2c3d3e6aafb1@linux-m68k.org>
+References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk> <5622d120-1b89-6898-d091-8b4ceff6418@linux-m68k.org> <YQAbTazP4/JB8Aas@zeniv-ca.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We used to have per-cpu memcg and lruvec stats and the readers have to
-traverse and sum the stats from each cpu. This summing was racy and may
-expose transient negative values. So, an explicit check was added to
-avoid such scenarios. Now these stats are moved to rstat infrastructure
-and are no more per-cpu, so we can remove the fixup for transient
-negative values.
+On Tue, 27 Jul 2021, Al Viro wrote:
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
- include/linux/memcontrol.h | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+> On Tue, Jul 27, 2021 at 08:21:52PM +1000, Finn Thain wrote:
+> > On Sun, 25 Jul 2021, Al Viro wrote:
+> > 
+> > > 
+> > > 	The series is on top of 5.14-rc1; it lives in
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #untested.m68k
+> > > Individual patches in followups...
+> > > 
+> > > 	_Very_ lightly tested on aranym; no real hardware to test it on.
+> > > Any help with review and testing would be very welcome.
+> > > 
+> > 
+> > I can test this branch on a Motorola 68040 machine I have here. Can you 
+> > advise how to get decent code coverage? Maybe there's a package out there 
+> > with a signal-heavy test suite? Maybe I need a break point in a signal 
+> > handler? Or perhaps just send ^C to a process running under strace?
+> 
+> Generally, SIGINT is not the best insertion vector...
+> 
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 7028d8e4a3d7..5f2a39a43d47 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -991,30 +991,19 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
- 
- static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
- {
--	long x = READ_ONCE(memcg->vmstats.state[idx]);
--#ifdef CONFIG_SMP
--	if (x < 0)
--		x = 0;
--#endif
--	return x;
-+	return READ_ONCE(memcg->vmstats.state[idx]);
- }
- 
- static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
- 					      enum node_stat_item idx)
- {
- 	struct mem_cgroup_per_node *pn;
--	long x;
- 
- 	if (mem_cgroup_disabled())
- 		return node_page_state(lruvec_pgdat(lruvec), idx);
- 
- 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
--	x = READ_ONCE(pn->lruvec_stats.state[idx]);
--#ifdef CONFIG_SMP
--	if (x < 0)
--		x = 0;
--#endif
--	return x;
-+	return READ_ONCE(pn->lruvec_stats.state[idx]);
- }
- 
- static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
--- 
-2.32.0.432.gabb21c7263-goog
+True. I see that 'man 7 signal' says that SIGQUIT will produce a coredump. 
+Would that contain anything of interest?
 
+> Set a handler of e.g. SIGALRM with sigaction(), with a couple of other signals
+> in sa_mask (e.g. SIGUSR1 and SIGUSR2).  With raise() on those inside the
+> SIGALRM handler - then they will become deliverable on return from handler.
+> And have SIGUSR1 and SIGUSR2 handlers print siginfo and ucontext contents
+> (have them set with SA_SIGINFO in sa_flags, look at the second and third
+> arguments of sighandler).
+> 
+> Use alarm(2) to arrange for SIGALRM and sit in a tight loop - that'll give you
+> delivery on return from interrupt.  Alternatively, raise(SIGALRM) will give
+> you delivery on return from trap.  And making that a SIGBUS handler instead,
+> mmapping a file, truncating it to 0 and dereferencing something in mmapped
+> area will give you delivery on return from access error trap.  Division by
+> zero (and insertion handler on SIGFPE) ought to give you a type 2 exception
+> stack frame (4 bytes of aux data, that makes shifted exception frame bugger
+> format and vector fields of the original).
+> 
+> FWIW, the third argument of handler points to
+> struct ucontext {
+>         unsigned long     uc_flags;
+>         struct ucontext  *uc_link;
+>         stack_t           uc_stack;
+>         struct mcontext   uc_mcontext;
+>         unsigned long     uc_filler[80];
+>         sigset_t          uc_sigmask;   /* mask last for extensibility */
+> };
+> and type/vector is stored in uc_filler[54] (216 bytes into the array), with
+> aux data from exception stack frame starting from uc_filler[55].
+> 
+
+OK, give me a week or so and I'll see what I can come up with. 
