@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42E53D89C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1A73D89CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbhG1IaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:30:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
+        id S234574AbhG1Ibd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:31:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:52658 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235025AbhG1IaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:30:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 429FA60FE4;
-        Wed, 28 Jul 2021 08:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627461007;
-        bh=412QLOWl6lsgrJvaETIkLRDap172jok0TCDCOOeQmD0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WPniMS3RK9cSY8owpTbfM50AdVmxNCOZ6d9ebpBSoh3QvAncAQo7fKTC9OJbgp4Uw
-         TMio8ZagfKXDAzlqx3V7xJJULgHvseAEfolQckfk1epOEXu/4IWY/qmQLlR2S9JNnz
-         k2nfcxT2v7m1TqAKETZ4CP2GB9dPHGJKfLxgInLH4Lel75VD+Cfolr6Wh0HJw5f7so
-         5kgtYnBvWJ+tr4Bj8NOHdup5acJO5/2pd+CDbvWL4zqhK/tWODo5Ns9GAvqr2D6Cs4
-         IlM01H0TBHTnO/0UhJAMoKcp/f6K6BIn/Xjb4lJViGUCcCs2j3zJa07fY0MOPTw6Bp
-         SzUdNA9x7l2iQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 314C660A6C;
-        Wed, 28 Jul 2021 08:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234311AbhG1Ibb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 04:31:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B2FD1FB;
+        Wed, 28 Jul 2021 01:31:30 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD8AC3F73D;
+        Wed, 28 Jul 2021 01:31:27 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 09:31:25 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Peter Hilber <peter.hilber@opensynergy.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, sudeep.holla@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        igor.skalkin@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v6 07/17] firmware: arm_scmi: Handle concurrent and
+ out-of-order messages
+Message-ID: <20210728083125.GJ49078@e120937-lin>
+References: <20210712141833.6628-1-cristian.marussi@arm.com>
+ <20210712141833.6628-8-cristian.marussi@arm.com>
+ <a163653c-51f9-adf0-c978-b747ddf2498a@opensynergy.com>
+ <20210719091451.GF49078@e120937-lin>
+ <85868de4-54bf-cca8-3786-61a404b80117@opensynergy.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] tulip: windbond-840: Fix missing pci_disable_device() in
- probe and remove
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162746100719.27952.3800646890142714725.git-patchwork-notify@kernel.org>
-Date:   Wed, 28 Jul 2021 08:30:07 +0000
-References: <20210728074313.272055-1-wanghai38@huawei.com>
-In-Reply-To: <20210728074313.272055-1-wanghai38@huawei.com>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        christophe.jaillet@wanadoo.fr, gustavoars@kernel.org,
-        tanghui20@huawei.com, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85868de4-54bf-cca8-3786-61a404b80117@opensynergy.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Wed, 28 Jul 2021 15:43:13 +0800 you wrote:
-> Replace pci_enable_device() with pcim_enable_device(),
-> pci_disable_device() and pci_release_regions() will be
-> called in release automatically.
+On Thu, Jul 22, 2021 at 10:32:58AM +0200, Peter Hilber wrote:
+> On 19.07.21 11:14, Cristian Marussi wrote:
+> > On Thu, Jul 15, 2021 at 06:36:03PM +0200, Peter Hilber wrote:
+> > > On 12.07.21 16:18, Cristian Marussi wrote:
 > 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> [snip]
 > 
-> [...]
+> > > > @@ -608,6 +755,7 @@ static int do_xfer(const struct scmi_protocol_handle *ph,
+> > > >    			      xfer->hdr.protocol_id, xfer->hdr.seq,
+> > > >    			      xfer->hdr.poll_completion);
+> > > > +	xfer->state = SCMI_XFER_SENT_OK;
+> > > 
+> > > To be completely safe, this assignment could also be protected by the
+> > > xfer->lock.
+> > > 
+> > 
+> > In fact this would be true being xfer->lock meant to protect the state but it
+> > seemed to me unnecessary here given that this is a brand new xfer with a
+> > brand new (monotonic) seq number so that any possibly late-received msg will
+> > carry an old stale seq number certainly different from this such that cannot be
+> > possibly mapped to this same xfer. (but just discarded on xfer lookup in
+> > xfer_command_acquire)
+> > 
+> > The issue indeed could still exist only for do_xfer loops (as you pointed out
+> > already early on) where the seq_num is used, but in that case on a timeout we
+> > would have already bailed out of the loop and reported an error so any timed-out
+> > late received response would have been anyway discarded; so at the end I thought
+> > I could avoid spinlocking here.
+> > 
+> > Thanks,
+> > Cristian
+> > 
 
-Here is the summary with links:
-  - tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
-    https://git.kernel.org/netdev/net/c/76a16be07b20
+Hi Peter,
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+sorry for the late answer.
 
+> 
+> I mostly meant to refer to the possibility of a very fast response not
+> seeing this assignment, since the next line is
+> 
+> >  	ret = info->desc->ops->send_message(cinfo, xfer);
+> 
+> and during that a regular scmi_rx_callback(), reading xfer->state, can
+> already arrive. But maybe this is too theoretical.
+> 
 
+Right, that's a possibility indeed to account for even if remote: given
+that, though, no race is possible here on state as said, I'd still avoid the
+spinlock and related irq-off and opt instead for a barrier to avoid
+re-ordering and to be sure that the scmi_rx_callback() on the RX processor
+can see the latest value (a dmb(ish) + cache coherence magic should be enough)
+
+Thanks,
+Cristian
