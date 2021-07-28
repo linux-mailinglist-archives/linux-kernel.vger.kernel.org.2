@@ -2,171 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C543D8B0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DE23D8B10
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235725AbhG1Jqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:46:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39762 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235450AbhG1Jqa (ORCPT
+        id S235743AbhG1JrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235012AbhG1JrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:46:30 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B6F401FF72;
-        Wed, 28 Jul 2021 09:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627465588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6SmJoWuNOkQrkuI0XRjJgWVMFSNTd3xQZMNXA2xgQOg=;
-        b=VvDF0cxZX7AsT8ou8F59bz4Pk6T1XkMqJxGrMy83HhNmhmIPe4P1tLHIdu/Se8C3YjglHt
-        SwyL9UaqgYQXgrrlqXA07sR9KebCfxlXG++AV6MIfD7S6slJsSV1s/lvqkIsOEjEooP671
-        LNtWC1jm7v+MGk7Vuy4QycT2MIzAxGY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627465588;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6SmJoWuNOkQrkuI0XRjJgWVMFSNTd3xQZMNXA2xgQOg=;
-        b=nPf+908hZXDnZjJsdl7zegBYk2m5C/dSQ0JbDUi3TaEETjbIBDVwuhbePQf8S/z9QuI7aR
-        dDzX9imCL5V94yCA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3DC1113D29;
-        Wed, 28 Jul 2021 09:46:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id q/OAC3QnAWHzHAAAGKfGzw
-        (envelope-from <lhenriques@suse.de>); Wed, 28 Jul 2021 09:46:28 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 8fe92907;
-        Wed, 28 Jul 2021 09:46:27 +0000 (UTC)
-Date:   Wed, 28 Jul 2021 10:46:27 +0100
-From:   Luis Henriques <lhenriques@suse.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [linux-stable-rc:linux-4.9.y 9976/9999] fs/ceph/caps.o: warning:
- objtool: handle_cap_grant() falls through to next function
- ceph_add_cap.cold()
-Message-ID: <YQEncwVkTGJZCJQu@suse.de>
-References: <202107280522.y2scFsEy-lkp@intel.com>
+        Wed, 28 Jul 2021 05:47:14 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8385C061757;
+        Wed, 28 Jul 2021 02:47:13 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id n10so2001288plf.4;
+        Wed, 28 Jul 2021 02:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iPJfT32PGYt4NJ5C+bncE2oPEQUqDqGzmN3ZvuFQkGI=;
+        b=SV1ILPTpHhcPVfAExOd1xUWdXjac03q3/bUhkyQX0fBdxe9DOlGsmMoBR41c+6BGS1
+         Y0sIHvQZNNT2c8Zp/bCNbM/cakRjXXnx1hlcCRQ0sgtG60ew5BVyr0t+HdLCOg5F0q0u
+         0BdYBhUh5aZ8EC8VgZv9MHym0Qr3Xuw3B6L/77nDLHMm4E0g09Lmvp60n6z+Xk2WXYd+
+         PN+Ba6UTM+l6IIjaRK23rgFWjpBGZNDAThaEjTU0ZUhjESHHWrgL0h8QL/SBrvkHRac8
+         k56RLfEk5+7t0OBQpM9yDL86L4/+8Cxt8jgkfTPPakD9A31e/UrdMnwMEOBz+csXj9HI
+         5d6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iPJfT32PGYt4NJ5C+bncE2oPEQUqDqGzmN3ZvuFQkGI=;
+        b=TGZZEpG3GqxjtjoyX7Q9HYVwz43KkHFRDunAY+9C+ND58OoVkekEmvZ10CVR6tCMcY
+         POFEFK00STNQGNsf621VaktkSqToLhKx5TSZNyZ1IG79wZeSC+2P15Oj1riZ83hHtsmC
+         spyVFDyzVhblwVaAmyxig+DNtlzOjI8i+GwFYvYyZib51/2jgFUhE1cBDFyMvf+crOAu
+         9v6Sc0ZWIs+nNqiIOR47QorIAG6fC0g75O54oQUkOxXGm6MqK7E3ei9TWfZKE9jTmT1i
+         eDyQocM5mvQBbDzFvzNKCv3/V3JZn8rHHbN+Tz8olJNdxsZL8qc0CI3Py+9ApnPuqELJ
+         qUpQ==
+X-Gm-Message-State: AOAM532VnWvrSmzYqhrg3a9hJcupGsT72gqJbtqmqoiDqGohiCgm2/V6
+        yZOo+Ax9ij9eN19hHznQ8YEeCy0RA9n5jJRs
+X-Google-Smtp-Source: ABdhPJx7eeQZY6RmA2SeF+LALVSppSIzUZOiaiW2Y6eoqtb6ufWzam9z2zRewtEHioSmFhdoQzmi8g==
+X-Received: by 2002:aa7:9e1b:0:b029:384:1d00:738 with SMTP id y27-20020aa79e1b0000b02903841d000738mr23528820pfq.71.1627465633057;
+        Wed, 28 Jul 2021 02:47:13 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.110])
+        by smtp.gmail.com with ESMTPSA id r18sm7495964pgk.54.2021.07.28.02.47.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 02:47:12 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
+To:     Tejun Heo <tj@kernel.org>
+Cc:     viro@zeniv.linux.org.uk, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
+References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
+ <YP8ovYqISzKC43mt@mtj.duckdns.org>
+ <b2ff6f80-8ec6-e260-ec42-2113e8ce0a18@gmail.com>
+ <YQA1D1GRiF9+px/s@mtj.duckdns.org>
+ <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
+ <YQEKNPrrOuyxTarN@mtj.duckdns.org>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <ed8824d5-0557-7d38-97bd-18d6795faa55@gmail.com>
+Date:   Wed, 28 Jul 2021 17:47:05 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <YQEKNPrrOuyxTarN@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <202107280522.y2scFsEy-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 05:13:28AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> head:   8da69d43f5d3f7f8787117ee78cfc4060c4c0d29
-> commit: 05700fe421866f60f63fbb3a02852425a9bd9447 [9976/9999] libceph: allow ceph_buffer_put() to receive a NULL ceph_buffer
-> config: x86_64-randconfig-r021-20210725 (attached as .config)
-> compiler: gcc-10 (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0
-> reproduce (this is a W=1 build):
->         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=05700fe421866f60f63fbb3a02852425a9bd9447
->         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->         git fetch --no-tags linux-stable-rc linux-4.9.y
->         git checkout 05700fe421866f60f63fbb3a02852425a9bd9447
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash LDFLAGS=-z max-page-size=0x200000  arch/x86/xen/ fs/ceph/ net/batman-adv/ net/ceph/
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    In file included from include/linux/ceph/ceph_fs.h:15,
->                     from include/linux/ceph/types.h:10,
->                     from include/linux/ceph/libceph.h:18,
->                     from fs/ceph/super.h:18,
->                     from fs/ceph/caps.c:11:
->    include/linux/ceph/msgr.h:66:1: warning: alignment 1 of 'struct ceph_entity_addr' is less than 8 [-Wpacked-not-aligned]
->       66 | } __attribute__ ((packed));
->          | ^
->    fs/ceph/caps.c: In function '__send_cap':
->    fs/ceph/caps.c:1128:22: warning: variable 'dropping' set but not used [-Wunused-but-set-variable]
->     1128 |  int held, revoking, dropping, keep;
->          |                      ^~~~~~~~
->    fs/ceph/caps.c: In function 'ceph_handle_caps':
->    fs/ceph/caps.c:3571:7: warning: variable 'osd_epoch_barrier' set but not used [-Wunused-but-set-variable]
->     3571 |   u32 osd_epoch_barrier;
->          |       ^~~~~~~~~~~~~~~~~
->    fs/ceph/caps.c:3570:19: warning: variable 'caller_gid' set but not used [-Wunused-but-set-variable]
->     3570 |   u32 caller_uid, caller_gid;
->          |                   ^~~~~~~~~~
->    fs/ceph/caps.c:3570:7: warning: variable 'caller_uid' set but not used [-Wunused-but-set-variable]
->     3570 |   u32 caller_uid, caller_gid;
->          |       ^~~~~~~~~~
->    fs/ceph/caps.c:3569:7: warning: variable 'flush_tid' set but not used [-Wunused-but-set-variable]
->     3569 |   u64 flush_tid;
->          |       ^~~~~~~~~
->    fs/ceph/caps.o: warning: objtool: handle_cap_flushsnap_ack.constprop.0() falls through to next function __ceph_flush_snaps.cold()
-> >> fs/ceph/caps.o: warning: objtool: handle_cap_grant() falls through to next function ceph_add_cap.cold()
 
-I'll be honest: I've no idea why this is happening and x86 assembly isn't my
-cup of tea.  I wonder, however, why this is showing up now because commit
-5c498950f730 has been released in v4.9.192 already.
 
-Cheers,
---
-Lu�s
-
-> --
->    In file included from include/linux/ceph/ceph_fs.h:15,
->                     from include/linux/ceph/types.h:10,
->                     from include/linux/ceph/libceph.h:18,
->                     from net/ceph/messenger.c:21:
->    include/linux/ceph/msgr.h:66:1: warning: alignment 1 of 'struct ceph_entity_addr' is less than 8 [-Wpacked-not-aligned]
->       66 | } __attribute__ ((packed));
->          | ^
->    net/ceph/messenger.c: In function 'write_partial_message_data':
->    net/ceph/messenger.c:1570:8: warning: variable 'need_crc' set but not used [-Wunused-but-set-variable]
->     1570 |   bool need_crc;
->          |        ^~~~~~~~
->    In file included from include/linux/kernel.h:13,
->                     from include/linux/list.h:8,
->                     from include/linux/wait.h:6,
->                     from include/linux/fs.h:5,
->                     from include/linux/highmem.h:4,
->                     from net/ceph/messenger.c:5:
->    net/ceph/messenger.c: In function 'ceph_sock_state_change':
->    include/linux/printk.h:123:2: warning: this statement may fall through [-Wimplicit-fallthrough=]
->      123 |  0;      \
->          |  ^
->    include/linux/printk.h:315:2: note: in expansion of macro 'no_printk'
->      315 |  no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
->          |  ^~~~~~~~~
->    include/linux/ceph/ceph_debug.h:34:25: note: in expansion of macro 'pr_debug'
->       34 | # define dout(fmt, ...) pr_debug(" " fmt, ##__VA_ARGS__)
->          |                         ^~~~~~~~
->    net/ceph/messenger.c:431:3: note: in expansion of macro 'dout'
->      431 |   dout("%s TCP_CLOSE\n", __func__);
->          |   ^~~~
->    net/ceph/messenger.c:432:2: note: here
->      432 |  case TCP_CLOSE_WAIT:
->          |  ^~~~
->    arch/x86/include/asm/bitops.h: Assembler messages:
->    arch/x86/include/asm/bitops.h:206: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
->    arch/x86/include/asm/bitops.h:252: Warning: no instruction mnemonic suffix given and no register operands; using default for `btr'
-> >> net/ceph/messenger.o: warning: objtool: ceph_msg_release() falls through to next function ceph_msg_new.cold()
+Tejun Heo wrote on 2021/7/28 3:41 下午:
+> On Wed, Jul 28, 2021 at 11:17:08AM +0800, brookxu wrote:
+>> Yeah we can adjust file-max through sysctl, but in many cases we adjust it according
+>> to the actual load of the machine, not for abnormal tasks. Another problem is that in
+>> practical applications, kmem_limit will cause some minor problems. In many cases,
+>> kmem_limit is disabled. Limit_in_bytes mainly counts user pages and pagecache, which
+>> may cause files_cache to be out of control. In this case, if file-max is set to MAX,
+>> we may have a risk in the abnormal scene, which prevents us from recovering from the
+>> abnormal scene. Maybe I missed something.
 > 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> Kmem control is always on in cgroup2 and has been in wide production use for
+> years now. If there are problems with it, we need to fix them. That really
+> doesn't justify adding another feature.
 
+But considering stability issues(k8s), There are still many production environments use
+cgroup v1 without kmem. If kmem is enabled, due to the relatively large granularity
+of kmem, this feature can also prevent the abnormal open behavior from making the entire
+container unavailable? but I currently do not have this scenario.
+
+Thanks for your time.
+
+> Thanks.
+> 
