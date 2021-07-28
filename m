@@ -2,169 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3113D8A62
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0D13D8A66
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbhG1JNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S235604AbhG1JNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235520AbhG1JNo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Jul 2021 05:13:44 -0400
-Received: from comms.puri.sm ([159.203.221.185]:37454 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235455AbhG1JNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:13:40 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 2A024E10B2;
-        Wed, 28 Jul 2021 02:13:09 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id CsczDMohEXS2; Wed, 28 Jul 2021 02:13:08 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     laurent.pinchart@ideasonboard.com, dafna.hirschfeld@collabora.com,
-        shawnguo@kernel.org
-Cc:     devicetree@vger.kernel.org, festevam@gmail.com,
-        kernel@pengutronix.de, kernel@puri.sm, krzk@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
-        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
-        slongerbeam@gmail.com,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH v10 3/3] arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
-Date:   Wed, 28 Jul 2021 11:12:45 +0200
-Message-Id: <20210728091245.231043-4-martin.kepplinger@puri.sm>
-In-Reply-To: <20210728091245.231043-1-martin.kepplinger@puri.sm>
-References: <20210728091245.231043-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F88BC0613CF;
+        Wed, 28 Jul 2021 02:13:43 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id f13so1923304plj.2;
+        Wed, 28 Jul 2021 02:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6m4UZEx/kYzeDD67ywCPsN6+L14vcm0XjCn8vgnR0gs=;
+        b=iC6z8Qctytr3DWMW26XBlXyJXmcX9mHqtGYg7L6xD94wbl7ajzQi5zIilGaoIAsNBu
+         ZN7L0JWLQB0NsyAQiW+JqWlOT1mTbK4f+uOaBNUne3qrnSByPi9LK4eaUGHE6oXAo+tw
+         7gXczYP9K2NW9xgp4RU0Wn0tG7xRBm8dvpW/t/+zJk+V0r1Lb6GZzxN+922cNAK3aV+j
+         lKtMq4xZPZfiDze9gJjeELttGZiHW7K0jpIUX7aPHQVSLXgmQga/VBWMx7C7W9UDTxml
+         zt0rZuogVBn8QhRnDgl2my8YDzXxJUe2Cy1wtm27Z5pRU6koXTuaHQgUeJXb1z/uUgVX
+         Qrbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6m4UZEx/kYzeDD67ywCPsN6+L14vcm0XjCn8vgnR0gs=;
+        b=PUjkq5B1sWa0E3dOPmT2GEukvgq/pSjuUldr3TjQu3lRiIwYQxuPURmRXaZ0DogowA
+         zrW/T0LEZRAi54f3kqG57fP+eDcFwOuBP1LbtbTKmD82awpzp+juGaD83SO8WnkoIRTo
+         zGl/kIjF8f8/6TghFUMa2+veeVAHguLPspshtfF9fRAor+3WX6Avu7CLof1XAhkzJ4XC
+         8dWcg8duXeBi4Sx2KvIEemb+fAHszFyIwWIy8/zjt/vKgKZTfw0aQc0OXuyNybN9qrcu
+         q4w9+p7ySHJpxDpQIRt6nDVmPDVzi1yqBaEWS8zD3oS4ZxtUyIhaZ0seXb1cVk1ql4ur
+         gRug==
+X-Gm-Message-State: AOAM532ZDkGtX55k0RKd7AfriGSxKt6icOHLQj4q/j4k6fyD2VPWq4au
+        TF5zKbF+0ENBPH7Huhv1sqMC/hrZQhsx4ksxs/8=
+X-Google-Smtp-Source: ABdhPJyyR2mCT0pEZEhhVsDOslGMUTe+AfTMeNLSOODQi5iwax+TD6tMAXsYw27Coe070sKnGki21opJt2OQkPeCxzA=
+X-Received: by 2002:a17:902:ac90:b029:12c:e7a:c183 with SMTP id
+ h16-20020a170902ac90b029012c0e7ac183mr14859743plr.21.1627463622505; Wed, 28
+ Jul 2021 02:13:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210723075858.376378-1-andrew@aj.id.au> <CAHp75VeQML7njMZ6x8kC-ZJVexC1xJ6n1cB3JneVMAVfuOJgWw@mail.gmail.com>
+ <d019990e-a725-4ef5-bb54-aadee9d18b86@www.fastmail.com>
+In-Reply-To: <d019990e-a725-4ef5-bb54-aadee9d18b86@www.fastmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 28 Jul 2021 12:13:06 +0300
+Message-ID: <CAHp75Vc2W+WmwNj1AvH6EiT_80c+5gADV9QzK+asHxpd1Ucppw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/6] leds: Fix pca955x GPIO pin mappings
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>, Pavel Machek <pavel@ucw.cz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe the 2 available CSI interfaces on the i.MX8MQ with the MIPI-CSI2
-receiver (new driver) and the CSI Bridge that provides the user buffers
-(existing driver).
+On Wed, Jul 28, 2021 at 8:43 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> On Fri, 23 Jul 2021, at 17:45, Andy Shevchenko wrote:
+> > On Friday, July 23, 2021, Andrew Jeffery <andrew@aj.id.au> wrote:
 
-An image sensor is to be connected to the MIPIs' second port, to be described
-in board files.
+> > > This series does a bunch of crimes, so it's an RFC. I'm cross-posting to the
+> > > pinctrl/GPIO and LEDs lists because the PCA955x devices impact all of them. What
+> > > needs fixing is the leds-pca955x driver's failure to map the GPIO numberspace to
+> > > the pin numberspace of the PCA955x devices. The series solves that by
+> > > implementing pinctrl and pinmux in the leds-pca955x driver.
+> > >
+> > > Things I'm unsure about:
+> > >
+> > > 1. Patch 1: The pinctrl_gpio_as_pin() API feels a bit dirty, not sure what
+> > >    others thoughts are on that (Linus?).
+> > >
+> > > 2. Patch 2: I've added a new callback to hook the entirety of the pinctrl map
+> > >    parsing rather than supplying a subnode-specific callback. This was necessary
+> > >    to handle the PCA955x devicetree binding in a backwards compatible way.
+> > >
+> > > 3. Patch 4: The PCA955x devices don't actually have any pinmux hardware, but the
+> > >    properties of the pinctrl/pinmux subsystems in the kernel map nicely onto the
+> > >    problem we have. But it's quite a bit of code...
+> > >
+> > > 4. Patch 6: I also lost a bunch of time to overlooking the get_group_pins()
+> > >    callback for pinctrl, and it seems odd to me that it isn't required.
+> > >
+> > > Please review!
+> >
+> >
+> > Sounds like a hack.
+>
+> Yes, possibly. Feedback like this is why I sent the series as an RFC.
+>
+> > I was briefly looking into patches 1-4 and suddenly
+> > realized that the fix can be similar as in PCA9685 (PWM), I.e. we
+> > always have chips for the entire pin space and one may map them
+> > accordingly, requested in one realm (LED) in the other (GPIO)
+> > automatically is BUSY. Or I missed the point?
+>
+> No, you haven't missed the point. I will look at the PCA9685 driver.
+>
+> That said, my goal was to implement the behaviour intended by the
+> existing binding (i.e. fix a bug).
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 104 ++++++++++++++++++++++
- 1 file changed, 104 insertions(+)
+Okay, so it implies that this used to work at some point. What has
+changed from that point? Why can't we simply fix the culprit commit?
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 91df9c5350ae..e026a39bddce 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1099,6 +1099,110 @@ uart4: serial@30a60000 {
- 				status = "disabled";
- 			};
- 
-+			mipi_csi1: csi@30a70000 {
-+				compatible = "fsl,imx8mq-mipi-csi2";
-+				reg = <0x30a70000 0x1000>;
-+				clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-+				   <&clk IMX8MQ_CLK_CSI1_ESC>,
-+				   <&clk IMX8MQ_CLK_CSI1_PHY_REF>;
-+				clock-names = "core", "esc", "ui";
-+				assigned-clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-+				    <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
-+				    <&clk IMX8MQ_CLK_CSI1_ESC>;
-+				assigned-clock-rates = <266000000>, <333000000>, <66000000>;
-+				assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_266M>,
-+					<&clk IMX8MQ_SYS2_PLL_1000M>,
-+					<&clk IMX8MQ_SYS1_PLL_800M>;
-+				power-domains = <&pgc_mipi_csi1>;
-+				resets = <&src IMX8MQ_RESET_MIPI_CSI1_CORE_RESET>,
-+					 <&src IMX8MQ_RESET_MIPI_CSI1_PHY_REF_RESET>,
-+					 <&src IMX8MQ_RESET_MIPI_CSI1_ESC_RESET>;
-+				fsl,mipi-phy-gpr = <&iomuxc_gpr 0x88>;
-+				interconnects = <&noc IMX8MQ_ICM_CSI1 &noc IMX8MQ_ICS_DRAM>;
-+				interconnect-names = "dram";
-+				status = "disabled";
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					port@0 {
-+						reg = <0>;
-+
-+						csi1_mipi_ep: endpoint {
-+							remote-endpoint = <&csi1_ep>;
-+						};
-+					};
-+				};
-+			};
-+
-+			csi1: csi@30a90000 {
-+				compatible = "fsl,imx8mq-csi", "fsl,imx7-csi";
-+				reg = <0x30a90000 0x10000>;
-+				interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX8MQ_CLK_CSI1_ROOT>;
-+				clock-names = "mclk";
-+				status = "disabled";
-+
-+				port {
-+					csi1_ep: endpoint {
-+						remote-endpoint = <&csi1_mipi_ep>;
-+					};
-+				};
-+			};
-+
-+			mipi_csi2: csi@30b60000 {
-+				compatible = "fsl,imx8mq-mipi-csi2";
-+				reg = <0x30b60000 0x1000>;
-+				clocks = <&clk IMX8MQ_CLK_CSI2_CORE>,
-+				   <&clk IMX8MQ_CLK_CSI2_ESC>,
-+				   <&clk IMX8MQ_CLK_CSI2_PHY_REF>;
-+				clock-names = "core", "esc", "ui";
-+				assigned-clocks = <&clk IMX8MQ_CLK_CSI2_CORE>,
-+				    <&clk IMX8MQ_CLK_CSI2_PHY_REF>,
-+				    <&clk IMX8MQ_CLK_CSI2_ESC>;
-+				assigned-clock-rates = <266000000>, <333000000>, <66000000>;
-+				assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_266M>,
-+					<&clk IMX8MQ_SYS2_PLL_1000M>,
-+					<&clk IMX8MQ_SYS1_PLL_800M>;
-+				power-domains = <&pgc_mipi_csi2>;
-+				resets = <&src IMX8MQ_RESET_MIPI_CSI2_CORE_RESET>,
-+					 <&src IMX8MQ_RESET_MIPI_CSI2_PHY_REF_RESET>,
-+					 <&src IMX8MQ_RESET_MIPI_CSI2_ESC_RESET>;
-+				fsl,mipi-phy-gpr = <&iomuxc_gpr 0xa4>;
-+				interconnects = <&noc IMX8MQ_ICM_CSI2 &noc IMX8MQ_ICS_DRAM>;
-+				interconnect-names = "dram";
-+				status = "disabled";
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					port@0 {
-+						reg = <0>;
-+
-+						csi2_mipi_ep: endpoint {
-+							remote-endpoint = <&csi2_ep>;
-+						};
-+					};
-+				};
-+			};
-+
-+			csi2: csi@30b80000 {
-+				compatible = "fsl,imx8mq-csi", "fsl,imx7-csi";
-+				reg = <0x30b80000 0x10000>;
-+				interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX8MQ_CLK_CSI2_ROOT>;
-+				clock-names = "mclk";
-+				status = "disabled";
-+
-+				port {
-+					csi2_ep: endpoint {
-+						remote-endpoint = <&csi2_mipi_ep>;
-+					};
-+				};
-+			};
-+
- 			mu: mailbox@30aa0000 {
- 				compatible = "fsl,imx8mq-mu", "fsl,imx6sx-mu";
- 				reg = <0x30aa0000 0x10000>;
+> However, userspace would never have
+> got the results it expected with the existing driver implementation, so
+> I guess you could argue that no such (useful) userspace exists. Given
+> that, we could adopt the strategy of always defining a gpiochip
+> covering the whole pin space, and parts of the devicetree binding just
+> become redundant.
+
+I'm lost now. GPIO has its own userspace ABI, how does it work right
+now in application to this chip?
+
 -- 
-2.30.2
-
+With Best Regards,
+Andy Shevchenko
