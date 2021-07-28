@@ -2,188 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423C63D8C50
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C063D8C78
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236105AbhG1K4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:56:04 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:42319 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236069AbhG1Kzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:55:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1627469751;
-  x=1659005751;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=exMO1CjlI492RauDLoVsuVOqHJtnXLvleQim1mQfQRs=;
-  b=ayVldceoAEqJ8nxvFNiVjo0tbTER0iD+BH6nh5uYFJpHTqmnc1ZVIB4i
-   D6q7Kx/tN43ku0sOthD/q0pA3VSBJaAXsHdYc5HWtklsdwjZWgrP0CV+F
-   zj6xPV17n+E8GaECtEwGMt0y6uVm3SJjO4A2h98atMTGUHW3TtBpp6KfG
-   18DfPjp5kTngCYLLTvZQzqv9PM5Cx2cTosA3vU8sFA4J2yZsn4jHHsWVu
-   HYvhbtm6LVscNnhlV294bDZT8MQNn1XFzi0ZxEeIBTI8l4JPGoi7g+4Zo
-   BeS1zZQp70/mIoyuOlgG461+w97Yi236c6PIHUCYdvcQCeq9Zr91tV5Pp
-   w==;
-From:   Borys Movchan <borysmn@axis.com>
-To:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <kernel@axis.com>, Borys Movchan <borysmn@axis.com>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-Date:   Wed, 28 Jul 2021 12:57:30 +0200
-Message-ID: <20210728105730.10170-1-borysmn@axis.com>
-X-Mailer: git-send-email 2.20.1
+        id S236061AbhG1LIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:08:55 -0400
+Received: from mail-m17640.qiye.163.com ([59.111.176.40]:41590 "EHLO
+        mail-m17640.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231994AbhG1LIy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:08:54 -0400
+X-Greylist: delayed 519 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Jul 2021 07:08:54 EDT
+Received: from [0.0.0.0] (unknown [119.136.90.116])
+        by mail-m17640.qiye.163.com (Hmail) with ESMTPA id A34FC54056F;
+        Wed, 28 Jul 2021 19:00:10 +0800 (CST)
+Subject: Re: [PATCH v1 5/6] mm/hwpoison: make some kernel pages handlable
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>, mike.kravetz@oracle.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        huangcun@sangfor.com.cn
+References: <20210614021212.223326-1-nao.horiguchi@gmail.com>
+ <20210614021212.223326-6-nao.horiguchi@gmail.com>
+From:   Ding Hui <dinghui@sangfor.com.cn>
+Message-ID: <271d0f41-0599-9d5d-0555-47189f476243@sangfor.com.cn>
+Date:   Wed, 28 Jul 2021 18:59:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210614021212.223326-6-nao.horiguchi@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail07w.axis.com
- (10.20.40.13)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUMfGUhWQ0pMHR1LS0tKHR
+        hLVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OjI6KRw4Kz9WLTpCLx8ONVZD
+        QxJPCglVSlVKTUlMT0xLS0pKTktIVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKSkJVSkhNVUJLVUpKTVlXWQgBWUFMT0lCNwY+
+X-HM-Tid: 0a7aecc59b13d995kuwsa34fc54056f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If something went wrong during the TPM firmware upgrade,
-like power failure or the firmware image file get corrupted,
-the TPM might end up in Upgrade or Failure mode upon the
-next start. The state is persistent between the TPM power
-cycle/restart.
+On 2021/6/14 10:12, Naoya Horiguchi wrote:
+> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> 
+> HWPoisonHandlable() introduced by patch "mm,hwpoison: fix race with hugetlb
+> page allocation" filters error events by page type, and only limited events
+> reach get_page_unless_zero() to avoid race >
 
-According to TPM specification:
- * If the TPM is in Upgrade mode, it will answer with
-   TPM2_RC_UPGRADE to all commands except Field Upgrade
-   related ones.
- * If the TPM is in Failure mode, it will allow performing
-   TPM initialization but will not provide any crypto
-   operations. Will happily respond to Field Upgrade calls.
+I want to report a bug which has relationship with "mm,hwpoison: fix 
+race with hugetlb page allocation", hugetlb pmd shared and also this patch.
 
-The fix adds the possibility to detect an active state of
-the TPM and gives the user-space a chance to finish the
-firmware upgrade/recover the TPM.
+Recently, when test hugetlb and soft offline, I encountered a crash like 
+this:
+[449901.638605] huge_test[16596]: segfault at 8 ip 00007f5f64c39a12 sp 
+00007fff2105c020 error 4 in ld-2.23.so[7f5f64c2a000+26000]
+[449901.638612] Code: 48 8d 35 2c 03 01 00 48 8d 3d 31 03 01 00 ba b5 00 
+00 00 e8 f0 a5 00 00 53 49 89 fa 89 f6 48 8d 14 76 48 83 ec 10 48 8b 47 
+68 <48> 8b 78 08 49 8b 82 f8 00 00 00 48 8b 40 08 4c 8d 04 d0 49 8b 42
+[449901.638885] BUG: Bad rss-counter state mm:00000000a1ce68ac idx:0 val:358
+[449901.638894] ------------[ cut here ]------------
+[449901.638962] BUG: Bad rss-counter state mm:00000000a1ce68ac idx:1 val:26
+[449901.638966] BUG: non-zero pgtables_bytes on freeing mm: 28672
+[449901.639045] kernel BUG at fs/hugetlbfs/inode.c:443!
+[449901.639193] invalid opcode: 0000 [#1] SMP NOPTI
 
-Signed-off-by: Borys Movchan <borysmn@axis.com>
----
+After a few days of digging and reproduce, it turns out that there is a 
+mechanism conflict between the get_hwpoison_page() and hugetlb pmd share:
 
-Notes:
-    v2: The terms are changed to match the ones used in the TPM specification.
-    Rework the commit message to provide more details regarding TPM
-    behavior in Failure/Upgrade mode.
+In huge_pmd_unshare(), the page_count is used to determine whether the 
+page is shared, it is not safe.
 
-    The TPM specification describes TPM behavior in Upgrade mode very clearly.
-    Things are a bit more complex if we are talking about Failure mode.
-    The TPM behavior in this mode is highly vendor-specific. Although, there
-    is one thing clearly described in the TPM specification and can be relied
-    on to detect the Failure state: in Failure mode, the TPM doesn't provide
-    any crypto operations. Including access to attributes and configuration
-    registers.
-    It seems persistent between different TPM manufacturers, at least to the
-    degree I was able to verify.
+My case is the same page's refcount was increaseed by 
+get_hwpoison_page() little before if (page_count(virt_to_page(ptep)) == 
+1) in huge_pmd_unshare(), so huge_pmd_unshare() went to wrong branch.
 
- drivers/char/tpm/tpm-chip.c | 23 +++++++++++++++--------
- drivers/char/tpm/tpm2-cmd.c | 12 ++++++++++--
- include/linux/tpm.h         |  1 +
- 3 files changed, 26 insertions(+), 10 deletions(-)
+> Actually this is too restictive because get_hwpoison_page always fails
+> to take refcount for any types of kernel page, leading to
+> MF_MSG_KERNEL_HIGH_ORDER.  This is not critical (no panic), but less
+> informative than MF_MSG_SLAB or MF_MSG_PAGETABLE, so extend
+> HWPoisonHandlable() to some basic types of kernel pages (slab, pgtable,
+> and reserved pages).
+> 
 
-diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-index ddaeceb7e109..ff2367c447fb 100644
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -574,20 +574,25 @@ static int tpm_get_pcr_allocation(struct tpm_chip *chip)
- int tpm_chip_register(struct tpm_chip *chip)
- {
- 	int rc;
-+	bool limited_mode = false;
- 
- 	rc = tpm_chip_start(chip);
- 	if (rc)
- 		return rc;
- 	rc = tpm_auto_startup(chip);
--	if (rc) {
-+	if (rc == -EIO) {
-+		limited_mode = true;
-+	} else if (rc) {
- 		tpm_chip_stop(chip);
- 		return rc;
- 	}
- 
--	rc = tpm_get_pcr_allocation(chip);
--	tpm_chip_stop(chip);
--	if (rc)
--		return rc;
-+	if (!limited_mode) {
-+		rc = tpm_get_pcr_allocation(chip);
-+		tpm_chip_stop(chip);
-+		if (rc)
-+			return rc;
-+	}
- 
- 	tpm_sysfs_add_device(chip);
- 
-@@ -595,9 +600,11 @@ int tpm_chip_register(struct tpm_chip *chip)
- 
- 	tpm_add_ppi(chip);
- 
--	rc = tpm_add_hwrng(chip);
--	if (rc)
--		goto out_ppi;
-+	if (!limited_mode) {
-+		rc = tpm_add_hwrng(chip);
-+		if (rc)
-+			goto out_ppi;
-+	}
- 
- 	rc = tpm_add_char_device(chip);
- 	if (rc)
-diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-index a25815a6f625..7468353ed67d 100644
---- a/drivers/char/tpm/tpm2-cmd.c
-+++ b/drivers/char/tpm/tpm2-cmd.c
-@@ -718,7 +718,8 @@ static int tpm2_startup(struct tpm_chip *chip)
-  *                     sequence
-  * @chip: TPM chip to use
-  *
-- * Returns 0 on success, < 0 in case of fatal error.
-+ * Returns 0 on success, -ENODEV in case of fatal error,
-+ *	    -EIO in case of Reduced/Upgrade mode
-  */
- int tpm2_auto_startup(struct tpm_chip *chip)
- {
-@@ -729,7 +730,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
- 		goto out;
- 
- 	rc = tpm2_do_selftest(chip);
--	if (rc && rc != TPM2_RC_INITIALIZE)
-+	if (rc == TPM2_RC_UPGRADE) {
-+		rc = -EIO;
-+		goto out;
-+	} else if (rc && rc != TPM2_RC_INITIALIZE)
- 		goto out;
- 
- 	if (rc == TPM2_RC_INITIALIZE) {
-@@ -743,6 +747,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
- 	}
- 
- 	rc = tpm2_get_cc_attrs_tbl(chip);
-+	if (rc) { /* Succeeded until here, but failed -> reduced mode */
-+		rc = -EIO;
-+		goto out;
-+	}
- 
- out:
- 	if (rc > 0)
-diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-index aa11fe323c56..e873c42907f0 100644
---- a/include/linux/tpm.h
-+++ b/include/linux/tpm.h
-@@ -207,6 +207,7 @@ enum tpm2_return_codes {
- 	TPM2_RC_INITIALIZE	= 0x0100, /* RC_VER1 */
- 	TPM2_RC_FAILURE		= 0x0101,
- 	TPM2_RC_DISABLED	= 0x0120,
-+	TPM2_RC_UPGRADE		= 0x012D,
- 	TPM2_RC_COMMAND_CODE    = 0x0143,
- 	TPM2_RC_TESTING		= 0x090A, /* RC_WARN */
- 	TPM2_RC_REFERENCE_H0	= 0x0910,
+After "mm,hwpoison: fix race with hugetlb page allocation"，the 
+PageTable(page) is blocked to get_page_unless_zero() due to 
+"restictive", this bug is just fixed by side effect.
+
+> The "handling" for these types are still primitive (just taking refcount
+> and setting PG_hwpoison) and some more aggressive actions for memory
+> error containment are possible and wanted.  But compared to the older code,
+> these cases never enter the code block of page locks (note that
+> page locks is not well-defined on these pages), so it's a little safer
+> for functions intended for user pages not to be called for kernel pages.
+> 
+
+But the root cause is still existed, the bug may come back at any time 
+by unconsciously, like this patch, if the PageTable(page) is allowed to 
+get_page_unless_zero(), the risk is come back.
+
+I'm not sure is there any other way to determine whether the pmd page is 
+shared, so I add Mike Kravetz here, and report the risk to you.
+
+> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> ---
+>   mm/memory-failure.c | 28 ++++++++++++++++++++--------
+>   1 file changed, 20 insertions(+), 8 deletions(-)
+> 
+> diff --git v5.13-rc5/mm/memory-failure.c v5.13-rc5_patched/mm/memory-failure.c
+> index b986936e50eb..0d51067f0129 100644
+> --- v5.13-rc5/mm/memory-failure.c
+> +++ v5.13-rc5_patched/mm/memory-failure.c
+> @@ -1113,7 +1113,8 @@ static int page_action(struct page_state *ps, struct page *p,
+>    */
+>   static inline bool HWPoisonHandlable(struct page *page)
+>   {
+> -	return PageLRU(page) || __PageMovable(page);
+> +	return PageLRU(page) || __PageMovable(page) ||
+> +		PageSlab(page) || PageTable(page) || PageReserved(page);
+>   }
+>    >   static int __get_hwpoison_page(struct page *page)
+> @@ -1260,12 +1261,6 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
+>   	struct page *hpage = *hpagep;
+>   	bool mlocked = PageMlocked(hpage);
+>   
+> -	/*
+> -	 * Here we are interested only in user-mapped pages, so skip any
+> -	 * other types of pages.
+> -	 */
+> -	if (PageReserved(p) || PageSlab(p))
+> -		return true;
+>   	if (!(PageLRU(hpage) || PageHuge(p)))
+>   		return true;
+>   
+> @@ -1670,7 +1665,10 @@ int memory_failure(unsigned long pfn, int flags)
+>   				action_result(pfn, MF_MSG_BUDDY, res);
+>   				res = res == MF_RECOVERED ? 0 : -EBUSY;
+>   			} else {
+> -				action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
+> +				if (PageCompound(p))
+> +					action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
+> +				else
+> +					action_result(pfn, MF_MSG_KERNEL, MF_IGNORED);
+>   				res = -EBUSY;
+>   			}
+>   			goto unlock_mutex;
+> @@ -1681,6 +1679,20 @@ int memory_failure(unsigned long pfn, int flags)
+>   		}
+>   	}
+>   
+> +	if (PageSlab(p)) {
+> +		action_result(pfn, MF_MSG_SLAB, MF_IGNORED);
+> +		res = -EBUSY;
+> +		goto unlock_mutex;
+> +	} else if (PageTable(p)) {
+> +		action_result(pfn, MF_MSG_PAGETABLE, MF_IGNORED);
+> +		res = -EBUSY;
+> +		goto unlock_mutex;
+> +	} else if (PageReserved(p)) {
+> +		action_result(pfn, MF_MSG_KERNEL, MF_IGNORED);
+> +		res = -EBUSY;
+> +		goto unlock_mutex;
+> +	}
+> +
+>   	if (PageTransHuge(hpage)) {
+>   		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
+>   			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
+> 
+
+
 -- 
-2.20.1
-
+Thanks,
+- Ding Hui
