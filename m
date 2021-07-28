@@ -2,136 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA563D93F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F034D3D9413
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhG1RHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:07:17 -0400
-Received: from mga17.intel.com ([192.55.52.151]:32424 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhG1RHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:07:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="192989419"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="192989419"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 10:06:51 -0700
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="517613242"
-Received: from sobsiex-desk2.amr.corp.intel.com (HELO [10.212.198.197]) ([10.212.198.197])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 10:06:46 -0700
-Subject: Re: [PATCH 03/13] x86/HV: Add new hvcall guest address host
- visibility support
-To:     Tianyu Lan <ltykernel@gmail.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, rientjes@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        rppt@kernel.org, kirill.shutemov@linux.intel.com,
-        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, xen-devel@lists.xenproject.org,
-        pgonda@google.com, david@redhat.com, keescook@chromium.org,
-        hannes@cmpxchg.org, sfr@canb.auug.org.au,
-        michael.h.kelley@microsoft.com
-Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, anparri@microsoft.com
-References: <20210728145232.285861-1-ltykernel@gmail.com>
- <20210728145232.285861-4-ltykernel@gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <a2444c36-0103-8e1c-7005-d97f77f90e85@intel.com>
-Date:   Wed, 28 Jul 2021 10:06:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231921AbhG1RJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:09:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57634 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231624AbhG1RIv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:08:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627492129;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZCIhPQxRBE36WyC9C6HRgZKGU4Bb0HiAlaS/qG8sOa8=;
+        b=U6WHIOjnW0BTzcMpaPFHkec2YTZZvrNkbxk9wRYIm8ThRgPMlip5hu1Va7qkrXMOMf5eoU
+        p5r2LFNWf99q1RLblqeyTVef49Q0R1Q4z0sbOGE5YutGfXmfC1Bnqlar4mjfb+NYZqlni3
+        tVITK+EBZ0YTm3ljJhyLavlZ2O9y1z0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-5VnAyghvPPSm0mjDsSPe0w-1; Wed, 28 Jul 2021 13:08:48 -0400
+X-MC-Unique: 5VnAyghvPPSm0mjDsSPe0w-1
+Received: by mail-wr1-f72.google.com with SMTP id u26-20020adfb21a0000b029013e2b4a9d1eso1174494wra.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:08:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=ZCIhPQxRBE36WyC9C6HRgZKGU4Bb0HiAlaS/qG8sOa8=;
+        b=dozyJXx6qWg26kgLrXmRtcjvphi4aqDfatkRzUcaUSS/+P/rIzAzoMTu+0jJxv1iJE
+         fh2bczgbFyhY6khu8GDGfO8oF4g9YNj9rlEWHSyYFFk37GVPs0SlgjgtDJI5IiFJPfP1
+         mt4DHolbV4e1V9KoWbklzxANm71kfM+5qKxUHLhjN/9IrPQLlwg02vWVkbo8GMT4jkCx
+         kdAT1M3pe4wJVxbvJViOZXrsNVu2M9PLDKvNIPYYd2RzF4HFxORKMaQT6sGYviECK7rG
+         dMR+sQ785W4L3+Yk1WEpWF8Uix0w0MeL8iewatFBNs7wohpN6HgH3IPAKvUxv1p7s0Vj
+         wwoA==
+X-Gm-Message-State: AOAM530lrIf18fiZ8GqsvZHVUr6N0s3+J0kch29CDc5hVWRgzKa1Afkp
+        0fvmgzzwlvmJuhDTmLy9ZGkSkI1DPkK8pC7nw1jZMR+eGi9hpMAnT+gT1j0Zwl2Sh0TWx2W1dyX
+        0Z4aBtmG9utYUTHREMGmT4K/I
+X-Received: by 2002:a1c:a74f:: with SMTP id q76mr684143wme.112.1627492127107;
+        Wed, 28 Jul 2021 10:08:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYk79Qk0VRWyXmQWaG2mg+xFgU4FjQWreqjMPX2GyKfFNK5iGCeP8j9APtHtnKRueB8vNZOw==
+X-Received: by 2002:a1c:a74f:: with SMTP id q76mr684131wme.112.1627492126875;
+        Wed, 28 Jul 2021 10:08:46 -0700 (PDT)
+Received: from [192.168.1.136] ([79.116.5.179])
+        by smtp.gmail.com with ESMTPSA id u11sm401659wrr.44.2021.07.28.10.08.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 10:08:46 -0700 (PDT)
+Message-ID: <441d94dbd93443839d31fdfe5f6048de35b0d7b0.camel@redhat.com>
+Subject: Re: [patch 1/4] add basic task isolation prctl interface
+From:   nsaenzju@redhat.com
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@marvell.com>,
+        Peter Xu <peterx@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Wed, 28 Jul 2021 19:08:45 +0200
+In-Reply-To: <20210728131610.GA11900@fuller.cnet>
+References: <20210727103803.464432924@fuller.cnet>
+         <20210727104119.551607458@fuller.cnet>
+         <7b2d6bf91d30c007e19a7d2cbddcb2460e72d163.camel@redhat.com>
+         <20210727110050.GA502360@fuller.cnet>
+         <a020a45ddea10956938f59bd235b88fe873d0e98.camel@redhat.com>
+         <20210727130930.GB283787@lothringen> <20210727145209.GA518735@fuller.cnet>
+         <20210727234539.GH283787@lothringen> <20210728093707.GA3242@fuller.cnet>
+         <e0135b88dad323d0abd1ce05081e0b554421af7c.camel@redhat.com>
+         <20210728131610.GA11900@fuller.cnet>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <20210728145232.285861-4-ltykernel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 7:52 AM, Tianyu Lan wrote:
-> @@ -1986,7 +1988,9 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
->  	int ret;
->  
->  	/* Nothing to do if memory encryption is not active */
-> -	if (!mem_encrypt_active())
-> +	if (hv_is_isolation_supported())
-> +		return hv_set_mem_enc(addr, numpages, enc);
-> +	else if (!mem_encrypt_active())
->  		return 0;
+On Wed, 2021-07-28 at 10:16 -0300, Marcelo Tosatti wrote:
+> > For example, let's say we introduce ISOL_F_QUIESCE_DEFER_TLB_FLUSH, this will
+> > defer relatively short IPIs on isolated CPUs in exchange for a longer flush
+> > whenever we enter the kernel (syscall, IRQs, NMI, etc...). 
+> 
+> Why the flush has to be longer when you enter the kernel?
 
-One more thing.  If you're going to be patching generic code, please
-start using feature checks that can get optimized away at runtime.
-hv_is_isolation_supported() doesn't look like the world's cheapest
-check.  It can't be inlined and costs at least a function call.
+What I had in mind was cost of rapid partial flushes (IPIs) vs full flushes on
+entry, although I haven't really measured anything so the extra latency cost
+might as well be zero.
 
-These checks could, with basically no effort be wrapped in a header like
-this:
+> ISOL_F_QUIESCE_DEFER_TLB_FLUSH might collapse multiple IPIs 
+> into a single IPI, so the behaviour might be beneficial 
+> for "standard" types of application as well.
+> 
+> > A latency sensitive
+> > application might be OK with the former but not with the latter.
+> 
+> Two alternatives:
+> 
+> 1) The pattern above, where particular subsystems that might interrupt 
+> the kernel are enabled automatically if the kernel supports it.
+> 
+> Pros: 
+> Applications which implement this only need to be changed once,
+> and can benefit from new kernel features.
+>
+> Applications can disable particular features if they turn
+> out to be problematic.
+> 
+> Cons: 
+> New features might break applications.
+>
+> 2) Force applications to enable each new feature individually.
+> 
+> Pros: Won't cause regressions, kernel behaviour is explicitly 
+> controlled by userspace.
+> 
+> Cons: Apps won't benefit from new features automatically.
+> 
+> ---
+> 
+> It seems to me 1) is preferred. Can also add a sysfs control to
+> have a "default_isolation_feature" flag, which can be changed
+> by a sysadmin in case a new feature is undesired.
+> 
+> Thoughts?
 
-static inline bool hv_is_isolation_supported(void)
-{
-	if (!cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
-		return 0;
+I'd still take option 2. Nitesh has a very good point, latency requirements are
+hit or miss. What's the benefit of enabling new features on an already valid
+application vs the potential regression?
 
-	// out of line function call:
-	return __hv_is_isolation_supported();
-}	
+That said I see value in providing means for users that want all
+features/modes, but it should be an through an explicit action on their part.
 
-I don't think it would be the end of the world to add an
-X86_FEATURE_HYPERV_GUEST, either.  There are plenty of bits allocated
-for Xen and VMWare.
+--
+Nicolás Sáenz
+
