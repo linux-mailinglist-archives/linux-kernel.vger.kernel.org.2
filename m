@@ -2,147 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443083D89A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452753D89A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235302AbhG1ISr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:18:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36809 "EHLO
+        id S235088AbhG1IV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:21:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27952 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234604AbhG1ISj (ORCPT
+        by vger.kernel.org with ESMTP id S234510AbhG1IVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:18:39 -0400
+        Wed, 28 Jul 2021 04:21:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627460318;
+        s=mimecast20190719; t=1627460484;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=crKmmuF3vSFeLNrZsABSm5kyODHNC6gu4soJ8ICOTvw=;
-        b=Y0qBJgnEXvh61l+Zk6jYrHPi9S+/aw3WwghmYkQGSTu86Fwt5HSx1oUgI3V85AE7A7GSmv
-        APAdERDhD5gLJliAdbFhIoz7G/pZgzNl7oV7iaL2iNI7GwUbysRGdR+ZtPhw0XsPMYmMN7
-        C4lmT2TI2oDkCbAU5kEUDUOldmxgGU4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-kf3q1KqRMk-mdolc6-YdBA-1; Wed, 28 Jul 2021 04:18:36 -0400
-X-MC-Unique: kf3q1KqRMk-mdolc6-YdBA-1
-Received: by mail-ed1-f72.google.com with SMTP id d12-20020a50fe8c0000b02903a4b519b413so877023edt.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 01:18:36 -0700 (PDT)
+        bh=6gWJqZpysylhm0r71/CN5q60nzTxNxEk/7whHXN4TyA=;
+        b=KNSjTgJhFN2Q3lKgEe5jhz7+3+4O6KJILLuDxlweRrO0PWdZsZkQi5AiYgXln50Gmgwfu0
+        ju0OtnWj3TK/Tz7Ar+eM7JWBVQe7EesrCYsHLilffjK3ZCLj6J8QuDddii84R2K9F5hx8c
+        bMi/rxQE+vrGKEivzRC8gfGtsGlHQhE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-64-Qdw2VUZEP7WKFksemTY9Hg-1; Wed, 28 Jul 2021 04:21:21 -0400
+X-MC-Unique: Qdw2VUZEP7WKFksemTY9Hg-1
+Received: by mail-wr1-f72.google.com with SMTP id o8-20020a5d4a880000b029013a10564614so619925wrq.15
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 01:21:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=crKmmuF3vSFeLNrZsABSm5kyODHNC6gu4soJ8ICOTvw=;
-        b=QarUD8wI6p6mj6TFAD1OOjMD0kRez370G35IVN6tc6btY/akN6xSBT9hc9pZEqBplA
-         OaqoP48LWynVwsdU4JQk/kA4t5f3AolZsu89ZZF3xuiI418T0Ga203ddh/z04fUaXGOa
-         hMqJ6JMRoXGAcfktZjXK+U/Z414wOQQVTNq7Um+qEEbS7yJUoRaWrT/WUal++kkByIN8
-         ScyAeb3i/lbmT1GOupKwDGg7I2gGXWPrZ36C6eVgpg6MKmY6uqJ96iQuhseyO6ETUwGI
-         RgxH7sqWW6+hKRGfn4bXsQ+o2Y3frwPUH0SIEaI5oe22CTBUwZapu1p42s1bp6D8EAKJ
-         xPxg==
-X-Gm-Message-State: AOAM531YTXEj8h4cOR5LvqVeJEZOo4VFqc5cYLRE2pZecdslUhpErVm1
-        OmBRyGZNWo0kbnLdEjneV+Illb5OYFAK7f+ncXkQn+HNv43TlLyb3Xocpi6Gm2hw1bQmkTZQGJ9
-        LnAGc5qN6LOQfQOyX9mkI4J0b
-X-Received: by 2002:a50:a456:: with SMTP id v22mr32224211edb.333.1627460315724;
-        Wed, 28 Jul 2021 01:18:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRbmAu4lAhEfewYa9Hmlor8TFe5yKDcZw3jUIl3o2oxP/V0Eq5Q+BPPoJfCrH+1EnY8l1sBw==
-X-Received: by 2002:a50:a456:: with SMTP id v22mr32224202edb.333.1627460315603;
-        Wed, 28 Jul 2021 01:18:35 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id h1sm1742941eji.46.2021.07.28.01.18.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 01:18:35 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Suleiman Souhlal <suleiman@google.com>
-Cc:     ssouhlal@FreeBSD.org, joelaf@google.com, senozhatsky@chromium.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [RFC PATCH 2/2] kvm,x86: Report preempt_count to host.
-In-Reply-To: <20210728073700.120449-3-suleiman@google.com>
-References: <20210728073700.120449-1-suleiman@google.com>
- <20210728073700.120449-3-suleiman@google.com>
-Date:   Wed, 28 Jul 2021 10:18:33 +0200
-Message-ID: <87tuke6ecm.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=6gWJqZpysylhm0r71/CN5q60nzTxNxEk/7whHXN4TyA=;
+        b=q1FawPS9y24yKeQzAZJDB4aUnLyw9jE9Zk0Ne0l4GY/mQDp1PU9syQfJRN/AT1XSV9
+         FCU6uvJurr1NRjJb5SL8IgaCXYLBqd8BwM3W3zc1N6sUhDlSPrGzDciY6elaSxky8pVi
+         FXtN+XCduaJacEZa4MJ+Jwh1nB7NpohmPojsL1eIA+s1jvGi6q1BiZHxw/PYOApj+t/Y
+         6jamsNgjLFrbKozazkiQ5SrJ5LADfrXrZYk6r5WvtBuQLtGbn/ah7les7wa3utq3SS83
+         CHj9JKfNb9/ElUHZHWGgWemIvyExxx9pfqW08H9xRp3pwGBG3fnDW4fGlXa058fsufQK
+         CAAg==
+X-Gm-Message-State: AOAM532RJJ2fNI9w2YGt2xBLz+FJb3W/Lm2TS9XMR46r3cZ3jxzODTRw
+        vwsqqCXGY03Tu+0rB/xVv5ISNclJ56ieq8Pe2qE6zu59vIuYm7aeayt6FHbFu7FxPlK5NqWxIre
+        QkWpi6vqITYodkT4rSHxAX5y+jRR9zseEl3JHgGnI4O9N7KCYV9QT5f6V2j6s2KcRSoUnFI8c
+X-Received: by 2002:a05:600c:2210:: with SMTP id z16mr1463184wml.92.1627460479877;
+        Wed, 28 Jul 2021 01:21:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywozPvYuAuinyeJcKYXHRgjRzubPJmW42EHxOhWmI72/fa0axCzQ3ARxBmOyn7dHEFAcgp9g==
+X-Received: by 2002:a05:600c:2210:: with SMTP id z16mr1463157wml.92.1627460479606;
+        Wed, 28 Jul 2021 01:21:19 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id z2sm5312534wma.45.2021.07.28.01.21.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 01:21:19 -0700 (PDT)
+Subject: Re: [PATCH] memcg: cleanup racy sum avoidance code
+To:     Shakeel Butt <shakeelb@google.com>, Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210728012243.3369123-1-shakeelb@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <8c35e469-b355-63b0-6cd4-ca39c39ddb79@redhat.com>
+Date:   Wed, 28 Jul 2021 10:21:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210728012243.3369123-1-shakeelb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suleiman Souhlal <suleiman@google.com> writes:
-
-> When KVM_PREEMPT_COUNT_REPORTING is enabled, the host can use
-> preempt_count to determine if the guest is in a critical section,
-> if it also has CONFIG_KVM_HETEROGENEOUS_RT enabled, in order to
-> use heterogeneous RT VCPU configurations.
->
-> Signed-off-by: Suleiman Souhlal <suleiman@google.com>
+On 28.07.21 03:22, Shakeel Butt wrote:
+> We used to have per-cpu memcg and lruvec stats and the readers have to
+> traverse and sum the stats from each cpu. This summing was racy and may
+> expose transient negative values. So, an explicit check was added to
+> avoid such scenarios. Now these stats are moved to rstat infrastructure
+> and are no more per-cpu, so we can remove the fixup for transient
+> negative values.
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 > ---
->  arch/x86/Kconfig      | 11 +++++++++++
->  arch/x86/kernel/kvm.c | 10 ++++++++++
->  2 files changed, 21 insertions(+)
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 49270655e827..d8b62789df57 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -846,6 +846,17 @@ config PARAVIRT_TIME_ACCOUNTING
->  config PARAVIRT_CLOCK
->  	bool
->  
-> +config KVM_PREEMPT_COUNT_REPORTING
-> +	bool "KVM preempt_count reporting to the host"
-> +	depends on KVM_GUEST && PREEMPT_COUNT
-> +	default n
-> +	help
-> +	  Select this option to enable KVM preempt_count reporting to the host,
-> +	  which can be useful in cases where some VCPUs are RT and the rest
-> +	  aren't.
-> +
-> +	  If in doubt, say N here.
-> +
->  config JAILHOUSE_GUEST
->  	bool "Jailhouse non-root cell support"
->  	depends on X86_64 && PCI
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index a26643dc6bd6..7ec53ea3f979 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -363,6 +363,16 @@ static void kvm_guest_cpu_init(void)
->  
->  	if (has_steal_clock)
->  		kvm_register_steal_time();
-> +
-> +#ifdef CONFIG_KVM_PREEMPT_COUNT_REPORTING
-> +	if (kvm_para_has_feature(KVM_FEATURE_PREEMPT_COUNT)) {
-> +		unsigned long pa;
-> +
-> +		pa = slow_virt_to_phys(this_cpu_ptr(&__preempt_count)) |
-> +		    KVM_MSR_ENABLED;
-> +		wrmsrl(MSR_KVM_PREEMPT_COUNT, pa);
-> +	}
-> +#endif
->  }
+>   include/linux/memcontrol.h | 15 ++-------------
+>   1 file changed, 2 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 7028d8e4a3d7..5f2a39a43d47 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -991,30 +991,19 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
+>   
+>   static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+>   {
+> -	long x = READ_ONCE(memcg->vmstats.state[idx]);
+> -#ifdef CONFIG_SMP
+> -	if (x < 0)
+> -		x = 0;
+> -#endif
+> -	return x;
+> +	return READ_ONCE(memcg->vmstats.state[idx]);
+>   }
+>   
+>   static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+>   					      enum node_stat_item idx)
+>   {
+>   	struct mem_cgroup_per_node *pn;
+> -	long x;
+>   
+>   	if (mem_cgroup_disabled())
+>   		return node_page_state(lruvec_pgdat(lruvec), idx);
+>   
+>   	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+> -	x = READ_ONCE(pn->lruvec_stats.state[idx]);
+> -#ifdef CONFIG_SMP
+> -	if (x < 0)
+> -		x = 0;
+> -#endif
+> -	return x;
+> +	return READ_ONCE(pn->lruvec_stats.state[idx]);
+>   }
+>   
+>   static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+> 
 
-Please also disable the feature in kvm_guest_cpu_offline() as e.g. upon
-kexec the memory address looses its meaning.
-
->  
->  static void kvm_pv_disable_apf(void)
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Vitaly
+Thanks,
+
+David / dhildenb
 
