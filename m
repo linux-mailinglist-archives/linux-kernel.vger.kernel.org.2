@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BFD3D8DA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDE43D8DA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbhG1MYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 08:24:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234601AbhG1MYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 08:24:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5208E60C3E;
-        Wed, 28 Jul 2021 12:24:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627475091;
-        bh=jlrPzEuJm9foO+7KNRHzPI4mF50awFwPR4lclougBGI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f8RFZbgyPBX1w+my5BAr68m6Nr4g2HjcKFMrKBmJWOApLyn1qYBnskqFbTG0Jq6w7
-         EbLet8kbXNCQNYxoiocmnlinuiioqvUOHe6wY0H1KbAHw5wH0Csy41fimRSQblWsPz
-         QYdMn7g5N+cQNFDPqq3C4Cpr/bVS42pH0KrX1Fal2G5oPg1AF0i7Dt4GcNnQ7RuAN0
-         dk0em/3RS99wV9E/xwik2bkjOYnl6MPw0Qsja53RB+A7YiVhbtJpJL8kjmzlBgkGUO
-         tjfOst8LfA32m53rPf82tiuAX2loRRkdHPAj8U4wVtVXfMrv5BmwBB5wyPPuES5fiL
-         naRfq9A9nV9Wg==
-Date:   Wed, 28 Jul 2021 14:24:48 +0200
-From:   Alexey Gladkov <legion@kernel.org>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com,
-        syzbot+59dd63761094a80ad06d@syzkaller.appspotmail.com,
-        syzbot+6cd79f45bb8fa1c9eeae@syzkaller.appspotmail.com,
-        syzbot+b6e65bd125a05f803d6b@syzkaller.appspotmail.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [PATCH v1] ucounts: Fix race condition between alloc_ucounts and
- put_ucounts
-Message-ID: <20210728122448.lh2e3nr4txhsmcwt@example.org>
-References: <000000000000efe97f05c74bb995@google.com>
- <20210728025837.1641-1-hdanton@sina.com>
+        id S234984AbhG1M0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 08:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234601AbhG1M0U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 08:26:20 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6AAC061757;
+        Wed, 28 Jul 2021 05:26:18 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id h27so1150693qtu.9;
+        Wed, 28 Jul 2021 05:26:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1cpOBZXZl+X9zh9reb80OTm+Y4W8Zt/c3AvDZt4KISo=;
+        b=vJXvb2Jmlbm70+yCmjiFIleraKYYYJ+oFk0cRA5lKzzVnAChhB3QFlFl0bUDpkHvfX
+         53r0RALch+rrgQJM1zkvkguosuCN/W1V2Q9uHeVBjXZD8xK0bO93xihBguGNVexr/Jeh
+         QTCxKj50OMfwF3ak0WF9eXh8Q7RRqC5N+p1zhgGbNU9Bp2WaYBeBsv2EkpyLvdBRsH0W
+         JYino0wZ7Or+Qfw8WYdAnX3tfOVHpjl3rLktWochoOAQovvHx8piGe1m2ESF0ZhDd6gH
+         iMAX7E8FC2NVR9lIfLnEZCboTWg9yatSJoNW85DnzbmYxzlBIKxqtasQKSy/WYXjaFj1
+         huIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1cpOBZXZl+X9zh9reb80OTm+Y4W8Zt/c3AvDZt4KISo=;
+        b=ES+ymiLpVH57Mk9eWDbjsulV7zk4yc9XV48ZDXAtCVO6lfKBHwbMHqkFdGQZHsDIOy
+         Hm41AszwujHB2GPUrtgopV/6kRNucD5m3fcJqNUcs2nAzRVraaUDNJ8x9NONMGRXp6+t
+         Q2OxrZb7BRs5xzFEzewURrockoujcv/tOGmw94wJfVO4fFFc5XWip7F0KuMItSDu6Dh7
+         w7XNFZucDXmkJJv12+gbNc2z+GgqejEPdeOJGfikFYW4hxcOab8HY3kHaIhp9+y1m1Kr
+         xa6/WmspGLDlMeGMkZESmJgud+IDSw1GfGrD/9ZcDA6jvGIq9FTSRQlty2aI0rVeiIHN
+         VtIw==
+X-Gm-Message-State: AOAM530ab0jISQ7AOId6LdvA0s+kfSVuCyQP9mK3epUp4353b+uZbkY8
+        /UyfyWJZ/YBK/QJgIQ6p0FA=
+X-Google-Smtp-Source: ABdhPJxZ0V3Jp5j7jIzfzpXOPbo0SByMp8ZIPkpmvH3SLHeS+IK/TXItGd/fCc0GPVXtnhnIL5OTRw==
+X-Received: by 2002:a05:622a:1828:: with SMTP id t40mr23729089qtc.276.1627475177902;
+        Wed, 28 Jul 2021 05:26:17 -0700 (PDT)
+Received: from master-laptop.sparksnet ([2601:153:980:85b1:b58:2ae8:d75f:660a])
+        by smtp.gmail.com with ESMTPSA id z9sm2842972qtn.54.2021.07.28.05.26.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 05:26:17 -0700 (PDT)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, Peter Geis <pgwipeout@gmail.com>
+Subject: [RFC PATCH 0/9] phy-rockchip-inno-usb2: support rk356x usb2phy
+Date:   Wed, 28 Jul 2021 08:25:57 -0400
+Message-Id: <20210728122606.697619-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728025837.1641-1-hdanton@sina.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:58:37AM +0800, Hillf Danton wrote:
-> On Tue, 27 Jul 2021 17:24:18 +0200 Alexey Gladkov wrote:
-> > +++ b/kernel/ucount.c
-> > @@ -160,6 +160,7 @@ struct ucounts *alloc_ucounts(struct user_namespace *ns, kuid_t uid)
-> >  {
-> >  	struct hlist_head *hashent = ucounts_hashentry(ns, uid);
-> >  	struct ucounts *ucounts, *new;
-> > +	long overflow;
-> >  
-> >  	spin_lock_irq(&ucounts_lock);
-> >  	ucounts = find_ucounts(ns, uid, hashent);
-> > @@ -184,8 +185,12 @@ struct ucounts *alloc_ucounts(struct user_namespace *ns, kuid_t uid)
-> >  			return new;
-> >  		}
-> >  	}
-> > +	overflow = atomic_add_negative(1, &ucounts->count);
-> >  	spin_unlock_irq(&ucounts_lock);
-> > -	ucounts = get_ucounts(ucounts);
-> > +	if (overflow) {
-> > +		put_ucounts(ucounts);
-> 
-> Given 		  if (atomic_add_unless(atomic, -1, 1))
-> 			return 0;
-> 
-> put can not help roll back overflow.
+Good Morning,
 
-In case of overflow, we don't try to rollback overflow. We return an
-error.
+This is my series to support the usb2 phy devices on the rk356x.
+The rk356x phy has a single muxed interrupt and has moved the usb2phy
+nodes out of the grf and into their own nodes.
+The phy needs to tie back into the grf for register control, similar to
+the rv1108.
+By moving the phys into their own nodes, they now have full
+#address_cells = 2 register addresses, but they still reside below the 32bit
+mmio range.
 
-> BTW can you specify a bit on the real workloads with the risk of count overflow?
+This driver series only supports the host configuration for the rk356x.
+I have have tested it on the following:
+rk3566 - Pine64 Quartz64 Model A
+rk3399 - Pine64 Rockpro64
 
-For example, one user has too many processes in one namespace.
+Please provide feedback and comments as you see fit.
 
-It is necessary to check and handle the possibility of counter overflow
-in this case. Linus described it here:
+Peter Geis (9):
+  dt-bindings: soc: rockchip: add rk3568-usb2phy-grf
+  dt-bindings: phy: phy-rockchip-inno-usb2: add rk3568 documentation
+  dt-bindings: usb: generic-ohci: increase maximum clocks
+  phy: phy-rockchip-inno-usb2: support #address_cells = 2
+  phy: phy-rockchip-inno-usb2: support standalone phy nodes
+  phy: phy-rockchip-inno-usb2: support muxed interrupts
+  phy: phy-rockchip-inno-usb2: add rk3568 support
+  arm64: dts: rockchip: add usb2 nodes to rk3568 device tree
+  arm64: dts: rockchip: add Quartz64-A usb2 support
 
-https://lore.kernel.org/lkml/CAHk-%3dwjYOCgM%2bmKzwTZwkDDg12DdYjFFkmoFKYLim7NFmR9HBg@mail.gmail.com/
-
-> > +		return NULL;
-> > +	}
-> >  	return ucounts;
-> >  }
-> >  
-> > @@ -193,8 +198,7 @@ void put_ucounts(struct ucounts *ucounts)
-> >  {
-> >  	unsigned long flags;
-> >  
-> > -	if (atomic_dec_and_test(&ucounts->count)) {
-> > -		spin_lock_irqsave(&ucounts_lock, flags);
-> > +	if (atomic_dec_and_lock_irqsave(&ucounts->count, &ucounts_lock, flags)) {
-> >  		hlist_del_init(&ucounts->node);
-> >  		spin_unlock_irqrestore(&ucounts_lock, flags);
-> >  		kfree(ucounts);
-> > -- 
-> > 2.29.3
-> 
+ .../bindings/phy/phy-rockchip-inno-usb2.yaml  |   8 +-
+ .../devicetree/bindings/soc/rockchip/grf.yaml |   1 +
+ .../devicetree/bindings/usb/generic-ohci.yaml |   2 +-
+ .../boot/dts/rockchip/rk3566-quartz64-a.dts   |  52 ++++
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi      |  97 +++++++
+ drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 259 ++++++++++++++----
+ 6 files changed, 360 insertions(+), 59 deletions(-)
 
 -- 
-Rgrds, legion
+2.25.1
 
