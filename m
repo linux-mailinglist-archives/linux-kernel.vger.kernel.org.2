@@ -2,215 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C80B3D8D0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D069F3D8D16
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236109AbhG1LvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbhG1LvD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:51:03 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEE7C061757;
-        Wed, 28 Jul 2021 04:51:00 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id l18so2168567wrv.5;
-        Wed, 28 Jul 2021 04:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=yp5cWmb4AkxFKBl8NuqRHF/Fj+1O+kz07eQ9B1cFrTM=;
-        b=rjufznQpIgT9Y4X5wATRAu5BDsSd6HgqZ5d9ZbD1tV5XqwI37bp4dlZn7sEU3roUWH
-         clGVPK5HZt0ibEg3n3rnQO/LLfCGXNB1z/OcJviBqX5BnDvPAT6ovSqtf2GG9z+b2bf5
-         hNRMQ5K1GU2t5utAkiIOYPFplsyDtoOtGyLrHrE0gjJStx3UlTxodAu66P1SUyVqHuRo
-         M6T6x8SRy36Ns7u7LeNWzv4QGHqMLlVM5YZOdZC2fd6M+9vcopSschELbxKP610fuQ0E
-         cnkAxdbpF2osQv7uYuvrxQu8i8zU9T8kP5ggNwdog+ispko+yCugJr87oZyjOacGVREA
-         620A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=yp5cWmb4AkxFKBl8NuqRHF/Fj+1O+kz07eQ9B1cFrTM=;
-        b=QPuryN1fLc/VPu6yEAvogl5fia8uovJAdD5soyvzbh84n3HUPMW+hTkIgVHJtGMrE1
-         nKQ2jii29LcsxjHkisvumT1oAy2ADr1pz5KqxEzu5jHoMij+kNTiIBxwT8VLZiIEjnZp
-         7mOdcvzPrbNAaMPE3XlRqsNZmE+RJ0MYwPs5X8F3fXxjK2ZzYVk9i4VTyklWjqIJTqCg
-         6zcMSr6WQrv5MYAvttKw3SNWXQwlXfl9AfaaV8biVmyeEyU9yx6cxUwkWrDD63AV30xY
-         ZE9SbLvjy/vIu8YhoD/NK3JrU6c1YMlquXYJDov8lJu/LKPfWFjJgRzl7Hg5CBQzxCZ3
-         k6tA==
-X-Gm-Message-State: AOAM530Ia0096yhmBDQwaQ+HSKaF4EE/BOpyfIV1bBc8AtuXPKqRweLr
-        e58feEfqg/+IXQMk5+0JKt0=
-X-Google-Smtp-Source: ABdhPJxnFTfpGwAmyL+B5BY1p5oMjCoBMdD/Omxoq7nc4R8MHgQpLQLkqKXCOPeVLSKKDmRSYkfgVw==
-X-Received: by 2002:adf:d1c7:: with SMTP id b7mr22336082wrd.108.1627473059546;
-        Wed, 28 Jul 2021 04:50:59 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:6a5d:b580:2891:cbac? ([2a02:908:1252:fb60:6a5d:b580:2891:cbac])
-        by smtp.gmail.com with ESMTPSA id q72sm7758671wme.14.2021.07.28.04.50.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 04:50:59 -0700 (PDT)
-Subject: Re: [PATCH 00/11] Implement generic prot_guest_has() helper function
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Cc:     Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>, Baoquan He <bhe@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <joro@8bytes.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>, Dave Young <dyoung@redhat.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <cover.1627424773.git.thomas.lendacky@amd.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <5cd35ae7-a7ff-eca4-5d2a-f0dad94e1d7a@gmail.com>
-Date:   Wed, 28 Jul 2021 13:50:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236121AbhG1LwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:52:00 -0400
+Received: from mail-vi1eur05on2073.outbound.protection.outlook.com ([40.107.21.73]:32449
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234537AbhG1Lv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:51:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=imx/OX9DS/oIVjSS9eVz8ODt+64OZaoGgurHv+MKVDLwyKi+nLQNS4yYKzgLOLlu/kw6JXBBjE7PPDCCC/CnaYsBvJoLpQVypTXcI4B7woCL8t9F2ZLylrmefV074QjeuyFV88XwlLLhgq1PUjeCTU7lR9+NCXvQHxQYueRJzfIA9aMAGSnnHg/vChV7uuQfFlrvc4yxd6hl3/D0fjBGlsch8tuyj3HjC4qAfwMnsTi2P/OH0WDkOEUtSgdtGjzOnWZodQMs0n34HS8vhM5k6x9q/el6kQuYtz5upkEIBVADLm88lAiUM2njy6Qao2z2HdrA4qs+9zonL7Uk9PW9HA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DmC2RZjt0OOqlW1JC+lks1SbLSMo+H4f+pR+34O7AhU=;
+ b=Be/KjtGTbbSbCsi+qm1lbwOIeEJl9FczcowAaaAx9X2N2BohYNfusSakLCyWPGZsmmZWK9dapNq5lQ8rAR8vlHBQBe/m2xDgVpL0KpO7BI2cWdQwAAnTXrsZKj5cH7ZVsaA8h+7JUYTRVDrpD5MhIym/tvY8TrsAzpzRJlmE0r4k1c3ADM8L4KOc+L7THNfe/L42hwTvoJQz1CDdicw0tJEYVC8rvZA4RHJM1d4jZfehpzIqExnPe0QeqLHC9PIQo8ZJT8ulHeEjODutMvJzufXMJpcx4fi3uV969kBkWVHgzQcQwP37dlNWRo4X0xa6WDQBhUZROeFkgm5XMRV48A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DmC2RZjt0OOqlW1JC+lks1SbLSMo+H4f+pR+34O7AhU=;
+ b=A0Ga8lH2SKGvTAS6Frus1NRnPMZbhxO8ygGUormZ2T+SGgXTqduzDItZtcVcAKY7wLjiaG5LhnvvqU8WCdUQiHfb2x0SQLTZIVKjytsXL7F1/GuIrRJuSXzZOtDuJEadRnfXcoUwL8MQwK1REtCyjsPyEg7eaVTeCOhwd2vfZ6s=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB6PR04MB3094.eurprd04.prod.outlook.com (2603:10a6:6:10::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Wed, 28 Jul
+ 2021 11:51:54 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9c70:fd2f:f676:4802]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::9c70:fd2f:f676:4802%9]) with mapi id 15.20.4352.032; Wed, 28 Jul 2021
+ 11:51:53 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2 net-next 0/7] net: fec: add support for i.MX8MQ and i.MX8QM
+Date:   Wed, 28 Jul 2021 19:51:56 +0800
+Message-Id: <20210728115203.16263-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0100.apcprd01.prod.exchangelabs.com
+ (2603:1096:3:15::26) To DB8PR04MB6795.eurprd04.prod.outlook.com
+ (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-In-Reply-To: <cover.1627424773.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0100.apcprd01.prod.exchangelabs.com (2603:1096:3:15::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 11:51:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 60e84ee6-cc5e-451b-8e4d-08d951be17cf
+X-MS-TrafficTypeDiagnostic: DB6PR04MB3094:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR04MB3094D33BDC88733AA443D1EDE6EA9@DB6PR04MB3094.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zs2+XSWuwZcjRau8OckMWbOMm5xpg7vUGeUMlQDkJ+6cI+eiRe1FQJCOQ+jkQy/aJVQ92fDpDkqKIm6din1xqI0CNVcf/PORtqFx+Uimv/tHZhjwi84DhW9OZFNWRYRGxb7cjcZfkWhkzYujO6/4aOs5iVWMETwRbAh9BaKCWHcPZK1KiVTw9foofv2xSpjyfzPjN22NnNP3Cy59RSWEhG2f7xq9/K0+SVRU9U4MMATi47ddwkUlXS1FUPeEVgTL7sbsFyMOgInzfHLiMqBXxGEj2zC0EW6+Wy2iohvb/ZE+5i9xqI+h0uzwXdx1cG6RInc+Z/l/EWOpW/ZJXdrvPIWcFqDyqF3FOIpEs7DA1xL8U9NZy64sA8O6s4yaU8rUA30RZuKiagL9aSGwSong7y8RseCL6RuLVtTMb4Xoirk4Kf1eIIl2sW4WQTH1Be/YfgVjpc4KxV4IcTHgpCSgr+m7oaMKkq48WJAhFtg40DHIHCTEhbY58TJiqZB7iV7wqYMZq1j0AG9IpTCHPikO97BfhtcwYiFCVnyGDnp+ZPGPeShOPDw9zlBy6myiAv88X2+/nj6EmeB8eygr+5/I1jQ1+m3gOK7GieELZwBV/YSYGjhNqtUBBqubWMm6An1SQWYRttoql+5k4V4qxh7lHj8NvEkrrxgNE74OCpT+vWKP2P4SZ5K1s3f+hBLxrKGmFIeAVGTbUIszzY4D9ErKAQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(136003)(396003)(366004)(376002)(346002)(6512007)(7416002)(26005)(2906002)(6486002)(66946007)(66476007)(66556008)(8676002)(1076003)(6506007)(478600001)(38350700002)(38100700002)(186003)(5660300002)(2616005)(956004)(36756003)(86362001)(316002)(52116002)(83380400001)(4326008)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9MdR/QEXqA1U9RcTY5dqC0itLeC9kvECmOyYQI5ceCSrY0cm/FA3eqrQq+03?=
+ =?us-ascii?Q?SvZavj9o8faUGYDwwI1OrnXI7kVpSuI+yRK9PPae1UXdAicg4pw8v/9IIwuW?=
+ =?us-ascii?Q?BOM3Qypyd6YxO5tPbhqTo1NoXo3B5Xqwwaa8IyVxO/RMut9iy3l2ZUYBKFDs?=
+ =?us-ascii?Q?PFIjB9qpNPwdnOmNYA3zQNwqtWs51g773JxKFdhKAyWe0siQ52xfEONr/mIv?=
+ =?us-ascii?Q?r2YO70LS5F49gY8GBhagRiTkps80B832GTmMqf8Z6KHJK8i3sbVNbm8kpU7V?=
+ =?us-ascii?Q?0J/c8X+JHE4TVJPETX8O26//rWQtozNnd8BQMeaT5vm/KVQqwVw2aqG2qk9g?=
+ =?us-ascii?Q?dr/sL+3ubjx/KkB246hrtNxsaKTiTghzO51rsWNsjdcQUc4nLVap7+Qo8Dwe?=
+ =?us-ascii?Q?HrLV3ip9XwAHLaRGq/dFJF3mxlfPvksh5YZ05RaX51yoQvLGjwbemqRjNvqk?=
+ =?us-ascii?Q?lOYGw02GUC/sMEHU20JlfJndEZMpkeqx93MuD/h3pkdsoM+kSJoqUSKbhuyn?=
+ =?us-ascii?Q?9S1SLIcP4xJTIk4zU1w0QR3LP1tuyF9MVcV4avpYDjMRxc6cIIPj2mEZfMQM?=
+ =?us-ascii?Q?5UFxJrjdI1EqxdSNA590C+752EZAb4CaZ//MbcGJL24aMM05I/CtOnO5qwll?=
+ =?us-ascii?Q?5Mbcghdm/EG41FL9Qko5ROyzVe8/TCky3dq5hCr3fipG3DWUMWF1PUj720eM?=
+ =?us-ascii?Q?Xcdv120a6b1+o0IEZxcqzKF7OpIZMeAKCWM4Qy79ERjadCGhpA7O0CwUUuqY?=
+ =?us-ascii?Q?a0x23IA0Y8Me1nzZGEvR8W3W8AgvKmSK90AJak1SSlnaqdcus6l47Uyu+p54?=
+ =?us-ascii?Q?aITjfcfrVcAFZPFmUqCfp+JF/T2dUKrdkO0NyYx9Uq0q2za+2fjRqOthe+IZ?=
+ =?us-ascii?Q?OYBni5wum+5EdYE2BA3cl2FWsi/az45RCrU5omwUoeq8Ug9irfNarq94AOyq?=
+ =?us-ascii?Q?BPYacP/h2no8OGrG5Ibe88wbadJTcQeTGWZNwoJlWDn56FQsq7BBrTZJoToR?=
+ =?us-ascii?Q?98ty3TLo1iWSskRFaQJ2aln7sOXjrylXMi4uJ4RiI0dm1XduUvkrjZ02OugB?=
+ =?us-ascii?Q?mVXa04xUPxe68DvJVuzZMD52VTPfUm9GjgHDULSsT0XbzNoShgZtXi83Brzu?=
+ =?us-ascii?Q?KfAc+Etee/KjwM0mqa/3khMOEploUYdqd5qFOucHtNxPzJDjqM8VIKt3uSOe?=
+ =?us-ascii?Q?wgM2u9QzV1PFncTrgwAtr0mgFwIGNbR7fdELPBn3B4zWMHfu3p6nYp/mCQus?=
+ =?us-ascii?Q?eU4VqRYJnzGXTkcs5eLeibutZhv1SunvjlhekhKjz7SZqpSOBvOr/0XuVpIq?=
+ =?us-ascii?Q?eNsM517pxt7z3wunYnGrf4Ql?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60e84ee6-cc5e-451b-8e4d-08d951be17cf
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 11:51:53.8374
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Lfa0zgSCjPEaD5jXHwq8gpcf+V3NEYRGzAETvFTzaIEiDKBK4TjLDLLWj+J5GY//0zGSkcYTfkBfENEtIA0oYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 28.07.21 um 00:26 schrieb Tom Lendacky:
-> This patch series provides a generic helper function, prot_guest_has(),
-> to replace the sme_active(), sev_active(), sev_es_active() and
-> mem_encrypt_active() functions.
->
-> It is expected that as new protected virtualization technologies are
-> added to the kernel, they can all be covered by a single function call
-> instead of a collection of specific function calls all called from the
-> same locations.
->
-> The powerpc and s390 patches have been compile tested only. Can the
-> folks copied on this series verify that nothing breaks for them.
+This patch set adds supports for i.MX8MQ and i.MX8QM, both of them extend new features.
 
-As GPU driver dev I'm only one end user of this, but at least from the 
-high level point of view that makes totally sense to me.
+ChangeLogs:
+V1->V2:
+	* rebase on schema binding, and update dts compatible string.
+	* use generic ethernet controller property for MAC internal RGMII clock delay
+	  rx-internal-delay-ps and tx-internal-delay-ps
 
-Feel free to add an Acked-by: Christian König <christian.koenig@amd.com>.
+Fugang Duan (3):
+  net: fec: add imx8mq and imx8qm new versions support
+  net: fec: add eee mode tx lpi support
+  net: fec: add MAC internal delayed clock feature support
 
-We could run that through the AMD GPU unit tests, but I fear we actually 
-don't test on a system with SEV/SME active.
+Joakim Zhang (4):
+  dt-bindings: net: fsl,fec: update compatible items
+  dt-bindings: net: fsl,fec: add RGMII internal clock delay
+  arm64: dts: imx8m: add "fsl,imx8mq-fec" compatible string for FEC
+  arm64: dts: imx8qxp: add "fsl,imx8qm-fec" compatible string for FEC
 
-Going to raise that on our team call today.
+ .../devicetree/bindings/net/fsl,fec.yaml      |  27 ++++
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi     |   2 +-
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi     |   2 +-
+ .../boot/dts/freescale/imx8qxp-ss-conn.dtsi   |   4 +-
+ drivers/net/ethernet/freescale/fec.h          |  25 +++
+ drivers/net/ethernet/freescale/fec_main.c     | 146 ++++++++++++++++++
+ 6 files changed, 202 insertions(+), 4 deletions(-)
 
-Regards,
-Christian.
-
->
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Dave Young <dyoung@redhat.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
-> Cc: Will Deacon <will@kernel.org>
->
-> ---
->
-> Patches based on:
->    https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
->    commit 79e920060fa7 ("Merge branch 'WIP/fixes'")
->
-> Tom Lendacky (11):
->    mm: Introduce a function to check for virtualization protection
->      features
->    x86/sev: Add an x86 version of prot_guest_has()
->    powerpc/pseries/svm: Add a powerpc version of prot_guest_has()
->    x86/sme: Replace occurrences of sme_active() with prot_guest_has()
->    x86/sev: Replace occurrences of sev_active() with prot_guest_has()
->    x86/sev: Replace occurrences of sev_es_active() with prot_guest_has()
->    treewide: Replace the use of mem_encrypt_active() with
->      prot_guest_has()
->    mm: Remove the now unused mem_encrypt_active() function
->    x86/sev: Remove the now unused mem_encrypt_active() function
->    powerpc/pseries/svm: Remove the now unused mem_encrypt_active()
->      function
->    s390/mm: Remove the now unused mem_encrypt_active() function
->
->   arch/Kconfig                               |  3 ++
->   arch/powerpc/include/asm/mem_encrypt.h     |  5 --
->   arch/powerpc/include/asm/protected_guest.h | 30 +++++++++++
->   arch/powerpc/platforms/pseries/Kconfig     |  1 +
->   arch/s390/include/asm/mem_encrypt.h        |  2 -
->   arch/x86/Kconfig                           |  1 +
->   arch/x86/include/asm/kexec.h               |  2 +-
->   arch/x86/include/asm/mem_encrypt.h         | 13 +----
->   arch/x86/include/asm/protected_guest.h     | 27 ++++++++++
->   arch/x86/kernel/crash_dump_64.c            |  4 +-
->   arch/x86/kernel/head64.c                   |  4 +-
->   arch/x86/kernel/kvm.c                      |  3 +-
->   arch/x86/kernel/kvmclock.c                 |  4 +-
->   arch/x86/kernel/machine_kexec_64.c         | 19 +++----
->   arch/x86/kernel/pci-swiotlb.c              |  9 ++--
->   arch/x86/kernel/relocate_kernel_64.S       |  2 +-
->   arch/x86/kernel/sev.c                      |  6 +--
->   arch/x86/kvm/svm/svm.c                     |  3 +-
->   arch/x86/mm/ioremap.c                      | 16 +++---
->   arch/x86/mm/mem_encrypt.c                  | 60 +++++++++++++++-------
->   arch/x86/mm/mem_encrypt_identity.c         |  3 +-
->   arch/x86/mm/pat/set_memory.c               |  3 +-
->   arch/x86/platform/efi/efi_64.c             |  9 ++--
->   arch/x86/realmode/init.c                   |  8 +--
->   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c    |  4 +-
->   drivers/gpu/drm/drm_cache.c                |  4 +-
->   drivers/gpu/drm/vmwgfx/vmwgfx_drv.c        |  4 +-
->   drivers/gpu/drm/vmwgfx/vmwgfx_msg.c        |  6 +--
->   drivers/iommu/amd/init.c                   |  7 +--
->   drivers/iommu/amd/iommu.c                  |  3 +-
->   drivers/iommu/amd/iommu_v2.c               |  3 +-
->   drivers/iommu/iommu.c                      |  3 +-
->   fs/proc/vmcore.c                           |  6 +--
->   include/linux/mem_encrypt.h                |  4 --
->   include/linux/protected_guest.h            | 37 +++++++++++++
->   kernel/dma/swiotlb.c                       |  4 +-
->   36 files changed, 218 insertions(+), 104 deletions(-)
->   create mode 100644 arch/powerpc/include/asm/protected_guest.h
->   create mode 100644 arch/x86/include/asm/protected_guest.h
->   create mode 100644 include/linux/protected_guest.h
->
+-- 
+2.17.1
 
