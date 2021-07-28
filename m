@@ -2,103 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FE83D87BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC1D3D8863
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234078AbhG1GOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 02:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233989AbhG1GOc (ORCPT
+        id S234850AbhG1G6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 02:58:35 -0400
+Received: from gateway30.websitewelcome.com ([192.185.146.7]:23545 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234242AbhG1G6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 02:14:32 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5048CC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 23:14:29 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so8454607pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 23:14:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+eCPJolnjFD6s7o/D7/wCD8S3LJbNwZNkFAhDgmHNdg=;
-        b=mR4Tt7DzUQaHNxHJQDGkFhLLLljZDCuHSLxVhBOpom3iS+QI99MjDfopHJ9XmURL/i
-         bCugbreHHQ0xBU095vg6uHwXTSdQsTKtVFGvhxCtiLbvzN8yaKuepp0M9CeZxG8Nr3Zq
-         /Qe7l6ARfY6A59sOduR69WOdWo96M4zLL4GRU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+eCPJolnjFD6s7o/D7/wCD8S3LJbNwZNkFAhDgmHNdg=;
-        b=LJy6EC0g3X2GoESAjCUx14gpVJMIrK5De/ST+7o8xGO14jCHyorhJ6GNkGYoH57qaR
-         4uy5jKu5Vh/F9a/ogZdy3yXYGiQ2D/+y+F6XHFC3SozQIJNBBYq4SjFjmFEs4Yvcd3Gt
-         fbLsJeDg2V6PQ5IPIvcvEw7nNFmOv5cL4CvSVCRDli28c4F54u5X3Dbb2IAggwquclxj
-         tYKmbMWPRaoL4iuC8KcC1tUG1l1koenZl48wldFxh2+Hm7aWU4rPRoZYjcrfG2KgJH6a
-         hMl7za7Jj1zCqdjFa2mQMZmRd4iWl5TpKY+RfKmqSGeEdqnnVaH/1ZR8lTkZYpHi9Geu
-         jUgg==
-X-Gm-Message-State: AOAM5326FB4rgz/QV+Hm875k3TbT+T/ub1DBvy/8lvquxK0OLgT8ikM2
-        a7ONkjEKbx2ijxNfrzHjekAOS4iikMrpTv2kUn2rTw==
-X-Google-Smtp-Source: ABdhPJzmByxKqYRSbuErkA4p8ANUorSkgXNNWkdhJmCqT7YsTx5hk209/4gRAztv7igdNUaEYtPZLsDig5mlURlglKQ=
-X-Received: by 2002:a63:8f04:: with SMTP id n4mr26845226pgd.317.1627452868772;
- Tue, 27 Jul 2021 23:14:28 -0700 (PDT)
+        Wed, 28 Jul 2021 02:58:34 -0400
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id A6F71C1BD
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 01:12:11 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 8cnbmfcNKK61i8cnbmt2je; Wed, 28 Jul 2021 01:12:11 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=/gCRywG3p9gdzDsdnfCiyJuRt7hlhcIRTlf1DfYGxQk=; b=VcIfYrm9dG72K/ZQdtfuvuRlxT
+        V3vj8YAhGaZx/cGjli4zOBFYlJLoXo0Vsd02K5fRjcNQP9NIaIESg+YOXV99qTCB2Yo/O/8WHP1ds
+        tXZbD1nJiwP3eEvBBTiZUo+VuIrDMlwm0ktVaXENnRTX4JuI9vlmD7ltgDRPbsHiRknznvoYhhE9n
+        E8MtFRCudEt5DeNW0MrlXGslPCSnGcfJ5OUAGOu7TVmX7V7cwyVfPVrDjuE3onf3wAwUBuIo0NmMx
+        IpJTghBwcX95Gj2Ml9t6eR6MSITfuKehPikhPibC8RrQ3I91RzhVBZtQ0/pRauPtwPnnaJk7AevGt
+        aQE41uZw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:44814 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1m8cna-003PI6-Vi; Wed, 28 Jul 2021 01:12:11 -0500
+Subject: Re: [PATCH 19/64] ip: Use struct_group() for memcpy() regions
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-20-keescook@chromium.org> <YQDxaYrHu0PeBIuX@kroah.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <baead202-569f-775f-348c-aa64e69f03ed@embeddedor.com>
+Date:   Wed, 28 Jul 2021 01:14:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210727023205.20319-1-chun-jie.chen@mediatek.com> <20210727023205.20319-3-chun-jie.chen@mediatek.com>
-In-Reply-To: <20210727023205.20319-3-chun-jie.chen@mediatek.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Wed, 28 Jul 2021 14:14:17 +0800
-Message-ID: <CAATdQgC-X6pijkgTBsWJJKp__J6N=7JNKHQJmOMvTAjivwPM5w@mail.gmail.com>
-Subject: Re: [v6 2/2] arm64: dts: mediatek: Correct UART0 bus clock of MT8192
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQDxaYrHu0PeBIuX@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1m8cna-003PI6-Vi
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:44814
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 7
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, Jul 27, 2021 at 10:43 AM Chun-Jie Chen
-<chun-jie.chen@mediatek.com> wrote:
->
-> infra_uart0 clock is the real one what uart0 uses as bus clock.
->
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> ---
->  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> index c7c7d4e017ae..9810f1d441da 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> @@ -327,7 +327,7 @@
->                                      "mediatek,mt6577-uart";
->                         reg = <0 0x11002000 0 0x1000>;
->                         interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH 0>;
-> -                       clocks = <&clk26m>, <&clk26m>;
-> +                       clocks = <&clk26m>, <&infracfg CLK_INFRA_UART0>;
->                         clock-names = "baud", "bus";
->                         status = "disabled";
->                 };
 
-There're many other nodes still having only clk26m. Will you update them too?
+On 7/28/21 00:55, Greg Kroah-Hartman wrote:
+> On Tue, Jul 27, 2021 at 01:58:10PM -0700, Kees Cook wrote:
+>> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+>> field bounds checking for memcpy(), memmove(), and memset(), avoid
+>> intentionally writing across neighboring fields.
+>>
+>> Use struct_group() in struct flowi4, struct ipv4hdr, and struct ipv6hdr
+>> around members saddr and daddr, so they can be referenced together. This
+>> will allow memcpy() and sizeof() to more easily reason about sizes,
+>> improve readability, and avoid future warnings about writing beyond the
+>> end of saddr.
+>>
+>> "pahole" shows no size nor member offset changes to struct flowi4.
+>> "objdump -d" shows no meaningful object code changes (i.e. only source
+>> line number induced differences.)
+>>
+>> Note that since this is a UAPI header, struct_group() has been open
+>> coded.
+>>
+>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>> ---
+>>  include/net/flow.h            |  6 ++++--
+>>  include/uapi/linux/if_ether.h | 12 ++++++++++--
+>>  include/uapi/linux/ip.h       | 12 ++++++++++--
+>>  include/uapi/linux/ipv6.h     | 12 ++++++++++--
+>>  net/core/flow_dissector.c     | 10 ++++++----
+>>  net/ipv4/ip_output.c          |  6 ++----
+>>  6 files changed, 42 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/include/net/flow.h b/include/net/flow.h
+>> index 6f5e70240071..f1a3b6c8eae2 100644
+>> --- a/include/net/flow.h
+>> +++ b/include/net/flow.h
+>> @@ -81,8 +81,10 @@ struct flowi4 {
+>>  #define flowi4_multipath_hash	__fl_common.flowic_multipath_hash
+>>  
+>>  	/* (saddr,daddr) must be grouped, same order as in IP header */
+>> -	__be32			saddr;
+>> -	__be32			daddr;
+>> +	struct_group(addrs,
+>> +		__be32			saddr;
+>> +		__be32			daddr;
+>> +	);
+>>  
+>>  	union flowi_uli		uli;
+>>  #define fl4_sport		uli.ports.sport
+>> diff --git a/include/uapi/linux/if_ether.h b/include/uapi/linux/if_ether.h
+>> index a0b637911d3c..8f5667b2ea92 100644
+>> --- a/include/uapi/linux/if_ether.h
+>> +++ b/include/uapi/linux/if_ether.h
+>> @@ -163,8 +163,16 @@
+>>  
+>>  #if __UAPI_DEF_ETHHDR
+>>  struct ethhdr {
+>> -	unsigned char	h_dest[ETH_ALEN];	/* destination eth addr	*/
+>> -	unsigned char	h_source[ETH_ALEN];	/* source ether addr	*/
+>> +	union {
+>> +		struct {
+>> +			unsigned char h_dest[ETH_ALEN];	  /* destination eth addr */
+>> +			unsigned char h_source[ETH_ALEN]; /* source ether addr	  */
+>> +		};
+>> +		struct {
+>> +			unsigned char h_dest[ETH_ALEN];	  /* destination eth addr */
+>> +			unsigned char h_source[ETH_ALEN]; /* source ether addr	  */
+>> +		} addrs;
+> 
+> A union of the same fields in the same structure in the same way?
+> 
+> Ah, because struct_group() can not be used here?  Still feels odd to see
+> in a userspace-visible header.
+> 
+>> +	};
+>>  	__be16		h_proto;		/* packet type ID field	*/
+>>  } __attribute__((packed));
+>>  #endif
+>> diff --git a/include/uapi/linux/ip.h b/include/uapi/linux/ip.h
+>> index e42d13b55cf3..33647a37e56b 100644
+>> --- a/include/uapi/linux/ip.h
+>> +++ b/include/uapi/linux/ip.h
+>> @@ -100,8 +100,16 @@ struct iphdr {
+>>  	__u8	ttl;
+>>  	__u8	protocol;
+>>  	__sum16	check;
+>> -	__be32	saddr;
+>> -	__be32	daddr;
+>> +	union {
+>> +		struct {
+>> +			__be32	saddr;
+>> +			__be32	daddr;
+>> +		} addrs;
+>> +		struct {
+>> +			__be32	saddr;
+>> +			__be32	daddr;
+>> +		};
+> 
+> Same here (except you named the first struct addrs, not the second,
+> unlike above).
+> 
+> 
+>> +	};
+>>  	/*The options start here. */
+>>  };
+>>  
+>> diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
+>> index b243a53fa985..1c26d32e733b 100644
+>> --- a/include/uapi/linux/ipv6.h
+>> +++ b/include/uapi/linux/ipv6.h
+>> @@ -130,8 +130,16 @@ struct ipv6hdr {
+>>  	__u8			nexthdr;
+>>  	__u8			hop_limit;
+>>  
+>> -	struct	in6_addr	saddr;
+>> -	struct	in6_addr	daddr;
+>> +	union {
+>> +		struct {
+>> +			struct	in6_addr	saddr;
+>> +			struct	in6_addr	daddr;
+>> +		} addrs;
+>> +		struct {
+>> +			struct	in6_addr	saddr;
+>> +			struct	in6_addr	daddr;
+>> +		};
+> 
+> addrs first?  Consistancy is key :)
 
-> --
-> 2.18.0
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+I think addrs should be second. In general, I think all newly added
+non-anonymous structures should be second.
+
+Thanks
+--
+Gustavo
