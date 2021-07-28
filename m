@@ -2,126 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AFC3D99C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E680F3D99C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbhG1XyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:54:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40248 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232609AbhG1XyG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:54:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627516443;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1h6+SGK2Sn0dPBpEs5XgMlwlQ2+yF6kyESThFa4UTD8=;
-        b=R1HsExfcL9sgmzLY368m0/gVBm6lJRKcoEX7tqQ/F0XG4FZNJu0V2eaBnx5Mb9rAc/VV3j
-        zpYWa/tOTQfDOjqekGHuwLPPtnJpuIJXsjE8bcp8kksJEpVPKG0WPDq7aOM6GNsAul+Vir
-        z0In9pXe3fIhPVgk6cttqOZxOftXvYE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-aN550gYzOSiH0LMnfBhrdA-1; Wed, 28 Jul 2021 19:53:59 -0400
-X-MC-Unique: aN550gYzOSiH0LMnfBhrdA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S232848AbhG1Xyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:54:31 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:34095 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232384AbhG1Xya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:54:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627516468; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=rG5MyP/cD6Lu3423Hm61sSZ+MdCpGFjzTE2RP88KNMY=; b=kwgFkqaI3Uy+tCnfV8CM/yJ1gi863pYwliCY6oKdIcTI5jusfRI6ejPM/RomT2ME2WzZife6
+ mhynF8GhIQOJJjTF7K9e7etH6IHZjh9Y/qgxXmqpZVdGWwxQNSLzCys/xHCzLj1qD5vTohQC
+ wtF4H5WDlVBa5B1aBNIeNDPW2ro=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6101ee2c9771b05b2441e0e2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 23:54:20
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8944BC4323A; Wed, 28 Jul 2021 23:54:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F403C101C8B9;
-        Wed, 28 Jul 2021 23:53:57 +0000 (UTC)
-Received: from [10.64.54.184] (vpn2-54-184.bne.redhat.com [10.64.54.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1471569CBA;
-        Wed, 28 Jul 2021 23:53:52 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v4 06/12] mm/debug_vm_pgtable: Use struct
- pgtable_debug_args in migration and thp tests
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
-        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
-References: <20210727061401.592616-1-gshan@redhat.com>
- <20210727061401.592616-7-gshan@redhat.com>
- <39de75d2-744a-9194-cbc2-14926b60e68e@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <7205bb91-4940-e625-1641-210a6ee767c8@redhat.com>
-Date:   Thu, 29 Jul 2021 09:54:06 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
-MIME-Version: 1.0
-In-Reply-To: <39de75d2-744a-9194-cbc2-14926b60e68e@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EAB38C4338A;
+        Wed, 28 Jul 2021 23:54:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EAB38C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     bqiang@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, clew@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [RESEND PATCH] net: qrtr: mhi: synchronize qrtr and mhi preparation
+Date:   Wed, 28 Jul 2021 16:54:11 -0700
+Message-Id: <1627516451-35294-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+A dl callback can be received anytime after mhi_prepare_for_transfer
+has been called. There is a window where the callback may happen
+before the probe initializes the qrtr_mhi_dev state. Move the
+mhi_prepare_for_transfer call after the registering the endpoint.
 
-On 7/28/21 9:08 PM, Anshuman Khandual wrote:
-> On 7/27/21 11:43 AM, Gavin Shan wrote:
->> This uses struct pgtable_debug_args in the migration and thp test
->> functions. It's notable that the pre-allocated page is used in
->> swap_migration_tests() as set_pte_at() is used there.
->>
->> Signed-off-by: Gavin Shan <gshan@redhat.com>
->> ---
->>   mm/debug_vm_pgtable.c | 28 ++++++++++++++--------------
->>   1 file changed, 14 insertions(+), 14 deletions(-)
->>
->> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
->> index bc153cad9045..9136195efde3 100644
->> --- a/mm/debug_vm_pgtable.c
->> +++ b/mm/debug_vm_pgtable.c
->> @@ -845,7 +845,7 @@ static void __init pmd_swap_tests(struct pgtable_debug_args *args)
->>   static void __init pmd_swap_tests(struct pgtable_debug_args *args) { }
->>   #endif /* CONFIG_ARCH_ENABLE_THP_MIGRATION */
->>   
->> -static void __init swap_migration_tests(void)
->> +static void __init swap_migration_tests(struct pgtable_debug_args *args)
->>   {
->>   	struct page *page;
->>   	swp_entry_t swp;
->> @@ -861,9 +861,10 @@ static void __init swap_migration_tests(void)
->>   	 * problematic. Lets allocate a dedicated page explicitly for this
->>   	 * purpose that will be freed subsequently.
->>   	 */
->> -	page = alloc_page(GFP_KERNEL);
->> +	page = (args->pte_pfn != ULONG_MAX) ?
->> +	       pfn_to_page(args->pte_pfn) : NULL;
->>   	if (!page) {
->> -		pr_err("page allocation failed\n");
->> +		pr_err("no page available\n");
->>   		return;
->>   	}
-> 
-> Please check for a valid page earlier in the function and return. Otherwise
-> this calls out the page unavailability (after starting the test), which is
-> inconsistent with all other functions like pxx_advanced_tests().
-> 
-> [    1.051633] debug_vm_pgtable: [pte_swap_tests           ]: Validating PTE swap
-> [    1.052697] debug_vm_pgtable: [pmd_swap_tests           ]: Validating PMD swap
-> [    1.053765] debug_vm_pgtable: [swap_migration_tests     ]: Validating swap migration <=====
-> [    1.054900] debug_vm_pgtable: [swap_migration_tests     ]: no page available         <=====
-> 
-> Should do this just before pr_info("Validating swap migration\n").
-> 
-> ......
-> page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
-> if (!page)
-> 	return;
-> .....
-> 
+Once moved, the reverse can happen where qrtr will try to send a packet
+before the channels are prepared. Add a wait in the sending path to
+ensure the channels are prepared before trying to do a ul transfer.
 
-Yes. The order of error messages are sticky to original implementation, but
-it'd better to be consistent with the new order we have in this series. I
-will adjust in v5.
+Fixes: a2e2cc0dbb11 ("net: qrtr: Start MHI channels during init")
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+---
+Tested-on: X86_64 architecture
 
-Thanks,
-Gavin
+ net/qrtr/mhi.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
+index 29b4fa3..88f046b 100644
+--- a/net/qrtr/mhi.c
++++ b/net/qrtr/mhi.c
+@@ -15,6 +15,7 @@ struct qrtr_mhi_dev {
+ 	struct qrtr_endpoint ep;
+ 	struct mhi_device *mhi_dev;
+ 	struct device *dev;
++	struct completion ready;
+ };
+ 
+ /* From MHI to QRTR */
+@@ -50,6 +51,10 @@ static int qcom_mhi_qrtr_send(struct qrtr_endpoint *ep, struct sk_buff *skb)
+ 	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, ep);
+ 	int rc;
+ 
++	rc = wait_for_completion_interruptible(&qdev->ready);
++	if (rc)
++		goto free_skb;
++
+ 	if (skb->sk)
+ 		sock_hold(skb->sk);
+ 
+@@ -78,17 +83,13 @@ static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
+ 	struct qrtr_mhi_dev *qdev;
+ 	int rc;
+ 
+-	/* start channels */
+-	rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
+-	if (rc)
+-		return rc;
+-
+ 	qdev = devm_kzalloc(&mhi_dev->dev, sizeof(*qdev), GFP_KERNEL);
+ 	if (!qdev)
+ 		return -ENOMEM;
+ 
+ 	qdev->mhi_dev = mhi_dev;
+ 	qdev->dev = &mhi_dev->dev;
++	init_completion(&qdev->ready);
+ 	qdev->ep.xmit = qcom_mhi_qrtr_send;
+ 
+ 	dev_set_drvdata(&mhi_dev->dev, qdev);
+@@ -96,6 +97,15 @@ static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
+ 	if (rc)
+ 		return rc;
+ 
++	/* start channels */
++	rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
++	if (rc) {
++		qrtr_endpoint_unregister(&qdev->ep);
++		dev_set_drvdata(&mhi_dev->dev, NULL);
++		return rc;
++	}
++
++	complete_all(&qdev->ready);
+ 	dev_dbg(qdev->dev, "Qualcomm MHI QRTR driver probed\n");
+ 
+ 	return 0;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
