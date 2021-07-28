@@ -2,174 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDA23D8AC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408653D8B2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235593AbhG1Jhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:37:37 -0400
-Received: from mail-bn1nam07on2100.outbound.protection.outlook.com ([40.107.212.100]:59207
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231322AbhG1Jhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:37:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MpAVg4p4hvquIYmsTMg1RZjQr1pQvUfK6QLwUvhxLy/ZJRUyDeYLv2e0ugq1kdGYgE0kAsQMWlqlrt5HUUnFQCMUEBBB00iU8dstKYX0KZ/soyNhXcejTQcKa0/vEKfnt5GpXDNaQ0wWZn36TvDTT/mYyinH8cgbru2aVaLlBkb+TPsdhX364feXRxZh4y3mP0A+TULYsY2yvbhcmJbMFP/JH9X0tQMRMoBVdA0FCVKFRBd8hiIRMlQoq2wEZAfsRPO0ptPeAq7QXvMAqO9mYjYNvsgS7W108grtU2ouqollWYEeq+O6OtbUtNmIYn0l36hFd/OPzppm9wUarI/hbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=brwECbCqFC359Kfh1RA+iiXquT25LjE76lk1tHzFyfI=;
- b=J3HAQth6iKQ+m98e8hiBMXJyY0/TcTlMObluLGkoi9lJodLwPyWNIiFAH75c/o322Ch06OpqziV1PgyfgikJGq58ig2V+JW5cmN0YWmwViYk2z0obkl51ePtScR5ELKuYL/X3qIW6AFhaCOGJWq9FPLRNhkJmSXPfeKDoPBulJviDPpUuDEdJwEbAQ93dc9AQE3qeFiZUqscJxzFadFrzOfb0CvfrShq/UnrLPlQTaPIbmWRqaPtKKkbasOcEg5AtJh796/nCHLYyL84SfQWnYkECKeyWz/rEdEB6s8UlfvwY1M5JbL42FO4PbogiLIFd3lkrqRqPwCisFdKl92Mrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=brwECbCqFC359Kfh1RA+iiXquT25LjE76lk1tHzFyfI=;
- b=uMdMrlPpR+coFMF9swUoffJrPy/yj176nOx6c2OhFs+Vy/KIEVzRs8/HcqFqWfGNrFl/WZEIPLcGQeaQTgExESRCrZUBFER7DJXJRji0dZ5p6sraimS7lt3SifMS1brepbxXY/+o6tcexyNU2++97H7PCj4nKJnZn1fYXFT+cWA=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=corigine.com;
-Received: from DM6PR13MB4249.namprd13.prod.outlook.com (2603:10b6:5:7b::25) by
- DM6PR13MB4052.namprd13.prod.outlook.com (2603:10b6:5:2a1::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4373.7; Wed, 28 Jul 2021 09:37:32 +0000
-Received: from DM6PR13MB4249.namprd13.prod.outlook.com
- ([fe80::3c5f:ccfc:c008:b4aa]) by DM6PR13MB4249.namprd13.prod.outlook.com
- ([fe80::3c5f:ccfc:c008:b4aa%3]) with mapi id 15.20.4373.018; Wed, 28 Jul 2021
- 09:37:32 +0000
-Subject: Re: [PATCH net-next] nfp: flower-ct: fix error return code in
- nfp_fl_ct_add_offload()
-To:     Yang Yingliang <yangyingliang@huawei.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     simon.horman@corigine.com, kuba@kernel.org, davem@davemloft.net,
-        yinjun.zhang@corigine.com, dan.carpenter@oracle.com
-References: <20210728091631.2421865-1-yangyingliang@huawei.com>
-From:   Louis Peens <louis.peens@corigine.com>
-Message-ID: <0776b133-91f0-33ef-edc9-8f275798d44b@corigine.com>
-Date:   Wed, 28 Jul 2021 11:36:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210728091631.2421865-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0368.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18e::13) To DM6PR13MB4249.namprd13.prod.outlook.com
- (2603:10b6:5:7b::25)
+        id S235713AbhG1J4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:56:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231770AbhG1J4f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 05:56:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627466193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IONbg/ked4uqfGw9LM42l1vsFw4q6Wlna3+yNQ7ATkI=;
+        b=IuO84ZqlethCrFNnifXiWrN1cL5ONZQ7U0AYukn2YHOMQO6gHN7XSuQn2HTjpY6h08A/LC
+        K5Fj5zZsX7OHrtHmbowB7LPVoOeiQqPy98gs5UMba8J19TDm6L7csNtgGUV/ykd5fbmf4M
+        ISfMC/cZ/Co7+r9mV9EHKhVexNZYXYE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-gCVleic_M4OfsYdqgwBdNg-1; Wed, 28 Jul 2021 05:56:31 -0400
+X-MC-Unique: gCVleic_M4OfsYdqgwBdNg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46F97190A7A1;
+        Wed, 28 Jul 2021 09:56:30 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A77525C1B4;
+        Wed, 28 Jul 2021 09:56:19 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 22AE14172EE3; Wed, 28 Jul 2021 06:37:07 -0300 (-03)
+Date:   Wed, 28 Jul 2021 06:37:07 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     nsaenzju@redhat.com, linux-kernel@vger.kernel.org,
+        Nitesh Lal <nilal@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@marvell.com>,
+        Peter Xu <peterx@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [patch 1/4] add basic task isolation prctl interface
+Message-ID: <20210728093707.GA3242@fuller.cnet>
+References: <20210727103803.464432924@fuller.cnet>
+ <20210727104119.551607458@fuller.cnet>
+ <7b2d6bf91d30c007e19a7d2cbddcb2460e72d163.camel@redhat.com>
+ <20210727110050.GA502360@fuller.cnet>
+ <a020a45ddea10956938f59bd235b88fe873d0e98.camel@redhat.com>
+ <20210727130930.GB283787@lothringen>
+ <20210727145209.GA518735@fuller.cnet>
+ <20210727234539.GH283787@lothringen>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.1.2.53] (105.30.25.75) by LO4P123CA0368.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:18e::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20 via Frontend Transport; Wed, 28 Jul 2021 09:37:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b4996265-6822-43c4-03f4-08d951ab52e4
-X-MS-TrafficTypeDiagnostic: DM6PR13MB4052:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR13MB40521508C62920D68061424C88EA9@DM6PR13MB4052.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QO3zvbjj156R36jPspigMgkSUq++0dT6Gd9cg6dOk2eJq+1ao2fS6bHhR1JYLCgFmnNOdqCVp79kGa7AZVz+rxbiwshQ/Fsy0i0/KfmYo57A1DXlgvs2fKDks4iiG43KS4/cgS6BXyJLpLtruQMXzJYabI9SNyz2viNgCPhuY2BmO7Eh7bmvAxHT2qzrei0JzkkkPceXOjWfIGlvpwdIRDqKcHFhkauH55uDVxrX9VQTIOxyhB9rRRbo+Y53e8b0Ax2uf9KDNfsB7IIDBI2IEFCSDG1nd9Xlhk0YB0B33n3lAiT2T1vBHN0DJXLoRngi+ngeCm5h7NLJ+1Lad+jlCJbrDNe0NfA2UFTm/F1sWmDlLzuLdgka3Bqx9WYjOv5Y56PV31rSS6Dl2PTqC5g9Npy2ms3SZqAk1fHDBU326lC45lUyArVn8jbm1EWk9upkAyzOyvOhOog+R+7sts8fqrn6+z0ijEfzVUvoHVCamaxsOU/k//Om7XUAttrcQ5n13zlh5lpLWgeMd8MoDBnMEe5qEJzYsSi8x91uftBaqvdCyWO3rAraJuhQdbFPP5aEiTdgFYhgASGfRz9zI0HkvYcMdhAFvEbLxg/CEPL8fYrBOlsX4WVC0FDCOIyCaXsvhXScpATkWcJq+BdkOTtHkT34wEJYqr7sqNkkHJ7mZcCNdCvZP0GB97VOcrSDZEewLwd8KrAlT9mH62WPudgVy8XmjNzGoJlVaRIhAS1AyTuYWZr8/ll2uPuGTu5lShcBQlIuDvRhmES6/Yd8DekbXQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB4249.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(39830400003)(376002)(396003)(366004)(31686004)(2906002)(52116002)(2616005)(8936002)(53546011)(186003)(956004)(6666004)(83380400001)(36756003)(44832011)(4326008)(26005)(31696002)(478600001)(8676002)(86362001)(38100700002)(38350700002)(66946007)(16576012)(316002)(5660300002)(6486002)(66476007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ejVrbGpTOHJweXB4NzBIdkNNUzdpT2hxcWxYTG1qTUVBblhWOVpFOTljZVl2?=
- =?utf-8?B?Tm4zY0hCWHRoNktVNVh2UDBRamJBWHNCcFk4NVQ3OGJYd1lJYm8xcGgwL0RF?=
- =?utf-8?B?ZlVIbW12M2pKdXJ0UGhCWXk4KzFsRVdkNy8yNmFmdzFENnFhQ2tpN1lHeUw3?=
- =?utf-8?B?OHFtUWNLNVhINHRQbDFacDh5QTFzUis4MnJJQVRTWWd1R3lHSk04TE1SSHF1?=
- =?utf-8?B?ZE4zWUZlMXRmK1pZMkRrNUIwdmFVVnNkNmhiRXBidEFEakxEWUMrdm9FeU1H?=
- =?utf-8?B?MmFFelZIMlp2QjZNekdDRXlYc1VhUlV4NEhvK0ZYd3BmSmlVK0h3eEtoUXJu?=
- =?utf-8?B?VzV2VTYyb3JWU0RtMUc4SnJGWVVBMi80OEdBTHJQeDVUcUZLeE1RdzN3c1hJ?=
- =?utf-8?B?dlZWMWo3QUtzSmZDN0xTT3dxZXgzSWQ0NStaREZTZ2tydjVycUdpNnFSRnd3?=
- =?utf-8?B?Tm04cFA0K2dtVXhBQWJSVitXOUxUS3FqN3JEMTIxNnBjclhoSUJ3akx4RnhB?=
- =?utf-8?B?M01LeDRKL3gwOElGeXNuWkEwQmZDbyt6WHNqWTAvN2JtUWVqa2U0L1I1TEhs?=
- =?utf-8?B?c2tLd2FJcjBpSXJxc0VqLzNxRGo0M2R3dVM4VWlRcndTTWFiU0lYREtzTHJX?=
- =?utf-8?B?TjIrOWV6Y2hKclJMYldmaDdsZWlSYnFYaVFSejZvVFJBc1ZRVFVVUG00VUtM?=
- =?utf-8?B?dHZLeGIycWN5RkFHZG1oWlI0ZHVJVWMxekVMQ0g4Ym1CekVVM2pDcWI4Y1FM?=
- =?utf-8?B?OHFyT1hUaVlMNEVrR21VM3VlbGNteE9FeE9VOGF4RStLajJEcEV1bktrZ1lC?=
- =?utf-8?B?SjY0dmxQNE5SN0JPdjdJL3paQW5MakpKd0hLWkp4MStaOG5laitoSFNjQUw4?=
- =?utf-8?B?UDhqaks2MFFSYXhBUjNuQXd4djUrWjZ2S0NzK0ZHRTZBZy9tYWQrWFFkU1hT?=
- =?utf-8?B?Q0pwRkNjOVhUYUJNWlFiN2ZpZlBmdzhYc1dhdk5TcGpKSU5VZjR1eFRWc1FF?=
- =?utf-8?B?MFpYYStvYWxoTGMwTkt4dE5PdWVOTmY4RElRem5UaWhHUWNraVk3S0oxeE1B?=
- =?utf-8?B?Vk5TY1p3d2srNW5RM2hkNzl1bW05WUJhQVFJMldFY1pvVGxDc2hOOXU3VFl5?=
- =?utf-8?B?Z25KOUtxbk9sOEY5NGV1alM1Z0VJVWc1NTJCZlFId2VLcSs2Ri9rNlg4L3Zv?=
- =?utf-8?B?QXErN0UzTEtCS29uMGorcXpZV1l6QzEzanBLbFA5WnJNN3FvSzRZMXQ4d0hF?=
- =?utf-8?B?V3JZTi95SkxWNHVEZVRFLzNSbmJHd0tsY0FmNnZaN09tYXpHeE93K1NKZ2Z4?=
- =?utf-8?B?RGhHWTY3T2ZZYTNKWWdtZVJQWXBLT0V1SlIyMndsazVsSEVsdGN6ODhXUGR6?=
- =?utf-8?B?dGptTmhVNCtjdE5yUHlwN2tLek9nR2dvYUxrWjd2U3QyZ29Bdm9pSnUvcEdI?=
- =?utf-8?B?TUFBV0ljU1BpLzhWTXZwNzY5M2x0MGN4MFIvK2lUQ2dRNUlxNTZ4R3ZrZEll?=
- =?utf-8?B?anFYNnZIclRrbE42UTY0d05pampjM1NRQngxM3BUcjBtbFlxdzJQR0NCYmRS?=
- =?utf-8?B?T0RROXF6Tlg0dEFjczd1dk91Y09COE4ya0JvVldLRzQ1YnAxVU5hNzZ6bmtx?=
- =?utf-8?B?RjVrbnZ0d3djNEpEcHZFajFoVHZaa1kzNVdzU09QdDZrNnpReVg4T2dLcjdC?=
- =?utf-8?B?cFNqTUpuMXc5MXJ2VkE4eGNuZlYzYlZ4OHRidkQvalZkOEkxNFBzRzhVV3lv?=
- =?utf-8?Q?EddhTrmpkYCyA4QMvS1glY7pHgEbJ65zmcjKvy5?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4996265-6822-43c4-03f4-08d951ab52e4
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB4249.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 09:37:32.2957
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c9sTb2tnWZS+m/xzGMrqV//AdURuoUJFQnxmLV4bzVm1ffVyUBqLmOZjVCcbTkgVgcYkRoBrOA7qnqKdFTDNNDK9ONw1wnyECiiKg1MkJxg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB4052
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727234539.GH283787@lothringen>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/07/28 11:16, Yang Yingliang wrote:
-> If nfp_tunnel_add_ipv6_off() fails, it should return error code
-> in nfp_fl_ct_add_offload().
+On Wed, Jul 28, 2021 at 01:45:39AM +0200, Frederic Weisbecker wrote:
+> On Tue, Jul 27, 2021 at 11:52:09AM -0300, Marcelo Tosatti wrote:
+> > The meaning of isolated is specified as follows:
+> > 
+> > Isolation features
+> > ==================
+> > 
+> > - prctl(PR_ISOL_GET, ISOL_SUP_FEATURES, 0, 0, 0) returns the supported
+> > features as a return value.
+> > 
+> > - prctl(PR_ISOL_SET, ISOL_FEATURES, bitmask, 0, 0) enables the features in
+> > the bitmask.
+> > 
+> > - prctl(PR_ISOL_GET, ISOL_FEATURES, 0, 0, 0) returns the currently
+> > enabled features.
 > 
-> Fixes: 5a2b93041646 ("nfp: flower-ct: compile match sections of flow_payload")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Ah, thanks Yang, I was just preparing a patch for this myself. This was first reported by
-Dan Carpenter <dan.carpenter@oracle.com> on 26 Jul 2021 (added to CC).
+> So what are the ISOL_FEATURES here? A mode that we enter such as flush
+> vmstat _everytime_ we resume to userpace after (and including) this prctl() ?
 
-	'Hello Louis Peens,
+ISOL_FEATURES is just the "command" type (which you can get and set).
 
-	The patch 5a2b93041646: "nfp: flower-ct: compile match sections of
-	flow_payload" from Jul 22, 2021, leads to the following static
-	checker warning:
-	.....'
+The bitmask would include ISOL_F_QUIESCE_ON_URET, so:
 
-I'm not sure what the usual procedure would be for this, I would think adding
-another "Reported-by" line would be sufficient?
+- bitmask = ISOL_F_QUIESCE_ON_URET;
+- prctl(PR_ISOL_SET, ISOL_FEATURES, bitmask, 0, 0) enables the features in
+the bitmask.
 
-Anyway, for the patch itself the change looks good to me, thanks:
-Signed-off-by: Louis Peens <louis.peens@corigine.com>
-> ---
->  drivers/net/ethernet/netronome/nfp/flower/conntrack.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+- quiesce_bitmap = prctl(PR_ISOL_GET, PR_ISOL_SUP_QUIESCE_CFG, 0, 0, 0)
+  (1)
+
+  (returns the supported actions to be quiesced).
+
+- prctl(PR_ISOL_SET, PR_ISOL_QUIESCE_CFG, quiesce_bitmask, 0, 0) _sets_
+the actions to be quiesced (2)
+
+If an application does not modify "quiesce_bitmask" between 
+points (1) and (2) above, it will enable quiescing of all
+"features" the kernel supports.
+
+Application can, however, modify quiesce_bitmap to its preference.
+
+Flushing vmstat _everytime_ you resume to userspace is enabled only
+_after_ prctl(PR_ISOL_ENTER, 0, 0, 0, 0) is performed (which happens 
+only when isolation is fully configured with the PR_ISOL_SET calls).
+OK, will better document that.
+
+> If so I'd rather call that ISOL_MODE because feature is too general.
+
+Well, in the first patchset, there was one "mode" implemented (but
+it was possible to implement different modes in the future).
+
+This would allow for example easier integration of "full task isolation"
+patchset type of functionality, disallowing syscalls.
+
+I think we'd like to keep that, so i'll keep the previous distinct modes
+(but allow configuration of individual features on the bitmap).
+
+> > 
+> > The supported features are:
+> > 
+> > ISOL_F_QUIESCE_ON_URET: quiesce deferred actions on return to userspace.
+> > ----------------------
+> > 
+> > Quiescing of different actions can be performed on return to userspace.
+> > 
+> > - prctl(PR_ISOL_GET, PR_ISOL_SUP_QUIESCE_CFG, 0, 0, 0) returns
+> > the supported actions to be quiesced.
+> > 
+> > - prctl(PR_ISOL_SET, PR_ISOL_QUIESCE_CFG, quiesce_bitmask, 0, 0) returns
+							
+							s/returns/sets/
+
+> > the currently supported actions to be quiesced.
+> > 
+> > - prctl(PR_ISOL_GET, PR_ISOL_QUIESCE_CFG, 0, 0, 0) returns
+> > the currently enabled actions to be quiesced.
+> > 
+> > #define ISOL_F_QUIESCE_VMSTAT_SYNC      (1<<0)
+> > #define ISOL_F_QUIESCE_NOHZ_FULL        (1<<1)
+> > #define ISOL_F_QUIESCE_DEFER_TLB_FLUSH  (1<<2)
 > 
-> diff --git a/drivers/net/ethernet/netronome/nfp/flower/conntrack.c b/drivers/net/ethernet/netronome/nfp/flower/conntrack.c
-> index 1ac3b65df600..bfd7d1c35076 100644
-> --- a/drivers/net/ethernet/netronome/nfp/flower/conntrack.c
-> +++ b/drivers/net/ethernet/netronome/nfp/flower/conntrack.c
-> @@ -710,8 +710,10 @@ static int nfp_fl_ct_add_offload(struct nfp_fl_nft_tc_merge *m_entry)
->  			dst = &gre_match->ipv6.dst;
->  
->  			entry = nfp_tunnel_add_ipv6_off(priv->app, dst);
-> -			if (!entry)
-> +			if (!entry) {
-> +				err = -ENOMEM;
->  				goto ct_offload_err;
-> +			}
->  
->  			flow_pay->nfp_tun_ipv6 = entry;
->  		} else {
-> @@ -760,8 +762,10 @@ static int nfp_fl_ct_add_offload(struct nfp_fl_nft_tc_merge *m_entry)
->  			dst = &udp_match->ipv6.dst;
->  
->  			entry = nfp_tunnel_add_ipv6_off(priv->app, dst);
-> -			if (!entry)
-> +			if (!entry) {
-> +				err = -ENOMEM;
->  				goto ct_offload_err;
-> +			}
->  
->  			flow_pay->nfp_tun_ipv6 = entry;
->  		} else {
+> And then PR_ISOL_QUIESCE_CFG is a oneshot operation that applies only upon
+> return to this ctrl, right? If so perhaps this should be called just
+> ISOL_QUIESCE or ISOL_QUIESCE_ONCE or ISOL_REQ ?
+
+There was no one-shot operation implemented in the first patchset. What
+application would do to achieve that is:
+
+1. Configure isolation with PR_ISOL_SET (say configure mode which 
+allows system calls, and when a system call happens, flush all deferred
+actions on return to userspace).
+
+2. prctl(PR_ISOL_ENTER, 0, 0, 0, 0) (this actually enables the flushing, 
+and tags the task_struct as isolated). Here we can transfer this information
+from per-task to per-CPU data, for example, to be able to implement 
+other features such as deferred TLB flushing.
+
+On return from this prctl(), deferrable actions are flushed.
+
+3. latency sensitive loop, with no system calls.
+
+4. some event which requires system calls is noticed:
+   prctl(PR_ISOL_EXIT, 0, 0, 0, 0)
+   (this would untag task_struct as isolated).
+
+5. perform system calls A, B, C, D (with no flushing of vmstat, 
+for example).
+
+6. jmp to 2.
+
+So there is a problem with this logic, which is that one would like
+certain isolation functionality to remain enabled between points 4
+and 6 (for example, blocking CPU hotplug or other blockable activities
+that would cause interruptions).
+
+One way to achieve this would be to replace PR_ISOL_ENTER/PR_ISOL_EXIT
+with PR_ISOL_ENABLE, which accepts a bitmask:
+
+1. Configure isolation with PR_ISOL_SET (say configure mode which 
+allows system calls, and when a system call happens, flush all deferred
+actions on return to userspace).
+
+2. enabled_bitmask = ISOL_F_QUIESCE_ON_URET|ISOL_F_BLOCK_INTERRUPTORS;
+   prctl(PR_ISOL_ENABLE, enabled_bitmask, 0, 0, 0)
+
+On return from this prctl(), deferrable actions are flushed.
+
+3. latency sensitive loop, with no system calls.
+
+4. some event which requires system calls is noticed:
+
+   prctl(PR_ISOL_ENABLE, ISOL_F_BLOCK_INTERRUPTORS, 0, 0, 0)
+   (this would clear ISOL_F_QUIESCE_ON_URET, so no flushing
+    is performed on return from system calls).
+
+5. perform system calls A, B, C, D (with no flushing of vmstat).
+
+6. jmp to 2.
+
+...
+
+On exit: prctl(PR_ISOL_ENABLE, 0, 0, 0, 0)
+
+IOW: the one-shot operation does not allow the application
+to inform the kernel when the latency sensitive loop has 
+begun or has ended.
+
 > 
+> But that's just naming debate because otherwise that prctl layout looks good
+> to me.
+> 
+> Thanks!
+
+Thank you for the input!
+
