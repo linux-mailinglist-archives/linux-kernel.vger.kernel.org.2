@@ -2,99 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1D63D8FFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDA93D9001
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235418AbhG1OBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:01:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233254AbhG1OBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:01:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A326E600EF;
-        Wed, 28 Jul 2021 14:00:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627480860;
-        bh=sNNg1eBjaBERoOL+pNGqJG1GnXOiFtnWCHGA3ZA1guw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uSK3rYX334vCPmIzWf/THTX34yLnn8ni/QBiKG2wSaCIb8flS7V+h/B0eP4sytljM
-         /dQCjspApub1KKi22poI11WUSYyfjIatH2hfq7qGrbqIBlbq4S7vAjAAhS+KS8TxV8
-         5woiYW5ZUA5Il7RUYHhP1Ry/YyXRyBxz8Ox2BtJMlMkWsKjuc9kKYiDOiacib9sy0i
-         aPfPMZkkYmDggAK37mahkCnICO1fDZeN0JaiIFzgSxGeXShgdXEF1DAYPxU22ln/Di
-         kGzFe7xSqPBokwQ8jjNqfX2hYMIrPy1ah7XaTQx6UwViWPpfyLEfsPSfZ5MEsWr3Ps
-         NAkXFU5X3exlg==
-Date:   Wed, 28 Jul 2021 17:00:53 +0300
-From:   Georgi Djakov <djakov@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        isaacm@codeaurora.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 0/3] iommu/drm/msm: Allow non-coherent masters to use
- system cache
-Message-ID: <20210728140052.GB22887@mms-0441>
-References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
+        id S236444AbhG1OCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235420AbhG1OB6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 10:01:58 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2DBC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:01:55 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id z2so4214280lft.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HkzKATWQiJzwj9+f4qauTnrP7HOjchHXfR7sVxWkLd4=;
+        b=Z2XfG/9ykSGrj/xt0ovI/QuVJGiIPo8ma/mlpZecQ5KGkrdwUl0o4wNcgsrB5M6CPy
+         k+LRIVKdGv37hjQyssh7sOp4ReHsKazfJU8T2WDcfrvC/knSTILmluDY0QDU/Ev5vgAr
+         o9pGwdEvesM0RkO4A5bCBuH1Zuq64s3JJJf+OUpGokUqIjL7s/mZw4+Td14Tb+Qes4ge
+         AvfPzyB90XtBS5DYsTZHW+8RWQTx7tX1AYN3lldi1CDuFzT7cD5Ez6DMLV1WIfHu89iF
+         N4+wbNvwWcIAOwcD7tR6wMUsNunVzqXRYy0Dwm3t12W9ILVQPFKbvd0V3qDg8bScDJW4
+         3cnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HkzKATWQiJzwj9+f4qauTnrP7HOjchHXfR7sVxWkLd4=;
+        b=PsEEkxGuO0Qa08+GF9a+PAP51K9oE9eJOH/V9CC/wWlHTAqyTLie3TmXDNFXsfa+km
+         SzDT4mNYsAZoJcKzGWEJhypHbIVTuF7ueSldcPqCJ/Y+FVZb8LgLh+Y/MXyad895fQvJ
+         EQs1FNiYdpHAXzFSDQ03ANTUV+RknvyZlPow65UUUAq2qyEaIqzRk4Qd16/BfXFJExhL
+         8rLvzvf4WRbaRdJyLzjYaiA9WYxWUmk+KJUZFFFo4vkynhQKV2zSse+by4NUWrtVGnbg
+         y2fBV/8HOi8dXqrhX/5OU032ZJV2ts5ovSSfF1Lyq3sB4Gi7tEhV4yEeOJMAzMj7o/H2
+         PPEw==
+X-Gm-Message-State: AOAM531rypuqn9OU4csNWO5MteBk7OgJD5AXKsdG+uzewsfkbD26rT1+
+        ZhInU6WEzwkqTdZE00di6s6d4A==
+X-Google-Smtp-Source: ABdhPJyX6gIG42z6TXISGYD1AbaGbevxFM65kRY0gZHdDQyTHym/lcLS3jklXa5hLa0Zm/Hprzll9g==
+X-Received: by 2002:a05:6512:400c:: with SMTP id br12mr21749856lfb.268.1627480913485;
+        Wed, 28 Jul 2021 07:01:53 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id l13sm514250ljj.43.2021.07.28.07.01.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 07:01:53 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] arm64: dts: sc7180: Add required-opps for i2c
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, ulf.hansson@linaro.org,
+        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, rojay@codeaurora.org,
+        stephan@gerhold.net
+References: <YPHpsO5LlQRQxj9y@yoga>
+ <CAE-0n53CHD8c7C4ETWRgzmZmFSCcBw46wSs4pKbYMRjA_tD3yg@mail.gmail.com>
+ <YPHxfHPC/faq/y+J@yoga>
+ <CAE-0n50qx80cMFPJ1x9rc+EMR1L+j2CUMyDjWAbnE9mPHjf-TQ@mail.gmail.com>
+ <YPIBK/NJgBNZVI8Y@yoga> <12711a61-e16c-d2bc-6e04-ab94c7551abe@codeaurora.org>
+ <YPXQNFYKfH/xZxFY@yoga> <bc79ea3e-4981-8f9b-f9a7-59cb972047a7@codeaurora.org>
+ <YP2Y6qs5P5mb2jzE@yoga> <b6b315ae-ee68-6ba8-7453-f28dace3d8d2@codeaurora.org>
+ <YQDTImwRhp8juvKh@yoga>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <f73f1c31-dc31-32f9-d7d8-1aa3233b0040@linaro.org>
+Date:   Wed, 28 Jul 2021 17:01:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <YQDTImwRhp8juvKh@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 07:45:02PM +0530, Sai Prakash Ranjan wrote:
-> commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
-> removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
-> the memory type setting required for the non-coherent masters to use
-> system cache. Now that system cache support for GPU is added, we will
-> need to set the right PTE attribute for GPU buffers to be sys cached.
-> Without this, the system cache lines are not allocated for GPU.
+On 28/07/2021 06:46, Bjorn Andersson wrote:
+> On Tue 27 Jul 02:35 CDT 2021, Rajendra Nayak wrote:
 > 
-> So the patches in this series introduces a new prot flag IOMMU_LLC,
-> renames IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
-> and makes GPU the user of this protection flag.
+>>
+>> On 7/25/2021 10:31 PM, Bjorn Andersson wrote:
+>>> On Mon 19 Jul 23:29 CDT 2021, Rajendra Nayak wrote:
+>>>
+>>>>
+>>>>
+>>>> On 7/20/2021 12:49 AM, Bjorn Andersson wrote:
+>>>>> On Mon 19 Jul 04:37 CDT 2021, Rajendra Nayak wrote:
+>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 7/17/2021 3:29 AM, Bjorn Andersson wrote:
+>>>>>>> On Fri 16 Jul 16:49 CDT 2021, Stephen Boyd wrote:
+>>>>>>>
+>>>>>>>> Quoting Bjorn Andersson (2021-07-16 13:52:12)
+>>>>>>>>> On Fri 16 Jul 15:21 CDT 2021, Stephen Boyd wrote:
+>>>>>>>>>
+>>>>>>>>>> Quoting Bjorn Andersson (2021-07-16 13:18:56)
+>>>>>>>>>>> On Fri 16 Jul 05:00 CDT 2021, Rajendra Nayak wrote:
+>>>>>>>>>>>
+>>>>>>>>>>>> qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 MHz)
+>>>>>>>>>>>> Though qup-i2c does not support DVFS, it still needs to vote for a
+>>>>>>>>>>>> performance state on 'CX' to satisfy the 19.2 Mhz clock frequency
+>>>>>>>>>>>> requirement.
+>>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> Sounds good, but...
+>>>>>>>>>>>
+>>>>>>>>>>>> Use 'required-opps' to pass this information from
+>>>>>>>>>>>> device tree, and also add the power-domains property to specify
+>>>>>>>>>>>> the CX power-domain.
+>>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> ..is the required-opps really needed with my rpmhpd patch in place?
+>>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Yes? Because rpmhpd_opp_low_svs is not the lowest performance state for
+>>>>>>>>>> CX.
+>>>>>>>>>
+>>>>>>>>> On e.g. sm8250 the first available non-zero corner presented in cmd-db
+>>>>>>>>> is low_svs.
+>>>>>>
+>>>>>> what rail is this? the mmcx? Perhaps it does not support RET.
+>>>>>> cx usually supports both collapse state and RET.
+>>>>>>
+>>>>>
+>>>>> That was the one I was specifically looking at for the MDSS_GDSC->MMCX
+>>>>> issue, so it's likely I didn't look elsewhere.
+>>>>>
+>>>>>>>>
+>>>>>>>> Indeed. On sc7180 it's not the first non-zero corner. I suppose
+>>>>>>>> retention for CX isn't actually used when the SoC is awake so your
+>>>>>>>> rpmhpd patch is putting in a vote for something that doesn't do anything
+>>>>>>>> at runtime for CX? I imagine that rpmh only sets the aggregate corner to
+>>>>>>>> retention when the whole SoC is suspended/sleeping, otherwise things
+>>>>>>>> wouldn't go very well. Similarly, min_svs may be VDD minimization? If
+>>>>>>>> so, those first two states are basically states that shouldn't be used
+>>>>>>>> at runtime, almost like sleep states.
+>>>>>>>>
+>>>>>>>
+>>>>>>> But if that's the case, I don't think it's appropriate for the "enabled
+>>>>>>> state" of the domain to use any of those corners.
+>>>>>>
+>>>>>> I rechecked the downstream kernels where all this voting happens from within
+>>>>>> the clock drivers, and I do see votes to min_svs for some clocks, but Stephen is
+>>>>>> right that RET is not something that's voted on while in active state.
+>>>>>>
+>>>>>> But always going with something just above the ret level while active will also
+>>>>>> not work for all devices, for instance for i2c on 7180, it needs a cx vote of
+>>>>>> low svs while the rail (cx) does support something lower than that which is min svs.
+>>>>>> (why can't it just work with min svs?, I don't know, these values and recommendations
+>>>>>> come in from the voltage plans published by HW teams for every SoC and we just end up
+>>>>>> using them in SW, perhaps something to dig further and understand which I will try and
+>>>>>> do but these are the values in voltage plans and downstream kernels which work for now)
+>>>>>>
+>>>>>
+>>>>> So to some degree this invalidates my argumentation about the
+>>>>> enabled_corner in rpmhpd, given that "enabled" means a different corner
+>>>>> for each rail - not just the one with lowest non-zero value.
+>>>>
+>>>> Right, it might work in some cases but might not work for all.
+>>>>
+>>>
+>>> Which makes it way less desirable.
+>>>
+>>> The enable state for rpmhpd power domains doesn't meet my expectations
+>>> for how a power domain should behave,
+>>
+>> Right and that's perhaps because these are not the usual power-domains,
+>> which have one "on/active" state and one or more "off/inactive" states (off/ret/clock-stop)
+>> Rpmhpd has multiple "on/active" states, and whats "on/active" for one consumer
+>> might not be "on/active" for another, so this information is hard to be managed
+>> at a generic level and these requests in some way or the other need to come
+>> in explicitly from the resp. consumers.
+>>
+> 
+> I think it's fine if we just acknowledge that this is how the rpmhpd
+> domains works.
+> 
+> But I am worried about how we're going to handle the case where the
+> consumer is indirectly referencing one of these power-domains using a
+> subdomain (gdsc).
 
-Hi Sai,
+With the proper subdomain relationship in place and with Ulf's patches, 
+this seems to be handled correctly. gdsc sets proper level for the 
+parent power domain, which gets voted and unvoted by the core pm code 
+when gdsc's power domain is powered on or off.
 
-Thank you for the patchset! Are you planning to refresh it, as it does
-not apply anymore?
+> And the open question is if a solution to that problem will solve this
+> problem as well, or if we need to have this and some mechanism to
+> describe the "on state" for the parent of a subdomain.
 
-Thanks,
-Georgi
 
-> 
-> The series slightly depends on following 2 patches posted earlier and
-> is based on msm-next branch:
->  * https://lore.kernel.org/patchwork/patch/1363008/
->  * https://lore.kernel.org/patchwork/patch/1363010/
-> 
-> Sai Prakash Ranjan (3):
->   iommu/io-pgtable: Rename last-level cache quirk to
->     IO_PGTABLE_QUIRK_PTW_LLC
->   iommu/io-pgtable-arm: Add IOMMU_LLC page protection flag
->   drm/msm: Use IOMMU_LLC page protection flag to map gpu buffers
-> 
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 3 +++
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 2 +-
->  drivers/gpu/drm/msm/msm_iommu.c         | 3 +++
->  drivers/gpu/drm/msm/msm_mmu.h           | 4 ++++
->  drivers/iommu/io-pgtable-arm.c          | 9 ++++++---
->  include/linux/io-pgtable.h              | 6 +++---
->  include/linux/iommu.h                   | 6 ++++++
->  7 files changed, 26 insertions(+), 7 deletions(-)
-> 
-> 
-> base-commit: 00fd44a1a4700718d5d962432b55c09820f7e709
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+-- 
+With best wishes
+Dmitry
