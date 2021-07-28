@@ -2,140 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D778D3D8B09
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021303D8B0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235680AbhG1Jp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:45:28 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:54942 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235506AbhG1Jp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:45:28 -0400
-X-UUID: 03e47096485a4158aa523bb59784f8bd-20210728
-X-UUID: 03e47096485a4158aa523bb59784f8bd-20210728
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <yee.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 362949387; Wed, 28 Jul 2021 17:45:22 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 28 Jul 2021 17:45:21 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 28 Jul 2021 17:45:21 +0800
-From:   <yee.lee@mediatek.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <nicholas.Tang@mediatek.com>, <Kuan-Ying.lee@mediatek.com>,
-        <chinwen.chang@mediatek.com>, Yee Lee <yee.lee@mediatek.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>,
+        id S235724AbhG1JqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235610AbhG1JqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 05:46:03 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04C9D600D4;
+        Wed, 28 Jul 2021 09:46:01 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m8g8V-001V1V-Sj; Wed, 28 Jul 2021 10:46:00 +0100
+Date:   Wed, 28 Jul 2021 10:45:59 +0100
+Message-ID: <874kceeppk.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
         James Morse <james.morse@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 1/1] arm64/cpufeature: Add option to disable mte support
-Date:   Wed, 28 Jul 2021 17:42:58 +0800
-Message-ID: <20210728094302.9949-2-yee.lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210728094302.9949-1-yee.lee@mediatek.com>
-References: <20210728094302.9949-1-yee.lee@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 02/16] KVM: arm64: Don't issue CMOs when the physical address is invalid
+In-Reply-To: <20210727181044.GB19173@willie-the-truck>
+References: <20210715163159.1480168-1-maz@kernel.org>
+        <20210715163159.1480168-3-maz@kernel.org>
+        <20210727181044.GB19173@willie-the-truck>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, qperret@google.com, dbrazdil@google.com, vatsa@codeaurora.org, sdonthineni@nvidia.com, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yee Lee <yee.lee@mediatek.com>
+On Tue, 27 Jul 2021 19:10:45 +0100,
+Will Deacon <will@kernel.org> wrote:
+> 
+> On Thu, Jul 15, 2021 at 05:31:45PM +0100, Marc Zyngier wrote:
+> > Make sure we don't issue CMOs when mapping something that
+> > is not a memory address in the S2 page tables.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm64/kvm/hyp/pgtable.c | 16 ++++++++++------
+> >  1 file changed, 10 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > index 05321f4165e3..a5874ebd0354 100644
+> > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > @@ -619,12 +619,16 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+> >  	}
+> >  
+> >  	/* Perform CMOs before installation of the guest stage-2 PTE */
+> > -	if (mm_ops->dcache_clean_inval_poc && stage2_pte_cacheable(pgt, new))
+> > -		mm_ops->dcache_clean_inval_poc(kvm_pte_follow(new, mm_ops),
+> > -						granule);
+> > -
+> > -	if (mm_ops->icache_inval_pou && stage2_pte_executable(new))
+> > -		mm_ops->icache_inval_pou(kvm_pte_follow(new, mm_ops), granule);
+> > +	if (kvm_phys_is_valid(phys)) {
+> > +		if (mm_ops->dcache_clean_inval_poc &&
+> > +		    stage2_pte_cacheable(pgt, new))
+> > +			mm_ops->dcache_clean_inval_poc(kvm_pte_follow(new,
+> > +								      mm_ops),
+> > +						       granule);
+> > +		if (mm_ops->icache_inval_pou && stage2_pte_executable(new))
+> > +			mm_ops->icache_inval_pou(kvm_pte_follow(new, mm_ops),
+> > +						 granule);
+> > +	}
+> 
+> Given that this check corresponds to checking the validity of 'new', I
+> wonder whether we'd be better off pushing the validity checks down into
+> stage2_pte_{cacheable,executable}()?
+> 
+> I.e. have stage2_pte_cacheable() return false if !kvm_pte_valid()
 
-Add a static key to exapnd the logic of system_supports_mte().
-This function controls mte enablement in both EL1 and EL0.
+That would work just as well. I'll update the patch.
 
-The static key, "arm64_mte_support" is default true and can
-be disabled via the early_param.
+Thanks,
 
-Signed-off-by: Yee Lee <yee.lee@mediatek.com>
----
- arch/arm64/include/asm/cpufeature.h |  4 +++-
- arch/arm64/kernel/cpufeature.c      | 13 +++++++++++++
- arch/arm64/kernel/image-vars.h      |  3 +++
- 3 files changed, 19 insertions(+), 1 deletion(-)
+	M.
 
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 9bb9d11750d7..0e5c82f2e012 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -420,6 +420,7 @@ static __always_inline bool is_hyp_code(void)
- extern DECLARE_BITMAP(cpu_hwcaps, ARM64_NCAPS);
- extern struct static_key_false cpu_hwcap_keys[ARM64_NCAPS];
- extern struct static_key_false arm64_const_caps_ready;
-+extern struct static_key_true arm64_mte_support;
- 
- /* ARM64 CAPS + alternative_cb */
- #define ARM64_NPATCHABLE (ARM64_NCAPS + 1)
-@@ -756,7 +757,8 @@ static __always_inline bool system_uses_irq_prio_masking(void)
- static inline bool system_supports_mte(void)
- {
- 	return IS_ENABLED(CONFIG_ARM64_MTE) &&
--		cpus_have_const_cap(ARM64_MTE);
-+		cpus_have_const_cap(ARM64_MTE) &&
-+		static_branch_likely(&arm64_mte_support);
- }
- 
- static inline bool system_has_prio_mask_debugging(void)
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 0ead8bfedf20..b1602ad3d7c0 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1840,9 +1840,22 @@ static void bti_enable(const struct arm64_cpu_capabilities *__unused)
- }
- #endif /* CONFIG_ARM64_BTI */
- 
-+DEFINE_STATIC_KEY_TRUE(arm64_mte_support);
-+EXPORT_SYMBOL(arm64_mte_support);
- #ifdef CONFIG_ARM64_MTE
-+static int __init disable_arm64_mte_support(char *str)
-+{
-+	static_branch_disable(&arm64_mte_support);
-+	return 0;
-+}
-+early_param("arm64_mte_not_support", disable_arm64_mte_support);
-+
- static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
- {
-+	if(!system_supports_mte()){
-+		pr_info("MTE is disabled since system does not support.\n");
-+		return ;
-+	}
- 	/*
- 	 * Clear the tags in the zero page. This needs to be done via the
- 	 * linear map which has the Tagged attribute.
-diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index c96a9a0043bf..04cf30ec84e7 100644
---- a/arch/arm64/kernel/image-vars.h
-+++ b/arch/arm64/kernel/image-vars.h
-@@ -83,6 +83,9 @@ KVM_NVHE_ALIAS(__icache_flags);
- KVM_NVHE_ALIAS(arm64_const_caps_ready);
- KVM_NVHE_ALIAS(cpu_hwcap_keys);
- 
-+/* Static key which indicates if system supports mte */
-+KVM_NVHE_ALIAS(arm64_mte_support);
-+
- /* Static keys which are set if a vGIC trap should be handled in hyp. */
- KVM_NVHE_ALIAS(vgic_v2_cpuif_trap);
- KVM_NVHE_ALIAS(vgic_v3_cpuif_trap);
 -- 
-2.18.0
-
+Without deviation from the norm, progress is not possible.
