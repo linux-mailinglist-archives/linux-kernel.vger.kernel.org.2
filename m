@@ -2,118 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9493D93EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6597F3D93F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhG1RGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:06:07 -0400
-Received: from mail-yb1-f175.google.com ([209.85.219.175]:34389 "EHLO
-        mail-yb1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbhG1RGA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:06:00 -0400
-Received: by mail-yb1-f175.google.com with SMTP id a93so5154311ybi.1;
-        Wed, 28 Jul 2021 10:05:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qa1TBZYoLh+YW4PL+E3qWZTqGnp9tadNlp+6JNZ01k8=;
-        b=Jy4xHBJ9PFo19VYDdXr9BvTMVMM6CFfvG1/Y3JYGZKK8/4J2eCkAPXh0VqskJEmAn9
-         A2QFGvRXHLa3BPXPN0OHTkCbTFE/XGnv+f44Sm+J1Jawz8rYdjNKhQK+43if5QOwjKlp
-         UMxEbV+lfMR7CXIT5O7awZOIT0bo2Dcfu4YboHSoHgEOHlbshyl2m3Jonh8chaoY8Ozc
-         ZJWS7kI3qyWSV93tfb7jFgBMK9RpkRpaBeMt1mM30YvXJOhrZrXDAMjJM7BBSb3awSKS
-         EuW2blx5cYEwn0KJuTZ+0fqlu+FDufQM6qLAhEjYe3NIQlhCXFQ+yd72eWWSb30absz1
-         Gtag==
-X-Gm-Message-State: AOAM531niC+Dmygu1T9/bKf7My4p2Fp9gCTuBFVKH3K3q1Ocr1WnPAmN
-        8g/dkOH56yJYNc0S0pdIaEoHvu2zlbQMVmxwzy8=
-X-Google-Smtp-Source: ABdhPJxAcps2oVxkB58J6mo4MBlUBaaOa0QLieInecYjzoFhd3BRYME5jWkJspYp6fLqXsEuVOFrUpsE+D1Sw7atR20=
-X-Received: by 2002:a25:8093:: with SMTP id n19mr945626ybk.414.1627491958119;
- Wed, 28 Jul 2021 10:05:58 -0700 (PDT)
+        id S230101AbhG1RHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:07:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:32992 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhG1RHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:07:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96ACD6D;
+        Wed, 28 Jul 2021 10:07:04 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A472F3F66F;
+        Wed, 28 Jul 2021 10:07:02 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, bobo.shaobowang@huawei.com
+Subject: [PATCH v7 00/24] x86/resctrl: Merge the CDP resources
+Date:   Wed, 28 Jul 2021 17:06:13 +0000
+Message-Id: <20210728170637.25610-1-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210726171802.1052716-1-kernel@esmil.dk> <bcc9de67-f006-0a81-8c3f-2ae5188dca48@roeck-us.net>
-In-Reply-To: <bcc9de67-f006-0a81-8c3f-2ae5188dca48@roeck-us.net>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Wed, 28 Jul 2021 19:05:47 +0200
-Message-ID: <CANBLGcxpaFt-bokq8=Tie-bJnWk5AqLyr-1Ns-+Xtobxs5bYQQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] hwmon: Add StarFive JH7100 temperature sensor
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Drew Fustini <drew@beagleboard.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        linux-hwmon@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 at 18:54, Guenter Roeck <linux@roeck-us.net> wrote:
-> On 7/26/21 10:18 AM, Emil Renner Berthing wrote:
-> > This adds a driver for the temperature sensor on the JH7100, a RISC-V
-> > SoC by StarFive Technology Co. Ltd., and most likely also the upcoming
-> > JH7110 version.
-> >
-> > The SoC is used on the BeagleV Starlight board:
-> > https://github.com/beagleboard/beaglev-starlight
-> >
-> > Support for this SoC is not yet upstreamed, but is actively worked on,
-> > so it should only be a matter of time before that happens.
-> >
->
-> Hmm, makes me wonder if I should apply the series now or later,
-> when the chip is actually supported by the kernel. Comments/thoughts ?
->
-> Guenter
+Hi folks,
 
-I'd of course love if it was applied now. That would at least mean
-fewer patches to rebase when keeping the beaglev patches [1] up to
-date, and I'd be very surprised if SoC support doesn't make it
-upstream eventually. But I'd also fully understand the position that
-this only makes sense to add when support for the SoC is upstream too.
-I'm adding Drew, as he might have something to say about this.
+Changes since v6? Fixed some undefined behaviour warning in the first patch.
+---
 
-[1]: https://github.com/starfive-tech/linux/tree/beaglev
+This series re-folds the resctrl code so the CDP resources (L3CODE et al)
+behaviour is all contained in the filesystem parts, with a minimum amount
+of arch specific code.
 
-/Emil
+Arm have some CPU support for dividing caches into portions, and
+applying bandwidth limits at various points in the SoC. The collective term
+for these features is MPAM: Memory Partitioning and Monitoring.
 
-> > v3:
-> > * Handle timeouts from wait_for_completion_interruptible_timeout
-> >    properly.
-> >
-> > v2:
-> > * Fix checkpatch.pl --strict warnings
-> >    - Add myself to MAINTAINERS
-> >    - Fix multiline comments
-> >    - Use proper case and whitespace for #defines
-> >    - Add comment to sfctemp::lock mutex.
-> > * Remaining comments by Guenter Roeck
-> >    - Add Documentation/hwmon/sfctemp.rst
-> >    - Use devm_add_action() and devm_hwmon_device_register_with_info()
-> >      instead of a driver .remove function.
-> >    - Don't do test conversion at probe time.
-> >    - #include <linux/io.h>
-> >    - Remove unused #defines
-> >    - Use int return variable in sfctemp_convert().
-> > * Add Samin's Signed-off-by to patch 2/2
-> >
-> > Emil Renner Berthing (2):
-> >    dt-bindings: hwmon: add starfive,jh7100-temp bindings
-> >    hwmon: (sfctemp) Add StarFive JH7100 temperature sensor
-> >
-> >   .../bindings/hwmon/starfive,jh7100-temp.yaml  |  43 +++
-> >   Documentation/hwmon/index.rst                 |   1 +
-> >   Documentation/hwmon/sfctemp.rst               |  32 ++
-> >   MAINTAINERS                                   |   8 +
-> >   drivers/hwmon/Kconfig                         |  10 +
-> >   drivers/hwmon/Makefile                        |   1 +
-> >   drivers/hwmon/sfctemp.c                       | 291 ++++++++++++++++++
-> >   7 files changed, 386 insertions(+)
-> >   create mode 100644 Documentation/devicetree/bindings/hwmon/starfive,jh7100-temp.yaml
-> >   create mode 100644 Documentation/hwmon/sfctemp.rst
-> >   create mode 100644 drivers/hwmon/sfctemp.c
-> >
->
+MPAM is similar enough to Intel RDT, that it should use the defacto linux
+interface: resctrl. This filesystem currently lives under arch/x86, and is
+tightly coupled to the architecture.
+Ultimately, my plan is to split the existing resctrl code up to have an
+arch<->fs abstraction, then move all the bits out to fs/resctrl. From there
+MPAM can be wired up.
+
+x86 might have two resources with cache controls, (L2 and L3) but has
+extra copies for CDP: L{2,3}{CODE,DATA}, which are marked as enabled
+if CDP is enabled for the corresponding cache.
+
+MPAM has an equivalent feature to CDP, but its a property of the CPU,
+not the cache. Resctrl needs to have x86's odd/even behaviour, as that
+its the ABI, but this isn't how the MPAM hardware works. It is entirely
+possible that an in-kernel user of MPAM would not be using CDP, whereas
+resctrl is.
+
+
+Pretending L3CODE and L3DATA are entirely separate resources is a neat
+trick, but doing this is specific to x86.
+Doing this leaves the arch code in control of various parts of the
+filesystem ABI: the resources names, and the way the schemata are parsed.
+Allowing this stuff to vary between architectures is bad for user space.
+
+This series collapses the CODE/DATA resources, moving all the user-visible
+resctrl ABI into what becomes the filesystem code. CDP becomes the type of
+configuration being applied to a cache. This is done by adding a
+struct resctrl_schema to the parts of resctrl that will move to fs. This
+holds the arch-code resource that is in use for this schema, along with
+other properties like the name, and whether the configuration being applied
+is CODE/DATA/BOTH.
+
+This lets us fold the extra resources out of the arch code so that they
+don't need to be duplicated if the equivalent feature to CDP is missing, or
+implemented in a different way.
+
+
+The first two patches split the resource and domain structs to have an
+arch specific 'hw' portion, and the rest that is visible to resctrl.
+Future series massage the resctrl code so there are no accesses to 'hw'
+structures in the parts of resctrl that will move to fs, providing helpers
+where necessary.
+
+This series adds temporary scaffolding, which it removes a few patches
+later. This is to allow things like the ctrlval arrays and resources to be
+merged separately, which should make is easier to bisect. These things
+are marked temporary, and should all be gone by the end of the series.
+
+This series is a little rough around the monitors, would a fake
+struct resctrl_schema for the monitors simplify things, or be a source
+of bugs?
+
+A side effect of merging these resources, is their names are no longer printed
+in the kernel log at boot. e.g:
+| resctrl: L3 allocation detected
+| resctrl: MB allocation detected
+| resctrl: L3 monitoring detected
+would previously have had extra entries for 'L3CODE' and 'L3DATA'.
+User-space cannot rely on this to discover CDP support, as the kernel log may
+be inaccessible, may have been overwritten by newer messages, and because
+parsing the kernel log is a bad idea.
+
+
+This series is based on v5.14-rc1, and can be retrieved from:
+git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/resctrl_merge_cdp/v7
+
+v6: https://lore.kernel.org/lkml/20210715173043.14222-25-james.morse@arm.com/
+v5: https://lore.kernel.org/lkml/20210617175820.24037-1-james.morse@arm.com/
+v4: https://lore.kernel.org/lkml/20210614200941.12383-1-james.morse@arm.com/
+v3: https://lore.kernel.org/lkml/20210519162424.27654-1-james.morse@arm.com/
+v2: https://lore.kernel.org/lkml/20210312175849.8327-1-james.morse@arm.com/
+v1: https://lore.kernel.org/lkml/20201030161120.227225-1-james.morse@arm.com/
+
+Parts were previously posted as an RFC here:
+https://lore.kernel.org/lkml/20200214182947.39194-1-james.morse@arm.com/
+
+
+Thanks,
+
+
+James Morse (24):
+  x86/resctrl: Split struct rdt_resource
+  x86/resctrl: Split struct rdt_domain
+  x86/resctrl: Add a separate schema list for resctrl
+  x86/resctrl: Pass the schema in info dir's private pointer
+  x86/resctrl: Label the resources with their configuration type
+  x86/resctrl: Walk the resctrl schema list instead of an arch list
+  x86/resctrl: Store the effective num_closid in the schema
+  x86/resctrl: Add resctrl_arch_get_num_closid()
+  x86/resctrl: Pass the schema to resctrl filesystem functions
+  x86/resctrl: Swizzle rdt_resource and resctrl_schema in
+    pseudo_lock_region
+  x86/resctrl: Add a helper to read/set the CDP configuration
+  x86/resctrl: Move the schemata names into struct resctrl_schema
+  x86/resctrl: Group staged configuration into a separate struct
+  x86/resctrl: Allow different CODE/DATA configurations to be staged
+  x86/resctrl: Rename update_domains() resctrl_arch_update_domains()
+  x86/resctrl: Add a helper to read a closid's configuration
+  x86/resctrl: Pass configuration type to resctrl_arch_get_config()
+  x86/resctrl: Make ctrlval arrays the same size
+  x86/resctrl: Apply offset correction when config is staged
+  x86/resctrl: Calculate the index from the configuration type
+  x86/resctrl: Merge the ctrl_val arrays
+  x86/resctrl: Remove rdt_cdp_peer_get()
+  x86/resctrl: Expand resctrl_arch_update_domains()'s msr_param range
+  x86/resctrl: Merge the CDP resources
+
+ arch/x86/kernel/cpu/resctrl/core.c        | 276 ++++++-------
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 164 +++++---
+ arch/x86/kernel/cpu/resctrl/internal.h    | 231 ++++-------
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  44 ++-
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  12 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 459 ++++++++++++----------
+ include/linux/resctrl.h                   | 185 +++++++++
+ 7 files changed, 775 insertions(+), 596 deletions(-)
+
+-- 
+2.30.2
+
