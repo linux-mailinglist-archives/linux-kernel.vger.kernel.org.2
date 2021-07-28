@@ -2,223 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90603D8FC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95803D8FC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237626AbhG1Nyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:54:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:56984 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237424AbhG1NxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:53:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A02C113E;
-        Wed, 28 Jul 2021 06:53:05 -0700 (PDT)
-Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9B6B83F70D;
-        Wed, 28 Jul 2021 06:53:03 -0700 (PDT)
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        anshuman.khandual@arm.com, will@kernel.org,
-        catalin.marinas@arm.com, james.morse@arm.com,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH 10/10] arm64: errata: Add workaround for TSB flush failures
-Date:   Wed, 28 Jul 2021 14:52:17 +0100
-Message-Id: <20210728135217.591173-11-suzuki.poulose@arm.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20210728135217.591173-1-suzuki.poulose@arm.com>
-References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+        id S237283AbhG1NyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236952AbhG1Nww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 09:52:52 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950A2C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 06:52:41 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id l11-20020a7bc34b0000b029021f84fcaf75so4388836wmj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 06:52:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kuD2/cMi9v63nZZZmSBG2IaupOS/1XWwnneUf9M1k9o=;
+        b=qcRqP641xG0vB+UDYiik9LQYbPUpon4cK820eR4sCWfADHA+T9YgUCydz8yzF5Z8gN
+         9ZQUEAhytwB5ZTNRpwtUWvuzeTq7kDMKRLGiRBEVaGKgpBgaJMzQzHdYwsT+ei/fzUXD
+         tnEDngdpt/iMmL9N+uLOZBHGyiUIgar1ziPC1yNKhdps+wgFOmNmB2Bv2w4E8HKZTvBf
+         72i9hM0HTF4pHTf0pEs99WWodCZCQ9/x9snGUz247KYbrsT1v4M7LCB4quydvu6HYkrl
+         oK5ypCS8Fy3yBcHA54M1L3MZ+MlQ2d4dGvvShgn5bgsDF8hmQrtKCtyrAcYa18gE4f8n
+         mkGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kuD2/cMi9v63nZZZmSBG2IaupOS/1XWwnneUf9M1k9o=;
+        b=dVKwNJ2MtDeseoVR5rHOtZY8zNJ9pigjsGbya6vAL3GQFnkRChMEa1GJiQNVHG2hHY
+         4m3GFfzTVefyvgqRGFp0SjMtfQM90aFAs/wJSRaBCnOqZIoQeFzVdhJpd77Yci1uDB5V
+         i/Ll/FsWKfJNGZtnPPCs9DWSvtw8ik5+roaNp7o+1p+l4TiawEudilauip+T9HaBa9yL
+         3Rr0+vnWYoSVRpOjnsrHBrx5gw4mfVLzH3DMuF7Ha6yjO6S+gaoMk5nLHI/9zL1duHwQ
+         pVe1lcud0rBeM5Ky66WJAOLXuuLXfxX7hcQzNj3pUXa+15mkQ+qEyHXmEx7bWVDZJ810
+         CvWQ==
+X-Gm-Message-State: AOAM532eJYcJA/fxvKdoxOYKC1v6R0qTD7y6NB5gbc6HkrQjlwyd3MZo
+        bPmoCS1wUQEAoHwBe0Lh/3o/WnHJf0N87z0rdsqMYQ==
+X-Google-Smtp-Source: ABdhPJyZ4wRTiW93BgBlBxE6MvcGFi57mJyOUsPHwaGo/ilO2tap+IJYgnG0mQS5pIEyDpoLfvQwlnfJlQMVP7gRGQs=
+X-Received: by 2002:a05:600c:354e:: with SMTP id i14mr27642677wmq.96.1627480360236;
+ Wed, 28 Jul 2021 06:52:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210707092257.1465109-1-maxime@cerno.tech>
+In-Reply-To: <20210707092257.1465109-1-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Wed, 28 Jul 2021 14:52:24 +0100
+Message-ID: <CAPY8ntDXZ7ExjKvBMFjd5d3RTfrGCe2TYiXfmjF4bmE+WMFssQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] drm/vc4: hdmi: Fix CEC access while disabled
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Emma Anholt <emma@anholt.net>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arm Neoverse-N2 (#2067961) and Cortex-A710 (#2054223) suffers
-from errata, where a TSB (trace synchronization barrier)
-fails to flush the trace data completely, when executed from
-a trace prohibited region. In Linux we always execute it
-after we have moved the PE to trace prohibited region. So,
-we can apply the workaround everytime a TSB is executed.
+Hi Maxime
 
-The work around is to issue two TSB consecutively.
+On Wed, 7 Jul 2021 at 10:23, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Hi,
+>
+> This series aims at fixing a complete and silent hang when one tries to use CEC
+> while the display output is off.
+>
+> This can be tested with:
+>
+> echo off > /sys/class/drm/card0-HDMI-A-1/status
+> cec-ctl --tuner -p 1.0.0.0
+> cec-compliance
+>
+> This series addresses it by making sure the HDMI controller is powered up as
+> soon as the CEC device is opened by the userspace.
+>
+> Let me know what you think,
+> Maxime
+>
+> Changes from v1:
+>   - More fixes
+>   - Added a big warning if we try to access a register while the device is
+>     disabled.
+>   - Fixed the pre_crtc_configure error path
+>
+> Maxime Ripard (5):
+>   drm/vc4: hdmi: Make sure the controller is powered up during bind
+>   drm/vc4: hdmi: Rework the pre_crtc_configure error handling
+>   drm/vc4: hdmi: Split the CEC disable / enable functions in two
+>   drm/vc4: hdmi: Make sure the device is powered with CEC
+>   drm/vc4: hdmi: Warn if we access the controller while disabled
 
-NOTE: This errata is defined as LOCAL_CPU_ERRATUM, implying
-that a late CPU could be blocked from booting if it is the
-first CPU that requires the workaround. This is because we
-do not allow setting a cpu_hwcaps after the SMP boot. The
-other alternative is to use "this_cpu_has_cap()" instead
-of the faster system wide check, which may be a bit of an
-overhead, given we may have to do this in nvhe KVM host
-before a guest entry.
+Comment made on patch 1.
 
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
----
- Documentation/arm64/silicon-errata.rst |  4 ++++
- arch/arm64/Kconfig                     | 31 ++++++++++++++++++++++++++
- arch/arm64/include/asm/barrier.h       | 17 +++++++++++++-
- arch/arm64/kernel/cpu_errata.c         | 19 ++++++++++++++++
- arch/arm64/tools/cpucaps               |  1 +
- 5 files changed, 71 insertions(+), 1 deletion(-)
+Patches 2-5:
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
-index 2f99229d993c..569a92411dcd 100644
---- a/Documentation/arm64/silicon-errata.rst
-+++ b/Documentation/arm64/silicon-errata.rst
-@@ -94,6 +94,8 @@ stable kernels.
- +----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
- +----------------+-----------------+-----------------+-----------------------------+
-+| ARM            | Cortex-A710     | #2054223        | ARM64_ERRATUM_2054223       |
-++----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Neoverse-N1     | #1188873,1418040| ARM64_ERRATUM_1418040       |
- +----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Neoverse-N1     | #1349291        | N/A                         |
-@@ -102,6 +104,8 @@ stable kernels.
- +----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
- +----------------+-----------------+-----------------+-----------------------------+
-+| ARM            | Neoverse-N2     | #2067961        | ARM64_ERRATUM_2067961       |
-++----------------+-----------------+-----------------+-----------------------------+
- | ARM            | MMU-500         | #841119,826419  | N/A                         |
- +----------------+-----------------+-----------------+-----------------------------+
- +----------------+-----------------+-----------------+-----------------------------+
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index ad301045dafc..49416ea655c0 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -708,6 +708,37 @@ config ARM64_ERRATUM_2139208
- 
- 	  If unsure, say Y.
- 
-+config ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-+	bool
-+
-+config ARM64_ERRATUM_2054223
-+	bool "Cortex-A710: 2054223: workaround TSB instruction failing to flush trace"
-+	default y
-+	help
-+	  Enable workaround for ARM Cortex-A710 erratum 2054223
-+
-+	  Affected cores may fail to flush the trace data on a TSB instruction, when
-+	  the PE is in trace prohibited state. This will cause loosing a few bytes
-+	  of the trace cached.
-+
-+	  Workaround is to issue two TSB consecutively on affected cores.
-+
-+	  If unsure, say Y.
-+
-+config ARM64_ERRATUM_2067961
-+	bool "Neoverse-N2: 2067961: workaround TSB instruction failing to flush trace"
-+	default y
-+	help
-+	  Enable workaround for ARM Neoverse-N2 erratum 2067961
-+
-+	  Affected cores may fail to flush the trace data on a TSB instruction, when
-+	  the PE is in trace prohibited state. This will cause loosing a few bytes
-+	  of the trace cached.
-+
-+	  Workaround is to issue two TSB consecutively on affected cores.
-+
-+	  If unsure, say Y.
-+
- config CAVIUM_ERRATUM_22375
- 	bool "Cavium erratum 22375, 24313"
- 	default y
-diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
-index 451e11e5fd23..3bc1ed436e04 100644
---- a/arch/arm64/include/asm/barrier.h
-+++ b/arch/arm64/include/asm/barrier.h
-@@ -23,7 +23,7 @@
- #define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
- 
- #define psb_csync()	asm volatile("hint #17" : : : "memory")
--#define tsb_csync()	asm volatile("hint #18" : : : "memory")
-+#define __tsb_csync()	asm volatile("hint #18" : : : "memory")
- #define csdb()		asm volatile("hint #20" : : : "memory")
- 
- #ifdef CONFIG_ARM64_PSEUDO_NMI
-@@ -46,6 +46,21 @@
- #define dma_rmb()	dmb(oshld)
- #define dma_wmb()	dmb(oshst)
- 
-+
-+#define tsb_csync()								\
-+	do {									\
-+		/*								\
-+		 * CPUs affected by Arm Erratum 2054223 or 2067961 needs	\
-+		 * another TSB to ensure the trace is flushed.			\
-+		 */								\
-+		if (cpus_have_const_cap(ARM64_WORKAROUND_TSB_FLUSH_FAILURE)) {	\
-+			__tsb_csync();						\
-+			__tsb_csync();						\
-+		} else {							\
-+			__tsb_csync();						\
-+		}								\
-+	} while (0)
-+
- /*
-  * Generate a mask for array_index__nospec() that is ~0UL when 0 <= idx < sz
-  * and 0 otherwise.
-diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-index ccd757373f36..bdbeac75ead6 100644
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -352,6 +352,18 @@ static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
- };
- #endif	/* CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE */
- 
-+#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-+static const struct midr_range tsb_flush_fail_cpus[] = {
-+#ifdef CONFIG_ARM64_ERRATUM_2067961
-+	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
-+#endif
-+#ifdef CONFIG_ARM64_ERRATUM_2054223
-+	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
-+#endif
-+	{},
-+};
-+#endif	/* CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILURE */
-+
- const struct arm64_cpu_capabilities arm64_errata[] = {
- #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
- 	{
-@@ -558,6 +570,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
- 		.type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
- 		CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
- 	},
-+#endif
-+#ifdef CONFIG_ARM64_WORKAROUND_TSB_FLUSH_FAILRE
-+	{
-+		.desc = "ARM erratum 2067961 or 2054223",
-+		.capability = ARM64_WORKAROUND_TSB_FLUSH_FAILURE,
-+		ERRATA_MIDR_RANGE_LIST(tsb_flush_fail_cpus),
-+	},
- #endif
- 	{
- 	}
-diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-index 1ccb92165bd8..2102e15af43d 100644
---- a/arch/arm64/tools/cpucaps
-+++ b/arch/arm64/tools/cpucaps
-@@ -54,6 +54,7 @@ WORKAROUND_1463225
- WORKAROUND_1508412
- WORKAROUND_1542419
- WORKAROUND_TRBE_OVERWRITE_FILL_MODE
-+WORKAROUND_TSB_FLUSH_FAILURE
- WORKAROUND_CAVIUM_23154
- WORKAROUND_CAVIUM_27456
- WORKAROUND_CAVIUM_30115
--- 
-2.24.1
+  Dave
 
+>
+>  drivers/gpu/drm/vc4/vc4_hdmi.c      | 123 +++++++++++++++++++---------
+>  drivers/gpu/drm/vc4/vc4_hdmi_regs.h |   6 ++
+>  2 files changed, 89 insertions(+), 40 deletions(-)
+>
+> --
+> 2.31.1
+>
