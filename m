@@ -2,182 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2192A3D9179
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E61853D9182
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236992AbhG1PBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236996AbhG1PBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:01:00 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3EAC061757;
-        Wed, 28 Jul 2021 08:00:57 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id k13so1524539qth.10;
-        Wed, 28 Jul 2021 08:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AlpYFZELB3hxoanwcJLzp+k0B1S9bWh0moPS2Ma0y3s=;
-        b=dhJfvCrdX6+JGPhGDJDiLBEG9UcTs16jDN30lex0VRBKF31MUZUDo/xkZR6v3BkQRH
-         3ELG307oxRyzNYMvuDDBFRlHKIl6jcRvUzt4NR6of8GeDOA2OYcikQw0f5cG9mxfulnp
-         VjmUF7popt16REpUDoOqa8pCQmkMhujTuv/vkJGqPnLP/tVc2lG4CBxgdvVl3t5eZyS2
-         ykUPStBkvttyxhooJeX9AWL6ADzL08OgxAz5sNUmEZqZ00MWEuIuhB5M4D1PPphpvwxs
-         bBGC/q3UYISy2ao1M1kL3QSAU433qE5dynEpQ8Rkr8PVmEVvsvHrKThnueDsgMDaTgDp
-         AIcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AlpYFZELB3hxoanwcJLzp+k0B1S9bWh0moPS2Ma0y3s=;
-        b=DuOm9BWSercjUjIMO4aBCV2WJLGlLbd16RIl47FOvH4IgBKtDBoAQh8/72P6HPdxxz
-         A32YXdUuLBOzIIDQ4Iu6DPgunJPAKLxLL372KA9YORmaep6jAI+IVpgGH3a1f6hUbQYB
-         HBXvHtsbneStUxSt9cSODIlQLkI+ZZy/cpSnv8AH4kLV48gCHqWuHfwdRBorNy+G8UOC
-         ++vTH7XbpDlfwUrebueOPy1CJGtg1xWEI4ioACeJvKsw4sa6fgpkfzfoqEajReU9aI6K
-         /l9p6QguspYh/NtiYjVm9nmkTLvW5kyqzcEbbJzqXfjHYC3ej8Drd5tjCJ4/CX/+ZxPT
-         rwqw==
-X-Gm-Message-State: AOAM531IfDyiW/o0SkNf2UN6/LmVoCa65jBPNHZz99KUSYRf8Gfk6rLa
-        tCHSjNpAIXH/vS31iU+1+jUDeLx+/Gf1hA==
-X-Google-Smtp-Source: ABdhPJyWnjizrUNfAt5HnnUjZjxHyPZkzszUBil/ydfv7NEImOvXH+iaC3mYu7hipeoeIzFjvsaisg==
-X-Received: by 2002:ac8:4794:: with SMTP id k20mr24810889qtq.371.1627484456421;
-        Wed, 28 Jul 2021 08:00:56 -0700 (PDT)
-Received: from localhost ([12.28.44.171])
-        by smtp.gmail.com with ESMTPSA id c15sm45491qtc.37.2021.07.28.08.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 08:00:56 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 08:00:54 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        David Hildenbrand <david@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH 0/8] all: use find_next_*_bit() instead of
- find_first_*_bit() where possible
-Message-ID: <YQFxJnB+cH4SU9I3@yury-ThinkPad>
-References: <20210612123639.329047-1-yury.norov@gmail.com>
+        id S235615AbhG1PIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:08:05 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44577 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235546AbhG1PIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:08:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627484882; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Reply-To: Sender;
+ bh=sj2A2zR3rcI8P9VUMF3/9Yk8xk+GhmmV1rwmsS/dDMU=; b=mC3qGMR2gROfN8/EHK4FGKlgas4yi5oZ0mb3nu897gdZS2fpQVWWwQ5pqocuHek3zeHPQV9S
+ USLI0cyq9WrFVJ5I7tcaN9HzuN7pTAPvSDfkg7g10qSkmlw78xJHCiGtRIhv//DOM/ugydSe
+ IuxBXlLr1z/lyE2Y03IEy0/1vJw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 610172c5b653fbdadd4e6ad5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 15:07:48
+ GMT
+Sender: bcain=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 33600C433F1; Wed, 28 Jul 2021 15:07:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from BCAIN (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bcain)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 497DBC433F1;
+        Wed, 28 Jul 2021 15:07:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 497DBC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
+Reply-To: <bcain@codeaurora.org>
+From:   "Brian Cain" <bcain@codeaurora.org>
+To:     "'Nathan Chancellor'" <nathan@kernel.org>,
+        "'Andrew Morton'" <akpm@linux-foundation.org>
+Cc:     "'Nick Desaulniers'" <ndesaulniers@google.com>,
+        <linux-hexagon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <clang-built-linux@googlegroups.com>,
+        "'Manning, Sid'" <sidneym@quicinc.com>
+References: <20210728001729.1960182-1-nathan@kernel.org>
+In-Reply-To: <20210728001729.1960182-1-nathan@kernel.org>
+Subject: RE: [PATCH] hexagon: Clean up timer-regs.h
+Date:   Wed, 28 Jul 2021 10:07:45 -0500
+Message-ID: <03bc01d783c2$52e6f200$f8b4d600$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210612123639.329047-1-yury.norov@gmail.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQHsvcFl/v/yGvN+KqOPEWg6PsqxiKsuCMEw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping again.
+> -----Original Message-----
+> From: Nathan Chancellor <nathan@kernel.org>
+...
+> When building allmodconfig, there is a warning about TIMER_ENABLE being
+> redefined:
+> 
+>  drivers/clocksource/timer-oxnas-rps.c:39:9: warning: 'TIMER_ENABLE'
+>  macro redefined [-Wmacro-redefined]
+>  #define TIMER_ENABLE            BIT(7)
+>          ^
+>  arch/hexagon/include/asm/timer-regs.h:13:9: note: previous definition
+>  is here
+>  #define TIMER_ENABLE            0
+>          ^
+>  1 warning generated.
+> 
+> The values in this header are only used in one file each, if they are
+> used at all. Remove the header and sink all of the constants into their
+> respective files.
+> 
+> TCX0_CLK_RATE is only used in arch/hexagon/include/asm/timex.h
+> 
+> TIMER_ENABLE, RTOS_TIMER_INT, RTOS_TIMER_REGS_ADDR are only used in
+> arch/hexagon/kernel/time.c.
+> 
+> SLEEP_CLK_RATE and TIMER_CLR_ON_MATCH have both been unused since
+> the
+> file's introduction in commit 71e4a47f32f4 ("Hexagon: Add time and timer
+> functions").
+> 
+> TIMER_ENABLE is redefined as BIT(0) so the shift is moved into the
+> definition, rather than its use.
+> 
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  arch/hexagon/include/asm/timer-regs.h | 26 --------------------------
+>  arch/hexagon/include/asm/timex.h      |  3 +--
+>  arch/hexagon/kernel/time.c            | 12 ++++++++++--
+>  3 files changed, 11 insertions(+), 30 deletions(-)
+>  delete mode 100644 arch/hexagon/include/asm/timer-regs.h
+> 
+> diff --git a/arch/hexagon/include/asm/timer-regs.h
+> b/arch/hexagon/include/asm/timer-regs.h
+> deleted file mode 100644
+> index ee6c61423a05..000000000000
+> --- a/arch/hexagon/include/asm/timer-regs.h
+> +++ /dev/null
+> @@ -1,26 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0-only */
+> -/*
+> - * Timer support for Hexagon
+> - *
+> - * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+> - */
+> -
+> -#ifndef _ASM_TIMER_REGS_H
+> -#define _ASM_TIMER_REGS_H
+> -
+> -/*  This stuff should go into a platform specific file  */
+> -#define TCX0_CLK_RATE		19200
+> -#define TIMER_ENABLE		0
+> -#define TIMER_CLR_ON_MATCH	1
+> -
+> -/*
+> - * 8x50 HDD Specs 5-8.  Simulator co-sim not fixed until
+> - * release 1.1, and then it's "adjustable" and probably not defaulted.
+> - */
+> -#define RTOS_TIMER_INT		3
+> -#ifdef CONFIG_HEXAGON_COMET
+> -#define RTOS_TIMER_REGS_ADDR	0xAB000000UL
+> -#endif
+> -#define SLEEP_CLK_RATE		32000
+> -
+> -#endif
+> diff --git a/arch/hexagon/include/asm/timex.h
+> b/arch/hexagon/include/asm/timex.h
+> index 8d4ec76fceb4..dfe69e118b2b 100644
+> --- a/arch/hexagon/include/asm/timex.h
+> +++ b/arch/hexagon/include/asm/timex.h
+> @@ -7,11 +7,10 @@
+>  #define _ASM_TIMEX_H
+> 
+>  #include <asm-generic/timex.h>
+> -#include <asm/timer-regs.h>
+>  #include <asm/hexagon_vm.h>
+> 
+>  /* Using TCX0 as our clock.  CLOCK_TICK_RATE scheduled to be removed. */
+> -#define CLOCK_TICK_RATE              TCX0_CLK_RATE
+> +#define CLOCK_TICK_RATE              19200
+> 
+>  #define ARCH_HAS_READ_CURRENT_TIMER
+> 
+> diff --git a/arch/hexagon/kernel/time.c b/arch/hexagon/kernel/time.c
+> index feffe527ac92..febc95714d75 100644
+> --- a/arch/hexagon/kernel/time.c
+> +++ b/arch/hexagon/kernel/time.c
+> @@ -17,9 +17,10 @@
+>  #include <linux/of_irq.h>
+>  #include <linux/module.h>
+> 
+> -#include <asm/timer-regs.h>
+>  #include <asm/hexagon_vm.h>
+> 
+> +#define TIMER_ENABLE		BIT(0)
+> +
+>  /*
+>   * For the clocksource we need:
+>   *	pcycle frequency (600MHz)
+> @@ -33,6 +34,13 @@ cycles_t	pcycle_freq_mhz;
+>  cycles_t	thread_freq_mhz;
+>  cycles_t	sleep_clk_freq;
+> 
+> +/*
+> + * 8x50 HDD Specs 5-8.  Simulator co-sim not fixed until
+> + * release 1.1, and then it's "adjustable" and probably not defaulted.
+> + */
+> +#define RTOS_TIMER_INT		3
+> +#define RTOS_TIMER_REGS_ADDR	0xAB000000UL
+> +
+>  static struct resource rtos_timer_resources[] = {
+>  	{
+>  		.start	= RTOS_TIMER_REGS_ADDR,
+> @@ -80,7 +88,7 @@ static int set_next_event(unsigned long delta, struct
+> clock_event_device *evt)
+>  	iowrite32(0, &rtos_timer->clear);
+> 
+>  	iowrite32(delta, &rtos_timer->match);
+> -	iowrite32(1 << TIMER_ENABLE, &rtos_timer->enable);
+> +	iowrite32(TIMER_ENABLE, &rtos_timer->enable);
+>  	return 0;
+>  }
+> 
+> 
+> base-commit: 7d549995d4e0d99b68e8a7793a0d23da6fc40fe8
 
-The rebased series together with other bitmap patches can be found
-here:
+Acked-by: Brian Cain <bcain@codeaurora.org>
 
-https://github.com/norov/linux/tree/bitmap-20210716
-
-On Sat, Jun 12, 2021 at 05:36:31AM -0700, Yury Norov wrote:
-> find_first_*_bit() is simpler and faster than 'next' version [1], and they
-> work identically if start == 0. But in many cases kernel code uses the
-> 'next' version where 'first' can be used. This series addresses this issue.
-> 
-> Patches 1-3 move find.h under include/linux as it simplifies development.
-> Patches 4-8 switch the kernel and tools to find_first_*_bit() implementation
-> where appropriate. 
-> 
-> Yury Norov (8):
->   bitops: protect find_first_{,zero}_bit properly
->   bitops: move find_bit_*_le functions from le.h to find.h
->   include: move find.h from asm_generic to linux
->   arch: remove GENERIC_FIND_FIRST_BIT entirely
->   lib: add find_first_and_bit()
->   cpumask: use find_first_and_bit()
->   all: replace find_next{,_zero}_bit with find_first{,_zero}_bit where
->     appropriate
->   tools: sync tools/bitmap with mother linux
-> 
->  MAINTAINERS                                   |   4 +-
->  arch/alpha/include/asm/bitops.h               |   2 -
->  arch/arc/Kconfig                              |   1 -
->  arch/arc/include/asm/bitops.h                 |   1 -
->  arch/arm/include/asm/bitops.h                 |   1 -
->  arch/arm64/Kconfig                            |   1 -
->  arch/arm64/include/asm/bitops.h               |   1 -
->  arch/csky/include/asm/bitops.h                |   1 -
->  arch/h8300/include/asm/bitops.h               |   1 -
->  arch/hexagon/include/asm/bitops.h             |   1 -
->  arch/ia64/include/asm/bitops.h                |   2 -
->  arch/m68k/include/asm/bitops.h                |   2 -
->  arch/mips/Kconfig                             |   1 -
->  arch/mips/include/asm/bitops.h                |   1 -
->  arch/openrisc/include/asm/bitops.h            |   1 -
->  arch/parisc/include/asm/bitops.h              |   2 -
->  arch/powerpc/include/asm/bitops.h             |   2 -
->  arch/powerpc/platforms/pasemi/dma_lib.c       |   4 +-
->  arch/riscv/include/asm/bitops.h               |   1 -
->  arch/s390/Kconfig                             |   1 -
->  arch/s390/include/asm/bitops.h                |   1 -
->  arch/s390/kvm/kvm-s390.c                      |   2 +-
->  arch/sh/include/asm/bitops.h                  |   1 -
->  arch/sparc/include/asm/bitops_32.h            |   1 -
->  arch/sparc/include/asm/bitops_64.h            |   2 -
->  arch/x86/Kconfig                              |   1 -
->  arch/x86/include/asm/bitops.h                 |   2 -
->  arch/x86/um/Kconfig                           |   1 -
->  arch/xtensa/include/asm/bitops.h              |   1 -
->  drivers/block/rnbd/rnbd-clt.c                 |   2 +-
->  drivers/dma/ti/edma.c                         |   2 +-
->  drivers/iio/adc/ad7124.c                      |   2 +-
->  drivers/infiniband/hw/irdma/hw.c              |  16 +-
->  drivers/media/cec/core/cec-core.c             |   2 +-
->  drivers/media/mc/mc-devnode.c                 |   2 +-
->  drivers/pci/controller/dwc/pci-dra7xx.c       |   2 +-
->  drivers/scsi/lpfc/lpfc_sli.c                  |  10 +-
->  drivers/soc/ti/k3-ringacc.c                   |   4 +-
->  drivers/tty/n_tty.c                           |   2 +-
->  drivers/virt/acrn/ioreq.c                     |   3 +-
->  fs/f2fs/segment.c                             |   8 +-
->  fs/ocfs2/cluster/heartbeat.c                  |   2 +-
->  fs/ocfs2/dlm/dlmdomain.c                      |   4 +-
->  fs/ocfs2/dlm/dlmmaster.c                      |  18 +--
->  fs/ocfs2/dlm/dlmrecovery.c                    |   2 +-
->  fs/ocfs2/dlm/dlmthread.c                      |   2 +-
->  include/asm-generic/bitops.h                  |   1 -
->  include/asm-generic/bitops/le.h               |  64 --------
->  include/linux/bitmap.h                        |   1 +
->  include/linux/cpumask.h                       |  30 ++--
->  .../bitops => include/linux}/find.h           | 149 +++++++++++++++++-
->  lib/Kconfig                                   |   3 -
->  lib/find_bit.c                                |  21 +++
->  lib/find_bit_benchmark.c                      |  21 +++
->  lib/genalloc.c                                |   2 +-
->  net/ncsi/ncsi-manage.c                        |   4 +-
->  tools/include/asm-generic/bitops.h            |   1 -
->  tools/include/linux/bitmap.h                  |   7 +-
->  .../bitops => tools/include/linux}/find.h     |  54 +++++--
->  tools/lib/find_bit.c                          |  20 +++
->  60 files changed, 319 insertions(+), 185 deletions(-)
->  rename {tools/include/asm-generic/bitops => include/linux}/find.h (50%)
->  rename {include/asm-generic/bitops => tools/include/linux}/find.h (83%)
-> 
-> -- 
-> 2.30.2
