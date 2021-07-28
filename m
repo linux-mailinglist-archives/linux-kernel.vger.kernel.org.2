@@ -2,140 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093AC3D981A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1D93D981C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbhG1WBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:01:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231668AbhG1WBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:01:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BF6E60F5E;
-        Wed, 28 Jul 2021 22:01:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627509699;
-        bh=eT1ZYBz1kwcqDTxbLvzyK/4f/qPZ0QCHOcZMPByW5y0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=abA7RTUyN/hXppfCfRb6ywSxGoiOkGSVe/n0+PWvd8OLQkmiM691COMzZYC/qO9cU
-         z5VtYefEq9b8ZJpuZ4yKPSuvr5k/B0PK8KLFlGF3hiRH4o8e/qR0p2TgUixgromYnF
-         RYgM9pbxUFXo4d8Rn2Acw/W1emcZyOFThFMzVufoQyyuddm/3IrGj6evxNQ+NU19Ek
-         iXdgSSyYvpaNzTZshWBz8KyZpFn6IpF23c07BS5MHlfEwiknl0msaTRww6zDSFTJ5U
-         dpldAlQo9OkIBsw0pObRlvcv4Wxjj8aLEobuVyLfczrKfUIP/uhPNMPgkw/YTgUqMT
-         5NJdXY7/Rx8cw==
-Date:   Thu, 29 Jul 2021 00:01:37 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH 2/3] rcu/nocb: Check for migratability rather than pure
- preemptability
-Message-ID: <20210728220137.GD293265@lothringen>
-References: <20210721115118.729943-1-valentin.schneider@arm.com>
- <20210721115118.729943-3-valentin.schneider@arm.com>
- <20210727230814.GC283787@lothringen>
- <87pmv2kzbd.mognet@arm.com>
+        id S232130AbhG1WBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:01:50 -0400
+Received: from mail-dm6nam10on2089.outbound.protection.outlook.com ([40.107.93.89]:31712
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231668AbhG1WBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:01:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QRdfD3405GJKrQWtgx3zPFSwanxD3yPkaSmjbSR5pk6HEqhbo4/ngUIsyk9T3if8+kNNsN/ZJMnuE1K019GTSVKx7SHew4Mu4d7rhH868jdhde778Lkpt/VaCm2+O8pCRSpUZpBgi3TOnoTc9fIm36NhdgrbY3ipEeCxRCmSnq9Ri+8mzuHMGlHL8D9pnc9lWxa2BysS8crSV9+qOE6PFv4cL+iY0Kcu8EAMtcKiUsxwK5rfJfR1OD2+nJhFl155oz7YPT63jznWZ7MyezIYeQhcSrtnoZGd/cbPn81Av7hnCYIJ14HV0IZCUn5jclFr1uUwcb3PT6VHE5/dm+TTxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ix+lyizIBOmC4/iaM96Bn44b5MO1n6c0ADhY8nZn+Vc=;
+ b=CBkNjCD762e8UHeyr3Hjd9sA/nd8Y86LLw+sTz+pbFnAjXW5guMJvmDrHRO1mzldGb/PKP1dsN65urh+TAoK/gLYuR1AXGePvpix/WwXIZXETqaRPNo+dnRS1sdtR7OnHJAVjcnxS1/x8eY4HWMfSM1aKp9ELMXgtbP7/WV5rgD64BadLU4lM8cyLKp6nsuIcHCxYMV6lzSFAXejuHhwyVYVbHWn9RLnCOsA3t67pngku2G8dOFHfvzYN+bJsLW+GCcC9bjL7+8LJiDJpSRjD6IRugJ5OeqktsxTbTWfVrra07Cofjhg8f1k1TAMmazH1DaMwqcJSnsDxhTlvN+3og==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ix+lyizIBOmC4/iaM96Bn44b5MO1n6c0ADhY8nZn+Vc=;
+ b=Papq3c3SWr09DSsv2zbSZcHnSK+2HNEk9IyAgW9iKuHdZYjEHN9EiwDFvfcoU2GQwmGC/cr+xErRTnN5rCsjEGiOmaQdHOYYoxPxEk1NADslzHqJfnpp2a5mjKsqADn10qjWxLu/+LVWisa8l2opeSTo4bXI83F0o4bmQuc/83raEHZNzwptI8pahhbZ5wh+4pdPSwgSOAF+IS9C6VWQBC7owXWGdhHM/mVGyt9AfvsWLHuZm9vzATcBgEDwnMPH0/4vXWHKtcLhIcvPR2O+YlqlbNvT5izD17QawwQGYFIqoVbIdAebYBjnut1WSXiI0AosFS7ZwWdzLy2Wruz2hg==
+Received: from BN9PR03CA0434.namprd03.prod.outlook.com (2603:10b6:408:113::19)
+ by DM6PR12MB2684.namprd12.prod.outlook.com (2603:10b6:5:4a::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17; Wed, 28 Jul
+ 2021 22:01:45 +0000
+Received: from BN8NAM11FT054.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:113:cafe::af) by BN9PR03CA0434.outlook.office365.com
+ (2603:10b6:408:113::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend
+ Transport; Wed, 28 Jul 2021 22:01:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT054.mail.protection.outlook.com (10.13.177.102) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 22:01:45 +0000
+Received: from [10.20.23.47] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 28 Jul
+ 2021 22:01:43 +0000
+Subject: Re: [PATCH v10 2/8] PCI: Add new array for keeping track of ordering
+ of reset methods
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <alex.williamson@redhat.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kw@linux.com>, Sinan Kaya <okaya@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+References: <20210728202513.GA848092@bjorn-Precision-5520>
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Message-ID: <3382bb94-0cf1-52eb-1b97-69b4536f4874@nvidia.com>
+Date:   Wed, 28 Jul 2021 17:01:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pmv2kzbd.mognet@arm.com>
+In-Reply-To: <20210728202513.GA848092@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 19eecdbc-dbff-41a7-a7d8-08d952134a78
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2684:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2684BB41CFF452C53F4D1FC6C7EA9@DM6PR12MB2684.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lq4p8VCmAi9D5vgQxoXA2ucZAuVVxonx/lzod7cKqsCob6zZ+YP69NyOXNVqtEbWSq4QNNDxXtvqp4JSEsHA+cqqprCHzUY803YTH7yGvWlQhI6jwqP3tdsLJxtOq0XYAbpxf5uDuSSw3pmUDacWbNuJDLHBa3nC0LczLFVE6mvRGZI1LEYtn1FoK82mWv7E8uc6XtvM+jk21TqwN0PJrQHRl4zsmouFZBW9RTngkTWvJoMev7bJqMaBheb1Ta0DZXwgI0hZb0W3KsILE7r46vBSlW0hfmSMQGuScR4cp5rMDO5pCWObaeh3iaF2yd4j2UddjGvjfxLTpflxM6CEPOMGIkccPeNSzrxZHYSIwynbWZqXcHIc9FXSTjz4PHMX6C/jUiauzFLbZanp7q8nr1Sbw6sxiAOasoaVVE/LLHrqROpnwt3siuL1JQ8YRBJw3xg1ccip359IiwvI9YVdsHooTlH6Lvs3Skbd/MG1/qMmI/T8poM5xkRv+5joe10weP/d9NA3xVLZvZbU/tiTNkHQ1m1HTizzCbHFxFm/bGPnbDaDYg0Ly/BxQJzA41eoycGrulL4JbAM+WvXVdeCWD3o0AjlBueLi8Gz5dXN0LYCjxaFNXf6PTY1e7zOiYzZl7a5sx03uo2UCgLrXk9VZwcyjsEsmSVIL72z//8zeNiVYj5obmfiTM96w9z5NsnpzyXGU3r0i6CmTRwKdRNKsQsUrEJzphnHV/fpiALdhXG59FLXdGIBCW66LZuVNLRN+J88F7fAxJvQ/2cyaqHLcQ==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(346002)(396003)(46966006)(36840700001)(36860700001)(356005)(426003)(82310400003)(7416002)(47076005)(336012)(316002)(5660300002)(31696002)(186003)(70206006)(2906002)(53546011)(70586007)(36906005)(478600001)(54906003)(16576012)(4326008)(2616005)(8676002)(26005)(8936002)(82740400003)(36756003)(16526019)(31686004)(6916009)(86362001)(7636003)(43740500002)(309714004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 22:01:45.5054
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19eecdbc-dbff-41a7-a7d8-08d952134a78
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT054.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2684
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 08:34:14PM +0100, Valentin Schneider wrote:
-> On 28/07/21 01:08, Frederic Weisbecker wrote:
-> > On Wed, Jul 21, 2021 at 12:51:17PM +0100, Valentin Schneider wrote:
-> >> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> >> ---
-> >>  kernel/rcu/tree_plugin.h | 3 +--
-> >>  1 file changed, 1 insertion(+), 2 deletions(-)
-> >>
-> >> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> >> index ad0156b86937..6c3c4100da83 100644
-> >> --- a/kernel/rcu/tree_plugin.h
-> >> +++ b/kernel/rcu/tree_plugin.h
-> >> @@ -70,8 +70,7 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
-> >>              !(lockdep_is_held(&rcu_state.barrier_mutex) ||
-> >>                (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
-> >>                rcu_lockdep_is_held_nocb(rdp) ||
-> >> -		  (rdp == this_cpu_ptr(&rcu_data) &&
-> >> -		   !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())) ||
-> >> +		  (rdp == this_cpu_ptr(&rcu_data) && is_pcpu_safe()) ||
-> >
-> > I fear that won't work. We really need any caller of rcu_rdp_is_offloaded()
-> > on the local rdp to have preemption disabled and not just migration disabled,
-> > because we must protect against concurrent offloaded state changes.
-> >
-> > The offloaded state is changed by a workqueue that executes on the target rdp.
-> >
-> > Here is a practical example where it matters:
-> >
-> >            CPU 0
-> >            -----
-> >            // =======> task rcuc running
-> >            rcu_core {
-> >              rcu_nocb_lock_irqsave(rdp, flags) {
-> >                    if (!rcu_segcblist_is_offloaded(rdp->cblist)) {
-> >                      // is not offloaded right now, so it's going
-> >                        // to just disable IRQs. Oh no wait:
-> >            // preemption
-> >            // ========> workqueue running
-> >            rcu_nocb_rdp_offload();
-> >            // ========> task rcuc resume
-> >                      local_irq_disable();
-> >                    }
-> >                }
-> >              ....
-> >                      rcu_nocb_unlock_irqrestore(rdp, flags) {
-> >                    if (rcu_segcblist_is_offloaded(rdp->cblist)) {
-> >                        // is offloaded right now so:
-> >                        raw_spin_unlock_irqrestore(rdp, flags);
-> >
-> > And that will explode because that's an impaired unlock on nocb_lock.
-> 
-> Harumph, that doesn't look good, thanks for pointing this out.
-> 
-> AFAICT PREEMPT_RT doesn't actually require to disable softirqs here (since
-> it forces RCU callbacks on the RCU kthreads), but disabled softirqs seem to
-> be a requirement for much of the underlying functions and even some of the
-> callbacks (delayed_put_task_struct() ~> vfree() pays close attention to
-> in_interrupt() for instance).
-> 
-> Now, if the offloaded state was (properly) protected by a local_lock, do
-> you reckon we could then keep preemption enabled?
 
-I guess we could take such a local lock on the update side
-(rcu_nocb_rdp_offload) and then take it on rcuc kthread/softirqs
-and maybe other places.
 
-But we must make sure that rcu_core() is preempt-safe from a general perspective
-in the first place. From a quick glance I can't find obvious issues...yet.
+On 7/28/21 3:25 PM, Bjorn Helgaas wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Wed, Jul 28, 2021 at 01:31:19PM -0500, Shanker R Donthineni wrote:
+>> Hi Bjorn,
+>>
+>> On 7/27/21 5:59 PM, Bjorn Helgaas wrote:
+>>>> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+>>>> index fefa6d7b3..42440cb10 100644
+>>>> --- a/drivers/pci/pci.c
+>>>> +++ b/drivers/pci/pci.c
+>>>> @@ -72,6 +72,14 @@ static void pci_dev_d3_sleep(struct pci_dev *dev)
+>>>>               msleep(delay);
+>>>>  }
+>>>>
+>>>> +int pci_reset_supported(struct pci_dev *dev)
+>>>> +{
+>>>> +     u8 null_reset_methods[PCI_NUM_RESET_METHODS] = { 0 };
+>>>> +
+>>>> +     return memcmp(null_reset_methods,
+>>>> +                   dev->reset_methods, sizeof(null_reset_methods));
+>>> I think "return dev->reset_methods[0] != 0;" is sufficient, isn't it?
+>>>
+>> Agree with you, it simplifies code logic and can be moved to
+>> "include/linux/pci.h" with inline definition. Can we change return
+>> type to 'bool' instead of 'int' ?
+> Does it need to be exported to drivers?  Looks like it's only used
+> inside drivers/pci/, so it shouldn't be in include/linux/pci.h.
 
-Paul maybe you can see something?
+Yes, you're right can be moved to driver/pci/pci.h.
 
-> 
-> From a naive outsider PoV, rdp->nocb_lock looks like a decent candidate,
-> but it's a *raw* spinlock (I can't tell right now whether changing this is
-> a horrible idea or not), and then there's
+> Making it bool is fine with me.
+>
+>> static inline bool pci_reset_supported(struct pci_dev *dev)
+>> {  
+>>     return !!dev->reset_methods[0];
+>> }
+>>
 
-Yeah that's not possible, nocb_lock is too low level and has to be called with
-IRQs disabled. So if we take that local_lock solution, we need a new lock.
-
-Thanks.
