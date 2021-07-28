@@ -2,92 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A8D3D8EA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390053D8EA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236600AbhG1NJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:09:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236430AbhG1NIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:08:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B45160F02;
-        Wed, 28 Jul 2021 13:08:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627477710;
-        bh=H1S7AlV0COt/bxaXeyQx1d8vL8M0dbUMU7ZJt6NPQao=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lhF2L+uVa1UwdQ7Cqk0pnrjHOQNx7pTKWuDDejBNYjN7A4it/H9lYpeC/cKU1T5bw
-         hQM3Na89GeH11aOtWH5LwuNLnQAzrNKm1hNd9combq4MNd6d5kj5hDdM43SvCKXuKm
-         mQOhkROUEBDNzZVgDZy+12+010DsTRsyj4B8C+cW8N8WMZzTKfcnsxLC5IeSxnLEkM
-         Usd1c13/hPiRiWHeJ/26+IQEYEfcTRZhtc2H+p0eWQJKqapIBSJDHdGLSMPqq0dXGK
-         f+ajcoWDqnl3jOR5pdzhqf7hM7P7LLGGQbhY4LgJjY4meNxxAHNKQB500JiB5bLB/j
-         ByRRqXtjzReFA==
-Date:   Wed, 28 Jul 2021 15:08:23 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC][PATCH v2 02/12] diglim: Basic definitions
-Message-ID: <20210728150823.705623ad@sal.lan>
-In-Reply-To: <eb3b025820574f0d901a38a4ad088018@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
-        <20210726163700.2092768-3-roberto.sassu@huawei.com>
-        <20210728133102.339c7b8e@coco.lan>
-        <eb3b025820574f0d901a38a4ad088018@huawei.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S236288AbhG1NKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:10:16 -0400
+Received: from mail.zeus.flokli.de ([88.198.15.28]:39370 "EHLO zeus.flokli.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235942AbhG1NKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 09:10:15 -0400
+Received: from localhost (80-62-116-241-mobile.dk.customer.tdc.net [80.62.116.241])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: flokli@flokli.de)
+        by zeus.flokli.de (Postfix) with ESMTPSA id 63CF51151A51;
+        Wed, 28 Jul 2021 13:10:11 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 15:10:10 +0200
+From:   Florian Klink <flokli@flokli.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        Matthias Schiffer <mschiffer@universe-factory.net>,
+        linux-kernel@vger.kernel.org, gabriel.kh.huang@fii-na.com,
+        moritzf@google.com, stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Justin Forbes <jmforbes@linuxtx.org>, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] Revert "usb: renesas-xhci: Fix handling of unknown ROM
+ state"
+Message-ID: <20210728131010.v42ocedxt2tg5hbb@tp.flokli.de>
+References: <20210719070519.41114-1-mdf@kernel.org>
+ <c0f191cc-6400-7309-e8a4-eab0925a3d54@universe-factory.net>
+ <YPhRu/DWbs58hgvq@epycbox.lan>
+ <20210728123755.md5zvbeeop3shmve@tp.flokli.de>
+ <YQFTKug7VeUcuMG9@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YQFTKug7VeUcuMG9@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 28 Jul 2021 11:45:02 +0000
-Roberto Sassu <roberto.sassu@huawei.com> escreveu:
+>> > I'll put up an RFC in the next couple of days ...
+>>
+>> Is the RFC already out somewhere?
+>>
+>> Regardless of that, maybe we should push the trivial revert to
+>> linux-stable first, so users don't run into this unexpectedly.
+>
+>It's already merged in the stable trees, right?
 
-> > From: Mauro Carvalho Chehab [mailto:mchehab+huawei@kernel.org]
-> > Sent: Wednesday, July 28, 2021 1:31 PM
-> > Em Mon, 26 Jul 2021 18:36:50 +0200
-> > Roberto Sassu <roberto.sassu@huawei.com> escreveu:
-> >   
+It's in 5.13.6, which was pushed 27mins ago ;-)
 
-> > > +struct compact_list_hdr {
-> > > +	__u8 version;
-> > > +	__u8 _reserved;
-> > > +	__le16 type;
-> > > +	__le16 modifiers;
-> > > +	__le16 algo;
-> > > +	__le32 count;
-> > > +	__le32 datalen;
-> > > +} __packed;
-> > > +#endif /*_UAPI__LINUX_DIGLIM_H*/  
-> > 
-> > Besides Greg's notes, I'm wondering why to enforce a particular
-> > endness here. I mean, this is uAPI. I would expect it to use the
-> > CPU endianness instead, in order to avoid uneeded conversions.  
-> 
-> Also Greg had the same concern. I hoped the Lifecycle section clarified
-> the fact that digest lists are generated by software vendors not the
-> local system. Should I add something more in the documentation?
+Thanks!
 
-It shouldn't matter what kind of endness software vendors use on
-userspace (either CPU or a fixed endiannes - either LE or BE).
-
-I mean, I won't doubt that some package tools use LE while others
-would use BE. At some point, this needs to be converted to 
-CPU endiannes.
-
-IMO, the best would be to isolate whatever RPM/DEB/... endianness 
-is used on userspace from what the Kernel will use internally.
-
-Just my 2 cents.
-
-Regards,
-Mauro
+Florian
