@@ -2,227 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722D03D9212
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B023D9216
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237303AbhG1Pdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:33:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235648AbhG1Pdn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:33:43 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21576C061757;
-        Wed, 28 Jul 2021 08:33:41 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id nb11so5298620ejc.4;
-        Wed, 28 Jul 2021 08:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=si1mgqR4hY6Vfet+JUR4OQ+XcsaVJnN5eLUW6jCI1H8=;
-        b=Yabfn2tEqlcOW2R6zKpzZxhVViW1JCNZDXH4aPGMpZ+9cPDKUySzKe9UlZXhh4hCN3
-         bptI/95PoVJdM5dVdW/EsVyxakJ4Ewnj8xO02xKrjbzby9rVkxbR6N5EBpHQkqIhe9JR
-         JV4fnkPf0Vx+X1Ek9dWfd2ejsfwFqrL++gt7tAirrryxw5nqPwpNN7+NnJHpS+Uf3de8
-         Lx0zgCgsiym6jqaDgRNg99Vjj+WPcJjwKmGyrdBeCkPEiBhEXIiWYr/LPhYennJat054
-         jmHlSfmjP6yBjNBGOb4LCkM5wV8FcfQRsGWcvDmIjr0g4VC6eBfpccmf37mhn1zaJnbK
-         H50w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=si1mgqR4hY6Vfet+JUR4OQ+XcsaVJnN5eLUW6jCI1H8=;
-        b=P04MXrxWu9pJ5vyD+N50BvgfTsRsX82FrSmSwKWWiZktkRsNltKRDuTQQgAth4U5VZ
-         KAvW5twPLyS4LcO7FXzhf3JmARQ7KodRkvsey8mO4J+Et0QoIfA2mQNC1fmQzMJ+DNGF
-         pFDUr4g9KNFliXno3JJj2lRiSwU3SynmF73z0/5ajOD90A3xsE0haUe9+TV7vWfDyr1P
-         8veoXd3/rOe2vjHFn3ZFOIQsiy495jEr2bdx6aK7nuu6Pv8h6viMLAekyJcs6PN+RVfx
-         n/pkNAzHujxjw+jW6K7gsX3rrDrQCDvjikMGGh3or5q1ZTAw1VAodsCx0MN4VlsNs/ob
-         6hyw==
-X-Gm-Message-State: AOAM530qP3g1qamViodlL3k3lMgUrnbrmAkwl9SrIU45APVgwOvh4umu
-        FjEy+y9u2qX3ofsa8h2RgM2F/HqbV2U=
-X-Google-Smtp-Source: ABdhPJzshhdEflocyi4gdgO2oNd2Rd65Idabh0CmlCYsp4GRU1wwosn3cznIEOllvFeWvJxs9NQTpQ==
-X-Received: by 2002:a17:906:a5b:: with SMTP id x27mr108635ejf.18.1627486419760;
-        Wed, 28 Jul 2021 08:33:39 -0700 (PDT)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id dj16sm53392edb.0.2021.07.28.08.33.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 08:33:39 -0700 (PDT)
-Subject: Re: [PATCH 5/9] arm64: dts: rockchip: add rk3568 tsadc nodes
-To:     Peter Geis <pgwipeout@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210728135534.703028-1-pgwipeout@gmail.com>
- <20210728135534.703028-6-pgwipeout@gmail.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <757c6db0-c259-32d8-53c1-c1e31e9cbe8c@gmail.com>
-Date:   Wed, 28 Jul 2021 17:33:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237345AbhG1Pd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:33:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235622AbhG1Pdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:33:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7330F60FE7;
+        Wed, 28 Jul 2021 15:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627486433;
+        bh=gXRvKj/jTXShHTI3Z2KiQV2JwSAuffLFbU956dQZa0o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UOoTLTlLbSaltUBPTRmse1nFfSKsz1rMvbo8AAOqruXPOcJo93Agciu83TFYqS9h+
+         SI3eTJ91UYapkq3hCC/B1vVRUcM+BQQX8dBY6O/qonVAX54NRPd7P7t9PAwBArKa/q
+         zm3sDmOMr69aTfHI7LNF9t1zgmVDjsVqwbohee9Ltwt/+03RDOM+5rg23a9gNCBhtL
+         kWvZZdICDSaFV9gKCdV3DOKDypOtSAUkOlQweVfL7wXgjGrapNG+pn9+VfXG1C8D7i
+         LCyzFxToEPYoNKqe9Y9gI95wgzKTwbAFYu7PBdeSlwyG1jSQfc0SQphANKzM9NvMEn
+         oYk2gmuOysK5Q==
+Received: by mail-ed1-f44.google.com with SMTP id f13so3749642edq.13;
+        Wed, 28 Jul 2021 08:33:53 -0700 (PDT)
+X-Gm-Message-State: AOAM5322sYs7D9ZOKZGa6FsUlBT+D86sfwRxt9yZ4CzjyntxDrw17VV2
+        DVnWfzOILCtnqLM1FAH0nUwmMbkEoQ2CcdFFcg==
+X-Google-Smtp-Source: ABdhPJzr+OOKQnEGhCp40Qp8isRJj+KNO+AYVQNwWLTcIczd67+YlzldV0glqwoOCUky671peYvE7CwlQmC2L2XQEJM=
+X-Received: by 2002:aa7:c603:: with SMTP id h3mr456690edq.165.1627486431954;
+ Wed, 28 Jul 2021 08:33:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210728135534.703028-6-pgwipeout@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210719212456.3176086-1-elder@linaro.org> <20210719212456.3176086-2-elder@linaro.org>
+ <20210723205252.GA2550230@robh.at.kernel.org> <6c1779aa-c90c-2160-f8b9-497fb8c32dc5@ieee.org>
+In-Reply-To: <6c1779aa-c90c-2160-f8b9-497fb8c32dc5@ieee.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 28 Jul 2021 09:33:40 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKTdUxro-tgCQBzhudaUFQ5GejJL2EMuX2ArcP0JTiG3g@mail.gmail.com>
+Message-ID: <CAL_JsqKTdUxro-tgCQBzhudaUFQ5GejJL2EMuX2ArcP0JTiG3g@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/3] dt-bindings: net: qcom,ipa: make imem
+ interconnect optional
+To:     Alex Elder <elder@ieee.org>
+Cc:     Alex Elder <elder@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Gross, Andy" <agross@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Evan Green <evgreen@chromium.org>, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, Alex Elder <elder@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Mon, Jul 26, 2021 at 9:59 AM Alex Elder <elder@ieee.org> wrote:
+>
+> On 7/23/21 3:52 PM, Rob Herring wrote:
+> > On Mon, Jul 19, 2021 at 04:24:54PM -0500, Alex Elder wrote:
+> >> On some newer SoCs, the interconnect between IPA and SoC internal
+> >> memory (imem) is not used.  Reflect this in the binding by moving
+> >> the definition of the "imem" interconnect to the end and defining
+> >> minItems to be 2 for both the interconnects and interconnect-names
+> >> properties.
+> >>
+> >> Signed-off-by: Alex Elder <elder@linaro.org>
+> >> ---
+> >>   .../devicetree/bindings/net/qcom,ipa.yaml      | 18 ++++++++++--------
+> >>   1 file changed, 10 insertions(+), 8 deletions(-)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> >> index ed88ba4b94df5..4853ab7017bd9 100644
+> >> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> >> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> >> @@ -87,16 +87,18 @@ properties:
+> >>         - const: ipa-setup-ready
+> >>
+> >>     interconnects:
+> >> +    minItems: 2
+> >>       items:
+> >> -      - description: Interconnect path between IPA and main memory
+> >> -      - description: Interconnect path between IPA and internal memory
+> >> -      - description: Interconnect path between IPA and the AP subsystem
+> >> +      - description: Path leading to system memory
+> >> +      - description: Path between the AP and IPA config space
+> >> +      - description: Path leading to internal memory
+> >>
+> >>     interconnect-names:
+> >> +    minItems: 2
+> >>       items:
+> >>         - const: memory
+> >> -      - const: imem
+> >>         - const: config
+> >> +      - const: imem
+> >
+> > What about existing users? This will generate warnings. Doing this for
+> > the 2nd item would avoid the need for .dts updates:
+> >
+> > - enum: [ imem, config ]
+>
+> If I understand correctly, the effect of this would be that
+> the second item can either be "imem" or "config", and the third
+> (if present) could only be "imem"?
 
-On 7/28/21 3:55 PM, Peter Geis wrote:
-> Add the thermal and tsadc nodes to the rk3568 device tree.
-> There are two sensors, one for the cpu, one for the gpu.
-> 
-> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> ---
->  .../boot/dts/rockchip/rk3568-pinctrl.dtsi     |  6 ++
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi      | 71 +++++++++++++++++++
->  2 files changed, 77 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
-> index a588ca95ace2..b464c7bda1f7 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
-> @@ -2420,6 +2420,12 @@ spi3m1_cs1: spi3m1-cs1 {
->  	};
->  
->  	tsadc {
-> +		/omit-if-no-ref/
+Yes for the 2nd, but the 3rd item could only be 'config'.
 
-> +		tsadc_gpio: tsadc-gpio {
+>
+> And you're saying that otherwise, existing users (the only
+> one it applies to at the moment is "sdm845.dtsi") would
+> produce warnings, because the interconnects are listed
+> in an order different from what the binding specifies.
+>
+> Is that correct?
 
-nodenames ending on -gpio -gpios are kind of reserved.
-Maybe use -pin or -pins.
+Yes.
 
-From  dt-schema/schemas/gpio/gpio-consumer.yaml
+> If so, what you propose suggests "imem" could be listed twice.
+> It doesn't make sense, and maybe it's precluded in other ways
+> so that's OK.
 
-patternProperties:
-  "(?<!,nr)-gpios?$":
-    $ref: "/schemas/types.yaml#/definitions/phandle-array"
+Good observation. There are generic checks that the strings are unique.
 
+>  But I'd be happy to update "sdm845.dtsi" to
+> address your concern.  (Maybe that's something you would rather
+> avoid?)
 
-> +			rockchip,pins =
-> +				<0 RK_PA1 0 &pcfg_pull_none>;
-> +		};
-> +
->  		/omit-if-no-ref/
->  		tsadcm0_shut: tsadcm0-shut {
->  			rockchip,pins =
-> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> index 77c679304916..0905fac0726a 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> @@ -51,6 +51,7 @@ cpu0: cpu@0 {
->  			compatible = "arm,cortex-a55";
->  			reg = <0x0 0x0>;
->  			clocks = <&scmi_clk 0>;
-> +			#cooling-cells = <2>;
->  			enable-method = "psci";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> @@ -59,6 +60,7 @@ cpu1: cpu@100 {
->  			device_type = "cpu";
->  			compatible = "arm,cortex-a55";
->  			reg = <0x0 0x100>;
-> +			#cooling-cells = <2>;
->  			enable-method = "psci";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> @@ -67,6 +69,7 @@ cpu2: cpu@200 {
->  			device_type = "cpu";
->  			compatible = "arm,cortex-a55";
->  			reg = <0x0 0x200>;
-> +			#cooling-cells = <2>;
->  			enable-method = "psci";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> @@ -75,6 +78,7 @@ cpu3: cpu@300 {
->  			device_type = "cpu";
->  			compatible = "arm,cortex-a55";
->  			reg = <0x0 0x300>;
-> +			#cooling-cells = <2>;
->  			enable-method = "psci";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  		};
-> @@ -774,6 +778,73 @@ uart9: serial@fe6d0000 {
->  		status = "disabled";
->  	};
->  
-> +	thermal_zones: thermal-zones {
-> +		cpu_thermal: cpu-thermal {
-> +			polling-delay-passive = <100>;
-> +			polling-delay = <1000>;
-> +
-> +			thermal-sensors = <&tsadc 0>;
-> +
-> +			trips {
-> +				cpu_alert0: cpu_alert0 {
-> +					temperature = <70000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				cpu_alert1: cpu_alert1 {
-> +					temperature = <75000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +				cpu_crit: cpu_crit {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu_alert0>;
-> +					cooling-device =
-> +						<&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		gpu_thermal: gpu-thermal {
-> +			polling-delay-passive = <20>; /* milliseconds */
-> +			polling-delay = <1000>; /* milliseconds */
-> +
-> +			thermal-sensors = <&tsadc 1>;
-> +		};
-> +	};
-> +
-> +	tsadc: tsadc@fe710000 {
-> +		compatible = "rockchip,rk3568-tsadc";
-> +		reg = <0x0 0xfe710000 0x0 0x100>;
-> +		interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
-> +		assigned-clocks = <&cru CLK_TSADC_TSEN>, <&cru CLK_TSADC>;
-> +		assigned-clock-rates = <17000000>, <700000>;
-> +		clocks = <&cru CLK_TSADC>, <&cru PCLK_TSADC>;
-> +		clock-names = "tsadc", "apb_pclk";
-> +		resets = <&cru SRST_TSADC>, <&cru SRST_P_TSADC>,
-> +			 <&cru SRST_TSADCPHY>;
-> +		reset-names = "tsadc", "tsadc-apb", "tsadc-phy";
-> +		rockchip,grf = <&grf>;
-> +		rockchip,hw-tshut-temp = <95000>;
-> +		rockchip,hw-tshut-mode = <1>; /* tshut mode 0:CRU 1:GPIO */
-> +		rockchip,hw-tshut-polarity = <0>; /* tshut polarity 0:LOW 1:HIGH */
-> +		pinctrl-names = "gpio", "otpout";
-> +		pinctrl-0 = <&tsadc_gpio>;
-> +		pinctrl-1 = <&tsadc_shutorg>;
-> +		#thermal-sensor-cells = <1>;
-> +		status = "disabled";
-> +	};
-> +
->  	saradc: saradc@fe720000 {
->  		compatible = "rockchip,rk3568-saradc", "rockchip,rk3399-saradc";
->  		reg = <0x0 0xfe720000 0x0 0x100>;
-> 
+Better to not change DT if you don't have to. You're probably okay if
+all clients (consumers of the dtb) used names and didn't care about
+the order. And I have no idea if all users of SDM845 are okay with a
+DTB change being required. That's up to QCom maintainers. I only care
+that ABI breakages are documented as such.
+
+> Also, I need to make a separate update to "sm8350.dtsi" because
+> that was defined before I understood what I do now about the
+> interconnects.  It uses the wrong names, and should combine
+> its first two interconnects into just one.
+
+If the interconnects was ignored in that case, then the change doesn't matter.
+
+Rob
