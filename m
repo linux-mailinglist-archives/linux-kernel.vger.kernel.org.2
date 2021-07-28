@@ -2,188 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1DA3D852D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5985F3D8682
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 06:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234679AbhG1BDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53018 "EHLO
+        id S229734AbhG1ET0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 00:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234561AbhG1BDJ (ORCPT
+        with ESMTP id S229546AbhG1ETY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:03:09 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9699C061757;
-        Tue, 27 Jul 2021 18:03:07 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso7506538pjb.1;
-        Tue, 27 Jul 2021 18:03:07 -0700 (PDT)
+        Wed, 28 Jul 2021 00:19:24 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A489C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 21:19:22 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d2so474014qto.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 21:19:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BVHgu7P3jLeGAr6c6jiQnBbjUeZUVb7sIei9a5S3h4I=;
-        b=dmWlM3T2LTqYy+3H7Q8IfXYrQN8RtqxpPMlevHLVCKuFDRXvD+T+ZwM1TEK8pW+Prr
-         6We5ubyhg7wYLfcKM7vgq1QwH2ynVHcNz42fMHHpdb85J4mJ4H8MiDEFrPSlr3+SZi10
-         g2bJG+tjik8SeuWOlGdOMhTMaS87qaCYNZCNQt5n/KRc6+fac0XyP9OxDXJiNY1m/KoX
-         qF9/C0/hzfJlUUS1jWDSsdmxhIPBM5vHNwaoM73gz+i37bWb8PUg25S6Fldj3T8URgi2
-         bDCoi6Fth0RGOqR1e2dkngEMW42co8gvjqn+xhqXBo2BQucSSedGkvhbJO0TlwV3t4R6
-         tv9g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=98gtSXDc7ZlTP8DOpD7xPPrbBz6KU/i+LtjlbzvHQbE=;
+        b=k0X6UEjkKBfbAFH6JYFJNMOfoQuDUk6MYWgifJN2pAnWZnEeGST5bE74ezH/a4Ew8m
+         l7+Ha5ZJzvssBw6MkI6+vJItvzys74w8MoJNkyeBcDGKwsmKCY+QW8vmmd26oCSfTTJt
+         AaJvOxs7IhcR+nfQJONeDTeW+x1tB+jLz2umb27g8Lv5R7R5wa2TySBJWuj/TmkwXGRP
+         VpIhPpKFi4ws1+9QWtJ/4237wxnTJbmRpT4wolmwZclF9yYVJCqyIiY82cByYOx34VNl
+         OUYMFTOTln5FSaElAUSKa/6uujrTsBgBpsPW2W6CWfScvptbn1fhKlsAOsHNe0Di95/I
+         aVGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BVHgu7P3jLeGAr6c6jiQnBbjUeZUVb7sIei9a5S3h4I=;
-        b=gFSSRHCAwD+mav1nzeRfkqAFILtrik3pTEAzImdpePztzKIW91Ey+twCIq10VQGO/V
-         jBXEI9lay0jyvo9HXEV/bRhqQRr79QHCgeapm8eUtw7bf4O4xyNF5q51/BvN3Wkrygf2
-         pChq/79YXiGy3h+xGB5nfs7yImx9rwkskMvLHmPfNcwvkRmVcMGBmunrxvnfvl5z6pXy
-         ObtupOfVHy6UwL42vh/BIwWEffKGmYh8nnGzTwh6BL/f7PnXRrDxVwrmQbAwEUqK179k
-         yrnF+7hmjs7A7RCJxKrr9oEhReUKWccPjcPAIcuXPaSk2afJdJYWneDfmDIpSA4Lxsps
-         x1Gw==
-X-Gm-Message-State: AOAM530EHn3SC+igVdI2LDwoQE9cg6yzjJucEXcKWtLPnT06h7Lhy6Nd
-        J+1Q1RkR/cBxaobOlqdpyPQ=
-X-Google-Smtp-Source: ABdhPJwLyM6C8RCSNxp9Lhz/fnnARR2n+2V3Q+Mr/oYE0qAQEOLNDhvtsm35CD5Ys48fSh0eT5pTGA==
-X-Received: by 2002:a17:902:8bc3:b029:124:919f:6213 with SMTP id r3-20020a1709028bc3b0290124919f6213mr21425743plo.51.1627434187298;
-        Tue, 27 Jul 2021 18:03:07 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id 1sm4926456pfv.138.2021.07.27.18.03.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 18:03:06 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 13/13] drm/msm/gem: Mark active before pinning
-Date:   Tue, 27 Jul 2021 18:06:18 -0700
-Message-Id: <20210728010632.2633470-14-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210728010632.2633470-1-robdclark@gmail.com>
-References: <20210728010632.2633470-1-robdclark@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=98gtSXDc7ZlTP8DOpD7xPPrbBz6KU/i+LtjlbzvHQbE=;
+        b=DKC7BDI7PME959xntUdwhc/HPxKU6pLhzVytrTKNxIOkY5RcZXk/TLumaeaDg2Jdad
+         +9K7nC7Keqg43ZhzVHivpzIPC5mv4FYQ7OjIJwZYBEI+qLjjMSlL4SDPcWh2bVH6pZgq
+         ZkKduqr5Q9ZAWJ7ssvcHeqdw+gkWezl7OyWd38M/cn3j+aG/Np/7wZKz/8PnJXGw7Atq
+         uhH32usdEbBdiCZ0LLjzqwCLmVYq89HVzvwG58jTIkMW039GVdEj5LGU+KZh2n905naF
+         Qcv4kxPaO2UuxA8qxwzGdZujYOtx/OS4ZceQXeqhGaeIrUWna1SBHQ9z5L9YJSAJZZal
+         JWTA==
+X-Gm-Message-State: AOAM5305OiEzrLc0EWtFfXwe9xodiyAkZPmc8+Xr1RM9wml1Xbpdk6Nk
+        lMfF03LTUROzrsQsqvzd9LqU4Dp4efxVpJwhHiQ=
+X-Google-Smtp-Source: ABdhPJzpRxaeYMeDLeO8zgqFYNb5J+g+FY8Gr9FLuWekwpckk/L7lwKzlbgsAza9R5n6NqJdrQnj4LbbOWpJUBlWZXs=
+X-Received: by 2002:ac8:7c54:: with SMTP id o20mr13378070qtv.142.1627445961649;
+ Tue, 27 Jul 2021 21:19:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAEsQvctJDnsaRTXAGAJ6==juKazoo2=AJrWabLzqE=jCfg5EEA@mail.gmail.com>
+ <20210727102744.30364-1-chihhao.chen@mediatek.com> <CAEsQvcuOQ_Tg0bRbsegECdBUsGxa61ei9-Z2bRbGvQ9FmEUPbA@mail.gmail.com>
+In-Reply-To: <CAEsQvcuOQ_Tg0bRbsegECdBUsGxa61ei9-Z2bRbGvQ9FmEUPbA@mail.gmail.com>
+From:   Geraldo Nascimento <geraldogabriel@gmail.com>
+Date:   Wed, 28 Jul 2021 01:19:13 +0000
+Message-ID: <CAEsQvcvMVCptNss0iSB1uk1vu7PNdyO5c3jzHbi3HvRELi5Jdw@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
+To:     chihhao chen <chihhao.chen@mediatek.com>
+Cc:     alsa-devel@alsa-project.org, damien@zamaudio.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        tiwai@suse.com, Takashi Iwai <tiwai@suse.de>,
+        wsd_upstream@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+> Chihhao, please try the below patch and perform another echo test.
+>
+> Let us know if the echo test works or if it still fails and please
+> remember to share with us the relevant dmesg logs.
+>
 
-Mark all the bos in the submit as active, before pinning, to prevent
-evicting a buffer in the same submit to make room for a buffer earlier
-in the table.
+Chihhao Chen,
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gem.c        |  2 --
- drivers/gpu/drm/msm/msm_gem_submit.c | 28 ++++++++++++++++++++--------
- 2 files changed, 20 insertions(+), 10 deletions(-)
+when I said echo test I meant just test the device and observe if
+there are noises related to incorrect clock setting.
 
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index af199ef53d2f..15b1804fa64e 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -131,7 +131,6 @@ static struct page **get_pages(struct drm_gem_object *obj)
- 		if (msm_obj->flags & (MSM_BO_WC|MSM_BO_UNCACHED))
- 			sync_for_device(msm_obj);
- 
--		GEM_WARN_ON(msm_obj->active_count);
- 		update_inactive(msm_obj);
- 	}
- 
-@@ -815,7 +814,6 @@ void msm_gem_active_get(struct drm_gem_object *obj, struct msm_gpu *gpu)
- 	GEM_WARN_ON(!msm_gem_is_locked(obj));
- 	GEM_WARN_ON(msm_obj->madv != MSM_MADV_WILLNEED);
- 	GEM_WARN_ON(msm_obj->dontneed);
--	GEM_WARN_ON(!msm_obj->sgt);
- 
- 	if (msm_obj->active_count++ == 0) {
- 		mutex_lock(&priv->mm_lock);
-diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-index c2ecec5b11c4..fc25a85eb1ca 100644
---- a/drivers/gpu/drm/msm/msm_gem_submit.c
-+++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-@@ -24,7 +24,8 @@
- /* make sure these don't conflict w/ MSM_SUBMIT_BO_x */
- #define BO_VALID    0x8000   /* is current addr in cmdstream correct/valid? */
- #define BO_LOCKED   0x4000   /* obj lock is held */
--#define BO_PINNED   0x2000   /* obj is pinned and on active list */
-+#define BO_ACTIVE   0x2000   /* active refcnt is held */
-+#define BO_PINNED   0x1000   /* obj is pinned and on active list */
- 
- static struct msm_gem_submit *submit_create(struct drm_device *dev,
- 		struct msm_gpu *gpu,
-@@ -239,10 +240,11 @@ static void submit_cleanup_bo(struct msm_gem_submit *submit, int i,
- 	struct drm_gem_object *obj = &submit->bos[i].obj->base;
- 	unsigned flags = submit->bos[i].flags & cleanup_flags;
- 
--	if (flags & BO_PINNED) {
-+	if (flags & BO_PINNED)
- 		msm_gem_unpin_iova_locked(obj, submit->aspace);
-+
-+	if (flags & BO_ACTIVE)
- 		msm_gem_active_put(obj);
--	}
- 
- 	if (flags & BO_LOCKED)
- 		dma_resv_unlock(obj->resv);
-@@ -252,7 +254,7 @@ static void submit_cleanup_bo(struct msm_gem_submit *submit, int i,
- 
- static void submit_unlock_unpin_bo(struct msm_gem_submit *submit, int i)
- {
--	submit_cleanup_bo(submit, i, BO_PINNED | BO_LOCKED);
-+	submit_cleanup_bo(submit, i, BO_PINNED | BO_ACTIVE | BO_LOCKED);
- 
- 	if (!(submit->bos[i].flags & BO_VALID))
- 		submit->bos[i].iova = 0;
-@@ -356,6 +358,18 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
- 
- 	submit->valid = true;
- 
-+	/*
-+	 * Increment active_count first, so if under memory pressure, we
-+	 * don't inadvertently evict a bo needed by the submit in order
-+	 * to pin an earlier bo in the same submit.
-+	 */
-+	for (i = 0; i < submit->nr_bos; i++) {
-+		struct drm_gem_object *obj = &submit->bos[i].obj->base;
-+
-+		msm_gem_active_get(obj, submit->gpu);
-+		submit->bos[i].flags |= BO_ACTIVE;
-+	}
-+
- 	for (i = 0; i < submit->nr_bos; i++) {
- 		struct drm_gem_object *obj = &submit->bos[i].obj->base;
- 		uint64_t iova;
-@@ -367,8 +381,6 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
- 		if (ret)
- 			break;
- 
--		msm_gem_active_get(obj, submit->gpu);
--
- 		submit->bos[i].flags |= BO_PINNED;
- 
- 		if (iova == submit->bos[i].iova) {
-@@ -502,7 +514,7 @@ static void submit_cleanup(struct msm_gem_submit *submit, bool error)
- 	unsigned i;
- 
- 	if (error)
--		cleanup_flags |= BO_PINNED;
-+		cleanup_flags |= BO_PINNED | BO_ACTIVE;
- 
- 	for (i = 0; i < submit->nr_bos; i++) {
- 		struct msm_gem_object *msm_obj = submit->bos[i].obj;
-@@ -520,7 +532,7 @@ void msm_submit_retire(struct msm_gem_submit *submit)
- 		struct drm_gem_object *obj = &submit->bos[i].obj->base;
- 
- 		msm_gem_lock(obj);
--		submit_cleanup_bo(submit, i, BO_PINNED);
-+		submit_cleanup_bo(submit, i, BO_PINNED | BO_ACTIVE);
- 		msm_gem_unlock(obj);
- 		drm_gem_object_put(obj);
- 	}
--- 
-2.31.1
 
+I then realized a bit too late that probably in your programming
+culture "echo test" refers to the whole technique you used to hook the
+kernel and debug the issue to produce the fix.
+
+If you call that technique "echo test" I'm sorry, I didn't know it was
+called that way.
+
+
+I just meant to briefly test to hear if there is noise even when the
+clock parameters are correctly hardcoded.
+
+My intent with that patch is to try to prove there's a firmware bug in
+action just like Takashi Iwai suggested.
+
+
+My apologies,
+Geraldo Nascimento
