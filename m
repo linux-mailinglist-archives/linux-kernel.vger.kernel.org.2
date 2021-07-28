@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E39B3D8C00
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9563D8BFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhG1Kiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:38:50 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3510 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236027AbhG1Kio (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:38:44 -0400
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GZVFj46N2z6L9kY;
-        Wed, 28 Jul 2021 18:26:49 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 28 Jul 2021 12:38:41 +0200
-Received: from [10.47.27.80] (10.47.27.80) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 28 Jul
- 2021 11:38:41 +0100
-From:   John Garry <john.garry@huawei.com>
-Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
- from remote numa node
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <YPd7IGFZrsTRfUxE@T590>
- <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com> <YPfwAN1onpSKoeBj@T590>
- <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com> <YPklDMng1hL3bQ+v@T590>
- <9c929985-4fcb-e65d-0265-34c820b770ea@huawei.com> <YPlGOOMSdm6Bcyy/@T590>
- <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com> <YPmUoBk9u+tU2rbS@T590>
- <0adbe03b-ce26-e4d3-3425-d967bc436ef5@arm.com> <YPqYDY9/VAhfHNfU@T590>
- <6ceab844-465f-3bf3-1809-5df1f1dbbc5c@huawei.com>
- <CAFj5m9J+9vO=CK3uPP+va5EoWffZj9ruSRe2fDDLXn+AE971CQ@mail.gmail.com>
-Message-ID: <ead87bf2-ddfa-eb67-db44-9619c6cdb714@huawei.com>
-Date:   Wed, 28 Jul 2021 11:38:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-MIME-Version: 1.0
-In-Reply-To: <CAFj5m9J+9vO=CK3uPP+va5EoWffZj9ruSRe2fDDLXn+AE971CQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.27.80]
-X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        id S236013AbhG1Kik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:38:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234261AbhG1Kij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 06:38:39 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D598C60F9B;
+        Wed, 28 Jul 2021 10:38:37 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m8gxP-001VeA-OZ; Wed, 28 Jul 2021 11:38:35 +0100
+Date:   Wed, 28 Jul 2021 11:38:35 +0100
+Message-ID: <87wnpad8pg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 06/16] KVM: arm64: Force a full unmap on vpcu reinit
+In-Reply-To: <20210727181132.GE19173@willie-the-truck>
+References: <20210715163159.1480168-1-maz@kernel.org>
+        <20210715163159.1480168-7-maz@kernel.org>
+        <20210727181132.GE19173@willie-the-truck>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, qperret@google.com, dbrazdil@google.com, vatsa@codeaurora.org, sdonthineni@nvidia.com, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2021 02:32, Ming Lei wrote:
-> On Mon, Jul 26, 2021 at 3:51 PM John Garry<john.garry@huawei.com>  wrote:
->> On 23/07/2021 11:21, Ming Lei wrote:
->>>> Thanks, I was also going to suggest the latter, since it's what
->>>> arm_smmu_cmdq_issue_cmdlist() does with IRQs masked that should be most
->>>> indicative of where the slowness most likely stems from.
->>> The improvement from 'iommu.strict=0' is very small:
->>>
->> Have you tried turning off the IOMMU to ensure that this is really just
->> an IOMMU problem?
->>
->> You can try setting CONFIG_ARM_SMMU_V3=n in the defconfig or passing
->> cmdline param iommu.passthrough=1 to bypass the the SMMU (equivalent to
->> disabling for kernel drivers).
-> Bypassing SMMU via iommu.passthrough=1 basically doesn't make a difference
-> on this issue.
-
-A ~90% throughput drop still seems to me to be too high to be a software 
-issue. More so since I don't see similar on my system. And that 
-throughput drop does not lead to a total CPU usage drop, from the fio log.
-
-Do you know if anyone has run memory benchmark tests on this board to 
-find out NUMA effect? I think lmbench or stream could be used for this.
-
-Testing network performance in an equivalent fashion to storage could 
-also be an idea.
-
-Thanks,
-John
-
+On Tue, 27 Jul 2021 19:11:33 +0100,
+Will Deacon <will@kernel.org> wrote:
 > 
-> And from fio log, submission latency is good, but completion latency
-> is pretty bad,
-> and maybe it is something that writing to PCI memory isn't committed to HW in
-> time?
+> On Thu, Jul 15, 2021 at 05:31:49PM +0100, Marc Zyngier wrote:
+> > As we now keep information in the S2PT, we must be careful not
+> > to keep it across a VM reboot, which could otherwise lead to
+> > interesting problems.
+> > 
+> > Make sure that the S2 is completely discarded on reset of
+> > a vcpu, and remove the flag that enforces the MMIO check.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  arch/arm64/kvm/arm.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> > index 97ab1512c44f..b0d2225190d2 100644
+> > --- a/arch/arm64/kvm/arm.c
+> > +++ b/arch/arm64/kvm/arm.c
+> > @@ -1096,12 +1096,18 @@ static int kvm_arch_vcpu_ioctl_vcpu_init(struct kvm_vcpu *vcpu,
+> >  	 * ensuring that the data side is always coherent. We still
+> >  	 * need to invalidate the I-cache though, as FWB does *not*
+> >  	 * imply CTR_EL0.DIC.
+> > +	 *
+> > +	 * If the MMIO guard was enabled, we pay the price of a full
+> > +	 * unmap to get back to a sane state (and clear the flag).
+> >  	 */
+> >  	if (vcpu->arch.has_run_once) {
+> > -		if (!cpus_have_final_cap(ARM64_HAS_STAGE2_FWB))
+> > +		if (!cpus_have_final_cap(ARM64_HAS_STAGE2_FWB) ||
+> > +		    test_bit(KVM_ARCH_FLAG_MMIO_GUARD, &vcpu->kvm->arch.flags))
+> >  			stage2_unmap_vm(vcpu->kvm);
+> >  		else
+> >  			icache_inval_all_pou();
+> > +
+> > +		clear_bit(KVM_ARCH_FLAG_MMIO_GUARD, &vcpu->kvm->arch.flags);
+> 
+> What prevents this racing with another vCPU trying to set the bit?
 
+Not much. We could take the kvm lock on both ends to serialize it, but
+that's pretty ugly. And should we care? What is the semantic of
+resetting a vcpu while another is still running?
+
+If we want to support this sort of behaviour, then our tracking is
+totally bogus, because it is VM-wide. And you don't even have to play
+with that bit from another vcpu: all the information is lost at the
+point where we unmap the S2 PTs.
+
+Maybe an alternative is to move this to the halt/reboot PSCI handlers,
+making it clearer what we expect?
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
