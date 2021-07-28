@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92F23D94AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0ABB3D94B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhG1RzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:55:25 -0400
-Received: from mail-pj1-f43.google.com ([209.85.216.43]:53936 "EHLO
-        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhG1RzW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:55:22 -0400
-Received: by mail-pj1-f43.google.com with SMTP id j1so6335280pjv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:55:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vaHWQMyapbwMNDooasKS1ZMgjJGMU/Tqpe97r0Mjc8M=;
-        b=KnTHJy4j2DE7U9mBziHMHZT+iHLv3pc8XwLSLfXFK5ZeV+R2cEIL3tJ7nqjikhlIOA
-         uPpnnNiK4hxhTj3VRDBbf8MJKUrtmpcojMlidB8DEgKSeAOuieuaN4j5XsAAGCN7x/0K
-         cisPB1a9xsnCM7ODe4hYU0xXVE4UU2nVcyl3eOX0CCWsdOG5TFkwne5uJmVROJJYbq7i
-         vxMpKQI/mzj7CY2cMN9V8NYU/sLrjJGlB7Bml8XH6un+ntYYXcce0lR1NMkbcqu3Cxhf
-         5ce5UMn1sjPhtQmQCrc1sX7+Sw9/vUwV2+PBOZAjvLhhT1GP+7McGCHC2PRttU2iaMR7
-         9iyw==
-X-Gm-Message-State: AOAM533CQ8p+2FBX9641zzlM36joZ++8+jUD5mDdYR0nK/QbVgT/p3Sn
-        cOe8RDAUBkUOy++xSMAcWwk=
-X-Google-Smtp-Source: ABdhPJwj/v4a358VMS8grMiaN9aSuY7X8fqahL1XIeoeDYXE5xu3N5q77WtvLmLNWd0QLshLVTU3YQ==
-X-Received: by 2002:a63:5505:: with SMTP id j5mr93705pgb.250.1627494919816;
-        Wed, 28 Jul 2021 10:55:19 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:3328:5f8d:f6e2:85ea])
-        by smtp.gmail.com with ESMTPSA id c7sm440015pgq.22.2021.07.28.10.55.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 10:55:18 -0700 (PDT)
-Subject: Re: [PATCH 2/4] configfs: Fix writing at a non-zero offset
-To:     Bodo Stroesser <bostroesser@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Yanko Kaneti <yaneti@declera.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-References: <20210723212353.896343-1-bvanassche@acm.org>
- <20210723212353.896343-3-bvanassche@acm.org>
- <7bee65ce-f5f1-a525-c72d-221b5d23cf3e@gmail.com>
- <d12f24b6-7066-f9bb-1b88-6cc23c9c45c1@acm.org>
- <4055ca70-7669-d00d-7c08-86fe75a3d377@gmail.com>
- <618b2bdc-282b-0a1d-1fc5-020cf80d7a7e@acm.org>
- <c9cb1f3b-0b3b-c571-4a51-e647f3c1e90a@gmail.com>
- <ab190c50-8c87-b215-1432-056c81bcd656@acm.org>
- <fec30933-46b1-1085-1af1-1fd0d2265981@gmail.com>
- <a3ba73e5-ffd1-887e-acd9-11f537db27e0@acm.org>
- <b33a5330-472b-9961-c590-5c07420cf9de@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <70ed90fc-9de0-efcf-b591-8f1accc7dda6@acm.org>
-Date:   Wed, 28 Jul 2021 10:55:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231328AbhG1Rzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231222AbhG1Rz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:55:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C335D61050;
+        Wed, 28 Jul 2021 17:55:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627494926;
+        bh=eR8Mb5mftbz5DEwh6BIcjxWxE2NDjLa/HY+rtPuS9Vc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=NBwah9bZgNw8mAa/hy200SaKVPPUf1pG5zNHfsFuI7DCrIdyePnsfyF2sXrGWm4O5
+         BHzg3H5l5A8IKUCzt15r6OYMiPLUSPnfQkAoyp6Bz+VFoas/XkFnd1eigmYIlgTbRs
+         cT78xYg68AOSUrm2j6jmU1NMkud+PR/zFJOznMttNDBx8kGW654eekl0zrf6Dis7CB
+         aHmylcxM+f/sch4yg1QMBKL9Esh1DEAX22aMJ8/bn4Z9ED9mBAmjlbRZmjcLvROTH/
+         wpO++JjkQMyJg7ZM+SIavBU+futcLJfhqud03dX1cswHe9Nz9jmZmjILFXIWUUhbvK
+         xW7FIZWiotJDw==
+Date:   Wed, 28 Jul 2021 12:55:24 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v10 8/8] PCI: Change the type of probe argument in reset
+ functions
+Message-ID: <20210728175524.GA834270@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <b33a5330-472b-9961-c590-5c07420cf9de@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728173514.77yiv2vjvjpf6ao5@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 10:14 AM, Bodo Stroesser wrote:
-> I reviewed and tested the new patch. For me it works fine.
-> 
-> Just one warning to fix:
-> 
-> fs/configfs/file.c: In function ‘fill_write_buffer’:
-> fs/configfs/file.c:184:6: warning: unused variable ‘to_copy’ [-Wunused-variable]
->    int to_copy, copied;
->        ^~~~~~~
-> 
-> Apart from that you can add my tested-by or reviewed-by if you want.
+On Wed, Jul 28, 2021 at 11:05:14PM +0530, Amey Narkhede wrote:
+> On 21/07/27 05:22PM, Bjorn Helgaas wrote:
+> > On Fri, Jul 09, 2021 at 06:08:13PM +0530, Amey Narkhede wrote:
+> > > Introduce a new enum pci_reset_mode_t to make the context of probe argument
+> > > in reset functions clear and the code easier to read.  Change the type of
+> > > probe argument in functions which implement reset methods from int to
+> > > pci_reset_mode_t to make the intent clear.
+> >
+> > Not sure adding an enum and a PCI_RESET_MODE_MAX seems worth it to me.
+> > It's really a boolean parameter, and I'd be happy to change it to a
+> > bool.  But I don't think it's worth checking against
+> > PCI_RESET_MODE_MAX unless we need more than two options.
+> >
+> Is it okay to use PCI_RESET_PROBE and PCI_RESET_DO_RESET as bool.
+> That would be less confusing than directly using true/false.
 
-I will remove the 'to_copy' variable and also add your Tested-by. Thanks for
-having tested this patch!
+You mean like this?
 
-Bart.
+  #define PCI_RESET_DO_RESET  false
+  #define PCI_RESET_PROBE     true
+
+I don't think there's a huge amount of value, but I guess that's OK as
+long as it's confined to drivers/pci/, i.e., not exposed via
+include/linux/pci.h.
