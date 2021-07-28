@@ -2,206 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56393D918A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465D13D918B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237050AbhG1PKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235670AbhG1PIq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:08:46 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93032C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:08:41 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so1913709wmd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y0Oxv7FSNFEltVg4Evcp+IiFZ6zdpGchbxfgnaolaO8=;
-        b=Tz31OFTwL+yRNaj/JrXEOOjFyy+JEpDVpYCEMQQmHIpLnwMFuIG+HUb5PLYw9GPGSW
-         VxlhbmIrkhF0ZcX9emVfLMt8vtjOx7wJXzTJ5ACPsNLZr818iBjdSsGNVA6hErwNBmdd
-         h6MdeMT08aJ86+oj83tjmr+MogrMzwGsKiDvGEwXjHf9VH42jIizSHyoafXsLKvLeaH1
-         zj4jyPQY0Be+WCy7v32PIEhUK/alwxNrTPOgyO4PQtT0rCK5XXlvmpAy9qbi76nQjPbw
-         itQuzoaC1uOcV7+n6tqVIAI77XIXpEe9mALXndbOdSLMlUPqMNyN18tWEllWEuDVLxgi
-         NMvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Y0Oxv7FSNFEltVg4Evcp+IiFZ6zdpGchbxfgnaolaO8=;
-        b=XCGHmnrsW7DMlAwwdTaiwGmgXsFVyBvdfDHY2Tzce+qdoUcp+AbuubJFRLRvYvYTA/
-         sCkdz7Rp/Zse1bXv2UlZsAdb16q8SyyNoXhmhYHaRwe4k9/ogLb0RDhm7EPONZLGa4c6
-         4L1lEr19+fjkkw2VxDdHi76wQ1sa0m3EF8zQ+JDjuKrfrsyrGJo/ygUxkrj1t6uABxsq
-         dRiVC/2gNbpZtOs2cFgYzyVwtlLbjf8Tyz6Lk3qCqHtBPJV0yvllyC9UoI9SEEGZRMkB
-         nrK8Cx1OVm8aVGXm6ht//dSPnTWmn2AsKtO8ULYpyHXpQzHOnwewSDVvzyMis5d/lKys
-         805g==
-X-Gm-Message-State: AOAM533LfYWL9HXrCjn33NEhgiAYVK+8CP7kGCKM1BKrcAIJyIpF2UvG
-        p94y9plAPpZ6VxrKwZWDrEhqiw==
-X-Google-Smtp-Source: ABdhPJz9/1JRRhO2jzvXgHlf/omHSHLO2FSaTH9Cryo2mHZyi9st2t5VNn5Lb2L7iEypP4bk7girCw==
-X-Received: by 2002:a1c:2282:: with SMTP id i124mr177672wmi.166.1627484919970;
-        Wed, 28 Jul 2021 08:08:39 -0700 (PDT)
-Received: from [10.1.3.29] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id a191sm277151wme.15.2021.07.28.08.08.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 08:08:23 -0700 (PDT)
-Subject: Re: [PATCH v2] PCI: DWC: meson: add 256 bytes MRRS quirk
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Artem Lapkin <email2tema@gmail.com>
-Cc:     yue.wang@Amlogic.com, khilman@baylibre.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        jbrunet@baylibre.com, christianshewitt@gmail.com,
-        martin.blumenstingl@googlemail.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-References: <20210727194323.GA725763@bjorn-Precision-5520>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <63838b21-3073-0b07-53d3-b85d6e89f0eb@baylibre.com>
-Date:   Wed, 28 Jul 2021 17:08:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237075AbhG1PKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:10:11 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44577 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235618AbhG1PIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:08:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627484924; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Reply-To: Sender;
+ bh=3wwq0AErdGICOZ9un5uPRzTUaZOh9Woef+N1yP+Q6P8=; b=i8utI76rDKa7v2SssMXcnzQyF10jpV6VTWcxq2Xyk1e4KgMtupbIcROf/Gjykh+3FiBEyBUH
+ d+tk4xBPiClaPry+EazlzU7qIVWYka7p2j0VGG/bV6pS55FXklMlW0jwZIsIUgvM803/vLKn
+ Jk4PV453I9zrF5cXKwIir4FdwOw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 610172f196a66e66b2ac446c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 15:08:33
+ GMT
+Sender: bcain=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 88174C4338A; Wed, 28 Jul 2021 15:08:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from BCAIN (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bcain)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74E43C433D3;
+        Wed, 28 Jul 2021 15:08:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 74E43C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
+Reply-To: <bcain@codeaurora.org>
+From:   "Brian Cain" <bcain@codeaurora.org>
+To:     "'Nathan Chancellor'" <nathan@kernel.org>,
+        "'Andrew Morton'" <akpm@linux-foundation.org>
+Cc:     "'Nick Desaulniers'" <ndesaulniers@google.com>,
+        <linux-hexagon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <clang-built-linux@googlegroups.com>,
+        "'Manning, Sid'" <sidneym@quicinc.com>
+References: <20210708233849.3140194-1-nathan@kernel.org> <YQCiZSj1gfnF5x/d@Ryzen-9-3900X.localdomain>
+In-Reply-To: <YQCiZSj1gfnF5x/d@Ryzen-9-3900X.localdomain>
+Subject: RE: [PATCH] Hexagon: Export raw I/O routines for modules
+Date:   Wed, 28 Jul 2021 10:08:31 -0500
+Message-ID: <03be01d783c2$6e684420$4b38cc60$@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210727194323.GA725763@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQFUlYLPOGQsXIMzH6S1xuiFiwykdgGu9yYgrFDh67A=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
 
-On 27/07/2021 21:43, Bjorn Helgaas wrote:
-> On Tue, Jul 27, 2021 at 10:30:00AM +0800, Artem Lapkin wrote:
->> 256 bytes maximum read request size. They can't handle
->> anything larger than this. So force this limit on
->> any devices attached under these ports.
+> -----Original Message-----
+> From: Nathan Chancellor <nathan@kernel.org>
+...
+> On Thu, Jul 08, 2021 at 04:38:50PM -0700, Nathan Chancellor wrote:
+...
+> > Export these symbols so that modules can use them without any errors.
+> >
+> > Fixes: 013bf24c3829 ("Hexagon: Provide basic implementation and/or stubs
+> for I/O routines.")
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > ---
+> >
+> > It would be nice if this could get into 5.14 at some point so that we
+> > can build ARCH=hexagon allmodconfig in our CI.
+> >
+> >  arch/hexagon/lib/io.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/arch/hexagon/lib/io.c b/arch/hexagon/lib/io.c
+> > index d35d69d6588c..55f75392857b 100644
+> > --- a/arch/hexagon/lib/io.c
+> > +++ b/arch/hexagon/lib/io.c
+> > @@ -27,6 +27,7 @@ void __raw_readsw(const void __iomem *addr, void
+> *data, int len)
+> >  		*dst++ = *src;
+> >
+> >  }
+> > +EXPORT_SYMBOL(__raw_readsw);
+> >
+> >  /*
+> >   * __raw_writesw - read words a short at a time
+> > @@ -47,6 +48,7 @@ void __raw_writesw(void __iomem *addr, const void
+> *data, int len)
+> >
+> >
+> >  }
+> > +EXPORT_SYMBOL(__raw_writesw);
+> >
+> >  /*  Pretty sure len is pre-adjusted for the length of the access
+already */
+> >  void __raw_readsl(const void __iomem *addr, void *data, int len)
+> > @@ -62,6 +64,7 @@ void __raw_readsl(const void __iomem *addr, void
+> *data, int len)
+> >
+> >
+> >  }
+> > +EXPORT_SYMBOL(__raw_readsl);
+> >
+> >  void __raw_writesl(void __iomem *addr, const void *data, int len)
+> >  {
+> > @@ -76,3 +79,4 @@ void __raw_writesl(void __iomem *addr, const void
+> *data, int len)
+> >
+> >
+> >  }
+> > +EXPORT_SYMBOL(__raw_writesl);
+> >
+> > base-commit: f55966571d5eb2876a11e48e798b4592fa1ffbb7
+> > --
+> > 2.32.0.93.g670b81a890
 > 
-> This needs to say whether this is a functional or a performance issue.
-> 
-> If it's a functional issue, i.e., if meson signals an error or abort
-> when it receives a read request for > 256 bytes, we need to explain
-> exactly what happens.
-> 
-> If it's a performance issue, we need to explain why MRRS affects
-> performance and that this is an optimization.
-> 
->> Come-from: https://lkml.org/lkml/2021/6/18/160
->> Come-from: https://lkml.org/lkml/2021/6/19/19
-> 
-> Please use lore.kernel.org URLs instead.  The lore URLs are a little
-> uglier, but are more functional, more likely to continue working, and
-> avoid the ads.  These are:
-> 
->   https://lore.kernel.org/r/20210618230132.GA3228427@bjorn-Precision-5520
->   https://lore.kernel.org/r/20210619063952.2008746-1-art@khadas.com
-> 
->> It only affects PCIe in P2P, in non-P2P is will certainly affect
->> transfers on the internal SoC/Processor/Chip internal bus/fabric.
-> 
-> This needs to explain how a field in a PCIe TLP affects transfers on
-> these non-PCIe fabrics.
-> 
->> These quirks are currently implemented in the
->> controller driver and only applies when the controller has been probed
->> and to each endpoint detected on this particular controller.
->>
->> Continue having separate quirks for each controller if the core
->> isn't the right place to handle MPS/MRRS.
-> 
-> I see similar code in dwc/pci-keystone.c.  Does this problem actually
-> affect *all* DesignWare-based controllers?
-> 
-> If so, we should put the workaround in the common dwc code, e.g.,
-> pcie-designware.c or similar.  
-> 
-> It also seems to affect pci-loongson.c (not DesignWare-based).  Is
-> there some reason it has the same problem, e.g., does loongson contain
-> DesignWare IP, or does it use the same non-PCIe fabric?
+> Ping? Brian, if you do not want to carry this, can you give an ack so
+> that Andrew can?
 
-As my reply on the previous thread, the Synopsys IP can be configured with a
-maximum TLP packet to AXI transaction size, which is hardcoded AFAIK Amlogic
-doesn't explicit it. And it doesn't seem we can read the value.
-
-This means is a TPL size if higher than this maximum packet size, the IP will
-do multiple AXI transactions, and this can reduce the system overall performance.
-
-The problem is that it affects the P2P transactions aswell, which can support any MPS/MRRS.
-But honestly, it's not a big deal on a PCIe 2.0 1x system only designed for NVMe and basic
-PCIe devices.
-
-The fun part is that the pci=pcie_bus_perf kerne cmdline solves this already,
-isn't there any possibility to force pcie_bus_perf for a particular root port ?
-
-Neil
-
-> 
->>>> Neil
->>
->> Signed-off-by: Artem Lapkin <art@khadas.com>
->> ---
->>  drivers/pci/controller/dwc/pci-meson.c | 31 ++++++++++++++++++++++++++
->>  1 file changed, 31 insertions(+)
->>
->> diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
->> index 686ded034..1498950de 100644
->> --- a/drivers/pci/controller/dwc/pci-meson.c
->> +++ b/drivers/pci/controller/dwc/pci-meson.c
->> @@ -466,6 +466,37 @@ static int meson_pcie_probe(struct platform_device *pdev)
->>  	return ret;
->>  }
->>  
->> +static void meson_mrrs_limit_quirk(struct pci_dev *dev)
->> +{
->> +	struct pci_bus *bus = dev->bus;
->> +	int mrrs, mrrs_limit = 256;
->> +	static const struct pci_device_id bridge_devids[] = {
->> +		{ PCI_DEVICE(PCI_VENDOR_ID_SYNOPSYS, PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3) },
-> 
-> I don't really believe that PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3 is the
-> only device affected here.  Is this related to the Meson root port, or
-> is it related to a PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3 on a plug-in card?
-> I guess the former, since you're searching upward for a root port.
-> 
-> So why is this limited to PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3?
-> 
->> +		{ 0, },
->> +	};
->> +
->> +	/* look for the matching bridge */
->> +	while (!pci_is_root_bus(bus)) {
->> +		/*
->> +		 * 256 bytes maximum read request size. They can't handle
->> +		 * anything larger than this. So force this limit on
->> +		 * any devices attached under these ports.
->> +		 */
->> +		if (!pci_match_id(bridge_devids, bus->self)) {
->> +			bus = bus->parent;
->> +			continue;
->> +		}
->> +
->> +		mrrs = pcie_get_readrq(dev);
->> +		if (mrrs > mrrs_limit) {
->> +			pci_info(dev, "limiting MRRS %d to %d\n", mrrs, mrrs_limit);
->> +			pcie_set_readrq(dev, mrrs_limit);
->> +		}
->> +		break;
->> +	}
->> +}
->> +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_mrrs_limit_quirk);
->> +
->>  static const struct of_device_id meson_pcie_of_match[] = {
->>  	{
->>  		.compatible = "amlogic,axg-pcie",
->> -- 
->> 2.25.1
->>
+Acked-by: Brian Cain <bcain@codeaurora.org>
 
