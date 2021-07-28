@@ -2,142 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFAF3D95FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949733D9600
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhG1TWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 15:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhG1TWX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:22:23 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45671C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:22:21 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 48-20020a9d0bb30000b02904cd671b911bso3258826oth.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:22:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xtCzcJFAu9dR3CG6ek/fh/xMW6UNckFyG7RsgVYyIWw=;
-        b=TT+fBye+Vvf5GJpNluw0WcRTC7515kpgaXVVegMP0wr4inSikyrK9QanPefFtjXmim
-         WTEQtYiCNW/5IW8h+juauUzRzHM/svXLuLrAV+fuKZ9rqkmQbDIA9OT+VvZQH2bjm2cT
-         0/p6SsgDhIIYH/h46RytjULmrLSTZRSXTrga4HzPz/3Qm0rJj1aeVtkoOK4gaNlySQvW
-         3M+BSBbmJisXYnHtIp6o6BQhrd/mwd9K2OyKVF+/qPBE4+wp0j2A3zZhqHHEgyHyZMqF
-         tmmtTCOr682Mglw8SU0cvL4tSZlC4vzW8FLEHyOkF1swMSKXTy+H6mdf1t8PCYkkfmg8
-         Lovw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xtCzcJFAu9dR3CG6ek/fh/xMW6UNckFyG7RsgVYyIWw=;
-        b=lhTbyWOl+SWO4JhjVB6Fzw5g4LTlTelPfbh6m8+1WiSPZjYhr2z8dBXTkOSWGCRygR
-         YwbxYb/Tgfi1HrqggSjUidigHuOg7e6bUeZr4XXxEvxtlS/brawiO7MlTbCry2lg8RxA
-         TXCt2XBAUkaHJb+TCIBo1/WegyL/3aj0raQlb1gNkWj3cnG4q4yqdGSFfRvT0kFqSvtH
-         ULGFI11N/BHubykmn8V/4za+07wmzP7BLMX/5YQ22wq/dEVEpWjqXk5rD0KgIDC5ZEM6
-         Ks6wJuQR8BijrZPHk/qphd17ZaEMO1m2HOjbB8E+TLp00KwIKG04PmiIKIzxKFOlfwo6
-         roxA==
-X-Gm-Message-State: AOAM530daO2avoIJL7amwrWsOVWNh++zrmeuZ4QsbKTygM3q3OBfgVSG
-        wwRBj+IkkGxKhf4gcIjZeZWy4g==
-X-Google-Smtp-Source: ABdhPJxCOixxPZx/B9u6/IckaLKvyCZhkvAoWYTyKbBLx//EwCPaLJWT+Dr+GFNlXpBF10QYtCkl5g==
-X-Received: by 2002:a9d:6e8a:: with SMTP id a10mr1050189otr.51.1627500140530;
-        Wed, 28 Jul 2021 12:22:20 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id p4sm127444ooa.35.2021.07.28.12.22.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 12:22:20 -0700 (PDT)
-Subject: Re: [PATCH v5 0/5] block: add a sequence number to disks
-To:     Matteo Croce <mcroce@linux.microsoft.com>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Javier_Gonz=c3=a1lez?= <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-References: <20210712230530.29323-1-mcroce@linux.microsoft.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fa2b4c63-6262-ab0b-63c2-270e84207dc0@kernel.dk>
-Date:   Wed, 28 Jul 2021 13:22:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210712230530.29323-1-mcroce@linux.microsoft.com>
+        id S231313AbhG1TXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 15:23:09 -0400
+Received: from mail-bn1nam07on2071.outbound.protection.outlook.com ([40.107.212.71]:22945
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229690AbhG1TXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 15:23:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mv5qAOBWFI5Z4Lbw5KQg+LJz37+Te7o9QSmS0izwqJOBcCll4bm5dOEv39G96NDXjljmrZUrxJ+MPxEFyPMfFhDyuD/zV0/BGU0B/WBFqbMAtVVE1ddHn96F/uP8uh4IsIS3iVHRFgS0IhW4E51RlcIAibu6aGcWULOakZVmS8BC0S9QepCtCMwnxSpSftbSFBSGNvUiB2M8ulTmpoWoFbfel0pm9o6MhxK0L9ytttfZfSmLCByxcmlB+QFHrQmJtp7ElFaPQyMh0nMXYv+C38XxT9MSw+YLOqBxN5E0aqbNBd10/yaSdvOBoiJJEm59QVS+wItXzSJ2sVtPrfo2iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rnN/Kc89ikX1olYEAuPE2yjHHUKeoZofNysZ/hv7qQc=;
+ b=jzPek5XMSs+4EItJdK3mjyxsXqPLtwqg/2Ph6rwh7yJ9m1Tun0zbgag650AqcGy4gevoGW3exFkOAStC7e9tmzwQwoNdtUWGHpydo2UVRD6eq8vi2VIpBhiHlOqCXcZliRIwcwdfqE3eFSpCKPd8f1wIRMJuzkfbMCrk1sXujghmI42pin8Cqkwie+HVug2c93oPUNhxsCgSwXFHgRtxs1FSQhYZyPTUSOZwsv8quKoZzUlkwQ6z0InBIwz2YQOQIwU4CSSaW67Qgp0sPDrdTx57kTO0qrKV0AFABqGpp1SbgC4MztMI9pM0Zs+1HcyyfJ2P9EKRPYKXi5HdBp+6QA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rnN/Kc89ikX1olYEAuPE2yjHHUKeoZofNysZ/hv7qQc=;
+ b=OyiWgSePVxxMrFHil11zBYplfX59NSdgQOD+nyL5MH5LKSdRg9DWmgjYQc+nCU3e2cfxunVgOkf91hvoYtzhj4KPtFU5HFyzKwqBZJT7UjxGBdJB95KF97TSk6I9JIfZaQKld1WucQz/k1oveZKnGeGK2xuUlej3iKNuIabR700=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5040.namprd12.prod.outlook.com (2603:10b6:5:38b::19)
+ by DM4PR12MB5376.namprd12.prod.outlook.com (2603:10b6:5:39a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Wed, 28 Jul
+ 2021 19:23:04 +0000
+Received: from DM4PR12MB5040.namprd12.prod.outlook.com
+ ([fe80::7c6d:57fe:e2e6:69e3]) by DM4PR12MB5040.namprd12.prod.outlook.com
+ ([fe80::7c6d:57fe:e2e6:69e3%4]) with mapi id 15.20.4373.018; Wed, 28 Jul 2021
+ 19:23:04 +0000
+Subject: Re: [PATCH 0/2] HID: amd_sfh: Minor DMA mapping bugfixes
+To:     Jiri Kosina <jikos@kernel.org>,
+        Dylan MacKenzie <ecstaticmorse@gmail.com>
+Cc:     Nehal Shah <nehal-bakulchandra.shah@amd.com>,
+        Basavaraj Natikar <basavaraj.natikar@amd.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210622001503.47541-1-ecstaticmorse@gmail.com>
+ <nycvar.YFH.7.76.2107281128140.8253@cbobk.fhfr.pm>
+ <nycvar.YFH.7.76.2107281132410.8253@cbobk.fhfr.pm>
+From:   Basavaraj Natikar <bnatikar@amd.com>
+Message-ID: <637db2da-d5d1-ca95-edc4-d6357a89fd03@amd.com>
+Date:   Thu, 29 Jul 2021 00:52:44 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+In-Reply-To: <nycvar.YFH.7.76.2107281132410.8253@cbobk.fhfr.pm>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: BM1PR0101CA0026.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:1a::12) To DM4PR12MB5040.namprd12.prod.outlook.com
+ (2603:10b6:5:38b::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.90.200] (165.204.159.242) by BM1PR0101CA0026.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:1a::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 19:22:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e96e3403-eae1-434f-b896-08d951fd1f14
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5376:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5376F0E4AE4FC1698EFCE475E6EA9@DM4PR12MB5376.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: A81Q9K83IYUyOV3+rpju+xeeqCE5DKv00zFpOgvtOIS6yOGWQYfrI40eeri+nntP+RDNiSEmakZb4EDOupEl/1HoZWe2ivBZVJY/pGDWA+7ACmoXF9ZFpviPR4UgNy1QA+CppaTyqYonqjO9xyaQFf62geYgp9JOMEIqTlcroxC+YWJa/sN/XvaNAHO43kxkwE9W92ngMzjyTnxdc3p0xvHUIWmsPKUSmGzwi5nafblMxLjoOawkta18AVlvwG9d/jw43nX+6vtgtF37RYrMCKG9ThCvwOIpWT67e7ZuW/fifRCkaWTUUgfS/J9hk75i71xh4nsHnMEMnOW5q/w5Qwux/DWt3B1A/g7JB9A1G4ol+MlBSfiyNPY/rmWFO7+rklkKtUxnhSXsTZFkGR1DLuRjCAhzMTjZ05MhtSNHN5C4z8pjFDaLsxCLN425lZb542bEZgXWGqV/DbZd5jn05gHXq6RiJ1T1vypszS9tBh4TjnZVQT2qqWo3eIsUmu9Enx/M3Xko8N/GyFI4190F2w3v0WzDDjuccDkHd3IzV+kcySZUQHyBCXRf9ErAVQ/UlHCE5qwhmUosLLpyqxPJbwz1Tgs+Jt7nJDeQkPz3uJD8GZy57blyO1fT6iw3dGY5ScWtssXB6ZuqCZARiQBUBzYl7FQNe+n2eKAZ35c6n/QiBDv0Taa3XcZ+v/t+Zinqvvp5IAarszu/u4oSqaRX02huEhZKBETqXvznlUft6oWBI1W7Bq5IOh99T+LKGfCAPrxGUXUfGlxssnnH/MCfTqoBg8rgnDQlb5ownUau/i8spDLSzp678MHt81HDjCYr
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5040.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(346002)(396003)(136003)(8936002)(83380400001)(31686004)(966005)(186003)(54906003)(110136005)(66476007)(2906002)(6486002)(478600001)(66556008)(45080400002)(956004)(316002)(16576012)(8676002)(66946007)(6666004)(38100700002)(36756003)(2616005)(31696002)(26005)(53546011)(5660300002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZVJsVlhUVmtTREM1Z1lwS1U2bkdkWW40K0JDcmt5V052WS9wM0VKMHg0cVhP?=
+ =?utf-8?B?NnJZblBTdXdDN2h0dFRIaG8zNXAvUVhRUEg1ajFnbHNsT3B4K3BHQlF5ZHdD?=
+ =?utf-8?B?dzAva2NOQW0zeXNFRGhnSldaTlZ2Z3kxVitVYzF2eWVWL1FCMHgvai9ZcjM3?=
+ =?utf-8?B?cEtzNDFtYURzRXVqeXk3Z2t0TmkwOWpyaDY3OWNqVHBVYmVzQXFiTGFacmNQ?=
+ =?utf-8?B?ZERKZ2RYbFI5bFJHQS9IT1RDa2hYaWxuNmZvc0M3aVZVL2RGNzNYRkh1YXpt?=
+ =?utf-8?B?MXZSMCs2emRNbXBnZU1aVFVXcGFEYytZMjZEeU50Q2xlMlhZR1lZaldmb1ZR?=
+ =?utf-8?B?NkNxUDZmODZCb0xjcnBRYUFOdDlGSUo5M0JlTktMb3NIREdadm5aYVRoeHo1?=
+ =?utf-8?B?RUVZQUNFTlZzd1Ivbm4vcUJMc0xhWmE5aC9FR1pIQzJxaWJ5eWJlZy95cHdY?=
+ =?utf-8?B?WFI2UGtpM1RpTkJVK0hpR0xiNGlVemF2QlJhYXVKa1BmcVlDRTlhVlFlZlVK?=
+ =?utf-8?B?N2ZlWjRBTWw4WWtJSWY0MlppTjN3WDRDeWs0T1EwbWdVY0hGKzdkRnErVTJI?=
+ =?utf-8?B?U1hkcmpyRlhlNlZrMis3QStYVHE1QUVaR2dwbGFUT205Rk9LQUdpVmYvcjZv?=
+ =?utf-8?B?N2lmOGtaZk40SWx0aGs4NzduN0t0K2VTNEo3Vm84blpvdFRpK3J2bVlFNEgr?=
+ =?utf-8?B?WnN2RnlJc2h5VDF6d0taRTVDNlFnSzlrWk1aU0NCUEpHZ0RkL3cvU1R6NUE3?=
+ =?utf-8?B?a0hnUFpSZkpoaitHdWE1QlNFUG55NXhhUXhEeG5OK3NlUmcramhLeDRzTjcv?=
+ =?utf-8?B?YXIxaXNIcGFQd080eXQzQUs5bGwvUUMvN3h6YnRlTjJKN0E5VWI3ZE1ta0ow?=
+ =?utf-8?B?VHp0SDB6MS9hNnVBTHRra2wzSGM0SzFqNThPN3lNa3BjaUlIZzRDNWI5ckp1?=
+ =?utf-8?B?ZEc2aEZPMk9URHV6ZHBtS0ltUm1McHFDK2JRRWF2cVFvS2wxZVhxY0pOQXNu?=
+ =?utf-8?B?SzZRbDBxbXlDVFZQMTAyc294R0pLZ1FaNjM5YnZhL2xMdnM4M21vMUxKMmlX?=
+ =?utf-8?B?a0FqSHlDMjI5dlJzNmdvL01EN21xeElnTHdkK3lZc0JiWmVhcmcvV2JGWEdG?=
+ =?utf-8?B?MnJqSDdPb0JzL3NxdkRSUzVKUG9MWmFpWUFZMFJPb3pkTVZXbHU3TjcwcmNm?=
+ =?utf-8?B?NExYQWFjbXZYbnRPVng2bTJJUUlWRVFRRmxMK1ZJcTJ5b2ZrSzNBcmR5bFd2?=
+ =?utf-8?B?aHpIUVc5SldjYWdDSXFhbUl1RVJ2MitVYVFjN3BWY3FrMDc2UFR6UkovN0Vt?=
+ =?utf-8?B?V0h2c2VyOGdOK2ZCaVZHMkswRGJ6Y1VJNnRQYXV6dm5weHBscEFscGNlWlVy?=
+ =?utf-8?B?M0ZYbUVqMklHOEpORHVDdDRCYkFibE9nZUd0RGhLRUhoNXd6L1ZGZ2RzTFE4?=
+ =?utf-8?B?RSs1VEk2bEJEVFp5SjhnQzc3K1JPRXdia2FPd0RtanhlemwxQWZ6K29qb1lY?=
+ =?utf-8?B?ajhyZU9TTzcrRjlUYWZVeWExcHBlOVV4RERUUVBGK1pZLzRaaHB1eXFJTWt5?=
+ =?utf-8?B?MkZWT0gvRWZZQzRuRkFWV0haa1dIbk8zejc2N1IxWGJYS2lzak5pNWhLbktu?=
+ =?utf-8?B?SWNsM3kzVU14NjF4NEdnVFVBNWM3MEI4ZDd5N3EydWJwQkQ0ZGFxcnBTNUc0?=
+ =?utf-8?B?U0RxTzRXNjYvMTUzaDBZNURVUHVJT3RzbU1CVzZEaktDeXVNa1hicWVVeUM1?=
+ =?utf-8?Q?B8Wg5O9vpiQIfFdJUumWCi240lyJ/bqeH0KSyUP?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e96e3403-eae1-434f-b896-08d951fd1f14
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5040.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 19:23:04.1047
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bFTx1nvxeq6vuCBfxhszhTQGVlAyqqjYudFzhuq9NUfYZUOlxcz/joOo/IJKX5c1FcFfJjGcuA4kkwv603oEEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5376
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 5:05 PM, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
-> 
-> Associating uevents with block devices in userspace is difficult and racy:
-> the uevent netlink socket is lossy, and on slow and overloaded systems has
-> a very high latency. Block devices do not have exclusive owners in
-> userspace, any process can set one up (e.g. loop devices). Moreover, device
-> names can be reused (e.g. loop0 can be reused again and again). A userspace
-> process setting up a block device and watching for its events cannot thus
-> reliably tell whether an event relates to the device it just set up or
-> another earlier instance with the same name.
-> 
-> Being able to set a UUID on a loop device would solve the race conditions.
-> But it does not allow to derive orderings from uevents: if you see a uevent
-> with a UUID that does not match the device you are waiting for, you cannot
-> tell whether it's because the right uevent has not arrived yet, or it was
-> already sent and you missed it. So you cannot tell whether you should wait
-> for it or not.
-> 
-> Being able to set devices up in a namespace would solve the race conditions
-> too, but it can work only if being namespaced is feasible in the first
-> place. Many userspace processes need to set devices up for the root
-> namespace, so this solution cannot always work.
-> 
-> Changing the loop devices naming implementation to always use
-> monotonically increasing device numbers, instead of reusing the lowest
-> free number, would also solve the problem, but it would be very disruptive
-> to userspace and likely break many existing use cases. It would also be
-> quite awkward to use on long-running machines, as the loop device name
-> would quickly grow to many-digits length.
-> 
-> Furthermore, this problem does not affect only loop devices - partition
-> probing is asynchronous and very slow on busy systems. It is very easy to
-> enter races when using LO_FLAGS_PARTSCAN and watching for the partitions to
-> show up, as it can take a long time for the uevents to be delivered after
-> setting them up.
-> 
-> Associating a unique, monotonically increasing sequential number to the
-> lifetime of each block device, which can be retrieved with an ioctl
-> immediately upon setting it up, allows to solve the race conditions with
-> uevents, and also allows userspace processes to know whether they should
-> wait for the uevent they need or if it was dropped and thus they should
-> move on.
-> 
-> This does not benefit only loop devices and block devices with multiple
-> partitions, but for example also removable media such as USB sticks or
-> cdroms/dvdroms/etc.
-> 
-> The first patch is the core one, the 2..4 expose the information in
-> different ways, and the last one makes the loop device generate a media
-> changed event upon attach, detach or reconfigure, so the sequence number
-> is increased.
-> 
-> If merged, this feature will immediately used by the userspace:
-> https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
+On 7/28/2021 3:03 PM, Jiri Kosina wrote:
+> [CAUTION: External Email]
+>
+> [ dropping Sandeep, CCing Basavaraj ]
+>
+> On Wed, 28 Jul 2021, Jiri Kosina wrote:
+>
+>> On Mon, 21 Jun 2021, Dylan MacKenzie wrote:
+>>
+>>> While preparing to investigate
+>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fbugzilla.kernel.org%2Fshow_bug.cgi%3Fid%3D212615&amp;data=04%7C01%7Cbasavaraj.natikar%40amd.com%7C2dff45d8dc964dbc5b1c08d951aab806%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630615935776199%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=hGpNFpr6BjVg8dvfUTNF8Td1SOdtN5T8c2WACGAZWUo%3D&amp;reserved=0, I read through the amd_sfh
+>>> driver and saw two (unrelated) bugs in the logic that sets the DMA mask.
+>>> Ultimately these are harmless, but they should probably get fixed.
+>>>
+>>> FYI, this is my first time submitting a kernel patch. If I've done something
+>>> wrong in formatting this email, it is likely due to incompetence rather than
+>>> malice.
+>>>
+>>> Dylan MacKenzie (2):
+>>>   HID: amd_sfh: Set correct DMA mask
+>>>   HID: amd_sfh: Continue if fallback DMA mask is accepted
+>>>
+>>>  drivers/hid/amd-sfh-hid/amd_sfh_pcie.c | 8 ++++++--
+>>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>> Nehal, Sandeep, could you please provide your Ack to this series? Thanks,
 
-Applied for 5.15, with #2 done manually since it didn't apply cleanly.
+I think, you can merge both of them together as it addresses a single problem. 
+can you please respin a v2 with the changes something like this?
 
--- 
-Jens Axboe
+        privdata->mmio = pcim_iomap_table(pdev)[2];
+        pci_set_master(pdev);
+-       rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++
++       rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+        if (rc) {
+-               rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+-               return rc;
++               rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
++               if (rc) {
++                       pci_err(pdev, "Failed to set DMA mask");
++                       return rc;
+                 }
+        }
+
+Thanks,
+Basavaraj
 
