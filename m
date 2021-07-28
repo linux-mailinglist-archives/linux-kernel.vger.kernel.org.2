@@ -2,243 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9BC3D9150
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2403D90F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237484AbhG1Oyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
+        id S236917AbhG1OxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237321AbhG1OyO (ORCPT
+        with ESMTP id S235345AbhG1OxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:54:14 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E4BC061384;
-        Wed, 28 Jul 2021 07:53:39 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id c16so2995303plh.7;
-        Wed, 28 Jul 2021 07:53:39 -0700 (PDT)
+        Wed, 28 Jul 2021 10:53:05 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9522C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:53:03 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id c16so2881245wrp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:53:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=29igml5xJQT7NZ/zHELD608zwBtMw+CBZNUu6aD3TXw=;
-        b=SU5+MP1dlZCdXiG26CqRqBNmqpOnXlHHd6+fcRsxbvw2EKuyqOU5Mopp7bVlS/zejO
-         csfVLQRSDXU/7dyozcqNTbp4P2dmnl8BvfUDZ1Gqg7dgoQW5/yF5uiTbfYAy+VmENB1e
-         ZbRjIv/17kq9qz1Iwt0YvmWCsP015hBjqyx7Z42jWLt2YBzb/erhrTjXS+igHusqWvTV
-         bsLn/A16PIaeWfmCBYPCwhZk+c/L4TU0ebGyf7PLH2QjuceGtPagZYnSsDqBPkotX/hN
-         i7oMHXglQkgWHkJisLKxQxmwRHNVomuhibIwUMR5k1D0bq2YE4VhqLodvPvuOU9g6oxL
-         pZ+Q==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FLa9JkYsnVFYuAh0m/VrdgEnPoab+4HrUUbPIcU3ZTA=;
+        b=CC0Ae83R+scTToRCxibUQ8g+cU1jUC3z6GWqbkDyXyKA15xFyl9QHfcCX2vLRbs7E6
+         Mh1i/5pzLZXLHxcn6ZZRyeMy7tDsKNFwygmEpFcut8aXUN0ltJ+ECAfZ/15Clfrcuajm
+         jyehU/F59MDDt4gLhb8UcbNhmm9hmKCTsRV4qS187cfpGWgwq6L9LpybOowMYpszwoLj
+         6oJpuYdiBPyYB5tJz9lUXosf2Xkk6y3HehQ0bd0t4d3Rd1dJKMLWg4pyGC/hdGWfmc3j
+         AlN4psPs4uaRUi0PHUomQpZ6+Rq2eoHpWXtqPmxB2DbM+9DzmMkGud49TxjSUGA3rxPB
+         /ELQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=29igml5xJQT7NZ/zHELD608zwBtMw+CBZNUu6aD3TXw=;
-        b=X0xdCflInmCmjLypMQvFsmT7kBfEJMEmyGxSUIUs2E322O3PQflDjnKgCJAYTV6SyG
-         BRh+6D/Z6l8c2830nEEhPQgK09tzucC5wJDSnkrZoraeFQLG2TXhMOEGKsEAV1OqUMyx
-         GIuwsMiM5SGxmKfA+nPrAZnE+YvAyBcytIRifSniHn/+dZXMGg9r+gsAcRVfKr8xPqJv
-         unt+sv/3yzMV5v7sM1q2OzxHtcMGhbXfYY/hTUbcVSd0GQsZWitk2iwTiFfawrLk8Tp8
-         ZGokTdB+IUruhqGMkaatmt6YM5drTYzs2mpX/QbLjc2RLx3PourpHVgsSXoHbrBxYtew
-         2Dig==
-X-Gm-Message-State: AOAM531uZb2OIlRrFGhcBhGo/jvYPk23HP/p79PgRkMVfFYWLrQzDh1D
-        VnKdUHoX5giV9E/NqQGD7JY=
-X-Google-Smtp-Source: ABdhPJzheaAoRTrkFU3jE3YHYpkFIR7nUHQbhRWDG+7XrGIy9dCpNUWuhIUXvdG5v42plPOPnYbJQA==
-X-Received: by 2002:a63:84:: with SMTP id 126mr169114pga.221.1627484019244;
-        Wed, 28 Jul 2021 07:53:39 -0700 (PDT)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:0:3823:141e:6d51:f0ad])
-        by smtp.gmail.com with ESMTPSA id n134sm277558pfd.89.2021.07.28.07.53.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 07:53:38 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, rientjes@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        rppt@kernel.org, kirill.shutemov@linux.intel.com,
-        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, xen-devel@lists.xenproject.org,
-        pgonda@google.com, david@redhat.com, keescook@chromium.org,
-        hannes@cmpxchg.org, sfr@canb.auug.org.au,
-        michael.h.kelley@microsoft.com
-Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, anparri@microsoft.com
-Subject: [PATCH 13/13] HV/Storvsc: Add Isolation VM support for storvsc driver
-Date:   Wed, 28 Jul 2021 10:52:28 -0400
-Message-Id: <20210728145232.285861-14-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210728145232.285861-1-ltykernel@gmail.com>
-References: <20210728145232.285861-1-ltykernel@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FLa9JkYsnVFYuAh0m/VrdgEnPoab+4HrUUbPIcU3ZTA=;
+        b=UmuH9zNAAd+8nKhrMKg1WwqguUBQ9NI/bgWNWLOM4ajYVAaLc90R6mhY0RFB7+/x62
+         C4taUflmf5w+ZK9G3TQr2TSFg+dn37PnzSbJv9kITGllR9zgn/HiTMn78r0LhJx7Gbwt
+         oABCk/v1a38LwLUT37hnm7k+5iWlJ7x6FmYQbfcck9JzKTdZcU04C884RMWaxPXd/Szn
+         8WYCy5fXypo+sjwZLjvYOsoe3gayW7kPNYpydH+jqxxCQ/cHvOwhvGOPZbCekRANm/cy
+         w+gWAgujh/9kYbkBZw8SevNG2WLcNiAdV48Pa4HSsgMPS1b0PIZngp74CgR3q7PQAXZ8
+         AShQ==
+X-Gm-Message-State: AOAM531mul98akeE9EibN8NaG1PtVSjTNHtUv16BGDaaUyad3mes165J
+        K4yUKUfl6vX4XkPnR5hQRxeokA==
+X-Google-Smtp-Source: ABdhPJwRlLF7HdOtB6/tmNwW4HJhWd7IOR3djacIZTmwFK5zwHJw32e9Gp52b6W5ox0Z7OSO/SeFrw==
+X-Received: by 2002:adf:dd05:: with SMTP id a5mr7815662wrm.214.1627483982539;
+        Wed, 28 Jul 2021 07:53:02 -0700 (PDT)
+Received: from [10.10.6.131] ([109.120.209.55])
+        by smtp.googlemail.com with ESMTPSA id s1sm6211270wmj.8.2021.07.28.07.53.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 07:53:02 -0700 (PDT)
+Subject: Re: [PATCH v3 7/7] media: venus: Set buffer to FW based on FW min
+ count requirement.
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+References: <1626246068-21023-1-git-send-email-dikshita@codeaurora.org>
+ <1626246068-21023-8-git-send-email-dikshita@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <e85515cc-6213-cdc3-dab8-46ea5eb58011@linaro.org>
+Date:   Wed, 28 Jul 2021 17:53:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1626246068-21023-8-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-In Isolation VM, all shared memory with host needs to mark visible
-to host via hvcall. vmbus_establish_gpadl() has already done it for
-storvsc rx/tx ring buffer. The page buffer used by vmbus_sendpacket_
-mpb_desc() still need to handle. Use DMA API to map/umap these
-memory during sending/receiving packet and Hyper-V DMA ops callback
-will use swiotlb function to allocate bounce buffer and copy data
-from/to bounce buffer.
 
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
----
- drivers/scsi/storvsc_drv.c | 68 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 63 insertions(+), 5 deletions(-)
+On 7/14/21 10:01 AM, Dikshita Agarwal wrote:
+> - Get the min buffer count required by FW from source event change
+>   and use the same value to decide actual buffer count and for
+>   buffer size calculation.
+> - Setup DPB and OPB buffers after session continue incase of
+>   reconfig.
+> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.h             |  1 +
+>  drivers/media/platform/qcom/venus/helpers.c          | 11 ++++++++++-
+>  drivers/media/platform/qcom/venus/hfi_helper.h       |  9 +++++++++
+>  drivers/media/platform/qcom/venus/hfi_msgs.c         |  7 +++++++
+>  drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c |  6 ++++--
+>  drivers/media/platform/qcom/venus/vdec.c             | 20 +++++++++++++-------
+>  6 files changed, 44 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 1ff20d9..b2b023e 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -403,6 +403,7 @@ struct venus_inst {
+>  	u32 width;
+>  	u32 height;
+>  	struct v4l2_rect crop;
+> +	u32 fw_min_cnt;
+>  	u32 out_width;
+>  	u32 out_height;
+>  	u32 colorspace;
+> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+> index ccf188a..ea82cdc 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.c
+> +++ b/drivers/media/platform/qcom/venus/helpers.c
+> @@ -576,6 +576,7 @@ static int platform_get_bufreq(struct venus_inst *inst, u32 buftype,
+>  	struct hfi_plat_buffers_params params;
+>  	bool is_dec = inst->session_type == VIDC_SESSION_TYPE_DEC;
+>  	struct venc_controls *enc_ctr = &inst->controls.enc;
+> +	int ret = 0;
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 328bb961c281..78320719bdd8 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -21,6 +21,8 @@
- #include <linux/device.h>
- #include <linux/hyperv.h>
- #include <linux/blkdev.h>
-+#include <linux/io.h>
-+#include <linux/dma-mapping.h>
- #include <scsi/scsi.h>
- #include <scsi/scsi_cmnd.h>
- #include <scsi/scsi_host.h>
-@@ -427,6 +429,8 @@ struct storvsc_cmd_request {
- 	u32 payload_sz;
- 
- 	struct vstor_packet vstor_packet;
-+	u32 hvpg_count;
-+	struct hv_dma_range *dma_range;
- };
- 
- 
-@@ -509,6 +513,14 @@ struct storvsc_scan_work {
- 	u8 tgt_id;
- };
- 
-+#define storvsc_dma_map(dev, page, offset, size, dir) \
-+	dma_map_page(dev, page, offset, size, dir)
-+
-+#define storvsc_dma_unmap(dev, dma_range, dir)		\
-+		dma_unmap_page(dev, dma_range.dma,	\
-+			       dma_range.mapping_size,	\
-+			       dir ? DMA_FROM_DEVICE : DMA_TO_DEVICE)
-+
- static void storvsc_device_scan(struct work_struct *work)
- {
- 	struct storvsc_scan_work *wrk;
-@@ -1260,6 +1272,7 @@ static void storvsc_on_channel_callback(void *context)
- 	struct hv_device *device;
- 	struct storvsc_device *stor_device;
- 	struct Scsi_Host *shost;
-+	int i;
- 
- 	if (channel->primary_channel != NULL)
- 		device = channel->primary_channel->device_obj;
-@@ -1314,6 +1327,15 @@ static void storvsc_on_channel_callback(void *context)
- 				request = (struct storvsc_cmd_request *)scsi_cmd_priv(scmnd);
- 			}
- 
-+			if (request->dma_range) {
-+				for (i = 0; i < request->hvpg_count; i++)
-+					storvsc_dma_unmap(&device->device,
-+						request->dma_range[i],
-+						request->vstor_packet.vm_srb.data_in == READ_TYPE);
-+
-+				kfree(request->dma_range);
-+			}
-+
- 			storvsc_on_receive(stor_device, packet, request);
- 			continue;
- 		}
-@@ -1810,7 +1832,9 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 		unsigned int hvpgoff, hvpfns_to_add;
- 		unsigned long offset_in_hvpg = offset_in_hvpage(sgl->offset);
- 		unsigned int hvpg_count = HVPFN_UP(offset_in_hvpg + length);
-+		dma_addr_t dma;
- 		u64 hvpfn;
-+		u32 size;
- 
- 		if (hvpg_count > MAX_PAGE_BUFFER_COUNT) {
- 
-@@ -1824,6 +1848,13 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 		payload->range.len = length;
- 		payload->range.offset = offset_in_hvpg;
- 
-+		cmd_request->dma_range = kcalloc(hvpg_count,
-+				 sizeof(*cmd_request->dma_range),
-+				 GFP_ATOMIC);
-+		if (!cmd_request->dma_range) {
-+			ret = -ENOMEM;
-+			goto free_payload;
-+		}
- 
- 		for (i = 0; sgl != NULL; sgl = sg_next(sgl)) {
- 			/*
-@@ -1847,9 +1878,29 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 			 * last sgl should be reached at the same time that
- 			 * the PFN array is filled.
- 			 */
--			while (hvpfns_to_add--)
--				payload->range.pfn_array[i++] =	hvpfn++;
-+			while (hvpfns_to_add--) {
-+				size = min(HV_HYP_PAGE_SIZE - offset_in_hvpg,
-+					   (unsigned long)length);
-+				dma = storvsc_dma_map(&dev->device, pfn_to_page(hvpfn++),
-+						      offset_in_hvpg, size,
-+						      scmnd->sc_data_direction);
-+				if (dma_mapping_error(&dev->device, dma)) {
-+					ret = -ENOMEM;
-+					goto free_dma_range;
-+				}
-+
-+				if (offset_in_hvpg) {
-+					payload->range.offset = dma & ~HV_HYP_PAGE_MASK;
-+					offset_in_hvpg = 0;
-+				}
-+
-+				cmd_request->dma_range[i].dma = dma;
-+				cmd_request->dma_range[i].mapping_size = size;
-+				payload->range.pfn_array[i++] = dma >> HV_HYP_PAGE_SHIFT;
-+				length -= size;
-+			}
- 		}
-+		cmd_request->hvpg_count = hvpg_count;
- 	}
- 
- 	cmd_request->payload = payload;
-@@ -1860,13 +1911,20 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	put_cpu();
- 
- 	if (ret == -EAGAIN) {
--		if (payload_sz > sizeof(cmd_request->mpb))
--			kfree(payload);
- 		/* no more space */
--		return SCSI_MLQUEUE_DEVICE_BUSY;
-+		ret = SCSI_MLQUEUE_DEVICE_BUSY;
-+		goto free_dma_range;
- 	}
- 
- 	return 0;
-+
-+free_dma_range:
-+	kfree(cmd_request->dma_range);
-+
-+free_payload:
-+	if (payload_sz > sizeof(cmd_request->mpb))
-+		kfree(payload);
-+	return ret;
- }
- 
- static struct scsi_host_template scsi_driver = {
+No need to initialize ret to zero.
+
+>  
+>  	hfi_plat = hfi_platform_get(version);
+>  
+> @@ -610,7 +611,15 @@ static int platform_get_bufreq(struct venus_inst *inst, u32 buftype,
+>  		params.enc.is_tenbit = inst->bit_depth == VIDC_BITDEPTH_10;
+>  	}
+>  
+> -	return hfi_plat->bufreq(&params, inst->session_type, buftype, req);
+> +	if (buftype == HFI_BUFFER_OUTPUT || buftype == HFI_BUFFER_OUTPUT2 ||
+> +	    buftype == HFI_BUFFER_INTERNAL_SCRATCH_1(version))
+
+Could you add a comment why HFI_BUFFER_INTERNAL_SCRATCH_1 is included in
+condition and not included in below 'if' condition?
+
+> +		req->count_min = inst->fw_min_cnt;
+> +
+> +	ret = hfi_plat->bufreq(&params, inst->session_type, buftype, req);
+> +	if (buftype == HFI_BUFFER_OUTPUT || buftype == HFI_BUFFER_OUTPUT2)
+
+^^^^
+
+> +		if (inst->fw_min_cnt != req->count_min)
+> +			inst->fw_min_cnt = req->count_min;
+> +	return ret;
+>  }
+
+Also in regards to inst->fw_min_cnt, can we pass fw_min_cnt as input to
+get_bufreq via 'req' structure, i.e.
+
+req.count_min = inst->fw_min_cnt;
+
+ret = venus_helper_get_bufreq(inst, type, &req);
+
+inst->fw_min_cnt = req.count_min
+
+?
+
+>  
+>  int venus_helper_get_bufreq(struct venus_inst *inst, u32 type,
+> diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
+> index 185c302..f2e8fad 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_helper.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_helper.h
+> @@ -167,6 +167,7 @@
+>  #define HFI_PROPERTY_PARAM_VDEC_RECOVERY_POINT_SEI_EXTRADATA	0x120300c
+>  #define HFI_PROPERTY_PARAM_VDEC_THUMBNAIL_MODE			0x120300d
+>  #define HFI_PROPERTY_PARAM_VDEC_FRAME_ASSEMBLY			0x120300e
+> +#define HFI_PROPERTY_PARAM_VDEC_DPB_COUNTS				0x120300e
+>  #define HFI_PROPERTY_PARAM_VDEC_VC1_FRAMEDISP_EXTRADATA		0x1203011
+>  #define HFI_PROPERTY_PARAM_VDEC_VC1_SEQDISP_EXTRADATA		0x1203012
+>  #define HFI_PROPERTY_PARAM_VDEC_TIMESTAMP_EXTRADATA		0x1203013
+> @@ -906,6 +907,14 @@ struct hfi_extradata_input_crop {
+>  	u32 height;
+>  };
+>  
+> +struct hfi_dpb_counts {
+> +	u32 max_dpb_count;
+> +	u32 max_ref_frames;
+> +	u32 max_dec_buffering;
+> +	u32 max_reorder_frames;
+> +	u32 fw_min_cnt;
+> +};
+> +
+>  #define HFI_COLOR_FORMAT_MONOCHROME		0x01
+>  #define HFI_COLOR_FORMAT_NV12			0x02
+>  #define HFI_COLOR_FORMAT_NV21			0x03
+> diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
+> index a2d436d..ed005d6 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_msgs.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
+> @@ -32,6 +32,7 @@ static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
+>  	struct hfi_colour_space *colour_info;
+>  	struct hfi_buffer_requirements *bufreq;
+>  	struct hfi_extradata_input_crop *crop;
+> +	struct hfi_dpb_counts *dpb_count;
+>  	u8 *data_ptr;
+>  	u32 ptype;
+>  
+> @@ -110,6 +111,12 @@ static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
+>  			event.input_crop.height = crop->height;
+>  			data_ptr += sizeof(*crop);
+>  			break;
+> +		case HFI_PROPERTY_PARAM_VDEC_DPB_COUNTS:
+> +			data_ptr += sizeof(u32);
+> +			dpb_count = (struct hfi_dpb_counts *)data_ptr;
+> +			event.buf_count = dpb_count->fw_min_cnt;
+> +			data_ptr += sizeof(*dpb_count);
+> +			break;
+>  		default:
+>  			break;
+>  		}
+> diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+> index 479178b..ea25c45 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+> @@ -1164,7 +1164,7 @@ static int output_buffer_count(u32 session_type, u32 codec)
+>  			output_min_count = 6;
+>  			break;
+>  		case V4L2_PIX_FMT_VP9:
+> -			output_min_count = 9;
+> +			output_min_count = 11;
+>  			break;
+>  		case V4L2_PIX_FMT_H264:
+>  		case V4L2_PIX_FMT_HEVC:
+> @@ -1213,6 +1213,8 @@ static int bufreq_dec(struct hfi_plat_buffers_params *params, u32 buftype,
+>  	}
+>  
+>  	out_min_count = output_buffer_count(VIDC_SESSION_TYPE_DEC, codec);
+> +	/* Max of driver and FW count */
+> +	out_min_count = max(out_min_count, bufreq->count_min);
+>  
+>  	bufreq->type = buftype;
+>  	bufreq->region_size = 0;
+> @@ -1237,7 +1239,7 @@ static int bufreq_dec(struct hfi_plat_buffers_params *params, u32 buftype,
+>  	} else if (buftype == HFI_BUFFER_INTERNAL_SCRATCH(version)) {
+>  		bufreq->size = dec_ops->scratch(width, height, is_interlaced);
+>  	} else if (buftype == HFI_BUFFER_INTERNAL_SCRATCH_1(version)) {
+> -		bufreq->size = dec_ops->scratch1(width, height, out_min_count,
+> +		bufreq->size = dec_ops->scratch1(width, height, VB2_MAX_FRAME,
+>  						 is_secondary_output,
+>  						 num_vpp_pipes);
+>  	} else if (buftype == HFI_BUFFER_INTERNAL_PERSIST_1) {
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index 892be8d..3e91d8c 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -988,23 +988,23 @@ static int vdec_start_capture(struct venus_inst *inst)
+>  	if (ret)
+>  		goto err;
+>  
+> +	venus_pm_load_scale(inst);
+> +
+> +	inst->next_buf_last = false;
+> +
+>  	ret = venus_helper_alloc_dpb_bufs(inst);
+>  	if (ret)
+>  		goto err;
+>  
+> -	ret = venus_helper_queue_dpb_bufs(inst);
+> +	ret = hfi_session_continue(inst);
+>  	if (ret)
+>  		goto free_dpb_bufs;
+>  
+> -	ret = venus_helper_process_initial_cap_bufs(inst);
+> +	ret = venus_helper_queue_dpb_bufs(inst);
+>  	if (ret)
+>  		goto free_dpb_bufs;
+>  
+> -	venus_pm_load_scale(inst);
+> -
+> -	inst->next_buf_last = false;
+> -
+> -	ret = hfi_session_continue(inst);
+> +	ret = venus_helper_process_initial_cap_bufs(inst);
+>  	if (ret)
+>  		goto free_dpb_bufs;
+>  
+> @@ -1411,6 +1411,11 @@ static void vdec_event_change(struct venus_inst *inst,
+>  		inst->crop.height = ev_data->height;
+>  	}
+>  
+> +	inst->fw_min_cnt = ev_data->buf_count;
+> +	//overwriting this to 11 for vp9 due to fw bug
+
+Please use C style for comments
+
+> +	if(inst->hfi_codec == HFI_VIDEO_CODEC_VP9)
+
+Space after if:
+
+if (condition)
+
+> +		inst->fw_min_cnt = 11;
+> +
+>  	inst->out_width = ev_data->width;
+>  	inst->out_height = ev_data->height;
+>  
+> @@ -1514,6 +1519,7 @@ static void vdec_inst_init(struct venus_inst *inst)
+>  	inst->crop.top = 0;
+>  	inst->crop.width = inst->width;
+>  	inst->crop.height = inst->height;
+> +	inst->fw_min_cnt = 8;
+>  	inst->out_width = frame_width_min(inst);
+>  	inst->out_height = frame_height_min(inst);
+>  	inst->fps = 30;
+> 
+
 -- 
-2.25.1
-
+regards,
+Stan
