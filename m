@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7DE3D9612
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3CB3D961B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbhG1Te2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 15:34:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:35262 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229986AbhG1TeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:34:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B3401FB;
-        Wed, 28 Jul 2021 12:34:21 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFA463F66F;
-        Wed, 28 Jul 2021 12:34:18 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH 2/3] rcu/nocb: Check for migratability rather than pure preemptability
-In-Reply-To: <20210727230814.GC283787@lothringen>
-References: <20210721115118.729943-1-valentin.schneider@arm.com> <20210721115118.729943-3-valentin.schneider@arm.com> <20210727230814.GC283787@lothringen>
-Date:   Wed, 28 Jul 2021 20:34:14 +0100
-Message-ID: <87pmv2kzbd.mognet@arm.com>
+        id S231618AbhG1Thd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 15:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhG1Thb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 15:37:31 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36489C061757;
+        Wed, 28 Jul 2021 12:37:29 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id m1so6783149pjv.2;
+        Wed, 28 Jul 2021 12:37:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=YGNbXA3LWoeJvRqmwBvBDGTrMpQsxN7Ok+KzzHRsrJE=;
+        b=BYHqUywK6NhuYK8K63h8dsZIeYvypTzKbDDQusjvHwR5ZclWGmvOmGEv4IuYp2c/mC
+         W4RvFdId2rD1w1Y8ClR8xM44L40dR6Bl3Iz7Q8rRkY2nMyXrucXK6aJNVT2KcL7QUVie
+         gq8GOllM308JsT4ptYu0SptVrVUFH0I0Fl6RbNN4mQT5bIN8Ky9qI0+ll4zUI3/hFQ/J
+         DoNOJ1TpF6o/NG5/O1pMMaC7LdwAehVRfhiOMYmKfn29fqvJ8N2MJp0LKp5BQ6smkqDH
+         dqiot/YvFBp0djSX4pd1WvHsKeU9DCIn0zEK6UzFchg6sIsSsZpOEk70Yu2IAwc0gr7J
+         UA8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YGNbXA3LWoeJvRqmwBvBDGTrMpQsxN7Ok+KzzHRsrJE=;
+        b=dJrfzrX4jw/tgL93V6igCq80icE9OOAg2BSCQcvqzBd31yTBpYVj8GYi5dTyoLsXIs
+         iveblb/gA02Tf9LoX7rWABIkF3pytN7P+mMtCbiX2KqcOr6LQE3D1jSKx6j7egod6XI3
+         QwH/EOlsWSl72TcPwTyp8JI23y9xvJr0LOHc/CKMBovrv74FeJR/dPMS8GWQr9xT3SLU
+         MA1zdnSGJ+XHxsqv+T4jo4aOktAFxVNfEASp4l7LfcHskKHFCfYkDpJz7ebtf+/23ZVf
+         Uv7R61l7uJ8UxJGalyTpuVzO3v4fSi4o+FwOwSXBYEzWfClmQ7gs+bdW8hMTOYvpmx+A
+         iyYQ==
+X-Gm-Message-State: AOAM531TA+6zv6LT8DXt9vxvaNHreB7yoINVKJb/xtcqXZXkZxfgfJUj
+        4iVqtrjSDVn4BhLlvwJUGmhycpCE+FLhqR4T
+X-Google-Smtp-Source: ABdhPJxn0tndfDcbLrGTOjSfF0xXe64xCfGTt9FAN3qryeAvMdxs1I2MuhGkzqcgXSV2bfAAzyBHAg==
+X-Received: by 2002:a17:902:a606:b029:12b:fbb7:1f9d with SMTP id u6-20020a170902a606b029012bfbb71f9dmr1243712plq.22.1627501048516;
+        Wed, 28 Jul 2021 12:37:28 -0700 (PDT)
+Received: from [192.168.1.10] ([223.236.188.83])
+        by smtp.gmail.com with ESMTPSA id 2sm656294pgz.26.2021.07.28.12.37.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 12:37:28 -0700 (PDT)
+Subject: Re: [PATCH v2] ath9k_htc: Add a missing spin_lock_init()
+To:     ath9k-devel@qca.qualcomm.com, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <38fa8cc-c9c4-66c1-e2ee-fe02caa7ef63@gmail.com>
+ <20210728191719.17856-1-rajatasthana4@gmail.com>
+From:   Rajat Asthana <rajatasthana4@gmail.com>
+Message-ID: <eb79099c-8dc9-21ee-f03e-207d1685941c@gmail.com>
+Date:   Thu, 29 Jul 2021 01:07:24 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210728191719.17856-1-rajatasthana4@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/21 01:08, Frederic Weisbecker wrote:
-> On Wed, Jul 21, 2021 at 12:51:17PM +0100, Valentin Schneider wrote:
->> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
->> ---
->>  kernel/rcu/tree_plugin.h | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
->> index ad0156b86937..6c3c4100da83 100644
->> --- a/kernel/rcu/tree_plugin.h
->> +++ b/kernel/rcu/tree_plugin.h
->> @@ -70,8 +70,7 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
->>              !(lockdep_is_held(&rcu_state.barrier_mutex) ||
->>                (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
->>                rcu_lockdep_is_held_nocb(rdp) ||
->> -		  (rdp == this_cpu_ptr(&rcu_data) &&
->> -		   !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())) ||
->> +		  (rdp == this_cpu_ptr(&rcu_data) && is_pcpu_safe()) ||
->
-> I fear that won't work. We really need any caller of rcu_rdp_is_offloaded()
-> on the local rdp to have preemption disabled and not just migration disabled,
-> because we must protect against concurrent offloaded state changes.
->
-> The offloaded state is changed by a workqueue that executes on the target rdp.
->
-> Here is a practical example where it matters:
->
->            CPU 0
->            -----
->            // =======> task rcuc running
->            rcu_core {
->              rcu_nocb_lock_irqsave(rdp, flags) {
->                    if (!rcu_segcblist_is_offloaded(rdp->cblist)) {
->                      // is not offloaded right now, so it's going
->                        // to just disable IRQs. Oh no wait:
->            // preemption
->            // ========> workqueue running
->            rcu_nocb_rdp_offload();
->            // ========> task rcuc resume
->                      local_irq_disable();
->                    }
->                }
->              ....
->                      rcu_nocb_unlock_irqrestore(rdp, flags) {
->                    if (rcu_segcblist_is_offloaded(rdp->cblist)) {
->                        // is offloaded right now so:
->                        raw_spin_unlock_irqrestore(rdp, flags);
->
-> And that will explode because that's an impaired unlock on nocb_lock.
+please ignore this patch!
 
-Harumph, that doesn't look good, thanks for pointing this out.
 
-AFAICT PREEMPT_RT doesn't actually require to disable softirqs here (since
-it forces RCU callbacks on the RCU kthreads), but disabled softirqs seem to
-be a requirement for much of the underlying functions and even some of the
-callbacks (delayed_put_task_struct() ~> vfree() pays close attention to
-in_interrupt() for instance).
 
-Now, if the offloaded state was (properly) protected by a local_lock, do
-you reckon we could then keep preemption enabled?
+I have sent this by wrongly giving the `in-reply-to` field in the `git 
+send-email`. Really sorry for this!
 
-From a naive outsider PoV, rdp->nocb_lock looks like a decent candidate,
-but it's a *raw* spinlock (I can't tell right now whether changing this is
-a horrible idea or not), and then there's
 
-81c0b3d724f4 ("rcu/nocb: Avoid ->nocb_lock capture by corresponding CPU")
 
-on top...
+Best wishes,
+
+-- Rajat
