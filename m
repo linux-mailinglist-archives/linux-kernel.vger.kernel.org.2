@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34F63D8C17
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD30C3D8C23
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235956AbhG1Kol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:44:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56509 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232609AbhG1Kod (ORCPT
+        id S236052AbhG1Kqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232514AbhG1Kqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:44:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627469071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wVPX76oa+ikEVer1UL4g4IfAB5UX3EuLtEsoXtArruM=;
-        b=CC6aYbCijMdrn5YCpKiVOY9ICYi2uvt/lUeXk0QJy6oxr/t5kZiWVJf/fMP0gKfi2weQgT
-        zvM6lWK0wEMYPytmw3myuB95jH9NRl49tvgrI0LT26LHjoAFXWsxLdW5j0AYRCp+6QlS13
-        /m4UcP8mXot5hU2D5mgoMPaPt+U20w0=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-45-iRU8VLxPNjGFW0XI-jW7hw-1; Wed, 28 Jul 2021 06:44:30 -0400
-X-MC-Unique: iRU8VLxPNjGFW0XI-jW7hw-1
-Received: by mail-ej1-f70.google.com with SMTP id yl23-20020a17090693f7b029051a448bab28so668281ejb.17
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 03:44:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wVPX76oa+ikEVer1UL4g4IfAB5UX3EuLtEsoXtArruM=;
-        b=CaF3HaQyT7+n957ssGfLfht1UOc5YwT6M3xhbU4MVbLe3NAS8OOAL4hBtLi5pvszXe
-         fvvDy9883zI/QFUzZDbZbmg0ZqqwhUuuRGhTBmCviX295G7zeda5J9fa0JJ6UlSRY+dU
-         6ddKzwKUF35DvEvu6If7CvNqd6c/0CMfKuZ439tDnlyPiAtKDSVG0q+CnHmT38ijZzQJ
-         YeOvtBbdwfV1s6yNrFuCVekyEJuxFYEAIaBpN+FwfsJVrJXwkPgla+wUVVT47csrdGkP
-         mT0Bocvt4XvJiQTtavD8XzvXld/1uDgsVdZRFqhglqkJeyeLRLbGKBk17sviBobmJM4d
-         m3gg==
-X-Gm-Message-State: AOAM532tvOkFvcxn/Xy1dUvFEv7J0F6cz9HlBSekXGufZm9X/RyI0Q4W
-        ppsmhQNSxpDjsAAgeKDINCiLpRWKVOWUC0MsrSpWTkk3MWE4bbMmsw6YXHgGtyzQYTVFqc1oYWS
-        w/aO6DBP6OdvyemVS8mxqnIjq
-X-Received: by 2002:a17:906:2817:: with SMTP id r23mr26205724ejc.285.1627469069102;
-        Wed, 28 Jul 2021 03:44:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzWcLtMBxOnIs64TlNoB0jmKwP4hUfZ5cywxkR9K10TtWPUd3iAhD3JxMJ1jDhe556eWIuu2A==
-X-Received: by 2002:a17:906:2817:: with SMTP id r23mr26205710ejc.285.1627469068919;
-        Wed, 28 Jul 2021 03:44:28 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id o14sm2472320eds.55.2021.07.28.03.44.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 03:44:28 -0700 (PDT)
-Subject: Re: LED subsystem lagging maintenance
-To:     Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
- <20210728103551.GA31304@amd>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <179c4bce-ce9b-c9a8-4f24-cb4b3397e0f0@redhat.com>
-Date:   Wed, 28 Jul 2021 12:44:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 28 Jul 2021 06:46:45 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2ACC061757;
+        Wed, 28 Jul 2021 03:46:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YQ6n99gglRIs882rM3VAbrraBMVYq36xoGa1dJkdE1U=; b=jYFNUJ65XiqIDkOlUy2lMGnAg2
+        MJ+YjxSokjtG8XrRp1WQd2hfx98seC1/Bp1d0Vk7r4qoSxRjInphARNmUnpKBdfVXsLA5kEJbbpiM
+        /cNVPpASl/QBu1IhkUdCB8kmuRMBUMN+Re5KM5hd3a0O3ZIvCM9jumtMUQjW4o8weqy+9mrXsGqCQ
+        XEGDiEulhNWxMb2By0BUNfOcYxzFLgJ9svhj81JyeuqqGQlHsRcYfWida6ZXH7I6vQEVTcEU6jI2P
+        r5IlGgOsRshykl8cCY61PNkDGgZ0FH6Wp3yH45YDf9sbcd5Vl6SioBdeuQzBxZv3zMe+toHip1JrY
+        GCEsSA0w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8h4b-003gLS-Td; Wed, 28 Jul 2021 10:46:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3287330005A;
+        Wed, 28 Jul 2021 12:46:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 186A721071BE8; Wed, 28 Jul 2021 12:46:00 +0200 (CEST)
+Date:   Wed, 28 Jul 2021 12:46:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Suleiman Souhlal <suleiman@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        ssouhlal@freebsd.org, joelaf@google.com, senozhatsky@chromium.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Subject: Re: [RFC PATCH 0/2] KVM: Support Heterogeneous RT VCPU
+ Configurations.
+Message-ID: <YQE1aB0/6B1FReZg@hirez.programming.kicks-ass.net>
+References: <20210728073700.120449-1-suleiman@google.com>
+ <YQEQ9zdlBrgpOukj@hirez.programming.kicks-ass.net>
+ <20210728103253.GB7633@fuller.cnet>
 MIME-Version: 1.0
-In-Reply-To: <20210728103551.GA31304@amd>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728103253.GB7633@fuller.cnet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 7/28/21 12:35 PM, Pavel Machek wrote:
-> Hi!
+On Wed, Jul 28, 2021 at 07:32:53AM -0300, Marcelo Tosatti wrote:
+> Peter, not sure what exactly are you thinking of? (to solve this
+> particular problem with pv deadline scheduling).
 > 
->> I have noticed that in the last couple of cycles the LED subsystem is
->> a bit laggish in terms of maintenance (*). I think it's time that
->> someone can help Pavel to sort things out.
->>
->> In any case, I wonder if we have any kind of procedure for what to do
->> in such cases. Do we need to assume that the subsystem is in a
->> (pre-)orphaned state? If so, who is the best to take care of patch
->> flow?
-> 
-> To be honest, patches were not applied because they were not that
-> important to begin with, because of lacking explanation, and because
-> you pushed a bit too hard.
-> 
-> Yes, I'm quite busy in -rc1 to -rc3 timeframe with stable reviews. No,
-> LED subsystem is not orphaned.
+> Shouldnt it be possible to, through paravirt locks, boost the priority
+> of the non-RT vCPU (when locking fails in the -RT vCPU) ?
 
-It is good to hear that you are still actively maintaining the LED
-subsystem, thank you.
-
-This thread does remind me that I was planning on re-sending this
-LED patch which seems to have fallen through the cracks:
-
-https://lore.kernel.org/alsa-devel/20210221115208.105203-1-hdegoede@redhat.com/
-
-Can you pick this one up please? Or shall I resend it?
-
-Regards,
-
-Hans
-
+No. Static priority scheduling does not compose. Any scheme that relies
+on the guest behaving 'nice' is unacceptable.
