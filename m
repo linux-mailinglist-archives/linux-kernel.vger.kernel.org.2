@@ -2,165 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197DD3D8AC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C82D3D8AD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235490AbhG1Jid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:38:33 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:50073 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231576AbhG1Ji2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:38:28 -0400
-Received: from ersatz.molgen.mpg.de (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id B474561E5FE00;
-        Wed, 28 Jul 2021 11:38:25 +0200 (CEST)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Cc:     Guohan Lu <lguohan@gmail.com>,
-        Madhava Reddy Siddareddygari <msiddare@cisco.com>,
-        Venkat Garigipati <venkatg@cisco.com>,
-        Billie Alsup <balsup@cisco.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC][PATCH] hwmon: (pmbus) Support 4th PSU temperature sensor
-Date:   Wed, 28 Jul 2021 11:38:14 +0200
-Message-Id: <20210728093815.8395-1-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.32.0
+        id S235736AbhG1Jjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:39:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51539 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235679AbhG1Jjj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 05:39:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627465177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ZYlpvd0wrMNvulsNAlFJD373h3DlBpV9FmzAud/uLI=;
+        b=fp4iQm5OVMwzimSby6fBdTsntfeoUE4pZKsnA71OJWHjDZBqJeqnl0ymGb5Z7qWkLZUnmn
+        mTUOz0Mnsluv9iEGxvH+XxicjpsJDJsgHwcnIizDPoD7LqcOs8VFM17QIgU54IuEuM6i4c
+        pSr4HxmWG/Ct/jbngGvfgQ3+lYIpOE4=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-230-QLnScPHqOVOWroGzJLdPHQ-1; Wed, 28 Jul 2021 05:39:36 -0400
+X-MC-Unique: QLnScPHqOVOWroGzJLdPHQ-1
+Received: by mail-il1-f198.google.com with SMTP id d9-20020a056e021c49b02902095727d18dso1191125ilg.17
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:39:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1ZYlpvd0wrMNvulsNAlFJD373h3DlBpV9FmzAud/uLI=;
+        b=cXf4jG0VzsVi3EoEoGqXcV5TiuhmWuF7Xd8vEdP/zsPAaB0s+uadLeTK/DnJjw107U
+         +PnNGixGNGpHc58AOsZoomuFvco5Ov0cS8IiHvWmXR4JYpvn6qIwpNctyCB+OYT27Ufc
+         H5iA/T6kNM3SUmBVDKLSPUSm+rDq3qRRuZGIuefNVUbi3RhRKzCkF++XPZB//8+6xRBa
+         v/Icfn9R3m6bo0f+DYh1Ncy8xOtW1wovSNTmFg5X+HCPESdxNkNo2A4qGl2fvtz2EA4T
+         twgsyJ2MF7j/RX8LG97n4oS7gby5f5p0pgvMV7K3Dbuw+pup7nGx2UeejlG21rHLLJJc
+         MF2w==
+X-Gm-Message-State: AOAM531RGGn/CVgv17mQoQnDLOcSFCA4Kfhi3DQsnzPGBaDxFZsogKCs
+        2PuhQ2wDsh4i3LFtiYwGdLMSbvs6HYZLpkFg1I50eXpd4ZyUvxmUEk5szXhQ/ZTLvJ2TfsEbfoy
+        9puRoQqME/r27+TNUkz2/ONMsVXBAcuMtRe2RH+Cp
+X-Received: by 2002:a92:cec5:: with SMTP id z5mr18759439ilq.226.1627465175920;
+        Wed, 28 Jul 2021 02:39:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGQjikI+CcP92C8oA9YNs6Xpubb3f815soKcRbvzy7YTVQlpcJkpzxb3OZh2Rq+Q7nKigYlaFrt4yknkYOVMo=
+X-Received: by 2002:a92:cec5:: with SMTP id z5mr18759427ilq.226.1627465175742;
+ Wed, 28 Jul 2021 02:39:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210727111446.119561-1-mlombard@redhat.com> <YQDznBi5NuTIKd+x@kernel.org>
+In-Reply-To: <YQDznBi5NuTIKd+x@kernel.org>
+From:   Maurizio Lombardi <mlombard@redhat.com>
+Date:   Wed, 28 Jul 2021 11:39:25 +0200
+Message-ID: <CAFL455=X7aCK=vSBuQZV39gR03mrnc1j+-YHWkWbVor4g89DkQ@mail.gmail.com>
+Subject: Re: [PATCH V2] iscsi_ibft: fix crash due to KASLR physical memory remapping
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     bp@alien8.de, tglx@linutronix.de, x86@kernel.org,
+        pjones@redhat.com, konrad@kernel.org,
+        George Kennedy <george.kennedy@oracle.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhava Reddy Siddareddygari <msiddare@cisco.com>
+Hi Mike,
 
-PSU650W has four temperature sensors, while the pmbus driver currently
-only support three temperature sensors.
+st 28. 7. 2021 v 8:05 odes=C3=ADlatel Mike Rapoport <rppt@kernel.org> napsa=
+l:
+>
+> Hi,
+>
+> On Tue, Jul 27, 2021 at 01:14:46PM +0200, Maurizio Lombardi wrote:
+> > Starting with commit a799c2bd29d19c565f37fa038b31a0a1d44d0e4d
+> > memory reservations have been moved earlier during the boot process,
+> > before the execution of the Kernel Address Space Layout Randomization c=
+ode.
+> >
+> > setup_arch() calls the iscsi_ibft's find_ibft_region() function
+> > to find and reserve the memory dedicated to the iBFT; this function
+> > also saves a (virt) pointer to the iBFT table for later use.
+>
+>               ^ virtual
+>
+> > The problem is that if KALSR is active, the physical memory gets
+> > remapped somewhere else in the virtual address space and the pointer is
+> > no longer valid, this will cause a kernel panic when the iscsi driver t=
+ries
+> > to dereference it.
+>
+> Please drop "this patch" and use imperative language, e.g. "Fix this bug
+> by..."
+>
+> > This patch fixes the bug by saving the address of the physical location
+> > of the ibft; later the driver will use isa_bus_to_virt() to get
+> > the correct virtual address.
+> >
+> > It will also simplify the code by renaming find_ibft_region()
+> > to reserve_ibft_region() and removing all the wrappers.
+> >
+> > [   37.764225] iBFT detected.
+>
+> It is better to put the crash report close to the problem description as =
+it
+> actually shows how the issue is manifested.
 
-So, support a fourth temp sensor, i. e. PSU outlet temperature sensor,
-by copying what is done for temperature sensor 3, and use register 0xDF.
+Thanks for the review, I will submit a V3 soon
 
-PSU650W is based on LITE-ON vendor.
-LITE-ON MFG part numbers for the PSU are PS-2651-3SB5 Z and PS-2651-3SA5 Z.
-
-Signed-off-by: Madhava Reddy Siddareddygari <msiddare@cisco.com>
-Signed-off-by: Venkat Garigipati <venkatg@cisco.com>
-Cc: Billie Alsup <balsup@cisco.com>
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
----
-This as a RFC, as we know 0xDF is a manufacturer specific register, and
-cannot be added to the PMBus core driver. It was submitted to SONiC [1]
-by Cisco engineers.
-
-It’d be great if the maintainers good suggest how to easily implement a
-custom driver for that PSU?
-
-[1]: https://github.com/Azure/sonic-linux-kernel/pull/214
-
- drivers/hwmon/pmbus/pmbus.c      |  4 +++-
- drivers/hwmon/pmbus/pmbus.h      |  3 +++
- drivers/hwmon/pmbus/pmbus_core.c | 38 ++++++++++++++++++++++++++++++++
- 3 files changed, 44 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/hwmon/pmbus/pmbus.c b/drivers/hwmon/pmbus/pmbus.c
-index d0d386990af5..df2a782a1105 100644
---- a/drivers/hwmon/pmbus/pmbus.c
-+++ b/drivers/hwmon/pmbus/pmbus.c
-@@ -60,8 +60,10 @@ static void pmbus_find_sensor_groups(struct i2c_client *client,
- 		info->func[0] |= PMBUS_HAVE_TEMP2;
- 	if (pmbus_check_word_register(client, 0, PMBUS_READ_TEMPERATURE_3))
- 		info->func[0] |= PMBUS_HAVE_TEMP3;
-+	if (pmbus_check_word_register(client, 0, PMBUS_READ_TEMPERATURE_4))
-+		info->func[0] |= PMBUS_HAVE_TEMP4;
- 	if (info->func[0] & (PMBUS_HAVE_TEMP | PMBUS_HAVE_TEMP2
--			     | PMBUS_HAVE_TEMP3)
-+			     | PMBUS_HAVE_TEMP3 | PMBUS_HAVE_TEMP4)
- 	    && pmbus_check_byte_register(client, 0,
- 					 PMBUS_STATUS_TEMPERATURE))
- 			info->func[0] |= PMBUS_HAVE_STATUS_TEMP;
-diff --git a/drivers/hwmon/pmbus/pmbus.h b/drivers/hwmon/pmbus/pmbus.h
-index e0aa8aa46d8c..1522c8c7cade 100644
---- a/drivers/hwmon/pmbus/pmbus.h
-+++ b/drivers/hwmon/pmbus/pmbus.h
-@@ -135,6 +135,8 @@ enum pmbus_regs {
- 	PMBUS_MFR_MAX_TEMP_2		= 0xC1,
- 	PMBUS_MFR_MAX_TEMP_3		= 0xC2,
- 
-+	PMBUS_READ_TEMPERATURE_4	= 0xDF,
-+
- /*
-  * Virtual registers.
-  * Useful to support attributes which are not supported by standard PMBus
-@@ -401,6 +403,7 @@ enum pmbus_sensor_classes {
- #define PMBUS_HAVE_PWM12	BIT(20)
- #define PMBUS_HAVE_PWM34	BIT(21)
- #define PMBUS_HAVE_SAMPLES	BIT(22)
-+#define PMBUS_HAVE_TEMP4	BIT(23)
- 
- #define PMBUS_PHASE_VIRTUAL	BIT(30)	/* Phases on this page are virtual */
- #define PMBUS_PAGE_VIRTUAL	BIT(31)	/* Page is virtual */
-diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-index 776ee2237be2..b084b5ba6d45 100644
---- a/drivers/hwmon/pmbus/pmbus_core.c
-+++ b/drivers/hwmon/pmbus/pmbus_core.c
-@@ -1810,6 +1810,32 @@ static const struct pmbus_limit_attr temp_limit_attrs3[] = {
- 	},
- };
- 
-+static const struct pmbus_limit_attr temp_limit_attrs4[] = {
-+	{
-+		.reg = PMBUS_UT_WARN_LIMIT,
-+		.low = true,
-+		.attr = "min",
-+		.alarm = "min_alarm",
-+		.sbit = PB_TEMP_UT_WARNING,
-+	}, {
-+		.reg = PMBUS_UT_FAULT_LIMIT,
-+		.low = true,
-+		.attr = "lcrit",
-+		.alarm = "lcrit_alarm",
-+		.sbit = PB_TEMP_UT_FAULT,
-+	}, {
-+		.reg = PMBUS_OT_WARN_LIMIT,
-+		.attr = "max",
-+		.alarm = "max_alarm",
-+		.sbit = PB_TEMP_OT_WARNING,
-+	}, {
-+		.reg = PMBUS_OT_FAULT_LIMIT,
-+		.attr = "crit",
-+		.alarm = "crit_alarm",
-+		.sbit = PB_TEMP_OT_FAULT,
-+	}
-+};
-+
- static const struct pmbus_sensor_attr temp_attributes[] = {
- 	{
- 		.reg = PMBUS_READ_TEMPERATURE_1,
-@@ -1847,6 +1873,18 @@ static const struct pmbus_sensor_attr temp_attributes[] = {
- 		.gbit = PB_STATUS_TEMPERATURE,
- 		.limit = temp_limit_attrs3,
- 		.nlimit = ARRAY_SIZE(temp_limit_attrs3),
-+	}, {
-+		.reg = PMBUS_READ_TEMPERATURE_4,
-+		.class = PSC_TEMPERATURE,
-+		.paged = true,
-+		.update = true,
-+		.compare = true,
-+		.func = PMBUS_HAVE_TEMP4,
-+		.sfunc = PMBUS_HAVE_STATUS_TEMP,
-+		.sbase = PB_STATUS_TEMP_BASE,
-+		.gbit = PB_STATUS_TEMPERATURE,
-+		.limit = temp_limit_attrs4,
-+		.nlimit = ARRAY_SIZE(temp_limit_attrs4),
- 	}
- };
- 
--- 
-2.32.0
+Maurizio
 
