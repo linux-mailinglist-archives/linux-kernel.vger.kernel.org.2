@@ -2,72 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AC63D928D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32EF3D92AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237435AbhG1P7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:59:31 -0400
-Received: from [43.250.32.171] ([43.250.32.171]:10547 "EHLO email.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237358AbhG1P7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:59:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=+0wI7mv8XUU8mTLbxor4A/f7cmasr0sNeQo/+
-        h10VfE=; b=Lzl9S29cJ09P3Nnj9lH4xUNIMgRrLqjq79yqXJQcdL+ahOnSRRf21
-        ca1Gpju7Ix7thIicLtYFZLFqbTytF2wJMK8Jlzqy/uT325oOk2rbXnARMyMcQMFw
-        RYFC7RxBYIa70mmAtkCZJOhVm5eYV5nDUg8Or3fFOyxaBa4xFMeh2g=
-Received: from localhost.localdomain (unknown [113.251.14.68])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgDn9QTQfgFhsjoLAA--.39671S2;
-        Wed, 28 Jul 2021 23:59:13 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net
-Cc:     netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: networking: add ioam6-sysctl into index
-Date:   Wed, 28 Jul 2021 23:59:12 +0800
-Message-Id: <20210728155912.9293-1-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
+        id S237516AbhG1QAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237485AbhG1QAa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 12:00:30 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591B6C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:00:29 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so10731694pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:00:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yc5UbwPjJQACVbhvjLg+y5j4VZ0+YIpYUrLOrohGgkY=;
+        b=qx5DLqsbVm3pDju2VSYfAbQl88h0B1EVxHBtlFut/6ctc/nH5qKeikqQP8qDzv5eLz
+         4dXp4+bODSNL0hCZEqkcoIXwwgNai7tOfbtTXvvAJFOhkqKw4/R92jWdwWtXJ9MEEJsN
+         ro5LWDnEwbyRH9wKa5r5HNbWgvifvNoGYREpxyTCfDqcz+X9QWsBCb1IwHoUy5UGvqKn
+         D2CJREa3Lxf2IUklMIDwvcd8J2lFtg8zk4OMK/DqNxMeWeYh3PgASpIsx6JZRzQy1X5/
+         PpueJOCkPwHVbIzp97vF2w551yq7JhJQDq7PAJox8mAqy6DFKelLwFc9oSxgYgQ4xlnG
+         MF2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yc5UbwPjJQACVbhvjLg+y5j4VZ0+YIpYUrLOrohGgkY=;
+        b=qiDsahLFCtqxsEapIlhsbXd6IZCqCPiyP3x0tcNWRti+nyrVBqptYGB8JQutIYnALE
+         TF/YWgUrhywbxmWcVsPktBThNz4iPexW9pFR6c3NcUIawxMuwn2YDkXKCNsLwUV5bOki
+         QG/WM61yalPZeHoodDjO5tNHPl1HIBm+RXoyxSlc5I0dhwGzaJadhPTUzaMxizmQmJVv
+         JYYFSFLzluUUHVTIUg5rPweolpImWDc7ObmD/1TPy3jPtBAydWIhVahjM9YUiK5Tmzqa
+         7GtQLsqslwfsGQl+A/n4BbDS6dfjBGYDcoDvqBBdxz7IDveXZSe21+TcsnaBrNHFXDV/
+         tA5w==
+X-Gm-Message-State: AOAM532PUbLOxGX31I54ya4YfQtjQh5r6tRzLrDxHO0Mo6j4Clceq0Zc
+        mmKKfgdHKPpxNnMqleFyUhY4HujgjmsZxAgl/+VAhA==
+X-Google-Smtp-Source: ABdhPJz2logvFN0MKIsYvPCI7xECU1r0uANCc3AQ/xrgU3X9/gvm7fwRg8jd0KyK/HMYlIFMJe0A74gaDSUTZUqwKDo=
+X-Received: by 2002:a65:6181:: with SMTP id c1mr507765pgv.208.1627488028807;
+ Wed, 28 Jul 2021 09:00:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LCKnCgDn9QTQfgFhsjoLAA--.39671S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5-7k0a2IF6w4kM7kC6x804xWl1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
-        x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWU
-        JVW8JwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04
-        k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F4UJr1UMxC20s026xCaFVCjc4AY6r1j
-        6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-        AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
-        2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
-        C2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
-        nUUI43ZEXa7IUnLSdPUUUUU==
-X-Originating-IP: [113.251.14.68]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+References: <20210727232219.2948-1-phil@philpotter.co.uk> <20210728074605.pp5rs4c65tofnqot@viti.kaiser.cx>
+In-Reply-To: <20210728074605.pp5rs4c65tofnqot@viti.kaiser.cx>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Wed, 28 Jul 2021 17:00:18 +0100
+Message-ID: <CAA=Fs0mH9YAVhr24YeE3jpZrnuDGhOuhj=Sb9Ekkpb-xoC5LYg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] staging: r8188eu: add newer/better RTL8188eu driver
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, Fabio Aiuto <fabioaiuto83@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Append ioam6-sysctl to toctree in order to get rid of building warnings.
+On Wed, 28 Jul 2021 at 08:46, Martin Kaiser <martin@kaiser.cx> wrote:
+>
+> Hi Philipp and all,
+>
+> Thus wrote Phillip Potter (phil@philpotter.co.uk):
+>
+> > The driver currently in staging is older and less functional than the
+> > version on Larry Finger's GitHub account, based upon v4.1.4_6773.20130222.
+> > This series of patches therefore:
+>
+> [...]
+>
+> > V4: don't remove old driver now, just mark as deprecated and modify to
+> >     allow building alongside the new driver.
+>
+> Basically, you're suggesting to put aside all the fixes and cleanup
+> that was done since the rtl8188eu driver was imported into the kernel
+> tree. The TODO file says
+>
+> - merge Realtek's bugfixes and new features into the driver
+>
+> Why aren't we going down this route?
+>
+> Edimax offer a realtek driver linux_v5.7.6.1_36803.20200602 for
+> rtl8188eu as a .zip file for download on their website
+>
+> https://www.edimax.com/edimax/mw/cufiles/files/download/Driver_Utility/EW-7811Un_V2/EW-7811Un_V2_Linux_Driver_1.0.1.2.zip
+>
+> If we integrate and fix the v4.1.4_6773.20130222 driver, are we running
+> the risk that someone else will come along and propose another replacement?
+>
+> Thanks,
+> Martin
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
----
- Documentation/networking/index.rst | 1 +
- 1 file changed, 1 insertion(+)
+Dear Martin,
 
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index e9ce55992aa9..a91a2739f8ed 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -57,6 +57,7 @@ Contents:
-    gen_stats
-    gtp
-    ila
-+   ioam6-sysctl
-    ipddp
-    ip_dynaddr
-    ipsec
--- 
-2.25.1
+I see what you are saying for sure - I think we've both sunk a fair
+few patches into the existing driver :-)
 
+That said, from what Larry has mentioned, this newer driver would
+still be a better bet overall due to the additional work that has
+already happened on it out-of-tree. The Realtek driver you reference
+probably has no CFG80211 support etc. would be my guess, but I am
+going off what others have suggested in terms of proposing this
+patchset. I can't honestly say what the risk of this happening again
+would be, but minimal I'd imagine.
+
+Regards,
+Phil
