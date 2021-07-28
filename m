@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696BC3D9948
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440163D994A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhG1XLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbhG1XLQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:11:16 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D24C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:11:14 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so12618449pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wjVZYNNKvkz+dEqnRUcvgnvoiUT+17D6nY+LOvQaqFM=;
-        b=LyMc9TiBuRMdPTTAqLyUditTfLnTTRPuRFiSp1/g8qRVaSD911B/hJ1JigdxNGzzZf
-         ZHDMhL9XPwZG0HIqkWCW3SRP6cYblxII2QqbZ8fV6TaLmbFo8yqjFMTib+i6WYFJT4sa
-         IS+58xCLXSpKvXmnCksM0Ei9UmmjMgvt+D6PsoZKlOXTW1JNEoz2ICejKZ4GhKjStROc
-         SVpNxF9wX1owUlE9qVtbjcXiGgU6XC57ml5EvUyT+9nNzkUIO+tvjupt7nbZBOwxAHDX
-         Lk5rYLBoFYdJENOhInfMC+gB4BDDNYozGaNPHUto8QY+oIZsV9E4sLKSqGMHV/oM9B3T
-         Y2Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wjVZYNNKvkz+dEqnRUcvgnvoiUT+17D6nY+LOvQaqFM=;
-        b=Ly4WcP4tXfCwNo1mS7OxeSV5TflZD06cEQPr6HAE4rMPOIucGbZwZ/TwUVjxwaeczX
-         c65n77thMurNDlUg9XGtZd77J5fBk6X4lRPpsR+WkZjYf/R6HqiVwAVLuPk8YxsPW5KP
-         DkNd4BBVKXechqAuFiFoJZIhRAw/pU6aJ9v/LBwvvSoL5BTTL+EsoFFFY8JcAm8SKvAV
-         cfwBGb0nohFlM/zjwcgmrVdEos9jJ7Ix4oGOT/H2cKUTBQI3nYavwoD7kOSc0IcecIvi
-         3gcZym3t3Hxxh8JExNNqA26URny4P5GwMvGedhCQ+3LcIA9aWdsGyUaPZThTW/XOxPSg
-         7sTw==
-X-Gm-Message-State: AOAM533bPfX5DLZIseztA77AGu/nhWfc0QD3Dda21MLuozl6k9YxHQR2
-        D5iZtx03oP5vDpMRo3r5tO4y8xRYZB9tBg==
-X-Google-Smtp-Source: ABdhPJwa932+QRBDfM/6XzzlKH/E0wkeUZlFkYSZiAe7DrHhqPtKcatkq6xNejJSqEGJGcEs0DXqLA==
-X-Received: by 2002:a17:90a:bd06:: with SMTP id y6mr2147490pjr.6.1627513873271;
-        Wed, 28 Jul 2021 16:11:13 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p17sm1058543pfh.33.2021.07.28.16.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 16:11:12 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 23:11:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org, Stas Sergeev <stsp2@yandex.ru>
-Subject: Re: [PATCH v3] KVM: x86: accept userspace interrupt only if no event
- is injected
-Message-ID: <YQHkDDN+T3mFTcP+@google.com>
-References: <20210727210916.1652841-1-pbonzini@redhat.com>
+        id S232596AbhG1XMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:12:46 -0400
+Received: from mga07.intel.com ([134.134.136.100]:55857 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232392AbhG1XMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:12:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="276549632"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="276549632"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 16:12:42 -0700
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="581030981"
+Received: from shuangho-mobl1.amr.corp.intel.com (HELO [10.212.219.154]) ([10.212.219.154])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 16:12:41 -0700
+Subject: Re: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
+ pages
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210719182009.1409895-1-tony.luck@intel.com>
+ <20210728204653.1509010-1-tony.luck@intel.com>
+ <20210728204653.1509010-2-tony.luck@intel.com>
+ <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
+ <f2685d7c8dc14792a4e0f9807f742ea6@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <fd8f8e79-f63f-7d6f-277e-1ad08ab7b6b8@intel.com>
+Date:   Wed, 28 Jul 2021 16:12:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727210916.1652841-1-pbonzini@redhat.com>
+In-Reply-To: <f2685d7c8dc14792a4e0f9807f742ea6@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021, Paolo Bonzini wrote:
-> Once an exception has been injected, any side effects related to
-> the exception (such as setting CR2 or DR6) have been taked place.
-> Therefore, once KVM sets the VM-entry interruption information
-> field or the AMD EVENTINJ field, the next VM-entry must deliver that
-> exception.
+On 7/28/21 3:57 PM, Luck, Tony wrote:
+>> Wouldn't it be safer to do something like:
+>>
+>> 	page->owner = owner ? owner : (void *)-1;
+>>
+>> -1 is non-NULL, but also invalid, which makes it harder for us to poke
+>> ourselves in the eye.
+> Does Linux have some #define INVALID_POINTER thing that
+> provides a guaranteed bad (e.g. non-canonical) value?
 > 
-> Pending interrupts are processed after injected exceptions, so
-> in theory it would not be a problem to use KVM_INTERRUPT when
-> an injected exception is present.  However, DOSEMU is using
-> run->ready_for_interrupt_injection to detect interrupt windows
-> and then using KVM_SET_SREGS/KVM_SET_REGS to inject the
-> interrupt manually.  For this to work, the interrupt window
-> must be delayed after the completion of the previous event
-> injection.
-> 
-> Cc: stable@vger.kernel.org
-> Reported-by: Stas Sergeev <stsp2@yandex.ru>
-> Tested-by: Stas Sergeev <stsp2@yandex.ru>
-> Fixes: 71cc849b7093 ("KVM: x86: Fix split-irqchip vs interrupt injection window request")
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/x86.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 4116567f3d44..e5d5c5ed7dd4 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4358,8 +4358,17 @@ static int kvm_cpu_accept_dm_intr(struct kvm_vcpu *vcpu)
->  
->  static int kvm_vcpu_ready_for_interrupt_injection(struct kvm_vcpu *vcpu)
->  {
-> -	return kvm_arch_interrupt_allowed(vcpu) &&
-> -		kvm_cpu_accept_dm_intr(vcpu);
-> +	/*
-> +	 * Do not cause an interrupt window exit if an exception
-> +	 * is pending or an event needs reinjection; userspace
-> +	 * might want to inject the interrupt manually using KVM_SET_REGS
-> +	 * or KVM_SET_SREGS.  For that to work, we must be at an
-> +	 * instruction boundary and with no events half-injected.
-> +	 */
-> +	return (kvm_arch_interrupt_allowed(vcpu) &&
+> (void *)-1 seems hacky.
 
-Ha, adding a '(' is one way to fix the indentation.
+ERR_PTR(-SOMETHING) wouldn't be too bad.  I guess it could even be:
 
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
+	page->owner = ERR_PTR(SGX_EPC_PAGE_VA);
 
-> +		kvm_cpu_accept_dm_intr(vcpu) &&
-> +		!kvm_event_needs_reinjection(vcpu) &&
-> +		!vcpu->arch.exception.pending);
->  }
->  
->  static int kvm_vcpu_ioctl_interrupt(struct kvm_vcpu *vcpu,
-> -- 
-> 2.27.0
-> 
+and then:
+
+#define SGX_EPC_PAGE_VA 0xffff...something...greppable
+
+I *thought* we had a file full of these magic values, but maybe I'm
+misremembering the uapi magic header.
