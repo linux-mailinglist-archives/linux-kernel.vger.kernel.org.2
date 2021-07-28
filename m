@@ -2,132 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD2A3D97FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D473D9819
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhG1V7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 17:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbhG1V7U (ORCPT
+        id S232005AbhG1WBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:01:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42623 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231668AbhG1WBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 17:59:20 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6B5C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:59:16 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id i10so4438691pla.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:59:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ry2so8wkWIDOCG/sQogiwuE+9Zyl4IrepEHbauTvq4U=;
-        b=IGRqrDLsPrMGIokLAHHitBXrTGx8ldPYhQZ0vhlO7BwqLTxHuG39KqoD+0xySdQDeZ
-         wOes72WlsRRJac/rz2gEpxXYvtLZ6bSaZfmQarX0qm7P2LxswesUfd9AKF5i4JhugBhi
-         nx2jk3HjG5WlS1z72s2XLwsxgebFqKKL6xJwA=
+        Wed, 28 Jul 2021 18:01:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627509669;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pKidz3FSMJhJcIlYfT3swxoQS+3hE6AXtJkM+UemTX0=;
+        b=YlYXn6X9nsDPoelomEWSTO/uo2Y1i4od8aOYS5AInAvgK/7dLvKDOARtUUOX4M0quy5b29
+        PzCg+y9tPLFIZ1Z5ewF6LOrnq4YqRHFV4iLV/mHvlz+n4EeXadnF03LcxJT2EU++fcLjii
+        TldvoYY4sIKTrsdWQln8c/h5A93SANI=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-I6hf7BPxNNyfh3qnpmfO-w-1; Wed, 28 Jul 2021 18:01:07 -0400
+X-MC-Unique: I6hf7BPxNNyfh3qnpmfO-w-1
+Received: by mail-qk1-f200.google.com with SMTP id x12-20020a05620a14acb02903b8f9d28c19so2436718qkj.23
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 15:01:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ry2so8wkWIDOCG/sQogiwuE+9Zyl4IrepEHbauTvq4U=;
-        b=kKAn8g78KHoTVG+rr7GVjgyq/CnjuPbaHE1yb36Ec8NpZeAmGXaRX9oT6BxCLRNQQc
-         tfTp1AKFO/llGPQzcJRkVpTPayvLRTPX5GGcl8A1ubZejQOt5vQX7X6XqY9vuW/lr9p2
-         Hqm2CLidYRtYnUblEOPjgi2a9bTq3Vs88VF9pyElIpsV13zIxApJnD/FI57fN8/D62Ml
-         WIaNRdmRZ6wFZCTvicJ/mRREomE4QKH8qsioKgiPel7fcK1g+yVAIulX71tpExHn2j8T
-         mA8XQeJo4uTxMBZYD0affLu4RGCS0lU4rjjwl8EZ+wFNGuwoZAXV4l6THEzPZG2stCDX
-         dJNw==
-X-Gm-Message-State: AOAM533fyVteF3nMBIdcTcKQyLMftT8PrEmVtFtLb6dyd3WO7V0SFxTc
-        kX4aSgaRGALneT7ivKASPLgdyA==
-X-Google-Smtp-Source: ABdhPJzgz5HqNdUbzYWG/8osCsOtCEP6ipgHXlpT0b4bkWx62GdyxJFdtfEBDYACX8aQ6iHvHf/hRw==
-X-Received: by 2002:a65:498a:: with SMTP id r10mr928037pgs.7.1627509555798;
-        Wed, 28 Jul 2021 14:59:15 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 30sm1011862pgq.31.2021.07.28.14.59.14
+        bh=pKidz3FSMJhJcIlYfT3swxoQS+3hE6AXtJkM+UemTX0=;
+        b=GouTPtwf1KxHL1d/B1fPKLheQfkfJgSlqogml1gPa66IMwvwi/WFhAvVif+Cy///Dd
+         7KreWc0mbN8BShIZfSnnGom9BoyMkWRLpfxNWopLLkTEOBhC5OdCFgcztYBKmbP5idGZ
+         a24rJYSPrS5q0vhmCthiBuZ7CJB1PNG1HmYYeteMPm4C1U0ZqYGWE6NjaC+oz1WE7woY
+         VdHKFBNzT+yJSnjd/4LqMI8kPvKFtgafbT/qK31tArwTp2SepHucDqGtl7FlP4Rf3DS2
+         yblht6ycYfSuhLo1asgxYho2CQWv4KRWB4i6vANtIZeWC0D0JIBT9ZO1m5RKgaZEEAwe
+         6bxg==
+X-Gm-Message-State: AOAM530gc4tGqG3b4yvfIELhzCJ9CIxSXH2H+dUQ6MOAAbvnSW2frI03
+        U6/PDveaBxVF4KffD+HGXD7b5SKRLXs94ZjTosidHTS0hBpfVUxH2jzz9kyesw9kaNgoQljDKUz
+        3N2IJ2jhPY3qCNVPU1HLUSPvu
+X-Received: by 2002:a05:6214:21ee:: with SMTP id p14mr2277315qvj.8.1627509667469;
+        Wed, 28 Jul 2021 15:01:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxVYy91ZfI5zoJBEKJ3Yd5LRP0ae3BUZQqzdPCj6QgqrfTkFjRd1wt7FFWnSP8Q2X1IkxR3pg==
+X-Received: by 2002:a05:6214:21ee:: with SMTP id p14mr2277294qvj.8.1627509667289;
+        Wed, 28 Jul 2021 15:01:07 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id o63sm680309qkf.4.2021.07.28.15.01.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 14:59:15 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 14:59:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-hardening@vger.kernel.org,
-        Keith Packard <keithpac@amazon.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 04/64] stddef: Introduce struct_group() helper macro
-Message-ID: <202107281456.1A3A5C18@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-5-keescook@chromium.org>
- <41183a98-bdb9-4ad6-7eab-5a7292a6df84@rasmusvillemoes.dk>
+        Wed, 28 Jul 2021 15:01:06 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 18:01:05 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 9/9] KVM: X86: Optimize zapping rmap
+Message-ID: <YQHTocEdMzsJQuzL@t490s>
+References: <20210625153214.43106-1-peterx@redhat.com>
+ <20210625153419.43671-1-peterx@redhat.com>
+ <YQHOdhMoFW821HAu@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <41183a98-bdb9-4ad6-7eab-5a7292a6df84@rasmusvillemoes.dk>
+In-Reply-To: <YQHOdhMoFW821HAu@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 12:54:18PM +0200, Rasmus Villemoes wrote:
-> On 27/07/2021 22.57, Kees Cook wrote:
-> 
-> > In order to have a regular programmatic way to describe a struct
-> > region that can be used for references and sizing, can be examined for
-> > bounds checking, avoids forcing the use of intermediate identifiers,
-> > and avoids polluting the global namespace, introduce the struct_group()
-> > macro. This macro wraps the member declarations to create an anonymous
-> > union of an anonymous struct (no intermediate name) and a named struct
-> > (for references and sizing):
+On Wed, Jul 28, 2021 at 09:39:02PM +0000, Sean Christopherson wrote:
+> On Fri, Jun 25, 2021, Peter Xu wrote:
+> > Using rmap_get_first() and rmap_remove() for zapping a huge rmap list could be
+> > slow.  The easy way is to travers the rmap list, collecting the a/d bits and
+> > free the slots along the way.
 > > 
-> > 	struct foo {
-> > 		int one;
-> > 		struct_group(thing,
-> > 			int two,
-> > 			int three,
-> > 		);
-> > 		int four;
-> > 	};
-> 
-> That example won't compile, the commas after two and three should be
-> semicolons.
-
-Oops, yes, thanks. This is why I shouldn't write code that doesn't first
-go through a compiler. ;)
-
-> And your implementation relies on MEMBERS not containing any comma
-> tokens, but as
-> 
->   int a, b, c, d;
-> 
-> is a valid way to declare multiple members, consider making MEMBERS
-> variadic
-> 
-> #define struct_group(NAME, MEMBERS...)
-> 
-> to have it slurp up every subsequent argument and make that work.
-
-Ah! Perfect, thank you. I totally forgot I could do it that way.
-
-> 
+> > Provide a pte_list_destroy() and do exactly that.
 > > 
-> > Co-developed-by: Keith Packard <keithpac@amazon.com>
-> > Signed-off-by: Keith Packard <keithpac@amazon.com>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
 > > ---
-> >  include/linux/stddef.h | 34 ++++++++++++++++++++++++++++++++++
+> >  arch/x86/kvm/mmu/mmu.c | 45 +++++++++++++++++++++++++++++++-----------
+> >  1 file changed, 33 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index ba0258bdebc4..45aac78dcabc 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -1014,6 +1014,38 @@ unsigned int pte_list_count(struct kvm_rmap_head *rmap_head)
+> >  	return count;
+> >  }
+> >  
+> > +/* Return true if rmap existed and callback called, false otherwise */
+> > +static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
+> > +			     int (*callback)(u64 *sptep))
+> > +{
+> > +	struct pte_list_desc *desc, *next;
+> > +	int i;
+> > +
+> > +	if (!rmap_head->val)
+> > +		return false;
+> > +
+> > +	if (!(rmap_head->val & 1)) {
+> > +		if (callback)
+> > +			callback((u64 *)rmap_head->val);
+> > +		goto out;
+> > +	}
+> > +
+> > +	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
+> > +
+> > +	while (desc) {
+> > +		if (callback)
+> > +			for (i = 0; i < desc->spte_count; i++)
+> > +				callback(desc->sptes[i]);
+> > +		next = desc->more;
+> > +		mmu_free_pte_list_desc(desc);
+> > +		desc = next;
 > 
-> Bikeshedding a bit, but do we need to add 34 lines that need to be
-> preprocessed to virtually each and every translation unit [as opposed to
-> adding a struct_group.h header]? Oh well, you need it for struct
-> skbuff.h, so it would be pulled in by a lot regardless :(
+> Alternatively, 
+> 
+> 	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
+> 	for ( ; desc; desc = next) {
+> 		for (i = 0; i < desc->spte_count; i++)
+> 			mmu_spte_clear_track_bits((u64 *)rmap_head->val);
+> 		next = desc->more;
+> 		mmu_free_pte_list_desc(desc);
+> 	}
+> 
+> > +	}
+> > +out:
+> > +	/* rmap_head is meaningless now, remember to reset it */
+> > +	rmap_head->val = 0;
+> > +	return true;
+> 
+> Why implement this as a generic method with a callback?  gcc is suprisingly
+> astute in optimizing callback(), but I don't see the point of adding a complex
+> helper that has a single caller, and is extremely unlikely to gain new callers.
+> Or is there another "zap everything" case I'm missing?
 
-My instinct is to make these kinds of helpers "always available" (like
-sizeof_field(), etc), but I have no strong opinion on where it should
-live. If the consensus is to move it, I certainly can! :)
+No other case; it's just that pte_list_*() helpers will be more self-contained.
+If that'll be a performance concern, no objection to hard code it.
 
--Kees
+> 
+> E.g. why not this?
+> 
+> static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+> 			  const struct kvm_memory_slot *slot)
+> {
+> 	struct pte_list_desc *desc, *next;
+> 	int i;
+> 
+> 	if (!rmap_head->val)
+> 		return false;
+> 
+> 	if (!(rmap_head->val & 1)) {
+> 		mmu_spte_clear_track_bits((u64 *)rmap_head->val);
+> 		goto out;
+> 	}
+> 
+> 	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
+> 	for ( ; desc; desc = next) {
+> 		for (i = 0; i < desc->spte_count; i++)
+> 			mmu_spte_clear_track_bits(desc->sptes[i]);
+> 		next = desc->more;
+> 		mmu_free_pte_list_desc(desc);
+> 	}
+> out:
+> 	/* rmap_head is meaningless now, remember to reset it */
+> 	rmap_head->val = 0;
+> 	return true;
+> }
+
+Looks good, but so far I've no strong opinion on this.  I'll leave it for Paolo
+to decide.
+
+Thanks!
 
 -- 
-Kees Cook
+Peter Xu
+
