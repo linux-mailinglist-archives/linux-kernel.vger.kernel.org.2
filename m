@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367043D8D2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9EE3D8D31
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236172AbhG1LxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:53:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234638AbhG1LxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:53:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE9EE60F93;
-        Wed, 28 Jul 2021 11:53:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627473194;
-        bh=CoNlbWpxRqirEoDfSJZQuE/rJKRJRkJbDQtxblx8y/M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N4X8/seBx5tSFnAnIyJLJI10ENk7bXQOdVr+PPAqkagKbnrCtWNsmOVodpb0xZB0l
-         71385HPI51FlX+0xE9EFSV0ciqXkLdF8pQWH0wgyvCa5Qw9WMIsTfqY/dddfspKJqo
-         qvWme+ckDE8bXCkzeRM2lI7RUOkiVa3zWUV0mre8MxGL3Ex5bx2qIpRN91BivlP914
-         IFhZyxGYG71ND7XuEsVMgeFcQWuXLVFMfLAvbavp7ZJsBFjqbIo54Qyp2wcEnb33w7
-         jHmpudTHtOPRsEDwgVICGNYyf+J4EPD74FG95kFFwuSePyRqaOZU1JACLmIFZoVE0H
-         4R5P99/h73jYQ==
-Date:   Wed, 28 Jul 2021 14:53:10 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] docs: Fix infiniband uverbs minor number
-Message-ID: <YQFFJgMXFSN8IcjC@unreal>
-References: <a1213ef6064911aa3499322691bc465482818a3a.1626936170.git.leonro@nvidia.com>
- <YPrJorr7r9Kd2IzA@unreal>
+        id S234638AbhG1Lx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:53:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58078 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236084AbhG1LxX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:53:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627473201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8WAexIXwMU6WXsuKm8nm0H68XqR0D98nZayVKGg2cZM=;
+        b=A2JFve8+a2E6ikhx24Z4GFozqGfIdik3FSrPFu1DzKdahg95nM834sZs/qt7nQW+kHGZCl
+        sKNLXD6kvo6MDjFmKX49UmIqUYDtRooXbo/H+jxhMz44as/j7CLpCtsO2+rO1yz3M1DPj2
+        uqWquLcMSuU+Afmqqpm0y7GgkOhbpQc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-5-UKvLjqBnP7WWR8bqZqaKrA-1; Wed, 28 Jul 2021 07:53:19 -0400
+X-MC-Unique: UKvLjqBnP7WWR8bqZqaKrA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A7B1101C8AA;
+        Wed, 28 Jul 2021 11:53:18 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2536C60854;
+        Wed, 28 Jul 2021 11:53:18 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>
+Subject: [PATCH] KVM: x86: Exit to userspace when kvm_check_nested_events fails
+Date:   Wed, 28 Jul 2021 07:53:17 -0400
+Message-Id: <20210728115317.1930332-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPrJorr7r9Kd2IzA@unreal>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jason ????
+From: Jim Mattson <jmattson@google.com>
 
-On Fri, Jul 23, 2021 at 04:52:34PM +0300, Leon Romanovsky wrote:
-> + RDMA
-> 
-> On Thu, Jul 22, 2021 at 09:45:07AM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > Starting from the introduction of infiniband subsystem, the uverbs
-> > char devices started from 192 as a minor number, see 
-> > commit bc38a6abdd5a ("[PATCH] IB uverbs: core implementation"), but
-> > the documentation was slightly different.
-> > 
-> > This patch updates the admin guide documentation to reflect it.
-> > 
-> > Fixes: 9d85025b0418 ("docs-rst: create an user's manual book")
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  Documentation/admin-guide/devices.txt | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
-> > index 9c2be821c225..922c23bb4372 100644
-> > --- a/Documentation/admin-guide/devices.txt
-> > +++ b/Documentation/admin-guide/devices.txt
-> > @@ -2993,10 +2993,10 @@
-> >  		65 = /dev/infiniband/issm1     Second InfiniBand IsSM device
-> >  		  ...
-> >  		127 = /dev/infiniband/issm63    63rd InfiniBand IsSM device
-> > -		128 = /dev/infiniband/uverbs0   First InfiniBand verbs device
-> > -		129 = /dev/infiniband/uverbs1   Second InfiniBand verbs device
-> > +		192 = /dev/infiniband/uverbs0   First InfiniBand verbs device
-> > +		193 = /dev/infiniband/uverbs1   Second InfiniBand verbs device
-> >  		  ...
-> > -		159 = /dev/infiniband/uverbs31  31st InfiniBand verbs device
-> > +		223 = /dev/infiniband/uverbs31  31st InfiniBand verbs device
-> >  
-> >   232 char	Biometric Devices
-> >  		0 = /dev/biometric/sensor0/fingerprint	first fingerprint sensor on first device
-> > -- 
-> > 2.31.1
-> > 
+If kvm_check_nested_events fails due to raising an
+EXIT_REASON_INTERNAL_ERROR, propagate it to userspace
+immediately, even if the vCPU would otherwise be sleeping.
+This happens for example when the posted interrupt descriptor
+points outside guest memory.
+
+Reported-by: Jim Mattson <jmattson@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/x86.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 348452bb16bc..916c976e99ab 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9752,10 +9752,14 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
+ 	return 1;
+ }
+ 
+-static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
++static inline int kvm_vcpu_running(struct kvm_vcpu *vcpu)
+ {
+-	if (is_guest_mode(vcpu))
+-		kvm_check_nested_events(vcpu);
++	int r;
++	if (is_guest_mode(vcpu)) {
++		r = kvm_check_nested_events(vcpu);
++		if (r < 0 && r != -EBUSY)
++			return r;
++	}
+ 
+ 	return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
+ 		!vcpu->arch.apf.halted);
+@@ -9770,12 +9774,16 @@ static int vcpu_run(struct kvm_vcpu *vcpu)
+ 	vcpu->arch.l1tf_flush_l1d = true;
+ 
+ 	for (;;) {
+-		if (kvm_vcpu_running(vcpu)) {
+-			r = vcpu_enter_guest(vcpu);
+-		} else {
+-			r = vcpu_block(kvm, vcpu);
++		r = kvm_vcpu_running(vcpu);
++		if (r < 0) {
++			r = 0;
++			break;
+ 		}
+ 
++		if (r)
++			r = vcpu_enter_guest(vcpu);
++		else
++			r = vcpu_block(kvm, vcpu);
+ 		if (r <= 0)
+ 			break;
+ 
+-- 
+2.27.0
+
