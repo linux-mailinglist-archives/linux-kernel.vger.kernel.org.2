@@ -2,152 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001CE3D98F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF223D98F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhG1WfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:35:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232174AbhG1WfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:35:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28FB061019;
-        Wed, 28 Jul 2021 22:35:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627511711;
-        bh=ZDuaNWwp28Ho8LJfbfmNOQLGMOZ4dSJK9TfRTeg9pSo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aZuzPRfYjIxtfYJrjEMIqQa8Dtl/gbQMqfEQxGg9ekvOur0xUsHE0Wdy7e/G3sx/u
-         GulAYCmXH5E6Ey0YvCMaEHpcowy2feVtpVjzNB962Mft34Ekhftu5h+apkgQqQmNmM
-         QAaXO0jotB4AqDQgfnZJiyCeb/A/HYuhaMAIx02hDYNo7wuDyR8beRGG0kQ5yx6rey
-         gx9vZ7WO+j36H65YcWlPv5kNRn/14Ck0Oh9cLQgkG7/YYrBWSGRX27RobtG3xZbukb
-         hL+1CYze410YVpPt8KXsb6VLrRvdjoThKN6loJrlCLScC2Op429lb8WD6DI7JOACzy
-         zdlGSEzYHrXMg==
-Received: by pali.im (Postfix)
-        id CE4C196B; Thu, 29 Jul 2021 00:35:08 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 00:35:08 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
- invoke PME and AER
-Message-ID: <20210728223508.iffjpmk6ipjpvddh@pali>
-References: <20201124232037.GA595463@bjorn-Precision-5520>
- <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
- <f49a236d-c5f8-c445-f74e-7aa4eea70c3a@socionext.com>
- <20210718005109.6xwe3z7gxhuop5xc@pali>
- <2dfa5ec9-2a33-ae72-3904-999d8b8a2f71@socionext.com>
- <20210722172627.i4n65lrz3j7pduiz@pali>
- <17c6eeee-692f-2e9a-5827-34f6939a21a6@socionext.com>
- <20210723083702.nvhurkgbzbvrrmv3@pali>
- <660e8597-bb7a-b5a0-e3d4-f108a211ae76@socionext.com>
- <d96880c4-75ab-50b5-3ecf-0dfd2aa3b8f3@socionext.com>
+        id S232599AbhG1Wgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:36:54 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:33668 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232154AbhG1Wgw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:36:52 -0400
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 16SMaSpw009511;
+        Thu, 29 Jul 2021 07:36:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 16SMaSpw009511
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1627511789;
+        bh=TmY7u99GvKGaIrLNACsThniYgzMQ+Eus0lMGKUzW6R4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UM02UuIiQNiR6b7PSxMr4UhwWU5fln/BxpEhyJlihPGhgMdTSaL5xiWZt/9Vk6G/k
+         8pUwijVsYwpwNakDdZ+fpgWhMblpM4hkJxEcQ18PmcJyeeDNzX/OLhDEpG9sa8jkU2
+         a0Og2+pB7DoqEV+eoNk2tk85qO5/nNFtrKsY13bEFKZh/6NZNRJwl0MiiDh7+Z+oCo
+         EJDKMLy0MOU2njIm7kI5Uwv599Cx823l1pf6inIJkgjwoFYgSKDbSQJIstH5hsNjFh
+         JKiOhuUTPXOa5K7550tf03MfjmoS91BkjWQ9YgYV7L03qhoMHZeEYp5+psp6urUn3G
+         0sXxhZF1azC8g==
+X-Nifty-SrcIP: [209.85.216.52]
+Received: by mail-pj1-f52.google.com with SMTP id m1so7411631pjv.2;
+        Wed, 28 Jul 2021 15:36:28 -0700 (PDT)
+X-Gm-Message-State: AOAM533r8IZ7qHAYhXNSOh3JatettkLQtMFQJ+IW0aUtL5mdLC0LhnE/
+        zSKhas785dn0LU4jEoz12crDYVnIippx9EBzlx4=
+X-Google-Smtp-Source: ABdhPJyEiRgoFU7YIi1ba2pQVYHMwa9TRitcGe7dEpg/naXMc2Scx534EplzEBKnc5zHrNLyp6R/bw3QMAyPUli2cQ8=
+X-Received: by 2002:a17:90a:c506:: with SMTP id k6mr11696072pjt.198.1627511787958;
+ Wed, 28 Jul 2021 15:36:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d96880c4-75ab-50b5-3ecf-0dfd2aa3b8f3@socionext.com>
-User-Agent: NeoMutt/20180716
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+ <0636b417-15bb-3f65-39f7-148d94fe22db@kernel.org> <CAK7LNAQtw-ZR0D4quHAqT_6rkMjgkjJhWG8EY7H4T1=PwUMgVw@mail.gmail.com>
+ <CAKwvOdkENUWd7OgJO=dNiYjH6D1aJ0puBgs4W7uuYO9xQiAiNg@mail.gmail.com>
+In-Reply-To: <CAKwvOdkENUWd7OgJO=dNiYjH6D1aJ0puBgs4W7uuYO9xQiAiNg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 29 Jul 2021 07:35:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARrwpk5s8FDFoRbGqx2mzUk8xM9TBNnH3SepFPoijkBAA@mail.gmail.com>
+Message-ID: <CAK7LNARrwpk5s8FDFoRbGqx2mzUk8xM9TBNnH3SepFPoijkBAA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 28 July 2021 14:29:15 Kunihiko Hayashi wrote:
-> Hi Lorenzo, Pali,
-> 
-> On 2021/07/23 18:36, Kunihiko Hayashi wrote:
-> > Hi Pali,
-> 
-> [snip]
-> 
-> > > Just you need to specify that new/private IRQ domain into
-> > > irq_find_mapping() call.
-> > 
-> > I'll try to replace the events with new IRQ domain.
-> According to Pali's suggestion, the bridge handles INTX and it isn't difficult
-> to change IRQ's map for Root Port like the example.
-> It seems that it can't be applied to MSI.
+On Thu, Jul 29, 2021 at 4:00 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Tue, Jul 20, 2021 at 8:50 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > On Wed, Jul 21, 2021 at 2:30 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> > >
+> > > On 7/20/2021 1:04 AM, Masahiro Yamada wrote:
+> > > > On Fri, Jul 9, 2021 at 8:25 AM 'Nick Desaulniers' via Clang Built
+> > > > Linux <clang-built-linux@googlegroups.com> wrote:
+> > > >>
+> > > >> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> > > >> index 297932e973d4..956603f56724 100644
+> > > >> --- a/scripts/Makefile.clang
+> > > >> +++ b/scripts/Makefile.clang
+> > > >> @@ -1,6 +1,36 @@
+> > > >> -ifneq ($(CROSS_COMPILE),)
+> > > >> +# Individual arch/{arch}/Makfiles should use -EL/-EB to set intended endianness
+> > > >> +# and -m32/-m64 to set word size based on Kconfigs instead of relying on the
+> > > >> +# target triple.
+> > > >> +ifeq ($(CROSS_COMPILE),)
+> > > >> +ifneq ($(LLVM),)
+> > > >
+> > > >
+> > > > Do you need to check $(LLVM) ?
+> > > >
+> > > >
+> > > > LLVM=1 is a convenient switch to change all the
+> > > > defaults, but yet you can flip each tool individually.
+> > > >
+> > > > Instead of LLVM=1, you still should be able to
+> > > > get the equivalent setups by:
+> > > >
+> > > >
+> > > >    make CC=clang LD=ld.lld AR=llvm-ar OBJCOPY=llvm-objcopy ...
+> > > >
+> > > >
+> > > > The --target option is passed to only
+> > > > KBUILD_CFLAGS and KBUILD_AFLAGS.
+> > > >
+> > > > So, when we talk about --target=,
+> > > > we only care about whether $(CC) is Clang.
+> > > > Not caring about $(AR), $(LD), or $(OBJCOPY).
+> > > >
+> > > >
+> > > > scripts/Makefile.clang is already guarded by:
+> > > >
+> > > > ifneq ($(findstring clang,$(CC_VERSION_TEXT)),
+> > >
+> > > $ make ARCH=arm64 CC=clang LLVM_IAS=1
+> > >
+> > > will use the right compiler and assembler but none of the other binary
+> > > tools because '--prefix=' will not be set so CROSS_COMPILE needs to be
+> > > specified still, which defeats the purpose of this whole change. This
+> > > patch is designed to work for the "normal" case of saying "I want to use
+> > > all of the LLVM tools", not "I want to use clang by itself".
+> >
+> >
+> > I disagree.
+> >
+> > LLVM=1 is a shorthand.
+> >
+> >
+> >
+> > make LLVM=1 LLVM_IAS=1
+> >
+> >   should be equivalent to:
+> >
+> > make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \
+> >   OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
+> >   HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld \
+> >   LLVM_IAS=1
+> >
+> >
+> >
+> > We do not care about the origin of CC=clang,
+> > whether it came from LLVM=1 or every tool was explicitly,
+> > individually specified.
+> >
+> >
+> >
+> > ifneq ($(LLVM),) is a garbage code
+> > that checks a pointless thing.
+>
+> Masahiro,
+> Nathan is correct.  Test for yourself; if you apply these two patches,
+> then apply:
+>
+> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> index 956603f56724..a1b46811bdc6 100644
+> --- a/scripts/Makefile.clang
+> +++ b/scripts/Makefile.clang
+> @@ -2,7 +2,6 @@
+>  # and -m32/-m64 to set word size based on Kconfigs instead of relying on the
+>  # target triple.
+>  ifeq ($(CROSS_COMPILE),)
+> -ifneq ($(LLVM),)
+>  ifeq ($(LLVM_IAS),1)
+>  ifeq ($(SRCARCH),arm)
+>  CLANG_FLAGS    += --target=arm-linux-gnueabi
+> @@ -26,7 +25,6 @@ else
+>  $(error Specify CROSS_COMPILE or add '--target=' option to
+> scripts/Makefile.clang)
+>  endif # SRCARCH
+>  endif # LLVM_IAS
+> -endif # LLVM
+>  else
+>  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+>  endif # CROSS_COMPILE
+>
+> Then build as Nathan specified:
+> $ ARCH=arm64 make CC=clang LLVM_IAS=1 -j72 defconfig all
 
-Hm... And it is hard to change mapping also for MSI via custom/new
-callback?
 
-> On the other hand, according to Lorenzo's suggestion,
-> 
-> >>>>>>> IMO this should be modelled with a separate IRQ domain and chip for
-> >>>>>>> the root port (yes this implies describing the root port in the dts
-> >>>>>>> file with a separate msi-parent).
-> 
-> Interrupts for PME/AER event is assigned to number 0 of MSI IRQ domain.
+Yes, LD is set to GNU ld, which is only for x86.
 
-Yes. This is because Root Port of your PCIe controller provides this
-information to OS.
+$ ARCH=arm64  make  CC=clang LLVM_IAS=1  LD=ld.lld \
+   OBJCOPY=llvm-objcopy STRIP=llvm-strip \
+    -j72 defconfig all
 
-> (pcie_port_enable_irq_vec() in portdrv_core.c)
-> This expects MSI status bit 0 to be set when the event occurs.
+worked for me.
 
-Obviously (according to PCIe spec).
 
-> However, in the uniphier PCIe controller, MSI status bit 0 is not set, but
-> the PME/AER status bit in the glue logic is set.
 
-And this "violates" PCIe spec and your controller needs custom handling
-in driver to work...
+It is true that the most common use-case would be
+LLVM=1 LLVM_IAS=1, but as I said, there is no good
+reason to prevent this feature from working when
+CC, LD, etc. are specified individually.
 
-> I think that it's hard to associate the new domain and "MSI-IRQ 0" event
-> if the new IRQ domain and chip is modelled.
 
-No. It was mean to assign all MSI IRQs (not only MSI number 0) which
-comes from Root Port to new domain. Assigning just one MSI number to
-separate domain is I guess impossible (and also does not make sense).
 
-This is required to difference between MSI number 0 which comes from
-real MSI path and "fake MSI number 0" which is just specific for Root
-Port and does not share anything with real MSI interrupts. As MSI
-interrupts are not shared it is required to prevent "mixing" interrupt
-sources. And kernel can do it via different MSI domains.
 
-So in the end you would have two different MSI numbers 0.
 
-> So, I have no idea to handle both new IRQ domain and cascaded MSI event.
 
-It was mean to define Root Port PCIe device in DTS. Then define a new
-IRQ chip / domain in DTS. And specify in DTS that this Root Port PCIe
-device should use this new IRQ chip / domain instead of default one.
-And then you need to implement "driver" for this "virtual" IRQ chip /
-domain to handle specific glue logic in this controller driver.
 
-I was hoping that it is possible to set this mapping directly in
-controller driver. But if you checked that only legacy IRQs can be done
-in this way, and not MSI then it is either needed to go via this DTS
-path OR try to figure out how to define this mapping in PCI subsystem
-(maybe needs some changes?) also for MSI.
+> ...
+> arch/arm64/Makefile:25: ld does not support --fix-cortex-a53-843419;
+> kernel may be susceptible to erratum
+> ...
+>   LD      arch/arm64/kernel/vdso/vdso.so.dbg
+> ld: unrecognised emulation mode: aarch64linux
+> Supported emulations: elf_x86_64 elf32_x86_64 elf_i386 elf_iamcu
+> elf_l1om elf_k1om i386pep i386pe
+> make[1]: *** [arch/arm64/kernel/vdso/Makefile:56:
+> arch/arm64/kernel/vdso/vdso.so.dbg] Error 1
+> make: *** [arch/arm64/Makefile:193: vdso_prepare] Error 2
+>
+> Nathan referred to --prefix, but in this failure, because
+> CROSS_COMPILE was never set, the top level Makefile set LD to:
+>  452 LD    = $(CROSS_COMPILE)ld
+> in this case `ld` in my path was my host x86 linker, which is not
+> correct for a cross compilation of arm64 target.
+>
+> Perhaps we can somehow support "implicit CROSS_COMPILE" with just
+> CC=clang, and not LLVM=1, but I think it would be inflexible to
+> hardcode such target triple prefixes.  What if someone has
+> arm-linux-gnueabi-as but not arm-linux-gnueabihf-as installed?  That's
+> the point of CROSS_COMPILE in my opinion to provide such flexibility
+> at the cost of additional command line verbosity.
+>
+> For the common case of LLVM=1 though, this series is a simplification.
+> If users want to specify CC=clang, then they MUST use CROSS_COMPILE
+> when cross compiling.
+>
+> Please review the current approach and see if there's more I can
+> improve in a v3; otherwise I still think this series is good to go.
+> --
+> Thanks,
+> ~Nick Desaulniers
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdkENUWd7OgJO%3DdNiYjH6D1aJ0puBgs4W7uuYO9xQiAiNg%40mail.gmail.com.
 
-> Is there any example for that?
 
-I do not know. I think you are the first one who have such buggy PCIe
-controller which needs this specific kind of configuration and domains.
 
-In my case in pci-aardvark.c, emulated kernel Root Port does not support
-MSI interrupts (yet) so these "fake" interrupts are routed as legacy
-INTA. And because legacy INTx are shared interrupts they can be mixed
-together with real (as it is done prior my patch). My patch (link sent
-in previous email) just separates "fake" INTA from "real" INTA via
-separate domains for performance reasons.
-
-But you use MSI interrupts, which means that it is required to have
-logic to separate them into different domains to prevent mixing.
-
-> Thank you,
-> 
-> ---
-> Best Regards
-> Kunihiko Hayashi
+-- 
+Best Regards
+Masahiro Yamada
