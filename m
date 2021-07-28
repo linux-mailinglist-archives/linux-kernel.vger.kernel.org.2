@@ -2,93 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5523D9670
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AF93D9678
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhG1UMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:12:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55714 "EHLO
+        id S231312AbhG1URZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:17:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32993 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231243AbhG1UMS (ORCPT
+        by vger.kernel.org with ESMTP id S230289AbhG1URY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:12:18 -0400
+        Wed, 28 Jul 2021 16:17:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627503136;
+        s=mimecast20190719; t=1627503441;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SQoUhTYek/sbmmfvELcZcV2xU/1jF0ea9DMZkLH8lxw=;
-        b=eG2523b4k2P18JslqaiYjcRVkNWxA+L/pdhd7YCqj9RSJV52xthmipLipDkiwfn5ukAiJ0
-        P7I0pTqnUn97NM6pH/QJznLZ8SjWZ1YLhmcUZ6s2zXYaLS40xm1ZZAYPV+zYL412+pDmRC
-        zdjZ3gfN6AugzfyC08aberQkoSRKDSk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-F5N4kZpbNSCSzsHcWb0JKg-1; Wed, 28 Jul 2021 16:12:14 -0400
-X-MC-Unique: F5N4kZpbNSCSzsHcWb0JKg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AAE9107ACF5;
-        Wed, 28 Jul 2021 20:12:13 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-112-7.ams2.redhat.com [10.36.112.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7A9435D9FC;
-        Wed, 28 Jul 2021 20:12:11 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-        torvalds@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        david@fromorbit.com
-Subject: Re: [PATCH] lib/string: Bring optimized memcmp from glibc
-References: <20210721135926.602840-1-nborisov@suse.com>
-Date:   Wed, 28 Jul 2021 22:12:09 +0200
-In-Reply-To: <20210721135926.602840-1-nborisov@suse.com> (Nikolay Borisov's
-        message of "Wed, 21 Jul 2021 16:59:26 +0300")
-Message-ID: <877dha6vvq.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        bh=wTOlYUXV1991ysqsQVTTRBs/M2N2Bgatu9whcUKn5SQ=;
+        b=jCvp91L5D/GQ4ecSaIm1kIfvg0dHk769Bflkag6kB98ka0BSv5mw+JqXMnBnrtMlxVmqOF
+        vKZGgKeto07mzMKejl8tQm53Rz8sjR/lMRMAmGjgPSlxYGUIgMCc/zSZ/p99Uc60jEm6ES
+        n5p9tQbz5leVoQvfxg5iOob0KdXs6H0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-224-IAm_WTxIM1GnTXCQtsoZ4g-1; Wed, 28 Jul 2021 16:17:20 -0400
+X-MC-Unique: IAm_WTxIM1GnTXCQtsoZ4g-1
+Received: by mail-wr1-f71.google.com with SMTP id s16-20020adfdb100000b0290140a25efc6dso1345461wri.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:17:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=wTOlYUXV1991ysqsQVTTRBs/M2N2Bgatu9whcUKn5SQ=;
+        b=FFdMHxgJ/RwUtFZ7EdgUaO2qJTqVmFnK3RKcrfJe7nk0Vr943g4tzdwPtAeux/BqFV
+         00T5uUpQ2plYodMd33fFkoP89FPp6hjw5JrO1tFXHLgse942seDphDJlhHqVqiwAgTjo
+         38gkFfvvadqATeqHAZY+jW+yIMVqT/lAshHFDYd5JeClHvZkPm026RZZ+309dXdGoR6E
+         qlixerX1A8SXnbVh6IEy2Sf9ZsMf6BRbhYIvbYphFPTTOCM4w3t3pGw5pG7RLdTSSKPo
+         XFHrwF/tAgtZb+ZIgcP1iuQ0UkUwuRRx04njULlgj2GSGsQLwM3JBBIAz4mTqWWqQY66
+         qMTQ==
+X-Gm-Message-State: AOAM531X2L87jHzLY6Wj64Fje9gclICW4scbuFdINoI/xDc5dPG78Ll0
+        qpEeTjYqGSQZyUQotVBQGwOgWgW0W8029udXoxiX18x9RbOB5ixzkqjLMOMiTzNQ1jNB9sCvGXZ
+        2AdRBjngwedSnpY8qVpkbukAM
+X-Received: by 2002:a1c:f203:: with SMTP id s3mr10636160wmc.138.1627503439160;
+        Wed, 28 Jul 2021 13:17:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4laX2t23/QMPtmnKUWVnbHiRG9Z3USBKI5x2FQCZXJ4d/XfePp95Zz7/zDTpeOZKyxINrdw==
+X-Received: by 2002:a1c:f203:: with SMTP id s3mr10636132wmc.138.1627503438865;
+        Wed, 28 Jul 2021 13:17:18 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id n8sm806164wrx.46.2021.07.28.13.17.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 13:17:18 -0700 (PDT)
+To:     Jia He <justin.he@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>
+Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org, nd@arm.com
+References: <20210728082226.22161-1-justin.he@arm.com>
+ <20210728082226.22161-2-justin.he@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] device-dax: use fallback nid when numa_node is invalid
+Message-ID: <fc31c6ab-d147-10c0-7678-d820bc8ec96e@redhat.com>
+Date:   Wed, 28 Jul 2021 22:17:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210728082226.22161-2-justin.he@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Nikolay Borisov:
-
-> +/*
-> + * Compare A and B bytewise in the byte order of the machine.
-> + * A and B are known to be different. This is needed only on little-endian
-> + * machines.
-> + */
-> +static inline int memcmp_bytes(unsigned long a, unsigned long b)
-> +{
-> +	long srcp1 = (long) &a;
-> +	long srcp2 = (long) &b;
-> +	unsigned long a0, b0;
+On 28.07.21 10:22, Jia He wrote:
+> Previously, numa_off was set unconditionally in dummy_numa_init()
+> even with a fake numa node. Then ACPI set node id as NUMA_NO_NODE(-1)
+> after acpi_map_pxm_to_node() because it regards numa_off as turning
+> off the numa node. Hence dev_dax->target_node is NUMA_NO_NODE on
+> arm64 with fake numa.
+> 
+> Without this patch, pmem can't be probed as a RAM device on arm64 if
+> SRAT table isn't present:
+>    $ndctl create-namespace -fe namespace0.0 --mode=devdax --map=dev -s 1g -a 64K
+>    kmem dax0.0: rejecting DAX region [mem 0x240400000-0x2bfffffff] with invalid node: -1
+>    kmem: probe of dax0.0 failed with error -22
+> 
+> This fixes it by using fallback memory_add_physaddr_to_nid() as nid.
+> 
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
+>   drivers/dax/kmem.c | 36 ++++++++++++++++++++----------------
+>   1 file changed, 20 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+> index ac231cc36359..749674909e51 100644
+> --- a/drivers/dax/kmem.c
+> +++ b/drivers/dax/kmem.c
+> @@ -46,20 +46,7 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
+>   	struct dax_kmem_data *data;
+>   	int rc = -ENOMEM;
+>   	int i, mapped = 0;
+> -	int numa_node;
+> -
+> -	/*
+> -	 * Ensure good NUMA information for the persistent memory.
+> -	 * Without this check, there is a risk that slow memory
+> -	 * could be mixed in a node with faster memory, causing
+> -	 * unavoidable performance issues.
+> -	 */
+> -	numa_node = dev_dax->target_node;
+> -	if (numa_node < 0) {
+> -		dev_warn(dev, "rejecting DAX region with invalid node: %d\n",
+> -				numa_node);
+> -		return -EINVAL;
+> -	}
+> +	int numa_node = dev_dax->target_node, new_node;
+>   
+>   	data = kzalloc(struct_size(data, res, dev_dax->nr_range), GFP_KERNEL);
+>   	if (!data)
+> @@ -104,6 +91,20 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
+>   		 */
+>   		res->flags = IORESOURCE_SYSTEM_RAM;
+>   
+> +		/*
+> +		 * Ensure good NUMA information for the persistent memory.
+> +		 * Without this check, there is a risk but not fatal that slow
+> +		 * memory could be mixed in a node with faster memory, causing
+> +		 * unavoidable performance issues. Furthermore, fallback node
+> +		 * id can be used when numa_node is invalid.
+> +		 */
+> +		if (numa_node < 0) {
+> +			new_node = memory_add_physaddr_to_nid(range.start);
+> +			dev_info(dev, "changing nid from %d to %d for DAX region %pR\n",
+> +				numa_node, new_node, res);
+> +			numa_node = new_node;
+> +		}
 > +
-> +	do {
-> +		a0 = ((uint8_t *) srcp1)[0];
-> +		b0 = ((uint8_t *) srcp2)[0];
-> +		srcp1 += 1;
-> +		srcp2 += 1;
-> +	} while (a0 == b0);
-> +	return a0 - b0;
-> +}
+>   		/*
+>   		 * Ensure that future kexec'd kernels will not treat
+>   		 * this as RAM automatically.
+> @@ -141,6 +142,7 @@ static void dev_dax_kmem_remove(struct dev_dax *dev_dax)
+>   	int i, success = 0;
+>   	struct device *dev = &dev_dax->dev;
+>   	struct dax_kmem_data *data = dev_get_drvdata(dev);
+> +	int numa_node = dev_dax->target_node;
+>   
+>   	/*
+>   	 * We have one shot for removing memory, if some memory blocks were not
+> @@ -156,8 +158,10 @@ static void dev_dax_kmem_remove(struct dev_dax *dev_dax)
+>   		if (rc)
+>   			continue;
+>   
+> -		rc = remove_memory(dev_dax->target_node, range.start,
+> -				range_len(&range));
+> +		if (numa_node < 0)
+> +			numa_node = memory_add_physaddr_to_nid(range.start);
+> +
+> +		rc = remove_memory(numa_node, range.start, range_len(&range));
+>   		if (rc == 0) {
+>   			release_resource(data->res[i]);
+>   			kfree(data->res[i]);
+> 
 
-Should this be this?
+Note that this patch conflicts with:
 
-static inline int memcmp_bytes(unsigned long a, unsigned long b)
-{
-	if (sizeof(a) == 4)
-		return __builtin_bswap32(a) < __builtin_bswap32(b) ? -1 : 0;
-	else
-		return __builtin_bswap64(a) < __builtin_bswap64(b) ? -1 : 0;
-}
+https://lkml.kernel.org/r/20210723125210.29987-7-david@redhat.com
 
-(Or whatever macro versions the kernel has for this.)
+But nothing fundamental. Determining a single NID is similar to how I'm 
+handling it for ACPI:
 
-Or is the expectation that targets that don't have an assembler
-implementation for memcmp have also bad bswap built-ins?
+https://lkml.kernel.org/r/20210723125210.29987-6-david@redhat.com
 
+-- 
 Thanks,
-Florian
+
+David / dhildenb
 
