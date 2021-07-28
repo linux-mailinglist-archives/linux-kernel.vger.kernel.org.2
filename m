@@ -2,161 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1650A3D946F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04AD3D9471
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhG1Rk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:40:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59984 "EHLO mail.kernel.org"
+        id S230288AbhG1Rll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:41:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:34158 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhG1Rk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:40:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3F6A60238;
-        Wed, 28 Jul 2021 17:40:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627494055;
-        bh=4ubaP3xAeTeUiJRqybWFV/LSjFpv/srCYUsWlwLVoNA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=caJb4tX2QUDhE4l30ZFZHwbuwgdR4mKqQQfeyia16umy2cpqnC3GtFznHOEFHDgWm
-         rFQxInaXMp1O2+XOUyVgl4M9sl5E/jcuAuonO2u80fFgCjK54+kIEN1pU3u3GRzFk9
-         MBcmot6lTIknQR6EVH52hYlGdHuplVC8c8W0Esd4OgcICA4Jv27aYjVCM6im7ya5oZ
-         huOPaDKzw2QQggjdssBuyT1u1XDkJSyFDE/v8ORKJsszb0mPnjBt+CrBXrmYxIfzkn
-         r0nMr1Nuw0AZ4bE4dQSVb3Zh6AlwcPZIDjItvqawTqZ6gOyigG4efTWmJ34hKf7Y+X
-         PZl1Bg0lmAQfA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7A5FA5C048D; Wed, 28 Jul 2021 10:40:55 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 10:40:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, Manfred Spraul <manfred@colorfullife.com>
-Subject: [PATCH v2 memory-model 2/4] tools/memory-model: Add example for
- heuristic lockless reads
-Message-ID: <20210728174055.GA9718@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
- <20210721211003.869892-2-paulmck@kernel.org>
+        id S229556AbhG1Rlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:41:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 109B36D;
+        Wed, 28 Jul 2021 10:41:38 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D29A53F66F;
+        Wed, 28 Jul 2021 10:41:34 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 18:41:32 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
+        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v6 10/17] firmware: arm_scmi: Make polling mode optional
+Message-ID: <20210728174132.GM6592@e120937-lin>
+References: <20210712141833.6628-1-cristian.marussi@arm.com>
+ <20210712141833.6628-11-cristian.marussi@arm.com>
+ <20210728143418.5lton6l7t2oa6rtz@bogus>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210721211003.869892-2-paulmck@kernel.org>
+In-Reply-To: <20210728143418.5lton6l7t2oa6rtz@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds example code for heuristic lockless reads, based loosely
-on the sem_lock() and sem_unlock() functions.
+On Wed, Jul 28, 2021 at 03:34:18PM +0100, Sudeep Holla wrote:
+> On Mon, Jul 12, 2021 at 03:18:26PM +0100, Cristian Marussi wrote:
+> > Add a check for the presence of .poll_done transport operation so that
+> > transports that do not need to support polling mode have no need to provide
+> > a dummy .poll_done callback either and polling mode can be disabled in the
+> > SCMI core for that tranport.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
 
-[ paulmck: Apply Alan Stern and Manfred Spraul feedback. ]
+Hi,
 
-Reported-by: Manfred Spraul <manfred@colorfullife.com>
-[ paulmck: Update per Manfred Spraul and Hillf Danton feedback. ]
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >  drivers/firmware/arm_scmi/driver.c | 43 ++++++++++++++++++------------
+> >  1 file changed, 26 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index a952b6527b8a..4183d25c9289 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -777,25 +777,34 @@ static int do_xfer(const struct scmi_protocol_handle *ph,
+> >  	}
+> >  
+> >  	if (xfer->hdr.poll_completion) {
+> > -		ktime_t stop = ktime_add_ns(ktime_get(), SCMI_MAX_POLL_TO_NS);
+> > -
+> > -		spin_until_cond(scmi_xfer_done_no_timeout(cinfo, xfer, stop));
+> > -
+> > -		if (ktime_before(ktime_get(), stop)) {
+> > -			unsigned long flags;
+> > -
+> > -			/*
+> > -			 * Do not fetch_response if an out-of-order delayed
+> > -			 * response is being processed.
+> > -			 */
+> > -			spin_lock_irqsave(&xfer->lock, flags);
+> > -			if (xfer->state == SCMI_XFER_SENT_OK) {
+> > -				info->desc->ops->fetch_response(cinfo, xfer);
+> > -				xfer->state = SCMI_XFER_RESP_OK;
+> > +		if (info->desc->ops->poll_done) {
+> > +			ktime_t stop = ktime_add_ns(ktime_get(),
+> > +						    SCMI_MAX_POLL_TO_NS);
+> > +
+> > +			spin_until_cond(scmi_xfer_done_no_timeout(cinfo, xfer,
+> > +								  stop));
+> > +
+> > +			if (ktime_before(ktime_get(), stop)) {
+> > +				unsigned long flags;
+> > +
+> > +				/*
+> > +				 * Do not fetch_response if an out-of-order delayed
+> > +				 * response is being processed.
+> > +				 */
+> > +				spin_lock_irqsave(&xfer->lock, flags);
+> > +				if (xfer->state == SCMI_XFER_SENT_OK) {
+> > +					info->desc->ops->fetch_response(cinfo,
+> > +									xfer);
+> > +					xfer->state = SCMI_XFER_RESP_OK;
+> > +				}
+> > +				spin_unlock_irqrestore(&xfer->lock, flags);
+> > +			} else {
+> > +				ret = -ETIMEDOUT;
+> >  			}
+> > -			spin_unlock_irqrestore(&xfer->lock, flags);
+> >  		} else {
+> > -			ret = -ETIMEDOUT;
+> > +			dev_warn_once(dev,
+> > +				      "Polling mode is not supported by transport.\n");
+> > +			ret = EINVAL;
+> 
+> Can't we just return this error as early as possible if the user isn't
+> expected to use polling with this transport ? That would simplify the patch
+> (as most of it is due to indentation which can go away) as you need not
+> check it later ?
+> 
 
-diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
-index 58bff26198767..d96fe20ed582a 100644
---- a/tools/memory-model/Documentation/access-marking.txt
-+++ b/tools/memory-model/Documentation/access-marking.txt
-@@ -319,6 +319,99 @@ of the ASSERT_EXCLUSIVE_WRITER() is to allow KCSAN to check for a buggy
- concurrent lockless write.
- 
- 
-+Lock-Protected Writes With Heuristic Lockless Reads
-+---------------------------------------------------
-+
-+For another example, suppose that the code can normally make use of
-+a per-data-structure lock, but there are times when a global lock
-+is required.  These times are indicated via a global flag.  The code
-+might look as follows, and is based loosely on nf_conntrack_lock(),
-+nf_conntrack_all_lock(), and nf_conntrack_all_unlock():
-+
-+	bool global_flag;
-+	DEFINE_SPINLOCK(global_lock);
-+	struct foo {
-+		spinlock_t f_lock;
-+		int f_data;
-+	};
-+
-+	/* All foo structures are in the following array. */
-+	int nfoo;
-+	struct foo *foo_array;
-+
-+	void do_something_locked(struct foo *fp)
-+	{
-+		/* This works even if data_race() returns nonsense. */
-+		if (!data_race(global_flag)) {
-+			spin_lock(&fp->f_lock);
-+			if (!smp_load_acquire(&global_flag)) {
-+				do_something(fp);
-+				spin_unlock(&fp->f_lock);
-+				return;
-+			}
-+			spin_unlock(&fp->f_lock);
-+		}
-+		spin_lock(&global_lock);
-+		/* global_lock held, thus global flag cannot be set. */
-+		spin_lock(&fp->f_lock);
-+		spin_unlock(&global_lock);
-+		/*
-+		 * global_flag might be set here, but begin_global()
-+		 * will wait for ->f_lock to be released.
-+		 */
-+		do_something(fp);
-+		spin_unlock(&fp->f_lock);
-+	}
-+
-+	void begin_global(void)
-+	{
-+		int i;
-+
-+		spin_lock(&global_lock);
-+		WRITE_ONCE(global_flag, true);
-+		for (i = 0; i < nfoo; i++) {
-+			/*
-+			 * Wait for pre-existing local locks.  One at
-+			 * a time to avoid lockdep limitations.
-+			 */
-+			spin_lock(&fp->f_lock);
-+			spin_unlock(&fp->f_lock);
-+		}
-+	}
-+
-+	void end_global(void)
-+	{
-+		smp_store_release(&global_flag, false);
-+		spin_unlock(&global_lock);
-+	}
-+
-+All code paths leading from the do_something_locked() function's first
-+read from global_flag acquire a lock, so endless load fusing cannot
-+happen.
-+
-+If the value read from global_flag is true, then global_flag is
-+rechecked while holding ->f_lock, which, if global_flag is now false,
-+prevents begin_global() from completing.  It is therefore safe to invoke
-+do_something().
-+
-+Otherwise, if either value read from global_flag is true, then after
-+global_lock is acquired global_flag must be false.  The acquisition of
-+->f_lock will prevent any call to begin_global() from returning, which
-+means that it is safe to release global_lock and invoke do_something().
-+
-+For this to work, only those foo structures in foo_array[] may be passed
-+to do_something_locked().  The reason for this is that the synchronization
-+with begin_global() relies on momentarily holding the lock of each and
-+every foo structure.
-+
-+The smp_load_acquire() and smp_store_release() are required because
-+changes to a foo structure between calls to begin_global() and
-+end_global() are carried out without holding that structure's ->f_lock.
-+The smp_load_acquire() and smp_store_release() ensure that the next
-+invocation of do_something() from do_something_locked() will see those
-+changes.
-+
-+
- Lockless Reads and Writes
- -------------------------
- 
+Yes, indeed at first it was something like
+
+if (xfer->hdr.poll_completion && !info->desc->ops->poll_done)
+	return -EINVAL;
+
+at the very beginning of do_xfer(), even before attempting to send
+anything...and I liked much more but then I thought I would have run such
+if-test for each and every command do_xfer() attempted...but maybe it's
+just irrelevant and instead much more tidy if done as above.
+
+I'll fix it as above.
+
+Thanks,
+Cristian
