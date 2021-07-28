@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1C43D8EA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A8D3D8EA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236524AbhG1NI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:08:59 -0400
-Received: from mail.netline.ch ([148.251.143.180]:33254 "EHLO
-        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236364AbhG1NIZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:08:25 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by netline-mail3.netline.ch (Postfix) with ESMTP id 7C50320201B;
-        Wed, 28 Jul 2021 15:08:21 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
-Received: from netline-mail3.netline.ch ([127.0.0.1])
-        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id 4BGu1Zb87bub; Wed, 28 Jul 2021 15:08:20 +0200 (CEST)
-Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
-        by netline-mail3.netline.ch (Postfix) with ESMTPA id 2F6EF20201A;
-        Wed, 28 Jul 2021 15:08:20 +0200 (CEST)
-Received: from [::1]
-        by thor with esmtp (Exim 4.94.2)
-        (envelope-from <michel@daenzer.net>)
-        id 1m8jIJ-000xp8-5z; Wed, 28 Jul 2021 15:08:19 +0200
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Rob Clark <robdclark@chromium.org>
-Cc:     Matthew Brost <matthew.brost@intel.com>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-References: <20210726233854.2453899-1-robdclark@gmail.com>
- <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
- <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
- <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
- <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
- <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-Message-ID: <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
-Date:   Wed, 28 Jul 2021 15:08:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S236600AbhG1NJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:09:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236430AbhG1NIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 09:08:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B45160F02;
+        Wed, 28 Jul 2021 13:08:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627477710;
+        bh=H1S7AlV0COt/bxaXeyQx1d8vL8M0dbUMU7ZJt6NPQao=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lhF2L+uVa1UwdQ7Cqk0pnrjHOQNx7pTKWuDDejBNYjN7A4it/H9lYpeC/cKU1T5bw
+         hQM3Na89GeH11aOtWH5LwuNLnQAzrNKm1hNd9combq4MNd6d5kj5hDdM43SvCKXuKm
+         mQOhkROUEBDNzZVgDZy+12+010DsTRsyj4B8C+cW8N8WMZzTKfcnsxLC5IeSxnLEkM
+         Usd1c13/hPiRiWHeJ/26+IQEYEfcTRZhtc2H+p0eWQJKqapIBSJDHdGLSMPqq0dXGK
+         f+ajcoWDqnl3jOR5pdzhqf7hM7P7LLGGQbhY4LgJjY4meNxxAHNKQB500JiB5bLB/j
+         ByRRqXtjzReFA==
+Date:   Wed, 28 Jul 2021 15:08:23 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH v2 02/12] diglim: Basic definitions
+Message-ID: <20210728150823.705623ad@sal.lan>
+In-Reply-To: <eb3b025820574f0d901a38a4ad088018@huawei.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+        <20210726163700.2092768-3-roberto.sassu@huawei.com>
+        <20210728133102.339c7b8e@coco.lan>
+        <eb3b025820574f0d901a38a4ad088018@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-28 1:36 p.m., Christian König wrote:
-> Am 27.07.21 um 17:37 schrieb Rob Clark:
->> On Tue, Jul 27, 2021 at 8:19 AM Michel Dänzer <michel@daenzer.net> wrote:
->>> On 2021-07-27 5:12 p.m., Rob Clark wrote:
->>>> On Tue, Jul 27, 2021 at 7:50 AM Michel Dänzer <michel@daenzer.net> wrote:
->>>>> On 2021-07-27 1:38 a.m., Rob Clark wrote:
->>>>>> From: Rob Clark <robdclark@chromium.org>
->>>>>>
->>>>>> Based on discussion from a previous series[1] to add a "boost" mechanism
->>>>>> when, for example, vblank deadlines are missed.  Instead of a boost
->>>>>> callback, this approach adds a way to set a deadline on the fence, by
->>>>>> which the waiter would like to see the fence signalled.
->>>>>>
->>>>>> I've not yet had a chance to re-work the drm/msm part of this, but
->>>>>> wanted to send this out as an RFC in case I don't have a chance to
->>>>>> finish the drm/msm part this week.
->>>>>>
->>>>>> Original description:
->>>>>>
->>>>>> In some cases, like double-buffered rendering, missing vblanks can
->>>>>> trick the GPU into running at a lower frequence, when really we
->>>>>> want to be running at a higher frequency to not miss the vblanks
->>>>>> in the first place.
->>>>>>
->>>>>> This is partially inspired by a trick i915 does, but implemented
->>>>>> via dma-fence for a couple of reasons:
->>>>>>
->>>>>> 1) To continue to be able to use the atomic helpers
->>>>>> 2) To support cases where display and gpu are different drivers
->>>>>>
->>>>>> [1] https://patchwork.freedesktop.org/series/90331/
->>>>> Unfortunately, none of these approaches will have the full intended effect once Wayland compositors start waiting for client buffers to become idle before using them for an output frame (to prevent output frames from getting delayed by client work). See https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1880 (shameless plug :) for a proof of concept of this for mutter. The boost will only affect the compositor's own GPU work, not the client work (which means no effect at all for fullscreen apps where the compositor can scan out the client buffers directly).
->>>>>
->>>> I guess you mean "no effect at all *except* for fullscreen..."?
->>> I meant what I wrote: The compositor will wait for the next buffer to become idle, so there's no boost from this mechanism for the client drawing to that buffer. And since the compositor does no drawing of its own in this case, there's no boost from that either.
->>>
->>>
->>>> I'd perhaps recommend that wayland compositors, in cases where only a
->>>> single layer is changing, not try to be clever and just push the
->>>> update down to the kernel.
->>> Even just for the fullscreen direct scanout case, that would require some kind of atomic KMS API extension to allow queuing multiple page flips for the same CRTC.
->>>
->>> For other cases, this would also require a mechanism to cancel a pending atomic commit, for when another surface update comes in before the compositor's deadline, which affects the previously single updating surface as well.
->>>
->> Well, in the end, there is more than one compositor out there.. and if
->> some wayland compositors are going this route, they can also implement
->> the same mechanism in userspace using the sysfs that devfreq exports.
->>
->> But it sounds simpler to me for the compositor to have a sort of "game
->> mode" for fullscreen games.. I'm less worried about UI interactive
->> workloads, boosting the GPU freq upon sudden activity after a period
->> of inactivity seems to work reasonably well there.
+Em Wed, 28 Jul 2021 11:45:02 +0000
+Roberto Sassu <roberto.sassu@huawei.com> escreveu:
+
+> > From: Mauro Carvalho Chehab [mailto:mchehab+huawei@kernel.org]
+> > Sent: Wednesday, July 28, 2021 1:31 PM
+> > Em Mon, 26 Jul 2021 18:36:50 +0200
+> > Roberto Sassu <roberto.sassu@huawei.com> escreveu:
+> >   
+
+> > > +struct compact_list_hdr {
+> > > +	__u8 version;
+> > > +	__u8 _reserved;
+> > > +	__le16 type;
+> > > +	__le16 modifiers;
+> > > +	__le16 algo;
+> > > +	__le32 count;
+> > > +	__le32 datalen;
+> > > +} __packed;
+> > > +#endif /*_UAPI__LINUX_DIGLIM_H*/  
+> > 
+> > Besides Greg's notes, I'm wondering why to enforce a particular
+> > endness here. I mean, this is uAPI. I would expect it to use the
+> > CPU endianness instead, in order to avoid uneeded conversions.  
 > 
-> At least AMD hardware is already capable of flipping frames on GPU events like finishing rendering (or uploading etc).
-> 
-> By waiting in userspace on the CPU before send the frame to the hardware you are completely killing of such features.
-> 
-> For composing use cases that makes sense, but certainly not for full screen applications as far as I can see.
+> Also Greg had the same concern. I hoped the Lifecycle section clarified
+> the fact that digest lists are generated by software vendors not the
+> local system. Should I add something more in the documentation?
 
-Even for fullscreen, the current KMS API only allows queuing a single page flip per CRTC, with no way to cancel or otherwise modify it. Therefore, a Wayland compositor has to set a deadline for the next refresh cycle, and when the deadline passes, it has to select the best buffer available for the fullscreen surface. To make sure the flip will not miss the next refresh cycle, the compositor has to pick an idle buffer. If it picks a non-idle buffer, and the pending rendering does not finish in time for vertical blank, the flip will be delayed by at least one refresh cycle, which results in visible stuttering.
+It shouldn't matter what kind of endness software vendors use on
+userspace (either CPU or a fixed endiannes - either LE or BE).
 
-(Until the deadline passes, the Wayland compositor can't even know if a previously fullscreen surface will still be fullscreen for the next refresh cycle)
+I mean, I won't doubt that some package tools use LE while others
+would use BE. At some point, this needs to be converted to 
+CPU endiannes.
 
+IMO, the best would be to isolate whatever RPM/DEB/... endianness 
+is used on userspace from what the Kernel will use internally.
 
--- 
-Earthling Michel Dänzer               |               https://redhat.com
-Libre software enthusiast             |             Mesa and X developer
+Just my 2 cents.
+
+Regards,
+Mauro
