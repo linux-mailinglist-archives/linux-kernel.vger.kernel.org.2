@@ -2,123 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECBE3D891D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810943D8917
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhG1HwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233407AbhG1HwG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:52:06 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44289C061757;
-        Wed, 28 Jul 2021 00:52:04 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id k4-20020a17090a5144b02901731c776526so8697274pjm.4;
-        Wed, 28 Jul 2021 00:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BfFfoe2qcsk90EiXHqmqBH9bAIL6WXwzwjqk2LV2VVk=;
-        b=ppIUqaLekxhrUOEuMFOP5KxK5q8q7129j/z6DU0EJzkYRxjo62gKXr2wJvu8QG/yMm
-         xhMyy9Wx7VIEwZV1otUjTONOQ9rx8N2PpciwEVRTLyCCo9vewTvMRfII4Ufk+BgnW9Dx
-         M4KuDZAEKxvlcuFcsrjfKxl6s32AgBgkzlE4VGK+VBiclbMB0alcxkmPEOJqyEKa5LNv
-         EmqYuUIQ0otQ9M2qT58HsgUtU8gcpuD/5uXEjPTLUfrdUisqhL+A12xgykRAYUIELkkr
-         K1tR8aRtt9u9GfzLnkL1beWCueQkDX0wdd+/HFdwXt+RHY1guUH/GCMaP6SKALwqoaWF
-         gNCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BfFfoe2qcsk90EiXHqmqBH9bAIL6WXwzwjqk2LV2VVk=;
-        b=c+UtA7Q1l26LK1tHfnhzqqKVZx2dk+fvaELsNIsg2yHQvr54NkfGzt1BaOlRv9fGsb
-         iLKdNsrVlvBDg7nzemc3e3LNq/yKe8Ko4i8uz3DY8MuBDVyMNrIFFVv0jB0k9klsAvTd
-         dOycrGmvb6BDDwjsQhgWErVLdodZAQjJXlXUH/aY/82nWOinWZl1KBOaXgiURH5Ylr8P
-         qNpYnBfl2Jqx3LsKPmj43Aq6hURKhbALitIPT5viRfxIjjubl8/Lcy3dRok0SlFHhKvt
-         jYYibhRGcJme+PdhvHtwlGxV+Nt/x4OT7AsB8Jw+EKvAuOSviXrLDJP4XKJPctd1Q75N
-         fl5w==
-X-Gm-Message-State: AOAM532pFHG06Vh4+zRavT9cRDgGaWtChUHjIWtgLc55T/Vgmqt6eoCG
-        uLCbY7xkkfRyQvZyzVkr4dU=
-X-Google-Smtp-Source: ABdhPJw42zg0Y3dEy18wgMq779F5L2gS2hIZZYw/51Zmz+CQ+5PANyu0aE6Ap5rABGFjTLBKbdm28w==
-X-Received: by 2002:a65:6909:: with SMTP id s9mr16014599pgq.321.1627458723697;
-        Wed, 28 Jul 2021 00:52:03 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id oj4sm4903482pjb.56.2021.07.28.00.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 00:52:03 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
-Subject: [PATCH v2] Bluetooth: skip invalid hci_sync_conn_complete_evt
-Date:   Wed, 28 Jul 2021 15:51:04 +0800
-Message-Id: <20210728075105.415214-1-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S234503AbhG1HsM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 03:48:12 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:39786 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234299AbhG1HsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 03:48:11 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GZQkc3T82zBBlF;
+        Wed, 28 Jul 2021 09:48:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zhO5PGMIrOxw; Wed, 28 Jul 2021 09:48:08 +0200 (CEST)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GZQkc2DGBzBBkp;
+        Wed, 28 Jul 2021 09:48:08 +0200 (CEST)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id B9E1A8EA; Wed, 28 Jul 2021 09:53:27 +0200 (CEST)
+Received: from 37.165.138.29 ([37.165.138.29]) by messagerie.c-s.fr (Horde
+ Framework) with HTTP; Wed, 28 Jul 2021 09:53:27 +0200
+Date:   Wed, 28 Jul 2021 09:53:26 +0200
+Message-ID: <20210728095326.Horde.k1npSPaQKh2i7W3XoBsdiQ3@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     shan.gavin@gmail.com, chuhu@redhat.com, akpm@linux-foundation.org,
+        will@kernel.org, catalin.marinas@arm.com, cai@lca.pw,
+        aneesh.kumar@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v4 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
+References: <20210727061401.592616-1-gshan@redhat.com>
+ <20210727061401.592616-13-gshan@redhat.com>
+In-Reply-To: <20210727061401.592616-13-gshan@redhat.com>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported a corrupted list in kobject_add_internal [1]. This
-happens when multiple HCI_EV_SYNC_CONN_COMPLETE event packets with
-status 0 are sent for the same HCI connection. This causes us to
-register the device more than once which corrupts the kset list.
+Gavin Shan <gshan@redhat.com> a écrit :
 
-As this is forbidden behavior, we add a check for whether we're
-trying to process the same HCI_EV_SYNC_CONN_COMPLETE event multiple
-times for one connection. If that's the case, the event is invalid, so
-we report an error that the device is misbehaving, and ignore the
-packet.
+> In page table entry modifying tests, set_xxx_at() are used to populate
+> the page table entries. On ARM64, PG_arch_1 (PG_dcache_clean) flag is
+> set to the target page flag if execution permission is given. The logic
+> exits since commit 4f04d8f00545 ("arm64: MMU definitions"). The page
+> flag is kept when the page is free'd to buddy's free area list. However,
+> it will trigger page checking failure when it's pulled from the buddy's
+> free area list, as the following warning messages indicate.
+>
+>    BUG: Bad page state in process memhog  pfn:08000
+>    page:0000000015c0a628 refcount:0 mapcount:0 \
+>         mapping:0000000000000000 index:0x1 pfn:0x8000
+>    flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
+>    raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
+>    raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+>    page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
+>
+> This fixes the issue by clearing PG_arch_1 through flush_dcache_page()
+> after set_xxx_at() is called. For architectures other than ARM64, the
+> unexpected overhead of cache flushing is acceptable.
+>
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
 
-Link: https://syzkaller.appspot.com/bug?extid=66264bf2fd0476be7e6c [1]
-Reported-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
-Tested-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
----
+Maybe a Fixes: tag would be good to have
 
-v1 -> v2:
-- Added more comments to explain the reasoning behind the new check, and
-a bt_dev_err message upon detecting the invalid event. As suggested by
-Marcel Holtmann.
+And would it be possible to have this fix as first patch of the series  
+so that it can be applied to stable without applying the whole series ?
 
- net/bluetooth/hci_event.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Christophe
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 016b2999f219..a6df4f9d2c23 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4373,6 +4373,22 @@ static void hci_sync_conn_complete_evt(struct hci_dev *hdev,
- 
- 	switch (ev->status) {
- 	case 0x00:
-+		/* The synchronous connection complete event should only be
-+		 * sent once per new connection. Receiving a successful
-+		 * complete event when the connection status is already
-+		 * BT_CONNECTED means that the device is misbehaving and sent
-+		 * multiple complete event packets for the same new connection.
-+		 *
-+		 * Registering the device more than once can corrupt kernel
-+		 * memory, hence upon detecting this invalid event, we report
-+		 * an error and ignore the packet.
-+		 */
-+		if (conn->state == BT_CONNECTED) {
-+			bt_dev_err(hdev,
-+				   "received multiple HCI_EV_SYNC_CONN_COMPLETE events with status 0 for conn %p",
-+				   conn);
-+			goto unlock;
-+		}
- 		conn->handle = __le16_to_cpu(ev->handle);
- 		conn->state  = BT_CONNECTED;
- 		conn->type   = ev->link_type;
--- 
-2.25.1
+
+> ---
+>  mm/debug_vm_pgtable.c | 55 +++++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 51 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index 162ff6329f7b..d2c2d23e542e 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -29,6 +29,8 @@
+>  #include <linux/start_kernel.h>
+>  #include <linux/sched/mm.h>
+>  #include <linux/io.h>
+> +
+> +#include <asm/cacheflush.h>
+>  #include <asm/pgalloc.h>
+>  #include <asm/tlbflush.h>
+>
+> @@ -119,19 +121,28 @@ static void __init pte_basic_tests(struct  
+> pgtable_debug_args *args, int idx)
+>
+>  static void __init pte_advanced_tests(struct pgtable_debug_args *args)
+>  {
+> +	struct page *page;
+>  	pte_t pte;
+>
+>  	/*
+>  	 * Architectures optimize set_pte_at by avoiding TLB flush.
+>  	 * This requires set_pte_at to be not used to update an
+>  	 * existing pte entry. Clear pte before we do set_pte_at
+> +	 *
+> +	 * flush_dcache_page() is called after set_pte_at() to clear
+> +	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
+> +	 * when it's released and page allocation check will fail when
+> +	 * the page is allocated again. For architectures other than ARM64,
+> +	 * the unexpected overhead of cache flushing is acceptable.
+>  	 */
+> -	if (args->pte_pfn == ULONG_MAX)
+> +	page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
+> +	if (!page)
+>  		return;
+>
+>  	pr_debug("Validating PTE advanced\n");
+>  	pte = pfn_pte(args->pte_pfn, args->page_prot);
+>  	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+> +	flush_dcache_page(page);
+>  	ptep_set_wrprotect(args->mm, args->vaddr, args->ptep);
+>  	pte = ptep_get(args->ptep);
+>  	WARN_ON(pte_write(pte));
+> @@ -143,6 +154,7 @@ static void __init pte_advanced_tests(struct  
+> pgtable_debug_args *args)
+>  	pte = pte_wrprotect(pte);
+>  	pte = pte_mkclean(pte);
+>  	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+> +	flush_dcache_page(page);
+>  	pte = pte_mkwrite(pte);
+>  	pte = pte_mkdirty(pte);
+>  	ptep_set_access_flags(args->vma, args->vaddr, args->ptep, pte, 1);
+> @@ -155,6 +167,7 @@ static void __init pte_advanced_tests(struct  
+> pgtable_debug_args *args)
+>  	pte = pfn_pte(args->pte_pfn, args->page_prot);
+>  	pte = pte_mkyoung(pte);
+>  	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+> +	flush_dcache_page(page);
+>  	ptep_test_and_clear_young(args->vma, args->vaddr, args->ptep);
+>  	pte = ptep_get(args->ptep);
+>  	WARN_ON(pte_young(pte));
+> @@ -213,15 +226,24 @@ static void __init pmd_basic_tests(struct  
+> pgtable_debug_args *args, int idx)
+>
+>  static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
+>  {
+> +	struct page *page;
+>  	pmd_t pmd;
+>  	unsigned long vaddr = args->vaddr;
+>
+>  	if (!has_transparent_hugepage())
+>  		return;
+>
+> -	if (args->pmd_pfn == ULONG_MAX)
+> +	page = (args->pmd_pfn != ULONG_MAX) ? pfn_to_page(args->pmd_pfn) : NULL;
+> +	if (!page)
+>  		return;
+>
+> +	/*
+> +	 * flush_dcache_page() is called after set_pmd_at() to clear
+> +	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
+> +	 * when it's released and page allocation check will fail when
+> +	 * the page is allocated again. For architectures other than ARM64,
+> +	 * the unexpected overhead of cache flushing is acceptable.
+> +	 */
+>  	pr_debug("Validating PMD advanced\n");
+>  	/* Align the address wrt HPAGE_PMD_SIZE */
+>  	vaddr &= HPAGE_PMD_MASK;
+> @@ -230,6 +252,7 @@ static void __init pmd_advanced_tests(struct  
+> pgtable_debug_args *args)
+>
+>  	pmd = pfn_pmd(args->pmd_pfn, args->page_prot);
+>  	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
+> +	flush_dcache_page(page);
+>  	pmdp_set_wrprotect(args->mm, vaddr, args->pmdp);
+>  	pmd = READ_ONCE(*args->pmdp);
+>  	WARN_ON(pmd_write(pmd));
+> @@ -241,6 +264,7 @@ static void __init pmd_advanced_tests(struct  
+> pgtable_debug_args *args)
+>  	pmd = pmd_wrprotect(pmd);
+>  	pmd = pmd_mkclean(pmd);
+>  	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
+> +	flush_dcache_page(page);
+>  	pmd = pmd_mkwrite(pmd);
+>  	pmd = pmd_mkdirty(pmd);
+>  	pmdp_set_access_flags(args->vma, vaddr, args->pmdp, pmd, 1);
+> @@ -253,6 +277,7 @@ static void __init pmd_advanced_tests(struct  
+> pgtable_debug_args *args)
+>  	pmd = pmd_mkhuge(pfn_pmd(args->pmd_pfn, args->page_prot));
+>  	pmd = pmd_mkyoung(pmd);
+>  	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
+> +	flush_dcache_page(page);
+>  	pmdp_test_and_clear_young(args->vma, vaddr, args->pmdp);
+>  	pmd = READ_ONCE(*args->pmdp);
+>  	WARN_ON(pmd_young(pmd));
+> @@ -339,21 +364,31 @@ static void __init pud_basic_tests(struct  
+> pgtable_debug_args *args, int idx)
+>
+>  static void __init pud_advanced_tests(struct pgtable_debug_args *args)
+>  {
+> +	struct page *page;
+>  	unsigned long vaddr = args->vaddr;
+>  	pud_t pud;
+>
+>  	if (!has_transparent_hugepage())
+>  		return;
+>
+> -	if (args->pud_pfn == ULONG_MAX)
+> +	page = (args->pud_pfn != ULONG_MAX) ? pfn_to_page(args->pud_pfn) : NULL;
+> +	if (!page)
+>  		return;
+>
+> +	/*
+> +	 * flush_dcache_page() is called after set_pud_at() to clear
+> +	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
+> +	 * when it's released and page allocation check will fail when
+> +	 * the page is allocated again. For architectures other than ARM64,
+> +	 * the unexpected overhead of cache flushing is acceptable.
+> +	 */
+>  	pr_debug("Validating PUD advanced\n");
+>  	/* Align the address wrt HPAGE_PUD_SIZE */
+>  	vaddr &= HPAGE_PUD_MASK;
+>
+>  	pud = pfn_pud(args->pud_pfn, args->page_prot);
+>  	set_pud_at(args->mm, vaddr, args->pudp, pud);
+> +	flush_dcache_page(page);
+>  	pudp_set_wrprotect(args->mm, vaddr, args->pudp);
+>  	pud = READ_ONCE(*args->pudp);
+>  	WARN_ON(pud_write(pud));
+> @@ -367,6 +402,7 @@ static void __init pud_advanced_tests(struct  
+> pgtable_debug_args *args)
+>  	pud = pud_wrprotect(pud);
+>  	pud = pud_mkclean(pud);
+>  	set_pud_at(args->mm, vaddr, args->pudp, pud);
+> +	flush_dcache_page(page);
+>  	pud = pud_mkwrite(pud);
+>  	pud = pud_mkdirty(pud);
+>  	pudp_set_access_flags(args->vma, vaddr, args->pudp, pud, 1);
+> @@ -382,6 +418,7 @@ static void __init pud_advanced_tests(struct  
+> pgtable_debug_args *args)
+>  	pud = pfn_pud(args->pud_pfn, args->page_prot);
+>  	pud = pud_mkyoung(pud);
+>  	set_pud_at(args->mm, vaddr, args->pudp, pud);
+> +	flush_dcache_page(page);
+>  	pudp_test_and_clear_young(args->vma, vaddr, args->pudp);
+>  	pud = READ_ONCE(*args->pudp);
+>  	WARN_ON(pud_young(pud));
+> @@ -594,16 +631,26 @@ static void __init pgd_populate_tests(struct  
+> pgtable_debug_args *args) { }
+>
+>  static void __init pte_clear_tests(struct pgtable_debug_args *args)
+>  {
+> +	struct page *page;
+>  	pte_t pte = pfn_pte(args->pte_pfn, args->page_prot);
+>
+> -	if (args->pte_pfn == ULONG_MAX)
+> +	page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
+> +	if (!page)
+>  		return;
+>
+> +	/*
+> +	 * flush_dcache_page() is called after set_pte_at() to clear
+> +	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
+> +	 * when it's released and page allocation check will fail when
+> +	 * the page is allocated again. For architectures other than ARM64,
+> +	 * the unexpected overhead of cache flushing is acceptable.
+> +	 */
+>  	pr_debug("Validating PTE clear\n");
+>  #ifndef CONFIG_RISCV
+>  	pte = __pte(pte_val(pte) | RANDOM_ORVALUE);
+>  #endif
+>  	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+> +	flush_dcache_page(page);
+>  	barrier();
+>  	pte_clear(args->mm, args->vaddr, args->ptep);
+>  	pte = ptep_get(args->ptep);
+> --
+> 2.23.0
+
 
