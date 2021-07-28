@@ -2,57 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9533D9017
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772723D901A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236645AbhG1OIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:08:20 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:49904 "EHLO vps0.lunn.ch"
+        id S236659AbhG1OJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:09:04 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:50184 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233439AbhG1OIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:08:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=p1ZPqb4JnoiqJdUy3vnukyeR01HwkRN6PlUru+n8cQk=; b=3H8BpUcZNCR7qZ5elLTY+OrAXg
-        lW2dhXJwczo0A9Xdg+esFXvfYBmqWRwlM5parI7UKDosoXS09/yQHSyFDDf1U96dVK01wie9SxHjQ
-        9Wmm0BxPjA7ovj/f4eJJcUooQQLz6Rzy0BXOQyxZtp4C/Yx35EyWVPxYAt9uaU2ya0Hc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m8kEE-00FB6E-5W; Wed, 28 Jul 2021 16:08:10 +0200
-Date:   Wed, 28 Jul 2021 16:08:10 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 net-next 2/7] dt-bindings: net: fsl,fec: add RGMII
- internal clock delay
-Message-ID: <YQFkysjHFEN1w6Yz@lunn.ch>
-References: <20210728115203.16263-1-qiangqing.zhang@nxp.com>
- <20210728115203.16263-3-qiangqing.zhang@nxp.com>
+        id S235464AbhG1OJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 10:09:03 -0400
+Received: from [95.90.166.74] (helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1m8kEz-0005xo-Uz; Wed, 28 Jul 2021 16:08:57 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: Re: [PATCH 7/9] arm64: dts: rockchip: adjust rk3568 pll clocks
+Date:   Wed, 28 Jul 2021 16:08:57 +0200
+Message-ID: <3555961.44csPzL39Z@diego>
+In-Reply-To: <20210728135534.703028-8-pgwipeout@gmail.com>
+References: <20210728135534.703028-1-pgwipeout@gmail.com> <20210728135534.703028-8-pgwipeout@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728115203.16263-3-qiangqing.zhang@nxp.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 07:51:58PM +0800, Joakim Zhang wrote:
+Hi Peter,
 
-> +      The "enet_2x_txclk"(option), for RGMII sampling clock which fixed at 250Mhz.
-> +      The clock is required if SoC RGMII enable clock delay.
+Am Mittwoch, 28. Juli 2021, 15:55:32 CEST schrieb Peter Geis:
+> The rk3568 gpll should run at 1200mhz and the ppll should run at 200mhz.
+> These are set incorrectly by the bootloader, so fix them here.
 
-Hi Joakim
+Can you specify where the "should run at" comes from?
+Normally I'd assume setting desired PLL frequencies would be quite
+board-specific.
 
-So you only need the clock if you are using RGMII delays? For RGMII
-without delays, the clock is not needed?
+So if we're setting defaults for all boards, I'd like some reasoning
+behind that ;-) ... especially when the other option would be to
+fix the bootloader.
 
-You might want to add a check in the C code that the clock is provided
-when needed.
+Thanks
+Heiko
 
-     Andrew
+> 
+> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> index 8ba0516eedd8..91ae3c541c1a 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> @@ -230,6 +230,8 @@ cru: clock-controller@fdd20000 {
+>  		rockchip,grf = <&grf>;
+>  		#clock-cells = <1>;
+>  		#reset-cells = <1>;
+> +		assigned-clocks = <&cru PLL_GPLL>, <&pmucru PLL_PPLL>;
+> +		assigned-clock-rates = <1200000000>, <200000000>;
+>  	};
+>  
+>  	i2c0: i2c@fdd40000 {
+> 
+
+
+
+
