@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC263D9338
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45303D9333
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhG1Q2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:28:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40770 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229880AbhG1Q2D (ORCPT
+        id S229722AbhG1Q17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhG1Q16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:28:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627489681;
+        Wed, 28 Jul 2021 12:27:58 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7B1C061757;
+        Wed, 28 Jul 2021 09:27:56 -0700 (PDT)
+Received: from nazgul.tnic (unknown [109.121.183.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F24F1EC0527;
+        Wed, 28 Jul 2021 18:27:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1627489669;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oVx/5yrmyZbbRVeN3LD+d66Q2FozCvKMMwaCU5JpwKA=;
-        b=C8TkkbLtJNQFJzm7vuOth01N1hoMg0o0Hs8+2dm7BpdaI8dOJqXNDhrEA3SBMadh7Jwh/W
-        lPwIwRsPDZSA32snFj1Bcb9EEFYnZKf0h78flfT2UnWWzerOSoKlOUmmgKM5TXw/JDZkc8
-        RwAXJ7aDIw2Oj6fYt/TdD2tgTxNPJqE=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-131-RFve3lQaPL-BQxg7owug5g-1; Wed, 28 Jul 2021 12:28:00 -0400
-X-MC-Unique: RFve3lQaPL-BQxg7owug5g-1
-Received: by mail-qt1-f199.google.com with SMTP id t35-20020a05622a1823b02902647b518455so1315468qtc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:28:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=oVx/5yrmyZbbRVeN3LD+d66Q2FozCvKMMwaCU5JpwKA=;
-        b=Wg1dOxVmOc4u78jP1dWaf5aALuFaLsVxGYgDgsoMo9aa23ct1TYLZA6+y7y82aa3Qw
-         EZmh1JDD9SPRZwi/h/igL6O/paWB/Hg9ln32u+DmZjcWG8S6jP96czJPGEmriPYdD2YE
-         V8dBQibUWvJwZU8nAjdHCBUSftgmgHL3doSGDhHm23MDZYC99WXyVm4Nm0fCKHAPlxit
-         bmglhlACaopFTLlHjqHnuKDX5pG2GdBvbrnWAIaaZ2fR4Z22M2UqzBY1HYX19aitl+k+
-         IQ/fALceLhWD1ixVBsVIdrK2Ypphi0fItJmrMlRYr6LDu9No6G/eve9YF4hTD3J0ygNK
-         TYHg==
-X-Gm-Message-State: AOAM531W6m+5GV+Xcn2vVc4r4OaDHmFIZat1zOPusIhvS3FHvlp78usd
-        So8sAMsxpm3iSUcSaHUrpIaeZxa6ZJ44P3MYJgqK4MerhhQTgk+0CIvSRJpIQuCRdSe22V1swm3
-        XaM0wPPfF0VMlqKxqucbUlNdF
-X-Received: by 2002:a37:9244:: with SMTP id u65mr520013qkd.46.1627489680044;
-        Wed, 28 Jul 2021 09:28:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZRqP37sqJcrPzK/iLTHBFFo1TykeaKOBzeN4NCV6nY6od2hic7g0uzGrV0SdRcBpcBj9h2w==
-X-Received: by 2002:a37:9244:: with SMTP id u65mr519993qkd.46.1627489679827;
-        Wed, 28 Jul 2021 09:27:59 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id p13sm236018qkk.87.2021.07.28.09.27.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 09:27:59 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 6/9] cgroup/cpuset: Add a new isolated cpus.partition
- type
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-References: <20210720141834.10624-1-longman@redhat.com>
- <20210720141834.10624-7-longman@redhat.com>
- <20210728160900.GA8905@blackbody.suse.cz>
-Message-ID: <f1afbd9e-d16b-c972-c3c0-022a05cec2a6@redhat.com>
-Date:   Wed, 28 Jul 2021 12:27:58 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=GOEYhGPYQ4YUbo4gftj4JX0Uz5V/Qj9S6dris+AXSaA=;
+        b=LxjG3gFIJCDuOQDGzY+hiG0vN+dfpBr7Vq5w2ORdpOETiJfx6X9JMDFJJMxIan0ujoNNw7
+        KMi/vJ5Nq5Vi/Nq5x7JcXDHRAXe8ptcsnGwT9j1ZZa1hhOAXVDNeta9RonTrMrxsR3lvLV
+        KIVjknjki6FEc0QGw1JCe7AU529aFu0=
+Date:   Wed, 28 Jul 2021 18:28:01 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH 01/11] mm: Introduce a function to check for
+ virtualization protection features
+Message-ID: <YQGFh3BlaD8RAEBz@nazgul.tnic>
+References: <cover.1627424773.git.thomas.lendacky@amd.com>
+ <cbc875b1d2113225c2b44a2384d5b303d0453cf7.1627424774.git.thomas.lendacky@amd.com>
+ <YQFY5/cq2thyHzUe@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210728160900.GA8905@blackbody.suse.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YQFY5/cq2thyHzUe@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 12:09 PM, Michal Koutný wrote:
-> Hello Waiman.
->
-> On Tue, Jul 20, 2021 at 10:18:31AM -0400, Waiman Long <longman@redhat.com> wrote:
->> @@ -2026,6 +2036,22 @@ static int update_prstate(struct cpuset *cs, int new_prs)
->> [...]
->> +	} else if (old_prs && new_prs) {
-> If an isolated root partition becomes invalid (new_prs == PRS_ERROR)...
->
->> +		/*
->> +		 * A change in load balance state only, no change in cpumasks.
->> +		 */
->> +		update_flag(CS_SCHED_LOAD_BALANCE, cs, (new_prs != PRS_ISOLATED));
-> ...this seems to erase information about CS_SCHED_LOAD_BALANCE zeroness.
->
-> IOW, if there's an isolated partition that becomes invalid and later
-> valid again (a cpu is (re)added), it will be a normal root partition
-> without the requested isolation, which is IMO undesired.
->
-> I may have overlooked something in broader context but it seems to me
-> the invalidity should be saved independently of the root/isolated type.
+On Wed, Jul 28, 2021 at 02:17:27PM +0100, Christoph Hellwig wrote:
+> So common checks obviously make sense, but I really hate the stupid
+> multiplexer.  Having one well-documented helper per feature is much
+> easier to follow.
 
-PRS_ERROR cannot be passed to update_prstate(). For this patchset, 
-PRS_ERROR can only be set by changes in hotplug. The current design will 
-maintain the set flag (CS_SCHED_LOAD_BALANCE) and use it to decide to 
-switch back to PRS_ENABLED or PRS_ISOLATED when the cpus are available 
-again.
+We had that in x86 - it was called cpu_has_<xxx> where xxx is the
+feature bit. It didn't scale with the sheer amount of feature bits that
+kept getting added so we do cpu_feature_enabled(X86_FEATURE_XXX) now.
 
-Cheers,
-Longman
+The idea behind this is very similar - those protected guest flags
+will only grow in the couple of tens range - at least - so having a
+multiplexer is a lot simpler, I'd say, than having a couple of tens of
+helpers. And those PATTR flags should have good, readable names, btw.
 
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
