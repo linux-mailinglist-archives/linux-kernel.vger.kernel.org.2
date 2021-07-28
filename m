@@ -2,149 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618B43D9663
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6703D965B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhG1UHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:07:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
+        id S231310AbhG1UGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhG1UHx (ORCPT
+        with ESMTP id S229762AbhG1UGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:07:53 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9FEC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:07:50 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id y18so5266562oiv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:07:50 -0700 (PDT)
+        Wed, 28 Jul 2021 16:06:16 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982BBC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:06:13 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so11816517pja.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:06:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=97hQfQK7XavPSltv9pN4yF2y5jNc7cIdloHZZGHQCvY=;
-        b=Z7jTTKBFGpWIxboKqwgJRsOZp1J+aWDmjni8p5+XEVDRVJmY29+ni5XltyAcjXJrPd
-         VKRiyGY2cxhdfvhTRdTJXxMi8S4rhnmsf7fgxGaIh3UvIFWi4IDtUyJAop5wHOt23ZWF
-         4DS/rBN4kxsmc5k3UIkqOFWLnzdGHlERYnLb/rN8QlBNhMpET6iELjrDWctsQitUPXGL
-         2sckHJR93BoAb3Tm7MNt5hGZ34d1TvqTBveiQqtTZfbncswKMzJrgB6ult5Anul6wbBt
-         IngUJZkLp/kFIdNqQ4EVmz2DH5drGaBqdJBFNlZL/yfplvskUs3XOZoFU1YNCvGzVSnO
-         EDgA==
+        bh=oOXvanqkJmFK42acZmBqNZo5yXMDDdF902WjpDqKC4A=;
+        b=WnAwo5B+9Xwwuru6q9EGEhgLjvCcS6LlStfUh1WwP/Q5o3pUKz7vcGCwDWOMbHCf+y
+         vwCvUj3gT/ytNsLCG8dg5cf09Qu1agFSi0hpKEXqg2yrh7+HTfbTLj0N7lTi+DwAUA+c
+         wiR4zn4V2tQ14TJYRd7y2LPKBsbPk2OwmiRff/+J4AEDQGP5zEemUeX5fzPCV0DHnPEJ
+         x7E6m68JxBw48tNnED7NLEn4yeWsOJrRPymcV3InL99jm6wiaqKPuC5cRewZ+ECj610+
+         bTHswTQoEPjOzgkuA1cbYByHodXUmieFhfZQZTyrmxbT1QxE6ymTkLGJOmpwUyi5Rht+
+         HcgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=97hQfQK7XavPSltv9pN4yF2y5jNc7cIdloHZZGHQCvY=;
-        b=OTdChzWI7nlQxv3zv14yE9BAl1UQ5buLhgSnVinB5SW0lL9snrAdZtbpBWAQUOVA6U
-         tz8SOblRR/LAdYyfU7eCC9EhNpzdwh0CaJefQacU4oN5C8jCn7IjZH2yCCqKgQYxK1TH
-         PHBakI2xGzeErsCshMOqIcanM3X2AKJkLs1mP90W34sBrVmNY5q0CtLteqelGKbmeKug
-         huHoSlc6VCSDXmoxSnJm8RW85mY3bFqbQE3lEFpWAzUSo1WQle0qDWEpMqiXayJoFyr/
-         Ys4Io2wetHeCGeJRxQCfA1mRaqyjmp47CrLNjcYLpR4Np51k2STX7V/aqF+Gufew0SEI
-         Wi1A==
-X-Gm-Message-State: AOAM531BBUWe2iepOQ+Ak9kZ6lSMQ9UbfhGVXwSKkNh2q0AGvXkse//v
-        bZLS4pjkIh58sXe2+dTMgeGGgA==
-X-Google-Smtp-Source: ABdhPJwD7U8+qAvbZ4kuKnlj7p/+LPIrjaNSnetymU4fcJ2ltcIGDeO08kf0oVPEIdx8JqShaVs4sA==
-X-Received: by 2002:aca:1e12:: with SMTP id m18mr7648287oic.95.1627502869900;
-        Wed, 28 Jul 2021 13:07:49 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n1sm182047otk.34.2021.07.28.13.07.48
+        bh=oOXvanqkJmFK42acZmBqNZo5yXMDDdF902WjpDqKC4A=;
+        b=V4J6iOM7Z7lWn2rlFvt3SUpG/mIdBeb+OYsR085j0fQoDKxUUWkY7lwwDBui+cYtJY
+         QtSGWbhDX3jJFyO6WfCdhf7Kv5C8D+bFH95rXJZuijiR9TwvllmYCvEYG1S+sLx0XllF
+         81+iBqR/tFKZeVfjzGE1EpxxIizsLl0rRsQqm5kNI9ybcbHX4GDmYZls3Z/IeWIMke9/
+         dYNwW/QIGy5Aziwq58m7I8njrCDzXiGpQnRqw6iPZA4y22XTgvYf+sq6bK2qpqeG2B5B
+         gZa1YoUz3HXixISKyF4wPhSzsA24EXwZrxe3gVsv6Ih0AVKrTWHO7dRgMPwBalaq+eDO
+         PUew==
+X-Gm-Message-State: AOAM531qI5JZ9xr0d7CuWfOMMNoVqCW9FYYtTpx1b9S68KZf0vla0rA2
+        pe6cUpUCzqkk7rCLZyzOgXg=
+X-Google-Smtp-Source: ABdhPJxlPnIoSUgxvNTqCOCrs1RLNXp7nKQOGGNqWBmMeOHJQEVlDU7Jpe2FJKzo2NYHKr+EBZjihA==
+X-Received: by 2002:a17:90a:ead4:: with SMTP id ev20mr11244312pjb.65.1627502773141;
+        Wed, 28 Jul 2021 13:06:13 -0700 (PDT)
+Received: from ojas ([122.161.51.5])
+        by smtp.gmail.com with ESMTPSA id m11sm759503pgn.56.2021.07.28.13.06.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 13:07:49 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 13:05:59 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Andy Gross <agross@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] PM: clk: add devm_pm_clk_create helper
-Message-ID: <YQG4pz/z2nBNA+tJ@ripper>
-References: <20210728142445.774158-1-dmitry.baryshkov@linaro.org>
- <20210728142445.774158-3-dmitry.baryshkov@linaro.org>
+        Wed, 28 Jul 2021 13:06:12 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 01:36:07 +0530
+From:   Ojaswin Mujoo <ojaswin98@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     nsaenz@kernel.org, stefan.wahren@i2se.com,
+        dan.carpenter@oracle.com, phil@raspberrypi.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] staging: vchiq: Set $CONFIG_VCHIQ_CDEV to be enabled
+ by default
+Message-ID: <20210728200607.GB17046@ojas>
+References: <cover.1627495116.git.ojaswin98@gmail.com>
+ <70d91b0482e19d7551d3258ea54c970c1b996317.1627495116.git.ojaswin98@gmail.com>
+ <YQGl47Wpu7+SHIW+@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210728142445.774158-3-dmitry.baryshkov@linaro.org>
+In-Reply-To: <YQGl47Wpu7+SHIW+@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 28 Jul 07:24 PDT 2021, Dmitry Baryshkov wrote:
-
-> Add devm_pm_clk_create helper, devres-enabled version of the
-> pm_clk_create(), which will call pm_clk_destroy at the correct time.
+On Wed, Jul 28, 2021 at 08:45:55PM +0200, Greg KH wrote:
+> On Thu, Jul 29, 2021 at 12:07:16AM +0530, Ojaswin Mujoo wrote:
+> > Before this config was defined, the cdev used to be created
+> > unconditionally. When an earlier commit introduced this config, the
+> > default behavior was set to disabled, which might surprise some
+> > unsuspecting users.  Hence, make this config default to 'Y' to be more
+> > backward consistent.
+> > 
+> > Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
+> > ---
+> >  drivers/staging/vc04_services/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
+> > index 63caa6818d37..2b70c37cdd09 100644
+> > --- a/drivers/staging/vc04_services/Kconfig
+> > +++ b/drivers/staging/vc04_services/Kconfig
+> > @@ -23,6 +23,7 @@ if BCM2835_VCHIQ
+> >  
+> >  config VCHIQ_CDEV
+> >  	bool "VCHIQ Character Driver"
+> > +	default y
 > 
-
-As with path 1, please describe why this is a good thing. (I definitely
-think it is, but I've been part of the discussion leading up to this
-patch)
-
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/base/power/clock_ops.c | 17 +++++++++++++++++
->  include/linux/pm_clock.h       |  5 +++++
->  2 files changed, 22 insertions(+)
 > 
-> diff --git a/drivers/base/power/clock_ops.c b/drivers/base/power/clock_ops.c
-> index 0251f3e6e61d..4110c19c08dc 100644
-> --- a/drivers/base/power/clock_ops.c
-> +++ b/drivers/base/power/clock_ops.c
-> @@ -519,6 +519,23 @@ void pm_clk_destroy(struct device *dev)
->  }
->  EXPORT_SYMBOL_GPL(pm_clk_destroy);
->  
-> +static void pm_clk_destroy_action(void *data)
-> +{
-> +	pm_clk_destroy(data);
-> +}
-> +
+> default y is only if the machine will not work without this option.
+> Is that the case here?  If not, then please do not have this as the
+> default.
+Got it Greg. 
 
-As this is an addition to the API, it deserves some kerneldoc.
+From my testing, the Raspberry Pi does seem to boot correctly without
+this although some userspace libraries might not work. 
 
-Regards,
-Bjorn
+Since the machine itself works, I guess I'll drop this patch.
 
-> +int devm_pm_clk_create(struct device *dev)
-> +{
-> +	int ret;
-> +
-> +	ret = pm_clk_create(dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev, pm_clk_destroy_action, dev);
-> +}
-> +EXPORT_SYMBOL_GPL(devm_pm_clk_create);
-> +
->  /**
->   * pm_clk_suspend - Disable clocks in a device's PM clock list.
->   * @dev: Device to disable the clocks for.
-> diff --git a/include/linux/pm_clock.h b/include/linux/pm_clock.h
-> index 8ddc7860e131..ada3a0ab10bf 100644
-> --- a/include/linux/pm_clock.h
-> +++ b/include/linux/pm_clock.h
-> @@ -47,6 +47,7 @@ extern void pm_clk_remove(struct device *dev, const char *con_id);
->  extern void pm_clk_remove_clk(struct device *dev, struct clk *clk);
->  extern int pm_clk_suspend(struct device *dev);
->  extern int pm_clk_resume(struct device *dev);
-> +extern int devm_pm_clk_create(struct device *dev);
->  #else
->  static inline bool pm_clk_no_clocks(struct device *dev)
->  {
-> @@ -83,6 +84,10 @@ static inline void pm_clk_remove(struct device *dev, const char *con_id)
->  static inline void pm_clk_remove_clk(struct device *dev, struct clk *clk)
->  {
->  }
-> +static inline int devm_pm_clk_create(struct device *dev)
-> +{
-> +	return -EINVAL;
-> +}
->  #endif
->  
->  #ifdef CONFIG_HAVE_CLK
-> -- 
-> 2.30.2
+Thank you!
+Ojaswin
 > 
+> thanks,
+> 
+> greg k-h
