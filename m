@@ -2,119 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB0F3D92FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228453D92FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhG1QPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:15:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43294 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhG1QP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:15:28 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5DAC31FFD4;
-        Wed, 28 Jul 2021 16:15:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627488925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xoPVca8js9y9snyRSKAlYaCIdY+QKI6XS6rLmdx3N8I=;
-        b=uvq87d8IoaGI4sM7/K/O/NBMWzeDchWDqTXdTXVA/6AWqym+4TC0zR4+d5VQkLb/fEccNA
-        eDkG7yq6BDC11nr0pOPxPrUIQ0RWoKszm3oZzf4YOJkNBKuaFNyvZN205v5IZAr+OkXYcs
-        9TbtHt7pGO+19aM2HKkp7uObQSXkAhY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2E979A3B84;
-        Wed, 28 Jul 2021 16:15:25 +0000 (UTC)
-Date:   Wed, 28 Jul 2021 18:15:24 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Widawsky, Ben" <ben.widawsky@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>
-Subject: Re: [PATCH v6 2/6] mm/memplicy: add page allocation function for
- MPOL_PREFERRED_MANY policy
-Message-ID: <YQGCnDZUEhwbinnn@dhcp22.suse.cz>
-References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
- <1626077374-81682-3-git-send-email-feng.tang@intel.com>
- <YQFQsnSt/DaWoQHV@dhcp22.suse.cz>
- <20210728151810.GD43486@shbuild999.sh.intel.com>
- <20210728152507.GE43486@shbuild999.sh.intel.com>
+        id S230139AbhG1QPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:15:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230163AbhG1QPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 12:15:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 570976101C;
+        Wed, 28 Jul 2021 16:15:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627488941;
+        bh=YxSnffw74ATV0fmbxVeBDi/P3tDrgFf/jC+1OaxRqSI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XHeYikXeFbCTn1+EBLk6YFrxmtYD4lEyWh+Er8+BbSIAcORwF4v5MZUthOyQnNBWa
+         BJc54Sh/GB1kD03yHcoi7pPuB9AqYTSJWow4vNQ9lhblNuLLfBnN99jBDthfM2SJOP
+         fC1UtbZwBFOczNjmN2VLOYq3zN9JiDFddrYlSFAU=
+Date:   Wed, 28 Jul 2021 18:15:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joe Korty <joe.korty@concurrent-rt.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [BUG] 4.4.262: infinite loop in futex_unlock_pi (EAGAIN loop)
+Message-ID: <YQGCqylzS6sTW7Nm@kroah.com>
+References: <20210719162418.GA28003@zipoli.concurrent-rt.com>
+ <YPl8nfZBjgmSnE7N@kroah.com>
+ <20210727221950.GA51120@zipoli.concurrent-rt.com>
+ <YQD0BIYaD/y9VCEz@kroah.com>
+ <20210728135114.GA2453@zipoli.concurrent-rt.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210728152507.GE43486@shbuild999.sh.intel.com>
+In-Reply-To: <20210728135114.GA2453@zipoli.concurrent-rt.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 28-07-21 23:25:07, Feng Tang wrote:
-> On Wed, Jul 28, 2021 at 11:18:10PM +0800, Tang, Feng wrote:
-> > On Wed, Jul 28, 2021 at 02:42:26PM +0200, Michal Hocko wrote:
-> > > On Mon 12-07-21 16:09:30, Feng Tang wrote:
-> > > > The semantics of MPOL_PREFERRED_MANY is similar to MPOL_PREFERRED,
-> > > > that it will first try to allocate memory from the preferred node(s),
-> > > > and fallback to all nodes in system when first try fails.
-> > > > 
-> > > > Add a dedicated function for it just like 'interleave' policy.
-> > > > 
-> > > > Link: https://lore.kernel.org/r/20200630212517.308045-9-ben.widawsky@intel.com
-> > > > Suggested-by: Michal Hocko <mhocko@suse.com>
-> > > > Co-developed-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > > Signed-off-by: Feng Tang <feng.tang@intel.com>
+On Wed, Jul 28, 2021 at 09:51:14AM -0400, Joe Korty wrote:
+> On Wed, Jul 28, 2021 at 08:07:00AM +0200, Greg Kroah-Hartman wrote:
+> > On Tue, Jul 27, 2021 at 06:19:50PM -0400, Joe Korty wrote:
 > > > 
-> > > It would be better to squash this together with the actual user of the
-> > > function added by the next patch.
-> >  
-> > Ok, will do
-> > 
-> > > > ---
-> > > >  mm/mempolicy.c | 19 +++++++++++++++++++
-> > > >  1 file changed, 19 insertions(+)
-> > > > 
-> > > > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > > > index 17b5800b7dcc..d17bf018efcc 100644
-> > > > --- a/mm/mempolicy.c
-> > > > +++ b/mm/mempolicy.c
-> > > > @@ -2153,6 +2153,25 @@ static struct page *alloc_page_interleave(gfp_t gfp, unsigned order,
-> > > >  	return page;
-> > > >  }
-> > > >  
-> > > > +static struct page *alloc_page_preferred_many(gfp_t gfp, unsigned int order,
-> > > > +						struct mempolicy *pol)
+> > >  [ Added missing people to the cc: as listed in MAINTAINERS ]
 > > > 
-> > > We likely want a node parameter to know which one we want to start with
-> > > for locality. Callers should use policy_node for that.
-> >  
-> > Yes, locality should be considered, something like this?
+> > > On Thu, Jul 22, 2021 at 04:11:41PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Mon, Jul 19, 2021 at 12:24:18PM -0400, Joe Korty wrote:
+> > > > > [BUG] 4.4.262: infinite loop in futex_unlock_pi (EAGAIN loop)
+> > > > > 
+> > > > >    [ replicator, attached ]
+> > > > >    [ workaround patch that crudely clears the loop, attached ]
+> > > > >    [ 4.4.256 does _not_ have this problem, 4.4.262 is known to have it ]
+> > > > > 
+> > > > > When a certain, secure-site application is run on 4.4.262, it locks up and
+> > > > > is unkillable.  Crash(8) and sysrq backtraces show that the application
+> > > > > is looping in the kernel in futex_unlock_pi.
+> > > > > 
+> > > > > Between 4.4.256 and .257, 4.4 got this 4.12 patch backported into it:
+> > > > > 
+> > > > >    73d786b ("[PATCH] futex: Rework inconsistent rt_mutex/futex_q state")
+> > > > > 
+> > > > > This patch has the following comment:
+> > > > > 
+> > > > >    The only problem is that this breaks RT timeliness guarantees. That
+> > > > >    is, consider the following scenario:
+> > > > > 
+> > > > >       T1 and T2 are both pinned to CPU0. prio(T2) > prio(T1)
+> > > > > 
+> > > > >         CPU0
+> > > > > 
+> > > > >         T1
+> > > > >           lock_pi()
+> > > > >           queue_me()  <- Waiter is visible
+> > > > >    
+> > > > >         preemption
+> > > > > 
+> > > > >         T2
+> > > > >           unlock_pi()
+> > > > >             loops with -EAGAIN forever
+> > > > > 
+> > > > >     Which is undesirable for PI primitives. Future patches will rectify
+> > > > >     this.
+> > > > > 
+> > > > > This describes the situation exactly.  To prove, we developed a little
+> > > > > kernel patch that, on loop detection, puts a message into the kernel log for
+> > > > > just the first occurrence, keeps a count of the number of occurrences seen
+> > > > > since boot, and tries to break out of the loop via usleep_range(1000,1000).
+> > > > > Note that the patch is not really needed for replication.  It merely shows,
+> > > > > by 'fixing' the problem, that it really is the EAGAIN loop that triggers
+> > > > > the lockup.
+> > > > > 
+> > > > > Along with this patch, we submit a replicator.  Running this replicator
+> > > > > with this patch, it can be seen that 4.4.256 does not have the problem.
+> > > > > 4.4.267 and the latest 4.4, 4.4.275, do.  In addition, 4.9.274 (tested
+> > > > > w/o the patch) does not have the problem.
+> > > > > 
+> > > > > >From this pattern there may be some futex fixup patch that was ported
+> > > > > back into 4.9 but failed to make it to 4.4.
+> > > > 
+> > > > Odd, I can't seem to find anything that we missed.  Can you dig to see
+> > > > if there is something that we need to do here so we can resolve this?
+> > > > 
+> > > > thanks,
+> > > > greg k-h
+> > > 
+> > > 
+> > > Hi Greg,
+> > > 
+> > > 4.12 has these apparently-original patches:
+> > > 
+> > >   73d786b  futex: Rework inconsistent rt_mutex/futex_q state
+> > >   cfafcd1  futex: Rework futex_lock_pi() to use rt_mutex_*_proxy_lock()
+> > > 
+> > > I have verified that the first commit, 73d786b, introduces
+> > > the futex_unlock_pi infinite loop bug into 4.12.  I have
+> > > also verified that the last commit, cfafcd1, fixes the bug.
+> > > 
+> > > 4.9 has had both futex patches backported into it.
+> > > Verified that 4.9.276 does not suffer from the bug.
+> > > 
+> > > 4.4 has had the first patch backported, as 394fc49, but
+> > > not the last.  I have verified that building a kernel at
+> > > 394fc49 and at v4.4.276, the bug is seen, and at 394fc49^,
+> > > the bug is not present.
+> > > 
+> > > The missing commit, cfafcd1 in 4.12, is present in 4.9
+> > > as 13c98b0.  A visual spot-check of 13c98b0, as a patch,
+> > > with kernel/futex.c in 4.4.276 did not find any hunks of
+> > > 13c98b0 present in 4.4.276's kernel/futex.c.
 > > 
-> > 	int pnid, lnid = numa_node_id();
+> > Ok, so what do you recommend be done to resolve this?
 > > 
-> > 	if (is_nodeset(lnid, &pol->nodes))
-> > 		pnid = local_nid;
-> > 	else
-> > 		pnid = first_node(pol->nodes);
+> > thanks,
+> > greg k-h
 > 
-> One further thought is, if local node is not in the nodemask,
-> should we compare the distance of all the nodes in nodemask
-> to the local node and chose the shortest? 
+> I suppose we could either back out 394fc49 from 4.4, or
+> backport 13c98b0 from 4.9 to 4.4.  At the time I wrote
+> the above, I hadn't tried either approach yet.
+> 
+> Since then, I did a trial backport of 13c98b0 into 4.4.
+> All the changes to kernel/futex.c applied, none of the
+> changes to kernel/locking/rtmutex.c applied.  That implies
+> to me that we have at least one other patch that needs
+> finding-n-backporting before we can proceed.
 
-Nope, That is zonelist for. Nodemask will do the rest.
--- 
-Michal Hocko
-SUSE Labs
+Ok, let me know if there's anything I can apply here after you test
+things.
+
+greg k-h
