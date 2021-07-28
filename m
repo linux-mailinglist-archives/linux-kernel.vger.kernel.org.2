@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B44C3D8D52
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48CC3D8D5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236161AbhG1L56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:57:58 -0400
-Received: from m12-11.163.com ([220.181.12.11]:35664 "EHLO m12-11.163.com"
+        id S236234AbhG1L7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:59:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236145AbhG1L5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:57:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=u3qOm
-        i3yxLZFOkDotBepUEsryH0TnOvUsnY/qvFuVKg=; b=ZDRxCktgL8uMj84k1BJW9
-        CuIOOWGYhz9f+R8+vzPCULDnHtig/AbRLeB2lKdlgtPWm6YfckaijexFOm4BMplw
-        Mkc75V6GQXxG7vs5YSEQ5cc5brpinB4n5pOd8JKjzkSR87MI4eKUXtBepvEhgFdr
-        auAHe/LBeda4BBT1r4Ypys=
-Received: from localhost (unknown [218.17.89.92])
-        by smtp7 (Coremail) with SMTP id C8CowABHRZ0mRgFhIOECpA--.48350S2;
-        Wed, 28 Jul 2021 19:57:26 +0800 (CST)
-Date:   Wed, 28 Jul 2021 19:57:34 +0800
-From:   wengjianfeng <samirweng1979@163.com>
-To:     broonie@kernel.org, davem@davemloft.net, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        tangbin@cmss.chinamobile.com
-Subject: Re: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210728195734.00002cfe@163.com>
-Organization: yulong
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S234753AbhG1L7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:59:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06E7F60F91;
+        Wed, 28 Jul 2021 11:59:33 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 13:59:30 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     cgel.zte@gmail.com
+Cc:     peterz@infradead.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, Ran Xiaokai <ran.xiaokai@zte.com.cn>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>, NeilBrown <neilb@suse.de>
+Subject: Re: [PATCH] set_user: add capability check when rlimit(RLIMIT_NPROC)
+ exceeds
+Message-ID: <20210728115930.2lzs57h4hvnqipue@wittgenstein>
+References: <20210728072629.530435-1-ran.xiaokai@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: C8CowABHRZ0mRgFhIOECpA--.48350S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7WF1xCFWUJrWDAryUZrWDurg_yoW8Xr1kpr
-        W5J3W0kF18JFn5ArykAw4DuF15tw1xCr1Uu392q3y8AF93ZF97GanF9FWkWrWDurWF93W3
-        tr42qw1293WFqaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jATmDUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiHQfdsVSIrqS+NAAAsq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210728072629.530435-1-ran.xiaokai@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Hi all,
-> >
-> >Today's linux-next merge of the net-next tree got a conflict in:
-> >
-> >  drivers/nfc/s3fwrn5/firmware.c
-> >
-> >between commit:
-> >
-> >  801e541c79bb ("nfc: s3fwrn5: fix undefined parameter values in
-> >  dev_err()")
-> >
-> > from the net tree and commit:
+[Ccing a few people that did the PF_NPROC_EXCEEDED changes]
 
-> >  a0302ff5906a ("nfc: s3fwrn5: remove unnecessary label")
+On Wed, Jul 28, 2021 at 12:26:29AM -0700, cgel.zte@gmail.com wrote:
+> From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+> 
+> in copy_process(): non root users but with capability CAP_SYS_RESOURCE
+> or CAP_SYS_ADMIN will clean PF_NPROC_EXCEEDED flag even
+> rlimit(RLIMIT_NPROC) exceeds. Add the same capability check logic here.
+> 
+> Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+> ---
+>  kernel/sys.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sys.c b/kernel/sys.c
+> index ef1a78f5d71c..72c7639e3c98 100644
+> --- a/kernel/sys.c
+> +++ b/kernel/sys.c
+> @@ -480,7 +480,8 @@ static int set_user(struct cred *new)
+>  	 * failure to the execve() stage.
+>  	 */
+>  	if (is_ucounts_overlimit(new->ucounts, UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC)) &&
+> -			new_user != INIT_USER)
+> +			new_user != INIT_USER &&
+> +			!capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+>  		current->flags |= PF_NPROC_EXCEEDED;
+>  	else
+>  		current->flags &= ~PF_NPROC_EXCEEDED;
 
-> > from the net-next tree.
+Hey Cgel,
+Hey Ran,
 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your
-> > tree is submitted for merging.  You may also want to consider
-> > cooperating with the maintainer of the conflicting tree to minimise
-> > any particularly complex conflicts.
+The gist seems to me that this code wants to make sure that a program
+can't successfully exec if it has gone through a set*id() transition
+while exceeding its RLIMIT_NPROC.
 
-> > diff --cc drivers/nfc/s3fwrn5/firmware.c
-> > index 1340fab9565e,1421ffd46d9a..000000000000
-> > --- a/drivers/nfc/s3fwrn5/firmware.c
-> > +++ b/drivers/nfc/s3fwrn5/firmware.c
-> > @@@ -421,10 -421,9 +421,9 @@@ int s3fwrn5_fw_download(struct
-> > s3fwrn5_
-> > 
-> >  tfm = crypto_alloc_shash("sha1", 0, 0);
-> >  if (IS_ERR(tfm)) {
-> >- ret = PTR_ERR(tfm);
- > > dev_err(&fw_info->ndev->nfc_dev->dev,
-> >-	"Cannot allocate shash (code=%d)\n", ret);
-> >+	"Cannot allocate shash (code=%ld)\n", PTR_ERR(tfm));
-> >- goto out;
-> >+ return PTR_ERR(tfm);
-> >  }
-> > 
-> >  ret = crypto_shash_tfm_digest(tfm, fw->image, image_size,
-> > hash_data);
+But I agree that the semantics here are a bit strange.
 
-Hi Mark,  
-  Thanks for you fix the issue, I'll pay attention to this later.
+Iicu, a capable but non-INIT_USER caller getting PF_NPROC_EXCEEDED set
+during a set*id() transition wouldn't be able to exec right away if they
+still exceed their RLIMIT_NPROC at the time of exec. So their exec would
+fail in fs/exec.c:
 
+	if ((current->flags & PF_NPROC_EXCEEDED) &&
+	    is_ucounts_overlimit(current_ucounts(), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+		retval = -EAGAIN;
+		goto out_ret;
+	}
+
+However, if the caller were to fork() right after the set*id()
+transition but before the exec while still exceeding their RLIMIT_NPROC
+then they would get PF_NPROC_EXCEEDED cleared (while the child would
+inherit it):
+
+	retval = -EAGAIN;
+	if (is_ucounts_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+		if (p->real_cred->user != INIT_USER &&
+		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+			goto bad_fork_free;
+	}
+	current->flags &= ~PF_NPROC_EXCEEDED;
+
+which means a subsequent exec by the capable caller would now succeed
+even though they could still exceed their RLIMIT_NPROC limit.
+
+So at first glance, it seems that set_user() should probably get the
+same check as it can be circumvented today unless I misunderstand the
+original motivation.
+
+Christian
