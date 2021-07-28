@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327803D926B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00F33D9274
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbhG1P4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237142AbhG1P4r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:56:47 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4BFC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:56:45 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id j2so3867068edp.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/KJBia7ATQ1PTUNjJu6JBkn1Mi7yqgxyK+/WDg/bTwg=;
-        b=w70ktT0sUm4x5/f26NtVnnrUk4m04hSQhSs4kv5uGRm+4aZ3jc+xsnXtcdLBLG4NFd
-         4ffVZN6ro+DEuvceEZPdZ3gfhQdGlEYgFk+OWPUYCi3H2S88nBvByOu2uCBxuK1I9A8f
-         cu8U/dG3Oul2ze2IIG2AVchUM771Ffb14PHfrIQSZPTVIJyXgNeCmPcvG3Ezp6dwnCfg
-         zT6cw/Nh6Si03kHIVK0vRkOspja7ykHPRO5n1OVpQqsjdbaqLXGSVXXbxUuYv6mdhax5
-         VNzsBnP/7LOB2OzRDm7+zS3onc945fAzihKL5zZhsBfOcQwjc5Go8qZ/ZGN8RfBBGUSI
-         mD5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/KJBia7ATQ1PTUNjJu6JBkn1Mi7yqgxyK+/WDg/bTwg=;
-        b=DVyWAnRcbbs6Co6CM7D8XC41xDwH865M/sPYP3twnccTUiGhewjNtN7Tff189EJm3v
-         +9cJOBVn0Z948KAUp0GP8SWtREL6L4iD67E9MGkcja74oMkxiZieUeqJCXB2t6lKHKgN
-         XHwMol6AqIibEi+jgYJzXb2Ze7VpzqgFwfcqMq2Bvg3ZdVaAt5JAl0NX/TIiqKXl/MBt
-         xsps71br9ZZ4eUZy4V1tdephXnWYk+nUlfqgiLKxBkAZa2kF9RIOuXej2Ze/QVi6vDGH
-         BT0khNg7DsGLegwgwIaYxH+zSLxY2faEqR6w1BMRiPDcQFYvp2W5DGpB/7NEQQCTmxaQ
-         nvnw==
-X-Gm-Message-State: AOAM533cYLaUsh6AhdLHCHjty1eM3jjmru8YwbXOJB/028/s/SbIfGT1
-        pBgrXNLKI+5Wbjc31NscAFdK0jjWoQ45dCcvNfkI
-X-Google-Smtp-Source: ABdhPJxiK0XAEkUiIv7RelCrxIMbjSS4L19AbQRcvGDWUU+n/7vGxBMFwi2QKmgyT13BXEMeqYLZCyjH0jqsDIEDQoo=
-X-Received: by 2002:aa7:c792:: with SMTP id n18mr581349eds.269.1627487803897;
- Wed, 28 Jul 2021 08:56:43 -0700 (PDT)
+        id S236901AbhG1P7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:59:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:59134 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229880AbhG1P7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:59:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4EEFA1FB;
+        Wed, 28 Jul 2021 08:59:03 -0700 (PDT)
+Received: from 010265703453.arm.com (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C8AF33F70D;
+        Wed, 28 Jul 2021 08:59:00 -0700 (PDT)
+From:   Robin Murphy <robin.murphy@arm.com>
+To:     joro@8bytes.org, will@kernel.org
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
+        john.garry@huawei.com, dianders@chromium.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH v2 00/24] iommu: Refactor DMA domain strictness
+Date:   Wed, 28 Jul 2021 16:58:21 +0100
+Message-Id: <cover.1627468308.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210728063110.3652-1-xiujianfeng@huawei.com>
-In-Reply-To: <20210728063110.3652-1-xiujianfeng@huawei.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 28 Jul 2021 11:56:32 -0400
-Message-ID: <CAHC9VhSAA5KmeG9-0t=A6wRyxuHZPLpZ4H=HE0FbT1fwcUeFnA@mail.gmail.com>
-Subject: Re: [PATCH -next] selinux: correct the return value when loads
- initial sids
-To:     Xiu Jianfeng <xiujianfeng@huawei.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wangweiyang2@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 2:30 AM Xiu Jianfeng <xiujianfeng@huawei.com> wrote:
->
-> It should not return 0 when SID 0 is assigned to isids.
-> This patch fixes it.
->
-> Fixes: e3e0b582c321a ("selinux: remove unused initial SIDs and improve handling")
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> ---
->  security/selinux/ss/policydb.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/policydb.c
-> index defc5ef35c66..ad1183e18ce0 100644
-> --- a/security/selinux/ss/policydb.c
-> +++ b/security/selinux/ss/policydb.c
-> @@ -884,6 +884,7 @@ int policydb_load_isids(struct policydb *p, struct sidtab *s)
->
->                 if (sid == SECSID_NULL) {
->                         pr_err("SELinux:  SID 0 was assigned a context.\n");
-> +                       rc = -EINVAL;
->                         sidtab_destroy(s);
->                         goto out;
->                 }
+Hi all,
 
-Hi Xiu Jianfeng,
+Here's v2 where things start to look more realistic, hence the expanded
+CC list. The patches are now based on the current iommu/core branch to
+take John's iommu_set_dma_strict() cleanup into account.
 
-Thanks for the patch, but since you are fixing the error handling in
-policydb_load_isids(), would you mind respinning this patch to get rid
-of the "out" label and just have all of the associated callers return
-directly instead?  I generally dislike jump targets that do nothing
-else other than return a value; those 'goto X;' statements can easily
-be converted into 'return Y;' statements.
+The series remiains in two (or possibly 3) logical parts - for people
+CC'd on cookie cleanup patches, the later parts should not affect you
+since your drivers don't implement non-strict mode anyway; the cleanup
+is all pretty straightforward, but please do yell at me if I've managed
+to let a silly mistake slip through and broken your driver.
 
-Thanks.
+This time I have also build-tested x86 as well as arm64 :)
+
+Changes in v2:
+
+- Add iommu_is_dma_domain() helper to abstract flag check (and help
+  avoid silly typos like the one in v1).
+- Tweak a few commit messages for spelling and (hopefully) clarity.
+- Move the iommu_create_device_direct_mappings() update to patch #14
+  where it should have been.
+- Rewrite patch #20 as a conversion of the now-existing option.
+- Clean up the ops->flush_iotlb_all check which is also made redundant
+  by the new domain type
+- Add patch #24, which is arguably tangential, but it was something I
+  spotted during the rebase, so...
+
+Once again, the whole lot is available on a branch here:
+
+https://gitlab.arm.com/linux-arm/linux-rm/-/tree/iommu/fq
+
+Thanks,
+Robin.
+
+
+CC: Marek Szyprowski <m.szyprowski@samsung.com>
+CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+CC: Geert Uytterhoeven <geert+renesas@glider.be>
+CC: Yong Wu <yong.wu@mediatek.com>
+CC: Heiko Stuebner <heiko@sntech.de>
+CC: Chunyan Zhang <chunyan.zhang@unisoc.com>
+CC: Chunyan Zhang <chunyan.zhang@unisoc.com>
+CC: Maxime Ripard <mripard@kernel.org>
+CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
+
+Robin Murphy (24):
+  iommu: Pull IOVA cookie management into the core
+  iommu/amd: Drop IOVA cookie management
+  iommu/arm-smmu: Drop IOVA cookie management
+  iommu/vt-d: Drop IOVA cookie management
+  iommu/exynos: Drop IOVA cookie management
+  iommu/ipmmu-vmsa: Drop IOVA cookie management
+  iommu/mtk: Drop IOVA cookie management
+  iommu/rockchip: Drop IOVA cookie management
+  iommu/sprd: Drop IOVA cookie management
+  iommu/sun50i: Drop IOVA cookie management
+  iommu/virtio: Drop IOVA cookie management
+  iommu/dma: Unexport IOVA cookie management
+  iommu/dma: Remove redundant "!dev" checks
+  iommu: Introduce explicit type for non-strict DMA domains
+  iommu/amd: Prepare for multiple DMA domain types
+  iommu/arm-smmu: Prepare for multiple DMA domain types
+  iommu/vt-d: Prepare for multiple DMA domain types
+  iommu: Express DMA strictness via the domain type
+  iommu: Expose DMA domain strictness via sysfs
+  iommu: Merge strictness and domain type configs
+  iommu/dma: Factor out flush queue init
+  iommu: Allow enabling non-strict mode dynamically
+  iommu/arm-smmu: Allow non-strict in pgtable_quirks interface
+  iommu: Only log strictness for DMA domains
+
+ .../ABI/testing/sysfs-kernel-iommu_groups     |  2 +
+ drivers/iommu/Kconfig                         | 80 +++++++++----------
+ drivers/iommu/amd/iommu.c                     | 21 +----
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 25 ++++--
+ drivers/iommu/arm/arm-smmu/arm-smmu.c         | 29 ++++---
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c       |  8 --
+ drivers/iommu/dma-iommu.c                     | 44 +++++-----
+ drivers/iommu/exynos-iommu.c                  | 18 +----
+ drivers/iommu/intel/iommu.c                   | 23 ++----
+ drivers/iommu/iommu.c                         | 53 +++++++-----
+ drivers/iommu/ipmmu-vmsa.c                    | 27 +------
+ drivers/iommu/mtk_iommu.c                     |  6 --
+ drivers/iommu/rockchip-iommu.c                | 11 +--
+ drivers/iommu/sprd-iommu.c                    |  6 --
+ drivers/iommu/sun50i-iommu.c                  | 12 +--
+ drivers/iommu/virtio-iommu.c                  |  8 --
+ include/linux/dma-iommu.h                     |  9 ++-
+ include/linux/iommu.h                         | 15 +++-
+ 18 files changed, 171 insertions(+), 226 deletions(-)
 
 -- 
-paul moore
-www.paul-moore.com
+2.25.1
+
