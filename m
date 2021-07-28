@@ -2,217 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A763D9321
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43363D931A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhG1QYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:24:42 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18690 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230025AbhG1QYj (ORCPT
+        id S229899AbhG1QYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhG1QYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:24:39 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SGEBAn142337;
-        Wed, 28 Jul 2021 12:23:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=SR4vpxkGnzbSTAhN/u+D4Aldp8aTgDt7b8Ka1a3p3K4=;
- b=FT74/69PDTsitf7VPXIb6MDrEBSctUoKIZJbXPcmCErXYJegjJQ0rpITgb808KOecOtD
- 6i7/gO5unkvTPsZ85CoH/uc4a02yb4kGxVZbSJzZ9QjXn16C3m5QQYX+IK0smzUEmpjL
- OA/W1X2u5mY6AA0lV0hFh3wHKh7pRQIjv6PA+9to5UPUlz9TcReSjVQpgqzKzZBGXKTY
- O3hjTLQgGUwxHcTc4WXY9i0fIEg6k8EFF+Sjotu/fOP06H91JMurTuw2456HrqO3L46n
- MIb7oKOZfKLaORfVGZiZn8yzDz4WP3QCfnr7TLLmYhE3QSiCMHWcDuo7MEAB3RD7NK7D Pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3ajxr95d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Jul 2021 12:23:55 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16SGFO8w153197;
-        Wed, 28 Jul 2021 12:23:54 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3ajxr94a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Jul 2021 12:23:54 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16SGJ1KQ022957;
-        Wed, 28 Jul 2021 16:23:52 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3a235kh6jy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Jul 2021 16:23:51 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16SGLAN630343586
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Jul 2021 16:21:10 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B9E54AE051;
-        Wed, 28 Jul 2021 16:23:49 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19CFBAE045;
-        Wed, 28 Jul 2021 16:23:49 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.170.45])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Jul 2021 16:23:49 +0000 (GMT)
-Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
-To:     Benjamin Segall <bsegall@google.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>, peterz@infradead.org,
-        bristot@redhat.com, dietmar.eggemann@arm.com, joshdon@google.com,
-        juri.lelli@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
-        rostedt@goodmis.org, valentin.schneider@arm.com,
-        vincent.guittot@linaro.org
-References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
- <20210707123402.13999-1-borntraeger@de.ibm.com>
- <20210707123402.13999-2-borntraeger@de.ibm.com>
- <20210723093523.GX3809@techsingularity.net>
- <ddb81bc9-1429-c392-adac-736e23977c84@de.ibm.com>
- <20210723162137.GY3809@techsingularity.net>
- <1acd7520-bd4b-d43d-302a-8dcacf6defa5@de.ibm.com>
- <xm2635rza8l2.fsf@google.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <d9543747-c75f-28c2-6af3-8d9a134717a6@de.ibm.com>
-Date:   Wed, 28 Jul 2021 18:23:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 28 Jul 2021 12:24:08 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878EAC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:24:06 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id a20so3376413plm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fjhAztcxPbj6GCHCrhXV3HF94+0ZyiWrizPlj65G63M=;
+        b=qiwppd0eMTb9QrwKCSnlMVBqBUBMjkk44DOkoShPQ5MmX+niLVhbP0D924t51BeEiX
+         7i3RkVmGNBTFZvre/CkDvDUrbFxwF8DC1qLA4qFV0xirK0Tlnukm5FpYmvSt3Nd5AD9s
+         tqD2slJO8B4KHduCH7SxiLcxZA5dm3q4UMvQj7NoZayfEGJTXnTMIF4glTocUK0EEEBN
+         oyywY9Tx3N9fUmwetIk5kMnu0wq3wXoF06SJNu/7+Efvm7AAcwBM3p8nrkfKL7SeelhZ
+         WE3/bgtD0nsULPRHZDrOv9HGdaxikxPhr1Jt6rJf4zn56KyRarkWvTJ5acwsaORpVyZA
+         du3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fjhAztcxPbj6GCHCrhXV3HF94+0ZyiWrizPlj65G63M=;
+        b=PRVgj6hCPvEU4JD6Aidf3OB6dr/q5h6HsQ7UtXZEZgdJRY+4Akb0Dxv64t5tDKqZg2
+         2cY0MFrXZcbI0hl4KM4M9c0GO56T++fUn/kQgPiX7j1FA71UbIIHaJC6zDxbgpllKT7T
+         rn2F3RpSxmd/KHB7Z3fNcWDVu0YI9bXIt7IqRtGIQt5RL1hdcvbgCTxAk1d1MhuMdA0t
+         sEfanYbDRTVXxn7U6d4mmCQra6JfJmXF5Gnywjdds1nnhaD6yEjZNFreP4nnsERyizAN
+         MQj2mO2qTyAiBHkaQYZv2PQt7025wBowyfBpq6fMg2p0HTbG+HqNveslNBtBuF54HmAx
+         CPWg==
+X-Gm-Message-State: AOAM5335jhnLNLYwMdUcdyjK55B9clfCt66F1bCNPrJXUZn9tbo5gKqC
+        o5ry+8n1WF8mgA/s3WfuMPfDhA==
+X-Google-Smtp-Source: ABdhPJyeJel6WKLgZw3plxOQ8WoG2P48c5pdbVK988dtMXMbXt5tX8N2nWrE2BZZVjb3pINGnsDbsA==
+X-Received: by 2002:a65:44c3:: with SMTP id g3mr555757pgs.233.1627489445900;
+        Wed, 28 Jul 2021 09:24:05 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id q4sm472347pfn.23.2021.07.28.09.24.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 09:24:05 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 16:24:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH] KVM: x86: Exit to userspace when kvm_check_nested_events
+ fails
+Message-ID: <YQGEoRTfGhinO41u@google.com>
+References: <20210728115317.1930332-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <xm2635rza8l2.fsf@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LW-kW5Cmkq8ClOJMy0yM8S9BEpCxreC4
-X-Proofpoint-GUID: m-ueN1bVoJyu8M7xkNoPJIVh3oa7uKkt
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-28_08:2021-07-27,2021-07-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- spamscore=0 priorityscore=1501 bulkscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 suspectscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107280090
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728115317.1930332-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 28, 2021, Paolo Bonzini wrote:
+> From: Jim Mattson <jmattson@google.com>
 
+I don't think this is actually from Jim.
 
-On 27.07.21 20:57, Benjamin Segall wrote:
-> Christian Borntraeger <borntraeger@de.ibm.com> writes:
+> If kvm_check_nested_events fails due to raising an
+> EXIT_REASON_INTERNAL_ERROR, propagate it to userspace
+> immediately, even if the vCPU would otherwise be sleeping.
+> This happens for example when the posted interrupt descriptor
+> points outside guest memory.
 > 
->> On 23.07.21 18:21, Mel Gorman wrote:
->>> On Fri, Jul 23, 2021 at 02:36:21PM +0200, Christian Borntraeger wrote:
->>>>> sched: Do not select highest priority task to run if it should be skipped
->>>>>
->>>>> <SNIP>
->>>>>
->>>>> index 44c452072a1b..ddc0212d520f 100644
->>>>> --- a/kernel/sched/fair.c
->>>>> +++ b/kernel/sched/fair.c
->>>>> @@ -4522,7 +4522,8 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
->>>>>     			se = second;
->>>>>     	}
->>>>> -	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
->>>>> +	if (cfs_rq->next &&
->>>>> +	    (cfs_rq->skip == left || wakeup_preempt_entity(cfs_rq->next, left) < 1)) {
->>>>>     		/*
->>>>>     		 * Someone really wants this to run. If it's not unfair, run it.
->>>>>     		 */
->>>>>
->>>>
->>>> I do see a reduction in ignored yields, but from a performance aspect for my
->>>> testcases this patch does not provide a benefit, while the the simple
->>>> 	curr->vruntime += sysctl_sched_min_granularity;
->>>> does.
->>> I'm still not a fan because vruntime gets distorted. From the docs
->>>      Small detail: on "ideal" hardware, at any time all tasks would have the
->>> same
->>>      p->se.vruntime value --- i.e., tasks would execute simultaneously and no task
->>>      would ever get "out of balance" from the "ideal" share of CPU time
->>> If yield_to impacts this "ideal share" then it could have other
->>> consequences.
->>> I think your patch may be performing better in your test case because every
->>> "wrong" task selected that is not the yield_to target gets penalised and
->>> so the yield_to target gets pushed up the list.
->>>
->>>> I still think that your approach is probably the cleaner one, any chance to improve this
->>>> somehow?
->>>>
->>> Potentially. The patch was a bit off because while it noticed that skip
->>> was not being obeyed, the fix was clumsy and isolated. The current flow is
->>> 1. pick se == left as the candidate
->>> 2. try pick a different se if the "ideal" candidate is a skip candidate
->>> 3. Ignore the se update if next or last are set
->>> Step 3 looks off because it ignores skip if next or last buddies are set
->>> and I don't think that was intended. Can you try this?
->>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>> index 44c452072a1b..d56f7772a607 100644
->>> --- a/kernel/sched/fair.c
->>> +++ b/kernel/sched/fair.c
->>> @@ -4522,12 +4522,12 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
->>>    			se = second;
->>>    	}
->>>    -	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
->>> +	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, se) < 1) {
->>>    		/*
->>>    		 * Someone really wants this to run. If it's not unfair, run it.
->>>    		 */
->>>    		se = cfs_rq->next;
->>> -	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
->>> +	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, se) < 1) {
->>>    		/*
->>>    		 * Prefer last buddy, try to return the CPU to a preempted task.
->>>    		 */
->>>
->>
->> This one alone does not seem to make a difference. Neither in ignored yield, nor
->> in performance.
->>
->> Your first patch does really help in terms of ignored yields when
->> all threads are pinned to one host CPU. After that we do have no ignored yield
->> it seems. But it does not affect the performance of my testcase.
->> I did some more experiments and I removed the wakeup_preempt_entity checks in
->> pick_next_entity - assuming that this will result in source always being stopped
->> and target always being picked. But still, no performance difference.
->> As soon as I play with vruntime I do see a difference (but only without the cpu cgroup
->> controller). I will try to better understand the scheduler logic and do some more
->> testing. If you have anything that I should test, let me know.
->>
->> Christian
+> Reported-by: Jim Mattson <jmattson@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/x86.c | 22 +++++++++++++++-------
+>  1 file changed, 15 insertions(+), 7 deletions(-)
 > 
-> If both yielder and target are in the same cpu cgroup or the cpu cgroup
-> is disabled (ie, if cfs_rq_of(p->se) matches), you could try
-> 
-> if (p->se.vruntime > rq->curr->se.vruntime)
-> 	swap(p->se.vruntime, rq->curr->se.vruntime)
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 348452bb16bc..916c976e99ab 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9752,10 +9752,14 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
+>  	return 1;
+>  }
+>  
+> -static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
+> +static inline int kvm_vcpu_running(struct kvm_vcpu *vcpu)
+>  {
+> -	if (is_guest_mode(vcpu))
+> -		kvm_check_nested_events(vcpu);
+> +	int r;
 
-I tried that and it does not show the performance benefit. I then played with my
-patch (uses different values to add) and the benefit seems to be depending on the
-size that is being added, maybe when swapping it was just not large enough.
+newline
 
-I have to say that this is all a bit unclear what and why performance improves.
-It just seems that the cpu cgroup controller has a fair share of the performance
-problems.
-
-I also asked the performance people to run some measurements and the numbers of
-some transactional workload under KVM was
-baseline: 11813
-with much smaller sched_latency_ns and sched_migration_cost_ns: 16419
-with cpu controller disabled: 15962
-with cpu controller disabled + my patch: 16782
-
-I will be travelling the next 2 weeks, so I can continue with more debugging
-after that.
-
-Thanks for all the ideas and help so far.
-
-Christian
-
-> as well as the existing buddy flags, as an entirely fair vruntime boost
-> to the target.
-> 
-> For when they aren't direct siblings, you /could/ use find_matching_se,
-> but it's much less clear that's desirable, since it would yield vruntime
-> for the entire hierarchy to the target's hierarchy.
+> +	if (is_guest_mode(vcpu)) {
+> +		r = kvm_check_nested_events(vcpu);
+> +		if (r < 0 && r != -EBUSY)
+> +			return r;
+> +	}
+>  
+>  	return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
+>  		!vcpu->arch.apf.halted);
+> @@ -9770,12 +9774,16 @@ static int vcpu_run(struct kvm_vcpu *vcpu)
+>  	vcpu->arch.l1tf_flush_l1d = true;
+>  
+>  	for (;;) {
+> -		if (kvm_vcpu_running(vcpu)) {
+> -			r = vcpu_enter_guest(vcpu);
+> -		} else {
+> -			r = vcpu_block(kvm, vcpu);
+> +		r = kvm_vcpu_running(vcpu);
+> +		if (r < 0) {
+> +			r = 0;
+> +			break;
+>  		}
+>  
+> +		if (r)
+> +			r = vcpu_enter_guest(vcpu);
+> +		else
+> +			r = vcpu_block(kvm, vcpu);
+>  		if (r <= 0)
+>  			break;
+>  
+> -- 
+> 2.27.0
 > 
