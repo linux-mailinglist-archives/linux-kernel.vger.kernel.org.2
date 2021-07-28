@@ -2,134 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA0E3D9077
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C133D9082
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236855AbhG1O0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236711AbhG1OZN (ORCPT
+        id S237111AbhG1O0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:26:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31608 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236976AbhG1O0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:25:13 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17461C061757;
-        Wed, 28 Jul 2021 07:25:06 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id a201so4179713ybg.12;
-        Wed, 28 Jul 2021 07:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ePnN+OtKJkL4YSga85tPRB9eA7yVn2R5VVoOGu/iPn4=;
-        b=QJawNYLGS+LkejlMcc+iO8GHPjaS0YTFEU85ytYOdHqqlSzjsdd8gNfjMOHaTtv6PZ
-         S5lQ5eLCDahi3OYMp0zlWbME/vrXMSneZWu9PZ5SeQ95q04FyUEfBlU40Wscg1Tu3AbA
-         MXULAuj+a3uT1YIx8Jk0HZgtHS4N29+mkAK+8ZW1iSqxrLebu4aY80E9newHzZLJ+ruY
-         W+3oXDrYkqmZ+o6PaC7ugd6bqWfV4FwGquyL0AyAYmonEuL9ZMLJMVRJ5LZ8vD1AquJj
-         nCWosFKZk8cT/B1BABmk0WTf+QKGPLEwI2nlE4Kcnnp/U3k0K1oZwn4tHxGRiigWmb0w
-         BVHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ePnN+OtKJkL4YSga85tPRB9eA7yVn2R5VVoOGu/iPn4=;
-        b=PvQbOrI7+kEFA5RoYaigVygtHaB/r0Y5vEBH25takC9QlvOgw+36zd5AQuQKzKAjOD
-         6G/QsYyKliNi7ZbA1kUmLDPT+u2w+QPWhTOQz1sG92VxynMW2zpkrCT7138OLnd0/Pqt
-         5+fHiG7C6m5kHcl9yyT3dFFaoyu8nm9VI+YrpOnpFyCHwiEwbQhQQWT4ngbAr5O69cRU
-         kEift8teZ+91MQNg1LQXBjGxGBxZLtsWGmmO8XpoWMorCbw8DPvmrFK1xYWMrTZbSCCK
-         PJkwpc3El75fsBK3hRd8deUMB1iFsGCp4fpGyN9NcJnfRbRGpl82Poa0AtWRtwDkObeE
-         fYzw==
-X-Gm-Message-State: AOAM533b+PFJyOCAZ/l9Uzu03ivhTLx7gR7qNt1W+UqmVZAcEh1eR8G1
-        f3DpnagqeLG2ZcKpjnO3UIl0arnJmYEZo8iwf94=
-X-Google-Smtp-Source: ABdhPJxpNbQVTXN8VTyHHLkR0omthvWuLI1ddd5xIKEcDOnhwKOKPmkLi6o50NBt/TZP4M1hufqYonkrgkYWI/eCehU=
-X-Received: by 2002:a25:d113:: with SMTP id i19mr15516799ybg.39.1627482305334;
- Wed, 28 Jul 2021 07:25:05 -0700 (PDT)
+        Wed, 28 Jul 2021 10:26:45 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SENRY2042272;
+        Wed, 28 Jul 2021 10:26:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=hvAOTiEKaEgvFj0kPp3Kt/7BfN6vnah/Lx98H8heYGo=;
+ b=KZeTNDQv7RhCwpggu9N3aVWFREBSaIkq9VmobF6nSgQsNDJs49VjZ+J7iB45JdS7/gsq
+ 9CCXeUleYtTEal8BzcUaOG27wcm7BsdJkYv9fyxZiZ8kwoS4eTb2aLb3TsQtE/o22N1F
+ C8tzBHD7zTOXEy5d/UPvZPuCkLDdF++Q1OMOxAsnaq2NwSj01gkbXZYPzkkN9Bkw4KxX
+ O5xumTlAWSvcTJ4DrUGJZp4cRcr+cjHNH7/sfAy/a/URKxWhCw7+QULpt079f3olp5DK
+ agfj+3w74KAUPNIRtWK+oHCGijRcVyWi11POo0++1WwnqLOnIuWi+lsgoQqxmKMdoy5T Jg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a38cthnmr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 10:26:43 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16SENQKh042178;
+        Wed, 28 Jul 2021 10:26:42 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a38cthnkx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 10:26:42 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16SEJDH7024351;
+        Wed, 28 Jul 2021 14:26:40 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 3a235yh4k0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 14:26:40 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16SEQaxf25886980
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Jul 2021 14:26:37 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4BB0A405D;
+        Wed, 28 Jul 2021 14:26:36 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6ACFEA4053;
+        Wed, 28 Jul 2021 14:26:36 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.9.194])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Jul 2021 14:26:36 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/13] KVM: s390: pv: implement lazy destroy
+Date:   Wed, 28 Jul 2021 16:26:18 +0200
+Message-Id: <20210728142631.41860-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210728135534.703028-1-pgwipeout@gmail.com> <20210728135534.703028-8-pgwipeout@gmail.com>
- <3555961.44csPzL39Z@diego>
-In-Reply-To: <3555961.44csPzL39Z@diego>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 28 Jul 2021 10:24:53 -0400
-Message-ID: <CAMdYzYruEKc8na4NPo6OkouDTAgGrSgDRbTA3fA-LMrQ6T4fYQ@mail.gmail.com>
-Subject: Re: [PATCH 7/9] arm64: dts: rockchip: adjust rk3568 pll clocks
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iZSBioiGCCgkctBGdC9NOTFXxvz_znRv
+X-Proofpoint-GUID: esy9GRG-S1MbUUYnatQ5Ov9nHA3MBnai
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-28_08:2021-07-27,2021-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 suspectscore=0
+ malwarescore=0 clxscore=1011 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2107280079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:09 AM Heiko St=C3=BCbner <heiko@sntech.de> wrote=
-:
->
-> Hi Peter,
->
-> Am Mittwoch, 28. Juli 2021, 15:55:32 CEST schrieb Peter Geis:
-> > The rk3568 gpll should run at 1200mhz and the ppll should run at 200mhz=
-.
-> > These are set incorrectly by the bootloader, so fix them here.
->
-> Can you specify where the "should run at" comes from?
-> Normally I'd assume setting desired PLL frequencies would be quite
-> board-specific.
+Previously, when a protected VM was rebooted or when it was shut down,
+its memory was made unprotected, and then the protected VM itself was
+destroyed. Looping over the whole address space can take some time,
+considering the overhead of the various Ultravisor Calls (UVCs). This
+means that a reboot or a shutdown would take a potentially long amount
+of time, depending on the amount of used memory.
 
-gpll boots at 1188mhz, but to get accurate dividers for all
-gpll_dividers it needs to run
-at 1200mhz, otherwise everyone downstream isn't quite right.
+This patchseries implements a deferred destroy mechanism for protected
+guests. When a protected guest is destroyed, its memory is cleared in
+background, allowing the guest to restart or terminate significantly
+faster than before.
 
-ppll feeds the combophys, which has a divide by 2 clock, so 200mhz is
-required to reach a 100mhz clock input for them.
-Downstream also makes this fix.
+There are 2 possibilities when a protected VM is torn down:
+* it still has an address space associated (reboot case)
+* it does not have an address space anymore (shutdown case)
 
-rk356x has a number of dividers that produce expected clock values for
-various peripherals, so changing the defaults would mean reclocking a
-number of child dividers.
+For the reboot case, the reference count of the mm is increased, and
+then a background thread is started to clean up. Once the thread went
+through the whole address space, the protected VM is actually
+destroyed.
 
->
-> So if we're setting defaults for all boards, I'd like some reasoning
-> behind that ;-) ... especially when the other option would be to
-> fix the bootloader.
+For the shutdown case, a list of pages to be destroyed is formed when
+the mm is torn down. Instead of just unmapping the pages when the
+address space is being torn down, they are also set aside. Later when
+KVM cleans up the VM, a thread is started to clean up the pages from
+the list.
 
-Currently we are forced to use downstream u-boot (mainline isn't ready yet)=
-.
-Downstream doesn't seem to want to assign clocks correctly, so the
-simplest method right now is to have the kernel ensure they are
-correct.
+This means that the same address space can have memory belonging to
+more than one protected guest, although only one will be running, the
+others will in fact not even have any CPUs.
 
->
-> Thanks
-> Heiko
->
-> >
-> > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot=
-/dts/rockchip/rk356x.dtsi
-> > index 8ba0516eedd8..91ae3c541c1a 100644
-> > --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> > +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> > @@ -230,6 +230,8 @@ cru: clock-controller@fdd20000 {
-> >               rockchip,grf =3D <&grf>;
-> >               #clock-cells =3D <1>;
-> >               #reset-cells =3D <1>;
-> > +             assigned-clocks =3D <&cru PLL_GPLL>, <&pmucru PLL_PPLL>;
-> > +             assigned-clock-rates =3D <1200000000>, <200000000>;
-> >       };
-> >
-> >       i2c0: i2c@fdd40000 {
-> >
->
->
->
->
+When a guest is destroyed, its memory still counts towards its memory
+control group until it's actually freed (I tested this experimentally)
+
+When the system runs out of memory, if a guest has terminated and its
+memory is being cleaned asynchronously, the OOM killer will wait a
+little and then see if memory has been freed. This has the practical
+effect of slowing down memory allocations when the system is out of
+memory to give the cleanup thread time to cleanup and free memory, and
+avoid an actual OOM situation.
+
+v1->v2
+* rebased on a more recent kernel
+* improved/expanded some patch descriptions
+* improves/expanded some comments
+* added patch 1, which prevents stall notification when the system is
+  under heavy load.
+* rename some members of struct deferred_priv to improve readability
+* avoid an use-after-free bug of the struct mm in case of shutdown
+* add missing return when lazy destroy is disabled
+* add support for OOM notifier
+
+Claudio Imbrenda (13):
+  KVM: s390: pv: avoid stall notifications for some UVCs
+  KVM: s390: pv: leak the ASCE page when destroy fails
+  KVM: s390: pv: properly handle page flags for protected guests
+  KVM: s390: pv: handle secure storage violations for protected guests
+  KVM: s390: pv: handle secure storage exceptions for normal guests
+  KVM: s390: pv: refactor s390_reset_acc
+  KVM: s390: pv: usage counter instead of flag
+  KVM: s390: pv: add export before import
+  KVM: s390: pv: lazy destroy for reboot
+  KVM: s390: pv: extend lazy destroy to handle shutdown
+  KVM: s390: pv: module parameter to fence lazy destroy
+  KVM: s390: pv: add OOM notifier for lazy destroy
+  KVM: s390: pv: add support for UV feature bits
+
+ arch/s390/include/asm/gmap.h        |   5 +-
+ arch/s390/include/asm/mmu.h         |   3 +
+ arch/s390/include/asm/mmu_context.h |   2 +
+ arch/s390/include/asm/pgtable.h     |  16 +-
+ arch/s390/include/asm/uv.h          |  26 ++-
+ arch/s390/kernel/uv.c               | 144 ++++++++++++++-
+ arch/s390/kvm/kvm-s390.c            |   6 +-
+ arch/s390/kvm/kvm-s390.h            |   2 +-
+ arch/s390/kvm/pv.c                  | 272 ++++++++++++++++++++++++++--
+ arch/s390/mm/fault.c                |  22 ++-
+ arch/s390/mm/gmap.c                 |  86 ++++++---
+ 11 files changed, 530 insertions(+), 54 deletions(-)
+
+-- 
+2.31.1
+
