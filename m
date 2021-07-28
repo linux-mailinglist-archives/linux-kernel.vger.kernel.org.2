@@ -2,182 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C063D8C78
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE3D3D8C5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236061AbhG1LIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:08:55 -0400
-Received: from mail-m17640.qiye.163.com ([59.111.176.40]:41590 "EHLO
-        mail-m17640.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhG1LIy (ORCPT
+        id S235655AbhG1LAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:00:05 -0400
+Received: from mail-yb1-f170.google.com ([209.85.219.170]:39744 "EHLO
+        mail-yb1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232530AbhG1LAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:08:54 -0400
-X-Greylist: delayed 519 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Jul 2021 07:08:54 EDT
-Received: from [0.0.0.0] (unknown [119.136.90.116])
-        by mail-m17640.qiye.163.com (Hmail) with ESMTPA id A34FC54056F;
-        Wed, 28 Jul 2021 19:00:10 +0800 (CST)
-Subject: Re: [PATCH v1 5/6] mm/hwpoison: make some kernel pages handlable
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>, mike.kravetz@oracle.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        huangcun@sangfor.com.cn
-References: <20210614021212.223326-1-nao.horiguchi@gmail.com>
- <20210614021212.223326-6-nao.horiguchi@gmail.com>
-From:   Ding Hui <dinghui@sangfor.com.cn>
-Message-ID: <271d0f41-0599-9d5d-0555-47189f476243@sangfor.com.cn>
-Date:   Wed, 28 Jul 2021 18:59:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 28 Jul 2021 07:00:01 -0400
+Received: by mail-yb1-f170.google.com with SMTP id p145so2145769ybg.6;
+        Wed, 28 Jul 2021 03:59:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wK3igtRs0a7wGjLFT3gZUhZkPeDXJ85qIk/XHsByfrU=;
+        b=AAStnxK3D8SCMIbXdamgnpbiWIgW1M6THo48VRWk5QfZOxmc6CmibXotXq2ORKCgxc
+         /hKvzBGEkrg/82jX4hHnnZQS8ygBCx/GRSEidUqRcuxRll6VMLNP69qQBHqZieXFLxhL
+         dLLXSv2aSjb+cdqLZK17OZRgMroim0aMwh95nmmLhPZxmyu4tbsc2D1V/s1cT0umzBbd
+         Hox+lm7xt16qxvWMrfKO/gbMjYe9iZJb7rOEepA3WAjpys1DeADlJ7hd5Foum06Jezoa
+         JtmCiI/fufm6uVFQm6UN6QurVxchmi5KrC6ZS0L9kRw/ZXItF7cyR4qbSO7uHdupSsFK
+         e6ZQ==
+X-Gm-Message-State: AOAM530Mp13/TykRvvac3SnvP7H/TYWkcbRKgWlHEfLvYPvtLu6HZUB8
+        NGbrZLMH7Edn5HqdmV+wXrDPRwKI38B/tdz6hSc=
+X-Google-Smtp-Source: ABdhPJwjDN2mrpV1R+yvCVMRahNLwZriEIfAN5OpTIoTNiGi6ItP95KozcUWDXM1LM6S6WqWlWVIPIHi4t51psQ27g4=
+X-Received: by 2002:a25:bc2:: with SMTP id 185mr24767014ybl.23.1627469999187;
+ Wed, 28 Jul 2021 03:59:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210614021212.223326-6-nao.horiguchi@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUMfGUhWQ0pMHR1LS0tKHR
-        hLVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OjI6KRw4Kz9WLTpCLx8ONVZD
-        QxJPCglVSlVKTUlMT0xLS0pKTktIVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKSkJVSkhNVUJLVUpKTVlXWQgBWUFMT0lCNwY+
-X-HM-Tid: 0a7aecc59b13d995kuwsa34fc54056f
+References: <20210701002037.912625-1-drew@beagleboard.org> <20210701002037.912625-3-drew@beagleboard.org>
+ <8c59105d32a9936f8806501ecd20e044@walle.cc> <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
+ <20210726071124.GA9184@x1> <dad13b899b69436acc1804b7c3438639@walle.cc>
+ <20210727052851.GA3147871@x1> <ff76b62927e3f5f016f6c4c11ca16ccf@walle.cc>
+In-Reply-To: <ff76b62927e3f5f016f6c4c11ca16ccf@walle.cc>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Wed, 28 Jul 2021 12:59:48 +0200
+Message-ID: <CANBLGczfrmv1tzFm=Fu6B_S8nZ=ckwd3DOBkN4x7BUZtAg7bdw@mail.gmail.com>
+Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO driver
+To:     Michael Walle <michael@walle.cc>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/14 10:12, Naoya Horiguchi wrote:
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> 
-> HWPoisonHandlable() introduced by patch "mm,hwpoison: fix race with hugetlb
-> page allocation" filters error events by page type, and only limited events
-> reach get_page_unless_zero() to avoid race >
+On Wed, 28 Jul 2021 at 11:49, Michael Walle <michael@walle.cc> wrote:
+> Hi Drew,
+> Am 2021-07-27 07:28, schrieb Drew Fustini:
+> [..]
+> >> > > Drew please look at drivers/gpio/gpio-ftgpio010.c for an example
+> >> > > of GPIO_GENERIC calling bgpio_init() in probe().
+> >> >
+> >> > Thank you for the suggestion. However, I am not sure that will work for
+> >> > this SoC.
+> >> >
+> >> > The GPIO registers are described in section 12 of JH7100 datasheet [1]
+> >> > and I don't think they fit the expectation of gpio-mmio.c because there
+> >> > is a seperate register for each GPIO line for output data value and
+> >> > output enable.
+> >> >
+> >> > There are 64 output data config registers which are 4 bytes wide. There
+> >> > are 64 output enable config registers which are 4 bytes wide too. Output
+> >> > data and output enable registers for a given GPIO pad are contiguous.
+> >> > GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54 while GPIO1_DOUT_CFG
+> >> > is 0x58 and GPIO1_DOEN_CFG is 0x5C. The stride between GPIO pads is
+> >> > effectively 8, which yields the formula: GPIOn_DOUT_CFG is 0x50+8n.
+> >> > Similarly, GPIO0_DOEN_CFG is 0x54 and thus GPIOn_DOEN_CFG is 0x54+8n.
+> >> >
+> >> > However, GPIO input data does use just one bit for each line. GPIODIN_0
+> >> > at 0x48 covers GPIO[31:0] and GPIODIN_1 at 0x4c covers GPIO[63:32].
+>
+> Mh, I'm not sure I'm understanding the datasheet/registers. _DOUT_CFG
+> and _DOEN_CFG seem to specify the pad where this GPIO is mapped to.
+> Shouldn't this be some kind of pinctrl then? Apparently you can map
+> any GPIO number to any output pad, no? Or at least to all pads
+> which are described in Table 11-2. What happens if two different GPIOs
+> are mapped to the same pad? Bit 31 in these _CFG seems to be an invert
+> bit, but what does it invert?
+>
+> Similar, the input GPIOs are connected to an output pad by all the
+> GPI_*_CFG registers.
+>
+> To me it seems, that there two multiplexers for each GPIO, where
+> you can connect any GPIOn to any input pad and output pad. Sound
+> like a huge overkill. I must be missing something here.
+>
+> But what puzzles me the most, where do I set the actual GPIO output
+> value?
 
-I want to report a bug which has relationship with "mm,hwpoison: fix 
-race with hugetlb page allocation", hugetlb pmd shared and also this patch.
+Yeah, it's a little confusing. The DOUT registers choose between a number of
+signals from various peripherals to control the output value of the
+pin. Similarly
+the DOEN registers chose between a number of signals to control the output
+enable of the pin. However, two of those signals are special in that they are
+constant 0 or constant 1. This is how you control the output value and output
+enable from software like a regular GPIO.
 
-Recently, when test hugetlb and soft offline, I encountered a crash like 
-this:
-[449901.638605] huge_test[16596]: segfault at 8 ip 00007f5f64c39a12 sp 
-00007fff2105c020 error 4 in ld-2.23.so[7f5f64c2a000+26000]
-[449901.638612] Code: 48 8d 35 2c 03 01 00 48 8d 3d 31 03 01 00 ba b5 00 
-00 00 e8 f0 a5 00 00 53 49 89 fa 89 f6 48 8d 14 76 48 83 ec 10 48 8b 47 
-68 <48> 8b 78 08 49 8b 82 f8 00 00 00 48 8b 40 08 4c 8d 04 d0 49 8b 42
-[449901.638885] BUG: Bad rss-counter state mm:00000000a1ce68ac idx:0 val:358
-[449901.638894] ------------[ cut here ]------------
-[449901.638962] BUG: Bad rss-counter state mm:00000000a1ce68ac idx:1 val:26
-[449901.638966] BUG: non-zero pgtables_bytes on freeing mm: 28672
-[449901.639045] kernel BUG at fs/hugetlbfs/inode.c:443!
-[449901.639193] invalid opcode: 0000 [#1] SMP NOPTI
+You're completely right though. This ought to be managed by a proper pinctrl
+driver, and I'm working on one here:
+https://github.com/esmil/linux/commits/beaglev-pinctrl
 
-After a few days of digging and reproduce, it turns out that there is a 
-mechanism conflict between the get_hwpoison_page() and hugetlb pmd share:
-
-In huge_pmd_unshare(), the page_count is used to determine whether the 
-page is shared, it is not safe.
-
-My case is the same page's refcount was increaseed by 
-get_hwpoison_page() little before if (page_count(virt_to_page(ptep)) == 
-1) in huge_pmd_unshare(), so huge_pmd_unshare() went to wrong branch.
-
-> Actually this is too restictive because get_hwpoison_page always fails
-> to take refcount for any types of kernel page, leading to
-> MF_MSG_KERNEL_HIGH_ORDER.  This is not critical (no panic), but less
-> informative than MF_MSG_SLAB or MF_MSG_PAGETABLE, so extend
-> HWPoisonHandlable() to some basic types of kernel pages (slab, pgtable,
-> and reserved pages).
-> 
-
-After "mm,hwpoison: fix race with hugetlb page allocation"，the 
-PageTable(page) is blocked to get_page_unless_zero() due to 
-"restictive", this bug is just fixed by side effect.
-
-> The "handling" for these types are still primitive (just taking refcount
-> and setting PG_hwpoison) and some more aggressive actions for memory
-> error containment are possible and wanted.  But compared to the older code,
-> these cases never enter the code block of page locks (note that
-> page locks is not well-defined on these pages), so it's a little safer
-> for functions intended for user pages not to be called for kernel pages.
-> 
-
-But the root cause is still existed, the bug may come back at any time 
-by unconsciously, like this patch, if the PageTable(page) is allowed to 
-get_page_unless_zero(), the risk is come back.
-
-I'm not sure is there any other way to determine whether the pmd page is 
-shared, so I add Mike Kravetz here, and report the risk to you.
-
-> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> ---
->   mm/memory-failure.c | 28 ++++++++++++++++++++--------
->   1 file changed, 20 insertions(+), 8 deletions(-)
-> 
-> diff --git v5.13-rc5/mm/memory-failure.c v5.13-rc5_patched/mm/memory-failure.c
-> index b986936e50eb..0d51067f0129 100644
-> --- v5.13-rc5/mm/memory-failure.c
-> +++ v5.13-rc5_patched/mm/memory-failure.c
-> @@ -1113,7 +1113,8 @@ static int page_action(struct page_state *ps, struct page *p,
->    */
->   static inline bool HWPoisonHandlable(struct page *page)
->   {
-> -	return PageLRU(page) || __PageMovable(page);
-> +	return PageLRU(page) || __PageMovable(page) ||
-> +		PageSlab(page) || PageTable(page) || PageReserved(page);
->   }
->    >   static int __get_hwpoison_page(struct page *page)
-> @@ -1260,12 +1261,6 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
->   	struct page *hpage = *hpagep;
->   	bool mlocked = PageMlocked(hpage);
->   
-> -	/*
-> -	 * Here we are interested only in user-mapped pages, so skip any
-> -	 * other types of pages.
-> -	 */
-> -	if (PageReserved(p) || PageSlab(p))
-> -		return true;
->   	if (!(PageLRU(hpage) || PageHuge(p)))
->   		return true;
->   
-> @@ -1670,7 +1665,10 @@ int memory_failure(unsigned long pfn, int flags)
->   				action_result(pfn, MF_MSG_BUDDY, res);
->   				res = res == MF_RECOVERED ? 0 : -EBUSY;
->   			} else {
-> -				action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
-> +				if (PageCompound(p))
-> +					action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
-> +				else
-> +					action_result(pfn, MF_MSG_KERNEL, MF_IGNORED);
->   				res = -EBUSY;
->   			}
->   			goto unlock_mutex;
-> @@ -1681,6 +1679,20 @@ int memory_failure(unsigned long pfn, int flags)
->   		}
->   	}
->   
-> +	if (PageSlab(p)) {
-> +		action_result(pfn, MF_MSG_SLAB, MF_IGNORED);
-> +		res = -EBUSY;
-> +		goto unlock_mutex;
-> +	} else if (PageTable(p)) {
-> +		action_result(pfn, MF_MSG_PAGETABLE, MF_IGNORED);
-> +		res = -EBUSY;
-> +		goto unlock_mutex;
-> +	} else if (PageReserved(p)) {
-> +		action_result(pfn, MF_MSG_KERNEL, MF_IGNORED);
-> +		res = -EBUSY;
-> +		goto unlock_mutex;
-> +	}
-> +
->   	if (PageTransHuge(hpage)) {
->   		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
->   			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
-> 
-
-
--- 
-Thanks,
-- Ding Hui
+> >> I'd say, that should work with the .reg_mask_xlate of the gpio-regmap.
+> >>
+> >> -michael
+> >
+> > Thanks, yes, I think trying to figure out how .reg_mask_xlate would
+> > need
+> > to work this SoC.  I believe these are the only two implementations.
+> >
+> > From drivers/gpio/gpio-regmap.c:
+> >
+> >   static int gpio_regmap_simple_xlate(struct gpio_regmap *gpio,
+> >                                     unsigned int base, unsigned int offset,
+> >                                     unsigned int *reg, unsigned int *mask)
+> >   {
+> >         unsigned int line = offset % gpio->ngpio_per_reg;
+> >         unsigned int stride = offset / gpio->ngpio_per_reg;
+> >
+> >         *reg = base + stride * gpio->reg_stride;
+> >         *mask = BIT(line);
+> >
+> >         return 0;
+> >   }
+> >
+> > From drivers/pinctrl/bcm/pinctrl-bcm63xx.c:
+> >
+> >   static int bcm63xx_reg_mask_xlate(struct gpio_regmap *gpio,
+> >                                   unsigned int base, unsigned int offset,
+> >                                   unsigned int *reg, unsigned int *mask)
+> >   {
+> >         unsigned int line = offset % BCM63XX_BANK_GPIOS;
+> >         unsigned int stride = offset / BCM63XX_BANK_GPIOS;
+> >
+> >         *reg = base - stride * BCM63XX_BANK_SIZE;
+> >         *mask = BIT(line);
+> >
+> >         return 0;
+> >   }
+> >
+> > Let's say a driver calls gpio_regmap_set(chip, 0, 5) to set line 5 to
+> > value 1.
+> >
+> > I believe this would result in call to:
+> >
+> >   gpio->reg_mask_xlate(gpio, gpio->reg_set_base, 5, &reg, &mask)
+> >
+> > Then this would be called to set the register:
+> >
+> >   regmap_update_bits(gpio->regmap, reg, mask, mask);
+> >
+> > From datasheet section 12 [1], there are 64 output data registers which
+> > are 4 bytes wide. There are 64 output enable registers which are also 4
+> > bytes wide too. Output data and output enable registers for a GPIO line
+> > are contiguous. Thus GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54.
+> > The forumla is GPIOn_DOUT_CFG is 0x50+8n and GPIOn_DOEN_CFG is 0x54+8n.
+> > Thus for GPIO line 5:
+> >
+> >   GPIO5_DOUT_CFG is 0x50 + 0x28 = 0x78
+> >   GPIO5_DOEN_CFG is 0x54 + 0x28 = 0x7C
+> >
+> > Enable GPIO line 5 as output by writing 0x1 to 0x7C and set output
+> > value
+> > to 1 by writing 1 to 0x7C.
+> >
+> > Using gpio_regmap_simple_xlate() as a template, I am thinking through
+> > xlate for this gpio controller:
+> >
+> >
+> > static int gpio_regmap_starfive_xlate(struct gpio_regmap *gpio,
+> >                                     unsigned int base, unsigned int offset,
+> >                                     unsigned int *reg, unsigned int *mask)
+> > {
+> >       // reg_set_base is passed as base
+> >       // let reg_set_base = 0x50 (GPIO0_DOUT_CFG)
+> >       // let gpio->reg_stride = 8
+> >       // let offest = 5 (for gpio line 5)
+> >
+> >       *reg = base + offset * gpio->reg_stride;
+> >       // *reg = base:0x50 + offset:0x5 * reg_stride:0x8
+> >       // *reg = 0x50 + 0x28
+> >       // *reg=  0x78
+> >
+> >       // Each gpio line has a full register, not just a bit. To output
+> >       // a digital 1, then GPIO5_DOUT_CFG would be 0x1. To output
+> >       // digital 0, GPIO5_DOUT_CFG would be 0x0. Thus I think the mask
+> >       // should be the least significant bit.
+> >       *mask = BIT(1);
+> >
+> >       return 0;
+> > }
+> >
+> > Let's walk through what would happen if gpio_regmap_set() was the
+> > caller:
+> >
+> > static void gpio_regmap_set(struct gpio_chip *chip, unsigned int
+> > offset,
+> >                           int val)
+> > {
+> >       // for gpio line, offset = 5
+> >       // if want to set line 5 high, then val = 1
+> >       struct gpio_regmap *gpio = gpiochip_get_data(chip);
+> >
+> >       // reg_set_base would be set to 0x50 (GPIO0_DOUT_CFG)
+> >       unsigned int base = gpio_regmap_addr(gpio->reg_set_base);
+> >       unsigned int reg, mask;
+> >
+> >       gpio->reg_mask_xlate(gpio, base /* 0x50 */, offset /* 5 */, &reg,
+> > &mask);
+> >       if (val) /* if val is 1 */
+> >               regmap_update_bits(gpio->regmap, reg, mask, mask);
+> >               // if mask returned was 0x1, then this would set the
+> >               // bit 0 in GPIO5_DOUT_CFG
+> >       else /* if val is 0 */
+> >               regmap_update_bits(gpio->regmap, reg, mask, 0);
+> >               // if mask returned was 0x1, then this would clear
+> >               // bit 0 in GPIO5_DOUT_CFG
+> > }
+> >
+> > Now for the output enable register GPIO5_DOEN_CFG, the output driver is
+> > active low so 0x0 is actually enables output where as 0x1 disables
+> > output.  Thus maybe I need to add logic like:
+> >
+> >
+> > static int gpio_regmap_starfive_xlate(struct gpio_regmap *gpio,
+> >                                     unsigned int base, unsigned int offset,
+> >                                     unsigned int *reg, unsigned int *mask)
+> > {
+> >       <snip>
+> >       if (base == GPIO0_DOUT_CFG)
+> >               *mask = 0x1U;
+> >       else if (base == GPIO0_DOEN_CFG)
+> >               *bit = ~(0x1U);
+> >
+> >       return 0;
+> > }
+> >
+> > What do you think of that approach?
+>
+> I'm also not opposed to add a new flag to gpio-regmap which
+> invert the value itself.
+>
+> But the idea was that you can differentiate in _xlate() by the
+> base register offset, like you already did:
+>
+> static int gpio_regmap_starfive_xlate(struct gpio_regmap *gpio,
+>                                       unsigned int base, unsigned int offset,
+>                                       unsigned int *reg, unsigned int *mask)
+> {
+>         switch (base) {
+>         case GPIO0_DOUT_CFG:
+>                 /* do some custom mapping just for DOUT_CFG */
+>         case GPIO0_DOEN_CFG:
+>                 /* do some custom mapping just for DOEN_CFG */
+>         default:
+>                 /* do normal mapping */
+> }
+>
+> > Are there any other examples of regmap xlate that I missed?
+>
+> No there aren't much yet. Usually the simple one is enough.
+>
+> -michael
+>
+> > [1]
+> > https://github.com/starfive-tech/beaglev_doc/blob/main/JH7100%20Data%20Sheet%20V01.01.04-EN%20(4-21-2021).pdf
+>
