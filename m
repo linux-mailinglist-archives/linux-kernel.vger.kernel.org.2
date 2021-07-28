@@ -2,78 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ADA3D8919
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECBE3D891D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234514AbhG1Hsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:48:33 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40556 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbhG1Hsb (ORCPT
+        id S234383AbhG1HwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233407AbhG1HwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:48:31 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 8DED71C0B7C; Wed, 28 Jul 2021 09:48:29 +0200 (CEST)
-Date:   Wed, 28 Jul 2021 09:48:28 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 014/167] net: Introduce preferred busy-polling
-Message-ID: <20210728074828.GA28860@amd>
-References: <20210726153839.371771838@linuxfoundation.org>
- <20210726153839.841834200@linuxfoundation.org>
+        Wed, 28 Jul 2021 03:52:06 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44289C061757;
+        Wed, 28 Jul 2021 00:52:04 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id k4-20020a17090a5144b02901731c776526so8697274pjm.4;
+        Wed, 28 Jul 2021 00:52:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BfFfoe2qcsk90EiXHqmqBH9bAIL6WXwzwjqk2LV2VVk=;
+        b=ppIUqaLekxhrUOEuMFOP5KxK5q8q7129j/z6DU0EJzkYRxjo62gKXr2wJvu8QG/yMm
+         xhMyy9Wx7VIEwZV1otUjTONOQ9rx8N2PpciwEVRTLyCCo9vewTvMRfII4Ufk+BgnW9Dx
+         M4KuDZAEKxvlcuFcsrjfKxl6s32AgBgkzlE4VGK+VBiclbMB0alcxkmPEOJqyEKa5LNv
+         EmqYuUIQ0otQ9M2qT58HsgUtU8gcpuD/5uXEjPTLUfrdUisqhL+A12xgykRAYUIELkkr
+         K1tR8aRtt9u9GfzLnkL1beWCueQkDX0wdd+/HFdwXt+RHY1guUH/GCMaP6SKALwqoaWF
+         gNCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BfFfoe2qcsk90EiXHqmqBH9bAIL6WXwzwjqk2LV2VVk=;
+        b=c+UtA7Q1l26LK1tHfnhzqqKVZx2dk+fvaELsNIsg2yHQvr54NkfGzt1BaOlRv9fGsb
+         iLKdNsrVlvBDg7nzemc3e3LNq/yKe8Ko4i8uz3DY8MuBDVyMNrIFFVv0jB0k9klsAvTd
+         dOycrGmvb6BDDwjsQhgWErVLdodZAQjJXlXUH/aY/82nWOinWZl1KBOaXgiURH5Ylr8P
+         qNpYnBfl2Jqx3LsKPmj43Aq6hURKhbALitIPT5viRfxIjjubl8/Lcy3dRok0SlFHhKvt
+         jYYibhRGcJme+PdhvHtwlGxV+Nt/x4OT7AsB8Jw+EKvAuOSviXrLDJP4XKJPctd1Q75N
+         fl5w==
+X-Gm-Message-State: AOAM532pFHG06Vh4+zRavT9cRDgGaWtChUHjIWtgLc55T/Vgmqt6eoCG
+        uLCbY7xkkfRyQvZyzVkr4dU=
+X-Google-Smtp-Source: ABdhPJw42zg0Y3dEy18wgMq779F5L2gS2hIZZYw/51Zmz+CQ+5PANyu0aE6Ap5rABGFjTLBKbdm28w==
+X-Received: by 2002:a65:6909:: with SMTP id s9mr16014599pgq.321.1627458723697;
+        Wed, 28 Jul 2021 00:52:03 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id oj4sm4903482pjb.56.2021.07.28.00.52.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 00:52:03 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
+Subject: [PATCH v2] Bluetooth: skip invalid hci_sync_conn_complete_evt
+Date:   Wed, 28 Jul 2021 15:51:04 +0800
+Message-Id: <20210728075105.415214-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
-Content-Disposition: inline
-In-Reply-To: <20210726153839.841834200@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Syzbot reported a corrupted list in kobject_add_internal [1]. This
+happens when multiple HCI_EV_SYNC_CONN_COMPLETE event packets with
+status 0 are sent for the same HCI connection. This causes us to
+register the device more than once which corrupts the kset list.
 
---bg08WKrSYDhXBjb5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As this is forbidden behavior, we add a check for whether we're
+trying to process the same HCI_EV_SYNC_CONN_COMPLETE event multiple
+times for one connection. If that's the case, the event is invalid, so
+we report an error that the device is misbehaving, and ignore the
+packet.
 
-Hi!
+Link: https://syzkaller.appspot.com/bug?extid=66264bf2fd0476be7e6c [1]
+Reported-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
+Tested-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+---
 
-> From: Bj=F6rn T=F6pel <bjorn.topel@intel.com>
->=20
-> [ Upstream commit 7fd3253a7de6a317a0683f83739479fb880bffc8 ]
->=20
-> The existing busy-polling mode, enabled by the SO_BUSY_POLL socket
-> option or system-wide using the /proc/sys/net/core/busy_read knob, is
-> an opportunistic. That means that if the NAPI context is not
+v1 -> v2:
+- Added more comments to explain the reasoning behind the new check, and
+a bt_dev_err message upon detecting the invalid event. As suggested by
+Marcel Holtmann.
 
-Do we need this in -stable? It is rather long at 400 lines, and
-introduces new API feature, does not fix a bug.
+ net/bluetooth/hci_event.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-I can revert it on top of 5.10-stable, so I don't believe we have
-bugfix depending on it.
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 016b2999f219..a6df4f9d2c23 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -4373,6 +4373,22 @@ static void hci_sync_conn_complete_evt(struct hci_dev *hdev,
+ 
+ 	switch (ev->status) {
+ 	case 0x00:
++		/* The synchronous connection complete event should only be
++		 * sent once per new connection. Receiving a successful
++		 * complete event when the connection status is already
++		 * BT_CONNECTED means that the device is misbehaving and sent
++		 * multiple complete event packets for the same new connection.
++		 *
++		 * Registering the device more than once can corrupt kernel
++		 * memory, hence upon detecting this invalid event, we report
++		 * an error and ignore the packet.
++		 */
++		if (conn->state == BT_CONNECTED) {
++			bt_dev_err(hdev,
++				   "received multiple HCI_EV_SYNC_CONN_COMPLETE events with status 0 for conn %p",
++				   conn);
++			goto unlock;
++		}
+ 		conn->handle = __le16_to_cpu(ev->handle);
+ 		conn->state  = BT_CONNECTED;
+ 		conn->type   = ev->link_type;
+-- 
+2.25.1
 
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---bg08WKrSYDhXBjb5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEBC8wACgkQMOfwapXb+vI6/QCfSm725dj6X03s11p0VOo4DPRn
-SN4AoKIyovifQCui152lZM9+nPY9m9Vo
-=h5pZ
------END PGP SIGNATURE-----
-
---bg08WKrSYDhXBjb5--
