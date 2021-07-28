@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845CE3D9969
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC0D3D996A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbhG1X21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:28:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232710AbhG1X2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:28:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4001160FD7;
-        Wed, 28 Jul 2021 23:28:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627514903;
-        bh=+NI/Q1mxn7g59Uo+U5KM4ZKoYVyNYBLPtk1ASgNvUow=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sM/HQQxJ9CWHoyXxLvHXxSkkq9COWnITBIWqG+7dcHfD0q8N0JeH1Iy5ZkRMSa35i
-         2oWnQzGbQPiQ/yo8c1hePDRUrG0tgi527dxv+9ygKv7hQLaN4e6Bku/yqvcHcOe/Yj
-         5dthiKRs6MBRN4SNv+za0//bCuW+BGF26GFHKUuDpX72rg7nIfYO3mRUAIWFe85mGr
-         cJTMlk164/qNidvgQs5nHaZ8FjaHo6K+7Z/ojdg36ctbUSk3XToZH71LKCUWaLXXAJ
-         kLhlQr032pvKJsPPhhTBIZsjGYVryr+OqH+z6SOzq6znsSR2qmeLy2ZnZ5QdGyqIOd
-         EGIeV+28SjGJw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        James Schulman <james.schulman@cirrus.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Adam Brickman <Adam.Brickman@cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: wm_adsp: Let soc_cleanup_component_debugfs remove debugfs
-Date:   Thu, 29 Jul 2021 00:27:57 +0100
-Message-Id: <162751391068.10122.6522975229334793917.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210728104416.636591-1-tanureal@opensource.cirrus.com>
-References: <20210728104416.636591-1-tanureal@opensource.cirrus.com>
+        id S232762AbhG1X2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:28:55 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52072 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232116AbhG1X2z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:28:55 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 97DF91F41CC4
+Subject: Re: [patch 42/50] futex: Cleanup stale comments
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+References: <20210713151054.700719949@linutronix.de>
+ <20210713160750.053836299@linutronix.de>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <1c931d28-1ad2-519a-9896-c3d7273384fa@collabora.com>
+Date:   Wed, 28 Jul 2021 20:28:44 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210713160750.053836299@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 11:44:16 +0100, Lucas Tanure wrote:
-> soc_cleanup_component_debugfs will debugfs_remove_recursive
-> the component->debugfs_root, so adsp doesn't need to also
-> remove the same entry.
-> By doing that adsp also creates a race with core component,
-> which causes a NULL pointer dereference
+Às 12:11 de 13/07/21, Thomas Gleixner escreveu:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> The futex key reference mechanism is long gone. Cleanup the stale comments
+> which still mention it.
+> 
 
-Applied to
+There are two comments at futex_wait() that can be cleaned as well:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+/*
+ * Prepare to wait on uaddr. On success, holds hb lock and increments
+ * q.key refs.
+ */
 
-Thanks!
+/* unqueue_me() drops q.key ref */
 
-[1/1] ASoC: wm_adsp: Let soc_cleanup_component_debugfs remove debugfs
-      commit: acbf58e530416e167c3b323111f4013d9f2b0a7d
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  kernel/futex.c |  9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+> ---
+> diff --git a/kernel/futex.c b/kernel/futex.c
+> index b8eab7a2934b..e0f266fa7249 100644
+> --- a/kernel/futex.c
+> +++ b/kernel/futex.c
+> @@ -1354,7 +1354,7 @@ static int lock_pi_update_atomic(u32 __user *uaddr, u32 uval, u32 newval)
+>   *  -  1 - acquired the lock;
+>   *  - <0 - error
+>   *
+> - * The hb->lock and futex_key refs shall be held by the caller.
+> + * The hb->lock must be held by the caller.
+>   *
+>   * @exiting is only set when the return value is -EBUSY. If so, this holds
+>   * a refcount on the exiting task on return and the caller needs to drop it
+> @@ -2621,8 +2621,7 @@ static void futex_wait_queue_me(struct futex_hash_bucket *hb, struct futex_q *q,
+>   *
+>   * Setup the futex_q and locate the hash_bucket.  Get the futex value and
+>   * compare it with the expected value.  Handle atomic faults internally.
+> - * Return with the hb lock held and a q.key reference on success, and unlocked
+> - * with no q.key reference on failure.
+> + * Return with the hb lock held on success, and unlocked on failure.
+>   *
+>   * Return:
+>   *  -  0 - uaddr contains val and hb has been locked;
+> @@ -3235,9 +3234,7 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+>  	 * In order for us to be here, we know our q.key == key2, and since
+>  	 * we took the hb->lock above, we also know that futex_requeue() has
+>  	 * completed and we no longer have to concern ourselves with a wakeup
+> -	 * race with the atomic proxy lock acquisition by the requeue code. The
+> -	 * futex_requeue dropped our key1 reference and incremented our key2
+> -	 * reference count.
+> +	 * race with the atomic proxy lock acquisition by the requeue code.
+>  	 */
+>  
+>  	/*
+> 
+> 
