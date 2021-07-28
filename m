@@ -2,124 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7767E3D9363
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5931F3D9364
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhG1Qng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:43:36 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:51656 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhG1Qn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:43:28 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1m8meT-0006pT-8b; Wed, 28 Jul 2021 18:43:25 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, Liang Chen <cl@rock-chips.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Simon Xue <xxm@rock-chips.com>
-Subject: Re: [PATCH 1/2] arm64: dts: rockchip: add gmac0 node to rk3568
-Date:   Wed, 28 Jul 2021 18:43:24 +0200
-Message-ID: <2193550.atdPhlSkOF@diego>
-In-Reply-To: <20210728161020.3905-2-michael.riesch@wolfvision.net>
-References: <20210728161020.3905-1-michael.riesch@wolfvision.net> <20210728161020.3905-2-michael.riesch@wolfvision.net>
+        id S230169AbhG1QoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:44:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47370 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhG1QoH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 12:44:07 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8D3B81FFD7;
+        Wed, 28 Jul 2021 16:44:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627490644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v4EOY6ldmDFYdioXhdFcqgF63Zm4Uf4JO8ULF+YwZqE=;
+        b=Dt1aZCMOmON0Sr2FeZq8bnbtMMIQcxP+jPEjOTZW/bt05S/l+X3o3vIVkK0yX0xB7P4tGa
+        CsUzGY1Q5alN3lAc5H+N5WVu0hoVwQtHbjauWaGatStK9d1BtIiV9t4KLTYqPvfWD5sCLQ
+        vMN/sqi8JsuFT7rc0yd2g+1SAu9HGME=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 567C0A3B8B;
+        Wed, 28 Jul 2021 16:44:04 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 18:44:03 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     cl@linux.com, penberg@kernel.org, guro@fb.com, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        hannes@cmpxchg.org, shakeelb@google.com, ast@kernel.org,
+        wangkefeng.wang@huawei.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/memcg: fix NULL pointer dereference in
+ memcg_slab_free_hook()
+Message-ID: <YQGJUz9kKfYR37ce@dhcp22.suse.cz>
+References: <20210728145655.274476-1-wanghai38@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728145655.274476-1-wanghai38@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Am Mittwoch, 28. Juli 2021, 18:10:19 CEST schrieb Michael Riesch:
-> While both RK3566 and RK3568 feature the gmac1 node, the gmac0
-> node is exclusive to the RK3568.
+On Wed 28-07-21 22:56:55, Wang Hai wrote:
+> When I use kfree_rcu() to free a large memory allocated by
+> kmalloc_node(), the following dump occurs.
 > 
-> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+> BUG: kernel NULL pointer dereference, address: 0000000000000020
+> [...]
+> Oops: 0000 [#1] SMP
+> [...]
+> Workqueue: events kfree_rcu_work
+> RIP: 0010:__obj_to_index include/linux/slub_def.h:182 [inline]
+> RIP: 0010:obj_to_index include/linux/slub_def.h:191 [inline]
+> RIP: 0010:memcg_slab_free_hook+0x120/0x260 mm/slab.h:363
+> [...]
+> Call Trace:
+>  kmem_cache_free_bulk+0x58/0x630 mm/slub.c:3293
+>  kfree_bulk include/linux/slab.h:413 [inline]
+>  kfree_rcu_work+0x1ab/0x200 kernel/rcu/tree.c:3300
+>  process_one_work+0x207/0x530 kernel/workqueue.c:2276
+>  worker_thread+0x320/0x610 kernel/workqueue.c:2422
+>  kthread+0x13d/0x160 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> 
+> When kmalloc_node() a large memory, page is allocated, not slab,
+> so when freeing memory via kfree_rcu(), this large memory should not
+> be used by memcg_slab_free_hook(), because memcg_slab_free_hook() is
+> is used for slab.
+> 
+> Using page_objcgs_check() instead of page_objcgs() in
+> memcg_slab_free_hook() to fix this bug.
+> 
+> Fixes: 270c6a71460e ("mm: memcontrol/slab: Use helpers to access slab page's memcg_data")
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+
+This looks like a much better fix. Thanks!
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
 > ---
->  arch/arm64/boot/dts/rockchip/rk3568.dtsi | 51 ++++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
+> v1->v2: Use page_objcgs_check() to fix this bug
+>  mm/slab.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> index da01a59f6f26..ec39a2c593b6 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-> @@ -22,6 +22,57 @@
->  		compatible = "rockchip,rk3568-qos", "syscon";
->  		reg = <0x0 0xfe190200 0x0 0x20>;
->  	};
-> +
-> +	gmac0: ethernet@fe2a0000 {
-> +		compatible = "rockchip,rk3568-gmac", "snps,dwmac-4.20a";
-> +		reg = <0x0 0xfe2a0000 0x0 0x10000>;
-> +		interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
-> +		interrupt-names = "macirq", "eth_wake_irq";
-> +		rockchip,grf = <&grf>;
-> +		clocks = <&cru SCLK_GMAC0>, <&cru SCLK_GMAC0_RX_TX>,
-> +			 <&cru SCLK_GMAC0_RX_TX>, <&cru CLK_MAC0_REFOUT>,
-> +			 <&cru ACLK_GMAC0>, <&cru PCLK_GMAC0>,
-> +			 <&cru SCLK_GMAC0_RX_TX>, <&cru CLK_GMAC0_PTP_REF>,
-> +			 <&cru PCLK_XPCS>;
-> +		clock-names = "stmmaceth", "mac_clk_rx",
-> +			      "mac_clk_tx", "clk_mac_refout",
-> +			      "aclk_mac", "pclk_mac",
-> +			      "clk_mac_speed", "ptp_ref",
-> +			      "pclk_xpcs";
-> +		resets = <&cru SRST_A_GMAC0>;
-> +		reset-names = "stmmaceth";
-> +
-
-is this missing a rockchip,grf phandle?
-
-gmac1 has one and the driver side also does want to access the grf for both
-controllers.
-
-
-Heiko
-
-> +		snps,mixed-burst;
-> +		snps,tso;
-> +
-> +		snps,axi-config = <&gmac0_stmmac_axi_setup>;
-> +		snps,mtl-rx-config = <&gmac0_mtl_rx_setup>;
-> +		snps,mtl-tx-config = <&gmac0_mtl_tx_setup>;
-> +		status = "disabled";
-> +
-> +		mdio0: mdio {
-> +			compatible = "snps,dwmac-mdio";
-> +			#address-cells = <0x1>;
-> +			#size-cells = <0x0>;
-> +		};
-> +
-> +		gmac0_stmmac_axi_setup: stmmac-axi-config {
-> +			snps,wr_osr_lmt = <4>;
-> +			snps,rd_osr_lmt = <8>;
-> +			snps,blen = <0 0 0 0 16 8 4>;
-> +		};
-> +
-> +		gmac0_mtl_rx_setup: rx-queues-config {
-> +			snps,rx-queues-to-use = <1>;
-> +			queue0 {};
-> +		};
-> +
-> +		gmac0_mtl_tx_setup: tx-queues-config {
-> +			snps,tx-queues-to-use = <1>;
-> +			queue0 {};
-> +		};
-> +	};
->  };
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 67e06637ff2e..59db4797acd4 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -339,7 +339,7 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
+>  			continue;
 >  
->  &cpu0_opp_table {
-> 
+>  		page = virt_to_head_page(p[i]);
+> -		objcgs = page_objcgs(page);
+> +		objcgs = page_objcgs_check(page);
+>  		if (!objcgs)
+>  			continue;
+>  
+> -- 
+> 2.17.1
 
-
-
-
+-- 
+Michal Hocko
+SUSE Labs
