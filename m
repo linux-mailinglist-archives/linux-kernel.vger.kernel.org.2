@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708B73D8983
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB623D8968
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234545AbhG1IL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234365AbhG1IL2 (ORCPT
+        id S235082AbhG1IHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:07:15 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12324 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234508AbhG1IHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:11:28 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C4DC061757;
-        Wed, 28 Jul 2021 01:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vTbuxttj0FFIwn1FK4YowH8wGy2ge1M6WiA+RdlzqII=; b=i+ONwuTrrfD7jE9yjOnbb2LvR6
-        bJo1sHq5YTn7t+rCxdt6RZbLulxiEtk+iriCQlzGHwRVDz6JS2v+h73lXg5zVXfr7qms+77zhwJtt
-        IQjf4hr+D0RAbjEnkWWawxP873c3mcAA+d0bvcM2Yv0vsA6auGdCxnNUmcdttsWgndrRBY8jhCJGE
-        qfrjKr4+CMuSXSmFMwwF6DvLibv78aGEQXWrzkBuRhDXHVAkrzVD+l4Js8xOBIWavG1xs+24OzWTg
-        KA9PR9XZto4yjSLUpNmt3OnVX6W9d7sQa3DXGJ/Y4qhF96bS6hCHxfcwgKFgP8JI69QGdc1IaPBGy
-        xhNfqhMA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8eeA-003ewE-Mv; Wed, 28 Jul 2021 08:10:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CB7CC30005A;
-        Wed, 28 Jul 2021 10:10:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id ACFB921396EA6; Wed, 28 Jul 2021 10:10:31 +0200 (CEST)
-Date:   Wed, 28 Jul 2021 10:10:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Suleiman Souhlal <suleiman@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        ssouhlal@freebsd.org, joelaf@google.com, senozhatsky@chromium.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] KVM: Support Heterogeneous RT VCPU
- Configurations.
-Message-ID: <YQEQ9zdlBrgpOukj@hirez.programming.kicks-ass.net>
-References: <20210728073700.120449-1-suleiman@google.com>
+        Wed, 28 Jul 2021 04:07:14 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GZR3673wVz7yfB;
+        Wed, 28 Jul 2021 16:02:26 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Jul 2021 16:07:10 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Jul 2021 16:07:09 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <rostedt@goodmis.org>, <mingo@redhat.com>, <davem@davemloft.net>,
+        <ast@kernel.org>, <ryabinin.a.a@gmail.com>
+CC:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <linux-s390@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH v2 0/7] sections: Unify kernel sections range check and use
+Date:   Wed, 28 Jul 2021 16:13:13 +0800
+Message-ID: <20210728081320.20394-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728073700.120449-1-suleiman@google.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 04:36:58PM +0900, Suleiman Souhlal wrote:
-> Hello,
-> 
-> This series attempts to solve some issues that arise from
-> having some VCPUs be real-time while others aren't.
-> 
-> We are trying to play media inside a VM on a desktop environment
-> (Chromebooks), which requires us to have some tasks in the guest
-> be serviced at real-time priority on the host so that the media
-> can be played smoothly.
-> 
-> To achieve this, we give a VCPU real-time priority on the host
-> and use isolcpus= to ensure that only designated tasks are allowed
-> to run on the RT VCPU.
+There are three head files(kallsyms.h, kernel.h and sections.h) which
+include the kernel sections range check, let's make some cleanup and
+unify them.
 
-WTH do you need isolcpus for that? What's wrong with cpusets?
+1. cleanup arch specific text/data check and fix address boundary check
+   in kallsyms.h
+2. make all the basic/core kernel range check function into sections.h
+3. update all the callers, and use the helper in sections.h to simplify
+   the code
 
-> In order to avoid priority inversions (for example when the RT
-> VCPU preempts a non-RT that's holding a lock that it wants to
-> acquire), we dedicate a host core to the RT vcpu: Only the RT
-> VCPU is allowed to run on that CPU, while all the other non-RT
-> cores run on all the other host CPUs.
-> 
-> This approach works on machines that have a large enough number
-> of CPUs where it's possible to dedicate a whole CPU for this,
-> but we also have machines that only have 2 CPUs and doing this
-> on those is too costly.
-> 
-> This patch series makes it possible to have a RT VCPU without
-> having to dedicate a whole host core for it.
-> It does this by making it so that non-RT VCPUs can't be
-> preempted if they are in a critical section, which we
-> approximate as having interrupts disabled or non-zero
-> preempt_count. Once the VCPU is found to not be in a critical
-> section anymore, it will give up the CPU.
-> There measures to ensure that preemption isn't delayed too
-> many times.
-> 
-> (I realize that the hooks in the scheduler aren't very
-> tasteful, but I couldn't figure out a better way.
-> SVM support will be added when sending the patch for
-> inclusion.)
-> 
-> Feedback or alternatives are appreciated.
+After this series, we have 5 APIs about kernel sections range check in
+sections.h
 
-This is disguisting and completely wrecks the host scheduling. You're
-placing guest over host, that's fundamentally wrong.
+ * is_kernel_core_data()	--- come from core_kernel_data() in kernel.h
+ * is_kernel_rodata()		--- already in sections.h
+ * is_kernel_text()		--- come from kallsyms.h
+ * is_kernel_inittext()		--- come from kernel.h and kallsyms.h
+ * is_kernel()			--- come from kallsyms.h
 
-NAK!
 
-If you want co-ordinated RT scheduling, look at paravirtualized deadline
-scheduling.
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-arch@vger.kernel.org 
+Cc: iommu@lists.linux-foundation.org
+Cc: bpf@vger.kernel.org 
+
+v2:
+- add ACK/RW to patch2, and drop inappropriate fix tag
+- keep 'core' to check kernel data, suggestted by Steven Rostedt
+  <rostedt@goodmis.org>, rename is_kernel_data() to is_kernel_core_data()
+- drop patch8 which is merged
+- drop patch9 which is resend independently
+
+v1:
+https://lore.kernel.org/linux-arch/20210626073439.150586-1-wangkefeng.wang@huawei.com
+
+Kefeng Wang (7):
+  kallsyms: Remove arch specific text and data check
+  kallsyms: Fix address-checks for kernel related range
+  sections: Move and rename core_kernel_data() to is_kernel_core_data()
+  sections: Move is_kernel_inittext() into sections.h
+  kallsyms: Rename is_kernel() and is_kernel_text()
+  sections: Add new is_kernel() and is_kernel_text()
+  powerpc/mm: Use is_kernel_text() and is_kernel_inittext() helper
+
+ arch/powerpc/mm/pgtable_32.c   |  7 +---
+ arch/x86/kernel/unwind_orc.c   |  2 +-
+ arch/x86/net/bpf_jit_comp.c    |  2 +-
+ include/asm-generic/sections.h | 71 ++++++++++++++++++++++++++--------
+ include/linux/kallsyms.h       | 21 +++-------
+ include/linux/kernel.h         |  2 -
+ kernel/cfi.c                   |  2 +-
+ kernel/extable.c               | 33 ++--------------
+ kernel/locking/lockdep.c       |  3 --
+ kernel/trace/ftrace.c          |  2 +-
+ mm/kasan/report.c              |  2 +-
+ net/sysctl_net.c               |  2 +-
+ 12 files changed, 72 insertions(+), 77 deletions(-)
+
+-- 
+2.26.2
+
