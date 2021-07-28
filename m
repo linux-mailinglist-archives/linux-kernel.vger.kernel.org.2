@@ -2,214 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B56B3D8884
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE473D888D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234279AbhG1HFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbhG1HFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:05:03 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB81C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:05:01 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id da26so1834902edb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 00:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cKhgY1APh6u7WRd7JINYXQE2NYePg4Fciw9h6NBd1sU=;
-        b=llICbczqrATAT9EBV/lEVzhA2TH9YyrHoX5ozdD7CK8UvT188Y+fPpuwu4cwuOzinW
-         B46k5aEumcBW5q0y70u20B/FoQLqBzMAC1p3oVejx3vvm35XZzu/Gy6ahiFkNQCFyUYB
-         Zo2ERsi2Dlj802M5meDle1CAF0zTVLpJr1j+XUHkmdt9p8B7WYiyqT28aDsQ7YOaL36g
-         Q99L7Fan0kY6ztGYl+GtNmVidWLzCo906Dl5vh6JBLfyqjRO37ohJy9KBGBE3pEqi5yg
-         r3rlEhEyuYM6XYYPH5MzitvpmBsAwKq5lhMf4A0gR6O1mDvt5kgijjnIFUjGBAkJ6T2b
-         RfPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cKhgY1APh6u7WRd7JINYXQE2NYePg4Fciw9h6NBd1sU=;
-        b=FC2Jyr/8M/pBca4eHmS4tWsRC0RTul55fyngSWrraLI1nNwXeqNYBSF62dgmNnm8Gp
-         vFad64bGveHQpevjSv9kHL0g39kvw7q6iEpPowVndVq42DQqGKvVFys2tB1Nrn/or/sA
-         UxFLOZ/Ks7LDtKyH+8Sg+f2+GN3OvGwyhKohgGXbqYfINuf2wzZTXiEhzaBd/h49neSa
-         s6oM6nepbSJ8DUuZBTY0Xfhcv8OgvmzZB9zV1rqQ9TUWtL746fBwcNF0jAoREFBohnE7
-         +SaLd/q60af4Yl8W7uyGKlabZSd8YESPOelCKXIMeRnr5q4XE2tcjCb2a6tSPQLQVIIh
-         HFsQ==
-X-Gm-Message-State: AOAM531MuqqDnidKuouPq3S14p6niEHoRICp6EkLdMWaO6T58o21yOnx
-        DqAvNwVwt+gi4v3PkA6I7yrwywEE0nizr5b0U4bFBw==
-X-Google-Smtp-Source: ABdhPJwwwDVBXtREuKoUYNMQlmHHS1IS1VtQtH3+aUxiYFYwUvMBa+RsaVWXbC+O1JSBw1bZEyPTnLYp/xjgAQWVGSg=
-X-Received: by 2002:aa7:cb9a:: with SMTP id r26mr32666305edt.78.1627455900283;
- Wed, 28 Jul 2021 00:05:00 -0700 (PDT)
+        id S234082AbhG1HH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:07:59 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:52003 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233343AbhG1HH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 03:07:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627456076; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=RcOzkuQJajbXsCttSZMhnwTZaSzx9XzoFmVS1+N7np0=; b=CjmLyioAzwBKV57XtDjfvi0BkoUrxwy68aNmDbOoiFApFryYSMYssi7qIPIViTLhfp2TMFdU
+ N807xzfm5TafSXJ7tcCx/BNQgh3I0uP8cDea1ElREdNQqq6Gl97QeuOfa3mxUMjRQhBSIuRn
+ pEGa8uHxSiFK7tWNRnICkuE8orM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6101023138fa9bfe9c37a559 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 07:07:29
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 09F3FC43460; Wed, 28 Jul 2021 07:07:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CB4B5C433F1;
+        Wed, 28 Jul 2021 07:07:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CB4B5C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>, Jouni Malinen <j@w1.fi>,
+        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 04/31] hostap: use ndo_siocdevprivate
+References: <20210727134517.1384504-1-arnd@kernel.org>
+        <20210727134517.1384504-5-arnd@kernel.org>
+Date:   Wed, 28 Jul 2021 10:07:22 +0300
+In-Reply-To: <20210727134517.1384504-5-arnd@kernel.org> (Arnd Bergmann's
+        message of "Tue, 27 Jul 2021 15:44:50 +0200")
+Message-ID: <8735ryhq6t.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210727061334.372078412@linuxfoundation.org>
-In-Reply-To: <20210727061334.372078412@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 28 Jul 2021 12:34:49 +0530
-Message-ID: <CA+G9fYt8UAz+ey9bej4_gJ+5aCYyKDO121-ZjzVw+LTiV-HcVQ@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/46] 4.4.277-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 at 11:43, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+(adding linux-wireless list)
+
+Arnd Bergmann <arnd@kernel.org> writes:
+
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> This is the start of the stable review cycle for the 4.4.277 release.
-> There are 46 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> hostap has a combination of iwpriv ioctls that do not work at
+> all, and two SIOCDEVPRIVATE commands that work natively but
+> lack a compat conversion handler.
 >
-> Responses should be made by Thu, 29 Jul 2021 06:13:25 +0000.
-> Anything received after that time might be too late.
+> For the moment, move them over to the new ndo_siocdevprivate
+> interface and return an error for compat mode.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.277-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> Cc: Jouni Malinen <j@w1.fi>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.4.277-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.4.y
-* git commit: 33db885afa37349d2872aa265bfa7b936f83d709
-* git describe: v4.4.276-47-g33db885afa37
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-76-47-g33db885afa37
-
-## Regressions (compared to v4.4.276-48-gaf1d085ef55c)
-No regressions found.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-## No fixes (compared to v4.4.276-48-gaf1d085ef55c)
-
-
-## Test result summary
- total: 45368, pass: 35683, fail: 351, skip: 8074, xfail: 1260,
-
-## Build Summary
-* arm: 96 total, 96 passed, 0 failed
-* arm64: 23 total, 23 passed, 0 failed
-* i386: 13 total, 13 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 13 total, 13 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
