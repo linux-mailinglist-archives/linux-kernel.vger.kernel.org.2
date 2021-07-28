@@ -2,127 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AD33D8E50
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683213D8E58
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236261AbhG1MxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 08:53:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49733 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236254AbhG1MxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 08:53:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9C2E60FC4;
-        Wed, 28 Jul 2021 12:53:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627476788;
-        bh=uVs06J6Sp0nm7rKdLCNuLO/owrULe5dkBXVfD8Ww5vE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G/faYnN3UaBN3B4xIHIKWqE5hItl6PNO4fcX6B9/fhP2vRecEWniGPj/DGuP74hnz
-         NNJBFupVHrEVdCyQ19KJM0OlpQBGpgiROFQ5/6H9uvN+tFmu08+87Icn6uoQNiqjPa
-         vC4rrZheFMLK8yy5LDm3HZT5APN5gQrutrVbMLDT4RI0aKxjgiwxx19zGYUtUy4UTj
-         oimAgvdikHrUJSR0QIUaouf2fbu3c8vPX3OKZKeQVLWIojcQ5c/qITQReGJgTi94mP
-         DEMqs6HRqk3llsf2nKmASpsGOm7Ltgl+Yz/2jVJ00iGzkkwcorRHDi/Vg71IEY/AH+
-         g4KcFpr+9BA9A==
-Date:   Wed, 28 Jul 2021 15:52:58 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Kenneth Lee <nek.in.cn@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Kenneth Lee <liguozhu@hisilicon.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        guohanjun@huawei.com, wangzhou1@hisilicon.com
-Subject: Re: [PATCH] riscv: fix the global name pfn_base confliction error
-Message-ID: <YQFTKtNmqorzsv6a@kernel.org>
-References: <20210728064318.375747-1-nek.in.cn@gmail.com>
- <0e81c8d2-468a-9afd-bce3-0e8211baa065@ghiti.fr>
+        id S236282AbhG1Myf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 08:54:35 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3515 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234256AbhG1Myd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 08:54:33 -0400
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GZYKS2dZZz6DJHd;
+        Wed, 28 Jul 2021 20:45:16 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Jul 2021 14:54:30 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Wed, 28 Jul 2021 14:54:30 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC][PATCH v2 11/12] diglim: Remote Attestation
+Thread-Topic: [RFC][PATCH v2 11/12] diglim: Remote Attestation
+Thread-Index: AQHXgjz9ODHmd+8DTkOcoAaHmj57yatYN3AAgAAjKjA=
+Date:   Wed, 28 Jul 2021 12:54:30 +0000
+Message-ID: <3ed8744299814d238c73d26a9fb9f745@huawei.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+        <20210726163700.2092768-12-roberto.sassu@huawei.com>
+ <20210728144728.62ace280@sal.lan>
+In-Reply-To: <20210728144728.62ace280@sal.lan>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0e81c8d2-468a-9afd-bce3-0e8211baa065@ghiti.fr>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 09:19:16AM +0200, Alex Ghiti wrote:
-> Hi Kenneth,
+> From: Mauro Carvalho Chehab [mailto:mchehab+huawei@kernel.org]
+> Sent: Wednesday, July 28, 2021 2:47 PM
+> Em Mon, 26 Jul 2021 18:36:59 +0200
+> Roberto Sassu <roberto.sassu@huawei.com> escreveu:
 > 
-> Le 28/07/2021 à 08:43, Kenneth Lee a écrit :
-> > From: Kenneth Lee <liguozhu@hisilicon.com>
-> > 
-> > RISCV use a global variable pfn_base for page/pfn translation. But this
-> > is a common name and will be used elsewhere. In those case,
-> > the page-pfn macro which refer this name will refer to the local/input
-> > variable of those function (such as in vfio_pin_pages_remote). This make
-> > everything wrong.
-> > 
-> > This patch change the name from pfn_base to riscv_global_pfn_base to fix
-> > this problem
-> 
-> What about removing this variable entirely and using
-> PFN_DOWN(kernel_map.phys_addr) directly in ARCH_PFN_OFFSET definition? That
-> would remove code from mm/init.c, which is nice :)
-
-That would be nice, but such change would also change the generated code.
-Probably nothing important, but someone would have to at least check what
-size and bloat-o-meter say.
- 
-> Thanks,
-> 
-> Alex
-> 
-> > 
-> > Signed-off-by: Kenneth Lee <liguozhu@hisilicon.com>
+> > Add more information about remote attestation with IMA and DIGLIM in
+> > Documentation/security/diglim/remote_attestation.rst.
+> >
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 > > ---
-> >   arch/riscv/include/asm/page.h | 4 ++--
-> >   arch/riscv/mm/init.c          | 6 +++---
-> >   2 files changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> > index cca8764aed83..8711e415f37c 100644
-> > --- a/arch/riscv/include/asm/page.h
-> > +++ b/arch/riscv/include/asm/page.h
-> > @@ -79,8 +79,8 @@ typedef struct page *pgtable_t;
-> >   #endif
-> >   #ifdef CONFIG_MMU
-> > -extern unsigned long pfn_base;
-> > -#define ARCH_PFN_OFFSET		(pfn_base)
-> > +extern unsigned long riscv_global_pfn_base;
-> > +#define ARCH_PFN_OFFSET		(riscv_global_pfn_base)
-> >   #else
-> >   #define ARCH_PFN_OFFSET		(PAGE_OFFSET >> PAGE_SHIFT)
-> >   #endif /* CONFIG_MMU */
-> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > index a14bf3910eec..2ce4e9a46ca0 100644
-> > --- a/arch/riscv/mm/init.c
-> > +++ b/arch/riscv/mm/init.c
-> > @@ -228,8 +228,8 @@ static struct pt_alloc_ops _pt_ops __initdata;
-> >   #define pt_ops _pt_ops
-> >   #endif
-> > -unsigned long pfn_base __ro_after_init;
-> > -EXPORT_SYMBOL(pfn_base);
-> > +unsigned long riscv_global_pfn_base __ro_after_init;
-> > +EXPORT_SYMBOL(riscv_global_pfn_base);
-> >   pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
-> >   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
-> > @@ -572,7 +572,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
-> >   	kernel_map.va_kernel_pa_offset = kernel_map.virt_addr - kernel_map.phys_addr;
-> >   #endif
-> > -	pfn_base = PFN_DOWN(kernel_map.phys_addr);
-> > +	riscv_global_pfn_base = PFN_DOWN(kernel_map.phys_addr);
-> >   	/*
-> >   	 * Enforce boot alignment requirements of RV32 and
-> > 
+> >  Documentation/security/diglim/index.rst       |  1 +
+> >  .../security/diglim/remote_attestation.rst    | 87 +++++++++++++++++++
+> >  MAINTAINERS                                   |  1 +
+> >  3 files changed, 89 insertions(+)
+> >  create mode 100644 Documentation/security/diglim/remote_attestation.rst
+> >
+> > diff --git a/Documentation/security/diglim/index.rst
+> b/Documentation/security/diglim/index.rst
+> > index 4771134c2f0d..0f28c5ad71c0 100644
+> > --- a/Documentation/security/diglim/index.rst
+> > +++ b/Documentation/security/diglim/index.rst
+> > @@ -10,3 +10,4 @@ Digest Lists Integrity Module (DIGLIM)
+> >     introduction
+> >     architecture
+> >     implementation
+> > +   remote_attestation
+> > diff --git a/Documentation/security/diglim/remote_attestation.rst
+> b/Documentation/security/diglim/remote_attestation.rst
+> > new file mode 100644
+> > index 000000000000..83fd7581c460
+> > --- /dev/null
+> > +++ b/Documentation/security/diglim/remote_attestation.rst
+> > @@ -0,0 +1,87 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +Remote Attestation
+> > +==================
+> > +
+> > +When a digest list is added or deleted through the ``digest_list_add`` or
+> > +``digest_list_del`` interfaces, its buffer is sent to the IMA function
+> > +``ima_measure_critical_data()``. The primary reason for it is to calculate
+> > +the buffer digest, so that the digest list itself is searchable in the hash
+> > +table.
+> > +
+> > +``ima_measure_critical_data()`` can be also used to create a new
+> > +measurement entry each time this function is called, if there is an
+> > +appropriate rule in the IMA policy. Given that this function is called
+> > +during an addition or deletion of a digest list, a remote verifier can
+> > +infer from the measurement list precise information about what has been
+> > +uploaded to the kernel.
+> > +
+> > +To enable this functionality, the following rule must be added to the IMA
+> > +policy:
+> > +
+> > +::
+> 
+> As commented on other patches at this series, you can merge :: at the
+> previous text line, e. g.:
+> 
+> 	policy::
+> 
+> does the same as:
+> 
+> 	policy:
+> 
+> 	::
+> 
+> but it is nicer for text-only readers, IMO.
 
--- 
-Sincerely yours,
-Mike.
+Ok, will change in the next version of the patch set.
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> > +
+> > + measure func=CRITICAL_DATA label=diglim
+> > +
+> > +
+> > +When a file is uploaded, the workflow and the resulting IMA measurement
+> > +list are:
+> > +
+> > +.. code-block:: bash
+> > +
+> > + # echo $PWD/0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_list_add
+> > + # echo $PWD/0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_list_del
+> > + # cat /sys/kernel/security/integrity/ima/ascii_runtime_measurements
+> > + ...
+> > + 10 <template digest> ima-buf sha256:<buffer digest> add_file_0-file_list-
+> compact-cat <buffer>
+> > + 10 <template digest> ima-buf sha256:<buffer digest> del_file_0-file_list-
+> compact-cat <buffer>
+> > +
+> > +When a buffer is uploaded, the workflow and the resulting IMA
+> measurement
+> > +list are:
+> > +
+> > +.. code-block:: bash
+> > +
+> > + # echo 0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_label
+> > + # cat 0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_list_add
+> > + # echo 0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_label
+> > + # cat 0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_list_del
+> > + # cat /sys/kernel/security/integrity/ima/ascii_runtime_measurements
+> > + ...
+> > + 10 <template digest> ima-buf sha256:<buffer digest> add_buffer_0-
+> file_list-compact-cat <buffer>
+> > + 10 <template digest> ima-buf sha256:<buffer digest> del_buffer_0-file_list-
+> compact-cat <buffer>
+> > +
+> > +In the second case, the digest list label must be set explicitly, as the
+> > +kernel cannot determine it by itself (in the first case it is derived from
+> > +the name of the file uploaded).
+> > +
+> > +The confirmation that the digest list has been processed by IMA can be
+> > +obtained by reading the ASCII representation of the digest list:
+> > +
+> > +.. code-block:: bash
+> > +
+> > + # cat /sys/kernel/security/integrity/diglim/digest_lists_loaded/sha256-
+> <digest list digest>-0-file_list-compact-cat.ascii
+> > + actions: 1, version: 1, algo: sha256, type: 2, modifiers: 1, count: 1, datalen:
+> 32
+> > +
+> 87e5bd81850e11eeec2d3bb696b626b2a7f45673241cbbd64769c83580432869
+> > +
+> > +In this output, ``actions`` is set to 1
+> (``COMPACT_ACTION_IMA_MEASURED``
+> > +bit set).
+> > +
+> > +
+> > +DIGLIM guarantees that the information reported in the IMA measurement
+> list
+> > +is complete. If digest list loading is not recorded, digest query results
+> > +are ignored by IMA. If the addition was recorded, deletion can be
+> performed
+> > +only if also the deletion is recorded. This can be seen in the following
+> > +sequence of commands:
+> > +
+> > +.. code-block:: bash
+> > +
+> > + # echo 0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_label
+> > + # cat 0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_list_add
+> > + # echo 0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_label
+> > + # /tmp/cat 0-file_list-compact-cat >
+> /sys/kernel/security/integrity/diglim/digest_list_del
+> > + diglim: actions mismatch, add: 1, del: 0
+> > + diglim: unable to upload generated digest list
+> > + /tmp/cat: write error: Invalid argument
+> > +
+> > +Digest list measurement is avoided with the execution of ``/tmp/cat``, for
+> > +which a dont_measure rule was previously added in the IMA policy.
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 0672128fae7f..a7c502685109 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -5461,6 +5461,7 @@ F:
+> 	Documentation/security/diglim/architecture.rst
+> >  F:	Documentation/security/diglim/implementation.rst
+> >  F:	Documentation/security/diglim/index.rst
+> >  F:	Documentation/security/diglim/introduction.rst
+> > +F:	Documentation/security/diglim/remote_attestation.rst
+> >  F:	include/linux/diglim.h
+> >  F:	include/uapi/linux/diglim.h
+> >  F:	security/integrity/diglim/diglim.h
