@@ -2,153 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3B93D8A4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A193D8A4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234483AbhG1JIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:08:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44351 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230520AbhG1JIG (ORCPT
+        id S235068AbhG1JIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:08:16 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:54205 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhG1JIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:08:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627463285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hzpX4Anju1g1uTE/VmLWDxyTDF0xzMb9RwOUSeDvum0=;
-        b=Fvd2BuEq/EYcTAQjftZm45bNQmwwtGPfJYafH3Ja15v7QIjDTf66OVEw7VPrdIxvqZ8AMs
-        KDe+S/VfkAmsf+Gl74uI66HGcXAYVnL8TurJPdCNlULl2qjoU4PCFXURnF1hrJE+A0+1vT
-        QEVIwFNMS1TM0PwVDYwvDnbxwN2fC7s=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-77Gch2hLOX2KdmqfAeFAIA-1; Wed, 28 Jul 2021 05:08:03 -0400
-X-MC-Unique: 77Gch2hLOX2KdmqfAeFAIA-1
-Received: by mail-ej1-f71.google.com with SMTP id ju25-20020a17090798b9b029058c24b55273so600024ejc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:08:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hzpX4Anju1g1uTE/VmLWDxyTDF0xzMb9RwOUSeDvum0=;
-        b=ekFdGTyMBdGROZ2O/0qU48HQMEH272T+V9Oj6x0U1ZJ1S7kWQGLr1qmUIo7KIr7KfQ
-         kHx2R8xxtQ2MBYukj4Mk8ddBof8kIdC9Tvo89/KgcAm4BWmvzttlsITw5I2kmYJ2MNTV
-         i1clcPpc9kojmFxJxarMH5C+zluwqPxcg3AOdonM2tSmCBRfrVXuDIuEXeeBO+TUGLWl
-         yRJswnVxDf8c9MOlFbF7ENkJ5ay6cv54jbkRicW6Dm4o60OW6h7nzPeDqwU5S7ZKfuM8
-         BwM6WHliUPvhDRtjnsusqsyoYIJKmW4Unkc/JqEH+Ec+HJnvXKKmqOzL3RVfKZxvdpTw
-         n/1g==
-X-Gm-Message-State: AOAM532gNFyZicudKJjn6e+ws9FfTjqyof+cG3vCXDa5bkeVkSKefqdd
-        +1374KO4obmAY33Nthqh8UUohmXrI6eDhmTVyeZQdLuIOH4aGxwaNB1US7rEOay0WK4rPiPO9Q3
-        eYOvlJUU9KTZ3WCTYnBL1BsLB
-X-Received: by 2002:a05:6402:3450:: with SMTP id l16mr32743556edc.358.1627463282713;
-        Wed, 28 Jul 2021 02:08:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxsUf6D4UqA78keeC1CvqRtWMLxpq2D9fXM93HChpsnw2Tl65AEmHpWTsw0oYo69Bkiv7LKeQ==
-X-Received: by 2002:a05:6402:3450:: with SMTP id l16mr32743539edc.358.1627463282599;
-        Wed, 28 Jul 2021 02:08:02 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id b13sm2326917ede.49.2021.07.28.02.08.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 02:08:02 -0700 (PDT)
-Subject: Re: [PATCH 1/2] acpi: Add acpi_init_properties to ACPI driver code
-To:     Michael Bottini <michael.a.bottini@linux.intel.com>,
-        rjw@rjwysocki.net, lenb@kernel.org, irenic.rajneesh@gmail.com,
-        david.e.box@linux.intel.com, mgross@linux.intel.com
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-References: <20210723202157.2425-1-michael.a.bottini@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <d8e4f0f3-7282-50d4-16ac-2f67b210373c@redhat.com>
-Date:   Wed, 28 Jul 2021 11:08:01 +0200
+        Wed, 28 Jul 2021 05:08:14 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id BBB541BF20A;
+        Wed, 28 Jul 2021 09:08:04 +0000 (UTC)
+Subject: Re: [PATCH] riscv: fix the global name pfn_base confliction error
+To:     Lee Ken <nek.in.cn@gmail.com>
+References: <20210728064318.375747-1-nek.in.cn@gmail.com>
+ <0e81c8d2-468a-9afd-bce3-0e8211baa065@ghiti.fr>
+ <CA+CqrBQPou5QuYfHUYzbe7j2AUPpmBQs1HQJgjJo5QtF51LmXw@mail.gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, moi <alex@ghiti.fr>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Kenneth Lee <liguozhu@hisilicon.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        "guohanjun@huawei.com" <guohanjun@huawei.com>,
+        "wangzhou1@hisilicon.com" <wangzhou1@hisilicon.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <4da4adaf-9bd8-6463-9230-5a3a73f323ba@ghiti.fr>
+Date:   Wed, 28 Jul 2021 11:08:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210723202157.2425-1-michael.a.bottini@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CA+CqrBQPou5QuYfHUYzbe7j2AUPpmBQs1HQJgjJo5QtF51LmXw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 7/23/21 10:21 PM, Michael Bottini wrote:
-> Some products in the field, like Intel Rocket Lake systems, contain
-> AML code that can modify _DSD properties after they have been
-> evaluated by ACPI init code. Therefore, there is a need for drivers
-> to be able to reevaluate _DSDs so that the updated property values can
-> be read. Export acpi_init_properties() for this purpose.
+
+Le 28/07/2021 à 09:33, Lee Ken a écrit :
+> On Wed, Jul 28, 2021 at 3:19 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>
+>> Hi Kenneth,
+>>
+>> Le 28/07/2021 à 08:43, Kenneth Lee a écrit :
+>>> From: Kenneth Lee <liguozhu@hisilicon.com>
+>>>
+>>> RISCV use a global variable pfn_base for page/pfn translation. But this
+>>> is a common name and will be used elsewhere. In those case,
+>>> the page-pfn macro which refer this name will refer to the local/input
+>>> variable of those function (such as in vfio_pin_pages_remote). This make
+>>> everything wrong.
+>>>
+>>> This patch change the name from pfn_base to riscv_global_pfn_base to fix
+>>> this problem
+>>
+>> What about removing this variable entirely and using
+>> PFN_DOWN(kernel_map.phys_addr) directly in ARCH_PFN_OFFSET definition?
+>> That would remove code from mm/init.c, which is nice :)
+>>
+>> Thanks,
+>>
+>> Alex
+>>
+>>>
+>>> Signed-off-by: Kenneth Lee <liguozhu@hisilicon.com>
+>>> ---
+>>>    arch/riscv/include/asm/page.h | 4 ++--
+>>>    arch/riscv/mm/init.c          | 6 +++---
+>>>    2 files changed, 5 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+>>> index cca8764aed83..8711e415f37c 100644
+>>> --- a/arch/riscv/include/asm/page.h
+>>> +++ b/arch/riscv/include/asm/page.h
+>>> @@ -79,8 +79,8 @@ typedef struct page *pgtable_t;
+>>>    #endif
+>>>
+>>>    #ifdef CONFIG_MMU
+>>> -extern unsigned long pfn_base;
+>>> -#define ARCH_PFN_OFFSET              (pfn_base)
+>>> +extern unsigned long riscv_global_pfn_base;
+>>> +#define ARCH_PFN_OFFSET              (riscv_global_pfn_base)
+>>>    #else
+>>>    #define ARCH_PFN_OFFSET             (PAGE_OFFSET >> PAGE_SHIFT)
+>>>    #endif /* CONFIG_MMU */
+>>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>>> index a14bf3910eec..2ce4e9a46ca0 100644
+>>> --- a/arch/riscv/mm/init.c
+>>> +++ b/arch/riscv/mm/init.c
+>>> @@ -228,8 +228,8 @@ static struct pt_alloc_ops _pt_ops __initdata;
+>>>    #define pt_ops _pt_ops
+>>>    #endif
+>>>
+>>> -unsigned long pfn_base __ro_after_init;
+>>> -EXPORT_SYMBOL(pfn_base);
+>>> +unsigned long riscv_global_pfn_base __ro_after_init;
+>>> +EXPORT_SYMBOL(riscv_global_pfn_base);
+>>>
+>>>    pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>>>    pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>>> @@ -572,7 +572,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>>        kernel_map.va_kernel_pa_offset = kernel_map.virt_addr - kernel_map.phys_addr;
+>>>    #endif
+>>>
+>>> -     pfn_base = PFN_DOWN(kernel_map.phys_addr);
+>>> +     riscv_global_pfn_base = PFN_DOWN(kernel_map.phys_addr);
+>>>
+>>>        /*
+>>>         * Enforce boot alignment requirements of RV32 and
+>>>
 > 
-> Signed-off-by: Michael Bottini <michael.a.bottini@linux.intel.com>
-
-My first instinct here is this is a firmware bug and we should
-go out of our way here to not support this and to instead apply
-pressure on the vendor to get the firmware fixed.
-
-Let me explain, the standard use of _DSD is to allow embedding
-open-firmware/devicetree style properties inside ACPI nodes.
-
-devicetree files, unlike AML contain static information, which
-is parsed once and only once.
-
-Allowing AML code to dynamically change _DSD results pretty
-much breaks this entire model.
-
-So I might be shooting from the hip a bit here:
-"no, just no". IOW nack.
-
-Regards,
-
-Hans
-
-
-
-
-
-
-> ---
->  drivers/acpi/property.c | 1 +
->  include/linux/acpi.h    | 6 ++++++
->  2 files changed, 7 insertions(+)
-> 
-> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
-> index e312ebaed8db..2c1f8cf1a8f0 100644
-> --- a/drivers/acpi/property.c
-> +++ b/drivers/acpi/property.c
-> @@ -432,6 +432,7 @@ void acpi_init_properties(struct acpi_device *adev)
->  	if (!adev->data.pointer)
->  		acpi_extract_apple_properties(adev);
->  }
-> +EXPORT_SYMBOL(acpi_init_properties);
->  
->  static void acpi_destroy_nondev_subnodes(struct list_head *list)
->  {
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 72e4f7fd268c..57defc3bc9b9 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -716,6 +716,8 @@ static inline u64 acpi_arch_get_root_pointer(void)
->  
->  int acpi_get_local_address(acpi_handle handle, u32 *addr);
->  
-> +void acpi_init_properties(struct acpi_device *adev);
-> +
->  #else	/* !CONFIG_ACPI */
->  
->  #define acpi_disabled 1
-> @@ -976,6 +978,10 @@ static inline int acpi_get_local_address(acpi_handle handle, u32 *addr)
->  	return -ENODEV;
->  }
->  
-> +static inline void acpi_init_properties(struct acpi_device *adev)
-> +{
-> +}
-> +
->  #endif	/* !CONFIG_ACPI */
->  
->  #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+> Yes. It is a choice. But I think it is the choice of the maintainer of
+> the module. He should have a full consideration on how to expose the
+> interface. I'm now just working for VFIO enablement in RISCV. It is
+> not wise to be trapped into this;)
 > 
 
+I think there is a misunderstanding, I suggested to do the following to 
+get rid of pfn_base entirely:
+
+diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+index adf5b4671684..8afb3db61eb0 100644
+--- a/arch/riscv/include/asm/page.h
++++ b/arch/riscv/include/asm/page.h
+@@ -79,8 +79,7 @@ typedef struct page *pgtable_t;
+  #endif
+
+  #ifdef CONFIG_MMU
+-extern unsigned long pfn_base;
+-#define ARCH_PFN_OFFSET                (pfn_base)
++#define ARCH_PFN_OFFSET                (PFN_DOWN(kernel_map.phys_addr))
+  #else
+  #define ARCH_PFN_OFFSET                (PAGE_OFFSET >> PAGE_SHIFT)
+  #endif /* CONFIG_MMU */
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index c9a6362d8c7f..c51f0da03a62 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -211,9 +211,6 @@ static void __init setup_bootmem(void)
+  #ifdef CONFIG_MMU
+  static struct pt_alloc_ops pt_ops __initdata;
+
+-unsigned long pfn_base __ro_after_init;
+-EXPORT_SYMBOL(pfn_base);
+-
+  pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+  pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+  extern pte_t fixmap_pte[PTRS_PER_PTE];// __page_aligned_bss;
+@@ -608,8 +605,6 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+         kernel_map.va_pa_offset = PAGE_OFFSET - kernel_map.phys_addr;
+         kernel_map.va_kernel_pa_offset = kernel_map.virt_addr - 
+kernel_map.phys_addr;
+
+-       pfn_base = PFN_DOWN(kernel_map.phys_addr);
+-
+         /* Sanity check alignment and size */
+         BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
+         BUG_ON((kernel_map.phys_addr % PMD_SIZE) != 0);
