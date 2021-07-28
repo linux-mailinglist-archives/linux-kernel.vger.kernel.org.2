@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D523D900B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE963D9010
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236469AbhG1OEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235317AbhG1OEg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:04:36 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED09C061757;
-        Wed, 28 Jul 2021 07:04:33 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id g6so1549924qvj.8;
-        Wed, 28 Jul 2021 07:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RJ6yiUmiMn9KXKa+d1/GNMShbg379rzibdu6zfOJPe4=;
-        b=iAsLbeOiL/fKTFCVi1vRjJPRalwM8QeZESMxa70PdYSCzUNpPXxDFFC+53mgSq6Nel
-         gNxLh67UXeEauvl2EiPWUIDlRr/HueXRyA483cWJVvlccGeKC3RRkzarjvxuEo5XY3xn
-         pzppBYBjfwYs/KRVsyqTJ81NLlZEA50UiAKnEf58zZcLllCcRC/hZ9iUulbt2cOfFW2V
-         46/c3Ty1FdNmfUerQzPtQ9vBv8zSUQm6NFHAYH92JNnJYiWk49dzwRj9U9DaHbDIenSw
-         sp12Tl+mAz/dnTQtbeUWhdMG/T+QM9+p4exsu/1pQvKH7u0tk/EmXjpjV1W7NCGbcrwM
-         eYlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RJ6yiUmiMn9KXKa+d1/GNMShbg379rzibdu6zfOJPe4=;
-        b=gnAAHC+zQ/Xr2EoDHanVHu/ntppGiSlltUzAKw+GMH7Kq+YsUVcIeCmEwidWGUEgmq
-         rm26KSeff4sfaZ82GwR3Rda0DKUs626zspT9XGyFvPeuuHGtsyJ+hyOM6DTdWMVBK/gf
-         SUDcuY1dlRzP3AEBSxqGopPpfwv11K4EV1Wb9ohRuQ8xZH7LyE5XKE3n8fjuaQ2g29WJ
-         bMAU2/a6nBwqNHXRX5dQipElR5Ne6VUUa9XptMLj+1hSRMXf2K82fzuTAhn0jGNQhT9b
-         e8wlJPxi4CvSmKcMT4A1z4JUoYTDxwNBSwrLfmYvhESJMxHQSHxql0VT+RwsWHJT3AfI
-         M/QA==
-X-Gm-Message-State: AOAM5332MdBtzYG6DXeH9G53NR7lezmqxpbbaOrzWaSgnrkGMTyeZgRS
-        NZyKomtP0gFvLRpebGbnsfOEIaRJa4w=
-X-Google-Smtp-Source: ABdhPJwyqdQ6iec8LEqxM4w3Rg/eJ2SUVEkoi2nQ6W5EMq43YfiWmvtO7v6IwoqNob0iUX2DWrqzgQ==
-X-Received: by 2002:a05:6214:501d:: with SMTP id jo29mr141852qvb.43.1627481072852;
-        Wed, 28 Jul 2021 07:04:32 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j198sm30674qke.120.2021.07.28.07.04.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 07:04:32 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: connector: Add pd-supported property
-To:     Kyle Tso <kyletso@google.com>, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210728092930.2552619-1-kyletso@google.com>
- <20210728092930.2552619-2-kyletso@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <825a816f-4049-ddc4-e42d-ffc0d68306f8@roeck-us.net>
-Date:   Wed, 28 Jul 2021 07:04:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236392AbhG1OGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:06:37 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:50104 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233439AbhG1OGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 10:06:36 -0400
+Received: from [95.90.166.74] (helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1m8kCc-0005wH-22; Wed, 28 Jul 2021 16:06:30 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: Re: [PATCH 6/9] arm64: dts: rockchip: add missing rk3568 cru phandles
+Date:   Wed, 28 Jul 2021 16:06:29 +0200
+Message-ID: <13247009.uLZWGnKmhe@diego>
+In-Reply-To: <20210728135534.703028-7-pgwipeout@gmail.com>
+References: <20210728135534.703028-1-pgwipeout@gmail.com> <20210728135534.703028-7-pgwipeout@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210728092930.2552619-2-kyletso@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 2:29 AM, Kyle Tso wrote:
-> Set "pd-unsupported" property if the Type-C connector has no power
-> delivery support.
+Hi Peter,
+
+Am Mittwoch, 28. Juli 2021, 15:55:31 CEST schrieb Peter Geis:
+> The grf and pmugrf phandles are necessary for the pmucru and cru to
+> modify clocks. Add these phandles to permit adjusting the clock rates
+> and muxes.
 > 
-
-$subject still says "pd-supported"
-
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
 > ---
-> changes since v2:
-> - Negated the meaning and the name of the dt property. Now the name is
->    "pd-unsupported".
+>  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
->   .../devicetree/bindings/connector/usb-connector.yaml          | 4 ++++
->   1 file changed, 4 insertions(+)
+> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> index 0905fac0726a..8ba0516eedd8 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> @@ -218,6 +218,8 @@ grf: syscon@fdc60000 {
+>  	pmucru: clock-controller@fdd00000 {
+>  		compatible = "rockchip,rk3568-pmucru";
+>  		reg = <0x0 0xfdd00000 0x0 0x1000>;
+> +		rockchip,grf = <&grf>;
+> +		rockchip,pmugrf = <&pmugrf>;
+
+I don't think the pmucru needs both and in fact the mainline
+clock driver should just reference its specific grf at all, i.e.
+	pmucru -> pmugrf (via the rockchip,grf handle)
+	cru -> grf
+
+I've not seen anything breaking this scope so far.
+
+
+Heiko
+
+>  		#clock-cells = <1>;
+>  		#reset-cells = <1>;
+>  	};
+> @@ -225,6 +227,7 @@ pmucru: clock-controller@fdd00000 {
+>  	cru: clock-controller@fdd20000 {
+>  		compatible = "rockchip,rk3568-cru";
+>  		reg = <0x0 0xfdd20000 0x0 0x1000>;
+> +		rockchip,grf = <&grf>;
+>  		#clock-cells = <1>;
+>  		#reset-cells = <1>;
+>  	};
 > 
-> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> index 92b49bc37939..21ec470117a6 100644
-> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> @@ -111,6 +111,10 @@ properties:
->         - 1.5A
->         - 3.0A
->   
-> +  pd-unsupported:
-> +    description: Set this property if the Type-C connector has no power delivery support.
-> +    type: boolean
-> +
->     # The following are optional properties for "usb-c-connector" with power
->     # delivery support.
->     source-pdos:
-> 
+
+
+
 
