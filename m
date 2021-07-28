@@ -2,143 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3BC3D95BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C97A3D95CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhG1TCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 15:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhG1TCq (ORCPT
+        id S231583AbhG1TDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 15:03:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59202 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231154AbhG1TDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:02:46 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D27C061757;
-        Wed, 28 Jul 2021 12:02:43 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id t3so1749938plg.9;
-        Wed, 28 Jul 2021 12:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gSKT03NA4DEtO6O+YCZKEJGEnVfDEOnGrSXUvzhO/Vg=;
-        b=vbIVubwf59X5xiw+LVZwMbImHDgnV4ARyNtA29y2nLJlynRdjXZnkrjvwBQ4oEVsdG
-         JwLuGB6cHIwXCS3EsTr8Z4gyr2HaayEATeG3uoSRCT0v+CHyVFkz1HWxzF0B6Exm9l3S
-         3M9ySoF3sv7RDp372Ce8wn17uHuPKRHqMa6NSJLU1HHE8M9UpJUfSspOOwIjrj62TDH0
-         4dSPK1QbBwf4/LfF+gxu2UqjqE+eOWZmElRWTaRV/wXwEi5SaCuRNIqSD8CK46Bau5ZI
-         l9WWOGZCDryZ/SzwAJOm+rxogz5vx2/zimDZ4nN7B8Br1NMmKf7eun54Fb9lgV6fFLs2
-         cgaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gSKT03NA4DEtO6O+YCZKEJGEnVfDEOnGrSXUvzhO/Vg=;
-        b=TcqstxgDRjjH7DxGomrjo7Gg5vW/0LdFSyj6zENjEwsNCHUqON4VZZbMllyRcL7zVt
-         fMw/Of4jn/UKELDgXSVFJA7Ea/vierycEXoEJ8B2V0Njqmn1chQN33ldCm4kr19D5Rrb
-         THYhZMz1hjEo0vreRpL+M4OH0lUcKPzZUgla3X4tRU8BI4EEhbE4ipBwI6X5556fFtKT
-         bvoP+qlcKMxnkOp34JUneJ9fwqg/CSHA/cZC1MYnq4Zw1HztY6QExc/4kS5MQHZlviSz
-         37+2oKvEMwAeVmTorBtzPnQRvkT8/5QwTOdmhoGgMapoT4t2Z6T0V+/ICCP2VMWHWqkF
-         bqpA==
-X-Gm-Message-State: AOAM531M7AGZtnR53WW8cr2JnDpefO07RIOPo5X8K/WfB5ruDWcbaD5j
-        dEZvOkXwlk0bSXaUx3PA+9UJvPHQeoYjPcaO
-X-Google-Smtp-Source: ABdhPJyWyprhhRGvM8i8lxjK3qy10fvAQVKSgXo9BiYVrrmfhtyPK5R7lpf4M9kAnkShLrs+9K08RA==
-X-Received: by 2002:aa7:8f07:0:b029:332:958b:1513 with SMTP id x7-20020aa78f070000b0290332958b1513mr1311032pfr.4.1627498963069;
-        Wed, 28 Jul 2021 12:02:43 -0700 (PDT)
-Received: from [192.168.1.10] ([223.236.188.83])
-        by smtp.gmail.com with ESMTPSA id x4sm806376pfb.27.2021.07.28.12.02.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 12:02:42 -0700 (PDT)
-Subject: Re: [PATCH] ath9k_htc: Add a missing spin_lock_init()
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210727214358.466397-1-rajatasthana4@gmail.com>
- <87y29qgbff.fsf@codeaurora.org>
-From:   Rajat Asthana <rajatasthana4@gmail.com>
-Message-ID: <738fa8cc-c9c4-66c1-e2ee-fe02caa7ef63@gmail.com>
-Date:   Thu, 29 Jul 2021 00:32:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 28 Jul 2021 15:03:06 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SIf0EY028915;
+        Wed, 28 Jul 2021 15:03:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=8IQoq9d9JRaCzftcndSZz9ID4zL4uP+cWMNHvn6nuv0=;
+ b=e572/hQBhnKICMvWf+xzr4nqFQNoFyKPa+92ne7e7Yq2wQVYA2pPDFRcErgxYdrUHA+6
+ De+WL+pcq4wrJk3t06QO+IFbA7Dy41TgQxpd+Mh5G6FrKvJsIcKJ2Mua2HbSKuDAEbl/
+ nBsc8leG6ioX3mKKz/ZLT6gslQ1jbqCIWBc7oK4SSQadjW7YE23lqXGzsfwnp1i550eG
+ jCMSnqHrY6WxaqQRDKhFfq+QAGp/Xrg9ctj1qyj+IHH2B0iqGK8YLKl0S/nAC0IqG5m0
+ k8PO7Y0uot5SNVE0OIS/V6Ond7QkjpjWBPkBR2vKDb5H6q1L9KtWpFwKwsZKan+e4LpF XA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3bwm1gq4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 15:03:02 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16SIqIoi106631;
+        Wed, 28 Jul 2021 15:03:01 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3bwm1gp9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 15:03:01 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16SJ2j49014691;
+        Wed, 28 Jul 2021 19:02:59 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06fra.de.ibm.com with ESMTP id 3a235kgtuw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 19:02:59 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16SJ2tl230736734
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Jul 2021 19:02:55 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 86E96AE04D;
+        Wed, 28 Jul 2021 19:02:55 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1B0C4AE045;
+        Wed, 28 Jul 2021 19:02:55 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Jul 2021 19:02:55 +0000 (GMT)
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH 0/4] s390: add kfence support
+Date:   Wed, 28 Jul 2021 21:02:50 +0200
+Message-Id: <20210728190254.3921642-1-hca@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: j97TaW2Of8FDCrA7PepNrglp6nV4Z9Jg
+X-Proofpoint-ORIG-GUID: borSlyoue7H9mxxHLLVA9li_lNMCF4-y
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <87y29qgbff.fsf@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-28_09:2021-07-27,2021-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 phishscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 priorityscore=1501 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107280106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+this patch series adds kfence support for s390, and was mainly
+developed by Sven Schnelle. Given that he is currently busy I send
+this out for him, since I'd like to get an ACK for the second patch,
+which touches kfence common code.
 
-On 28/07/21 12:41 pm, Kalle Valo wrote:
-> Rajat Asthana <rajatasthana4@gmail.com> writes:
-> 
->> Syzkaller reported a lockdep warning on non-initialized spinlock:
->>
->> INFO: trying to register non-static key.
->> The code is fine but needs lockdep annotation, or maybe
->> you didn't initialize this object before use?
->> turning off the locking correctness validator.
->> CPU: 0 PID: 10 Comm: ksoftirqd/0 Not tainted 5.13.0-rc4-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Call Trace:
->>   __dump_stack lib/dump_stack.c:79 [inline]
->>   dump_stack+0x143/0x1db lib/dump_stack.c:120
->>   assign_lock_key kernel/locking/lockdep.c:937 [inline]
->>   register_lock_class+0x1077/0x1180 kernel/locking/lockdep.c:1249
->>   __lock_acquire+0x102/0x5230 kernel/locking/lockdep.c:4781
->>   lock_acquire kernel/locking/lockdep.c:5512 [inline]
->>   lock_acquire+0x19d/0x700 kernel/locking/lockdep.c:5477
->>   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
->>   _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
->>   spin_lock_bh include/linux/spinlock.h:359 [inline]
->>   ath9k_wmi_event_tasklet+0x231/0x3f0 drivers/net/wireless/ath/ath9k/wmi.c:172
->>   tasklet_action_common.constprop.0+0x201/0x2e0 kernel/softirq.c:784
->>   __do_softirq+0x1b0/0x944 kernel/softirq.c:559
->>   run_ksoftirqd kernel/softirq.c:921 [inline]
->>   run_ksoftirqd+0x21/0x50 kernel/softirq.c:913
->>   smpboot_thread_fn+0x3ec/0x870 kernel/smpboot.c:165
->>   kthread+0x38c/0x460 kernel/kthread.c:313
->>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->>
->> We missed a spin_lock_init() in ath9k_wmi_event_tasklet() when the wmi
->> event is WMI_TXSTATUS_EVENTID. Placing this init here instead of
->> ath9k_init_wmi() is fine mainly because we need this spinlock when the
->> event is WMI_TXSTATUS_EVENTID and hence it should be initialized when it
->> is needed.
->>
->> Signed-off-by: Rajat Asthana <rajatasthana4@gmail.com>
->> ---
->>   drivers/net/wireless/ath/ath9k/wmi.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/net/wireless/ath/ath9k/wmi.c b/drivers/net/wireless/ath/ath9k/wmi.c
->> index fe29ad4b9023..446b7ca459df 100644
->> --- a/drivers/net/wireless/ath/ath9k/wmi.c
->> +++ b/drivers/net/wireless/ath/ath9k/wmi.c
->> @@ -169,6 +169,7 @@ void ath9k_wmi_event_tasklet(struct tasklet_struct *t)
->>   					     &wmi->drv_priv->fatal_work);
->>   			break;
->>   		case WMI_TXSTATUS_EVENTID:
->> +			spin_lock_init(&priv->tx.tx_lock);
->>   			spin_lock_bh(&priv->tx.tx_lock);
->>   			if (priv->tx.flags & ATH9K_HTC_OP_TX_DRAIN) {
->>   				spin_unlock_bh(&priv->tx.tx_lock);
-> 
-> This is not making sense to me. You need to elaborate in the commit log
-> a lot more why this is "fine". For example, what happens when there are
-> multiple WMI_TXSTATUS_EVENTID events?
-> 
-Thanks for the review!
-Now that you mentioned the case when there are multiple 
-WMI_TXSTATUS_EVENTID events, this doesn't make sense, as that will cause 
-a race condition. This instead should be done in ath9k_init_wmi(). I 
-will make this change in the v2 patch.
+This was already discussed here:
+https://lore.kernel.org/lkml/CANpmjNPAS5kDsADb-DwvdFR9nRnX47-mFuEG2vmMPn5U3i3sGQ@mail.gmail.com/
 
-> Did you test this on a real device?
-> 
-No, I didn't test this on a real device. Syzkaller has a reproducer for 
-this and I just relied on the fact that the reproducer did not reproduce 
-the warning with this patch.
+With that ACK I'd like to carry the series via the s390 tree, so it
+gets upstream during the next merge window. Hopefully that's ok.
+
+Thanks,
+Heiko
+
+Heiko Carstens (1):
+  s390/mm: implement set_memory_4k()
+
+Sven Schnelle (3):
+  kfence: add function to mask address bits
+  s390: add support for KFENCE
+  s390: add kfence region to pagetable dumper
+
+ arch/s390/Kconfig                  |  1 +
+ arch/s390/include/asm/kfence.h     | 42 ++++++++++++++++++++++++++++++
+ arch/s390/include/asm/set_memory.h |  6 +++++
+ arch/s390/mm/dump_pagetables.c     | 14 ++++++++++
+ arch/s390/mm/fault.c               |  9 +++++--
+ arch/s390/mm/init.c                |  3 ++-
+ arch/s390/mm/pageattr.c            | 15 ++++++++---
+ mm/kfence/kfence_test.c            | 13 ++++++++-
+ 8 files changed, 96 insertions(+), 7 deletions(-)
+ create mode 100644 arch/s390/include/asm/kfence.h
+
+-- 
+2.25.1
+
