@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE643D8FC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56C93D8FD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237571AbhG1NyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:54:25 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:37388 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237459AbhG1NxG (ORCPT
+        id S236614AbhG1N4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232441AbhG1Nzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:53:06 -0400
-Received: by mail-ot1-f49.google.com with SMTP id z6-20020a9d24860000b02904d14e47202cso2157650ota.4;
-        Wed, 28 Jul 2021 06:53:03 -0700 (PDT)
+        Wed, 28 Jul 2021 09:55:55 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62051C061757;
+        Wed, 28 Jul 2021 06:55:53 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id b20so2259868qkj.3;
+        Wed, 28 Jul 2021 06:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGfwAbdRt78qHTO96TNHse01yCgrSXx0nBQE1K40Z9k=;
+        b=oqxg8mVy/V6nu+jVSAFy/QCDzw4popNFWi0oMDsYaEG6drkfVexNbdx+GFQOcSCAgK
+         Q4I4iOETyduykRRnpF/1yZQ1S8r0gplh47RkJE8o61uTRV+O0qGHSZqaefM1+kFWwXJr
+         7fw1crb4tbEyYGRNKho8iLHDRLTTEjMVau7riZJi7ulD3ZWPtgh9jyEchpDYCktXY0NQ
+         wlX31YlIfnfKq264A0Wjoazr5fvy1CufiUQQ7oPI1IdlWLWCDjkRAZV4cq8vtudg1Med
+         hXemtX53BEFNnO34o2AAev56iHoUmsN7Y/zVokRyBFuT05FGteJHS+wpstmNVhCb/16N
+         xvuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EQ2uTtmQSF7eeJSxOaPiuG0wacoqEZYWK0ECaKxTctU=;
-        b=oGQB6gE01Ppa7kZS+0sq873X5i13SWu6OdEI7jh84/o4C7zxrnxWUKkR8JjZEi0MsD
-         rGeOZh7HjXu5uZvP2DlgS2JGxMOcCsL4ktUUuXSUpBJTvC5DCwN8MnT/mpEHFUG1UrOL
-         +jkOCRcQHtgSHWyzRwHFNZd0jV941DpVOSHameUmPCIHtdv0+Y36SlEl3ahkbV9NiyuN
-         F/+CFt5NYevyB4WE7pje9qU9qqIjp1GnqYpsaKXqnrN4FcFTEXPPM0MpLS6JjixCWoEa
-         kUCCQdsbYn5xF3eAMG1z5RPiErqFL9BPk8dE08VCcLMBo0P3hJ9LV6MpSZdjZmnrqbTc
-         d/bw==
-X-Gm-Message-State: AOAM5339Bq2R+Ue/2c2Hw6L4XWgB+X6tbc5OkMpEF7+bzaJRT3oQT8m2
-        iDj4hRFXf+mFMOdcAFq/Ilf0iSpmVnfqYlOvAgI=
-X-Google-Smtp-Source: ABdhPJwTnNGP3qLFPqtkpJp48iEuk+9w1bYwKVJ49seRbatZVwQgS1znIJlIzRN9T5GaQemDotp88A5AaHT/SXUqpzY=
-X-Received: by 2002:a05:6830:9a:: with SMTP id a26mr82592oto.260.1627480383227;
- Wed, 28 Jul 2021 06:53:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGfwAbdRt78qHTO96TNHse01yCgrSXx0nBQE1K40Z9k=;
+        b=OTIxNHrgUmy8cKZlm2KjmPP1slDHldS5JMGoS+o7YOgkYRw7d2Ey51DujePpYsmLbN
+         6IdUOpWWkedbVpgqMCegRu25qCiowuPd49hi4NsLTbTYuUFuuIVlKpWzA0qAlH/fZAo1
+         Yke9L2vfbHz4dLaS5l7WzbmtpoCVT4whjGX3UviOn5V8eEUBxrKl1USokynyfm32ibzR
+         85CMb8anCeurIQqMMOgyH3b9XS5mwkmqxCtqVC1UF3CvtI22bo44v14uu81CWNH0bzkZ
+         +1YAlPkiF/5KZPQMXr2XaG1pf495Kmj+edbJ5rYADRtfxfLuGZlW9OFYsVFPXL3csIvA
+         HktA==
+X-Gm-Message-State: AOAM5313D9vPSnJqJr3k5uTJeGq7wh8MxDTor0B77sXQo6Ij9fFIG64B
+        LIaJ9WrAHbgDTsohsQYi3e8=
+X-Google-Smtp-Source: ABdhPJwFOefvh7nvrQLkSCRfqcRb4dWBL8gmNm47o675Elqgo8EaaKtcFOiaHI58yZ4EhsJVPVQQHg==
+X-Received: by 2002:a05:620a:a19:: with SMTP id i25mr27119975qka.426.1627480552482;
+        Wed, 28 Jul 2021 06:55:52 -0700 (PDT)
+Received: from master-laptop.sparksnet ([2601:153:980:85b1:b58:2ae8:d75f:660a])
+        by smtp.gmail.com with ESMTPSA id t64sm27202qkd.71.2021.07.28.06.55.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 06:55:51 -0700 (PDT)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: [PATCH 0/9] fixes and enablement for rk356x
+Date:   Wed, 28 Jul 2021 09:55:25 -0400
+Message-Id: <20210728135534.703028-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1867445.PYKUYFuaPT@kreacher> <000801d78322$e9b94980$bd2bdc80$@telus.net>
-In-Reply-To: <000801d78322$e9b94980$bd2bdc80$@telus.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 28 Jul 2021 15:52:51 +0200
-Message-ID: <CAJZ5v0jashhvE4vRNAft1qfZ_Ud==tG1Yh29ad7BSfhk5xjx4A@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 10:06 PM Doug Smythies <dsmythies@telus.net> wrote:
->
-> Hi Rafael,
->
-> Further to my reply of 2021.07.04  on this, I have
-> continued to work with and test this patch set.
->
-> On 2021.06.02 11:14 Rafael J. Wysocki wrote:
->
-> >This series of patches addresses some theoretical shortcoming in the
-> > TEO (Timer Events Oriented) cpuidle governor by reworking its idle
-> > state selection logic to some extent.
-> >
-> > Patches [1-2/5] are introductory cleanups and the substantial changes are
-> > made in patches [3-4/5] (please refer to the changelogs of these two
-> > patches for details).  The last patch only deals with documentation.
-> >
-> > Even though this work is mostly based on theoretical considerations, it
-> > shows a measurable reduction of the number of cases in which the shallowest
-> > idle state is selected while it would be more beneficial to select a deeper
-> > one or the deepest idle state is selected while it would be more beneficial to
-> > select a shallower one, which should be a noticeable improvement.
->
-> I am concentrating in the idle state 0 and 1 area.
-> When I disable idle state 0, the expectation is its
-> usage will fall to idle state 1. It doesn't.
->
-> Conditions:
-> CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-> HWP: disabled
-> CPU frequency scaling driver: intel_pstate, active
-> CPU frequency scaling governor: performance.
-> Idle configuration: As a COMETLAKE processor, with 4 idle states.
-> Sample time for below: 1 minute.
-> Workflow: Cross core named pipe token passing, 12 threads.
->
-> Kernel 5.14-rc3: idle: teo governor
->
-> All idle states enabled: PASS
-> Processor: 97 watts
-> Idle state 0 entries: 811151
-> Idle state 1 entries: 140300776
-> Idle state 2 entries: 889
-> Idle state 3 entries: 8
->
-> Idle state 0 disabled: FAIL <<<<<
-> Processor: 96 watts
-> Idle state 0 entries: 0
-> Idle state 1 entries: 65599283
-> Idle state 2 entries: 364399
-> Idle state 3 entries: 65112651
+Good Morning,
 
-This looks odd.
+This series aims to fix some early issues with the rk356x and enable
+nodes that are currently supported by the available drivers.
 
-Thanks for the report, I'll take a look at this.
+1. increases the max clocks in the dt-bindings to permit patch 3.
+2. fixes the mbi-alias, which points to the wrong location
+3. adds the gpio debounce clocks which are necessary for gpio to bind
+4. adds the common gmac1 node
+5. adds the tsadc nodes
+6. adds the missing cru and pmucru phandles necessary to reclock
+7. adjusts the gpll and ppll clocks to better support hardware
+8. enables the gmac1 on the Quartz64
+9. adds thermal support to the Quartz64
+
+Peter Geis (9):
+  dt-bindings: gpio: rockchip,gpio-bank: increase max clocks
+  arm64: dts: rockchip: fix rk3568 mbi-alias
+  arm64: dts: rockchip: add rk356x gpio debounce clocks
+  arm64: dts: rockchip: add rk356x gmac1 node
+  arm64: dts: rockchip: add rk3568 tsadc nodes
+  arm64: dts: rockchip: add missing rk3568 cru phandles
+  arm64: dts: rockchip: adjust rk3568 pll clocks
+  arm64: dts: rockchip: enable gmac node on quartz64-a
+  arm64: dts: rockchip: add thermal support to Quartz64 Model A
+
+ .../bindings/gpio/rockchip,gpio-bank.yaml     |   2 +-
+ .../boot/dts/rockchip/rk3566-quartz64-a.dts   |  66 +++++++++
+ .../boot/dts/rockchip/rk3568-pinctrl.dtsi     |   6 +
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi      | 136 +++++++++++++++++-
+ 4 files changed, 203 insertions(+), 7 deletions(-)
+
+-- 
+2.25.1
+
