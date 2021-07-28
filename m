@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34593D91B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5313D3D91BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237174AbhG1PUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235574AbhG1PUg (ORCPT
+        id S237202AbhG1PU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:20:58 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:51858 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235457AbhG1PU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:20:36 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706D4C061757;
-        Wed, 28 Jul 2021 08:20:34 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id w17so4502046ybl.11;
-        Wed, 28 Jul 2021 08:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o9J+anRamv6ZCWPr2DTuO0dYhbRAoT47jmndMUGMGBQ=;
-        b=UggwyPzjXdcBMG8TySoKOtZjIhO8R7LZQMde0mv/Gh+M/kY52rug4sfyhs4EJ3Acmn
-         vkO9JOmwfywaRhuqBidq7oQb9C1iv9OY+559Io/YjxITg/Yrjm9fhkpFz1gQyxMyeePz
-         Rie0EgTdmG/NeVFLZBxbX9TbcSeTiEEGJFiEpuWzEnlEJp+LOrV9AgNeeSS4Sel/blEK
-         GpK1msonPpPyX0gwWSHgJiMcOzniahcpCNu3se0JmcmqSZuoGCqMbieqSkhRz2NQC7zp
-         mQWYSZD84d93iU7awOz5YNASVssf7jhaLLIAjRFRW5C35lCHwMjUQWvbcNJ+H7DHzNSM
-         xHlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o9J+anRamv6ZCWPr2DTuO0dYhbRAoT47jmndMUGMGBQ=;
-        b=Fhhz6j/RbOC7Gc8AthgNs7tKIdCgXvR/UFfahx3Djslvzv03CDMIex0PgmsdGnQPGW
-         U9Tc0xwZ7L7+ar+a/GiQypxD+O+t7yzYwR3Y/o5LVZmdk5BdmbqmWC+hhu4vYEK+quM1
-         1KB2ZTy/jHCZryAwEgb0sgceF9/gWoLuKk3dEfDNsBL+Kw7YwgKquM/3TYEHUVX7NSM4
-         q0LXjMR7uzewl5iZRphY3z9aRSz0BcyWzkmH50CulloMeRRcHvlK9lvEOa2hO7ym686V
-         XzffcNw4QYqd2IJg2wE0fTvb14YGElVWMNl1uOjcPEeoFpa2yRmneZF+J3Py4OR5O+53
-         mmyQ==
-X-Gm-Message-State: AOAM532kqMgEsrad58SmG6GCvfX3z7GeYBB+kDoucuzaYLXV7UOYt31d
-        c7t6H06ht31y0HcDSnkQtxDBovFkb6nnfhgw8lQ=
-X-Google-Smtp-Source: ABdhPJwHvxq0H0nZe5Ndm0BwQ5cEN3PjYE0YO7anNFQzBR78w7F1CnBqZGfrYvOK7HLhsRcHm3GfAYkaLn2SJYAY+TQ=
-X-Received: by 2002:a25:808b:: with SMTP id n11mr293584ybk.141.1627485633743;
- Wed, 28 Jul 2021 08:20:33 -0700 (PDT)
+        Wed, 28 Jul 2021 11:20:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627485654; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Reply-To: Sender;
+ bh=NMBA6eMZ2++sBypZUxc6pdznV/MW5syE3FBstf0UH5I=; b=BFqPU2m2R0GQVlIJZVI6K/7QZNxnNuJSIP8x1G7QoFadzO8IG3HeieOaPr4HZUP5QWSLUOAM
+ c8MF6WfPimB92MWX3OgXsnsRoRwnV66oB2LtYDPChx4wZV+W2fkcLQMR6H2Q5Aoa4loZrWqh
+ VLO9L/sstCmL2+t9yk5EFdDeyr4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 610175c7e81205dd0aa482b7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 15:20:39
+ GMT
+Sender: bcain=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 28087C4323A; Wed, 28 Jul 2021 15:20:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from BCAIN (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bcain)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1CDC3C433D3;
+        Wed, 28 Jul 2021 15:20:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1CDC3C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
+Reply-To: <bcain@codeaurora.org>
+From:   "Brian Cain" <bcain@codeaurora.org>
+To:     "'Christoph Hellwig'" <hch@lst.de>,
+        <iommu@lists.linux-foundation.org>,
+        "'Russell King'" <linux@armlinux.org.uk>
+Cc:     "'Dillon Min'" <dillon.minfei@gmail.com>,
+        "'Vladimir Murzin'" <vladimir.murzin@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-hexagon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "'Manning, Sid'" <sidneym@quicinc.com>
+References: <20210712061704.4162464-1-hch@lst.de>
+In-Reply-To: <20210712061704.4162464-1-hch@lst.de>
+Subject: RE: add support for the global coherent pool to the dma core
+Date:   Wed, 28 Jul 2021 10:20:34 -0500
+Message-ID: <03d501d783c4$1d3f10e0$57bd32a0$@codeaurora.org>
 MIME-Version: 1.0
-References: <20210728122606.697619-1-pgwipeout@gmail.com> <20210728122606.697619-2-pgwipeout@gmail.com>
- <fc6d5b02-707b-aa0e-9ef0-2984bbb1f5b8@gmail.com>
-In-Reply-To: <fc6d5b02-707b-aa0e-9ef0-2984bbb1f5b8@gmail.com>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 28 Jul 2021 11:20:21 -0400
-Message-ID: <CAMdYzYoB0t6dB7BuZv7AFOQ7oYLbbPVQNybRxM_2y8MDTfXmyA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/9] dt-bindings: soc: rockchip: add rk3568-usb2phy-grf
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-phy@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQGLBLs9KUWyWP2l5ibPYuIecai1XKvxfn8g
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:36 AM Johan Jonker <jbx6244@gmail.com> wrote:
->
-> Hi Peter,
->
-> On 7/28/21 2:25 PM, Peter Geis wrote:
-> > Add the documentation for the rk3568-usb2phy-grf node, which is separate
-> > from the usb2phy node on this chip.
-> >
-> > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-> > index fa010df51a5c..3b0e06b6ea61 100644
-> > --- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-> > +++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-> > @@ -16,6 +16,7 @@ properties:
-> >            - enum:
-> >                - rockchip,rk3288-sgrf
->
-> >                - rockchip,rv1108-usbgrf
-> > +              - rockchip,rk3568-usb2phy-grf
->
-> Could you sort this in alphabetical order?
 
-Will do, thanks.
 
->
-> >            - const: syscon
-> >        - items:
-> >            - enum:
-> >
+> -----Original Message-----
+> From: Christoph Hellwig <hch@lst.de>
+> Sent: Monday, July 12, 2021 1:17 AM
+> To: iommu@lists.linux-foundation.org; Russell King
+<linux@armlinux.org.uk>;
+> Brian Cain <bcain@codeaurora.org>
+> Cc: Dillon Min <dillon.minfei@gmail.com>; Vladimir Murzin
+> <vladimir.murzin@arm.com>; linux-arm-kernel@lists.infradead.org; linux-
+> hexagon@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: add support for the global coherent pool to the dma core
+> 
+> Hi all,
+> 
+> this series adds support for using the global coherent (aka uncached)
+> pool to the generic dma-direct code and then switches arm-nommu and
+> hexagon over to it, together with a bunch of cleanups.
+
+Christoph,
+
+Thanks for sending this -- I will take a look and give some feedback soon.
+
+> Diffstat:
+>  arch/arm/Kconfig                |    5 -
+>  arch/arm/mm/dma-mapping-nommu.c |  173
++--------------------------------------
+> -
+>  arch/hexagon/Kconfig            |    1
+>  arch/hexagon/kernel/dma.c       |   57 ++-----------
+>  include/linux/dma-map-ops.h     |   18 ++--
+>  kernel/dma/Kconfig              |    4
+>  kernel/dma/coherent.c           |  159
++++++++++++++++++-------------------
+>  kernel/dma/direct.c             |   15 +++
+>  8 files changed, 124 insertions(+), 308 deletions(-)
+
