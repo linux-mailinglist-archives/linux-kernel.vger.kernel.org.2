@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E0E3D95F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EEB3D95F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhG1TSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 15:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49848 "EHLO
+        id S231231AbhG1TUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 15:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhG1TR7 (ORCPT
+        with ESMTP id S229986AbhG1TUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:17:59 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1401C061757;
-        Wed, 28 Jul 2021 12:17:56 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id i10so3919934pla.3;
-        Wed, 28 Jul 2021 12:17:56 -0700 (PDT)
+        Wed, 28 Jul 2021 15:20:40 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB747C061765
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:20:38 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id z24so3351105qkz.7
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:20:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tlSkpJrxofz4KLJFo6IpJsCRmIFL97VN126VaWV4qiw=;
-        b=JNLEAf2mMXwo4aCgKs24hotp8eBbsf0ahKXCR0Y85l0p7adULjYvjPyieQZpVbS/N4
-         b739qfW8zD6kZiI2vgm2CTpEMPL5cQip1EvVPGMIl83vjjbPCjXMjq9VxFeLLrIclxOZ
-         cCAkcakrjT1od6kWSGW5qfrfuSACjhqUMgx26FQfJA3IwIW6qtXyGxWxBGtzQEowYnJ/
-         zP82CfhIFZS5F7btTUyrQi8KlYBGTbPgfiU75vpmGej++V4qp7Hxio+g0fxtCLb1an/7
-         AMlRuBCXVFRQ6K0KeEFagO0tXO+hfCg8W/yYEBxckGx2xYXr9RqL9j/mh4mxcL7SJwJD
-         dXZQ==
+        d=gpiccoli-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d6qfKqRI6m4WTJASM6iTIDEeVp83gFU9fVe84XKYU6Y=;
+        b=A3zB2BxrkshfLj1hul36dmsxR83ZwIIx8IATAiVAm18rAErkeotKTlhDn7xT5TnALE
+         SsHLnr8y7ODufgkIr5xPzIWTu+TI10wW2RiIV6aLPlOn5SbgAL5YjwaDF1weKkx6biRQ
+         VtPPWGqI2tJrPVDooy6TLnjaipm3AXs+KjeNLCj92QcUm4f/WFBnih3T6X8GzhRA7uD3
+         vZaQPwDwSvfH9nVUhgfJf/w2pH/A8rjXZOSgOD/Kn37j4JPETTgm4YZc6egdcFFsIlZN
+         FSD43Tci/OHWigGmrPz5HiJzhxtp44aHmXYXANlgGNmGipYYpFxcMAhjsc2IwmqHb9lQ
+         nqxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tlSkpJrxofz4KLJFo6IpJsCRmIFL97VN126VaWV4qiw=;
-        b=HlC+mYO/1zuialFh+VkOdCQUIClYFvJCuBnPdhTRme7fx1uGXr7b0T+a2XHmwDh6QR
-         AmJwwz7GM104RvagmYlrfEkJ9oZA4RH1k7E25iYgdqFvYvV7Nm5vZyEeTiTpCFo+QOJj
-         h95IIyUA+yVlSN3OyekcojnySaITDYiR3u4N2bIB3pxov5mTkGFr4lfa/YKtoge5gtVv
-         q91+bjU737d/VDBYMwVVqZD//LtPh+ZJgdj0cOIxVkXO+iPGDJu5EEBBsmpQ/5NMtFkR
-         3HAWdHpZAkqCVGEeSWIsw26RQ5XgcoAy2H6kFU4boZ+DtEAsgVAvNc1DzUKp35x9mXtR
-         FRjw==
-X-Gm-Message-State: AOAM531RkfIaSUQ9S4cfI9GjjLSAyeKtiWRQ/ywAZvfrRkihbeqXc7Y6
-        25DWdTcABR7rpZhcebkVsWY=
-X-Google-Smtp-Source: ABdhPJzz1hnYQmfSfPANLOLr9Ck2OfELKiyvpZ7Caoj/2kq9puuPWuV06r6sJYJbsrIBfg1NTYu2lg==
-X-Received: by 2002:a17:902:7247:b029:12c:48a2:cc2c with SMTP id c7-20020a1709027247b029012c48a2cc2cmr1151819pll.31.1627499876116;
-        Wed, 28 Jul 2021 12:17:56 -0700 (PDT)
-Received: from novachrono.. ([223.236.188.83])
-        by smtp.gmail.com with ESMTPSA id d14sm5827671pjc.0.2021.07.28.12.17.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 12:17:55 -0700 (PDT)
-From:   Rajat Asthana <rajatasthana4@gmail.com>
-To:     ath9k-devel@qca.qualcomm.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rajat Asthana <rajatasthana4@gmail.com>
-Subject: [PATCH v2] ath9k_htc: Add a missing spin_lock_init()
-Date:   Thu, 29 Jul 2021 00:47:19 +0530
-Message-Id: <20210728191719.17856-1-rajatasthana4@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <38fa8cc-c9c4-66c1-e2ee-fe02caa7ef63@gmail.com>
-References: <38fa8cc-c9c4-66c1-e2ee-fe02caa7ef63@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d6qfKqRI6m4WTJASM6iTIDEeVp83gFU9fVe84XKYU6Y=;
+        b=Dqi5533QUsQE/AVwodSp2zy/k2Rt7X67fRzU9iGhNIcYhZTjXo5ocu/dvTSrZ/uDOE
+         TqnZcDUGhHWu5yExK2aGZy8CyusnlLtIFSUv/tSQJZHuIOjBaD0pc40b0ex/gXPGyJr4
+         QMgZcjfHlrJzDiNlpEQtP9vqtlh525HUkpSOzCsRpuvawGyGX2Kiex6gSRIGl2Gpm9/v
+         ycQPKK3et2pgphO3QpbojFo3baMbjrferS0yFafloo1wohgKxxy7ARxjQZC4c2U+7v0f
+         0zk1aCKv64D+23I6KodDZtFaE+90EDlcq0SXFGE+fhE0VnRykoZxVK8Jr181+z9dC8IO
+         SKzw==
+X-Gm-Message-State: AOAM5302hEOUkCy5FL6EzXDGs4zQEW+KcivjlOiSq9LvEdRv+4YeTIKr
+        AfNIH5XUB1sgsuuF6+p+3ra9JpKu8Ilehd4dR7Tg0A==
+X-Google-Smtp-Source: ABdhPJxANaAhzZ3UvkSECqZTlZDB1UlnPJDdf7/FGnsQF5G3JjPaM70ed3s6veVwwGXMnJVtULZ62m95/1pevSBIiU4=
+X-Received: by 2002:a05:620a:1319:: with SMTP id o25mr1256137qkj.396.1627500037010;
+ Wed, 28 Jul 2021 12:20:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210715202341.2016612-1-mcgrof@kernel.org> <20210715202341.2016612-4-mcgrof@kernel.org>
+In-Reply-To: <20210715202341.2016612-4-mcgrof@kernel.org>
+From:   "Guilherme G. Piccoli" <kernel@gpiccoli.net>
+Date:   Wed, 28 Jul 2021 16:20:01 -0300
+Message-ID: <CALJn8nOWtFBnuzqPpuOH6nqikUzZGUYWEnvwCFvmrCrC5MWSmw@mail.gmail.com>
+Subject: Re: [RFC 3/6] md: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED on is_mddev_broken()
+To:     Luis Chamberlain <mcgrof@kernel.org>, hch@infradead.org
+Cc:     axboe@kernel.dk, hare@suse.de,
+        Bart Van Assche <bvanassche@acm.org>,
+        Ming Lei <ming.lei@redhat.com>, jack@suse.cz, osandov@fb.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzkaller reported a lockdep warning on non-initialized spinlock:
+On Thu, Jul 15, 2021 at 5:24 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> The GENHD_FL_DISK_ADDED flag is what we really want, as the
+> flag GENHD_FL_UP could be set on a semi-initialized device.
+>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/md/md.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/md/md.h b/drivers/md/md.h
+> index 832547cf038f..80561bca1f51 100644
+> --- a/drivers/md/md.h
+> +++ b/drivers/md/md.h
+> @@ -766,7 +766,7 @@ static inline bool is_mddev_broken(struct md_rdev *rdev, const char *md_type)
+>  {
+>         int flags = rdev->bdev->bd_disk->flags;
+>
+> -       if (!(flags & GENHD_FL_UP)) {
+> +       if (!(flags & GENHD_FL_DISK_ADDED)) {
 
-INFO: trying to register non-static key.
-The code is fine but needs lockdep annotation, or maybe
-you didn't initialize this object before use?
-turning off the locking correctness validator.
-CPU: 0 PID: 10 Comm: ksoftirqd/0 Not tainted 5.13.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x143/0x1db lib/dump_stack.c:120
- assign_lock_key kernel/locking/lockdep.c:937 [inline]
- register_lock_class+0x1077/0x1180 kernel/locking/lockdep.c:1249
- __lock_acquire+0x102/0x5230 kernel/locking/lockdep.c:4781
- lock_acquire kernel/locking/lockdep.c:5512 [inline]
- lock_acquire+0x19d/0x700 kernel/locking/lockdep.c:5477
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
- spin_lock_bh include/linux/spinlock.h:359 [inline]
- ath9k_wmi_event_tasklet+0x231/0x3f0 drivers/net/wireless/ath/ath9k/wmi.c:172
- tasklet_action_common.constprop.0+0x201/0x2e0 kernel/softirq.c:784
- __do_softirq+0x1b0/0x944 kernel/softirq.c:559
- run_ksoftirqd kernel/softirq.c:921 [inline]
- run_ksoftirqd+0x21/0x50 kernel/softirq.c:913
- smpboot_thread_fn+0x3ec/0x870 kernel/smpboot.c:165
- kthread+0x38c/0x460 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Thanks for the patch Luis! And thanks Christoph for looping me in on
+the last iteration.
+I think specifically for md, both flags are interchangeable - if
+add_disk() is not completed, I'm pretty sure we cannot have the array
+properly working hence we shouldn't ever reach this check for such
+device. Nevertheless, technically speaking Christoph seems correct and
+we are checking here in fact if the disk was del_gendisk'ed().
+My opinion is that we don't need to change this usage, if possible,
+but I'm not strongly against the change if you feel it fits better.
 
-We missed a spin_lock_init() in ath9k_wmi_event_tasklet() when the wmi
-event is WMI_TXSTATUS_EVENTID. So, add a spin_lock_init() in
-ath9k_init_wmi().
+Just double-checking - after del_gendisk(), this flag is removed anyways right?
+Oh, and if possible, loop me in CC for next revisions, using this email.
+Cheers,
 
-Signed-off-by: Rajat Asthana <rajatasthana4@gmail.com>
----
- drivers/net/wireless/ath/ath9k/wmi.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath9k/wmi.c b/drivers/net/wireless/ath/ath9k/wmi.c
-index fe29ad4b9023..480de2170816 100644
---- a/drivers/net/wireless/ath/ath9k/wmi.c
-+++ b/drivers/net/wireless/ath/ath9k/wmi.c
-@@ -101,6 +101,7 @@ struct wmi *ath9k_init_wmi(struct ath9k_htc_priv *priv)
- 	skb_queue_head_init(&wmi->wmi_event_queue);
- 	spin_lock_init(&wmi->wmi_lock);
- 	spin_lock_init(&wmi->event_lock);
-+	spin_lock_init(&wmi->drv_priv->tx.tx_lock);
- 	mutex_init(&wmi->op_mutex);
- 	mutex_init(&wmi->multi_write_mutex);
- 	mutex_init(&wmi->multi_rmw_mutex);
--- 
-2.32.0
-
+Guilherme
