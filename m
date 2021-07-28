@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB583D8546
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7BE3D8545
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234251AbhG1BXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:23:38 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:57557 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234038AbhG1BXg (ORCPT
+        id S234150AbhG1BXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233008AbhG1BXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:23:36 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 759333200754;
-        Tue, 27 Jul 2021 21:23:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 27 Jul 2021 21:23:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=qcOAmK
-        Z6XlEpzxajr3df3EJ15DHZZ8RZdgiDKKttjE8=; b=bphnyQefhT87xYqE1Dz+S+
-        BCwnhIlGXpb30wU14kB5j38Bz+p3TaPn7/oReiMP0t7HefZlzMMMtTSZOIhQHnCQ
-        SpjD0QZh4PdYAipgYpWeq2Es0e5cXUWNTkM4ymvlwL9mHcp2mSP9fy9saHXwnzp9
-        gThzFyqSa1Debqy9sth+MA3Zj8R+nw5b5Pyl6gFsXnPriEWwBdRPe8KQVJXu+QFY
-        Zh2t57Dn2Tfquw2phHKsw4B6aydecKsosHWlUiISJdlOUroTRxx9W+RqERRfFDcP
-        6Y/5Ml+jK/WFVRxwOho57YAzgJXLfxO58C88ZDiy6/wm1fzmTm0yA5f0mtaqEckA
-        ==
-X-ME-Sender: <xms:lLEAYXclOqZgRjS46tWHY66lpVzl94T9RCKm45Yf2erVThV39bVtPg>
-    <xme:lLEAYdP5FAhaXnmeq9YPJxFy8Ind430wShQVn-cliOQiN_6LmPS98A2cqvkghoZKg
-    Hub-oO4vmuRB_Pv2h0>
-X-ME-Received: <xmr:lLEAYQhJRol931B0O0_Kp5LObpZkZQLgAd8LxI_DXeFjzZeq6sOznaj2J_wCWiMjn9oSbIyZS_rPvNLfslAMNgVfMsx03bFaFK4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeekgdefvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeekveevtdekfedtfefhvdfgleelfefhtdefieetjeejvefghfdufeejkeehgfeu
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdr
-    ohhrgh
-X-ME-Proxy: <xmx:lLEAYY-0zSCe0eEytEXlRXdlialLTSfwiev3qbYVVykYW5AIWJ-iZg>
-    <xmx:lLEAYTsf5nl9IdRJfTK4c1_REjoOH7ZHgdeyVeUiIcqZlVGq8FcNyw>
-    <xmx:lLEAYXHqVByZVm24f1Or_6WgzFPBc-K8pE8KWhTbwoJQH7HZlSdUyw>
-    <xmx:lrEAYc64YYkMZ3wl5WOzy3xblqCH0rXdXSLXuvWANRI9zhjfDj7wUA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Jul 2021 21:23:29 -0400 (EDT)
-Date:   Wed, 28 Jul 2021 11:23:24 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-cc:     linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][CFT] signal handling fixes
-In-Reply-To: <YQAbTazP4/JB8Aas@zeniv-ca.linux.org.uk>
-Message-ID: <689cf6b8-e8fc-dc35-9d47-2c3d3e6aafb1@linux-m68k.org>
-References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk> <5622d120-1b89-6898-d091-8b4ceff6418@linux-m68k.org> <YQAbTazP4/JB8Aas@zeniv-ca.linux.org.uk>
+        Tue, 27 Jul 2021 21:23:34 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7BEC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:23:33 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so7580939pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:23:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ig4qN9lSKY4uKAkOlIGr5lSNEclLXQYYAS8Ofamptog=;
+        b=TwpYN0vzjL5rNPBwfqAMSPcx2jrsYk3U7BJA5THJ4naDJKx44MBOt3II9EcRAISls/
+         kpNm1SR8fCAbF9n7kPM7fGfd6Wn2GbfBvmYgHvujlUFo75TAlf/7jyVgjy7Fc7ClkS/e
+         wXPNGU5xTAKOEXA0Nxltj1xrZyt9rMDiPF9fw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ig4qN9lSKY4uKAkOlIGr5lSNEclLXQYYAS8Ofamptog=;
+        b=ppn7DsMS9PnVR3prMxCYsbPWuOdvcyfFa6qS7rHp4ef3NDSTQHunGmPmRNvCE6/RAM
+         Z33V2dTqwVDDxOzY1jyiBtTnPe9nBbMvJUYV+CmTmT7U2kU3mRUC66QKyFLQzt/qVpnl
+         SPILN+/2LqJZdcDA36ztu7BRe8xutT/ayBkMt78bUHG+GXg/n462zZJT3zQunuxERCT4
+         7U0v8xhtlzjECIhqyqr/guOI5I1e+bIAZZeN/AFwrxjvvbg0nHFpg36JPHXOcLOV1oa9
+         QbDc+r4Rxi4D+56kR4tsPaKZUuuwO84+ilgeSgKUa63ZfEkJFW9RaQo4taK/ClRq8ASF
+         vB0A==
+X-Gm-Message-State: AOAM531hMvFQRpzQTqiZruapMa9YrrFlKUKOHm9tTxQ+ZDwgF7BEA3kw
+        9Tii9ZaIYJ8KkzxQT4P/hHQqbw==
+X-Google-Smtp-Source: ABdhPJxko3GUh8FHYlh0S9hcJRI724qwE+vWqbjdu5ygNAWk2iBL+JkGSeTqDw4SbESxd911BIYkpQ==
+X-Received: by 2002:a63:d757:: with SMTP id w23mr26557669pgi.434.1627435413215;
+        Tue, 27 Jul 2021 18:23:33 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:ba3e:509b:495:ec84])
+        by smtp.gmail.com with ESMTPSA id o1sm148842pfp.84.2021.07.27.18.23.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 18:23:32 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 10:23:28 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v3 1/2] printk: Remove console_silent()
+Message-ID: <YQCxkICd0UY+k4Dl@google.com>
+References: <20210727130635.675184-1-dima@arista.com>
+ <20210727130635.675184-2-dima@arista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727130635.675184-2-dima@arista.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021, Al Viro wrote:
+On (21/07/27 14:06), Dmitry Safonov wrote:
+> It' unused since removal of mn10300:
+> commit 739d875dd698 ("mn10300: Remove the architecture")
+> x86 stopped using it in v2.6.12 (see history git):
+> commit 7574828b3dbb ("[PATCH] x86_64: add nmi button support")
+> 
+> Let's clean it up from the header.
 
-> On Tue, Jul 27, 2021 at 08:21:52PM +1000, Finn Thain wrote:
-> > On Sun, 25 Jul 2021, Al Viro wrote:
-> > 
-> > > 
-> > > 	The series is on top of 5.14-rc1; it lives in
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #untested.m68k
-> > > Individual patches in followups...
-> > > 
-> > > 	_Very_ lightly tested on aranym; no real hardware to test it on.
-> > > Any help with review and testing would be very welcome.
-> > > 
-> > 
-> > I can test this branch on a Motorola 68040 machine I have here. Can you 
-> > advise how to get decent code coverage? Maybe there's a package out there 
-> > with a signal-heavy test suite? Maybe I need a break point in a signal 
-> > handler? Or perhaps just send ^C to a process running under strace?
-> 
-> Generally, SIGINT is not the best insertion vector...
-> 
+Nice.
 
-True. I see that 'man 7 signal' says that SIGQUIT will produce a coredump. 
-Would that contain anything of interest?
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-> Set a handler of e.g. SIGALRM with sigaction(), with a couple of other signals
-> in sa_mask (e.g. SIGUSR1 and SIGUSR2).  With raise() on those inside the
-> SIGALRM handler - then they will become deliverable on return from handler.
-> And have SIGUSR1 and SIGUSR2 handlers print siginfo and ucontext contents
-> (have them set with SA_SIGINFO in sa_flags, look at the second and third
-> arguments of sighandler).
-> 
-> Use alarm(2) to arrange for SIGALRM and sit in a tight loop - that'll give you
-> delivery on return from interrupt.  Alternatively, raise(SIGALRM) will give
-> you delivery on return from trap.  And making that a SIGBUS handler instead,
-> mmapping a file, truncating it to 0 and dereferencing something in mmapped
-> area will give you delivery on return from access error trap.  Division by
-> zero (and insertion handler on SIGFPE) ought to give you a type 2 exception
-> stack frame (4 bytes of aux data, that makes shifted exception frame bugger
-> format and vector fields of the original).
-> 
-> FWIW, the third argument of handler points to
-> struct ucontext {
->         unsigned long     uc_flags;
->         struct ucontext  *uc_link;
->         stack_t           uc_stack;
->         struct mcontext   uc_mcontext;
->         unsigned long     uc_filler[80];
->         sigset_t          uc_sigmask;   /* mask last for extensibility */
-> };
-> and type/vector is stored in uc_filler[54] (216 bytes into the array), with
-> aux data from exception stack frame starting from uc_filler[55].
-> 
-
-OK, give me a week or so and I'll see what I can come up with. 
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
