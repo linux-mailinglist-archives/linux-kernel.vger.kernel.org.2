@@ -2,61 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBE33D95B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299813D95BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhG1TB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 15:01:29 -0400
-Received: from gardel.0pointer.net ([85.214.157.71]:49734 "EHLO
-        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhG1TB2 (ORCPT
+        id S231514AbhG1TCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 15:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231420AbhG1TCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:01:28 -0400
-Received: from gardel-login.0pointer.net (gardel-mail [85.214.157.71])
-        by gardel.0pointer.net (Postfix) with ESMTP id A58DEE809E1;
-        Wed, 28 Jul 2021 21:01:23 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-        id 5E392160383; Wed, 28 Jul 2021 21:01:22 +0200 (CEST)
-Date:   Wed, 28 Jul 2021 21:01:22 +0200
-From:   Lennart Poettering <mzxreary@0pointer.de>
-To:     Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Subject: Re: [PATCH v5 0/5] block: add a sequence number to disks
-Message-ID: <YQGpgvwLk7voeKZ3@gardel-login>
-References: <20210712230530.29323-1-mcroce@linux.microsoft.com>
- <3ca56654449b53814a22e3f06179292bc959ae72.camel@debian.org>
+        Wed, 28 Jul 2021 15:02:48 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3116DC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:02:46 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id r26so5920079lfp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WxJfCRcm28Q2mtsiHw3xjSJ0DqRCRRYstcd9Q20/xQQ=;
+        b=h1XD5KmacsdUAtbaHNScOkc4DLg84/eQEn/iMfLNe1maR49bt1wCDsB+EWz924QuhM
+         yg7UwljEOJ8uTiBJCd5MaKIN9FcLfzEyk4sjhj/afJbP5n1aNqKQTWxRAew7fegon5ju
+         yOjQTYyseuc2AAyc8ir3EXAnKfdZBqBPhAlQNqBsKsSXCvlmnd0naeobSxKW9xwxPSpn
+         8xwpzF+pzAoouVn63N/KAEyp6KHPP/6HMjX0nwn0QU/VFR1P4dzUdp94aQ22t9qw3dQy
+         ssDDge8K9XRwwy2Xqt1I6umnjyXtbdWtSeBwjq49+owOqUN6FnoJ1mwuf6g+iNyuOAAF
+         HvGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WxJfCRcm28Q2mtsiHw3xjSJ0DqRCRRYstcd9Q20/xQQ=;
+        b=C0DLAyDZcQUV7U+xUZGTAmSbOLuEPpqFSQiXG+hkkfNu+EWoTd1d21CEbTmvaURPtP
+         8Bf84FfKpESm5yG2mJzv6ol0uadKRVXS8kyk/Fre13u3SLoeb5Z13bpcelKVLrzfDV3V
+         bz3O5BDiblbwxtw5G2CsftI+Sud/N/xNAD+yDRuz2r2VAPpJUGdknwI3pxvvttBaZSsU
+         rxXdy15a+3BpVcqflqNG+l9HHkPmZ0UR3jINRZt0SD5lfJR9k8P9VqZ3M+LSt3tLhWX4
+         1VDg76yj1CmS6Wg9Gg6Qda1QcRJFKZPnWf3sUSzq+mdvCEaB2HtiYyYqQA+err4g03VD
+         7BdA==
+X-Gm-Message-State: AOAM533iPbeIAKbXPfYu0OKi6L2T039cWHYKzMtRZWj6ODMJtWLX5WvZ
+        UFZZhCn19LOa95Kg1xFgKzJ7/TNtDGczgQcmYBXs6PEcBvi2uQ==
+X-Google-Smtp-Source: ABdhPJz1ZBo2qfIXLXj9J9AuWps3bxG9GMcoWTo51fL/O5qgHVUFf00HxQNpDGyfKWNQadpw2tNsh9g2M3liJMGm4iE=
+X-Received: by 2002:a05:6512:3b94:: with SMTP id g20mr784842lfv.0.1627498964165;
+ Wed, 28 Jul 2021 12:02:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3ca56654449b53814a22e3f06179292bc959ae72.camel@debian.org>
+References: <20210727103251.16561-1-pbonzini@redhat.com>
+In-Reply-To: <20210727103251.16561-1-pbonzini@redhat.com>
+From:   Oliver Upton <oupton@google.com>
+Date:   Wed, 28 Jul 2021 12:02:33 -0700
+Message-ID: <CAOQ_Qsg+mwmcuht=rQrqNdzaTGKgak0BQwFHzSj=9RZdK9tB5w@mail.gmail.com>
+Subject: Re: [PATCH] KVM: ARM: count remote TLB flushes
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, maz@kernel.org,
+        kvmarm@lists.cs.columbia.edu, Jing Zhang <jingzhangos@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Di, 20.07.21 18:27, Luca Boccassi (bluca@debian.org) wrote:
-
-> Here's the implementation, in draft state until the kernel side is
-> merged:
+On Tue, Jul 27, 2021 at 3:33 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> https://github.com/systemd/systemd/pull/20257
+> KVM/ARM has an architecture-specific implementation of
+> kvm_flush_remote_tlbs; however, unlike the generic one,
+> it does not count the flushes in kvm->stat.remote_tlb_flush,
+> so that it inexorably remained stuck to zero.
+>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-I reviewed this systemd PR now. Looks excellent. See my comments on the PR.
+Reviewed-by: Oliver Upton <oupton@google.com>
 
-Jens, anything we can do to get your blessing on the kernel patch set
-and get this landed?
-
-Thank you,
-
-Lennart
+> ---
+>  arch/arm64/kvm/mmu.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index c10207fed2f3..6cf16b43bfcc 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -81,6 +81,7 @@ static bool memslot_is_logging(struct kvm_memory_slot *memslot)
+>  void kvm_flush_remote_tlbs(struct kvm *kvm)
+>  {
+>         kvm_call_hyp(__kvm_tlb_flush_vmid, &kvm->arch.mmu);
+> +       ++kvm->stat.generic.remote_tlb_flush;
+>  }
+>
+>  static bool kvm_is_device_pfn(unsigned long pfn)
+> --
+> 2.31.1
+>
+> _______________________________________________
+> kvmarm mailing list
+> kvmarm@lists.cs.columbia.edu
+> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
