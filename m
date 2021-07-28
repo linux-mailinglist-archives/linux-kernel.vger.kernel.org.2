@@ -2,135 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390683D94E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BE33D94EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhG1SBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231493AbhG1SBI (ORCPT
+        id S229880AbhG1SDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:03:22 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:53781 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhG1SDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:01:08 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC51EC061764;
-        Wed, 28 Jul 2021 11:01:05 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id x3so3088915qkl.6;
-        Wed, 28 Jul 2021 11:01:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=A7JOWTCTU3mD3oDw+k1gzAhKjoRm+3hquu6wc2UO4Yo=;
-        b=NhfcLtyU22TcWSCOGXGgpZ+wknGxJBUJ5IiOpFCdLpmp46UYw742rMBwYjXqbZjzw1
-         SdxLvYFtMWyj3r3NDGQiApGAVSArPmipjdGr7W7vnGvlZEYFkwguPDrommUZGF//UtGW
-         0sbF2FhEItBqfeeoh+B+wC9+QKKaAxmot5SVomrGF4zhThnE2iXwvzvdDUbmdzpePTI3
-         xS5dyhHaBV2oq0AT54Ti8A+g/T9BzEJxFqttkI3QnhOdKw4mQ5pb74XYLc2h3HdHsn9i
-         5T/lISfJUU/zjOEA9lQiRHXkVZ36TUHUrewd0m/dtgLG2CD/SdgZxISNlGHfyPrp9cjP
-         frTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=A7JOWTCTU3mD3oDw+k1gzAhKjoRm+3hquu6wc2UO4Yo=;
-        b=cK7mhppzFQNP3tydt9WR3xp+e9VOxOJApZGw58Ptvhv3FygENffudTCSCt9Sd/xlgH
-         F2cDRAYlNIqVA3AKd8evZ4HKqtIglbJZ/UvgREs+Xki0Nft280p1eJlpINaAU29iuiUG
-         R9hkL0eKn3TLzaGcG1Ty88R0gHfw7KLvRzPcg6MvK1qbThiYldaKjsgkmcEma37WiK6t
-         dPX4F5Hfg/Ymi3RoCWL2UenVeDzr4z4YWgoMMEGQFzgDmceHc5QkCIJFnsqDAb5zPS04
-         XYZFQZ3s5HCgc4GTmp3PvP8EgAw4XsYxqt4WP28+vCHF/hRE/PuyqG26wckw+P/dCOzw
-         1lvQ==
-X-Gm-Message-State: AOAM532rcRX7FhqpMAEsetihw8f8k841ifVBrN7Mu2TDA2FxMNx8U5NG
-        hp4RXOQQM/Yyp6Rwy7Ot74k=
-X-Google-Smtp-Source: ABdhPJwAeS8EcjSx8OOrubvq4e88OEay+SE8dd0bRnV9hpQSSmPWnW1xeHm+IBfMailcCNtrvqYvCQ==
-X-Received: by 2002:a37:5d7:: with SMTP id 206mr969388qkf.170.1627495264946;
-        Wed, 28 Jul 2021 11:01:04 -0700 (PDT)
-Received: from master-laptop.sparksnet ([2601:153:980:85b1:b58:2ae8:d75f:660a])
-        by smtp.gmail.com with ESMTPSA id r5sm223341qtm.75.2021.07.28.11.01.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 11:01:04 -0700 (PDT)
-From:   Peter Geis <pgwipeout@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] arm64: dts: rockchip: add thermal support to Quartz64 Model A
-Date:   Wed, 28 Jul 2021 14:00:34 -0400
-Message-Id: <20210728180034.717953-9-pgwipeout@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210728180034.717953-1-pgwipeout@gmail.com>
-References: <20210728180034.717953-1-pgwipeout@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 28 Jul 2021 14:03:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627495398; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=n8zu2+yyYfKoRSknIfHiAcFCRFragvnkngkp+ZsvrDo=; b=OZ8lIJyC4/qianASqHdjxadJvs/nHeA2CUWYvqlMQ3W+k7ph+hCx60om6W4rpiAH8AwoaAsT
+ 8KI10rlOCw+eO1A2wCRTitmqpiF/qaeyU5D/7dio3blbtbSgHytpj389wKX6kEq6NWEyt+gj
+ ywxxNkFMXdiZgfXOSi9rzgyWBfM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 61019bcf17c2b4047d3fee24 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Jul 2021 18:02:55
+ GMT
+Sender: collinsd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 80A93C433F1; Wed, 28 Jul 2021 18:02:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: collinsd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0620DC4338A;
+        Wed, 28 Jul 2021 18:02:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0620DC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=collinsd@codeaurora.org
+From:   David Collins <collinsd@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     David Collins <collinsd@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Subject: [RESEND PATCH] spmi: spmi-pmic-arb: fix irq_set_type race condition
+Date:   Wed, 28 Jul 2021 11:02:09 -0700
+Message-Id: <20210728180209.14764-1-collinsd@codeaurora.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the thermal nodes for the Quartz64 Model A.
-The Model A supports a single speed gpio fan.
+The qpnpint_irq_set_type() callback function configures the type
+(edge vs level) and polarity (high, low, or both) of a particular
+PMIC interrupt within a given peripheral.  To do this, it reads
+the three consecutive IRQ configuration registers, modifies the
+specified IRQ bit within the register values, and finally writes
+the three modified register values back to the PMIC.  While a
+spinlock is used to provide mutual exclusion on the SPMI bus
+during the register read and write calls, there is no locking
+around the overall read, modify, write sequence.  This opens up
+the possibility of a race condition if two tasks set the type of
+a PMIC IRQ within the same peripheral simultaneously.
 
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+When the race condition is encountered, both tasks will read the
+old value of the registers and IRQ bits set by one of the tasks
+will be dropped upon the register write of the other task.  This
+then leads to PMIC IRQs being enabled with an incorrect type and
+polarity configured.  Such misconfiguration can lead to an IRQ
+storm that overwhelms the system and causes it to crash.
+
+This race condition and IRQ storm have been observed when using
+a pair of pm8941-pwrkey devices to handle PMK8350 pwrkey and
+resin interrupts.  The independent devices probe asynchronously
+in parallel and can simultaneously request and configure PMIC
+IRQs in the same PMIC peripheral.
+
+For a good case, the IRQ configuration calls end up serialized
+due to timing deltas and the register read/write sequence looks
+like this:
+
+1. pwrkey probe: SPMI  read(0x1311): 0x00, 0x00, 0x00
+2. pwrkey probe: SPMI write(0x1311): 0x80, 0x80, 0x80
+3. resin probe:  SPMI  read(0x1311): 0x80, 0x80, 0x80
+4. resin probe:  SPMI write(0x1311): 0xC0, 0xC0, 0xC0
+
+The final register states after both devices have requested and
+enabled their respective IRQs is thus:
+
+0x1311: 0xC0
+0x1312: 0xC0
+0x1313: 0xC0
+0x1314: 0x00
+0x1315: 0xC0
+
+For a bad case, the IRQ configuration calls end up occurring
+simultaneously and the race condition is encountered.  The
+register read/write sequence then looks like this:
+
+1. pwrkey probe: SPMI  read(0x1311): 0x00, 0x00, 0x00
+2. resin probe:  SPMI  read(0x1311): 0x00, 0x00, 0x00
+3. pwrkey probe: SPMI write(0x1311): 0x80, 0x80, 0x80
+4. resin probe:  SPMI write(0x1311): 0x40, 0x40, 0x40
+
+In this case, the final register states after both devices have
+requested and enabled their respective IRQs is thus:
+
+0x1311: 0x40
+0x1312: 0x40
+0x1313: 0x40
+0x1314: 0x00
+0x1315: 0xC0
+
+This corresponds to the resin IRQ being configured for both
+rising and falling edges, as expected.  However, the pwrkey IRQ
+is misconfigured as level type with both polarity high and low
+set to disabled.  The PMIC IRQ triggering hardware treats this
+particular register configuration as if level low triggering is
+enabled.
+
+The raw pwrkey IRQ signal is low when the power key is not being
+pressed.  Thus, the pwrkey IRQ begins firing continuously in an
+IRQ storm.
+
+Fix the race condition by locking a spinlock for the duration of
+the read, modify, write sequence in the qpnpint_irq_set_type()
+function.
+
+Fixes: 67b563f1f258 ("spmi: pmic_arb: add support for interrupt handling")
+Signed-off-by: David Collins <collinsd@codeaurora.org>
 ---
- .../boot/dts/rockchip/rk3566-quartz64-a.dts   | 33 +++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ drivers/spmi/spmi-pmic-arb.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-index b239f314b38a..a244f7b87e38 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-@@ -27,6 +27,14 @@ gmac1_clkin: external-gmac1-clock {
- 		#clock-cells = <0>;
- 	};
+diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
+index bbbd311eda03..379ad6c1c14a 100644
+--- a/drivers/spmi/spmi-pmic-arb.c
++++ b/drivers/spmi/spmi-pmic-arb.c
+@@ -127,6 +127,7 @@ struct apid_data {
+  * @intr:		address of the SPMI interrupt control registers.
+  * @cnfg:		address of the PMIC Arbiter configuration registers.
+  * @lock:		lock to synchronize accesses.
++ * @irq_lock:		lock to ensure mutual exclusion for IRQ type setting
+  * @channel:		execution environment channel to use for accesses.
+  * @irq:		PMIC ARB interrupt.
+  * @ee:			the current Execution Environment
+@@ -146,6 +147,7 @@ struct spmi_pmic_arb {
+ 	void __iomem		*core;
+ 	resource_size_t		core_size;
+ 	raw_spinlock_t		lock;
++	raw_spinlock_t		irq_lock;
+ 	u8			channel;
+ 	int			irq;
+ 	u8			ee;
+@@ -600,10 +602,13 @@ static void qpnpint_irq_unmask(struct irq_data *d)
  
-+	fan: gpio_fan {
-+		compatible = "gpio-fan";
-+		gpios = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
-+		gpio-fan,speed-map = <0    0
-+				      4500 1>;
-+		#cooling-cells = <2>;
-+	};
-+
- 	leds {
- 		compatible = "gpio-leds";
+ static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_type)
+ {
++	struct spmi_pmic_arb *pmic_arb = irq_data_get_irq_chip_data(d);
+ 	struct spmi_pmic_arb_qpnpint_type type;
+ 	irq_flow_handler_t flow_handler;
+ 	u8 irq = hwirq_to_irq(d->hwirq);
++	unsigned long flags;
  
-@@ -124,6 +132,23 @@ &cpu3 {
- 	cpu-supply = <&vdd_cpu>;
- };
++	raw_spin_lock_irqsave(&pmic_arb->irq_lock, flags);
+ 	qpnpint_spmi_read(d, QPNPINT_REG_SET_TYPE, &type, sizeof(type));
  
-+&cpu_thermal {
-+	trips {
-+		cpu_hot: cpu_hot {
-+			temperature = <55000>;
-+			hysteresis = <2000>;
-+			type = "active";
-+		};
-+	};
-+
-+	cooling-maps {
-+		map1 {
-+			trip = <&cpu_hot>;
-+			cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
- &gmac1 {
- 	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1_RGMII_SPEED>, <&cru SCLK_GMAC1>;
- 	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>, <&cru SCLK_GMAC1>, <&gmac1_clkin>;
-@@ -433,6 +458,14 @@ &sdmmc0 {
- 	status = "okay";
- };
+ 	if (flow_type & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
+@@ -616,8 +621,10 @@ static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_type)
+ 		flow_handler = handle_edge_irq;
+ 	} else {
+ 		if ((flow_type & (IRQF_TRIGGER_HIGH)) &&
+-		    (flow_type & (IRQF_TRIGGER_LOW)))
++		    (flow_type & (IRQF_TRIGGER_LOW))) {
++			raw_spin_unlock_irqrestore(&pmic_arb->irq_lock, flags);
+ 			return -EINVAL;
++		}
  
-+&tsadc {
-+	/* tshut mode 0:CRU 1:GPIO */
-+	rockchip,hw-tshut-mode = <1>;
-+	/* tshut polarity 0:LOW 1:HIGH */
-+	rockchip,hw-tshut-polarity = <0>;
-+	status = "okay";
-+};
+ 		type.type &= ~BIT(irq); /* level trig */
+ 		if (flow_type & IRQF_TRIGGER_HIGH)
+@@ -629,6 +636,8 @@ static int qpnpint_irq_set_type(struct irq_data *d, unsigned int flow_type)
+ 	}
+ 
+ 	qpnpint_spmi_write(d, QPNPINT_REG_SET_TYPE, &type, sizeof(type));
++	raw_spin_unlock_irqrestore(&pmic_arb->irq_lock, flags);
 +
- &uart0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&uart0_xfer>;
+ 	irq_set_handler_locked(d, flow_handler);
+ 
+ 	return 0;
+@@ -1285,6 +1294,7 @@ static int spmi_pmic_arb_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, ctrl);
+ 	raw_spin_lock_init(&pmic_arb->lock);
++	raw_spin_lock_init(&pmic_arb->irq_lock);
+ 
+ 	ctrl->cmd = pmic_arb_cmd;
+ 	ctrl->read_cmd = pmic_arb_read_cmd;
 -- 
-2.25.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
