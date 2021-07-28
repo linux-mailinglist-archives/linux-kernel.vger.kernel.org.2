@@ -2,55 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC96C3D87D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366A53D87D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234087AbhG1GXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 02:23:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58976 "EHLO mail.kernel.org"
+        id S234323AbhG1GZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 02:25:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231199AbhG1GX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 02:23:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28D0760F58;
-        Wed, 28 Jul 2021 06:23:27 +0000 (UTC)
+        id S231484AbhG1GZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 02:25:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11DAF60F58;
+        Wed, 28 Jul 2021 06:25:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627453407;
-        bh=cTCAGOAsBM2oppNycnqCbmguMrkUmbR1fWFIwmzyIGQ=;
+        s=korg; t=1627453525;
+        bh=4hAIdzttwWWApX+xj/vZnnLd1lxQdez71wJ2QJgxjs8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pwz2U7A1Xk7KnM9ZD6ft+yKfDWN6/0O7eBT+0Jw6vmli6jO7Kkxf68F6HHOAyhAOD
-         tcagIFxRuKqF5GFtM152hT8CLhtpAp+mJEY9oqCBbnF59L3GkKfVsA18k6rambr98+
-         ks429uE1djsXvWh0MNzbKhQi4gCD57HUuBRe+ff4=
-Date:   Wed, 28 Jul 2021 08:23:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: PM: add two device managed helpers
-Message-ID: <YQD33b6kjSk3AIAa@kroah.com>
-References: <20210727210202.717181-1-dmitry.baryshkov@linaro.org>
+        b=mqC5SZvEo9xsqURYjSdJ7DXZJwM9oEd8fBGgvGsv/AcS18s7xtdIwNQ67hTV4cAia
+         F0SOTdL6NeaAN6bNdyOaCM8JUts7cFQpsE8iSVCBw/QuAIpQoS0ngNfhOTeeFVJ/31
+         p3KW7Q4fWrB98Hw4uCkBL/UnWl+6bdLKqOKaZc+0=
+Date:   Wed, 28 Jul 2021 08:25:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Maxim Devaev <mdevaev@gmail.com>
+Cc:     balbi@kernel.org, sandeen@redhat.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: f_hid: idle uses the highest byte for
+ duration
+Message-ID: <YQD4U67wFqtXBGu1@kroah.com>
+References: <20210727185800.43796-1-mdevaev@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210727210202.717181-1-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20210727185800.43796-1-mdevaev@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 12:02:00AM +0300, Dmitry Baryshkov wrote:
-> Qualcomm clock controller code (and most probably other drivers) would
-> benefit from having devres helpers for pm_runtime_enable() and
-> pm_clk_create(). Add those two helpers.
+On Tue, Jul 27, 2021 at 09:58:00PM +0300, Maxim Devaev wrote:
+> SET_IDLE value must be shifted 8 bits to the right to get duration.
+> This confirmed by USBCV test.
+> 
+> Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
+> ---
+>  drivers/usb/gadget/function/f_hid.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
+> index 8d50c8b12..bb476e121 100644
+> --- a/drivers/usb/gadget/function/f_hid.c
+> +++ b/drivers/usb/gadget/function/f_hid.c
+> @@ -573,7 +573,7 @@ static int hidg_setup(struct usb_function *f,
+>  		  | HID_REQ_SET_IDLE):
+>  		VDBG(cdev, "set_idle\n");
+>  		length = 0;
+> -		hidg->idle = value;
+> +		hidg->idle = value >> 8;
+>  		goto respond;
+>  		break;
+>  
+> -- 
+> 2.32.0
 > 
 
-I do not want to add new "helpers" without seeing them actually used in
-the kernel at the same time, so that we can verify they work and make
-code easier to understand.
+You forgot to mention what commit this fixes up:
 
-So please feel free to resubmit this as a patch series that uses them,
-adding apis that no one uses is not a good idea.
+Fixes: afcff6dc690e ("usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers")
+
+I've added it to the patch now, but try to remember it next time.
 
 thanks,
 
