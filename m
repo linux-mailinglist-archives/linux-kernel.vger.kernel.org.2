@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9BF3D991D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B873D9920
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhG1Wzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbhG1Wzt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:55:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD683C061757;
-        Wed, 28 Jul 2021 15:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=iXq6gtJgg/KgevAKbbPdcmL6v/tjqWXVyd71VWdu32g=; b=aI/AM99FpdL/zSIAo7Uo0E+CGl
-        +6s2Jzg6JH7umPO7PnUwe9u26jTVXQ90CLsXspPyQcEh6GF7iq/xzNwOlz9QtYBUO1+Jior47Leye
-        UHbOSgx9TfIJDmqaHIgYJpSATyZdCW09tJqjuopHP0ufQWUcBHwe0z5TPdOJcDcLU9iP6dQQr1abz
-        ocoaW5D52xHSV9dtD/KAKwJ/Z4yAkC+zsAnAxwyZkj6mQFREHGcJ9yVQeohCgBX+xuqgGk4EodYGz
-        wMCm3iDoURIPA+0kNsRrt1HPIOqu5kml7t1whfX/Ns632XWKij1/cjzkovQ3wo+iurrNMmiIZOtlb
-        1dFvZjgg==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8sSo-002Vco-EI; Wed, 28 Jul 2021 22:55:46 +0000
-Subject: Re: patch suggestion: Kconfig symbols
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>
-References: <295b8f8c-4264-9f32-6723-9d2d574021ac@infradead.org>
- <e77e2329bdafdbea538be0d7edb8a9d7d3e45990.camel@perches.com>
- <09db53b9-7edf-44fc-c6b7-7c4e9198a2d4@infradead.org>
- <733d2747b67a8a172333b51bacbf77fe@perches.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a89eefda-df18-0965-e56c-a1b73975b8c3@infradead.org>
-Date:   Wed, 28 Jul 2021 15:55:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <733d2747b67a8a172333b51bacbf77fe@perches.com>
-Content-Type: text/plain; charset=utf-8
+        id S232311AbhG1W5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:57:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:16510 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232163AbhG1W5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:57:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="192359420"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="192359420"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 15:57:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="517824202"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga002.fm.intel.com with ESMTP; 28 Jul 2021 15:57:08 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 28 Jul 2021 15:57:07 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Wed, 28 Jul 2021 15:57:07 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
+ Wed, 28 Jul 2021 15:57:07 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Hansen, Dave" <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
+ pages
+Thread-Topic: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
+ pages
+Thread-Index: AQHXg/G3voDWmDqCq06DL34grJaPratZaKWA//+WanA=
+Date:   Wed, 28 Jul 2021 22:57:07 +0000
+Message-ID: <f2685d7c8dc14792a4e0f9807f742ea6@intel.com>
+References: <20210719182009.1409895-1-tony.luck@intel.com>
+ <20210728204653.1509010-1-tony.luck@intel.com>
+ <20210728204653.1509010-2-tony.luck@intel.com>
+ <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
+In-Reply-To: <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 2:30 PM, Joe Perches wrote:
-> On 2021-07-28 12:41, Randy Dunlap wrote:
->> On 7/28/21 8:37 AM, Joe Perches wrote:
->>> On Mon, 2021-07-26 at 17:21 -0700, Randy Dunlap wrote:
->>>> Running scripts/checkkconfigsymbols.py reports several hundred (maybe thousand)
->>>> Kconfig symbols that are used questionably. Lots of these are false positives
->>>> but lots of the remainder could use some cleaning up.
->>> []
->>>> False positive example:
->>>>
->>>> XCHOFFLD_MEM
->>>> Referencing files: drivers/scsi/qla2xxx/qla_mbx.c
->>>> Similar symbols: OF_PMEM, CXL_MEM, CXL_PMEM
->>>>
->>>> The Referencing source file does this:
->>>> #define CONFIG_XCHOFFLD_MEM    0x3
->>>>
->>>> which is legitimate, so no change is needed.
->>>
->>> Legitimate is perhaps dubious.
->>>
->>> It might be better if Kconfig has exclusive use of CONFIG_<foo> naming so
->>> renaming all the other existing CONFIG_<foo> defines might be appropriate.
->>
->> I would prefer that as well -- maybe 15 years ago.
->> But I think it's too invasive to make that change now.
-> 
-> I do not think it's that invasive.
-> 
-> It's something that doesn't have to be done immediately either.
-> 
-> It's not too many macro defines and not too many uses of those defines.
-
-OK :)
-
-I'm not trying to prevent such a change.
-
-Getting the exclusive use of CONFIG_symbols being dedicated to
-Kconfig namespace is the bug hurdle (IMO).
-
--- 
-~Randy
-
+PiBXb3VsZG4ndCBpdCBiZSBzYWZlciB0byBkbyBzb21ldGhpbmcgbGlrZToNCj4NCj4JcGFnZS0+
+b3duZXIgPSBvd25lciA/IG93bmVyIDogKHZvaWQgKiktMTsNCj4NCj4gLTEgaXMgbm9uLU5VTEws
+IGJ1dCBhbHNvIGludmFsaWQsIHdoaWNoIG1ha2VzIGl0IGhhcmRlciBmb3IgdXMgdG8gcG9rZQ0K
+PiBvdXJzZWx2ZXMgaW4gdGhlIGV5ZS4NCg0KRG9lcyBMaW51eCBoYXZlIHNvbWUgI2RlZmluZSBJ
+TlZBTElEX1BPSU5URVIgdGhpbmcgdGhhdA0KcHJvdmlkZXMgYSBndWFyYW50ZWVkIGJhZCAoZS5n
+LiBub24tY2Fub25pY2FsKSB2YWx1ZT8NCg0KKHZvaWQgKiktMSBzZWVtcyBoYWNreS4NCg0KLVRv
+bnkNCg==
