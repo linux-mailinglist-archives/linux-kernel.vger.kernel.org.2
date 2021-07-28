@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EEB3D95F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFAF3D95FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhG1TUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 15:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50456 "EHLO
+        id S231327AbhG1TWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 15:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhG1TUk (ORCPT
+        with ESMTP id S230300AbhG1TWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:20:40 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB747C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:20:38 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id z24so3351105qkz.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:20:38 -0700 (PDT)
+        Wed, 28 Jul 2021 15:22:23 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45671C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:22:21 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 48-20020a9d0bb30000b02904cd671b911bso3258826oth.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:22:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gpiccoli-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d6qfKqRI6m4WTJASM6iTIDEeVp83gFU9fVe84XKYU6Y=;
-        b=A3zB2BxrkshfLj1hul36dmsxR83ZwIIx8IATAiVAm18rAErkeotKTlhDn7xT5TnALE
-         SsHLnr8y7ODufgkIr5xPzIWTu+TI10wW2RiIV6aLPlOn5SbgAL5YjwaDF1weKkx6biRQ
-         VtPPWGqI2tJrPVDooy6TLnjaipm3AXs+KjeNLCj92QcUm4f/WFBnih3T6X8GzhRA7uD3
-         vZaQPwDwSvfH9nVUhgfJf/w2pH/A8rjXZOSgOD/Kn37j4JPETTgm4YZc6egdcFFsIlZN
-         FSD43Tci/OHWigGmrPz5HiJzhxtp44aHmXYXANlgGNmGipYYpFxcMAhjsc2IwmqHb9lQ
-         nqxA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xtCzcJFAu9dR3CG6ek/fh/xMW6UNckFyG7RsgVYyIWw=;
+        b=TT+fBye+Vvf5GJpNluw0WcRTC7515kpgaXVVegMP0wr4inSikyrK9QanPefFtjXmim
+         WTEQtYiCNW/5IW8h+juauUzRzHM/svXLuLrAV+fuKZ9rqkmQbDIA9OT+VvZQH2bjm2cT
+         0/p6SsgDhIIYH/h46RytjULmrLSTZRSXTrga4HzPz/3Qm0rJj1aeVtkoOK4gaNlySQvW
+         3M+BSBbmJisXYnHtIp6o6BQhrd/mwd9K2OyKVF+/qPBE4+wp0j2A3zZhqHHEgyHyZMqF
+         tmmtTCOr682Mglw8SU0cvL4tSZlC4vzW8FLEHyOkF1swMSKXTy+H6mdf1t8PCYkkfmg8
+         Lovw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d6qfKqRI6m4WTJASM6iTIDEeVp83gFU9fVe84XKYU6Y=;
-        b=Dqi5533QUsQE/AVwodSp2zy/k2Rt7X67fRzU9iGhNIcYhZTjXo5ocu/dvTSrZ/uDOE
-         TqnZcDUGhHWu5yExK2aGZy8CyusnlLtIFSUv/tSQJZHuIOjBaD0pc40b0ex/gXPGyJr4
-         QMgZcjfHlrJzDiNlpEQtP9vqtlh525HUkpSOzCsRpuvawGyGX2Kiex6gSRIGl2Gpm9/v
-         ycQPKK3et2pgphO3QpbojFo3baMbjrferS0yFafloo1wohgKxxy7ARxjQZC4c2U+7v0f
-         0zk1aCKv64D+23I6KodDZtFaE+90EDlcq0SXFGE+fhE0VnRykoZxVK8Jr181+z9dC8IO
-         SKzw==
-X-Gm-Message-State: AOAM5302hEOUkCy5FL6EzXDGs4zQEW+KcivjlOiSq9LvEdRv+4YeTIKr
-        AfNIH5XUB1sgsuuF6+p+3ra9JpKu8Ilehd4dR7Tg0A==
-X-Google-Smtp-Source: ABdhPJxANaAhzZ3UvkSECqZTlZDB1UlnPJDdf7/FGnsQF5G3JjPaM70ed3s6veVwwGXMnJVtULZ62m95/1pevSBIiU4=
-X-Received: by 2002:a05:620a:1319:: with SMTP id o25mr1256137qkj.396.1627500037010;
- Wed, 28 Jul 2021 12:20:37 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xtCzcJFAu9dR3CG6ek/fh/xMW6UNckFyG7RsgVYyIWw=;
+        b=lhTbyWOl+SWO4JhjVB6Fzw5g4LTlTelPfbh6m8+1WiSPZjYhr2z8dBXTkOSWGCRygR
+         YwbxYb/Tgfi1HrqggSjUidigHuOg7e6bUeZr4XXxEvxtlS/brawiO7MlTbCry2lg8RxA
+         TXCt2XBAUkaHJb+TCIBo1/WegyL/3aj0raQlb1gNkWj3cnG4q4yqdGSFfRvT0kFqSvtH
+         ULGFI11N/BHubykmn8V/4za+07wmzP7BLMX/5YQ22wq/dEVEpWjqXk5rD0KgIDC5ZEM6
+         Ks6wJuQR8BijrZPHk/qphd17ZaEMO1m2HOjbB8E+TLp00KwIKG04PmiIKIzxKFOlfwo6
+         roxA==
+X-Gm-Message-State: AOAM530daO2avoIJL7amwrWsOVWNh++zrmeuZ4QsbKTygM3q3OBfgVSG
+        wwRBj+IkkGxKhf4gcIjZeZWy4g==
+X-Google-Smtp-Source: ABdhPJxCOixxPZx/B9u6/IckaLKvyCZhkvAoWYTyKbBLx//EwCPaLJWT+Dr+GFNlXpBF10QYtCkl5g==
+X-Received: by 2002:a9d:6e8a:: with SMTP id a10mr1050189otr.51.1627500140530;
+        Wed, 28 Jul 2021 12:22:20 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id p4sm127444ooa.35.2021.07.28.12.22.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 12:22:20 -0700 (PDT)
+Subject: Re: [PATCH v5 0/5] block: add a sequence number to disks
+To:     Matteo Croce <mcroce@linux.microsoft.com>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Javier_Gonz=c3=a1lez?= <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+References: <20210712230530.29323-1-mcroce@linux.microsoft.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <fa2b4c63-6262-ab0b-63c2-270e84207dc0@kernel.dk>
+Date:   Wed, 28 Jul 2021 13:22:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210715202341.2016612-1-mcgrof@kernel.org> <20210715202341.2016612-4-mcgrof@kernel.org>
-In-Reply-To: <20210715202341.2016612-4-mcgrof@kernel.org>
-From:   "Guilherme G. Piccoli" <kernel@gpiccoli.net>
-Date:   Wed, 28 Jul 2021 16:20:01 -0300
-Message-ID: <CALJn8nOWtFBnuzqPpuOH6nqikUzZGUYWEnvwCFvmrCrC5MWSmw@mail.gmail.com>
-Subject: Re: [RFC 3/6] md: replace GENHD_FL_UP with GENHD_FL_DISK_ADDED on is_mddev_broken()
-To:     Luis Chamberlain <mcgrof@kernel.org>, hch@infradead.org
-Cc:     axboe@kernel.dk, hare@suse.de,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ming Lei <ming.lei@redhat.com>, jack@suse.cz, osandov@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210712230530.29323-1-mcroce@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 5:24 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> The GENHD_FL_DISK_ADDED flag is what we really want, as the
-> flag GENHD_FL_UP could be set on a semi-initialized device.
->
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  drivers/md/md.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/md/md.h b/drivers/md/md.h
-> index 832547cf038f..80561bca1f51 100644
-> --- a/drivers/md/md.h
-> +++ b/drivers/md/md.h
-> @@ -766,7 +766,7 @@ static inline bool is_mddev_broken(struct md_rdev *rdev, const char *md_type)
->  {
->         int flags = rdev->bdev->bd_disk->flags;
->
-> -       if (!(flags & GENHD_FL_UP)) {
-> +       if (!(flags & GENHD_FL_DISK_ADDED)) {
+On 7/12/21 5:05 PM, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> Associating uevents with block devices in userspace is difficult and racy:
+> the uevent netlink socket is lossy, and on slow and overloaded systems has
+> a very high latency. Block devices do not have exclusive owners in
+> userspace, any process can set one up (e.g. loop devices). Moreover, device
+> names can be reused (e.g. loop0 can be reused again and again). A userspace
+> process setting up a block device and watching for its events cannot thus
+> reliably tell whether an event relates to the device it just set up or
+> another earlier instance with the same name.
+> 
+> Being able to set a UUID on a loop device would solve the race conditions.
+> But it does not allow to derive orderings from uevents: if you see a uevent
+> with a UUID that does not match the device you are waiting for, you cannot
+> tell whether it's because the right uevent has not arrived yet, or it was
+> already sent and you missed it. So you cannot tell whether you should wait
+> for it or not.
+> 
+> Being able to set devices up in a namespace would solve the race conditions
+> too, but it can work only if being namespaced is feasible in the first
+> place. Many userspace processes need to set devices up for the root
+> namespace, so this solution cannot always work.
+> 
+> Changing the loop devices naming implementation to always use
+> monotonically increasing device numbers, instead of reusing the lowest
+> free number, would also solve the problem, but it would be very disruptive
+> to userspace and likely break many existing use cases. It would also be
+> quite awkward to use on long-running machines, as the loop device name
+> would quickly grow to many-digits length.
+> 
+> Furthermore, this problem does not affect only loop devices - partition
+> probing is asynchronous and very slow on busy systems. It is very easy to
+> enter races when using LO_FLAGS_PARTSCAN and watching for the partitions to
+> show up, as it can take a long time for the uevents to be delivered after
+> setting them up.
+> 
+> Associating a unique, monotonically increasing sequential number to the
+> lifetime of each block device, which can be retrieved with an ioctl
+> immediately upon setting it up, allows to solve the race conditions with
+> uevents, and also allows userspace processes to know whether they should
+> wait for the uevent they need or if it was dropped and thus they should
+> move on.
+> 
+> This does not benefit only loop devices and block devices with multiple
+> partitions, but for example also removable media such as USB sticks or
+> cdroms/dvdroms/etc.
+> 
+> The first patch is the core one, the 2..4 expose the information in
+> different ways, and the last one makes the loop device generate a media
+> changed event upon attach, detach or reconfigure, so the sequence number
+> is increased.
+> 
+> If merged, this feature will immediately used by the userspace:
+> https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
 
-Thanks for the patch Luis! And thanks Christoph for looping me in on
-the last iteration.
-I think specifically for md, both flags are interchangeable - if
-add_disk() is not completed, I'm pretty sure we cannot have the array
-properly working hence we shouldn't ever reach this check for such
-device. Nevertheless, technically speaking Christoph seems correct and
-we are checking here in fact if the disk was del_gendisk'ed().
-My opinion is that we don't need to change this usage, if possible,
-but I'm not strongly against the change if you feel it fits better.
+Applied for 5.15, with #2 done manually since it didn't apply cleanly.
 
-Just double-checking - after del_gendisk(), this flag is removed anyways right?
-Oh, and if possible, loop me in CC for next revisions, using this email.
-Cheers,
+-- 
+Jens Axboe
 
-
-Guilherme
