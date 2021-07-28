@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1303D928B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4713D9290
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhG1P73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:59:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:59368 "EHLO foss.arm.com"
+        id S237429AbhG1P7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:59:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:59384 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237387AbhG1P7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:59:25 -0400
+        id S237382AbhG1P71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:59:27 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9308C113E;
-        Wed, 28 Jul 2021 08:59:23 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83B79D6E;
+        Wed, 28 Jul 2021 08:59:25 -0700 (PDT)
 Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F1B7D3F70D;
-        Wed, 28 Jul 2021 08:59:21 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E098E3F70D;
+        Wed, 28 Jul 2021 08:59:23 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux-foundation.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
         john.garry@huawei.com, dianders@chromium.org,
-        Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH v2 10/24] iommu/sun50i: Drop IOVA cookie management
-Date:   Wed, 28 Jul 2021 16:58:31 +0100
-Message-Id: <d16baf342ffee500b13f0ec4c4ac011291b58454.1627468309.git.robin.murphy@arm.com>
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH v2 11/24] iommu/virtio: Drop IOVA cookie management
+Date:   Wed, 28 Jul 2021 16:58:32 +0100
+Message-Id: <d9f524e29a580d094c7f9a7322e1bea6f3637c19.1627468309.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1627468308.git.robin.murphy@arm.com>
 References: <cover.1627468308.git.robin.murphy@arm.com>
@@ -38,51 +38,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The core code bakes its own cookies now.
 
-CC: Maxime Ripard <mripard@kernel.org>
+CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 ---
- drivers/iommu/sun50i-iommu.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ drivers/iommu/virtio-iommu.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/iommu/sun50i-iommu.c b/drivers/iommu/sun50i-iommu.c
-index 181bb1c3437c..c349a95ec7bd 100644
---- a/drivers/iommu/sun50i-iommu.c
-+++ b/drivers/iommu/sun50i-iommu.c
-@@ -610,14 +610,10 @@ static struct iommu_domain *sun50i_iommu_domain_alloc(unsigned type)
- 	if (!sun50i_domain)
- 		return NULL;
+diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+index 6abdcab7273b..80930ce04a16 100644
+--- a/drivers/iommu/virtio-iommu.c
++++ b/drivers/iommu/virtio-iommu.c
+@@ -598,12 +598,6 @@ static struct iommu_domain *viommu_domain_alloc(unsigned type)
+ 	spin_lock_init(&vdomain->mappings_lock);
+ 	vdomain->mappings = RB_ROOT_CACHED;
  
 -	if (type == IOMMU_DOMAIN_DMA &&
--	    iommu_get_dma_cookie(&sun50i_domain->domain))
--		goto err_free_domain;
+-	    iommu_get_dma_cookie(&vdomain->domain)) {
+-		kfree(vdomain);
+-		return NULL;
+-	}
 -
- 	sun50i_domain->dt = (u32 *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
- 						    get_order(DT_SIZE));
- 	if (!sun50i_domain->dt)
--		goto err_put_cookie;
-+		goto err_free_domain;
+ 	return &vdomain->domain;
+ }
  
- 	refcount_set(&sun50i_domain->refcnt, 1);
- 
-@@ -627,10 +623,6 @@ static struct iommu_domain *sun50i_iommu_domain_alloc(unsigned type)
- 
- 	return &sun50i_domain->domain;
- 
--err_put_cookie:
--	if (type == IOMMU_DOMAIN_DMA)
--		iommu_put_dma_cookie(&sun50i_domain->domain);
--
- err_free_domain:
- 	kfree(sun50i_domain);
- 
-@@ -644,8 +636,6 @@ static void sun50i_iommu_domain_free(struct iommu_domain *domain)
- 	free_pages((unsigned long)sun50i_domain->dt, get_order(DT_SIZE));
- 	sun50i_domain->dt = NULL;
+@@ -643,8 +637,6 @@ static void viommu_domain_free(struct iommu_domain *domain)
+ {
+ 	struct viommu_domain *vdomain = to_viommu_domain(domain);
  
 -	iommu_put_dma_cookie(domain);
 -
- 	kfree(sun50i_domain);
- }
+ 	/* Free all remaining mappings (size 2^64) */
+ 	viommu_del_mappings(vdomain, 0, 0);
  
 -- 
 2.25.1
