@@ -2,109 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E91D3D8A6C
+	by mail.lfdr.de (Postfix) with ESMTP id 35D7D3D8A6B
 	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235576AbhG1JOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:14:22 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7760 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235606AbhG1JOS (ORCPT
+        id S235514AbhG1JOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:14:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20040 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235573AbhG1JOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:14:18 -0400
-Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GZSW64hVszYd7v;
-        Wed, 28 Jul 2021 17:08:18 +0800 (CST)
-Received: from huawei.com (10.175.104.82) by dggeme766-chm.china.huawei.com
- (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 28
- Jul 2021 17:14:13 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <cl@linux.com>, <penberg@kernel.org>, <rientjes@google.com>,
-        <iamjoonsoo.kim@lge.com>, <akpm@linux-foundation.org>,
-        <vbabka@suse.cz>, <hannes@cmpxchg.org>, <shakeelb@google.com>,
-        <ast@kernel.org>, <wangkefeng.wang@huawei.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mm/memcg: fix NULL pointer dereference in memcg_slab_free_hook()
-Date:   Wed, 28 Jul 2021 17:13:48 +0800
-Message-ID: <20210728091348.272714-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 28 Jul 2021 05:14:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627463654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qM2pY3QQZ75N8NGvyWod3aePv3OhL3iSnbWaTNcX1vQ=;
+        b=DvwMickiA2ljD/yAxLTpPEQFbyDhJH4qkeCvrg/lu824PiaRdJsHHKCtal+MJGjkAeWUWm
+        Ua5mcy2JpSfvnlH+tUgZl6bqMFK3horKcBlTETksZhiWIdX8s99J6AMUteFOgCgEOPbNI+
+        pYTy+uTCL9YIaUb5zYp6mWYgHQ00StI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-24-koeJ_VBtMm6s37DXcy3xsA-1; Wed, 28 Jul 2021 05:14:10 -0400
+X-MC-Unique: koeJ_VBtMm6s37DXcy3xsA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 442978010F4;
+        Wed, 28 Jul 2021 09:14:09 +0000 (UTC)
+Received: from ws.net.home (ovpn-113-182.ams2.redhat.com [10.36.113.182])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EFF5C60854;
+        Wed, 28 Jul 2021 09:14:07 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 11:14:05 +0200
+From:   Karel Zak <kzak@redhat.com>
+To:     Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Sinan Kaya <sinan.kaya@microsoft.com>,
+        util-linux@vger.kernel.org, linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Commit d5fd456c88aba4fcf77d35fe38024a8d5c814686 - "loopdev: use
+ LOOP_CONFIG ioctl" broke loop on x86-64 w/ 32 bit userspace
+Message-ID: <20210728091405.cqvkgv6c2vvsmacb@ws.net.home>
+References: <a797f527-4599-e986-a326-4bb141487f2c@ans.pl>
+ <e7f64d43-2a26-e386-b208-5c35d6a56ed4@ans.pl>
+ <7de1bd0b-b8ea-daf0-b677-f92db1c1cdff@ans.pl>
+ <c1c9d728-c4d9-eaf4-63c3-d13b99da3a3d@kernel.dk>
+ <72947cba-6a12-d54f-c9c8-588729631306@ans.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <72947cba-6a12-d54f-c9c8-588729631306@ans.pl>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I use kfree_rcu() to free a large memory allocated by
-kmalloc_node(), the following dump occurs.
+On Tue, Jul 27, 2021 at 10:46:06PM -0700, Krzysztof Olędzki wrote:
+> So, to confirm - checking for both EINVAL and ENOTTY after LOOP_CONFIGURE is
+> the proper way of taking care this?
+> 
+> https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/tree/lib/loopdev.c?id=d4423cce9b9001c9de7ebc6f64f6cc2bb854944c#n1362
 
-BUG: kernel NULL pointer dereference, address: 0000000000000020
-[...]
-Oops: 0000 [#1] SMP
-[...]
-Workqueue: events kfree_rcu_work
-RIP: 0010:__obj_to_index include/linux/slub_def.h:182 [inline]
-RIP: 0010:obj_to_index include/linux/slub_def.h:191 [inline]
-RIP: 0010:memcg_slab_free_hook+0x120/0x260 mm/slab.h:363
-[...]
-Call Trace:
- kmem_cache_free_bulk+0x58/0x630 mm/slub.c:3293
- kfree_bulk include/linux/slab.h:413 [inline]
- kfree_rcu_work+0x1ab/0x200 kernel/rcu/tree.c:3300
- process_one_work+0x207/0x530 kernel/workqueue.c:2276
- worker_thread+0x320/0x610 kernel/workqueue.c:2422
- kthread+0x13d/0x160 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+We need both to make losetup/mount robust for already released kernels.
+Fixed: https://github.com/karelzak/util-linux/commit/583990d25b5d65a9a9771a39d112de0ee16a1f3a
 
-When kmalloc_node() a large memory, page is allocated, not slab,
-so when freeing memory via kfree_rcu(), this large memory should not
-be used by memcg_slab_free_hook(), because memcg_slab_free_hook() is
-is used for slab.
+Thanks for your report!
 
-So in this case, there is no need to do anything with this large
-page in memcg_slab_free_hook(), just skip it.
+ Karel
 
-Fixes: 270c6a71460e ("mm: memcontrol/slab: Use helpers to access slab page's memcg_data")
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- mm/slab.h | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/mm/slab.h b/mm/slab.h
-index 67e06637ff2e..247d3f9c21f7 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -339,15 +339,20 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
- 			continue;
- 
- 		page = virt_to_head_page(p[i]);
-+		if (!s_orig) {
-+			if (unlikely(!PageSlab(page))) {
-+				BUG_ON(!PageCompound(page));
-+				continue;
-+			}
-+			s = page->slab_cache;
-+		} else {
-+			s = s_orig;
-+		}
-+
- 		objcgs = page_objcgs(page);
- 		if (!objcgs)
- 			continue;
- 
--		if (!s_orig)
--			s = page->slab_cache;
--		else
--			s = s_orig;
--
- 		off = obj_to_index(s, page, p[i]);
- 		objcg = objcgs[off];
- 		if (!objcg)
 -- 
-2.17.1
+ Karel Zak  <kzak@redhat.com>
+ http://karelzak.blogspot.com
 
