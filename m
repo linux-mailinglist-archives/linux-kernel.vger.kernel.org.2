@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80B23D8728
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8F23D873E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhG1F3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 01:29:23 -0400
-Received: from mx.socionext.com ([202.248.49.38]:6815 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229752AbhG1F3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 01:29:20 -0400
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 28 Jul 2021 14:29:17 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 50848205902A;
-        Wed, 28 Jul 2021 14:29:17 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Wed, 28 Jul 2021 14:29:17 +0900
-Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
-        by iyokan2.css.socionext.com (Postfix) with ESMTP id C9FB3B6392;
-        Wed, 28 Jul 2021 14:29:16 +0900 (JST)
-Received: from [10.212.30.196] (unknown [10.212.30.196])
-        by yuzu2.css.socionext.com (Postfix) with ESMTP id 07942B1D52;
-        Wed, 28 Jul 2021 14:29:15 +0900 (JST)
-Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
- invoke PME and AER
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <1603848703-21099-4-git-send-email-hayashi.kunihiko@socionext.com>
- <20201124232037.GA595463@bjorn-Precision-5520>
- <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
- <f49a236d-c5f8-c445-f74e-7aa4eea70c3a@socionext.com>
- <20210718005109.6xwe3z7gxhuop5xc@pali>
- <2dfa5ec9-2a33-ae72-3904-999d8b8a2f71@socionext.com>
- <20210722172627.i4n65lrz3j7pduiz@pali>
- <17c6eeee-692f-2e9a-5827-34f6939a21a6@socionext.com>
- <20210723083702.nvhurkgbzbvrrmv3@pali>
- <660e8597-bb7a-b5a0-e3d4-f108a211ae76@socionext.com>
-Message-ID: <d96880c4-75ab-50b5-3ecf-0dfd2aa3b8f3@socionext.com>
-Date:   Wed, 28 Jul 2021 14:29:15 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <660e8597-bb7a-b5a0-e3d4-f108a211ae76@socionext.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233288AbhG1Fnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 01:43:51 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51021 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229814AbhG1Fnt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 01:43:49 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 110B858075E;
+        Wed, 28 Jul 2021 01:43:48 -0400 (EDT)
+Received: from imap43 ([10.202.2.93])
+  by compute2.internal (MEProxy); Wed, 28 Jul 2021 01:43:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=8mTsTAru489HGgVKdhQ8Pd5T2sBSOVb
+        +V3PjJK0kxrE=; b=Bql/f7NSgB8BpjW+EMx4py9cvlE5UW14bPWU/99jy2DAAHq
+        JhDXy/kIGxAQ4SD5IPJj/ctT4bjGtCSO9HfRoHUVK8qt4ryjshwcLHrR+kJi49J6
+        oNwqkoRQh9Qdl1Iozc0HLAVkfQR9Tec4+LvNEHwlvFkzuhKrwJwEZqXDLxZS9tcY
+        TK1BGtbzxSkKz71LDy/p7MoOBWVp4ooD3PbPzK5EbPLwKTFwbULELBNS1fB84gig
+        MXpmJMgdUcSSkbq597CZ+choHZvuFYwT3zMBt8XpndRX+VCLiwdvBhFPWK4ia9EP
+        H6WTnHNT4i1xj8msdRq9VkbtdYpneDraL46CZrQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=8mTsTA
+        ru489HGgVKdhQ8Pd5T2sBSOVb+V3PjJK0kxrE=; b=SDMIgFrZ3Ikjjmhf4nBd2K
+        efRFbPHc/AnxB0s23kJ3Lu8RhP2R48XcKGMedP8MxrdxPark4GX/OQG0nKnlRR1L
+        FklLr5tYPP5dyrYgKvClgVyC2xERuWqELsP2kBifOeY3uI8QtdCoG6VE5oIPvged
+        i4qKQpTYVycyZllvhDwhQg/O0gVzKEuc0UdRCO63Kq8ZnhPsegmrQMttER7Ub1Rv
+        B4VmRF4KVtXraJfKAdet0AgGvskylMqNiZABqu54mzekqfgojHXP83KwqFwot5T2
+        AOHbjDQ2a/6oaUGXPlsUlR8iODZzTnM7czIyLVoVyMXzYyBb27lTK0yX/SCKkmCw
+        ==
+X-ME-Sender: <xms:ke4AYfNn-XlVWvWxZMkukETnWRJQSjYLNvdhDStlxOOC__6TLVkZkQ>
+    <xme:ke4AYZ-wj9g1NdtglQrSD4gSsoRba-DpSo35aM3UM6tPJiSCenRJo4BZwaIaC6_z8
+    6A9baF55IvSaFIRfA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeekgdekhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:ke4AYeRl0fmJ2MUX9vcWQ4MxoR7Uvf0AvK9p1msLXqzVHLXcuj-tyg>
+    <xmx:ke4AYTumxmpL-iNc5tAaRNzs-9HCY2yOgvaEEez24JQhlJql1j412Q>
+    <xmx:ke4AYXeNlZQS5pOqBGNdKgZ-a26Qf0whlVX0yC2RSPpkmC40U4ZJVQ>
+    <xmx:lO4AYb7LjTl9DtFs_Mcm45ridCpbFUsDyQSmJVrMEgnbrXb0hzXc9g>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9CBAFAC0DD0; Wed, 28 Jul 2021 01:43:45 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-545-g7a4eea542e-fm-20210727.001-g7a4eea54
+Mime-Version: 1.0
+Message-Id: <d019990e-a725-4ef5-bb54-aadee9d18b86@www.fastmail.com>
+In-Reply-To: <CAHp75VeQML7njMZ6x8kC-ZJVexC1xJ6n1cB3JneVMAVfuOJgWw@mail.gmail.com>
+References: <20210723075858.376378-1-andrew@aj.id.au>
+ <CAHp75VeQML7njMZ6x8kC-ZJVexC1xJ6n1cB3JneVMAVfuOJgWw@mail.gmail.com>
+Date:   Wed, 28 Jul 2021 15:13:24 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
+Cc:     "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>, "Pavel Machek" <pavel@ucw.cz>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/6] leds: Fix pca955x GPIO pin mappings
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo, Pali,
 
-On 2021/07/23 18:36, Kunihiko Hayashi wrote:
-> Hi Pali,
 
-[snip]
-
->> Just you need to specify that new/private IRQ domain into
->> irq_find_mapping() call.
+On Fri, 23 Jul 2021, at 17:45, Andy Shevchenko wrote:
 > 
-> I'll try to replace the events with new IRQ domain.
-According to Pali's suggestion, the bridge handles INTX and it isn't difficult
-to change IRQ's map for Root Port like the example.
-It seems that it can't be applied to MSI.
+> 
+> On Friday, July 23, 2021, Andrew Jeffery <andrew@aj.id.au> wrote:
+> > Hello,
+> > 
+> > This series does a bunch of crimes, so it's an RFC. I'm cross-posting to the
+> > pinctrl/GPIO and LEDs lists because the PCA955x devices impact all of them. What
+> > needs fixing is the leds-pca955x driver's failure to map the GPIO numberspace to
+> > the pin numberspace of the PCA955x devices. The series solves that by
+> > implementing pinctrl and pinmux in the leds-pca955x driver.
+> > 
+> > Things I'm unsure about:
+> > 
+> > 1. Patch 1: The pinctrl_gpio_as_pin() API feels a bit dirty, not sure what
+> >    others thoughts are on that (Linus?).
+> > 
+> > 2. Patch 2: I've added a new callback to hook the entirety of the pinctrl map
+> >    parsing rather than supplying a subnode-specific callback. This was necessary
+> >    to handle the PCA955x devicetree binding in a backwards compatible way.
+> > 
+> > 3. Patch 4: The PCA955x devices don't actually have any pinmux hardware, but the
+> >    properties of the pinctrl/pinmux subsystems in the kernel map nicely onto the
+> >    problem we have. But it's quite a bit of code...
+> > 
+> > 4. Patch 6: I also lost a bunch of time to overlooking the get_group_pins()
+> >    callback for pinctrl, and it seems odd to me that it isn't required.
+> > 
+> > Please review!
+> 
+> 
+> Sounds like a hack.
 
-On the other hand, according to Lorenzo's suggestion,
+Yes, possibly. Feedback like this is why I sent the series as an RFC.
 
- >>>>>>> IMO this should be modelled with a separate IRQ domain and chip for
- >>>>>>> the root port (yes this implies describing the root port in the dts
- >>>>>>> file with a separate msi-parent).
+> I was briefly looking into patches 1-4 and suddenly 
+> realized that the fix can be similar as in PCA9685 (PWM), I.e. we 
+> always have chips for the entire pin space and one may map them 
+> accordingly, requested in one realm (LED) in the other (GPIO) 
+> automatically is BUSY. Or I missed the point?
 
-Interrupts for PME/AER event is assigned to number 0 of MSI IRQ domain.
-(pcie_port_enable_irq_vec() in portdrv_core.c)
-This expects MSI status bit 0 to be set when the event occurs.
+No, you haven't missed the point. I will look at the PCA9685 driver.
 
-However, in the uniphier PCIe controller, MSI status bit 0 is not set, but
-the PME/AER status bit in the glue logic is set.
+That said, my goal was to implement the behaviour intended by the 
+existing binding (i.e. fix a bug). However, userspace would never have 
+got the results it expected with the existing driver implementation, so 
+I guess you could argue that no such (useful) userspace exists. Given 
+that, we could adopt the strategy of always defining a gpiochip 
+covering the whole pin space, and parts of the devicetree binding just 
+become redundant.
 
-I think that it's hard to associate the new domain and "MSI-IRQ 0" event
-if the new IRQ domain and chip is modelled.
-So, I have no idea to handle both new IRQ domain and cascaded MSI event.
-Is there any example for that?
-
-Thank you,
-
----
-Best Regards
-Kunihiko Hayashi
+Andrew
