@@ -2,232 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A593D87F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EF83D87FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbhG1GdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 02:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
+        id S234233AbhG1Gen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 02:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233537AbhG1GdE (ORCPT
+        with ESMTP id S233989AbhG1Gem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 02:33:04 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B326EC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 23:33:03 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id hp25so2747218ejc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 23:33:03 -0700 (PDT)
+        Wed, 28 Jul 2021 02:34:42 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB7CC061757;
+        Tue, 27 Jul 2021 23:34:40 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id mt6so3697786pjb.1;
+        Tue, 27 Jul 2021 23:34:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Wzc1VnWHuUTL1zDY7Wja81vShQG20UXdvo++bBOFt18=;
-        b=eSlphBKjoCEojoPpl4MgfJpe2xwXV+oBLk5fPYjfS4ANMInn09pRJzt8hZoLgNAAXF
-         dSM9OeTCvbb9/bUfk2+oWwvWyfTyzBoOgTbYKp++M8H5lFSVH/kjtTgo4+aAh27Tmlz9
-         gyiXLq0avTmn/qL/6CkqLsp/vmZmyGRoLOdbISMMRifmzTqxiOcaSL6VFWj4IjUPjPia
-         bY/Bzl+MO8hTABIUnEJgH8gdaeQCdQu5G3HdpSQXPOozXB3y3ixDEl9xnTpCTWvuaWdM
-         KYZbpiDSB58z/ymj91Goo0M8uFNekqnJAjwAZHbf+KpJPyfnV+IQAO0KdG/Y8CU4dzL4
-         fc8w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9DmELG1+gVWEcdyY7//y7sI4pfR9zgU+WdxarmT6tSs=;
+        b=hBLsVbJHABv39fCJdwJEiFnBwz0SSVjEq5d8EfPYrxMbuO76MDzevoYSPDzoCIamOG
+         3b2SYrO3qIqajTHx8PMkqIep9+T0fuJD5M7AGznU5sh0lPg50i8plbdZfRwZpZT1f2Vb
+         mLW93MQc1zNOYNRC/CDSIcvnNTJqnB1sXQPCOG+WYBeHaT5hglHEij2EetI2LUr2HdIZ
+         lEgaH5Ou4CVaQgNSCWAtFlM47jR0s7AoaR+4BmFanBnVh16wopxkN7E4KLHqxUZmscIb
+         jpjhGF8RO3mX8UGqGPC7duOSdxzPV+WBY0M1adEpUAk/NYuAnfgfFvUX71WkgrvjMFs6
+         cflA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Wzc1VnWHuUTL1zDY7Wja81vShQG20UXdvo++bBOFt18=;
-        b=Azfcof9Ji+Q3Yjqa09l7KqWf9dDg011ti2QAhHJb2DZYVSoY0cZpsGrB+B0hjeda4O
-         a6x5z1mLmW4wOLYZTdi35Sx32zIrpAecFaH6FtmmTtKxn9v6+d6kr8EP1jwo8l0mcUUy
-         xV3h4/LAr+lwCs3z2OuAD5/DF8VMKr32vKSqKbIRNGckGiQolZZKvwodxu5pw/pA2Men
-         8+Jt9xCZseayYCcHZ3bqXXYiacs6b8AOTibE2uV1yLKS8+heZV9/N7DUdJAJvlvXg3/s
-         efJCWUSsrfNPMCGB724eMFnB/siSYVnQ22s5mcys9B1CsL7KKj6YMU1AGQrUdXnHxt/R
-         EPSg==
-X-Gm-Message-State: AOAM532D/VTjZdrhwmstU27q4rD220Piry3VlKVk+ZDVEek42B5qjFil
-        a5Cpbjg1IUU82KTHdp7Gvn4khAUAuQUzpPKRBf0Fzw==
-X-Google-Smtp-Source: ABdhPJwsPWx52W9lF9EL7VtL/9QNrXcvB+NloPfgw+S9Oh/ua9A0L3WpqGTnG2xP5tD3u1rrVTNya5tHNMJmiNK0Lhs=
-X-Received: by 2002:a17:906:45b:: with SMTP id e27mr17141033eja.375.1627453982188;
- Tue, 27 Jul 2021 23:33:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9DmELG1+gVWEcdyY7//y7sI4pfR9zgU+WdxarmT6tSs=;
+        b=RCJpjGNdcUe0HtsApimyBsN22RZYlnEFAWdiK33vwLzcRKRy42o8tM14UrfUvhMAAy
+         KgzgLgfPQ2vSfKDsqgRW/tsA9upw8GCut8gaUCLc5ATLslRYTt3wGNmn7V4nHqQF/CVy
+         wzjacbB5wRdfQw1OChqQLCerbaVTV0JTN7UVyunWy6wYA7b21wrxDQjW6/zeLphuQP4t
+         LKE9fO5BBaThiCxpIyxIaIYJ94wIgv6skAvyuq76QoLPMa4z3P8C1bcbPekuXBdJaVFF
+         mWmfbVoukxjKwOH64iDwUwJyBDueJJf/ZC9KoW7C/k4EPPzL1XMX5IDwligIOTtV3X7b
+         wGCw==
+X-Gm-Message-State: AOAM531jts/ZRw+dMVQ4XFNkY1LOsAG2/GTwT0lrvVhMw1VdMKOcJnOA
+        6NDKsgB+IUBf1gY+Uc0COvA=
+X-Google-Smtp-Source: ABdhPJykhAsaGkST3v8hKLOWZ/IR7hFeOoOoIE3eI+f3o7caP8nReZ9C3MrrsC0vwHF5ZUd9l23PeA==
+X-Received: by 2002:a62:3896:0:b029:33a:f41a:11a4 with SMTP id f144-20020a6238960000b029033af41a11a4mr27194404pfa.9.1627454079848;
+        Tue, 27 Jul 2021 23:34:39 -0700 (PDT)
+Received: from localhost.localdomain ([27.255.220.51])
+        by smtp.googlemail.com with ESMTPSA id e30sm6698882pga.63.2021.07.27.23.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 23:34:39 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Michael.Hennerich@analog.com, alexandru.ardelean@analog.com,
+        jic23@kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
+Cc:     Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH v6 0/2] iio: accel: add support for ADXL355
+Date:   Wed, 28 Jul 2021 12:04:28 +0530
+Message-Id: <20210728063430.258199-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210727112108.341674321@linuxfoundation.org>
-In-Reply-To: <20210727112108.341674321@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 28 Jul 2021 12:02:51 +0530
-Message-ID: <CA+G9fYsb0QzEqGxdVErL-FTz1OTSLHE+-s6aW5MT6BmKu7V+RQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/119] 4.19.199-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 at 16:51, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.199 release.
-> There are 119 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 29 Jul 2021 11:20:50 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.199-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Add the dt-bindings and the driver for ADXL355 3-axis MEMS Accelerometer.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Changes since v5:
+1. Used get_unaligned_be24() and  get_unaligned_be16() to parse
+acceleration and temperature data. This solves sparse errors and also
+make the code more understandable.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Changes since v4:
+1. Fix errors reported by sparse.
 
-## Build
-* kernel: 4.19.199-rc3
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.19.y
-* git commit: b72fc3c0016d5ba671bf6e5ee31852a03d8c3a0d
-* git describe: v4.19.198-120-gb72fc3c0016d
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.198-120-gb72fc3c0016d
+Changes since v3:
+1. Fix errors in yaml DT doc.
+2. Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause
 
-## No regressions (compared to v4.19.198-121-g85cf6e2446d4)
+Changes since v2:
+1. Add separate DT binding doc in yaml.
+2. Use ____cacheline_aligned buffer for regmap_bulk_read/write calls.
+3. Make code consistent by using same style in switch case.
+4. Use FIELD_PREP in place of custom macros.
+5. Make Kconfig description more informative.
 
-## No fixes (compared to v4.19.198-121-g85cf6e2446d4)
+Changes since v1:
+1. Remove the declarations for static regmap structures from adxl355.h.
+This was missed in the v1 and caused errors.
+2. Make switch case statements consistent by directly returning from
+each case rather than saving the return in a variable.
+3. Some coding style changes.
 
-## Test result summary
- total: 77363, pass: 59814, fail: 1889, skip: 13309, xfail: 2351,
+Changes since v0:
+1. Move adxl355_hpf_3db_table to adxl355_data structure. This is done to make
+sure that each device gets its own table.
+2. Make local regmap definitions private to adxl355_core.c.
+3. Other minor coding style changes.
 
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 25 total, 25 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 39 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 15 total, 15 passed, 0 failed
+Puranjay Mohan (2):
+  dt-bindings: iio: accel: Add DT binding doc for ADXL355
+  iio: accel: Add driver support for ADXL355
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+ .../bindings/iio/accel/adi,adxl355.yaml       |  76 +++
+ MAINTAINERS                                   |   7 +
+ drivers/iio/accel/Kconfig                     |  29 +
+ drivers/iio/accel/Makefile                    |   3 +
+ drivers/iio/accel/adxl355.h                   |  77 +++
+ drivers/iio/accel/adxl355_core.c              | 542 ++++++++++++++++++
+ drivers/iio/accel/adxl355_i2c.c               |  63 ++
+ drivers/iio/accel/adxl355_spi.c               |  66 +++
+ 8 files changed, 863 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+ create mode 100644 drivers/iio/accel/adxl355.h
+ create mode 100644 drivers/iio/accel/adxl355_core.c
+ create mode 100644 drivers/iio/accel/adxl355_i2c.c
+ create mode 100644 drivers/iio/accel/adxl355_spi.c
 
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+2.30.1
+
