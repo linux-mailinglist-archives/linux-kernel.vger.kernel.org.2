@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA823D8961
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D463D8963
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234793AbhG1IG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:06:58 -0400
-Received: from mga11.intel.com ([192.55.52.93]:60575 "EHLO mga11.intel.com"
+        id S235066AbhG1IHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:07:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:58604 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234443AbhG1IGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:06:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="209499603"
+        id S234556AbhG1IG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 04:06:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="273688175"
 X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="209499603"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 01:06:53 -0700
+   d="scan'208";a="273688175"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 01:06:53 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="417153209"
+   d="scan'208";a="634677526"
 Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 28 Jul 2021 01:06:52 -0700
+  by orsmga005.jf.intel.com with ESMTP; 28 Jul 2021 01:06:52 -0700
 Received: from kbuild by d053b881505b with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1m8eaZ-00080n-Mk; Wed, 28 Jul 2021 08:06:51 +0000
-Date:   Wed, 28 Jul 2021 16:05:58 +0800
+        id 1m8eaZ-00080k-M5; Wed, 28 Jul 2021 08:06:51 +0000
+Date:   Wed, 28 Jul 2021 16:06:05 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:lkmm] BUILD SUCCESS 87859a8e3f083bd57b34e6a962544d775a76b15f
-Message-ID: <61010fe6.B9PESzp8LN5e42/W%lkp@intel.com>
+Subject: [rcu:kcsan] BUILD SUCCESS
+ e04938042d77addc7f41d983aebea125cddbed33
+Message-ID: <61010fed.VU1rNhVjRFOOj75+%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -38,8 +39,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git lkmm
-branch HEAD: 87859a8e3f083bd57b34e6a962544d775a76b15f  tools/memory-model: Document data_race(READ_ONCE())
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git kcsan
+branch HEAD: e04938042d77addc7f41d983aebea125cddbed33  kcsan: Make strict mode imply interruptible watchers
 
 elapsed time: 763m
 
