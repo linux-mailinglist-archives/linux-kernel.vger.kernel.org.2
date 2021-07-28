@@ -2,110 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8C63D9831
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B8F3D983F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbhG1WML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:12:11 -0400
-Received: from mga17.intel.com ([192.55.52.151]:57787 "EHLO mga17.intel.com"
+        id S232144AbhG1WQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:16:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231989AbhG1WMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:12:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="193037417"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="193037417"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 15:12:07 -0700
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="517811524"
-Received: from sobsiex-desk2.amr.corp.intel.com (HELO [10.212.198.197]) ([10.212.198.197])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 15:12:06 -0700
-Subject: Re: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
- pages
-To:     Tony Luck <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
- <20210728204653.1509010-2-tony.luck@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
-Date:   Wed, 28 Jul 2021 15:12:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231982AbhG1WQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:16:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AAE0603E9;
+        Wed, 28 Jul 2021 22:16:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627510598;
+        bh=eFciqfWNmyLu0Hy7m//jYdIb3XQRAWS7pAgCiQ+QOrY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=TpBqYtzGa+W1ndTSO0DuTp5u4MzXsIXirVbD3RxaB90Mc9xEMTbMent/ltieHiMpf
+         35ajIt87rvIn3Dx0JSyKKHoGzYCUw7epqi9oQlDhQ/4S72NHxJokeBjUfSaIR18jKJ
+         TaMw6pgH+gMz9ea5srkjmHW9LSQgKHrUM1ylvTD6rWVjINQkwhntV3jgcbaxLKTOBg
+         tgt8LuObwbUjZHbtDHsk34nO3qKy+YGuOmGcG1M/L28FF+dhmUsHbA1t+oj++WldpI
+         Y3JQal54fTsOIDF1psZ6QhGAMUx2mtjhvGyehF5rOXu2ev7xPlz2iAwxDA1KXpU+T4
+         JsA8sGbfUFyMg==
+Date:   Wed, 28 Jul 2021 17:16:36 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shanker R Donthineni <sdonthineni@nvidia.com>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Sinan Kaya <okaya@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v10 1/8] PCI: Add pcie_reset_flr to follow calling
+ convention of other reset methods
+Message-ID: <20210728221636.GA858116@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210728204653.1509010-2-tony.luck@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64a0049e-00dc-8b10-6c9a-0b270c0a181d@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 1:46 PM, Tony Luck wrote:
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -581,7 +581,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
->  	for ( ; ; ) {
->  		page = __sgx_alloc_epc_page();
->  		if (!IS_ERR(page)) {
-> -			page->owner = owner;
-> +			page->owner = owner ? owner : page;
->  			break;
->  		}
+On Wed, Jul 28, 2021 at 04:58:14PM -0500, Shanker R Donthineni wrote:
+> On 7/28/21 3:23 PM, Bjorn Helgaas wrote:
+> > On Wed, Jul 28, 2021 at 01:54:16PM -0500, Shanker R Donthineni wrote:
+> >> On 7/27/21 5:12 PM, Bjorn Helgaas wrote:
+> >>> On Fri, Jul 09, 2021 at 06:08:06PM +0530, Amey Narkhede wrote:
+> >>>> Add has_pcie_flr bitfield in struct pci_dev to indicate support for PCIe
+> >>>> FLR to avoid reading PCI_EXP_DEVCAP multiple times.
 
-I'm a little worried about this.
+> >> -       pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
+> >> -       return cap & PCI_EXP_DEVCAP_FLR;
+> >> +       return !!FIELD_GET(PCI_EXP_DEVCAP_FLR, dev->devcap);
+> >
+> > Nice, thanks for reminding me of FIELD_GET().  I like how that works
+> > without having to #define *_SHIFT values.  I personally don't care for
+> > "!!" and would probably write something like:
+> >
+> >   return FIELD_GET(PCI_EXP_DEVCAP_FLR, dev->devcap) == 1;
+> 
+> Both are same since FLR is a single bit value.
 
-Let's say we get confused about the type of the page and dereference
-page->owner.  If it's NULL, we get a nice oops.  If it's a real, valid
-pointer, we get real valid memory back that we can scribble on.
-
-Wouldn't it be safer to do something like:
-
-	page->owner = owner ? owner : (void *)-1;
-
--1 is non-NULL, but also invalid, which makes it harder for us to poke
-ourselves in the eye.
+Right; this is a style preference, not a correctness question.
