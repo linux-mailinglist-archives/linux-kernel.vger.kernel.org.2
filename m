@@ -2,183 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652E33D9421
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67D83D9423
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhG1RPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhG1RPD (ORCPT
+        id S230143AbhG1RRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:17:08 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:51648 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhG1RRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:15:03 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA66C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:15:00 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id e2so3470318wrq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:15:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QAWjI1HeB1hTA5bY9JWN/5jd7hflgLO2RENExto/KKk=;
-        b=HwmLn0Ec0akkBwvyuhBw+muIC2adP2/KfYTSr6njRzVp++4INWvhPvYlvXKN9jLDb9
-         nuyNbqIQYJIrxdR7pYdOUT+q6oqc//pa4XOv7PyeVkRlhvyQ7/gwbNTT20w4DapVHA+R
-         iIZcNh3JrVgmNrntXeYCIdy9l45qF985IMFQzf5C+zuZrc8foTfIplbTW4jWf4DP+qrm
-         o0gqi8I80ewBuC5LsC5egjS/OKoT72cTUGPOaPq9JyZ1mcz28KMZb2kHirPuZ7hozqxo
-         SciHsLETt4anGEtNk+eNTc0PB67b6cXL+W3Ot65QyOdFDoHq9nw3Tp0ke1bzcjlZqcXI
-         bdlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QAWjI1HeB1hTA5bY9JWN/5jd7hflgLO2RENExto/KKk=;
-        b=Og1sxtqwV/9udD9Yehi1+n3Fn4KBRmoepsS2HGgQVcVEL2/4UmRIjnjqenANj/Tk4w
-         4dQnBdb1o1BjOtZKl4qhJBOnHB2yqEpr8+gaNAqKHM7FHu06HOxM7+jmYmagwM4FM1+h
-         ucli6ddu5NQkCxD+soAgfun+XAVopid0z1F1RnpbrVtfg/eHop89WWxNM9Ptql3K66BQ
-         RSyAXKwzPwscQqdVxVLS2c7emwKeuDzOvh1wusGBRIpi5H4udSsxuopDHCBiAyWLKlI0
-         gIfk6QeM3PCs/h+WbymSAUJed4J0RY0JG+EwO2n3K9Mn4SGYnqef9nJJDeymBdof86bX
-         hmNA==
-X-Gm-Message-State: AOAM533L/mWM0yQv2t/O8eL77gcTP9WFe4WOANKhw6FtVdLH/Fsnrpok
-        ep0CdJ7A5YyrY9TGXpxwt8A=
-X-Google-Smtp-Source: ABdhPJwORhy4xEr3z6KRtI5vPBYgQG6GCnOQ3bw0U0q3iaH/5v5z+EGPn/NhV4xOagBqh+n5OtslVA==
-X-Received: by 2002:adf:d1cf:: with SMTP id b15mr455163wrd.382.1627492499598;
-        Wed, 28 Jul 2021 10:14:59 -0700 (PDT)
-Received: from [192.168.178.40] (ipbcc187b7.dynamic.kabel-deutschland.de. [188.193.135.183])
-        by smtp.gmail.com with ESMTPSA id k186sm7673463wme.45.2021.07.28.10.14.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 10:14:59 -0700 (PDT)
-Subject: Re: [PATCH 2/4] configfs: Fix writing at a non-zero offset
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Yanko Kaneti <yaneti@declera.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-References: <20210723212353.896343-1-bvanassche@acm.org>
- <20210723212353.896343-3-bvanassche@acm.org>
- <7bee65ce-f5f1-a525-c72d-221b5d23cf3e@gmail.com>
- <d12f24b6-7066-f9bb-1b88-6cc23c9c45c1@acm.org>
- <4055ca70-7669-d00d-7c08-86fe75a3d377@gmail.com>
- <618b2bdc-282b-0a1d-1fc5-020cf80d7a7e@acm.org>
- <c9cb1f3b-0b3b-c571-4a51-e647f3c1e90a@gmail.com>
- <ab190c50-8c87-b215-1432-056c81bcd656@acm.org>
- <fec30933-46b1-1085-1af1-1fd0d2265981@gmail.com>
- <a3ba73e5-ffd1-887e-acd9-11f537db27e0@acm.org>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <b33a5330-472b-9961-c590-5c07420cf9de@gmail.com>
-Date:   Wed, 28 Jul 2021 19:14:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 28 Jul 2021 13:17:07 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:59210)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m8nB3-007bZg-85; Wed, 28 Jul 2021 11:17:05 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:42676 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m8nB2-00AYDX-2C; Wed, 28 Jul 2021 11:17:04 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Alexey Gladkov <legion@kernel.org>, linux-kernel@vger.kernel.org
+References: <20210721125233.1041429-1-svens@linux.ibm.com>
+Date:   Wed, 28 Jul 2021 12:16:56 -0500
+In-Reply-To: <20210721125233.1041429-1-svens@linux.ibm.com> (Sven Schnelle's
+        message of "Wed, 21 Jul 2021 14:52:33 +0200")
+Message-ID: <875ywucq9j.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <a3ba73e5-ffd1-887e-acd9-11f537db27e0@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1m8nB2-00AYDX-2C;;;mid=<875ywucq9j.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+cqmwLDUxsvtTMPwYR17iocWyqZlJ6gyI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4962]
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Sven Schnelle <svens@linux.ibm.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 520 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 10 (2.0%), b_tie_ro: 9 (1.7%), parse: 0.87 (0.2%),
+         extract_message_metadata: 3.3 (0.6%), get_uri_detail_list: 1.46
+        (0.3%), tests_pri_-1000: 3.2 (0.6%), tests_pri_-950: 1.19 (0.2%),
+        tests_pri_-900: 0.94 (0.2%), tests_pri_-90: 72 (13.8%), check_bayes:
+        70 (13.5%), b_tokenize: 6 (1.2%), b_tok_get_all: 5 (1.0%),
+        b_comp_prob: 1.65 (0.3%), b_tok_touch_all: 54 (10.4%), b_finish: 0.81
+        (0.2%), tests_pri_0: 410 (78.8%), check_dkim_signature: 0.49 (0.1%),
+        check_dkim_adsp: 2.6 (0.5%), poll_dns_idle: 0.77 (0.1%), tests_pri_10:
+        2.2 (0.4%), tests_pri_500: 8 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2] ucounts: add missing data type changes
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+Sven Schnelle <svens@linux.ibm.com> writes:
 
-I reviewed and tested the new patch. For me it works fine.
+> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
+> changed the data type of ucounts/ucounts_max to long, but missed to
+> adjust a few other places. This is noticeable on big endian platforms
+> from user space because the /proc/sys/user/max_*_names files all
+> contain 0.
 
-Just one warning to fix:
+As far as this goes I don't have any problem with this patch.
 
-fs/configfs/file.c: In function ‘fill_write_buffer’:
-fs/configfs/file.c:184:6: warning: unused variable ‘to_copy’ 
-[-Wunused-variable]
-   int to_copy, copied;
-       ^~~~~~~
+However it looks like you missed
+fs/notify/inotify_user.c:inotify_table[].
 
-Apart from that you can add my tested-by or reviewed-by if you want.
+Any chance you can add to the patch that verify things look ok and send
+version 3?
 
-Thank you,
-Bodo
+Thanks,
+Eric
 
 
-
-On 27.07.21 18:47, Bart Van Assche wrote:
-
-> Hi Bodo,
-> 
-> How about replacing patches 1 and 2 from this series with the patch below?
-> Do you agree that this patch is sufficient to restore the behavior from
-> kernel v5.13 and before?
-> 
-> Thanks,
-> 
-> Bart.
-> 
-> Subject: [PATCH 1/3] configfs: Restore the kernel v5.13 text attribute 
-> write behavior
-> 
-> Instead of writing at the offset specified by the write() system call,
-> always write at offset zero.
-> 
-> Cc: Bodo Stroesser <bostroesser@gmail.com>
-> Cc: Martin K. Petersen <martin.petersen@oracle.com>
-> Cc: Yanko Kaneti <yaneti@declera.com>
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Reported-by: Bodo Stroesser <bostroesser@gmail.com>
-> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
+> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
 > ---
->   fs/configfs/file.c | 20 ++++++++------------
->   1 file changed, 8 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-> index 5a0be9985bae..8adf6250b207 100644
-> --- a/fs/configfs/file.c
-> +++ b/fs/configfs/file.c
-> @@ -177,12 +177,11 @@ static ssize_t configfs_bin_read_iter(struct kiocb 
-> *iocb, struct iov_iter *to)
->       return retval;
->   }
-> 
-> -/* Fill [buffer, buffer + pos) with data coming from @from. */
-> -static int fill_write_buffer(struct configfs_buffer *buffer, loff_t pos,
-> +/* Fill @buffer with data coming from @from. */
-> +static int fill_write_buffer(struct configfs_buffer *buffer,
->                    struct iov_iter *from)
->   {
-> -    loff_t to_copy;
-> -    int copied;
-> +    int to_copy, copied;
->       u8 *to;
-> 
->       if (!buffer->page)
-> @@ -190,11 +189,8 @@ static int fill_write_buffer(struct configfs_buffer 
-> *buffer, loff_t pos,
->       if (!buffer->page)
->           return -ENOMEM;
-> 
-> -    to_copy = SIMPLE_ATTR_SIZE - 1 - pos;
-> -    if (to_copy <= 0)
-> -        return 0;
-> -    to = buffer->page + pos;
-> -    copied = copy_from_iter(to, to_copy, from);
-> +    to = buffer->page;
-> +    copied = copy_from_iter(to, SIMPLE_ATTR_SIZE - 1, from);
->       buffer->needs_read_fill = 1;
->       /* if buf is assumed to contain a string, terminate it by \0,
->        * so e.g. sscanf() can scan the string easily */
-> @@ -227,14 +223,14 @@ static ssize_t configfs_write_iter(struct kiocb 
-> *iocb, struct iov_iter *from)
->   {
->       struct file *file = iocb->ki_filp;
->       struct configfs_buffer *buffer = file->private_data;
-> -    ssize_t len;
-> +    int len;
-> 
->       mutex_lock(&buffer->mutex);
-> -    len = fill_write_buffer(buffer, iocb->ki_pos, from);
-> +    len = fill_write_buffer(buffer, from);
->       if (len > 0)
->           len = flush_write_buffer(file, buffer, len);
->       if (len > 0)
-> -        iocb->ki_pos += len;
-> +        iocb->ki_pos = len;
->       mutex_unlock(&buffer->mutex);
->       return len;
->   }
+>  fs/notify/fanotify/fanotify_user.c | 10 ++++++----
+>  kernel/ucount.c                    | 16 ++++++++--------
+>  2 files changed, 14 insertions(+), 12 deletions(-)
+>
+> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+> index 64864fb40b40..6576657a1a25 100644
+> --- a/fs/notify/fanotify/fanotify_user.c
+> +++ b/fs/notify/fanotify/fanotify_user.c
+> @@ -58,18 +58,20 @@ struct ctl_table fanotify_table[] = {
+>  	{
+>  		.procname	= "max_user_groups",
+>  		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
+> -		.maxlen		= sizeof(int),
+> +		.maxlen		= sizeof(long),
+>  		.mode		= 0644,
+> -		.proc_handler	= proc_dointvec_minmax,
+> +		.proc_handler	= proc_doulongvec_minmax,
+>  		.extra1		= SYSCTL_ZERO,
+> +		.extra2		= SYSCTL_INT_MAX,
+>  	},
+>  	{
+>  		.procname	= "max_user_marks",
+>  		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS],
+> -		.maxlen		= sizeof(int),
+> +		.maxlen		= sizeof(long),
+>  		.mode		= 0644,
+> -		.proc_handler	= proc_dointvec_minmax,
+> +		.proc_handler	= proc_doulongvec_minmax,
+>  		.extra1		= SYSCTL_ZERO,
+> +		.extra2		= SYSCTL_INT_MAX,
+>  	},
+>  	{
+>  		.procname	= "max_queued_events",
+> diff --git a/kernel/ucount.c b/kernel/ucount.c
+> index 87799e2379bd..f852591e395c 100644
+> --- a/kernel/ucount.c
+> +++ b/kernel/ucount.c
+> @@ -58,14 +58,14 @@ static struct ctl_table_root set_root = {
+>  	.permissions = set_permissions,
+>  };
+>  
+> -#define UCOUNT_ENTRY(name)				\
+> -	{						\
+> -		.procname	= name,			\
+> -		.maxlen		= sizeof(int),		\
+> -		.mode		= 0644,			\
+> -		.proc_handler	= proc_dointvec_minmax,	\
+> -		.extra1		= SYSCTL_ZERO,		\
+> -		.extra2		= SYSCTL_INT_MAX,	\
+> +#define UCOUNT_ENTRY(name)					\
+> +	{							\
+> +		.procname	= name,				\
+> +		.maxlen		= sizeof(long),			\
+> +		.mode		= 0644,				\
+> +		.proc_handler	= proc_doulongvec_minmax,	\
+> +		.extra1		= SYSCTL_ZERO,			\
+> +		.extra2		= SYSCTL_INT_MAX,		\
+>  	}
+>  static struct ctl_table user_table[] = {
+>  	UCOUNT_ENTRY("max_user_namespaces"),
