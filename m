@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F4C3D936E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8986D3D9374
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhG1Qq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
+        id S230382AbhG1Qqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhG1Qq0 (ORCPT
+        with ESMTP id S230286AbhG1Qq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:46:26 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CF2C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:46:24 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso4991148pjo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:46:24 -0700 (PDT)
+        Wed, 28 Jul 2021 12:46:28 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F43CC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:46:26 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id m1so6066211pjv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:46:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3Wf14gG5Rla0NCThAzrC4jotbBpcH9EXwPpxX3uNRjo=;
-        b=EtlAYDaEc0TpuNyXhqKi50L3nKK4in1bT8Phheri8gREf7P5NrxJ2A29bcz9tTkNV4
-         KMxG0EH+veKm8iIIsYG68Hmklfn+DxuQp9m7Kv3Wqy4kOtalb2dvdpSOmUM0aFyN6p9x
-         8aa2qd57b8OCOv02Ru/xKrV2Y1aghXj14dmi8=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=E+64vU1qKaQt4H6y0jZvJKOI9CTWrL576JKYHnv+P58=;
+        b=Cj6Z5k6TbxD2x9dIUzq5VLOSItV5NUhbE32Hew4oiMroHjqzqpsn9Q3OrMqx00NRpL
+         FHOzjt8EPIj5vKnMCwPP7QmZ1hZu42xkmm9bjUlaAgxtGtGaZ/UObb1c6Z5Ki5FVheBf
+         uGKzLxl5ZVcfQKnfp4lcSKrqaXbb7VzOx+Ec4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3Wf14gG5Rla0NCThAzrC4jotbBpcH9EXwPpxX3uNRjo=;
-        b=j7CKK7ySp2I/uORJwWMQ4O0qRsezm1V5SNVGChZmdJxARLT/54IAsYKuH7rCIw6rUc
-         OzwEjNDlMsDWtgVGl10yZ0RtHEckuAA8X7OEaW55HYH5JwzuBBndYX4ILuMgOCSy5OjM
-         LBhkXWlOtBusM/9iXspP1lQ97QRsMmT/6vHxh7xXjb5V9hp8oygApxuRLBYFCAeG8h86
-         jzjmk5eL9FdrXZ/y81va4kilbJCrPjhcHxwVsSNW+HjXphboQECKAJuUzy5QWzXOojF6
-         dU57tqb3YL4qF7KkWOZsFPllh/bk/GIXz8h5utCg+wBH/os2iUweEHmNiK6Tvc2PhCn6
-         4a4A==
-X-Gm-Message-State: AOAM5316G1iPHORuAJ0a1brzJRSb2q4SO7AOlstJJfkzoHz99B3GiOeJ
-        2RUeIOZ2W8QaMEG8qS+QhbctrQ==
-X-Google-Smtp-Source: ABdhPJzfO4KkJpCh98jEoXUePNoIZEGk1qRg4kKFgs4O1HX2oxNwF0DCb/etyqdvMdxChckiCrP56g==
-X-Received: by 2002:a65:4382:: with SMTP id m2mr656852pgp.205.1627490784259;
-        Wed, 28 Jul 2021 09:46:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=E+64vU1qKaQt4H6y0jZvJKOI9CTWrL576JKYHnv+P58=;
+        b=KQROCxjld/tsGPpHl3aBr4/VZtVMh68EY6Ky4DZ5Pi9QAZII/uh5/gnk3pM5zaaLFc
+         xeIgtSJZbZec1VSAqWkH4hCCB8pWyAaBTQ++skYjcyMNKxrIPeEI2Hb0NOUBkyxJlEIB
+         QngFdGTvXVf+MeHg2TBet33YW0N4gFIlpY/WynA73Pzpns4cz9VpjOIrm/eIT+5zgid7
+         PEB0glRUJdanCZO659Epgx/HswncrM/Jf4yV4F8yddn73PcLRh/vVsaw5KC0NocDbUFY
+         BBQ9MahJlNPbiH9aR5OqEM1KEvWV/iexAUX2deLlWj+nEL/ovtFZnxg/GaVojGoF3GVc
+         /qKA==
+X-Gm-Message-State: AOAM531+vT4nx+rc4FUZpHjawOv8zzXlCz90lKQCw4tLQakw3VLUlBAT
+        Ye1vW3m45ORlm755v7q/vxnuVg==
+X-Google-Smtp-Source: ABdhPJxWFqYtDvnJJgoUgNEvupJRcl6FnSGf7LmlHKsxRxSnzigsEFmlt+KzkZI7qZszb9FiqXJYjg==
+X-Received: by 2002:a17:902:8ec6:b029:12b:ab33:15d4 with SMTP id x6-20020a1709028ec6b029012bab3315d4mr515472plo.80.1627490786102;
+        Wed, 28 Jul 2021 09:46:26 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:9f1e:e713:1a5e:89dc])
-        by smtp.gmail.com with ESMTPSA id l12sm474075pff.182.2021.07.28.09.46.22
+        by smtp.gmail.com with ESMTPSA id l12sm474075pff.182.2021.07.28.09.46.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 09:46:23 -0700 (PDT)
+        Wed, 28 Jul 2021 09:46:25 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     dri-devel@lists.freedesktop.org
 Cc:     tzimmermann@suse.de, linux-arm-msm@vger.kernel.org,
@@ -58,60 +58,60 @@ Cc:     tzimmermann@suse.de, linux-arm-msm@vger.kernel.org,
         rajeevny@codeaurora.org, lyude@redhat.com,
         thierry.reding@gmail.com, steev@kali.org,
         Douglas Anderson <dianders@chromium.org>,
-        Sandeep Panda <spanda@codeaurora.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/6] drm/panel: atna33xc20: Fix the Samsung ATNA33XC20 panel
-Date:   Wed, 28 Jul 2021 09:45:51 -0700
-Message-Id: <20210728164557.1882787-1-dianders@chromium.org>
+Subject: [PATCH 1/6] drm/dp: Don't zero PWMGEN_BIT_COUNT when driver_pwm_freq_hz not specified
+Date:   Wed, 28 Jul 2021 09:45:52 -0700
+Message-Id: <20210728094511.1.If017efce7116ae8ba015ed7def840c390a0e0c77@changeid>
 X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+In-Reply-To: <20210728164557.1882787-1-dianders@chromium.org>
+References: <20210728164557.1882787-1-dianders@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The function drm_edp_backlight_init() is defined such that the
+"driver_pwm_freq_hz" parameter is optional--it's 0 if you don't want
+to futz with it. If you follow this variable through, you'll find out
+that if it's 0 we won't ever set the "bl->pwmgen_bit_count", leaving
+it as 0.
 
-The overall goal of this series is to make the Samsung ATNA33XC20
-panel work more properly. As part of this, we have:
-* A bugfix for the recently abstracted DP AUX backlight code.
-* A bugfix for the sequencing of the ti-sn65dsi86 bridge driver.
-* Removal of the panel from panel-simple and moving it to its own
-  driver.
+That means that before using it in drm_edp_backlight_enable() we need
+to check to see if it's non-zero.
 
-If the bugfixes look good but the rest of the series needs work then
-those could land early on their own. There's no real compile time
-dependency on the bugfixes, things are just glitchier without them.
+Programming this field to zero was confusing the panel I tested with
+(Samsung ATNA33XC20). The backlight still worked somewhat but the
+brightness values didn't correspond to what they should have been.
 
-NOTE: this series will (slightly) conflict with my other recent series
-making eDP panels probable [1]. The conflict is easy to resolve and
-I'm happy to repost either once the other lands. It should be noted
-that the fact that the Samsung ATNA33XC20 needs its own panel driver
-means that it _can't_ handled as a probed driver. I think this is
-fine, at least for now. I don't think it would be easy to make a
-unified design with this panel and other panels given that it's an
-AMOLED panel and has a whole bunch of different components on board.
+Fixes: 867cf9cd73c3 ("drm/dp: Extract i915's eDP backlight code into DRM helpers")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-[1] https://lore.kernel.org/r/20210723002146.1962910-1-dianders@chromium.org/
+ drivers/gpu/drm/drm_dp_helper.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-
-Douglas Anderson (6):
-  drm/dp: Don't zero PWMGEN_BIT_COUNT when driver_pwm_freq_hz not
-    specified
-  drm/bridge: ti-sn65dsi86: Fix power off sequence
-  drm/bridge: ti-sn65dsi86: Add some 100 us delays
-  Revert "drm/panel-simple: Add Samsung ATNA33XC20"
-  Revert "drm/panel-simple: Support for delays between GPIO & regulator"
-  drm/panel: atna33xc20: Introduce the Samsung ATNA33XC20 panel
-
- drivers/gpu/drm/bridge/ti-sn65dsi86.c         |  17 +-
- drivers/gpu/drm/drm_dp_helper.c               |  10 +-
- drivers/gpu/drm/panel/Kconfig                 |  12 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- .../gpu/drm/panel/panel-samsung-atna33xc20.c  | 366 ++++++++++++++++++
- drivers/gpu/drm/panel/panel-simple.c          |  61 ---
- 6 files changed, 398 insertions(+), 69 deletions(-)
- create mode 100644 drivers/gpu/drm/panel/panel-samsung-atna33xc20.c
-
+diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+index b5f75ca05774..b8a5c5e49d74 100644
+--- a/drivers/gpu/drm/drm_dp_helper.c
++++ b/drivers/gpu/drm/drm_dp_helper.c
+@@ -3229,10 +3229,12 @@ int drm_edp_backlight_enable(struct drm_dp_aux *aux, const struct drm_edp_backli
+ 		new_dpcd_buf &= ~DP_EDP_BACKLIGHT_CONTROL_MODE_MASK;
+ 		new_dpcd_buf |= DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD;
+ 
+-		ret = drm_dp_dpcd_writeb(aux, DP_EDP_PWMGEN_BIT_COUNT, bl->pwmgen_bit_count);
+-		if (ret != 1)
+-			drm_dbg_kms(aux->drm_dev, "%s: Failed to write aux pwmgen bit count: %d\n",
+-				    aux->name, ret);
++		if (bl->pwmgen_bit_count) {
++			ret = drm_dp_dpcd_writeb(aux, DP_EDP_PWMGEN_BIT_COUNT, bl->pwmgen_bit_count);
++			if (ret != 1)
++				drm_dbg_kms(aux->drm_dev, "%s: Failed to write aux pwmgen bit count: %d\n",
++					aux->name, ret);
++		}
+ 	}
+ 
+ 	if (bl->pwm_freq_pre_divider) {
 -- 
 2.32.0.432.gabb21c7263-goog
 
