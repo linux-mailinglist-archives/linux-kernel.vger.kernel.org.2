@@ -2,111 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F0F3D8D3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCDA3D8D45
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbhG1Lye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:54:34 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:48135 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236071AbhG1Lya (ORCPT
+        id S236166AbhG1LzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:55:11 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:54871 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234752AbhG1LzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:54:30 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3AB4C5C00E7;
-        Wed, 28 Jul 2021 07:54:25 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 28 Jul 2021 07:54:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=1xqt7KTezd7B+8knlEY1h4ifSLV
-        iKAGI4K83e6m5dMU=; b=0lzLhgyKnZcaTBLpMblHo2mdF4qP+n7ywW9Pc5rJ/bz
-        t+j7TrvtrIaZN5nqBJN0PxZ+xOYQK6X+5ubl3Qr8/nBb5cTxeT00qzqbOVLHa/yk
-        n41HezpvTvk2EUA2PZzQfMrfoBvcI2Sd+QvHHr3ZGHq1r/Ym0c8ICayhgiigaxCw
-        cbGCw0b2rvBK/00hgNxvq6FNazO9Q8sp9bTCnlohLC5SiDRc7LHUXEXCuPBlxDkt
-        9fgYL+F95XBCBaRYnL3cjHxly9FzTS2jr515npRx+R/DbghAIgIHNOKbsAtT8uPo
-        vHHZ4S/MDOLdvFUiqrTVyGKV6YKubhhh8d0DS7lSDAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1xqt7K
-        Tezd7B+8knlEY1h4ifSLViKAGI4K83e6m5dMU=; b=rTvZqaHci/YLsdQdLJySj8
-        2rGLLNwrvCTrzJ2Dm3HreBl/4F2RDYiFtOChDRC1hPCdtxx3emt9IU0Wc8+FFjOP
-        gb6cgz81XZ/24M0h5nAq5bvheEp0KXYFf8BLCP8p5U7NpmUQhL01HjrGj04DJWXN
-        t13hZ5+RUswYn9X4zrpk2zY4RleuIqlxx6nnimfLAndp3+vBTeeS5pQCilhYNvB1
-        43c1HR/E735SW3cM/fvLDxyE6cBtLt5evRbGW1bsfqNw2NsNYXx+u/3W66WNp0yS
-        3kZwIyZfOSnvjJ++AYS3qAeF0MXBQ+kGEu2X4Iz7ZvmxwagqsvAGpeeELH5uJ7Zw
-        ==
-X-ME-Sender: <xms:cEUBYeab7_sgZcUzpbAZRV3BDZjcIOdYshL6gvXwwd3wDIwjxMojkw>
-    <xme:cEUBYRYhFP9LtjESM5MkF9nKeinNDLvQeLJ9KWIsZlj7dqJIFTI7yxXBqfgqCw-Pz
-    4KFVL6NPWJOUqXlfZ8>
-X-ME-Received: <xmr:cEUBYY8y9DyIMTwWEV1y8skZhbcG2-CLLK1dkwrxOXZoD_7UqFE93QeHUavEniF_h8brWREHjValqry-xbt5tZNVHhs8vXfM0rGJ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeelgdegfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:cEUBYQptHTw3iiPxKKDqnvLKHgTeZiygjjUHIVgGYZeRRtGfNyAxuA>
-    <xmx:cEUBYZot-nXIpjVKwmN8yBCZoszHGyE_oqIKwODYwk7MTbly1rGN4A>
-    <xmx:cEUBYeRiXBduqKUvRehdWgNc5nDiaE_eN4fM9c8-OKP_6V2ImIOIpw>
-    <xmx:cUUBYalMHEPbgg2ZLaOod4Dqm2o5_EdHfwtFzMNc-F18JQzoy_WGbA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 28 Jul 2021 07:54:23 -0400 (EDT)
-Date:   Wed, 28 Jul 2021 13:54:19 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     "Ivan T. Ivanov" <iivanov@suse.de>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Emma Anholt <emma@anholt.net>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/vc4: hdmi: Add debugfs prefix
-Message-ID: <20210728115419.kt3tdhx5jmmk42u2@gilmour>
-References: <20210723072414.17590-1-iivanov@suse.de>
+        Wed, 28 Jul 2021 07:55:09 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 2469B4000D;
+        Wed, 28 Jul 2021 11:55:01 +0000 (UTC)
+Subject: Re: [PATCH v2 -next] riscv: mm: remove redundant trampoline PGD for
+ 64bit
+To:     Nanyong Sun <sunnanyong@huawei.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, anup.patel@wdc.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        palmerdabbelt@google.com, atish.patra@wdc.com,
+        wangkefeng.wang@huawei.com, tiantao6@hisilicon.com,
+        qiuwenbo@phytium.com.cn, rppt@kernel.org, jszhang@kernel.org,
+        mick@ics.forth.gr
+References: <20210728024910.1417720-1-sunnanyong@huawei.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <3199c658-ffac-729d-d93d-8895e7d3668e@ghiti.fr>
+Date:   Wed, 28 Jul 2021 13:55:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rotth3xlzxm5wim2"
-Content-Disposition: inline
-In-Reply-To: <20210723072414.17590-1-iivanov@suse.de>
+In-Reply-To: <20210728024910.1417720-1-sunnanyong@huawei.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---rotth3xlzxm5wim2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Le 28/07/2021 à 04:49, Nanyong Sun a écrit :
+> Remove redundant trampoline PGD for 64bit and add more comment
+> for why 32bit systems need trampoline PGD.
+> 
+> There was a patch and discussion similar to this,refer to
+> the link [1][2].
+> 
+> The trampoline PGD is redundant for 64bit systems because:
+> 1. The early PGD covers the entire kernel mapping. Directly
+> loading early PGD can achieve the result in boot stage.
+> A more trampoline PGD makes code hard to understand.
+> 2. Directly loading early PGD is safe in 64bit systems since
+> the kernel virtual address starts as 0xFFFFxxxxxxxxxxxx,
+> which has a very big gap with RAM address.It won't fall into
+> the corner case that 32bit system worrys.
+> 3. Remove redundant trampoline PGD can benefit to code maintaince,
+> because 64bit systems have more page table levels.For example:
+> If we want to support SV48 which has 4 page table levels, we have
+> to add a trampoline_pud and insert it before trampoline_pmd.
+> 
+> Reference link:
+> [1]https://lore.kernel.org/linux-riscv/20190325092234.5451-4-anup.patel@wdc.com/
+> [2]https://lkml.org/lkml/2019/3/28/147
+> 
+> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+> Reviewed-by: Alexandre Ghiti <alex@ghiti.fr>
 
-On Fri, Jul 23, 2021 at 09:24:14AM +0200, Ivan T. Ivanov wrote:
-> Without prefix debugfs can't properly create component
-> debug information tree when driver register more than
-> one component per device, in this case two. Fix this.
->=20
-> debugfs: Directory 'fef00700.hdmi' with parent 'vc4-hdmi-0' already prese=
-nt!
->=20
-> Signed-off-by: Ivan T. Ivanov <iivanov@suse.de>
+I have not reviewed this patch yet! :)
 
-Thanks for your patch.
-
-However, that part changed fairly significantly recently so you'll need
-to rebase it on top of the drm-misc-next (or linux-next)
-
-Maxime
-
---rotth3xlzxm5wim2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYQFFawAKCRDj7w1vZxhR
-xSo9AQDI2NTYVqSA2pkWlD+4Sqebxb1NKxDNprh8vzsltJFq6QD9HsHa+guhDvGX
-U1Cxfh+vtki37RRS3K0JfmtpMvm+WgM=
-=s2kW
------END PGP SIGNATURE-----
-
---rotth3xlzxm5wim2--
+> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Reviewed-by: weiyongjun <weiyongjun1@huawei.com>
+> ---
+> v2 changes:
+>    Adjust codes based on the review suggestions from Alex Ghiti,
+>    make codes more readable.
+> ---
+>   arch/riscv/kernel/head.S | 46 ++++++++++++++++++++++++++--------------
+>   arch/riscv/mm/init.c     | 16 ++++----------
+>   2 files changed, 34 insertions(+), 28 deletions(-)
+> 
+> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+> index fce5184b22c3..3816aa5edc69 100644
+> --- a/arch/riscv/kernel/head.S
+> +++ b/arch/riscv/kernel/head.S
+> @@ -89,29 +89,52 @@ relocate:
+>   	add ra, ra, a1
+>   
+>   	/* Point stvec to virtual address of intruction after satp write */
+> -	la a2, 1f
+> +#ifdef CONFIG_64BIT
+> +	la a2, load_done
+> +#else
+> +	la a2, load_kernel_pgd
+> +#endif
+>   	add a2, a2, a1
+>   	csrw CSR_TVEC, a2
+>   
+> -	/* Compute satp for kernel page tables, but don't load it yet */
+> +	/* Compute satp for kernel page tables.
+> +	 * For 64bit systems, load it and trap to stvec.
+> +	 * For 32bit systems, don't load it yet.
+> +	 */
+>   	srl a2, a0, PAGE_SHIFT
+>   	li a1, SATP_MODE
+>   	or a2, a2, a1
+>   
+>   	/*
+> +	 * Before writing satp, we need a full fence here because setup_vm() just
+> +	 * wrote these PTEs and we need to ensure the new translations are in use.
+> +	 */
+> +	sfence.vma
+> +#ifndef CONFIG_64BIT
+> +	/*
+> +	 * 32bit systems need firstly loading a trampoline to handle a corner
+> +	 * case where load address range overlaps kernel virtual address range.
+>   	 * Load trampoline page directory, which will cause us to trap to
+> -	 * stvec if VA != PA, or simply fall through if VA == PA.  We need a
+> -	 * full fence here because setup_vm() just wrote these PTEs and we need
+> -	 * to ensure the new translations are in use.
+> +	 * stvec if VA != PA, or simply fall through if VA == PA.
+>   	 */
+>   	la a0, trampoline_pg_dir
+>   	XIP_FIXUP_OFFSET a0
+>   	srl a0, a0, PAGE_SHIFT
+>   	or a0, a0, a1
+> -	sfence.vma
+>   	csrw CSR_SATP, a0
+> +#endif
+>   .align 2
+> -1:
+> +load_kernel_pgd:
+> +        /*
+> +         * Switch to kernel page tables.  A full fence is necessary in order to
+> +         * avoid using the trampoline translations, which are only correct for
+> +         * the first superpage.  Fetching the fence is guarnteed to work
+> +         * because that first superpage is translated the same way.
+> +         */
+> +        csrw CSR_SATP, a2
+> +        sfence.vma
+> +
+> +load_done:
+>   	/* Set trap vector to spin forever to help debug */
+>   	la a0, .Lsecondary_park
+>   	csrw CSR_TVEC, a0
+> @@ -122,15 +145,6 @@ relocate:
+>   	la gp, __global_pointer$
+>   .option pop
+>   
+> -	/*
+> -	 * Switch to kernel page tables.  A full fence is necessary in order to
+> -	 * avoid using the trampoline translations, which are only correct for
+> -	 * the first superpage.  Fetching the fence is guarnteed to work
+> -	 * because that first superpage is translated the same way.
+> -	 */
+> -	csrw CSR_SATP, a2
+> -	sfence.vma
+> -
+>   	ret
+>   #endif /* CONFIG_MMU */
+>   #ifdef CONFIG_SMP
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index ac48742fa6fc..306fcb2334fa 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -219,13 +219,17 @@ unsigned long pfn_base __ro_after_init;
+>   EXPORT_SYMBOL(pfn_base);
+>   
+>   pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> +#ifndef CONFIG_64BIT
+>   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> +#endif /* CONFIG_64BIT */
+>   static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+>   
+>   pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+>   
+>   #ifdef CONFIG_XIP_KERNEL
+> +#ifndef CONFIG_64BIT
+>   #define trampoline_pg_dir      ((pgd_t *)XIP_FIXUP(trampoline_pg_dir))
+> +#endif /* CONFIG_64BIT */
+>   #define fixmap_pte             ((pte_t *)XIP_FIXUP(fixmap_pte))
+>   #define early_pg_dir           ((pgd_t *)XIP_FIXUP(early_pg_dir))
+>   #endif /* CONFIG_XIP_KERNEL */
+> @@ -300,13 +304,11 @@ static void __init create_pte_mapping(pte_t *ptep,
+>   
+>   #ifndef __PAGETABLE_PMD_FOLDED
+>   
+> -static pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>   static pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>   static pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>   static pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>   
+>   #ifdef CONFIG_XIP_KERNEL
+> -#define trampoline_pmd ((pmd_t *)XIP_FIXUP(trampoline_pmd))
+>   #define fixmap_pmd     ((pmd_t *)XIP_FIXUP(fixmap_pmd))
+>   #define early_pmd      ((pmd_t *)XIP_FIXUP(early_pmd))
+>   #endif /* CONFIG_XIP_KERNEL */
+> @@ -585,16 +587,6 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>   	/* Setup fixmap PMD */
+>   	create_pmd_mapping(fixmap_pmd, FIXADDR_START,
+>   			   (uintptr_t)fixmap_pte, PMD_SIZE, PAGE_TABLE);
+> -	/* Setup trampoline PGD and PMD */
+> -	create_pgd_mapping(trampoline_pg_dir, kernel_map.virt_addr,
+> -			   (uintptr_t)trampoline_pmd, PGDIR_SIZE, PAGE_TABLE);
+> -#ifdef CONFIG_XIP_KERNEL
+> -	create_pmd_mapping(trampoline_pmd, kernel_map.virt_addr,
+> -			   kernel_map.xiprom, PMD_SIZE, PAGE_KERNEL_EXEC);
+> -#else
+> -	create_pmd_mapping(trampoline_pmd, kernel_map.virt_addr,
+> -			   kernel_map.phys_addr, PMD_SIZE, PAGE_KERNEL_EXEC);
+> -#endif
+>   #else
+>   	/* Setup trampoline PGD */
+>   	create_pgd_mapping(trampoline_pg_dir, kernel_map.virt_addr,
+> 
