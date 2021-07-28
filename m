@@ -2,115 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AB93D964E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D9C3D9652
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhG1UAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhG1UAv (ORCPT
+        id S231316AbhG1UDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 16:03:06 -0400
+Received: from mail.efficios.com ([167.114.26.124]:45560 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhG1UDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:00:51 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EE0C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:00:49 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id t21so4012804plr.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TJBawUD1aFfD+dzRqdwJ1MPEWpORtq7Fvvwh0fqmN4w=;
-        b=U5xnZ2ApxaMWnn7gJYnJAR8u59w7nGyYjuMteJJ5vh2utJ4V+34Hki0luScN94y1q5
-         NY7LJKxP0vdSs/BkhP4DvbU7p6TW8iGGLqYrsAgsXtFXw3z4kD6jfWlLcSNJq1dwldXH
-         csVkvbMVSaBdzCzmn4y28pFJJ6R7MAveCAHYupzmC5jABC4uID9rD1tNvWsHFP6EuitP
-         zz9zn2HchfkHh/FwP/LwNVEERNucc53wq7+yJRc3x98OP4+PY9iNN7tyJPbQ/rAj6XF4
-         LtutpaEF6eqyZtY0HfbHWNEuwDt0yVaHLSFCpzTkNwcr15QBhOkGoIRO60MThiEhkT1e
-         OyYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TJBawUD1aFfD+dzRqdwJ1MPEWpORtq7Fvvwh0fqmN4w=;
-        b=GpECbLONOXYPhjBfkACUJufnzcZJhfNYASmUP9/novQ2/6mEprQuqq7XZWqL0RJV64
-         zCrd/XlymStcFrqizWNvqswPyNJXAfytwWYfhqwuykzO0r6MFQCoeh9JmLKcpNYdwM0e
-         +kA5pHH+xWl+nD0YzHH3nTlLbGvqvxcgqaZRds8i7cmfXUkvuqRhUr937EeR3NX2xKrH
-         F8ybEi01cDz5INAybQoYErhADeFi3tQmqibNuLSdZZDKLx+rDXBASSaXh9h5bswcJpGT
-         STD+JwIiRr6BAfsMAi4VBdEZFGnADftAn3PLv7w6eHFfnpD7+6z8cHwQSdTISovh8gHH
-         eOzw==
-X-Gm-Message-State: AOAM533B7TOCqQDKkKSPfSA2BKtqWQVAupTiEfGc2N+9zCXWnvHWPZWQ
-        ZAjYrCyVJlpXIbuwWU9H0HA=
-X-Google-Smtp-Source: ABdhPJxglSz5HVVd1rwyBjzRsuioP4LKmTyej4fYd6rxpo5LXhgxwUrQNYu6edeKN6oVLP3h57Ocvg==
-X-Received: by 2002:a17:90a:7505:: with SMTP id q5mr9437802pjk.64.1627502449011;
-        Wed, 28 Jul 2021 13:00:49 -0700 (PDT)
-Received: from ojas ([122.161.51.5])
-        by smtp.gmail.com with ESMTPSA id b13sm808153pfl.49.2021.07.28.13.00.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 13:00:48 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 01:30:39 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     nsaenz@kernel.org, stefan.wahren@i2se.com,
-        dan.carpenter@oracle.com, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] staging: vchiq: Add details to $CONFIG_VCHIQ_CDEV
- help text
-Message-ID: <20210728200039.GA17046@ojas>
-References: <cover.1627495116.git.ojaswin98@gmail.com>
- <9c9c128b41e31d6bebe646e052aa05c44b19eb83.1627495116.git.ojaswin98@gmail.com>
- <YQGmG6nwk+pOyAdu@kroah.com>
+        Wed, 28 Jul 2021 16:03:05 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id C649235B4A9;
+        Wed, 28 Jul 2021 16:03:02 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 1neallEIlD3z; Wed, 28 Jul 2021 16:03:02 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3570635B4A6;
+        Wed, 28 Jul 2021 16:03:02 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3570635B4A6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1627502582;
+        bh=b//lJLcPByuvZRIn7/xeEND5gAZOf4XdRcGyQEVeavU=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=ZYOrhnNqKYJK7ZSr8cZjqOBTtE8PKtnP9KuIAzfUe5Rzqg+lLL5NCJbb433RuP1Pp
+         RCkSUZ62764URo+zbIUzJgRthtunezURj1eO4Ww7tIJGGebAUNlnaDcCNjLthDGN6A
+         A+pg9aVUqlYAqYl+E46qhMz7Zo94Xo/B+6pQ49oPyJ3GRJMD4VA4p9VRGHRY5oEJ8x
+         Ie/sBmTh2VzppVfuPba1QPzLJOZLxSrgLrEyVLPOFwGr5tCnElnKkkLLUef6xr7NxP
+         5WMEjsJN6ZGgJA8gh8b7QGD+w3JE/YJ0I/K2L2YhgfwbVxRst5Ne9BVh3Vwr9t9bxI
+         lX3O+6wIQAfuw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id X339T_vesXcS; Wed, 28 Jul 2021 16:03:02 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 1EEDE35B435;
+        Wed, 28 Jul 2021 16:03:02 -0400 (EDT)
+Date:   Wed, 28 Jul 2021 16:03:02 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     paulmck <paulmck@kernel.org>
+Cc:     rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <874308613.9545.1627502582005.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210728194505.GA1500024@paulmck-ThinkPad-P17-Gen-1>
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1> <20210721202127.2129660-4-paulmck@kernel.org> <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1> <2135064974.9081.1627496585724.JavaMail.zimbra@efficios.com> <20210728185854.GK4397@paulmck-ThinkPad-P17-Gen-1> <20210728194505.GA1500024@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and
+ updates
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQGmG6nwk+pOyAdu@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
+Thread-Topic: Weaken ->dynticks accesses and updates
+Thread-Index: 568K9ZSxkflip1GHOVAM8nm+9R9/hw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 08:46:51PM +0200, Greg KH wrote:
-> On Thu, Jul 29, 2021 at 12:07:17AM +0530, Ojaswin Mujoo wrote:
-> > Add some details to the Kconfig definition of $CONFIG_VCHIQ_CDEV to help
-> > make the motive behind it a bit more clear.
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
-> > ---
-> >  drivers/staging/vc04_services/Kconfig | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
-> > index 2b70c37cdd09..cb02d8a4cb74 100644
-> > --- a/drivers/staging/vc04_services/Kconfig
-> > +++ b/drivers/staging/vc04_services/Kconfig
-> > @@ -25,8 +25,12 @@ config VCHIQ_CDEV
-> >  	bool "VCHIQ Character Driver"
-> >  	default y
-> >  	help
-> > -		Enable the creation of VCHIQ character driver to help
-> > -		communicate with the Videocore platform.
-> > +		Enable the creation of VCHIQ character driver to help communicate
-> > +		with the VideoCore platform. The cdev exposes ioctls used by
-> > +		userspace libraries and testing tools to interact with VideoCore.
-> > +		This can be set to 'N' if the VideoCore communication is not needed
-> > +		by userspace but only by other kernel modules (like bcm2835-audio).
-> > +		If not sure, set this to 'Y'.
+----- On Jul 28, 2021, at 3:45 PM, paulmck paulmck@kernel.org wrote:
+[...]
 > 
-> I still do not understand if I need this driver or not, and I have this
-> hardware!  What functionality does this driver accomplish?  What is
-> VideoCore?
-Hey Greg,
-
-I believe I can add this under the CONFIG_BCM2835_VCHIQ config option,
-as that enables the core driver that implements the functions to
-communicate with VideoCore platform? 
-
-This config option merely adds a cdev which exposes the the core
-driver's functionality to userspace. 
-
-Regards,
-Ojaswin
+> And how about like this?
 > 
-> thanks,
+>						Thanx, Paul
 > 
-> greg k-h
+> ------------------------------------------------------------------------
+> 
+> commit cb8914dcc6443cca15ce48d937a93c0dfdb114d3
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Wed Jul 28 12:38:42 2021 -0700
+> 
+>    rcu: Move rcu_dynticks_eqs_online() to rcu_cpu_starting()
+>    
+>    The purpose of rcu_dynticks_eqs_online() is to adjust the ->dynticks
+>    counter of an incoming CPU if required.  It is currently is invoked
+
+"is currently is" -> "is currently"
+
+>    from rcutree_prepare_cpu(), which runs before the incoming CPU is
+>    running, and thus on some other CPU.  This makes the per-CPU accesses in
+>    rcu_dynticks_eqs_online() iffy at best, and it all "works" only because
+>    the running CPU cannot possibly be in dyntick-idle mode, which means
+>    that rcu_dynticks_eqs_online() never has any effect.  One could argue
+>    that this means that rcu_dynticks_eqs_online() is unnecessary, however,
+>    removing it makes the CPU-online process vulnerable to slight changes
+>    in the CPU-offline process.
+
+Why favor moving this from the prepare_cpu to the cpu_starting hotplug step,
+rather than using the target cpu's rdp from rcutree_prepare_cpu ? Maybe there
+was a good reason for having this very early in the prepare_cpu step ?
+
+Also, the commit message refers to this bug as having no effect because the
+running CPU cannot possibly be in dyntick-idle mode. I understand that calling
+this function was indeed effect-less, but then why is it OK for the CPU coming
+online to skip this call in the first place ? This commit message hints at
+"slight changes in the CPU-offline process" which could break it, but therer is
+no explanation of what makes this not an actual bug fix.
+
+Thanks,
+
+Mathieu
+
+>    
+>    This commit therefore moves the call to rcu_dynticks_eqs_online() from
+>    rcutree_prepare_cpu() to rcu_cpu_starting(), this latter being guaranteed
+>    to be running on the incoming CPU.  The call to this function must of
+>    course be placed before this rcu_cpu_starting() announces this CPU's
+>    presence to RCU.
+>    
+>    Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 0172a5fd6d8de..aa00babdaf544 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4129,7 +4129,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
+> 	rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
+> 	rdp->blimit = blimit;
+> 	rdp->dynticks_nesting = 1;	/* CPU not up, no tearing. */
+> -	rcu_dynticks_eqs_online();
+> 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
+> 
+> 	/*
+> @@ -4249,6 +4248,7 @@ void rcu_cpu_starting(unsigned int cpu)
+> 	mask = rdp->grpmask;
+> 	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
+> 	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
+> +	rcu_dynticks_eqs_online();
+> 	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
+> 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>  	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
