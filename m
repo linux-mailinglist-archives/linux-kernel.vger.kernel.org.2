@@ -2,196 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BB63D97F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD2A3D97FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhG1V6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 17:58:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232005AbhG1V6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 17:58:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5846C6103A;
-        Wed, 28 Jul 2021 21:58:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627509501;
-        bh=ezqX1FxBa8zEWu5cc4dGcLZ31b6wltzL2lhjCEjPd4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NYhgaSpAaZQiBMxbtw8mLPqN6JjKBRWz67kC67zjYpveuseyI6B+0C4hFgLevqDA8
-         7DQw2Yk+HFQt7g9PytIWaWF17EeqFM+rqDL/1v/piz3K+gaykO9917Ta7ogt5SjT0+
-         sbvvQwVba8FwGTJQfVh6dOYtAQU1+EnSvd1W7TG4o9z9tUtHesZBVzScHGpGqNmZAu
-         RquoQKp9lpu3wHv44y7dpwe/iN9Fl4+c0cUUkKnmYTcFBrogmTL/bsvNl1ly8/ot+s
-         udzdqVWpV5W9pE/H+ktZjmB5dOsh43k1oCXYKzG+Xm0u53WxtFRcjuKw84WbqQlsc7
-         tWsA7po0ENfjA==
-Date:   Thu, 29 Jul 2021 00:58:19 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borys Movchan <borysmn@axis.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel@axis.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-Message-ID: <20210728215819.vsdwh2fbct7wxwsu@kernel.org>
-References: <20210728105730.10170-1-borysmn@axis.com>
+        id S232164AbhG1V7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 17:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232144AbhG1V7U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 17:59:20 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6B5C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:59:16 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id i10so4438691pla.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ry2so8wkWIDOCG/sQogiwuE+9Zyl4IrepEHbauTvq4U=;
+        b=IGRqrDLsPrMGIokLAHHitBXrTGx8ldPYhQZ0vhlO7BwqLTxHuG39KqoD+0xySdQDeZ
+         wOes72WlsRRJac/rz2gEpxXYvtLZ6bSaZfmQarX0qm7P2LxswesUfd9AKF5i4JhugBhi
+         nx2jk3HjG5WlS1z72s2XLwsxgebFqKKL6xJwA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ry2so8wkWIDOCG/sQogiwuE+9Zyl4IrepEHbauTvq4U=;
+        b=kKAn8g78KHoTVG+rr7GVjgyq/CnjuPbaHE1yb36Ec8NpZeAmGXaRX9oT6BxCLRNQQc
+         tfTp1AKFO/llGPQzcJRkVpTPayvLRTPX5GGcl8A1ubZejQOt5vQX7X6XqY9vuW/lr9p2
+         Hqm2CLidYRtYnUblEOPjgi2a9bTq3Vs88VF9pyElIpsV13zIxApJnD/FI57fN8/D62Ml
+         WIaNRdmRZ6wFZCTvicJ/mRREomE4QKH8qsioKgiPel7fcK1g+yVAIulX71tpExHn2j8T
+         mA8XQeJo4uTxMBZYD0affLu4RGCS0lU4rjjwl8EZ+wFNGuwoZAXV4l6THEzPZG2stCDX
+         dJNw==
+X-Gm-Message-State: AOAM533fyVteF3nMBIdcTcKQyLMftT8PrEmVtFtLb6dyd3WO7V0SFxTc
+        kX4aSgaRGALneT7ivKASPLgdyA==
+X-Google-Smtp-Source: ABdhPJzgz5HqNdUbzYWG/8osCsOtCEP6ipgHXlpT0b4bkWx62GdyxJFdtfEBDYACX8aQ6iHvHf/hRw==
+X-Received: by 2002:a65:498a:: with SMTP id r10mr928037pgs.7.1627509555798;
+        Wed, 28 Jul 2021 14:59:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 30sm1011862pgq.31.2021.07.28.14.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 14:59:15 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 14:59:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     linux-hardening@vger.kernel.org,
+        Keith Packard <keithpac@amazon.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 04/64] stddef: Introduce struct_group() helper macro
+Message-ID: <202107281456.1A3A5C18@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-5-keescook@chromium.org>
+ <41183a98-bdb9-4ad6-7eab-5a7292a6df84@rasmusvillemoes.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210728105730.10170-1-borysmn@axis.com>
+In-Reply-To: <41183a98-bdb9-4ad6-7eab-5a7292a6df84@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 12:57:30PM +0200, Borys Movchan wrote:
-> If something went wrong during the TPM firmware upgrade,
-> like power failure or the firmware image file get corrupted,
-> the TPM might end up in Upgrade or Failure mode upon the
-> next start. The state is persistent between the TPM power
-> cycle/restart.
+On Wed, Jul 28, 2021 at 12:54:18PM +0200, Rasmus Villemoes wrote:
+> On 27/07/2021 22.57, Kees Cook wrote:
 > 
-> According to TPM specification:
->  * If the TPM is in Upgrade mode, it will answer with
->    TPM2_RC_UPGRADE to all commands except Field Upgrade
->    related ones.
->  * If the TPM is in Failure mode, it will allow performing
->    TPM initialization but will not provide any crypto
->    operations. Will happily respond to Field Upgrade calls.
+> > In order to have a regular programmatic way to describe a struct
+> > region that can be used for references and sizing, can be examined for
+> > bounds checking, avoids forcing the use of intermediate identifiers,
+> > and avoids polluting the global namespace, introduce the struct_group()
+> > macro. This macro wraps the member declarations to create an anonymous
+> > union of an anonymous struct (no intermediate name) and a named struct
+> > (for references and sizing):
+> > 
+> > 	struct foo {
+> > 		int one;
+> > 		struct_group(thing,
+> > 			int two,
+> > 			int three,
+> > 		);
+> > 		int four;
+> > 	};
 > 
-> The fix adds the possibility to detect an active state of
-> the TPM and gives the user-space a chance to finish the
-> firmware upgrade/recover the TPM.
+> That example won't compile, the commas after two and three should be
+> semicolons.
 
-This is different than telling what the patch does. It's just
-describing a goal, but does not describe how the driver is
-changed, and reasons for doing that.
+Oops, yes, thanks. This is why I shouldn't write code that doesn't first
+go through a compiler. ;)
 
-For instance, you check 'limited_mode' flag in a few sites.
-How can I know that those are exactly the locations where this
-needs to be done?
+> And your implementation relies on MEMBERS not containing any comma
+> tokens, but as
+> 
+>   int a, b, c, d;
+> 
+> is a valid way to declare multiple members, consider making MEMBERS
+> variadic
+> 
+> #define struct_group(NAME, MEMBERS...)
+> 
+> to have it slurp up every subsequent argument and make that work.
 
-> Signed-off-by: Borys Movchan <borysmn@axis.com>
-> ---
-> 
-> Notes:
->     v2: The terms are changed to match the ones used in the TPM specification.
->     Rework the commit message to provide more details regarding TPM
->     behavior in Failure/Upgrade mode.
-> 
->     The TPM specification describes TPM behavior in Upgrade mode very clearly.
->     Things are a bit more complex if we are talking about Failure mode.
->     The TPM behavior in this mode is highly vendor-specific. Although, there
->     is one thing clearly described in the TPM specification and can be relied
->     on to detect the Failure state: in Failure mode, the TPM doesn't provide
->     any crypto operations. Including access to attributes and configuration
->     registers.
->     It seems persistent between different TPM manufacturers, at least to the
->     degree I was able to verify.
-> 
->  drivers/char/tpm/tpm-chip.c | 23 +++++++++++++++--------
->  drivers/char/tpm/tpm2-cmd.c | 12 ++++++++++--
->  include/linux/tpm.h         |  1 +
->  3 files changed, 26 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index ddaeceb7e109..ff2367c447fb 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -574,20 +574,25 @@ static int tpm_get_pcr_allocation(struct tpm_chip *chip)
->  int tpm_chip_register(struct tpm_chip *chip)
->  {
->  	int rc;
-> +	bool limited_mode = false;
->  
->  	rc = tpm_chip_start(chip);
->  	if (rc)
->  		return rc;
->  	rc = tpm_auto_startup(chip);
-> -	if (rc) {
-> +	if (rc == -EIO) {
-> +		limited_mode = true;
-> +	} else if (rc) {
->  		tpm_chip_stop(chip);
->  		return rc;
->  	}
->  
-> -	rc = tpm_get_pcr_allocation(chip);
-> -	tpm_chip_stop(chip);
-> -	if (rc)
-> -		return rc;
-> +	if (!limited_mode) {
-> +		rc = tpm_get_pcr_allocation(chip);
-> +		tpm_chip_stop(chip);
-> +		if (rc)
-> +			return rc;
-> +	}
->  
->  	tpm_sysfs_add_device(chip);
->  
-> @@ -595,9 +600,11 @@ int tpm_chip_register(struct tpm_chip *chip)
->  
->  	tpm_add_ppi(chip);
->  
-> -	rc = tpm_add_hwrng(chip);
-> -	if (rc)
-> -		goto out_ppi;
-> +	if (!limited_mode) {
-> +		rc = tpm_add_hwrng(chip);
-> +		if (rc)
-> +			goto out_ppi;
-> +	}
->  
->  	rc = tpm_add_char_device(chip);
->  	if (rc)
-> diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-> index a25815a6f625..7468353ed67d 100644
-> --- a/drivers/char/tpm/tpm2-cmd.c
-> +++ b/drivers/char/tpm/tpm2-cmd.c
-> @@ -718,7 +718,8 @@ static int tpm2_startup(struct tpm_chip *chip)
->   *                     sequence
->   * @chip: TPM chip to use
->   *
-> - * Returns 0 on success, < 0 in case of fatal error.
-> + * Returns 0 on success, -ENODEV in case of fatal error,
-> + *	    -EIO in case of Reduced/Upgrade mode
->   */
->  int tpm2_auto_startup(struct tpm_chip *chip)
->  {
-> @@ -729,7 +730,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
->  		goto out;
->  
->  	rc = tpm2_do_selftest(chip);
-> -	if (rc && rc != TPM2_RC_INITIALIZE)
-> +	if (rc == TPM2_RC_UPGRADE) {
-> +		rc = -EIO;
-> +		goto out;
-> +	} else if (rc && rc != TPM2_RC_INITIALIZE)
->  		goto out;
->  
->  	if (rc == TPM2_RC_INITIALIZE) {
-> @@ -743,6 +747,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
->  	}
->  
->  	rc = tpm2_get_cc_attrs_tbl(chip);
-> +	if (rc) { /* Succeeded until here, but failed -> reduced mode */
-> +		rc = -EIO;
-> +		goto out;
-> +	}
->  
->  out:
->  	if (rc > 0)
-> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> index aa11fe323c56..e873c42907f0 100644
-> --- a/include/linux/tpm.h
-> +++ b/include/linux/tpm.h
-> @@ -207,6 +207,7 @@ enum tpm2_return_codes {
->  	TPM2_RC_INITIALIZE	= 0x0100, /* RC_VER1 */
->  	TPM2_RC_FAILURE		= 0x0101,
->  	TPM2_RC_DISABLED	= 0x0120,
-> +	TPM2_RC_UPGRADE		= 0x012D,
->  	TPM2_RC_COMMAND_CODE    = 0x0143,
->  	TPM2_RC_TESTING		= 0x090A, /* RC_WARN */
->  	TPM2_RC_REFERENCE_H0	= 0x0910,
-> -- 
-> 2.20.1
-> 
-> 
+Ah! Perfect, thank you. I totally forgot I could do it that way.
 
-/Jarkko
+> 
+> > 
+> > Co-developed-by: Keith Packard <keithpac@amazon.com>
+> > Signed-off-by: Keith Packard <keithpac@amazon.com>
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  include/linux/stddef.h | 34 ++++++++++++++++++++++++++++++++++
+> 
+> Bikeshedding a bit, but do we need to add 34 lines that need to be
+> preprocessed to virtually each and every translation unit [as opposed to
+> adding a struct_group.h header]? Oh well, you need it for struct
+> skbuff.h, so it would be pulled in by a lot regardless :(
+
+My instinct is to make these kinds of helpers "always available" (like
+sizeof_field(), etc), but I have no strong opinion on where it should
+live. If the consensus is to move it, I certainly can! :)
+
+-Kees
+
+-- 
+Kees Cook
