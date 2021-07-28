@@ -2,127 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92303D8542
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792DB3D8544
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 03:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233901AbhG1BWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 21:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
+        id S234026AbhG1BWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 21:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233008AbhG1BWJ (ORCPT
+        with ESMTP id S233008AbhG1BWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:22:09 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC915C061757;
-        Tue, 27 Jul 2021 18:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=j5GutQxzHEwJUpvD+PoxPI7xCYldNc9Co9wCdAd7+DY=; b=aJ5OQrFrVT0TyHsJE26cfHOC8M
-        mwn70MgmW1akXnWiL6397E4oDjB7HNT01RRKDF6LA2k7hIC4kL370GfIjdQbd7+LDtM0l/0YZwc0y
-        XAh4RE2kq5vJRbq8YKKNCQXu4qDUMeTtQzJx9CKGssWvxq4raEq0o7r7D+//fDfBKY/QVCIRQeRu+
-        v8BUlzXDLgYBAAenvopb80y5MnBrQLAuuk24enxKnx011RtSFLB95mPZvOxWxmL8FE+noCdDQi+Lq
-        gnxnu8PXnjIWk+gewSa0P4XN3HCyp2lKvCUmIh8qBQSM65HW9AOxVDi5bmxTiT2wLx1IFELXvJ8DL
-        g6/+BcWw==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8YGt-00GmwT-21; Wed, 28 Jul 2021 01:22:07 +0000
-Subject: Re: [PATCH] scripts: make some scripts executable
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210727153924.79473-1-masahiroy@kernel.org>
- <YQAsth0TA3AwtxvK@kroah.com>
- <CAK7LNAQM2WzfHdJhukiaeq=qYtJ7U8UbMZdFWSuAJG86bBVHnA@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <508c6a7a-0de1-a102-4a48-d29eae188511@infradead.org>
-Date:   Tue, 27 Jul 2021 18:22:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAK7LNAQM2WzfHdJhukiaeq=qYtJ7U8UbMZdFWSuAJG86bBVHnA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 27 Jul 2021 21:22:49 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A0CC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:22:48 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id mu13-20020a17090b388db02901769cf3d01aso1229259pjb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 18:22:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=KmGPLe7yWyGg+5xBmJJBJmFQBI3nGe2qI3u2htSZRc8=;
+        b=nuhUlmTMHBefTVNrgYI+UtWHFhAeUZ55sBhNa0QX9fumm4mflb1V6DbSoHCRW6t06r
+         onMeMgc+EcsYHFi0X4PcAOFTt1Ca4GWOMdzhbbiOrGVTrb0+gtM9N1DnIZxhXv8HlftC
+         DJSqiUVC7neopxxFodop5YR1Gled3AwZiXE7gKa9y/fs3sAr5ZECb/Puda3R9v+/bkI+
+         nb00mP95Ua0jnx3xuMqkU9/WGjDryEYGUuk5L5v/oC3oUWmi5Da3evvFfquWnPH15h+y
+         PKiZUtUG5Qb4p9eZ7PCfY2pcvyOh2brxBgAENIFwi2xJrsLT1ESfcW03z9V4K8U/cP8u
+         YJPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=KmGPLe7yWyGg+5xBmJJBJmFQBI3nGe2qI3u2htSZRc8=;
+        b=jma3MlQMHbpbA3J1uc3bPAEek70dBZ0IHekaGE7uz3fJuXOpXSkGnTyFb2hajaQPAl
+         ck7oXlPrmuyEb8EI6WHsGQWLVr++hrgVoj6TClCRtrf/dO+3MSV0YCM78yP6oKyIBVPO
+         NfNSiIA1S5UE+VOjjnr3Ufr/5zDyOZMkB/5ytzSE8+KwC1DqVTHgMRqERMfKIbLn3D4B
+         jqaU8MH6fS+uv0J1x8WRhNZF3BBpTcClRn+Kmwqse/RHHGaiGV27r4S+NoWqjnv6zHiY
+         rZXL/kLwNEpZ0qWsny89Fi3dYgyaoICW+p0/679ehn6Hs/0Buh2y9eIH/BbhRVgpU9Hd
+         VGDg==
+X-Gm-Message-State: AOAM530ecnvY5JcDnX1WB9FwPJJS9jp/7L/thrOLlAEo7W1xLIEa7L5+
+        6LquggcdBY5LL3qITvY43UaHGerMr7pMSA==
+X-Google-Smtp-Source: ABdhPJzw9SOwdwjV0WZ2MCa+P1MfPRGVFwKeQeenXU6wTjTUOggsSdYuRL9EvyC6Q1eQ/xQYrxL51Z0AKSHI7w==
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:40e2:477f:2bc7:716c])
+ (user=shakeelb job=sendgmr) by 2002:a17:90a:3489:: with SMTP id
+ p9mr13744551pjb.4.1627435368045; Tue, 27 Jul 2021 18:22:48 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 18:22:43 -0700
+Message-Id: <20210728012243.3369123-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH] memcg: cleanup racy sum avoidance code
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/21 6:03 PM, Masahiro Yamada wrote:
-> On Wed, Jul 28, 2021 at 12:56 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->>
->> On Wed, Jul 28, 2021 at 12:39:24AM +0900, Masahiro Yamada wrote:
->>> Set the x bit to some scripts to make them directly executable.
->>>
->>> Especially, scripts/checkdeclares.pl is not hooked by anyone.
->>> It should be executable since it is tedious to type
->>> 'perl scripts/checkdeclares.pl'.>>>
->>> The original patch [1] set the x bit properly, but it was lost when
->>> it was merged as commit 21917bded72c ("scripts: a new script for
->>> checking duplicate struct declaration").
->>>
->>> [1] https://lore.kernel.org/lkml/20210401110943.1010796-1-wanjiabing@vivo.com/
->>>
->>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->>> ---
->>>
->>>  scripts/checkdeclares.pl               | 0
->>>  scripts/gcc-plugins/gen-random-seed.sh | 0
->>>  scripts/syscallnr.sh                   | 0
->>>  scripts/xen-hypercalls.sh              | 0
->>>  4 files changed, 0 insertions(+), 0 deletions(-)
->>>  mode change 100644 => 100755 scripts/checkdeclares.pl
->>>  mode change 100644 => 100755 scripts/gcc-plugins/gen-random-seed.sh
->>>  mode change 100644 => 100755 scripts/syscallnr.sh
->>>  mode change 100644 => 100755 scripts/xen-hypercalls.sh
->>
->> Please no, as other tools (i.e. patch), can not set mode bits, and some
->> people still rely on patch in places.
->>
->> If these need to be called by other parts of the build, we should
->> execute them properly, not rely on the mode settings.
->>
->> thanks,
->>
->> greg k-h
-> 
-> 
-> I believe tools should be executable.
-> 
-> If the x bit were missing in scripts/checkpatch.pl
-> for example, we would need to run 'perl scripts/checkpatch.pl'
-> instead of 'scripts/checkpatch.pl'. That is annoying.
-> 
-> 
-> Most of the scripts under the scripts/ directory
-> are already executable, and we rely on that fact.
-> Some of them are run directly, and I do not hear
-> from anyone who complains about that.
-> 
-> 
-...
-> 
-> 
-> Even if it did not work on somebody's tools,
-> the diff files are provided for bug-fix
-> releases (for example, 5.13.x), not the entire source.
-> 
-> Developers (except Andrew Morton) use git
-> to merge patches like this, so I see no issue
-> on changing the mode.
+We used to have per-cpu memcg and lruvec stats and the readers have to
+traverse and sum the stats from each cpu. This summing was racy and may
+expose transient negative values. So, an explicit check was added to
+avoid such scenarios. Now these stats are moved to rstat infrastructure
+and are no more per-cpu, so we can remove the fixup for transient
+negative values.
 
-Sure, once the changes are in a git tree, it's not an
-issue, so I don't see a problem with it.
-Someone may have to go a few weeks without such a change,
-but that's not a big deal.
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ include/linux/memcontrol.h | 15 ++-------------
+ 1 file changed, 2 insertions(+), 13 deletions(-)
 
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 7028d8e4a3d7..5f2a39a43d47 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -991,30 +991,19 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
+ 
+ static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+ {
+-	long x = READ_ONCE(memcg->vmstats.state[idx]);
+-#ifdef CONFIG_SMP
+-	if (x < 0)
+-		x = 0;
+-#endif
+-	return x;
++	return READ_ONCE(memcg->vmstats.state[idx]);
+ }
+ 
+ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+ 					      enum node_stat_item idx)
+ {
+ 	struct mem_cgroup_per_node *pn;
+-	long x;
+ 
+ 	if (mem_cgroup_disabled())
+ 		return node_page_state(lruvec_pgdat(lruvec), idx);
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	x = READ_ONCE(pn->lruvec_stats.state[idx]);
+-#ifdef CONFIG_SMP
+-	if (x < 0)
+-		x = 0;
+-#endif
+-	return x;
++	return READ_ONCE(pn->lruvec_stats.state[idx]);
+ }
+ 
+ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
 -- 
-~Randy
+2.32.0.432.gabb21c7263-goog
 
