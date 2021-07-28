@@ -2,111 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B303D916D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9172F3D9171
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236889AbhG1O5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235546AbhG1O5G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:57:06 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8393CC061757;
-        Wed, 28 Jul 2021 07:57:04 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id q18so2832091ile.9;
-        Wed, 28 Jul 2021 07:57:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e2ywKCAyW5iOo3TdeL4LGysC3w1acIn4LADsFzbMsMA=;
-        b=LmKgLak9fidSbx+hsVMK04ZqjeFal/L/sWVRHPUbfKyYpAF/FL5spbTmGeZD7MgHAl
-         5eKMIgEflypQwCqPRdpVG+ohHTvVL0gBPbAuOm+9PrzqU+/ObXpT9ut0SBxUdL8zmnHI
-         OPsmcDAzTcTcJWQIB749Hk8BpJbIVEZ07oaLxPd7XcdWRrnfTvHjB0BJrna7ADRoLGjZ
-         n+P/gZUano47GrIg207NeiAQuBa6oQ24nHw/HJsegM188NC5ZcZvJv9JqoG//qye24Z3
-         WrrGadOWX2X3AHUZIgCS/4wEBiOmnnDhciABNrJS19nIl7rlcCXgi4f3NxtLO6aAt1Kd
-         kWcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e2ywKCAyW5iOo3TdeL4LGysC3w1acIn4LADsFzbMsMA=;
-        b=mezx2VdC9ZqYRAxnaMTufBGyNtkT535Ygdu9+PWwyTtqrdM+YVwWknU5Ymw7gcBdoj
-         9soJmDg/4U7c2t1Pm0tgJtOc4bb3XYDYSybme9to3Y7FqCO/WVuJ1CnJuELKLCVs2F0G
-         ym/QbIK/VLx2aScNJ/jSu9g6bVv0mVc6OHfRSULl5uQ7g9Ua8ufOxXf6V2l5il9nqm2x
-         Vo0YK2Lop+ArfhKMIm9Ac0o2FTkrEJNVjAuf6Iu8HRFWQptR41VctfC0x7IGBLm+Elas
-         DwA5PnCjELD3ZcOwOaPODiLayBdKP5oRUx8rFBFdyHzVCEhrXCl58kdUzXnX889tDkQ2
-         RXwA==
-X-Gm-Message-State: AOAM530kuQ77CtFW2fpcxuRDsA+FwMb5WVq2MQRhmcSIJ6eh3VdwIMGZ
-        HA6h6X9cFtICOf0uyMjaOK0=
-X-Google-Smtp-Source: ABdhPJywbWBVLY6qHpI7Oc9lffXNu0yIXkEG1M1rAmTYABJuf5ipVoG372N5iVxALJi3BqYFfoigxA==
-X-Received: by 2002:a05:6e02:ecd:: with SMTP id i13mr199143ilk.182.1627484223888;
-        Wed, 28 Jul 2021 07:57:03 -0700 (PDT)
-Received: from localhost ([12.28.44.171])
-        by smtp.gmail.com with ESMTPSA id x4sm78028ilj.52.2021.07.28.07.57.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 07:57:03 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 07:57:02 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marc Zyngier <maz@kernel.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH 0/3] for_each_*_bit: move to find.h and reconsider
-Message-ID: <YQFwPtKOtlN6Cigg@yury-ThinkPad>
-References: <20210618195735.55933-1-yury.norov@gmail.com>
+        id S236665AbhG1O7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:59:55 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:50722 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235457AbhG1O7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 10:59:54 -0400
+Received: from [95.90.166.74] (helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1m8l2E-0006Fd-5Z; Wed, 28 Jul 2021 16:59:50 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Peter Geis <pgwipeout@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, Peter Geis <pgwipeout@gmail.com>
+Subject: Re: [RFC PATCH 3/9] dt-bindings: usb: generic-ohci: increase maximum clocks
+Date:   Wed, 28 Jul 2021 16:59:49 +0200
+Message-ID: <3733382.QJadu78ljV@diego>
+In-Reply-To: <20210728122606.697619-4-pgwipeout@gmail.com>
+References: <20210728122606.697619-1-pgwipeout@gmail.com> <20210728122606.697619-4-pgwipeout@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618195735.55933-1-yury.norov@gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping?
+Hi Peter,
 
-On Fri, Jun 18, 2021 at 12:57:32PM -0700, Yury Norov wrote:
-> for_each_bit() macro family uses find_bit() functions, so it's better
-> to have for_each_bit() and find_bit() functions in the same header. 
+Am Mittwoch, 28. Juli 2021, 14:26:00 CEST schrieb Peter Geis:
+> The rk3568 generic ohci controller has four clocks.
+> Increase the maximum clocks in the documentation to account for this.
 > 
-> This series puts for_each_bit() to a proper place and optimizes its
-> usage over the kernel.
+> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/usb/generic-ohci.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> The series is based on this:
-> https://lore.kernel.org/linux-arch/20210612123639.329047-1-yury.norov@gmail.com/
+> diff --git a/Documentation/devicetree/bindings/usb/generic-ohci.yaml b/Documentation/devicetree/bindings/usb/generic-ohci.yaml
+> index 569777a76c90..850996e6f451 100644
+> --- a/Documentation/devicetree/bindings/usb/generic-ohci.yaml
+> +++ b/Documentation/devicetree/bindings/usb/generic-ohci.yaml
+> @@ -59,7 +59,7 @@ properties:
+>  
+>    clocks:
+>      minItems: 1
+> -    maxItems: 3
+> +    maxItems: 4
+>      description: |
+>        In case the Renesas R-Car Gen3 SoCs:
+>          - if a host only channel: first clock should be host.
 > 
-> The full series can be found here:
-> https://github.com/norov/linux/commits/bm-final
-> 
-> Yury Norov (3):
->   include/linux: move for_each_bit() macros from bitops.h to find.h
->   find: micro-optimize for_each_{set,clear}_bit()
->   Replace for_each_*_bit_from() with for_each_*_bit() where appropriate
-> 
->  arch/x86/kernel/apic/vector.c         |  4 ++--
->  drivers/gpu/drm/etnaviv/etnaviv_gpu.c |  4 ++--
->  drivers/hwmon/ltc2992.c               |  3 +--
->  include/linux/bitops.h                | 34 ---------------------------
->  include/linux/find.h                  | 34 +++++++++++++++++++++++++++
->  5 files changed, 39 insertions(+), 40 deletions(-)
-> 
-> -- 
-> 2.30.2
+
+In the patch adding the usb nodes, I see that this 4th clock references
+the clock generated inside usbphy itself.
+
+Does the usb controller actually use that or is this just a way to
+enable the usbphy clock, which in that case should maybe just happen
+on phy-power-on in the phy driver?
+
+
+Heiko
+
+
