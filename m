@@ -2,143 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A8F3D94CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAD03D94D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhG1R76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhG1R75 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:59:57 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12E9C061757;
-        Wed, 28 Jul 2021 10:59:54 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so5245942pji.5;
-        Wed, 28 Jul 2021 10:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KklQJMU2Fgefevf9VpkrECZdIoTO7jzAXK1VIukHwu8=;
-        b=L1nZGZ2+3K2hafMuqZUgd9pui3wAkl7iK6MiSms5oPEBe0UCuzAFUrxzbtmMfImK8t
-         +9Bv/V0iJL0KzghVUji8cRZfaiL1NfRpcFzqMLa4lwUJqMBwKn3aSQT6kPXvoztWRmNt
-         8LG31tC58P3EmzVzKfnBxbvY4Ws1XdA22FJJp1PiuvZprV2yNJlmqa6oBWjb62j2/0uh
-         GMKFcblwcIOnycE5NFafVAkLENmhicjubA50LHdd9uva/VO2hs9/VJ092o3GHYeN5Je0
-         0WIBm3/Uq3CgKbLK1lh9weqcWo6jIDDrVCXSUzlUYRUG+ivG1x1okYMNxXgWeuwd2CWf
-         MsCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KklQJMU2Fgefevf9VpkrECZdIoTO7jzAXK1VIukHwu8=;
-        b=WDknvmqT6vxcVf1q1OqEPMOPjOnZ6E3KbQ0sDTN/DSHC14+ITWoIoVYR52wQ6c4BNx
-         xNv3kVYG2dF6wuJCOl+cm0CyYWKMq59I9EIuFECff/OytctN68dfwhCtWUGj4DaeyEAy
-         dOtGKl/9k1OBI2oRoPY0qi2p9SaSIPsiimeFkdOalpS7evQMUv4gb4AIpVvlT+VSu1H2
-         InFxAGQmUQwalCow/n1ErNlWu+bOebBgYCCjHAWY/EliLto5hhtlit99KwQa6FU0CL3K
-         E0FDaZi+x+tcqJFylruqG0k3NzWb+NHwe2BuwKnU5Q+2QjZAU2HfgU/9nAi3/493dlcB
-         55nQ==
-X-Gm-Message-State: AOAM533vi2DpPvRw2z+xDe2woMRQ3Y5VBFZudbWc///oTbkoVmJIqEN/
-        yUCOWBs29KDCCP6XL86XKHw=
-X-Google-Smtp-Source: ABdhPJwvj2PGbfi3GzICBrSRhi0mCLdBpmHzIBdpfoA+rKu4q7f5T8RCu24ii8Rcy0/HDvQtfY25og==
-X-Received: by 2002:a17:902:f68f:b029:12c:228a:5226 with SMTP id l15-20020a170902f68fb029012c228a5226mr878072plg.61.1627495194359;
-        Wed, 28 Jul 2021 10:59:54 -0700 (PDT)
-Received: from localhost ([49.32.197.231])
-        by smtp.gmail.com with ESMTPSA id a35sm466501pgm.66.2021.07.28.10.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 10:59:54 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 23:29:50 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 4/8] PCI/sysfs: Allow userspace to query and set
- device reset mechanism
-Message-ID: <20210728175950.q75qcrfas5mcjych@archlinux>
-References: <20210709123813.8700-5-ameynarkhede03@gmail.com>
- <20210727232808.GA754831@bjorn-Precision-5520>
+        id S231240AbhG1SAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:00:21 -0400
+Received: from mail-bn8nam11on2101.outbound.protection.outlook.com ([40.107.236.101]:22913
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229556AbhG1SAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 14:00:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mnUf3l3BApts6FzNl42OBPyJwaX2v40sbM27RDZei4XZ0+3nwVeyKXF/WMorT3bQ4VJfZDCuRwcOrawzrpegzYHqcloY54rH5pFKnOKDBbm1mfiAV+AcbJsXECCjrTbkNUh+gZAC+2jW8OeRxyNKLEleHPhHSiclobfUjW1tt81hs6P4/c1HHxafAIzlKRpMhUzkWC7G/rWXSpJqGFVvnNqvONCLn9RUTPWQKN0yW7zb/3aI07wWp3PREyAbPLmHA66Umh52ZgZ8Yld3lAIQ7pPbU+iqDG/I6AwmehSnck35un/WYxukWp6jlUNQ8chzC7dNcqimaraaOySVj3Riww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RNX1ZSTlNaWQC63X0YAXx8KYcMG0Nnx6EfxoC+8A1sw=;
+ b=c/oX1d3000g2lEvsXylPUF0+PVQw5gHq5t4pt/zX5g7WwXiYn4z6Wp2C/VVVG1EinoIVTuAXaIoRTmpOIZOq+Yzi4SWsKND+CUt7tvFKyor/D0U7ywmqLN718HinvKxydmwIh1qfxIcK5fHB51a14Hvm9MVcSeRV85FaIx98Wfgpg9ml2T6207Vxc/zEYWORHuXmecnl0CYra2H59kaP2aSoBPyQeC1wrmEgvMuIxiVpj7KAaAjYCHKlb3a078F7YTb1Okvl+hu4Iw90TJobdZRhkbtFxZRDX/ZQtAxlDtubuOZOSkDyilASXodVrEIx3NJ/JSlWmp33sawSP4TnEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RNX1ZSTlNaWQC63X0YAXx8KYcMG0Nnx6EfxoC+8A1sw=;
+ b=L3lCsTZzbMHwlnMx5HCvuc4c7vXXFVtShPU/N1mAG9k518Nndc3nvj8P9a0bIuY6FJ8nPaBouOi8CUfLZTMfokwcmkwpAENtf1XqHNDUDZgFWRf3Z42aYR0ZHiQkvDiHGRhGw7Hk9BemxTjAu3wwJMAGvEsd7TNosMJIHtdq57U=
+Received: from SN6PR2101MB0975.namprd21.prod.outlook.com (2603:10b6:805:4::28)
+ by SN6PR2101MB0910.namprd21.prod.outlook.com (2603:10b6:805:a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.5; Wed, 28 Jul
+ 2021 18:00:15 +0000
+Received: from SN6PR2101MB0975.namprd21.prod.outlook.com
+ ([fe80::1d1d:8845:1b1d:972a]) by SN6PR2101MB0975.namprd21.prod.outlook.com
+ ([fe80::1d1d:8845:1b1d:972a%9]) with mapi id 15.20.4394.002; Wed, 28 Jul 2021
+ 18:00:15 +0000
+From:   Sinan Kaya <Sinan.Kaya@microsoft.com>
+To:     Karel Zak <kzak@redhat.com>,
+        =?iso-8859-2?Q?Krzysztof_Ol=EAdzki?= <ole@ans.pl>
+CC:     Jens Axboe <axboe@kernel.dk>,
+        "util-linux@vger.kernel.org" <util-linux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Commit d5fd456c88aba4fcf77d35fe38024a8d5c814686 - "loopdev: use
+ LOOP_CONFIG ioctl" broke loop on x86-64 w/ 32 bit userspace
+Thread-Topic: Commit d5fd456c88aba4fcf77d35fe38024a8d5c814686 - "loopdev: use
+ LOOP_CONFIG ioctl" broke loop on x86-64 w/ 32 bit userspace
+Thread-Index: AQHXgzHeweNCdRuBtk6UKgQVpdHAeatXaheAgAAEyICAAClPAIAASSUAgAA6HICAAJLc1Q==
+Date:   Wed, 28 Jul 2021 18:00:15 +0000
+Message-ID: <SN6PR2101MB0975A55F768A97B08690AE7386EA9@SN6PR2101MB0975.namprd21.prod.outlook.com>
+References: <a797f527-4599-e986-a326-4bb141487f2c@ans.pl>
+ <e7f64d43-2a26-e386-b208-5c35d6a56ed4@ans.pl>
+ <7de1bd0b-b8ea-daf0-b677-f92db1c1cdff@ans.pl>
+ <c1c9d728-c4d9-eaf4-63c3-d13b99da3a3d@kernel.dk>
+ <72947cba-6a12-d54f-c9c8-588729631306@ans.pl>,<20210728091405.cqvkgv6c2vvsmacb@ws.net.home>
+In-Reply-To: <20210728091405.cqvkgv6c2vvsmacb@ws.net.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-07-28T18:00:14.484Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 445c8e36-d8f5-4c48-0697-08d951f18d9b
+x-ms-traffictypediagnostic: SN6PR2101MB0910:
+x-microsoft-antispam-prvs: <SN6PR2101MB091027D53FF1DD17BCDD798F86EA9@SN6PR2101MB0910.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fWBPg74m27kQg8Xchsb8FYae0UL0wiSrEm+CmiIGbqTqKnQw60pSh2rk+5H/Yq2v2nx/rC755iKOQ2Y/0T3d1j0lDvDrBgjL5OI03aSBEmmUIq9nMl00h89JRfxX9uyzjUCSgLB94KnHtJR7Ta6+6oLxdEfXL0atUrTNVC43gBRjs7McYqfDlZxGJEtSgdy7i/Xqynw/suGmjRQ9NEeYbMzZAFubDafzgo8kiopptbtQmV2hvrzlVVtBmA4XGGGCeEi7xN5cIoQ+jpSOB2fMIfmb8mYUt0h9BSPI2XZY7QKiRj3sczFbzkqwMZki4YQOSQAj7BEMF89VC+78c3QBD+Xd4vr7AVqd/2ejVmuPVKipDpxwRROnyyql3rLnqIeEqg8dBnqpBJ7Oe0gthiidbReytUvENzK4hXTdbNSjKhvUkytIjat27tfIu0/SF1+hUSek8LD6cCaYI367FJ+S/nxL6e5DtCCUuo3NEAysL6Tpf9c4sH5uII75cyQ9P4SGlXJeNWdghl21nytJCX05iEJrITqzDAsdzxfynrk+n7EYhsUrkfzlbfKM1fvoVRusaOtyPdu5m7IsMSdWJkKvrHSCJ7I3ZWeC2iQDF5w6xqN0hZJxdbXdhp8B59LLzboofCXdxjVsn5uJu1xX0hAfLPwNxbRaZYyO8Iyfne6ENK2LYjnxWGQA3E3PqzOVnNMZfVbblx9MlHgeOo+KWcexpw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR2101MB0975.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(558084003)(7696005)(66946007)(10290500003)(110136005)(26005)(86362001)(5660300002)(8676002)(508600001)(8936002)(91956017)(64756008)(66446008)(66476007)(54906003)(52536014)(4270600006)(2906002)(8990500004)(76116006)(71200400001)(38070700005)(19618925003)(316002)(6506007)(4326008)(66556008)(55016002)(122000001)(186003)(33656002)(82950400001)(82960400001)(38100700002)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?VJNJPAUpdlX1dqmhm0bjCuBqwlcnltGej3Hsvr3WolOrCN5qSMntbg5bnM?=
+ =?iso-8859-2?Q?d42+XDVuxUxmLh4vENGmntSZWmJkagKheMGdd3hCvUjuO9aH5aXwjNTv8S?=
+ =?iso-8859-2?Q?/nfhw10DuhPOOGR1aAlydu+EoA8i03grfdGWvyCVI8Cf41HewMp3YRZJ/Z?=
+ =?iso-8859-2?Q?83m09V7DcwBIb6Y7RPEz/G3CSIUzYkxH/Ehiut9rncXQh8sgaz/bXHULmX?=
+ =?iso-8859-2?Q?a7wg0+G65kvo2YEdyTmliAQW5j35h+1Ddeu4it958uad4l2DWuzYIciAz0?=
+ =?iso-8859-2?Q?8vJAiL1bJbsmLsygvN0PeYKwIoGvDFZHTT860bW8u1/d/vRHAKybbmIAhT?=
+ =?iso-8859-2?Q?BFEHJJ9es+9AO3MlYDInmVnIf/wch+OQpVuiNVwv1/u4tvF91dH0H0Nvq+?=
+ =?iso-8859-2?Q?4jWgB6TBJ2d10HfjAPpHrGg2fluyeezLaQ5scUvqcXqw0o9fqRa7wb/n0+?=
+ =?iso-8859-2?Q?GghOKRZf2UT4AAP9+xX0Yy7r+brecTbHhKE96w5buZBao/9ngU7mT/UIVE?=
+ =?iso-8859-2?Q?8knNrAaMWVago8HZpYPQ/xd2aMRVkTdyCdZkyujPmIjzv7pL4OWbQvHGWM?=
+ =?iso-8859-2?Q?L6uj6MKhU5ggDx88Lgs1hDrgoGBrPVZDVubTP8cVg2sGBis3jT49lQ00Pe?=
+ =?iso-8859-2?Q?PPvsnlQbFInstZA+8hUtTsMICG9JIaBb6KQe7PR/YhViI72tcnz2W8Zxv0?=
+ =?iso-8859-2?Q?7189665cxErhuFI4Wo/YyGLbeaFQcOfKvVGfLaL03GnTXdHNCf1anZhMuA?=
+ =?iso-8859-2?Q?KP/2lcdb40fyLYrPlTSH+pQnyL6OjpL7ZHDXjj4A7w4S3i7xZ6oINFb/by?=
+ =?iso-8859-2?Q?KQSV9NhSynvzrQqrf81gXL9UQligQILOP4iwwlIHStljdSNovg9wRGDGph?=
+ =?iso-8859-2?Q?WRhhgW9fPerXXhRSUeGrNyHgiZ9liqES8M5aC5BurLgN2Klu43UcWaBpUB?=
+ =?iso-8859-2?Q?V+HZ0X5vvoEN3c0TZi8vMtvHdkiS6OyYYemhlElwpmiL9Pu07nJAi7q/Qb?=
+ =?iso-8859-2?Q?R2UBqKD6bZdzCNOsd05kN69b0J1a639soYc3YaFEUTHzNORGdY6Z/klIzs?=
+ =?iso-8859-2?Q?Qh6LkQSvRb4wxt5GKKqBLHRrTd+URbypeN0VYdX6vekjADkO0l0OXFzrXC?=
+ =?iso-8859-2?Q?Cxnf1cBYbdLDUeWZHiKoCuHT+CH8fa7m7MTRVRwZpNwedObY9h7apt9dN4?=
+ =?iso-8859-2?Q?AYiZwjUfdRWzFWodaifaqSX9oUQRt7ulaeKlJblDM+U8xvsc9qL11kfxJt?=
+ =?iso-8859-2?Q?8YR9xq8vRv9+vAKKZTAh2x1mVEra3ySjlhicN5aq0tf8sxnZUtb27N/rws?=
+ =?iso-8859-2?Q?Tuzx/Hy9NaDVWi1vCO6+natdbGfP41VpG0X6gCHlpKJVYSk=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727232808.GA754831@bjorn-Precision-5520>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR2101MB0975.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 445c8e36-d8f5-4c48-0697-08d951f18d9b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2021 18:00:15.3271
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CesGWJWlhjZWrnLa8EjF9psYpiki0XSGsXFobAOjh66CAAFaNeWLad8uMlD37789IoDYtJ+LPhDEzrrhG4b2HQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR2101MB0910
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/27 06:28PM, Bjorn Helgaas wrote:
-> On Fri, Jul 09, 2021 at 06:08:09PM +0530, Amey Narkhede wrote:
-> > Add reset_method sysfs attribute to enable user to query and set user
-> > preferred device reset methods and their ordering.
-> >
-> > Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
-> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > ---
-> >  Documentation/ABI/testing/sysfs-bus-pci |  19 +++++
-> >  drivers/pci/pci-sysfs.c                 | 103 ++++++++++++++++++++++++
-> >  2 files changed, 122 insertions(+)
-> >
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> > index ef00fada2..43f4e33c7 100644
-> > --- a/Documentation/ABI/testing/sysfs-bus-pci
-> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> > @@ -121,6 +121,25 @@ Description:
-> >  		child buses, and re-discover devices removed earlier
-> >  		from this part of the device tree.
-> >
-> > +What:		/sys/bus/pci/devices/.../reset_method
-> > +Date:		March 2021
-> > +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
-> > +Description:
-> > +		Some devices allow an individual function to be reset
-> > +		without affecting other functions in the same slot.
-> > +
-> > +		For devices that have this support, a file named
-> > +		reset_method will be present in sysfs. Initially reading
-> > +		this file will give names of the device supported reset
-> > +		methods and their ordering. After write, this file will
-> > +		give names and ordering of currently enabled reset methods.
-> > +		Writing the name or comma separated list of names of any of
-> > +		the device supported reset methods to this file will set
-> > +		the reset methods and their ordering to be used when
-> > +		resetting the device. Writing empty string to this file
-> > +		will disable ability to reset the device and writing
-> > +		"default" will return to the original value.
-> > +
-> >  What:		/sys/bus/pci/devices/.../reset
-> >  Date:		July 2009
-> >  Contact:	Michael S. Tsirkin <mst@redhat.com>
->
-[...]
-
-> > +		int i;
-> > +
-> > +		if (sysfs_streq(name, ""))
-> > +			continue;
-> > +
-> > +		name = strim(name);
-> > +
-> > +		for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
-> > +			if (sysfs_streq(name, pci_reset_fn_methods[i].name) &&
-> > +			    !pci_reset_fn_methods[i].reset_fn(pdev, 1)) {
-> > +				reset_methods[n++] = i;
->
-> Can we build this directly in pdev->reset_methods[] so we don't need
-> the memcpy() below?
->
-This is to avoid writing partial values directly to dev->reset_methods.
-So for example if user writes flr,unsupported_value then
-dev->reset_methods should not be modified even though flr is valid reset
-method in this example to avoid partial writes. Either operation(in this
-case writing supported reset methods to reset_method attr) succeeds
-completely or it fails othewise.
-
-Thanks,
-Amey
-
-[...]
+Thanks for fixing the issue and making it more robust.=0A=
