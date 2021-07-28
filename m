@@ -2,831 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286CE3D8DD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E983D8DDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235165AbhG1Mak convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 08:30:40 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3514 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234629AbhG1Maj (ORCPT
+        id S235076AbhG1MbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 08:31:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48438 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234881AbhG1MbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 08:30:39 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GZXg542MQz6GD8s;
-        Wed, 28 Jul 2021 20:15:29 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 28 Jul 2021 14:30:35 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Wed, 28 Jul 2021 14:30:35 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC][PATCH v2 04/12] diglim: Methods
-Thread-Topic: [RFC][PATCH v2 04/12] diglim: Methods
-Thread-Index: AQHXgjyjMBvfyNyn/EWebRSuhowtCatYL2cAgAAkLzA=
-Date:   Wed, 28 Jul 2021 12:30:35 +0000
-Message-ID: <62b0c20a780d49f199ce780f76804165@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
-        <20210726163700.2092768-5-roberto.sassu@huawei.com>
- <20210728141842.600aaabe@coco.lan>
-In-Reply-To: <20210728141842.600aaabe@coco.lan>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 28 Jul 2021 08:31:06 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6277922314;
+        Wed, 28 Jul 2021 12:31:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627475464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=npMFGiRKpe9E2NAzxS4y+5J6eprtxsqTY9vAsITRMUg=;
+        b=grWfSWG5enS6L02jqEBUn/cVF8gY3gQ3BR/4ugX8P8YwDZw4VnyA+reyvLfcyqIgY4MIpT
+        0MJ3wYrCYgUP+x91sRjSi6f5dMTVuwsiNqWRFiTLidGMb7HGnVyjgfrQgLS49ehsYtzyir
+        CmoaE91Mp8qa0YNxL6qXl30SHvYJJHE=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 1EE79A3B81;
+        Wed, 28 Jul 2021 12:31:04 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 14:31:03 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
+ multiple preferred nodes
+Message-ID: <YQFOB4UDK+dNZeOV@dhcp22.suse.cz>
+References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
+ <1626077374-81682-2-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626077374-81682-2-git-send-email-feng.tang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mauro Carvalho Chehab [mailto:mchehab+huawei@kernel.org]
-> Sent: Wednesday, July 28, 2021 2:19 PM
-> Em Mon, 26 Jul 2021 18:36:52 +0200
-> Roberto Sassu <roberto.sassu@huawei.com> escreveu:
-> 
-> > Introduce the methods requires to manage the three objects defined.
-> >
-> > - digest_item methods:
-> >   - digest_add()
-> >   - digest_del()
-> >   - __digest_lookup()
-> >   - diglim_digest_get_info()
-> >
-> > - digest_list_item_ref methods:
-> >   - digest_list_ref_add()
-> >   - digest_list_ref_del()
-> >
-> > - digest_list_item methods:
-> >   - digest_list_add()
-> >   - digest_list_del()
-> >
-> > More information about these functions can be found in
-> > Documentation/security/diglim/implementation.rst.
-> >
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > ---
-> >  .../security/diglim/implementation.rst        |   9 +
-> >  MAINTAINERS                                   |   2 +
-> >  include/linux/diglim.h                        |  28 +
-> >  security/integrity/Kconfig                    |   1 +
-> >  security/integrity/Makefile                   |   1 +
-> >  security/integrity/diglim/Kconfig             |  11 +
-> >  security/integrity/diglim/Makefile            |   8 +
-> >  security/integrity/diglim/diglim.h            |  20 +-
-> >  security/integrity/diglim/methods.c           | 499 ++++++++++++++++++
-> >  9 files changed, 578 insertions(+), 1 deletion(-)
-> >  create mode 100644 include/linux/diglim.h
-> >  create mode 100644 security/integrity/diglim/Kconfig
-> >  create mode 100644 security/integrity/diglim/Makefile
-> >  create mode 100644 security/integrity/diglim/methods.c
-> >
-> > diff --git a/Documentation/security/diglim/implementation.rst
-> b/Documentation/security/diglim/implementation.rst
-> > index 6002049612a1..54af23b2f5f1 100644
-> > --- a/Documentation/security/diglim/implementation.rst
-> > +++ b/Documentation/security/diglim/implementation.rst
-> > @@ -200,3 +200,12 @@ Similarly:
-> >  the digest can be obtained by summing the address of the digest list buffer
-> >  with ``digest_offset`` (except for the digest lists, where the digest is
-> >  stored in the ``digest`` field of the ``digest_list_item`` structure).
-> > +
-> > +
-> > +Methods
-> > +-------
-> > +
-> > +This section introduces the methods requires to manage the three objects
-> > +defined.
-> > +
-> > +.. kernel-doc:: security/integrity/diglim/methods.c
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index f7592d41367d..9e085a36654a 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -5461,8 +5461,10 @@ F:
-> 	Documentation/security/diglim/architecture.rst
-> >  F:	Documentation/security/diglim/implementation.rst
-> >  F:	Documentation/security/diglim/index.rst
-> >  F:	Documentation/security/diglim/introduction.rst
-> > +F:	include/linux/diglim.h
-> >  F:	include/uapi/linux/diglim.h
-> >  F:	security/integrity/diglim/diglim.h
-> > +F:	security/integrity/diglim/methods.c
-> >
-> >  DIOLAN U2C-12 I2C DRIVER
-> >  M:	Guenter Roeck <linux@roeck-us.net>
-> > diff --git a/include/linux/diglim.h b/include/linux/diglim.h
-> > new file mode 100644
-> > index 000000000000..d4b4548a288b
-> > --- /dev/null
-> > +++ b/include/linux/diglim.h
-> > @@ -0,0 +1,28 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
-> > + *
-> > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > + *
-> > + * DIGLIM functions available for use by kernel subsystems.
-> > + */
-> > +
-> > +#ifndef __DIGLIM_H
-> > +#define __DIGLIM_H
-> > +
-> > +#include <crypto/hash_info.h>
-> > +#include <uapi/linux/diglim.h>
-> > +
-> > +#ifdef CONFIG_DIGLIM
-> > +extern int diglim_digest_get_info(u8 *digest, enum hash_algo algo,
-> > +				  enum compact_types type, u16 *modifiers,
-> > +				  u8 *actions);
-> > +#else
-> > +static inline int diglim_digest_get_info(u8 *digest, enum hash_algo algo,
-> > +					 enum compact_types type,
-> > +					 u16 *modifiers, u8 *actions)
-> > +{
-> > +	return -ENOENT;
-> > +}
-> > +#endif /*CONFIG_DIGLIM*/
-> > +#endif /*__DIGLIM_H*/
-> > diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
-> > index 71f0177e8716..8f94f4dcc052 100644
-> > --- a/security/integrity/Kconfig
-> > +++ b/security/integrity/Kconfig
-> > @@ -98,5 +98,6 @@ config INTEGRITY_AUDIT
-> >
-> >  source "security/integrity/ima/Kconfig"
-> >  source "security/integrity/evm/Kconfig"
-> > +source "security/integrity/diglim/Kconfig"
-> >
-> >  endif   # if INTEGRITY
-> > diff --git a/security/integrity/Makefile b/security/integrity/Makefile
-> > index 7ee39d66cf16..d6166550a6b8 100644
-> > --- a/security/integrity/Makefile
-> > +++ b/security/integrity/Makefile
-> > @@ -19,3 +19,4 @@ integrity-$(CONFIG_LOAD_PPC_KEYS) +=
-> platform_certs/efi_parser.o \
-> >                                       platform_certs/keyring_handler.o
-> >  obj-$(CONFIG_IMA)			+= ima/
-> >  obj-$(CONFIG_EVM)			+= evm/
-> > +obj-$(CONFIG_DIGLIM)			+= diglim/
-> > diff --git a/security/integrity/diglim/Kconfig
-> b/security/integrity/diglim/Kconfig
-> > new file mode 100644
-> > index 000000000000..436a76a14337
-> > --- /dev/null
-> > +++ b/security/integrity/diglim/Kconfig
-> > @@ -0,0 +1,11 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +# Digest Lists Integrity Module (DIGLIM)
-> > +#
-> > +config DIGLIM
-> > +	bool "Digest Lists Integrity Module (DIGLIM)"
-> > +	select SECURITYFS
-> > +	select CRYPTO
-> > +	select CRYPTO_HASH_INFO
-> > +	help
-> > +	  DIGLIM provides reference values for file content and metadata,
-> > +	  that can be used for measurement and appraisal with IMA.
-> > diff --git a/security/integrity/diglim/Makefile
-> b/security/integrity/diglim/Makefile
-> > new file mode 100644
-> > index 000000000000..b761ed8cfb3e
-> > --- /dev/null
-> > +++ b/security/integrity/diglim/Makefile
-> > @@ -0,0 +1,8 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +#
-> > +# Makefile for building Digest Lists Integrity Module (DIGLIM).
-> > +#
-> > +
-> > +obj-$(CONFIG_DIGLIM) += diglim.o
-> > +
-> > +diglim-y := methods.o
-> > diff --git a/security/integrity/diglim/diglim.h
-> b/security/integrity/diglim/diglim.h
-> > index 578253d7e1d1..25851e7d4906 100644
-> > --- a/security/integrity/diglim/diglim.h
-> > +++ b/security/integrity/diglim/diglim.h
-> > @@ -20,7 +20,7 @@
-> >  #include <linux/audit.h>
-> >  #include <crypto/hash_info.h>
-> >  #include <linux/hash_info.h>
-> > -#include <uapi/linux/diglim.h>
-> > +#include <linux/diglim.h>
-> >
-> >  #define MAX_DIGEST_SIZE 64
-> >  #define HASH_BITS 10
-> > @@ -81,6 +81,8 @@ static inline unsigned int hash_key(u8 *digest)
-> >  	return (digest[0] | digest[1] << 8) % DIGLIM_HTABLE_SIZE;
-> >  }
-> >
-> > +extern struct h_table htable[COMPACT__LAST];
-> > +
-> 
-> it sounds somewhat risky to use just "htable" for a var declared
-> as external.
+[Sorry for a late review]
 
-Ok, adding diglim_ as prefix should be enough.
+On Mon 12-07-21 16:09:29, Feng Tang wrote:
+[...]
+> @@ -1887,7 +1909,8 @@ nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+>  /* Return the node id preferred by the given mempolicy, or the given id */
+>  static int policy_node(gfp_t gfp, struct mempolicy *policy, int nd)
+>  {
+> -	if (policy->mode == MPOL_PREFERRED) {
+> +	if (policy->mode == MPOL_PREFERRED ||
+> +	    policy->mode == MPOL_PREFERRED_MANY) {
+>  		nd = first_node(policy->nodes);
+>  	} else {
+>  		/*
 
-> >  static inline struct compact_list_hdr *get_hdr(
-> >  					struct digest_list_item *digest_list,
-> >  					loff_t hdr_offset)
-> > @@ -131,4 +133,20 @@ static inline u8 *get_digest_ref(struct
-> digest_list_item_ref *ref)
-> >
-> >  	return ref->digest_list->buf + ref->digest_offset;
-> >  }
-> > +
-> > +struct digest_item *__digest_lookup(u8 *digest, enum hash_algo algo,
-> > +				    enum compact_types type, u16 *modifiers,
-> > +				    u8 *actions);
-> > +struct digest_item *digest_add(u8 *digest, enum hash_algo algo,
-> > +			       enum compact_types type,
-> > +			       struct digest_list_item *digest_list,
-> > +			       loff_t digest_offset, loff_t hdr_offset);
-> > +void digest_del(u8 *digest, enum hash_algo algo, enum compact_types
-> type,
-> > +		struct digest_list_item *digest_list, loff_t digest_offset,
-> > +		loff_t hdr_offset);
-> > +struct digest_item *digest_list_add(u8 *digest, enum hash_algo algo,
-> > +				    loff_t size, u8 *buf, u8 actions,
-> > +				    const char *label);
-> > +void digest_list_del(u8 *digest, enum hash_algo algo, u8 actions,
-> > +		     struct digest_list_item *digest_list);
-> >  #endif /*__DIGLIM_INTERNAL_H*/
-> > diff --git a/security/integrity/diglim/methods.c
-> b/security/integrity/diglim/methods.c
-> > new file mode 100644
-> > index 000000000000..7ed61399cfe8
-> > --- /dev/null
-> > +++ b/security/integrity/diglim/methods.c
-> > @@ -0,0 +1,499 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2005,2006,2007,2008 IBM Corporation
-> > + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
-> > + *
-> > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > + *
-> > + * Functions to manage digest lists.
-> > + */
-> > +
-> > +#include <linux/vmalloc.h>
-> > +#include <linux/module.h>
-> > +#include <linux/fault-inject.h>
-> > +
-> > +#include "diglim.h"
-> > +#include "../integrity.h"
-> > +
-> > +/* Define a cache for each object type. */
-> > +static struct kmem_cache *digest_list_item_cache __read_mostly;
-> > +static struct kmem_cache *digest_list_item_ref_cache __read_mostly;
-> > +static struct kmem_cache *digest_item_cache __read_mostly;
-> > +
-> > +/* Define a hash table for each digest type. */
-> > +struct h_table htable[COMPACT__LAST] = {{
-> > +	.queue[0 ... DIGLIM_HTABLE_SIZE - 1] = HLIST_HEAD_INIT
-> > +}};
-> 
-> 
-> > +
-> > +#ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
-> > +static DECLARE_FAULT_ATTR(fail_diglim);
-> > +
-> > +static int __init fail_diglim_debugfs(void)
-> > +{
-> > +	struct dentry *dir = fault_create_debugfs_attr("fail_diglim", NULL,
-> > +						       &fail_diglim);
-> > +
-> > +	return PTR_ERR_OR_ZERO(dir);
-> > +}
-> > +
-> > +static inline bool should_fail_diglim(void)
-> > +{
-> > +	return should_fail(&fail_diglim, 1);
-> > +}
-> > +
-> > +late_initcall(fail_diglim_debugfs);
-> > +#else
-> > +static inline bool should_fail_diglim(void)
-> > +{
-> > +	return false;
-> > +}
-> > +#endif
-> 
-> 
-> I guess this is a matter of personal preference, but, IMO, it is a lot better
-> to place the debugfs stuff on a separate source file, avoiding ugly #ifdefs
-> in the middle of the code.
-> 
-> Ok, the current code is too small to deserve a separate file, but
-> if later patches would add more stuff, then I would opt to have this on
-> a separate file.
+Do we really want to have the preferred node to be always the first node
+in the node mask? Shouldn't that strive for a locality as well? Existing
+callers already prefer numa_node_id() - aka local node - and I belive we
+shouldn't just throw that away here.
 
-Ok.
+> @@ -1931,6 +1954,7 @@ unsigned int mempolicy_slab_node(void)
+>  
+>  	switch (policy->mode) {
+>  	case MPOL_PREFERRED:
+> +	case MPOL_PREFERRED_MANY:
+>  		return first_node(policy->nodes);
 
-Thanks
+Similarly here but I am not really familiar with the slab numa code
+enough to have strong opinions here.
 
-Roberto
+> @@ -2173,10 +2198,12 @@ struct page *alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
+>  		 * node and don't fall back to other nodes, as the cost of
+>  		 * remote accesses would likely offset THP benefits.
+>  		 *
+> -		 * If the policy is interleave, or does not allow the current
+> -		 * node in its nodemask, we allocate the standard way.
+> +		 * If the policy is interleave or multiple preferred nodes, or
+> +		 * does not allow the current node in its nodemask, we allocate
+> +		 * the standard way.
+>  		 */
+> -		if (pol->mode == MPOL_PREFERRED)
+> +		if ((pol->mode == MPOL_PREFERRED ||
+> +		     pol->mode == MPOL_PREFERRED_MANY))
+>  			hpage_node = first_node(pol->nodes);
 
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
+Same here.
 
-> > +
-> > +/**
-> > + * __digest_lookup - lookup digest and return associated modifiers and
-> actions
-> > + * @digest: digest to lookup
-> > + * @algo: digest algorithm
-> > + * @type: type of digest to lookup (e.g. file, metadata)
-> > + * @modifiers: modifiers (attributes) associated to the found digest
-> > + * @actions: actions performed by IMA on the digest list containing the
-> digest
-> > + *
-> > + * This function searches the given digest in the hash table depending on
-> the
-> > + * passed type and sets the modifiers and actions associated to the digest, if
-> > + * the pointers are not NULL.
-> > + *
-> > + * This function is not intended for external use, as the returned digest item
-> > + * could be freed at any time after it has been returned.
-> > + * diglim_digest_get_info() should be used instead by external callers, as it
-> > + * only returns the modifiers and the actions associated to the digest at the
-> > + * time the digest is searched.
-> > + *
-> > + * RCU protects both the hash table and the linked list of references to the
-> > + * digest lists containing the found digest.
-> > + *
-> > + * Return: a digest_item structure if the digest is found, NULL otherwise.
-> > + */
-> > +struct digest_item *__digest_lookup(u8 *digest, enum hash_algo algo,
-> > +				    enum compact_types type, u16 *modifiers,
-> > +				    u8 *actions)
-> > +{
-> > +	struct digest_item *d = NULL;
-> > +	struct digest_list_item_ref *ref;
-> > +	int digest_len = hash_digest_size[algo];
-> > +	unsigned int key = hash_key(digest);
-> > +	bool found = false;
-> > +
-> > +	rcu_read_lock();
-> > +	hlist_for_each_entry_rcu(d, &htable[type].queue[key], hnext) {
-> > +		list_for_each_entry_rcu(ref, &d->refs, list) {
-> > +			if (get_algo_ref(ref) != algo ||
-> > +			    memcmp(get_digest_ref(ref), digest, digest_len))
-> > +				break;
-> > +
-> > +			found = true;
-> > +
-> > +			/* There is no need to scan all digest list refs. */
-> > +			if (!modifiers || !actions)
-> > +				break;
-> > +
-> > +			/*
-> > +			 * The resulting modifiers and actions are the OR of
-> the
-> > +			 * modifiers and actions for each digest list.
-> > +			 */
-> > +			*modifiers |= get_hdr_ref(ref)->modifiers;
-> > +			*actions |= ref->digest_list->actions;
-> > +		}
-> > +
-> > +		if (found)
-> > +			break;
-> > +	}
-> > +
-> > +	rcu_read_unlock();
-> > +	return d;
-> > +}
-> > +
-> > +/**
-> > + * diglim_digest_get_info - lookup digest and return modifiers and actions
-> > + * @digest: digest to lookup
-> > + * @algo: digest algorithm
-> > + * @type: type of digest to lookup (e.g. file, metadata)
-> > + * @modifiers: modifiers (attributes) associated to the found digest
-> > + * @actions: actions performed by IMA on the digest lists containing the
-> digest
-> > + *
-> > + * This function searches the given digest in the hash table depending on
-> the
-> > + * passed type and sets the modifiers and actions associated to the digest, if
-> > + * the pointers are not NULL.
-> > + *
-> > + * This function is safe for external use, as it does not return pointers of
-> > + * objects that can be freed without the caller notices it.
-> > + *
-> > + * Return: 0 if the digest is found, -ENOENT otherwise.
-> > + */
-> > +int diglim_digest_get_info(u8 *digest, enum hash_algo algo,
-> > +			   enum compact_types type, u16 *modifiers, u8
-> *actions)
-> > +{
-> > +	struct digest_item *d;
-> > +
-> > +	d = __digest_lookup(digest, algo, type, modifiers, actions);
-> > +	if (!d)
-> > +		return -ENOENT;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * digest_list_ref_add - add reference to a digest list
-> > + * @d: digest a new reference is added to
-> > + * @digest_list: digest list whose reference is being added
-> > + * @digest_offset: offset of the digest in the buffer of the digest list
-> > + * @hdr_offset: offset of the header within the digest list the digest refers
-> to
-> > + *
-> > + * This function adds a new reference to an existing digest list for a given
-> > + * digest. The reference is described by the digest_list_item_ref structure
-> and
-> > + * consists of a pointer of the digest list, the offset of the digest to the
-> > + * beginning of the digest list buffer and the offset of the header the digest
-> > + * refers to (each digest list might be composed of several digest blocks,
-> each
-> > + * prefixed by a header describing the attributes of those digests).
-> > + *
-> > + * Return: 0 if a new digest list reference was successfully added, a negative
-> > + * value otherwise.
-> > + */
-> > +static int digest_list_ref_add(struct digest_item *d,
-> > +			       struct digest_list_item *digest_list,
-> > +			       loff_t digest_offset, loff_t hdr_offset)
-> > +{
-> > +	struct digest_list_item_ref *new_ref = NULL;
-> > +	u8 *digest = get_digest(digest_list, digest_offset, hdr_offset);
-> > +	enum hash_algo algo = get_algo(digest_list, digest_offset, hdr_offset);
-> > +	int digest_len = hash_digest_size[algo];
-> > +
-> > +	/* Allocate a new reference. */
-> > +	if (!should_fail_diglim())
-> > +		new_ref = kmem_cache_alloc(digest_list_item_ref_cache,
-> > +					   GFP_KERNEL);
-> > +	if (!new_ref) {
-> > +		print_hex_dump(KERN_ERR, "digest list ref allocation failed: ",
-> > +			       DUMP_PREFIX_NONE, digest_len, 1, digest,
-> > +			       digest_len, true);
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	/* Set the new reference. */
-> > +	new_ref->digest_list = digest_list;
-> > +	/* Converting loff_t -> u32 is fine as long as the digest list < 4G. */
-> > +	new_ref->digest_offset = digest_offset;
-> > +	new_ref->hdr_offset = hdr_offset;
-> > +
-> > +	list_add_tail_rcu(&new_ref->list, &d->refs);
-> > +
-> > +	print_hex_dump_debug("add digest list ref: ", DUMP_PREFIX_NONE,
-> > +			     digest_len, 1, digest, digest_len, true);
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * digest_list_ref_del - del reference to a digest list
-> > + * @d: digest a reference is deleted from
-> > + * @digest_list: digest list whose reference is being deleted
-> > + * @digest_offset: offset of the digest in the buffer of the digest list
-> > + * @hdr_offset: offset of the header within the digest list the digest refers
-> to
-> > + *
-> > + * This function searches the reference to an already loaded digest list in
-> the
-> > + * linked list of references stored for each digest item. If the reference is
-> > + * found (if not, it is a bug), the function deletes it from the linked list.
-> > + */
-> > +static void digest_list_ref_del(struct digest_item *d,
-> > +				struct digest_list_item *digest_list,
-> > +				loff_t digest_offset, loff_t hdr_offset)
-> > +{
-> > +	struct digest_list_item_ref *ref;
-> > +	u8 *digest = get_digest(digest_list, digest_offset, hdr_offset);
-> > +	enum hash_algo algo = get_algo(digest_list, digest_offset, hdr_offset);
-> > +	int digest_len = hash_digest_size[algo];
-> > +
-> > +	/* Search for a digest list reference. */
-> > +	list_for_each_entry(ref, &d->refs, list)
-> > +		if (ref->digest_list == digest_list)
-> > +			break;
-> > +
-> > +	if (!ref) {
-> > +		print_hex_dump(KERN_ERR, "digest list ref not found: ",
-> > +			       DUMP_PREFIX_NONE, digest_len, 1, digest,
-> > +			       digest_len, true);
-> > +		return;
-> > +	}
-> > +
-> > +	list_del_rcu(&ref->list);
-> > +	kmem_cache_free(digest_list_item_ref_cache, ref);
-> > +
-> > +	print_hex_dump_debug("del digest list ref: ", DUMP_PREFIX_NONE,
-> > +			     digest_len, 1, digest, digest_len, true);
-> > +}
-> > +
-> > +/**
-> > + * digest_add - add a new digest
-> > + * @digest: digest in binary form
-> > + * @algo: digest algorithm
-> > + * @type: digest type
-> > + * @digest_list: digest list the new digest belongs to
-> > + * @digest_offset: offset of the digest in the buffer of the digest list
-> > + * @hdr_offset: offset of the header within the digest list the digest refers
-> to
-> > + *
-> > + * This function first searches if the digest is already in the hash table for
-> > + * the given type. The digest is searched by comparing the passed digest
-> and
-> > + * algorithm with the digest obtained from the first digest list reference
-> > + * (buffer + digest_offset), or from the digest field of a digest list item,
-> > + * for a digest list.
-> > + *
-> > + * If the digest exists, only a new reference is added (there might be
-> multiple
-> > + * references to the same digest list).
-> > + *
-> > + * If the digest is not found, a new digest item is allocated and a reference
-> to
-> > + * the passed digest list is added to that item. The digest item is finally
-> > + * added to the hash table for the given type.
-> > + *
-> > + * Proper locking must be provided by the caller.
-> > + *
-> > + * Return: a new or the found digest item on success, an error pointer
-> > + * otherwise.
-> > + */
-> > +struct digest_item *digest_add(u8 *digest, enum hash_algo algo,
-> > +			       enum compact_types type,
-> > +			       struct digest_list_item *digest_list,
-> > +			       loff_t digest_offset, loff_t hdr_offset)
-> > +{
-> > +	int digest_len = hash_digest_size[algo];
-> > +	struct digest_item *d;
-> > +	int ret;
-> > +
-> > +	/* Search the digest. */
-> > +	d = __digest_lookup(digest, algo, type, NULL, NULL);
-> > +	if (d) {
-> > +		/*
-> > +		 * Add a new digest list reference to the existing digest item.
-> > +		 */
-> > +		ret = digest_list_ref_add(d, digest_list, digest_offset,
-> > +					  hdr_offset);
-> > +		if (ret < 0)
-> > +			return ERR_PTR(ret);
-> > +
-> > +		print_hex_dump_debug("digest add duplicate: ",
-> DUMP_PREFIX_NONE,
-> > +				     digest_len, 1, digest, digest_len, true);
-> > +		return d;
-> > +	}
-> > +
-> > +	/* Allocate a new digest item. */
-> > +	if (!should_fail_diglim())
-> > +		d = kmem_cache_alloc(digest_item_cache, GFP_KERNEL);
-> > +	if (!d) {
-> > +		print_hex_dump_debug("digest allocation failed: ",
-> > +				     DUMP_PREFIX_NONE, digest_len, 1, digest,
-> > +				     digest_len, true);
-> > +		return ERR_PTR(-ENOMEM);
-> > +	}
-> > +
-> > +	INIT_LIST_HEAD(&d->refs);
-> > +
-> > +	/* Add a new digest list reference to the new digest item. */
-> > +	ret = digest_list_ref_add(d, digest_list, digest_offset, hdr_offset);
-> > +	if (ret < 0) {
-> > +		kmem_cache_free(digest_item_cache, d);
-> > +		return ERR_PTR(ret);
-> > +	}
-> > +
-> > +	/* Add the new digest item to the hash table for the given type. */
-> > +	hlist_add_head_rcu(&d->hnext,
-> &htable[type].queue[hash_key(digest)]);
-> > +	htable[type].len++;
-> > +
-> > +	print_hex_dump_debug("digest add: ", DUMP_PREFIX_NONE,
-> digest_len, 1,
-> > +			     digest, digest_len, true);
-> > +	return d;
-> > +}
-> > +
-> > +/**
-> > + * digest_del - delete a digest with one reference, or just a reference
-> > + * @digest: digest in binary form
-> > + * @algo: digest algorithm
-> > + * @type: digest type
-> > + * @digest_list: digest list the digest belongs to
-> > + * @digest_offset: offset of the digest in the buffer of the digest list
-> > + * @hdr_offset: offset of the header within the digest list the digest refers
-> to
-> > + *
-> > + * This function is called when a digest list is being removed. The digest is
-> > + * first searched in the hash table for the given type. If it is found (if not,
-> > + * it is a bug, because digest lists can be deleted only if they were added
-> > + * previously), a reference of the passed digest list is deleted from the
-> linked
-> > + * list of references of the digest item.
-> > + *
-> > + * If the last reference was deleted, the digest item is also deleted and
-> > + * removed from the hash table.
-> > + *
-> > + * Proper locking must be provided by the caller.
-> > + */
-> > +void digest_del(u8 *digest, enum hash_algo algo, enum compact_types
-> type,
-> > +		struct digest_list_item *digest_list, loff_t digest_offset,
-> > +		loff_t hdr_offset)
-> > +{
-> > +	struct digest_item *d;
-> > +	int digest_len = hash_digest_size[algo];
-> > +
-> > +	/* Search the digest. */
-> > +	d = __digest_lookup(digest, algo, type, NULL, NULL);
-> > +	if (!d) {
-> > +		print_hex_dump(KERN_ERR, "digest not found: ",
-> DUMP_PREFIX_NONE,
-> > +			       digest_len, 1, digest, digest_len, true);
-> > +		return;
-> > +	}
-> > +
-> > +	/* Delete a reference of the passed digest list. */
-> > +	digest_list_ref_del(d, digest_list, digest_offset, hdr_offset);
-> > +
-> > +	print_hex_dump_debug(!list_empty(&d->refs) ?
-> > +			     "digest del duplicate: " : "digest del: ",
-> > +			     DUMP_PREFIX_NONE, digest_len, 1, digest,
-> > +			     digest_len, true);
-> > +
-> > +	/* Return if there are still references. */
-> > +	if (!list_empty(&d->refs))
-> > +		return;
-> > +
-> > +	/*
-> > +	 * Remove the digest item from the hash table and free it if there are
-> > +	 * no more references left.
-> > +	 */
-> > +	hlist_del_rcu(&d->hnext);
-> > +	htable[type].len--;
-> > +	kmem_cache_free(digest_item_cache, d);
-> > +}
-> > +
-> > +/**
-> > + * digest_list_add - add a new digest list
-> > + * @digest: digest of the digest list in binary form
-> > + * @algo: digest algorithm
-> > + * @size: digest list size
-> > + * @buf: digest list buffer
-> > + * @actions: actions (measure/appraise) performed by IMA on the digest
-> list
-> > + * @label: label to be used to identify the digest list
-> > + *
-> > + * This function allocates a new digest list item, which contains the buffer,
-> > + * size, actions performed by IMA and a label. Each digest list item is
-> > + * associated to a digest item representing the digest of the digest list.
-> > + *
-> > + * This function prevents the same digest list to be added multiple times by
-> > + * searching its digest in the hash table for the COMPACT_DIGEST_LIST
-> type.
-> > + *
-> > + * The passed buffer is copied in a new memory area, to avoid to reference
-> > + * memory that could be freed by the caller.
-> > + *
-> > + * If allocation of a new digest list and the associated buffer was successful,
-> > + * its digest is added to the hash table for the COMPACT_DIGEST_LIST type.
-> > + *
-> > + * Proper locking must be provided by the caller.
-> > + *
-> > + * Return: the digest item associated to the digest list item on success, an
-> > + * error pointer otherwise.
-> > + */
-> > +struct digest_item *digest_list_add(u8 *digest, enum hash_algo algo,
-> > +				    loff_t size, u8 *buf, u8 actions,
-> > +				    const char *label)
-> > +{
-> > +	struct digest_item *d;
-> > +	struct digest_list_item *digest_list = NULL;
-> > +	int digest_len = hash_digest_size[algo];
-> > +
-> > +	/* Search the digest of the digest list. */
-> > +	d = __digest_lookup(digest, algo, COMPACT_DIGEST_LIST, NULL,
-> NULL);
-> > +	if (d) {
-> > +		print_hex_dump(KERN_ERR, "digest list already uploaded: ",
-> > +			       DUMP_PREFIX_NONE, digest_len, 1, digest,
-> > +			       digest_len, true);
-> > +		return ERR_PTR(-EEXIST);
-> > +	}
-> > +
-> > +	/* Allocate a new digest list. */
-> > +	if (!should_fail_diglim())
-> > +		digest_list = kmem_cache_alloc(digest_list_item_cache,
-> > +					       GFP_KERNEL);
-> > +	if (!digest_list) {
-> > +		print_hex_dump(KERN_ERR, "digest list allocation failed: ",
-> > +			       DUMP_PREFIX_NONE, digest_len, 1, digest,
-> > +			       digest_len, true);
-> > +		return ERR_PTR(-ENOMEM);
-> > +	}
-> > +
-> > +	digest_list->buf = NULL;
-> > +	digest_list->size = size;
-> > +
-> > +	if (!should_fail_diglim())
-> > +		digest_list->buf = kmemdup(buf, size, GFP_KERNEL);
-> > +	if (!digest_list->buf) {
-> > +		print_hex_dump(KERN_ERR, "digest list allocation failed: ",
-> > +			       DUMP_PREFIX_NONE, digest_len, 1, digest,
-> > +			       digest_len, true);
-> > +		kmem_cache_free(digest_list_item_cache, digest_list);
-> > +		return ERR_PTR(-ENOMEM);
-> > +	}
-> > +
-> > +	digest_list->actions = actions;
-> > +	memcpy(digest_list->digest, digest, hash_digest_size[algo]);
-> > +	digest_list->algo = algo;
-> > +	digest_list->label = label;
-> > +
-> > +	/* Add the digest of the digest list to the hash table. */
-> > +	d = digest_add(digest, algo, COMPACT_DIGEST_LIST, digest_list, 0, 0);
-> > +	if (IS_ERR(d)) {
-> > +		kfree(digest_list->buf);
-> > +		kmem_cache_free(digest_list_item_cache, digest_list);
-> > +	}
-> > +
-> > +	return d;
-> > +}
-> > +
-> > +/**
-> > + * digest_list_del - delete an existing digest list
-> > + * @digest: digest of the digest list in binary form
-> > + * @algo: digest algorithm
-> > + * @actions: actions (measure/appraise) performed by IMA on the digest
-> list
-> > + * @digest_list: digest list to delete
-> > + *
-> > + * This function searches the digest of the digest list in the hash table for
-> > + * the COMPACT_DIGEST_LIST type. If it is found, this function frees the
-> buffer
-> > + * and the digest list item allocated in digest_list_add().
-> > + *
-> > + * This function will be executed only for digest lists that were previously
-> > + * added.
-> > + *
-> > + * Proper locking must be provided by the caller.
-> > + */
-> > +void digest_list_del(u8 *digest, enum hash_algo algo, u8 actions,
-> > +		     struct digest_list_item *digest_list)
-> > +{
-> > +	/* Delete the digest item associated to the digest list. */
-> > +	digest_del(digest, algo, COMPACT_DIGEST_LIST, digest_list, 0, 0);
-> > +
-> > +	/*
-> > +	 * Free the buffer and the digest list item allocated when the digest
-> > +	 * list was added.
-> > +	 */
-> > +	kfree(digest_list->buf);
-> > +	kmem_cache_free(digest_list_item_cache, digest_list);
-> > +}
-> > +
-> > +static int __init digest_list_cache_init(void)
-> > +{
-> > +	digest_list_item_cache =
-> kmem_cache_create("digest_list_item_cache",
-> > +						sizeof(struct digest_list_item),
-> > +						0, SLAB_PANIC, NULL);
-> > +
-> > +	digest_list_item_ref_cache = kmem_cache_create(
-> > +					"digest_list_item_ref_cache",
-> > +					sizeof(struct digest_list_item_ref), 0,
-> > +					SLAB_PANIC, NULL);
-> > +
-> > +	digest_item_cache = kmem_cache_create("digest_item_cache",
-> > +					      sizeof(struct digest_item), 0,
-> > +					      SLAB_PANIC, NULL);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +late_initcall(digest_list_cache_init)
-> 
-> 
-> 
-> Thanks,
-> Mauro
+> @@ -2451,6 +2479,9 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+>  		break;
+>  
+>  	case MPOL_PREFERRED:
+> +	case MPOL_PREFERRED_MANY:
+> +		if (node_isset(curnid, pol->nodes))
+> +			goto out;
+>  		polnid = first_node(pol->nodes);
+>  		break;
+
+I do not follow what is the point of using first_node here. Either the
+node is in the mask or it is misplaced. What are you trying to achieve
+here?
+-- 
+Michal Hocko
+SUSE Labs
