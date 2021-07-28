@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EFB3D8960
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002B03D8962
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234577AbhG1IG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:06:56 -0400
-Received: from mga07.intel.com ([134.134.136.100]:65112 "EHLO mga07.intel.com"
+        id S234923AbhG1IHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:07:00 -0400
+Received: from mga11.intel.com ([192.55.52.93]:60575 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234280AbhG1IGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234545AbhG1IGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Jul 2021 04:06:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="276394391"
+X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="209499596"
 X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="276394391"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 01:06:53 -0700
+   d="scan'208";a="209499596"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 01:06:53 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="663214384"
+   d="scan'208";a="475615690"
 Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 28 Jul 2021 01:06:52 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 28 Jul 2021 01:06:52 -0700
 Received: from kbuild by d053b881505b with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1m8eaZ-00080Z-Hc; Wed, 28 Jul 2021 08:06:51 +0000
-Date:   Wed, 28 Jul 2021 16:06:08 +0800
+        id 1m8eaZ-00080i-LC; Wed, 28 Jul 2021 08:06:51 +0000
+Date:   Wed, 28 Jul 2021 16:06:13 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:clocksource] BUILD SUCCESS
- 9b073961afabcf70d0804e472ea02fc6c739dcce
-Message-ID: <61010ff0.XJ+YXvqLYUkF7Y8k%lkp@intel.com>
+Subject: [tip:timers/urgent] BUILD SUCCESS
+ bb7262b295472eb6858b5c49893954794027cd84
+Message-ID: <61010ff5.ntCNUZVMhhxLruRl%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,8 +39,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git clocksource
-branch HEAD: 9b073961afabcf70d0804e472ea02fc6c739dcce  clocksource: Prohibit clocksource watchdog test when HZ<100
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
+branch HEAD: bb7262b295472eb6858b5c49893954794027cd84  timers: Move clearing of base::timer_running under base:: Lock
 
 elapsed time: 763m
 
