@@ -2,92 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1933D93C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E730B3D93C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhG1RCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhG1RC3 (ORCPT
+        id S230190AbhG1RC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:02:56 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49234 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhG1RCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:02:29 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CB5C061757;
-        Wed, 28 Jul 2021 10:02:25 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id j1so6098497pjv.3;
-        Wed, 28 Jul 2021 10:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JGFDDjacBRjxyAnzN4CvLDDxGvGaTiT/tmmgH6BU6SE=;
-        b=n2QuhUDGM48atZWRY/aljXhxd9/Ay3bGpZVPfiM9Nt0A+y3sCcsfMa46IuBp/Zdy3B
-         LqCgFGmGrhfp1datijDUx+gY1Jar9Guez8AlxGKcaNgXlJzD891dOtZCWhsnznDzhi4A
-         zlcMXd4RuWrF1xrz3KM4Itl9JYllp8AJMQfLgl/Y+mKszdZDuZM32+wR/u/fIxO8P6oc
-         8Xtc97OQALykME7uo1zctiMLSZ7rxJRnJWUpNc9vcNW1ee1Pl5aMugQnGgbHSkRbZL+W
-         N2dhyLEfuva8CJX0e6fFI/ol2Qu1kLL6Gtl8ZrppsmeTiU08PTQshXimEAVi8ANkvXUf
-         Kalw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JGFDDjacBRjxyAnzN4CvLDDxGvGaTiT/tmmgH6BU6SE=;
-        b=pwRusiS/S5zmKMyFIrARimXTnVowxypSFF65El/yigCsbHD5yFAE6IpLjSzEdKKvS+
-         VdoCmOsYvsSE4b4MPtCJzJgX2BxlvxD/7D+rwCgbOVWwVqLJKkbcLom2nPzC1Z1FzXLr
-         mSD4nKZnupkS5QHvxrKpdw0370w425LswU3lEoRC70lNTmTPt5UcLbvVsj6v87OxSvGD
-         Z5CjfTFwfSd4hqtlCtodvJvneeEF128xtUGwMBAxlSvW/g7KKjXO/1tgTAx26kPMnzCj
-         Yu3iFFcc1Es5Y1H7WlJk+jOpnI8x7ptgOWvNc+IqgJj41CrmYlTOGbkjPbmYVxb81QXW
-         dREA==
-X-Gm-Message-State: AOAM530WqlLMGboki95746g2sCOscQ9X4FbF02qUV6SXHQPhxp7IuE3D
-        OcuDuEc5MWAkQo86JUH/k3cG9E9tdZ+1i145d8s=
-X-Google-Smtp-Source: ABdhPJyW8YD9ucztMeB9MdK83Zh6EDesq/+KxR0bBFUhv5UtQd61jJyeNfi0FOOJsVZ9hRC7PJTyc97iovetydrjlHU=
-X-Received: by 2002:a17:90a:7146:: with SMTP id g6mr733453pjs.228.1627491744801;
- Wed, 28 Jul 2021 10:02:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210728164847.46855-1-broonie@kernel.org>
-In-Reply-To: <20210728164847.46855-1-broonie@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 28 Jul 2021 20:01:45 +0300
-Message-ID: <CAHp75VcP2V2j_ZHtc9y9Jw527E8PZaoFngsXD3oA0Yvmm=L4SA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the drivers-x86 tree
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mark.gross@intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 28 Jul 2021 13:02:54 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 34A641FFD5;
+        Wed, 28 Jul 2021 17:02:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627491772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4QcA1ooDxwwNFuX8+dVEvEspFGMcPAidGM3W6dbV2E4=;
+        b=JMbfmhJoE6gBX0kxF0oMg90xIg55UAl+kkl8+R6BD+vhNfYfEzSFtaS8I5SlhdDt0ZdiVM
+        xLqN+nV1xuFg3Ecxv6Nabc7gKMba/bBZarW0JMw9tqfg/Mg34qP0gH6nQ+LEHFiIbP6MNb
+        ATfoaUkpKykkAtNiVFQNmJKnWwx7j3c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627491772;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4QcA1ooDxwwNFuX8+dVEvEspFGMcPAidGM3W6dbV2E4=;
+        b=LlDdUEIvOi+R3izif9mgh+OlAKA0mdC59EPd/dQc9vj1KiBaIgMEaemOUp/PqvJbgLkIGT
+        34Lqj/d761QdbCAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 992D5A3B84;
+        Wed, 28 Jul 2021 17:02:51 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 19:02:51 +0200
+Message-ID: <s5h7dhabcck.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Alexander Monakov <amonakov@ispras.ru>
+Cc:     linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Jeremy Szu <jeremy.szu@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        PeiSen Hou <pshou@realtek.com>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ALSA: hda/realtek: add mic quirk for Acer SF314-42
+In-Reply-To: <20210721170141.24807-1-amonakov@ispras.ru>
+References: <20210721170141.24807-1-amonakov@ispras.ru>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 7:49 PM Mark Brown <broonie@kernel.org> wrote:
->
-> Hi all,
->
-> After merging the drivers-x86 tree, today's linux-next build
-> (x86 allmodconfig) failed like this:
->
-> error: the following would cause module name conflict:
->   drivers/misc/c2port/core.ko
->   drivers/platform/x86/intel/pmc/core.ko
->
-> Caused by commit
->
->   29036fcc92b22d ("platform/x86/intel: intel_pmc_core: Move intel_pmc_core* files to pmc subfolder")
->
-> Since there was nothing in the branch yesterday I've just dropped the
-> tree entirely.
+On Wed, 21 Jul 2021 19:01:41 +0200,
+Alexander Monakov wrote:
+> 
+> The Acer Swift SF314-42 laptop is using Realtek ALC255 codec. Add a
+> quirk so microphone in a headset connected via the right-hand side jack
+> is usable.
+> 
+> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Hui Wang <hui.wang@canonical.com>
+> Cc: Kailang Yang <kailang@realtek.com>
+> Cc: Jeremy Szu <jeremy.szu@canonical.com>
+> Cc: Jian-Hong Pan <jhp@endlessos.org>
+> Cc: Chris Chiu <chris.chiu@canonical.com>
+> Cc: PeiSen Hou <pshou@realtek.com>
+> Cc: alsa-devel@alsa-project.org
+> ---
+> Hello,
+> 
+> Acer Swift SF314-42 laptop is using AMD Ryzen SoC audio with Realtek
+> ALC255 codec. The are three ALSA cards: HDMI audio, AMD ACP card, and
+> AMD HDA card. There is an internal stereo microphone connected to the
+> ACP card, and a mini-jack connected to the Realtek codec. There are no
+> LEDs.
+> 
+> I'd like to be able to use a mic+headphones headset. Unfortunately, out
+> of the box ALSA does not correctly detect the microphone input of the
+> Realtek codec.  The suggested patch fixes that, though I cannot be sure
+> it's 100% correct.
+> 
+> With the patch, the experience is unfortunately still not ideal. I have
+> noticed a couple of issues:
+> 
+> 1) at high enough gain, recording the microphone is picking up what is
+> being played via the headphones; maybe it's supposed to be like that,
+> but it surprised me;
 
-Yeah, PMC Makefile should keep the object name the same, something like
+Hrm, that doesn't sound right.  Some internal loopback in the codec?
+Dunno.  It doesn't pick up the sound physically, right?
 
-obj-$(..._PMC_...) += intel_pmc_....o
-intel-pmc_...-y := core.o ...
+> 2) there is a very noticeable "pop" when plugging the headset in/out,
+> accompanied by
+> 
+> pcieport 0000:00:08.1: PME: Spurious native interrupt!
+> pcieport 0000:00:08.1: PME: Spurious native interrupt!
+> 
+> in dmesg. I'd appreciate info and any help about this issue.
+
+The pop noise is often a thing with the codec and there are a bunch of
+different workarounds found in the driver.  But the spurious interrupt
+is more worrisome.  Is the PCI slot corresponding to the HD-audio
+controller?
+
+As of now, I'm inclined to take your patch as is, at least as a
+first-aid workaround.  Let's see whether we get a better development
+soonish.
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+thanks,
+
+Takashi
+
+> 
+> Thanks.
+> Alexander
+> 
+>  sound/pci/hda/patch_realtek.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index ab5113cccffa..87ad8469dbc5 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -8191,6 +8191,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+>  	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
+>  	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
+> +	SND_PCI_QUIRK(0x1025, 0x142b, "Acer Swift SF314-42", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0x1025, 0x1466, "Acer Aspire A515-56", ALC255_FIXUP_ACER_HEADPHONE_AND_MIC),
+>  	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+> 
+> base-commit: 62fb9874f5da54fdb243003b386128037319b219
+> -- 
+> 2.31.1
+> 
