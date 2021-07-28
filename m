@@ -2,68 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0ABB3D94B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2823D94B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbhG1Rzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:55:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231222AbhG1Rz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:55:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C335D61050;
-        Wed, 28 Jul 2021 17:55:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627494926;
-        bh=eR8Mb5mftbz5DEwh6BIcjxWxE2NDjLa/HY+rtPuS9Vc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=NBwah9bZgNw8mAa/hy200SaKVPPUf1pG5zNHfsFuI7DCrIdyePnsfyF2sXrGWm4O5
-         BHzg3H5l5A8IKUCzt15r6OYMiPLUSPnfQkAoyp6Bz+VFoas/XkFnd1eigmYIlgTbRs
-         cT78xYg68AOSUrm2j6jmU1NMkud+PR/zFJOznMttNDBx8kGW654eekl0zrf6Dis7CB
-         aHmylcxM+f/sch4yg1QMBKL9Esh1DEAX22aMJ8/bn4Z9ED9mBAmjlbRZmjcLvROTH/
-         wpO++JjkQMyJg7ZM+SIavBU+futcLJfhqud03dX1cswHe9Nz9jmZmjILFXIWUUhbvK
-         xW7FIZWiotJDw==
-Date:   Wed, 28 Jul 2021 12:55:24 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 8/8] PCI: Change the type of probe argument in reset
- functions
-Message-ID: <20210728175524.GA834270@bjorn-Precision-5520>
+        id S231338AbhG1R4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:56:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49411 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229755AbhG1R4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:56:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627494958;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GxisACX8174uMvFvlppclC4EQL5bs36jiETLuSiddmQ=;
+        b=OXlS0yfgTSxc5e+GWf0PPg/hovinvhi59WfNbjD34t6cNcP/SoHGwbSLM1HAcnnkMfCw5R
+        VHGCOdN85jb8mZf6t15N8s0WkMuh3hJNknulijoFb+O8kWYp5W0w2RIJEyxEUqrsGyE21T
+        2zIoWmnQzJ+p6C6JSEIGyoraz0I43o8=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-ZHNvaAMJOxWC0CInD3DJ6Q-1; Wed, 28 Jul 2021 13:55:56 -0400
+X-MC-Unique: ZHNvaAMJOxWC0CInD3DJ6Q-1
+Received: by mail-ej1-f72.google.com with SMTP id x5-20020a1709064bc5b02905305454f5d1so1096352ejv.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:55:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GxisACX8174uMvFvlppclC4EQL5bs36jiETLuSiddmQ=;
+        b=kgwbzfDkPjt0tyZ1Yc4nSlrihqY+07BC6Bv99ZDNXcT3+URMiEGKvdcA9uxCIy6nGC
+         9tCERgeHQgaxTKvm3fLROabTeFOlzKKxA8hJrSJVGEiJTohIsKtPysjWN9jgbyQM3ZdJ
+         ClILvVxwxk7nyGuwZdOY1mI8tTkdYYnEdO6Tumdfb54XrlUQKqJvflLt+VUAqXrK//Vl
+         GgM2SoInucWSjp72FKaCVUNKV+H3OpGY8Sj0QQwGpy2JR2pzpfC0TxukVTYAVb7EAFOx
+         0C/fxsccR9dyEr6FDYMuhxy5bYWciHE4vBKLGaNhhcDoURBZMwj8DFRzk6bS5mIKN3eE
+         bpxw==
+X-Gm-Message-State: AOAM530WOP+yLgakKWrno1hvu741v9A9HCBfRPYr1saqcNY+vDtgbj/h
+        N3JFFsD6NWleUpkBcvbdlR1IAIbSgb6NLmS8ncdo6TxgLS3pr72C3hpwruMdjvnWrSyeYm9Y0gw
+        x7bb+lbWLalFMLCn0ZUW43YAU
+X-Received: by 2002:a05:6402:6cb:: with SMTP id n11mr1262885edy.112.1627494955576;
+        Wed, 28 Jul 2021 10:55:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNWLqvC1eNWQ14TfqA0JTSWLbjWeSN7zy4ZcbOLmr0SzaT8OOnqJeoK5N3U+5DYVcl7pmWfQ==
+X-Received: by 2002:a05:6402:6cb:: with SMTP id n11mr1262876edy.112.1627494955459;
+        Wed, 28 Jul 2021 10:55:55 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id jg9sm150431ejc.6.2021.07.28.10.55.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 10:55:55 -0700 (PDT)
+Subject: Re: linux-next: build failure after merge of the drivers-x86 tree
+To:     "Kammela, Gayatri" <gayatri.kammela@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     "Gross, Mark" <mark.gross@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+References: <20210728164847.46855-1-broonie@kernel.org>
+ <CAHp75VcP2V2j_ZHtc9y9Jw527E8PZaoFngsXD3oA0Yvmm=L4SA@mail.gmail.com>
+ <MW3PR11MB45238F497A4960B3D8FE60A7F2EA9@MW3PR11MB4523.namprd11.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <cd335478-7882-ade8-58e5-c5ab42902b8c@redhat.com>
+Date:   Wed, 28 Jul 2021 19:55:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728173514.77yiv2vjvjpf6ao5@archlinux>
+In-Reply-To: <MW3PR11MB45238F497A4960B3D8FE60A7F2EA9@MW3PR11MB4523.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:05:14PM +0530, Amey Narkhede wrote:
-> On 21/07/27 05:22PM, Bjorn Helgaas wrote:
-> > On Fri, Jul 09, 2021 at 06:08:13PM +0530, Amey Narkhede wrote:
-> > > Introduce a new enum pci_reset_mode_t to make the context of probe argument
-> > > in reset functions clear and the code easier to read.  Change the type of
-> > > probe argument in functions which implement reset methods from int to
-> > > pci_reset_mode_t to make the intent clear.
-> >
-> > Not sure adding an enum and a PCI_RESET_MODE_MAX seems worth it to me.
-> > It's really a boolean parameter, and I'd be happy to change it to a
-> > bool.  But I don't think it's worth checking against
-> > PCI_RESET_MODE_MAX unless we need more than two options.
-> >
-> Is it okay to use PCI_RESET_PROBE and PCI_RESET_DO_RESET as bool.
-> That would be less confusing than directly using true/false.
+Hi,
 
-You mean like this?
+On 7/28/21 7:27 PM, Kammela, Gayatri wrote:
+>> -----Original Message-----
+>> From: Andy Shevchenko <andy.shevchenko@gmail.com>
+>> Sent: Wednesday, July 28, 2021 10:02 AM
+>> To: Mark Brown <broonie@kernel.org>
+>> Cc: Hans de Goede <hdegoede@redhat.com>; Gross, Mark
+>> <mark.gross@intel.com>; Kammela, Gayatri <gayatri.kammela@intel.com>;
+>> Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>; Linux Kernel Mailing List
+>> <linux-kernel@vger.kernel.org>; Linux Next Mailing List <linux-
+>> next@vger.kernel.org>; Platform Driver <platform-driver-
+>> x86@vger.kernel.org>
+>> Subject: Re: linux-next: build failure after merge of the drivers-x86 tree
+>>
+>> On Wed, Jul 28, 2021 at 7:49 PM Mark Brown <broonie@kernel.org> wrote:
+>>>
+>>> Hi all,
+>>>
+>>> After merging the drivers-x86 tree, today's linux-next build
+>>> (x86 allmodconfig) failed like this:
+>>>
+>>> error: the following would cause module name conflict:
+>>>   drivers/misc/c2port/core.ko
+>>>   drivers/platform/x86/intel/pmc/core.ko
+>>>
+>>> Caused by commit
+>>>
+>>>   29036fcc92b22d ("platform/x86/intel: intel_pmc_core: Move
+>>> intel_pmc_core* files to pmc subfolder")
+>>>
+>>> Since there was nothing in the branch yesterday I've just dropped the
+>>> tree entirely.
+>>
+>> Yeah, PMC Makefile should keep the object name the same, something like
+>>
+>> obj-$(..._PMC_...) += intel_pmc_....o
+>> intel-pmc_...-y := core.o ...
 
-  #define PCI_RESET_DO_RESET  false
-  #define PCI_RESET_PROBE     true
+Right, I will drop the patches from pdx86/for-next and do a forced push.
 
-I don't think there's a huge amount of value, but I guess that's OK as
-long as it's confined to drivers/pci/, i.e., not exposed via
-include/linux/pci.h.
+> Hi Andy and Mark,
+> We've found the issue on our side as well and planning to push the fix soon. Would you prefer to have the whole patch series redone or just the fix ?
+
+I've just dropped the current version of the patches,
+please send the whole patch series redone.
+
+Thanks & Regards,
+
+Hans
+
