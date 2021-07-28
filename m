@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6157C3D9967
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378C53D9968
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbhG1X2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:28:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49572 "EHLO mail.kernel.org"
+        id S232677AbhG1X2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:28:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232105AbhG1X2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:28:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5392F61039;
-        Wed, 28 Jul 2021 23:28:15 +0000 (UTC)
+        id S232609AbhG1X2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:28:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 040DF6101B;
+        Wed, 28 Jul 2021 23:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627514895;
-        bh=jKs2vwb9o0xiN7GQKe677wZ1TLjF+DReuPPA1627SKg=;
+        s=k20201202; t=1627514898;
+        bh=O+//6IJ/VPQ62CUgWxVD82JUZheq3ea8zHr1YC2khU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fCz5915orU5hvygX87AGjmlSVI++7uSL3g0dV5MZ57maKXHPG/DcF6vQKy+ZlDZbv
-         4+KT16bFNpGYkT9c9wuAunMVQORbcmeKaVhSJ+ephy/vpAoznDnqx6/OKZzAcage2j
-         Irt0soX1fLgTHAm2tKVOtX06dsUZVa5JblABwo9pDDxfzSmXT2WQxEAYm/BpHP/0kG
-         kwmuhaqmdcPVRpiwsCcFYwkVrReAOzaAo9GDNIOSjzZ4N9vKME2ivSiSFzPcLQzVDt
-         qJCVpnEKPDBcrxSSULYYpQdyCMm3djFGHjAT4jYhxvgTJnaJXK06s+Cb6kQbNFQwmF
-         c+9ipdflznJ0g==
+        b=JQRw58bjtYCNMizbYEe/o+pyprfdExpIxGQFN8yiWlY/viVeE9z5mPuo7P9AbOf12
+         DmSP8aCGhgGnPH97bGg58DnLnLoTJbMRDyYomYKzdqbdHZp6d5jGwyLCILSYTPpJlu
+         5haPpcGiN60gzdNNgqJmLvTpfkFiXVk0LZQxflLDdLhKbXKrck5aZTa+0nIeZfP91H
+         Nkcdy9QrP/WQw+eYNC7rj5MOSrvUWKwegmGcywAf54m3brX0L8Ad08OPNU8p4mZhKj
+         fMTJrID7/Lvu3Ki+RYc2ly7qnbfLdBliMEpe3fdMVEm97IVcp95vGjoXuW2XbAJxPv
+         YgovX1W/vvg0A==
 From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add sound devicetree bindings for Wolfson Micro devices
-Date:   Thu, 29 Jul 2021 00:27:54 +0100
-Message-Id: <162751391068.10122.4445316157453147618.b4-ty@kernel.org>
+To:     Jie Yang <yang.jie@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Colin King <colin.king@canonical.com>,
+        alsa-devel@alsa-project.org
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ASoC: Intel: Fix spelling contraction "cant" -> "can't"
+Date:   Thu, 29 Jul 2021 00:27:55 +0100
+Message-Id: <162751391069.10122.6012833198246486438.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210727164948.4308-1-rf@opensource.cirrus.com>
-References: <20210727164948.4308-1-rf@opensource.cirrus.com>
+In-Reply-To: <20210728103602.171817-1-colin.king@canonical.com>
+References: <20210728103602.171817-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,12 +47,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 17:49:48 +0100, Richard Fitzgerald wrote:
-> Include all wm* sound bindings in the section for Wolfson Micro
-> drivers. This section already includes the actual driver source
-> files.
-> 
-> Also update the existing entry to match all wlf,* sound bindings.
+On Wed, 28 Jul 2021 11:36:02 +0100, Colin King wrote:
+> There is a spelling mistake in a dev_err message. Fix it.
 
 Applied to
 
@@ -53,8 +56,8 @@ Applied to
 
 Thanks!
 
-[1/1] MAINTAINERS: Add sound devicetree bindings for Wolfson Micro devices
-      commit: 830b69f6c059bc46451e7c4be8b796d483acb0bd
+[1/1] ASoC: Intel: Fix spelling contraction "cant" -> "can't"
+      commit: 0f6b04adb58d80e7fb5f8d9229ad22c9931c3bd1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
