@@ -2,222 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 429CE3D87AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FE83D87BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 08:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbhG1GJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 02:09:10 -0400
-Received: from mga17.intel.com ([192.55.52.151]:36264 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231199AbhG1GJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 02:09:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="192866704"
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="192866704"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 23:09:06 -0700
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="517290472"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.30.133]) ([10.255.30.133])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 23:09:04 -0700
-Subject: Re: [kbuild-all] Re: gup_test.c:1:10: fatal error: fcntl.h: No such
- file or directory
-To:     John Hubbard <jhubbard@nvidia.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <202107281223.L61SLDL2-lkp@intel.com>
- <6af32770-1825-ff9a-ccf2-46600ed6fc7e@nvidia.com>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <04756a7d-3c08-affa-2e14-13b801d543a7@intel.com>
-Date:   Wed, 28 Jul 2021 14:09:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S234078AbhG1GOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 02:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233989AbhG1GOc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 02:14:32 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5048CC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 23:14:29 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so8454607pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 23:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+eCPJolnjFD6s7o/D7/wCD8S3LJbNwZNkFAhDgmHNdg=;
+        b=mR4Tt7DzUQaHNxHJQDGkFhLLLljZDCuHSLxVhBOpom3iS+QI99MjDfopHJ9XmURL/i
+         bCugbreHHQ0xBU095vg6uHwXTSdQsTKtVFGvhxCtiLbvzN8yaKuepp0M9CeZxG8Nr3Zq
+         /Qe7l6ARfY6A59sOduR69WOdWo96M4zLL4GRU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+eCPJolnjFD6s7o/D7/wCD8S3LJbNwZNkFAhDgmHNdg=;
+        b=LJy6EC0g3X2GoESAjCUx14gpVJMIrK5De/ST+7o8xGO14jCHyorhJ6GNkGYoH57qaR
+         4uy5jKu5Vh/F9a/ogZdy3yXYGiQ2D/+y+F6XHFC3SozQIJNBBYq4SjFjmFEs4Yvcd3Gt
+         fbLsJeDg2V6PQ5IPIvcvEw7nNFmOv5cL4CvSVCRDli28c4F54u5X3Dbb2IAggwquclxj
+         tYKmbMWPRaoL4iuC8KcC1tUG1l1koenZl48wldFxh2+Hm7aWU4rPRoZYjcrfG2KgJH6a
+         hMl7za7Jj1zCqdjFa2mQMZmRd4iWl5TpKY+RfKmqSGeEdqnnVaH/1ZR8lTkZYpHi9Geu
+         jUgg==
+X-Gm-Message-State: AOAM5326FB4rgz/QV+Hm875k3TbT+T/ub1DBvy/8lvquxK0OLgT8ikM2
+        a7ONkjEKbx2ijxNfrzHjekAOS4iikMrpTv2kUn2rTw==
+X-Google-Smtp-Source: ABdhPJzmByxKqYRSbuErkA4p8ANUorSkgXNNWkdhJmCqT7YsTx5hk209/4gRAztv7igdNUaEYtPZLsDig5mlURlglKQ=
+X-Received: by 2002:a63:8f04:: with SMTP id n4mr26845226pgd.317.1627452868772;
+ Tue, 27 Jul 2021 23:14:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6af32770-1825-ff9a-ccf2-46600ed6fc7e@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210727023205.20319-1-chun-jie.chen@mediatek.com> <20210727023205.20319-3-chun-jie.chen@mediatek.com>
+In-Reply-To: <20210727023205.20319-3-chun-jie.chen@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Wed, 28 Jul 2021 14:14:17 +0800
+Message-ID: <CAATdQgC-X6pijkgTBsWJJKp__J6N=7JNKHQJmOMvTAjivwPM5w@mail.gmail.com>
+Subject: Re: [v6 2/2] arm64: dts: mediatek: Correct UART0 bus clock of MT8192
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+Hi,
 
-On 7/28/2021 1:24 PM, John Hubbard wrote:
-> On 7/27/21 9:59 PM, kernel test robot wrote:
->> tree:   
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   7d549995d4e0d99b68e8a7793a0d23da6fc40fe8
->> commit: 9c84f229268fa229e250b7225611d0eb7094fea0 mm/gup_benchmark: 
->> rename to mm/gup_test
->> date:   7 months ago
->> config: openrisc-randconfig-s031-20210726 (attached as .config)
->> compiler: or1k-linux-gcc (GCC) 10.3.0
->> reproduce:
->>          wget 
->> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
->> -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # apt-get install sparse
->>          # sparse version: v0.6.3-341-g8af24329-dirty
->>          # 
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9c84f229268fa229e250b7225611d0eb7094fea0 
->>
->>          git remote add linus 
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout 9c84f229268fa229e250b7225611d0eb7094fea0
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 
->> make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir 
->> ARCH=openrisc SHELL=/bin/bash -C tools/testing/selftests/vm install
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>>> gup_test.c:1:10: fatal error: fcntl.h: No such file or directory
->>         1 | #include <fcntl.h>
->>           |          ^~~~~~~~~
->>     compilation terminated.
->>
-> 
-> I reproduced this via the above steps, and noticed that there are missing
-> header files for most (all?) of the vm tests, not just gup_test.c. And
-> not just fcntl.h, either. The error list continue as follows (below).
-> 
-> This seems like a new toolchain issue, right?
-> 
+On Tue, Jul 27, 2021 at 10:43 AM Chun-Jie Chen
+<chun-jie.chen@mediatek.com> wrote:
+>
+> infra_uart0 clock is the real one what uart0 uses as bus clock.
+>
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> index c7c7d4e017ae..9810f1d441da 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> @@ -327,7 +327,7 @@
+>                                      "mediatek,mt6577-uart";
+>                         reg = <0 0x11002000 0 0x1000>;
+>                         interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH 0>;
+> -                       clocks = <&clk26m>, <&clk26m>;
+> +                       clocks = <&clk26m>, <&infracfg CLK_INFRA_UART0>;
+>                         clock-names = "baud", "bus";
+>                         status = "disabled";
+>                 };
 
-Yes, Sorry about this, it seems to be related to our changes recently, 
-please ignore it.
+There're many other nodes still having only clk26m. Will you update them too?
 
-Best Regards,
-Rong Chen
-
-
-> 
-> gup_test.c:1:10: fatal error: fcntl.h: No such file or directory
-> 1 | #include <fcntl.h>
-> |          ^~~~~~~~~
-> compilation terminated.
-> compaction_test.c:10:10: fatal error: stdio.h: No such file or directory
-> 10 | #include <stdio.h>
-> |          ^~~~~~~~~
-> In file included from hmm-tests.c:13:
-> ../kselftest_harness.h:56:10: fatal error: asm/types.h: No such file or 
-> directory
-> 56 | #include <asm/types.h>
-> |          ^~~~~~~~~~~~~
-> hugepage-shm.c:31:10: fatal error: stdlib.h: No such file or directory
-> 31 | #include <stdlib.h>
-> |          ^~~~~~~~~~
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/gup_test] Error 1
-> compilation terminated.
-> compilation terminated.
-> compilation terminated.
-> hugepage-mmap.c:20:10: fatal error: stdlib.h: No such file or directory
-> 20 | #include <stdlib.h>
-> |          ^~~~~~~~~~
-> map_hugetlb.c:13:10: fatal error: stdlib.h: No such file or directory
-> 13 | #include <stdlib.h>
-> |          ^~~~~~~~~~
-> compilation terminated.
-> compilation terminated.
-> on-fault-limit.c:2:10: fatal error: sys/mman.h: No such file or directory
-> 2 | #include <sys/mman.h>
-> |          ^~~~~~~~~~~~
-> transhuge-stress.c:9:10: fatal error: stdlib.h: No such file or directory
-> 9 | #include <stdlib.h>
-> |          ^~~~~~~~~~
-> map_fixed_noreplace.c:10:10: fatal error: sys/mman.h: No such file or 
-> directory
-> 10 | #include <sys/mman.h>
-> |          ^~~~~~~~~~~~
-> mlock2-tests.c:3:10: fatal error: sys/mman.h: No such file or directory
-> 3 | #include <sys/mman.h>
-> |          ^~~~~~~~~~~~
-> compilation terminated.
-> compilation terminated.
-> compilation terminated.
-> compilation terminated.
-> mremap_dontunmap.c:9:10: fatal error: sys/mman.h: No such file or directory
-> 9 | #include <sys/mman.h>
-> |          ^~~~~~~~~~~~
-> compilation terminated.
-> va_128TBswitch.c:8:10: fatal error: stdio.h: No such file or directory
-> 8 | #include <stdio.h>
-> |          ^~~~~~~~~
-> compilation terminated.
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/hmm-tests] Error 1
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/hugepage-shm] Error 1
-> map_populate.c:9:10: fatal error: errno.h: No such file or directory
-> 9 | #include <errno.h>
-> |          ^~~~~~~~~
-> compilation terminated.
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/compaction_test] 
-> Error 1
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/hugepage-mmap] Error 1
-> mlock-random-test.c:6:10: fatal error: unistd.h: No such file or directory
-> 6 | #include <unistd.h>
-> |          ^~~~~~~~~~
-> compilation terminated.
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/map_hugetlb] Error 1
-> khugepaged.c:2:10: fatal error: fcntl.h: No such file or directory
-> 2 | #include <fcntl.h>
-> |          ^~~~~~~~~
-> compilation terminated.
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/on-fault-limit] 
-> Error 1
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/mlock2-tests] Error 1
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/transhuge-stress] 
-> Error 1
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/map_fixed_noreplace] Error 
-> 1
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/mremap_dontunmap] 
-> Error 1
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/va_128TBswitch] 
-> Error 1
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/map_populate] Error 1
-> thuge-gen.c:16:10: fatal error: sys/mman.h: No such file or directory
-> 16 | #include <sys/mman.h>
-> |          ^~~~~~~~~~~~
-> compilation terminated.
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/khugepaged] Error 1
-> make: *** [../lib.mk:139: 
-> /kernel_work/linux-github/tools/testing/selftests/vm/mlock-random-test] 
-> Error 1
-> userfaultfd.c:38:10: fatal error: stdio.h: No such file or directory
-> 38 | #include <stdio.h>
-> |          ^~~~~~~~~
-> compilation terminated.
-> write_to_hugetlbfs.c:7:10: fatal error: err.h: No such file or directory
-> 7 | #include <err.h>
-> |          ^~~~~~~
-> compilation terminated.
-> virtual_address_range.c:8:10: fatal error: stdio.h: No such file or 
-> directory
-> 8 | #include <stdio.h>
-> |          ^~~~~~~~~
-> compilation terminated.
-> 
-> 
-> thanks,
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
