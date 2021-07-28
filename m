@@ -2,188 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5815E3D951F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F643D9536
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhG1SRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:17:39 -0400
-Received: from mail-dm6nam08on2075.outbound.protection.outlook.com ([40.107.102.75]:43489
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229614AbhG1SRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:17:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RwBodKWwznISLozseLGnYgabaGC3QbSAhW8XkoyamUwNQItrX+tLn9BAc4dOrp2PqQhHVjg6TzQ/u6hus3Oxz8pr2zGF1iyLRFDhyY/M2FtsT5JIejUlV0hrjMId2OBodkMiVxZuucYfC1Nt/opqOMCuRpo2QtC4sCS0VhnMrRYGgjmGYep+8qWlK3/WDDhxPLycv5hD/P2NHC0XwZWY1uWnvRdF6UfmYJuFBiW92Mrxutss058pbkv50kooDdhMswlW6dVZOpYftZEfVv4TpaiXxYlsbzoOlaBmAv8VXehcK+2jyOocmQGFmETVle1DCchLlU7fpLBDtnuHbUG6eg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KWPH/WnxjjFDAYLV85v/ECVuO3M5OvuMbf4A65dAoQ4=;
- b=D54SswKcvz7WUE3O2vBZMWtcKZVznSXdv/9SYO+CiGX0clPIjW8DmcWbcACygotlQgSFrV7DAfh53MC7VMGT5ZAKL6zFIQtDR77sjQd0ITDxbeiWyrakA5m0v2aN2oKQzIf+jfhpm/AJvge8mBtjFCj3Xy/LO2Ppc0dCJfpkS8M68iA5wDQH+uivG5LqeZH3c0FaBejbnGnZgSq9+45Nb0xPTLUAhH3oqTp9ejLKiTID6sgEvmkWFFsbb6amHlIlLoWzcYZsIJ9XRv91BvxyDqiNZ4oVFFjHHLcXmBuxZw5BSHCuYTCj66NI7i9gbRcPB99m1j4+hlXAwNDqdWk0dg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=nutanix.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KWPH/WnxjjFDAYLV85v/ECVuO3M5OvuMbf4A65dAoQ4=;
- b=hPLm0WveP1W0OV+aN5KQl2We1EFde3BlHjJ+ZfOftoqTeOBdO5Jej6TKCGp0NyTWJndIlM2yhfniAS88Dx43jItI/DeXQsyHcp54r+Jg9gHDSG/OiJbNdusMN4kM0N+YOlG2Z8UxAFLiF6mrKsokyHZ2i48rfzVb31byyarglzdCK40YLzViCCRXLwqHFAGibZqvwEsqGznaSNQktfnp/oDSqoaf4JQlSD57JsWJDFzx+cS2jJturX9RpLJ8molslo+WKitcFNyNv6tA3mJsa1J75+t3xLqgZcCUlOuj2q/uD0wCLu0gwqnyOH/8hFxFCWs2n9EVqzkYvxSFjb55Ew==
-Received: from DM5PR20CA0025.namprd20.prod.outlook.com (2603:10b6:3:13d::11)
- by DM5PR12MB1724.namprd12.prod.outlook.com (2603:10b6:3:10f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.29; Wed, 28 Jul
- 2021 18:17:30 +0000
-Received: from DM6NAM11FT018.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:13d:cafe::6) by DM5PR20CA0025.outlook.office365.com
- (2603:10b6:3:13d::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19 via Frontend
- Transport; Wed, 28 Jul 2021 18:17:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; nutanix.com; dkim=none (message not signed)
- header.d=none;nutanix.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT018.mail.protection.outlook.com (10.13.172.110) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 18:17:30 +0000
-Received: from [10.20.23.47] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 28 Jul
- 2021 18:17:28 +0000
-Subject: Re: [PATCH v10 2/8] PCI: Add new array for keeping track of ordering
- of reset methods
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-CC:     <alex.williamson@redhat.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kw@linux.com>, Sinan Kaya <okaya@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-References: <20210728175911.GA835695@bjorn-Precision-5520>
-From:   Shanker R Donthineni <sdonthineni@nvidia.com>
-Message-ID: <afaf66ea-2eee-cd16-ede8-095b8b6a6de6@nvidia.com>
-Date:   Wed, 28 Jul 2021 13:17:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210728175911.GA835695@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4dec8192-7ce5-4bc6-22a5-08d951f3f659
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1724:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1724AED8CADAD2C593C7950DC7EA9@DM5PR12MB1724.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r0/SCmDgbcNfFdVHdFCP4uV8qjmQm5JH03EsKp/w6dD1Vv2cl8yfzOuzEH0l1ppEB9GdEXoLOxrKLGv9dMZg2+RsvNLM2OdCduR8Nr27xX4huImxfaeOL/ypkDnq3m67qgySNCvzXa7yjdWiBAtafvVADwdd1oYAI/dJ8pY9nPavyQ/unqldNxwtHHxAz7snaGRvd/37AuiTMxeK7wdlLNqxyY4bzqAe+aCu2ynHM8zub1Y1eaj7wzE2fgLzGm0d9RRYpzKVdWfH7IAFVj0rhKKacaMN6sxyL/zPopN2GBuTwqhRNv6RfmwN2cQXpJYMZ7JjSchjfxxGE7myNz8GxA2KDiz0y2TfFeNiJt+AgDE/gaVgo6+4sohIqbUgL/chp2YI0DnWv7DoxQNCkuYwG3R7kB2veCyru2+i9Cj4nMi79YHg0en1qzYnlvmzr9Hx/+S7VAhnB02gAswOgUsQMx4KtoKSbCcocbTy7QG80yBImVrOBeuzE0MjWXqmaycVydA/ht23lQ7kZnyXPFb+3im1tleiZIuRL7yS+2FDDfONSI3XfiHy/DO06MyW6IVZ2C4riJYXVLruXOTIsE/IhXuFICglhYtRi5uMxDX57LlI5eZl1v0ecovtHun7L4F3aN2nY8KzfzVyCCyq0QR0kz8F3vuAHp4dhB4E3nO6TcTU6jvHlPH1unQ2xYRHIdjNiYAcMwFWa+2uA93L8H3bE5d0g1S1jM98lvk8UiB7u6k=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(53546011)(426003)(70206006)(70586007)(8936002)(82310400003)(86362001)(83380400001)(31686004)(36860700001)(110136005)(4326008)(508600001)(8676002)(186003)(7416002)(336012)(16526019)(54906003)(7636003)(31696002)(2906002)(26005)(36756003)(5660300002)(356005)(2616005)(16576012)(296002)(47076005)(316002)(36906005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 18:17:30.0535
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4dec8192-7ce5-4bc6-22a5-08d951f3f659
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT018.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1724
+        id S229969AbhG1SVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhG1SVd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 14:21:33 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADF1C061757;
+        Wed, 28 Jul 2021 11:21:30 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n11so2034249wmd.2;
+        Wed, 28 Jul 2021 11:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=aF3/VHib9GfO0nFJBohIRSm4KR3E1di5VfkCUNhyYTc=;
+        b=j+7JSdyL/y+5Tp4kgvBfv3a7O8SxDct7cjXFxt3kfO/nBdrjysT8zMYTtmjcjmICNe
+         xXtbgscX5Z0OO2TGenxgzYhXqChAYsMPuE9fLcrY9TZtp3bbRqYTnkU3W1it9aR9oxTs
+         /v02VoW84XyvkeNvrYtqh6CQGDoQDDz1s6G4NMTxlSbXIMfdT05h/dXKstyEPoePxH2I
+         HeZwsjiPBjbjexDG8zIAI1QxlM/cASCcmgVGwALVa66j6CeDbILQqX+Phg4+t/OT6goC
+         npeNIatPb4N8bnvQAhNzyfwiViindBb/BAgUbh2gX2h54t86yGRFpLKg6AUGjq2lr+K1
+         hfyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=aF3/VHib9GfO0nFJBohIRSm4KR3E1di5VfkCUNhyYTc=;
+        b=GeK+jEEZUFRqi8Cmq1NMwBHEGfMUfg964BKRXSeMECGXVEMdoFsWNWXz6d0kGAS7do
+         C6pvuyxA588wwdaoVvCEGF5oJ867kY3FTBO2Afp4i9kdkCMQTTV060xXdBGI9vwqrsN0
+         xyUdnXczN1enQoirPitxAxCVnHBRGLqAhUdVnx3YEJrScdgbKCF3aExy668Z+vl22HGb
+         5x+lrJ1FWtHy3JEAHJUcgtQHQEi4bwVPrBJt7usHgB5wsYC7Ova0gIcrTo5Tuchu5Nl+
+         HIUV+BLI+OSqVG89gcoZJdm1h2PjP2m0PHjJdliET/TL1jgTsapTwFv0kEGomH7OFuIc
+         EhFQ==
+X-Gm-Message-State: AOAM530YXPDgMdwoRPKNWyhwtc7rsOjpzNiK5Xi3YmKSPp5o+FI01EIS
+        RpMU0gOyTDxULWbhuptRx+4=
+X-Google-Smtp-Source: ABdhPJx0eEbkPeH6aJH3m0u5RZgt9e6APmNbopPFI39+3QwRNHGBoeSXptg7zSKawFDABm59R+KI5g==
+X-Received: by 2002:a05:600c:2e4a:: with SMTP id q10mr10720693wmf.133.1627496489195;
+        Wed, 28 Jul 2021 11:21:29 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d7f:fa00:1d1c:996c:af83:88fd])
+        by smtp.gmail.com with ESMTPSA id i5sm620880wrs.85.2021.07.28.11.21.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 11:21:28 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] arch: Kconfig: clean up obsolete use of HAVE_IDE
+Date:   Wed, 28 Jul 2021 20:21:15 +0200
+Message-Id: <20210728182115.4401-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+The arch-specific Kconfig files use HAVE_IDE to indicate if IDE is
+supported.
 
-On 7/28/21 12:59 PM, Bjorn Helgaas wrote:
-> External email: Use caution opening links or attachments
->
->
-> On Wed, Jul 28, 2021 at 11:15:19PM +0530, Amey Narkhede wrote:
->> On 21/07/27 05:59PM, Bjorn Helgaas wrote:
->>> On Fri, Jul 09, 2021 at 06:08:07PM +0530, Amey Narkhede wrote:
->>>> Introduce a new array reset_methods in struct pci_dev to keep track of
->>>> reset mechanisms supported by the device and their ordering.
->>>>
->>>> Also refactor probing and reset functions to take advantage of calling
->>>> convention of reset functions.
->>>>
->>>> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
->>>> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
->>>> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
->>>> ---
->>>>  drivers/pci/pci.c   | 92 ++++++++++++++++++++++++++-------------------
->>>>  drivers/pci/pci.h   |  9 ++++-
->>>>  drivers/pci/probe.c |  5 +--
->>>>  include/linux/pci.h |  7 ++++
->>>>  4 files changed, 70 insertions(+), 43 deletions(-)
->>>>
->> [...]
->>>> + BUILD_BUG_ON(ARRAY_SIZE(pci_reset_fn_methods) != PCI_NUM_RESET_METHODS);
->>>>
->>>>   might_sleep();
->>>>
->>>> - rc = pci_dev_specific_reset(dev, 1);
->>>> - if (rc != -ENOTTY)
->>>> -         return rc;
->>>> - rc = pcie_reset_flr(dev, 1);
->>>> - if (rc != -ENOTTY)
->>>> -         return rc;
->>>> - rc = pci_af_flr(dev, 1);
->>>> - if (rc != -ENOTTY)
->>>> -         return rc;
->>>> - rc = pci_pm_reset(dev, 1);
->>>> - if (rc != -ENOTTY)
->>>> -         return rc;
->>>> + for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
->>>> +         rc = pci_reset_fn_methods[i].reset_fn(dev, 1);
->>>> +         if (!rc)
->>>> +                 reset_methods[n++] = i;
->>> Why do we need this local reset_methods[] array?  Can we just fill
->>> in dev->reset_methods[] directly and skip the memcpy() below?
->>>
->> This is for avoiding caching of previously supported reset methods.
->> Is it okay if I use memset(dev->reset_methods, 0,
->> sizeof(dev->reset_methods)) instead to clear the values in
->> dev->reset_methods?
-> I don't think there's ever a case where you look at a
-> dev->reset_methods[] element past a zero value, so we shouldn't care
-> about any previously-supported methods left in the array.
->
-> If we *do* look at something past a zero value, why do we do that?  It
-> sounds like it would be a bug.
->
+As IDE support and the HAVE_IDE config vanishes with commit b7fb14d3ac63
+("ide: remove the legacy ide driver"), there is no need to mention
+HAVE_IDE in all those arch-specific Kconfig files.
 
-I think either we need memset or clear 0th/last element. Can we set the last
-index explicitly to zero?
+The issue was identified with ./scripts/checkkconfigsymbols.py.
 
-void pci_init_reset_methods(struct pci_dev *dev)
-{
-        int i, n, rc;
+Fixes: b7fb14d3ac63 ("ide: remove the legacy ide driver")
+Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ arch/alpha/Kconfig            | 1 -
+ arch/arm/Kconfig              | 6 ------
+ arch/arm/mach-davinci/Kconfig | 1 -
+ arch/h8300/Kconfig.cpu        | 1 -
+ arch/ia64/Kconfig             | 1 -
+ arch/m68k/Kconfig             | 1 -
+ arch/mips/Kconfig             | 1 -
+ arch/parisc/Kconfig           | 1 -
+ arch/powerpc/Kconfig          | 1 -
+ arch/sh/Kconfig               | 1 -
+ arch/sparc/Kconfig            | 1 -
+ arch/x86/Kconfig              | 1 -
+ arch/xtensa/Kconfig           | 1 -
+ 13 files changed, 18 deletions(-)
 
-        BUILD_BUG_ON(ARRAY_SIZE(pci_reset_fn_methods) != PCI_NUM_RESET_METHODS);
-
-        might_sleep();
-
-        n = 0;
-        for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
-                rc = pci_reset_fn_methods[i].reset_fn(dev, 1);
-                if (!rc)
-                        dev->reset_methods[n++] = i;
-                else if (rc != -ENOTTY)
-                        break;
-        }
-        dev->reset_methods[n] = 0;
-}
-
-
-
-
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index 77d3280dc678..a6d4c2f744e3 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -14,7 +14,6 @@ config ALPHA
+ 	select PCI_SYSCALL if PCI
+ 	select HAVE_AOUT
+ 	select HAVE_ASM_MODVERSIONS
+-	select HAVE_IDE
+ 	select HAVE_PCSPKR_PLATFORM
+ 	select HAVE_PERF_EVENTS
+ 	select NEED_DMA_MAP_STATE
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 82f908fa5676..2fb7012c3246 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -95,7 +95,6 @@ config ARM
+ 	select HAVE_FUNCTION_TRACER if !XIP_KERNEL
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
+-	select HAVE_IDE if PCI || ISA || PCMCIA
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_KERNEL_GZIP
+ 	select HAVE_KERNEL_LZ4
+@@ -361,7 +360,6 @@ config ARCH_FOOTBRIDGE
+ 	bool "FootBridge"
+ 	select CPU_SA110
+ 	select FOOTBRIDGE
+-	select HAVE_IDE
+ 	select NEED_MACH_IO_H if !MMU
+ 	select NEED_MACH_MEMORY_H
+ 	help
+@@ -430,7 +428,6 @@ config ARCH_PXA
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIO_PXA
+ 	select GPIOLIB
+-	select HAVE_IDE
+ 	select IRQ_DOMAIN
+ 	select PLAT_PXA
+ 	select SPARSE_IRQ
+@@ -446,7 +443,6 @@ config ARCH_RPC
+ 	select ARM_HAS_SG_CHAIN
+ 	select CPU_SA110
+ 	select FIQ
+-	select HAVE_IDE
+ 	select HAVE_PATA_PLATFORM
+ 	select ISA_DMA_API
+ 	select LEGACY_TIMER_TICK
+@@ -469,7 +465,6 @@ config ARCH_SA1100
+ 	select CPU_SA1100
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIOLIB
+-	select HAVE_IDE
+ 	select IRQ_DOMAIN
+ 	select ISA
+ 	select NEED_MACH_MEMORY_H
+@@ -505,7 +500,6 @@ config ARCH_OMAP1
+ 	select GENERIC_IRQ_CHIP
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIOLIB
+-	select HAVE_IDE
+ 	select HAVE_LEGACY_CLK
+ 	select IRQ_DOMAIN
+ 	select NEED_MACH_IO_H if PCCARD
+diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
+index de11030748d0..1d3aef84287d 100644
+--- a/arch/arm/mach-davinci/Kconfig
++++ b/arch/arm/mach-davinci/Kconfig
+@@ -9,7 +9,6 @@ menuconfig ARCH_DAVINCI
+ 	select PM_GENERIC_DOMAINS_OF if PM && OF
+ 	select REGMAP_MMIO
+ 	select RESET_CONTROLLER
+-	select HAVE_IDE
+ 	select PINCTRL_SINGLE
+ 
+ if ARCH_DAVINCI
+diff --git a/arch/h8300/Kconfig.cpu b/arch/h8300/Kconfig.cpu
+index 2b9cbaf41cd0..e4467d40107d 100644
+--- a/arch/h8300/Kconfig.cpu
++++ b/arch/h8300/Kconfig.cpu
+@@ -44,7 +44,6 @@ config H8300_H8MAX
+ 	bool "H8MAX"
+ 	select H83069
+ 	select RAMKERNEL
+-	select HAVE_IDE
+ 	help
+ 	  H8MAX Evaluation Board Support
+ 	  More Information. (Japanese Only)
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index cf425c2c63af..4993c7ac7ff6 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -25,7 +25,6 @@ config IA64
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+ 	select HAVE_EXIT_THREAD
+-	select HAVE_IDE
+ 	select HAVE_KPROBES
+ 	select HAVE_KRETPROBES
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 96989ad46f66..d632a1d576f9 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -23,7 +23,6 @@ config M68K
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
+ 	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
+-	select HAVE_IDE
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_UID16
+ 	select MMU_GATHER_NO_RANGE if MMU
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index cee6087cd686..6dfb27d531dd 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -71,7 +71,6 @@ config MIPS
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_GENERIC_VDSO
+-	select HAVE_IDE
+ 	select HAVE_IOREMAP_PROT
+ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index bde9907bc5b2..4f8c1fbf8f2f 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -3,7 +3,6 @@ config PARISC
+ 	def_bool y
+ 	select ARCH_32BIT_OFF_T if !64BIT
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+-	select HAVE_IDE
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_SYSCALL_TRACEPOINTS
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 53db06ba4223..2e213ec6ec05 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -220,7 +220,6 @@ config PPC
+ 	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC_BOOK3S_64 && SMP
+ 	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
+ 	select HAVE_HW_BREAKPOINT		if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
+-	select HAVE_IDE
+ 	select HAVE_IOREMAP_PROT
+ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 45a0549421cd..b683b69a4556 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -39,7 +39,6 @@ config SUPERH
+ 	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+ 	select HAVE_HW_BREAKPOINT
+-	select HAVE_IDE if HAS_IOPORT_MAP
+ 	select HAVE_IOREMAP_PROT if MMU && !X2TLB
+ 	select HAVE_KERNEL_BZIP2
+ 	select HAVE_KERNEL_GZIP
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index c5fa7932b550..f0c0f955e169 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -19,7 +19,6 @@ config SPARC
+ 	select OF
+ 	select OF_PROMTREE
+ 	select HAVE_ASM_MODVERSIONS
+-	select HAVE_IDE
+ 	select HAVE_ARCH_KGDB if !SMP || SPARC64
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_ARCH_SECCOMP if SPARC64
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 89a286d5e4b9..ff0769cd4b31 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -202,7 +202,6 @@ config X86
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_HW_BREAKPOINT
+-	select HAVE_IDE
+ 	select HAVE_IOREMAP_PROT
+ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK	if X86_64
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 1bdb55c2d0c1..b843902ad9fd 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -327,7 +327,6 @@ config XTENSA_PLATFORM_ISS
+ 
+ config XTENSA_PLATFORM_XT2000
+ 	bool "XT2000"
+-	select HAVE_IDE
+ 	help
+ 	  XT2000 is the name of Tensilica's feature-rich emulation platform.
+ 	  This hardware is capable of running a full Linux distribution.
+-- 
+2.17.1
 
