@@ -2,188 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A473D8792
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD95B3D8797
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234662AbhG1F4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 01:56:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53182 "EHLO mail.kernel.org"
+        id S233818AbhG1F6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 01:58:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:50504 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233537AbhG1F4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 01:56:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D5B060F91;
-        Wed, 28 Jul 2021 05:56:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627451802;
-        bh=SkTFCJePd+lcNKc8+koD7IK+G34mocgYj4IvJM4fn44=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q9ANBjbNMZPywJN2UYq05SCuBOhTh8QHCmVyEEeZ4lj9G9Lo7DqXT0AQWx0CTwhuo
-         npUVqfPC2/cHcWa7oOmYq7zfHqbYNwvw0P7jiRdASWbUGTLmzBLjVQyTH4VOO1Dawq
-         EJzJmvcOAynf4CFmcVLm9WnYMB1CSUQJDDwEt8Fk=
-Date:   Wed, 28 Jul 2021 07:56:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 25/64] drm/mga/mga_ioc32: Use struct_group() for memcpy()
- region
-Message-ID: <YQDxmEYfppJ4wAmD@kroah.com>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-26-keescook@chromium.org>
+        id S230118AbhG1F6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 01:58:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8004731B;
+        Tue, 27 Jul 2021 22:58:09 -0700 (PDT)
+Received: from [10.163.65.183] (unknown [10.163.65.183])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC7333F70D;
+        Tue, 27 Jul 2021 22:58:06 -0700 (PDT)
+Subject: Re: [RFC] arm64/mm: Fix idmap on [16K|36VA|48PA]
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     suzuki.poulose@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+References: <1627019894-14819-1-git-send-email-anshuman.khandual@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <d0809831-98da-a120-334b-08157469aca1@arm.com>
+Date:   Wed, 28 Jul 2021 11:28:54 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727205855.411487-26-keescook@chromium.org>
+In-Reply-To: <1627019894-14819-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 01:58:16PM -0700, Kees Cook wrote:
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> intentionally writing across neighboring fields.
+
+On 7/23/21 11:28 AM, Anshuman Khandual wrote:
+> When creating the idmap, the kernel may add one extra level to idmap memory
+> outside the VA range. But for [16K|36VA|48PA], we need two levels to reach
+> 48 bits. If the bootloader places the kernel in memory above (1 << 46), the
+> kernel will fail to enable the MMU. Although we are not aware of a platform
+> where this happens, it is worth to accommodate such scenarios and prevent a
+> possible kernel crash.
 > 
-> Use struct_group() in struct drm32_mga_init around members chipset, sgram,
-> maccess, fb_cpp, front_offset, front_pitch, back_offset, back_pitch,
-> depth_cpp, depth_offset, depth_pitch, texture_offset, and texture_size,
-> so they can be referenced together. This will allow memcpy() and sizeof()
-> to more easily reason about sizes, improve readability, and avoid future
-> warnings about writing beyond the end of chipset.
+> Lets fix the problem on the above configuration by creating two additional
+> idmap page table levels when 'idmap_text_end' is outside the VA range. This
+> reduces 'idmap_t0sz' to cover the entire PA range which would prevent table
+> misconfiguration (fault) when a given 'idmap_t0sz' value requires a single
+> additional page table level where as two have been built.
 > 
-> "pahole" shows no size nor member offset changes to struct drm32_mga_init.
-> "objdump -d" shows no meaningful object code changes (i.e. only source
-> line number induced differences and optimizations).
-> 
-> Note that since this includes a UAPI header, struct_group() has been
-> explicitly redefined local to the header.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Fixes: 215399392fe4 ("arm64: 36 bit VA")
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->  drivers/gpu/drm/mga/mga_ioc32.c | 30 ++++++++++++++------------
->  include/uapi/drm/mga_drm.h      | 37 ++++++++++++++++++++++++---------
->  2 files changed, 44 insertions(+), 23 deletions(-)
+> This applies on v5.14-rc2
+
+Hello,
+
+This should ideally be backported to stable releases even though it
+is only applicable with CONFIG_EXPERT (which lets the 36 bit VA get
+selected on 16K page size). Tried to keep this as clean and minimal.
+But being part of the very early code, wondering if there would be
+any concern in getting this backported to stable ?
+
+- Anshuman
+
 > 
-> diff --git a/drivers/gpu/drm/mga/mga_ioc32.c b/drivers/gpu/drm/mga/mga_ioc32.c
-> index 4fd4de16cd32..fbd0329dbd4f 100644
-> --- a/drivers/gpu/drm/mga/mga_ioc32.c
-> +++ b/drivers/gpu/drm/mga/mga_ioc32.c
-> @@ -38,16 +38,21 @@
->  typedef struct drm32_mga_init {
->  	int func;
->  	u32 sarea_priv_offset;
-> -	int chipset;
-> -	int sgram;
-> -	unsigned int maccess;
-> -	unsigned int fb_cpp;
-> -	unsigned int front_offset, front_pitch;
-> -	unsigned int back_offset, back_pitch;
-> -	unsigned int depth_cpp;
-> -	unsigned int depth_offset, depth_pitch;
-> -	unsigned int texture_offset[MGA_NR_TEX_HEAPS];
-> -	unsigned int texture_size[MGA_NR_TEX_HEAPS];
-> +	struct_group(always32bit,
-> +		int chipset;
-> +		int sgram;
-> +		unsigned int maccess;
-> +		unsigned int fb_cpp;
-> +		unsigned int front_offset;
-> +		unsigned int front_pitch;
-> +		unsigned int back_offset;
-> +		unsigned int back_pitch;
-> +		unsigned int depth_cpp;
-> +		unsigned int depth_offset;
-> +		unsigned int depth_pitch;
-> +		unsigned int texture_offset[MGA_NR_TEX_HEAPS];
-> +		unsigned int texture_size[MGA_NR_TEX_HEAPS];
-> +	);
->  	u32 fb_offset;
->  	u32 mmio_offset;
->  	u32 status_offset;
-> @@ -67,9 +72,8 @@ static int compat_mga_init(struct file *file, unsigned int cmd,
+>  arch/arm64/kernel/head.S | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+> index c5c994a..da33bbc 100644
+> --- a/arch/arm64/kernel/head.S
+> +++ b/arch/arm64/kernel/head.S
+> @@ -329,7 +329,9 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
 >  
->  	init.func = init32.func;
->  	init.sarea_priv_offset = init32.sarea_priv_offset;
-> -	memcpy(&init.chipset, &init32.chipset,
-> -		offsetof(drm_mga_init_t, fb_offset) -
-> -		offsetof(drm_mga_init_t, chipset));
-> +	memcpy(&init.always32bit, &init32.always32bit,
-> +	       sizeof(init32.always32bit));
->  	init.fb_offset = init32.fb_offset;
->  	init.mmio_offset = init32.mmio_offset;
->  	init.status_offset = init32.status_offset;
-> diff --git a/include/uapi/drm/mga_drm.h b/include/uapi/drm/mga_drm.h
-> index 8c4337548ab5..61612e5ecab2 100644
-> --- a/include/uapi/drm/mga_drm.h
-> +++ b/include/uapi/drm/mga_drm.h
-> @@ -265,6 +265,16 @@ typedef struct _drm_mga_sarea {
->  #define DRM_IOCTL_MGA_WAIT_FENCE    DRM_IOWR(DRM_COMMAND_BASE + DRM_MGA_WAIT_FENCE, __u32)
->  #define DRM_IOCTL_MGA_DMA_BOOTSTRAP DRM_IOWR(DRM_COMMAND_BASE + DRM_MGA_DMA_BOOTSTRAP, drm_mga_dma_bootstrap_t)
+>  #if (VA_BITS < 48)
+>  #define EXTRA_SHIFT	(PGDIR_SHIFT + PAGE_SHIFT - 3)
+> +#define EXTRA_SHIFT_1	(EXTRA_SHIFT + PAGE_SHIFT - 3)
+>  #define EXTRA_PTRS	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT))
+> +#define EXTRA_PTRS_1	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT_1))
 >  
-> +#define __struct_group(name, fields) \
-> +	union { \
-> +		struct { \
-> +			fields \
-> +		}; \
-> +		struct { \
-> +			fields \
-> +		} name; \
-> +	}
+>  	/*
+>  	 * If VA_BITS < 48, we have to configure an additional table level.
+> @@ -342,8 +344,30 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>  #error "Mismatch between VA_BITS and page size/number of translation levels"
+>  #endif
+>  
+> +/*
+> + * In this particular CONFIG_ARM64_16K_PAGES config, there might be a
+> + * scenario where 'idmap_text_end' ends up high enough in the PA range
+> + * requiring two additional idmap page table levels. Reduce idmap_t0sz
+> + * to cover the entire PA range. This prevents table misconfiguration
+> + * when a given idmap_t0sz value just requires single additional level
+> + * where as two levels have been built.
+> + */
+> +#if defined(CONFIG_ARM64_VA_BITS_36) && defined(CONFIG_ARM64_PA_BITS_48)
+> +	mov	x4, EXTRA_PTRS_1
+> +	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
 > +
->  typedef struct _drm_mga_warp_index {
->  	int installed;
->  	unsigned long phys_addr;
-> @@ -279,20 +289,25 @@ typedef struct drm_mga_init {
->  
->  	unsigned long sarea_priv_offset;
->  
-> -	int chipset;
-> -	int sgram;
-> +	__struct_group(always32bit,
-> +		int chipset;
-> +		int sgram;
->  
-> -	unsigned int maccess;
-> +		unsigned int maccess;
->  
-> -	unsigned int fb_cpp;
-> -	unsigned int front_offset, front_pitch;
-> -	unsigned int back_offset, back_pitch;
-> +		unsigned int fb_cpp;
-> +		unsigned int front_offset;
-> +		unsigned int front_pitch;
-> +		unsigned int back_offset;
-> +		unsigned int back_pitch;
->  
-> -	unsigned int depth_cpp;
-> -	unsigned int depth_offset, depth_pitch;
-> +		unsigned int depth_cpp;
-> +		unsigned int depth_offset;
-> +		unsigned int depth_pitch;
->  
-> -	unsigned int texture_offset[MGA_NR_TEX_HEAPS];
-> -	unsigned int texture_size[MGA_NR_TEX_HEAPS];
-> +		unsigned int texture_offset[MGA_NR_TEX_HEAPS];
-> +		unsigned int texture_size[MGA_NR_TEX_HEAPS];
-> +	);
->  
->  	unsigned long fb_offset;
->  	unsigned long mmio_offset;
-> @@ -302,6 +317,8 @@ typedef struct drm_mga_init {
->  	unsigned long buffers_offset;
->  } drm_mga_init_t;
->  
-> +#undef __struct_group
+> +	mov	x4, PTRS_PER_PTE
+> +	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
 > +
-
-Why can you use __struct_group in this uapi header, but not the
-networking one?
-
-thanks,
-
-greg k-h
+> +	mov	x5, #64 - PHYS_MASK_SHIFT
+> +	adr_l	x6, idmap_t0sz
+> +	str	x5, [x6]
+> +	dmb	sy
+> +	dc	ivac, x6
+> +#else
+>  	mov	x4, EXTRA_PTRS
+>  	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
+> +#endif
+>  #else
+>  	/*
+>  	 * If VA_BITS == 48, we don't have to configure an additional
+> 
