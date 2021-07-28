@@ -2,93 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F303D9500
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAA93D9504
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhG1SI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhG1SIZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:08:25 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709F5C061757;
-        Wed, 28 Jul 2021 11:08:22 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id u12so4485549eds.2;
-        Wed, 28 Jul 2021 11:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0ZTJnZtraIG0xPipALR10pj5tmmjQMjK6shf1JTwqpk=;
-        b=JgPC/3JBmvWiLoyT2NK/dn+kzAbbqaqEpRXKf55vkck4YPBZRdLOwv2yRCvOoVpMEi
-         aBS0ltY4gtDOwISN64UiY7MQyxGOuHwV0pj5KulGZMK1zJRFi8esjjQOPJqeqslDRuTp
-         vU3X76haMpN+qSk4DgJ0Org9uNSF9E1aIw//lNjmGZ8/ZCaeCPeci7TU8blJVRXfOhKQ
-         kEj+a5p8W1P+P6tEDmYLR/HyaQwIR9dB0neIY9v/YtR3wFu54Cma8AUOFxZgk2t1p5TT
-         Mz7LcRtOfkCnqzfc64ZUh+gQuAIbhmD5ZNY0qidALiD6YQPjtlJUY5lKGy4kXkSC7sKU
-         NGjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0ZTJnZtraIG0xPipALR10pj5tmmjQMjK6shf1JTwqpk=;
-        b=Peig9qKTkQFJ/9ToKMIXw4jaZ6b7saZ6jJnb8W8QMFuDP5y0dADmPMtZmDlBZwGjET
-         Xm1SCXNfiQjrMbpAfYe4/NrmCe3IjRDWUpVKZeQAg9zeDPt4jDk5G7LmIymq0AjiKsaU
-         wjd9qw7HwlXB2bYs+rfeuu11sBEreNtdIt7BhMnMAqrWIJ4B5pYY944T3CrlcoKtx5w9
-         coGd7/xR8aioCRZVfJfRS/qIzPQvsEdr5VfTeA4TcvTgaDtaIkwWtjxrGE7mAvzCoagh
-         98v5r1+o6gNUQqZXLF8fmUsh9hToz+CUxns3eGEyvvKbXy0MGvHcvB7vszJKNW5avvt0
-         a8yQ==
-X-Gm-Message-State: AOAM530meEGbc8UfyICquC/DrjE8BgrH22eDvPE0p28uJFCHEKXmQh6W
-        UzYNRf8cJFz4avVU7hjrhvo=
-X-Google-Smtp-Source: ABdhPJwEqVB8zqyKQ4K2P8TAEa37pHxPMHxMS6a23Sxq7bHR4vQ2I2cH6uzNfreWqKQe++YLwYM31Q==
-X-Received: by 2002:a05:6402:291a:: with SMTP id ee26mr1342296edb.220.1627495701024;
-        Wed, 28 Jul 2021 11:08:21 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id x2sm211241edj.37.2021.07.28.11.08.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 11:08:20 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 21:08:19 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 0/2] mt7530 software fallback bridging fix
-Message-ID: <20210728180819.egvin5gyllmwqp3n@skbuf>
-References: <20210728175327.1150120-1-dqfext@gmail.com>
+        id S231254AbhG1SIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:08:45 -0400
+Received: from mail-bn1nam07on2053.outbound.protection.outlook.com ([40.107.212.53]:13958
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229542AbhG1SIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 14:08:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ULAwQiTaXVFzyIhAQPk+lnVBMBWZaxyrqDd6C/N0nr7mydQfyIoyfoZEsw1oGxxh6PxsyYj34q24vBoyWPFfVJ8nfI/EJXsrYHZ7cm3/WKjM6kjrX1JG2wQRWzlfhXE2IRwvSq/zn7Uraqe/ZHxEkT/tDQXIJbaFWJoiy6Iwdp8R/SW7tCrg2D9Quiu9klVkMwAreQrw5dLf7hU9pQs8t1JDqc89dEQi2bRSRQUtAWXTdD9DsDFtSKPM8L9/n7fXMhDc8ZfYp07frUoaHU6RFJUVnQpDXY1Tl7zC7nXOuVmpwds04v1ERBcvo1pqfyH27D2FysrEzUJcNdQmDSADHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yutGl2JXoYQtPHIKC00dK9B+HtCnkecdQEfEWl1u5T8=;
+ b=YUVKCAz48wJlShav71bk1dfvKJ8IIHSA+CS9FKSw33SaH/MLn04YaNWe31tO8DKHxZ1JPNbcxLzEFG/PjAy1jRApia951ccusgXzhhRKtNtcNU5v+/OmMvmfId4SHigxv8LfUc1xi8Q/Ui4jY/+Co5CPnRX4VMOAdYeKIQKbmsomzTY2jCePX3DqUOW57PdHBu5B1LGH/2R5ohStj6xPfrWGiEFjszHf9TBxyo/HpXLSKuk7oxQxmupQV3S5CuSXdQUTKH15yX86XTzqZJxaRlq0gyV8LQc3npzq5u1owxm3v7bG7M6kmqAPUaAb10veGMMFgvIIPTpyPYtOzeewvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=nutanix.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yutGl2JXoYQtPHIKC00dK9B+HtCnkecdQEfEWl1u5T8=;
+ b=I3RZYxeaELdWfGcpCWYxid/NKcy9k/P4MIpLnDHJegGxcV/WhhzFXohC9ydi5GBDzNLNfAHHMjedEFP6YRbw9L1P8BQBhlU2yjBjZje+elDzFlzH12DkUwv3HhwWvjp/RhfjFR69lJnITfCYsFNOJtqo0xRAQoFjFkyo+bm1tn4a4EqtJewgRBjIQqAMhNT5KJKq7d3lLON6afrndvU7S7YRzZ4mi9NExiG47X1motq1AwJ/kjwHsIshDaRLFjEFox7QKVPEfYb+D55AePQfsp9rHO+9nZ0gkOKdxHpfERw6UsxIhKybCeuMNaczzaLmDxxbjb4/Y8214An77M3vGg==
+Received: from DM6PR06CA0006.namprd06.prod.outlook.com (2603:10b6:5:120::19)
+ by DM5PR1201MB2473.namprd12.prod.outlook.com (2603:10b6:3:e2::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.29; Wed, 28 Jul
+ 2021 18:08:41 +0000
+Received: from DM6NAM11FT020.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:120:cafe::82) by DM6PR06CA0006.outlook.office365.com
+ (2603:10b6:5:120::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20 via Frontend
+ Transport; Wed, 28 Jul 2021 18:08:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; nutanix.com; dkim=none (message not signed)
+ header.d=none;nutanix.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT020.mail.protection.outlook.com (10.13.172.224) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 18:08:40 +0000
+Received: from [10.20.23.47] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 28 Jul
+ 2021 18:08:38 +0000
+Subject: Re: [PATCH v10 2/8] PCI: Add new array for keeping track of ordering
+ of reset methods
+To:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+CC:     <alex.williamson@redhat.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kw@linux.com>, Sinan Kaya <okaya@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20210709123813.8700-3-ameynarkhede03@gmail.com>
+ <20210727225951.GA752728@bjorn-Precision-5520>
+ <20210728174519.has5xvy6rksbukup@archlinux>
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Message-ID: <e8ad2686-22e8-7d75-f0f4-82c0c57fc65e@nvidia.com>
+Date:   Wed, 28 Jul 2021 13:08:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728175327.1150120-1-dqfext@gmail.com>
+In-Reply-To: <20210728174519.has5xvy6rksbukup@archlinux>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 320faaf6-f7aa-4906-0780-08d951f2baf3
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB2473:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB2473DC31F6D48F9D2237FB44C7EA9@DM5PR1201MB2473.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fpA+JC4ly3JXxA7Z3cyAWGgsUH3zu8LcBaqJvDzpOmK82/QFNTJkXd2mhYNEDk9TOTYoFUaAkBhz03Un1I1v3z0fCVCcL+FYMDzE2+Zgzy61KLzJvBcRWi+H0O9ZFByi8n0Ui5PUmxKgyX+r6GE7uOhiNmZ/cFc0AQpM6Vwloxu8Z2ljjEv23fPmEHKTJTynVI1wR+MHi/ODAL3eF9XfjYXaTAgfW3PM3H1YeZKwsiNe/peh0S2Tu3eLbuG1tgxbZu9pLep6I1vPanHQC5Vcvhh0ZhT+IK1jfs7IBQHFTg3Ce8iDSgwKvjHQEzcmhgNdDhsTfhIM0boNrhOvZhKj9Xojs07IsYEl1Z06CixNRVEtg6M2XbRJXXLFCP8BTzigs8dosK5LLItCyNf3vHN9EOG3reeK16n0T1XHgli1i2xVr/4L9vPg8Pbd+P84TasTJBiG0QoZOj2q0I+fc4UJZ1J0elG3tdF5wIVmTB+cY94whDBfFxn+OmDGyoeyxjKJxuEDhq9GwImhh7SqYJLQ9h0o+i0OepoAtns/tKOE9VLQpok5Mr1xSENrkH4E86HWDo26sCY2XVXU4cXGR4thO4gZ1hLsHO8gVE7xIHWabv/Wtn1gLbcIwI570k9BltUfgWrKd4vplIPGh4L8T4fVevrqPd1YZWoSNI3LSDY20vDV1U5cUAY0B+O2UPPK8Qz97TAuIlIS9ufASuPZVzJd3CxOD38l1pBUYWbDj9qkOCI=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(82310400003)(7416002)(47076005)(16526019)(36756003)(186003)(53546011)(86362001)(36906005)(2906002)(31696002)(70586007)(26005)(316002)(8676002)(8936002)(36860700001)(426003)(336012)(2616005)(70206006)(356005)(508600001)(5660300002)(4326008)(7636003)(296002)(54906003)(110136005)(31686004)(16576012)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 18:08:40.8901
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 320faaf6-f7aa-4906-0780-08d951f2baf3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT020.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB2473
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 01:53:24AM +0800, DENG Qingfang wrote:
-> DSA core has gained software fallback support since commit 2f5dc00f7a3e,
-> but it does not work properly on mt7530. This patch series fixes the
-> issues.
+Hi Amey,
 
-I haven't looked at the patches, just read the commit messages. Your
-approach makes sense considering that mt7530 supports ACL rules. For
-switches that don't, I was thinking that we could add a check within DSA
-that bridging with software uppers such as LAGs can be allowed only as
-long as the bridge is VLAN-aware. If it is, then the classified VLAN for
-packets on standalone ports can be made == 0, and if independent VLAN
-learning is used, then the FDB entries learned on bridged ports will
-always have a VLAN ID != 0, so the standalone switch port won't attempt
-to shortcircuit the forwarding process towards the bridge port.
-Anyway, we can have both solutions, yours and the generic DSA restriction.
-I was just not expecting to see a fix for this already, it makes me
-think that the DSA restriction for VLAN-unaware software bridging should
-not be unconditional, but we should guard it behind a new bool option
-like ds->fdb_shared_across_all_ports = true or something like that.
-What do you think?
+On 7/28/21 12:45 PM, Amey Narkhede wrote:
+>>> +   BUILD_BUG_ON(ARRAY_SIZE(pci_reset_fn_methods) != PCI_NUM_RESET_METHODS);
+>>>
+>>>     might_sleep();
+>>>
+>>> -   rc = pci_dev_specific_reset(dev, 1);
+>>> -   if (rc != -ENOTTY)
+>>> -           return rc;
+>>> -   rc = pcie_reset_flr(dev, 1);
+>>> -   if (rc != -ENOTTY)
+>>> -           return rc;
+>>> -   rc = pci_af_flr(dev, 1);
+>>> -   if (rc != -ENOTTY)
+>>> -           return rc;
+>>> -   rc = pci_pm_reset(dev, 1);
+>>> -   if (rc != -ENOTTY)
+>>> -           return rc;
+>>> +   for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
+>>> +           rc = pci_reset_fn_methods[i].reset_fn(dev, 1);
+>>> +           if (!rc)
+>>> +                   reset_methods[n++] = i;
+>> Why do we need this local reset_methods[] array?  Can we just fill
+>> in dev->reset_methods[] directly and skip the memcpy() below?
+>>
+> This is for avoiding caching of previously supported reset methods.
+> Is it okay if I use memset(dev->reset_methods, 0,
+> sizeof(dev->reset_methods)) instead to clear the values in
+> dev->reset_methods?
+
+Clearing the array before the loop might a better option, we can get rid of a local variable.
+
+void pci_init_reset_methods(struct pci_dev *dev)
+{
+        int i, n, rc;
+
+        BUILD_BUG_ON(ARRAY_SIZE(pci_reset_fn_methods) != PCI_NUM_RESET_METHODS);
+
+        might_sleep();
+
+        memset(dev->reset_methods, 0x0, sizeof(reset_methods));
+
+        n = 0;
+        for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
+                rc = pci_reset_fn_methods[i].reset_fn(dev, 1);
+                if (!rc)
+                        dev->reset_methods[n++] = i;
+                else if (rc != -ENOTTY)
+                        break;
+        }
+}
+
+
