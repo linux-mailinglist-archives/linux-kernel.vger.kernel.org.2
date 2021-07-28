@@ -2,136 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305DE3D9726
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 22:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CC43D9730
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbhG1U5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 16:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        id S231734AbhG1VBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 17:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhG1U5g (ORCPT
+        with ESMTP id S231666AbhG1VB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 16:57:36 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49585C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:57:34 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id a201so6165865ybg.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 13:57:34 -0700 (PDT)
+        Wed, 28 Jul 2021 17:01:28 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD85EC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:01:25 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id m1so7092867pjv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:01:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pTsvjRA7QJHz6Ut4194ILaAL+6Y4KjG9H2G1vntGX6w=;
-        b=jYhXLyFxy+0LDnmQx3ShWVphRBj1/9hh+jLt56xwmBb9htxCdFO1rIETWEMLIJQmSw
-         PktIHjmim14n8bmqOPZAe8UC39MQnNukydEq2ToJ/NqXgPWJ1Eu7cQxIpCchjDI+4oAO
-         pEybwP5Fj8bS3I73oGgy7aQm079ZD35eH1lteS4gHwXvl1y+VGEZ+U7iCNzjrBkNKtE9
-         sCNtxvla1OzOsktzEhyhkrSRHJ0fE2X6LZe65uBVMo7JuFT1sWxtuvvRUDgLTH7kbzEK
-         4ZbJkf2oU+CuLmuZOTv5QJd/8YpUxXVtYNcXOOjn/LFYPSus6Vj75Upwnky2oB1EG/1l
-         +oyQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FJEdJNA4sywUWglVLwn78S3p+lPMZ01rTY+4k5h2Png=;
+        b=vM44vlNslYWPbrjWIUu3iZFP6177zbLGeg6hyqrWdrVuDIZbAVbau4oMY3s6yBUNag
+         cAWhQkel7/cgeaXF3reLPEscphuVuKsHMJB303I8gNYS5XZBHLxst+dWkokgP2eoW9tl
+         RRcSnX2yLFCeOTUfLqSdMOEDr/avbk8h+vsooe3UpIAQ56O6b6/ThWXRMPf4Rc4fZCOp
+         euc3dkrMYRfyP0IgN9H2ymWsJeGaaoSXkEpeCAKuSSFd8YFfLUEj5aHwJfggS1bjlBVA
+         Rrkd2MaQIr4jgEQtyeHXjj1RqfAxdMGDxGxwbGmUjUUl8qMsPBIJfUgwtyctiCRu6Ue/
+         os+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pTsvjRA7QJHz6Ut4194ILaAL+6Y4KjG9H2G1vntGX6w=;
-        b=tRdDDybXt5duj9Zw6kNDlNbWHFBSUBRSrqrYNT7bCdDsBF6BO+zM+b0fr0YLBtlE5F
-         lN6ey3iRa4Gv2XHY3aw0X9LKZOEB+r4llk7sxyRB8Ffanw1ZmHhcoAf12X9V/oBUt+nR
-         ZPHFL43WbZqjraE3x9N+bvF2JL81n8sspE5V4F4cAYdjtZJiJWBNRJF8Ze88iI0Jy1DI
-         T+EV6eBesL3yocUgzGSeln5/pL6nT/bJwbUBRrrx2IM3WZo71OF2ixbXjpZ/2qa6Iagv
-         1/tc2kV+eKohCemN8pgLBkINdpbqNQcfkpjYLUv8jLV/+RzxxF1tLqZxgH994F1iycaJ
-         3QGQ==
-X-Gm-Message-State: AOAM530BltYCWteHex2MXW1ib8SpiZiyrVkbJfUmdHWCrQ5QMOsHMM23
-        EI8OVNAPF0wWnO1Sm6fpwSF7++VxXlVuAPuIzaxW/g==
-X-Google-Smtp-Source: ABdhPJyFZqPWvpfpjKjL58yBUX6jEHePEqtOYklIISdBW/qV3U0B6Y7KJoL/Z8EVeT1JSND+ndEBqx6IWveusANig1Q=
-X-Received: by 2002:a25:ba44:: with SMTP id z4mr2130612ybj.476.1627505853191;
- Wed, 28 Jul 2021 13:57:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FJEdJNA4sywUWglVLwn78S3p+lPMZ01rTY+4k5h2Png=;
+        b=l/YKdSGD/FQWlrt5XkZzuBS56XB1Kae6wNmtOuorL9PnnNiLX9qWSKKEkgF+fnaA4P
+         Xgbz77mYrLhEkKOPIAl2ja0hzZgjwBLhMfbGsJksitBKNBQ4U06kZE2sILHmgbSs7L9A
+         3n/gWluZal7kSnRkblTBSfCiXTRIDav3MzgKwTRhO+LW3mbK1MqlJcXbIPiZWDo8hr0u
+         5BhMmiq8vsX/Ykv6LS5aLzdHs+pedZ0CmIBPylcXmFQB3IjBJincobZGErQVACh+Tzve
+         GfowGK5sy/i0VPqZ1LbQhvnhtRcHvWzoNdFoiryNwclUaaxGfK2OhRxRg8MroE32P+7j
+         RvmQ==
+X-Gm-Message-State: AOAM533QVX2xToCw6MMbaizaawncqFjyX7CIORh+b2SkmvE8XTsPbUjV
+        gWYZEkn28BVIdEE0SXs0/ZuDkA==
+X-Google-Smtp-Source: ABdhPJwx4GRnRHuDauI9xgKnOWibZNxddcRVd4P3ZBzKBS71Eqdi0J1GWpZUKB18NEIaKPOMp/cs9A==
+X-Received: by 2002:a17:902:ab88:b029:12b:d2ee:c26f with SMTP id f8-20020a170902ab88b029012bd2eec26fmr1549354plr.38.1627506085157;
+        Wed, 28 Jul 2021 14:01:25 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id l2sm882101pfc.157.2021.07.28.14.01.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 14:01:24 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 21:01:20 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 7/9] KVM: X86: MMU: Tune PTE_LIST_EXT to be bigger
+Message-ID: <YQHFoDqp4yxfXcjc@google.com>
+References: <20210625153214.43106-1-peterx@redhat.com>
+ <20210625153413.43570-1-peterx@redhat.com>
 MIME-Version: 1.0
-References: <20210727131853.GA18032@pswork> <20210727140618.19130-1-treasure4paddy@gmail.com>
-In-Reply-To: <20210727140618.19130-1-treasure4paddy@gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 28 Jul 2021 13:57:21 -0700
-Message-ID: <CABCJKudYRiK0KcMHGHeBFcr+Smwa9EM+NFeBpMo_ePqK+zHz0w@mail.gmail.com>
-Subject: Re: [PATCH v2] kallsyms: strip ThinLTO postfix ".cfi_jt"
-To:     Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
-Cc:     Jessica Yu <jeyu@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625153413.43570-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Jul 27, 2021 at 7:07 AM Padmanabha Srinivasaiah
-<treasure4paddy@gmail.com> wrote:
->
-> Clang ThinLTO adds a postfix ".cfi_jt" to a symbols of extern functions.
-
-These symbols are added with CONFIG_CFI_CLANG no matter which LTO mode
-is selected, so talking about ThinLTO here isn't quite correct.
-
-> For example this breaks syscall tracer that doesn't expect such postfix,
-> so strip out the postfix from the output.
->
-> Signed-off-by: Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
+On Fri, Jun 25, 2021, Peter Xu wrote:
+> Currently rmap array element only contains 3 entries.  However for EPT=N there
+> could have a lot of guest pages that got tens of even hundreds of rmap entry.
+> 
+> A normal distribution of a 6G guest (even if idle) shows this with rmap count
+> statistics:
+> 
+> Rmap_Count:     0       1       2-3     4-7     8-15    16-31   32-63   64-127  128-255 256-511 512-1023
+> Level=4K:       3089171 49005   14016   1363    235     212     15      7       0       0       0
+> Level=2M:       5951    227     0       0       0       0       0       0       0       0       0
+> Level=1G:       32      0       0       0       0       0       0       0       0       0       0
+> 
+> If we do some more fork some pages will grow even larger rmap counts.
+> 
+> This patch makes PTE_LIST_EXT bigger so it'll be more efficient for the general
+> use case of EPT=N as we do list reference less and the loops over PTE_LIST_EXT
+> will be slightly more efficient; but still not too large so less waste when
+> array not full.
+> 
+> It should not affecting EPT=Y since EPT normally only has zero or one rmap
+> entry for each page, so no array is even allocated.
+> 
+> With a test case to fork 500 child and recycle them ("./rmap_fork 500" [1]),
+> this patch speeds up fork time of about 22%.
+> 
+>     Before: 367.20 (+-4.58%)
+>     After:  302.00 (+-5.30%)
+> 
+> [1] https://github.com/xzpeter/clibs/commit/825436f825453de2ea5aaee4bdb1c92281efe5b3
+> 
+> Signed-off-by: Peter Xu <peterx@redhat.com>
 > ---
-> Change in v2:
->   - Use existing routine in kallsyms to strip postfix ".cfi_jt" from
->     extern function name.
->   - Modified the commit message accordingly
->
->  kernel/kallsyms.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> index 0ba87982d017..e9148626ae6c 100644
-> --- a/kernel/kallsyms.c
-> +++ b/kernel/kallsyms.c
-> @@ -166,16 +166,20 @@ static unsigned long kallsyms_sym_address(int idx)
->
->  #if defined(CONFIG_CFI_CLANG) && defined(CONFIG_LTO_CLANG_THIN)
->  /*
-> - * LLVM appends a hash to static function names when ThinLTO and CFI are
-> - * both enabled, i.e. foo() becomes foo$707af9a22804d33c81801f27dcfe489b.
-> - * This causes confusion and potentially breaks user space tools, so we
-> - * strip the suffix from expanded symbol names.
-> + * LLVM appends a hash to static function names and just ".cfi_jt" postfix
-> + * for non-static functions when both ThinLTO and CFI are enabled,
+>  arch/x86/kvm/mmu/mmu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index b3f738a7c05e..9b093985a2ef 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -137,8 +137,8 @@ module_param(dbg, bool, 0644);
+>  
+>  #include <trace/events/kvm.h>
+>  
+> -/* make pte_list_desc fit well in cache line */
+> -#define PTE_LIST_EXT 3
+> +/* make pte_list_desc fit well in cache lines */
+> +#define PTE_LIST_EXT 15
 
-Functions aren't technically speaking renamed to add a .cfi_jt
-postfix. Instead, these are separate symbols that point to the CFI
-jump table. Perhaps the comment should just say that we want to strip
-.cfi_jt from CFI jump table symbols?
+Ha, I was going to say that this should be '14' to fit pte_list_desc within two
+cache lines, but looks like Paolo fixed it up on commit.
 
-> + * i.e. for example foo() becomes foo$707af9a22804d33c81801f27dcfe489b.
-> + * This causes confusion and potentially breaks user space tools and
-> + * built-in components, so we strip the suffix from expanded symbol names.
->   */
->  static inline bool cleanup_symbol_name(char *s)
->  {
->         char *res;
->
->         res = strrchr(s, '$');
-> +       if (!res)
-> +               res = strstr(s, ".cfi_jt");
-> +
->         if (res)
->                 *res = '\0';
+Also, if the whole cache line thing actually matters, sptes[] and spte_count
+should be swapped since spte_count is always read, whereas spte_count[7:14] will
+be read iff there are 8+ SPTEs.
 
-This looks otherwise fine to me, but it's going to conflict with
-Nick's earlier patch:
-
-https://lore.kernel.org/lkml/20210707181814.365496-1-ndesaulniers@google.com/
-
-Could you please rebase this on top of that, and take into account
-that we should do this when CONFIG_LTO_CLANG is enabled, not only with
-LTO_CLANG_THIN?
-
-Sami
+>  struct pte_list_desc {
+>  	u64 *sptes[PTE_LIST_EXT];
+> -- 
+> 2.31.1
+> 
