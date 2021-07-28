@@ -2,112 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C82D3D8AD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704083D8ADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 11:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235736AbhG1Jjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 05:39:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51539 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235679AbhG1Jjj (ORCPT
+        id S235768AbhG1Jjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 05:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235679AbhG1Jjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 05:39:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627465177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1ZYlpvd0wrMNvulsNAlFJD373h3DlBpV9FmzAud/uLI=;
-        b=fp4iQm5OVMwzimSby6fBdTsntfeoUE4pZKsnA71OJWHjDZBqJeqnl0ymGb5Z7qWkLZUnmn
-        mTUOz0Mnsluv9iEGxvH+XxicjpsJDJsgHwcnIizDPoD7LqcOs8VFM17QIgU54IuEuM6i4c
-        pSr4HxmWG/Ct/jbngGvfgQ3+lYIpOE4=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-230-QLnScPHqOVOWroGzJLdPHQ-1; Wed, 28 Jul 2021 05:39:36 -0400
-X-MC-Unique: QLnScPHqOVOWroGzJLdPHQ-1
-Received: by mail-il1-f198.google.com with SMTP id d9-20020a056e021c49b02902095727d18dso1191125ilg.17
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:39:36 -0700 (PDT)
+        Wed, 28 Jul 2021 05:39:44 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B9DC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:39:42 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id m20-20020a05600c4f54b029024e75a15716so1225798wmq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 02:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QWYajFnJCJzmpzKrv7hbKbuFIci/pVSRegRGjTua7O0=;
+        b=l4TDshnGaVaNrCBGz8USyiAQ/yncxv/XGJmIm83yOaQhEbSiv6MgQ0QJVX9q8GoIxo
+         rRKVKidZIyrdNbEUfzBB6KYwXo6V60OvulGJsQoVAsRds6rVkfV7lg0Xwo9OkZAxp5+k
+         Jj/8TXE6FWFG22hxnjLOEze2aPxuayJTXsAz9uTxpmMf8dWwKKCjRRlfNutNKjVyhhYy
+         mvhGCWeu4Lbe9UjToKlMPmPCRV/G/wF7sZtLthWg7rw/bc+Qe6vl2wZ9qlrS4RW2lwPf
+         PxjmtuPKeoORfhmF0R+9Ra6qbReEZvmemcqMyO6o2h4q14x4ZjR5DagzwqTdV9KFqPs4
+         QngA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1ZYlpvd0wrMNvulsNAlFJD373h3DlBpV9FmzAud/uLI=;
-        b=cXf4jG0VzsVi3EoEoGqXcV5TiuhmWuF7Xd8vEdP/zsPAaB0s+uadLeTK/DnJjw107U
-         +PnNGixGNGpHc58AOsZoomuFvco5Ov0cS8IiHvWmXR4JYpvn6qIwpNctyCB+OYT27Ufc
-         H5iA/T6kNM3SUmBVDKLSPUSm+rDq3qRRuZGIuefNVUbi3RhRKzCkF++XPZB//8+6xRBa
-         v/Icfn9R3m6bo0f+DYh1Ncy8xOtW1wovSNTmFg5X+HCPESdxNkNo2A4qGl2fvtz2EA4T
-         twgsyJ2MF7j/RX8LG97n4oS7gby5f5p0pgvMV7K3Dbuw+pup7nGx2UeejlG21rHLLJJc
-         MF2w==
-X-Gm-Message-State: AOAM531RGGn/CVgv17mQoQnDLOcSFCA4Kfhi3DQsnzPGBaDxFZsogKCs
-        2PuhQ2wDsh4i3LFtiYwGdLMSbvs6HYZLpkFg1I50eXpd4ZyUvxmUEk5szXhQ/ZTLvJ2TfsEbfoy
-        9puRoQqME/r27+TNUkz2/ONMsVXBAcuMtRe2RH+Cp
-X-Received: by 2002:a92:cec5:: with SMTP id z5mr18759439ilq.226.1627465175920;
-        Wed, 28 Jul 2021 02:39:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGQjikI+CcP92C8oA9YNs6Xpubb3f815soKcRbvzy7YTVQlpcJkpzxb3OZh2Rq+Q7nKigYlaFrt4yknkYOVMo=
-X-Received: by 2002:a92:cec5:: with SMTP id z5mr18759427ilq.226.1627465175742;
- Wed, 28 Jul 2021 02:39:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210727111446.119561-1-mlombard@redhat.com> <YQDznBi5NuTIKd+x@kernel.org>
-In-Reply-To: <YQDznBi5NuTIKd+x@kernel.org>
-From:   Maurizio Lombardi <mlombard@redhat.com>
-Date:   Wed, 28 Jul 2021 11:39:25 +0200
-Message-ID: <CAFL455=X7aCK=vSBuQZV39gR03mrnc1j+-YHWkWbVor4g89DkQ@mail.gmail.com>
-Subject: Re: [PATCH V2] iscsi_ibft: fix crash due to KASLR physical memory remapping
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     bp@alien8.de, tglx@linutronix.de, x86@kernel.org,
-        pjones@redhat.com, konrad@kernel.org,
-        George Kennedy <george.kennedy@oracle.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QWYajFnJCJzmpzKrv7hbKbuFIci/pVSRegRGjTua7O0=;
+        b=IcaVLExcqgNTfi+2PjdGwEXdeta5wVNnpDwzm5aWMyy6p+Jgz+5TyNe7NheSzi/0AB
+         0LAKg9OvMvRmpC3ttsgQRTVijS0tWxJAsrGRNGzAQdZR97euRbxCizkYn40Z74NpZ9R3
+         LFGVTjM0Htx8J91eJiDwGtebz6+CxLg0SMLRe6pdb2L7l/rex8EjqeZ6KUrCuWspQ+6n
+         iXSTXDQhfVqgydMM/7oxoITASpVI5lWSMswJoJxoR9OY3NaIRm5vxLzRw+SCAJWfG/M1
+         40bulOsjEqiODuuRvgxRr7H1x6WmD/cGr5NQYMlA0dvZnRuusAC4UZvA0SXo/9m+T0oV
+         ai7w==
+X-Gm-Message-State: AOAM530N7hD2Gbh6Hba/g72dg6ksvblqpaIKq0b0rdLA+e39tGdcl7ZH
+        K11mrJ0PBIFhT/Pqke/nLJDjmA==
+X-Google-Smtp-Source: ABdhPJzhsvzLPo4Nt7Hmn+qOvVsLPt2BEWNVD5b8YV6t1d2ULZjZ2dvIJp0YfMIxuAPZN6651KmPYA==
+X-Received: by 2002:a1c:4e10:: with SMTP id g16mr8507098wmh.66.1627465180964;
+        Wed, 28 Jul 2021 02:39:40 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:20cb:dab7:97bc:c682])
+        by smtp.gmail.com with ESMTPSA id m14sm5943663wrs.56.2021.07.28.02.39.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 02:39:40 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 10:39:38 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 2/2] sched: Don't report SCHED_FLAG_SUGOV in
+ sched_getattr()
+Message-ID: <YQEl2t2RgaB9eEOZ@google.com>
+References: <20210727101103.2729607-1-qperret@google.com>
+ <20210727101103.2729607-3-qperret@google.com>
+ <YQEfY730Sjkr3w+Y@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQEfY730Sjkr3w+Y@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+On Wednesday 28 Jul 2021 at 11:12:03 (+0200), Juri Lelli wrote:
+> Hi Quentin,
+> 
+> On 27/07/21 11:11, Quentin Perret wrote:
+> > SCHED_FLAG_SUGOV is supposed to be a kernel-only flag that userspace
+> > cannot interact with. However, sched_getattr() currently reports it
+> > in sched_flags if called on a sugov worker even though it is not
+> > actually defined in a UAPI header. To avoid this, make sure to
+> > clean-up the sched_flags field in sched_getattr() before returning to
+> > userspace.
+> > 
+> > Signed-off-by: Quentin Perret <qperret@google.com>
+> > ---
+> >  kernel/sched/core.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 2d9ff40f4661..d8f489dcc383 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -7535,6 +7535,7 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pid, struct sched_attr __user *, uattr,
+> >  		kattr.sched_priority = p->rt_priority;
+> >  	else
+> >  		kattr.sched_nice = task_nice(p);
+> > +	kattr.sched_flags &= SCHED_FLAG_ALL;
+> 
+> Maybe we can do this in the previous patch so that it's kept confined to
+> deadline bits?
 
-st 28. 7. 2021 v 8:05 odes=C3=ADlatel Mike Rapoport <rppt@kernel.org> napsa=
-l:
->
-> Hi,
->
-> On Tue, Jul 27, 2021 at 01:14:46PM +0200, Maurizio Lombardi wrote:
-> > Starting with commit a799c2bd29d19c565f37fa038b31a0a1d44d0e4d
-> > memory reservations have been moved earlier during the boot process,
-> > before the execution of the Kernel Address Space Layout Randomization c=
-ode.
-> >
-> > setup_arch() calls the iscsi_ibft's find_ibft_region() function
-> > to find and reserve the memory dedicated to the iBFT; this function
-> > also saves a (virt) pointer to the iBFT table for later use.
->
->               ^ virtual
->
-> > The problem is that if KALSR is active, the physical memory gets
-> > remapped somewhere else in the virtual address space and the pointer is
-> > no longer valid, this will cause a kernel panic when the iscsi driver t=
-ries
-> > to dereference it.
->
-> Please drop "this patch" and use imperative language, e.g. "Fix this bug
-> by..."
->
-> > This patch fixes the bug by saving the address of the physical location
-> > of the ibft; later the driver will use isa_bus_to_virt() to get
-> > the correct virtual address.
-> >
-> > It will also simplify the code by renaming find_ibft_region()
-> > to reserve_ibft_region() and removing all the wrappers.
-> >
-> > [   37.764225] iBFT detected.
->
-> It is better to put the crash report close to the problem description as =
-it
-> actually shows how the issue is manifested.
+That works too, it just felt like this could happen again if we start
+using non-standard flags outside of deadline for any reason at some
+point in the future. But no strong opinion really.
 
-Thanks for the review, I will submit a V3 soon
-
-Maurizio
-
+Cheers,
+Quentin
