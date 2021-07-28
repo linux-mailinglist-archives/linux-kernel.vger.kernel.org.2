@@ -2,178 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24C43D9983
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702093D998A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhG1XdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
+        id S232638AbhG1XiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232798AbhG1XdY (ORCPT
+        with ESMTP id S232116AbhG1XiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:33:24 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DCAC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:33:21 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id j18-20020a17090aeb12b029017737e6c349so4078306pjz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:33:21 -0700 (PDT)
+        Wed, 28 Jul 2021 19:38:09 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEE6C061757;
+        Wed, 28 Jul 2021 16:38:05 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d1so4718167pll.1;
+        Wed, 28 Jul 2021 16:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hFIkjt/HAKYP2gDSt85Hu9GQQgBuaRL3GoR8pjbA0bw=;
-        b=eZq87nPKlWl1J2DEEMJZ0uaEj2HBpzx1uFCKn+eDG74O39BY2fqgYPseftQWhiHZ3p
-         3PJNkhirHMnzPm0VwpSUdr5bc9yR+trhFp/MOdtZnE7T7uRicxtGEKbYH49hrFM5DKkn
-         1n46Y3AQgPVx/z+eMIRIv1CuZbfnRiL9Xc4bA=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=SfhM5hIjH4I2dOHB9xgS2+AKrC0SvF1WxH5UJ+fSmRk=;
+        b=DHHzoOVXCFpB2m+umRRgHMk+kFAqECOeEl5r1oi4ckNWeivoGTI7aAz4oGGAr7LbAT
+         E7qu8ZeZbpQrwKhiWLnhQ1L1yuaQIOi8WRfuTLsaIy6fB9UIvwKSwt23RSmGoTV6Pgx2
+         s/RSqrrUd52uFOZqAd6r9JzRVBiZN56m+Rfnu9DeysgNaBeGA/2A1fEFymHivV3rXEY5
+         JVRLMeGgcP5ZS/orWw5L5LIJuVshEUGfmJdntab/jA/1lP1hYGdt2cWyjahQ3df0O5OA
+         ZcYaWK9r5Y5oozvErh9m0J8eHzKdduGjWSanUXVITeN031HEknOZGVUasXewZ8DwS7dm
+         YAEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hFIkjt/HAKYP2gDSt85Hu9GQQgBuaRL3GoR8pjbA0bw=;
-        b=dS79vQYinW0cAdx5yww58dnmnvijfSM13byacEF8EZiL6ilXjjrf/rKW7eoxCPZK8d
-         NwBNYEnBVupL7W1QszGrthlZzG27onSn2imDlbqiAoF16zEWkZRw0wYK4UawAnUdYnjl
-         8jEeyIfFIvVIIlVlGOhNH+QxPnjOp/xkQq0PSlTKFwe4qdaIdslTb1AGLyKTtpSTC5z2
-         mdFj8Q2mw7Z4lEbBHjPOuEi2fg7KfkRBLaWaVs19p2Ist/UVcT2i0aNby2IaEtC1hMaf
-         8KYUTqf9K5YxBdIgwK4RKEh8xHbolSHdMQnfroWA7SrwTiriXtHlUaLHW3aLgzu1GHpE
-         8Orw==
-X-Gm-Message-State: AOAM533TB9XU+NKoDrIv8ElrHqVO55MWV/HH1CUhvTvWvzmcYQ7qKXxW
-        DGhDhEvFM8uuVxBoUaOzuv1eqQ==
-X-Google-Smtp-Source: ABdhPJyDOQNxc6ttxQhAqGxoxWvmp3MMGc7Zv3gC3yqd9RQT0SfNwJrM7aAomvW+xqq4hMTgYf4FHA==
-X-Received: by 2002:a17:90a:fc95:: with SMTP id ci21mr12127797pjb.176.1627515200829;
-        Wed, 28 Jul 2021 16:33:20 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m34sm1068670pgb.85.2021.07.28.16.33.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SfhM5hIjH4I2dOHB9xgS2+AKrC0SvF1WxH5UJ+fSmRk=;
+        b=DMKG2oEg79XGBF2SRfndT5IFw/1YqY+/6erJsK9RUqCHU1Q+o8RLYbhKtWZ4QHnl0W
+         VZKF3oAGJUP3z6tnjWxdzWOO12z6pC6muSdf1hPNyMdIDiROx+/B3byye8/FGweMKh0T
+         LkLy096YL0JSjDWSLFTPcTdSHTm1YTVM0/5TRbdn5x8s1iLeYtoUTNHrq4WYO5CMJ8mG
+         44skmiQ4IeqDrnHDGLghHdoQqtd6CP92ZII95pYrMRGGkdIGWcKiowq+90yfYuAjCKvH
+         DFSW1jZodWuITITwWV/WgbAqACn9Sa0lod+DbNZwY7YOMFyY4WmrLQEUNFDnHGpQKeyp
+         Atgw==
+X-Gm-Message-State: AOAM53010CXPtU0WaiSlNpOabSi/ug6xcx2Px2YGPre7vc6zhN2IDKBo
+        196xXvNcChl2UyhyefbRJnI=
+X-Google-Smtp-Source: ABdhPJw9M4Lxsn7ys7mPlyLWaO6vlx6TfaLR1km4tFwmfpcL1zh55ty79nFEMvIxyek5uv8z6iI/9A==
+X-Received: by 2002:a17:902:8bc4:b029:12b:8470:e29e with SMTP id r4-20020a1709028bc4b029012b8470e29emr2080316plo.2.1627515485326;
+        Wed, 28 Jul 2021 16:38:05 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id k37sm1038671pgm.84.2021.07.28.16.38.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 16:33:20 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 16:33:18 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 02/64] mac80211: Use flex-array for radiotap header bitmap
-Message-ID: <202107281630.B0519DA@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-3-keescook@chromium.org>
- <20210728073556.GP1931@kadam>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728073556.GP1931@kadam>
+        Wed, 28 Jul 2021 16:38:04 -0700 (PDT)
+From:   rentao.bupt@gmail.com
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, taoren@fb.com
+Cc:     Tao Ren <rentao.bupt@gmail.com>
+Subject: [PATCH 0/6] ARM: dts: Add Facebook AST2600 BMCs
+Date:   Wed, 28 Jul 2021 16:37:49 -0700
+Message-Id: <20210728233755.17963-1-rentao.bupt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:35:56AM +0300, Dan Carpenter wrote:
-> On Tue, Jul 27, 2021 at 01:57:53PM -0700, Kees Cook wrote:
-> > [...]
-> > -	/**
-> > -	 * @it_present: (first) present word
-> > -	 */
-> > -	__le32 it_present;
-> > +	union {
-> > +		/**
-> > +		 * @it_present: (first) present word
-> > +		 */
-> > +		__le32 it_present;
-> > +
-> > +		struct {
-> > +			/* The compiler makes it difficult to overlap
-> > +			 * a flex-array with an existing singleton,
-> > +			 * so we're forced to add an empty named
-> > +			 * variable here.
-> > +			 */
-> > +			struct { } __unused;
-> > +
-> > +			/**
-> > +			 * @bitmap: all presence bitmaps
-> > +			 */
-> > +			__le32 bitmap[];
-> > +		};
-> > +	};
-> >  } __packed;
-> 
-> This patch is so confusing...
-> 
-> Btw, after the end of the __le32 data there is a bunch of other le64,
-> u8 and le16 data so the struct is not accurate or complete.
-> 
-> It might be better to re-write this as something like this:
-> 
-> diff --git a/include/net/ieee80211_radiotap.h b/include/net/ieee80211_radiotap.h
-> index c0854933e24f..0cb5719e9668 100644
-> --- a/include/net/ieee80211_radiotap.h
-> +++ b/include/net/ieee80211_radiotap.h
-> @@ -42,7 +42,10 @@ struct ieee80211_radiotap_header {
->  	/**
->  	 * @it_present: (first) present word
->  	 */
-> -	__le32 it_present;
-> +	struct {
-> +		__le32 it_present;
-> +		char buff[];
-> +	} data;
->  } __packed;
+From: Tao Ren <rentao.bupt@gmail.com>
 
-Ah-ha, got it:
+The patch series introuces 3 new Facebook AST2600 Network BMC platforms.
 
-diff --git a/include/net/ieee80211_radiotap.h b/include/net/ieee80211_radiotap.h
-index c0854933e24f..6b7274edb3c6 100644
---- a/include/net/ieee80211_radiotap.h
-+++ b/include/net/ieee80211_radiotap.h
-@@ -43,6 +43,10 @@ struct ieee80211_radiotap_header {
- 	 * @it_present: (first) present word
- 	 */
- 	__le32 it_present;
-+	/**
-+	 * @it_optional: all remaining presence bitmaps
-+	 */
-+	__le32 it_optional[];
- } __packed;
- 
- /* version is always 0 */
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 2563473b5cf1..b6a960d37278 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -359,7 +359,13 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 
- 	put_unaligned_le32(it_present_val, it_present);
- 
--	pos = (void *)(it_present + 1);
-+	/*
-+	 * This references through an offset into it_optional[] rather
-+	 * than via it_present otherwise later uses of pos will cause
-+	 * the compiler to think we have walked past the end of the
-+	 * struct member.
-+	 */
-+	pos = (void *)&rthdr->it_optional[it_present - rthdr->it_optional];
- 
- 	/* the order of the following fields is important */
- 
-diff --git a/net/wireless/radiotap.c b/net/wireless/radiotap.c
-index 36f1b59a78bf..081f0a3bdfe1 100644
---- a/net/wireless/radiotap.c
-+++ b/net/wireless/radiotap.c
-@@ -115,10 +115,9 @@ int ieee80211_radiotap_iterator_init(
- 	iterator->_max_length = get_unaligned_le16(&radiotap_header->it_len);
- 	iterator->_arg_index = 0;
- 	iterator->_bitmap_shifter = get_unaligned_le32(&radiotap_header->it_present);
--	iterator->_arg = (uint8_t *)radiotap_header + sizeof(*radiotap_header);
-+	iterator->_arg = (uint8_t *)radiotap_header->it_optional;
- 	iterator->_reset_on_ext = 0;
--	iterator->_next_bitmap = &radiotap_header->it_present;
--	iterator->_next_bitmap++;
-+	iterator->_next_bitmap = radiotap_header->it_optional;
- 	iterator->_vns = vns;
- 	iterator->current_namespace = &radiotap_ns;
- 	iterator->is_radiotap_ns = 1;
+Patch #1 adds dtsi file to describe the fixed flash layout of 128MB mtd
+device. The flash layout is used by all the 3 AST2600 BMC as well as
+Wedge400 (AST2500).
+
+Patch #2 simplies Wedge400 dts by including the flash layout dtsi.
+
+Patch #3 adds common dtsi which is included by all the new Facebook
+AST2600 Network BMC platforms.
+
+Patch #4 adds the device tree for Facebook Cloudripper (AST2600) BMC.
+
+Patch #5 adds the device tree for Facebook Elbert (AST2600) BMC.
+
+Patch #6 adds the device tree for Facebook Fuji (AST2600) BMC.
+
+Tao Ren (6):
+  ARM: dts: Add Facebook BMC 128MB flash layout
+  ARM: dts: aspeed: wedge400: Use common flash layout
+  ARM: dts: aspeed: Common dtsi for Facebook AST2600 Network BMCs
+  ARM: dts: aspeed: Add Facebook Cloudripper (AST2600) BMC
+  ARM: dts: aspeed: Add Facebook Elbert (AST2600) BMC
+  ARM: dts: aspeed: Add Facebook Fuji (AST2600) BMC
+
+ arch/arm/boot/dts/Makefile                    |    3 +
+ .../dts/aspeed-bmc-facebook-cloudripper.dts   |  564 ++++++++
+ .../boot/dts/aspeed-bmc-facebook-elbert.dts   |  185 +++
+ .../arm/boot/dts/aspeed-bmc-facebook-fuji.dts | 1276 +++++++++++++++++
+ .../boot/dts/aspeed-bmc-facebook-wedge400.dts |   48 +-
+ .../dts/ast2600-facebook-netbmc-common.dtsi   |  176 +++
+ .../dts/facebook-bmc-flash-layout-128.dtsi    |   60 +
+ 7 files changed, 2265 insertions(+), 47 deletions(-)
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-cloudripper.dts
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-elbert.dts
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-fuji.dts
+ create mode 100644 arch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi
+ create mode 100644 arch/arm/boot/dts/facebook-bmc-flash-layout-128.dtsi
 
 -- 
-Kees Cook
+2.17.1
+
