@@ -2,136 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547763D992E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1913D9933
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbhG1XAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232238AbhG1XAP (ORCPT
+        id S232397AbhG1XCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:02:39 -0400
+Received: from mail-io1-f45.google.com ([209.85.166.45]:39747 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232290AbhG1XCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:00:15 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA3BC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:00:12 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso6380723pjo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 16:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4OhRfzRCDIVRSF0qVIZu/V8Dymx9+bTbUwgg3FW5xYI=;
-        b=i3wBDh/ZYvNEANhL1wdz0gtZjpl3LYCuhITrNFVCLnsgss01MorTj5VfRElsRx7EM1
-         IGoqUwF2w2c33+fFueEKRP632JerVwGOVg9pFc+/XuHuOADDb54r6T7uwlQIyN9UUSJk
-         DuO89Qg3nS1TWWzNxBiPwMD8HwzPIrHML9F+dDfGd1JGfWOpAKzbqlwVRZRl5+6wJIrh
-         rEwxarv5WUUmv2VmGsO9H9RYUA4YpDy6dFODz1iA8fafrAGz+2/kkm3Qm4zo8LCKlyxz
-         lMeAocEih1R8EZrX5KRsx8QemdlwWHCAHbQcEziaj64g/6kxwOMi0Xymi2dj3KM7UYKy
-         lSZg==
+        Wed, 28 Jul 2021 19:02:38 -0400
+Received: by mail-io1-f45.google.com with SMTP id j21so4646951ioo.6;
+        Wed, 28 Jul 2021 16:02:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4OhRfzRCDIVRSF0qVIZu/V8Dymx9+bTbUwgg3FW5xYI=;
-        b=UVtQzFAbKCpOHC2B2vK7TE3ws5TcO0N6kgN3FrhP0EV5ZlWzX9sMvAlZL7wyv6HnYV
-         hmal7ONouzdsua6ie7p5hnN3a/hssVwMxKFQew6Aq9beZYDKufVeJmSnw/x8NEDX0DWS
-         +jxrViDeEwSgHCvCU7aEvECjvP4mXXQyJpc49LZNkjmsxVOHl3ef2Ig2JITm0OenNoic
-         fK98+7DLSF4mAaJ6iJeUck8yFS5+uT3sxL0wMxA/GI2iftn6LNNMKmIsz/umQ4fzYbR/
-         yf9NoVYQ/pPaNdD8wFmYK/GcRTQX2rz/Bcp1KbPlEg3SmX7fxqF6SK45R7h9iKRTny8k
-         NawA==
-X-Gm-Message-State: AOAM532otb0cswG7W7CkpRgEPMkyLAryy54C3rd3ECNCEr8XPYY5qVOc
-        I7jKhFLRxnB6Qt0rCnb3i0VWFaquRN7gAA==
-X-Google-Smtp-Source: ABdhPJxVnHMQkelgiFmuK2lyeu8jOnVruAgThfvOtuFuxAPLRXu5RAWQEkUOXPQapxVvd8BV+Sh4FQ==
-X-Received: by 2002:a62:7cc7:0:b029:32a:5351:8bf4 with SMTP id x190-20020a627cc70000b029032a53518bf4mr1853884pfc.69.1627513211414;
-        Wed, 28 Jul 2021 16:00:11 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b22sm7068638pjq.37.2021.07.28.16.00.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zcT0CaB9kN2T3PMOS6JNuQI+lMgOqz4mktM1Kdoh2lA=;
+        b=LeO+wWmsE/LKNyxty0n8/u6ysjPDPu0VhRDoWl8WWdsEw2T9hpLkpPATfRzXi1ZDKc
+         eCYTocxAav7oKx9C385+Zti2cPLriF2DZ7tf2jPuDufDA1pPTf/iguCAygsrjkHzOrNz
+         XiQfWZbcTwcQfxx/f8PCv4Bcb+sYtvPRrZzTHcXzcfielnjNFwFW9blaGPu/+P7525mi
+         OPl0yR0HN3VqJEEvvMp+KltwFGaolrrD/sLgu7BNd1NihtAWjdP4gOwD7lgdqZQUsPeA
+         zRNKewWlH2Gj4WUVVYVnUhYllUKpNgFYzjkvfZPUPKQeJ6KN678igNCaAOpN67UwXAoA
+         VtWg==
+X-Gm-Message-State: AOAM531ZZEN/7ZLcNqvBDJm1SVZLBCL9U31mkN61EVfvtne1WMazMv23
+        86I5eI5s72PMd2n45Mpt+Q==
+X-Google-Smtp-Source: ABdhPJxdSkqY3tEIRhGrhjM5Xphb7LnOBoDAgo8/cHwZSqsaUtz//z4pW+rTG1kG7NYgvkhWikMI6A==
+X-Received: by 2002:a6b:e016:: with SMTP id z22mr1430367iog.187.1627513355565;
+        Wed, 28 Jul 2021 16:02:35 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.248])
+        by smtp.googlemail.com with ESMTPSA id j20sm974821ile.17.2021.07.28.16.02.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 16:00:10 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 23:00:07 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/7] x86/sgx: Add SGX infrastructure to recover from
- poison
-Message-ID: <YQHhd0qKZqMCWqks@google.com>
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
- <20210728204653.1509010-5-tony.luck@intel.com>
- <3534daf5-fae5-a85c-e198-c0b73e44ece4@intel.com>
+        Wed, 28 Jul 2021 16:02:34 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-perf-users@vger.kernel.org
+Subject: [RFC 0/3] perf/x86: Rework RDPMC access handling
+Date:   Wed, 28 Jul 2021 17:02:27 -0600
+Message-Id: <20210728230230.1911468-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3534daf5-fae5-a85c-e198-c0b73e44ece4@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021, Dave Hansen wrote:
-> On 7/28/21 1:46 PM, Tony Luck wrote:
-> > +int sgx_memory_failure(unsigned long pfn, int flags)
-> > +{
-> ...
-> > +	page->flags |= SGX_EPC_PAGE_POISON;
-> 
-> Is this safe outside of any locks?
+This series is preparation for supporting perf user counter access on arm64.
 
-It's safe outside of sgx_reclaimer_lock iff this can guarantee nothing else can
-reach the page.  I'm pretty sure that doesn't hold true here.
+Originally, the arm64 implementation was just a copy of the x86 version, but
+Will did not like the mm_context state tracking nor the IPIs (mm_cpumask
+doesn't work for arm64). The hook into switch_mm and the IPIs feel like
+working around limitations in the perf core (aka the platform problem).
+So this series aims to solve that such that all the state for RDPMC is
+tracked and controlled via the perf core.
 
-> I see the reclaimer doing things like:
-> 
->                 epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-> 
-> I'd worry that this code and other non-atomic epc_page->flags
-> manipulation could trample on each other.
-> 
-> This might need to some some atomic bit manipulation *and* convert all
-> the other epc_page->flags users.
+Alternatively, I could avoid all the x86 changes here with a new PMU
+callback (.set_user_access()?) and plumb that into the perf core context
+and mmap code. However, it's better in the long run if there's a common
+implementation.
 
-I don't think atomics would be sufficient as that would open all sorts of possible
-races.  E.g. this new code in __sgx_sanitize_pages()
+So far, I've only tested the perf core changes with the arm64 version of
+the code which is similar to the x86 version here. I'm hoping for some
+quick feedback on the direction here and whether I've missed some usecase
+that isn't handled.
 
-                page = list_first_entry(dirty_page_list, struct sgx_epc_page, list);
-
-+               if (page->flags & SGX_EPC_PAGE_POISON) {
-+                       list_del(&page->list);
-+                       continue;
-+               }
-+
-		***HERE***
-                ret = __eremove(sgx_get_epc_virt_addr(page));
-
-could attempt EREMOVE on a freshly POISONed page.  That appears to be "benign"
-since ENCLS is wrapped with_ASM_EXTABLE_FAULT, but it feels wrong to add a check
-that we know can race.
-
-And similar races for allocation/free could hand out a poisoned page or add one
-to the free list.
-
-@@ -585,6 +600,10 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
-
-        for ( ; ; ) {
-                page = __sgx_alloc_epc_page();
-+
-+               if (page->flags & SGX_EPC_PAGE_POISON)
-+                       continue;
-		*** HERE ***
-+
+Rob
 
 
-@@ -630,7 +651,8 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
-        spin_lock(&node->lock);
+Rob Herring (3):
+  x86: perf: Move RDPMC event flag to a common definition
+  perf/x86: Control RDPMC access from .enable() hook
+  perf/x86: Call mmap event callbacks on event's CPU
 
-        page->owner = NULL;
--       list_add_tail(&page->list, &node->free_page_list);
-+       if (!(page->flags & SGX_EPC_PAGE_POISON))
-		*** HERE ***
-+               list_add_tail(&page->list, &node->free_page_list);
+ arch/x86/events/core.c             | 113 +++++++++++++++--------------
+ arch/x86/events/perf_event.h       |   2 +-
+ arch/x86/include/asm/mmu.h         |   1 -
+ arch/x86/include/asm/mmu_context.h |   6 --
+ arch/x86/include/asm/perf_event.h  |   1 -
+ arch/x86/mm/tlb.c                  |  29 +-------
+ include/linux/perf_event.h         |   9 ++-
+ kernel/events/core.c               |  56 +++++++++++---
+ 8 files changed, 113 insertions(+), 104 deletions(-)
 
-
-Setting POISON and hoping we eventually notice doesn't sound robust.  Maybe some
-of these races are unavoidable due to the nature of #MC delivery, but I would hope
-the kernel can at least avoid handing out a poisoned page to a different enclave.
+--
+2.27.0
