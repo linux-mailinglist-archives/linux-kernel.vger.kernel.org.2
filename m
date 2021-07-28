@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B303D8FBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D703D8FC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237377AbhG1Nxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:53:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:56876 "EHLO foss.arm.com"
+        id S237395AbhG1NyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:54:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:56888 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236968AbhG1Nwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236992AbhG1Nwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Jul 2021 09:52:53 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 802B4106F;
-        Wed, 28 Jul 2021 06:52:48 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F57C113E;
+        Wed, 28 Jul 2021 06:52:50 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CE8E83F70D;
-        Wed, 28 Jul 2021 06:52:46 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B18693F70D;
+        Wed, 28 Jul 2021 06:52:48 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
@@ -25,9 +25,9 @@ Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
         mathieu.poirier@linaro.org, mike.leach@linaro.org,
         leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com,
         Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH 01/10] coresight: trbe: Add infrastructure for Errata handling
-Date:   Wed, 28 Jul 2021 14:52:08 +0100
-Message-Id: <20210728135217.591173-2-suzuki.poulose@arm.com>
+Subject: [PATCH 02/10] coresight: trbe: Add a helper to calculate the trace generated
+Date:   Wed, 28 Jul 2021 14:52:09 +0100
+Message-Id: <20210728135217.591173-3-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20210728135217.591173-1-suzuki.poulose@arm.com>
 References: <20210728135217.591173-1-suzuki.poulose@arm.com>
@@ -37,119 +37,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a minimal infrastructure to keep track of the errata
-affecting the given TRBE instance. Given that we have
-heterogeneous CPUs, we have to manage the list per-TRBE
-instance to be able to apply the work around as needed.
+We collect the trace from the TRBE on FILL event from IRQ context
+and when via update_buffer(), when the event is stopped. Let us
+consolidate how we calculate the trace generated into a helper.
 
-We rely on the arm64 errata framework for the actual
-description and the discovery of a given erratum, to
-keep the Erratum work around at a central place and
-benefit from the code and the advertisement from the
-kernel. We use a local mapping of the erratum to
-avoid bloating up the individual TRBE structures.
-i.e, each arm64 TRBE erratum bit is assigned a new number
-within the driver to track. Each trbe instance updates
-the list of affected erratum at probe time on the CPU.
-This makes sure that we can easily access the list of
-errata on a given TRBE instance without much overhead.
-
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-trbe.c | 48 ++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ drivers/hwtracing/coresight/coresight-trbe.c | 48 ++++++++++++--------
+ 1 file changed, 30 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index b8586c170889..0368bf405e35 100644
+index 0368bf405e35..a0168ad204b3 100644
 --- a/drivers/hwtracing/coresight/coresight-trbe.c
 +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -16,6 +16,8 @@
- #define pr_fmt(fmt) DRVNAME ": " fmt
+@@ -528,6 +528,30 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+ 	return TRBE_FAULT_ACT_SPURIOUS;
+ }
  
- #include <asm/barrier.h>
-+#include <asm/cputype.h>
-+
- #include "coresight-self-hosted-trace.h"
- #include "coresight-trbe.h"
- 
-@@ -65,6 +67,35 @@ struct trbe_buf {
- 	struct trbe_cpudata *cpudata;
- };
- 
-+/*
-+ * TRBE erratum list
-+ *
-+ * We rely on the corresponding cpucaps to be defined for a given
-+ * TRBE erratum. We map the given cpucap into a TRBE internal number
-+ * to make the tracking of the errata lean.
-+ *
-+ * This helps in :
-+ *   - Not duplicating the detection logic
-+ *   - Streamlined detection of erratum across the system
-+ *
-+ * Since the erratum work arounds could be applied individually
-+ * per TRBE instance, we keep track of the list of errata that
-+ * affects the given instance of the TRBE.
-+ */
-+#define TRBE_ERRATA_MAX			0
-+
-+static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
-+};
-+
-+/*
-+ * struct trbe_cpudata: TRBE instance specific data
-+ * @trbe_flag		- TRBE dirty/access flag support
-+ * @tbre_align		- Actual TRBE alignment required for TRBPTR_EL1.
-+ * @cpu			- CPU this TRBE belongs to.
-+ * @mode		- Mode of current operation. (perf/disabled)
-+ * @drvdata		- TRBE specific drvdata
-+ * @errata		- Bit map for the errata on this TRBE.
-+ */
- struct trbe_cpudata {
- 	bool trbe_flag;
- 	u64 trbe_align;
-@@ -72,6 +103,7 @@ struct trbe_cpudata {
- 	enum cs_mode mode;
- 	struct trbe_buf *buf;
- 	struct trbe_drvdata *drvdata;
-+	DECLARE_BITMAP(errata, TRBE_ERRATA_MAX);
- };
- 
- struct trbe_drvdata {
-@@ -84,6 +116,21 @@ struct trbe_drvdata {
- 	struct platform_device *pdev;
- };
- 
-+static void trbe_check_errata(struct trbe_cpudata *cpudata)
++static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
++					 struct trbe_buf *buf,
++					 bool wrap)
 +{
-+	int i;
++	u64 write;
++	u64 start_off, end_off;
 +
-+	for (i = 0; i < ARRAY_SIZE(trbe_errata_cpucaps); i++) {
-+		if (this_cpu_has_cap(trbe_errata_cpucaps[i]))
-+			set_bit(i, cpudata->errata);
-+	}
++	/*
++	 * If the TRBE has wrapped around the write pointer has
++	 * wrapped and should be treated as limit.
++	 */
++	if (wrap)
++		write = get_trbe_limit_pointer();
++	else
++		write = get_trbe_write_pointer();
++
++	end_off = write - buf->trbe_base;
++	start_off = PERF_IDX2OFF(handle->head, buf);
++
++	if (WARN_ON_ONCE(end_off < start_off))
++		return 0;
++	return (end_off - start_off);
 +}
 +
-+static inline bool trbe_has_erratum(int i, struct trbe_cpudata *cpudata)
-+{
-+	return (i < TRBE_ERRATA_MAX) && test_bit(i, cpudata->errata);
-+}
-+
- static int trbe_alloc_node(struct perf_event *event)
- {
- 	if (event->cpu == -1)
-@@ -925,6 +972,7 @@ static void arm_trbe_probe_cpu(void *info)
- 		goto cpu_clear;
+ static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
+ 				   struct perf_event *event, void **pages,
+ 				   int nr_pages, bool snapshot)
+@@ -589,9 +613,9 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+ 	struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
+ 	struct trbe_buf *buf = config;
+ 	enum trbe_fault_action act;
+-	unsigned long size, offset;
+-	unsigned long write, base, status;
++	unsigned long size, status;
+ 	unsigned long flags;
++	bool wrap = false;
+ 
+ 	WARN_ON(buf->cpudata != cpudata);
+ 	WARN_ON(cpudata->cpu != smp_processor_id());
+@@ -633,8 +657,6 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+ 	 * handle gets freed in etm_event_stop().
+ 	 */
+ 	trbe_drain_and_disable_local();
+-	write = get_trbe_write_pointer();
+-	base = get_trbe_base_pointer();
+ 
+ 	/* Check if there is a pending interrupt and handle it here */
+ 	status = read_sysreg_s(SYS_TRBSR_EL1);
+@@ -658,20 +680,11 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+ 			goto done;
+ 		}
+ 
+-		/*
+-		 * Otherwise, the buffer is full and the write pointer
+-		 * has reached base. Adjust this back to the Limit pointer
+-		 * for correct size. Also, mark the buffer truncated.
+-		 */
+-		write = get_trbe_limit_pointer();
+ 		perf_aux_output_flag(handle, PERF_AUX_FLAG_COLLISION);
++		wrap = true;
  	}
  
-+	trbe_check_errata(cpudata);
- 	cpudata->trbe_align = 1ULL << get_trbe_address_align(trbidr);
- 	if (cpudata->trbe_align > SZ_2K) {
- 		pr_err("Unsupported alignment on cpu %d\n", cpu);
+-	offset = write - base;
+-	if (WARN_ON_ONCE(offset < PERF_IDX2OFF(handle->head, buf)))
+-		size = 0;
+-	else
+-		size = offset - PERF_IDX2OFF(handle->head, buf);
++	size = trbe_get_trace_size(handle, buf, wrap);
+ 
+ done:
+ 	local_irq_restore(flags);
+@@ -752,11 +765,10 @@ static int trbe_handle_overflow(struct perf_output_handle *handle)
+ {
+ 	struct perf_event *event = handle->event;
+ 	struct trbe_buf *buf = etm_perf_sink_config(handle);
+-	unsigned long offset, size;
++	unsigned long size;
+ 	struct etm_event_data *event_data;
+ 
+-	offset = get_trbe_limit_pointer() - get_trbe_base_pointer();
+-	size = offset - PERF_IDX2OFF(handle->head, buf);
++	size = trbe_get_trace_size(handle, buf, true);
+ 	if (buf->snapshot)
+ 		handle->head += size;
+ 
 -- 
 2.24.1
 
