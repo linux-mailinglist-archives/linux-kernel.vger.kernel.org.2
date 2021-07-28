@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD343D97E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A7A3D97EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 23:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbhG1VzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 17:55:25 -0400
-Received: from mail-pj1-f49.google.com ([209.85.216.49]:37528 "EHLO
-        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbhG1VzY (ORCPT
+        id S231126AbhG1V4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 17:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231521AbhG1V4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 17:55:24 -0400
-Received: by mail-pj1-f49.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso12322181pjq.2;
-        Wed, 28 Jul 2021 14:55:22 -0700 (PDT)
+        Wed, 28 Jul 2021 17:56:34 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9400C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:56:32 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id i10so4431550pla.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:56:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HZwmvCaIsPtNlFau8xRfO0wSxpkKiZeYhRsp0hhs6yw=;
+        b=hOKYAGtG8p+bAHn079A+GM3Py/fP7BGZDuwsW4Mjq9e8qxEHkXaIX8EFN5D2fIwLEi
+         ZFtJ1zO9oQPVoZsB0XSK72Q2e/dGGKnZNiWhA/JY3Rin/dkgbv2Nf8xBAGlU16+rs1d5
+         sh9E8Z/HoNqY67Kuijgp3iycbdTBVU2mbaxLE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KkaDpFBrorB/7+KcoYo9mjb47DIH688fsoaa3C+MbmI=;
-        b=SaUDZQhbzZDEexflbyun7MDMI0L/T1nJk4FgCVZEcUpvHszt/9d4HR1Jy710dVpWby
-         kMsQCkKEZ9Kj7Q//4HuzhXSROaFEkWxB6xY00PsN5RRjrYRxFS5lZCWOkRJRLCrWI1BU
-         uAfv5cwkH2biNaM2huYix69En7yKfLYgP7Y631JXVJY2tMwFSKHCpKh3VOfMeT1hs5It
-         Gjfu7x8DDl4nvCDGbW8vO2xOmkx5Tdb1dGKz2T6PYq6no4R30oX28VYl9wgMqBA7gi3W
-         jKL2fDMuMOKA2/v6CvOEkEwhKWW7Zv+kXtoh4P4azzP95yMUQMgUqeFuBEaMn08LtQjK
-         mF0g==
-X-Gm-Message-State: AOAM530gj7htp6ZCA+K9OFKRnnhoLdyt1/Bh72s8hrEIeDkArKqKF28j
-        pWPXyE9tToHJOMojPShD/Ci4ZpUhXE1OApHx
-X-Google-Smtp-Source: ABdhPJzxZaMJqQ5j1kW97caD3zwk6yq5e6Zs69mm7+kaTJHr5jgqBc3ipBWEkRI+pTEIrK/F1SiNQg==
-X-Received: by 2002:a17:90a:b313:: with SMTP id d19mr1707062pjr.84.1627509321414;
-        Wed, 28 Jul 2021 14:55:21 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:3328:5f8d:f6e2:85ea])
-        by smtp.gmail.com with ESMTPSA id a13sm913556pgt.58.2021.07.28.14.55.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 14:55:20 -0700 (PDT)
-Subject: Re: [PATH v2] scsi: scsi_dh_rdac: Avoid crash during rdac_bus_attach
-To:     yebin <yebin10@huawei.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210113063103.2698953-1-yebin10@huawei.com>
- <a1113b04-e320-a12b-5a59-ec7479d5eec1@acm.org> <61016887.9000200@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <1a86eadf-41fe-256e-2656-b9a13f73d88f@acm.org>
-Date:   Wed, 28 Jul 2021 14:55:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HZwmvCaIsPtNlFau8xRfO0wSxpkKiZeYhRsp0hhs6yw=;
+        b=Pe3uz/qfTaqWemTsgDlMANYTd6i6mBUYl/AKyukg0Vd3Ao9C81CONFuitb435gEp/E
+         qmb0ZSWoD0kTxmj3FNbLoSYI1N2bpOixqCH4Wzzm129AjI3TIxspyJq0hc7JW6AaXTQY
+         zqsGT8JzU4XKIr7vd45czOrQX8u55OnhR+koHRBRonRd5RXfcm60yzEPXBSmjHCXov9J
+         fnqDZm+mgE0JfgCCcnxtl3VcR8jx+lmtjyP3rpesmv9oyd0a+lO7PuKU1w39ytDJ2yLf
+         5NjNPywvMxBG96EKRM5AtMzC/tbM5C9mbHZs4RNd9bWukYKdNjTAPusfP41FylkpxpSP
+         xwAA==
+X-Gm-Message-State: AOAM531fYJSkYvZTWxT1MCgkuPi3nGUo350z7eDc6ANl1LlOw0sLSVnz
+        WTlY5vnFaNWkowMr6D6Nfq42Ow==
+X-Google-Smtp-Source: ABdhPJzYF1ZeTn1uxmA0auYJjoAviEKmg5jmTnExS/QLj8lRKV0fiEUKYsUTv/gKWeJm4puGljAjtg==
+X-Received: by 2002:a17:90a:44:: with SMTP id 4mr1792767pjb.130.1627509392397;
+        Wed, 28 Jul 2021 14:56:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k8sm947353pgr.91.2021.07.28.14.56.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 14:56:31 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 14:56:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     dsterba@suse.cz, linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 47/64] btrfs: Use memset_after() to clear end of struct
+Message-ID: <202107281455.2A0753F5@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-48-keescook@chromium.org>
+ <20210728094215.GX5047@twin.jikos.cz>
 MIME-Version: 1.0
-In-Reply-To: <61016887.9000200@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728094215.GX5047@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 7:24 AM, yebin wrote:
-> On 2021/7/23 12:04, Bart Van Assche wrote:
->> On 1/12/21 10:31 PM, Ye Bin wrote:
->>>       sdev->handler_data = NULL;
->>> +    synchronize_rcu();
->>>       kfree(h);
->> What is the purpose of the new synchronize_rcu() call?
-> Thanks for your reply.
-> Yes, I add new synchronize_rcu() call is to wait until *h is no longer 
-> in use. If free
-> "h" right now , mybe lead to UAF.
->> If its purpose is
->> to wait until *h is no longer in use, please use kfree_rcu() instead.
-> struct rdac_dh_data {
->          struct list_head        node;
->          .....
-> }
-> As rdac_dh_data.node type is "struct list_head", but  kfree_rcu the 
-> first parameter type is
-> "struct rcu_head". So we can only use synchronize_rcu() at here.
+On Wed, Jul 28, 2021 at 11:42:15AM +0200, David Sterba wrote:
+> On Tue, Jul 27, 2021 at 01:58:38PM -0700, Kees Cook wrote:
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memset(), avoid intentionally writing across
+> > neighboring fields.
+> > 
+> > Use memset_after() so memset() doesn't get confused about writing
+> > beyond the destination member that is intended to be the starting point
+> > of zeroing through the end of the struct.
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  fs/btrfs/root-tree.c | 5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+> > index 702dc5441f03..ec9e78f65fca 100644
+> > --- a/fs/btrfs/root-tree.c
+> > +++ b/fs/btrfs/root-tree.c
+> > @@ -39,10 +39,7 @@ static void btrfs_read_root_item(struct extent_buffer *eb, int slot,
+> >  		need_reset = 1;
+> >  	}
+> >  	if (need_reset) {
+> > -		memset(&item->generation_v2, 0,
+> > -			sizeof(*item) - offsetof(struct btrfs_root_item,
+> > -					generation_v2));
+> > -
+> 
+> Please add
+> 		/* Clear all members from generation_v2 onwards */
+> 
+> > +		memset_after(item, 0, level);
 
-Ah, that's right. Hence:
+Perhaps there should be another helper memset_starting()? That would
+make these cases a bit more self-documenting.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
++		memset_starting(item, 0, generation_v2);
+
+> >  		generate_random_guid(item->uuid);
+> 
+> Acked-by: David Sterba <dsterba@suse.com>
+
+What do you think?
+
+-Kees
+
+-- 
+Kees Cook
