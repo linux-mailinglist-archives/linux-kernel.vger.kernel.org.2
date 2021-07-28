@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2CB3D9386
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515AE3D9385
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhG1Qqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
+        id S231211AbhG1Qqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbhG1Qqf (ORCPT
+        with ESMTP id S230435AbhG1Qqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:46:35 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A0AC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:46:32 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso4991697pjo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:46:32 -0700 (PDT)
+        Wed, 28 Jul 2021 12:46:36 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54325C0617A0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:46:34 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so10996895pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3eEA42JlXQNC4PWoCIFgR+HXz7Rjp4J77j6npFrZR+4=;
-        b=Ngg9a/kX+yBwppZxMsfTAwkNrCWuUc1GwnYAZSm8WCvy4KbDgu+V3Kwzhe+aFh4Zgs
-         gszehOKA7U54UmQ1aCuJTSlnqKJCBvP5mQi/RYCDt0O3MmrHSaUKXcyAdZaDDTLOywaG
-         mKXqA0ZOrTkck0FEWb4p/UgYx6bTwzmj7lnp0=
+        bh=STTl4syxhYiPqJGJCa+c8pqgWqmaNxb9nZtqbCu6WMo=;
+        b=QWHU5ALALIEjB1vtvsSgIbBoC2aClYOpIbtSW/QDyYyH+c2F1pfyECpkrN3rmgsm6i
+         A0lmVM8zTixkvAkL2P5knid03Yo4AALld7DxGYqcZTvj8BNHj5+Jme9kqrGVpy8DKQyh
+         5oI3ir3kL5Qk6DLy5mr6Oj2jIGE141p369RBI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3eEA42JlXQNC4PWoCIFgR+HXz7Rjp4J77j6npFrZR+4=;
-        b=aY5/aVhJMygC7o/5CtSDS4UTQpL0dHgxoGAz2HccdDt2SRv+Xse13M1Q7wSghLWCxe
-         v4FCdyxeqGQFfLD0tjAXAKEXzF1+4dK6+bhvzMjs4vWAUu6mY5r1f5zfZke+h2Pngjaq
-         QPNyA7Q4RxAe0VmOGAMP8Uqa5kGtYs0LB/PRyBwqCcPlnaof2ELtfwW027UNLRo5METr
-         9MNhGtLQWRJKtCaQhxYV/CIeV4LGFjFSIE5ODovgYyjk+mit9QYSBO7xhcvKUjOEkypD
-         5gAg9m5YIdIDD2O5vVLkx9CCfnnVKJISVtiiXce6q+kehFcpXpdbrl0vHcbVJMuDhCJj
-         jJFQ==
-X-Gm-Message-State: AOAM5321OSxoK+yfNo984p6rhDutEyY/8d+cAcroi2Q1Ez2l8lt4Lv0o
-        26+/yOYWkdHZx4NmxLVbKEPuqg==
-X-Google-Smtp-Source: ABdhPJyxS+v19XYGtTUmlI/PnvqcN5S6DoY5auTi0nO8UXRAUp+H+Ub7crNHZFqYSSrGKv1eT4Hi2Q==
-X-Received: by 2002:a65:41c7:: with SMTP id b7mr670981pgq.81.1627490792046;
-        Wed, 28 Jul 2021 09:46:32 -0700 (PDT)
+        bh=STTl4syxhYiPqJGJCa+c8pqgWqmaNxb9nZtqbCu6WMo=;
+        b=IlXQk+T8bNOeXIRA0IwzR2Bgz94810QQiFp0eG5P9enLuzdDSQN+0bfpW3X+ZPcVdp
+         xOjcbN415vmWOTZTj+b7zc32lvmZNiEyF1HQ2K4LXzhIKxhJ6FO9WpPsNdB8pgSiBL+V
+         onpZTz+5yv7yH0GEeTBXoawTYxq3YIqViFLRFKsDtWgnuGY9snpsq5K34y94PUHiwrRa
+         xtXJw2FRuTUumfZquzeQ3FlCCpjx/Tk2E6fppze6oKQOGNGAUxXUJstn6KKoCdQKZ5gT
+         TkeRUGPs8pjlhtLHc43SnsAECACw+w9DnmYrMR8YnKoZMkO3WwQrvOlS1n64KJGn66pP
+         XGQA==
+X-Gm-Message-State: AOAM531yElC5ShtDjh4zZqCKkB+fnBXXEw48e1nNSOImLDCClIXRR08q
+        r8ywxHq1ACBNahio95Hsn8HYBg==
+X-Google-Smtp-Source: ABdhPJxNVqhXZn98YSnXaLQyTmtbqfu8/DRzlEzSAFdrRH1VB3dmQ8nadXOOJcwvq6NRJX5kfsyppA==
+X-Received: by 2002:a05:6a00:1582:b029:332:67bf:c196 with SMTP id u2-20020a056a001582b029033267bfc196mr768393pfk.52.1627490793917;
+        Wed, 28 Jul 2021 09:46:33 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:9f1e:e713:1a5e:89dc])
-        by smtp.gmail.com with ESMTPSA id l12sm474075pff.182.2021.07.28.09.46.30
+        by smtp.gmail.com with ESMTPSA id l12sm474075pff.182.2021.07.28.09.46.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 09:46:31 -0700 (PDT)
+        Wed, 28 Jul 2021 09:46:33 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     dri-devel@lists.freedesktop.org
 Cc:     tzimmermann@suse.de, linux-arm-msm@vger.kernel.org,
@@ -59,9 +59,9 @@ Cc:     tzimmermann@suse.de, linux-arm-msm@vger.kernel.org,
         thierry.reding@gmail.com, steev@kali.org,
         Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 4/6] Revert "drm/panel-simple: Add Samsung ATNA33XC20"
-Date:   Wed, 28 Jul 2021 09:45:55 -0700
-Message-Id: <20210728094511.4.Id9f076ec5f35633f8ce931051af268a04c45c075@changeid>
+Subject: [PATCH 5/6] Revert "drm/panel-simple: Support for delays between GPIO & regulator"
+Date:   Wed, 28 Jul 2021 09:45:56 -0700
+Message-Id: <20210728094511.5.Ie44e3e5b7a926392541d575ca84c56931596513f@changeid>
 X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
 In-Reply-To: <20210728164557.1882787-1-dianders@chromium.org>
 References: <20210728164557.1882787-1-dianders@chromium.org>
@@ -71,71 +71,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 4bfe6c8f7c23b01719671b69fd29b87a35ccd9d6.
+This reverts commit 18a1488bf1e13fc3fc96d7948466b2166067c6c8.
 
-This panel's power sequencing really can't be handled properly by
-panel-simple because of the special sequencing needed for the EL_ON3
-GPIO. The only way it was sorta working in the past was by trying to
-jam that signal into the "enable-gpio", but that really wasn't a good
-fit. We'll add a custom panel driver for this panel to do it right.
+Those delays were added to support the Samsung ATNA33XC20
+panel. However, we've moving that to its own panel driver and out of
+panel-simple. That means we don't need the ability to specify this
+delay.
+
+NOTE: it's unlikely we want to keep this delay "just in case" some
+other panel needs it. The enable-gpio and the power supply are really
+supposed to be different ways to specify the same thing: the main
+enable of the panel. Supporting a delay between them doesn't really
+make sense.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
- drivers/gpu/drm/panel/panel-simple.c | 33 ----------------------------
- 1 file changed, 33 deletions(-)
+ drivers/gpu/drm/panel/panel-simple.c | 28 ----------------------------
+ 1 file changed, 28 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 9b286bd4444f..c8694f7f8e0f 100644
+index c8694f7f8e0f..ff8b59471c71 100644
 --- a/drivers/gpu/drm/panel/panel-simple.c
 +++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3621,36 +3621,6 @@ static const struct panel_desc rocktech_rk101ii01d_ct = {
- 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
+@@ -132,22 +132,6 @@ struct panel_desc {
+ 		 */
+ 		unsigned int prepare_to_enable;
  
--static const struct drm_display_mode samsung_atna33xc20_mode = {
--	.clock = 138770,
--	.hdisplay = 1920,
--	.hsync_start = 1920 + 48,
--	.hsync_end = 1920 + 48 + 32,
--	.htotal = 1920 + 48 + 32 + 80,
--	.vdisplay = 1080,
--	.vsync_start = 1080 + 8,
--	.vsync_end = 1080 + 8 + 8,
--	.vtotal = 1080 + 8 + 8 + 16,
--	.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
--};
+-		/**
+-		 * @delay.power_to_enable: Time for the power to enable the display on.
+-		 *
+-		 * The time (in milliseconds) to wait after powering up the display
+-		 * before asserting its enable pin.
+-		 */
+-		unsigned int power_to_enable;
 -
--static const struct panel_desc samsung_atna33xc20 = {
--	.modes = &samsung_atna33xc20_mode,
--	.num_modes = 1,
--	.bpc = 10,
--	.size = {
--		.width = 294,
--		.height = 165,
--	},
--	.delay = {
--		.disable_to_power_off = 200,
--		.power_to_enable = 400,
--		.hpd_absent_delay = 200,
--		.unprepare = 500,
--	},
--	.connector_type = DRM_MODE_CONNECTOR_eDP,
--};
+-		/**
+-		 * @delay.disable_to_power_off: Time for the disable to power the display off.
+-		 *
+-		 * The time (in milliseconds) to wait before powering off the display
+-		 * after deasserting its enable pin.
+-		 */
+-		unsigned int disable_to_power_off;
 -
- static const struct drm_display_mode samsung_lsn122dl01_c01_mode = {
- 	.clock = 271560,
- 	.hdisplay = 2560,
-@@ -4657,9 +4627,6 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "rocktech,rk101ii01d-ct",
- 		.data = &rocktech_rk101ii01d_ct,
--	}, {
--		.compatible = "samsung,atna33xc20",
--		.data = &samsung_atna33xc20,
- 	}, {
- 		.compatible = "samsung,lsn122dl01-c01",
- 		.data = &samsung_lsn122dl01_c01,
+ 		/**
+ 		 * @delay.enable: Time for the panel to display a valid frame.
+ 		 *
+@@ -363,10 +347,6 @@ static int panel_simple_suspend(struct device *dev)
+ 	struct panel_simple *p = dev_get_drvdata(dev);
+ 
+ 	gpiod_set_value_cansleep(p->enable_gpio, 0);
+-
+-	if (p->desc->delay.disable_to_power_off)
+-		msleep(p->desc->delay.disable_to_power_off);
+-
+ 	regulator_disable(p->supply);
+ 	p->unprepared_time = ktime_get();
+ 
+@@ -427,9 +407,6 @@ static int panel_simple_prepare_once(struct panel_simple *p)
+ 		return err;
+ 	}
+ 
+-	if (p->desc->delay.power_to_enable)
+-		msleep(p->desc->delay.power_to_enable);
+-
+ 	gpiod_set_value_cansleep(p->enable_gpio, 1);
+ 
+ 	delay = p->desc->delay.prepare;
+@@ -803,11 +780,6 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc,
+ 		break;
+ 	}
+ 
+-	if (!panel->enable_gpio && desc->delay.disable_to_power_off)
+-		dev_warn(dev, "Need a delay after disabling panel GPIO, but a GPIO wasn't provided\n");
+-	if (!panel->enable_gpio && desc->delay.power_to_enable)
+-		dev_warn(dev, "Need a delay before enabling panel GPIO, but a GPIO wasn't provided\n");
+-
+ 	dev_set_drvdata(dev, panel);
+ 
+ 	/*
 -- 
 2.32.0.432.gabb21c7263-goog
 
