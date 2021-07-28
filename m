@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4713D9290
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B773D9294
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237429AbhG1P7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:59:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:59384 "EHLO foss.arm.com"
+        id S237382AbhG1P7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:59:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:59402 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237382AbhG1P71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:59:27 -0400
+        id S237419AbhG1P73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:59:29 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83B79D6E;
-        Wed, 28 Jul 2021 08:59:25 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B0F1106F;
+        Wed, 28 Jul 2021 08:59:27 -0700 (PDT)
 Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E098E3F70D;
-        Wed, 28 Jul 2021 08:59:23 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C8F363F70D;
+        Wed, 28 Jul 2021 08:59:25 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux-foundation.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
-        john.garry@huawei.com, dianders@chromium.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH v2 11/24] iommu/virtio: Drop IOVA cookie management
-Date:   Wed, 28 Jul 2021 16:58:32 +0100
-Message-Id: <d9f524e29a580d094c7f9a7322e1bea6f3637c19.1627468309.git.robin.murphy@arm.com>
+        john.garry@huawei.com, dianders@chromium.org
+Subject: [PATCH v2 12/24] iommu/dma: Unexport IOVA cookie management
+Date:   Wed, 28 Jul 2021 16:58:33 +0100
+Message-Id: <697a7c5da18c58e61e6b9a98b97775a2934a6358.1627468309.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1627468308.git.robin.murphy@arm.com>
 References: <cover.1627468308.git.robin.murphy@arm.com>
@@ -36,40 +35,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The core code bakes its own cookies now.
+IOVA cookies are now got and put by core code, so we no longer need to
+export these to modular drivers. The export for getting MSI cookies
+stays, since VFIO can still be a module, but it was already relying on
+someone else putting them, so that aspect is unaffected.
 
-CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 ---
- drivers/iommu/virtio-iommu.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/iommu/dma-iommu.c | 7 -------
+ drivers/iommu/iommu.c     | 3 +--
+ 2 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-index 6abdcab7273b..80930ce04a16 100644
---- a/drivers/iommu/virtio-iommu.c
-+++ b/drivers/iommu/virtio-iommu.c
-@@ -598,12 +598,6 @@ static struct iommu_domain *viommu_domain_alloc(unsigned type)
- 	spin_lock_init(&vdomain->mappings_lock);
- 	vdomain->mappings = RB_ROOT_CACHED;
- 
--	if (type == IOMMU_DOMAIN_DMA &&
--	    iommu_get_dma_cookie(&vdomain->domain)) {
--		kfree(vdomain);
--		return NULL;
--	}
--
- 	return &vdomain->domain;
- }
- 
-@@ -643,8 +637,6 @@ static void viommu_domain_free(struct iommu_domain *domain)
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 98ba927aee1a..10067fbc4309 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -98,9 +98,6 @@ static struct iommu_dma_cookie *cookie_alloc(enum iommu_dma_cookie_type type)
+ /**
+  * iommu_get_dma_cookie - Acquire DMA-API resources for a domain
+  * @domain: IOMMU domain to prepare for DMA-API usage
+- *
+- * IOMMU drivers should normally call this from their domain_alloc
+- * callback when domain->type == IOMMU_DOMAIN_DMA.
+  */
+ int iommu_get_dma_cookie(struct iommu_domain *domain)
  {
- 	struct viommu_domain *vdomain = to_viommu_domain(domain);
+@@ -113,7 +110,6 @@ int iommu_get_dma_cookie(struct iommu_domain *domain)
  
--	iommu_put_dma_cookie(domain);
--
- 	/* Free all remaining mappings (size 2^64) */
- 	viommu_del_mappings(vdomain, 0, 0);
+ 	return 0;
+ }
+-EXPORT_SYMBOL(iommu_get_dma_cookie);
  
+ /**
+  * iommu_get_msi_cookie - Acquire just MSI remapping resources
+@@ -151,8 +147,6 @@ EXPORT_SYMBOL(iommu_get_msi_cookie);
+  * iommu_put_dma_cookie - Release a domain's DMA mapping resources
+  * @domain: IOMMU domain previously prepared by iommu_get_dma_cookie() or
+  *          iommu_get_msi_cookie()
+- *
+- * IOMMU drivers should normally call this from their domain_free callback.
+  */
+ void iommu_put_dma_cookie(struct iommu_domain *domain)
+ {
+@@ -172,7 +166,6 @@ void iommu_put_dma_cookie(struct iommu_domain *domain)
+ 	kfree(cookie);
+ 	domain->iova_cookie = NULL;
+ }
+-EXPORT_SYMBOL(iommu_put_dma_cookie);
+ 
+ /**
+  * iommu_dma_get_resv_regions - Reserved region driver helper
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index ea5a9ea8d431..fa8109369f74 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -1947,8 +1947,7 @@ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
+ 	/* Assume all sizes by default; the driver may override this later */
+ 	domain->pgsize_bitmap  = bus->iommu_ops->pgsize_bitmap;
+ 
+-	/* Temporarily ignore -EEXIST while drivers still get their own cookies */
+-	if (type == IOMMU_DOMAIN_DMA && iommu_get_dma_cookie(domain) == -ENOMEM) {
++	if (type == IOMMU_DOMAIN_DMA && iommu_get_dma_cookie(domain)) {
+ 		iommu_domain_free(domain);
+ 		domain = NULL;
+ 	}
 -- 
 2.25.1
 
