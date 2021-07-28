@@ -2,108 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936A03D920F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722D03D9212
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237301AbhG1Pct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
+        id S237303AbhG1Pdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237291AbhG1Pcs (ORCPT
+        with ESMTP id S235648AbhG1Pdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:32:48 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6632CC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:32:45 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id p2-20020a5d48c20000b0290150e4a5e7e0so1070718wrs.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 08:32:45 -0700 (PDT)
+        Wed, 28 Jul 2021 11:33:43 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21576C061757;
+        Wed, 28 Jul 2021 08:33:41 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id nb11so5298620ejc.4;
+        Wed, 28 Jul 2021 08:33:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=qzw4XcX4w+ny84Qln9d15Ry0/+5tfssrXUUN0rRDVVc=;
-        b=G3I/3fhsNE6Og2SNbp7xijYfhxbbi8EEXzZO7tjVLLwHEwaGAf2WH4WDSAI9RuBK2v
-         y7MINQTjeOU9oU90HjjguDGAwa4tof8t/8vq/m2JE5pv2a/YNi09Y4IPEqg/Mq+fBEPD
-         Z0d/8fw19uWXRPZVYkNEbf40fgTfDWXSKtSXKuEpcdnImMph1V/8lTDcxryYsvCOGEJx
-         bdhwsqESBm+n86hEdsfP11ImWIAtFpMKBxxxA86Z4l4ZbGbeKxemOU97Z+VC4VrnXV3V
-         xL3tHvSnAfmB7Ax5kGhpV8zZqSzrsqsT6CwvAXBclwHpCvv307H5rs9J7qPyzU9u9jLx
-         Izwg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=si1mgqR4hY6Vfet+JUR4OQ+XcsaVJnN5eLUW6jCI1H8=;
+        b=Yabfn2tEqlcOW2R6zKpzZxhVViW1JCNZDXH4aPGMpZ+9cPDKUySzKe9UlZXhh4hCN3
+         bptI/95PoVJdM5dVdW/EsVyxakJ4Ewnj8xO02xKrjbzby9rVkxbR6N5EBpHQkqIhe9JR
+         JV4fnkPf0Vx+X1Ek9dWfd2ejsfwFqrL++gt7tAirrryxw5nqPwpNN7+NnJHpS+Uf3de8
+         Lx0zgCgsiym6jqaDgRNg99Vjj+WPcJjwKmGyrdBeCkPEiBhEXIiWYr/LPhYennJat054
+         jmHlSfmjP6yBjNBGOb4LCkM5wV8FcfQRsGWcvDmIjr0g4VC6eBfpccmf37mhn1zaJnbK
+         H50w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=qzw4XcX4w+ny84Qln9d15Ry0/+5tfssrXUUN0rRDVVc=;
-        b=X7k5+k3MQGNyUURz0jQDd5BwjM7HqkLq1/DDadVDDQ+1epBWmSfZysFRZYdNvxDbE9
-         ooT+9tDT4aKLsCYSdy8x3E4K4vJw9+WJDr2aoDEUD7Z8r6HGlGIzmGSEAD/6WWAJePZE
-         F/ORGIgVST39p82yMslP21m+sV3MajmbrOqtMLDbLp0SQp2QfababwYj/+MN8gf+XyMp
-         W8MDIP6KUkYr5rarI9QDjTVy8dts+sxe8UsXxZbLsz3p214R/U34FQzakSGeAzbjB4ab
-         GScffm/ZJeGOEBCPCUSFPwQZ2XGygRNLVfuki6iOvzN9EWlKZ3CfHqyD0URQJB8XUTCA
-         7iLw==
-X-Gm-Message-State: AOAM530Sz+GxZ7LQjkPncgQ37iNfohEKtoc6xMnaJIaL0JLoPtUSbajS
-        RxTVrQE9wIIsL1N9SFfg9l+rO7cXlckMgg==
-X-Google-Smtp-Source: ABdhPJx3RYSTCqCub5lOGXrHgg5jPvAqfn3GPah0zCRIxkTx6aci9KeM6XDoX5DGxOYQRxwXx1QUpmsxtpyJMg==
-X-Received: from dbrazdil.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:7f9b])
- (user=dbrazdil job=sendgmr) by 2002:a05:600c:4101:: with SMTP id
- j1mr308618wmi.110.1627486363975; Wed, 28 Jul 2021 08:32:43 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 15:32:32 +0000
-In-Reply-To: <20210728153232.1018911-1-dbrazdil@google.com>
-Message-Id: <20210728153232.1018911-3-dbrazdil@google.com>
-Mime-Version: 1.0
-References: <20210728153232.1018911-1-dbrazdil@google.com>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH 2/2] KVM: arm64: Minor optimization of range_is_memory
-From:   David Brazdil <dbrazdil@google.com>
-To:     kvmarm@lists.cs.columbia.edu
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Brazdil <dbrazdil@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=si1mgqR4hY6Vfet+JUR4OQ+XcsaVJnN5eLUW6jCI1H8=;
+        b=P04MXrxWu9pJ5vyD+N50BvgfTsRsX82FrSmSwKWWiZktkRsNltKRDuTQQgAth4U5VZ
+         KAvW5twPLyS4LcO7FXzhf3JmARQ7KodRkvsey8mO4J+Et0QoIfA2mQNC1fmQzMJ+DNGF
+         pFDUr4g9KNFliXno3JJj2lRiSwU3SynmF73z0/5ajOD90A3xsE0haUe9+TV7vWfDyr1P
+         8veoXd3/rOe2vjHFn3ZFOIQsiy495jEr2bdx6aK7nuu6Pv8h6viMLAekyJcs6PN+RVfx
+         n/pkNAzHujxjw+jW6K7gsX3rrDrQCDvjikMGGh3or5q1ZTAw1VAodsCx0MN4VlsNs/ob
+         6hyw==
+X-Gm-Message-State: AOAM530qP3g1qamViodlL3k3lMgUrnbrmAkwl9SrIU45APVgwOvh4umu
+        FjEy+y9u2qX3ofsa8h2RgM2F/HqbV2U=
+X-Google-Smtp-Source: ABdhPJzshhdEflocyi4gdgO2oNd2Rd65Idabh0CmlCYsp4GRU1wwosn3cznIEOllvFeWvJxs9NQTpQ==
+X-Received: by 2002:a17:906:a5b:: with SMTP id x27mr108635ejf.18.1627486419760;
+        Wed, 28 Jul 2021 08:33:39 -0700 (PDT)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id dj16sm53392edb.0.2021.07.28.08.33.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 08:33:39 -0700 (PDT)
+Subject: Re: [PATCH 5/9] arm64: dts: rockchip: add rk3568 tsadc nodes
+To:     Peter Geis <pgwipeout@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210728135534.703028-1-pgwipeout@gmail.com>
+ <20210728135534.703028-6-pgwipeout@gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <757c6db0-c259-32d8-53c1-c1e31e9cbe8c@gmail.com>
+Date:   Wed, 28 Jul 2021 17:33:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210728135534.703028-6-pgwipeout@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently range_is_memory finds the corresponding struct memblock_region
-for both the lower and upper bounds of the given address range with two
-rounds of binary search, and then checks that the two memblocks are the
-same. Simplify this by only doing binary search on the lower bound and
-then checking that the upper bound is in the same memblock.
+Hi Peter,
 
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/kvm/hyp/nvhe/mem_protect.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+On 7/28/21 3:55 PM, Peter Geis wrote:
+> Add the thermal and tsadc nodes to the rk3568 device tree.
+> There are two sensors, one for the cpu, one for the gpu.
+> 
+> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> ---
+>  .../boot/dts/rockchip/rk3568-pinctrl.dtsi     |  6 ++
+>  arch/arm64/boot/dts/rockchip/rk356x.dtsi      | 71 +++++++++++++++++++
+>  2 files changed, 77 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+> index a588ca95ace2..b464c7bda1f7 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+> @@ -2420,6 +2420,12 @@ spi3m1_cs1: spi3m1-cs1 {
+>  	};
+>  
+>  	tsadc {
+> +		/omit-if-no-ref/
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-index a6ce991b1467..37d73af69634 100644
---- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -189,13 +189,18 @@ static bool find_mem_range(phys_addr_t addr, struct kvm_mem_range *range)
- 	return false;
- }
- 
-+static bool is_in_mem_range(phys_addr_t addr, struct kvm_mem_range *range)
-+{
-+	return range->start <= addr && addr < range->end;
-+}
-+
- static bool range_is_memory(u64 start, u64 end)
- {
--	struct kvm_mem_range r1, r2;
-+	struct kvm_mem_range r;
- 
--	if (!find_mem_range(start, &r1) || !find_mem_range(end - 1, &r2))
-+	if (!find_mem_range(start, &r))
- 		return false;
--	if (r1.start != r2.start)
-+	if (!is_in_mem_range(end - 1, &r))
- 		return false;
- 
- 	return true;
--- 
-2.32.0.432.gabb21c7263-goog
+> +		tsadc_gpio: tsadc-gpio {
 
+nodenames ending on -gpio -gpios are kind of reserved.
+Maybe use -pin or -pins.
+
+From  dt-schema/schemas/gpio/gpio-consumer.yaml
+
+patternProperties:
+  "(?<!,nr)-gpios?$":
+    $ref: "/schemas/types.yaml#/definitions/phandle-array"
+
+
+> +			rockchip,pins =
+> +				<0 RK_PA1 0 &pcfg_pull_none>;
+> +		};
+> +
+>  		/omit-if-no-ref/
+>  		tsadcm0_shut: tsadcm0-shut {
+>  			rockchip,pins =
+> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> index 77c679304916..0905fac0726a 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> @@ -51,6 +51,7 @@ cpu0: cpu@0 {
+>  			compatible = "arm,cortex-a55";
+>  			reg = <0x0 0x0>;
+>  			clocks = <&scmi_clk 0>;
+> +			#cooling-cells = <2>;
+>  			enable-method = "psci";
+>  			operating-points-v2 = <&cpu0_opp_table>;
+>  		};
+> @@ -59,6 +60,7 @@ cpu1: cpu@100 {
+>  			device_type = "cpu";
+>  			compatible = "arm,cortex-a55";
+>  			reg = <0x0 0x100>;
+> +			#cooling-cells = <2>;
+>  			enable-method = "psci";
+>  			operating-points-v2 = <&cpu0_opp_table>;
+>  		};
+> @@ -67,6 +69,7 @@ cpu2: cpu@200 {
+>  			device_type = "cpu";
+>  			compatible = "arm,cortex-a55";
+>  			reg = <0x0 0x200>;
+> +			#cooling-cells = <2>;
+>  			enable-method = "psci";
+>  			operating-points-v2 = <&cpu0_opp_table>;
+>  		};
+> @@ -75,6 +78,7 @@ cpu3: cpu@300 {
+>  			device_type = "cpu";
+>  			compatible = "arm,cortex-a55";
+>  			reg = <0x0 0x300>;
+> +			#cooling-cells = <2>;
+>  			enable-method = "psci";
+>  			operating-points-v2 = <&cpu0_opp_table>;
+>  		};
+> @@ -774,6 +778,73 @@ uart9: serial@fe6d0000 {
+>  		status = "disabled";
+>  	};
+>  
+> +	thermal_zones: thermal-zones {
+> +		cpu_thermal: cpu-thermal {
+> +			polling-delay-passive = <100>;
+> +			polling-delay = <1000>;
+> +
+> +			thermal-sensors = <&tsadc 0>;
+> +
+> +			trips {
+> +				cpu_alert0: cpu_alert0 {
+> +					temperature = <70000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				cpu_alert1: cpu_alert1 {
+> +					temperature = <75000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				cpu_crit: cpu_crit {
+> +					temperature = <95000>;
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&cpu_alert0>;
+> +					cooling-device =
+> +						<&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +				};
+> +			};
+> +		};
+> +
+> +		gpu_thermal: gpu-thermal {
+> +			polling-delay-passive = <20>; /* milliseconds */
+> +			polling-delay = <1000>; /* milliseconds */
+> +
+> +			thermal-sensors = <&tsadc 1>;
+> +		};
+> +	};
+> +
+> +	tsadc: tsadc@fe710000 {
+> +		compatible = "rockchip,rk3568-tsadc";
+> +		reg = <0x0 0xfe710000 0x0 0x100>;
+> +		interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
+> +		assigned-clocks = <&cru CLK_TSADC_TSEN>, <&cru CLK_TSADC>;
+> +		assigned-clock-rates = <17000000>, <700000>;
+> +		clocks = <&cru CLK_TSADC>, <&cru PCLK_TSADC>;
+> +		clock-names = "tsadc", "apb_pclk";
+> +		resets = <&cru SRST_TSADC>, <&cru SRST_P_TSADC>,
+> +			 <&cru SRST_TSADCPHY>;
+> +		reset-names = "tsadc", "tsadc-apb", "tsadc-phy";
+> +		rockchip,grf = <&grf>;
+> +		rockchip,hw-tshut-temp = <95000>;
+> +		rockchip,hw-tshut-mode = <1>; /* tshut mode 0:CRU 1:GPIO */
+> +		rockchip,hw-tshut-polarity = <0>; /* tshut polarity 0:LOW 1:HIGH */
+> +		pinctrl-names = "gpio", "otpout";
+> +		pinctrl-0 = <&tsadc_gpio>;
+> +		pinctrl-1 = <&tsadc_shutorg>;
+> +		#thermal-sensor-cells = <1>;
+> +		status = "disabled";
+> +	};
+> +
+>  	saradc: saradc@fe720000 {
+>  		compatible = "rockchip,rk3568-saradc", "rockchip,rk3399-saradc";
+>  		reg = <0x0 0xfe720000 0x0 0x100>;
+> 
