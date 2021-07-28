@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3AE3D8DAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F18A3D8DB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbhG1M0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 08:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
+        id S235300AbhG1M0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 08:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235009AbhG1M0V (ORCPT
+        with ESMTP id S235029AbhG1M0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 08:26:21 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F6DC061757;
-        Wed, 28 Jul 2021 05:26:19 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id w10so1172330qtj.3;
-        Wed, 28 Jul 2021 05:26:19 -0700 (PDT)
+        Wed, 28 Jul 2021 08:26:22 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356B2C061764;
+        Wed, 28 Jul 2021 05:26:20 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id z24so1941478qkz.7;
+        Wed, 28 Jul 2021 05:26:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cqVElBTymsj42U9y84VWCRYbnR5OUCvocbx2B46HwA4=;
-        b=lfHZWifbnkRx73BjJ2DdNFoh76LTI/lR/JlGRqXWxJb8VDd5lGQmojCJBJ0S2JOHQA
-         DUrgcauL4hNPhsLLPxolrKmT3lZ2aVwln3R6WyPmgqw3ADU2hx6Ie0q1F8vjs47yUUIx
-         U6erLvl4z6Wc/te6l/4qlmIkyN7Hn9T26/D6XnHbwHTItUxU5wdQX9cVtf7YVBGGy0WI
-         DkXEdn2ucXcIEAVN/POOmw2ylW8NEiqKfjboJwmFtpSBjhf2cHF+hmz8ijGA9fM2Ckrb
-         lKB+if/AzXsndXcz9hWPyi95hUu6AkT0VA0gP9gaHifrZhz+mErtN5m81PTSDmk011uw
-         W4Tg==
+        bh=saUJiNRMbvLZyMVotP5YuX5FwxQa4tigZr/kaBCa+Io=;
+        b=K4v9CqjZNh8twTu5xrnxNT8X9vHL3NFu9kkZsyURLaTJnoNl2/ZwSIiaqs+cqWxZad
+         bY/UrFOwxbuO/M3eiSRRA2ymTPp6vYxqfRXnRIq0Q0DGMvpq3qhL2+tIyagxaglPw7mO
+         fc2+HnSt+RF7pC/FyHfKjOYOL3IQ1ixEbYK6Gw2i0+PIxY7oK4kmXIoTfj1HxpZJ85j5
+         w3/aVtYuvtcc1aiO76NoI7vsstxIhpe3BFfRViapKpgSZ4WJdtOEYF71Qn9SOrrGVTWn
+         55Od0ny66He0kH7hV/CAgTWp2YOyiZ69s2/1l1JPUMwT9P1/aLEaKOBiq4qp6iBgcfs6
+         9IrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cqVElBTymsj42U9y84VWCRYbnR5OUCvocbx2B46HwA4=;
-        b=IiGPI4wFlgId/miFMcG4/w99r5JnxFeXi0/AEPYlUqkrQCIgIoahzIpPNbYmfCZT2s
-         T6pMgaPgRmpWVPumBxVLiLkFrf4C5pLZifM8CiLkY0DuicvhRbpIR0k31AllgNF8FO+n
-         tDYeR+6uW0WXoqa6TJG1cnULcE6OUBqXvDu7hpx7Wz63iFVsfH5M+dup8RsVeRMltv1I
-         gvhtYmFQDokjSG4yauEKKHRPtRrFaj9j0oRZHvjJ+6K9u70HxoRhOiXVNv8GvjkLCpTD
-         M+esUqxvZjU+7cK1COyY9qzMzICvZE41gx2ppLrNegp44h3iiq/FpWmv39FoWPgLWZHs
-         ugkA==
-X-Gm-Message-State: AOAM532FgcU4b3PTQSOaX4mGDmbsW7uHLC3RhSFwUdNNUmgR2GCaPyK+
-        Acc10idilpHJsyVnheE6yM4=
-X-Google-Smtp-Source: ABdhPJxg8GxOcLAwV95w2hX1hG2TcoDsu76sI3iNr3XLbBM4hoL0FeYRELgeOO/MKNl97IqbmxiNgg==
-X-Received: by 2002:a05:622a:50:: with SMTP id y16mr24452703qtw.322.1627475178609;
-        Wed, 28 Jul 2021 05:26:18 -0700 (PDT)
+        bh=saUJiNRMbvLZyMVotP5YuX5FwxQa4tigZr/kaBCa+Io=;
+        b=DOAW0+GmqzlU06VoRk/PZBpyDq+X4xiJkNx6PnGcmM//ny/J3EspOXu2mzUT3EQDsG
+         vw4dOo35VsXuVeo8MrFjfMaGU6u8ZMMpJ9Edul7W/obWG5cFHV/7RNBr3VhCnHweL0xC
+         hQucKql//I5MDuUwctqNPBsG6Zbm+H8bMRXnNLJ23lD7RWf/NrIgXamBcgKuLBzx2XcS
+         90e+bsR2GEo8wrQLAXdf/BzagDpAmvnWS0LAvMAVjtDS2Xp3fxFzU/GNXXJcnnEMRNvE
+         ORRvw6wbdP2qy6gOdfrQGXtIyUXPg0yoixij7FPDqVBZslORJ3FLs9rB+iNWhUBRM/r/
+         LE0Q==
+X-Gm-Message-State: AOAM530qSyRtDGNsx1uisGYfRjlpQJRjIVmJ92a9OJ99FiWVvC4X3zIo
+        Y1viAQ2CWFjyaAyJvIiaS/nx7M1j4q8j7igo
+X-Google-Smtp-Source: ABdhPJzxXx1BFjc1KWaI0txpLeQx/KnOb1DN/D+akRYwuwv1Ggv9+kkVmVBuLjNw7rZjDyPaTVd9mg==
+X-Received: by 2002:a05:620a:c86:: with SMTP id q6mr26855154qki.278.1627475179367;
+        Wed, 28 Jul 2021 05:26:19 -0700 (PDT)
 Received: from master-laptop.sparksnet ([2601:153:980:85b1:b58:2ae8:d75f:660a])
-        by smtp.gmail.com with ESMTPSA id z9sm2842972qtn.54.2021.07.28.05.26.17
+        by smtp.gmail.com with ESMTPSA id z9sm2842972qtn.54.2021.07.28.05.26.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 05:26:18 -0700 (PDT)
+        Wed, 28 Jul 2021 05:26:19 -0700 (PDT)
 From:   Peter Geis <pgwipeout@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
         Kishon Vijay Abraham I <kishon@ti.com>,
@@ -55,9 +55,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-phy@lists.infradead.org, Peter Geis <pgwipeout@gmail.com>
-Subject: [RFC PATCH 1/9] dt-bindings: soc: rockchip: add rk3568-usb2phy-grf
-Date:   Wed, 28 Jul 2021 08:25:58 -0400
-Message-Id: <20210728122606.697619-2-pgwipeout@gmail.com>
+Subject: [RFC PATCH 2/9] dt-bindings: phy: phy-rockchip-inno-usb2: add rk3568 documentation
+Date:   Wed, 28 Jul 2021 08:25:59 -0400
+Message-Id: <20210728122606.697619-3-pgwipeout@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210728122606.697619-1-pgwipeout@gmail.com>
 References: <20210728122606.697619-1-pgwipeout@gmail.com>
@@ -67,26 +67,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the documentation for the rk3568-usb2phy-grf node, which is separate
-from the usb2phy node on this chip.
+The rk3568 usb2phy node is a standalone node with a single muxed
+interrupt.
+Add documentation for it to phy-rockchip-inno-usb2.
 
 Signed-off-by: Peter Geis <pgwipeout@gmail.com>
 ---
- Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ .../devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml   | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-index fa010df51a5c..3b0e06b6ea61 100644
---- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-+++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-@@ -16,6 +16,7 @@ properties:
-           - enum:
-               - rockchip,rk3288-sgrf
-               - rockchip,rv1108-usbgrf
-+              - rockchip,rk3568-usb2phy-grf
-           - const: syscon
-       - items:
-           - enum:
+diff --git a/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml b/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
+index 5bebd86bf8b6..f16fea5cad1c 100644
+--- a/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
++++ b/Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
+@@ -18,6 +18,7 @@ properties:
+       - rockchip,rk3328-usb2phy
+       - rockchip,rk3366-usb2phy
+       - rockchip,rk3399-usb2phy
++      - rockchip,rk3568-usb2phy
+       - rockchip,rv1108-usb2phy
+ 
+   reg:
+@@ -50,6 +51,9 @@ properties:
+     description:
+       Phandle to the extcon device providing the cable state for the otg phy.
+ 
++  interrupts:
++    description: Muxed interrupt for both ports
++
+   rockchip,usbgrf:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
+@@ -78,8 +82,6 @@ properties:
+ 
+     required:
+       - "#phy-cells"
+-      - interrupts
+-      - interrupt-names
+ 
+   otg-port:
+     type: object
+@@ -109,8 +111,6 @@ properties:
+ 
+     required:
+       - "#phy-cells"
+-      - interrupts
+-      - interrupt-names
+ 
+ required:
+   - compatible
 -- 
 2.25.1
 
