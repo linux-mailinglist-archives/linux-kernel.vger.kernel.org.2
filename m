@@ -2,116 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60FC33D8F48
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C70D3D8F4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236908AbhG1Nlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:41:45 -0400
-Received: from mga05.intel.com ([192.55.52.43]:36491 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236384AbhG1Nln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:41:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="298246898"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="298246898"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 06:41:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="506465039"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 28 Jul 2021 06:41:38 -0700
-Date:   Wed, 28 Jul 2021 21:41:37 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [PATCH v6 5/6] mm/mempolicy: Advertise new MPOL_PREFERRED_MANY
-Message-ID: <20210728134137.GA43486@shbuild999.sh.intel.com>
-References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
- <1626077374-81682-6-git-send-email-feng.tang@intel.com>
- <YQFR27gkFNqJqzGN@dhcp22.suse.cz>
+        id S236419AbhG1NnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:43:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43760 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235314AbhG1NnO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 09:43:14 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SDXoqn128509;
+        Wed, 28 Jul 2021 09:43:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=H2yNMS1D+GRLF/AUuNQuhT8RlaBua7StLFaTOY1jVsw=;
+ b=p+vPhRbGAyw6CowI36EGGNWrOAnEPUzVFwbA8fLRYgvDDYf1V2LZbaG14MhsWzN36Qky
+ wF/kvQ90O/AxLCpsRdjsPfQTnXg1XemupLtnGe16AZq78KpNqNuxtmFdGnhEqaRJCfVl
+ W9hGNpTmiyQuGz3nn8KGAlOTFt6+eeoGxbER8ughJnb51e/a1XuQU58zNaj4M8dkDo76
+ xanmMkdDbAeEMi8sJmZAVyXotZX08lQeXeQb6lPi+FwtD8ZqFb/31xtJU5NH9iePui63
+ GeDrCLZkX2Yiodhn/R55MuM/oZpTSfoCB/EZucJlBQTksdnIFFhX57IOdjoPHm4w2sus Yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a377bb2cs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 09:43:09 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16SDXqoU128660;
+        Wed, 28 Jul 2021 09:43:08 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a377bb2c7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 09:43:08 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16SDSTfc008025;
+        Wed, 28 Jul 2021 13:43:07 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma04dal.us.ibm.com with ESMTP id 3a235pc4ky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Jul 2021 13:43:07 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16SDh6F833095976
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Jul 2021 13:43:06 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 135BA6A054;
+        Wed, 28 Jul 2021 13:43:06 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5A4696A058;
+        Wed, 28 Jul 2021 13:43:04 +0000 (GMT)
+Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.77.143.250])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Jul 2021 13:43:04 +0000 (GMT)
+Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+To:     Halil Pasic <pasic@linux.ibm.com>, Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
+        pbonzini@redhat.com, David Hildenbrand <david@redhat.com>,
+        frankja@linux.ibm.com, imbrenda@linux.ibm.com
+References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+ <20210719193503.793910-3-akrowiak@linux.ibm.com>
+ <20210721164550.5402fe1c.pasic@linux.ibm.com>
+ <c3b80f79-6795-61ce-2dd1-f4cc7110e417@linux.ibm.com>
+ <20210723162625.59cead27.pasic@linux.ibm.com>
+ <5380652f-e68f-bbd0-10c0-c7d541065843@linux.ibm.com>
+ <20210726223628.4d7759bf.pasic@linux.ibm.com>
+ <20210726220317.GA1721383@nvidia.com>
+ <20210727004329.3bcc7d4f.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <a5eeac87-069d-171b-5558-3e99e7bda539@linux.ibm.com>
+Date:   Wed, 28 Jul 2021 09:43:03 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQFR27gkFNqJqzGN@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210727004329.3bcc7d4f.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: J4CNyl775TrIyC91pzqarvdtJXqcGreK
+X-Proofpoint-ORIG-GUID: MfBEXE31ktBTrbZRs-sEW6NsopN7z9lB
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-28_08:2021-07-27,2021-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 adultscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107280076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 02:47:23PM +0200, Michal Hocko wrote:
-> On Mon 12-07-21 16:09:33, Feng Tang wrote:
-> > From: Ben Widawsky <ben.widawsky@intel.com>
-> > 
-> > Adds a new mode to the existing mempolicy modes, MPOL_PREFERRED_MANY.
-> > 
-> > MPOL_PREFERRED_MANY will be adequately documented in the internal
-> > admin-guide with this patch. Eventually, the man pages for mbind(2),
-> > get_mempolicy(2), set_mempolicy(2) and numactl(8) will also have text
-> > about this mode. Those shall contain the canonical reference.
-> > 
-> > NUMA systems continue to become more prevalent. New technologies like
-> > PMEM make finer grain control over memory access patterns increasingly
-> > desirable. MPOL_PREFERRED_MANY allows userspace to specify a set of
-> > nodes that will be tried first when performing allocations. If those
-> > allocations fail, all remaining nodes will be tried. It's a straight
-> > forward API which solves many of the presumptive needs of system
-> > administrators wanting to optimize workloads on such machines. The mode
-> > will work either per VMA, or per thread.
-> > 
-> > Link: https://lore.kernel.org/r/20200630212517.308045-13-ben.widawsky@intel.com
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > Signed-off-by: Feng Tang <feng.tang@intel.com>
-> > ---
-> >  Documentation/admin-guide/mm/numa_memory_policy.rst | 16 ++++++++++++----
-> >  mm/mempolicy.c                                      |  7 +------
-> >  2 files changed, 13 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Documentation/admin-guide/mm/numa_memory_policy.rst
-> > index 067a90a1499c..cd653561e531 100644
-> > --- a/Documentation/admin-guide/mm/numa_memory_policy.rst
-> > +++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
-> > @@ -245,6 +245,14 @@ MPOL_INTERLEAVED
-> >  	address range or file.  During system boot up, the temporary
-> >  	interleaved system default policy works in this mode.
-> >  
-> > +MPOL_PREFERRED_MANY
-> > +        This mode specifies that the allocation should be attempted from the
-> > +        nodemask specified in the policy. If that allocation fails, the kernel
-> > +        will search other nodes, in order of increasing distance from the first
-> > +        set bit in the nodemask based on information provided by the platform
-> > +        firmware. It is similar to MPOL_PREFERRED with the main exception that
-> > +        is an error to have an empty nodemask.
-> 
-> I believe the target audience of this documents are users rather than
-> kernel developers and for those the wording might be rather cryptic. I
-> would rephrase like this
-> 	This mode specifices that the allocation should be preferrably
-> 	satisfied from the nodemask specified in the policy. If there is
-> 	a memory pressure on all nodes in the nodemask the allocation
-> 	can fall back to all existing numa nodes. This is effectively
-> 	MPOL_PREFERRED allowed for a mask rather than a single node.
-> 
-> With that or similar feel free to add
-> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Thanks!
 
-Will revise the test as suggested.
+On 7/26/21 6:43 PM, Halil Pasic wrote:
+> On Mon, 26 Jul 2021 19:03:17 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+>>> You may end up with open and close running interleaved. What I'
+>>> trying to say is, to my best knowledge, normally there is no
+>>> you have to close it before you open it again rule for files.
+>> This is an existing bug in this driver, I've fixed in the reflck series.
+>>
+>> open_device/close_device will not run concurrently, or out of order,
+>> afer it is fixed.
+> Well if that is the case then provided your fix precedes this patch:
+>
+> Acked-by: Halil Pasic <pasic@linux.ibm.com>
+>
+> I'm not entirely happy with this. I did not thoroughly investigate the
+> implications of reversing the locking order of the vfio-ap lock (driver
+> global) and the kvm lock (guest specific). I will trust Tony and hope
+> our KVM maintainers will scream if this is bad from interference and
+> delay perspective.
 
-- Feng
+This solution was suggested by Jason G and it does in fact resolve
+the lockdep splat encountered when starting an SE guest with
+access to crypto resources. There is a chance that the KVM lock
+can get held while waiting for the lock on the matrix_dev->mutex,
+but this does not seem like a grave concern to me. That would
+only happen during VFIO_GROUP_NOTIFY_SET_KVM notification - either
+when the guest is being started or terminated, or when the mdev
+fd is opened or closed. According to Jason, once he integrates his reflck
+series, the open/close will happen only once.
 
-> -- 
-> Michal Hocko
-> SUSE Labs
+I've copied the KVM maintainers on this response, so hopefully one of
+them will provide some input.
+
+>
+> Regards,
+> Halil
+
