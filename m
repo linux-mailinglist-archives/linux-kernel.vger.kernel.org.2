@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436813D8C77
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10413D8C74
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235992AbhG1LIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhG1LIj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:08:39 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C85CC061757;
-        Wed, 28 Jul 2021 04:08:38 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so9348661pja.5;
-        Wed, 28 Jul 2021 04:08:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RaGdX69TfOUF+PA+iG3LI1pAqLNvsYxS1NTTMaqEKBo=;
-        b=AKvjPRgIeM2YflVn6Kb+Snz34nSZTkgEHfQj9L6q+lPpNPI/M69KTdvhyXdsPgbU9a
-         j3ULwI8FueA8h3Uh+/MTn2lUcZ2rFjXSLZq++FWb0AoFwV2HtPCvSCEr1ioBRS44ZiXQ
-         yIjoJE0ZUXLJGgU6Gae4S3cDp65yA3R+ZPnQHbDRCRry3aar0jOHIXm976UOn/dC9/Md
-         9uMguwZ1VigioKOI9wt7ae/LlPnDZR9TT+lolMgs5m+YX67SHR08CIDo14tcGqbCPmGG
-         x2lrYi3xh2x8eo6Yc7LsKgNtqyZ0xZN/8ndAQHvpNfOz/oNdX0xE6Jg6xQIZmAEYwEFk
-         V50w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RaGdX69TfOUF+PA+iG3LI1pAqLNvsYxS1NTTMaqEKBo=;
-        b=JHx7sipVV4Xu08eugmhX9nrdi4eXAcSdJVUvFCBTvC6Pab92EsQWYmRZKhvaYehOfs
-         Bya3i5aekfboCP6C9hP8tehtOjptmQKKar7JDxUHxJhPFxWX/+dwt8c+K7t0Bz3vYAVQ
-         ZlVnyQhUIuqn/gH8iurLzsIET7c2ra2VFUAbFiguSmmyyN++ZmfP9NIpGBilnrCfPlrO
-         9OUAC99LafZqtEvqBXnedFQE6/MYD8aIZ6ZYc0OliSyhFjeaM2NzScrwd8NAsvf7msQh
-         ZLtEDKZZ0XXo+q9HWRt+z0+jH+M86AJFBqeWAScNtaK1VTKMnG0+ZRlOsOmYcv5ghMZD
-         fZOQ==
-X-Gm-Message-State: AOAM5336o33fkfgiTJr2zPQcixY9QVJOLqBKo56PbtmTZ/l1aYKvra/D
-        dihIW8vc+h9etT9ulgu5RchXhV64aGgwd8duQZI=
-X-Google-Smtp-Source: ABdhPJwjjUD6gn//02i/musk032RNIg5zcsK5ykLCg6MxOtsxwc2zmGCleIuDO+JWdrLhVdIGbrkRjIn6INQwhjXVqE=
-X-Received: by 2002:a17:90a:7146:: with SMTP id g6mr1681484pjs.228.1627470517649;
- Wed, 28 Jul 2021 04:08:37 -0700 (PDT)
+        id S235896AbhG1LHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:07:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:55138 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231994AbhG1LHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 07:07:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B56C631B;
+        Wed, 28 Jul 2021 04:07:16 -0700 (PDT)
+Received: from [10.163.65.183] (unknown [10.163.65.183])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B3773F66F;
+        Wed, 28 Jul 2021 04:07:13 -0700 (PDT)
+Subject: Re: [PATCH v4 06/12] mm/debug_vm_pgtable: Use struct
+ pgtable_debug_args in migration and thp tests
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
+        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
+        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
+References: <20210727061401.592616-1-gshan@redhat.com>
+ <20210727061401.592616-7-gshan@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <39de75d2-744a-9194-cbc2-14926b60e68e@arm.com>
+Date:   Wed, 28 Jul 2021 16:38:02 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
- <20210728103551.GA31304@amd>
-In-Reply-To: <20210728103551.GA31304@amd>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 28 Jul 2021 14:07:58 +0300
-Message-ID: <CAHp75VcrYRkzGwe=K98Augy=jb2RtWjiF6P6kietN8Lz7f_okA@mail.gmail.com>
-Subject: Re: LED subsystem lagging maintenance
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210727061401.592616-7-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 1:35 PM Pavel Machek <pavel@ucw.cz> wrote:
 
-Thanks for your _prompt_ response!
 
-> > I have noticed that in the last couple of cycles the LED subsystem is
-> > a bit laggish in terms of maintenance (*). I think it's time that
-> > someone can help Pavel to sort things out.
-> >
-> > In any case, I wonder if we have any kind of procedure for what to do
-> > in such cases. Do we need to assume that the subsystem is in a
-> > (pre-)orphaned state? If so, who is the best to take care of patch
-> > flow?
+On 7/27/21 11:43 AM, Gavin Shan wrote:
+> This uses struct pgtable_debug_args in the migration and thp test
+> functions. It's notable that the pre-allocated page is used in
+> swap_migration_tests() as set_pte_at() is used there.
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  mm/debug_vm_pgtable.c | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index bc153cad9045..9136195efde3 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -845,7 +845,7 @@ static void __init pmd_swap_tests(struct pgtable_debug_args *args)
+>  static void __init pmd_swap_tests(struct pgtable_debug_args *args) { }
+>  #endif /* CONFIG_ARCH_ENABLE_THP_MIGRATION */
+>  
+> -static void __init swap_migration_tests(void)
+> +static void __init swap_migration_tests(struct pgtable_debug_args *args)
+>  {
+>  	struct page *page;
+>  	swp_entry_t swp;
+> @@ -861,9 +861,10 @@ static void __init swap_migration_tests(void)
+>  	 * problematic. Lets allocate a dedicated page explicitly for this
+>  	 * purpose that will be freed subsequently.
+>  	 */
+> -	page = alloc_page(GFP_KERNEL);
+> +	page = (args->pte_pfn != ULONG_MAX) ?
+> +	       pfn_to_page(args->pte_pfn) : NULL;
+>  	if (!page) {
+> -		pr_err("page allocation failed\n");
+> +		pr_err("no page available\n");
+>  		return;
+>  	}
 
-> To be honest, patches were not applied because they were not that
-> important to begin with,
+Please check for a valid page earlier in the function and return. Otherwise
+this calls out the page unavailability (after starting the test), which is
+inconsistent with all other functions like pxx_advanced_tests().
 
-Reference counting disbalance is not critical, but what is then?
+[    1.051633] debug_vm_pgtable: [pte_swap_tests           ]: Validating PTE swap
+[    1.052697] debug_vm_pgtable: [pmd_swap_tests           ]: Validating PMD swap
+[    1.053765] debug_vm_pgtable: [swap_migration_tests     ]: Validating swap migration <=====
+[    1.054900] debug_vm_pgtable: [swap_migration_tests     ]: no page available         <=====
 
-> because of lacking explanation,
+Should do this just before pr_info("Validating swap migration\n").
 
-According to the thread
-https://lore.kernel.org/linux-leds/20210529111935.3849707-1-andy.shevchenko@gmail.com/T/#u
-you haven't commented a word on them. Can you, please, elaborate?
-
-> and because
-> you pushed a bit too hard.
-
-Huh?!
-It was two month and nothing from you. Good that this thread does
-something about it.
-
-> Yes, I'm quite busy in -rc1 to -rc3 timeframe with stable reviews. No,
-> LED subsystem is not orphaned.
-
-Thank you!
-
--- 
-With Best Regards,
-Andy Shevchenko
+......
+page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
+if (!page)
+	return;
+.....
