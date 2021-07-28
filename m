@@ -2,135 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F9A3D8F7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7713C3D8FC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237028AbhG1Nrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236567AbhG1NrG (ORCPT
+        id S237670AbhG1Nyl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Jul 2021 09:54:41 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3516 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236916AbhG1Nrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:47:06 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AE2C0617BD
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 06:46:41 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id 184so2240841qkh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 06:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sVvCedOiHNNS2N2AbA3HaoukyGvi3rdukkeJ2dK8WDs=;
-        b=ZD2RgalNzeDSCP5anWAv+Ja8eSd4YU9Fye9iLhxQTwo6S0CxnRkScjGEKPI8jqCuPC
-         q/h08a3BHrnaTazhZC8wPWpza1FceWHC/cOXlfsSryYTNEq3fQDyOWRC21do7TTN++4J
-         LKHy/THBvEc7ghkidc0SIIDbcEPBGQAOwEw97ML16cBPCeW8X7N61bCv0R6eZicNsd11
-         A014HHm4rPZV1SA0Vg5EBOO64WusF85+N4P14K8G7056m0UuRvWgOPg636SYkzRkFzLR
-         Q65bX5M3kfdUssTvDsKKH1I+N/0tFaUXh4skdG6mSBi6YZCBfqPLO8eH2dWrpxYCsXJW
-         MVVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sVvCedOiHNNS2N2AbA3HaoukyGvi3rdukkeJ2dK8WDs=;
-        b=qlHJhYBTACzsWLfwoI/zKPwrmiEDgElq78c+ovaCM+LlX2pYNMcF3k2OzsKJAdipCe
-         hPXcoqulP27ZytsJh1VMKT0c3htGeabtE4Z/gfVm9uLDeZ2gLgFS1x6bF+Cr2OpOcF5Z
-         X4ICXPZE1moj875T1JXWjUewsqz5etF4V7lIOyiF3h4VZi/Pp66XivCuLeaopji2JYvM
-         6h7C2eEqX881d43iQLCfOpnCjqPeX3m7c+dMNbec+ez9o9ZDKup+2tDDL5cIFQMAlZcl
-         tRDZOkQ5WPyTbYZ0TrioODsBej3eCUwQZjI1EIz2ZHY24JInzWY6ThvZTkm+A4XL487S
-         7law==
-X-Gm-Message-State: AOAM532xCBOu1JmjSEaowVyh4cL5h7CPw+zvDWLD/IeRpiRfqPnBULuy
-        eV1ZVhvAVXl+XDKfAUCIXWA=
-X-Google-Smtp-Source: ABdhPJzre1XpcM5E3Bio8JoYESCY9lNKyGrlBNMIsSOYxAdiFl2JS+BCFpk/wQRMaVdAIbRD2hirBg==
-X-Received: by 2002:a05:620a:1319:: with SMTP id o25mr23942443qkj.396.1627480000758;
-        Wed, 28 Jul 2021 06:46:40 -0700 (PDT)
-Received: from localhost ([12.28.44.171])
-        by smtp.gmail.com with ESMTPSA id c2sm2854609qtw.30.2021.07.28.06.46.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 06:46:40 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 06:46:38 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andrea Merello <andrea.merello@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrea Merello <andrea.merello@iit.it>
-Subject: Re: [PATCH v1 1/1] bitmap.h: add const modifier to
- bitmap_next_[set/clear]_region() argument
-Message-ID: <YQFfvoZn/DlYRJkI@yury-ThinkPad>
-References: <20210727094441.9815-1-andrea.merello@gmail.com>
- <YP/ymvrd1zV7z6rF@smile.fi.intel.com>
- <YQAlmBEGIaChYgeW@yury-ThinkPad>
- <CAN8YU5PD9i=qztMLyuFsMQFf80pz04dLOSQ0NJ9=uHb1bTh52w@mail.gmail.com>
+        Wed, 28 Jul 2021 09:47:40 -0400
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GZZMy2nnbz6GDBX;
+        Wed, 28 Jul 2021 21:32:30 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Jul 2021 15:47:36 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Wed, 28 Jul 2021 15:47:36 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC][PATCH v2 02/12] diglim: Basic definitions
+Thread-Topic: [RFC][PATCH v2 02/12] diglim: Basic definitions
+Thread-Index: AQHXgjyicwJtnSjv/UmZEg8zsJLYTqtYIhYAgAAkorD///aRgIAAKWmw
+Date:   Wed, 28 Jul 2021 13:47:36 +0000
+Message-ID: <caa43f36ce764f16ba56bc38cbd43319@huawei.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+        <20210726163700.2092768-3-roberto.sassu@huawei.com>
+        <20210728133102.339c7b8e@coco.lan>
+        <eb3b025820574f0d901a38a4ad088018@huawei.com>
+ <20210728150823.705623ad@sal.lan>
+In-Reply-To: <20210728150823.705623ad@sal.lan>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN8YU5PD9i=qztMLyuFsMQFf80pz04dLOSQ0NJ9=uHb1bTh52w@mail.gmail.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 08:39:15AM +0200, Andrea Merello wrote:
-> Il giorno mar 27 lug 2021 alle ore 17:26 Yury Norov
-> <yury.norov@gmail.com> ha scritto:
-> >
-> > On Tue, Jul 27, 2021 at 02:48:42PM +0300, Andy Shevchenko wrote:
-> > > On Tue, Jul 27, 2021 at 11:44:41AM +0200, Andrea Merello wrote:
-> > > > Those two functions don't modify the bitmap, so their bitmap argument
-> > > > should be const. This patch add this.
-> >
-> > Thanks Andrea.
-> >
-> > Acked-by: Yury Norov <yury.norov@gmail.com>
-> >
-> > > Constification is always a good thing. No objections from me,
-> > > although Yuri is doing something with them in one of his patch series.
-> >
-> > I try to remove those two because in practice they bring more mess
-> > than good. All real use-cases for bitmap_next_{set,clear}_region
-> > relate to iterating the whole bitmap, ie nobody just wants to find a
-> > next region. Untill recently there was only a single user of the API,
-> > so I easily reworked the code to use find_first_bit/find_next bit and
-> > by chance return faster.
+> From: Mauro Carvalho Chehab [mailto:mchehab+huawei@kernel.org]
+> Sent: Wednesday, July 28, 2021 3:08 PM
+> Em Wed, 28 Jul 2021 11:45:02 +0000
+> Roberto Sassu <roberto.sassu@huawei.com> escreveu:
 > 
-> Ah, that's interesting to know: I'm working on a new driver that used
-> find_next_zero_bit() and find_next_bit() [0]; Andy told me that my
-> algorithm could be rewritten exploiting some bitmap_* helpers, so I
-> rewrote my code using bitmap_for_each_set_region(), which in turn uses
-> bitmap_next_set_region().
+> > > From: Mauro Carvalho Chehab [mailto:mchehab+huawei@kernel.org]
+> > > Sent: Wednesday, July 28, 2021 1:31 PM
+> > > Em Mon, 26 Jul 2021 18:36:50 +0200
+> > > Roberto Sassu <roberto.sassu@huawei.com> escreveu:
+> > >
 > 
-> Should I revert to my previous implementation that uses
-> find_next_zero_bit() and find_next_bit() ?
+> > > > +struct compact_list_hdr {
+> > > > +	__u8 version;
+> > > > +	__u8 _reserved;
+> > > > +	__le16 type;
+> > > > +	__le16 modifiers;
+> > > > +	__le16 algo;
+> > > > +	__le32 count;
+> > > > +	__le32 datalen;
+> > > > +} __packed;
+> > > > +#endif /*_UAPI__LINUX_DIGLIM_H*/
+> > >
+> > > Besides Greg's notes, I'm wondering why to enforce a particular
+> > > endness here. I mean, this is uAPI. I would expect it to use the
+> > > CPU endianness instead, in order to avoid uneeded conversions.
+> >
+> > Also Greg had the same concern. I hoped the Lifecycle section clarified
+> > the fact that digest lists are generated by software vendors not the
+> > local system. Should I add something more in the documentation?
 > 
-> [0] https://lore.kernel.org/linux-iio/20210715141742.15072-3-andrea.merello@gmail.com/
-
-No, you're doing right. I just reimplemented and renamed
-bitmap_for_each_set_region to unify with other similar functions. The
-transition is very stragthforward, so you have nothing to worry on.
-
-https://patchwork.kernel.org/project/linux-mmc/patch/20210719021755.883182-3-yury.norov@gmail.com/
-
+> It shouldn't matter what kind of endness software vendors use on
+> userspace (either CPU or a fixed endiannes - either LE or BE).
 > 
-> > https://github.com/norov/linux/commit/1c870b5c3fcd2eea9b351a1e0af8d1e93be78e1e
-> >
-> > Recently in next-20210716, there appeared another user in fs/btrfs/extent_io.c:
-> > find_next_dirty_byte(). The fun is that in that case the length of bitmap
-> > is 16 bit, so it's probably simpler to return the bitmap by value,
-> > instead of calling prologue code up to 8 times. Anyways, I'll contact
-> > authors of the find_next_dirty_byte() and ask if it's possible to rework
-> > their code.
-> >
-> > > Yuri, do you have a public repo / branch that people can base their changes to
-> > > bitmap stuff against of?
-> >
-> > I collected not yet upstreamed bitmap patches here:
-> >
-> > https://github.com/norov/linux/commits/bitmap-20210716
+> I mean, I won't doubt that some package tools use LE while others
+> would use BE. At some point, this needs to be converted to
+> CPU endiannes.
+
+If you let digest list generators decide the endianness, probably
+it is necessary to also add the endianness information in the
+structure. Otherwise, the kernel wouldn't know what to do.
+
+If the kernel knows that the digest list is always in little endian,
+it simply calls le32_to_cpu().
+
+> IMO, the best would be to isolate whatever RPM/DEB/... endianness
+> is used on userspace from what the Kernel will use internally.
+
+This is a different case. The conversion happens if the digest list
+is not in native format. The kernel can also parse an untouched
+digest list if it is in native format.
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> Just my 2 cents.
 > 
-> Looks like also bitmap_for_each_set_region() went away indeed ?
-
-Just replaced with for_each_{set,clear}_bitrange.
-
-Thanks,
-Yury
+> Regards,
+> Mauro
