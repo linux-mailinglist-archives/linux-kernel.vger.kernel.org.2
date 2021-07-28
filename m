@@ -2,105 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3E83D8C99
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE703D8CA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 13:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235748AbhG1LUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 07:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbhG1LUF (ORCPT
+        id S234565AbhG1LWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 07:22:07 -0400
+Received: from mail-yb1-f176.google.com ([209.85.219.176]:36556 "EHLO
+        mail-yb1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232165AbhG1LWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:20:05 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BF7C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 04:20:02 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id h14so3218139lfv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 04:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WRpAt4Qf30VQcI04z59j1Xhna4kVm3ZAFQjWCiFVzII=;
-        b=ZITf0JJkY6siA6zuTWx/S+3I3pJ92j2lsEWHCAUrQgybgq2nu7vMyrV5yFzPnr0ASF
-         zQnwOwgLaX1f2Ag8AdE3Zoi+yryD69qxehZj3Axp0G1SI8NHWpwdtRD/AWfB8hXTTU+w
-         7JIntZBgXB7V3Bx+KAGMmd0eo1ehu7YXfBEGo=
+        Wed, 28 Jul 2021 07:22:06 -0400
+Received: by mail-yb1-f176.google.com with SMTP id j77so1342164ybj.3;
+        Wed, 28 Jul 2021 04:22:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WRpAt4Qf30VQcI04z59j1Xhna4kVm3ZAFQjWCiFVzII=;
-        b=RI59GggMEnqGR74z1Y5gBs7sadpwEnjxHUuhQ1/otyDwKKR0vAq0SWI/ZX8UjKZHyu
-         DxL9rE1tMqGFYVsR6Ph4V8SGqUd2yRYaE3HzbJ+wdvrzlsoon8VvTxYnK2579XvZ6mNF
-         MfKOzan730mJpzX65DOpPdYl6VUxps7F0hKQjlYurMSKxIVysbk+fv2FWVCdg81iIVxj
-         oHX2qG0Lvy2PNcTDcr1DokYg/8dhptiiKbNoH5/CMfLP71Dji6jQajUEFxh8alj4sjba
-         QtvhwrZYijWbsgQdkahvW38xXODgrjdZvmuNTSynr4kn6fWtGtLaZCbdFevhD2FuUQAa
-         PD4A==
-X-Gm-Message-State: AOAM5307FUn+5aUH13Qmx5lntiA0FELei9Qs8Gej9u8916q/dbzfUUVe
-        tdvSi7fN4p0tUsYL/kA62SIxOg==
-X-Google-Smtp-Source: ABdhPJwtX9cWcqS+T2RXR4asd80U6YfWCrWHQPG0xseFJRRyUcQAZvx3wnyU+2xS6u5f7adx+ZAvkA==
-X-Received: by 2002:a19:dc5e:: with SMTP id f30mr20474709lfj.318.1627471200888;
-        Wed, 28 Jul 2021 04:20:00 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id z4sm564853lfe.274.2021.07.28.04.19.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 04:20:00 -0700 (PDT)
-Subject: Re: [PATCH 34/64] fortify: Detect struct member overflows in memcpy()
- at compile-time
-To:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-35-keescook@chromium.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <d2f9f21c-4d6e-9458-5887-ca5166d07942@rasmusvillemoes.dk>
-Date:   Wed, 28 Jul 2021 13:19:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9C90hpgYkE4biTrUIzNHDYYty+iOjCgfF4PS52t6ewo=;
+        b=F6pJPrvdCieXriMEBuqgIXnPrNl6PtcJpZiaoh3GGXKuHZowv6plgRKI2uRH93Lbfh
+         AKiAwfdG+sAvdvz1Wpwib/UQtps7ej/ius40I1HAKzkcAhliU1gtoKLmE2vr6kJQPo7Y
+         w+Lattr/kY729rVR0sddKt0LSBYh1cxJjYDiHws0sidf7/AfPCzRyaHnMAM5CsjPic/f
+         1cb/0wXiw7VsbQo7zjt2AT7NFqHvCVKAWayp7D0J+2UkB3pjQavxpWMHkCa7kL/CayA3
+         UC+G5v+80KNR6PwPjXbq/LecM0JUr50Vf+7kRLDxEbZMxsi+xZjgAJDuCeigCGsvAktm
+         vRJg==
+X-Gm-Message-State: AOAM533zp8NXxWGhVujmsuzCr6KClIbetHx1Dh4GWuEW0mWed+WusCLR
+        aHH59FAc6+6cqry5Ejslj7X65oa3YQ0iucKCICk=
+X-Google-Smtp-Source: ABdhPJyMKN9A7vWkH92nGKXoClZVP7xtHJgjDzAKw67iBSQKKzU7V2Oom+eEuE5m1MWc9u5CTXApe/NPMo7j7l4w0a4=
+X-Received: by 2002:a25:1e89:: with SMTP id e131mr9659175ybe.90.1627471323751;
+ Wed, 28 Jul 2021 04:22:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210727205855.411487-35-keescook@chromium.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210701002037.912625-1-drew@beagleboard.org> <20210701002037.912625-3-drew@beagleboard.org>
+ <8c59105d32a9936f8806501ecd20e044@walle.cc> <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
+ <20210726071124.GA9184@x1> <dad13b899b69436acc1804b7c3438639@walle.cc>
+ <20210727052851.GA3147871@x1> <ff76b62927e3f5f016f6c4c11ca16ccf@walle.cc>
+ <CANBLGczfrmv1tzFm=Fu6B_S8nZ=ckwd3DOBkN4x7BUZtAg7bdw@mail.gmail.com> <a15823a88515f944cad6d77bdd65555c@walle.cc>
+In-Reply-To: <a15823a88515f944cad6d77bdd65555c@walle.cc>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Wed, 28 Jul 2021 13:21:52 +0200
+Message-ID: <CANBLGcyN9TVp6UghJMpc4hULz4e+OPux0fEwfQoJrixxO4rcuA@mail.gmail.com>
+Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO driver
+To:     Michael Walle <michael@walle.cc>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2021 22.58, Kees Cook wrote:
-
-> At its core, FORTIFY_SOURCE uses the compiler's __builtin_object_size()
-> internal[0] to determine the available size at a target address based on
-> the compile-time known structure layout details. It operates in two
-> modes: outer bounds (0) and inner bounds (1). In mode 0, the size of the
-> enclosing structure is used. In mode 1, the size of the specific field
-> is used. For example:
-> 
-> 	struct object {
-> 		u16 scalar1;	/* 2 bytes */
-> 		char array[6];	/* 6 bytes */
-> 		u64 scalar2;	/* 8 bytes */
-> 		u32 scalar3;	/* 4 bytes */
-> 	} instance;
-> 
+On Wed, 28 Jul 2021 at 13:19, Michael Walle <michael@walle.cc> wrote:
+> Am 2021-07-28 12:59, schrieb Emil Renner Berthing:
+> > On Wed, 28 Jul 2021 at 11:49, Michael Walle <michael@walle.cc> wrote:
+> >> Hi Drew,
+> >> Am 2021-07-27 07:28, schrieb Drew Fustini:
+> >> [..]
+> >> >> > > Drew please look at drivers/gpio/gpio-ftgpio010.c for an example
+> >> >> > > of GPIO_GENERIC calling bgpio_init() in probe().
+> >> >> >
+> >> >> > Thank you for the suggestion. However, I am not sure that will work for
+> >> >> > this SoC.
+> >> >> >
+> >> >> > The GPIO registers are described in section 12 of JH7100 datasheet [1]
+> >> >> > and I don't think they fit the expectation of gpio-mmio.c because there
+> >> >> > is a seperate register for each GPIO line for output data value and
+> >> >> > output enable.
+> >> >> >
+> >> >> > There are 64 output data config registers which are 4 bytes wide. There
+> >> >> > are 64 output enable config registers which are 4 bytes wide too. Output
+> >> >> > data and output enable registers for a given GPIO pad are contiguous.
+> >> >> > GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54 while GPIO1_DOUT_CFG
+> >> >> > is 0x58 and GPIO1_DOEN_CFG is 0x5C. The stride between GPIO pads is
+> >> >> > effectively 8, which yields the formula: GPIOn_DOUT_CFG is 0x50+8n.
+> >> >> > Similarly, GPIO0_DOEN_CFG is 0x54 and thus GPIOn_DOEN_CFG is 0x54+8n.
+> >> >> >
+> >> >> > However, GPIO input data does use just one bit for each line. GPIODIN_0
+> >> >> > at 0x48 covers GPIO[31:0] and GPIODIN_1 at 0x4c covers GPIO[63:32].
+> >>
+> >> Mh, I'm not sure I'm understanding the datasheet/registers. _DOUT_CFG
+> >> and _DOEN_CFG seem to specify the pad where this GPIO is mapped to.
+> >> Shouldn't this be some kind of pinctrl then? Apparently you can map
+> >> any GPIO number to any output pad, no? Or at least to all pads
+> >> which are described in Table 11-2. What happens if two different GPIOs
+> >> are mapped to the same pad? Bit 31 in these _CFG seems to be an invert
+> >> bit, but what does it invert?
+> >>
+> >> Similar, the input GPIOs are connected to an output pad by all the
+> >> GPI_*_CFG registers.
+> >>
+> >> To me it seems, that there two multiplexers for each GPIO, where
+> >> you can connect any GPIOn to any input pad and output pad. Sound
+> >> like a huge overkill. I must be missing something here.
+> >>
+> >> But what puzzles me the most, where do I set the actual GPIO output
+> >> value?
+> >
+> > Yeah, it's a little confusing. The DOUT registers choose between a
+> > number of
+> > signals from various peripherals to control the output value of the
+> > pin. Similarly
+> > the DOEN registers chose between a number of signals to control the
+> > output
+> > enable of the pin. However, two of those signals are special in that
+> > they are
+> > constant 0 or constant 1. This is how you control the output value and
+> > output
+> > enable from software like a regular GPIO.
+> >
+> > You're completely right though. This ought to be managed by a proper
+> > pinctrl
+> > driver, and I'm working on one here:
+> > https://github.com/esmil/linux/commits/beaglev-pinctrl
 >
-> __builtin_object_size(instance.array, 0) == 18, since the remaining size
-> of the enclosing structure starting from "array" is 18 bytes (6 + 8 + 4).
+> Ahh, I see. So for the non-gpio function you have to set a value other
+> than 0 or 1, correct?
+>
+> And as an implementation detail you have to set the corresponding OE
+> pin if the non-gpio function will need a tristate pin (or whatever).
+>
+> So, the _DOUT_CFG will actually be shared between the pinctrl and the
+> gpio driver, right? (I haven't done anything with pinctrl, so this might
+> be a stupid question).
 
-I think the compiler would usually end up making that struct size 24,
-with 4 bytes of trailing padding (at least when alignof(u64) is 8). In
-that case, does __builtin_object_size(instance.array, 0) actually
-evaluate to 18, or to 22? A quick test on x86-64 suggests the latter, so
-the memcpy(, , 20) would not be a violation.
+No, not a stupid question. You've got that exactly right.
 
-Perhaps it's better to base the example on something which doesn't have
-potential trailing padding - so either add another 4 byte member, or
-also make scalar2 u32.
-
-Rasmus
+/Emil
