@@ -2,161 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEFB3D9583
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB3F3D958A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbhG1Srt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42986 "EHLO
+        id S230175AbhG1Stk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhG1Srs (ORCPT
+        with ESMTP id S229839AbhG1Stj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:47:48 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E817C061757;
-        Wed, 28 Jul 2021 11:47:46 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id e19so6163875ejs.9;
-        Wed, 28 Jul 2021 11:47:46 -0700 (PDT)
+        Wed, 28 Jul 2021 14:49:39 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C8CC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:49:36 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id t128so5002477oig.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:49:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=rw1im/4KKTL6GDAfF73CRmLTIbz+OF0JjH7lHeKRYlQ=;
-        b=hWEENPPhfpw22zsbzZ+sNGX02aq9HWzFfb5S7Ijrz+11UNSRxaa9/ecl0m+g9VEP2Y
-         rKIqH/43TbQdMF1LM4YmM0g5/9r+KTJpZPotC7M0ZoODR7QFYX4Ofb72bKk9SO/GZUN6
-         BNN9xgO88X2kMLgdplL6z8TQ3w8Oi2MnhSriiXejlK4grTZEDpoTnJwDI68O6obM2gna
-         bVntCdmHPZaljVwCLCRIHSyf27AR9iS51V8hoLMzg1mQ2m33GqAk/d+HcqRhUdsURAOd
-         fqQlUawCvnZfoOKOdoY0R0Jy8DgOaMzEgMbNlu0QPjJzu+SM8M58zrPOUEyxgO/wnup3
-         k7Hg==
+        bh=U7vNPIko5GOjWbPYkaIByKIDTKv6SGLaM0HuUzXJ7Do=;
+        b=IWX2ITiBL6y1vEe0ozMojPakXQ01o2k+aYejjRl4zE0021Ay7iEGsZUh31vLZY0Jym
+         AOJRN8JGcT1MKHxDPwcHpbt69C31nkw+qyFcB+Z3sRSXX0v2z4vXlfzL46ZzUPi53rb5
+         iwIgFzidujHad32g5L9CypUC0bjt30ch/DQ6wUzuS451o+Wn/dX7E+oxoZ3msZfSAKhE
+         MDeboJH25jqc2RnIMB687Kfh2Rj8OgA+jYJHJdnBy6aaPqJw/cV4wYWBi5cc2rBgRcMH
+         VRSko1PV8GqQxa5l63HsgWd8hYjb40bHmCKsNjENNfVoFjzpGU5RiPScAxLzYAIKLzg0
+         NZ7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rw1im/4KKTL6GDAfF73CRmLTIbz+OF0JjH7lHeKRYlQ=;
-        b=icYpOuuJeHdNSJDXmJe0NJLw3oZTSJQfdv5urbUAm0KijNzz+MnB27sfLaGcit2t31
-         K5q10RuKSpcPNd8so/4qd0vmUVIulgHx2LJyxKM/rEAbzckr33ncQUAQKlAeQo+ILuAp
-         bry3maOuEdXUHtirJOJK3S1iUd3Zj+M/rJKIHyg0WZcaRbW5vcAhul4BmANv4VWy+gfD
-         RlFnB/B878zEzKuAKEdCqMj8erilKGSSaP23rNKgrJer9d5HQMnrnzvHPJ1uh2j8uj4e
-         S9/cKj6ZqkBffN38NnGHOlvsWUOZfjLk2ipduYW97Ap81F+cL/zlcN6pW1E2I7pGlgsl
-         JCbg==
-X-Gm-Message-State: AOAM530krHmxNg1Zh4IiXsds23QWc87vSh0dzKPxhT888WQe/YTdL4zw
-        bfu3br/xfMAzlhSCe5wmhto=
-X-Google-Smtp-Source: ABdhPJyrA1FU5+Q1j3pmfXnRdR9xvKtg4sq1W9c+KbbUMEyrWKfBM3aem+xcjtncDkPRLpxOUbVyrA==
-X-Received: by 2002:a17:907:2d28:: with SMTP id gs40mr815302ejc.193.1627498064631;
-        Wed, 28 Jul 2021 11:47:44 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id i11sm175324ejx.82.2021.07.28.11.47.43
+        bh=U7vNPIko5GOjWbPYkaIByKIDTKv6SGLaM0HuUzXJ7Do=;
+        b=TfVD/HWHatKnd0FrbramXzIYuPuLWX8edeSKsCZIsSdseInpYhcUMMyRfOTNj5Romx
+         jesDcxwSnwPMis/piqOKxx18HC0pOupAneVlg+K+zBYKT8L98fOGv+dmqYQxK0F66u60
+         7siqWPOPQXdyi4WkbdrRAeC6YCqKORtSsKoWGT2pN8UFTy21ovkJVmm88JK3QPM0255j
+         sEDvK1evBNFWLeXV7PXWiTIzQsMa/mBHSMBB5q2C4WFmEmU8LvUtPSvPI2rTQMiOCgE/
+         NZghBBIQ8JvK2WW6MIEzKMQVB0z3r6ZH160+DzRLbCvVjr+rs+v4s+Qb1SyjdIVyvbjJ
+         kQvA==
+X-Gm-Message-State: AOAM5329OQEZEbH/Q1tqwc40412c2nERkiKgPxTJOflU01+nulwNX0N1
+        txmubxziNjxC3ky1gJ3tavqFiw==
+X-Google-Smtp-Source: ABdhPJwxcGRr32B2c1xZaRJ3khgROrE350We7kDTSR0NZxjlPl6eo+gEwRdkmWxv3Tw1zkx794iADg==
+X-Received: by 2002:aca:5f8b:: with SMTP id t133mr7259687oib.15.1627498176010;
+        Wed, 28 Jul 2021 11:49:36 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id b6sm149201oib.51.2021.07.28.11.49.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 11:47:44 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 21:47:42 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 2/2] net: dsa: mt7530: trap packets from
- standalone ports to the CPU
-Message-ID: <20210728184742.cyoh7ucvxwlbdpnu@skbuf>
-References: <20210728175327.1150120-1-dqfext@gmail.com>
- <20210728175327.1150120-3-dqfext@gmail.com>
+        Wed, 28 Jul 2021 11:49:35 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 11:47:45 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>, ulf.hansson@linaro.org,
+        viresh.kumar@linaro.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, rojay@codeaurora.org,
+        stephan@gerhold.net
+Subject: Re: [PATCH v4 2/2] arm64: dts: sc7180: Add required-opps for i2c
+Message-ID: <YQGmUWE8quTVMV6+@ripper>
+References: <YPHxfHPC/faq/y+J@yoga>
+ <CAE-0n50qx80cMFPJ1x9rc+EMR1L+j2CUMyDjWAbnE9mPHjf-TQ@mail.gmail.com>
+ <YPIBK/NJgBNZVI8Y@yoga>
+ <12711a61-e16c-d2bc-6e04-ab94c7551abe@codeaurora.org>
+ <YPXQNFYKfH/xZxFY@yoga>
+ <bc79ea3e-4981-8f9b-f9a7-59cb972047a7@codeaurora.org>
+ <YP2Y6qs5P5mb2jzE@yoga>
+ <b6b315ae-ee68-6ba8-7453-f28dace3d8d2@codeaurora.org>
+ <YQDTImwRhp8juvKh@yoga>
+ <f73f1c31-dc31-32f9-d7d8-1aa3233b0040@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210728175327.1150120-3-dqfext@gmail.com>
+In-Reply-To: <f73f1c31-dc31-32f9-d7d8-1aa3233b0040@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 01:53:26AM +0800, DENG Qingfang wrote:
->  /* Register for setup vlan and acl write data */
-> @@ -153,6 +162,35 @@ enum mt7530_vlan_cmd {
->  #define  PORT_MEM_SHFT			16
->  #define  PORT_MEM_MASK			0xff
->  
-> +/* ACL rule pattern */
-> +#define  BIT_CMP(x)			(((x) & 0xffff) << 16)
-> +#define  CMP_PAT(x)			((x) & 0xffff)
+On Wed 28 Jul 07:01 PDT 2021, Dmitry Baryshkov wrote:
 
-not used
-
-> +
-> +/* ACL rule action */
-> +#define  ACL_MANG			BIT(29)
-> +#define  ACL_INT_EN			BIT(28)
-> +#define  ACL_CNT_EN			BIT(27)
-> +#define  ACL_CNT_IDX(x)			(((x) & 0x7) << 24)
-> +#define  VLAN_PORT_EN			BIT(23)
-> +#define  DA_SWAP			BIT(22)
-> +#define  SA_SWAP			BIT(21)
-> +#define  PPP_RM				BIT(20)
-> +#define  LKY_VLAN			BIT(19)
-> +#define  ACL_EG_TAG(x)			(((x) & 0x7) << 16)
-> +#define  ACL_PORT(x)			(((x) & 0xff) << 8)
-> +#define  ACL_PORT_EN			BIT(7)
-> +#define  PRI_USER(x)			(((x) & 0x7) << 4)
-> +#define  ACL_MIR_EN			BIT(3)
-> +#define  ACL_PORT_FW(x)			((x) & 0x7)
-> +
-> +enum mt7530_to_cpu_port_fw {
-> +	PORT_FW_DEFAULT,
-> +	PORT_FW_EXCLUDE_CPU = 4,
-> +	PORT_FW_INCLUDE_CPU,
-> +	PORT_FW_CPU_ONLY,
-> +	PORT_FW_DROP,
-> +};
-
-not used
-
-> +
->  #define MT7530_VAWD2			0x98
->  /* Egress Tag Control */
->  #define  ETAG_CTRL_P(p, x)		(((x) & 0x3) << ((p) << 1))
-> @@ -164,6 +202,23 @@ enum mt7530_vlan_egress_attr {
->  	MT7530_VLAN_EGRESS_STACK = 3,
->  };
->  
-> +/* ACL rule pattern */
-> +#define  ACL_TABLE_EN			BIT(19)
-> +#define  OFST_TP(x)			(((x) & 0x7) << 16)
-> +#define  ACL_SP(x)			(((x) & 0xff) << 8)
-> +#define  WORD_OFST(x)			(((x) & 0x7f) << 1)
-> +#define  CMP_SEL			BIT(0)
-
-not used
-
-> +
-> +enum mt7530_acl_offset_type {
-> +	MT7530_ACL_MAC_HEADER,
-> +	MT7530_ACL_L2_PAYLOAD,
-> +	MT7530_ACL_IP_HEADER,
-> +	MT7530_ACL_IP_DATAGRAM,
-> +	MT7530_ACL_TCP_UDP_HEADER,
-> +	MT7530_ACL_TCP_UDP_DATAGRAM,
-> +	MT7530_ACL_IPV6_HEADER,
-> +};
-
-not used
-
-> +
->  /* Register for address age control */
->  #define MT7530_AAC			0xa0
->  /* Disable ageing */
-> @@ -192,6 +247,7 @@ enum mt7530_stp_state {
->  
->  /* Register for port control */
->  #define MT7530_PCR_P(x)			(0x2004 + ((x) * 0x100))
-> +#define  PORT_ACL_EN			BIT(10)
->  #define  PORT_TX_MIR			BIT(9)
->  #define  PORT_RX_MIR			BIT(8)
->  #define  PORT_VLAN(x)			((x) & 0x3)
-> -- 
-> 2.25.1
+> On 28/07/2021 06:46, Bjorn Andersson wrote:
+> > On Tue 27 Jul 02:35 CDT 2021, Rajendra Nayak wrote:
+> > 
+> > > 
+> > > On 7/25/2021 10:31 PM, Bjorn Andersson wrote:
+> > > > On Mon 19 Jul 23:29 CDT 2021, Rajendra Nayak wrote:
+> > > > 
+> > > > > 
+> > > > > 
+> > > > > On 7/20/2021 12:49 AM, Bjorn Andersson wrote:
+> > > > > > On Mon 19 Jul 04:37 CDT 2021, Rajendra Nayak wrote:
+> > > > > > 
+> > > > > > > 
+> > > > > > > 
+> > > > > > > On 7/17/2021 3:29 AM, Bjorn Andersson wrote:
+> > > > > > > > On Fri 16 Jul 16:49 CDT 2021, Stephen Boyd wrote:
+> > > > > > > > 
+> > > > > > > > > Quoting Bjorn Andersson (2021-07-16 13:52:12)
+> > > > > > > > > > On Fri 16 Jul 15:21 CDT 2021, Stephen Boyd wrote:
+> > > > > > > > > > 
+> > > > > > > > > > > Quoting Bjorn Andersson (2021-07-16 13:18:56)
+> > > > > > > > > > > > On Fri 16 Jul 05:00 CDT 2021, Rajendra Nayak wrote:
+> > > > > > > > > > > > 
+> > > > > > > > > > > > > qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 MHz)
+> > > > > > > > > > > > > Though qup-i2c does not support DVFS, it still needs to vote for a
+> > > > > > > > > > > > > performance state on 'CX' to satisfy the 19.2 Mhz clock frequency
+> > > > > > > > > > > > > requirement.
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > 
+> > > > > > > > > > > > Sounds good, but...
+> > > > > > > > > > > > 
+> > > > > > > > > > > > > Use 'required-opps' to pass this information from
+> > > > > > > > > > > > > device tree, and also add the power-domains property to specify
+> > > > > > > > > > > > > the CX power-domain.
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > 
+> > > > > > > > > > > > ..is the required-opps really needed with my rpmhpd patch in place?
+> > > > > > > > > > > > 
+> > > > > > > > > > > 
+> > > > > > > > > > > Yes? Because rpmhpd_opp_low_svs is not the lowest performance state for
+> > > > > > > > > > > CX.
+> > > > > > > > > > 
+> > > > > > > > > > On e.g. sm8250 the first available non-zero corner presented in cmd-db
+> > > > > > > > > > is low_svs.
+> > > > > > > 
+> > > > > > > what rail is this? the mmcx? Perhaps it does not support RET.
+> > > > > > > cx usually supports both collapse state and RET.
+> > > > > > > 
+> > > > > > 
+> > > > > > That was the one I was specifically looking at for the MDSS_GDSC->MMCX
+> > > > > > issue, so it's likely I didn't look elsewhere.
+> > > > > > 
+> > > > > > > > > 
+> > > > > > > > > Indeed. On sc7180 it's not the first non-zero corner. I suppose
+> > > > > > > > > retention for CX isn't actually used when the SoC is awake so your
+> > > > > > > > > rpmhpd patch is putting in a vote for something that doesn't do anything
+> > > > > > > > > at runtime for CX? I imagine that rpmh only sets the aggregate corner to
+> > > > > > > > > retention when the whole SoC is suspended/sleeping, otherwise things
+> > > > > > > > > wouldn't go very well. Similarly, min_svs may be VDD minimization? If
+> > > > > > > > > so, those first two states are basically states that shouldn't be used
+> > > > > > > > > at runtime, almost like sleep states.
+> > > > > > > > > 
+> > > > > > > > 
+> > > > > > > > But if that's the case, I don't think it's appropriate for the "enabled
+> > > > > > > > state" of the domain to use any of those corners.
+> > > > > > > 
+> > > > > > > I rechecked the downstream kernels where all this voting happens from within
+> > > > > > > the clock drivers, and I do see votes to min_svs for some clocks, but Stephen is
+> > > > > > > right that RET is not something that's voted on while in active state.
+> > > > > > > 
+> > > > > > > But always going with something just above the ret level while active will also
+> > > > > > > not work for all devices, for instance for i2c on 7180, it needs a cx vote of
+> > > > > > > low svs while the rail (cx) does support something lower than that which is min svs.
+> > > > > > > (why can't it just work with min svs?, I don't know, these values and recommendations
+> > > > > > > come in from the voltage plans published by HW teams for every SoC and we just end up
+> > > > > > > using them in SW, perhaps something to dig further and understand which I will try and
+> > > > > > > do but these are the values in voltage plans and downstream kernels which work for now)
+> > > > > > > 
+> > > > > > 
+> > > > > > So to some degree this invalidates my argumentation about the
+> > > > > > enabled_corner in rpmhpd, given that "enabled" means a different corner
+> > > > > > for each rail - not just the one with lowest non-zero value.
+> > > > > 
+> > > > > Right, it might work in some cases but might not work for all.
+> > > > > 
+> > > > 
+> > > > Which makes it way less desirable.
+> > > > 
+> > > > The enable state for rpmhpd power domains doesn't meet my expectations
+> > > > for how a power domain should behave,
+> > > 
+> > > Right and that's perhaps because these are not the usual power-domains,
+> > > which have one "on/active" state and one or more "off/inactive" states (off/ret/clock-stop)
+> > > Rpmhpd has multiple "on/active" states, and whats "on/active" for one consumer
+> > > might not be "on/active" for another, so this information is hard to be managed
+> > > at a generic level and these requests in some way or the other need to come
+> > > in explicitly from the resp. consumers.
+> > > 
+> > 
+> > I think it's fine if we just acknowledge that this is how the rpmhpd
+> > domains works.
+> > 
+> > But I am worried about how we're going to handle the case where the
+> > consumer is indirectly referencing one of these power-domains using a
+> > subdomain (gdsc).
+> 
+> With the proper subdomain relationship in place and with Ulf's patches, this
+> seems to be handled correctly. gdsc sets proper level for the parent power
+> domain, which gets voted and unvoted by the core pm code when gdsc's power
+> domain is powered on or off.
 > 
 
+Right, but this works only in our case because "on" for MMCX happens to
+be the first non-zero corner.
+
+What this patch points out is that for some of the other power domains
+my patch in the rpmhpd driver isn't sufficient - and presumably wouldn't
+work for other gdsc's (that are parented by CX or MX).
+
+Regards,
+Bjorn
+
+> > And the open question is if a solution to that problem will solve this
+> > problem as well, or if we need to have this and some mechanism to
+> > describe the "on state" for the parent of a subdomain.
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
