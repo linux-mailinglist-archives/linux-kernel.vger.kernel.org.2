@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6F13D94AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92F23D94AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhG1Rz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:55:27 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50376 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229581AbhG1RzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231131AbhG1RzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:55:25 -0400
+Received: from mail-pj1-f43.google.com ([209.85.216.43]:53936 "EHLO
+        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhG1RzW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Jul 2021 13:55:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=hpRbk0yCaD06IT2pljlpFDQ+YXKte4gavVlH1cev1Rw=; b=3TqZYHyMWBYfoFw895VTj5AHTx
-        L059GjKxNd/svHThIWsqVNnhCK/2FDLfwgFKZaKuQNISIwNCjPS6Ftix2BEc8yjgXM481q5PCRqcj
-        2AA+3o6sB3Bs8P8H/Bygb8bfir6xaHyHsIAdrm0hWP9oTDx5f58F31Pa9Ne6mwWuAuic=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m8nlw-00FDLz-HE; Wed, 28 Jul 2021 19:55:12 +0200
-Date:   Wed, 28 Jul 2021 19:55:12 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Liang Chen <cl@rock-chips.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Simon Xue <xxm@rock-chips.com>
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: rk3568-evb1-v10: add ethernet
- support
-Message-ID: <YQGaAFvqqc7wXrWD@lunn.ch>
-References: <20210728161020.3905-1-michael.riesch@wolfvision.net>
- <20210728161020.3905-3-michael.riesch@wolfvision.net>
+Received: by mail-pj1-f43.google.com with SMTP id j1so6335280pjv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:55:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vaHWQMyapbwMNDooasKS1ZMgjJGMU/Tqpe97r0Mjc8M=;
+        b=KnTHJy4j2DE7U9mBziHMHZT+iHLv3pc8XwLSLfXFK5ZeV+R2cEIL3tJ7nqjikhlIOA
+         uPpnnNiK4hxhTj3VRDBbf8MJKUrtmpcojMlidB8DEgKSeAOuieuaN4j5XsAAGCN7x/0K
+         cisPB1a9xsnCM7ODe4hYU0xXVE4UU2nVcyl3eOX0CCWsdOG5TFkwne5uJmVROJJYbq7i
+         vxMpKQI/mzj7CY2cMN9V8NYU/sLrjJGlB7Bml8XH6un+ntYYXcce0lR1NMkbcqu3Cxhf
+         5ce5UMn1sjPhtQmQCrc1sX7+Sw9/vUwV2+PBOZAjvLhhT1GP+7McGCHC2PRttU2iaMR7
+         9iyw==
+X-Gm-Message-State: AOAM533CQ8p+2FBX9641zzlM36joZ++8+jUD5mDdYR0nK/QbVgT/p3Sn
+        cOe8RDAUBkUOy++xSMAcWwk=
+X-Google-Smtp-Source: ABdhPJwj/v4a358VMS8grMiaN9aSuY7X8fqahL1XIeoeDYXE5xu3N5q77WtvLmLNWd0QLshLVTU3YQ==
+X-Received: by 2002:a63:5505:: with SMTP id j5mr93705pgb.250.1627494919816;
+        Wed, 28 Jul 2021 10:55:19 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:3328:5f8d:f6e2:85ea])
+        by smtp.gmail.com with ESMTPSA id c7sm440015pgq.22.2021.07.28.10.55.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 10:55:18 -0700 (PDT)
+Subject: Re: [PATCH 2/4] configfs: Fix writing at a non-zero offset
+To:     Bodo Stroesser <bostroesser@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Yanko Kaneti <yaneti@declera.com>,
+        Brendan Higgins <brendanhiggins@google.com>
+References: <20210723212353.896343-1-bvanassche@acm.org>
+ <20210723212353.896343-3-bvanassche@acm.org>
+ <7bee65ce-f5f1-a525-c72d-221b5d23cf3e@gmail.com>
+ <d12f24b6-7066-f9bb-1b88-6cc23c9c45c1@acm.org>
+ <4055ca70-7669-d00d-7c08-86fe75a3d377@gmail.com>
+ <618b2bdc-282b-0a1d-1fc5-020cf80d7a7e@acm.org>
+ <c9cb1f3b-0b3b-c571-4a51-e647f3c1e90a@gmail.com>
+ <ab190c50-8c87-b215-1432-056c81bcd656@acm.org>
+ <fec30933-46b1-1085-1af1-1fd0d2265981@gmail.com>
+ <a3ba73e5-ffd1-887e-acd9-11f537db27e0@acm.org>
+ <b33a5330-472b-9961-c590-5c07420cf9de@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <70ed90fc-9de0-efcf-b591-8f1accc7dda6@acm.org>
+Date:   Wed, 28 Jul 2021 10:55:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728161020.3905-3-michael.riesch@wolfvision.net>
+In-Reply-To: <b33a5330-472b-9961-c590-5c07420cf9de@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 06:10:20PM +0200, Michael Riesch wrote:
-> +&gmac0 {
-> +	phy-mode = "rgmii";
+On 7/28/21 10:14 AM, Bodo Stroesser wrote:
+> I reviewed and tested the new patch. For me it works fine.
+> 
+> Just one warning to fix:
+> 
+> fs/configfs/file.c: In function ‘fill_write_buffer’:
+> fs/configfs/file.c:184:6: warning: unused variable ‘to_copy’ [-Wunused-variable]
+>    int to_copy, copied;
+>        ^~~~~~~
+> 
+> Apart from that you can add my tested-by or reviewed-by if you want.
 
-...
-> +
-> +	tx_delay = <0x3c>;
-> +	rx_delay = <0x2f>;
+I will remove the 'to_copy' variable and also add your Tested-by. Thanks for
+having tested this patch!
 
-Hi Michael
-
-In general, we try to have the PHY introduce the RGMII delays, not the
-MAC. Did you try
-
-phy-mode = "rgmii-id";
-
-and remove these delay values? It is hard for me to say if that will
-work because i've no idea what 0x3c and 0x2f means? Are they
-equivalent to 2ns?
-
-     Andrew
+Bart.
