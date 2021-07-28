@@ -2,217 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B4C3D8781
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBC13D8788
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 07:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234008AbhG1Fzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 01:55:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52420 "EHLO mail.kernel.org"
+        id S234229AbhG1Fz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 01:55:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229814AbhG1Fza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 01:55:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFCEE60F91;
-        Wed, 28 Jul 2021 05:55:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627451729;
-        bh=CHutfR66EytynydQX6I7FYroM0McZFhjdSGnOcWRUMI=;
+        id S229814AbhG1Fz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 01:55:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9539F60F91;
+        Wed, 28 Jul 2021 05:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627451755;
+        bh=dUBkfSuy+pimGAygKvH/n56Fu+Rjei7swUaiM8a6UqY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lOgx1/5HtC7kDH/DMOqVu6bijNc2yaE0cA6Fx29IHRiaTMg0nDkdQsEAoLlVmH0E0
-         TyT/NRV+eCELg7neljgY9xwSfPEAfRLuT4lnwv3G4yUGifCbqDk3Zx6n8LQ/HRcpqH
-         OGsnzibBYI4BGEIpTqy2pIDJuAGJ4aMEzgF8XDX1UrdTAm3criwO/Upcjlho1am4EC
-         4qCSAG0xroWT2UDESyvdfy/JsEbBaEpIHNZmPWxX9sN1HMe7jPDUfrv3unELOQCTn6
-         0ZaSvVDP27V3HfK9NiJBbsZ+C20udsF8Fg5v2Iwc4Fxb/K8oY7tAqy+xnYUlZTJsyi
-         DXVcSZmlJswnw==
-Date:   Wed, 28 Jul 2021 11:25:23 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Sanjay R Mehta <Sanju.Mehta@amd.com>
-Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
-        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
-        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
-        mchehab+samsung@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v10 1/3] dmaengine: ptdma: Initial driver for the AMD
- PTDMA
-Message-ID: <YQDxSwT0DYqEf0z5@matsya>
-References: <1624207298-115928-1-git-send-email-Sanju.Mehta@amd.com>
- <1624207298-115928-2-git-send-email-Sanju.Mehta@amd.com>
+        b=qLN7/AfFyKyqqZDZ9FDSMX6paOr2wueWSWObcEAr/Zi1oyjzjstRV/VEwxN7kqrMN
+         LrM8kTmwyBi22OUBnN5t74TunCqP0FyLqfYR4+puz8/QuIzbcLYEnwsV86MkZ/qY9S
+         abW/DHoDjfQ4zF+SRbQj6vg+F6J88I07elfvWVsc=
+Date:   Wed, 28 Jul 2021 07:55:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 19/64] ip: Use struct_group() for memcpy() regions
+Message-ID: <YQDxaYrHu0PeBIuX@kroah.com>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-20-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1624207298-115928-2-git-send-email-Sanju.Mehta@amd.com>
+In-Reply-To: <20210727205855.411487-20-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-06-21, 11:41, Sanjay R Mehta wrote:
+On Tue, Jul 27, 2021 at 01:58:10PM -0700, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy(), memmove(), and memset(), avoid
+> intentionally writing across neighboring fields.
+> 
+> Use struct_group() in struct flowi4, struct ipv4hdr, and struct ipv6hdr
+> around members saddr and daddr, so they can be referenced together. This
+> will allow memcpy() and sizeof() to more easily reason about sizes,
+> improve readability, and avoid future warnings about writing beyond the
+> end of saddr.
+> 
+> "pahole" shows no size nor member offset changes to struct flowi4.
+> "objdump -d" shows no meaningful object code changes (i.e. only source
+> line number induced differences.)
+> 
+> Note that since this is a UAPI header, struct_group() has been open
+> coded.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  include/net/flow.h            |  6 ++++--
+>  include/uapi/linux/if_ether.h | 12 ++++++++++--
+>  include/uapi/linux/ip.h       | 12 ++++++++++--
+>  include/uapi/linux/ipv6.h     | 12 ++++++++++--
+>  net/core/flow_dissector.c     | 10 ++++++----
+>  net/ipv4/ip_output.c          |  6 ++----
+>  6 files changed, 42 insertions(+), 16 deletions(-)
+> 
+> diff --git a/include/net/flow.h b/include/net/flow.h
+> index 6f5e70240071..f1a3b6c8eae2 100644
+> --- a/include/net/flow.h
+> +++ b/include/net/flow.h
+> @@ -81,8 +81,10 @@ struct flowi4 {
+>  #define flowi4_multipath_hash	__fl_common.flowic_multipath_hash
+>  
+>  	/* (saddr,daddr) must be grouped, same order as in IP header */
+> -	__be32			saddr;
+> -	__be32			daddr;
+> +	struct_group(addrs,
+> +		__be32			saddr;
+> +		__be32			daddr;
+> +	);
+>  
+>  	union flowi_uli		uli;
+>  #define fl4_sport		uli.ports.sport
+> diff --git a/include/uapi/linux/if_ether.h b/include/uapi/linux/if_ether.h
+> index a0b637911d3c..8f5667b2ea92 100644
+> --- a/include/uapi/linux/if_ether.h
+> +++ b/include/uapi/linux/if_ether.h
+> @@ -163,8 +163,16 @@
+>  
+>  #if __UAPI_DEF_ETHHDR
+>  struct ethhdr {
+> -	unsigned char	h_dest[ETH_ALEN];	/* destination eth addr	*/
+> -	unsigned char	h_source[ETH_ALEN];	/* source ether addr	*/
+> +	union {
+> +		struct {
+> +			unsigned char h_dest[ETH_ALEN];	  /* destination eth addr */
+> +			unsigned char h_source[ETH_ALEN]; /* source ether addr	  */
+> +		};
+> +		struct {
+> +			unsigned char h_dest[ETH_ALEN];	  /* destination eth addr */
+> +			unsigned char h_source[ETH_ALEN]; /* source ether addr	  */
+> +		} addrs;
 
-> +static irqreturn_t pt_core_irq_handler(int irq, void *data)
-> +{
-> +	struct pt_device *pt = data;
-> +	struct pt_cmd_queue *cmd_q = &pt->cmd_q;
-> +	u32 status;
-> +	bool err = true;
-> +
-> +	pt_core_disable_queue_interrupts(pt);
-> +
-> +	status = ioread32(cmd_q->reg_interrupt_status);
-> +	if (status) {
-> +		cmd_q->int_status = status;
-> +		cmd_q->q_status = ioread32(cmd_q->reg_status);
-> +		cmd_q->q_int_status = ioread32(cmd_q->reg_int_status);
-> +
-> +		/* On error, only save the first error value */
-> +		if ((status & INT_ERROR) && !cmd_q->cmd_error) {
-> +			cmd_q->cmd_error = CMD_Q_ERROR(cmd_q->q_status);
-> +			err = false;
-> +		}
-> +
-> +		/* Acknowledge the interrupt */
-> +		iowrite32(status, cmd_q->reg_interrupt_status);
-> +	}
-> +
-> +	pt_core_enable_queue_interrupts(pt);
-> +
-> +	return err ? IRQ_HANDLED : IRQ_NONE;
+A union of the same fields in the same structure in the same way?
 
-On err you should not return IRQ_NONE. IRQ_NONE means "interrupt was not
-from this device or was not handled"
+Ah, because struct_group() can not be used here?  Still feels odd to see
+in a userspace-visible header.
 
-Error is handled here!
+> +	};
+>  	__be16		h_proto;		/* packet type ID field	*/
+>  } __attribute__((packed));
+>  #endif
+> diff --git a/include/uapi/linux/ip.h b/include/uapi/linux/ip.h
+> index e42d13b55cf3..33647a37e56b 100644
+> --- a/include/uapi/linux/ip.h
+> +++ b/include/uapi/linux/ip.h
+> @@ -100,8 +100,16 @@ struct iphdr {
+>  	__u8	ttl;
+>  	__u8	protocol;
+>  	__sum16	check;
+> -	__be32	saddr;
+> -	__be32	daddr;
+> +	union {
+> +		struct {
+> +			__be32	saddr;
+> +			__be32	daddr;
+> +		} addrs;
+> +		struct {
+> +			__be32	saddr;
+> +			__be32	daddr;
+> +		};
 
-> +static struct pt_device *pt_alloc_struct(struct device *dev)
-> +{
-> +	struct pt_device *pt;
-> +
-> +	pt = devm_kzalloc(dev, sizeof(*pt), GFP_KERNEL);
-> +
-> +	if (!pt)
-> +		return NULL;
-> +	pt->dev = dev;
-> +
-> +	INIT_LIST_HEAD(&pt->cmd);
-> +
-> +	snprintf(pt->name, MAX_PT_NAME_LEN, "pt-%s", dev_name(dev));
-
-what is this name used for? Why not use dev_name everywhere?
-
-> +static int pt_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> +{
-> +	struct pt_device *pt;
-> +	struct pt_msix *pt_msix;
-> +	struct device *dev = &pdev->dev;
-> +	void __iomem * const *iomap_table;
-> +	int bar_mask;
-> +	int ret = -ENOMEM;
-> +
-> +	pt = pt_alloc_struct(dev);
-> +	if (!pt)
-> +		goto e_err;
-> +
-> +	pt_msix = devm_kzalloc(dev, sizeof(*pt_msix), GFP_KERNEL);
-> +	if (!pt_msix)
-> +		goto e_err;
-> +
-> +	pt->pt_msix = pt_msix;
-> +	pt->dev_vdata = (struct pt_dev_vdata *)id->driver_data;
-> +	if (!pt->dev_vdata) {
-> +		ret = -ENODEV;
-> +		dev_err(dev, "missing driver data\n");
-> +		goto e_err;
-> +	}
-> +
-> +	ret = pcim_enable_device(pdev);
-> +	if (ret) {
-> +		dev_err(dev, "pcim_enable_device failed (%d)\n", ret);
-> +		goto e_err;
-> +	}
-> +
-> +	bar_mask = pci_select_bars(pdev, IORESOURCE_MEM);
-> +	ret = pcim_iomap_regions(pdev, bar_mask, "ptdma");
-> +	if (ret) {
-> +		dev_err(dev, "pcim_iomap_regions failed (%d)\n", ret);
-> +		goto e_err;
-> +	}
-> +
-> +	iomap_table = pcim_iomap_table(pdev);
-> +	if (!iomap_table) {
-> +		dev_err(dev, "pcim_iomap_table failed\n");
-> +		ret = -ENOMEM;
-> +		goto e_err;
-> +	}
-> +
-> +	pt->io_regs = iomap_table[pt->dev_vdata->bar];
-> +	if (!pt->io_regs) {
-> +		dev_err(dev, "ioremap failed\n");
-> +		ret = -ENOMEM;
-> +		goto e_err;
-> +	}
-> +
-> +	ret = pt_get_irqs(pt);
-> +	if (ret)
-> +		goto e_err;
-> +
-> +	pci_set_master(pdev);
-> +
-> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(48));
-> +	if (ret) {
-> +		ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
-> +		if (ret) {
-> +			dev_err(dev, "dma_set_mask_and_coherent failed (%d)\n",
-> +				ret);
-> +			goto e_err;
-> +		}
-> +	}
-> +
-> +	dev_set_drvdata(dev, pt);
-> +
-> +	if (pt->dev_vdata)
-> +		ret = pt_core_init(pt);
-> +
-> +	if (ret)
-> +		goto e_err;
-> +
-> +	return 0;
-> +
-> +e_err:
-> +	dev_err(dev, "initialization failed\n");
-
-log the err code, that is very useful!
-
-> +	/* Register addresses for queue */
-> +	void __iomem *reg_control;
-> +	void __iomem *reg_tail_lo;
-> +	void __iomem *reg_head_lo;
-> +	void __iomem *reg_int_enable;
-> +	void __iomem *reg_interrupt_status;
-> +	void __iomem *reg_status;
-> +	void __iomem *reg_int_status;
-> +	void __iomem *reg_dma_status;
-> +	void __iomem *reg_dma_read_status;
-> +	void __iomem *reg_dma_write_status;
-
-this looks like pointer to registers, wont it make sense to keep base
-ptr and use offset to read..?
-
-Looking at pt_init_cmdq_regs(), i think that seems to be the case. Why
-waste so much memory by having so many pointers?
+Same here (except you named the first struct addrs, not the second,
+unlike above).
 
 
-> +	u32 qcontrol; /* Cached control register */
-> +
-> +	/* Status values from job */
-> +	u32 int_status;
-> +	u32 q_status;
-> +	u32 q_int_status;
-> +	u32 cmd_error;
-> +} ____cacheline_aligned;
-> +
-> +struct pt_device {
-> +	struct list_head entry;
-> +
-> +	unsigned int ord;
+> +	};
+>  	/*The options start here. */
+>  };
+>  
+> diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
+> index b243a53fa985..1c26d32e733b 100644
+> --- a/include/uapi/linux/ipv6.h
+> +++ b/include/uapi/linux/ipv6.h
+> @@ -130,8 +130,16 @@ struct ipv6hdr {
+>  	__u8			nexthdr;
+>  	__u8			hop_limit;
+>  
+> -	struct	in6_addr	saddr;
+> -	struct	in6_addr	daddr;
+> +	union {
+> +		struct {
+> +			struct	in6_addr	saddr;
+> +			struct	in6_addr	daddr;
+> +		} addrs;
+> +		struct {
+> +			struct	in6_addr	saddr;
+> +			struct	in6_addr	daddr;
+> +		};
 
-Unused?
+addrs first?  Consistancy is key :)
 
--- 
-~Vinod
+thanks,
+
+greg k-h
