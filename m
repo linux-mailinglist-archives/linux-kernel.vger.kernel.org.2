@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11F63D95A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDA63D95A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhG1S5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
+        id S231308AbhG1S5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhG1S5h (ORCPT
+        with ESMTP id S231231AbhG1S5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:57:37 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CFEC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:57:34 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id h14so5845330lfv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:57:33 -0700 (PDT)
+        Wed, 28 Jul 2021 14:57:19 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B11CC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:57:17 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id i10so3846311pla.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:57:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/mLJclBpYBjhUfUWPAk4A67K9qVvzDPVHZO2WkQdA/g=;
-        b=T07r2c1vyn3l3czDvtg1PT8m1MuOm+AE7RG7tSRhBnbgravg9PfJwDbDkF+a1k0NQr
-         AfGvVfhBaow/QsjhXEHnz1RPeEKfFGDu28W7gYXNRoiQJ/4z5tgPJ8XFl5ItVK+yF8qa
-         NxCa9TsGsc+a3NyUtJskbZHARtKEs+5g0Gm+U=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=127Od1Z5L5mrPERJlQTktPz34XXJuvOrvHqT3KKh12Q=;
+        b=CT/CUy6V11s/6KhYMzSsdsMDErLudpJAHUqNC0Rpu9F7Ero2CNsiQemV80Kh7YxA18
+         O09bddDAkQD5N79FTWd2JhufucZWJdvUnGQK4C3MDdI6o+fliBhy2PpoYHcWAEFN4pot
+         mlS6O/Te+d+/T7xLqqDiIN6UOLBL2XxRO5jCQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/mLJclBpYBjhUfUWPAk4A67K9qVvzDPVHZO2WkQdA/g=;
-        b=hOO7O94bO7Aw9nG5APU3D7u2/PrH6XEEwD4VBc9wvZiBb4EZyug2kGBgDvXu62qzqV
-         vq9TBewlAA2jOQq5cQ65zwWHXWb4Lht4ZF3AIpeKPg/UKIBqXZf2LNSAWPJFr26W/THH
-         GkEbPrxOz+PAxBv1rfl8b6I6lfkZcqr3XJQCmga9Z0oVL6oSq7Q0/RyPumW6bBWAJB+9
-         j9sjrb7nCnfXDdDcnZaBH2C/A28ZXylzUjP9w6mBRh5zdNpv+5a04OnrXwsUiLCo+ul7
-         Pr2JWFzwK04AlyC0/y74vYDKULNZyF+qsGy4O1+W4QXpC/jp91Tx6BDGpJDJE7A3VRYI
-         LVLA==
-X-Gm-Message-State: AOAM531Yn+iu7bMCtXVYQTxphGxxRIi4oNhiWKhRy1ZoP/p9E5ST0B9/
-        AERPkvhchZbuqkFa0ep8sAeujzKIfGHcsvo5sAQ=
-X-Google-Smtp-Source: ABdhPJxg7o1Qp/QPIXyi/Ybi7PGGOoRGkqwO9QSWGhIHQu9uOLV8uChd4ZaxoN7ESR+rqbe+74q6HA==
-X-Received: by 2002:a05:6512:13a9:: with SMTP id p41mr702226lfa.403.1627498652167;
-        Wed, 28 Jul 2021 11:57:32 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id m9sm33917ljo.85.2021.07.28.11.57.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 11:57:31 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id bp1so5907353lfb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:57:30 -0700 (PDT)
-X-Received: by 2002:a05:6512:2388:: with SMTP id c8mr681760lfv.201.1627498650428;
- Wed, 28 Jul 2021 11:57:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-4-paulmck@kernel.org> <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=wjwZzi=Lqsre8C8C4YJiVQNdNnco7jkLq=ohePSPA9JCA@mail.gmail.com> <20210728184605.GI4397@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210728184605.GI4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 28 Jul 2021 11:57:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj-5vtA_-9xs6zV0U20LRaRhVeE1Ky7X+9kHeucrb6_ig@mail.gmail.com>
-Message-ID: <CAHk-=wj-5vtA_-9xs6zV0U20LRaRhVeE1Ky7X+9kHeucrb6_ig@mail.gmail.com>
-Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu <rcu@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=127Od1Z5L5mrPERJlQTktPz34XXJuvOrvHqT3KKh12Q=;
+        b=HsB/iCmdjDDQa5lmt4BJ6Va9H3eBkMiQSX3P60hBgpwu2n10zq4zh5ka5BLxiXfKM7
+         9/7m/3CajCDMrsAC/fHuRK161snbLCjxMLe34A+VXgu0WAOHmSupWZ4bHDrLFS0Sy9SZ
+         rWR7btpuYUMl8HlEID6POP748+jubKqurhCAdF9DKZuhx4DKociS7FE2iN2VF3TIyemU
+         UurMf71G7rFrJaVVzxyZJvSEqW1pQ+9pyR4lYW8yMi6k1/DtAWtbyNrL2nqIwOgXK3Mi
+         uzWc7SN0nv49V8r3z9GSAqiEQnhh8sr3dtyUEm0AaAs7GXu0tT1xTAlBIV/mtQSWW9TF
+         tteg==
+X-Gm-Message-State: AOAM531FiouA/yU5mBmDDas+KpZuElRZrqBoeVDpjjXxvTN9CwivU3zq
+        +gAu3PvQSasS97mCrrQCP+CNGA==
+X-Google-Smtp-Source: ABdhPJznHpu/gslPhcK+chR4/yRixyO0Zt/1nxlU5ZOnQ6g7gqNYFE0PSpANagAqHnwDfuJHc+ddvw==
+X-Received: by 2002:a63:4c26:: with SMTP id z38mr313058pga.376.1627498636621;
+        Wed, 28 Jul 2021 11:57:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d14sm5792859pjc.0.2021.07.28.11.57.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 11:57:16 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 11:57:15 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Brian King <brking@linux.vnet.ibm.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: Re: [PATCH 36/64] scsi: ibmvscsi: Avoid multi-field memset()
+ overflow by aiming at srp
+Message-ID: <202107281152.515A3BA@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-37-keescook@chromium.org>
+ <yq135rzp79c.fsf@ca-mkp.ca.oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yq135rzp79c.fsf@ca-mkp.ca.oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:46 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> But atomic_read_this_cpu(&rcu_data.dynticks) isn't all that much shorter
-> than atomic_read(this_cpu_ptr(&rcu_data.dynticks)).
+On Tue, Jul 27, 2021 at 09:39:39PM -0400, Martin K. Petersen wrote:
+> 
+> Kees,
+> 
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memset(), avoid intentionally writing across
+> > neighboring fields.
+> >
+> > Instead of writing beyond the end of evt_struct->iu.srp.cmd, target the
+> > upper union (evt_struct->iu.srp) instead, as that's what is being wiped.
+> >
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> Orthogonal to your change, it wasn't immediately obvious to me that
+> SRP_MAX_IU_LEN was the correct length to use for an srp_cmd. However, I
+> traversed the nested unions and it does look OK.
 
-It's not so much that it's shorter to write for a human, it's that we
-could generate better code for it.
+Yeah, I had the same fun. Maybe I should add a BUILD_BUG_ON() here to
+help illustrate the relationship? I did that in a few other places where
+the equalities weren't very clear.
 
-That atomic_read(this_cpu_ptr()) pattern generates code like
+For example, change it to:
 
-        movq    $rcu_data+288, %rax
-        add %gs:this_cpu_off(%rip), %rax
-        movl    (%rax), %eax
++	BUILD_BUG_ON(sizeof(evt_struct->iu.srp) != SRP_MAX_IU_LEN);
++	memset(&evt_struct->iu.srp, 0x00, sizeof(evt_struct->iu.srp));
+ 	srp_cmd = &evt_struct->iu.srp.cmd;
+-	memset(srp_cmd, 0x00, SRP_MAX_IU_LEN);
 
-but it *could* just generate
+> 
+> For good measure I copied Tyrel and Brian.
+> 
+> Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
 
-        movl %gs:rcu_data+288, %rax
+For the moment, I'll leave the patch as-is unless you prefer having
+the BUILD_BUG_ON(). :)
 
-instead.
+Thanks!
 
-Similar patterns for the other per-cpu atomics, ie it would be
-possible to just generate
+-Kees
 
-        lock ; xaddl %gs:..., %rax
+> 
+> > ---
+> >  drivers/scsi/ibmvscsi/ibmvscsi.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
+> > index e6a3eaaa57d9..7e8beb42d2d3 100644
+> > --- a/drivers/scsi/ibmvscsi/ibmvscsi.c
+> > +++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
+> > @@ -1055,8 +1055,8 @@ static int ibmvscsi_queuecommand_lck(struct scsi_cmnd *cmnd,
+> >  		return SCSI_MLQUEUE_HOST_BUSY;
+> >  
+> >  	/* Set up the actual SRP IU */
+> > +	memset(&evt_struct->iu.srp, 0x00, SRP_MAX_IU_LEN);
+> >  	srp_cmd = &evt_struct->iu.srp.cmd;
+> > -	memset(srp_cmd, 0x00, SRP_MAX_IU_LEN);
+> >  	srp_cmd->opcode = SRP_CMD;
+> >  	memcpy(srp_cmd->cdb, cmnd->cmnd, sizeof(srp_cmd->cdb));
+> >  	int_to_scsilun(lun, &srp_cmd->lun);
+> 
+> -- 
+> Martin K. Petersen	Oracle Linux Engineering
 
-instead of generating the address by doing that "add %gs:this_cpu_off" thing..
 
-But no, it doesn't look like there are enough users of this to matter.
-We're just talking a few extra bytes, and a couple of extra
-instructions (and possibly slightly higher register pressure, which
-then generates more instructions).
-
-The *expensive* part remains the SMP serialization of the "lock".
-
-                Linus
+-- 
+Kees Cook
