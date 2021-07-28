@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488DC3D8BA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB043D8BAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235612AbhG1KYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:24:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhG1KYS (ORCPT
+        id S235573AbhG1K0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:26:19 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:52686
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229574AbhG1K0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:24:18 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F5EC061757;
-        Wed, 28 Jul 2021 03:24:16 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso3416009pjf.4;
-        Wed, 28 Jul 2021 03:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=XidBTdQ5uPkt5vfN57UDqH+N5ltbBIRRuv2VRdTk2Zg=;
-        b=fEpU7dw+rghIJT929Lau0M1sTD34ly6Vu3A6LY6lnxM7LrdfInYGSK7O3C3M51EUcD
-         1GNJ7W4TItHQIBL74tJZqmhmGc/cs2xbebsPYdidhL3rU7MT4VjC03KBd/7bppOWcbc4
-         oeleTuWwxOygXwwj+ocxpaUtZj3E2clzjHnNHeJAIit9AlQtqz/OCMtUa7nKccNhn6AA
-         I+1AZUGljc3yMKoXAJqEufH0c6P7T3j/iK6idFvD56B9OF9Mvf/tAfof16McP5UP3O22
-         qOU/qf2qsnxucDEyGKmkWOHR5B+OxSZAOTh094XUwalob4QdzEgZAjCQECKRlT+71wTk
-         3CNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=XidBTdQ5uPkt5vfN57UDqH+N5ltbBIRRuv2VRdTk2Zg=;
-        b=gO+QcT59Ldl7rdo4dGgf7uVQ06awZHeYl41tsNuhD9CemSjuXqJCRtrW0mJ1eZ0hXQ
-         Vuv4FfMckB6Nffk23xnGj3d4SZhvaUCChAF41GHqgK8mm1sZW7Q9jJXQX2R8Wdg60m8F
-         NoPYvm9nOu7nhLn29WybuATAK/BMaKw97aE0OLQlZvu6xhMEV0YxtLUQUVqwvOnA3XEL
-         ArkU44RPqbuFenrDnHkg75OE/5ofXzxTVazyYucWFCTI2vkweMnsv1chWOs+68lpBmJ8
-         xRA5pBJjugVGTjuZ6+wfSdlMoIJVonQFhKdMA2zvGTER9HNxhajeSjBKZxHKNP2FKtfl
-         5Zzg==
-X-Gm-Message-State: AOAM530632J3/Mz/cK799CvicQrXtL4a61qCW60XXH4C5z0OBwbnDaWo
-        NA2l4/ZgbomIIDodjbJaJqc=
-X-Google-Smtp-Source: ABdhPJyFTuwN9atLCkTmWglcY1RVNTF2pH6x7tCZGfUfM5IEO6OqyvrnI5ynOXPAjDm62wTcZTtOhA==
-X-Received: by 2002:a17:90a:8914:: with SMTP id u20mr9046669pjn.47.1627467855653;
-        Wed, 28 Jul 2021 03:24:15 -0700 (PDT)
-Received: from [10.55.0.86] ([45.135.186.18])
-        by smtp.gmail.com with ESMTPSA id 26sm5734396pjg.8.2021.07.28.03.24.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 03:24:15 -0700 (PDT)
-From:   Li Tuo <islituo@gmail.com>
-Subject: [BUG] power: supply: 88pm860x_battery: possible
- uninitialized-variable access in measure_vbatt()
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com
-Message-ID: <e2080eb9-bbe2-5077-761d-b5594edb6006@gmail.com>
-Date:   Wed, 28 Jul 2021 18:24:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 28 Jul 2021 06:26:17 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C49E13F32F;
+        Wed, 28 Jul 2021 10:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627467974;
+        bh=RzFO0WvxXjGz6K02P8hc8WjBrShTRvNxHsMes42WDWA=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=V35G4kXwPgcaICMLJz8EqKIbR/HJ6Megt927S7f3dYO9prJmBXboiO8tdXxvbvrAs
+         Lv8dHjB21kw7JPywxiagv6LMDyTy6FyM9BZtGAUpjYzGs5UuJyo+J6EYAprJv03POp
+         hjKftKHMgV+0eCQRl9Wo3qGeeM2dCPkzpfUyXjUtNUIf2f59ZgMz/mXSvmB5TEHNLC
+         XWUaEXlbVPJAp72XDgKgZzLRCHYZjv8h49KLpNwsg7yxUfnznpvc9lzi6HGvLEYQyD
+         TXsZZYPgtbUmlzXcGrqt46wWVPksf5teQ0bQLwdxwZH0qkmyo0Zd4i4nvXo9806eEc
+         PGYg6zLAaYeqA==
+From:   Colin King <colin.king@canonical.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Alchemy: Fix spelling contraction "cant" -> "can't"
+Date:   Wed, 28 Jul 2021 11:26:12 +0100
+Message-Id: <20210728102612.171012-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Colin Ian King <colin.king@canonical.com>
 
-Our static analysis tool finds a possible uninitialized-variable access 
-in the 88pm860x_battery driver in Linux 5.14.0-rc3:
+There is a spelling mistake in a pr_warn message. Fix it.
 
-In calc_soc():
-369:    int ocv;
-376:    switch (state) {
-380:    case OCV_MODE_SLEEP:
-381:        ret = measure_vbatt(info, OCV_MODE_SLEEP, &ocv);
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ arch/mips/alchemy/devboards/db1200.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In measure_vbatt(struct pm860x_battery_info *info, int state, int *data)
-176:    switch (state) {
-184:    case OCV_MODE_SLEEP:
-201:        *data = ((*data & 0xff) * 27 * 25) >> 9;
+diff --git a/arch/mips/alchemy/devboards/db1200.c b/arch/mips/alchemy/devboards/db1200.c
+index 421d651433b6..1864eb935ca5 100644
+--- a/arch/mips/alchemy/devboards/db1200.c
++++ b/arch/mips/alchemy/devboards/db1200.c
+@@ -835,7 +835,7 @@ int __init db1200_dev_setup(void)
+ 	if (!IS_ERR(c)) {
+ 		pfc = clk_round_rate(c, 50000000);
+ 		if ((pfc < 1) || (abs(50000000 - pfc) > 2500000))
+-			pr_warn("DB1200: cant get I2C close to 50MHz\n");
++			pr_warn("DB1200: can't get I2C close to 50MHz\n");
+ 		else
+ 			clk_set_rate(c, pfc);
+ 		clk_prepare_enable(c);
+-- 
+2.31.1
 
-If the variable state is OCV_MODE_SLEEP, the function measure_vbatt() is 
-called with the argument &ocv,
-and the corresponding parameter is data. Thus *data is uninitialized but 
-it is used at line 201.
-
-I am not quite sure whether this possible uninitialized-variable access 
-is real and how to fix it if it is real.
-Any feedback would be appreciated, thanks!
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-
-Best wishes,
-Tuo Li
