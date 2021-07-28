@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1028B3D8BEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963343D8BEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 12:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235859AbhG1KfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 06:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234354AbhG1KfQ (ORCPT
+        id S235915AbhG1Kfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 06:35:55 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:57190 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231704AbhG1Kfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 06:35:16 -0400
-Received: from mxout1.routing.net (mxout1.routing.net [IPv6:2a03:2900:1:a::a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB24C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 03:35:15 -0700 (PDT)
-Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
-        by mxout1.routing.net (Postfix) with ESMTP id 506D13FC25;
-        Wed, 28 Jul 2021 10:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1627468513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NxU06HLhrl9+rLyaZWdBMl0a7U1akRA+tjgjOr6pMYU=;
-        b=LIT9It63QvpF3ZFNFDrvNEFGugyOiUgFtR6AvRUGkvR3zsWvUmhuvWsn0kr6EaaKe5iD8m
-        zRmGZD17fkL/vKmYQKW+5LPpi5yY4bc0ni3NuK0HPfYULxPZlVzmvwOmG44gwyBhFswbW9
-        n5FKE5/VryVSVQSKxjhUpFhfk5T7Eu8=
-Received: from frank-s9 (fttx-pool-217.61.145.245.bambit.de [217.61.145.245])
-        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 98E7C1007DD;
-        Wed, 28 Jul 2021 10:35:12 +0000 (UTC)
-Date:   Wed, 28 Jul 2021 12:35:07 +0200
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YO/hpPpu6Z526+Ia@8bytes.org>
-References: <20210715071150.82157-1-linux@fw-web.de> <YO/hpPpu6Z526+Ia@8bytes.org>
+        Wed, 28 Jul 2021 06:35:54 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id A50941C0B7C; Wed, 28 Jul 2021 12:35:52 +0200 (CEST)
+Date:   Wed, 28 Jul 2021 12:35:52 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: LED subsystem lagging maintenance
+Message-ID: <20210728103551.GA31304@amd>
+References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] iommu: check if group is NULL before remove device
-To:     Joerg Roedel <joro@8bytes.org>
-CC:     iommu@lists.linux-foundation.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        yong.wu@mediatek.com
-From:   Frank Wunderlich <linux@fw-web.de>
-Message-ID: <F2ABC95E-D39F-4713-8959-91366DE4ECB8@fw-web.de>
-X-Mail-ID: c5da2f25-14af-4163-bd01-1aee1eb1c340
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
 
-Sorry for late reply, somehow i marked message as read without answering i=
-t=2E
+--zYM0uCDKw75PZbzx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Am 15=2E Juli 2021 09:20:04 MESZ schrieb Joerg Roedel <joro@8bytes=2Eorg>:
->On Thu, Jul 15, 2021 at 09:11:50AM +0200, Frank Wunderlich wrote:
->> From: Frank Wunderlich <frank-w@public-files=2Ede>
->>=20
->> if probe is failing, iommu_group may be not initialized,
->
->Sentences start with capital letters=2E
->
->IOMMU patch subjects too, after the 'iommu:' prefix=2E
+Hi!
 
-Will fix these in v2
+> I have noticed that in the last couple of cycles the LED subsystem is
+> a bit laggish in terms of maintenance (*). I think it's time that
+> someone can help Pavel to sort things out.
+>=20
+> In any case, I wonder if we have any kind of procedure for what to do
+> in such cases. Do we need to assume that the subsystem is in a
+> (pre-)orphaned state? If so, who is the best to take care of patch
+> flow?
 
->> so freeing it will result in NULL pointer access
->
->Please describe in more detail how this NULL-ptr dereference is
->triggered=2E
+To be honest, patches were not applied because they were not that
+important to begin with, because of lacking explanation, and because
+you pushed a bit too hard.
 
-I had this by testing this series:=20
-https://patchwork=2Ekernel=2Eorg/project/linux-mediatek/list/?series=3D515=
-129
+Yes, I'm quite busy in -rc1 to -rc3 timeframe with stable reviews. No,
+LED subsystem is not orphaned.
 
-Initialization in mtk driver was failed (i guess the iommu group was not y=
-et created), cleanup was started and so this function is called with a NULL=
- group pointer=2E I can try to find my debug-trace if you need a kind of ba=
-cktrace=2E
+Best regards,
 
-regards Frank
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--zYM0uCDKw75PZbzx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmEBMwcACgkQMOfwapXb+vKyBACdHHzrt4xTc8c09wb+t5kxdxzp
+0hMAnjkyngryJ3F3XiI94JVCmstwlrho
+=u0Dy
+-----END PGP SIGNATURE-----
+
+--zYM0uCDKw75PZbzx--
