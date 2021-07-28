@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4BB3D88BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F133D88BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbhG1HTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:19:25 -0400
-Received: from mga07.intel.com ([134.134.136.100]:59815 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233209AbhG1HTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:19:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="276384402"
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="276384402"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 00:19:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="663199615"
-Received: from fedora29.sh.intel.com ([10.239.182.87])
-  by fmsmga006.fm.intel.com with ESMTP; 28 Jul 2021 00:19:13 -0700
-Date:   Wed, 28 Jul 2021 15:18:35 +0800
-From:   Pengfei Xu <pengfei.xu@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Heng Su <heng.su@intel.com>,
-        Yu Yu-cheng <yu-cheng.yu@intel.com>,
-        Yu Fenghua <fenghua.yu@intel.com>,
-        Luck Tony <tony.luck@intel.com>,
-        Mehta Sohil <sohil.mehta@intel.com>,
-        Chen Yu C <yu.c.chen@intel.com>
-Subject: Re: [RFC PATCH v1 0/2] Introduce XSAVE/XRSTOR self-test
-Message-ID: <20210728071835.GA12735@fedora29.sh.intel.com>
-References: <cover.1627355565.git.pengfei.xu@intel.com>
- <af8e6de6-c428-d3f9-9abf-f8bd5cc95838@intel.com>
+        id S234844AbhG1HTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:19:30 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:39579 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234949AbhG1HT2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 03:19:28 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 4CA9D4000A;
+        Wed, 28 Jul 2021 07:19:17 +0000 (UTC)
+Subject: Re: [PATCH] riscv: fix the global name pfn_base confliction error
+To:     Kenneth Lee <nek.in.cn@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Kenneth Lee <liguozhu@hisilicon.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     guohanjun@huawei.com, wangzhou1@hisilicon.com
+References: <20210728064318.375747-1-nek.in.cn@gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <0e81c8d2-468a-9afd-bce3-0e8211baa065@ghiti.fr>
+Date:   Wed, 28 Jul 2021 09:19:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af8e6de6-c428-d3f9-9abf-f8bd5cc95838@intel.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20210728064318.375747-1-nek.in.cn@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
-  Thanks for comments!
+Hi Kenneth,
 
-On 2021-07-27 at 10:46:45 -0700, Dave Hansen wrote:
-> On 7/26/21 8:34 PM, Pengfei Xu wrote:
-> > The XSAVE feature set supports the saving and restoring of state components
-> > such as FPU, which is used for process context switching.
+Le 28/07/2021 à 08:43, Kenneth Lee a écrit :
+> From: Kenneth Lee <liguozhu@hisilicon.com>
 > 
-> This sentence is really awkward.  It reads at first as saying that the
-> FPU is used for context switching.  Can you rephrase.
+> RISCV use a global variable pfn_base for page/pfn translation. But this
+> is a common name and will be used elsewhere. In those case,
+> the page-pfn macro which refer this name will refer to the local/input
+> variable of those function (such as in vfio_pin_pages_remote). This make
+> everything wrong.
 > 
-  Thanks for advice, I will update it as below if it's appropriate:
-"
-The XSAVE feature set supports the saving and restoring of state components,
-which is used for process context switching. The state components include
-x87 state for FPU execution environment, SSE state, AVX state and so on.
-"
+> This patch change the name from pfn_base to riscv_global_pfn_base to fix
+> this problem
 
-> > In order to ensure that XSAVE works correctly, add XSAVE basic test for
-> > XSAVE architecture functionality.
-> 
-> This sentence needs to be start on the same line as the previous one,
-> *or* be in a new paragraph.  Please rewrap it.
-> 
-  Will rewrap it.
+What about removing this variable entirely and using 
+PFN_DOWN(kernel_map.phys_addr) directly in ARCH_PFN_OFFSET definition? 
+That would remove code from mm/init.c, which is nice :)
 
-> > This patch set tests XSAVE/XRSTOR instructions on x86 platforms and verify if
-> > the XSAVE/XRSTOR works correctly during signal handling.
-> 
-> This reads to me like you are going to test the XSAVE/XRSTOR
-> instructions *in* a signal handler, instead of testing the XSAVE/XRSTOR
-> instructions that the kernel uses at signal entry/exit.
-> 
-> Also, the kernel does *NOT* *USE* XSAVE/XRSTOR in many cases to
-> save/restore signal state.  The changelog could be read as implying that
-> it does.
-> 
-  Yes, how about updating it as below:
-"
-This patch set tests and verifies the basic functions of XSAVE/XRSTOR in
-user space; during and after signal processing on the x86 platform, the
-XSAVE contents of the process should not be changed.
-"
+Thanks,
 
-> > Cases such as signal handling, process creation, other xstate(except FPU)
-> > tests for XSAVE check, etc. will be added to the Linux kernel self-test.
-> > If appropriate, it is even planned to add the [1] mentioned XSAVE issues
-> > reproduce and some XSAVE anomaly tests to the kernel self-test.
-> 
-> This is not clear whether it is talking about *this* series int he
-> future tense (will be added) or whether it is talking about future *work*.
-> 
-> Maybe something like this:
-> 
-> 	This series introduces only the most basic XSAVE tests.  In the
-> 	future, the intention is to continue expanding the scope of
-> 	these selftests to include more kernel XSAVE-related
-> 	functionality and XSAVE-managed features like AMX and shadow
-> 	stacks.
-Thanks for advice, will update it.
+Alex
 
--Pengfei
-BR.
+> 
+> Signed-off-by: Kenneth Lee <liguozhu@hisilicon.com>
+> ---
+>   arch/riscv/include/asm/page.h | 4 ++--
+>   arch/riscv/mm/init.c          | 6 +++---
+>   2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+> index cca8764aed83..8711e415f37c 100644
+> --- a/arch/riscv/include/asm/page.h
+> +++ b/arch/riscv/include/asm/page.h
+> @@ -79,8 +79,8 @@ typedef struct page *pgtable_t;
+>   #endif
+>   
+>   #ifdef CONFIG_MMU
+> -extern unsigned long pfn_base;
+> -#define ARCH_PFN_OFFSET		(pfn_base)
+> +extern unsigned long riscv_global_pfn_base;
+> +#define ARCH_PFN_OFFSET		(riscv_global_pfn_base)
+>   #else
+>   #define ARCH_PFN_OFFSET		(PAGE_OFFSET >> PAGE_SHIFT)
+>   #endif /* CONFIG_MMU */
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index a14bf3910eec..2ce4e9a46ca0 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -228,8 +228,8 @@ static struct pt_alloc_ops _pt_ops __initdata;
+>   #define pt_ops _pt_ops
+>   #endif
+>   
+> -unsigned long pfn_base __ro_after_init;
+> -EXPORT_SYMBOL(pfn_base);
+> +unsigned long riscv_global_pfn_base __ro_after_init;
+> +EXPORT_SYMBOL(riscv_global_pfn_base);
+>   
+>   pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> @@ -572,7 +572,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>   	kernel_map.va_kernel_pa_offset = kernel_map.virt_addr - kernel_map.phys_addr;
+>   #endif
+>   
+> -	pfn_base = PFN_DOWN(kernel_map.phys_addr);
+> +	riscv_global_pfn_base = PFN_DOWN(kernel_map.phys_addr);
+>   
+>   	/*
+>   	 * Enforce boot alignment requirements of RV32 and
+> 
