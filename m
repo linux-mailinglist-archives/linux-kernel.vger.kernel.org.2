@@ -2,120 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCF33D95AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD303D95B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 21:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhG1S66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:58:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbhG1S64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:58:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 131606024A;
-        Wed, 28 Jul 2021 18:58:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627498735;
-        bh=ylRo91fIufsJiBQ/p1hWoYSghsQ4i01+g9DxsEqtZg8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hdwzcvPua3c9lnDYn0c7kJ6RQTjy+0LbW2hEHEiDQo06U6Iz98ox/JeLt5da6kgj0
-         0qxbK7ALuTSZCd5gY3JEZrVZLgtEAhU6EpkGq8qU3GnVubnBXasWrf2PZ9fxLMVVnd
-         IjPt8TdkK0hgaPPqsU13GG4LUSRkB7tEIvhc4mTFPzjCoa3+mEjEEXBd9MelZgcmVN
-         0dXHq7qcx+OdeBvZBgOVxC+zRRnpebhds8utvM3mwp7SBJOfIn39x08S+3+wKa0/jY
-         q98zWq9etbqNvZHKj3raULYCrWGbUqxkWDTlephxJadU9UXYN54VKo0KDAYvlbD9Hq
-         X75n6cTO19Ddw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D13315C048D; Wed, 28 Jul 2021 11:58:54 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 11:58:54 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
-Message-ID: <20210728185854.GK4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-4-paulmck@kernel.org>
- <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
- <2135064974.9081.1627496585724.JavaMail.zimbra@efficios.com>
+        id S231360AbhG1TAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 15:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231287AbhG1TAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 15:00:17 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A60DC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:00:14 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id x7so4286130ljn.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 12:00:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IHfSHdJMp1ac7+FtC9uOY9CbIvUOsDtm7pUymTGrBto=;
+        b=DasNgrs7wyzhChHr4ZDJhG7k0cY7OVxzs1g5Pw98gvoSad8ovXMxBCKjaVScLZOrRY
+         Ar9egV9KR+97RJeNnNopBvIl3Z0AoH6VTVnRqvPIjSNLcQT2kDXn5Sqgz+0vyxq34a24
+         s+c4xKGj16uL2GBajckF/FFPBHBb3CIZl1S+QjErjnPgC5Ams+bIk57Zi5YQ5BKVgYl0
+         wdVQWM0elzrrEgS6DQeE2lWWwU42i/cPqTeSw8wsJD/gE9qdk2gffiurUAXh8vBDkT5X
+         SoqvusICo2onhgVAlWxBQpCm1rsKTZYeEurDCzaaJPU60C1QVjoJ24DiOYn4rQGarMpp
+         Ad1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IHfSHdJMp1ac7+FtC9uOY9CbIvUOsDtm7pUymTGrBto=;
+        b=SYz5ivhWgKPsMkjIE3P6umafmxWWaS0k3JNrunI7bjT8Q34epJyvAhnJWN6K8sVasy
+         xYjDnKxFgqewFqAkyEfwbNx5yzWwfsSqdp2+e9SjtEpzunj9gIEWqdBqpYU1H31eq/GH
+         LDEET5HylfCfOsaw4zGXvsEb37sE2eVptD7KVdOIQjeYOeShCn+Syh6CAqXQp1FOm9E1
+         31T1j4xLWnJ8lNdBiVFa1KCNnI4pnSEO49SvZt1T1itUiMRaqqr1h0Fya8TjiRhvNZs/
+         jiYymO7111CPoeHMQMhtKb9Mv82HCz1HWvB5XoxElov/ttw30/7TKzWbYU7s9dCM5ycn
+         tzOQ==
+X-Gm-Message-State: AOAM530cxCpan5LC0GSbRRJ3KJgb/WKvGXhWw6cKExKWiu3R2d70n6Hp
+        /nZukBgLFRsQrCvCfcQZBJ1R4bg3CgXjjsIowgftOg==
+X-Google-Smtp-Source: ABdhPJxCqfkSLElTrwr/7lDTQXaZ0GZrnOGlQP49bCxwi3HyMs3iAlG96wdS9Xils4CZYOIIPm/d9HwukrHun35aOUU=
+X-Received: by 2002:a05:651c:329:: with SMTP id b9mr731525ljp.116.1627498812284;
+ Wed, 28 Jul 2021 12:00:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2135064974.9081.1627496585724.JavaMail.zimbra@efficios.com>
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+ <0636b417-15bb-3f65-39f7-148d94fe22db@kernel.org> <CAK7LNAQtw-ZR0D4quHAqT_6rkMjgkjJhWG8EY7H4T1=PwUMgVw@mail.gmail.com>
+In-Reply-To: <CAK7LNAQtw-ZR0D4quHAqT_6rkMjgkjJhWG8EY7H4T1=PwUMgVw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 28 Jul 2021 11:59:59 -0700
+Message-ID: <CAKwvOdkENUWd7OgJO=dNiYjH6D1aJ0puBgs4W7uuYO9xQiAiNg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 02:23:05PM -0400, Mathieu Desnoyers wrote:
-> ----- On Jul 28, 2021, at 1:37 PM, paulmck paulmck@kernel.org wrote:
-> [...]
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 42a0032dd99f7..c87b3a271d65b 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -251,6 +251,15 @@ void rcu_softirq_qs(void)
-> > 	rcu_tasks_qs(current, false);
-> > }
-> > 
-> > +/*
-> > + * Increment the current CPU's rcu_data structure's ->dynticks field
-> > + * with ordering.  Return the new value.
-> > + */
-> > +static noinstr unsigned long rcu_dynticks_inc(int incby)
-> > +{
-> > +	return arch_atomic_add_return(incby, this_cpu_ptr(&rcu_data.dynticks));
-> > +}
-> > +
-> 
-> [...]
-> 
-> > @@ -308,7 +317,7 @@ static void rcu_dynticks_eqs_online(void)
-> > 
-> > 	if (atomic_read(&rdp->dynticks) & 0x1)
-> > 		return;
-> 
-> Can the thread be migrated at this point ? If yes, then
-> the check and the increment may happen on different cpu's rdps. Is
-> that OK ?
+On Tue, Jul 20, 2021 at 8:50 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Wed, Jul 21, 2021 at 2:30 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > On 7/20/2021 1:04 AM, Masahiro Yamada wrote:
+> > > On Fri, Jul 9, 2021 at 8:25 AM 'Nick Desaulniers' via Clang Built
+> > > Linux <clang-built-linux@googlegroups.com> wrote:
+> > >>
+> > >> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> > >> index 297932e973d4..956603f56724 100644
+> > >> --- a/scripts/Makefile.clang
+> > >> +++ b/scripts/Makefile.clang
+> > >> @@ -1,6 +1,36 @@
+> > >> -ifneq ($(CROSS_COMPILE),)
+> > >> +# Individual arch/{arch}/Makfiles should use -EL/-EB to set intended endianness
+> > >> +# and -m32/-m64 to set word size based on Kconfigs instead of relying on the
+> > >> +# target triple.
+> > >> +ifeq ($(CROSS_COMPILE),)
+> > >> +ifneq ($(LLVM),)
+> > >
+> > >
+> > > Do you need to check $(LLVM) ?
+> > >
+> > >
+> > > LLVM=1 is a convenient switch to change all the
+> > > defaults, but yet you can flip each tool individually.
+> > >
+> > > Instead of LLVM=1, you still should be able to
+> > > get the equivalent setups by:
+> > >
+> > >
+> > >    make CC=clang LD=ld.lld AR=llvm-ar OBJCOPY=llvm-objcopy ...
+> > >
+> > >
+> > > The --target option is passed to only
+> > > KBUILD_CFLAGS and KBUILD_AFLAGS.
+> > >
+> > > So, when we talk about --target=,
+> > > we only care about whether $(CC) is Clang.
+> > > Not caring about $(AR), $(LD), or $(OBJCOPY).
+> > >
+> > >
+> > > scripts/Makefile.clang is already guarded by:
+> > >
+> > > ifneq ($(findstring clang,$(CC_VERSION_TEXT)),
+> >
+> > $ make ARCH=arm64 CC=clang LLVM_IAS=1
+> >
+> > will use the right compiler and assembler but none of the other binary
+> > tools because '--prefix=' will not be set so CROSS_COMPILE needs to be
+> > specified still, which defeats the purpose of this whole change. This
+> > patch is designed to work for the "normal" case of saying "I want to use
+> > all of the LLVM tools", not "I want to use clang by itself".
+>
+>
+> I disagree.
+>
+> LLVM=1 is a shorthand.
+>
+>
+>
+> make LLVM=1 LLVM_IAS=1
+>
+>   should be equivalent to:
+>
+> make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \
+>   OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
+>   HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld \
+>   LLVM_IAS=1
+>
+>
+>
+> We do not care about the origin of CC=clang,
+> whether it came from LLVM=1 or every tool was explicitly,
+> individually specified.
+>
+>
+>
+> ifneq ($(LLVM),) is a garbage code
+> that checks a pointless thing.
 
-Good point!  Actually, it can be migrated, but it does not matter.
-In fact, it so completely fails to matter that is is totally useless.  :-/
+Masahiro,
+Nathan is correct.  Test for yourself; if you apply these two patches,
+then apply:
 
-The incoming CPU is still offline, so this is run from some other
-completely-online CPU.  Because this CPU is executing in non-idle
-kernel context, that "if" condition must evaluate to true, so that the
-rcu_dynticks_inc() below is dead code.
+diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+index 956603f56724..a1b46811bdc6 100644
+--- a/scripts/Makefile.clang
++++ b/scripts/Makefile.clang
+@@ -2,7 +2,6 @@
+ # and -m32/-m64 to set word size based on Kconfigs instead of relying on the
+ # target triple.
+ ifeq ($(CROSS_COMPILE),)
+-ifneq ($(LLVM),)
+ ifeq ($(LLVM_IAS),1)
+ ifeq ($(SRCARCH),arm)
+ CLANG_FLAGS    += --target=arm-linux-gnueabi
+@@ -26,7 +25,6 @@ else
+ $(error Specify CROSS_COMPILE or add '--target=' option to
+scripts/Makefile.clang)
+ endif # SRCARCH
+ endif # LLVM_IAS
+-endif # LLVM
+ else
+ CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+ endif # CROSS_COMPILE
 
-Maybe I should move the call to rcu_dynticks_eqs_online() to
-rcu_cpu_starting(), which is pinned to the incoming CPU.  Yes, I
-could remove it completely, but then small changes in the offline
-process could cause great mischief.
+Then build as Nathan specified:
+$ ARCH=arm64 make CC=clang LLVM_IAS=1 -j72 defconfig all
+...
+arch/arm64/Makefile:25: ld does not support --fix-cortex-a53-843419;
+kernel may be susceptible to erratum
+...
+  LD      arch/arm64/kernel/vdso/vdso.so.dbg
+ld: unrecognised emulation mode: aarch64linux
+Supported emulations: elf_x86_64 elf32_x86_64 elf_i386 elf_iamcu
+elf_l1om elf_k1om i386pep i386pe
+make[1]: *** [arch/arm64/kernel/vdso/Makefile:56:
+arch/arm64/kernel/vdso/vdso.so.dbg] Error 1
+make: *** [arch/arm64/Makefile:193: vdso_prepare] Error 2
 
-Good catch, thank you!
+Nathan referred to --prefix, but in this failure, because
+CROSS_COMPILE was never set, the top level Makefile set LD to:
+ 452 LD    = $(CROSS_COMPILE)ld
+in this case `ld` in my path was my host x86 linker, which is not
+correct for a cross compilation of arm64 target.
 
-							Thanx, Paul
+Perhaps we can somehow support "implicit CROSS_COMPILE" with just
+CC=clang, and not LLVM=1, but I think it would be inflexible to
+hardcode such target triple prefixes.  What if someone has
+arm-linux-gnueabi-as but not arm-linux-gnueabihf-as installed?  That's
+the point of CROSS_COMPILE in my opinion to provide such flexibility
+at the cost of additional command line verbosity.
 
-> > -	atomic_inc(&rdp->dynticks);
-> > +	rcu_dynticks_inc(1);
-> > }
-> 
-> Thanks,
-> 
-> Mathieu
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+For the common case of LLVM=1 though, this series is a simplification.
+If users want to specify CC=clang, then they MUST use CROSS_COMPILE
+when cross compiling.
+
+Please review the current approach and see if there's more I can
+improve in a v3; otherwise I still think this series is good to go.
+-- 
+Thanks,
+~Nick Desaulniers
