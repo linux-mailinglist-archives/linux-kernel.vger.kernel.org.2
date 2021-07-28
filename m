@@ -2,129 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1783D84A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 02:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B883D84A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 02:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbhG1A0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 20:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232778AbhG1A0q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 20:26:46 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1C3C061757;
-        Tue, 27 Jul 2021 17:26:45 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id t68so589816qkf.8;
-        Tue, 27 Jul 2021 17:26:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:subject:from
-         :to:cc:references:in-reply-to;
-        bh=1A91s7Te2XTyl2yRkF2IWoqCfdQ4Me6Q3qE2EpgjHdI=;
-        b=LKRG/+wKMTDkesuu00lkfu/zGXKF5+uU2nLHisI/26KcBSO/A/GVA1O8f1fBUJH5rK
-         U4MUpVLvOAmO0U5/IfkYi6QrFPl5p113RGat9ncHiSl+kBNW0/6b+bqWK5QqTZmdGHc6
-         dqs/jm0IuuEDE0fuzI8csw7yOTfsnT36+MW6+yyJoSGSxwsyXSQHr43OKHVY7d8iKlNw
-         VtG5cbBiN8+FZbT+Fe5F6oEwNqdeFGfhCobStdGVoDtPfYUdbuIiJVIra5E1IBYsDbFl
-         bdlbPMb9ww1yNFJqVyN61MRSC8puBYGy5dFm8SnuKOiheL2l4akeGXoT8Zrwz3FKRs19
-         PHNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:subject:from:to:cc:references:in-reply-to;
-        bh=1A91s7Te2XTyl2yRkF2IWoqCfdQ4Me6Q3qE2EpgjHdI=;
-        b=QlXqm82Vh6kYkgXAKDQOiP+xAo/+cz/KXmEdozif09A/xZfVV/uKq71xC1+ABFhx6r
-         DwhHft59QSuQiqMxC8BY6ZcopXxKbQ53pP8vm5Um9K18m705qYX/cZhzWZd2IorU0PpM
-         5XbWmxbfYpCXM0M9fEZQ9XhcZzYp1CEMvk8l4Uc1f8vnLMmsIIAAiTagMIEBE+dZnBfm
-         PihMRH10Bl1ISUAmd+F+31ubLGliwa/QBCDncB6rlwcxMJYuODrj2vPlcK0YyguGlD0P
-         CVMriETAO9dlbbUSn6dGkwZxbRyl8DB/mdcDoOnxQ9uqi5xGCEOlaJovbdnHKNLzpi2Q
-         ixWA==
-X-Gm-Message-State: AOAM5311He37pnni9LX8IEoApk63/l6j8kWf2E9ZnDaV1s15GVk8TN4X
-        YTEX3tlnu8d74klwTffmLjw=
-X-Google-Smtp-Source: ABdhPJyMMGFUcvCN6+XwH+nVJAu+SYgqo7VOgdghYiurl+vKYwt63xkYautuodh9DVpATVYo0yj1Kw==
-X-Received: by 2002:a37:b645:: with SMTP id g66mr25281110qkf.32.1627432004610;
-        Tue, 27 Jul 2021 17:26:44 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id h68sm2549762qkf.126.2021.07.27.17.26.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 17:26:44 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 27 Jul 2021 20:26:43 -0400
-Message-Id: <CD4CHX6R9QRI.2Q76MYJGTXNWK@shaak>
-Subject: Re: [PATCH v6 09/13] iio: afe: rescale: fix precision on fractional
- log scale
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Peter Rosin" <peda@axentia.se>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-References: <20210721030613.3105327-1-liambeguin@gmail.com>
- <20210721030613.3105327-10-liambeguin@gmail.com>
- <d2dea8ea-5a31-0428-4eac-4e4315d07a42@axentia.se>
-In-Reply-To: <d2dea8ea-5a31-0428-4eac-4e4315d07a42@axentia.se>
+        id S233544AbhG1AZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 20:25:26 -0400
+Received: from mail-dm6nam10on2071.outbound.protection.outlook.com ([40.107.93.71]:23212
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232778AbhG1AZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 20:25:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mqXSeoALO4ceagFEbQ7PdDuXNrX5Po7M3bB6j0J0HFoteSrPDf+VZIqVZ2vvfyduBF8kng2wuIU9MOBEmgmLO9Q8H6/oGfnAb/Jq/a5woyIa71qGP0JDoRVI1eLYIPzl5g8AKdka9MnREugwo2JfuP4cFYSLqHnj6uMJPxsj1LHA3zUI3zdPBKi9m72yqmakbKq4y+qvzgc4tOxcoKDUYEMsHHArbYLTjctgjKv5IhCrehfKiAZuIX6WfsDowDrE/bZ8kK/cXiaw0AxP9ko3SR7BfW8BnD6fuGRTmTtaekSFHzSkF7+XzwqylwTxfajsmhe0VZejgVHxGRBGiKvvnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZM4bA0aJHOjHkpfMl2GzHejORM4gQj5erY2EsU2HIU0=;
+ b=jCDY/WvX0vP1mvHJxGwJ2uInb669ZKhcVMP7gYeVnEJxMUvK9VOqCYgMlhRtKFWuVhu8sYrDRQk0it6xjWeFhZoqZqM6Xn79w2Si2iit4mSugizxzkacWPygp55HvvtUVA6wh15Uze7RmSsYIfYf6efgefi2+FA3Un4bj2paB9OdNbIU2GnWSQ2kAjelA7F44iXZXWgCsWiGjCrNyF9Ig3xb/IkuqYLhFgVjZ78pDzhN19iOvX0+mN28KPk6Iz6RmijsM6TvOdfnyLVXBKlaPQz9AimDrAlh4RmNiEVc0Q/UCp6pIelV/CLfrP2Tued9ksHVyKrzgWerD7fByjxOyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZM4bA0aJHOjHkpfMl2GzHejORM4gQj5erY2EsU2HIU0=;
+ b=XaaSgMqg81dF1rnJ0n5D54Q3FtT5kQ9l9sU5hKucO7YQZ3ELAEnm1vtsuqj0oMeRr/b1kHduO0dvc8KGSObt1L39TkZjI2E9lNkSUB1Vpv/ujYQrulzvx7GFu5l3SzE7m/jAybeD5S8TdO+OGOR1sS96wutrMYAeZeolQZfvSv5jJR38/jhK6K/r9bb5CWlYuStlTR4hPIBOUnQZeuoTC/AipAoErCFX3eEKHg9jtsekQ4u3Noee0XhULMj4Gh6fkU2/6DfRsno86HOYT33FPIzftLW6XWDRAYeq/Q9qT7b/CYerDqauBbvTyFGjZ0M+YdDYIPFqXEJpcdor60QGHg==
+Received: from MW2PR16CA0032.namprd16.prod.outlook.com (2603:10b6:907::45) by
+ DM6PR12MB3547.namprd12.prod.outlook.com (2603:10b6:5:18a::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4352.28; Wed, 28 Jul 2021 00:25:23 +0000
+Received: from CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:907:0:cafe::48) by MW2PR16CA0032.outlook.office365.com
+ (2603:10b6:907::45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend
+ Transport; Wed, 28 Jul 2021 00:25:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT050.mail.protection.outlook.com (10.13.174.79) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 00:25:23 +0000
+Received: from [172.17.173.69] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 28 Jul
+ 2021 00:25:21 +0000
+Subject: Re: [RFC 02/11] drivers: Add HTE subsystem
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linus.walleij@linaro.org>,
+        <bgolaszewski@baylibre.com>, <warthog618@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <robh+dt@kernel.org>
+References: <20210625235532.19575-1-dipenp@nvidia.com>
+ <20210625235532.19575-3-dipenp@nvidia.com> <YOK1Fq45P/DeqxAA@kroah.com>
+X-Nvconfidentiality: public
+From:   Dipen Patel <dipenp@nvidia.com>
+Message-ID: <60f42b1b-309a-52b2-3090-722a3b7360ac@nvidia.com>
+Date:   Tue, 27 Jul 2021 17:34:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YOK1Fq45P/DeqxAA@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e40ddf2f-c89e-4c25-6afa-08d9515e30a6
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3547:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB354796749412CCFD0D9A97EFAEEA9@DM6PR12MB3547.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LRLcm5tu1lr+XtzvsOibKyPJOHRkAK+g9fJFzYeCFLVL0LFEr+d1POOEUTYPaOXdBKY4+Lwm4AJElxX+xLW1Aqc85AbIeliJX4FAdnsU/FuYA0QAnb4Avk7qCDf3ODz7czPjODBQm7EdrfHHQEDNnml+tP59DaJONesldi94f7jTDle5TJUEi5c+rsERs2ZIRvWAyeVzUq6LXGlPNA1SpS0ASHEJh8vlIfWzgZLxbYj94SJ9JVjQxOSsRiMY6YQKvXNtSHI7exNjUI8IXLug1GOYDaG6QXHL1rqu7/cLJOUdsr6OGjf39dGqL0VYR1wCJhDE6MhpKePYtUV8jvm7PNVxaT8ZBVkEZqC8vgEjMSvXVz/GRibmh3SPs7AvC/jsGth8P9PDD3Yw7Nos4JdXqx9JNdDYNvQoVB2Dcs+4QesGjwvQPIqc9UdJv193TZA31qt4XRUkuom+4xUVKMgb/eUwxussEPTTR7fV6UoKjfLCQhrRq98HMiIN8HPxD6nj/vG1o3jUeNyoSQqs63UHAazte2/7X0j9832DFC6qvsIBgLfRG/iAQYab8xcCgcy0BPiNisKwzbbWnsysSCxErCC723YmMDqAIcWEBSR0ItXFeFYrgFpmaXDYwBMfv1y8X3zTUYTWKj6rdWX44164THzQNuZRVSWa/x2xeP/UWMxqm25EHKWRzXVYnjoZjQmgjzRvbQwNoCa+tFbkI0HiPrfkkrkPvHWNWACzb2sUc28=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(346002)(46966006)(36840700001)(70586007)(6666004)(478600001)(5660300002)(336012)(70206006)(186003)(82740400003)(8676002)(36756003)(36860700001)(16576012)(31686004)(8936002)(36906005)(54906003)(2616005)(316002)(426003)(86362001)(4326008)(7636003)(82310400003)(53546011)(26005)(31696002)(16526019)(6916009)(2906002)(7416002)(47076005)(356005)(83380400001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 00:25:23.3484
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e40ddf2f-c89e-4c25-6afa-08d9515e30a6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3547
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Jul 23, 2021 at 5:20 PM EDT, Peter Rosin wrote:
-> On 2021-07-21 05:06, Liam Beguin wrote:
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > The IIO_VAL_FRACTIONAL_LOG2 scale type doesn't return the expected
-> > scale. Update the case so that the rescaler returns a fractional type
-> > and a more precise scale.
-> >=20
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> >  drivers/iio/afe/iio-rescale.c | 9 +++------
-> >  1 file changed, 3 insertions(+), 6 deletions(-)
-> >=20
-> > diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescal=
-e.c
-> > index 35fa3b4e53e0..47cd4a6d9aca 100644
-> > --- a/drivers/iio/afe/iio-rescale.c
-> > +++ b/drivers/iio/afe/iio-rescale.c
-> > @@ -44,12 +44,9 @@ int rescale_process_scale(struct rescale *rescale, i=
-nt scale_type,
-> >  		*val2 =3D rescale->denominator;
-> >  		return IIO_VAL_FRACTIONAL;
-> >  	case IIO_VAL_FRACTIONAL_LOG2:
-> > -		tmp =3D *val * 1000000000LL;
-> > -		do_div(tmp, rescale->denominator);
-> > -		tmp *=3D rescale->numerator;
-> > -		do_div(tmp, 1000000000LL);
-> > -		*val =3D tmp;
-> > -		return scale_type;
-> > +		*val =3D rescale->numerator * *val;
-> > +		*val2 =3D rescale->denominator * (1 << *val2);
-> > +		return IIO_VAL_FRACTIONAL;
+Thanks Greg for the review comments. I will address all in next RFC version2.
+
+Best Regards,
+
+Dipen Patel
+
+On 7/5/21 12:30 AM, Greg KH wrote:
+> On Fri, Jun 25, 2021 at 04:55:23PM -0700, Dipen Patel wrote:
+>> +static void hte_chip_dbgfs_init(struct hte_device *gdev)
+>> +{
+>> +	const struct hte_chip *chip = gdev->chip;
+>> +	const char *name = chip->name ? chip->name : dev_name(chip->dev);
+>> +
+>> +	gdev->dbg_root = debugfs_create_dir(name, hte_root);
+>> +	if (!gdev->dbg_root)
+>> +		return;
+> No need to check for this, if it fails, your other debugfs calls
+> will handle it just fine.
 >
-> Hi!
-
-Hi Peter,
-
 >
-> I do not think this is an uncontested improvement. You have broken the
-> case
-> where *val2 is "large" before the scale factor is applied.
-
-I was a little reluctant to add this change as I keep increasing the
-scope of this series, but since I added tests for all cases, I didn't
-want to leave this one out.
-
-Would you rather I drop this patch and the test cases associated to it?
-
-Thanks,
-Liam
-
+>> +
+>> +	debugfs_create_atomic_t("ts_requested", 0444, gdev->dbg_root,
+>> +				&gdev->ts_req);
+>> +	debugfs_create_u32("total_ts", 0444, gdev->dbg_root,
+>> +			   &gdev->nlines);
+>> +}
+>> +
+>> +static void hte_ts_dbgfs_init(const char *name, struct hte_ts_info *ei)
+>> +{
+>> +	if (!ei->gdev->dbg_root || !name)
+>> +		return;
+>> +
+>> +	ei->ts_dbg_root = debugfs_create_dir(name, ei->gdev->dbg_root);
+>> +	if (!ei->ts_dbg_root)
+>> +		return;
+> Again, no need to check.
 >
-> Cheers,
-> Peter
+>> +
+>> +	debugfs_create_size_t("ts_buffer_depth", 0444, ei->ts_dbg_root,
+>> +			      &ei->buf->datum_len);
+>> +	debugfs_create_size_t("ts_buffer_watermark", 0444, ei->ts_dbg_root,
+>> +			      &ei->buf->watermark);
+>> +	debugfs_create_atomic_t("dropped_timestamps", 0444, ei->ts_dbg_root,
+>> +				&ei->dropped_ts);
+>> +}
+>> +
+>> +static inline void hte_dbgfs_deinit(struct dentry *root)
+>> +{
+>> +	if (!root)
+>> +		return;
+> No need to check this.
 >
-> >  	case IIO_VAL_INT_PLUS_NANO:
-> >  		tmp =3D ((s64)*val * 1000000000LL + *val2) * rescale->numerator;
-> >  		tmp =3D div_s64(tmp, rescale->denominator);
-> >=20
-
+>> +
+>> +	debugfs_remove_recursive(root);
+> Do not wrap a single call with another call :)
+>
+>
+> thanks,
+>
+> greg k-h
