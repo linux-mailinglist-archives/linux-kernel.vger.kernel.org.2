@@ -2,223 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6896C3D941B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652E33D9421
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhG1RJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:09:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhG1RJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:09:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D303260F5E;
-        Wed, 28 Jul 2021 17:09:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627492194;
-        bh=FYMA5pdExb7xuWJXpOX+CgZlXsECAXDPtU96Sufzvu4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=urr/MSpTxcS4Otpvzwo1qA3HLbLkjw4OqoCcEFhVyQ371vUtfEHFY2bAc4odKsTKE
-         v4RC5Lm2w7veA1KD6hkE642eBmdO633tgztoaFNmJkiSyBu93kXlI9qT9Q7JuIsfor
-         wtXhJmzhnyhYFHLs6Yn/eSgr0ciWwVqLnY0CL2ULQMQGP115VQkv4XJR05F9BbSOzb
-         JMKikbC/GE6TSs+EmuatRxV7LsYRWldZnl/gsh9tXPEAPwAJh9d5Vsf4BfTGvK+nkt
-         /51Q620CNabEN3m3NGhV6dPC0c6DrpLkUaqfGhj+O8tuyRD7VJJj394pCzKpS5Y1Jr
-         c0leims9Sj6SA==
-Date:   Wed, 28 Jul 2021 12:09:52 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Serge Hallyn <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v10 4/8] PCI/sysfs: Allow userspace to query and set
- device reset mechanism
-Message-ID: <20210728170952.GA829614@bjorn-Precision-5520>
+        id S229729AbhG1RPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhG1RPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:15:03 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA66C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:15:00 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id e2so3470318wrq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 10:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QAWjI1HeB1hTA5bY9JWN/5jd7hflgLO2RENExto/KKk=;
+        b=HwmLn0Ec0akkBwvyuhBw+muIC2adP2/KfYTSr6njRzVp++4INWvhPvYlvXKN9jLDb9
+         nuyNbqIQYJIrxdR7pYdOUT+q6oqc//pa4XOv7PyeVkRlhvyQ7/gwbNTT20w4DapVHA+R
+         iIZcNh3JrVgmNrntXeYCIdy9l45qF985IMFQzf5C+zuZrc8foTfIplbTW4jWf4DP+qrm
+         o0gqi8I80ewBuC5LsC5egjS/OKoT72cTUGPOaPq9JyZ1mcz28KMZb2kHirPuZ7hozqxo
+         SciHsLETt4anGEtNk+eNTc0PB67b6cXL+W3Ot65QyOdFDoHq9nw3Tp0ke1bzcjlZqcXI
+         bdlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QAWjI1HeB1hTA5bY9JWN/5jd7hflgLO2RENExto/KKk=;
+        b=Og1sxtqwV/9udD9Yehi1+n3Fn4KBRmoepsS2HGgQVcVEL2/4UmRIjnjqenANj/Tk4w
+         4dQnBdb1o1BjOtZKl4qhJBOnHB2yqEpr8+gaNAqKHM7FHu06HOxM7+jmYmagwM4FM1+h
+         ucli6ddu5NQkCxD+soAgfun+XAVopid0z1F1RnpbrVtfg/eHop89WWxNM9Ptql3K66BQ
+         RSyAXKwzPwscQqdVxVLS2c7emwKeuDzOvh1wusGBRIpi5H4udSsxuopDHCBiAyWLKlI0
+         gIfk6QeM3PCs/h+WbymSAUJed4J0RY0JG+EwO2n3K9Mn4SGYnqef9nJJDeymBdof86bX
+         hmNA==
+X-Gm-Message-State: AOAM533L/mWM0yQv2t/O8eL77gcTP9WFe4WOANKhw6FtVdLH/Fsnrpok
+        ep0CdJ7A5YyrY9TGXpxwt8A=
+X-Google-Smtp-Source: ABdhPJwORhy4xEr3z6KRtI5vPBYgQG6GCnOQ3bw0U0q3iaH/5v5z+EGPn/NhV4xOagBqh+n5OtslVA==
+X-Received: by 2002:adf:d1cf:: with SMTP id b15mr455163wrd.382.1627492499598;
+        Wed, 28 Jul 2021 10:14:59 -0700 (PDT)
+Received: from [192.168.178.40] (ipbcc187b7.dynamic.kabel-deutschland.de. [188.193.135.183])
+        by smtp.gmail.com with ESMTPSA id k186sm7673463wme.45.2021.07.28.10.14.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 10:14:59 -0700 (PDT)
+Subject: Re: [PATCH 2/4] configfs: Fix writing at a non-zero offset
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Yanko Kaneti <yaneti@declera.com>,
+        Brendan Higgins <brendanhiggins@google.com>
+References: <20210723212353.896343-1-bvanassche@acm.org>
+ <20210723212353.896343-3-bvanassche@acm.org>
+ <7bee65ce-f5f1-a525-c72d-221b5d23cf3e@gmail.com>
+ <d12f24b6-7066-f9bb-1b88-6cc23c9c45c1@acm.org>
+ <4055ca70-7669-d00d-7c08-86fe75a3d377@gmail.com>
+ <618b2bdc-282b-0a1d-1fc5-020cf80d7a7e@acm.org>
+ <c9cb1f3b-0b3b-c571-4a51-e647f3c1e90a@gmail.com>
+ <ab190c50-8c87-b215-1432-056c81bcd656@acm.org>
+ <fec30933-46b1-1085-1af1-1fd0d2265981@gmail.com>
+ <a3ba73e5-ffd1-887e-acd9-11f537db27e0@acm.org>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <b33a5330-472b-9961-c590-5c07420cf9de@gmail.com>
+Date:   Wed, 28 Jul 2021 19:14:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709123813.8700-5-ameynarkhede03@gmail.com>
+In-Reply-To: <a3ba73e5-ffd1-887e-acd9-11f537db27e0@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Serge, linux-security-module: should we check CAP_SYS_ADMIN or
-similar for changing PCI reset mechanisms for a device?]
+Hi Bart,
 
-On Fri, Jul 09, 2021 at 06:08:09PM +0530, Amey Narkhede wrote:
-> Add reset_method sysfs attribute to enable user to query and set user
-> preferred device reset methods and their ordering.
+I reviewed and tested the new patch. For me it works fine.
+
+Just one warning to fix:
+
+fs/configfs/file.c: In function ‘fill_write_buffer’:
+fs/configfs/file.c:184:6: warning: unused variable ‘to_copy’ 
+[-Wunused-variable]
+   int to_copy, copied;
+       ^~~~~~~
+
+Apart from that you can add my tested-by or reviewed-by if you want.
+
+Thank you,
+Bodo
+
+
+
+On 27.07.21 18:47, Bart Van Assche wrote:
+
+> Hi Bodo,
 > 
-> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> How about replacing patches 1 and 2 from this series with the patch below?
+> Do you agree that this patch is sufficient to restore the behavior from
+> kernel v5.13 and before?
+> 
+> Thanks,
+> 
+> Bart.
+> 
+> Subject: [PATCH 1/3] configfs: Restore the kernel v5.13 text attribute 
+> write behavior
+> 
+> Instead of writing at the offset specified by the write() system call,
+> always write at offset zero.
+> 
+> Cc: Bodo Stroesser <bostroesser@gmail.com>
+> Cc: Martin K. Petersen <martin.petersen@oracle.com>
+> Cc: Yanko Kaneti <yaneti@declera.com>
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> Reported-by: Bodo Stroesser <bostroesser@gmail.com>
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 > ---
->  Documentation/ABI/testing/sysfs-bus-pci |  19 +++++
->  drivers/pci/pci-sysfs.c                 | 103 ++++++++++++++++++++++++
->  2 files changed, 122 insertions(+)
+>   fs/configfs/file.c | 20 ++++++++------------
+>   1 file changed, 8 insertions(+), 12 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> index ef00fada2..43f4e33c7 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-pci
-> +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> @@ -121,6 +121,25 @@ Description:
->  		child buses, and re-discover devices removed earlier
->  		from this part of the device tree.
->  
-> +What:		/sys/bus/pci/devices/.../reset_method
-> +Date:		March 2021
-> +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
-> +Description:
-> +		Some devices allow an individual function to be reset
-> +		without affecting other functions in the same slot.
-> +
-> +		For devices that have this support, a file named
-> +		reset_method will be present in sysfs. Initially reading
-> +		this file will give names of the device supported reset
-> +		methods and their ordering. After write, this file will
-> +		give names and ordering of currently enabled reset methods.
-> +		Writing the name or comma separated list of names of any of
-> +		the device supported reset methods to this file will set
-> +		the reset methods and their ordering to be used when
-> +		resetting the device. Writing empty string to this file
-> +		will disable ability to reset the device and writing
-> +		"default" will return to the original value.
-> +
->  What:		/sys/bus/pci/devices/.../reset
->  Date:		July 2009
->  Contact:	Michael S. Tsirkin <mst@redhat.com>
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index 316f70c3e..8a740e211 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -1334,6 +1334,108 @@ static const struct attribute_group pci_dev_rom_attr_group = {
->  	.is_bin_visible = pci_dev_rom_attr_is_visible,
->  };
->  
-> +static ssize_t reset_method_show(struct device *dev,
-> +				 struct device_attribute *attr,
-> +				 char *buf)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	ssize_t len = 0;
-> +	int i, idx;
-> +
-> +	for (i = 0; i < PCI_NUM_RESET_METHODS; i++) {
-> +		idx = pdev->reset_methods[i];
-> +		if (!idx)
-> +			break;
-> +
-> +		len += sysfs_emit_at(buf, len, "%s%s", len ? "," : "",
-> +				     pci_reset_fn_methods[idx].name);
-> +	}
-> +
-> +	if (len)
-> +		len += sysfs_emit_at(buf, len, "\n");
-> +
-> +	return len;
-> +}
-> +
-> +static ssize_t reset_method_store(struct device *dev,
-> +				  struct device_attribute *attr,
-> +				  const char *buf, size_t count)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	int n = 0;
-> +	char *name, *options = NULL;
-> +	u8 reset_methods[PCI_NUM_RESET_METHODS] = { 0 };
-
-Should this check "capable(CAP_SYS_ADMIN)" or similar?  The sysfs file
-is mode 0644, so writable only by root.
-
-I do note that Documentation/process/adding-syscalls.rst suggests
-"avoid adding new uses of the already overly-general CAP_SYS_ADMIN
-capability."  But CAP_SYS_ADMIN is used for all the other checks in
-pci-sysfs.c.
-
-> +	if (count >= (PAGE_SIZE - 1))
-> +		return -EINVAL;
-> +
-> +	if (sysfs_streq(buf, "")) {
-> +		pci_warn(pdev, "All device reset methods disabled by user");
-> +		goto set_reset_methods;
-> +	}
-> +
-> +	if (sysfs_streq(buf, "default")) {
-> +		pci_init_reset_methods(pdev);
-> +		return count;
-> +	}
-> +
-> +	options = kstrndup(buf, count, GFP_KERNEL);
-> +	if (!options)
-> +		return -ENOMEM;
-> +
-> +	while ((name = strsep(&options, ",")) != NULL) {
-> +		int i;
-> +
-> +		if (sysfs_streq(name, ""))
-> +			continue;
-> +
-> +		name = strim(name);
-> +
-> +		for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
-> +			if (sysfs_streq(name, pci_reset_fn_methods[i].name) &&
-> +			    !pci_reset_fn_methods[i].reset_fn(pdev, 1)) {
-> +				reset_methods[n++] = i;
-> +				break;
-> +			}
-> +		}
-> +
-> +		if (i == PCI_NUM_RESET_METHODS) {
-> +			kfree(options);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	if (!pci_reset_fn_methods[1].reset_fn(pdev, 1) && reset_methods[0] != 1)
-> +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
-> +
-> +set_reset_methods:
-> +	memcpy(pdev->reset_methods, reset_methods, sizeof(reset_methods));
-> +	kfree(options);
-> +	return count;
-> +}
-> +static DEVICE_ATTR_RW(reset_method);
-> +
-> +static struct attribute *pci_dev_reset_method_attrs[] = {
-> +	&dev_attr_reset_method.attr,
-> +	NULL,
-> +};
-> +
-> +static umode_t pci_dev_reset_method_attr_is_visible(struct kobject *kobj,
-> +						    struct attribute *a, int n)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
-> +
-> +	if (!pci_reset_supported(pdev))
-> +		return 0;
-> +
-> +	return a->mode;
-> +}
-> +
-> +static const struct attribute_group pci_dev_reset_method_attr_group = {
-> +	.attrs = pci_dev_reset_method_attrs,
-> +	.is_visible = pci_dev_reset_method_attr_is_visible,
-> +};
-> +
->  static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
->  			   const char *buf, size_t count)
->  {
-> @@ -1491,6 +1593,7 @@ const struct attribute_group *pci_dev_groups[] = {
->  	&pci_dev_config_attr_group,
->  	&pci_dev_rom_attr_group,
->  	&pci_dev_reset_attr_group,
-> +	&pci_dev_reset_method_attr_group,
->  	&pci_dev_vpd_attr_group,
->  #ifdef CONFIG_DMI
->  	&pci_dev_smbios_attr_group,
-> -- 
-> 2.32.0
+> diff --git a/fs/configfs/file.c b/fs/configfs/file.c
+> index 5a0be9985bae..8adf6250b207 100644
+> --- a/fs/configfs/file.c
+> +++ b/fs/configfs/file.c
+> @@ -177,12 +177,11 @@ static ssize_t configfs_bin_read_iter(struct kiocb 
+> *iocb, struct iov_iter *to)
+>       return retval;
+>   }
 > 
+> -/* Fill [buffer, buffer + pos) with data coming from @from. */
+> -static int fill_write_buffer(struct configfs_buffer *buffer, loff_t pos,
+> +/* Fill @buffer with data coming from @from. */
+> +static int fill_write_buffer(struct configfs_buffer *buffer,
+>                    struct iov_iter *from)
+>   {
+> -    loff_t to_copy;
+> -    int copied;
+> +    int to_copy, copied;
+>       u8 *to;
+> 
+>       if (!buffer->page)
+> @@ -190,11 +189,8 @@ static int fill_write_buffer(struct configfs_buffer 
+> *buffer, loff_t pos,
+>       if (!buffer->page)
+>           return -ENOMEM;
+> 
+> -    to_copy = SIMPLE_ATTR_SIZE - 1 - pos;
+> -    if (to_copy <= 0)
+> -        return 0;
+> -    to = buffer->page + pos;
+> -    copied = copy_from_iter(to, to_copy, from);
+> +    to = buffer->page;
+> +    copied = copy_from_iter(to, SIMPLE_ATTR_SIZE - 1, from);
+>       buffer->needs_read_fill = 1;
+>       /* if buf is assumed to contain a string, terminate it by \0,
+>        * so e.g. sscanf() can scan the string easily */
+> @@ -227,14 +223,14 @@ static ssize_t configfs_write_iter(struct kiocb 
+> *iocb, struct iov_iter *from)
+>   {
+>       struct file *file = iocb->ki_filp;
+>       struct configfs_buffer *buffer = file->private_data;
+> -    ssize_t len;
+> +    int len;
+> 
+>       mutex_lock(&buffer->mutex);
+> -    len = fill_write_buffer(buffer, iocb->ki_pos, from);
+> +    len = fill_write_buffer(buffer, from);
+>       if (len > 0)
+>           len = flush_write_buffer(file, buffer, len);
+>       if (len > 0)
+> -        iocb->ki_pos += len;
+> +        iocb->ki_pos = len;
+>       mutex_unlock(&buffer->mutex);
+>       return len;
+>   }
