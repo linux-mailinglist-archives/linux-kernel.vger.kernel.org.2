@@ -2,72 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4973D8DE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742D03D8DE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235758AbhG1Mby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 08:31:54 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:34530 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234683AbhG1Mbw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 08:31:52 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UhFo.B1_1627475508;
-Received: from 30.21.164.90(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UhFo.B1_1627475508)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 28 Jul 2021 20:31:48 +0800
-Subject: Re: [PATCH] selftests: openat2: Fix testing failure for O_LARGEFILE
- flag
-To:     shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1627475340-128057-1-git-send-email-baolin.wang@linux.alibaba.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <01184d9e-477d-cbe4-c936-62b92e915911@linux.alibaba.com>
-Date:   Wed, 28 Jul 2021 20:32:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234938AbhG1Meq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 08:34:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234683AbhG1Men (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 08:34:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A710E60F9E;
+        Wed, 28 Jul 2021 12:34:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627475682;
+        bh=2wKeig8qmDRZeeiIJGk5x5q7NdKFK9WJTk7jPfELINU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=h2jpE/un8sDwiSUvsAyJRH2B6/0t7DfcPb/dZMdPwDgM35PXurqzYneTIjAhnZw2h
+         YHckVIRd/1UlbM9UYusDYl//ESgrEhFMEG+jo6JEuN/XPKyEvBJ1dabIgB+QNjuEhl
+         RNBBR99lMKO6KC2Nwrq3wNMOmz42WlCoDF8hs5v7/SR04+LdfiUOV8IrT1D9tBB4XA
+         /Bcq0uKTGoXtB2QWlbU1OHw4lww5fgb53xNGFKhsjxQN1ZO9fPaEqIZWlgTe0gO0vI
+         RfLQBzuJXHqVebUlWdXxR6ttcSnev4Th4sR4f+tS3H0RL6+GgbjkzsFO+g0ePkD/5N
+         HSiBpHY/2d6+A==
+From:   Mark Brown <broonie@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Pan Xinhui <Xinhui.Pan@amd.com>,
+        Leung Martin <Martin.Leung@amd.com>,
+        Solomon Chiu <solomon.chiu@amd.com>,
+        Mark Morra <MarkAlbert.Morra@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: linux-next: build failure after merge of the amdgpu tree
+Date:   Wed, 28 Jul 2021 13:34:31 +0100
+Message-Id: <20210728123431.32687-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <1627475340-128057-1-git-send-email-baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi all,
 
-> When running the openat2 test suite on ARM64 platform, we got below failure,
-> since the definition of the O_LARGEFILE is different on ARM64. So we can
-> set the correct O_LARGEFILE definition on ARM64 to fix this issue.
+After merging the amdgpu tree, today's linux-next build (x86
+allmodconfig) failed like this:
 
-Sorry, I forgot to copy the failure log:
+ERROR: modpost: "dc_dsc_stream_bandwidth_in_kbps" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
 
-# openat2 unexpectedly returned # 
-3['/lkp/benchmarks/kernel_selftests/tools/testing/selftests/openat2'] 
-with 208000 (!= 208000)
-not ok 102 openat2 with incompatible flags (O_PATH | O_LARGEFILE) fails 
-with -22 (Invalid argument)
+Probably caused by commit
 
-> 
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->   tools/testing/selftests/openat2/openat2_test.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/openat2/openat2_test.c b/tools/testing/selftests/openat2/openat2_test.c
-> index d7ec1e7..1bddbe9 100644
-> --- a/tools/testing/selftests/openat2/openat2_test.c
-> +++ b/tools/testing/selftests/openat2/openat2_test.c
-> @@ -22,7 +22,11 @@
->    * XXX: This is wrong on {mips, parisc, powerpc, sparc}.
->    */
->   #undef	O_LARGEFILE
-> +#ifdef __aarch64__
-> +#define	O_LARGEFILE 0x20000
-> +#else
->   #define	O_LARGEFILE 0x8000
-> +#endif
->   
->   struct open_how_ext {
->   	struct open_how inner;
-> 
+  b6b76b0315ed7b ("drm/amd/display: Fixed EdidUtility build errors")
+
+I've reverted to Monday's tree.
