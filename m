@@ -2,160 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE043D94C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A8F3D94CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbhG1R7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:59:31 -0400
-Received: from mail-bn8nam12on2082.outbound.protection.outlook.com ([40.107.237.82]:11872
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229691AbhG1R7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:59:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MjhEqcbnEyciHis/Dsdw1EP2wkCxVc01ww1UW2CrCODACqSZ1/uVAzPPpYWlIlM9zaKyNrc/juj29WLsg0h5X0X3m5ljB//DRuAKOLCLguH91wnJsIBjY5SyF6gsRwcRKOMt3pMxPsiMB3FV9VaxGA2KJkVLXRxqj7IWtauOl2iIdQaL4aa9SJhpgRtl4vh12tel3wqvqtuWAL2WcphhuskPI4xJPQL7u/rnnFk0ikRsIOLhPU8E/m1WUg/MsxkXxqATix2N2vcu0+wruPy2jH0I5HTiPjG7/0D0BMMQUXs9MSd5V6QKoiMjDqAiWimcLBExjBiG7ehuPjX4u1Jauw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EMal+7H9ey+3mfKZw+6Bwba4tDSBFskpF+luGm4OM8U=;
- b=QGnEzaR6RaigCaJaq9rAIRQiL42/Z9Wl0CvE0beTAUIR7mkPOlacQZ8xxoPvI8sAx4EW4+h038Kqpg4AgNTaXMGR6UBy6kYmN3Afyj5wrTG7i5RxkIBjN6V6Qf0ruHZLpGU+L8cnHNkWnDbsaF8TrNHmFfHX6k5zJamDo8m64yr2J/O3r7TNqTuRaKRC5xfI8CXClrjIerdZ5f20jNQRjnMPJK8KQA0QL5YVEshd/T3tgdnzQWFP/NAy3jUoU9OUFuHnPhbPfQCUNXqnLAuhUrUoB9h9oQLXN5ulXzafHyxoYZej7MmCDrp1rrIamvA251HYYjkOgLEdZlsnjk1k5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EMal+7H9ey+3mfKZw+6Bwba4tDSBFskpF+luGm4OM8U=;
- b=huJwV1jz0pZuWv+x5d50puxuRtjv5gnOuRnpQUbZSSYoPcLaRShypaNzYJga2BtiI4qaKkrA4CGups/JKacKmxLHlX9x5OKV9Ibqzui9DmEwiBr2QYQwQAmXg6YkiXVVg590wvzpGXgzHkxuUz7OXTNmLFKjxU1eXOxUp44pHvPyT/1spDNQiiGfH/E99hq6E6CxM8c6hpWKk/lvLjceMO+Jb+jjUHGfCAnOVACZzFFYtsrwo596UN2bpNw73K97CP3NGrXft0NJu/giJtWfaoXA6L/W2dWlPpp9zAir3O80Y07RjpXMQUDD/0C+aPBbkyR+qo03iP55C2F4glCrDg==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5333.namprd12.prod.outlook.com (2603:10b6:208:31f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.26; Wed, 28 Jul
- 2021 17:59:27 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4373.019; Wed, 28 Jul 2021
- 17:59:27 +0000
-Date:   Wed, 28 Jul 2021 14:59:25 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Wang, Zhi A" <zhi.a.wang@intel.com>
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210728175925.GU1721383@nvidia.com>
-References: <20210721155355.173183-1-hch@lst.de>
- <DM4PR11MB55496531B246A4604FC86998CAE49@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210722112636.wj277vqhg4dez5ug@sirius.home.kraxel.org>
- <20210727121224.GA2145868@nvidia.com>
- <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
+        id S231167AbhG1R76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhG1R75 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:59:57 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12E9C061757;
+        Wed, 28 Jul 2021 10:59:54 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so5245942pji.5;
+        Wed, 28 Jul 2021 10:59:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KklQJMU2Fgefevf9VpkrECZdIoTO7jzAXK1VIukHwu8=;
+        b=L1nZGZ2+3K2hafMuqZUgd9pui3wAkl7iK6MiSms5oPEBe0UCuzAFUrxzbtmMfImK8t
+         +9Bv/V0iJL0KzghVUji8cRZfaiL1NfRpcFzqMLa4lwUJqMBwKn3aSQT6kPXvoztWRmNt
+         8LG31tC58P3EmzVzKfnBxbvY4Ws1XdA22FJJp1PiuvZprV2yNJlmqa6oBWjb62j2/0uh
+         GMKFcblwcIOnycE5NFafVAkLENmhicjubA50LHdd9uva/VO2hs9/VJ092o3GHYeN5Je0
+         0WIBm3/Uq3CgKbLK1lh9weqcWo6jIDDrVCXSUzlUYRUG+ivG1x1okYMNxXgWeuwd2CWf
+         MsCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KklQJMU2Fgefevf9VpkrECZdIoTO7jzAXK1VIukHwu8=;
+        b=WDknvmqT6vxcVf1q1OqEPMOPjOnZ6E3KbQ0sDTN/DSHC14+ITWoIoVYR52wQ6c4BNx
+         xNv3kVYG2dF6wuJCOl+cm0CyYWKMq59I9EIuFECff/OytctN68dfwhCtWUGj4DaeyEAy
+         dOtGKl/9k1OBI2oRoPY0qi2p9SaSIPsiimeFkdOalpS7evQMUv4gb4AIpVvlT+VSu1H2
+         InFxAGQmUQwalCow/n1ErNlWu+bOebBgYCCjHAWY/EliLto5hhtlit99KwQa6FU0CL3K
+         E0FDaZi+x+tcqJFylruqG0k3NzWb+NHwe2BuwKnU5Q+2QjZAU2HfgU/9nAi3/493dlcB
+         55nQ==
+X-Gm-Message-State: AOAM533vi2DpPvRw2z+xDe2woMRQ3Y5VBFZudbWc///oTbkoVmJIqEN/
+        yUCOWBs29KDCCP6XL86XKHw=
+X-Google-Smtp-Source: ABdhPJwvj2PGbfi3GzICBrSRhi0mCLdBpmHzIBdpfoA+rKu4q7f5T8RCu24ii8Rcy0/HDvQtfY25og==
+X-Received: by 2002:a17:902:f68f:b029:12c:228a:5226 with SMTP id l15-20020a170902f68fb029012c228a5226mr878072plg.61.1627495194359;
+        Wed, 28 Jul 2021 10:59:54 -0700 (PDT)
+Received: from localhost ([49.32.197.231])
+        by smtp.gmail.com with ESMTPSA id a35sm466501pgm.66.2021.07.28.10.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 10:59:54 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 23:29:50 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v10 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210728175950.q75qcrfas5mcjych@archlinux>
+References: <20210709123813.8700-5-ameynarkhede03@gmail.com>
+ <20210727232808.GA754831@bjorn-Precision-5520>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
-X-ClientProxiedBy: YT1PR01CA0074.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2d::13) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0074.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend Transport; Wed, 28 Jul 2021 17:59:26 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m8nq1-009jXm-9J; Wed, 28 Jul 2021 14:59:25 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 13bec3df-9234-4460-e348-08d951f170a2
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5333:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB533353DAF3FE946577E87D33C2EA9@BL1PR12MB5333.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GIBEkgJb+kY/XegEApMx9rqsXWsBwF85uwOLTPkzqpMoB0fIZ4H9Xomh002K7AX69qFakyHjq5EoKcT36oAEW7Fsj7Qnx2ZyN5onOSuGAPCpqK54gc2VUQ2Xr+2nTu5XYK4cxFI38nVlupylDL0vXr18PR9Ls8WysLLIHwgHE6vExL/O1D99FGRzBBrla742Sa3m0zD5xZtAnLdJbfDGv+Ektt0GBVMBfS5HZ5wzCCXYGZQebR+k7ez5OlokexcNOGcpjJ16nb5w0/Qfl8Up8UfQd9rTPq76lN31Bwhp9M2JcAO7pvPcAcyJ7h8jsAUTEj+zVG05zCcIhIEB8vMapHEr2xGb1dZUXJ64G3T4ZuNF3JqQN4E6AduwaJkSw+Kx1Wbe+evHn0tuuK3HxMrQBpq74Fncs5nepXaAe1bqeG47XJW5RvDpmAsR1+zuRVBRMDOM9mi1AHIWZAoZQ0LRMUV99NrYA/X+A+iXstMdK1mB2YtPLgIAXVi38V+ue6HjG6qRISaovDe/0QGw3LMOGC5lgyYWUtrw4edOEBO1y6xAD4NjHlSF5r30pu1KghROijaKZOGQ/YEiobdE514wiGrp8WOgUeRzT9Mfm/wYsaEvXjn9MFQ4PT6iH+2W0yuPROttZSDJPipPsnwo3nJw6w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(136003)(346002)(396003)(83380400001)(426003)(86362001)(38100700002)(26005)(5660300002)(6916009)(316002)(2906002)(186003)(9786002)(1076003)(36756003)(8676002)(4326008)(66476007)(66946007)(54906003)(66556008)(33656002)(9746002)(8936002)(2616005)(7416002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?om0m31dIh0ZCt2lLZeio190dbGfs+sUWVxPIs3e/W7ri0c+Mfh2FnU5v6Jar?=
- =?us-ascii?Q?8La3xxmBq59Jkl0v4YU6gykOGMhUs8jlYfP9KI6RJokHzSifVRj49o2PV26K?=
- =?us-ascii?Q?174QaCI4JucE2BCHL3/uU5Cm+bOWXGE+Sgmi9pshT+xBeQYFvMZa/zDVSKKC?=
- =?us-ascii?Q?Rkk8bAA3r7U2hCaP67hLpfeYkAmFVSyycL1LgeD2kRZmvhFu67hXTBMgjDNf?=
- =?us-ascii?Q?bD+0iyL+zAaMOnz9O4xdEVHi/PPQG5X//xAEVt3+Lt7QR1wtvv+5667iRx/A?=
- =?us-ascii?Q?f02eh9W2ijIXVN+tntfqtvBqDwthVJc1CcE4wY4T/GkaHs2yWzjqHLbfRK8i?=
- =?us-ascii?Q?XPlOa8XS1+cDYE9e1eIj++IY8Ku4RYALLbhBceiNRlwuzL6+LPqa3v7ssb0v?=
- =?us-ascii?Q?/qXvJ+Pyv+ZR4HB2lE8Wh9avz/n6TbTcmmw9px4pfMgdF+rYEqpUpdNUq1B/?=
- =?us-ascii?Q?K1LqSHUkdoXVXfbRRjzKh3PHl2ZSY3lGtsFTNvJ9rmAsgsvcUzjn9FIYgIN+?=
- =?us-ascii?Q?isNwsXe184bC/XzocyHvqrCP2VhA2T+k1+ETVZpafdUtzTOibw0qdzKKe0WO?=
- =?us-ascii?Q?ybMldNnRepb1pg8hfhSjEmIw6IqgZt5jTkAwYNysPNzGgo4FHJiohJgDUNxk?=
- =?us-ascii?Q?NIqw7SzYCQWoNh9NLZUNofTUdp9yJnhuZR+f9jyscmmAEz1IhvzWYfokJfTs?=
- =?us-ascii?Q?urI+yt1Tq2t3k5G8YSeDMAXOJmnriV6yuhWfkYY2mDHJ57ZvbnmOMVZRqYa2?=
- =?us-ascii?Q?uzScFKhVRVDnqSa2mCzASyECJukb4+MfCvK7Up1Oftndu5oyL+wOcX7o0m3V?=
- =?us-ascii?Q?NqaEEms9HZr1lDNeAHso5TtW70G8of8DFaho3UrjwxTVbNWROpZ2Yi3wu6CD?=
- =?us-ascii?Q?1HQitF7m3NjmSA1aDm+JSXZYn47L/G+BLikJa0i9WB/6mJjcihzJ8w4jlq2T?=
- =?us-ascii?Q?b7EAhOe6uE6vw17YwDx5aah6WtJ8cmpOZr/N0/BouYHlhL9Nyr1+D7GNwtHN?=
- =?us-ascii?Q?n1cjQLo6ZlYUmWkmKDB0YnwetXCjpdwiZBsGqMWY8wJQp/tFVoRUEA7sDbwX?=
- =?us-ascii?Q?N/zKSqji3M/GMBimsiBac/q95hALhsLD+sI9n7PYpFPul/4/R5Ht/gxRTfMJ?=
- =?us-ascii?Q?YMFvJn4lz7sGOdY6RCUXOvURt+f0wd+18UR6LfXGPZihtYv2O1bq9uBTKAvn?=
- =?us-ascii?Q?HVxkobMNDSiznhPsVUaZmD3mtpIKKFe63EmwI+SilV/bUHb2JLS9oO/fg5a6?=
- =?us-ascii?Q?KoDCxLqILPuPN+r5yTTXatkoScN1oagcknx8tBgQSWsRAtshKaHNQNVlcCxo?=
- =?us-ascii?Q?9bbog3xABVo9M4NFHKiJtgpT?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13bec3df-9234-4460-e348-08d951f170a2
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 17:59:27.0019
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EHOuypwxk4L8X0mMsK6IemBkkJ20locTm1/t6GPzK53ebFE647LcFys+a3fvOZkd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5333
+In-Reply-To: <20210727232808.GA754831@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 01:38:58PM +0000, Wang, Zhi A wrote:
+On 21/07/27 06:28PM, Bjorn Helgaas wrote:
+> On Fri, Jul 09, 2021 at 06:08:09PM +0530, Amey Narkhede wrote:
+> > Add reset_method sysfs attribute to enable user to query and set user
+> > preferred device reset methods and their ordering.
+> >
+> > Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-pci |  19 +++++
+> >  drivers/pci/pci-sysfs.c                 | 103 ++++++++++++++++++++++++
+> >  2 files changed, 122 insertions(+)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> > index ef00fada2..43f4e33c7 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-pci
+> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> > @@ -121,6 +121,25 @@ Description:
+> >  		child buses, and re-discover devices removed earlier
+> >  		from this part of the device tree.
+> >
+> > +What:		/sys/bus/pci/devices/.../reset_method
+> > +Date:		March 2021
+> > +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
+> > +Description:
+> > +		Some devices allow an individual function to be reset
+> > +		without affecting other functions in the same slot.
+> > +
+> > +		For devices that have this support, a file named
+> > +		reset_method will be present in sysfs. Initially reading
+> > +		this file will give names of the device supported reset
+> > +		methods and their ordering. After write, this file will
+> > +		give names and ordering of currently enabled reset methods.
+> > +		Writing the name or comma separated list of names of any of
+> > +		the device supported reset methods to this file will set
+> > +		the reset methods and their ordering to be used when
+> > +		resetting the device. Writing empty string to this file
+> > +		will disable ability to reset the device and writing
+> > +		"default" will return to the original value.
+> > +
+> >  What:		/sys/bus/pci/devices/.../reset
+> >  Date:		July 2009
+> >  Contact:	Michael S. Tsirkin <mst@redhat.com>
+>
+[...]
 
-> I guess those APIs you were talking about are KVM-only. For other
-> hypervisors, e.g. Xen, ARCN cannot use the APIs you mentioned. Not
-> sure if you have already noticed that VFIO is KVM-only right now.
+> > +		int i;
+> > +
+> > +		if (sysfs_streq(name, ""))
+> > +			continue;
+> > +
+> > +		name = strim(name);
+> > +
+> > +		for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
+> > +			if (sysfs_streq(name, pci_reset_fn_methods[i].name) &&
+> > +			    !pci_reset_fn_methods[i].reset_fn(pdev, 1)) {
+> > +				reset_methods[n++] = i;
+>
+> Can we build this directly in pdev->reset_methods[] so we don't need
+> the memcpy() below?
+>
+This is to avoid writing partial values directly to dev->reset_methods.
+So for example if user writes flr,unsupported_value then
+dev->reset_methods should not be modified even though flr is valid reset
+method in this example to avoid partial writes. Either operation(in this
+case writing supported reset methods to reset_method attr) succeeds
+completely or it fails othewise.
 
-There is very little hard connection between VFIO and KVM, so no, I
-don't think that is completely true.
+Thanks,
+Amey
 
-In an event, an in-tree version of other hypervisor support for GVT
-needs to go through enabling VFIO support so that the existing API
-multiplexers we have can be used properly, not adding a shim layer
-trying to recreate VFIO inside a GPU driver.
-
-> GVT-g is designed for many hypervisors not only KVM. In the design,
-> we implemented an abstraction layer for different hypervisors. You
-> can check the link in the previous email which has an example of how
-> the MPT module "xengt" supports GVT-g running under Xen.  For
-> example, injecting a msi in VFIO/KVM is via playing with
-> eventfd. But in Xen, we need to issue a hypercall from Dom0. 
-
-This is obviously bad design, Xen should plug into the standardized
-eventfd scheme as well and trigger its hypercall this way. Then it can
-integrate with the existing VFIO interrupt abstraction infrastructure.
-
-> others, like querying mappings between GFN and HFN. 
-
-This should be done through VFIO containers, there is nothing KVM
-specific there.
-
-> As you can see, to survive from this situation, we have to rely on
-> an abstraction layer so that we can prevent introducing coding
-> blocks like in the core logic:
-
-No, you have to fix the abstractions we already have to support the
-matrix of things you care about. If this can't be done then maybe we
-can add new abstractions, but abstractions like this absoultely should
-not be done inside drivers.
-
-Jason
+[...]
