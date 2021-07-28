@@ -2,82 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D77E3D8E42
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B0C3D8E46
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236227AbhG1MuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 08:50:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235159AbhG1MuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 08:50:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A14A460FC0;
-        Wed, 28 Jul 2021 12:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627476606;
-        bh=c7cmXFD6ILJ07Ag2y2T5Gac+uLpZFYPDDHu1w7USR04=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uryZv+vrFsxQyU8xrN8YbUM8OI8l+4LSYzadHuEMGTHTUhPhCxQSl8AYmInjPZ8VI
-         WJ9+3pMOZJB7X4jCqZg9O/JSHLePFSzYoP1FJVoh9sAvjSaUgBYkgBK5Mz8iN2NtmC
-         xU9R90AmI/ykKmISRz8qMz5Rb5Qu02dIzZUcyojMr8LsXFwX4Y9n6VZcpQ9HHnkJeJ
-         6nOP2hKXTCQg7VhoCr0MFxASzhJB32lnoOIdmwxZtRHuOeK7QJczhB6hH2UyylCFzs
-         aFQBCQ31ZHyXnT5Mdbhw9BEhMZqsaHFPb8Ki13OrkYzHgTmKSIfDtJuPHd879yeCH2
-         L863yFWaMnBRw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9A84760A6C;
-        Wed, 28 Jul 2021 12:50:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236152AbhG1Mvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 08:51:47 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42398 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234256AbhG1Mvp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 08:51:45 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 87E4A1FFA6;
+        Wed, 28 Jul 2021 12:51:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627476703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N760nZXvzpnDdyilSPHJO7qHvhAQ/EWT5M2KTQvmNio=;
+        b=L9ooC+Cid5z+SAxxhYycJx8a1SyFK/P4dXwd1vPVmHKHVmfUi5JgXDVje5P0uejK8KbYtF
+        kbvnl0e4WiWdBZaOGbdJkZ1SRSCyUD00WW/dya+zf1NZu6PyoU65kvo8pa6lCW2rYQPnRs
+        hi/24Gokpq0kZUKt+jreVX/3avsmNfs=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4F831A3B88;
+        Wed, 28 Jul 2021 12:51:43 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 14:51:42 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v6 6/6] mm/mempolicy: unify the create() func for
+ bind/interleave/prefer-many policies
+Message-ID: <YQFS3uZEQvPQ9y8Z@dhcp22.suse.cz>
+References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
+ <1626077374-81682-7-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2 net-next 0/7] net: fec: add support for i.MX8MQ and i.MX8QM
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162747660662.5429.7423683699651350875.git-patchwork-notify@kernel.org>
-Date:   Wed, 28 Jul 2021 12:50:06 +0000
-References: <20210728115203.16263-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20210728115203.16263-1-qiangqing.zhang@nxp.com>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626077374-81682-7-git-send-email-feng.tang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon 12-07-21 16:09:34, Feng Tang wrote:
+> As they all do the same thing: sanity check and save nodemask info, create
+> one mpol_new_nodemask() to reduce redundancy.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Do we really need a create() callback these days?
 
-On Wed, 28 Jul 2021 19:51:56 +0800 you wrote:
-> This patch set adds supports for i.MX8MQ and i.MX8QM, both of them extend new features.
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
+
+Other than that LGTM
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/mempolicy.c | 24 ++++--------------------
+>  1 file changed, 4 insertions(+), 20 deletions(-)
 > 
-> ChangeLogs:
-> V1->V2:
-> 	* rebase on schema binding, and update dts compatible string.
-> 	* use generic ethernet controller property for MAC internal RGMII clock delay
-> 	  rx-internal-delay-ps and tx-internal-delay-ps
-> 
-> [...]
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index d90247d6a71b..e5ce5a7e8d92 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -192,7 +192,7 @@ static void mpol_relative_nodemask(nodemask_t *ret, const nodemask_t *orig,
+>  	nodes_onto(*ret, tmp, *rel);
+>  }
+>  
+> -static int mpol_new_interleave(struct mempolicy *pol, const nodemask_t *nodes)
+> +static int mpol_new_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
+>  {
+>  	if (nodes_empty(*nodes))
+>  		return -EINVAL;
+> @@ -210,22 +210,6 @@ static int mpol_new_preferred(struct mempolicy *pol, const nodemask_t *nodes)
+>  	return 0;
+>  }
+>  
+> -static int mpol_new_preferred_many(struct mempolicy *pol, const nodemask_t *nodes)
+> -{
+> -	if (nodes_empty(*nodes))
+> -		return -EINVAL;
+> -	pol->nodes = *nodes;
+> -	return 0;
+> -}
+> -
+> -static int mpol_new_bind(struct mempolicy *pol, const nodemask_t *nodes)
+> -{
+> -	if (nodes_empty(*nodes))
+> -		return -EINVAL;
+> -	pol->nodes = *nodes;
+> -	return 0;
+> -}
+> -
+>  /*
+>   * mpol_set_nodemask is called after mpol_new() to set up the nodemask, if
+>   * any, for the new policy.  mpol_new() has already validated the nodes
+> @@ -405,7 +389,7 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
+>  		.rebind = mpol_rebind_default,
+>  	},
+>  	[MPOL_INTERLEAVE] = {
+> -		.create = mpol_new_interleave,
+> +		.create = mpol_new_nodemask,
+>  		.rebind = mpol_rebind_nodemask,
+>  	},
+>  	[MPOL_PREFERRED] = {
+> @@ -413,14 +397,14 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
+>  		.rebind = mpol_rebind_preferred,
+>  	},
+>  	[MPOL_BIND] = {
+> -		.create = mpol_new_bind,
+> +		.create = mpol_new_nodemask,
+>  		.rebind = mpol_rebind_nodemask,
+>  	},
+>  	[MPOL_LOCAL] = {
+>  		.rebind = mpol_rebind_default,
+>  	},
+>  	[MPOL_PREFERRED_MANY] = {
+> -		.create = mpol_new_preferred_many,
+> +		.create = mpol_new_nodemask,
+>  		.rebind = mpol_rebind_preferred,
+>  	},
+>  };
+> -- 
+> 2.7.4
 
-Here is the summary with links:
-  - [V2,net-next,1/7] dt-bindings: net: fsl,fec: update compatible items
-    https://git.kernel.org/netdev/net-next/c/5d886947039d
-  - [V2,net-next,2/7] dt-bindings: net: fsl,fec: add RGMII internal clock delay
-    https://git.kernel.org/netdev/net-next/c/df11b8073e19
-  - [V2,net-next,3/7] net: fec: add imx8mq and imx8qm new versions support
-    https://git.kernel.org/netdev/net-next/c/947240ebcc63
-  - [V2,net-next,4/7] net: fec: add eee mode tx lpi support
-    https://git.kernel.org/netdev/net-next/c/b82f8c3f1409
-  - [V2,net-next,5/7] net: fec: add MAC internal delayed clock feature support
-    https://git.kernel.org/netdev/net-next/c/fc539459e900
-  - [V2,net-next,6/7] arm64: dts: imx8m: add "fsl,imx8mq-fec" compatible string for FEC
-    https://git.kernel.org/netdev/net-next/c/a758dee8ac50
-  - [V2,net-next,7/7] arm64: dts: imx8qxp: add "fsl,imx8qm-fec" compatible string for FEC
-    https://git.kernel.org/netdev/net-next/c/987e1b96d056
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-- 
+Michal Hocko
+SUSE Labs
