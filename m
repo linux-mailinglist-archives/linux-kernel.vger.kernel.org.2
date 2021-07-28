@@ -2,252 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28DC3D892F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA9B3D892E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234475AbhG1H6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:58:36 -0400
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:48818 "EHLO
-        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233224AbhG1H6f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:58:35 -0400
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16S7hLi4015607;
-        Wed, 28 Jul 2021 00:58:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=PPS06212021;
- bh=trabcA4xa8OijUy5BhdAeboaO0JZyDCAmlEL3syPf5s=;
- b=drph/+9qdFCeOO4UmEw9B0HZ87oR0cYvH3JoqQrpQ3LkhRFjdMH51vT47MZMf/oiLuBU
- 59BCRJgfM8XnicCiGyIIh5HgbOnnAYqTYGxzqzWqPTfBys9SIw8/06LSGgRMi4LyrnRl
- hCxIeBE0DtUUzuSlQrNyDojIw18IuF3ob7F7GOiSwfnIvIQre9/rLQexWXHtKmnP/a5O
- NxwSRR3mUV5Ggla+zirDqF8BYb60y4jQWXz5y1Ww9PsUzpHLtpAJTUnhlt3J7dOUibyw
- +6K4wV1Jd9Iu16i8TbCmMe9ZuGYFdnNQ02xBrxPxJBmsIUFGx/eZOZ0XMK2oAvNf8INo 0A== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by mx0a-0064b401.pphosted.com with ESMTP id 3a314e82x9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Jul 2021 00:58:22 -0700
+        id S234430AbhG1H6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:58:19 -0400
+Received: from mail-eopbgr80094.outbound.protection.outlook.com ([40.107.8.94]:38102
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233224AbhG1H6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 03:58:17 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ESi4buvTZLb5jmc6mEMm/DRIb4wVm9PHkNrmaksb8HxIifH7klbSQxbqjq/LkoxM/J+ld/tKTycINPaNMPTdvxW96lkHQWO3R2cVRoGyEcmi+yixnHCly4b3PAr/gy9b3oMkFNdN0fAFetqwi1EuIKUG5SMfL1ZjxKOKsOOZsqKVHo0MlJ7htUbA7beFtTq1tifS1yQWfWS2wrG3dVvdFD2OY2AoOG3KLFOEEXZNpu4ltV1WKWz376GlNUMYfb5fdjLL04Y2aIp+4tb7SCy7vqDqCi24qYwDnOdG1PhzrFDswoGRQ85ieSvL3jKjSQ1TiBvvG27Vl4wc8k+KVBFzuQ==
+ b=IJx2cWfgtAhLoaZpV7xuTYUjyfi2Yn63fkozr1XTVTeRuMFB90rLdwUgGqF4mYs7I757OEFfeNoeYmtxLlp+bVZPrhIQG2N5Hiuk5Gs3W0QszI+wFdkHusiz/SODaKOcGv52sFaL7AYmYl2Zio3SUH3EU7bCWZngCLuHY0kFxaFFU1jtYhGBGkY4YhS8a51IHydRTccouK3dAkCULddzbsh4FLOvwSRhoGc1+5hLezyB2eF2GeGr2KDJve7lioeTcuHYnqoGmNSu0+F0LdzDibRGYSGygbIIUom6id9im9+HtlxLkXmIQuo1JLyK/IVijJYxVw69oPXrc/3RUQn+tg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=trabcA4xa8OijUy5BhdAeboaO0JZyDCAmlEL3syPf5s=;
- b=CRN9vCxXuFx5Os98q4SaxRdYgB0FpsaYSmYh6EMeZ5sUnfsrElpn0OUJw/atnEBjidhMgkWEIvQDOy3EzkP0TyYuWWAxfdaQBYfHoepNTmuWpKMpm8LqUNffnzf1HK/9iok9LfnJGN1YIF1rv1KXUfE5HcBWbaXE5kpxz2gJhYj1sJ3Hs+JtkcRWQHAenbDl9YqaJ2t2nGLWnF0HNVZIbksRzsiCOkG9mrH5aPLSLxdnhjxzRVeZQ5p7Q2wCGCKpdHQklUy8SQzxjMjibZtlbkle4l7sU4DUrchrY5etNNyO3oONao/ElV5RImntQoUs3dT1nQVgvl7ePVuOn6cVyA==
+ bh=T5czFYLYff7stftJiMyJeDbus7+nfTqxHqYtVv1xPNk=;
+ b=ckH27oXyiR9eer7wJMhG6eEYyKp/ucv+ZFfHYNmJhvCMsl6aUVlMtwz4XgTRnz0TfIqKpN/JZvj/tLqKuZEiqt1eaO09bMT1vjUdKIiCjdNtOpTkhi+ZDbge1Rqy/8mrMVbroh60dKNnSY8WMYMdVINuR5f/x3NQfSmSQX6oS91R/OXk83DADBjBiZE8Tcgeuwt1kEl+PUBDFYGzFwn+Le/zgTX0SGiRbSIpHzYmN74la5pY+I9V9+DH/R/8wj6WkcoExPHg13Wl8SBjIT3CX64GdAfQakwpaV6Um64LEuPuh0aqIj3BhlkWY4AimiVWz+eWvJ0Q4DJ5Q9PeNWqhPg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=windriver.com;
-Received: from DM6PR11MB2587.namprd11.prod.outlook.com (2603:10b6:5:c3::16) by
- DM6PR11MB3436.namprd11.prod.outlook.com (2603:10b6:5:65::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4352.29; Wed, 28 Jul 2021 07:58:21 +0000
-Received: from DM6PR11MB2587.namprd11.prod.outlook.com
- ([fe80::7071:ef90:3130:cc76]) by DM6PR11MB2587.namprd11.prod.outlook.com
- ([fe80::7071:ef90:3130:cc76%6]) with mapi id 15.20.4352.032; Wed, 28 Jul 2021
- 07:58:21 +0000
-From:   Jun Miao <jun.miao@windriver.com>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     chris@chris-wilson.co.uk, tvrtko.ursulin@intel.com,
-        matthew.brost@intel.com, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/i915/gt: Fix a lockdep warning with disable interrupts
-Date:   Wed, 28 Jul 2021 15:58:07 +0800
-Message-Id: <20210728075807.2784314-1-jun.miao@windriver.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR04CA0087.apcprd04.prod.outlook.com
- (2603:1096:202:15::31) To DM6PR11MB2587.namprd11.prod.outlook.com
- (2603:10b6:5:c3::16)
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T5czFYLYff7stftJiMyJeDbus7+nfTqxHqYtVv1xPNk=;
+ b=iNhIZO+oqnfMGENw1Qa1cR+TczIV9+19YrcpDWGypMV2vNRrYjczlHjei0OgV439SY9hhlF2IQTu3Nvl7NfXD/okgUREWICzorApB+0dnwj+7afkcCAxMH1Og557zhsuR+taKz1dmlBn4gzjLaJ3ZL4jfzC+Quv4NLlO7aNAoCo=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB6PR0201MB2392.eurprd02.prod.outlook.com (2603:10a6:4:37::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.31; Wed, 28 Jul
+ 2021 07:58:13 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::14ca:a41:2218:3578]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::14ca:a41:2218:3578%6]) with mapi id 15.20.4352.031; Wed, 28 Jul 2021
+ 07:58:13 +0000
+Subject: Re: [PATCH v6 09/13] iio: afe: rescale: fix precision on fractional
+ log scale
+To:     Liam Beguin <liambeguin@gmail.com>, jic23@kernel.org,
+        lars@metafoo.de, pmeerw@pmeerw.net
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+References: <20210721030613.3105327-1-liambeguin@gmail.com>
+ <20210721030613.3105327-10-liambeguin@gmail.com>
+ <d2dea8ea-5a31-0428-4eac-4e4315d07a42@axentia.se>
+ <CD4CHX6R9QRI.2Q76MYJGTXNWK@shaak>
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+Message-ID: <4e477a42-1cae-06f8-2778-fc734359d6f3@axentia.se>
+Date:   Wed, 28 Jul 2021 09:58:10 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <CD4CHX6R9QRI.2Q76MYJGTXNWK@shaak>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM6P192CA0095.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:209:8d::36) To DB8PR02MB5482.eurprd02.prod.outlook.com
+ (2603:10a6:10:eb::29)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpggp7.wrs.com (60.247.85.82) by HK2PR04CA0087.apcprd04.prod.outlook.com (2603:1096:202:15::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25 via Frontend Transport; Wed, 28 Jul 2021 07:58:18 +0000
+Received: from [192.168.13.3] (85.229.94.233) by AM6P192CA0095.EURP192.PROD.OUTLOOK.COM (2603:10a6:209:8d::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 07:58:12 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b54ff30e-a5bf-4d86-0db5-08d9519d77b9
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3436:
-X-Microsoft-Antispam-PRVS: <DM6PR11MB34365AED5EF01D8E609690718EEA9@DM6PR11MB3436.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
+X-MS-Office365-Filtering-Correlation-Id: 8aa549de-6cfc-4b1b-cb26-08d9519d72d7
+X-MS-TrafficTypeDiagnostic: DB6PR0201MB2392:
+X-Microsoft-Antispam-PRVS: <DB6PR0201MB2392DA9506E0937AFE62D288BCEA9@DB6PR0201MB2392.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kE7DLAOsD9Uxqa+n0lSpawW2Uc5kV1eijkuG8mVwzn4Q350+xCrXe8ytxpHxDtYxD9vX1FDx2kU5vkLY1wIj7AlaLqLGHv/W7QBevNrb9dScvA3teHG+bO0Ix+RPR1fEqAd3ud3hLxTHz72cEt6sMTQPA91zaYwXQAC8Bouk/ezIp4Hh0X6s6Cp4s9YIGOVQMhfRIggwYif5G4ZJ96ckrOrCVmbXHfHLvr9ifdESdEYupgtaMp9Gz18tG/QWG0ckf3w1oxo561ZkGx91vmtRqyPINBv/h+/pVAvW41Tpinv8SmWAKYGMtXz8jw5KH7sJiSMZ0e8IaLEPrdSRJKQ/sbtTowSr6YzztQ9ZLc3ehi7qftA3++jKqMq/TFhtSE2CAn2zYfd1/3RYxM3ybdrQ+oBa6RB6Hcn+fmLFz/4jZXbOn/LNQN/KbjVAlmSfNUIe5GJ2cw02FJXuhc8UIax/zUVAlo9yEYEyP6LZ5OA1YYyTvs+JARTcwqmrK3Cdwva06dTXZMNbAcyecLYwqJs3TD/BCXgDMyvZh0gwHU86MeWZQyGGO9INBbYsyp1QSDNSRbvEmwnSQRXJ8dCTjo9BzCVhHcYk9hOS3YHqxxyesoMtwqzxHhOj2e85PsCZl8nkDUzjGlsbmF9c2QjKhRIg93iRf1oc5nZsRcQ8u5uSxMVoYxjQobq9et1fm7Wi9eSnh6IiOsf8r+V1TsdIXBKg4Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2587.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(346002)(136003)(39850400004)(956004)(1076003)(2616005)(4326008)(7416002)(5660300002)(8936002)(38350700002)(6486002)(44832011)(36756003)(38100700002)(66946007)(8676002)(83380400001)(52116002)(26005)(6506007)(66476007)(86362001)(478600001)(66556008)(6666004)(186003)(316002)(2906002)(6512007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 7CMSPvzw783VTEkS5sKw/bTuBQGltm4mOvM7rPsQ3ni/axxDdrbbGIZ+ILA9W0kvlQLVlL9/i/R75i7RWyJr919LnMN9ObiDRb6jwdgDBHKGoZNmO1DmVqUoEoU6v/ZI8CYaIOlJ+NivkilO1wTqztSTB/L4TgNOVQf7FsEDGDP4i+4//LY+jn7SztQlNl/HSRSBgUsTYb4HF9Yr9K7CSfwuI3rqRsG7ExG2xIXBA/SIow9eAYeA//cpcwKfDWG4bro0r6B0KqQ4Jfy5KAXZ33NpnB/AFTsdvlEioOU+P2j9hX9j7er3Hvzkt5UBM/f1AFprtElXqm5j5MDst/p7jmjq478uOsQUvjHlyqO5y1XzOmsZEc4aZN1x9LnXJneVJ4QU48tkS9Ee2ad3zIPne3YZsS6GVWtaT8MkpiCL4cS0se3wUoSZp3mqO+/BG6OI3+/AIHCs+sRIo6JNP2YjHPsrUJMHIQ3lzgzNovEcu/vQ1HUhx023NK+T72wS3oqeRBSyqX7wqNhCDycdMNWy+C+KARQXkkzixJfmd2rYsIDe0e2g5+QuujlQb0gsz7qSnx7mD4PZCpkOruDt8ppuFFjoBhB7ddtZPNhc9ciK43wjGOA63nij34VXPfCCzGPwZH7fqGgVnKVx0tj9EO1H1mxzVgUGSkBAhXI5xD/87c69ibyBpXhGUIsuFTHDpNsoY4PQGBSJj+5DAM+W1jXNUZZusHjOSvkOnPN1EiCyhhw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(376002)(396003)(39830400003)(83380400001)(36916002)(8936002)(8676002)(4326008)(66556008)(6486002)(2906002)(66946007)(316002)(38100700002)(66476007)(5660300002)(956004)(36756003)(2616005)(16576012)(478600001)(186003)(26005)(53546011)(31696002)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bEte2dbmwQuIUoDJQ68KhP9lAVZpWMjvJsZlq2MII7GmKtCasj2mcJ6a6xRE?=
- =?us-ascii?Q?fU6btUj+ryLlUEuGltgQvwVDjZhZEJ1AZepkdJEb5jHNa/soHpTuxKkB6b4U?=
- =?us-ascii?Q?xdmTSBMAmFg10kfmgdzspEjHidu/tTZzd1WHBZVpAgSvYrv5g6yD4Gn3dBji?=
- =?us-ascii?Q?1Yyhe8hXR3TgS7xZ3ulSkVPPVALqaMiCnuXcgxhkcMg3VPbRtRqspi8d9/v0?=
- =?us-ascii?Q?KwwV0HFSJgixgorSxgshjP7tjf55rtTiNbIKt6jQvyb3+IGtxcqR05L8Jm0P?=
- =?us-ascii?Q?/ZqyQyyqNk/7a82gMMyuatnV8pMdq7gtstKFhGLv6pm3HQN4D9iPkkUop2Qt?=
- =?us-ascii?Q?UtQVnc0WSNjouqERI1wFMQAHs2nw4E53HDWSJkjuTDGcqBnhjHjhEbuO7yC6?=
- =?us-ascii?Q?WJB9i3NC4FQY+KDdtEu4KHSGtYfD3BJ5N8ITMFy4NY5CzHoiEB+LgVH7sanL?=
- =?us-ascii?Q?pXXjqL4ppB+4SPjaWugjonlVrNu7A2AnrbxYlKnYmU7GTDKDEvOM76GC9xFX?=
- =?us-ascii?Q?ixJOTZshklyORR5XxostP8Yjs6ik9xxCzEjWzpR42Em11mj3q5XAX9eGYzUk?=
- =?us-ascii?Q?fZkkNPCTSJydMuzkUcniib6oJfdV98h2AbydQkWiEa+Gh+20AAqgygm6/mDl?=
- =?us-ascii?Q?s+81onexE9j74W++yaZ426bABMQq5VVWy6UIAcME1MboXeyZc6SuYFQm97ix?=
- =?us-ascii?Q?7w9+uDaYHxxxqE+vOiPJJFb9OSoMd6JK68fnax5OxsfEp+YTA2jdOYpU0s4D?=
- =?us-ascii?Q?1stXGbhThgW8NhQo6ppT8w9+9U9hYw+pJACwQPGoUfNupraCvPRppQxhMKtQ?=
- =?us-ascii?Q?qBGd6uzdm3B8jB8804SWzl2+N85UcTBiqsSpsaJcqS4SYjI9B9En17HsTQ9A?=
- =?us-ascii?Q?LMsqTKJ1yMp8cHe5qDajenINHFyFoCztNZ8o2imSbQaRqy6Qis4vCAY2zvyB?=
- =?us-ascii?Q?GF5QCZ86yMwIQb/0fqIt4tZi8jM8GmjlFKYWDKun25ajkZADDucCptF+AgoZ?=
- =?us-ascii?Q?INmybi6Z0LPUKdupmBQHlWcFi4vZZkXqvIYe6C1LvnL+09W9+TObQSMMK1eX?=
- =?us-ascii?Q?vlEEaGzv4TGO891Rgrvx+XZAKvZlWcQKGbNjEl4xlUAU/rYoLREJWq5EB69x?=
- =?us-ascii?Q?ne92wPJxjvMk8FED6l9VCj9o1Km+ksRmYhNNRXU0go5Iay+5Q3QyUrG6SpLF?=
- =?us-ascii?Q?qc1UUDkotCsquRHTVCn6Br96SGt7putsXmNbSEi2ppaxf2h/xsA63qJ3tKbR?=
- =?us-ascii?Q?qnS6VqLA1os2TdzZAtKbLTu46KMOumOxz8v6X21dlnLBoG72MaKSHsxjiYvC?=
- =?us-ascii?Q?AkjV3Ec7345/F2BikxcAGcmV?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b54ff30e-a5bf-4d86-0db5-08d9519d77b9
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2587.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dVVOOGxhOFBXaVo3cjc0Z0RYd0ZJWE9kbjNoWGdXMzhTOFhTWkhvNzRMTGxv?=
+ =?utf-8?B?ajcwNnRnbytQcDhxZUJzUkFTUnlzYVpmTGVLYjlqQTR1ZjFvbENaRmcycjl3?=
+ =?utf-8?B?bm1jSVgwa1laZWxZZWNsOXgyR1YxbDVvd3NXOFhkcjVIVStMakR0Q0tnNTIr?=
+ =?utf-8?B?TEpEZlVCNzhtMGdvM0FCcEgrS3p0MUt2QStmdWZ6VVRGQkU3QnNKdzV5RVVt?=
+ =?utf-8?B?Zkx2QjZ1dGlxMUs0QWVDdUhLV1ZCS3lXelFubTdqMnRPRkRjSjBZTW1NMEpG?=
+ =?utf-8?B?K2hMcVp0eW1SNlZpU2U5QldiU25iRlE1Z3RRSUNjUVV3MnlmNEtBUHVQZmhQ?=
+ =?utf-8?B?anZRa3BHNmZhcSt2QlFZZ3d0MGxDdHMzWGZkUzJlcXdja2NOcDN2U1I5M3hm?=
+ =?utf-8?B?eHJPQThuSXczclNYNWJ0THdxVnlLMGtnVDNocm1OUVJra3Z5MXVScUZ1YSt1?=
+ =?utf-8?B?a0JMK2lkc0FlRkNaalF6b1B1a2ZEYVpKYXBScWRMTERyRmFETG1rUElvV1hJ?=
+ =?utf-8?B?RnkxalVzMk1uTlY1eTMwOHRVSmZFdzhGZFFGMi9wZWRPMjJkVTJTNlNmeFpw?=
+ =?utf-8?B?T1JnQ2NGNlU5WnRESnIyWTN5R0dCdGVUdHhVRzFOLzBiQjlnL2hub0c1TFhJ?=
+ =?utf-8?B?c0Jaa3FEdU8zMDBaUGRxRWlBYm9uR0tJeWswN0c3RkZoeVZlRlZDekFiQ0xO?=
+ =?utf-8?B?ekZ3MHNFUDVpYklIN3lYVytMVlYxazBTMmpZUmo4c1Q4bnpSQTR6Q2k0SmhN?=
+ =?utf-8?B?SE9rSXJ6QmZSTTl4dUhhcURVZzRhVnFTZE53b2JIdVZubXdTRzU2aW1KZVBC?=
+ =?utf-8?B?UTFpZ1V3Q0NUM29OUTYzNWJFRW9IQ3duTVZPUWFPTURaOEw4ZkZ0QVNPVnJp?=
+ =?utf-8?B?bVc2TUZtY29xWC9KUGVobC8xRGlqbW9IbkU2NnpVQlVDeEtsMnQ3M0V6dDJx?=
+ =?utf-8?B?SGRqUWxtT3h2bVZFK1lLcGZPYVVmRGVTb292WXBkKzJzcFFNcVlDQ1hlenFJ?=
+ =?utf-8?B?dzlwaVlmVDNNeWMwVGpZd2ZzdlNSazJNSS9rRzF5bEhyTkRnV2ZHSUNIYTFY?=
+ =?utf-8?B?WVlWejVOQVJrZVR4TGV6ekFSc0ZLTmZCb3AyemxLd2ZjSmFjSnNCdzlZSzNj?=
+ =?utf-8?B?Tjd6K0F0UnBwM1FxZ1Z3cGhmbHkrYUVmTlFYTERYb1VuaTVGbVBtVjcwaWJh?=
+ =?utf-8?B?UnVXZm0yM3FoOVRtOVNNYzFqR0dsQk1kc2FtRGxOT1ZFL0RPWmZIdFBKSDZ3?=
+ =?utf-8?B?S3k2MWN3b0RLWFF0ak40VFpoQTRNYmp1OW93TG5IbzVQbTByRzdHWVJZVUxp?=
+ =?utf-8?B?OWR2bTZiNjlmWGxNMnpPSkt3RE1RZXgxZVBjTTZRNkhHSS94ZUl5aTFPZm5P?=
+ =?utf-8?B?NVRreHo5bWh2VU5NeVNaSExyUGFPdCtNTHN5Z2JDeWlkYm4yVnB2TFlYVENa?=
+ =?utf-8?B?enZkZmlLZDFxdFFISHRTNHJubFBTUGpENXlLVnQvWXZCaG92elRFSXZwdTR6?=
+ =?utf-8?B?ZnBhdFJiZy9saHpabEhGVnpDTWZET0J6SzVKM2VYcG03UGtXa2F0b2l4ZUhN?=
+ =?utf-8?B?eVBxVk1MSFczV2kxaGxQczY3YWViS1EwVWg3VzI3bmJJbU5scStHdGFlTU1H?=
+ =?utf-8?B?anJVRStoNVY3Uno1YjVwRFRKZThvWG1ETFRHbVY1eEZxZ3NScEFkYlR1UmJh?=
+ =?utf-8?B?L2FwdWpTYVREaXZVRjNQSmUwY3JGMWE0L3RwRjUwYkZzQS9CbE50ZEkzZ3BD?=
+ =?utf-8?Q?QAKLWdYhNEGwB14pgq3eRLAix7fhZJb/b7xRGvt?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8aa549de-6cfc-4b1b-cb26-08d9519d72d7
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 07:58:21.1196
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 07:58:12.9485
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1Ie1D8QBiX/QvWEufBdxLwFL1828hFE0UmIS5Or6y5b8ifHbKoEWqD1RBmaS1dejmaQJ7i82+RedIfhidGVNZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3436
-X-Proofpoint-ORIG-GUID: sj5Fh2icTv4A10NHj756aWb7D2jaoUVz
-X-Proofpoint-GUID: sj5Fh2icTv4A10NHj756aWb7D2jaoUVz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-07-28_05,2021-07-27_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 suspectscore=0
- spamscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 clxscore=1011
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2107280044
+X-MS-Exchange-CrossTenant-UserPrincipalName: w9ZsifoP3yWof0/oz5JL2NBzT9Sj3ArSy1kqdnSeaAI1gnsaPniIqTF7VpZCKyG3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0201MB2392
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When disable local interrupt irq of CPU hardware, some spin_lock
-are called by inside signal_irq_work(), intel_breadcrumbs_disarm_irq() and
-intel_breadcrumbs_arm_irq().
+On 2021-07-28 02:26, Liam Beguin wrote:
+> On Fri Jul 23, 2021 at 5:20 PM EDT, Peter Rosin wrote:
+>> On 2021-07-21 05:06, Liam Beguin wrote:
+>>> From: Liam Beguin <lvb@xiphos.com>
+>>>
+>>> The IIO_VAL_FRACTIONAL_LOG2 scale type doesn't return the expected
+>>> scale. Update the case so that the rescaler returns a fractional type
+>>> and a more precise scale.
+>>>
+>>> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+>>> ---
+>>>  drivers/iio/afe/iio-rescale.c | 9 +++------
+>>>  1 file changed, 3 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
+>>> index 35fa3b4e53e0..47cd4a6d9aca 100644
+>>> --- a/drivers/iio/afe/iio-rescale.c
+>>> +++ b/drivers/iio/afe/iio-rescale.c
+>>> @@ -44,12 +44,9 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
+>>>  		*val2 = rescale->denominator;
+>>>  		return IIO_VAL_FRACTIONAL;
+>>>  	case IIO_VAL_FRACTIONAL_LOG2:
+>>> -		tmp = *val * 1000000000LL;
+>>> -		do_div(tmp, rescale->denominator);
+>>> -		tmp *= rescale->numerator;
+>>> -		do_div(tmp, 1000000000LL);
+>>> -		*val = tmp;
+>>> -		return scale_type;
+>>> +		*val = rescale->numerator * *val;
+>>> +		*val2 = rescale->denominator * (1 << *val2);
+>>> +		return IIO_VAL_FRACTIONAL;
+>>
+>> Hi!
+> 
+> Hi Peter,
+> 
+>>
+>> I do not think this is an uncontested improvement. You have broken the
+>> case
+>> where *val2 is "large" before the scale factor is applied.
+> 
+> I was a little reluctant to add this change as I keep increasing the
+> scope of this series, but since I added tests for all cases, I didn't
+> want to leave this one out.
 
-RT complains about might sleep inside interrupt disable by spin_lock, so 
-switch spin_lock to spin_lock_irqsave with the shutdown interrupt at the 
-same time.
+> Would you rather I drop this patch and the test cases associated to it?
 
---- ---
-BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
-  #0: ffff89c4c00ca970 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x1cf/0x6d0
-  #1: ffffa433c1f53e60 ((work_completion)(&engine->retire_work)){+.+.}-{0:0}, at: process_one_work+0x1cf 0x6d
-  #2: ffff89c4ccb0a0a8 (kernel_context){+.+.}-{0:0}, at: engine_retire+0x62/0x110 [i915]
-  #3: ffff89c4cf682300 (wakeref.mutex#3){+.+.}-{0:0}, at: __intel_wakeref_put_last+0x20/0x60 [i915]
-  #4: ffff89c4ccb08398 (&b->irq_lock){+.+.}-{0:0}, at: intel_breadcrumbs_disarm_irq+0x20/0xd0 [i915]
- irq event stamp: 2126
- hardirqs last  enabled at (2125): [<ffffffffbb134739>] cancel_delayed_work+0xa9/0xc0
- hardirqs last disabled at (2126): [<ffffffffc0507fe6>] __intel_breadcrumbs_park+0x76/0x80 [i915]
- softirqs last  enabled at (0): [<ffffffffbb1099ce>] copy_process+0x63e/0x1630
- softirqs last disabled at (0): [<0000000000000000>] 0x0
- CPU: 3 PID: 281 Comm: kworker/3:3 Not tainted 5.10.27-rt34-yocto-preempt-rt #1
- Hardware name: Intel(R) Client Systems NUC7i5DNKE/NUC7i5DNB, BIOS DNKBLi5v.86A.0064.2019.0523.1933 05/23 2019
- Workqueue: events engine_retire [i915]
- Call Trace:
-  show_stack+0x52/0x58
-  dump_stack+0x7d/0x9f
-  ___might_sleep.cold+0xe3/0xf4
-  rt_spin_lock+0x3f/0xc0
-  ? intel_breadcrumbs_disarm_irq+0x20/0xd0 [i915]
-  intel_breadcrumbs_disarm_irq+0x20/0xd0 [i915]
-  signal_irq_work+0x241/0x660 [i915]
-  ? __this_cpu_preempt_check+0x13/0x20
-  ? lockdep_hardirqs_off+0x106/0x120
-  __intel_breadcrumbs_park+0x3f/0x80 [i915]
-  __engine_park+0xbd/0xe0 [i915]
-  ____intel_wakeref_put_last+0x22/0x60 [i915]
-  __intel_wakeref_put_last+0x50/0x60 [i915]
-  intel_context_exit_engine+0x5f/0x70 [i915]
-  i915_request_retire+0x139/0x2d0 [i915]
-  engine_retire+0xb0/0x110 [i915]
-  process_one_work+0x26d/0x6d0
-  worker_thread+0x53/0x330
-  kthread+0x1b0/0x1d0
-  ? process_one_work+0x6d0/0x6d0
-  ? __kthread_parkme+0xc0/0xc0
-  ret_from_fork+0x22/0x30
+Why drop the tests? Are they doing any harm? Or are they testing exactly
+the problem situation that fail without this patch?
 
-Fixes: 9d5612ca165a ("drm/i915/gt: Defer enabling the breadcrumb interrupt to after submission")
-Signed-off-by: Jun Miao <jun.miao@windriver.com>
----
- drivers/gpu/drm/i915/gt/intel_breadcrumbs.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+In that case, I guess fix the tests to pass and preferably add tests
+for the *val2 is "large" situation (that this patch breaks) so that the
+next person trying to improve precision is made aware of the overflow
+problem. Does that make sense?
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-index 38cc42783dfb..9b74d0a56bc5 100644
---- a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-+++ b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-@@ -63,13 +63,15 @@ static void __intel_breadcrumbs_arm_irq(struct intel_breadcrumbs *b)
- 
- static void intel_breadcrumbs_arm_irq(struct intel_breadcrumbs *b)
- {
-+	unsigned long flags;
-+
- 	if (!b->irq_engine)
- 		return;
- 
--	spin_lock(&b->irq_lock);
-+	spin_lock_irqsave(&b->irq_lock, flags);
- 	if (!b->irq_armed)
- 		__intel_breadcrumbs_arm_irq(b);
--	spin_unlock(&b->irq_lock);
-+	spin_unlock_irqrestore(&b->irq_lock, flags);
- }
- 
- static void __intel_breadcrumbs_disarm_irq(struct intel_breadcrumbs *b)
-@@ -84,10 +86,12 @@ static void __intel_breadcrumbs_disarm_irq(struct intel_breadcrumbs *b)
- 
- static void intel_breadcrumbs_disarm_irq(struct intel_breadcrumbs *b)
- {
--	spin_lock(&b->irq_lock);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&b->irq_lock, flags);
- 	if (b->irq_armed)
- 		__intel_breadcrumbs_disarm_irq(b);
--	spin_unlock(&b->irq_lock);
-+	spin_unlock_irqrestore(&b->irq_lock, flags);
- }
- 
- static void add_signaling_context(struct intel_breadcrumbs *b,
-@@ -181,6 +185,7 @@ static void signal_irq_work(struct irq_work *work)
- 	const ktime_t timestamp = ktime_get();
- 	struct llist_node *signal, *sn;
- 	struct intel_context *ce;
-+	unsigned long flags;
- 
- 	signal = NULL;
- 	if (unlikely(!llist_empty(&b->signaled_requests)))
-@@ -259,11 +264,11 @@ static void signal_irq_work(struct irq_work *work)
- 			llist_entry(signal, typeof(*rq), signal_node);
- 		struct list_head cb_list;
- 
--		spin_lock(&rq->lock);
-+		spin_lock_irqsave(&rq->lock, flags);
- 		list_replace(&rq->fence.cb_list, &cb_list);
- 		__dma_fence_signal__timestamp(&rq->fence, timestamp);
- 		__dma_fence_signal__notify(&rq->fence, &cb_list);
--		spin_unlock(&rq->lock);
-+		spin_unlock_irqrestore(&rq->lock, flags);
- 
- 		i915_request_put(rq);
- 	}
-@@ -318,9 +323,7 @@ void __intel_breadcrumbs_park(struct intel_breadcrumbs *b)
- 	/* Kick the work once more to drain the signalers, and disarm the irq */
- 	irq_work_sync(&b->irq_work);
- 	while (READ_ONCE(b->irq_armed) && !atomic_read(&b->active)) {
--		local_irq_disable();
- 		signal_irq_work(&b->irq_work);
--		local_irq_enable();
- 		cond_resched();
- 	}
- }
--- 
-2.32.0
+Cheers,
+Peter
+
+> Thanks,
+> Liam
+> 
+>>
+>> Cheers,
+>> Peter
+>>
+>>>  	case IIO_VAL_INT_PLUS_NANO:
+>>>  		tmp = ((s64)*val * 1000000000LL + *val2) * rescale->numerator;
+>>>  		tmp = div_s64(tmp, rescale->denominator);
+>>>
+> 
 
