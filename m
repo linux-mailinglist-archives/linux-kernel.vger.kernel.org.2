@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABFB3D90D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4563D90D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236792AbhG1Oml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:42:41 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42790
+        id S236898AbhG1Omn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:42:43 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42818
         "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235345AbhG1Omk (ORCPT
+        by vger.kernel.org with ESMTP id S236711AbhG1Oml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:42:40 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        Wed, 28 Jul 2021 10:42:41 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id E39073FE73
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:42:37 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 16DF1402FE
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 14:42:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627483357;
-        bh=I1PKEMwXuF82cGlAevCPYveDll1B9ZxnvL7Av9RVEa0=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=fDOoCA/wwBv4aFg4tVD6a3qPMsSS6HzGJtyzw+AB9TKVvIa9o6U4vpUBokH7gFC88
-         N3hSgIbDCxZ5mi+CgK7xoZ2YJ6e03LUaPe11fyvg6yZ3FoDvb/ajKAFMEVxARVWZCs
-         1IYv3faYMlKs8eSYvdKf4GtiJY3zp+6JQgc4lrUpAr972fcS4nkzxAV+2XQ4/yJEi2
-         sUqFf9L0kpNCw8o4aU6lweActDtHG96N0fH4MQuzOFvIPOJ6hy7YhO41qbbuadHRf+
-         0s7Lf96lvu5XgnCPxNL+nex0uuZ5IrP04y+mAOSp+uKmtWUOB/E4h3sFv9vKdE80pH
-         AVCibPpJLJJsg==
-Received: by mail-ed1-f71.google.com with SMTP id u25-20020aa7d8990000b02903bb6a903d90so1350439edq.17
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:42:37 -0700 (PDT)
+        s=20210705; t=1627483359;
+        bh=HAie+4ObP5wDsqMY5KGCgt4d7K8iKvd4Bvw66slM+7o=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=EJ1ngy8+YbC3nMzKPdN+X4aZs1bkJNRgVeiOtwtBOTZX/dT5w8ohRuwbvzx1gjlWB
+         jQPgBPlXwcoToE0jonF1ALcfZciu30YV7thA36215FgV9bi2BZBEc+zXKutKyBA1sE
+         8up1q21O3eof05/vuseQLgITXtnYt6c1ghS6wUlIPt3CHi/ZpVE6B+GDk0HEQLGyyr
+         Kgw525b8mXFR7AQqxhzSU04woY92ZIwBMS5Y7qJ5cJmx8jDJgaBKrSC1UEsRhzQKba
+         AIOzOenw9FCKzBwP9s31U+aoetzBCx+PZTqC/skv/oq8A097EaowOzNczNUEA7gVsR
+         zWWaIF6QZPScw==
+Received: by mail-ed1-f70.google.com with SMTP id d6-20020a50f6860000b02903bc068b7717so1360688edn.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 07:42:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I1PKEMwXuF82cGlAevCPYveDll1B9ZxnvL7Av9RVEa0=;
-        b=uV+Z9ffcsLqoYNreyZDuZjzIJk1f6yyTqOXyZw5XUT5VTaSEguABA1f61ecOrDeljS
-         rwqOvbny/l75QG1AzAf1v9h9Srym5KPWg4+foIB5011v+W/4J5LK8NK/VQJGGguq7+Do
-         tSuDpNcF4tkpGAdQc5wXNxDiUEqlmyWJbP5zIN1hiMmd3GZfCJxSTebZD4585qTdyeel
-         Sw5YpI0keb1BIyAuBGcIPrpG/QjHVbvFg4QHn3vly7qJpal+WAfuYzlIVbD8+CrisqBx
-         /navNGGfVCaCdoTOawkR3TjNmlYALaaFHURKAFGXk3XH3Tfh0wLsFi0sH+2yfI0FGtxk
-         mwEg==
-X-Gm-Message-State: AOAM531iu+VzFRSkLfRooCsZl0K4FJdZDvdkYGNbzAwxnRhN93GomiXy
-        wNXXD0dNCLzlui5opygiuQ8yDEGI5fMJowIWjuw8hCEpdmYKDA6rCrQh1FxrvWEAJDLL/0+xXEn
-        Fxe98qEPlRxOKUfvsTwJD27LPt4rZJgSlbKX1d2Ds6A==
-X-Received: by 2002:aa7:c597:: with SMTP id g23mr186031edq.340.1627483357634;
-        Wed, 28 Jul 2021 07:42:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxlzVaR6Q3zwsFWtnXgHfb0bnEN67CBw95glR9J9AzgAsrKT/4ZsPZqnlvood7OLi4vWzsLSg==
-X-Received: by 2002:aa7:c597:: with SMTP id g23mr186015edq.340.1627483357490;
-        Wed, 28 Jul 2021 07:42:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HAie+4ObP5wDsqMY5KGCgt4d7K8iKvd4Bvw66slM+7o=;
+        b=jzc2+9zFFCv4E3GO9/4LznvRMAk25YEIXgO9/AOEuvGMV6yyIVAJPGVgaOym+/kede
+         Wt9J+iSrC6kQK7o60uT3igFOkZ51K1Tn7u/m7dfCQqCFlNrylon1ZdtstfYY8jltMHjS
+         YnsR50nxUhEiXWDIv7ihEnA8aSsF/ae7phZwDysiQWF/o4GK3EFMLueMjUI3iJEUSO0B
+         ipob8HH4f4f+afgf4LZtquCXPwRVVVeQ6LFU2QdgAHNuTd+EA/8TZNwQRn5xWA4/9+iM
+         sWR+O/Nj9zTSln+eFnU67bVKwLAsKPVNn3TNEA1mLgRtVN4ilBGbBMORga6iGpg0L3cI
+         AeyA==
+X-Gm-Message-State: AOAM532yfnAQUGcX4VCfuql3fK9Yk9kJ3x3rLzSaa/bsjXAZBaNEql62
+        JXbsQIX7dhtCtiwYAf15BHwfYwqryaS3zPAkCQ3kkkh1A1aOL4b8gDNPXA78B39yc1fpzsv54n/
+        n6SxS2YcJVDCUmZdXxR4D1h/Xbfj/aOvpjyUfmMA/wA==
+X-Received: by 2002:a17:906:c836:: with SMTP id dd22mr16340505ejb.3.1627483358786;
+        Wed, 28 Jul 2021 07:42:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxteeSA3oSAeRNij5f1M2M78dulmjLVEORBllzGQQO9MQOzz6cXVa/fw6iRYfYcKNgfnOcF3g==
+X-Received: by 2002:a17:906:c836:: with SMTP id dd22mr16340483ejb.3.1627483358609;
+        Wed, 28 Jul 2021 07:42:38 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id d19sm2683676eds.54.2021.07.28.07.42.36
+        by smtp.gmail.com with ESMTPSA id d19sm2683676eds.54.2021.07.28.07.42.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 07:42:36 -0700 (PDT)
+        Wed, 28 Jul 2021 07:42:38 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -61,37 +62,39 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
         linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 0/3] of/gpiolib: minor constifying
-Date:   Wed, 28 Jul 2021 16:42:26 +0200
-Message-Id: <20210728144229.323611-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 1/3] of: unify of_count_phandle_with_args() arguments with !CONFIG_OF
+Date:   Wed, 28 Jul 2021 16:42:27 +0200
+Message-Id: <20210728144229.323611-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210728144229.323611-1-krzysztof.kozlowski@canonical.com>
+References: <20210728144229.323611-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Unify the declaration of of_count_phandle_with_args() between enabled
+and disabled OF by making constifying pointed device_node.
 
-Minor constifying of pointer to device_node.  Patches depend on each
-other (in order of submission).
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ include/linux/of.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
-Krzysztof
-
-
-Krzysztof Kozlowski (3):
-  of: unify of_count_phandle_with_args() arguments with !CONFIG_OF
-  gpiolib: constify passed device_node pointer
-  gpiolib: of: constify few local device_node variables
-
- drivers/gpio/gpiolib-devres.c |  2 +-
- drivers/gpio/gpiolib-of.c     | 16 ++++++++--------
- include/linux/gpio/consumer.h |  8 ++++----
- include/linux/of.h            |  2 +-
- include/linux/of_gpio.h       | 15 ++++++++-------
- 5 files changed, 22 insertions(+), 21 deletions(-)
-
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 0e786b60bd5d..6f1c41f109bb 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -896,7 +896,7 @@ static inline int of_parse_phandle_with_fixed_args(const struct device_node *np,
+ 	return -ENOSYS;
+ }
+ 
+-static inline int of_count_phandle_with_args(struct device_node *np,
++static inline int of_count_phandle_with_args(const struct device_node *np,
+ 					     const char *list_name,
+ 					     const char *cells_name)
+ {
 -- 
 2.27.0
 
