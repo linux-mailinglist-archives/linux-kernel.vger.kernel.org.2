@@ -2,127 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED583D88C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47F13D88C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 09:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233971AbhG1HVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 03:21:46 -0400
-Received: from mga09.intel.com ([134.134.136.24]:40179 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231949AbhG1HVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 03:21:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="212590561"
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="212590561"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 00:21:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="475591406"
-Received: from shbuild999.sh.intel.com ([10.239.146.151])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Jul 2021 00:21:40 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Feng Tang <feng.tang@intel.com>
-Subject: [RFC PATCH] x86, vmlinux.lds: Add debug option to force all data sections aligned
-Date:   Wed, 28 Jul 2021 15:21:40 +0800
-Message-Id: <1627456900-42743-1-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S234901AbhG1HWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 03:22:32 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7755 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231949AbhG1HWa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 03:22:30 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GZQ276VbKzYhPw;
+        Wed, 28 Jul 2021 15:16:31 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Jul 2021 15:22:16 +0800
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Jul 2021 15:22:13 +0800
+Subject: Re: [PATCH] riscv: fix the global name pfn_base confliction error
+From:   Hanjun Guo <guohanjun@huawei.com>
+To:     Kenneth Lee <nek.in.cn@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Kenneth Lee <liguozhu@hisilicon.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Vitaly Wool" <vitaly.wool@konsulko.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        "Jisheng Zhang" <jszhang@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <wangzhou1@hisilicon.com>
+References: <20210728064318.375747-1-nek.in.cn@gmail.com>
+ <0b813cde-ca37-9b83-c0c5-ce9f6b8eab3c@huawei.com>
+Message-ID: <27b3ce52-5d88-90e3-8509-c032bda1f559@huawei.com>
+Date:   Wed, 28 Jul 2021 15:22:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <0b813cde-ca37-9b83-c0c5-ce9f6b8eab3c@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.247]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0day has reported many strange performance changes (regression or
-improvement), in which there was no obvious relation between the culprit
-commit and the benchmark at the first look, and it causes people to doubt
-the test itself is wrong.
+On 2021/7/28 15:13, Hanjun Guo wrote:
+> On 2021/7/28 14:43, Kenneth Lee wrote:
+>> From: Kenneth Lee <liguozhu@hisilicon.com>
+>>
+>> RISCV use a global variable pfn_base for page/pfn translation. But this
+>> is a common name and will be used elsewhere. In those case,
+>> the page-pfn macro which refer this name will refer to the local/input
+>> variable of those function (such as in vfio_pin_pages_remote). This make
+>> everything wrong.
+>>
+>> This patch change the name from pfn_base to riscv_global_pfn_base to fix
+>> this problem
+>>
+>> Signed-off-by: Kenneth Lee <liguozhu@hisilicon.com>
+>> ---
+>>   arch/riscv/include/asm/page.h | 4 ++--
+>>   arch/riscv/mm/init.c          | 6 +++---
+>>   2 files changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/page.h 
+>> b/arch/riscv/include/asm/page.h
+>> index cca8764aed83..8711e415f37c 100644
+>> --- a/arch/riscv/include/asm/page.h
+>> +++ b/arch/riscv/include/asm/page.h
+>> @@ -79,8 +79,8 @@ typedef struct page *pgtable_t;
+>>   #endif
+>>   #ifdef CONFIG_MMU
+>> -extern unsigned long pfn_base;
+>> -#define ARCH_PFN_OFFSET        (pfn_base)
+>> +extern unsigned long riscv_global_pfn_base;
+>> +#define ARCH_PFN_OFFSET        (riscv_global_pfn_base)
+>>   #else
+>>   #define ARCH_PFN_OFFSET        (PAGE_OFFSET >> PAGE_SHIFT)
+>>   #endif /* CONFIG_MMU */
+>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> index a14bf3910eec..2ce4e9a46ca0 100644
+>> --- a/arch/riscv/mm/init.c
+>> +++ b/arch/riscv/mm/init.c
+>> @@ -228,8 +228,8 @@ static struct pt_alloc_ops _pt_ops __initdata;
+>>   #define pt_ops _pt_ops
+>>   #endif
+>> -unsigned long pfn_base __ro_after_init;
+>> -EXPORT_SYMBOL(pfn_base);
+>> +unsigned long riscv_global_pfn_base __ro_after_init;
+>> +EXPORT_SYMBOL(riscv_global_pfn_base);
+> 
+> Just nit: I didn't see any driver in kernel refers to
+> the riscv_global_pfn_base, can we just remove the EXPORT_SYMBOL()？
 
-Upon further check, many of these cases are caused by the change to the
-alignment of kernel text or data, as whole text/data of kernel are linked
-together, change in one domain can affect alignments of other domains.
-
-To help to quickly identify if the strange performance change is caused
-by _data_ alignment. add a debug option to force the data sections from
-all .o files aligned on THREAD_SIZE, so that change in one domain won't
-affect other modules' data alignment.
-
-We have used this option to check some strange kernel changes [1][2][3],
-and those performance changes were gone after enabling it, which proved
-they are data alignment related.
-
-Similarly, there is another kernel debug option to check text alignment
-related performance changes: CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B,  
-which forces all function's start address to be 64 bytes alinged.
-
-This option depends on CONFIG_DYNAMIC_DEBUG==n, as '__dyndbg' subsection
-of .data has a hard requirement of ALIGN(8), shown in the 'vmlinux.lds':
-
-"
-. = ALIGN(8); __start___dyndbg = .; KEEP(*(__dyndbg)) __stop___dyndbg = .;
-"
-
-It contains all pointers to 'struct _ddebug', and dynamic_debug_init()
-will "pointer++" to loop accessing these pointers, which will be broken
-with this option enabled.
-
-[1]. https://lore.kernel.org/lkml/20200205123216.GO12867@shao2-debian/
-[2]. https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
-[3]. https://lore.kernel.org/lkml/20201112140625.GA21612@xsang-OptiPlex-9020/
-
-Signed-off-by: Feng Tang <feng.tang@intel.com>
----
- arch/x86/Kconfig.debug        | 13 +++++++++++++
- arch/x86/kernel/vmlinux.lds.S |  7 ++++++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
-index 80b57e7..d04c67e 100644
---- a/arch/x86/Kconfig.debug
-+++ b/arch/x86/Kconfig.debug
-@@ -228,6 +228,19 @@ config PUNIT_ATOM_DEBUG
- 	  The current power state can be read from
- 	  /sys/kernel/debug/punit_atom/dev_power_state
- 
-+config DEBUG_FORCE_DATA_SECTION_ALIGNED
-+	bool "Force all data sections to be THREAD_SIZE aligned"
-+	depends on EXPERT && !DYNAMIC_DEBUG
-+	help
-+	  There are cases that a commit from one kernel domain changes
-+	  data sections' alignment of other domains, as they are all
-+	  linked together compactly, and cause magic performance bump
-+	  (regression or improvement), which is hard to debug. Enable
-+	  this option will help to verify if the bump is caused by
-+	  data alignment changes.
-+
-+	  It is mainly for debug and performance tuning use.
-+
- choice
- 	prompt "Choose kernel unwinder"
- 	default UNWINDER_ORC if X86_64
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index efd9e9e..64256d0 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -156,7 +156,12 @@ SECTIONS
- 	X86_ALIGN_RODATA_END
- 
- 	/* Data */
--	.data : AT(ADDR(.data) - LOAD_OFFSET) {
-+	.data : AT(ADDR(.data) - LOAD_OFFSET)
-+#ifdef CONFIG_DEBUG_FORCE_DATA_SECTION_ALIGNED
-+	/* Use the biggest alignment of below sections */
-+	SUBALIGN(THREAD_SIZE)
-+#endif
-+	{
- 		/* Start of data section */
- 		_sdata = .;
- 
--- 
-2.7.4
-
+Sorry, I'm wrong, will be used by ARCH_PFN_OFFSET...
