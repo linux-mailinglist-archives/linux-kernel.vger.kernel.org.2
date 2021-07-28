@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713523D8672
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 06:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916C53D8676
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 06:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbhG1EH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 00:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S229718AbhG1EMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 00:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231875AbhG1EHV (ORCPT
+        with ESMTP id S229546AbhG1EMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 00:07:21 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE7CC061765
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 21:07:19 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so2307523pji.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 21:07:19 -0700 (PDT)
+        Wed, 28 Jul 2021 00:12:01 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABA0C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 21:12:00 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id z7so551911iog.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 21:12:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+fqG4R+4qOt1ELoyg7PgFn0oDWuwuLmHhCt0oIoufOs=;
-        b=leiQUpg97lA0cyhIJNpA37EZPKMHTpmtrVStYeFXvNCJ1xyRsmHlWPqKfdlCllPmjI
-         mOyT4TnU4QLIXcO7Zxl1XD+VvxZAfjtgOk25vKX1d6v5xLIUJpdGVKPM86Qk//U5KjB2
-         ebdk2A7Rj+dpo2AS5h/WGB4EOF4U/F72/Ppms=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jkbI7zztV8NxbL6OAK1GEXMLTdKA0PoGPYCzxGouH9A=;
+        b=dXYscuKA9USWzwsEiMBwy5bFn/At9FyANB2VnftNc1X/3U6Q7IE+ADanciy9xfye3r
+         dagomBuKngzGJSGumLSkQdm8bYNno6ki1QW7KUxpxYe9jxJOcDIxvRU7EpP8S5E00c2/
+         pXE/MXTifhLK7UKGySp+fdKyCMkGBXoCzF4BQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+fqG4R+4qOt1ELoyg7PgFn0oDWuwuLmHhCt0oIoufOs=;
-        b=cDOalLHHU8o7ky6fymWO/7RJJ2wpMSL1sw6N+eTk7ikVr5ExgH1rkSHKDtHcnUMWIi
-         3dDAGcuol7bbTSgUC9hzlWwaPUYJwsSNBtRI+LpYakmHC7Ciy5IiUXvmbjoGv7uBClIB
-         Ikw3EkNzg2wee9JcvcZy/Zp5J12pW0OsAft0CC7eYg/pVs2NMxIoBLAOO+fxMhijLugF
-         FWv8zSU7lJ6/Navr1+1G2OcDX/CQ+niIDd7Ubl57xeUz1kUzEhFh7pyu4eGlBJHSN0Ur
-         hH2MMhy1XLmLDQzSZx9b3YPlXqThwE/prV0AnRS9uDK9yN1OKDQsjYVWXUAnQTQjRuyn
-         b7Dw==
-X-Gm-Message-State: AOAM532PZ/dMygJt5FdnGbbWihdGgPaLqlGI44qR0P1yu4afbH5APipT
-        DoBX/0tReA0X6+BuksQ5Ckqp7g==
-X-Google-Smtp-Source: ABdhPJyDCFmwyf2fn2UI5FGK/JoEH7OH9IM47ZOeYNpro93++WTNtr6+NaqTR9oGAv3jyqKHNRGf9g==
-X-Received: by 2002:a63:1614:: with SMTP id w20mr27210465pgl.198.1627445239405;
-        Tue, 27 Jul 2021 21:07:19 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:5176:76cc:2193:9b8f])
-        by smtp.gmail.com with ESMTPSA id 6sm5536012pfg.108.2021.07.27.21.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 21:07:19 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        eizan@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] arm64: dts: mt8173: elm: Use aliases to mmc nodes
-Date:   Wed, 28 Jul 2021 12:07:10 +0800
-Message-Id: <20210728040710.2891955-2-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-In-Reply-To: <20210728040710.2891955-1-hsinyi@chromium.org>
-References: <20210728040710.2891955-1-hsinyi@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jkbI7zztV8NxbL6OAK1GEXMLTdKA0PoGPYCzxGouH9A=;
+        b=Z4oqRyauPl2iXsdnvR9EcSZJeg82a/yVkzWm8ahEdoI6T4d7OjUONN3btI9WeQa6hf
+         QjADIauKWzLLy609ce1y9epsshMvciIBjwORnWGOvFoX91+x4iRAUqtUo17ZxnbHd66Q
+         vofk8iWq/6fDHv/F0mHlkL2n+RKY34O9pVGfPwb9fVbscaFLS4uMO+cN+2c0RvMXfoOi
+         f2xbxdf7D5gsop6ICY6h7VWQcR81C64uy6LycZWT0ATN953Lt3R5tphDJQjX+d83M3xY
+         LdupqtcJjUNBUZcUsqS/dggzMLa+2SjR8PiL8FG7RGZHeqNGz+2ysyg8LtxlLdtLbm7i
+         rxYg==
+X-Gm-Message-State: AOAM5334V55ga8COLuwYtxrCnYhenZ4Ih6mzsT/dG4IucqbH0oSUoR39
+        4IljXtIN/sImRRg1gVtPmVFlQKTMEjS4nCCcH97Y+Klnw4uKUA==
+X-Google-Smtp-Source: ABdhPJwZURagtlb/Es05dXEFrkQMdNvFOAO3Y0xE8fnLEijoUW7gGe8ePUB+PSUfm3tmzaT/PUEwnpmW7dLCcUiGvtg=
+X-Received: by 2002:a02:6946:: with SMTP id e67mr24142969jac.4.1627445519987;
+ Tue, 27 Jul 2021 21:11:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210727110232.2503763-1-hsinyi@chromium.org> <20210727110232.2503763-3-hsinyi@chromium.org>
+ <1627410395.874547.3210653.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1627410395.874547.3210653.nullmailer@robh.at.kernel.org>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Wed, 28 Jul 2021 12:11:34 +0800
+Message-ID: <CAJMQK-jii-qqzG8Myn2svn+hBS+s+0YZLO1Gx=Co23gzd7FUgA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] dt-bindings: mediatek: convert pinctrl to yaml
+To:     Rob Herring <robh@kernel.org>
+Cc:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Andy Teng <andy.teng@mediatek.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, linux-gpio@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit 1796164fac7e ("dt-bindings: mmc: document alias support"),
-a way to specify fixed index numbers was provided. This patch use aliases
-to mmc nodes so the partition name for eMMC and SD card will be consistent
-across boots.
+On Wed, Jul 28, 2021 at 2:26 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, 27 Jul 2021 19:02:32 +0800, Hsin-Yi Wang wrote:
+> > Convert mt65xx, mt6796, mt7622, mt8183 bindings to yaml.
+> >
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > ---
+> >  .../pinctrl/mediatek,mt65xx-pinctrl.yaml      | 202 +++++++
+> >  .../pinctrl/mediatek,mt6797-pinctrl.yaml      | 175 ++++++
+> >  .../pinctrl/mediatek,mt7622-pinctrl.yaml      | 537 ++++++++++++++++++
+> >  .../pinctrl/mediatek,mt8183-pinctrl.yaml      | 230 ++++++++
+> >  .../bindings/pinctrl/pinctrl-mt65xx.txt       | 156 -----
+> >  .../bindings/pinctrl/pinctrl-mt6797.txt       |  83 ---
+> >  .../bindings/pinctrl/pinctrl-mt7622.txt       | 490 ----------------
+> >  .../bindings/pinctrl/pinctrl-mt8183.txt       | 132 -----
+> >  8 files changed, 1144 insertions(+), 861 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt65xx-pinctrl.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt6797-pinctrl.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt7622-pinctrl.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
+> >  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt6797.txt
+> >  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
+> >  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8183.txt
+> >
+>
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.example.dts:21:18: fatal error: dt-bindings/pinctrl/mt8183-pinfunc.h: No such file or directory
+>    21 |         #include <dt-bindings/pinctrl/mt8183-pinfunc.h>
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> compilation terminated.
+> make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.example.dt.yaml] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1418: dt_binding_check] Error 2
+> \ndoc reference errors (make refcheckdocs):
+> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
+> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
+> MAINTAINERS: Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
+> MAINTAINERS: Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
+>
+> See https://patchwork.ozlabs.org/patch/1510444
+>
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+>
+This patch is dependent on
+https://patchwork.kernel.org/project/linux-mediatek/patch/20210727110232.2503763-2-hsinyi@chromium.org/
+("arm: dts: mt8183: Move pinfunc to include/dt-bindings/pinctrl")
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
----
-v3->v4: change commit message based on review in v3.
----
- arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-index 21452c51a20a8..d5a2cad39c9c7 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-@@ -10,6 +10,12 @@
- #include "mt8173.dtsi"
- 
- / {
-+	aliases {
-+		mmc0 = &mmc0;
-+		mmc1 = &mmc1;
-+		mmc2 = &mmc3;
-+	};
-+
- 	memory@40000000 {
- 		device_type = "memory";
- 		reg = <0 0x40000000 0 0x80000000>;
--- 
-2.32.0.432.gabb21c7263-goog
-
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
+>
