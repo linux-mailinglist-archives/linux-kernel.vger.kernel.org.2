@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AB33D9390
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2303D9391
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhG1Qtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        id S230174AbhG1Qtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhG1Qt2 (ORCPT
+        with ESMTP id S229974AbhG1Qtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:49:28 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832ABC061757;
-        Wed, 28 Jul 2021 09:49:26 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id x3so2844554qkl.6;
-        Wed, 28 Jul 2021 09:49:26 -0700 (PDT)
+        Wed, 28 Jul 2021 12:49:50 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A47C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:49:48 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id t68so2847612qkf.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 09:49:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LeWyV5Hvjaj4WOnnvngdvVRWMOHLBfih9OtkOnTI1z8=;
-        b=m6pv6jW/27Q3dD+d92ObHIKtmjZeqyQ2c/7m7Bk6dRtN2oEYjl+9tLoxIYD/VE2EAz
-         AGc6RND3GdY7tDhPDTEN8gyZveNVuqLTMNgnFsNEG0+SFzpV66qKkIB4WQmCnE4UFHC+
-         rHn3aGQLiSfDvjElh16L9NKZeOv+W7IlRo257PP+ZgY3mnJYQAOX90Rvz3fA3xWFkcH/
-         WFOj1pplHshep4uLnOj4w2SjYSC8SXXquAcA0tszz8EqBF66BGhcsMXIwVvO38Vrj6wn
-         +7b5RrnF8IzOG6Q12uis5AJFKKXMt201zKe9qPNmHd6kugr2t0zpR3Gx2VLqaCl6Fpgp
-         oDLA==
+        d=maine.edu; s=google;
+        h=from:date:to:cc:subject:message-id:mime-version;
+        bh=nJXlLpkTlQG+j2g9fJu+5AVUSl9pOmwqtryvrpLl9zY=;
+        b=SOta93O7KDpbZ3/CfSY3Gv+++hKDiwL0eTalIh/EVOWVeYaMLHjpCpVRsTgbMUBAvT
+         MPJLDPNwinLSvJFNEhKj/4Wc3hAZqcHlU/QDG2y0cHnsDGtmBmVFmIvRQ1CRut6Dsme3
+         kgWHYqXrnLAAhNdVQZIQ7CMwPYvDQWXdvYc3A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=LeWyV5Hvjaj4WOnnvngdvVRWMOHLBfih9OtkOnTI1z8=;
-        b=r76lz6PCTEg3oNbHobH2sjQ7+ICzJYdu/uPRCUXz6GYHOhFmAI0cwT6gIuUWOnZs0Q
-         a0mLugvm2G6Y0yUqa0Vx8yPGUIzslOlKTR6IoVY2HA2Gl9cJYKm8PvGDdogMoybIm6au
-         wnHEt0EYe30hpr+UOxN0h9l+T8Y28ULXNkBq/dia/pWIoWa0NWAONxfgFzGdHbOphLR/
-         +OjKrrDNN1UScky7RzFUWTv1TUiDaJY7/cDidzrzNzVNAR0m/KFvTo0lYshBNHpGoYBn
-         J5kNwHxTO4EVHpZhll/hnkNqHLOFf7M+JyO+S76lmCQbb7c0xULR4k5biPVNdGz7Clrr
-         7Bbg==
-X-Gm-Message-State: AOAM533wMcU/WhJPJg25QxaJUyevsZreMHqKLJjddIXBvcQtHng0/OFX
-        gkG78HqEPK8Xej5EwSWbuVs=
-X-Google-Smtp-Source: ABdhPJySjYSARMewUPhmoEjLk/WUz2g0xxHATHGntoq6omxh909G00JlSe0G+vHbIYKnZIV3fJoVIg==
-X-Received: by 2002:ae9:ebd5:: with SMTP id b204mr572143qkg.183.1627490965712;
-        Wed, 28 Jul 2021 09:49:25 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j24sm161387qtr.52.2021.07.28.09.49.24
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version;
+        bh=nJXlLpkTlQG+j2g9fJu+5AVUSl9pOmwqtryvrpLl9zY=;
+        b=IpUTboNiWBMjDgnv6MreAPTonjozKORoNw75FVhv7zDHmENxO2j1bKYZhlIuLmTau6
+         wIppMIyq11mJZaPgz3sn9gTiVqLZRDRwNk2xtrx/M7bzoP50b/EqUdAr487RbTYuWMqD
+         k17+pv3xowcq/DDrNnd0l3qz6b5D1w6xC7eHran8YnEWISIO3HEihpRToPyl4qfSvnAa
+         h0LAg3yB3sMpp90i7dH0S6osrBxqXxEZXsuFAYl3UBScKZY+IT1Aprqatmrf/A2HVUCI
+         GMA1mXFr5C5YHXDKYNRQKCrIlQ29l73oh5mxb/ECmFw1+ywF8PCjJwp06fsXrWq1mYio
+         LCrg==
+X-Gm-Message-State: AOAM530/7fhVpFTjOW0NlgZ2w82jP/HDvqWrasrs1Fo68yBgMgRW4b0k
+        ucbhX3N4vKXWXU87D29GLtBhfGGfivdE6g==
+X-Google-Smtp-Source: ABdhPJznoC6po0xd33YGlKPu+hTq1bF0rajM+XbF2VTq87GhRpdDzXEcsJsILoUwXhMSGbGwis6PGg==
+X-Received: by 2002:a37:a04a:: with SMTP id j71mr587084qke.424.1627490987778;
+        Wed, 28 Jul 2021 09:49:47 -0700 (PDT)
+Received: from macbook-air-3.local (weaver.eece.maine.edu. [130.111.218.23])
+        by smtp.gmail.com with ESMTPSA id a127sm268955qkc.121.2021.07.28.09.49.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 09:49:25 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 28 Jul 2021 09:49:23 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Navin Sankar Velliangiri <navin@linumiz.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH] hwmon: sht4x: update Documentation for Malformed table
-Message-ID: <20210728164923.GA1084966@roeck-us.net>
-References: <20210727232054.7426-1-rdunlap@infradead.org>
+        Wed, 28 Jul 2021 09:49:47 -0700 (PDT)
+From:   Vince Weaver <vincent.weaver@maine.edu>
+X-Google-Original-From: Vince Weaver <vince@maine.edu>
+Date:   Wed, 28 Jul 2021 12:49:43 -0400 (EDT)
+To:     linux-kernel@vger.kernel.org
+cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [perf] fuzzer triggers unchecked MSR access error: WRMSR to 0x318
+Message-ID: <37881148-a43e-5fd4-817c-a875adc7a15f@maine.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727232054.7426-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:20:54PM -0700, Randy Dunlap wrote:
-> Make top and bottom border lines match.
-> 
-> Documentation/hwmon/sht4x.rst:42: WARNING: Malformed table.
-> Text in column margin in table line 4.
-> 
-> Fixes: 505c2549373f ("hwmon: Add sht4x Temperature and Humidity Sensor Driver")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Navin Sankar Velliangiri <navin@linumiz.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Jean Delvare <jdelvare@suse.com>
-> Cc: linux-hwmon@vger.kernel.org
-> ---
+Hello
 
-Applied.
+ther perf_fuzzer on current linux-git on a Haswell system triggers the 
+following.
 
-Thanks,
-Guenter
+I've truncated the call chain, as it goes on for quite a while, let me 
+know if you want/need more information.
 
-> Applies to mainline.
-> 
->  Documentation/hwmon/sht4x.rst |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linext-20210727.orig/Documentation/hwmon/sht4x.rst
-> +++ linext-20210727/Documentation/hwmon/sht4x.rst
-> @@ -42,4 +42,4 @@ humidity1_input Measured humidity in %H
->  update_interval The minimum interval for polling the sensor,
->                  in milliseconds. Writable. Must be at least
->                  2000.
-> -============== =============================================
-> +=============== ============================================
+Vince
+
+[32694.087403] unchecked MSR access error: WRMSR to 0x318 (tried to write 0x0000000000000000) at rIP: 0xffffffff8106f854 (native_write_msr+0x4/0x20)
+[32694.101374] Call Trace:
+[32694.103974]  perf_clear_dirty_counters+0x86/0x100
+[32694.109027]  switch_mm_irqs_off+0x1d0/0x430
+[32694.113498]  __schedule+0x29f/0x1490
+[32694.117300]  ? cr4_update_irqsoff+0x2a/0x30
+[32694.121762]  ? switch_mm_irqs_off+0x1ba/0x430
+[32694.126418]  ? rcu_eqs_exit.constprop.0+0x2e/0x60
+[32694.131515]  ? cpuidle_enter_state+0xb7/0x350
+[32694.136152]  schedule_idle+0x26/0x40
+[32694.139974]  do_idle+0x16e/0x280
+[32694.143421]  cpu_startup_entry+0x19/0x20
+[32694.147643]  secondary_startup_64_no_verify+0xb0/0xbb
+[32694.973583] Call Trace:
+[32694.976215]  perf_clear_dirty_counters+0x86/0x100
+[32694.981290]  switch_mm_irqs_off+0x1d0/0x430
+[32694.985797]  __schedule+0x29f/0x1490
+[32694.989664]  ? cr4_update_irqsoff+0x2a/0x30
+[32694.994134]  ? switch_mm_irqs_off+0x1ba/0x430
+[32694.998789]  ? rcu_eqs_exit.constprop.0+0x2e/0x60
+[32695.003831]  ? cpuidle_enter_state+0xb7/0x350
+[32695.008521]  schedule_idle+0x26/0x40
+[32695.012362]  do_idle+0x16e/0x280
+[32695.015838]  cpu_startup_entry+0x19/0x20
+[32695.020041]  secondary_startup_64_no_verify+0xb0/0xbb
+[32695.126530] Call Trace:
+[32695.129184]  perf_clear_dirty_counters+0x86/0x100
+[32695.134268]  switch_mm_irqs_off+0x1d0/0x430
+[32695.138757]  __schedule+0x29f/0x1490
+[32695.142577]  ? tick_nohz_get_sleep_length+0x6b/0xa0
+[32695.147806]  ? rcu_eqs_exit.constprop.0+0x2e/0x60
+[32695.152806]  ? cpuidle_enter_state+0xb7/0x350
+[32695.157500]  schedule_idle+0x26/0x40
+[32695.161342]  do_idle+0x16e/0x280
+[32695.164798]  cpu_startup_entry+0x19/0x20
+[32695.169010]  secondary_startup_64_no_verify+0xb0/0xbb
+
