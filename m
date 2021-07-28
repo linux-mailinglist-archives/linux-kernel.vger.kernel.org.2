@@ -2,164 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02343D8D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C2B3D8D78
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 14:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236210AbhG1MFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 08:05:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50990 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234805AbhG1MFZ (ORCPT
+        id S236007AbhG1MHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 08:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234758AbhG1MHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 08:05:25 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SC2VdD101996;
-        Wed, 28 Jul 2021 08:05:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=IQu+wCH9h7nDTOSHQeUwEGhSI28OKU5cShZSQ8xx/uw=;
- b=jSy+XZOaPcxAhtNsegAIez5qIsGtjbahHYn5lu32mUuck3t76OQQoRH7mPLp/tczyaTF
- a0o1jDf4c5IiPcaMtv2e88Y0jQx8UKzAm4FJ3mvqk5TC9zvhum9QqEna1PZ3xcVmlus2
- 7oqi2I9JJ7J3lX+qEK24RXE+3oX6JtFlyXdET60xfmoFugDrT4aobokYjVsBkyNLCeZR
- D8EHQXFQFks3bT7SFNljhYuK4YIWPJHZOLeQ875kY0BI9/atzuvD1vheginSf3pUpcnO
- ZEzrCcU0sRwrCaOofktxlokCVlG4Y3xQmt8JaVWGWQOI6X9YhTLIwPBL8j8ekZ9aK9k/ lw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a36g897k2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Jul 2021 08:05:14 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16SC5D2m134022;
-        Wed, 28 Jul 2021 08:05:13 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a36g897h7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Jul 2021 08:05:12 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16SC2pui009742;
-        Wed, 28 Jul 2021 12:05:11 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 3a235yh1fa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Jul 2021 12:05:11 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16SC58f731392066
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Jul 2021 12:05:08 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9793111C050;
-        Wed, 28 Jul 2021 12:05:08 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD98F11C058;
-        Wed, 28 Jul 2021 12:05:05 +0000 (GMT)
-Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.80.104])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Jul 2021 12:05:05 +0000 (GMT)
-From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
-To:     mpe@ellerman.id.au, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, psampat@linux.ibm.com,
-        pratik.r.sampat@gmail.com
-Subject: [PATCH v2 1/1] cpufreq:powernv: Fix init_chip_info initialization in numa=off
-Date:   Wed, 28 Jul 2021 17:35:00 +0530
-Message-Id: <20210728120500.87549-2-psampat@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210728120500.87549-1-psampat@linux.ibm.com>
-References: <20210728120500.87549-1-psampat@linux.ibm.com>
+        Wed, 28 Jul 2021 08:07:17 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7E0C061757;
+        Wed, 28 Jul 2021 05:07:16 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id f13so2418886plj.2;
+        Wed, 28 Jul 2021 05:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pzNje+eEaJYZU+DxBipnEI0TOsk5q1STrYyOmtqwUmw=;
+        b=e7qqtcYhnfdctT6rgsOSi4ZWSdffnSx0c8FrQXLY0JgJjKCB3So9UY8TWMVIjKwIBp
+         SK+mq1gckdIxGgRh/OYfuMuLMnAGIaZYUhwpJEQq9Bo/+Fh7XkjHHIKjkUpxfgu7zv8T
+         ltNIOkdq6vCCMmzizL57P/oKwnLO7wM/l0AUlUKk8g/Vft8QfbDNz02GGb4BXovNcMZt
+         P9xXfJxa2kLVe4VojHa52BLND4GFlpvarDTIl4anoUAZVd2UfdsqfxBx3OlDcI6A/5YS
+         8IpBfqayz+VfDftWwVp6eEyEBIrHCXnFMN4c6pBS+IGojkytvlo7hUSx+HVIeEAEBGcE
+         YuYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pzNje+eEaJYZU+DxBipnEI0TOsk5q1STrYyOmtqwUmw=;
+        b=t9XWMu1mIOji9j7bk8oyJscfMEjZfDthViCaXDjiWuuKL7sOprEeE2d9FEozpdylT7
+         c+tJEQfvLytY5+wl2slvEiJul62UCEjOwgFH+17pKTr50RUp01aA8IbMXYi8ewP3vTFF
+         Ku+Bwz+5w9vRfASxRi9k/gdmfT+dIR0qEWhz3Z/C7QdsC9cNBIaY4j7B0OdBT3HDO9Xv
+         NyNqgsIW2yhtEnL2PfJkYhRmRjtEh71r4/Gxj7UN6SuJTdmeLOeNLvStkx9AQfhYrAF9
+         ZTnhQIzOQBCNl8s8XEp3O0Yfpfz7Z4qLv/1qL4Q6dgoMwBYH0yT0NW5CP51AvdY9vYAT
+         5qcA==
+X-Gm-Message-State: AOAM533yQcHpakIj3teNx5fwJ2Q/N/JUuwZ753NnY/EAy6MJL1KJioLO
+        ENFOFY88KHY8QRwyU05jXNw=
+X-Google-Smtp-Source: ABdhPJxf/w2TK+hJYnsreVKPhj+fRyufvn+X6h+fruvET1ca3iuEj1Kh+w8bPIk/FSHYliEClzVlCA==
+X-Received: by 2002:a63:5506:: with SMTP id j6mr9677935pgb.19.1627474035630;
+        Wed, 28 Jul 2021 05:07:15 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id i24sm5887142pfr.207.2021.07.28.05.07.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Jul 2021 05:07:15 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: x86/pmu: Introduce pmc->is_paused to reduce the call time of perf interfaces
+Date:   Wed, 28 Jul 2021 20:07:05 +0800
+Message-Id: <20210728120705.6855-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: yy9xZxCFGgnQXWxN30-uVWG8VmOn6ZmQ
-X-Proofpoint-ORIG-GUID: 5nhJnAlooTf6GZS1GKBZpkDtRQGvr6iq
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-28_07:2021-07-27,2021-07-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- impostorscore=0 suspectscore=0 phishscore=0 adultscore=0 malwarescore=0
- lowpriorityscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107280068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the numa=off kernel command-line configuration init_chip_info() loops
-around the number of chips and attempts to copy the cpumask of that node
-which is NULL for all iterations after the first chip.
+From: Like Xu <likexu@tencent.com>
 
-Hence, store the cpu mask for each chip instead of derving cpumask from
-node while populating the "chips" struct array and copy that to the
-chips[i].mask
+Based on our observations, after any vm-exit associated with vPMU, there
+are at least two or more perf interfaces to be called for guest counter
+emulation, such as perf_event_{pause, read_value, period}(), and each one
+will {lock, unlock} the same perf_event_ctx. The frequency of calls becomes
+more severe when guest use counters in a multiplexed manner.
 
-Cc: stable@vger.kernel.org
-Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
-Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
-Reported-by: Shirisha Ganta <shirisha.ganta1@ibm.com>
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Holding a lock once and completing the KVM request operations in the perf
+context would introduce a set of impractical new interfaces. So we can
+further optimize the vPMU implementation by avoiding repeated calls to
+these interfaces in the KVM context for at least one pattern:
+
+After we call perf_event_pause() once, the event will be disabled and its
+internal count will be reset to 0. So there is no need to pause it again
+or read its value. Once the event is paused, event period will not be
+updated until the next time it's resumed or reprogrammed. And there is
+also no need to call perf_event_period twice for a non-running counter,
+considering the perf_event for a running counter is never paused.
+
+Based on this implementation, for the following common usage of
+sampling 4 events using perf on a 4u8g guest:
+
+  echo 0 > /proc/sys/kernel/watchdog
+  echo 25 > /proc/sys/kernel/perf_cpu_time_max_percent
+  echo 10000 > /proc/sys/kernel/perf_event_max_sample_rate
+  echo 0 > /proc/sys/kernel/perf_cpu_time_max_percent
+  for i in `seq 1 1 10`
+  do
+  taskset -c 0 perf record \
+  -e cpu-cycles -e instructions -e branch-instructions -e cache-misses \
+  /root/br_instr a
+  done
+
+the average latency of the guest NMI handler is reduced from
+37646.7 ns to 32929.3 ns (~1.14x speed up) on the Intel ICX server.
+Also, in addition to collecting more samples, no loss of sampling
+accuracy was observed compared to before the optimization.
+
+Signed-off-by: Like Xu <likexu@tencent.com>
 ---
- drivers/cpufreq/powernv-cpufreq.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/kvm_host.h | 1 +
+ arch/x86/kvm/pmu.c              | 5 ++++-
+ arch/x86/kvm/pmu.h              | 2 +-
+ arch/x86/kvm/vmx/pmu_intel.c    | 4 ++--
+ 4 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-index 005600cef273..5f0e7c315e49 100644
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -36,6 +36,7 @@
- #define MAX_PSTATE_SHIFT	32
- #define LPSTATE_SHIFT		48
- #define GPSTATE_SHIFT		56
-+#define MAX_NR_CHIPS		32
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 99f37781a6fc..a079880d4cd5 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -482,6 +482,7 @@ struct kvm_pmc {
+ 	 * ctrl value for fixed counters.
+ 	 */
+ 	u64 current_config;
++	bool is_paused;
+ };
  
- #define MAX_RAMP_DOWN_TIME				5120
- /*
-@@ -1046,12 +1047,20 @@ static int init_chip_info(void)
- 	unsigned int *chip;
- 	unsigned int cpu, i;
- 	unsigned int prev_chip_id = UINT_MAX;
-+	cpumask_t *chip_cpu_mask;
- 	int ret = 0;
+ struct kvm_pmu {
+diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+index 827886c12c16..0772bad9165c 100644
+--- a/arch/x86/kvm/pmu.c
++++ b/arch/x86/kvm/pmu.c
+@@ -137,18 +137,20 @@ static void pmc_reprogram_counter(struct kvm_pmc *pmc, u32 type,
+ 	pmc->perf_event = event;
+ 	pmc_to_pmu(pmc)->event_count++;
+ 	clear_bit(pmc->idx, pmc_to_pmu(pmc)->reprogram_pmi);
++	pmc->is_paused = false;
+ }
  
- 	chip = kcalloc(num_possible_cpus(), sizeof(*chip), GFP_KERNEL);
- 	if (!chip)
- 		return -ENOMEM;
+ static void pmc_pause_counter(struct kvm_pmc *pmc)
+ {
+ 	u64 counter = pmc->counter;
  
-+	/* Allocate a chip cpu mask large enough to fit mask for all chips */
-+	chip_cpu_mask = kcalloc(MAX_NR_CHIPS, sizeof(cpumask_t), GFP_KERNEL);
-+	if (!chip_cpu_mask) {
-+		ret = -ENOMEM;
-+		goto free_and_return;
-+	}
-+
- 	for_each_possible_cpu(cpu) {
- 		unsigned int id = cpu_to_chip_id(cpu);
+-	if (!pmc->perf_event)
++	if (!pmc->perf_event || pmc->is_paused)
+ 		return;
  
-@@ -1059,22 +1068,25 @@ static int init_chip_info(void)
- 			prev_chip_id = id;
- 			chip[nr_chips++] = id;
- 		}
-+		cpumask_set_cpu(cpu, &chip_cpu_mask[nr_chips-1]);
- 	}
+ 	/* update counter, reset event value to avoid redundant accumulation */
+ 	counter += perf_event_pause(pmc->perf_event, true);
+ 	pmc->counter = counter & pmc_bitmask(pmc);
++	pmc->is_paused = true;
+ }
  
- 	chips = kcalloc(nr_chips, sizeof(struct chip), GFP_KERNEL);
- 	if (!chips) {
- 		ret = -ENOMEM;
--		goto free_and_return;
-+		goto out_chip_cpu_mask;
- 	}
+ static bool pmc_resume_counter(struct kvm_pmc *pmc)
+@@ -163,6 +165,7 @@ static bool pmc_resume_counter(struct kvm_pmc *pmc)
  
- 	for (i = 0; i < nr_chips; i++) {
- 		chips[i].id = chip[i];
--		cpumask_copy(&chips[i].mask, cpumask_of_node(chip[i]));
-+		cpumask_copy(&chips[i].mask, &chip_cpu_mask[i]);
- 		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
- 		for_each_cpu(cpu, &chips[i].mask)
- 			per_cpu(chip_info, cpu) =  &chips[i];
- 	}
+ 	/* reuse perf_event to serve as pmc_reprogram_counter() does*/
+ 	perf_event_enable(pmc->perf_event);
++	pmc->is_paused = false;
  
-+out_chip_cpu_mask:
-+	kfree(chip_cpu_mask);
- free_and_return:
- 	kfree(chip);
- 	return ret;
+ 	clear_bit(pmc->idx, (unsigned long *)&pmc_to_pmu(pmc)->reprogram_pmi);
+ 	return true;
+diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
+index 67e753edfa22..0e4f2b1fa9fb 100644
+--- a/arch/x86/kvm/pmu.h
++++ b/arch/x86/kvm/pmu.h
+@@ -55,7 +55,7 @@ static inline u64 pmc_read_counter(struct kvm_pmc *pmc)
+ 	u64 counter, enabled, running;
+ 
+ 	counter = pmc->counter;
+-	if (pmc->perf_event)
++	if (pmc->perf_event && !pmc->is_paused)
+ 		counter += perf_event_read_value(pmc->perf_event,
+ 						 &enabled, &running);
+ 	/* FIXME: Scaling needed? */
+diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+index 9efc1a6b8693..10cc4f65c4ef 100644
+--- a/arch/x86/kvm/vmx/pmu_intel.c
++++ b/arch/x86/kvm/vmx/pmu_intel.c
+@@ -437,13 +437,13 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 			    !(msr & MSR_PMC_FULL_WIDTH_BIT))
+ 				data = (s64)(s32)data;
+ 			pmc->counter += data - pmc_read_counter(pmc);
+-			if (pmc->perf_event)
++			if (pmc->perf_event && !pmc->is_paused)
+ 				perf_event_period(pmc->perf_event,
+ 						  get_sample_period(pmc, data));
+ 			return 0;
+ 		} else if ((pmc = get_fixed_pmc(pmu, msr))) {
+ 			pmc->counter += data - pmc_read_counter(pmc);
+-			if (pmc->perf_event)
++			if (pmc->perf_event && !pmc->is_paused)
+ 				perf_event_period(pmc->perf_event,
+ 						  get_sample_period(pmc, data));
+ 			return 0;
 -- 
-2.31.1
+2.32.0
 
