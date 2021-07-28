@@ -2,155 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002B03D8962
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160FE3D895F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234923AbhG1IHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:07:00 -0400
-Received: from mga11.intel.com ([192.55.52.93]:60575 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234545AbhG1IGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:06:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="209499596"
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="209499596"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 01:06:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
-   d="scan'208";a="475615690"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Jul 2021 01:06:52 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m8eaZ-00080i-LC; Wed, 28 Jul 2021 08:06:51 +0000
-Date:   Wed, 28 Jul 2021 16:06:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/urgent] BUILD SUCCESS
- bb7262b295472eb6858b5c49893954794027cd84
-Message-ID: <61010ff5.ntCNUZVMhhxLruRl%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234492AbhG1IGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:06:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58134 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234315AbhG1IGb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 04:06:31 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627459589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9jP1dOnAADsugCfZk429dCYPdMvT+6nhaUFZ+0nKmpA=;
+        b=FAwLICGs3zISGyeLgQYlLbDZj+slQtDlRdhllA0VlAlJQNP987hRVLAJImkzX8clRln6FP
+        PtIy3k1qd+GU1u6ZjfE7eLmU6DSkeUTWzTQekLKXgQkee/iE+fk8N1DP0BLuyObEVIG47/
+        VsNsUzqEFGehEqvCVQuX3ohqI1HhIMNdMb9Zmt+8/jww3i4OtmXNXCPKWvrKO6odB/v2BD
+        PlRfAfiYWiuw25PLGnrPG1GoJzT2zuX72XPu4+KHPLsiYuAyFoKuPBQ0FTEYzVf8z2RMGD
+        /7UQdZGuNbDOElwOmVjz60QC11yFjIBh2GbkacUC1IajGEPCZZjYbJPH58lARw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627459589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9jP1dOnAADsugCfZk429dCYPdMvT+6nhaUFZ+0nKmpA=;
+        b=/xVJjW1Nx5bkuGbQbkszwkRcyFHLW8h/JVguCuOzHAq7Irb/Pj1SHMS+anFF25eoOt48dN
+        kJXykLFsi6X6uoCA==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Juri Lelli <jlelli@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        He Zhe <zhe.he@windriver.com>
+Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
+In-Reply-To: <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
+References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com> <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com> <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com> <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
+Date:   Wed, 28 Jul 2021 10:06:29 +0200
+Message-ID: <87pmv23lru.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
-branch HEAD: bb7262b295472eb6858b5c49893954794027cd84  timers: Move clearing of base::timer_running under base:: Lock
+On Wed, Jul 14 2021 at 12:35, Paolo Bonzini wrote:
+> On 14/07/21 11:23, Jason Wang wrote:
+>   
+> +static local_lock_t eventfd_wake_lock = INIT_LOCAL_LOCK(eventfd_wake_lock);
+>   DEFINE_PER_CPU(int, eventfd_wake_count);
+>   
+>   static DEFINE_IDA(eventfd_ida);
+> @@ -71,8 +73,11 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
+>   	 * it returns true, the eventfd_signal() call should be deferred to a
+>   	 * safe context.
+>   	 */
+> -	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
+> +	local_lock(&eventfd_wake_lock);
+> +	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count))) {
+> +		local_unlock(&eventfd_wake_lock);
+>   		return 0;
+> +	}
+>   
+>   	spin_lock_irqsave(&ctx->wqh.lock, flags);
+>   	this_cpu_inc(eventfd_wake_count);
+> @@ -83,6 +88,7 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
+>   		wake_up_locked_poll(&ctx->wqh, EPOLLIN);
+>   	this_cpu_dec(eventfd_wake_count);
+>   	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
+> +	local_unlock(&eventfd_wake_lock);
 
-elapsed time: 763m
+Yes, that cures it, but if you think about what this wants to prevent,
+then having the recursion counter per CPU is at least suboptimal.
 
-configs tested: 97
-configs skipped: 3
+Something like the untested below perhaps?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks,
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210728
-i386                 randconfig-c001-20210727
-powerpc                   bluestone_defconfig
-alpha                            alldefconfig
-arc                            hsdk_defconfig
-mips                       capcella_defconfig
-powerpc                       eiger_defconfig
-openrisc                    or1ksim_defconfig
-sh                           se7750_defconfig
-mips                     decstation_defconfig
-arm                         mv78xx0_defconfig
-arm                         s3c2410_defconfig
-arm                            mmp2_defconfig
-mips                      pistachio_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210727
-i386                 randconfig-a003-20210727
-i386                 randconfig-a004-20210727
-i386                 randconfig-a002-20210727
-i386                 randconfig-a001-20210727
-i386                 randconfig-a006-20210727
-i386                 randconfig-a005-20210728
-i386                 randconfig-a003-20210728
-i386                 randconfig-a004-20210728
-i386                 randconfig-a002-20210728
-i386                 randconfig-a001-20210728
-i386                 randconfig-a006-20210728
-x86_64               randconfig-a011-20210727
-x86_64               randconfig-a016-20210727
-x86_64               randconfig-a013-20210727
-x86_64               randconfig-a014-20210727
-x86_64               randconfig-a012-20210727
-x86_64               randconfig-a015-20210727
-i386                 randconfig-a016-20210727
-i386                 randconfig-a013-20210727
-i386                 randconfig-a012-20210727
-i386                 randconfig-a011-20210727
-i386                 randconfig-a014-20210727
-i386                 randconfig-a015-20210727
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c001-20210727
-x86_64               randconfig-a003-20210727
-x86_64               randconfig-a006-20210727
-x86_64               randconfig-a001-20210727
-x86_64               randconfig-a005-20210727
-x86_64               randconfig-a004-20210727
-x86_64               randconfig-a002-20210727
-
+        tglx
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -1695,7 +1695,7 @@ static int aio_poll_wake(struct wait_que
+ 		list_del(&iocb->ki_list);
+ 		iocb->ki_res.res = mangle_poll(mask);
+ 		req->done = true;
+-		if (iocb->ki_eventfd && eventfd_signal_count()) {
++		if (iocb->ki_eventfd && !eventfd_signal_allowed()) {
+ 			iocb = NULL;
+ 			INIT_WORK(&req->work, aio_poll_put_work);
+ 			schedule_work(&req->work);
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -25,8 +25,6 @@
+ #include <linux/idr.h>
+ #include <linux/uio.h>
+ 
+-DEFINE_PER_CPU(int, eventfd_wake_count);
+-
+ static DEFINE_IDA(eventfd_ida);
+ 
+ struct eventfd_ctx {
+@@ -67,21 +65,21 @@ struct eventfd_ctx {
+ 	 * Deadlock or stack overflow issues can happen if we recurse here
+ 	 * through waitqueue wakeup handlers. If the caller users potentially
+ 	 * nested waitqueues with custom wakeup handlers, then it should
+-	 * check eventfd_signal_count() before calling this function. If
+-	 * it returns true, the eventfd_signal() call should be deferred to a
++	 * check eventfd_signal_allowed() before calling this function. If
++	 * it returns false, the eventfd_signal() call should be deferred to a
+ 	 * safe context.
+ 	 */
+-	if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
++	if (WARN_ON_ONCE(current->in_eventfd_signal))
+ 		return 0;
+ 
+ 	spin_lock_irqsave(&ctx->wqh.lock, flags);
+-	this_cpu_inc(eventfd_wake_count);
++	current->in_eventfd_signal = 1;
+ 	if (ULLONG_MAX - ctx->count < n)
+ 		n = ULLONG_MAX - ctx->count;
+ 	ctx->count += n;
+ 	if (waitqueue_active(&ctx->wqh))
+ 		wake_up_locked_poll(&ctx->wqh, EPOLLIN);
+-	this_cpu_dec(eventfd_wake_count);
++	current->in_eventfd_signal = 0;
+ 	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
+ 
+ 	return n;
+--- a/include/linux/eventfd.h
++++ b/include/linux/eventfd.h
+@@ -43,11 +43,9 @@ int eventfd_ctx_remove_wait_queue(struct
+ 				  __u64 *cnt);
+ void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt);
+ 
+-DECLARE_PER_CPU(int, eventfd_wake_count);
+-
+-static inline bool eventfd_signal_count(void)
++static inline bool eventfd_signal_allowed(void)
+ {
+-	return this_cpu_read(eventfd_wake_count);
++	return !current->in_eventfd_signal;
+ }
+ 
+ #else /* CONFIG_EVENTFD */
+@@ -78,9 +76,9 @@ static inline int eventfd_ctx_remove_wai
+ 	return -ENOSYS;
+ }
+ 
+-static inline bool eventfd_signal_count(void)
++static inline bool eventfd_signal_allowed(void)
+ {
+-	return false;
++	return true;
+ }
+ 
+ static inline void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt)
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -863,6 +863,8 @@ struct task_struct {
+ 	/* Used by page_owner=on to detect recursion in page tracking. */
+ 	unsigned			in_page_owner:1;
+ #endif
++	/* Recursion prevention for eventfd_signal() */
++	unsigned			in_eventfd_signal:1;
+ 
+ 	unsigned long			atomic_flags; /* Flags requiring atomic access. */
+ 
+
