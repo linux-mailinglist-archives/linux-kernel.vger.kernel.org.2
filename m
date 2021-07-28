@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFD73D95A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCF33D95AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 20:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhG1S6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 14:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhG1S6k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 14:58:40 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662AAC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:58:38 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id y9so4084568iox.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 11:58:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UgJXRf6+3XgHXOkAGVUradMJnX44XHUoXK+yva5PRVE=;
-        b=uFfF3Lrh7g1ukNwto85c0hdyiTUJS1UM8jDHog2VUbqYksEJTzgSJ6abpmImv9Fg2o
-         eMyEA99KGMF5ZQF1+63ClOc8Sxll+fVILTgZmJVMsMSb9vR9KwinHX0nL+Sb6bQzgtC8
-         Dn+obQNVEFHqagS6WTMttmhg4WzLdXDV/BI/dRj+s5LedU4+LgANuMwEbh9EEh9842Qv
-         f82tH6lgvaRWDOo0r1jK8a2Kn30N4pVqe/h3L8tXgndFs78t5kytwkE/UFYBIWBKrqv0
-         8GJM4rI9jQC+JOByUWW3YU79ZCyXyFT/E2/AGk1PSKiPy+7kq2XU2zlMy3PPnTK2VaDm
-         DNKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UgJXRf6+3XgHXOkAGVUradMJnX44XHUoXK+yva5PRVE=;
-        b=Qz+ioDtFoi2gT1SFqWeOEoMn0cd6/zWTlBLN487uoCyCH+2r+IWtmbMPEBVDUzPBnS
-         lHKWf7f/4tV9NPZfLIeLodDNpcQ8MUM9Hy/JuiX67tZFmMuT/iBBBALpvrfh4KesUFZ1
-         OUv3wO6uVAQ4mr3AjLf9CkxQBY+5XBuHaV74vSZJo4cWNZwnpufICU9FaoVgNFPu2WRN
-         zO+xoCEZov7a0HPeePyVEpQJTAGTkjJrpftl5Y5RCkGl6Infb6vfxo+lhKHiPJXoS1Yr
-         +PRnEyfFw7doSHJgSGWSu9peip8dTcWGlS4nLku9li607nPS8Js4M6Vyd1DZUVGupEoL
-         N0Qw==
-X-Gm-Message-State: AOAM530S0MU0rLz7T4o8BhqBgfXPj8gTYWORgdDCVog/Y/m7n1IF3aZ1
-        BDH6wTextDVfXr8QZv/dPTS4LRa6skfSIQ==
-X-Google-Smtp-Source: ABdhPJyHUZgrAPEWeHqkAKF9fca84iwYaaQ4RsDOJvzRW1pi1GnHABNXm18YGtCSfOFtxa0PY3aLXw==
-X-Received: by 2002:a5d:8b8b:: with SMTP id p11mr742421iol.77.1627498717698;
-        Wed, 28 Jul 2021 11:58:37 -0700 (PDT)
-Received: from localhost ([12.28.44.171])
-        by smtp.gmail.com with ESMTPSA id p8sm538846iol.49.2021.07.28.11.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 11:58:37 -0700 (PDT)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        Barry Song <song.bao.hua@hisilicon.com>
-Cc:     Yury Norov <yury.norov@gmail.com>, dave.hansen@intel.com,
-        linux@rasmusvillemoes.dk, rafael@kernel.org, rdunlap@infradead.org,
-        agordeev@linux.ibm.com, sbrivio@redhat.com, jianpeng.ma@intel.com,
-        valentin.schneider@arm.com, peterz@infradead.org,
-        bristot@redhat.com, guodong.xu@linaro.org,
-        tangchengchang@huawei.com, prime.zeng@hisilicon.com,
-        yangyicong@huawei.com, tim.c.chen@linux.intel.com,
-        linuxarm@huawei.com, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com
-Subject: [PATCH] bitmap: extend comment to bitmap_print_to_buf
-Date:   Wed, 28 Jul 2021 11:58:31 -0700
-Message-Id: <20210728185831.215079-1-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
-References: 
+        id S231403AbhG1S66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 14:58:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229565AbhG1S64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 14:58:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 131606024A;
+        Wed, 28 Jul 2021 18:58:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627498735;
+        bh=ylRo91fIufsJiBQ/p1hWoYSghsQ4i01+g9DxsEqtZg8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hdwzcvPua3c9lnDYn0c7kJ6RQTjy+0LbW2hEHEiDQo06U6Iz98ox/JeLt5da6kgj0
+         0qxbK7ALuTSZCd5gY3JEZrVZLgtEAhU6EpkGq8qU3GnVubnBXasWrf2PZ9fxLMVVnd
+         IjPt8TdkK0hgaPPqsU13GG4LUSRkB7tEIvhc4mTFPzjCoa3+mEjEEXBd9MelZgcmVN
+         0dXHq7qcx+OdeBvZBgOVxC+zRRnpebhds8utvM3mwp7SBJOfIn39x08S+3+wKa0/jY
+         q98zWq9etbqNvZHKj3raULYCrWGbUqxkWDTlephxJadU9UXYN54VKo0KDAYvlbD9Hq
+         X75n6cTO19Ddw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D13315C048D; Wed, 28 Jul 2021 11:58:54 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 11:58:54 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+Message-ID: <20210728185854.GK4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-4-paulmck@kernel.org>
+ <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
+ <2135064974.9081.1627496585724.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2135064974.9081.1627496585724.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend comment to new function to warn potential users about caveats.
+On Wed, Jul 28, 2021 at 02:23:05PM -0400, Mathieu Desnoyers wrote:
+> ----- On Jul 28, 2021, at 1:37 PM, paulmck paulmck@kernel.org wrote:
+> [...]
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 42a0032dd99f7..c87b3a271d65b 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -251,6 +251,15 @@ void rcu_softirq_qs(void)
+> > 	rcu_tasks_qs(current, false);
+> > }
+> > 
+> > +/*
+> > + * Increment the current CPU's rcu_data structure's ->dynticks field
+> > + * with ordering.  Return the new value.
+> > + */
+> > +static noinstr unsigned long rcu_dynticks_inc(int incby)
+> > +{
+> > +	return arch_atomic_add_return(incby, this_cpu_ptr(&rcu_data.dynticks));
+> > +}
+> > +
+> 
+> [...]
+> 
+> > @@ -308,7 +317,7 @@ static void rcu_dynticks_eqs_online(void)
+> > 
+> > 	if (atomic_read(&rdp->dynticks) & 0x1)
+> > 		return;
+> 
+> Can the thread be migrated at this point ? If yes, then
+> the check and the increment may happen on different cpu's rdps. Is
+> that OK ?
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- lib/bitmap.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Good point!  Actually, it can be migrated, but it does not matter.
+In fact, it so completely fails to matter that is is totally useless.  :-/
 
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 56bcffe2fa8c..b9f557ca668c 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -545,6 +545,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
-  * mainly serves bin_attribute which doesn't work with exact one page, and it
-  * can break the size limit of converted decimal list and hexadecimal bitmask.
-  *
-+ * WARNING!
-+ *
-+ * This function is not a replacement for sprintf() or bitmap_print_to_pagebuf().
-+ * It is intended to workaround sysfs limitations discussed above and should be
-+ * used carefully in general case for the following reasons:
-+ *  - Time complexity is O(nbits^2/count), comparing to O(nbits) for snprintf().
-+ *  - Memory complexity is O(nbits), comparing to O(1) for snprintf().
-+ *  - @off and @count are NOT offset and number of bits to print.
-+ *  - If printing part of bitmap as list, the resulting string is not a correct
-+ *    list representation of bitmap. Particularly, some bits within or out of
-+ *    related interval may be erroneously set or unset. The format of the string
-+ *    may be broken, so bitmap_parselist-like parser may fail parsing it.
-+ *  - If printing the whole bitmap as list by parts, user must ensure the order
-+ *    of calls of the function such that the offset is incremented linearly.
-+ *  - If printing the whole bitmap as list by parts, user must keep bitmap
-+ *    unchanged between the very first and very last call. Otherwise concatenated
-+ *    result may be incorrect, and format may be broken.
-+ *
-  * Returns the number of characters actually printed to @buf
-  */
- int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
--- 
-2.30.2
+The incoming CPU is still offline, so this is run from some other
+completely-online CPU.  Because this CPU is executing in non-idle
+kernel context, that "if" condition must evaluate to true, so that the
+rcu_dynticks_inc() below is dead code.
 
+Maybe I should move the call to rcu_dynticks_eqs_online() to
+rcu_cpu_starting(), which is pinned to the incoming CPU.  Yes, I
+could remove it completely, but then small changes in the offline
+process could cause great mischief.
+
+Good catch, thank you!
+
+							Thanx, Paul
+
+> > -	atomic_inc(&rdp->dynticks);
+> > +	rcu_dynticks_inc(1);
+> > }
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
