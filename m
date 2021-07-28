@@ -2,149 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423AC3D98EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001CE3D98F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbhG1WcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbhG1WcA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:32:00 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C10C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 15:31:56 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso6231987pjf.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 15:31:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4EOLGfIgju2Hvli/6D/hx+/lwjRcH7NCagC19mzzbto=;
-        b=Gb2lWfRRrZOCipzLboTCyd8ip2X5sq8STvhzVnNOKAdq7jJ6uEfSFYPOZ72YDwVjrL
-         MihCSGQvz9HHyLoJ+CWwfGQbVD3snRPPtI66AJGAylng4Mm8Ety+Kct7YXrDpLD0lU3x
-         smoI8LLyZQj4usYW6mQZK55CZUbz4ovZZfFul7UKu8eBWvat00CdoAOA0sqknqJ+vsZ4
-         mMId10tDUIfnpHVMG14BYAzC0XLD8xBYruSEWDIiMf2lje4qm/9MDsaw0ZeHunX1Rid/
-         Me/2A0gc5AaJ2kDXW3qTyTnbfYH322ZeFX15Pxu02PZFj4CUSqZ9OVqIiJ+RW/WIfrtp
-         OpnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4EOLGfIgju2Hvli/6D/hx+/lwjRcH7NCagC19mzzbto=;
-        b=ICEi7nkp6Q0MY31ZEI4x48YRth20gQFWSaNeUuBmCVSLpQepx27n8qU1FoKHhHjwHI
-         TuPZeRImtSmOrwpE4Kri0B91eYexarm1dJAj4oKn9kk09Nmj7CoH2G3+xrma+DIPBJUD
-         tJbA1ovA5IV8yGKpe4Dgp7dKRe2PPF53nGVhs++oxjW9H8z836SBGCnSPyP4UYdS0VzH
-         BH+sNk0SUafC8X2FOqMi6M5QkLJVnK25y8fc0aXZjwrZqenLrbmRl3Z+sqaEj0GkylJp
-         RRZzA4NDRxcVIsZbeYT7UxXlPZxomLAzL2jSmahr4Dl5Po5k6p1+etMy3mWHO87b/xEt
-         w9dQ==
-X-Gm-Message-State: AOAM530N1B5pBtXZT8N3RdbJr7hHdaCLXV++g2jpdigkEDQamDW7OKWT
-        2K+c1ZPxCjJ4U2pOqS7EZQZhhSAAc8DfIg==
-X-Google-Smtp-Source: ABdhPJyST6XeGLZhicf1sD0ee9ilIj+7CH1GqxSzZY42vuYPnjF9ZCYbt4p1c061Ll+/9L5OqLkUUQ==
-X-Received: by 2002:aa7:938c:0:b029:32a:1725:a3d7 with SMTP id t12-20020aa7938c0000b029032a1725a3d7mr1900553pfe.64.1627511516184;
-        Wed, 28 Jul 2021 15:31:56 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id s36sm984091pgk.64.2021.07.28.15.31.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 15:31:55 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 22:31:51 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 9/9] KVM: X86: Optimize zapping rmap
-Message-ID: <YQHa1xuNKhqRr4Fq@google.com>
-References: <20210625153214.43106-1-peterx@redhat.com>
- <20210625153419.43671-1-peterx@redhat.com>
- <YQHOdhMoFW821HAu@google.com>
- <YQHTocEdMzsJQuzL@t490s>
+        id S232516AbhG1WfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:35:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232174AbhG1WfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:35:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28FB061019;
+        Wed, 28 Jul 2021 22:35:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627511711;
+        bh=ZDuaNWwp28Ho8LJfbfmNOQLGMOZ4dSJK9TfRTeg9pSo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aZuzPRfYjIxtfYJrjEMIqQa8Dtl/gbQMqfEQxGg9ekvOur0xUsHE0Wdy7e/G3sx/u
+         GulAYCmXH5E6Ey0YvCMaEHpcowy2feVtpVjzNB962Mft34Ekhftu5h+apkgQqQmNmM
+         QAaXO0jotB4AqDQgfnZJiyCeb/A/HYuhaMAIx02hDYNo7wuDyR8beRGG0kQ5yx6rey
+         gx9vZ7WO+j36H65YcWlPv5kNRn/14Ck0Oh9cLQgkG7/YYrBWSGRX27RobtG3xZbukb
+         hL+1CYze410YVpPt8KXsb6VLrRvdjoThKN6loJrlCLScC2Op429lb8WD6DI7JOACzy
+         zdlGSEzYHrXMg==
+Received: by pali.im (Postfix)
+        id CE4C196B; Thu, 29 Jul 2021 00:35:08 +0200 (CEST)
+Date:   Thu, 29 Jul 2021 00:35:08 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
+ invoke PME and AER
+Message-ID: <20210728223508.iffjpmk6ipjpvddh@pali>
+References: <20201124232037.GA595463@bjorn-Precision-5520>
+ <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
+ <f49a236d-c5f8-c445-f74e-7aa4eea70c3a@socionext.com>
+ <20210718005109.6xwe3z7gxhuop5xc@pali>
+ <2dfa5ec9-2a33-ae72-3904-999d8b8a2f71@socionext.com>
+ <20210722172627.i4n65lrz3j7pduiz@pali>
+ <17c6eeee-692f-2e9a-5827-34f6939a21a6@socionext.com>
+ <20210723083702.nvhurkgbzbvrrmv3@pali>
+ <660e8597-bb7a-b5a0-e3d4-f108a211ae76@socionext.com>
+ <d96880c4-75ab-50b5-3ecf-0dfd2aa3b8f3@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQHTocEdMzsJQuzL@t490s>
+In-Reply-To: <d96880c4-75ab-50b5-3ecf-0dfd2aa3b8f3@socionext.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021, Peter Xu wrote:
-> On Wed, Jul 28, 2021 at 09:39:02PM +0000, Sean Christopherson wrote:
-> > On Fri, Jun 25, 2021, Peter Xu wrote:
-> > Why implement this as a generic method with a callback?  gcc is suprisingly
-> > astute in optimizing callback(), but I don't see the point of adding a complex
-> > helper that has a single caller, and is extremely unlikely to gain new callers.
-> > Or is there another "zap everything" case I'm missing?
+On Wednesday 28 July 2021 14:29:15 Kunihiko Hayashi wrote:
+> Hi Lorenzo, Pali,
 > 
-> No other case; it's just that pte_list_*() helpers will be more self-contained.
+> On 2021/07/23 18:36, Kunihiko Hayashi wrote:
+> > Hi Pali,
+> 
+> [snip]
+> 
+> > > Just you need to specify that new/private IRQ domain into
+> > > irq_find_mapping() call.
+> > 
+> > I'll try to replace the events with new IRQ domain.
+> According to Pali's suggestion, the bridge handles INTX and it isn't difficult
+> to change IRQ's map for Root Port like the example.
+> It seems that it can't be applied to MSI.
 
-Eh, but this flow is as much about rmaps as it is about pte_list.
+Hm... And it is hard to change mapping also for MSI via custom/new
+callback?
 
-> If that'll be a performance concern, no objection to hard code it.
+> On the other hand, according to Lorenzo's suggestion,
+> 
+> >>>>>>> IMO this should be modelled with a separate IRQ domain and chip for
+> >>>>>>> the root port (yes this implies describing the root port in the dts
+> >>>>>>> file with a separate msi-parent).
+> 
+> Interrupts for PME/AER event is assigned to number 0 of MSI IRQ domain.
 
-It's more about unnecessary complexity than it is about performance, e.g. gcc-10
-generates identical code for both version (which did surprise the heck out of me).
+Yes. This is because Root Port of your PCIe controller provides this
+information to OS.
 
-If we really want to isolate pte_list_destroy(), I would vote for something like
-this (squashed in).   pte_list_remove() already calls mmu_spte_clear_track_bits(),
-so that particular separation of concerns has already gone out the window.
+> (pcie_port_enable_irq_vec() in portdrv_core.c)
+> This expects MSI status bit 0 to be set when the event occurs.
 
- 
--/* Return true if rmap existed and callback called, false otherwise */
--static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
--                            void (*callback)(u64 *sptep))
-+static bool pte_list_destroy(struct kvm_rmap_head *rmap_head)
- {
-        struct pte_list_desc *desc, *next;
-        int i;
-@@ -1013,20 +1011,16 @@ static bool pte_list_destroy(struct kvm_rmap_head *rmap_head,
-                return false;
- 
-        if (!(rmap_head->val & 1)) {
--               if (callback)
--                       callback((u64 *)rmap_head->val);
-+               mmu_spte_clear_track_bits((u64 *)rmap_head->val);
-                goto out;
-        }
- 
-        desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
--
--       while (desc) {
--               if (callback)
--                       for (i = 0; i < desc->spte_count; i++)
--                               callback(desc->sptes[i]);
-+       for ( ; desc; desc = next) {
-+               for (i = 0; i < desc->spte_count; i++)
-+                       mmu_spte_clear_track_bits(desc->sptes[i]);
-                next = desc->more;
-                mmu_free_pte_list_desc(desc);
--               desc = next;
-        }
- out:
-        /* rmap_head is meaningless now, remember to reset it */
-@@ -1422,22 +1416,17 @@ static bool rmap_write_protect(struct kvm_vcpu *vcpu, u64 gfn)
-        return kvm_mmu_slot_gfn_write_protect(vcpu->kvm, slot, gfn, PG_LEVEL_4K);
- }
- 
--static void mmu_spte_clear_track_bits_cb(u64 *sptep)
--{
--       mmu_spte_clear_track_bits(sptep);
--}
--
- static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-                          const struct kvm_memory_slot *slot)
- {
--       return pte_list_destroy(rmap_head, mmu_spte_clear_track_bits_cb);
-+       return pte_list_destroy(rmap_head);
- }
- 
- static bool kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-                            struct kvm_memory_slot *slot, gfn_t gfn, int level,
-                            pte_t unused)
- {
--       return kvm_zap_rmapp(kvm, rmap_head, slot);
-+       return pte_list_destroy(rmap_head);
- }
- 
- static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+Obviously (according to PCIe spec).
+
+> However, in the uniphier PCIe controller, MSI status bit 0 is not set, but
+> the PME/AER status bit in the glue logic is set.
+
+And this "violates" PCIe spec and your controller needs custom handling
+in driver to work...
+
+> I think that it's hard to associate the new domain and "MSI-IRQ 0" event
+> if the new IRQ domain and chip is modelled.
+
+No. It was mean to assign all MSI IRQs (not only MSI number 0) which
+comes from Root Port to new domain. Assigning just one MSI number to
+separate domain is I guess impossible (and also does not make sense).
+
+This is required to difference between MSI number 0 which comes from
+real MSI path and "fake MSI number 0" which is just specific for Root
+Port and does not share anything with real MSI interrupts. As MSI
+interrupts are not shared it is required to prevent "mixing" interrupt
+sources. And kernel can do it via different MSI domains.
+
+So in the end you would have two different MSI numbers 0.
+
+> So, I have no idea to handle both new IRQ domain and cascaded MSI event.
+
+It was mean to define Root Port PCIe device in DTS. Then define a new
+IRQ chip / domain in DTS. And specify in DTS that this Root Port PCIe
+device should use this new IRQ chip / domain instead of default one.
+And then you need to implement "driver" for this "virtual" IRQ chip /
+domain to handle specific glue logic in this controller driver.
+
+I was hoping that it is possible to set this mapping directly in
+controller driver. But if you checked that only legacy IRQs can be done
+in this way, and not MSI then it is either needed to go via this DTS
+path OR try to figure out how to define this mapping in PCI subsystem
+(maybe needs some changes?) also for MSI.
+
+> Is there any example for that?
+
+I do not know. I think you are the first one who have such buggy PCIe
+controller which needs this specific kind of configuration and domains.
+
+In my case in pci-aardvark.c, emulated kernel Root Port does not support
+MSI interrupts (yet) so these "fake" interrupts are routed as legacy
+INTA. And because legacy INTx are shared interrupts they can be mixed
+together with real (as it is done prior my patch). My patch (link sent
+in previous email) just separates "fake" INTA from "real" INTA via
+separate domains for performance reasons.
+
+But you use MSI interrupts, which means that it is required to have
+logic to separate them into different domains to prevent mixing.
+
+> Thank you,
+> 
+> ---
+> Best Regards
+> Kunihiko Hayashi
