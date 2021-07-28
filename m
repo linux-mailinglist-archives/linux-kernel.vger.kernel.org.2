@@ -2,74 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9479F3D901E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A043D9022
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 16:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236588AbhG1OKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 10:10:39 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:50228 "EHLO gloria.sntech.de"
+        id S236707AbhG1OK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 10:10:56 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:49924 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235427AbhG1OKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 10:10:38 -0400
-Received: from [95.90.166.74] (helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1m8kGX-0005zA-8U; Wed, 28 Jul 2021 16:10:33 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peter Geis <pgwipeout@gmail.com>
-Subject: Re: [PATCH 1/9] dt-bindings: gpio: rockchip,gpio-bank: increase max clocks
-Date:   Wed, 28 Jul 2021 16:10:32 +0200
-Message-ID: <10355864.nUPlyArG6x@diego>
-In-Reply-To: <20210728135534.703028-2-pgwipeout@gmail.com>
-References: <20210728135534.703028-1-pgwipeout@gmail.com> <20210728135534.703028-2-pgwipeout@gmail.com>
+        id S236668AbhG1OKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 10:10:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=dn7Kp73y2jWoHdQMYsqP+HDt7Jswx+VZ/Cd2d00WOak=; b=oDIUmU8rD1Z1i6GeQCvr9SAo2b
+        op4tL38NAz23ewHcEPU8UnkGvI3vbXp0cQ873+q2r+zreVEB4JTlymNHLOkvyZc4Zmpw8+zCJERmi
+        IKMZGsD0lniUXMd6+d9ed70GHGPOkiCcHI/ZKj8SsZAz9MoS7BiNR249pS/37fbTIM9U=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m8kGl-00FB92-Q5; Wed, 28 Jul 2021 16:10:47 +0200
+Date:   Wed, 28 Jul 2021 16:10:47 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 net-next 5/7] net: fec: add MAC internal delayed clock
+ feature support
+Message-ID: <YQFlZ+eZRTikjItm@lunn.ch>
+References: <20210728115203.16263-1-qiangqing.zhang@nxp.com>
+ <20210728115203.16263-6-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728115203.16263-6-qiangqing.zhang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+> +	/* For rgmii internal delay, valid values are 0ps and 2000ps */
+> +	if (of_property_read_u32(np, "tx-internal-delay-ps", &rgmii_delay))
+> +		fep->rgmii_txc_dly = true;
+> +	if (of_property_read_u32(np, "rx-internal-delay-ps", &rgmii_delay))
+> +		fep->rgmii_rxc_dly = true;
 
-Am Mittwoch, 28. Juli 2021, 15:55:26 CEST schrieb Peter Geis:
-> The rk356x adds a debounce clock to the gpio devices.
-> Increase the maximum clocks to account for it.
-> 
-> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+I don't see any validation of the only supported values are 0ps and
+2000ps.
 
-that binding change is also part of Jianqun's gpio driver series,
-also adds clock descriptions for both and even got an Ack from Rob
-already, so we should be going with that other variant ;-)
-
-Heiko
-
-> ---
->  Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> index d993e002cebe..489a5263a7a1 100644
-> --- a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> @@ -22,7 +22,7 @@ properties:
->      maxItems: 1
->  
->    clocks:
-> -    maxItems: 1
-> +    maxItems: 2
->  
->    gpio-controller: true
->  
-> 
-
-
-
-
+	Andrew
