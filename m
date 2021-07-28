@@ -2,99 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457AB3D92F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3609E3D92BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbhG1QOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhG1QOj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:14:39 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0CBC061765;
-        Wed, 28 Jul 2021 09:03:59 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id e21so3245029pla.5;
-        Wed, 28 Jul 2021 09:03:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DohKmaOm/zwQ2P9QFmgx3wEwck5+bB7sVxm44FsrpYE=;
-        b=XJ308Hi10yPx5xgCjRg89oRQt9zk7X1SMwWEKyWRdQMFc04fDasAkFE0aNK823E9fI
-         0JZxtWABF2MqVMVHzdf8+rypUR08hUFEpYBHEv25ECLB8OBqJDTxIVOSW5T7+hRTgHfG
-         TtxxYC2npCgjRkVHeD+CzhscLypIY4sRHuTsxpeJvDrCtPbyhYYBcVT8YoNxB1/x9trA
-         KQg1Shpwuj86F6q554eakcxyN8d8wx5ssoILn3fCnX4mXArXEw98TAtbfpCMp13SPCY0
-         ILw+OTyVL8rUirRXxgvI0BBx0bWmXKvI30zCKUH6bP9fUH/JFjFQ1fOOLY1NxzuQAgzg
-         n5Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DohKmaOm/zwQ2P9QFmgx3wEwck5+bB7sVxm44FsrpYE=;
-        b=cBQrNoBwacVFbOfn3aYUVMQ75ZxxOlD/igkmi/EvW4cx5USInG2GdPG3B96NEMENTl
-         /n7FpDuBoR9nU/wOwBix2d4qmnB0P9z6Z6YNGJ2lDsa9kpTW99qv/+ym4xShJGQn0iGv
-         hqFQerUyBYvf/zpltwuUATG8/Zqeyl0a1WIa+pb6KsWe1SJuU8SeWolvhIUQltBIhjHF
-         1jGGW9SNtmcA3ftADWMFHN10A4AXBhf+OI9bEvouSI4JUmJwzJBpxpSSZqpYdjPz4R6v
-         9gj+gtK3J0H9Pgj/wRhzXro4B2/4S28C9jrKgUM91IGjBEl32CCgdsuPohIqFDXJkIdM
-         xxyQ==
-X-Gm-Message-State: AOAM533vrE5iChoeF3dk/kiRxL1z7Nzp4Tyw1eeUl+yxZHAOdvKY+O2E
-        KDlfsWrkUhi1Nw4QzzPL6m9pjiugL2TdEFNM9fk=
-X-Google-Smtp-Source: ABdhPJxJ+G7hcyR34BEFUSBwCTPCdA8kqXedy8NMDhSH+aAbLbfKT/vM/3KcMZyZzV5eQJXwbPlWjHmpbyMJ2utj3gk=
-X-Received: by 2002:a17:90a:b10b:: with SMTP id z11mr5032438pjq.181.1627488238478;
- Wed, 28 Jul 2021 09:03:58 -0700 (PDT)
+        id S237322AbhG1QIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:08:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237402AbhG1QFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 12:05:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 805C160F93;
+        Wed, 28 Jul 2021 16:05:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627488315;
+        bh=mtlOEjAp0ZaGN8O1thI4Ls/GpTvqSvAbJ+P7xB2uW9k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uGb09cwCNSkXfP+k0uos/ECMpj7PWsDGBwTi5+FvDBprC+zJ6BfucHxDsHBbwEQiJ
+         7X7fwv1xOkt8e/MYIsO7NliM7xV6FbJj9upUwPMBeKNqVZPjXpah5kcwQG86/jY6s7
+         olm0khDFNJwAXph5MR1EIh6jn5sI9nF28mKfDLP6g9C0BJcSh+sqTpngCmDT7Q2fNo
+         Wm6BAOjSwA3YpETAXnVH3HCwmc+LvnxmTl4YAbqbs1HLViv/dRl0IXH8J3Wst6H6U1
+         WqFZ9ZFDiB9K/5hoVa2Gpf4JQ8oy63HVN00dXpTp+McuvtwtDETTYLnnJ61YvCtwR5
+         kG8EbXh9kjSRQ==
+Date:   Wed, 28 Jul 2021 09:05:13 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, git@andred.net,
+        Omar Sandoval <osandov@osandov.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [RFC PATCH v1] fscrypt: support encrypted and trusted keys
+Message-ID: <YQGAOTdQRHFv9rlr@gmail.com>
+References: <20210727144349.11215-1-a.fatoum@pengutronix.de>
+ <YQA2fHPwH6EsH9BR@sol.localdomain>
+ <367ea5bb-76cf-6020-cb99-91b5ca82d679@pengutronix.de>
 MIME-Version: 1.0
-References: <20210728105558.23871-1-andriy.shevchenko@linux.intel.com> <20210728155002.GA822338@bjorn-Precision-5520>
-In-Reply-To: <20210728155002.GA822338@bjorn-Precision-5520>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 28 Jul 2021 19:03:18 +0300
-Message-ID: <CAHp75Vex4NffM_H0sK8LnyauMizmk3CjhKYurrcm==80K+qQ-Q@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] PCI: keystone: Use device_get_match_data()
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <367ea5bb-76cf-6020-cb99-91b5ca82d679@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 6:51 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> On Wed, Jul 28, 2021 at 01:55:58PM +0300, Andy Shevchenko wrote:
-> > Instead of manipulations with OF APIs, use device_get_match_data().
-> >
-> > While at it, drop of_match_ptr() completely and make compiler happy,
-> > otherwise it complains:
-> >
-> >   pci-keystone.c:1069:34: warning: =E2=80=98ks_pcie_of_match=E2=80=99 d=
-efined but not used [-Wunused-const-variable=3D]
->
-> These are two separate things and I'd prefer two separate patches.
->
-> I have a to-do item on my list to replace of_match_device(), as you
-> did here.  I originally suggested replacing with
-> device_get_match_data(), but I think Rob prefers
-> of_device_get_match_data() because there's really no benefit to the
-> extra indirection of device_get_match_data().  These are not drivers
-> that may potentially be used with either ACPI or OF; they're just OF.
->
-> Either way, I'd like to see a patch that does this for all drivers in
-> drivers/pci/controller/ at the same time so they get slightly more
-> consistent.
->
-> Same for the .of_match_table update; a good change that I'd like to
-> apply universally.  It looks like pcie-spear13xx.c, pcie-armada8k.c,
-> pci-ftpci100.c, pci-v3-semi.c, pci-xgene.c, pcie-iproc-platform.c also
-> have the same issue.
+On Wed, Jul 28, 2021 at 10:50:42AM +0200, Ahmad Fatoum wrote:
+> Hello Eric,
+> 
+> On 27.07.21 18:38, Eric Biggers wrote:
+> > On Tue, Jul 27, 2021 at 04:43:49PM +0200, Ahmad Fatoum wrote:
+> >> For both v1 and v2 key setup mechanisms, userspace supplies the raw key
+> >> material to the kernel after which it is never again disclosed to
+> >> userspace.
+> >>
+> >> Use of encrypted and trusted keys offers stronger guarantees:
+> >> The key material is generated within the kernel and is never disclosed to
+> >> userspace in clear text and, in the case of trusted keys, can be
+> >> directly rooted to a trust source like a TPM chip.
+> > 
+> > Please include a proper justification for this feature
+> 
+> I've patches pending for extending trusted keys to wrap the key sealing
+> functionality of the CAAM IP on NXP SoCs[1]. I want the kernel to
+> generate key material in the factory, have the CAAM encrypt it using its
+> undisclosed unique key and pass it to userspace as encrypted blob that is
+> persisted to an unencrypted volume. The intention is to thwart offline
+> decryption of an encrypted file system in an embedded system, where a
+> passphrase can't be supplied by an end user.
+> 
+> Employing TPM and TEE trusted keys with this is already possible with
+> dm-crypt, but I'd like this to be possible out-of-the-box with
+> ubifs + fscrypt as well.
 
-Thanks for the review, I will drop this.
+Why not do the key management in userspace, like tpm-tools
+(https://github.com/tpm2-software/tpm2-tools)?  There are a lot of uses for this
+type of hardware besides in-kernel crypto.  See
+https://wiki.archlinux.org/title/Trusted_Platform_Module for all the things you
+can do with the TPM on Linux, including LUKS encryption; this is all with
+userspace key management.  Wouldn't the CAAM hardware be useful for similar
+purposes and thus need a similar design as well, e.g. with functionality exposed
+through some /dev node for userspace to use?  Or are you saying it will only
+ever be useful for in-kernel crypto?
 
---=20
-With Best Regards,
-Andy Shevchenko
+> > Note that there are several design flaws with the encrypted and trusted key
+> > types:
+> > 
+> > - By default, trusted keys are generated using the TPM's RNG rather than the
+> >   kernel's RNG, which places all trust in an unauditable black box.
+> 
+> Patch to fix that awaits feedback on linux-integrity[2].
+
+It does *not* fix it, as your patch only provides an option to use the kernel's
+RNG whereas the default is still the TPM's RNG.
+
+Most people don't change defaults.
+
+Essentially your same argument was used for Dual_EC_DRBG; people argued it was
+okay to standardize because people had the option to choose their own constants
+if they felt the default constants were backdoored.  That didn't really matter,
+though, since in practice everyone just used the default constants.
+
+> 
+> > - trusted and encrypted keys aren't restricted to specific uses in the kernel
+> >   (like the fscrypt-provisioning key type is) but rather are general-purpose.
+> >   Hence, it may be possible to leak their contents to userspace by requesting
+> >   their use for certain algorithms/features, e.g. to encrypt a dm-crypt target
+> >   using a weak cipher that is vulnerable to key recovery attacks.
+> 
+> The footgun is already there by allowing users to specify their own
+> 
+> raw key. Users can already use $keyid for dm-crypt and then do
+> 
+>   $ keyctl pipe $keyid | fscryptctl add_key /mnt
+> 
+> The responsibility to not reuse key material already lies with the users,
+> regardless if they handle the raw key material directly or indirectly via
+> a trusted key description/ID.
+
+Elsewhere you are claiming that "trusted" keys can never be disclosed to
+userspace.  So you can't rely on userspace cooperating, right?
+
+- Eric
