@@ -2,248 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A89C3D89F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4EB3D89F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 10:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbhG1IqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 04:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
+        id S234508AbhG1Irf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 04:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234365AbhG1IqA (ORCPT
+        with ESMTP id S229574AbhG1Ire (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:46:00 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636B1C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 01:45:59 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id h7-20020a4ab4470000b0290263c143bcb2so480057ooo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 01:45:59 -0700 (PDT)
+        Wed, 28 Jul 2021 04:47:34 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D7AC061757;
+        Wed, 28 Jul 2021 01:47:33 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so1312439ota.11;
+        Wed, 28 Jul 2021 01:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FXW54YHoGb6p0OaECaGxMSQDhEroyRfhDhDE+SWU4WI=;
-        b=JJU3bTVzGtzupFIeJadpKdYzv2Y689RhD0w6lzyW5+OhTqgY+xjF4qzOV/Cm/w5NZB
-         dtcIbmjsMHwpHRSAUjq72AJs5MVnjSAWi04YoezMo3Wk+LyWCK+lOSXTfLiYhkvJky2c
-         9eKs42p35o81bO1pBH74tZuB7HoqG3ijAvA62MVU0LuGYwC1DSYItH1rx0GX26Lfxqn+
-         5lEOuJLKwXIaRTGWj2YkJD24C/IfxOgqDzgEWRGySo+C8W/GbmqtWsc/APCpKB75VZXU
-         McwmI2KIvr0bvIgJ2lYYkVrTf/6ALpPGr1yupN+3dz7GmC1AKjuGDPZA3otp2rCmYGhc
-         dT4A==
+        bh=mj+6onJ5YCrGEwa+OUlRe/rsn1CusgezZwhDmz7NI9g=;
+        b=QbywKMqDBE2vyLGvddwKLvEEqPYtYiP3KuLnBqSbk/reeT/yJKLmp+2pGPy1CzN2tU
+         YosFnFUjFJnJiVu2bZ2PHFo1VbGF+xD7bgcTdyX9tN0iCiy0PDPbMSD5MeqYdz8uTBY9
+         zbAGxVhPOAuyXVCN5l2rBNacN9h8QsmrEEo3jf8CXyvKbCuXnMIez7YF/nWdu5i5STdI
+         Niy4RYY6GsSIFn5wg8E5h7B3v7lQhY27ggHOwZjd38aaDUY8Jq0Vo+N25s1LPJcGKTC/
+         fTodhzcfijSudfAaxvR+CHbWYv55iNEbxOeuSZAkKreFiX6SozBK2M+4NN3dTuHh17NY
+         T1pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FXW54YHoGb6p0OaECaGxMSQDhEroyRfhDhDE+SWU4WI=;
-        b=ByQ/iPvyHzJA2vaRmEcCl9Xn+WO3OZka2YZB3eiKGP1zm2hkVvXe38qFpj7VNDH85b
-         VX19gAnMDEFZIAkeEHARxW+pokNqZ0rCHvMHt26/DYoFUDlXk/AJ7W9Ev4C3VptAh2Kq
-         a+qT4EDANAk3k6Zu5WrGGU1DyPzPdSXAqZmaKEQA4t0mqZptMnm2TniTH+W3WXxVf//c
-         gsnEknfqIvCGEf11b1CF7L0DjGYpZOe8az5szSWd6k5hvTmCAWovxSUQXQ4WOhcnvgxd
-         1oBIXq31jDTw+bBBzy5pNYlGWWERs8vWWynyv3rXgM0dXU+7LAWBNlIQVTNAy3Fevysr
-         H9iA==
-X-Gm-Message-State: AOAM530CjWFZa6uqAy8pYpuo5ZAnexbNf66z3xaQ2gokQ+scGpRqxT+P
-        AFQ4nl/M08jJ0BgSeLlTAxnNMqYBEJLFJzLbOv0gLQ==
-X-Google-Smtp-Source: ABdhPJzQfWM7W7ygyyjy8S5CT8wjjXdnLP2tNHyOQ7OSu38X6cL93er//YDhShGyd2FT/sNShLzhrDv/4aaBBOm9Aqk=
-X-Received: by 2002:a4a:e60b:: with SMTP id f11mr16524375oot.8.1627461958720;
- Wed, 28 Jul 2021 01:45:58 -0700 (PDT)
+        bh=mj+6onJ5YCrGEwa+OUlRe/rsn1CusgezZwhDmz7NI9g=;
+        b=ZoeAElpB0CiGi0+qSUS5ruofnzEU/J3iDeL6cpbvHb1IMTMaCBXAz7/7dLgaeiXCpU
+         gee7o9HZx6PUiZboOitGzjBbDOXnqrlaImIT+Kdg8YcUnEkcAL16wTCpeNiT1MU0rWKi
+         nfMdJ1E1P9CiMRHROBbgNvbiANN2Uf+QwNSvqwe90s5vXdkyFNfrpBMAL4fk/0yu0WLL
+         GSy/YUuWVxAJw+dlsiMW0B4SpWLStxBw1Oe6/tSam/Nndcos0ncDFHZjJh654KcjD+s8
+         JqZ47JSVaW0WIrhlgi1u2hDgfs3Rqh5sQ2j1p6hYTQ0O48QlYov2GZmoxCVZKGi7eQLi
+         T7cA==
+X-Gm-Message-State: AOAM531/StrHinsvgOFT42u7zVQk0oOzQNphOAJnPfcXWpHp169lWnJJ
+        nmYeKQrux1Xy2YTMi4X2nl0XtcBfUvefKqmXhF0=
+X-Google-Smtp-Source: ABdhPJyTdb7oER2azfgjeqt4WdAGg6eOms+MJ2WoWxr9GEQkVXuK60ACrXuJ/QqNL6CNBrr6qYi+l1txUCDAqqvnjjQ=
+X-Received: by 2002:a9d:27a4:: with SMTP id c33mr18699138otb.281.1627462053217;
+ Wed, 28 Jul 2021 01:47:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210722121757.1944658-1-jens.wiklander@linaro.org> <20210722121757.1944658-3-jens.wiklander@linaro.org>
-In-Reply-To: <20210722121757.1944658-3-jens.wiklander@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 28 Jul 2021 14:15:47 +0530
-Message-ID: <CAFA6WYOJ6At7p21UuWNp8k4=Qwcb_2VFuV78Z9hksyW76p-fKA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] optee: simplify optee_release()
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        Sughosh Ganu <sughosh.ganu@linaro.org>
+References: <20210726105719.15793-1-chun-jie.chen@mediatek.com>
+ <20210726105719.15793-3-chun-jie.chen@mediatek.com> <162740843452.2368309.13157283201271440368@swboyd.mtv.corp.google.com>
+In-Reply-To: <162740843452.2368309.13157283201271440368@swboyd.mtv.corp.google.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Wed, 28 Jul 2021 10:47:21 +0200
+Message-ID: <CAFqH_51D0A_Oht785cxvWjuNFYgLL25-qX1QEpLhWBARtTgVMA@mail.gmail.com>
+Subject: Re: [v14 02/21] dt-bindings: ARM: Mediatek: Add mmsys document
+ binding for MT8192
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 at 17:48, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+Hi Chun-Jie and Stephen,
+
+Missatge de Stephen Boyd <sboyd@kernel.org> del dia dt., 27 de jul.
+2021 a les 19:54:
 >
-> Simplifies optee_release() with a new helper function,
-> optee_close_session_helper() which has been factored out from
-> optee_close_session().
+> Quoting Chun-Jie Chen (2021-07-26 03:57:00)
+> > This patch adds the mmsys document binding for MT8192 SoC.
+> >
+> > Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> > Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> > Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > ---
+>
+> Applied to clk-next
 >
 
-Simplification looks good to me.
+This will conflict in linux-next as the binding was already converted
+to yaml. See
 
-> A separate optee_release_supp() is added for the supplicant device.
->
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml?id=63e1125e6bb8eae3cd20292f6a10ee421dd574ae
 
-On similar terms, can we have separate optee_open_supp() for better
-understanding?
+Thanks,
+  Enric
 
--Sumit
-
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> ---
->  drivers/tee/optee/call.c          | 31 ++++++++++-------
->  drivers/tee/optee/core.c          | 55 +++++++++++--------------------
->  drivers/tee/optee/optee_private.h |  1 +
->  3 files changed, 39 insertions(+), 48 deletions(-)
->
-> diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> index 6e6eb836e9b6..9d8f5a95e42f 100644
-> --- a/drivers/tee/optee/call.c
-> +++ b/drivers/tee/optee/call.c
-> @@ -288,12 +288,28 @@ int optee_open_session(struct tee_context *ctx,
->         return rc;
->  }
->
-> -int optee_close_session(struct tee_context *ctx, u32 session)
-> +int optee_close_session_helper(struct tee_context *ctx, u32 session)
->  {
-> -       struct optee_context_data *ctxdata = ctx->data;
->         struct tee_shm *shm;
->         struct optee_msg_arg *msg_arg;
->         phys_addr_t msg_parg;
-> +
-> +       shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
-> +       if (IS_ERR(shm))
-> +               return PTR_ERR(shm);
-> +
-> +       msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
-> +       msg_arg->session = session;
-> +       optee_do_call_with_arg(ctx, msg_parg);
-> +
-> +       tee_shm_free(shm);
-> +
-> +       return 0;
-> +}
-> +
-> +int optee_close_session(struct tee_context *ctx, u32 session)
-> +{
-> +       struct optee_context_data *ctxdata = ctx->data;
->         struct optee_session *sess;
->
->         /* Check that the session is valid and remove it from the list */
-> @@ -306,16 +322,7 @@ int optee_close_session(struct tee_context *ctx, u32 session)
->                 return -EINVAL;
->         kfree(sess);
->
-> -       shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
-> -       if (IS_ERR(shm))
-> -               return PTR_ERR(shm);
-> -
-> -       msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
-> -       msg_arg->session = session;
-> -       optee_do_call_with_arg(ctx, msg_parg);
-> -
-> -       tee_shm_free(shm);
-> -       return 0;
-> +       return optee_close_session_helper(ctx, session);
->  }
->
->  int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index ddb8f9ecf307..949223b214c3 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -263,59 +263,42 @@ static int optee_open(struct tee_context *ctx)
->         return 0;
->  }
->
-> -static void optee_release(struct tee_context *ctx)
-> +static void optee_release_helper(struct tee_context *ctx,
-> +                                int (*close_session)(struct tee_context *ctx,
-> +                                                     u32 session))
->  {
->         struct optee_context_data *ctxdata = ctx->data;
-> -       struct tee_device *teedev = ctx->teedev;
-> -       struct optee *optee = tee_get_drvdata(teedev);
-> -       struct tee_shm *shm;
-> -       struct optee_msg_arg *arg = NULL;
-> -       phys_addr_t parg;
->         struct optee_session *sess;
->         struct optee_session *sess_tmp;
->
->         if (!ctxdata)
->                 return;
->
-> -       shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg), TEE_SHM_MAPPED);
-> -       if (!IS_ERR(shm)) {
-> -               arg = tee_shm_get_va(shm, 0);
-> -               /*
-> -                * If va2pa fails for some reason, we can't call into
-> -                * secure world, only free the memory. Secure OS will leak
-> -                * sessions and finally refuse more sessions, but we will
-> -                * at least let normal world reclaim its memory.
-> -                */
-> -               if (!IS_ERR(arg))
-> -                       if (tee_shm_va2pa(shm, arg, &parg))
-> -                               arg = NULL; /* prevent usage of parg below */
-> -       }
-> -
->         list_for_each_entry_safe(sess, sess_tmp, &ctxdata->sess_list,
->                                  list_node) {
->                 list_del(&sess->list_node);
-> -               if (!IS_ERR_OR_NULL(arg)) {
-> -                       memset(arg, 0, sizeof(*arg));
-> -                       arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
-> -                       arg->session = sess->session_id;
-> -                       optee_do_call_with_arg(ctx, parg);
-> -               }
-> +               close_session(ctx, sess->session_id);
->                 kfree(sess);
->         }
->         kfree(ctxdata);
-> +       ctx->data = NULL;
-> +}
->
-> -       if (!IS_ERR(shm))
-> -               tee_shm_free(shm);
-> +static void optee_release(struct tee_context *ctx)
-> +{
-> +       optee_release_helper(ctx, optee_close_session_helper);
-> +}
->
-> -       ctx->data = NULL;
-> +static void optee_release_supp(struct tee_context *ctx)
-> +{
-> +       struct optee *optee = tee_get_drvdata(ctx->teedev);
->
-> -       if (teedev == optee->supp_teedev) {
-> -               if (optee->scan_bus_wq) {
-> -                       destroy_workqueue(optee->scan_bus_wq);
-> -                       optee->scan_bus_wq = NULL;
-> -               }
-> -               optee_supp_release(&optee->supp);
-> +       optee_release_helper(ctx, optee_close_session_helper);
-> +       if (optee->scan_bus_wq) {
-> +               destroy_workqueue(optee->scan_bus_wq);
-> +               optee->scan_bus_wq = NULL;
->         }
-> +       optee_supp_release(&optee->supp);
->  }
->
->  static const struct tee_driver_ops optee_ops = {
-> @@ -339,7 +322,7 @@ static const struct tee_desc optee_desc = {
->  static const struct tee_driver_ops optee_supp_ops = {
->         .get_version = optee_get_version,
->         .open = optee_open,
-> -       .release = optee_release,
-> +       .release = optee_release_supp,
->         .supp_recv = optee_supp_recv,
->         .supp_send = optee_supp_send,
->         .shm_register = optee_shm_register_supp,
-> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-> index e25b216a14ef..2b63b796645e 100644
-> --- a/drivers/tee/optee/optee_private.h
-> +++ b/drivers/tee/optee/optee_private.h
-> @@ -152,6 +152,7 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg);
->  int optee_open_session(struct tee_context *ctx,
->                        struct tee_ioctl_open_session_arg *arg,
->                        struct tee_param *param);
-> +int optee_close_session_helper(struct tee_context *ctx, u32 session);
->  int optee_close_session(struct tee_context *ctx, u32 session);
->  int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
->                       struct tee_param *param);
-> --
-> 2.31.1
->
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
