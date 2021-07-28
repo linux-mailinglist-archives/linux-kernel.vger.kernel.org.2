@@ -2,88 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675113D923F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8E33D924C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 17:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237177AbhG1Pjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 11:39:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:58924 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229622AbhG1Pjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:39:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 937221FB;
-        Wed, 28 Jul 2021 08:39:29 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 750F13F70D;
-        Wed, 28 Jul 2021 08:39:28 -0700 (PDT)
-Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
- from remote numa node
-To:     Ming Lei <ming.lei@redhat.com>, John Garry <john.garry@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <YPklDMng1hL3bQ+v@T590>
- <9c929985-4fcb-e65d-0265-34c820b770ea@huawei.com> <YPlGOOMSdm6Bcyy/@T590>
- <fc552129-e89d-74ad-9e57-30e3ffe4cf5d@huawei.com> <YPmUoBk9u+tU2rbS@T590>
- <0adbe03b-ce26-e4d3-3425-d967bc436ef5@arm.com> <YPqYDY9/VAhfHNfU@T590>
- <6ceab844-465f-3bf3-1809-5df1f1dbbc5c@huawei.com>
- <CAFj5m9J+9vO=CK3uPP+va5EoWffZj9ruSRe2fDDLXn+AE971CQ@mail.gmail.com>
- <ead87bf2-ddfa-eb67-db44-9619c6cdb714@huawei.com> <YQF1AKS6Y14dLU/A@T590>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e1ec45e5-8e8b-7295-4a95-af6fe92573ee@arm.com>
-Date:   Wed, 28 Jul 2021 16:39:23 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235630AbhG1Ppk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 11:45:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53260 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229880AbhG1Pph (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:45:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627487121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1GgCCl6y1CPjPsga6U9ZJtUMD5+4UWfGOjF/EDKX/eI=;
+        b=YDgCgxhflo7v4Gs0DmCdpn9GUSxPNPeg4ZIOu3BtVEAaeSaRsDIFwIHX7aBzQyulmlwlgb
+        NCnqItiaGK5I1tufBLtp6wlC5rj9lVYiNXME8XWL71ghPDivAt/41L3PB8NkJUsI4/+QUl
+        MOxI/HJzPzgZUf4nem7jmRHXTnhjzgc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-378-rSXbtSO7PQu6wp0etv4aJA-1; Wed, 28 Jul 2021 11:45:20 -0400
+X-MC-Unique: rSXbtSO7PQu6wp0etv4aJA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28A308799EF;
+        Wed, 28 Jul 2021 15:45:19 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.18.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D7AD160C05;
+        Wed, 28 Jul 2021 15:45:10 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 11:45:09 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] sched: Fix nr_uninterruptible race causing increasing
+ load average
+Message-ID: <YQF7hXlYI8NtLKPW@lorien.usersys.redhat.com>
+References: <20210707190457.60521-1-pauld@redhat.com>
+ <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
+ <YOb82exzMcrOxfHa@lorien.usersys.redhat.com>
+ <YOg1LHSDknjobJfR@hirez.programming.kicks-ass.net>
+ <YPrGZK+ud5A17lSL@lorien.usersys.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YQF1AKS6Y14dLU/A@T590>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPrGZK+ud5A17lSL@lorien.usersys.redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-28 16:17, Ming Lei wrote:
-> On Wed, Jul 28, 2021 at 11:38:18AM +0100, John Garry wrote:
->> On 28/07/2021 02:32, Ming Lei wrote:
->>> On Mon, Jul 26, 2021 at 3:51 PM John Garry<john.garry@huawei.com>  wrote:
->>>> On 23/07/2021 11:21, Ming Lei wrote:
->>>>>> Thanks, I was also going to suggest the latter, since it's what
->>>>>> arm_smmu_cmdq_issue_cmdlist() does with IRQs masked that should be most
->>>>>> indicative of where the slowness most likely stems from.
->>>>> The improvement from 'iommu.strict=0' is very small:
->>>>>
->>>> Have you tried turning off the IOMMU to ensure that this is really just
->>>> an IOMMU problem?
->>>>
->>>> You can try setting CONFIG_ARM_SMMU_V3=n in the defconfig or passing
->>>> cmdline param iommu.passthrough=1 to bypass the the SMMU (equivalent to
->>>> disabling for kernel drivers).
->>> Bypassing SMMU via iommu.passthrough=1 basically doesn't make a difference
->>> on this issue.
->>
->> A ~90% throughput drop still seems to me to be too high to be a software
->> issue. More so since I don't see similar on my system. And that throughput
->> drop does not lead to a total CPU usage drop, from the fio log.
-
-Indeed, it now sounds like $SUBJECT has been a complete red herring, and 
-although the SMMU may be reflecting the underlying slowness it is not in 
-fact a significant contributor to it. Presumably perf shows any 
-difference in CPU time moving elsewhere once iommu_dma_unmap_sg() is out 
-of the picture?
-
->> Do you know if anyone has run memory benchmark tests on this board to find
->> out NUMA effect? I think lmbench or stream could be used for this.
+On Fri, Jul 23, 2021 at 09:38:44AM -0400 Phil Auld wrote:
+> On Fri, Jul 09, 2021 at 01:38:20PM +0200 Peter Zijlstra wrote:
+> > On Thu, Jul 08, 2021 at 09:25:45AM -0400, Phil Auld wrote:
+> > > Hi Peter,
+> > > 
+> > > On Thu, Jul 08, 2021 at 09:26:26AM +0200 Peter Zijlstra wrote:
+> > > > On Wed, Jul 07, 2021 at 03:04:57PM -0400, Phil Auld wrote:
+> > > > > On systems with weaker memory ordering (e.g. power) commit dbfb089d360b
+> > > > > ("sched: Fix loadavg accounting race") causes increasing values of load
+> > > > > average (via rq->calc_load_active and calc_load_tasks) due to the wakeup
+> > > > > CPU not always seeing the write to task->sched_contributes_to_load in
+> > > > > __schedule(). Missing that we fail to decrement nr_uninterruptible when
+> > > > > waking up a task which incremented nr_uninterruptible when it slept.
+> > > > > 
+> > > > > The rq->lock serialization is insufficient across different rq->locks.
+> > > > > 
+> > > > > Add smp_wmb() to schedule and smp_rmb() before the read in
+> > > > > ttwu_do_activate().
+> > > > 
+> > > > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > > > index 4ca80df205ce..ced7074716eb 100644
+> > > > > --- a/kernel/sched/core.c
+> > > > > +++ b/kernel/sched/core.c
+> > > > > @@ -2992,6 +2992,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
+> > > > >  
+> > > > >  	lockdep_assert_held(&rq->lock);
+> > > > >  
+> > > > > +	/* Pairs with smp_wmb in __schedule() */
+> > > > > +	smp_rmb();
+> > > > >  	if (p->sched_contributes_to_load)
+> > > > >  		rq->nr_uninterruptible--;
+> > > > >  
+> > > > 
+> > > > Is this really needed ?! (this question is a big fat clue the comment is
+> > > > insufficient). AFAICT try_to_wake_up() has a LOAD-ACQUIRE on p->on_rq
+> > > > and hence the p->sched_contributed_to_load must already happen after.
+> > > >
+> > > 
+> > > Yes, it is needed.  We've got idle power systems with load average of 530.21.
+> > > Calc_load_tasks is 530, and the sum of both nr_uninterruptible and
+> > > calc_load_active across all the runqueues is 530. Basically monotonically
+> > > non-decreasing load average. With the patch this no longer happens.
+> > 
+> > Have you tried without the rmb here? Do you really need both barriers?
+> >
 > 
-> https://lore.kernel.org/lkml/YOhbc5C47IzC893B@T590/
+> You're right here. (I see now that you were asking about the rmb specifically
+> in the first question) The rmb is not needed. 
+> 
+> I was unable to reproducde it with the upstream kernel. I still think it is
+> a problem though since the code in question is all the same. The recent
+> changes to unbound workqueues which make it more likely to run on the
+> submitting cpu may be masking the problem since it obviously requires
+> multiple cpus to hit.
+> 
+> If I can isolate those changes I can try to revert them in upstream and
+> see if I can get it there.
+> 
+> I suppose pulling those changes back could get us past this but
+> I'm not a fan of just hiding it by making it harder to hit.
+> 
+> I've not gotten to the disable TTWU_QUEUE test, that's next...
+>
 
-Hmm, a ~4x discrepancy in CPU<->memory bandwidth is pretty significant, 
-but it's still not the ~10x discrepancy in NVMe throughput. Possibly 
-CPU<->PCIe and/or PCIe<->memory bandwidth is even further impacted 
-between sockets, or perhaps all the individual latencies just add up - 
-that level of detailed performance analysis is beyond my expertise. 
-Either way I guess it's probably time to take it up with the system 
-vendor to see if there's anything which can be tuned in hardware/firmware.
+ETOOMANYTREES
 
-Robin.
+Sorry for the noise. I was using the wrong tree to compare with upstream.
+The offending tree is missing f97bb5272d9e ("sched: Fix data-race in wakeup").
+I thought the loadavg increase sounded familiar...
+
+
+Cheers,
+Phil
+
+> 
+> Cheers,
+> Phil
+> 
+> -- 
+> 
+
+-- 
+
