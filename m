@@ -2,1373 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676FE3D9998
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BB33D9990
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 01:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbhG1XiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 19:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232885AbhG1XiQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 19:38:16 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787A6C0613CF;
-        Wed, 28 Jul 2021 16:38:14 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id f13so4716187plj.2;
-        Wed, 28 Jul 2021 16:38:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=2EkZ3kmzIy0h/6cB+mP0+jIME5e7bENzKO4wC8rJFY4=;
-        b=cINEqIM8Nussr6OWTH/CSB6dS6IvkPUxhrE4EHjidlG8W91a4p973l5UuPkuz9bWgg
-         wtLzdtL9YaxcR+QS5p/7zb0B8OuumrbYgVgoatg8UYInmSCv64tSQBhwgwkLuWyKJGju
-         J5IXJ78FfOD3Hy+yaNivmpbJxkjoAFRDfAODS/9gD9LbHRASBIqU/mdZg/YxA6Y3O1yI
-         1uUn3O8JRER+T9gWbcVKf1rdaC6uJ7EbgTOeMhOKSPilpcP0VZaNOih+prRulNoAs3L6
-         kqj3GT7iNLtvSGlp68NA2oCGbFn/E0HMrkwSyMArnZ0c7V4DWViT+8CJsFv117VSvudd
-         ZXYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=2EkZ3kmzIy0h/6cB+mP0+jIME5e7bENzKO4wC8rJFY4=;
-        b=Z4QRX3Ff7nCJZMy8fd5fNYGjPEV0TwnqHBas0iLJr+R/c9MVddjJe3cqtqeP5nBJfe
-         l8RQaPnsjrc6uDJNz6N18Gpl7ivLsKKuJ+1VT77BuQ0m9EUvv2tW9nnleFW39YLROZ1y
-         y6SWzWmS2688am69ToP9ysTUwjFDW0qslrLIuDemJYWieF1BhRF5Q0zpwcy6YPK5jrEt
-         NAazQ6MTSnK6fJKw79+9ONvuQz4sgHhYvlt4Hxd/6XDIGp6mgHBsMcCt7CbV37bpEbe5
-         xGKfuBeKxkUYflKhMj0lmekXmFCg55Kk6XeI11wMQSzOId+1c+bg8FbovB5pbOYZT53d
-         TPDA==
-X-Gm-Message-State: AOAM533XGvYLXclAL974d4UWhXyMrhzCeHWjzntHdFsLjTLlrxHCcvXP
-        +EBsOE7oIGGxsX6AcgmHG+s=
-X-Google-Smtp-Source: ABdhPJx7VFSJ9WSI+CIVthKTWj8BJqlO33fiZO1uDSbUJmS7lh7DQRrAwFS4RSr5fG21wiwvC1P/3Q==
-X-Received: by 2002:a17:90a:5d8a:: with SMTP id t10mr12120334pji.6.1627515493872;
-        Wed, 28 Jul 2021 16:38:13 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id k37sm1038671pgm.84.2021.07.28.16.38.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 16:38:13 -0700 (PDT)
-From:   rentao.bupt@gmail.com
-To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, taoren@fb.com
-Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH 6/6] ARM: dts: aspeed: Add Facebook Fuji (AST2600) BMC
-Date:   Wed, 28 Jul 2021 16:37:55 -0700
-Message-Id: <20210728233755.17963-7-rentao.bupt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210728233755.17963-1-rentao.bupt@gmail.com>
-References: <20210728233755.17963-1-rentao.bupt@gmail.com>
+        id S232849AbhG1XiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 19:38:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232750AbhG1XiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:38:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC4096103E;
+        Wed, 28 Jul 2021 23:38:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627515490;
+        bh=+ykELLiF6X+PUZtIhfZ1cCVPe03Ud8NIS6XNdXYc0TA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PmpA2mB52OiIyb3+GakS+uJW0NXlswSVLSeF2mKFCeVp0R3XiMt1giNDbkfualLlK
+         C0TEHMdXRAs1K66Vi6cdhS3RbqKXvgV+l/E2UMpRcMvxYOo/KJsJxGRN+tU7jxGkXn
+         EEqk8C9Q7ubxoGwoxXAFfnFSJg16DTFaJ0I+4PpAA3BeIbtYBjK18Xaedt/Gp5DDni
+         G1K/3j1AXs1fw5lyaoggIGZ0xIaU7kieoZGCM/UmyuPBKH7NdRgE1/qgG2FFkMXUgE
+         GIMtmq9E/JeUeeFUXjWbsAbhGZqfB9LVgg1SWdURy7+PGyBVJTfAFVyjF5f8F1Jr+D
+         y4d8+t9xbxF2g==
+Received: by mail-ej1-f44.google.com with SMTP id nd39so7333236ejc.5;
+        Wed, 28 Jul 2021 16:38:10 -0700 (PDT)
+X-Gm-Message-State: AOAM531BSXrXms7gbeqABv8QWzYBwj4HH9dSNuqMY3Fz+3rZLcVYczCB
+        MxJ1+w47vkweRku9q2+ruRH8DtcSjRwZPHgs3g==
+X-Google-Smtp-Source: ABdhPJwcLdRnPcxmu95eAJbchsY+qbUNYbfWCcds3WuxJ7T8dxpZvGyfPkjlXfDdmftw1JKBIB1a8DbFI2N4UEko5VU=
+X-Received: by 2002:a17:906:3707:: with SMTP id d7mr1816670ejc.127.1627515489228;
+ Wed, 28 Jul 2021 16:38:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210727174025.10552-1-linux@fw-web.de>
+In-Reply-To: <20210727174025.10552-1-linux@fw-web.de>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 29 Jul 2021 07:37:57 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-mjUhNJ6=q2wGROYCftegESuC8mU1QC2ve6Fm5yiBTgw@mail.gmail.com>
+Message-ID: <CAAOTY_-mjUhNJ6=q2wGROYCftegESuC8mU1QC2ve6Fm5yiBTgw@mail.gmail.com>
+Subject: Re: [PATCH] soc: mmsys: mediatek: add mask to mmsys routes
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, CK Hu <ck.hu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Frank Wunderlich <frank-w@public-files.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Ren <rentao.bupt@gmail.com>
+Hi, Frank:
 
-Add initial version of device tree for Facebook Fuji (AST2600) BMC.
+Frank Wunderlich <linux@fw-web.de> =E6=96=BC 2021=E5=B9=B47=E6=9C=8828=E6=
+=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:41=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> From: CK Hu <ck.hu@mediatek.com>
+>
+> SOUT has many bits and need to be cleared before set new value.
+> Write only could do the clear, but for MOUT, it clears bits that
+> should not be cleared. So use a mask to reset only the needed bits.
 
-Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
----
- arch/arm/boot/dts/Makefile                    |    1 +
- .../arm/boot/dts/aspeed-bmc-facebook-fuji.dts | 1276 +++++++++++++++++
- 2 files changed, 1277 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-fuji.dts
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 7cbb982a7c8b..9765e2ff5bfe 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1412,6 +1412,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-facebook-cloudripper.dtb \
- 	aspeed-bmc-facebook-cmm.dtb \
- 	aspeed-bmc-facebook-elbert.dtb \
-+	aspeed-bmc-facebook-fuji.dtb \
- 	aspeed-bmc-facebook-galaxy100.dtb \
- 	aspeed-bmc-facebook-minipack.dtb \
- 	aspeed-bmc-facebook-tiogapass.dtb \
-diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-fuji.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-fuji.dts
-new file mode 100644
-index 000000000000..382cbbcf908d
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed-bmc-facebook-fuji.dts
-@@ -0,0 +1,1276 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+// Copyright (c) 2020 Facebook Inc.
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/leds/common.h>
-+#include "ast2600-facebook-netbmc-common.dtsi"
-+
-+/ {
-+	model = "Facebook Fuji BMC";
-+	compatible = "facebook,fuji-bmc", "aspeed,ast2600";
-+
-+	aliases {
-+		/*
-+		 * PCA9548 (2-0070) provides 8 channels connecting to
-+		 * SCM (System Controller Module).
-+		 */
-+		i2c16 = &imux16;
-+		i2c17 = &imux17;
-+		i2c18 = &imux18;
-+		i2c19 = &imux19;
-+		i2c20 = &imux20;
-+		i2c21 = &imux21;
-+		i2c22 = &imux22;
-+		i2c23 = &imux23;
-+
-+		/*
-+		 * PCA9548 (8-0070) provides 8 channels connecting to
-+		 * SMB (Switch Main Board).
-+		 */
-+		i2c24 = &imux24;
-+		i2c25 = &imux25;
-+		i2c26 = &imux26;
-+		i2c27 = &imux27;
-+		i2c28 = &imux28;
-+		i2c29 = &imux29;
-+		i2c30 = &imux30;
-+		i2c31 = &imux31;
-+
-+		/*
-+		 * PCA9548 (11-0077) provides 8 channels connecting to
-+		 * SMB (Switch Main Board).
-+		 */
-+		i2c40 = &imux40;
-+		i2c41 = &imux41;
-+		i2c42 = &imux42;
-+		i2c43 = &imux43;
-+		i2c44 = &imux44;
-+		i2c45 = &imux45;
-+		i2c46 = &imux46;
-+		i2c47 = &imux47;
-+
-+		/*
-+		 * PCA9548 (24-0071) provides 8 channels connecting to
-+		 * PDB-Left.
-+		 */
-+		i2c48 = &imux48;
-+		i2c49 = &imux49;
-+		i2c50 = &imux50;
-+		i2c51 = &imux51;
-+		i2c52 = &imux52;
-+		i2c53 = &imux53;
-+		i2c54 = &imux54;
-+		i2c55 = &imux55;
-+
-+		/*
-+		 * PCA9548 (25-0072) provides 8 channels connecting to
-+		 * PDB-Right.
-+		 */
-+		i2c56 = &imux56;
-+		i2c57 = &imux57;
-+		i2c58 = &imux58;
-+		i2c59 = &imux59;
-+		i2c60 = &imux60;
-+		i2c61 = &imux61;
-+		i2c62 = &imux62;
-+		i2c63 = &imux63;
-+
-+		/*
-+		 * PCA9548 (26-0076) provides 8 channels connecting to
-+		 * FCM1.
-+		 */
-+		i2c64 = &imux64;
-+		i2c65 = &imux65;
-+		i2c66 = &imux66;
-+		i2c67 = &imux67;
-+		i2c68 = &imux68;
-+		i2c69 = &imux69;
-+		i2c70 = &imux70;
-+		i2c71 = &imux71;
-+
-+		/*
-+		 * PCA9548 (27-0076) provides 8 channels connecting to
-+		 * FCM2.
-+		 */
-+		i2c72 = &imux72;
-+		i2c73 = &imux73;
-+		i2c74 = &imux74;
-+		i2c75 = &imux75;
-+		i2c76 = &imux76;
-+		i2c77 = &imux77;
-+		i2c78 = &imux78;
-+		i2c79 = &imux79;
-+
-+		/*
-+		 * PCA9548 (40-0076) provides 8 channels connecting to
-+		 * PIM1.
-+		 */
-+		i2c80 = &imux80;
-+		i2c81 = &imux81;
-+		i2c82 = &imux82;
-+		i2c83 = &imux83;
-+		i2c84 = &imux84;
-+		i2c85 = &imux85;
-+		i2c86 = &imux86;
-+		i2c87 = &imux87;
-+
-+		/*
-+		 * PCA9548 (41-0076) provides 8 channels connecting to
-+		 * PIM2.
-+		 */
-+		i2c88 = &imux88;
-+		i2c89 = &imux89;
-+		i2c90 = &imux90;
-+		i2c91 = &imux91;
-+		i2c92 = &imux92;
-+		i2c93 = &imux93;
-+		i2c94 = &imux94;
-+		i2c95 = &imux95;
-+
-+		/*
-+		 * PCA9548 (42-0076) provides 8 channels connecting to
-+		 * PIM3.
-+		 */
-+		i2c96 = &imux96;
-+		i2c97 = &imux97;
-+		i2c98 = &imux98;
-+		i2c99 = &imux99;
-+		i2c100 = &imux100;
-+		i2c101 = &imux101;
-+		i2c102 = &imux102;
-+		i2c103 = &imux103;
-+
-+		/*
-+		 * PCA9548 (43-0076) provides 8 channels connecting to
-+		 * PIM4.
-+		 */
-+		i2c104 = &imux104;
-+		i2c105 = &imux105;
-+		i2c106 = &imux106;
-+		i2c107 = &imux107;
-+		i2c108 = &imux108;
-+		i2c109 = &imux109;
-+		i2c110 = &imux110;
-+		i2c111 = &imux111;
-+
-+		/*
-+		 * PCA9548 (44-0076) provides 8 channels connecting to
-+		 * PIM5.
-+		 */
-+		i2c112 = &imux112;
-+		i2c113 = &imux113;
-+		i2c114 = &imux114;
-+		i2c115 = &imux115;
-+		i2c116 = &imux116;
-+		i2c117 = &imux117;
-+		i2c118 = &imux118;
-+		i2c119 = &imux119;
-+
-+		/*
-+		 * PCA9548 (45-0076) provides 8 channels connecting to
-+		 * PIM6.
-+		 */
-+		i2c120 = &imux120;
-+		i2c121 = &imux121;
-+		i2c122 = &imux122;
-+		i2c123 = &imux123;
-+		i2c124 = &imux124;
-+		i2c125 = &imux125;
-+		i2c126 = &imux126;
-+		i2c127 = &imux127;
-+
-+		/*
-+		 * PCA9548 (46-0076) provides 8 channels connecting to
-+		 * PIM7.
-+		 */
-+		i2c128 = &imux128;
-+		i2c129 = &imux129;
-+		i2c130 = &imux130;
-+		i2c131 = &imux131;
-+		i2c132 = &imux132;
-+		i2c133 = &imux133;
-+		i2c134 = &imux134;
-+		i2c135 = &imux135;
-+
-+		/*
-+		 * PCA9548 (47-0076) provides 8 channels connecting to
-+		 * PIM8.
-+		 */
-+		i2c136 = &imux136;
-+		i2c137 = &imux137;
-+		i2c138 = &imux138;
-+		i2c139 = &imux139;
-+		i2c140 = &imux140;
-+		i2c141 = &imux141;
-+		i2c142 = &imux142;
-+		i2c143 = &imux143;
-+	};
-+
-+	spi_gpio: spi-gpio {
-+		num-chipselects = <3>;
-+		cs-gpios = <&gpio0 ASPEED_GPIO(X, 0) GPIO_ACTIVE_LOW>,
-+			   <0>,	/* device reg=<1> does not exist */
-+			   <&gpio0 ASPEED_GPIO(X, 2) GPIO_ACTIVE_HIGH>;
-+
-+		eeprom@2 {
-+			compatible = "atmel,at93c46d";
-+			spi-max-frequency = <250000>;
-+			data-size = <16>;
-+			spi-cs-high;
-+			reg = <2>;
-+		};
-+	};
-+};
-+
-+&spi1 {
-+	status = "okay";
-+
-+	/*
-+	 * Customize spi1 flash memory size to 32MB (maximum flash size on
-+	 * the bus) to save vmalloc space.
-+	 */
-+	reg = < 0x1e630000 0xc4
-+		0x30000000 0x2000000 >;
-+
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "spi1.0";
-+		spi-max-frequency = <5000000>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			flash1@0 {
-+				reg = <0x0 0x2000000>;
-+				label = "system-flash";
-+			};
-+		};
-+	};
-+};
-+
-+&i2c0 {
-+	multi-master;
-+	bus-frequency = <1000000>;
-+};
-+
-+&i2c2 {
-+	/*
-+	 * PCA9548 (2-0070) provides 8 channels connecting to SCM (System
-+	 * Controller Module).
-+	 */
-+	i2c-switch@70 {
-+		compatible = "nxp,pca9548";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x70>;
-+		i2c-mux-idle-disconnect;
-+
-+		imux16: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			adm1278@10 {
-+				compatible = "adi,adm1278";
-+				reg = <0x10>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				shunt-resistor-micro-ohms = <1500>;
-+			};
-+		};
-+
-+		imux17: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		imux18: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		imux19: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+
-+		imux20: i2c@4 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <4>;
-+		};
-+
-+		imux21: i2c@5 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <5>;
-+		};
-+
-+		imux22: i2c@6 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <6>;
-+		};
-+
-+		imux23: i2c@7 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <7>;
-+		};
-+	};
-+};
-+
-+&i2c8 {
-+	/*
-+	 * PCA9548 (8-0070) provides 8 channels connecting to SMB (Switch
-+	 * Main Board).
-+	 */
-+	i2c-switch@70 {
-+		compatible = "nxp,pca9548";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x70>;
-+		i2c-mux-idle-disconnect;
-+
-+		imux24: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			i2c-switch@71 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x71>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux48: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux49: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux50: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+
-+					lp5012@14 {
-+						compatible = "ti,lp5012";
-+						reg = <0x14>;
-+						#address-cells = <1>;
-+						#size-cells = <0>;
-+
-+						multi-led@0 {
-+							#address-cells = <1>;
-+							#size-cells = <0>;
-+							reg = <0>;
-+							color = <LED_COLOR_ID_MULTI>;
-+							function = LED_FUNCTION_ACTIVITY;
-+							label = "sys";
-+
-+							led@0 {
-+								reg = <0>;
-+								color = <LED_COLOR_ID_RED>;
-+							};
-+
-+							led@1 {
-+								reg = <1>;
-+								color = <LED_COLOR_ID_BLUE>;
-+							};
-+
-+							led@2 {
-+								reg = <2>;
-+								color = <LED_COLOR_ID_GREEN>;
-+							};
-+						};
-+
-+						multi-led@1 {
-+							#address-cells = <1>;
-+							#size-cells = <0>;
-+							reg = <1>;
-+							color = <LED_COLOR_ID_MULTI>;
-+							function = LED_FUNCTION_ACTIVITY;
-+							label = "fan";
-+
-+							led@0 {
-+								reg = <0>;
-+								color = <LED_COLOR_ID_RED>;
-+							};
-+
-+							led@1 {
-+								reg = <1>;
-+								color = <LED_COLOR_ID_BLUE>;
-+							};
-+
-+							led@2 {
-+								reg = <2>;
-+								color = <LED_COLOR_ID_GREEN>;
-+							};
-+						};
-+
-+						multi-led@2 {
-+							#address-cells = <1>;
-+							#size-cells = <0>;
-+							reg = <2>;
-+							color = <LED_COLOR_ID_MULTI>;
-+							function = LED_FUNCTION_ACTIVITY;
-+							label = "psu";
-+
-+							led@0 {
-+								reg = <0>;
-+								color = <LED_COLOR_ID_RED>;
-+							};
-+
-+							led@1 {
-+								reg = <1>;
-+								color = <LED_COLOR_ID_BLUE>;
-+							};
-+
-+							led@2 {
-+								reg = <2>;
-+								color = <LED_COLOR_ID_GREEN>;
-+							};
-+						};
-+
-+						multi-led@3 {
-+							#address-cells = <1>;
-+							#size-cells = <0>;
-+							reg = <3>;
-+							color = <LED_COLOR_ID_MULTI>;
-+							function = LED_FUNCTION_ACTIVITY;
-+							label = "smb";
-+
-+							led@0 {
-+								reg = <0>;
-+								color = <LED_COLOR_ID_RED>;
-+							};
-+
-+							led@1 {
-+								reg = <1>;
-+								color = <LED_COLOR_ID_BLUE>;
-+							};
-+
-+							led@2 {
-+								reg = <2>;
-+								color = <LED_COLOR_ID_GREEN>;
-+							};
-+						};
-+					};
-+				};
-+
-+				imux51: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux52: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux53: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux54: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux55: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux25: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+
-+			i2c-switch@72 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x72>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux56: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux57: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux58: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux59: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux60: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux61: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux62: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux63: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux26: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux64: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux65: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux66: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux67: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+
-+					adm1278@10 {
-+						compatible = "adi,adm1278";
-+						reg = <0x10>;
-+						#address-cells = <1>;
-+						#size-cells = <0>;
-+						shunt-resistor-micro-ohms = <250>;
-+					};
-+				};
-+
-+				imux68: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux69: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux70: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux71: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux27: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux72: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux73: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux74: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux75: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+
-+					adm1278@10 {
-+						compatible = "adi,adm1278";
-+						reg = <0x10>;
-+						#address-cells = <1>;
-+						#size-cells = <0>;
-+						shunt-resistor-micro-ohms = <250>;
-+					};
-+				};
-+
-+				imux76: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux77: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux78: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux79: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux28: i2c@4 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <4>;
-+		};
-+
-+		imux29: i2c@5 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <5>;
-+		};
-+
-+		imux30: i2c@6 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <6>;
-+		};
-+
-+		imux31: i2c@7 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <7>;
-+		};
-+
-+	};
-+};
-+
-+&i2c11 {
-+	status = "okay";
-+
-+	/*
-+	 * PCA9548 (11-0077) provides 8 channels connecting to SMB (Switch
-+	 * Main Board).
-+	 */
-+	i2c-switch@77 {
-+		compatible = "nxp,pca9548";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x77>;
-+		i2c-mux-idle-disconnect;
-+
-+		imux40: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux80: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux81: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux82: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux83: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux84: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux85: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux86: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux87: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux41: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux88: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux89: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux90: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux91: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux92: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux93: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux94: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux95: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux42: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux96: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux97: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux98: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux99: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux100: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux101: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux102: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux103: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux43: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux104: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux105: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux106: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux107: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux108: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux109: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux110: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux111: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux44: i2c@4 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <4>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux112: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux113: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux114: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux115: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux116: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux117: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux118: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux119: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux45: i2c@5 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <5>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux120: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux121: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux122: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux123: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux124: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux125: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux126: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux127: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux46: i2c@6 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <6>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux128: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux129: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux130: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux131: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux132: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux133: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux134: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux135: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+		imux47: i2c@7 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <7>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux136: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux137: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux138: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux139: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux140: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux141: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux142: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux143: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
-+
-+		};
-+
-+	};
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+
-+&mdio1 {
-+	status = "okay";
-+
-+	ethphy3: ethernet-phy@13 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <0x0d>;
-+	};
-+};
-+
-+&mac3 {
-+	phy-handle = <&ethphy3>;
-+};
--- 
-2.17.1
-
+>
+> this fixes HDMI issues on MT7623/BPI-R2 since 5.13
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 440147639ac7 ("soc: mediatek: mmsys: Use an array for setting the =
+routing registers")
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> Signed-off-by: CK Hu <ck.hu@mediatek.com>
+> ---
+> code is taken from here (upstreamed without mask part)
+> https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/=
++/2345186/5
+> basicly CK Hu's code so i set him as author
+> ---
+>  drivers/soc/mediatek/mtk-mmsys.c |   7 +-
+>  drivers/soc/mediatek/mtk-mmsys.h | 133 +++++++++++++++++++++----------
+>  2 files changed, 98 insertions(+), 42 deletions(-)
+>
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-=
+mmsys.c
+> index 080660ef11bf..0f949896fd06 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.c
+> +++ b/drivers/soc/mediatek/mtk-mmsys.c
+> @@ -68,7 +68,9 @@ void mtk_mmsys_ddp_connect(struct device *dev,
+>
+>         for (i =3D 0; i < mmsys->data->num_routes; i++)
+>                 if (cur =3D=3D routes[i].from_comp && next =3D=3D routes[=
+i].to_comp) {
+> -                       reg =3D readl_relaxed(mmsys->regs + routes[i].add=
+r) | routes[i].val;
+> +                       reg =3D readl_relaxed(mmsys->regs + routes[i].add=
+r);
+> +                       reg &=3D ~routes[i].mask;
+> +                       reg |=3D routes[i].val;
+>                         writel_relaxed(reg, mmsys->regs + routes[i].addr)=
+;
+>                 }
+>  }
+> @@ -85,7 +87,8 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
+>
+>         for (i =3D 0; i < mmsys->data->num_routes; i++)
+>                 if (cur =3D=3D routes[i].from_comp && next =3D=3D routes[=
+i].to_comp) {
+> -                       reg =3D readl_relaxed(mmsys->regs + routes[i].add=
+r) & ~routes[i].val;
+> +                       reg =3D readl_relaxed(mmsys->regs + routes[i].add=
+r);
+> +                       reg &=3D ~routes[i].mask;
+>                         writel_relaxed(reg, mmsys->regs + routes[i].addr)=
+;
+>                 }
+>  }
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.h b/drivers/soc/mediatek/mtk-=
+mmsys.h
+> index a760a34e6eca..5f3e2bf0c40b 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.h
+> +++ b/drivers/soc/mediatek/mtk-mmsys.h
+> @@ -35,41 +35,54 @@
+>  #define RDMA0_SOUT_DSI1                                0x1
+>  #define RDMA0_SOUT_DSI2                                0x4
+>  #define RDMA0_SOUT_DSI3                                0x5
+> +#define RDMA0_SOUT_MASK                                0x7
+>  #define RDMA1_SOUT_DPI0                                0x2
+>  #define RDMA1_SOUT_DPI1                                0x3
+>  #define RDMA1_SOUT_DSI1                                0x1
+>  #define RDMA1_SOUT_DSI2                                0x4
+>  #define RDMA1_SOUT_DSI3                                0x5
+> +#define RDMA1_SOUT_MASK                                0x7
+>  #define RDMA2_SOUT_DPI0                                0x2
+>  #define RDMA2_SOUT_DPI1                                0x3
+>  #define RDMA2_SOUT_DSI1                                0x1
+>  #define RDMA2_SOUT_DSI2                                0x4
+>  #define RDMA2_SOUT_DSI3                                0x5
+> +#define RDMA2_SOUT_MASK                                0x7
+>  #define DPI0_SEL_IN_RDMA1                      0x1
+>  #define DPI0_SEL_IN_RDMA2                      0x3
+> +#define DPI0_SEL_IN_MASK                       0x3
+>  #define DPI1_SEL_IN_RDMA1                      (0x1 << 8)
+>  #define DPI1_SEL_IN_RDMA2                      (0x3 << 8)
+> +#define DPI1_SEL_IN_MASK                       (0x3 << 8)
+>  #define DSI0_SEL_IN_RDMA1                      0x1
+>  #define DSI0_SEL_IN_RDMA2                      0x4
+> +#define DSI0_SEL_IN_MASK                       0x7
+>  #define DSI1_SEL_IN_RDMA1                      0x1
+>  #define DSI1_SEL_IN_RDMA2                      0x4
+> +#define DSI1_SEL_IN_MASK                       0x7
+>  #define DSI2_SEL_IN_RDMA1                      (0x1 << 16)
+>  #define DSI2_SEL_IN_RDMA2                      (0x4 << 16)
+> +#define DSI2_SEL_IN_MASK                       (0x7 << 16)
+>  #define DSI3_SEL_IN_RDMA1                      (0x1 << 16)
+>  #define DSI3_SEL_IN_RDMA2                      (0x4 << 16)
+> +#define DSI3_SEL_IN_MASK                       (0x7 << 16)
+>  #define COLOR1_SEL_IN_OVL1                     0x1
+>
+>  #define OVL_MOUT_EN_RDMA                       0x1
+>  #define BLS_TO_DSI_RDMA1_TO_DPI1               0x8
+>  #define BLS_TO_DPI_RDMA1_TO_DSI                        0x2
+> +#define BLS_RDMA1_DSI_DPI_MASK                 0xf
+>  #define DSI_SEL_IN_BLS                         0x0
+>  #define DPI_SEL_IN_BLS                         0x0
+> +#define DPI_SEL_IN_MASK                                0x1
+>  #define DSI_SEL_IN_RDMA                                0x1
+> +#define DSI_SEL_IN_MASK                                0x1
+>
+>  struct mtk_mmsys_routes {
+>         u32 from_comp;
+>         u32 to_comp;
+>         u32 addr;
+> +       u32 mask;
+>         u32 val;
+>  };
+>
+> @@ -91,124 +104,164 @@ struct mtk_mmsys_driver_data {
+>  static const struct mtk_mmsys_routes mmsys_default_routing_table[] =3D {
+>         {
+>                 DDP_COMPONENT_BLS, DDP_COMPONENT_DSI0,
+> -               DISP_REG_CONFIG_OUT_SEL, BLS_TO_DSI_RDMA1_TO_DPI1
+> +               DISP_REG_CONFIG_OUT_SEL, BLS_RDMA1_DSI_DPI_MASK,
+> +               BLS_TO_DSI_RDMA1_TO_DPI1
+>         }, {
+>                 DDP_COMPONENT_BLS, DDP_COMPONENT_DSI0,
+> -               DISP_REG_CONFIG_DSI_SEL, DSI_SEL_IN_BLS
+> +               DISP_REG_CONFIG_DSI_SEL, DSI_SEL_IN_MASK,
+> +               DSI_SEL_IN_BLS
+>         }, {
+>                 DDP_COMPONENT_BLS, DDP_COMPONENT_DPI0,
+> -               DISP_REG_CONFIG_OUT_SEL, BLS_TO_DPI_RDMA1_TO_DSI
+> +               DISP_REG_CONFIG_OUT_SEL, BLS_RDMA1_DSI_DPI_MASK,
+> +               BLS_TO_DPI_RDMA1_TO_DSI
+>         }, {
+>                 DDP_COMPONENT_BLS, DDP_COMPONENT_DPI0,
+> -               DISP_REG_CONFIG_DSI_SEL, DSI_SEL_IN_RDMA
+> +               DISP_REG_CONFIG_DSI_SEL, DSI_SEL_IN_MASK,
+> +               DSI_SEL_IN_RDMA
+>         }, {
+>                 DDP_COMPONENT_BLS, DDP_COMPONENT_DPI0,
+> -               DISP_REG_CONFIG_DPI_SEL, DPI_SEL_IN_BLS
+> +               DISP_REG_CONFIG_DPI_SEL, DPI_SEL_IN_MASK,
+> +               DPI_SEL_IN_BLS
+>         }, {
+>                 DDP_COMPONENT_GAMMA, DDP_COMPONENT_RDMA1,
+> -               DISP_REG_CONFIG_DISP_GAMMA_MOUT_EN, GAMMA_MOUT_EN_RDMA1
+> +               DISP_REG_CONFIG_DISP_GAMMA_MOUT_EN, GAMMA_MOUT_EN_RDMA1,
+> +               GAMMA_MOUT_EN_RDMA1
+>         }, {
+>                 DDP_COMPONENT_OD0, DDP_COMPONENT_RDMA0,
+> -               DISP_REG_CONFIG_DISP_OD_MOUT_EN, OD_MOUT_EN_RDMA0
+> +               DISP_REG_CONFIG_DISP_OD_MOUT_EN, OD_MOUT_EN_RDMA0,
+> +               OD_MOUT_EN_RDMA0
+>         }, {
+>                 DDP_COMPONENT_OD1, DDP_COMPONENT_RDMA1,
+> -               DISP_REG_CONFIG_DISP_OD_MOUT_EN, OD1_MOUT_EN_RDMA1
+> +               DISP_REG_CONFIG_DISP_OD_MOUT_EN, OD1_MOUT_EN_RDMA1,
+> +               OD1_MOUT_EN_RDMA1
+>         }, {
+>                 DDP_COMPONENT_OVL0, DDP_COMPONENT_COLOR0,
+> -               DISP_REG_CONFIG_DISP_OVL0_MOUT_EN, OVL0_MOUT_EN_COLOR0
+> +               DISP_REG_CONFIG_DISP_OVL0_MOUT_EN, OVL0_MOUT_EN_COLOR0,
+> +               OVL0_MOUT_EN_COLOR0
+>         }, {
+>                 DDP_COMPONENT_OVL0, DDP_COMPONENT_COLOR0,
+> -               DISP_REG_CONFIG_DISP_COLOR0_SEL_IN, COLOR0_SEL_IN_OVL0
+> +               DISP_REG_CONFIG_DISP_COLOR0_SEL_IN, COLOR0_SEL_IN_OVL0,
+> +               COLOR0_SEL_IN_OVL0
+>         }, {
+>                 DDP_COMPONENT_OVL0, DDP_COMPONENT_RDMA0,
+> -               DISP_REG_CONFIG_DISP_OVL_MOUT_EN, OVL_MOUT_EN_RDMA
+> +               DISP_REG_CONFIG_DISP_OVL_MOUT_EN, OVL_MOUT_EN_RDMA,
+> +               OVL_MOUT_EN_RDMA
+>         }, {
+>                 DDP_COMPONENT_OVL1, DDP_COMPONENT_COLOR1,
+> -               DISP_REG_CONFIG_DISP_OVL1_MOUT_EN, OVL1_MOUT_EN_COLOR1
+> +               DISP_REG_CONFIG_DISP_OVL1_MOUT_EN, OVL1_MOUT_EN_COLOR1,
+> +               OVL1_MOUT_EN_COLOR1
+>         }, {
+>                 DDP_COMPONENT_OVL1, DDP_COMPONENT_COLOR1,
+> -               DISP_REG_CONFIG_DISP_COLOR1_SEL_IN, COLOR1_SEL_IN_OVL1
+> +               DISP_REG_CONFIG_DISP_COLOR1_SEL_IN, COLOR1_SEL_IN_OVL1,
+> +               COLOR1_SEL_IN_OVL1
+>         }, {
+>                 DDP_COMPONENT_RDMA0, DDP_COMPONENT_DPI0,
+> -               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DPI0
+> +               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
+> +               RDMA0_SOUT_DPI0
+>         }, {
+>                 DDP_COMPONENT_RDMA0, DDP_COMPONENT_DPI1,
+> -               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DPI1
+> +               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
+> +               RDMA0_SOUT_DPI1
+>         }, {
+>                 DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI1,
+> -               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DSI1
+> +               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
+> +               RDMA0_SOUT_DSI1
+>         }, {
+>                 DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI2,
+> -               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DSI2
+> +               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
+> +               RDMA0_SOUT_DSI2
+>         }, {
+>                 DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI3,
+> -               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DSI3
+> +               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
+> +               RDMA0_SOUT_DSI3
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
+> -               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DPI0
+> +               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
+> +               RDMA1_SOUT_DPI0
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
+> -               DISP_REG_CONFIG_DPI_SEL_IN, DPI0_SEL_IN_RDMA1
+> +               DISP_REG_CONFIG_DPI_SEL_IN, DPI0_SEL_IN_MASK,
+> +               DPI0_SEL_IN_RDMA1
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI1,
+> -               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DPI1
+> +               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
+> +               RDMA1_SOUT_DPI1
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI1,
+> -               DISP_REG_CONFIG_DPI_SEL_IN, DPI1_SEL_IN_RDMA1
+> +               DISP_REG_CONFIG_DPI_SEL_IN, DPI1_SEL_IN_MASK,
+> +               DPI1_SEL_IN_RDMA1
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI0,
+> -               DISP_REG_CONFIG_DSIE_SEL_IN, DSI0_SEL_IN_RDMA1
+> +               DISP_REG_CONFIG_DSIE_SEL_IN, DSI0_SEL_IN_MASK,
+> +               DSI0_SEL_IN_RDMA1
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI1,
+> -               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DSI1
+> +               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
+> +               RDMA1_SOUT_DSI1
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI1,
+> -               DISP_REG_CONFIG_DSIO_SEL_IN, DSI1_SEL_IN_RDMA1
+> +               DISP_REG_CONFIG_DSIO_SEL_IN, DSI1_SEL_IN_MASK,
+> +               DSI1_SEL_IN_RDMA1
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI2,
+> -               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DSI2
+> +               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
+> +               RDMA1_SOUT_DSI2
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI2,
+> -               DISP_REG_CONFIG_DSIE_SEL_IN, DSI2_SEL_IN_RDMA1
+> +               DISP_REG_CONFIG_DSIE_SEL_IN, DSI2_SEL_IN_MASK,
+> +               DSI2_SEL_IN_RDMA1
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI3,
+> -               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DSI3
+> +               DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
+> +               RDMA1_SOUT_DSI3
+>         }, {
+>                 DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI3,
+> -               DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_RDMA1
+> +               DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_MASK,
+> +               DSI3_SEL_IN_RDMA1
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI0,
+> -               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DPI0
+> +               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
+> +               RDMA2_SOUT_DPI0
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI0,
+> -               DISP_REG_CONFIG_DPI_SEL_IN, DPI0_SEL_IN_RDMA2
+> +               DISP_REG_CONFIG_DPI_SEL_IN, DPI0_SEL_IN_MASK,
+> +               DPI0_SEL_IN_RDMA2
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI1,
+> -               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DPI1
+> +               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
+> +               RDMA2_SOUT_DPI1
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI1,
+> -               DISP_REG_CONFIG_DPI_SEL_IN, DPI1_SEL_IN_RDMA2
+> +               DISP_REG_CONFIG_DPI_SEL_IN, DPI1_SEL_IN_MASK,
+> +               DPI1_SEL_IN_RDMA2
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI0,
+> -               DISP_REG_CONFIG_DSIE_SEL_IN, DSI0_SEL_IN_RDMA2
+> +               DISP_REG_CONFIG_DSIE_SEL_IN, DSI0_SEL_IN_MASK,
+> +               DSI0_SEL_IN_RDMA2
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI1,
+> -               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DSI1
+> +               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
+> +               RDMA2_SOUT_DSI1
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI1,
+> -               DISP_REG_CONFIG_DSIO_SEL_IN, DSI1_SEL_IN_RDMA2
+> +               DISP_REG_CONFIG_DSIO_SEL_IN, DSI1_SEL_IN_MASK,
+> +               DSI1_SEL_IN_RDMA2
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI2,
+> -               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DSI2
+> +               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
+> +               RDMA2_SOUT_DSI2
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI2,
+> -               DISP_REG_CONFIG_DSIE_SEL_IN, DSI2_SEL_IN_RDMA2
+> +               DISP_REG_CONFIG_DSIE_SEL_IN, DSI2_SEL_IN_MASK,
+> +               DSI2_SEL_IN_RDMA2
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI3,
+> -               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DSI3
+> +               DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
+> +               RDMA2_SOUT_DSI3
+>         }, {
+>                 DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI3,
+> -               DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_RDMA2
+> +               DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_MASK,
+> +               DSI3_SEL_IN_RDMA2
+>         }
+>  };
+>
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
