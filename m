@@ -2,143 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFB03D8F31
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA8B3D8F2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 15:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236566AbhG1NdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 09:33:05 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:41507 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236614AbhG1NdB (ORCPT
+        id S236447AbhG1Nc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 09:32:59 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54190 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236495AbhG1Ncz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:33:01 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 69D39580B92;
-        Wed, 28 Jul 2021 09:32:59 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 28 Jul 2021 09:32:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=oj0uWTcP4eN/7
-        CWZDuDel6GfjZzcOM2ouml6hFdmYPA=; b=Slc460qMfo8dv8eoJrvCksRwXJP26
-        FdN2UhmRDlnfq0LcrMhc+R43iu79h22MNTB4lCSBxc9Bd/V9i51IM5CQtWg0FdD1
-        IPTPRcaBY8OBuJDvH3ngDPsCp7ITToLHVgyxcmBKQa3bMYcLUpr2fgdF7irkLDbu
-        qRXewaVGlE5DVlDOWOT0Zcd2yXg+VRz67PzR1vJNtPDr4bdSy5tfpU4u+Qrm2zLb
-        BJXHw8JciJpQhtZ6ofyt2OJWhQvOUgJEu9RuPtIqU3YDhkoucn4Qr8vZIUfk7BaT
-        qxFaFQt89P2wGwxDAzHkve7Z5U2pSwChpl96IfsqiI6bKwoP20fEt6HRA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=oj0uWTcP4eN/7CWZDuDel6GfjZzcOM2ouml6hFdmYPA=; b=E9ipdD5t
-        ZlcBQy9QTB1kPmrL7dwvrn7EgRasv8XwE68licTQuITnJP9PSsnFTlXV+Y5aWh4R
-        tzIg3og5O+dUdoiOFtJ5uut9RLz9FEYBK+JWiPOnzSAerOJQ63XmbuPyPmeNKvB4
-        nZ1RMGmoxF4LZ+pDkyQtG9PgGirMnTSyuAz1ZgEX7m8Ko+553wgzpIC9PWwtY/lb
-        QSXKurF3nnyC6tCbiL20aisxaXQzN9SdxZSR7ZXtCfQXcFwr1tzZQPaqIKXxRWQY
-        01WRpiIWdgi1PPj2a6RswqI9p7NA8vtK+fZ6EwndTsXbObatamyZCRFjSLeD/TTo
-        V0rkwg5hKSaUPQ==
-X-ME-Sender: <xms:iVwBYddrKZVlWNnMQ3qskFOvoBPeWYA1EYhQ694O5eeJSl__SqZqQQ>
-    <xme:iVwBYbMwsN2BTlfvwLosjcctHR3j_JuPJo3tbL-UY9j7xa__vT2N0WAtnXedQbchg
-    ENzSYdNS8X63ij7us4>
-X-ME-Received: <xmr:iVwBYWjmKcZsAEOGejVqgzqrPxKL2ANkLB2o64G0B7oSt-ZoEHo8hxhOQDyAjHFb4For-Qt36xbCY8AwdqMewy3cs68OdU20p_OA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeelgdeivdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveevheeh
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:iVwBYW_2m-EfmLLFzri_qZ3kzWDBb8lAyMKX8FeaMi2iNdP4KjKq3A>
-    <xmx:iVwBYZtrZ9uMzYEUjx6IJ4KfRJBMtcrhoXzrk-ytvPXT8QV_2i073w>
-    <xmx:iVwBYVGvgHNcsR9yXRmJSPTxp1wo80_nNH7CS2PJQZzsCrW7qWBm7g>
-    <xmx:i1wBYaMjmJvB8Zw20cJQ2NlqxUeqTVrY7zXvf5xxizmfwth2V0SVNQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 28 Jul 2021 09:32:57 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Robert Foss <robert.foss@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 8/8] drm/panel: raspberrypi-touchscreen: Remove MIPI-DSI driver
-Date:   Wed, 28 Jul 2021 15:32:29 +0200
-Message-Id: <20210728133229.2247965-9-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210728133229.2247965-1-maxime@cerno.tech>
-References: <20210728133229.2247965-1-maxime@cerno.tech>
+        Wed, 28 Jul 2021 09:32:55 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 77FBCEE;
+        Wed, 28 Jul 2021 15:32:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1627479171;
+        bh=c1dkUuPXfClOIv5jpAqPkqsyfaPoUtpNHnoR7YUBKtE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JgCARYIVVkDVfEHmvs9gFM9xYM7j/CTlLRSZtKoKNqHJIs0AF6WwqQgMxUr03ru+P
+         ypa7AigHetwOwZZOaGKbE2sakovaTsIV6Ny//st1PPyyR+gwYKG/iCPI81o/tnAtk5
+         iwnjIUWpksVMQze9N4GnXsCRy6iR713Kq6mBzR0U=
+Date:   Wed, 28 Jul 2021 16:32:45 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     dafna.hirschfeld@collabora.com, shawnguo@kernel.org,
+        devicetree@vger.kernel.org, festevam@gmail.com,
+        kernel@pengutronix.de, kernel@puri.sm, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
+        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
+        slongerbeam@gmail.com, Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v10 0/3] media: imx: add support for imx8mq MIPI RX
+Message-ID: <YQFcfbrTmGw4kZvQ@pendragon.ideasonboard.com>
+References: <20210728091245.231043-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210728091245.231043-1-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver was using a two-steps initialisation when probing with the
-i2c probe first registering the MIPI-DSI device, and then when that
-device was probed the driver would attach the device to its host. This
-resulted in a fairly non-standard probe logic.
+Hi Martin,
 
-The previous commit changed that logic entirely though, resulting in a
-completely empty MIPI-DSI device probe. Let's simplify the driver by
-removing it entirely and just behave as a normal i2c driver.
+On Wed, Jul 28, 2021 at 11:12:42AM +0200, Martin Kepplinger wrote:
+> hi,
+> 
+> This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
+> 
+> It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
+> I test it using libcamera. Thanks to Laurent who helped a lot. I'm happy for
+> any feedback,
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- .../drm/panel/panel-raspberrypi-touchscreen.c | 25 +------------------
- 1 file changed, 1 insertion(+), 24 deletions(-)
+Thank you for the series. I've submitted a pull request that contains
+patches 1/3 and 2/3.
 
-diff --git a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-index 995c5cafb970..09937aa26c6a 100644
---- a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-+++ b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-@@ -483,16 +483,6 @@ static int rpi_touchscreen_remove(struct i2c_client *i2c)
- 	return 0;
- }
- 
--static int rpi_touchscreen_dsi_probe(struct mipi_dsi_device *dsi)
--{
--	return 0;
--}
--
--static struct mipi_dsi_driver rpi_touchscreen_dsi_driver = {
--	.driver.name = RPI_DSI_DRIVER_NAME,
--	.probe = rpi_touchscreen_dsi_probe,
--};
--
- static const struct of_device_id rpi_touchscreen_of_ids[] = {
- 	{ .compatible = "raspberrypi,7inch-touchscreen-panel" },
- 	{ } /* sentinel */
-@@ -507,20 +497,7 @@ static struct i2c_driver rpi_touchscreen_driver = {
- 	.probe = rpi_touchscreen_probe,
- 	.remove = rpi_touchscreen_remove,
- };
--
--static int __init rpi_touchscreen_init(void)
--{
--	mipi_dsi_driver_register(&rpi_touchscreen_dsi_driver);
--	return i2c_add_driver(&rpi_touchscreen_driver);
--}
--module_init(rpi_touchscreen_init);
--
--static void __exit rpi_touchscreen_exit(void)
--{
--	i2c_del_driver(&rpi_touchscreen_driver);
--	mipi_dsi_driver_unregister(&rpi_touchscreen_dsi_driver);
--}
--module_exit(rpi_touchscreen_exit);
-+module_i2c_driver(rpi_touchscreen_driver);
- 
- MODULE_AUTHOR("Eric Anholt <eric@anholt.net>");
- MODULE_DESCRIPTION("Raspberry Pi 7-inch touchscreen driver");
+Shawn, Sascha, how would you like to handle 3/3 ?
+
+> revision history
+> ----------------
+> v10: (thank you Dafna)
+> * improve send_level documentation.
+> * add some comments to 0x180 and 0x184
+> * after re-reading I could eliminate the unneeded setting of 0x184 (ignored
+>   by setting 0x180 to 1).
+> 
+> v9: (thank you Laurent)
+> * improve getting the esc clock rate for hs_settle
+> https://lore.kernel.org/linux-media/20210726082117.2423597-1-martin.kepplinger@puri.sm/
+> 
+> v8: (thank you Laurent)
+> * calculate hs_settle for any clk rate and mode
+> * add reviewed-by tag
+> https://lore.kernel.org/linux-media/20210723101217.1954805-1-martin.kepplinger@puri.sm/T/
+> 
+> v7: (thank you Laurent and Rob)
+> * fix the binding example (include the reset driver)
+> * use pm_runtime_resume_and_get()
+> * fix some logic in init_cfg()
+> * add some useful code comments and fix minor bits found by Laurent in v6
+> https://lore.kernel.org/linux-media/20210716102244.581182-1-martin.kepplinger@puri.sm/T/#t
+> 
+> v6: (thank you Laurent and Rob)
+> * add reviewed-by tag to binding
+> * statically allocate clk_bulk_data
+> * fix how the hs_settle value is applied
+> * remove s_power calls
+> * remove the link_setup() callback implementation and make the link immutable
+> * more cleanups according to Laurents' review from v5
+> https://lore.kernel.org/linux-media/20210714111931.324485-1-martin.kepplinger@puri.sm/
+> 
+> v5: (thank you Laurent)
+> * fix reset usage by using the already supported reset controller driver
+> * remove clko2 (totally unrelated clock / had been included by accident)
+> * rename pxl clock to ui
+> https://lore.kernel.org/linux-media/20210618095753.114557-1-martin.kepplinger@puri.sm/
+> 
+> v4: (thank you Rob and Marco)
+> * create fsl,mipi-phy-gpr custom dt property instead of confusing "phy"
+> * add imx8mq-specific compatibile to imx8mq.dtsi for future use
+> https://lore.kernel.org/linux-media/20210614121522.2944593-1-martin.kepplinger@puri.sm/
+> 
+> v3: (thank you, Rob and Laurent)
+> among minor other things according to v2 review, changes include:
+> * better describe the clocks
+> * rename DT property "phy-reset" to "reset" and "phy-gpr" to "phy"
+> https://lore.kernel.org/linux-media/20210608104128.1616028-1-martin.kepplinger@puri.sm/T/#t
+> 
+> v2: (thank you, Dan and Guido)
+> among fixes according to v1 reviews, changes include:
+> * remove status property from dt-bindings example
+> * define a few bits in order to have less magic values
+> * use "imx8mq_mipi_csi_" as local function prefix
+> * read DT properties only during probe()
+> * remove dead code (log_status)
+> * add imx8mq_mipi_csi_release_icc()
+> * fix imx8mq_mipi_csi_init_icc()
+> https://lore.kernel.org/linux-media/20210531112326.90094-1-martin.kepplinger@puri.sm/
+> 
+> v1:
+> https://lore.kernel.org/linux-media/20210527075407.3180744-1-martin.kepplinger@puri.sm/T/#t
+> 
+> 
+> Martin Kepplinger (3):
+>   dt-bindings: media: document the nxp,imx8mq-mipi-csi2 receiver phy and
+>     controller
+>   media: imx: add a driver for i.MX8MQ mipi csi rx phy and controller
+>   arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
+> 
+>  .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 174 +++
+>  arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 104 ++
+>  drivers/staging/media/imx/Makefile            |   1 +
+>  drivers/staging/media/imx/imx8mq-mipi-csi2.c  | 991 ++++++++++++++++++
+>  4 files changed, 1270 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+>  create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
+
 -- 
-2.31.1
+Regards,
 
+Laurent Pinchart
