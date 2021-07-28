@@ -2,559 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519CE3D93A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0FF3D93A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 18:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhG1Qyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 12:54:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:60988 "EHLO foss.arm.com"
+        id S229809AbhG1Q4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 12:56:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:32806 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhG1Qyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 12:54:46 -0400
+        id S229515AbhG1Q4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 12:56:45 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 444CA6D;
-        Wed, 28 Jul 2021 09:54:44 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 61E5F3F66F;
-        Wed, 28 Jul 2021 09:54:41 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 17:54:30 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
-        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
-        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
-        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: Re: [PATCH v6 06/17] firmware: arm_scmi: Introduce monotonically
- increasing tokens
-Message-ID: <20210728165430.GJ6592@e120937-lin>
-References: <20210712141833.6628-1-cristian.marussi@arm.com>
- <20210712141833.6628-7-cristian.marussi@arm.com>
- <20210728141746.chqwhspnwviz67xn@bogus>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDCB16D;
+        Wed, 28 Jul 2021 09:56:43 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.11.234])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 823AF3F66F;
+        Wed, 28 Jul 2021 09:56:41 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 17:56:35 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     madvenka@linux.microsoft.com
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v6 1/3] arm64: Improve the unwinder return value
+Message-ID: <20210728165635.GA47345@C02TD0UTHF1T.local>
+References: <3f2aab69a35c243c5e97f47c4ad84046355f5b90>
+ <20210630223356.58714-1-madvenka@linux.microsoft.com>
+ <20210630223356.58714-2-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210728141746.chqwhspnwviz67xn@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210630223356.58714-2-madvenka@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 03:17:46PM +0100, Sudeep Holla wrote:
-> On Mon, Jul 12, 2021 at 03:18:22PM +0100, Cristian Marussi wrote:
-> > Tokens are sequence numbers embedded in the each SCMI message header: they
-> > are used to correlate commands with responses (and delayed responses), but
-> > their usage and policy of selection is entirely up to the caller (usually
-> > the OSPM agent), while they are completely opaque to the callee (SCMI
-> > server platform) which merely copies them back from the command into the
-> > response message header.
-> > This also means that the platform does not, can not and should not enforce
-> > any kind of policy on received messages depending on the contained sequence
-> > number: platform can perfectly handle concurrent requests carrying the same
-> > identifiying token if that should happen.
-> > 
-> > Moreover the platform is not required to produce in-order responses to
-> > agent requests, the only constraint in these regards is that in case of
-> > an asynchronous message the delayed response must be sent after the
-> > immediate response for the synchronous part of the command transaction.
-> > 
-> > Currenly the SCMI stack of the OSPM agent selects a token for the egressing
-> > commands picking the lowest possible number which is not already in use by
-> > an existing in-flight transaction, which means, in other words, that we
-> > immediately reuse any token after its transaction has completed or it has
-> > timed out: this policy indeed does simplify management and lookup of tokens
-> > and associated xfers.
-> > 
-> > Under the above assumptions and constraints, since there is really no state
-> > shared between the agent and the platform to let the platform know when a
-> > token and its associated message has timed out, the current policy of early
-> > reuse of tokens can easily lead to the situation in which a spurious or
-> > late received response (or delayed_response), related to an old stale and
-> > timed out transaction, can be wrongly associated to a newer valid in-flight
-> > xfer that just happens to have reused the same token.
-> > 
-> > This misbehaviour on such ghost responses is more easily exposed on those
-> > transports that naturally have an higher level of parallelism in processing
-> > multiple concurrent in-flight messages.
-> >
+On Wed, Jun 30, 2021 at 05:33:54PM -0500, madvenka@linux.microsoft.com wrote:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+> 
+> Currently, the unwinder returns a tri-state return value:
+> 
+> 	0		means "continue with the unwind"
+> 	-ENOENT		means "successful termination of the stack trace"
+> 	-EINVAL		means "fatal error, abort the stack trace"
+> 
+> This is confusing. To fix this, define an enumeration of different return
+> codes to make it clear. Handle the return codes in all of the unwind
+> consumers.
 
-Hi,
+I agree the tri-state is confusing, and I also generally agree that
+enums are preferabel to a set of error codes. However, I don't think
+this is quite the right abstraction; more on that below.
 
 > 
-> The term ghost is used here without any reference to what it means. That
-> could make it difficult to follow if someone unaware of it is trying to
-> understand.
+> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+> ---
+>  arch/arm64/include/asm/stacktrace.h | 14 ++++++--
+>  arch/arm64/kernel/perf_callchain.c  |  5 ++-
+>  arch/arm64/kernel/process.c         |  8 +++--
+>  arch/arm64/kernel/return_address.c  | 10 ++++--
+>  arch/arm64/kernel/stacktrace.c      | 53 ++++++++++++++++-------------
+>  arch/arm64/kernel/time.c            |  9 +++--
+>  6 files changed, 64 insertions(+), 35 deletions(-)
 > 
+> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
+> index eb29b1fe8255..6fcd58553fb1 100644
+> --- a/arch/arm64/include/asm/stacktrace.h
+> +++ b/arch/arm64/include/asm/stacktrace.h
+> @@ -30,6 +30,12 @@ struct stack_info {
+>  	enum stack_type type;
+>  };
+>  
+> +enum unwind_rc {
+> +	UNWIND_CONTINUE,		/* No errors encountered */
+> +	UNWIND_ABORT,			/* Fatal errors encountered */
+> +	UNWIND_FINISH,			/* End of stack reached successfully */
+> +};
 
-Right, I'll reword this.
+Generally, there are a bunch of properties we might need to check for an
+unwind step relating to reliabiltiy (e.g. as you add
+UNWIND_CONTINUE_WITH_RISK in the next patch), and I'd prefer that we
+check those properties on the struct stackframe, and simplify
+unwind_frame() to return a bool.
 
-> > This commit introduces a new policy of selection of tokens for the OSPM
-> > agent: each new command transfer now gets the next available, monotonically
-> > increasing token, until tokens are exhausted and the counter rolls over.
-> > 
-> > Such new policy mitigates the above issues with ghost responses since the
-> > tokens are now reused as late as possible (when they roll back ideally)
-> > and so it is much easier to identify such ghost responses to stale timed
-> > out transactions: this also helps in simplifying the specific transports
-> > implementation since stale transport messages can be easily identified
-> > and discarded early on in the rx path without the need to cross check
-> > their actual state with the core transport layer.
-> > This mitigation is even more effective when, as is usually the case, the
-> > maximum number of pending messages is capped by the platform to a much
-> > lower number than the whole possible range of tokens values (2^10).
-> > 
-> > This internal policy change in the core SCMI transport layer is fully
-> > transparent to the specific transports so it has not and should not have
-> > any impact on the transports implementation.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> > v4 --> V5
-> > - removed empirical profiling info from commit msg
-> > - do NOT use monotonic tokens and pending HT for notifications (not needed)
-> > - release xfer_lock later in scmi_xfer_get
-> > ---
-> >  drivers/firmware/arm_scmi/common.h |  25 +++
-> >  drivers/firmware/arm_scmi/driver.c | 260 +++++++++++++++++++++++++----
-> >  2 files changed, 249 insertions(+), 36 deletions(-)
-> > 
-> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> > index 6bb734e0e3ac..2233d0a188fc 100644
-> > --- a/drivers/firmware/arm_scmi/common.h
-> > +++ b/drivers/firmware/arm_scmi/common.h
-> > @@ -14,7 +14,10 @@
-> >  #include <linux/device.h>
-> >  #include <linux/errno.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/hashtable.h>
-> > +#include <linux/list.h>
-> >  #include <linux/module.h>
-> > +#include <linux/refcount.h>
-> >  #include <linux/scmi_protocol.h>
-> >  #include <linux/types.h>
-> >  
-> > @@ -138,6 +141,10 @@ struct scmi_msg {
-> >   *	buffer for the rx path as we use for the tx path.
-> >   * @done: command message transmit completion event
-> >   * @async_done: pointer to delayed response message received event completion
-> > + * @users: A refcount to track the active users for this xfer
-> > + * @pending: True for xfers added to @pending_xfers hashtable
-> > + * @node: An hlist_node reference used to store this xfer, alternatively, on
-> > + *	  the free list @free_xfers or in the @pending_xfers hashtable
-> >   */
-> >  struct scmi_xfer {
-> >  	int transfer_id;
-> > @@ -146,8 +153,26 @@ struct scmi_xfer {
-> >  	struct scmi_msg rx;
-> >  	struct completion done;
-> >  	struct completion *async_done;
-> > +	refcount_t users;
-> > +	bool pending;
-> > +	struct hlist_node node;
-> >  };
-> >  
-> > +/*
-> > + * An helper macro to lookup an xfer from the @pending_xfers hashtable
-> > + * using the message sequence number token as a key.
-> > + */
-> > +#define XFER_FIND(__ht, __k)					\
-> > +({								\
-> > +	typeof(__k) k_ = __k;					\
-> > +	struct scmi_xfer *xfer_ = NULL;				\
-> > +								\
-> > +	hash_for_each_possible((__ht), xfer_, node, k_)		\
-> > +		if (xfer_->hdr.seq == k_)			\
-> > +			break;					\
-> > +	xfer_;							\
-> > +})
-> > +
-> >  struct scmi_xfer_ops;
-> >  
-> >  /**
-> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> > index 4c77ee13b1ad..245ede223302 100644
-> > --- a/drivers/firmware/arm_scmi/driver.c
-> > +++ b/drivers/firmware/arm_scmi/driver.c
-> > @@ -21,6 +21,7 @@
-> >  #include <linux/io.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/ktime.h>
-> > +#include <linux/hashtable.h>
-> >  #include <linux/list.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of_address.h>
-> > @@ -65,19 +66,29 @@ struct scmi_requested_dev {
-> >  	struct list_head node;
-> >  };
-> >  
-> > +#define SCMI_PENDING_XFERS_HT_ORDER_SZ	9
-> > +
-> 
-> Is there any particular reason to choose half the token size as hash bucket
-> size ? IOW why not 1/3 or 1/4th of it ? I would appreciate a comment here.
-> I see it is mentioned in the commit log. Also is it not better to associate
-> or keep it close to MSG_TOKEN_ID_MASK and associated macros.
-> 
+Something akin to the x86 unwinders, where the main loop looks like:
 
-I'll move this in the proper place where associated macros are defined.
+for (unwind_start(&state, ...);
+     !unwind_done(&state) && !unwind_error(&state);
+     unwind_next_frame(&state) {
+	...
+}
 
-The reason for the size choice is tricky (and not sure about its value
-still...so I have not commented yet :D); the ideal size of this hashtable would
-be desc->max_msg so equal to the maximum number of inflight messages allowed on
-the system in order to minimize (probably to zero) collisions on the hashtable:
-unfortunately max_msg is only finally available at runtime time and the
-kernel hashtable is statically sized by design....
+That way we don't have to grow the enum to handle every variation that
+we can think of, and it's simple enough for users to check the
+properties with the helpers.
 
-I tried to play some tricks to define dynamically the size but everything falls
-apart since a lot of stuff in linux/hashtable.h is based on ARRAY_SIZE() and
-friends (to speedup all I suppose). Another non-fit (in my opinion)
-alternative would be using relativistic hashtable (linux/rhashtable.h) but
-those are definitely overkill in our case since they are hashtables that
-can be resized completely at runtime while populated O_o. (with even
-more overhead)
+> +
+>  /*
+>   * A snapshot of a frame record or fp/lr register values, along with some
+>   * accounting information necessary for robust unwinding.
+> @@ -61,7 +67,8 @@ struct stackframe {
+>  #endif
+>  };
+>  
+> -extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
+> +extern enum unwind_rc unwind_frame(struct task_struct *tsk,
+> +				   struct stackframe *frame);
+>  extern void walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+>  			    bool (*fn)(void *, unsigned long), void *data);
+>  extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+> @@ -148,8 +155,8 @@ static inline bool on_accessible_stack(const struct task_struct *tsk,
+>  	return false;
+>  }
+>  
+> -static inline void start_backtrace(struct stackframe *frame,
+> -				   unsigned long fp, unsigned long pc)
+> +static inline enum unwind_rc start_backtrace(struct stackframe *frame,
+> +					     unsigned long fp, unsigned long pc)
+>  {
+>  	frame->fp = fp;
+>  	frame->pc = pc;
+> @@ -169,6 +176,7 @@ static inline void start_backtrace(struct stackframe *frame,
+>  	bitmap_zero(frame->stacks_done, __NR_STACK_TYPES);
+>  	frame->prev_fp = 0;
+>  	frame->prev_type = STACK_TYPE_UNKNOWN;
+> +	return UNWIND_CONTINUE;
+>  }
+>  
+>  #endif	/* __ASM_STACKTRACE_H */
+> diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
+> index 88ff471b0bce..f459208149ae 100644
+> --- a/arch/arm64/kernel/perf_callchain.c
+> +++ b/arch/arm64/kernel/perf_callchain.c
+> @@ -148,13 +148,16 @@ void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry,
+>  			   struct pt_regs *regs)
+>  {
+>  	struct stackframe frame;
+> +	enum unwind_rc rc;
+>  
+>  	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
+>  		/* We don't support guest os callchain now */
+>  		return;
+>  	}
+>  
+> -	start_backtrace(&frame, regs->regs[29], regs->pc);
+> +	rc = start_backtrace(&frame, regs->regs[29], regs->pc);
+> +	if (rc == UNWIND_FINISH || rc == UNWIND_ABORT)
+> +		return;
+>  	walk_stackframe(current, &frame, callchain_trace, entry);
 
-At the end the size that fits all possible in-flight messages minimizing
-collisions in any possible case that I can set at compile time would be 10,
-which means really 2^10 1024 HT entries (equal to MAX_MSG_TOKEN) each of which
-is a struct list_head (*prev,*next 16bytes) i.e. 16KB HT: Peter pointed out
-that it would be a lot of wasted space on normal systems in which max in-flight
-messages are far-less than 1024 AND would not even fit in one 4Kb page, so I
-reduced it to 512 entries but the best would be 256 (8) if we want to
-fit in one regular 4kb page. The drawback will be a bit of HT collisions on
-system with more than 256 possible and effective in-flight messages.
+As a first step, could we convert this over to arch_stack_walk()?
 
-So, best of all would be runtime sizing of the HT, which is not possible
-with current statically sized Kernel hashtable.h (even though I started looking
-into that I have to admit :D), or sizing to 8 (256 entries 4k) to fit in a page,
-or 10 (1024 entries 16kb) to minimize any possible collision if we do
-not care about wasted memory and/or page boundary.
+>  }
+>  
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 6e60aa3b5ea9..e9c763b44fd4 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -573,6 +573,7 @@ unsigned long get_wchan(struct task_struct *p)
+>  	struct stackframe frame;
+>  	unsigned long stack_page, ret = 0;
+>  	int count = 0;
+> +	enum unwind_rc rc;
+>  	if (!p || p == current || p->state == TASK_RUNNING)
+>  		return 0;
+>  
+> @@ -580,10 +581,13 @@ unsigned long get_wchan(struct task_struct *p)
+>  	if (!stack_page)
+>  		return 0;
+>  
+> -	start_backtrace(&frame, thread_saved_fp(p), thread_saved_pc(p));
+> +	rc = start_backtrace(&frame, thread_saved_fp(p), thread_saved_pc(p));
+> +	if (rc == UNWIND_FINISH || rc == UNWIND_ABORT)
+> +		return 0;
+>  
+>  	do {
+> -		if (unwind_frame(p, &frame))
+> +		rc = unwind_frame(p, &frame);
+> +		if (rc == UNWIND_FINISH || rc == UNWIND_ABORT)
+>  			goto out;
+>  		if (!in_sched_functions(frame.pc)) {
+>  			ret = frame.pc;
 
-> >  /**
-> >   * struct scmi_xfers_info - Structure to manage transfer information
-> >   *
-> > - * @xfer_block: Preallocated Message array
-> >   * @xfer_alloc_table: Bitmap table for allocated messages.
-> >   *	Index of this bitmap table is also used for message
-> >   *	sequence identifier.
-> >   * @xfer_lock: Protection for message allocation
-> > + * @last_token: A counter to use as base to generate for monotonically
-> > + *		increasing tokens.
-> > + * @free_xfers: A free list for available to use xfers. It is initialized with
-> > + *		a number of xfers equal to the maximum allowed in-flight
-> > + *		messages.
-> > + * @pending_xfers: An hashtable, indexed by msg_hdr.seq, used to keep all the
-> > + *		   currently in-flight messages.
-> >   */
-> >  struct scmi_xfers_info {
-> > -	struct scmi_xfer *xfer_block;
-> >  	unsigned long *xfer_alloc_table;
-> >  	spinlock_t xfer_lock;
-> > +	atomic_t last_token;
-> 
-> Can we merge this and transfer_last_id ? Let this be free running like
-> transfer_last_id and just use [0-9] from this ? I don't see any point
-> having 2 different monotonically increasing tokens/id.
-> 
+Likewise, can we convert this to use arch_stack_walk()?
 
-Mmm I was tempted about that, but the reason I did not was that in some
-rare limit condition as you can see in the ASCII art (:O) I can find a hole in
-the next available token ids so I have to skip and update last_token itself,
-not sure if this could cause confusion seeing transfer_ids with holes during
-tracing if I unify them.
+> diff --git a/arch/arm64/kernel/return_address.c b/arch/arm64/kernel/return_address.c
+> index a6d18755652f..1224e043e98f 100644
+> --- a/arch/arm64/kernel/return_address.c
+> +++ b/arch/arm64/kernel/return_address.c
+> @@ -36,13 +36,17 @@ void *return_address(unsigned int level)
+>  {
+>  	struct return_address_data data;
+>  	struct stackframe frame;
+> +	enum unwind_rc rc;
+>  
+>  	data.level = level + 2;
+>  	data.addr = NULL;
+>  
+> -	start_backtrace(&frame,
+> -			(unsigned long)__builtin_frame_address(0),
+> -			(unsigned long)return_address);
+> +	rc = start_backtrace(&frame,
+> +			     (unsigned long)__builtin_frame_address(0),
+> +			     (unsigned long)return_address);
+> +	if (rc == UNWIND_FINISH || rc == UNWIND_ABORT)
+> +		return NULL;
+> +
+>  	walk_stackframe(current, &frame, save_return_addr, &data);
 
-> > +	struct hlist_head free_xfers;
-> > +	DECLARE_HASHTABLE(pending_xfers, SCMI_PENDING_XFERS_HT_ORDER_SZ);
-> >  };
-> >  
-> >  /**
-> > @@ -190,45 +201,177 @@ void *scmi_notification_instance_data_get(const struct scmi_handle *handle)
-> >  	return info->notify_priv;
-> >  }
-> >  
-> > +/**
-> > + * scmi_xfer_token_set  - Reserve and set new token for the xfer at hand
-> > + *
-> > + * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> > + * @xfer: The xfer to act upon
-> > + *
-> > + * Pick the next unused monotonically increasing token and set it into
-> > + * xfer->hdr.seq: picking a monotonically increasing value avoids immediate
-> > + * reuse of freshly completed or timed-out xfers, thus mitigating the risk
-> > + * of incorrect association of a late and expired xfer with a live in-flight
-> > + * transaction, both happening to re-use the same token identifier.
-> > + *
-> > + * Since platform is NOT required to answer our request in-order we should
-> > + * account for a few rare but possible scenarios:
-> > + *
-> > + *  - exactly 'next_token' may be NOT available so pick xfer_id >= next_token
-> > + *    using find_next_zero_bit() starting from candidate next_token bit
-> > + *
-> > + *  - all tokens ahead upto (MSG_TOKEN_ID_MASK - 1) are used in-flight but we
-> > + *    are plenty of free tokens at start, so try a second pass using
-> > + *    find_next_zero_bit() and starting from 0.
-> > + *
-> > + *  X = used in-flight
-> > + *
-> > + * Normal
-> > + * ------
-> > + *
-> > + *		|- xfer_id picked
-> > + *   -----------+----------------------------------------------------------
-> > + *   | | |X|X|X| | | | | | ... ... ... ... ... ... ... ... ... ... ...|X|X|
-> > + *   ----------------------------------------------------------------------
-> > + *		^
-> > + *		|- next_token
-> > + *
-> > + * Out-of-order pending at start
-> > + * -----------------------------
-> > + *
-> > + *	  |- xfer_id picked, last_token fixed
-> > + *   -----+----------------------------------------------------------------
-> > + *   |X|X| | | | |X|X| ... ... ... ... ... ... ... ... ... ... ... ...|X| |
-> > + *   ----------------------------------------------------------------------
-> > + *    ^
-> > + *    |- next_token
-> > + *
-> > + *
-> > + * Out-of-order pending at end
-> > + * ---------------------------
-> > + *
-> > + *	  |- xfer_id picked, last_token fixed
-> > + *   -----+----------------------------------------------------------------
-> > + *   |X|X| | | | |X|X| ... ... ... ... ... ... ... ... ... ... |X|X|X||X|X|
-> > + *   ----------------------------------------------------------------------
-> > + *								^
-> > + *								|- next_token
-> > + *
-> > + * Context: Assumes to be called with @xfer_lock already acquired.
-> > + *
-> > + * Return: 0 on Success or error
-> > + */
-> > +static int scmi_xfer_token_set(struct scmi_xfers_info *minfo,
-> > +			       struct scmi_xfer *xfer)
-> > +{
-> > +	unsigned long xfer_id, next_token;
-> > +
-> > +	/* Pick a candidate monotonic token in range [0, MSG_TOKEN_MAX - 1] */
-> > +	next_token = (atomic_inc_return(&minfo->last_token) &
-> > +		      (MSG_TOKEN_MAX - 1));
-> > +
-> > +	/* Pick the next available xfer_id >= next_token */
-> > +	xfer_id = find_next_zero_bit(minfo->xfer_alloc_table,
-> > +				     MSG_TOKEN_MAX, next_token);
-> > +	if (xfer_id == MSG_TOKEN_MAX) {
-> > +		/*
-> > +		 * After heavily out-of-order responses, there are no free
-> > +		 * tokens ahead, but only at start of xfer_alloc_table so
-> > +		 * try again from the beginning.
-> > +		 */
-> > +		xfer_id = find_next_zero_bit(minfo->xfer_alloc_table,
-> > +					     MSG_TOKEN_MAX, 0);
-> > +		/*
-> > +		 * Something is wrong if we got here since there can be a
-> > +		 * maximum number of (MSG_TOKEN_MAX - 1) in-flight messages
-> > +		 * but we have not found any free token [0, MSG_TOKEN_MAX - 1].
-> > +		 */
-> > +		if (WARN_ON_ONCE(xfer_id == MSG_TOKEN_MAX))
-> > +			return -ENOMEM;
-> > +	}
-> > +
-> > +	/* Update +/- last_token accordingly if we skipped some hole */
-> > +	if (xfer_id != next_token)
-> > +		atomic_add((int)(xfer_id - next_token), &minfo->last_token);
-> > +
-> > +	/* Set in-flight */
-> > +	set_bit(xfer_id, minfo->xfer_alloc_table);
-> > +	xfer->hdr.seq = (u16)xfer_id;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * scmi_xfer_token_clear  - Release the token
-> > + *
-> > + * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> > + * @xfer: The xfer to act upon
-> > + */
-> > +static inline void scmi_xfer_token_clear(struct scmi_xfers_info *minfo,
-> > +					 struct scmi_xfer *xfer)
-> > +{
-> > +	clear_bit(xfer->hdr.seq, minfo->xfer_alloc_table);
-> > +}
-> > +
-> >  /**
-> >   * scmi_xfer_get() - Allocate one message
-> >   *
-> >   * @handle: Pointer to SCMI entity handle
-> >   * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> > + * @set_pending: If true a monotonic token is picked and the xfer is added to
-> > + *		 the pending hash table.
-> >   *
-> >   * Helper function which is used by various message functions that are
-> >   * exposed to clients of this driver for allocating a message traffic event.
-> >   *
-> > - * This function can sleep depending on pending requests already in the system
-> > - * for the SCMI entity. Further, this also holds a spinlock to maintain
-> > - * integrity of internal data structures.
-> > + * Picks an xfer from the free list @free_xfers (if any available) and, if
-> > + * required, sets a monotonically increasing token and stores the inflight xfer
-> > + * into the @pending_xfers hashtable for later retrieval.
-> > + *
-> > + * The successfully initialized xfer is refcounted.
-> > + *
-> > + * Context: Holds @xfer_lock while manipulating @xfer_alloc_table and
-> > + *	    @free_xfers.
-> >   *
-> >   * Return: 0 if all went fine, else corresponding error.
-> >   */
-> >  static struct scmi_xfer *scmi_xfer_get(const struct scmi_handle *handle,
-> > -				       struct scmi_xfers_info *minfo)
-> > +				       struct scmi_xfers_info *minfo,
-> > +				       bool set_pending)
-> >  {
-> > -	u16 xfer_id;
-> > +	int ret;
-> > +	unsigned long flags;
-> >  	struct scmi_xfer *xfer;
-> > -	unsigned long flags, bit_pos;
-> > -	struct scmi_info *info = handle_to_scmi_info(handle);
-> >  
-> > -	/* Keep the locked section as small as possible */
-> >  	spin_lock_irqsave(&minfo->xfer_lock, flags);
-> > -	bit_pos = find_first_zero_bit(minfo->xfer_alloc_table,
-> > -				      info->desc->max_msg);
-> > -	if (bit_pos == info->desc->max_msg) {
-> > +	if (hlist_empty(&minfo->free_xfers)) {
-> >  		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> >  		return ERR_PTR(-ENOMEM);
-> >  	}
-> > -	set_bit(bit_pos, minfo->xfer_alloc_table);
-> > -	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> >  
-> > -	xfer_id = bit_pos;
-> > +	/* grab an xfer from the free_list */
-> > +	xfer = hlist_entry(minfo->free_xfers.first, struct scmi_xfer, node);
-> > +	hlist_del_init(&xfer->node);
-> > +
-> > +	if (set_pending) {
-> > +		/* Pick and set monotonic token */
-> > +		ret = scmi_xfer_token_set(minfo, xfer);
-> > +		if (!ret) {
-> > +			hash_add(minfo->pending_xfers, &xfer->node,
-> > +				 xfer->hdr.seq);
-> > +			xfer->pending = true;
-> > +		} else {
-> > +			dev_err(handle->dev,
-> > +				"Failed to get monotonic token %d\n", ret);
-> > +			hlist_add_head(&xfer->node, &minfo->free_xfers);
-> > +			xfer = ERR_PTR(ret);
-> > +		}
-> > +	}
-> >  
-> > -	xfer = &minfo->xfer_block[xfer_id];
-> > -	xfer->hdr.seq = xfer_id;
-> > -	xfer->transfer_id = atomic_inc_return(&transfer_last_id);
-> > +	if (!IS_ERR(xfer)) {
-> > +		refcount_set(&xfer->users, 1);
-> > +		xfer->transfer_id = atomic_inc_return(&transfer_last_id);
-> > +	}
-> > +	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> >  
-> >  	return xfer;
-> >  }
-> > @@ -239,6 +382,9 @@ static struct scmi_xfer *scmi_xfer_get(const struct scmi_handle *handle,
-> >   * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> >   * @xfer: message that was reserved by scmi_xfer_get
-> >   *
-> > + * After refcount check, possibly release an xfer, clearing the token slot,
-> > + * removing xfer from @pending_xfers and putting it back into free_xfers.
-> > + *
-> >   * This holds a spinlock to maintain integrity of internal data structures.
-> >   */
-> >  static void
-> > @@ -246,16 +392,44 @@ __scmi_xfer_put(struct scmi_xfers_info *minfo, struct scmi_xfer *xfer)
-> >  {
-> >  	unsigned long flags;
-> >  
-> > -	/*
-> > -	 * Keep the locked section as small as possible
-> > -	 * NOTE: we might escape with smp_mb and no lock here..
-> > -	 * but just be conservative and symmetric.
-> > -	 */
-> >  	spin_lock_irqsave(&minfo->xfer_lock, flags);
-> > -	clear_bit(xfer->hdr.seq, minfo->xfer_alloc_table);
-> > +	if (refcount_dec_and_test(&xfer->users)) {
-> 
-> The introduction of users in this patch seems useless. I am assuming there are
-> multiple users and this is to prevent some race. I was about to ask if we can
-> manage without it, but seeing some additional use of it in later patches, I
-> will comment later. It may still make sense to move this to later patch as
-> it doesn't add anything here ?
-> 
-
-Indeed I was not sure about introducing it here, the problem that addresses is
-as follows: a normal cmd flow is xfer_get/send/rx/xfer_put ... but if a command
-times out on the TX path BEFORE is finally xfer_put() by the invoking protocol,
-the MSG is still valid (as state) and pending for a while and if something is
-received in the RX path concurrently, the transport calls scmi_rx_callback and
-the risk would be that the xfer would be acquired just fine and processed by RX
-(still has to be xfer_put as said) and then be suddendly vanished by the final
-xfer_put on the TX path while RX is working on it. (or worst released while RX
-is working on it and then picked from the free_list and reused for send while
-RX is still processing it...ok bit of unlucky case I have to admit..)
-
-So xfer->users is meant to avoid the xfer being vanished by the xfer_put() in
-the TX path while rx_callback is still working on it....in such a case the
-rx_callback will be allowed to process safely the xfer (even though it timed
-out in TX) till the end of its RX-processing and the result will be then finally
-discarded at the end with the final __scmi_xfer_put inside handle_response
-that at the end releases the xfer once for all.
-
-Using a refcount allows me to avoid bigger spinlocked critical sections (or at least
-was the idea :D)
-
-> > +		if (xfer->pending) {
-> > +			scmi_xfer_token_clear(minfo, xfer);
-> > +			hash_del(&xfer->node);
-> > +			xfer->pending = false;
-> > +		}
-> > +		hlist_add_head(&xfer->node, &minfo->free_xfers);
-> > +	}
-> >  	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> >  }
-> >  
-> > +/**
-> > + * scmi_xfer_lookup_unlocked  -  Helper to lookup an xfer_id
-> > + *
-> > + * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> > + * @xfer_id: Token ID to lookup in @pending_xfers
-> > + *
-> > + * Refcounting is untouched.
-> > + *
-> > + * Context: Assumes to be called with @xfer_lock already acquired.
-> > + *
-> > + * Return: A valid xfer on Success or error otherwise
-> > + */
-> > +static struct scmi_xfer *
-> > +scmi_xfer_lookup_unlocked(struct scmi_xfers_info *minfo, u16 xfer_id)
-> > +{
-> > +	struct scmi_xfer *xfer = NULL;
-> > +
-> > +	if (xfer_id >= MSG_TOKEN_MAX)
-> > +		return ERR_PTR(-EINVAL);
-> > +
-> 
-> Is this really needed ? I guess we always use MSG_XTRACT_TOKEN(hdr) to
-> fetch the xfer_id, no ?
-> 
-
-Right, indeed comes from a MSG_XTRACT_TOKEN, I'll drop it.
+Likewise, can we convert this to use arch_stack_walk()?
 
 Thanks,
-Cristian
+Mark.
 
+>  
+>  	if (!data.level)
+> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+> index d55bdfb7789c..e9c2c1fa9dde 100644
+> --- a/arch/arm64/kernel/stacktrace.c
+> +++ b/arch/arm64/kernel/stacktrace.c
+> @@ -39,26 +39,27 @@
+>   * records (e.g. a cycle), determined based on the location and fp value of A
+>   * and the location (but not the fp value) of B.
+>   */
+> -int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+> +enum unwind_rc notrace unwind_frame(struct task_struct *tsk,
+> +					struct stackframe *frame)
+>  {
+>  	unsigned long fp = frame->fp;
+>  	struct stack_info info;
+>  
+>  	/* Terminal record; nothing to unwind */
+>  	if (!fp)
+> -		return -ENOENT;
+> +		return UNWIND_FINISH;
+>  
+>  	if (fp & 0xf)
+> -		return -EINVAL;
+> +		return UNWIND_ABORT;
+>  
+>  	if (!tsk)
+>  		tsk = current;
+>  
+>  	if (!on_accessible_stack(tsk, fp, &info))
+> -		return -EINVAL;
+> +		return UNWIND_ABORT;
+>  
+>  	if (test_bit(info.type, frame->stacks_done))
+> -		return -EINVAL;
+> +		return UNWIND_ABORT;
+>  
+>  	/*
+>  	 * As stacks grow downward, any valid record on the same stack must be
+> @@ -75,7 +76,7 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+>  	 */
+>  	if (info.type == frame->prev_type) {
+>  		if (fp <= frame->prev_fp)
+> -			return -EINVAL;
+> +			return UNWIND_ABORT;
+>  	} else {
+>  		set_bit(frame->prev_type, frame->stacks_done);
+>  	}
+> @@ -101,14 +102,14 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+>  		 */
+>  		ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph++);
+>  		if (WARN_ON_ONCE(!ret_stack))
+> -			return -EINVAL;
+> +			return UNWIND_ABORT;
+>  		frame->pc = ret_stack->ret;
+>  	}
+>  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+>  
+>  	frame->pc = ptrauth_strip_insn_pac(frame->pc);
+>  
+> -	return 0;
+> +	return UNWIND_CONTINUE;
+>  }
+>  NOKPROBE_SYMBOL(unwind_frame);
+>  
+> @@ -116,12 +117,12 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+>  			     bool (*fn)(void *, unsigned long), void *data)
+>  {
+>  	while (1) {
+> -		int ret;
+> +		enum unwind_rc rc;
+>  
+>  		if (!fn(data, frame->pc))
+>  			break;
+> -		ret = unwind_frame(tsk, frame);
+> -		if (ret < 0)
+> +		rc = unwind_frame(tsk, frame);
+> +		if (rc == UNWIND_FINISH || rc == UNWIND_ABORT)
+>  			break;
+>  	}
+>  }
+> @@ -137,6 +138,7 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>  {
+>  	struct stackframe frame;
+>  	int skip = 0;
+> +	enum unwind_rc rc;
+>  
+>  	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
+>  
+> @@ -153,17 +155,19 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>  		return;
+>  
+>  	if (tsk == current) {
+> -		start_backtrace(&frame,
+> -				(unsigned long)__builtin_frame_address(0),
+> -				(unsigned long)dump_backtrace);
+> +		rc = start_backtrace(&frame,
+> +				     (unsigned long)__builtin_frame_address(0),
+> +				     (unsigned long)dump_backtrace);
+>  	} else {
+>  		/*
+>  		 * task blocked in __switch_to
+>  		 */
+> -		start_backtrace(&frame,
+> -				thread_saved_fp(tsk),
+> -				thread_saved_pc(tsk));
+> +		rc = start_backtrace(&frame,
+> +				     thread_saved_fp(tsk),
+> +				     thread_saved_pc(tsk));
+>  	}
+> +	if (rc == UNWIND_FINISH || rc == UNWIND_ABORT)
+> +		return;
+>  
+>  	printk("%sCall trace:\n", loglvl);
+>  	do {
+> @@ -181,7 +185,8 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>  			 */
+>  			dump_backtrace_entry(regs->pc, loglvl);
+>  		}
+> -	} while (!unwind_frame(tsk, &frame));
+> +		rc = unwind_frame(tsk, &frame);
+> +	} while (rc != UNWIND_FINISH && rc != UNWIND_ABORT);
+>  
+>  	put_task_stack(tsk);
+>  }
+> @@ -199,17 +204,19 @@ noinline void arch_stack_walk(stack_trace_consume_fn consume_entry,
+>  			      struct pt_regs *regs)
+>  {
+>  	struct stackframe frame;
+> +	enum unwind_rc rc;
+>  
+>  	if (regs)
+> -		start_backtrace(&frame, regs->regs[29], regs->pc);
+> +		rc = start_backtrace(&frame, regs->regs[29], regs->pc);
+>  	else if (task == current)
+> -		start_backtrace(&frame,
+> +		rc = start_backtrace(&frame,
+>  				(unsigned long)__builtin_frame_address(1),
+>  				(unsigned long)__builtin_return_address(0));
+>  	else
+> -		start_backtrace(&frame, thread_saved_fp(task),
+> -				thread_saved_pc(task));
+> -
+> +		rc = start_backtrace(&frame, thread_saved_fp(task),
+> +				     thread_saved_pc(task));
+> +	if (rc == UNWIND_FINISH || rc == UNWIND_ABORT)
+> +		return;
+>  	walk_stackframe(task, &frame, consume_entry, cookie);
+>  }
+>  
+> diff --git a/arch/arm64/kernel/time.c b/arch/arm64/kernel/time.c
+> index eebbc8d7123e..eb50218ec9a4 100644
+> --- a/arch/arm64/kernel/time.c
+> +++ b/arch/arm64/kernel/time.c
+> @@ -35,15 +35,18 @@
+>  unsigned long profile_pc(struct pt_regs *regs)
+>  {
+>  	struct stackframe frame;
+> +	enum unwind_rc rc;
+>  
+>  	if (!in_lock_functions(regs->pc))
+>  		return regs->pc;
+>  
+> -	start_backtrace(&frame, regs->regs[29], regs->pc);
+> +	rc = start_backtrace(&frame, regs->regs[29], regs->pc);
+> +	if (rc == UNWIND_FINISH || rc == UNWIND_ABORT)
+> +		return 0;
+>  
+>  	do {
+> -		int ret = unwind_frame(NULL, &frame);
+> -		if (ret < 0)
+> +		rc = unwind_frame(NULL, &frame);
+> +		if (rc == UNWIND_FINISH || rc == UNWIND_ABORT)
+>  			return 0;
+>  	} while (in_lock_functions(frame.pc));
+>  
+> -- 
+> 2.25.1
+> 
