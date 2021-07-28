@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BB03D9485
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2623D9497
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 19:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhG1RqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 13:46:01 -0400
-Received: from mout.gmx.net ([212.227.15.19]:34557 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229556AbhG1Rp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:45:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627494340;
-        bh=2YMhgIVFIpcFYWrl8VJ85b+omZYWYfbhao4JskYXmfA=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=QREbQZUT8kwSfosauDEsPlBbSoda1IM1ZVRr5LDA/PGpWG0w8ytC+ceEKwioqdxv0
-         wFBBCP6FFwowoyKa4YaxtjjOYkIHDPQowxsp3NP1Oyb9zF2rWFzy0KewEYZFX8D7wI
-         QI4rw/iuXcSL7tw/OPLCECPqtqKf4goxfd7dnzQk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTzay-1mZqfR3MwM-00R2QF; Wed, 28
- Jul 2021 19:45:39 +0200
-Date:   Wed, 28 Jul 2021 19:45:27 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Len Baker <len.baker@gmx.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] staging/rtl8712: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210728174527.GA4275@titan>
-References: <20210717155145.15041-1-len.baker@gmx.com>
- <20210719053747.GN1931@kadam>
- <de94438319a84e0985b3ba0f5c00807b@AcuMS.aculab.com>
- <20210721080624.GV1931@kadam>
- <20210723151510.GB2612@titan>
- <20210726081148.GF1931@kadam>
+        id S230201AbhG1Rwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 13:52:39 -0400
+Received: from liame.vimja.email ([185.85.124.156]:51013 "EHLO
+        liame.vimja.email" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhG1Rwi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 13:52:38 -0400
+X-Greylist: delayed 360 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Jul 2021 13:52:37 EDT
+Received: from authenticated-user (liame.vimja.email [185.85.124.156])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by liame.vimja.email (Postfix) with ESMTPSA id 48CB33F307
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 19:46:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=vimja.email; s=mail;
+        t=1627494392; bh=q7ZSWMIaeHfrouOjyXxOm8kGC9Ef7xw//sHDmbzy3Zw=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=LU/tEGnb/1rDnYxLQ+m/Nrn9YWb0Yh/Pin8TddUfh+8ss2C3pYmBqf6ab9jeyippj
+         kGCiUSxouEE8ndAoJZmm5pu99JK7x8KiQiZQg2sGenE32YXHtimlvMA5x4wdIcqlis
+         2Z4RmXMTE6RtEdxSMz6+Z+8MI8EMlF36kbDRBMAMTuirkGapZepHm5qhjzfkc6Jd0Z
+         TobTG3FKo9VOVnwpSxAutNVsBPELLsuIzK3P3DLcIyifWwmvC3xRxdN9SYi1ivv5i/
+         FqaP47PofOlmf9Icn7LebIW6oRzciIj5RXFujIZfFYtbMnhu0LgFlY0fKD5cqBX3jh
+         y5WzYIFrs12EA==
+Date:   Wed, 28 Jul 2021 19:46:32 +0200
+From:   Niklaus vimja Hofer <lkml@vimja.email>
+To:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5.13 024/800] usb: renesas-xhci: Fix handling of unknown
+ ROM state
+Message-ID: <YQGX+HdjGCfpUper@pcsm1501.honet.lan>
+Mail-Followup-To: LKML <linux-kernel@vger.kernel.org>
+References: <20210712060912.995381202@linuxfoundation.org>
+ <20210712060916.499546891@linuxfoundation.org>
+ <CAFxkdApAJ2i_Bg6Ghd38Tw9Lz5s6FTKP=3-+pSWM-cDT427i2g@mail.gmail.com>
+ <YPMUu+kNu0GZeQQ1@kroah.com>
+ <YPM0IE8U7oDSVbvd@epycbox.lan>
+ <CAFxkdAr7KHgx3etpia8_OdFySP-1HQVW=2LL6Vu=UO4Jh1dW5w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210726081148.GF1931@kadam>
-X-Provags-ID: V03:K1:hnORNkYY4j+OZ3r38+/VcZ/3w+bN0YS8S8yFZW3qYLNo/MWSVqo
- qrB9gEDvTKlMYbg6Rt0ZUEkkymy8/NclpbYwQ/fhdKb7epTgMz7hU/a3suNZPQbIPaZIjHe
- 76twIOkEP3ikinwHCQIWAVs0WBYq5wXCF8faIS3sIxYQmiQDsBmER+s0n9Z977ZO5HRnwYz
- fxNKplQn3LrVEAMc7v5HQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nzhPRzZcdSk=:p01CsDRAtKqDdFLPAFRumF
- UFFU4lPZFUf842WUS1CEBxpOxzEv7QGl4z+zOWwWQpR58lHtoXCbO+ysC+u6php6w1t+RdMax
- JLhkrxLEvY1vQNtjWAkFsrlogEPhfkrfZ24by7FaQ6nskC7LjkknH9owq2wE/gMfUmTwfja0f
- n/bD6HGSzkUk5Gqh+f720C0gS9JJ3Q9VIjvRA7ceboMl/LRHtu9BVslFby7XpRbiaGGgBm3gn
- AlmTADtrwlVmFiyfTjkubSmsVlYlXnYILDr2tEEjkqdOEfEQu6HTjb2+r581gMZ7NNMq9NG8L
- 02b9AMMYpC9urkaJRsE7v8NZClZx6IDRIooqPbPnC+VmqjZRsB0g+8zVj1U4ZkwEo3RJspAbW
- cNHLnmGqiPERrsyrel6LchFwDFczOif0rWEF/w4KaFkMCNYIWEHxFuNUE3g8EOo7uKGFEy6ON
- mCa9ztsTdUe8vKdhP+HaFRaIRe1yD0bicYa4lhILPZf41ERNNwZV4hZU7wxJ0hX9tfxvbGcOJ
- KYOrEtOor1wE7DdlaN4OLSLo0CwyeDP+/Gs/5pNsYS7aLdscC3yUMoAXAQq+Ta35ZtxazuzQ6
- AsExNf6+t89hnbg+giTG8jqf4vcxGgvLG4GlFHhbNn9daR3NHF6ae7fdZcIHkQL1SCsxmVbTk
- zKrCG718rVnbrLYDcI3pijbGgArPnRqdBg68x1AkXlANaM2utsexCZ1X+4nBdmD9tsINnBjgY
- 3smiWy14KPuEqq+LfbGhhw3sy6lCS8GQROHiGw/NVRBKgaT7zq2sx4EtugWaz6glVgwj8fN8I
- kwgHWDK7K2PGXrhoLpiwBqjTUO3u0vtKhi/J2RoXZhQ9lYkK/SDASYM5dyLEmKKgrqxXQ8AHN
- nfOIiXHDfhnla8zYFueaeh9ajYr6Zj/dUneyEf5vSyoBia874nasH3PJRNUR/Rf8c9pge+Hnh
- RQMecIORr8lj845Eq1rDm+690XseI7OO90lX3M5+UxCJh5ZriPtRuynzYR3xG0FSrjVP4efcH
- vOaiHIP6TiAJSZnyufChQeEkdlQAjDWzoVE/emCEsD1RdBU7zIYPOoBdfjQbFxkqJOGhxKy+g
- cg81Ml1OkhUWP/HYn5fCMH5sEFj0UkWteA9
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAFxkdAr7KHgx3etpia8_OdFySP-1HQVW=2LL6Vu=UO4Jh1dW5w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 11:11:48AM +0300, Dan Carpenter wrote:
-> On Fri, Jul 23, 2021 at 05:15:10PM +0200, Len Baker wrote:
-> > Hi,
+Hi,
+
+On Mon, 2021-07-19 10:28, Justin Forbes wrote:
+> On Sat, Jul 17, 2021 at 2:48 PM Moritz Fischer <mdf@kernel.org> wrote:
 > >
-> > On Wed, Jul 21, 2021 at 11:06:24AM +0300, Dan Carpenter wrote:
-> > > On Mon, Jul 19, 2021 at 03:24:38PM +0000, David Laight wrote:
+> > On Sat, Jul 17, 2021 at 07:34:51PM +0200, Greg Kroah-Hartman wrote:
+> > > On Sat, Jul 17, 2021 at 08:39:19AM -0500, Justin Forbes wrote:
+> > > > On Mon, Jul 12, 2021 at 2:31 AM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > From: Moritz Fischer <mdf@kernel.org>
+> > > > >
+> > > > > commit d143825baf15f204dac60acdf95e428182aa3374 upstream.
+> > > > >
+> > > > > The ROM load sometimes seems to return an unknown status
+> > > > > (RENESAS_ROM_STATUS_NO_RESULT) instead of success / fail.
+> > > > >
+> > > > > If the ROM load indeed failed this leads to failures when trying to
+> > > > > communicate with the controller later on.
+> > > > >
+> > > > > Attempt to load firmware using RAM load in those cases.
+> > > > >
+> > > > > Fixes: 2478be82de44 ("usb: renesas-xhci: Add ROM loader for uPD720201")
+> > > > > Cc: stable@vger.kernel.org
+> > > > > Cc: Mathias Nyman <mathias.nyman@intel.com>
+> > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > Cc: Vinod Koul <vkoul@kernel.org>
+> > > > > Tested-by: Vinod Koul <vkoul@kernel.org>
+> > > > > Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> > > > > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> > > > > Link: https://lore.kernel.org/r/20210615153758.253572-1-mdf@kernel.org
+> > > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > >
 > > > >
-> > > > I know only root can set module parameters, but having one
-> > > > that contains a string used as a printf format seems
-> > > > dangerous at best.
+> > > > After sending out 5.12.17 for testing, we had a user complain that all
+> > > > of their USB devices disappeared with the error:
 > > > >
-> > > > Isn't it best to let userspace rename the interfaces later on?
+> > > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: Direct firmware load
+> > > > for renesas_usb_fw.mem failed with error -2
+> > > > Jul 15 23:18:53 kernel: xhci_hcd 0000:04:00.0: request_firmware failed: -2
+> > > > Jul 15 23:18:53 kernel: xhci_hcd: probe of 0000:04:00.0 failed with error -2
+> > > >
+> > > > After first assuming that something was missing in the backport to
+> > > > 5.12, I had the user try 5.13.2, and then 5.14-rc1. Both of those
+> > > > failed in the same way, so it is not working in the current Linus tree
+> > > > either.  Reverting this patch fixed the issue.
 > > >
-> > > Yeah.  I think you're right.
+> > > Can you send a revert for this so I can get that into Linus's tree and
+> > > then all stable releases as well?
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
 > >
-> > Sorry, but I don't understand if the code needs to be improved or not.
-> > Is the code shown by Dan not correct?
->
-> We should remove the ifname[] array and the module option completely.
+> > Me or Justin? I can do it. This is annoying my system doesn't work
+> > without this :-(
+> >
+> > Back to the drawing board I guess ...
+> >
+> > Justin, any idea if your customer had the eeprom populated and
+> > programmed or not, just as additional datapoint.
+> 
+> I am not sure, but I did have another user chime in on the bug saying
+> the test kernel with the revert fixed their system as well. It was a
+> T14s AMD
+> Generation_1. The original reporter had a ASUS System Product
+> Name/PRIME H370M-PLUS, BIOS 2801 04/13/2021.
 
-Thanks for the clarification.
+This solved the same issue on my T14 AMD Gen 1 (non-s variant). I was
+using 5.13.5 where it was not working and I was able to observe the same
+error message in `dmesg`. Reverted the patch, recompiled, rebooted and
+now it's working just fine.
 
-Regards,
-Len
+Sincerely
+-- 
+Niklaus 'vimja' Hofer
+ig@vimja.email
+xmpp: vimja@xmpp.honet.ch
