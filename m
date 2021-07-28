@@ -2,144 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA7A3D982B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E5E3D982C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 00:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhG1WIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 18:08:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49246 "EHLO mail.kernel.org"
+        id S232089AbhG1WJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 18:09:13 -0400
+Received: from mga14.intel.com ([192.55.52.115]:43875 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231668AbhG1WIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:08:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57F0660FED;
-        Wed, 28 Jul 2021 22:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627510123;
-        bh=H2Y1+Sq9QtbYo5PwIHp3aaXPyV8HfD43k8oAInR8+1s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=kW9Qv4GlHHK4gBCVNAB8toz48c1nwSP7v33mjObvx6F/QXtfx02beCyVa4IaZdUqw
-         xfG6pzJREK9lUbi9xtN8wAmbTb1VcbSckJ3mS7YzVoDJCJP4XTFknHrZyyQn7GCnEK
-         VT79ED8hYHirnLUMcvk3sv9Skdc11CnRgcpY3anpZA5ib4JXkW2svfy+vHV/IcrJNb
-         HQKwiKj8mPumeT6GMp5TLh2ed1Yv8XIrmhgoh2zxMlstqvTCcgAnqws5OGRACcyPcP
-         uEIwhq8tM9Js6QfdqCADuMkYXh5ipMVV7hCXcBwcalmyXy9y54tBT3nlnt+d1vA5kk
-         xhs3e4wJG0Xlw==
-Date:   Wed, 28 Jul 2021 17:08:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Xiaofei Tan <tanxiaofei@huawei.com>
-Cc:     bhelgaas@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        sean.v.kelley@intel.com, Jonathan.Cameron@huawei.com,
-        refactormyself@gmail.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH v2] PCI/AER: Change to use helper pcie_aer_is_native() in
- some places
-Message-ID: <20210728220842.GA856517@bjorn-Precision-5520>
+        id S232059AbhG1WJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 18:09:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="212485285"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="212485285"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 15:09:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="666092649"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 28 Jul 2021 15:09:09 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m8rjh-0008iO-0Q; Wed, 28 Jul 2021 22:09:09 +0000
+Date:   Thu, 29 Jul 2021 06:08:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ b7fe54f6c2d437082dcbecfbd832f38edd9caaf4
+Message-ID: <6101d573.pBdgKKuC4Kfkb4w+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1612490648-44817-1-git-send-email-tanxiaofei@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 10:04:08AM +0800, Xiaofei Tan wrote:
-> Use helper function pcie_aer_is_native() in some places to keep
-> the code tidy. No function changes.
-> 
-> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
-> 
-> ---
-> Changes from v1 to v2:
-> - Add the fix suggested by Krzysztof.
-> ---
->  drivers/pci/pcie/aer.c          | 4 ++--
->  drivers/pci/pcie/err.c          | 2 +-
->  drivers/pci/pcie/portdrv_core.c | 3 +--
->  3 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 77b0f2c..03212d0 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -1397,7 +1397,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->  	 */
->  	aer = root ? root->aer_cap : 0;
->  
-> -	if ((host->native_aer || pcie_ports_native) && aer) {
-> +	if (pcie_aer_is_native(dev) && aer) {
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
+branch HEAD: b7fe54f6c2d437082dcbecfbd832f38edd9caaf4  Documentation: Add L1D flushing Documentation
 
-Are we guaranteed that "dev" has an AER capability?  I guess so,
-because the function comment says "dev" is a Root Port, an RCEC, or an
-RCiEP.  I *guess* that we only get here if "dev" has an AER
-capability?  I wish this were a little more obvious from the code.
+elapsed time: 726m
 
-If "dev" does not have AER, we previously cleared
-ROOT_PORT_INTR_ON_MESG_MASK, but after this patch we won't.
+configs tested: 130
+configs skipped: 3
 
-  pcie_aer_is_native(struct pci_dev *dev)
-  {
-    struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-    if (!dev->aer_cap)
-      return 0;
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210728
+h8300                       h8s-sim_defconfig
+powerpc                   bluestone_defconfig
+um                             i386_defconfig
+powerpc                         ps3_defconfig
+powerpc                      chrp32_defconfig
+sparc64                          alldefconfig
+mips                       rbtx49xx_defconfig
+m68k                            mac_defconfig
+sh                     sh7710voipgw_defconfig
+mips                           ip28_defconfig
+arm                           spitz_defconfig
+arm                         palmz72_defconfig
+sh                           sh2007_defconfig
+h8300                               defconfig
+arm                       imx_v4_v5_defconfig
+mips                        workpad_defconfig
+arc                    vdk_hs38_smp_defconfig
+arm                          ep93xx_defconfig
+powerpc                     kmeter1_defconfig
+sh                          kfr2r09_defconfig
+m68k                          amiga_defconfig
+mips                          malta_defconfig
+powerpc                       holly_defconfig
+powerpc                     tqm8560_defconfig
+arm                         orion5x_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                  mpc866_ads_defconfig
+m68k                        m5407c3_defconfig
+arc                 nsimosci_hs_smp_defconfig
+mips                            e55_defconfig
+m68k                          multi_defconfig
+mips                         tb0287_defconfig
+arm                         hackkit_defconfig
+sh                   secureedge5410_defconfig
+arm                           viper_defconfig
+m68k                          hp300_defconfig
+sh                            shmin_defconfig
+arm                        neponset_defconfig
+arm                            lart_defconfig
+arm                            hisi_defconfig
+powerpc                       eiger_defconfig
+openrisc                    or1ksim_defconfig
+powerpc                 mpc836x_mds_defconfig
+arm                         lpc18xx_defconfig
+powerpc                    mvme5100_defconfig
+arm                        mvebu_v7_defconfig
+powerpc                      makalu_defconfig
+mips                           gcw0_defconfig
+powerpc                      mgcoge_defconfig
+x86_64                           alldefconfig
+i386                             alldefconfig
+arm                         s5pv210_defconfig
+powerpc                    gamecube_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210728
+x86_64               randconfig-a003-20210728
+x86_64               randconfig-a001-20210728
+x86_64               randconfig-a004-20210728
+x86_64               randconfig-a005-20210728
+x86_64               randconfig-a002-20210728
+i386                 randconfig-a005-20210728
+i386                 randconfig-a003-20210728
+i386                 randconfig-a004-20210728
+i386                 randconfig-a002-20210728
+i386                 randconfig-a001-20210728
+i386                 randconfig-a006-20210728
+i386                 randconfig-a016-20210728
+i386                 randconfig-a012-20210728
+i386                 randconfig-a013-20210728
+i386                 randconfig-a014-20210728
+i386                 randconfig-a011-20210728
+i386                 randconfig-a015-20210728
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-    return pcie_ports_native || host->native_aer;
-  }
+clang tested configs:
+x86_64               randconfig-c001-20210728
+x86_64               randconfig-a016-20210728
+x86_64               randconfig-a011-20210728
+x86_64               randconfig-a014-20210728
+x86_64               randconfig-a013-20210728
+x86_64               randconfig-a012-20210728
+x86_64               randconfig-a015-20210728
 
-If we do decide this patch is correct, I think we can drop the "host",
-which is no longer used in this function.
-
->  		/* Disable Root's interrupt in response to error messages */
->  		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->  		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-> @@ -1417,7 +1417,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->  		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
->  	}
->  
-> -	if ((host->native_aer || pcie_ports_native) && aer) {
-> +	if (pcie_aer_is_native(dev) && aer) {
->  		/* Clear Root Error Status */
->  		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
->  		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 510f31f..1d6cfb9 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -237,7 +237,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	 * this status.  In that case, the signaling device may not even be
->  	 * visible to the OS.
->  	 */
-> -	if (host->native_aer || pcie_ports_native) {
-> +	if (pcie_aer_is_native(dev)) {
->  		pcie_clear_device_status(bridge);
-
-Is it guaranteed that "dev" has an AER capability here?  Again, it's
-not obvious to me that it must; this path is used from DPC and EDR as
-well as AER.
-
-If it's not guaranteed, assume "dev" is a PCIe device with no AER
-capability.  It still has a Device Status register, and previously we
-called pcie_clear_device_status() to clear it.
-
-Now we won't clear it.
-
->  		pci_aer_clear_nonfatal_status(bridge);
->  	}
-> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-> index e1fed664..3b3743e 100644
-> --- a/drivers/pci/pcie/portdrv_core.c
-> +++ b/drivers/pci/pcie/portdrv_core.c
-> @@ -221,8 +221,7 @@ static int get_port_device_capability(struct pci_dev *dev)
->  	}
->  
->  #ifdef CONFIG_PCIEAER
-> -	if (dev->aer_cap && pci_aer_available() &&
-> -	    (pcie_ports_native || host->native_aer)) {
-> +	if (pci_aer_available() && pcie_aer_is_native(dev)) {
->  		services |= PCIE_PORT_SERVICE_AER;
->  
->  		/*
-> -- 
-> 2.8.1
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
