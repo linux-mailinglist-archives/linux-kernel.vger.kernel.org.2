@@ -2,97 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E54E3DA83D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD7A3DA841
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhG2QBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235214AbhG2QAl (ORCPT
+        id S231459AbhG2QCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:02:01 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38458 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238468AbhG2QAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:00:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E762C0617A4;
-        Thu, 29 Jul 2021 09:00:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lz3sCBUeoFIpcuJvkV+2hxcBz6NNpFWXO3cu/2smPZU=; b=rAdanEV3TxYnKye4f2nl/t9Vmz
-        VvBRYHsQc2daZHGww9PrpfLisetD38btktOOIp+KJKfyuFC5LLEnHs/WlvvaD2+SFzzsDhVo387Fy
-        /vkh9nSmyzuIdYc1kb6LUUrALObzOGJYaHoHagmA+FbCa60A44n9FkbrXIzdhAkGoC5By+vjko248
-        iP2+tkxUG9pl3TMISopAEr70NLHUj3I1X2RoYdR3YgX254YGRVEA/iBuQszMwUL3Ie0hZLeTP9Hls
-        90PEXvI6g36ruUlwwwnkoZ3gv/lDsdlSZPU0r+GOAauHY/N+8C8uRdzS47Vyc/x/S56Zz9R/XbH/U
-        vlyqABJQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m98R2-00HGfk-5K; Thu, 29 Jul 2021 15:59:23 +0000
-Date:   Thu, 29 Jul 2021 16:59:00 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, rdunlap@infradead.org, joe@perches.com,
-        mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com, kari.argillander@gmail.com,
-        oleksandr@natalenko.name
-Subject: Re: [PATCH v27 02/10] fs/ntfs3: Add initialization of super block
-Message-ID: <YQLQRGyKGdL00sQ7@casper.infradead.org>
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210729134943.778917-3-almaz.alexandrovich@paragon-software.com>
+        Thu, 29 Jul 2021 12:00:00 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: dafna)
+        with ESMTPSA id 9F1DE1F43FB6
+Subject: Re: [PATCH v7 3/4] iommu: rockchip: Add internal ops to handle
+ variants
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, xxm@rock-chips.com, robin.murphy@arm.com,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20210525121551.606240-1-benjamin.gaignard@collabora.com>
+ <20210525121551.606240-4-benjamin.gaignard@collabora.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <c6175f3d-a324-9fb5-bd39-cfe0447ee5e7@collabora.com>
+Date:   Thu, 29 Jul 2021 17:59:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729134943.778917-3-almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20210525121551.606240-4-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 04:49:35PM +0300, Konstantin Komarov wrote:
-> +static void ntfs_readahead(struct readahead_control *rac)
+
+
+On 25.05.21 14:15, Benjamin Gaignard wrote:
+> Add internal ops to be able to handle incoming variant v2.
+> The goal is to keep the overall structure of the framework but
+> to allow to add the evolution of this hardware block.
+> 
+> The ops are global for a SoC because iommu domains are not
+> attached to a specific devices if they are for a virtuel device like
+> drm. Use a global variable shouldn't be since SoC usually doesn't
+> embedded different versions of the iommu hardware block.
+> If that happen one day a WARN_ON will be displayed at probe time.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> ---
+> version 7:
+>   - Set DMA mask
+>   - Add function to convert dma address to dte
+> 
+> version 6:
+>   - Remove #include <module.h>
+>   - Remove pt_address_mask field
+>   - Only use once of_device_get_match_data
+>   - Return an error if ops don't match
+> 
+> version 5:
+>   - Use of_device_get_match_data()
+>   - Add internal ops inside the driver
+> 
+>   drivers/iommu/rockchip-iommu.c | 86 +++++++++++++++++++++++++---------
+>   1 file changed, 64 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
+> index 7a2932772fdf..bd2cf7f08c71 100644
+> --- a/drivers/iommu/rockchip-iommu.c
+> +++ b/drivers/iommu/rockchip-iommu.c
+> @@ -96,6 +96,15 @@ static const char * const rk_iommu_clocks[] = {
+>   	"aclk", "iface",
+>   };
+>   
+> +struct rk_iommu_ops {
+> +	phys_addr_t (*pt_address)(u32 dte);
+> +	u32 (*mk_dtentries)(dma_addr_t pt_dma);
+> +	u32 (*mk_ptentries)(phys_addr_t page, int prot);
+> +	phys_addr_t (*dte_addr_phys)(u32 addr);
+> +	u32 (*dma_addr_dte)(dma_addr_t dt_dma);
+> +	u64 dma_bit_mask;
+> +};
+> +
+>   struct rk_iommu {
+>   	struct device *dev;
+>   	void __iomem **bases;
+> @@ -116,6 +125,7 @@ struct rk_iommudata {
+>   };
+>   
+>   static struct device *dma_dev;
+> +static const struct rk_iommu_ops *rk_ops;
+>   
+>   static inline void rk_table_flush(struct rk_iommu_domain *dom, dma_addr_t dma,
+>   				  unsigned int count)
+> @@ -215,11 +225,6 @@ static inline u32 rk_mk_dte(dma_addr_t pt_dma)
+>   #define RK_PTE_PAGE_READABLE      BIT(1)
+>   #define RK_PTE_PAGE_VALID         BIT(0)
+>   
+> -static inline phys_addr_t rk_pte_page_address(u32 pte)
+> -{
+> -	return (phys_addr_t)pte & RK_PTE_PAGE_ADDRESS_MASK;
+> -}
+> -
+>   static inline bool rk_pte_is_page_valid(u32 pte)
+>   {
+>   	return pte & RK_PTE_PAGE_VALID;
+> @@ -448,10 +453,10 @@ static int rk_iommu_force_reset(struct rk_iommu *iommu)
+>   	 * and verifying that upper 5 nybbles are read back.
+>   	 */
+>   	for (i = 0; i < iommu->num_mmu; i++) {
+> -		rk_iommu_write(iommu->bases[i], RK_MMU_DTE_ADDR, DTE_ADDR_DUMMY);
+> +		dte_addr = rk_ops->pt_address(DTE_ADDR_DUMMY);
+> +		rk_iommu_write(iommu->bases[i], RK_MMU_DTE_ADDR, dte_addr);
+>   
+> -		dte_addr = rk_iommu_read(iommu->bases[i], RK_MMU_DTE_ADDR);
+> -		if (dte_addr != (DTE_ADDR_DUMMY & RK_DTE_PT_ADDRESS_MASK)) {
+> +		if (dte_addr != rk_iommu_read(iommu->bases[i], RK_MMU_DTE_ADDR)) {
+>   			dev_err(iommu->dev, "Error during raw reset. MMU_DTE_ADDR is not functioning\n");
+>   			return -EFAULT;
+>   		}
+> @@ -470,6 +475,16 @@ static int rk_iommu_force_reset(struct rk_iommu *iommu)
+>   	return 0;
+>   }
+>   
+> +static inline phys_addr_t rk_dte_addr_phys(u32 addr)
 > +{
-> +	struct address_space *mapping = rac->mapping;
-> +	struct inode *inode = mapping->host;
-> +	struct ntfs_inode *ni = ntfs_i(inode);
-> +	u64 valid;
-> +	loff_t pos;
+> +	return (phys_addr_t)addr;
+> +}
 > +
-> +	if (is_resident(ni)) {
-> +		/* no readahead for resident */
-> +		return;
-> +	}
+> +static inline u32 rk_dma_addr_dte(dma_addr_t dt_dma)
+> +{
+> +	return dt_dma;
+> +}
 > +
-> +	if (is_compressed(ni)) {
-> +		/* no readahead for compressed */
-> +		return;
-
-I'm sure this works, but it could perform better ;-)
-
-The ->readpage path that you fall back to is synchronous (unless I
-misunderstand something).  We now have readahead_expand() which lets
-you ensure that there are pages in the page cache for the entire
-range of the compressed extent.  So if you can create an asynchronous
-decompression path (probably need your own custom bi_end_io), you can
-start reads here and only unlock the pages after you've done the
-decompression.
-
-This should not gate your code being accepted upstream.  What I'd
-really like to see is your buffered i/o path being converted from
-buffer_heads to iomap, and iomap to gain the ability to handle
-compressed extents.
-
-> +	valid = ni->i_valid;
-> +	pos = readahead_pos(rac);
+>   static void log_iova(struct rk_iommu *iommu, int index, dma_addr_t iova)
+>   {
+>   	void __iomem *base = iommu->bases[index];
+> @@ -489,7 +504,7 @@ static void log_iova(struct rk_iommu *iommu, int index, dma_addr_t iova)
+>   	page_offset = rk_iova_page_offset(iova);
+>   
+>   	mmu_dte_addr = rk_iommu_read(base, RK_MMU_DTE_ADDR);
+> -	mmu_dte_addr_phys = (phys_addr_t)mmu_dte_addr;
+> +	mmu_dte_addr_phys = rk_ops->dte_addr_phys(mmu_dte_addr);
+>   
+>   	dte_addr_phys = mmu_dte_addr_phys + (4 * dte_index);
+>   	dte_addr = phys_to_virt(dte_addr_phys);
+> @@ -498,14 +513,14 @@ static void log_iova(struct rk_iommu *iommu, int index, dma_addr_t iova)
+>   	if (!rk_dte_is_pt_valid(dte))
+>   		goto print_it;
+>   
+> -	pte_addr_phys = rk_dte_pt_address(dte) + (pte_index * 4);
+> +	pte_addr_phys = rk_ops->pt_address(dte) + (pte_index * 4);
+>   	pte_addr = phys_to_virt(pte_addr_phys);
+>   	pte = *pte_addr;
+>   
+>   	if (!rk_pte_is_page_valid(pte))
+>   		goto print_it;
+>   
+> -	page_addr_phys = rk_pte_page_address(pte) + page_offset;
+> +	page_addr_phys = rk_ops->pt_address(pte) + page_offset;
+>   	page_flags = pte & RK_PTE_PAGE_FLAGS_MASK;
+>   
+>   print_it:
+> @@ -601,13 +616,13 @@ static phys_addr_t rk_iommu_iova_to_phys(struct iommu_domain *domain,
+>   	if (!rk_dte_is_pt_valid(dte))
+>   		goto out;
+>   
+> -	pt_phys = rk_dte_pt_address(dte);
+> +	pt_phys = rk_ops->pt_address(dte);
+>   	page_table = (u32 *)phys_to_virt(pt_phys);
+>   	pte = page_table[rk_iova_pte_index(iova)];
+>   	if (!rk_pte_is_page_valid(pte))
+>   		goto out;
+>   
+> -	phys = rk_pte_page_address(pte) + rk_iova_page_offset(iova);
+> +	phys = rk_ops->pt_address(pte) + rk_iova_page_offset(iova);
+>   out:
+>   	spin_unlock_irqrestore(&rk_domain->dt_lock, flags);
+>   
+> @@ -679,14 +694,14 @@ static u32 *rk_dte_get_page_table(struct rk_iommu_domain *rk_domain,
+>   		return ERR_PTR(-ENOMEM);
+>   	}
+>   
+> -	dte = rk_mk_dte(pt_dma);
+> +	dte = rk_ops->mk_dtentries(pt_dma);
+>   	*dte_addr = dte;
+>   
+>   	rk_table_flush(rk_domain, pt_dma, NUM_PT_ENTRIES);
+>   	rk_table_flush(rk_domain,
+>   		       rk_domain->dt_dma + dte_index * sizeof(u32), 1);
+>   done:
+> -	pt_phys = rk_dte_pt_address(dte);
+> +	pt_phys = rk_ops->pt_address(dte);
+>   	return (u32 *)phys_to_virt(pt_phys);
+>   }
+>   
+> @@ -728,7 +743,7 @@ static int rk_iommu_map_iova(struct rk_iommu_domain *rk_domain, u32 *pte_addr,
+>   		if (rk_pte_is_page_valid(pte))
+>   			goto unwind;
+>   
+> -		pte_addr[pte_count] = rk_mk_pte(paddr, prot);
+> +		pte_addr[pte_count] = rk_ops->mk_ptentries(paddr, prot);
+>   
+>   		paddr += SPAGE_SIZE;
+>   	}
+> @@ -750,7 +765,7 @@ static int rk_iommu_map_iova(struct rk_iommu_domain *rk_domain, u32 *pte_addr,
+>   			    pte_count * SPAGE_SIZE);
+>   
+>   	iova += pte_count * SPAGE_SIZE;
+> -	page_phys = rk_pte_page_address(pte_addr[pte_count]);
+> +	page_phys = rk_ops->pt_address(pte_addr[pte_count]);
+>   	pr_err("iova: %pad already mapped to %pa cannot remap to phys: %pa prot: %#x\n",
+>   	       &iova, &page_phys, &paddr, prot);
+>   
+> @@ -785,7 +800,8 @@ static int rk_iommu_map(struct iommu_domain *domain, unsigned long _iova,
+>   	dte_index = rk_domain->dt[rk_iova_dte_index(iova)];
+>   	pte_index = rk_iova_pte_index(iova);
+>   	pte_addr = &page_table[pte_index];
+> -	pte_dma = rk_dte_pt_address(dte_index) + pte_index * sizeof(u32);
 > +
-> +	if (valid < i_size_read(inode) && pos <= valid &&
-> +	    valid < pos + readahead_length(rac)) {
-> +		/* range cross 'valid'. read it page by page */
-> +		return;
+> +	pte_dma = rk_ops->pt_address(dte_index) + pte_index * sizeof(u32);
+>   	ret = rk_iommu_map_iova(rk_domain, pte_addr, pte_dma, iova,
+>   				paddr, size, prot);
+>   
+> @@ -821,7 +837,7 @@ static size_t rk_iommu_unmap(struct iommu_domain *domain, unsigned long _iova,
+>   		return 0;
+>   	}
+>   
+> -	pt_phys = rk_dte_pt_address(dte);
+> +	pt_phys = rk_ops->pt_address(dte);
+>   	pte_addr = (u32 *)phys_to_virt(pt_phys) + rk_iova_pte_index(iova);
+>   	pte_dma = pt_phys + rk_iova_pte_index(iova) * sizeof(u32);
+>   	unmap_size = rk_iommu_unmap_iova(rk_domain, pte_addr, pte_dma, size);
+> @@ -879,7 +895,7 @@ static int rk_iommu_enable(struct rk_iommu *iommu)
+>   
+>   	for (i = 0; i < iommu->num_mmu; i++) {
+>   		rk_iommu_write(iommu->bases[i], RK_MMU_DTE_ADDR,
+> -			       rk_domain->dt_dma);
+> +			       rk_ops->dma_addr_dte(rk_domain->dt_dma));
 
-This, I do not understand.  Why can't ntfs_get_block / mpage_readahead
-cope with a readahead that crosses i_valid?  AIUI, i_valid is basically
-the same as i_size, and mpage_readahead() handles crossing i_size
-just fine.
+Hi,
+This is not related to that patch, I was wondring why are all mmu devices initialized
+with the same dt_dma?
+I see for example that the isp0_mmu in rk3399.dtsi has two resources. Can't each resource
+be initialized with different dt_dma and this way there are two dt tables instead of the two mmus pointing
+to the same dt table.
 
+Thanks,
+Dafna
+
+>   		rk_iommu_base_command(iommu->bases[i], RK_MMU_CMD_ZAP_CACHE);
+>   		rk_iommu_write(iommu->bases[i], RK_MMU_INT_MASK, RK_MMU_IRQ_MASK);
+>   	}
+> @@ -1037,7 +1053,7 @@ static void rk_iommu_domain_free(struct iommu_domain *domain)
+>   	for (i = 0; i < NUM_DT_ENTRIES; i++) {
+>   		u32 dte = rk_domain->dt[i];
+>   		if (rk_dte_is_pt_valid(dte)) {
+> -			phys_addr_t pt_phys = rk_dte_pt_address(dte);
+> +			phys_addr_t pt_phys = rk_ops->pt_address(dte);
+>   			u32 *page_table = phys_to_virt(pt_phys);
+>   			dma_unmap_single(dma_dev, pt_phys,
+>   					 SPAGE_SIZE, DMA_TO_DEVICE);
+> @@ -1127,6 +1143,7 @@ static int rk_iommu_probe(struct platform_device *pdev)
+>   	struct device *dev = &pdev->dev;
+>   	struct rk_iommu *iommu;
+>   	struct resource *res;
+> +	const struct rk_iommu_ops *ops;
+>   	int num_res = pdev->num_resources;
+>   	int err, i;
+>   
+> @@ -1138,6 +1155,17 @@ static int rk_iommu_probe(struct platform_device *pdev)
+>   	iommu->dev = dev;
+>   	iommu->num_mmu = 0;
+>   
+> +	ops = of_device_get_match_data(dev);
+> +	if (!rk_ops)
+> +		rk_ops = ops;
+> +
+> +	/*
+> +	 * That should not happen unless different versions of the
+> +	 * hardware block are embedded the same SoC
+> +	 */
+> +	if (WARN_ON(rk_ops != ops))
+> +		return -EINVAL;
+> +
+>   	iommu->bases = devm_kcalloc(dev, num_res, sizeof(*iommu->bases),
+>   				    GFP_KERNEL);
+>   	if (!iommu->bases)
+> @@ -1226,6 +1254,8 @@ static int rk_iommu_probe(struct platform_device *pdev)
+>   		}
+>   	}
+>   
+> +	dma_set_mask_and_coherent(dev, rk_ops->dma_bit_mask);
+> +
+>   	return 0;
+>   err_remove_sysfs:
+>   	iommu_device_sysfs_remove(&iommu->iommu);
+> @@ -1277,8 +1307,20 @@ static const struct dev_pm_ops rk_iommu_pm_ops = {
+>   				pm_runtime_force_resume)
+>   };
+>   
+> +static struct rk_iommu_ops iommu_data_ops_v1 = {
+> +	.pt_address = &rk_dte_pt_address,
+> +	.mk_dtentries = &rk_mk_dte,
+> +	.mk_ptentries = &rk_mk_pte,
+> +	.dte_addr_phys = &rk_dte_addr_phys,
+> +	.dma_addr_dte = &rk_dma_addr_dte,
+> +	.dma_bit_mask = DMA_BIT_MASK(32),
+> +};
+> +
+> +
+>   static const struct of_device_id rk_iommu_dt_ids[] = {
+> -	{ .compatible = "rockchip,iommu" },
+> +	{	.compatible = "rockchip,iommu",
+> +		.data = &iommu_data_ops_v1,
+> +	},
+>   	{ /* sentinel */ }
+>   };
+>   
+> 
