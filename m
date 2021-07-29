@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57543DA5B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D133DA60D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238114AbhG2OI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:08:59 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3527 "EHLO
+        id S236224AbhG2OL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:11:56 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3528 "EHLO
         frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238406AbhG2OCr (ORCPT
+        with ESMTP id S238121AbhG2OCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:02:47 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBkb3TMDz6LBct;
-        Thu, 29 Jul 2021 21:50:47 +0800 (CST)
+        Thu, 29 Jul 2021 10:02:51 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBnk0yMyz6FG2m;
+        Thu, 29 Jul 2021 21:53:30 +0800 (CST)
 Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 16:02:43 +0200
+ 15.1.2176.2; Thu, 29 Jul 2021 16:02:47 +0200
 Received: from localhost.localdomain (10.69.192.58) by
  lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 15:02:39 +0100
+ 15.1.2176.2; Thu, 29 Jul 2021 15:02:43 +0100
 From:   John Garry <john.garry@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -30,9 +30,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
 CC:     <yao.jin@linux.intel.com>, <linux-kernel@vger.kernel.org>,
         <linux-perf-users@vger.kernel.org>, <irogers@google.com>,
         <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH 04/11] perf test: Factor out pmu-events alias comparison
-Date:   Thu, 29 Jul 2021 21:56:19 +0800
-Message-ID: <1627566986-30605-5-git-send-email-john.garry@huawei.com>
+Subject: [PATCH 05/11] perf test: Test pmu-events core aliases separately
+Date:   Thu, 29 Jul 2021 21:56:20 +0800
+Message-ID: <1627566986-30605-6-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
 References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
@@ -46,113 +46,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factor out alias test which will be used in multiple places.
+The current method to test uncore event aliasing is limited, as it relies
+on the uncore PMU being present in the host system to test.
 
-Also test missing fields.
+As such, breakages of uncore PMU aliases goes unnoticed. To make this more
+robust, a new method of testing uncore PMUs with fake PMUs will be used in
+future. This will be separate to testing core PMU aliases.
+
+So make the current test function core PMU only. Uncore PMU alias support
+will be re-added later.
 
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- tools/perf/tests/pmu-events.c | 80 ++++++++++++++++++++++++-----------
- 1 file changed, 55 insertions(+), 25 deletions(-)
+ tools/perf/tests/pmu-events.c | 45 +++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 29 deletions(-)
 
 diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index 0837f2c9d882..8fb5df6ee500 100644
+index 8fb5df6ee500..9537bbdd09f0 100644
 --- a/tools/perf/tests/pmu-events.c
 +++ b/tools/perf/tests/pmu-events.c
-@@ -232,6 +232,60 @@ static int compare_pmu_events(struct pmu_event *e1, const struct pmu_event *e2)
- 	return 0;
+@@ -352,26 +352,19 @@ static struct perf_pmu_alias *find_alias(const char *test_event, struct list_hea
  }
  
-+static int compare_alias_to_test_event(struct perf_pmu_alias *alias,
-+				struct perf_pmu_test_event const *test_event,
-+				char const *pmu_name)
-+{
-+	struct pmu_event const *event = &test_event->event;
-+
-+	/* An alias was found, ensure everything is in order */
-+	if (!is_same(alias->name, event->name)) {
-+		pr_debug("testing aliases PMU %s: mismatched name, %s vs %s\n",
-+			  pmu_name, alias->name, event->name);
-+		return -1;
-+	}
-+
-+	if (!is_same(alias->desc, event->desc)) {
-+		pr_debug("testing aliases PMU %s: mismatched desc, %s vs %s\n",
-+			  pmu_name, alias->desc, event->desc);
-+		return -1;
-+	}
-+
-+	if (!is_same(alias->long_desc, test_event->alias_long_desc)) {
-+		pr_debug("testing aliases PMU %s: mismatched long_desc, %s vs %s\n",
-+			  pmu_name, alias->long_desc,
-+			  test_event->alias_long_desc);
-+		return -1;
-+	}
-+
-+	if (!is_same(alias->topic, event->topic)) {
-+		pr_debug("testing aliases PMU %s: mismatched topic, %s vs %s\n",
-+			  pmu_name, alias->topic, event->topic);
-+		return -1;
-+	}
-+
-+	if (!is_same(alias->str, test_event->alias_str)) {
-+		pr_debug("testing aliases PMU %s: mismatched str, %s vs %s\n",
-+			  pmu_name, alias->str, test_event->alias_str);
-+		return -1;
-+	}
-+
-+	if (!is_same(alias->long_desc, test_event->alias_long_desc)) {
-+		pr_debug("testing aliases PMU %s: mismatched long desc, %s vs %s\n",
-+			  pmu_name, alias->str, test_event->alias_long_desc);
-+		return -1;
-+	}
-+
-+
-+	if (!is_same(alias->pmu_name, test_event->event.pmu)) {
-+		pr_debug("testing aliases PMU %s: mismatched pmu_name, %s vs %s\n",
-+			  pmu_name, alias->pmu_name, test_event->event.pmu);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
- /* Verify generated events from pmu-events.c are as expected */
- static int test_pmu_event_table(void)
+ /* Verify aliases are as expected */
+-static int __test__pmu_event_aliases(char *pmu_name, int *count)
++static int __test_core_pmu_event_aliases(char *pmu_name, int *count)
  {
-@@ -349,31 +403,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
- 			break;
- 		}
+ 	struct perf_pmu_test_event const **test_event_table;
+ 	struct perf_pmu *pmu;
+ 	LIST_HEAD(aliases);
+ 	int res = 0;
+-	bool use_uncore_table;
+ 	struct pmu_events_map *map = __test_pmu_get_events_map();
+ 	struct perf_pmu_alias *a, *tmp;
  
--		if (!is_same(alias->desc, event->desc)) {
--			pr_debug2("testing aliases PMU %s: mismatched desc, %s vs %s\n",
--				  pmu_name, alias->desc, event->desc);
--			res = -1;
--			break;
--		}
+ 	if (!map)
+ 		return -1;
+ 
+-	if (is_pmu_core(pmu_name)) {
+-		test_event_table = &core_events[0];
+-		use_uncore_table = false;
+-	} else {
+-		test_event_table = &uncore_events[0];
+-		use_uncore_table = true;
+-	}
++	test_event_table = &core_events[0];
+ 
+ 	pmu = zalloc(sizeof(*pmu));
+ 	if (!pmu)
+@@ -384,20 +377,10 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
+ 	for (; *test_event_table; test_event_table++) {
+ 		struct perf_pmu_test_event const *test_event = *test_event_table;
+ 		struct pmu_event const *event = &test_event->event;
 -
--		if (!is_same(alias->long_desc, test_event->alias_long_desc)) {
--			pr_debug2("testing aliases PMU %s: mismatched long_desc, %s vs %s\n",
--				  pmu_name, alias->long_desc,
--				  test_event->alias_long_desc);
--			res = -1;
--			break;
--		}
+ 		struct perf_pmu_alias *alias = find_alias(event->name, &aliases);
+ 
+ 		if (!alias) {
+-			bool uncore_match = pmu_uncore_alias_match(pmu_name,
+-								   event->pmu);
 -
--		if (!is_same(alias->str, test_event->alias_str)) {
--			pr_debug2("testing aliases PMU %s: mismatched str, %s vs %s\n",
--				  pmu_name, alias->str, test_event->alias_str);
--			res = -1;
--			break;
--		}
+-			if (use_uncore_table && !uncore_match) {
+-				pr_debug3("testing aliases PMU %s: skip matching alias %s\n",
+-					  pmu_name, event->name);
+-				continue;
+-			}
 -
--		if (!is_same(alias->topic, event->topic)) {
--			pr_debug2("testing aliases PMU %s: mismatched topic, %s vs %s\n",
--				  pmu_name, alias->topic, event->topic);
-+		if (compare_alias_to_test_event(alias, test_event, pmu_name)) {
+-			pr_debug2("testing aliases PMU %s: no alias, alias_table->name=%s\n",
++			pr_debug("testing aliases core PMU %s: no alias, alias_table->name=%s\n",
+ 				  pmu_name, event->name);
  			res = -1;
  			break;
+@@ -409,7 +392,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
  		}
+ 
+ 		(*count)++;
+-		pr_debug2("testing aliases PMU %s: matched event %s\n",
++		pr_debug2("testing aliases core PMU %s: matched event %s\n",
+ 			  pmu_name, alias->name);
+ 	}
+ 
+@@ -421,7 +404,6 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
+ 	return res;
+ }
+ 
+-
+ /* Test that aliases generated are as expected */
+ static int test_aliases(void)
+ {
+@@ -430,21 +412,26 @@ static int test_aliases(void)
+ 	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
+ 		int count = 0;
+ 
++		if (!is_pmu_core(pmu->name))
++			continue;
++
+ 		if (list_empty(&pmu->format)) {
+-			pr_debug2("skipping testing PMU %s\n", pmu->name);
++			pr_debug2("skipping testing core PMU %s\n", pmu->name);
+ 			continue;
+ 		}
+ 
+-		if (__test__pmu_event_aliases(pmu->name, &count)) {
+-			pr_debug("testing PMU %s aliases: failed\n", pmu->name);
++		if (__test_core_pmu_event_aliases(pmu->name, &count)) {
++			pr_debug("testing core PMU %s aliases: failed\n", pmu->name);
+ 			return -1;
+ 		}
+ 
+-		if (count == 0)
+-			pr_debug3("testing PMU %s aliases: no events to match\n",
++		if (count == 0) {
++			pr_debug("testing core PMU %s aliases: no events to match\n",
+ 				  pmu->name);
+-		else
+-			pr_debug("testing PMU %s aliases: pass\n", pmu->name);
++			return -1;
++		}
++
++		pr_debug("testing core PMU %s aliases: pass\n", pmu->name);
+ 	}
+ 
+ 	return 0;
 -- 
 2.26.2
 
