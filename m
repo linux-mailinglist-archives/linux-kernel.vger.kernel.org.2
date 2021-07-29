@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4607E3D9D32
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06D83D9D33
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234108AbhG2FnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 01:43:14 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7893 "EHLO
+        id S234130AbhG2FnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 01:43:16 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12421 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234058AbhG2FnL (ORCPT
+        with ESMTP id S234112AbhG2FnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:43:11 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZzqW6bJbz81Sd;
-        Thu, 29 Jul 2021 13:39:19 +0800 (CST)
+        Thu, 29 Jul 2021 01:43:15 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZzqy00xhzcjS9;
+        Thu, 29 Jul 2021 13:39:41 +0800 (CST)
 Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 13:43:05 +0800
+ 15.1.2176.2; Thu, 29 Jul 2021 13:43:10 +0800
 Received: from SWX921481.china.huawei.com (10.126.201.210) by
  dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 29 Jul 2021 13:43:00 +0800
+ 15.1.2176.2; Thu, 29 Jul 2021 13:43:05 +0800
 From:   Barry Song <song.bao.hua@hisilicon.com>
 To:     <andriy.shevchenko@linux.intel.com>, <yury.norov@gmail.com>,
         <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
@@ -37,9 +37,9 @@ CC:     <akpm@linux-foundation.org>, <dave.hansen@intel.com>,
         <linuxarm@huawei.com>, Tian Tao <tiantao6@hisilicon.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH v8 2/5] topology: use bin_attribute to break the size limitation of cpumap ABI
-Date:   Thu, 29 Jul 2021 17:42:05 +1200
-Message-ID: <20210729054208.1800-3-song.bao.hua@hisilicon.com>
+Subject: [PATCH v8 3/5] drivers/base/node.c: use bin_attribute to break the size limitation of cpumap ABI
+Date:   Thu, 29 Jul 2021 17:42:06 +1200
+Message-ID: <20210729054208.1800-4-song.bao.hua@hisilicon.com>
 X-Mailer: git-send-email 2.21.0.windows.1
 In-Reply-To: <20210729054208.1800-1-song.bao.hua@hisilicon.com>
 References: <20210729054208.1800-1-song.bao.hua@hisilicon.com>
@@ -56,9 +56,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tian Tao <tiantao6@hisilicon.com>
 
-Reading /sys/devices/system/cpu/cpuX/topology/ returns cpu topology.
-However, the size of this file is limited to PAGE_SIZE because of
-the limitation for sysfs attribute.
+Reading /sys/devices/system/cpu/cpuX/nodeX/ returns cpumap and cpulist.
+However, the size of this file is limited to PAGE_SIZE because of the
+limitation for sysfs attribute.
+
 This patch moves to use bin_attribute to extend the ABI to be more
 than one page so that cpumap bitmask and list won't be potentially
 trimmed.
@@ -69,174 +70,105 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- drivers/base/topology.c | 115 ++++++++++++++++++++++------------------
- 1 file changed, 63 insertions(+), 52 deletions(-)
+ drivers/base/node.c | 51 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 33 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/base/topology.c b/drivers/base/topology.c
-index 4d254fcc93d1..dd3980124e33 100644
---- a/drivers/base/topology.c
-+++ b/drivers/base/topology.c
-@@ -21,25 +21,27 @@ static ssize_t name##_show(struct device *dev,				\
- 	return sysfs_emit(buf, "%d\n", topology_##name(dev->id));	\
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index 4a4ae868ad9f..89a72aba72a3 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -27,42 +27,44 @@ static struct bus_type node_subsys = {
+ };
+ 
+ 
+-static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
++static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf,
++				loff_t off, size_t count)
+ {
+ 	ssize_t n;
+ 	cpumask_var_t mask;
+ 	struct node *node_dev = to_node(dev);
+ 
+-	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
+-	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
+-
+ 	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
+ 		return 0;
+ 
+ 	cpumask_and(mask, cpumask_of_node(node_dev->dev.id), cpu_online_mask);
+-	n = cpumap_print_to_pagebuf(list, buf, mask);
++	n = cpumap_print_to_buf(list, buf, mask, off, count);
+ 	free_cpumask_var(mask);
+ 
+ 	return n;
  }
  
--#define define_siblings_show_map(name, mask)				\
--static ssize_t name##_show(struct device *dev,				\
--			   struct device_attribute *attr, char *buf)	\
--{									\
--	return cpumap_print_to_pagebuf(false, buf, topology_##mask(dev->id));\
-+#define define_siblings_read_func(name, mask)					\
-+static ssize_t name##_read(struct file *file, struct kobject *kobj,		\
-+				  struct bin_attribute *attr, char *buf,	\
-+				  loff_t off, size_t count)			\
-+{										\
-+	struct device *dev = kobj_to_dev(kobj);                                 \
-+										\
-+	return cpumap_print_to_buf(false, buf, topology_##mask(dev->id),	\
-+				   off, count);                                 \
-+}										\
-+										\
-+static ssize_t name##_list_read(struct file *file, struct kobject *kobj,	\
-+				  struct bin_attribute *attr, char *buf,	\
-+				  loff_t off, size_t count)			\
-+{										\
-+	struct device *dev = kobj_to_dev(kobj);					\
-+										\
-+	return cpumap_print_to_buf(true, buf, topology_##mask(dev->id),		\
-+				   off, count);					\
+-static inline ssize_t cpumap_show(struct device *dev,
+-				  struct device_attribute *attr,
+-				  char *buf)
++static inline ssize_t cpumap_read(struct file *file, struct kobject *kobj,
++				  struct bin_attribute *attr, char *buf,
++				  loff_t off, size_t count)
+ {
+-	return node_read_cpumap(dev, false, buf);
++	struct device *dev = kobj_to_dev(kobj);
++
++	return node_read_cpumap(dev, false, buf, off, count);
  }
  
--#define define_siblings_show_list(name, mask)				\
--static ssize_t name##_list_show(struct device *dev,			\
--				struct device_attribute *attr,		\
--				char *buf)				\
--{									\
--	return cpumap_print_to_pagebuf(true, buf, topology_##mask(dev->id));\
--}
--
--#define define_siblings_show_func(name, mask)	\
--	define_siblings_show_map(name, mask);	\
--	define_siblings_show_list(name, mask)
--
- define_id_show_func(physical_package_id);
- static DEVICE_ATTR_RO(physical_package_id);
+-static DEVICE_ATTR_RO(cpumap);
++static BIN_ATTR_RO(cpumap, 0);
  
-@@ -49,71 +51,80 @@ static DEVICE_ATTR_RO(die_id);
- define_id_show_func(core_id);
- static DEVICE_ATTR_RO(core_id);
+-static inline ssize_t cpulist_show(struct device *dev,
+-				   struct device_attribute *attr,
+-				   char *buf)
++static inline ssize_t cpulist_read(struct file *file, struct kobject *kobj,
++				   struct bin_attribute *attr, char *buf,
++				   loff_t off, size_t count)
+ {
+-	return node_read_cpumap(dev, true, buf);
++	struct device *dev = kobj_to_dev(kobj);
++
++	return node_read_cpumap(dev, true, buf, off, count);
+ }
  
--define_siblings_show_func(thread_siblings, sibling_cpumask);
--static DEVICE_ATTR_RO(thread_siblings);
--static DEVICE_ATTR_RO(thread_siblings_list);
-+define_siblings_read_func(thread_siblings, sibling_cpumask);
-+static BIN_ATTR_RO(thread_siblings, 0);
-+static BIN_ATTR_RO(thread_siblings_list, 0);
+-static DEVICE_ATTR_RO(cpulist);
++static BIN_ATTR_RO(cpulist, 0);
  
--define_siblings_show_func(core_cpus, sibling_cpumask);
--static DEVICE_ATTR_RO(core_cpus);
--static DEVICE_ATTR_RO(core_cpus_list);
-+define_siblings_read_func(core_cpus, sibling_cpumask);
-+static BIN_ATTR_RO(core_cpus, 0);
-+static BIN_ATTR_RO(core_cpus_list, 0);
+ /**
+  * struct node_access_nodes - Access class device to hold user visible
+@@ -557,15 +559,28 @@ static ssize_t node_read_distance(struct device *dev,
+ static DEVICE_ATTR(distance, 0444, node_read_distance, NULL);
  
--define_siblings_show_func(core_siblings, core_cpumask);
--static DEVICE_ATTR_RO(core_siblings);
--static DEVICE_ATTR_RO(core_siblings_list);
-+define_siblings_read_func(core_siblings, core_cpumask);
-+static BIN_ATTR_RO(core_siblings, 0);
-+static BIN_ATTR_RO(core_siblings_list, 0);
- 
--define_siblings_show_func(die_cpus, die_cpumask);
--static DEVICE_ATTR_RO(die_cpus);
--static DEVICE_ATTR_RO(die_cpus_list);
-+define_siblings_read_func(die_cpus, die_cpumask);
-+static BIN_ATTR_RO(die_cpus, 0);
-+static BIN_ATTR_RO(die_cpus_list, 0);
- 
--define_siblings_show_func(package_cpus, core_cpumask);
--static DEVICE_ATTR_RO(package_cpus);
--static DEVICE_ATTR_RO(package_cpus_list);
-+define_siblings_read_func(package_cpus, core_cpumask);
-+static BIN_ATTR_RO(package_cpus, 0);
-+static BIN_ATTR_RO(package_cpus_list, 0);
- 
- #ifdef CONFIG_SCHED_BOOK
- define_id_show_func(book_id);
- static DEVICE_ATTR_RO(book_id);
--define_siblings_show_func(book_siblings, book_cpumask);
--static DEVICE_ATTR_RO(book_siblings);
--static DEVICE_ATTR_RO(book_siblings_list);
-+define_siblings_read_func(book_siblings, book_cpumask);
-+static BIN_ATTR_RO(book_siblings, 0);
-+static BIN_ATTR_RO(book_siblings_list, 0);
- #endif
- 
- #ifdef CONFIG_SCHED_DRAWER
- define_id_show_func(drawer_id);
- static DEVICE_ATTR_RO(drawer_id);
--define_siblings_show_func(drawer_siblings, drawer_cpumask);
--static DEVICE_ATTR_RO(drawer_siblings);
--static DEVICE_ATTR_RO(drawer_siblings_list);
-+define_siblings_read_func(drawer_siblings, drawer_cpumask);
-+static BIN_ATTR_RO(drawer_siblings, 0);
-+static BIN_ATTR_RO(drawer_siblings_list, 0);
- #endif
- 
-+static struct bin_attribute *bin_attrs[] = {
-+	&bin_attr_core_cpus,
-+	&bin_attr_core_cpus_list,
-+	&bin_attr_thread_siblings,
-+	&bin_attr_thread_siblings_list,
-+	&bin_attr_core_siblings,
-+	&bin_attr_core_siblings_list,
-+	&bin_attr_die_cpus,
-+	&bin_attr_die_cpus_list,
-+	&bin_attr_package_cpus,
-+	&bin_attr_package_cpus_list,
-+#ifdef CONFIG_SCHED_BOOK
-+	&bin_attr_book_siblings,
-+	&bin_attr_book_siblings_list,
-+#endif
-+#ifdef CONFIG_SCHED_DRAWER
-+	&bin_attr_drawer_siblings,
-+	&bin_attr_drawer_siblings_list,
-+#endif
+ static struct attribute *node_dev_attrs[] = {
+-	&dev_attr_cpumap.attr,
+-	&dev_attr_cpulist.attr,
+ 	&dev_attr_meminfo.attr,
+ 	&dev_attr_numastat.attr,
+ 	&dev_attr_distance.attr,
+ 	&dev_attr_vmstat.attr,
+ 	NULL
+ };
+-ATTRIBUTE_GROUPS(node_dev);
++
++static struct bin_attribute *node_dev_bin_attrs[] = {
++	&bin_attr_cpumap,
++	&bin_attr_cpulist,
 +	NULL
 +};
 +
- static struct attribute *default_attrs[] = {
- 	&dev_attr_physical_package_id.attr,
- 	&dev_attr_die_id.attr,
- 	&dev_attr_core_id.attr,
--	&dev_attr_thread_siblings.attr,
--	&dev_attr_thread_siblings_list.attr,
--	&dev_attr_core_cpus.attr,
--	&dev_attr_core_cpus_list.attr,
--	&dev_attr_core_siblings.attr,
--	&dev_attr_core_siblings_list.attr,
--	&dev_attr_die_cpus.attr,
--	&dev_attr_die_cpus_list.attr,
--	&dev_attr_package_cpus.attr,
--	&dev_attr_package_cpus_list.attr,
- #ifdef CONFIG_SCHED_BOOK
- 	&dev_attr_book_id.attr,
--	&dev_attr_book_siblings.attr,
--	&dev_attr_book_siblings_list.attr,
- #endif
- #ifdef CONFIG_SCHED_DRAWER
- 	&dev_attr_drawer_id.attr,
--	&dev_attr_drawer_siblings.attr,
--	&dev_attr_drawer_siblings_list.attr,
- #endif
- 	NULL
- };
++static const struct attribute_group node_dev_group = {
++	.attrs = node_dev_attrs,
++	.bin_attrs = node_dev_bin_attrs
++};
++
++static const struct attribute_group *node_dev_groups[] = {
++	&node_dev_group,
++	NULL
++};
  
- static const struct attribute_group topology_attr_group = {
- 	.attrs = default_attrs,
-+	.bin_attrs = bin_attrs,
- 	.name = "topology"
- };
- 
+ #ifdef CONFIG_HUGETLBFS
+ /*
 -- 
 2.25.1
 
