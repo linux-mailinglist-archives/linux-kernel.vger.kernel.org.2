@@ -2,71 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04A03DA048
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0453DA04B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235602AbhG2JcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:32:10 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:41116 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235466AbhG2JcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:32:08 -0400
-Received: from localhost.localdomain (unknown [117.81.121.223])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxWuCLdQJhLdklAA--.50476S2;
-        Thu, 29 Jul 2021 17:31:59 +0800 (CST)
-From:   Rui Wang <wangrui@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Rui Wang <wangrui@loongson.cn>, Rui Wang <r@hev.cc>
-Subject: [RFC PATCH v2] locking/atomic: arch/mips: Fix atomic{_64,}_sub_if_positive
-Date:   Thu, 29 Jul 2021 17:31:52 +0800
-Message-Id: <20210729093152.146256-1-wangrui@loongson.cn>
-X-Mailer: git-send-email 2.32.0
+        id S235642AbhG2JdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:33:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235260AbhG2Jc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 05:32:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1121361052;
+        Thu, 29 Jul 2021 09:32:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627551175;
+        bh=JuJA50JqDCkg8F9U4K0AUSFD4NR8BUFnw4OZQNi4sWM=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=Ry8neo+AuNIQtwYnTVSUrqbYYldMEHpXiRno+WoUUIz58lVybCBwrp8+wczAslBCY
+         b2yKkliUIh4PlgrfXKwCXZgBhhkZsILk34HzTNziAO1lzNbSiOwLLyJVA2TOVg5Sef
+         czvF3XfBRr8CAYf2TKOTAJZbyC0SC/eKaav6PS30LNet1bXiKYTFyV2zs8R99aVvOG
+         PwuRqC6dFG9YcfxtIxVjzB4WOft6s6UK911fMk2lJDAxP7hGAGsQbx12tP+133kbkV
+         7BADvANKBW37Nk1HvNcjkhOa56CTsfRwJV1SYzzvihlTg04VZgtwamkhZok+XgxA67
+         PQpNTJUG5a7YQ==
+References: <1627543994-20327-1-git-send-email-wcheng@codeaurora.org>
+ <87zgu5v8om.fsf@kernel.org>
+ <4e06452a-080f-a2be-ab88-9ac992740ee0@codeaurora.org>
+User-agent: mu4e 1.6.0; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Use list_replace_init() before
+ traversing lists
+Date:   Thu, 29 Jul 2021 12:31:59 +0300
+In-reply-to: <4e06452a-080f-a2be-ab88-9ac992740ee0@codeaurora.org>
+Message-ID: <87fsvxsbwc.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxWuCLdQJhLdklAA--.50476S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrur1DCFWfKw48Zr1xZF4xJFb_yoW3CrgEk3
-        Wxtws7ur1rCFWava47Ca1FkFyIkwn3W3Z3Wrn5WrnxA34kA34UCayDJF95Jw4UCw1vyr1F
-        9FyYqryYkF17GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFWl
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbgyCJUUUUU==
-X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This looks like a typo and that caused atomic64 test failed.
 
-Signed-off-by: Rui Wang <wangrui@loongson.cn>
----
- arch/mips/include/asm/atomic.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
-index 95e1f7f3597f..a0b9e7c1e4fc 100644
---- a/arch/mips/include/asm/atomic.h
-+++ b/arch/mips/include/asm/atomic.h
-@@ -206,7 +206,7 @@ ATOMIC_OPS(atomic64, xor, s64, ^=, xor, lld, scd)
-  * The function returns the old value of @v minus @i.
-  */
- #define ATOMIC_SIP_OP(pfx, type, op, ll, sc)				\
--static __inline__ int arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
-+static __inline__ type arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
- {									\
- 	type temp, result;						\
- 									\
+Wesley Cheng <wcheng@codeaurora.org> writes:
+>>> The list_for_each_entry_safe() macro saves the current item (n) and
+>>> the item after (n+1), so that n can be safely removed without
+>>> corrupting the list.  However, when traversing the list and removing
+>>> items using gadget giveback, the DWC3 lock is briefly released,
+>>> allowing other routines to execute.  There is a situation where, while
+>>> items are being removed from the cancelled_list using
+>>> dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
+>>> routine is running in parallel (due to UDC unbind).  As the cleanup
+>>> routine removes n, and the pullup disable removes n+1, once the
+>>> cleanup retakes the DWC3 lock, it references a request who was already
+>>> removed/handled.  With list debug enabled, this leads to a panic.
+>>> Ensure all instances of the macro are replaced where gadget giveback
+>>> is used.
+>>>
+>>> Example call stack:
+>>>
+>>> Thread#1:
+>>> __dwc3_gadget_ep_set_halt() - CLEAR HALT
+>>>   -> dwc3_gadget_ep_cleanup_cancelled_requests()
+>>>     ->list_for_each_entry_safe()
+>>>     ->dwc3_gadget_giveback(n)
+>>>       ->dwc3_gadget_del_and_unmap_request()- n deleted[cancelled_list]
+>>>       ->spin_unlock
+>>>       ->Thread#2 executes
+>>>       ...
+>>>     ->dwc3_gadget_giveback(n+1)
+>>>       ->Already removed!
+>>>
+>>> Thread#2:
+>>> dwc3_gadget_pullup()
+>>>   ->waiting for dwc3 spin_lock
+>>>   ...
+>>>   ->Thread#1 released lock
+>>>   ->dwc3_stop_active_transfers()
+>>>     ->dwc3_remove_requests()
+>>>       ->fetches n+1 item from cancelled_list (n removed by Thread#1)
+>>>       ->dwc3_gadget_giveback()
+>>>         ->dwc3_gadget_del_and_unmap_request()- n+1
+>>> deleted[cancelled_list]
+>>>         ->spin_unlock
+>>>
+>>> Fix this condition by utilizing list_replace_init(), and traversing
+>>> through a local copy of the current elements in the endpoint lists.
+>>> This will also set the parent list as empty, so if another thread is
+>>> also looping through the list, it will be empty on the next iteration.
+>>>
+>>> Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_list")
+>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>>>
+>>> ---
+>>> Previous patchset:
+>>> https://lore.kernel.org/linux-usb/1620716636-12422-1-git-send-email-wcheng@codeaurora.org/
+>>> ---
+>>>  drivers/usb/dwc3/gadget.c | 18 ++++++++++++++++--
+>>>  1 file changed, 16 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>> index a29a4ca..3ce6ed9 100644
+>>> --- a/drivers/usb/dwc3/gadget.c
+>>> +++ b/drivers/usb/dwc3/gadget.c
+>>> @@ -1926,9 +1926,13 @@ static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
+>>>  {
+>>>  	struct dwc3_request		*req;
+>>>  	struct dwc3_request		*tmp;
+>>> +	struct list_head		local;
+>>>  	struct dwc3			*dwc = dep->dwc;
+>>>  
+>>> -	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
+>>> +restart:
+>>> +	list_replace_init(&dep->cancelled_list, &local);
+>> 
+>> hmm, if the lock is held and IRQs disabled when this runs, then no other
+>> threads will be able to append requests to the list which makes the
+>> "restart" label unnecessary, no?
+>
+> We do still call dwc3_gadget_giveback() which would release the lock
+> briefly, so if there was another thread waiting on dwc->lock, it would
+> be able to add additional items to that list.
+>
+>> 
+>> I wonder if we should release the lock and reenable interrupts after
+>> replacing the head. The problem is that
+>> dwc3_gadget_ep_cleanup_cancelled_requests() can run from the IRQ
+>> handler.
+>> 
+>
+> We would also need to consider that some of the APIs being called in
+> these situations would also have the assumption that the dwc->lock is
+> held, ie dwc3_gadget_giveback()
+
+yeah, good point. I think we're good to integrate this, unless Alan can
+shed some light on some particular possible race scenario we may have
+missed.
+
+In any case:
+
+Acked-by: Felipe Balbi <balbi@kernel.org>
+
 -- 
-2.32.0
-
+balbi
