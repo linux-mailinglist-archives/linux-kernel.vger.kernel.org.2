@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED013D9EAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441253D9EB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235439AbhG2HhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
+        id S235542AbhG2HhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235185AbhG2Hgr (ORCPT
+        with ESMTP id S235246AbhG2Hgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:36:47 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E515C06179A
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:36:40 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id e21so5959094pla.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:36:40 -0700 (PDT)
+        Thu, 29 Jul 2021 03:36:48 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9190C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:36:44 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so7971554pji.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:36:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=t/Mv+HEad+Mm0KXM51+RZNvY/SJHCBiAHseh+BVH8NU=;
-        b=m90svpJzE0nzBWjlFAdvM3aAFHtWP/DlxqcYbayFc782jYlMWShvCEVJ0CTahZE/4c
-         OFcZuIKMRY7g/484tMHPBybe/0F58rG2ian0mz6D2JwKCvUXXG0YIQIgDOENccOXypun
-         5n1IX472knippk8leuZrYqHK0NPdOkkBE9wzi/IOAvv/VaXFlofWyjGV7EAW2m1Cdjmc
-         riCH1qwqxWeaz29T80miRK27dO8k6o3PtY2CGlFq/NE13QmSrReo7eR7gBPi8fS9c1P8
-         y351q7SiHU47741aY4t6v82hxTS7BcTp9jciEVxgSv8YcKn8TV94Lr6dI+nWRMf2NQCz
-         5x2Q==
+        bh=79+lwfgqPqTMCDJYOtelsxZhwWsCxwv7dGGvPGe+0Sw=;
+        b=pht7EHvBPEmalFMQJxnA5uITGsCuOlxP9Y280Ur4c4Xr3lJdEeqiDYxP7TC7vQPgGd
+         I/ZPYxIAF7wX+D7ibW2+QAbkf4ckwDUGvyyRhT83wHCsspVChvqBgO1K/tQZaoBTt9Yp
+         Lir6sHtO0AUKIhh8vlXiMiD+sbirh9E/DVJcXMoijXcC4aQJapQYNS+qNggApM9o0DIi
+         ZzEoPv6irKFSlf6epkzfwm9d0JWIMWZMQhLEIbRJUy/HXVHCsfR9gQAfB/8EirRwTMsF
+         uRKiOnqoMqV2cLI/WjkPsIhOBs4mwx41zQl+qu/lOvaz0BIStwAPZwrefnhImIRH+0MY
+         YaFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=t/Mv+HEad+Mm0KXM51+RZNvY/SJHCBiAHseh+BVH8NU=;
-        b=AU/wu3NttVkTp3mPbyU4n8cDB5PedmVhB1ImCXoeV1LADpSIEnItWnq/OAla3T4AiC
-         2FfnWQjYl/lqG4puJ9jGM+U2pPlvvUeszIJdGCxmBU9wpOQjOkHlsT9ee0qxEjrkCwPX
-         JVA50IgT3HEqkQQEFH2sK9lHDRASGIU7oOY/1n0kpc3KgzHuFST9NnImovkYzYYHtaUi
-         9BmQwMMlfKq+FD2chiHGIppoA2JORDMM9zGv9+5A6x5sxa+r7LCcuxBO8kDzQBKm3czP
-         PsVVFtaqn2PNMBmvJzBci0io7+MnSsgE/JJ2C41+/A7ATq5WsmqMr6ia3/0d0hmWcNHI
-         F7Bg==
-X-Gm-Message-State: AOAM533BWZK9bwPXP6ag9jU1rBSEL1elG92cylmd+vIxmkAzYGGBd9hy
-        8h8pEW+gzN8VqnX5inCJzReH
-X-Google-Smtp-Source: ABdhPJyhmuXfKE1NaeP74fAHMH1dtIHSozYXkqdngLO3jW1LBkz8W+OaQ0EIVcLXjVhhD5uH00JunQ==
-X-Received: by 2002:a17:902:e742:b029:12b:5431:24fe with SMTP id p2-20020a170902e742b029012b543124femr3584330plf.20.1627544199577;
-        Thu, 29 Jul 2021 00:36:39 -0700 (PDT)
+        bh=79+lwfgqPqTMCDJYOtelsxZhwWsCxwv7dGGvPGe+0Sw=;
+        b=hGfb77JCr9M794xhzvGjdjBxw39+Sy1O8Z9nL93k0Yc9YkhZ9o6uTzJKi0bwPFPzRW
+         T2GuIMAcav+fcavl7KBSiXGy++Qh+CVMa7bqp9LVtmx4Jsk5liAwOaCzJa3LMlWI6G1O
+         sWyMuMfoeqY9j5Prze6x5pRO3sNzW2F0nGMgepqpaomNiOzZl9eeoKK/WfjcnWFMsp9m
+         lS0wVdgniGlhetjUOuO/or5JrL0Q/hxysQtcG4fMfzsXVTSKnD753yWBM3mz92oVG99v
+         yzOAkIKRiR2pJVidzHdqZ5oMG8yvrbcJ4DUc1bjLMceGauNPxWQwFje1fd5bPZN66W8O
+         KsaQ==
+X-Gm-Message-State: AOAM533s/8pPIerlCjR6a+JPN+31xTPbOYGjBMTVa2eJB6WR5lDzhPMe
+        pRtowUvk7Aie8NnkzEG7ejMy
+X-Google-Smtp-Source: ABdhPJwd6fqL59b6zB2Y1X6Xa6fhnvr9Evz97aQU4N4q/6V8MSENkC+yj5nWiVm8Rzev8LmszMzr1w==
+X-Received: by 2002:a05:6a00:2:b029:32e:3ef0:770a with SMTP id h2-20020a056a000002b029032e3ef0770amr3859510pfk.8.1627544204478;
+        Thu, 29 Jul 2021 00:36:44 -0700 (PDT)
 Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id dw15sm2121343pjb.42.2021.07.29.00.36.37
+        by smtp.gmail.com with ESMTPSA id ge21sm2237949pjb.55.2021.07.29.00.36.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 00:36:39 -0700 (PDT)
+        Thu, 29 Jul 2021 00:36:43 -0700 (PDT)
 From:   Xie Yongji <xieyongji@bytedance.com>
 To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
         sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
@@ -61,9 +61,9 @@ Cc:     songmuchun@bytedance.com,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v10 08/17] virtio_config: Add a return value to reset function
-Date:   Thu, 29 Jul 2021 15:34:54 +0800
-Message-Id: <20210729073503.187-9-xieyongji@bytedance.com>
+Subject: [PATCH v10 09/17] virtio-vdpa: Handle the failure of vdpa_reset()
+Date:   Thu, 29 Jul 2021 15:34:55 +0800
+Message-Id: <20210729073503.187-10-xieyongji@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210729073503.187-1-xieyongji@bytedance.com>
 References: <20210729073503.187-1-xieyongji@bytedance.com>
@@ -73,216 +73,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a return value to reset function so that we can
-handle the reset failure later. No functional changes.
+The vpda_reset() may fail now. This adds check to its return
+value and fail the virtio_vdpa_reset().
 
 Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 ---
- arch/um/drivers/virtio_uml.c             | 4 +++-
- drivers/platform/mellanox/mlxbf-tmfifo.c | 4 +++-
- drivers/remoteproc/remoteproc_virtio.c   | 4 +++-
- drivers/s390/virtio/virtio_ccw.c         | 6 ++++--
- drivers/virtio/virtio_mmio.c             | 4 +++-
- drivers/virtio/virtio_pci_legacy.c       | 4 +++-
- drivers/virtio/virtio_pci_modern.c       | 4 +++-
- drivers/virtio/virtio_vdpa.c             | 4 +++-
- include/linux/virtio_config.h            | 3 ++-
- 9 files changed, 27 insertions(+), 10 deletions(-)
+ drivers/virtio/virtio_vdpa.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 4412d6febade..ca02deaf9b32 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -828,11 +828,13 @@ static void vu_set_status(struct virtio_device *vdev, u8 status)
- 	vu_dev->status = status;
- }
- 
--static void vu_reset(struct virtio_device *vdev)
-+static int vu_reset(struct virtio_device *vdev)
- {
- 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
- 
- 	vu_dev->status = 0;
-+
-+	return 0;
- }
- 
- static void vu_del_vq(struct virtqueue *vq)
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index 38800e86ed8a..e3c513c2d4fa 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -989,11 +989,13 @@ static void mlxbf_tmfifo_virtio_set_status(struct virtio_device *vdev,
- }
- 
- /* Reset the device. Not much here for now. */
--static void mlxbf_tmfifo_virtio_reset(struct virtio_device *vdev)
-+static int mlxbf_tmfifo_virtio_reset(struct virtio_device *vdev)
- {
- 	struct mlxbf_tmfifo_vdev *tm_vdev = mlxbf_vdev_to_tmfifo(vdev);
- 
- 	tm_vdev->status = 0;
-+
-+	return 0;
- }
- 
- /* Read the value of a configuration field. */
-diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-index cf4d54e98e6a..975c845b3187 100644
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -191,7 +191,7 @@ static void rproc_virtio_set_status(struct virtio_device *vdev, u8 status)
- 	dev_dbg(&vdev->dev, "status: %d\n", status);
- }
- 
--static void rproc_virtio_reset(struct virtio_device *vdev)
-+static int rproc_virtio_reset(struct virtio_device *vdev)
- {
- 	struct rproc_vdev *rvdev = vdev_to_rvdev(vdev);
- 	struct fw_rsc_vdev *rsc;
-@@ -200,6 +200,8 @@ static void rproc_virtio_reset(struct virtio_device *vdev)
- 
- 	rsc->status = 0;
- 	dev_dbg(&vdev->dev, "reset !\n");
-+
-+	return 0;
- }
- 
- /* provide the vdev features as retrieved from the firmware */
-diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-index d35e7a3f7067..5221cdad531d 100644
---- a/drivers/s390/virtio/virtio_ccw.c
-+++ b/drivers/s390/virtio/virtio_ccw.c
-@@ -710,14 +710,14 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 	return ret;
- }
- 
--static void virtio_ccw_reset(struct virtio_device *vdev)
-+static int virtio_ccw_reset(struct virtio_device *vdev)
- {
- 	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
- 	struct ccw1 *ccw;
- 
- 	ccw = ccw_device_dma_zalloc(vcdev->cdev, sizeof(*ccw));
- 	if (!ccw)
--		return;
-+		return -ENOMEM;
- 
- 	/* Zero status bits. */
- 	vcdev->dma_area->status = 0;
-@@ -729,6 +729,8 @@ static void virtio_ccw_reset(struct virtio_device *vdev)
- 	ccw->cda = 0;
- 	ccw_io_helper(vcdev, ccw, VIRTIO_CCW_DOING_RESET);
- 	ccw_device_dma_free(vcdev->cdev, ccw, sizeof(*ccw));
-+
-+	return 0;
- }
- 
- static u64 virtio_ccw_get_features(struct virtio_device *vdev)
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 56128b9c46eb..c0a65efa4a65 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -256,12 +256,14 @@ static void vm_set_status(struct virtio_device *vdev, u8 status)
- 	writel(status, vm_dev->base + VIRTIO_MMIO_STATUS);
- }
- 
--static void vm_reset(struct virtio_device *vdev)
-+static int vm_reset(struct virtio_device *vdev)
- {
- 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
- 
- 	/* 0 status means a reset. */
- 	writel(0, vm_dev->base + VIRTIO_MMIO_STATUS);
-+
-+	return 0;
- }
- 
- 
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index d62e9835aeec..0b5d95e3efa1 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -89,7 +89,7 @@ static void vp_set_status(struct virtio_device *vdev, u8 status)
- 	iowrite8(status, vp_dev->ioaddr + VIRTIO_PCI_STATUS);
- }
- 
--static void vp_reset(struct virtio_device *vdev)
-+static int vp_reset(struct virtio_device *vdev)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	/* 0 status means a reset. */
-@@ -99,6 +99,8 @@ static void vp_reset(struct virtio_device *vdev)
- 	ioread8(vp_dev->ioaddr + VIRTIO_PCI_STATUS);
- 	/* Flush pending VQ/configuration callbacks. */
- 	vp_synchronize_vectors(vdev);
-+
-+	return 0;
- }
- 
- static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 30654d3a0b41..b0cde3b2f0ff 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -158,7 +158,7 @@ static void vp_set_status(struct virtio_device *vdev, u8 status)
- 	vp_modern_set_status(&vp_dev->mdev, status);
- }
- 
--static void vp_reset(struct virtio_device *vdev)
-+static int vp_reset(struct virtio_device *vdev)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-@@ -174,6 +174,8 @@ static void vp_reset(struct virtio_device *vdev)
- 		msleep(1);
- 	/* Flush pending VQ/configuration callbacks. */
- 	vp_synchronize_vectors(vdev);
-+
-+	return 0;
- }
- 
- static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
 diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index ff43f9b62b2f..3e666f70e829 100644
+index 3e666f70e829..ebbd8471bbee 100644
 --- a/drivers/virtio/virtio_vdpa.c
 +++ b/drivers/virtio/virtio_vdpa.c
-@@ -97,11 +97,13 @@ static void virtio_vdpa_set_status(struct virtio_device *vdev, u8 status)
- 	return ops->set_status(vdpa, status);
- }
- 
--static void virtio_vdpa_reset(struct virtio_device *vdev)
-+static int virtio_vdpa_reset(struct virtio_device *vdev)
+@@ -101,9 +101,7 @@ static int virtio_vdpa_reset(struct virtio_device *vdev)
  {
  	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
  
- 	vdpa_reset(vdpa);
-+
-+	return 0;
+-	vdpa_reset(vdpa);
+-
+-	return 0;
++	return vdpa_reset(vdpa);
  }
  
  static bool virtio_vdpa_notify(struct virtqueue *vq)
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index 8519b3ae5d52..203407992c30 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -47,6 +47,7 @@ struct virtio_shm_region {
-  *	After this, status and feature negotiation must be done again
-  *	Device must not be reset from its vq/config callbacks, or in
-  *	parallel with being added/removed.
-+ *	Returns 0 on success or error status
-  * @find_vqs: find virtqueues and instantiate them.
-  *	vdev: the virtio_device
-  *	nvqs: the number of virtqueues to find
-@@ -82,7 +83,7 @@ struct virtio_config_ops {
- 	u32 (*generation)(struct virtio_device *vdev);
- 	u8 (*get_status)(struct virtio_device *vdev);
- 	void (*set_status)(struct virtio_device *vdev, u8 status);
--	void (*reset)(struct virtio_device *vdev);
-+	int (*reset)(struct virtio_device *vdev);
- 	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
- 			struct virtqueue *vqs[], vq_callback_t *callbacks[],
- 			const char * const names[], const bool *ctx,
 -- 
 2.11.0
 
