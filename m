@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FF03DA269
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5C73DA26E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235136AbhG2Lpv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Jul 2021 07:45:51 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:46474 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbhG2Lpu (ORCPT
+        id S234451AbhG2Lra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:47:30 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:54032 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229869AbhG2Lr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:45:50 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 93E5D60A59E0;
-        Thu, 29 Jul 2021 13:45:45 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id aO_TuqCBAGxP; Thu, 29 Jul 2021 13:45:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 3EEFA60A59E2;
-        Thu, 29 Jul 2021 13:45:45 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ubc79fz-8zcI; Thu, 29 Jul 2021 13:45:45 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 15DB260A59E0;
-        Thu, 29 Jul 2021 13:45:45 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 13:45:44 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Pintu Agarwal <pintu.ping@gmail.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Sean Nyekjaer <sean@geanix.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>
-Message-ID: <1668790824.35266.1627559144878.JavaMail.zimbra@nod.at>
-In-Reply-To: <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com> <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com> <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at> <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com> <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com> <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF90 (Linux)/8.8.12_GA_3809)
-Thread-Topic: How to get actual image size from MTD partition
-Thread-Index: o5rhXDaMb949oL+oV/E2gN2BDVZpgg==
+        Thu, 29 Jul 2021 07:47:29 -0400
+Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 6D42CCED14;
+        Thu, 29 Jul 2021 13:47:25 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v2] drivers/bluetooth: Remove all strcpy() uses
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210724122152.7133-1-len.baker@gmx.com>
+Date:   Thu, 29 Jul 2021 13:47:25 +0200
+Cc:     Kees Cook <keescook@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Adam Sampson <ats@offog.org>, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <B9CF4857-98A5-418D-B689-A13A230A6641@holtmann.org>
+References: <20210724122152.7133-1-len.baker@gmx.com>
+To:     Len Baker <len.baker@gmx.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ezequiel,
+Hi Len,
 
------ Ursprüngliche Mail -----
-> [snip]
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. The safe replacement is strscpy() but in
+> this case it is better to use the scnprintf to simplify the arithmetic.
 > 
-> Ouch, so surprised that after all these years someone is doing squashfs/mtdblock
-> instead of using ubiblock :-)
+> This is a previous step in the path to remove the strcpy() function
+> entirely from the kernel.
 > 
-> Can we patch either Kconfig or add some warn_once on mtdblock
-> usage, suggesting to use ubiblock instead?
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+> Changelog v1 -> v2
+> - Add spaces to the "plus" sign.
+> - Use the correct size for the fw_dump_ptr buffer (Adam Sampson)
+> 
+> drivers/bluetooth/btmrvl_sdio.c | 29 ++++++++++++++---------------
+> 1 file changed, 14 insertions(+), 15 deletions(-)
 
-a hint in Kconfig makes IMHO sense. Do you want to send a patch?
-A warning is too much since on some tiny embedded system with NOR flash mtdblock is still
-a good choice.
-ubiblock is mostly useful for NAND flash.
+patch has been applied to bluetooth-next tree.
 
-> I remember there was still some use case(s) for mtdblock but I can't remember
-> now what was it, perhaps we should document the expectations?
-> (Is that for JFFS2 to mount?)
+Regards
 
-a long time ago mount didn't accept character devices, so you had to pass mtdblockX to mount
-JFFS2.
-This limitation is gone.
+Marcel
 
-Thanks,
-//richard
