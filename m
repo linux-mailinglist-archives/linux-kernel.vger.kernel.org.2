@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1683DA29D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0073DA29C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236072AbhG2L4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:56:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46342 "EHLO mail.kernel.org"
+        id S235603AbhG2L4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:56:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231674AbhG2L4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234958AbhG2L4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Jul 2021 07:56:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D04060EFD;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6700860720;
         Thu, 29 Jul 2021 11:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1627559793;
-        bh=ryrQ4aOwXNxknddn27PIiC1ii8cdXtd/lDw0nb6oBB0=;
+        bh=AyZq286GxOzlTPT6NwaDtxxaeeo+pRSi6ddl1AxdRy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ldXMpoMPhxpVQ+917Ky1CoHd1LqIdRUfnu+sPh+A0jBtTiROt+/ZxyuzNOm66o2i8
-         G3sa/HUDJWTSCgzmzIvY+cECrHG24KTHUCPD6ZlMWtNfxJk/kFH3z2yKxd7EiDGFom
-         kMkvWuT5IMatCENy8+ZDxdWwz99JyD56ZSiHUtudmslW0VcJgG4KEtH2Y/fmyv83UD
-         KDfJmy4FnEE7GOPS9jOZzEzWy7qnTGNjlTriFJyH4lAByG02OpCR7Ip6EN6vS0wrmS
-         t378bizfLHBP2zX2zTDilH4zQVaygzTG1Vl/Izy6aNtCcyrJaLyWmmARgIVIEfrLn9
-         9uLrZ5DbxQtJQ==
+        b=Or2jJVcNIiWH4V4i1i2ovkcpzMRG/jxoqD1DZRNUKcOFSsFZDDPZZVyqEbckrr9wG
+         8SOF7CE/1V/JX5Z/+z9DNfkKxWfwqjf43G7e6vPAYtvUAv4L0AVXMpyEMM6XvxCdHQ
+         a4sg3s0OKI4MblF78SMQvZ817NCjxGOvYXrhyUNyxkkq28B3nyCwYL8ENFIMZBtzkM
+         JDlSKBcVG6mnODrPx7645UlHbEmRf8Zd+ChVOPQejzAGAEEXYCj92JIw/3zLzwtw6A
+         PbpJl5/EnBmTLsbkA+ArFHhPM4TiQ5lKaUEvjFvyjJdxox0GbX2u8hb3dkfWnrtyFY
+         C2dGbBXdbakeQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1m94eN-004d20-Bs; Thu, 29 Jul 2021 13:56:31 +0200
+        id 1m94eN-004d24-DI; Thu, 29 Jul 2021 13:56:31 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Rob Herring <robh@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH 3/5] dt-bindings: PCI: kirin: Add support for Kirin970
-Date:   Thu, 29 Jul 2021 13:56:26 +0200
-Message-Id: <2cf7bd80d0b54f7658a64febf79d3a36e70aba86.1627559126.git.mchehab+huawei@kernel.org>
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
+Subject: [PATCH 4/5] dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
+Date:   Thu, 29 Jul 2021 13:56:27 +0200
+Message-Id: <f85127c1426d8d6dd755973bd379cf34f065a829.1627559126.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1627559126.git.mchehab+huawei@kernel.org>
 References: <cover.1627559126.git.mchehab+huawei@kernel.org>
@@ -49,102 +47,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new compatible, plus the new bindings needed by
-HiKey970 board.
+Document the bindings for HiKey 970 (hi3670) PCIe PHY
+interface, supported via the pcie-kirin driver.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../bindings/pci/hisilicon,kirin-pcie.yaml    | 61 ++++++++++++++++++-
- 1 file changed, 60 insertions(+), 1 deletion(-)
+ .../phy/hisilicon,phy-hi3670-pcie.yaml        | 86 +++++++++++++++++++
+ 1 file changed, 86 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
 
-diff --git a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-index 90cab09e8d4b..bb0c3a081d68 100644
---- a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-@@ -24,11 +24,13 @@ properties:
-     contains:
-       enum:
-         - hisilicon,kirin960-pcie
-+        - hisilicon,kirin970-pcie
- 
-   reg:
-     description: |
-       Should contain dbi, apb, config registers location and length.
--      For HiKey960, it should also contain phy.
-+      For HiKey960, it should also contain phy. All other devices
-+      should use a separate phy driver.
-     minItems: 3
-     maxItems: 4
- 
-@@ -47,6 +49,7 @@ examples:
-   - |
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-     #include <dt-bindings/clock/hi3660-clock.h>
-+    #include <dt-bindings/clock/hi3670-clock.h>
- 
-     soc {
-       #address-cells = <2>;
-@@ -83,4 +86,60 @@ examples:
-         clock-names = "pcie_phy_ref", "pcie_aux", "pcie_apb_phy",
-                       "pcie_apb_sys", "pcie_aclk";
-       };
+diff --git a/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+new file mode 100644
+index 000000000000..1e0153e4f4a5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+@@ -0,0 +1,86 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/phy/hisilicon,phy-hi3670-pcie.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+      pcie@f5000000 {
-+        compatible = "hisilicon,kirin970-pcie";
-+        reg = <0x0 0xf4000000 0x0 0x1000000>,
-+              <0x0 0xfc180000 0x0 0x1000>,
-+              <0x0 0xf5000000 0x0 0x2000>;
-+        reg-names = "dbi", "apb", "config";
-+        bus-range = <0x0  0x1>;
-+        msi-parent = <&its_pcie>;
-+        #address-cells = <3>;
-+        #size-cells = <2>;
-+        device_type = "pci";
-+        phys = <&pcie_phy>;
-+        ranges = <0x02000000 0x0 0x00000000
-+                  0x0 0xf6000000
-+                  0x0 0x02000000>;
-+        num-lanes = <1>;
-+        #interrupt-cells = <1>;
-+        interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-names = "msi";
-+        interrupt-map-mask = <0 0 0 7>;
-+        interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
-+        pcie@4,0 { // Lane 4: M.2
-+          reg = <0 0 0 0 0>;
-+          compatible = "pciclass,0604";
-+          device_type = "pci";
-+          reset-gpios = <&gpio7 1 0>;
-+          clkreq-gpios = <&gpio27 3 0 >;
-+          #address-cells = <3>;
-+          #size-cells = <2>;
-+          ranges;
-+        };
-+        pcie@5,0 { // Lane 5: Mini PCIe
-+          reg = <0 0 0 0 0>;
-+          compatible = "pciclass,0604";
-+          device_type = "pci";
-+          reset-gpios = <&gpio7 2 0>;
-+          clkreq-gpios = <&gpio17 0 0 >;
-+          #address-cells = <3>;
-+          #size-cells = <2>;
-+          ranges;
-+        };
-+        pcie@7,0 { // Lane 7: Ethernet
-+          reg = <0 0 0 0 0>;
-+          compatible = "pciclass,0604";
-+          device_type = "pci";
-+          reset-gpios = <&gpio7 3 0>;
-+          clkreq-gpios = <&gpio20 0 0 >;
-+          #address-cells = <3>;
-+          #size-cells = <2>;
-+          ranges;
-+        };
++title: HiSilicon Kirin970 PCIe PHY
++
++maintainers:
++  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
++
++description: |+
++  Bindings for PCIe PHY on HiSilicon Kirin 970.
++
++properties:
++  compatible:
++    const: hisilicon,hi970-pcie-phy
++
++  "#phy-cells":
++    const: 0
++
++  reg:
++    maxItems: 1
++    description: PHY Control registers
++
++  phy-supply:
++    description: The PCIe PHY power supply
++
++  clocks:
++    items:
++      - description: PCIe PHY clock
++      - description: PCIe AUX clock
++      - description: PCIe APB PHY clock
++      - description: PCIe APB SYS clock
++      - description: PCIe ACLK clock
++
++  clock-names:
++    items:
++      - const: phy_ref
++      - const: aux
++      - const: apb_phy
++      - const: apb_sys
++      - const: aclk
++
++  clkreq-gpios:
++    description: Clock request GPIOs
++    maxItems: 3
++
++  hisilicon,eye-diagram-param:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: Eye diagram for phy.
++
++required:
++  - "#phy-cells"
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - hisilicon,eye-diagram-param
++  - phy-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/hi3670-clock.h>
++
++    soc {
++      #address-cells = <2>;
++      #size-cells = <2>;
++      pcie_phy: pcie-phy@fc000000 {
++        compatible = "hisilicon,hi970-pcie-phy";
++        reg = <0x0 0xfc000000 0x0 0x80000>;
++        #phy-cells = <0>;
++        phy-supply = <&ldo33>;
++        clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
++                 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
++                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
++                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
++                 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
++        clock-names = "phy_ref", "aux",
++                      "apb_phy", "apb_sys", "aclk";
++        hisilicon,eye-diagram-param = <0xffffffff 0xffffffff
++                                       0xffffffff 0xffffffff 0xffffffff>;
 +      };
-     };
++    };
 -- 
 2.31.1
 
