@@ -2,105 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7ED93DA7CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE823DA7CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237926AbhG2PrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:47:25 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60102 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhG2PrY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:47:24 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 75DC920057;
-        Thu, 29 Jul 2021 15:47:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627573640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BGETejjFkZtLsLCQCyIcbXPBMg4J1wjpmMhMDKVQqCY=;
-        b=GPHZ5YADFHOGSHkdeeuWFFrOcqJXVm56o4u/Tj19A5t+18BMepw/rA1Rxos8c7VQru0TCe
-        EkqTNpH8lIG/cF6JECoki9jcI14u/GBNNN3UeOW7u79qkXOw9LGsWE+7H/y78wEZDKWRha
-        8sIcA5pX6GRSyrEN2zetsDXS/Qa+KtM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627573640;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BGETejjFkZtLsLCQCyIcbXPBMg4J1wjpmMhMDKVQqCY=;
-        b=KiKIixyRnw4jXrulQ/55BF7NfzU20dTCugzlQRV6eP6V85fmEFUOg4vCFPOeAA5aUnTLlY
-        CENCxqaZAAH/mYBQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 490B3136BF;
-        Thu, 29 Jul 2021 15:47:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id VcccEYjNAmEaNAAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 29 Jul 2021 15:47:20 +0000
-Subject: Re: [PATCH v3 00/35] SLUB: reduce irq disabled scope and make it RT
- compatible
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jann Horn <jannh@google.com>
-References: <20210729132132.19691-1-vbabka@suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <7ce60b82-a8c5-f31c-b344-b214a6ca38f8@suse.cz>
-Date:   Thu, 29 Jul 2021 17:47:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237973AbhG2PsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:48:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:51020 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229602AbhG2PsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 11:48:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 626666D;
+        Thu, 29 Jul 2021 08:48:17 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.13.114])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50F153F73D;
+        Thu, 29 Jul 2021 08:48:14 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 16:48:04 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v6 3/3] arm64: Create a list of SYM_CODE functions,
+ check return PC against list
+Message-ID: <20210729154804.GA59940@C02TD0UTHF1T.local>
+References: <3f2aab69a35c243c5e97f47c4ad84046355f5b90>
+ <20210630223356.58714-1-madvenka@linux.microsoft.com>
+ <20210630223356.58714-4-madvenka@linux.microsoft.com>
+ <20210728172523.GB47345@C02TD0UTHF1T.local>
+ <f9931a57-7a81-867b-fa2a-499d441c5acd@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210729132132.19691-1-vbabka@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f9931a57-7a81-867b-fa2a-499d441c5acd@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 3:20 PM, Vlastimil Babka wrote:
-> Changes since v2 [5]:
-> * Rebase to 5.14-rc3
-> * A number of fixes to the RT parts, big thanks to Mike Galbraith for testing
->   and debugging!
->   * The largest fix is to protect kmem_cache_cpu->partial by local_lock instead
->     of cmpxchg tricks, which are insufficient on RT. To avoid divergence
->     between RT and !RT, just do it everywhere. Affected mainly patch 25 and a
->     new patch 33. This also addresses a theoretical race raised earlier by Jann
->     Horn.
-> * Smaller fixes reported by Sebastian Andrzej Siewior and Cyrill Gorcunov
+On Thu, Jul 29, 2021 at 09:06:26AM -0500, Madhavan T. Venkataraman wrote:
+> Responses inline...
 > 
-> Changes since RFC v1 [1]:
-> * Addressed feedback from Christoph and Mel, added their acks.
-> * Finished RT conversion, adopting 2 patches from the RT tree.
-> * The local_lock conversion has to sacrifice lockless fathpaths on PREEMPT_RT
-> * Added some more cleanup patches to the front.
+> On 7/28/21 12:25 PM, Mark Rutland wrote:
+> > On Wed, Jun 30, 2021 at 05:33:56PM -0500, madvenka@linux.microsoft.com wrote:
+> >> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+> >> ... <snip> ...
+> >> +static struct code_range	*sym_code_functions;
+> >> +static int			num_sym_code_functions;
+> >> +
+> >> +int __init init_sym_code_functions(void)
+> >> +{
+> >> +	size_t size;
+> >> +
+> >> +	size = (unsigned long)__sym_code_functions_end -
+> >> +	       (unsigned long)__sym_code_functions_start;
+> >> +
+> >> +	sym_code_functions = kmalloc(size, GFP_KERNEL);
+> >> +	if (!sym_code_functions)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	memcpy(sym_code_functions, __sym_code_functions_start, size);
+> >> +	/* Update num_sym_code_functions after copying sym_code_functions. */
+> >> +	smp_mb();
+> >> +	num_sym_code_functions = size / sizeof(struct code_range);
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +early_initcall(init_sym_code_functions);
+> > 
+> > What's the point of copying this, given we don't even sort it?
+> > 
+> > If we need to keep it around, it would be nicer to leave it where the
+> > linker put it, but make it rodata or ro_after_init.
+> > 
 > 
-> This series was initially inspired by Mel's pcplist local_lock rewrite, and
-> also interest to better understand SLUB's locking and the new primitives and RT
-> variants and implications. It should make SLUB more preemption-friendly,
-> especially for RT, hopefully without noticeable regressions, as the fast paths
-> are not affected.
-> 
-> Series is based on 5.14-rc3 and also available as a git branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slub-local-lock-v3r1
+> I was planning to sort it for performance. I have a comment to that effect.
+> But I can remove the copy and retain the info in linker data.
 
-Branch with fixed memory leak in patch 33:
+I think for now it's better to place it in .rodata. If we need to sort
+this, we can rework that later, preferably sorting at compile time as
+with extable entries.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slub-local-lock-v3r2
+That way this is *always* in a usable state, and there's a much lower
+risk of this being corrupted by a stray write.
+
+> >> +	/*
+> >> +	 * Check the return PC against sym_code_functions[]. If there is a
+> >> +	 * match, then the consider the stack frame unreliable. These functions
+> >> +	 * contain low-level code where the frame pointer and/or the return
+> >> +	 * address register cannot be relied upon. This addresses the following
+> >> +	 * situations:
+> >> +	 *
+> >> +	 *  - Exception handlers and entry assembly
+> >> +	 *  - Trampoline assembly (e.g., ftrace, kprobes)
+> >> +	 *  - Hypervisor-related assembly
+> >> +	 *  - Hibernation-related assembly
+> >> +	 *  - CPU start-stop, suspend-resume assembly
+> >> +	 *  - Kernel relocation assembly
+> >> +	 *
+> >> +	 * Some special cases covered by sym_code_functions[] deserve a mention
+> >> +	 * here:
+> >> +	 *
+> >> +	 *  - All EL1 interrupt and exception stack traces will be considered
+> >> +	 *    unreliable. This is the correct behavior as interrupts and
+> >> +	 *    exceptions can happen on any instruction including ones in the
+> >> +	 *    frame pointer prolog and epilog. Unless stack metadata is
+> >> +	 *    available so the unwinder can unwind through these special
+> >> +	 *    cases, such stack traces will be considered unreliable.
+> > 
+> > As mentioned previously, we *can* reliably unwind precisely one step
+> > across an exception boundary, as we can be certain of the PC value at
+> > the time the exception was taken, but past this we can't be certain
+> > whether the LR is legitimate.
+> > 
+> > I'd like that we capture that precisely in the unwinder, and I'm
+> > currently reworking the entry assembly to make that possible.
+> > 
+> >> +	 *
+> >> +	 *  - A task can get preempted at the end of an interrupt. Stack
+> >> +	 *    traces of preempted tasks will show the interrupt frame in the
+> >> +	 *    stack trace and will be considered unreliable.
+> >> +	 *
+> >> +	 *  - Breakpoints are exceptions. So, all stack traces in the break
+> >> +	 *    point handler (including probes) will be considered unreliable.
+> >> +	 *
+> >> +	 *  - All of the ftrace entry trampolines are considered unreliable.
+> >> +	 *    So, all stack traces taken from tracer functions will be
+> >> +	 *    considered unreliable.
+> >> +	 *
+> >> +	 *  - The Function Graph Tracer return trampoline (return_to_handler)
+> >> +	 *    and the Kretprobe return trampoline (kretprobe_trampoline) are
+> >> +	 *    also considered unreliable.
+> > 
+> > We should be able to unwind these reliably if we specifically identify
+> > them. I think we need a two-step check here; we should assume that
+> > SYM_CODE() is unreliable by default, but in specific cases we should
+> > unwind that reliably.
+> > 
+> >> +	 * Some of the special cases above can be unwound through using
+> >> +	 * special logic in unwind_frame().
+> >> +	 *
+> >> +	 *  - return_to_handler() is handled by the unwinder by attempting
+> >> +	 *    to retrieve the original return address from the per-task
+> >> +	 *    return address stack.
+> >> +	 *
+> >> +	 *  - kretprobe_trampoline() can be handled in a similar fashion by
+> >> +	 *    attempting to retrieve the original return address from the
+> >> +	 *    per-task kretprobe instance list.
+> > 
+> > We don't do this today,
+> > 
+> >> +	 *
+> >> +	 *  - I reckon optprobes can be handled in a similar fashion in the
+> >> +	 *    future?
+> >> +	 *
+> >> +	 *  - Stack traces taken from the FTrace tracer functions can be
+> >> +	 *    handled as well. ftrace_call is an inner label defined in the
+> >> +	 *    Ftrace entry trampoline. This is the location where the call
+> >> +	 *    to a tracer function is patched. So, if the return PC equals
+> >> +	 *    ftrace_call+4, it is reliable. At that point, proper stack
+> >> +	 *    frames have already been set up for the traced function and
+> >> +	 *    its caller.
+> >> +	 *
+> >> +	 * NOTE:
+> >> +	 *   If sym_code_functions[] were sorted, a binary search could be
+> >> +	 *   done to make this more performant.
+> >> +	 */
+> > 
+> > Since some of the above is speculative (e.g. the bit about optprobes),
+> > and as code will change over time, I think we should have a much terser
+> > comment, e.g.
+> > 
+> > 	/*
+> > 	 * As SYM_CODE functions don't follow the usual calling
+> > 	 * conventions, we assume by default that any SYM_CODE function
+> > 	 * cannot be unwound reliably.
+> > 	 *
+> > 	 * Note that this includes exception entry/return sequences and
+> > 	 * trampoline for ftrace and kprobes.
+> > 	 */
+> > 
+> > ... and then if/when we try to unwind a specific SYM_CODE function
+> > reliably, we add the comment for that specifically.
+> > 
+> 
+> Just to confirm, are you suggesting that I remove the entire large comment
+> detailing the various cases and replace the whole thing with the terse comment?
+
+Yes.
+
+For clarity, let's take your bullet-point list above as a list of
+examples, and make that:
+
+	/*
+	 * As SYM_CODE functions don't follow the usual calling
+	 * conventions, we assume by default that any SYM_CODE function
+	 * cannot be unwound reliably.
+	 *
+	 * Note that this includes:
+	 *
+	 * - Exception handlers and entry assembly
+	 * - Trampoline assembly (e.g., ftrace, kprobes)
+	 * - Hypervisor-related assembly
+	 * - Hibernation-related assembly
+	 * - CPU start-stop, suspend-resume assembly
+	 * - Kernel relocation assembly
+	 */
+
+> I did the large comment because of Mark Brown's input that we must be
+> verbose about all the cases so that it is clear in the future what the
+> different cases are and how we handle them in this code. As the code
+> evolves, the comments would evolve.
+
+The bulk of the comment just enumerates cases and says we treat them as
+unreliable, which I think is already clear from the terser comment with
+the list. The cases which mention special treatment (e.g. for unwinding
+through return_to_handler) aren't actually handled here (and the
+kretprobes case isn't handled at all today), so this isn't the right
+place for those -- they'll inevitably drift from the implementation.
+
+> I can replace the comment if you want. Please confirm.
+
+Yes please. If you can use the wording I've suggested immediately above
+(with your list folded in), that would be great.
+
+Thanks,
+Mark.
+
+> 
+> Thanks.
+> 
+> Madhavan
