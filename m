@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B073DA6D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5913DA6BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237701AbhG2Oty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:49:54 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:44090 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhG2Otu (ORCPT
+        id S237253AbhG2Oq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237587AbhG2On1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:49:50 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 0f8846d825f27bfa; Thu, 29 Jul 2021 16:49:45 +0200
-Received: from kreacher.localnet (89-64-80-223.dynamic.chello.pl [89.64.80.223])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 53D6A669F44;
-        Thu, 29 Jul 2021 16:49:44 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PCI <linux-pci@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        Koba Ko <koba.ko@canonical.com>
-Subject: [PATCH v1 0/2] PCI: PM: Fix handling of device that can only signal PME from D3cold
-Date:   Thu, 29 Jul 2021 16:46:27 +0200
-Message-ID: <4668274.31r3eYUQgx@kreacher>
+        Thu, 29 Jul 2021 10:43:27 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A49BC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:43:21 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id y200so7491218iof.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:43:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+UmWBFJr8CZCCI6Hv7anKl8N5XnEyboqlsB/Azk7Fvk=;
+        b=W+WSgTckYxDJ3PQIAJIDPz/acxCKtOF3UQEmscCBjbTVF+6lpvtt8UOJK8ynV23PZ1
+         j9QnsuAj2AWqhPxI+3PzpkoxiVZJlZChGmwNLM9UPY90l4nIbw7cj2PA3PB8dFpDfStp
+         U3WPeV0K/7yCEuYriitsRxR95iKeNneDOGEQ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+UmWBFJr8CZCCI6Hv7anKl8N5XnEyboqlsB/Azk7Fvk=;
+        b=d5+2/X8qhU5mlA9v1HDDvlCP3lxtMI7zhmS3I+kXI8TpoeBRMm+E4N3ArIS60srOTc
+         Rrs6Bz5yhe4QWWGFbXm2rK1yOKVSFFFyLcZoEQvwwiooU/9kcHEaI5JVDDIQvwCucKm0
+         7FeCiAPA03GztPqR2Ct3wqLuuDOpvi7c7nlyOD+EE+X4QMj+roPUHdGubML/60JqB4i2
+         2NKKKGxcJt7HXHecDQmfxLpJ5d6uL4DOY0pqSrtBJ41+8p9vwvU1O+m8KDaSFGjA4o9n
+         A5OH4ILP3+1cUCkEAitVw6zQ18oInF8k5IJcKqOHn1w7GXgIAQSYcDFqK79MCfNdzY14
+         jnqg==
+X-Gm-Message-State: AOAM530o2cNneLINYWU0eLETDzZwOBIeGpYBgv5MPfPvuGTyNeLEAcFL
+        qPkGRxzgnpeC3UP0a7PAy2JiWKUsZb/JtS/AoX8rCw==
+X-Google-Smtp-Source: ABdhPJwba+RJ3lGvRq+rfCLLiBleSyA4hT5CDS5/+FuNgREumvyYcfbJdG3n5wXq+ZPnCXxCjmaGneDkyAT917tyH+E=
+X-Received: by 2002:a5d:87cc:: with SMTP id q12mr4403406ios.131.1627569800780;
+ Thu, 29 Jul 2021 07:43:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20210729111027.33028-1-broonie@kernel.org> <2306c0c4-1312-fcc7-1ed3-406fbd72cf63@amd.com>
+ <20210729122521.GM4670@sirena.org.uk>
+In-Reply-To: <20210729122521.GM4670@sirena.org.uk>
+From:   Rob Clark <robdclark@chromium.org>
+Date:   Thu, 29 Jul 2021 07:47:31 -0700
+Message-ID: <CAJs_Fx7osL1PAANAVGnbkyk+K1LvB9O-dWxsz1b=cCJMCixUfQ@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the drm-msm tree with the drm-next tree
+To:     Mark Brown <broonie@kernel.org>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.223
-X-CLIENT-HOSTNAME: 89-64-80-223.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrheefgdegtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdevgfetueetheekudeuvdduteelvefftdfftdejjeeukeffteeikefgiefghedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepkeelrdeigedrkedtrddvvdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrddvvdefpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhg
- pdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvlhhgrggrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgrihdrhhgvnhhgrdhfvghnghestggrnhhonhhitggrlhdrtghomhdprhgtphhtthhopehuthhkrghrshhhrdhhrdhprghtvghlsehinhhtvghlrdgtohhmpdhrtghpthhtohepkhhosggrrdhkohestggrnhhonhhitggrlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jul 29, 2021 at 5:25 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Jul 29, 2021 at 01:44:42PM +0200, Christian K=C3=B6nig wrote:
+> > Am 29.07.21 um 13:10 schrieb Mark Brown:
+> > > Hi all,
+> > >
+> > > Today's linux-next merge of the drm-msm tree got a conflict in:
+> > >
+> > >    drivers/gpu/drm/msm/msm_gem.c
+> > >
+> > > between commit:
+> > >
+> > >    60f800b2bdfa ("drm/msm: always wait for the exclusive fence")
+> > >
+> > > from the drm-next tree and commit:
+> > >
+> > >    1d8a5ca436ee ("drm/msm: Conversion to drm scheduler")
+> > >
+> > > from the drm-msm tree.
+> > >
+> > > I fixed it up (see below) and can carry the fix as necessary. This
+> > > is now fixed as far as linux-next is concerned, but any non trivial
+> > > conflicts should be mentioned to your upstream maintainer when your t=
+ree
+> > > is submitted for merging.  You may also want to consider cooperating
+> > > with the maintainer of the conflicting tree to minimise any particula=
+rly
+> > > complex conflicts.
+> > >
+> > > diff --cc drivers/gpu/drm/msm/msm_gem.c
+> > > index 39c35414d7b5,5db07fc287ad..000000000000
+> > > --- a/drivers/gpu/drm/msm/msm_gem.c
+> > > +++ b/drivers/gpu/drm/msm/msm_gem.c
+> >
+> > thanks for the fixup, but something went wrong here. The diff is just e=
+mpty.
+> >
+> > Any idea what's going on?
+>
+> The change modified a function that is simply deleted so the resulting
+> diff was empty.
 
-This series is a replacement for the following patch:
+That is the correct resolution, that commit switched to
+drm_gem_fence_array_add_implicit() as part of the conversion
 
-https://patchwork.kernel.org/project/linux-pm/patch/3149540.aeNJFYEL58@kreacher/
-
-allowing devices that only can signal PME from D3cold to be put into
-low-power states and signal wakeup from D3cold (if they get into it).
-
-However, the patch above works by adding a special case to pci_pme_capable()
-which actually is not necessary.
-
-Instead of doing that, it is sufficient to make pci_target_state() handle the
-case in which the device cannot signal PME from D0 consistently (patch [1/2]
-in this series) and make __pci_enable_wake() enable PM signaling for devices
-that can signal PME from D3cold (patch [2/2] in this series).
-
-Please see the patch changelogs for details.
-
-Thanks!
-
-
-
+BR,
+-R
