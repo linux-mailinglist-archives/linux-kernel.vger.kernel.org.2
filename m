@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BDC3DA5B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC783DA601
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239615AbhG2OJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:09:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238651AbhG2OHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:07:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA5860F6F;
-        Thu, 29 Jul 2021 14:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627567626;
-        bh=PKI/11VUgofsqKtIxhbATROKObOP+Kwnqz32HDODdGE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yp2Ss41CFX3w+aBnhv6DNWDEEn6ZVWQ00j3G4+8dZUskytxHPvb3E2MRAwoEJ44HP
-         Y4/WzR/dQr7BeKPmhkmzacXk1A/GZn4bMIBfNQ1YCXfafj8k3xw5+gVRUm/tdSkIFi
-         uhQHZz5xIADdPOGr0zKURE3JQwJtLeCJkB9E24qQhIRmsizq1xySTmEmWDuLhjfUlp
-         1rBZSGj5AKQDBvWss3m7OHAMPYQRD7I+ZoWsMTEt/YSNLncpJ3x7RHn0/VZPwni4S1
-         LQdfEhrrxlJsUDOgY0QRfRo52+34vyLqGYurM/4bXHpyl4XfyTjMklkgi4SD+Xe0cP
-         6iNhYD3cKesaw==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip v10 07/16] objtool: Ignore unwind hints for ignored functions
-Date:   Thu, 29 Jul 2021 23:07:01 +0900
-Message-Id: <162756762128.301564.14921395970626566365.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162756755600.301564.4957591913842010341.stgit@devnote2>
-References: <162756755600.301564.4957591913842010341.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S239229AbhG2OLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:11:15 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:39914 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238548AbhG2OHL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:07:11 -0400
+Received: by mail-wr1-f42.google.com with SMTP id b11so1775955wrx.6;
+        Thu, 29 Jul 2021 07:07:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8LofI00GAwLkUAnxAUd4xKumAPYSByZWAAynmglCQoo=;
+        b=q1b6B0HkXqq6P43gcgLMIHU6Ks/hfTA1OMSMPH/UvlpedIaGJAImLN1++8tF3vszIc
+         1fY1Yqn1VD5cJ4ZAzpmWud+YZENUbwq1cgW6DW7lHw3u9DNk7mnc8kCqOQHjEetNDGVC
+         23Z7TGRNnw2F/Q3vnOKKIAyRcVhm9iSkD4hSqOdyZYoUgJXifZjOhlroahvj7+TtYlYE
+         20vVujKaucgBN0DjgHsFJmRGfxCe6oKBQZ2jwRNufwy9HuKTnkkz+6DDT8SE6nnHf01U
+         Wk6H5n2rXpgi1XDhcSo1k8v90xEaInhQaJmtT4LtnkTyemjb4cL+LHaIvVARXMM1Remi
+         nNNw==
+X-Gm-Message-State: AOAM530HYBk3HE/8WnShK1hYGAWrQ42Hn1IJsA+L9riZaoJIDLvM6jAt
+        0SHO1UexznYr6J2SvnyCuP0=
+X-Google-Smtp-Source: ABdhPJzyQQcNlTQOQAYqPAwVB0LNrL0j3MkejU/yVyGKgSEKW5TBNC+ecp+5xsLrh6HC+pPYI3mKGA==
+X-Received: by 2002:a5d:5750:: with SMTP id q16mr5182030wrw.9.1627567627396;
+        Thu, 29 Jul 2021 07:07:07 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id u2sm10170996wmm.37.2021.07.29.07.07.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 07:07:06 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 14:07:05 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Siddharth Chandrasekaran <sidcha@amazon.de>,
+        Siddharth Chandrasekaran <sidcha.dev@gmail.com>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] asm-generic/hyperv: Fix struct hv_message_header ordering
+Message-ID: <20210729140705.wj5tokeq6lkxm2yy@liuwe-devbox-debian-v2>
+References: <20210729133702.11383-1-sidcha@amazon.de>
+ <87eebh9qhd.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87eebh9qhd.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+On Thu, Jul 29, 2021 at 03:52:46PM +0200, Vitaly Kuznetsov wrote:
+> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+> 
+> > According to Hyper-V TLFS Version 6.0b, struct hv_message_header members
+> > should be defined in the order:
+> >
+> > 	message_type, reserved, message_flags, payload_size
+> >
+> > but we have it defined in the order:
+> >
+> > 	message_type, payload_size, message_flags, reserved
+> >
+> > that is, the payload_size and reserved members swapped. 
+> 
+> Indeed,
+> 
+> typedef struct
+> {
+> 	HV_MESSAGE_TYPE MessageType;
+> 	UINT16 Reserved;
+> 	HV_MESSAGE_FLAGS MessageFlags;
+> 	UINT8 PayloadSize;
+> 	union
+> 	{
+> 		UINT64 OriginationId;
+> 		HV_PARTITION_ID Sender;
+> 		HV_PORT_ID Port;
+> 	};
+> } HV_MESSAGE_HEADER;
 
-If a function is ignored, also ignore its hints.  This is useful for the
-case where the function ignore is conditional on frame pointers, e.g.
-STACK_FRAME_NON_STANDARD_FP().
+Well. I think TLFS is wrong. Let me ask around.
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/objtool/check.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e5947fbb9e7a..67cbdcfcabae 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2909,7 +2909,7 @@ static int validate_unwind_hints(struct objtool_file *file, struct section *sec)
- 	}
- 
- 	while (&insn->list != &file->insn_list && (!sec || insn->sec == sec)) {
--		if (insn->hint && !insn->visited) {
-+		if (insn->hint && !insn->visited && !insn->ignore) {
- 			ret = validate_branch(file, insn->func, insn, state);
- 			if (ret && backtrace)
- 				BT_FUNC("<=== (hint)", insn);
-
+Wei.
