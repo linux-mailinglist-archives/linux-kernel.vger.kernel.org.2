@@ -2,378 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C7F3DA062
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B18D3DA06E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236041AbhG2Jj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:39:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236000AbhG2JjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:39:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C6A461058;
-        Thu, 29 Jul 2021 09:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627551563;
-        bh=oGLPTe0mfmXWuL4iGqaxlMWMNr0RA0EnCilhc6HniCg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s06i2lXc0X5Yxp9xGhL8wgGFApOAc+78EShKtRdEwixFag3wvL7yhBsbodJbohnVR
-         Qmm3wS/yau2yjRGiuqVecGMc+dXX0rxmRtYC7Ohaw8Sq3Uw5fnw88PndyHIjlvXVRk
-         NiBXwMcwyPIdOp9KFnW2juJNttYhlSky0D1voWkv9sOT28vTAHA+MUSlbXygXZK1C8
-         cuWy0uZAnL8L5btosfHHhMcBl6aCVVDe/osMfSr1BwktICRcYfoVuzW5O0L3OabCCq
-         XhsRwVKRoOX7p98YJ6Oh1syj/Ubouk/+TgsUcvnmKfsUufcw2zSejr4hwzTvCyNsnq
-         WSyics37o3OkA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, Ariel Elior <aelior@marvell.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v3 1/3] lib/scatterlist: Provide a dedicated function to support table append
-Date:   Thu, 29 Jul 2021 12:39:11 +0300
-Message-Id: <b0f6e50a8cdfc484f2dc18d3215e86465e2e1f1c.1627551226.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1627551226.git.leonro@nvidia.com>
-References: <cover.1627551226.git.leonro@nvidia.com>
-MIME-Version: 1.0
+        id S235781AbhG2Jjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:39:52 -0400
+Received: from mail-eopbgr130080.outbound.protection.outlook.com ([40.107.13.80]:64330
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236015AbhG2Jju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 05:39:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LidB71/8RIDBQ9JBdbXJFm/pggjUMKCyiNMyahMqShBOdDxBIx01cP9Bj5Tlk0L4t1N0Vq1syBJXC40EicMDynLLQ4FtfkJA71DAusKD8pztbmAucCIS1ldEH0/Ob9i5Lgxxj/ZL/FwrBN++hLLvquj5Vgazb46LgPEAo+aVcPYEbjTPS1/EJzU9sxM3jOvx4ue/uyF1TFkPAryZRCOuPmX7Bd6u8yTlRZV4eQsesveITHCcuS15cFk7coXdm/VBx5AIawDmnUM4z4f7OcT1/n8ZSV5usYmB+S2z+3G2P3jrBXJ5X6ZjnW/74Gd4T2p6cCRhhtCnOOenb0Oxpbhmbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h8v556kpoNYRc+U2FD63vQ8tSjGm+MvN3JlqAMYhQGI=;
+ b=KD14XbVCm+lHnL8/qgvA+TJ603uPmhna0SE2ac0tsMlKdIaDxJOCOMXkmIujL3dT4GlAtkhTXC7SGVeBA9HoQVoHBWSw6aQffxAx8+QRH9OMG8x5K5xHZgDlZH/5cZ3i8KZAyiq67R0iup/V/Vm56rp3w9AE5yXTw3moLtptDLOKLRJrbB6iWwJtfgF04wedpv80I6JD+7VvJPApUsfRHUAehLe6eNmSHqJnkd3PE81DAqi40BCXPTT6tLIqNfej0+dfjyQnJebSdu8Fnnt7sXiMnhYKETMk+ydda26A2gpIECH73VBOsJIgvWYBMdeevx7fYw9NeYbF8hgZ6Q7SqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h8v556kpoNYRc+U2FD63vQ8tSjGm+MvN3JlqAMYhQGI=;
+ b=Y3Ul7lRIkdIhR0MF1hIlluaESmztxpBD3bt1hTVXds0GS66kFTH0CBxc9MEM+k3EkoXXtYXQcgArebSP5/bqVWHaYYwwkPMQfhI88KwzGOrbUiloBg9/Bf4r4H9+tg7gFbJNbkhwplYBIZPBH8/dSWe9cUXZFb1aWqgqGsPWIKY=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=wolfvision.net;
+Received: from DBBPR08MB4523.eurprd08.prod.outlook.com (2603:10a6:10:c8::19)
+ by DB7PR08MB3548.eurprd08.prod.outlook.com (2603:10a6:10:4d::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.31; Thu, 29 Jul
+ 2021 09:39:44 +0000
+Received: from DBBPR08MB4523.eurprd08.prod.outlook.com
+ ([fe80::ade3:93e2:735c:c10b]) by DBBPR08MB4523.eurprd08.prod.outlook.com
+ ([fe80::ade3:93e2:735c:c10b%7]) with mapi id 15.20.4373.019; Thu, 29 Jul 2021
+ 09:39:43 +0000
+From:   Michael Riesch <michael.riesch@wolfvision.net>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Liang Chen <cl@rock-chips.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Simon Xue <xxm@rock-chips.com>
+Subject: [PATCH v2 0/2] add ethernet support to rk3568 dts
+Date:   Thu, 29 Jul 2021 11:39:11 +0200
+Message-Id: <20210729093913.8917-1-michael.riesch@wolfvision.net>
+X-Mailer: git-send-email 2.20.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM5PR0701CA0018.eurprd07.prod.outlook.com
+ (2603:10a6:203:51::28) To DBBPR08MB4523.eurprd08.prod.outlook.com
+ (2603:10a6:10:c8::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carlos.wolfvision-at.intra (91.118.163.37) by AM5PR0701CA0018.eurprd07.prod.outlook.com (2603:10a6:203:51::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.6 via Frontend Transport; Thu, 29 Jul 2021 09:39:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c37444ff-4b34-468b-e302-08d95274cb80
+X-MS-TrafficTypeDiagnostic: DB7PR08MB3548:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR08MB3548557D753922C060663FF9F2EB9@DB7PR08MB3548.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4u0++9H7EWpObaL2wEMdqMpFSwvFgawy0XTNNdmFRBiXRAeEh5sssFDyORObXReXduPaKbSnyHe5s5qd5NZuaM6WAxdEN904xOJ60kC/3AIUkW7jRdERIzhnK3f33bcyh0QVi4PtZLXc8AnxRZf4QhBxj12V4AqyDUOq6gdOiO8YrN2CXOiehrWaLZnXcQX7uQYvPhYzir14ArzaBmmMIRai6TMu7XT9EdZElcFkclNXfWVMPq6m9C4cHzvY8FgFyhgO2R5na0Qp8zEyUTZkIkBWyI+nB3zNmk8N6loP+Z3jFzlNGOMCM5AcrYjw/e14xGc3Ml2RNXPk2Py9NrK8sYE46mfbuq75EugR3XVdIjqSG6quQxgnE86DVtdvkqbli2dHH2smjz/+NnGJdwKEziFa4rzwWS/gAjg7hx/ANDbOWM8Y5PguLwYCdaxBsFcfgbk+UxZGarDAKjiVLJm9pqcqAWIJJxVwelbn8gTzFIxm7qORoT/QMJXeWbRhwaAnzFLby6PscL4w3mi0imC8qXQuvfX2bK1m/JhZefkvKxiPG3ZPHFl4Nx+6COLp9KcqwVJNHIdSVZyLC92yvIJNcoKmrxFskHgBgdxL4eBgGpdg+QJSFdkSYMbcmm6SjYTMOYJ+2Ts9t8bnBc9bP0TTdpSjH+VWcYZkK8rR8dQq23o8iKmy0VlskSvaa19/S/rqJ9NX3DC4Bn90qp+Avu0GtA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR08MB4523.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39840400004)(366004)(346002)(136003)(376002)(8676002)(52116002)(5660300002)(26005)(2616005)(44832011)(316002)(6506007)(54906003)(4744005)(66946007)(6666004)(66476007)(2906002)(186003)(478600001)(36756003)(6486002)(38350700002)(1076003)(38100700002)(8936002)(956004)(86362001)(66556008)(6512007)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?U8lajPBUjrC5s+2zXeno1YNVvbj2ni18XKowGFzG1dS8BExXvM87BTzWBgFz?=
+ =?us-ascii?Q?nIJ/pMayJSrgHrwK87nyGMNdXxmTXehnU6kxq7r9/qnpzsl6Uk1h3YqJhkx/?=
+ =?us-ascii?Q?y9dsgZndvavFy6numZev8sOMfGZnO1CUWn8QLSiTRsZ//W2QUe9I1jMyrM6P?=
+ =?us-ascii?Q?aTSlsnssjRqITGGycE+u9dPsPE34bZkTbwnx1e/ZJyY4MpUSzUiB9PO9g5aL?=
+ =?us-ascii?Q?almXSKXg6gX6mCm4D9vbJ6sFmgNPNjpOXna88LsXhAbibDwPMw9BgEj1mBgp?=
+ =?us-ascii?Q?IsENgw8gN/1oWCaOQgnBC8FrZeYv1TsFmxZEKjWZKwwoj++dNLMKSKz2SGXF?=
+ =?us-ascii?Q?GIxcl52+iVFRXuPywago3ofCIflCupKx+ymGgvmF/143ChifO6FGxRypUG+m?=
+ =?us-ascii?Q?JjaQuTWeLpSO7IZCpMuhw3tILSZtbzHbGS/kD8ndulXqvg0q+pXy7xo1Bq+y?=
+ =?us-ascii?Q?s7hWxoHgTiFrjpRVkdZUk3RIUbEBQKTmXbATydYJORDQEaiq9Lo7Ugk0DNu4?=
+ =?us-ascii?Q?DVjEH+D9Y9si7N1ZJP/0SGSyxlG+aqFvOxiHlvZjQjhjDOZ//zqRFFnxV8nJ?=
+ =?us-ascii?Q?qShy1iM5ylcA5PJsJ9ATiKgTf1nrcR23EgA+xnqsuQyJwkyqF2npwt1n6/Di?=
+ =?us-ascii?Q?w+X6EPIlZsWtgra7Gm3pjG5kFEzFywLOYEqMAcfPXEMjQUYOIUsbnBwME4TH?=
+ =?us-ascii?Q?bO12teFu4j/h4MezvLxYebmfquKpIS/ZEyZeStx2W5RIA5BC+9h9TIgmMEgP?=
+ =?us-ascii?Q?wr+B9yxKP+mWfsHkomypEGJ5QiGTt5akuQ4y4dXbP3iBlyQFTj7a1VuemoRv?=
+ =?us-ascii?Q?u1y79P1adBScgh/ZwhsFp573BtvKqp2fyAinrfSEeOx2Q+ynrTdtiRLiYOIi?=
+ =?us-ascii?Q?5eqZfh861iGN4qt/AIaHJIkXDVQPey6VzbcoMdN/0VL9h1mC+ij4w5EjBLZg?=
+ =?us-ascii?Q?31ssB24VV8Lik36viasW6bRgZQpouzbDYq62jpw0PvYoieUDgb8ZYb/IzEPc?=
+ =?us-ascii?Q?UCwYVaQC/FtjDKTDzBXuf6ticXN3IonJy1mFRG07GYi9uhSXXsKyWXgqt3x+?=
+ =?us-ascii?Q?SgLAy1dfOaez0mPPUD1ulPNFvJ0sKr7C6RCOMI7L7km3dmnS325aqOfLFKCg?=
+ =?us-ascii?Q?CgUIgmCP8/1K+XpKC4j7z9pMEQk6NuZXAiN1XVNm+2pivHazb1lZr3vSABiW?=
+ =?us-ascii?Q?uQeiZo32naaEXw+hnaqKj207NpmN1sm8nR9GEM2zFtgzIwGf2AczNxNpOSBP?=
+ =?us-ascii?Q?F9gI1I82jwHaTuUHJT/bBHsOUdXjSdExcnDdHhDajoZbt1yuoO5MTcvK2xcX?=
+ =?us-ascii?Q?rx1U9xP2D2irr7357SU124FK?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: c37444ff-4b34-468b-e302-08d95274cb80
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR08MB4523.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 09:39:43.5370
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ei6mhiSH+7ZzSI7s0RzlItuspEtuMC2RfM78fhod5dqB6KA33/qUSH8MADmoLNvInQRFP/6nnnc0mfbiZ3mCDGTsgFzdsPuvjHGcMf76bOE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR08MB3548
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+Hi all,
 
-RDMA is the only in-kernel user that uses __sg_alloc_table_from_pages to
-append pages dynamically. In the next patch. That mode will be extended
-and that function will get more parameters. So separate it into a unique
-function to make such change more clear.
+these patches should be orthogonal to the ongoing work of Peter Geis
+that aims to introduce the GMAC1 node to the common RK356x dts.
+The GMAC0 node, which is exclusive to the RK3568, and the Ethernet
+phy nodes in the RK3568 EVB1 are introduced by this series.
 
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/gpu/drm/drm_prime.c                 | 13 ++++---
- drivers/gpu/drm/i915/gem/i915_gem_userptr.c | 11 +++---
- drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c  | 14 +++-----
- drivers/infiniband/core/umem.c              |  4 +--
- include/linux/scatterlist.h                 | 39 ++++++++++++++++++---
- lib/scatterlist.c                           | 36 ++++++++++---------
- tools/testing/scatterlist/main.c            | 25 +++++++++----
- 7 files changed, 90 insertions(+), 52 deletions(-)
+v2:
+- sort properties alphabetically
+- use phy-mode "rgmii-id" without delay properties
+- rename phy nodes to "ethernet-phy"
 
-diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-index 2a54f86856af..cf3278041f9c 100644
---- a/drivers/gpu/drm/drm_prime.c
-+++ b/drivers/gpu/drm/drm_prime.c
-@@ -807,8 +807,8 @@ struct sg_table *drm_prime_pages_to_sg(struct drm_device *dev,
- 				       struct page **pages, unsigned int nr_pages)
- {
- 	struct sg_table *sg;
--	struct scatterlist *sge;
- 	size_t max_segment = 0;
-+	int err;
- 
- 	sg = kmalloc(sizeof(struct sg_table), GFP_KERNEL);
- 	if (!sg)
-@@ -818,13 +818,12 @@ struct sg_table *drm_prime_pages_to_sg(struct drm_device *dev,
- 		max_segment = dma_max_mapping_size(dev->dev);
- 	if (max_segment == 0)
- 		max_segment = UINT_MAX;
--	sge = __sg_alloc_table_from_pages(sg, pages, nr_pages, 0,
--					  nr_pages << PAGE_SHIFT,
--					  max_segment,
--					  NULL, 0, GFP_KERNEL);
--	if (IS_ERR(sge)) {
-+	err = sg_alloc_table_from_pages_segment(sg, pages, nr_pages, 0,
-+						nr_pages << PAGE_SHIFT,
-+						max_segment, GFP_KERNEL);
-+	if (err) {
- 		kfree(sg);
--		sg = ERR_CAST(sge);
-+		sg = ERR_PTR(err);
- 	}
- 	return sg;
- }
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-index 7487bab11f0b..458f797a9e1e 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-@@ -133,7 +133,6 @@ static int i915_gem_userptr_get_pages(struct drm_i915_gem_object *obj)
- 	unsigned int max_segment = i915_sg_segment_size();
- 	struct sg_table *st;
- 	unsigned int sg_page_sizes;
--	struct scatterlist *sg;
- 	struct page **pvec;
- 	int ret;
- 
-@@ -153,13 +152,11 @@ static int i915_gem_userptr_get_pages(struct drm_i915_gem_object *obj)
- 	spin_unlock(&i915->mm.notifier_lock);
- 
- alloc_table:
--	sg = __sg_alloc_table_from_pages(st, pvec, num_pages, 0,
--					 num_pages << PAGE_SHIFT, max_segment,
--					 NULL, 0, GFP_KERNEL);
--	if (IS_ERR(sg)) {
--		ret = PTR_ERR(sg);
-+	ret = sg_alloc_table_from_pages_segment(st, pvec, num_pages, 0,
-+						num_pages << PAGE_SHIFT,
-+						max_segment, GFP_KERNEL);
-+	if (ret)
- 		goto err;
--	}
- 
- 	ret = i915_gem_gtt_prepare_pages(obj, st);
- 	if (ret) {
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
-index 0488042fb287..fc372d2e52a1 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
-@@ -363,7 +363,6 @@ static int vmw_ttm_map_dma(struct vmw_ttm_tt *vmw_tt)
- 	int ret = 0;
- 	static size_t sgl_size;
- 	static size_t sgt_size;
--	struct scatterlist *sg;
- 
- 	if (vmw_tt->mapped)
- 		return 0;
-@@ -386,15 +385,12 @@ static int vmw_ttm_map_dma(struct vmw_ttm_tt *vmw_tt)
- 		if (unlikely(ret != 0))
- 			return ret;
- 
--		sg = __sg_alloc_table_from_pages(&vmw_tt->sgt, vsgt->pages,
--				vsgt->num_pages, 0,
--				(unsigned long) vsgt->num_pages << PAGE_SHIFT,
--				dma_get_max_seg_size(dev_priv->drm.dev),
--				NULL, 0, GFP_KERNEL);
--		if (IS_ERR(sg)) {
--			ret = PTR_ERR(sg);
-+		ret = sg_alloc_table_from_pages_segment(
-+			&vmw_tt->sgt, vsgt->pages, vsgt->num_pages, 0,
-+			(unsigned long)vsgt->num_pages << PAGE_SHIFT,
-+			dma_get_max_seg_size(dev_priv->drm.dev), GFP_KERNEL);
-+		if (ret)
- 			goto out_sg_alloc_fail;
--		}
- 
- 		if (vsgt->num_pages > vmw_tt->sgt.orig_nents) {
- 			uint64_t over_alloc =
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 0eb40025075f..b741758e528f 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -226,8 +226,8 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 
- 		cur_base += ret * PAGE_SIZE;
- 		npages -= ret;
--		sg = __sg_alloc_table_from_pages(&umem->sg_head, page_list, ret,
--				0, ret << PAGE_SHIFT,
-+		sg = sg_alloc_append_table_from_pages(&umem->sg_head, page_list,
-+				ret, 0, ret << PAGE_SHIFT,
- 				ib_dma_max_seg_size(device), sg, npages,
- 				GFP_KERNEL);
- 		umem->sg_nents = umem->sg_head.nents;
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index ecf87484814f..5c700f2a0d18 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -285,14 +285,45 @@ void sg_free_table(struct sg_table *);
- int __sg_alloc_table(struct sg_table *, unsigned int, unsigned int,
- 		     struct scatterlist *, unsigned int, gfp_t, sg_alloc_fn *);
- int sg_alloc_table(struct sg_table *, unsigned int, gfp_t);
--struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
-+struct scatterlist *sg_alloc_append_table_from_pages(struct sg_table *sgt,
- 		struct page **pages, unsigned int n_pages, unsigned int offset,
- 		unsigned long size, unsigned int max_segment,
- 		struct scatterlist *prv, unsigned int left_pages,
- 		gfp_t gfp_mask);
--int sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
--			      unsigned int n_pages, unsigned int offset,
--			      unsigned long size, gfp_t gfp_mask);
-+int sg_alloc_table_from_pages_segment(struct sg_table *sgt, struct page **pages,
-+				      unsigned int n_pages, unsigned int offset,
-+				      unsigned long size,
-+				      unsigned int max_segment, gfp_t gfp_mask);
-+
-+/**
-+ * sg_alloc_table_from_pages - Allocate and initialize an sg table from
-+ *			       an array of pages
-+ * @sgt:	 The sg table header to use
-+ * @pages:	 Pointer to an array of page pointers
-+ * @n_pages:	 Number of pages in the pages array
-+ * @offset:      Offset from start of the first page to the start of a buffer
-+ * @size:        Number of valid bytes in the buffer (after offset)
-+ * @gfp_mask:	 GFP allocation mask
-+ *
-+ *  Description:
-+ *    Allocate and initialize an sg table from a list of pages. Contiguous
-+ *    ranges of the pages are squashed into a single scatterlist node. A user
-+ *    may provide an offset at a start and a size of valid data in a buffer
-+ *    specified by the page array. The returned sg table is released by
-+ *    sg_free_table.
-+ *
-+ * Returns:
-+ *   0 on success, negative error on failure
-+ */
-+static inline int sg_alloc_table_from_pages(struct sg_table *sgt,
-+					    struct page **pages,
-+					    unsigned int n_pages,
-+					    unsigned int offset,
-+					    unsigned long size, gfp_t gfp_mask)
-+{
-+	return sg_alloc_table_from_pages_segment(sgt, pages, n_pages, offset,
-+						 size, UINT_MAX, gfp_mask);
-+}
- 
- #ifdef CONFIG_SGL_ALLOC
- struct scatterlist *sgl_alloc_order(unsigned long long length,
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 27efa6178153..611c63d4a958 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -397,7 +397,7 @@ static struct scatterlist *get_next_sg(struct sg_table *table,
- }
- 
- /**
-- * __sg_alloc_table_from_pages - Allocate and initialize an sg table from
-+ * sg_alloc_append_table_from_pages - Allocate and initialize an sg table from
-  *			         an array of pages
-  * @sgt:	 The sg table header to use
-  * @pages:	 Pointer to an array of page pointers
-@@ -425,7 +425,7 @@ static struct scatterlist *get_next_sg(struct sg_table *table,
-  *   If this function returns non-0 (eg failure), the caller must call
-  *   sg_free_table() to cleanup any leftover allocations.
-  */
--struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
-+struct scatterlist *sg_alloc_append_table_from_pages(struct sg_table *sgt,
- 		struct page **pages, unsigned int n_pages, unsigned int offset,
- 		unsigned long size, unsigned int max_segment,
- 		struct scatterlist *prv, unsigned int left_pages,
-@@ -520,36 +520,40 @@ struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
- 		sg_mark_end(s);
- 	return s;
- }
--EXPORT_SYMBOL(__sg_alloc_table_from_pages);
-+EXPORT_SYMBOL(sg_alloc_append_table_from_pages);
- 
- /**
-- * sg_alloc_table_from_pages - Allocate and initialize an sg table from
-- *			       an array of pages
-+ * sg_alloc_table_from_pages_segment - Allocate and initialize an sg table from
-+ *                                     an array of pages and given maximum
-+ *                                     segment.
-  * @sgt:	 The sg table header to use
-  * @pages:	 Pointer to an array of page pointers
-  * @n_pages:	 Number of pages in the pages array
-  * @offset:      Offset from start of the first page to the start of a buffer
-  * @size:        Number of valid bytes in the buffer (after offset)
-+ * @max_segment: Maximum size of a scatterlist element in bytes
-  * @gfp_mask:	 GFP allocation mask
-  *
-  *  Description:
-  *    Allocate and initialize an sg table from a list of pages. Contiguous
-- *    ranges of the pages are squashed into a single scatterlist node. A user
-- *    may provide an offset at a start and a size of valid data in a buffer
-- *    specified by the page array. The returned sg table is released by
-- *    sg_free_table.
-+ *    ranges of the pages are squashed into a single scatterlist node up to the
-+ *    maximum size specified in @max_segment. A user may provide an offset at a
-+ *    start and a size of valid data in a buffer specified by the page array.
-  *
-- * Returns:
-+ *    The returned sg table is released by sg_free_table.
-+ *
-+ *  Returns:
-  *   0 on success, negative error on failure
-  */
--int sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
--			      unsigned int n_pages, unsigned int offset,
--			      unsigned long size, gfp_t gfp_mask)
-+int sg_alloc_table_from_pages_segment(struct sg_table *sgt, struct page **pages,
-+				unsigned int n_pages, unsigned int offset,
-+				unsigned long size, unsigned int max_segment,
-+				gfp_t gfp_mask)
- {
--	return PTR_ERR_OR_ZERO(__sg_alloc_table_from_pages(sgt, pages, n_pages,
--			offset, size, UINT_MAX, NULL, 0, gfp_mask));
-+	return PTR_ERR_OR_ZERO(sg_alloc_append_table_from_pages(sgt, pages,
-+			n_pages, offset, size, max_segment, NULL, 0, gfp_mask));
- }
--EXPORT_SYMBOL(sg_alloc_table_from_pages);
-+EXPORT_SYMBOL(sg_alloc_table_from_pages_segment);
- 
- #ifdef CONFIG_SGL_ALLOC
- 
-diff --git a/tools/testing/scatterlist/main.c b/tools/testing/scatterlist/main.c
-index 652254754b4c..c2ff9179c2cc 100644
---- a/tools/testing/scatterlist/main.c
-+++ b/tools/testing/scatterlist/main.c
-@@ -87,28 +87,39 @@ int main(void)
- 		int left_pages = test->pfn_app ? test->num_pages : 0;
- 		struct page *pages[MAX_PAGES];
- 		struct sg_table st;
--		struct scatterlist *sg;
-+		struct scatterlist *sg = NULL;
-+		int ret;
- 
- 		set_pages(pages, test->pfn, test->num_pages);
- 
--		sg = __sg_alloc_table_from_pages(&st, pages, test->num_pages, 0,
--				test->size, test->max_seg, NULL, left_pages, GFP_KERNEL);
--		assert(PTR_ERR_OR_ZERO(sg) == test->alloc_ret);
-+		if (test->pfn_app) {
-+			sg = sg_alloc_append_table_from_pages(
-+				&st, pages, test->num_pages, 0, test->size,
-+				test->max_seg, NULL, left_pages, GFP_KERNEL);
-+			assert(PTR_ERR_OR_ZERO(sg) == test->alloc_ret);
-+		} else {
-+			ret = sg_alloc_table_from_pages_segment(
-+				&st, pages, test->num_pages, 0, test->size,
-+				test->max_seg, GFP_KERNEL);
-+			assert(ret == test->alloc_ret);
-+		}
- 
- 		if (test->alloc_ret)
- 			continue;
- 
- 		if (test->pfn_app) {
- 			set_pages(pages, test->pfn_app, test->num_pages);
--			sg = __sg_alloc_table_from_pages(&st, pages, test->num_pages, 0,
--					test->size, test->max_seg, sg, 0, GFP_KERNEL);
-+			sg = sg_alloc_append_table_from_pages(
-+				&st, pages, test->num_pages, 0, test->size,
-+				test->max_seg, sg, 0, GFP_KERNEL);
- 
- 			assert(PTR_ERR_OR_ZERO(sg) == test->alloc_ret);
- 		}
- 
- 		VALIDATE(st.nents == test->expected_segments, &st, test);
- 		if (!test->pfn_app)
--			VALIDATE(st.orig_nents == test->expected_segments, &st, test);
-+			VALIDATE(st.orig_nents == test->expected_segments, &st,
-+				 test);
- 
- 		sg_free_table(&st);
- 	}
+Best regards,
+Michael
+
+Michael Riesch (2):
+  arm64: dts: rockchip: add gmac0 node to rk3568
+  arm64: dts: rockchip: rk3568-evb1-v10: add ethernet support
+
+ .../boot/dts/rockchip/rk3568-evb1-v10.dts     | 57 +++++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3568.dtsi      | 49 ++++++++++++++++
+ 2 files changed, 106 insertions(+)
+
 -- 
-2.31.1
+2.20.1
 
