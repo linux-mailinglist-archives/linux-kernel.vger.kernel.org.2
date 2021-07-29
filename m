@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE763DA450
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012643DA469
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237940AbhG2NaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:30:08 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33006 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237790AbhG2N3e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:29:34 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TD7LHq193859;
-        Thu, 29 Jul 2021 09:29:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=dZ1MtAeicVg1mTid4GtdqXebtmlJQChudOYPbJLtSIg=;
- b=lCgRDzKClK7dhqK004lyG8N22SmxfsMwhxfTKqNiWnpH2CxLXJFp1v5fuqthcKOOtzPS
- QRk+aeth1lT1Np3YK5PkeCcEJLC7+AQkhC9wKD+9+zN7ge5Ex66Lmv1OOwBHdIDWoFj3
- lJj2Ucjqv8wDGHigvQ4y8zdEu8nUwg1MXskoyhsFyR5vMBMYGt+oqXBU4S953PDxWLDz
- uEqdnR8JXBkPQH2XDkEfI240cKrWbAUE2+omxZ1vkWy5fflLj0FvR7w9cbhgQZTbfQ6h
- djEcWZB1AiXkE5ziiVBjAX8Bcw4/LihWu8YAHsDmVn/4Etdib2XPDnDfCWsUxi9VkH5j Kg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a3vmn17rr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 09:29:26 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TDJ2NO011084;
-        Thu, 29 Jul 2021 13:29:25 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3a235khr0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 13:29:24 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TDTLEX31392076
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Jul 2021 13:29:21 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9497152054;
-        Thu, 29 Jul 2021 13:29:21 +0000 (GMT)
-Received: from localhost (unknown [9.171.66.47])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 35B2952057;
-        Thu, 29 Jul 2021 13:29:21 +0000 (GMT)
-Date:   Thu, 29 Jul 2021 15:29:19 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] s390/boot: fix zstd build for -march=z900
-Message-ID: <patch-1.thread-f0f589.git-f0f58936888f.your-ad-here.call-01627564869-ext-2765@work.hours>
-References: <202107280146.D9p1EaKo-lkp@intel.com>
- <cover.thread-f0f589.your-ad-here.call-01627564869-ext-2765@work.hours>
+        id S237509AbhG2NgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:36:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234314AbhG2NgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:36:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF65E6052B;
+        Thu, 29 Jul 2021 13:36:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627565778;
+        bh=K6ZbYvTSeAPFllbF4KPvUCWrVKio91AyMs/iHX7QjnI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=g0uwBoN8D2Ydb6xm6sy66/kgHGBSIrCpfw0jFuoIEIrBwODZsHbhzi2paQwghy/un
+         eU05yTwMYyd9aN4DvTQS2szlmuSHjyovVjZgeNzyGeTx0o7c7ozKNgNe5MAnXrvegb
+         JgfbFMQAAu5fbU2Z4JGCIdhDiU08tR2IOmP75D4pKbRpGaSuTUMjbyvDkYFrWtYv7D
+         9BMyG+JU0EALUQTSZXwHaU6YGDeho8GdnKX+zIbbwPPyyvsXGsB8PBNa7TcJZ24eta
+         adcOj1/cjhN85ln1wpFuU9pmXlmxVxdzblVf/QK9HZB+HBB02C7+AxJOirJUVjx/Yn
+         HUtCPq0Hclb+Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9D5685C04E6; Thu, 29 Jul 2021 06:36:18 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 06:36:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH rcu 10/18] srcutiny: Mark read-side data races
+Message-ID: <20210729133618.GS4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-10-paulmck@kernel.org>
+ <YQJlbEgaAGJvx3iN@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.thread-f0f589.your-ad-here.call-01627564869-ext-2765@work.hours>
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: VG1C6MCQsoKKsqmOuU8JeYH7ZCCN5q58
-X-Proofpoint-ORIG-GUID: VG1C6MCQsoKKsqmOuU8JeYH7ZCCN5q58
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- adultscore=0 mlxscore=0 bulkscore=0 suspectscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107290084
+In-Reply-To: <YQJlbEgaAGJvx3iN@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zstd decompression uses __builtin_clz() which fails back to __clzdi2()
-when the kernel is built for older hardware like z900. This leads to
-build failures like the following:
-s390x-11.1.0-ld: /devel/src/kernel/arch/s390/boot/compressed/../../../../lib/zstd/bitstream.h:148: undefined reference to `__clzdi2'
+On Thu, Jul 29, 2021 at 04:23:08PM +0800, Boqun Feng wrote:
+> On Wed, Jul 21, 2021 at 01:21:18PM -0700, Paul E. McKenney wrote:
+> > This commit marks some interrupt-induced read-side data races in
+> > __srcu_read_lock(), __srcu_read_unlock(), and srcu_torture_stats_print().
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  include/linux/srcutiny.h | 8 ++++----
+> >  kernel/rcu/srcutiny.c    | 2 +-
+> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+> > index 0e0cf4d6a72a0..6cfaa0a9a9b96 100644
+> > --- a/include/linux/srcutiny.h
+> > +++ b/include/linux/srcutiny.h
+> > @@ -61,7 +61,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
+> >  	int idx;
+> >  
+> >  	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+> > -	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
+> > +	WRITE_ONCE(ssp->srcu_lock_nesting[idx], READ_ONCE(ssp->srcu_lock_nesting[idx]) + 1);
+> >  	return idx;
+> >  }
+> >  
+> > @@ -81,11 +81,11 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+> >  {
+> >  	int idx;
+> >  
+> > -	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+> > +	idx = ((data_race(READ_ONCE(ssp->srcu_idx)) + 1) & 0x2) >> 1;
+> 
+> This looks very weird, any explanation why we want to put data_race() on
+> a READ_ONCE()?
 
-Fix that by optionally including lib/clz_ctz.c into the decompressor.
+We don't want KCSAN to check this read, but we also don't want the
+compiler to mess it up.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 7b034d9c1b08 ("s390/boot: add zstd support")
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
----
- arch/s390/boot/compressed/Makefile  | 1 +
- arch/s390/boot/compressed/clz_ctz.c | 2 ++
- 2 files changed, 3 insertions(+)
- create mode 100644 arch/s390/boot/compressed/clz_ctz.c
+							Thanx, Paul
 
-diff --git a/arch/s390/boot/compressed/Makefile b/arch/s390/boot/compressed/Makefile
-index 660c799d875d..e30d3fdbbc78 100644
---- a/arch/s390/boot/compressed/Makefile
-+++ b/arch/s390/boot/compressed/Makefile
-@@ -11,6 +11,7 @@ UBSAN_SANITIZE := n
- KASAN_SANITIZE := n
- 
- obj-y	:= $(if $(CONFIG_KERNEL_UNCOMPRESSED),,decompressor.o) info.o
-+obj-$(CONFIG_KERNEL_ZSTD) += clz_ctz.o
- obj-all := $(obj-y) piggy.o syms.o
- targets	:= vmlinux.lds vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2
- targets += vmlinux.bin.xz vmlinux.bin.lzma vmlinux.bin.lzo vmlinux.bin.lz4
-diff --git a/arch/s390/boot/compressed/clz_ctz.c b/arch/s390/boot/compressed/clz_ctz.c
-new file mode 100644
-index 000000000000..c3ebf248596b
---- /dev/null
-+++ b/arch/s390/boot/compressed/clz_ctz.c
-@@ -0,0 +1,2 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "../../../../lib/clz_ctz.c"
--- 
-2.25.4
+> Regards,
+> Boqun
+> 
+> >  	pr_alert("%s%s Tiny SRCU per-CPU(idx=%d): (%hd,%hd)\n",
+> >  		 tt, tf, idx,
+> > -		 READ_ONCE(ssp->srcu_lock_nesting[!idx]),
+> > -		 READ_ONCE(ssp->srcu_lock_nesting[idx]));
+> > +		 data_race(READ_ONCE(ssp->srcu_lock_nesting[!idx])),
+> > +		 data_race(READ_ONCE(ssp->srcu_lock_nesting[idx])));
+> >  }
+> >  
+> >  #endif
+> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> > index 26344dc6483b0..a0ba2ed49bc61 100644
+> > --- a/kernel/rcu/srcutiny.c
+> > +++ b/kernel/rcu/srcutiny.c
+> > @@ -96,7 +96,7 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
+> >   */
+> >  void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
+> >  {
+> > -	int newval = ssp->srcu_lock_nesting[idx] - 1;
+> > +	int newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
+> >  
+> >  	WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
+> >  	if (!newval && READ_ONCE(ssp->srcu_gp_waiting))
+> > -- 
+> > 2.31.1.189.g2e36527f23
+> > 
