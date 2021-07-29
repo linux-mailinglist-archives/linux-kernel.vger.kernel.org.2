@@ -2,324 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BC23D9DFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029693D9E05
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbhG2HDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        id S234353AbhG2HGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234347AbhG2HDj (ORCPT
+        with ESMTP id S234079AbhG2HGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:03:39 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAA4C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:03:36 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id n28-20020a05600c3b9cb02902552e60df56so3258261wms.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yjmoZLiUD+FWnyezF+2h89AQ15fOMkle7vS/pk0BQrk=;
-        b=CYR8Fi+P5EGNe3xUIak1oGG+oatnt/+x6BC4ocWfsDJ0OG6hWZPlm3OGOeViQJMCdI
-         UWclXE36+8hC86zTZkKVWdW5btkVTJSQq2YTENMQL0xa7ZHmW9YQazg4/NvC/1R8g51w
-         3PDiKAhYS6QM+IpddnmSyaPUtJ7Q4kq36fU0c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=yjmoZLiUD+FWnyezF+2h89AQ15fOMkle7vS/pk0BQrk=;
-        b=fqt6S1qRgcfpZoUO8gcYW7z4b2IMxCbWvRiJ8V5+shmXBT+s7mrNqdiQULjLJNWTjZ
-         2GXGUp70n9gb8NwgQQUg4g9JPvG07oL9ZKJu91OiAFhPI+ntIBs2Z4Hyfr4cda/Y6ilp
-         lOybs+cm0xc98IWmd9CWasoig4oagr67iXSiU0W5+r4+QRiTJIsj1YcD9TTEi/t9jqCh
-         cOFGNcju6meC/LnR6DrR/z8wjUh1fQkVthqUtZ+ljmLmRYww4jO6vB+gKVyNT2unAe6n
-         vTqDIK1x7yGKioT6+s9Py/ewn3yBECXZftO4LRcfiumWSoEvS58C575nB9nn2Y/CIITq
-         /moQ==
-X-Gm-Message-State: AOAM532VJWjzGUt58fsI3gn4bVULlQ3e2BJ9Fgu+AzYbxbiTZdoX5mI1
-        WIWoY+y2utaPSkMuadkul38Vcg==
-X-Google-Smtp-Source: ABdhPJxhDZGEhqp03BqW6NXSOqDd5aB+UkvkHgDcGsZFr8Q1/7QVZU8Ur8DP6zd16O+/MOBVdJtmzQ==
-X-Received: by 2002:a05:600c:3587:: with SMTP id p7mr12841259wmq.27.1627542215139;
-        Thu, 29 Jul 2021 00:03:35 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p3sm8448882wmp.25.2021.07.29.00.03.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 00:03:34 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 09:03:32 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 1/4] dma-fence: Add deadline awareness
-Message-ID: <YQJSxEVUkZmfL5Cb@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210726233854.2453899-1-robdclark@gmail.com>
- <20210726233854.2453899-2-robdclark@gmail.com>
- <50b181fe-6605-b7ac-36a6-8bcda2930e6f@gmail.com>
- <CAF6AEGuNxi_aeYE37FT3a-atCUWgepxs-9EwxMfpiMaU7wgqdQ@mail.gmail.com>
- <9edd7083-e6b3-b230-c273-8f2fbe76ca17@amd.com>
- <703dc9c3-5657-432e-ca0b-25bdd67a2abd@gmail.com>
- <CAF6AEGvSpvc2po93b2eKB2cSzx_a+BtPWhQgRs-1NFFZfUbJNw@mail.gmail.com>
- <e5e71356-1c58-04ac-2609-70d268941b8d@amd.com>
- <CAF6AEGu3NMyRp1pC5iZQoHhKhu_xBFBqkkfbG36dx8bVzYdWMA@mail.gmail.com>
+        Thu, 29 Jul 2021 03:06:04 -0400
+Received: from mxout2.routing.net (mxout2.routing.net [IPv6:2a03:2900:1:a::b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C15DC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:06:02 -0700 (PDT)
+Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
+        by mxout2.routing.net (Postfix) with ESMTP id 2DAF65FA8E;
+        Thu, 29 Jul 2021 07:06:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1627542360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/LAZ73YjPmWGBqkhhTx62xnQDFJ6WYvVC10lm5EMIIk=;
+        b=W+xa5Ako8s0FPxb7elO0UuS+AedtYOl+dKUS+IkBvdvkqO7ohdiDGHMEOBSzv6fzQVUMnQ
+        xbE70f5u+QiehzcqST4jdBPy6CZOTOaZ1oVNLwpL7DXGtGhlA8+XUiv5ZNs48GSGzrRUyh
+        ms0yxZgMA836Z1oxFO0/v7A12KbEY70=
+Received: from localhost.localdomain (fttx-pool-217.61.146.92.bambit.de [217.61.146.92])
+        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 4700B10010F;
+        Thu, 29 Jul 2021 07:05:59 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     CK Hu <ck.hu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dafna.hirschfeld@collabora.com,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Subject: [PATCH v2] soc: mmsys: mediatek: add mask to mmsys routes
+Date:   Thu, 29 Jul 2021 09:05:49 +0200
+Message-Id: <20210729070549.5514-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF6AEGu3NMyRp1pC5iZQoHhKhu_xBFBqkkfbG36dx8bVzYdWMA@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+X-Mail-ID: 318a4e58-903f-4b95-80fe-59321db78235
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:58:51AM -0700, Rob Clark wrote:
-> On Wed, Jul 28, 2021 at 10:23 AM Christian König
-> <christian.koenig@amd.com> wrote:
-> >
-> >
-> >
-> > Am 28.07.21 um 17:15 schrieb Rob Clark:
-> > > On Wed, Jul 28, 2021 at 4:37 AM Christian König
-> > > <ckoenig.leichtzumerken@gmail.com> wrote:
-> > >> Am 28.07.21 um 09:03 schrieb Christian König:
-> > >>> Am 27.07.21 um 16:25 schrieb Rob Clark:
-> > >>>> On Tue, Jul 27, 2021 at 12:11 AM Christian König
-> > >>>> <ckoenig.leichtzumerken@gmail.com> wrote:
-> > >>>>> Am 27.07.21 um 01:38 schrieb Rob Clark:
-> > >>>>>> From: Rob Clark <robdclark@chromium.org>
-> > >>>>>>
-> > >>>>>> Add a way to hint to the fence signaler of an upcoming deadline,
-> > >>>>>> such as
-> > >>>>>> vblank, which the fence waiter would prefer not to miss. This is to
-> > >>>>>> aid
-> > >>>>>> the fence signaler in making power management decisions, like boosting
-> > >>>>>> frequency as the deadline approaches and awareness of missing
-> > >>>>>> deadlines
-> > >>>>>> so that can be factored in to the frequency scaling.
-> > >>>>>>
-> > >>>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > >>>>>> ---
-> > >>>>>>     drivers/dma-buf/dma-fence.c | 39
-> > >>>>>> +++++++++++++++++++++++++++++++++++++
-> > >>>>>>     include/linux/dma-fence.h   | 17 ++++++++++++++++
-> > >>>>>>     2 files changed, 56 insertions(+)
-> > >>>>>>
-> > >>>>>> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
-> > >>>>>> index ce0f5eff575d..2e0d25ab457e 100644
-> > >>>>>> --- a/drivers/dma-buf/dma-fence.c
-> > >>>>>> +++ b/drivers/dma-buf/dma-fence.c
-> > >>>>>> @@ -910,6 +910,45 @@ dma_fence_wait_any_timeout(struct dma_fence
-> > >>>>>> **fences, uint32_t count,
-> > >>>>>>     }
-> > >>>>>>     EXPORT_SYMBOL(dma_fence_wait_any_timeout);
-> > >>>>>>
-> > >>>>>> +
-> > >>>>>> +/**
-> > >>>>>> + * dma_fence_set_deadline - set desired fence-wait deadline
-> > >>>>>> + * @fence:    the fence that is to be waited on
-> > >>>>>> + * @deadline: the time by which the waiter hopes for the fence to be
-> > >>>>>> + *            signaled
-> > >>>>>> + *
-> > >>>>>> + * Inform the fence signaler of an upcoming deadline, such as
-> > >>>>>> vblank, by
-> > >>>>>> + * which point the waiter would prefer the fence to be signaled
-> > >>>>>> by.  This
-> > >>>>>> + * is intended to give feedback to the fence signaler to aid in power
-> > >>>>>> + * management decisions, such as boosting GPU frequency if a periodic
-> > >>>>>> + * vblank deadline is approaching.
-> > >>>>>> + */
-> > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t
-> > >>>>>> deadline)
-> > >>>>>> +{
-> > >>>>>> +     unsigned long flags;
-> > >>>>>> +
-> > >>>>>> +     if (dma_fence_is_signaled(fence))
-> > >>>>>> +             return;
-> > >>>>>> +
-> > >>>>>> +     spin_lock_irqsave(fence->lock, flags);
-> > >>>>>> +
-> > >>>>>> +     /* If we already have an earlier deadline, keep it: */
-> > >>>>>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags) &&
-> > >>>>>> +         ktime_before(fence->deadline, deadline)) {
-> > >>>>>> +             spin_unlock_irqrestore(fence->lock, flags);
-> > >>>>>> +             return;
-> > >>>>>> +     }
-> > >>>>>> +
-> > >>>>>> +     fence->deadline = deadline;
-> > >>>>>> +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags);
-> > >>>>>> +
-> > >>>>>> +     spin_unlock_irqrestore(fence->lock, flags);
-> > >>>>>> +
-> > >>>>>> +     if (fence->ops->set_deadline)
-> > >>>>>> +             fence->ops->set_deadline(fence, deadline);
-> > >>>>>> +}
-> > >>>>>> +EXPORT_SYMBOL(dma_fence_set_deadline);
-> > >>>>>> +
-> > >>>>>>     /**
-> > >>>>>>      * dma_fence_init - Initialize a custom fence.
-> > >>>>>>      * @fence: the fence to initialize
-> > >>>>>> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-> > >>>>>> index 6ffb4b2c6371..4e6cfe4e6fbc 100644
-> > >>>>>> --- a/include/linux/dma-fence.h
-> > >>>>>> +++ b/include/linux/dma-fence.h
-> > >>>>>> @@ -88,6 +88,7 @@ struct dma_fence {
-> > >>>>>>                 /* @timestamp replaced by @rcu on
-> > >>>>>> dma_fence_release() */
-> > >>>>>>                 struct rcu_head rcu;
-> > >>>>>>         };
-> > >>>>>> +     ktime_t deadline;
-> > >>>>> Mhm, adding the flag sounds ok to me but I'm a bit hesitating adding
-> > >>>>> the
-> > >>>>> deadline as extra field here.
-> > >>>>>
-> > >>>>> We tuned the dma_fence structure intentionally so that it is only 64
-> > >>>>> bytes.
-> > >>>> Hmm, then I guess you wouldn't be a fan of also adding an hrtimer?
-> > >>>>
-> > >>>> We could push the ktime_t (and timer) down into the derived fence
-> > >>>> class, but I think there is going to need to be some extra storage
-> > >>>> *somewhere*.. maybe the fence signaler could get away with just
-> > >>>> storing the nearest upcoming deadline per fence-context instead?
-> > >>> I would just push that into the driver instead.
-> > >>>
-> > >>> You most likely don't want the deadline per fence anyway in complex
-> > >>> scenarios, but rather per frame. And a frame is usually composed from
-> > >>> multiple fences.
-> > > Right, I ended up keeping track of the nearest deadline in patch 5/4
-> > > which added drm/msm support:
-> > >
-> > >    https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.freedesktop.org%2Fpatch%2F447138%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cce6ace85263d448bbc9f08d951d9f06c%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630819606427306%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=ameszAOlClaZNeUDlYr37ZdIytVXNgiEUKuctjXLqZ0%3D&amp;reserved=0
-> > >
-> > > But if we do have the ktime_t in dma_fence in dma_fence, we can add
-> > > some checks and avoid calling back to the driver if a later deadline
-> > > is set on a fence that already has an earlier deadline.  OTOH I
-> > > suppose I can push all that back to the driver to start, and we can
-> > > revisit once we have more drivers implementing deadline support.
-> >
-> > I still think that all of this is rather specific to your use case and
-> > have strong doubt that anybody else will implement that.
-> 
-> i915 does already have a similar thing in it's hand-rolled atomic
-> commit path.  So I think msm won't be the only one.  It should be also
-> useful to the other mobile GPUs with a gpu vs kms driver split,
-> although looking at the other gpu devfreq implementations, I don't
-> think they've yet gotten to this point in the fine tuning..
+From: CK Hu <ck.hu@mediatek.com>
 
-Yeah I have a dream that maybe i915 will use the atomic commit helpers, I
-originally wrote them with i915 in mind :-) even had patches!
+SOUT has many bits and need to be cleared before set new value.
+Write only could do the clear, but for MOUT, it clears bits that
+should not be cleared. So use a mask to reset only the needed bits.
 
-I also think we'll need this eventually in other areas, Android also has
-some hacks like this to make sure idle->first touch doesn't suck and
-similar things.
--Daniel
+this fixes HDMI issues on MT7623/BPI-R2 since 5.13
 
-> 
-> BR,
-> -R
-> 
-> > >> Thinking more about it we could probably kill the spinlock pointer and
-> > >> make the flags 32bit if we absolutely need that here.
-> > > If we had a 'struct dma_fence_context' we could push the spinlock, ops
-> > > pointer, and u64 context into that and replace with a single
-> > > dma_fence_context ptr, fwiw
-> >
-> > That won't work. We have a lot of use cases where you can't allocate
-> > memory, but must allocate a context.
-> >
-> > Christian.
-> >
-> > >
-> > > BR,
-> > > -R
-> > >
-> > >> But I still don't see the need for that, especially since most drivers
-> > >> probably won't implement it.
-> > >>
-> > >> Regards,
-> > >> Christian.
-> > >>
-> > >>> Regards,
-> > >>> Christian.
-> > >>>
-> > >>>> BR,
-> > >>>> -R
-> > >>>>
-> > >>>>> Regards,
-> > >>>>> Christian.
-> > >>>>>
-> > >>>>>>         u64 context;
-> > >>>>>>         u64 seqno;
-> > >>>>>>         unsigned long flags;
-> > >>>>>> @@ -99,6 +100,7 @@ enum dma_fence_flag_bits {
-> > >>>>>>         DMA_FENCE_FLAG_SIGNALED_BIT,
-> > >>>>>>         DMA_FENCE_FLAG_TIMESTAMP_BIT,
-> > >>>>>>         DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
-> > >>>>>> +     DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
-> > >>>>>>         DMA_FENCE_FLAG_USER_BITS, /* must always be last member */
-> > >>>>>>     };
-> > >>>>>>
-> > >>>>>> @@ -261,6 +263,19 @@ struct dma_fence_ops {
-> > >>>>>>          */
-> > >>>>>>         void (*timeline_value_str)(struct dma_fence *fence,
-> > >>>>>>                                    char *str, int size);
-> > >>>>>> +
-> > >>>>>> +     /**
-> > >>>>>> +      * @set_deadline:
-> > >>>>>> +      *
-> > >>>>>> +      * Callback to allow a fence waiter to inform the fence
-> > >>>>>> signaler of an
-> > >>>>>> +      * upcoming deadline, such as vblank, by which point the
-> > >>>>>> waiter would
-> > >>>>>> +      * prefer the fence to be signaled by.  This is intended to
-> > >>>>>> give feedback
-> > >>>>>> +      * to the fence signaler to aid in power management
-> > >>>>>> decisions, such as
-> > >>>>>> +      * boosting GPU frequency.
-> > >>>>>> +      *
-> > >>>>>> +      * This callback is optional.
-> > >>>>>> +      */
-> > >>>>>> +     void (*set_deadline)(struct dma_fence *fence, ktime_t deadline);
-> > >>>>>>     };
-> > >>>>>>
-> > >>>>>>     void dma_fence_init(struct dma_fence *fence, const struct
-> > >>>>>> dma_fence_ops *ops,
-> > >>>>>> @@ -586,6 +601,8 @@ static inline signed long dma_fence_wait(struct
-> > >>>>>> dma_fence *fence, bool intr)
-> > >>>>>>         return ret < 0 ? ret : 0;
-> > >>>>>>     }
-> > >>>>>>
-> > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t
-> > >>>>>> deadline);
-> > >>>>>> +
-> > >>>>>>     struct dma_fence *dma_fence_get_stub(void);
-> > >>>>>>     struct dma_fence *dma_fence_allocate_private_stub(void);
-> > >>>>>>     u64 dma_fence_context_alloc(unsigned num);
-> >
+Fixes: 440147639ac7 ("soc: mediatek: mmsys: Use an array for setting the routing registers")
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+Signed-off-by: CK Hu <ck.hu@mediatek.com>
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+code is taken from here (upstreamed without mask part)
+https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2345186/5
+basicly CK Hu's code so i set him as author
+---
+v2:
+- added mask to mt8183 specific table (mask=value),
+  before val was used as mask and val itself not defined,
+  breaking display on these devices
+- as changes do not add addional code only restoring same
+  behaviour for mt8183 added reviwed-by from CK Hu from v1
+---
+ drivers/soc/mediatek/mt8183-mmsys.h |  21 +++--
+ drivers/soc/mediatek/mtk-mmsys.c    |   7 +-
+ drivers/soc/mediatek/mtk-mmsys.h    | 133 +++++++++++++++++++---------
+ 3 files changed, 112 insertions(+), 49 deletions(-)
 
+diff --git a/drivers/soc/mediatek/mt8183-mmsys.h b/drivers/soc/mediatek/mt8183-mmsys.h
+index 579dfc8dc8fc..9dee485807c9 100644
+--- a/drivers/soc/mediatek/mt8183-mmsys.h
++++ b/drivers/soc/mediatek/mt8183-mmsys.h
+@@ -28,25 +28,32 @@
+ static const struct mtk_mmsys_routes mmsys_mt8183_routing_table[] = {
+ 	{
+ 		DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
+-		MT8183_DISP_OVL0_MOUT_EN, MT8183_OVL0_MOUT_EN_OVL0_2L
++		MT8183_DISP_OVL0_MOUT_EN, MT8183_OVL0_MOUT_EN_OVL0_2L,
++		MT8183_OVL0_MOUT_EN_OVL0_2L
+ 	}, {
+ 		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
+-		MT8183_DISP_OVL0_2L_MOUT_EN, MT8183_OVL0_2L_MOUT_EN_DISP_PATH0
++		MT8183_DISP_OVL0_2L_MOUT_EN, MT8183_OVL0_2L_MOUT_EN_DISP_PATH0,
++		MT8183_OVL0_2L_MOUT_EN_DISP_PATH0
+ 	}, {
+ 		DDP_COMPONENT_OVL_2L1, DDP_COMPONENT_RDMA1,
+-		MT8183_DISP_OVL1_2L_MOUT_EN, MT8183_OVL1_2L_MOUT_EN_RDMA1
++		MT8183_DISP_OVL1_2L_MOUT_EN, MT8183_OVL1_2L_MOUT_EN_RDMA1,
++		MT8183_OVL1_2L_MOUT_EN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
+-		MT8183_DISP_DITHER0_MOUT_EN, MT8183_DITHER0_MOUT_IN_DSI0
++		MT8183_DISP_DITHER0_MOUT_EN, MT8183_DITHER0_MOUT_IN_DSI0,
++		MT8183_DITHER0_MOUT_IN_DSI0
+ 	}, {
+ 		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
+-		MT8183_DISP_PATH0_SEL_IN, MT8183_DISP_PATH0_SEL_IN_OVL0_2L
++		MT8183_DISP_PATH0_SEL_IN, MT8183_DISP_PATH0_SEL_IN_OVL0_2L,
++		MT8183_DISP_PATH0_SEL_IN_OVL0_2L
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
+-		MT8183_DISP_DPI0_SEL_IN, MT8183_DPI0_SEL_IN_RDMA1
++		MT8183_DISP_DPI0_SEL_IN, MT8183_DPI0_SEL_IN_RDMA1,
++		MT8183_DPI0_SEL_IN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
+-		MT8183_DISP_RDMA0_SOUT_SEL_IN, MT8183_RDMA0_SOUT_COLOR0
++		MT8183_DISP_RDMA0_SOUT_SEL_IN, MT8183_RDMA0_SOUT_COLOR0,
++		MT8183_RDMA0_SOUT_COLOR0
+ 	}
+ };
+ 
+diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
+index 080660ef11bf..0f949896fd06 100644
+--- a/drivers/soc/mediatek/mtk-mmsys.c
++++ b/drivers/soc/mediatek/mtk-mmsys.c
+@@ -68,7 +68,9 @@ void mtk_mmsys_ddp_connect(struct device *dev,
+ 
+ 	for (i = 0; i < mmsys->data->num_routes; i++)
+ 		if (cur == routes[i].from_comp && next == routes[i].to_comp) {
+-			reg = readl_relaxed(mmsys->regs + routes[i].addr) | routes[i].val;
++			reg = readl_relaxed(mmsys->regs + routes[i].addr);
++			reg &= ~routes[i].mask;
++			reg |= routes[i].val;
+ 			writel_relaxed(reg, mmsys->regs + routes[i].addr);
+ 		}
+ }
+@@ -85,7 +87,8 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
+ 
+ 	for (i = 0; i < mmsys->data->num_routes; i++)
+ 		if (cur == routes[i].from_comp && next == routes[i].to_comp) {
+-			reg = readl_relaxed(mmsys->regs + routes[i].addr) & ~routes[i].val;
++			reg = readl_relaxed(mmsys->regs + routes[i].addr);
++			reg &= ~routes[i].mask;
+ 			writel_relaxed(reg, mmsys->regs + routes[i].addr);
+ 		}
+ }
+diff --git a/drivers/soc/mediatek/mtk-mmsys.h b/drivers/soc/mediatek/mtk-mmsys.h
+index a760a34e6eca..5f3e2bf0c40b 100644
+--- a/drivers/soc/mediatek/mtk-mmsys.h
++++ b/drivers/soc/mediatek/mtk-mmsys.h
+@@ -35,41 +35,54 @@
+ #define RDMA0_SOUT_DSI1				0x1
+ #define RDMA0_SOUT_DSI2				0x4
+ #define RDMA0_SOUT_DSI3				0x5
++#define RDMA0_SOUT_MASK				0x7
+ #define RDMA1_SOUT_DPI0				0x2
+ #define RDMA1_SOUT_DPI1				0x3
+ #define RDMA1_SOUT_DSI1				0x1
+ #define RDMA1_SOUT_DSI2				0x4
+ #define RDMA1_SOUT_DSI3				0x5
++#define RDMA1_SOUT_MASK				0x7
+ #define RDMA2_SOUT_DPI0				0x2
+ #define RDMA2_SOUT_DPI1				0x3
+ #define RDMA2_SOUT_DSI1				0x1
+ #define RDMA2_SOUT_DSI2				0x4
+ #define RDMA2_SOUT_DSI3				0x5
++#define RDMA2_SOUT_MASK				0x7
+ #define DPI0_SEL_IN_RDMA1			0x1
+ #define DPI0_SEL_IN_RDMA2			0x3
++#define DPI0_SEL_IN_MASK			0x3
+ #define DPI1_SEL_IN_RDMA1			(0x1 << 8)
+ #define DPI1_SEL_IN_RDMA2			(0x3 << 8)
++#define DPI1_SEL_IN_MASK			(0x3 << 8)
+ #define DSI0_SEL_IN_RDMA1			0x1
+ #define DSI0_SEL_IN_RDMA2			0x4
++#define DSI0_SEL_IN_MASK			0x7
+ #define DSI1_SEL_IN_RDMA1			0x1
+ #define DSI1_SEL_IN_RDMA2			0x4
++#define DSI1_SEL_IN_MASK			0x7
+ #define DSI2_SEL_IN_RDMA1			(0x1 << 16)
+ #define DSI2_SEL_IN_RDMA2			(0x4 << 16)
++#define DSI2_SEL_IN_MASK			(0x7 << 16)
+ #define DSI3_SEL_IN_RDMA1			(0x1 << 16)
+ #define DSI3_SEL_IN_RDMA2			(0x4 << 16)
++#define DSI3_SEL_IN_MASK			(0x7 << 16)
+ #define COLOR1_SEL_IN_OVL1			0x1
+ 
+ #define OVL_MOUT_EN_RDMA			0x1
+ #define BLS_TO_DSI_RDMA1_TO_DPI1		0x8
+ #define BLS_TO_DPI_RDMA1_TO_DSI			0x2
++#define BLS_RDMA1_DSI_DPI_MASK			0xf
+ #define DSI_SEL_IN_BLS				0x0
+ #define DPI_SEL_IN_BLS				0x0
++#define DPI_SEL_IN_MASK				0x1
+ #define DSI_SEL_IN_RDMA				0x1
++#define DSI_SEL_IN_MASK				0x1
+ 
+ struct mtk_mmsys_routes {
+ 	u32 from_comp;
+ 	u32 to_comp;
+ 	u32 addr;
++	u32 mask;
+ 	u32 val;
+ };
+ 
+@@ -91,124 +104,164 @@ struct mtk_mmsys_driver_data {
+ static const struct mtk_mmsys_routes mmsys_default_routing_table[] = {
+ 	{
+ 		DDP_COMPONENT_BLS, DDP_COMPONENT_DSI0,
+-		DISP_REG_CONFIG_OUT_SEL, BLS_TO_DSI_RDMA1_TO_DPI1
++		DISP_REG_CONFIG_OUT_SEL, BLS_RDMA1_DSI_DPI_MASK,
++		BLS_TO_DSI_RDMA1_TO_DPI1
+ 	}, {
+ 		DDP_COMPONENT_BLS, DDP_COMPONENT_DSI0,
+-		DISP_REG_CONFIG_DSI_SEL, DSI_SEL_IN_BLS
++		DISP_REG_CONFIG_DSI_SEL, DSI_SEL_IN_MASK,
++		DSI_SEL_IN_BLS
+ 	}, {
+ 		DDP_COMPONENT_BLS, DDP_COMPONENT_DPI0,
+-		DISP_REG_CONFIG_OUT_SEL, BLS_TO_DPI_RDMA1_TO_DSI
++		DISP_REG_CONFIG_OUT_SEL, BLS_RDMA1_DSI_DPI_MASK,
++		BLS_TO_DPI_RDMA1_TO_DSI
+ 	}, {
+ 		DDP_COMPONENT_BLS, DDP_COMPONENT_DPI0,
+-		DISP_REG_CONFIG_DSI_SEL, DSI_SEL_IN_RDMA
++		DISP_REG_CONFIG_DSI_SEL, DSI_SEL_IN_MASK,
++		DSI_SEL_IN_RDMA
+ 	}, {
+ 		DDP_COMPONENT_BLS, DDP_COMPONENT_DPI0,
+-		DISP_REG_CONFIG_DPI_SEL, DPI_SEL_IN_BLS
++		DISP_REG_CONFIG_DPI_SEL, DPI_SEL_IN_MASK,
++		DPI_SEL_IN_BLS
+ 	}, {
+ 		DDP_COMPONENT_GAMMA, DDP_COMPONENT_RDMA1,
+-		DISP_REG_CONFIG_DISP_GAMMA_MOUT_EN, GAMMA_MOUT_EN_RDMA1
++		DISP_REG_CONFIG_DISP_GAMMA_MOUT_EN, GAMMA_MOUT_EN_RDMA1,
++		GAMMA_MOUT_EN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_OD0, DDP_COMPONENT_RDMA0,
+-		DISP_REG_CONFIG_DISP_OD_MOUT_EN, OD_MOUT_EN_RDMA0
++		DISP_REG_CONFIG_DISP_OD_MOUT_EN, OD_MOUT_EN_RDMA0,
++		OD_MOUT_EN_RDMA0
+ 	}, {
+ 		DDP_COMPONENT_OD1, DDP_COMPONENT_RDMA1,
+-		DISP_REG_CONFIG_DISP_OD_MOUT_EN, OD1_MOUT_EN_RDMA1
++		DISP_REG_CONFIG_DISP_OD_MOUT_EN, OD1_MOUT_EN_RDMA1,
++		OD1_MOUT_EN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_OVL0, DDP_COMPONENT_COLOR0,
+-		DISP_REG_CONFIG_DISP_OVL0_MOUT_EN, OVL0_MOUT_EN_COLOR0
++		DISP_REG_CONFIG_DISP_OVL0_MOUT_EN, OVL0_MOUT_EN_COLOR0,
++		OVL0_MOUT_EN_COLOR0
+ 	}, {
+ 		DDP_COMPONENT_OVL0, DDP_COMPONENT_COLOR0,
+-		DISP_REG_CONFIG_DISP_COLOR0_SEL_IN, COLOR0_SEL_IN_OVL0
++		DISP_REG_CONFIG_DISP_COLOR0_SEL_IN, COLOR0_SEL_IN_OVL0,
++		COLOR0_SEL_IN_OVL0
+ 	}, {
+ 		DDP_COMPONENT_OVL0, DDP_COMPONENT_RDMA0,
+-		DISP_REG_CONFIG_DISP_OVL_MOUT_EN, OVL_MOUT_EN_RDMA
++		DISP_REG_CONFIG_DISP_OVL_MOUT_EN, OVL_MOUT_EN_RDMA,
++		OVL_MOUT_EN_RDMA
+ 	}, {
+ 		DDP_COMPONENT_OVL1, DDP_COMPONENT_COLOR1,
+-		DISP_REG_CONFIG_DISP_OVL1_MOUT_EN, OVL1_MOUT_EN_COLOR1
++		DISP_REG_CONFIG_DISP_OVL1_MOUT_EN, OVL1_MOUT_EN_COLOR1,
++		OVL1_MOUT_EN_COLOR1
+ 	}, {
+ 		DDP_COMPONENT_OVL1, DDP_COMPONENT_COLOR1,
+-		DISP_REG_CONFIG_DISP_COLOR1_SEL_IN, COLOR1_SEL_IN_OVL1
++		DISP_REG_CONFIG_DISP_COLOR1_SEL_IN, COLOR1_SEL_IN_OVL1,
++		COLOR1_SEL_IN_OVL1
+ 	}, {
+ 		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DPI0,
+-		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DPI0
++		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
++		RDMA0_SOUT_DPI0
+ 	}, {
+ 		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DPI1,
+-		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DPI1
++		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
++		RDMA0_SOUT_DPI1
+ 	}, {
+ 		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI1,
+-		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DSI1
++		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
++		RDMA0_SOUT_DSI1
+ 	}, {
+ 		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI2,
+-		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DSI2
++		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
++		RDMA0_SOUT_DSI2
+ 	}, {
+ 		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI3,
+-		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DSI3
++		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_MASK,
++		RDMA0_SOUT_DSI3
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
+-		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DPI0
++		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
++		RDMA1_SOUT_DPI0
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
+-		DISP_REG_CONFIG_DPI_SEL_IN, DPI0_SEL_IN_RDMA1
++		DISP_REG_CONFIG_DPI_SEL_IN, DPI0_SEL_IN_MASK,
++		DPI0_SEL_IN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI1,
+-		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DPI1
++		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
++		RDMA1_SOUT_DPI1
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI1,
+-		DISP_REG_CONFIG_DPI_SEL_IN, DPI1_SEL_IN_RDMA1
++		DISP_REG_CONFIG_DPI_SEL_IN, DPI1_SEL_IN_MASK,
++		DPI1_SEL_IN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI0,
+-		DISP_REG_CONFIG_DSIE_SEL_IN, DSI0_SEL_IN_RDMA1
++		DISP_REG_CONFIG_DSIE_SEL_IN, DSI0_SEL_IN_MASK,
++		DSI0_SEL_IN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI1,
+-		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DSI1
++		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
++		RDMA1_SOUT_DSI1
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI1,
+-		DISP_REG_CONFIG_DSIO_SEL_IN, DSI1_SEL_IN_RDMA1
++		DISP_REG_CONFIG_DSIO_SEL_IN, DSI1_SEL_IN_MASK,
++		DSI1_SEL_IN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI2,
+-		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DSI2
++		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
++		RDMA1_SOUT_DSI2
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI2,
+-		DISP_REG_CONFIG_DSIE_SEL_IN, DSI2_SEL_IN_RDMA1
++		DISP_REG_CONFIG_DSIE_SEL_IN, DSI2_SEL_IN_MASK,
++		DSI2_SEL_IN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI3,
+-		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_DSI3
++		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN, RDMA1_SOUT_MASK,
++		RDMA1_SOUT_DSI3
+ 	}, {
+ 		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI3,
+-		DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_RDMA1
++		DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_MASK,
++		DSI3_SEL_IN_RDMA1
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI0,
+-		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DPI0
++		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
++		RDMA2_SOUT_DPI0
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI0,
+-		DISP_REG_CONFIG_DPI_SEL_IN, DPI0_SEL_IN_RDMA2
++		DISP_REG_CONFIG_DPI_SEL_IN, DPI0_SEL_IN_MASK,
++		DPI0_SEL_IN_RDMA2
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI1,
+-		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DPI1
++		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
++		RDMA2_SOUT_DPI1
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI1,
+-		DISP_REG_CONFIG_DPI_SEL_IN, DPI1_SEL_IN_RDMA2
++		DISP_REG_CONFIG_DPI_SEL_IN, DPI1_SEL_IN_MASK,
++		DPI1_SEL_IN_RDMA2
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI0,
+-		DISP_REG_CONFIG_DSIE_SEL_IN, DSI0_SEL_IN_RDMA2
++		DISP_REG_CONFIG_DSIE_SEL_IN, DSI0_SEL_IN_MASK,
++		DSI0_SEL_IN_RDMA2
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI1,
+-		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DSI1
++		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
++		RDMA2_SOUT_DSI1
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI1,
+-		DISP_REG_CONFIG_DSIO_SEL_IN, DSI1_SEL_IN_RDMA2
++		DISP_REG_CONFIG_DSIO_SEL_IN, DSI1_SEL_IN_MASK,
++		DSI1_SEL_IN_RDMA2
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI2,
+-		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DSI2
++		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
++		RDMA2_SOUT_DSI2
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI2,
+-		DISP_REG_CONFIG_DSIE_SEL_IN, DSI2_SEL_IN_RDMA2
++		DISP_REG_CONFIG_DSIE_SEL_IN, DSI2_SEL_IN_MASK,
++		DSI2_SEL_IN_RDMA2
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI3,
+-		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_DSI3
++		DISP_REG_CONFIG_DISP_RDMA2_SOUT, RDMA2_SOUT_MASK,
++		RDMA2_SOUT_DSI3
+ 	}, {
+ 		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI3,
+-		DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_RDMA2
++		DISP_REG_CONFIG_DSIO_SEL_IN, DSI3_SEL_IN_MASK,
++		DSI3_SEL_IN_RDMA2
+ 	}
+ };
+ 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.25.1
+
