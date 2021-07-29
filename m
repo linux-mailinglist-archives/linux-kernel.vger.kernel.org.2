@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0B03DAEE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FE43DAEE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhG2WaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:30:13 -0400
-Received: from mail-io1-f46.google.com ([209.85.166.46]:33663 "EHLO
-        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhG2WaK (ORCPT
+        id S232169AbhG2WcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 18:32:05 -0400
+Received: from mail-io1-f44.google.com ([209.85.166.44]:46663 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhG2WcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:30:10 -0400
-Received: by mail-io1-f46.google.com with SMTP id n19so9176660ioz.0;
-        Thu, 29 Jul 2021 15:30:05 -0700 (PDT)
+        Thu, 29 Jul 2021 18:32:02 -0400
+Received: by mail-io1-f44.google.com with SMTP id z7so8238128iog.13;
+        Thu, 29 Jul 2021 15:31:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=nxHho6RZxjUuYURjfVw+2b6ILg8EjvBd3YtWTTGJ9Is=;
-        b=S/zN7gDbM3Dqyv9tSR3znu98IIja/mHSyq2yh1eq0kHhXEYEWyk3CG7beVadp7Qgn3
-         PBM+ibUw5xDtoRQLTfEm9fqzmtUuKepwBfVFtE9rlny1/51G63mjRoUpZ1F9iBnEaGvU
-         IcxCBLnWPG24xW9vFaKablZODmnhF6Fba1x77aNMaqPgZaGV1sgFPiApMIbX9IhNus6t
-         trItCwEIyoIkOBw2/FNP5KkFeDjoCUtNdxYcz52RlJjzm6QK8M2rOAz9LoHIseDqjXjq
-         V9fIml6sDffHCwdPuYm6kOxkbaFoEf0v0b+x2mjVVwYhDU/XIEkAYrBEJguXR3LPb3mL
-         B+KQ==
-X-Gm-Message-State: AOAM533MDU7EfLG4EL8ezBJ+JwojnG6vD++7VwYfxb+3br43ZRN4+Ta4
-        9ilLDWSYzCn8m8wnyBZbfg==
-X-Google-Smtp-Source: ABdhPJx3FAFP9axGNQ3Quk45L4+xPnWPLhYc926b4evgK46BUcmGvFDnG8jsDH5SjroGIGATVhBwbQ==
-X-Received: by 2002:a02:6f1c:: with SMTP id x28mr6371373jab.95.1627597804911;
-        Thu, 29 Jul 2021 15:30:04 -0700 (PDT)
+        bh=8xRR7b05CZCC7cFh3+x7THVjJVxqClYmWXBUMBmzhzc=;
+        b=cIRNKjit5UGDHbFD5lkg/cTWMtTP39+j7o9TZsCj5lbseoDAw1Mc1TaiyttXcjDNZM
+         dk7zg95ZwTrFLOTxHD3qhUVbZn3k4Je3A9qzw7+c1AcCZE/zYlL+gNG4VcNj+hhFsN6C
+         66E4XEsMmhrz2wr+5T6/Oc25h94zXWcdy0aMsRbWnf2v4+rivETT21aQ9LPZN4dxJugA
+         ylN3MSOgR2vmqWcGKs6XxRY4Uql7mSCeyFk4oLDYXc+8Yc9mxsgfeaLCY76ck5qHgw5m
+         oX+y0xoLhr98mc6X4UysQgvH5FCAwhiFocuE5/XAyaMjBuDnwAC4ho+HBOQ/bcdpStWw
+         EsgA==
+X-Gm-Message-State: AOAM533MOz3CrsIOUeOL/XVPlnvHgJ+SEf0Fit7fpZeTyQVOa1+u5yNu
+        YEfRYiLhVe2VwE6OAFrUng==
+X-Google-Smtp-Source: ABdhPJz3myyUSpUJ0VTVRdeLG/tG/ZdbT3RE/4rk1olugX7JtG6zT1jFIK54Se6giDwLxuwmQTIE6Q==
+X-Received: by 2002:a6b:b795:: with SMTP id h143mr5887746iof.74.1627597918403;
+        Thu, 29 Jul 2021 15:31:58 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id y14sm2335867ilv.76.2021.07.29.15.30.03
+        by smtp.gmail.com with ESMTPSA id p9sm2554309ilj.65.2021.07.29.15.31.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 15:30:04 -0700 (PDT)
-Received: (nullmailer pid 1020064 invoked by uid 1000);
-        Thu, 29 Jul 2021 22:30:02 -0000
-Date:   Thu, 29 Jul 2021 16:30:02 -0600
+        Thu, 29 Jul 2021 15:31:57 -0700 (PDT)
+Received: (nullmailer pid 1022957 invoked by uid 1000);
+        Thu, 29 Jul 2021 22:31:55 -0000
+Date:   Thu, 29 Jul 2021 16:31:55 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Alexey Minnekhanov <alexeymin@postmarketos.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
+To:     Alexey Minnekhanov <alexeymin@postmarketos.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
-        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
-        Shevchenko <andy.shevchenko@gmail.com>," 
-        <~postmarketos/upstreaming@lists.sr.ht>,
-        phone-devel@vger.kernel.org
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        phone-devel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Linus Walleij <linus.walleij@linaro.org>
 Subject: Re: [PATCH 1/2] dt-bindings: panel: Add Samsung S6E3FA2 panel
-Message-ID: <YQMr6slu/Nvt6UYr@robh.at.kernel.org>
+Message-ID: <YQMsW0Z9UhM/PXcW@robh.at.kernel.org>
 References: <20210725140339.2465677-1-alexeymin@postmarketos.org>
- <CACRpkdaaQeuVqJbczHndsgmmMv0NycwRDdzFTDwM=BJnc7SseQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdaaQeuVqJbczHndsgmmMv0NycwRDdzFTDwM=BJnc7SseQ@mail.gmail.com>
+In-Reply-To: <20210725140339.2465677-1-alexeymin@postmarketos.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 09:51:40AM +0200, Linus Walleij wrote:
-> On Sun, Jul 25, 2021 at 4:04 PM Alexey Minnekhanov
-> <alexeymin@postmarketos.org> wrote:
+On Sun, 25 Jul 2021 17:03:37 +0300, Alexey Minnekhanov wrote:
+> The Samsung S6E3FA2 AMOLED cmd LCD panel is used on Samsung Galaxy
+> S5 (klte) phone.
 > 
-> > The Samsung S6E3FA2 AMOLED cmd LCD panel is used on Samsung Galaxy
-> > S5 (klte) phone.
-> >
-> > Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
+> Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
+> ---
+>  .../display/panel/samsung,s6e3fa2.yaml        | 63 +++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/samsung,s6e3fa2.yaml
 > 
-> Grr gmail put this in my spam folder, sorry for confused mails.
-> 
-> With Sam's comments addressed:
 
-What comments? Sam's mails seem to have problems getting to the lists.
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
