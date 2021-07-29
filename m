@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF9B3D9C5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552A73D9C65
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233650AbhG2Dmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 23:42:40 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:48088 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233553AbhG2Dmi (ORCPT
+        id S233662AbhG2Dpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 23:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233572AbhG2Dps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 23:42:38 -0400
-X-UUID: b7c7981fbe13443dad4c914c3cb8bc6f-20210729
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=g/h6d5ht0Kz0+npXpy03sIdKmA8QrRfO6V6rBdcyB/E=;
-        b=rtc7fWTZ1a/NQaHEu0naUj1+QF6Q9N22WuGae/iTfkcWw71ghZrira85urEdjDYaesMBevS27+Hh1nngrxiwY4eAqqzzHkpimNTOmCC0cv39TZMfu/zfoStpXOSVNtGoQqMkKrL7giifII/fz0qZWEmnRKdrCybySgEctnFNJLM=;
-X-UUID: b7c7981fbe13443dad4c914c3cb8bc6f-20210729
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 996941046; Thu, 29 Jul 2021 11:42:33 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 29 Jul 2021 11:42:31 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 29 Jul 2021 11:42:31 +0800
-Message-ID: <1627530151.32756.9.camel@mtksdaap41>
-Subject: Re: [PATCH] soc: mmsys: mediatek: add mask to mmsys routes
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Frank Wunderlich <linux@fw-web.de>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        Frank Wunderlich <frank-w@public-files.de>
-Date:   Thu, 29 Jul 2021 11:42:31 +0800
-In-Reply-To: <CAJMQK-g8g5QJbBkU-A6th1VSWafxVv2fGtym+enQa_hDVaVoBw@mail.gmail.com>
-References: <20210727174025.10552-1-linux@fw-web.de>
-         <CAJMQK-g8g5QJbBkU-A6th1VSWafxVv2fGtym+enQa_hDVaVoBw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Wed, 28 Jul 2021 23:45:48 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA01C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 20:45:45 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id w6so2756113qvh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 20:45:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
+         :content-transfer-encoding:date:message-id;
+        bh=q+M49PeUBQuimyfvlL2nW1+4dQ9ei8Trpuf8eE4YbM8=;
+        b=DBHW7JbxkjNZWSm7EUDALgNEXmMWuTTxsYpEpHufG8yrRDPI/0JAnihnpTVi4ymGSJ
+         omWt2yLreSfqCougJ3fc4jJKWB8W9Aa0YQEVEPDufKCrmoaPpMjSFDRJUwJFQBlC8pb6
+         NpCZa21HrOocWYoXJzCALs0NHq0oVZ4X4lmp25qIhSiK2kttedFHzN4r+vrGl6FZ68Fp
+         6G9IVSeE0BaYDR+eafXQSOfDNk8Z7tCeQhzD6xx7PZu92Ch+0UIlFHpIS43xwfnOj3wR
+         jCDSoe92/qCoq9xom4TGwo3zLbGeCQC6kWfADH9CAo7kNvnn2axz4NBFgsJFMO1DT8+3
+         zBVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :mime-version:content-transfer-encoding:date:message-id;
+        bh=q+M49PeUBQuimyfvlL2nW1+4dQ9ei8Trpuf8eE4YbM8=;
+        b=HREeWHrX3+6iMTd3ef313ufjCU8HM5MbD5YQJ/Nn50V2e03rwDPVKQnmSY3wtEVYMl
+         lTXREA8VlXUe5BFR7R7jd1qZGo4Va1e5x/b9NGH9lQEYvQfV2UtoWUgq0XK7ErllpEaj
+         x/D/xixEG3WrZAd0/YLMfgnn2+t2YheNLg8bj9L+7eO//OYeYAEu/rxoIFNgdS6oHB/k
+         ZnTQVmmxh10GhsmG6YUuSNzVEIeLxOHafhugKzGVm+U+ZGrt7zwgc8upYxyfS0PXkLCS
+         RcuewSqkSWPHJHSc1gRegBAaqfv+V4HgQuYozDItjMaKnfSe6Y28iIY5mUnbH8b6dIyd
+         UYBQ==
+X-Gm-Message-State: AOAM531tQYoRlAJpCF9uxV19M30c7zw5KofW2kbphw9TkCJTZVOz5irE
+        8lQEqPgQ6PdFEuBOcnBNJ/LaLQ==
+X-Google-Smtp-Source: ABdhPJysJZIKEpENTPU/YLbX7Tm2/poR8pYLaphKwoor/Cj6xoHYNQCDaKSB+bWFBTBUPMQt7VD/Rg==
+X-Received: by 2002:a05:6214:1909:: with SMTP id er9mr3484278qvb.26.1627530344263;
+        Wed, 28 Jul 2021 20:45:44 -0700 (PDT)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id bk3sm1071780qkb.103.2021.07.28.20.45.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 20:45:43 -0700 (PDT)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.10.0-pre 07/05/2021 with nmh-1.7+dev
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
+        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
+        kernelnewbies@kernelnewbies.org
+Subject: Re: [RFC PATCH 3/8] block: Add kernel APIs to create & delete block device LED triggers
+In-Reply-To: <20210729015344.3366750-4-arequipeno@gmail.com>
+References: <20210729015344.3366750-1-arequipeno@gmail.com>
+ <20210729015344.3366750-4-arequipeno@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="==_Exmh_1627530334_13589P";
+         micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 28 Jul 2021 23:45:34 -0400
+Message-ID: <110419.1627530334@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaW4teWk6DQoNCk9uIFRodSwgMjAyMS0wNy0yOSBhdCAxMToxNSArMDgwMCwgSHNpbi1Z
-aSBXYW5nIHdyb3RlOg0KPiBPbiBXZWQsIEp1bCAyOCwgMjAyMSBhdCAxOjQxIEFNIEZyYW5rIFd1
-bmRlcmxpY2ggPGxpbnV4QGZ3LXdlYi5kZT4gd3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBDSyBIdSA8
-Y2suaHVAbWVkaWF0ZWsuY29tPg0KPiA+DQo+ID4gU09VVCBoYXMgbWFueSBiaXRzIGFuZCBuZWVk
-IHRvIGJlIGNsZWFyZWQgYmVmb3JlIHNldCBuZXcgdmFsdWUuDQo+ID4gV3JpdGUgb25seSBjb3Vs
-ZCBkbyB0aGUgY2xlYXIsIGJ1dCBmb3IgTU9VVCwgaXQgY2xlYXJzIGJpdHMgdGhhdA0KPiA+IHNo
-b3VsZCBub3QgYmUgY2xlYXJlZC4gU28gdXNlIGEgbWFzayB0byByZXNldCBvbmx5IHRoZSBuZWVk
-ZWQgYml0cy4NCj4gPg0KPiA+IHRoaXMgZml4ZXMgSERNSSBpc3N1ZXMgb24gTVQ3NjIzL0JQSS1S
-MiBzaW5jZSA1LjEzDQo+ID4NCj4gPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZw0KPiA+IEZp
-eGVzOiA0NDAxNDc2MzlhYzcgKCJzb2M6IG1lZGlhdGVrOiBtbXN5czogVXNlIGFuIGFycmF5IGZv
-ciBzZXR0aW5nIHRoZSByb3V0aW5nIHJlZ2lzdGVycyIpDQo+ID4gU2lnbmVkLW9mZi1ieTogRnJh
-bmsgV3VuZGVybGljaCA8ZnJhbmstd0BwdWJsaWMtZmlsZXMuZGU+DQo+ID4gU2lnbmVkLW9mZi1i
-eTogQ0sgSHUgPGNrLmh1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiBjb2RlIGlzIHRha2Vu
-IGZyb20gaGVyZSAodXBzdHJlYW1lZCB3aXRob3V0IG1hc2sgcGFydCkNCj4gPiBodHRwczovL3Vy
-bGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9jaHJvbWl1bS1yZXZpZXcuZ29vZ2xlc291cmNlLmNv
-bS9jL2Nocm9taXVtb3MvdGhpcmRfcGFydHkva2VybmVsLyovMjM0NTE4Ni81X187S3chIUNUUk5L
-QTl3TWcwQVJidyExZWJ4MkZqckhucXZPcXczSGRWeU1NWWNFVWl2TmJ4UklPaTFfRFhNV3dmeEpI
-eDQ1TnlLSS1EdDRNdm8xZyQgDQo+ID4gYmFzaWNseSBDSyBIdSdzIGNvZGUgc28gaSBzZXQgaGlt
-IGFzIGF1dGhvcg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbW1zeXMu
-YyB8ICAgNyArLQ0KPiA+ICBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbW1zeXMuaCB8IDEzMyAr
-KysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgOTgg
-aW5zZXJ0aW9ucygrKSwgNDIgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9zb2MvbWVkaWF0ZWsvbXRrLW1tc3lzLmMgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGst
-bW1zeXMuYw0KPiA+IGluZGV4IDA4MDY2MGVmMTFiZi4uMGY5NDk4OTZmZDA2IDEwMDY0NA0KPiA+
-IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1tbXN5cy5jDQo+ID4gKysrIGIvZHJpdmVy
-cy9zb2MvbWVkaWF0ZWsvbXRrLW1tc3lzLmMNCj4gPiBAQCAtNjgsNyArNjgsOSBAQCB2b2lkIG10
-a19tbXN5c19kZHBfY29ubmVjdChzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+ID4NCj4gPiAgICAgICAg
-IGZvciAoaSA9IDA7IGkgPCBtbXN5cy0+ZGF0YS0+bnVtX3JvdXRlczsgaSsrKQ0KPiA+ICAgICAg
-ICAgICAgICAgICBpZiAoY3VyID09IHJvdXRlc1tpXS5mcm9tX2NvbXAgJiYgbmV4dCA9PSByb3V0
-ZXNbaV0udG9fY29tcCkgew0KPiA+IC0gICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IHJlYWRs
-X3JlbGF4ZWQobW1zeXMtPnJlZ3MgKyByb3V0ZXNbaV0uYWRkcikgfCByb3V0ZXNbaV0udmFsOw0K
-PiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IHJlYWRsX3JlbGF4ZWQobW1zeXMtPnJl
-Z3MgKyByb3V0ZXNbaV0uYWRkcik7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmVnICY9
-IH5yb3V0ZXNbaV0ubWFzazsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICByZWcgfD0gcm91
-dGVzW2ldLnZhbDsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICB3cml0ZWxfcmVsYXhlZChy
-ZWcsIG1tc3lzLT5yZWdzICsgcm91dGVzW2ldLmFkZHIpOw0KPiA+ICAgICAgICAgICAgICAgICB9
-DQo+ID4gIH0NCj4gPiBAQCAtODUsNyArODcsOCBAQCB2b2lkIG10a19tbXN5c19kZHBfZGlzY29u
-bmVjdChzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+ID4NCj4gPiAgICAgICAgIGZvciAoaSA9IDA7IGkg
-PCBtbXN5cy0+ZGF0YS0+bnVtX3JvdXRlczsgaSsrKQ0KPiA+ICAgICAgICAgICAgICAgICBpZiAo
-Y3VyID09IHJvdXRlc1tpXS5mcm9tX2NvbXAgJiYgbmV4dCA9PSByb3V0ZXNbaV0udG9fY29tcCkg
-ew0KPiA+IC0gICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IHJlYWRsX3JlbGF4ZWQobW1zeXMt
-PnJlZ3MgKyByb3V0ZXNbaV0uYWRkcikgJiB+cm91dGVzW2ldLnZhbDsNCj4gPiArICAgICAgICAg
-ICAgICAgICAgICAgICByZWcgPSByZWFkbF9yZWxheGVkKG1tc3lzLT5yZWdzICsgcm91dGVzW2ld
-LmFkZHIpOw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHJlZyAmPSB+cm91dGVzW2ldLm1h
-c2s7DQo+IA0KPiBUaGlzIHBhdGNoIGlzIGJyZWFraW5nIHRoZSBtdDgxODMgaW50ZXJuYWwgZGlz
-cGxheS4gSSB0aGluayBpdCdzDQo+IGJlY2F1c2UgIH5yb3V0ZXNbaV0udmFsOyBpcyByZW1vdmVk
-Pw0KPiBBbHNvIHdoYXQgc2hvdWxkIHRoZSByb3V0ZXNbaV0ubWFzayBiZSBpZiBpdCdzIG5vdCBz
-ZXQgaW4NCj4gbW1zeXNfbXQ4MTgzX3JvdXRpbmdfdGFibGU/DQoNCkknbSBub3Qgc3VyZSB0aGlz
-IHByb2JsZW0gaXMgYWJvdXQgTU9VVCBvciBTT1VULiBCdXQgZm9yIE1PVVQsIGl0J3Mgbm90DQpu
-ZWNlc3NhcnkgdG8gc2V0IG1hc2sgYmVjYXVzZSB0aGUgdmFsdWUgaXMgZXF1YWwgdG8gbWFzay4g
-VG8gbWFrZSB0aGlucw0Kc2ltcGxlLCB0aGUgY29kZSBjb3VsZCBiZQ0KDQovKiBGb3IgTU9VVCwg
-IHZhbHVlIGlzIGVxdWFsIHRvIG1hc2ssIHNvIG1hc2sgaXMgMCBhbmQgY2xlYXIgdGhlIHZhbHVl
-DQoqLw0KcmVnICY9IH5yb3V0ZXNbaV0ubWFzayAmIH5yb3V0ZXNbaV0udmFsOw0KDQpSZWdhcmRz
-LA0KQ0sNCj4gDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgd3JpdGVsX3JlbGF4ZWQocmVn
-LCBtbXN5cy0+cmVncyArIHJvdXRlc1tpXS5hZGRyKTsNCj4gPiAgICAgICAgICAgICAgICAgfQ0K
-PiA+ICB9DQo+IDxzbmlwPg0KDQo=
+--==_Exmh_1627530334_13589P
+Content-Type: text/plain; charset=us-ascii
 
+On Wed, 28 Jul 2021 20:53:39 -0500, Ian Pilcher said:
+> * New file - include/linux/blk-ledtrig.h
+>
+> Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
+> ---
+>  block/blk-ledtrig.c         | 152 ++++++++++++++++++++++++++++++++++++
+>  include/linux/blk-ledtrig.h |  19 +++++
+>  2 files changed, 171 insertions(+)
+>  create mode 100644 include/linux/blk-ledtrig.h
+>
+> diff --git a/block/blk-ledtrig.c b/block/blk-ledtrig.c
+> index 345a3b6bdbc6..c69ea1539336 100644
+> --- a/block/blk-ledtrig.c
+> +++ b/block/blk-ledtrig.c
+
+> +
+> +static int __blk_ledtrig_create(const char *const name, const size_t len)
+
+(...)
++	if (blk_ledtrig_find(name, len) != NULL) {
++		pr_warn("blockdev LED trigger named %.*s already exists\n",
++			(int)len, name);
+
+Is pr_warn() the right level for this stuff? I'd think this sort of pilot error should
+be pr_info() or even pr_debug(), if mentioned at all.  pr_warn() would be for
+something like an unexpected situation like trying to blink an LED but failing.
+Simple syntax errors should probably just toss a -EINVAL and return.
+
+(Among other things, this allows a userspace script to spam the
+log by simply repeatedly trying to create the same entry)
+
+
+--==_Exmh_1627530334_13589P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.9.0 11/07/2018
+
+iQEcBAEBCAAGBQJhAiRdAAoJEI0DS38y7CIcKHMH/idwruZ9tURrsesbgrgquzXZ
+yyBAlzWUAMPlJ0jWJ4OSshKeEVs60pYdHXmZyuPQaag7RiXUG0b720YIy0pSV+Fx
+kbi6edyt1ZDRsEC10nLhdHn5AgxiNvMe1gP5wBZU0VUzVBbY4kICVjc0I1KIKLz6
+4cTCrlAN2dqufTetLUWnvjz8aQXhubvC0Xg18p9cDAEbpCVBAb6FwZ736eC/yppy
+8+V0q4mg/pyN+t2PpVbtMRL2xNwz1UtwyDBNEu872YVP+jL9wp2z7+QM/vNR8Kj7
+HcumxINpEpHcviLwYyqlsd+Vylb6B3EW3xzy/q3+u/x0sobJMNjAsyirkI+5XYk=
+=HwId
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1627530334_13589P--
