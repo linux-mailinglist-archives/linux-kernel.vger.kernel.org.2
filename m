@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DD13DA8F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1912F3DA8FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhG2Q0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:26:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:52304 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhG2Q0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:26:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65FA11FB;
-        Thu, 29 Jul 2021 09:26:43 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D25093F73D;
-        Thu, 29 Jul 2021 09:26:41 -0700 (PDT)
-Subject: Re: [PATCH 1/2] sched/deadline: Fix reset_on_fork reporting of DL
- tasks
-To:     Quentin Perret <qperret@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20210727101103.2729607-1-qperret@google.com>
- <20210727101103.2729607-2-qperret@google.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <e6d103f1-f8ee-cad9-c7c0-c9ea5d0f099a@arm.com>
-Date:   Thu, 29 Jul 2021 18:26:40 +0200
+        id S231416AbhG2Q1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhG2Q1j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 12:27:39 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB3CC061765;
+        Thu, 29 Jul 2021 09:27:34 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id y16-20020a4ad6500000b0290258a7ff4058so1714105oos.10;
+        Thu, 29 Jul 2021 09:27:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wccDcOIxHNoamIBs8+qI6cGQUyc31knn7IGUD84IWoI=;
+        b=Gi6LIfs9OvoxHljklLH6u2B9MqdkFBOeLMUStKM35DZ710RYV1kO+msYERWa6S3C2G
+         dUuL+42LKQP4hzVVvc2oWyNfpt2NxH/dbnpik+YT8m4pC3RrPiFTNaWLxYIhCcWmqLmD
+         rV6dhmZHY8+j/PRuNy0KFmoxLox25zcM4CX+mjvrSIc2Gz9b5+2QvghrEVI7zhuBikaW
+         yx2KbG7aQoYzmwID0T0Tn+IDftwP7gFw2l5n/0efCVi4XLPVteBQ8MPCIi3LYsugjM4/
+         0FWJ0tB/hTa0gj2OrtTahqHRqoTUiMSD6+v6vbXJAz+QwQnWAHmfJzOPOydrPIZLb12P
+         HWsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wccDcOIxHNoamIBs8+qI6cGQUyc31knn7IGUD84IWoI=;
+        b=UI4QzSD+dcs9pGQBiAz3NbeXZ6LF0U2Ong5BG0Y27N7K+BokGZFR7f+zlkPcatvyJi
+         /0mnbmbMKsMXtzWsKDgFNMnOFNQoCjwnmNk1Oh4l4nwRYuFmPrIgg4I11UyeF0J2BcEo
+         JfniJVg12ERBVBPbTNQq47eCwAa7ZqMmW/GlXL9pBSIrlSn3zpdGp1U4tIKPTAUfSosz
+         TqLzFbzidSqxkYrsBQSXeNLugtLKJhIrgIm+dypQKuRLDDfZM0RjQRx7Qh1CU0V5cHlR
+         z3FTvSaOyyBogfVT1BHTAUI1HCEnls44MAfINTUPR++ufsDIECOcJDG0hsCYEUfQlk+8
+         wutA==
+X-Gm-Message-State: AOAM5331BWscNPWMyVq2baHD6CxfZbh1kb/VVSttRDs8gOFjuyrmPzzn
+        BPaKgywJOV+tDq4y5SvQZFkhJwsl4P8=
+X-Google-Smtp-Source: ABdhPJzx11z/wO9bOtkouRxSASlYujObu13PzWtD5mUe7KEWY08XL6Clk9UGPlizniiwYVOBvlrfrQ==
+X-Received: by 2002:a4a:cb0e:: with SMTP id r14mr3561068ooq.70.1627576053889;
+        Thu, 29 Jul 2021 09:27:33 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y19sm540815ooa.2.2021.07.29.09.27.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 09:27:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: Fix an invalid memory access in
+ 'watchdog_cdev_unregister()'
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        wim@linux-watchdog.org, curtis.klein@hpe.com
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <dcb65e66acd1a50d65635b35d0d340846c7d10c7.1627575359.git.christophe.jaillet@wanadoo.fr>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <af32d970-b96e-724b-7f5e-c9544f8aee6a@roeck-us.net>
+Date:   Thu, 29 Jul 2021 09:27:31 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210727101103.2729607-2-qperret@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <dcb65e66acd1a50d65635b35d0d340846c7d10c7.1627575359.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2021 12:11, Quentin Perret wrote:
-> It is possible for sched_getattr() to incorrectly report the state of
-> the reset_on_fork flag when called on a deadline task.
+On 7/29/21 9:16 AM, Christophe JAILLET wrote:
+> A few lines before 'watchdog_hrtimer_pretimeout_stop(wdd)', we explicitly
+> set 'wdd->wd_data' to NULL.
+> So, it is more than likely than this call will lead to an invalid
+> memory access.
 > 
-> Indeed, if the flag was set on a deadline task using sched_setattr()
-> with flags (SCHED_FLAG_RESET_ON_FORK | SCHED_FLAG_KEEP_PARAMS), then
-> p->sched_reset_on_fork will be set, but __setscheduler() will bail out
-> early, which means that the dl_se->flags will not get updated by
-> __setscheduler_params()->__setparam_dl(). Consequently, if
-
-True, but it would also be awkward if non-DL related flags would have to
-be stored in dl_se->flags.
-
-> sched_getattr() is then called on the task, __getparam_dl() will
-> override kattr.sched_flags with the now out-of-date copy in dl_se->flags
-> and report the stale value to userspace.
+> Move this call before the 'wdd->wd_data = NULL;'
 > 
-> To fix this, make sure to only copy the flags that are relevant to
-> sched_deadline to and from the dl_se->flags field.
+> Fixes: 7b7d2fdc8c3e ("watchdog: Add hrtimer-based pretimeout feature")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Completely untested!
+> Not sure at all, that it is the way to fix it.
 
-It also fixes the 'hidden' issue that a
+Nice catch. Should be ok.
 
-    uclampset -mX -MY -p dl_task
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-would end up at 'change:' label because of
+> ---
+>   drivers/watchdog/watchdog_dev.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+> index 3bab32485273..ffd8f1a82355 100644
+> --- a/drivers/watchdog/watchdog_dev.c
+> +++ b/drivers/watchdog/watchdog_dev.c
+> @@ -1096,6 +1096,8 @@ static void watchdog_cdev_unregister(struct watchdog_device *wdd)
+>   		watchdog_stop(wdd);
+>   	}
+>   
+> +	watchdog_hrtimer_pretimeout_stop(wdd);
+> +
+>   	mutex_lock(&wd_data->lock);
+>   	wd_data->wdd = NULL;
+>   	wdd->wd_data = NULL;
+> @@ -1103,7 +1105,6 @@ static void watchdog_cdev_unregister(struct watchdog_device *wdd)
+>   
+>   	hrtimer_cancel(&wd_data->timer);
+>   	kthread_cancel_work_sync(&wd_data->work);
+> -	watchdog_hrtimer_pretimeout_stop(wdd);
+>   
+>   	put_device(&wd_data->dev);
+>   }
+> 
 
-    dl_se->flags != attr->sched_flags
-
-and not because of
-
-    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP
-
-
-And it also unblocks the uclamp-dl issue raised in
-https://lkml.kernel.org/r/ad30be79-8fb2-023d-9936-01f7173164e4@arm.com
-which surfaced when using `get_params()->__getparam_dl()` in
-SYSCALL_DEFINE3(sched_setattr,...).
-Just for reference, IIRC, you mentioned this already on irc.
-
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-
-[...]
