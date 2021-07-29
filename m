@@ -2,228 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1C03DA254
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058923DA257
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234392AbhG2Lnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:43:35 -0400
-Received: from mail-bn8nam12on2052.outbound.protection.outlook.com ([40.107.237.52]:7125
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233949AbhG2Lnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234744AbhG2Lni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:43:38 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47962 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233949AbhG2Lng (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 07:43:36 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TBZRYL158253;
+        Thu, 29 Jul 2021 07:43:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=N77Uh/TOkWlgGPDK+0wtUuo8+tx2rxTwOHNNLClxXHE=;
+ b=bf6N1I8oi17285BZF2NdUxuu4sF/MMD9EZhCDr/GlCMO9wc5rmx7B5Fu5/j0/WuSBSp7
+ exIhQi/c9rkEBPwJ704heKoDiVevSNQnMP+cUQD3xgKF6ULMDbijoL/UKLVPVBDR7C8/
+ 4UVJCyWK3NB/0k42b5t0wVxV6DhAcTfiHz8/TjEjs1Y8E9xuP+/HWt+GOzeBbSC9xP19
+ pDDGrleylEbxLQCEo5eYaWjlDd9HMfNQgIBgF5sUORhB5201Z/MFvTMqF43IDDoSxtJl
+ I+2GZpHPZoAlv4v+mBRDzEE62bFiwt9tSXHLYKJkHCz4LNuHsEXTiQXfW8YoRWLdr0mS qA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3fb162kt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 07:43:33 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TBaM1T165593;
         Thu, 29 Jul 2021 07:43:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ve+KXbF+eb7+jRmd7OPgV1wu9bhDKUV85819yJuNo038xpmrQhoorP+thbKzNAAjtuJDXM4xXZ6Qp/k+gyJ1bH7VFJ8Ekx14rDS5rnqNlwZ3pa6ZIdtFBSXN5wuklxfbuxeoJqU6anbN/pKatWIsIqxcNtw1idBu2Va02oBo4E8n3Tvo5UsQd7WIkeM8At12ejIUT6ZoIMT9+fpXwYiLY+WuioF5C0rP/mcYENXP+F0PgHIXDzkp61m9MX1ZFJUJdcnNUioAl54/I1La3ELGnszAhbnc/gL9iLPiXDUkP4fd/JQvlJhnve2uFOUbET8Ar1WLZs6xG2slqq+ZPgRtKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XTy1ue7/+zLHlGBBKXx4JzII4O1brzMtFKd1csS4Qfk=;
- b=AK08goascpXYHab3s00XHd470bH53IuDLL/ZIxSgZ1kDwLht3yMP1RYkU410r+Hfp9aMA4l58EucFgJhxI+h4v4KECZd225M8TC3lohXZPwt+skNUSOMBObzNhBESvMUDQ7RNwE6x9+seqKEvtkjjnQ01Bkkzbthyh2rtv3Thk9ZY6bs9VBZxxWxgPd4VOFJFugvz4ifNTER7yfC1UY9sOtLVeM8RAG0L0kxYqsrl97WVClqhMU+b2/19XY15NUnk3ieX3/D3A6gT54qSEot5y0FBl0Vsb0OpuNN3CmZ0yS3nFbBXAid037qZrUW3fs/A1h6Edw81fpLxgg+KvgeSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XTy1ue7/+zLHlGBBKXx4JzII4O1brzMtFKd1csS4Qfk=;
- b=JOCd9qUg4RyOMcjYo0o9HC48pLrSeBi+4hFngKsM00iAVJ7FUrU/FKR4hB3hSyvSjYVSkitnvD5PT//m+TOaPYC89RlW8HGaTwPY6k99SYh0IU65Nbt72K3Ai5uBzkaqxT4dfMOgfLJ0pnbUOZJ5Zv9A7sEgKtCtGmG1wQb32qQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4111.namprd12.prod.outlook.com (2603:10b6:208:1de::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.28; Thu, 29 Jul
- 2021 11:43:26 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4352.033; Thu, 29 Jul 2021
- 11:43:26 +0000
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-To:     Pekka Paalanen <ppaalanen@gmail.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Cc:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-References: <20210726233854.2453899-1-robdclark@gmail.com>
- <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
- <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
- <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
- <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
- <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
- <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
- <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com>
- <9d5f4415-d470-3bc1-7d52-61ba739706ae@daenzer.net>
- <eedfdc75-72f8-9150-584b-c5e9d16db180@amd.com>
- <20210728165700.38c39cf8@eldfell>
- <74e310fa-e544-889f-2389-5abe06f80eb8@amd.com>
- <20210729112358.237651ff@eldfell>
- <3675d530-c9fc-7ec9-e157-b6abeeec7c2a@amd.com>
- <20210729121542.27d9b1cc@eldfell>
- <15cf73a8-eda4-3559-561a-a05a14f445d0@gmail.com>
- <20210729140024.6a635be4@eldfell>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <c090d320-7f2c-3858-d978-7a6f6e8001c0@amd.com>
-Date:   Thu, 29 Jul 2021 13:43:20 +0200
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3fb162jr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 07:43:32 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TBhDex003197;
+        Thu, 29 Jul 2021 11:43:30 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 3a235ps34g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 11:43:30 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TBhQ6N31261114
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jul 2021 11:43:26 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6489C11C070;
+        Thu, 29 Jul 2021 11:43:26 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DEA3511C052;
+        Thu, 29 Jul 2021 11:43:25 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.155.135])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Jul 2021 11:43:25 +0000 (GMT)
+Subject: Re: [PATCH v2 03/13] KVM: s390: pv: properly handle page flags for
+ protected guests
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210728142631.41860-1-imbrenda@linux.ibm.com>
+ <20210728142631.41860-4-imbrenda@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Message-ID: <825b1d54-39ea-334d-e637-a26995780f53@linux.ibm.com>
+Date:   Thu, 29 Jul 2021 13:43:25 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-In-Reply-To: <20210729140024.6a635be4@eldfell>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: FR0P281CA0080.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1e::14) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:3e62:c902:d5a3:6f28] (2a02:908:1252:fb60:3e62:c902:d5a3:6f28) by FR0P281CA0080.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:1e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.12 via Frontend Transport; Thu, 29 Jul 2021 11:43:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 450169df-1603-4e13-7a5f-08d9528613dc
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4111:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB411116A32966CCCE8033EDFF83EB9@MN2PR12MB4111.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vqSNCYc3/+J2cCq6iqYXbx6mgQpGDeSMUdMM8mxJri2suqISYoAxhqoV7sePb6myMRxyIdQ5Fdx5KXdSumaI19oYscS4F2LSS79BXnuwMWtsMsr2rI5faRa/M5EStbFdu7DUBguj8u8afh1FIdplPOOCeQZHVpp2lzfeyI7nCjoX4p13D9msGa4/M3lgvq3w9pGVfiaqPI3ezPvgwIUW2tKRnWRj60OMyvH1/cAma6irEG/d0B/Fyg4YtPlKiP6fK9SIH1ngQgpLt6ELAjtQ2gjO+RqNlZgau5Q9LXeJweAR+SWh9qLXP9XEK1jj3UedFHbrAeAYiXcWi3VpmTB9pfsOx8QbBjieykYfmODTQRjHMWFbTAk35cGbvQlfD+8oLAvdN6yT2jLT1OkvWd9Sx0uUlRo/d96nlJuIUFf8UWiLli3qgU+MEpRkpK/WnHwwesevG5xe6wG0r3GPazf5rMYemhGHUSg6jDvldL7qjhHDCU/QNxLzGBvKxSSzVCLgxPIVju8JsOuoPAD8jQZttnJPzzj+fggOuT29RkM8fV/zo4Uwc7/LdEtrBEqTQ0fULomnuAlsXwV+ZDPvvv9ZgY84ezVMPt8YOueic0tqppSnxuoIxj9HOYxYQuJJJrVa0SgXuwBoaZxHNkLuDAe8lVDkU/F/iMy5lt5VN55pMoUOPmFn4lNCKdXBZacw3VLQ4OEBHqwE8Ni8Mt+kp1QuLsyFGoGNH3OxBqSDp/54mrYj9lV6JuL633tkc+bAO/sW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(346002)(366004)(376002)(66574015)(54906003)(110136005)(66946007)(31696002)(66556008)(8936002)(8676002)(66476007)(5660300002)(2616005)(7416002)(31686004)(186003)(316002)(478600001)(2906002)(6486002)(86362001)(83380400001)(38100700002)(36756003)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bmVhdWF4Z2FjRE9oTkVleUFxR0MwUW5kWFIvdk15T1Y0TkVyOXQ0eXJKVE9t?=
- =?utf-8?B?eVRSa2RSd3BvNjZseFVZZllCVm4vYmR3WFJDU1dJTFVrNXNaaXZIYkVlZDhx?=
- =?utf-8?B?TFdkR2VUc2k0NVl6RGpWV1VVdmd0UE43dkE2bzBsNkhOTDBpdnRxamc3d3JK?=
- =?utf-8?B?ZFY4UWNxQ3NaUmFpdXpvb0djb3V1VUdncjI2T1BuMytxanBVL050OHVtRzhS?=
- =?utf-8?B?dGUvL1luZVRIUTlLaTZsc0hNU1ppVTNWT0IrVUFrUDBQUC8wS0Fhcm8xaHZQ?=
- =?utf-8?B?UVEwMWxCUUdHc2x6RjRHZ2o3L25JWHh0QndrUmNNSzdvdHVpb3VTWk9TVlQ4?=
- =?utf-8?B?OS9ScUdBQTZzeUZ0ZVhEWXJHTTM4MkR6bVZWcmZ6dUhpQ09VSWRoeEUxSmti?=
- =?utf-8?B?NldOazJERXZBZ0IwRHBVOHM2VnF2WTJZamJGM3lwaDI4OVpsMlFIQzIzKzA5?=
- =?utf-8?B?VElUNnBFUy9UWXArZ1BNR3ovcC9renhzdW13OExWckY2aGIzRi9ZRjd1OXZI?=
- =?utf-8?B?Z1NJY25QRmd5NlpmeFBRNjUycUJPOUVOcytOUFM5MzkwejJ6R292ZmFYcEdG?=
- =?utf-8?B?RDI4Tm9hWjR0aVFoeTRhYXhXVGNuYzVYaGp2Vm1xejVwelh1OXJ3K21Iemgz?=
- =?utf-8?B?bnhWY3VXTG9sTUQ1N0kyZ1pmOGVjZFptVUZEWEN6SUwwclBXQ1BjTjF3aHdH?=
- =?utf-8?B?WTRMd0p4OVMwK2liRTZVOFg3R1RmNmg3UjdLSk45anVkQWNIbHJqVHBvajBo?=
- =?utf-8?B?UkxMUDVTQUYyU1NteWRtSEhrMEloTDVsWlJhNzhwcEVmYzNrTzJSdmppZDV5?=
- =?utf-8?B?N3dyNGs3eHJKaGVpLzJVMmgxbnBlNm1CNDFxVmN2Z1I2alZ6alUzV1NCQUxx?=
- =?utf-8?B?d0FsSXkrUjdUUXRrZW1sU2IxcytiTUx0YlA0eTh2dG8vL3pMYWNqbW5qbnNk?=
- =?utf-8?B?czZZOFhmM3poUnZ5RkJBQ2hPMFRVeW9yRithbmVkZk54ZVVITHU0Ti9HK0cz?=
- =?utf-8?B?aFgyRlBOSXJFN0s0OS9Yc2tpZjdiaWxJSHgzNmlUanNIWk4reG91ak9vaWJt?=
- =?utf-8?B?MkVCZ2UwN0c2MGV0TGh3ZFphSzU3WmpRWDAyaGNZV2daMGMyVjRXNFlOSnE4?=
- =?utf-8?B?WURHK0RWbmpSUXVhWmY0c3RGS1VMZThQdFpHcDRDSUp2cXhOUGwyVW0wUHFK?=
- =?utf-8?B?cXpoMy9BeXpzN0U3QjRnWUZqdjUxMVNBaW1MZHFwNjBDS2pHRFZ5MDVyb0Rv?=
- =?utf-8?B?SG11RW5SbkRlMkczT0s1S09BZ2c5NkZOOTdJdXhJQkVQRzEwbXhOSXMwWkdx?=
- =?utf-8?B?azl1eERyUEVTbEpUUndUSks2djRBejBXUFhPYmNZNlo0cm1iSy9VR25JT0M0?=
- =?utf-8?B?Z0crWFRCc3NQUlNIZUNIUlBYWmV3U3VkZmxZN0MvLzFWTmFIUVdPeFNsVzE4?=
- =?utf-8?B?Mlh5aTl0NVh5ZklTQmpsR2ZkNDNaOTVtaHNrNWVjM3lMVTYvak5GVW50dzRN?=
- =?utf-8?B?WkducU9sbURKdTJTaHRJbkcyYW1xbGJUMFZaZngyTVM5UTFSMnhkY0ZGWS81?=
- =?utf-8?B?cXZxaW5yUG1LUm0wSVhzT1plZjErUnZNcVVYalhuZFlaRGtFTm9ldDF0OEJt?=
- =?utf-8?B?Q21mZDFKSVF5UnhHWk9lUkJ4NjZkWnRVcGREYVYwUUVTbTBFeVhmeGVYaG12?=
- =?utf-8?B?WTE1cUxXL1lIUlhTYXRrUGRiMlFmdVNSWi9GZ1BoejQ3Z09XY1VQLzR2bEh5?=
- =?utf-8?B?NVp2WHBzSXhEcnMrdmhPSTNJNWpkUGxtYnl6dHRDVjVZQW8rNlRiZGJsUFI1?=
- =?utf-8?B?NXI3OEtPQ2JHOFVyUHFMb3Z5N1M0alNqY3NTQ2dzZllIazF3azhBTEZLUFF5?=
- =?utf-8?Q?qdeoRDxgfn3Gf?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 450169df-1603-4e13-7a5f-08d9528613dc
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 11:43:26.4705
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J4q51p8KULmj5in1dfsH/QYFfU2lwuKyP0D2RK5eVeI39mLxwwF/EGjnmiEKZ+4R
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4111
+In-Reply-To: <20210728142631.41860-4-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: If0OG2Vr98Ex_lrPPAhL1BNthCCz56rD
+X-Proofpoint-GUID: NVKAAFblsZOUl-cpFvJl9yjQkJrJMy52
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_09:2021-07-29,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ spamscore=0 malwarescore=0 adultscore=0 priorityscore=1501 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 29.07.21 um 13:00 schrieb Pekka Paalanen:
-> On Thu, 29 Jul 2021 12:14:18 +0200
-> Christian König <ckoenig.leichtzumerken@gmail.com> wrote:
->
->> Am 29.07.21 um 11:15 schrieb Pekka Paalanen:
->>> If the app happens to be frozen (e.g. some weird bug in fence handling
->>> to make it never ready, or maybe it's just bugged itself and never
->>> drawing again), then the app is frozen, and all the rest of the desktop
->>> continues running normally without a glitch.
->> But that is in contradict to what you told me before.
->>
->> See when the window should move but fails to draw it's new content what
->> happens?
->>
->> Are the other windows which would be affected by the move not drawn as well?
-> No, all the other windows will continue behaving normally just like
-> they always did. It's just that one frozen window there that won't
-> update; it won't resize, so there is no reason to move that other
-> window either.
->
-> Everything continues as if the frozen window never even sent anything
-> to the compositor after its last good update.
->
-> We have a principle in Wayland: the compositor cannot afford to wait
-> for clients, the desktop as a whole must remain responsive. So there is
-> always a backup plan even for cases where the compositor expects the
-> client to change something. For resizes, in a floating-window manager
-> it's easy: just let things continue as they are; in a tiling window
-> manager they may have a timeout after which... whatever is appropriate.
->
-> Another example: If a compositor decides to make a window maximized, it
-> tells the client the new size and state it must have. Until the client
-> acks that specific state change, the compositor will continue managing
-> that window as if nothing changed. Given the asynchronous nature of
-> Wayland, the client might even continue submitting updates
-> non-maximized for a while, and that will go through as if the
-> compositor didn't ask for maximized. But at some point the client acks
-> the window state change, and from that point on if it doesn't behave
-> like maximized state requires, it will get a protocol error and be
-> disconnected.
+On 7/28/21 4:26 PM, Claudio Imbrenda wrote:
+> Introduce variants of the convert and destroy page functions that also
+> clear the PG_arch_1 bit used to mark them as secure pages.
+> 
+> These new functions can only be called on pages for which a reference
+> is already being held.
+> 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
-Yeah and all of this totally makes sense.
+Acked-by: Janosch Frank <frankja@linux.ibm.com>
 
-The problem is that not forwarding the state changes to the hardware 
-adds a CPU round trip which is rather bad for the driver design, 
-especially power management.
-
-E.g. when you submit the work only after everybody becomes available the 
-GPU becomes idle in between and might think it is a good idea to reduce 
-clocks etc...
-
-How about doing this instead:
-
-1. As soon as at least one window has new committed state you submit the 
-rendering.
-         As far as I understand it that is already the case anyway.
-
-2. Before starting rendering the hardware driver waits with a timeout 
-for all the window content to become ready.
-         The timeout is picked in a way so that we at least reach a 
-reasonable fps. Making that depending on the maximum refresh rate of the 
-display device sounds reasonable to me.
-
-3a. If all windows become ready on time we draw the frame as expected.
-3b. If a timeout occurs the compositor is noted of this and goes on a 
-fallback path rendering only the content known to be ready.
-
-4. Repeat.
-
-This way we should be able to handle all use cases gracefully, e.g. the 
-hanging client won't cause the server to block and when everything 
-becomes ready on time we just render as expected.
-
-Regards,
-Christian.
-
->
->
-> Thanks,
-> pq
+> ---
+>  arch/s390/include/asm/pgtable.h |  9 ++++++---
+>  arch/s390/include/asm/uv.h      | 10 ++++++++--
+>  arch/s390/kernel/uv.c           | 34 ++++++++++++++++++++++++++++++++-
+>  arch/s390/mm/gmap.c             |  4 +++-
+>  4 files changed, 50 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> index dcac7b2df72c..0f1af2232ebe 100644
+> --- a/arch/s390/include/asm/pgtable.h
+> +++ b/arch/s390/include/asm/pgtable.h
+> @@ -1074,8 +1074,9 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+>  	pte_t res;
+>  
+>  	res = ptep_xchg_lazy(mm, addr, ptep, __pte(_PAGE_INVALID));
+> +	/* At this point the reference through the mapping is still present */
+>  	if (mm_is_protected(mm) && pte_present(res))
+> -		uv_convert_from_secure(pte_val(res) & PAGE_MASK);
+> +		uv_convert_owned_from_secure(pte_val(res) & PAGE_MASK);
+>  	return res;
+>  }
+>  
+> @@ -1091,8 +1092,9 @@ static inline pte_t ptep_clear_flush(struct vm_area_struct *vma,
+>  	pte_t res;
+>  
+>  	res = ptep_xchg_direct(vma->vm_mm, addr, ptep, __pte(_PAGE_INVALID));
+> +	/* At this point the reference through the mapping is still present */
+>  	if (mm_is_protected(vma->vm_mm) && pte_present(res))
+> -		uv_convert_from_secure(pte_val(res) & PAGE_MASK);
+> +		uv_convert_owned_from_secure(pte_val(res) & PAGE_MASK);
+>  	return res;
+>  }
+>  
+> @@ -1116,8 +1118,9 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
+>  	} else {
+>  		res = ptep_xchg_lazy(mm, addr, ptep, __pte(_PAGE_INVALID));
+>  	}
+> +	/* At this point the reference through the mapping is still present */
+>  	if (mm_is_protected(mm) && pte_present(res))
+> -		uv_convert_from_secure(pte_val(res) & PAGE_MASK);
+> +		uv_convert_owned_from_secure(pte_val(res) & PAGE_MASK);
+>  	return res;
+>  }
+>  
+> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
+> index 12c5f006c136..bbd51aa94d05 100644
+> --- a/arch/s390/include/asm/uv.h
+> +++ b/arch/s390/include/asm/uv.h
+> @@ -351,8 +351,9 @@ static inline int is_prot_virt_host(void)
+>  }
+>  
+>  int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb);
+> -int uv_destroy_page(unsigned long paddr);
+> +int uv_destroy_owned_page(unsigned long paddr);
+>  int uv_convert_from_secure(unsigned long paddr);
+> +int uv_convert_owned_from_secure(unsigned long paddr);
+>  int gmap_convert_to_secure(struct gmap *gmap, unsigned long gaddr);
+>  
+>  void setup_uv(void);
+> @@ -362,7 +363,7 @@ void adjust_to_uv_max(unsigned long *vmax);
+>  static inline void setup_uv(void) {}
+>  static inline void adjust_to_uv_max(unsigned long *vmax) {}
+>  
+> -static inline int uv_destroy_page(unsigned long paddr)
+> +static inline int uv_destroy_owned_page(unsigned long paddr)
+>  {
+>  	return 0;
+>  }
+> @@ -371,6 +372,11 @@ static inline int uv_convert_from_secure(unsigned long paddr)
+>  {
+>  	return 0;
+>  }
+> +
+> +static inline int uv_convert_owned_from_secure(unsigned long paddr)
+> +{
+> +	return 0;
+> +}
+>  #endif
+>  
+>  #if defined(CONFIG_PROTECTED_VIRTUALIZATION_GUEST) || IS_ENABLED(CONFIG_KVM)
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index fd0faa51c1bb..5a6ac965f379 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -115,7 +115,7 @@ static int uv_pin_shared(unsigned long paddr)
+>   *
+>   * @paddr: Absolute host address of page to be destroyed
+>   */
+> -int uv_destroy_page(unsigned long paddr)
+> +static int uv_destroy_page(unsigned long paddr)
+>  {
+>  	struct uv_cb_cfs uvcb = {
+>  		.header.cmd = UVC_CMD_DESTR_SEC_STOR,
+> @@ -135,6 +135,22 @@ int uv_destroy_page(unsigned long paddr)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * The caller must already hold a reference to the page
+> + */
+> +int uv_destroy_owned_page(unsigned long paddr)
+> +{
+> +	struct page *page = phys_to_page(paddr);
+> +	int rc;
+> +
+> +	get_page(page);
+> +	rc = uv_destroy_page(paddr);
+> +	if (!rc)
+> +		clear_bit(PG_arch_1, &page->flags);
+> +	put_page(page);
+> +	return rc;
+> +}
+> +
+>  /*
+>   * Requests the Ultravisor to encrypt a guest page and make it
+>   * accessible to the host for paging (export).
+> @@ -154,6 +170,22 @@ int uv_convert_from_secure(unsigned long paddr)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * The caller must already hold a reference to the page
+> + */
+> +int uv_convert_owned_from_secure(unsigned long paddr)
+> +{
+> +	struct page *page = phys_to_page(paddr);
+> +	int rc;
+> +
+> +	get_page(page);
+> +	rc = uv_convert_from_secure(paddr);
+> +	if (!rc)
+> +		clear_bit(PG_arch_1, &page->flags);
+> +	put_page(page);
+> +	return rc;
+> +}
+> +
+>  /*
+>   * Calculate the expected ref_count for a page that would otherwise have no
+>   * further pins. This was cribbed from similar functions in other places in
+> diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+> index 9bb2c7512cd5..de679facc720 100644
+> --- a/arch/s390/mm/gmap.c
+> +++ b/arch/s390/mm/gmap.c
+> @@ -2678,8 +2678,10 @@ static int __s390_reset_acc(pte_t *ptep, unsigned long addr,
+>  {
+>  	pte_t pte = READ_ONCE(*ptep);
+>  
+> +	/* There is a reference through the mapping */
+>  	if (pte_present(pte))
+> -		WARN_ON_ONCE(uv_destroy_page(pte_val(pte) & PAGE_MASK));
+> +		WARN_ON_ONCE(uv_destroy_owned_page(pte_val(pte) & PAGE_MASK));
+> +
+>  	return 0;
+>  }
+>  
+> 
 
