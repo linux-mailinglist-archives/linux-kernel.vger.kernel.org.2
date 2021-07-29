@@ -2,132 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8630C3DA411
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6128B3DA417
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237521AbhG2N1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:27:08 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:51792 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237528AbhG2N1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:27:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ve/KL1lU44TvwHzfefIp6JxgDdI8qbOUpEiu1gJ+fiU=; b=Z7OaNwnYWxUZ3TTXmSx0cznR3c
-        Tr03VFm1LyFn5euqXGtQ0L5TuicEeg/xYF/h0QERCRdUo0H1TUsG8SY+YtaSAEWtN4vJfljqHoJfD
-        w0v2zUo9xqF0mFQC94/UYFqBeyjhaHIp45kkw+xflO/G8x5I2VgAH/HoN5kewLZkNDD0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m963q-00FJdk-4G; Thu, 29 Jul 2021 15:26:54 +0200
-Date:   Thu, 29 Jul 2021 15:26:54 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     hkallweit1@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        p.zabel@pengutronix.de, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        robert.marko@sartura.hr, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH 1/3] net: mdio-ipq4019: Add mdio reset function
-Message-ID: <YQKsnqWCfoTpTuxI@lunn.ch>
-References: <20210729125358.5227-1-luoj@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729125358.5227-1-luoj@codeaurora.org>
+        id S237528AbhG2N22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237420AbhG2N21 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:28:27 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D8BC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:23 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id r14-20020a0c8d0e0000b02902e82df307f0so3932708qvb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=uCsDvrfcUF+1HjCy/5u0lXgukkeSpeNSQPNFAPtE5Og=;
+        b=TwUGuSD9qt0RaCZOS9MqYshAwbluPWeQnV47t4m6fl1LT4Bu8aMFJPgR4wel2mQ/0d
+         VMq3hAK+GBdhK0pDqqszgH6EjWtt0g+gsttm5me4V/4bLlmdJtY8xDdSkXQhD2+kh7En
+         APBRNllYpK/w+G4htTFazfyOkcJT2CNzdRflI8pGflgUvStmidwaEZJ1ISLDNIz8XHkE
+         I8TAGDAGu8wQRDYBI3LsbMZm8DvGc5Yhi05TnDxDgHirqn7QwkGG9pUJKe1iAk3KJ5ST
+         nrE4ll47uKL1HWghtXbFmGP9rQo/7u9BGNvZD5e4hpV4BN1enHUmTMlPD1rE19y/oH2I
+         Rzug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=uCsDvrfcUF+1HjCy/5u0lXgukkeSpeNSQPNFAPtE5Og=;
+        b=SxpD7hxGtpT2VQgV9LrsTJVL4aBD6nTLQ7lUW6BU2dKxgCRNwMm16/0VgtuXqoL9A7
+         zyci1iuZainzsTxSNSAbuYytd/bAv8172yr/6rZ50njiFqFPJfy4Hvf8xVuzUo/NfeZp
+         RHE6atRQ4+nYxwHyI3kzgZ9nZuqe9VZqeAXcJyaRzPv5oT6vKNKgrS4BNnojmNcwSRjq
+         X0b/SugOy5QXEsIuLDVNKc/c3FfwtbcToFctDYdvgAOS6fRtxE/Ux8yN1DhV8cj5wAhV
+         MkvmWNh8FumyLgrjowCszLG+pXJd1NQX0niS49Z3XqDLiChAjwWvg4z8sEf/CRSSa2Qx
+         /Ggw==
+X-Gm-Message-State: AOAM531B9AQuPvglgor0BQPmv6LmfyI/2SmwrOouikL0C6eyZBSfbADx
+        BPmDtO+BhFU0C+7N6Meg22SxLIXNWiKV
+X-Google-Smtp-Source: ABdhPJwFLu6UzIEWRzj8e8yAxcsgzIxAgdeYD1x+wnn2xqD3UBVZS+HjIyhzCZDdD20gs2aUkHHEOqy6y/hY
+X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:293a:bc89:7514:5218])
+ (user=qperret job=sendgmr) by 2002:a05:6214:27e7:: with SMTP id
+ jt7mr5278007qvb.28.1627565302295; Thu, 29 Jul 2021 06:28:22 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 14:27:57 +0100
+Message-Id: <20210729132818.4091769-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH v3 00/21] Track shared pages at EL2 in protected mode
+From:   Quentin Perret <qperret@google.com>
+To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        tabba@google.com, dbrazdil@google.com, kernel-team@android.com,
+        Quentin Perret <qperret@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luo
+Hi all,
 
-For a patchset, netdev wants to see a patch 0/X which describes the
-big picture. What is the patchset as a whole doing.
+This is v3 of the patch series previously posted here:
 
-> +static int ipq_mdio_reset(struct mii_bus *bus)
-> +{
-> +	struct ipq4019_mdio_data *priv = bus->priv;
-> +	struct device *dev = bus->parent;
-> +	struct gpio_desc *reset_gpio;
-> +	u32 val;
-> +	int i, ret;
-> +
-> +	/* To indicate CMN_PLL that ethernet_ldo has been ready if needed */
-> +	if (!IS_ERR(priv->eth_ldo_rdy)) {
-> +		val = readl(priv->eth_ldo_rdy);
-> +		val |= BIT(0);
-> +		writel(val, priv->eth_ldo_rdy);
-> +		fsleep(QCA_PHY_SET_DELAY_US);
-> +	}
-> +
-> +	/* Reset GEPHY if need */
-> +	if (!IS_ERR(priv->reset_ctrl)) {
-> +		reset_control_assert(priv->reset_ctrl);
-> +		fsleep(QCA_PHY_SET_DELAY_US);
-> +		reset_control_deassert(priv->reset_ctrl);
-> +		fsleep(QCA_PHY_SET_DELAY_US);
-> +	}
+https://lore.kernel.org/kvmarm/20210726092905.2198501-1-qperret@google.com/
 
-What exactly is being reset here? Which is GEPHY?
+This series aims to improve how the nVHE hypervisor tracks ownership of
+memory pages when running in protected mode ("kvm-arm.mode=protected" on
+the kernel command line).
 
-The MDIO bus master driver should not be touching any Ethernet
-PHYs. All it provides is a bus, nothing more.
+The main issue with the existing ownership tracking code is that it is
+completely binary: a page is either owned by an entity (e.g. the host)
+or not. However, we'll need something smarter to track shared pages, as
+is needed for virtio, or even just host/hypervisor communications.
 
-> +
-> +	/* Configure MDIO clock frequency */
-> +	if (!IS_ERR(priv->mdio_clk)) {
-> +		ret = clk_set_rate(priv->mdio_clk, QCA_MDIO_CLK_RATE);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = clk_prepare_enable(priv->mdio_clk);
-> +		if (ret)
-> +			return ret;
-> +	}
+This series introduces a few changes to the kvm page-table library to
+allow annotating shared pages in ignored bits (a.k.a. software bits) of
+leaf entries, and makes use of that infrastructure to track all pages
+that are shared between the host and the hypervisor. We will obviously
+want to apply the same treatment to guest stage-2 page-tables, but that
+is not really possible to do until EL2 manages them directly, so I'll
+keep that for another series.
 
-> +
-> +	/* Reset PHYs by gpio pins */
-> +	for (i = 0; i < gpiod_count(dev, "phy-reset"); i++) {
-> +		reset_gpio = gpiod_get_index_optional(dev, "phy-reset", i, GPIOD_OUT_HIGH);
-> +		if (IS_ERR(reset_gpio))
-> +			continue;
-> +		gpiod_set_value_cansleep(reset_gpio, 0);
-> +		fsleep(QCA_PHY_SET_DELAY_US);
-> +		gpiod_set_value_cansleep(reset_gpio, 1);
-> +		fsleep(QCA_PHY_SET_DELAY_US);
-> +		gpiod_put(reset_gpio);
-> +	}
+The series is based on the kvmarm/fixes branch, and has been tested on
+AML-S905X-CC (Le Potato) and using various Qemu configurations.
 
-No, there is common code in phylib to do that.
+Changes since v2:
+ - Renamed and refactored the find_range() path for host memory aborts;
+ - Added hyp_assert_lock_held() using Will's hyp_spin_is_locked()
+   helper, and sprinkled a few of them throughout the series;
+ - Changed how host stage-2 mappings are adjusted after __pkvm_init() by
+   walking the hyp stage-1 instead of relying on the host calling
+   __pkvm_mark_hyp.
 
->  static int ipq4019_mdio_probe(struct platform_device *pdev)
->  {
->  	struct ipq4019_mdio_data *priv;
->  	struct mii_bus *bus;
-> +	struct resource *res;
->  	int ret;
->  
->  	bus = devm_mdiobus_alloc_size(&pdev->dev, sizeof(*priv));
-> @@ -182,14 +244,23 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	priv = bus->priv;
-> +	priv->eth_ldo_rdy = IOMEM_ERR_PTR(-EINVAL);
->  
->  	priv->membase = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(priv->membase))
->  		return PTR_ERR(priv->membase);
->  
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +	if (res)
-> +		priv->eth_ldo_rdy = devm_ioremap_resource(&pdev->dev, res);
-> +
-> +	priv->reset_ctrl = devm_reset_control_get_exclusive(&pdev->dev, "gephy_mdc_rst");
-> +	priv->mdio_clk = devm_clk_get(&pdev->dev, "gcc_mdio_ahb_clk");
+Changes since v1:
+ - Changed the 'share' hypercall to accept a single page at a time;
+ - Dropped the patch allowing to continue stage-2 map when hitting the
+   EAGAIN case;
+ - Dropped some of the custom pgtable walkers and used Marc's get_leaf()
+   patch instead;
+ - Changed pgtable API to manipulate SW bits directly rather than
+   specifying shared pages;
+ - Added comments and documentations all over;
+ - Cleanups and small refactoring.
 
-You probably want to use devm_clk_get_optional().
+Thanks,
+Quentin
 
-    Andrew
+Marc Zyngier (1):
+  KVM: arm64: Introduce helper to retrieve a PTE and its level
+
+Quentin Perret (19):
+  KVM: arm64: Introduce hyp_assert_lock_held()
+  KVM: arm64: Provide the host_stage2_try() helper macro
+  KVM: arm64: Expose page-table helpers
+  KVM: arm64: Optimize host memory aborts
+  KVM: arm64: Rename KVM_PTE_LEAF_ATTR_S2_IGNORED
+  KVM: arm64: Don't overwrite software bits with owner id
+  KVM: arm64: Tolerate re-creating hyp mappings to set software bits
+  KVM: arm64: Enable forcing page-level stage-2 mappings
+  KVM: arm64: Allow populating software bits
+  KVM: arm64: Add helpers to tag shared pages in SW bits
+  KVM: arm64: Expose host stage-2 manipulation helpers
+  KVM: arm64: Expose pkvm_hyp_id
+  KVM: arm64: Introduce addr_is_memory()
+  KVM: arm64: Enable retrieving protections attributes of PTEs
+  KVM: arm64: Mark host bss and rodata section as shared
+  KVM: arm64: Remove __pkvm_mark_hyp
+  KVM: arm64: Refactor protected nVHE stage-1 locking
+  KVM: arm64: Restrict EL2 stage-1 changes in protected mode
+  KVM: arm64: Make __pkvm_create_mappings static
+
+Will Deacon (1):
+  KVM: arm64: Add hyp_spin_is_locked() for basic locking assertions at
+    EL2
+
+ arch/arm64/include/asm/kvm_asm.h              |   5 +-
+ arch/arm64/include/asm/kvm_pgtable.h          | 166 ++++++++----
+ arch/arm64/kvm/Kconfig                        |   9 +
+ arch/arm64/kvm/arm.c                          |  46 ----
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  33 ++-
+ arch/arm64/kvm/hyp/include/nvhe/mm.h          |   3 +-
+ arch/arm64/kvm/hyp/include/nvhe/spinlock.h    |  25 ++
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c            |  20 +-
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 221 ++++++++++++++--
+ arch/arm64/kvm/hyp/nvhe/mm.c                  |  22 +-
+ arch/arm64/kvm/hyp/nvhe/setup.c               |  82 +++++-
+ arch/arm64/kvm/hyp/pgtable.c                  | 247 +++++++++---------
+ arch/arm64/kvm/mmu.c                          |  28 +-
+ 13 files changed, 625 insertions(+), 282 deletions(-)
+
+-- 
+2.32.0.432.gabb21c7263-goog
+
