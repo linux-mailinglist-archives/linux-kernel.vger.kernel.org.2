@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C693DA081
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9A73DA082
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235459AbhG2Jp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:45:26 -0400
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:40891 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235019AbhG2JpZ (ORCPT
+        id S235496AbhG2Jpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235019AbhG2Jpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:45:25 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id 92bPmQVBPXTlc92bQmWAb2; Thu, 29 Jul 2021 11:45:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1627551920; bh=vbIVqTDTAteecuz2DMVo/JVX+W1bA/dNCU66Lx7X4hQ=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=oj7yqS63iQ8xIlHb6YQBYHE+KFC1OPqMIO2uSUXeJnhSiaLA/P/YGmhVRKK6GymIC
-         dc3sL5xLB4XZnbqtxKr0eTGP1BB3WxT4/vo3NBDcs5n1QmSROu01fWVyGYmD1ZW4vp
-         PkRCNhJfbAzF6kx40MWnun3TsUs5inX5A20u4WtMkzapxYN2wDgBtI8i8DzOBtIPco
-         o02aSaxcEiq4UhrxDZsD+/rhgppOl2BCbQjUqY0c8KKQgBbIlgiRa8Ar2noTrWd3vh
-         AylIMKNeKc2UKWvZ32/4ZhPiqoIu8AW4cWu4t7ChONrqom6YclnVMDNJusmzYIeEUM
-         sZuKF0Auop+GA==
-Subject: Re: [PATCH v2] media: em28xx: add missing em28xx_close_extension
-To:     Pavel Skripkin <paskripkin@gmail.com>, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
-References: <7df1705e-b2c7-ddfc-9cc5-582fb1a304e5@xs4all.nl>
- <20210721194307.12155-1-paskripkin@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <3b1de658-ebf0-e45f-49ef-953e3467e7d4@xs4all.nl>
-Date:   Thu, 29 Jul 2021 11:45:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 29 Jul 2021 05:45:40 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE35C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:45:37 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id x11so8717069ejj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RTIOpBIhIXba+iHfkGbk1sKd2cv7hIyyhFm84TIZ/vI=;
+        b=E5VNFuwlnm/hWZNfsaxVOYyRAJh/Bebb2DIBdcB97U3Jc3u+7UWGojn9MGliXc51d5
+         jFgRckSFdVEMJQkiKmlPNPc0Jcf1jWjNe7T9Cgascuos87PQydPjpztoiOwy2GIJDadM
+         pLf6O4tetR3/th6ahlw7zeWLI6uAhPIn1EMXx+KaEPKOoEUhbGmvqM4bMniaiLWY97aF
+         hNkLbi2YqPYlwg6wdwxxtC1jxf+Y4ZNLN/Y0tws5qXhQRxz0wPbkPxDqgs4ddEWIiIlk
+         0FM0io5HIT+sdoD4ZQS1WzoR79lmxGSuOppkgfA0rGDk69shCyk44L/e+AMX5RdVAVeT
+         a+Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RTIOpBIhIXba+iHfkGbk1sKd2cv7hIyyhFm84TIZ/vI=;
+        b=DXyThN3uYNCxO35/oCWYW5J6JHeYVPIfdf19VrmZWZ/BFfj1CvYGDHAmCAmU8ymW1A
+         StTjJxcz7xH1WNQcv7bd8Hms5qnzw54lbF/67G9CNRfVYGKABpKCsbLDphc3FoEBQtzw
+         UhpMCvliY42wo2rxGJmAwvTOedDZpxMtfb10PMt9MvvrM17t6s7MAcS/iR67lJYqEyPi
+         ogqo3Et5R7l4ZO2T6Gac2Ce+pbNDhJ+wx77FkyOWj3DP4e2iJOOo8SgWx8/WN64IJyfg
+         UjGvvjjehbZR8uQSFkRtqd5x4Sv603o8eJnITz3RN+zzR4gBkI7WcE835kHmbUCR/qy4
+         ma6Q==
+X-Gm-Message-State: AOAM532oel/3qvNdF7XySq3TvPZrNuxG11YauiYCuKWPiZUEg8KD8SE5
+        M5y9lcyG/ZzMxwa0bRLZjSDaiw==
+X-Google-Smtp-Source: ABdhPJyJdvD5DjTCPmr1TXl9bWCrJ7GsZp3ykSnNdM0FEZav34FCo4bqcM0yOwCyBLhr7wsMRKpYSQ==
+X-Received: by 2002:a17:906:cc57:: with SMTP id mm23mr3665043ejb.12.1627551936120;
+        Thu, 29 Jul 2021 02:45:36 -0700 (PDT)
+Received: from localhost.localdomain ([89.18.44.40])
+        by smtp.gmail.com with ESMTPSA id b15sm774965ejv.15.2021.07.29.02.45.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 02:45:35 -0700 (PDT)
+From:   Pavo Banicevic <pavo.banicevic@sartura.hr>
+To:     arkamar@atlas.cz, matt.redfearn@mips.com, mingo@kernel.org,
+        dvlasenk@redhat.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] include/uapi/linux/swab: Fix potentially missing __always_inline
+Date:   Thu, 29 Jul 2021 11:45:58 +0200
+Message-Id: <20210729094558.5935-1-pavo.banicevic@sartura.hr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210721194307.12155-1-paskripkin@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKd8PN8J7/4z6Rk4e1ePDXyaG+++PODV2c39F/Q4Syb0lmmnIUmzTpFFugx8QSYNQp207C6WweJSGQkN4lW+pAqnONjyq97UP66u/ADAINzi4C7M4CUD
- 07Io7n/EwXDJBBinsVPr05P29+ZaJLTjeAcm2uk60o6QJhA8Rdm+fDcZMKCjyA5M/DZgMh4I3vvPWwpPdBS6vI97twj8mdaq6L3/2cHpxa8FycfAkJWTglPe
- ZYozeKYYKgn3o5Mw8dwn4+xhbpaDW/0YcwQ7x8ReBk5DAvaaSxxHcEK9+48PgG6Vmn3FBYOW8IMVcvyW1RfAmj1K4y+gyFPyX6aPtSssmyeSwmzbiwGaDooE
- 6I5+vCiJ4QeeLVj+t/0BkTQEG1EnttHDQnrVO95zCSsYsRlpFSxvUNtbJ7zsFWwqG55Pf+GovQ0pBwrVb55mH2T2ztwMjlmqMCQ2VlhUdkkae7stWducgEOx
- 4bX7hHCAvWKNYvd8
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2021 21:43, Pavel Skripkin wrote:
-> If em28xx dev has ->dev_next pointer, we need to delete dev_next list node
-> from em28xx_extension_devlist on disconnect to avoid UAF bugs and
-> corrupted list bugs, since driver frees this pointer on disconnect.
-> 
-> Fixes: 1a23f81b7dc3 ("V4L/DVB (9979): em28xx: move usb probe code to a proper place")
-> Reported-and-tested-by: syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
-> 
-> Changes in v2:
-> 	Previous patch was completely broken. I've done some debugging
-> 	again and found true root case of the reported bug.
-> 
-> ---
->  drivers/media/usb/em28xx/em28xx-cards.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
-> index c1e0dccb7408..d56b040e1bd7 100644
-> --- a/drivers/media/usb/em28xx/em28xx-cards.c
-> +++ b/drivers/media/usb/em28xx/em28xx-cards.c
-> @@ -4139,8 +4139,10 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
->  
->  	em28xx_close_extension(dev);
->  
-> -	if (dev->dev_next)
-> +	if (dev->dev_next) {
->  		em28xx_release_resources(dev->dev_next);
-> +		em28xx_close_extension(dev->dev_next);
+From: Matt Redfearn <matt.redfearn@mips.com>
 
-Wouldn't it be better to swap these two?
+Commit bc27fb68aaad ("include/uapi/linux/byteorder, swab: force inlining
+of some byteswap operations") added __always_inline to swab functions
+and commit 283d75737837 ("uapi/linux/stddef.h: Provide __always_inline to
+userspace headers") added a definition of __always_inline for use in
+exported headers when the kernel's compiler.h is not available.
 
-That order is also used for em28xx_close_extension(dev) and em28xx_release_resources(dev).
+However, since swab.h does not include stddef.h, if the header soup does
+not indirectly include it, the definition of __always_inline is missing,
+resulting in a compilation failure, which was observed compiling the
+perf tool using exported headers containing this commit:
 
-You do need to store dev->dev_next in a temp variable, though.
+In file included from /usr/include/linux/byteorder/little_endian.h:12:0,
+                 from /usr/include/asm/byteorder.h:14,
+                 from tools/include/uapi/linux/perf_event.h:20,
+                 from perf.h:8,
+                 from builtin-bench.c:18:
+/usr/include/linux/swab.h:160:8: error: unknown type name `__always_inline'
+ static __always_inline __u16 __swab16p(const __u16 *p)
 
-Regards,
+Fix this by replacing the inclusion of linux/compiler.h with
+linux/stddef.h to ensure that we pick up that definition if required,
+without relying on it's indirect inclusion. compiler.h is then included
+indirectly, via stddef.h.
 
-	Hans
+Fixes: 283d75737837 ("uapi/linux/stddef.h: Provide __always_inline to userspace headers")
 
-> +	}
->  	em28xx_release_resources(dev);
->  
->  	if (dev->dev_next) {
-> 
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+Reviewed-by: Petr Vaněk <arkamar@atlas.cz>
+---
+
+Resending as patch is not really related to previous series and to not wait long for the merge.
+
+---
+ include/uapi/linux/swab.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/swab.h b/include/uapi/linux/swab.h
+index 7272f85d6d6a..3736f2fe1541 100644
+--- a/include/uapi/linux/swab.h
++++ b/include/uapi/linux/swab.h
+@@ -3,7 +3,7 @@
+ #define _UAPI_LINUX_SWAB_H
+ 
+ #include <linux/types.h>
+-#include <linux/compiler.h>
++#include <linux/stddef.h>
+ #include <asm/bitsperlong.h>
+ #include <asm/swab.h>
+ 
+-- 
+2.32.0
 
