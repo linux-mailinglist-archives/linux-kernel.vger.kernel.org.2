@@ -2,148 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0453DA04B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE78E3DA049
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbhG2JdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:33:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235260AbhG2Jc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:32:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1121361052;
-        Thu, 29 Jul 2021 09:32:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627551175;
-        bh=JuJA50JqDCkg8F9U4K0AUSFD4NR8BUFnw4OZQNi4sWM=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=Ry8neo+AuNIQtwYnTVSUrqbYYldMEHpXiRno+WoUUIz58lVybCBwrp8+wczAslBCY
-         b2yKkliUIh4PlgrfXKwCXZgBhhkZsILk34HzTNziAO1lzNbSiOwLLyJVA2TOVg5Sef
-         czvF3XfBRr8CAYf2TKOTAJZbyC0SC/eKaav6PS30LNet1bXiKYTFyV2zs8R99aVvOG
-         PwuRqC6dFG9YcfxtIxVjzB4WOft6s6UK911fMk2lJDAxP7hGAGsQbx12tP+133kbkV
-         7BADvANKBW37Nk1HvNcjkhOa56CTsfRwJV1SYzzvihlTg04VZgtwamkhZok+XgxA67
-         PQpNTJUG5a7YQ==
-References: <1627543994-20327-1-git-send-email-wcheng@codeaurora.org>
- <87zgu5v8om.fsf@kernel.org>
- <4e06452a-080f-a2be-ab88-9ac992740ee0@codeaurora.org>
-User-agent: mu4e 1.6.0; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org
-Subject: Re: [PATCH] usb: dwc3: gadget: Use list_replace_init() before
- traversing lists
-Date:   Thu, 29 Jul 2021 12:31:59 +0300
-In-reply-to: <4e06452a-080f-a2be-ab88-9ac992740ee0@codeaurora.org>
-Message-ID: <87fsvxsbwc.fsf@kernel.org>
+        id S235620AbhG2Jck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:32:40 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:38499 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235492AbhG2Jcj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 05:32:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UhKSVrp_1627551149;
+Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UhKSVrp_1627551149)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 29 Jul 2021 17:32:34 +0800
+From:   Wen Yang <wenyang@linux.alibaba.com>
+To:     Corey Minyard <minyard@acm.org>
+Cc:     Wen Yang <wenyang@linux.alibaba.com>,
+        Baoyou Xie <baoyou.xie@alibaba-inc.com>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ipmi: rate limit ipmi smi_event failure message
+Date:   Thu, 29 Jul 2021 17:32:28 +0800
+Message-Id: <20210729093228.77098-1-wenyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sometimes we can't get a valid si_sm_data, and we print an error
+message accordingly. But the ipmi module seem to like retrying a lot,
+in which case we flood the kernel log with a lot of messages, eg:
 
-Hi,
+[46318019.164726] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318020.109700] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318021.158677] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318022.212598] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318023.258564] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318024.210455] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318025.260473] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318026.308445] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318027.356389] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318028.298288] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+[46318029.363302] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
 
-Wesley Cheng <wcheng@codeaurora.org> writes:
->>> The list_for_each_entry_safe() macro saves the current item (n) and
->>> the item after (n+1), so that n can be safely removed without
->>> corrupting the list.  However, when traversing the list and removing
->>> items using gadget giveback, the DWC3 lock is briefly released,
->>> allowing other routines to execute.  There is a situation where, while
->>> items are being removed from the cancelled_list using
->>> dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
->>> routine is running in parallel (due to UDC unbind).  As the cleanup
->>> routine removes n, and the pullup disable removes n+1, once the
->>> cleanup retakes the DWC3 lock, it references a request who was already
->>> removed/handled.  With list debug enabled, this leads to a panic.
->>> Ensure all instances of the macro are replaced where gadget giveback
->>> is used.
->>>
->>> Example call stack:
->>>
->>> Thread#1:
->>> __dwc3_gadget_ep_set_halt() - CLEAR HALT
->>>   -> dwc3_gadget_ep_cleanup_cancelled_requests()
->>>     ->list_for_each_entry_safe()
->>>     ->dwc3_gadget_giveback(n)
->>>       ->dwc3_gadget_del_and_unmap_request()- n deleted[cancelled_list]
->>>       ->spin_unlock
->>>       ->Thread#2 executes
->>>       ...
->>>     ->dwc3_gadget_giveback(n+1)
->>>       ->Already removed!
->>>
->>> Thread#2:
->>> dwc3_gadget_pullup()
->>>   ->waiting for dwc3 spin_lock
->>>   ...
->>>   ->Thread#1 released lock
->>>   ->dwc3_stop_active_transfers()
->>>     ->dwc3_remove_requests()
->>>       ->fetches n+1 item from cancelled_list (n removed by Thread#1)
->>>       ->dwc3_gadget_giveback()
->>>         ->dwc3_gadget_del_and_unmap_request()- n+1
->>> deleted[cancelled_list]
->>>         ->spin_unlock
->>>
->>> Fix this condition by utilizing list_replace_init(), and traversing
->>> through a local copy of the current elements in the endpoint lists.
->>> This will also set the parent list as empty, so if another thread is
->>> also looping through the list, it will be empty on the next iteration.
->>>
->>> Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_list")
->>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->>>
->>> ---
->>> Previous patchset:
->>> https://lore.kernel.org/linux-usb/1620716636-12422-1-git-send-email-wcheng@codeaurora.org/
->>> ---
->>>  drivers/usb/dwc3/gadget.c | 18 ++++++++++++++++--
->>>  1 file changed, 16 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
->>> index a29a4ca..3ce6ed9 100644
->>> --- a/drivers/usb/dwc3/gadget.c
->>> +++ b/drivers/usb/dwc3/gadget.c
->>> @@ -1926,9 +1926,13 @@ static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
->>>  {
->>>  	struct dwc3_request		*req;
->>>  	struct dwc3_request		*tmp;
->>> +	struct list_head		local;
->>>  	struct dwc3			*dwc = dep->dwc;
->>>  
->>> -	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
->>> +restart:
->>> +	list_replace_init(&dep->cancelled_list, &local);
->> 
->> hmm, if the lock is held and IRQs disabled when this runs, then no other
->> threads will be able to append requests to the list which makes the
->> "restart" label unnecessary, no?
->
-> We do still call dwc3_gadget_giveback() which would release the lock
-> briefly, so if there was another thread waiting on dwc->lock, it would
-> be able to add additional items to that list.
->
->> 
->> I wonder if we should release the lock and reenable interrupts after
->> replacing the head. The problem is that
->> dwc3_gadget_ep_cleanup_cancelled_requests() can run from the IRQ
->> handler.
->> 
->
-> We would also need to consider that some of the APIs being called in
-> these situations would also have the assumption that the dwc->lock is
-> held, ie dwc3_gadget_giveback()
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Cc: Baoyou Xie <baoyou.xie@alibaba-inc.com>
+Cc: Corey Minyard <minyard@acm.org>
+Cc: openipmi-developer@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/char/ipmi/ipmi_si_intf.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-yeah, good point. I think we're good to integrate this, unless Alan can
-shed some light on some particular possible race scenario we may have
-missed.
-
-In any case:
-
-Acked-by: Felipe Balbi <balbi@kernel.org>
-
+diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
+index 62929a3..f64c3ac 100644
+--- a/drivers/char/ipmi/ipmi_si_intf.c
++++ b/drivers/char/ipmi/ipmi_si_intf.c
+@@ -591,7 +591,7 @@ static void handle_transaction_done(struct smi_info *smi_info)
+ 		smi_info->handlers->get_result(smi_info->si_sm, msg, 3);
+ 		if (msg[2] != 0) {
+ 			/* Error clearing flags */
+-			dev_warn(smi_info->io.dev,
++			dev_warn_ratelimited(smi_info->io.dev,
+ 				 "Error clearing flags: %2.2x\n", msg[2]);
+ 		}
+ 		smi_info->si_state = SI_NORMAL;
+@@ -683,10 +683,11 @@ static void handle_transaction_done(struct smi_info *smi_info)
+ 		/* We got the flags from the SMI, now handle them. */
+ 		smi_info->handlers->get_result(smi_info->si_sm, msg, 4);
+ 		if (msg[2] != 0) {
+-			dev_warn(smi_info->io.dev,
+-				 "Couldn't get irq info: %x.\n", msg[2]);
+-			dev_warn(smi_info->io.dev,
+-				 "Maybe ok, but ipmi might run very slowly.\n");
++#define IPMI_WARN_CHECKING_ENABLES "Maybe ok, but ipmi might run very slowly."
++
++			dev_warn_ratelimited(smi_info->io.dev,
++				"Couldn't get irq info: %x, %s\n",
++				msg[2], IPMI_WARN_CHECKING_ENABLES);
+ 			smi_info->si_state = SI_NORMAL;
+ 			break;
+ 		}
+@@ -721,7 +722,7 @@ static void handle_transaction_done(struct smi_info *smi_info)
+ 
+ 		smi_info->handlers->get_result(smi_info->si_sm, msg, 4);
+ 		if (msg[2] != 0)
+-			dev_warn(smi_info->io.dev,
++			dev_warn_ratelimited(smi_info->io.dev,
+ 				 "Could not set the global enables: 0x%x.\n",
+ 				 msg[2]);
+ 
+@@ -1343,7 +1344,7 @@ static int try_get_dev_id(struct smi_info *smi_info)
+ 
+ 		if (cc != IPMI_CC_NO_ERROR &&
+ 		    ++retry_count <= GET_DEVICE_ID_MAX_RETRY) {
+-			dev_warn(smi_info->io.dev,
++			dev_warn_ratelimited(smi_info->io.dev,
+ 			    "BMC returned 0x%2.2x, retry get bmc device id\n",
+ 			    cc);
+ 			goto retry;
 -- 
-balbi
+1.8.3.1
+
