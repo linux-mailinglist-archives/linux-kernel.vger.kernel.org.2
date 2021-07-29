@@ -2,123 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1863DAED4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CB53DAED9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhG2W1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232672AbhG2W1h (ORCPT
+        id S233335AbhG2W1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 18:27:46 -0400
+Received: from mail-io1-f43.google.com ([209.85.166.43]:37601 "EHLO
+        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232996AbhG2W1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:27:37 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2287DC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:27:34 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id i10so8700664pla.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:27:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U7V9Ap3CLbBdQCnG02pu0xdSqMhicUYByn9SxkAU8rw=;
-        b=Ffk8XpysnuqjpLBT6TZqn4W5/OEbtQF8oVqJwVgwx/tfDyKtg04s3+tvbENJTzrV5J
-         4NJrhbizq83pOW9DriO0IT1D4PRHNil84BWsETrNpx1o81V0zVMAYWrhvFiYbCRUk2MD
-         zG5yXj3ZhDiLFDAKQK4BizaWGfbivzK8Ia7+s06Ffs9L6mTHg6b2P3eFLnVlrfwT7WPO
-         zByAMI0AQb70/64I2++woOOagf26a1zTqhRimG2LA8iijcdW37HJhjl3r+9q2qJIk7SM
-         e9i3dvi3rB1sEJuHMPEhTCJ5YGvU3pkRsprjZZm28ZHEaP82OdR6kEcxqbW5GzfTj/Ng
-         aG5g==
+        Thu, 29 Jul 2021 18:27:43 -0400
+Received: by mail-io1-f43.google.com with SMTP id r18so9108868iot.4;
+        Thu, 29 Jul 2021 15:27:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=U7V9Ap3CLbBdQCnG02pu0xdSqMhicUYByn9SxkAU8rw=;
-        b=X4AFBKA1NjJz1IK3o86D5CdOsUCjswe+okUGNaXo6U4LZVXCkeiLtwaxRNCkn/MngG
-         S9+1WP9M49xryBzSj1r0c3bK6eLkRpc8gXaMk0beUssciyV7XdU6/fGRJybpT+cdKaz6
-         dImgDd0nO5E1iDCQcZWWKNiu/TCfDum3J3BlIkNqmf7KbaHYiHknbupmPLQsm4C+HdEG
-         IVv/3dyYZxphTVRf0BuSia7SVpCnkL2VlPhzm3ICjUQLd5eBBSvrD5FoZcJIeyRDPIvz
-         aG88T/5qDlROsbhST0JjVVa/1tcN5qp4CqtvzTaISBgbtyDvlNI//UB+TM0Kgf9X3fym
-         DuOg==
-X-Gm-Message-State: AOAM532n3szFQCiXAtSCS7KIwxjEnGsL+efWhQholdApISluUr0ZZ3Ka
-        G8RpEC29p2qx8jXjsLutnoGtPW06mgf/ew==
-X-Google-Smtp-Source: ABdhPJwUIJmnIsqgtiT+cHGl4vPiaiiOn9b6WyOeTGaDzqUNureByRM1AZxpT7XVVs9zcWtSUdzInA==
-X-Received: by 2002:a17:902:d492:b029:12b:dd74:5c79 with SMTP id c18-20020a170902d492b029012bdd745c79mr6407841plg.45.1627597653314;
-        Thu, 29 Jul 2021 15:27:33 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z124sm5138144pgb.6.2021.07.29.15.27.32
+        bh=qgj7Oz+Z4oQUajH16rwmhqgIjsE8vKHUhln4wEool40=;
+        b=nM4PlYn5mDkLkNXSF+Wub463iAJTTNvn5sB+Sies1KKCSTzAw0qcVuOezBAknPKSwJ
+         DZWKTe+VVRv4uyMiPn16p6+nEvcnqAxOsXDIBaTAvyDxMTkDd0nOMf87f2EPy1IdKglg
+         ojal0lzTiF4+ven0urchf2Jd+wVrRyIoy2s4xGqm8/2X4ttvZGNJ+4MF48WMPkL0UgSO
+         tlrOK5LCpQdgXstPXNxV4iQ64KMr/bQQ3N//YYIu1N+Dqeo1JcOG4iRvdK1N1g2TCb51
+         A4bpICl+If7aJslOrsXoCiMbI8aTOePQkrU0sMCjJc9mOOL/A55AeyulgMoKGNe6SR70
+         UYRw==
+X-Gm-Message-State: AOAM530A9fAS7j16f/G8jzBptaBkcEd+QqHObIU19SoamM8WeZuebwLT
+        coAOBQ6iK1Yx6ImnSjiE4g==
+X-Google-Smtp-Source: ABdhPJxMf6QFRuwiADJWh2p0kei3afSyvCSMwWd/LbLRzsgb78lCuFeuQ4wcy86IpAMeagGMp2fWQg==
+X-Received: by 2002:a02:ccec:: with SMTP id l12mr6310078jaq.61.1627597658139;
+        Thu, 29 Jul 2021 15:27:38 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id k10sm1468258ili.86.2021.07.29.15.27.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 15:27:32 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 22:27:28 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Edmondson <david.edmondson@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        David Matlack <dmatlack@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH v3 1/3] KVM: x86: kvm_x86_ops.get_exit_info should
- include the exit reason
-Message-ID: <YQMrUOjZMD1eiIeE@google.com>
-References: <20210729133931.1129696-1-david.edmondson@oracle.com>
- <20210729133931.1129696-2-david.edmondson@oracle.com>
+        Thu, 29 Jul 2021 15:27:37 -0700 (PDT)
+Received: (nullmailer pid 1016337 invoked by uid 1000);
+        Thu, 29 Jul 2021 22:27:36 -0000
+Date:   Thu, 29 Jul 2021 16:27:36 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] PCI: qcom: Add sc8180x compatible
+Message-ID: <YQMrWHyhvBIlFBMr@robh.at.kernel.org>
+References: <20210725040038.3966348-1-bjorn.andersson@linaro.org>
+ <20210725040038.3966348-4-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729133931.1129696-2-david.edmondson@oracle.com>
+In-Reply-To: <20210725040038.3966348-4-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shortlog is a bit odd, "should" is subjective and makes this sound like a bug fix.
-
-  KVM: x86: Get exit_reason as part of kvm_x86_ops.get_exit_info
-
-On Thu, Jul 29, 2021, David Edmondson wrote:
-> Extend the get_exit_info static call to provide the reason for the VM
-> exit. Modify relevant trace points to use this rather than extracting
-> the reason in the caller.
+On Sat, Jul 24, 2021 at 09:00:38PM -0700, Bjorn Andersson wrote:
+> The SC8180x platform comes with 4 PCIe controllers, typically used for
+> things such as NVME storage or connecting a SDX55 5G modem. Add a
+> compatible for this, that just reuses the 1.9.0 ops.
 > 
-> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
-> -static void svm_get_exit_info(struct kvm_vcpu *vcpu, u64 *info1, u64 *info2,
-> +static void svm_get_exit_info(struct kvm_vcpu *vcpu, u64 *reason,
-> +			      u64 *info1, u64 *info2,
->  			      u32 *intr_info, u32 *error_code)
->  {
->  	struct vmcb_control_area *control = &to_svm(vcpu)->vmcb->control;
->  
-> +	*reason = control->exit_code;
->  	*info1 = control->exit_info_1;
->  	*info2 = control->exit_info_2;
->  	*intr_info = control->exit_int_info;
+>  Documentation/devicetree/bindings/pci/qcom,pcie.txt | 5 +++--
+>  drivers/pci/controller/dwc/pcie-qcom.c              | 1 +
+>  2 files changed, 4 insertions(+), 2 deletions(-)
 
-...
-
-> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-> index b484141ea15b..2228565beda2 100644
-> --- a/arch/x86/kvm/trace.h
-> +++ b/arch/x86/kvm/trace.h
-> @@ -273,11 +273,11 @@ TRACE_EVENT(kvm_apic,
->  
->  #define TRACE_EVENT_KVM_EXIT(name)					     \
->  TRACE_EVENT(name,							     \
-> -	TP_PROTO(unsigned int exit_reason, struct kvm_vcpu *vcpu, u32 isa),  \
-> -	TP_ARGS(exit_reason, vcpu, isa),				     \
-> +	TP_PROTO(struct kvm_vcpu *vcpu, u32 isa),			     \
-> +	TP_ARGS(vcpu, isa),						     \
->  									     \
->  	TP_STRUCT__entry(						     \
-> -		__field(	unsigned int,	exit_reason	)	     \
-> +		__field(	u64,		exit_reason	)	     \
-
-Converting to a u64 is unnecessary and misleading.  vmcs.EXIT_REASON and
-vmcb.EXIT_CODE are both u32s, a.k.a. unsigned ints.  There is vmcb.EXIT_CODE_HI,
-but that's not being included, and AFAICT isn't even sanity checked by KVM.
-
->  		__field(	unsigned long,	guest_rip	)	     \
->  		__field(	u32,	        isa             )	     \
->  		__field(	u64,	        info1           )	     \
+Acked-by: Rob Herring <robh@kernel.org>
