@@ -2,230 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858B33DA08A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F372E3DA090
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbhG2Jsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S235549AbhG2JuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235141AbhG2Jss (ORCPT
+        with ESMTP id S235058AbhG2JuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:48:48 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5739C061757;
-        Thu, 29 Jul 2021 02:48:44 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id x16so1170331vkn.0;
-        Thu, 29 Jul 2021 02:48:44 -0700 (PDT)
+        Thu, 29 Jul 2021 05:50:13 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A42EC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:50:09 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so952704wms.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:50:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dZaS47nSlEIbF3gt+eXWvP8QryuhvxuisTCZUzClp2Q=;
-        b=FZ7DowT7UzVjrl1MBVsA/uecOICDwBYScfFgxpjbdlQ1UaOgSUiRhaGl6EWoeZ0Ozf
-         LWiJImWjYo+AQ0JeTJZbQSwcksgYr1k5npIaVercCOO9d6qZlBdynQR0VDt2vzhdWFcW
-         qF1lNqDgXbJXMLEsJY8QBvLe9TselcXQBWTbocZ4Tlkf3/PVCa7kXv+VTtJ4tzlv1snU
-         TD9LoZcrZ9NxzNlxWjg8fGYpjNIL95UL3YDYOHjZg1YwVlZSWBNvOKQm87lYAZAgrV2r
-         ce6hXU82ijLx/T4CPFHB8xXAfIxwUy+QNLpY2PY8ZxF/430168BTwKeMY8pt0yJTuQDY
-         eNKg==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rvQg0fCV2zlqV5dQH884+MsRqdOryhfx32acXTHMR58=;
+        b=vUSWb+GMFwOOz5X1tdPl9PddUA9GEN66WcViE9SPNlKNdnBIYxj1XAWr/34wPQ+w/G
+         NdzhdRHMTwWvojbma9ScPYWLEm2B9Ttz2rmqvJPoqxDt1/f8o7wvKYKn8r/3/JmVAfz1
+         3cBl8Bd0He+Mo/K3HLjF3y5dMt2NWGwC689jufmrAk5Lw/THB0YuDyCYWw32DmAZLbLM
+         HgC3OM1XN6lSeF3QcEMnfgZg4cPhlNK3yUqJ1eRdobFsNo9ak001EnSBbNfIq+nfO6T7
+         oLF7iIwTMNdpm5oOZgAq18HFvheyNWpuPyNSQq5Gg7hcYIFMyCCmwzqaR3bXMjkTo0z1
+         rweA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dZaS47nSlEIbF3gt+eXWvP8QryuhvxuisTCZUzClp2Q=;
-        b=G7C9+0GuNWul/ww8dCf9QV91VhYOxtr1RHKLR7sYNP7BVbadCLgvjWCUEhW2f879Oi
-         OGcM0lvjTeAV6gNmHdPHP0WFVZIzH2gJi/QT/7QPfEER4JLF4G9mHmAri7C9PKddxAsI
-         LhidCRbPh0U6kpiJwkGXs2eeJH1aRbaUqwAIOrnhfHJd14qO1LjTdPGD8U8gCinWWQmz
-         500X9pH87E938V9k1I1g9JECHsAALAqPqygpCEDBYYJoWNV8mfkoO5Utav0bu9v0TlQ5
-         CFijhZgrpFQ/lcrLh2zcjikPem7+rwz6xQIFYiWJpwOk98yrzzi5CYCQGBsiFsRXOlm0
-         Z95Q==
-X-Gm-Message-State: AOAM531CITYjhWjSAma2FrnOWq40uoTTNVi2baeJAQjaJyS6vDqdTs15
-        uJlkVcSdKP1pvEjCl4YpPBw=
-X-Google-Smtp-Source: ABdhPJzUqcQx+NYmVmOoymLqQI0/ZyOvIUerZ/7pNZ+ZNAGcv//gJwOy6a2nZW+0syEWsJT0qAF2yA==
-X-Received: by 2002:a05:6122:451:: with SMTP id f17mr3080938vkk.22.1627552123975;
-        Thu, 29 Jul 2021 02:48:43 -0700 (PDT)
-Received: from shinobu ([193.27.12.132])
-        by smtp.gmail.com with ESMTPSA id q188sm112686vkq.13.2021.07.29.02.48.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 02:48:43 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 18:48:35 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     jic23@kernel.org
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v13 00/17] Introduce the Counter character device
- interface
-Message-ID: <YQJ5c5+wWlmubxaG@shinobu>
-References: <cover.1626165764.git.vilhelm.gray@gmail.com>
- <YQEaoYMGdvh0vgu5@shinobu>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rvQg0fCV2zlqV5dQH884+MsRqdOryhfx32acXTHMR58=;
+        b=JHgQSZW/kZfvEvhahDC30QFDFw/FNqFtuMIFODJylhQJ2m2L8yRsuiCwijRDaJB26B
+         DLPW264vtZu8qysKXJlYTepMxbFWJcqoCie2IXUVxJZ8l+EZo6vzfeyZvkNunQPwXHAa
+         +2JV+r67qayQuELonTPvAj4naiEO6dg8aMvmd8m+D0a0ohyiaR1/uVeWo06oRWhXFwGx
+         d4IO6mDVuCkyihVkoMHiY8L7TE60xjxA5qwdo3w8kR9bPOwQ9O0cYAjFq+FF8zXyVUJf
+         uWYTvg9B/eBnOZJO9oAfHqVzA2nCyUm0ETBFK/IMGH/+fLryCaknB0wWaGbLMJbK6xeP
+         LDuQ==
+X-Gm-Message-State: AOAM53085vaRqdW0N9TOu1+H4maGO1sjFIgoMQBS7es2xpdnDRRtcSJy
+        KPeq4lRSMUra4vbwY3tQuyMBIQ==
+X-Google-Smtp-Source: ABdhPJx3ZQM7tvTrQdNKt+IdfvZgw+Eo/B8g6XYRPBg+pS34MTGFVDUsRKhM/yyYjBpT4TlaPBsWmQ==
+X-Received: by 2002:a7b:c3c5:: with SMTP id t5mr13357590wmj.28.1627552207700;
+        Thu, 29 Jul 2021 02:50:07 -0700 (PDT)
+Received: from [10.10.6.131] ([109.120.209.55])
+        by smtp.googlemail.com with ESMTPSA id z20sm2542680wmi.36.2021.07.29.02.50.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 02:50:07 -0700 (PDT)
+Subject: Re: [V2] venus: vdec: decoded picture buffer handling during reconfig
+ sequence
+To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org
+References: <20210715123555.26763-1-mansur@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <0c8ba82d-5d7d-bb36-5792-4ace34d7478a@linaro.org>
+Date:   Thu, 29 Jul 2021 12:50:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TqnZt1+pCWg0OOJI"
-Content-Disposition: inline
-In-Reply-To: <YQEaoYMGdvh0vgu5@shinobu>
+In-Reply-To: <20210715123555.26763-1-mansur@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---TqnZt1+pCWg0OOJI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 28, 2021 at 05:51:45PM +0900, William Breathitt Gray wrote:
-> On Tue, Jul 13, 2021 at 06:53:04PM +0900, William Breathitt Gray wrote:
-> > Suppose I open the chrdev from a userspace application and keep it open,
-> > but then remove the respective driver and Counter subsystem module from
-> > my system. The devm_counter_release() and counter_exit() functions will
-> > be called as expected; the counter_chrdev_release() function will not be
-> > called yet, but that is expected because the chrdev is still open by
-> > userspace. If I try to break out of my userspace application, I expect
-> > counter_chrdev_release() to finally be called, but this does not happen.
-> > Instead, my userspace application stalls and I see the following error
-> > in my dmesg:
-> >=20
-> > [  172.859570] BUG: unable to handle page fault for address: ffffffffc0=
-9ae298
-> > [  172.859594] #PF: supervisor read access in kernel mode
-> > [  172.859598] #PF: error_code(0x0000) - not-present page
-> > [  172.859603] PGD 23615067 P4D 23615067 PUD 23617067 PMD 1029ad067 PTE=
- 0
-> > [  172.859623] Oops: 0000 [#1] SMP NOPTI
-> > [  172.859629] CPU: 2 PID: 2485 Comm: counter_example Not tainted 5.13.=
-0+ #1
-> > [  172.859640] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS d55cb5a 04/01/2014
-> > [  172.859645] RIP: 0010:filp_close+0x29/0x70
-> > [  172.859662] Code: 90 0f 1f 44 00 00 55 48 89 e5 41 56 41 55 41 54 48=
- 8b 47 38 48 85 c0 0f 84 b7 40 86 00 48 8b 47 28 49 89 fc 49 89 f5 45 31 f6=
- <48> 8b 40 78 48 85 c0 74 08 ff d0 0f 1f 00 41 89 c6 41 f6 44 24 45
-> > [  172.859669] RSP: 0018:ffffad31c0ee7cb0 EFLAGS: 00010246
-> > [  172.859675] RAX: ffffffffc09ae220 RBX: 0000000000000001 RCX: 0000000=
-000000001
-> > [  172.859680] RDX: ffff9a43829708e0 RSI: ffff9a4382970840 RDI: ffff9a4=
-3821f4f00
-> > [  172.859684] RBP: ffffad31c0ee7cc8 R08: 0000000000000001 R09: 0000000=
-000000001
-> > [  172.859687] R10: ffffffffffff4d00 R11: ffff9a43933c6e10 R12: ffff9a4=
-3821f4f00
-> > [  172.859691] R13: ffff9a4382970840 R14: 0000000000000000 R15: 0000000=
-000000003
-> > [  172.859694] FS:  0000000000000000(0000) GS:ffff9a44b7d00000(0000) kn=
-lGS:0000000000000000
-> > [  172.859699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  172.859704] CR2: ffffffffc09ae298 CR3: 0000000023610001 CR4: 0000000=
-000370ee0
-> > [  172.859713] Call Trace:
-> > [  172.859730]  put_files_struct+0x73/0xd0
-> > [  172.859738]  exit_files+0x49/0x50
-> > [  172.859743]  do_exit+0x33b/0xa20
-> > [  172.859751]  do_group_exit+0x3b/0xb0
-> > [  172.859758]  get_signal+0x16f/0x8b0
-> > [  172.859766]  ? _copy_to_user+0x20/0x30
-> > [  172.859774]  ? put_timespec64+0x3d/0x60
-> > [  172.859784]  arch_do_signal_or_restart+0xf3/0x850
-> > [  172.859794]  ? hrtimer_nanosleep+0x9f/0x120
-> > [  172.859802]  ? __hrtimer_init+0xd0/0xd0
-> > [  172.859808]  exit_to_user_mode_prepare+0x122/0x1b0
-> > [  172.859816]  syscall_exit_to_user_mode+0x27/0x50
-> > [  172.859825]  do_syscall_64+0x48/0xc0
-> > [  172.859831]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > [  172.859839] RIP: 0033:0x7f07f8b9951a
-> > [  172.859850] Code: Unable to access opcode bytes at RIP 0x7f07f8b994f=
-0.
-> > [  172.859853] RSP: 002b:00007ffc0d12c230 EFLAGS: 00000246 ORIG_RAX: 00=
-000000000000e6
-> > [  172.859860] RAX: fffffffffffffdfc RBX: ffffffffffffff01 RCX: 00007f0=
-7f8b9951a
-> > [  172.859863] RDX: 00007ffc0d12c2b0 RSI: 0000000000000000 RDI: 0000000=
-000000000
-> > [  172.859867] RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ff=
-c0d12c1c6
-> > [  172.859871] R10: 00007ffc0d12c2b0 R11: 0000000000000246 R12: 00007ff=
-c0d12c2b0
-> > [  172.859874] R13: 00007ffc0d12c2b0 R14: 0000000000000000 R15: 0000000=
-000000000
-> > [  172.859886] Modules linked in: intel_rapl_msr intel_rapl_common kvm_=
-intel kvm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel nls_iso8859_1 a=
-esni_intel crypto_simd cryptd rapl drm_ttm_helper ttm uvcvideo drm_kms_help=
-er videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common input=
-_leds syscopyarea videodev sysfillrect sysimgblt fb_sys_fops cec rc_core jo=
-ydev mc drm serio_raw mac_hid qemu_fw_cfg sch_fq_codel msr parport_pc ppdev=
- lp parport virtio_rng ip_tables x_tables autofs4 hid_generic usbhid hid vi=
-rtio_net psmouse net_failover i2c_piix4 virtio_blk failover pata_acpi flopp=
-y [last unloaded: counter]
-> > [  172.859995] CR2: ffffffffc09ae298
-> > [  172.860009] ---[ end trace e7d3d7da1a73b8f4 ]---
-> > [  172.860013] RIP: 0010:filp_close+0x29/0x70
-> > [  172.860021] Code: 90 0f 1f 44 00 00 55 48 89 e5 41 56 41 55 41 54 48=
- 8b 47 38 48 85 c0 0f 84 b7 40 86 00 48 8b 47 28 49 89 fc 49 89 f5 45 31 f6=
- <48> 8b 40 78 48 85 c0 74 08 ff d0 0f 1f 00 41 89 c6 41 f6 44 24 45
-> > [  172.860027] RSP: 0018:ffffad31c0ee7cb0 EFLAGS: 00010246
-> > [  172.860031] RAX: ffffffffc09ae220 RBX: 0000000000000001 RCX: 0000000=
-000000001
-> > [  172.860034] RDX: ffff9a43829708e0 RSI: ffff9a4382970840 RDI: ffff9a4=
-3821f4f00
-> > [  172.860038] RBP: ffffad31c0ee7cc8 R08: 0000000000000001 R09: 0000000=
-000000001
-> > [  172.860041] R10: ffffffffffff4d00 R11: ffff9a43933c6e10 R12: ffff9a4=
-3821f4f00
-> > [  172.860044] R13: ffff9a4382970840 R14: 0000000000000000 R15: 0000000=
-000000003
-> > [  172.860047] FS:  0000000000000000(0000) GS:ffff9a44b7d00000(0000) kn=
-lGS:0000000000000000
-> > [  172.860052] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  172.860056] CR2: ffffffffc09ae298 CR3: 0000000023610001 CR4: 0000000=
-000370ee0
-> > [  172.860073] Fixing recursive fault but reboot is needed!
-> >=20
-> > It looks like faults in filp_close() before counter_chrdev_release() is
-> > called. Is this issue manifesting because counter_exit() was called
-> > earlier while the chrdev was still open?
->=20
-> After giving this some more thought I realized that once the counter
-> module is unloaded, the counter_fops callbacks are lost and thus the
-> fops for the chrdev are no longer be valid. This means that
-> counter_chrdev_release will need to be called before the counter module
-> is unloaded. How can I guarantee this if a userspace application may
-> still have the chrdev indefinitely open? In counter_chrdev_remove(),
-> should I walk through the open chrdevs and release each one?
->=20
-> William Breathitt Gray
+On 7/15/21 3:35 PM, Mansur Alisha Shaik wrote:
+> In existing implementation, driver is freeing and un-mapping all the
+> decoded picture buffers(DPB) as part of dynamic resolution change(DRC)
+> handling. As a result, when firmware try to access the DPB buffer, from
+> previous sequence, SMMU context fault is seen due to the buffer being
+> already unmapped.
+> 
+> With this change, driver defines ownership of each DPB buffer. If a buffer
+> is owned by firmware, driver would skip from un-mapping the same.
+> 
+> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> 
+> Changes in V2:
+> - Fixed proto type warnings reported by kernel test robot
+> ---
+>  drivers/media/platform/qcom/venus/core.h    |  3 ++
+>  drivers/media/platform/qcom/venus/helpers.c | 38 ++++++++++++++++-----
+>  drivers/media/platform/qcom/venus/helpers.h | 18 ++++++++++
+>  drivers/media/platform/qcom/venus/vdec.c    | 25 +++++++++++++-
+>  4 files changed, 74 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 8df2d497d706..7ecbf9ed1acb 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -450,6 +450,7 @@ struct venus_inst {
+>  	bool next_buf_last;
+>  	bool drain_active;
+>  	enum venus_inst_modes flags;
+> +	u32 dpb_out_tag[VB2_MAX_FRAME];
+>  };
+>  
+>  #define IS_V1(core)	((core)->res->hfi_version == HFI_VERSION_1XX)
+> @@ -484,4 +485,6 @@ venus_caps_by_codec(struct venus_core *core, u32 codec, u32 domain)
+>  	return NULL;
+>  }
+>  
+> +void dpb_out_tag_init(struct venus_inst *inst);
+> +
+>  #endif
+> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+> index 1fe6d463dc99..4d308be712d7 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.c
+> +++ b/drivers/media/platform/qcom/venus/helpers.c
+> @@ -21,14 +21,6 @@
+>  #define NUM_MBS_720P	(((1280 + 15) >> 4) * ((720 + 15) >> 4))
+>  #define NUM_MBS_4K	(((4096 + 15) >> 4) * ((2304 + 15) >> 4))
+>  
+> -struct intbuf {
+> -	struct list_head list;
+> -	u32 type;
+> -	size_t size;
+> -	void *va;
+> -	dma_addr_t da;
+> -	unsigned long attrs;
+> -};
+>  
+>  bool venus_helper_check_codec(struct venus_inst *inst, u32 v4l2_pixfmt)
+>  {
+> @@ -95,9 +87,16 @@ int venus_helper_queue_dpb_bufs(struct venus_inst *inst)
+>  		fdata.device_addr = buf->da;
+>  		fdata.buffer_type = buf->type;
+>  
+> +		if (buf->owned_by == FIRMWARE)
+> +			continue;
+> +
+> +		fdata.clnt_data = buf->dpb_out_tag;
+> +
+>  		ret = hfi_session_process_buf(inst, &fdata);
+>  		if (ret)
+>  			goto fail;
+> +
+> +		buf->owned_by = FIRMWARE;
+>  	}
+>  
+>  fail:
+> @@ -110,18 +109,37 @@ int venus_helper_free_dpb_bufs(struct venus_inst *inst)
+>  	struct intbuf *buf, *n;
+>  
+>  	list_for_each_entry_safe(buf, n, &inst->dpbbufs, list) {
+> +		if (buf->owned_by == FIRMWARE)
+> +			continue;
+> +
+> +		inst->dpb_out_tag[buf->dpb_out_tag - VB2_MAX_FRAME] = 0;
 
-Sorry for all the noise, I had simply forgotten to define the owner
-member of counter_fops structure to THIS_MODULE. I'll make that fix and
-also add in some conditional checks to protect the callbacks so they
-return -ENODEV if the counter has been unregistered. With that I expect
-to have a v14 submission ready some time this coming week.
+This looks wrong. The dpb_out_tag is in range of 0 .. 31, then for
+dpb_out_tag = 0 you will have negative array index. Could you revisit that.
 
-William Breathitt Gray
+> +
+>  		list_del_init(&buf->list);
+>  		dma_free_attrs(inst->core->dev, buf->size, buf->va, buf->da,
+>  			       buf->attrs);
+>  		kfree(buf);
+>  	}
+>  
+> -	INIT_LIST_HEAD(&inst->dpbbufs);
 
---TqnZt1+pCWg0OOJI
-Content-Type: application/pgp-signature; name="signature.asc"
+Instead of delete INIT_LIST_HEAD you can do:
 
------BEGIN PGP SIGNATURE-----
+if (list_empty(&inst->dpbbufs)
+	INIT_LIST_HEAD(&inst->dpbbufs);
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmECeWkACgkQhvpINdm7
-VJLWPw/9Gvy1Am3dCnOtIeE+VRrEZ+PD6w4p3uhoBgBNRSDbHOM3TAAYynG1myLB
-CgV1I8EwG9TEMWXp2EoxjrQr8HgsblGjBwm+qnKO4MAEldms2HEHknaZL2h9/T2/
-TIIXC6Be5egf3zH9dZ2BmbtSN1A6qlJ1384CThpO8XE3aINjL8ye4N5TjQp3UuPT
-sRrkQJnzsQ7lX1IuLmIgLqd8/SGC5+QBYSTLLIUmxQd5UBXEEqKsSM2FzUmRc6XN
-SjTWgWOKcGcrN87gz/ZnCexTXN6QZ0Hv27N6EiHN0CsOlRCib01PiVXhNneGw8uL
-0jG0zyOLE5RLDv0gpwh+qz2JuZGSPenZjHnxp6ipWM4gMuCs0da1+4gR4UFA98m9
-HH7L5qJy2vA7thqcfAqbxtAWX+NvG225cZlmcqBYrYGhJZXoxjZgfiw5NrA0onLN
-Q2XBsDr6Oix6CfKpP6YLphbHaZjV++HoCrX83helg6Kry89yJMRMfjPmxUbZYdJC
-g9EhcihevOUjs+ftvkAaVI2fkhKPOyA8WGmU3/Ft3XI9PA82dKxeUSsZrWIM3Q8w
-PlJE87GMBWgXx6oO9+2N9epIlMhvBNXa6TY382Q8zrbrGWJfp9S6PD0BZUx3boJl
-rU7B2AktQWrJFenBZ/Ryy0RSzzDrjnQ9T2cwvtEA2TFYb0LGlzw=
-=PKVq
------END PGP SIGNATURE-----
+>  
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(venus_helper_free_dpb_bufs);
+>  
+> +int venus_helper_get_free_dpb_tag(struct venus_inst *inst)
+> +{
+> +	u32 i;
+> +
+> +	for (i = 0; i < VB2_MAX_FRAME; i++) {
+> +		if (inst->dpb_out_tag[i] == 0) {
+> +			inst->dpb_out_tag[i] = i + VB2_MAX_FRAME;
+> +			return inst->dpb_out_tag[i];
+> +		}
+> +	}
 
---TqnZt1+pCWg0OOJI--
+Can we use kernel API for that? I think ida_alloc|free|destroy would
+work nicely and also will save a lot of code lines.
+
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(venus_helper_get_free_dpb_tag);
+> +
+>  int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
+>  {
+>  	struct venus_core *core = inst->core;
+> @@ -171,6 +189,8 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
+>  			ret = -ENOMEM;
+>  			goto fail;
+>  		}
+> +		buf->owned_by = DRIVER;
+> +		buf->dpb_out_tag = venus_helper_get_free_dpb_tag(inst);
+>  
+>  		list_add_tail(&buf->list, &inst->dpbbufs);
+>  	}
+> diff --git a/drivers/media/platform/qcom/venus/helpers.h b/drivers/media/platform/qcom/venus/helpers.h
+> index e6269b4be3af..ea87a552c3ca 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.h
+> +++ b/drivers/media/platform/qcom/venus/helpers.h
+> @@ -8,6 +8,22 @@
+>  
+>  #include <media/videobuf2-v4l2.h>
+>  
+> +enum dpb_buf_owner {
+> +	DRIVER,
+> +	FIRMWARE,
+> +};
+> +
+> +struct intbuf {
+> +	struct list_head list;
+> +	u32 type;
+> +	size_t size;
+> +	void *va;
+> +	dma_addr_t da;
+> +	unsigned long attrs;
+> +	enum dpb_buf_owner owned_by;
+> +	u32 dpb_out_tag;
+> +};
+> +
+
+If you make dpb buffer manipulations as venus_helpers you don't need to
+move the prototype of the structure outside of helpers.c.
+
+>  struct venus_inst;
+>  struct venus_core;
+>  
+> @@ -66,4 +82,6 @@ int venus_helper_get_profile_level(struct venus_inst *inst, u32 *profile, u32 *l
+>  int venus_helper_set_profile_level(struct venus_inst *inst, u32 profile, u32 level);
+>  int venus_helper_set_stride(struct venus_inst *inst, unsigned int aligned_width,
+>  			    unsigned int aligned_height);
+> +int venus_helper_get_free_dpb_tag(struct venus_inst *inst);
+> +
+>  #endif
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index 198e47eb63f4..ba46085301ee 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -1297,6 +1297,7 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+>  	struct vb2_v4l2_buffer *vbuf;
+>  	struct vb2_buffer *vb;
+>  	unsigned int type;
+> +	struct intbuf *dpb_buf;
+>  
+>  	vdec_pm_touch(inst);
+>  
+> @@ -1306,8 +1307,18 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+>  		type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+>  
+>  	vbuf = venus_helper_find_buf(inst, type, tag);
+> -	if (!vbuf)
+> +	if (!vbuf) {
+> +		if (type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE &&
+> +		    buf_type == HFI_BUFFER_OUTPUT) {
+> +			list_for_each_entry(dpb_buf, &inst->dpbbufs, list) {
+> +				if (dpb_buf->dpb_out_tag == tag) {
+> +					dpb_buf->owned_by = DRIVER;
+> +					break;
+> +				}
+> +			}
+> +		}
+
+Please make this chuck of code a new venus_helper_find_dpb_buf()
+
+>  		return;
+> +	}
+>  
+>  	vbuf->flags = flags;
+>  	vbuf->field = V4L2_FIELD_NONE;
+> @@ -1542,6 +1553,14 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+>  	return vb2_queue_init(dst_vq);
+>  }
+>  
+> +void dpb_out_tag_init(struct venus_inst *inst)
+> +{
+> +	u32 i;
+> +
+> +	for (i = 0; i < VB2_MAX_FRAME; i++)
+> +		inst->dpb_out_tag[i] = 0;
+
+This initialization cycle can be moved in vdec_inst_init(), but if you
+migrate to ida_xxx APIs this will be part of venus_helper_alloc_dpb_bufs()
+
+> +}
+> +
+>  static int vdec_open(struct file *file)
+>  {
+>  	struct venus_core *core = video_drvdata(file);
+> @@ -1580,6 +1599,8 @@ static int vdec_open(struct file *file)
+>  
+>  	vdec_inst_init(inst);
+>  
+> +	dpb_out_tag_init(inst);
+> +
+>  	/*
+>  	 * create m2m device for every instance, the m2m context scheduling
+>  	 * is made by firmware side so we do not need to care about.
+> @@ -1622,6 +1643,8 @@ static int vdec_close(struct file *file)
+>  
+>  	vdec_pm_get(inst);
+>  
+> +	venus_helper_free_dpb_bufs(inst);
+> +	INIT_LIST_HEAD(&inst->dpbbufs);
+>  	v4l2_m2m_ctx_release(inst->m2m_ctx);
+>  	v4l2_m2m_release(inst->m2m_dev);
+>  	vdec_ctrl_deinit(inst);
+> 
+> base-commit: c1a6d08348fc729e59776fe22878d4ce8fb97cde
+> 
+
+-- 
+regards,
+Stan
