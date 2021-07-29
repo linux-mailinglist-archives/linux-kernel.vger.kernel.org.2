@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF713DA0B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603823DA0B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235669AbhG2J6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:58:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235175AbhG2J6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:58:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 055C461076;
-        Thu, 29 Jul 2021 09:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627552696;
-        bh=jU/mVxIYzVpDQbC61+5+mpAlihguu9WTIumYgAJw8Dw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=waM/KqvyOq+yOCVb4Y7Movu+Gw2kQRd8sEn7qKGl2Fb3gdPojP0dyQg7aEuCyy1tf
-         3yoPeCsmXz1m2HTn5W9OrWeigDeEINSk0ciadtW/Vg+SXAUTTCBu7Mo7lnqBwTUwaz
-         0cG8lejnJeg4hCEgS9pV/CwEy5z4erfQPK+Pv1CY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-staging@lists.linux.dev
-Cc:     forest@alittletooquiet.net, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joe Perches <joe@perches.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] staging: vt665X: remove unused CONFIG_PATH
-Date:   Thu, 29 Jul 2021 11:58:12 +0200
-Message-Id: <20210729095812.1693061-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
+        id S235807AbhG2J6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235134AbhG2J6e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 05:58:34 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7F0C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:58:30 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id a7so6763272ljq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:58:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5KPMH+AygWZEXcn3xe7p9376dbY996l7aWe2Z4Eu6Fo=;
+        b=hIThC7Wnj8zQqP1im1k2UypoMmNZ6oHXlheP9MP6Qi1qLa+9eoxUXi4Llr1q2Uaztq
+         P4hAywuOyH1DuSWQJ7LiL/o9mnbWUoT3IzzJO77vYgh8hPY8qCcDZ80QbxqHYQ7gLyuq
+         Cs+2bfpL4pbTwdW9hHQEZaXs2JNDsnGZXfaog=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5KPMH+AygWZEXcn3xe7p9376dbY996l7aWe2Z4Eu6Fo=;
+        b=nyi/5ptufS7tU2+JmkxiXFV7zhno5CJfDY4tl14ebREmKpbUiYEOqt+CBehIecKUAw
+         tM46ZI/JhRQsn13/ntY5iy4Rl/fh2Ke3+ExGjWsl7eMzBdTe41CzMkT+JVnFOiNUoUyK
+         lF0Jpk+UK7mDy2ThYWAClRsz1is7ah2sU/NzbgeZ6hWfOcphH9jgpce8WftQVD5NVDU9
+         VNI9QourTu9NV1Y1zZD4GWYIMZCKlqXSrwcO1N+MCEnioMIknqsAZ3SzFApOxq1bjoPh
+         ZemHtBALMloVNcHHD3z2LrkwIXDZOwz1m1WZPdkDICJcPSa2/rPhtW+ixzBrBaGWQzqh
+         XBhg==
+X-Gm-Message-State: AOAM532cxCe2YBoM37h93vb+JHfVyDAtxsu9t4gcyIWxMU6JF1t6e92i
+        YI+85BAF2uoPpAUrR8grexEmYpTzyQuOzFBhronnlg==
+X-Google-Smtp-Source: ABdhPJwMxLLuvn7mala9hBDJn6qhU6W72vuZFml3Zm2YdFBSpUIQVM85iFq3c1hiUGEN8pVvVdMK/LRL7Cgcsacf3mo=
+X-Received: by 2002:a2e:760d:: with SMTP id r13mr2454128ljc.437.1627552709362;
+ Thu, 29 Jul 2021 02:58:29 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1386; h=from:subject; bh=jU/mVxIYzVpDQbC61+5+mpAlihguu9WTIumYgAJw8Dw=; b=owGbwMvMwCRo6H6F97bub03G02pJDIlM1Rv/c/FLbX+pVXeyU1FIjnli5P/Ovq0qR/vN/8TPWS6n WVDcEcvCIMjEICumyPJlG8/R/RWHFL0MbU/DzGFlAhnCwMUpABMxm8OwYMmT8EWdxcxybnE7Z+66Mr viSkDxJoa58nIOz/5c6lPz7Hsf0Bon/XC+8dE9AA==
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
+References: <20210728040710.2891955-1-hsinyi@chromium.org>
+In-Reply-To: <20210728040710.2891955-1-hsinyi@chromium.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 29 Jul 2021 17:58:18 +0800
+Message-ID: <CAGXv+5EVcSyfG1Fk6PZOnWUZo85brf_cneW7iob4Z5gnjFca7Q@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] arm64: dts: mt8183: kukui: Use aliases to mmc nodes
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vt6655 and vt6656 drivers have an unused CONFIG_PATH define floating
-around in the code, but it is never used.  Remove it as drivers should
-never be reading from config files anyway, even if these were valid
-files.
+On Wed, Jul 28, 2021 at 12:07 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> With commit 1796164fac7e ("dt-bindings: mmc: document alias support"),
+> a way to specify fixed index numbers was provided. This patch use aliases
+> to mmc nodes so the partition name for eMMC and SD card will be consistent
+> across boots.
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+> v3->v4: change commit message based on review in v3.
 
-Reported-by: Joe Perches <joe@perches.com>
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/staging/vt6655/device_cfg.h | 3 ---
- drivers/staging/vt6656/device.h     | 2 --
- 2 files changed, 5 deletions(-)
+Thanks for following up. My reviewed-by is still valid for both patches.
 
-diff --git a/drivers/staging/vt6655/device_cfg.h b/drivers/staging/vt6655/device_cfg.h
-index db0304f6e21c..2d647a3619ba 100644
---- a/drivers/staging/vt6655/device_cfg.h
-+++ b/drivers/staging/vt6655/device_cfg.h
-@@ -38,9 +38,6 @@
- 
- #include <linux/fs.h>
- #include <linux/fcntl.h>
--#ifndef CONFIG_PATH
--#define CONFIG_PATH            "/etc/vntconfiguration.dat"
--#endif
- 
- #define PKT_BUF_SZ          2390
- 
-diff --git a/drivers/staging/vt6656/device.h b/drivers/staging/vt6656/device.h
-index 947530fefe94..2c93a2e66c8a 100644
---- a/drivers/staging/vt6656/device.h
-+++ b/drivers/staging/vt6656/device.h
-@@ -77,8 +77,6 @@
- #define FIRMWARE_NAME			"vntwusb.fw"
- #define FIRMWARE_CHUNK_SIZE		0x400
- 
--#define CONFIG_PATH			"/etc/vntconfiguration.dat"
--
- #define MAX_UINTS			8
- #define OPTION_DEFAULT			{ [0 ... MAX_UINTS - 1] = -1}
- 
--- 
-2.32.0
-
+ChenYu
