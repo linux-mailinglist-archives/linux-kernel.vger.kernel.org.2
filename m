@@ -2,82 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2633DA5FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052C63DA5B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239190AbhG2OK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:10:58 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:20651 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238774AbhG2OHt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:07:49 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 16TE77x7030502;
-        Thu, 29 Jul 2021 23:07:08 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 16TE77x7030502
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627567628;
-        bh=OkmM0pXDX7v2EhLXhxLu/LZ8oreIh62vNVpYZPlZlb0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LvG/zWy7K+8KpgQvwZOKvSf+IAn/+5SgGChyU10gxmnDnwK0GTtwJwTtHCDcycMAy
-         VGiH3WqIAV3N1PIswFixnBph97hXUjUj7juVB6E9iYe3E6sjbjiFwAf3VkamJFhtJ1
-         lFRn/hSbuI+7Cv4RGEA2EjFGB14wSRxtElajldZxqdgj+RiQYdPRWKHufBYqEqjMuY
-         QEDzHc8UuW9gFZHojwBGBeC7IitTM/3PC9at9lJOFe4T6HyeMGRdRC/kphvSOzs4MS
-         rJfFBMpS9pa6iCbaoS6FHB2LuEPGmXdnGl593HwZUJO7OxWq0OORxlBCZefyc/nL/F
-         gKq2/9o3vjJIw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Ley Foon Tan <ley.foon.tan@intel.com>, linux-kernel@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH] nios2: move the install rule to arch/nios2/Makefile
-Date:   Thu, 29 Jul 2021 23:07:06 +0900
-Message-Id: <20210729140706.443527-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S237774AbhG2OJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:09:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238643AbhG2OHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:07:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D867460FD7;
+        Thu, 29 Jul 2021 14:07:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627567634;
+        bh=Rdr5qCe1gNFYBhdSCbvzhAs4VdI1+Mgp+bv4Bzlp+MA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=VHsKz2kUeACRz8iKJHAIeXMcZ9y+zWCghLv4reJQeqMnZEhj15OXFYdKFL4lttMIt
+         GhnCUdMZnwjzFfnZwxRq3lWzpI2qN7WPgKrm0tATVxpMQ6xRiWbCBp7roYM8hU4CZZ
+         eKM4FtWe+lH1gdJMhh28EDrsOKjT2v30WnzO7jDYr1EmwBcOohoHXDh1uWIsN4nMOP
+         3m74Ye6ukgPE/vPVY0AvPusmfCx41rAAVZzX96YJ2SRhgIvAN2HmG9521quMz57PJh
+         vspsVe8rUPisWnFBWMKkirk7gRIpoTBd/x+5vSmoPMh48MTc/W8li4PzcNtBiBQBBz
+         KsK7xlMN0Py5A==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH -tip v10 08/16] x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline()
+Date:   Thu, 29 Jul 2021 23:07:11 +0900
+Message-Id: <162756763152.301564.15938185070079124398.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <162756755600.301564.4957591913842010341.stgit@devnote2>
+References: <162756755600.301564.4957591913842010341.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the install target in arch/nios2/Makefile descends into
-arch/nios2/boot/Makefile to invoke the shell script, but it is no
-good reason to do so.
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-arch/nios2/Makefile can run the shell script directly.
+Add UNWIND_HINT_FUNC on __kretprobe_trampoline() code so that ORC
+information is generated on the __kretprobe_trampoline() correctly.
+Also, this uses STACK_FRAME_NON_STANDARD_FP(), CONFIG_FRAME_POINTER-
+-specific version of STACK_FRAME_NON_STANDARD().
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Andrii Nakryiko <andrii@kernel.org>
 ---
+ Changes in v9:
+  - Update changelog and fix comment.
+  - Use STACK_FRAME_NON_STANDARD_FP().
+ Changes in v4:
+  - Apply UNWIND_HINT_FUNC only if CONFIG_FRAME_POINTER=n.
+---
+ arch/x86/include/asm/unwind_hints.h |    5 +++++
+ arch/x86/kernel/kprobes/core.c      |   13 +++++++++++--
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
- arch/nios2/Makefile      | 3 ++-
- arch/nios2/boot/Makefile | 3 ---
- 2 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/arch/nios2/Makefile b/arch/nios2/Makefile
-index 52c03e60b114..72e8ff065cf7 100644
---- a/arch/nios2/Makefile
-+++ b/arch/nios2/Makefile
-@@ -60,7 +60,8 @@ $(BOOT_TARGETS): vmlinux
- 	$(Q)$(MAKE) $(build)=$(nios2-boot) $(nios2-boot)/$@
+diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
+index 8e574c0afef8..8b33674288ea 100644
+--- a/arch/x86/include/asm/unwind_hints.h
++++ b/arch/x86/include/asm/unwind_hints.h
+@@ -52,6 +52,11 @@
+ 	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=8 type=UNWIND_HINT_TYPE_FUNC
+ .endm
  
- install:
--	$(Q)$(MAKE) $(build)=$(nios2-boot) BOOTIMAGE=$(KBUILD_IMAGE) install
-+	sh $(srctree)/$(nios2-boot)/install.sh $(KERNELRELEASE) \
-+	$(KBUILD_IMAGE) System.map "$(INSTALL_PATH)"
++#else
++
++#define UNWIND_HINT_FUNC \
++	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
++
+ #endif /* __ASSEMBLY__ */
  
- define archhelp
-   echo  '* vmImage         - Kernel-only image for U-Boot ($(KBUILD_IMAGE))'
-diff --git a/arch/nios2/boot/Makefile b/arch/nios2/boot/Makefile
-index 37dfc7e584bc..8c3ad76602f3 100644
---- a/arch/nios2/boot/Makefile
-+++ b/arch/nios2/boot/Makefile
-@@ -30,6 +30,3 @@ $(obj)/zImage: $(obj)/compressed/vmlinux FORCE
- 
- $(obj)/compressed/vmlinux: $(obj)/vmlinux.gz FORCE
- 	$(Q)$(MAKE) $(build)=$(obj)/compressed $@
+ #endif /* _ASM_X86_UNWIND_HINTS_H */
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 79cd23dba5b5..d1436d7463fd 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -1025,6 +1025,7 @@ asm(
+ 	/* We don't bother saving the ss register */
+ #ifdef CONFIG_X86_64
+ 	"	pushq %rsp\n"
++	UNWIND_HINT_FUNC
+ 	"	pushfq\n"
+ 	SAVE_REGS_STRING
+ 	"	movq %rsp, %rdi\n"
+@@ -1035,6 +1036,7 @@ asm(
+ 	"	popfq\n"
+ #else
+ 	"	pushl %esp\n"
++	UNWIND_HINT_FUNC
+ 	"	pushfl\n"
+ 	SAVE_REGS_STRING
+ 	"	movl %esp, %eax\n"
+@@ -1048,8 +1050,15 @@ asm(
+ 	".size __kretprobe_trampoline, .-__kretprobe_trampoline\n"
+ );
+ NOKPROBE_SYMBOL(__kretprobe_trampoline);
+-STACK_FRAME_NON_STANDARD(__kretprobe_trampoline);
 -
--install:
--	sh $(srctree)/$(src)/install.sh $(KERNELRELEASE) $(BOOTIMAGE) System.map "$(INSTALL_PATH)"
--- 
-2.27.0
++/*
++ * __kretprobe_trampoline() skips updating frame pointer. The frame pointer
++ * saved in trampoline_handler() points to the real caller function's
++ * frame pointer. Thus the __kretprobe_trampoline() doesn't have a
++ * standard stack frame with CONFIG_FRAME_POINTER=y.
++ * Let's mark it non-standard function. Anyway, FP unwinder can correctly
++ * unwind without the hint.
++ */
++STACK_FRAME_NON_STANDARD_FP(__kretprobe_trampoline);
+ 
+ /*
+  * Called from __kretprobe_trampoline
 
