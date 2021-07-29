@@ -2,137 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D893D9D40
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0D33D9D41
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhG2FwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 01:52:25 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:39645 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233739AbhG2FwX (ORCPT
+        id S234065AbhG2FxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 01:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233739AbhG2Fw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:52:23 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id A7FAA5803F8;
-        Thu, 29 Jul 2021 01:52:16 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 29 Jul 2021 01:52:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=viiBn1GywulERgvrKcCmkXUyuBc
-        +hfV25KNyhlk4biE=; b=UvBUR3YSV1Hzv1rHB+81W9W34BIL1FI5U6cXTigUmL/
-        46ODEIp8Kx7bAynesl+dIL6v0Q/iXqjtQjguo7w4zE3oFJmZrjaMWM35HTzcO+Hr
-        PB9LgXc0v5rVc7Vvs7UYo8BoeeKpFqdtXJOiniOQOHV2q4uK65Dd90Rp/hyXsVaO
-        ZyDgV36GQw673DE9qDtLLtPZZ+gJMflXvxKYAJigEGFJkHgyHSFn92Ytml0j/zxj
-        WVaViCDv+ftKZZ9HBUnTjXcoSk24ubmoPSZDzxv8vDLFHX9MPuyTpsMn/CeooxP5
-        KvEmLHuOcRgK7S1kKNM28yfZfqkvPfXXHp2PoKabXew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=viiBn1
-        GywulERgvrKcCmkXUyuBc+hfV25KNyhlk4biE=; b=ZPwAAszRN1awh/jGyBm78/
-        7vUhL5y7FGte7hlzU3CkqzNtuO0eFM9XdbR3OnSo3skQrB3FCatPPsvmtLgHmCZd
-        yo9+sZpuF/OqKytUSJu/nHwMn+5Y86MV+P0fSF+RJSh5E6ftRc/LKe9CdqcC6Ed8
-        +MSGjkmwFHprHRF/1eJDXgAK8vQA4ZyrR1zI9sM9LIJYj4ylG5EylMHuGTSa3sK2
-        OzRPmC4lfiLhN/OnsS/JkxAoo603S/yHPPHVCaeaIvYgsCZzIny3oHyvOh+xTDRc
-        +Z7j9wEOzFp1Yj54n7mQXia+oHSUliWVY9gVFMvZriImJ6aB/VZ6pB13YMH6MCxg
-        ==
-X-ME-Sender: <xms:D0ICYdMF1N79dQx7LJMZN3ENRO2Pkz5uM9mum12E_7kQYqJ0AlVzLw>
-    <xme:D0ICYf8o_P3J2FXD5fIyfF_S4pUvHfayWQxQiGrK8crTFeu0mC7_Meups7D3wOIvJ
-    2th2qeKnRj4Dg>
-X-ME-Received: <xmr:D0ICYcTmppWFaMoou0irXWAo6QwiFia-Y2kuJ2TjS14cNUflYVYoE_vZz8yWAendAX4566Vi1xhGE9_aT9-Yz2HOwMxxRmIA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedtgdeltdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeen
-    ucggtffrrghtthgvrhhnpeevueehjefgfffgiedvudekvdektdelleelgefhleejieeuge
-    egveeuuddukedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:D0ICYZvF96QQm0rtPvy0kQAYP8jrPWtb4RU39N4OURt0Ku3LqEIOKA>
-    <xmx:D0ICYVcpMKo8ViFWvYzrs58-SkBBxnmiIhtyrHz4SL2qrPg04HxGAg>
-    <xmx:D0ICYV1gwMrVTbNRm3BnOvLmL6YUuYr4xYYr2pAgONW7gHtTGUJCTA>
-    <xmx:EEICYT0tZvuO9P27kP4ZNTuF1tDouXEg78ftOu4qCp2gGtbZJsO-eg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jul 2021 01:52:15 -0400 (EDT)
-Date:   Thu, 29 Jul 2021 07:52:11 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org, pavel@ucw.cz,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [RFC PATCH 3/8] block: Add kernel APIs to create & delete block
- device LED triggers
-Message-ID: <YQJCC66c2v7Dv59j@kroah.com>
-References: <20210729015344.3366750-1-arequipeno@gmail.com>
- <20210729015344.3366750-4-arequipeno@gmail.com>
+        Thu, 29 Jul 2021 01:52:58 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95544C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 22:52:55 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id bg4so2910954vsb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 22:52:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Tlr/6pPCGqRO3IM/d8M08zALVL5i+alBi3fpFo8IHwQ=;
+        b=cpFO0tb9GQu1AjMJkWpa56cIlpZHHofV7MR+0SqB3erLcHBDF+1xGyCYavdU4bfnKo
+         oy5N/F/9pZjKrTZLNa6jnQWWC8QOZdijJ/iHaF/p9CWku04XceU3XK8N3HOfb+5vayk6
+         2xQTmsU4Ow9eUYypNvzjF88yBnNyNrLLiLqUNEK4V4VCSX42SoconCR8xMTuLMF/XRj8
+         7GaHJwAnpLruTOjAbZUraUULZxFx7fytDDdpW91bJ08N4FGejyIxmYil0YfkUtpzvlK1
+         HfkxSRFjyuWcRPPqQdxdKpncH4+JSCFVjQ7x2GkPM9QCzN4fBIaTswfKgUlod5JbNAuM
+         g3SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=Tlr/6pPCGqRO3IM/d8M08zALVL5i+alBi3fpFo8IHwQ=;
+        b=sOwWgCyuYyDpP0Q1agMLEVCwSkqLDXXiYXagP2WNSwI7mhxcVe5Ahv6rr1TMViu/Zc
+         tnE6qgItt3z2r5UJr9e8DsTKyoYwoaPSg6a8T4v/bJYFGEX+9bdJZD1tdPH+6gw1xGP+
+         DmPUKUXgfD/4JbQXmMdUCEn+AeyI5PdP3FodXHMpAUBOFd8lCdiO3C+czIcqKNgDnCxz
+         MaM0wv6E4tK1XVM8kR3fPF/0lf0KtprRj9gf5NmZUbXEjhR3U0RUWyvjbta3CVTyZlxQ
+         hLsn+d4PjhXVFkSSDX/eX8qOGd6xfJFqSZVs8hBQp4TNJt6LRrJyWGeFFvBIqEf5N+/d
+         5wYg==
+X-Gm-Message-State: AOAM532J/ztVUM/SuNxPkK/ZcHhoQGAetRomRutSLNzPPRqMNbFqDf7D
+        CeGuC3aiLgoNr5XIY2zu441jDd6N8XmX76idYWQ=
+X-Google-Smtp-Source: ABdhPJwQ3Ko0XRCisXOAkqvbHfiEWWOdSQy2kM4KhtLXHiV5+Un1B+iMRJGTDZtN3yQWBpmNX+ejURjH0pKWiKOsLEw=
+X-Received: by 2002:a67:b444:: with SMTP id c4mr3026920vsm.48.1627537974734;
+ Wed, 28 Jul 2021 22:52:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729015344.3366750-4-arequipeno@gmail.com>
+Sender: buscarhank@gmail.com
+Received: by 2002:a67:5d86:0:0:0:0:0 with HTTP; Wed, 28 Jul 2021 22:52:54
+ -0700 (PDT)
+From:   Debby Hallcom <debbyhallcom137@gmail.com>
+Date:   Thu, 29 Jul 2021 05:52:54 +0000
+X-Google-Sender-Auth: FM6GK27AmjS78loBc0oU2LhyFvY
+Message-ID: <CADXwykcHNsr-8u-ZKHWvxvjr+ESpFnw8GCz9TcCW4Kkdn5UMYg@mail.gmail.com>
+Subject: Good Day My beloved,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 08:53:39PM -0500, Ian Pilcher wrote:
-> * New file - include/linux/blk-ledtrig.h
-> 
-> Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
-> ---
->  block/blk-ledtrig.c         | 152 ++++++++++++++++++++++++++++++++++++
->  include/linux/blk-ledtrig.h |  19 +++++
->  2 files changed, 171 insertions(+)
->  create mode 100644 include/linux/blk-ledtrig.h
-> 
-> diff --git a/block/blk-ledtrig.c b/block/blk-ledtrig.c
-> index 345a3b6bdbc6..c69ea1539336 100644
-> --- a/block/blk-ledtrig.c
-> +++ b/block/blk-ledtrig.c
-> @@ -6,9 +6,11 @@
->   *	Copyright 2021 Ian Pilcher <arequipeno@gmail.com>
->   */
->  
-> +#include <linux/blk-ledtrig.h>
->  #include <linux/leds.h>
->  #include <linux/list.h>
->  #include <linux/mutex.h>
-> +#include <linux/slab.h>
->  
->  
->  /*
-> @@ -49,3 +51,153 @@ static struct blk_ledtrig *blk_ledtrig_find(const char *const name,
->  
->  	return NULL;
->  }
-> +
-> +
-> +/*
-> + *
-> + *	Create a new trigger
-> + *
-> + */
-> +
-> +static int __blk_ledtrig_create(const char *const name, const size_t len)
-> +{
-> +	struct blk_ledtrig *t;
-> +	int ret;
-> +
-> +	if (len == 0) {
-> +		pr_warn("empty name specified for blockdev LED trigger\n");
-> +		ret = -EINVAL;
-> +		goto create_exit_return;
-> +	}
-> +
-> +	ret = mutex_lock_interruptible(&blk_ledtrig_list_mutex);
-> +	if (unlikely(ret != 0))
+Hello My Beloved.
+Please do not feel disturbed for contacting =C2=A0you in this regards, It
+was based on the critical health condition I find mine self. =C2=A0My names
+ are Mrs.Debby Hallcom.a widow and I=E2=80=99m suffering from brain tumor
+disease and this illness has gotten to a very bad stage, I married my
+husband for Ten years without a child. =C2=A0My husband died after a brief
+illness that lasted for few  days.Since the death of my husband, I
+decided not to remarry again, When my late husband was alive he
+deposited the sum of =C2=A0($12.500.000 dollars.) with the Bank. Presently
+this money is still in bank. And My  Doctor told me that I don't have
+much time to live on this earth because my illness has gotten to a
+very bad stage, Having known my condition I  decided to entrust over
+the deposited fund under your custody to take care of the
+less-privileged ones therein your country or position, which i believe
+that you will utilize this money the way I am going to instruct
+herein.
 
-Only ever use likely/unlikely if you can measure the difference without
-it.  Otherwise the CPU and compiler will almost always get it right and
-you should not clutter up the code with them at all.
-
-For something like this function, where there is no speed difference at
-all, there is no need for these types of markings, so I would recommend
-just removing them all from your patchset.
-
-thanks,
-
-greg k-h
+However all I need and required from you is your sincerity and ability
+to carry out the transaction successfully and fulfill my final wish in
+implementing the charitable project as it requires absolute trust and
+devotion without any failure and I will be glad to see that the bank
+finally release and transfer the fund into your bank account in your
+country even before I die here in the hospital, because my present
+health condition is very critical at the moment everything needs to be
+process rapidly as soon as possible.
+It will be my pleasure to compensate you as my Investment
+Manager/Partner with 35 % percent of the total fund for your effort in
+ handling the transaction, 5 % percent for any expenses or processing
+charges fee that will involve during this process while 60% of the
+fund will be Invested into the charity project there in your country
+for the mutual benefit of the orphans and the less privileges ones.
+Meanwhile I am waiting for your prompt respond, if only you are
+interested for further details of the transaction and execution of
+this  humanitarian project for the glory and honor of God the merciful
+compassionate.you can contact me on my private
+email(debbyhallcom137@gmail.com)
+May God bless you and your family.
+Best Regards,
+Mrs.Debby Hallcom.
+written from Hospital.
