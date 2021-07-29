@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012643DA469
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067B93DA473
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237509AbhG2NgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:36:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234314AbhG2NgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:36:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF65E6052B;
-        Thu, 29 Jul 2021 13:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627565778;
-        bh=K6ZbYvTSeAPFllbF4KPvUCWrVKio91AyMs/iHX7QjnI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=g0uwBoN8D2Ydb6xm6sy66/kgHGBSIrCpfw0jFuoIEIrBwODZsHbhzi2paQwghy/un
-         eU05yTwMYyd9aN4DvTQS2szlmuSHjyovVjZgeNzyGeTx0o7c7ozKNgNe5MAnXrvegb
-         JgfbFMQAAu5fbU2Z4JGCIdhDiU08tR2IOmP75D4pKbRpGaSuTUMjbyvDkYFrWtYv7D
-         9BMyG+JU0EALUQTSZXwHaU6YGDeho8GdnKX+zIbbwPPyyvsXGsB8PBNa7TcJZ24eta
-         adcOj1/cjhN85ln1wpFuU9pmXlmxVxdzblVf/QK9HZB+HBB02C7+AxJOirJUVjx/Yn
-         HUtCPq0Hclb+Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9D5685C04E6; Thu, 29 Jul 2021 06:36:18 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 06:36:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH rcu 10/18] srcutiny: Mark read-side data races
-Message-ID: <20210729133618.GS4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-10-paulmck@kernel.org>
- <YQJlbEgaAGJvx3iN@boqun-archlinux>
+        id S237644AbhG2NiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:38:01 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:12225 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237427AbhG2Nh5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:37:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1627565875; x=1659101875;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=W8x69J6Q09I5gZNXo9ZYxmS76YuV1xVnU5m8ij7pP8E=;
+  b=DA/R4+ivRRUBpi/GbJS/qOXt6GM09Av6NvTj4S/kPy5Nze2cGHSXEP4o
+   Gjer0bUCKLkolr2viJNkUadg8HStssynuBy7rudQl+D33q5IVNLlanZiK
+   wA7NroVoOxAvTBBudtoJaUhAs2MwxVK8+TmKuqAXnXEQJNUVkVe/7zdIp
+   g=;
+X-IronPort-AV: E=Sophos;i="5.84,278,1620691200"; 
+   d="scan'208";a="128788947"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 29 Jul 2021 13:37:45 +0000
+Received: from EX13D28EUC003.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id DAB04A0379;
+        Thu, 29 Jul 2021 13:37:43 +0000 (UTC)
+Received: from uc8bbc9586ea454.ant.amazon.com (10.43.161.175) by
+ EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Thu, 29 Jul 2021 13:37:38 +0000
+From:   Siddharth Chandrasekaran <sidcha@amazon.de>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>
+CC:     Siddharth Chandrasekaran <sidcha.dev@gmail.com>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        <linux-hyperv@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Siddharth Chandrasekaran <sidcha@amazon.de>
+Subject: [PATCH] asm-generic/hyperv: Fix struct hv_message_header ordering
+Date:   Thu, 29 Jul 2021 15:37:02 +0200
+Message-ID: <20210729133702.11383-1-sidcha@amazon.de>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQJlbEgaAGJvx3iN@boqun-archlinux>
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.175]
+X-ClientProxiedBy: EX13D15UWA003.ant.amazon.com (10.43.160.182) To
+ EX13D28EUC003.ant.amazon.com (10.43.164.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 04:23:08PM +0800, Boqun Feng wrote:
-> On Wed, Jul 21, 2021 at 01:21:18PM -0700, Paul E. McKenney wrote:
-> > This commit marks some interrupt-induced read-side data races in
-> > __srcu_read_lock(), __srcu_read_unlock(), and srcu_torture_stats_print().
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  include/linux/srcutiny.h | 8 ++++----
-> >  kernel/rcu/srcutiny.c    | 2 +-
-> >  2 files changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> > index 0e0cf4d6a72a0..6cfaa0a9a9b96 100644
-> > --- a/include/linux/srcutiny.h
-> > +++ b/include/linux/srcutiny.h
-> > @@ -61,7 +61,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
-> >  	int idx;
-> >  
-> >  	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
-> > -	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
-> > +	WRITE_ONCE(ssp->srcu_lock_nesting[idx], READ_ONCE(ssp->srcu_lock_nesting[idx]) + 1);
-> >  	return idx;
-> >  }
-> >  
-> > @@ -81,11 +81,11 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
-> >  {
-> >  	int idx;
-> >  
-> > -	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
-> > +	idx = ((data_race(READ_ONCE(ssp->srcu_idx)) + 1) & 0x2) >> 1;
-> 
-> This looks very weird, any explanation why we want to put data_race() on
-> a READ_ONCE()?
+According to Hyper-V TLFS Version 6.0b, struct hv_message_header members
+should be defined in the order:
 
-We don't want KCSAN to check this read, but we also don't want the
-compiler to mess it up.
+	message_type, reserved, message_flags, payload_size
 
-							Thanx, Paul
+but we have it defined in the order:
 
-> Regards,
-> Boqun
-> 
-> >  	pr_alert("%s%s Tiny SRCU per-CPU(idx=%d): (%hd,%hd)\n",
-> >  		 tt, tf, idx,
-> > -		 READ_ONCE(ssp->srcu_lock_nesting[!idx]),
-> > -		 READ_ONCE(ssp->srcu_lock_nesting[idx]));
-> > +		 data_race(READ_ONCE(ssp->srcu_lock_nesting[!idx])),
-> > +		 data_race(READ_ONCE(ssp->srcu_lock_nesting[idx])));
-> >  }
-> >  
-> >  #endif
-> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > index 26344dc6483b0..a0ba2ed49bc61 100644
-> > --- a/kernel/rcu/srcutiny.c
-> > +++ b/kernel/rcu/srcutiny.c
-> > @@ -96,7 +96,7 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
-> >   */
-> >  void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
-> >  {
-> > -	int newval = ssp->srcu_lock_nesting[idx] - 1;
-> > +	int newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
-> >  
-> >  	WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
-> >  	if (!newval && READ_ONCE(ssp->srcu_gp_waiting))
-> > -- 
-> > 2.31.1.189.g2e36527f23
-> > 
+	message_type, payload_size, message_flags, reserved
+
+that is, the payload_size and reserved members swapped. Due to this mix
+up, we were inadvertently causing two issues:
+
+    - The payload_size field has invalid data; it didn't cause an issue
+      so far because we are delivering only timer messages which has fixed
+      size payloads the guest probably did a sizeof(payload) instead
+      relying on the value of payload_size member.
+
+    - The message_flags was always delivered as 0 to the guest;
+      fortunately, according to section 13.3.1 message_flags is also
+      treated as a reserved field.
+
+Although this is not causing an issue now, it might in future (we are
+adding more message types in our VSM implementation) so fix it to
+reflect the specification.
+
+Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+---
+ include/asm-generic/hyperv-tlfs.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+index 56348a541c50..a5540e9b171f 100644
+--- a/include/asm-generic/hyperv-tlfs.h
++++ b/include/asm-generic/hyperv-tlfs.h
+@@ -284,9 +284,9 @@ union hv_port_id {
+ /* Define synthetic interrupt controller message header. */
+ struct hv_message_header {
+ 	__u32 message_type;
+-	__u8 payload_size;
+-	union hv_message_flags message_flags;
+ 	__u8 reserved[2];
++	union hv_message_flags message_flags;
++	__u8 payload_size;
+ 	union {
+ 		__u64 sender;
+ 		union hv_port_id port;
+-- 
+2.17.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
