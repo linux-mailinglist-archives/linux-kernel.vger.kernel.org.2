@@ -2,84 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27933DA5A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0CB3DA602
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239068AbhG2OIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238537AbhG2OBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:01:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2DFD60F4B;
-        Thu, 29 Jul 2021 14:00:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567237;
-        bh=zpaHIP0trcuo0pKfQIns0Olh+uBBj4ssUvGd0sEYq6Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MklJTt6j1cy+MWLSeVkjK9Vb753BQLTmRSsDJ+cjTnpXHvcuApz+YoHMS9RTO+kdI
-         6LdQ6G60UnCRL6SolGgwnIr30H0URTxF3xtYIOkDSYkyX1ZQiWbFbiqQjURYWnb/w/
-         TEszwDmuPsyvhlwJPhnl6EEDbtwkOs1Bbo/QZwZc=
-Date:   Thu, 29 Jul 2021 15:59:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     qiaoyanbo_310 <qiaoyanbo_310@163.com>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] kobject: kobject_add_internal cleanup
-Message-ID: <YQK0JuI1w1zsEHeC@kroah.com>
-References: <20210727143212.39142-1-qiaoyanbo_310@163.com>
- <YQEtJkPFDWMSAd/C@kroah.com>
- <3be7ce57.62f6.17af280a47f.Coremail.qiaoyanbo_310@163.com>
+        id S238836AbhG2OLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238495AbhG2OHG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:07:06 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A99C0619E5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:59:58 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id t68so6004240qkf.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KUvzSeTHiMYYDqDJxB7rJ4PNsknIyxmHg+DiEVHfwLI=;
+        b=iOwiVk+59SLzINH9AVvJnCRQz3piAW2z7tpru53kHm1k8PiIusFJtd0SQ4xDI4FFc3
+         bZRCI6YMKhRT2u+U7GBQrmyv91J8yRGOkgseXRyYp7xA0e9h6yRbXixo5JdSxDfEAs4W
+         sPxNOOwyfZFAAikVc79dsioyppviL3Wil4CQGo+DfLT7Ue0Gg4uRNRiJvoVSesolCxYI
+         r/ec+r0NELHo0Yq/AxQB2kqG6MJ2iDFiU4M6evSHPfKc/MiE8MpoaypA8dItdSXeMmzY
+         m1RgqdrArXNTrH/8k9p75lPGfzFckmisE2hIDyzz9R9qUOJcypGIT0WoDmlU3RJ+PCvi
+         xp8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KUvzSeTHiMYYDqDJxB7rJ4PNsknIyxmHg+DiEVHfwLI=;
+        b=BAy0EaSy0tEkmw5qLlRluTsyQ0fq44IqlSQnlR3nqMMYep7nl3XIzJImaCAPXa60WQ
+         /KsmMLY5ZYyCfkmIWtTgc5EEDQ7zcVXGTZJgUTbxFFbOCGGDSOn8/h/dlbIlBs7VX8Do
+         awG7o5//Q3MVzlyzTB4JKysWrnhGa8yQCcuTuSKHBnKo2eNd7tU0/3QI0UApb6vS5lKV
+         mw06nlmLCXZJce1M+pLQbSkS76joEyN3CrMkuvUgCV1i9orasyx2bVKRpD5lQSL0Lorx
+         arqr+XNSDB4/yBYqC25M/SHKmMh9XPgJAMJmZoJAifA++dQDusBlkQ9e2ugAC5308I9R
+         Hz3A==
+X-Gm-Message-State: AOAM533cPwSnafV0OcBrLXanrYy9xPtnkDm5dtxMNX44u17wEYrRcVAG
+        UlXt+WABxTuHgZhv2Kivs/L60fhjbXfJ8oLexU5hjQ==
+X-Google-Smtp-Source: ABdhPJxSrKNbOK3NA1s7QIBVfkGMkfAw4PxjPNutIFyYV824DbkgAHKPEK0RIiQ0e7hLN3J7hdZ8bMltngwlkwTbnFk=
+X-Received: by 2002:a37:a5ca:: with SMTP id o193mr5414456qke.352.1627567197517;
+ Thu, 29 Jul 2021 06:59:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3be7ce57.62f6.17af280a47f.Coremail.qiaoyanbo_310@163.com>
+References: <20210728190254.3921642-1-hca@linux.ibm.com> <20210728190254.3921642-3-hca@linux.ibm.com>
+ <CAG_fn=VS_WFjL+qjm79Jvq5M0KaNScvX2vCw=aNxPx14Hffa0A@mail.gmail.com> <yt9dtukdteoj.fsf@linux.ibm.com>
+In-Reply-To: <yt9dtukdteoj.fsf@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 29 Jul 2021 15:59:21 +0200
+Message-ID: <CAG_fn=XHr2j+xVaxjxqSUKU7ddDoekvxVoac9sSJ+Yk3voRUnA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] kfence: add function to mask address bits
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>, Marco Elver <elver@google.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+On Thu, Jul 29, 2021 at 3:47 PM Sven Schnelle <svens@linux.ibm.com> wrote:
+>
+> Alexander Potapenko <glider@google.com> writes:
+>
+> > On Wed, Jul 28, 2021 at 9:03 PM Heiko Carstens <hca@linux.ibm.com> wrote:
+> >>
+> >> From: Sven Schnelle <svens@linux.ibm.com>
+> >>
+> >> s390 only reports the page address during a translation fault.
+> >> To make the kfence unit tests pass, add a function that might
+> >> be implemented by architectures to mask out address bits.
+> >>
+> >> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> >> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+> >> ---
+> >>  mm/kfence/kfence_test.c | 13 ++++++++++++-
+> >>  1 file changed, 12 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
+> >> index 942cbc16ad26..eb6307c199ea 100644
+> >> --- a/mm/kfence/kfence_test.c
+> >> +++ b/mm/kfence/kfence_test.c
+> >> @@ -23,8 +23,15 @@
+> >>  #include <linux/tracepoint.h>
+> >>  #include <trace/events/printk.h>
+> >>
+> >> +#include <asm/kfence.h>
+> >> +
+> >>  #include "kfence.h"
+> >>
+> >> +/* May be overridden by <asm/kfence.h>. */
+> >> +#ifndef arch_kfence_test_address
+> >> +#define arch_kfence_test_address(addr) (addr)
+> >> +#endif
+> >> +
+> >>  /* Report as observed from console. */
+> >>  static struct {
+> >>         spinlock_t lock;
+> >> @@ -82,6 +89,7 @@ static const char *get_access_type(const struct expect_report *r)
+> >>  /* Check observed report matches information in @r. */
+> >>  static bool report_matches(const struct expect_report *r)
+> >>  {
+> >> +       unsigned long addr = (unsigned long)r->addr;
+> >>         bool ret = false;
+> >>         unsigned long flags;
+> >>         typeof(observed.lines) expect;
+> >> @@ -131,22 +139,25 @@ static bool report_matches(const struct expect_report *r)
+> >>         switch (r->type) {
+> >>         case KFENCE_ERROR_OOB:
+> >>                 cur += scnprintf(cur, end - cur, "Out-of-bounds %s at", get_access_type(r));
+> >> +               addr = arch_kfence_test_address(addr);
+> >
+> > Can we normalize addr once before (or after) this switch?
+> >
+>
 
-A: No.
-Q: Should I include quotations after my reply?
+> I don't think so. When reporing corrupted memory or an invalid free the
+> address is not generated by hardware but kfence itself, and therefore we
+> would strip valid bits.
 
-http://daringfireball.net/2007/07/on_top
-
-On Thu, Jul 29, 2021 at 09:42:34PM +0800, qiaoyanbo_310 wrote:
-> Hi Greg k-h,
-> 
-> 
-> First at all, there is my mistake about From line different with Sign off line. They all should be "Qiao Yanbo".
-
-Great, please fix that up.
-
-> Secondly, the problem this patch wants to solve is： In this function, the parent variable is first called "kobject_get (kobj->parent) " assignment. When the parent is not null, the just obtained parent is assigned back to "kobj - > parent", which is meaningless. Actually, "kobj->kset->kobj" will be assigned to "kobj->parent" only when the parent is NULL. So this patch solves the problem of meaningless assignment.
-
-Why is this a problem?  What bug is this solving?  Is the code somehow
-now faster or smaller that can be measured?
-
-> Finally , I tested this patch and didn't see any additional problems in my environment.
-> 
-> 
-> Here is the original code snippet. I hope you can understand my idea.
-> ======================================================= 
->        parent = kobject_get(kobj->parent);
-> 
-> 
->         /* join kset if set, use it as parent if we do not already have one */
->         if (kobj->kset) {
->                 if (!parent)
->                         parent = kobject_get(&kobj->kset->kobj);
->                 kobj_kset_join(kobj);
->                 kobj->parent = parent;
-
-I do not see a bug with this code, what is wrong with it?
-
-thanks,
-
-greg k-h
+Ah, sorry, I missed that.
