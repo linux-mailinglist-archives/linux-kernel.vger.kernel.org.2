@@ -2,261 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5504C3DA5E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B37E3DA603
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238986AbhG2OKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239359AbhG2OIi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:08:38 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51385C061383
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:06:05 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id y18so8602954oiv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ERFue+oHCOjcFjpKybCHGm8Nf73ebXktzSux0cMnuM0=;
-        b=RvIXERV7oStEjYkk/BrebgVpiq6/8GMBlhwGRXTlJXtmQD0+0FSp6vKd3U3rx72vnb
-         Dskbh9JEQHgZzaz14qnJiRv0Z85Z8/nI+jSd2GcG3uZQGbUV7HY1dYkpF40rHuOH/tOy
-         t++dhn7XmaIjhp7fKjyA8LkXn0d40y+ELabsU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ERFue+oHCOjcFjpKybCHGm8Nf73ebXktzSux0cMnuM0=;
-        b=MYTfkrv9uRMosJeDzoc6gV2rOosbI7dtM7xR3YKiB36kJFuls632xk5+JjO/bVvzGk
-         hgn5y9+8qjhqe9cZSaKF8VB69vouBSWlMRhWjTPJeQcqMlHZUI7nVMWPxDDJoKm5TGya
-         fSzOQi72uTIR0+qySj2cJiyRIhEgwaH9SKJ8UYIUzKIdimea7QqljDIxGrhqLXJtEV1O
-         hjCEEDs+k0t1xt3Aw75r+53nFfHcBpsoz30ZQYI1n68NDtUlebxPEBuJofBGdTY2nVup
-         nSDzH/8HNGxv35qcsyhKjbkPC6+/fT76lY9K24S83zbto9EOmZ3gAXVTcr1Qn3275pFl
-         JgbA==
-X-Gm-Message-State: AOAM531QSKweRWyNsygbj2vSlOcNCQBw94dsaihuauV1kk/1rpUdw+rm
-        bvohTUB6XW5Xw9V0H51J8xwDmtfw2nXAST/rP5tKpw==
-X-Google-Smtp-Source: ABdhPJxwHe8UR04yoFZoPSRg5yexYy7LIXZIIj5YSvpYgpfw3k7PwllaAKSr1vBFepIW+UHzpPn0HMznlj122DeDwuw=
-X-Received: by 2002:aca:d682:: with SMTP id n124mr3260319oig.128.1627567564541;
- Thu, 29 Jul 2021 07:06:04 -0700 (PDT)
+        id S238818AbhG2OLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:11:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237890AbhG2OGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:06:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C58AB601FF;
+        Thu, 29 Jul 2021 14:05:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627567560;
+        bh=zdMVzA0jMORbneJQhtqbeyzSAnzLu7XkdM5+ixlxJmQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aBJEAXFf+1zEPkfEUu7wU1g0lYW9Z771rFdXiOja7sXxXLmvua/1zDWR6OBAaFEam
+         B0lCLnOdmM7ahS//7qkNsw5NW7sL6+6Rb+d9000fbX/K0g61LjzyKd/nP0PeQFwkq+
+         OqomxAbM04hhb1CMjEFa0R7PXxapC1n1YQbMNnL1T0qQzHnRRWDVZpXnQ5wgrtIPhF
+         U5LXuLEtTj2AjeVbSXiTV5iy/2g3QEcvFP9nVmUcHR8e/NqK3kpiVDMecZRPj3ShTW
+         juWLVtXMlxYl3kug+wSygM4ohITekI+6zSsABCqY9lkXgxjJAFE84dPZlmxb4Oe5XQ
+         i2jh6+LnitZwg==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH -tip v10 00/16] kprobes: Fix stacktrace with kretprobes on x86
+Date:   Thu, 29 Jul 2021 23:05:56 +0900
+Message-Id: <162756755600.301564.4957591913842010341.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-References: <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
- <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com> <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
- <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com> <9d5f4415-d470-3bc1-7d52-61ba739706ae@daenzer.net>
- <CAF6AEGu409eY9xznTAaBf2ZDcV_AaDELUzN2afWgiHwB_uBwqg@mail.gmail.com>
- <YQJUKXgf/Q957fmy@phenom.ffwll.local> <ff394f2b-b555-e80f-b685-d0d59e2bbe67@daenzer.net>
- <YQJu6AqKn7bdT1li@phenom.ffwll.local> <20210729123732.3259a9bf@eldfell>
- <YQKclVvL+QeeL6cP@phenom.ffwll.local> <20210729155959.665fc1a6@eldfell>
-In-Reply-To: <20210729155959.665fc1a6@eldfell>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 29 Jul 2021 16:05:53 +0200
-Message-ID: <CAKMK7uG=UtTjtGCxTQm9wnm44QqTK2=ZCSM2MS0wVwpTL7DEkw@mail.gmail.com>
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     Simon Ser <contact@emersion.fr>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Roy Sun <Roy.Sun@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 3:00 PM Pekka Paalanen <ppaalanen@gmail.com> wrote:
-> On Thu, 29 Jul 2021 14:18:29 +0200
-> Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> > On Thu, Jul 29, 2021 at 12:37:32PM +0300, Pekka Paalanen wrote:
-> > > On Thu, 29 Jul 2021 11:03:36 +0200
-> > > Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > > On Thu, Jul 29, 2021 at 10:17:43AM +0200, Michel D=C3=A4nzer wrote:
-> > > > > On 2021-07-29 9:09 a.m., Daniel Vetter wrote:
-> > > > > > On Wed, Jul 28, 2021 at 08:34:13AM -0700, Rob Clark wrote:
-> > > > > >> On Wed, Jul 28, 2021 at 6:24 AM Michel D=C3=A4nzer <michel@dae=
-nzer.net> wrote:
-> > > > > >>> On 2021-07-28 3:13 p.m., Christian K=C3=B6nig wrote:
-> > > > > >>>> Am 28.07.21 um 15:08 schrieb Michel D=C3=A4nzer:
-> > > > > >>>>> On 2021-07-28 1:36 p.m., Christian K=C3=B6nig wrote:
-> > > > > >>>>>> Am 27.07.21 um 17:37 schrieb Rob Clark:
-> > > > > >>>>>>> On Tue, Jul 27, 2021 at 8:19 AM Michel D=C3=A4nzer <miche=
-l@daenzer.net> wrote:
-> > > > > >>>>>>>> On 2021-07-27 5:12 p.m., Rob Clark wrote:
-> > > > > >>>>>>>>> On Tue, Jul 27, 2021 at 7:50 AM Michel D=C3=A4nzer <mic=
-hel@daenzer.net> wrote:
-> > > > > >>>>>>>>>> On 2021-07-27 1:38 a.m., Rob Clark wrote:
-> > > > > >>>>>>>>>>> From: Rob Clark <robdclark@chromium.org>
-> > > > > >>>>>>>>>>>
-> > > > > >>>>>>>>>>> Based on discussion from a previous series[1] to add =
-a "boost" mechanism
-> > > > > >>>>>>>>>>> when, for example, vblank deadlines are missed.  Inst=
-ead of a boost
-> > > > > >>>>>>>>>>> callback, this approach adds a way to set a deadline =
-on the fence, by
-> > > > > >>>>>>>>>>> which the waiter would like to see the fence signalle=
-d.
-> > >
-> > > ...
-> > >
-> > > > > I'm not questioning that this approach helps when there's a direc=
-t
-> > > > > chain of fences from the client to the page flip. I'm pointing ou=
-t
-> > > > > there will not always be such a chain.
-> > > > >
-> > > > >
-> > > > > >> But maybe the solution to make this also useful for mutter
-> > > > >
-> > > > > It's not just mutter BTW. I understand gamescope has been doing
-> > > > > this for some time already. And there seems to be consensus among
-> > > > > developers of Wayland compositors that this is needed, so I expec=
-t
-> > > > > at least all the major compositors to do this longer term.
-> > > > >
-> > > > >
-> > > > > >> is to, once we have deadline support, extend it with an ioctl =
-to
-> > > > > >> the dma-fence fd so userspace can be the one setting the
-> > > > > >> deadline.
-> > > > >
-> > > > > I was thinking in a similar direction.
-> > > > >
-> > > > > > atomic ioctl with TEST_ONLY and SET_DEADLINES? Still gives mutt=
-er
-> > > > > > the option to bail out with an old frame if it's too late?
-> > > > >
-> > > > > This is a bit cryptic though, can you elaborate?
-> > > >
-> > > > So essentially when the mutter compositor guesstimator is fairly
-> > > > confident about the next frame's composition (recall you're keeping
-> > > > track of clients to estimate their usual latency or something like
-> > > > that), then it does a TEST_ONLY commit to check it all works and pr=
-ep
-> > > > the rendering, but _not_ yet fire it off.
-> > > >
-> > > > Instead it waits until all buffers complete, and if some don't, pic=
-k
-> > > > the previous one. Which I guess in an extreme case would mean you
-> > > > need a different window tree configuration and maybe different
-> > > > TEST_ONLY check and all that, not sure how you solve that.
-> > > >
-> > > > Anyway, in that TEST_ONLY commit my idea is that you'd also supply
-> > > > all the in-fences you expect to depend upon (maybe we need an
-> > > > additional list of in-fences for your rendering job), plus a deadli=
-ne
-> > > > when you want to have them done (so that there's enough time for yo=
-ur
-> > > > render job still). And the kernel then calls dma_fence_set_deadline
-> > > > on all of them.
-> > > >
-> > > > Pondering this more, maybe a separate ioctl is simpler where you ju=
-st
-> > > > supply a list of in-fences and deadlines.
-> > > >
-> > > > The real reason I want to tie this to atomic is for priviledge
-> > > > checking reasons. I don't think normal userspace should have the
-> > > > power to set arbitrary deadlines like this - at least on i915 it wi=
-ll
-> > > > also give you a slight priority boost and stuff like that, to make
-> > > > sure your rendering for the current frame goes in ahead of the next
-> > > > frame's prep work.
-> > > >
-> > > > So maybe just a new ioctl that does this which is limited to the
-> > > > current kms owner (aka drm_master)?
-> > >
-> > > Yeah.
-> > >
-> > > Why not have a Wayland compositor *always* "set the deadlines" for th=
-e
-> > > next screen update as soon as it gets the wl_surface.commit with the
-> > > new buffer and fences (a simplified description of what is actually
-> > > necessary to take a new window state set into use)?
-> >
-> > Yeah taht's probably best. And if the frame is scheduled (video at 24fp=
-s
-> > or whatever) you can also immediately set the deadline for that too, ju=
-st
-> > a few frames later. Always minus compositor budget taken into account.
-> >
-> > > The Wayland client posted the frame to the compositor, so surely it
-> > > wants it ready and displayed ASAP. If we happen to have a Wayland fra=
-me
-> > > queuing extension, then also take that into account when setting the
-> > > deadline.
-> > >
-> > > Then, *independently* of that, the compositor will choose which frame=
-s
-> > > it will actually use in its composition when the time comes.
-> > >
-> > > No need for any KMS atomic commit fiddling, userspace just explicitly
-> > > sets the deadline on the fence and that's it. You could tie the
-> > > privilege of setting deadlines to simply holding DRM master on whatev=
-er
-> > > device? So the ioctl would need both the fence and any DRM device fd.
-> >
-> > Yeah tying that up with atomic doesn't make sense.
-> >
-> > > A rogue application opening a DRM device and becoming DRM master on i=
-t
-> > > just to be able to abuse deadlines feels both unlikely and with
-> > > insignificant consequences. It stops the obvious abuse, and if someon=
-e
-> > > actually goes the extra effort, then so what.
-> >
-> > With logind you can't become drm master just for lolz anymore, so I'm n=
-ot
-> > worried about that. On such systems only logind has the rights to acces=
-s
-> > the primary node, everyone doing headless goes through the render node.
->
-> Mm, I hope the DRM leasing protocols don't rely on clients being able
-> to open KMS nodes anymore... they used to at some point, I think, for
-> the initial resource discovery before actually leasing anything.
+Hello,
 
-Yeah I thought that was fixed with additional xrandr/wayland discovery
-protocols. It doesn't work anyone on systems with display/render
-split. I think that was just to get it all going.
+This is the 10th version of the series to fix the stacktrace with kretprobe on x86.
 
-> "only logind has rights" might be a bit off still.
->
-> > So just limiting the deadline ioctl to current kms owner is imo perfect=
-ly
-> > good enough for a security model.
->
-> There could be multiple DRM devices. Including VKMS. Some of them not
-> used. The deadline setting ioctl can't guarantee the fenced buffer is
-> going to be used on the same DRM device the ioctl was called with. Or
-> used at all with KMS.
+The previous version is here;
 
-That's not a problem, fence deadline interface is cross-driver.
+ https://lore.kernel.org/bpf/162601048053.1318837.1550594515476777588.stgit@devnote2/
 
-> Anyway, even if that is not completely secure, I wouldn't think that
-> setting deadlines can do more than change GPU job priorities and power
-> consumption, which seem quite benign. It's enough hoops to jump through
-> that I think it stops everything we care to stop.
+This version is rebased on top of new kprobes cleanup series(*1) and merging
+Josh's objtool update series (*2)(*3) as [6/16] and [7/16].
 
-Yeah. Plus with this patch set you can do this already, just need to
-send out an atomic flip with all the fences merged together into your
-in-fence slots.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+(*1) https://lore.kernel.org/bpf/162748615977.59465.13262421617578791515.stgit@devnote2/
+(*2) https://lore.kernel.org/bpf/20210710192433.x5cgjsq2ksvaqnss@treble/
+(*3) https://lore.kernel.org/bpf/20210710192514.ghvksi3ozhez4lvb@treble/
+
+Changes from v9:
+ - Add Josh's objtool update patches with a build error fix as [6/16] and [7/16].
+ - Add a API document for kretprobe_find_ret_addr() and check cur != NULL in [5/16].
+
+With this series, unwinder can unwind stack correctly from ftrace as below;
+
+  # cd /sys/kernel/debug/tracing
+  # echo > trace
+  # echo 1 > options/sym-offset
+  # echo r vfs_read >> kprobe_events
+  # echo r full_proxy_read >> kprobe_events
+  # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+  # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+  # echo 1 > events/kprobes/enable
+  # cat /sys/kernel/debug/kprobes/list
+ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+  # echo 0 > events/kprobes/enable
+  # cat trace
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 3/3   #P:8
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| /     delay
+#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+#              | |         |   ||||      |         |
+           <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+           <...>-134     [007] ...1    16.185901: <stack trace>
+ => kretprobe_trace_func+0x209/0x300
+ => kretprobe_dispatcher+0x4a/0x70
+ => __kretprobe_trampoline_handler+0xd4/0x170
+ => trampoline_handler+0x43/0x60
+ => kretprobe_trampoline+0x2a/0x50
+ => vfs_read+0x98/0x180
+ => ksys_read+0x5f/0xe0
+ => do_syscall_64+0x37/0x90
+ => entry_SYSCALL_64_after_hwframe+0x44/0xae
+           <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+
+This shows the double return probes (vfs_read() and full_proxy_read()) on the stack
+correctly unwinded. (vfs_read() returns to 'ksys_read+0x5f' and full_proxy_read()
+returns to 'vfs_read+0x98')
+
+This also changes the kretprobe behavisor a bit, now the instraction pointer in
+the 'pt_regs' passed to kretprobe user handler is correctly set the real return
+address. So user handlers can get it via instruction_pointer() API, and can use
+stack_trace_save_regs().
+
+You can also get this series from 
+ git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v9
+
+
+Thank you,
+
+---
+
+Josh Poimboeuf (3):
+      objtool: Add frame-pointer-specific function ignore
+      objtool: Ignore unwind hints for ignored functions
+      x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline()
+
+Masami Hiramatsu (13):
+      ia64: kprobes: Fix to pass correct trampoline address to the handler
+      kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
+      kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+      kprobes: treewide: Make it harder to refer kretprobe_trampoline directly
+      kprobes: Add kretprobe_find_ret_addr() for searching return address
+      ARC: Add instruction_pointer_set() API
+      ia64: Add instruction_pointer_set() API
+      arm: kprobes: Make space for instruction pointer on stack
+      kprobes: Enable stacktrace from pt_regs in kretprobe handler
+      x86/kprobes: Push a fake return address at kretprobe_trampoline
+      x86/unwind: Recover kretprobe trampoline entry
+      tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+      x86/kprobes: Fixup return address in generic trampoline handler
+
+
+ arch/arc/include/asm/kprobes.h                |    2 
+ arch/arc/include/asm/ptrace.h                 |    5 +
+ arch/arc/kernel/kprobes.c                     |   13 +-
+ arch/arm/probes/kprobes/core.c                |   11 +-
+ arch/arm64/include/asm/kprobes.h              |    2 
+ arch/arm64/kernel/probes/kprobes.c            |    5 -
+ arch/arm64/kernel/probes/kprobes_trampoline.S |    4 -
+ arch/csky/include/asm/kprobes.h               |    2 
+ arch/csky/kernel/probes/kprobes.c             |    4 -
+ arch/csky/kernel/probes/kprobes_trampoline.S  |    4 -
+ arch/ia64/include/asm/ptrace.h                |    5 +
+ arch/ia64/kernel/kprobes.c                    |   15 +--
+ arch/mips/kernel/kprobes.c                    |   15 +--
+ arch/parisc/kernel/kprobes.c                  |    6 +
+ arch/powerpc/include/asm/kprobes.h            |    2 
+ arch/powerpc/kernel/kprobes.c                 |   29 ++---
+ arch/powerpc/kernel/optprobes.c               |    2 
+ arch/powerpc/kernel/stacktrace.c              |    2 
+ arch/riscv/include/asm/kprobes.h              |    2 
+ arch/riscv/kernel/probes/kprobes.c            |    4 -
+ arch/riscv/kernel/probes/kprobes_trampoline.S |    4 -
+ arch/s390/include/asm/kprobes.h               |    2 
+ arch/s390/kernel/kprobes.c                    |   12 +-
+ arch/s390/kernel/stacktrace.c                 |    2 
+ arch/sh/include/asm/kprobes.h                 |    2 
+ arch/sh/kernel/kprobes.c                      |   12 +-
+ arch/sparc/include/asm/kprobes.h              |    2 
+ arch/sparc/kernel/kprobes.c                   |   12 +-
+ arch/x86/include/asm/kprobes.h                |    1 
+ arch/x86/include/asm/unwind.h                 |   23 ++++
+ arch/x86/include/asm/unwind_hints.h           |    5 +
+ arch/x86/kernel/kprobes/core.c                |   71 ++++++++++---
+ arch/x86/kernel/unwind_frame.c                |    3 -
+ arch/x86/kernel/unwind_guess.c                |    3 -
+ arch/x86/kernel/unwind_orc.c                  |   21 +++-
+ include/linux/kprobes.h                       |   44 +++++++-
+ include/linux/objtool.h                       |   12 ++
+ kernel/kprobes.c                              |  133 +++++++++++++++++++------
+ kernel/trace/trace_output.c                   |   17 +--
+ lib/error-inject.c                            |    3 -
+ tools/include/linux/objtool.h                 |   12 ++
+ tools/objtool/check.c                         |    2 
+ 42 files changed, 360 insertions(+), 172 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
