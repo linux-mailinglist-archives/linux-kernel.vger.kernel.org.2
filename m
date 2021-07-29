@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850DA3DA173
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FBE3DA132
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236436AbhG2KoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:44:19 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3522 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236292AbhG2KoP (ORCPT
+        id S234236AbhG2Kkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:40:39 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34408
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235445AbhG2Kkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:44:15 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gb6NZ3C6lz6FG8P;
-        Thu, 29 Jul 2021 18:34:54 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 12:44:11 +0200
-Received: from A2006125610.china.huawei.com (10.47.90.183) by
- lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 11:44:04 +0100
-From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
-CC:     <maz@kernel.org>, <will@kernel.org>, <catalin.marinas@arm.com>,
-        <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
-        <suzuki.poulose@arm.com>, <jean-philippe@linaro.org>,
-        <Alexandru.Elisei@arm.com>, <qperret@google.com>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v3 4/4] KVM: arm64: Clear active_vmids on vCPU schedule out
-Date:   Thu, 29 Jul 2021 11:40:09 +0100
-Message-ID: <20210729104009.382-5-shameerali.kolothum.thodi@huawei.com>
-X-Mailer: git-send-email 2.12.0.windows.1
-In-Reply-To: <20210729104009.382-1-shameerali.kolothum.thodi@huawei.com>
-References: <20210729104009.382-1-shameerali.kolothum.thodi@huawei.com>
+        Thu, 29 Jul 2021 06:40:37 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 02B653F051
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:40:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627555234;
+        bh=U5ZMYZkwqc8RmbQysqq1OTMd/Wgw4WsrTPEA4vYur0c=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=O3jOQYFY6dqrgjVdVuQL9e6Sc0FfoF5VGfll05AhWptCMRmmIBbiGuenWnfO1VrK0
+         Jhdyo5J2n6plCcNoZ7kBC7lGi1z0eCy7lKMkDOxQQaeKalVUsSyHNLUFqWJqb8yWi6
+         aS0IL8ag7MPLBlBDgyzrQN+IfJBcFOGB/M88dUr0KtNvU+70XhQOw5WeNzb/KDdvta
+         W6H7d+1eYYZ1NqzkpravJ0trzDRCE4ewXtuv2JugzqYJbWKWHc1mMQE8vdPP/f0Yhi
+         XejWQkkWi+kMjq1Q3E2K4TTKgx7DUBJoCzQZHSicdVeDtFU+v4gtFhIbDTU8kPmb99
+         eNUqpdbFD5raw==
+Received: by mail-ed1-f69.google.com with SMTP id i89-20020a50b0620000b02903b8906e05b4so2715037edd.19
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:40:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U5ZMYZkwqc8RmbQysqq1OTMd/Wgw4WsrTPEA4vYur0c=;
+        b=YhmmVsjYYOnxoWNYrA9AUcQiFjtzQhIOWaOK9LTXyvbv66bOYfqytMr4ZVTyQYFvEG
+         gHu6augAGvlJQ0dbyY4I/QCKSu5x5urs4GK1lxwepyEX9LKTrwevCiQWoe41ex0W9qfW
+         kF7+1nRRh7A8hr8jO1y1GP1T0F0KzMFwBKVTwGobTkcSBf76nMZyeuv9I8w8XnWI4k8q
+         P1zDiwZfmyynO6v2vJG/JZ79LicGTuaPRiYRR2hqk067YOAT/ox60DdqGvC9nUVYkBxH
+         Tp3FCOTuPhGKQk5jomcg0IuewpqzILRIFUYntrjezjlhl2vGp+opBCqn9ypT0EFs6v/m
+         47cg==
+X-Gm-Message-State: AOAM532gyvJHYyTKur8cOE7DYBtyDCxZyEkaB1rVitCR8LKCHf6baSEa
+        JX05JEcI3JWSZxGRp0IGnZDYv9Z4Lvqlw7CQA9wQ/Ne5ML2nZNfpPE58XDfjpAP8O7mFXMeCPjl
+        D7F9HvHG0hF7IU9PfW8NrZ6d6vHgUuqrsKr2PuWi5/A==
+X-Received: by 2002:a05:6402:278e:: with SMTP id b14mr5191732ede.277.1627555233654;
+        Thu, 29 Jul 2021 03:40:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw0zzZMt4FRxj6/pkKudrZrKtAC8UcrWt1V+5uDuEVakkenlwbpg5EabX2DWunH4RtcpYeAvw==
+X-Received: by 2002:a05:6402:278e:: with SMTP id b14mr5191710ede.277.1627555233472;
+        Thu, 29 Jul 2021 03:40:33 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id c14sm824475ejb.78.2021.07.29.03.40.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 03:40:32 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Bongsu Jeon <bongsu.jeon@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH 00/12] nfc: constify, continued (part 2)
+Date:   Thu, 29 Jul 2021 12:40:10 +0200
+Message-Id: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.90.183]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like ASID allocator, we copy the active_vmids into the
-reserved_vmids on a rollover. But it's unlikely that
-every CPU will have a vCPU as current task and we may
-end up unnecessarily reserving the VMID space.
+Hi,
 
-Hence, clear active_vmids when scheduling out a vCPU.
+On top of:
+nfc: constify pointed data
+https://lore.kernel.org/lkml/20210726145224.146006-1-krzysztof.kozlowski@canonical.com/
 
-Suggested-by: Will Deacon <will@kernel.org>
-Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
----
- arch/arm64/include/asm/kvm_host.h | 1 +
- arch/arm64/kvm/arm.c              | 1 +
- arch/arm64/kvm/vmid.c             | 6 ++++++
- 3 files changed, 8 insertions(+)
+Best regards,
+Krzysztof
 
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index bb993bce1363..d93141cb8d16 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -687,6 +687,7 @@ extern unsigned int kvm_arm_vmid_bits;
- int kvm_arm_vmid_alloc_init(void);
- void kvm_arm_vmid_alloc_free(void);
- void kvm_arm_vmid_update(struct kvm_vmid *kvm_vmid);
-+void kvm_arm_vmid_clear_active(void);
- 
- static inline void kvm_arm_pvtime_vcpu_init(struct kvm_vcpu_arch *vcpu_arch)
- {
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 077e55a511a9..b134a1b89c84 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -435,6 +435,7 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
- 	kvm_timer_vcpu_put(vcpu);
- 	kvm_vgic_put(vcpu);
- 	kvm_vcpu_pmu_restore_host(vcpu);
-+	kvm_arm_vmid_clear_active();
- 
- 	vcpu->cpu = -1;
- }
-diff --git a/arch/arm64/kvm/vmid.c b/arch/arm64/kvm/vmid.c
-index 5584e84aed95..5fd51f5445c1 100644
---- a/arch/arm64/kvm/vmid.c
-+++ b/arch/arm64/kvm/vmid.c
-@@ -116,6 +116,12 @@ static u64 new_vmid(struct kvm_vmid *kvm_vmid)
- 	return idx2vmid(vmid) | generation;
- }
- 
-+/* Call with preemption disabled */
-+void kvm_arm_vmid_clear_active(void)
-+{
-+	atomic64_set(this_cpu_ptr(&active_vmids), 0);
-+}
-+
- void kvm_arm_vmid_update(struct kvm_vmid *kvm_vmid)
- {
- 	unsigned long flags;
+
+Krzysztof Kozlowski (12):
+  nfc: constify passed nfc_dev
+  nfc: mei_phy: constify buffer passed to mei_nfc_send()
+  nfc: port100: constify several pointers
+  nfc: trf7970a: constify several pointers
+  nfc: virtual_ncidev: constify pointer to nfc_dev
+  nfc: nfcsim: constify drvdata (struct nfcsim)
+  nfc: fdp: drop unneeded cast for printing firmware size in dev_dbg()
+  nfc: fdp: use unsigned int as loop iterator
+  nfc: fdp: constify several pointers
+  nfc: microread: constify several pointers
+  nfc: mrvl: constify several pointers
+  nfc: mrvl: constify static nfcmrvl_if_ops
+
+ drivers/nfc/fdp/fdp.c             | 27 +++++++++++-----------
+ drivers/nfc/fdp/fdp.h             |  2 +-
+ drivers/nfc/fdp/i2c.c             |  6 ++---
+ drivers/nfc/mei_phy.c             |  2 +-
+ drivers/nfc/microread/i2c.c       |  2 +-
+ drivers/nfc/microread/microread.c |  4 ++--
+ drivers/nfc/microread/microread.h |  2 +-
+ drivers/nfc/nfcmrvl/fw_dnld.c     | 16 +++++++------
+ drivers/nfc/nfcmrvl/i2c.c         |  4 ++--
+ drivers/nfc/nfcmrvl/main.c        |  4 ++--
+ drivers/nfc/nfcmrvl/nfcmrvl.h     |  6 ++---
+ drivers/nfc/nfcmrvl/spi.c         |  6 ++---
+ drivers/nfc/nfcmrvl/uart.c        |  4 ++--
+ drivers/nfc/nfcmrvl/usb.c         |  2 +-
+ drivers/nfc/nfcsim.c              |  2 +-
+ drivers/nfc/port100.c             | 37 +++++++++++++++++--------------
+ drivers/nfc/trf7970a.c            | 17 +++++++-------
+ drivers/nfc/virtual_ncidev.c      |  2 +-
+ include/net/nfc/nfc.h             |  4 ++--
+ 19 files changed, 78 insertions(+), 71 deletions(-)
+
 -- 
-2.17.1
+2.27.0
 
