@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B783E3DAC39
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A943DAC3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhG2Tzv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Jul 2021 15:55:51 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:60213 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhG2Tzu (ORCPT
+        id S232506AbhG2T4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhG2T4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 15:55:50 -0400
-Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id F04BFCED1E;
-        Thu, 29 Jul 2021 21:55:45 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] Bluetooth: btusb: Make the CSR clone chip force-suspend
- workaround more generic
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <906e95ce-b0e5-239e-f544-f34d8424c8da@gmail.com>
-Date:   Thu, 29 Jul 2021 21:55:45 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <D11408EE-8541-4930-A438-6338F342EFB1@holtmann.org>
-References: <906e95ce-b0e5-239e-f544-f34d8424c8da@gmail.com>
-To:     Ismael Ferreras Morezuelas <swyterzone@gmail.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Thu, 29 Jul 2021 15:56:47 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8C4C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:56:43 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id e11-20020a05620a208bb02903b854c43335so3833829qka.21
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=AybauKNFPo3SsUjhjkW3rvaT9nCugcHZc2DTga5rD+Y=;
+        b=pDjWXDMBoqce2Uo3OFtJqZEiF7+0tG6fbwCkYp/QACm55I5LeZi6KGbTuMrSoe1cpk
+         cKB3vxAThRuWvsRaBsGqDa70j0yjXUL+jIyrVksRTaHkqWIM7fjB12MJIG2DFRppBsET
+         OS+SgpYNdabohr+fskGck9XrjK1I9TB5SGCPbSFDRFCvXaVN/wK3x+926RV2yAWtXm92
+         2RLXmBhRr2WiNQi5NX86D6YFvwO+mh5X+GudOeiT1cU81ScCAw9pXLpWtAYUlsvlEwny
+         7LTUROpCB9f6RyfBw38ElnczcBXFnU+VcCD28lRKwo+UoPXYplSCMMbxGekOT21/omPJ
+         aMQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=AybauKNFPo3SsUjhjkW3rvaT9nCugcHZc2DTga5rD+Y=;
+        b=soJeUujVPUHQW9WCjUslr6jaExgku20sWyMuYjSaTd4mf/OK7ByPys+Ymb0uTz4jFF
+         iNPvB/RZXJ0UlOXk/FPfLOssnCcqb8VbvZu+6dz2tToWRbCxS0mDe6NOXrRZTMgiJ8Py
+         T1zofCWE/O5SJiYszEpWdpmAyh/r/xGcA3iinA7WQIdEFTIuN0xrBRnmlJUKYTEOuZax
+         SGsxfz3/Bw62GP5LGN0JKw9U927sY0mLdOJ+QukTCMLEap9bg7t4EBf+QfJYDc5JUiSc
+         32oKqVYhvdKPqkdlhKP5OJj1eOPWIvIoXOXQVYenBK6cW9PptRRwWyuNzJ/eW8BB5gya
+         mXSw==
+X-Gm-Message-State: AOAM530WLl4ljxL7LsfNBx7EtYbR7j9QkToDPXH7E+/AncFSoWOq1QI2
+        Zb9BAJAFSEZiyUKRZL7KBGWPTepEFMI=
+X-Google-Smtp-Source: ABdhPJwU8WQNmo1zhH1aQzP5f0AXaA7UbdvB2nIHEOEw8XVOvuCKD7pK9ur3hioyHd+oC0Rya2glIwWuYlI=
+X-Received: from oupton.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:404])
+ (user=oupton job=sendgmr) by 2002:ad4:5c49:: with SMTP id a9mr6517273qva.27.1627588602907;
+ Thu, 29 Jul 2021 12:56:42 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 19:56:29 +0000
+Message-Id: <20210729195632.489978-1-oupton@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH 0/3] KVM: arm64: Use generic guest entry infrastructure
+From:   Oliver Upton <oupton@google.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Peter Shier <pshier@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Guangyu Shi <guangyus@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ismael,
+The arm64 kernel doesn't yet support the full generic entry
+infrastructure. That being said, KVM/arm64 doesn't properly handle
+TIF_NOTIFY_RESUME and could pick this up by switching to the generic
+guest entry infrasturture.
 
-> Turns out Hans de Goede completed the work I started last year trying to
-> improve Chinese-clone detection of CSR controller chips. Quirk after quirk
-> these Bluetooth dongles are more usable now.
-> 
-> Even after a few BlueZ regressions; these clones are so fickle that some
-> days they stop working altogether. Except on Windows, they work fine.
-> 
-> 
-> But this force-suspend initialization quirk seems to mostly do the trick,
-> after a lot of testing Bluetooth now seems to work *all* the time.
-> 
-> The only problem is that the solution ended up being masked under a very
-> stringent check; when there are probably hundreds of fake dongle
-> models out there that benefit from a good reset. Make it so.
-> 
-> 
-> Fixes: 81cac64ba258a ("Bluetooth: Deal with USB devices that are faking CSR vendor")
-> Fixes: cde1a8a992875 ("Bluetooth: btusb: Fix and detect most of the Chinese Bluetooth controllers")
-> Fixes: d74e0ae7e0303 ("Bluetooth: btusb: Fix detection of some fake CSR controllers with a bcdDevice val of 0x0134")
-> Fixes: 0671c0662383e ("Bluetooth: btusb: Add workaround for remote-wakeup issues with Barrot 8041a02 fake CSR controllers")
-> 
-> Cc: stable@vger.kernel.org
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Tested-by: Ismael Ferreras Morezuelas <swyterzone@gmail.com>
-> Signed-off-by: Ismael Ferreras Morezuelas <swyterzone@gmail.com>
-> ---
-> 
-> I've changed the warning line to make it easy to grep and detect if this updated
-> workaround is part of the driver. Should make it much more obvious to users in
-> case their dongle doesn't work for other reasons. There's a clear then-now.
-> 
-> Easy to narrow other future issues down. Let me know what you think.
-> 
-> drivers/bluetooth/btusb.c | 61 +++++++++++++++++++++------------------
-> 1 file changed, 33 insertions(+), 28 deletions(-)
+Patch 1 adds a missing vCPU stat to ARM64 to record the number of signal
+exits to userspace.
 
-patch has been applied to bluetooth-next tree.
+Patch 2 unhitches entry-kvm from entry-generic, as ARM64 doesn't
+currently support the generic infrastructure.
 
-Regards
+Patch 3 replaces the open-coded entry handling with the generic xfer
+function.
 
-Marcel
+This series was tested on an Ampere Mt. Jade reference system. The
+series cleanly applies to kvm/queue (note that this is deliberate as the
+generic kvm stats patches have not yet propagated to kvm-arm/queue) at
+the following commit:
+
+8ad5e63649ff ("KVM: Don't take mmu_lock for range invalidation unless necessary")
+
+Oliver Upton (3):
+  KVM: arm64: Record number of signal exits as a vCPU stat
+  entry: KVM: Allow use of generic KVM entry w/o full generic support
+  KVM: arm64: Use generic KVM xfer to guest work function
+
+ arch/arm64/include/asm/kvm_host.h |  1 +
+ arch/arm64/kvm/Kconfig            |  1 +
+ arch/arm64/kvm/arm.c              | 26 ++++++++++++++------------
+ arch/arm64/kvm/guest.c            |  3 ++-
+ include/linux/entry-kvm.h         |  6 +++++-
+ 5 files changed, 23 insertions(+), 14 deletions(-)
+
+-- 
+2.32.0.554.ge1b32706d8-goog
 
