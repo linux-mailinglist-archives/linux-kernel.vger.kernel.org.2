@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C183DA97C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304763DA982
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhG2Qzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhG2Qzg (ORCPT
+        id S231359AbhG2Q4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:56:51 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:44613 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229769AbhG2Q4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:55:36 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219A2C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:55:33 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 48-20020a9d0bb30000b02904cd671b911bso6542377oth.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:55:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hgC1Q4pMoeXbvHStOPFFYkLCsk1OZWIPRrIaBVnONRI=;
-        b=XutRjkdHw48vdg5XN70l1ypLeUDJqRnm6H13Jem2+Z5AyMWS5W1/Kv/k09zcJ/bnoq
-         rk2HiyxskeP2QVNOPd1m0g1cKw0HDDaAonISyZe16aVWOcInCaFkH4E4WYxiUjpysyq5
-         id5VXhW99jjQiFBB73BwvEu7tFCta27R+cUZk=
+        Thu, 29 Jul 2021 12:56:46 -0400
+Received: by mail-wm1-f46.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so4502160wmd.3;
+        Thu, 29 Jul 2021 09:56:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hgC1Q4pMoeXbvHStOPFFYkLCsk1OZWIPRrIaBVnONRI=;
-        b=bHS1bwsQRL/rD+Vol5YIxPjf6pZ5p2KJF6h/dUxL+quI+i0F5BzTbjHI/exXL62fQy
-         rMPENeQvo150AQjbEaz8FwqHoHZ/7eepoLJT/iWF3zN+sUbjNd79kPjVZb9oG9Uo2vkT
-         Y4QxzWj/2dL33mp5jEbRn3tULmP3GcTNCQGLx1ieJUM4CZgb8vSTtL1YHaDIezL7q3f3
-         3m7Glt8MupvnKfFHgQZYZk2RrrHExnEnmWsxxpEAnubTau+3u4I1H1GpHUTfWuJTiMzA
-         cgS/sCv/LQO5Awhnv3p/7S2eH6d9Pw3d8jV8bw+V7qfSz1lF2A6yHn/nUYHwGjflTWw/
-         MZqQ==
-X-Gm-Message-State: AOAM532Xeq3TB+LOPLebYee9hqr0GV0EiE7+z0lsuiLFwsH2E71iOpI8
-        MqBQidMCyMTL92BeNc8pzVMbEw==
-X-Google-Smtp-Source: ABdhPJwjwbXtqv/YaHyHQl731cs7U5y/NpGcnFr/liM5DMdeNIrOW+KQplyhTo++fjEjlu+8Ac2gTQ==
-X-Received: by 2002:a05:6830:2b23:: with SMTP id l35mr4160041otv.21.1627577732507;
-        Thu, 29 Jul 2021 09:55:32 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s24sm549018ooq.37.2021.07.29.09.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 09:55:32 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] kunit: Add support for suite initialization and
- cleanup
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iAOr1eTi2QbZFnOFfALjz4TbmFhPPA7Bn3lPJeG08eE=;
+        b=GgwafQx4+gpsLxU4D8qPW85iEahhD+KpsZPorEOogzi3tiBGJ0WZ0FuSY38Gx5Vls+
+         qXdveLl4FvUSPyNnb6j56g6wAhEpLHPcvzNyr/nA5X93jrSIys4aQeh3m18REcJE1gEh
+         1/qddAObi+E+XhWHxB6LojxG8rMFx9ZWbqjYlWxVl0rGT0IipI8XA3W0rEswTXhl5hX/
+         9iLRQu6FjmjyDcyq408KKkNOcbthwjp1AKAwyuRYK0WU1OkHdWfKlQiztSeZm440oCpk
+         tdCNtBgMhlbxcBxXUBD2EcsElNzmSIcPJyGDg7f4z1aPvxMI4hTWalKqJ8suqdwFdoq8
+         59CA==
+X-Gm-Message-State: AOAM532ZWU1Kz7CNsBfiMs4c8WeTDGh+M8kOQPU+YLr53oEAtkkmiwsr
+        csksqtsbVQHLBHi5qbDbdy0=
+X-Google-Smtp-Source: ABdhPJyfCfq044i2vz5ul0cBAcnLD2W5dYBIRUnQdt4zr5u4bLe7WSQpPLQIvGhwXP2+rJ3hRrPI9Q==
+X-Received: by 2002:a1c:7419:: with SMTP id p25mr15030397wmc.160.1627577800978;
+        Thu, 29 Jul 2021 09:56:40 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id p22sm8806377wmq.44.2021.07.29.09.56.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 09:56:40 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 16:56:38 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Siddharth Chandrasekaran <sidcha.dev@gmail.com>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org,
-        Bodo Stroesser <bostroesser@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Yanko Kaneti <yaneti@declera.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210729044125.7435-1-bvanassche@acm.org>
- <20210729044125.7435-3-bvanassche@acm.org> <YQJCyigNroTl8J/l@kroah.com>
- <8ab0ea44-760a-61df-0b9a-8b314ca9a0fe@acm.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <733cb812-8696-45f4-356d-cfe5bd85eb9b@linuxfoundation.org>
-Date:   Thu, 29 Jul 2021 10:55:31 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] asm-generic/hyperv: Fix struct hv_message_header ordering
+Message-ID: <20210729165638.f5idr2ag3pdbpd6u@liuwe-devbox-debian-v2>
+References: <20210729133702.11383-1-sidcha@amazon.de>
+ <87eebh9qhd.fsf@vitty.brq.redhat.com>
+ <20210729140705.wj5tokeq6lkxm2yy@liuwe-devbox-debian-v2>
+ <20210729142652.GA25242@uc8bbc9586ea454.ant.amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <8ab0ea44-760a-61df-0b9a-8b314ca9a0fe@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729142652.GA25242@uc8bbc9586ea454.ant.amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 10:52 AM, Bart Van Assche wrote:
-> On 7/28/21 10:55 PM, Greg KH wrote:
->> On Wed, Jul 28, 2021 at 09:41:24PM -0700, Bart Van Assche wrote:
->>> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
->>> Cc: David Gow <davidgow@google.com>
->>> Cc: Shuah Khan <skhan@linuxfoundation.org>
->>> Cc: kunit-dev@googlegroups.com
->>> Cc: linux-kselftest@vger.kernel.org
->>> Cc: Bodo Stroesser <bostroesser@gmail.com>
->>> Cc: Martin K. Petersen <martin.petersen@oracle.com>
->>> Cc: Yanko Kaneti <yaneti@declera.com>
->>> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
->>> ---
->>
->> I know I do not take patches without any changelog text.  Maybe other
->> maintainers are more lax :(
+On Thu, Jul 29, 2021 at 04:26:54PM +0200, Siddharth Chandrasekaran wrote:
+> On Thu, Jul 29, 2021 at 02:07:05PM +0000, Wei Liu wrote:
+> > On Thu, Jul 29, 2021 at 03:52:46PM +0200, Vitaly Kuznetsov wrote:
+> > > Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+> > >
+> > > > According to Hyper-V TLFS Version 6.0b, struct hv_message_header members
+> > > > should be defined in the order:
+> > > >
+> > > >     message_type, reserved, message_flags, payload_size
+> > > >
+> > > > but we have it defined in the order:
+> > > >
+> > > >     message_type, payload_size, message_flags, reserved
+> > > >
+> > > > that is, the payload_size and reserved members swapped.
+> > >
+> > > Indeed,
+> > >
+> > > typedef struct
+> > > {
+> > >       HV_MESSAGE_TYPE MessageType;
+> > >       UINT16 Reserved;
+> > >       HV_MESSAGE_FLAGS MessageFlags;
+> > >       UINT8 PayloadSize;
+> > >       union
+> > >       {
+> > >               UINT64 OriginationId;
+> > >               HV_PARTITION_ID Sender;
+> > >               HV_PORT_ID Port;
+> > >       };
+> > > } HV_MESSAGE_HEADER;
+> > 
+> > Well. I think TLFS is wrong. Let me ask around.
 > 
-> Almost every patch from me has an elaborate changelog. For this patch I chose not to add a changelog since I think that the subject is self-explanatory?
+> TBH, I hadn't considered that possibility :). I assumed it was a
+> regression on our side. But I spent some time tracing the history of that
+> struct all the way back to when it was in staging (in 2009) and now I'm
+> inclined to believe a later version of TLFS is at fault here.
+> 
+> Based on what we decide in this thread, I will open an issue on the TLFS
+> GitHub repository.
 > 
 
-I don't take patches without change logs either. I can't say the subject
-tells me what you are doing.
+I have confirmation TLFS is wrong and shall be fixed. Feel free to open
+an issue on GitHub too.
 
-Please add a change log.
-
-thanks,
--- Shuah
-
+Wei.
