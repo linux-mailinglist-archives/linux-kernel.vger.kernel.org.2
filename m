@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0D73DAF97
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4F33DAF99
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbhG2WwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:52:06 -0400
-Received: from mail-il1-f175.google.com ([209.85.166.175]:35384 "EHLO
-        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbhG2WwE (ORCPT
+        id S234510AbhG2WxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 18:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233516AbhG2WxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:52:04 -0400
-Received: by mail-il1-f175.google.com with SMTP id k3so7521974ilu.2;
-        Thu, 29 Jul 2021 15:52:01 -0700 (PDT)
+        Thu, 29 Jul 2021 18:53:18 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F739C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:53:14 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 21so10534732oin.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Bd7dVxWZYNuT3I9ZZ3/NGYWtgMpKZTXAbbWXptJCJmg=;
+        b=DSI6jW3CyvI5xTydK7NrBm+CN2vi2xwISQZBrWq6ujFfWzOeAzfifgIVNBA4Dw+Mzi
+         BoTOgJFTsKH15XERmt0bWVl+yi3qJ+DhcYNaGl/VYC0AMszvoojuqDlonOUSc7c7jHYh
+         Rn+RqcKMloy9z/fz0H3iIwrXDohKlY+6tLhq0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HTJgy5VBZ0oMAHE9O7XmVIIL13K6DpLlQbEnJdwiDGg=;
-        b=OF6eWnj6UqpObP2sdHK+/Ft6tkpDnVFyJ0xfj7h9G/Gj1gVWlgjL7MzL5esgEyBhWL
-         AseMY5oM0LlseADRhQqkrBrmJPyEXQjbR+AAmy72j9o7TkSVaXzA7Ma5h2vSk4VLmG5V
-         cMgCahwcqp0guGdJzUlKWsw06DQQ6qe5fDim1Dg5TvHCb7HMWw/hpwm9d/2ZV/NYLLrL
-         eyxaKb9tVDnZzm+3tnP/D3TXvN5lxGk2bPzg1+AWCKsVvTug9IDFHWUyuH1yIrRuRdjk
-         ReOHy6JgtM+i7+pejCgXGD656HA4X22cEhrz2AUwlGMI32f4hReY//VuR63bbMc27Hk+
-         VW2w==
-X-Gm-Message-State: AOAM531qBzBpu8qbCAYoRTxIfiy+Ry5vw33bTCEn6t1O96vpims1RPC5
-        hmPhO58EuX1swAP6HRpJuA==
-X-Google-Smtp-Source: ABdhPJxvwdp6rY9SUaluCLYLkZoGuVPcomNzfE5Ygq462J5Max8ViPgmc099fsR25cf7mnvNu3kFRQ==
-X-Received: by 2002:a05:6e02:2162:: with SMTP id s2mr5369766ilv.99.1627599120624;
-        Thu, 29 Jul 2021 15:52:00 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id q11sm1623611ile.71.2021.07.29.15.51.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 15:51:59 -0700 (PDT)
-Received: (nullmailer pid 1054722 invoked by uid 1000);
-        Thu, 29 Jul 2021 22:51:56 -0000
-Date:   Thu, 29 Jul 2021 16:51:56 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sam Shih <sam.shih@mediatek.com>
-Cc:     Seiya Wang <seiya.wang@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-watchdog@vger.kernel.org, Ryder Lee <Ryder.Lee@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, linux-clk@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sean Wang <sean.wang@kernel.org>, linux-serial@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matt Mackall <mpm@selenic.com>,
-        John Crispin <john@phrozen.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: Re: [PATCH 07/12] dt-bindings: arm64: dts: mediatek: Add mt7986
- series
-Message-ID: <YQMxDIKR6+mR0gZt@robh.at.kernel.org>
-References: <20210726071439.14248-1-sam.shih@mediatek.com>
- <20210726071439.14248-8-sam.shih@mediatek.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Bd7dVxWZYNuT3I9ZZ3/NGYWtgMpKZTXAbbWXptJCJmg=;
+        b=XMxVFk02v410MwbK5HXR+apCiAyg+NPcjpq0xeNloB7MhGoK0B/5w91sZUWjC4P5un
+         ccrAew/m9vtb8Vf/72S4mm0vJHmu8CrPP3lZVKL9NBuHSZbx0uBCNT3uGbLjvibnFO+0
+         /d210IRm0kezZnsySdR7OqdLeOLIF5WM2K1tmqRecT1SLCCEZCVzbOC4HZ1L/h5oakHI
+         jv5BlLucmP96GLLUb2Omm0VMvx1cOn21wdKKSAMgdI2I9tVu1OsQ0WyntF5YhLXQtsKY
+         6k0O/TDPog58LmdZkTsLu8yMpVu2dKB9DUEQnHyzgc5V8si9LJMpzmF197r0l41//OXf
+         UVlA==
+X-Gm-Message-State: AOAM533la1m+t7wQbxu+aFKTa8516TMQFZiPG57l4gTUQG5a/4XbcEwp
+        /kEjT9srVfkwLWOKd4aOoXBwEQ==
+X-Google-Smtp-Source: ABdhPJz/cDoA5ROTORgia6Wg/A24q4jVe7a/TPTO597+Mug16syhXzbW4bBuj9eobtJB9SYEJ0rT4Q==
+X-Received: by 2002:aca:c346:: with SMTP id t67mr11591228oif.124.1627599193630;
+        Thu, 29 Jul 2021 15:53:13 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id r20sm857513oic.47.2021.07.29.15.53.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 15:53:13 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/24] 5.10.55-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210729135137.267680390@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <126ef248-a490-24d9-2bf0-feefe5c64007@linuxfoundation.org>
+Date:   Thu, 29 Jul 2021 16:53:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726071439.14248-8-sam.shih@mediatek.com>
+In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 15:14:34 +0800, Sam Shih wrote:
-> MT7986 is Mediatek's new 4-core SoC, which is mainly for wifi-router
-> application. The difference between mt7986a and mt7986b is that some
-> pins do not exist on mt7986b.
+On 7/29/21 7:54 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.55 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.55-rc1.gz
 
-Acked-by: Rob Herring <robh@kernel.org>
+Couldn't find this patch. Will checkout the rc instead.
+
+thanks,
+-- Shuah
