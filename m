@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110E03DAC03
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DA13DAC05
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhG2TrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 15:47:15 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:43618 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhG2TrO (ORCPT
+        id S232452AbhG2TrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:47:20 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:34295 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229664AbhG2TrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 15:47:14 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A2BCD1C0B79; Thu, 29 Jul 2021 21:47:09 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 21:47:09 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/24] 5.10.55-rc1 review
-Message-ID: <20210729194709.GA11477@duo.ucw.cz>
-References: <20210729135137.267680390@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
-Content-Disposition: inline
-In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 29 Jul 2021 15:47:16 -0400
+Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 39516CED1E;
+        Thu, 29 Jul 2021 21:47:12 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH] Bluetooth: btusb: Enable MSFT extension for Intel next
+ generation controllers
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210729094319.1.Ib7a90fea41e56da34bab6811c2ecf6b255a14f51@changeid>
+Date:   Thu, 29 Jul 2021 21:47:11 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <0E5C12DF-2385-4B31-A396-FBDB9A2CFD0D@holtmann.org>
+References: <20210729094319.1.Ib7a90fea41e56da34bab6811c2ecf6b255a14f51@changeid>
+To:     Michael Sun <michaelfsun@google.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Michael,
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> The Intel TyphoonPeak, GarfieldPeak Bluetooth controllers
+> support the Microsoft vendor extension and they are using
+> 0xFC1E for VsMsftOpCode.
+> 
+> Verified on a GarfieldPeak device through bluetoothctl show
+> 
+> Signed-off-by: Chethan T N <chethan.tumkur.narayan@intel.com>
+> Signed-off-by: Michael Sun <michaelfsun@google.com>
+> ---
+> 
+> drivers/bluetooth/btusb.c | 11 +++++++++++
+> 1 file changed, 11 insertions(+)
 
-Hi!
+Patch has been applied to bluetooth-next tree.
 
-> This is the start of the stable review cycle for the 5.10.55 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Regards
 
-CIP testing did not find any problems here:
+Marcel
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
-
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYQMFvQAKCRAw5/Bqldv6
-8vLLAKCQUnNEzkCAzmN28pOCjLZv678A9gCeMKkxZEPmMuDsiqyN/X1TMdWoqlQ=
-=0nFE
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
