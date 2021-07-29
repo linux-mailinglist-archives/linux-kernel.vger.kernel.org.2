@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5419B3DA89B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FCA3DA8A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhG2QMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhG2QMl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:12:41 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A656C061799;
-        Thu, 29 Jul 2021 09:11:57 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id a26so11961236lfr.11;
-        Thu, 29 Jul 2021 09:11:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N/ukz9Nxovf/wu6f2u5vCaEbaJjcjA44qpNIta3Aiwk=;
-        b=Qw/ib0YrQysCpDvVZE3IzXPLC/imDhK/VxXHvnOOthIj1PRxXYA6+vexaM47HToVoA
-         tTETxJbo3lLqGZKs6DB2vebtNnLp0IUDdbcm5f/Uvm1VdwuYwcCjqhwZddHqSu63vP23
-         DVVWLBUwnPtdtGpCE7RH6RNe9sYe11mmVHuagF1lsJuFu/PBS9JQedVLgUWmUS1BxVu4
-         rBNTbSIWrpyNoKx7THwvlCyIvvupKo4hF2bC2PXeKOJ00q9temZJhrNsalW2ZTYTj5jV
-         Fs5OhQ3VRC93qLEu2YF4tIwz+h9Pt84HoNL3+eHXhD2r8r8NDCm3Bs6okrzCMBA23Rk7
-         pr+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N/ukz9Nxovf/wu6f2u5vCaEbaJjcjA44qpNIta3Aiwk=;
-        b=k0SlWvnPpPazq0rgu+Fs8+uV74IEo1Cv+6UwMdpjhIe7CTuVi525ffuCe4Un2+4imA
-         8m9/9QnKY07mY2venh0nWxts2dVzHSTE6r9sGMJE2bmkmWCuhP/p3ysSX4lbzAMIIcoW
-         p6ots3qI7h7H1WjtfcS4+p8snyIljXI3rEwPnMiDR4IK/ogi+Ye2qzOqx5Vt4UDYU7Sr
-         goMWU+nd0u5ZUeLxHQ9HYBlyUb8CDMQc2/apLdKbF/xWzUN/OXxK7/lwzZ5w9jIwXCX6
-         Dxlsi3Jhy3nKKyXlj/i2tfl0BtV+M9pasRp5x8waVQb5sQdT0UIWz1yFDHaVHFGwqw8X
-         OaHg==
-X-Gm-Message-State: AOAM533kQEUYss+K/ql13kwyKovB73/3UusD7WVYt3LHfkQoIo0gDpoE
-        s/Cnj6SwGmamcQkFNWBVT6/TZgYdQCDksy1DZSc=
-X-Google-Smtp-Source: ABdhPJx8Sflz71gf1mhhsuMz8oCEiGzHhbGVCNN3UMpN5Pi+BQfxX6fNmF2Fo+tsOPc1VWB60X/9nAL2qJZgLb2fc5I=
-X-Received: by 2002:ac2:4341:: with SMTP id o1mr4177642lfl.360.1627575115559;
- Thu, 29 Jul 2021 09:11:55 -0700 (PDT)
+        id S229920AbhG2QNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:13:42 -0400
+Received: from mga04.intel.com ([192.55.52.120]:42247 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229485AbhG2QNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 12:13:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="211035522"
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
+   d="scan'208";a="211035522"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 09:12:04 -0700
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
+   d="scan'208";a="465130370"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.209.170.107]) ([10.209.170.107])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 09:12:04 -0700
+Subject: Re: [PATCH] dmaengine: idxd: Fix a possible NULL pointer dereference
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        vkoul@kernel.org, dan.j.williams@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <77f0dc4f3966591d1f0cffb614a94085f8895a85.1627560174.git.christophe.jaillet@wanadoo.fr>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <44c9607e-2cde-02b9-7e4e-68578a775fb3@intel.com>
+Date:   Thu, 29 Jul 2021 09:12:03 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210728175327.1150120-1-dqfext@gmail.com> <20210728175327.1150120-3-dqfext@gmail.com>
- <20210729152805.o2pur7pp2kpxvvnq@skbuf>
-In-Reply-To: <20210729152805.o2pur7pp2kpxvvnq@skbuf>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Fri, 30 Jul 2021 00:11:45 +0800
-Message-ID: <CALW65jbHwRhekX=7xoFvts2m7xTRM4ti9zpTiah8ed0n0fCrRg@mail.gmail.com>
-Subject: Re: [RFC net-next 2/2] net: dsa: mt7530: trap packets from standalone
- ports to the CPU
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <77f0dc4f3966591d1f0cffb614a94085f8895a85.1627560174.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 11:28 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> Actually, on second thought...
-> If MT7530 supports 8 FIDs and it has 7 ports, then you can assign one
-> FID to each standalone port or VLAN-unaware bridge it is a member of.
 
-The problem is, there is no way to do that..
+On 7/29/2021 5:04 AM, Christophe JAILLET wrote:
+> 'device_driver_attach()' dereferences its first argument (i.e. 'alt_drv')
+> so it must not be NULL.
+> Simplify the error handling logic about NULL 'alt_drv' in order to be
+> more robust and future-proof.
+>
+> Fixes: 568b2126466f ("dmaengine: idxd: fix uninit var for alt_drv")
+> Fixes: 6e7f3ee97bbe ("dmaengine: idxd: move dsa_drv support to compatible mode")
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-According to the reference manual:
-Filter ID is learned automatically from VLAN Table. 0 is the default value if
-VLAN Table is not applicable.
 
-So it is always 0 in VLAN-unaware mode.
+Thanks for the cleanup.
+
+Acked-by: Dave Jiang <dave.jiang@intel.com>
+
+> ---
+>   drivers/dma/idxd/compat.c | 15 ++++-----------
+>   1 file changed, 4 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/dma/idxd/compat.c b/drivers/dma/idxd/compat.c
+> index d7616c240dcd..3df21615f888 100644
+> --- a/drivers/dma/idxd/compat.c
+> +++ b/drivers/dma/idxd/compat.c
+> @@ -45,23 +45,16 @@ static ssize_t bind_store(struct device_driver *drv, const char *buf, size_t cou
+>   	idxd_dev = confdev_to_idxd_dev(dev);
+>   	if (is_idxd_dev(idxd_dev)) {
+>   		alt_drv = driver_find("idxd", bus);
+> -		if (!alt_drv)
+> -			return -ENODEV;
+>   	} else if (is_idxd_wq_dev(idxd_dev)) {
+>   		struct idxd_wq *wq = confdev_to_wq(dev);
+>   
+> -		if (is_idxd_wq_kernel(wq)) {
+> +		if (is_idxd_wq_kernel(wq))
+>   			alt_drv = driver_find("dmaengine", bus);
+> -			if (!alt_drv)
+> -				return -ENODEV;
+> -		} else if (is_idxd_wq_user(wq)) {
+> +		else if (is_idxd_wq_user(wq))
+>   			alt_drv = driver_find("user", bus);
+> -			if (!alt_drv)
+> -				return -ENODEV;
+> -		} else {
+> -			return -ENODEV;
+> -		}
+>   	}
+> +	if (!alt_drv)
+> +		return -ENODEV;
+>   
+>   	rc = device_driver_attach(alt_drv, dev);
+>   	if (rc < 0)
