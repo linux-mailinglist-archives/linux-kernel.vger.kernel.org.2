@@ -2,137 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B633DA163
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245123DA168
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236778AbhG2Klx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:41:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:44534 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237148AbhG2KlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:41:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDF346D;
-        Thu, 29 Jul 2021 03:41:20 -0700 (PDT)
-Received: from [10.57.86.111] (unknown [10.57.86.111])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA1703F73D;
-        Thu, 29 Jul 2021 03:41:18 -0700 (PDT)
-Subject: Re: [PATCH 10/10] arm64: errata: Add workaround for TSB flush
- failures
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, anshuman.khandual@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, mark.rutland@arm.com
-References: <20210728135217.591173-1-suzuki.poulose@arm.com>
- <20210728135217.591173-11-suzuki.poulose@arm.com>
- <87mtq5a1gs.wl-maz@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <c41330d9-c2a2-afbe-624f-77c1e94f0490@arm.com>
-Date:   Thu, 29 Jul 2021 11:41:17 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S236217AbhG2Kmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:42:55 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:48054
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235722AbhG2Kmw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 06:42:52 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 92A6D3F113
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:42:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627555368;
+        bh=1aqWonZ1UVeYrgP40WWguDTIwwMWBTXMW2a73Xqk2/I=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=fTaOL6yTA1N+j0b4PUpgzWYos85Rpw0HlW0/TgjfeqewNixyjGNfObfDbsVVve1bV
+         yydbMj9K5Ccic8BYEPXdTA4fkQWUWx7oJkgK/ZE65F4lEb/LuC3WVjJmC1AffOmwA1
+         sGu1k8b6HYE9IzZyrbjGgGc+UubqOQ2+eXU6evx/KPw39ESOd7+97h8+GRCB06Mrl7
+         +igO0k3WafwE2vQOrr3evhhnc/jFz2vKZ4rOP/1zt5kbkapY8/rZSQ3V7pAeoLDpbz
+         Wz7HRQtEPwtjuNJStAMXPRCC/E2OFNve8/u1A5YWbdQJm8IQeyp/KlLsZmT8d9XkZS
+         vHHNwVaZWX8vA==
+Received: by mail-ed1-f71.google.com with SMTP id de5-20020a0564023085b02903bb92fd182eso2767519edb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:42:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1aqWonZ1UVeYrgP40WWguDTIwwMWBTXMW2a73Xqk2/I=;
+        b=cRDLOn3wkfsn4ZwFm7pROed9bBL9zUaYcEeFJ6fm9gKe6fSnIbkhyLQQmAOy3cmYbV
+         ca6XVejqPl0pDyvpQAIqYXUg4/Lr/qtOtwSi9DKYIyKZ4cOHr4SShbcQZh2HQ0M0SFhC
+         PRKvxSguFcWENh+4dVt74bP+1lhB2lgetlR1kVC7vO6qdUaYi07TRNr3uI5t8tzK0nQU
+         Bf59rlXP4UR3c0hXZ1aLalI58wyEcZF1wl3cQM0JHTOvZuOI6bILgK5vwTsViuIsojW8
+         pV5EaXpVNZqJp80uip0+8eD4BsfcKeP3THJe9L0EOmnJ8AQOTbUY8vnkk8AZHJcqgxR+
+         xzKw==
+X-Gm-Message-State: AOAM531t4969KhqpcfsrcOYLWh4yM3iP1MFaEmwvV/XqWWZkykGCq4IB
+        UxWQ4ttlI4MUjTO8wi5ZX0+6+Em5n6KbRCedcfNLh0HdUq6ZW/3fIK/hEhcQbZ86I7RRh0SjhuB
+        Air6itFoYAPZa3LxVwoKkkRalaeZVPyalUYCQjgs6lw==
+X-Received: by 2002:a17:907:1b02:: with SMTP id mp2mr4104324ejc.196.1627555368311;
+        Thu, 29 Jul 2021 03:42:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7aV8dzqZZfnsgycbu2nLiwhd9HngRE7rGbZygUqpYd4zH2xG3lNFXnZlVjoxsJ3E/BKLvUA==
+X-Received: by 2002:a17:907:1b02:: with SMTP id mp2mr4104308ejc.196.1627555368118;
+        Thu, 29 Jul 2021 03:42:48 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id e7sm1048472edk.3.2021.07.29.03.42.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 03:42:47 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Bongsu Jeon <bongsu.jeon@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH 12/12] nfc: mrvl: constify static nfcmrvl_if_ops
+Date:   Thu, 29 Jul 2021 12:42:41 +0200
+Message-Id: <20210729104241.48086-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
+References: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <87mtq5a1gs.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/07/2021 10:55, Marc Zyngier wrote:
-> On Wed, 28 Jul 2021 14:52:17 +0100,
-> Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>
->> Arm Neoverse-N2 (#2067961) and Cortex-A710 (#2054223) suffers
->> from errata, where a TSB (trace synchronization barrier)
->> fails to flush the trace data completely, when executed from
->> a trace prohibited region. In Linux we always execute it
->> after we have moved the PE to trace prohibited region. So,
->> we can apply the workaround everytime a TSB is executed.
->>
->> The work around is to issue two TSB consecutively.
->>
->> NOTE: This errata is defined as LOCAL_CPU_ERRATUM, implying
->> that a late CPU could be blocked from booting if it is the
->> first CPU that requires the workaround. This is because we
->> do not allow setting a cpu_hwcaps after the SMP boot. The
->> other alternative is to use "this_cpu_has_cap()" instead
->> of the faster system wide check, which may be a bit of an
->> overhead, given we may have to do this in nvhe KVM host
->> before a guest entry.
->>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->>   Documentation/arm64/silicon-errata.rst |  4 ++++
->>   arch/arm64/Kconfig                     | 31 ++++++++++++++++++++++++++
->>   arch/arm64/include/asm/barrier.h       | 17 +++++++++++++-
->>   arch/arm64/kernel/cpu_errata.c         | 19 ++++++++++++++++
->>   arch/arm64/tools/cpucaps               |  1 +
->>   5 files changed, 71 insertions(+), 1 deletion(-)
-> 
-> [...]
-> 
->> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
->> index 451e11e5fd23..3bc1ed436e04 100644
->> --- a/arch/arm64/include/asm/barrier.h
->> +++ b/arch/arm64/include/asm/barrier.h
->> @@ -23,7 +23,7 @@
->>   #define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
->>   
->>   #define psb_csync()	asm volatile("hint #17" : : : "memory")
->> -#define tsb_csync()	asm volatile("hint #18" : : : "memory")
->> +#define __tsb_csync()	asm volatile("hint #18" : : : "memory")
->>   #define csdb()		asm volatile("hint #20" : : : "memory")
->>   
->>   #ifdef CONFIG_ARM64_PSEUDO_NMI
->> @@ -46,6 +46,21 @@
->>   #define dma_rmb()	dmb(oshld)
->>   #define dma_wmb()	dmb(oshst)
->>   
->> +
->> +#define tsb_csync()								\
->> +	do {									\
->> +		/*								\
->> +		 * CPUs affected by Arm Erratum 2054223 or 2067961 needs	\
->> +		 * another TSB to ensure the trace is flushed.			\
->> +		 */								\
->> +		if (cpus_have_const_cap(ARM64_WORKAROUND_TSB_FLUSH_FAILURE)) {	\
-> 
-> Could this be made a final cap instead? Or do you expect this to be
-> usable before caps have been finalised?
+File-scope struct nfcmrvl_if_ops is not modified so can be made const.
 
-Good point. This can be final cap.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/nfc/nfcmrvl/i2c.c     | 2 +-
+ drivers/nfc/nfcmrvl/main.c    | 2 +-
+ drivers/nfc/nfcmrvl/nfcmrvl.h | 4 ++--
+ drivers/nfc/nfcmrvl/spi.c     | 2 +-
+ drivers/nfc/nfcmrvl/uart.c    | 2 +-
+ drivers/nfc/nfcmrvl/usb.c     | 2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
 
-> 
->> +			__tsb_csync();						\
->> +			__tsb_csync();						\
->> +		} else {							\
->> +			__tsb_csync();						\
->> +		}								\
-> 
-> nit: You could keep one unconditional __tsb_csync().
-
-I thought about that, I was worried if the CPU expects them back to back
-without any other instructions in between them. Thinking about it a bit
-more, it doesn't look like that is the case. I will confirm this and
-change it accordingly.
-
-Thanks
-Suzuki
-
-> 
-> Thanks,
-> 
-> 	M.
-> 
+diff --git a/drivers/nfc/nfcmrvl/i2c.c b/drivers/nfc/nfcmrvl/i2c.c
+index 6e659e77c8a2..c38b228006fd 100644
+--- a/drivers/nfc/nfcmrvl/i2c.c
++++ b/drivers/nfc/nfcmrvl/i2c.c
+@@ -146,7 +146,7 @@ static void nfcmrvl_i2c_nci_update_config(struct nfcmrvl_private *priv,
+ {
+ }
+ 
+-static struct nfcmrvl_if_ops i2c_ops = {
++static const struct nfcmrvl_if_ops i2c_ops = {
+ 	.nci_open = nfcmrvl_i2c_nci_open,
+ 	.nci_close = nfcmrvl_i2c_nci_close,
+ 	.nci_send = nfcmrvl_i2c_nci_send,
+diff --git a/drivers/nfc/nfcmrvl/main.c b/drivers/nfc/nfcmrvl/main.c
+index d8e48bdaf652..2fcf545012b1 100644
+--- a/drivers/nfc/nfcmrvl/main.c
++++ b/drivers/nfc/nfcmrvl/main.c
+@@ -91,7 +91,7 @@ static const struct nci_ops nfcmrvl_nci_ops = {
+ 
+ struct nfcmrvl_private *nfcmrvl_nci_register_dev(enum nfcmrvl_phy phy,
+ 				void *drv_data,
+-				struct nfcmrvl_if_ops *ops,
++				const struct nfcmrvl_if_ops *ops,
+ 				struct device *dev,
+ 				const struct nfcmrvl_platform_data *pdata)
+ {
+diff --git a/drivers/nfc/nfcmrvl/nfcmrvl.h b/drivers/nfc/nfcmrvl/nfcmrvl.h
+index 84fafa95965e..165bd0a95190 100644
+--- a/drivers/nfc/nfcmrvl/nfcmrvl.h
++++ b/drivers/nfc/nfcmrvl/nfcmrvl.h
+@@ -77,7 +77,7 @@ struct nfcmrvl_private {
+ 	/* PHY type */
+ 	enum nfcmrvl_phy phy;
+ 	/* Low level driver ops */
+-	struct nfcmrvl_if_ops *if_ops;
++	const struct nfcmrvl_if_ops *if_ops;
+ };
+ 
+ struct nfcmrvl_if_ops {
+@@ -92,7 +92,7 @@ void nfcmrvl_nci_unregister_dev(struct nfcmrvl_private *priv);
+ int nfcmrvl_nci_recv_frame(struct nfcmrvl_private *priv, struct sk_buff *skb);
+ struct nfcmrvl_private *nfcmrvl_nci_register_dev(enum nfcmrvl_phy phy,
+ 				void *drv_data,
+-				struct nfcmrvl_if_ops *ops,
++				const struct nfcmrvl_if_ops *ops,
+ 				struct device *dev,
+ 				const struct nfcmrvl_platform_data *pdata);
+ 
+diff --git a/drivers/nfc/nfcmrvl/spi.c b/drivers/nfc/nfcmrvl/spi.c
+index 7b015bb33fc9..d64abd0c4df3 100644
+--- a/drivers/nfc/nfcmrvl/spi.c
++++ b/drivers/nfc/nfcmrvl/spi.c
+@@ -99,7 +99,7 @@ static void nfcmrvl_spi_nci_update_config(struct nfcmrvl_private *priv,
+ 	drv_data->nci_spi->xfer_speed_hz = config->clk;
+ }
+ 
+-static struct nfcmrvl_if_ops spi_ops = {
++static const struct nfcmrvl_if_ops spi_ops = {
+ 	.nci_open = nfcmrvl_spi_nci_open,
+ 	.nci_close = nfcmrvl_spi_nci_close,
+ 	.nci_send = nfcmrvl_spi_nci_send,
+diff --git a/drivers/nfc/nfcmrvl/uart.c b/drivers/nfc/nfcmrvl/uart.c
+index 63ac434675c8..9c92cbdc42f0 100644
+--- a/drivers/nfc/nfcmrvl/uart.c
++++ b/drivers/nfc/nfcmrvl/uart.c
+@@ -49,7 +49,7 @@ static void nfcmrvl_uart_nci_update_config(struct nfcmrvl_private *priv,
+ 			    config->flow_control);
+ }
+ 
+-static struct nfcmrvl_if_ops uart_ops = {
++static const struct nfcmrvl_if_ops uart_ops = {
+ 	.nci_open = nfcmrvl_uart_nci_open,
+ 	.nci_close = nfcmrvl_uart_nci_close,
+ 	.nci_send = nfcmrvl_uart_nci_send,
+diff --git a/drivers/nfc/nfcmrvl/usb.c b/drivers/nfc/nfcmrvl/usb.c
+index 9d649b45300b..a99aedff795d 100644
+--- a/drivers/nfc/nfcmrvl/usb.c
++++ b/drivers/nfc/nfcmrvl/usb.c
+@@ -264,7 +264,7 @@ static int nfcmrvl_usb_nci_send(struct nfcmrvl_private *priv,
+ 	return err;
+ }
+ 
+-static struct nfcmrvl_if_ops usb_ops = {
++static const struct nfcmrvl_if_ops usb_ops = {
+ 	.nci_open = nfcmrvl_usb_nci_open,
+ 	.nci_close = nfcmrvl_usb_nci_close,
+ 	.nci_send = nfcmrvl_usb_nci_send,
+-- 
+2.27.0
 
