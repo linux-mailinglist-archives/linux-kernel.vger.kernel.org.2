@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB5C3DA6FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD88F3DA705
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237662AbhG2PBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
+        id S237708AbhG2PCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhG2PBX (ORCPT
+        with ESMTP id S236736AbhG2PCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:01:23 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A1FC061765;
-        Thu, 29 Jul 2021 08:01:19 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u20so8007059ljo.0;
-        Thu, 29 Jul 2021 08:01:19 -0700 (PDT)
+        Thu, 29 Jul 2021 11:02:39 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204C7C061765;
+        Thu, 29 Jul 2021 08:02:36 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id t21so7267234plr.13;
+        Thu, 29 Jul 2021 08:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=R0UHRNrLka+a+buvqDDT6IGZvdUfKhb8O6hi8kQSoj0=;
-        b=fLIfNtTcLN8ef/3QB/2FwUDhhAgRPsCyMVxc0JMjQX7cUVpDiThDkEOEo8EwPgpTz4
-         cGXvef04xg6q11NV7TlgcaHMyNRI+fDWRi4jUPeUZEcJxQIqQaAVZJS73WqztczwQikV
-         lN6wDYdYJ1CjcnB251VDwJQJrCVDWnv3Eq0dhHDREXvLiTgBmzTXps+300lul0tDAa4r
-         ESazEIIq/tIm8DQuP+4ZAWOZAANDnAIAz6NWJmRHVQyv50bDS9wVvV0panqNclP1refJ
-         l7XhnDjWNZ1ocX1xTfwzycfteqdVw6+XTsM+o1ogAwCNzvfZs21DXnUytQGkoO+w3Ccj
-         ApKA==
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+bK/E9hMSXhFLJuYffyy4lnGRV/WQf1v1wRicssH11c=;
+        b=FwB6x7B4iG0F7MUs9/9F6Dg/9PoCSP7gVTcOX0ocOJU41g4H+lOYYpyql4IyYVFcQY
+         /jR2vjQ8vXFjFKbHbASRXdJemRdLMW21jXT3DV06qcoHuzHkTjYfMvskkaAemBRPzjTP
+         h4JIu0oy0kK8PPRWkGWT9A0ZMN37pPHspf8nHPV3REyaJvIq/2bRvESuNsbdqOhCVZps
+         wVNuJN0Wcl6YgLLFJnGARAl2uxPd4PQ0Gk5oTKljpXKFW8Dd8N4UiP1kBqxQ7w9zRhD8
+         K8YjAuIKZcJf6XeOYfYrcl4FxeujnfCoH+ST0WDAmJ9l2jF1cG2dsUQ3hNCcIAs2tXUI
+         dquA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=R0UHRNrLka+a+buvqDDT6IGZvdUfKhb8O6hi8kQSoj0=;
-        b=OVU4vS9aicI6s9zBdYzqeqJ+0ePQd2vWpkjzn/rPcLH6cYVCzEEOVxhbp4SF7IAf5M
-         Jn4hIH5W5xj0opYliy6NSQa3Tb48PzPpDYQz50p5rZUFSgNERnrVMrRXKrGxYwkMNdwI
-         MRAeZiDVyGLZbHXdpOq6dDsCmmBBjiCuLEQ4zQHedCdL51RytjiG8wP0SPN4rhqogUHI
-         qNT7N75VDtd5Mv7bVJmWrJnybpJdRk0g1bQ6gkR11MMxKvTI2ovSO8/sq77BS0p0v7Np
-         rvKPyfCPGQI8Lu5DqN3Hw/gkUg1u+0XVqZVDgpfgY0OEfkh0OCHd+c78FG4oURxrzQSa
-         dOsA==
-X-Gm-Message-State: AOAM531X0tS7uT9Z267NvBhJBObc2e1qmwwhKElQHN/8ikDioAoa5IaU
-        VLW4fFBImYAn+ew8xZsRCfQ4giiboXQIOOqa
-X-Google-Smtp-Source: ABdhPJxjd7o0KVNL7mI4Bv07lQfIFDQfbDUZuJmHE5UpJWofTNabI8PAT90pO3/iaWOCWbU0rMwLwA==
-X-Received: by 2002:a2e:b0d9:: with SMTP id g25mr3206610ljl.454.1627570877722;
-        Thu, 29 Jul 2021 08:01:17 -0700 (PDT)
-Received: from [0.0.0.0] ([2a00:b700:2::4:1d2])
-        by smtp.gmail.com with ESMTPSA id h10sm327913lfp.151.2021.07.29.08.01.14
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+bK/E9hMSXhFLJuYffyy4lnGRV/WQf1v1wRicssH11c=;
+        b=krkSatZVGsHUeqp2PyHHi9Edp5fYjIxcfGeKfL7GUX9LQJKisnJOTrD8NUPeagqISk
+         q+pOH/BBWfUNeHZDlqJM6KEdXpLpe05nH+qPnmZdUvdVUU0mCpOtUJPlQ03ZWSjPj+DH
+         eNWDORS1b1M80hPS1iCbhXeu7/2AHBKyxD9QpBVcwbnddYAi2tXDw8yJuAKnmADT7KzS
+         oF3dqyL2wyoCro6U7XpWlltJ2+DIpie+7UjwCwMrJusan48YBb6NZFgIo8Nkr84141r9
+         WknC+fvxUFcnDPbwbo9caz6tVQ5eu6eWRqbzUPcG8hXbeT2cinz7B34xuBW8V0sHBB8H
+         LYsQ==
+X-Gm-Message-State: AOAM532938mSLUmq52/zjOkVE+2fYJdjb1f6Fcqb1AfyGyMjbla1+KWY
+        IC7ag/KCGUAyvQyEvZP9ThQ=
+X-Google-Smtp-Source: ABdhPJzBGI9zTfesOKkMJXLKPI10+fN42IwNJPZiUXGYmFrvx/nDBD1B0BKa0HCMXpw5NCSATnP3lw==
+X-Received: by 2002:a17:90a:e651:: with SMTP id ep17mr5748786pjb.85.1627570953940;
+        Thu, 29 Jul 2021 08:02:33 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id h30sm4026153pfr.191.2021.07.29.08.02.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 08:01:17 -0700 (PDT)
-Subject: Re: [PATCH v6 3/3] MAINTAINERS: add entry for traditional Chinese
- documentation
-To:     Hu Haowen <src.res@email.cn>, corbet@lwn.net
-Cc:     linux-doc-tw@groups.io, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210727161501.13030-1-src.res@email.cn>
- <20210727161501.13030-3-src.res@email.cn>
-From:   Pan Yunwang <panyunwang849@gmail.com>
-Message-ID: <d5633d12-bd1f-c45f-2b98-d5953d074793@gmail.com>
-Date:   Thu, 29 Jul 2021 23:01:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 29 Jul 2021 08:02:33 -0700 (PDT)
+Subject: Re: [PATCH 03/13] x86/HV: Add new hvcall guest address host
+ visibility support
+To:     Dave Hansen <dave.hansen@intel.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, rientjes@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, xen-devel@lists.xenproject.org,
+        pgonda@google.com, david@redhat.com, keescook@chromium.org,
+        hannes@cmpxchg.org, sfr@canb.auug.org.au,
+        michael.h.kelley@microsoft.com
+Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, anparri@microsoft.com
+References: <20210728145232.285861-1-ltykernel@gmail.com>
+ <20210728145232.285861-4-ltykernel@gmail.com>
+ <a2444c36-0103-8e1c-7005-d97f77f90e85@intel.com>
+ <0d956a05-7d24-57a0-f4a9-dccc849b52fc@gmail.com>
+ <ec1d4cfd-bbbc-e27a-7589-e85d9f0438f4@intel.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <8df2845d-ee90-56d0-1228-adebb103ec37@gmail.com>
+Date:   Thu, 29 Jul 2021 23:02:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210727161501.13030-3-src.res@email.cn>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ec1d4cfd-bbbc-e27a-7589-e85d9f0438f4@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/29/2021 10:09 PM, Dave Hansen wrote:
+> On 7/29/21 6:01 AM, Tianyu Lan wrote:
+>> On 7/29/2021 1:06 AM, Dave Hansen wrote:
+>>> On 7/28/21 7:52 AM, Tianyu Lan wrote:
+>>>> @@ -1986,7 +1988,9 @@ static int __set_memory_enc_dec(unsigned long
+>>>> addr, int numpages, bool enc)
+>>>>        int ret;
+>>>>          /* Nothing to do if memory encryption is not active */
+>>>> -    if (!mem_encrypt_active())
+>>>> +    if (hv_is_isolation_supported())
+>>>> +        return hv_set_mem_enc(addr, numpages, enc);
+>>>> +    else if (!mem_encrypt_active())
+>>>>            return 0;
+>>>
+>>> One more thing.  If you're going to be patching generic code, please
+>>> start using feature checks that can get optimized away at runtime.
+>>> hv_is_isolation_supported() doesn't look like the world's cheapest
+>>> check.  It can't be inlined and costs at least a function call.
+>>
+>> Yes, you are right. How about adding a static branch key for the check
+>> of isolation VM? This may reduce the check cost.
+> 
+> I don't think you need a static key.
+> 
+> There are basically three choices:
+> 1. Use an existing X86_FEATURE bit.  I think there's already one for
+>     when you are running under a hypervisor.  It's not super precise,
+>     but it's better than what you have.
+> 2. Define a new X86_FEATURE bit for when you are running under
+>     Hyper-V.
+> 3. Define a new X86_FEATURE bit specifically for Hyper-V isolation VM
+>     support.  This particular feature might be a little uncommon to
+>     deserve its own bit.
+> 
+> I'd probably just do #2.
+> 
 
-�� 2021/7/28 ����12:15, Hu Haowen д��:
-> Add maintainer information for traditional Chinese documentation.
->
-> Signed-off-by: Hu Haowen <src.res@email.cn>
-> ---
->  MAINTAINERS | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 66d047dc6880..de9370bcb226 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18829,6 +18829,14 @@ F:	arch/x86/mm/testmmiotrace.c
->  F:	include/linux/mmiotrace.h
->  F:	kernel/trace/trace_mmiotrace.c
->  
-> +TRADITIONAL CHINESE DOCUMENTATION
-> +M:	Hu Haowen <src.res@email.cn>
-> +L:	linux-doc-tw@groups.io
+There is x86_hyper_type to identify hypervisor type and we may check 
+this variable after checking X86_FEATURE_HYPERVISOR.
 
+static inline bool hv_is_isolation_supported(void)
+{
+	if (!cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
+		return 0;
 
-The mailing list isn't working at the moment. Please replace it with
-linux-doc-tw-discuss@lists.sourceforge.net.
+         if (x86_hyper_type != X86_HYPER_MS_HYPERV)
+                 return 0;
 
-Thanks,
-Pan Yunwang
-
-
-> +S:	Maintained
-> +W:	https://github.com/srcres258/linux-doc
-> +T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
-> +F:	Documentation/translations/zh_TW/
-> +
->  TRIVIAL PATCHES
->  M:	Jiri Kosina <trivial@kernel.org>
->  S:	Maintained
+	// out of line function call:
+	return __hv_is_isolation_supported();
+}	
