@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6342E3DAE6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 23:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71773DAE73
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 23:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbhG2Vig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 17:38:36 -0400
-Received: from mail-il1-f171.google.com ([209.85.166.171]:34548 "EHLO
-        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhG2Vif (ORCPT
+        id S234142AbhG2Vjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 17:39:35 -0400
+Received: from mail-io1-f53.google.com ([209.85.166.53]:42859 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229852AbhG2Vje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 17:38:35 -0400
-Received: by mail-il1-f171.google.com with SMTP id a14so7375264ila.1;
-        Thu, 29 Jul 2021 14:38:30 -0700 (PDT)
+        Thu, 29 Jul 2021 17:39:34 -0400
+Received: by mail-io1-f53.google.com with SMTP id h1so8935283iol.9;
+        Thu, 29 Jul 2021 14:39:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=weWgO//c0TSwvdORBfQI0q5l+aoZeVIROfRH7MThAaM=;
-        b=mxaHaRvTWxu8MckTD9q3kkCTOaJxahlZxCksjh76yh4LvaYhk7oslKWiBjZsxyeQKs
-         kPo6etIwjB84pf/4MdErLurL35/NUI++LMg8ZN8wNkouOh5BGesq6wRlMElKfE/McHaL
-         9USrlw7euTrCSpLnDAxEs+eDAGHaEI9wLxs0s+oWhIiCTPnjBSl7GosXJ/hCSigxMbcf
-         VfEaHsUaj0Y1Wc4aqURon2wgtsIGHRgFWl32c7w2F2uFguLy0qYCkixLjUrj7CU5yzhE
-         xXtGMGlsJh2JLPHyJ9zS2AGjqKEUBR5eI4wAYGr/IU7wL+J714Ut7mtfZTRqmuBtdxXI
-         JbLQ==
-X-Gm-Message-State: AOAM533jO8CY8JwEIYerElK1llB6GruVTjATn2V3OYjzpW7aiinLoUFZ
-        t0c/jwyyJ3boo1Y8eoH5CQ==
-X-Google-Smtp-Source: ABdhPJwAOUzTr2jjupUUjm6A2XAKxUh+3/3BQxcw+6CHRe2q7z5wjB7X9/O2qR7ZaNz5jrXGVMkT3Q==
-X-Received: by 2002:a92:cc85:: with SMTP id x5mr5353484ilo.266.1627594710423;
-        Thu, 29 Jul 2021 14:38:30 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=VlgnUr3PrArxFkf+WyoZ600D3pMrPXeaR+Qq3HneVC8=;
+        b=tK7gt9XJ1EWD0N7Gq6eVrfsc/aKZJYkdDSEIHp1of5uCg6sDkqoEx6dX8OTNp16tuf
+         mLJQIgm2G2U5o46Z68ryyO4B3iMSmEuu3Tx5WMvTOdbgfiVAAqxeG+0eSMQ43aLe69lS
+         XxvdBCvdbTDBR7vQU75ZlhiW7pQ6sdHS2GJIyrtokN/XLpaouW+s67sxPhtoCABQBMtl
+         fEmSuS40UmdU2bdVDOzMFrXAOL3LW2aMcUAgTSWhqBeFoYcN3k14vAOlDBEoTiankJdS
+         37NkXzlGrIfB5fCE/3Ze4aJBQEcdJU2lln9XuQXr2xAAtoHNg9K68t4hemzolP793ljW
+         Fq2w==
+X-Gm-Message-State: AOAM531/LbDVskSnpWeFXwSJufRxHGXFFx67N6/OjhTunZRmZZUFAMg8
+        vOaixAtA51X7UbTJSQ8hIA==
+X-Google-Smtp-Source: ABdhPJxzdIeKKyoVAP3p+VmLsurV5eDWcczAb+WqKOoQXA7vvnJWxtNksCgZGm6TcWu3K74b1i97qQ==
+X-Received: by 2002:a5d:89d6:: with SMTP id a22mr5886543iot.178.1627594769372;
+        Thu, 29 Jul 2021 14:39:29 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id j20sm2951149ile.17.2021.07.29.14.38.28
+        by smtp.gmail.com with ESMTPSA id f5sm2484161ilr.72.2021.07.29.14.39.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 14:38:29 -0700 (PDT)
-Received: (nullmailer pid 940350 invoked by uid 1000);
-        Thu, 29 Jul 2021 21:38:27 -0000
-Date:   Thu, 29 Jul 2021 15:38:27 -0600
+        Thu, 29 Jul 2021 14:39:28 -0700 (PDT)
+Received: (nullmailer pid 942047 invoked by uid 1000);
+        Thu, 29 Jul 2021 21:39:27 -0000
+Date:   Thu, 29 Jul 2021 15:39:27 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     linux-usb@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        jun.jiang@ingenic.com, hminas@synopsys.com, sihui.liu@ingenic.com,
-        sernia.zhou@foxmail.com, linux-mips@vger.kernel.org,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        devicetree@vger.kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, paul@crapouillou.net,
-        robh+dt@kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: dwc2: Add bindings for new Ingenic SoCs.
-Message-ID: <YQMf06v4nFTxVdzx@robh.at.kernel.org>
-References: <1627116521-124612-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1627116521-124612-2-git-send-email-zhouyanjie@wanyeetech.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Georgi Djakov <djakov@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: interconnect: Add SC8180x to OSM L3 DT
+ binding
+Message-ID: <YQMgD40bHfZ6VDYb@robh.at.kernel.org>
+References: <20210725025834.3941777-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1627116521-124612-2-git-send-email-zhouyanjie@wanyeetech.com>
+In-Reply-To: <20210725025834.3941777-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 24 Jul 2021 16:48:40 +0800, 周琰杰 (Zhou Yanjie) wrote:
-> Add the dwc2 bindings for the JZ4775 SoC, the JZ4780 SoC, the X1000 SoC,
-> the X1600 SoC, the X1830 SoC, and the X2000 SoC from Ingenic.
+On Sat, 24 Jul 2021 19:58:33 -0700, Bjorn Andersson wrote:
+> The Qualcomm SC8180x has an OSM L3, add compatible for this.
 > 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  Documentation/devicetree/bindings/usb/dwc2.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
