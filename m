@@ -2,117 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E8B3D9E6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8A23D9E73
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbhG2H3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45124 "EHLO
+        id S234718AbhG2Ha1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234524AbhG2H3n (ORCPT
+        with ESMTP id S234524AbhG2Ha0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:29:43 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4BEC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:29:41 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <jbe@pengutronix.de>)
-        id 1m90U7-0000u9-F0; Thu, 29 Jul 2021 09:29:39 +0200
-Received: from [2a0a:edc0:0:900:2e4d:54ff:fe67:bfa5] (helo=ginster)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <jbe@pengutronix.de>)
-        id 1m90U6-0002J0-Fl; Thu, 29 Jul 2021 09:29:38 +0200
-Received: from jbe by ginster with local (Exim 4.92)
-        (envelope-from <jbe@pengutronix.de>)
-        id 1m90U6-0002gl-Ej; Thu, 29 Jul 2021 09:29:38 +0200
-From:   Juergen Borleis <jbe@pengutronix.de>
-To:     linux-mmc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, festevam@gmail.com,
-        wsa+renesas@sang-engineering.com, dianders@chromium.org,
-        ulf.hansson@linaro.org, kernel@pengutronix.de
-Subject: [PATCH 2/2] mmc: mxcmmc: don't expect a DMA operation if DMA seems present
-Date:   Thu, 29 Jul 2021 09:29:29 +0200
-Message-Id: <20210729072929.10267-3-jbe@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210729072929.10267-1-jbe@pengutronix.de>
-References: <20210729072929.10267-1-jbe@pengutronix.de>
+        Thu, 29 Jul 2021 03:30:26 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8859AC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:30:23 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id g15so5644818wrd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:30:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tb+0rRKuqDnjOL1ASnfrRF1A89N4P92fMWjclPMkDss=;
+        b=DOm1OvhgzgwgHgDIrraZ03XoHOA+d6dH762ZTJo+E6S39/5h6jRhFRd+nsUazfCfLf
+         S2Lkxsdk7hwdmUXxR5OwXDEk4YRTKj7sadSS89ys7t7SG5QJL5cy5+h4oeCB0txEXIsE
+         dEHc7JF5fJepkGCz2g+EKTUszzyxAsZeEzsgs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Tb+0rRKuqDnjOL1ASnfrRF1A89N4P92fMWjclPMkDss=;
+        b=jubgZZlhFOdPHZk3z8Solw2ToRTFZVViBX/nIyjKhzusHAtyCEr3Rxdw/A+oSPu6Ni
+         ruHD2Xv8jiFBpqSAiBqxiQOmXfE9tMAsgHPNFyL4XRwFf3DJVHfqUwfkZj3uTSCosSTU
+         JCdQruPYaWXYCuXXakPQ5YT29/A7wdI88X3Umh03jhtPmfMbZWyXH/WDr/sCsLJSN5k3
+         ziLqMtrekeqS6lDx+xUOSgw2BxzgxJxSG/GOg2olEElcMgsvNzMmkYEHTZ2twbLQV3tz
+         68IdEuQY9iO4XDEeRpNt/wxcpoMaEdMxrIQy0UDciSi7ctLD2odIU14WueT/YUYjtMQh
+         jExg==
+X-Gm-Message-State: AOAM5300lIrTov8ehnEvu2TMvrfZaq/Tx/DSlePfmZGTdw35V2g2VBY3
+        49kyLAVOLJODcxR8523PtgOJTw==
+X-Google-Smtp-Source: ABdhPJzVoNhNuWzyJb6b5KpqveRPXRf80R7n4sTS1a3iK3O41OT/IBBs23MW0vHKeYXlErBFvWWpYQ==
+X-Received: by 2002:a5d:53ca:: with SMTP id a10mr1549831wrw.197.1627543822183;
+        Thu, 29 Jul 2021 00:30:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q22sm2207751wmc.16.2021.07.29.00.30.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 00:30:21 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 09:30:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>
+Subject: Re: [Intel-gfx] refactor the i915 GVT support
+Message-ID: <YQJZCwyT9YSZWLnO@phenom.ffwll.local>
+Mail-Followup-To: Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        "intel-gvt-dev@lists.freedesktop.org" <intel-gvt-dev@lists.freedesktop.org>
+References: <20210721155355.173183-1-hch@lst.de>
+ <DM4PR11MB55496531B246A4604FC86998CAE49@DM4PR11MB5549.namprd11.prod.outlook.com>
+ <20210722112636.wj277vqhg4dez5ug@sirius.home.kraxel.org>
+ <20210727121224.GA2145868@nvidia.com>
+ <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
+ <20210728175925.GU1721383@nvidia.com>
+ <20210729072022.GB31896@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: jbe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729072022.GB31896@lst.de>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the driver's default behaviour from DMA to PIO for each request.
-Preparing DMA can fail or be prevented by other causes. Switch to a DMA
-operation only, if it is really possible.
+On Thu, Jul 29, 2021 at 09:20:22AM +0200, Christoph Hellwig wrote:
+> On Wed, Jul 28, 2021 at 02:59:25PM -0300, Jason Gunthorpe wrote:
+> > On Wed, Jul 28, 2021 at 01:38:58PM +0000, Wang, Zhi A wrote:
+> > 
+> > > I guess those APIs you were talking about are KVM-only. For other
+> > > hypervisors, e.g. Xen, ARCN cannot use the APIs you mentioned. Not
+> > > sure if you have already noticed that VFIO is KVM-only right now.
+> > 
+> > There is very little hard connection between VFIO and KVM, so no, I
+> > don't think that is completely true.
+> 
+> The only connection is the SET_KVM notifier as far as I can tell.
+> Which is used by a total of two drivers, including i915/gvt.  That
+> being said gvt does not only use vfio, but also does quite a few
+> direct cals to KVM.
+> 
+> > In an event, an in-tree version of other hypervisor support for GVT
+> > needs to go through enabling VFIO support so that the existing API
+> > multiplexers we have can be used properly, not adding a shim layer
+> > trying to recreate VFIO inside a GPU driver.
+> 
+> Yes.  And if we go back to actually looking at the series a lot of
+> it just removes entirely pointless indirect calls that go to generic
+> code and not even the kvm code, or questionable data structure designs.
+> If we were to support another upstream hypervisor we'd just need to
+> union a few fields in struct intel_gpu and maybe introduce a few
+> methods.  Preferably in a way that avoids expensive indirect calls
+> in the fast path.
 
-This avoids a NULL pointer dereference on shutdown in mxcmci_start_cmd()
-where it tries to store a DMA callback configuration into mxcmci_host::desc
-which isn't setup a this point of time.
+fwiw I concur with the direction of this series. gvt landed 5 years ago,
+that should have been plenty of time to merge at least one of the other
+backends that float around. If it didn't happen in 5 years it aint
+suddenly happening in the next few, and the abstraction layer should be
+sunset.
 
-Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
----
- drivers/mmc/host/mxcmmc.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/mmc/host/mxcmmc.c b/drivers/mmc/host/mxcmmc.c
-index 611f827..41feea9 100644
---- a/drivers/mmc/host/mxcmmc.c
-+++ b/drivers/mmc/host/mxcmmc.c
-@@ -293,14 +293,13 @@ static int mxcmci_setup_data(struct mxcmci_host *host, struct mmc_data *data)
- 	mxcmci_writew(host, blksz, MMC_REG_BLK_LEN);
- 	host->datasize = datasize;
- 
--	if (!mxcmci_use_dma(host))
--		return 0;
-+	if (host->dma == NULL)
-+		return 0; /* Keep PIO */
- 
-+	/* Avoid the use of DMA on short transfers, e.g. non-sectors for example */
- 	for_each_sg(data->sg, sg, data->sg_len, i) {
--		if (sg->offset & 3 || sg->length & 3 || sg->length < 512) {
--			host->do_dma = 0;
--			return 0;
--		}
-+		if (sg->offset & 3 || sg->length & 3 || sg->length < 512)
-+			return 0; /* Keep PIO */
- 	}
- 
- 	if (data->flags & MMC_DATA_READ) {
-@@ -325,9 +324,11 @@ static int mxcmci_setup_data(struct mxcmci_host *host, struct mmc_data *data)
- 	if (!host->desc) {
- 		dma_unmap_sg(host->dma->device->dev, data->sg, data->sg_len,
- 				host->dma_dir);
--		host->do_dma = 0;
--		return 0; /* Fall back to PIO */
-+		return 0; /* Keep PIO */
- 	}
-+
-+	/* DMA is possible */
-+	host->do_dma = 1;
- 	wmb();
- 
- 	dmaengine_submit(host->desc);
-@@ -747,8 +748,11 @@ static void mxcmci_request(struct mmc_host *mmc, struct mmc_request *req)
- 	host->req = req;
- 	host->cmdat &= ~CMD_DAT_CONT_INIT;
- 
--	if (host->dma)
--		host->do_dma = 1;
-+	/*
-+	 * Default always to PIO. DMA will be enabled in
-+	 * mxcmci_setup_data() if possible
-+	 */
-+	host->do_dma = 0;
- 
- 	if (req->data) {
- 		error = mxcmci_setup_data(host, req->data);
+Also yes structuring it more as a helper layer with some
+unions/subclassing than full blown backend abstractor layer would be a
+good idea too I guess (it usually is the right thing to do).
+-Daniel
 -- 
-2.20.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
