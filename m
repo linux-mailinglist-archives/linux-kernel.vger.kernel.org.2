@@ -2,112 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EB73DA19E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5253DA1A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbhG2Kzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
+        id S236001AbhG2K7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbhG2Kzn (ORCPT
+        with ESMTP id S234156AbhG2K7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:55:43 -0400
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6D9C061765;
-        Thu, 29 Jul 2021 03:55:40 -0700 (PDT)
-Received: from [192.168.1.101] (83.6.168.174.neoplus.adsl.tpnet.pl [83.6.168.174])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id DF0501FECE;
-        Thu, 29 Jul 2021 12:55:37 +0200 (CEST)
-Subject: Re: [PATCH 14/39] arm64: dts: qcom: sdm630: Add TSENS node
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210728222542.54269-1-konrad.dybcio@somainline.org>
- <20210728222542.54269-15-konrad.dybcio@somainline.org>
- <860f1120-c5a4-f531-3ea9-aa90c6b063dc@linaro.org>
- <2318377c-959a-a42b-81b5-44e2629570d5@somainline.org>
- <afee55a8-d7d3-709a-ea4f-0306698c9976@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <b16d8000-85a7-d957-77d2-d921e5b09829@somainline.org>
-Date:   Thu, 29 Jul 2021 12:55:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 29 Jul 2021 06:59:18 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694B8C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:59:14 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id ec13so7091111edb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hev-cc.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cqjLFNVfBDWAnhToFHoZWvbNeERTdn0BoKdbQkjb8Lo=;
+        b=eCt1VY/bP2pVbt0ZgN5ZfGDJmAqrjEE+qlEID+dEqfmef5hWpQl6F+yBsIGgGhLyF4
+         Bz3jVcRHSsGWSLJi+6x2S2OuO6IP47x123Hk4wxe/7I+X7YvYthgqoJpxMfWqYf9DUW1
+         sb7NxXHPLyEX3qVZKjkFmpYk6bq9BGVH4F+IKPqQTnxBuHFOY9xPf+LGAl9SI8WNi8rE
+         UpkkbbW4dKfjxBC45JtI8giYqRyKAgR5xUQOnaUh20n9h5wcpm/UfGinIMoBsI+UmqIt
+         sJN2/phVXhgVzs06VYNQM+2RAhDVqj4aZurHaXK6Pca8CE2RRyNLiYt8CyJTvlmj4365
+         +rtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cqjLFNVfBDWAnhToFHoZWvbNeERTdn0BoKdbQkjb8Lo=;
+        b=MTLSMRYT9U1xbWmhXoTQ3teJeHP3rzvsf4vWtU1v7TB55oSmYoUWvYzMxaGUOl5jMW
+         LGQALfh3XLRvon+AtUmVlMIuKG6TNa+F1+qomdudWDc4g2BaxJE0ImOTO48oUw50Un7i
+         78BGFG0eE4tgL26izPh06P8Ogs9TQs3M2HeDoBiysNjq3awJ8cZNau9n7pQS8WipqqqK
+         r306jHPoc9YtQRM4ZMR327pgnWxZJdlruLRStCtin9hRcP/Un1SFlER8/K7y9W4Cl6Gu
+         2DMx7eBOQhU+kERk3DA1fz6Gmn06f9Fd3kQlbfVpvxAolazPYmRsxrjJ7r+AbRsTP2s4
+         5CwA==
+X-Gm-Message-State: AOAM533Lt2a7d9lTx0zOiTgiyuqhrpKBU+BO+dcn1w+8rli4bQbomO1v
+        XE8+0jP/EBtqnL/rDmwLsNWCiorkKcGujXMqUH4HGw==
+X-Google-Smtp-Source: ABdhPJxkguyURA9a6iefXWLZvRL5hydiVvuH8w5gi+2Q6zxsNLdJa+ccYesHTZ4iYu+TX9+XAVWGGXim9zt6sfTg0To=
+X-Received: by 2002:a05:6402:516f:: with SMTP id d15mr5526812ede.210.1627556353053;
+ Thu, 29 Jul 2021 03:59:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <afee55a8-d7d3-709a-ea4f-0306698c9976@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210729093003.146166-1-wangrui@loongson.cn> <20210729095551.GE21151@willie-the-truck>
+In-Reply-To: <20210729095551.GE21151@willie-the-truck>
+From:   hev <r@hev.cc>
+Date:   Thu, 29 Jul 2021 18:58:59 +0800
+Message-ID: <CAHirt9j+UJiNpgmeSOMnUnYomOLgi1oD44ZCzEWA9OAzrnAMaw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3] locking/atomic: Implement atomic{,64,_long}_{fetch_,}{andnot_or}{,_relaxed,_acquire,_release}()
+To:     Will Deacon <will@kernel.org>
+Cc:     Rui Wang <wangrui@loongson.cn>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Guo Ren <guoren@kernel.org>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Will,
 
-On 29.07.2021 12:54, Thara Gopinath wrote:
+On Thu, Jul 29, 2021 at 5:55 PM Will Deacon <will@kernel.org> wrote:
 >
+> On Thu, Jul 29, 2021 at 05:30:03PM +0800, Rui Wang wrote:
+> > This patch introduce a new atomic primitive andnot_or:
+> >
+> >  * atomic_andnot_or
+> >  * atomic_fetch_andnot_or
+> >  * atomic_fetch_andnot_or_relaxed
+> >  * atomic_fetch_andnot_or_acquire
+> >  * atomic_fetch_andnot_or_release
+> >  * atomic64_andnot_or
+> >  * atomic64_fetch_andnot_or
+> >  * atomic64_fetch_andnot_or_relaxed
+> >  * atomic64_fetch_andnot_or_acquire
+> >  * atomic64_fetch_andnot_or_release
+> >  * atomic_long_andnot_or
+> >  * atomic_long_fetch_andnot_or
+> >  * atomic_long_fetch_andnot_or_relaxed
+> >  * atomic_long_fetch_andnot_or_acquire
+> >  * atomic_long_fetch_andnot_or_release
+> >
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Rui Wang <wangrui@loongson.cn>
+> > ---
+> >  include/asm-generic/atomic-instrumented.h |  72 +++++-
+> >  include/asm-generic/atomic-long.h         |  62 ++++-
+> >  include/linux/atomic-arch-fallback.h      | 262 +++++++++++++++++++++-
+> >  lib/atomic64_test.c                       |  92 ++++----
+> >  scripts/atomic/atomics.tbl                |   1 +
+> >  scripts/atomic/fallbacks/andnot_or        |  25 +++
+> >  6 files changed, 471 insertions(+), 43 deletions(-)
+> >  create mode 100755 scripts/atomic/fallbacks/andnot_or
 >
-> On 7/29/21 6:52 AM, Konrad Dybcio wrote:
->>
->> On 29.07.2021 12:50, Thara Gopinath wrote:
->>> Hi Konrad,
->>>
->>> On 7/28/21 6:25 PM, Konrad Dybcio wrote:
->>>> This will enable temperature reporting for various SoC
->>>> components.
->>>>
->>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
->>>> ---
->>>>    .../devicetree/bindings/thermal/qcom-tsens.yaml       |  1 +
->>>>    arch/arm64/boot/dts/qcom/sdm630.dtsi                  | 11 +++++++++++
->>>>    2 files changed, 12 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
->>>> index 4a2eaf28e3fd..d3b9e9b600a2 100644
->>>> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
->>>> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
->>>> @@ -48,6 +48,7 @@ properties:
->>>>                  - qcom,sc7180-tsens
->>>>                  - qcom,sc7280-tsens
->>>>                  - qcom,sc8180x-tsens
->>>> +              - qcom,sdm630-tsens
->>>>                  - qcom,sdm845-tsens
->>>>                  - qcom,sm8150-tsens
->>>>                  - qcom,sm8250-tsens
->>>> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>>> index 1e54828817d5..7e9c80e35fba 100644
->>>> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>>> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>>> @@ -627,6 +627,17 @@ mnoc: interconnect@1745000 {
->>>>                     <&mmcc AHB_CLK_SRC>;
->>>>            };
->>>>    +        tsens: thermal-sensor@10ae000 {
->>>> +            compatible = "qcom,sdm630-tsens", "qcom,tsens-v2";
->>>> +            reg = <0x010ae000 0x1000>, /* TM */
->>>> +                  <0x010ad000 0x1000>; /* SROT */
->>>> +            #qcom,sensors = <12>;
->>>
->>> Are all 12 sensors used ? I see that in a later patch "arm64: dts: qcom: sdm630: Add thermal-zones configuration" only 9 are used.
->>
->> Hi,
->>
->> if I recall correctly, they all give output but not all of the mappings were documented in the downstream sources and we have no documentation whatsoever :(
+> Please see my other comments on the other patches you posted:
 >
-> Right. In that case, why not change #qcom,sensors to 9 and add rest of the sensors if and when needed ?
+> https://lore.kernel.org/r/20210729093923.GD21151@willie-the-truck
 >
-I don't think it makes sense to describe the hardware incorrectly, even if some of it is unused.
+> Overall, I'm not thrilled to bits by extending the atomics API with
+> operations that cannot be implemented efficiently on any (?) architectures
+> and are only used by the qspinlock slowpath on machines with more than 16K
+> CPUs.
+>
+> I also think we're lacking documentation justifying when you would use this
+> new primitive over e.g. a sub-word WRITE_ONCE() on architectures that
+> support those, especially for the non-returning variants.
+>
+> Will
 
+I have tried to explain in another thread. At the beginning, I thought
+about implementing xchg_mask for the sub-word xchg, but now I agree
+that atomic andnot_or is clearer and more general.
 
+Peter, what do you think?
 
+Regards,
+Rui
