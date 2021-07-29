@@ -2,162 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62443D99DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EFB3D99DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhG2AEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 20:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbhG2AED (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 20:04:03 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D8FC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 17:04:01 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id a20so4817536plm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 17:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CW8QUk9P9o2UEGEcBhQxw6hUF2SB0nBvDvcAFREKWG0=;
-        b=p1HVDJ84ai7K3pcXHqczT0rOendqQSnKDQIkJGEQG94mnqrTbD0jqM3+xkRmHP3wi6
-         DhxPuvPyJjrnCSKldBYopwhFtYIMXRt6Lv7S78/8cFIhPn+WDc9vK6g3oFIb+hSoGElQ
-         KsQ+C6PRajcED+FgMfkZbBD0ZDi5whtifzZKg+rzwtiEO4o71BBsabs9TaHD0S6/2Ims
-         2wWv0D6Z/rG4Pvq67KOxGEJ0UNTgpYWxl8hPWriw1A2EoUY0sR+SMVnuZU+NMxxc6Wmk
-         tGs4VPywB7ceEtZKcEpQpilJKwdrBTCWhQ5xvKLijSnv/FelikOMx13QCBYu/ysF/7w9
-         ATJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CW8QUk9P9o2UEGEcBhQxw6hUF2SB0nBvDvcAFREKWG0=;
-        b=UPl8QY4gSYHb6frVyElY7quIQywa3MMe3uDloA4xSEOTEgfynvAtnQ4OntepqYbQsc
-         +rrXLsidxXDVTCw5WQJH9jfNzoZgpLRiS4w1uo/mDm16t9lfWt1gPFW240WD+p0eBPov
-         XgRY/zBKVVZkYeXeFlKqWFN0usJoqXHIxLaLqtjvEF7cjMALDJ6R2UlMTTMsQqdafSD1
-         KOcK/ClH8RshUVvGLUWyKOZCAajLtFcCUQT2YcIqpnhGfw9/x4xWTMECaSh6rFx8/abS
-         qwCJCu9QQh03Ln7xOZNW/LwCIREsdmmkrT/DWKBpNMwnMzlMUHXEFuZgl61n4Op9P5h0
-         ys7g==
-X-Gm-Message-State: AOAM533ceyu9K20QuIYVjwxbZN6jwI6d2Q9cXtMY5/F+gqzeVr4bihDr
-        M979QREPMbsmYv6pC+Gfl7QaWA==
-X-Google-Smtp-Source: ABdhPJwDDRusLfZvjJMLfqtso2qpQV/CB8c/tUNekSFj6j2EXCUX/AkxCcm3tJJLABPyZtQ1trwVcw==
-X-Received: by 2002:aa7:8d56:0:b029:327:6dc:d254 with SMTP id s22-20020aa78d560000b029032706dcd254mr2268607pfe.69.1627517040296;
-        Wed, 28 Jul 2021 17:04:00 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u19sm1183457pfi.4.2021.07.28.17.03.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 17:03:59 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 00:03:55 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Zeng Guang <guang.zeng@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
-        Gao Chao <chao.gao@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-Subject: Re: [PATCH 3/6] KVM: VMX: Detect Tertiary VM-Execution control when
- setup VMCS config
-Message-ID: <YQHwa42jixqPPvVm@google.com>
-References: <20210716064808.14757-1-guang.zeng@intel.com>
- <20210716064808.14757-4-guang.zeng@intel.com>
+        id S232892AbhG2AET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 20:04:19 -0400
+Received: from smtpbg587.qq.com ([113.96.223.105]:35667 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232355AbhG2AES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 20:04:18 -0400
+X-QQ-mid: bizesmtp47t1627517045tc5sn4m5
+Received: from ficus.lan (unknown [171.223.99.141])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Thu, 29 Jul 2021 08:04:04 +0800 (CST)
+X-QQ-SSF: 01000000002000B0C000B00A0000000
+X-QQ-FEAT: N/s2IhZC2kB/UP9K3qmqMqXKNEviE95eaKovK49Vfuc1Vvwz/R0XX6qcQiTtb
+        XMq2lLxXmr/HK1mJCpxCixoxMZ8/n/HhhitsKHC7j89l0HD3rDe3Uc/Olq4MN3xlLbULkYe
+        O97HKLq5Wp7JlBd+Ab+DKqv3oXorG8Mpggzc0Pmt7E6o1Y+0S5aqHN1tS1umUljQ4wXnYjt
+        lbCp2y9XlgjuefN5DzyQAMFqy3SCra04r03YyrbXGBsh6wzVvDXm+serta7aMnBXhKlq4jl
+        HKxBvMSiIO55xGgLfbFXInCAVdHsCcgoSmADXF9D4dS7B6az1gePwKeTZlAatnofi8tQ==
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     jasowang@redhat.com
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] tools/virtio: use 'unsigned int' instead of bare 'unsigned'
+Date:   Thu, 29 Jul 2021 08:04:02 +0800
+Message-Id: <20210729000402.45690-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716064808.14757-4-guang.zeng@intel.com>
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021, Zeng Guang wrote:
-> @@ -4204,6 +4234,13 @@ vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
->  #define vmx_adjust_sec_exec_exiting(vmx, exec_control, lname, uname) \
->  	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, uname##_EXITING, true)
->  
-> +static void vmx_compute_tertiary_exec_control(struct vcpu_vmx *vmx)
-> +{
-> +	u32 exec_control = vmcs_config.cpu_based_3rd_exec_ctrl;
+Replace the lazy way 'unsigned' with 'unsigned int' which is more
+accurate.
 
-This is incorrectly truncating the value.
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ tools/virtio/vringh_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> +
-> +	vmx->tertiary_exec_control = exec_control;
-> +}
-> +
->  static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
->  {
->  	struct kvm_vcpu *vcpu = &vmx->vcpu;
-> @@ -4319,6 +4356,11 @@ static void init_vmcs(struct vcpu_vmx *vmx)
->  		secondary_exec_controls_set(vmx, vmx->secondary_exec_control);
->  	}
->  
-> +	if (cpu_has_tertiary_exec_ctrls()) {
-> +		vmx_compute_tertiary_exec_control(vmx);
-> +		tertiary_exec_controls_set(vmx, vmx->tertiary_exec_control);
+diff --git a/tools/virtio/vringh_test.c b/tools/virtio/vringh_test.c
+index fa87b58bd5fa..3e85f4ec210d 100644
+--- a/tools/virtio/vringh_test.c
++++ b/tools/virtio/vringh_test.c
+@@ -447,7 +447,7 @@ int main(int argc, char *argv[])
+ 	char buf[28];
+ 	u16 head;
+ 	int err;
+-	unsigned i;
++	unsigned int i;
+ 	void *ret;
+ 	bool (*getrange)(struct vringh *vrh, u64 addr, struct vringh_range *r);
+ 	bool fast_vringh = false, parallel = false;
+@@ -654,7 +654,7 @@ int main(int argc, char *argv[])
+ 
+ 	/* Free those buffers. */
+ 	for (i = 0; i < RINGSIZE; i++) {
+-		unsigned len;
++		unsigned int len;
+ 		assert(virtqueue_get_buf(vq, &len) != NULL);
+ 	}
+ 
+-- 
+2.32.0
 
-IMO, the existing vmx->secondary_exec_control is an abomination that should not
-exist.  Looking at the code, it's actually not hard to get rid, there's just one
-annoying use in prepare_vmcs02_early() that requires a bit of extra work to get
-rid of.
-
-Anyways, for tertiary controls, I'd prefer to avoid the same mess and instead
-follow vmx_exec_control(), both in functionality and in name:
-
-  static u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
-  {
-	return vmcs_config.cpu_based_3rd_exec_ctrl;
-  }
-
-and:
-
-	if (cpu_has_tertiary_exec_ctrls())
-		tertiary_exec_controls_set(vmx, vmx_tertiary_exec_control(vmx));
-
-and then the next patch becomes:
-
-  static u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
-  {
-	u64 exec_control = vmcs_config.cpu_based_3rd_exec_ctrl;
-
-	if (!kvm_vcpu_apicv_active(vcpu))
-		exec_control &= ~TERTIARY_EXEC_IPI_VIRT;
-
-	return exec_control;
-  }
-
-
-And I'll work on a patch to purge vmx->secondary_exec_control.
-
-> +	}
-> +
->  	if (kvm_vcpu_apicv_active(&vmx->vcpu)) {
->  		vmcs_write64(EOI_EXIT_BITMAP0, 0);
->  		vmcs_write64(EOI_EXIT_BITMAP1, 0);
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 945c6639ce24..c356ceebe84c 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -266,6 +266,7 @@ struct vcpu_vmx {
->  	u32		      msr_ia32_umwait_control;
->  
->  	u32 secondary_exec_control;
-> +	u64 tertiary_exec_control;
->  
->  	/*
->  	 * loaded_vmcs points to the VMCS currently used in this vcpu. For a
-> -- 
-> 2.25.1
-> 
