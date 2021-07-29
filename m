@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A23B3DA9FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE9D3DA9FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhG2RU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:20:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
+        id S232054AbhG2RVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:21:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:53484 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhG2RUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:20:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C67E760F42;
-        Thu, 29 Jul 2021 17:20:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627579250;
-        bh=3u51lRqQafrXq5f6IqvWMxZ1ptNInQdEddFA3TjKAb0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bbTDTTZUuX1tvZrjspUiyv7DKa8/vf8E/FZBxFhlf4W1jolNX6oBAnUQmJLMA+/HO
-         os+AFaPTyDu57ZXYiK1ZmRz+uv4PsMw0xMU5NsT4xSr2TCKBn4DlXJQPC9aOVprzve
-         OXGhvZsI9KJS8jfurdZYrJmlILa2SrwZumTm2BeTDTueOvNKqD7DpMpMemfTMHwQtP
-         m7OWv5mIHK07aUFQSE73K7t6wqG3gJKYxq8Cv36//b5YyWFrVKc2ohRCANV5aEPjFA
-         js5QvQdGh2cPcaatgPANzygIq1RoxijBd88J8YAo6KIOtXqCmuSd4gLTGtZ0TAwS1H
-         3ysTC+kA1fsag==
-Received: by mail-ej1-f48.google.com with SMTP id e19so11929870ejs.9;
-        Thu, 29 Jul 2021 10:20:50 -0700 (PDT)
-X-Gm-Message-State: AOAM532WgPfHP1QJVQvUosrjizcT70WnF0mKtZUW3IjL7SbnwBIGnPIn
-        vRUygH3UR6wGhX9Vti6hopcJNpJ8dapK/6Dmow==
-X-Google-Smtp-Source: ABdhPJzuipRyW+xyNT+RtqOAnbQFg0W4CvcPJqdZSA4Ju9OA/O4unHd//H8Jvub6DcKsikWuNgfrKfNfwMj6Ur9hAJQ=
-X-Received: by 2002:a17:906:d287:: with SMTP id ay7mr5417811ejb.360.1627579249347;
- Thu, 29 Jul 2021 10:20:49 -0700 (PDT)
+        id S229657AbhG2RVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 13:21:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D3D71FB;
+        Thu, 29 Jul 2021 10:21:10 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E4913F73D;
+        Thu, 29 Jul 2021 10:21:08 -0700 (PDT)
+Subject: Re: [PATCH 2/2] sched: Don't report SCHED_FLAG_SUGOV in
+ sched_getattr()
+To:     Juri Lelli <juri.lelli@redhat.com>,
+        Quentin Perret <qperret@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20210727101103.2729607-1-qperret@google.com>
+ <20210727101103.2729607-3-qperret@google.com>
+ <YQEfY730Sjkr3w+Y@localhost.localdomain> <YQEl2t2RgaB9eEOZ@google.com>
+ <YQFPYIqJG5PSPH1S@localhost.localdomain>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <97c06d07-bb6a-e8b5-b230-390edd8bcfbe@arm.com>
+Date:   Thu, 29 Jul 2021 19:21:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <cover.1627559126.git.mchehab+huawei@kernel.org>
-In-Reply-To: <cover.1627559126.git.mchehab+huawei@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 29 Jul 2021 11:20:37 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+fY3k7JzUYH5WX=nDoa2jLwnoEf8hp64UjYR5OpPAFiA@mail.gmail.com>
-Message-ID: <CAL_Jsq+fY3k7JzUYH5WX=nDoa2jLwnoEf8hp64UjYR5OpPAFiA@mail.gmail.com>
-Subject: Re: [PATCH 0/5] DT schema changes for HiKey970 PCIe hardware to work
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, linux-phy@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQFPYIqJG5PSPH1S@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 5:56 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Hi Rob,
->
-> After our discussions, I'm opting to submit first the DT bindings for the
-> Kirin 970 PCIe support.
->
-> Patch 1 is there just because patch 2 needs. You already acked on it.
->
-> Patch 5 is also there just as an example of the entire stuff added to
-> the DTS file.
->
-> The core of this series are patches 2 to 4. They contain the conversion
-> of the kirin-pcie.txt file to the DT schema, and adds the needed
-> bindings.
->
-> Currently, it generates some warnings:
->
->    Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml: pcie@f5000000: pcie@4,0:compatible: None of ['pciclass,0604'] are valid under the given schema
->         From schema: Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+On 28/07/2021 14:36, Juri Lelli wrote:
+> On 28/07/21 10:39, Quentin Perret wrote:
+>> On Wednesday 28 Jul 2021 at 11:12:03 (+0200), Juri Lelli wrote:
 
-This should be fixed now in dtschema master.
+[...]
 
->   Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml: pcie@4,0: reset-gpios: [[4294967295, 1, 0]] is too short
+>>> Maybe we can do this in the previous patch so that it's kept confined to
+>>> deadline bits?
+>>
+>> That works too, it just felt like this could happen again if we start
+>> using non-standard flags outside of deadline for any reason at some
+>> point in the future. But no strong opinion really.
+> 
+> Yeah, I also see this point. :)
+> 
+> So no prob with me to keep it in core.c as you do here.
+> 
+> Best,
+> Juri
+> 
 
-Your proposed change to pci-bus.yaml is wrong. It's requiring 4
-entries. You need 'minItems: 1'.
+I would vote for not exporting SCHED_FLAG_SUGOV from __getparam_dl() in
+patch 1/2 to underpin the idea that this flag is a hack.
 
-Rob
+@ -2759,7 +2759,7 @@ void __getparam_dl(struct task_struct *p, struct
+sched_attr *attr)
+        attr->sched_deadline = dl_se->dl_deadline;
+        attr->sched_period = dl_se->dl_period;
+        attr->sched_flags &= ~SCHED_DL_FLAGS;
+-       attr->sched_flags |= dl_se->flags;
++       attr->sched_flags |= dl_se->flags & ~SCHED_FLAG_SUGOV;
