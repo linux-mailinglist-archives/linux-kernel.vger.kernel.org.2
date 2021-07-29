@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3693DAA28
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C9E3DAA34
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232122AbhG2R3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhG2R3m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:29:42 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE54C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:29:38 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id o185so9340617oih.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=nuL9Gtrngyb6HozKG8XOhySmiHppyZ4SPKwk+KQp+Zc=;
-        b=JdtXha2KVXzKZ2i+/dg6/TqTi8BKHsyrpUafLCGrH3a4/NrAgfn9+1VV61+cKYypI/
-         zQis9HjO0mRR/RhoP0rU+vdBW8oNeszZsNBI9t+oY9amV7+Q38G2zdiUy58bnHalNRVT
-         BzZ5MybexeU8CXngY8eZukXE4Gw0vor1OAyfs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=nuL9Gtrngyb6HozKG8XOhySmiHppyZ4SPKwk+KQp+Zc=;
-        b=F3MICoyy0vPzrthvisFOSWTmm/h2SQwWWEw/GbV30ywsfKzwu3TpVINna2D9G74ecA
-         yVrwL2ctyrDTtrb6whtosfPNLMeMjjzXHe2P16ulWbcppfuK2e29tEoKGOgrSkstTDRv
-         LBSTYTLdIf4yFVO2w7uv0rHcPG8m81xCTvgCqVLBb61wBLbn6bscj5DsLTjO3HgGOAuk
-         WBE4u3PwjKelSEHl/oZaYAHXT4ndvmcvsH6i7oAl/Jspy1ai66CefHgjlfzTJsyIZHzt
-         22rHQcRwDTy7isoYQkukOYRF2Fm+AFx+jOW4M6In8+1N8Gix7OQ9GTft85++5uhOfNT2
-         HY1A==
-X-Gm-Message-State: AOAM530XMCFbwTkw2AceRgGgbSV/XlBDsho+Ng5tdzceDIobp53nnQZF
-        Z9Ixwi5NaE3Ym5x1CVjsFYfRvAgih48s+xc+5fCwSA==
-X-Google-Smtp-Source: ABdhPJwi3G9rwu5lrD06uFLjaL3kNc79dxhFbRDbNktWD54FVP7PGqPqCjr1IvDBEJd9gDzQ74iPrFgSWrFNyjY6nRc=
-X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr3928249oiu.19.1627579778357;
- Thu, 29 Jul 2021 10:29:38 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 29 Jul 2021 12:29:38 -0500
+        id S231420AbhG2RbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:31:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:53702 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229662AbhG2RbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 13:31:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 26F6A1FB;
+        Thu, 29 Jul 2021 10:31:19 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 739A63F73D;
+        Thu, 29 Jul 2021 10:31:17 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] sched: Skip priority checks with
+ SCHED_FLAG_KEEP_PARAMS
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        qais.yousef@arm.com, rickyiu@google.com, wvw@google.com,
+        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+References: <20210719161656.3833943-1-qperret@google.com>
+ <20210719161656.3833943-3-qperret@google.com>
+ <ad30be79-8fb2-023d-9936-01f7173164e4@arm.com> <YP6++lClPCQvTLcK@google.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <787ac8b6-3df6-0225-e835-c17a56a8d642@arm.com>
+Date:   Thu, 29 Jul 2021 19:31:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210728172330.v3.2.Iea8318d85a23f0167fd523ea85df5630147649f9@changeid>
-References: <1627473242-35926-1-git-send-email-akhilpo@codeaurora.org> <20210728172330.v3.2.Iea8318d85a23f0167fd523ea85df5630147649f9@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 29 Jul 2021 12:29:37 -0500
-Message-ID: <CAE-0n50GLdByWnMxf2AZJ0r1pdZFRwG3b5t3V69wZY6H6pf32A@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7280: Add gpu thermal zone
- cooling support
-To:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YP6++lClPCQvTLcK@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Akhil P Oommen (2021-07-28 04:54:02)
-> From: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
->
-> Add cooling-cells property and the cooling maps for the gpu thermal
-> zones to support GPU thermal cooling.
->
-> Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> ---
+On 26/07/2021 15:56, Quentin Perret wrote:
+> On Thursday 22 Jul 2021 at 10:47:33 (+0200), Dietmar Eggemann wrote:
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+[...]
+
+>>> @@ -7393,6 +7403,8 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+>>>  	rcu_read_unlock();
+>>>  
+>>>  	if (likely(p)) {
+>>> +		if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS)
+>>> +			get_params(p, &attr);
+>>
+>> SCHED_FLAG_KEEP_PARAMS is handled here but SCHED_FLAG_KEEP_POLICY
+>> outside (before) the `if (likely(p))`?
+> 
+> Because I need to dereference p while SCHED_FLAG_KEEP_POLICY doesn't :)
+
+Ah, true. Looked weird though.
+But then the SCHED_FLAG_KEEP_POLICY condition can be placed closer to
+the SCHED_FLAG_KEEP_PARAMS condition. We don't have to set
+SETPARAM_POLICY if p == NULL.
+
+>>>  		retval = sched_setattr(p, &attr);
+>>>  		put_task_struct(p);
+>>>  	}
+
+[...]
