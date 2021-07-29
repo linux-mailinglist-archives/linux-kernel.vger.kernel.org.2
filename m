@@ -2,142 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447CE3DA4A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010A73DA4B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237795AbhG2NsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237684AbhG2NsH (ORCPT
+        id S237874AbhG2NtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:49:02 -0400
+Received: from wforward5-smtp.messagingengine.com ([64.147.123.35]:33165 "EHLO
+        wforward5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237831AbhG2Nsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:48:07 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E01C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:48:03 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id k1so7013622plt.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YxDl0EJtEuevrE5fofbeNq+CYZb2RNB0hzvmFi+D3+8=;
-        b=VVYQWyDfexTZ8+hbjdrXcso8HsN0LxWI8d3EnEupkmGdjIekJNRNOUnHbFvjHQDSTL
-         sZoJ3mohHFdq5D2OsrU4VkIxYb/jwD1NqYsCFKcuiaJsDikdI1VcNWref2GZYaczSIcC
-         NOTsJIA8uiNJpcfNMMN1iXroctoHxObztJZabghMQl6xFYmo4Qlzughg4rtXT18uK6KM
-         d0aPBsBM8+KsN368qpHnjjYYnNTZzox1aN8Q6rLKlpCpYG9RgA0oDbQHV+KErlpqWAk+
-         IA20Mz8OUyk7fSs7EtQl+Hi52so/NY/jNIRcLNuRaTqXyR5Xofhh3dpX1NReIcRUQG2i
-         JcQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YxDl0EJtEuevrE5fofbeNq+CYZb2RNB0hzvmFi+D3+8=;
-        b=XqMxaPtg6CCbio4cVjGH+gbC0tbg3CM58YP2kX/EsXunEOTCkpjXi5QAIfIPGGiQ5O
-         QGXCqxWRyvYyigMLJ5DlZ+tHp3/Sfr7KcF4UkWQF4Xby517+4zhLVMbpgVrLVbELCJSA
-         ILSue6L0zo30N9uMti3abby2lEXxx7MOPu58OdDUwA4ns3vAV4Mkua36p6yZtf4f1j5p
-         T4TUJBZgfXEtGHhlIbJ7ls9rYx6lHOq/+nfFn5i1f92EwKNmnBkH6UXM75n+r/EcUEl4
-         FMXbEqmAN0EpAAIU8wIMBEbhuaveYjw3XjxxjpLZ600QPunBeekwldCGGhFM/llWWS6H
-         v7RA==
-X-Gm-Message-State: AOAM5322ht5FpIzivhER5MKBl+VAfCSa4X/1ytFgvFsRWj3ZqxFmUaRn
-        b7k1Am3qk3uqC4DxkYB3ubU=
-X-Google-Smtp-Source: ABdhPJwehJhh8ZtlX4s5039UfLl8M70E/Prup4jVkYNGctW420GGbrH/QI/TZ7Pczmv/94fnJzaTHg==
-X-Received: by 2002:a17:90a:b893:: with SMTP id o19mr5325862pjr.114.1627566483247;
-        Thu, 29 Jul 2021 06:48:03 -0700 (PDT)
-Received: from ojas ([122.161.51.5])
-        by smtp.gmail.com with ESMTPSA id f3sm3887725pfe.123.2021.07.29.06.47.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 06:48:02 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 19:17:52 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, nsaenz@kernel.org,
-        dan.carpenter@oracle.com, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] staging: vchiq: Add details to $CONFIG_VCHIQ_CDEV
- help text
-Message-ID: <20210729134739.GA19228@ojas>
-References: <cover.1627495116.git.ojaswin98@gmail.com>
- <9c9c128b41e31d6bebe646e052aa05c44b19eb83.1627495116.git.ojaswin98@gmail.com>
- <YQGmG6nwk+pOyAdu@kroah.com>
- <20210728200039.GA17046@ojas>
- <fa20cb94-ed73-ea6e-d128-cfb930399af6@i2se.com>
+        Thu, 29 Jul 2021 09:48:53 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailforward.west.internal (Postfix) with ESMTP id A60611AC0113;
+        Thu, 29 Jul 2021 09:48:48 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 29 Jul 2021 09:48:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=9QPW2T
+        aD5TkdBoSC7awJVUB3Oz/9pHuBCU2Rqw2XRmM=; b=UX5PL0C7EKdRQuy+w/FfN1
+        Bgu9VREKmyd4QqYE2mhCz63k7Z7Nld6DHJpjKy1I0Z94U3NlpQts+L4MhXK/oskt
+        jcOyiHibEl2xKYk2Kkzp1keMK0qQiWq8skd4R6r2uwp6trW+wQg2Mduso3jLFWlR
+        Nz7HqI4TqKDkSRa3xj4k/i3BG9RO57RttgUveqArp3QmP7pRna23+aEviFJqB1Dq
+        NDnPKGs7YygNQ41QOxZ1X8KcQngsJXtJEjIMbnxCuAbaqlXe9kYmNcao3l9aZhAZ
+        ygJ/TyiLHPeJPmzmY5Zdz2MDCagp1Yb4il5oGO6WDeL5JfKfgCTwE4d1+APUwq8g
+        ==
+X-ME-Sender: <xms:uLECYQKaAAPIOcNBK7DO0W4TMK1h7hiIoG_hdXwKSl_rAJIQo_A7mg>
+    <xme:uLECYQJ7bc_skfmUr8G0NnQ8jnuNTliOMdGZNVxOA4wUZrspQCj4o2gmainu193P9
+    lPW9OhfzdGNrj93PLE>
+X-ME-Received: <xmr:uLECYQuEWcfJbTIrmKDjsalZaHiGIU6el4Pm5AXi_jrVNNPHzadhtJ5CUYD7ET6SgSl6WbmPav3Fh-E3IgusIOqSigoU1ap08qX35VT6Qgo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheefgddvkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefvufgjfhfhfffkgggtsehttdertddttddtnecuhfhrohhmpeffrghvihguucfg
+    ughmohhnughsohhnuceouggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpeegtdegheevhfegieekfffhledtjedugeehffegvdev
+    feffheeliefhkeevfeejfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggrvhhiugdrvggu
+    mhhonhgushhonhesohhrrggtlhgvrdgtohhm
+X-ME-Proxy: <xmx:uLECYdaGxtYm92wj4W1DtEK31OUdCPpnhVDymZIMm6hZZuqGbcIwcA>
+    <xmx:uLECYXZxN-0DfUqhYKGBSe33Mcx__DUUoLfCADD-bpwyjnrkmmScrw>
+    <xmx:uLECYZDvOT7HNn0mYPXm_jT8z4lw_Y6F_6QCjHZjJaReJawnYh4PcQ>
+    <xmx:wLECYdwVh-qLAgSXrGx4FCGSkfiSwL3lJRMClSuEh3b8TAkhN8mGChuzs47hFOaZ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 29 Jul 2021 09:48:39 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id bb8cfb13;
+        Thu, 29 Jul 2021 13:48:38 +0000 (UTC)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     David Matlack <dmatlack@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH 2/2] KVM: x86: On emulation failure, convey the exit
+ reason to userspace
+In-Reply-To: <YOjGdFXXCqDeVlh4@google.com>
+References: <20210628173152.2062988-1-david.edmondson@oracle.com>
+ <20210628173152.2062988-3-david.edmondson@oracle.com>
+ <YNygagjfTIuptxL8@google.com> <m2pmw114w5.fsf@oracle.com>
+ <YOjGdFXXCqDeVlh4@google.com>
+From:   David Edmondson <david.edmondson@oracle.com>
+Date:   Thu, 29 Jul 2021 14:48:38 +0100
+Message-ID: <cunmtq5temh.fsf@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa20cb94-ed73-ea6e-d128-cfb930399af6@i2se.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:39:38PM +0200, Stefan Wahren wrote:
-> Am 28.07.21 um 22:00 schrieb Ojaswin Mujoo:
-> > On Wed, Jul 28, 2021 at 08:46:51PM +0200, Greg KH wrote:
-> >> On Thu, Jul 29, 2021 at 12:07:17AM +0530, Ojaswin Mujoo wrote:
-> >>> Add some details to the Kconfig definition of $CONFIG_VCHIQ_CDEV to help
-> >>> make the motive behind it a bit more clear.
-> >>>
-> >>> Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
-> >>> ---
-> >>>  drivers/staging/vc04_services/Kconfig | 8 ++++++--
-> >>>  1 file changed, 6 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
-> >>> index 2b70c37cdd09..cb02d8a4cb74 100644
-> >>> --- a/drivers/staging/vc04_services/Kconfig
-> >>> +++ b/drivers/staging/vc04_services/Kconfig
-> >>> @@ -25,8 +25,12 @@ config VCHIQ_CDEV
-> >>>  	bool "VCHIQ Character Driver"
-> >>>  	default y
-> >>>  	help
-> >>> -		Enable the creation of VCHIQ character driver to help
-> >>> -		communicate with the Videocore platform.
-> >>> +		Enable the creation of VCHIQ character driver to help communicate
-> >>> +		with the VideoCore platform. The cdev exposes ioctls used by
-> >>> +		userspace libraries and testing tools to interact with VideoCore.
-> >>> +		This can be set to 'N' if the VideoCore communication is not needed
-> >>> +		by userspace but only by other kernel modules (like bcm2835-audio).
-> >>> +		If not sure, set this to 'Y'.
-> >> I still do not understand if I need this driver or not, and I have this
-> >> hardware!  What functionality does this driver accomplish?  What is
-> >> VideoCore?
-> > Hey Greg,
-> >
-> > I believe I can add this under the CONFIG_BCM2835_VCHIQ config option,
-> > as that enables the core driver that implements the functions to
-> > communicate with VideoCore platform? 
-> 
-> Sorry, today i'm too tired to give a good explanation. VideoCore is the
-> VPU inside the BCM283x SoC. It runs a firmware and VCHIQ provides a way
-> to communicate with this firmware / VPU. The VCHIQ driver is required to
-> get access to the audio jack and camera interface (see depending drivers).
-> 
-> Unfortunately i don't have an application list by the hand which uses
-> the CDEV interface for VCHIQ, please use this link [1] as a starting point.
-> 
-> [1] - https://github.com/raspberrypi/userland
-> 
-Hi Stefan
+On Friday, 2021-07-09 at 21:58:12 GMT, Sean Christopherson wrote:
 
-Thanks for the brief, its good enough to help me get started. I've also
-been looking more closely into this driver in my free time lately and I
-can try to come up with a small summary to use as the help text. I'll
-add it in v2 of this patch.
+> On Fri, Jul 02, 2021, David Edmondson wrote:
+>> On Wednesday, 2021-06-30 at 16:48:42 UTC, David Matlack wrote:
+>> 
+>> > On Mon, Jun 28, 2021 at 06:31:52PM +0100, David Edmondson wrote:
+>> >>  	if (!is_guest_mode(vcpu) && static_call(kvm_x86_get_cpl)(vcpu) == 0) {
+>> >> -		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+>> >> -		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
+>> >> -		vcpu->run->internal.ndata = 0;
+>> >> +		prepare_emulation_failure_exit(
+>> >> +			vcpu, KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON);
+>> >
+>> > Should kvm_task_switch and kvm_handle_memory_failure also be updated
+>> > like this?
+>> 
+>> Will do in v2.
+>> 
+>> sgx_handle_emulation_failure() seems like an existing user of
+>> KVM_INTERNAL_ERROR_EMULATION that doesn't follow the new protocol (use
+>> the emulation_failure part of the union).
+>> 
+>> Sean: If I add another flag for this case, what is the existing
+>> user-level consumer?
+>
+> Doh, the SGX case should have been updated as part of commit c88339d88b0a ("kvm:
+> x86: Allow userspace to handle emulation errors").  The easiest fix for SGX would
+> be to zero out 'flags', bump ndata, and shift the existing field usage.  That
+> would resolve the existing problem of the address being misinterpreted as flags,
+> and would play nice _if_ additional flags are added.  I'll send a patch for that.
+>
+> [...]
+>
+> Which brings me back to adding another flag when dumping the exit reason.  Unless
+> there is a concrete use case for programmatically taking action in reponse to
+> failed emulation, e.g. attemping emulation in userspace using insn_bytes+insn_size,
+> I think we should not add a flag and instead dump info for debug/triage purposes
+> without committing to an ABI.  I.e. define the ABI such that KVM can dump
+> arbitrary info in the unused portions of data[].
 
-Regards,
-Ojaswin
-> >
-> > This config option merely adds a cdev which exposes the the core
-> > driver's functionality to userspace. 
-> >
-> > Regards,
-> > Ojaswin
-> >> thanks,
-> >>
-> >> greg k-h
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+https://lore.kernel.org/r/20210729133931.1129696-1-david.edmondson@oracle.com
+includes both of these suggestions.
