@@ -2,186 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D11E3DB010
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 01:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10BE63DB015
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 01:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235061AbhG2Xz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 19:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
+        id S235354AbhG2X75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 19:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235321AbhG2Xzt (ORCPT
+        with ESMTP id S235324AbhG2X7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 19:55:49 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10A1C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 16:55:45 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id f3-20020a25cf030000b029055a2303fc2dso8399837ybg.11
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 16:55:45 -0700 (PDT)
+        Thu, 29 Jul 2021 19:59:54 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B41C0613CF;
+        Thu, 29 Jul 2021 16:59:50 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so18203358pjb.0;
+        Thu, 29 Jul 2021 16:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=xV6nYQh6vIeMfHMSX9yqr53Q2dMYFsvSCqcZj7BCtOg=;
-        b=cw4/EPbIsQnnba25xZG+p5I7r5Y9lGea6Ti2p3P0TazdUW6zQ2hKxXDWgnknL2KqHi
-         cvyE/StrZrcbgcN5pRMLdKjvJ9vVsLw0EHoWDKFcL971eosaUzHAP4B2TgcJi57ewV0j
-         x4+8Lp7zoYyT7gRICQ+2lbChqISsmWmyuAt7pUZdnn00/STQT68KomTTuEoo3PJejKDW
-         oVqp6p7EJ0JUXXSsmbf+SF/ujTJ670VCrWYSM4BVaUxbzw2eF3LL93jAgnlPLEVDP1/H
-         LmIpcuXGew+nT4M+g7RQj4g+tC1+sPabep/g9W2fEswOpdPpy5csHyOthQTUqzgH3Ijr
-         5YjA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JlxS3T0DwUa4mptnycUnVH7bQaMOBwE1cnaubCwbXtY=;
+        b=BVmMiwJBcnvh+LsCYe4hcbQyiZHaLFylDnigDlab2EsA5l6H4SVX0trfdsbYMri1Iz
+         /2X4s2Zv0ZiiHZhdw961EULM4nvwFucu5VdKBGgOCLlmydJAEVJpmd9SgskQh5j4j27E
+         DMNNjHSWcGq6yq6JYOTGoLSdq7uSYe/9NaxH++hHSPKFzGsMR3fgaZm6RyMI+KXKanBr
+         YKQ7tsYS22odCKw6GR/PCHkz9moRCfN/oFOi/e8L1cTEOG6snDd5boS3qyK1ztH967RG
+         N8Nbgsuq9KlC8mhOs6VPKVhB/ZaVTVFO41ym5azYNUMaDLUc69WKVK7yC+wTvNmurXLE
+         L3HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=xV6nYQh6vIeMfHMSX9yqr53Q2dMYFsvSCqcZj7BCtOg=;
-        b=IqE2lJ7JdKzhb/Dvdn7sV1maKvUzEoq7yU6Quys21tlHJK5LPLlsajT4kwBjeU2qJG
-         2F2FeUzc/jxgOy5zmM4dY9mW2UbBRIgut/DUjX8windnk018BGTYCjArc6fSLGhSV4Zu
-         TchKoF29YaJk53n5bBMaiJS6EYaJf3AftDfVAGnHAePvIbLqtsF3EDrhJpRZoDWudw3u
-         1ZAF2rN4ez6z1M2r5oIG5USjES8dqAC7K5hafO+6fbcraI7Nh8kDSxrAsEyEd0j8n0BU
-         a43IECAOj8sBOZ+KEPHhnbGcs8BeBk0IZItnD3ytY+ZYaT4DHEHNm7XquyskBuMcrIBb
-         QqWg==
-X-Gm-Message-State: AOAM531medFSGJbeKtLFKE9NAB6I9hEXyggVp84RWVD/zvavHeOY9YMk
-        2H505H3v13OJTI1mtVEP+hSs4aBp66PXLw==
-X-Google-Smtp-Source: ABdhPJz23N1pr4/WLiuePyhNmZsXzuXEg23lQU9LHDM9bFHRyo28b9fsgrhp+u5jedCZGCOCmpYtVOorWfo6cg==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:675d:5947:e389:b947])
- (user=dlatypov job=sendgmr) by 2002:a25:2d17:: with SMTP id
- t23mr9865289ybt.125.1627602945174; Thu, 29 Jul 2021 16:55:45 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 16:55:21 -0700
-In-Reply-To: <20210729235521.1127484-1-dlatypov@google.com>
-Message-Id: <20210729235521.1127484-2-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20210729235521.1127484-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH 2/2] kunit: add 'kunit.action' param to allow listing out tests
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JlxS3T0DwUa4mptnycUnVH7bQaMOBwE1cnaubCwbXtY=;
+        b=WXuaEHgd6guopv7z7GFlipnAh0FEaYPf7aTna+0/9z8WuIpqxWB/Ly9aEHbutVK5A7
+         8PvROHaEkVQvbqnyFRMbOdEPtaqF5C6gJORsBIw9oiLU2IFsaCJrdCt9Y6FJXdMGSMxf
+         ok5x7cHTVipCjTnmtuJLr3rbkwkHgQrijLTyxN4iK27DERN4FCqv+ry5CdoXq+/WuAlA
+         mnxIA7u5keMqi9dP3Tn33spyMNU0a678eI7ZugX2YncpciIGtDo51T1Li9roIibwdp//
+         YunWhQ2+iZ26ISb4HbZudhnHeH2p1CLZc1TSH0Tqkzi1/oiX9zsB1SjGHXgHbPRthjcJ
+         5G6g==
+X-Gm-Message-State: AOAM530ePL9mqwwaP88Y23bNTjOuyXSrF3Vg48uJLb4K5FgKaD9gNZ1q
+        1ymQ88fTLu5XH+a8KNLnA8+Bl7khb4I=
+X-Google-Smtp-Source: ABdhPJzKBGSKeDbr8fcqH82L81rsbkJnnGAdgZne6emak4Me+mBd8Jc7kYbpoKMgQwju2MttmOjEwQ==
+X-Received: by 2002:a63:f961:: with SMTP id q33mr4013585pgk.82.1627603189583;
+        Thu, 29 Jul 2021 16:59:49 -0700 (PDT)
+Received: from [10.67.49.140] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id u3sm1943pjn.18.2021.07.29.16.59.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 16:59:49 -0700 (PDT)
+Subject: Re: [PATCH 5.13 00/22] 5.13.7-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210729135137.336097792@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <899a57cd-f473-668f-09d9-a71de9ee51b4@gmail.com>
+Date:   Thu, 29 Jul 2021 16:59:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210729135137.336097792@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Context:
-It's difficult to map a given .kunitconfig => set of enabled tests.
+On 7/29/21 6:54 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.13.7 release.
+> There are 22 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.7-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Having a standard, easy way of getting the list could be useful in a
-number of ways. For example, if we also extended kunit.filter_glob to
-allow filtering on tests, this would allow users to run tests cases one
-by one if they wanted to debug hermeticity issues.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-This patch:
-* adds a kunit.action module param with one valid non-null value, "list"
-* for the "list" action, it simply prints out "<suite>.<test>"
-* does not itself introduce kunit.py changes to make use of this [1].
-
-Note: kunit.filter_glob is respected for this and all future actions.
-Note: we need a TAP header for kunit.py to isolate the KUnit output.
-
-Tested:
-$ ./tools/testing/kunit/kunit.py run --kernel_arg=kunit.action=list --raw_output=kunit
-...
-TAP version 14
-1..1
-example.example_simple_test
-example.example_skip_test
-example.example_mark_skipped_test
-reboot: System halted
-
-[1] The interface for this can work in a few ways. We could add a
---list_tests flag or a new subcommand. But this change is enough to
-allow people to split each suite into its own invocation, e.g. via a
-short script like:
-
-  #!/bin/bash
-
-  cd $(git rev-parse --show-toplevel)
-
-  for suite in $(
-    ./tools/testing/kunit/kunit.py run --kernel_args=kunit.action=list --raw_output=kunit |
-    sed -n '/^TAP version/,$p' | grep -P -o '^[a-z][a-z0-9_-]+\.' | tr -d '.' | sort -u);
-  do
-    ./tools/testing/kunit/kunit.py run "${suite}"
-  done
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- lib/kunit/executor.c | 46 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 41 insertions(+), 5 deletions(-)
-
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index acd1de436f59..77d99ee5ed64 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -15,9 +15,16 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
- #if IS_BUILTIN(CONFIG_KUNIT)
- 
- static char *filter_glob_param;
-+static char *action_param;
-+
- module_param_named(filter_glob, filter_glob_param, charp, 0);
- MODULE_PARM_DESC(filter_glob,
--		"Filter which KUnit test suites run at boot-time, e.g. list*");
-+		 "Filter which KUnit test suites run at boot-time, e.g. list*");
-+module_param_named(action, action_param, charp, 0);
-+MODULE_PARM_DESC(action,
-+		 "Changes KUnit executor behavior, valid values are:\n"
-+		 "<none>: run the tests like normal\n"
-+		 "'list' to list test names instead of running them.\n");
- 
- static char *kunit_shutdown;
- core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
-@@ -109,6 +116,33 @@ static void kunit_print_tap_header(struct suite_set *suite_set)
- 	pr_info("1..%d\n", num_of_suites);
- }
- 
-+static void kunit_exec_run_tests(struct suite_set *suite_set)
-+{
-+	struct kunit_suite * const * const *suites;
-+
-+	kunit_print_tap_header(suite_set);
-+
-+	for (suites = suite_set->start; suites < suite_set->end; suites++)
-+		__kunit_test_suites_init(*suites);
-+}
-+
-+static void kunit_exec_list_tests(struct suite_set *suite_set)
-+{
-+	unsigned int i;
-+	struct kunit_suite * const * const *suites;
-+	struct kunit_case *test_case;
-+
-+	/* Hack: print a tap header so kunit.py can find the start of KUnit output. */
-+	kunit_print_tap_header(suite_set);
-+
-+	for (suites = suite_set->start; suites < suite_set->end; suites++)
-+		for (i = 0; (*suites)[i] != NULL; i++) {
-+			kunit_suite_for_each_test_case((*suites)[i], test_case) {
-+				pr_info("%s.%s\n", (*suites)[i]->name, test_case->name);
-+			}
-+		}
-+}
-+
- int kunit_run_all_tests(void)
- {
- 	struct kunit_suite * const * const *suites;
-@@ -120,10 +154,12 @@ int kunit_run_all_tests(void)
- 	if (filter_glob_param)
- 		suite_set = kunit_filter_suites(&suite_set, filter_glob_param);
- 
--	kunit_print_tap_header(&suite_set);
--
--	for (suites = suite_set.start; suites < suite_set.end; suites++)
--		__kunit_test_suites_init(*suites);
-+	if (!action_param)
-+		kunit_exec_run_tests(&suite_set);
-+	else if (strcmp(action_param, "list") == 0)
-+		kunit_exec_list_tests(&suite_set);
-+	else
-+		pr_err("kunit executor: unknown action '%s'\n", action_param);
- 
- 	if (filter_glob_param) { /* a copy was made of each array */
- 		for (suites = suite_set.start; suites < suite_set.end; suites++)
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.32.0.554.ge1b32706d8-goog
-
+Florian
