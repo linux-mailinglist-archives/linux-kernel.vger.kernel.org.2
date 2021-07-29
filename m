@@ -2,121 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD4D3D99D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62443D99DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232798AbhG2AAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 20:00:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43575 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232355AbhG2AAV (ORCPT
+        id S232730AbhG2AEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 20:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232355AbhG2AED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 20:00:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627516818;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wwCPQjG58j7oWkSwdoN8w00sp4R5au56rr1fRjraU+E=;
-        b=Ir1/JqnrygSGmG9YfLd9VCNNd6X5hY/jg7z8FVavUB5ZIkQ4m8eGvEB2RuW7gFq+Q/6I3Y
-        L5IZ1bGYddSN3g4EHrwRkT0z3HpiuI0v473T8nZvVys+m8ZpKWjHg7I85egObCJlaBKa8A
-        BZyWDYfspZvY8PdVPBSwW4ZkzV1IUXI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-8NvSSR2xNledKlNqiAXzjg-1; Wed, 28 Jul 2021 20:00:17 -0400
-X-MC-Unique: 8NvSSR2xNledKlNqiAXzjg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5AA0F800050;
-        Thu, 29 Jul 2021 00:00:15 +0000 (UTC)
-Received: from [10.64.54.184] (vpn2-54-184.bne.redhat.com [10.64.54.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B1E5319D9D;
-        Thu, 29 Jul 2021 00:00:11 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v4 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     shan.gavin@gmail.com, chuhu@redhat.com, akpm@linux-foundation.org,
-        will@kernel.org, catalin.marinas@arm.com, cai@lca.pw,
-        aneesh.kumar@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210727061401.592616-1-gshan@redhat.com>
- <20210727061401.592616-13-gshan@redhat.com>
- <20210728095326.Horde.k1npSPaQKh2i7W3XoBsdiQ3@messagerie.c-s.fr>
- <58a1eaa9-ba63-403b-1f4b-c22f23a3a0d3@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <cfa714eb-8574-8cfb-8d5f-719c9a6b0a30@redhat.com>
-Date:   Thu, 29 Jul 2021 10:00:25 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Wed, 28 Jul 2021 20:04:03 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D8FC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 17:04:01 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id a20so4817536plm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 17:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CW8QUk9P9o2UEGEcBhQxw6hUF2SB0nBvDvcAFREKWG0=;
+        b=p1HVDJ84ai7K3pcXHqczT0rOendqQSnKDQIkJGEQG94mnqrTbD0jqM3+xkRmHP3wi6
+         DhxPuvPyJjrnCSKldBYopwhFtYIMXRt6Lv7S78/8cFIhPn+WDc9vK6g3oFIb+hSoGElQ
+         KsQ+C6PRajcED+FgMfkZbBD0ZDi5whtifzZKg+rzwtiEO4o71BBsabs9TaHD0S6/2Ims
+         2wWv0D6Z/rG4Pvq67KOxGEJ0UNTgpYWxl8hPWriw1A2EoUY0sR+SMVnuZU+NMxxc6Wmk
+         tGs4VPywB7ceEtZKcEpQpilJKwdrBTCWhQ5xvKLijSnv/FelikOMx13QCBYu/ysF/7w9
+         ATJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CW8QUk9P9o2UEGEcBhQxw6hUF2SB0nBvDvcAFREKWG0=;
+        b=UPl8QY4gSYHb6frVyElY7quIQywa3MMe3uDloA4xSEOTEgfynvAtnQ4OntepqYbQsc
+         +rrXLsidxXDVTCw5WQJH9jfNzoZgpLRiS4w1uo/mDm16t9lfWt1gPFW240WD+p0eBPov
+         XgRY/zBKVVZkYeXeFlKqWFN0usJoqXHIxLaLqtjvEF7cjMALDJ6R2UlMTTMsQqdafSD1
+         KOcK/ClH8RshUVvGLUWyKOZCAajLtFcCUQT2YcIqpnhGfw9/x4xWTMECaSh6rFx8/abS
+         qwCJCu9QQh03Ln7xOZNW/LwCIREsdmmkrT/DWKBpNMwnMzlMUHXEFuZgl61n4Op9P5h0
+         ys7g==
+X-Gm-Message-State: AOAM533ceyu9K20QuIYVjwxbZN6jwI6d2Q9cXtMY5/F+gqzeVr4bihDr
+        M979QREPMbsmYv6pC+Gfl7QaWA==
+X-Google-Smtp-Source: ABdhPJwDDRusLfZvjJMLfqtso2qpQV/CB8c/tUNekSFj6j2EXCUX/AkxCcm3tJJLABPyZtQ1trwVcw==
+X-Received: by 2002:aa7:8d56:0:b029:327:6dc:d254 with SMTP id s22-20020aa78d560000b029032706dcd254mr2268607pfe.69.1627517040296;
+        Wed, 28 Jul 2021 17:04:00 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u19sm1183457pfi.4.2021.07.28.17.03.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 17:03:59 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 00:03:55 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Zeng Guang <guang.zeng@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
+        Gao Chao <chao.gao@intel.com>,
+        Robert Hoo <robert.hu@linux.intel.com>
+Subject: Re: [PATCH 3/6] KVM: VMX: Detect Tertiary VM-Execution control when
+ setup VMCS config
+Message-ID: <YQHwa42jixqPPvVm@google.com>
+References: <20210716064808.14757-1-guang.zeng@intel.com>
+ <20210716064808.14757-4-guang.zeng@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <58a1eaa9-ba63-403b-1f4b-c22f23a3a0d3@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716064808.14757-4-guang.zeng@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe and Anshuman,
+On Fri, Jul 16, 2021, Zeng Guang wrote:
+> @@ -4204,6 +4234,13 @@ vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
+>  #define vmx_adjust_sec_exec_exiting(vmx, exec_control, lname, uname) \
+>  	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, uname##_EXITING, true)
+>  
+> +static void vmx_compute_tertiary_exec_control(struct vcpu_vmx *vmx)
+> +{
+> +	u32 exec_control = vmcs_config.cpu_based_3rd_exec_ctrl;
 
-On 7/28/21 8:05 PM, Anshuman Khandual wrote:
-> On 7/28/21 1:23 PM, Christophe Leroy wrote:
->> Gavin Shan <gshan@redhat.com> a écrit :
->>> In page table entry modifying tests, set_xxx_at() are used to populate
->>> the page table entries. On ARM64, PG_arch_1 (PG_dcache_clean) flag is
->>> set to the target page flag if execution permission is given. The logic
->>> exits since commit 4f04d8f00545 ("arm64: MMU definitions"). The page
->>> flag is kept when the page is free'd to buddy's free area list. However,
->>> it will trigger page checking failure when it's pulled from the buddy's
->>> free area list, as the following warning messages indicate.
->>>
->>>     BUG: Bad page state in process memhog  pfn:08000
->>>     page:0000000015c0a628 refcount:0 mapcount:0 \
->>>          mapping:0000000000000000 index:0x1 pfn:0x8000
->>>     flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
->>>     raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
->>>     raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->>>     page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
->>>
->>> This fixes the issue by clearing PG_arch_1 through flush_dcache_page()
->>> after set_xxx_at() is called. For architectures other than ARM64, the
->>> unexpected overhead of cache flushing is acceptable.
->>>
->>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>
->> Maybe a Fixes: tag would be good to have
+This is incorrectly truncating the value.
+
+> +
+> +	vmx->tertiary_exec_control = exec_control;
+> +}
+> +
+>  static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>  {
+>  	struct kvm_vcpu *vcpu = &vmx->vcpu;
+> @@ -4319,6 +4356,11 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+>  		secondary_exec_controls_set(vmx, vmx->secondary_exec_control);
+>  	}
+>  
+> +	if (cpu_has_tertiary_exec_ctrls()) {
+> +		vmx_compute_tertiary_exec_control(vmx);
+> +		tertiary_exec_controls_set(vmx, vmx->tertiary_exec_control);
+
+IMO, the existing vmx->secondary_exec_control is an abomination that should not
+exist.  Looking at the code, it's actually not hard to get rid, there's just one
+annoying use in prepare_vmcs02_early() that requires a bit of extra work to get
+rid of.
+
+Anyways, for tertiary controls, I'd prefer to avoid the same mess and instead
+follow vmx_exec_control(), both in functionality and in name:
+
+  static u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
+  {
+	return vmcs_config.cpu_based_3rd_exec_ctrl;
+  }
+
+and:
+
+	if (cpu_has_tertiary_exec_ctrls())
+		tertiary_exec_controls_set(vmx, vmx_tertiary_exec_control(vmx));
+
+and then the next patch becomes:
+
+  static u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
+  {
+	u64 exec_control = vmcs_config.cpu_based_3rd_exec_ctrl;
+
+	if (!kvm_vcpu_apicv_active(vcpu))
+		exec_control &= ~TERTIARY_EXEC_IPI_VIRT;
+
+	return exec_control;
+  }
+
+
+And I'll work on a patch to purge vmx->secondary_exec_control.
+
+> +	}
+> +
+>  	if (kvm_vcpu_apicv_active(&vmx->vcpu)) {
+>  		vmcs_write64(EOI_EXIT_BITMAP0, 0);
+>  		vmcs_write64(EOI_EXIT_BITMAP1, 0);
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 945c6639ce24..c356ceebe84c 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -266,6 +266,7 @@ struct vcpu_vmx {
+>  	u32		      msr_ia32_umwait_control;
+>  
+>  	u32 secondary_exec_control;
+> +	u64 tertiary_exec_control;
+>  
+>  	/*
+>  	 * loaded_vmcs points to the VMCS currently used in this vcpu. For a
+> -- 
+> 2.25.1
 > 
-> Agreed.
-> 
-> Fixes: a5c3b9ffb0f4 ("mm/debug_vm_pgtable: add tests validating advanced arch page table helpers")
-> 
-
-Yep, I will add the tag in v5.
-
->>
->> And would it be possible to have this fix as first patch of the series so that it can be applied to stable without applying the whole series ?
-> Changing the allocation scheme does solve another problem (using non-owned pages)
-> but is achieved via the entire series applied. But this particular patch could be
-> moved to the beginning without much problem.
-> 
-
-I prefer to keep current layout as explained before. Firstly, all
-code changes included in this series are affecting only one source
-file. It's hard to apply the whole series to stable kernel. I also
-need apply this series to our downstream kernel once it hits upstream.
-Secondly, applying PATCH[v4 12/12] can't resolve all issues we have.
-It means we need to apply the whole series to resolve all issues.
-Lastly, moving PATCH[v4 12/12] to PATCH[v4 01/12] will introduce
-unnecessary code for subsequent patches. I don't think it's worthy
-to do.
-
-So lets keep current layout we have.
-
-Thanks,
-Gavin
-
