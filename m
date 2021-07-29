@@ -2,124 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7811B3D9E13
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4843F3D9E17
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234480AbhG2HJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:09:28 -0400
-Received: from mga09.intel.com ([134.134.136.24]:64994 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234339AbhG2HJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:09:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="212810214"
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="212810214"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 00:09:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="438102616"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by fmsmga007.fm.intel.com with ESMTP; 29 Jul 2021 00:09:19 -0700
-Date:   Thu, 29 Jul 2021 15:09:18 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
- multiple preferred nodes
-Message-ID: <20210729070918.GA96680@shbuild999.sh.intel.com>
-References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
- <1626077374-81682-2-git-send-email-feng.tang@intel.com>
- <YQFOB4UDK+dNZeOV@dhcp22.suse.cz>
- <20210728141156.GC43486@shbuild999.sh.intel.com>
- <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
+        id S234559AbhG2HJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234496AbhG2HJg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 03:09:36 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857D1C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:09:33 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so3289818wmb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=khztsyA4Xuq7DRmcu1TTIQSEqbeknz6KE3Dd7p8lqds=;
+        b=eNqhijdJE6YymsOWQNdQAKIichpS9gzs5UZJ5KEg72L0Qy0bH+bjxXNwqRhGnCSjeJ
+         z1HW2e6dz3O6Uro8Kq2CIQkN/upTMdWNslpyIeHOnfU6aYHt5rSUfX0JXslPILUyx8JB
+         y6U+8Bigu0samzmf9KR2Da6cUt6TRctYFyh4g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=khztsyA4Xuq7DRmcu1TTIQSEqbeknz6KE3Dd7p8lqds=;
+        b=R+fkdAq1bgcG8Y+E/2RbupET2iEVYG/66zqH8uVylW+sNp1RKQaHlo7MSUpVQXpE7l
+         Nmy/up/Zg8dJCpyaXbHB2UWMyd1KDe+QPk50wE61Oua62kpY2oZ2od3JiZ2GuJhbt8q3
+         IymVFyzQRjdVvoFrE/57HqbDXBrwUpsKnTLOeTOm9V3vlz6drHxbfc29np9vVypAtOXP
+         qd3hZ3eRoIoTW2yg6XiPkP9oBzSnz0mQMPaCRM6esykcHt91mX3Zj1sGXm97G5A3cWqv
+         ug6dH/IPbbu5ps8PF0TovNJAlRyDmZ7GsF8OvlAvdG5lNZf8AfdZbs745miLWcCBjYm6
+         JRHw==
+X-Gm-Message-State: AOAM5309xFtu2rqnI6l5Odvg0+cR5WYBcKEZIqQYLODGrEmSvvOMgZV8
+        umZCuCN6shA+bRK8TO3P1hckyQ==
+X-Google-Smtp-Source: ABdhPJya6t37/zP2fn+AGgoQScAbX8dTg7R2sruxHnwfNx/V6dol3NlRy/0ereppDACVsUfqIPeycg==
+X-Received: by 2002:a05:600c:2dd0:: with SMTP id e16mr3193113wmh.113.1627542572057;
+        Thu, 29 Jul 2021 00:09:32 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t17sm2188136wru.94.2021.07.29.00.09.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 00:09:31 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 09:09:29 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
+Message-ID: <YQJUKXgf/Q957fmy@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>, Lee Jones <lee.jones@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
+References: <20210726233854.2453899-1-robdclark@gmail.com>
+ <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
+ <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
+ <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
+ <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
+ <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
+ <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
+ <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com>
+ <9d5f4415-d470-3bc1-7d52-61ba739706ae@daenzer.net>
+ <CAF6AEGu409eY9xznTAaBf2ZDcV_AaDELUzN2afWgiHwB_uBwqg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF6AEGu409eY9xznTAaBf2ZDcV_AaDELUzN2afWgiHwB_uBwqg@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 06:12:21PM +0200, Michal Hocko wrote:
-> On Wed 28-07-21 22:11:56, Feng Tang wrote:
-> > On Wed, Jul 28, 2021 at 02:31:03PM +0200, Michal Hocko wrote:
-> > > [Sorry for a late review]
-> > 
-> > Not at all. Thank you for all your reviews and suggestions from v1
-> > to v6!
-> > 
-> > > On Mon 12-07-21 16:09:29, Feng Tang wrote:
-> > > [...]
-> > > > @@ -1887,7 +1909,8 @@ nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
-> > > >  /* Return the node id preferred by the given mempolicy, or the given id */
-> > > >  static int policy_node(gfp_t gfp, struct mempolicy *policy, int nd)
-> > > >  {
-> > > > -	if (policy->mode == MPOL_PREFERRED) {
-> > > > +	if (policy->mode == MPOL_PREFERRED ||
-> > > > +	    policy->mode == MPOL_PREFERRED_MANY) {
-> > > >  		nd = first_node(policy->nodes);
-> > > >  	} else {
-> > > >  		/*
-> > > 
-> > > Do we really want to have the preferred node to be always the first node
-> > > in the node mask? Shouldn't that strive for a locality as well? Existing
-> > > callers already prefer numa_node_id() - aka local node - and I belive we
-> > > shouldn't just throw that away here.
-> >  
-> > I think it's about the difference of 'local' and 'prefer/perfer-many'
-> > policy. There are different kinds of memory HW: HBM(High Bandwidth
-> > Memory), normal DRAM, PMEM (Persistent Memory), which have different
-> > price, bandwidth, speed etc. A platform may have two, or all three of
-> > these types, and there are real use case which want memory comes
-> > 'preferred' node/nodes than the local node.
-> > 
-> > And good point for 'local node', if the 'prefer-many' policy's
-> > nodemask has local node set, we should pick it han this
-> > 'first_node', and the same semantic also applies to the other
-> > several places you pointed out. Or do I misunderstand you point?
+On Wed, Jul 28, 2021 at 08:34:13AM -0700, Rob Clark wrote:
+> On Wed, Jul 28, 2021 at 6:24 AM Michel Dänzer <michel@daenzer.net> wrote:
+> >
+> > On 2021-07-28 3:13 p.m., Christian König wrote:
+> > > Am 28.07.21 um 15:08 schrieb Michel Dänzer:
+> > >> On 2021-07-28 1:36 p.m., Christian König wrote:
+> > >>> Am 27.07.21 um 17:37 schrieb Rob Clark:
+> > >>>> On Tue, Jul 27, 2021 at 8:19 AM Michel Dänzer <michel@daenzer.net> wrote:
+> > >>>>> On 2021-07-27 5:12 p.m., Rob Clark wrote:
+> > >>>>>> On Tue, Jul 27, 2021 at 7:50 AM Michel Dänzer <michel@daenzer.net> wrote:
+> > >>>>>>> On 2021-07-27 1:38 a.m., Rob Clark wrote:
+> > >>>>>>>> From: Rob Clark <robdclark@chromium.org>
+> > >>>>>>>>
+> > >>>>>>>> Based on discussion from a previous series[1] to add a "boost" mechanism
+> > >>>>>>>> when, for example, vblank deadlines are missed.  Instead of a boost
+> > >>>>>>>> callback, this approach adds a way to set a deadline on the fence, by
+> > >>>>>>>> which the waiter would like to see the fence signalled.
+> > >>>>>>>>
+> > >>>>>>>> I've not yet had a chance to re-work the drm/msm part of this, but
+> > >>>>>>>> wanted to send this out as an RFC in case I don't have a chance to
+> > >>>>>>>> finish the drm/msm part this week.
+> > >>>>>>>>
+> > >>>>>>>> Original description:
+> > >>>>>>>>
+> > >>>>>>>> In some cases, like double-buffered rendering, missing vblanks can
+> > >>>>>>>> trick the GPU into running at a lower frequence, when really we
+> > >>>>>>>> want to be running at a higher frequency to not miss the vblanks
+> > >>>>>>>> in the first place.
+> > >>>>>>>>
+> > >>>>>>>> This is partially inspired by a trick i915 does, but implemented
+> > >>>>>>>> via dma-fence for a couple of reasons:
+> > >>>>>>>>
+> > >>>>>>>> 1) To continue to be able to use the atomic helpers
+> > >>>>>>>> 2) To support cases where display and gpu are different drivers
+> > >>>>>>>>
+> > >>>>>>>> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.freedesktop.org%2Fseries%2F90331%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C269b2df3e1dc4f0b856d08d951c8c768%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630745091538563%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=eYaSOSS5wOngNAd9wufp5eWCx5GtAwo6GkultJgrjmA%3D&amp;reserved=0
+> > >>>>>>> Unfortunately, none of these approaches will have the full intended effect once Wayland compositors start waiting for client buffers to become idle before using them for an output frame (to prevent output frames from getting delayed by client work). See https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.gnome.org%2FGNOME%2Fmutter%2F-%2Fmerge_requests%2F1880&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C269b2df3e1dc4f0b856d08d951c8c768%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630745091538563%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=1ZkOzLqbiKSyCixGZ0u7Hd%2Fc1YnUZub%2F%2Fx7RuEclFKg%3D&amp;reserved=0 (shameless plug :) for a proof of concept of this for mutter. The boost will only affect the compositor's own GPU work, not the client work (which means no effect at all for fullscreen apps where the compositor can scan out the client buffers directly).
+> > >>>>>>>
+> > >>>>>> I guess you mean "no effect at all *except* for fullscreen..."?
+> > >>>>> I meant what I wrote: The compositor will wait for the next buffer to become idle, so there's no boost from this mechanism for the client drawing to that buffer. And since the compositor does no drawing of its own in this case, there's no boost from that either.
+> > >>>>>
+> > >>>>>
+> > >>>>>> I'd perhaps recommend that wayland compositors, in cases where only a
+> > >>>>>> single layer is changing, not try to be clever and just push the
+> > >>>>>> update down to the kernel.
+> > >>>>> Even just for the fullscreen direct scanout case, that would require some kind of atomic KMS API extension to allow queuing multiple page flips for the same CRTC.
+> > >>>>>
+> > >>>>> For other cases, this would also require a mechanism to cancel a pending atomic commit, for when another surface update comes in before the compositor's deadline, which affects the previously single updating surface as well.
+> > >>>>>
+> > >>>> Well, in the end, there is more than one compositor out there.. and if
+> > >>>> some wayland compositors are going this route, they can also implement
+> > >>>> the same mechanism in userspace using the sysfs that devfreq exports.
+> > >>>>
+> > >>>> But it sounds simpler to me for the compositor to have a sort of "game
+> > >>>> mode" for fullscreen games.. I'm less worried about UI interactive
+> > >>>> workloads, boosting the GPU freq upon sudden activity after a period
+> > >>>> of inactivity seems to work reasonably well there.
+> > >>> At least AMD hardware is already capable of flipping frames on GPU events like finishing rendering (or uploading etc).
+> > >>>
+> > >>> By waiting in userspace on the CPU before send the frame to the hardware you are completely killing of such features.
+> > >>>
+> > >>> For composing use cases that makes sense, but certainly not for full screen applications as far as I can see.
+> > >> Even for fullscreen, the current KMS API only allows queuing a single page flip per CRTC, with no way to cancel or otherwise modify it. Therefore, a Wayland compositor has to set a deadline for the next refresh cycle, and when the deadline passes, it has to select the best buffer available for the fullscreen surface. To make sure the flip will not miss the next refresh cycle, the compositor has to pick an idle buffer. If it picks a non-idle buffer, and the pending rendering does not finish in time for vertical blank, the flip will be delayed by at least one refresh cycle, which results in visible stuttering.
+> > >>
+> > >> (Until the deadline passes, the Wayland compositor can't even know if a previously fullscreen surface will still be fullscreen for the next refresh cycle)
+> > >
+> > > Well then let's extend the KMS API instead of hacking together workarounds in userspace.
+> >
+> > That's indeed a possible solution for the fullscreen / direct scanout case.
+> >
+> > Not for the general compositing case though, since a compositor does not want to composite multiple output frames per display refresh cycle, so it has to make sure the one frame hits the target.
+> >
 > 
-> Yeah. Essentially what I am trying to tell is that for
-> MPOL_PREFERRED_MANY you simply want to return the given node without any
-> alternation. That node will be used for the fallback zonelist and the
-> nodemask would make sure we won't get out of the policy.
+> I think solving the fullscreen game case is sufficient enough forward
+> progress to be useful.  And the results I'm seeing[1] are sufficiently
+> positive to convince me that dma-fence deadline support is the right
+> thing to do.
+> 
+> But maybe the solution to make this also useful for mutter is to, once
+> we have deadline support, extend it with an ioctl to the dma-fence fd
+> so userspace can be the one setting the deadline.
 
-I think I got your point now :)
+atomic ioctl with TEST_ONLY and SET_DEADLINES? Still gives mutter the
+option to bail out with an old frame if it's too late?
 
-With current mainline code, the 'prefer' policy will return the preferred
-node.
+Also mutter would need to supply the deadline, because we need to fit the
+rendering in still before the actual flip. So gets a bit quirky maybe ...
+-Daniel
+> 
+> [1] https://patchwork.freedesktop.org/patch/447138/
+> 
+> BR,
+> -R
 
-For 'prefer-many', we would like to keep the similar semantic, that the
-preference of node is 'preferred' > 'local' > all other nodes. There is
-some customer use case, whose platform has both DRAM and cheaper, bigger
-and slower PMEM, and they anlayzed the hotness of their huge data, and
-they want to put huge cold data into the PMEM, and only fallback to DRAM
-as the last step. The HW topology could be simplified like this:
-
-Socket 0:  Node 0 (CPU + 64GB DRAM), Node 2 (512GB PMEM)
-Socket 1:  Node 1 (CPU + 64GB DRAM), Node 3 (512GB PMEM)
-
-E.g they want to allocate memory for colde application data with
-'prefer-many' policy + 0xC nodemask (N2+N3 PMEM nodes), so no matter the
-application is running on Node 0 or Node 1, the 'local' node only has DRAM
-which is not their preference, and want a preferred-->local-->others order. 
-
-Thanks,
-Feng
-
-> -- 
-> Michal Hocko
-> SUSE Labs
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
