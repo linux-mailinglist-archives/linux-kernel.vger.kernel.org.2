@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9674E3DA965
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8463DA96A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhG2Quf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
+        id S231488AbhG2Qut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhG2Que (ORCPT
+        with ESMTP id S231245AbhG2Qus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:50:34 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD6FC061765;
-        Thu, 29 Jul 2021 09:50:30 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id f13so9035236edq.13;
-        Thu, 29 Jul 2021 09:50:30 -0700 (PDT)
+        Thu, 29 Jul 2021 12:50:48 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE28BC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:50:44 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id f9-20020a05622a1a09b02902615523e725so2978510qtb.21
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:50:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ge2c2dD+EBmDmaGN5nupteoqdj28OTIbcgEuzsesBTw=;
-        b=qL2Rj3JukTZAxtcWyetmk0LTL3hs8/mi9vn+JdDmSkmyeRjbMqR9jXg8gFWsv6kGdz
-         O0mVq9BBHW+9GVS+YDVrhRf0mXLlO5vCDryASFucgvyh0dkAlvrfzd/ieoXEO75YfthV
-         P3NThxNT4ZFkznm+Tkruy0vS3BJakX4rGnzOqjRuyu1qC9V8Ydx9GUQnjJbXIy+Y6DOo
-         Jwx+w1uqo7G9P/fIIdEpYI81sGJQaMfU4fn1MlNIs6Uh8wlE1YenINqJN6SFKeF6cmN6
-         l1l0o1orLp4On4m4sET2NN461fgFveISmPlIFkRWIAH9vXEz16WarCNbpNHwG+kNT+SC
-         a2oA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=MJP1t72bFvITlNOtlr8RusQlm4nGOAfcjgK9C55asO0=;
+        b=p8sWn2dbfPOWOBjQc4eyjx4hSnj6xXIeQa6Rn1r20g6fteWVNgIfxcKTXkay2tj5ao
+         8cpNYJ/3FwZJ+uW7vZJS1cHZjtofBZmvSZub8kyvQ/moI8wW9mTgKIA/Vtwst+S+ITBT
+         rKOJsv4KWg3qTbMYo/rAA0yvKurM7uXkTL844v1QGTWCxBztnKAE9ETVIx/eOfrSD8vx
+         jlfPPCPBDwHrlY0gmEbu0tf/fdx2S038Hzzs9TMee1rNbRkOOezKm7TM2jRlZvRgNlnp
+         Z1EkN7iM01DojaUZz1q8hhNF0hEhtwApG+oiLcpVQDX/zISNY65glCstjGU30dOqj2hB
+         uPKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ge2c2dD+EBmDmaGN5nupteoqdj28OTIbcgEuzsesBTw=;
-        b=NApSNNceX5ZCGj1961NQBOXyuM1Ed7PDhy5k3bBD+2XFrFaVt2xhLU/AdnHhvfF57e
-         1TgXm+FpqdeL6so4uLtxSUu2XWiznLVSXQUZST+EJgjCtVKyFkQNSR9rNQVSe1CVeI6Y
-         9qU9iCuzG0gwHWrLRZgBotWKl0s0y3h33DrsSUOt1JYxi8LUoz5WKElkKq3TIikGwUCs
-         bozuLZZTQmKuyrUxDKKq0JlNy7c6/8YkxwGI1T8NnZCGEUvVzjFULrhjpmBJikki7cAn
-         dK6+pLuLyiBL0+OqOTVngmh5DU26UNiDaL46o7Q0ghVTU9sI8lnkgjn8xLayEo7VVF0i
-         bt9g==
-X-Gm-Message-State: AOAM532QB+iAD6vgd0fydb39DOrRw01p5AmuTdxpu8dO6Tr0kCnsfQSl
-        1qCXuLglKeDxJJTx6sNJj7M=
-X-Google-Smtp-Source: ABdhPJw3QV3+/J7tiE+JZbeIL/dUyVkeZkd4O2CYoDmctiP9takCqIOmAAt5RBeHoxF+m8qK2doyCw==
-X-Received: by 2002:a05:6402:d63:: with SMTP id ec35mr7069658edb.347.1627577429163;
-        Thu, 29 Jul 2021 09:50:29 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id la23sm1155008ejc.63.2021.07.29.09.50.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 09:50:28 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 19:50:27 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC net-next 2/2] net: dsa: mt7530: trap packets from
- standalone ports to the CPU
-Message-ID: <20210729165027.okmfa3ulpd3e6gte@skbuf>
-References: <20210728175327.1150120-1-dqfext@gmail.com>
- <20210728175327.1150120-3-dqfext@gmail.com>
- <20210729152805.o2pur7pp2kpxvvnq@skbuf>
- <CALW65jbHwRhekX=7xoFvts2m7xTRM4ti9zpTiah8ed0n0fCrRg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALW65jbHwRhekX=7xoFvts2m7xTRM4ti9zpTiah8ed0n0fCrRg@mail.gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=MJP1t72bFvITlNOtlr8RusQlm4nGOAfcjgK9C55asO0=;
+        b=COBuV9M6GZ9d2SrQgyrVb2fhhSQ3U55aSc5K7rGi4nO+mmldORC9G7GwDY3rFA3Eqb
+         YB8Lv6dMiwGgv3VmJqj2PLgsWVP06WPEIrMOze3QlPct306oXg3c/jPs399u77GfiSSe
+         cCND0y//ow86xtDRGLsSwH47VWSa9FKAlnE4u2nqzNfWd9P10Gbmo5fybtuqIFmuPM4+
+         ErRDImhYK5Ojl7vUIJyWFS/e5j73OkMqOAlnEi3AJAtjvJ7Mso7kJBJ6SQoMugel9Efx
+         icJvNaGVfcPV2QJx3/pOVzdRzrEkGOO+GKBc2Rf8r2ijqW0JYiDCYD2eF2Nw6XJ30QLm
+         kXsw==
+X-Gm-Message-State: AOAM532to1qOa146F6uTwngIb3IxPhNqXzcyQW+Zafkw9YNLej+rbioy
+        1VEXujSNR4QWR2Iiuj83GSXMBIniXX/A3zpksFg=
+X-Google-Smtp-Source: ABdhPJwWD7T0W4TmwEn8mJADZPusDQqnLnyY+kZpkLqDOJPPRdSOLO6lu686aMxImY3NMENP7lV0kqpRQYZQA1ZIlA4=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:8132:32f4:cf29:1268])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6214:1362:: with SMTP id
+ c2mr6400031qvw.9.1627577444006; Thu, 29 Jul 2021 09:50:44 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 09:50:37 -0700
+Message-Id: <20210729165039.23896-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH v3 0/2] infer CROSS_COMPILE from SRCARCH for CC=clang LLVM_IAS=1
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:11:45AM +0800, DENG Qingfang wrote:
-> On Thu, Jul 29, 2021 at 11:28 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> > Actually, on second thought...
-> > If MT7530 supports 8 FIDs and it has 7 ports, then you can assign one
-> > FID to each standalone port or VLAN-unaware bridge it is a member of.
-> 
-> The problem is, there is no way to do that..
-> 
-> According to the reference manual:
-> Filter ID is learned automatically from VLAN Table. 0 is the default value if
-> VLAN Table is not applicable.
-> 
-> So it is always 0 in VLAN-unaware mode.
+We get constant feedback that the command line invocation of make is too
+long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+target triple, or is an absolute path outside of $PATH, but it's mostly
+redundant for a given ARCH.
 
-I have the MT7621 GSW, and sadly this reference manual isn't the best in
-explaining what is and what is not possible. For example, I am still not
-clear what is meant by "VID1" and "VID0". Is "VID1" the inner (customer)
-VLAN tag, and "VID0" the outer (service) VLAN tag, or "VID1" means the
-actual VLAN ID 1?
+Instead, let's infer it from SRCARCH, and move some flag handling into a
+new file included from the top level Makefile.
 
-And the bits 3:1 of VAWD1 (VLAN table access register) indicate a FID
-field per VLAN. I cannot find the piece that you quoted in this manual.
-But what I expect to happen for a Transparent Port is that the packets
-are always classified to that port's PVID, and the VLAN Table is looked
-up with that PVID. There, it will find the FID, which this driver
-currently always configures as zero. In my manual's description, in the
-"Transparent Port" chapter, it does explicitly say:
+Changes v2 -> v3:
+* Remove requirement that LLVM=1 be set. Instead, if building with just
+  CC=clang LLVM_IAS=1 instead of LLVM=1 LLVM_IAS=1, you should use
+  LD=ld.lld explicitly, or LD=aarch64-linux-gnu-ld. (As per Masahiro)
+  Example:
 
-	VID0 and VID1 will store PVID as the default VID which is used
-	to look up the VLAN table.
+  $ ARCH=arm64 make CC=clang LLVM_IAS=1 LD=ld.lld OBJCOPY=llvm-objcopy \
+    STRIP=llvm-strip -j72 defconfig all
 
-So I get the impression that the phrase "the VLAN table is not applicable"
-is not quite correct, but I might be wrong...
+  (It's still preferable to use LLVM=1 IMO, but this is maximally
+  flexible.)
+* Change oneliner from LLVM=1 to CC=clang.
+* Update Docs slightly.
+
+Changes v1 -> v2:
+* patch 1/2 untouched.
+* Fix typos in commit message as per Geert and Masahiro.
+* Use SRCARCH instead of ARCH, simplifying x86 handling, as per
+  Masahiro. Add his sugguested by tag.
+* change commit oneline from 'drop' to 'infer.'
+* Add detail about explicit host --target and relationship of ARCH to
+  SRCARCH, as per Masahiro.
+
+Nick Desaulniers (2):
+  Makefile: move initial clang flag handling into scripts/Makefile.clang
+  Makefile: infer CROSS_COMPILE from SRCARCH for CC=clang LLVM_IAS=1
+
+ Documentation/kbuild/llvm.rst |  6 +++++
+ MAINTAINERS                   |  1 +
+ Makefile                      | 15 +------------
+ scripts/Makefile.clang        | 42 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 50 insertions(+), 14 deletions(-)
+ create mode 100644 scripts/Makefile.clang
+
+
+base-commit: 27932b6a2088eac7a5afa5471963b926cfbb4de7
+-- 
+2.32.0.432.gabb21c7263-goog
+
