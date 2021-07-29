@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F9A3DAB5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DCE3DAB5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhG2SuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:50:25 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49046 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229672AbhG2SuV (ORCPT
+        id S231469AbhG2Svm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:51:42 -0400
+Received: from mail-pj1-f52.google.com ([209.85.216.52]:36733 "EHLO
+        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhG2Svc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:50:21 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TIhnjb096174;
-        Thu, 29 Jul 2021 14:50:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=GPcnWxEBukLzUxX48nng7iWbwV7pxLeK8ohKXg+66Ag=;
- b=VzwWNRq9LE1m9F/xGmIRJkheaTT2kclUIU+qKyodzspIIXKssd4BiSZ9AS6Be9WhffdD
- dgIybHfKo+NbCsbyt2roLyUHU5ihzsn1YUhZoeJ3Z1jPSK0hSLnqPsVAmRwWNhLXDETM
- b6/pUR8MpzOqPMROaXu3VCs0rXL8YMAYDkb/uX8b7UnPMaQW35IyMNk3kg4ura1u2QUt
- tg6SObP5DB9s/Tzg0QDvPz0clFgx6RQ+7c9fnQ/qE3e6T5maLQAvuefXvoo2SGQDS+Xq
- VqRo6EVv7+7toQMyczpFZDbZU6ywiKk6WGUyIAEMwEIP1U/zyOK/p6e6gYTBjUYUKyQV nw== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a40nwhqr2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 14:50:17 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TIRG86021483;
-        Thu, 29 Jul 2021 18:50:15 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 3a235khpps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 18:50:14 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TIlTLf24379862
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Jul 2021 18:47:29 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 865BBA4057;
-        Thu, 29 Jul 2021 18:50:11 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 46419A4040;
-        Thu, 29 Jul 2021 18:50:11 +0000 (GMT)
-Received: from osiris (unknown [9.145.2.68])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 29 Jul 2021 18:50:11 +0000 (GMT)
-Date:   Thu, 29 Jul 2021 20:50:09 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] s390: move the install rule to arch/s390/Makefile
-Message-ID: <YQL4YR08dqYRApqU@osiris>
-References: <20210729142338.446002-1-masahiroy@kernel.org>
+        Thu, 29 Jul 2021 14:51:32 -0400
+Received: by mail-pj1-f52.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso17136951pjb.1;
+        Thu, 29 Jul 2021 11:51:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tB5r7jCOOPtFx6Q3Xg17uNrYOv0JnsNx/+HyvJ9HcMY=;
+        b=Wq5T3tNUCbzAFjmKGUZybPrFiOdbKuj1NpgpeoPIo07SzN1wEDqnZ3Sr5bo95BQmtr
+         OmZL7eH4zCyJzF2i4N1MKJ2M7YM0aGaQtqNj6YZyzXzFu4YcKwmpZZS5TRVLklydDySh
+         UHtxgvdwbKfPN6QfGiE00e25xoXFHhImhq14dYohXrv7bYokLVIpfk8WGv0Xo31jrCHe
+         nRWA7YR1aWJY6az9tcm4ogUtCYG3vZYm/DCV50t2ihMjVVIo9GQ0f9+bQn6PmWC+0wRe
+         2B1gcLgz/oqT0OULQMKRufbEl5P7XtyoF36K/44eaOgMIVyypmtZ+aK/FiLtBRV6+KFE
+         Q8LQ==
+X-Gm-Message-State: AOAM53314o2wz0y9luaOWk2+KwQaMK2BQnkJ9efeV4v3dcYbr13iYadK
+        WLnDjhWjPDrWLk/d0Ud2yuQ=
+X-Google-Smtp-Source: ABdhPJwS111Y8fetmdxFNjjKDlXVD2Q9U/D66wiGaEpHbEsop7x+AynHKIzIY7ubQ2y77VVIU9YKtA==
+X-Received: by 2002:a65:578a:: with SMTP id b10mr5034953pgr.135.1627584687707;
+        Thu, 29 Jul 2021 11:51:27 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
+        by smtp.gmail.com with ESMTPSA id r18sm4980703pgk.54.2021.07.29.11.51.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 11:51:24 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 11:51:23 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     "Wu, Hao" <hao.wu@intel.com>
+Cc:     Tom Rix <trix@redhat.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>
+Subject: Re: [PATCH] fpga: region: handle compat_id as an uuid
+Message-ID: <YQL4qyAmqj322HTz@epycbox.lan>
+References: <20210726202650.4074614-1-trix@redhat.com>
+ <6f30a4c6-61a0-bb57-9f13-bcad3f3589b8@intel.com>
+ <ba28bac6-9c6d-de73-523f-b8ba4bef84de@redhat.com>
+ <DM6PR11MB38199F872DC94971D9C8A53885EA9@DM6PR11MB3819.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729142338.446002-1-masahiroy@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: r2IJ0Bf4Jsnqcv892CmY95AjTa42Tm-0
-X-Proofpoint-ORIG-GUID: r2IJ0Bf4Jsnqcv892CmY95AjTa42Tm-0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_14:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 mlxscore=0 adultscore=0
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2107290115
+In-Reply-To: <DM6PR11MB38199F872DC94971D9C8A53885EA9@DM6PR11MB3819.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 11:23:38PM +0900, Masahiro Yamada wrote:
-> Currently, the install target in arch/s390/Makefile descends into
-> arch/s390/boot/Makefile to invoke the shell script, but there is no
-> good reason to do so.
+On Wed, Jul 28, 2021 at 01:36:56AM +0000, Wu, Hao wrote:
+> > On 7/26/21 3:12 PM, Russ Weight wrote:
+> > > On 7/26/21 1:26 PM, trix@redhat.com wrote:
+> > >> From: Tom Rix <trix@redhat.com>
+> > >>
+> > >> An fpga region's compat_id is exported by the sysfs
+> > >> as a 128 bit hex string formed by concatenating two
+> > >> 64 bit values together.
+> > >>
+> > >> The only user of compat_id is dfl.  Its user library
+> > >> opae converts this value into a uuid.
+> > >>
+> > >> ex/
+> > >> $ cat /sys/class/fpga_region/region1/compat_id
+> > >> f3c9941350814aadbced07eb84a6d0bb
+> > >>
+> > >> Is reported as
+> > >> $ fpgainfo bmc
+> > >> ...
+> > >> Pr Interface Id                  : f3c99413-5081-4aad-bced-07eb84a6d0bb
+> > >>
+> > >> Storing a uuid as 2 64 bit values is vendor specific.
+> > >> And concatenating them together is vendor specific.
+> > >>
+> > >> It is better to store and print out as a vendor neutral uuid.
+> > >>
+> > >> Change fpga_compat_id from a struct to a union.
+> > >> Keep the old 64 bit values for dfl.
+> > >> Sysfs output is now
+> > >> f3c99413-5081-4aad-bced-07eb84a6d0bb
+> > > I'm fowarding feedback from Tim Whisonant, one of the OPAE userspace
+> > > developers:
+> > >
+> > > I think that this change to the sysfs for the compat_id node will
+> > > end up breaking the SDK, which does not expect the '-' characters to
+> > > be included when parsing the sysfs value. Currently, it is parsed as
+> > > a raw hex string without regard to any '-' characters. This goes for
+> > > any "guid" currently exported by sysfs and for what we read in the
+> > > device MMIO space.
+> > 
+> > Yes, it will.
+> > 
+> > And there are other places, like dfl-afu-main.c:afu_id_show()
+> > 
+> > outputs raw hex that sdk turns into a uuid.
+> > 
+> > 
+> > Some options.
+> > 
+> > If no one but dfl will ever use it, then v1 of patchset.
+> > 
+> > If others can use it but don't want to change dfl, then v2 of patchset,
+> > my favorite.
+> > 
+> > Or this one for uuid for everyone, what have been v3 but changed too much.
+> > 
+> > 
+> > could dfl change generally to output uuid's to the sysfs ?
+> > 
+> > this would be generally helpful and a one time disruption to the sdk.
 > 
-> arch/s390/Makefile can run the shell script directly.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  arch/s390/Makefile      | 3 ++-
->  arch/s390/boot/Makefile | 4 ----
->  2 files changed, 2 insertions(+), 5 deletions(-)
+> This change limited the output format to uuid_t, but if any hardware doesn't
+> use uuid_t on hardware may have to convert it back from the sysfs output in
+> userspace. Leave it to print hardware values (e.g. from register), and convert
+> it in userspace should be fine too I think.
 
-Applied, thanks!
+I'm not entirely sure. I seem to recall there being examples of sysfs
+files returning different things for different drivers.
+
+That being said it seems largely cosmetic to add the '-' in between.
+
+If it breaks userspace, I'm against it. If you *need* it make a
+compat_uuid entry or something in that case?
+
+- Moritz
