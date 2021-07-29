@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BA73DA51E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2B83DA523
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238399AbhG2N6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:58:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48368 "EHLO mail.kernel.org"
+        id S238428AbhG2N6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:58:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238183AbhG2N5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:57:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D2F360F5E;
-        Thu, 29 Jul 2021 13:57:44 +0000 (UTC)
+        id S238274AbhG2N5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:57:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D0E260F5C;
+        Thu, 29 Jul 2021 13:57:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567065;
-        bh=S7P0nhfOfRBupSOYqNTo4tFCg++UMUkYFsS9chBOYA0=;
+        s=korg; t=1627567068;
+        bh=gWvgCTQg7rvnBzmXLUKMJjQDvXWX+T5EnRxDJmA5gno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vj3I4wsR6+sxNNEntW87FykFkRMMsxlhNKUrUX1sl36nbLvXAfanSP5UBPswoq0AU
-         tNnVKharnBNOJ5fHxtSr4lsuLBz3OowulaquriFc14HPYuDOyeGWUEtd2BrRXVtyAF
-         r9pb6p0xIolK5zLCa26Wb5Kheeg3DONkAoKm6TbE=
+        b=T+raSCF73f7Nr9AlencdO2UiHYEYyH0+9m/lqFIPsvUjMqDBBEPJmJIuSHfkJ2a4H
+         hWK6OLR5U48Jks7HWBYR+COVw+Z/uYej5t5+9kF2yTiNCGlcgeLkltgbEQnbjZosDM
+         sI0Em9Ta4MTOEawKh4s1w+YyzI34re44VbCMNASE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 20/21] ARM: dts: versatile: Fix up interrupt controller node names
-Date:   Thu, 29 Jul 2021 15:54:27 +0200
-Message-Id: <20210729135143.552064391@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 21/21] ipv6: ip6_finish_output2: set sk into newly allocated nskb
+Date:   Thu, 29 Jul 2021 15:54:28 +0200
+Message-Id: <20210729135143.583420235@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
 References: <20210729135142.920143237@linuxfoundation.org>
@@ -40,70 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 82a1c67554dff610d6be4e1982c425717b3c6a23 ]
+[ Upstream commit 2d85a1b31dde84038ea07ad825c3d8d3e71f4344 ]
 
-Once the new schema interrupt-controller/arm,vic.yaml is added, we get
-the below warnings:
+skb_set_owner_w() should set sk not to old skb but to new nskb.
 
-        arch/arm/boot/dts/versatile-ab.dt.yaml:
-        intc@10140000: $nodename:0: 'intc@10140000' does not match
-        '^interrupt-controller(@[0-9a-f,]+)*$'
-
-	arch/arm/boot/dts/versatile-ab.dt.yaml:
-	intc@10140000: 'clear-mask' does not match any of the regexes
-
-Fix the node names for the interrupt controller to conform
-to the standard node name interrupt-controller@.. Also drop invalid
-clear-mask property.
-
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210701132118.759454-1-sudeep.holla@arm.com'
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 5796015fa968 ("ipv6: allocate enough headroom in ip6_finish_output2()")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Link: https://lore.kernel.org/r/70c0744f-89ae-1869-7e3e-4fa292158f4b@virtuozzo.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/versatile-ab.dts | 5 ++---
- arch/arm/boot/dts/versatile-pb.dts | 2 +-
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ net/ipv6/ip6_output.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/versatile-ab.dts b/arch/arm/boot/dts/versatile-ab.dts
-index 37bd41ff8dff..151c0220047d 100644
---- a/arch/arm/boot/dts/versatile-ab.dts
-+++ b/arch/arm/boot/dts/versatile-ab.dts
-@@ -195,16 +195,15 @@
- 		#size-cells = <1>;
- 		ranges;
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index f26ef5606d8a..fc913f09606d 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -73,7 +73,7 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
  
--		vic: intc@10140000 {
-+		vic: interrupt-controller@10140000 {
- 			compatible = "arm,versatile-vic";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
- 			reg = <0x10140000 0x1000>;
--			clear-mask = <0xffffffff>;
- 			valid-mask = <0xffffffff>;
- 		};
- 
--		sic: intc@10003000 {
-+		sic: interrupt-controller@10003000 {
- 			compatible = "arm,versatile-sic";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
-diff --git a/arch/arm/boot/dts/versatile-pb.dts b/arch/arm/boot/dts/versatile-pb.dts
-index 06a0fdf24026..e7e751a858d8 100644
---- a/arch/arm/boot/dts/versatile-pb.dts
-+++ b/arch/arm/boot/dts/versatile-pb.dts
-@@ -7,7 +7,7 @@
- 
- 	amba {
- 		/* The Versatile PB is using more SIC IRQ lines than the AB */
--		sic: intc@10003000 {
-+		sic: interrupt-controller@10003000 {
- 			clear-mask = <0xffffffff>;
- 			/*
- 			 * Valid interrupt lines mask according to
+ 			if (likely(nskb)) {
+ 				if (skb->sk)
+-					skb_set_owner_w(skb, skb->sk);
++					skb_set_owner_w(nskb, skb->sk);
+ 				consume_skb(skb);
+ 			} else {
+ 				kfree_skb(skb);
 -- 
 2.30.2
 
