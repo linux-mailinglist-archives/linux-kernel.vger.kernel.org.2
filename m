@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7048E3DA6A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2085E3DA6A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237313AbhG2OjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:39:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236309AbhG2OjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:39:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 860F660F5C;
-        Thu, 29 Jul 2021 14:38:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627569539;
-        bh=aGLXIjHVkYWFzsChURMHFN9lIddAwd4xYj9dovWUc5w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cw08f9z3c4pTROEqOYseH+vjOkSa5LYHWL1eaw5E6XZcPpTN5ciYRJ0exiM/FR3r1
-         JQ9sU64enqIWE46Zuo+eIJvIxnUd5yiqJezUlBrG4oq/2F6i8IqhTP6C4CFOyjsabm
-         0SBSr8vKOf67y8EMAINwO8fhE4MNBS8APZYN2c6vlQF4TNUdUjfYVMYYjkkHRYLfO8
-         go0OWN6u3+xCIpECfK8vPZQDxE5nsta5Ea6d3SKyH/S5GXGPIGZn8HBwEb/mYofwlJ
-         dPL0lOpskjqAhkpM+Gw8/8MjguGIh3V5bXuGYiYysmBVOYZZYsh+8MoMsgKikyApJV
-         eAnnXAtdOJWdQ==
-Date:   Thu, 29 Jul 2021 17:38:55 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>
-Subject: Re: [PATCH net-next v1 1/2] devlink: Break parameter notification
- sequence to be before/after unload/load driver
-Message-ID: <YQK9fxkb0FIYkzbx@unreal>
-References: <cover.1627564383.git.leonro@nvidia.com>
- <a9a61cdee79cbfefa4e4e2cc973fe27a10b7ee4f.1627564383.git.leonro@nvidia.com>
- <YQK8VkXweZmWTggC@nanopsycho>
+        id S237441AbhG2Ojb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236285AbhG2Oj0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:39:26 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77426C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:39:22 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id l17so7880761ljn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:39:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pQ+TosWiDAdG8+90eQclOC0l7J20f+GG4ER7QwTBKX8=;
+        b=R23L4N03E0Cp8DvPNPKl1idmWh2CJdaYEmaLa1zbfrqP6vbUf+kVIxIr+waUl74KJ7
+         Mphdxreoppmm+jRPzPzsh1BxrZm8LVudhznf1T4QIzuK2yPi+akMMez82h2jumMlbVBf
+         S4s7yiBKeS5xYqWyj6/0VB0Gc5h/lkfbSVQ8/wSDflor4uoM7saLwFNOPaGtfgypCOj/
+         +WIjAxfYsT6tTBO/q53IY7HCwDcgVv78qaKosze2J5wD59XRmrOEtTa4h7EmF5Pf5cK0
+         nkmiVrgBr2zJPDiZ0MD0JZ5mxei1/97cIXhT5vYsbRVqwrZO7WrhQf5r9ywwwTopzLvU
+         jR6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pQ+TosWiDAdG8+90eQclOC0l7J20f+GG4ER7QwTBKX8=;
+        b=rVkNYNSXCKB79dApVm8gCOOu6Ke2Nc8aIVTTU7VteeDwCfRyCXlg6xtNC9NQP/8vLK
+         0Z/u5RCwv7PAiFAQoukBFWypijNJNdc9ZOUBQ412sG/9vewVCaTHca28/sjIc06nw/VK
+         aDdPMxaB3SdauUo8ON27+0VOoHgwPNGb+tEpHIZfJ/5IpddiVpYYBRjvMhmUP0WX1uMu
+         2vUrSxVBLZAsJCfGs+/ndCjityAYMkCdk4WL+cfeRM8fAWd+AlYNAGr0WjUZvBNA+8LH
+         T3VJy0Kr48b5aRQ0XLfC9cFlA2pQd+QqwZFv7243Pkeqito/NqVdvNrIQW3FHLq8QldX
+         ifYQ==
+X-Gm-Message-State: AOAM530TQZLWHKgFknmz5/LfJguAZ5Vx/pdaXMtJKCfCSoOoEH6x2KZR
+        xDoy3MKIJCAbPDeX16we7emXWAbffNnbxRNIYecqIg==
+X-Google-Smtp-Source: ABdhPJysPj8T1T/jC1N62guQJtz/h9nWJSh3QUau+BzFLvn4bSnqGN64gK1+jXKEM+irMoznNKLcgVOnxOJpvkYACmY=
+X-Received: by 2002:a2e:85d7:: with SMTP id h23mr3111083ljj.279.1627569560514;
+ Thu, 29 Jul 2021 07:39:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQK8VkXweZmWTggC@nanopsycho>
+References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-6-linmiaohe@huawei.com>
+In-Reply-To: <20210729125755.16871-6-linmiaohe@huawei.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 29 Jul 2021 07:39:08 -0700
+Message-ID: <CALvZod6n1EwcyLTi=Eb8t=NVVPLRh9=Ng=VJ93pQyCRkOcLo9Q@mail.gmail.com>
+Subject: Re: [PATCH 5/5] mm, memcg: always call __mod_node_page_state() with
+ preempt disabled
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Matthew Wilcox <willy@infradead.org>, alexs@kernel.org,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 04:33:58PM +0200, Jiri Pirko wrote:
-> Thu, Jul 29, 2021 at 03:17:49PM CEST, leon@kernel.org wrote:
-> >From: Leon Romanovsky <leonro@nvidia.com>
+On Thu, Jul 29, 2021 at 5:58 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> We should always ensure __mod_node_page_state() is called with preempt
+> disabled or percpu ops may manipulate the wrong cpu when preempt happened.
+>
+> Fixes: b4e0b68fbd9d ("mm: memcontrol: use obj_cgroup APIs to charge kmem pages")
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 70a32174e7c4..616d1a72ece3 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -697,8 +697,8 @@ void __mod_lruvec_page_state(struct page *page, enum node_stat_item idx,
+>         memcg = page_memcg(head);
+>         /* Untracked pages have no memcg, no lruvec. Update only the node */
+>         if (!memcg) {
+> -               rcu_read_unlock();
+>                 __mod_node_page_state(pgdat, idx, val);
+> +               rcu_read_unlock();
 
-<...>
+This rcu is for page_memcg. The preemption and interrupts are disabled
+across __mod_lruvec_page_state().
 
-> >+static void devlink_ns_change_notify(struct devlink *devlink,
-> >+				     struct net *dest_net, struct net *curr_net,
-> >+				     enum devlink_command cmd, bool new)
-> 
-> Drop the cmd and determine the DEVLINK_CMD_PARAM_NEW/DEL by "new" arg as
-> well. I thought I wrote that clearly in my previous review, but
-> apparently not, sorry about that.
-> 
-> 
-> 
-> > {
-> > 	struct devlink_param_item *param_item;
-> > 
-> >@@ -3812,17 +3813,17 @@ static void devlink_reload_netns_change(struct devlink *devlink,
-> > 	 * reload process so the notifications are generated separatelly.
-> > 	 */
-> > 
-> >-	list_for_each_entry(param_item, &devlink->param_list, list)
-> >-		devlink_param_notify(devlink, 0, param_item,
-> >-				     DEVLINK_CMD_PARAM_DEL);
-> >-	devlink_notify(devlink, DEVLINK_CMD_DEL);
-> >+	if (!dest_net || net_eq(dest_net, curr_net))
-> >+		return;
-> > 
-> >-	__devlink_net_set(devlink, dest_net);
-> >+	if (new)
-> >+		devlink_notify(devlink, DEVLINK_CMD_NEW);
-> > 
-> >-	devlink_notify(devlink, DEVLINK_CMD_NEW);
-> > 	list_for_each_entry(param_item, &devlink->param_list, list)
-> >-		devlink_param_notify(devlink, 0, param_item,
-> >-				     DEVLINK_CMD_PARAM_NEW);
-> >+		devlink_param_notify(devlink, 0, param_item, cmd);
-> 
-> Like this:
-> 		devlink_param_notify(devlink, 0, param_item, new ?
-> 				     DEVLINK_CMD_PARAM_NEW ?
-> 				     DEVLINK_CMD_PARAM_DEL);
-
-IMHO it is not nice, but will change.
-
-Thanks
+>                 return;
+>         }
+>
+> --
+> 2.23.0
+>
