@@ -2,254 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E3F3DA9B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE96E3DA9BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhG2RJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:09:28 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:33970 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhG2RJZ (ORCPT
+        id S229791AbhG2RJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhG2RJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:09:25 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6377220B36E8;
-        Thu, 29 Jul 2021 10:09:21 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6377220B36E8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1627578562;
-        bh=14nH6SQktOnjxmNI3AnyHw2tOfTbGWH5RglX6lPMTP4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ioDYcPWXlMj9NO1PLenA1nVcqxxBEoj7elW5y3VLz0nS9e2BfvsjCEOzDiRYiFkef
-         w2P/pzYBU4xb7+lXEYmaKYJhNxkzQ/GNqcPgv95y+7O07oECWuDuSiyd4E7RyczwXA
-         KEPKKVQrkk6J2lfKhyHE1rt/PxX8RrwxHqMsZ4SM=
-Subject: Re: [RFC PATCH v6 3/3] arm64: Create a list of SYM_CODE functions,
- check return PC against list
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <3f2aab69a35c243c5e97f47c4ad84046355f5b90>
- <20210630223356.58714-1-madvenka@linux.microsoft.com>
- <20210630223356.58714-4-madvenka@linux.microsoft.com>
- <20210728172523.GB47345@C02TD0UTHF1T.local>
- <f9931a57-7a81-867b-fa2a-499d441c5acd@linux.microsoft.com>
- <20210729154804.GA59940@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <da957171-8bb0-1449-cbc2-21a4b735575a@linux.microsoft.com>
-Date:   Thu, 29 Jul 2021 12:09:20 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 29 Jul 2021 13:09:48 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91791C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:09:43 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id i39-20020a9d17270000b02904cf73f54f4bso6597082ota.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:09:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=isu5knoKM82mHKKPvZvU7A9KKB+tgB30G7ELkkDeyRs=;
+        b=hKMGOwGzpeuDqov5O7QxZmfGxd6Md8Cp56XUnPzvuDYDdraTyCGDp97vrXjp1krgA7
+         jcXmGm/7CPG1MRFMWgAzaqSLczvJI6xUt9hXPkQlKMggT27307gtAF+1kQGr65h/frCq
+         +pHwn4OwH/pH6iAhfTgG9zS8jlpWfNyI1ObbJ/M5MWKDRVh5OxDMoQt93EJsjv2TBjCB
+         mNA7jXNEaxWcgNPTVsvjQZ9aZ8ifpKiXFtM8fSNQfoE1OY7PzI24544RF4vyk6KGOT1M
+         juN/xnEnrk7SzELkKWlwHPOD4i5+FkDoAdwg2ExWqZTcNe093Ysl9y2L4szJhpQFc2h8
+         dZ9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=isu5knoKM82mHKKPvZvU7A9KKB+tgB30G7ELkkDeyRs=;
+        b=ueE7b0qN17UGPGOAfhMIToZ9P2RCk61Ov1FQCggMcL9yDTzEiel7XG2cNs5C7/zQhq
+         /6QJ4sL0oZtXBMIUvZmV1Tiq+a2gyDIS+lLY4XuNUH/RtnZB/Te0L3v3G9l7hN0M4Tv0
+         0t/VRu2z8JInlCmb1hWY+mD9mTdL4zp63zWJ8j54fxNqmRxhlQvKkWHqLtnMOg4VwcII
+         DbziijeJqLXMxGOK+iLr0JF13k+wjfuMVwWeDgiYuf59uwLsGtf1T5gppzO9CV0UHBw8
+         QrS4oXPPFm6dQ6UleoqkY7tOMit1HTmAKLfcHLYEKSic3xokLbpHgpXnTRuN9UMpY6vO
+         h4pQ==
+X-Gm-Message-State: AOAM533KQ2+xWXlX+4hhRV4amqNFnOso/jjaOZAawUd1YqF0OmEUUrJ9
+        djOQNLffhjmtjiffEFZ1O/s=
+X-Google-Smtp-Source: ABdhPJwM+jCDmk0xnCoQVhRhh6+coXHZG1u6BoGw772syhaJWA/jCH7c4Y6K8iWqv7CHY/wDvHzjSA==
+X-Received: by 2002:a05:6830:34a4:: with SMTP id c36mr3970253otu.57.1627578582970;
+        Thu, 29 Jul 2021 10:09:42 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
+        by smtp.gmail.com with ESMTPSA id a23sm614358otv.79.2021.07.29.10.09.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 10:09:42 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+To:     gregkh@linuxfoundation.org
+Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Subject: [PATCH 0/6] Do more cleanup of the new rtl8188eu driver
+Date:   Thu, 29 Jul 2021 12:09:24 -0500
+Message-Id: <20210729170930.23171-1-Larry.Finger@lwfinger.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210729154804.GA59940@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This set of patches eliminates several of the small header file by
+moving their content into longer headers. One patch also removes the
+code used to build the driver on kernels older than mainline.
+
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
 
 
-On 7/29/21 10:48 AM, Mark Rutland wrote:
-> On Thu, Jul 29, 2021 at 09:06:26AM -0500, Madhavan T. Venkataraman wrote:
->> Responses inline...
->>
->> On 7/28/21 12:25 PM, Mark Rutland wrote:
->>> On Wed, Jun 30, 2021 at 05:33:56PM -0500, madvenka@linux.microsoft.com wrote:
->>>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>>> ... <snip> ...
->>>> +static struct code_range	*sym_code_functions;
->>>> +static int			num_sym_code_functions;
->>>> +
->>>> +int __init init_sym_code_functions(void)
->>>> +{
->>>> +	size_t size;
->>>> +
->>>> +	size = (unsigned long)__sym_code_functions_end -
->>>> +	       (unsigned long)__sym_code_functions_start;
->>>> +
->>>> +	sym_code_functions = kmalloc(size, GFP_KERNEL);
->>>> +	if (!sym_code_functions)
->>>> +		return -ENOMEM;
->>>> +
->>>> +	memcpy(sym_code_functions, __sym_code_functions_start, size);
->>>> +	/* Update num_sym_code_functions after copying sym_code_functions. */
->>>> +	smp_mb();
->>>> +	num_sym_code_functions = size / sizeof(struct code_range);
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +early_initcall(init_sym_code_functions);
->>>
->>> What's the point of copying this, given we don't even sort it?
->>>
->>> If we need to keep it around, it would be nicer to leave it where the
->>> linker put it, but make it rodata or ro_after_init.
->>>
->>
->> I was planning to sort it for performance. I have a comment to that effect.
->> But I can remove the copy and retain the info in linker data.
-> 
-> I think for now it's better to place it in .rodata. If we need to sort
-> this, we can rework that later, preferably sorting at compile time as
-> with extable entries.
-> 
-> That way this is *always* in a usable state, and there's a much lower
-> risk of this being corrupted by a stray write.
-> 
+Larry Finger (6):
+  staging: r8188eu: Remove empty header file
+  staging: r8188eu: Remove tests of kernel version
+  staging: r8188eu: Remove include/rtw_qos.h
+  staging: r8188eu: Remove header file include/usb_hal.h
+  staging: r8188eu: Remove header file include/rtw_version.h
+  staging: r8188eu: Add "fallthrough" statement to quiet compiler
 
-OK.
+ drivers/staging/r8188eu/core/rtw_debug.c      |  2 +-
+ drivers/staging/r8188eu/core/rtw_led.c        | 12 ----
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c   |  2 +-
+ drivers/staging/r8188eu/core/rtw_p2p.c        | 53 ----------------
+ drivers/staging/r8188eu/core/rtw_pwrctrl.c    | 12 ----
+ drivers/staging/r8188eu/core/rtw_recv.c       | 16 -----
+ drivers/staging/r8188eu/core/rtw_xmit.c       |  8 ---
+ drivers/staging/r8188eu/hal/hal_intf.c        |  1 -
+ drivers/staging/r8188eu/hal/odm.c             |  9 ---
+ drivers/staging/r8188eu/hal/odm_interface.c   | 10 ---
+ drivers/staging/r8188eu/hal/usb_halinit.c     |  1 -
+ drivers/staging/r8188eu/include/drv_types.h   |  4 +-
+ .../staging/r8188eu/include/drv_types_linux.h |  7 ---
+ drivers/staging/r8188eu/include/hal_intf.h    |  1 +
+ drivers/staging/r8188eu/include/odm_precomp.h |  4 --
+ .../staging/r8188eu/include/osdep_service.h   | 12 ----
+ drivers/staging/r8188eu/include/rtw_led.h     |  4 --
+ drivers/staging/r8188eu/include/rtw_mlme.h    | 11 ++--
+ drivers/staging/r8188eu/include/rtw_qos.h     | 14 -----
+ .../staging/r8188eu/include/rtw_security.h    |  8 ---
+ drivers/staging/r8188eu/include/rtw_version.h |  2 -
+ drivers/staging/r8188eu/include/usb_hal.h     | 10 ---
+ drivers/staging/r8188eu/include/usb_ops.h     | 16 -----
+ drivers/staging/r8188eu/include/wifi.h        |  3 -
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c  |  1 -
+ drivers/staging/r8188eu/os_dep/mlme_linux.c   | 63 -------------------
+ drivers/staging/r8188eu/os_dep/os_intfs.c     |  3 -
+ drivers/staging/r8188eu/os_dep/recv_linux.c   | 16 -----
+ drivers/staging/r8188eu/os_dep/usb_intf.c     |  4 +-
+ 29 files changed, 12 insertions(+), 297 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/include/drv_types_linux.h
+ delete mode 100644 drivers/staging/r8188eu/include/rtw_qos.h
+ delete mode 100644 drivers/staging/r8188eu/include/rtw_version.h
+ delete mode 100644 drivers/staging/r8188eu/include/usb_hal.h
 
->>>> +	/*
->>>> +	 * Check the return PC against sym_code_functions[]. If there is a
->>>> +	 * match, then the consider the stack frame unreliable. These functions
->>>> +	 * contain low-level code where the frame pointer and/or the return
->>>> +	 * address register cannot be relied upon. This addresses the following
->>>> +	 * situations:
->>>> +	 *
->>>> +	 *  - Exception handlers and entry assembly
->>>> +	 *  - Trampoline assembly (e.g., ftrace, kprobes)
->>>> +	 *  - Hypervisor-related assembly
->>>> +	 *  - Hibernation-related assembly
->>>> +	 *  - CPU start-stop, suspend-resume assembly
->>>> +	 *  - Kernel relocation assembly
->>>> +	 *
->>>> +	 * Some special cases covered by sym_code_functions[] deserve a mention
->>>> +	 * here:
->>>> +	 *
->>>> +	 *  - All EL1 interrupt and exception stack traces will be considered
->>>> +	 *    unreliable. This is the correct behavior as interrupts and
->>>> +	 *    exceptions can happen on any instruction including ones in the
->>>> +	 *    frame pointer prolog and epilog. Unless stack metadata is
->>>> +	 *    available so the unwinder can unwind through these special
->>>> +	 *    cases, such stack traces will be considered unreliable.
->>>
->>> As mentioned previously, we *can* reliably unwind precisely one step
->>> across an exception boundary, as we can be certain of the PC value at
->>> the time the exception was taken, but past this we can't be certain
->>> whether the LR is legitimate.
->>>
->>> I'd like that we capture that precisely in the unwinder, and I'm
->>> currently reworking the entry assembly to make that possible.
->>>
->>>> +	 *
->>>> +	 *  - A task can get preempted at the end of an interrupt. Stack
->>>> +	 *    traces of preempted tasks will show the interrupt frame in the
->>>> +	 *    stack trace and will be considered unreliable.
->>>> +	 *
->>>> +	 *  - Breakpoints are exceptions. So, all stack traces in the break
->>>> +	 *    point handler (including probes) will be considered unreliable.
->>>> +	 *
->>>> +	 *  - All of the ftrace entry trampolines are considered unreliable.
->>>> +	 *    So, all stack traces taken from tracer functions will be
->>>> +	 *    considered unreliable.
->>>> +	 *
->>>> +	 *  - The Function Graph Tracer return trampoline (return_to_handler)
->>>> +	 *    and the Kretprobe return trampoline (kretprobe_trampoline) are
->>>> +	 *    also considered unreliable.
->>>
->>> We should be able to unwind these reliably if we specifically identify
->>> them. I think we need a two-step check here; we should assume that
->>> SYM_CODE() is unreliable by default, but in specific cases we should
->>> unwind that reliably.
->>>
->>>> +	 * Some of the special cases above can be unwound through using
->>>> +	 * special logic in unwind_frame().
->>>> +	 *
->>>> +	 *  - return_to_handler() is handled by the unwinder by attempting
->>>> +	 *    to retrieve the original return address from the per-task
->>>> +	 *    return address stack.
->>>> +	 *
->>>> +	 *  - kretprobe_trampoline() can be handled in a similar fashion by
->>>> +	 *    attempting to retrieve the original return address from the
->>>> +	 *    per-task kretprobe instance list.
->>>
->>> We don't do this today,
->>>
->>>> +	 *
->>>> +	 *  - I reckon optprobes can be handled in a similar fashion in the
->>>> +	 *    future?
->>>> +	 *
->>>> +	 *  - Stack traces taken from the FTrace tracer functions can be
->>>> +	 *    handled as well. ftrace_call is an inner label defined in the
->>>> +	 *    Ftrace entry trampoline. This is the location where the call
->>>> +	 *    to a tracer function is patched. So, if the return PC equals
->>>> +	 *    ftrace_call+4, it is reliable. At that point, proper stack
->>>> +	 *    frames have already been set up for the traced function and
->>>> +	 *    its caller.
->>>> +	 *
->>>> +	 * NOTE:
->>>> +	 *   If sym_code_functions[] were sorted, a binary search could be
->>>> +	 *   done to make this more performant.
->>>> +	 */
->>>
->>> Since some of the above is speculative (e.g. the bit about optprobes),
->>> and as code will change over time, I think we should have a much terser
->>> comment, e.g.
->>>
->>> 	/*
->>> 	 * As SYM_CODE functions don't follow the usual calling
->>> 	 * conventions, we assume by default that any SYM_CODE function
->>> 	 * cannot be unwound reliably.
->>> 	 *
->>> 	 * Note that this includes exception entry/return sequences and
->>> 	 * trampoline for ftrace and kprobes.
->>> 	 */
->>>
->>> ... and then if/when we try to unwind a specific SYM_CODE function
->>> reliably, we add the comment for that specifically.
->>>
->>
->> Just to confirm, are you suggesting that I remove the entire large comment
->> detailing the various cases and replace the whole thing with the terse comment?
-> 
-> Yes.
-> 
-> For clarity, let's take your bullet-point list above as a list of
-> examples, and make that:
-> 
-> 	/*
-> 	 * As SYM_CODE functions don't follow the usual calling
-> 	 * conventions, we assume by default that any SYM_CODE function
-> 	 * cannot be unwound reliably.
-> 	 *
-> 	 * Note that this includes:
-> 	 *
-> 	 * - Exception handlers and entry assembly
-> 	 * - Trampoline assembly (e.g., ftrace, kprobes)
-> 	 * - Hypervisor-related assembly
-> 	 * - Hibernation-related assembly
-> 	 * - CPU start-stop, suspend-resume assembly
-> 	 * - Kernel relocation assembly
-> 	 */
-> 
+-- 
+2.32.0
 
-OK.
-
->> I did the large comment because of Mark Brown's input that we must be
->> verbose about all the cases so that it is clear in the future what the
->> different cases are and how we handle them in this code. As the code
->> evolves, the comments would evolve.
-> 
-> The bulk of the comment just enumerates cases and says we treat them as
-> unreliable, which I think is already clear from the terser comment with
-> the list. The cases which mention special treatment (e.g. for unwinding
-> through return_to_handler) aren't actually handled here (and the
-> kretprobes case isn't handled at all today), so this isn't the right
-> place for those -- they'll inevitably drift from the implementation.
-> 
->> I can replace the comment if you want. Please confirm.
-> 
-> Yes please. If you can use the wording I've suggested immediately above
-> (with your list folded in), that would be great.
-> 
-
-OK. I will use your suggested text.
-
-Thanks.
-
-Madhavan
