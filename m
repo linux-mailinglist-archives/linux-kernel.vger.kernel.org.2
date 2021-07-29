@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35993DA547
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B633DA505
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238636AbhG2OAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:00:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48682 "EHLO mail.kernel.org"
+        id S238234AbhG2N5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238425AbhG2N6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:58:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5240761019;
-        Thu, 29 Jul 2021 13:58:19 +0000 (UTC)
+        id S238020AbhG2N5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:57:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E47860F42;
+        Thu, 29 Jul 2021 13:57:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567099;
-        bh=6bDxJbptT1U1JLaiy0NDMKZe5KA7OH27FqhYrY53oD0=;
+        s=korg; t=1627567036;
+        bh=gu6d9Us+WhzE3l0gwrmXsYoZU1puGJK2+pcE0jW2/ao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rZCGavLuNFg4gx3LYB5UFWXPelL+Z0KKiQgYBGtjEz6yjUaClHqGtqhYltp1lajwF
-         Ybr7FNktd/StQ9GiTZe76n+oRS0wPvvZw72XVRWyS8eEVdnewUH4BzVSUI2vUkUkUd
-         PC7YeJrEB0xLXvIZKNO3tQC8lO9gO0MjGM52Ok6A=
+        b=zmb/Mnbufk92Y8uIY7vpgS/zOSnKS+RAbiXY9KZ+HNjX+ZV0w9f66Ve9OxH/Vz82t
+         aigSnRhM0Xh7+gtHfcfuwh8leq90b60uRwLG/V9RgyIt2iNRQlQcrceB7Ux+O8LjtE
+         rargmty2XNWTLGaxyyiTCXBsyrXB0lQGU54aX5cU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzbot+a2910119328ce8e7996f@syzkaller.appspotmail.com,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-Subject: [PATCH 5.10 02/24] [PATCH] io_uring: fix link timeout refs
-Date:   Thu, 29 Jul 2021 15:54:22 +0200
-Message-Id: <20210729135137.342673263@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 16/21] firmware: arm_scmi: Fix range check for the maximum number of pending messages
+Date:   Thu, 29 Jul 2021 15:54:23 +0200
+Message-Id: <20210729135143.427393872@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
-References: <20210729135137.267680390@linuxfoundation.org>
+In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
+References: <20210729135142.920143237@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Cristian Marussi <cristian.marussi@arm.com>
 
-[ Upstream commit a298232ee6b9a1d5d732aa497ff8be0d45b5bd82 ]
+[ Upstream commit bdb8742dc6f7c599c3d61959234fe4c23638727b ]
 
-WARNING: CPU: 0 PID: 10242 at lib/refcount.c:28 refcount_warn_saturate+0x15b/0x1a0 lib/refcount.c:28
-RIP: 0010:refcount_warn_saturate+0x15b/0x1a0 lib/refcount.c:28
-Call Trace:
- __refcount_sub_and_test include/linux/refcount.h:283 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- io_put_req fs/io_uring.c:2140 [inline]
- io_queue_linked_timeout fs/io_uring.c:6300 [inline]
- __io_queue_sqe+0xbef/0xec0 fs/io_uring.c:6354
- io_submit_sqe fs/io_uring.c:6534 [inline]
- io_submit_sqes+0x2bbd/0x7c50 fs/io_uring.c:6660
- __do_sys_io_uring_enter fs/io_uring.c:9240 [inline]
- __se_sys_io_uring_enter+0x256/0x1d60 fs/io_uring.c:9182
+SCMI message headers carry a sequence number and such field is sized to
+allow for MSG_TOKEN_MAX distinct numbers; moreover zero is not really an
+acceptable maximum number of pending in-flight messages.
 
-io_link_timeout_fn() should put only one reference of the linked timeout
-request, however in case of racing with the master request's completion
-first io_req_complete() puts one and then io_put_req_deferred() is
-called.
+Fix accordingly the checks performed on the value exported by transports
+in scmi_desc.max_msg
 
-Cc: stable@vger.kernel.org # 5.12+
-Fixes: 9ae1f8dd372e0 ("io_uring: fix inconsistent lock state")
-Reported-by: syzbot+a2910119328ce8e7996f@syzkaller.appspotmail.com
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Link: https://lore.kernel.org/r/ff51018ff29de5ffa76f09273ef48cb24c720368.1620417627.git.asml.silence@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210712141833.6628-3-cristian.marussi@arm.com
+Reported-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+[sudeep.holla: updated the patch title and error message]
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/firmware/arm_scmi/driver.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6266,7 +6266,6 @@ static enum hrtimer_restart io_link_time
- 	if (prev) {
- 		io_async_find_and_cancel(ctx, req, prev->user_data, -ETIME);
- 		io_put_req_deferred(prev, 1);
--		io_put_req_deferred(req, 1);
- 	} else {
- 		io_cqring_add_event(req, -ETIME, 0);
- 		io_put_req_deferred(req, 1);
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index ba2e18d9e0e4..48e6e2b48924 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -694,8 +694,9 @@ static int scmi_xfer_info_init(struct scmi_info *sinfo)
+ 	struct scmi_xfers_info *info = &sinfo->tx_minfo;
+ 
+ 	/* Pre-allocated messages, no more than what hdr.seq can support */
+-	if (WARN_ON(desc->max_msg >= MSG_TOKEN_MAX)) {
+-		dev_err(dev, "Maximum message of %d exceeds supported %ld\n",
++	if (WARN_ON(!desc->max_msg || desc->max_msg > MSG_TOKEN_MAX)) {
++		dev_err(dev,
++			"Invalid maximum messages %d, not in range [1 - %lu]\n",
+ 			desc->max_msg, MSG_TOKEN_MAX);
+ 		return -EINVAL;
+ 	}
+-- 
+2.30.2
+
 
 
