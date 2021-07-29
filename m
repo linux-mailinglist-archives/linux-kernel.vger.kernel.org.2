@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3443DA290
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395833DA2A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234916AbhG2L4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhG2L4R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:56:17 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F6EC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:56:14 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d1so6717486pll.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:56:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=reWzh3OdEOGw7F78jU2h0BOb61+Bau+uTHia8Q/89V8=;
-        b=IaL3rGM1C0+p5EI4dwAtMi7JS2l80ZljyAWOK2arkXrKp3nTXS49OP6MfH3eVQW9kD
-         pu5JqNu4HNx5plFv3VYgwzFZLfBBMWq84kURUBKQ5jEe0sqIPEWln+eSnF9MrVUw0exg
-         3CkRUhPvAydBUlUmx18mWAeMCrRGtbIA93B7Qd1h1EUXaPcnWE9VBfY3dY2oT8KjGlBP
-         lKokRCRDeOKHFfCX/dA89sIO8QqdO7o8mZ07wal1pZEe3b5UXOKOWf3Uv0zSiih+6G0j
-         tbE7I0jtp4aVsYUDMWtgRp0CL77BCGx8nKOKl7TQmw2YcUnmFlK6mES5XWRH3Voo3IZb
-         oFFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=reWzh3OdEOGw7F78jU2h0BOb61+Bau+uTHia8Q/89V8=;
-        b=kyCfycm4R0mq8NcY7MbcHnVw/HYsiCMmnNlCXE1e79/IcEvZzGvMJi+jJr7WR3ieE6
-         TmMGNPn2DSvFlr9S+xInxAsWIe74DmQvaCjlKzbdU7+c0ZSPSmIPbRi68ERObGx4uWdD
-         X9Tvb4V8Xcvmc8p1am0l/u6NKe7R8005qbLyNQg92Y0k5+TYfKA3jn0aukd4hMoru/8w
-         vXhiIUrcV2rFLwW0L57gG7ouPI8Q5lc+vJxse37BHIMfgN8fnDZ0HuIwptgicvb4kpt0
-         TGavLk8mz3vMyx7vO1ZPNdDVMRgMTOdcbjqh0Io6yP2Eh1XyLfLse9iy73SmzU0z4gHP
-         vy/A==
-X-Gm-Message-State: AOAM532q8QDn0+Uqp2BUVs/QffEmy54MzjvOk7h+wu9aPSphc+dRIk3h
-        jIA8+wHnF8vetuWIrRzMZVY=
-X-Google-Smtp-Source: ABdhPJzj0RzK7IZOH+o/pO07TTLehY7nwqiCMVKOOGmOCGDv3SpV5AZLs1+BD7rJnIH0eNdeWFVTmw==
-X-Received: by 2002:a17:902:b218:b029:11a:bf7b:1a80 with SMTP id t24-20020a170902b218b029011abf7b1a80mr4437298plr.82.1627559773713;
-        Thu, 29 Jul 2021 04:56:13 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id e23sm9671103pjt.8.2021.07.29.04.56.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 04:56:12 -0700 (PDT)
-Subject: Re: [PATCH] ntfs: Fix validity check for file name attribute
-To:     Rolf Eike Beer <eb@emlix.com>
-Cc:     anton@tuxera.com, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        skhan@linuxfoundation.org,
-        syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com,
-        rkovhaev@gmail.com
-References: <2424055.QlFIqzKPrH@devpool47>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <e24a9b8c-12c9-eb05-7133-148d16da034b@gmail.com>
-Date:   Thu, 29 Jul 2021 19:56:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235744AbhG2L4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234975AbhG2L4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 07:56:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D5B060F22;
+        Thu, 29 Jul 2021 11:56:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627559793;
+        bh=rncMA8vl1pvuHqou4S/RmnWLK3jVEoJLkOEd1M5JIhI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fLPd42EVOWcLWnoiOJqYIqiQrdQpBsRkPih7KHw2/dYfSsCL/ex6Yw6Ei1ZE4olea
+         qvTcvRh7tHWtGa0rTNg7u1dZ043YkXofUH797NYyzPftgyWuiurqMjsMfOtf7CDiz0
+         JW3TFrrUD2hVu+Z9ip58s2iQlmOTuGbY7EzlBMER6r3L6vZFd3X+p9zvUpvsmCgzPa
+         Yf+vDpTMG8wYIANpPG9mPD1jZCnt+HrcjXfIVYjIR+Y80z74g/Ylz+oLhPHTEOC5Vw
+         D+vV3WWYfd3cp7yjlsGbcwYuaRQ+3BZtJz0M0N0BDdmjLPa7qjWXCG3WCRTTStSUSj
+         bhaXOB0bWulRw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1m94eN-004d1p-6f; Thu, 29 Jul 2021 13:56:31 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: [PATCH 0/5] DT schema changes for HiKey970 PCIe hardware to work
+Date:   Thu, 29 Jul 2021 13:56:23 +0200
+Message-Id: <cover.1627559126.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <2424055.QlFIqzKPrH@devpool47>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/7/21 4:31 pm, Rolf Eike Beer wrote:
-> Hi,
-> 
-> I was just scanning through some older vulnerabilities and came across
-> CVE-2018-12929, CVE-2018-12930, and CVE-2018-12931, which are all still open
-> according to linuxkernelcves.com (originally reported against 4.15 [1]). I
-> looked into the commits in fs/ntfs/ from 4.15 onwards to see if they were just
-> missed, but I can't spot anything there. RedHat claims to have them fixed in
-> one of their kernels [2].
-> 
-> Which makes me wonder if the issue fixed here is a duplicate of the any of the
-> above. Is there a reason I can't find any patches for the original issue in
-> tree, like the issue only introduced in a custom patchset that Ubuntu/RedHat
-> were using? Is this thing worth it's own CVE if it's no duplicate?
-> 
-> Greetings,
-> 
-> Eike
-> 
-> 1) https://marc.info/?t=152407734400002&r=1&w=2
-> 2) https://access.redhat.com/errata/RHSA-2019:0641
-> 
+Hi Rob,
 
-Hi Eike,
+After our discussions, I'm opting to submit first the DT bindings for the
+Kirin 970 PCIe support.
 
-Thanks for digging into this. From a first glance, this bug seems most 
-similar to CVE-2018-12929.
+Patch 1 is there just because patch 2 needs. You already acked on it.
 
-However, from the logs, the root causes are probably different. The 
-cause of this bug is specifically in the call to 
-ntfs_is_extended_system_file [1], but from what I can see this is not 
-the case for CVE-2018-12929. I don't know enough to comment whether it 
-needs a CVE, but it has been patched on Linux stable (up to 4.4).
+Patch 5 is also there just as an example of the entire stuff added to
+the DTS file.
 
-It's worth noting that there's another similar bug that was fixed by 
-Rustam Kovhaev (+cc) in ntfs_read_locked_inode [2]. This may or may not 
-have been the issue in CVE-2018-12929.
+The core of this series are patches 2 to 4. They contain the conversion
+of the kirin-pcie.txt file to the DT schema, and adds the needed
+bindings.
 
-Link: 
-https://syzkaller.appspot.com/bug?id=a1a1e379b225812688566745c3e2f7242bffc246 
-[1]
+Currently, it generates some warnings:
 
-Link: 
-https://syzkaller.appspot.com/bug?id=933dab9c03ac47a3d09dd4b0563a0a8fcb35f282 
-[2]
+   Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml: pcie@f5000000: pcie@4,0:compatible: None of ['pciclass,0604'] are valid under the given schema
+	From schema: Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+	
+  Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml: pcie@4,0: reset-gpios: [[4294967295, 1, 0]] is too short
 
-Best wishes,
-Desmond
+Not sure how/where to fix those. Perhaps at the pci-bus.yaml?
+
+Please review.
+
+Thanks!
+Mauro
+
+Manivannan Sadhasivam (1):
+  arm64: dts: HiSilicon: Add support for HiKey 970 PCIe controller
+    hardware
+
+Mauro Carvalho Chehab (4):
+  dt-bindings: PCI: kirin: Fix compatible string
+  dt-bindings: PCI: kirin: convert kirin-pcie.txt to yaml
+  dt-bindings: PCI: kirin: Add support for Kirin970
+  dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
+
+ .../bindings/pci/hisilicon,kirin-pcie.yaml    | 145 ++++++++++++++++++
+ .../devicetree/bindings/pci/kirin-pcie.txt    |  50 ------
+ .../devicetree/bindings/pci/snps,dw-pcie.yaml |   2 +-
+ .../phy/hisilicon,phy-hi3670-pcie.yaml        |  86 +++++++++++
+ MAINTAINERS                                   |   2 +-
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  99 ++++++++++++
+ 6 files changed, 332 insertions(+), 52 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+
+-- 
+2.31.1
+
+
