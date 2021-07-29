@@ -2,219 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1E83D9D3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D893D9D40
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233966AbhG2FvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 01:51:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:41002 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233739AbhG2FvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:51:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDD876D;
-        Wed, 28 Jul 2021 22:51:00 -0700 (PDT)
-Received: from [10.163.65.237] (unknown [10.163.65.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 713BD3F66F;
-        Wed, 28 Jul 2021 22:50:57 -0700 (PDT)
-Subject: Re: [PATCH v4 10/12] mm/debug_vm_pgtable: Use struct
- pgtable_debug_args in PGD and P4D modifying tests
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
-        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
-References: <20210727061401.592616-1-gshan@redhat.com>
- <20210727061401.592616-11-gshan@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <d373368a-52c9-30b8-5300-edaacad077ef@arm.com>
-Date:   Thu, 29 Jul 2021 11:21:45 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234024AbhG2FwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 01:52:25 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:39645 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233739AbhG2FwX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 01:52:23 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A7FAA5803F8;
+        Thu, 29 Jul 2021 01:52:16 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 29 Jul 2021 01:52:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=viiBn1GywulERgvrKcCmkXUyuBc
+        +hfV25KNyhlk4biE=; b=UvBUR3YSV1Hzv1rHB+81W9W34BIL1FI5U6cXTigUmL/
+        46ODEIp8Kx7bAynesl+dIL6v0Q/iXqjtQjguo7w4zE3oFJmZrjaMWM35HTzcO+Hr
+        PB9LgXc0v5rVc7Vvs7UYo8BoeeKpFqdtXJOiniOQOHV2q4uK65Dd90Rp/hyXsVaO
+        ZyDgV36GQw673DE9qDtLLtPZZ+gJMflXvxKYAJigEGFJkHgyHSFn92Ytml0j/zxj
+        WVaViCDv+ftKZZ9HBUnTjXcoSk24ubmoPSZDzxv8vDLFHX9MPuyTpsMn/CeooxP5
+        KvEmLHuOcRgK7S1kKNM28yfZfqkvPfXXHp2PoKabXew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=viiBn1
+        GywulERgvrKcCmkXUyuBc+hfV25KNyhlk4biE=; b=ZPwAAszRN1awh/jGyBm78/
+        7vUhL5y7FGte7hlzU3CkqzNtuO0eFM9XdbR3OnSo3skQrB3FCatPPsvmtLgHmCZd
+        yo9+sZpuF/OqKytUSJu/nHwMn+5Y86MV+P0fSF+RJSh5E6ftRc/LKe9CdqcC6Ed8
+        +MSGjkmwFHprHRF/1eJDXgAK8vQA4ZyrR1zI9sM9LIJYj4ylG5EylMHuGTSa3sK2
+        OzRPmC4lfiLhN/OnsS/JkxAoo603S/yHPPHVCaeaIvYgsCZzIny3oHyvOh+xTDRc
+        +Z7j9wEOzFp1Yj54n7mQXia+oHSUliWVY9gVFMvZriImJ6aB/VZ6pB13YMH6MCxg
+        ==
+X-ME-Sender: <xms:D0ICYdMF1N79dQx7LJMZN3ENRO2Pkz5uM9mum12E_7kQYqJ0AlVzLw>
+    <xme:D0ICYf8o_P3J2FXD5fIyfF_S4pUvHfayWQxQiGrK8crTFeu0mC7_Meups7D3wOIvJ
+    2th2qeKnRj4Dg>
+X-ME-Received: <xmr:D0ICYcTmppWFaMoou0irXWAo6QwiFia-Y2kuJ2TjS14cNUflYVYoE_vZz8yWAendAX4566Vi1xhGE9_aT9-Yz2HOwMxxRmIA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedtgdeltdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdertd
+    dttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeen
+    ucggtffrrghtthgvrhhnpeevueehjefgfffgiedvudekvdektdelleelgefhleejieeuge
+    egveeuuddukedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:D0ICYZvF96QQm0rtPvy0kQAYP8jrPWtb4RU39N4OURt0Ku3LqEIOKA>
+    <xmx:D0ICYVcpMKo8ViFWvYzrs58-SkBBxnmiIhtyrHz4SL2qrPg04HxGAg>
+    <xmx:D0ICYV1gwMrVTbNRm3BnOvLmL6YUuYr4xYYr2pAgONW7gHtTGUJCTA>
+    <xmx:EEICYT0tZvuO9P27kP4ZNTuF1tDouXEg78ftOu4qCp2gGtbZJsO-eg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 29 Jul 2021 01:52:15 -0400 (EDT)
+Date:   Thu, 29 Jul 2021 07:52:11 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
+        axboe@kernel.dk, linux-kernel@vger.kernel.org, pavel@ucw.cz,
+        kernelnewbies@kernelnewbies.org
+Subject: Re: [RFC PATCH 3/8] block: Add kernel APIs to create & delete block
+ device LED triggers
+Message-ID: <YQJCC66c2v7Dv59j@kroah.com>
+References: <20210729015344.3366750-1-arequipeno@gmail.com>
+ <20210729015344.3366750-4-arequipeno@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210727061401.592616-11-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729015344.3366750-4-arequipeno@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/27/21 11:43 AM, Gavin Shan wrote:
-> This uses struct pgtable_debug_args in PGD/P4D modifying tests. No
-> allocated huge page is used in these tests. Besides, the unused
-> variable @saved_p4dp and @saved_pudp are dropped.
+On Wed, Jul 28, 2021 at 08:53:39PM -0500, Ian Pilcher wrote:
+> * New file - include/linux/blk-ledtrig.h
 > 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
 > ---
->  mm/debug_vm_pgtable.c | 86 +++++++++++++++++++------------------------
->  1 file changed, 38 insertions(+), 48 deletions(-)
+>  block/blk-ledtrig.c         | 152 ++++++++++++++++++++++++++++++++++++
+>  include/linux/blk-ledtrig.h |  19 +++++
+>  2 files changed, 171 insertions(+)
+>  create mode 100644 include/linux/blk-ledtrig.h
 > 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index 863871e70268..0611b5f31e89 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -518,27 +518,26 @@ static void __init pud_populate_tests(struct pgtable_debug_args *args) { }
->  #endif /* PAGETABLE_PUD_FOLDED */
+> diff --git a/block/blk-ledtrig.c b/block/blk-ledtrig.c
+> index 345a3b6bdbc6..c69ea1539336 100644
+> --- a/block/blk-ledtrig.c
+> +++ b/block/blk-ledtrig.c
+> @@ -6,9 +6,11 @@
+>   *	Copyright 2021 Ian Pilcher <arequipeno@gmail.com>
+>   */
 >  
->  #ifndef __PAGETABLE_P4D_FOLDED
-> -static void __init p4d_clear_tests(struct mm_struct *mm, p4d_t *p4dp)
-> +static void __init p4d_clear_tests(struct pgtable_debug_args *args)
->  {
-> -	p4d_t p4d = READ_ONCE(*p4dp);
-> +	p4d_t p4d = READ_ONCE(*args->p4dp);
+> +#include <linux/blk-ledtrig.h>
+>  #include <linux/leds.h>
+>  #include <linux/list.h>
+>  #include <linux/mutex.h>
+> +#include <linux/slab.h>
 >  
-> -	if (mm_pud_folded(mm))
-> +	if (mm_pud_folded(args->mm))
->  		return;
 >  
->  	pr_debug("Validating P4D clear\n");
->  	p4d = __p4d(p4d_val(p4d) | RANDOM_ORVALUE);
-> -	WRITE_ONCE(*p4dp, p4d);
-> -	p4d_clear(p4dp);
-> -	p4d = READ_ONCE(*p4dp);
-> +	WRITE_ONCE(*args->p4dp, p4d);
-> +	p4d_clear(args->p4dp);
-> +	p4d = READ_ONCE(*args->p4dp);
->  	WARN_ON(!p4d_none(p4d));
+>  /*
+> @@ -49,3 +51,153 @@ static struct blk_ledtrig *blk_ledtrig_find(const char *const name,
+>  
+>  	return NULL;
 >  }
->  
-> -static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
-> -				      pud_t *pudp)
-> +static void __init p4d_populate_tests(struct pgtable_debug_args *args)
->  {
->  	p4d_t p4d;
->  
-> -	if (mm_pud_folded(mm))
-> +	if (mm_pud_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating P4D populate\n");
-> @@ -546,34 +545,33 @@ static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
->  	 * This entry points to next level page table page.
->  	 * Hence this must not qualify as p4d_bad().
->  	 */
-> -	pud_clear(pudp);
-> -	p4d_clear(p4dp);
-> -	p4d_populate(mm, p4dp, pudp);
-> -	p4d = READ_ONCE(*p4dp);
-> +	pud_clear(args->pudp);
-> +	p4d_clear(args->p4dp);
-> +	p4d_populate(args->mm, args->p4dp, args->start_pudp);
-> +	p4d = READ_ONCE(*args->p4dp);
->  	WARN_ON(p4d_bad(p4d));
->  }
->  
-> -static void __init pgd_clear_tests(struct mm_struct *mm, pgd_t *pgdp)
-> +static void __init pgd_clear_tests(struct pgtable_debug_args *args)
->  {
-> -	pgd_t pgd = READ_ONCE(*pgdp);
-> +	pgd_t pgd = READ_ONCE(*(args->pgdp));
->  
-> -	if (mm_p4d_folded(mm))
-> +	if (mm_p4d_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating PGD clear\n");
->  	pgd = __pgd(pgd_val(pgd) | RANDOM_ORVALUE);
-> -	WRITE_ONCE(*pgdp, pgd);
-> -	pgd_clear(pgdp);
-> -	pgd = READ_ONCE(*pgdp);
-> +	WRITE_ONCE(*args->pgdp, pgd);
-> +	pgd_clear(args->pgdp);
-> +	pgd = READ_ONCE(*args->pgdp);
->  	WARN_ON(!pgd_none(pgd));
->  }
->  
-> -static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
-> -				      p4d_t *p4dp)
-> +static void __init pgd_populate_tests(struct pgtable_debug_args *args)
->  {
->  	pgd_t pgd;
->  
-> -	if (mm_p4d_folded(mm))
-> +	if (mm_p4d_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating PGD populate\n");
-> @@ -581,23 +579,17 @@ static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
->  	 * This entry points to next level page table page.
->  	 * Hence this must not qualify as pgd_bad().
->  	 */
-> -	p4d_clear(p4dp);
-> -	pgd_clear(pgdp);
-> -	pgd_populate(mm, pgdp, p4dp);
-> -	pgd = READ_ONCE(*pgdp);
-> +	p4d_clear(args->p4dp);
-> +	pgd_clear(args->pgdp);
-> +	pgd_populate(args->mm, args->pgdp, args->start_p4dp);
-> +	pgd = READ_ONCE(*args->pgdp);
->  	WARN_ON(pgd_bad(pgd));
->  }
->  #else  /* !__PAGETABLE_P4D_FOLDED */
-> -static void __init p4d_clear_tests(struct mm_struct *mm, p4d_t *p4dp) { }
-> -static void __init pgd_clear_tests(struct mm_struct *mm, pgd_t *pgdp) { }
-> -static void __init p4d_populate_tests(struct mm_struct *mm, p4d_t *p4dp,
-> -				      pud_t *pudp)
-> -{
-> -}
-> -static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
-> -				      p4d_t *p4dp)
-> -{
-> -}
-> +static void __init p4d_clear_tests(struct pgtable_debug_args *args) { }
-> +static void __init pgd_clear_tests(struct pgtable_debug_args *args) { }
-> +static void __init p4d_populate_tests(struct pgtable_debug_args *args) { }
-> +static void __init pgd_populate_tests(struct pgtable_debug_args *args) { }
->  #endif /* PAGETABLE_P4D_FOLDED */
->  
->  static void __init pte_clear_tests(struct pgtable_debug_args *args)
-> @@ -1212,8 +1204,8 @@ static int __init debug_vm_pgtable(void)
->  	struct vm_area_struct *vma;
->  	struct mm_struct *mm;
->  	pgd_t *pgdp;
-> -	p4d_t *p4dp, *saved_p4dp;
-> -	pud_t *pudp, *saved_pudp;
-> +	p4d_t *p4dp;
-> +	pud_t *pudp;
->  	pmd_t *pmdp, *saved_pmdp, pmd;
->  	pte_t *ptep;
->  	pgtable_t saved_ptep;
-> @@ -1258,8 +1250,6 @@ static int __init debug_vm_pgtable(void)
->  	 * page table pages.
->  	 */
->  	pmd = READ_ONCE(*pmdp);
-> -	saved_p4dp = p4d_offset(pgdp, 0UL);
-> -	saved_pudp = pud_offset(p4dp, 0UL);
->  	saved_pmdp = pmd_offset(pudp, 0UL);
->  	saved_ptep = pmd_pgtable(pmd);
->  
-> @@ -1338,15 +1328,15 @@ static int __init debug_vm_pgtable(void)
->  	pud_populate_tests(&args);
->  	spin_unlock(ptl);
->  
-> -	spin_lock(&mm->page_table_lock);
-> -	p4d_clear_tests(mm, p4dp);
-> -	pgd_clear_tests(mm, pgdp);
-> -	p4d_populate_tests(mm, p4dp, saved_pudp);
-> -	pgd_populate_tests(mm, pgdp, saved_p4dp);
-> -	spin_unlock(&mm->page_table_lock);
-> +	spin_lock(&(args.mm->page_table_lock));
-> +	p4d_clear_tests(&args);
-> +	pgd_clear_tests(&args);
-> +	p4d_populate_tests(&args);
-> +	pgd_populate_tests(&args);
-> +	spin_unlock(&(args.mm->page_table_lock));
->  
-> -	p4d_free(mm, saved_p4dp);
-> -	pud_free(mm, saved_pudp);
-> +	p4d_free(mm, p4d_offset(pgdp, 0UL));
-> +	pud_free(mm, pud_offset(p4dp, 0UL));
->  	pmd_free(mm, saved_pmdp);
->  	pte_free(mm, saved_ptep);
->  
-> 
+> +
+> +
+> +/*
+> + *
+> + *	Create a new trigger
+> + *
+> + */
+> +
+> +static int __blk_ledtrig_create(const char *const name, const size_t len)
+> +{
+> +	struct blk_ledtrig *t;
+> +	int ret;
+> +
+> +	if (len == 0) {
+> +		pr_warn("empty name specified for blockdev LED trigger\n");
+> +		ret = -EINVAL;
+> +		goto create_exit_return;
+> +	}
+> +
+> +	ret = mutex_lock_interruptible(&blk_ledtrig_list_mutex);
+> +	if (unlikely(ret != 0))
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Only ever use likely/unlikely if you can measure the difference without
+it.  Otherwise the CPU and compiler will almost always get it right and
+you should not clutter up the code with them at all.
+
+For something like this function, where there is no speed difference at
+all, there is no need for these types of markings, so I would recommend
+just removing them all from your patchset.
+
+thanks,
+
+greg k-h
