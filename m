@@ -2,203 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B143DA10A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2843DA10D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbhG2K2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:28:18 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33740
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235510AbhG2K2Q (ORCPT
+        id S235695AbhG2K3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:29:46 -0400
+Received: from mail.netline.ch ([148.251.143.180]:37974 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235309AbhG2K3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:28:16 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 5CB2E3F10D
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:28:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627554490;
-        bh=3lP5TEMwTNPyCtaRO7YTrbYiyPUNNmQTosdLpyAOjSM=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=If9TBU+wQQeikjra/bfR40KQSWIg674pX9vm6rPYNpMT7ywLBytNcy9UDo/OfGsJp
-         awGZFLTrwcZ+QgBOq+StGJE9aN9kANw5hegfyybTbXxQUmaEuBWv4LjlIDPhpkGbsV
-         a37PmWgxlMysmVftYEndMLJicq/A5QsmO2bXwxHY6TYe2FBDQj+7HD6wz1sYoy3yXS
-         6M8OqYHAD/Dw3tRXXPrUFj51zWy8m/VP7D+Umn/YCycAuvjIoRJqp2pxUy5YbjFuRP
-         svmzLycM68Sw6RyZ2EOKMmMQvjsOu5wPC4ofuTDFb9yOV9oJFYyIJJQio5ITi97i3w
-         vSEqi65TCQ/jA==
-Received: by mail-ed1-f70.google.com with SMTP id c20-20020a0564021014b029039994f9cab9so1272734edu.22
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:28:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3lP5TEMwTNPyCtaRO7YTrbYiyPUNNmQTosdLpyAOjSM=;
-        b=FCmK2ICsPdwMzU9dk8ke1HaYWVPfy17Dlf0x4486Ktw5RSrY2Kt6DmT4JbdGQvZQXq
-         nkf10YSkLQxke1JGPniUZz3Kg7l7KYqwK5wyhJBfPYttW1BhBwjEZl8zGa52B1EEy4iF
-         9ffEZQNWy5h4u3Sk/TOVdQRspJ3Uv34qy58kWOsao251w8Y8H9h3C5vS8rKlggRW6xAc
-         m9bHa5XpaNPAlsi6k/AeSlnMCW9AOkdXruluEI1mFUPFvwI6VhkyoMYgVa3nqNpVhbBn
-         OhN2jp0Ik81SOwixqKPPNQASjOxs1hMh7d1RLqddNavSnpwVT2dWWA+w+2jwNXwRVxaE
-         FCWg==
-X-Gm-Message-State: AOAM531X62QnJj8SxoIw6sKoWVNAMQ2NVgqIlMompf4KoUm8zIuGDFlE
-        npoHeGfmWgQD77MmX5YvD1/4KijSXfVwO3jmgMM34wWEJouZYqSGdrCTJMTzfvS6lPrxcooacvQ
-        gcR8uNqdfDkynJjuUyUPalX4NBC9KEP552jsfSyEFOA==
-X-Received: by 2002:a05:6402:2789:: with SMTP id b9mr5046979ede.201.1627554489070;
-        Thu, 29 Jul 2021 03:28:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzDLD2DRNNjgpMQdhV0g9xtas8XsRGAMIj1z025QIlHTNhjbpRJ8xFwsiV6UpjuwmkQEz3hpw==
-X-Received: by 2002:a05:6402:2789:: with SMTP id b9mr5046964ede.201.1627554488915;
-        Thu, 29 Jul 2021 03:28:08 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id kf3sm824603ejc.118.2021.07.29.03.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 03:28:08 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH] mei: constify passed buffers and structures
-Date:   Thu, 29 Jul 2021 12:28:03 +0200
-Message-Id: <20210729102803.46289-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 29 Jul 2021 06:29:45 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id E66A520201A;
+        Thu, 29 Jul 2021 12:29:40 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id 1L6nuNw0PY7d; Thu, 29 Jul 2021 12:28:38 +0200 (CEST)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPA id B4F5F20201B;
+        Thu, 29 Jul 2021 12:28:37 +0200 (CEST)
+Received: from [::1]
+        by thor with esmtp (Exim 4.94.2)
+        (envelope-from <michel@daenzer.net>)
+        id 1m93HI-001Kjn-Oa; Thu, 29 Jul 2021 12:28:36 +0200
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20210726233854.2453899-1-robdclark@gmail.com>
+ <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
+ <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
+ <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
+ <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
+ <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
+ <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
+ <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com>
+ <9d5f4415-d470-3bc1-7d52-61ba739706ae@daenzer.net>
+ <eedfdc75-72f8-9150-584b-c5e9d16db180@amd.com>
+ <20210728165700.38c39cf8@eldfell>
+ <74e310fa-e544-889f-2389-5abe06f80eb8@amd.com>
+ <20210729112358.237651ff@eldfell>
+ <3675d530-c9fc-7ec9-e157-b6abeeec7c2a@amd.com>
+ <20210729121542.27d9b1cc@eldfell>
+ <15cf73a8-eda4-3559-561a-a05a14f445d0@gmail.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
+Message-ID: <4def9567-f88d-3b7c-5ed2-d1686a25fbb3@daenzer.net>
+Date:   Thu, 29 Jul 2021 12:28:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <15cf73a8-eda4-3559-561a-a05a14f445d0@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Buffers and structures passed to MEI bus and client API can be made
-const for safer code and clear indication that it is not modified.
+On 2021-07-29 12:14 p.m., Christian König wrote:
+> Am 29.07.21 um 11:15 schrieb Pekka Paalanen:
+>> [SNIP]
+>>> But how does it then help to wait on the CPU instead?
+>> A compositor does not "wait" literally. It would only check which state
+>> set is ready to be used, and uses the most recent set that is ready. Any
+>> state sets that are not ready are ignored and reconsidered the next
+>> time the compositor updates the screen.
+> 
+> Mhm, then I'm not understanding what Michel's changes are actually doing.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/misc/mei/bus.c     | 18 +++++++++---------
- drivers/misc/mei/client.h  |  2 +-
- drivers/misc/mei/mei_dev.h |  2 +-
- include/linux/mei_cl_bus.h |  9 +++++----
- 4 files changed, 16 insertions(+), 15 deletions(-)
+In a nutshell, my mutter MR holds back all Wayland state changes which were committed together with a new buffer (and dependent later ones) until the dma-buf file descriptors for that buffer have become readable. This is achieved by adding the fds to the main event loop (if they aren't readable already when the buffer is committed), and when they become readable, all corresponding state changes are propagated such that they will be taken into account for drawing the next frame.
 
-diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
-index 935acc6bbf3c..09188d9afc06 100644
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -31,7 +31,7 @@
-  *
-  * Return: written size bytes or < 0 on error
-  */
--ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length, u8 vtag,
-+ssize_t __mei_cl_send(struct mei_cl *cl, const u8 *buf, size_t length, u8 vtag,
- 		      unsigned int mode)
- {
- 	struct mei_device *bus;
-@@ -232,8 +232,8 @@ ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length, u8 *vtag,
-  *  * < 0 on error
-  */
- 
--ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
--			    u8 vtag)
-+ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, const u8 *buf,
-+			    size_t length, u8 vtag)
- {
- 	struct mei_cl *cl = cldev->cl;
- 
-@@ -296,7 +296,7 @@ EXPORT_SYMBOL_GPL(mei_cldev_recv_nonblock_vtag);
-  *  * written size in bytes
-  *  * < 0 on error
-  */
--ssize_t mei_cldev_send(struct mei_cl_device *cldev, u8 *buf, size_t length)
-+ssize_t mei_cldev_send(struct mei_cl_device *cldev, const u8 *buf, size_t length)
- {
- 	return mei_cldev_send_vtag(cldev, buf, length, 0);
- }
-@@ -552,7 +552,7 @@ EXPORT_SYMBOL_GPL(mei_cldev_ver);
-  *
-  * Return: true if me client is initialized and connected
-  */
--bool mei_cldev_enabled(struct mei_cl_device *cldev)
-+bool mei_cldev_enabled(const struct mei_cl_device *cldev)
- {
- 	return mei_cl_is_connected(cldev->cl);
- }
-@@ -771,8 +771,8 @@ EXPORT_SYMBOL_GPL(mei_cldev_disable);
-  * Return: id on success; NULL if no id is matching
-  */
- static const
--struct mei_cl_device_id *mei_cl_device_find(struct mei_cl_device *cldev,
--					    struct mei_cl_driver *cldrv)
-+struct mei_cl_device_id *mei_cl_device_find(const struct mei_cl_device *cldev,
-+					    const struct mei_cl_driver *cldrv)
- {
- 	const struct mei_cl_device_id *id;
- 	const uuid_le *uuid;
-@@ -815,8 +815,8 @@ struct mei_cl_device_id *mei_cl_device_find(struct mei_cl_device *cldev,
-  */
- static int mei_cl_device_match(struct device *dev, struct device_driver *drv)
- {
--	struct mei_cl_device *cldev = to_mei_cl_device(dev);
--	struct mei_cl_driver *cldrv = to_mei_cl_driver(drv);
-+	const struct mei_cl_device *cldev = to_mei_cl_device(dev);
-+	const struct mei_cl_driver *cldrv = to_mei_cl_driver(drv);
- 	const struct mei_cl_device_id *found_id;
- 
- 	if (!cldev)
-diff --git a/drivers/misc/mei/client.h b/drivers/misc/mei/client.h
-index b12cdcde9436..418056fb1489 100644
---- a/drivers/misc/mei/client.h
-+++ b/drivers/misc/mei/client.h
-@@ -160,7 +160,7 @@ int mei_cl_vt_support_check(const struct mei_cl *cl);
-  *
-  * Return: true if the host client is connected
-  */
--static inline bool mei_cl_is_connected(struct mei_cl *cl)
-+static inline bool mei_cl_is_connected(const struct mei_cl *cl)
- {
- 	return  cl->state == MEI_FILE_CONNECTED;
- }
-diff --git a/drivers/misc/mei/mei_dev.h b/drivers/misc/mei/mei_dev.h
-index b7b6ef344e80..694f866f87ef 100644
---- a/drivers/misc/mei/mei_dev.h
-+++ b/drivers/misc/mei/mei_dev.h
-@@ -356,7 +356,7 @@ struct mei_hw_ops {
- /* MEI bus API*/
- void mei_cl_bus_rescan_work(struct work_struct *work);
- void mei_cl_bus_dev_fixup(struct mei_cl_device *dev);
--ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length, u8 vtag,
-+ssize_t __mei_cl_send(struct mei_cl *cl, const u8 *buf, size_t length, u8 vtag,
- 		      unsigned int mode);
- ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length, u8 *vtag,
- 		      unsigned int mode, unsigned long timeout);
-diff --git a/include/linux/mei_cl_bus.h b/include/linux/mei_cl_bus.h
-index 07f5ef8fc456..c6786c12b207 100644
---- a/include/linux/mei_cl_bus.h
-+++ b/include/linux/mei_cl_bus.h
-@@ -91,12 +91,13 @@ void mei_cldev_driver_unregister(struct mei_cl_driver *cldrv);
- 		      mei_cldev_driver_register,\
- 		      mei_cldev_driver_unregister)
- 
--ssize_t mei_cldev_send(struct mei_cl_device *cldev, u8 *buf, size_t length);
-+ssize_t mei_cldev_send(struct mei_cl_device *cldev, const u8 *buf,
-+		       size_t length);
- ssize_t mei_cldev_recv(struct mei_cl_device *cldev, u8 *buf, size_t length);
- ssize_t mei_cldev_recv_nonblock(struct mei_cl_device *cldev, u8 *buf,
- 				size_t length);
--ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
--			    u8 vtag);
-+ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, const u8 *buf,
-+			    size_t length, u8 vtag);
- ssize_t mei_cldev_recv_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
- 			    u8 *vtag);
- ssize_t mei_cldev_recv_nonblock_vtag(struct mei_cl_device *cldev, u8 *buf,
-@@ -114,6 +115,6 @@ void mei_cldev_set_drvdata(struct mei_cl_device *cldev, void *data);
- 
- int mei_cldev_enable(struct mei_cl_device *cldev);
- int mei_cldev_disable(struct mei_cl_device *cldev);
--bool mei_cldev_enabled(struct mei_cl_device *cldev);
-+bool mei_cldev_enabled(const struct mei_cl_device *cldev);
- 
- #endif /* _LINUX_MEI_CL_BUS_H */
+
+>> Depending on which state sets are selected for a screen update, the
+>> global window manager state may be updated accordingly, before the
+>> drawing commands for the composition can be created.
+>>
+>>> See what I'm proposing is to either render the next state of the window
+>>> or compose from the old state (including all atomic properties).
+>> Yes, that's exactly how it would work. It's just that state for a
+>> window is not an independent thing, it can affect how unrelated windows
+>> are managed.
+>>
+>> A simplified example would be two windows side by side where the
+>> resizing of one causes the other to move. You can't resize the window
+>> or move the other until the buffer with the new size is ready. Until
+>> then the compositor uses the old state.
+>>
+>>> E.g. what do you do if you timeout and can't have the new window content
+>>> on time? What's the fallback here?
+>> As there is no wait, there is no timeout either.
+>>
+>> If the app happens to be frozen (e.g. some weird bug in fence handling
+>> to make it never ready, or maybe it's just bugged itself and never
+>> drawing again), then the app is frozen, and all the rest of the desktop
+>> continues running normally without a glitch.
+> 
+> But that is in contradict to what you told me before.
+> 
+> See when the window should move but fails to draw it's new content what happens?
+> 
+> Are the other windows which would be affected by the move not drawn as well?
+
+Basically, the compositor draws its output as if the new buffer and all connected Wayland state changes had not been committed yet.
+
+
 -- 
-2.27.0
-
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
