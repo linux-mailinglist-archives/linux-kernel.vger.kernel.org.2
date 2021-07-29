@@ -2,89 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D443DABB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4379B3DABB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhG2TOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 15:14:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhG2TOa (ORCPT
+        id S230376AbhG2TQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:16:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43033 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229713AbhG2TQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 15:14:30 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B17C061765;
-        Thu, 29 Jul 2021 12:14:26 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id a19so9825170oiw.6;
-        Thu, 29 Jul 2021 12:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dq8X3bwjz9sqqkCm4+HA7qd+/0ngQHwPeVfx2qkB81Y=;
-        b=u7xirmmJ5Hy56G/uAPI+A466Nr7diM5GyE+1ndVRveWCT+/AqYEJkZElxwouvwZghk
-         5bRcYRaZU45Ju6dULijh7wlAuCJ5cMxvBCH3+yY6Dqj5XqMRNXGzmjMio6VPJyWQ3DtZ
-         vg2ZBLJaAj6eSKqNpbzQCX9zYIqAY3UgvHnI3e/BTyz7+t5futV9yKOfpqHK5FUOhzuD
-         vTr2QNFcrRxd+sJojLuUqu2X1m4ulqJOIrAMLZQJGUgScsZd/Ko+UpGjPh7eIVte4EQC
-         73ocH3w+50kPf8eUfuDyCt/V1forChgqL7goG3MVX9032oC5Wsr7IDsNaoLBHP+GXTwD
-         jUVg==
+        Thu, 29 Jul 2021 15:16:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627586212;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5A2N7dGYeQ+Xbk5UXj9qLfRubLSGQbg8nll0cwkgIt4=;
+        b=Fqwu1t3H2zIdpj1eA25zWe+JZtJDVxWZY4z2z6vNH/wuev9YuC+TSWTiFsxVlHjQNhGdDq
+        R5epwI+jciqxoThkY/Bd3VY3RHasbAbDf7ULua7o3gfOdVItowrOpjs7u5p9G+1Vyo4070
+        RbM/zdi1mrd5NOPo7ssFUYB34+J8oSI=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-GCO0TC1tMAWqjbcKnJUVZA-1; Thu, 29 Jul 2021 15:16:51 -0400
+X-MC-Unique: GCO0TC1tMAWqjbcKnJUVZA-1
+Received: by mail-qv1-f70.google.com with SMTP id hf7-20020a0562140e87b02902dc988b8675so4460439qvb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:16:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dq8X3bwjz9sqqkCm4+HA7qd+/0ngQHwPeVfx2qkB81Y=;
-        b=puujQ/UMp+jbBclZbW1qUrcoSuJ1e6DVPz7xvg+X4jcSMKQc3cDYWKeQoBvLaH3qGE
-         BEU1ebwOnaER6r6Joe/3nlfqCRVb5PY0z/CJpS8C5aXogIJspC047tzL8zoaew2NWmgg
-         +qH/VzVTlv6GHPy+wNPQ8LyrIioaLx873wamCrdFahh6a5RA1KdJTwmHquk0WfRtyOt+
-         zLyCJBs6Pp5rMoaviFIq/Tg9DqGAenu3XxVcx7QhIu8LcOE0GD4Bj4Ily0Pgy/d/hVD2
-         tV1uQx+XzL1SaouV141g6hoeOeoKuK+yQst1RJRrRcUNiVkYs7MWxqO4/f3k9kV7L3eh
-         Hv2w==
-X-Gm-Message-State: AOAM533iM9gxQGVt/oRXPwS0EiqBn/fILW6K5HVyTe9E+B/XMaeuHlV2
-        jQNwPy8eq9WtGHmtq9a18Ia6tRLPiIfWS2zn
-X-Google-Smtp-Source: ABdhPJyLfO/2HRJ0hVZIubo0kNuxVp9XStJqQnD4Zcl+AKZnqEkafj1F3lsi2V1UPF1a/smFr39hPA==
-X-Received: by 2002:a54:468d:: with SMTP id k13mr11095578oic.125.1627586066226;
-        Thu, 29 Jul 2021 12:14:26 -0700 (PDT)
-Received: from ian.penurio.us ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id z6sm761213oiz.39.2021.07.29.12.14.25
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5A2N7dGYeQ+Xbk5UXj9qLfRubLSGQbg8nll0cwkgIt4=;
+        b=WYe3uO9FDJ4TkEVGKBSJQ7BuxGbUD9AaFL2GsbefNLZbVJ38PamtEDVhsl1dAjU9mU
+         cj91PNORwecIgynZhh2uVB3n9+3MTDpvQeRPOL/kHwNDLMkdTC+c+NWW/r9yA2CdrBzz
+         rb6E8mMeCjDZVTGwTaQQPnfRlpnYnhzaSZZhJSvv788+wuR5uKWJUn6rVRS9r9hbUEbO
+         G1PY1diuYkbgaBGUck8hGQLukruEwJaUYoOyLrYRSlLCtD/WVBmbv+fMTaXCqjuglEwl
+         oAHkTOXDzTF60BF8Swi7mm1k5hwMj61Y9nA5SY3O8FWzeClEG9A3/W2N9lL1DZMvSv1r
+         zNYw==
+X-Gm-Message-State: AOAM530JzIz0Vl5/yyHj+BppZZpuWxpH5cfY4E+w5JBspGjol2fvdMGh
+        8ASLxj03QgTJMqOCxaChJOJX0DIL2dHXlBSn2HnbK0a5Y/LcMEYG2Vhty7d4ftEWJi/ZEIXrmAY
+        GJlNIhU/z6F4lHLZm3uUfBbgW
+X-Received: by 2002:a37:668e:: with SMTP id a136mr6733810qkc.54.1627586210363;
+        Thu, 29 Jul 2021 12:16:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxXWZdunXtPWYgMO5r2/mrUnugJE+AZjsM1cvmYe3z4ID1Ag4YUCClpSiGUppBJ4TltSIlYHQ==
+X-Received: by 2002:a37:668e:: with SMTP id a136mr6733790qkc.54.1627586210155;
+        Thu, 29 Jul 2021 12:16:50 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id t6sm2219044qkg.75.2021.07.29.12.16.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 12:14:25 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/8] Add configurable block device LED triggers
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        kernelnewbies@kernelnewbies.org,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-References: <20210729015344.3366750-1-arequipeno@gmail.com>
- <20210729085413.GA16945@amd> <b108799e-24a2-d5ec-e18e-b7ae8bded085@gmail.com>
- <20210729183541.GA6772@duo.ucw.cz>
-From:   Ian Pilcher <arequipeno@gmail.com>
-Message-ID: <7a353c64-a81f-a149-9541-ef328a197761@gmail.com>
-Date:   Thu, 29 Jul 2021 14:14:24 -0500
+        Thu, 29 Jul 2021 12:16:49 -0700 (PDT)
+Subject: Re: [PATCH] fpga: region: handle compat_id as an uuid
+To:     Moritz Fischer <mdf@kernel.org>, "Wu, Hao" <hao.wu@intel.com>
+Cc:     "Weight, Russell H" <russell.h.weight@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>
+References: <20210726202650.4074614-1-trix@redhat.com>
+ <6f30a4c6-61a0-bb57-9f13-bcad3f3589b8@intel.com>
+ <ba28bac6-9c6d-de73-523f-b8ba4bef84de@redhat.com>
+ <DM6PR11MB38199F872DC94971D9C8A53885EA9@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <YQL4qyAmqj322HTz@epycbox.lan>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <a5b4b303-7d9b-27d7-4c1e-cd29fea8cdb9@redhat.com>
+Date:   Thu, 29 Jul 2021 12:16:47 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210729183541.GA6772@duo.ucw.cz>
+In-Reply-To: <YQL4qyAmqj322HTz@epycbox.lan>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 1:35 PM, Pavel Machek wrote:
-> Yes, and I'd like to have that functionality, but I believe userland
-> API should be similar to what we do elsewhere. Marek described it in
-> more details.
 
-On 7/29/21 6:59 AM, Marek Behún wrote:
-...
- > - only one trigger, with name "blkdev"
+On 7/29/21 11:51 AM, Moritz Fischer wrote:
+> On Wed, Jul 28, 2021 at 01:36:56AM +0000, Wu, Hao wrote:
+>>> On 7/26/21 3:12 PM, Russ Weight wrote:
+>>>> On 7/26/21 1:26 PM, trix@redhat.com wrote:
+>>>>> From: Tom Rix <trix@redhat.com>
+>>>>>
+>>>>> An fpga region's compat_id is exported by the sysfs
+>>>>> as a 128 bit hex string formed by concatenating two
+>>>>> 64 bit values together.
+>>>>>
+>>>>> The only user of compat_id is dfl.  Its user library
+>>>>> opae converts this value into a uuid.
+>>>>>
+>>>>> ex/
+>>>>> $ cat /sys/class/fpga_region/region1/compat_id
+>>>>> f3c9941350814aadbced07eb84a6d0bb
+>>>>>
+>>>>> Is reported as
+>>>>> $ fpgainfo bmc
+>>>>> ...
+>>>>> Pr Interface Id                  : f3c99413-5081-4aad-bced-07eb84a6d0bb
+>>>>>
+>>>>> Storing a uuid as 2 64 bit values is vendor specific.
+>>>>> And concatenating them together is vendor specific.
+>>>>>
+>>>>> It is better to store and print out as a vendor neutral uuid.
+>>>>>
+>>>>> Change fpga_compat_id from a struct to a union.
+>>>>> Keep the old 64 bit values for dfl.
+>>>>> Sysfs output is now
+>>>>> f3c99413-5081-4aad-bced-07eb84a6d0bb
+>>>> I'm fowarding feedback from Tim Whisonant, one of the OPAE userspace
+>>>> developers:
+>>>>
+>>>> I think that this change to the sysfs for the compat_id node will
+>>>> end up breaking the SDK, which does not expect the '-' characters to
+>>>> be included when parsing the sysfs value. Currently, it is parsed as
+>>>> a raw hex string without regard to any '-' characters. This goes for
+>>>> any "guid" currently exported by sysfs and for what we read in the
+>>>> device MMIO space.
+>>> Yes, it will.
+>>>
+>>> And there are other places, like dfl-afu-main.c:afu_id_show()
+>>>
+>>> outputs raw hex that sdk turns into a uuid.
+>>>
+>>>
+>>> Some options.
+>>>
+>>> If no one but dfl will ever use it, then v1 of patchset.
+>>>
+>>> If others can use it but don't want to change dfl, then v2 of patchset,
+>>> my favorite.
+>>>
+>>> Or this one for uuid for everyone, what have been v3 but changed too much.
+>>>
+>>>
+>>> could dfl change generally to output uuid's to the sysfs ?
+>>>
+>>> this would be generally helpful and a one time disruption to the sdk.
+>> This change limited the output format to uuid_t, but if any hardware doesn't
+>> use uuid_t on hardware may have to convert it back from the sysfs output in
+>> userspace. Leave it to print hardware values (e.g. from register), and convert
+>> it in userspace should be fine too I think.
+> I'm not entirely sure. I seem to recall there being examples of sysfs
+> files returning different things for different drivers.
+>
+> That being said it seems largely cosmetic to add the '-' in between.
+>
+> If it breaks userspace, I'm against it. If you *need* it make a
+> compat_uuid entry or something in that case?
 
-I guess I'm missing something, because I just don't understand how this
-can work for multiple, per-device LEDs.
+My gripe is
 
--- 
-========================================================================
-                  In Soviet Russia, Google searches you!
-========================================================================
+For a nominally common interface, compat_id has a vendor specific output.
+
+If for example another vendor wanted to use this field but their natural 
+format was an OF string.
+
+16 bytes of raw hex would not work for them, so they would roll their own.
+
+which defeats the purpose of a common interface.
+
+
+The language in the docs as-is is vague on the output format.
+
+DFL is the only user of the interface.
+
+So ver 2
+
+https://lore.kernel.org/linux-fpga/4ab7dd2d-c215-6333-6860-6f7d0ac64c3d@redhat.com/
+
+Keeps the output as-is for dfl, so nothing breaks in userspace
+
+And adds flexibility for vendors to output their appropriate natural form.
+
+So compat_id becomes generally useful.
+
+
+Tom
+
+
+>
+> - Moritz
+>
+
