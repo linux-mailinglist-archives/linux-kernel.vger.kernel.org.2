@@ -2,100 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3BB3D9E56
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326573D9E66
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbhG2HYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:24:33 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:40442 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234634AbhG2HYc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:24:32 -0400
-Received: from netfilter.org (bl11-146-165.dsl.telepac.pt [85.244.146.165])
-        by mail.netfilter.org (Postfix) with ESMTPSA id E8DA86411D;
-        Thu, 29 Jul 2021 09:23:56 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 09:24:20 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     yajun.deng@linux.dev
-Cc:     kadlec@netfilter.org, fw@strlen.de, roopa@nvidia.com,
-        nikolay@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netfilter: nf_conntrack_bridge: Fix not free when error
-Message-ID: <20210729072420.GA16265@salvia>
-References: <20210728161849.GA10433@salvia>
- <20210726035702.11964-1-yajun.deng@linux.dev>
- <eaeec889b3a07cea1347d48269e5964e@linux.dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <eaeec889b3a07cea1347d48269e5964e@linux.dev>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S234587AbhG2H1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:27:19 -0400
+Received: from smtpbg587.qq.com ([113.96.223.105]:38932 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234317AbhG2H1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 03:27:18 -0400
+X-QQ-mid: bizesmtp44t1627543632tsgbcds7
+Received: from ubuntu.localdomain (unknown [125.70.163.57])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Thu, 29 Jul 2021 15:26:38 +0800 (CST)
+X-QQ-SSF: 01000000007000202000000A0000000
+X-QQ-FEAT: A5awU/F+CWMsgPFi95NBZH77qYd0xK4VSIwuLgcZ12QhCOH1FLRrDNH52x5CJ
+        8u9+LjBLWC3J9SlM/dS9U8bD8zdRPXyCCmS4i5KU/ilcbHQZ7bkEKWlV/jg1SAwdh+TnX4d
+        W0WEJ2tbTwyR8ZBg5Wt3St8VJi8RQ1gEcGDd1H0frg9PU/L0kgtfjpEiF7vJMDNbdnHnFWJ
+        1zMxHx5HsRKxwptdqfIHT29Gv7EVWKTX1K2SaBIRnc5Ny9djvpcP8WP2gdRoi7bHxEpZx8S
+        ctEXTPq7KdYhPhPUBe5RZTbWs20w41j9seFdVOTSmANLfFzVsHvPGsM/1Gn8mXM5wswA==
+X-QQ-GoodBg: 0
+From:   Huiquan Deng <denghuiquan@cdjrlc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ojeda@kernel.org, Huiquan Deng <denghuiquan@cdjrlc.com>
+Subject: [PATCH] auxdisplay: code indent should use tabs where possible
+Date:   Thu, 29 Jul 2021 00:26:28 -0700
+Message-Id: <20210729072628.68838-1-denghuiquan@cdjrlc.com>
+X-Mailer: git-send-email 2.17.1
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:19:01AM +0000, yajun.deng@linux.dev wrote:
-> July 29, 2021 12:18 AM, "Pablo Neira Ayuso" <pablo@netfilter.org> wrote:
-> 
-> > On Mon, Jul 26, 2021 at 11:57:02AM +0800, Yajun Deng wrote:
-> > 
-> >> It should be added kfree_skb_list() when err is not equal to zero
-> >> in nf_br_ip_fragment().
-> >> 
-> >> Fixes: 3c171f496ef5 ("netfilter: bridge: add connection tracking system")
-> >> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> >> ---
-> >> net/bridge/netfilter/nf_conntrack_bridge.c | 12 ++++++++----
-> >> 1 file changed, 8 insertions(+), 4 deletions(-)
-> >> 
-> >> diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c
-> >> b/net/bridge/netfilter/nf_conntrack_bridge.c
-> >> index 8d033a75a766..059f53903eda 100644
-> >> --- a/net/bridge/netfilter/nf_conntrack_bridge.c
-> >> +++ b/net/bridge/netfilter/nf_conntrack_bridge.c
-> >> @@ -83,12 +83,16 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
-> >> 
-> >> skb->tstamp = tstamp;
-> >> err = output(net, sk, data, skb);
-> >> - if (err || !iter.frag)
-> >> - break;
-> >> -
-> >> + if (err) {
-> >> + kfree_skb_list(iter.frag);
-> >> + return err;
-> >> + }
-> >> +
-> >> + if (!iter.frag)
-> >> + return 0;
-> >> +
-> >> skb = ip_fraglist_next(&iter);
-> >> }
-> >> - return err;
-> > 
-> > Why removing this line above? It enters slow_path: on success.
-> > 
-> I used return rather than break, it wouldn't enter the slow_path.
+Resolves the checkpatch error.
 
-Right, your patch is correct.
+Signed-off-by: Huiquan Deng <denghuiquan@cdjrlc.com>
+---
+ drivers/auxdisplay/cfag12864bfb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> > This patch instead will keep this aligned with IPv6.
-> > 
-> I think err and !iter.frag are not related, there is no need to put
-> them in an if statement, We still need to separate them after loop.
-> So I separate them in loop and use return instead of break. In
-> addition, if you insist, I will accept your patch.
+diff --git a/drivers/auxdisplay/cfag12864bfb.c b/drivers/auxdisplay/cfag12864bfb.c
+index d66821adf453..1e040e83d1c1 100644
+--- a/drivers/auxdisplay/cfag12864bfb.c
++++ b/drivers/auxdisplay/cfag12864bfb.c
+@@ -41,8 +41,8 @@ static const struct fb_var_screeninfo cfag12864bfb_var = {
+ 	.yres_virtual = CFAG12864B_HEIGHT,
+ 	.bits_per_pixel = 1,
+ 	.red = { 0, 1, 0 },
+-      	.green = { 0, 1, 0 },
+-      	.blue = { 0, 1, 0 },
++	.green = { 0, 1, 0 },
++	.blue = { 0, 1, 0 },
+ 	.left_margin = 0,
+ 	.right_margin = 0,
+ 	.upper_margin = 0,
+@@ -69,8 +69,8 @@ static const struct fb_ops cfag12864bfb_ops = {
+ 
+ static int cfag12864bfb_probe(struct platform_device *device)
+ {
++	struct fb_info *info = framebuffer_alloc(0, &device->dev);
+ 	int ret = -EINVAL;
+- 	struct fb_info *info = framebuffer_alloc(0, &device->dev);
+ 
+ 	if (!info)
+ 		goto none;
+-- 
+2.17.1
 
-Thanks. Yes, I'd prefer to keep it consistent with existing users of
-the fragment iterator, see:
-
-net/ipv4/ip_output.c
-net/ipv6/netfilter.c
-net/ipv6/ip6_output.c
-
-they are roughly using the same programming idiom to iterate over the
-fragments.
-
-Would you send a v2?
