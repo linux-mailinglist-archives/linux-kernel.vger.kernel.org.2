@@ -2,243 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABA83D9CED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEC53D9CF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbhG2ExO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 00:53:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:40676 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233607AbhG2ExN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 00:53:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C94F36D;
-        Wed, 28 Jul 2021 21:53:10 -0700 (PDT)
-Received: from [10.163.65.237] (unknown [10.163.65.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D52C63F66F;
-        Wed, 28 Jul 2021 21:53:06 -0700 (PDT)
-Subject: Re: [PATCH v4 02/12] mm/debug_vm_pgtable: Use struct
- pgtable_debug_args in basic tests
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
-        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
-References: <20210727061401.592616-1-gshan@redhat.com>
- <20210727061401.592616-3-gshan@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <7f2cbb0d-cde7-3ebd-2a82-4ba697b54e07@arm.com>
-Date:   Thu, 29 Jul 2021 10:23:55 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233869AbhG2E4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 00:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233782AbhG2E4y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 00:56:54 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C988EC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 21:56:50 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id c16so5133024wrp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 21:56:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HgZ2ekjB2w4IATMge4zN6op9t2Z495TinwaLO8sLH0U=;
+        b=cFFqioRADT538UWHbhbK/gKFUBiIb2E+GS9adDnd+Y5FNNDFj8UksFsBUAjkbdXtd6
+         J/Q1lDxPGLM+Vg6I5wjdZwA5dcL8B5hNASh4M9zm0cWY/2ZVnctawbtYTlJxDgxADE9u
+         qrvw/n7Y9VFbYLrL0gCliCt8Li/MSsWyiQo2Ylgc9Nw9lFxpoRmd0xOenpI8bHO+VrxK
+         2U0sSdPlKvaxnAenqBccDx1sSZJoNZfohV7MvWjaAWPjKxRb3JoymN6LqHKgOAvReiMn
+         mOD0tsfs11KfI/1UCrGPVRNdy2XfmTwl8pLrqTsv8OxQbUhXz9tkRoOX7F6ok2u2xKQs
+         QYBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HgZ2ekjB2w4IATMge4zN6op9t2Z495TinwaLO8sLH0U=;
+        b=SI4Va241D8fXb9J0dXe1bePuzKJ7vm94nOavzpAMoHXzZngpp9vO9HLDYP1k1nZJPt
+         d80kopoMlFCxAD1KTCE7Zp8OKCCUMcHFSe0zisKePEaKsYR/wpCujG/meUTe3yJbsxEF
+         uKcUKZXA+paQyh3czewxis1f2iu3yXCDuECDgl0/wfLXJTPegh7zdGGkIpNEQWIz4Zyr
+         SDynw+JaNdWky66S2s5njRLNPBf45p5fIEc5jLSXGFs6oWoyMG8uCeabcciE3PsKm8Kr
+         /xZFjUq8/TpiUX+Kl7dtsFUC8slME8pUGiU990kWJd7PnHEl4iJlVThxhcT5Q+XmdsR+
+         GX8Q==
+X-Gm-Message-State: AOAM533FOwYLRHxztP+ZVVh+qPNNXhjrMOYap37ZQrxgTesJkzl0IoTb
+        ZlW3WGJ4Ng4jyxYsB3Vkmg26XfpKMw3qrIoGqlQgYQ==
+X-Google-Smtp-Source: ABdhPJy9zG4CjAQR/J6R19gfFDkrsm7e4WOPkyQ/kcxBrA8tFfhtF7n/4/gG7NkhctFeNwvdbA425f129B53LpKUKAE=
+X-Received: by 2002:a05:6000:2a1:: with SMTP id l1mr2525748wry.128.1627534609273;
+ Wed, 28 Jul 2021 21:56:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210727061401.592616-3-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAAhSdy1rA9e2iCJWeVEQwKTRfTZZaRZVcMe1o8wMnFiWOOGW3w@mail.gmail.com>
+ <mhng-7fd3d454-cd80-4ede-baed-08003d66b3a4@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-7fd3d454-cd80-4ede-baed-08003d66b3a4@palmerdabbelt-glaptop>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 29 Jul 2021 10:26:38 +0530
+Message-ID: <CAAhSdy0PsbAJdA=CX7fh=J8jaEh2XniXveQV8rhQWNzW=PBBwQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 00/11] Linux RISC-V ACLINT Support
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Anup Patel <Anup.Patel@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 29, 2021 at 10:00 AM Palmer Dabbelt
+<palmerdabbelt@google.com> wrote:
+>
+> On Mon, 26 Jul 2021 06:01:01 PDT (-0700), anup@brainfault.org wrote:
+> > Hi Marc,
+> >
+> > On Mon, Jul 26, 2021 at 8:02 PM Marc Zyngier <maz@kernel.org> wrote:
+> >>
+> >> On Mon, 26 Jul 2021 13:45:20 +0100,
+> >> Anup Patel <anup@brainfault.org> wrote:
+> >> >
+> >> > Hi Marc,
+> >> >
+> >> > I have taken the approach of IPI domains (like you suggested) in this series.
+> >> >
+> >> > What do you think ?
+> >>
+> >> I have commented on the irqchip driver.
+> >>
+> >> As for the RISC-V specific code, I'll let the architecture maintainers
+> >> look into it. I guess the elephant in the room is that this spec seems
+> >> to be evolving, and that there is no HW implementation (how this
+> >> driver maps on SF's CLINT is anybody's guess).
+>
+> There's a long history of interrupt controller efforts from the RISC-V
+> foundation, and we've yet to have any of them result in hardware.
 
+The RISC-V AIA group was formed last year. Can you point me to which
+interrupt controller efforts you are referring to.
 
-On 7/27/21 11:43 AM, Gavin Shan wrote:
-> This uses struct pgtable_debug_args in the basic test functions. The
-> unused variables @pgd_aligned and @p4d_aligned in debug_vm_pgtable()
-> are dropped.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  mm/debug_vm_pgtable.c | 50 +++++++++++++++++++++----------------------
->  1 file changed, 24 insertions(+), 26 deletions(-)
-> 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index 8c7361643166..8498aa180ebc 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -89,10 +89,10 @@ struct pgtable_debug_args {
->  	unsigned long		fixed_pte_pfn;
->  };
->  
-> -static void __init pte_basic_tests(unsigned long pfn, int idx)
-> +static void __init pte_basic_tests(struct pgtable_debug_args *args, int idx)
->  {
->  	pgprot_t prot = protection_map[idx];
-> -	pte_t pte = pfn_pte(pfn, prot);
-> +	pte_t pte = pfn_pte(args->fixed_pte_pfn, prot);
->  	unsigned long val = idx, *ptr = &val;
->  
->  	pr_debug("Validating PTE basic (%pGv)\n", ptr);
-> @@ -174,7 +174,7 @@ static void __init pte_savedwrite_tests(unsigned long pfn, pgprot_t prot)
->  }
->  
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -static void __init pmd_basic_tests(unsigned long pfn, int idx)
-> +static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx)
->  {
->  	pgprot_t prot = protection_map[idx];
->  	unsigned long val = idx, *ptr = &val;
-> @@ -184,7 +184,7 @@ static void __init pmd_basic_tests(unsigned long pfn, int idx)
->  		return;
->  
->  	pr_debug("Validating PMD basic (%pGv)\n", ptr);
-> -	pmd = pfn_pmd(pfn, prot);
-> +	pmd = pfn_pmd(args->fixed_pmd_pfn, prot);
->  
->  	/*
->  	 * This test needs to be executed after the given page table entry
-> @@ -296,7 +296,7 @@ static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
->  }
->  
->  #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
-> -static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx)
-> +static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx)
->  {
->  	pgprot_t prot = protection_map[idx];
->  	unsigned long val = idx, *ptr = &val;
-> @@ -306,7 +306,7 @@ static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int
->  		return;
->  
->  	pr_debug("Validating PUD basic (%pGv)\n", ptr);
-> -	pud = pfn_pud(pfn, prot);
-> +	pud = pfn_pud(args->fixed_pud_pfn, prot);
->  
->  	/*
->  	 * This test needs to be executed after the given page table entry
-> @@ -327,7 +327,7 @@ static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int
->  	WARN_ON(pud_dirty(pud_wrprotect(pud_mkclean(pud))));
->  	WARN_ON(!pud_dirty(pud_wrprotect(pud_mkdirty(pud))));
->  
-> -	if (mm_pmd_folded(mm))
-> +	if (mm_pmd_folded(args->mm))
->  		return;
->  
->  	/*
-> @@ -404,7 +404,7 @@ static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot)
->  	WARN_ON(!pud_leaf(pud));
->  }
->  #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
-> -static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
-> +static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
->  static void __init pud_advanced_tests(struct mm_struct *mm,
->  				      struct vm_area_struct *vma, pud_t *pudp,
->  				      unsigned long pfn, unsigned long vaddr,
-> @@ -414,8 +414,8 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
->  static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot) { }
->  #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
->  #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
-> -static void __init pmd_basic_tests(unsigned long pfn, int idx) { }
-> -static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
-> +static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx) { }
-> +static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
->  static void __init pmd_advanced_tests(struct mm_struct *mm,
->  				      struct vm_area_struct *vma, pmd_t *pmdp,
->  				      unsigned long pfn, unsigned long vaddr,
-> @@ -476,7 +476,7 @@ static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
->  static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
->  #endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
->  
-> -static void __init p4d_basic_tests(unsigned long pfn, pgprot_t prot)
-> +static void __init p4d_basic_tests(struct pgtable_debug_args *args)
->  {
->  	p4d_t p4d;
->  
-> @@ -485,7 +485,7 @@ static void __init p4d_basic_tests(unsigned long pfn, pgprot_t prot)
->  	WARN_ON(!p4d_same(p4d, p4d));
->  }
->  
-> -static void __init pgd_basic_tests(unsigned long pfn, pgprot_t prot)
-> +static void __init pgd_basic_tests(struct pgtable_debug_args *args)
->  {
->  	pgd_t pgd;
->  
-> @@ -890,7 +890,7 @@ static void __init swap_migration_tests(void)
->  }
->  
->  #ifdef CONFIG_HUGETLB_PAGE
-> -static void __init hugetlb_basic_tests(unsigned long pfn, pgprot_t prot)
-> +static void __init hugetlb_basic_tests(struct pgtable_debug_args *args)
->  {
->  	struct page *page;
->  	pte_t pte;
-> @@ -900,21 +900,21 @@ static void __init hugetlb_basic_tests(unsigned long pfn, pgprot_t prot)
->  	 * Accessing the page associated with the pfn is safe here,
->  	 * as it was previously derived from a real kernel symbol.
->  	 */
-> -	page = pfn_to_page(pfn);
-> -	pte = mk_huge_pte(page, prot);
-> +	page = pfn_to_page(args->fixed_pmd_pfn);
-> +	pte = mk_huge_pte(page, args->page_prot);
->  
->  	WARN_ON(!huge_pte_dirty(huge_pte_mkdirty(pte)));
->  	WARN_ON(!huge_pte_write(huge_pte_mkwrite(huge_pte_wrprotect(pte))));
->  	WARN_ON(huge_pte_write(huge_pte_wrprotect(huge_pte_mkwrite(pte))));
->  
->  #ifdef CONFIG_ARCH_WANT_GENERAL_HUGETLB
-> -	pte = pfn_pte(pfn, prot);
-> +	pte = pfn_pte(args->fixed_pmd_pfn, args->page_prot);
->  
->  	WARN_ON(!pte_huge(pte_mkhuge(pte)));
->  #endif /* CONFIG_ARCH_WANT_GENERAL_HUGETLB */
->  }
->  #else  /* !CONFIG_HUGETLB_PAGE */
-> -static void __init hugetlb_basic_tests(unsigned long pfn, pgprot_t prot) { }
-> +static void __init hugetlb_basic_tests(struct pgtable_debug_args *args) { }
->  #endif /* CONFIG_HUGETLB_PAGE */
->  
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> @@ -1240,7 +1240,7 @@ static int __init debug_vm_pgtable(void)
->  	pgprot_t prot, protnone;
->  	phys_addr_t paddr;
->  	unsigned long vaddr, pte_aligned, pmd_aligned;
-> -	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
-> +	unsigned long pud_aligned;
->  	spinlock_t *ptl = NULL;
->  	int idx, ret;
->  
-> @@ -1283,8 +1283,6 @@ static int __init debug_vm_pgtable(void)
->  	pte_aligned = (paddr & PAGE_MASK) >> PAGE_SHIFT;
->  	pmd_aligned = (paddr & PMD_MASK) >> PAGE_SHIFT;
->  	pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
-> -	p4d_aligned = (paddr & P4D_MASK) >> PAGE_SHIFT;
-> -	pgd_aligned = (paddr & PGDIR_MASK) >> PAGE_SHIFT;
->  	WARN_ON(!pfn_valid(pte_aligned));
->  
->  	pgdp = pgd_offset(mm, vaddr);
-> @@ -1318,9 +1316,9 @@ static int __init debug_vm_pgtable(void)
->  	 * given page table entry.
->  	 */
->  	for (idx = 0; idx < ARRAY_SIZE(protection_map); idx++) {
-> -		pte_basic_tests(pte_aligned, idx);
-> -		pmd_basic_tests(pmd_aligned, idx);
-> -		pud_basic_tests(mm, pud_aligned, idx);
-> +		pte_basic_tests(&args, idx);
-> +		pmd_basic_tests(&args, idx);
-> +		pud_basic_tests(&args, idx);
->  	}
->  
->  	/*
-> @@ -1330,8 +1328,8 @@ static int __init debug_vm_pgtable(void)
->  	 * the above iteration for now to save some test execution
->  	 * time.
->  	 */
-> -	p4d_basic_tests(p4d_aligned, prot);
-> -	pgd_basic_tests(pgd_aligned, prot);
-> +	p4d_basic_tests(&args);
-> +	pgd_basic_tests(&args);
->  
->  	pmd_leaf_tests(pmd_aligned, prot);
->  	pud_leaf_tests(pud_aligned, prot);
-> @@ -1360,7 +1358,7 @@ static int __init debug_vm_pgtable(void)
->  	pmd_thp_tests(pmd_aligned, prot);
->  	pud_thp_tests(pud_aligned, prot);
->  
-> -	hugetlb_basic_tests(pte_aligned, prot);
-> +	hugetlb_basic_tests(&args);
->  
->  	/*
->  	 * Page table modifying tests. They need to hold
-> 
+>
+> > The SiFive CLINT is a more convoluted device and provides M-level
+> > timer functionality and M-level IPI functionality in one MMIO device.
+> >
+> > The RISC-V ACLINT specification is more modular and backward
+> > compatible with the SiFive CLINT. In fact, a SiFive CLINT device
+> > can be viewed as a ACLINT MSWI device + ACLINT MTIMER device.
+> > This means existing RISC-V boards having SiFive CLINT will be
+> > automatically compliant to the RISC-V ACLINT specification.
+>
+> So is there any hardware that this new specification enables?  It seems
+> to be a more convoluted way to describe the same mess we're already in.
+> I'm not really inclined to take a bunch of code that just does the same
+> thing via a more complicated specification.
 
+Nope, it is much cleaner and modular compared to SiFive CLINT and
+it is also backward compatible to SiFive CLINT.
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Can you elaborate what part of the code you are not okay with ?
+
+>
+> > Here's the RISC-V ACLINT spec:
+> > https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc
+> >
+> > The RISC-V ACLINT spec is quite stable and we are not seeing any
+> > further changes hence I sent out RFC PATCHes to get feedback. The
+> > RISC-V ACLINT spec will be frozen before 2021 end (i.e. before next
+> > RISC-V summit).
+>
+> Have you talked to the other ISA folks about that?
+
+This spec is being developed by the RISC-V AIA group based on the
+feedback from ISA folks and HW architects.
+
+>
+> As far as I can tell this new spec allows for multiple MTIME registers,
+> which seems to be in direct contradiction to the single -MTIME register
+> as defined in the ISA manual.  It also seems to be vaguely incompatible
+> WRT the definition of SSIP, but I'm not sure that one really matters all
+> that much as it's not like old software can write the new registers.
+
+The ACLINT spec clearly defines that if we have multiple MTIME registers
+then these registers must be synchronized to meet the architecture
+requirements. The spec also defines a software mechanism for MTIME
+synchronization. It is also possible for multiple MTIMER devices to share
+same MTIME register. Please refer to the latest ACLINT spec.
+
+>
+> I just talked to Krste and Andrew, they say they haven't heard of any of
+> this.  I don't know what's going on over there, but it's very hard to
+> review anything when I can't even tell where the ISA is defined.
+
+I am surprised by the respone you got because the ACLINT spec is
+being developed by a working group of RISC-V International. In fact,
+it is hosted on the RISC-V International GitHub. How can we host it on
+RISC-V GitHub if it is not an official spec being developed by RVI.
+
+Regards,
+Anup
+
+>
+> > The Linux NoMMU kernel (M-level) will use an ACLINT MSWI device
+> > for IPI support whereas the regular Linux MMU kernel (S-level) will
+> > use an ACLINT SSWI device for IPI support.
+> >
+> > The ACLINT SWI driver is a common IPI driver for both ACLINT
+> > MSWI (Linux NoMMU) and ACLINT SSWI (Linux MMU). In fact,
+> > the ACLINT SWI also works for IPI part (i.e. MSWI) of SiFive CLINT.
+> >
+> > Regards,
+> > Anup
+> >
+> >>
+> >>         M.
+> >>
+> >> --
+> >> Without deviation from the norm, progress is not possible.
