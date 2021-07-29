@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE78E3DA049
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF1C3DA04D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235620AbhG2Jck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:32:40 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:38499 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235492AbhG2Jcj (ORCPT
+        id S235661AbhG2Jdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:33:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24583 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235546AbhG2Jdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:32:39 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UhKSVrp_1627551149;
-Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UhKSVrp_1627551149)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 29 Jul 2021 17:32:34 +0800
-From:   Wen Yang <wenyang@linux.alibaba.com>
-To:     Corey Minyard <minyard@acm.org>
-Cc:     Wen Yang <wenyang@linux.alibaba.com>,
-        Baoyou Xie <baoyou.xie@alibaba-inc.com>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ipmi: rate limit ipmi smi_event failure message
-Date:   Thu, 29 Jul 2021 17:32:28 +0800
-Message-Id: <20210729093228.77098-1-wenyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.23.0
+        Thu, 29 Jul 2021 05:33:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627551217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=md6Oc7TeV7HG+jATakLwy9ixrHl66kXuQgl0GJ9Fitg=;
+        b=ZTWYpuHgZGyHGg+za5uB4A9h7VmCU3/kE+p1mgm5UEN/6Bq0BGa3Qf+ESw5H8j/q0vc4N6
+        4JZTmpkJw1IIjM2AR556L3Tmkh9FXMIsXVENMoeKViWJoTDQI+1//pqtq9EnFOWR3B8M8x
+        5qCkNkFtt7VEPcgAKMhsYEBJwRCPcPQ=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-164-ODZMtwbkM9qWz6udD2LvkQ-1; Thu, 29 Jul 2021 05:33:35 -0400
+X-MC-Unique: ODZMtwbkM9qWz6udD2LvkQ-1
+Received: by mail-ed1-f72.google.com with SMTP id b13-20020a056402278db029039c013d5b80so2674712ede.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:33:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=md6Oc7TeV7HG+jATakLwy9ixrHl66kXuQgl0GJ9Fitg=;
+        b=PTCha6WWPkCcL8uiTMcE+s7/HkR2tpNSpbw2sc3vQ6ZhvyUdS3IJvrmrsJRvhcN5lf
+         KG4kQWI9wTeNFQWdbLk2p2x+TFV4Qibbdo+ybmcgM3dXI+P7ZEeijPGxLWNAkthN23cf
+         1/+6MIYnrdvzfPaYRec3ngzrM8WLNnGBq47uEHsDF3aZLviLMjY8tbWQii7dx70nPA5p
+         +ZOVJyEZ+yxxrMX6ITF0xlTzA7oELavrKQdB9Meut4l/CXIIZFRBPAzqMtXaewJI9kUf
+         f62OGi1FAiFGw7T62I1KPX7iuxzaVRzIPV33r7W5xzf6RHvU8zDHkp6Odx/4yvCyNNXV
+         5Kaw==
+X-Gm-Message-State: AOAM530+asc0EYA5H2QNqFoHbomwpqWNCXc7qsf4u0gjNdhY0pSjfDlU
+        Wb5u0gKN8WiSnowKbNgKVmgBEr378SARKuXy+EDoXQCvW+7+g5Rdk3yZRpmVr9z5eERDC6zbse7
+        KjTFTtnbLc5kf8rKubXQdXCUc
+X-Received: by 2002:a05:6402:221c:: with SMTP id cq28mr4957593edb.115.1627551214267;
+        Thu, 29 Jul 2021 02:33:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWtYyeEsKK8QG2q57jEd8WiiG65QrD/ajD03X4+P7WkyzcEeGdZ/zqOSInTNjlj7S2BmXcEg==
+X-Received: by 2002:a05:6402:221c:: with SMTP id cq28mr4957587edb.115.1627551214144;
+        Thu, 29 Jul 2021 02:33:34 -0700 (PDT)
+Received: from [192.168.10.118] ([93.56.169.140])
+        by smtp.gmail.com with ESMTPSA id i11sm951152eds.72.2021.07.29.02.33.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 02:33:33 -0700 (PDT)
+Subject: Re: [PATCH v2 8/9] KVM: X86: Optimize pte_list_desc with per-array
+ counter
+To:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20210625153214.43106-1-peterx@redhat.com>
+ <20210625153415.43620-1-peterx@redhat.com> <YQHGXhOc5gO9aYsL@google.com>
+ <YQHRV/uEZ4LqPVNI@t490s>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <dc9eb6da-59ce-2dd3-c39c-8348088cadcb@redhat.com>
+Date:   Thu, 29 Jul 2021 11:33:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQHRV/uEZ4LqPVNI@t490s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes we can't get a valid si_sm_data, and we print an error
-message accordingly. But the ipmi module seem to like retrying a lot,
-in which case we flood the kernel log with a lot of messages, eg:
+On 28/07/21 23:51, Peter Xu wrote:
+> Reasonable.  Not sure whether this would change the numbers a bit in the commit
+> message; it can be slightly better but also possible to be non-observable.
+> Paolo, let me know if you want me to repost/retest with the change (along with
+> keeping the comment in the other patch).
 
-[46318019.164726] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318020.109700] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318021.158677] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318022.212598] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318023.258564] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318024.210455] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318025.260473] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318026.308445] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318027.356389] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318028.298288] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
-[46318029.363302] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+Yes, feel free please start from the patches in kvm/queue (there were 
+some conflicts, so it will save you the rebasing work) and send v3 
+according to Sean's callbacks.
 
-Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-Cc: Baoyou Xie <baoyou.xie@alibaba-inc.com>
-Cc: Corey Minyard <minyard@acm.org>
-Cc: openipmi-developer@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
----
- drivers/char/ipmi/ipmi_si_intf.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-index 62929a3..f64c3ac 100644
---- a/drivers/char/ipmi/ipmi_si_intf.c
-+++ b/drivers/char/ipmi/ipmi_si_intf.c
-@@ -591,7 +591,7 @@ static void handle_transaction_done(struct smi_info *smi_info)
- 		smi_info->handlers->get_result(smi_info->si_sm, msg, 3);
- 		if (msg[2] != 0) {
- 			/* Error clearing flags */
--			dev_warn(smi_info->io.dev,
-+			dev_warn_ratelimited(smi_info->io.dev,
- 				 "Error clearing flags: %2.2x\n", msg[2]);
- 		}
- 		smi_info->si_state = SI_NORMAL;
-@@ -683,10 +683,11 @@ static void handle_transaction_done(struct smi_info *smi_info)
- 		/* We got the flags from the SMI, now handle them. */
- 		smi_info->handlers->get_result(smi_info->si_sm, msg, 4);
- 		if (msg[2] != 0) {
--			dev_warn(smi_info->io.dev,
--				 "Couldn't get irq info: %x.\n", msg[2]);
--			dev_warn(smi_info->io.dev,
--				 "Maybe ok, but ipmi might run very slowly.\n");
-+#define IPMI_WARN_CHECKING_ENABLES "Maybe ok, but ipmi might run very slowly."
-+
-+			dev_warn_ratelimited(smi_info->io.dev,
-+				"Couldn't get irq info: %x, %s\n",
-+				msg[2], IPMI_WARN_CHECKING_ENABLES);
- 			smi_info->si_state = SI_NORMAL;
- 			break;
- 		}
-@@ -721,7 +722,7 @@ static void handle_transaction_done(struct smi_info *smi_info)
- 
- 		smi_info->handlers->get_result(smi_info->si_sm, msg, 4);
- 		if (msg[2] != 0)
--			dev_warn(smi_info->io.dev,
-+			dev_warn_ratelimited(smi_info->io.dev,
- 				 "Could not set the global enables: 0x%x.\n",
- 				 msg[2]);
- 
-@@ -1343,7 +1344,7 @@ static int try_get_dev_id(struct smi_info *smi_info)
- 
- 		if (cc != IPMI_CC_NO_ERROR &&
- 		    ++retry_count <= GET_DEVICE_ID_MAX_RETRY) {
--			dev_warn(smi_info->io.dev,
-+			dev_warn_ratelimited(smi_info->io.dev,
- 			    "BMC returned 0x%2.2x, retry get bmc device id\n",
- 			    cc);
- 			goto retry;
--- 
-1.8.3.1
+Paolo
 
