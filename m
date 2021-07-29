@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2548C3DA6DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB0C3DA6E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237540AbhG2OvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhG2OvR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:51:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52175C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:51:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=c0pAqr7WjXOmFqze5UYuYquQopW+1yGLNu5EKWRUiGc=; b=u07QTVbfnWNQmvKswjiJGLv5mf
-        Q/+cUcRYtTRvAYz8JLJDravtb7cFv1rgmMreNJc+/FZFvZmmmLsCy8hfkY9AAO3GLBZuSDnDB13A0
-        KeEDjVoqDilEMP7JpmQMz7/24sdJlq8TuUiCNwXZZkIK7W8Dj8YXGTb418+5InGY9owxuPbhJAiyM
-        ODzwpFNN2sfYOH1E4SIvzNsONFVaT4xYZAgmIGR/y/oHIfUXl1WHC9af5JJnMzU3emr2eqQXHnYN3
-        cgdCThNaqLag18GqTJ9pVFn1C6rFP/VLZCj57ySHNOecjZEqBwJuLyFyuIY/J8r347uVNGXYpiTfQ
-        Aj6sNKOg==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m97NQ-004biU-Ic; Thu, 29 Jul 2021 14:51:12 +0000
-Subject: Re: [PATCH] staging: vt665X: remove unused CONFIG_PATH
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev
-Cc:     forest@alittletooquiet.net, linux-kernel@vger.kernel.org,
-        Joe Perches <joe@perches.com>
-References: <20210729095812.1693061-1-gregkh@linuxfoundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <68f85669-71a8-b0c9-d23f-0dc7e1de2f12@infradead.org>
-Date:   Thu, 29 Jul 2021 07:51:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237756AbhG2Owi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:52:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237204AbhG2Owh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:52:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05093604DC;
+        Thu, 29 Jul 2021 14:52:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627570354;
+        bh=tlr6WfyAAfYIOdiTBqFltGkyg5uAuLp75iQ4ftRMncg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l4YivkEzcgjZAW7uNZ1Smg+4IvuOkmGFdXeC38ea30J5dD02s/HnACqaZsYos143X
+         MMJSfbD95yJMFN2FYVsj99SJNghH0D8AVkz19WACcR9RQzaVw2duwWUpHYbm6kO6Dn
+         k7uvd0vus2Dx95TJ6j4IZEbjvczQRoGaktY6KEakkEXPiVqC3EkbZoSNAJqpEk9NPQ
+         O2ipJqRrpX6D/mlOFSLXsbbJW31CQv/0r4Au5ciTdRaxvQpAQdQNC/nidEXQIz81ST
+         1FDgJ8x+qHXXJ5dKUq2eafsc7ahNDY/HWHq0Xz6VBGaEsru9k8Lfj37UsYL4eoIlYD
+         84VIu9p8BT7ig==
+Date:   Thu, 29 Jul 2021 15:52:10 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, jpoimboe@redhat.com,
+        ardb@kernel.org, nobuta.keiya@fujitsu.com,
+        sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v6 3/3] arm64: Create a list of SYM_CODE functions,
+ check return PC against list
+Message-ID: <20210729145210.GP4670@sirena.org.uk>
+References: <3f2aab69a35c243c5e97f47c4ad84046355f5b90>
+ <20210630223356.58714-1-madvenka@linux.microsoft.com>
+ <20210630223356.58714-4-madvenka@linux.microsoft.com>
+ <20210728172523.GB47345@C02TD0UTHF1T.local>
+ <f9931a57-7a81-867b-fa2a-499d441c5acd@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210729095812.1693061-1-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="K9FEQnHYtEQyKlzu"
+Content-Disposition: inline
+In-Reply-To: <f9931a57-7a81-867b-fa2a-499d441c5acd@linux.microsoft.com>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 2:58 AM, Greg Kroah-Hartman wrote:
-> The vt6655 and vt6656 drivers have an unused CONFIG_PATH define floating
-> around in the code, but it is never used.  Remove it as drivers should
-> never be reading from config files anyway, even if these were valid
-> files.
-> 
-> Reported-by: Joe Perches <joe@perches.com>
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+--K9FEQnHYtEQyKlzu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks.
+On Thu, Jul 29, 2021 at 09:06:26AM -0500, Madhavan T. Venkataraman wrote:
+> On 7/28/21 12:25 PM, Mark Rutland wrote:
+> > On Wed, Jun 30, 2021 at 05:33:56PM -0500, madvenka@linux.microsoft.com wrote:
 
-> ---
->  drivers/staging/vt6655/device_cfg.h | 3 ---
->  drivers/staging/vt6656/device.h     | 2 --
->  2 files changed, 5 deletions(-)
-> 
-> diff --git a/drivers/staging/vt6655/device_cfg.h b/drivers/staging/vt6655/device_cfg.h
-> index db0304f6e21c..2d647a3619ba 100644
-> --- a/drivers/staging/vt6655/device_cfg.h
-> +++ b/drivers/staging/vt6655/device_cfg.h
-> @@ -38,9 +38,6 @@
->  
->  #include <linux/fs.h>
->  #include <linux/fcntl.h>
-> -#ifndef CONFIG_PATH
-> -#define CONFIG_PATH            "/etc/vntconfiguration.dat"
-> -#endif
->  
->  #define PKT_BUF_SZ          2390
->  
-> diff --git a/drivers/staging/vt6656/device.h b/drivers/staging/vt6656/device.h
-> index 947530fefe94..2c93a2e66c8a 100644
-> --- a/drivers/staging/vt6656/device.h
-> +++ b/drivers/staging/vt6656/device.h
-> @@ -77,8 +77,6 @@
->  #define FIRMWARE_NAME			"vntwusb.fw"
->  #define FIRMWARE_CHUNK_SIZE		0x400
->  
-> -#define CONFIG_PATH			"/etc/vntconfiguration.dat"
-> -
->  #define MAX_UINTS			8
->  #define OPTION_DEFAULT			{ [0 ... MAX_UINTS - 1] = -1}
->  
-> 
+> > Since some of the above is speculative (e.g. the bit about optprobes),
+> > and as code will change over time, I think we should have a much terser
+> > comment, e.g.
 
+> > 	/*
+> > 	 * As SYM_CODE functions don't follow the usual calling
+> > 	 * conventions, we assume by default that any SYM_CODE function
+> > 	 * cannot be unwound reliably.
+> > 	 *
+> > 	 * Note that this includes exception entry/return sequences and
+> > 	 * trampoline for ftrace and kprobes.
+> > 	 */
 
--- 
-~Randy
+> Just to confirm, are you suggesting that I remove the entire large comment
+> detailing the various cases and replace the whole thing with the terse comment?
+> I did the large comment because of Mark Brown's input that we must be verbose
+> about all the cases so that it is clear in the future what the different
+> cases are and how we handle them in this code. As the code evolves, the comments
+> would evolve.
 
+I do agree with Mark that this has probably gone from one extreme to the
+other and could be cut back a lot - originally it didn't reference there
+being complicated cases like the trampoline at all IIRC so you needed
+external knowledge to figure out that those cases were handled.
+
+--K9FEQnHYtEQyKlzu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmECwJkACgkQJNaLcl1U
+h9CC9wf8DqjxuFSwcUy/+ixIXHiCPRzxZpCl+PK99VCWgx6pnx+ndjI6ulrAnESa
+D9dmwiLY6mPNFQYwHnyZF3n7+2QvlvJ0vtAfYzKTAD2GL5s8GU9eMCGkEeHCOdON
+vB9sT5dccjFTmyLsAXhYbET2Yrrir4Hb9mgIWW4e5/cl/lliMmgvOCjrbvA4ZDSL
+gMi++LRG+b5NJWoGBneeRug/uRq+wH3rVy7HESZWL4dkwemxoqIOrJuZ8pu1sHcO
+UplFpWBgmQUahCKe6T8vb23V45XOClSTaowYCEJZprveu5vOE2y+IFcwVA9chXrD
+XxdGLN9KS2gHj1Vw+RNnjG/IxwoH6Q==
+=4mHi
+-----END PGP SIGNATURE-----
+
+--K9FEQnHYtEQyKlzu--
