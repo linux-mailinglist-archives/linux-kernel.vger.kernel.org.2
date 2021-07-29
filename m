@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4CB3DA60B
+	by mail.lfdr.de (Postfix) with ESMTP id 85E063DA60C
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237260AbhG2OLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:11:48 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3529 "EHLO
+        id S231674AbhG2OLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:11:53 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3530 "EHLO
         frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238303AbhG2OCz (ORCPT
+        with ESMTP id S238148AbhG2OC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:02:55 -0400
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBg20rC5z6J9tM;
-        Thu, 29 Jul 2021 21:47:42 +0800 (CST)
+        Thu, 29 Jul 2021 10:02:59 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBns5Vx8z6FGH7;
+        Thu, 29 Jul 2021 21:53:37 +0800 (CST)
 Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 16:02:51 +0200
+ 15.1.2176.2; Thu, 29 Jul 2021 16:02:54 +0200
 Received: from localhost.localdomain (10.69.192.58) by
  lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 15:02:47 +0100
+ 15.1.2176.2; Thu, 29 Jul 2021 15:02:50 +0100
 From:   John Garry <john.garry@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -30,9 +30,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
 CC:     <yao.jin@linux.intel.com>, <linux-kernel@vger.kernel.org>,
         <linux-perf-users@vger.kernel.org>, <irogers@google.com>,
         <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH 06/11] perf pmu: Check .is_uncore field in pmu_add_cpu_aliases_map()
-Date:   Thu, 29 Jul 2021 21:56:21 +0800
-Message-ID: <1627566986-30605-7-git-send-email-john.garry@huawei.com>
+Subject: [PATCH 07/11] perf test: Re-add pmu-event uncore PMU alias test
+Date:   Thu, 29 Jul 2021 21:56:22 +0800
+Message-ID: <1627566986-30605-8-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
 References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
@@ -46,30 +46,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling pmu_is_uncore() for fake PMUs does not work, as it checks sysfs
-for the PMU details (which won't exist).
+Add support to match aliases for uncore PMUs.
 
-Check .is_uncore field instead, which makes sense anyway.
+Since we cannot rely on the PMUs being present on the host system, use
+fake PMUs.
+
+The following conditions in the test are ensures:
+- Expected count of aliases created
+- All aliases can be matched to an expected alias in
+  perf_pmu_test_pmu.aliases
+
+This will catch the condition fixed in commit c47a5599eda3 ("perf tools:
+Fix pattern matching for same substring in different PMU type"), where
+excess events were created for a PMU. It will also fix the scenario
+inadvertently broken there, where no aliases were created for aliases with
+multiple tokens.
 
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- tools/perf/util/pmu.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/perf/tests/pmu-events.c | 110 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 538b8fa8a710..238792197006 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -843,8 +843,7 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
- 			break;
- 		}
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index 9537bbdd09f0..74c7dfe0a97f 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -28,6 +28,14 @@ struct perf_pmu_test_event {
+ 	 * be set in the alias.
+ 	 */
+ 	const char *alias_long_desc;
++
++	/* PMU which we should match against */
++	const char *matching_pmu;
++};
++
++struct perf_pmu_test_pmu {
++	struct perf_pmu pmu;
++	struct perf_pmu_test_event const *aliases[10];
+ };
  
--		if (pmu_is_uncore(name) &&
--		    pmu_uncore_alias_match(pname, name))
-+		if (pmu->is_uncore && pmu_uncore_alias_match(pname, name))
- 			goto new_alias;
+ static const struct perf_pmu_test_event bp_l1_btb_correct = {
+@@ -118,6 +126,7 @@ static const struct perf_pmu_test_event uncore_hisi_ddrc_flux_wcmd = {
+ 	},
+ 	.alias_str = "event=0x2",
+ 	.alias_long_desc = "DDRC write commands",
++	.matching_pmu = "hisi_sccl1_ddrc2",
+ };
  
- 		if (strcmp(pname, name))
+ static const struct perf_pmu_test_event unc_cbo_xsnp_response_miss_eviction = {
+@@ -131,6 +140,7 @@ static const struct perf_pmu_test_event unc_cbo_xsnp_response_miss_eviction = {
+ 	},
+ 	.alias_str = "umask=0x81,event=0x22",
+ 	.alias_long_desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
++	.matching_pmu = "uncore_cbox_0",
+ };
+ 
+ static const struct perf_pmu_test_event *uncore_events[] = {
+@@ -404,10 +414,103 @@ static int __test_core_pmu_event_aliases(char *pmu_name, int *count)
+ 	return res;
+ }
+ 
++static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
++{
++	int alias_count = 0, to_match_count = 0, matched_count = 0;
++	struct perf_pmu_test_event const **table;
++	struct perf_pmu *pmu = &test_pmu->pmu;
++	const char *pmu_name = pmu->name;
++	struct perf_pmu_alias *a, *tmp, *alias;
++	struct pmu_events_map *map;
++	LIST_HEAD(aliases);
++	int res = 0;
++
++	map = __test_pmu_get_events_map();
++	if (!map)
++		return -1;
++	pmu_add_cpu_aliases_map(&aliases, pmu, map);
++
++	/* Count how many aliases we generated */
++	list_for_each_entry(alias, &aliases, list)
++		alias_count++;
++
++	/* Count how many aliases we expect from the known table */
++	for (table = &test_pmu->aliases[0]; *table; table++)
++		to_match_count++;
++
++	if (alias_count != to_match_count) {
++		pr_debug("testing aliases uncore PMU %s: mismatch expected aliases (%d) vs found (%d)\n",
++			 pmu_name, to_match_count, alias_count);
++		res = -1;
++		goto out;
++	}
++
++	list_for_each_entry(alias, &aliases, list) {
++		bool matched = false;
++
++		for (table = &test_pmu->aliases[0]; *table; table++) {
++			struct perf_pmu_test_event const *test_event = *table;
++			struct pmu_event const *event = &test_event->event;
++
++			if (!strcmp(event->name, alias->name)) {
++				if (compare_alias_to_test_event(alias,
++							test_event,
++							pmu_name)) {
++					continue;
++				}
++				matched = true;
++				matched_count++;
++			}
++		}
++
++		if (matched == false) {
++			pr_debug("testing aliases uncore PMU %s: could not match alias %s\n",
++				 pmu_name, alias->name);
++			res = -1;
++			goto out;
++		}
++	}
++
++	if (alias_count != matched_count) {
++		pr_debug("testing aliases uncore PMU %s: mismatch found aliases (%d) vs matched (%d)\n",
++			 pmu_name, matched_count, alias_count);
++		res = -1;
++	}
++
++out:
++	list_for_each_entry_safe(a, tmp, &aliases, list) {
++		list_del(&a->list);
++		perf_pmu_free_alias(a);
++	}
++	return res;
++}
++
++static struct perf_pmu_test_pmu test_pmus[] = {
++	{
++		.pmu = {
++			.name = (char *)"hisi_sccl1_ddrc2",
++			.is_uncore = 1,
++		},
++		.aliases = {
++			&uncore_hisi_ddrc_flux_wcmd,
++		},
++	},
++	{
++		.pmu = {
++			.name = (char *)"uncore_cbox_0",
++			.is_uncore = 1,
++		},
++		.aliases = {
++			&unc_cbo_xsnp_response_miss_eviction,
++		},
++	},
++};
++
+ /* Test that aliases generated are as expected */
+ static int test_aliases(void)
+ {
+ 	struct perf_pmu *pmu = NULL;
++	unsigned long i;
+ 
+ 	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
+ 		int count = 0;
+@@ -434,6 +537,13 @@ static int test_aliases(void)
+ 		pr_debug("testing core PMU %s aliases: pass\n", pmu->name);
+ 	}
+ 
++	for (i = 0; i < ARRAY_SIZE(test_pmus); i++) {
++		int res = __test_uncore_pmu_event_aliases(&test_pmus[i]);
++
++		if (res)
++			return res;
++	}
++
+ 	return 0;
+ }
+ 
 -- 
 2.26.2
 
