@@ -2,150 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAC03DA013
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753F23DA015
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235349AbhG2JH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:07:59 -0400
-Received: from mail-eopbgr10057.outbound.protection.outlook.com ([40.107.1.57]:32753
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234936AbhG2JH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:07:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KGi8X0ByfzdBm9EReBYgtjtX2QKPuLU5swT7EURZ7UA3wXhsRY6VWNjTskNklNDzdsdT8SAq8c39aTzKhEYe8fhbo/dNH2hZvGJrWNbeR+FbGT8yV9LKh6f1k/xrwv7Rz5ffLdTR3wacFnCn+4OPaRIyA9PmFttuNgHWcFLn2TWY9OZvMT0CAa9DgCFPIzUkQFJOhVELlcfncgqGIbvrDrnYYA/rF4IeIQmi97gs05nEdvZjp4zJ4gdl110cpOIRoWF6EcW16YQ2FXJKO71OmCG6mguuS/6skcaCJSurvxzEPX5sqMBl5SguxNz/Dq6Tc1MofArAwi77q8IAhXwcEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g+dlEyhVkpW9k3iK/hAVEwk/c/8LG3g62mGiG7XnXVs=;
- b=AOh3LzA2dPu03Tw5Y7wb3+MJziPCfOe9+9PuynQdgK48Cn7H+tLMVsx65uX6mPTspcGhvitLPS/hZFLTsA2EBGIsNnvztR3fOJyorAoN17LrXoF6IcJyE6k+XtSkUNlIsHVR/efSj1MJUHfhHBh8uJwLdjJ3B8RTpBALZq/sRpQo/QWwYqZRwmkQklh5poGFePiNJa6fSwoCFkbEgklScU64ik0omurU6zly4A9fZdyJIvx+Wzop3v4QWIjeB2XHB5NKDnI60x2pCjshpq/6ydndzbJtPa/Q5GyiMeh25+C4MCA4eJl8IkT+rrBWB1BUNyM6wFdLsQnCNOn4Y8KS9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g+dlEyhVkpW9k3iK/hAVEwk/c/8LG3g62mGiG7XnXVs=;
- b=oJwClmMVSMbDLl6Ac6Ax7PdFaFjX3gjc6acrPCTCMSm3Q54DNRlTdZx+088diblM8ttZCAXHl9fGHCDaWsYybIxEfLI2H0a/IRDAEpfp5vHtXKXOyO1WJzuynZeydmsNNvr3WJO7+qayjfhEuSPeBppjF652YFC+GEt9+v/4Z/M=
-Authentication-Results: rock-chips.com; dkim=none (message not signed)
- header.d=none;rock-chips.com; dmarc=none action=none
- header.from=wolfvision.net;
-Received: from DBBPR08MB4523.eurprd08.prod.outlook.com (2603:10a6:10:c8::19)
- by DBAPR08MB5670.eurprd08.prod.outlook.com (2603:10a6:10:1a6::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Thu, 29 Jul
- 2021 09:07:52 +0000
-Received: from DBBPR08MB4523.eurprd08.prod.outlook.com
- ([fe80::ade3:93e2:735c:c10b]) by DBBPR08MB4523.eurprd08.prod.outlook.com
- ([fe80::ade3:93e2:735c:c10b%7]) with mapi id 15.20.4373.019; Thu, 29 Jul 2021
- 09:07:52 +0000
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: rk3568-evb1-v10: add ethernet
- support
-To:     Andrew Lunn <andrew@lunn.ch>, Peter Geis <pgwipeout@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Liang Chen <cl@rock-chips.com>, Simon Xue <xxm@rock-chips.com>
-References: <20210728161020.3905-1-michael.riesch@wolfvision.net>
- <20210728161020.3905-3-michael.riesch@wolfvision.net>
- <YQGaAFvqqc7wXrWD@lunn.ch>
- <CAMdYzYo8zf0wjtAxTuYQnZQsBtw38prNuAA0j0sBEamcbzZbfA@mail.gmail.com>
- <YQHAHmMmysBVpF+m@lunn.ch>
-From:   Michael Riesch <michael.riesch@wolfvision.net>
-Organization: WolfVision GmbH
-Message-ID: <a01e7faf-4cfc-dc04-44ea-2b1e0724778b@wolfvision.net>
-Date:   Thu, 29 Jul 2021 11:07:50 +0200
+        id S235315AbhG2JK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235017AbhG2JK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 05:10:27 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71742C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:10:24 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id y34so9661584lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j1oTdGaEQ77wKFt5yMUzZqXg44oVq6MHBdIKvRtKHso=;
+        b=xiRwb6lr+yN2TvAWWqnnWrrLDB723jy82nWZmOQ8iowGgp/4xpqEERcNg7aNe5TMiu
+         /KXTATfbuD5j1Pnh2+TbZ9CCZp9PqZ1qebUtJQK8wDsCEIJGEQpJzKE4QRNKY6utUDp+
+         BEapaAqUXw0T9DqgL1mfwrMFNCtjgrduBVYu4KMH8cNbOfU19ti5pTFvRPbHaPSExcRi
+         sDvrhiOGF3CsPKysGtGFELNvONsDuI9ZtUQNFJqBxo4dEFtvnLBCPZeL1bDsdrzaXI83
+         tlLWKf3j89ECUP6m2GVoDiYRclqxVqrwepriFE/bcX8AsIAsQNCGRV4OhKlx2xjzuXKV
+         QqUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j1oTdGaEQ77wKFt5yMUzZqXg44oVq6MHBdIKvRtKHso=;
+        b=V3JdXOUXNoUYz7FOUbjR2kpyKaU72UuFyvV7jbM2geO1AAMhqNsq3266LUfhcOgK3o
+         qgDAMh49GoHcQoVzk0K3+hqW74w/G2Xr6ncghvqcRlpLn9n8E0ZRNBNwheVPQQXsTcSF
+         pH9XpTj0k1JqEurMjfPZUlOpJIXl/cHRt9nEnvQhKJio9gs6nf5iUcy2etf1pkZ5In5v
+         TCHXU8oayYdTOaW8s0wjhfN9FsiR7AEN+sTQpxlpZx8M5xdlo+15aJVBDiqjEVx1wuI6
+         i7veQj+mYazFsVyH/3Q4vvGHJzewIs6FG/nsLicpPmW+dMaujfATyaX+WxZSyc8/9V+q
+         vXYw==
+X-Gm-Message-State: AOAM532mEXQZ+jd0r3uTo5gSkirZqGmx9TgEE6UVgFttWy5Uv/T3zI1V
+        4dYtxvhk5FgGdc0LFTTQTl/9VZXpynhqGg==
+X-Google-Smtp-Source: ABdhPJwibZhgd98KMXz/38f1bi6OLY99Lu6tvHg+uIoC2n0wFaLTXoWHoZpl/kqoKRgpcmyUUWlhJw==
+X-Received: by 2002:a05:6512:131d:: with SMTP id x29mr3220085lfu.655.1627549822611;
+        Thu, 29 Jul 2021 02:10:22 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id v130sm243109lfa.284.2021.07.29.02.10.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 02:10:22 -0700 (PDT)
+Subject: Re: [PATCH] drm/msm/dsi: Fix DSI and DSI PHY regulator config from
+ SDM660
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210728222057.52641-1-konrad.dybcio@somainline.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <f19a9368-1d51-9e1a-dfe8-04d6970e149f@linaro.org>
+Date:   Thu, 29 Jul 2021 12:10:21 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YQHAHmMmysBVpF+m@lunn.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM6PR08CA0026.eurprd08.prod.outlook.com
- (2603:10a6:20b:c0::14) To DBBPR08MB4523.eurprd08.prod.outlook.com
- (2603:10a6:10:c8::19)
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.100.125] (91.118.163.37) by AM6PR08CA0026.eurprd08.prod.outlook.com (2603:10a6:20b:c0::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Thu, 29 Jul 2021 09:07:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e72ca8c5-32a5-40bc-c39b-08d95270582f
-X-MS-TrafficTypeDiagnostic: DBAPR08MB5670:
-X-Microsoft-Antispam-PRVS: <DBAPR08MB56702BF1C25651C100E33046F2EB9@DBAPR08MB5670.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Nby37xrPybM9HZYbqXoGKiXdtRFujjh0MUGS1kZQ0bU1uNgXcl5vnMj+HjUO2FE9TfIoM8Pis98taJmbUTXoKnYraEW6Um2VAbgdObEMHkcGxQFU7kw4t+n90sBTPs2CPNiql6imLk494u67rUTKau0hrvY2pIkj8ZpsSjRt8sDTHiRFdV8/TKUCWI8SggZU8VelRE9YZ49o4hVvx+vwUyPuUpRXBvzJTXLZd0SzhxGQXQoYdR2pll/lxKnD5QuKKrVljOdL1Y60L/8EAEk89I3BD56E+4CBKhcoEJmLv0vywAI8uFK1cwTeOdF2/GvVq5EUHOrmUgo1Wq6MPcaKqWnhh6RVN7Kyqc/UNTd3mtLphYlcVHEp+lPITrLI7e0TJ8JhGqMIWAUD9NCUA24R7ee9lsWCv2MKImJOlKAsWj1mRNZRjW5vfV2A/kBNwld3qQMifwQehbq4ULIKsvYe3uSgvm1ryARLAxhrVrJNCj9UwvQ7WdMke3ACsDndDJtTYrE+J85H0TmarYQS1aZSPLWAldfQ0tOb+im9ZIweviVHvjwSg1Pu+MJYcif37TIoJx/Xu688M/a38jJyT3V219r7xbJ/984RTDjV3zQ8UlcmlDb6KQXfzV/ifpj++XEFFRWCwwokxBx3HFY0HzPJpgH9r/RpjBJ2XLyMEBGJgojMMX34b/k7iwR+MQiRg6vPBxAvnGw2YrMWx3MqKAQYE02BCBFgiraPrXpeMpdMNjfl45WzsDsy/cbybgTqIniptzxYG3IAlELkS5zGGutUJg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR08MB4523.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39840400004)(396003)(346002)(376002)(366004)(8676002)(2906002)(7416002)(66556008)(66476007)(8936002)(53546011)(2616005)(6486002)(956004)(36916002)(31686004)(52116002)(66946007)(86362001)(44832011)(36756003)(478600001)(110136005)(4744005)(38350700002)(38100700002)(4326008)(5660300002)(26005)(54906003)(186003)(31696002)(316002)(16576012)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WHV0MmVualRHZUVwVTlTdmtlVEpUMWw1RlNLM0ZTYkttaWJrRStGTlppVitU?=
- =?utf-8?B?VlVyYWdDU1kyY0xYeWh2cWg0cmVmaXZWdUc5eTQrRUR6Q3pPUXVnVndRS1RS?=
- =?utf-8?B?N2ZlSGZXdEczbjlJTHRkWERMQkJTY3hvRVAzK1M5V0orWGhCemltSkFicEJo?=
- =?utf-8?B?WEwxazV2R294c3h6N2dDNUZCaXZiM3lRRFZPMU95SFRIWjlETThXL0VvUUxR?=
- =?utf-8?B?L3VTMmIyM1VOK2NtQ0gySTMvTzBkRy9jQmhYSlBlNjBCOTEyTlFmMlVWeHNk?=
- =?utf-8?B?b29tVVhYZlB5YlRvQjltMkRrYzlBRmgrUWRUQVFYUFZvcEMxNnZ3VWN5SG9o?=
- =?utf-8?B?Z2ZreTNINmNveGNXWXhXVTNQVUhaWFArQURUemgwNTZPUVN3blowOHlCQzZC?=
- =?utf-8?B?MjUwV21oenZzcFcxNTJMZE1BajNTVEl5SnVJWFppVWFBa2VuR3JuTnNKZTZq?=
- =?utf-8?B?SEpDM0tRNWY2ajdxU24zQ1VzUGxrV1phdXBmaU13USs0RGY0eE9ZdkFvZlFl?=
- =?utf-8?B?aTJwdmFRZmRxVC9mUk1lTllrN0RIdm1wSHJhYzNIczcvQW5RcCtwMVVJQXZ2?=
- =?utf-8?B?RFNrVGJxYWpBQ2RoREVHSlp3QUcxYW5mUDNyU2t3bnEzVVhyY2J3RzY5SG41?=
- =?utf-8?B?cVloay9vZ3V0cEdpeTgrVkprUDNCYm5SWklXdXZ0TmtQcjU1MjR5eXd0a1JN?=
- =?utf-8?B?cDhzU2xCMkt1MTAxQmtYNnAzQWhJWHlxcFBYMndpbEFPZFMxYU9UWERQaDZW?=
- =?utf-8?B?TlVPZDlyTVhaTFdGdVVUdzBMVkxkTWxxR01QTzRhcVBxZzBXWUtiYmJmSWZF?=
- =?utf-8?B?VFgyTG8zZ05JRkIzMHNEdG9TVE1qZFRBWnQzTnhTYzludk40dUhlMXp5WXQ0?=
- =?utf-8?B?cXRBY2ZJSklveDIzbHNFeEo1cFU1SUlUR25RbEdYaDVmckxHWDRDQ09lVzAz?=
- =?utf-8?B?Uks3d003RnNUSkRUQTNoR2o5aGwxMkJNSXVYWEtDSC8xbG9udCtTOW95Skh3?=
- =?utf-8?B?N0ZNZTBLRENWRkdnclI5a28zdmowVCtmZ0w4ZkFjemNTU0lCTkUzR3lLSVk3?=
- =?utf-8?B?d29oV0I5YW1ESEpuTkpERE9vUHFvTXdjMTZIYitpSDBwS3AxaEtSaWpzelVE?=
- =?utf-8?B?dWtVb1dTOUN5TzU2K3NaOHh1ekMzc3hBalhnRXlwdlRzUzFvT1RDdFg5UHpO?=
- =?utf-8?B?c2QvU2t5Nyt6bVF4cW0vYlFtL2pRSjV2MnUrMCtLTHhRcitzUk4yTWZOa3Rw?=
- =?utf-8?B?MFM4YVRNTGcrVitTYkdvZUxmeVZjSmc1MGE1Z1ZYcU91VHl1cW16eG5HTjRP?=
- =?utf-8?B?cGp0cHo4NDhoWTFmTmxqMTVTblJuaVNuTDZsaTV2TzJNMTZ5bmRMQUZUbHhH?=
- =?utf-8?B?VlhvTlhIOVFjQys4czRPOTRodHVLVmtFZUYrMVQ0Y3YrTloyeG45WEFDdnUr?=
- =?utf-8?B?aFc2STQ3dGVyakxLVEcwQm52LzRIczN1eFpGR25VcFVtVFQ0VDdUNWNWSFJP?=
- =?utf-8?B?am9DR3FuVmxCVVpDSU14ek9tQThaQ3BBd3gva1M4dXlmdGttVzZVaXFXWUNk?=
- =?utf-8?B?OVVWRk9aZC94QkUwaXNzSDlMS3pqeVJ6a1h3RTlHWFhBKzhiQ0JVcEROZVMr?=
- =?utf-8?B?R3dPTWdrRTB0MnNqUHBWTzVMem0vaEgzdGJTOFRsdC9USjlBN2E0V2ludlN3?=
- =?utf-8?B?THB6WGVEN2xYcG1ScnRhTkY1VkU3NnJod3NIMGtHd3d1Y3IwdnhLalVySnRz?=
- =?utf-8?Q?x9v99CRGVwFUB9IXvEu9R0ElVmfwzzptXoyHGfn?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: e72ca8c5-32a5-40bc-c39b-08d95270582f
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR08MB4523.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 09:07:52.0614
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eg2xglsIdnwEDt8f9VJ0UsvpZI9bnAcdl6U7yq1YY5pzt+lsCTrDiugcFSPJ9oiqfQIyItUZboUmHrXPIMKlyxkP8dPFlZE7ppvB/05cCz4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR08MB5670
+In-Reply-To: <20210728222057.52641-1-konrad.dybcio@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andrew, Peter,
-
-On 7/28/21 10:37 PM, Andrew Lunn wrote:
->> Generally all rockchip boards use this value instead of the rgmii_id,
->> I imagine because it's more consistent to tune here than the hit or
->> miss support of the phy drivers.
+On 29/07/2021 01:20, Konrad Dybcio wrote:
+> VDDA is not present and the specified load value is wrong. Fix it.
 > 
-> Most PHY drivers actually implement it correctly, since by default,
-> most systems get the PHY to do the delays.
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+> ---
+>   drivers/gpu/drm/msm/dsi/dsi_cfg.c          | 1 -
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c | 2 +-
+>   2 files changed, 1 insertion(+), 2 deletions(-)
 > 
-> But if most Rockchip boards do it this way, there is a lot to be said
-> for consistence, so this is fine by me.
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_cfg.c b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
+> index f3f1c03c7db9..763f127e4621 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_cfg.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_cfg.c
+> @@ -154,7 +154,6 @@ static const struct msm_dsi_config sdm660_dsi_cfg = {
+>   	.reg_cfg = {
+>   		.num = 2,
+>   		.regs = {
+> -			{"vdd", 73400, 32 },	/* 0.9 V */
+>   			{"vdda", 12560, 4 },	/* 1.2 V */
+>   		},
+>   	},
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> index a34cf151c517..bb31230721bd 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> @@ -1050,7 +1050,7 @@ const struct msm_dsi_phy_cfg dsi_phy_14nm_660_cfgs = {
+>   	.reg_cfg = {
+>   		.num = 1,
+>   		.regs = {
+> -			{"vcca", 17000, 32},
+> +			{"vcca", 73400, 32},
+>   		},
+>   	},
+>   	.ops = {
+> 
 
-I have tested a dts without the delays and with phy-mode = "rgmii-id"
-and it seems to work just fine.
 
-Although consistency with other Rockchip boards is something one should
-consider, I think I'll go along the "rgmii-id" path since this seems to
-be a more general convention.
-
-Thanks for your comments, I'll submit a v2.
-
-Regards, Michael
+-- 
+With best wishes
+Dmitry
