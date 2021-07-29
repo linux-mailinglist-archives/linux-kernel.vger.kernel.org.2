@@ -2,78 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CF93D9FA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F993D9FAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235072AbhG2Igu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 04:36:50 -0400
-Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:52316 "EHLO
-        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234886AbhG2Igt (ORCPT
+        id S235193AbhG2Ihp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 04:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235035AbhG2Ihn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 04:36:49 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id EE591CAED6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:36:45 +0100 (IST)
-Received: (qmail 32396 invoked from network); 29 Jul 2021 08:36:45 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Jul 2021 08:36:45 -0000
-Date:   Thu, 29 Jul 2021 09:36:44 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 049/138] mm/memcg: Add folio_lruvec_relock_irq() and
- folio_lruvec_relock_irqsave()
-Message-ID: <20210729083644.GD3809@techsingularity.net>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-50-willy@infradead.org>
+        Thu, 29 Jul 2021 04:37:43 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B765C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 01:37:40 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id b11so524112wrx.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 01:37:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=p4JKR78YCMT0GzyVFcGrMvlzwUNK0GrOMmgRXzeh3O0=;
+        b=xXvt4CdFkg9xhPKQW2RhAebtYEw6tb9FEsWXEB39j21/7Ac1xyB6gAutrVd8Q6k6mo
+         CcGkND+TtkTIXf64uwdmPqKvjncLrsbq1N/FTfj6CVSdgJEKxZ2Tefs2nDx6hS/vcrkC
+         24EM73E/EzoNnZO4EMIA1OiXCbG+NmtXPlwBM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=p4JKR78YCMT0GzyVFcGrMvlzwUNK0GrOMmgRXzeh3O0=;
+        b=A49of3MEPGh8pa+33iQsoWo5fwuHXEmzASf8lL2MiYDmaZapoGrJRKg2cy6NDfI/Vi
+         BM73mRknNyGMNNRTm7OcZNpYBPDke/0fsC0xqNDlgcOS0OmVLKHqtRIZud9VEa2Ws1Mj
+         WwpkZhAFZxq+VNMhJxP/CVSSJD1HGczaNANce+TeOK3jJ7wCB44+rUrEWDKqfXKpYHOo
+         QYZ87wctruSHeuHpdFsu0dmU5d3GXut3f1Xfsn8a1KY5VSRzRXQBRKtfbqYdmygO1lFP
+         xhuGgHFegaEakc/nMQYto2i2KZJsTF6sBDnPJ2VKVcHHVrsBArG0bZbDb5++t+G4WIec
+         0ZvA==
+X-Gm-Message-State: AOAM531lKWmlrbvkfdPkiezP0BiY2Jb3flwrGs6Ul6pkI4OMei0y8HSJ
+        +5Q0qYNdbed3uhnYo6TJJDTfgw==
+X-Google-Smtp-Source: ABdhPJwvfdPV+HEbqfc1QfuveLLbR+7bPKmajYzrC1UCQPb+dGWvjUdHZDdMDmZMYftDrgrPwNV0WQ==
+X-Received: by 2002:a5d:674c:: with SMTP id l12mr3634542wrw.112.1627547859211;
+        Thu, 29 Jul 2021 01:37:39 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id t17sm2196225wmq.17.2021.07.29.01.37.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 01:37:38 -0700 (PDT)
+References: <20210727001252.1287673-1-jiang.wang@bytedance.com>
+ <20210727001252.1287673-2-jiang.wang@bytedance.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Jiang Wang <jiang.wang@bytedance.com>
+Cc:     netdev@vger.kernel.org, cong.wang@bytedance.com,
+        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
+        chaiwen.cc@bytedance.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 1/5] af_unix: add read_sock for stream
+ socket types
+In-reply-to: <20210727001252.1287673-2-jiang.wang@bytedance.com>
+Date:   Thu, 29 Jul 2021 10:37:37 +0200
+Message-ID: <87a6m5zfam.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-50-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:35:35AM +0100, Matthew Wilcox (Oracle) wrote:
-> These are the folio equivalents of relock_page_lruvec_irq() and
-> folio_lruvec_relock_irqsave().  Also convert page_matches_lruvec()
-> to folio_matches_lruvec().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Tue, Jul 27, 2021 at 02:12 AM CEST, Jiang Wang wrote:
+> To support sockmap for af_unix stream type, implement
+> read_sock, which is similar to the read_sock for unix
+> dgram sockets.
+>
+> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+> Reviewed-by: Cong Wang <cong.wang@bytedance.com>.
+> ---
+>  net/unix/af_unix.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> index 89927678c..32eeb4a6a 100644
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -672,6 +672,8 @@ static int unix_dgram_sendmsg(struct socket *, struct msghdr *, size_t);
+>  static int unix_dgram_recvmsg(struct socket *, struct msghdr *, size_t, int);
+>  static int unix_read_sock(struct sock *sk, read_descriptor_t *desc,
+>  			  sk_read_actor_t recv_actor);
+> +static int unix_stream_read_sock(struct sock *sk, read_descriptor_t *desc,
+> +				 sk_read_actor_t recv_actor);
+>  static int unix_dgram_connect(struct socket *, struct sockaddr *,
+>  			      int, int);
+>  static int unix_seqpacket_sendmsg(struct socket *, struct msghdr *, size_t);
+> @@ -725,6 +727,7 @@ static const struct proto_ops unix_stream_ops = {
+>  	.shutdown =	unix_shutdown,
+>  	.sendmsg =	unix_stream_sendmsg,
+>  	.recvmsg =	unix_stream_recvmsg,
+> +	.read_sock =	unix_stream_read_sock,
+>  	.mmap =		sock_no_mmap,
+>  	.sendpage =	unix_stream_sendpage,
+>  	.splice_read =	unix_stream_splice_read,
+> @@ -2311,6 +2314,15 @@ struct unix_stream_read_state {
+>  	unsigned int splice_flags;
+>  };
+>
+> +static int unix_stream_read_sock(struct sock *sk, read_descriptor_t *desc,
+> +				 sk_read_actor_t recv_actor)
+> +{
+> +	if (unlikely(sk->sk_state != TCP_ESTABLISHED))
+> +		return -EINVAL;
 
-When build testing what you had in your for-next branch, I got a new
-warning for powerpc defconfig
+tcp_read_sock returns -ENOTCONN if socket is not connected.
 
- In file included from ./include/linux/mmzone.h:8,
-                  from ./include/linux/gfp.h:6,
-                  from ./include/linux/mm.h:10,
-                  from mm/swap.c:17:
- mm/swap.c: In function 'release_pages':
- ./include/linux/spinlock.h:290:3: warning: 'flags' may be used uninitialized in this function [-Wmaybe-uninitialized]
-   290 |   _raw_spin_unlock_irqrestore(lock, flags); \
-       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
- mm/swap.c:906:16: note: 'flags' was declared here
-   906 |  unsigned long flags;
-       |                ^~~~~
+For the sake of being consistent, and in case we start propagating the
+error up the call chain, I'd use the same error code.
 
-I'm fairly sure it's a false positive and the compiler just cannot figure
-out that flags are only accessed when lruvec is !NULL and once lruvec is
-!NULL, flags are valid
-
-diff --git a/mm/swap.c b/mm/swap.c
-index 6f382abeccf9..96a23af8d1c7 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -903,7 +903,7 @@ void release_pages(struct page **pages, int nr)
- 	int i;
- 	LIST_HEAD(pages_to_free);
- 	struct lruvec *lruvec = NULL;
--	unsigned long flags;
-+	unsigned long flags = 0;
- 	unsigned int lock_batch;
- 
- 	for (i = 0; i < nr; i++) {
+> +
+> +	return unix_read_sock(sk, desc, recv_actor);
+> +}
+> +
+>  static int unix_stream_read_generic(struct unix_stream_read_state *state,
+>  				    bool freezable)
+>  {
