@@ -2,166 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14873DA11B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42C33DA11E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhG2KeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:34:25 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:58237 "EHLO
+        id S236035AbhG2Keb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:34:31 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:35095 "EHLO
         new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232054AbhG2KeV (ORCPT
+        by vger.kernel.org with ESMTP id S232054AbhG2Ke3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:34:21 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 094EE580CD9;
-        Thu, 29 Jul 2021 06:34:18 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 29 Jul 2021 06:34:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=V4C55hsRueWa8C1kkzjddTo5uH
-        zR8ZYH9nUiecGcVuk=; b=g+/XtHHoj3CfrBsfqDX/52EObavJ6dr8GOdOXNlJXB
-        wUmP46oD+pYDLpPRhXUL8HvVo6ZWLOPZZdlt0rTkuwj6LKta5dMfYHdjdsIEEiw4
-        Gy9NoN98v4UGCjDA4iKpderM3SF/vih4XagQKyI1gBXg5FISeTzQjdup0UqoG5Ln
-        dJE96WL5fqfare0QQCBW3AmreJZRGYJ4hOLyxI5/ZOEVncWzaOxibp6RqglMEWiA
-        P1XI+MlSCjnVnS18/6kSei9oirsRzS69LjjIFQvRy3zUd3BUrKEk8wQGRwbs5c9Z
-        gY0ToJlOKJx5AKqXFz13fn25JIQtZx1EFwNn2d6/Ujnw==
+        Thu, 29 Jul 2021 06:34:29 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BF350580CD8;
+        Thu, 29 Jul 2021 06:34:26 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 29 Jul 2021 06:34:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=rZVUw9pgoUdhW+JWJZ3Hk75t5pQ
+        SA6lpVEQ51FpxcxI=; b=Q27O/Jk/qRHVQGN6GeFY+jRt2URH60oKQYPW/A5hIkk
+        mjQEJMTLuiKPDUwNoxKheQ4tX4IBrL9HBjOf8A2DUkLmuL4TEqk8ivC72/Q06jN3
+        eE9f0NaUtcqnosZLQVLtcxneRxfn4iAJM95DiPHgmrqMAz2scB8VtdyT1ijSUNQC
+        JUPRcr1tDBVACDz7cNCRalJCFIWK0g0akcGKInArTJD86nYIYjlBjX6+7IfTCW9a
+        25GVIfidIbP6KVgoAsUUsWGoxMz0cE4sbnAv3cXQeCl/Qwjw/56ddwSyyEUctpXA
+        dG3XjSqIY+eHZmN8RwWZEQ/wEhmdz0PV0uv4xu7oQbw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=V4C55hsRueWa8C1kk
-        zjddTo5uHzR8ZYH9nUiecGcVuk=; b=GrHseugRFsVX7h2G58XQ7y1K5rZAGKwrN
-        Eiw3KAZm87qiiDSyQgT8XtpWPZmAupJ7euCdeiBbKHq1T8jCGaowENUU9+gXB7zd
-        93Zao0mxxGJWWCKTeW0obIYRSPO+FpCeKN9lkWuBepIR01exzPHG+/N87zLJZS5p
-        d+FaVNa3IfnXilEW0qXx165JAhqsASUhxdxBNi/cAepx3eDIIg5k9tDVjp2NC61Q
-        f3RuPTTVLSKueyWIUENklDwE8b2/+ywAD6T9IGXlSkxYJAcUyfQPOYRJeoPlBgzW
-        8T8JDvngxmM54/KumZkWxhNuuFsDj6jhHwDDQiQaPXkjCCIWezzNQ==
-X-ME-Sender: <xms:J4QCYR8L6XPQ8MERFwA4-FnXTX5NkjqCuP4DsO-u_QXRPTU6IxYH5A>
-    <xme:J4QCYVuywSTSMtVD8_ddIyoCipbLVhRdcz0MwcJ2A78CU54RJBvppZSSD4bwi-Zwt
-    ebFYcmfzPF3LEX6LTQ>
-X-ME-Received: <xmr:J4QCYfAK-_mYamets8ftnz4zct_LDxMGi9r1KiIxIM9h17ylmy_gxw2qR3SfDyY2GB2jNUahXkKfcp2nthU1BuxqWKmZEwGXei99DiGw>
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rZVUw9
+        pgoUdhW+JWJZ3Hk75t5pQSA6lpVEQ51FpxcxI=; b=V1c69sO71JXrJpZlvn/kDd
+        2kSL2ND06sF4SdtQKX0hpYQ3TorQn/1dIIQJkfY0ZJl3ibr2LZ+QrIhUvVERJCfJ
+        9BPOV8FxiSpgCsS3ck1OR9cqdjnxxODq+4NQlbDKQlqV3ma0pwpVUHBVqYOyiaT5
+        zrYBpHaW0rMZkBgKzgGHpzK7wkIbrhNCJY/EGiRFYc0+CGBuN98ePs3qe8OXdTIB
+        vAmxWVXJ61003OMYlTpyQus9UPdhkh7DQ7JesL35wazvyHjVAf88nYfsfz0MjM2Y
+        1w/yfzHOvrdHciPUhFI4Enm3UygRNjJQpb7yEh3YHtDTPi0J5W0Wt3GjDclsxxbQ
+        ==
+X-ME-Sender: <xms:MYQCYTwUs5t13gEbuWaW2ydmCBCYzp1K7G0duvYUQNrFTQSueKLPqw>
+    <xme:MYQCYbShsyZFgX8c0Y4Gzag6awCW9Q8WmwA-BNO3AiBQjIghHBp9HmAfdi1FKpkgt
+    kQ3SnFln1GgjA>
+X-ME-Received: <xmr:MYQCYdXpE_-Q5v-eY_ci5--tHpR734sQ3SYizU7JjEyvpC_EQ8KC6dDSIQBIv3CdRbe313Z2xdW7Hrhx_e2b6t0zNNoYtu61>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedugddvudcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheptehlihhsthgrihhr
-    ucfhrhgrnhgtihhsuceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenuc
-    ggtffrrghtthgvrhhnpefghfegkeejtddvfeekjeelgeffhefhvddvvddtvefgfffftdek
-    geeljeefvdeiudenucffohhmrghinhepvghinhhkrdgtohhmnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhishht
-    rghirhdvfedrmhgv
-X-ME-Proxy: <xmx:J4QCYVe02nXhSMk0zWzqSkERFmklr-Rj0DyB70Y6j6mSmZ5QEJcG6g>
-    <xmx:J4QCYWO3nJr2iz34JRFe_38l047YF9KQE5dysCYn5MVXO8LDaxYg8w>
-    <xmx:J4QCYXmjpwvPQap6kgZMNVjAN0zvilueH-uJ37r08cdML3tneSLrCQ>
-    <xmx:KoQCYTvJB0tKhA5yeCNgIAdREBGd69MS684CWuztX_alZgWgPNt20w>
+    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdortd
+    dttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeen
+    ucggtffrrghtthgvrhhnpedvfeeggeehudevuedvffdvtdevffeukedvheduuefhveegue
+    dvhfetveduheejffenucffohhmrghinhepsghsshdrnhgvthenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:MYQCYdhZzwriJ1isIAdiN-xrP4pgHYbJRYxOeMWp1_TBZOk31nCuZQ>
+    <xmx:MYQCYVAVZUQaN3GkbKzfzxkaZN3Yu0hff7PSPnhMyE7NN-688JRiaQ>
+    <xmx:MYQCYWKP1nb-Sfr2D-Txg4-mKd0_XgVot4ZjJwpYTR4Fb61h4-3o1w>
+    <xmx:MoQCYdaaT1JR38lvWKFbniN8ojnxOke75PwZ3wrYsEmLdmP-jp8hbA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jul 2021 06:34:07 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     robh+dt@kernel.org, thierry.reding@gmail.com, sam@ravnborg.org,
-        krzk@kernel.org, shawnguo@kernel.org, daniel@0x0f.com,
-        linux@rempel-privat.de, kuninori.morimoto.gx@renesas.com,
-        max.Merchel@tq-group.com, geert+renesas@glider.be,
-        airlied@linux.ie, daniel@ffwll.ch
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, alistair23@gmail.com,
-        Alistair Francis <alistair@alistair23.me>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v4] drm/panel: Add support for E Ink VB3300-KCA
-Date:   Thu, 29 Jul 2021 20:33:58 +1000
-Message-Id: <20210729103358.209-1-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
+ 29 Jul 2021 06:34:25 -0400 (EDT)
+Date:   Thu, 29 Jul 2021 12:34:22 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Nguyen Dinh Phi <phind.uet@gmail.com>
+Cc:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH V2] cfg80211: Fix possible memory leak in function
+ cfg80211_bss_update
+Message-ID: <YQKELjKuAQsjmpLY@kroah.com>
+References: <20210628132334.851095-1-phind.uet@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628132334.851095-1-phind.uet@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the 10.3" E Ink panel described at:
-https://www.eink.com/product.html?type=productdetail&id=7
+On Mon, Jun 28, 2021 at 09:23:34PM +0800, Nguyen Dinh Phi wrote:
+> When we exceed the limit of BSS entries, this function will free the
+> new entry, however, at this time, it is the last door to access the
+> inputed ies, so these ies will be unreferenced objects and cause memory
+> leak.
+> Therefore we should free its ies before deallocating the new entry, beside
+> of dropping it from hidden_list.
+> 
+> Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+> ---
+> V2:	- Add subsystem to the subject line.
+> 	- Use bss_ref_put function for better clean-up dynamically allocated
+> 	cfg80211_internal_bss objects. It helps to clean relative hidden_bss.
+> 
+>  net/wireless/scan.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/wireless/scan.c b/net/wireless/scan.c
+> index f03c7ac8e184..7897b1478c3c 100644
+> --- a/net/wireless/scan.c
+> +++ b/net/wireless/scan.c
+> @@ -1754,16 +1754,14 @@ cfg80211_bss_update(struct cfg80211_registered_device *rdev,
+>  			 * be grouped with this beacon for updates ...
+>  			 */
+>  			if (!cfg80211_combine_bsses(rdev, new)) {
+> -				kfree(new);
+> +				bss_ref_put(rdev, new);
+>  				goto drop;
+>  			}
+>  		}
+> 
+>  		if (rdev->bss_entries >= bss_entries_limit &&
+>  		    !cfg80211_bss_expire_oldest(rdev)) {
+> -			if (!list_empty(&new->hidden_list))
+> -				list_del(&new->hidden_list);
+> -			kfree(new);
+> +			bss_ref_put(rdev, new);
+>  			goto drop;
+>  		}
+> 
+> --
+> 2.25.1
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
-Acked-by: Rob Herring <robh@kernel.org>
----
-v4:
- - Fixup alphebetical sorting
+Did this change get lost somewhere?
 
- .../bindings/display/panel/panel-simple.yaml  |  2 ++
- .../devicetree/bindings/vendor-prefixes.yaml  |  2 ++
- drivers/gpu/drm/panel/panel-simple.c          | 29 +++++++++++++++++++
- 3 files changed, 33 insertions(+)
+thanks,
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index b3797ba2698b..799e20222551 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -128,6 +128,8 @@ properties:
-         # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
-       - edt,etm0700g0dh6
-       - edt,etm0700g0edh6
-+        # E Ink VB3300-KCA
-+      - eink,vb3300-kca
-         # Evervision Electronics Co. Ltd. VGG804821 5.0" WVGA TFT LCD Panel
-       - evervision,vgg804821
-         # Foxlink Group 5" WVGA TFT LCD panel
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 71da86e7b3a2..31745c45dd92 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -339,6 +339,8 @@ patternProperties:
-     description: eGalax_eMPIA Technology Inc
-   "^einfochips,.*":
-     description: Einfochips
-+  "^eink,.*":
-+    description: E Ink Corporation
-   "^elan,.*":
-     description: Elan Microelectronic Corp.
-   "^element14,.*":
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 21939d4352cf..8d6317b85465 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -2046,6 +2046,32 @@ static const struct panel_desc edt_etm0700g0bdh6 = {
- 	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
- };
- 
-+static const struct display_timing eink_vb3300_kca_timing = {
-+	.pixelclock = { 40000000, 40000000, 40000000 },
-+	.hactive = { 334, 334, 334 },
-+	.hfront_porch = { 1, 1, 1 },
-+	.hback_porch = { 1, 1, 1 },
-+	.hsync_len = { 1, 1, 1 },
-+	.vactive = { 1405, 1405, 1405 },
-+	.vfront_porch = { 1, 1, 1 },
-+	.vback_porch = { 1, 1, 1 },
-+	.vsync_len = { 1, 1, 1 },
-+	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
-+		 DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_POSEDGE,
-+};
-+
-+static const struct panel_desc eink_vb3300_kca = {
-+	.timings = &eink_vb3300_kca_timing,
-+	.num_timings = 1,
-+	.bpc = 6,
-+	.size = {
-+		.width = 157,
-+		.height = 209,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
-+};
-+
- static const struct display_timing evervision_vgg804821_timing = {
- 	.pixelclock = { 27600000, 33300000, 50000000 },
- 	.hactive = { 800, 800, 800 },
-@@ -4350,6 +4376,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "edt,etm0700g0edh6",
- 		.data = &edt_etm0700g0bdh6,
-+	}, {
-+		.compatible = "eink,vb3300-kca",
-+		.data = &eink_vb3300_kca,
- 	}, {
- 		.compatible = "evervision,vgg804821",
- 		.data = &evervision_vgg804821,
--- 
-2.31.1
-
+greg k-h
