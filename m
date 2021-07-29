@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D373D9C1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB9B3D9C18
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbhG2DPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 23:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233555AbhG2DPw (ORCPT
+        id S233542AbhG2DPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 23:15:39 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7765 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233297AbhG2DPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 23:15:52 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C672FC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 20:15:49 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id q18so4299169ile.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 20:15:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GEHpVphhyLJFXCEe7iQRjsD/9tyMnPNRqVbPlXIwLE4=;
-        b=H90NoVLKUmuE48C1hAsE0ENepOFZRurynbwu4Ws/QA1jGVRagWYAhHGiC8+m2XW69W
-         JA9fHV1GqZL6fM7sH2FKKneMMmwqYPo8v4iPz8hoSF6djxgc3bXBfUay/zJ28wLYWvpT
-         vkll/a6MvrPvAukm8GFHf+MXXIuhOKhN/2AKk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GEHpVphhyLJFXCEe7iQRjsD/9tyMnPNRqVbPlXIwLE4=;
-        b=NR/1CejzW6aZQFBsFHIq3KvqpoCEXv4iVVVgdVt1ZUT+To3fsIGZ1yJMNBPPJ2HrP5
-         zIOqqpKdgIcgwB6qfzEW9pQuQb9Q8BsxVxE/TVGQsmCuGwuHakmr1uCF2U0nkqueiE8O
-         XASp+/CJliQSSPwJrGHNUJnMmrJ8v6xpKBxSXC/5zoC64eJsLp2thUclE7pKuW/EdOGc
-         2leHMYMU6Ykc7BTREyITSnL91Hoi7MKKL/COJ20TtCJrhD84gg2TWTzhWNZLvmXUb+Sg
-         fpX6VFjIkigxm5jM2AglsYqWDuzILLYRV/w0xFw4coC8HqWTuSlz3drayP7WwR2ZIFzt
-         3xiQ==
-X-Gm-Message-State: AOAM531H8IWU5JXgaajVpJx3FNKsw0MLThW2Kr2KwFp2JrLbniL6F3my
-        aRUxTaFDwx5zFiuCK/spMg3ZahAn7oHbW9A6E+7qAg==
-X-Google-Smtp-Source: ABdhPJyPsS75VPrbgercdilELkiuOWzRBn0SaHkomjCxnwrLSJus0YUdJJOv5CRdtmWxFFYOzx1hw2W2wQKSbbm/++c=
-X-Received: by 2002:a05:6e02:d8f:: with SMTP id i15mr2072719ilj.102.1627528549224;
- Wed, 28 Jul 2021 20:15:49 -0700 (PDT)
+        Wed, 28 Jul 2021 23:15:37 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GZwVm4ggHzYh8R;
+        Thu, 29 Jul 2021 11:09:36 +0800 (CST)
+Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 11:15:33 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.58) by
+ dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 11:15:29 +0800
+From:   Xiu Jianfeng <xiujianfeng@huawei.com>
+To:     <paul@paul-moore.com>, <stephen.smalley.work@gmail.com>,
+        <eparis@parisplace.org>
+CC:     <selinux@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangweiyang2@huawei.com>
+Subject: [PATCH -next, v2] selinux: correct the return value when loads initial sids
+Date:   Thu, 29 Jul 2021 11:16:44 +0800
+Message-ID: <20210729031644.47679-1-xiujianfeng@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210727174025.10552-1-linux@fw-web.de>
-In-Reply-To: <20210727174025.10552-1-linux@fw-web.de>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Thu, 29 Jul 2021 11:15:23 +0800
-Message-ID: <CAJMQK-g8g5QJbBkU-A6th1VSWafxVv2fGtym+enQa_hDVaVoBw@mail.gmail.com>
-Subject: Re: [PATCH] soc: mmsys: mediatek: add mask to mmsys routes
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, CK Hu <ck.hu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Frank Wunderlich <frank-w@public-files.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.58]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 1:41 AM Frank Wunderlich <linux@fw-web.de> wrote:
->
-> From: CK Hu <ck.hu@mediatek.com>
->
-> SOUT has many bits and need to be cleared before set new value.
-> Write only could do the clear, but for MOUT, it clears bits that
-> should not be cleared. So use a mask to reset only the needed bits.
->
-> this fixes HDMI issues on MT7623/BPI-R2 since 5.13
->
-> Cc: stable@vger.kernel.org
-> Fixes: 440147639ac7 ("soc: mediatek: mmsys: Use an array for setting the routing registers")
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> Signed-off-by: CK Hu <ck.hu@mediatek.com>
-> ---
-> code is taken from here (upstreamed without mask part)
-> https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2345186/5
-> basicly CK Hu's code so i set him as author
-> ---
->  drivers/soc/mediatek/mtk-mmsys.c |   7 +-
->  drivers/soc/mediatek/mtk-mmsys.h | 133 +++++++++++++++++++++----------
->  2 files changed, 98 insertions(+), 42 deletions(-)
->
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-> index 080660ef11bf..0f949896fd06 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -68,7 +68,9 @@ void mtk_mmsys_ddp_connect(struct device *dev,
->
->         for (i = 0; i < mmsys->data->num_routes; i++)
->                 if (cur == routes[i].from_comp && next == routes[i].to_comp) {
-> -                       reg = readl_relaxed(mmsys->regs + routes[i].addr) | routes[i].val;
-> +                       reg = readl_relaxed(mmsys->regs + routes[i].addr);
-> +                       reg &= ~routes[i].mask;
-> +                       reg |= routes[i].val;
->                         writel_relaxed(reg, mmsys->regs + routes[i].addr);
->                 }
->  }
-> @@ -85,7 +87,8 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
->
->         for (i = 0; i < mmsys->data->num_routes; i++)
->                 if (cur == routes[i].from_comp && next == routes[i].to_comp) {
-> -                       reg = readl_relaxed(mmsys->regs + routes[i].addr) & ~routes[i].val;
-> +                       reg = readl_relaxed(mmsys->regs + routes[i].addr);
-> +                       reg &= ~routes[i].mask;
+It should not return 0 when SID 0 is assigned to isids.
+This patch fixes it.
 
-This patch is breaking the mt8183 internal display. I think it's
-because  ~routes[i].val; is removed?
-Also what should the routes[i].mask be if it's not set in
-mmsys_mt8183_routing_table?
+v2: remove the "out" label and return directly.
 
->                         writel_relaxed(reg, mmsys->regs + routes[i].addr);
->                 }
->  }
-<snip>
+Fixes: e3e0b582c321a ("selinux: remove unused initial SIDs and improve handling")
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+---
+ security/selinux/ss/policydb.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/policydb.c
+index defc5ef35c66..0ae1b718194a 100644
+--- a/security/selinux/ss/policydb.c
++++ b/security/selinux/ss/policydb.c
+@@ -874,7 +874,7 @@ int policydb_load_isids(struct policydb *p, struct sidtab *s)
+ 	rc = sidtab_init(s);
+ 	if (rc) {
+ 		pr_err("SELinux:  out of memory on SID table init\n");
+-		goto out;
++		return rc;
+ 	}
+ 
+ 	head = p->ocontexts[OCON_ISID];
+@@ -885,7 +885,7 @@ int policydb_load_isids(struct policydb *p, struct sidtab *s)
+ 		if (sid == SECSID_NULL) {
+ 			pr_err("SELinux:  SID 0 was assigned a context.\n");
+ 			sidtab_destroy(s);
+-			goto out;
++			return -EINVAL;
+ 		}
+ 
+ 		/* Ignore initial SIDs unused by this kernel. */
+@@ -897,12 +897,10 @@ int policydb_load_isids(struct policydb *p, struct sidtab *s)
+ 			pr_err("SELinux:  unable to load initial SID %s.\n",
+ 			       name);
+ 			sidtab_destroy(s);
+-			goto out;
++			return rc;
+ 		}
+ 	}
+-	rc = 0;
+-out:
+-	return rc;
++	return 0;
+ }
+ 
+ int policydb_class_isvalid(struct policydb *p, unsigned int class)
+-- 
+2.17.1
+
