@@ -2,111 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931C63D9D70
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401CD3D9D71
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhG2GEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 02:04:06 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:49309 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230223AbhG2GEE (ORCPT
+        id S234137AbhG2GEQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Jul 2021 02:04:16 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12329 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234005AbhG2GEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 02:04:04 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 51A46580B39;
-        Thu, 29 Jul 2021 02:04:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 29 Jul 2021 02:04:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=oOA9yKbtZrclxkXt8oi2w9Qy4VI
-        sBkPwwH4Zip+yF2Q=; b=jlS/9w7SQZpmcYyil/QHB10d4j+LqD1BBnEeV4VpVbv
-        YZcHJh/Vq7gQ63HSRfNySSGszZLBGMRyX1HZCbzDmg98A2mDQDi9CL2eo/w+lBeZ
-        9rpP82l3iy8NfhCPOD4RfvQs5zQGdY9wjNBUtjqYjF1AFeAJ3mEGZSxluDAgsqSX
-        YcJUHUl1XVpqLVSIG+P7e52LxOPCsz3M/NPpapeIjUKNYZmhv/lebtp/qOd2meNd
-        rEUU8cBd+lDKoxPGgYkpcbdhX3u974W8teP+KCvkJ4I1cT1OyQrtyR8pToEKAhuh
-        i8/SQExgJwN6Q2vtcdzs1yf3lKlMoM4xPjQPYuouStg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=oOA9yK
-        btZrclxkXt8oi2w9Qy4VIsBkPwwH4Zip+yF2Q=; b=ErtoLAJ54DmhkFR0iJpgqm
-        9ERknF9Qyd1Esscd3Cy/Jh109VV7+BA16zm23A4kNc+Q5nhpTd1Ncu19h+a8bOWD
-        rss1BNt43SQWfUysU2ae1tPSYAAPOhpRkvnWjdcBx0BGuh2FKfDxgxCx3zdnnwTh
-        aGWwKrbBr67B4XNUUAitjbo+WQAYZEHhyBjlCKWFvyHQNYoCqwoPi6adNPoTuDfK
-        FIwj5ID3KnQ9Jh+cEuzw8s8bQZTusEXoKwn4PSHeNwV5LOZvcpQmTqRBkbNI73w9
-        MCEaOoM/fdDer11hxBw/9Ow43j2/r671/LX7PS3SiGFeNBJkqyY6uN7EAlJj1Gpg
-        ==
-X-ME-Sender: <xms:0EQCYbyYxtkJu4glF-PyF7Vmo43tTOkmvx7vk1EntVZdLMEsHu3C3Q>
-    <xme:0EQCYTQMDkRSNrRfWPG-hblj2PmnOTxNvFK7bUM5dB0oC_22euwHulzvy7WykXbDR
-    hcIb45NDz3qsA>
-X-ME-Received: <xmr:0EQCYVVCQuiiDMb-vlKynWBt1gusm3RY0N0qSpi8uTEjqcbSEDY8vYCjsGkVpQytv_Ajx3LMmq2fb0184BL90bN5-mEmdm76>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedtgdelfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepfeefueduhe
-    egtddvueejueeiveelhedthfejudehteejgfegudffgedttdetheeknecuffhomhgrihhn
-    pegsohhothhlihhnrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:0EQCYVgIDo1Ew43r7hAFpqP8nmJpY5A5vd9QDYdocfnL7YV5_tY1qw>
-    <xmx:0EQCYdBh3Od3AAwJM5CHD0pPk69bSsf7bG7F1_I1lMG6ty4Onw0P6g>
-    <xmx:0EQCYeIhXcVY50E1ruC0Z8OVs-Gv2-qNTmHE6IJR-H-yWCCk6BNUhQ>
-    <xmx:0UQCYdansu-BxNZUR8BiGYppnOc_z2YNFJumpJ6Ouh-OROzART6GgQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jul 2021 02:04:00 -0400 (EDT)
-Date:   Thu, 29 Jul 2021 08:03:58 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     timur@kernel.org, linux@armlinux.org.uk, alcooperx@gmail.com,
-        tklauser@distanz.ch, sean.wang@kernel.org,
-        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
-        yuchen.huang@mediatek.com, huihui.wang@mediatek.com,
-        eddie.huang@mediatek.com, sean.wang@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v1 0/1] Mediatek uart patch
-Message-ID: <YQJEzlb2NyxD1EpD@kroah.com>
-References: <20210729014817.11879-1-zhiyong.tao@mediatek.com>
+        Thu, 29 Jul 2021 02:04:15 -0400
+Received: from dggeme716-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Gb0Gj5y46z80H3;
+        Thu, 29 Jul 2021 13:59:25 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggeme716-chm.china.huawei.com (10.1.199.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 14:04:10 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Thu, 29 Jul 2021 14:04:09 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Yury Norov <yury.norov@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
+        "sbrivio@redhat.com" <sbrivio@redhat.com>,
+        "jianpeng.ma@intel.com" <jianpeng.ma@intel.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        tangchengchang <tangchengchang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        yangyicong <yangyicong@huawei.com>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>
+Subject: RE: [PATCH] bitmap: extend comment to bitmap_print_to_buf
+Thread-Topic: [PATCH] bitmap: extend comment to bitmap_print_to_buf
+Thread-Index: AQHXg+KZwXR9e68Y4UCjnNkvs7pIuqtZca+A
+Date:   Thu, 29 Jul 2021 06:04:09 +0000
+Message-ID: <eec4210a5d724cccb2931a3f4403e5be@hisilicon.com>
+References: <20210715115856.11304-1-song.bao.hua@hisilicon.com>
+ <20210728185831.215079-1-yury.norov@gmail.com>
+In-Reply-To: <20210728185831.215079-1-yury.norov@gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.210]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729014817.11879-1-zhiyong.tao@mediatek.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 09:48:16AM +0800, Zhiyong Tao wrote:
-> This series includes 1 patches:
-> 1.fix uart corruption issue when rx power off
+
+
+> -----Original Message-----
+> From: Yury Norov [mailto:yury.norov@gmail.com]
+> Sent: Thursday, July 29, 2021 6:59 AM
+> To: linux-kernel@vger.kernel.org; gregkh@linuxfoundation.org; Song Bao Hua
+> (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: Yury Norov <yury.norov@gmail.com>; dave.hansen@intel.com;
+> linux@rasmusvillemoes.dk; rafael@kernel.org; rdunlap@infradead.org;
+> agordeev@linux.ibm.com; sbrivio@redhat.com; jianpeng.ma@intel.com;
+> valentin.schneider@arm.com; peterz@infradead.org; bristot@redhat.com;
+> guodong.xu@linaro.org; tangchengchang <tangchengchang@huawei.com>; Zengtao (B)
+> <prime.zeng@hisilicon.com>; yangyicong <yangyicong@huawei.com>;
+> tim.c.chen@linux.intel.com; Linuxarm <linuxarm@huawei.com>;
+> akpm@linux-foundation.org; andriy.shevchenko@linux.intel.com
+> Subject: [PATCH] bitmap: extend comment to bitmap_print_to_buf
 > 
-> when uart is used as a communication port with external device(GPS).
-> when external device(GPS) power off, the power of rx pin is also from
-> 1.8v to 0v. Even if there is not any data in rx. But uart rx pin can
-> capture the data "0".
-> If uart don't receive any data in specified cycle, uart will generates
-> BI(Break interrupt) interrupt.
-> If external device(GPS) power off, we found that BI interrupt appeared
-> continuously and very frequently.
-> When uart interrupt type is BI, uart IRQ handler(8250 framwork
-> API:serial8250_handle_irq) will push data to tty buffer.
-> The code path:
-> https://elixir.bootlin.com/linux/latest/source/drivers/tty/serial/8250/8250_port.c#L1917
-> mtk8250_dma_rx_complete is a task of mtk_uart_apdma_rx_handler.
-> mtk8250_dma_rx_complete priority is lower than uart irq
-> handler(serial8250_handle_irq).
-> if we are in process of mtk8250_dma_rx_complete, uart appear BI
-> interrupt:1)serial8250_handle_irq will priority execution.2)it may cause
-> write tty buffer conflict in mtk8250_dma_rx_complete.
-> So the spin lock protect the rx receive data process is not break.
+> Extend comment to new function to warn potential users about caveats.
+> 
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
 
-All of this information should be in the changelog for the patch itself.
-There is no need for a "cover letter" for a single patch like this.
+Looks awesome. Thanks, Yury. I have integrated your patch into
+the latest series v8.
 
-Can you redo your 1/1 patch and add the above information to the
-changelog text and resend it as a v2?
+>  lib/bitmap.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 56bcffe2fa8c..b9f557ca668c 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -545,6 +545,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
+>   * mainly serves bin_attribute which doesn't work with exact one page, and it
+>   * can break the size limit of converted decimal list and hexadecimal bitmask.
+>   *
+> + * WARNING!
+> + *
+> + * This function is not a replacement for sprintf() or
+> bitmap_print_to_pagebuf().
+> + * It is intended to workaround sysfs limitations discussed above and should
+> be
+> + * used carefully in general case for the following reasons:
+> + *  - Time complexity is O(nbits^2/count), comparing to O(nbits) for snprintf().
+> + *  - Memory complexity is O(nbits), comparing to O(1) for snprintf().
+> + *  - @off and @count are NOT offset and number of bits to print.
+> + *  - If printing part of bitmap as list, the resulting string is not a correct
+> + *    list representation of bitmap. Particularly, some bits within or out of
+> + *    related interval may be erroneously set or unset. The format of the string
+> + *    may be broken, so bitmap_parselist-like parser may fail parsing it.
+> + *  - If printing the whole bitmap as list by parts, user must ensure the order
+> + *    of calls of the function such that the offset is incremented linearly.
+> + *  - If printing the whole bitmap as list by parts, user must keep bitmap
+> + *    unchanged between the very first and very last call. Otherwise concatenated
+> + *    result may be incorrect, and format may be broken.
+> + *
+>   * Returns the number of characters actually printed to @buf
+>   */
+>  int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+> --
+> 2.30.2
 
-thanks,
+Thanks
+Barry
 
-greg k-h
