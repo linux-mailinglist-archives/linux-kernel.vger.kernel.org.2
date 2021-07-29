@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320A33DA8F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DD13DA8F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhG2Q0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhG2Q0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:26:39 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90FAC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:26:36 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id t2so3812671vsa.11
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=bhcR0uNJ9QKNLEqbWP6DNG0C5iS0cCtPLUPz80MMDZU=;
-        b=FMOQ6NE/OEvvZnphimnEz71WPLcF1vwClANfqktHjVZKABt+JrLh/EDy295U3tjBVG
-         dLqkhJc2wvsHeVEd4qnAED7c3Iz+8JSp6wGEofNE+JqZb28YOQMOhDA4uxqxnDe3w1/8
-         V1/mUyuzzrStu6SUCaCu9XExAgkk4BDsR0wFktOSCFQA/iU+Z0IcLESM4ZRe1c8Ny2l2
-         tihsf/0Vt+JOvlvhlCXI9ejtEuJMU9B8eRzU07r2sT9YFBqgZ1K52tZUmR1B3x6ndZEz
-         Wv2aY2ORw6U9kvKJkzA6zJ/dZUPEka/bAOJ9nXhv7TeSujKvVQ0mGHVvPcc3sCggmLGt
-         c9Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=bhcR0uNJ9QKNLEqbWP6DNG0C5iS0cCtPLUPz80MMDZU=;
-        b=D7TxicNa5N7udqiaTcNpCQRtt/qbL1X57zZZ6Y0QIF4uuXzTKvy9VEcEY58uv9hHuT
-         jpo2unSWcKW84E5oKCqw+ZgxrxamatZ24mZoMZ+yiRKQaQ3O6oT4LScnDMpiwX4cCud6
-         pwXufJHtgleNnn+OJTJ/gSTMjNsIi7AnErrrKLYsgFSWflakcGP7/OOf2XMZy6Fym/KW
-         Cd/uf9ItVtje49tqAvPrT7OO8zuQ+UymIYpouvovlpuESUHB9csXXoDHfyQPTcINK6Nf
-         pOLlvMFSLfO3Dxttr3/Iib9g/tywpvRGO2bEPr2H4dPSpjudic8mooXrv6+FS2AomhGI
-         99Hw==
-X-Gm-Message-State: AOAM531KefCsNa6l2uYI283WeNdGT84RLiioAVZHeusrIQ2zTpUfHQ4C
-        S01ZFv2pef8g3/s+3tClUmHpAQoCUGnFPh75h5o=
-X-Google-Smtp-Source: ABdhPJxf2evb6q0JjopVP8+2TwS0KoKxSPI5mGMh8/aZXbcVXWmsXE1W5m4REyFMfkzD3+WNEcoLCaFzP92xtnEXPg4=
-X-Received: by 2002:a67:fa84:: with SMTP id f4mr5092566vsq.59.1627575995847;
- Thu, 29 Jul 2021 09:26:35 -0700 (PDT)
+        id S231396AbhG2Q0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:26:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:52304 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhG2Q0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 12:26:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65FA11FB;
+        Thu, 29 Jul 2021 09:26:43 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D25093F73D;
+        Thu, 29 Jul 2021 09:26:41 -0700 (PDT)
+Subject: Re: [PATCH 1/2] sched/deadline: Fix reset_on_fork reporting of DL
+ tasks
+To:     Quentin Perret <qperret@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20210727101103.2729607-1-qperret@google.com>
+ <20210727101103.2729607-2-qperret@google.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <e6d103f1-f8ee-cad9-c7c0-c9ea5d0f099a@arm.com>
+Date:   Thu, 29 Jul 2021 18:26:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Sender: mrs.anna.brunn249@gmail.com
-Received: by 2002:ab0:2013:0:0:0:0:0 with HTTP; Thu, 29 Jul 2021 09:26:35
- -0700 (PDT)
-From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
-Date:   Thu, 29 Jul 2021 17:26:35 +0100
-X-Google-Sender-Auth: eGso6L3ItevCGQodO_Adtn1KZW4
-Message-ID: <CAN5BXtJtM+N1vAqZCrd26r=b9vZObXZcxtM26716ndcPs0=tjw@mail.gmail.com>
-Subject: My Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210727101103.2729607-2-qperret@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future. I am willing to negotiate an investment/business
-profit sharing ratio with you based on the future investment earning
-profits. If you are willing to handle this project on my behalf kindly
-reply urgently to enable me to provide you more information about the
-investment funds.
-Best Regards
-Mrs Aisha Al-Qaddafi
+On 27/07/2021 12:11, Quentin Perret wrote:
+> It is possible for sched_getattr() to incorrectly report the state of
+> the reset_on_fork flag when called on a deadline task.
+> 
+> Indeed, if the flag was set on a deadline task using sched_setattr()
+> with flags (SCHED_FLAG_RESET_ON_FORK | SCHED_FLAG_KEEP_PARAMS), then
+> p->sched_reset_on_fork will be set, but __setscheduler() will bail out
+> early, which means that the dl_se->flags will not get updated by
+> __setscheduler_params()->__setparam_dl(). Consequently, if
+
+True, but it would also be awkward if non-DL related flags would have to
+be stored in dl_se->flags.
+
+> sched_getattr() is then called on the task, __getparam_dl() will
+> override kattr.sched_flags with the now out-of-date copy in dl_se->flags
+> and report the stale value to userspace.
+> 
+> To fix this, make sure to only copy the flags that are relevant to
+> sched_deadline to and from the dl_se->flags field.
+
+It also fixes the 'hidden' issue that a
+
+    uclampset -mX -MY -p dl_task
+
+would end up at 'change:' label because of
+
+    dl_se->flags != attr->sched_flags
+
+and not because of
+
+    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP
+
+
+And it also unblocks the uclamp-dl issue raised in
+https://lkml.kernel.org/r/ad30be79-8fb2-023d-9936-01f7173164e4@arm.com
+which surfaced when using `get_params()->__getparam_dl()` in
+SYSCALL_DEFINE3(sched_setattr,...).
+Just for reference, IIRC, you mentioned this already on irc.
+
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+
+[...]
