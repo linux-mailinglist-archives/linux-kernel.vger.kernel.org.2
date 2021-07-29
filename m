@@ -2,259 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584163DA8A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1F13DA8AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhG2QPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:15:01 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:49238 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbhG2QO7 (ORCPT
+        id S230137AbhG2QQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhG2QQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:14:59 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id a6e25b56ef76a7db; Thu, 29 Jul 2021 18:14:54 +0200
-Received: from kreacher.localnet (89-64-80-223.dynamic.chello.pl [89.64.80.223])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 185AC669F29;
-        Thu, 29 Jul 2021 18:14:54 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
-Date:   Thu, 29 Jul 2021 18:14:53 +0200
-Message-ID: <4334837.LvFx2qVVIh@kreacher>
-In-Reply-To: <CAAYoRsVko5jG=xqH=KTochqQu95i7PDo_6f1LCPGvAP0=XdVTA@mail.gmail.com>
-References: <1867445.PYKUYFuaPT@kreacher> <2178828.iZASKD2KPV@kreacher> <CAAYoRsVko5jG=xqH=KTochqQu95i7PDo_6f1LCPGvAP0=XdVTA@mail.gmail.com>
+        Thu, 29 Jul 2021 12:16:49 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56EBC061765;
+        Thu, 29 Jul 2021 09:16:45 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so6457567oti.0;
+        Thu, 29 Jul 2021 09:16:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PPsPSzxLvC5DRd9zmh1nElMNXIvh5LMndC48uND3l50=;
+        b=PmSYYquQ4lHR2+pqeT/8VPy5ihnhrNFt3FqzGWjTjhU1sro3g6RMUeQrSIWqT1QEtp
+         URzjftDFv6IfB2eI+BBsVClIuTcki8S67ayy5TllJM0vg07XnEeVPwu2R9kzClweIFYm
+         szNGR0q/RXcyvV5Ou7Qn2nCZ8i6umk4giqcO4u6MY6EbwwgKPgrqr1NY3S5u+pLiosOS
+         DeaE7zOxaX2zCRli4e0jF599XbjK9tHAU7FWYO8a+b1H0ciVHkZ8t4/maaF539BvVd8A
+         5lTyY3uBuozXXsdeHWOhK0V+S+qeIyQNCN9scMCJfN39XtqxjfEJpw6iM4rV0T+eSlvn
+         DVvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PPsPSzxLvC5DRd9zmh1nElMNXIvh5LMndC48uND3l50=;
+        b=O4W3VuvJcUnaArfhZizbh7bOvRbVJDspK67Rntuo1ui/h55zL6Bjp07TH7BGP1XYvs
+         xgA/qb2EBZfkjicrPyBUV0UB1jfaTAGoUIdXp73bWDu4X7jXHYuatyEVU/iv7y/FUYIK
+         ycdUL6cHM2IczqwZxmtd3DSuOMJlMiREPrsil2SDuuQ9zbhAoHkbzQpecIQ4cgIRfbsO
+         LU+tlKWK5YCEJkVaLc/MsWn2NDFNeNdXPiF0KsKOrw/sZaEu+ouO74pmsFkCwyNEfk+e
+         7I0tv4yxe03W7RCtH+z/qjBYZ9CorYEVKBGXLzLf8hB3Jaqj0WwInMIcEZLyzuxFA/2f
+         Jx1A==
+X-Gm-Message-State: AOAM5313FJvhj4H8u/JrBPkTjdRxO+f2DXUzDOi16XB9pRE+a+9QzW6Y
+        nHqzoI3iUEX77pFBwu8VyVhJPZgnQrf3lZiM
+X-Google-Smtp-Source: ABdhPJwtNfvn1W6zUgsLjM03xBPfHPlPNAtz1JY9XUWi5b6kD0LOIHYXINce1NRWxdbbbRoiQUqo/Q==
+X-Received: by 2002:a9d:6c8e:: with SMTP id c14mr4210242otr.5.1627575405140;
+        Thu, 29 Jul 2021 09:16:45 -0700 (PDT)
+Received: from ian.penurio.us ([47.184.51.90])
+        by smtp.gmail.com with ESMTPSA id r5sm584841oti.5.2021.07.29.09.16.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 09:16:44 -0700 (PDT)
+Subject: Re: [RFC PATCH 3/8] block: Add kernel APIs to create & delete block
+ device LED triggers
+To:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>
+Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
+        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
+        kernelnewbies@kernelnewbies.org
+References: <20210729015344.3366750-1-arequipeno@gmail.com>
+ <20210729015344.3366750-4-arequipeno@gmail.com>
+ <110419.1627530334@turing-police>
+From:   Ian Pilcher <arequipeno@gmail.com>
+Message-ID: <36b97f0a-b435-24fa-df2e-f507a4971bd6@gmail.com>
+Date:   Thu, 29 Jul 2021 11:16:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.223
-X-CLIENT-HOSTNAME: 89-64-80-223.dynamic.chello.pl
-X-VADE-SPAMSTATE: spam:low
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrheefgdehfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnegoufhprghmkfhpucdlfedttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdektddrvddvfeenucfuphgrmhfkphepkeelrdeigedrkedtrddvvdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrddvvdefpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepughsmhihthhhihgvshesthgvlhhushdrnhgvthdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+In-Reply-To: <110419.1627530334@turing-police>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, July 29, 2021 8:34:37 AM CEST Doug Smythies wrote:
-> On Wed, Jul 28, 2021 at 10:47 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> >
-> > On Wednesday, July 28, 2021 3:52:51 PM CEST Rafael J. Wysocki wrote:
-> > > On Tue, Jul 27, 2021 at 10:06 PM Doug Smythies <dsmythies@telus.net> wrote:
-> > > >
-> > > > Hi Rafael,
-> > > >
-> > > > Further to my reply of 2021.07.04  on this, I have
-> > > > continued to work with and test this patch set.
-> > > >
-> > > > On 2021.06.02 11:14 Rafael J. Wysocki wrote:
-> > > >
-> > > > >This series of patches addresses some theoretical shortcoming in the
-> > > > > TEO (Timer Events Oriented) cpuidle governor by reworking its idle
-> > > > > state selection logic to some extent.
-> > > > >
-> > > > > Patches [1-2/5] are introductory cleanups and the substantial changes are
-> > > > > made in patches [3-4/5] (please refer to the changelogs of these two
-> > > > > patches for details).  The last patch only deals with documentation.
-> > > > >
-> > > > > Even though this work is mostly based on theoretical considerations, it
-> > > > > shows a measurable reduction of the number of cases in which the shallowest
-> > > > > idle state is selected while it would be more beneficial to select a deeper
-> > > > > one or the deepest idle state is selected while it would be more beneficial to
-> > > > > select a shallower one, which should be a noticeable improvement.
-> > > >
-> > > > I am concentrating in the idle state 0 and 1 area.
-> > > > When I disable idle state 0, the expectation is its
-> > > > usage will fall to idle state 1. It doesn't.
-> > > >
-> > > > Conditions:
-> > > > CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-> > > > HWP: disabled
-> > > > CPU frequency scaling driver: intel_pstate, active
-> > > > CPU frequency scaling governor: performance.
-> > > > Idle configuration: As a COMETLAKE processor, with 4 idle states.
-> > > > Sample time for below: 1 minute.
-> > > > Workflow: Cross core named pipe token passing, 12 threads.
-> > > >
-> > > > Kernel 5.14-rc3: idle: teo governor
-> > > >
-> > > > All idle states enabled: PASS
-> > > > Processor: 97 watts
-> > > > Idle state 0 entries: 811151
-> > > > Idle state 1 entries: 140300776
-> > > > Idle state 2 entries: 889
-> > > > Idle state 3 entries: 8
-> > > >
-> > > > Idle state 0 disabled: FAIL <<<<<
-> > > > Processor: 96 watts
-> > > > Idle state 0 entries: 0
-> > > > Idle state 1 entries: 65599283
-> > > > Idle state 2 entries: 364399
-> > > > Idle state 3 entries: 65112651
-> > >
-> > > This looks odd.
-> > >
-> > > Thanks for the report, I'll take a look at this.
-> >
-> > I have found an issue in the code that may be responsible for the
-> > observed behavior and should be addressed by the appended patch (not
-> > tested yet).
-> >
-> > Basically, the "disabled" check in the second loop over states in
-> > teo_select() needs to exclude the first enabled state, because
-> > there are no more states to check after that.
-> >
-> > Plus the time span check needs to be done when the given state
-> > is about to be selected, because otherwise the function may end up
-> > returning a state for which the sums are too low.
-> >
-> > Thanks!
-> >
-> > ---
-> >  drivers/cpuidle/governors/teo.c |   26 ++++++++++++++------------
-> >  1 file changed, 14 insertions(+), 12 deletions(-)
-> >
-> > Index: linux-pm/drivers/cpuidle/governors/teo.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/cpuidle/governors/teo.c
-> > +++ linux-pm/drivers/cpuidle/governors/teo.c
-> > @@ -404,25 +404,27 @@ static int teo_select(struct cpuidle_dri
-> >                         intercept_sum += bin->intercepts;
-> >                         recent_sum += bin->recent;
-> >
-> > -                       if (dev->states_usage[i].disable)
-> > +                       if (dev->states_usage[i].disable && i > idx0)
-> >                                 continue;
-> >
-> >                         span_ns = teo_middle_of_bin(i, drv);
-> > -                       if (!teo_time_ok(span_ns)) {
-> > -                               /*
-> > -                                * The current state is too shallow, so select
-> > -                                * the first enabled deeper state.
-> > -                                */
-> > -                               duration_ns = last_enabled_span_ns;
-> > -                               idx = last_enabled_idx;
-> > -                               break;
-> > -                       }
-> >
-> >                         if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
-> >                             (!alt_intercepts ||
-> >                              2 * intercept_sum > idx_intercept_sum)) {
-> > -                               idx = i;
-> > -                               duration_ns = span_ns;
-> > +                               if (!teo_time_ok(span_ns) ||
-> > +                                   dev->states_usage[i].disable) {
-> > +                                       /*
-> > +                                        * The current state is too shallow or
-> > +                                        * disabled, so select the first enabled
-> > +                                        * deeper state.
-> > +                                        */
-> > +                                       duration_ns = last_enabled_span_ns;
-> > +                                       idx = last_enabled_idx;
-> > +                               } else {
-> > +                                       idx = i;
-> > +                                       duration_ns = span_ns;
-> > +                               }
-> >                                 break;
-> >                         }
-> 
-> Hi Rafael,
+On 7/28/21 10:45 PM, Valdis Klētnieks wrote:
+> Is pr_warn() the right level for this stuff? I'd think this sort of pilot error should
+> be pr_info() or even pr_debug(), if mentioned at all.  pr_warn() would be for
+> something like an unexpected situation like trying to blink an LED but failing.
+> Simple syntax errors should probably just toss a -EINVAL and return.
 
-Hi Doug,
+Fair point.  I'll change it to pr_info().  I'm reluctant to completely
+"swallow" the error message, as I've been on the other side as a system
+administrator trying to guess at the reason for an error code.
 
-Thanks for the feedback, much appreciated!
+> (Among other things, this allows a userspace script to spam the
+> log by simply repeatedly trying to create the same entry)
 
-> I tried the patch and when I disabled idle state 0
-> got, very similar to before:
-> 
-> Idle state 0 disabled: FAIL
-> Processor: 95 watts
-> Idle state 0 entries: 0
-> Idle state 1 entries: 65,475,534
-> Idle state 2 entries: 333144
-> Idle state 3 entries: 65,247,048
-> 
-> However, I accidently left it for about 30 minutes
-> and noticed:
-> 
-> Idle state 0 disabled:
-> Processor: 83 watts
-> Idle state 0 entries: 0
-> Idle state 1 entries: 88,706,831
-> Idle state 2 entries: 100
-> Idle state 3 entries: 662
+Only root, and they've got plenty of ways to do that.
 
-This means that idle state 0 data are disregarded after disabling it
-and that most likely is because the second loop in teo_select() should
-be over all states down to idle state 0 (not only down to the first
-enabled one).
+Thanks!
 
-So below is an updated patch (not tested yet).
-
----
- drivers/cpuidle/governors/teo.c |   28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
-
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -397,32 +397,34 @@ static int teo_select(struct cpuidle_dri
- 		intercept_sum = 0;
- 		recent_sum = 0;
- 
--		for (i = idx - 1; i >= idx0; i--) {
-+		for (i = idx - 1; i >= 0; i--) {
- 			struct teo_bin *bin = &cpu_data->state_bins[i];
- 			s64 span_ns;
- 
- 			intercept_sum += bin->intercepts;
- 			recent_sum += bin->recent;
- 
--			if (dev->states_usage[i].disable)
-+			if (dev->states_usage[i].disable && i > 0)
- 				continue;
- 
- 			span_ns = teo_middle_of_bin(i, drv);
--			if (!teo_time_ok(span_ns)) {
--				/*
--				 * The current state is too shallow, so select
--				 * the first enabled deeper state.
--				 */
--				duration_ns = last_enabled_span_ns;
--				idx = last_enabled_idx;
--				break;
--			}
- 
- 			if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
- 			    (!alt_intercepts ||
- 			     2 * intercept_sum > idx_intercept_sum)) {
--				idx = i;
--				duration_ns = span_ns;
-+				if (!teo_time_ok(span_ns) ||
-+				    dev->states_usage[i].disable) {
-+					/*
-+					 * The current state is too shallow or
-+					 * disabled, so select the first enabled
-+					 * deeper state.
-+					 */
-+					duration_ns = last_enabled_span_ns;
-+					idx = last_enabled_idx;
-+				} else {
-+					idx = i;
-+					duration_ns = span_ns;
-+				}
- 				break;
- 			}
- 
-
-
-
+-- 
+========================================================================
+                  In Soviet Russia, Google searches you!
+========================================================================
