@@ -2,193 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D203DA286
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EC93DA288
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbhG2LxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:53:15 -0400
-Received: from smtpbg604.qq.com ([59.36.128.82]:50263 "EHLO smtpbg604.qq.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233413AbhG2LxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:53:14 -0400
-X-QQ-mid: bizesmtp52t1627559574tmijf3m2
-Received: from ficus.lan (unknown [171.223.99.141])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Thu, 29 Jul 2021 19:52:53 +0800 (CST)
-X-QQ-SSF: 01000000002000B0C000B00A0000000
-X-QQ-FEAT: g9nl15ZGxlhDVMSj6Uem5DcjAIeccceCz6DFsJDcQaz5JJU7e3eMSyK1+61mi
-        /Sjas9lCh/ziJHwd3XHvFK5wuv0V73xCjEFL0+lC84UWds6KnsUNc126y1unYxau9WR8h0H
-        M0FNzAT3HCpt3xRuLYw1Hr1zV6jIMfA9WsGfwmw0E8D161ROFI4t8HQG+hPZm4JRFJk2zAp
-        EUKCTcYxKK9ZrYiR58sLZBVUhtTePK7BpAIo+gol3ZBfliNKO66P1B3GTlpeuANzIRwUPIj
-        dEireyFDmqdQMQNWD2ghMGfK2JTdobNETd0f+nN+HrhBLydsmm0z/c4a1CkoB0h0ZcoF/gl
-        feVLzkJVNkqWswY0DHLNH+/Gt96XA==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org, kjain@linux.ibm.com,
-        cuibixuan@huawei.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] powerpc/perf/24x7: use 'unsigned int' instead of 'unsigned'
-Date:   Thu, 29 Jul 2021 19:52:52 +0800
-Message-Id: <20210729115252.40895-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
+        id S234700AbhG2LyT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Jul 2021 07:54:19 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:58842 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233413AbhG2LyS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 07:54:18 -0400
+Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
+        by mail.holtmann.org (Postfix) with ESMTPSA id EE60DCED16;
+        Thu, 29 Jul 2021 13:54:13 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v2 1/3] Bluetooth: hci_h5: add WAKEUP_DISABLE flag
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <CAJQfnxFikFjkGn6_+n=ycH4byzTMWY51C=+VJOycg_ZXmg=qqA@mail.gmail.com>
+Date:   Thu, 29 Jul 2021 13:54:13 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Hilda Wu <hildawu@realtek.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <F610BDE8-CC34-4665-91D8-C32EDFD73F75@holtmann.org>
+References: <20210715225146.v2.1.I68649745bd11a83265f1e816bf34ecc82775e95a@changeid>
+ <57AE120A-78AE-4990-8D7F-BA8D8077B610@holtmann.org>
+ <CAJQfnxFzj9m43wntnb2gvXkJS6B5+aQGsu7v6hc4H4ktAopk7g@mail.gmail.com>
+ <A2D33DB0-40DD-4F14-BFB9-9FB34DB003A8@holtmann.org>
+ <CAJQfnxFikFjkGn6_+n=ycH4byzTMWY51C=+VJOycg_ZXmg=qqA@mail.gmail.com>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the 'unsigned' with 'unsigned int' which is more accurate.
+Hi Archie,
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/powerpc/perf/hv-24x7.c | 38 ++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+>>>>> Some RTL chips resets the FW on suspend, so wakeup is disabled on
+>>>>> those chips. This patch introduces this WAKEUP_DISABLE flag so that
+>>>>> chips that doesn't reset FW on suspend can leave the flag unset and
+>>>>> is allowed to wake the host.
+>>>>> 
+>>>>> This patch also left RTL8822 WAKEUP_DISABLE flag unset, therefore
+>>>>> allowing it to wake the host, and preventing reprobing on resume.
+>>>>> 
+>>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+>>>>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+>>>>> Reviewed-by: Hilda Wu <hildawu@realtek.com>
+>>>>> 
+>>>>> ---
+>>>>> 
+>>>>> Changes in v2:
+>>>>> * Remove unnecessary variable
+>>>>> 
+>>>>> drivers/bluetooth/hci_h5.c | 83 +++++++++++++++++++++++++++-----------
+>>>>> 1 file changed, 59 insertions(+), 24 deletions(-)
+>>>> 
+>>>> so the set does not apply cleanly to bluetooth-next
+>>>> 
+>>>> Applying: Bluetooth: hci_h5: Add runtime suspend
+>>>> error: patch failed: drivers/bluetooth/hci_h5.c:11
+>>>> error: drivers/bluetooth/hci_h5.c: patch does not apply
+>>> 
+>>> Hmm, it applies cleanly for me. Not sure what's going on.
+>>> Anyway I rebased and made a little change as v3, please take a look!
+>> 
+>> the v3 applied cleanly.
+>> 
+>>>> 
+>>>> 
+>>>> And I am really close to not accepting any patches for hci_h5.c anymore. This thing turns into crazy hacking and nobody is taking my hint to redo this as clean H:5 3-Wire serdev standalone driver.
+>>> 
+>>> Pardon my unfamiliarity, but could you share more about your vision of
+>>> a clean h5 driver? Should the RTL component be moved out to btrtl?
+>>> Do we have something as a reference?
+>> 
+>> so a while back I send a bt3wire.c sample driver around. That would be a good starting point.
+>> 
+>> Anyhow, the problem is that hci_uart.ko is inherent a line discipline driver from 2.4.x kernel days and it has been stacked and hacked on top of it. It has become a burden, especially in the light that you can have clean serdev based drivers now (like btmtkuart.c).
+>> 
+>> And yes, it would be following the 3-Wire H:5 spec and then deal with vendor specific details like btusb.c for example. And my hope would be that especially in the Realtek and Broadcom (RPi3 etc.) cases this can move into vendor specific blocks and shared between USB and UART transports.
+>> 
+>> I also send around a btuart.c sample driver that is solely serdev based and should replace all the cases where we have H:4 as transport.
+>> 
+> 
+> Thanks for the pointers!
+> 
+> The files you mentioned are rather hard to find, so below I paste the
+> URL where I found them in case anyone else is also interested.
+> 
+> [RFC v2] Bluetooth: Add new serdev based driver for UART attached controllers
+> https://www.spinics.net/lists/linux-bluetooth/msg74918.html
+> 
+> [RFC] Bluetooth: Add new serdev based driver for 3-Wire attached controllers
+> https://www.spinics.net/lists/linux-bluetooth/msg74839.html
 
-diff --git a/arch/powerpc/perf/hv-24x7.c b/arch/powerpc/perf/hv-24x7.c
-index 1816f560a465..d767724a1162 100644
---- a/arch/powerpc/perf/hv-24x7.c
-+++ b/arch/powerpc/perf/hv-24x7.c
-@@ -33,7 +33,7 @@ static bool aggregate_result_elements;
- 
- static cpumask_t hv_24x7_cpumask;
- 
--static bool domain_is_valid(unsigned domain)
-+static bool domain_is_valid(unsigned int domain)
- {
- 	switch (domain) {
- #define DOMAIN(n, v, x, c)		\
-@@ -47,7 +47,7 @@ static bool domain_is_valid(unsigned domain)
- 	}
- }
- 
--static bool is_physical_domain(unsigned domain)
-+static bool is_physical_domain(unsigned int domain)
- {
- 	switch (domain) {
- #define DOMAIN(n, v, x, c)		\
-@@ -128,7 +128,7 @@ static bool domain_needs_aggregation(unsigned int domain)
- 			  domain <= HV_PERF_DOMAIN_VCPU_REMOTE_NODE));
- }
- 
--static const char *domain_name(unsigned domain)
-+static const char *domain_name(unsigned int domain)
- {
- 	if (!domain_is_valid(domain))
- 		return NULL;
-@@ -146,7 +146,7 @@ static const char *domain_name(unsigned domain)
- 	return NULL;
- }
- 
--static bool catalog_entry_domain_is_valid(unsigned domain)
-+static bool catalog_entry_domain_is_valid(unsigned int domain)
- {
- 	/* POWER8 doesn't support virtual domains. */
- 	if (interface_version == 1)
-@@ -258,7 +258,7 @@ static char *event_name(struct hv_24x7_event_data *ev, int *len)
- 
- static char *event_desc(struct hv_24x7_event_data *ev, int *len)
- {
--	unsigned nl = be16_to_cpu(ev->event_name_len);
-+	unsigned int nl = be16_to_cpu(ev->event_name_len);
- 	__be16 *desc_len = (__be16 *)(ev->remainder + nl - 2);
- 
- 	*len = be16_to_cpu(*desc_len) - 2;
-@@ -267,9 +267,9 @@ static char *event_desc(struct hv_24x7_event_data *ev, int *len)
- 
- static char *event_long_desc(struct hv_24x7_event_data *ev, int *len)
- {
--	unsigned nl = be16_to_cpu(ev->event_name_len);
-+	unsigned int nl = be16_to_cpu(ev->event_name_len);
- 	__be16 *desc_len_ = (__be16 *)(ev->remainder + nl - 2);
--	unsigned desc_len = be16_to_cpu(*desc_len_);
-+	unsigned int desc_len = be16_to_cpu(*desc_len_);
- 	__be16 *long_desc_len = (__be16 *)(ev->remainder + nl + desc_len - 2);
- 
- 	*len = be16_to_cpu(*long_desc_len) - 2;
-@@ -296,8 +296,8 @@ static void *event_end(struct hv_24x7_event_data *ev, void *end)
- {
- 	void *start = ev;
- 	__be16 *dl_, *ldl_;
--	unsigned dl, ldl;
--	unsigned nl = be16_to_cpu(ev->event_name_len);
-+	unsigned int dl, ldl;
-+	unsigned int nl = be16_to_cpu(ev->event_name_len);
- 
- 	if (nl < 2) {
- 		pr_debug("%s: name length too short: %d", __func__, nl);
-@@ -398,7 +398,7 @@ static long h_get_24x7_catalog_page(char page[], u64 version, u32 index)
-  *		- Specifying (i.e overriding) values for other parameters
-  *		  is undefined.
-  */
--static char *event_fmt(struct hv_24x7_event_data *event, unsigned domain)
-+static char *event_fmt(struct hv_24x7_event_data *event, unsigned int domain)
- {
- 	const char *sindex;
- 	const char *lpar;
-@@ -529,9 +529,9 @@ static struct attribute *device_str_attr_create(char *name, int name_max,
- 	return NULL;
- }
- 
--static struct attribute *event_to_attr(unsigned ix,
-+static struct attribute *event_to_attr(unsigned int ix,
- 				       struct hv_24x7_event_data *event,
--				       unsigned domain,
-+				       unsigned int domain,
- 				       int nonce)
- {
- 	int event_name_len;
-@@ -599,7 +599,7 @@ event_to_long_desc_attr(struct hv_24x7_event_data *event, int nonce)
- 	return device_str_attr_create(name, nl, nonce, desc, dl);
- }
- 
--static int event_data_to_attrs(unsigned ix, struct attribute **attrs,
-+static int event_data_to_attrs(unsigned int ix, struct attribute **attrs,
- 				   struct hv_24x7_event_data *event, int nonce)
- {
- 	*attrs = event_to_attr(ix, event, event->domain, nonce);
-@@ -614,8 +614,8 @@ struct event_uniq {
- 	struct rb_node node;
- 	const char *name;
- 	int nl;
--	unsigned ct;
--	unsigned domain;
-+	unsigned int ct;
-+	unsigned int domain;
- };
- 
- static int memord(const void *d1, size_t s1, const void *d2, size_t s2)
-@@ -628,8 +628,8 @@ static int memord(const void *d1, size_t s1, const void *d2, size_t s2)
- 	return memcmp(d1, d2, s1);
- }
- 
--static int ev_uniq_ord(const void *v1, size_t s1, unsigned d1, const void *v2,
--		       size_t s2, unsigned d2)
-+static int ev_uniq_ord(const void *v1, size_t s1, unsigned int d1,
-+			const void *v2, size_t s2, unsigned int d2)
- {
- 	int r = memord(v1, s1, v2, s2);
- 
-@@ -643,7 +643,7 @@ static int ev_uniq_ord(const void *v1, size_t s1, unsigned d1, const void *v2,
- }
- 
- static int event_uniq_add(struct rb_root *root, const char *name, int nl,
--			  unsigned domain)
-+			  unsigned int domain)
- {
- 	struct rb_node **new = &(root->rb_node), *parent = NULL;
- 	struct event_uniq *data;
-@@ -1398,7 +1398,7 @@ static int single_24x7_request(struct perf_event *event, u64 *count)
- static int h_24x7_event_init(struct perf_event *event)
- {
- 	struct hv_perf_caps caps;
--	unsigned domain;
-+	unsigned int domain;
- 	unsigned long hret;
- 	u64 ct;
- 
--- 
-2.32.0
+exactly these. I posted my initial work so that it can be continued by people with easier access to hardware.
+
+Regards
+
+Marcel
 
