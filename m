@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047D83DA43D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE9D3DA440
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237798AbhG2N3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
+        id S237786AbhG2N3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237726AbhG2N2w (ORCPT
+        with ESMTP id S237687AbhG2N2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:28:52 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1274CC06179F
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:49 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id bm25-20020a05620a1999b02903a9c3f8b89fso3857947qkb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:49 -0700 (PDT)
+        Thu, 29 Jul 2021 09:28:55 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0AAC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:52 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id 132-20020a1c018a0000b029025005348905so1997772wmb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=K2yJYY4AwV+vn/rNuC2tG6Gq9ljpo+CbL9CfXBwYhKs=;
-        b=QOeabQvhK+pjySXM7mdcCBpwBPGxHA2Aapue3mH3nglJQ48pdBSi1Gn+iql4C+ZGom
-         yxB9Fd0YJyOA5p4oPp5VddH6E/ae1UId3M3sSiQLeXVEXTAyT8WEuAcHH4S3tIGW4GL7
-         7wL1UZpRFNTcYPQ5V4zS3cIm55suJij7Ous/EuOVId5PU1TniXtP5Aqb0dVNxvTPxtlj
-         KiaaQa51mTF7lD9V2qlqCFAKM3pn6tq7MWusSXIEem4MarzZ67Wycb9NnvuHlTS06wLf
-         E0b4JNz5c1tJLmgcdHVU3XSzLEhKhe3NqjOJO2gPG+nEK+YdR7Kj2Kw1hj8Xb/tq07w5
-         5N5A==
+        bh=H72uhE5VGkDx1jb1MVcWxLaZfSQPWlRzbrWGol5Bg8o=;
+        b=HTncpCcFrfYqsq+B0XVUZSJV3OsWsCbXAq0Nsc6wlmDYOhwALGBrA3jJ41pZG0qqMI
+         BUp7QdvrQdj2zE8BkjdDej0plVEuMnXHWUQxTorC7+RLWrL1Cl5SNZOzSPQYcIPsiBfy
+         PrIxNokt9gtSQCGyTC4CeE1TIB4Vpi45IPhQSXcZ31S+u0qfhpB+xXZJnFGTLgqBW/FK
+         8j7S1I+GtzmzNFPDXkOtQ4OpR5EBk196h65xM3EPu3FNApwn8htU1h7pYOsraR/C0MHV
+         Et3C8vRAcLob23EWSpeVAA0PxgEvB3ZxKyeGA3rhHcr1KBj7OXeo6C86lTupLKh5WO3I
+         vGjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=K2yJYY4AwV+vn/rNuC2tG6Gq9ljpo+CbL9CfXBwYhKs=;
-        b=okpp9EY1c17Y24c90EjmYkKhrCgtETrsuhWBgDH8li5fCtqZoy6mZA0spylSTtvT/d
-         zuw+tWcW+6UyfSCgDKyHkmIgYYAizlZmIvpKVCJDw1HnMp8FfLyKqIKSxLL6XFa6AIng
-         KFJ5tBPpdN4WBdkWG3XidxZAzh6YyERgXh+OtEAtIvmobRNZGTMmWlaNMDBTe8fqGnTI
-         R3Iq4lI+1FFfKqat1Hx2aTrcc4+HyjFGzwCq7zBXhOlnew4hzThfN+vDO/WXoDc18mxl
-         LrGTR8Mk46JgFRd0YMRQ5qNfXjJ/W/z0nncGrXm7xVh5qVOmP/eBeiqxI9mY34DNhW6B
-         S+Xg==
-X-Gm-Message-State: AOAM533axrCMv6B36mArhqYnAjfffIRk4L2heJaVQ4FChnMTSAwVdp/M
-        xdOvrY9XcI09HOII4t9Q1ulGWCC7NgpD
-X-Google-Smtp-Source: ABdhPJxz1R05cTjKGeAzbyffgsjdEJ6FuTW+MEeZoslgi5BQPfW/okp9D2w7vU3mDjPYNqOPOTSTUIW1Zb/l
+        bh=H72uhE5VGkDx1jb1MVcWxLaZfSQPWlRzbrWGol5Bg8o=;
+        b=FZVF8xalg4cjxhPApNvihEO+UHnAP+cq2s3m8gh/4YVnybIDjW1HmvMmQqg3pkL0Zt
+         UhJE2HctTt+eCJztT1RXa2QAv4Kfshp0nF0WmXYhYxlAwBBWFkV1QKGE9YK5tK5ofkXc
+         pPru4rdbKNdKu9Sv8lHxpCq/j4l8S2m6z3OTGixRqggd0m/q6YIzQIKgG/u3HwfPpKPg
+         Sype3sFBcBVRaDKV+ETZntMtfCT5dDat7XtNveeuZ7jjB6UGp47zLRqRImCHMRzrAmcq
+         KpdeQWeTWYkOKvfE8amzUemi5dY+V8xcbuqdA+Cf3PfHK9fhcWg4ABpFLZ3HjF8hbBhJ
+         75oA==
+X-Gm-Message-State: AOAM531bFF7YBJb8rwu1cfNO3sXQZ/IkXX6EnyOc3PoGEC8DNQqLWKpI
+        is3gbX2MaDMb6Bl5w1hPO2MFKaGuIrW7
+X-Google-Smtp-Source: ABdhPJzn1rlmoNXXKLmPJSHjhbkDAjV7ZnprHUg6PgSi5S1PmeBEhPufv9qLwdFykhgetYoUfULvmrtzd+sc
 X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:293a:bc89:7514:5218])
- (user=qperret job=sendgmr) by 2002:a05:6214:10c8:: with SMTP id
- r8mr5270070qvs.28.1627565328196; Thu, 29 Jul 2021 06:28:48 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 14:28:08 +0100
+ (user=qperret job=sendgmr) by 2002:a1c:a78a:: with SMTP id
+ q132mr4804653wme.76.1627565330622; Thu, 29 Jul 2021 06:28:50 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 14:28:09 +0100
 In-Reply-To: <20210729132818.4091769-1-qperret@google.com>
-Message-Id: <20210729132818.4091769-12-qperret@google.com>
+Message-Id: <20210729132818.4091769-13-qperret@google.com>
 Mime-Version: 1.0
 References: <20210729132818.4091769-1-qperret@google.com>
 X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH v3 11/21] KVM: arm64: Allow populating software bits
+Subject: [PATCH v3 12/21] KVM: arm64: Add helpers to tag shared pages in SW bits
 From:   Quentin Perret <qperret@google.com>
 To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
         suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
@@ -64,89 +64,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce infrastructure allowing to manipulate software bits in stage-1
-and stage-2 page-tables using additional entries in the kvm_pgtable_prot
-enum.
+We will soon start annotating shared pages in page-tables in nVHE
+protected mode. Define all the states in which a page can be (owned,
+shared and owned, shared and borrowed), and provide helpers allowing to
+convert this into SW bits annotations using the matching prot
+attributes.
 
-This is heavily inspired by Marc's implementation of a similar feature
-in the NV patch series, but adapted to allow stage-1 changes as well:
-
-  https://lore.kernel.org/kvmarm/20210510165920.1913477-56-maz@kernel.org/
-
-Suggested-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/include/asm/kvm_pgtable.h | 12 +++++++++++-
- arch/arm64/kvm/hyp/pgtable.c         |  5 +++++
- 2 files changed, 16 insertions(+), 1 deletion(-)
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-index ba7dcade2798..d5ca9b6ce241 100644
---- a/arch/arm64/include/asm/kvm_pgtable.h
-+++ b/arch/arm64/include/asm/kvm_pgtable.h
-@@ -121,6 +121,10 @@ enum kvm_pgtable_stage2_flags {
-  * @KVM_PGTABLE_PROT_W:		Write permission.
-  * @KVM_PGTABLE_PROT_R:		Read permission.
-  * @KVM_PGTABLE_PROT_DEVICE:	Device attributes.
-+ * @KVM_PGTABLE_PROT_SW0:	Software bit 0.
-+ * @KVM_PGTABLE_PROT_SW1:	Software bit 1.
-+ * @KVM_PGTABLE_PROT_SW2:	Software bit 2.
-+ * @KVM_PGTABLE_PROT_SW3:	Software bit 3.
-  */
- enum kvm_pgtable_prot {
- 	KVM_PGTABLE_PROT_X			= BIT(0),
-@@ -128,6 +132,11 @@ enum kvm_pgtable_prot {
- 	KVM_PGTABLE_PROT_R			= BIT(2),
+diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+index 9c227d87c36d..ae355bfd8c01 100644
+--- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
++++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+@@ -12,6 +12,32 @@
+ #include <asm/virt.h>
+ #include <nvhe/spinlock.h>
  
- 	KVM_PGTABLE_PROT_DEVICE			= BIT(3),
++/*
++ * SW bits 0-1 are reserved to track the memory ownership state of each page:
++ *   00: The page is owned solely by the page-table owner.
++ *   01: The page is owned by the page-table owner, but is shared
++ *       with another entity.
++ *   10: The page is shared with, but not owned by the page-table owner.
++ *   11: Reserved for future use (lending).
++ */
++enum pkvm_page_state {
++	PKVM_PAGE_OWNED			= 0ULL,
++	PKVM_PAGE_SHARED_OWNED		= KVM_PGTABLE_PROT_SW0,
++	PKVM_PAGE_SHARED_BORROWED	= KVM_PGTABLE_PROT_SW1,
++};
 +
-+	KVM_PGTABLE_PROT_SW0			= BIT(55),
-+	KVM_PGTABLE_PROT_SW1			= BIT(56),
-+	KVM_PGTABLE_PROT_SW2			= BIT(57),
-+	KVM_PGTABLE_PROT_SW3			= BIT(58),
- };
- 
- #define KVM_PGTABLE_PROT_RW	(KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W)
-@@ -419,7 +428,8 @@ kvm_pte_t kvm_pgtable_stage2_mkold(struct kvm_pgtable *pgt, u64 addr);
-  * If there is a valid, leaf page-table entry used to translate @addr, then
-  * relax the permissions in that entry according to the read, write and
-  * execute permissions specified by @prot. No permissions are removed, and
-- * TLB invalidation is performed after updating the entry.
-+ * TLB invalidation is performed after updating the entry. Software bits cannot
-+ * be set or cleared using kvm_pgtable_stage2_relax_perms().
-  *
-  * Return: 0 on success, negative error code on failure.
-  */
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index bcc02e6e0f62..1915489bb127 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -357,6 +357,7 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
- 	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S1_AP, ap);
- 	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S1_SH, sh);
- 	attr |= KVM_PTE_LEAF_ATTR_LO_S1_AF;
-+	attr |= prot & KVM_PTE_LEAF_ATTR_HI_SW;
- 	*ptep = attr;
- 
- 	return 0;
-@@ -558,6 +559,7 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
- 
- 	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S2_SH, sh);
- 	attr |= KVM_PTE_LEAF_ATTR_LO_S2_AF;
-+	attr |= prot & KVM_PTE_LEAF_ATTR_HI_SW;
- 	*ptep = attr;
- 
- 	return 0;
-@@ -1025,6 +1027,9 @@ int kvm_pgtable_stage2_relax_perms(struct kvm_pgtable *pgt, u64 addr,
- 	u32 level;
- 	kvm_pte_t set = 0, clr = 0;
- 
-+	if (prot & KVM_PTE_LEAF_ATTR_HI_SW)
-+		return -EINVAL;
++#define PKVM_PAGE_STATE_PROT_MASK	(KVM_PGTABLE_PROT_SW0 | KVM_PGTABLE_PROT_SW1)
++static inline enum kvm_pgtable_prot pkvm_mkstate(enum kvm_pgtable_prot prot,
++						 enum pkvm_page_state state)
++{
++	return (prot & ~PKVM_PAGE_STATE_PROT_MASK) | state;
++}
 +
- 	if (prot & KVM_PGTABLE_PROT_R)
- 		set |= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R;
- 
++static inline enum pkvm_page_state pkvm_getstate(enum kvm_pgtable_prot prot)
++{
++	return prot & PKVM_PAGE_STATE_PROT_MASK;
++}
++
+ struct host_kvm {
+ 	struct kvm_arch arch;
+ 	struct kvm_pgtable pgt;
 -- 
 2.32.0.432.gabb21c7263-goog
 
