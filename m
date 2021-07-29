@@ -2,87 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6DE3DAEC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A653DAECA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhG2WYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhG2WY2 (ORCPT
+        id S229931AbhG2WZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 18:25:49 -0400
+Received: from mail-il1-f169.google.com ([209.85.166.169]:43547 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhG2WZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:24:28 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E49C061765;
-        Thu, 29 Jul 2021 15:24:23 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id f14-20020a05600c154eb02902519e4abe10so7780874wmg.4;
-        Thu, 29 Jul 2021 15:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LOX8ZHfk/Qsidg5/FWcUvCoq+KCIJaGQvGbJZ0G3asQ=;
-        b=rNmMYVXBBi+3q/vHY6zyT8vUc77XieSSx21bFRJU8datswB9UwerDdwOaHF6fvu1/t
-         nHbFpq4JG5ZLz1/dhww9uSu0PstRjqaCTxSoYzXxcLhVRYK31fuWnb+egboMgBc3WzfV
-         IKtY1UQW1/hse/Ni7ANxq4n3MywXVmrlhGRk8iYx9YYZetXYZUY9ncfwc3eWVqiuj0kN
-         i3Qrn+lDS8N9wbloNr9elJv2Mf8E0lUwF18sMvuK9s/Fi0E5XBtbijz/GbT5Db1G9YJQ
-         caqsgJFfPpXtMOqD3lZ4ezjdytl7397W86F9+rivk6wRMf/K3Rxm2qFPwnkem994BPUZ
-         YN3w==
+        Thu, 29 Jul 2021 18:25:46 -0400
+Received: by mail-il1-f169.google.com with SMTP id x7so4118132ilh.10;
+        Thu, 29 Jul 2021 15:25:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LOX8ZHfk/Qsidg5/FWcUvCoq+KCIJaGQvGbJZ0G3asQ=;
-        b=hCgCBQPj5cXckjyK5OmQRcwXlLRGMWsDeNdu9grzR1TAj4WhpkawJn6z/by3WnrOlr
-         1GtI7b6BGRiiwoRmjafj6A/iTKuKFyqOJj4xwwLxeMk7qpp2uUManuLrqPdFe5ns8GqF
-         54z8XdlxL///YHwe4hFxCaUHuVzyE3nnujq/e0ireKNahrV5Kw6fOIlg04JzvGQph83h
-         jhEKAWsRncVo2IJKdbjuhVtrtAnsddRVrppM7dVi2MK7W5pEEMttWeEKjHloHuwHGMIV
-         Bfjc2foDoiKxJJSdI+NcePrLvfxj7wgEhn6NwPLmAGDHgprYWjm4GQS4+hhM2rCMYs+5
-         Trsg==
-X-Gm-Message-State: AOAM530gL/wgYh1KgSdyUqJzWeuhedNxi/Z7xNNmCfAaIcQdQBTbCnZK
-        i9LIaAormuVA9o/OxWjZJphLZxaATOv3KGWY1sc=
-X-Google-Smtp-Source: ABdhPJy0bCvdsGcG36Sc2ZlzGBRnVuewLMj2rVvhmpEB/vaSDRXeSL0Tuovo7DJjfEXdpcaZ8cm5sg==
-X-Received: by 2002:a05:600c:2908:: with SMTP id i8mr6825574wmd.108.1627597462089;
-        Thu, 29 Jul 2021 15:24:22 -0700 (PDT)
-Received: from 168.52.45.77 (201.ip-51-68-45.eu. [51.68.45.201])
-        by smtp.gmail.com with ESMTPSA id x15sm4687317wrs.57.2021.07.29.15.24.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 15:24:21 -0700 (PDT)
-Subject: Re: [PATCH] Bluetooth: btusb: Make the CSR clone chip force-suspend
- workaround more generic
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
-References: <906e95ce-b0e5-239e-f544-f34d8424c8da@gmail.com>
- <D11408EE-8541-4930-A438-6338F342EFB1@holtmann.org>
-From:   Ismael Ferreras Morezuelas <swyterzone@gmail.com>
-Message-ID: <a5e94ec1-5894-3c9b-2ff3-cb1406459cfe@gmail.com>
-Date:   Fri, 30 Jul 2021 00:24:18 +0200
-User-Agent: nano 6.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/aC99Iu0Lbk5aCpNG1EP7BkY/PlQCFTDv6tZFmoT4to=;
+        b=taflZroEbgqdCNt6u3acyu6z47k5u6MWJYOlmOxrbIly3JtJy3g5UUlHpiqJLl6W53
+         bh8yYTLGg9Hncb3ny5Fko1jbLLv7z23q8AGtOI+K+cXdJ/UHOAkFUduVwTwu/ct2Vjy/
+         8hhhPM7kT6faRNq3v8iARpZwkuyLgtWafFC+oD/J8032kqx5aYKcuBCoxjuz7Qh3M7AN
+         i6j2wOs58vzeRXTLJO638xHgL0qhiyYuhD/KjURsXtaLetFFlFhTXLyV9g2U8EiML8BT
+         +X6XG3Sv4iQat/LhcKG9MZz4ufEv9DYxGdHQqM5JZsYHzQVu4ESxlDUx7fo3hgurgtYg
+         HgSQ==
+X-Gm-Message-State: AOAM532vPdinbhOGTjujgquReyVMYDupPvy2RnU9bdKcC/zbpOGtjiOH
+        t91D46zS+Y6w0GVdnXRSyw==
+X-Google-Smtp-Source: ABdhPJygF+DGb0ov5OEhfhmd/o0r6FJ5+aiZ3DxlC6htdV2NzPesAASgz05K1tfkyG0Y7Y+lZrWTiw==
+X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr5049395ilu.61.1627597542869;
+        Thu, 29 Jul 2021 15:25:42 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id h24sm3240751ioj.32.2021.07.29.15.25.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 15:25:42 -0700 (PDT)
+Received: (nullmailer pid 1013223 invoked by uid 1000);
+        Thu, 29 Jul 2021 22:25:40 -0000
+Date:   Thu, 29 Jul 2021 16:25:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] PCI: qcom: Introduce enable/disable resource ops
+Message-ID: <YQMq5OsmskE64w0i@robh.at.kernel.org>
+References: <20210725040038.3966348-1-bjorn.andersson@linaro.org>
+ <20210725040038.3966348-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <D11408EE-8541-4930-A438-6338F342EFB1@holtmann.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210725040038.3966348-2-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/07/2021 21:55, Marcel Holtmann wrote:
-> Hi Ismael,
-> 
-> patch has been applied to bluetooth-next tree.
-> 
-> Regards
-> 
-> Marcel
-> 
+On Sat, Jul 24, 2021 at 09:00:36PM -0700, Bjorn Andersson wrote:
+> The current model of doing resource enablement and controller
+> initialization in a single "init" function invoked after
+> dw_pcie_host_init() is invoked might result in clocks not being enabled
+> at the time the "msi" interrupt fires.
 
-Thanks a lot, Marcel! Upstreaming these changes has been very fun,
-looking forward to improve the compatibility more in the future.
+This seems like working around DWC ops...
 
-Every bit helps. The next step will probably entail
-adding a HCI_FLT_CLEAR_ALL quirk in there. :)
+> One such case happens reliably on the SC8180x (8cx) Snapdragon laptops,
+> where it's seems like the bootloader touches PCIe and leaves things in a
+> state that the "msi" interrupt will fire before we have a change to
+
+s/change/chance/
+
+> enable the clocks, resulting in an access of unclocked hardware.
+
+How does the MSI fire without the clocks or a link? Can't you quiesce 
+things?
+
+> Introduce a two new callbacks, allowing the individual resource handling
+> functions to be split between enable/init and deinit/disable.
+> 
+> Helper functions for enable, disable and deinit are introduced to handle
+> the fact that these functions may now be left without implementation.
+> init is given a wrapper for symmetry.
+
+I think you can simply flip the order the MSI init and host_init() in 
+dw_pcie_host_init().
+
+In general, I want to move some of the resource setup (clks, phys, 
+perst#, etc.) into the DWC core and make the DWC ops more specific in 
+what they do and touch. That should simplify at least the simple cases. 
+For Qcom, maybe some of the ops can be moved to new DWC ops.
+
+Rob
+
+
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 42 +++++++++++++++++++++++---
+>  1 file changed, 38 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 8a7a300163e5..8a64a126de2b 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -181,9 +181,11 @@ struct qcom_pcie;
+>  
+>  struct qcom_pcie_ops {
+>  	int (*get_resources)(struct qcom_pcie *pcie);
+> +	int (*enable_resources)(struct qcom_pcie *pcie);
+>  	int (*init)(struct qcom_pcie *pcie);
+>  	int (*post_init)(struct qcom_pcie *pcie);
+>  	void (*deinit)(struct qcom_pcie *pcie);
+> +	void (*disable_resources)(struct qcom_pcie *pcie);
+>  	void (*post_deinit)(struct qcom_pcie *pcie);
+>  	void (*ltssm_enable)(struct qcom_pcie *pcie);
+>  	int (*config_sid)(struct qcom_pcie *pcie);
+> @@ -1345,6 +1347,31 @@ static int qcom_pcie_config_sid_sm8250(struct qcom_pcie *pcie)
+>  	return 0;
+>  }
+>  
+> +static int qcom_pcie_enable_resources(struct qcom_pcie *pcie)
+> +{
+> +	if (pcie->ops->enable_resources)
+> +		return pcie->ops->enable_resources(pcie);
+> +
+> +	return 0;
+> +}
+> +
+> +static int qcom_pcie_init(struct qcom_pcie *pcie)
+> +{
+> +	return pcie->ops->init(pcie);
+> +}
+> +
+> +static void qcom_pcie_deinit(struct qcom_pcie *pcie)
+> +{
+> +	if (pcie->ops->deinit)
+> +		pcie->ops->deinit(pcie);
+> +}
+> +
+> +static void qcom_pcie_disable_resources(struct qcom_pcie *pcie)
+> +{
+> +	if (pcie->ops->disable_resources)
+> +		pcie->ops->disable_resources(pcie);
+> +}
+> +
+>  static int qcom_pcie_host_init(struct pcie_port *pp)
+>  {
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> @@ -1353,7 +1380,7 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
+>  
+>  	qcom_ep_reset_assert(pcie);
+>  
+> -	ret = pcie->ops->init(pcie);
+> +	ret = qcom_pcie_init(pcie);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -1384,7 +1411,7 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
+>  err_disable_phy:
+>  	phy_power_off(pcie->phy);
+>  err_deinit:
+> -	pcie->ops->deinit(pcie);
+> +	qcom_pcie_deinit(pcie);
+>  
+>  	return ret;
+>  }
+> @@ -1520,10 +1547,14 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  
+>  	pp->ops = &qcom_pcie_dw_ops;
+>  
+> +	ret = qcom_pcie_enable_resources(pcie);
+> +	if (ret)
+> +		goto err_pm_runtime_put;
+> +
+>  	ret = phy_init(pcie->phy);
+>  	if (ret) {
+>  		pm_runtime_disable(&pdev->dev);
+> -		goto err_pm_runtime_put;
+> +		goto err_disable_resources;
+>  	}
+>  
+>  	platform_set_drvdata(pdev, pcie);
+> @@ -1532,11 +1563,14 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  	if (ret) {
+>  		dev_err(dev, "cannot initialize host\n");
+>  		pm_runtime_disable(&pdev->dev);
+> -		goto err_pm_runtime_put;
+> +		goto err_disable_resources;
+>  	}
+>  
+>  	return 0;
+>  
+> +err_disable_resources:
+> +	qcom_pcie_disable_resources(pcie);
+> +
+>  err_pm_runtime_put:
+>  	pm_runtime_put(dev);
+>  	pm_runtime_disable(dev);
+> -- 
+> 2.29.2
+> 
+> 
