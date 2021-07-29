@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470C33DA632
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D2A3DA639
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236602AbhG2OVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234176AbhG2OVC (ORCPT
+        id S237104AbhG2OXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:23:15 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:40393 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234975AbhG2OXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:21:02 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F20C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:20:57 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id m1so10554703pjv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F1MJS4je1Oiq7mhlbgvshdM+wBGyXHC/8oJzd/GZ1Bg=;
-        b=Ow6fkhcPEh5V54oLfWWwMO7N3w8hOXvUHnRCEDo6zEciRgrCaJsWFsAcGnHwmh2vzD
-         FPMisuZ3FNXTf1ixYZPueZXd8SlW0Sz5U+WAicNuv3cCxFOuib10hY1RfAbe25NVplGQ
-         cFbNTcFvibLllrPwkX1NyOUGsfubqOt4JDVkl6QEMBEexnkifJfcBERFxqsXLxDQlC6C
-         sWvxUebaqrJx4zyMhNnHramYFQuvyDG0DUp+CZ8TnJsj2WONURIPg4QNHM4xLMgwjz4d
-         aQIxu9xpzTPCVDDZQL0Apsap6Nh+R7+Z0NH4Xj2u0w2G5KRLYVz10F7gqa8OYyYtCME9
-         Ig2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F1MJS4je1Oiq7mhlbgvshdM+wBGyXHC/8oJzd/GZ1Bg=;
-        b=cTW6uqA7U5SQoJDi92dYGYnNh0A67WrSRvpoATz264ks+BEwrXyzijdoPdScPvfy46
-         RD+hRQMw281usLa3L1W+AH2a47X+wJfdpb9NNLhP/O9aFjzO8+yxkaxnQ5IqFGE+eZnK
-         xEQkjfZXblNC2vDthM6pxg1wYlU6PoEZgS0v0hM746XyZqoUPAH5DhaOi0XtXKq8A0SG
-         56hUa8HYJIllwsLMjdk4oxdBmMmZcPrXxCHGyjL01/RTU7yv77ccUIwCqLQwLimGse8j
-         5p7g8W8t9gInYsURblJ6EbzFNpLIr3mLFYxI/YCSD6K5IJxYkrwWIFzJUcioDMTFm9sk
-         vs3w==
-X-Gm-Message-State: AOAM530Pz0HEUpZWFODQVaOU/HpAVKVaWUkLY5E2gtZvRVOFjYDtXUwC
-        KidpNP+VXAB3Rhyyd5iZzWs=
-X-Google-Smtp-Source: ABdhPJwJqoUiFy7YXuGI7xJHhZ4oqQidNFSSfrsgUMREpiAhvQS66r555cMNOfkEqZZH73MivZZI6w==
-X-Received: by 2002:a17:902:a9c3:b029:12c:31c7:9b81 with SMTP id b3-20020a170902a9c3b029012c31c79b81mr4901232plr.30.1627568456660;
-        Thu, 29 Jul 2021 07:20:56 -0700 (PDT)
-Received: from ojas ([122.161.51.5])
-        by smtp.gmail.com with ESMTPSA id p3sm4091663pgi.20.2021.07.29.07.20.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 07:20:56 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 19:50:43 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, nsaenz@kernel.org,
-        dan.carpenter@oracle.com, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] staging: vchiq: Set $CONFIG_VCHIQ_CDEV to be enabled
- by default
-Message-ID: <20210729142043.GA25192@ojas>
-References: <cover.1627495116.git.ojaswin98@gmail.com>
- <70d91b0482e19d7551d3258ea54c970c1b996317.1627495116.git.ojaswin98@gmail.com>
- <YQGl47Wpu7+SHIW+@kroah.com>
- <20210728200607.GB17046@ojas>
- <ddcc0ba2-edc0-89a9-b20d-ce58b3e548fc@i2se.com>
+        Thu, 29 Jul 2021 10:23:15 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 16TELnM4012048;
+        Thu, 29 Jul 2021 23:21:49 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 16TELnM4012048
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1627568510;
+        bh=gIER6M/yetFIr/zY03y/J3RNp299mi6jgg2VO7pHBG8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OIPGhlSxzmEIQ/XRyK6pMZbkWX9BN+XwZhARCinWDPyLS90GApKnXNjHdoq6BF/zj
+         I+f6oSr0ddA3qlUD/ACerbzjWRKhW0cCWpfJ4NP98cj47TUqEUx0dxxWeY9XAOGtl8
+         6KMI7wxFlY0mFJDZw0nyYHsKaLdsmrrKVOJTdTwoM1AVDOtlKx+gOerVrJ6a0XQ5Y9
+         PSyntHQnVqeQIFpgClnwVAFg/JcYK2oggCSuxSjg+XSmGtiIm1ATmbkPx5VbyAzIvq
+         hVbzJ0mTwVUto4KmfIjxtq/55918dttdzwc6bdeV2kL9G2HOuGSxSMqPp6i9EsIWli
+         cWulz2pQqrUsA==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: move the (z)install rules to arch/riscv/Makefile
+Date:   Thu, 29 Jul 2021 23:21:47 +0900
+Message-Id: <20210729142147.445593-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ddcc0ba2-edc0-89a9-b20d-ce58b3e548fc@i2se.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:21:41PM +0200, Stefan Wahren wrote:
-> Am 28.07.21 um 22:06 schrieb Ojaswin Mujoo:
-> > On Wed, Jul 28, 2021 at 08:45:55PM +0200, Greg KH wrote:
-> >> On Thu, Jul 29, 2021 at 12:07:16AM +0530, Ojaswin Mujoo wrote:
-> >>> Before this config was defined, the cdev used to be created
-> >>> unconditionally. When an earlier commit introduced this config, the
-> >>> default behavior was set to disabled, which might surprise some
-> >>> unsuspecting users.  Hence, make this config default to 'Y' to be more
-> >>> backward consistent.
-> >>>
-> >>> Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
-> >>> ---
-> >>>  drivers/staging/vc04_services/Kconfig | 1 +
-> >>>  1 file changed, 1 insertion(+)
-> >>>
-> >>> diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
-> >>> index 63caa6818d37..2b70c37cdd09 100644
-> >>> --- a/drivers/staging/vc04_services/Kconfig
-> >>> +++ b/drivers/staging/vc04_services/Kconfig
-> >>> @@ -23,6 +23,7 @@ if BCM2835_VCHIQ
-> >>>  
-> >>>  config VCHIQ_CDEV
-> >>>  	bool "VCHIQ Character Driver"
-> >>> +	default y
-> >>
-> >> default y is only if the machine will not work without this option.
-> >> Is that the case here?  If not, then please do not have this as the
-> >> default.
-> > Got it Greg. 
-> >
-> > From my testing, the Raspberry Pi does seem to boot correctly without
-> > this although some userspace libraries might not work. 
-> >
-> > Since the machine itself works, I guess I'll drop this patch.
-> 
-> The idea is good, but the patch needs improvement :)
-> 
-> Acceptable solution might be that BCM2835_VCHIQ selects VCHIQ_CDEV.
-Thanks for the suggestion, Stefan. 
+Currently, the (z)install targets in arch/riscv/Makefile descend into
+arch/riscv/boot/Makefile to invoke the shell script, but there is no
+good reason to do so.
 
-So on testing with select, it seems like select defines a hard reverse
-dependency i.e if BCM2835_VCHIQ=y then VCHIQ_CDEV=y and it can't be set
-to n.
+arch/riscv/Makefile can run the shell script directly.
 
-Checking the Kconfig launguae doc, I found that we could use "imply" to
-define weak reverse dependencies, such that BCM2835_VCHIQ=y auto selects
-VCHIQ_CDEV=y but we can also change it back to n if required. I tested
-this out and it seems to work fine. I believe we can se imply here as it
-better suits the use case.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Thank you,
-Ojaswin
-> 
-> >
-> > Thank you!
-> > Ojaswin
-> >> thanks,
-> >>
-> >> greg k-h
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+ arch/riscv/Makefile      | 7 +++++--
+ arch/riscv/boot/Makefile | 8 --------
+ 2 files changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index bc74afdbf31e..3c437fb09a07 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -126,8 +126,11 @@ $(BOOT_TARGETS): vmlinux
+ Image.%: Image
+ 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
+ 
+-zinstall install:
+-	$(Q)$(MAKE) $(build)=$(boot) $@
++install: install-image = Image
++zinstall: install-image = Image.gz
++install zinstall:
++	$(CONFIG_SHELL) $(srctree)/$(boot)/install.sh $(KERNELRELEASE) \
++	$(boot)/$(install-image) System.map "$(INSTALL_PATH)"
+ 
+ archclean:
+ 	$(Q)$(MAKE) $(clean)=$(boot)
+diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
+index 6bf299f70c27..becd0621071c 100644
+--- a/arch/riscv/boot/Makefile
++++ b/arch/riscv/boot/Makefile
+@@ -58,11 +58,3 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
+ 
+ $(obj)/loader.bin: $(obj)/loader FORCE
+ 	$(call if_changed,objcopy)
+-
+-install:
+-	$(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
+-	$(obj)/Image System.map "$(INSTALL_PATH)"
+-
+-zinstall:
+-	$(CONFIG_SHELL) $(srctree)/$(src)/install.sh $(KERNELRELEASE) \
+-	$(obj)/Image.gz System.map "$(INSTALL_PATH)"
+-- 
+2.27.0
+
