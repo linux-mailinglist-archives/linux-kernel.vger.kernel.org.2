@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B3C3DA4E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74E53DA4FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237994AbhG2N4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:56:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46470 "EHLO mail.kernel.org"
+        id S238199AbhG2N51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:57:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237924AbhG2N4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:56:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3FB560F42;
-        Thu, 29 Jul 2021 13:56:32 +0000 (UTC)
+        id S238034AbhG2N5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:57:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71BF960F43;
+        Thu, 29 Jul 2021 13:57:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627566993;
-        bh=XgbLbzi5wZdAoqd7BTj6HlFDf77mLOGO7053c4OTYnY=;
+        s=korg; t=1627567027;
+        bh=990hEWUFXpwXJWCSflrQzlw4eWngcYVGx39aLAMGdD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xE5yWr6Zr/YLUMWVUJC5qqzRYCitjeJXVBaJQyabzKoQ0Ey3XmJH597cUBn+dWMgo
-         uU6PCNot4lfaDjtk/drXwhyG7hTvlwozEwKNoIVHSpj1+JhzrEeG/McNV5VRv8/KZD
-         WzBggcIfwtat8BuGo8k9r8iVXmoCJgc+S4PBC4+8=
+        b=foSR5Lw2IrYPgfOnoCCMvTfxa3jnQCdqhNOFpnwesgCbN3fXF1UQ+oIrCMBRAo51l
+         wEWluVfhGw4t77vZKSIokabAieM+uqFmUlWFTTJRQ5O8odNT/u+LJAtYZagcPDjhZU
+         vC0+ZEeT+jztvluLhRGAM6k6/kXaeccnqaRr8J00=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 17/17] ARM: dts: versatile: Fix up interrupt controller node names
-Date:   Thu, 29 Jul 2021 15:54:18 +0200
-Message-Id: <20210729135137.798474715@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 12/21] hfs: add missing clean-up in hfs_fill_super
+Date:   Thu, 29 Jul 2021 15:54:19 +0200
+Message-Id: <20210729135143.306799857@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729135137.260993951@linuxfoundation.org>
-References: <20210729135137.260993951@linuxfoundation.org>
+In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
+References: <20210729135142.920143237@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +46,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-[ Upstream commit 82a1c67554dff610d6be4e1982c425717b3c6a23 ]
+[ Upstream commit 16ee572eaf0d09daa4c8a755fdb71e40dbf8562d ]
 
-Once the new schema interrupt-controller/arm,vic.yaml is added, we get
-the below warnings:
+Patch series "hfs: fix various errors", v2.
 
-        arch/arm/boot/dts/versatile-ab.dt.yaml:
-        intc@10140000: $nodename:0: 'intc@10140000' does not match
-        '^interrupt-controller(@[0-9a-f,]+)*$'
+This series ultimately aims to address a lockdep warning in
+hfs_find_init reported by Syzbot [1].
 
-	arch/arm/boot/dts/versatile-ab.dt.yaml:
-	intc@10140000: 'clear-mask' does not match any of the regexes
+The work done for this led to the discovery of another bug, and the
+Syzkaller repro test also reveals an invalid memory access error after
+clearing the lockdep warning.  Hence, this series is broken up into
+three patches:
 
-Fix the node names for the interrupt controller to conform
-to the standard node name interrupt-controller@.. Also drop invalid
-clear-mask property.
+1. Add a missing call to hfs_find_exit for an error path in
+   hfs_fill_super
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210701132118.759454-1-sudeep.holla@arm.com'
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+2. Fix memory mapping in hfs_bnode_read by fixing calls to kmap
+
+3. Add lock nesting notation to tell lockdep that the observed locking
+   hierarchy is safe
+
+This patch (of 3):
+
+Before exiting hfs_fill_super, the struct hfs_find_data used in
+hfs_find_init should be passed to hfs_find_exit to be cleaned up, and to
+release the lock held on the btree.
+
+The call to hfs_find_exit is missing from an error path.  We add it back
+in by consolidating calls to hfs_find_exit for error paths.
+
+Link: https://syzkaller.appspot.com/bug?id=f007ef1d7a31a469e3be7aeb0fde0769b18585db [1]
+Link: https://lkml.kernel.org/r/20210701030756.58760-1-desmondcheongzx@gmail.com
+Link: https://lkml.kernel.org/r/20210701030756.58760-2-desmondcheongzx@gmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Reviewed-by: Viacheslav Dubeyko <slava@dubeyko.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/versatile-ab.dts | 5 ++---
- arch/arm/boot/dts/versatile-pb.dts | 2 +-
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ fs/hfs/super.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/versatile-ab.dts b/arch/arm/boot/dts/versatile-ab.dts
-index 6f4f60ba5429..990b7ef1800e 100644
---- a/arch/arm/boot/dts/versatile-ab.dts
-+++ b/arch/arm/boot/dts/versatile-ab.dts
-@@ -192,16 +192,15 @@
- 		#size-cells = <1>;
- 		ranges;
+diff --git a/fs/hfs/super.c b/fs/hfs/super.c
+index c33324686d89..bcf820ce0e02 100644
+--- a/fs/hfs/super.c
++++ b/fs/hfs/super.c
+@@ -421,14 +421,12 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (!res) {
+ 		if (fd.entrylength > sizeof(rec) || fd.entrylength < 0) {
+ 			res =  -EIO;
+-			goto bail;
++			goto bail_hfs_find;
+ 		}
+ 		hfs_bnode_read(fd.bnode, &rec, fd.entryoffset, fd.entrylength);
+ 	}
+-	if (res) {
+-		hfs_find_exit(&fd);
+-		goto bail_no_root;
+-	}
++	if (res)
++		goto bail_hfs_find;
+ 	res = -EINVAL;
+ 	root_inode = hfs_iget(sb, &fd.search_key->cat, &rec);
+ 	hfs_find_exit(&fd);
+@@ -444,6 +442,8 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	/* everything's okay */
+ 	return 0;
  
--		vic: intc@10140000 {
-+		vic: interrupt-controller@10140000 {
- 			compatible = "arm,versatile-vic";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
- 			reg = <0x10140000 0x1000>;
--			clear-mask = <0xffffffff>;
- 			valid-mask = <0xffffffff>;
- 		};
- 
--		sic: intc@10003000 {
-+		sic: interrupt-controller@10003000 {
- 			compatible = "arm,versatile-sic";
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
-diff --git a/arch/arm/boot/dts/versatile-pb.dts b/arch/arm/boot/dts/versatile-pb.dts
-index 06a0fdf24026..e7e751a858d8 100644
---- a/arch/arm/boot/dts/versatile-pb.dts
-+++ b/arch/arm/boot/dts/versatile-pb.dts
-@@ -7,7 +7,7 @@
- 
- 	amba {
- 		/* The Versatile PB is using more SIC IRQ lines than the AB */
--		sic: intc@10003000 {
-+		sic: interrupt-controller@10003000 {
- 			clear-mask = <0xffffffff>;
- 			/*
- 			 * Valid interrupt lines mask according to
++bail_hfs_find:
++	hfs_find_exit(&fd);
+ bail_no_root:
+ 	pr_err("get root inode failed\n");
+ bail:
 -- 
 2.30.2
 
