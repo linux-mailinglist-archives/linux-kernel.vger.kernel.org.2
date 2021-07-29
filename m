@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAEC3DA51A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A27933DA5A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237877AbhG2N6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:58:09 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:35642 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238138AbhG2N5l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:57:41 -0400
-Received: by mail-io1-f50.google.com with SMTP id y9so7287476iox.2;
-        Thu, 29 Jul 2021 06:57:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=f6yLtzVKiViVv7Lb1wtruCMYUOAawC7NxRnHoG+pOk8=;
-        b=feGBgC/3vgmfVHRGe9/Y72h91iPAdvL1scvBkzaVzjP86CWHixD20aVaI396NQt7lY
-         v4IfsOeIf40u63SZdlbRDqtekKyaXWoxkBV1bFiCFlUyIF5HXBnWPB8doSbE0c23mwCR
-         L4ckgkaWVmftt/m1RzkhCCcun/IWqAu9sIh3T2kYBj4cyOEFUT4auH+EgIG7Jk18DW/X
-         2n0OKzVfJEeBvlHoNUX33893u5m/AlbxwFNJYbzxa49ytPWJsSRVHUnp168FObsHW540
-         POEjufgVUSUhKKt1htM48K/vb2ddo9f0jX6eddejCo2jTCW/5cN7dCiCBL9YV3PKKbjH
-         Nx1w==
-X-Gm-Message-State: AOAM531raok7ichHVSFTL+gXM6xt6W5CFwBnOsIddVm8IRr7iz2Dm4dN
-        65AryBJiJU96bVHvFMeMTg==
-X-Google-Smtp-Source: ABdhPJyc/94GUQtfy7aN4QTYu5OZ1tFkRkbCxT6z/ChFXl9JaiEB19aizs+rmbVyKypgppOh+favxQ==
-X-Received: by 2002:a05:6602:2057:: with SMTP id z23mr4169789iod.29.1627567057226;
-        Thu, 29 Jul 2021 06:57:37 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id r8sm2390396iov.39.2021.07.29.06.57.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 06:57:36 -0700 (PDT)
-Received: (nullmailer pid 200467 invoked by uid 1000);
-        Thu, 29 Jul 2021 13:57:34 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, kuba@kernel.org,
-        p.zabel@pengutronix.de, hkallweit1@gmail.com, agross@kernel.org,
-        andrew@lunn.ch, netdev@vger.kernel.org, davem@davemloft.net,
-        robert.marko@sartura.hr, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-In-Reply-To: <20210729125358.5227-3-luoj@codeaurora.org>
-References: <20210729125358.5227-1-luoj@codeaurora.org> <20210729125358.5227-3-luoj@codeaurora.org>
-Subject: Re: [PATCH 3/3] dt-bindings: net: rename Qualcomm IPQ MDIO bindings
-Date:   Thu, 29 Jul 2021 07:57:34 -0600
-Message-Id: <1627567054.801645.200466.nullmailer@robh.at.kernel.org>
+        id S239068AbhG2OIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:08:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238537AbhG2OBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:01:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2DFD60F4B;
+        Thu, 29 Jul 2021 14:00:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627567237;
+        bh=zpaHIP0trcuo0pKfQIns0Olh+uBBj4ssUvGd0sEYq6Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MklJTt6j1cy+MWLSeVkjK9Vb753BQLTmRSsDJ+cjTnpXHvcuApz+YoHMS9RTO+kdI
+         6LdQ6G60UnCRL6SolGgwnIr30H0URTxF3xtYIOkDSYkyX1ZQiWbFbiqQjURYWnb/w/
+         TEszwDmuPsyvhlwJPhnl6EEDbtwkOs1Bbo/QZwZc=
+Date:   Thu, 29 Jul 2021 15:59:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     qiaoyanbo_310 <qiaoyanbo_310@163.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] kobject: kobject_add_internal cleanup
+Message-ID: <YQK0JuI1w1zsEHeC@kroah.com>
+References: <20210727143212.39142-1-qiaoyanbo_310@163.com>
+ <YQEtJkPFDWMSAd/C@kroah.com>
+ <3be7ce57.62f6.17af280a47f.Coremail.qiaoyanbo_310@163.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3be7ce57.62f6.17af280a47f.Coremail.qiaoyanbo_310@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jul 2021 20:53:58 +0800, Luo Jie wrote:
-> rename ipq4019-mdio.yaml to ipq-mdio.yaml for supporting more
-> ipq boards such as ipq40xx, ipq807x, ipq60xx and ipq50xx.
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
+
+A: No.
+Q: Should I include quotations after my reply?
+
+http://daringfireball.net/2007/07/on_top
+
+On Thu, Jul 29, 2021 at 09:42:34PM +0800, qiaoyanbo_310 wrote:
+> Hi Greg k-h,
 > 
-> Signed-off-by: Luo Jie <luoj@codeaurora.org>
-> ---
->  ...m,ipq4019-mdio.yaml => qcom,ipq-mdio.yaml} | 32 ++++++++++++++++---
->  1 file changed, 28 insertions(+), 4 deletions(-)
->  rename Documentation/devicetree/bindings/net/{qcom,ipq4019-mdio.yaml => qcom,ipq-mdio.yaml} (58%)
 > 
+> First at all, there is my mistake about From line different with Sign off line. They all should be "Qiao Yanbo".
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Great, please fix that up.
 
-yamllint warnings/errors:
+> Secondly, the problem this patch wants to solve is： In this function, the parent variable is first called "kobject_get (kobj->parent) " assignment. When the parent is not null, the just obtained parent is assigned back to "kobj - > parent", which is meaningless. Actually, "kobj->kset->kobj" will be assigned to "kobj->parent" only when the parent is NULL. So this patch solves the problem of meaningless assignment.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/qcom,ipq-mdio.example.dt.yaml: mdio@90000: reg: [[589824, 100]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/qcom,ipq-mdio.yaml
-\ndoc reference errors (make refcheckdocs):
+Why is this a problem?  What bug is this solving?  Is the code somehow
+now faster or smaller that can be measured?
 
-See https://patchwork.ozlabs.org/patch/1511253
+> Finally , I tested this patch and didn't see any additional problems in my environment.
+> 
+> 
+> Here is the original code snippet. I hope you can understand my idea.
+> ======================================================= 
+>        parent = kobject_get(kobj->parent);
+> 
+> 
+>         /* join kset if set, use it as parent if we do not already have one */
+>         if (kobj->kset) {
+>                 if (!parent)
+>                         parent = kobject_get(&kobj->kset->kobj);
+>                 kobj_kset_join(kobj);
+>                 kobj->parent = parent;
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+I do not see a bug with this code, what is wrong with it?
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+thanks,
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+greg k-h
