@@ -2,409 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374EC3DA8BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9903DA8BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231350AbhG2QSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231420AbhG2QSh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:18:37 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C020C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:18:33 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id c7-20020a9d27870000b02904d360fbc71bso6368651otb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zmKveIAYbBTBnY55675WcFmTMajiGGjmMHwrRMhj8xk=;
-        b=kA4MpBL0EpYu0CGamz/vCqUNLw+gHARamWO6i5IiCSuVfj53pppWlpjDuT5Rj5mZa6
-         a7j5jo2Y0i7apU/ms31YnrXZRjwnBTkYxn4u6pNyfB9BKC9cAlA2PEaNZyb8xdKCBs5U
-         tO07e/lcsCP9fkfq6vJB/b3+Fqxz4X4Fnx+Pk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zmKveIAYbBTBnY55675WcFmTMajiGGjmMHwrRMhj8xk=;
-        b=alPzgNzpI3Fo/dJkwPyc4pGUrUHkS5IUUt4TLSEPJVKU+BGzoILI/qSycG6GZUjwXw
-         QFhR83zQsF3DcA4rcBVgM0E1fdhODaFceYRXp/lwL0NS3do5QUT7sEu3VBrPobtLOqS2
-         oC0aHUvRL6UFhAUOlUDZJbsmkCeprD6itWGJJ1LCBI/JC0cby2sQKUYB2w1BkCSOoQvc
-         3+S/4yIUOCus7sCgLCl0Tfqyizgh4m0wM0XEhG2HI7FhyEsbhKrWSvYXlMko08KBUQ8/
-         BD4ZMp5hhRJCMU31aUt5384X6d0qZlDC4vBtUfe8DFGfQOUifC0p0Cvtlw+fbLlqJHgx
-         uQ8A==
-X-Gm-Message-State: AOAM530zSq9oLt1X0IqAmuLbodqobYC0E8mBK+Sq1NN6X1iuYrpG48Sf
-        Ia5MmiYtTQa8v+0MsMRGpMnhkJtqOeylzfgzUt4ADQ==
-X-Google-Smtp-Source: ABdhPJzBci/tj/bCUyHHuBvZPyafx8Ll/i7z8tWquHpWo8+lhjb+3Kyov65R2fGHOfU1n7A9ESrG+l7ZMH/VU3O7Yrs=
-X-Received: by 2002:a05:6830:2802:: with SMTP id w2mr3925202otu.303.1627575512650;
- Thu, 29 Jul 2021 09:18:32 -0700 (PDT)
+        id S231521AbhG2QSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:18:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:52052 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231416AbhG2QSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 12:18:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 584A41FB;
+        Thu, 29 Jul 2021 09:18:48 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 838BA3F73D;
+        Thu, 29 Jul 2021 09:18:45 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 17:18:43 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
+        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Andriy.Tryshnivskyy@opensynergy.com
+Subject: Re: [PATCH v6 11/17] firmware: arm_scmi: Make SCMI transports
+ configurable
+Message-ID: <20210729161843.GN6592@e120937-lin>
+References: <20210712141833.6628-1-cristian.marussi@arm.com>
+ <20210712141833.6628-12-cristian.marussi@arm.com>
+ <20210728145033.wpobgpxane2t2brc@bogus>
 MIME-Version: 1.0
-References: <20210726233854.2453899-1-robdclark@gmail.com> <20210726233854.2453899-2-robdclark@gmail.com>
- <50b181fe-6605-b7ac-36a6-8bcda2930e6f@gmail.com> <CAF6AEGuNxi_aeYE37FT3a-atCUWgepxs-9EwxMfpiMaU7wgqdQ@mail.gmail.com>
- <9edd7083-e6b3-b230-c273-8f2fbe76ca17@amd.com> <703dc9c3-5657-432e-ca0b-25bdd67a2abd@gmail.com>
- <CAF6AEGvSpvc2po93b2eKB2cSzx_a+BtPWhQgRs-1NFFZfUbJNw@mail.gmail.com>
- <e5e71356-1c58-04ac-2609-70d268941b8d@amd.com> <CAF6AEGu3NMyRp1pC5iZQoHhKhu_xBFBqkkfbG36dx8bVzYdWMA@mail.gmail.com>
- <YQJSxEVUkZmfL5Cb@phenom.ffwll.local> <CAF6AEGswVQx3Vtm=Oab3CsQw1fE-yf9y2_MB2wdx_e14FLNwXQ@mail.gmail.com>
-In-Reply-To: <CAF6AEGswVQx3Vtm=Oab3CsQw1fE-yf9y2_MB2wdx_e14FLNwXQ@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 29 Jul 2021 18:18:21 +0200
-Message-ID: <CAKMK7uHjtiL9TzfMMKaKWMRx=-p_ZUg07wSp9djz7gwwUjn=zw@mail.gmail.com>
-Subject: Re: [RFC 1/4] dma-fence: Add deadline awareness
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728145033.wpobgpxane2t2brc@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 5:19 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> On Thu, Jul 29, 2021 at 12:03 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Wed, Jul 28, 2021 at 10:58:51AM -0700, Rob Clark wrote:
-> > > On Wed, Jul 28, 2021 at 10:23 AM Christian K=C3=B6nig
-> > > <christian.koenig@amd.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > Am 28.07.21 um 17:15 schrieb Rob Clark:
-> > > > > On Wed, Jul 28, 2021 at 4:37 AM Christian K=C3=B6nig
-> > > > > <ckoenig.leichtzumerken@gmail.com> wrote:
-> > > > >> Am 28.07.21 um 09:03 schrieb Christian K=C3=B6nig:
-> > > > >>> Am 27.07.21 um 16:25 schrieb Rob Clark:
-> > > > >>>> On Tue, Jul 27, 2021 at 12:11 AM Christian K=C3=B6nig
-> > > > >>>> <ckoenig.leichtzumerken@gmail.com> wrote:
-> > > > >>>>> Am 27.07.21 um 01:38 schrieb Rob Clark:
-> > > > >>>>>> From: Rob Clark <robdclark@chromium.org>
-> > > > >>>>>>
-> > > > >>>>>> Add a way to hint to the fence signaler of an upcoming deadl=
-ine,
-> > > > >>>>>> such as
-> > > > >>>>>> vblank, which the fence waiter would prefer not to miss. Thi=
-s is to
-> > > > >>>>>> aid
-> > > > >>>>>> the fence signaler in making power management decisions, lik=
-e boosting
-> > > > >>>>>> frequency as the deadline approaches and awareness of missin=
-g
-> > > > >>>>>> deadlines
-> > > > >>>>>> so that can be factored in to the frequency scaling.
-> > > > >>>>>>
-> > > > >>>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > > >>>>>> ---
-> > > > >>>>>>     drivers/dma-buf/dma-fence.c | 39
-> > > > >>>>>> +++++++++++++++++++++++++++++++++++++
-> > > > >>>>>>     include/linux/dma-fence.h   | 17 ++++++++++++++++
-> > > > >>>>>>     2 files changed, 56 insertions(+)
-> > > > >>>>>>
-> > > > >>>>>> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/d=
-ma-fence.c
-> > > > >>>>>> index ce0f5eff575d..2e0d25ab457e 100644
-> > > > >>>>>> --- a/drivers/dma-buf/dma-fence.c
-> > > > >>>>>> +++ b/drivers/dma-buf/dma-fence.c
-> > > > >>>>>> @@ -910,6 +910,45 @@ dma_fence_wait_any_timeout(struct dma_f=
-ence
-> > > > >>>>>> **fences, uint32_t count,
-> > > > >>>>>>     }
-> > > > >>>>>>     EXPORT_SYMBOL(dma_fence_wait_any_timeout);
-> > > > >>>>>>
-> > > > >>>>>> +
-> > > > >>>>>> +/**
-> > > > >>>>>> + * dma_fence_set_deadline - set desired fence-wait deadline
-> > > > >>>>>> + * @fence:    the fence that is to be waited on
-> > > > >>>>>> + * @deadline: the time by which the waiter hopes for the fe=
-nce to be
-> > > > >>>>>> + *            signaled
-> > > > >>>>>> + *
-> > > > >>>>>> + * Inform the fence signaler of an upcoming deadline, such =
-as
-> > > > >>>>>> vblank, by
-> > > > >>>>>> + * which point the waiter would prefer the fence to be sign=
-aled
-> > > > >>>>>> by.  This
-> > > > >>>>>> + * is intended to give feedback to the fence signaler to ai=
-d in power
-> > > > >>>>>> + * management decisions, such as boosting GPU frequency if =
-a periodic
-> > > > >>>>>> + * vblank deadline is approaching.
-> > > > >>>>>> + */
-> > > > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_=
-t
-> > > > >>>>>> deadline)
-> > > > >>>>>> +{
-> > > > >>>>>> +     unsigned long flags;
-> > > > >>>>>> +
-> > > > >>>>>> +     if (dma_fence_is_signaled(fence))
-> > > > >>>>>> +             return;
-> > > > >>>>>> +
-> > > > >>>>>> +     spin_lock_irqsave(fence->lock, flags);
-> > > > >>>>>> +
-> > > > >>>>>> +     /* If we already have an earlier deadline, keep it: */
-> > > > >>>>>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->=
-flags) &&
-> > > > >>>>>> +         ktime_before(fence->deadline, deadline)) {
-> > > > >>>>>> +             spin_unlock_irqrestore(fence->lock, flags);
-> > > > >>>>>> +             return;
-> > > > >>>>>> +     }
-> > > > >>>>>> +
-> > > > >>>>>> +     fence->deadline =3D deadline;
-> > > > >>>>>> +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags=
-);
-> > > > >>>>>> +
-> > > > >>>>>> +     spin_unlock_irqrestore(fence->lock, flags);
-> > > > >>>>>> +
-> > > > >>>>>> +     if (fence->ops->set_deadline)
-> > > > >>>>>> +             fence->ops->set_deadline(fence, deadline);
-> > > > >>>>>> +}
-> > > > >>>>>> +EXPORT_SYMBOL(dma_fence_set_deadline);
-> > > > >>>>>> +
-> > > > >>>>>>     /**
-> > > > >>>>>>      * dma_fence_init - Initialize a custom fence.
-> > > > >>>>>>      * @fence: the fence to initialize
-> > > > >>>>>> diff --git a/include/linux/dma-fence.h b/include/linux/dma-f=
-ence.h
-> > > > >>>>>> index 6ffb4b2c6371..4e6cfe4e6fbc 100644
-> > > > >>>>>> --- a/include/linux/dma-fence.h
-> > > > >>>>>> +++ b/include/linux/dma-fence.h
-> > > > >>>>>> @@ -88,6 +88,7 @@ struct dma_fence {
-> > > > >>>>>>                 /* @timestamp replaced by @rcu on
-> > > > >>>>>> dma_fence_release() */
-> > > > >>>>>>                 struct rcu_head rcu;
-> > > > >>>>>>         };
-> > > > >>>>>> +     ktime_t deadline;
-> > > > >>>>> Mhm, adding the flag sounds ok to me but I'm a bit hesitating=
- adding
-> > > > >>>>> the
-> > > > >>>>> deadline as extra field here.
-> > > > >>>>>
-> > > > >>>>> We tuned the dma_fence structure intentionally so that it is =
-only 64
-> > > > >>>>> bytes.
-> > > > >>>> Hmm, then I guess you wouldn't be a fan of also adding an hrti=
-mer?
-> > > > >>>>
-> > > > >>>> We could push the ktime_t (and timer) down into the derived fe=
-nce
-> > > > >>>> class, but I think there is going to need to be some extra sto=
-rage
-> > > > >>>> *somewhere*.. maybe the fence signaler could get away with jus=
-t
-> > > > >>>> storing the nearest upcoming deadline per fence-context instea=
-d?
-> > > > >>> I would just push that into the driver instead.
-> > > > >>>
-> > > > >>> You most likely don't want the deadline per fence anyway in com=
-plex
-> > > > >>> scenarios, but rather per frame. And a frame is usually compose=
-d from
-> > > > >>> multiple fences.
-> > > > > Right, I ended up keeping track of the nearest deadline in patch =
-5/4
-> > > > > which added drm/msm support:
-> > > > >
-> > > > >    https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A=
-%2F%2Fpatchwork.freedesktop.org%2Fpatch%2F447138%2F&amp;data=3D04%7C01%7Cch=
-ristian.koenig%40amd.com%7Cce6ace85263d448bbc9f08d951d9f06c%7C3dd8961fe4884=
-e608e11a82d994e183d%7C0%7C0%7C637630819606427306%7CUnknown%7CTWFpbGZsb3d8ey=
-JWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp=
-;sdata=3DameszAOlClaZNeUDlYr37ZdIytVXNgiEUKuctjXLqZ0%3D&amp;reserved=3D0
-> > > > >
-> > > > > But if we do have the ktime_t in dma_fence in dma_fence, we can a=
-dd
-> > > > > some checks and avoid calling back to the driver if a later deadl=
-ine
-> > > > > is set on a fence that already has an earlier deadline.  OTOH I
-> > > > > suppose I can push all that back to the driver to start, and we c=
-an
-> > > > > revisit once we have more drivers implementing deadline support.
-> > > >
-> > > > I still think that all of this is rather specific to your use case =
-and
-> > > > have strong doubt that anybody else will implement that.
-> > >
-> > > i915 does already have a similar thing in it's hand-rolled atomic
-> > > commit path.  So I think msm won't be the only one.  It should be als=
-o
-> > > useful to the other mobile GPUs with a gpu vs kms driver split,
-> > > although looking at the other gpu devfreq implementations, I don't
-> > > think they've yet gotten to this point in the fine tuning..
-> >
-> > Yeah I have a dream that maybe i915 will use the atomic commit helpers,=
- I
-> > originally wrote them with i915 in mind :-) even had patches!
-> >
-> > I also think we'll need this eventually in other areas, Android also ha=
-s
-> > some hacks like this to make sure idle->first touch doesn't suck and
-> > similar things.
->
-> input-boost is another thing I have on my roadmap.. part of the solution =
-is:
->
->     commit 9bc95570175a7fbca29d86d22c54bbf399f4ad5a
->     Author:     Rob Clark <robdclark@chromium.org>
->     AuthorDate: Mon Jul 26 07:46:50 2021 -0700
->     Commit:     Rob Clark <robdclark@chromium.org>
->     CommitDate: Tue Jul 27 17:54:36 2021 -0700
->
->         drm/msm: Devfreq tuning
->
-> which gives the freq a bit of a nudge if the GPU has been idle for
-> longer than a certain threshold.
->
-> But the other part is that if the GPU has been idle for more than 66ms
-> (typical autosuspend delay for adreno) it will suspend.  For modern
-> adreno's it takes ~2ms to "boot up" the GPU from suspend.  Which is
-> something you want to take out of the submit/execbuf path if you are
-> trying to reduce input-to-pageflip latency.
->
-> We have a downstream patch that boosts the CPUs on input events (with
-> a cooldown period to prevent spacebar-heater) and I have been thinking
-> of something along those lines to trigger resuming the GPU.. it is
-> straightforward enough for touch based devices, but gets more
-> complicated with keyboard input.  In particular, some keys you want to
-> trigger boost on key-release.  Ie. modifier keys (ctrl/shift/alt/etc..
-> the "search" key on chromebooks, etc) you want to boost on
-> key-release, not on key-press because unless you type *really* fast
-> you'll be in the cooldown period when the key-release event happens.
-> Unfortunately the kernel doesn't really know this "policy" sort of
-> information about which keys should boost on press vs release.  So I
-> think the long-term/upstream solution is to do input-boost in
-> userspace.. sysfs already has all the knobs that a userspace
-> input-boost daemon would need to twiddle, so no real need for this to
-> be in the kernel.  I guess the only drawback is the sysfs knobs are a
-> bit less standardized on the "desktop GPUs" which don't use devfreq.
+On Wed, Jul 28, 2021 at 03:50:33PM +0100, Sudeep Holla wrote:
+> On Mon, Jul 12, 2021 at 03:18:27PM +0100, Cristian Marussi wrote:
+> > Add configuration options to be able to select which SCMI transports have
+> > to be compiled into the SCMI stack.
+> > 
+> > Mailbox and SMC are by default enabled if their related dependencies are
+> > satisfied.
+> > 
+> > While doing that move all SCMI related config options in their own
+> > dedicated submenu.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> > Used a BUILD_BUG_ON() to avoid the scenario where SCMI is configured
+> > without any transport. Coul dnot do in any other way in Kconfig due to
+> > circular dependencies.
+> > 
+> > This will be neeed later on to add new Virtio based transport and
+> > optionally exclude other transports.
+> > ---
 
-I think we could do a standard interface for this, either on the drm
-owner/master or somewhere in sysfs. Essentially "I expect to use the
-gpu for the very next frame, get it going". Across all hw there's a
-lot of things we can do. I think abuse is pretty easy to prevent with
-a cooldown or similar.
--Daniel
+Hi Sudeep,
 
->
-> BR,
-> -R
->
-> > -Daniel
-> >
-> > >
-> > > BR,
-> > > -R
-> > >
-> > > > >> Thinking more about it we could probably kill the spinlock point=
-er and
-> > > > >> make the flags 32bit if we absolutely need that here.
-> > > > > If we had a 'struct dma_fence_context' we could push the spinlock=
-, ops
-> > > > > pointer, and u64 context into that and replace with a single
-> > > > > dma_fence_context ptr, fwiw
-> > > >
-> > > > That won't work. We have a lot of use cases where you can't allocat=
-e
-> > > > memory, but must allocate a context.
-> > > >
-> > > > Christian.
-> > > >
-> > > > >
-> > > > > BR,
-> > > > > -R
-> > > > >
-> > > > >> But I still don't see the need for that, especially since most d=
-rivers
-> > > > >> probably won't implement it.
-> > > > >>
-> > > > >> Regards,
-> > > > >> Christian.
-> > > > >>
-> > > > >>> Regards,
-> > > > >>> Christian.
-> > > > >>>
-> > > > >>>> BR,
-> > > > >>>> -R
-> > > > >>>>
-> > > > >>>>> Regards,
-> > > > >>>>> Christian.
-> > > > >>>>>
-> > > > >>>>>>         u64 context;
-> > > > >>>>>>         u64 seqno;
-> > > > >>>>>>         unsigned long flags;
-> > > > >>>>>> @@ -99,6 +100,7 @@ enum dma_fence_flag_bits {
-> > > > >>>>>>         DMA_FENCE_FLAG_SIGNALED_BIT,
-> > > > >>>>>>         DMA_FENCE_FLAG_TIMESTAMP_BIT,
-> > > > >>>>>>         DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
-> > > > >>>>>> +     DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
-> > > > >>>>>>         DMA_FENCE_FLAG_USER_BITS, /* must always be last mem=
-ber */
-> > > > >>>>>>     };
-> > > > >>>>>>
-> > > > >>>>>> @@ -261,6 +263,19 @@ struct dma_fence_ops {
-> > > > >>>>>>          */
-> > > > >>>>>>         void (*timeline_value_str)(struct dma_fence *fence,
-> > > > >>>>>>                                    char *str, int size);
-> > > > >>>>>> +
-> > > > >>>>>> +     /**
-> > > > >>>>>> +      * @set_deadline:
-> > > > >>>>>> +      *
-> > > > >>>>>> +      * Callback to allow a fence waiter to inform the fenc=
-e
-> > > > >>>>>> signaler of an
-> > > > >>>>>> +      * upcoming deadline, such as vblank, by which point t=
-he
-> > > > >>>>>> waiter would
-> > > > >>>>>> +      * prefer the fence to be signaled by.  This is intend=
-ed to
-> > > > >>>>>> give feedback
-> > > > >>>>>> +      * to the fence signaler to aid in power management
-> > > > >>>>>> decisions, such as
-> > > > >>>>>> +      * boosting GPU frequency.
-> > > > >>>>>> +      *
-> > > > >>>>>> +      * This callback is optional.
-> > > > >>>>>> +      */
-> > > > >>>>>> +     void (*set_deadline)(struct dma_fence *fence, ktime_t =
-deadline);
-> > > > >>>>>>     };
-> > > > >>>>>>
-> > > > >>>>>>     void dma_fence_init(struct dma_fence *fence, const struc=
-t
-> > > > >>>>>> dma_fence_ops *ops,
-> > > > >>>>>> @@ -586,6 +601,8 @@ static inline signed long dma_fence_wait=
-(struct
-> > > > >>>>>> dma_fence *fence, bool intr)
-> > > > >>>>>>         return ret < 0 ? ret : 0;
-> > > > >>>>>>     }
-> > > > >>>>>>
-> > > > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_=
-t
-> > > > >>>>>> deadline);
-> > > > >>>>>> +
-> > > > >>>>>>     struct dma_fence *dma_fence_get_stub(void);
-> > > > >>>>>>     struct dma_fence *dma_fence_allocate_private_stub(void);
-> > > > >>>>>>     u64 dma_fence_context_alloc(unsigned num);
-> > > >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+> >  drivers/firmware/Kconfig           | 34 +--------------
+> >  drivers/firmware/arm_scmi/Kconfig  | 70 ++++++++++++++++++++++++++++++
+> >  drivers/firmware/arm_scmi/Makefile |  4 +-
+> >  drivers/firmware/arm_scmi/common.h |  4 +-
+> >  drivers/firmware/arm_scmi/driver.c |  6 ++-
+> >  5 files changed, 80 insertions(+), 38 deletions(-)
+> >  create mode 100644 drivers/firmware/arm_scmi/Kconfig
+> > 
+> > diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> > index 1db738d5b301..8d41f73f5395 100644
+> > --- a/drivers/firmware/Kconfig
+> > +++ b/drivers/firmware/Kconfig
+> > @@ -6,39 +6,7 @@
+> >  
+> >  menu "Firmware Drivers"
+> >  
+> > -config ARM_SCMI_PROTOCOL
+> > -	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
+> > -	depends on ARM || ARM64 || COMPILE_TEST
+> > -	depends on MAILBOX || HAVE_ARM_SMCCC_DISCOVERY
+> > -	help
+> > -	  ARM System Control and Management Interface (SCMI) protocol is a
+> > -	  set of operating system-independent software interfaces that are
+> > -	  used in system management. SCMI is extensible and currently provides
+> > -	  interfaces for: Discovery and self-description of the interfaces
+> > -	  it supports, Power domain management which is the ability to place
+> > -	  a given device or domain into the various power-saving states that
+> > -	  it supports, Performance management which is the ability to control
+> > -	  the performance of a domain that is composed of compute engines
+> > -	  such as application processors and other accelerators, Clock
+> > -	  management which is the ability to set and inquire rates on platform
+> > -	  managed clocks and Sensor management which is the ability to read
+> > -	  sensor data, and be notified of sensor value.
+> > -
+> > -	  This protocol library provides interface for all the client drivers
+> > -	  making use of the features offered by the SCMI.
+> > -
+> > -config ARM_SCMI_POWER_DOMAIN
+> > -	tristate "SCMI power domain driver"
+> > -	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
+> > -	default y
+> > -	select PM_GENERIC_DOMAINS if PM
+> > -	help
+> > -	  This enables support for the SCMI power domains which can be
+> > -	  enabled or disabled via the SCP firmware
+> > -
+> > -	  This driver can also be built as a module.  If so, the module
+> > -	  will be called scmi_pm_domain. Note this may needed early in boot
+> > -	  before rootfs may be available.
+> > +source "drivers/firmware/arm_scmi/Kconfig"
+> >  
+> >  config ARM_SCPI_PROTOCOL
+> >  	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
+> > diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
+> > new file mode 100644
+> > index 000000000000..479fc8a3533e
+> > --- /dev/null
+> > +++ b/drivers/firmware/arm_scmi/Kconfig
+> > @@ -0,0 +1,70 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +menu "ARM System Control and Management Interface Protocol"
+> > +
+> > +config ARM_SCMI_PROTOCOL
+> > +	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
+> > +	depends on ARM || ARM64 || COMPILE_TEST
+> > +	help
+> > +	  ARM System Control and Management Interface (SCMI) protocol is a
+> > +	  set of operating system-independent software interfaces that are
+> > +	  used in system management. SCMI is extensible and currently provides
+> > +	  interfaces for: Discovery and self-description of the interfaces
+> > +	  it supports, Power domain management which is the ability to place
+> > +	  a given device or domain into the various power-saving states that
+> > +	  it supports, Performance management which is the ability to control
+> > +	  the performance of a domain that is composed of compute engines
+> > +	  such as application processors and other accelerators, Clock
+> > +	  management which is the ability to set and inquire rates on platform
+> > +	  managed clocks and Sensor management which is the ability to read
+> > +	  sensor data, and be notified of sensor value.
+> > +
+> > +	  This protocol library provides interface for all the client drivers
+> > +	  making use of the features offered by the SCMI.
+> > +
+> 
+> May be you can add if condition here to remove the depends on ARM_SCMI_PROTOCOL
+> 
+> if ARM_SCMI_PROTOCOL
+> 
 
+I'll do.
 
+> > +config ARM_SCMI_HAVE_TRANSPORT
+> > +	bool
+> > +	help
+> > +	  This declares whether at least one SCMI transport has been configured.
+> > +	  Used to trigger a build bug when trying to build SCMI without any
+> > +	  configured transport.
+> > +
+> > +config ARM_SCMI_TRANSPORT_MAILBOX
+> > +	bool "SCMI transport based on Mailbox"
+> > +	depends on ARM_SCMI_PROTOCOL && MAILBOX
+> 
+> And drop ARM_SCMI_PROTOCOL above
+> 
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Ditto
+
+> > +	select ARM_SCMI_HAVE_TRANSPORT
+> > +	default y
+> 
+> Do we need a user visible choice if it is always default on ?
+> 
+
+I'll leave for now as said offline to be able to not build unsupported
+transport.
+
+> > +	help
+> > +	  Enable mailbox based transport for SCMI.
+> > +
+> > +	  If you want the ARM SCMI PROTOCOL stack to include support for a
+> > +	  transport based on mailboxes, answer Y.
+> > +	  A matching DT entry will also be needed to indicate the effective
+> > +	  presence of this kind of transport.
+> > +
+> 
+> I would drop the above comment on matching DT.
+> 
+
+Yes right, I was in doubt in fact if it was sensible place for that
+comment.
+
+> > +config ARM_SCMI_TRANSPORT_SMC
+> > +	bool "SCMI transport based on SMC"
+> > +	depends on ARM_SCMI_PROTOCOL && HAVE_ARM_SMCCC_DISCOVERY
+> 
+> Ditto
+> 
+
+DittoAck :D
+
+> > +	select ARM_SCMI_HAVE_TRANSPORT
+> > +	default y
+> > +	help
+> > +	  Enable SMC based transport for SCMI.
+> > +
+> > +	  If you want the ARM SCMI PROTOCOL stack to include support for a
+> > +	  transport based on SMC, answer Y.
+> > +	  A matching DT entry will also be needed to indicate the effective
+> > +	  presence of this kind of transport.
+> > +
+> 
+> endif #ARM_SCMI_PROTOCOL
+> 
+
+Thanks,
+Cristian
