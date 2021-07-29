@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA0F3DA2B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12383DA2BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbhG2MAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 08:00:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49880 "EHLO mail.kernel.org"
+        id S236652AbhG2MBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 08:01:53 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38392 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234610AbhG2MAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 08:00:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCA4760F21;
-        Thu, 29 Jul 2021 11:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627560000;
-        bh=dVlivW1G35KXO37f2DhxEdxNU8sqEfSwmTd1QUrB7vE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JxwqEzyYPYymuA8cRC/Zbn9293xfgv72Y/v8+W5+YllJsHUaHm+agVxifF87zv4PA
-         Sy53L3qxsQQhlRuVFG+E6BpwdOW/ruhUAQ4RKG1eEsz8adfjh9Rzai6OsfgfWzs7Sh
-         OW0jxVXq/dbHGVrSPIwx+Ia1cn/Ygc4XY7Spvpte0kqmcbw59/L/V85UT0lpJBu4An
-         cNvD7MmOHns+xNk2fEIj/1fQEoKZESe0Ek67qwX3djur/c2QLaomNQqh/4JgIKII9/
-         fSjDPjBPMBT7ftwBi4RUhafe/er+7s4Qmfak9qrX65wpMd+aJ/TiEOP54iQahf+afx
-         ufUOA8wUpCEnA==
-Date:   Thu, 29 Jul 2021 13:59:55 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
-        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [RFC PATCH 1/8] docs: Add block device LED trigger
- documentation
-Message-ID: <20210729135955.3e3f591c@thinkpad>
-In-Reply-To: <20210729015344.3366750-2-arequipeno@gmail.com>
-References: <20210729015344.3366750-1-arequipeno@gmail.com>
-        <20210729015344.3366750-2-arequipeno@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234595AbhG2MBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 08:01:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627560109; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ncuVk0tm8feeNx3H/BvLh3vi7YpsBR7Hq/K0HuPg+lI=; b=UNBe5TU5NacXGppWB4YjF1Jd32JYg820jXLW05O9bHerK8n0SIR38R+R0MGi4ie/2pKcWsG7
+ SsP1FToyeRbmZvEcLA6AlTNcLI1VP+7U/ay3mvmka+R3Pk5IyCoK1fJBGfRLSV4S6ExfOzQU
+ mfqj81fMuXLhODjY8TbTgiSmb3A=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6102987996a66e66b20562c8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 12:00:57
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 094BCC4338A; Thu, 29 Jul 2021 12:00:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 679EBC433D3;
+        Thu, 29 Jul 2021 12:00:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 679EBC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        srinivas.kandagatla@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rbokka@codeaurora.org,
+        dianders@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v2 0/3] nvmem: qfprom: Add binding updates and power-domain handling
+Date:   Thu, 29 Jul 2021 17:30:33 +0530
+Message-Id: <1627560036-1626-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Ian,
+v2:
+* pm_runtime calls made unconditionally, should work even without the power-domains property in DT
+* Added the missing pm_runtime_disable() handling
+* DT patch rebased on msm/for-next
 
-On Wed, 28 Jul 2021 20:53:37 -0500
-Ian Pilcher <arequipeno@gmail.com> wrote:
+--
+qfprom devices on sc7280 have an additional requirement to vote on a power-domain
+performance state to reliably blow fuses. Add the binding updates and handle this in
+the driver, also add the DT node for sc7280 platform.
 
-> * Document the sysfs attributes (/sys/class/block/led_trigger_*
->   and /sys/class/block/${DEV}/led_trigger) that can be used to
->   create, list, and delete block device LED triggers and to
->   set and clear device/trigger associations.
-> 
-> * Pull API documentation from block/blk-ledtrig.c (once it
->   exists).
-> 
-> Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
+Rajendra Nayak (3):
+  dt-bindings: nvmem: qfprom: Add optional power-domains property
+  nvmem: qfprom: sc7280: Handle the additional power-domains vote
+  arm64: dts: qcom: sc7280: Add qfprom node
 
-thank you for this proposal.
+ .../devicetree/bindings/nvmem/qcom,qfprom.yaml     |  3 +++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 13 +++++++++++
+ drivers/nvmem/qfprom.c                             | 26 ++++++++++++++++++++++
+ 3 files changed, 42 insertions(+)
 
-I don't really see the purpose for having multiple different block
-device LED triggers. Moreover we really do not want userspace to be
-able to add LED triggers with arbitrary names, and as many as the
-userspace wants. There is no sense in making userspace be able to
-create 10000 triggers. Also if userspace can create triggers with
-arbitrary names, it could "steal" a name for a real trigger. For
-example if netdev trigger is compiled as a module, and before loading
-someone creates blockdev trigger with name "netdev", the loading of
-netdev trigger will fail.
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-I would like the blkdev trigger to work in a similar way the netdev
-trigger works:
-- only one trigger, with name "blkdev"
-- when activated on a LED, new sysfs files will be created:
-  * device_name, where user can write sda1, vdb, ...
-  * read (binary value, 1 means blink on read)
-  * write (binary value, 1 means blink on write)
-  * interval (blink interval)
-  Note that device_name could allow multiple names, in theory...
-  Also some other disk states may be included, like error, or something
-- also the blinking itself can be done as is done netdev trigger: every
-  50ms the work function would look at blkdev stats, and if current
-  stat (number of bytes read/written) is different from previous, then
-  blink the LED
-
-Marek
-  
