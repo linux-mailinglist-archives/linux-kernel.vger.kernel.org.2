@@ -2,160 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40013DAB01
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FAA3DAB16
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhG2Sfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhG2Sfb (ORCPT
+        id S230051AbhG2Sj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:39:59 -0400
+Received: from mail-il1-f170.google.com ([209.85.166.170]:36728 "EHLO
+        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhG2Sj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:35:31 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC330C061765;
-        Thu, 29 Jul 2021 11:35:26 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d17so7970976plh.10;
-        Thu, 29 Jul 2021 11:35:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+RTAf1if9kR/bBSOyuGfXjWLcHINKu14ayzGStg6SfE=;
-        b=hY+mHc5oqivPspA6jb1+QEF3sedyQxp/RsZmWYipznpgUXRVppN8fRaAxSBzGQ1wSh
-         5rTxlCHefehRK6ll7UKz6wH3+ImTPSCtnk6h0pwc6cnigW+6Hvd92l5exAnn2hPyHZld
-         9SwCvmQVVUEAee4yPtZ+AQnL9HLiJ33iEx3tb4AOJKdbvLNRw86Wt7huybZUEzQliZWb
-         ndM50aYlsCQvc4EzSHvueGH1ilAd346Zm+QE8AlDPJlIfaKTdP5G9oIKUmcuQ+T9cOw8
-         QCrwXLOs05NIq7DMx/sBkv/FW6WJOMp2cknJ26+/yskVR49cRQ7rrqmtEit4My1jyV60
-         6aOA==
+        Thu, 29 Jul 2021 14:39:58 -0400
+Received: by mail-il1-f170.google.com with SMTP id c3so6910027ilh.3;
+        Thu, 29 Jul 2021 11:39:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+RTAf1if9kR/bBSOyuGfXjWLcHINKu14ayzGStg6SfE=;
-        b=qGUE13uTRilOGseSamx0Zolft1KwEvZrQ2oYsDIrqWjri6cM8RukxWklfelLDVEsgw
-         mqxBwnfDNA49/+Q36XrK+BjbjiwL0XCbeFadsA6Rx26Eu0BhoW6/NpsvAkpsG3K8WqfQ
-         YZyTPBy7C8fZs5xonTifwmhWfO/+bPbIUWKYrgzjBvjv2ZVnBYOMCVK9A3oHdsVcdnfo
-         C+OLz/YhvQX2z1rS7cVeKDPCF79Jhl+v/4tsCqEDcyia4eOZhzEgp3U+X6zX/+HQO7ro
-         6QTuozYc4UC/LsOWrAP/fxYVrp8ItW0n/QnFLDY0wskQ7z3VVknkEneOeQc8kuGc5UQi
-         ubLA==
-X-Gm-Message-State: AOAM532qz3vxawRHTUsU7KcsfLFNEQkGG9uFjre9aOnKq1cQwg2aVmtv
-        lxBAZgy31KxJTW18LPnNAQk=
-X-Google-Smtp-Source: ABdhPJxNmT3hcGIrq1gXP5nW6zHSKx7R1o0nSuXgTMAMI2KqefkFX2c4bEbyy45SEtAPa5JPNW2xHA==
-X-Received: by 2002:a17:902:ab05:b029:12c:3d3:cc93 with SMTP id ik5-20020a170902ab05b029012c03d3cc93mr6028576plb.74.1627583726460;
-        Thu, 29 Jul 2021 11:35:26 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id j3sm4259943pfc.10.2021.07.29.11.35.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G8n24DYudmmBlwPEsIXvodH0cqEc+9JvYB6zqj+BSWA=;
+        b=bbTg9xQcqeKr3I0czAlvIhs3OS0DnFY9++YElSx5zFNWZf72WtIPll0wmHpkMWcnI5
+         rEgkZgL6PbRrkVxW0lQ8ntRKq+bKr7p4QPE+qsgso8V+HpC0rLWjGeDOD+okKQo3NP2p
+         gPJDRi8sdhD7OIQuU5GKuR8ay3IC6STEmrrj1wY0kpMUTWWKtnNcu1hGfjP6iWDl4vXo
+         IqGvopBqGcYZrSqiibm3gRvTDrE7V3dnxj4iNcY50i0ra8wIz7StZrW30apKKzPM91fv
+         oSyVpJe5KKCZYK0wqHCq9NXZPEqECOCJDNvKlrXWrqo3CLYzus0IxwcmAgUd7ReezbTp
+         rvdQ==
+X-Gm-Message-State: AOAM5315q7ul+J9o3P+tLly42VFXw0IKCoG5MS6NqlPX/IK4dppTyQuL
+        wCOcZ/t7ZwMaSoZs2s6IrA==
+X-Google-Smtp-Source: ABdhPJzHZZglPsN0icIN4InIO/S2YvyIIh/Lyvd63Ouq0Q3WHZDfaRAcbLEDefewEG0ysVBx3EdK0Q==
+X-Received: by 2002:a05:6e02:e82:: with SMTP id t2mr4721387ilj.218.1627583994765;
+        Thu, 29 Jul 2021 11:39:54 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id g1sm2356621ilq.13.2021.07.29.11.39.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 11:35:25 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm: Disable frequency clamping on a630
-Date:   Thu, 29 Jul 2021 11:39:40 -0700
-Message-Id: <20210729183942.2839925-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 29 Jul 2021 11:39:54 -0700 (PDT)
+Received: (nullmailer pid 659539 invoked by uid 1000);
+        Thu, 29 Jul 2021 18:39:52 -0000
+Date:   Thu, 29 Jul 2021 12:39:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-fpga@vger.kernel.org, michal.simek@xilinx.com,
+        linux-kernel@vger.kernel.org, trix@redhat.com, navam@xilinx.com,
+        linux-arm-kernel@lists.infradead.org, mdf@kernel.org
+Subject: Re: [PATCH v2] dt-bindings: fpga: convert Xilinx Zynq MPSoC bindings
+ to YAML
+Message-ID: <YQL1+JfwKukG6E7j@robh.at.kernel.org>
+References: <20210716212621.286806-1-iwamatsu@nigauri.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210716212621.286806-1-iwamatsu@nigauri.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Sat, 17 Jul 2021 06:26:21 +0900, Nobuhiro Iwamatsu wrote:
+> Convert FPGA Manager for Xilinx Zynq MPSoC bindings documentation to
+> YAML.
+> 
+> Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> 
+> ---
+> v2:
+>   - Fix to the correct maintainer 'Nava kishore Manne <navam@xilinx.com>'.
+>   - Update the word from configuration to Configuration.
+> 
+>  .../bindings/fpga/xlnx,zynqmp-pcap-fpga.txt   | 25 -------------
+>  .../bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml  | 36 +++++++++++++++++++
+>  2 files changed, 36 insertions(+), 25 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.txt
+>  create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,zynqmp-pcap-fpga.yaml
+> 
 
-The more frequent frequency transitions resulting from clamping freq to
-minimum when the GPU is idle seems to be causing some issue with the bus
-getting voted off when it should be on.  (An enable racing with an async
-disable?)  This might be a problem outside of the GPU, as I can't
-reproduce this on a618 which uses the same GMU fw and same mechanism to
-communicate with GMU to set opp.  For now, just revert to previous
-devfreq behavior on a630 until the issue is understood.
-
-Reported-by: Caleb Connolly <caleb.connolly@linaro.org>
-Fixes: 9bc95570175a ("drm/msm: Devfreq tuning")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/adreno/adreno_gpu.c |  3 +++
- drivers/gpu/drm/msm/msm_gpu.h           |  2 ++
- drivers/gpu/drm/msm/msm_gpu_devfreq.c   | 12 ++++++++++++
- 3 files changed, 17 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index 748665232d29..9fd08b413010 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -945,6 +945,9 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
- 	pm_runtime_use_autosuspend(dev);
- 	pm_runtime_enable(dev);
- 
-+	if (adreno_is_a630(adreno_gpu))
-+		gpu->devfreq.disable_freq_clamping = true;
-+
- 	return msm_gpu_init(drm, pdev, &adreno_gpu->base, &funcs->base,
- 			adreno_gpu->info->name, &adreno_gpu_config);
- }
-diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-index 0e4b45bff2e6..7e11b667f939 100644
---- a/drivers/gpu/drm/msm/msm_gpu.h
-+++ b/drivers/gpu/drm/msm/msm_gpu.h
-@@ -112,6 +112,8 @@ struct msm_gpu_devfreq {
- 	 * it is inactive.
- 	 */
- 	unsigned long idle_freq;
-+
-+	bool disable_freq_clamping;
- };
- 
- struct msm_gpu {
-diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-index 0a1ee20296a2..a832af436251 100644
---- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-+++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-@@ -94,6 +94,12 @@ void msm_devfreq_init(struct msm_gpu *gpu)
- 	if (!gpu->funcs->gpu_busy)
- 		return;
- 
-+	/* Revert to previous polling interval if we aren't using freq clamping
-+	 * to preserve previous behavior
-+	 */
-+	if (gpu->devfreq.disable_freq_clamping)
-+		msm_devfreq_profile.polling_ms = 10;
-+
- 	msm_devfreq_profile.initial_freq = gpu->fast_rate;
- 
- 	/*
-@@ -151,6 +157,9 @@ void msm_devfreq_active(struct msm_gpu *gpu)
- 	unsigned int idle_time;
- 	unsigned long target_freq = df->idle_freq;
- 
-+	if (gpu->devfreq.disable_freq_clamping)
-+		return;
-+
- 	/*
- 	 * Hold devfreq lock to synchronize with get_dev_status()/
- 	 * target() callbacks
-@@ -186,6 +195,9 @@ void msm_devfreq_idle(struct msm_gpu *gpu)
- 	struct msm_gpu_devfreq *df = &gpu->devfreq;
- 	unsigned long idle_freq, target_freq = 0;
- 
-+	if (gpu->devfreq.disable_freq_clamping)
-+		return;
-+
- 	/*
- 	 * Hold devfreq lock to synchronize with get_dev_status()/
- 	 * target() callbacks
--- 
-2.31.1
-
+Applied, thanks!
