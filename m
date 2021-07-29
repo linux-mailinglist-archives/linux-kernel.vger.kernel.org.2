@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064193D9C21
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87A23D9C26
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbhG2DTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 23:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233507AbhG2DTH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 23:19:07 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F72C061757;
-        Wed, 28 Jul 2021 20:19:04 -0700 (PDT)
+        id S233582AbhG2DWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 23:22:34 -0400
+Received: from mga07.intel.com ([134.134.136.100]:18011 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233297AbhG2DWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 23:22:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="276576559"
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="276576559"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 20:22:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
+   d="scan'208";a="517969699"
+Received: from louislifei-optiplex-7050.sh.intel.com (HELO louislifei-OptiPlex-7050) ([10.239.154.151])
+  by fmsmga002.fm.intel.com with ESMTP; 28 Jul 2021 20:22:26 -0700
+Date:   Thu, 29 Jul 2021 11:22:11 +0800
+From:   Li Fei1 <fei1.li@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuox.liu@gmail.com,
+        reinette.chatre@intel.com, zhi.a.wang@intel.com, yu1.wang@intel.com
+Subject: Re: [PATCH] virt: acrn: Do hcall_destroy_vm() before resource release
+Message-ID: <20210729032211.GA10306@louislifei-OptiPlex-7050>
+References: <20210722062736.15050-1-fei1.li@intel.com>
+ <YQAcnpQcO8h8/l8V@kroah.com>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1627528742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F00D1B8fJlYlyOskFlI65HCDbK3t3Y9UGUyxuEUxhIc=;
-        b=Yxw0jhdmkoSGZwZvREiQVjaFOw7JA2sJ3bpT2OARKuayiLGhRPtRY/2SvC8rMxF3sT47os
-        9qvGwLYQGRQkL5NEFogHgIFEfd/89Vv2vlUbabLZDhgrPzKIo+huDuzAOVaXghlnpz+Xm9
-        Yd+ywCR3qKJUkfR6uWczIbIFnR/K9CM=
-Date:   Thu, 29 Jul 2021 03:19:01 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yajun.deng@linux.dev
-Message-ID: <eaeec889b3a07cea1347d48269e5964e@linux.dev>
-Subject: Re: [PATCH] netfilter: nf_conntrack_bridge: Fix not free when
- error
-To:     "Pablo Neira Ayuso" <pablo@netfilter.org>
-Cc:     kadlec@netfilter.org, fw@strlen.de, roopa@nvidia.com,
-        nikolay@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210728161849.GA10433@salvia>
-References: <20210728161849.GA10433@salvia>
- <20210726035702.11964-1-yajun.deng@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQAcnpQcO8h8/l8V@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-July 29, 2021 12:18 AM, "Pablo Neira Ayuso" <pablo@netfilter.org> wrote:=
-=0A=0A> On Mon, Jul 26, 2021 at 11:57:02AM +0800, Yajun Deng wrote:=0A> =
-=0A>> It should be added kfree_skb_list() when err is not equal to zero=
-=0A>> in nf_br_ip_fragment().=0A>> =0A>> Fixes: 3c171f496ef5 ("netfilter:=
- bridge: add connection tracking system")=0A>> Signed-off-by: Yajun Deng =
-<yajun.deng@linux.dev>=0A>> ---=0A>> net/bridge/netfilter/nf_conntrack_br=
-idge.c | 12 ++++++++----=0A>> 1 file changed, 8 insertions(+), 4 deletion=
-s(-)=0A>> =0A>> diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c=
-=0A>> b/net/bridge/netfilter/nf_conntrack_bridge.c=0A>> index 8d033a75a76=
-6..059f53903eda 100644=0A>> --- a/net/bridge/netfilter/nf_conntrack_bridg=
-e.c=0A>> +++ b/net/bridge/netfilter/nf_conntrack_bridge.c=0A>> @@ -83,12 =
-+83,16 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,=
-=0A>> =0A>> skb->tstamp =3D tstamp;=0A>> err =3D output(net, sk, data, sk=
-b);=0A>> - if (err || !iter.frag)=0A>> - break;=0A>> -=0A>> + if (err) {=
-=0A>> + kfree_skb_list(iter.frag);=0A>> + return err;=0A>> + }=0A>> +=0A>=
-> + if (!iter.frag)=0A>> + return 0;=0A>> +=0A>> skb =3D ip_fraglist_next=
-(&iter);=0A>> }=0A>> - return err;=0A> =0A> Why removing this line above?=
- It enters slow_path: on success.=0A> =0AI used return rather than break,=
- it wouldn't enter the slow_path.=0A> This patch instead will keep this a=
-ligned with IPv6.=0A> =0AI think err and !iter.frag are not related, ther=
-e is no need to put them in an if statement,=0AWe still need to separate =
-them after loop. So I separate them in loop and use return instead=0Aof b=
-reak. In addition, if you insist, I will accept your patch.=0A>> }=0A>> s=
-low_path:=0A>> /* This is a linearized skbuff, the original geometry is l=
-ost for us.=0A>> --=0A>> 2.32.0
+On Tue, Jul 27, 2021 at 10:47:58PM +0800, Greg Kroah-Hartman wrote:
+> On Thu, Jul 22, 2021 at 02:27:36PM +0800, Fei Li wrote:
+> > From: Shuo Liu <shuo.a.liu@intel.com>
+> >
+> > The ACRN hypervisor has scenarios which could run a real-time guest VM.
+> > The real-time guest VM occupies dedicated CPU cores, be assigned with
+> > dedicated PCI devices. It can run without the Service VM after boot up.
+> > hcall_destroy_vm() returns failure when a real-time guest VM refuses.
+> > The clearing of flag ACRN_VM_FLAG_DESTROYED causes some kernel resource
+> > double-freed in a later acrn_vm_destroy().
+> >
+> > Do hcall_destroy_vm() before resource release to drop this chance to
+> > destroy the VM if hypercall fails.
+> >
+> > Fixes: 9c5137aedd11 ("virt: acrn: Introduce VM management interfaces")
+> > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+> > Signed-off-by: Fei Li <fei1.li@intel.com>
+> > ---
+> 
+> Do you also want this backported to older kernels?  If so, you need to
+> put a cc: stable in here, right?  I'll go add it myself, but be more
+> careful next time please.
+yes, thanks for your kind reminder.
+I will pay great attention next time.
+
+> 
+> greg k-h
