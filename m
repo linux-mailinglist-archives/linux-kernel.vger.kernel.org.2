@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC2E3DA57B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FFB3DA57F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238603AbhG2OCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:02:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48368 "EHLO mail.kernel.org"
+        id S238211AbhG2OCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238086AbhG2N6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238157AbhG2N6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Jul 2021 09:58:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 932856103A;
-        Thu, 29 Jul 2021 13:58:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3C9060FE7;
+        Thu, 29 Jul 2021 13:58:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567122;
-        bh=grUaTF2TqPMP7+8rV+DF67i7oeqjiW5BPvbjkAs20xc=;
+        s=korg; t=1627567124;
+        bh=aG7MXo4sX+HBUfiVRiIMTzo+oe61cNy92ZjzZ1wA+bc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=viWNzF/OP8Zz1WmHzqoPDTS44IRFMRcZe9VBVS3KoarBWyGTYc4NE9GUIz6GC4nA4
-         Dd3K6+eW5vGwN1lYaP8p8LNumO411DNtd2XahtImYaz9zqIzSqMtI6npvMZHeaS+6E
-         Xu5cuRi0nZlU6ncJFnmX5wGqKFI6r0rZi2d4ThOc=
+        b=U0Qxhqv9cY/RIL7xl4ptfCn2UiABcOYkn0nzVraVt37EAecZcQCsQIHFrBau2+EAy
+         iAve/5qXQRSDCt0+JowIX0QFPt/vqddfKAeTp99PjxQwJ52mQaOBnDcgzsPZlCNEcI
+         gCRrAHXNhmXShhdQXg0K7p5ls54bLYqsU2HHuW1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 08/24] net/802/garp: fix memleak in garp_request_join()
-Date:   Thu, 29 Jul 2021 15:54:28 +0200
-Message-Id: <20210729135137.529502517@linuxfoundation.org>
+Subject: [PATCH 5.10 09/24] net: annotate data race around sk_ll_usec
+Date:   Thu, 29 Jul 2021 15:54:29 +0200
+Message-Id: <20210729135137.558287573@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
 References: <20210729135137.267680390@linuxfoundation.org>
@@ -41,82 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 42ca63f980842918560b25f0244307fd83b4777c ]
+[ Upstream commit 0dbffbb5335a1e3aa6855e4ee317e25e669dd302 ]
 
-I got kmemleak report when doing fuzz test:
+sk_ll_usec is read locklessly from sk_can_busy_loop()
+while another thread can change its value in sock_setsockopt()
 
-BUG: memory leak
-unreferenced object 0xffff88810c909b80 (size 64):
-  comm "syz", pid 957, jiffies 4295220394 (age 399.090s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 08 00 00 00 01 02 00 04  ................
-  backtrace:
-    [<00000000ca1f2e2e>] garp_request_join+0x285/0x3d0
-    [<00000000bf153351>] vlan_gvrp_request_join+0x15b/0x190
-    [<0000000024005e72>] vlan_dev_open+0x706/0x980
-    [<00000000dc20c4d4>] __dev_open+0x2bb/0x460
-    [<0000000066573004>] __dev_change_flags+0x501/0x650
-    [<0000000035b42f83>] rtnl_configure_link+0xee/0x280
-    [<00000000a5e69de0>] __rtnl_newlink+0xed5/0x1550
-    [<00000000a5258f4a>] rtnl_newlink+0x66/0x90
-    [<00000000506568ee>] rtnetlink_rcv_msg+0x439/0xbd0
-    [<00000000b7eaeae1>] netlink_rcv_skb+0x14d/0x420
-    [<00000000c373ce66>] netlink_unicast+0x550/0x750
-    [<00000000ec74ce74>] netlink_sendmsg+0x88b/0xda0
-    [<00000000381ff246>] sock_sendmsg+0xc9/0x120
-    [<000000008f6a2db3>] ____sys_sendmsg+0x6e8/0x820
-    [<000000008d9c1735>] ___sys_sendmsg+0x145/0x1c0
-    [<00000000aa39dd8b>] __sys_sendmsg+0xfe/0x1d0
+This is correct but needs annotations.
 
-Calling garp_request_leave() after garp_request_join(), the attr->state
-is set to GARP_APPLICANT_VO, garp_attr_destroy() won't be called in last
-transmit event in garp_uninit_applicant(), the attr of applicant will be
-leaked. To fix this leak, iterate and free each attr of applicant before
-rerturning from garp_uninit_applicant().
+BUG: KCSAN: data-race in __skb_try_recv_datagram / sock_setsockopt
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+write to 0xffff88814eb5f904 of 4 bytes by task 14011 on cpu 0:
+ sock_setsockopt+0x1287/0x2090 net/core/sock.c:1175
+ __sys_setsockopt+0x14f/0x200 net/socket.c:2100
+ __do_sys_setsockopt net/socket.c:2115 [inline]
+ __se_sys_setsockopt net/socket.c:2112 [inline]
+ __x64_sys_setsockopt+0x62/0x70 net/socket.c:2112
+ do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+read to 0xffff88814eb5f904 of 4 bytes by task 14001 on cpu 1:
+ sk_can_busy_loop include/net/busy_poll.h:41 [inline]
+ __skb_try_recv_datagram+0x14f/0x320 net/core/datagram.c:273
+ unix_dgram_recvmsg+0x14c/0x870 net/unix/af_unix.c:2101
+ unix_seqpacket_recvmsg+0x5a/0x70 net/unix/af_unix.c:2067
+ ____sys_recvmsg+0x15d/0x310 include/linux/uio.h:244
+ ___sys_recvmsg net/socket.c:2598 [inline]
+ do_recvmmsg+0x35c/0x9f0 net/socket.c:2692
+ __sys_recvmmsg net/socket.c:2771 [inline]
+ __do_sys_recvmmsg net/socket.c:2794 [inline]
+ __se_sys_recvmmsg net/socket.c:2787 [inline]
+ __x64_sys_recvmmsg+0xcf/0x150 net/socket.c:2787
+ do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+value changed: 0x00000000 -> 0x00000101
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 14001 Comm: syz-executor.3 Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/802/garp.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ include/net/busy_poll.h | 2 +-
+ net/core/sock.c         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/802/garp.c b/net/802/garp.c
-index 400bd857e5f5..f6012f8e59f0 100644
---- a/net/802/garp.c
-+++ b/net/802/garp.c
-@@ -203,6 +203,19 @@ static void garp_attr_destroy(struct garp_applicant *app, struct garp_attr *attr
- 	kfree(attr);
+diff --git a/include/net/busy_poll.h b/include/net/busy_poll.h
+index b001fa91c14e..716b7c5f6fdd 100644
+--- a/include/net/busy_poll.h
++++ b/include/net/busy_poll.h
+@@ -36,7 +36,7 @@ static inline bool net_busy_loop_on(void)
+ 
+ static inline bool sk_can_busy_loop(const struct sock *sk)
+ {
+-	return sk->sk_ll_usec && !signal_pending(current);
++	return READ_ONCE(sk->sk_ll_usec) && !signal_pending(current);
  }
  
-+static void garp_attr_destroy_all(struct garp_applicant *app)
-+{
-+	struct rb_node *node, *next;
-+	struct garp_attr *attr;
-+
-+	for (node = rb_first(&app->gid);
-+	     next = node ? rb_next(node) : NULL, node != NULL;
-+	     node = next) {
-+		attr = rb_entry(node, struct garp_attr, node);
-+		garp_attr_destroy(app, attr);
-+	}
-+}
-+
- static int garp_pdu_init(struct garp_applicant *app)
- {
- 	struct sk_buff *skb;
-@@ -609,6 +622,7 @@ void garp_uninit_applicant(struct net_device *dev, struct garp_application *appl
- 
- 	spin_lock_bh(&app->lock);
- 	garp_gid_event(app, GARP_EVENT_TRANSMIT_PDU);
-+	garp_attr_destroy_all(app);
- 	garp_pdu_queue(app);
- 	spin_unlock_bh(&app->lock);
- 
+ bool sk_busy_loop_end(void *p, unsigned long start_time);
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 7de51ea15cdf..d638c5361ed2 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1164,7 +1164,7 @@ set_sndbuf:
+ 			if (val < 0)
+ 				ret = -EINVAL;
+ 			else
+-				sk->sk_ll_usec = val;
++				WRITE_ONCE(sk->sk_ll_usec, val);
+ 		}
+ 		break;
+ #endif
 -- 
 2.30.2
 
