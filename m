@@ -2,324 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2A13DADF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BED3DADFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 23:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbhG2Uy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 16:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbhG2Uy0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:54:26 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7211EC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:54:22 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id d17so13534310lfv.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TtzwERWqudonvRzbHNkdWZ3kWhB6I2ZbAEA6C8drPI4=;
-        b=AKrHUAeEQMD/pDXxpO9Be7WVc1QxuY+OIn7U5Cz9CHYR+v9R9/PbMFXBmHtOZFcC3N
-         WSUoVDpLwvHfhx6iA43CPTTk6fjsoAikNPqjS9JMs0xybGkWYmq6BFVO7QkOWoIhoe3Q
-         6kkD18rDvNpAb6Z94cmggC/DWZ3blKLlL2SxxyQ6nZpBgKTnx7HouPcZrYGarreSiypg
-         ftZNSgfBImqEfIK/euL8TumebckyDYgS6ZjVXf0Drsqumyv+FOR0D35pLvP3/fma/uyF
-         dNFpxs++iJ+xMy3KBLZROeZNdf4oUhx98gzSPS7Ch+n6AmK9cST2ZANSdt1Hq7UeQww0
-         cEMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TtzwERWqudonvRzbHNkdWZ3kWhB6I2ZbAEA6C8drPI4=;
-        b=nWnHMgH6p6/vgqH+Lxr2ngs26bUQCuZO7vjmJEklTCpF1/bJYLKBYxyKt5sMeNiNuc
-         E5kvfa43bdEH9xWMHpr+oNqWSsrofQoQHIVshFWsKc+PKEByDnnIz61dHR7g4uKmopKi
-         1qxdNKxuBAkML0aGfZGMpzGx3QYyD6RYP9TSfuNpioH42nd/7UV9aIeHsEwgXMWOG5Nq
-         dD9dLp1mUT4XiCVx59SCIaV4xjK1MQ8w2i2tXB7kGscLh8DtG4jS04IjwyIjqpoV9Uk9
-         B8WefmRZBhFp0kRXhfS6EPs4XyBhrKtH+UUpWx3ue5RObtJ3bPBHuQMTdkvKUNNfTDht
-         Wipg==
-X-Gm-Message-State: AOAM532g7LheCEoh3uM2VXcoW991ysmMmpGETaQAU4IRz9EwdAalXw0i
-        y/cA4noRddWqcPVBiLeTPhNPXA==
-X-Google-Smtp-Source: ABdhPJyxff8NyRMmiPjAya/ZL8U+X+NI3ZNSsZvtdNrtSaW+lyLrI7pCzr+J+94xTaRWsUewMWD8TA==
-X-Received: by 2002:ac2:5504:: with SMTP id j4mr5331173lfk.220.1627592060673;
-        Thu, 29 Jul 2021 13:54:20 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id p28sm394865lfd.156.2021.07.29.13.54.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 13:54:20 -0700 (PDT)
-Subject: Re: [PATCH 08/11] drm/msm/disp/dpu1: Add support for DSC in encoder
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-9-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <0227846a-47b1-96e7-f14c-7dc3b4f1ba47@linaro.org>
-Date:   Thu, 29 Jul 2021 23:54:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S233352AbhG2VAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 17:00:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229738AbhG2VAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 17:00:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0683060F46;
+        Thu, 29 Jul 2021 21:00:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627592442;
+        bh=HmJYde0Ikwk3SEQB8+ORc71r8eGZUocfLxfK0gO2i8w=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=AaP0k8yOi+fuz/VKaCSzD0h7sS7r2aBhNur9XETaJFRr6cF/YjKLFwO7JGdoNC0MO
+         PQq67DZKmMMHUydY2gd3pIXU0befmUj9hsmGBJch3oOZEmG/jITCw7g9A1dL70dICd
+         qE6mVV5dwFMAUQqNMTzFAN+1YebIgBHUOgYCuDuSVKVm4pcfXa4BbP7+u7Xtjz/E0M
+         sKVldZBxHqQ+xBjzZptNmBTmgknmJREVJKg2K0uzgfA/oN/6KgDO/JJ52sh39pNimQ
+         sm/qWWTnSPEbVwvZpPixykizIhgI2qSf70NLV9YrKS4K2GWemb/4NV/hmAD+CbtSvd
+         AJhh3Y6gxQS4A==
+Subject: Re: [PATCH v3 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ CC=clang LLVM_IAS=1
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210729165039.23896-1-ndesaulniers@google.com>
+ <20210729165039.23896-3-ndesaulniers@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <44117d0c-51b7-1f68-f752-ba53de503b14@kernel.org>
+Date:   Thu, 29 Jul 2021 14:00:39 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210715065203.709914-9-vkoul@kernel.org>
+In-Reply-To: <20210729165039.23896-3-ndesaulniers@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/2021 09:52, Vinod Koul wrote:
-> When DSC is enabled in DT, we need to configure the encoder for DSC
-> configuration, calculate DSC parameters for the given timing.
+I realized that the title of this commit is not really right. We are not 
+inferring CROSS_COMPILE, we are inferring '--target='.
+
+On 7/29/2021 9:50 AM, Nick Desaulniers wrote:
+> We get constant feedback that the command line invocation of make is too
+> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+> target triple, or is an absolute path outside of $PATH, but it's mostly
+> redundant for a given SRCARCH. SRCARCH itself is derived from ARCH
+
+I feel like the beginning of this needs a little work.
+
+1. "...invocation of make is too long when compiling with LLVM" would be 
+a little more accurate.
+
+2. "it's mostly redundant for a given SRCARCH" is not quite true in my 
+eyes. For example, you could have aarch64-linux-, aarch64-elf-, or 
+aarch64-linux-gnu-, and to my knowledge, all of these can compile a 
+working Linux kernel. Again, saying "with LLVM", even mentioning its 
+multitargeted nature, might make it a little more accurate to the casual 
+passerby.
+
+> (normalized for a few different targets).
 > 
-> This patch adds that support by adding dpu_encoder_prep_dsc() which is
-> invoked when DSC is enabled in DT
+> If CROSS_COMPILE is not set, simply set --target= for CLANG_FLAGS,
+> KBUILD_CFLAGS, and KBUILD_AFLAGS based on $SRCARCH.
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Previously, we'd cross compile via:
+> $ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make LLVM=1 LLVM_IAS=1
+> Now:
+> $ ARCH=arm64 make LLVM=1 LLVM_IAS=1
+> 
+> For native builds (not involving cross compilation) we now explicitly
+> specify a target triple rather than rely on the implicit host triple.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1399
+> Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
 > ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 142 +++++++++++++++++++-
->   1 file changed, 141 insertions(+), 1 deletion(-)
+> Changes v2 -> v3:
+> * Drop check/requirement for LLVM=1, as per Masahiro.
+> * Change oneliner from LLVM=1 LLVM_IAS=1 to CC=clang LLVM_IAS=1.
+> * Don't carry forward Nathan's RB/TB tags. :( Sorry Nathan, but thank
+>    you for testing+reviewing v2.
+> * Update wording of docs slightly.
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> index 8d942052db8a..41140b781e66 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> @@ -21,12 +21,17 @@
->   #include "dpu_hw_intf.h"
->   #include "dpu_hw_ctl.h"
->   #include "dpu_hw_dspp.h"
-> +#include "dpu_hw_dsc.h"
->   #include "dpu_formats.h"
->   #include "dpu_encoder_phys.h"
->   #include "dpu_crtc.h"
->   #include "dpu_trace.h"
->   #include "dpu_core_irq.h"
->   
-> +#define DSC_MODE_SPLIT_PANEL		BIT(0)
-> +#define DSC_MODE_MULTIPLEX		BIT(1)
-> +#define DSC_MODE_VIDEO			BIT(2)
-
-This should go into dpu_hw_dsc.h. Ah. They are already defined there and 
-just redefined there. Remove the defines here.
-
-It might be cleaner to add bool flags to struct msm_display_dsc_config 
-and then calculate common mode in the dpu_hw_dsc_config().
-
-
-> +
->   #define DPU_DEBUG_ENC(e, fmt, ...) DPU_DEBUG("enc%d " fmt,\
->   		(e) ? (e)->base.base.id : -1, ##__VA_ARGS__)
->   
-> @@ -135,6 +140,7 @@ enum dpu_enc_rc_states {
->    * @cur_slave:		As above but for the slave encoder.
->    * @hw_pp:		Handle to the pingpong blocks used for the display. No.
->    *			pingpong blocks can be different than num_phys_encs.
-> + * @hw_dsc		Handle to the DSC blocks used for the display.
->    * @intfs_swapped:	Whether or not the phys_enc interfaces have been swapped
->    *			for partial update right-only cases, such as pingpong
->    *			split where virtual pingpong does not generate IRQs
-> @@ -180,6 +186,7 @@ struct dpu_encoder_virt {
->   	struct dpu_encoder_phys *cur_master;
->   	struct dpu_encoder_phys *cur_slave;
->   	struct dpu_hw_pingpong *hw_pp[MAX_CHANNELS_PER_ENC];
-> +	struct dpu_hw_dsc *hw_dsc[MAX_CHANNELS_PER_ENC];
->   
->   	bool intfs_swapped;
->   
-> @@ -1008,7 +1015,8 @@ static void dpu_encoder_virt_mode_set(struct drm_encoder *drm_enc,
->   	struct dpu_hw_blk *hw_ctl[MAX_CHANNELS_PER_ENC];
->   	struct dpu_hw_blk *hw_lm[MAX_CHANNELS_PER_ENC];
->   	struct dpu_hw_blk *hw_dspp[MAX_CHANNELS_PER_ENC] = { NULL };
-> -	int num_lm, num_ctl, num_pp;
-> +	struct dpu_hw_blk *hw_dsc[MAX_CHANNELS_PER_ENC];
-> +	int num_lm, num_ctl, num_pp, num_dsc;
->   	int i, j;
->   
->   	if (!drm_enc) {
-> @@ -1061,11 +1069,16 @@ static void dpu_encoder_virt_mode_set(struct drm_encoder *drm_enc,
->   	dpu_rm_get_assigned_resources(&dpu_kms->rm, global_state,
->   		drm_enc->base.id, DPU_HW_BLK_DSPP, hw_dspp,
->   		ARRAY_SIZE(hw_dspp));
-> +	num_dsc = dpu_rm_get_assigned_resources(&dpu_kms->rm, global_state,
-> +		drm_enc->base.id, DPU_HW_BLK_DSC, hw_dsc, ARRAY_SIZE(hw_dsc));
->   
->   	for (i = 0; i < MAX_CHANNELS_PER_ENC; i++)
->   		dpu_enc->hw_pp[i] = i < num_pp ? to_dpu_hw_pingpong(hw_pp[i])
->   						: NULL;
->   
-> +	for (i = 0; i < MAX_CHANNELS_PER_ENC; i++)
-> +		dpu_enc->hw_dsc[i] = i < num_dsc ? to_dpu_hw_dsc(hw_dsc[i]) : NULL;
-> +
->   	cstate = to_dpu_crtc_state(drm_crtc->state);
->   
->   	for (i = 0; i < num_lm; i++) {
-> @@ -1810,10 +1823,133 @@ static void dpu_encoder_vsync_event_work_handler(struct kthread_work *work)
->   			nsecs_to_jiffies(ktime_to_ns(wakeup_time)));
->   }
->   
-> +static void
-> +dpu_encoder_dsc_pclk_param_calc(struct msm_display_dsc_config *dsc, u32 width)
-> +{
-> +	int slice_count, slice_per_intf;
-> +	int bytes_in_slice, total_bytes_per_intf;
-> +
-> +	if (!dsc || !dsc->drm->slice_width || !dsc->drm->slice_count) {
-> +		DPU_ERROR("Invalid DSC/slices\n");
-> +		return;
-> +	}
-> +
-> +	slice_count = dsc->drm->slice_count;
-> +	slice_per_intf = DIV_ROUND_UP(width, dsc->drm->slice_width);
-> +
-> +	/*
-> +	 * If slice_count is greater than slice_per_intf then default to 1.
-> +	 * This can happen during partial update.
-> +	 */
-> +	if (slice_count > slice_per_intf)
-> +		slice_count = 1;
-> +
-> +	bytes_in_slice = DIV_ROUND_UP(dsc->drm->slice_width *
-> +				      dsc->drm->bits_per_pixel, 8);
-> +	total_bytes_per_intf = bytes_in_slice * slice_per_intf;
-> +
-> +	dsc->eol_byte_num = total_bytes_per_intf % 3;
-> +	dsc->pclk_per_line =  DIV_ROUND_UP(total_bytes_per_intf, 3);
-> +	dsc->bytes_in_slice = bytes_in_slice;
-> +	dsc->bytes_per_pkt = bytes_in_slice * slice_count;
-> +	dsc->pkt_per_line = slice_per_intf / slice_count;
-> +}
-> +
-> +static void
-> +dpu_encoder_dsc_initial_line_calc(struct msm_display_dsc_config *dsc,
-> +				  u32 enc_ip_width)
-> +{
-> +	int ssm_delay, total_pixels, soft_slice_per_enc;
-> +
-> +	soft_slice_per_enc = enc_ip_width / dsc->drm->slice_width;
-> +
-> +	/*
-> +	 * minimum number of initial line pixels is a sum of:
-> +	 * 1. sub-stream multiplexer delay (83 groups for 8bpc,
-> +	 *    91 for 10 bpc) * 3
-> +	 * 2. for two soft slice cases, add extra sub-stream multiplexer * 3
-> +	 * 3. the initial xmit delay
-> +	 * 4. total pipeline delay through the "lock step" of encoder (47)
-> +	 * 5. 6 additional pixels as the output of the rate buffer is
-> +	 *    48 bits wide
-> +	 */
-> +	ssm_delay = ((dsc->drm->bits_per_component < 10) ? 84 : 92);
-> +	total_pixels = ssm_delay * 3 + dsc->drm->initial_xmit_delay + 47;
-> +	if (soft_slice_per_enc > 1)
-> +		total_pixels += (ssm_delay * 3);
-> +	dsc->initial_lines = DIV_ROUND_UP(total_pixels, dsc->drm->slice_width);
-> +}
-> +
-> +static void dpu_encoder_dsc_pipe_cfg(struct dpu_hw_dsc *hw_dsc,
-> +				     struct dpu_hw_pingpong *hw_pp,
-> +				     struct msm_display_dsc_config *dsc,
-> +				     u32 common_mode)
-> +{
-> +	if (hw_dsc->ops.dsc_config)
-> +		hw_dsc->ops.dsc_config(hw_dsc, dsc, common_mode);
-> +
-> +	if (hw_dsc->ops.dsc_config_thresh)
-> +		hw_dsc->ops.dsc_config_thresh(hw_dsc, dsc);
-> +
-> +	if (hw_pp->ops.setup_dsc)
-> +		hw_pp->ops.setup_dsc(hw_pp);
-> +
-> +	if (hw_pp->ops.enable_dsc)
-> +		hw_pp->ops.enable_dsc(hw_pp);
-
-I think, we do not need to split these operations, I'd suggest having 
-just hw_dsc->ops.dsc_config() and hw_pp->ops.enable_dsc(), merging 
-dsc_config_thres() and setup_dsc() into respective methods.
-
-> +}
-> +
-> +static void dpu_encoder_prep_dsc(struct dpu_encoder_virt *dpu_enc,
-> +				 struct msm_display_dsc_config *dsc)
-> +{
-> +	/* coding only for 2LM, 2enc, 1 dsc config */
-> +	struct dpu_encoder_phys *enc_master = dpu_enc->cur_master;
-> +	struct dpu_hw_dsc *hw_dsc[MAX_CHANNELS_PER_ENC];
-> +	struct dpu_hw_pingpong *hw_pp[MAX_CHANNELS_PER_ENC];
-> +	int this_frame_slices;
-> +	int intf_ip_w, enc_ip_w;
-> +	int dsc_common_mode;
-> +	int pic_width, pic_height;
-> +	int i;
-> +
-> +	for (i = 0; i < MAX_CHANNELS_PER_ENC; i++) {
-> +		hw_pp[i] = dpu_enc->hw_pp[i];
-> +		hw_dsc[i] = dpu_enc->hw_dsc[i];
-> +
-> +		if (!hw_pp[i] || !hw_dsc[i]) {
-> +			DPU_ERROR_ENC(dpu_enc, "invalid params for DSC\n");
-> +			return;
-> +		}
-> +	}
-> +
-> +	dsc_common_mode = 0;
-> +	pic_width = dsc->drm->pic_width;
-> +	pic_height = dsc->drm->pic_height;
-> +
-> +	dsc_common_mode = DSC_MODE_MULTIPLEX | DSC_MODE_SPLIT_PANEL;
-> +	if (enc_master->intf_mode == INTF_MODE_VIDEO)
-> +		dsc_common_mode |= DSC_MODE_VIDEO;
-> +
-> +	this_frame_slices = pic_width / dsc->drm->slice_width;
-> +	intf_ip_w = this_frame_slices * dsc->drm->slice_width;
-> +
-> +	dpu_encoder_dsc_pclk_param_calc(dsc, intf_ip_w);
-> +
-> +	/*
-> +	 * dsc merge case: when using 2 encoders for the same stream,
-> +	 * no. of slices need to be same on both the encoders.
-> +	 */
-> +	enc_ip_w = intf_ip_w / 2;
-> +	dpu_encoder_dsc_initial_line_calc(dsc, enc_ip_w);
-> +
-> +	for (i = 0; i < MAX_CHANNELS_PER_ENC; i++)
-> +		dpu_encoder_dsc_pipe_cfg(hw_dsc[i], hw_pp[i], dsc, dsc_common_mode);
-> +}
-> +
->   void dpu_encoder_prepare_for_kickoff(struct drm_encoder *drm_enc)
->   {
->   	struct dpu_encoder_virt *dpu_enc;
->   	struct dpu_encoder_phys *phys;
-> +	struct msm_drm_private *priv;
->   	bool needs_hw_reset = false;
->   	unsigned int i;
->   
-> @@ -1841,6 +1977,10 @@ void dpu_encoder_prepare_for_kickoff(struct drm_encoder *drm_enc)
->   			dpu_encoder_helper_hw_reset(dpu_enc->phys_encs[i]);
->   		}
->   	}
-> +
-> +	priv = drm_enc->dev->dev_private;
-> +	if (priv->dsc)
-> +		dpu_encoder_prep_dsc(dpu_enc, priv->dsc);
-
-Not quite. This makes dsc config global, while we can have several 
-encoders enabled at once (think of DSI + DP). So the dsc should be a 
-per-encoder setting rather than global.
-
->   }
->   
->   void dpu_encoder_kickoff(struct drm_encoder *drm_enc)
+> Changes v1 -> v2:
+> * Fix typos in commit message as per Geert and Masahiro.
+> * Use SRCARCH instead of ARCH, simplifying x86 handling, as per
+>    Masahiro. Add his sugguested by tag.
+> * change commit oneline from 'drop' to 'infer.'
+> * Add detail about explicit host --target and relationship of ARCH to
+>    SRCARCH, as per Masahiro.
 > 
+> Changes RFC -> v1:
+> * Rebase onto linux-kbuild/for-next
+> * Keep full target triples since missing the gnueabi suffix messes up
+>    32b ARM. Drop Fangrui's sugguested by tag. Update commit message to
+>    drop references to arm64.
+> * Flush out TODOS.
+> * Add note about -EL/-EB, -m32/-m64.
+> * Add note to Documentation/.
+> 
+>   Documentation/kbuild/llvm.rst |  6 ++++++
+>   scripts/Makefile.clang        | 32 ++++++++++++++++++++++++++++++--
+>   2 files changed, 36 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+> index b18401d2ba82..aef1587fc09b 100644
+> --- a/Documentation/kbuild/llvm.rst
+> +++ b/Documentation/kbuild/llvm.rst
+> @@ -46,6 +46,12 @@ example: ::
+>   
+>   	clang --target=aarch64-linux-gnu foo.c
+>   
+> +When both ``CC=clang`` (set via ``LLVM=1``) and ``LLVM_IAS=1`` are used,
+> +``CROSS_COMPILE`` becomes unnecessary and can be inferred from ``ARCH``.
 
+I am not a fan of this sentence because it implies that something like 
+'make ARCH=arm64 CC=clang LLVM_IAS=1' will work fine, which is not true. 
+We still need CROSS_COMPILE for binutils in this configuration.
 
--- 
-With best wishes
-Dmitry
+CROSS_COMPILE provides the value for '--target=' and the prefix for the 
+GNU tools such as ld, objcopy, and readelf. I think this direction is a 
+regression because we are just talking about the first use of 
+CROSS_COMPILE rather than the second at the same time.
+
+With LLVM=1 LLVM_IAS=1, we KNOW that the user will be using all LLVM 
+tools. Sure, they are free to override LD, OBJCOPY, READELF, etc with 
+the GNU variants but they have to provide the prefix because LLVM=1 
+overrides the $(CROSS_COMPILE)<tool> assignments so it is irrelevant to 
+us. As Masahiro mentioned, the user is free to individually specify all 
+the tools by their individual variables such as LD=ld.lld BUT at that 
+point, the user should be aware of what they are doing and specify 
+CROSS_COMPILE.
+
+While I understand that the LLVM=1 LLVM_IAS=1 case works perfectly fine 
+with this series, I am of the belief that making it work for CC=clang 
+LLVM_IAS=1 is a mistake because there is no way for that configuration 
+to work for cross compiling without CROSS_COMPILE.
+
+At the same time, not a hill I am willing to die on, hence the tags above.
+
+> +Example: ::
+> +
+> +	ARCH=arm64 make LLVM=1 LLVM_IAS=1
+> +
+>   LLVM Utilities
+>   --------------
+>   
+> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> index 297932e973d4..a1b46811bdc6 100644
+> --- a/scripts/Makefile.clang
+> +++ b/scripts/Makefile.clang
+> @@ -1,6 +1,34 @@
+> -ifneq ($(CROSS_COMPILE),)
+> +# Individual arch/{arch}/Makfiles should use -EL/-EB to set intended endianness
+
+Makefiles
+
+> +# and -m32/-m64 to set word size based on Kconfigs instead of relying on the
+> +# target triple.
+> +ifeq ($(CROSS_COMPILE),)
+> +ifeq ($(LLVM_IAS),1)
+> +ifeq ($(SRCARCH),arm)
+> +CLANG_FLAGS	+= --target=arm-linux-gnueabi
+> +else ifeq ($(SRCARCH),arm64)
+> +CLANG_FLAGS	+= --target=aarch64-linux-gnu
+> +else ifeq ($(SRCARCH),hexagon)
+> +CLANG_FLAGS	+= --target=hexagon-linux-gnu
+> +else ifeq ($(SRCARCH),m68k)
+> +CLANG_FLAGS	+= --target=m68k-linux-gnu
+> +else ifeq ($(SRCARCH),mips)
+> +CLANG_FLAGS	+= --target=mipsel-linux-gnu
+> +else ifeq ($(SRCARCH),powerpc)
+> +CLANG_FLAGS	+= --target=powerpc64le-linux-gnu
+> +else ifeq ($(SRCARCH),riscv)
+> +CLANG_FLAGS	+= --target=riscv64-linux-gnu
+> +else ifeq ($(SRCARCH),s390)
+> +CLANG_FLAGS	+= --target=s390x-linux-gnu
+> +else ifeq ($(SRCARCH),x86)
+> +CLANG_FLAGS	+= --target=x86_64-linux-gnu
+> +else
+> +$(error Specify CROSS_COMPILE or add '--target=' option to scripts/Makefile.clang)
+> +endif # SRCARCH
+> +endif # LLVM_IAS
+> +else
+>   CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+> -endif
+> +endif # CROSS_COMPILE
+> +
+>   ifeq ($(LLVM_IAS),1)
+>   CLANG_FLAGS	+= -integrated-as
+>   else
+> 
