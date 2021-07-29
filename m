@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2085E3DA6A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A403DA6A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237441AbhG2Ojb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        id S237402AbhG2Oj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236285AbhG2Oj0 (ORCPT
+        with ESMTP id S234999AbhG2Oj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:39:26 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77426C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:39:22 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id l17so7880761ljn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:39:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pQ+TosWiDAdG8+90eQclOC0l7J20f+GG4ER7QwTBKX8=;
-        b=R23L4N03E0Cp8DvPNPKl1idmWh2CJdaYEmaLa1zbfrqP6vbUf+kVIxIr+waUl74KJ7
-         Mphdxreoppmm+jRPzPzsh1BxrZm8LVudhznf1T4QIzuK2yPi+akMMez82h2jumMlbVBf
-         S4s7yiBKeS5xYqWyj6/0VB0Gc5h/lkfbSVQ8/wSDflor4uoM7saLwFNOPaGtfgypCOj/
-         +WIjAxfYsT6tTBO/q53IY7HCwDcgVv78qaKosze2J5wD59XRmrOEtTa4h7EmF5Pf5cK0
-         nkmiVrgBr2zJPDiZ0MD0JZ5mxei1/97cIXhT5vYsbRVqwrZO7WrhQf5r9ywwwTopzLvU
-         jR6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pQ+TosWiDAdG8+90eQclOC0l7J20f+GG4ER7QwTBKX8=;
-        b=rVkNYNSXCKB79dApVm8gCOOu6Ke2Nc8aIVTTU7VteeDwCfRyCXlg6xtNC9NQP/8vLK
-         0Z/u5RCwv7PAiFAQoukBFWypijNJNdc9ZOUBQ412sG/9vewVCaTHca28/sjIc06nw/VK
-         aDdPMxaB3SdauUo8ON27+0VOoHgwPNGb+tEpHIZfJ/5IpddiVpYYBRjvMhmUP0WX1uMu
-         2vUrSxVBLZAsJCfGs+/ndCjityAYMkCdk4WL+cfeRM8fAWd+AlYNAGr0WjUZvBNA+8LH
-         T3VJy0Kr48b5aRQ0XLfC9cFlA2pQd+QqwZFv7243Pkeqito/NqVdvNrIQW3FHLq8QldX
-         ifYQ==
-X-Gm-Message-State: AOAM530TQZLWHKgFknmz5/LfJguAZ5Vx/pdaXMtJKCfCSoOoEH6x2KZR
-        xDoy3MKIJCAbPDeX16we7emXWAbffNnbxRNIYecqIg==
-X-Google-Smtp-Source: ABdhPJysPj8T1T/jC1N62guQJtz/h9nWJSh3QUau+BzFLvn4bSnqGN64gK1+jXKEM+irMoznNKLcgVOnxOJpvkYACmY=
-X-Received: by 2002:a2e:85d7:: with SMTP id h23mr3111083ljj.279.1627569560514;
- Thu, 29 Jul 2021 07:39:20 -0700 (PDT)
+        Thu, 29 Jul 2021 10:39:57 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBA1C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:39:54 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1m97CR-0000QI-G5; Thu, 29 Jul 2021 16:39:51 +0200
+Subject: Re: [PATCH 0/6] Add IMX8M Mini PCI support
+To:     Tim Harvey <tharvey@gateworks.com>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210723204958.7186-1-tharvey@gateworks.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <36070609-9f1f-00c8-ccf5-8ed7877b29da@pengutronix.de>
+Date:   Thu, 29 Jul 2021 16:39:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-6-linmiaohe@huawei.com>
-In-Reply-To: <20210729125755.16871-6-linmiaohe@huawei.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 29 Jul 2021 07:39:08 -0700
-Message-ID: <CALvZod6n1EwcyLTi=Eb8t=NVVPLRh9=Ng=VJ93pQyCRkOcLo9Q@mail.gmail.com>
-Subject: Re: [PATCH 5/5] mm, memcg: always call __mod_node_page_state() with
- preempt disabled
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Matthew Wilcox <willy@infradead.org>, alexs@kernel.org,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210723204958.7186-1-tharvey@gateworks.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 5:58 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> We should always ensure __mod_node_page_state() is called with preempt
-> disabled or percpu ops may manipulate the wrong cpu when preempt happened.
->
-> Fixes: b4e0b68fbd9d ("mm: memcontrol: use obj_cgroup APIs to charge kmem pages")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/memcontrol.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 70a32174e7c4..616d1a72ece3 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -697,8 +697,8 @@ void __mod_lruvec_page_state(struct page *page, enum node_stat_item idx,
->         memcg = page_memcg(head);
->         /* Untracked pages have no memcg, no lruvec. Update only the node */
->         if (!memcg) {
-> -               rcu_read_unlock();
->                 __mod_node_page_state(pgdat, idx, val);
-> +               rcu_read_unlock();
+Hello Tim,
 
-This rcu is for page_memcg. The preemption and interrupts are disabled
-across __mod_lruvec_page_state().
+On 23.07.21 22:49, Tim Harvey wrote:
+> The IMX8M Mini PCI controller shares much in common with the existing
+> SoC's supported by the pci-imx6 driver.
+> 
+> This series adds support for it. Driver changes came from the NXP
+> downstream vendor kernel [1]
+> 
+> This series depends on Lucas Stach's i.MX8MM GPC improvements and
+> BLK_CTRL driver and is based on top of his v2 submission [2]
 
->                 return;
->         }
->
-> --
-> 2.23.0
->
+Are you aware of Lucas' patch series and Rob's remarks there?
+https://lore.kernel.org/linux-pci/20210510141509.929120-7-l.stach@pengutronix.de/
+
+Cheers,
+Ahmad
+
+> 
+> The final patch adds PCIe support to the
+> Tim
+> [1] https://source.codeaurora.org/external/imx/linux-imx/
+> [2]
+> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=519251
+> 
+> Tim Harvey (6):
+>   dt-bindings: imx6q-pcie: add compatible for IMX8MM support
+>   dt-bindings: reset: imx8mq: add pcie reset
+>   PCI: imx6: add IMX8MM support
+>   reset: imx7: add resets for PCIe
+>   arm64: dts: imx8mm: add PCIe support
+>   arm64: dts: imx8mm: add gpc iomux compatible
+> 
+>  .../bindings/pci/fsl,imx6q-pcie.txt           |   4 +-
+>  arch/arm64/boot/dts/freescale/imx8mm.dtsi     |  38 ++++++-
+>  drivers/pci/controller/dwc/pci-imx6.c         | 103 +++++++++++++++++-
+>  drivers/reset/reset-imx7.c                    |   3 +
+>  include/dt-bindings/reset/imx8mq-reset.h      |   3 +-
+>  5 files changed, 147 insertions(+), 4 deletions(-)
+> 
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
