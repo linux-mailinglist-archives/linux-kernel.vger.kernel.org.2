@@ -2,199 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3963DA038
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF7B3DA03D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235487AbhG2J3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbhG2J3D (ORCPT
+        id S235521AbhG2J3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:29:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24724 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235488AbhG2J3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:29:03 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6417EC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:29:00 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id b6so9409433pji.4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:29:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2Su0VFVFTdWpdLAS734Wj7JN2joCnRImQkjmBeHRcGw=;
-        b=Mm0bGYj6/zbXmOrHkAVjtM11qQ3M/chM0vse5Hslve/QWFmKyfyICYhWL3BT2hx/Jo
-         lOGR9ZsMGew7INrypS3uKTBqAUxFZLAlgwJWVAy6MeLdws6WhQBqj5mtKaSq0iK/vyMB
-         j0PQxCdHntIUxePG/8zJzVfWMGkAdNo6uIAkTeLUChMsobrUMrNxGS57Fj546MJq6Zln
-         adJvdzIF3G5hlLC+fD1uEx56nURRO9YJdcs2v4uvphig6pyHSr3B/qUQGwNsHiAgqFUb
-         4FR42rMO6lpqG+xPLhSjtQH06l70y+kl3W4FEp/pKMwdDKZ1XmHobV7jT7YvdKC0oyBd
-         P7gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2Su0VFVFTdWpdLAS734Wj7JN2joCnRImQkjmBeHRcGw=;
-        b=mQwB+bn6lktgAnyKxh37f/hBP78WVz8ouO0c/SB9zh4YLu1iDDb71Y7gGpGYdPeZBV
-         SFImh6MJlHMCdqzXQhUs3qnox+bbjuVQmzpu3Z/L4gy24O+YvVcHiEAfpsUdVrtBxspB
-         yfeMy0+7Cr1GEcd20KiV1QAIfTfBiRZEkHd3lGLMBhQ525mmDK8GzdgV3OsdEgutaqR5
-         6EljRf0HelYaLQ6DSYL3jV8eejww5Tom5y1uL+EbF0NL6Vu1PyOin2UIAyVsrY2ejL37
-         MGq55yrIclc1yNLmnko6UYLcWpdbEyKbcR7vGVLxBHjbHa3g4d4uqa9Yad1quq2kBQxy
-         ZNwQ==
-X-Gm-Message-State: AOAM531E5YnrnpKsG2LuTHOa/ta1TJsZlaLOhinc5IAR/12HokpktESh
-        mFCJEFb5otENEDwQoM14T7Q4ybDZWqGkZw==
-X-Google-Smtp-Source: ABdhPJzlw1r4Pigt4TQxXfj0XMmgGNpRfR9b/xT71Yrj9/h4lENPsF8b7WzA9XQCx49BV4sNearpNA==
-X-Received: by 2002:a17:90a:5101:: with SMTP id t1mr14152738pjh.107.1627550939931;
-        Thu, 29 Jul 2021 02:28:59 -0700 (PDT)
-Received: from C02FT5A6MD6R.tiktokd.org ([139.177.225.241])
-        by smtp.gmail.com with ESMTPSA id b15sm2962031pgm.15.2021.07.29.02.28.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 29 Jul 2021 02:28:59 -0700 (PDT)
-From:   Gang Li <ligang.bdlg@bytedance.com>
-To:     rostedt@goodmis.org
-Cc:     mingo@redhat.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        axelrasmussen@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Gang Li <ligang.bdlg@bytedance.com>
-Subject: [PATCH 3/3] mm: mmap_lock: add ip to mmap_lock tracepoints
-Date:   Thu, 29 Jul 2021 17:28:53 +0800
-Message-Id: <20210729092853.38242-1-ligang.bdlg@bytedance.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        Thu, 29 Jul 2021 05:29:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627550978;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QU04D4AFtIumGhlAE34vrZ8TeIMsBn0CApcJIeHb9PI=;
+        b=AsUCZZBK5GcySSFxn6wjkQ8lXRHW6NF3U6mSro4xQ2m2UhOD7QvVv3vMMDb+KH5IgR+KZX
+        aEyRIgdiTxqfqD5sze5WGyrygv+oZ6VUIEQBs0dveTYrDbWiysnhaQKf57LjvVkMALyoHe
+        VddqGBmyiePWPdTGdIZdw2LWd7MX9HU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-_xf3uillNICG3oRRPdDC8A-1; Thu, 29 Jul 2021 05:29:37 -0400
+X-MC-Unique: _xf3uillNICG3oRRPdDC8A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 022B8801AEB;
+        Thu, 29 Jul 2021 09:29:35 +0000 (UTC)
+Received: from T590 (ovpn-12-146.pek2.redhat.com [10.72.12.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CA16560877;
+        Thu, 29 Jul 2021 09:29:24 +0000 (UTC)
+Date:   Thu, 29 Jul 2021 17:29:25 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        David Jeffery <djeffery@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: New warning in nvme_setup_discard
+Message-ID: <YQJ09eaGIssStGXt@T590>
+References: <4729812.CpyZKHjjVO@natalenko.name>
+ <3180854.nXyytZ0Y3r@natalenko.name>
+ <YQF9YRSdRc+eVD1c@T590>
+ <4560968.zrxKzTJTGe@natalenko.name>
+ <YQIhfwP2z+DGWOxV@T590>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQIhfwP2z+DGWOxV@T590>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mmap_lock is acquired on most (all?) mmap / munmap / page fault
-operations, so a multi-threaded process which does a lot of these
-can experience significant contention. Sometimes we want to know
-where the lock is hold. And it's hard to locate without collecting ip.
+On Thu, Jul 29, 2021 at 11:33:33AM +0800, Ming Lei wrote:
+> On Wed, Jul 28, 2021 at 06:38:36PM +0200, Oleksandr Natalenko wrote:
+> > Hello.
+> > 
+> > On středa 28. července 2021 17:53:05 CEST Ming Lei wrote:
+> > > Can you collect debug log by applying the following patch against the
+> > > last one?
+> > 
+> > Yes, please see below.
+> > 
+> > > diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> > > index 8780e4aa9df2..fbd8a68c619b 100644
+> > > --- a/drivers/nvme/host/core.c
+> > > +++ b/drivers/nvme/host/core.c
+> > > @@ -828,6 +828,24 @@ static inline void nvme_setup_flush(struct nvme_ns *ns,
+> > > cmnd->common.nsid = cpu_to_le32(ns->head->ns_id);
+> > >  }
+> > > 
+> > > +static inline void blk_dump_rq(const struct request *req)
+> > > +{
+> > > +	struct bio *bio;
+> > > +	int i = 0;
+> > > +
+> > > +	printk("dump req %p(f:%x, seg: %d)\n", req, req->cmd_flags,
+> > > +			req->nr_phys_segments);
+> > > +
+> > > +	__rq_for_each_bio(bio, req) {
+> > > +		printk("%d-%p: %hx/%hx %llu %u\n",
+> > > +                       i++, bio,
+> > > +                       bio->bi_flags, bio->bi_opf,
+> > > +                       (unsigned long long)bio->bi_iter.bi_sector,
+> > > +                       bio->bi_iter.bi_size>>9);
+> > > +	}
+> > > +}
+> > > +
+> > > +
+> > >  static blk_status_t nvme_setup_discard(struct nvme_ns *ns, struct request
+> > > *req, struct nvme_command *cmnd)
+> > >  {
+> > > @@ -868,6 +886,8 @@ static blk_status_t nvme_setup_discard(struct nvme_ns
+> > > *ns, struct request *req, }
+> > > 
+> > >  	if (WARN_ON_ONCE(n != segments)) {
+> > > +		printk("%s: ranges %u segments %u\n", __func__, n, segments);
+> > > +		blk_dump_rq(req);
+> > >  		if (virt_to_page(range) == ns->ctrl->discard_page)
+> > >  			clear_bit_unlock(0, &ns->ctrl->discard_page_busy);
+> > >  		else
+> > 
+> > ```
+> > WARNING: CPU: 17 PID: 821 at drivers/nvme/host/core.c:868 nvme_setup_discard+0x1c6/0x220
+> > …
+> > CPU: 17 PID: 821 Comm: kworker/17:1H Not tainted 5.13.0-pf4 #1
+> > Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIOS 3601 05/26/2021
+> > Workqueue: kblockd blk_mq_run_work_fn
+> > RIP: 0010:nvme_setup_discard+0x1c6/0x220
+> > Code: 8b a0 40 0b 00 00 4c 2b 25 f7 ff d7 00 49 c1 fc 06 49 c1 e4 0c 4c 03 25 f8 ff d7 00 4c 89 e5 48 85 d2 0f 85 9b fe ff ff 31 d2 <0f> 0b 48 c7 c6 e0 a8 10 8b 41 0f b7 cd 48 c7 c7 af 09 40 8b e8 14
+> > RSP: 0018:ffffafa884517bf0 EFLAGS: 00010297
+> > RAX: ffff91602f5b20d0 RBX: ffff915e05743c00 RCX: 0000000000080000
+> > RDX: 000000000000000f RSI: 0000000028445c00 RDI: 000000000000000f
+> > RBP: ffff91602f5b2000 R08: 000000000b366000 R09: ffff91602f5b2000
+> > R10: 000000000000002d R11: fefefefefefefeff R12: ffff91602f5b2000
+> > R13: 000000000000000e R14: ffff915e18c77000 R15: ffff915e18c77148
+> > FS:  0000000000000000(0000) GS:ffff91650ee40000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00001c90b36879a8 CR3: 000000010d18c000 CR4: 0000000000350ee0
+> > Call Trace:
+> >  nvme_setup_cmd+0x2e4/0x6a0
+> >  nvme_queue_rq+0x79/0xc90
+> >  blk_mq_dispatch_rq_list+0x15c/0x810
+> >  __blk_mq_do_dispatch_sched+0xca/0x320
+> >  __blk_mq_sched_dispatch_requests+0x14d/0x190
+> >  blk_mq_sched_dispatch_requests+0x2f/0x60
+> >  blk_mq_run_work_fn+0x43/0xc0
+> >  process_one_work+0x24e/0x430
+> >  worker_thread+0x54/0x4d0
+> >  kthread+0x1b3/0x1e0
+> >  ret_from_fork+0x22/0x30
+> > ---[ end trace bd51917eae1d7201 ]---
+> > nvme_setup_discard: ranges 15 segments 14
+> > dump req 000000002c6a085b(f:3, seg: 14)
+> > 0-000000002c3297c7: f80/3 675773440 1024
+> > 1-0000000098edb2a8: b80/3 188319744 1024
+> > 2-00000000f58e3b18: b80/3 675775488 1024
+> > 3-00000000f6670c5a: b80/3 188129280 2048
+> > 4-00000000ea371a88: b80/3 675585024 2048
+> > 5-00000000e9cec043: b80/3 188140544 2048
+> > 6-000000006e1126e6: b80/3 675596288 2048
+> > 7-000000009466f937: b80/3 188327936 2048
+> > 8-000000003c9e2ccd: b80/3 675783680 2048
+> > 9-00000000ab322c68: b80/3 188329984 2048
+> 
+> 188329984 = 188327936 + 2048
+> 
+> > 10-00000000eb2b3fb6: b80/3 675785728 2048
+> 
+> 675785728 = 675783680 + 2048
+> 
+> Seems the adjacent bios are cut by coming discard
+> range.
+> 
+> Looks it isn't mature to support mixed discard IO merge(
+> traditional io merge vs. multi-range merge), I will post
+> the previous patch for fixing this issue.
 
-Here's an example: TP_printk("ip=%pS",ip)
-Log looks like this: "ip=do_user_addr_fault+0x274/0x640"
+The reason is the following lines of code:
 
-We can find out who cause the contention amd make some improvements
-for it.
+#define rq_hash_key(rq)         (blk_rq_pos(rq) + blk_rq_sectors(rq))
 
-Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
----
- include/trace/events/mmap_lock.h | 27 +++++++++++++++++----------
- mm/mmap_lock.c                   |  6 +++---
- 2 files changed, 20 insertions(+), 13 deletions(-)
+if (blk_rq_pos(rq) + blk_rq_sectors(rq) == bio->bi_iter.bi_sector)
 
-diff --git a/include/trace/events/mmap_lock.h b/include/trace/events/mmap_lock.h
-index b9dd66f9c226..8913a9f85894 100644
---- a/include/trace/events/mmap_lock.h
-+++ b/include/trace/events/mmap_lock.h
-@@ -15,35 +15,39 @@ extern void trace_mmap_lock_unreg(void);
- 
- DECLARE_EVENT_CLASS(mmap_lock,
- 
--	TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write),
-+	TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write,
-+		unsigned long ip),
- 
--	TP_ARGS(mm, memcg_path, write),
-+	TP_ARGS(mm, memcg_path, write, ip),
- 
- 	TP_STRUCT__entry(
- 		__field(struct mm_struct *, mm)
- 		__string(memcg_path, memcg_path)
- 		__field(bool, write)
-+		__field(void *, ip)
- 	),
- 
- 	TP_fast_assign(
- 		__entry->mm = mm;
- 		__assign_str(memcg_path, memcg_path);
- 		__entry->write = write;
-+		__entry->ip = (void *)ip;
- 	),
- 
- 	TP_printk(
--		"mm=%p memcg_path=%s write=%s",
-+		"mm=%p memcg_path=%s write=%s ip=%pS",
- 		__entry->mm,
- 		__get_str(memcg_path),
--		__entry->write ? "true" : "false"
--   )
-+		__entry->write ? "true" : "false",
-+		__entry->ip
-+	)
- );
- 
- #define DEFINE_MMAP_LOCK_EVENT(name)                                    \
- 	DEFINE_EVENT_FN(mmap_lock, name,                                \
- 		TP_PROTO(struct mm_struct *mm, const char *memcg_path,  \
--			bool write),                                    \
--		TP_ARGS(mm, memcg_path, write),                         \
-+			bool write, unsigned long ip),                  \
-+		TP_ARGS(mm, memcg_path, write, ip),                     \
- 		trace_mmap_lock_reg, trace_mmap_lock_unreg)
- 
- DEFINE_MMAP_LOCK_EVENT(mmap_lock_start_locking);
-@@ -52,14 +56,15 @@ DEFINE_MMAP_LOCK_EVENT(mmap_lock_released);
- TRACE_EVENT_FN(mmap_lock_acquire_returned,
- 
- 	TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write,
--		bool success),
-+		unsigned long ip, bool success),
- 
--	TP_ARGS(mm, memcg_path, write, success),
-+	TP_ARGS(mm, memcg_path, write, ip, success),
- 
- 	TP_STRUCT__entry(
- 		__field(struct mm_struct *, mm)
- 		__string(memcg_path, memcg_path)
- 		__field(bool, write)
-+		__field(void *, ip)
- 		__field(bool, success)
- 	),
- 
-@@ -67,14 +72,16 @@ TRACE_EVENT_FN(mmap_lock_acquire_returned,
- 		__entry->mm = mm;
- 		__assign_str(memcg_path, memcg_path);
- 		__entry->write = write;
-+		__entry->ip = (void *)ip;
- 		__entry->success = success;
- 	),
- 
- 	TP_printk(
--		"mm=%p memcg_path=%s write=%s success=%s",
-+		"mm=%p memcg_path=%s write=%s ip=%pS success=%s",
- 		__entry->mm,
- 		__get_str(memcg_path),
- 		__entry->write ? "true" : "false",
-+		__entry->ip,
- 		__entry->success ? "true" : "false"
- 	),
- 
-diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
-index 1854850b4b89..f1100eae6f2f 100644
---- a/mm/mmap_lock.c
-+++ b/mm/mmap_lock.c
-@@ -227,20 +227,20 @@ static const char *get_mm_memcg_path(struct mm_struct *mm)
- 
- void __mmap_lock_do_trace_start_locking(struct mm_struct *mm, bool write)
- {
--	TRACE_MMAP_LOCK_EVENT(start_locking, mm, write);
-+	TRACE_MMAP_LOCK_EVENT(start_locking, mm, write, _RET_IP_);
- }
- EXPORT_SYMBOL(__mmap_lock_do_trace_start_locking);
- 
- void __mmap_lock_do_trace_acquire_returned(struct mm_struct *mm, bool write,
- 					   bool success)
- {
--	TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, write, success);
-+	TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, write, _RET_IP_, success);
- }
- EXPORT_SYMBOL(__mmap_lock_do_trace_acquire_returned);
- 
- void __mmap_lock_do_trace_released(struct mm_struct *mm, bool write)
- {
--	TRACE_MMAP_LOCK_EVENT(released, mm, write);
-+	TRACE_MMAP_LOCK_EVENT(released, mm, write, _RET_IP_);
- }
- EXPORT_SYMBOL(__mmap_lock_do_trace_released);
- #endif /* CONFIG_TRACING */
--- 
-2.20.1
+...
+
+The current block merge code thinks that all bios in one request is physically
+continuous, so we can't support mixed merge for multi-range discard request simply.
+
+
+Thanks,
+Ming
 
