@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A143DA021
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A353DA023
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235372AbhG2JPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
+        id S235405AbhG2JPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235129AbhG2JPP (ORCPT
+        with ESMTP id S235129AbhG2JPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:15:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A26EC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=v/T8ooxFYhLgRNwewbXjp26oDIJbuCkkQtmo2vPCN00=; b=SCNCvNzri9Zv2RYJ82lvuk79r+
-        Omk76KmDu2TQua67ZXWltLjfD2Ayvfc4Acbut73iEMCgZ+n/2d2X6plIjOnlfsKzWfzi2Wf97W8ll
-        sCnT6rAV8EZiL+44rRioUw7tDknmmh/E+CVMSYPq60pPG7ixDEy93EuyDk2W2sUvxIFRUkhM4UmWa
-        BDfISS6ikbVBOp+wQ0feEw/wpF+r9jK5Nk1TrlEm5HVsUAO4UNltnXNU9UaagE9mBpv/y2cqy6oBl
-        zM22ayu64jbW0mPrOlXrjS61pvyWe1vsaGtuKRXZxAraIiFhgHyPo5Nay1HreG9lgRn9buHLUkmH7
-        8qdib4Iw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m9283-003veS-Ic; Thu, 29 Jul 2021 09:14:59 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 63CC330005A;
-        Thu, 29 Jul 2021 11:14:57 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1DE1D2C8A331C; Thu, 29 Jul 2021 11:14:57 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 11:14:57 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vince Weaver <vincent.weaver@maine.edu>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Liang, Kan" <kan.liang@intel.com>
-Subject: Re: [perf] fuzzer triggers unchecked MSR access error: WRMSR to 0x318
-Message-ID: <YQJxka3dxgdIdebG@hirez.programming.kicks-ass.net>
-References: <37881148-a43e-5fd4-817c-a875adc7a15f@maine.edu>
+        Thu, 29 Jul 2021 05:15:44 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0E8C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:15:41 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id x90so7210992ede.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:15:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hev-cc.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HJEWXYf+MLVoeyVL4aKf9RaWEeEr+d0jCBcU4Hehaxo=;
+        b=AnEg2zJa2HgclUb2HGoxq7v2MTCXHykSvoYQd/HK1CtNl+LbKX5si0F7hlBYlNCsc/
+         A1Hcib63x2knKIYHDoRtEmSTeNiNXCAcX6o0glPWsC5hscrxnQmerV2Ou3Gdxkin36ZS
+         ZsBEITmnal1ahnz+TC0JkduwhgHOukSSdZv7yhNBQR1zlb0edkI0N5M38xv+Rh2EX5KR
+         9Svw0ABIwdcXxPHHm/VwCuhnfnkySVumKny0DHdH7wobRKZA8EEe9CBAYJafaIXtSamj
+         JbUxQPcw9j4dtrcofRZclrSwjtbFGk7rK5BYzpD3CidKNrqQqEjFjBbYDfq5Y7vCQP5z
+         HI5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HJEWXYf+MLVoeyVL4aKf9RaWEeEr+d0jCBcU4Hehaxo=;
+        b=oWblWJQa1o1STlSm7ZKwlVsjX9eAEv3poklyLnKMWqa1sI0obRwJp8ZqNxwRvVyr7U
+         27WT4TmhlmHpe1Y40JTiAKsc5xpS05gXVmShVZUnOIAbzQjkCQsNkZqYgXRDWVNXwCgM
+         hjIMHr9GT/c0Lt/4WW3+gbAQRQK496PG6+wv6squKwSlNxfaEDqpCcQErG6OtaKr8RL9
+         cllg2iXP8SRsjfVh5mioGNlHXeLUgN1RXtPCFcJP46rFB0QLQ9TUMd+gwTb2iGU0D66G
+         HiqhMih2NLYdGRuKnyS/+Qr/g3WgvpWXspylNd/BUAei8I1+lFB1Eg1UNkLLPxY+vlMZ
+         k5dA==
+X-Gm-Message-State: AOAM5337TkNMmUpJyCyCKYQAAm4km3LUvCzIpYBWl2XN4rvPDt23HxbY
+        ozVd7PEA/yZILvfuYdzxW2JDW57jux40sPrayB837g==
+X-Google-Smtp-Source: ABdhPJzGO5ZEDGWNIfoyBnRz2S9+ImksyNVrhgBKmRynSisfodXh4WyTGC9T8Thgtd3CToxg9p1mCZgsHir6qf9QKZo=
+X-Received: by 2002:a05:6402:cab:: with SMTP id cn11mr4706255edb.369.1627550140422;
+ Thu, 29 Jul 2021 02:15:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37881148-a43e-5fd4-817c-a875adc7a15f@maine.edu>
+References: <20210729082549.144559-1-wangrui@loongson.cn> <YQJu6fTIpeuGV+UX@boqun-archlinux>
+In-Reply-To: <YQJu6fTIpeuGV+UX@boqun-archlinux>
+From:   hev <r@hev.cc>
+Date:   Thu, 29 Jul 2021 17:15:29 +0800
+Message-ID: <CAHirt9j2G62=7_a4Ow88smnRzOjKMkD1WQoj4uc=mQq9Qf8UFQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] locking/atomic: arch/mips: Fix atomic{_64,}_sub_if_positive
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Rui Wang <wangrui@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 12:49:43PM -0400, Vince Weaver wrote:
-> [32694.087403] unchecked MSR access error: WRMSR to 0x318 (tried to write 0x0000000000000000) at rIP: 0xffffffff8106f854 (native_write_msr+0x4/0x20)
-> [32694.101374] Call Trace:
-> [32694.103974]  perf_clear_dirty_counters+0x86/0x100
+Hi, Boqun,
 
-Hmm.. if I read this right that's MSR_ARCH_PERFMON_FIXED_CTR0 + i, given
-that FIXED_CTR0 is 0x309 that gives i == 15, which is FIXED_BTS.
+On Thu, Jul 29, 2021 at 5:04 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+>
+> Hi,
+>
+> On Thu, Jul 29, 2021 at 04:25:49PM +0800, Rui Wang wrote:
+> > This looks like a typo and that caused atomic64 test failed.
+> >
+> > Signed-off-by: Rui Wang <wangrui@loongson.cn>
+> > Signed-off-by: hev <r@hev.cc>
+>
+> In your upcoming patches, please change this part to your real name.
+> Here is a quote from Documentation/process/submitting-patches.rst:
+>
+>         using your real name (sorry, no pseudonyms or anonymous contributions.)
+Ok, got it. :-)
 
-I'm thinking something like this ought to cure things.
+Thank you. I will resend these patches.
 
----
- arch/x86/events/core.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 1eb45139fcc6..04edf8017961 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2489,13 +2489,15 @@ void perf_clear_dirty_counters(void)
- 		return;
- 
- 	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
--		/* Metrics and fake events don't have corresponding HW counters. */
--		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
--			continue;
--		else if (i >= INTEL_PMC_IDX_FIXED)
-+		if (i >= INTEL_PMC_IDX_FIXED) {
-+			/* Metrics and fake events don't have corresponding HW counters. */
-+			if ((i - INTEL_PMC_IDX_FIXED) >= x86_pmu.num_counters_fixed)
-+				continue;
-+
- 			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
--		else
-+		} else {
- 			wrmsrl(x86_pmu_event_addr(i), 0);
-+		}
- 	}
- 
- 	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
+Regards
+Rui
