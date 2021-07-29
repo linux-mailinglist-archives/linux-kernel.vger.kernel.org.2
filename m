@@ -2,84 +2,585 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED603D9E26
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587DC3D9E2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbhG2HNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:13:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:41662 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234079AbhG2HNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:13:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D8D96D;
-        Thu, 29 Jul 2021 00:13:36 -0700 (PDT)
-Received: from [10.163.65.237] (unknown [10.163.65.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92DF13F73D;
-        Thu, 29 Jul 2021 00:13:32 -0700 (PDT)
-Subject: Re: [PATCH v4 00/12] mm/debug_vm_pgtable: Enhancements
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
-        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
-References: <20210727061401.592616-1-gshan@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <8b969a2a-a883-3ce2-fac4-70ac2e3fd157@arm.com>
-Date:   Thu, 29 Jul 2021 12:44:20 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234511AbhG2HPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234079AbhG2HP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 03:15:29 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5F7C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:15:25 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id y34so9090039lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CJxeH2PRy1CFyyQKleoVFQEF6OvgSJowOIZASwZkLOA=;
+        b=b9uHgjM9UDQIOXX+XpV7k/8ndKJ2bOpL6AM2G0cGkJWKO4qUTnDK3BfV2LxyHmxCJe
+         aXDA0skyyYRYhCAOae+JDWGFeSR5pMU7b6BA3uXx0FNK641ZhnVXGpz5hO46Xt5dgMpu
+         Mhrbf6d0zlIeTtH0clTI7OFn3NHRoTui4dkZA7vASJmsTW88a3auwLevpHdAJvKsDNBv
+         v/FXob7Axj3Lh3ncwyFVfR9XPEKXqxdYTMVXTCvGewCo42xUm7hbEHyzqFtrF0az9NDN
+         Ov3ddItbQgXnX4ibiQk+fPQjSheaoqBO6ksZMHjLiwL7H2KZsVWnVow2nZEp2hQY1trm
+         Hb8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CJxeH2PRy1CFyyQKleoVFQEF6OvgSJowOIZASwZkLOA=;
+        b=OdreYvirkTkpa3+UtEXzy4fqFz2dMwyBCtGqs0/z6EizhKRiTf3u+nNQ3lJLe+isys
+         ekvXKIzNeOjIKeaRVn4PSD9Ezqcp2F82USH7AKWgJu6WYUGB2jn/ESKlHyqd2vTt4EIE
+         3BgHvgKKKk24YSc0gteRV86sdQ5ppW1StWL9v/u5CmhIcKlHql2aRYOcnyPrAl+5diKt
+         +mrBzK2DOfIVk09nsaDCkmxlPy250tl7vzEVN/GHbRbzzM0aXiKAhApfNuDokhU/6759
+         EXFLwiSROqC0uOJ/1I/tba1nzNWcdpmeD4UiWApfIcKKkIxhT0ikE+Nq+rU7E0y/GnTB
+         N8Ig==
+X-Gm-Message-State: AOAM5320ojWknQgKVQink8WOniIV/o8ti1BgbEg7fwVMRHxsTbtTXOET
+        Y2A1uOHXjPonllUKQU6LxJDC6oDGeSTfDEW77IPMvQ==
+X-Google-Smtp-Source: ABdhPJwW5mjQxi1a4udfjgSyugNwPEIcQAE/NOD72ifLhdpQLElTJwWmF1cRQqD3+/rl51ltZ4Rf+6zy3vIcuJhAzjg=
+X-Received: by 2002:ac2:43a6:: with SMTP id t6mr2708096lfl.194.1627542923287;
+ Thu, 29 Jul 2021 00:15:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210727061401.592616-1-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210722121757.1944658-1-jens.wiklander@linaro.org>
+ <20210722121757.1944658-4-jens.wiklander@linaro.org> <CAFA6WYMbOO6N2OSieeWitvti0bvOndLDWyc=yPrrC7cm4GLpPQ@mail.gmail.com>
+ <20210729065623.GB3316601@jade>
+In-Reply-To: <20210729065623.GB3316601@jade>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 29 Jul 2021 12:45:12 +0530
+Message-ID: <CAFA6WYPXMx8juuHPmr2hQG7zf8NDQkyUj5dgUzD4+adYMdUtjw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] optee: refactor driver with internal callbacks
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Jerome Forissier <jerome@forissier.org>,
+        Sughosh Ganu <sughosh.ganu@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 29 Jul 2021 at 12:26, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> On Wed, Jul 28, 2021 at 03:29:33PM +0530, Sumit Garg wrote:
+> > On Thu, 22 Jul 2021 at 17:48, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> > >
+> > > The OP-TEE driver is refactored with three internal callbacks replacing
+> > > direct calls to optee_from_msg_param(), optee_to_msg_param() and
+> > > optee_do_call_with_arg().
+> > >
+> > > These functions a central to communicating with OP-TEE in secure world
+> > > by using the SMC Calling Convention directly.
+> > >
+> > > This refactoring makes room for using other primitives to communicate
+> > > with OP-TEE in secure world while being able to reuse as much as
+> > > possible from the present driver.
+> > >
+> > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > > ---
+> > >  drivers/tee/optee/call.c          |  86 +++++++++--------
+> > >  drivers/tee/optee/core.c          | 148 ++++++++++++++++++++----------
+> > >  drivers/tee/optee/optee_private.h |  35 +++++--
+> > >  drivers/tee/optee/rpc.c           |  19 ++--
+> > >  4 files changed, 182 insertions(+), 106 deletions(-)
+> > >
+> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+> > > index 9d8f5a95e42f..00ecd794e59a 100644
+> > > --- a/drivers/tee/optee/call.c
+> > > +++ b/drivers/tee/optee/call.c
+> > > @@ -1,6 +1,6 @@
+> > >  // SPDX-License-Identifier: GPL-2.0-only
+> > >  /*
+> > > - * Copyright (c) 2015, Linaro Limited
+> > > + * Copyright (c) 2015-2021, Linaro Limited
+> > >   */
+> > >  #include <linux/arm-smccc.h>
+> > >  #include <linux/device.h>
+> > > @@ -118,20 +118,25 @@ static struct optee_session *find_session(struct optee_context_data *ctxdata,
+> > >  /**
+> > >   * optee_do_call_with_arg() - Do an SMC to OP-TEE in secure world
+> > >   * @ctx:       calling context
+> > > - * @parg:      physical address of message to pass to secure world
+> > > + * @arg:       shared memory holding the message to pass to secure world
+> > >   *
+> > >   * Does and SMC to OP-TEE in secure world and handles eventual resulting
+> > >   * Remote Procedure Calls (RPC) from OP-TEE.
+> > >   *
+> > >   * Returns return code from secure world, 0 is OK
+> > >   */
+> > > -u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
+> > > +int optee_do_call_with_arg(struct tee_context *ctx, struct tee_shm *arg)
+> > >  {
+> > >         struct optee *optee = tee_get_drvdata(ctx->teedev);
+> > >         struct optee_call_waiter w;
+> > >         struct optee_rpc_param param = { };
+> > >         struct optee_call_ctx call_ctx = { };
+> > > -       u32 ret;
+> > > +       phys_addr_t parg;
+> > > +       int rc;
+> > > +
+> > > +       rc = tee_shm_get_pa(arg, 0, &parg);
+> > > +       if (rc)
+> > > +               return rc;
+> > >
+> > >         param.a0 = OPTEE_SMC_CALL_WITH_ARG;
+> > >         reg_pair_from_64(&param.a1, &param.a2, parg);
+> > > @@ -160,7 +165,7 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
+> > >                         param.a3 = res.a3;
+> > >                         optee_handle_rpc(ctx, &param, &call_ctx);
+> > >                 } else {
+> > > -                       ret = res.a0;
+> > > +                       rc = res.a0;
+> > >                         break;
+> > >                 }
+> > >         }
+> > > @@ -172,14 +177,12 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
+> > >          */
+> > >         optee_cq_wait_final(&optee->call_queue, &w);
+> > >
+> > > -       return ret;
+> > > +       return rc;
+> > >  }
+> > >
+> > >  static struct tee_shm *get_msg_arg(struct tee_context *ctx, size_t num_params,
+> > > -                                  struct optee_msg_arg **msg_arg,
+> > > -                                  phys_addr_t *msg_parg)
+> > > +                                  struct optee_msg_arg **msg_arg)
+> > >  {
+> > > -       int rc;
+> > >         struct tee_shm *shm;
+> > >         struct optee_msg_arg *ma;
+> > >
+> > > @@ -190,22 +193,13 @@ static struct tee_shm *get_msg_arg(struct tee_context *ctx, size_t num_params,
+> > >
+> > >         ma = tee_shm_get_va(shm, 0);
+> > >         if (IS_ERR(ma)) {
+> > > -               rc = PTR_ERR(ma);
+> > > -               goto out;
+> > > +               tee_shm_free(shm);
+> > > +               return (void *)ma;
+> > >         }
+> > >
+> > > -       rc = tee_shm_get_pa(shm, 0, msg_parg);
+> > > -       if (rc)
+> > > -               goto out;
+> > > -
+> > >         memset(ma, 0, OPTEE_MSG_GET_ARG_SIZE(num_params));
+> > >         ma->num_params = num_params;
+> > >         *msg_arg = ma;
+> > > -out:
+> > > -       if (rc) {
+> > > -               tee_shm_free(shm);
+> > > -               return ERR_PTR(rc);
+> > > -       }
+> > >
+> > >         return shm;
+> > >  }
+> > > @@ -214,16 +208,16 @@ int optee_open_session(struct tee_context *ctx,
+> > >                        struct tee_ioctl_open_session_arg *arg,
+> > >                        struct tee_param *param)
+> > >  {
+> > > +       struct optee *optee = tee_get_drvdata(ctx->teedev);
+> > >         struct optee_context_data *ctxdata = ctx->data;
+> > >         int rc;
+> > >         struct tee_shm *shm;
+> > >         struct optee_msg_arg *msg_arg;
+> > > -       phys_addr_t msg_parg;
+> > >         struct optee_session *sess = NULL;
+> > >         uuid_t client_uuid;
+> > >
+> > >         /* +2 for the meta parameters added below */
+> > > -       shm = get_msg_arg(ctx, arg->num_params + 2, &msg_arg, &msg_parg);
+> > > +       shm = get_msg_arg(ctx, arg->num_params + 2, &msg_arg);
+> > >         if (IS_ERR(shm))
+> > >                 return PTR_ERR(shm);
+> > >
+> > > @@ -247,7 +241,8 @@ int optee_open_session(struct tee_context *ctx,
+> > >                 goto out;
+> > >         export_uuid(msg_arg->params[1].u.octets, &client_uuid);
+> > >
+> > > -       rc = optee_to_msg_param(msg_arg->params + 2, arg->num_params, param);
+> > > +       rc = optee->ops->to_msg_param(optee, msg_arg->params + 2,
+> > > +                                     arg->num_params, param);
+> > >         if (rc)
+> > >                 goto out;
+> > >
+> > > @@ -257,7 +252,7 @@ int optee_open_session(struct tee_context *ctx,
+> > >                 goto out;
+> > >         }
+> > >
+> > > -       if (optee_do_call_with_arg(ctx, msg_parg)) {
+> > > +       if (optee->ops->do_call_with_arg(ctx, shm)) {
+> > >                 msg_arg->ret = TEEC_ERROR_COMMUNICATION;
+> > >                 msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
+> > >         }
+> > > @@ -272,7 +267,8 @@ int optee_open_session(struct tee_context *ctx,
+> > >                 kfree(sess);
+> > >         }
+> > >
+> > > -       if (optee_from_msg_param(param, arg->num_params, msg_arg->params + 2)) {
+> > > +       if (optee->ops->from_msg_param(optee, param, arg->num_params,
+> > > +                                      msg_arg->params + 2)) {
+> > >                 arg->ret = TEEC_ERROR_COMMUNICATION;
+> > >                 arg->ret_origin = TEEC_ORIGIN_COMMS;
+> > >                 /* Close session again to avoid leakage */
+> > > @@ -291,16 +287,16 @@ int optee_open_session(struct tee_context *ctx,
+> > >  int optee_close_session_helper(struct tee_context *ctx, u32 session)
+> > >  {
+> > >         struct tee_shm *shm;
+> > > +       struct optee *optee = tee_get_drvdata(ctx->teedev);
+> > >         struct optee_msg_arg *msg_arg;
+> > > -       phys_addr_t msg_parg;
+> > >
+> > > -       shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
+> > > +       shm = get_msg_arg(ctx, 0, &msg_arg);
+> > >         if (IS_ERR(shm))
+> > >                 return PTR_ERR(shm);
+> > >
+> > >         msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
+> > >         msg_arg->session = session;
+> > > -       optee_do_call_with_arg(ctx, msg_parg);
+> > > +       optee->ops->do_call_with_arg(ctx, shm);
+> > >
+> > >         tee_shm_free(shm);
+> > >
+> > > @@ -328,10 +324,10 @@ int optee_close_session(struct tee_context *ctx, u32 session)
+> > >  int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+> > >                       struct tee_param *param)
+> > >  {
+> > > +       struct optee *optee = tee_get_drvdata(ctx->teedev);
+> > >         struct optee_context_data *ctxdata = ctx->data;
+> > >         struct tee_shm *shm;
+> > >         struct optee_msg_arg *msg_arg;
+> > > -       phys_addr_t msg_parg;
+> > >         struct optee_session *sess;
+> > >         int rc;
+> > >
+> > > @@ -342,7 +338,7 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+> > >         if (!sess)
+> > >                 return -EINVAL;
+> > >
+> > > -       shm = get_msg_arg(ctx, arg->num_params, &msg_arg, &msg_parg);
+> > > +       shm = get_msg_arg(ctx, arg->num_params, &msg_arg);
+> > >         if (IS_ERR(shm))
+> > >                 return PTR_ERR(shm);
+> > >         msg_arg->cmd = OPTEE_MSG_CMD_INVOKE_COMMAND;
+> > > @@ -350,16 +346,18 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+> > >         msg_arg->session = arg->session;
+> > >         msg_arg->cancel_id = arg->cancel_id;
+> > >
+> > > -       rc = optee_to_msg_param(msg_arg->params, arg->num_params, param);
+> > > +       rc = optee->ops->to_msg_param(optee, msg_arg->params, arg->num_params,
+> > > +                                     param);
+> > >         if (rc)
+> > >                 goto out;
+> > >
+> > > -       if (optee_do_call_with_arg(ctx, msg_parg)) {
+> > > +       if (optee->ops->do_call_with_arg(ctx, shm)) {
+> > >                 msg_arg->ret = TEEC_ERROR_COMMUNICATION;
+> > >                 msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
+> > >         }
+> > >
+> > > -       if (optee_from_msg_param(param, arg->num_params, msg_arg->params)) {
+> > > +       if (optee->ops->from_msg_param(optee, param, arg->num_params,
+> > > +                                      msg_arg->params)) {
+> > >                 msg_arg->ret = TEEC_ERROR_COMMUNICATION;
+> > >                 msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
+> > >         }
+> > > @@ -373,10 +371,10 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+> > >
+> > >  int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
+> > >  {
+> > > +       struct optee *optee = tee_get_drvdata(ctx->teedev);
+> > >         struct optee_context_data *ctxdata = ctx->data;
+> > >         struct tee_shm *shm;
+> > >         struct optee_msg_arg *msg_arg;
+> > > -       phys_addr_t msg_parg;
+> > >         struct optee_session *sess;
+> > >
+> > >         /* Check that the session is valid */
+> > > @@ -386,14 +384,14 @@ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
+> > >         if (!sess)
+> > >                 return -EINVAL;
+> > >
+> > > -       shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
+> > > +       shm = get_msg_arg(ctx, 0, &msg_arg);
+> > >         if (IS_ERR(shm))
+> > >                 return PTR_ERR(shm);
+> > >
+> > >         msg_arg->cmd = OPTEE_MSG_CMD_CANCEL;
+> > >         msg_arg->session = session;
+> > >         msg_arg->cancel_id = cancel_id;
+> > > -       optee_do_call_with_arg(ctx, msg_parg);
+> > > +       optee->ops->do_call_with_arg(ctx, shm);
+> > >
+> > >         tee_shm_free(shm);
+> > >         return 0;
+> > > @@ -592,10 +590,10 @@ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+> > >                        struct page **pages, size_t num_pages,
+> > >                        unsigned long start)
+> > >  {
+> > > -       struct tee_shm *shm_arg = NULL;
+> > > +       struct optee *optee = tee_get_drvdata(ctx->teedev);
+> > >         struct optee_msg_arg *msg_arg;
+> > > +       struct tee_shm *shm_arg;
+> > >         u64 *pages_list;
+> > > -       phys_addr_t msg_parg;
+> > >         int rc;
+> > >
+> > >         if (!num_pages)
+> > > @@ -609,7 +607,7 @@ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+> > >         if (!pages_list)
+> > >                 return -ENOMEM;
+> > >
+> > > -       shm_arg = get_msg_arg(ctx, 1, &msg_arg, &msg_parg);
+> > > +       shm_arg = get_msg_arg(ctx, 1, &msg_arg);
+> > >         if (IS_ERR(shm_arg)) {
+> > >                 rc = PTR_ERR(shm_arg);
+> > >                 goto out;
+> > > @@ -630,7 +628,7 @@ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+> > >         msg_arg->params->u.tmem.buf_ptr = virt_to_phys(pages_list) |
+> > >           (tee_shm_get_page_offset(shm) & (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
+> > >
+> > > -       if (optee_do_call_with_arg(ctx, msg_parg) ||
+> > > +       if (optee->ops->do_call_with_arg(ctx, shm_arg) ||
+> > >             msg_arg->ret != TEEC_SUCCESS)
+> > >                 rc = -EINVAL;
+> > >
+> > > @@ -642,12 +640,12 @@ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+> > >
+> > >  int optee_shm_unregister(struct tee_context *ctx, struct tee_shm *shm)
+> > >  {
+> > > -       struct tee_shm *shm_arg;
+> > > +       struct optee *optee = tee_get_drvdata(ctx->teedev);
+> > >         struct optee_msg_arg *msg_arg;
+> > > -       phys_addr_t msg_parg;
+> > > +       struct tee_shm *shm_arg;
+> > >         int rc = 0;
+> > >
+> > > -       shm_arg = get_msg_arg(ctx, 1, &msg_arg, &msg_parg);
+> > > +       shm_arg = get_msg_arg(ctx, 1, &msg_arg);
+> > >         if (IS_ERR(shm_arg))
+> > >                 return PTR_ERR(shm_arg);
+> > >
+> > > @@ -656,7 +654,7 @@ int optee_shm_unregister(struct tee_context *ctx, struct tee_shm *shm)
+> > >         msg_arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_RMEM_INPUT;
+> > >         msg_arg->params[0].u.rmem.shm_ref = (unsigned long)shm;
+> > >
+> > > -       if (optee_do_call_with_arg(ctx, msg_parg) ||
+> > > +       if (optee->ops->do_call_with_arg(ctx, shm_arg) ||
+> > >             msg_arg->ret != TEEC_SUCCESS)
+> > >                 rc = -EINVAL;
+> > >         tee_shm_free(shm_arg);
+> > > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> > > index 949223b214c3..f689f171a794 100644
+> > > --- a/drivers/tee/optee/core.c
+> > > +++ b/drivers/tee/optee/core.c
+> > > @@ -1,6 +1,6 @@
+> > >  // SPDX-License-Identifier: GPL-2.0-only
+> > >  /*
+> > > - * Copyright (c) 2015, Linaro Limited
+> > > + * Copyright (c) 2015-2021, Linaro Limited
+> > >   */
+> > >
+> > >  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> > > @@ -26,21 +26,87 @@
+> > >
+> > >  #define OPTEE_SHM_NUM_PRIV_PAGES       CONFIG_OPTEE_SHM_NUM_PRIV_PAGES
+> > >
+> > > +static void from_msg_param_value(struct tee_param *p, u32 attr,
+> > > +                                const struct optee_msg_param *mp)
+> > > +{
+> > > +       p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT +
+> > > +                 attr - OPTEE_MSG_ATTR_TYPE_VALUE_INPUT;
+> > > +       p->u.value.a = mp->u.value.a;
+> > > +       p->u.value.b = mp->u.value.b;
+> > > +       p->u.value.c = mp->u.value.c;
+> > > +}
+> > > +
+> > > +static int from_msg_param_tmp_mem(struct tee_param *p, u32 attr,
+> > > +                                 const struct optee_msg_param *mp)
+> > > +{
+> > > +       struct tee_shm *shm;
+> > > +       phys_addr_t pa;
+> > > +       int rc;
+> > > +
+> > > +       p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT +
+> > > +                 attr - OPTEE_MSG_ATTR_TYPE_TMEM_INPUT;
+> > > +       p->u.memref.size = mp->u.tmem.size;
+> > > +       shm = (struct tee_shm *)(unsigned long)mp->u.tmem.shm_ref;
+> > > +       if (!shm) {
+> > > +               p->u.memref.shm_offs = 0;
+> > > +               p->u.memref.shm = NULL;
+> > > +               return 0;
+> > > +       }
+> > > +
+> > > +       rc = tee_shm_get_pa(shm, 0, &pa);
+> > > +       if (rc)
+> > > +               return rc;
+> > > +
+> > > +       p->u.memref.shm_offs = mp->u.tmem.buf_ptr - pa;
+> > > +       p->u.memref.shm = shm;
+> > > +
+> > > +       /* Check that the memref is covered by the shm object */
+> > > +       if (p->u.memref.size) {
+> > > +               size_t o = p->u.memref.shm_offs +
+> > > +                          p->u.memref.size - 1;
+> > > +
+> > > +               rc = tee_shm_get_pa(shm, o, NULL);
+> > > +               if (rc)
+> > > +                       return rc;
+> > > +       }
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +static void from_msg_param_reg_mem(struct tee_param *p, u32 attr,
+> > > +                                  const struct optee_msg_param *mp)
+> > > +{
+> > > +       struct tee_shm *shm;
+> > > +
+> > > +       p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT +
+> > > +                 attr - OPTEE_MSG_ATTR_TYPE_RMEM_INPUT;
+> > > +       p->u.memref.size = mp->u.rmem.size;
+> > > +       shm = (struct tee_shm *)(unsigned long)mp->u.rmem.shm_ref;
+> > > +
+> > > +       if (shm) {
+> > > +               p->u.memref.shm_offs = mp->u.rmem.offs;
+> > > +               p->u.memref.shm = shm;
+> > > +       } else {
+> > > +               p->u.memref.shm_offs = 0;
+> > > +               p->u.memref.shm = NULL;
+> > > +       }
+> > > +}
+> > > +
+> > >  /**
+> > >   * optee_from_msg_param() - convert from OPTEE_MSG parameters to
+> > >   *                         struct tee_param
+> > > + * @optee:     main service struct
+> >
+> > I don't see this new argument being used. Can you throw some light on
+> > the use-case for this additional argument?
+>
+> This function is registered as a callback and the counter part in the
+> FF-A ABI (optee_ffa_from_msg_param()) will need this parameter. So it's
+> needed to have the same signature.
+>
 
+Okay, I see its usage.
 
-On 7/27/21 11:43 AM, Gavin Shan wrote:
-> There are couple of issues with current implementations and this series
-> tries to resolve the issues:
-> 
->   (a) All needed information are scattered in variables, passed to various
->       test functions. The code is organized in pretty much relaxed fashion.
-> 
->   (b) The page isn't allocated from buddy during page table entry modifying
->       tests. The page can be invalid, conflicting to the implementations
->       of set_xxx_at() on ARM64. The target page is accessed so that the iCache
->       can be flushed when execution permission is given on ARM64. Besides,
->       the target page can be unmapped and access to it causes kernel crash.
-> 
-> "struct pgtable_debug_args" is introduced to address issue (a). For issue
-> (b), the used page is allocated from buddy in page table entry modifying
-> tests. The corresponding tets will be skipped if we fail to allocate the
-> (huge) page. For other test cases, the original page around to kernel
-> symbol (@start_kernel) is still used.
-> 
-> The patches are organized as below. PATCH[2-10] could be combined to one
-> patch, but it will make the review harder:
-> 
->   PATCH[1] introduces "struct pgtable_debug_args" as place holder of all
->            needed information. With it, the old and new implementation
->            can coexist.
->   PATCH[2-10] uses "struct pgtable_debug_args" in various test functions.
->   PATCH[11] removes the unused code for old implementation.
->   PATCH[12] fixes the issue of corrupted page flag for ARM64
-> 
-> Changelog
-> =========
-> v4:
->    * Determine the page allocation method according to
->      MAX_ORDER                                                   (Anshuman)
->    * Move existing comments to init_args()                       (Anshuman)
->    * Code refactoring as suggested by Anshuman                   (Anshuman)
->    * Improved commit log and add comments for flush_dcache_page()
->      in PATCH[v4 12/12]                                          (Anshuman)
->    * Address misc comments                                       (Anshuman
+> >
+> > >   * @params:    subsystem internal parameter representation
+> > >   * @num_params:        number of elements in the parameter arrays
+> > >   * @msg_params:        OPTEE_MSG parameters
+> > >   * Returns 0 on success or <0 on failure
+> > >   */
+> > > -int optee_from_msg_param(struct tee_param *params, size_t num_params,
+> > > -                        const struct optee_msg_param *msg_params)
+> > > +static int optee_from_msg_param(struct optee *optee, struct tee_param *params,
+> > > +                               size_t num_params,
+> > > +                               const struct optee_msg_param *msg_params)
+> > >  {
+> > >         int rc;
+> > >         size_t n;
+> > > -       struct tee_shm *shm;
+> > > -       phys_addr_t pa;
+> > >
+> > >         for (n = 0; n < num_params; n++) {
+> > >                 struct tee_param *p = params + n;
+> > > @@ -55,48 +121,19 @@ int optee_from_msg_param(struct tee_param *params, size_t num_params,
+> > >                 case OPTEE_MSG_ATTR_TYPE_VALUE_INPUT:
+> > >                 case OPTEE_MSG_ATTR_TYPE_VALUE_OUTPUT:
+> > >                 case OPTEE_MSG_ATTR_TYPE_VALUE_INOUT:
+> > > -                       p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT +
+> > > -                                 attr - OPTEE_MSG_ATTR_TYPE_VALUE_INPUT;
+> > > -                       p->u.value.a = mp->u.value.a;
+> > > -                       p->u.value.b = mp->u.value.b;
+> > > -                       p->u.value.c = mp->u.value.c;
+> > > +                       from_msg_param_value(p, attr, mp);
+> > >                         break;
+> > >                 case OPTEE_MSG_ATTR_TYPE_TMEM_INPUT:
+> > >                 case OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT:
+> > >                 case OPTEE_MSG_ATTR_TYPE_TMEM_INOUT:
+> > > -                       p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT +
+> > > -                                 attr - OPTEE_MSG_ATTR_TYPE_TMEM_INPUT;
+> > > -                       p->u.memref.size = mp->u.tmem.size;
+> > > -                       shm = (struct tee_shm *)(unsigned long)
+> > > -                               mp->u.tmem.shm_ref;
+> > > -                       if (!shm) {
+> > > -                               p->u.memref.shm_offs = 0;
+> > > -                               p->u.memref.shm = NULL;
+> > > -                               break;
+> > > -                       }
+> > > -                       rc = tee_shm_get_pa(shm, 0, &pa);
+> > > +                       rc = from_msg_param_tmp_mem(p, attr, mp);
+> > >                         if (rc)
+> > >                                 return rc;
+> > > -                       p->u.memref.shm_offs = mp->u.tmem.buf_ptr - pa;
+> > > -                       p->u.memref.shm = shm;
+> > >                         break;
+> > >                 case OPTEE_MSG_ATTR_TYPE_RMEM_INPUT:
+> > >                 case OPTEE_MSG_ATTR_TYPE_RMEM_OUTPUT:
+> > >                 case OPTEE_MSG_ATTR_TYPE_RMEM_INOUT:
+> > > -                       p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT +
+> > > -                                 attr - OPTEE_MSG_ATTR_TYPE_RMEM_INPUT;
+> > > -                       p->u.memref.size = mp->u.rmem.size;
+> > > -                       shm = (struct tee_shm *)(unsigned long)
+> > > -                               mp->u.rmem.shm_ref;
+> > > -
+> > > -                       if (!shm) {
+> > > -                               p->u.memref.shm_offs = 0;
+> > > -                               p->u.memref.shm = NULL;
+> > > -                               break;
+> > > -                       }
+> > > -                       p->u.memref.shm_offs = mp->u.rmem.offs;
+> > > -                       p->u.memref.shm = shm;
+> > > -
+> > > +                       from_msg_param_reg_mem(p, attr, mp);
+> > >                         break;
+> > >
+> > >                 default:
+> > > @@ -106,6 +143,16 @@ int optee_from_msg_param(struct tee_param *params, size_t num_params,
+> > >         return 0;
+> > >  }
+> > >
+> > > +static void to_msg_param_value(struct optee_msg_param *mp,
+> > > +                              const struct tee_param *p)
+> > > +{
+> > > +       mp->attr = OPTEE_MSG_ATTR_TYPE_VALUE_INPUT + p->attr -
+> > > +                  TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
+> > > +       mp->u.value.a = p->u.value.a;
+> > > +       mp->u.value.b = p->u.value.b;
+> > > +       mp->u.value.c = p->u.value.c;
+> > > +}
+> > > +
+> > >  static int to_msg_param_tmp_mem(struct optee_msg_param *mp,
+> > >                                 const struct tee_param *p)
+> > >  {
+> > > @@ -148,13 +195,15 @@ static int to_msg_param_reg_mem(struct optee_msg_param *mp,
+> > >
+> > >  /**
+> > >   * optee_to_msg_param() - convert from struct tee_params to OPTEE_MSG parameters
+> > > + * @optee:     main service struct
+> >
+> > Same here.
+>
+> This function is also registered as a callback.  Here it's questionable
+> though, but I added it to let optee->ops->to_msg_param() and
+> optee->ops->from_msg_param() have better symmetry.
+>
 
-This series builds ok on all supported platforms but should also be tested
-on them as well i.e s390, ppc, arc and riscv. I was able to do some tests
-on arm64 and x86 platforms.
+I am fine with that. FWIW:
+
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+
+-Sumit
+
+> Thanks,
+> Jens
