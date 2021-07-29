@@ -2,201 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF923DA7C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4EC3DA7C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237971AbhG2PnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:43:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:50878 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237891AbhG2PnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:43:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27E076D;
-        Thu, 29 Jul 2021 08:43:16 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A26983F73D;
-        Thu, 29 Jul 2021 08:43:13 -0700 (PDT)
-Subject: Re: [PATCH v2 00/24] iommu: Refactor DMA domain strictness
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>, joro@8bytes.org,
-        will@kernel.org
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
-        john.garry@huawei.com, dianders@chromium.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <cover.1627468308.git.robin.murphy@arm.com>
- <2947762.k3LOHGUjKi@diego>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <ade9f10e-836c-f29e-030b-23fe0a3187fb@arm.com>
-Date:   Thu, 29 Jul 2021 16:43:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237879AbhG2PnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhG2PnF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 11:43:05 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2E6C061765;
+        Thu, 29 Jul 2021 08:43:01 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id q3so7551785wrx.0;
+        Thu, 29 Jul 2021 08:43:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wUU+uqMK2XMkpAz+JRAI4WjTrxOmVumYKbTDtChNDWo=;
+        b=YYfeUO7J0s+htMw0H3O22n/vBXHjlJQeKQWQcryPN1ybpayRJQVsIaaOEbRyDuzpKG
+         5FP3L2sftm+c1akwosWgGa0am6YFfVvoUNbMQqWxyVZtJJnhLpEO4cT7XDMM4ppOnz/E
+         7uYx8u9ynh9RTI7cpeDRt5ThvkKdhECzwVOx89Yn1xyXnIyR262UOYj0vTEaEcKK2ssh
+         No4uIzo4xs6EcUcXNGlF1poVXzC52DmegInCEYRcnWnRWQVDIpGQBnnlIU6bExQrPR7a
+         Oru8g63IUkt4ZQM5NvDMka409VALFyI04q8aLhbM97lVIsnIRZ+WZIv1F4+wSLBvyP/U
+         fYBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wUU+uqMK2XMkpAz+JRAI4WjTrxOmVumYKbTDtChNDWo=;
+        b=CXkK9TCwpUs9TA6Dxtb3Iq3R2gxNcOqZB7iUDZGWFFdpgAgErVdezrHR0kQ/BgYE3U
+         toapP9vEbvvpW0B84nAlOUPleIt6w4IQxLWTRQ+JqHhkRKAH/93seDlrAtwJEroEAMg0
+         /eRvOJgt3f8NN5i3WUiYmAiQkiHrieidcl2tX01wyZiFfbyoDEywAEQsOHraOFOc/zFd
+         apPQU5ACEs4izV4kB1qh9mb2nzIokidHLHsK/43gtvLb0+tS/xtK6PstwGQLYmo6/Nlf
+         hY2F9m+4C+qHwSOHAv4q4GXGZ0RDB41UC8hn3DO3+ZKHbADxrkU3WVbx0OnSaWIJXzZ9
+         +MpA==
+X-Gm-Message-State: AOAM532/hPXRJm+VsYSa2HgS9Ixwfv19F7KcZd5iA0RcxLggz9Y3zReN
+        rhIfr+42g4xMkcruA9lIoR0uyBZ3yXrjFlt6CVA=
+X-Google-Smtp-Source: ABdhPJxAJP84bulTj7l8JqyLiyhO41g1incA4XrhGVMOuwHSwF6m47BA2XAHlmhzvHLRiVNdg1NiWrZIEAYeNdzQexE=
+X-Received: by 2002:a5d:4e43:: with SMTP id r3mr5511562wrt.132.1627573379809;
+ Thu, 29 Jul 2021 08:42:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2947762.k3LOHGUjKi@diego>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20210729200230.v2.1.I110b87677ef16d97397fb7c81c07a16e1f5d211e@changeid>
+ <20210729200230.v2.2.I286ef007fcadd9e6ee3b2c0ad948f990735f9610@changeid>
+ <CAF6AEGtv0R=SjwpV7NEX6-4sHTF_CxbqgFXNWN+PT9hJJb7N2A@mail.gmail.com> <cf9effea-43dc-0ea6-6e73-29e6beff607f@codeaurora.org>
+In-Reply-To: <cf9effea-43dc-0ea6-6e73-29e6beff607f@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 29 Jul 2021 08:47:09 -0700
+Message-ID: <CAF6AEGtypTgeCdo_yzywEVyzEUG1H_w_r_29dS9MYRpSNvit8Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] drm/msm/a6xx: Use rev to identify SKU
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     Sean Paul <sean@poorly.run>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-29 16:04, Heiko Stübner wrote:
-> Hi Robin,
-> 
-> Am Mittwoch, 28. Juli 2021, 17:58:21 CEST schrieb Robin Murphy:
->> Hi all,
->>
->> Here's v2 where things start to look more realistic, hence the expanded
->> CC list. The patches are now based on the current iommu/core branch to
->> take John's iommu_set_dma_strict() cleanup into account.
->>
->> The series remiains in two (or possibly 3) logical parts - for people
->> CC'd on cookie cleanup patches, the later parts should not affect you
->> since your drivers don't implement non-strict mode anyway; the cleanup
->> is all pretty straightforward, but please do yell at me if I've managed
->> to let a silly mistake slip through and broken your driver.
->>
->> This time I have also build-tested x86 as well as arm64 :)
-> 
-> TL;DR: arm64 yay, arm32 nay ;-)
+On Thu, Jul 29, 2021 at 8:36 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>
+> On 7/29/2021 8:57 PM, Rob Clark wrote:
+> > On Thu, Jul 29, 2021 at 7:33 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+> >>
+> >> Use rev instead of revn to identify the SKU. This is in
+> >> preparation to the introduction of 7c3 gpu which won't have a
+> >> revn.
+> >>
+> >> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> >> ---
+> >>
+> >> (no changes since v1)
+> >>
+> >>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 11 +++++------
+> >>   1 file changed, 5 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >> index 183b9f9..0da1a66 100644
+> >> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >> @@ -1675,11 +1675,11 @@ static u32 a618_get_speed_bin(u32 fuse)
+> >>          return UINT_MAX;
+> >>   }
+> >>
+> >> -static u32 fuse_to_supp_hw(struct device *dev, u32 revn, u32 fuse)
+> >> +static u32 fuse_to_supp_hw(struct device *dev, struct adreno_rev rev, u32 fuse)
+> >>   {
+> >>          u32 val = UINT_MAX;
+> >>
+> >> -       if (revn == 618)
+> >> +       if (adreno_cmp_rev(ADRENO_REV(6, 1, 8, ANY_ID), rev))
+> >
+> > Looks like adreno_cmp_rev() ended up in patch 3/3 when it should have
+> > been in this patch..
+> >
+> > But I guess we could also move this into adreno_is_a618() and use that here
+> >
+> > BR,
+> > -R
+> Ahh! I reordered the patches. This is too early in the probe sequence to
+> call adreno_is_axxx(), right?
 
-Cheers Heiko!
+ahh, right, I guess you do still need to open code adreno_cmp_rev()
+here.. but you can at least move adreno_cmp_rev() into this patch.
 
-> testcase:
-> 5.14-rc3
-> + iommu/next
-> + patches 1+8 (the ones you cc'd me on)
->    iommu: Pull IOVA cookie management into the core
->    iommu/rockchip: Drop IOVA cookie management
-> 
-> rk3399+hdmi (puma): boots with graphics
-> rk3399+edp (kevin): boots with graphics
-> px30+dsi (minievb): boots with graphics
-> 
-> rk3288 (arm32, veyron-pinky): hangs when trying to start the rockchip-drm
-> at some points the rest of the system recovers and fills the log with
-> 
-> [   47.193776] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> [   47.193867] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:31:plane-0] commit wait timed out
-> [   57.433743] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> [   57.433828] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:40:plane-4] commit wait timed out
-> 
-> spews
-> 
-> testcase 2:
-> 5.14-rc3
-> + iommu/next
-> 
-> all works fine on both arm32+arm64
-> 
-> 
-> That whole iommu voodoo is a bit over my head right now, so I'm not sure
-> what to poke to diagnose this.
+BR,
+-R
 
-Dang, this wasn't supposed to affect 32-bit Arm at all, since that 
-doesn't touch any of the default domain stuff either way. I have both my 
-RK3288 box (which IIRC doesn't currently boot) and an Odroid-U3 in the 
-"desk pile" right in front of me, so at worst I'll try bringing one of 
-those to life to see what silly thing I have indeed done to break 32-bit.
-
-I have a vague idea forming already, which suggests that it might get 
-better again once patch #12 is applied, but even if so there's no excuse 
-not to be bisectable, so I need to dig in and fix it - many thanks for 
-yelling as requested :D
-
-Robin.
-
-> 
-> 
-> Heiko
-> 
-> 
->> Changes in v2:
->>
->> - Add iommu_is_dma_domain() helper to abstract flag check (and help
->>    avoid silly typos like the one in v1).
->> - Tweak a few commit messages for spelling and (hopefully) clarity.
->> - Move the iommu_create_device_direct_mappings() update to patch #14
->>    where it should have been.
->> - Rewrite patch #20 as a conversion of the now-existing option.
->> - Clean up the ops->flush_iotlb_all check which is also made redundant
->>    by the new domain type
->> - Add patch #24, which is arguably tangential, but it was something I
->>    spotted during the rebase, so...
->>
->> Once again, the whole lot is available on a branch here:
->>
->> https://gitlab.arm.com/linux-arm/linux-rm/-/tree/iommu/fq
->>
->> Thanks,
->> Robin.
->>
->>
->> CC: Marek Szyprowski <m.szyprowski@samsung.com>
->> CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
->> CC: Geert Uytterhoeven <geert+renesas@glider.be>
->> CC: Yong Wu <yong.wu@mediatek.com>
->> CC: Heiko Stuebner <heiko@sntech.de>
->> CC: Chunyan Zhang <chunyan.zhang@unisoc.com>
->> CC: Chunyan Zhang <chunyan.zhang@unisoc.com>
->> CC: Maxime Ripard <mripard@kernel.org>
->> CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
->>
->> Robin Murphy (24):
->>    iommu: Pull IOVA cookie management into the core
->>    iommu/amd: Drop IOVA cookie management
->>    iommu/arm-smmu: Drop IOVA cookie management
->>    iommu/vt-d: Drop IOVA cookie management
->>    iommu/exynos: Drop IOVA cookie management
->>    iommu/ipmmu-vmsa: Drop IOVA cookie management
->>    iommu/mtk: Drop IOVA cookie management
->>    iommu/rockchip: Drop IOVA cookie management
->>    iommu/sprd: Drop IOVA cookie management
->>    iommu/sun50i: Drop IOVA cookie management
->>    iommu/virtio: Drop IOVA cookie management
->>    iommu/dma: Unexport IOVA cookie management
->>    iommu/dma: Remove redundant "!dev" checks
->>    iommu: Introduce explicit type for non-strict DMA domains
->>    iommu/amd: Prepare for multiple DMA domain types
->>    iommu/arm-smmu: Prepare for multiple DMA domain types
->>    iommu/vt-d: Prepare for multiple DMA domain types
->>    iommu: Express DMA strictness via the domain type
->>    iommu: Expose DMA domain strictness via sysfs
->>    iommu: Merge strictness and domain type configs
->>    iommu/dma: Factor out flush queue init
->>    iommu: Allow enabling non-strict mode dynamically
->>    iommu/arm-smmu: Allow non-strict in pgtable_quirks interface
->>    iommu: Only log strictness for DMA domains
->>
->>   .../ABI/testing/sysfs-kernel-iommu_groups     |  2 +
->>   drivers/iommu/Kconfig                         | 80 +++++++++----------
->>   drivers/iommu/amd/iommu.c                     | 21 +----
->>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 25 ++++--
->>   drivers/iommu/arm/arm-smmu/arm-smmu.c         | 29 ++++---
->>   drivers/iommu/arm/arm-smmu/qcom_iommu.c       |  8 --
->>   drivers/iommu/dma-iommu.c                     | 44 +++++-----
->>   drivers/iommu/exynos-iommu.c                  | 18 +----
->>   drivers/iommu/intel/iommu.c                   | 23 ++----
->>   drivers/iommu/iommu.c                         | 53 +++++++-----
->>   drivers/iommu/ipmmu-vmsa.c                    | 27 +------
->>   drivers/iommu/mtk_iommu.c                     |  6 --
->>   drivers/iommu/rockchip-iommu.c                | 11 +--
->>   drivers/iommu/sprd-iommu.c                    |  6 --
->>   drivers/iommu/sun50i-iommu.c                  | 12 +--
->>   drivers/iommu/virtio-iommu.c                  |  8 --
->>   include/linux/dma-iommu.h                     |  9 ++-
->>   include/linux/iommu.h                         | 15 +++-
->>   18 files changed, 171 insertions(+), 226 deletions(-)
->>
->>
-> 
-> 
-> 
-> 
+>
+> -Akhil.
+> >
+> >>                  val = a618_get_speed_bin(fuse);
+> >>
+> >>          if (val == UINT_MAX) {
+> >> @@ -1692,8 +1692,7 @@ static u32 fuse_to_supp_hw(struct device *dev, u32 revn, u32 fuse)
+> >>          return (1 << val);
+> >>   }
+> >>
+> >> -static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+> >> -               u32 revn)
+> >> +static int a6xx_set_supported_hw(struct device *dev, struct adreno_rev rev)
+> >>   {
+> >>          u32 supp_hw = UINT_MAX;
+> >>          u16 speedbin;
+> >> @@ -1714,7 +1713,7 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+> >>          }
+> >>          speedbin = le16_to_cpu(speedbin);
+> >>
+> >> -       supp_hw = fuse_to_supp_hw(dev, revn, speedbin);
+> >> +       supp_hw = fuse_to_supp_hw(dev, rev, speedbin);
+> >>
+> >>   done:
+> >>          ret = devm_pm_opp_set_supported_hw(dev, &supp_hw, 1);
+> >> @@ -1785,7 +1784,7 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+> >>
+> >>          a6xx_llc_slices_init(pdev, a6xx_gpu);
+> >>
+> >> -       ret = a6xx_set_supported_hw(&pdev->dev, a6xx_gpu, info->revn);
+> >> +       ret = a6xx_set_supported_hw(&pdev->dev, config->rev);
+> >>          if (ret) {
+> >>                  a6xx_destroy(&(a6xx_gpu->base.base));
+> >>                  return ERR_PTR(ret);
+> >> --
+> >> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> >> of Code Aurora Forum, hosted by The Linux Foundation.
+> >>
+>
