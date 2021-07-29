@@ -2,171 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626363DA4A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447CE3DA4A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237766AbhG2Nrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:47:40 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48540 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237503AbhG2Nri (ORCPT
+        id S237795AbhG2NsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237684AbhG2NsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:47:38 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TDXWBw110609;
-        Thu, 29 Jul 2021 09:47:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=9O/GEXoZTqlR+xJfXv/WGh/M7l0aIVQd0qAa+HW+Jb4=;
- b=coJYu/Zt4KQyNuAJsFjZKgC2d9R85IJRz0q/e8r6/5m+RSV6IN9G1K0a6XkBIy9TP2OI
- fHwl3ccbMPd9m7nrH6gj+FLL8b98Z+DpQ0NQ1wRg4HUj7imZ42r/KwjNtXzMowZDHzFU
- VYo+Z8PPrFE4wBMrIbtFHN+WxhKoUBH+CYZ/wfgtuBn3hCs1LKuQf/TC6pv1x2J/GzOX
- kP6EsMclJkS6Z9KLjUdYk7Cq3Anv6yQOgRhIB/db6pYmF8sbq8j9GqUJACk80o/FdzPV
- esdO0Dl/NErjdG3p59+3Jl1fiTXMjuf9G+qeUASNY78+uLBRiM7URIkK8UdWFHxl0EsL YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3tw7nkue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 09:47:32 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TDYInm117541;
-        Thu, 29 Jul 2021 09:47:32 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3tw7nktt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 09:47:32 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TDZnjZ002896;
-        Thu, 29 Jul 2021 13:47:30 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3a235ks4ry-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 13:47:30 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TDigBD25428294
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Jul 2021 13:44:42 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF0C6A4051;
-        Thu, 29 Jul 2021 13:47:25 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 58190A4080;
-        Thu, 29 Jul 2021 13:47:25 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 29 Jul 2021 13:47:25 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>, Marco Elver <elver@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Subject: Re: [PATCH 2/4] kfence: add function to mask address bits
-References: <20210728190254.3921642-1-hca@linux.ibm.com>
-        <20210728190254.3921642-3-hca@linux.ibm.com>
-        <CAG_fn=VS_WFjL+qjm79Jvq5M0KaNScvX2vCw=aNxPx14Hffa0A@mail.gmail.com>
-Date:   Thu, 29 Jul 2021 15:47:24 +0200
-In-Reply-To: <CAG_fn=VS_WFjL+qjm79Jvq5M0KaNScvX2vCw=aNxPx14Hffa0A@mail.gmail.com>
-        (Alexander Potapenko's message of "Thu, 29 Jul 2021 14:43:51 +0200")
-Message-ID: <yt9dtukdteoj.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Thu, 29 Jul 2021 09:48:07 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E01C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:48:03 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id k1so7013622plt.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YxDl0EJtEuevrE5fofbeNq+CYZb2RNB0hzvmFi+D3+8=;
+        b=VVYQWyDfexTZ8+hbjdrXcso8HsN0LxWI8d3EnEupkmGdjIekJNRNOUnHbFvjHQDSTL
+         sZoJ3mohHFdq5D2OsrU4VkIxYb/jwD1NqYsCFKcuiaJsDikdI1VcNWref2GZYaczSIcC
+         NOTsJIA8uiNJpcfNMMN1iXroctoHxObztJZabghMQl6xFYmo4Qlzughg4rtXT18uK6KM
+         d0aPBsBM8+KsN368qpHnjjYYnNTZzox1aN8Q6rLKlpCpYG9RgA0oDbQHV+KErlpqWAk+
+         IA20Mz8OUyk7fSs7EtQl+Hi52so/NY/jNIRcLNuRaTqXyR5Xofhh3dpX1NReIcRUQG2i
+         JcQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YxDl0EJtEuevrE5fofbeNq+CYZb2RNB0hzvmFi+D3+8=;
+        b=XqMxaPtg6CCbio4cVjGH+gbC0tbg3CM58YP2kX/EsXunEOTCkpjXi5QAIfIPGGiQ5O
+         QGXCqxWRyvYyigMLJ5DlZ+tHp3/Sfr7KcF4UkWQF4Xby517+4zhLVMbpgVrLVbELCJSA
+         ILSue6L0zo30N9uMti3abby2lEXxx7MOPu58OdDUwA4ns3vAV4Mkua36p6yZtf4f1j5p
+         T4TUJBZgfXEtGHhlIbJ7ls9rYx6lHOq/+nfFn5i1f92EwKNmnBkH6UXM75n+r/EcUEl4
+         FMXbEqmAN0EpAAIU8wIMBEbhuaveYjw3XjxxjpLZ600QPunBeekwldCGGhFM/llWWS6H
+         v7RA==
+X-Gm-Message-State: AOAM5322ht5FpIzivhER5MKBl+VAfCSa4X/1ytFgvFsRWj3ZqxFmUaRn
+        b7k1Am3qk3uqC4DxkYB3ubU=
+X-Google-Smtp-Source: ABdhPJwehJhh8ZtlX4s5039UfLl8M70E/Prup4jVkYNGctW420GGbrH/QI/TZ7Pczmv/94fnJzaTHg==
+X-Received: by 2002:a17:90a:b893:: with SMTP id o19mr5325862pjr.114.1627566483247;
+        Thu, 29 Jul 2021 06:48:03 -0700 (PDT)
+Received: from ojas ([122.161.51.5])
+        by smtp.gmail.com with ESMTPSA id f3sm3887725pfe.123.2021.07.29.06.47.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 06:48:02 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 19:17:52 +0530
+From:   Ojaswin Mujoo <ojaswin98@gmail.com>
+To:     Stefan Wahren <stefan.wahren@i2se.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, nsaenz@kernel.org,
+        dan.carpenter@oracle.com, phil@raspberrypi.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] staging: vchiq: Add details to $CONFIG_VCHIQ_CDEV
+ help text
+Message-ID: <20210729134739.GA19228@ojas>
+References: <cover.1627495116.git.ojaswin98@gmail.com>
+ <9c9c128b41e31d6bebe646e052aa05c44b19eb83.1627495116.git.ojaswin98@gmail.com>
+ <YQGmG6nwk+pOyAdu@kroah.com>
+ <20210728200039.GA17046@ojas>
+ <fa20cb94-ed73-ea6e-d128-cfb930399af6@i2se.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 1Grps8gXUt09Y6zVx3mspHN6fv6-rv4W
-X-Proofpoint-GUID: dN18rwQmbCZAayJ0xzHHDeX5X82kCHcf
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0 impostorscore=0
- malwarescore=0 phishscore=0 priorityscore=1501 clxscore=1011
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107290087
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa20cb94-ed73-ea6e-d128-cfb930399af6@i2se.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexander Potapenko <glider@google.com> writes:
+On Wed, Jul 28, 2021 at 10:39:38PM +0200, Stefan Wahren wrote:
+> Am 28.07.21 um 22:00 schrieb Ojaswin Mujoo:
+> > On Wed, Jul 28, 2021 at 08:46:51PM +0200, Greg KH wrote:
+> >> On Thu, Jul 29, 2021 at 12:07:17AM +0530, Ojaswin Mujoo wrote:
+> >>> Add some details to the Kconfig definition of $CONFIG_VCHIQ_CDEV to help
+> >>> make the motive behind it a bit more clear.
+> >>>
+> >>> Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
+> >>> ---
+> >>>  drivers/staging/vc04_services/Kconfig | 8 ++++++--
+> >>>  1 file changed, 6 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
+> >>> index 2b70c37cdd09..cb02d8a4cb74 100644
+> >>> --- a/drivers/staging/vc04_services/Kconfig
+> >>> +++ b/drivers/staging/vc04_services/Kconfig
+> >>> @@ -25,8 +25,12 @@ config VCHIQ_CDEV
+> >>>  	bool "VCHIQ Character Driver"
+> >>>  	default y
+> >>>  	help
+> >>> -		Enable the creation of VCHIQ character driver to help
+> >>> -		communicate with the Videocore platform.
+> >>> +		Enable the creation of VCHIQ character driver to help communicate
+> >>> +		with the VideoCore platform. The cdev exposes ioctls used by
+> >>> +		userspace libraries and testing tools to interact with VideoCore.
+> >>> +		This can be set to 'N' if the VideoCore communication is not needed
+> >>> +		by userspace but only by other kernel modules (like bcm2835-audio).
+> >>> +		If not sure, set this to 'Y'.
+> >> I still do not understand if I need this driver or not, and I have this
+> >> hardware!  What functionality does this driver accomplish?  What is
+> >> VideoCore?
+> > Hey Greg,
+> >
+> > I believe I can add this under the CONFIG_BCM2835_VCHIQ config option,
+> > as that enables the core driver that implements the functions to
+> > communicate with VideoCore platform? 
+> 
+> Sorry, today i'm too tired to give a good explanation. VideoCore is the
+> VPU inside the BCM283x SoC. It runs a firmware and VCHIQ provides a way
+> to communicate with this firmware / VPU. The VCHIQ driver is required to
+> get access to the audio jack and camera interface (see depending drivers).
+> 
+> Unfortunately i don't have an application list by the hand which uses
+> the CDEV interface for VCHIQ, please use this link [1] as a starting point.
+> 
+> [1] - https://github.com/raspberrypi/userland
+> 
+Hi Stefan
 
-> On Wed, Jul 28, 2021 at 9:03 PM Heiko Carstens <hca@linux.ibm.com> wrote:
->>
->> From: Sven Schnelle <svens@linux.ibm.com>
->>
->> s390 only reports the page address during a translation fault.
->> To make the kfence unit tests pass, add a function that might
->> be implemented by architectures to mask out address bits.
->>
->> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
->> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
->> ---
->>  mm/kfence/kfence_test.c | 13 ++++++++++++-
->>  1 file changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
->> index 942cbc16ad26..eb6307c199ea 100644
->> --- a/mm/kfence/kfence_test.c
->> +++ b/mm/kfence/kfence_test.c
->> @@ -23,8 +23,15 @@
->>  #include <linux/tracepoint.h>
->>  #include <trace/events/printk.h>
->>
->> +#include <asm/kfence.h>
->> +
->>  #include "kfence.h"
->>
->> +/* May be overridden by <asm/kfence.h>. */
->> +#ifndef arch_kfence_test_address
->> +#define arch_kfence_test_address(addr) (addr)
->> +#endif
->> +
->>  /* Report as observed from console. */
->>  static struct {
->>         spinlock_t lock;
->> @@ -82,6 +89,7 @@ static const char *get_access_type(const struct expect_report *r)
->>  /* Check observed report matches information in @r. */
->>  static bool report_matches(const struct expect_report *r)
->>  {
->> +       unsigned long addr = (unsigned long)r->addr;
->>         bool ret = false;
->>         unsigned long flags;
->>         typeof(observed.lines) expect;
->> @@ -131,22 +139,25 @@ static bool report_matches(const struct expect_report *r)
->>         switch (r->type) {
->>         case KFENCE_ERROR_OOB:
->>                 cur += scnprintf(cur, end - cur, "Out-of-bounds %s at", get_access_type(r));
->> +               addr = arch_kfence_test_address(addr);
->
-> Can we normalize addr once before (or after) this switch?
->
+Thanks for the brief, its good enough to help me get started. I've also
+been looking more closely into this driver in my free time lately and I
+can try to come up with a small summary to use as the help text. I'll
+add it in v2 of this patch.
 
-I don't think so. When reporing corrupted memory or an invalid free the
-address is not generated by hardware but kfence itself, and therefore we
-would strip valid bits.
-
->>                 break;
->>         case KFENCE_ERROR_UAF:
->>                 cur += scnprintf(cur, end - cur, "Use-after-free %s at", get_access_type(r));
->> +               addr = arch_kfence_test_address(addr);
->>                 break;
->>         case KFENCE_ERROR_CORRUPTION:
->>                 cur += scnprintf(cur, end - cur, "Corrupted memory at");
->>                 break;
->>         case KFENCE_ERROR_INVALID:
->>                 cur += scnprintf(cur, end - cur, "Invalid %s at", get_access_type(r));
->> +               addr = arch_kfence_test_address(addr);
->>                 break;
->>         case KFENCE_ERROR_INVALID_FREE:
->>                 cur += scnprintf(cur, end - cur, "Invalid free of");
->>                 break;
->>         }
->>
->> -       cur += scnprintf(cur, end - cur, " 0x%p", (void *)r->addr);
->> +       cur += scnprintf(cur, end - cur, " 0x%p", (void *)addr);
->>
->>         spin_lock_irqsave(&observed.lock, flags);
->>         if (!report_available())
->> --
->> 2.25.1
->>
+Regards,
+Ojaswin
+> >
+> > This config option merely adds a cdev which exposes the the core
+> > driver's functionality to userspace. 
+> >
+> > Regards,
+> > Ojaswin
+> >> thanks,
+> >>
+> >> greg k-h
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
