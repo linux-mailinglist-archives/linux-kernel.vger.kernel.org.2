@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6957C3DA5A4
+	by mail.lfdr.de (Postfix) with ESMTP id D67F63DA5A5
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239152AbhG2OI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:08:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48428 "EHLO mail.kernel.org"
+        id S239201AbhG2OI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:08:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238160AbhG2OA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238107AbhG2OA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Jul 2021 10:00:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12E8961076;
-        Thu, 29 Jul 2021 13:59:39 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B0AD61077;
+        Thu, 29 Jul 2021 13:59:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567180;
-        bh=oHCmvgdufChCJ1pekZL6uygApYoQ8ckTJXK2jyvoiz4=;
+        s=korg; t=1627567182;
+        bh=xw6zDoSU74NpL/uDTjp7oyz3ugME9gQet2DxmHPBumQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z9pvRUtFbhdXK8MhftVxrDgDfJymsNxn04nGwQeBtulJNHD9WOe7chKFriEziJ9tj
-         2Nwte59xa7LK1QdgI/116KXRVzI+Gpo+Spq4DX12eEf9ifQDdPm90eChGPswXQxBOz
-         D/a50SBSJXDJVZyV7Q3GemqMw62L8QaRpamO8nK0=
+        b=M3zDo4W7q6wiL44zVMc9LiimIMT9/Pzsh6lyivHOHxqA8Z/HcqmGgBrPyaa1NG684
+         IhL5zTIO8W9FlS2OFeHaWj4wE8fviazTa65Uk4F+9IBSpJvvhmjkw80KuCAVnYBVdK
+         l4Oz8u4xJeMqrBO2RhW0U8PV90UJVoBuDjSKhuKU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?S=C3=A9rgio?= <surkamp@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, "Xu, Yanfei" <yanfei.xu@windriver.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 07/22] sctp: move 198 addresses from unusable to private scope
-Date:   Thu, 29 Jul 2021 15:54:38 +0200
-Message-Id: <20210729135137.568810328@linuxfoundation.org>
+Subject: [PATCH 5.13 08/22] rcu-tasks: Dont delete holdouts within trc_inspect_reader()
+Date:   Thu, 29 Jul 2021 15:54:39 +0200
+Message-Id: <20210729135137.603219354@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210729135137.336097792@linuxfoundation.org>
 References: <20210729135137.336097792@linuxfoundation.org>
@@ -43,63 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit 1d11fa231cabeae09a95cb3e4cf1d9dd34e00f08 ]
+[ Upstream commit 1d10bf55d85d34eb73dd8263635f43fd72135d2d ]
 
-The doc draft-stewart-tsvwg-sctp-ipv4-00 that restricts 198 addresses
-was never published. These addresses as private addresses should be
-allowed to use in SCTP.
+As Yanfei pointed out, although invoking trc_del_holdout() is safe
+from the viewpoint of the integrity of the holdout list itself,
+the put_task_struct() invoked by trc_del_holdout() can result in
+use-after-free errors due to later accesses to this task_struct structure
+by the RCU Tasks Trace grace-period kthread.
 
-As Michael Tuexen suggested, this patch is to move 198 addresses from
-unusable to private scope.
+This commit therefore removes this call to trc_del_holdout() from
+trc_inspect_reader() in favor of the grace-period thread's existing call
+to trc_del_holdout(), thus eliminating that particular class of
+use-after-free errors.
 
-Reported-by: Sérgio <surkamp@gmail.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: "Xu, Yanfei" <yanfei.xu@windriver.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sctp/constants.h | 4 +---
- net/sctp/protocol.c          | 3 ++-
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ kernel/rcu/tasks.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/sctp/constants.h b/include/net/sctp/constants.h
-index 14a0d22c9113..bf23a2ed92da 100644
---- a/include/net/sctp/constants.h
-+++ b/include/net/sctp/constants.h
-@@ -342,8 +342,7 @@ enum {
- #define SCTP_SCOPE_POLICY_MAX	SCTP_SCOPE_POLICY_LINK
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 350ebf5051f9..71e9d625371a 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -908,10 +908,9 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
+ 		in_qs = likely(!t->trc_reader_nesting);
+ 	}
  
- /* Based on IPv4 scoping <draft-stewart-tsvwg-sctp-ipv4-00.txt>,
-- * SCTP IPv4 unusable addresses: 0.0.0.0/8, 224.0.0.0/4, 198.18.0.0/24,
-- * 192.88.99.0/24.
-+ * SCTP IPv4 unusable addresses: 0.0.0.0/8, 224.0.0.0/4, 192.88.99.0/24.
-  * Also, RFC 8.4, non-unicast addresses are not considered valid SCTP
-  * addresses.
-  */
-@@ -351,7 +350,6 @@ enum {
- 	((htonl(INADDR_BROADCAST) == a) ||  \
- 	 ipv4_is_multicast(a) ||	    \
- 	 ipv4_is_zeronet(a) ||		    \
--	 ipv4_is_test_198(a) ||		    \
- 	 ipv4_is_anycast_6to4(a))
+-	// Mark as checked.  Because this is called from the grace-period
+-	// kthread, also remove the task from the holdout list.
++	// Mark as checked so that the grace-period kthread will
++	// remove it from the holdout list.
+ 	t->trc_reader_checked = true;
+-	trc_del_holdout(t);
  
- /* Flags used for the bind address copy functions.  */
-diff --git a/net/sctp/protocol.c b/net/sctp/protocol.c
-index 25192b378e2e..9b444df5e53e 100644
---- a/net/sctp/protocol.c
-+++ b/net/sctp/protocol.c
-@@ -398,7 +398,8 @@ static enum sctp_scope sctp_v4_scope(union sctp_addr *addr)
- 		retval = SCTP_SCOPE_LINK;
- 	} else if (ipv4_is_private_10(addr->v4.sin_addr.s_addr) ||
- 		   ipv4_is_private_172(addr->v4.sin_addr.s_addr) ||
--		   ipv4_is_private_192(addr->v4.sin_addr.s_addr)) {
-+		   ipv4_is_private_192(addr->v4.sin_addr.s_addr) ||
-+		   ipv4_is_test_198(addr->v4.sin_addr.s_addr)) {
- 		retval = SCTP_SCOPE_PRIVATE;
- 	} else {
- 		retval = SCTP_SCOPE_GLOBAL;
+ 	if (in_qs)
+ 		return true;  // Already in quiescent state, done!!!
 -- 
 2.30.2
 
