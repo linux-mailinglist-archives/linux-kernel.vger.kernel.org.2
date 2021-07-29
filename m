@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3EC3D9DBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A55D3D9DCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234311AbhG2Ghq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 02:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234079AbhG2Ghp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 02:37:45 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9974CC061757;
-        Wed, 28 Jul 2021 23:37:41 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d17so5761064plh.10;
-        Wed, 28 Jul 2021 23:37:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mn2QXsC9iXN6n0TPueHgxmDAwTtq1MsZU9RTs4Fr/hY=;
-        b=fULRnTdszNXc8PP2zScOdaash0b/Ue5x/8SbvvdEgbnSZ9++AHkKX1BMIbqqAWS543
-         T5qpIoeSR5Xfhr2XKcxJjw5LMQzQ1fJGHO5R4iJDoT+cVvAHaLN3ET04tmF9tPqzL82a
-         sI5/C2o/SnRDYWLmjn5TxWbCgRbIIOjq1Cw5CiR4PUvOxMno67YpRr7f24NBUE77mRUB
-         hEgl0SHs7qK6u+8gvhEp9JCJjf1m45Ucz/Grr0B2ZEf+cLeq+MGWY+A8aMvflAYUxqn7
-         eHItlxuEIVouEpLW3G+j/YUt+0JpI32zgc0jJ+r1WI/qfgrK23Ne+Arkh6wdmTQa6V+d
-         HXSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mn2QXsC9iXN6n0TPueHgxmDAwTtq1MsZU9RTs4Fr/hY=;
-        b=fwyMH5fnQwQJdf7oGwNgaZa28+9Y3AsbI0wCxXQuQcmYPKGurgD1T0ASiQmfeefIMC
-         U9dLv9iOqUow0Tg3dI8YEfcEZ8m15H1o64DCr1RRa03tQ1+rzhrPPpfHS9lZhNnUyE10
-         ljhVkRFncGpivuW56xFLu4zw1aPZXHViLZ/CfYfD1Ac0hP0lnfvsSUxxmcGrxYZiEKQL
-         cMuRaGE10jsBG08e77Btbf0qE4z/UeerFgCpEFCd7QwE4ZOlr+sJLZsRp+Lxqt11ldbl
-         1Rb3GThG5E1QkBgcHQnbQXzB9iHvkIn/SQCzx4eYkrO8MtfaZqlp1XswZajM9RcjACvF
-         tXtw==
-X-Gm-Message-State: AOAM530bd+xcKdpLdt8zjFSkp+5WOSn24eONpfKkoGsoHTrDdNCIVxou
-        s0ERE7YVplrEAADCjm5SDVis/p9xjYd0NTej
-X-Google-Smtp-Source: ABdhPJzeNf7oxJEGq4s6m5Lmmed75zMgOvhAaBS/fsHPP2WD2ZRwBn/xnghBdV1wHXkZCeKsQX4U9Q==
-X-Received: by 2002:a62:f252:0:b029:344:ea90:e913 with SMTP id y18-20020a62f2520000b0290344ea90e913mr3435106pfl.15.1627540661070;
-        Wed, 28 Jul 2021 23:37:41 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.115])
-        by smtp.gmail.com with ESMTPSA id 33sm2414118pgs.59.2021.07.28.23.37.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 23:37:40 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
-To:     Tejun Heo <tj@kernel.org>
-Cc:     viro@zeniv.linux.org.uk, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
-References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
- <YP8ovYqISzKC43mt@mtj.duckdns.org>
- <b2ff6f80-8ec6-e260-ec42-2113e8ce0a18@gmail.com>
- <YQA1D1GRiF9+px/s@mtj.duckdns.org>
- <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
- <YQEKNPrrOuyxTarN@mtj.duckdns.org>
- <ed8824d5-0557-7d38-97bd-18d6795faa55@gmail.com>
- <YQF5/8Zb/iY5DS7f@mtj.duckdns.org>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <1a5153d3-5cdc-58c5-858f-3c369d69e881@gmail.com>
-Date:   Thu, 29 Jul 2021 14:37:32 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <YQF5/8Zb/iY5DS7f@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S234322AbhG2Gqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 02:46:48 -0400
+Received: from smtpbg587.qq.com ([113.96.223.105]:41589 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234079AbhG2Gqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 02:46:46 -0400
+X-Greylist: delayed 434 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Jul 2021 02:46:45 EDT
+X-QQ-mid: bizesmtp48t1627540765tzn7ojqz
+Received: from ubuntu.localdomain (unknown [125.70.163.57])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Thu, 29 Jul 2021 14:39:20 +0800 (CST)
+X-QQ-SSF: 01000000007000002000B00A0000000
+X-QQ-FEAT: oPf+tCeE8zEPcylxTudXumjqzXwv07oRNg+GgOpGSNKn2gdkrd6rWwot4RoLs
+        /nSgbzYScE3IrvlV6CnZf7hMDjIvglD7fxbJvxDlzv2BvC2c+gzCE1/As8wO0qbN9zq86z/
+        Q2KxbRvqC6moFWJ94RsahrjVwl2uuELc3FJvkENJ1lKPXz0Mbnn5FrbdpthRW9qJHuLxAJd
+        fCTZ3R32dVy2bBCG1grDclU8jGT+PP0YGY/mtszQG4sCEx7bS2zUU/OyebpWcdxQPdKXfJF
+        Tau6kE/47d5u2ft16z7a+x+kFlUaqLsmPw/ajxLiZ08G/IY/qlgZKKHA4=
+X-QQ-GoodBg: 0
+From:   Huiquan Deng <denghuiquan@cdjrlc.com>
+To:     ojeda@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Huiquan Deng <denghuiquan@cdjrlc.com>
+Subject: [PATCH] auxdisplay: code indent should use tabs where possible
+Date:   Wed, 28 Jul 2021 23:39:10 -0700
+Message-Id: <20210729063910.63984-1-denghuiquan@cdjrlc.com>
+X-Mailer: git-send-email 2.17.1
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Resolves the checkpatch error.
 
-Thanks for your time.
+Signed-off-by: Huiquan Deng <denghuiquan@cdjrlc.com>
+---
+ drivers/auxdisplay/cfag12864bfb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Tejun Heo wrote on 2021/7/28 11:38 下午:
-> Hello,
-> 
-> On Wed, Jul 28, 2021 at 05:47:05PM +0800, brookxu wrote:
->> But considering stability issues(k8s), There are still many production environments use
->> cgroup v1 without kmem. If kmem is enabled, due to the relatively large granularity
->> of kmem, this feature can also prevent the abnormal open behavior from making the entire
->> container unavailable? but I currently do not have this scenario.
-> 
-> Now we are repeating the same points. This simply doesn't justify adding a
-> user-facing feature that we have to maintain for eternity.
+diff --git a/drivers/auxdisplay/cfag12864bfb.c b/drivers/auxdisplay/cfag12864bfb.c
+index d66821adf453..1e040e83d1c1 100644
+--- a/drivers/auxdisplay/cfag12864bfb.c
++++ b/drivers/auxdisplay/cfag12864bfb.c
+@@ -41,8 +41,8 @@ static const struct fb_var_screeninfo cfag12864bfb_var = {
+ 	.yres_virtual = CFAG12864B_HEIGHT,
+ 	.bits_per_pixel = 1,
+ 	.red = { 0, 1, 0 },
+-      	.green = { 0, 1, 0 },
+-      	.blue = { 0, 1, 0 },
++	.green = { 0, 1, 0 },
++	.blue = { 0, 1, 0 },
+ 	.left_margin = 0,
+ 	.right_margin = 0,
+ 	.upper_margin = 0,
+@@ -69,8 +69,8 @@ static const struct fb_ops cfag12864bfb_ops = {
+ 
+ static int cfag12864bfb_probe(struct platform_device *device)
+ {
++	struct fb_info *info = framebuffer_alloc(0, &device->dev);
+ 	int ret = -EINVAL;
+- 	struct fb_info *info = framebuffer_alloc(0, &device->dev);
+ 
+ 	if (!info)
+ 		goto none;
+-- 
+2.17.1
 
-Ok, thanks you for your patient reply.
-
-> Thanks.
-> 
