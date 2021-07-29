@@ -2,566 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FB43DA066
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22FD43DA072
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236131AbhG2Jjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:39:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236015AbhG2Jj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:39:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86C5561076;
-        Thu, 29 Jul 2021 09:39:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627551566;
-        bh=n7oQnK+wMpt8zpfHrbRVmqTPBILHKq7IJx69M7lQsIE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nOsh/68F3eDLiWirWF8B1v6YupCYX8sP1rFQ1qFz3PA0zltyweRKMFL4kIw0ttlir
-         97j2AnIX/CQEZJWy9GL0apJtYTZl3TqWqEzDSesrLO/mSd/yO7Kg1WpfcwF9wI7i43
-         poXuglznLZ+M4F3/zUXQ98l6+tX7InxaB5UiHHGpbkX6H7tFZlnxOBHzWKN7LtaxtG
-         e/cJznH+CYKFD1ENMQzVA/INFNYLt7t4gyY99OnjpRuiT6SPuOl2GClKm7q4QPKD3W
-         ACZlJwZz04Lqb/7qh6vJpIYQV/JyP7QJmKm10SPcLAuhnvCWEWRmACII6OdTrgf33f
-         FO197ph5ferAw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, Ariel Elior <aelior@marvell.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v3 2/3] lib/scatterlist: Fix wrong update of orig_nents
-Date:   Thu, 29 Jul 2021 12:39:12 +0300
-Message-Id: <460ae18dd1bbd6c1175e75f5d4e51ddb449acf8d.1627551226.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1627551226.git.leonro@nvidia.com>
-References: <cover.1627551226.git.leonro@nvidia.com>
-MIME-Version: 1.0
+        id S236289AbhG2JkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:40:02 -0400
+Received: from mail-eopbgr130047.outbound.protection.outlook.com ([40.107.13.47]:48358
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236209AbhG2Jj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 05:39:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MT1k8oUerJF0SPPip8RDZd0XKy3t8qsEZF0v60Tj3433WQjJvFlYFA37tFmnomwyqjwFvUyKx/2qK9TRwYZiEsLxumb95TOBF0Bs+iMRAaT9DclgCEuvLIyZYT9Zk5UBayJC40VukBHfJqwFCddZU+QhAUMGw/ux34MWC7DSwcakWcZBzsp9p8cQSnVz7Ks4uYTC4HkZkl5O1+WQOh8jqWZ/nTp6Ji1Zqpelkm1bseGtkcUfBsBvRDxjaKSLnqhdtBrbotQmkL8O5NxCfcWa0kFv5FaAjQXmGRF011VRrNavLL/II6WtA8vKVXZZVJiBCBNVLt4ypus3zKUGKkKeYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0hSJS0PEz0nkwiwguedeCZqn0gRUmyNjY/+ynYYIiwc=;
+ b=IXmZiph6UCLnzW9cND2+/DVKZ8ullDK8I0VH4NciH14cWj0Ky6VjHR8HdgV9SnmxSDpneI+8sD0DP7jc12wOp0fDp8p/PmZSenX36GzSJZkRfr5OZVZwDSrDL2Yts52IPFHxakKoxakP2cH3GOc3dxLh+c6QX0C8Dzvt5keHbYGDcFDWVMSSXKBW9kpra9gM81zckmOGnkMwvgYUZkI6E0JNKeLuxfFdPgASMJUciZx3jxqiIuc1NBtpeDGrw35eCaviYmC1pIaa8VTZXO4Hdm21t/9xt3PPIF9n/48sMNOxPt4xauIEmqC2UhrzgEpIDvbCNXCCOJdBlkQnFeEXVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0hSJS0PEz0nkwiwguedeCZqn0gRUmyNjY/+ynYYIiwc=;
+ b=IhavrHdOrq4+KAdqmQFt/UfgVbbvDqoZiWzhOtUnAhqDzrGslyAewOrc0Y8dh9uVbGM1kc9psS8+M2qsx/8pftkgUBwuWMeG9jMd4/30IYqsNnw0XE+nbSlKU65Dk+lZMfeq7SCwcdVECx72uKdOrFFI73xOIif+WfN+0uNWjvM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=wolfvision.net;
+Received: from DBBPR08MB4523.eurprd08.prod.outlook.com (2603:10a6:10:c8::19)
+ by DB7PR08MB3548.eurprd08.prod.outlook.com (2603:10a6:10:4d::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.31; Thu, 29 Jul
+ 2021 09:39:52 +0000
+Received: from DBBPR08MB4523.eurprd08.prod.outlook.com
+ ([fe80::ade3:93e2:735c:c10b]) by DBBPR08MB4523.eurprd08.prod.outlook.com
+ ([fe80::ade3:93e2:735c:c10b%7]) with mapi id 15.20.4373.019; Thu, 29 Jul 2021
+ 09:39:52 +0000
+From:   Michael Riesch <michael.riesch@wolfvision.net>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Liang Chen <cl@rock-chips.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Simon Xue <xxm@rock-chips.com>
+Subject: [PATCH v2 2/2] arm64: dts: rockchip: rk3568-evb1-v10: add ethernet support
+Date:   Thu, 29 Jul 2021 11:39:13 +0200
+Message-Id: <20210729093913.8917-3-michael.riesch@wolfvision.net>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210729093913.8917-1-michael.riesch@wolfvision.net>
+References: <20210729093913.8917-1-michael.riesch@wolfvision.net>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM5PR0701CA0018.eurprd07.prod.outlook.com
+ (2603:10a6:203:51::28) To DBBPR08MB4523.eurprd08.prod.outlook.com
+ (2603:10a6:10:c8::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carlos.wolfvision-at.intra (91.118.163.37) by AM5PR0701CA0018.eurprd07.prod.outlook.com (2603:10a6:203:51::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.6 via Frontend Transport; Thu, 29 Jul 2021 09:39:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3bfdd051-8789-421c-8c7b-08d95274d085
+X-MS-TrafficTypeDiagnostic: DB7PR08MB3548:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR08MB3548C021E9FB7479579C3231F2EB9@DB7PR08MB3548.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: e1X7NtbXT3CXxAlZIRwDCHFKyBRrwGsesesMwlNyQTVRLVEHI34Ok3k4mcVC4W+/5BpV1A/YgiGJ01eeWmiPueYJmBR/DVZom5BAN137g93oboXxIxow9uoxzbt5P2YbAl7YN36uCWmeqZiDiMF/IE4rV/70DjHWq2QrJ03mGgcn8ZBybrwoHShpFLjzjgWMDs2Bxt9pPLzNhm5rzW/k8ImEqRUlVKzrIqZ5gjnAXQ3+dY+/bHiQGQpSf3G5SU4siipGCFnItVngOVFHnRWjIxcVNwvtexod8DHXia2DEsO0CmR6uCPLe2nGCRhteFDdd8jqXd5zw+DX6NIEf8MRxebKYRO5yyuePOcsbBxpy7rvq395X0OgaEhratfzqW2UabfJXqwboqfpe7HF/dWTjypz3MQjHm1G2Fp9qpUrmxc8iTHCf2306pJuSaV2GHHbMX7J76BxOTgSbHjfzj2AqEpRCsN+23wd9HFith/NveInXtpPARkJ9/keZZp3mHcrvQGpVhfpQSgBWRovadpQnayK5QvUaQqb8jk8nefPiADwZsTtmWXXyD3Uzym5rxIXlFxvOEAdZZOvSy3G8mmEAgHXdVMG7K+JoaiupukVCGxlcsuXrCE9cltdZq7cftc1L0f9fDV2x0ZY3AXcATS7HZtNBYp4q1gds6GXXRQJKnbD69xk4mtOaaFHuwCz+pTlRbKzuASCrWh7e9bWR6o0uQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR08MB4523.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39840400004)(366004)(346002)(136003)(376002)(8676002)(52116002)(5660300002)(26005)(2616005)(44832011)(316002)(6506007)(54906003)(66946007)(6666004)(66476007)(2906002)(186003)(478600001)(36756003)(6486002)(38350700002)(1076003)(38100700002)(83380400001)(8936002)(956004)(86362001)(66556008)(6512007)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gPO/BitUk+/Zdq5nhTjf6pWmSHd9tWd70ZB8kuIEASZM8Imp8ngatE6Q5q4K?=
+ =?us-ascii?Q?MznILaK0aknJvd3GqUgWgjsz0mJ6z39h4H/dzr5zvKJB1ZNJSNgbbgifyw/E?=
+ =?us-ascii?Q?BdtGkAeN7h5gJsHidWHlcPIgBOZjiWccGKahHYLM6AoAGdPA2Uv05kBjA68W?=
+ =?us-ascii?Q?7jdo87XSxutOxX+1/fmZWC5RvqD3JSvtiGb81oMYyjemtJ+uOEKTwcboCNuB?=
+ =?us-ascii?Q?v2v0FFi34+r9og0NuN/c8BNOTB5oyog/LUfuBexXpcuciCF/E55NBhZ6jCWu?=
+ =?us-ascii?Q?gyjRJQP5q6qX9RVivYBLz68JjKLBtUPsz2kp6ztipQqYXFegM3izKqosIOlk?=
+ =?us-ascii?Q?LqkbBYXccmBGhxcG6SUPmNSEc0SSbgYxFSwXADRu3QC0+/7ze3w10Zbj5gXr?=
+ =?us-ascii?Q?wy1YrWnw9YFJRf3A4fGGWVCda84ZeG15eIbLbrvixF3c3xKmXWOz30ZUE4E0?=
+ =?us-ascii?Q?rhLkGigBJTeyOBkbKjx4GBXMRxW5EOe1p+7L43izpUSHobdpp4L7+Vu3ZfEj?=
+ =?us-ascii?Q?zVPIQRx307/TBsMjGOR8on2ZQx/U8dfBOlgRgc8unYkw0trMmcS9l/mWkigq?=
+ =?us-ascii?Q?A3rxE4gL/vZrgWHc5K5JKFkb9bwujIFv3E9GNORxYyD0wrPuPkrOrrzPg3qa?=
+ =?us-ascii?Q?cu1MwzbO6Y0nxdkQIekpolSlnxNclaz5DIy2R+Cn0Em63w90s5/ofY6HbMI+?=
+ =?us-ascii?Q?iKpfZaXVL8gvZCw+B1yzO/X8I7JMTD5FrwuhETP4625BbWxsbHkjtWyY07VJ?=
+ =?us-ascii?Q?jIvH8ixA7+xcFXzVI6ImdX9AVmjz/SCc2PvBohD/Th7sjmee+paKNr1j6T1Y?=
+ =?us-ascii?Q?YbU2Pe7A7j+yP77lMN/QNKH22IXE5wcDtDbnTa7jEmr5jkMfEft836sXO3wX?=
+ =?us-ascii?Q?F/wZ7Iu2PhvPdAyxdaV6i/siQtCuNp1iT5ZJkael0MUC/1vPPV9QgdvOVijm?=
+ =?us-ascii?Q?M/CtP8QVSnJwxP1fPJL2nqOQZLXogxUDjknMU5AMiKI85Jbij6BGYXDFu6Xp?=
+ =?us-ascii?Q?EUxrMK2JAn+7b/Tx3zcND8wmvcvb69dRH7O4V4NuqzF+Vypop1F2YVvGZpg3?=
+ =?us-ascii?Q?gAsI7sZfbayhUdro0Myq9OcI6VKux+tgbtTecDqSuIYp+ln6pwPOA1YpeRoy?=
+ =?us-ascii?Q?//ADBQXqDr1DgPYD6grSdX7sSIZWUP04d0tQZK+qhqIRHuMQoKkKUKnGFTli?=
+ =?us-ascii?Q?AUXlYh/P5WJNi8qGYm3+lNGlW05Tn5h+ztSYu8yxjSWiO1QC0DjfSxQGDbo+?=
+ =?us-ascii?Q?arFIAvwr1EU2ka8+VkdJ8Zfs6aIuMQIPgAojV3GgJgtXiyMwPqdAN9uKvSE9?=
+ =?us-ascii?Q?cYxxHJhscquLRowijFBHb1i7?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3bfdd051-8789-421c-8c7b-08d95274d085
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR08MB4523.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 09:39:51.8992
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7pBGUMxMDLfQEFAmwsfL7u/CsPWQnxBwWcUr3/e5R4zMps928OTzcKzl51cp6xRUP87kcPJ96LHAPXoI8HMEZ1VQEUZrUmj18pm46itDYh0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR08MB3548
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
-
-orig_nents should represent the number of entries with pages,
-but __sg_alloc_table_from_pages sets orig_nents as the number of
-total entries in the table. This is wrong when the API is used for
-dynamic allocation where not all the table entries are mapped with
-pages. It wasn't observed until now, since RDMA umem who uses this
-API in the dynamic form doesn't use orig_nents implicit or explicit
-by the scatterlist APIs.
-
-Fix it by changing the append API to track the SG append table
-state and have an API to free the append table according to the
-total number of entries in the table.
-Now all APIs set orig_nents as number of enries with pages.
-
-Fixes: 07da1223ec93 ("lib/scatterlist: Add support in dynamic allocation of SG table from pages")
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
 ---
- drivers/infiniband/core/umem.c   |  34 ++++---
- include/linux/scatterlist.h      |  17 +++-
- include/rdma/ib_umem.h           |   1 +
- lib/scatterlist.c                | 161 +++++++++++++++++++------------
- tools/testing/scatterlist/main.c |  45 +++++----
- 5 files changed, 154 insertions(+), 104 deletions(-)
+v2:
+- sort properties alphabetically
+- use phy-mode "rgmii-id" without delay properties
+- rename phy nodes to "ethernet-phy"
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index b741758e528f..42481e7a72e8 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -59,7 +59,7 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 		unpin_user_page_range_dirty_lock(sg_page(sg),
- 			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
+ .../boot/dts/rockchip/rk3568-evb1-v10.dts     | 57 +++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+index 69786557093d..65e536c78d2e 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+@@ -13,6 +13,11 @@
+ 	model = "Rockchip RK3568 EVB1 DDR4 V10 Board";
+ 	compatible = "rockchip,rk3568-evb1-v10", "rockchip,rk3568";
  
--	sg_free_table(&umem->sg_head);
-+	sg_free_append_table(&umem->sgt_append);
- }
- 
- /**
-@@ -155,8 +155,7 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 	unsigned long dma_attr = 0;
- 	struct mm_struct *mm;
- 	unsigned long npages;
--	int ret;
--	struct scatterlist *sg = NULL;
-+	int pinned, ret;
- 	unsigned int gup_flags = FOLL_WRITE;
- 
- 	/*
-@@ -216,28 +215,33 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 
- 	while (npages) {
- 		cond_resched();
--		ret = pin_user_pages_fast(cur_base,
-+		pinned = pin_user_pages_fast(cur_base,
- 					  min_t(unsigned long, npages,
- 						PAGE_SIZE /
- 						sizeof(struct page *)),
- 					  gup_flags | FOLL_LONGTERM, page_list);
--		if (ret < 0)
-+		if (pinned < 0) {
-+			ret = pinned;
- 			goto umem_release;
-+		}
- 
--		cur_base += ret * PAGE_SIZE;
--		npages -= ret;
--		sg = sg_alloc_append_table_from_pages(&umem->sg_head, page_list,
--				ret, 0, ret << PAGE_SHIFT,
--				ib_dma_max_seg_size(device), sg, npages,
--				GFP_KERNEL);
--		umem->sg_nents = umem->sg_head.nents;
--		if (IS_ERR(sg)) {
--			unpin_user_pages_dirty_lock(page_list, ret, 0);
--			ret = PTR_ERR(sg);
-+		cur_base += pinned * PAGE_SIZE;
-+		npages -= pinned;
-+		ret = sg_alloc_append_table_from_pages(
-+			&umem->sgt_append, page_list, pinned, 0,
-+			pinned << PAGE_SHIFT, ib_dma_max_seg_size(device),
-+			npages, GFP_KERNEL);
-+		umem->sg_nents = umem->sgt_append.sgt.nents;
-+		if (ret) {
-+			memcpy(&umem->sg_head.sgl, &umem->sgt_append.sgt,
-+			       sizeof(umem->sgt_append.sgt));
-+			unpin_user_pages_dirty_lock(page_list, pinned, 0);
- 			goto umem_release;
- 		}
- 	}
- 
-+	memcpy(&umem->sg_head.sgl, &umem->sgt_append.sgt,
-+	       sizeof(umem->sgt_append.sgt));
- 	if (access & IB_ACCESS_RELAXED_ORDERING)
- 		dma_attr |= DMA_ATTR_WEAK_ORDERING;
- 
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index 5c700f2a0d18..0c7aa5ccebfc 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -39,6 +39,12 @@ struct sg_table {
- 	unsigned int orig_nents;	/* original size of list */
++	aliases {
++		ethernet0 = &gmac0;
++		ethernet1 = &gmac1;
++	};
++
+ 	chosen: chosen {
+ 		stdout-path = "serial2:1500000n8";
+ 	};
+@@ -67,6 +72,58 @@
+ 	};
  };
  
-+struct sg_append_table {
-+	struct sg_table sgt;		/* The scatter list table */
-+	struct scatterlist *prv;	/* last populated sge in the table */
-+	unsigned int total_nents;	/* Total entries in the table */
++&gmac0 {
++	assigned-clocks = <&cru SCLK_GMAC0_RX_TX>, <&cru SCLK_GMAC0>;
++	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED>;
++	assigned-clock-rates = <0>, <125000000>;
++	clock_in_out = "output";
++	phy-handle = <&rgmii_phy0>;
++	phy-mode = "rgmii-id";
++	pinctrl-names = "default";
++	pinctrl-0 = <&gmac0_miim
++		     &gmac0_tx_bus2
++		     &gmac0_rx_bus2
++		     &gmac0_rgmii_clk
++		     &gmac0_rgmii_bus>;
++	status = "okay";
 +};
 +
- /*
-  * Notes on SG table design.
-  *
-@@ -282,14 +288,15 @@ typedef void (sg_free_fn)(struct scatterlist *, unsigned int);
- void __sg_free_table(struct sg_table *, unsigned int, unsigned int,
- 		     sg_free_fn *);
- void sg_free_table(struct sg_table *);
-+void sg_free_append_table(struct sg_append_table *sgt);
- int __sg_alloc_table(struct sg_table *, unsigned int, unsigned int,
- 		     struct scatterlist *, unsigned int, gfp_t, sg_alloc_fn *);
- int sg_alloc_table(struct sg_table *, unsigned int, gfp_t);
--struct scatterlist *sg_alloc_append_table_from_pages(struct sg_table *sgt,
--		struct page **pages, unsigned int n_pages, unsigned int offset,
--		unsigned long size, unsigned int max_segment,
--		struct scatterlist *prv, unsigned int left_pages,
--		gfp_t gfp_mask);
-+int sg_alloc_append_table_from_pages(struct sg_append_table *sgt,
-+				     struct page **pages, unsigned int n_pages,
-+				     unsigned int offset, unsigned long size,
-+				     unsigned int max_segment,
-+				     unsigned int left_pages, gfp_t gfp_mask);
- int sg_alloc_table_from_pages_segment(struct sg_table *sgt, struct page **pages,
- 				      unsigned int n_pages, unsigned int offset,
- 				      unsigned long size,
-diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-index 676c57f5ca80..33cb23b2ee3c 100644
---- a/include/rdma/ib_umem.h
-+++ b/include/rdma/ib_umem.h
-@@ -26,6 +26,7 @@ struct ib_umem {
- 	u32 is_odp : 1;
- 	u32 is_dmabuf : 1;
- 	struct work_struct	work;
-+	struct sg_append_table  sgt_append;
- 	struct sg_table sg_head;
- 	int             nmap;
- 	unsigned int    sg_nents;
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 611c63d4a958..b96b71c762b6 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -175,22 +175,9 @@ static void sg_kfree(struct scatterlist *sg, unsigned int nents)
- 		kfree(sg);
- }
- 
--/**
-- * __sg_free_table - Free a previously mapped sg table
-- * @table:	The sg table header to use
-- * @max_ents:	The maximum number of entries per single scatterlist
-- * @nents_first_chunk: Number of entries int the (preallocated) first
-- * 	scatterlist chunk, 0 means no such preallocated first chunk
-- * @free_fn:	Free function
-- *
-- *  Description:
-- *    Free an sg table previously allocated and setup with
-- *    __sg_alloc_table().  The @max_ents value must be identical to
-- *    that previously used with __sg_alloc_table().
-- *
-- **/
--void __sg_free_table(struct sg_table *table, unsigned int max_ents,
--		     unsigned int nents_first_chunk, sg_free_fn *free_fn)
-+static void sg_free_table_entries(struct sg_table *table, unsigned int max_ents,
-+				  unsigned int nents_first_chunk,
-+				  sg_free_fn *free_fn, unsigned int num_entries)
- {
- 	struct scatterlist *sgl, *next;
- 	unsigned curr_max_ents = nents_first_chunk ?: max_ents;
-@@ -199,8 +186,8 @@ void __sg_free_table(struct sg_table *table, unsigned int max_ents,
- 		return;
- 
- 	sgl = table->sgl;
--	while (table->orig_nents) {
--		unsigned int alloc_size = table->orig_nents;
-+	while (num_entries) {
-+		unsigned int alloc_size = num_entries;
- 		unsigned int sg_size;
- 
- 		/*
-@@ -218,7 +205,7 @@ void __sg_free_table(struct sg_table *table, unsigned int max_ents,
- 			next = NULL;
- 		}
- 
--		table->orig_nents -= sg_size;
-+		num_entries -= sg_size;
- 		if (nents_first_chunk)
- 			nents_first_chunk = 0;
- 		else
-@@ -229,6 +216,41 @@ void __sg_free_table(struct sg_table *table, unsigned int max_ents,
- 
- 	table->sgl = NULL;
- }
++&gmac1 {
++	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1>;
++	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>;
++	assigned-clock-rates = <0>, <125000000>;
++	clock_in_out = "output";
++	phy-handle = <&rgmii_phy1>;
++	phy-mode = "rgmii-id";
++	pinctrl-names = "default";
++	pinctrl-0 = <&gmac1m1_miim
++		     &gmac1m1_tx_bus2
++		     &gmac1m1_rx_bus2
++		     &gmac1m1_rgmii_clk
++		     &gmac1m1_rgmii_bus>;
++	status = "okay";
++};
 +
-+/**
-+ * sg_free_append_table - Free a previously allocated append sg table.
-+ * @table:	 The mapped sg append table header
-+ *
-+ **/
-+void sg_free_append_table(struct sg_append_table *table)
-+{
-+	sg_free_table_entries(&table->sgt, SG_MAX_SINGLE_ALLOC, false, sg_kfree,
-+			      table->total_nents);
-+}
-+EXPORT_SYMBOL(sg_free_append_table);
++&mdio0 {
++	rgmii_phy0: ethernet-phy@0 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <0x0>;
++		reset-assert-us = <20000>;
++		reset-deassert-us = <100000>;
++		reset-gpios = <&gpio2 RK_PD3 GPIO_ACTIVE_LOW>;
++	};
++};
 +
-+/**
-+ * __sg_free_table - Free a previously mapped sg table
-+ * @table:	The sg table header to use
-+ * @max_ents:	The maximum number of entries per single scatterlist
-+ * @total_ents:	The total number of entries in the table
-+ * @nents_first_chunk: Number of entries int the (preallocated) first
-+ *                     scatterlist chunk, 0 means no such preallocated
-+ *                     first chunk
-+ * @free_fn:	Free function
-+ *
-+ *  Description:
-+ *    Free an sg table previously allocated and setup with
-+ *    __sg_alloc_table().  The @max_ents value must be identical to
-+ *    that previously used with __sg_alloc_table().
-+ *
-+ **/
-+void __sg_free_table(struct sg_table *table, unsigned int max_ents,
-+		     unsigned int nents_first_chunk, sg_free_fn *free_fn)
-+{
-+	sg_free_table_entries(table, max_ents, nents_first_chunk, free_fn,
-+			      table->orig_nents);
-+}
- EXPORT_SYMBOL(__sg_free_table);
- 
- /**
-@@ -238,7 +260,8 @@ EXPORT_SYMBOL(__sg_free_table);
-  **/
- void sg_free_table(struct sg_table *table)
- {
--	__sg_free_table(table, SG_MAX_SINGLE_ALLOC, false, sg_kfree);
-+	sg_free_table_entries(table, SG_MAX_SINGLE_ALLOC, false, sg_kfree,
-+			      table->orig_nents);
- }
- EXPORT_SYMBOL(sg_free_table);
- 
-@@ -365,7 +388,7 @@ int sg_alloc_table(struct sg_table *table, unsigned int nents, gfp_t gfp_mask)
- }
- EXPORT_SYMBOL(sg_alloc_table);
- 
--static struct scatterlist *get_next_sg(struct sg_table *table,
-+static struct scatterlist *get_next_sg(struct sg_append_table *table,
- 				       struct scatterlist *cur,
- 				       unsigned long needed_sges,
- 				       gfp_t gfp_mask)
-@@ -386,54 +409,52 @@ static struct scatterlist *get_next_sg(struct sg_table *table,
- 		return ERR_PTR(-ENOMEM);
- 	sg_init_table(new_sg, alloc_size);
- 	if (cur) {
-+		table->total_nents += alloc_size - 1;
- 		__sg_chain(next_sg, new_sg);
--		table->orig_nents += alloc_size - 1;
- 	} else {
--		table->sgl = new_sg;
--		table->orig_nents = alloc_size;
--		table->nents = 0;
-+		table->sgt.sgl = new_sg;
-+		table->total_nents = alloc_size;
- 	}
- 	return new_sg;
- }
- 
- /**
-- * sg_alloc_append_table_from_pages - Allocate and initialize an sg table from
-- *			         an array of pages
-- * @sgt:	 The sg table header to use
-- * @pages:	 Pointer to an array of page pointers
-- * @n_pages:	 Number of pages in the pages array
-+ * sg_alloc_append_table_from_pages - Allocate and initialize an append sg
-+ *                                    table from an array of pages
-+ * @sgt_append:  The sg append table to use
-+ * @pages:       Pointer to an array of page pointers
-+ * @n_pages:     Number of pages in the pages array
-  * @offset:      Offset from start of the first page to the start of a buffer
-  * @size:        Number of valid bytes in the buffer (after offset)
-  * @max_segment: Maximum size of a scatterlist element in bytes
-- * @prv:	 Last populated sge in sgt
-  * @left_pages:  Left pages caller have to set after this call
-  * @gfp_mask:	 GFP allocation mask
-  *
-  * Description:
-- *    If @prv is NULL, allocate and initialize an sg table from a list of pages,
-- *    else reuse the scatterlist passed in at @prv.
-- *    Contiguous ranges of the pages are squashed into a single scatterlist
-- *    entry up to the maximum size specified in @max_segment.  A user may
-- *    provide an offset at a start and a size of valid data in a buffer
-- *    specified by the page array.
-+ *    In the first call it allocate and initialize an sg table from a list of
-+ *    pages, else reuse the scatterlist from sgt_append. Contiguous ranges of
-+ *    the pages are squashed into a single scatterlist entry up to the maximum
-+ *    size specified in @max_segment.  A user may provide an offset at a start
-+ *    and a size of valid data in a buffer specified by the page array. The
-+ *    returned sg table is released by sg_free_append_table
-  *
-  * Returns:
-- *   Last SGE in sgt on success, PTR_ERR on otherwise.
-- *   The allocation in @sgt must be released by sg_free_table.
-+ *   0 on success, negative error on failure
-  *
-  * Notes:
-  *   If this function returns non-0 (eg failure), the caller must call
-- *   sg_free_table() to cleanup any leftover allocations.
-+ *   sg_free_append_table() to cleanup any leftover allocations.
-+ *
-+ *   In the fist call, sgt_append must by initialized.
-  */
--struct scatterlist *sg_alloc_append_table_from_pages(struct sg_table *sgt,
-+int sg_alloc_append_table_from_pages(struct sg_append_table *sgt_append,
- 		struct page **pages, unsigned int n_pages, unsigned int offset,
- 		unsigned long size, unsigned int max_segment,
--		struct scatterlist *prv, unsigned int left_pages,
--		gfp_t gfp_mask)
-+		unsigned int left_pages, gfp_t gfp_mask)
- {
- 	unsigned int chunks, cur_page, seg_len, i, prv_len = 0;
- 	unsigned int added_nents = 0;
--	struct scatterlist *s = prv;
-+	struct scatterlist *s = sgt_append->prv;
- 
- 	/*
- 	 * The algorithm below requires max_segment to be aligned to PAGE_SIZE
-@@ -441,25 +462,26 @@ struct scatterlist *sg_alloc_append_table_from_pages(struct sg_table *sgt,
- 	 */
- 	max_segment = ALIGN_DOWN(max_segment, PAGE_SIZE);
- 	if (WARN_ON(max_segment < PAGE_SIZE))
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 
--	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && prv)
--		return ERR_PTR(-EOPNOTSUPP);
-+	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && sgt_append->prv)
-+		return -EOPNOTSUPP;
- 
--	if (prv) {
--		unsigned long paddr = (page_to_pfn(sg_page(prv)) * PAGE_SIZE +
--				       prv->offset + prv->length) /
--				      PAGE_SIZE;
-+	if (sgt_append->prv) {
-+		unsigned long paddr =
-+			(page_to_pfn(sg_page(sgt_append->prv)) * PAGE_SIZE +
-+			 sgt_append->prv->offset + sgt_append->prv->length) /
-+			PAGE_SIZE;
- 
- 		if (WARN_ON(offset))
--			return ERR_PTR(-EINVAL);
-+			return -EINVAL;
- 
- 		/* Merge contiguous pages into the last SG */
--		prv_len = prv->length;
-+		prv_len = sgt_append->prv->length;
- 		while (n_pages && page_to_pfn(pages[0]) == paddr) {
--			if (prv->length + PAGE_SIZE > max_segment)
-+			if (sgt_append->prv->length + PAGE_SIZE > max_segment)
- 				break;
--			prv->length += PAGE_SIZE;
-+			sgt_append->prv->length += PAGE_SIZE;
- 			paddr++;
- 			pages++;
- 			n_pages--;
-@@ -496,15 +518,16 @@ struct scatterlist *sg_alloc_append_table_from_pages(struct sg_table *sgt,
- 		}
- 
- 		/* Pass how many chunks might be left */
--		s = get_next_sg(sgt, s, chunks - i + left_pages, gfp_mask);
-+		s = get_next_sg(sgt_append, s, chunks - i + left_pages,
-+				gfp_mask);
- 		if (IS_ERR(s)) {
- 			/*
- 			 * Adjust entry length to be as before function was
- 			 * called.
- 			 */
--			if (prv)
--				prv->length = prv_len;
--			return s;
-+			if (sgt_append->prv)
-+				sgt_append->prv->length = prv_len;
-+			return PTR_ERR(s);
- 		}
- 		chunk_size = ((j - cur_page) << PAGE_SHIFT) - offset;
- 		sg_set_page(s, pages[cur_page],
-@@ -514,11 +537,13 @@ struct scatterlist *sg_alloc_append_table_from_pages(struct sg_table *sgt,
- 		offset = 0;
- 		cur_page = j;
- 	}
--	sgt->nents += added_nents;
-+	sgt_append->sgt.nents += added_nents;
-+	sgt_append->sgt.orig_nents = sgt_append->sgt.nents;
-+	sgt_append->prv = s;
- out:
- 	if (!left_pages)
- 		sg_mark_end(s);
--	return s;
-+	return 0;
- }
- EXPORT_SYMBOL(sg_alloc_append_table_from_pages);
- 
-@@ -550,8 +575,18 @@ int sg_alloc_table_from_pages_segment(struct sg_table *sgt, struct page **pages,
- 				unsigned long size, unsigned int max_segment,
- 				gfp_t gfp_mask)
- {
--	return PTR_ERR_OR_ZERO(sg_alloc_append_table_from_pages(sgt, pages,
--			n_pages, offset, size, max_segment, NULL, 0, gfp_mask));
-+	struct sg_append_table append = {};
-+	int err;
++&mdio1 {
++	rgmii_phy1: ethernet-phy@0 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <0x0>;
++		reset-assert-us = <20000>;
++		reset-deassert-us = <100000>;
++		reset-gpios = <&gpio2 RK_PD1 GPIO_ACTIVE_LOW>;
++	};
++};
 +
-+	err = sg_alloc_append_table_from_pages(&append, pages, n_pages, offset,
-+					       size, max_segment, 0, gfp_mask);
-+	if (err) {
-+		sg_free_append_table(&append);
-+		return err;
-+	}
-+	memcpy(sgt, &append.sgt, sizeof(*sgt));
-+	WARN_ON(append.total_nents != sgt->orig_nents);
-+	return 0;
- }
- EXPORT_SYMBOL(sg_alloc_table_from_pages_segment);
- 
-diff --git a/tools/testing/scatterlist/main.c b/tools/testing/scatterlist/main.c
-index c2ff9179c2cc..08465a701cd5 100644
---- a/tools/testing/scatterlist/main.c
-+++ b/tools/testing/scatterlist/main.c
-@@ -85,43 +85,46 @@ int main(void)
- 
- 	for (i = 0, test = tests; test->expected_segments; test++, i++) {
- 		int left_pages = test->pfn_app ? test->num_pages : 0;
-+		struct sg_append_table append = {};
- 		struct page *pages[MAX_PAGES];
--		struct sg_table st;
--		struct scatterlist *sg = NULL;
- 		int ret;
- 
- 		set_pages(pages, test->pfn, test->num_pages);
- 
--		if (test->pfn_app) {
--			sg = sg_alloc_append_table_from_pages(
--				&st, pages, test->num_pages, 0, test->size,
--				test->max_seg, NULL, left_pages, GFP_KERNEL);
--			assert(PTR_ERR_OR_ZERO(sg) == test->alloc_ret);
--		} else {
-+		if (test->pfn_app)
-+			ret = sg_alloc_append_table_from_pages(
-+				&append, pages, test->num_pages, 0, test->size,
-+				test->max_seg, left_pages, GFP_KERNEL);
-+		else
- 			ret = sg_alloc_table_from_pages_segment(
--				&st, pages, test->num_pages, 0, test->size,
--				test->max_seg, GFP_KERNEL);
--			assert(ret == test->alloc_ret);
--		}
-+				&append.sgt, pages, test->num_pages, 0,
-+				test->size, test->max_seg, GFP_KERNEL);
-+
-+		assert(ret == test->alloc_ret);
- 
- 		if (test->alloc_ret)
- 			continue;
- 
- 		if (test->pfn_app) {
- 			set_pages(pages, test->pfn_app, test->num_pages);
--			sg = sg_alloc_append_table_from_pages(
--				&st, pages, test->num_pages, 0, test->size,
--				test->max_seg, sg, 0, GFP_KERNEL);
-+			ret = sg_alloc_append_table_from_pages(
-+				&append, pages, test->num_pages, 0, test->size,
-+				test->max_seg, 0, GFP_KERNEL);
- 
--			assert(PTR_ERR_OR_ZERO(sg) == test->alloc_ret);
-+			assert(ret == test->alloc_ret);
- 		}
- 
--		VALIDATE(st.nents == test->expected_segments, &st, test);
-+		VALIDATE(append.sgt.nents == test->expected_segments,
-+			 &append.sgt, test);
- 		if (!test->pfn_app)
--			VALIDATE(st.orig_nents == test->expected_segments, &st,
--				 test);
--
--		sg_free_table(&st);
-+			VALIDATE(append.sgt.orig_nents ==
-+					 test->expected_segments,
-+				 &append.sgt, test);
-+
-+		if (test->pfn_app)
-+			sg_free_append_table(&append);
-+		else
-+			sg_free_table(&append.sgt);
- 	}
- 
- 	assert(i == (sizeof(tests) / sizeof(tests[0])) - 1);
+ &sdhci {
+ 	bus-width = <8>;
+ 	max-frequency = <200000000>;
 -- 
-2.31.1
+2.20.1
 
