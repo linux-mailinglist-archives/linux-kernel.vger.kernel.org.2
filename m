@@ -2,100 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422663DAB92
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D153DAB95
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhG2TCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 15:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhG2TCx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 15:02:53 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC1DC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:02:50 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id k65so11780384yba.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YqZsxUCzv1nae23QeEhOZX1NZ5hWxTmCpAqwWTcBvgs=;
-        b=g/a5YHYCKtRO0EJwzsoCB8TFISeJeQcBFKHob0LIZOeKkVIFXHcR7jJ0xYtaq14RYT
-         CRU+twyymtgjt2xdKhkI8AySQBUkukb5oMzrVNnfgPMXqbDm2ZXJVFZFqm52wn3762Qe
-         3XfD2as2/lEU3ruovPckflst5UmcV/DZxHmjaRcJnhkOxQH6Xg0JlRYX/pHz0c1S2E67
-         8oj1DOIUIVjFI1O03MX9qXBUPM1GtyV+sXced/UOf1Pdu5pTT1eTAsRRCrP+8iIhoEmo
-         W0YExJMNzqRZ0eh3GPSTi6g3VlyV831ucFL37jWfhpQkiTywgtGDRb7w7Lg8Sn5vM2Z7
-         4znw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YqZsxUCzv1nae23QeEhOZX1NZ5hWxTmCpAqwWTcBvgs=;
-        b=pzw3dzh6aeqw0lBNVzmWygbE/AQXR8JRhS0q0l2NDBEI8exGvoQQcL402bL3VGSdtH
-         Xuf1eMhz/7TSXlogbVumIDMZVrdW/SFRxj9g34zAZ3/Ga1q8ZTgGf/jLdceQ84mlNMUm
-         NY6sK4vUMdX/NyWWsfIFFxfu+9pezlBVY2ypX7rhcXTxZvnj5eUUHbE7Srk7SwYZijoT
-         lUP96t/Hy3PGZ461H09gBi8o+egir2Q6s8RCX91lVWnCFDCqyFhMqvMq+ULdjpFQiHMW
-         0XskE91CVAUWGeKR8kEpKv7c5TQcdXPV38v/0kI9F6He+WJvVpbVt7wh/xjq7W05pTTQ
-         +2VA==
-X-Gm-Message-State: AOAM533s+m4WfCCgAM8sAKVD9w2ldEgKK9R1P5rnl1WveW5uzRVFDanP
-        88LvABSTAchfWq1yeGhVNTvf1EU9ORAuIndkZzxxpA==
-X-Google-Smtp-Source: ABdhPJwjjVyNU+LfXMuVPt0kIZo+lRNNrJ1hsEXIpHqMj7h9FlWDDwDsr4qd7Jzn1InFYTm54LpS8hXbQFesmt8FM8M=
-X-Received: by 2002:a25:f503:: with SMTP id a3mr7922680ybe.501.1627585369133;
- Thu, 29 Jul 2021 12:02:49 -0700 (PDT)
+        id S231777AbhG2TDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:03:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229713AbhG2TDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 15:03:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2217560041;
+        Thu, 29 Jul 2021 19:03:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627585422;
+        bh=QZzTxuOXLw86rHcrs3zAcLvxXqbKvso+gGJ/Bt/V7Yo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TH2hos7zxb777wZ4DD5mN0DLcj65CFt3bLmdhbc6AYFgav8nyV0CRJSDoH0LY8Jow
+         R+jXTaFeTZJMdfkVePdh3VudGpQfc2BmYI5fbu2AFf88fJLfMiwIHe1+CliGXbew8A
+         vwflPDfg0fR+UqRe8INTZ9eEF4/746XoDgm05V6Ja2QhKuvO4S6CP2pC2UB5Q6X/zA
+         i2JIBwXdzJJPH7Brqzo3PQgRgZr0Z42SETyY4c5URe+cCpiEh1tdnZGDp26UXwz61c
+         xccOpLXbdBL1w1TOe3rH67+4Evgt6KBDR8VsxSIMbs0GlUfk9bj6TFaBnAsGO9v9a9
+         dt4irhlxmF8Qw==
+Date:   Thu, 29 Jul 2021 21:03:37 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH 3/5] dt-bindings: PCI: kirin: Add support for Kirin970
+Message-ID: <20210729210337.6fc9a92c@coco.lan>
+In-Reply-To: <CAL_Jsq+JgWMf8XPdHQ9GRdA+7EODJ47vwuz0jGkkyeETZPXz9Q@mail.gmail.com>
+References: <cover.1627559126.git.mchehab+huawei@kernel.org>
+        <2cf7bd80d0b54f7658a64febf79d3a36e70aba86.1627559126.git.mchehab+huawei@kernel.org>
+        <CAL_Jsq+JgWMf8XPdHQ9GRdA+7EODJ47vwuz0jGkkyeETZPXz9Q@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210726175357.1572951-1-mizhang@google.com> <20210726175357.1572951-4-mizhang@google.com>
- <CANgfPd8iohgpauQEEAFAQjLPXqHQw1Swguc7C0exHcz985igcw@mail.gmail.com> <YQL3SlI5XGVxqlvB@google.com>
-In-Reply-To: <YQL3SlI5XGVxqlvB@google.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Thu, 29 Jul 2021 12:02:38 -0700
-Message-ID: <CAL715WJMnMaFZ8XmsXWNEEHft0JsKi+MUqLARTf+C7D5s3kEKw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] KVM: x86/mmu: Add detailed page size stats
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Ben Gardon <bgardon@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jing Zhang <jingzhangos@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 11:45 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Mon, Jul 26, 2021, Ben Gardon wrote:
-> > On Mon, Jul 26, 2021 at 10:54 AM Mingwei Zhang <mizhang@google.com> wrote:
-> > > diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> > > index 83e6c6965f1e..ad5638815311 100644
-> > > --- a/arch/x86/kvm/mmu.h
-> > > +++ b/arch/x86/kvm/mmu.h
-> > > @@ -240,4 +240,6 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
-> > >         return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
-> > >  }
-> > >
-> > > +void kvm_update_page_stats(struct kvm *kvm, int level, int count);
-> > > +
-> > >  #endif
-> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > > index 442cc554ebd6..7e0fc760739b 100644
-> > > --- a/arch/x86/kvm/mmu/mmu.c
-> > > +++ b/arch/x86/kvm/mmu/mmu.c
-> > > @@ -588,16 +588,22 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
-> > >         return flush;
-> > >  }
-> > >
-> > > +void kvm_update_page_stats(struct kvm *kvm, int level, int count)
-> > > +{
-> > > +       atomic64_add(count, &kvm->stat.page_stats.pages[level - 1]);
-> > > +}
->
-> This can be static inline in the header.  Ignoring prolog+RET, it's four instructions,
-> and two of those are sign extending input params.
+Em Thu, 29 Jul 2021 09:20:15 -0600
+Rob Herring <robh@kernel.org> escreveu:
 
-will do.It is really nice to see that this big function has been
-finally shrinked to a single-line routine.
+> On Thu, Jul 29, 2021 at 5:56 AM Mauro Carvalho Chehab
+> <mchehab+huawei@kernel.org> wrote:
+> >
+> > Add a new compatible, plus the new bindings needed by
+> > HiKey970 board.
+> >
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  .../bindings/pci/hisilicon,kirin-pcie.yaml    | 61 ++++++++++++++++++-
+> >  1 file changed, 60 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+> > index 90cab09e8d4b..bb0c3a081d68 100644
+> > --- a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+> > +++ b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+> > @@ -24,11 +24,13 @@ properties:
+> >      contains:
+> >        enum:
+> >          - hisilicon,kirin960-pcie
+> > +        - hisilicon,kirin970-pcie
+> >
+> >    reg:
+> >      description: |
+> >        Should contain dbi, apb, config registers location and length.
+> > -      For HiKey960, it should also contain phy.
+> > +      For HiKey960, it should also contain phy. All other devices
+> > +      should use a separate phy driver.
+> >      minItems: 3
+> >      maxItems: 4
+> >
+> > @@ -47,6 +49,7 @@ examples:
+> >    - |
+> >      #include <dt-bindings/interrupt-controller/arm-gic.h>
+> >      #include <dt-bindings/clock/hi3660-clock.h>
+> > +    #include <dt-bindings/clock/hi3670-clock.h>
+> >
+> >      soc {
+> >        #address-cells = <2>;
+> > @@ -83,4 +86,60 @@ examples:
+> >          clock-names = "pcie_phy_ref", "pcie_aux", "pcie_apb_phy",
+> >                        "pcie_apb_sys", "pcie_aclk";
+> >        };
+> > +
+> > +      pcie@f5000000 {
+> > +        compatible = "hisilicon,kirin970-pcie";
+> > +        reg = <0x0 0xf4000000 0x0 0x1000000>,
+> > +              <0x0 0xfc180000 0x0 0x1000>,
+> > +              <0x0 0xf5000000 0x0 0x2000>;
+> > +        reg-names = "dbi", "apb", "config";
+> > +        bus-range = <0x0  0x1>;
+> > +        msi-parent = <&its_pcie>;
+> > +        #address-cells = <3>;
+> > +        #size-cells = <2>;
+> > +        device_type = "pci";
+> > +        phys = <&pcie_phy>;
+> > +        ranges = <0x02000000 0x0 0x00000000
+> > +                  0x0 0xf6000000
+> > +                  0x0 0x02000000>;
+> > +        num-lanes = <1>;
+> > +        #interrupt-cells = <1>;
+> > +        interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
+> > +        interrupt-names = "msi";
+> > +        interrupt-map-mask = <0 0 0 7>;
+> > +        interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
+> > +                        <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
+> > +                        <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
+> > +                        <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
+> > +        pcie@4,0 { // Lane 4: M.2
+> > +          reg = <0 0 0 0 0>;
+> > +          compatible = "pciclass,0604";
+> > +          device_type = "pci";
+> > +          reset-gpios = <&gpio7 1 0>;
+> > +          clkreq-gpios = <&gpio27 3 0 >;  
+> 
+> Looking at the schematics some more, this is not right. CLKREQ# is an
+> input from the device, and they are not connected to any GPIO (just
+> pulled high) on hikey970. These GPIOs are simply clock enables and
+> very much specific to hikey. So I'd call this 'hisilicon,clken-gpios'
+> and you can just stick them in the host bridge node.
+> 
+
+Ok. If I understood your review, the schema will then be:
+
+      pcie@f4000000 {
+        compatible = "hisilicon,kirin970-pcie";
+        reg = <0x0 0xf4000000 0x0 0x1000000>,
+              <0x0 0xfc180000 0x0 0x1000>,
+              <0x0 0xf5000000 0x0 0x2000>;
+        reg-names = "dbi", "apb", "config";
+        bus-range = <0x0  0x1>;
+        msi-parent = <&its_pcie>;
+        #address-cells = <3>;
+        #size-cells = <2>;
+        device_type = "pci";
+        phys = <&pcie_phy>;
+        ranges = <0x02000000 0x0 0x00000000
+                  0x0 0xf6000000
+                  0x0 0x02000000>;
+        num-lanes = <1>;
+        #interrupt-cells = <1>;
+        interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
+        interrupt-names = "msi";
+        interrupt-map-mask = <0 0 0 7>;
+        interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
+                        <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
+                        <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
+                        <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
+        reset-gpios = <&gpio7 0 0>;
+
+        pcie@0 { // Lane 0: upstream
+          reg = <0 0 0 0 0>;
+          compatible = "pciclass,0604";
+          device_type = "pci";
+          #address-cells = <3>;
+          #size-cells = <2>;
+          hisilicon,clken-gpios = <&gpio27 3 0 >, <&gpio17 0 0 >, <&gpio20 6 0 >;
+          ranges;
+
+          pcie@1,0 { // Lane 4: M.2
+            reg = <0x800 0 0 0 0>;
+            compatible = "pciclass,0604";
+            device_type = "pci";
+            reset-gpios = <&gpio3 1 0>;
+            #address-cells = <3>;
+            #size-cells = <2>;
+            ranges;
+          };
+
+          pcie@5,0 { // Lane 5: Mini PCIe
+            reg = <0x2800 0 0 0 0>;
+            compatible = "pciclass,0604";
+            device_type = "pci";
+            reset-gpios = <&gpio27 4 0 >;
+            #address-cells = <3>;
+            #size-cells = <2>;
+            ranges;
+          };
+
+          pcie@7,0 { // Lane 7: Ethernet
+            reg = <0x3800 0 0 0 0>;
+            compatible = "pciclass,0604";
+            device_type = "pci";
+            reset-gpios = <&gpio25 2 0 >;
+            #address-cells = <3>;
+            #size-cells = <2>;
+            ranges;
+          };
+        };
+      };
+    };
+
+Right?
+
+After updating the dt-schema from your git tree, the above doesn't 
+generate warnings anymore.
+
+Thanks,
+Mauro
