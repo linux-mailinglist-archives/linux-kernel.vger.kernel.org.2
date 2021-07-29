@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7000E3DA818
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF033DA819
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238247AbhG2P5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:57:31 -0400
-Received: from [43.250.32.171] ([43.250.32.171]:15113 "EHLO email.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238224AbhG2P4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:56:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=ptREmgSy9AQZ1hFdza5yGK+0EixV+4y6ei5ru
-        CicvSA=; b=kYELn9hq4nRUqvc6vOWImsjNPNvACZ74MKrLAwnHqLt5l8Qf1OVQi
-        3Q/M7hvdB0C447rbq8e3QchlUOkPq3bpS760ndrYtCfb6kyYqJkuUtUWWeUsVkD7
-        /qs1u4vBg6VDgwrrD37iT9d/J/s5dsdtCH2tETVEtlZLjmyuBxXuns=
-Received: from localhost.localdomain (unknown [113.251.12.143])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgA3RAOszwJhHf4MAA--.40231S4;
-        Thu, 29 Jul 2021 23:56:49 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     corbet@lwn.net
-Cc:     panyunwang849@gmail.com,
-        linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 3/3] MAINTAINERS: add entry for traditional Chinese documentation
-Date:   Thu, 29 Jul 2021 23:56:27 +0800
-Message-Id: <20210729155627.41744-3-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210729155627.41744-1-src.res@email.cn>
-References: <20210729155627.41744-1-src.res@email.cn>
+        id S238332AbhG2P5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:57:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40240 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238174AbhG2P5E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 11:57:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627574220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OdUOSn5PsAyIvz/45Ktqnl2uzGhZFKajWTR316l3Z74=;
+        b=bbYtjcoVmU0+FlbJLtmEyn6TMFNDohk9VltIOKevd97vynQdS8iTSoDh7C+OjM1O4fmYoo
+        3IkpSoFOAj7aeFPfs+zr4GuiGrVC9sb1h/7SeuMXWPaWvWUqOrByW+sazYDC/56yDNMCFG
+        PjijuN8OOA6lUHNc6WweUmJC0kUsuzo=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-zCwQAm_eMR-kdsRcB_nbgw-1; Thu, 29 Jul 2021 11:56:59 -0400
+X-MC-Unique: zCwQAm_eMR-kdsRcB_nbgw-1
+Received: by mail-wm1-f70.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so937989wmj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 08:56:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OdUOSn5PsAyIvz/45Ktqnl2uzGhZFKajWTR316l3Z74=;
+        b=HhgS8P65HEvzi6Du7D2Ubsz/niEneNOK9oza2dSqlR+s7aGB7wlhbmoHzLj96nfj+s
+         JIHjNLypzqZP/RffKA6DT8SHz1nd7WTdsqtoCj8Rg78EZf7T1oPQ6/uG7PT5wvIIuJMa
+         mmsL7dE9tj2HjIdLFvKFYrx132Cb+0ALjUEqhey8UIab4ljBJjhzXDcwi1VuVFgvyXBz
+         TndSipaUF4aCphdiK/nxHtpRScVeESs/eNbvkZ6JS9/I39E7uqwnuNBHZ7nz9SJRJRqz
+         rnasfWOb060XZ0A3Dm+3q1EfbmplC3lBftAZRJ/8kIb1ZbREdBEzNsQpy9Dd7UmPvQHx
+         C91Q==
+X-Gm-Message-State: AOAM5311rDSMMys97UJ4F3k9Tnrvv0vEQBu3yJqLcuU7LsIZlltDICai
+        Uh6ddPqd59t24box28+OfDcrBUcVZL+n/X7n4m24gT4QTG4BIjUNQ32hyllrF2Ooyy14s9DOrpk
+        oUDh0ClNCEICVOU33Dyro3mOf
+X-Received: by 2002:adf:ed4a:: with SMTP id u10mr5502884wro.86.1627574217994;
+        Thu, 29 Jul 2021 08:56:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLgrogS1Ps6UnQ/0VQrtQt2MjSbOfI++E0VYu6WLH7GmA/dcP3gaa//uIkUtCBDdxTYVpodw==
+X-Received: by 2002:adf:ed4a:: with SMTP id u10mr5502864wro.86.1627574217775;
+        Thu, 29 Jul 2021 08:56:57 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id k17sm4088354wrw.53.2021.07.29.08.56.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 08:56:57 -0700 (PDT)
+Subject: Re: [PATCH 1/6] x86/feat_ctl: Add new VMX feature, Tertiary
+ VM-Execution control
+To:     Sean Christopherson <seanjc@google.com>,
+        Zeng Guang <guang.zeng@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
+        Gao Chao <chao.gao@intel.com>,
+        Robert Hoo <robert.hu@linux.intel.com>
+References: <20210716064808.14757-1-guang.zeng@intel.com>
+ <20210716064808.14757-2-guang.zeng@intel.com> <YQHr6VvNOQclolfc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <20d46894-a42f-88fc-124b-9d6662c57bef@redhat.com>
+Date:   Thu, 29 Jul 2021 17:56:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LCKnCgA3RAOszwJhHf4MAA--.40231S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF15Jw4fXw4DWFy5XF1UJrb_yoWfXwb_Jw
-        4UJayxXr43GFn7K395ZFZ2kryava93Jr18u3Z5t3s8Xa4DJrZ0yFn2ywn3u3s8uFsruryD
-        AF9xJr4FqrnxujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbYAYjsxI4VW3JwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
-        s7xG6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
-        8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWxJr1U
-        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6ryrMxAIw2
-        8IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_
-        Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
-        CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0
-        I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I
-        8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73
-        UjIFyTuYvjxUnfHUUUUUU
-X-Originating-IP: [113.251.12.143]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+In-Reply-To: <YQHr6VvNOQclolfc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer information for traditional Chinese documentation.
+On 29/07/21 01:44, Sean Christopherson wrote:
+>> +	rdmsr_safe(MSR_IA32_VMX_PROCBASED_CTLS3, &ign, &supported);
+>> +	c->vmx_capability[TERTIARY_CTLS_LOW] = ign;
+>> +	c->vmx_capability[TERTIARY_CTLS_HIGH] = supported;
+> Assuming only the lower 32 bits are going to be used for the near future (next
+> few years), what about defining just TERTIARY_CTLS_LOW and then doing:
+> 
+> 	/*
+> 	 * Tertiary controls are 64-bit allowed-1, so unlikely other MSRs, the
+> 	 * upper bits are ignored (because they're not used, yet...).
+> 	 */
+> 	rdmsr_safe(MSR_IA32_VMX_PROCBASED_CTLS3, &supported, &ign);
+> 	c->vmx_capability[TERTIARY_CTLS_LOW] = supported;
+> 
+> I.e. punt the ugliness issue down the road a few years.
+> 
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
-Reviewed-by: Pan Yunwang <panyunwang849@gmail.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Or use two new variables low/high instead of supported/ign.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 66d047dc6880..22d8ca2d5616 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18829,6 +18829,14 @@ F:	arch/x86/mm/testmmiotrace.c
- F:	include/linux/mmiotrace.h
- F:	kernel/trace/trace_mmiotrace.c
- 
-+TRADITIONAL CHINESE DOCUMENTATION
-+M:	Hu Haowen <src.res@email.cn>
-+L:	linux-doc-tw-discuss@lists.sourceforge.net
-+S:	Maintained
-+W:	https://github.com/srcres258/linux-doc
-+T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
-+F:	Documentation/translations/zh_TW/
-+
- TRIVIAL PATCHES
- M:	Jiri Kosina <trivial@kernel.org>
- S:	Maintained
--- 
-2.25.1
+Paolo
 
