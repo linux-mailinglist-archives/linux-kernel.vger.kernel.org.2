@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138AC3D9C02
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913D63D9C13
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbhG2DJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 23:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
+        id S233675AbhG2DOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 23:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233297AbhG2DJV (ORCPT
+        with ESMTP id S233679AbhG2DOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 23:09:21 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA03C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 20:09:18 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id f22so4509657qke.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 20:09:18 -0700 (PDT)
+        Wed, 28 Jul 2021 23:14:19 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3759DC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 20:14:11 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id c18so4550741qke.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 20:14:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=vt-edu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:in-reply-to:references:mime-version
          :content-transfer-encoding:date:message-id;
-        bh=SdHnd3UxhQxILD5sIY68I8w2CS+2K2nQR0hdwBItcSQ=;
-        b=1fuWuTp0S9vFfzdBLCV3w1xBUH4RYC//+UhbZLlGYzInl7HpKECRExfamgdx9eRolN
-         pXxGhX4yl1vQgiqq79cpBOenFVyx6uEYvqYz2oqAhPuX1kIcBreKvpIlI0irOSjtsjXU
-         0W6X8Mas7FaprAPVqoVjugg9OX0tHpHbPSRCqMOTMc7NwRWFNP6Po371r05TndavoxN3
-         7ZOQNrGPvcO+rXPj+GuqhhCfqOQOOxOFjXEvQpB9G5bbJRXCq/6PQEAN5AnFSjrLQ+9e
-         d6lJcFOP0YVNlrp6ii47qjLM0W97tovZ/w2mTmrNJxiMCrEjlo6pv5Usv83bGYFxyMCa
-         1p7Q==
+        bh=nlsvjj4rY0Et6e/FykFDR3vhRnNtSIxPsqSGb/r9ALU=;
+        b=kCFpSYAgNQ0jmV6c4v5/E971UvU9p9NMkZJGXzZDqwkFxBkfwMmDUZEjYJa7WRyTtF
+         riAe3bXOmyu7Q2Z9ynCYvzPI+mcZwh48Ecl2G6sczf4zl9y2zB+oVICdglEENTshKF9e
+         Hi3tZ7n4+ENgWTHPK21OI+nXbphwOEtqGicUhOxfL7K2swIWziSWF0WYKAj7zfhzejsS
+         7hwQI4g2txxGDT+D8v2/Bzx8UEohJKLLDTRaHxYzMcZfLsj/OqGgGS4eI1P94eHH7S66
+         x7t7MQYubYZFOZbJ9pUDBi34GT4aByDP8CYPtGRha3S2UaNBC1mgdHjzuw3DQCszlUr7
+         K7Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
          :mime-version:content-transfer-encoding:date:message-id;
-        bh=SdHnd3UxhQxILD5sIY68I8w2CS+2K2nQR0hdwBItcSQ=;
-        b=XperK0QTOXbd71v4/DKSmttiGxNUFEEDtTtAY0mnBeMLofyvg8CuJ4CmHRATq2Uijb
-         pKxY+LGIwUwVXhNR9G7MMHJXsRgCkHU3gz0OhIz9Ood5b7qB2tM6dQ6uMM2kMhTe21cm
-         FfxMnu9uoy9ylVHkXqq8c3+RpVvCXSZT7xPzWOoz8GIR/zJ90ACg0nGapprPd6pVCWGB
-         TgM6W55esdWapUAK+/9qTtHndyqDs9xtvZNpewKKCamkt/NSPwZVIvYyGfKWd1xAq1+j
-         PqVQvPWezpule/h28uVt9Dj2dYiKNGAgjqJjOdItxSfGK1OCiB4fztSIjfT8UTICZRaP
-         wbsw==
-X-Gm-Message-State: AOAM5307ADCR6ykxdu9/oXWWr4dyYxUp0iR6kQG4xCC+Pbe1R+RC6Nok
-        yFwinLxA9xeUNEu+SZMPNnsTlQ==
-X-Google-Smtp-Source: ABdhPJwDK0qVuMlp6WgaA3Az4Au4QJilqAUMO8ICEJgVOV83q4gFst/vTmoNWJBscKKsVOjnSF/VOA==
-X-Received: by 2002:a37:6151:: with SMTP id v78mr3152537qkb.9.1627528157390;
-        Wed, 28 Jul 2021 20:09:17 -0700 (PDT)
+        bh=nlsvjj4rY0Et6e/FykFDR3vhRnNtSIxPsqSGb/r9ALU=;
+        b=lC+Y5Ie6UbtXBr2vpI4f+dfNkmv0tb8B6sV9SvTId9fN2nGaGt5vJtDUHPg7vYInQd
+         uRYQECbncZC54nhD3Wy9+zIQdLvTLth4qxxlehW5ca82H62g0+YmK1GyJfbcd2zFQLfC
+         NNrVchB6N545uuvqsY0KmSZVHifwqFvym6lnJ2qrNICUPRsF/gjPlTpO7j6idCJR95Rr
+         J5deiGbGavvjPHPiBv0yghfHx7YawPptjF6JtqHaXs7bL8uSxLjUFdO0r8ABFnBfwamX
+         zQgH4TK9zwEH1y8knjxQ2mHgoSuMq0e4+aOTMBZjm9J9/L4aoDbv1mK8JPVT9WWm66Mi
+         1Eew==
+X-Gm-Message-State: AOAM532Hm1wimtFzMzJXkECIi/wYwQNcgqGCsUgB9fpDC6mcJccf27FF
+        nXpf3HufV8B8mdluzrL1P8+5rg==
+X-Google-Smtp-Source: ABdhPJzuzipQ4hfP+0qmMKCAw0UZE8uHWc0F6Tdt+TS3gzApe3YsMZdvIS2ds/UEppmIEeFOr0nH+A==
+X-Received: by 2002:a37:9f55:: with SMTP id i82mr3058039qke.459.1627528450226;
+        Wed, 28 Jul 2021 20:14:10 -0700 (PDT)
 Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id q11sm1011870qkm.56.2021.07.28.20.09.16
+        by smtp.gmail.com with ESMTPSA id u7sm779796qta.27.2021.07.28.20.14.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 20:09:16 -0700 (PDT)
+        Wed, 28 Jul 2021 20:14:09 -0700 (PDT)
 Sender: Valdis Kletnieks <valdis@vt.edu>
 From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
 X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
@@ -56,59 +56,52 @@ To:     Ian Pilcher <arequipeno@gmail.com>
 Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
         axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
         kernelnewbies@kernelnewbies.org
-Subject: Re: [RFC PATCH 1/8] docs: Add block device LED trigger documentation
-In-Reply-To: <20210729015344.3366750-2-arequipeno@gmail.com>
+Subject: Re: [RFC PATCH 2/8] block: Add block device LED trigger list
+In-Reply-To: <20210729015344.3366750-3-arequipeno@gmail.com>
 References: <20210729015344.3366750-1-arequipeno@gmail.com>
- <20210729015344.3366750-2-arequipeno@gmail.com>
+ <20210729015344.3366750-3-arequipeno@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1627528155_13589P";
+Content-Type: multipart/signed; boundary="==_Exmh_1627528448_13589P";
          micalg=pgp-sha256; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 28 Jul 2021 23:09:15 -0400
-Message-ID: <108629.1627528155@turing-police>
+Date:   Wed, 28 Jul 2021 23:14:08 -0400
+Message-ID: <108872.1627528448@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1627528155_13589P
+--==_Exmh_1627528448_13589P
 Content-Type: text/plain; charset=us-ascii
 
-On Wed, 28 Jul 2021 20:53:37 -0500, Ian Pilcher said:
+On Wed, 28 Jul 2021 20:53:38 -0500, Ian Pilcher said:
+> * New config option (CONFIG_BLK_LED_TRIGGERS) to enable/disable
+>   block device LED triggers
+>
+> * New file - block/blk-ledtrig.c
 
-> +Create a new block device LED trigger::
-> +
-> +	# echo foo > /sys/class/block/led_trigger_new
-> +
-> +The name must be unique among all LED triggers (not just block device LED
-> +triggers).
-> +
-> +Create two more::
-> +
-> +	# echo bar baz > /sys/class/block/led_trigger_new
+Is this bisect-clean (as in "will it build properly with that config option
+set after each of the succeeding patches")?  Usually, the config option
+is added in the *last* patch, so that even if you have a bisect issue
+it won't manifest because it's wrapped in a '#ifdef CONFIG_WHATEVER'
+that can't possibly be compiled in because there's no way for Kconfig
+to set that variable.
 
-> +	# cat /sys/class/block/led_trigger_list
-> +	baz: 0
-> +	bar: 0
-> +	foo: 0
 
-This looks like an abuse of the "one entry one value" rule for sysfs.
-Perhaps this should be a directory /sys/class/block/defined_triggers/
-and separate files under that for foo, bar, and baz?  That would probably
-make reference counting a lot easier as well....
 
---==_Exmh_1627528155_13589P
+
+--==_Exmh_1627528448_13589P
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Comment: Exmh version 2.9.0 11/07/2018
 
-iQEcBAEBCAAGBQJhAhvbAAoJEI0DS38y7CIctZEH/3Pdfz1JB35y9wFELHDki00R
-/UC64FJqOqMfASDl0QtxgVV1S3MfGAAqXFlUw1Djb/0/ZcytyZ22f2S0u8JaP9Qx
-M4Wr0eo5A/BLR7csFwxoxN7lfxDFyEcsKKx+kkZZgfmoqbTLzt46NXTRWrcxJ5p4
-rc9KA6hWGz3GYFUj48Maz9VA3hNz3RLcmOy/F1DKHk7nwBrXZ775iKToao4uNNrw
-Y0NNAAFQYQ8LBZkf5G2hxBakpIA5jY+7arv2dIDO6f+MyDQYKH8gvJEO1vFmiyMM
-OAufuI4mM8ouhA11rIRqtZZ9acl12CJt/OK8FPifF+ypiFVqbqZHteNbzIvbmY4=
-=IjcV
+iQEcBAEBCAAGBQJhAh0AAAoJEI0DS38y7CIc6cUH/3tq6hqxvKtkiQcD4HzMc2rV
+VVnh4Fwe87oMVih1762MyR3eJq78lMdYCIE0uH5oCmhENt9vRazzRvqkhECq65+X
+4J6vzZPa5b11Thlbq7VxcX9xekPGY5oMy4gNUIxA13FssiY155/vJHoxf5M03eHV
+py/UIKV+Nt6TalNECEfo+tBwOo53jI0NuxKXVLSkrej1kTUWIgaGBhQ6a2UAVBlI
+yo7OR3plIsotR1586qaQinzTvLQ8CMehGYut5xMWFNsAFryK/KrwtZ3SI30k9Fnb
+mn51wpu5eei//q34mj5fSd93Ib0IK+7VmpSncpzqrWjZsRkn3z+yGMLjaCGvIuw=
+=6m9i
 -----END PGP SIGNATURE-----
 
---==_Exmh_1627528155_13589P--
+--==_Exmh_1627528448_13589P--
