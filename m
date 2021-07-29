@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1533DA3E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AD23DA3E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237742AbhG2NWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:22:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38500 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237350AbhG2NVr (ORCPT
+        id S237483AbhG2NWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:22:43 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56788 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237492AbhG2NVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Jul 2021 09:21:47 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 027F7223D8;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 377F120044;
         Thu, 29 Jul 2021 13:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1627564903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4wUXefGogUvby0u0ZYeK4JTU6bSiRmchnpXl1sp1MEY=;
-        b=KXdbvxoFOOlXQtdQeSkLXYjVGt+sTeJZEypH6XHLEiFbPF0axiMz9xrmRlZD6yA88bud+I
-        UC0S/1ssArfuegRDyTB1VL/017rcvechg2W1nNBKmb2/ImwUp3sEodhcYBNiNZoTwAnUdT
-        glHhTNZ9Fv6YzvY1dEyE1zUzWRqWYNU=
+        bh=B4vdJolFL2GVYpcikot2LbNLNf+dSU83/o6wpmgcp6o=;
+        b=WYagSXYGnVn3RHhHbl+/Wmv3AyCDrwuVsgobW/8YcpjvqGqpB8dyrBfrO+vv8F6jwo9MiU
+        JW2/Nnry5aVpS55gq2OvKO+1rFCzFymmeOMU2OunWJEndVJo0uwx8uvgxgeODbjZ7RhKQC
+        quMgF7lAjbjWhrPHe1kDdx1cyaASegM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1627564903;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4wUXefGogUvby0u0ZYeK4JTU6bSiRmchnpXl1sp1MEY=;
-        b=XaoeZ5+6og1YBZsFd7SDOnCC3PzWMduJnk08NgzhATKIs9PmMG38dzCaWu+2iH+h1Enwpy
-        UZQNSq+pgnzc8lDg==
+        bh=B4vdJolFL2GVYpcikot2LbNLNf+dSU83/o6wpmgcp6o=;
+        b=OQKAio0SyrpdzM2mh4lNi0WHqsibNZ2w+xoky0jsVt2lVcHaj3j9uzNRledcO2+7xSqtor
+        EfMiyfQOYKKNSoCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C3E9713AE9;
-        Thu, 29 Jul 2021 13:21:42 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0523713AF4;
+        Thu, 29 Jul 2021 13:21:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id yPX+LmarAmF9AwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 29 Jul 2021 13:21:42 +0000
+        id sMoRAGerAmF9AwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 29 Jul 2021 13:21:43 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Christoph Lameter <cl@linux.com>,
@@ -58,9 +58,9 @@ Cc:     Mike Galbraith <efault@gmx.de>,
         Mel Gorman <mgorman@techsingularity.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v3 14/35] mm, slub: move disabling irqs closer to get_partial() in ___slab_alloc()
-Date:   Thu, 29 Jul 2021 15:21:11 +0200
-Message-Id: <20210729132132.19691-15-vbabka@suse.cz>
+Subject: [PATCH v3 15/35] mm, slub: restore irqs around calling new_slab()
+Date:   Thu, 29 Jul 2021 15:21:12 +0200
+Message-Id: <20210729132132.19691-16-vbabka@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210729132132.19691-1-vbabka@suse.cz>
 References: <20210729132132.19691-1-vbabka@suse.cz>
@@ -70,99 +70,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Continue reducing the irq disabled scope. Check for per-cpu partial slabs with
-first with irqs enabled and then recheck with irqs disabled before grabbing
-the slab page. Mostly preparatory for the following patches.
+allocate_slab() currently re-enables irqs before calling to the page allocator.
+It depends on gfpflags_allow_blocking() to determine if it's safe to do so.
+Now we can instead simply restore irq before calling it through new_slab().
+The other caller early_kmem_cache_node_alloc() is unaffected by this.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 34 +++++++++++++++++++++++++---------
- 1 file changed, 25 insertions(+), 9 deletions(-)
+ mm/slub.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index dd01af81dd77..187424ebf1d8 100644
+index 187424ebf1d8..43f38fd47062 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2676,11 +2676,6 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		if (unlikely(node != NUMA_NO_NODE &&
- 			     !node_isset(node, slab_nodes)))
- 			node = NUMA_NO_NODE;
--		local_irq_save(flags);
--		if (unlikely(c->page)) {
--			local_irq_restore(flags);
--			goto reread_page;
--		}
- 		goto new_slab;
- 	}
- redo:
-@@ -2721,6 +2716,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+@@ -1792,9 +1792,6 @@ static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
  
- 	if (!freelist) {
- 		c->page = NULL;
-+		local_irq_restore(flags);
- 		stat(s, DEACTIVATE_BYPASS);
- 		goto new_slab;
- 	}
-@@ -2750,12 +2746,19 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		goto reread_page;
- 	}
- 	deactivate_slab(s, page, c->freelist, c);
-+	local_irq_restore(flags);
+ 	flags &= gfp_allowed_mask;
  
- new_slab:
- 
--	lockdep_assert_irqs_disabled();
+-	if (gfpflags_allow_blocking(flags))
+-		local_irq_enable();
 -
- 	if (slub_percpu_partial(c)) {
-+		local_irq_save(flags);
-+		if (unlikely(c->page)) {
-+			local_irq_restore(flags);
-+			goto reread_page;
-+		}
-+		if (unlikely(!slub_percpu_partial(c)))
-+			goto new_objects; /* stolen by an IRQ handler */
-+
- 		page = c->page = slub_percpu_partial(c);
- 		slub_set_percpu_partial(c, page);
- 		local_irq_restore(flags);
-@@ -2763,6 +2766,16 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		goto redo;
+ 	flags |= s->allocflags;
+ 
+ 	/*
+@@ -1853,8 +1850,6 @@ static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
+ 	page->frozen = 1;
+ 
+ out:
+-	if (gfpflags_allow_blocking(flags))
+-		local_irq_disable();
+ 	if (!page)
+ 		return NULL;
+ 
+@@ -2782,16 +2777,17 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 		goto check_new_page;
+ 	}
+ 
++	local_irq_restore(flags);
+ 	put_cpu_ptr(s->cpu_slab);
+ 	page = new_slab(s, gfpflags, node);
+ 	c = get_cpu_ptr(s->cpu_slab);
+ 
+ 	if (unlikely(!page)) {
+-		local_irq_restore(flags);
+ 		slab_out_of_memory(s, gfpflags, node);
+ 		return NULL;
  	}
  
 +	local_irq_save(flags);
-+	if (unlikely(c->page)) {
-+		local_irq_restore(flags);
-+		goto reread_page;
-+	}
-+
-+new_objects:
-+
-+	lockdep_assert_irqs_disabled();
-+
- 	freelist = get_partial(s, gfpflags, node, &page);
- 	if (freelist) {
- 		c->page = page;
-@@ -2795,15 +2808,18 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- check_new_page:
+ 	if (c->page)
+ 		flush_slab(s, c);
  
- 	if (kmem_cache_debug(s)) {
--		if (!alloc_debug_processing(s, page, freelist, addr))
-+		if (!alloc_debug_processing(s, page, freelist, addr)) {
- 			/* Slab failed checks. Next slab needed */
-+			c->page = NULL;
-+			local_irq_restore(flags);
- 			goto new_slab;
--		else
-+		} else {
- 			/*
- 			 * For debug case, we don't load freelist so that all
- 			 * allocations go through alloc_debug_processing()
- 			 */
- 			goto return_single;
-+		}
- 	}
- 
- 	if (unlikely(!pfmemalloc_match(page, gfpflags)))
 -- 
 2.32.0
 
