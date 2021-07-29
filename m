@@ -2,221 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC793DA8B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374EC3DA8BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhG2QS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:18:28 -0400
-Received: from mail-oo1-f41.google.com ([209.85.161.41]:33440 "EHLO
-        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbhG2QSZ (ORCPT
+        id S231350AbhG2QSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231420AbhG2QSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:18:25 -0400
-Received: by mail-oo1-f41.google.com with SMTP id e3-20020a4ab9830000b029026ada3b6b90so1721216oop.0;
-        Thu, 29 Jul 2021 09:18:21 -0700 (PDT)
+        Thu, 29 Jul 2021 12:18:37 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C020C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:18:33 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id c7-20020a9d27870000b02904d360fbc71bso6368651otb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:18:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zmKveIAYbBTBnY55675WcFmTMajiGGjmMHwrRMhj8xk=;
+        b=kA4MpBL0EpYu0CGamz/vCqUNLw+gHARamWO6i5IiCSuVfj53pppWlpjDuT5Rj5mZa6
+         a7j5jo2Y0i7apU/ms31YnrXZRjwnBTkYxn4u6pNyfB9BKC9cAlA2PEaNZyb8xdKCBs5U
+         tO07e/lcsCP9fkfq6vJB/b3+Fqxz4X4Fnx+Pk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ulj0Qxhttmh6pMrukwgRwHtYzawwAnVn5uZJVaYiBqA=;
-        b=MgE34odoBrIv5gEMwq5nQcYZe3dApfRGi3xnRxkkjupM4+pEwiTjVP/zjsC/blDrxa
-         d7qhUXUcMQer/z3XJebRkqHnio2zGXyaG4hHz1DOetcI1fORL3cIUo9zTqdxcQwMy0CZ
-         LGJZ/lenDlrsjPDIU48Q8B89NnJRKfK6Ov6/y9izhsUwL8yC8i+s7sjUbBHsi4Mmp/4b
-         CnBf7W51VI31ScJ+3izTAG29hlDdlgBEwN0J68cV56zMJblspBlNIOMPS3dGvqesTQuT
-         +MwFsF7dfCo+zoY6KxRBuDie2fFomuqhE0YT88uU3MNiLB4LeSBYDswebV8IKsjD3eBm
-         pqDw==
-X-Gm-Message-State: AOAM530yrTJvEfbn/I89Tchv0rsRRAlpjfmH0CYlRCzP6XgOZIjRoT0V
-        4j6fHV32yHLX7JlFBxCGUY19hCjVHMQcnPoPcbI=
-X-Google-Smtp-Source: ABdhPJz7OFDIG+YOw3L6p7tqWkt3wi2NMJyS2aKpl47ce0BdPCphEY0vUfeKlqKlDAhIbDF5d1ZAd2/B38fMbqg5lA0=
-X-Received: by 2002:a05:6820:161f:: with SMTP id bb31mr3533745oob.44.1627575501491;
- Thu, 29 Jul 2021 09:18:21 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zmKveIAYbBTBnY55675WcFmTMajiGGjmMHwrRMhj8xk=;
+        b=alPzgNzpI3Fo/dJkwPyc4pGUrUHkS5IUUt4TLSEPJVKU+BGzoILI/qSycG6GZUjwXw
+         QFhR83zQsF3DcA4rcBVgM0E1fdhODaFceYRXp/lwL0NS3do5QUT7sEu3VBrPobtLOqS2
+         oC0aHUvRL6UFhAUOlUDZJbsmkCeprD6itWGJJ1LCBI/JC0cby2sQKUYB2w1BkCSOoQvc
+         3+S/4yIUOCus7sCgLCl0Tfqyizgh4m0wM0XEhG2HI7FhyEsbhKrWSvYXlMko08KBUQ8/
+         BD4ZMp5hhRJCMU31aUt5384X6d0qZlDC4vBtUfe8DFGfQOUifC0p0Cvtlw+fbLlqJHgx
+         uQ8A==
+X-Gm-Message-State: AOAM530zSq9oLt1X0IqAmuLbodqobYC0E8mBK+Sq1NN6X1iuYrpG48Sf
+        Ia5MmiYtTQa8v+0MsMRGpMnhkJtqOeylzfgzUt4ADQ==
+X-Google-Smtp-Source: ABdhPJzBci/tj/bCUyHHuBvZPyafx8Ll/i7z8tWquHpWo8+lhjb+3Kyov65R2fGHOfU1n7A9ESrG+l7ZMH/VU3O7Yrs=
+X-Received: by 2002:a05:6830:2802:: with SMTP id w2mr3925202otu.303.1627575512650;
+ Thu, 29 Jul 2021 09:18:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <1867445.PYKUYFuaPT@kreacher> <000801d78322$e9b94980$bd2bdc80$@telus.net>
- <CAJZ5v0jashhvE4vRNAft1qfZ_Ud==tG1Yh29ad7BSfhk5xjx4A@mail.gmail.com>
- <2178828.iZASKD2KPV@kreacher> <CAAYoRsVko5jG=xqH=KTochqQu95i7PDo_6f1LCPGvAP0=XdVTA@mail.gmail.com>
- <CAAYoRsWQ25O=7msQfvH5qRRK80JrpfLOQdG2BQrGx9_wpOX_wQ@mail.gmail.com>
-In-Reply-To: <CAAYoRsWQ25O=7msQfvH5qRRK80JrpfLOQdG2BQrGx9_wpOX_wQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 29 Jul 2021 18:18:10 +0200
-Message-ID: <CAJZ5v0ioaKZ1yUn2VN0mdF82qmemzKbM3hmd-1mfa86toz+t2g@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
+References: <20210726233854.2453899-1-robdclark@gmail.com> <20210726233854.2453899-2-robdclark@gmail.com>
+ <50b181fe-6605-b7ac-36a6-8bcda2930e6f@gmail.com> <CAF6AEGuNxi_aeYE37FT3a-atCUWgepxs-9EwxMfpiMaU7wgqdQ@mail.gmail.com>
+ <9edd7083-e6b3-b230-c273-8f2fbe76ca17@amd.com> <703dc9c3-5657-432e-ca0b-25bdd67a2abd@gmail.com>
+ <CAF6AEGvSpvc2po93b2eKB2cSzx_a+BtPWhQgRs-1NFFZfUbJNw@mail.gmail.com>
+ <e5e71356-1c58-04ac-2609-70d268941b8d@amd.com> <CAF6AEGu3NMyRp1pC5iZQoHhKhu_xBFBqkkfbG36dx8bVzYdWMA@mail.gmail.com>
+ <YQJSxEVUkZmfL5Cb@phenom.ffwll.local> <CAF6AEGswVQx3Vtm=Oab3CsQw1fE-yf9y2_MB2wdx_e14FLNwXQ@mail.gmail.com>
+In-Reply-To: <CAF6AEGswVQx3Vtm=Oab3CsQw1fE-yf9y2_MB2wdx_e14FLNwXQ@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 29 Jul 2021 18:18:21 +0200
+Message-ID: <CAKMK7uHjtiL9TzfMMKaKWMRx=-p_ZUg07wSp9djz7gwwUjn=zw@mail.gmail.com>
+Subject: Re: [RFC 1/4] dma-fence: Add deadline awareness
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 5:24 PM Doug Smythies <dsmythies@telus.net> wrote:
+On Thu, Jul 29, 2021 at 5:19 PM Rob Clark <robdclark@gmail.com> wrote:
 >
-> On Wed, Jul 28, 2021 at 11:34 PM Doug Smythies <dsmythies@telus.net> wrote:
+> On Thu, Jul 29, 2021 at 12:03 AM Daniel Vetter <daniel@ffwll.ch> wrote:
 > >
-> > On Wed, Jul 28, 2021 at 10:47 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > >
-> > > On Wednesday, July 28, 2021 3:52:51 PM CEST Rafael J. Wysocki wrote:
-> > > > On Tue, Jul 27, 2021 at 10:06 PM Doug Smythies <dsmythies@telus.net> wrote:
-> > > > >
-> > > > > Hi Rafael,
-> > > > >
-> > > > > Further to my reply of 2021.07.04  on this, I have
-> > > > > continued to work with and test this patch set.
-> > > > >
-> > > > > On 2021.06.02 11:14 Rafael J. Wysocki wrote:
-> > > > >
-> > > > > >This series of patches addresses some theoretical shortcoming in the
-> > > > > > TEO (Timer Events Oriented) cpuidle governor by reworking its idle
-> > > > > > state selection logic to some extent.
-> > > > > >
-> > > > > > Patches [1-2/5] are introductory cleanups and the substantial changes are
-> > > > > > made in patches [3-4/5] (please refer to the changelogs of these two
-> > > > > > patches for details).  The last patch only deals with documentation.
-> > > > > >
-> > > > > > Even though this work is mostly based on theoretical considerations, it
-> > > > > > shows a measurable reduction of the number of cases in which the shallowest
-> > > > > > idle state is selected while it would be more beneficial to select a deeper
-> > > > > > one or the deepest idle state is selected while it would be more beneficial to
-> > > > > > select a shallower one, which should be a noticeable improvement.
-> > > > >
-> > > > > I am concentrating in the idle state 0 and 1 area.
-> > > > > When I disable idle state 0, the expectation is its
-> > > > > usage will fall to idle state 1. It doesn't.
-> > > > >
-> > > > > Conditions:
-> > > > > CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-> > > > > HWP: disabled
-> > > > > CPU frequency scaling driver: intel_pstate, active
-> > > > > CPU frequency scaling governor: performance.
-> > > > > Idle configuration: As a COMETLAKE processor, with 4 idle states.
-> > > > > Sample time for below: 1 minute.
-> > > > > Workflow: Cross core named pipe token passing, 12 threads.
-> > > > >
-> > > > > Kernel 5.14-rc3: idle: teo governor
-> > > > >
-> > > > > All idle states enabled: PASS
-> > > > > Processor: 97 watts
-> > > > > Idle state 0 entries: 811151
-> > > > > Idle state 1 entries: 140300776
-> > > > > Idle state 2 entries: 889
-> > > > > Idle state 3 entries: 8
-> > > > >
-> > > > > Idle state 0 disabled: FAIL <<<<<
-> > > > > Processor: 96 watts
-> > > > > Idle state 0 entries: 0
-> > > > > Idle state 1 entries: 65599283
-> > > > > Idle state 2 entries: 364399
-> > > > > Idle state 3 entries: 65112651
+> > On Wed, Jul 28, 2021 at 10:58:51AM -0700, Rob Clark wrote:
+> > > On Wed, Jul 28, 2021 at 10:23 AM Christian K=C3=B6nig
+> > > <christian.koenig@amd.com> wrote:
 > > > >
-> > > > This looks odd.
 > > > >
-> > > > Thanks for the report, I'll take a look at this.
+> > > >
+> > > > Am 28.07.21 um 17:15 schrieb Rob Clark:
+> > > > > On Wed, Jul 28, 2021 at 4:37 AM Christian K=C3=B6nig
+> > > > > <ckoenig.leichtzumerken@gmail.com> wrote:
+> > > > >> Am 28.07.21 um 09:03 schrieb Christian K=C3=B6nig:
+> > > > >>> Am 27.07.21 um 16:25 schrieb Rob Clark:
+> > > > >>>> On Tue, Jul 27, 2021 at 12:11 AM Christian K=C3=B6nig
+> > > > >>>> <ckoenig.leichtzumerken@gmail.com> wrote:
+> > > > >>>>> Am 27.07.21 um 01:38 schrieb Rob Clark:
+> > > > >>>>>> From: Rob Clark <robdclark@chromium.org>
+> > > > >>>>>>
+> > > > >>>>>> Add a way to hint to the fence signaler of an upcoming deadl=
+ine,
+> > > > >>>>>> such as
+> > > > >>>>>> vblank, which the fence waiter would prefer not to miss. Thi=
+s is to
+> > > > >>>>>> aid
+> > > > >>>>>> the fence signaler in making power management decisions, lik=
+e boosting
+> > > > >>>>>> frequency as the deadline approaches and awareness of missin=
+g
+> > > > >>>>>> deadlines
+> > > > >>>>>> so that can be factored in to the frequency scaling.
+> > > > >>>>>>
+> > > > >>>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > >>>>>> ---
+> > > > >>>>>>     drivers/dma-buf/dma-fence.c | 39
+> > > > >>>>>> +++++++++++++++++++++++++++++++++++++
+> > > > >>>>>>     include/linux/dma-fence.h   | 17 ++++++++++++++++
+> > > > >>>>>>     2 files changed, 56 insertions(+)
+> > > > >>>>>>
+> > > > >>>>>> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/d=
+ma-fence.c
+> > > > >>>>>> index ce0f5eff575d..2e0d25ab457e 100644
+> > > > >>>>>> --- a/drivers/dma-buf/dma-fence.c
+> > > > >>>>>> +++ b/drivers/dma-buf/dma-fence.c
+> > > > >>>>>> @@ -910,6 +910,45 @@ dma_fence_wait_any_timeout(struct dma_f=
+ence
+> > > > >>>>>> **fences, uint32_t count,
+> > > > >>>>>>     }
+> > > > >>>>>>     EXPORT_SYMBOL(dma_fence_wait_any_timeout);
+> > > > >>>>>>
+> > > > >>>>>> +
+> > > > >>>>>> +/**
+> > > > >>>>>> + * dma_fence_set_deadline - set desired fence-wait deadline
+> > > > >>>>>> + * @fence:    the fence that is to be waited on
+> > > > >>>>>> + * @deadline: the time by which the waiter hopes for the fe=
+nce to be
+> > > > >>>>>> + *            signaled
+> > > > >>>>>> + *
+> > > > >>>>>> + * Inform the fence signaler of an upcoming deadline, such =
+as
+> > > > >>>>>> vblank, by
+> > > > >>>>>> + * which point the waiter would prefer the fence to be sign=
+aled
+> > > > >>>>>> by.  This
+> > > > >>>>>> + * is intended to give feedback to the fence signaler to ai=
+d in power
+> > > > >>>>>> + * management decisions, such as boosting GPU frequency if =
+a periodic
+> > > > >>>>>> + * vblank deadline is approaching.
+> > > > >>>>>> + */
+> > > > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_=
+t
+> > > > >>>>>> deadline)
+> > > > >>>>>> +{
+> > > > >>>>>> +     unsigned long flags;
+> > > > >>>>>> +
+> > > > >>>>>> +     if (dma_fence_is_signaled(fence))
+> > > > >>>>>> +             return;
+> > > > >>>>>> +
+> > > > >>>>>> +     spin_lock_irqsave(fence->lock, flags);
+> > > > >>>>>> +
+> > > > >>>>>> +     /* If we already have an earlier deadline, keep it: */
+> > > > >>>>>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->=
+flags) &&
+> > > > >>>>>> +         ktime_before(fence->deadline, deadline)) {
+> > > > >>>>>> +             spin_unlock_irqrestore(fence->lock, flags);
+> > > > >>>>>> +             return;
+> > > > >>>>>> +     }
+> > > > >>>>>> +
+> > > > >>>>>> +     fence->deadline =3D deadline;
+> > > > >>>>>> +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags=
+);
+> > > > >>>>>> +
+> > > > >>>>>> +     spin_unlock_irqrestore(fence->lock, flags);
+> > > > >>>>>> +
+> > > > >>>>>> +     if (fence->ops->set_deadline)
+> > > > >>>>>> +             fence->ops->set_deadline(fence, deadline);
+> > > > >>>>>> +}
+> > > > >>>>>> +EXPORT_SYMBOL(dma_fence_set_deadline);
+> > > > >>>>>> +
+> > > > >>>>>>     /**
+> > > > >>>>>>      * dma_fence_init - Initialize a custom fence.
+> > > > >>>>>>      * @fence: the fence to initialize
+> > > > >>>>>> diff --git a/include/linux/dma-fence.h b/include/linux/dma-f=
+ence.h
+> > > > >>>>>> index 6ffb4b2c6371..4e6cfe4e6fbc 100644
+> > > > >>>>>> --- a/include/linux/dma-fence.h
+> > > > >>>>>> +++ b/include/linux/dma-fence.h
+> > > > >>>>>> @@ -88,6 +88,7 @@ struct dma_fence {
+> > > > >>>>>>                 /* @timestamp replaced by @rcu on
+> > > > >>>>>> dma_fence_release() */
+> > > > >>>>>>                 struct rcu_head rcu;
+> > > > >>>>>>         };
+> > > > >>>>>> +     ktime_t deadline;
+> > > > >>>>> Mhm, adding the flag sounds ok to me but I'm a bit hesitating=
+ adding
+> > > > >>>>> the
+> > > > >>>>> deadline as extra field here.
+> > > > >>>>>
+> > > > >>>>> We tuned the dma_fence structure intentionally so that it is =
+only 64
+> > > > >>>>> bytes.
+> > > > >>>> Hmm, then I guess you wouldn't be a fan of also adding an hrti=
+mer?
+> > > > >>>>
+> > > > >>>> We could push the ktime_t (and timer) down into the derived fe=
+nce
+> > > > >>>> class, but I think there is going to need to be some extra sto=
+rage
+> > > > >>>> *somewhere*.. maybe the fence signaler could get away with jus=
+t
+> > > > >>>> storing the nearest upcoming deadline per fence-context instea=
+d?
+> > > > >>> I would just push that into the driver instead.
+> > > > >>>
+> > > > >>> You most likely don't want the deadline per fence anyway in com=
+plex
+> > > > >>> scenarios, but rather per frame. And a frame is usually compose=
+d from
+> > > > >>> multiple fences.
+> > > > > Right, I ended up keeping track of the nearest deadline in patch =
+5/4
+> > > > > which added drm/msm support:
+> > > > >
+> > > > >    https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A=
+%2F%2Fpatchwork.freedesktop.org%2Fpatch%2F447138%2F&amp;data=3D04%7C01%7Cch=
+ristian.koenig%40amd.com%7Cce6ace85263d448bbc9f08d951d9f06c%7C3dd8961fe4884=
+e608e11a82d994e183d%7C0%7C0%7C637630819606427306%7CUnknown%7CTWFpbGZsb3d8ey=
+JWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp=
+;sdata=3DameszAOlClaZNeUDlYr37ZdIytVXNgiEUKuctjXLqZ0%3D&amp;reserved=3D0
+> > > > >
+> > > > > But if we do have the ktime_t in dma_fence in dma_fence, we can a=
+dd
+> > > > > some checks and avoid calling back to the driver if a later deadl=
+ine
+> > > > > is set on a fence that already has an earlier deadline.  OTOH I
+> > > > > suppose I can push all that back to the driver to start, and we c=
+an
+> > > > > revisit once we have more drivers implementing deadline support.
+> > > >
+> > > > I still think that all of this is rather specific to your use case =
+and
+> > > > have strong doubt that anybody else will implement that.
 > > >
-> > > I have found an issue in the code that may be responsible for the
-> > > observed behavior and should be addressed by the appended patch (not
-> > > tested yet).
-> > >
-> > > Basically, the "disabled" check in the second loop over states in
-> > > teo_select() needs to exclude the first enabled state, because
-> > > there are no more states to check after that.
-> > >
-> > > Plus the time span check needs to be done when the given state
-> > > is about to be selected, because otherwise the function may end up
-> > > returning a state for which the sums are too low.
-> > >
-> > > Thanks!
-> > >
-> > > ---
-> > >  drivers/cpuidle/governors/teo.c |   26 ++++++++++++++------------
-> > >  1 file changed, 14 insertions(+), 12 deletions(-)
-> > >
-> > > Index: linux-pm/drivers/cpuidle/governors/teo.c
-> > > ===================================================================
-> > > --- linux-pm.orig/drivers/cpuidle/governors/teo.c
-> > > +++ linux-pm/drivers/cpuidle/governors/teo.c
-> > > @@ -404,25 +404,27 @@ static int teo_select(struct cpuidle_dri
-> > >                         intercept_sum += bin->intercepts;
-> > >                         recent_sum += bin->recent;
-> > >
-> > > -                       if (dev->states_usage[i].disable)
-> > > +                       if (dev->states_usage[i].disable && i > idx0)
-> > >                                 continue;
-> > >
-> > >                         span_ns = teo_middle_of_bin(i, drv);
-> > > -                       if (!teo_time_ok(span_ns)) {
-> > > -                               /*
-> > > -                                * The current state is too shallow, so select
-> > > -                                * the first enabled deeper state.
-> > > -                                */
-> > > -                               duration_ns = last_enabled_span_ns;
-> > > -                               idx = last_enabled_idx;
-> > > -                               break;
-> > > -                       }
-> > >
-> > >                         if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
-> > >                             (!alt_intercepts ||
-> > >                              2 * intercept_sum > idx_intercept_sum)) {
-> > > -                               idx = i;
-> > > -                               duration_ns = span_ns;
-> > > +                               if (!teo_time_ok(span_ns) ||
-> > > +                                   dev->states_usage[i].disable) {
-> > > +                                       /*
-> > > +                                        * The current state is too shallow or
-> > > +                                        * disabled, so select the first enabled
-> > > +                                        * deeper state.
-> > > +                                        */
-> > > +                                       duration_ns = last_enabled_span_ns;
-> > > +                                       idx = last_enabled_idx;
-> > > +                               } else {
-> > > +                                       idx = i;
-> > > +                                       duration_ns = span_ns;
-> > > +                               }
-> > >                                 break;
-> > >                         }
+> > > i915 does already have a similar thing in it's hand-rolled atomic
+> > > commit path.  So I think msm won't be the only one.  It should be als=
+o
+> > > useful to the other mobile GPUs with a gpu vs kms driver split,
+> > > although looking at the other gpu devfreq implementations, I don't
+> > > think they've yet gotten to this point in the fine tuning..
 > >
-> > Hi Rafael,
+> > Yeah I have a dream that maybe i915 will use the atomic commit helpers,=
+ I
+> > originally wrote them with i915 in mind :-) even had patches!
 > >
-> > I tried the patch and when I disabled idle state 0
-> > got, very similar to before:
-> >
-> > Idle state 0 disabled: FAIL
-> > Processor: 95 watts
-> > Idle state 0 entries: 0
-> > Idle state 1 entries: 65,475,534
-> > Idle state 2 entries: 333144
-> > Idle state 3 entries: 65,247,048
-> >
-> > However, I accidently left it for about 30 minutes
-> > and noticed:
-> >
-> > Idle state 0 disabled:
-> > Processor: 83 watts
-> > Idle state 0 entries: 0
-> > Idle state 1 entries: 88,706,831
-> > Idle state 2 entries: 100
-> > Idle state 3 entries: 662
-> >
-> > I went back to unmodified kernel 5.13-rc3 and
+> > I also think we'll need this eventually in other areas, Android also ha=
+s
+> > some hacks like this to make sure idle->first touch doesn't suck and
+> > similar things.
 >
-> Sorry, 5.14-rc3.
+> input-boost is another thing I have on my roadmap.. part of the solution =
+is:
 >
-> > let it run longer with idle state 0 disabled, and
-> > after 30 minutes it had changed but nowhere
-> > near as much:
-> >
-> > Idle state 0 disabled:
-> > Processor: 87 watts
-> > Idle state 0 entries: 0
-> > Idle state 1 entries: 70,361,020
-> > Idle state 2 entries: 71219
-> > Idle state 3 entries: 27,249,975
+>     commit 9bc95570175a7fbca29d86d22c54bbf399f4ad5a
+>     Author:     Rob Clark <robdclark@chromium.org>
+>     AuthorDate: Mon Jul 26 07:46:50 2021 -0700
+>     Commit:     Rob Clark <robdclark@chromium.org>
+>     CommitDate: Tue Jul 27 17:54:36 2021 -0700
 >
-> Addendum: So far the workflow used for this
-> thread has been event based. If I switch to
-> a timer based workflow, everything works as
-> expected for both kernels, 5.14-rc3 unmodified
-> and modified with the patch from herein.
+>         drm/msm: Devfreq tuning
+>
+> which gives the freq a bit of a nudge if the GPU has been idle for
+> longer than a certain threshold.
+>
+> But the other part is that if the GPU has been idle for more than 66ms
+> (typical autosuspend delay for adreno) it will suspend.  For modern
+> adreno's it takes ~2ms to "boot up" the GPU from suspend.  Which is
+> something you want to take out of the submit/execbuf path if you are
+> trying to reduce input-to-pageflip latency.
+>
+> We have a downstream patch that boosts the CPUs on input events (with
+> a cooldown period to prevent spacebar-heater) and I have been thinking
+> of something along those lines to trigger resuming the GPU.. it is
+> straightforward enough for touch based devices, but gets more
+> complicated with keyboard input.  In particular, some keys you want to
+> trigger boost on key-release.  Ie. modifier keys (ctrl/shift/alt/etc..
+> the "search" key on chromebooks, etc) you want to boost on
+> key-release, not on key-press because unless you type *really* fast
+> you'll be in the cooldown period when the key-release event happens.
+> Unfortunately the kernel doesn't really know this "policy" sort of
+> information about which keys should boost on press vs release.  So I
+> think the long-term/upstream solution is to do input-boost in
+> userspace.. sysfs already has all the knobs that a userspace
+> input-boost daemon would need to twiddle, so no real need for this to
+> be in the kernel.  I guess the only drawback is the sysfs knobs are a
+> bit less standardized on the "desktop GPUs" which don't use devfreq.
 
-Yes, the affected case is when the governor selects states that are
-shallower than indicated by the time till the next timer.
+I think we could do a standard interface for this, either on the drm
+owner/master or somewhere in sysfs. Essentially "I expect to use the
+gpu for the very next frame, get it going". Across all hw there's a
+lot of things we can do. I think abuse is pretty easy to prevent with
+a cooldown or similar.
+-Daniel
+
+>
+> BR,
+> -R
+>
+> > -Daniel
+> >
+> > >
+> > > BR,
+> > > -R
+> > >
+> > > > >> Thinking more about it we could probably kill the spinlock point=
+er and
+> > > > >> make the flags 32bit if we absolutely need that here.
+> > > > > If we had a 'struct dma_fence_context' we could push the spinlock=
+, ops
+> > > > > pointer, and u64 context into that and replace with a single
+> > > > > dma_fence_context ptr, fwiw
+> > > >
+> > > > That won't work. We have a lot of use cases where you can't allocat=
+e
+> > > > memory, but must allocate a context.
+> > > >
+> > > > Christian.
+> > > >
+> > > > >
+> > > > > BR,
+> > > > > -R
+> > > > >
+> > > > >> But I still don't see the need for that, especially since most d=
+rivers
+> > > > >> probably won't implement it.
+> > > > >>
+> > > > >> Regards,
+> > > > >> Christian.
+> > > > >>
+> > > > >>> Regards,
+> > > > >>> Christian.
+> > > > >>>
+> > > > >>>> BR,
+> > > > >>>> -R
+> > > > >>>>
+> > > > >>>>> Regards,
+> > > > >>>>> Christian.
+> > > > >>>>>
+> > > > >>>>>>         u64 context;
+> > > > >>>>>>         u64 seqno;
+> > > > >>>>>>         unsigned long flags;
+> > > > >>>>>> @@ -99,6 +100,7 @@ enum dma_fence_flag_bits {
+> > > > >>>>>>         DMA_FENCE_FLAG_SIGNALED_BIT,
+> > > > >>>>>>         DMA_FENCE_FLAG_TIMESTAMP_BIT,
+> > > > >>>>>>         DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
+> > > > >>>>>> +     DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+> > > > >>>>>>         DMA_FENCE_FLAG_USER_BITS, /* must always be last mem=
+ber */
+> > > > >>>>>>     };
+> > > > >>>>>>
+> > > > >>>>>> @@ -261,6 +263,19 @@ struct dma_fence_ops {
+> > > > >>>>>>          */
+> > > > >>>>>>         void (*timeline_value_str)(struct dma_fence *fence,
+> > > > >>>>>>                                    char *str, int size);
+> > > > >>>>>> +
+> > > > >>>>>> +     /**
+> > > > >>>>>> +      * @set_deadline:
+> > > > >>>>>> +      *
+> > > > >>>>>> +      * Callback to allow a fence waiter to inform the fenc=
+e
+> > > > >>>>>> signaler of an
+> > > > >>>>>> +      * upcoming deadline, such as vblank, by which point t=
+he
+> > > > >>>>>> waiter would
+> > > > >>>>>> +      * prefer the fence to be signaled by.  This is intend=
+ed to
+> > > > >>>>>> give feedback
+> > > > >>>>>> +      * to the fence signaler to aid in power management
+> > > > >>>>>> decisions, such as
+> > > > >>>>>> +      * boosting GPU frequency.
+> > > > >>>>>> +      *
+> > > > >>>>>> +      * This callback is optional.
+> > > > >>>>>> +      */
+> > > > >>>>>> +     void (*set_deadline)(struct dma_fence *fence, ktime_t =
+deadline);
+> > > > >>>>>>     };
+> > > > >>>>>>
+> > > > >>>>>>     void dma_fence_init(struct dma_fence *fence, const struc=
+t
+> > > > >>>>>> dma_fence_ops *ops,
+> > > > >>>>>> @@ -586,6 +601,8 @@ static inline signed long dma_fence_wait=
+(struct
+> > > > >>>>>> dma_fence *fence, bool intr)
+> > > > >>>>>>         return ret < 0 ? ret : 0;
+> > > > >>>>>>     }
+> > > > >>>>>>
+> > > > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_=
+t
+> > > > >>>>>> deadline);
+> > > > >>>>>> +
+> > > > >>>>>>     struct dma_fence *dma_fence_get_stub(void);
+> > > > >>>>>>     struct dma_fence *dma_fence_allocate_private_stub(void);
+> > > > >>>>>>     u64 dma_fence_context_alloc(unsigned num);
+> > > >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
