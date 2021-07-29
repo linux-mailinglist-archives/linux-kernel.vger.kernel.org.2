@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A9D3DA9B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FC83DA9C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhG2RJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:09:50 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:57618 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229791AbhG2RJp (ORCPT
+        id S232536AbhG2RKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231741AbhG2RJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:09:45 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16T6K8lu018919;
-        Thu, 29 Jul 2021 12:09:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Yr+rALEqZLCX1Alk11rdAicsk1IoORZLMBQqoCy1fTI=;
- b=GnrfXQC3Dq7jZKOp5/RExJJkG5MgvJlsD6BcEYsGPDe8hWXcsb1kB6pUVbqrpF5yOX1a
- hSLozMkApylALcWs0azxLRlse8P82l7dAPgiyGpRZI3HQhveBghOC3D8blIWPbHE5eRV
- r+rR1ATqcXCJiofB7d6IYLLsCRq9rzNSdO9dtNEyuclAU1U3YnN7AHWMJl8egb6jSJmm
- AXV2c10vSioFAiyUWKBKZtK4hbCRsQXcvjaoBH97xdf06iFotuh55e5lYDghhFn+OHOk
- D1ggGokjKC+2IbkMteYFhQ3jPMTxRtKwKLtweATObPwiUn4ONv/xZsFVoEoPRmdUvfL3 OA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3a31m2t69n-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 29 Jul 2021 12:09:36 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 29 Jul
- 2021 18:09:35 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Thu, 29 Jul 2021 18:09:35 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.56])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0F89246E;
-        Thu, 29 Jul 2021 17:09:35 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 3/3] ASoC: cs42l42: Fix bclk calculation for mono
-Date:   Thu, 29 Jul 2021 18:09:29 +0100
-Message-ID: <20210729170929.6589-3-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210729170929.6589-1-rf@opensource.cirrus.com>
-References: <20210729170929.6589-1-rf@opensource.cirrus.com>
+        Thu, 29 Jul 2021 13:09:55 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10FFC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:09:50 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id f20-20020a9d6c140000b02904bb9756274cso6562002otq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=y620cawYnn+4V0Xna0MPjJG1IYCOfnYjGSth9ffrkPU=;
+        b=bnaU90Pbow0j2N/VSOEIDfj9td1aWUrUZz2/hhYEZSc4/Vb2/v1Btcfw8zeWRNQiIP
+         Ds6r6roWPX9w8/Vcsfsj4CIIVo3trxmUHPqybbwtR8AV19d4el3RePdiikWW63kSVb5R
+         s4roTm0cYRfS4eXlsQIFCJS1AeDfJv/hoV+hHC9G4LlxYl93SwOfsESrcu+S6WTVvqsl
+         X+4lw6V+7mTS5exMxVVdpOkLmJsnf7QMQXVVfQ7UFeZvS7ThnHahxzIq+NtE46wjSEiW
+         wHlRk8FnnpeJxoASbJC0503baUWm9FCz3FIM5fKiqN7nfSXUtghmZb2nmWEoKTDraO4b
+         B4eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=y620cawYnn+4V0Xna0MPjJG1IYCOfnYjGSth9ffrkPU=;
+        b=TptNMD/w+LWHTcrrGPTgI0Q9HuueU2RLKx7ZeAmmc3fqdjfr+IMq4qCzQA99ITaVcu
+         YDyKJNMQXBMFjOztCyLcHkxiNNFoEl5vugMVViQB2FnLZBBU3tP0z899Q3rDGII2rPJ1
+         FLoUnhyrmbgtxIc8re3k1PCKqk38cbb5L+swBDJyAAiRSbpFsCQow+mxEVbIHhCkFgpc
+         +BBLmWPBSIQKIMIxL0AwPPpVZcsAe+LOaeP1btsF3K/zKIbz981TYLDIJVMvlK86AJl/
+         fAtWs87ESHm58TeYYRS4NRmKgD5n7A0FTJOgak0iYNJf/tCQOEGn63baJx+sBsHzrNFC
+         Ac+w==
+X-Gm-Message-State: AOAM531sbHotCVXIWgtXMynipO60uXfZS4cuuzz7qwTW4H2SGsoXiw59
+        auUFh7DEV6/no5GEn/WERsQ=
+X-Google-Smtp-Source: ABdhPJx8n5eGvUzd1xw+yysVYKBGYHpoXipWudoxZFQqXVWT6KvJxAMjaFLZYL/r+Hgte5i8MDIn0g==
+X-Received: by 2002:a9d:1d7:: with SMTP id e81mr4208718ote.106.1627578590377;
+        Thu, 29 Jul 2021 10:09:50 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
+        by smtp.gmail.com with ESMTPSA id a23sm614358otv.79.2021.07.29.10.09.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 10:09:49 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+To:     gregkh@linuxfoundation.org
+Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Subject: [PATCH 6/6] staging: r8188eu: Add "fallthrough" statement to quiet compiler
+Date:   Thu, 29 Jul 2021 12:09:30 -0500
+Message-Id: <20210729170930.23171-7-Larry.Finger@lwfinger.net>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210729170930.23171-1-Larry.Finger@lwfinger.net>
+References: <20210729170930.23171-1-Larry.Finger@lwfinger.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: doPdSMftA5y97bpOXaEOBwJFQKeGuUkv
-X-Proofpoint-ORIG-GUID: doPdSMftA5y97bpOXaEOBwJFQKeGuUkv
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- clxscore=1015 mlxscore=0 adultscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107290101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An I2S frame always has a left and right channel slot even if mono
-data is being sent. So if channels==1 the actual bitclock frequency
-is 2 * snd_soc_params_to_bclk(params).
+Compiler gcc11, and possibly others, emit a warning when a fall-through
+case is found in a switch statement. Add a "fallthrough" statement to
+eliminate this warning.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2cdba9b045c7 ("ASoC: cs42l42: Use bclk from hw_params if set_sysclk was not called")
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
 ---
- sound/soc/codecs/cs42l42.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 38e243a815b1..08ca05bfbeb3 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -830,6 +830,10 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
- 	cs42l42->srate = params_rate(params);
- 	cs42l42->bclk = snd_soc_params_to_bclk(params);
- 
-+	/* I2S frame always has 2 channels even for mono audio */
-+	if (channels == 1)
-+		cs42l42->bclk *= 2;
-+
- 	switch(substream->stream) {
- 	case SNDRV_PCM_STREAM_CAPTURE:
- 		if (channels == 2) {
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+index 021044768b61..488a18133e59 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+@@ -460,7 +460,7 @@ void mgt_dispatcher(struct adapter *padapter, struct recv_frame *precv_frame)
+ 			ptable->func = &OnAuth;
+ 		else
+ 			ptable->func = &OnAuthClient;
+-		/* fall through */
++		fallthrough;
+ 	case WIFI_ASSOCREQ:
+ 	case WIFI_REASSOCREQ:
+ 		_mgt_dispatcher(padapter, ptable, precv_frame);
 -- 
-2.11.0
+2.32.0
 
