@@ -2,114 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3D13DAA1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4423DAA23
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbhG2R2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49692 "EHLO
+        id S230228AbhG2R2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhG2R2T (ORCPT
+        with ESMTP id S229864AbhG2R2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:28:19 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A45CC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:28:16 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id n28-20020a05600c3b9cb02902552e60df56so4542894wms.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:28:16 -0700 (PDT)
+        Thu, 29 Jul 2021 13:28:51 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BA4C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:28:48 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id f6so2316266ioc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:28:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/gAunwpvoCnlsGFlfZ64F2HFVRDl45rSubWvgfqVIOE=;
-        b=ZHqvLrzuRl2fPMTlCXNByHM3yJKn1mKrWxTMhYm6Lk8K21P9a6rdlcxZLzbSgwR9Fi
-         ys1+BTLngu9CLn2+yBUc93ZO4xIIUE5t+xn6GfqoIW5s4lj3XwgPRJWIG5xeaxCsFsRb
-         +rauwItGFTQS05SWTAf9k6hB0ktv6m+eqRC81Yx5aI3ZZLSCG9YJHhwjpxwEo7yCg8e/
-         2CEf5IVUvHxzoJ2AT2oR2QsWSGCy5HnLyyHfVHx5+sCCCAM4VHKQGJ4bqMDk5wmTPl2P
-         3YzoRQXAenu/a6gLgIxBou+Tu9/G4tlr9mUc013kEYTrbaZ0YtLR6l4HcFU2hlB1R7HE
-         SRpw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3FtzGKwABQo72/dMQleZZDertRJDDXn2wvynHfmBqH8=;
+        b=YzPmZW5EZSwHZDq92FKwxPy69FMJ+2vDI4hnu59VWRFvOaa3lNGNbNgT+IyKNgor4g
+         YuFsHIuTnutoXdkfl9dzUEYBWK78CV7QVbLzWbxajuDW324SdTapaHIpxUc51060I2Q5
+         z1y1UhU2h7Z6oRZ1u2DHd+Uexq5xVre4jISJnvr0Qzp62Km0hIczN2r+0R9bOqN/kA0u
+         5VyhURGkV3umzSqPV8SotzGVVstK7AqlWhd90kjOMJDlPllUOSrEzCuAen/5FgQbYvbW
+         JPQOAlRZLxfxbdyO1Gw/FmNrTc0Z8tSl00ZMrDomLjUQJpUOrDAV+FLF2trTXRsYIG8K
+         rCOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/gAunwpvoCnlsGFlfZ64F2HFVRDl45rSubWvgfqVIOE=;
-        b=aCVkhkp3uxVChIe2PgyZgePkwdSRqMtUiuPgtD6S79cJV7sgfL16uFhFcMEopfwdRf
-         mdPhCz6Sq9TFvI1tqnsIL6DSuxK4icZaGk5WVsk2PyNUVaNR4piR3fitjBHSSk8VPbwz
-         69qtVcUCYcCu+EtdLaDxFWefy6Oc8+QA0aYKcl9dKTaN2cqmDcTYmLdiywKNG/hky3c0
-         CspQYT0SJ7avgt+ls5WASP0bPB/def/hs3zBasCNS3l8ChnS6FBqEK1kuvUlXVcyAcnm
-         dBpDGouhuKrnSRnMJLxUK44uSuaqTqh3HITpVy9mAuXDdH1FDg4RKftzDWoI3Df+VZmz
-         fBqg==
-X-Gm-Message-State: AOAM5321yJJXPPNu/UV6Pr7CE0TxKUQ2sPTyK/ih9uJbKT9vYwK4lo+e
-        i78ACifkbnF88nci0dfmSIflXA==
-X-Google-Smtp-Source: ABdhPJwwHTqJs6QsR/2IXseU+OjCZY+KpGegj6Ul9iDqVZLN/LFuznDeEOjjubklCOt/lVNDMdCbmw==
-X-Received: by 2002:a1c:3505:: with SMTP id c5mr15203692wma.53.1627579694637;
-        Thu, 29 Jul 2021 10:28:14 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:293a:bc89:7514:5218])
-        by smtp.gmail.com with ESMTPSA id r4sm4183717wre.84.2021.07.29.10.28.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 10:28:14 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 18:28:11 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Juri Lelli <juri.lelli@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] sched: Don't report SCHED_FLAG_SUGOV in
- sched_getattr()
-Message-ID: <YQLlHKFgRwLVW6rE@google.com>
-References: <20210727101103.2729607-1-qperret@google.com>
- <20210727101103.2729607-3-qperret@google.com>
- <YQEfY730Sjkr3w+Y@localhost.localdomain>
- <YQEl2t2RgaB9eEOZ@google.com>
- <YQFPYIqJG5PSPH1S@localhost.localdomain>
- <97c06d07-bb6a-e8b5-b230-390edd8bcfbe@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3FtzGKwABQo72/dMQleZZDertRJDDXn2wvynHfmBqH8=;
+        b=eqwk9FkC1sXXkcJwF6fpsB9A0MNZ9sMfBM9pUluWXDwuDP+B5NJZMzAzHxTzMiL//a
+         tQYxn88aostu6TfYdgz6gWy4xfBQjGiMypekDvJxIe/u28tdlM4DInX1sY+IUVdCElxN
+         7IAwEllcsfkrQCfRu7R4FqWi2F0bFtx7ZP1McTLJSQaFfzj2loVs+TVOeecyfNvia/h1
+         wP6A8dPaDzR2yuX4KPa9BDipIR/IvQQ5aEorfs83RxBk5q8Me1MqGB0si+obDeJ/eh6X
+         7hrjGrpXxWepqp2qhllRMpUbiZ9R89iGijZ/j0mYjKYqD+IaYS6HoHTLQfIiq32hP9Oy
+         jU8w==
+X-Gm-Message-State: AOAM530BIKf93dljmtLY3DdSTLhJCvysSRn9IDDN2lU88R/SeWaAN6C9
+        YHV5kfCpqdMK0h6TpsH/b+MZJC9SsfRHaNh/8lQ7NA==
+X-Google-Smtp-Source: ABdhPJwfYweaYZvTqmLoiQYvOqERUYEe8DE+aZWTwo/E3l/mFh8dV39ZuZUZ/gGUmFu6jGbTlSHuHO37HIaWI5xKqzk=
+X-Received: by 2002:a05:6638:3a12:: with SMTP id j18mr5500606jaj.75.1627579726879;
+ Thu, 29 Jul 2021 10:28:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97c06d07-bb6a-e8b5-b230-390edd8bcfbe@arm.com>
+References: <20210729092841.38175-1-ligang.bdlg@bytedance.com>
+In-Reply-To: <20210729092841.38175-1-ligang.bdlg@bytedance.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Thu, 29 Jul 2021 10:28:11 -0700
+Message-ID: <CAJHvVcjou-AvG4VJ1zeiCUg-WWsNTVA6ni2U1OGOUnjJ24x8vQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: mmap_lock: use DECLARE_EVENT_CLASS and DEFINE_EVENT_FN
+To:     Gang Li <ligang.bdlg@bytedance.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 29 Jul 2021 at 19:21:03 (+0200), Dietmar Eggemann wrote:
-> On 28/07/2021 14:36, Juri Lelli wrote:
-> > On 28/07/21 10:39, Quentin Perret wrote:
-> >> On Wednesday 28 Jul 2021 at 11:12:03 (+0200), Juri Lelli wrote:
-> 
-> [...]
-> 
-> >>> Maybe we can do this in the previous patch so that it's kept confined to
-> >>> deadline bits?
-> >>
-> >> That works too, it just felt like this could happen again if we start
-> >> using non-standard flags outside of deadline for any reason at some
-> >> point in the future. But no strong opinion really.
-> > 
-> > Yeah, I also see this point. :)
-> > 
-> > So no prob with me to keep it in core.c as you do here.
-> > 
-> > Best,
-> > Juri
-> > 
-> 
-> I would vote for not exporting SCHED_FLAG_SUGOV from __getparam_dl() in
-> patch 1/2 to underpin the idea that this flag is a hack.
-> 
-> @ -2759,7 +2759,7 @@ void __getparam_dl(struct task_struct *p, struct
-> sched_attr *attr)
->         attr->sched_deadline = dl_se->dl_deadline;
->         attr->sched_period = dl_se->dl_period;
->         attr->sched_flags &= ~SCHED_DL_FLAGS;
-> -       attr->sched_flags |= dl_se->flags;
-> +       attr->sched_flags |= dl_se->flags & ~SCHED_FLAG_SUGOV;
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Alright, that's 2 votes against 1, you win!
-I'll post a v2 shortly.
-
-Cheers,
-Quentin
+On Thu, Jul 29, 2021 at 2:28 AM Gang Li <ligang.bdlg@bytedance.com> wrote:
+>
+> By using DECLARE_EVENT_CLASS and TRACE_EVENT_FN, we can save a lot
+> of space from duplicate code.
+>
+> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+> ---
+>  include/trace/events/mmap_lock.h | 44 +++++++++-----------------------
+>  1 file changed, 12 insertions(+), 32 deletions(-)
+>
+> diff --git a/include/trace/events/mmap_lock.h b/include/trace/events/mmap_lock.h
+> index 5f980c92e3e9..b9dd66f9c226 100644
+> --- a/include/trace/events/mmap_lock.h
+> +++ b/include/trace/events/mmap_lock.h
+> @@ -13,7 +13,7 @@ struct mm_struct;
+>  extern int trace_mmap_lock_reg(void);
+>  extern void trace_mmap_lock_unreg(void);
+>
+> -TRACE_EVENT_FN(mmap_lock_start_locking,
+> +DECLARE_EVENT_CLASS(mmap_lock,
+>
+>         TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write),
+>
+> @@ -36,11 +36,19 @@ TRACE_EVENT_FN(mmap_lock_start_locking,
+>                 __entry->mm,
+>                 __get_str(memcg_path),
+>                 __entry->write ? "true" : "false"
+> -       ),
+> -
+> -       trace_mmap_lock_reg, trace_mmap_lock_unreg
+> +   )
+>  );
+>
+> +#define DEFINE_MMAP_LOCK_EVENT(name)                                    \
+> +       DEFINE_EVENT_FN(mmap_lock, name,                                \
+> +               TP_PROTO(struct mm_struct *mm, const char *memcg_path,  \
+> +                       bool write),                                    \
+> +               TP_ARGS(mm, memcg_path, write),                         \
+> +               trace_mmap_lock_reg, trace_mmap_lock_unreg)
+> +
+> +DEFINE_MMAP_LOCK_EVENT(mmap_lock_start_locking);
+> +DEFINE_MMAP_LOCK_EVENT(mmap_lock_released);
+> +
+>  TRACE_EVENT_FN(mmap_lock_acquire_returned,
+>
+>         TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write,
+> @@ -73,34 +81,6 @@ TRACE_EVENT_FN(mmap_lock_acquire_returned,
+>         trace_mmap_lock_reg, trace_mmap_lock_unreg
+>  );
+>
+> -TRACE_EVENT_FN(mmap_lock_released,
+> -
+> -       TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write),
+> -
+> -       TP_ARGS(mm, memcg_path, write),
+> -
+> -       TP_STRUCT__entry(
+> -               __field(struct mm_struct *, mm)
+> -               __string(memcg_path, memcg_path)
+> -               __field(bool, write)
+> -       ),
+> -
+> -       TP_fast_assign(
+> -               __entry->mm = mm;
+> -               __assign_str(memcg_path, memcg_path);
+> -               __entry->write = write;
+> -       ),
+> -
+> -       TP_printk(
+> -               "mm=%p memcg_path=%s write=%s",
+> -               __entry->mm,
+> -               __get_str(memcg_path),
+> -               __entry->write ? "true" : "false"
+> -       ),
+> -
+> -       trace_mmap_lock_reg, trace_mmap_lock_unreg
+> -);
+> -
+>  #endif /* _TRACE_MMAP_LOCK_H */
+>
+>  /* This part must be outside protection */
+> --
+> 2.20.1
+>
