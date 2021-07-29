@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2123DA116
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0D93DA125
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235644AbhG2Kcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:32:39 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:40933 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235309AbhG2Kch (ORCPT
+        id S235962AbhG2Kg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:36:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40160 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233273AbhG2Kg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:32:37 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0C8F45808AB;
-        Thu, 29 Jul 2021 06:32:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 29 Jul 2021 06:32:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=4
-        p33TcQrDT0su6nNnp8CfeYZh0a1YwnH+3qX4uO2KEI=; b=OHtBvYsNvP4S3/81C
-        uQeJ5TScMUoomJei1HmFbMroPPA7HmjVZ5qHybtjMH5R2xQJJYlA6be2A7kLGaWe
-        PR5LsvTVnsXvA+gZgey9rSxqsrEoLy3sFdqj1ulmlfWCKkr7FbYYDA2mf4fW1Eco
-        5D7VTvpjIOL9fSGLGbNns+1HFugVby2TeyHVxdEHijLqdX5L3s3pElMkDXP/72hh
-        is75qYrGfb3XJn8oWYgu4ztv8aN4V5582lqiXtjdM9A3271ioJG6VghDsHR3OcaB
-        WyrYMkgAj9fSwMfdiYvEqHORWaVmAU4HfM6ubDBj77VgTJi6oyKBs1LXX1AFhOzH
-        uKy0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=4p33TcQrDT0su6nNnp8CfeYZh0a1YwnH+3qX4uO2K
-        EI=; b=itDMqA4EcVciNeJfRnM99ptZB3Nr7NQk2gVFYhAaW0CC1o/2mcgvYxp7o
-        UkkO6Tgd/BGeAZb0vUock7BjgXnvbIi1Uf2vYaDNGhfxtikVizlybgCdlUS4vckW
-        aOd4oANVn+hCLzTmVRnS3NwB0SBxKJJvd8Mgb89BQ5lbwNKyNvv9T1N67GMlFq2Q
-        HeJYgVB4xJ2WemOREXF9WswK2lmvHDI5/okUUN2mSaRkkzMHIIOO9BiGQb21c9Ys
-        3TbOwc18kQtu+bOpmJcN8QdZNgj3kDFZ8PJutiIRj5rrm3ivHY8FCb8UNwU96pYV
-        wGkHiLaBf52N0GcqSjaLwdcd7xLfg==
-X-ME-Sender: <xms:v4MCYX2DTjNRxkbQcXeAo13T3ts4ic8DjrOrpBO8p7S7FKJbOIfUQw>
-    <xme:v4MCYWFmwkdlOSCSSnRZqKfCBmS7BDLO-nolzpjGLT7qZDjwTX040DvrfRy4Wie6H
-    WGJUvX3XX8Rwa0vLOA>
-X-ME-Received: <xmr:v4MCYX4VjazlhTG6a62ad0zE_cOY--q1jx2qPYBaVxCspkcZ19BAhf9E9Nt1Ud5laL42iRIZqb6nd0LGT2f9d-KW5e7c6-U_Htb5>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedugddvtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepgfejjeekjedttdethedtfeelteefffduvdevvdfhtdeiudetleejgeelfeef
-    uedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:v4MCYc3GbJLGUxfYCXOWqOLWAkAGcb2x_prAYoVQUR6XSq0liXmI6g>
-    <xmx:v4MCYaGXLFp6wLczjM-wGqeNStOoe5D8Gf2AlTQ4eRgn_yPxYlEyIg>
-    <xmx:v4MCYd_RiVwZTSl2LFjYKW6feKrhEcBF5vvsupfOJ5U9LnacTkI9xg>
-    <xmx:woMCYRcYD6mI_zYUGYXj5ILDso__6Uhyv7DcKgKC5EqsnUg2L9Bnog>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jul 2021 06:32:31 -0400 (EDT)
-Date:   Thu, 29 Jul 2021 12:32:28 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Icenowy Zheng <icenowy@aosc.io>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v7 06/19] rtc: sun6i: Add support for RTCs without
- external LOSCs
-Message-ID: <20210729103228.prdav7eobi52y3ny@gilmour>
-References: <20210615110636.23403-1-andre.przywara@arm.com>
- <20210615110636.23403-7-andre.przywara@arm.com>
- <20210616091431.6tm3zdf77p2x3upc@gilmour>
- <1e49692a2f4548ae942e170bc1ae9431a6eb512e.camel@aosc.io>
+        Thu, 29 Jul 2021 06:36:27 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 508A0223DB;
+        Thu, 29 Jul 2021 10:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627554983;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UkKnqVbw14P1zZ1afK/03fijXFZbWicFe7fyoa6bfnY=;
+        b=pwTsly5mnrizCEq06N5ukXErKPn6Gc1C4FWAemD4tE4rdrKSAD7WEsJBIsy8JMWoICKPro
+        YUD+rdsGqthszKzibpdDw9PZmLm6K7z+/nJcnH3/9RbXzkKL1yBN2iLF4qJdxbzSEE22IX
+        Yy8hsiRj4qt+y/wj0C71RSUrfiRJOCs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627554983;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UkKnqVbw14P1zZ1afK/03fijXFZbWicFe7fyoa6bfnY=;
+        b=oD2Z+sefoAAeNVxRJnEQBL4v50NCmrVZt9d8xH9i0feek4vyCIM8VXMg7aRjFLf8nzGBrz
+        j9JufWGGGCZMyACA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 36ED5A3B8C;
+        Thu, 29 Jul 2021 10:36:23 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D7134DA7AF; Thu, 29 Jul 2021 12:33:37 +0200 (CEST)
+Date:   Thu, 29 Jul 2021 12:33:37 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 47/64] btrfs: Use memset_after() to clear end of struct
+Message-ID: <20210729103337.GS5047@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-48-keescook@chromium.org>
+ <20210728094215.GX5047@twin.jikos.cz>
+ <202107281455.2A0753F5@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1e49692a2f4548ae942e170bc1ae9431a6eb512e.camel@aosc.io>
+In-Reply-To: <202107281455.2A0753F5@keescook>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 04:04:10PM +0800, Icenowy Zheng wrote:
-> =E5=9C=A8 2021-06-16=E6=98=9F=E6=9C=9F=E4=B8=89=E7=9A=84 11:14 +0200=EF=
-=BC=8CMaxime Ripard=E5=86=99=E9=81=93=EF=BC=9A
-> > Hi,
-> >=20
-> > On Tue, Jun 15, 2021 at 12:06:23PM +0100, Andre Przywara wrote:
-> > > Some newer Allwinner RTCs (for instance the one in the H616 SoC)
-> > > lack
-> > > a pin for an external 32768 Hz oscillator. As a consequence, this
-> > > LOSC
-> > > can't be selected as the RTC clock source, and we must rely on the
-> > > internal RC oscillator.
-> > > To allow additions of clocks to the RTC node, add a feature bit to
-> > > ignore
-> > > any provided clocks for now (the current code would think this is
-> > > the
-> > > external LOSC). Later DTs and code can then for instance add the
-> > > PLL
-> > > based clock input, and older kernel won't get confused.
-> > >=20
-> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> >=20
-> > Honestly, I don't really know if it's worth it at this point.
-> >=20
-> > If we sums this up:
-> >=20
-> > =C2=A0- The RTC has 2 features that we use, mostly centered around 2
-> > =C2=A0=C2=A0 registers set plus a global one
-> >=20
-> > =C2=A0- Those 2 features are programmed in a completely different way
-> >=20
-> > =C2=A0- Even the common part is different, given the discussion around =
-the
-> > =C2=A0=C2=A0 clocks that we have.
-> >=20
-> > What is there to share in that driver aside from the probe, and maybe
-> > the interrupt handling? Instead of complicating this further with
-> > more
-> > special case that you were (rightfully) complaining about, shouldn't
-> > we
-> > just acknowledge the fact that it's a completely separate design and
-> > should be treated as such, with a completely separate driver?
->=20
-> I think our problem is just that we're having a single driver for both
-> functionalities (clock manager and RTC).
->=20
-> Personally I don't think we should have seperated driver for clock
-> managers, although I am fine with seperated RTC driver for linear days.
+On Wed, Jul 28, 2021 at 02:56:31PM -0700, Kees Cook wrote:
+> On Wed, Jul 28, 2021 at 11:42:15AM +0200, David Sterba wrote:
+> > On Tue, Jul 27, 2021 at 01:58:38PM -0700, Kees Cook wrote:
+> > > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > > field bounds checking for memset(), avoid intentionally writing across
+> > > neighboring fields.
+> > > 
+> > > Use memset_after() so memset() doesn't get confused about writing
+> > > beyond the destination member that is intended to be the starting point
+> > > of zeroing through the end of the struct.
+> > > 
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  fs/btrfs/root-tree.c | 5 +----
+> > >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > > 
+> > > diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+> > > index 702dc5441f03..ec9e78f65fca 100644
+> > > --- a/fs/btrfs/root-tree.c
+> > > +++ b/fs/btrfs/root-tree.c
+> > > @@ -39,10 +39,7 @@ static void btrfs_read_root_item(struct extent_buffer *eb, int slot,
+> > >  		need_reset = 1;
+> > >  	}
+> > >  	if (need_reset) {
+> > > -		memset(&item->generation_v2, 0,
+> > > -			sizeof(*item) - offsetof(struct btrfs_root_item,
+> > > -					generation_v2));
+> > > -
+> > 
+> > Please add
+> > 		/* Clear all members from generation_v2 onwards */
+> > 
+> > > +		memset_after(item, 0, level);
+> 
+> Perhaps there should be another helper memset_starting()? That would
+> make these cases a bit more self-documenting.
 
-Why do you think it's a bad idea to have the RTC and clocks in the same
-driver?
+That would be better, yes.
 
-Maxime
+> +		memset_starting(item, 0, generation_v2);
+
+memset_from?
