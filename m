@@ -2,200 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FD43DA072
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFAD3DA06C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236289AbhG2JkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:40:02 -0400
-Received: from mail-eopbgr130047.outbound.protection.outlook.com ([40.107.13.47]:48358
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236209AbhG2Jj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:39:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MT1k8oUerJF0SPPip8RDZd0XKy3t8qsEZF0v60Tj3433WQjJvFlYFA37tFmnomwyqjwFvUyKx/2qK9TRwYZiEsLxumb95TOBF0Bs+iMRAaT9DclgCEuvLIyZYT9Zk5UBayJC40VukBHfJqwFCddZU+QhAUMGw/ux34MWC7DSwcakWcZBzsp9p8cQSnVz7Ks4uYTC4HkZkl5O1+WQOh8jqWZ/nTp6Ji1Zqpelkm1bseGtkcUfBsBvRDxjaKSLnqhdtBrbotQmkL8O5NxCfcWa0kFv5FaAjQXmGRF011VRrNavLL/II6WtA8vKVXZZVJiBCBNVLt4ypus3zKUGKkKeYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0hSJS0PEz0nkwiwguedeCZqn0gRUmyNjY/+ynYYIiwc=;
- b=IXmZiph6UCLnzW9cND2+/DVKZ8ullDK8I0VH4NciH14cWj0Ky6VjHR8HdgV9SnmxSDpneI+8sD0DP7jc12wOp0fDp8p/PmZSenX36GzSJZkRfr5OZVZwDSrDL2Yts52IPFHxakKoxakP2cH3GOc3dxLh+c6QX0C8Dzvt5keHbYGDcFDWVMSSXKBW9kpra9gM81zckmOGnkMwvgYUZkI6E0JNKeLuxfFdPgASMJUciZx3jxqiIuc1NBtpeDGrw35eCaviYmC1pIaa8VTZXO4Hdm21t/9xt3PPIF9n/48sMNOxPt4xauIEmqC2UhrzgEpIDvbCNXCCOJdBlkQnFeEXVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0hSJS0PEz0nkwiwguedeCZqn0gRUmyNjY/+ynYYIiwc=;
- b=IhavrHdOrq4+KAdqmQFt/UfgVbbvDqoZiWzhOtUnAhqDzrGslyAewOrc0Y8dh9uVbGM1kc9psS8+M2qsx/8pftkgUBwuWMeG9jMd4/30IYqsNnw0XE+nbSlKU65Dk+lZMfeq7SCwcdVECx72uKdOrFFI73xOIif+WfN+0uNWjvM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=wolfvision.net;
-Received: from DBBPR08MB4523.eurprd08.prod.outlook.com (2603:10a6:10:c8::19)
- by DB7PR08MB3548.eurprd08.prod.outlook.com (2603:10a6:10:4d::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.31; Thu, 29 Jul
- 2021 09:39:52 +0000
-Received: from DBBPR08MB4523.eurprd08.prod.outlook.com
- ([fe80::ade3:93e2:735c:c10b]) by DBBPR08MB4523.eurprd08.prod.outlook.com
- ([fe80::ade3:93e2:735c:c10b%7]) with mapi id 15.20.4373.019; Thu, 29 Jul 2021
- 09:39:52 +0000
-From:   Michael Riesch <michael.riesch@wolfvision.net>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Liang Chen <cl@rock-chips.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Simon Xue <xxm@rock-chips.com>
-Subject: [PATCH v2 2/2] arm64: dts: rockchip: rk3568-evb1-v10: add ethernet support
-Date:   Thu, 29 Jul 2021 11:39:13 +0200
-Message-Id: <20210729093913.8917-3-michael.riesch@wolfvision.net>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210729093913.8917-1-michael.riesch@wolfvision.net>
-References: <20210729093913.8917-1-michael.riesch@wolfvision.net>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM5PR0701CA0018.eurprd07.prod.outlook.com
- (2603:10a6:203:51::28) To DBBPR08MB4523.eurprd08.prod.outlook.com
- (2603:10a6:10:c8::19)
+        id S236151AbhG2Jjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:39:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236015AbhG2Jjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 05:39:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D916F61090;
+        Thu, 29 Jul 2021 09:39:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627551569;
+        bh=BokEWfcIVN4Fe6xU8WP7wsbXuMINaEDXKElpZ5y2kYo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XdWqUVMZGvlTEc+uV3W15YrGNF1gjnjwE+t0HWZaq2lWGG4Ls5eDHydp7ygalBl/7
+         rTHE9sr3no68tK+ybfAC2JXpeVjrujPvaVROExjkbxFoLuqk85jGdWwFU2BYkkayWe
+         vL8NydD0SMS3x4FOjrkxsQJ945Axdhvy3QBVFUedBRkwLwkNEA+fpRwY1zpAekfP1L
+         +VUcqTLqw7PhjmiUoWjy+ZGDv9eKKH+/yvvTNj4JP3y1RV+stebgDPSxl43Xs0X/PQ
+         9TtWq4hMHQjSiJk0wJTXXuCDe4rv+Kggn4pFVgqGstc0StukcJIktmiOlfDDZCS1jr
+         Tr9EK/xYct/Jg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, Ariel Elior <aelior@marvell.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Wenpeng Liang <liangwenpeng@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v3 3/3] RDMA: Use the sg_table directly and remove the opencoded version from umem
+Date:   Thu, 29 Jul 2021 12:39:13 +0300
+Message-Id: <313cf82ed9997ab5de954f9133f33124caf0e662.1627551226.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1627551226.git.leonro@nvidia.com>
+References: <cover.1627551226.git.leonro@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carlos.wolfvision-at.intra (91.118.163.37) by AM5PR0701CA0018.eurprd07.prod.outlook.com (2603:10a6:203:51::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.6 via Frontend Transport; Thu, 29 Jul 2021 09:39:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3bfdd051-8789-421c-8c7b-08d95274d085
-X-MS-TrafficTypeDiagnostic: DB7PR08MB3548:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR08MB3548C021E9FB7479579C3231F2EB9@DB7PR08MB3548.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e1X7NtbXT3CXxAlZIRwDCHFKyBRrwGsesesMwlNyQTVRLVEHI34Ok3k4mcVC4W+/5BpV1A/YgiGJ01eeWmiPueYJmBR/DVZom5BAN137g93oboXxIxow9uoxzbt5P2YbAl7YN36uCWmeqZiDiMF/IE4rV/70DjHWq2QrJ03mGgcn8ZBybrwoHShpFLjzjgWMDs2Bxt9pPLzNhm5rzW/k8ImEqRUlVKzrIqZ5gjnAXQ3+dY+/bHiQGQpSf3G5SU4siipGCFnItVngOVFHnRWjIxcVNwvtexod8DHXia2DEsO0CmR6uCPLe2nGCRhteFDdd8jqXd5zw+DX6NIEf8MRxebKYRO5yyuePOcsbBxpy7rvq395X0OgaEhratfzqW2UabfJXqwboqfpe7HF/dWTjypz3MQjHm1G2Fp9qpUrmxc8iTHCf2306pJuSaV2GHHbMX7J76BxOTgSbHjfzj2AqEpRCsN+23wd9HFith/NveInXtpPARkJ9/keZZp3mHcrvQGpVhfpQSgBWRovadpQnayK5QvUaQqb8jk8nefPiADwZsTtmWXXyD3Uzym5rxIXlFxvOEAdZZOvSy3G8mmEAgHXdVMG7K+JoaiupukVCGxlcsuXrCE9cltdZq7cftc1L0f9fDV2x0ZY3AXcATS7HZtNBYp4q1gds6GXXRQJKnbD69xk4mtOaaFHuwCz+pTlRbKzuASCrWh7e9bWR6o0uQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR08MB4523.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39840400004)(366004)(346002)(136003)(376002)(8676002)(52116002)(5660300002)(26005)(2616005)(44832011)(316002)(6506007)(54906003)(66946007)(6666004)(66476007)(2906002)(186003)(478600001)(36756003)(6486002)(38350700002)(1076003)(38100700002)(83380400001)(8936002)(956004)(86362001)(66556008)(6512007)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gPO/BitUk+/Zdq5nhTjf6pWmSHd9tWd70ZB8kuIEASZM8Imp8ngatE6Q5q4K?=
- =?us-ascii?Q?MznILaK0aknJvd3GqUgWgjsz0mJ6z39h4H/dzr5zvKJB1ZNJSNgbbgifyw/E?=
- =?us-ascii?Q?BdtGkAeN7h5gJsHidWHlcPIgBOZjiWccGKahHYLM6AoAGdPA2Uv05kBjA68W?=
- =?us-ascii?Q?7jdo87XSxutOxX+1/fmZWC5RvqD3JSvtiGb81oMYyjemtJ+uOEKTwcboCNuB?=
- =?us-ascii?Q?v2v0FFi34+r9og0NuN/c8BNOTB5oyog/LUfuBexXpcuciCF/E55NBhZ6jCWu?=
- =?us-ascii?Q?gyjRJQP5q6qX9RVivYBLz68JjKLBtUPsz2kp6ztipQqYXFegM3izKqosIOlk?=
- =?us-ascii?Q?LqkbBYXccmBGhxcG6SUPmNSEc0SSbgYxFSwXADRu3QC0+/7ze3w10Zbj5gXr?=
- =?us-ascii?Q?wy1YrWnw9YFJRf3A4fGGWVCda84ZeG15eIbLbrvixF3c3xKmXWOz30ZUE4E0?=
- =?us-ascii?Q?rhLkGigBJTeyOBkbKjx4GBXMRxW5EOe1p+7L43izpUSHobdpp4L7+Vu3ZfEj?=
- =?us-ascii?Q?zVPIQRx307/TBsMjGOR8on2ZQx/U8dfBOlgRgc8unYkw0trMmcS9l/mWkigq?=
- =?us-ascii?Q?A3rxE4gL/vZrgWHc5K5JKFkb9bwujIFv3E9GNORxYyD0wrPuPkrOrrzPg3qa?=
- =?us-ascii?Q?cu1MwzbO6Y0nxdkQIekpolSlnxNclaz5DIy2R+Cn0Em63w90s5/ofY6HbMI+?=
- =?us-ascii?Q?iKpfZaXVL8gvZCw+B1yzO/X8I7JMTD5FrwuhETP4625BbWxsbHkjtWyY07VJ?=
- =?us-ascii?Q?jIvH8ixA7+xcFXzVI6ImdX9AVmjz/SCc2PvBohD/Th7sjmee+paKNr1j6T1Y?=
- =?us-ascii?Q?YbU2Pe7A7j+yP77lMN/QNKH22IXE5wcDtDbnTa7jEmr5jkMfEft836sXO3wX?=
- =?us-ascii?Q?F/wZ7Iu2PhvPdAyxdaV6i/siQtCuNp1iT5ZJkael0MUC/1vPPV9QgdvOVijm?=
- =?us-ascii?Q?M/CtP8QVSnJwxP1fPJL2nqOQZLXogxUDjknMU5AMiKI85Jbij6BGYXDFu6Xp?=
- =?us-ascii?Q?EUxrMK2JAn+7b/Tx3zcND8wmvcvb69dRH7O4V4NuqzF+Vypop1F2YVvGZpg3?=
- =?us-ascii?Q?gAsI7sZfbayhUdro0Myq9OcI6VKux+tgbtTecDqSuIYp+ln6pwPOA1YpeRoy?=
- =?us-ascii?Q?//ADBQXqDr1DgPYD6grSdX7sSIZWUP04d0tQZK+qhqIRHuMQoKkKUKnGFTli?=
- =?us-ascii?Q?AUXlYh/P5WJNi8qGYm3+lNGlW05Tn5h+ztSYu8yxjSWiO1QC0DjfSxQGDbo+?=
- =?us-ascii?Q?arFIAvwr1EU2ka8+VkdJ8Zfs6aIuMQIPgAojV3GgJgtXiyMwPqdAN9uKvSE9?=
- =?us-ascii?Q?cYxxHJhscquLRowijFBHb1i7?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bfdd051-8789-421c-8c7b-08d95274d085
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR08MB4523.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 09:39:51.8992
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7pBGUMxMDLfQEFAmwsfL7u/CsPWQnxBwWcUr3/e5R4zMps928OTzcKzl51cp6xRUP87kcPJ96LHAPXoI8HMEZ1VQEUZrUmj18pm46itDYh0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR08MB3548
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+From: Maor Gottlieb <maorg@nvidia.com>
+
+This allows using the normal sg_table APIs and makes all the code
+cleaner. Remove sgt, nents and nmapd from ib_umem.
+
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
-v2:
-- sort properties alphabetically
-- use phy-mode "rgmii-id" without delay properties
-- rename phy nodes to "ethernet-phy"
+ drivers/infiniband/core/umem.c          | 32 +++++++++----------------
+ drivers/infiniband/core/umem_dmabuf.c   |  5 ++--
+ drivers/infiniband/hw/hns/hns_roce_db.c |  4 ++--
+ drivers/infiniband/hw/irdma/verbs.c     |  2 +-
+ drivers/infiniband/hw/mlx4/doorbell.c   |  3 ++-
+ drivers/infiniband/hw/mlx4/mr.c         |  4 ++--
+ drivers/infiniband/hw/mlx5/doorbell.c   |  3 ++-
+ drivers/infiniband/hw/mlx5/mr.c         |  3 ++-
+ drivers/infiniband/hw/qedr/verbs.c      |  2 +-
+ drivers/infiniband/sw/rdmavt/mr.c       |  2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c      |  2 +-
+ include/rdma/ib_umem.h                  | 10 ++++----
+ include/rdma/ib_verbs.h                 | 28 ++++++++++++++++++++++
+ 13 files changed, 59 insertions(+), 41 deletions(-)
 
- .../boot/dts/rockchip/rk3568-evb1-v10.dts     | 57 +++++++++++++++++++
- 1 file changed, 57 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-index 69786557093d..65e536c78d2e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-@@ -13,6 +13,11 @@
- 	model = "Rockchip RK3568 EVB1 DDR4 V10 Board";
- 	compatible = "rockchip,rk3568-evb1-v10", "rockchip,rk3568";
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 42481e7a72e8..86d479772fbc 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -51,11 +51,11 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
+ 	struct scatterlist *sg;
+ 	unsigned int i;
  
-+	aliases {
-+		ethernet0 = &gmac0;
-+		ethernet1 = &gmac1;
-+	};
-+
- 	chosen: chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-@@ -67,6 +72,58 @@
- 	};
+-	if (umem->nmap > 0)
+-		ib_dma_unmap_sg(dev, umem->sg_head.sgl, umem->sg_nents,
+-				DMA_BIDIRECTIONAL);
++	if (dirty)
++		ib_dma_unmap_sgtable_attrs(dev, &umem->sgt_append.sgt,
++					   DMA_BIDIRECTIONAL, 0);
+ 
+-	for_each_sg(umem->sg_head.sgl, sg, umem->sg_nents, i)
++	for_each_sgtable_sg(&umem->sgt_append.sgt, sg, i)
+ 		unpin_user_page_range_dirty_lock(sg_page(sg),
+ 			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
+ 
+@@ -111,7 +111,7 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
+ 	/* offset into first SGL */
+ 	pgoff = umem->address & ~PAGE_MASK;
+ 
+-	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
++	for_each_sgtable_dma_sg(&umem->sgt_append.sgt, sg, i) {
+ 		/* Walk SGL and reduce max page size if VA/PA bits differ
+ 		 * for any address.
+ 		 */
+@@ -121,7 +121,7 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
+ 		 * the maximum possible page size as the low bits of the iova
+ 		 * must be zero when starting the next chunk.
+ 		 */
+-		if (i != (umem->nmap - 1))
++		if (i != (umem->sgt_append.sgt.nents - 1))
+ 			mask |= va;
+ 		pgoff = 0;
+ 	}
+@@ -231,30 +231,19 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 			&umem->sgt_append, page_list, pinned, 0,
+ 			pinned << PAGE_SHIFT, ib_dma_max_seg_size(device),
+ 			npages, GFP_KERNEL);
+-		umem->sg_nents = umem->sgt_append.sgt.nents;
+ 		if (ret) {
+-			memcpy(&umem->sg_head.sgl, &umem->sgt_append.sgt,
+-			       sizeof(umem->sgt_append.sgt));
+ 			unpin_user_pages_dirty_lock(page_list, pinned, 0);
+ 			goto umem_release;
+ 		}
+ 	}
+ 
+-	memcpy(&umem->sg_head.sgl, &umem->sgt_append.sgt,
+-	       sizeof(umem->sgt_append.sgt));
+ 	if (access & IB_ACCESS_RELAXED_ORDERING)
+ 		dma_attr |= DMA_ATTR_WEAK_ORDERING;
+ 
+-	umem->nmap =
+-		ib_dma_map_sg_attrs(device, umem->sg_head.sgl, umem->sg_nents,
+-				    DMA_BIDIRECTIONAL, dma_attr);
+-
+-	if (!umem->nmap) {
+-		ret = -ENOMEM;
++	ret = ib_dma_map_sgtable_attrs(device, &umem->sgt_append.sgt,
++				       DMA_BIDIRECTIONAL, dma_attr);
++	if (ret)
+ 		goto umem_release;
+-	}
+-
+-	ret = 0;
+ 	goto out;
+ 
+ umem_release:
+@@ -314,7 +303,8 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = sg_pcopy_to_buffer(umem->sg_head.sgl, umem->sg_nents, dst, length,
++	ret = sg_pcopy_to_buffer(umem->sgt_append.sgt.sgl,
++				 umem->sgt_append.sgt.orig_nents, dst, length,
+ 				 offset + ib_umem_offset(umem));
+ 
+ 	if (ret < 0)
+diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+index c6e875619fac..e824baf4640d 100644
+--- a/drivers/infiniband/core/umem_dmabuf.c
++++ b/drivers/infiniband/core/umem_dmabuf.c
+@@ -55,9 +55,8 @@ int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
+ 		cur += sg_dma_len(sg);
+ 	}
+ 
+-	umem_dmabuf->umem.sg_head.sgl = umem_dmabuf->first_sg;
+-	umem_dmabuf->umem.sg_head.nents = nmap;
+-	umem_dmabuf->umem.nmap = nmap;
++	umem_dmabuf->umem.sgt_append.sgt.sgl = umem_dmabuf->first_sg;
++	umem_dmabuf->umem.sgt_append.sgt.nents = nmap;
+ 	umem_dmabuf->sgt = sgt;
+ 
+ wait_fence:
+diff --git a/drivers/infiniband/hw/hns/hns_roce_db.c b/drivers/infiniband/hw/hns/hns_roce_db.c
+index d40ea3d87260..751470c7a2ce 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_db.c
++++ b/drivers/infiniband/hw/hns/hns_roce_db.c
+@@ -42,8 +42,8 @@ int hns_roce_db_map_user(struct hns_roce_ucontext *context, unsigned long virt,
+ 
+ found:
+ 	offset = virt - page_addr;
+-	db->dma = sg_dma_address(page->umem->sg_head.sgl) + offset;
+-	db->virt_addr = sg_virt(page->umem->sg_head.sgl) + offset;
++	db->dma = sg_dma_address(page->umem->sgt_append.sgt.sgl) + offset;
++	db->virt_addr = sg_virt(page->umem->sgt_append.sgt.sgl) + offset;
+ 	db->u.user_page = page;
+ 	refcount_inc(&page->refcount);
+ 
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 9712f6902ba8..dbb59a828307 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -2237,7 +2237,7 @@ static void irdma_copy_user_pgaddrs(struct irdma_mr *iwmr, u64 *pbl,
+ 	pinfo = (level == PBLE_LEVEL_1) ? NULL : palloc->level2.leaf;
+ 
+ 	if (iwmr->type == IRDMA_MEMREG_TYPE_QP)
+-		iwpbl->qp_mr.sq_page = sg_page(region->sg_head.sgl);
++		iwpbl->qp_mr.sq_page = sg_page(region->sgt_append.sgt.sgl);
+ 
+ 	rdma_umem_for_each_dma_block(region, &biter, iwmr->page_size) {
+ 		*pbl = rdma_block_iter_dma_address(&biter);
+diff --git a/drivers/infiniband/hw/mlx4/doorbell.c b/drivers/infiniband/hw/mlx4/doorbell.c
+index d41f03ccb0e1..9bbd695a9fd5 100644
+--- a/drivers/infiniband/hw/mlx4/doorbell.c
++++ b/drivers/infiniband/hw/mlx4/doorbell.c
+@@ -75,7 +75,8 @@ int mlx4_ib_db_map_user(struct ib_udata *udata, unsigned long virt,
+ 	list_add(&page->list, &context->db_page_list);
+ 
+ found:
+-	db->dma = sg_dma_address(page->umem->sg_head.sgl) + (virt & ~PAGE_MASK);
++	db->dma = sg_dma_address(page->umem->sgt_append.sgt.sgl) +
++		  (virt & ~PAGE_MASK);
+ 	db->u.user_page = page;
+ 	++page->refcnt;
+ 
+diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
+index 50becc0e4b62..04a67b481608 100644
+--- a/drivers/infiniband/hw/mlx4/mr.c
++++ b/drivers/infiniband/hw/mlx4/mr.c
+@@ -200,7 +200,7 @@ int mlx4_ib_umem_write_mtt(struct mlx4_ib_dev *dev, struct mlx4_mtt *mtt,
+ 	mtt_shift = mtt->page_shift;
+ 	mtt_size = 1ULL << mtt_shift;
+ 
+-	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
++	for_each_sgtable_dma_sg(&umem->sgt_append.sgt, sg, i) {
+ 		if (cur_start_addr + len == sg_dma_address(sg)) {
+ 			/* still the same block */
+ 			len += sg_dma_len(sg);
+@@ -273,7 +273,7 @@ int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va,
+ 
+ 	*num_of_mtts = ib_umem_num_dma_blocks(umem, PAGE_SIZE);
+ 
+-	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
++	for_each_sgtable_dma_sg(&umem->sgt_append.sgt, sg, i) {
+ 		/*
+ 		 * Initialization - save the first chunk start as the
+ 		 * current_block_start - block means contiguous pages.
+diff --git a/drivers/infiniband/hw/mlx5/doorbell.c b/drivers/infiniband/hw/mlx5/doorbell.c
+index 9ca2e61807ec..6398e2f48579 100644
+--- a/drivers/infiniband/hw/mlx5/doorbell.c
++++ b/drivers/infiniband/hw/mlx5/doorbell.c
+@@ -78,7 +78,8 @@ int mlx5_ib_db_map_user(struct mlx5_ib_ucontext *context, unsigned long virt,
+ 	list_add(&page->list, &context->db_page_list);
+ 
+ found:
+-	db->dma = sg_dma_address(page->umem->sg_head.sgl) + (virt & ~PAGE_MASK);
++	db->dma = sg_dma_address(page->umem->sgt_append.sgt.sgl) +
++		  (virt & ~PAGE_MASK);
+ 	db->u.user_page = page;
+ 	++page->refcnt;
+ 
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 3263851ea574..d1eb49dbca15 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1226,7 +1226,8 @@ int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
+ 	orig_sg_length = sg.length;
+ 
+ 	cur_mtt = mtt;
+-	rdma_for_each_block (mr->umem->sg_head.sgl, &biter, mr->umem->nmap,
++	rdma_for_each_block (mr->umem->sgt_append.sgt.sgl, &biter,
++			     mr->umem->sgt_append.sgt.nents,
+ 			     BIT(mr->page_shift)) {
+ 		if (cur_mtt == (void *)mtt + sg.length) {
+ 			dma_sync_single_for_device(ddev, sg.addr, sg.length,
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index fdc47ef7d861..f23d324bd5e1 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -1481,7 +1481,7 @@ static int qedr_init_srq_user_params(struct ib_udata *udata,
+ 		return PTR_ERR(srq->prod_umem);
+ 	}
+ 
+-	sg = srq->prod_umem->sg_head.sgl;
++	sg = srq->prod_umem->sgt_append.sgt.sgl;
+ 	srq->hw_srq.phy_prod_pair_addr = sg_dma_address(sg);
+ 
+ 	return 0;
+diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
+index 34b7af6ab9c2..dfb99a56d952 100644
+--- a/drivers/infiniband/sw/rdmavt/mr.c
++++ b/drivers/infiniband/sw/rdmavt/mr.c
+@@ -410,7 +410,7 @@ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	mr->mr.page_shift = PAGE_SHIFT;
+ 	m = 0;
+ 	n = 0;
+-	for_each_sg_page (umem->sg_head.sgl, &sg_iter, umem->nmap, 0) {
++	for_each_sgtable_page (&umem->sgt_append.sgt, &sg_iter, 0) {
+ 		void *vaddr;
+ 
+ 		vaddr = page_address(sg_page_iter_page(&sg_iter));
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index 1ee5bd8291e5..16de1bc6db6e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -141,7 +141,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 	if (length > 0) {
+ 		buf = map[0]->buf;
+ 
+-		for_each_sg_page(umem->sg_head.sgl, &sg_iter, umem->nmap, 0) {
++		for_each_sgtable_page (&umem->sgt_append.sgt, &sg_iter, 0) {
+ 			if (num_buf >= RXE_BUF_PER_MAP) {
+ 				map++;
+ 				buf = map[0]->buf;
+diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+index 33cb23b2ee3c..62f8e0604207 100644
+--- a/include/rdma/ib_umem.h
++++ b/include/rdma/ib_umem.h
+@@ -27,9 +27,6 @@ struct ib_umem {
+ 	u32 is_dmabuf : 1;
+ 	struct work_struct	work;
+ 	struct sg_append_table  sgt_append;
+-	struct sg_table sg_head;
+-	int             nmap;
+-	unsigned int    sg_nents;
  };
  
-+&gmac0 {
-+	assigned-clocks = <&cru SCLK_GMAC0_RX_TX>, <&cru SCLK_GMAC0>;
-+	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED>;
-+	assigned-clock-rates = <0>, <125000000>;
-+	clock_in_out = "output";
-+	phy-handle = <&rgmii_phy0>;
-+	phy-mode = "rgmii-id";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&gmac0_miim
-+		     &gmac0_tx_bus2
-+		     &gmac0_rx_bus2
-+		     &gmac0_rgmii_clk
-+		     &gmac0_rgmii_bus>;
-+	status = "okay";
-+};
+ struct ib_umem_dmabuf {
+@@ -57,7 +54,7 @@ static inline int ib_umem_offset(struct ib_umem *umem)
+ static inline unsigned long ib_umem_dma_offset(struct ib_umem *umem,
+ 					       unsigned long pgsz)
+ {
+-	return (sg_dma_address(umem->sg_head.sgl) + ib_umem_offset(umem)) &
++	return (sg_dma_address(umem->sgt_append.sgt.sgl) + ib_umem_offset(umem)) &
+ 	       (pgsz - 1);
+ }
+ 
+@@ -78,7 +75,8 @@ static inline void __rdma_umem_block_iter_start(struct ib_block_iter *biter,
+ 						struct ib_umem *umem,
+ 						unsigned long pgsz)
+ {
+-	__rdma_block_iter_start(biter, umem->sg_head.sgl, umem->nmap, pgsz);
++	__rdma_block_iter_start(biter, umem->sgt_append.sgt.sgl,
++				umem->sgt_append.sgt.nents, pgsz);
+ }
+ 
+ /**
+@@ -129,7 +127,7 @@ static inline unsigned long ib_umem_find_best_pgoff(struct ib_umem *umem,
+ 						    unsigned long pgsz_bitmap,
+ 						    u64 pgoff_bitmask)
+ {
+-	struct scatterlist *sg = umem->sg_head.sgl;
++	struct scatterlist *sg = umem->sgt_append.sgt.sgl;
+ 	dma_addr_t dma_addr;
+ 
+ 	dma_addr = sg_dma_address(sg) + (umem->address & ~PAGE_MASK);
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 371df1c80aeb..2dba30849731 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -4057,6 +4057,34 @@ static inline void ib_dma_unmap_sg_attrs(struct ib_device *dev,
+ 				   dma_attrs);
+ }
+ 
++/**
++ * ib_dma_map_sgtable_attrs - Map a scatter/gather table to DMA addresses
++ * @dev: The device for which the DMA addresses are to be created
++ * @sg: The sg_table object describing the buffer
++ * @direction: The direction of the DMA
++ * @attrs: Optional DMA attributes for the map operation
++ */
++static inline int ib_dma_map_sgtable_attrs(struct ib_device *dev,
++					   struct sg_table *sgt,
++					   enum dma_data_direction direction,
++					   unsigned long dma_attrs)
++{
++	if (ib_uses_virt_dma(dev)) {
++		ib_dma_virt_map_sg(dev, sgt->sgl, sgt->orig_nents);
++		return 0;
++	}
++	return dma_map_sgtable(dev->dma_device, sgt, direction, dma_attrs);
++}
 +
-+&gmac1 {
-+	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1>;
-+	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>;
-+	assigned-clock-rates = <0>, <125000000>;
-+	clock_in_out = "output";
-+	phy-handle = <&rgmii_phy1>;
-+	phy-mode = "rgmii-id";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&gmac1m1_miim
-+		     &gmac1m1_tx_bus2
-+		     &gmac1m1_rx_bus2
-+		     &gmac1m1_rgmii_clk
-+		     &gmac1m1_rgmii_bus>;
-+	status = "okay";
-+};
++static inline void ib_dma_unmap_sgtable_attrs(struct ib_device *dev,
++					      struct sg_table *sgt,
++					      enum dma_data_direction direction,
++					      unsigned long dma_attrs)
++{
++	if (!ib_uses_virt_dma(dev))
++		dma_unmap_sgtable(dev->dma_device, sgt, direction, dma_attrs);
++}
 +
-+&mdio0 {
-+	rgmii_phy0: ethernet-phy@0 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <0x0>;
-+		reset-assert-us = <20000>;
-+		reset-deassert-us = <100000>;
-+		reset-gpios = <&gpio2 RK_PD3 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&mdio1 {
-+	rgmii_phy1: ethernet-phy@0 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <0x0>;
-+		reset-assert-us = <20000>;
-+		reset-deassert-us = <100000>;
-+		reset-gpios = <&gpio2 RK_PD1 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
- &sdhci {
- 	bus-width = <8>;
- 	max-frequency = <200000000>;
+ /**
+  * ib_dma_map_sg - Map a scatter/gather list to DMA addresses
+  * @dev: The device for which the DMA addresses are to be created
 -- 
-2.20.1
+2.31.1
 
