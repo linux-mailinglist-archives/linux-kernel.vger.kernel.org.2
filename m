@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E303D9A20
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8F13D9A23
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhG2AgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 20:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbhG2AgF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 20:36:05 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADF5C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 17:36:02 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id l4so5247159ljq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 17:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=e0UcSO3vN6NdPfXAW5Z2clYrWNWotEljfw6HtHpSH6U=;
-        b=MhQvcj0tYToLcs058dln2lZoH+D307t+udfweA1FrP1x3zbDt7EAK13wSkIBQu/Tsq
-         sdPj9hEkoU3qAYW6nZf5MwUp+uPi0j8kgEsGYSrQFEVQiIqhRrcmmVO/iLzMX5AyRCXc
-         rWILmh7lcgtg2/5nctE2h6ZtsUoXc7Wu6Ubiivc1m6meFWdWer2PspuzmNJuEdUazXZu
-         GfFqH3uVn1dKWdBVLO/NA6Wj35yxrej8oedP5BHroCL4E4qBgnQvc+5F6vDbmZrLWyXU
-         f0yDw/8dU6g4wnu+dbh8M2lWQfGX7NaRXMemn1rArYgSK1ja9hOLVla73+9z7HCvYNte
-         SBfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=e0UcSO3vN6NdPfXAW5Z2clYrWNWotEljfw6HtHpSH6U=;
-        b=lsUfKjeWhPcyBbt4fQJ+aHMMJv2nw8f/R1OS4xvzmJghyHKNoketUgnHsL2BWdsuw3
-         Z92dhZIfneHXM9u5XTsoXZe7AII+5fW6oJ9Oo5nhE7jBLQmkKQADNtZ9BVI/87s3N1AQ
-         J9sCtT5sVYesAaQKxAYOF4h+4tERhtNE5CbGuQiMpgPLRO+tRSp3x4IPwU8Ft6TwcZpZ
-         1e8eV4FoPnFNa9Fz2sSnkdB1AUqQk/SEdvKOoXdTQMtzQ6mjs2tkzWLsaIYXv3C74ETs
-         31EMqhOfj4MJmFzbnaAguBGo8u/9iE5fcmCIIJVKylBxPCvIBwBgIijTON5HPK7fx0FI
-         faxA==
-X-Gm-Message-State: AOAM530gl9R0A5irVBMnciZAMcPPhvSpBeMy6c5B60T12ZhiJc2Xg8kS
-        rDHMkxdEBYhFecpSrEHh7oCP1eMD/Y+mQJPsYqY=
-X-Google-Smtp-Source: ABdhPJwE19Rr1oAyYK0g3PoM4H1rRstcPgIqc7RhE9AM1KAFko1tX+Lslj8n1g7uovPhtKq+LuSTgaYgXhBpEOm27aE=
-X-Received: by 2002:a2e:a22c:: with SMTP id i12mr1359703ljm.267.1627518961185;
- Wed, 28 Jul 2021 17:36:01 -0700 (PDT)
+        id S233050AbhG2Ahc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 20:37:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232869AbhG2Aha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 20:37:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95B616103B;
+        Thu, 29 Jul 2021 00:37:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627519047;
+        bh=HKuJ/sGTGEoDM22RJYLhczo7YamW8A07HkBki046ZPs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=W+nFlplcDkxPtR6FK3U73kf6y7ker+0HsuiHS9wyd/pPFKIAJmkEnT2usx4ttscK8
+         Ut3KSQ8XWplcwRZeWCg6WVpxygCU8Dgeo6jDQrieKEQdD5bZ7f5wAMFC/dW+X/GTqP
+         AkgWoL7GBpUMLLea8K7BEcXRi4Yd+VGM6SvAa3QKqDwcKDQ2JNvtSODKHGx6tAkaQ+
+         GcEGdb7MTtemveefybubjMWR64Z70a6DPAJcRoiD49FBaeRC/3oSx46fTUFUkWQqXg
+         a6LTP74Rr2/fCfDKtu94/BMf6+4Mjc/10Pn8PBIBVmA/+RyTKo0CU+j+9MrSus0zQl
+         J1lZhmK8hjtvA==
+Subject: Re: [f2fs-dev] [PATCH v4] f2fs: change fiemap way in printing
+ compression chunk
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>,
+        Eric Biggers <ebiggers@google.com>
+References: <20210726041819.2059593-1-daeho43@gmail.com>
+ <f9555521-8878-2d46-36f1-3032bb8bbc0a@kernel.org>
+ <CACOAw_zvFcV-5ePrFOr-bo2DxXyFzjDTSo-7aPcXG6jtNweEbA@mail.gmail.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <66d9419d-5ce6-626c-7ac8-d0592f34ec31@kernel.org>
+Date:   Thu, 29 Jul 2021 08:37:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210708183427.22842-1-bvanassche@acm.org> <9afbc59c-f745-03c1-c74d-264a7180ec87@acm.org>
-In-Reply-To: <9afbc59c-f745-03c1-c74d-264a7180ec87@acm.org>
-From:   Akinobu Mita <akinobu.mita@gmail.com>
-Date:   Thu, 29 Jul 2021 09:35:50 +0900
-Message-ID: <CAC5umygRc0hRDrpO_fU=bo9sAJRsm9vxB3tAtTFpPYguEWB+Lw@mail.gmail.com>
-Subject: Re: [PATCH] fault-inject: Declare the second argument of
- setup_fault_attr() const
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CACOAw_zvFcV-5ePrFOr-bo2DxXyFzjDTSo-7aPcXG6jtNweEbA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=E5=B9=B47=E6=9C=8829=E6=97=A5(=E6=9C=A8) 8:05 Bart Van Assche <bvanass=
-che@acm.org>:
->
-> On 7/8/21 11:34 AM, Bart Van Assche wrote:
-> > This patch makes it possible to pass a const char * argument to
-> > setup_fault_attr() without having to cast away constness.
-> >
-> > Cc: Akinobu Mita <akinobu.mita@gmail.com>
-> > Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-> > ---
-> >   include/linux/fault-inject.h | 2 +-
-> >   lib/fault-inject.c           | 2 +-
-> >   2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/fault-inject.h b/include/linux/fault-inject.=
-h
-> > index e525f6957c49..afc649f0102b 100644
-> > --- a/include/linux/fault-inject.h
-> > +++ b/include/linux/fault-inject.h
-> > @@ -42,7 +42,7 @@ struct fault_attr {
-> >       }
-> >
-> >   #define DECLARE_FAULT_ATTR(name) struct fault_attr name =3D FAULT_ATT=
-R_INITIALIZER
-> > -int setup_fault_attr(struct fault_attr *attr, char *str);
-> > +int setup_fault_attr(struct fault_attr *attr, const char *str);
-> >   bool should_fail(struct fault_attr *attr, ssize_t size);
-> >
-> >   #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
-> > diff --git a/lib/fault-inject.c b/lib/fault-inject.c
-> > index ce12621b4275..45520151b32d 100644
-> > --- a/lib/fault-inject.c
-> > +++ b/lib/fault-inject.c
-> > @@ -15,7 +15,7 @@
-> >    * setup_fault_attr() is a helper function for various __setup handle=
-rs, so it
-> >    * returns 0 on error, because that is what __setup handlers do.
-> >    */
-> > -int setup_fault_attr(struct fault_attr *attr, char *str)
-> > +int setup_fault_attr(struct fault_attr *attr, const char *str)
-> >   {
-> >       unsigned long probability;
-> >       unsigned long interval;
->
-> Hi Akinobu,
->
-> Did I send this patch to the right person?
+On 2021/7/28 0:41, Daeho Jeong wrote:
+> How about adding this?
+> 
+> skip_fill:
+> 
+>          if (map.m_pblk == COMPRESS_ADDR) {
+> 
+>                  if (start_blk & (cluster_size - 1)) {
+> 
+>                          ret = -EFSCORRUPTED;
+> 
+>                          goto out;
+> 
+>                  }
+> 
+>                  compr_cluster = true;
+> 
+>                  count_in_cluster = 1;
+> 
+>          } else if (compr_appended) {
 
-The fault injection patches are usually merged through the -mm tree.
-Could you send this with CCing Andrew?
+It seems we can add a separate patch to cover all cases that cluster metadata is
+going to be accessed rather than just fixing fiemap() case here?
 
-This patch looks good to me.
+>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>> Tested-by: Eric Biggers <ebiggers@google.com>
 
-Reviewed-by: Akinobu Mita <akinobu.mita@gmail.com>
+Anyway, this patch looks good to me.
+
+Reviewed-by: Chao Yu <chao@kernel.org>
+
+Thanks,
