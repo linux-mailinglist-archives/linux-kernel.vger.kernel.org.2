@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3014D3DA51B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EACC63DA586
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238210AbhG2N6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:58:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48302 "EHLO mail.kernel.org"
+        id S238641AbhG2OCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:02:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238167AbhG2N5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:57:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7D5360F46;
-        Thu, 29 Jul 2021 13:57:42 +0000 (UTC)
+        id S238352AbhG2N6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:58:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B89060F4B;
+        Thu, 29 Jul 2021 13:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567063;
-        bh=PcJSEufoi0i8jRxWfiKREwhqCPga+r/UzzLHV2wQEnw=;
+        s=korg; t=1627567119;
+        bh=GEMrgZ1BSUX+9zlkMV2VjhWoKC9SDQxjvZcaOc7xg3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zk/LNhXIx33xuuRFTyNpZMhuyngG1pNx+1tJU7glFfe8fm10NYgyja+eJBSjE1y/x
-         5XyN0vEDV0RwP4ONe4pPDYwytuBaKSrbYUNxE2+iBzpw1GaYzdDQlEVTihqYsDuVGr
-         bYpfctZJtPlEJ2llpNO7C+mEe+pABj3s/85DLtOE=
+        b=VF1wekUuPhczCY1ixXCfKiqI8jQ9cDj7s8aW/qBaTP/mHb4O3BznpEymCCkViWzJQ
+         t6gwiISY764wC7NMtQoeJ0nsM3XZ/Rf6tnbLN99x4n7LXOiyDMErQiYSNKeDFq8M4C
+         rX84j0m4j3HXflTDlzz76LvHCAnBeDzSTJNgVFps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 19/21] iomap: remove the length variable in iomap_seek_hole
-Date:   Thu, 29 Jul 2021 15:54:26 +0200
-Message-Id: <20210729135143.520655569@linuxfoundation.org>
+Subject: [PATCH 5.10 07/24] net/802/mrp: fix memleak in mrp_request_join()
+Date:   Thu, 29 Jul 2021 15:54:27 +0200
+Message-Id: <20210729135137.500011883@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
-References: <20210729135142.920143237@linuxfoundation.org>
+In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
+References: <20210729135137.267680390@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 49694d14ff68fa4b5f86019dbcfb44a8bd213e58 ]
+[ Upstream commit 996af62167d0e0ec69b938a3561e96f84ffff1aa ]
 
-The length variable is rather pointless given that it can be trivially
-deduced from offset and size.  Also the initial calculation can lead
-to KASAN warnings.
+I got kmemleak report when doing fuzz test:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reported-by: Leizhen (ThunderTown) <thunder.leizhen@huawei.com>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+BUG: memory leak
+unreferenced object 0xffff88810c239500 (size 64):
+comm "syz-executor940", pid 882, jiffies 4294712870 (age 14.631s)
+hex dump (first 32 bytes):
+01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+00 00 00 00 00 00 00 00 01 00 00 00 01 02 00 04 ................
+backtrace:
+[<00000000a323afa4>] slab_alloc_node mm/slub.c:2972 [inline]
+[<00000000a323afa4>] slab_alloc mm/slub.c:2980 [inline]
+[<00000000a323afa4>] __kmalloc+0x167/0x340 mm/slub.c:4130
+[<000000005034ca11>] kmalloc include/linux/slab.h:595 [inline]
+[<000000005034ca11>] mrp_attr_create net/802/mrp.c:276 [inline]
+[<000000005034ca11>] mrp_request_join+0x265/0x550 net/802/mrp.c:530
+[<00000000fcfd81f3>] vlan_mvrp_request_join+0x145/0x170 net/8021q/vlan_mvrp.c:40
+[<000000009258546e>] vlan_dev_open+0x477/0x890 net/8021q/vlan_dev.c:292
+[<0000000059acd82b>] __dev_open+0x281/0x410 net/core/dev.c:1609
+[<000000004e6dc695>] __dev_change_flags+0x424/0x560 net/core/dev.c:8767
+[<00000000471a09af>] rtnl_configure_link+0xd9/0x210 net/core/rtnetlink.c:3122
+[<0000000037a4672b>] __rtnl_newlink+0xe08/0x13e0 net/core/rtnetlink.c:3448
+[<000000008d5d0fda>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
+[<000000004882fe39>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5552
+[<00000000907e6c54>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
+[<00000000e7d7a8c4>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+[<00000000e7d7a8c4>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
+[<00000000e0645d50>] netlink_sendmsg+0x78e/0xc90 net/netlink/af_netlink.c:1929
+[<00000000c24559b7>] sock_sendmsg_nosec net/socket.c:654 [inline]
+[<00000000c24559b7>] sock_sendmsg+0x139/0x170 net/socket.c:674
+[<00000000fc210bc2>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
+[<00000000be4577b5>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
+
+Calling mrp_request_leave() after mrp_request_join(), the attr->state
+is set to MRP_APPLICANT_VO, mrp_attr_destroy() won't be called in last
+TX event in mrp_uninit_applicant(), the attr of applicant will be leaked.
+To fix this leak, iterate and free each attr of applicant before rerturning
+from mrp_uninit_applicant().
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/iomap/seek.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ net/802/mrp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/fs/iomap/seek.c b/fs/iomap/seek.c
-index c61b889235b3..10c4c1e80124 100644
---- a/fs/iomap/seek.c
-+++ b/fs/iomap/seek.c
-@@ -140,23 +140,20 @@ loff_t
- iomap_seek_hole(struct inode *inode, loff_t offset, const struct iomap_ops *ops)
+diff --git a/net/802/mrp.c b/net/802/mrp.c
+index bea6e43d45a0..35e04cc5390c 100644
+--- a/net/802/mrp.c
++++ b/net/802/mrp.c
+@@ -292,6 +292,19 @@ static void mrp_attr_destroy(struct mrp_applicant *app, struct mrp_attr *attr)
+ 	kfree(attr);
+ }
+ 
++static void mrp_attr_destroy_all(struct mrp_applicant *app)
++{
++	struct rb_node *node, *next;
++	struct mrp_attr *attr;
++
++	for (node = rb_first(&app->mad);
++	     next = node ? rb_next(node) : NULL, node != NULL;
++	     node = next) {
++		attr = rb_entry(node, struct mrp_attr, node);
++		mrp_attr_destroy(app, attr);
++	}
++}
++
+ static int mrp_pdu_init(struct mrp_applicant *app)
  {
- 	loff_t size = i_size_read(inode);
--	loff_t length = size - offset;
- 	loff_t ret;
+ 	struct sk_buff *skb;
+@@ -895,6 +908,7 @@ void mrp_uninit_applicant(struct net_device *dev, struct mrp_application *appl)
  
- 	/* Nothing to be found before or beyond the end of the file. */
- 	if (offset < 0 || offset >= size)
- 		return -ENXIO;
+ 	spin_lock_bh(&app->lock);
+ 	mrp_mad_event(app, MRP_EVENT_TX);
++	mrp_attr_destroy_all(app);
+ 	mrp_pdu_queue(app);
+ 	spin_unlock_bh(&app->lock);
  
--	while (length > 0) {
--		ret = iomap_apply(inode, offset, length, IOMAP_REPORT, ops,
--				  &offset, iomap_seek_hole_actor);
-+	while (offset < size) {
-+		ret = iomap_apply(inode, offset, size - offset, IOMAP_REPORT,
-+				  ops, &offset, iomap_seek_hole_actor);
- 		if (ret < 0)
- 			return ret;
- 		if (ret == 0)
- 			break;
--
- 		offset += ret;
--		length -= ret;
- 	}
- 
- 	return offset;
 -- 
 2.30.2
 
