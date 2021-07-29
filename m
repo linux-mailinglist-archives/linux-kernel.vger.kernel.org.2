@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064703DA6E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA5A3DA6E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237840AbhG2Ox5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:53:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229864AbhG2Ox4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:53:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D572C60EBC;
-        Thu, 29 Jul 2021 14:53:50 +0000 (UTC)
-Date:   Thu, 29 Jul 2021 16:53:48 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     cgel.zte@gmail.com
-Cc:     keescook@chromium.org, ktkhai@virtuozzo.com,
-        jamorris@linux.microsoft.com, varad.gautam@suse.com,
-        legion@kernel.org, dbueso@suse.de, linux-kernel@vger.kernel.org,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>
-Subject: Re: [PATCH] ipc: add set_ownership() and permissions() callbacks for
- posix mqueue sysctl
-Message-ID: <20210729145348.hvvhu6lmlcn5js4y@wittgenstein>
-References: <20210729030651.536326-1-ran.xiaokai@zte.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210729030651.536326-1-ran.xiaokai@zte.com.cn>
+        id S237461AbhG2Oyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:54:38 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:36065 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229864AbhG2Oyh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:54:37 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 5E59B2B011C1;
+        Thu, 29 Jul 2021 10:54:33 -0400 (EDT)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Thu, 29 Jul 2021 10:54:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=johnericson.me;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm3; bh=k76RUZpT+yXq9JfoZ3nl1UjqDvth
+        +gVcjMm7CyMdORc=; b=OkSINz24DReO2X8KmP7INsQgu9fu3HV80Q+ubVZ++qYd
+        NPi6YmOf+rk0m8f9HkHdOAhsV9/zd8m8pWcsL4Tdehh7wQqbb+jL3Ms0P7FSK005
+        A8qdPJjalSWSybrlxEjtxJ2xhphlzjFkQJHETKV0DZrgzWIP48m60Gqz4m2ruG/1
+        rzJas31a15CWEjP1NSNNYo/SjIMws19kBBcGZOYrpNXA9bz2Cn/Yfko1CfqBeC5M
+        9WBXOzy7FdnnK70GintxZEKq0bUydpAw4V3BsYOhjjpyWTW4n8gwNd3LD+iMfr6J
+        eKzBA6yotdjynd4uFFM495rlZGQTdxbvitT6dBumVw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=k76RUZ
+        pT+yXq9JfoZ3nl1UjqDvth+gVcjMm7CyMdORc=; b=Ea/YojnyJCFCk1RAHynM3s
+        gqBC1hSQp3HTeiL/Hoauv1wSyx+JLS+Peaodmxsl8SGD+OFqxy9vzMw7f0y4c/bx
+        Z0zHizatOCEotFVw8ht3vELUf56sZn9ydmKJuYtAqaYm2ZjRuGE8D0VCxh9jmF1a
+        vZI0GWoR72FX3TMV7EPdAi3RruRix5sHLZBjEBmxuMAFwH9n/6MHUMZKc2qRwpl6
+        hi3M48A0X9+TTF+Nm90qDYlMa6Y9utXs7p3Y3BoTSXhahqA4DE6hKXdoQaB5VQ06
+        MStU0C68pyysZybZy5ikEy7YPbnUwvJ2FqbWwg6qCTZ/llH+ea+Meq9921Yc72UA
+        ==
+X-ME-Sender: <xms:J8ECYYObVXxefpjb2_tNOzHCyGRy97CpQIVK5jJkGSC1gpNNHMLuAw>
+    <xme:J8ECYe8E5RiYQNgi4MRjrpmH-TD0NLP_D0w-K3wnvQrcO3str08M4OjLF3DWJ6jid
+    F9OrJ5VFotJtOwhf1g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheefgdegudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedflfhohhhn
+    ucfgrhhitghsohhnfdcuoehlihhsthesjhhohhhnvghrihgtshhonhdrmhgvqeenucggtf
+    frrghtthgvrhhnpedvhedtvedtiefhieefleelteehgfduveehteevveelieetheektdei
+    keeiheejjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehlihhsthesjhhohhhnvghrihgtshhonhdrmhgv
+X-ME-Proxy: <xmx:J8ECYfQrpiHHfBnPANec00KpFXN7OkXs1t5KoLFSLVvJoVyjVH2DAg>
+    <xmx:J8ECYQtbEQEHQhJDdHTrodNIeqY8--WgE6D5Ac4x9Tq8VJAfxxnh0w>
+    <xmx:J8ECYQdql8AvZWonkeYwV_3tXGZY2clgMV3eHm3Gc_cN09DXP2cNxg>
+    <xmx:KMECYVHOSpoz8M28r1kAtjf1ZmsLg9OTwfM9olgaPtRMYY_Yu5NCHmfG5Ow>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id DC198FA0AA4; Thu, 29 Jul 2021 10:54:31 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-545-g7a4eea542e-fm-20210727.001-g7a4eea54
+Mime-Version: 1.0
+Message-Id: <e048b871-55db-4e7f-96c9-40aabdd076c5@www.fastmail.com>
+In-Reply-To: <20210729142415.qovpzky537zkg3dp@wittgenstein>
+References: <CAHmME9oHBtR4fBBUY8E_Oi7av-=OjOGkSNhQuMJMHhafCjazBw@mail.gmail.com>
+ <CALCETrVGLx5yeHo7ExAmJZmPjVjcJiV7p1JOa4iUaW5DRoEvLQ@mail.gmail.com>
+ <cf07f0732eb94dbfa67c9d56ceba738e@AcuMS.aculab.com>
+ <f8457e20-c3cc-6e56-96a4-3090d7da0cb6@JohnEricson.me>
+ <20210729142415.qovpzky537zkg3dp@wittgenstein>
+Date:   Thu, 29 Jul 2021 10:54:08 -0400
+From:   "John Ericson" <list@johnericson.me>
+To:     "Christian Brauner" <christian.brauner@ubuntu.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "David Laight" <David.Laight@ACULAB.COM>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Kernel Hardening" <kernel-hardening@lists.openwall.com>,
+        "Jann Horn" <jann@thejh.net>,
+        "Christian Brauner" <christian.brauner@canonical.com>
+Subject: Re: Leveraging pidfs for process creation without fork
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 08:06:51PM -0700, cgel.zte@gmail.com wrote:
-> From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
-> 
-> When a non-root user process creates a user namespace and ipc namespace
-> with command "unshare -Ur -i", and map the root user inside
-> the user namesapce to the global owner of user namespace.
-> The newly created user namespace OWNS the ipc namespace,
-> So the root user inside the user namespace should have full access
-> rights to the ipc namespace resources.
-> 
-> $ id
-> uid=1200(u1200) gid=1200(u1200) groups=1200(u1200)
-> $ unshare -Ur -i
-> $ id
-> uid=0(root) gid=0(root) groups=0(root)
-> $ ls -l /proc/sys/fs/mqueue/
-> total 0
-> -rw-r--r-- 1 65534 65534 0 Jul 28 19:03 msg_default
-> -rw-r--r-- 1 65534 65534 0 Jul 28 19:03 msg_max
-> -rw-r--r-- 1 65534 65534 0 Jul 28 19:03 msgsize_default
-> -rw-r--r-- 1 65534 65534 0 Jul 28 19:03 msgsize_max
-> -rw-r--r-- 1 65534 65534 0 Jul 28 19:03 queues_max
-> -sh: /proc/sys/fs/mqueue/msg_max: Permission denied
-> 
-> As opposite, inside a net namespace,
-> 1. sysctl files owners are set to the local root user
->    insede the user namespace, not the GLOBAL_ROOT_UID;
-> 2. sysctl files are writable when accessed by root user
->    inside the user namespace.
-> 
-> $ id
-> uid=1200(u1200) gid=1200(u1200) groups=1200(u1200)
-> $ unshare -Ur -n
-> $ id
-> uid=0(root) gid=0(root) groups=0(root)
-> $ ls -l /proc/sys/net/ipv4/ip_forward
-> -rw-r--r-- 1 root root 0 Jul 28 19:04 /proc/sys/net/ipv4/ip_forward
-> $ echo 1 > /proc/sys/net/ipv4/ip_forward
-> $ cat /proc/sys/net/ipv4/ip_forward
-> 1
+Wonderful, looking forward to it reading it then!
 
-Yeah, we did that work specifically for the network namespace but knew
-there were quite a few places that would need fix up. This makes sense
-to me.
+John
 
-Please add tests for this patch though. Also make sure to run them in a
-tight loop on a kernel with memory and log debugging enabled. The whole
-sysctl retire stuff can't be called from rcu contexts and that's easy to
-miss. So turn on at least sm like:
-
-CONFIG_HAVE_ARCH_KASAN=y
-CONFIG_HAVE_ARCH_KASAN_VMALLOC=y
-CONFIG_CC_HAS_KASAN_GENERIC=y
-CONFIG_CC_HAS_WORKING_NOSANITIZE_ADDRESS=y
-CONFIG_KASAN=y
-CONFIG_KASAN_GENERIC=y
-# CONFIG_KASAN_OUTLINE is not set
-CONFIG_KASAN_INLINE=y
-CONFIG_KASAN_STACK=1
-CONFIG_KASAN_VMALLOC=y
-# CONFIG_KASAN_MODULE_TEST is not set
-CONFIG_HAVE_ARCH_KFENCE=y
-CONFIG_KFENCE=y
-CONFIG_KFENCE_STATIC_KEYS=y
-CONFIG_KFENCE_SAMPLE_INTERVAL=100
-CONFIG_KFENCE_NUM_OBJECTS=255
-CONFIG_KFENCE_STRESS_TEST_FAULTS=0
-CONFIG_LOCKDEP_SUPPORT=y
-CONFIG_LOCKDEP=y
+On Thu, Jul 29, 2021, at 10:24 AM, Christian Brauner wrote:
+> On Wed, Jul 28, 2021 at 12:37:57PM -0400, John Cotton Ericson wrote:
+> > Hi,
+> > 
+> > I was excited to learn about about pidfds the other day, precisely in hopes
+> > that it would open the door to such a "sane process creation API". I
+> > searched the LKML, found this thread, and now hope to rekindle the
+> > discussion; my apologies if there has been more discussion since that I
+> 
+> Yeah, I haven't forgotten this discussion. A proposal is on my todo list
+> for this year. So far I've scheduled some time to work on this in the
+> fall.
+> 
+> Thanks!
+> Christian
