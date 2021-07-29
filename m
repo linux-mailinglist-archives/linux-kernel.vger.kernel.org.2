@@ -2,158 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27983DA73E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7944E3DA745
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237350AbhG2PMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:12:54 -0400
-Received: from mga09.intel.com ([134.134.136.24]:15975 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhG2PMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:12:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="212895755"
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="212895755"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 08:12:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="507255384"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 29 Jul 2021 08:12:42 -0700
-Date:   Thu, 29 Jul 2021 23:12:42 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
- multiple preferred nodes
-Message-ID: <20210729151242.GA42865@shbuild999.sh.intel.com>
-References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
- <1626077374-81682-2-git-send-email-feng.tang@intel.com>
- <YQFOB4UDK+dNZeOV@dhcp22.suse.cz>
- <20210728141156.GC43486@shbuild999.sh.intel.com>
- <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
- <20210729070918.GA96680@shbuild999.sh.intel.com>
- <YQKvZDXmRSVVRvfi@dhcp22.suse.cz>
+        id S237833AbhG2PNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhG2PNc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 11:13:32 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D712C061765;
+        Thu, 29 Jul 2021 08:13:29 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so16094041pjb.3;
+        Thu, 29 Jul 2021 08:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=akMNdPJ4WS5nbnxgvsvMYm/zRUHwcBCfIsow9Ks6kis=;
+        b=dLioqOpBl2TpGowMKGZzRjcLFx0fZ0sBHYpCjAxABGEJkW9CgwGvHYqQ7apVDck0xx
+         W5FuDqVbCnNd70/DtkMCPd4nqMpezuT6upxl41IkUNtJlgdLrD+RhjExDK3z3ce7yAyi
+         4T3pGiS49Fpux5+3O0k15LkGMg6tQKFB1XgNeZAHuGRcTvc6EBLKsj3eNAVBiUHKR1xX
+         /CgKKN3LRKSV3ywoC91cZi4VtcHW9BdxphQdF31SCJLo1LkxTmqp53t070UtFqT4mdev
+         zb6GH16wdrsVQodoRsmLapOWCa0r0OH1HB0WqtJ3jUF4EHVlDutR3ypdLueHvAxYkwe8
+         3NDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=akMNdPJ4WS5nbnxgvsvMYm/zRUHwcBCfIsow9Ks6kis=;
+        b=Rf0LXdqe35DIX0CeL4+eXovGkojd7PyjM6TJkmS3RxQuadOe4KoRRY5esbULUo6naa
+         faBGdl4gcIyjxY0Cg/TlnuqLsaar8RzKvM4U8hTbColvlAS82Puwz06b9CJ4yJ+lRvRE
+         L/FGno6GhuY+tYpMQvx9MbierLOilZSdXuKrfWc7WukWQarUdLixCtBI09GQTc8mbvSb
+         8PlaypJ9QIWmO4l3pffNmBLf0c2sSkS82WH04BdNZ0XbqWrBYFxF5Ncu6PKsP1uc2uoM
+         dSbG68XdTpW/tL3scYwhwZPZ8X860fg0CwgbEkdJNvvieOsfxtdV80/Eby6m3YyeZUVc
+         8F/A==
+X-Gm-Message-State: AOAM532Qu9OdkWouio9FtnI25wpAYjCsi2W4gACDVOA3ING1q3HdoyQY
+        JWTCZsUTlYmtSTmRnhKohAc=
+X-Google-Smtp-Source: ABdhPJz+1u+t4XYMb612jZVRZC2eq6EVWswZWptItrWPSpDVi083nnf1kcuFDG/7rvR4ghR/eM6m5A==
+X-Received: by 2002:a63:5505:: with SMTP id j5mr4265664pgb.250.1627571608984;
+        Thu, 29 Jul 2021 08:13:28 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id c7sm4247137pgq.22.2021.07.29.08.13.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 08:13:28 -0700 (PDT)
+Subject: Re: [PATCH 09/13] DMA: Add dma_map_decrypted/dma_unmap_encrypted()
+ function
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, anparri@microsoft.com, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, rientjes@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, xen-devel@lists.xenproject.org,
+        pgonda@google.com, david@redhat.com, keescook@chromium.org,
+        hannes@cmpxchg.org, sfr@canb.auug.org.au,
+        michael.h.kelley@microsoft.com
+References: <20210728145232.285861-1-ltykernel@gmail.com>
+ <20210728145232.285861-10-ltykernel@gmail.com>
+Message-ID: <da69c920-c12a-b4ad-7554-68b9e99bb6ce@gmail.com>
+Date:   Thu, 29 Jul 2021 23:13:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQKvZDXmRSVVRvfi@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210728145232.285861-10-ltykernel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:38:44PM +0200, Michal Hocko wrote:
-> On Thu 29-07-21 15:09:18, Feng Tang wrote:
-> > On Wed, Jul 28, 2021 at 06:12:21PM +0200, Michal Hocko wrote:
-> > > On Wed 28-07-21 22:11:56, Feng Tang wrote:
-> > > > On Wed, Jul 28, 2021 at 02:31:03PM +0200, Michal Hocko wrote:
-> > > > > [Sorry for a late review]
-> > > > 
-> > > > Not at all. Thank you for all your reviews and suggestions from v1
-> > > > to v6!
-> > > > 
-> > > > > On Mon 12-07-21 16:09:29, Feng Tang wrote:
-> > > > > [...]
-> > > > > > @@ -1887,7 +1909,8 @@ nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
-> > > > > >  /* Return the node id preferred by the given mempolicy, or the given id */
-> > > > > >  static int policy_node(gfp_t gfp, struct mempolicy *policy, int nd)
-> > > > > >  {
-> > > > > > -	if (policy->mode == MPOL_PREFERRED) {
-> > > > > > +	if (policy->mode == MPOL_PREFERRED ||
-> > > > > > +	    policy->mode == MPOL_PREFERRED_MANY) {
-> > > > > >  		nd = first_node(policy->nodes);
-> > > > > >  	} else {
-> > > > > >  		/*
-> > > > > 
-> > > > > Do we really want to have the preferred node to be always the first node
-> > > > > in the node mask? Shouldn't that strive for a locality as well? Existing
-> > > > > callers already prefer numa_node_id() - aka local node - and I belive we
-> > > > > shouldn't just throw that away here.
-> > > >  
-> > > > I think it's about the difference of 'local' and 'prefer/perfer-many'
-> > > > policy. There are different kinds of memory HW: HBM(High Bandwidth
-> > > > Memory), normal DRAM, PMEM (Persistent Memory), which have different
-> > > > price, bandwidth, speed etc. A platform may have two, or all three of
-> > > > these types, and there are real use case which want memory comes
-> > > > 'preferred' node/nodes than the local node.
-> > > > 
-> > > > And good point for 'local node', if the 'prefer-many' policy's
-> > > > nodemask has local node set, we should pick it han this
-> > > > 'first_node', and the same semantic also applies to the other
-> > > > several places you pointed out. Or do I misunderstand you point?
-> > > 
-> > > Yeah. Essentially what I am trying to tell is that for
-> > > MPOL_PREFERRED_MANY you simply want to return the given node without any
-> > > alternation. That node will be used for the fallback zonelist and the
-> > > nodemask would make sure we won't get out of the policy.
-> > 
-> > I think I got your point now :)
-> > 
-> > With current mainline code, the 'prefer' policy will return the preferred
-> > node.
+
+Hi Christoph:
+      Could you have a look at this patch and the following patch
+"[PATCH 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap function
+for HV IVM" These two patches follows your previous comments and add 
+dma_map_decrypted/dma_unmap_decrypted(). I don't add arch prefix because 
+each platform may populate their callbacks into dma memory decrypted ops.
+
+Thanks.
+
+On 7/28/2021 10:52 PM, Tianyu Lan wrote:
+> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 > 
-> Yes this makes sense as there is only one node.
+> In Hyper-V Isolation VM with AMD SEV, swiotlb boucne buffer
+> needs to be mapped into address space above vTOM and so
+> introduce dma_map_decrypted/dma_unmap_encrypted() to map/unmap
+> bounce buffer memory. The platform can populate man/unmap callback
+> in the dma memory decrypted ops.
 > 
-> > For 'prefer-many', we would like to keep the similar semantic, that the
-> > preference of node is 'preferred' > 'local' > all other nodes.
+> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+> ---
+>   include/linux/dma-map-ops.h |  9 +++++++++
+>   kernel/dma/mapping.c        | 22 ++++++++++++++++++++++
+>   2 files changed, 31 insertions(+)
 > 
-> Yes but which of the preferred nodes you want to start with. Say your
-> nodemask preferring nodes 0 and 2 with the following topology
-> 	0	1	2	3
-> 0	10	30	20	30
-> 1	30	10	20	30
-> 2	20	30	10	30
-> 3	30	30	30	10
+> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+> index 0d53a96a3d64..01d60a024e45 100644
+> --- a/include/linux/dma-map-ops.h
+> +++ b/include/linux/dma-map-ops.h
+> @@ -71,6 +71,11 @@ struct dma_map_ops {
+>   	unsigned long (*get_merge_boundary)(struct device *dev);
+>   };
+>   
+> +struct dma_memory_decrypted_ops {
+> +	void *(*map)(void *addr, unsigned long size);
+> +	void (*unmap)(void *addr);
+> +};
+> +
+>   #ifdef CONFIG_DMA_OPS
+>   #include <asm/dma-mapping.h>
+>   
+> @@ -374,6 +379,10 @@ static inline void debug_dma_dump_mappings(struct device *dev)
+>   }
+>   #endif /* CONFIG_DMA_API_DEBUG */
+>   
+> +void *dma_map_decrypted(void *addr, unsigned long size);
+> +int dma_unmap_decrypted(void *addr, unsigned long size);
+> +
+>   extern const struct dma_map_ops dma_dummy_ops;
+> +extern struct dma_memory_decrypted_ops dma_memory_generic_decrypted_ops;
+>   
+>   #endif /* _LINUX_DMA_MAP_OPS_H */
+> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+> index 2b06a809d0b9..6fb150dc1750 100644
+> --- a/kernel/dma/mapping.c
+> +++ b/kernel/dma/mapping.c
+> @@ -13,11 +13,13 @@
+>   #include <linux/of_device.h>
+>   #include <linux/slab.h>
+>   #include <linux/vmalloc.h>
+> +#include <asm/set_memory.h>
+>   #include "debug.h"
+>   #include "direct.h"
+>   
+>   bool dma_default_coherent;
+>   
+> +struct dma_memory_decrypted_ops dma_memory_generic_decrypted_ops;
+>   /*
+>    * Managed DMA API
+>    */
+> @@ -736,3 +738,23 @@ unsigned long dma_get_merge_boundary(struct device *dev)
+>   	return ops->get_merge_boundary(dev);
+>   }
+>   EXPORT_SYMBOL_GPL(dma_get_merge_boundary);
+> +
+> +void *dma_map_decrypted(void *addr, unsigned long size)
+> +{
+> +	if (set_memory_decrypted((unsigned long)addr,
+> +				 size / PAGE_SIZE))
+> +		return NULL;
+> +
+> +	if (dma_memory_generic_decrypted_ops.map)
+> +		return dma_memory_generic_decrypted_ops.map(addr, size);
+> +	else
+> +		return addr;
+> +}
+> +
+> +int dma_unmap_encrypted(void *addr, unsigned long size)
+> +{
+> +	if (dma_memory_generic_decrypted_ops.unmap)
+> +		dma_memory_generic_decrypted_ops.unmap(addr);
+> +
+> +	return set_memory_encrypted((unsigned long)addr, size / PAGE_SIZE);
+> +}
 > 
-> And say you are running on cpu 1. I believe you want your allocation
-> preferably from node 2 rathern than 0, right?
-
-Yes, and in one earlier reply, I had a similar thought
-https://lore.kernel.org/lkml/20210728152507.GE43486@shbuild999.sh.intel.com/
-
-  "
-  One further thought is, if local node is not in the nodemask,
-  should we compare the distance of all the nodes in nodemask
-  to the local node and chose the shortest?
-  "
-And we may add a new API if there is no existing one:
-	int cloest_node(int nid, nodemask_t *nmask);
-to pick the best node from 'prefer-many' nodemsk.
-
-> With your approach you
-> would start with node 0 which would be more distant from cpu 1. 
-
-> Also the
-> semantic to give nodes some ordering based on their numbers sounds
-> rather weird to me.
-
-I agree, and as I admitted in the first reply, this need to be fixed.
-
-> The semantic I am proposing is to allocate from prefered nodes in
-> distance order starting from the local node.
-
-So the plan is:
-* if the local node is set in 'prefer-many's nodemask, then chose
-* otherwise chose the node with the shortest distance to local node
-?
-
-Thanks,
-Feng
-
-> -- 
-> Michal Hocko
-> SUSE Labs
