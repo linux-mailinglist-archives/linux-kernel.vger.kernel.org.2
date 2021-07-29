@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661D93DA657
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF193DA65D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237222AbhG2O1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:27:19 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:27995 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhG2O1R (ORCPT
+        id S237087AbhG2O2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:28:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42212 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229750AbhG2O2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:27:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1627568835; x=1659104835;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=vwT+DOuMYN89yAYYRZlirHPMkUhH9iWnZONxGbIjejc=;
-  b=HVBbJdoOkAoA1Si2R0HXPbV1yjzOKf4b1Cn1p8BjQyKnMzyS6Sy5Awfd
-   odoOffFRDecVbHtv2GYVdP2zAyLF5ls22ZezzUVqGyC/QXK5Q2ukC4OSq
-   HE4a59ml3Qz3+4f93I4PLioCTMCj5iqww+HUmc69ckMFN95bH5ccrDE86
-   8=;
-X-IronPort-AV: E=Sophos;i="5.84,278,1620691200"; 
-   d="scan'208";a="128801930"
-Subject: Re: [PATCH] asm-generic/hyperv: Fix struct hv_message_header ordering
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 29 Jul 2021 14:27:07 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 11343A1C41;
-        Thu, 29 Jul 2021 14:27:03 +0000 (UTC)
-Received: from uc8bbc9586ea454.ant.amazon.com (10.43.161.153) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 29 Jul 2021 14:26:58 +0000
-Date:   Thu, 29 Jul 2021 16:26:54 +0200
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Wei Liu <wei.liu@kernel.org>
-CC:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Siddharth Chandrasekaran <sidcha.dev@gmail.com>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>,
-        <linux-hyperv@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>, Arnd Bergmann <arnd@arndb.de>
-Message-ID: <20210729142652.GA25242@uc8bbc9586ea454.ant.amazon.com>
-References: <20210729133702.11383-1-sidcha@amazon.de>
- <87eebh9qhd.fsf@vitty.brq.redhat.com>
- <20210729140705.wj5tokeq6lkxm2yy@liuwe-devbox-debian-v2>
+        Thu, 29 Jul 2021 10:28:22 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TERnP3017894;
+        Thu, 29 Jul 2021 10:28:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=XRODP8YE+txQpLPc89b48UgaznBirPsnMkB+vT1cawU=;
+ b=gwPosHOPwBJo0glzbO3E4JynZW1aud7NCjzHDKhNm8QgX5KzU6huJbW62uKaqvpDHg0C
+ dAd68Ts6zAFlV4Dkph9vF/xmFb/9BtrdPhiCmVCNwx0eqJ+RvJi7viKZsSwHJHJea4bF
+ 7yAl3+qsWIfpiXrp+4TfNlkoGMzAeLFQ+v2Hz2utC2496Y10WI0O9qLNjIDyAo4wlUaf
+ KV4Zb4KAG2DXYrBTVZgDBCf767NsXqRciS9ZZjBvA4L9PqxZWnhWaKFwTJ+jkqB12D03
+ Hw57b737v5PZhOGoyMA2laB5jdZtc0Y+I+Ja5v/xT1D7eaLy32O4rryBKXwM9iK8uIvB Rg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3wnehrap-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 10:28:18 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TERoqJ017947;
+        Thu, 29 Jul 2021 10:28:18 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3wnehr9c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 10:28:18 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TEE0gj028769;
+        Thu, 29 Jul 2021 14:28:15 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3a235yhs7b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 14:28:15 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TEPRr020906300
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jul 2021 14:25:27 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6ADD2A4070;
+        Thu, 29 Jul 2021 14:28:12 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1FE28A4066;
+        Thu, 29 Jul 2021 14:28:12 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Jul 2021 14:28:12 +0000 (GMT)
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH] kcsan: use u64 instead of cycles_t
+Date:   Thu, 29 Jul 2021 16:28:11 +0200
+Message-Id: <20210729142811.1309391-1-hca@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210729140705.wj5tokeq6lkxm2yy@liuwe-devbox-debian-v2>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.161.153]
-X-ClientProxiedBy: EX13D18UWC004.ant.amazon.com (10.43.162.77) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 9Jgx2r-XZ9TgTC-47AcGHpMtFkUCF5P-
+X-Proofpoint-GUID: AlFAIIaxLvX5D_dB6HE9gxXME3G4Fqba
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 mlxscore=0 impostorscore=0 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 02:07:05PM +0000, Wei Liu wrote:
-> On Thu, Jul 29, 2021 at 03:52:46PM +0200, Vitaly Kuznetsov wrote:
-> > Siddharth Chandrasekaran <sidcha@amazon.de> writes:
-> >
-> > > According to Hyper-V TLFS Version 6.0b, struct hv_message_header members
-> > > should be defined in the order:
-> > >
-> > >     message_type, reserved, message_flags, payload_size
-> > >
-> > > but we have it defined in the order:
-> > >
-> > >     message_type, payload_size, message_flags, reserved
-> > >
-> > > that is, the payload_size and reserved members swapped.
-> >
-> > Indeed,
-> >
-> > typedef struct
-> > {
-> >       HV_MESSAGE_TYPE MessageType;
-> >       UINT16 Reserved;
-> >       HV_MESSAGE_FLAGS MessageFlags;
-> >       UINT8 PayloadSize;
-> >       union
-> >       {
-> >               UINT64 OriginationId;
-> >               HV_PARTITION_ID Sender;
-> >               HV_PORT_ID Port;
-> >       };
-> > } HV_MESSAGE_HEADER;
-> 
-> Well. I think TLFS is wrong. Let me ask around.
+cycles_t has a different type across architectures: unsigned int,
+unsinged long, or unsigned long long. Depending on architecture this
+will generate this warning:
 
-TBH, I hadn't considered that possibility :). I assumed it was a
-regression on our side. But I spent some time tracing the history of that
-struct all the way back to when it was in staging (in 2009) and now I'm
-inclined to believe a later version of TLFS is at fault here.
+kernel/kcsan/debugfs.c: In function ‘microbenchmark’:
+./include/linux/kern_levels.h:5:25: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘cycles_t’ {aka ‘long unsigned int’} [-Wformat=]
 
-Based on what we decide in this thread, I will open an issue on the TLFS
-GitHub repository.
+To avoid this simple change the type of cycle to u64 in
+microbenchmark(), since u64 is of type unsigned long long for all
+architectures.
 
-~ Sid.
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+---
+ kernel/kcsan/debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
+index e65de172ccf7..1d1d1b0e4248 100644
+--- a/kernel/kcsan/debugfs.c
++++ b/kernel/kcsan/debugfs.c
+@@ -64,7 +64,7 @@ static noinline void microbenchmark(unsigned long iters)
+ {
+ 	const struct kcsan_ctx ctx_save = current->kcsan_ctx;
+ 	const bool was_enabled = READ_ONCE(kcsan_enabled);
+-	cycles_t cycles;
++	u64 cycles;
+ 
+ 	/* We may have been called from an atomic region; reset context. */
+ 	memset(&current->kcsan_ctx, 0, sizeof(current->kcsan_ctx));
+-- 
+2.25.1
 
