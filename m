@@ -2,163 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA043DA2EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D883DA2F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbhG2MRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 08:17:25 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20500 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231674AbhG2MRW (ORCPT
+        id S236776AbhG2MSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 08:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236285AbhG2MST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 08:17:22 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TCBxnb106765;
-        Thu, 29 Jul 2021 08:17:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=to : cc : references :
- from : subject : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ncr9tdEnR/LWzJPZc04Ak5AtCvgjzA0ROVnP4OHIjhU=;
- b=PehW69u02IxSO+6kRFF7GppvWK32INRHEgVkGCakzcgGml+z74Aell+ARg+6Brw+HbaC
- OkDszTF9wfV8Ws4SN9+dP0TH/iC0XbxDRvH8NQeMwDaOdpJul8veq3l+5BrS9jipZGkj
- sjEVKVAAHonGtQFfA98D0KhjsQmP95WLvjVr+vb3owS0CM3epwxjxWlfh1250wtIP0A5
- sRu9fIWo2PJM6cXOGKdVS617AwBnqAWHvYWzQajuYJeafVkPJtElUHkzeIWtsLFZ6AkA
- 2sVIYBrWruc/ov/M5gZDt/oa0hUvFS/EbbkNrkXnUTVNOfBnbFRMzJey1/2K6SyTKLtE YA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3mm46aha-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 08:17:18 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TCD6l7116314;
-        Thu, 29 Jul 2021 08:17:18 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3mm46agc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 08:17:18 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TCDeEx025131;
-        Thu, 29 Jul 2021 12:17:15 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 3a235khppf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 12:17:15 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TCHCom12976530
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Jul 2021 12:17:12 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6AED611C050;
-        Thu, 29 Jul 2021 12:17:12 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA39311C05B;
-        Thu, 29 Jul 2021 12:17:11 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.155.135])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 29 Jul 2021 12:17:11 +0000 (GMT)
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        Thu, 29 Jul 2021 08:18:19 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on0622.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe1e::622])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E53C061765;
+        Thu, 29 Jul 2021 05:18:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dx1bzjaReuBm8se4BtjH0D2VWmfORFYkDnur8hhS4nPq6BBZ9l7eWUyHdlN+ooqy206tLtppdopZ6C4CwsOys6kBKr5plIee4TSnnyC+oR1p5RpCtR++6G+eKaG6YnOI2c79iCmMMwvj4tGCTDWtYLPGeCedC0FMVw2FEMiGkmB0E8IOCTPng1DfboWJRAmLKt8dBbDKCmbwdCkOnve+typDvieQ/N+N+9nRz3mR7k9o+SrNvUs0qMQdbJg1Mh0QIvoyL08ilpR8sCOZ4r56DQCjB8jQP9d6TIuEulEsR2bVhexU8pCYRCrR6ReVcWEhI3UPSvy0o812PhAet9YvIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=stLs8A2hsS2yZLQZPRDKx405ndwUgm+QSOz2i64ZlAc=;
+ b=RnE0wGAmdeRcDRzPCLtE/MqsKYQn13/BitJpi8ySO4LfM7B1A30b2HyasVNJLyVRxCaBUXL5oHyH71er/siW3iiSaTh7BMtEuuXPxS+Qz3AMSBnESyyz9CJAz88oEFxaJMYU87rjYMh+r9dWlxrooepv7yLLaIFSID3zzWqOFapd2joKciRxb9fub+Qb5PrTOjn6JxLul33Rsd647MP+h22ZiubNxc9z5WFA93wD+eEsSuqsV9OGYdh6AHS7bGVWvf/Z718H3mFYXKjgH6/N7KckFZaybIzbn4SL5QE9FxY7vR9GbbY47KYrUSUHnoGEkNJbSyjANpFOebqHzDw4QQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=stLs8A2hsS2yZLQZPRDKx405ndwUgm+QSOz2i64ZlAc=;
+ b=aD9e7A5tKYQgxACY/YT2A3Z55kpSluhHlTpn6aLWh+Pa4iqQqRVyblfkSsUawnI+T4YQcfJxRfARzJDnS/gd+tweD+Vk6YwDm/bhuL07WgAV3Ig/DmuLaNmDH1sEHs2A32u7SLZhrabfhxhHpS92tstyDMM9Z1Ih43EdoxEXlaE=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU2PR04MB8726.eurprd04.prod.outlook.com (2603:10a6:10:2dd::9)
+ by DU2PR04MB8648.eurprd04.prod.outlook.com (2603:10a6:10:2df::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Thu, 29 Jul
+ 2021 12:18:09 +0000
+Received: from DU2PR04MB8726.eurprd04.prod.outlook.com
+ ([fe80::e50a:234a:7fb7:11d4]) by DU2PR04MB8726.eurprd04.prod.outlook.com
+ ([fe80::e50a:234a:7fb7:11d4%9]) with mapi id 15.20.4373.021; Thu, 29 Jul 2021
+ 12:18:09 +0000
+From:   Wasim Khan <wasim.khan@oss.nxp.com>
+To:     bhelgaas@google.com, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210728142631.41860-1-imbrenda@linux.ibm.com>
- <20210728142631.41860-6-imbrenda@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Subject: Re: [PATCH v2 05/13] KVM: s390: pv: handle secure storage exceptions
- for normal guests
-Message-ID: <103c158c-dba6-7421-af8d-4d771c1cf087@linux.ibm.com>
-Date:   Thu, 29 Jul 2021 14:17:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210728142631.41860-6-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Cc:     V.Sethi@nxp.com, Wasim Khan <wasim.khan@nxp.com>
+Subject: [PATCH] PCI: Add ACS quirk for NXP LX2160A and LX2162A
+Date:   Thu, 29 Jul 2021 14:17:47 +0200
+Message-Id: <20210729121747.1823086-1-wasim.khan@oss.nxp.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sOsykrLJKdgJwp_DX4lCWhCs788WbNuo
-X-Proofpoint-ORIG-GUID: PrLcVzi7kY3xJxX7wAKXNY5anxzap1TY
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 spamscore=0 bulkscore=0
- mlxlogscore=999 phishscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107290078
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR10CA0060.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:150::40) To DU2PR04MB8726.eurprd04.prod.outlook.com
+ (2603:10a6:10:2dd::9)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv05369.swis.nl-cdc01.nxp.com (92.121.36.4) by AM0PR10CA0060.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Thu, 29 Jul 2021 12:18:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fc4861d0-c98f-40cf-6028-08d9528aeda5
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8648:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DU2PR04MB86487F3FB55C0BB72F2477F2D1EB9@DU2PR04MB8648.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TDUJt5OXlcK5emmBT+VY8MF8nnTw+XZc9clXoIcxAHgJkvh5GvjBmdATYX1Ps2F/frtHbiOVzRtom/sYX4JOfWGpIlQCl81BhImv7Sc4L+8A6JRlTvxSUucwk8BNdsrKlkwaaZt6W4EEmlIMjvbdO1oXsAVSwpAKIvItftqlWitQ9mnUvhimS3zTVFPN0IFWIf/qBLdNlQQNmK/xy0KFBkWkqcYfKNQhxK3WuOO/HCjhpAfCG2cnbKAiPAABIkU1QUQzT9PcjyZeMddUeMvjvobSMMEsglCnMrhPwz7navHqiAKu/VEWRp5v/mJ/n0J4Mx4stg2hPYJ7WJYiikJo8njy26sL3scVZT2rR7CqwYUlRAz6szxwjBMiwEGHEAUztlGpthQst7IWHiB1QgvtediKurPCWzdGuR0q+I056rf5Msgwi+JvE0ikudyKzGRRskv+/YDNyXU9mrsHRuTl2P+EOaxfHgUJYa+AMOyA6Zu6mH64Gtnj8ZcnRyVR23VQ8rlcY5cMXjll8izE7p9Mz5vawxG/5+YVl9NAMPgkdQRjH+ixs/uNTeMwYL0QPfB3V7UMbV3SocAKuyvCcZrjeAvsEIDWdO+yzF7HbkUl/eXUYVuvPjZzMBBgDlCmi8pFddoV2VbXQyBn55S/n7u+OiRgylCRzrAciwDS7jTWDEpZjRF4UCZ9Huo1fr/5tlgLJFIgqY1q/bGbVz2vfiOd7g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8726.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(376002)(396003)(6486002)(956004)(26005)(186003)(316002)(2616005)(86362001)(44832011)(6666004)(1076003)(4326008)(5660300002)(83380400001)(38350700002)(8676002)(478600001)(2906002)(66556008)(6512007)(8936002)(66476007)(38100700002)(6506007)(52116002)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fCe0kUE6qi1pBZadi2e+nAreQ/vSs/EVwaCDBaAijUZCyQpT0aQMxFIjo2GY?=
+ =?us-ascii?Q?2Ek50uvgpeDT/D5uwasrPj6uirUU6EWmnbN3cACnyPrro2YInCHSRmp6bFGU?=
+ =?us-ascii?Q?VzwQ6FaysXHgJfJguxHdHSCKHJX93Cw8fM7AJPJeRqZv4Ohze/PoAfqXsEHu?=
+ =?us-ascii?Q?BAIQtHD6OEoCKgXcvad+AwcPzZ1wnF4uPWjm/dmVoPcHIqCevt1Vh8mof/1c?=
+ =?us-ascii?Q?QrkBCEOlB3DGjUEDF4uQjly5UgbHZs0acfzZ65BThdD44KoBr7bhFPcs4IZ/?=
+ =?us-ascii?Q?Os0wPAXnhJcjWJpIMz34B1IHzOUIh19StRlw++YmtQooPaW+ls4QHU2s46vU?=
+ =?us-ascii?Q?LmF5w40HycAQcHpxAtla5VYCeAFg8AuKxhUXawHj5HbuYnI4aa4b+1evFT7Z?=
+ =?us-ascii?Q?8tBqiCIIu1JjfUYDtvHl76I9vt7SryKC8T7RQkvvDN61QCFybz0s42ubnwCK?=
+ =?us-ascii?Q?loH2yCZijfzKnI5Y2ATcvSI9isJJ1OwkA3GBJY/b2Z4kIq+06cp5BQOU5ylD?=
+ =?us-ascii?Q?84T/wyrzSa1fuTOV8hsc1K73wZ8l0bVh6Bf6eJAF3IoxSDlf8Jd5Bj13H1SJ?=
+ =?us-ascii?Q?GGZ3L6JRE5VGohnMnl/F9xG+4uaDdhsemvTEg4riFQGQWti79qZU2JE+5yd9?=
+ =?us-ascii?Q?g4Q+zl6Yh+FRmv2YySrGpum+g5nMaSTfsSl2m05mROZ3o8B6XWMN6Qm+YzSR?=
+ =?us-ascii?Q?/W4zHQ3WZPcuXuJ3mSMigcTUibWh4AjVLfSxY57CjnENHOoGDsZF6YGWCAGE?=
+ =?us-ascii?Q?XnrU9EEB/Hwodva2OK9FD2s2uwmhaWIGzyyXGJQkM5VcxNLWrMEjYZ7IJXLA?=
+ =?us-ascii?Q?C/5kQhjUnbSEb2+xzB1HHhSF9oX/RfuWEOuRO5WcQAjExlr5MdnIq3AunbTm?=
+ =?us-ascii?Q?wrYjU6z/m8tBTEJIvNjT+dXptgq4ktNybT/XNSv/11FQUL0VvUy2rvFPFJ+6?=
+ =?us-ascii?Q?v6Wix/yvJ/UhSNAevqeIjKp5uZg9AQ/MQTsaX8EBhcadoSOhrX+4tNXFIW9b?=
+ =?us-ascii?Q?I8sFHSUXx/lCbrnc60jo8cUP8Io4byDRtoAW9eun0zjzBNsvA6fblq1TSGxD?=
+ =?us-ascii?Q?VyXX5DL3qTrWdOhc82t4GSxPjJRy0v2GURwFGqRbGc8Mg/6sFHdJQOZS4VS3?=
+ =?us-ascii?Q?pId2jkOI9tC+zEqZT6YhMBpEo2qwaEOYzjB164gQhIE1zKM5orhj+qhdcRzv?=
+ =?us-ascii?Q?5ce7G+CobH6oiQJShPNXmnExUMavHQVNTFP11XoIF4MzoCpi0xWTN3zqkKzE?=
+ =?us-ascii?Q?UrtQz0CIyXAghcCncnDtAgdsJhOuPOnbDQtD7HmpyAj1GPlcPAlBBdAlzDLM?=
+ =?us-ascii?Q?lVRNtQ6QlOxJQ+KH8QyasrtO?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc4861d0-c98f-40cf-6028-08d9528aeda5
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8726.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 12:18:09.7151
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4Mc7XlqHXKckqJe1x/+RqgunxQNLaFyqEbFuuMWclc8US8O2sKmub/189bI+gN0OC+P5wacPok31iGt3wMjIvQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8648
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 4:26 PM, Claudio Imbrenda wrote:
-> With upcoming patches, normal guests might touch secure pages.
-> 
-> This patch extends the existing exception handler to convert the pages
-> to non secure also when the exception is triggered by a normal guest.
-> 
-> This can happen for example when a secure guest reboots; the first
-> stage of a secure guest is non secure, and in general a secure guest
-> can reboot into non-secure mode.
-> 
-> If the secure memory of the previous boot has not been cleared up
-> completely yet, a non-secure guest might touch secure memory, which
-> will need to be handled properly.
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> ---
->  arch/s390/mm/fault.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-> index eb68b4f36927..b89d625ea2ec 100644
-> --- a/arch/s390/mm/fault.c
-> +++ b/arch/s390/mm/fault.c
-> @@ -767,6 +767,7 @@ void do_secure_storage_access(struct pt_regs *regs)
->  	struct vm_area_struct *vma;
->  	struct mm_struct *mm;
->  	struct page *page;
-> +	struct gmap *gmap;
->  	int rc;
->  
->  	/*
-> @@ -796,6 +797,16 @@ void do_secure_storage_access(struct pt_regs *regs)
->  	}
->  
->  	switch (get_fault_type(regs)) {
-> +	case GMAP_FAULT:
-> +		gmap = (struct gmap *)S390_lowcore.gmap;
-> +		/*
-> +		 * Very unlikely, but if it happens, simply try again.
-> +		 * The next attempt will trigger a different exception.
-> +		 */
+From: Wasim Khan <wasim.khan@nxp.com>
 
-If we keep this the way it currently is then the comment needs to go to
-the EFAULT check since it makes no sense above the gmap_translate().
+Root Ports in NXP LX2160A and LX2162A where each Root Port
+is a Root Complex with unique segment numbers do provide
+isolation features to disable peer transactions and
+validate bus numbers in requests, but do not provide an
+actual PCIe ACS capability.
 
-> +		addr = __gmap_translate(gmap, addr);
+Add ACS quirk for NXP LX2160A and LX2162A
 
-So we had a valid gmap PTE to end up here where the guest touched a
-secure page and triggered the exception. But we suddenly can't translate
-the gaddr to a vmaddr because the gmap tracking doesn't have an entry
-for the address.
+Signed-off-by: Wasim Khan <wasim.khan@nxp.com>
+---
+ drivers/pci/quirks.c    | 16 ++++++++++++++++
+ include/linux/pci_ids.h |  1 +
+ 2 files changed, 17 insertions(+)
 
-My first instinct is to SIGSEGV the process since I can't come up with a
-way out of this situation except for the process to map this back in.
-The only reason I can think of that it was removed from the mapping is
-malicious intent or a bug.
-
-I think this is needs a VM_FAULT_BADMAP and a do_fault_error() call.
-
-> +		if (addr == -EFAULT)
-> +			break;
-> +		fallthrough;
->  	case USER_FAULT:
->  		mm = current->mm;
->  		mmap_read_lock(mm);
-> @@ -824,7 +835,6 @@ void do_secure_storage_access(struct pt_regs *regs)
->  		if (rc)
->  			BUG();
->  		break;
-> -	case GMAP_FAULT:
->  	default:
->  		do_fault_error(regs, VM_READ | VM_WRITE, VM_FAULT_BADMAP);
->  		WARN_ON_ONCE(1);
-> 
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 653660e3ba9e..24343a76c034 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4527,6 +4527,18 @@ static int pci_quirk_qcom_rp_acs(struct pci_dev *dev, u16 acs_flags)
+ 		PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+ }
+ 
++/*
++ * These NXP Root Ports with each Root Port is a Root Complex
++ * with unique segment numbers do provide isolation features
++ * to disable peer transactions and validate bus numbers in
++ * requests, but do not provide an actual PCIe ACS capability.
++ */
++static int pci_quirk_nxp_rp_acs(struct pci_dev *dev, u16 acs_flags)
++{
++	return pci_acs_ctrl_enabled(acs_flags,
++		PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
++}
++
+ static int pci_quirk_al_acs(struct pci_dev *dev, u16 acs_flags)
+ {
+ 	if (pci_pcie_type(dev) != PCI_EXP_TYPE_ROOT_PORT)
+@@ -4771,6 +4783,10 @@ static const struct pci_dev_acs_enabled {
+ 	{ PCI_VENDOR_ID_ZHAOXIN, 0x3038, pci_quirk_mf_endpoint_acs },
+ 	{ PCI_VENDOR_ID_ZHAOXIN, 0x3104, pci_quirk_mf_endpoint_acs },
+ 	{ PCI_VENDOR_ID_ZHAOXIN, 0x9083, pci_quirk_mf_endpoint_acs },
++	/* NXP root ports */
++	{ PCI_VENDOR_ID_NXP, 0x8d80, pci_quirk_nxp_rp_acs },
++	{ PCI_VENDOR_ID_NXP, 0x8d88, pci_quirk_nxp_rp_acs },
++	{ PCI_VENDOR_ID_NXP, 0x8d89, pci_quirk_nxp_rp_acs },
+ 	/* Zhaoxin Root/Downstream Ports */
+ 	{ PCI_VENDOR_ID_ZHAOXIN, PCI_ANY_ID, pci_quirk_zhaoxin_pcie_ports_acs },
+ 	{ 0 }
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index d8156a5dbee8..9eabf77d043a 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -2537,6 +2537,7 @@
+ #define PCI_DEVICE_ID_MPC8641		0x7010
+ #define PCI_DEVICE_ID_MPC8641D		0x7011
+ #define PCI_DEVICE_ID_MPC8610		0x7018
++#define PCI_VENDOR_ID_NXP		0x1957
+ 
+ #define PCI_VENDOR_ID_PASEMI		0x1959
+ 
+-- 
+2.25.1
 
