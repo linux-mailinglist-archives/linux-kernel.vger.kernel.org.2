@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542133DA6AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC7C3DA6B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237561AbhG2Okx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
+        id S237458AbhG2Ol6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237295AbhG2Okv (ORCPT
+        with ESMTP id S237253AbhG2OlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:40:51 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B43C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:40:47 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id n6so7827562ljp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:40:47 -0700 (PDT)
+        Thu, 29 Jul 2021 10:41:23 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB49DC061765;
+        Thu, 29 Jul 2021 07:41:19 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id i39-20020a9d17270000b02904cf73f54f4bso6113453ota.2;
+        Thu, 29 Jul 2021 07:41:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g5bAj8ty5oGdKwNlb8K8CLCbwch75jyi8lukuavge1w=;
-        b=Pt/myiUcp/HcWkRJqwMsshxtVCmbTMQkOHiiYTWtRrlpIQtfIwP/TshXg/Sv8sShX9
-         o2MFa/ULWHD9UC3jmOcqn1lmGxaT4wKLBTj9EmJNBAHOi7Q8KcOqOF0BKQN7ZPWxNCSJ
-         XetW0whmTlm+G5aufSYRe0G9VUSjiNZ+WQeflOuu8nWflrnK9K1ff6Rd2RAu58nxE+Y6
-         7qbJdt29eO3qn86prpYrCpSIiyM4hC29igxet+IGxGq7kaFkObrd4BxwXuAznFdcDM9l
-         95jP6Xt6Saju2kAdhuCdAVe/F79H2aNR8AMySTMNEDU2FRE0HLzx6Q07o0jseAYwQdQb
-         9Rcw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FPq9UnKVcU4kfCZLJNlpegR0xa6ct4O4koLbgdWD4mQ=;
+        b=cBLsSxg7emiU57PRaLgGFkBKp+9tX2FpCAewe/ej4ucoKac0M7vtwcSsfbgbQkFe0K
+         yvTTr4Md3XROGREifNti6dvrHwC+JRTnL5mUPKYH/PtrNRdxozTbyYPPw2mnZvQqcc1I
+         vBbeRNT/FlKIqiCJeLALw8oEB0d5vwfJ/kYLKO2Oc1O6XtVXwgKpFNxW1gGnBdAJE+H2
+         MgnOH+mldYPftLCSGFPhGlznENlozNZngjSwd2gwTU1XfjvlYVUE9B+IZOkqxDwTtYGH
+         W3A1zx/NsSHBsyQcUg7Zxw/GaTX63J96u7+JW0iEj8uqZG+AfH/O//Evz6+MBmR213u1
+         tySA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g5bAj8ty5oGdKwNlb8K8CLCbwch75jyi8lukuavge1w=;
-        b=QKkcVTQ348zEngeoJbCWLZNgHGQBqDdOKLS240W4YH6LU5GQ4IagjxcoqYXo5p8Q3u
-         rvYw4vCK7qV/mauzdhiPmjsvhqEfd30U0Rz1oQ5F9lbXMEKmsv5i9qBsEBABRf3UnZAS
-         JcIMgSd71EcCkekqazzGGwVAVzxXpdKrlKtGS+Gnwp4RAeij8vc04ugQJTVf+FnPOgkY
-         k1XMMvUh5sXZVbnrhwHaU6JbqK8RN5wjtVpg1+F4FzVHuzrtUaPYe/SjBPsAbr6OU5On
-         ZlDHmAxG4NtPFKvrB7L98S3wLb8ycwT+Nf/enGJa+m/Q5Y3AgaFhDuYsP5jqYVx1P03M
-         I82w==
-X-Gm-Message-State: AOAM53160JmYCkuMuzn5r34/rpQBNBGuhndIuHYYxRaIZAvrkJAz/Spe
-        slhYLgN+yvAnrZ9qsqrRBr3Z9BT5Dwvzv4KRdjzauA==
-X-Google-Smtp-Source: ABdhPJy0WHl5s9+K9hYnC4buzSwLhc4EudrWVzNl4PYmMwFv350CnGn+D/62ehgVRJhSUPwN8mqn74ibwIDnHFvWGvY=
-X-Received: by 2002:a05:651c:1211:: with SMTP id i17mr3201903lja.122.1627569645751;
- Thu, 29 Jul 2021 07:40:45 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FPq9UnKVcU4kfCZLJNlpegR0xa6ct4O4koLbgdWD4mQ=;
+        b=L9nNqoXfaSkbO5W9nLOCWFlqKJUefblKoTRmAjLwViBtiyj9WJgBR/KgUZ/yvkQZm6
+         15WOHfQ1etxrWGyl6CxeNzjN9QLyc9zdOTp4Dwto8ZOkIqWeHlvWwLnVvKfk+aph1+bW
+         lGYe5XmzNob1ABPUVwpfNIPbHuqvAji6ojjtgcXdbhoT/Gnmq8jxuTJbs451yH4Tvops
+         1kNSt5iMV1e+IVVJRwfPZklRRRhcsv//2oeQT+Y2ZD5ew8FR/5uEm9jBN3E+u4f17NB2
+         78sDeUtmy6n5HfScuMAqTdTTEvW4NmMR+lkiwcfx/MBv8jzooanHqCeFq4srKSXuyrzD
+         dP7Q==
+X-Gm-Message-State: AOAM530/3PTSLsOpO9/VxHu8YmunJVDxXNggZJ+3DyFm5Fsvt6YCjpTb
+        aBDV1ovLsfKXLTIQEYuvBEI=
+X-Google-Smtp-Source: ABdhPJwU0Evtf3qU/3HFjq/6at57j3lQJc6/jHgfrc1Z2hQjAvtCqtjbxb3Nz982mtFrMD7LIMr1nw==
+X-Received: by 2002:a9d:6d8d:: with SMTP id x13mr3571864otp.192.1627569679341;
+        Thu, 29 Jul 2021 07:41:19 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.27])
+        by smtp.googlemail.com with ESMTPSA id v13sm421ook.40.2021.07.29.07.41.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 07:41:18 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: ipv6: add IFLA_RA_MTU to expose mtu value
+ in the RA message
+To:     Rocco Yue <rocco.yue@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        rocco.yue@gmail.com, chao.song@mediatek.com,
+        zhuoliang.zhang@mediatek.com
+References: <20210729090206.11138-1-rocco.yue@mediatek.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <c4099beb-1c22-ac71-ae05-e3f9a8ab69e2@gmail.com>
+Date:   Thu, 29 Jul 2021 08:41:17 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-4-linmiaohe@huawei.com>
-In-Reply-To: <20210729125755.16871-4-linmiaohe@huawei.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 29 Jul 2021 07:40:34 -0700
-Message-ID: <CALvZod4MpcxzZ59hTX72g7F26Kmb=hfBCGNUGq41MgRfTvuEsQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] mm, memcg: save some atomic ops when flush is already true
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Matthew Wilcox <willy@infradead.org>, alexs@kernel.org,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210729090206.11138-1-rocco.yue@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 5:58 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> Add 'else' to save some atomic ops in obj_stock_flush_required() when
-> flush is already true. No functional change intended here.
->
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+On 7/29/21 3:02 AM, Rocco Yue wrote:
+> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+> index 4882e81514b6..ea6c872c5f2c 100644
+> --- a/include/uapi/linux/if_link.h
+> +++ b/include/uapi/linux/if_link.h
+> @@ -347,7 +347,7 @@ enum {
+>  	 */
+>  	IFLA_PARENT_DEV_NAME,
+>  	IFLA_PARENT_DEV_BUS_NAME,
+> -
+> +	IFLA_RA_MTU,
+>  	__IFLA_MAX
+>  };
+>  
+> diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
+> index 70603775fe91..3dbcf212b766 100644
+> --- a/include/uapi/linux/ipv6.h
+> +++ b/include/uapi/linux/ipv6.h
+> @@ -190,6 +190,7 @@ enum {
+>  	DEVCONF_NDISC_TCLASS,
+>  	DEVCONF_RPL_SEG_ENABLED,
+>  	DEVCONF_RA_DEFRTR_METRIC,
+> +	DEVCONF_RA_MTU,
+>  	DEVCONF_MAX
+>  };
+>  
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+you do not need both IFLA and DEVCONF. Drop the DEVCONF completely. IFLA
+attribute can be used for both inspection and notification on change.
