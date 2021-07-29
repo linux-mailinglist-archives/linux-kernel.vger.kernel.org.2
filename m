@@ -2,78 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC3E3DAC11
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7613DAC0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhG2Ttj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 15:49:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229698AbhG2Ttg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232080AbhG2Tth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:49:37 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:23159 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229606AbhG2Ttg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Jul 2021 15:49:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5109260EE6;
-        Thu, 29 Jul 2021 19:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627588172;
-        bh=buhNMFI+9VCWjOMaoYdJ3hTev3sxHngfjErEthfv/3g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IbWSsKQyObaCDnAy1A09HilVYchZ3N2y2asBTI+1Ab5ayFnhNaiZGMNNAvPbFkX32
-         gyIJM3lj3mCu0v/b1ScWnWNPyKWjJVcfYr5+Uef9kFtrVyP/w2QBgMigzMbPHvLjH+
-         HcjvrMYwjgGqUDE9Nj5t0ow1yo2jkn9nqDigSXgsxubNZnjWctg/GUhBFmrDJ9YVFI
-         rPkaIRxLuGMy4hPuGq8IL4oWvySDNvavmZXwThjpJ9fs+p+cAviE6EmM72W161i1Z5
-         5u3KUuqzElccdiFkKwmASQqpUrcLS8UVrQ8V1AbhDn+eUTQpjycthSMmoQq8tn4tlR
-         BBZS+4GJSVbMg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH 1/3] ASoC: cs42l42: Correct definition of ADC Volume control
-Date:   Thu, 29 Jul 2021 20:49:21 +0100
-Message-Id: <162758812271.3952.13208728919315614383.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210729170929.6589-1-rf@opensource.cirrus.com>
-References: <20210729170929.6589-1-rf@opensource.cirrus.com>
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d56 with ME
+        id b7pU2500D21Fzsu037pUqA; Thu, 29 Jul 2021 21:49:31 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 29 Jul 2021 21:49:31 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     narmstrong@baylibre.com, mchehab@kernel.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: meson-ge2d: Fix rotation parameter changes detection in 'ge2d_s_ctrl()'
+Date:   Thu, 29 Jul 2021 21:49:25 +0200
+Message-Id: <6cb8efcadcf8c856efb32b7692fc9bf3241e3bc3.1627588010.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jul 2021 18:09:27 +0100, Richard Fitzgerald wrote:
-> The ADC volume is a signed 8-bit number with range -97 to +12,
-> with -97 being mute. Use a SOC_SINGLE_S8_TLV() to define this
-> and fix the DECLARE_TLV_DB_SCALE() to have the correct start and
-> mute flag.
+There is likely a typo here. To be consistent, we should compare
+'fmt.height' with 'ctx->out.pix_fmt.height', not 'ctx->out.pix_fmt.width'.
 
-Applied to
+Fixes: 59a635327ca7 ("media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+I've not looked deeply in the code, but why is this test needed in the
+first place?
+Couldn't we assigned 'ctx->out.pix_fmt = fmt' un-conditionally?
+---
+ drivers/media/platform/meson/ge2d/ge2d.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-   torvalds/linux.git master
+diff --git a/drivers/media/platform/meson/ge2d/ge2d.c b/drivers/media/platform/meson/ge2d/ge2d.c
+index a1393fefa8ae..be22bb60e7cf 100644
+--- a/drivers/media/platform/meson/ge2d/ge2d.c
++++ b/drivers/media/platform/meson/ge2d/ge2d.c
+@@ -780,7 +780,7 @@ static int ge2d_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		 * parameters, take them in account
+ 		 */
+ 		if (fmt.width != ctx->out.pix_fmt.width ||
+-		    fmt.height != ctx->out.pix_fmt.width ||
++		    fmt.height != ctx->out.pix_fmt.height ||
+ 		    fmt.bytesperline > ctx->out.pix_fmt.bytesperline ||
+ 		    fmt.sizeimage > ctx->out.pix_fmt.sizeimage)
+ 			ctx->out.pix_fmt = fmt;
+-- 
+2.30.2
 
-Thanks!
-
-[1/3] ASoC: cs42l42: Correct definition of ADC Volume control
-      commit: ee86f680ff4c9b406d49d4e22ddf10805b8a2137
-[2/3] ASoC: cs42l42: Don't allow SND_SOC_DAIFMT_LEFT_J
-      commit: 64324bac750b84ca54711fb7d332132fcdb87293
-[3/3] ASoC: cs42l42: Fix bclk calculation for mono
-      commit: 926ef1a4c245c093acc07807e466ad2ef0ff6ccb
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
