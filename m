@@ -2,316 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178A53D9CE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BBE3D9CE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbhG2EpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 00:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbhG2EpA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 00:45:00 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98EDC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 21:44:57 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id u15-20020a05600c19cfb02902501bdb23cdso5900951wmq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 21:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=u83h2L86nsZYv8NbsUw74aEmeDWcUY3MuHoKCqJtf3Q=;
-        b=osuOOAGzKZCQN2G6lLQxjelORkW+B702aR8NElkuPml+50JPAG1/hjCVIQuvpSDC6x
-         xkhOX4ycDxb5l+LTI3Y7jd18fGTbG+Vy5qHmMc/UAS05vmYWu6agpe8oxhsTM0WmzDwR
-         oKrWjZK/4zhTudepws6vmrRtbvk3kG8jaDP1DvrJ09MPljsU8NrfS2w5nDYYA0XuTHfA
-         D/8VtQGvWSqx7bLPEcws5G4+6a/UOIJ/5beHmU4FwL6sx8NmTU6VnrPLWmFP0KB7tvgj
-         mln5JvqQsNOGMEIkxZBbEwGB98HLaUnokYNopUabJOTvMOD3nlyX7vlwXWDUKnHpXGj3
-         56Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=u83h2L86nsZYv8NbsUw74aEmeDWcUY3MuHoKCqJtf3Q=;
-        b=OzLw4Hop30SEKVQhzvGeLS/0O70DEaCCfJLgS7fG+0FQonPjdh9wydnrcvRT6JAQfj
-         67ZQuCroudsT7afywjvME1CBH4fE2dZnNiqZksBHDEAABLgPwV0VT0jASc6tsImihtBP
-         kX2jNpwvlbh842hHeDTnzmLe0I51QywQwQK8yrfJSVQ7cHoZmm3+8bXm8hNO7y5tdcqg
-         +AkwcAu8+3KXIXLuX3csQeRS3sLUNhe9zRWQIK2pNjzf0UvRIoRcav+wbowna7Bqm2f3
-         PUYyPjpueUcVWu40NwXMqrW9wB8OhRvct+DmUyUuWqwo+29Pb4/EOjhO6B9D0UOLAnnX
-         /VAw==
-X-Gm-Message-State: AOAM532UeD9TPUg6+giVtdhnfFz38XisIoEylOeqIo6Ml0IIhIgSQhZ0
-        evZBQiYTySsiMoXUZB2KiY7Bmm+7kvklqKXlNKYWeQ==
-X-Google-Smtp-Source: ABdhPJx3AQqf4zvFFpHRKjBF4rtaCGTSInvaYCd5ZKGhNsldGk+5Zhf+1VA69+8ubyBIdHyyBLnabPeEhNqmszyblZM=
-X-Received: by 2002:a05:600c:b46:: with SMTP id k6mr2719010wmr.134.1627533896307;
- Wed, 28 Jul 2021 21:44:56 -0700 (PDT)
+        id S233758AbhG2EpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 00:45:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:40624 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233639AbhG2EpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 00:45:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5574C1FB;
+        Wed, 28 Jul 2021 21:45:10 -0700 (PDT)
+Received: from [10.163.65.237] (unknown [10.163.65.237])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EC253F66F;
+        Wed, 28 Jul 2021 21:45:05 -0700 (PDT)
+Subject: Re: [PATCH v4 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
+        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
+        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
+References: <20210727061401.592616-1-gshan@redhat.com>
+ <20210727061401.592616-2-gshan@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <33626f62-0650-67ef-14be-0e79e69365f4@arm.com>
+Date:   Thu, 29 Jul 2021 10:15:54 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <mhng-6c25dda6-4c85-447c-ad9c-7641f2858b10@palmerdabbelt-glaptop> <mhng-40d64bc7-5a95-4a16-af45-1d7fd7c6167e@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-40d64bc7-5a95-4a16-af45-1d7fd7c6167e@palmerdabbelt-glaptop>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 29 Jul 2021 10:14:44 +0530
-Message-ID: <CAAhSdy2rvi1v4Txbd18JE6pad+iW8resE8_6+7ZnNiQKUMhgkQ@mail.gmail.com>
-Subject: Re: [PATCH v7 1/1] RISC-V: Use SBI SRST extension when available
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210727061401.592616-2-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:00 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> On Sun, 11 Jul 2021 11:59:33 PDT (-0700), Palmer Dabbelt wrote:
-> > On Fri, 09 Jul 2021 22:01:02 PDT (-0700), Anup Patel wrote:
-> >>
-> >>
-> >> =EF=BB=BFOn 08/07/21, 9:22 AM, "Anup Patel" <anup@brainfault.org> wrot=
-e:
-> >>
-> >>     On Wed, Jul 7, 2021 at 1:57 AM Palmer Dabbelt <palmerdabbelt@googl=
-e.com> wrote:
-> >>     >
-> >>     > On Mon, 21 Jun 2021 21:46:46 PDT (-0700), anup@brainfault.org wr=
-ote:
-> >>     > > Hi Palmer,
-> >>     > >
-> >>     > > On Wed, Jun 9, 2021 at 5:43 PM Anup Patel <anup.patel@wdc.com>=
- wrote:
-> >>     > >>
-> >>     > >> The SBI SRST extension provides a standard way to poweroff an=
-d
-> >>     > >> reboot the system irrespective to whether Linux RISC-V S-mode
-> >>     > >> is running natively (HS-mode) or inside Guest/VM (VS-mode).
-> >>     > >>
-> >>     > >> The SBI SRST extension is available in the SBI v0.3 specifica=
-tion.
-> >>     > >> (Refer, https://github.com/riscv/riscv-sbi-doc/releases/tag/v=
-0.3.0-rc1)
-> >>     > >
-> >>     > > Can you please consider this patch for Linux-5.14-rc1 ?
-> >>     > >
-> >>     > > The SBI v0.3 spec is already frozen and this patch has been
-> >>     > > floating on LKML for quite a few months now.
-> >>     >
-> >>     > I didn't realize that SBI-0.3 had been frozed.  That link is to =
-a RC,
-> >>     > the cooresponding v0.3.0 tag isn't in that repo.  Can you give m=
-e a
-> >>     > pointer to the frozen spec?
-> >>
-> >>     Here's the link to SBI v0.3.0 tag:
-> >>     https://github.com/riscv/riscv-sbi-doc/releases/tag/v0.3.0
-> >>
-> >>     We treat RC tags as frozen in SBI spec because no functional
-> >>     changes are done in SBI spec after it is tagged as RC. We only
-> >>     do typo fixes and clarifications on SBI spec RC release.
-> >
-> > Treating the 0.3.0-rc1 as frozen as soon as it's released is a
-> > terrifying policy: some of the fixes I sent in after I saw rc1 released
-> > change the actual meaning of the text, even if they were meant to chang=
-e
-> > them to what I thought the intended meaning was supposed to be.  That
-> > means the actual text of 0.3.0-rc1 and 0.3.0 conflict with each other.
-> > Given that frozen comes with a guarntee of backwards compatibility, doe=
-s
-> > that mean that the behavior allowed by 0.3.0-rc1 is compliant with the
-> > SBI, even if it was likely just allowed by a wording mistake?
-> >
-> > If you're going to freeze things at rc1 then you really need to be quit=
-e
-> > explicit about that, as generally the point of RCs is to elicit
-> > review/testing.  Looks like I was the only person to have provided any
-> > review, so I guess I was the only one who assumed "We don't expect any
-> > significant functional changes. We will wait for any further feedback
-> > and release the official v0.3 in a month or so." actually meant "this i=
-s
-> > frozen".
-> >
-> >> Can you take this patch for Linux-5.14 ??
-> >
-> > No, sorry, it's way too late for that.  Please be specific about when
-> > you freeze specifications in the future, so we can all stay on the same
-> > page.
->
-> I went and talked to Krste, and he says that there's a whole process for
-> freezing extensions that this hasn't gone through.  They don't have
-> anything written down that I can point to, but can you guys please just
-> get on the same page about this?  It seems like every time I talk to
-> someone from the RISC-V foundation I get a conflicting description of
-> what's going on, and I'm entirely out of patience when it comes to
-> getting blamed for all the chaos over there.
 
-The RISC-V SBI is a pure software specification and not a ISA specification=
-.
-In fact, this is not even non-ISA specification dealing with a MMIO
-(or hardware) device. There is no process defined for RISC-V software
-specifications.
 
-The last SBI v0.2 release was done by you (Palmer). At that time, you
-simply tagged the SBI v0.2 release and announced it everywhere.
+On 7/27/21 11:43 AM, Gavin Shan wrote:
+> In debug_vm_pgtable(), there are many local variables introduced to
+> track the needed information and they are passed to the functions for
+> various test cases. It'd better to introduce a struct as place holder
+> for these information. With it, what the tests functions need is the
+> struct. In this way, the code is simplified and easier to be maintained.
+> 
+> Besides, set_xxx_at() could access the data on the corresponding pages
+> in the page table modifying tests. So the accessed pages in the tests
+> should have been allocated from buddy. Otherwise, we're accessing pages
+> that aren't owned by us. This causes issues like page flag corruption
+> or kernel crash on accessing unmapped page when CONFIG_DEBUG_PAGEALLOC
+> is enabled.
+> 
+> This introduces "struct pgtable_debug_args". The struct is initialized
+> and destroyed, but the information in the struct isn't used yet. It will
+> be used in subsequent patches.
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  mm/debug_vm_pgtable.c | 280 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 279 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index 1c922691aa61..8c7361643166 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+> @@ -58,6 +58,37 @@
+>  #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
+>  #define RANDOM_NZVALUE	GENMASK(7, 0)
+>  
+> +struct pgtable_debug_args {
+> +	struct mm_struct	*mm;
+> +	struct vm_area_struct	*vma;
+> +
+> +	pgd_t			*pgdp;
+> +	p4d_t			*p4dp;
+> +	pud_t			*pudp;
+> +	pmd_t			*pmdp;
+> +	pte_t			*ptep;
+> +
+> +	p4d_t			*start_p4dp;
+> +	pud_t			*start_pudp;
+> +	pmd_t			*start_pmdp;
+> +	pgtable_t		start_ptep;
+> +
+> +	unsigned long		vaddr;
+> +	pgprot_t		page_prot;
+> +	pgprot_t		page_prot_none;
+> +
+> +	bool			is_contiguous_page;
+> +	unsigned long		pud_pfn;
+> +	unsigned long		pmd_pfn;
+> +	unsigned long		pte_pfn;
+> +
+> +	unsigned long		fixed_pgd_pfn;
+> +	unsigned long		fixed_p4d_pfn;
+> +	unsigned long		fixed_pud_pfn;
+> +	unsigned long		fixed_pmd_pfn;
+> +	unsigned long		fixed_pte_pfn;
+> +};
+> +
+>  static void __init pte_basic_tests(unsigned long pfn, int idx)
+>  {
+>  	pgprot_t prot = protection_map[idx];
+> @@ -955,8 +986,249 @@ static unsigned long __init get_random_vaddr(void)
+>  	return random_vaddr;
+>  }
+>  
+> +static void __init destroy_args(struct pgtable_debug_args *args)
+> +{
+> +	struct page *page = NULL;
+> +
+> +	/* Free (huge) page */
+> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +	    IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+> +	    has_transparent_hugepage() &&
+> +	    args->pud_pfn != ULONG_MAX) {
+> +		if (args->is_contiguous_page) {
+> +			free_contig_range(args->pud_pfn,
+> +					  (1 << (HPAGE_PUD_SHIFT - PAGE_SHIFT)));
+> +		} else {
+> +			page = pfn_to_page(args->pud_pfn);
+> +			__free_pages(page, HPAGE_PUD_SHIFT - PAGE_SHIFT);
+> +		}
+> +
+> +		args->pud_pfn = ULONG_MAX;
+> +		args->pmd_pfn = ULONG_MAX;
+> +		args->pte_pfn = ULONG_MAX;
+> +	}
+> +
+> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +	    has_transparent_hugepage() &&
+> +	    args->pmd_pfn != ULONG_MAX) {
+> +		if (args->is_contiguous_page) {
+> +			free_contig_range(args->pmd_pfn, (1 << HPAGE_PMD_ORDER));
+> +		} else {
+> +			page = pfn_to_page(args->pmd_pfn);
+> +			__free_pages(page, HPAGE_PMD_ORDER);
+> +		}
+> +
+> +		args->pmd_pfn = ULONG_MAX;
+> +		args->pte_pfn = ULONG_MAX;
+> +	}
+> +
+> +	if (args->pte_pfn != ULONG_MAX) {
+> +		page = pfn_to_page(args->pte_pfn);
+> +		__free_pages(page, 0);
+> +	}
+> +
+> +	/* Free page table entries */
+> +	if (args->start_ptep) {
+> +		pte_free(args->mm, args->start_ptep);
+> +		mm_dec_nr_ptes(args->mm);
+> +	}
+> +
+> +	if (args->start_pmdp) {
+> +		pmd_free(args->mm, args->start_pmdp);
+> +		mm_dec_nr_pmds(args->mm);
+> +	}
+> +
+> +	if (args->start_pudp) {
+> +		pud_free(args->mm, args->start_pudp);
+> +		mm_dec_nr_puds(args->mm);
+> +	}
+> +
+> +	if (args->start_p4dp)
+> +		p4d_free(args->mm, args->p4dp);
+> +
+> +	/* Free vma and mm struct */
+> +	if (args->vma)
+> +		vm_area_free(args->vma);
 
-Regards,
-Anup
+Small nit, needs an extra line here.
 
->
-> >
-> >>
-> >> Regards,
-> >> Anup
-> >>
-> >>     Regards,
-> >>     Anup
-> >>
-> >>     >
-> >>     > >
-> >>     > > Regards,
-> >>     > > Anup
-> >>     > >
-> >>     > >>
-> >>     > >> This patch extends Linux RISC-V SBI implementation to detect
-> >>     > >> and use SBI SRST extension.
-> >>     > >>
-> >>     > >> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> >>     > >> Reviewed-by: Atish Patra <atish.patra@wdc.com>
-> >>     > >> ---
-> >>     > >>  arch/riscv/include/asm/sbi.h | 24 ++++++++++++++++++++++++
-> >>     > >>  arch/riscv/kernel/sbi.c      | 35 ++++++++++++++++++++++++++=
-+++++++++
-> >>     > >>  2 files changed, 59 insertions(+)
-> >>     > >>
-> >>     > >> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/includ=
-e/asm/sbi.h
-> >>     > >> index 0d42693cb65e..289621da4a2a 100644
-> >>     > >> --- a/arch/riscv/include/asm/sbi.h
-> >>     > >> +++ b/arch/riscv/include/asm/sbi.h
-> >>     > >> @@ -27,6 +27,7 @@ enum sbi_ext_id {
-> >>     > >>         SBI_EXT_IPI =3D 0x735049,
-> >>     > >>         SBI_EXT_RFENCE =3D 0x52464E43,
-> >>     > >>         SBI_EXT_HSM =3D 0x48534D,
-> >>     > >> +       SBI_EXT_SRST =3D 0x53525354,
-> >>     > >>  };
-> >>     > >>
-> >>     > >>  enum sbi_ext_base_fid {
-> >>     > >> @@ -70,6 +71,21 @@ enum sbi_hsm_hart_status {
-> >>     > >>         SBI_HSM_HART_STATUS_STOP_PENDING,
-> >>     > >>  };
-> >>     > >>
-> >>     > >> +enum sbi_ext_srst_fid {
-> >>     > >> +       SBI_EXT_SRST_RESET =3D 0,
-> >>     > >> +};
-> >>     > >> +
-> >>     > >> +enum sbi_srst_reset_type {
-> >>     > >> +       SBI_SRST_RESET_TYPE_SHUTDOWN =3D 0,
-> >>     > >> +       SBI_SRST_RESET_TYPE_COLD_REBOOT,
-> >>     > >> +       SBI_SRST_RESET_TYPE_WARM_REBOOT,
-> >>     > >> +};
-> >>     > >> +
-> >>     > >> +enum sbi_srst_reset_reason {
-> >>     > >> +       SBI_SRST_RESET_REASON_NONE =3D 0,
-> >>     > >> +       SBI_SRST_RESET_REASON_SYS_FAILURE,
-> >>     > >> +};
-> >>     > >> +
-> >>     > >>  #define SBI_SPEC_VERSION_DEFAULT       0x1
-> >>     > >>  #define SBI_SPEC_VERSION_MAJOR_SHIFT   24
-> >>     > >>  #define SBI_SPEC_VERSION_MAJOR_MASK    0x7f
-> >>     > >> @@ -148,6 +164,14 @@ static inline unsigned long sbi_minor_ve=
-rsion(void)
-> >>     > >>         return sbi_spec_version & SBI_SPEC_VERSION_MINOR_MASK=
-;
-> >>     > >>  }
-> >>     > >>
-> >>     > >> +/* Make SBI version */
-> >>     > >> +static inline unsigned long sbi_mk_version(unsigned long maj=
-or,
-> >>     > >> +                                           unsigned long min=
-or)
-> >>     > >> +{
-> >>     > >> +       return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
-> >>     > >> +               SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
-> >>     > >> +}
-> >>     > >> +
-> >>     > >>  int sbi_err_map_linux_errno(int err);
-> >>     > >>  #else /* CONFIG_RISCV_SBI */
-> >>     > >>  static inline int sbi_remote_fence_i(const unsigned long *ha=
-rt_mask) { return -1; }
-> >>     > >> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.=
-c
-> >>     > >> index 7402a417f38e..9a84f0cb5175 100644
-> >>     > >> --- a/arch/riscv/kernel/sbi.c
-> >>     > >> +++ b/arch/riscv/kernel/sbi.c
-> >>     > >> @@ -7,6 +7,7 @@
-> >>     > >>
-> >>     > >>  #include <linux/init.h>
-> >>     > >>  #include <linux/pm.h>
-> >>     > >> +#include <linux/reboot.h>
-> >>     > >>  #include <asm/sbi.h>
-> >>     > >>  #include <asm/smp.h>
-> >>     > >>
-> >>     > >> @@ -501,6 +502,32 @@ int sbi_remote_hfence_vvma_asid(const un=
-signed long *hart_mask,
-> >>     > >>  }
-> >>     > >>  EXPORT_SYMBOL(sbi_remote_hfence_vvma_asid);
-> >>     > >>
-> >>     > >> +static void sbi_srst_reset(unsigned long type, unsigned long=
- reason)
-> >>     > >> +{
-> >>     > >> +       sbi_ecall(SBI_EXT_SRST, SBI_EXT_SRST_RESET, type, rea=
-son,
-> >>     > >> +                 0, 0, 0, 0);
-> >>     > >> +       pr_warn("%s: type=3D0x%lx reason=3D0x%lx failed\n",
-> >>     > >> +               __func__, type, reason);
-> >>     > >> +}
-> >>     > >> +
-> >>     > >> +static int sbi_srst_reboot(struct notifier_block *this,
-> >>     > >> +                          unsigned long mode, void *cmd)
-> >>     > >> +{
-> >>     > >> +       sbi_srst_reset((mode =3D=3D REBOOT_WARM || mode =3D=
-=3D REBOOT_SOFT) ?
-> >>     > >> +                      SBI_SRST_RESET_TYPE_WARM_REBOOT :
-> >>     > >> +                      SBI_SRST_RESET_TYPE_COLD_REBOOT,
-> >>     > >> +                      SBI_SRST_RESET_REASON_NONE);
-> >>     > >> +       return NOTIFY_DONE;
-> >>     > >> +}
-> >>     > >> +
-> >>     > >> +static struct notifier_block sbi_srst_reboot_nb;
-> >>     > >> +
-> >>     > >> +static void sbi_srst_power_off(void)
-> >>     > >> +{
-> >>     > >> +       sbi_srst_reset(SBI_SRST_RESET_TYPE_SHUTDOWN,
-> >>     > >> +                      SBI_SRST_RESET_REASON_NONE);
-> >>     > >> +}
-> >>     > >> +
-> >>     > >>  /**
-> >>     > >>   * sbi_probe_extension() - Check if an SBI extension ID is s=
-upported or not.
-> >>     > >>   * @extid: The extension ID to be probed.
-> >>     > >> @@ -608,6 +635,14 @@ void __init sbi_init(void)
-> >>     > >>                 } else {
-> >>     > >>                         __sbi_rfence    =3D __sbi_rfence_v01;
-> >>     > >>                 }
-> >>     > >> +               if ((sbi_spec_version >=3D sbi_mk_version(0, =
-3)) &&
-> >>     > >> +                   (sbi_probe_extension(SBI_EXT_SRST) > 0)) =
-{
-> >>     > >> +                       pr_info("SBI SRST extension detected\=
-n");
-> >>     > >> +                       pm_power_off =3D sbi_srst_power_off;
-> >>     > >> +                       sbi_srst_reboot_nb.notifier_call =3D =
-sbi_srst_reboot;
-> >>     > >> +                       sbi_srst_reboot_nb.priority =3D 192;
-> >>     > >> +                       register_restart_handler(&sbi_srst_re=
-boot_nb);
-> >>     > >> +               }
-> >>     > >>         } else {
-> >>     > >>                 __sbi_set_timer =3D __sbi_set_timer_v01;
-> >>     > >>                 __sbi_send_ipi  =3D __sbi_send_ipi_v01;
-> >>     > >> --
-> >>     > >> 2.25.1
-> >>     > >>
-> >>
+> +	if (args->mm)
+> +		mmdrop(args->mm);
+> +}
+> +
+> +static int __init init_args(struct pgtable_debug_args *args)
+> +{
+> +	struct page *page = NULL;
+> +	phys_addr_t phys;
+> +	int ret = 0;
+> +
+> +	/*
+> +	 * Initialize the debugging data.
+> +	 *
+> +	 * __P000 (or even __S000) will help create page table entries with
+> +	 * PROT_NONE permission as required for pxx_protnone_tests().
+> +	 */
+> +	memset(args, 0, sizeof(*args));
+> +	args->vaddr              = get_random_vaddr();
+> +	args->page_prot          = vm_get_page_prot(VMFLAGS);
+> +	args->page_prot_none     = __P000;
+> +	args->is_contiguous_page = false;
+> +	args->pud_pfn            = ULONG_MAX;
+> +	args->pmd_pfn            = ULONG_MAX;
+> +	args->pte_pfn            = ULONG_MAX;
+> +	args->fixed_pgd_pfn      = ULONG_MAX;
+> +	args->fixed_p4d_pfn      = ULONG_MAX;
+> +	args->fixed_pud_pfn      = ULONG_MAX;
+> +	args->fixed_pmd_pfn      = ULONG_MAX;
+> +	args->fixed_pte_pfn      = ULONG_MAX;
+> +
+> +	/* Allocate mm and vma */
+> +	args->mm = mm_alloc();
+> +	if (!args->mm) {
+> +		pr_err("Failed to allocate mm struct\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	args->vma = vm_area_alloc(args->mm);
+> +	if (!args->vma) {
+> +		pr_err("Failed to allocate vma\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	/*
+> +	 * Allocate page table entries. They will be modified in the tests.
+> +	 * Lets save the page table entries so that they can be released
+> +	 * when the tests are completed.
+> +	 */
+> +	args->pgdp = pgd_offset(args->mm, args->vaddr);
+> +	args->p4dp = p4d_alloc(args->mm, args->pgdp, args->vaddr);
+> +	if (!args->p4dp) {
+> +		pr_err("Failed to allocate p4d entries\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	args->start_p4dp = p4d_offset(args->pgdp, 0UL);
+> +	WARN_ON(!args->start_p4dp);
+
+Please move these two lines up to the previous block as args->start_p4dp
+is primarily derived from args->pgdp. Also please do the same for all
+others blocks down here.
+
+> +	args->pudp = pud_alloc(args->mm, args->p4dp, args->vaddr);
+> +	if (!args->pudp) {
+> +		pr_err("Failed to allocate pud entries\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	args->start_pudp = pud_offset(args->p4dp, 0UL);
+> +	WARN_ON(!args->start_pudp);
+> +	args->pmdp = pmd_alloc(args->mm, args->pudp, args->vaddr);
+> +	if (!args->pmdp) {
+> +		pr_err("Failed to allocate pmd entries\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	args->start_pmdp = pmd_offset(args->pudp, 0UL);
+> +	WARN_ON(!args->start_pmdp);
+> +	args->ptep = pte_alloc_map(args->mm, args->pmdp, args->vaddr);
+> +	if (!args->ptep) {
+> +		pr_err("Failed to allocate pte entries\n");
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	args->start_ptep = pmd_pgtable(READ_ONCE(*args->pmdp));
+> +	WARN_ON(!args->start_ptep);
+> +
+> +	/*
+> +	 * PFN for mapping at PTE level is determined from a standard kernel
+> +	 * text symbol. But pfns for higher page table levels are derived by
+> +	 * masking lower bits of this real pfn. These derived pfns might not
+> +	 * exist on the platform but that does not really matter as pfn_pxx()
+> +	 * helpers will still create appropriate entries for the test. This
+> +	 * helps avoid large memory block allocations to be used for mapping
+> +	 * at higher page table levels in some of the tests.
+> +	 */
+> +	phys = __pa_symbol(&start_kernel);
+> +	args->fixed_pgd_pfn = __phys_to_pfn(phys & PGDIR_MASK);
+> +	args->fixed_p4d_pfn = __phys_to_pfn(phys & P4D_MASK);
+> +	args->fixed_pud_pfn = __phys_to_pfn(phys & PUD_MASK);
+> +	args->fixed_pmd_pfn = __phys_to_pfn(phys & PMD_MASK);
+> +	args->fixed_pte_pfn = __phys_to_pfn(phys & PAGE_MASK);
+> +	WARN_ON(!pfn_valid(args->fixed_pte_pfn));
+> +
+> +	/*
+> +	 * Allocate (huge) pages because some of the tests need to access
+> +	 * the data in the pages. The corresponding tests will be skipped
+> +	 * if we fail to allocate (huge) pages.
+> +	 */
+> +#ifdef CONFIG_CONTIG_ALLOC
+> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +	    IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+> +	    has_transparent_hugepage() &&
+> +	    (HPAGE_PUD_SHIFT - PAGE_SHIFT) >= MAX_ORDER) {
+> +		page = alloc_contig_pages((1 << (HPAGE_PUD_SHIFT - PAGE_SHIFT)),
+> +					  GFP_KERNEL, first_online_node, NULL);
+> +		if (page) {
+> +			args->is_contiguous_page = true;
+> +			args->pud_pfn = page_to_pfn(page);
+> +			args->pmd_pfn = args->pud_pfn;
+> +			args->pte_pfn = args->pud_pfn;
+> +			return 0;
+> +		}
+> +	}
+> +#endif
+> +
+> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +	    IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+> +	    has_transparent_hugepage() &&
+> +	    (HPAGE_PUD_SHIFT - PAGE_SHIFT) < MAX_ORDER) {
+> +		page = alloc_pages(GFP_KERNEL, HPAGE_PUD_SHIFT - PAGE_SHIFT);
+> +		if (page) {
+> +			args->pud_pfn = page_to_pfn(page);
+> +			args->pmd_pfn = args->pud_pfn;
+> +			args->pte_pfn = args->pud_pfn;
+> +			return 0;
+> +		}
+> +	}
+> +
+> +#ifdef CONFIG_CONTIG_ALLOC
+> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +	    has_transparent_hugepage() &&
+> +	    HPAGE_PMD_ORDER >= MAX_ORDER) {
+> +		page = alloc_contig_pages((1 << HPAGE_PMD_ORDER), GFP_KERNEL,
+> +					  first_online_node, NULL);
+> +		if (page) {
+> +			args->is_contiguous_page = true;
+> +			args->pmd_pfn = page_to_pfn(page);
+> +			args->pte_pfn = args->pmd_pfn;
+> +			return 0;
+> +		}
+> +	}
+> +#endif
+> +
+> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> +	    has_transparent_hugepage() &&
+> +	    HPAGE_PMD_ORDER < MAX_ORDER) {
+> +		page = alloc_pages(GFP_KERNEL, HPAGE_PMD_ORDER);
+> +		if (page) {
+> +			args->pmd_pfn = page_to_pfn(page);
+> +			args->pte_pfn = args->pmd_pfn;
+> +			return 0;
+> +		}
+> +	}
+
+This can be simplified further. Could you please define a helper alloc_huge_page()
+which compares the order against MAX_ORDER and calls either alloc_contig_pages()
+when CONFIG_CONTIG_ALLOC or alloc_pages(). This will result in reduced code and
+CONFIG_CONTIG_ALLOC will move into the helper as well.
+
+> +
+> +	page = alloc_pages(GFP_KERNEL, 0);
+> +	if (page)
+> +		args->pte_pfn = page_to_pfn(page);
+> +
+> +	return 0;
+> +
+> +error:
+> +	destroy_args(args);
+> +	return ret;
+> +}
+> +
+>  static int __init debug_vm_pgtable(void)
+>  {
+> +	struct pgtable_debug_args args;
+>  	struct vm_area_struct *vma;
+>  	struct mm_struct *mm;
+>  	pgd_t *pgdp;
+> @@ -970,9 +1242,13 @@ static int __init debug_vm_pgtable(void)
+>  	unsigned long vaddr, pte_aligned, pmd_aligned;
+>  	unsigned long pud_aligned, p4d_aligned, pgd_aligned;
+>  	spinlock_t *ptl = NULL;
+> -	int idx;
+> +	int idx, ret;
+>  
+>  	pr_info("Validating architecture page table helpers\n");
+> +	ret = init_args(&args);
+> +	if (ret)
+> +		return ret;
+> +
+>  	prot = vm_get_page_prot(VMFLAGS);
+>  	vaddr = get_random_vaddr();
+>  	mm = mm_alloc();
+> @@ -1127,6 +1403,8 @@ static int __init debug_vm_pgtable(void)
+>  	mm_dec_nr_pmds(mm);
+>  	mm_dec_nr_ptes(mm);
+>  	mmdrop(mm);
+> +
+> +	destroy_args(&args);
+>  	return 0;
+>  }
+>  late_initcall(debug_vm_pgtable);
+> 
+
+Otherwise LGTM.
