@@ -2,127 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8A23D9E73
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF953D9E7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbhG2Ha1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234524AbhG2Ha0 (ORCPT
+        id S234627AbhG2HdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:33:24 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:57715 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234524AbhG2HdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:30:26 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8859AC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:30:23 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id g15so5644818wrd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:30:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tb+0rRKuqDnjOL1ASnfrRF1A89N4P92fMWjclPMkDss=;
-        b=DOm1OvhgzgwgHgDIrraZ03XoHOA+d6dH762ZTJo+E6S39/5h6jRhFRd+nsUazfCfLf
-         S2Lkxsdk7hwdmUXxR5OwXDEk4YRTKj7sadSS89ys7t7SG5QJL5cy5+h4oeCB0txEXIsE
-         dEHc7JF5fJepkGCz2g+EKTUszzyxAsZeEzsgs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Tb+0rRKuqDnjOL1ASnfrRF1A89N4P92fMWjclPMkDss=;
-        b=jubgZZlhFOdPHZk3z8Solw2ToRTFZVViBX/nIyjKhzusHAtyCEr3Rxdw/A+oSPu6Ni
-         ruHD2Xv8jiFBpqSAiBqxiQOmXfE9tMAsgHPNFyL4XRwFf3DJVHfqUwfkZj3uTSCosSTU
-         JCdQruPYaWXYCuXXakPQ5YT29/A7wdI88X3Umh03jhtPmfMbZWyXH/WDr/sCsLJSN5k3
-         ziLqMtrekeqS6lDx+xUOSgw2BxzgxJxSG/GOg2olEElcMgsvNzMmkYEHTZ2twbLQV3tz
-         68IdEuQY9iO4XDEeRpNt/wxcpoMaEdMxrIQy0UDciSi7ctLD2odIU14WueT/YUYjtMQh
-         jExg==
-X-Gm-Message-State: AOAM5300lIrTov8ehnEvu2TMvrfZaq/Tx/DSlePfmZGTdw35V2g2VBY3
-        49kyLAVOLJODcxR8523PtgOJTw==
-X-Google-Smtp-Source: ABdhPJzVoNhNuWzyJb6b5KpqveRPXRf80R7n4sTS1a3iK3O41OT/IBBs23MW0vHKeYXlErBFvWWpYQ==
-X-Received: by 2002:a5d:53ca:: with SMTP id a10mr1549831wrw.197.1627543822183;
-        Thu, 29 Jul 2021 00:30:22 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q22sm2207751wmc.16.2021.07.29.00.30.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 00:30:21 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 09:30:19 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>
-Subject: Re: [Intel-gfx] refactor the i915 GVT support
-Message-ID: <YQJZCwyT9YSZWLnO@phenom.ffwll.local>
-Mail-Followup-To: Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "intel-gvt-dev@lists.freedesktop.org" <intel-gvt-dev@lists.freedesktop.org>
-References: <20210721155355.173183-1-hch@lst.de>
- <DM4PR11MB55496531B246A4604FC86998CAE49@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210722112636.wj277vqhg4dez5ug@sirius.home.kraxel.org>
- <20210727121224.GA2145868@nvidia.com>
- <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210728175925.GU1721383@nvidia.com>
- <20210729072022.GB31896@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729072022.GB31896@lst.de>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+        Thu, 29 Jul 2021 03:33:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627544000; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=4dgDA5U7bl0B0ZrmuX/lx0/KoPyld4ncHKTgBOfdJns=; b=Hl4w+fWyh1SWdKAwwqmF2v/LrMVLSzOu55pSZorEzVgfbm+oTZVuev+/C7rlSaXtyAwdb229
+ MXsq7r4BpCI/FSPBGZdq0WCXqCRTGUkbsTYak9M+YM7uCQy1gmpUD2b+1dHiDgJAUVJe/esQ
+ OFq6/2yugewZnMSgmZ2gNR/0mh8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 610259be290ea35ee6de35de (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 07:33:18
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 01AF7C433F1; Thu, 29 Jul 2021 07:33:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 968BFC4338A;
+        Thu, 29 Jul 2021 07:33:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 968BFC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH] usb: dwc3: gadget: Use list_replace_init() before traversing lists
+Date:   Thu, 29 Jul 2021 00:33:14 -0700
+Message-Id: <1627543994-20327-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 09:20:22AM +0200, Christoph Hellwig wrote:
-> On Wed, Jul 28, 2021 at 02:59:25PM -0300, Jason Gunthorpe wrote:
-> > On Wed, Jul 28, 2021 at 01:38:58PM +0000, Wang, Zhi A wrote:
-> > 
-> > > I guess those APIs you were talking about are KVM-only. For other
-> > > hypervisors, e.g. Xen, ARCN cannot use the APIs you mentioned. Not
-> > > sure if you have already noticed that VFIO is KVM-only right now.
-> > 
-> > There is very little hard connection between VFIO and KVM, so no, I
-> > don't think that is completely true.
-> 
-> The only connection is the SET_KVM notifier as far as I can tell.
-> Which is used by a total of two drivers, including i915/gvt.  That
-> being said gvt does not only use vfio, but also does quite a few
-> direct cals to KVM.
-> 
-> > In an event, an in-tree version of other hypervisor support for GVT
-> > needs to go through enabling VFIO support so that the existing API
-> > multiplexers we have can be used properly, not adding a shim layer
-> > trying to recreate VFIO inside a GPU driver.
-> 
-> Yes.  And if we go back to actually looking at the series a lot of
-> it just removes entirely pointless indirect calls that go to generic
-> code and not even the kvm code, or questionable data structure designs.
-> If we were to support another upstream hypervisor we'd just need to
-> union a few fields in struct intel_gpu and maybe introduce a few
-> methods.  Preferably in a way that avoids expensive indirect calls
-> in the fast path.
+The list_for_each_entry_safe() macro saves the current item (n) and
+the item after (n+1), so that n can be safely removed without
+corrupting the list.  However, when traversing the list and removing
+items using gadget giveback, the DWC3 lock is briefly released,
+allowing other routines to execute.  There is a situation where, while
+items are being removed from the cancelled_list using
+dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
+routine is running in parallel (due to UDC unbind).  As the cleanup
+routine removes n, and the pullup disable removes n+1, once the
+cleanup retakes the DWC3 lock, it references a request who was already
+removed/handled.  With list debug enabled, this leads to a panic.
+Ensure all instances of the macro are replaced where gadget giveback
+is used.
 
-fwiw I concur with the direction of this series. gvt landed 5 years ago,
-that should have been plenty of time to merge at least one of the other
-backends that float around. If it didn't happen in 5 years it aint
-suddenly happening in the next few, and the abstraction layer should be
-sunset.
+Example call stack:
 
-Also yes structuring it more as a helper layer with some
-unions/subclassing than full blown backend abstractor layer would be a
-good idea too I guess (it usually is the right thing to do).
--Daniel
+Thread#1:
+__dwc3_gadget_ep_set_halt() - CLEAR HALT
+  -> dwc3_gadget_ep_cleanup_cancelled_requests()
+    ->list_for_each_entry_safe()
+    ->dwc3_gadget_giveback(n)
+      ->dwc3_gadget_del_and_unmap_request()- n deleted[cancelled_list]
+      ->spin_unlock
+      ->Thread#2 executes
+      ...
+    ->dwc3_gadget_giveback(n+1)
+      ->Already removed!
+
+Thread#2:
+dwc3_gadget_pullup()
+  ->waiting for dwc3 spin_lock
+  ...
+  ->Thread#1 released lock
+  ->dwc3_stop_active_transfers()
+    ->dwc3_remove_requests()
+      ->fetches n+1 item from cancelled_list (n removed by Thread#1)
+      ->dwc3_gadget_giveback()
+        ->dwc3_gadget_del_and_unmap_request()- n+1
+deleted[cancelled_list]
+        ->spin_unlock
+
+Fix this condition by utilizing list_replace_init(), and traversing
+through a local copy of the current elements in the endpoint lists.
+This will also set the parent list as empty, so if another thread is
+also looping through the list, it will be empty on the next iteration.
+
+Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_list")
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+
+---
+Previous patchset:
+https://lore.kernel.org/linux-usb/1620716636-12422-1-git-send-email-wcheng@codeaurora.org/
+---
+ drivers/usb/dwc3/gadget.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index a29a4ca..3ce6ed9 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1926,9 +1926,13 @@ static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
+ {
+ 	struct dwc3_request		*req;
+ 	struct dwc3_request		*tmp;
++	struct list_head		local;
+ 	struct dwc3			*dwc = dep->dwc;
+ 
+-	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
++restart:
++	list_replace_init(&dep->cancelled_list, &local);
++
++	list_for_each_entry_safe(req, tmp, &local, list) {
+ 		dwc3_gadget_ep_skip_trbs(dep, req);
+ 		switch (req->status) {
+ 		case DWC3_REQUEST_STATUS_DISCONNECTED:
+@@ -1946,6 +1950,9 @@ static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
+ 			break;
+ 		}
+ 	}
++
++	if (!list_empty(&dep->cancelled_list))
++		goto restart;
+ }
+ 
+ static int dwc3_gadget_ep_dequeue(struct usb_ep *ep,
+@@ -3190,8 +3197,12 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
+ {
+ 	struct dwc3_request	*req;
+ 	struct dwc3_request	*tmp;
++	struct list_head	local;
+ 
+-	list_for_each_entry_safe(req, tmp, &dep->started_list, list) {
++restart:
++	list_replace_init(&dep->started_list, &local);
++
++	list_for_each_entry_safe(req, tmp, &local, list) {
+ 		int ret;
+ 
+ 		ret = dwc3_gadget_ep_cleanup_completed_request(dep, event,
+@@ -3199,6 +3210,9 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
+ 		if (ret)
+ 			break;
+ 	}
++
++	if (!list_empty(&dep->started_list))
++		goto restart;
+ }
+ 
+ static bool dwc3_gadget_ep_should_continue(struct dwc3_ep *dep)
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
