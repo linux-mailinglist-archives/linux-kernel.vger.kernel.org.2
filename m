@@ -2,203 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A653DAECA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96783DAECE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhG2WZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:25:49 -0400
-Received: from mail-il1-f169.google.com ([209.85.166.169]:43547 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhG2WZq (ORCPT
+        id S230141AbhG2W12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 18:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhG2W11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:25:46 -0400
-Received: by mail-il1-f169.google.com with SMTP id x7so4118132ilh.10;
-        Thu, 29 Jul 2021 15:25:43 -0700 (PDT)
+        Thu, 29 Jul 2021 18:27:27 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2A8C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:27:23 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so17821930pja.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:27:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0qEtOVI+2bxrwcA0/khpilqHg8S4yKEf0/piqF/74tU=;
+        b=WNyPqykzza9gkT1w9OQXvq0HkGQimtoedVVSXRi/bk9yvFDLA2dhQm4bE490HMhoLB
+         fxlXtzImR2x82rDCE0GlyIV0aeBfcAlYTQD+XYdVjWOrvhwiVsO9Zfq2fEJTpZI0uMW2
+         O6h387/SWxbh1Efq7/BdE0XpThwQN/gcuhN3QUpefrigO9x9unlsJGhOZ98RSTFZLCOZ
+         7YKPcVKu6txlyzL7zxT9H9010oJPlQBHExj7CyNUnHLiEeElSUpl7rTa7cCO4/GaQPvq
+         ER1ZWF/WvryYLQ6IHMrR69U1zHxKDN1fbkmyeGs1gTfwosrNf6c7ePuARagnfJXOHY2X
+         WBhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/aC99Iu0Lbk5aCpNG1EP7BkY/PlQCFTDv6tZFmoT4to=;
-        b=taflZroEbgqdCNt6u3acyu6z47k5u6MWJYOlmOxrbIly3JtJy3g5UUlHpiqJLl6W53
-         bh8yYTLGg9Hncb3ny5Fko1jbLLv7z23q8AGtOI+K+cXdJ/UHOAkFUduVwTwu/ct2Vjy/
-         8hhhPM7kT6faRNq3v8iARpZwkuyLgtWafFC+oD/J8032kqx5aYKcuBCoxjuz7Qh3M7AN
-         i6j2wOs58vzeRXTLJO638xHgL0qhiyYuhD/KjURsXtaLetFFlFhTXLyV9g2U8EiML8BT
-         +X6XG3Sv4iQat/LhcKG9MZz4ufEv9DYxGdHQqM5JZsYHzQVu4ESxlDUx7fo3hgurgtYg
-         HgSQ==
-X-Gm-Message-State: AOAM532vPdinbhOGTjujgquReyVMYDupPvy2RnU9bdKcC/zbpOGtjiOH
-        t91D46zS+Y6w0GVdnXRSyw==
-X-Google-Smtp-Source: ABdhPJygF+DGb0ov5OEhfhmd/o0r6FJ5+aiZ3DxlC6htdV2NzPesAASgz05K1tfkyG0Y7Y+lZrWTiw==
-X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr5049395ilu.61.1627597542869;
-        Thu, 29 Jul 2021 15:25:42 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id h24sm3240751ioj.32.2021.07.29.15.25.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0qEtOVI+2bxrwcA0/khpilqHg8S4yKEf0/piqF/74tU=;
+        b=P2eABYGx1Q1LbMqd6oklg3UTbBoRvs9TLp8o43QmzuxvfvOyedukA451yRO9UoBO28
+         eoSmXuT3XJ18iPWYkY9MCvL6/xRlBMe5XQcvPd5+KBfRoSnqSqLbWqoEzrKuAGSNPORl
+         GTiraF2UYvv/BVyEWcvWDrhWSeYiqwBWlrZjhV1zvukvCUvalA39D8Ji0atL4T8ddPS5
+         4Y8TliJsyzZ0GOg8jNJH6L8oVjM5HCtck1K5c4IiuKyuR8Ju+QEOJlKcwFO6z94BnDnC
+         8wXn9O8SZw1AEpioiAzFUXXSCwnDTb09gYSQo9ZPHwxuUPD85lDvFWwdA8RboVUFrBLc
+         1bVQ==
+X-Gm-Message-State: AOAM5326ilO2Aw3lTsEZpGe+N9ad01ivPN1AnWNHQwJFML8eY+xqYp6K
+        u8dTOXri7QmL7flMGq85FOWIgg==
+X-Google-Smtp-Source: ABdhPJwnFzHhdA9Nt1EQ2Lu4QCvWt5JDEIU/9eS3ALJ2RdthG0rTMuVPqfq0HJC1X/dQBOPU+5DqIw==
+X-Received: by 2002:a17:90a:a105:: with SMTP id s5mr7506299pjp.9.1627597643146;
+        Thu, 29 Jul 2021 15:27:23 -0700 (PDT)
+Received: from sspatil2.c.googlers.com.com (190.40.105.34.bc.googleusercontent.com. [34.105.40.190])
+        by smtp.gmail.com with ESMTPSA id 5sm4761989pfp.154.2021.07.29.15.27.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 15:25:42 -0700 (PDT)
-Received: (nullmailer pid 1013223 invoked by uid 1000);
-        Thu, 29 Jul 2021 22:25:40 -0000
-Date:   Thu, 29 Jul 2021 16:25:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] PCI: qcom: Introduce enable/disable resource ops
-Message-ID: <YQMq5OsmskE64w0i@robh.at.kernel.org>
-References: <20210725040038.3966348-1-bjorn.andersson@linaro.org>
- <20210725040038.3966348-2-bjorn.andersson@linaro.org>
+        Thu, 29 Jul 2021 15:27:22 -0700 (PDT)
+From:   Sandeep Patil <sspatil@android.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sandeep Patil <sspatil@android.com>, torvalds@linux-foundation.org,
+        dhowells@redhat.com, gregkh@linuxfoundation.org,
+        stable@vger.kernel.org, kernel-team@android.com
+Subject: [PATCH 0/1] Revert change in pipe reader wakeup behavior
+Date:   Thu, 29 Jul 2021 22:26:34 +0000
+Message-Id: <20210729222635.2937453-1-sspatil@android.com>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210725040038.3966348-2-bjorn.andersson@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 09:00:36PM -0700, Bjorn Andersson wrote:
-> The current model of doing resource enablement and controller
-> initialization in a single "init" function invoked after
-> dw_pcie_host_init() is invoked might result in clocks not being enabled
-> at the time the "msi" interrupt fires.
+The commit <1b6b26ae7053>("pipe: fix and clarify pipe write wakeup
+logic") changed pipe write logic to wakeup readers only if the pipe
+was empty at the time of write. However, there are libraries that relied
+upon the older behavior for notification scheme similar to what's
+described in [1]
 
-This seems like working around DWC ops...
+One such library 'realm-core'[2] is used by numerous Android applications.
+The library uses a similar notification mechanism as GNU Make but it
+never drains the pipe until it is full. When Android moved to v5.10
+kernel, all applications using this library stopped working.
+The C program at the end of this email mimics the library code.
 
-> One such case happens reliably on the SC8180x (8cx) Snapdragon laptops,
-> where it's seems like the bootloader touches PCIe and leaves things in a
-> state that the "msi" interrupt will fire before we have a change to
+The program works with 5.4 kernel. It fails with v5.10 and I am fairly
+certain it will fail wiht v5.5 as well. The single patch in this series
+restores the old behavior. With the patch, the test and all affected
+Android applications start working with v5.10
 
-s/change/chance/
+After reading through epoll(7), I think the pipe should be drained after
+each epoll_wait() comes back. Also, that a non-empty pipe is
+considered to be "ready" for readers. The problem is that prior
+to the commit above, any new data written to non-empty pipes
+would wakeup threads waiting in epoll(EPOLLIN|EPILLET) and thats
+how this library worked.
 
-> enable the clocks, resulting in an access of unclocked hardware.
+I do think the program below is using EPOLLET wrong. However, it
+used to work before and now it doesn't. So, I thought it is
+worth asking if this counts as userspace break.
 
-How does the MSI fire without the clocks or a link? Can't you quiesce 
-things?
+There was also a symmetrical change made to pipe_read in commit
+<f467a6a66419> ("pipe: fix and clarify pipe read wakeup logic")
+that I am not sure needs changing.
 
-> Introduce a two new callbacks, allowing the individual resource handling
-> functions to be split between enable/init and deinit/disable.
-> 
-> Helper functions for enable, disable and deinit are introduced to handle
-> the fact that these functions may now be left without implementation.
-> init is given a wrapper for symmetry.
-
-I think you can simply flip the order the MSI init and host_init() in 
-dw_pcie_host_init().
-
-In general, I want to move some of the resource setup (clks, phys, 
-perst#, etc.) into the DWC core and make the DWC ops more specific in 
-what they do and touch. That should simplify at least the simple cases. 
-For Qcom, maybe some of the ops can be moved to new DWC ops.
-
-Rob
+The library has since been fixed[3] but it will be a while
+before all applications incorporate the updated library.
 
 
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 42 +++++++++++++++++++++++---
->  1 file changed, 38 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 8a7a300163e5..8a64a126de2b 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -181,9 +181,11 @@ struct qcom_pcie;
->  
->  struct qcom_pcie_ops {
->  	int (*get_resources)(struct qcom_pcie *pcie);
-> +	int (*enable_resources)(struct qcom_pcie *pcie);
->  	int (*init)(struct qcom_pcie *pcie);
->  	int (*post_init)(struct qcom_pcie *pcie);
->  	void (*deinit)(struct qcom_pcie *pcie);
-> +	void (*disable_resources)(struct qcom_pcie *pcie);
->  	void (*post_deinit)(struct qcom_pcie *pcie);
->  	void (*ltssm_enable)(struct qcom_pcie *pcie);
->  	int (*config_sid)(struct qcom_pcie *pcie);
-> @@ -1345,6 +1347,31 @@ static int qcom_pcie_config_sid_sm8250(struct qcom_pcie *pcie)
->  	return 0;
->  }
->  
-> +static int qcom_pcie_enable_resources(struct qcom_pcie *pcie)
-> +{
-> +	if (pcie->ops->enable_resources)
-> +		return pcie->ops->enable_resources(pcie);
-> +
-> +	return 0;
-> +}
-> +
-> +static int qcom_pcie_init(struct qcom_pcie *pcie)
-> +{
-> +	return pcie->ops->init(pcie);
-> +}
-> +
-> +static void qcom_pcie_deinit(struct qcom_pcie *pcie)
-> +{
-> +	if (pcie->ops->deinit)
-> +		pcie->ops->deinit(pcie);
-> +}
-> +
-> +static void qcom_pcie_disable_resources(struct qcom_pcie *pcie)
-> +{
-> +	if (pcie->ops->disable_resources)
-> +		pcie->ops->disable_resources(pcie);
-> +}
-> +
->  static int qcom_pcie_host_init(struct pcie_port *pp)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> @@ -1353,7 +1380,7 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
->  
->  	qcom_ep_reset_assert(pcie);
->  
-> -	ret = pcie->ops->init(pcie);
-> +	ret = qcom_pcie_init(pcie);
->  	if (ret)
->  		return ret;
->  
-> @@ -1384,7 +1411,7 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
->  err_disable_phy:
->  	phy_power_off(pcie->phy);
->  err_deinit:
-> -	pcie->ops->deinit(pcie);
-> +	qcom_pcie_deinit(pcie);
->  
->  	return ret;
->  }
-> @@ -1520,10 +1547,14 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  
->  	pp->ops = &qcom_pcie_dw_ops;
->  
-> +	ret = qcom_pcie_enable_resources(pcie);
-> +	if (ret)
-> +		goto err_pm_runtime_put;
-> +
->  	ret = phy_init(pcie->phy);
->  	if (ret) {
->  		pm_runtime_disable(&pdev->dev);
-> -		goto err_pm_runtime_put;
-> +		goto err_disable_resources;
->  	}
->  
->  	platform_set_drvdata(pdev, pcie);
-> @@ -1532,11 +1563,14 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  	if (ret) {
->  		dev_err(dev, "cannot initialize host\n");
->  		pm_runtime_disable(&pdev->dev);
-> -		goto err_pm_runtime_put;
-> +		goto err_disable_resources;
->  	}
->  
->  	return 0;
->  
-> +err_disable_resources:
-> +	qcom_pcie_disable_resources(pcie);
-> +
->  err_pm_runtime_put:
->  	pm_runtime_put(dev);
->  	pm_runtime_disable(dev);
-> -- 
-> 2.29.2
-> 
-> 
+- ssp
+
+1. https://lore.kernel.org/lkml/CAHk-=wjeG0q1vgzu4iJhW5juPkTsjTYmiqiMUYAebWW+0bam6w@mail.gmail.com/
+2. https://github.com/realm/realm-core
+3. https://github.com/realm/realm-core/issues/4666
+
+====
+#include <stdio.h>
+#include <error.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <time.h>
+#include <sys/epoll.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#define FIFO_NAME "epoll-test-fifo"
+
+pthread_t tid;
+int max_delay_ms = 20;
+int fifo_fd;
+unsigned char written;
+unsigned char received;
+int epoll_fd;
+
+void *wait_on_fifo(void *unused)
+{
+	while (1) {
+		struct epoll_event ev;
+		int ret;
+		unsigned char c;
+
+		ret = epoll_wait(epoll_fd, &ev, 1, 5000);
+		if (ret == -1) {
+			/* If interrupted syscall, continue .. */
+			if (errno == EINTR)
+				continue;
+			/* epoll_wait failed, bail.. */
+			error(99, errno, "epoll_wait failed \n");
+		}
+
+		/* timeout */
+		if (ret == 0)
+			break;
+
+		if (ev.data.fd == fifo_fd) {
+			/* Assume this is notification where the thread is catching up.
+			 * pipe is emptied by the writer when it detects it is full.
+			 */
+			received = written;
+		}
+	}
+
+	return NULL;
+}
+
+int write_fifo(int fd, unsigned char c)
+{
+	while (1) {
+		int actual;
+		char buf[1024];
+
+		ssize_t ret = write(fd, &c, 1);
+		if (ret == 1)
+			break;
+		/*
+		 * If the pipe's buffer is full, we need to read some of the old data in
+		 * it to make space. We dont read in the code waiting for
+		 * notifications so that we can notify multiple waiters with a single
+		 * write.
+		 */
+		if (ret != 0) {
+			if (errno != EAGAIN)
+				return -EIO;
+		}
+		actual = read(fd, buf, 1024);
+		if (actual == 0)
+			return -errno;
+	}
+
+	return 0;
+}
+
+int create_and_setup_fifo()
+{
+	int ret;
+	char fifo_path[4096];
+	struct epoll_event ev;
+
+	char *tmpdir = getenv("TMPDIR");
+	if (tmpdir == NULL)
+		tmpdir = ".";
+
+	ret = sprintf(fifo_path, "%s/%s", tmpdir, FIFO_NAME);
+	if (access(fifo_path, F_OK) == 0)
+		unlink(fifo_path);
+
+	ret = mkfifo(fifo_path, 0600);
+	if (ret < 0)
+		error(1, errno, "Failed to create fifo");
+
+	fifo_fd = open(fifo_path, O_RDWR | O_NONBLOCK);
+	if (fifo_fd < 0)
+		error(2, errno, "Failed to open Fifo");
+
+	ev.events = EPOLLIN | EPOLLET;
+	ev.data.fd = fifo_fd;
+
+	ret = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fifo_fd, &ev);
+	if (ret < 0)
+		error(4, errno, "Failed to add fifo to epoll instance");
+
+	return 0;
+}
+
+int main(int argc, char *argv[])
+{
+	int ret, random;
+	unsigned char c = 1;
+
+	epoll_fd = epoll_create(1);
+	if (epoll_fd == -1)
+		error(3, errno, "Failed to create epoll instance");
+
+	ret = create_and_setup_fifo();
+	if (ret != 0)
+		error(45, EINVAL, "Failed to setup fifo");
+
+	ret = pthread_create(&tid, NULL, wait_on_fifo, NULL);
+	if (ret != 0)
+		error(2, errno, "Failed to create a thread");
+
+	srand(time(NULL));
+
+	/* Write 256 bytes to fifo one byte at a time with random delays upto 20ms */
+	do {
+		written = c;
+		ret = write_fifo(fifo_fd, c);
+		if (ret != 0)
+			error(55, errno, "Failed to notify fifo, write #%u", (unsigned int)c);
+		c++;
+
+		random = rand();
+		usleep((random % max_delay_ms) * 1000);
+	} while (written <= c); /* stop after c = 255 */
+
+	pthread_join(tid, NULL);
+
+	printf("Test: %s", written == received ? "PASS\n" : "FAIL");
+	if (written != received)
+		printf(": Written (%d) Received (%d)\n", written, received);
+
+	close(fifo_fd);
+	close(epoll_fd);
+
+	return 0;
+}
+====
+
+Sandeep Patil (1):
+  fs: pipe: wakeup readers everytime new data written is to pipe
+
+ fs/pipe.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+-- 
+2.32.0.554.ge1b32706d8-goog
+
