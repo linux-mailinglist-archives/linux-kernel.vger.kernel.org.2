@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A2B3DA1E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC6D3DA1E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236768AbhG2LPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
+        id S236732AbhG2LPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236312AbhG2LPm (ORCPT
+        with ESMTP id S236312AbhG2LPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:15:42 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF2EC061765;
-        Thu, 29 Jul 2021 04:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CblAv96mX27DFrx3HyL6ij0ry5T9+5Rkz5lF7iXCAhs=; b=DlJZj6ih94zYBLueYF1oakpGwr
-        /emKwBozMSJYrxlmQEyYJMzpbI5ykbi+rTagIH4Oif2aOeFQ3cHY8h4J3wcJldZXBExLL1UaRqGWL
-        QEKGUdwLQTIOpzlRqtj5PeeNyCDBBVqyFg0R3Fe5nZctyAf/OR+lBNBrvExucYhFPGbVJcoy09wV5
-        7gE9q8eTcE+2vuGBE7+jUssC0NhxwS8WAJiVQthaegm2UxNpEf0UYQ8RjkslGBr/8rtWd9XuHvlEV
-        Fp+CYakW8L/VL9lEYcKJb9z6RMiT2WKZ4UelgK+3OZdQWpFPzMKDIaQ3do7oOXiuy1tcE81iAZEWz
-        ZEcCyQIA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m940M-003x8x-V5; Thu, 29 Jul 2021 11:15:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 35AB130005A;
-        Thu, 29 Jul 2021 13:15:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0D8172023ADBD; Thu, 29 Jul 2021 13:15:07 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 13:15:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Rui Wang <wangrui@loongson.cn>, Ingo Molnar <mingo@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Guo Ren <guoren@kernel.org>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rui Wang <r@hev.cc>, Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [RFC PATCH v3] locking/atomic: Implement
- atomic{,64,_long}_{fetch_,}{andnot_or}{,_relaxed,_acquire,_release}()
-Message-ID: <YQKNu3WeMA/eJrLj@hirez.programming.kicks-ass.net>
-References: <20210729093003.146166-1-wangrui@loongson.cn>
- <20210729095551.GE21151@willie-the-truck>
+        Thu, 29 Jul 2021 07:15:20 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3909C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:15:16 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id m2-20020a17090a71c2b0290175cf22899cso8790421pjs.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=P6JR4MD1nZbCGyDxWwepp0jK3WYk6Zdj/y8iVAiPBSg=;
+        b=VRBt+bKi0cAN8LEpK12OBHB9u6otmlMK+7o1OLzTBvni5crrZTjXwpNVW5dexaYG1w
+         FgRxil3VgmNL9n+uZowDsbDezsOfH+vE9Tg7wQWr+a0IIujQuIi4Xyqq+ItaCs/zwlI4
+         yUN869w1dy0UJc0U5D4IwLj1+jbXGnpenZZqvuTC2fFC07UgBdB4VBwJvA//TB6W80I+
+         rrW20kwjKSeXXklIS0yUuTWjNjpyKolULkl6TmXLnB+F8hb33PswdW5QAzSfV5spKsk7
+         tJqVivwIBrvSo2QQVBYnULt4HHdYr6EcUWwZgh6jfnBJrEHh9ui0rW+tMt+e322XH0Vd
+         fuHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=P6JR4MD1nZbCGyDxWwepp0jK3WYk6Zdj/y8iVAiPBSg=;
+        b=bMJOcDZivMp6m8p5uyVVOIi06tdj6XUfIECZTCMBYkmwCfeiAC7l+91ljor9eKUQBY
+         caSRmzsxYxWkU5O+nBH37NrdWZYVhL4WthP1POcOV7nGSddpGlBQKVmDLI215FkvZsN5
+         kZ5KPUeJ3rVh5vrxIwEWmd0/XCyfnc/jKPqwgLoD4RcbmlQJCk7XDV3NWl7Rm2XZRCFv
+         +ZL2WJcGH0egU5XxmXLMZHT4wqhxAES+mujusxpZBbMRIMtbu6dipKfA+YNyNJbZenku
+         fuP5i4akxDws80VVnqA7WpkDkGyjnOCyLF2Ig+gjZYEeyOe4O0zbM+GVv6SgZRFxXkIS
+         kkyg==
+X-Gm-Message-State: AOAM532A9mTOiCx6EgoIWNZLp4sAvD/gN99wQbHJvHZDan5jem38uEEH
+        hlADcna9BGP0tddbKgv/5to24w==
+X-Google-Smtp-Source: ABdhPJzmMzQgwR7cNNoSaOWusGUG+LNYHF0AXsO6MC5So3X+yMZ49KPS3MosOkJ4nGK7PFFOvq3uSQ==
+X-Received: by 2002:a17:902:a9c6:b029:129:8fdb:698f with SMTP id b6-20020a170902a9c6b02901298fdb698fmr4296847plr.15.1627557316246;
+        Thu, 29 Jul 2021 04:15:16 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id 20sm663000pgg.36.2021.07.29.04.15.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 04:15:15 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 16:45:13 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
+        steev@kali.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [Patch v4 3/6] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
+ support
+Message-ID: <20210729111513.djd5hrbz6jb453xp@vireshk-i7>
+References: <20210727152512.1098329-1-thara.gopinath@linaro.org>
+ <20210727152512.1098329-4-thara.gopinath@linaro.org>
+ <20210728035014.25mgvrpnraxfslq7@vireshk-i7>
+ <9a257605-d282-cd06-cc44-5ad5a5f8484d@linaro.org>
+ <20210729061713.kzhka7nymo53zw2o@vireshk-i7>
+ <4d80594c-9088-5d36-44cd-19a98145095c@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729095551.GE21151@willie-the-truck>
+In-Reply-To: <4d80594c-9088-5d36-44cd-19a98145095c@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:55:52AM +0100, Will Deacon wrote:
+On 29-07-21, 07:13, Thara Gopinath wrote:
+> So the interrupt handler is a threaded handler. I moved it in v4 since one
+> of the "_opp" api has an underlying mutex and was causing issues. So using a
+> mutex should be pretty safe in this case.
 
-> Overall, I'm not thrilled to bits by extending the atomics API with
-> operations that cannot be implemented efficiently on any (?) architectures
-> and are only used by the qspinlock slowpath on machines with more than 16K
-> CPUs.
+Ahh I see.
 
-My rationale for proposing this primitive is similar to the existence of
-other composite atomic ops from the Misc (and refcount) class (as per
-atomic_t.txt). They're common/performance sensitive operations that, on
-LL/SC platforms, can be better implemented than a cmpxchg() loop.
+> IIUC, the main change you are suggesting below is to include enable_irq() /
+> mod_delayed_work() under the spin_lock as well. Is that right ? In which
+> case isn't a mutex better than spinlock?
 
-Specifically here, it can be used to implement short xchg() in an
-architecturally neutral way, but more importantly it provides fwd
-progress on LL/SC, while most LL/SC based cmpxchg() implementations are
-arguably broken there.
+Yeah, sure.
 
-People seem to really struggle to implement that sanely.
-
-It's such a shame we can't have the compiler generate sane composite
-atomics for us..
-
-> I also think we're lacking documentation justifying when you would use this
-> new primitive over e.g. a sub-word WRITE_ONCE() on architectures that
-> support those, especially for the non-returning variants.
-
-Given the sub-word ordering 'fun', this might come in handy somewhere
-:-) But yes, it's existence is more of a completeness/symmetry argument
-than anything else.
+-- 
+viresh
