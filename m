@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7433DA615
+	by mail.lfdr.de (Postfix) with ESMTP id 33CA83DA614
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237952AbhG2OMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:12:07 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3525 "EHLO
+        id S237352AbhG2OMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:12:03 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3526 "EHLO
         frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238077AbhG2OCk (ORCPT
+        with ESMTP id S238298AbhG2OCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:02:40 -0400
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBnV5qKjz6FG0F;
-        Thu, 29 Jul 2021 21:53:18 +0800 (CST)
+        Thu, 29 Jul 2021 10:02:44 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBkW6WsDz6L9GG;
+        Thu, 29 Jul 2021 21:50:43 +0800 (CST)
 Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 16:02:35 +0200
+ 15.1.2176.2; Thu, 29 Jul 2021 16:02:39 +0200
 Received: from localhost.localdomain (10.69.192.58) by
  lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 15:02:32 +0100
+ 15.1.2176.2; Thu, 29 Jul 2021 15:02:35 +0100
 From:   John Garry <john.garry@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -30,9 +30,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
 CC:     <yao.jin@linux.intel.com>, <linux-kernel@vger.kernel.org>,
         <linux-perf-users@vger.kernel.org>, <irogers@google.com>,
         <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH 02/11] perf jevents: Relocate test events to cpu folder
-Date:   Thu, 29 Jul 2021 21:56:17 +0800
-Message-ID: <1627566986-30605-3-git-send-email-john.garry@huawei.com>
+Subject: [PATCH 03/11] perf test: Declare pmu-events test events separately
+Date:   Thu, 29 Jul 2021 21:56:18 +0800
+Message-ID: <1627566986-30605-4-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
 References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
@@ -46,51 +46,366 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In future to add support for sys events, relocate the core and uncore
-events to a cpu folder.
+Currently all test events are put into arrays of test events.
+
+Create pointer arrays of test events instead, so the test events may be
+referenced later for tighter alias verification.
 
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/branch.json | 0
- .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/cache.json  | 0
- .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/other.json  | 0
- .../pmu-events/arch/test/{test_cpu => test_soc/cpu}/uncore.json | 0
- tools/perf/pmu-events/jevents.c                                 | 2 +-
- 5 files changed, 1 insertion(+), 1 deletion(-)
- rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/branch.json (100%)
- rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/cache.json (100%)
- rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/other.json (100%)
- rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/uncore.json (100%)
+ tools/perf/tests/pmu-events.c | 244 ++++++++++++++++++----------------
+ 1 file changed, 126 insertions(+), 118 deletions(-)
 
-diff --git a/tools/perf/pmu-events/arch/test/test_cpu/branch.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/branch.json
-similarity index 100%
-rename from tools/perf/pmu-events/arch/test/test_cpu/branch.json
-rename to tools/perf/pmu-events/arch/test/test_soc/cpu/branch.json
-diff --git a/tools/perf/pmu-events/arch/test/test_cpu/cache.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/cache.json
-similarity index 100%
-rename from tools/perf/pmu-events/arch/test/test_cpu/cache.json
-rename to tools/perf/pmu-events/arch/test/test_soc/cpu/cache.json
-diff --git a/tools/perf/pmu-events/arch/test/test_cpu/other.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/other.json
-similarity index 100%
-rename from tools/perf/pmu-events/arch/test/test_cpu/other.json
-rename to tools/perf/pmu-events/arch/test/test_soc/cpu/other.json
-diff --git a/tools/perf/pmu-events/arch/test/test_cpu/uncore.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
-similarity index 100%
-rename from tools/perf/pmu-events/arch/test/test_cpu/uncore.json
-rename to tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 9604446f8360..405bdd36b9b9 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -814,7 +814,7 @@ static void print_mapping_test_table(FILE *outfp)
- 	fprintf(outfp, "\t.cpuid = \"testcpu\",\n");
- 	fprintf(outfp, "\t.version = \"v1\",\n");
- 	fprintf(outfp, "\t.type = \"core\",\n");
--	fprintf(outfp, "\t.table = pme_test_cpu,\n");
-+	fprintf(outfp, "\t.table = pme_test_soc_cpu,\n");
- 	fprintf(outfp, "},\n");
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index c064f08c63c9..0837f2c9d882 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -30,108 +30,114 @@ struct perf_pmu_test_event {
+ 	const char *alias_long_desc;
+ };
+ 
+-static struct perf_pmu_test_event test_cpu_events[] = {
+-	{
+-		.event = {
+-			.name = "bp_l1_btb_correct",
+-			.event = "event=0x8a",
+-			.desc = "L1 BTB Correction",
+-			.topic = "branch",
+-		},
+-		.alias_str = "event=0x8a",
+-		.alias_long_desc = "L1 BTB Correction",
+-	},
+-	{
+-		.event = {
+-			.name = "bp_l2_btb_correct",
+-			.event = "event=0x8b",
+-			.desc = "L2 BTB Correction",
+-			.topic = "branch",
+-		},
+-		.alias_str = "event=0x8b",
+-		.alias_long_desc = "L2 BTB Correction",
++static const struct perf_pmu_test_event bp_l1_btb_correct = {
++	.event = {
++		.name = "bp_l1_btb_correct",
++		.event = "event=0x8a",
++		.desc = "L1 BTB Correction",
++		.topic = "branch",
+ 	},
+-	{
+-		.event = {
+-			.name = "segment_reg_loads.any",
+-			.event = "umask=0x80,period=200000,event=0x6",
+-			.desc = "Number of segment register loads",
+-			.topic = "other",
+-		},
+-		.alias_str = "umask=0x80,(null)=0x30d40,event=0x6",
+-		.alias_long_desc = "Number of segment register loads",
++	.alias_str = "event=0x8a",
++	.alias_long_desc = "L1 BTB Correction",
++};
++
++static const struct perf_pmu_test_event bp_l2_btb_correct = {
++	.event = {
++		.name = "bp_l2_btb_correct",
++		.event = "event=0x8b",
++		.desc = "L2 BTB Correction",
++		.topic = "branch",
+ 	},
+-	{
+-		.event = {
+-			.name = "dispatch_blocked.any",
+-			.event = "umask=0x20,period=200000,event=0x9",
+-			.desc = "Memory cluster signals to block micro-op dispatch for any reason",
+-			.topic = "other",
+-		},
+-		.alias_str = "umask=0x20,(null)=0x30d40,event=0x9",
+-		.alias_long_desc = "Memory cluster signals to block micro-op dispatch for any reason",
++	.alias_str = "event=0x8b",
++	.alias_long_desc = "L2 BTB Correction",
++};
++
++static const struct perf_pmu_test_event segment_reg_loads_any = {
++	.event = {
++		.name = "segment_reg_loads.any",
++		.event = "umask=0x80,period=200000,event=0x6",
++		.desc = "Number of segment register loads",
++		.topic = "other",
+ 	},
+-	{
+-		.event = {
+-			.name = "eist_trans",
+-			.event = "umask=0x0,period=200000,event=0x3a",
+-			.desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
+-			.topic = "other",
+-		},
+-		.alias_str = "umask=0,(null)=0x30d40,event=0x3a",
+-		.alias_long_desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
++	.alias_str = "umask=0x80,(null)=0x30d40,event=0x6",
++	.alias_long_desc = "Number of segment register loads",
++};
++
++static const struct perf_pmu_test_event dispatch_blocked_any = {
++	.event = {
++		.name = "dispatch_blocked.any",
++		.event = "umask=0x20,period=200000,event=0x9",
++		.desc = "Memory cluster signals to block micro-op dispatch for any reason",
++		.topic = "other",
+ 	},
+-	{
+-		.event = {
+-			.name = "l3_cache_rd",
+-			.event = "event=0x40",
+-			.desc = "L3 cache access, read",
+-			.long_desc = "Attributable Level 3 cache access, read",
+-			.topic = "cache",
+-		},
+-		.alias_str = "event=0x40",
+-		.alias_long_desc = "Attributable Level 3 cache access, read",
++	.alias_str = "umask=0x20,(null)=0x30d40,event=0x9",
++	.alias_long_desc = "Memory cluster signals to block micro-op dispatch for any reason",
++};
++
++static const struct perf_pmu_test_event eist_trans = {
++	.event = {
++		.name = "eist_trans",
++		.event = "umask=0x0,period=200000,event=0x3a",
++		.desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
++		.topic = "other",
+ 	},
+-	{ /* sentinel */
+-		.event = {
+-			.name = NULL,
+-		},
++	.alias_str = "umask=0,(null)=0x30d40,event=0x3a",
++	.alias_long_desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
++};
++
++static const struct perf_pmu_test_event l3_cache_rd = {
++	.event = {
++		.name = "l3_cache_rd",
++		.event = "event=0x40",
++		.desc = "L3 cache access, read",
++		.long_desc = "Attributable Level 3 cache access, read",
++		.topic = "cache",
+ 	},
++	.alias_str = "event=0x40",
++	.alias_long_desc = "Attributable Level 3 cache access, read",
+ };
+ 
+-static struct perf_pmu_test_event test_uncore_events[] = {
+-	{
+-		.event = {
+-			.name = "uncore_hisi_ddrc.flux_wcmd",
+-			.event = "event=0x2",
+-			.desc = "DDRC write commands. Unit: hisi_sccl,ddrc ",
+-			.topic = "uncore",
+-			.long_desc = "DDRC write commands",
+-			.pmu = "hisi_sccl,ddrc",
+-		},
+-		.alias_str = "event=0x2",
+-		.alias_long_desc = "DDRC write commands",
++static const struct perf_pmu_test_event *core_events[] = {
++	&bp_l1_btb_correct,
++	&bp_l2_btb_correct,
++	&segment_reg_loads_any,
++	&dispatch_blocked_any,
++	&eist_trans,
++	&l3_cache_rd,
++	NULL
++};
++
++static const struct perf_pmu_test_event uncore_hisi_ddrc_flux_wcmd = {
++	.event = {
++		.name = "uncore_hisi_ddrc.flux_wcmd",
++		.event = "event=0x2",
++		.desc = "DDRC write commands. Unit: hisi_sccl,ddrc ",
++		.topic = "uncore",
++		.long_desc = "DDRC write commands",
++		.pmu = "hisi_sccl,ddrc",
+ 	},
+-	{
+-		.event = {
+-			.name = "unc_cbo_xsnp_response.miss_eviction",
+-			.event = "umask=0x81,event=0x22",
+-			.desc = "Unit: uncore_cbox A cross-core snoop resulted from L3 Eviction which misses in some processor core",
+-			.topic = "uncore",
+-			.long_desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
+-			.pmu = "uncore_cbox",
+-		},
+-		.alias_str = "umask=0x81,event=0x22",
+-		.alias_long_desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
++	.alias_str = "event=0x2",
++	.alias_long_desc = "DDRC write commands",
++};
++
++static const struct perf_pmu_test_event unc_cbo_xsnp_response_miss_eviction = {
++	.event = {
++		.name = "unc_cbo_xsnp_response.miss_eviction",
++		.event = "umask=0x81,event=0x22",
++		.desc = "Unit: uncore_cbox A cross-core snoop resulted from L3 Eviction which misses in some processor core",
++		.topic = "uncore",
++		.long_desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
++		.pmu = "uncore_cbox",
+ 	},
+-	{ /* sentinel */
+-		.event = {
+-			.name = NULL,
+-		},
+-	}
++	.alias_str = "umask=0x81,event=0x22",
++	.alias_long_desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
+ };
+ 
+-const int total_test_events_size = ARRAY_SIZE(test_uncore_events);
++static const struct perf_pmu_test_event *uncore_events[] = {
++	&uncore_hisi_ddrc_flux_wcmd,
++	&unc_cbo_xsnp_response_miss_eviction,
++	NULL
++};
+ 
+ static bool is_same(const char *reference, const char *test)
+ {
+@@ -226,7 +232,7 @@ static int compare_pmu_events(struct pmu_event *e1, const struct pmu_event *e2)
+ 	return 0;
  }
  
+-/* Verify generated events from pmu-events.c is as expected */
++/* Verify generated events from pmu-events.c are as expected */
+ static int test_pmu_event_table(void)
+ {
+ 	struct pmu_events_map *map = __test_pmu_get_events_map();
+@@ -234,31 +240,31 @@ static int test_pmu_event_table(void)
+ 	int map_events = 0, expected_events;
+ 
+ 	/* ignore 2x sentinels */
+-	expected_events = ARRAY_SIZE(test_cpu_events) +
+-			  ARRAY_SIZE(test_uncore_events) - 2;
++	expected_events = ARRAY_SIZE(core_events) +
++			  ARRAY_SIZE(uncore_events) - 2;
+ 
+ 	if (!map)
+ 		return -1;
+ 
+ 	for (table = map->table; table->name; table++) {
+-		struct perf_pmu_test_event *test;
+-		struct pmu_event *te;
++		struct perf_pmu_test_event const **test_event_table;
+ 		bool found = false;
+ 
+ 		if (table->pmu)
+-			test = &test_uncore_events[0];
++			test_event_table = &uncore_events[0];
+ 		else
+-			test = &test_cpu_events[0];
++			test_event_table = &core_events[0];
+ 
+-		te = &test->event;
++		for (; *test_event_table; test_event_table++) {
++			struct perf_pmu_test_event const *test_event = *test_event_table;
++			struct pmu_event const *event = &test_event->event;
+ 
+-		for (; te->name; test++, te = &test->event) {
+-			if (strcmp(table->name, te->name))
++			if (strcmp(table->name, event->name))
+ 				continue;
+ 			found = true;
+ 			map_events++;
+ 
+-			if (compare_pmu_events(table, te))
++			if (compare_pmu_events(table, event))
+ 				return -1;
+ 
+ 			pr_debug("testing event table %s: pass\n", table->name);
+@@ -294,8 +300,7 @@ static struct perf_pmu_alias *find_alias(const char *test_event, struct list_hea
+ /* Verify aliases are as expected */
+ static int __test__pmu_event_aliases(char *pmu_name, int *count)
+ {
+-	struct perf_pmu_test_event *test;
+-	struct pmu_event *te;
++	struct perf_pmu_test_event const **test_event_table;
+ 	struct perf_pmu *pmu;
+ 	LIST_HEAD(aliases);
+ 	int res = 0;
+@@ -307,10 +312,10 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
+ 		return -1;
+ 
+ 	if (is_pmu_core(pmu_name)) {
+-		test = &test_cpu_events[0];
++		test_event_table = &core_events[0];
+ 		use_uncore_table = false;
+ 	} else {
+-		test = &test_uncore_events[0];
++		test_event_table = &uncore_events[0];
+ 		use_uncore_table = true;
+ 	}
+ 
+@@ -322,50 +327,53 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
+ 
+ 	pmu_add_cpu_aliases_map(&aliases, pmu, map);
+ 
+-	for (te = &test->event; te->name; test++, te = &test->event) {
+-		struct perf_pmu_alias *alias = find_alias(te->name, &aliases);
++	for (; *test_event_table; test_event_table++) {
++		struct perf_pmu_test_event const *test_event = *test_event_table;
++		struct pmu_event const *event = &test_event->event;
++
++		struct perf_pmu_alias *alias = find_alias(event->name, &aliases);
+ 
+ 		if (!alias) {
+ 			bool uncore_match = pmu_uncore_alias_match(pmu_name,
+-								   te->pmu);
++								   event->pmu);
+ 
+ 			if (use_uncore_table && !uncore_match) {
+ 				pr_debug3("testing aliases PMU %s: skip matching alias %s\n",
+-					  pmu_name, te->name);
++					  pmu_name, event->name);
+ 				continue;
+ 			}
+ 
+ 			pr_debug2("testing aliases PMU %s: no alias, alias_table->name=%s\n",
+-				  pmu_name, te->name);
++				  pmu_name, event->name);
+ 			res = -1;
+ 			break;
+ 		}
+ 
+-		if (!is_same(alias->desc, te->desc)) {
++		if (!is_same(alias->desc, event->desc)) {
+ 			pr_debug2("testing aliases PMU %s: mismatched desc, %s vs %s\n",
+-				  pmu_name, alias->desc, te->desc);
++				  pmu_name, alias->desc, event->desc);
+ 			res = -1;
+ 			break;
+ 		}
+ 
+-		if (!is_same(alias->long_desc, test->alias_long_desc)) {
++		if (!is_same(alias->long_desc, test_event->alias_long_desc)) {
+ 			pr_debug2("testing aliases PMU %s: mismatched long_desc, %s vs %s\n",
+ 				  pmu_name, alias->long_desc,
+-				  test->alias_long_desc);
++				  test_event->alias_long_desc);
+ 			res = -1;
+ 			break;
+ 		}
+ 
+-		if (!is_same(alias->str, test->alias_str)) {
++		if (!is_same(alias->str, test_event->alias_str)) {
+ 			pr_debug2("testing aliases PMU %s: mismatched str, %s vs %s\n",
+-				  pmu_name, alias->str, test->alias_str);
++				  pmu_name, alias->str, test_event->alias_str);
+ 			res = -1;
+ 			break;
+ 		}
+ 
+-		if (!is_same(alias->topic, te->topic)) {
++		if (!is_same(alias->topic, event->topic)) {
+ 			pr_debug2("testing aliases PMU %s: mismatched topic, %s vs %s\n",
+-				  pmu_name, alias->topic, te->topic);
++				  pmu_name, alias->topic, event->topic);
+ 			res = -1;
+ 			break;
+ 		}
 -- 
 2.26.2
 
