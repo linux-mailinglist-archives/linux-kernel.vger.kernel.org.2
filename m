@@ -2,56 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2243DA72B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BFA3DA737
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237518AbhG2PI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:08:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhG2PIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:08:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E90D60EBC;
-        Thu, 29 Jul 2021 15:08:19 +0000 (UTC)
-Date:   Thu, 29 Jul 2021 17:08:16 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hch@lst.de, virtio-fs@redhat.com,
-        v9fs-developer@lists.sourceforge.net, stefanha@redhat.com,
-        miklos@szeredi.hu
-Subject: Re: [PATCH v3 0/3] support booting of arbitrary non-blockdevice file
- systems
-Message-ID: <20210729150816.jg5brzgt7nndhtdi@wittgenstein>
-References: <20210714202321.59729-1-vgoyal@redhat.com>
+        id S237688AbhG2PKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:10:02 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:44675 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhG2PKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 11:10:00 -0400
+Received: by mail-oi1-f173.google.com with SMTP id w6so8826205oiv.11;
+        Thu, 29 Jul 2021 08:09:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5bJH/fpoUt2uQkPvcGjyGDKgGhlQRm6pEd78vhS/jc4=;
+        b=dcpopyNmCSugC/5Ljm+GJtGYxWHX9qB3IgvaSbUM4/MjayxwF23BRzMAVQwKlGpS0e
+         IVbdHO5V00PmyaQVbWedk2YpU4Zhk/uKQzKa61zivfwtR1LtXyp9Cr49eFD5byB5riJM
+         kDImKeHY2/SJCkJ2dpYbZ3GCCRK+pswMaPSGrg/M1eR7mIcN5pZJJm66ddu1sGblbl9T
+         /ZyDx4flkuY2c6OQKCvZ3GOLGBD751aVS/skUTXrScqZBwuHzQVHjvQutiEy483cmLSh
+         gKxDPZGVP/D+FQC+wD87YbMfEKE3uwCrXk4dIKW+T17coe1Ze9TR+ZDhqhXEgTl1wTG9
+         JMPQ==
+X-Gm-Message-State: AOAM532ugR+AmWRt2QpIGJteHO8MM6QY1G5E9mFq/tq/1z3rrfxsrddK
+        28N3VS+z3lQmXQUxL2TpPwWTqwqpx2vJEpYz3xI=
+X-Google-Smtp-Source: ABdhPJyvEGB8FjJACYl3Fr7vWAR7dFS0J8VaBw0Le10jR0USiUfcLHOOMG8vDbEB/DEgNPj66v0To6sSiuu4EQ8RXyg=
+X-Received: by 2002:a05:6808:198c:: with SMTP id bj12mr1418309oib.71.1627571396779;
+ Thu, 29 Jul 2021 08:09:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210714202321.59729-1-vgoyal@redhat.com>
+References: <4668274.31r3eYUQgx@kreacher> <2207145.ElGaqSPkdT@kreacher>
+In-Reply-To: <2207145.ElGaqSPkdT@kreacher>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 29 Jul 2021 17:09:45 +0200
+Message-ID: <CAJZ5v0jA92Mdrv2NyKpNs0tB45_p2sFmh_81RaBpnFVnr66+5g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] PCI: PM: Add special case handling for PCIe device wakeup
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Koba Ko <koba.ko@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 04:23:18PM -0400, Vivek Goyal wrote:
-> Hi,
-> 
-> This is V3 of patches. Christoph had posted V2 here.
-> 
-> https://lore.kernel.org/linux-fsdevel/20210621062657.3641879-1-hch@lst.de/
-> 
-> There was a small issue in last patch series that list_bdev_fs_names()
-> did not put an extra '\0' at the end as current callers were expecting.
-> 
-> To fix this, I have modified list_bdev_fs_names() and split_fs_names()
-> to return number of null terminated strings they have parsed. And
-> modified callers to use that to loop through strings (instead of
-> relying on an extra null at the end).
-> 
-> Christoph was finding it hard to find time so I took his patches, 
-> added my changes in patch3 and reposting the patch series.
-> 
-> I have tested it with 9p, virtiofs and ext4 filesystems as rootfs
-> and it works for me.
+On Thu, Jul 29, 2021 at 4:49 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> It is inconsistent to return PCI_D0 from pci_target_state() instead
+> of the original target state if 'wakeup' is true and the device
+> cannot signal PME from D0.
+>
+> This only happens when the device cannot signal PME from the original
+> target state and any shallower power states (including D0) and that
+> case is effectively equivalent to the one in which PME signaling is
+> not supported at all.  Since the original target state is returned in
+> the latter case, make the function do that in the former one too.
+>
+> Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
+> Fixes: 666ff6f83e1d ("PCI/PM: Avoid using device_may_wakeup() for runtime PM")
+> Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+> Reported-by: Koba Ko <koba.ko@canonical.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-lgtm,
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+The subject of this patch should be different, let me resend it.
