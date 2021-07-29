@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E533DA15D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C9D3DA15C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237259AbhG2Kl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:41:28 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47750
+        id S237179AbhG2KlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:41:24 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47788
         "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236233AbhG2Kkn (ORCPT
+        by vger.kernel.org with ESMTP id S236246AbhG2Kko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:40:43 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        Thu, 29 Jul 2021 06:40:44 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 28EBB3F0B8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:40:39 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 675F63F239
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:40:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627555239;
-        bh=8EDO8hbetO1mnknXtDL482rftlukDehwkpBsBwJNSdE=;
+        s=20210705; t=1627555240;
+        bh=So1uUDkE721+BEqMeRM8NOIaRYftuFanUkfPQdOA99A=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=a9F9Kuf66F9m9f0E1H1Fa3W/FWi3TamL+faA3Li+zhob/81THfDgi5d6UrSWYnTz+
-         Epj85cJSFPTD4FemAEJGSNzDjKlqCoCeYIoMWHNy8mhSrP3380vwgSz1z7yCgkZ5qq
-         L0Yf/IJ4az5joXWgMzfKVpRJbJvHUPPLj6kxUDr+yVaoNazvpQ0UGVJiAC9JvlSHFj
-         QOkskfNV1eCNBMMPT8ZNrHVGF63xCJ/R6r6wYc2yzmlPu2ItAyKmfoZpOXpemevB4j
-         W5hSqHwJMTpOMGtPI2S9hWleughg8Z6+PRvYN1dSJlCqRtCmlSpi1Mrg/Pd4pFHW87
-         desx4dr4FIJRA==
-Received: by mail-ed1-f70.google.com with SMTP id u25-20020aa7d8990000b02903bb6a903d90so2732730edq.17
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:40:39 -0700 (PDT)
+        b=LcJpcVqO1Q45p0JH/FCarrOA08lTJgjKg292V28U+vo0Q2qtcKOp7vlPkir0Q1i+9
+         nA7p+otPGN/Oj0ezZu4FX4f5ng0XL6965w8zeWbBgBTy0FoXzVcRxDIzbuItauD6Hq
+         +rOtqB/ubTS3m+I/qN4eOFl9Gsu9ZmtztEB0CBfbpRX2AdSjfnRSCbPviI5yIU+OIh
+         5qZpxLTr2Q7PWLf7gR5CeUzqyuAVBSp9WNs2p72F6T8+yiQ+qDlz+7VDJFPa00llQJ
+         Ud90JWJ+RH2KgXIv6zTOEX0DYaZgtjG4Ai+FWG83pEmfTm9UTXmU3odH3c1xlvIMzT
+         KFK7OpfiI3P/w==
+Received: by mail-ed1-f72.google.com with SMTP id b88-20020a509f610000b02903ab1f22e1dcso2733091edf.23
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:40:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8EDO8hbetO1mnknXtDL482rftlukDehwkpBsBwJNSdE=;
-        b=uJonVgkz8XI3GB4oBuD9bqCs0YaOCuwBc+7odGO/mua+dAiEs6nOfSa2ti2HRfqOMn
-         m8dP2jecViNNlSbMdHJjxh0ELcA1q36NQkNMEgSynBOZ4D8JnvlStTDgsrvznwStOOT0
-         e5lHrtB/9JpQeKiaytwYhzgTLenbRAOezdMaMbhoL/Ebwo8BN2avqPdbV5G+DCdHS9o+
-         9OoY48zuMYZ+OHJthmOTIemoSPa+qYbLbYxVvI5SBLiqHoFDiwQFYCik7Fy2ES7MyjmO
-         DIjWDk9Lj3Y66JZ/mJqXPicOhp38vC7Vq5c9e3pwSkm1bHE+ADXnjbUpRpub5Sby19e0
-         oBXA==
-X-Gm-Message-State: AOAM533Sb/8MFDeDyCM2tOLOCnKPcUMm+JUt3UHSuccRnPXb8w4zrQ+T
-        vYRf6yPYKLrDB3cRY0+6QAoEeOQRPtOzAffS5pLC5vqqJRpB5JXSUM6QMrV6mOHaS/pBuSqfK5r
-        Fq8y+YueU6yXK1YbvJ5M89hbi7x+9AvSlkfs6o5s1gg==
-X-Received: by 2002:a17:907:364:: with SMTP id rs4mr4101077ejb.56.1627555238863;
-        Thu, 29 Jul 2021 03:40:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZOu9E6xI3XjXcxdCN71pcdo7KIqUHufVdue1M53+xuTdudckjsCWW6eu5CVaY3Tc87olLnA==
-X-Received: by 2002:a17:907:364:: with SMTP id rs4mr4101068ejb.56.1627555238733;
-        Thu, 29 Jul 2021 03:40:38 -0700 (PDT)
+        bh=So1uUDkE721+BEqMeRM8NOIaRYftuFanUkfPQdOA99A=;
+        b=Oz0fekbSt5kDj6mOItqjaG3eQeQeI7TwRcgyTUBwknZQR0TBC1gaCJhQgrueiaXB3g
+         i8zij/nXqP72GMTfqr/CE1H/6nxCs2axT9H3ueQfIZ9QqFFi0cd2xWHDgFSxi/HOwMVe
+         YBrlEhcESC7snk8cBq0cT84VdPEiqWgwgu0IM8+5j44I8fiVFxXiO67ZugkIfQ6ABgrL
+         0cBZWtVp/kEhVGab/xqEb4CdoWHLQFyAmYMBQvQLi5ZPiAIOybg+7CQRdig0rijuv9bm
+         titedkF/Kr2MXVf236I+xIz91Xaq75etD/YX4NvDBkwgkHVGrli6tYAhIzTh655CDJ5N
+         RUAA==
+X-Gm-Message-State: AOAM533/ZcX/iLWzFlyjUkjqD49BEaZnudYkOvZe/3EzR/PUDRJESeWY
+        9UsdnQj4rcwQDwdqcB9mDG3OjZE5gPcKIl3jjPh9fLIY7PDKF7PywLVp0ymYBjRFnCpgq6eq2er
+        geZT64bcfwysBdfOQz7N1/TzN2zrCQ9WA86XVZwyjEQ==
+X-Received: by 2002:a05:6402:cb9:: with SMTP id cn25mr4576420edb.271.1627555240172;
+        Thu, 29 Jul 2021 03:40:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwg8gQFeBPTWOxeoK6KYjuQRUdToXFwmH6p9ZgcYdRRS/mw4BXtIUndBzQfGalBkLacI2jz9A==
+X-Received: by 2002:a05:6402:cb9:: with SMTP id cn25mr4576407edb.271.1627555240070;
+        Thu, 29 Jul 2021 03:40:40 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id c14sm824475ejb.78.2021.07.29.03.40.37
+        by smtp.gmail.com with ESMTPSA id c14sm824475ejb.78.2021.07.29.03.40.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 03:40:38 -0700 (PDT)
+        Thu, 29 Jul 2021 03:40:39 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Mark Greer <mgreer@animalcreek.com>,
@@ -62,9 +62,9 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-wireless@vger.kernel.org
-Subject: [PATCH 04/12] nfc: trf7970a: constify several pointers
-Date:   Thu, 29 Jul 2021 12:40:14 +0200
-Message-Id: <20210729104022.47761-5-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 05/12] nfc: virtual_ncidev: constify pointer to nfc_dev
+Date:   Thu, 29 Jul 2021 12:40:15 +0200
+Message-Id: <20210729104022.47761-6-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
 References: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
@@ -74,85 +74,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several functions do not modify pointed data so arguments and local
-variables can be const for correctness and safety.
+virtual_ncidev_ioctl() does not modify struct nfc_dev, so local variable
+can be a pointer to const.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/nfc/trf7970a.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ drivers/nfc/virtual_ncidev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nfc/trf7970a.c b/drivers/nfc/trf7970a.c
-index 1aed44629aaa..8890fcd59c39 100644
---- a/drivers/nfc/trf7970a.c
-+++ b/drivers/nfc/trf7970a.c
-@@ -643,7 +643,7 @@ static void trf7970a_send_err_upstream(struct trf7970a *trf, int errno)
- }
- 
- static int trf7970a_transmit(struct trf7970a *trf, struct sk_buff *skb,
--			     unsigned int len, u8 *prefix,
-+			     unsigned int len, const u8 *prefix,
- 			     unsigned int prefix_len)
+diff --git a/drivers/nfc/virtual_ncidev.c b/drivers/nfc/virtual_ncidev.c
+index b914ab2c2109..2ee0ec4bb739 100644
+--- a/drivers/nfc/virtual_ncidev.c
++++ b/drivers/nfc/virtual_ncidev.c
+@@ -170,7 +170,7 @@ static int virtual_ncidev_close(struct inode *inode, struct file *file)
+ static long virtual_ncidev_ioctl(struct file *flip, unsigned int cmd,
+ 				 unsigned long arg)
  {
- 	struct spi_transfer t[2];
-@@ -1387,9 +1387,10 @@ static int trf7970a_is_iso15693_write_or_lock(u8 cmd)
- 	}
- }
+-	struct nfc_dev *nfc_dev = ndev->nfc_dev;
++	const struct nfc_dev *nfc_dev = ndev->nfc_dev;
+ 	void __user *p = (void __user *)arg;
  
--static int trf7970a_per_cmd_config(struct trf7970a *trf, struct sk_buff *skb)
-+static int trf7970a_per_cmd_config(struct trf7970a *trf,
-+				   const struct sk_buff *skb)
- {
--	u8 *req = skb->data;
-+	const u8 *req = skb->data;
- 	u8 special_fcn_reg1, iso_ctrl;
- 	int ret;
- 
-@@ -1791,7 +1792,7 @@ static int _trf7970a_tg_listen(struct nfc_digital_dev *ddev, u16 timeout,
- static int trf7970a_tg_listen(struct nfc_digital_dev *ddev, u16 timeout,
- 			      nfc_digital_cmd_complete_t cb, void *arg)
- {
--	struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
-+	const struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
- 
- 	dev_dbg(trf->dev, "Listen - state: %d, timeout: %d ms\n",
- 		trf->state, timeout);
-@@ -1803,7 +1804,7 @@ static int trf7970a_tg_listen_md(struct nfc_digital_dev *ddev,
- 				 u16 timeout, nfc_digital_cmd_complete_t cb,
- 				 void *arg)
- {
--	struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
-+	const struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
- 	int ret;
- 
- 	dev_dbg(trf->dev, "Listen MD - state: %d, timeout: %d ms\n",
-@@ -1824,7 +1825,7 @@ static int trf7970a_tg_listen_md(struct nfc_digital_dev *ddev,
- 
- static int trf7970a_tg_get_rf_tech(struct nfc_digital_dev *ddev, u8 *rf_tech)
- {
--	struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
-+	const struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
- 
- 	dev_dbg(trf->dev, "Get RF Tech - state: %d, rf_tech: %d\n",
- 		trf->state, trf->md_rf_tech);
-@@ -1974,7 +1975,7 @@ static void trf7970a_shutdown(struct trf7970a *trf)
- 	trf7970a_power_down(trf);
- }
- 
--static int trf7970a_get_autosuspend_delay(struct device_node *np)
-+static int trf7970a_get_autosuspend_delay(const struct device_node *np)
- {
- 	int autosuspend_delay, ret;
- 
-@@ -1987,7 +1988,7 @@ static int trf7970a_get_autosuspend_delay(struct device_node *np)
- 
- static int trf7970a_probe(struct spi_device *spi)
- {
--	struct device_node *np = spi->dev.of_node;
-+	const struct device_node *np = spi->dev.of_node;
- 	struct trf7970a *trf;
- 	int uvolts, autosuspend_delay, ret;
- 	u32 clk_freq = TRF7970A_13MHZ_CLOCK_FREQUENCY;
+ 	if (cmd != IOCTL_GET_NCIDEV_IDX)
 -- 
 2.27.0
 
