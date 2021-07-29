@@ -2,55 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2F33D9D49
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8565D3D9D4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbhG2Fyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 01:54:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59376 "EHLO mail.kernel.org"
+        id S234205AbhG2Fzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 01:55:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230223AbhG2Fyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:54:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D67A61053;
-        Thu, 29 Jul 2021 05:54:28 +0000 (UTC)
+        id S233899AbhG2Fza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 01:55:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0051061053;
+        Thu, 29 Jul 2021 05:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627538068;
-        bh=rAXscKZrW+2+4LGOnZPqFBsItZBqoTEh6dVWtmRtH2s=;
+        s=korg; t=1627538127;
+        bh=ObnkQ2ekSkknguegUJ7oExEOcolBoewZBGjOauRDd3I=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ppnf4cw4XG1iifQPDU9vTPsziBWEDfVakd1QzjJc7424WDvwxsarkQXBOSne6lZRX
-         2LQTRfGte1ePbPnsuRNFBOPAGjCLDiW4aH1lspDeN3kcY1w1XQsvo64fyIaE7AJJzN
-         hwQs8Gu2qqMdH6i2S4aDJtFdcovWFMFhZeSx/Iw0=
-Date:   Thu, 29 Jul 2021 07:54:23 +0200
+        b=lh1TFgzO8hSkhAVPKwCAi4BlEo6JyDRjaF3INXNV0sbrenyNlfF+oMRuMyYpj0CDK
+         EKWd9LZ0ZdyQCX1WVCkf6SH0fQiZcWiAK4y9OemniNcWgeLYVRnKEuZesGhXuG0BN5
+         ZLB83ZvZJ8r5mqWp18L9iihqVZCNghZMGDKDbaqE=
+Date:   Thu, 29 Jul 2021 07:55:22 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org, pavel@ucw.cz,
-        kernelnewbies@kernelnewbies.org
-Subject: Re: [RFC PATCH 4/8] block: Add block class attributes to manage LED
- trigger list
-Message-ID: <YQJCj/LjjCqb93AS@kroah.com>
-References: <20210729015344.3366750-1-arequipeno@gmail.com>
- <20210729015344.3366750-5-arequipeno@gmail.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
+        linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Yanko Kaneti <yaneti@declera.com>
+Subject: Re: [PATCH v2 2/3] kunit: Add support for suite initialization and
+ cleanup
+Message-ID: <YQJCyigNroTl8J/l@kroah.com>
+References: <20210729044125.7435-1-bvanassche@acm.org>
+ <20210729044125.7435-3-bvanassche@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729015344.3366750-5-arequipeno@gmail.com>
+In-Reply-To: <20210729044125.7435-3-bvanassche@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 08:53:40PM -0500, Ian Pilcher wrote:
-> * New class attributes - /sys/class/block/led_trigger_{new,list,del}
-> 
-> * Add init function - blk_ledtrig_init() - to create the attributes
->   in sysfs.  Call blk_ledtrig_init() from genhd_device_init() (in
->   block/genhd.c).
-> 
-> * New file - block/blk-ledtrig.h
+On Wed, Jul 28, 2021 at 09:41:24PM -0700, Bart Van Assche wrote:
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> Cc: David Gow <davidgow@google.com>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: kunit-dev@googlegroups.com
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: Bodo Stroesser <bostroesser@gmail.com>
+> Cc: Martin K. Petersen <martin.petersen@oracle.com>
+> Cc: Yanko Kaneti <yaneti@declera.com>
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+> ---
 
-That is an odd way to write a changelog, please read the documentation
-file about how to write a good changelog.
+I know I do not take patches without any changelog text.  Maybe other
+maintainers are more lax :(
 
-thanks,
-
-greg k-h
