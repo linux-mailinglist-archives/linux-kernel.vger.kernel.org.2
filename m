@@ -2,97 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630503DAC63
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1D53DAC62
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232529AbhG2UFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 16:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhG2UF3 (ORCPT
+        id S229886AbhG2UE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 16:04:56 -0400
+Received: from mail-pl1-f182.google.com ([209.85.214.182]:47084 "EHLO
+        mail-pl1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhG2UEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:05:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E124FC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dd8JzduH9hxHBnbjFnGofLElCDIcMgnxT3piASBgVac=; b=Eu+JXMHC0Kdk3tklE2H6hw/O4D
-        VjwMmH90+/bdv3m5bR6zoOtIImkkyxUawMw/XneLP7+wVjChhc9CxejN4JbYFKmP1OxuNGp4QqIkz
-        yZ/wtTeeH+cZFwP4moEwKkV2xpVuyjwL1+S1laKUuSLAiJeEADwnVSp5HGTr2a/1oNSnSdn9yctmi
-        YMXg0zQspv0P9Ih3Tq43+aLhxStH4O89ZtCOsmvVNB0+0QfB0eb0AEKXpAQzpHS8pjwamfCDeCJxN
-        O916PXBOlJ6N58PQY0sjFdd73m3tQWfrvUZSuB8ResKCIuc0GvHPdyzF4wIWGu8X/+csBr9yfKUW1
-        8BLE6Wbw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m9CFe-00HVxv-Qw; Thu, 29 Jul 2021 20:03:40 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 400D498631F; Thu, 29 Jul 2021 22:03:29 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 22:03:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     hev <r@hev.cc>
-Cc:     Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, paulmck@kernel.org,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        huacai chen <chenhuacai@gmail.com>,
-        Guo Ren <guoren@kernel.org>, geert@linux-m68k.org,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        wangrui <wangrui@loongson.cn>, lixuefeng <lixuefeng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH] Documentation/atomic_t: Document forward progress
- expectations
-Message-ID: <20210729200329.GC82583@worktop.programming.kicks-ass.net>
-References: <YQK9ziyogxTH0m9H@hirez.programming.kicks-ass.net>
- <CAHirt9hsN9cy16TKSn7Bb+HG5M52FR1Ct8=7xDiM14+5K_S8eg@mail.gmail.com>
+        Thu, 29 Jul 2021 16:04:53 -0400
+Received: by mail-pl1-f182.google.com with SMTP id t21so8227792plr.13;
+        Thu, 29 Jul 2021 13:04:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IHRkpF0RO7xgumloMSUZy6/MlTJAsHxlyDJXP+2mTd8=;
+        b=i6/kWaaxwh43qFB8sYwDyFJDsZOE7ZfAWxc85m6TXbKwAdSUx6jIe4VuQH3deeufNQ
+         yjj81odVw9HHSnFk9Ge434sa8ouG5jTYja6i5Pt4PeOoCii9sK45+72PIivDFHZemxu3
+         K7R3GR6pazMqmlAe+3eciuE6ARhwWV1I/ZlivCmJrBb6rI4Bx5jocp7fBwZPCBZyQz1B
+         XtIm0lheE3v0X50B8A8IQCONuL8XaZ9GNMlvuHWcbJC/tJTuGceILIqvndsLHyK2eXNi
+         MIyYawv2uGn5gKT7yBD8PSZgM+Yt7U5X4LOahgF17KLGfn6pIMk+lmtxGTCxJFtm6iVm
+         J7AA==
+X-Gm-Message-State: AOAM532eKrp4DAICEdKPYGC1tF7OJ/2iljOEblY2r7XUYm3ndgjc7epI
+        B61HC3dDvve+9wWc5ZFgrTQ=
+X-Google-Smtp-Source: ABdhPJxwBLkt8B/tY+5WYrqCRbM2Hr03x84qARqvRTVM5uIeBGiOklXkkP/i8FmNwFJl9YBZruitkw==
+X-Received: by 2002:a17:90a:990f:: with SMTP id b15mr16514780pjp.188.1627589088651;
+        Thu, 29 Jul 2021 13:04:48 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
+        by smtp.gmail.com with ESMTPSA id q17sm5440135pgd.39.2021.07.29.13.04.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 13:04:47 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 13:04:46 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>
+Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mark Brown <broonie@kernel.org>,
+        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Subject: Re: [PATCH v5 1/3] fpga: dfl: expose feature revision from struct
+ dfl_device
+Message-ID: <YQMJ3tG9jlYNK+dx@epycbox.lan>
+References: <20210716135441.3235863-1-martin@geanix.com>
+ <20210716135441.3235863-2-martin@geanix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAHirt9hsN9cy16TKSn7Bb+HG5M52FR1Ct8=7xDiM14+5K_S8eg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210716135441.3235863-2-martin@geanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:24:14AM +0800, hev wrote:
-> We may need new APIs to help LL/SC to implement atomic operations, but
-> this is obviously incompatible with native CAS. and many and many
-> common functions are CAS friendly. Let's more functions that implement
-> atomic semantics can be overridden by architecture may be a way. ;-)
+On Fri, Jul 16, 2021 at 03:54:39PM +0200, Martin Hundebøll wrote:
+> From: Martin Hundebøll <mhu@silicom.dk>
 > 
-> In the above example, the correct implementation on LL/SC may be like:
+> DFL device drivers have a common need for checking feature revision
+> information from the DFL header, as well as other common DFL information
+> like the already exposed feature id and type.
 > 
-> do {
->     old = LL(&v);
->     new = func(old, &skip);
->     if (skip) {
->         break;
->     }
-> } while (!SC(&v, new);
+> This patch exposes the feature revision information directly via the DFL
+> device data structure.
 > 
-> However, the success of SC may be affected by the inconstant
-> complexity of func. :-(
+> Since the DFL core code has already read the DFL header, this this patch
+> saves additional mmio reads from DFL device drivers too.
+> 
+> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+> Acked-by: Wu Hao <hao.wu@intel.com>
+> Acked-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> ---
+> 
+> Changes since v4:
+>  * Renamed 'rev' to 'revision' as per Tom's suggestion
+> 
+> Changes since v3:
+>  * Added Hao's Acked-by
+>  * Added Matthew's Acked-by
+> 
+> Changes since v2:
+>  * Reworded commit message as per Hao's suggestion
+> 
+> Changes since v1:
+>  * This patch replaces the previous patch 2 and exposes the feature
+>    revision through struct dfl_device instead of a helper reading from
+>    io-mem
+> 
+>  drivers/fpga/dfl.c  | 27 +++++++++++++++++----------
+>  drivers/fpga/dfl.h  |  1 +
+>  include/linux/dfl.h |  1 +
+>  3 files changed, 19 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+> index 511b20ff35a3..e73a70053906 100644
+> --- a/drivers/fpga/dfl.c
+> +++ b/drivers/fpga/dfl.c
+> @@ -381,6 +381,7 @@ dfl_dev_add(struct dfl_feature_platform_data *pdata,
+>  
+>  	ddev->type = feature_dev_id_type(pdev);
+>  	ddev->feature_id = feature->id;
+> +	ddev->revision = feature->revision;
+>  	ddev->cdev = pdata->dfl_cdev;
+>  
+>  	/* add mmio resource */
+> @@ -717,6 +718,7 @@ struct build_feature_devs_info {
+>   */
+>  struct dfl_feature_info {
+>  	u16 fid;
+> +	u8 revision;
+>  	struct resource mmio_res;
+>  	void __iomem *ioaddr;
+>  	struct list_head node;
+> @@ -796,6 +798,7 @@ static int build_info_commit_dev(struct build_feature_devs_info *binfo)
+>  		/* save resource information for each feature */
+>  		feature->dev = fdev;
+>  		feature->id = finfo->fid;
+> +		feature->revision = finfo->revision;
+>  
+>  		/*
+>  		 * the FIU header feature has some fundamental functions (sriov
+> @@ -910,19 +913,17 @@ static void build_info_free(struct build_feature_devs_info *binfo)
+>  	devm_kfree(binfo->dev, binfo);
+>  }
+>  
+> -static inline u32 feature_size(void __iomem *start)
+> +static inline u32 feature_size(u64 value)
+>  {
+> -	u64 v = readq(start + DFH);
+> -	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, v);
+> +	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, value);
+>  	/* workaround for private features with invalid size, use 4K instead */
+>  	return ofst ? ofst : 4096;
+>  }
+>  
+> -static u16 feature_id(void __iomem *start)
+> +static u16 feature_id(u64 value)
+>  {
+> -	u64 v = readq(start + DFH);
+> -	u16 id = FIELD_GET(DFH_ID, v);
+> -	u8 type = FIELD_GET(DFH_TYPE, v);
+> +	u16 id = FIELD_GET(DFH_ID, value);
+> +	u8 type = FIELD_GET(DFH_TYPE, value);
+>  
+>  	if (type == DFH_TYPE_FIU)
+>  		return FEATURE_ID_FIU_HEADER;
+> @@ -1021,10 +1022,15 @@ create_feature_instance(struct build_feature_devs_info *binfo,
+>  	unsigned int irq_base, nr_irqs;
+>  	struct dfl_feature_info *finfo;
+>  	int ret;
+> +	u8 revision;
+> +	u64 v;
+> +
+> +	v = readq(binfo->ioaddr + ofst);
+> +	revision = FIELD_GET(DFH_REVISION, v);
+>  
+>  	/* read feature size and id if inputs are invalid */
+> -	size = size ? size : feature_size(binfo->ioaddr + ofst);
+> -	fid = fid ? fid : feature_id(binfo->ioaddr + ofst);
+> +	size = size ? size : feature_size(v);
+> +	fid = fid ? fid : feature_id(v);
+>  
+>  	if (binfo->len - ofst < size)
+>  		return -EINVAL;
+> @@ -1038,6 +1044,7 @@ create_feature_instance(struct build_feature_devs_info *binfo,
+>  		return -ENOMEM;
+>  
+>  	finfo->fid = fid;
+> +	finfo->revision = revision;
+>  	finfo->mmio_res.start = binfo->start + ofst;
+>  	finfo->mmio_res.end = finfo->mmio_res.start + size - 1;
+>  	finfo->mmio_res.flags = IORESOURCE_MEM;
+> @@ -1166,7 +1173,7 @@ static int parse_feature_private(struct build_feature_devs_info *binfo,
+>  {
+>  	if (!is_feature_dev_detected(binfo)) {
+>  		dev_err(binfo->dev, "the private feature 0x%x does not belong to any AFU.\n",
+> -			feature_id(binfo->ioaddr + ofst));
+> +			feature_id(readq(binfo->ioaddr + ofst)));
+>  		return -EINVAL;
+>  	}
+>  
+> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+> index 2b82c96ba56c..422157cfd742 100644
+> --- a/drivers/fpga/dfl.h
+> +++ b/drivers/fpga/dfl.h
+> @@ -243,6 +243,7 @@ struct dfl_feature_irq_ctx {
+>  struct dfl_feature {
+>  	struct platform_device *dev;
+>  	u16 id;
+> +	u8 revision;
+>  	int resource_index;
+>  	void __iomem *ioaddr;
+>  	struct dfl_feature_irq_ctx *irq_ctx;
+> diff --git a/include/linux/dfl.h b/include/linux/dfl.h
+> index 6cc10982351a..431636a0dc78 100644
+> --- a/include/linux/dfl.h
+> +++ b/include/linux/dfl.h
+> @@ -38,6 +38,7 @@ struct dfl_device {
+>  	int id;
+>  	u16 type;
+>  	u16 feature_id;
+> +	u8 revision;
+>  	struct resource mmio_res;
+>  	int *irqs;
+>  	unsigned int num_irqs;
+> -- 
+> 2.31.0
+> 
 
-Right, so you can't really do that because the architecture constraints
-on what is allowed between LL and SC vary. Also, you couldn't compile
-that code on a CAS architecture because you simply cannot implement the
-LL/SC semantics using CAS.
+Applied to for-next,
 
-One thing that can be done is having the compiler transform a CAS loop
-into a LL/SC loop, and clang actually tries that, but GCC is absolutely
-failing there:
-
-  https://godbolt.org/z/1MK6ceq46
-
-(note; clang only does this for arm64, and the code it does generate is
-pretty horrific)
-
-And this is another thing where C11 is utter crap; because as far as
-it's concerned this is equivalent, while obviously it is not, per the
-parent argument.
-
-Also, ideally there would be a variant where you'd mandate the
-forward progress or a compiler error when not possible.
+Thanks
