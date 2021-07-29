@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FC83DA9C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210C43DA9C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhG2RKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
+        id S231917AbhG2RLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbhG2RJz (ORCPT
+        with ESMTP id S229739AbhG2RLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:09:55 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10FFC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:09:50 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id f20-20020a9d6c140000b02904bb9756274cso6562002otq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:09:50 -0700 (PDT)
+        Thu, 29 Jul 2021 13:11:06 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E958C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:11:03 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id cb3-20020ad456230000b02903319321d1e3so4254166qvb.14
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:11:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y620cawYnn+4V0Xna0MPjJG1IYCOfnYjGSth9ffrkPU=;
-        b=bnaU90Pbow0j2N/VSOEIDfj9td1aWUrUZz2/hhYEZSc4/Vb2/v1Btcfw8zeWRNQiIP
-         Ds6r6roWPX9w8/Vcsfsj4CIIVo3trxmUHPqybbwtR8AV19d4el3RePdiikWW63kSVb5R
-         s4roTm0cYRfS4eXlsQIFCJS1AeDfJv/hoV+hHC9G4LlxYl93SwOfsESrcu+S6WTVvqsl
-         X+4lw6V+7mTS5exMxVVdpOkLmJsnf7QMQXVVfQ7UFeZvS7ThnHahxzIq+NtE46wjSEiW
-         wHlRk8FnnpeJxoASbJC0503baUWm9FCz3FIM5fKiqN7nfSXUtghmZb2nmWEoKTDraO4b
-         B4eg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=7QYjLUUqEA7QJtp6uP4L96pWeYbMtWuBy88IlWBrbUs=;
+        b=GitGuPFN7VBWLpKFt0v1/hktZg429tIvceF80bLzkFbR32YQ/YcMnH8Teqgja1oso6
+         s3KMBnYF5rqp5okurqP0N+mxGdLdhhMxBzlOwpA0LR5Cm2aYe9C+a948MWYoM+lCv/0c
+         9sA2Y3uP+udORQmrkpo86lU33HFiU7fybTIg+W03UgB4mbI4b5TE3MkZspuwWxT/szgK
+         kFFluWoT7Ma3m+ZhKwVpPOZkVoS56RUlobsfiIIzYP1k/V7b4d8mBKyFIQhTeo7rkYt5
+         GjKJbKVWfYio+Qhk6KYtgIDJlKBikxy3KTL5hQvaudIaxEK/I5avhFbREGxPpmt9oX2n
+         nJ3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=y620cawYnn+4V0Xna0MPjJG1IYCOfnYjGSth9ffrkPU=;
-        b=TptNMD/w+LWHTcrrGPTgI0Q9HuueU2RLKx7ZeAmmc3fqdjfr+IMq4qCzQA99ITaVcu
-         YDyKJNMQXBMFjOztCyLcHkxiNNFoEl5vugMVViQB2FnLZBBU3tP0z899Q3rDGII2rPJ1
-         FLoUnhyrmbgtxIc8re3k1PCKqk38cbb5L+swBDJyAAiRSbpFsCQow+mxEVbIHhCkFgpc
-         +BBLmWPBSIQKIMIxL0AwPPpVZcsAe+LOaeP1btsF3K/zKIbz981TYLDIJVMvlK86AJl/
-         fAtWs87ESHm58TeYYRS4NRmKgD5n7A0FTJOgak0iYNJf/tCQOEGn63baJx+sBsHzrNFC
-         Ac+w==
-X-Gm-Message-State: AOAM531sbHotCVXIWgtXMynipO60uXfZS4cuuzz7qwTW4H2SGsoXiw59
-        auUFh7DEV6/no5GEn/WERsQ=
-X-Google-Smtp-Source: ABdhPJx8n5eGvUzd1xw+yysVYKBGYHpoXipWudoxZFQqXVWT6KvJxAMjaFLZYL/r+Hgte5i8MDIn0g==
-X-Received: by 2002:a9d:1d7:: with SMTP id e81mr4208718ote.106.1627578590377;
-        Thu, 29 Jul 2021 10:09:50 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
-        by smtp.gmail.com with ESMTPSA id a23sm614358otv.79.2021.07.29.10.09.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 10:09:49 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-To:     gregkh@linuxfoundation.org
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: [PATCH 6/6] staging: r8188eu: Add "fallthrough" statement to quiet compiler
-Date:   Thu, 29 Jul 2021 12:09:30 -0500
-Message-Id: <20210729170930.23171-7-Larry.Finger@lwfinger.net>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729170930.23171-1-Larry.Finger@lwfinger.net>
-References: <20210729170930.23171-1-Larry.Finger@lwfinger.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=7QYjLUUqEA7QJtp6uP4L96pWeYbMtWuBy88IlWBrbUs=;
+        b=aX4SL1nlCjmySw3XAZaSoOYyyZUDbX/cH35Knvuqm3pRQvcsM0LZEB5n0JCKS0AcSm
+         eGYEuvSHz1NF/2HTlDm6jJ1o8apm1HIlDnYuAd1300Y1V8tfL4upI4rQp8ocdtzzQXtv
+         JT9iOnNGbQsBhUH9mSSqQKdUzPUxux5erN4QOATRiZ+knIefIPzdyPSc9aJjCBtFqxoT
+         9SxOZsVq4Eitf/yknlBoAATltliwSa/NlWfoMbEfhAjwWIeNglHbhHlxBY56mp8zM61H
+         k+W3G2vscMuarn/oJxfgnq7vN5iQd8LMrehmcBr7AGr3+42kopyoMzZoyQYBofLCNHJA
+         Bv7Q==
+X-Gm-Message-State: AOAM533G4g+zoZyQX5sbQMIu7hUANvqsG7dwbxMOgm6l2BV5EkHdH+4G
+        MNODheiiG6irZa5azt7T4BlZtm0mvZ43r405SA==
+X-Google-Smtp-Source: ABdhPJy36b6GeGbxRVtXuY9CMyJWfNPDbOYW8W1+t+m0QitXepHvJiP1Q389FHGvtpmShE09ePMHXwqChVjxL+2CkA==
+X-Received: from michaelfsun.mtv.corp.google.com ([2620:15c:202:201:9678:c075:a4e7:f144])
+ (user=michaelfsun job=sendgmr) by 2002:a05:6214:1909:: with SMTP id
+ er9mr6387577qvb.26.1627578662750; Thu, 29 Jul 2021 10:11:02 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 10:10:59 -0700
+Message-Id: <20210729101036.1.I20af1cbaba1aed4ea5978c97339df5e035f08625@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH] Bluetooth: btusb: Enable MSFT extension for WCN6855 controller
+From:   Michael Sun <michaelfsun@google.com>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        Michael Sun <michaelfsun@google.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compiler gcc11, and possibly others, emit a warning when a fall-through
-case is found in a switch statement. Add a "fallthrough" statement to
-eliminate this warning.
+The Qualcomm WCN6855 Bluetooth controller supports the Microsoft vendor
+extension, enable them by setting VsMsftOpCode to 0xFD70.
 
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+Verified on a WCN6855 device through bluetoothctl show
+
+Signed-off-by: Michael Sun <michaelfsun@google.com>
 ---
- drivers/staging/r8188eu/core/rtw_mlme_ext.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index 021044768b61..488a18133e59 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -460,7 +460,7 @@ void mgt_dispatcher(struct adapter *padapter, struct recv_frame *precv_frame)
- 			ptable->func = &OnAuth;
- 		else
- 			ptable->func = &OnAuthClient;
--		/* fall through */
-+		fallthrough;
- 	case WIFI_ASSOCREQ:
- 	case WIFI_REASSOCREQ:
- 		_mgt_dispatcher(padapter, ptable, precv_frame);
+ drivers/bluetooth/btusb.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 1876a960b3dc..d9376380fcc2 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -4735,6 +4735,7 @@ static int btusb_probe(struct usb_interface *intf,
+ 		hdev->set_bdaddr = btusb_set_bdaddr_wcn6855;
+ 		hdev->cmd_timeout = btusb_qca_cmd_timeout;
+ 		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
++		hci_set_msft_opcode(hdev, 0xFD70);
+ 	}
+ 
+ 	if (id->driver_info & BTUSB_AMP) {
 -- 
-2.32.0
+2.32.0.432.gabb21c7263-goog
 
