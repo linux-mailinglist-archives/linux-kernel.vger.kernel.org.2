@@ -2,380 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0075D3DA785
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4C03DA75C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237975AbhG2PY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        id S237703AbhG2PTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237992AbhG2PXI (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:23:08 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914B2C06179B;
-        Thu, 29 Jul 2021 08:23:03 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id l18so7430140wrv.5;
-        Thu, 29 Jul 2021 08:23:03 -0700 (PDT)
+        with ESMTP id S237816AbhG2PT0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 11:19:26 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC93C0613C1;
+        Thu, 29 Jul 2021 08:19:21 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id j2so7382391wrx.9;
+        Thu, 29 Jul 2021 08:19:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=HVzmFDNhzfq905H6mXiGj+VHUUvGzVITmOnZczVHyos=;
-        b=qJC44blBBaOFixDixRTmSVdnhAlhH5loSEW5F06/CyOKXf+D6WrZOphJNgiOulKB8o
-         6OeFMqz9jFQHpf75Qg7LuX3oLLGIZUKRGHI0HBxVKKSWkS6y6DzZ2iOuYw6K9+lxBVg1
-         yOALm6c4mv2T9XT+ibK31j5A6W1L3Rdvqx3E8foxg5k8EMoWYnUr1W7G/+mULItFpl+V
-         oEWpnuv4ErCnR55LcpjCA159bc7jb7dEedGWrBcM4YY2roBrJHWz/30Vaq6UmYWAwQBG
-         /wpdC7/sleCw1GV85WxNPTxgbsdPLKSupMaKUGPPDR3rElHCqMWsVEQWmPSkxq5Kf3sF
-         10Gg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CjnIYfzbrAsq4/rt2odciYbsieuyUeldlw/sTc3eAWs=;
+        b=Qv8NihFSFwZlUCIDc4aQrB90kXagzvpZHjMA7l5e1aNizhH+DMhfrjptm4Us9dDcie
+         COI2r+vVVtxI4cvtrMs9GsoUhwnVOc0v0D9sguXdggnXmZpuzykxAa+dA+YrAIojSiAE
+         8/cd9JUdVjyO/zjjpv90YcuHFb+JMMW9gSq7mXH0jklyU1S0ecWUGFaKq5qWtZQoPA3h
+         gkofWS/r17J60vfaJo5bzrYj2Km3z92++Lw8hVwtrUIgcV8MocX6g+8qhHfZIzPuuRUk
+         q/m2AkPuycqIThvZiWxQ4MCZi/khZO1vWFJBUUYZNrw+JLeumxjlN1t6cckGZdZad9ls
+         zK2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=HVzmFDNhzfq905H6mXiGj+VHUUvGzVITmOnZczVHyos=;
-        b=JYirvpR65NdJOM2KP0aFuKFCd5v5npFbaO6dxdVTOPELy9uJmIMfwS7ePe+dGrY75a
-         2QvLxf16VL2M9OOZGCwX8QKs2gyRMOuZO+uCNDM5W2RAEtSu5sR4FZ0dJkMc+kHYP1Uz
-         2kb/1mE3hY3SwzVEarqPzj97HgvzCHItY75zRo7xmAKXiazJL3OsRN0lhW9nM8ox6s6F
-         0EEErEF43WyoODxc29fBh93PHMWC3ZTJ6H3GVWvrgm8eJIVt8EfWLp/4Lba7J5rxfxIF
-         imfr3pAu+iKNok0SpkolaEk1neEgom7/9wuhBBREcccBjvsMH5ppEKA0n3j7hHDDrJcD
-         05fQ==
-X-Gm-Message-State: AOAM533BotY5pampfPjRDadtXvXuzRwCcwrB0WM3ScM/vKt2KL4Wdkip
-        Ci7UlfIOlde79KAdFroDDrY=
-X-Google-Smtp-Source: ABdhPJxczdHM/KoAq01OFFEzrultj4zdtJIpUHFwdlmr0vf21gAymjQ9s6gH0wRh2E9uhZA3TQdClQ==
-X-Received: by 2002:a5d:6608:: with SMTP id n8mr5309881wru.427.1627572182028;
-        Thu, 29 Jul 2021 08:23:02 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.gmail.com with ESMTPSA id r17sm8951545wmq.13.2021.07.29.08.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 08:23:01 -0700 (PDT)
-Message-ID: <eb6b8c7c5e04f8069ac06971af74ac9ef32dd4c4.camel@gmail.com>
-Subject: Re: [PATCH v2 1/2] perf pmu: Add PMU alias support
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, john.garry@huawei.com
-Date:   Thu, 29 Jul 2021 17:23:00 +0200
-In-Reply-To: <20210729070619.20726-2-yao.jin@linux.intel.com>
-References: <20210729070619.20726-1-yao.jin@linux.intel.com>
-         <20210729070619.20726-2-yao.jin@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CjnIYfzbrAsq4/rt2odciYbsieuyUeldlw/sTc3eAWs=;
+        b=ft7Bv1r9WcaO6aeSXiuE4KHPzvXTJeJfDg6GtpGK7y37ZJ598yCdDoYv/g/SukWb4i
+         txxfbcbp9nP1WAlE2GY1W188KHx12vpohI/U7OGLvnvETbLo5xhnFD7RpO/yrRRR9vTa
+         gCacPryXTOzU2aGWZHIH2pUKt5Ye4+iYxO/wlGIRNSu0hC/PStLxnQ4edeRpfokr1UN8
+         i2TD2KQwD+NMwE2C1fWP5fzGcsinKh6bQnZ0c7SyVvnSJk/1v4ukcluxm58ALPfeFL7y
+         v1f2EIdEk3scpjulZ8tSs7Q3B/eGUYWApzTrt6n1GN56RgbcHA8JxIWyui0+5TYCZpCv
+         VDOQ==
+X-Gm-Message-State: AOAM532dozsdzMyCSWK4Oln6GjwwhCEAiMEIDGjJ0WzThx4VYvgpy+Z+
+        +BRdgRWqegP3V5N2ZUVXaYfZCsb0yCaKA+7Va5s=
+X-Google-Smtp-Source: ABdhPJzY5RuoqLtDnABekm+oWYb2oEO0QWuLRjgrUZqqx7YUuQxE7P5z+21Up2hzZxa12v2i2OhVhO4X9aB2Xd+YGk4=
+X-Received: by 2002:adf:ea41:: with SMTP id j1mr5426783wrn.147.1627571959809;
+ Thu, 29 Jul 2021 08:19:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210726233854.2453899-1-robdclark@gmail.com> <20210726233854.2453899-2-robdclark@gmail.com>
+ <50b181fe-6605-b7ac-36a6-8bcda2930e6f@gmail.com> <CAF6AEGuNxi_aeYE37FT3a-atCUWgepxs-9EwxMfpiMaU7wgqdQ@mail.gmail.com>
+ <9edd7083-e6b3-b230-c273-8f2fbe76ca17@amd.com> <703dc9c3-5657-432e-ca0b-25bdd67a2abd@gmail.com>
+ <CAF6AEGvSpvc2po93b2eKB2cSzx_a+BtPWhQgRs-1NFFZfUbJNw@mail.gmail.com>
+ <e5e71356-1c58-04ac-2609-70d268941b8d@amd.com> <CAF6AEGu3NMyRp1pC5iZQoHhKhu_xBFBqkkfbG36dx8bVzYdWMA@mail.gmail.com>
+ <YQJSxEVUkZmfL5Cb@phenom.ffwll.local>
+In-Reply-To: <YQJSxEVUkZmfL5Cb@phenom.ffwll.local>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 29 Jul 2021 08:23:28 -0700
+Message-ID: <CAF6AEGswVQx3Vtm=Oab3CsQw1fE-yf9y2_MB2wdx_e14FLNwXQ@mail.gmail.com>
+Subject: Re: [RFC 1/4] dma-fence: Add deadline awareness
+To:     Rob Clark <robdclark@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jul 29, 2021 at 12:03 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Wed, Jul 28, 2021 at 10:58:51AM -0700, Rob Clark wrote:
+> > On Wed, Jul 28, 2021 at 10:23 AM Christian K=C3=B6nig
+> > <christian.koenig@amd.com> wrote:
+> > >
+> > >
+> > >
+> > > Am 28.07.21 um 17:15 schrieb Rob Clark:
+> > > > On Wed, Jul 28, 2021 at 4:37 AM Christian K=C3=B6nig
+> > > > <ckoenig.leichtzumerken@gmail.com> wrote:
+> > > >> Am 28.07.21 um 09:03 schrieb Christian K=C3=B6nig:
+> > > >>> Am 27.07.21 um 16:25 schrieb Rob Clark:
+> > > >>>> On Tue, Jul 27, 2021 at 12:11 AM Christian K=C3=B6nig
+> > > >>>> <ckoenig.leichtzumerken@gmail.com> wrote:
+> > > >>>>> Am 27.07.21 um 01:38 schrieb Rob Clark:
+> > > >>>>>> From: Rob Clark <robdclark@chromium.org>
+> > > >>>>>>
+> > > >>>>>> Add a way to hint to the fence signaler of an upcoming deadlin=
+e,
+> > > >>>>>> such as
+> > > >>>>>> vblank, which the fence waiter would prefer not to miss. This =
+is to
+> > > >>>>>> aid
+> > > >>>>>> the fence signaler in making power management decisions, like =
+boosting
+> > > >>>>>> frequency as the deadline approaches and awareness of missing
+> > > >>>>>> deadlines
+> > > >>>>>> so that can be factored in to the frequency scaling.
+> > > >>>>>>
+> > > >>>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > >>>>>> ---
+> > > >>>>>>     drivers/dma-buf/dma-fence.c | 39
+> > > >>>>>> +++++++++++++++++++++++++++++++++++++
+> > > >>>>>>     include/linux/dma-fence.h   | 17 ++++++++++++++++
+> > > >>>>>>     2 files changed, 56 insertions(+)
+> > > >>>>>>
+> > > >>>>>> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma=
+-fence.c
+> > > >>>>>> index ce0f5eff575d..2e0d25ab457e 100644
+> > > >>>>>> --- a/drivers/dma-buf/dma-fence.c
+> > > >>>>>> +++ b/drivers/dma-buf/dma-fence.c
+> > > >>>>>> @@ -910,6 +910,45 @@ dma_fence_wait_any_timeout(struct dma_fen=
+ce
+> > > >>>>>> **fences, uint32_t count,
+> > > >>>>>>     }
+> > > >>>>>>     EXPORT_SYMBOL(dma_fence_wait_any_timeout);
+> > > >>>>>>
+> > > >>>>>> +
+> > > >>>>>> +/**
+> > > >>>>>> + * dma_fence_set_deadline - set desired fence-wait deadline
+> > > >>>>>> + * @fence:    the fence that is to be waited on
+> > > >>>>>> + * @deadline: the time by which the waiter hopes for the fenc=
+e to be
+> > > >>>>>> + *            signaled
+> > > >>>>>> + *
+> > > >>>>>> + * Inform the fence signaler of an upcoming deadline, such as
+> > > >>>>>> vblank, by
+> > > >>>>>> + * which point the waiter would prefer the fence to be signal=
+ed
+> > > >>>>>> by.  This
+> > > >>>>>> + * is intended to give feedback to the fence signaler to aid =
+in power
+> > > >>>>>> + * management decisions, such as boosting GPU frequency if a =
+periodic
+> > > >>>>>> + * vblank deadline is approaching.
+> > > >>>>>> + */
+> > > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t
+> > > >>>>>> deadline)
+> > > >>>>>> +{
+> > > >>>>>> +     unsigned long flags;
+> > > >>>>>> +
+> > > >>>>>> +     if (dma_fence_is_signaled(fence))
+> > > >>>>>> +             return;
+> > > >>>>>> +
+> > > >>>>>> +     spin_lock_irqsave(fence->lock, flags);
+> > > >>>>>> +
+> > > >>>>>> +     /* If we already have an earlier deadline, keep it: */
+> > > >>>>>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->fl=
+ags) &&
+> > > >>>>>> +         ktime_before(fence->deadline, deadline)) {
+> > > >>>>>> +             spin_unlock_irqrestore(fence->lock, flags);
+> > > >>>>>> +             return;
+> > > >>>>>> +     }
+> > > >>>>>> +
+> > > >>>>>> +     fence->deadline =3D deadline;
+> > > >>>>>> +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags);
+> > > >>>>>> +
+> > > >>>>>> +     spin_unlock_irqrestore(fence->lock, flags);
+> > > >>>>>> +
+> > > >>>>>> +     if (fence->ops->set_deadline)
+> > > >>>>>> +             fence->ops->set_deadline(fence, deadline);
+> > > >>>>>> +}
+> > > >>>>>> +EXPORT_SYMBOL(dma_fence_set_deadline);
+> > > >>>>>> +
+> > > >>>>>>     /**
+> > > >>>>>>      * dma_fence_init - Initialize a custom fence.
+> > > >>>>>>      * @fence: the fence to initialize
+> > > >>>>>> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fen=
+ce.h
+> > > >>>>>> index 6ffb4b2c6371..4e6cfe4e6fbc 100644
+> > > >>>>>> --- a/include/linux/dma-fence.h
+> > > >>>>>> +++ b/include/linux/dma-fence.h
+> > > >>>>>> @@ -88,6 +88,7 @@ struct dma_fence {
+> > > >>>>>>                 /* @timestamp replaced by @rcu on
+> > > >>>>>> dma_fence_release() */
+> > > >>>>>>                 struct rcu_head rcu;
+> > > >>>>>>         };
+> > > >>>>>> +     ktime_t deadline;
+> > > >>>>> Mhm, adding the flag sounds ok to me but I'm a bit hesitating a=
+dding
+> > > >>>>> the
+> > > >>>>> deadline as extra field here.
+> > > >>>>>
+> > > >>>>> We tuned the dma_fence structure intentionally so that it is on=
+ly 64
+> > > >>>>> bytes.
+> > > >>>> Hmm, then I guess you wouldn't be a fan of also adding an hrtime=
+r?
+> > > >>>>
+> > > >>>> We could push the ktime_t (and timer) down into the derived fenc=
+e
+> > > >>>> class, but I think there is going to need to be some extra stora=
+ge
+> > > >>>> *somewhere*.. maybe the fence signaler could get away with just
+> > > >>>> storing the nearest upcoming deadline per fence-context instead?
+> > > >>> I would just push that into the driver instead.
+> > > >>>
+> > > >>> You most likely don't want the deadline per fence anyway in compl=
+ex
+> > > >>> scenarios, but rather per frame. And a frame is usually composed =
+from
+> > > >>> multiple fences.
+> > > > Right, I ended up keeping track of the nearest deadline in patch 5/=
+4
+> > > > which added drm/msm support:
+> > > >
+> > > >    https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2=
+F%2Fpatchwork.freedesktop.org%2Fpatch%2F447138%2F&amp;data=3D04%7C01%7Cchri=
+stian.koenig%40amd.com%7Cce6ace85263d448bbc9f08d951d9f06c%7C3dd8961fe4884e6=
+08e11a82d994e183d%7C0%7C0%7C637630819606427306%7CUnknown%7CTWFpbGZsb3d8eyJW=
+IjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;s=
+data=3DameszAOlClaZNeUDlYr37ZdIytVXNgiEUKuctjXLqZ0%3D&amp;reserved=3D0
+> > > >
+> > > > But if we do have the ktime_t in dma_fence in dma_fence, we can add
+> > > > some checks and avoid calling back to the driver if a later deadlin=
+e
+> > > > is set on a fence that already has an earlier deadline.  OTOH I
+> > > > suppose I can push all that back to the driver to start, and we can
+> > > > revisit once we have more drivers implementing deadline support.
+> > >
+> > > I still think that all of this is rather specific to your use case an=
+d
+> > > have strong doubt that anybody else will implement that.
+> >
+> > i915 does already have a similar thing in it's hand-rolled atomic
+> > commit path.  So I think msm won't be the only one.  It should be also
+> > useful to the other mobile GPUs with a gpu vs kms driver split,
+> > although looking at the other gpu devfreq implementations, I don't
+> > think they've yet gotten to this point in the fine tuning..
+>
+> Yeah I have a dream that maybe i915 will use the atomic commit helpers, I
+> originally wrote them with i915 in mind :-) even had patches!
+>
+> I also think we'll need this eventually in other areas, Android also has
+> some hacks like this to make sure idle->first touch doesn't suck and
+> similar things.
 
-sorry for sending a separate email, but I found another problem while testing
-John's patchset with ASan:
-$ make DEBUG=1 EXTRA_CFLAGS='-O0 -g -fno-omit-frame-pointer -fsanitize=address'
+input-boost is another thing I have on my roadmap.. part of the solution is=
+:
 
-On Thu, 2021-07-29 at 15:06 +0800, Jin Yao wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> A perf uncore PMU may have two PMU names, a real name and an alias. The
-> alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
-> The perf tool should support the alias as well.
-> 
-> Add alias_name in the struct perf_pmu to store the alias. For the PMU
-> which doesn't have an alias. It's NULL.
-> 
-> Introduce two X86 specific functions to retrieve the real name and the
-> alias separately.
-> 
-> Only go through the sysfs to retrieve the mapping between the real name
-> and the alias once. The result is cached in a list, uncore_pmu_list.
-> 
-> Nothing changed for the other ARCHs.
-> 
-> With the patch, the perf tool can monitor the PMU with either the real
-> name or the alias.
-> 
-> Use the real name,
->  $ perf stat -e uncore_cha_2/event=1/ -x,
->    4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
-> 
-> Use the alias,
->  $ perf stat -e uncore_type_0_2/event=1/ -x,
->    3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
-> 
-> Co-developed-by: Jin Yao <yao.jin@linux.intel.com>
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> ---
-> v2:
->  - No change.
-> 
->  tools/perf/arch/x86/util/pmu.c | 109 ++++++++++++++++++++++++++++++++-
->  tools/perf/util/parse-events.y |   3 +-
->  tools/perf/util/pmu.c          |  26 +++++++-
->  tools/perf/util/pmu.h          |   5 ++
->  4 files changed, 138 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
-> index d48d608517fd..bb79b1d19b96 100644
-> --- a/tools/perf/arch/x86/util/pmu.c
-> +++ b/tools/perf/arch/x86/util/pmu.c
-> @@ -1,12 +1,28 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <string.h>
-> -
-> +#include <stdio.h>
-> +#include <sys/types.h>
-> +#include <dirent.h>
-> +#include <fcntl.h>
->  #include <linux/stddef.h>
->  #include <linux/perf_event.h>
-> +#include <linux/zalloc.h>
-> +#include <api/fs/fs.h>
->  
->  #include "../../../util/intel-pt.h"
->  #include "../../../util/intel-bts.h"
->  #include "../../../util/pmu.h"
-> +#include "../../../util/fncache.h"
-> +
-> +#define TEMPLATE_ALIAS "%s/bus/event_source/devices/%s/alias"
-> +
-> +struct perf_pmu_alias_name {
-> +       char *name;
-> +       char *alias;
-> +       struct list_head list;
-> +};
-> +
-> +static LIST_HEAD(pmu_alias_name_list);
->  
->  struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu
-> __maybe_unused)
->  {
-> @@ -18,3 +34,94 @@ struct perf_event_attr *perf_pmu__get_default_config(struct
-> perf_pmu *pmu __mayb
->  #endif
->         return NULL;
->  }
-> +
-> +static void setup_pmu_alias_list(void)
-> +{
-> +       char path[PATH_MAX];
-> +       DIR *dir;
-> +       struct dirent *dent;
-> +       const char *sysfs = sysfs__mountpoint();
-> +       struct perf_pmu_alias_name *pmu;
-> +       char buf[MAX_PMU_NAME_LEN];
-> +       FILE *file;
-> +
-> +       if (!sysfs)
-> +               return;
-> +
-> +       snprintf(path, PATH_MAX,
-> +                "%s" EVENT_SOURCE_DEVICE_PATH, sysfs);
-> +
-> +       dir = opendir(path);
-> +       if (!dir)
-> +               return;
-> +
-> +       while ((dent = readdir(dir))) {
-> +               if (!strcmp(dent->d_name, ".") ||
-> +                   !strcmp(dent->d_name, ".."))
-> +                       continue;
-> +
-> +               snprintf(path, PATH_MAX,
-> +                        TEMPLATE_ALIAS, sysfs, dent->d_name);
-> +
-> +               if (!file_available(path))
-> +                       continue;
-> +
-> +               file = fopen(path, "r");
-> +               if (!file)
-> +                       continue;
-> +
-> +               if (fscanf(file, "%s", buf) != 1)
-> +                       continue;
-> +
-> +               pmu = zalloc(sizeof(*pmu));
-> +               if (!pmu)
-> +                       continue;
-> +
-> +               pmu->alias = strdup(buf);
-> +               if (!pmu->alias) {
-> +                       free(pmu);
-> +                       continue;
-> +               }
-> +               pmu->name = strdup(dent->d_name);
-> +               list_add_tail(&pmu->list, &pmu_alias_name_list);
-> +               fclose(file);
-> +       }
-> +
-> +       closedir(dir);
-> +}
-> +
-> +static char *__pmu_find_real_name(const char *name)
-> +{
-> +       struct perf_pmu_alias_name *pmu;
-> +
-> +       list_for_each_entry(pmu, &pmu_alias_name_list, list) {
-> +               if (!strcmp(name, pmu->alias))
-> +                       return strdup(pmu->name);
-> +       }
-> +
-> +       return strdup(name);
-> +}
-> +
-> +char *pmu_find_real_name(const char *name)
-> +{
-> +       static bool cached_list;
-> +
-> +       if (cached_list)
-> +               return __pmu_find_real_name(name);
-> +
-> +       setup_pmu_alias_list();
-> +       cached_list = true;
-> +
-> +       return __pmu_find_real_name(name);
-> +}
-> +
-> +char *pmu_find_alias_name(const char *name)
-> +{
-> +       struct perf_pmu_alias_name *pmu;
-> +
-> +       list_for_each_entry(pmu, &pmu_alias_name_list, list) {
-> +               if (!strcmp(name, pmu->name))
-> +                       return strdup(pmu->alias);
-> +       }
-> +       return NULL;
-> +}
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> index 9321bd0e2f76..d94e48e1ff9b 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -316,7 +316,8 @@ event_pmu_name opt_pmu_config
->                         if (!strncmp(name, "uncore_", 7) &&
->                             strncmp($1, "uncore_", 7))
->                                 name += 7;
-> -                       if (!perf_pmu__match(pattern, name, $1)) {
-> +                       if (!perf_pmu__match(pattern, name, $1) ||
-> +                           !perf_pmu__match(pattern, pmu->alias_name, $1)) {
->                                 if (parse_events_copy_term_list(orig_terms,
-> &terms))
->                                         CLEANUP_YYABORT;
->                                 if (!parse_events_add_pmu(_parse_state, list,
-> pmu->name, terms, true, false))
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 44b90d638ad5..cc9af7942e7b 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -944,13 +944,28 @@ static int pmu_max_precise(const char *name)
->         return max_precise;
->  }
->  
-> -static struct perf_pmu *pmu_lookup(const char *name)
-> +char * __weak
-> +pmu_find_real_name(const char *name)
-> +{
-> +       return strdup(name);
-> +}
-> +
-> +char * __weak
-> +pmu_find_alias_name(const char *name __maybe_unused)
-> +{
-> +       return NULL;
-> +}
-> +
-> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
->  {
->         struct perf_pmu *pmu;
-> +       char *name;
->         LIST_HEAD(format);
->         LIST_HEAD(aliases);
->         __u32 type;
->  
-> +       name = pmu_find_real_name(lookup_name);
-> +
+    commit 9bc95570175a7fbca29d86d22c54bbf399f4ad5a
+    Author:     Rob Clark <robdclark@chromium.org>
+    AuthorDate: Mon Jul 26 07:46:50 2021 -0700
+    Commit:     Rob Clark <robdclark@chromium.org>
+    CommitDate: Tue Jul 27 17:54:36 2021 -0700
 
-name is not freed if one of the following checks fails.
+        drm/msm: Devfreq tuning
 
-	/*
-	 * The pmu data we store & need consists of the pmu
-	 * type value and format definitions. Load both right
-	 * now.
-	 */
-	if (pmu_format(name, &format))
-		return NULL;
+which gives the freq a bit of a nudge if the GPU has been idle for
+longer than a certain threshold.
 
-	/*
-	 * Check the type first to avoid unnecessary work.
-	 */
-	if (pmu_type(name, &type))
-		return NULL;
+But the other part is that if the GPU has been idle for more than 66ms
+(typical autosuspend delay for adreno) it will suspend.  For modern
+adreno's it takes ~2ms to "boot up" the GPU from suspend.  Which is
+something you want to take out of the submit/execbuf path if you are
+trying to reduce input-to-pageflip latency.
 
-	if (pmu_aliases(name, &aliases))
-		return NULL;
+We have a downstream patch that boosts the CPUs on input events (with
+a cooldown period to prevent spacebar-heater) and I have been thinking
+of something along those lines to trigger resuming the GPU.. it is
+straightforward enough for touch based devices, but gets more
+complicated with keyboard input.  In particular, some keys you want to
+trigger boost on key-release.  Ie. modifier keys (ctrl/shift/alt/etc..
+the "search" key on chromebooks, etc) you want to boost on
+key-release, not on key-press because unless you type *really* fast
+you'll be in the cooldown period when the key-release event happens.
+Unfortunately the kernel doesn't really know this "policy" sort of
+information about which keys should boost on press vs release.  So I
+think the long-term/upstream solution is to do input-boost in
+userspace.. sysfs already has all the knobs that a userspace
+input-boost daemon would need to twiddle, so no real need for this to
+be in the kernel.  I guess the only drawback is the sysfs knobs are a
+bit less standardized on the "desktop GPUs" which don't use devfreq.
 
-Thanks,
-Riccardo
+BR,
+-R
 
-> 
-> @@ -973,7 +988,8 @@ static struct perf_pmu *pmu_lookup(const char *name)
->                 return NULL;
->  
->         pmu->cpus = pmu_cpumask(name);
-> -       pmu->name = strdup(name);
-> +       pmu->name = name;
-> +       pmu->alias_name = pmu_find_alias_name(name);
->         pmu->type = type;
->         pmu->is_uncore = pmu_is_uncore(name);
->         if (pmu->is_uncore)
-> @@ -1003,7 +1019,8 @@ static struct perf_pmu *pmu_find(const char *name)
->         struct perf_pmu *pmu;
->  
->         list_for_each_entry(pmu, &pmus, list)
-> -               if (!strcmp(pmu->name, name))
-> +               if (!strcmp(pmu->name, name) ||
-> +                   (pmu->alias_name && !strcmp(pmu->alias_name, name)))
->                         return pmu;
->  
->         return NULL;
-> @@ -1898,6 +1915,9 @@ bool perf_pmu__has_hybrid(void)
->  
->  int perf_pmu__match(char *pattern, char *name, char *tok)
->  {
-> +       if (!name)
-> +               return -1;
-> +
->         if (fnmatch(pattern, name, 0))
->                 return -1;
->  
-> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> index 926da483a141..f6ca9f6a06ef 100644
-> --- a/tools/perf/util/pmu.h
-> +++ b/tools/perf/util/pmu.h
-> @@ -21,6 +21,7 @@ enum {
->  #define PERF_PMU_FORMAT_BITS 64
->  #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
->  #define CPUS_TEMPLATE_CPU      "%s/bus/event_source/devices/%s/cpus"
-> +#define MAX_PMU_NAME_LEN 128
->  
->  struct perf_event_attr;
->  
-> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
->  
->  struct perf_pmu {
->         char *name;
-> +       char *alias_name;       /* PMU alias name */
->         char *id;
->         __u32 type;
->         bool selectable;
-> @@ -135,4 +137,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu,
-> __u64 config,
->  bool perf_pmu__has_hybrid(void);
->  int perf_pmu__match(char *pattern, char *name, char *tok);
->  
-> +char *pmu_find_real_name(const char *name);
-> +char *pmu_find_alias_name(const char *name);
-> +
->  #endif /* __PMU_H */
-
-
+> -Daniel
+>
+> >
+> > BR,
+> > -R
+> >
+> > > >> Thinking more about it we could probably kill the spinlock pointer=
+ and
+> > > >> make the flags 32bit if we absolutely need that here.
+> > > > If we had a 'struct dma_fence_context' we could push the spinlock, =
+ops
+> > > > pointer, and u64 context into that and replace with a single
+> > > > dma_fence_context ptr, fwiw
+> > >
+> > > That won't work. We have a lot of use cases where you can't allocate
+> > > memory, but must allocate a context.
+> > >
+> > > Christian.
+> > >
+> > > >
+> > > > BR,
+> > > > -R
+> > > >
+> > > >> But I still don't see the need for that, especially since most dri=
+vers
+> > > >> probably won't implement it.
+> > > >>
+> > > >> Regards,
+> > > >> Christian.
+> > > >>
+> > > >>> Regards,
+> > > >>> Christian.
+> > > >>>
+> > > >>>> BR,
+> > > >>>> -R
+> > > >>>>
+> > > >>>>> Regards,
+> > > >>>>> Christian.
+> > > >>>>>
+> > > >>>>>>         u64 context;
+> > > >>>>>>         u64 seqno;
+> > > >>>>>>         unsigned long flags;
+> > > >>>>>> @@ -99,6 +100,7 @@ enum dma_fence_flag_bits {
+> > > >>>>>>         DMA_FENCE_FLAG_SIGNALED_BIT,
+> > > >>>>>>         DMA_FENCE_FLAG_TIMESTAMP_BIT,
+> > > >>>>>>         DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
+> > > >>>>>> +     DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+> > > >>>>>>         DMA_FENCE_FLAG_USER_BITS, /* must always be last membe=
+r */
+> > > >>>>>>     };
+> > > >>>>>>
+> > > >>>>>> @@ -261,6 +263,19 @@ struct dma_fence_ops {
+> > > >>>>>>          */
+> > > >>>>>>         void (*timeline_value_str)(struct dma_fence *fence,
+> > > >>>>>>                                    char *str, int size);
+> > > >>>>>> +
+> > > >>>>>> +     /**
+> > > >>>>>> +      * @set_deadline:
+> > > >>>>>> +      *
+> > > >>>>>> +      * Callback to allow a fence waiter to inform the fence
+> > > >>>>>> signaler of an
+> > > >>>>>> +      * upcoming deadline, such as vblank, by which point the
+> > > >>>>>> waiter would
+> > > >>>>>> +      * prefer the fence to be signaled by.  This is intended=
+ to
+> > > >>>>>> give feedback
+> > > >>>>>> +      * to the fence signaler to aid in power management
+> > > >>>>>> decisions, such as
+> > > >>>>>> +      * boosting GPU frequency.
+> > > >>>>>> +      *
+> > > >>>>>> +      * This callback is optional.
+> > > >>>>>> +      */
+> > > >>>>>> +     void (*set_deadline)(struct dma_fence *fence, ktime_t de=
+adline);
+> > > >>>>>>     };
+> > > >>>>>>
+> > > >>>>>>     void dma_fence_init(struct dma_fence *fence, const struct
+> > > >>>>>> dma_fence_ops *ops,
+> > > >>>>>> @@ -586,6 +601,8 @@ static inline signed long dma_fence_wait(s=
+truct
+> > > >>>>>> dma_fence *fence, bool intr)
+> > > >>>>>>         return ret < 0 ? ret : 0;
+> > > >>>>>>     }
+> > > >>>>>>
+> > > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t
+> > > >>>>>> deadline);
+> > > >>>>>> +
+> > > >>>>>>     struct dma_fence *dma_fence_get_stub(void);
+> > > >>>>>>     struct dma_fence *dma_fence_allocate_private_stub(void);
+> > > >>>>>>     u64 dma_fence_context_alloc(unsigned num);
+> > >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
