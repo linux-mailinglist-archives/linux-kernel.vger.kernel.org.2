@@ -2,169 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9793DAC46
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CE83DAC49
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhG2T5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 15:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232654AbhG2T4u (ORCPT
+        id S232970AbhG2T5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:57:05 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:33313 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232559AbhG2T47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 15:56:50 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C18C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:56:47 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id o3-20020a2541030000b0290557cf3415f8so7973425yba.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:56:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Ol+FzPmhNMEWcf/ywMIJRhViVzXRwXAQpsvgYkKHWL8=;
-        b=tE4wkeBUmlcgG1Oi1kqljBqPAq2FxkSBuM/0hbXQQi2dyGcWco8yqSrmnVk4GUqTP8
-         B1Y6AqoRFUHY5NfwvVT//R2KLyto5BFSK3FnmrUiG6B5QJbtotKTGiSx8TAiSpUfpBX1
-         RwJL40P1LJTj868fIGa7CImo40MmyzVuR3Zk0Ww+Q4xy5JLKXjy5TOCJ2rrdPUPCMjd/
-         OHn/OlsBf1bNoxUI7q/mKah8S8j9nBSApsYGYrHhrHMJ/VdT+Cta+PFakejb4YGHGoAm
-         Oxs/mxKqPQNfzOPDkOQwWRLi/PtiOeoWmR50Im/H2TpkCT/1DhBwEO+x3+I1HMKL+x3B
-         WsbA==
+        Thu, 29 Jul 2021 15:56:59 -0400
+Received: by mail-il1-f181.google.com with SMTP id y4so7165237ilp.0;
+        Thu, 29 Jul 2021 12:56:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Ol+FzPmhNMEWcf/ywMIJRhViVzXRwXAQpsvgYkKHWL8=;
-        b=JXOU+8cWrQuidq1dgh6n/XW5ldtCVbeSn2NegGPKEQw36DlQfNuqLUONz1kEhZL+3r
-         cM4c3ll6ImCnXsrdnDqdVmarMUkpAduDA+eVeCuOvx2XLp1hJs8KLpbGoMxyp7YhxImS
-         CLL441z2MgGD+HHEzayw881jlDztMULZeEAT/rVR0xFJbhNQGHumfelITn9ukj20S2n0
-         9Zn3wEBUV+JmzfFkrFOfLPYA0SckZl52wYptvBNmQ7wEldafZucBzE6Q3JUnEVMJ5q4C
-         I4BZgFTxdmIJ0irwscO8NkcvbfHaU7uRNoE3doakolGZLQSdwM2vALiiATRLBDGZsKam
-         i22g==
-X-Gm-Message-State: AOAM531cc2krMxrA2StmRtWGryayeGBbLdyYXpVEzTvSZD33Z1o6L+Rk
-        IKBsOpRmma3LmwatlUEI6egbz4KQ4Jw=
-X-Google-Smtp-Source: ABdhPJzEqeKxfCGlgZpzy/oi0hUM353MPBMR8OsyLB/q3Rn+Ob7BztAXWntKOvKujoWtbqCxSrp7KEVTT8w=
-X-Received: from oupton.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:404])
- (user=oupton job=sendgmr) by 2002:a25:55c4:: with SMTP id j187mr9110009ybb.284.1627588606437;
- Thu, 29 Jul 2021 12:56:46 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 19:56:32 +0000
-In-Reply-To: <20210729195632.489978-1-oupton@google.com>
-Message-Id: <20210729195632.489978-4-oupton@google.com>
-Mime-Version: 1.0
-References: <20210729195632.489978-1-oupton@google.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH 3/3] KVM: arm64: Use generic KVM xfer to guest work function
-From:   Oliver Upton <oupton@google.com>
-To:     kvmarm@lists.cs.columbia.edu
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Peter Shier <pshier@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Guangyu Shi <guangyus@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z0J5LQNEEyjEvcuJujP5AefHinx/f1KYPzS6uivxeNY=;
+        b=oSBFA1lTV2kDWzQjWtttqtAzSwk1rFdCenISsfasUjpUKe0ARXMXqmpAWKrwxHz6oU
+         Mro+Kn6YG/XDUZidB3PKkZtRr29TwLS3xi3IsutgGM/ZPJ4QusBlY9IVBXBDDKZ81u6k
+         gYjDhOZ7hcWVNzHMfoaxa5OZFhbfFJVwsntNUGPUxf9bBPxBS2IpahjC/XByax7pRJb8
+         RmXKXC6CE6HOCaTUNSK+X67mbPWCJ1VNgOsX5fm0bbAi1e9Qke635DNht7jpsTE6s/lA
+         XFrGhhdsyWdgHRDQR13XEeiYW499t2O2CqdZoLxyY8Bfd4yBtv63RUVCB/uAmersC1MQ
+         i0Ig==
+X-Gm-Message-State: AOAM532nqxTv37/9Q/6IsHCN3Uw8XIzuU97fn3LLEX+9uPX+EC4ald27
+        J1fIOhnZvnRu2MYYhONIBg==
+X-Google-Smtp-Source: ABdhPJxRRDWEUSJeM4gWtTDNajmw+L0NBzLZkybl2EAg5IFbGY4xTZgE8SbLXVVvUBXrnTiDac5GrA==
+X-Received: by 2002:a92:dcc2:: with SMTP id b2mr4974750ilr.84.1627588614140;
+        Thu, 29 Jul 2021 12:56:54 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id p8sm2920321iol.49.2021.07.29.12.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 12:56:53 -0700 (PDT)
+Received: (nullmailer pid 779754 invoked by uid 1000);
+        Thu, 29 Jul 2021 19:56:52 -0000
+Date:   Thu, 29 Jul 2021 13:56:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>, git@xilinx.com,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        saikrishna12468@gmail.com
+Subject: Re: [PATCH 1/4] dt-bindings: pinctrl: pinctrl-zynq: Convert to yaml
+Message-ID: <YQMIBJ7n4EN3KDhr@robh.at.kernel.org>
+References: <1626868353-96475-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <1626868353-96475-2-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626868353-96475-2-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up handling of checks for pending work by switching to the generic
-infrastructure to do so.
+On Wed, 21 Jul 2021 17:22:30 +0530, Sai Krishna Potthuri wrote:
+> Convert the Zynq pinctrl binding file to yaml.
+> 
+> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+> ---
+>  .../bindings/pinctrl/xlnx,zynq-pinctrl.txt    | 105 ---------
+>  .../bindings/pinctrl/xlnx,zynq-pinctrl.yaml   | 216 ++++++++++++++++++
+>  2 files changed, 216 insertions(+), 105 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/xlnx,zynq-pinctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/xlnx,zynq-pinctrl.yaml
+> 
 
-We pick up handling for TIF_NOTIFY_RESUME from this switch, meaning that
-task work will be correctly handled.
-
-Signed-off-by: Oliver Upton <oupton@google.com>
----
- arch/arm64/kvm/Kconfig |  1 +
- arch/arm64/kvm/arm.c   | 27 ++++++++++++++-------------
- 2 files changed, 15 insertions(+), 13 deletions(-)
-
-diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-index a4eba0908bfa..8bc1fac5fa26 100644
---- a/arch/arm64/kvm/Kconfig
-+++ b/arch/arm64/kvm/Kconfig
-@@ -26,6 +26,7 @@ menuconfig KVM
- 	select HAVE_KVM_ARCH_TLB_FLUSH_ALL
- 	select KVM_MMIO
- 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
-+	select KVM_XFER_TO_GUEST_WORK
- 	select SRCU
- 	select KVM_VFIO
- 	select HAVE_KVM_EVENTFD
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 60d0a546d7fd..9762e2129813 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/bug.h>
- #include <linux/cpu_pm.h>
-+#include <linux/entry-kvm.h>
- #include <linux/errno.h>
- #include <linux/err.h>
- #include <linux/kvm_host.h>
-@@ -714,6 +715,13 @@ static bool vcpu_mode_is_bad_32bit(struct kvm_vcpu *vcpu)
- 		static_branch_unlikely(&arm64_mismatched_32bit_el0);
- }
- 
-+static bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
-+{
-+	return kvm_request_pending(vcpu) ||
-+			need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
-+			xfer_to_guest_mode_work_pending();
-+}
-+
- /**
-  * kvm_arch_vcpu_ioctl_run - the main VCPU run function to execute guest code
-  * @vcpu:	The VCPU pointer
-@@ -757,7 +765,11 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		/*
- 		 * Check conditions before entering the guest
- 		 */
--		cond_resched();
-+		if (__xfer_to_guest_mode_work_pending()) {
-+			ret = xfer_to_guest_mode_handle_work(vcpu);
-+			if (!ret)
-+				ret = 1;
-+		}
- 
- 		update_vmid(&vcpu->arch.hw_mmu->vmid);
- 
-@@ -776,16 +788,6 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 
- 		kvm_vgic_flush_hwstate(vcpu);
- 
--		/*
--		 * Exit if we have a signal pending so that we can deliver the
--		 * signal to user space.
--		 */
--		if (signal_pending(current)) {
--			ret = -EINTR;
--			run->exit_reason = KVM_EXIT_INTR;
--			++vcpu->stat.signal_exits;
--		}
--
- 		/*
- 		 * If we're using a userspace irqchip, then check if we need
- 		 * to tell a userspace irqchip about timer or PMU level
-@@ -809,8 +811,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		 */
- 		smp_store_mb(vcpu->mode, IN_GUEST_MODE);
- 
--		if (ret <= 0 || need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
--		    kvm_request_pending(vcpu)) {
-+		if (ret <= 0 || kvm_vcpu_exit_request(vcpu)) {
- 			vcpu->mode = OUTSIDE_GUEST_MODE;
- 			isb(); /* Ensure work in x_flush_hwstate is committed */
- 			kvm_pmu_sync_hwstate(vcpu);
--- 
-2.32.0.554.ge1b32706d8-goog
-
+Reviewed-by: Rob Herring <robh@kernel.org>
