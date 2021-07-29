@@ -2,71 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1CD3DA6C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2443DA6C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237810AbhG2OrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237902AbhG2Op4 (ORCPT
+        id S237499AbhG2OrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:47:09 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33714 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237896AbhG2Opv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:45:56 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEC2C06179E
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:45:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yXVoVs90MS1xZ9tjxl4bGWV3as2/GFBM7qNojQie/p4=; b=NQVTi6MOTMOFnA5GJnFX0Xd5GJ
-        HPir7Vag2LISCmHW7sWkZbCucsXBS1h25ee4xy+eeVwqRONc36m8sSE516mdDKAiHrorePAR6NOZ/
-        MVOvIHpwEFovnYhOuiGQm6wsjT9Cuw6+uOH/7WqqqbDb3IKQVUHruAQ9Rt+ANkwN/WxsMEBB5lw9b
-        mmSp9hjza3Ijnh/IA7rxrxinhl8gmepWpSSlX9IZf3egqd0tLE3B6GfUaPpIQrPM9j9Z5gpgbT/7F
-        imD4I01sncchnnRHubC7jUDk+wnb+tDeJkFsnIYpxGhEWUUe9b+yJK5Dra3TlkItp3X/MKx02bLOa
-        aRqmtYAA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m97Hd-003z22-Ow; Thu, 29 Jul 2021 14:45:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 29 Jul 2021 10:45:51 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 407DF300215;
-        Thu, 29 Jul 2021 16:45:11 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1099229A0995A; Thu, 29 Jul 2021 16:45:11 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 16:45:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 1/3] drm: use the lookup lock in drm_is_current_master
-Message-ID: <YQK+9p+RIcFuzD3O@hirez.programming.kicks-ass.net>
-References: <20210722092929.244629-1-desmondcheongzx@gmail.com>
- <20210722092929.244629-2-desmondcheongzx@gmail.com>
- <YPlKkvelm/mcnCj0@phenom.ffwll.local>
- <YQAaIrNUXa6i2gxD@hirez.programming.kicks-ass.net>
- <YQJSE3TMRydDNhqT@phenom.ffwll.local>
- <fbf2ec46-5ef5-7108-450a-13a7c48c30ce@gmail.com>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 62B2E223F5;
+        Thu, 29 Jul 2021 14:45:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627569936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bGzrCEZ3gzxh1c4S1CYTs/FywXEyxc1cV/S7cox9Goc=;
+        b=w0jE6T+y7oziHIRH7lWA5FraENqlsRkQgciw4gjwCnCDlKS87VPGYFuBu441Q1QtT4g27Z
+        eeomsnJr0/n5w2C/EJSvz0X67J2EOJAL7N+BUuYY1K0KRIO63/NFJ7NEjfW8Bm93txVRwq
+        FDQ1F39Tawh2UT3V+UGS2ndrGqerJuc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627569936;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bGzrCEZ3gzxh1c4S1CYTs/FywXEyxc1cV/S7cox9Goc=;
+        b=j8u1Y6Nv47aUEt8Ca66ErCygqSL3h0VUxPUgsAaQcpWepOvf/6dErHjr8SNHPv8ozhqJEQ
+        XzvvEuqtK7a4kBAw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1AA5513690;
+        Thu, 29 Jul 2021 14:45:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 3xEZBBC/AmFOIQAAGKfGzw
+        (envelope-from <jdelvare@suse.de>); Thu, 29 Jul 2021 14:45:36 +0000
+Date:   Thu, 29 Jul 2021 16:45:33 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: drivers/firmware/dmi_scan.c:151:9: sparse: sparse: incorrect
+ type in argument 1 (different address spaces)
+Message-ID: <20210729164533.48fed217@endymion>
+In-Reply-To: <81c31d99-82dc-feb6-1213-2b2fbae7c867@loongson.cn>
+References: <202107242204.IbnaQfeL-lkp@intel.com>
+        <81c31d99-82dc-feb6-1213-2b2fbae7c867@loongson.cn>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fbf2ec46-5ef5-7108-450a-13a7c48c30ce@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:32:13PM +0800, Desmond Cheong Zhi Xi wrote:
-> Sounds good, will do. Thanks for the patch, Peter.
-> 
-> Just going to make a small edit:
-> s/LOCK_STAT_NOT_HELD/LOCK_STATE_NOT_HELD/
+Hi Tiezhu,
 
-Bah, I knew I should've compile tested it :-), Thanks!
+On Mon, 26 Jul 2021 20:53:42 +0800, Tiezhu Yang wrote:
+> On 07/24/2021 10:31 PM, kernel test robot wrote:
+> > Hi Stephen,
+> >
+> > First bad commit (maybe != root cause):
+> >
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   f0fddcec6b6254b4b3611388786bbafb703ad257
+> > commit: 1062fc45d1e93faefb93961f3be0a687f3f0e2e1 MIPS: Loongson64: Select SMP in Kconfig to avoid build error
+> > date:   10 months ago
+> > config: mips-randconfig-s031-20210724 (attached as .config)
+> > compiler: mips64-linux-gcc (GCC) 10.3.0
+> > reproduce:
+> >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >          chmod +x ~/bin/make.cross
+> >          # apt-get install sparse
+> >          # sparse version: v0.6.3-341-g8af24329-dirty
+> >          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1062fc45d1e93faefb93961f3be0a687f3f0e2e1
+> >          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >          git fetch --no-tags linus master
+> >          git checkout 1062fc45d1e93faefb93961f3be0a687f3f0e2e1
+> >          # save the attached .config to linux build tree
+> >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=mips
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> >
+> > sparse warnings: (new ones prefixed by >>)
+> >     command-line: note: in included file:
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQUIRE redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_SEQ_CST redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQ_REL redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_RELEASE redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     drivers/firmware/dmi_scan.c:143:13: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char [usertype] *buf @@     got void [noderef] __iomem * @@
+> >     drivers/firmware/dmi_scan.c:143:13: sparse:     expected unsigned char [usertype] *buf
+> >     drivers/firmware/dmi_scan.c:143:13: sparse:     got void [noderef] __iomem *  
+> >>> drivers/firmware/dmi_scan.c:151:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got unsigned char [usertype] *buf @@  
+> >     drivers/firmware/dmi_scan.c:151:9: sparse:     expected void const volatile [noderef] __iomem *addr
+> >     drivers/firmware/dmi_scan.c:151:9: sparse:     got unsigned char [usertype] *buf
+> >     drivers/firmware/dmi_scan.c:775:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char [usertype] *dmi_table @@     got void [noderef] __iomem * @@
+> >     drivers/firmware/dmi_scan.c:775:19: sparse:     expected unsigned char [usertype] *dmi_table
+> >     drivers/firmware/dmi_scan.c:775:19: sparse:     got void [noderef] __iomem *  
+> >>> drivers/firmware/dmi_scan.c:794:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got unsigned char [usertype] *dmi_table @@  
+> >     drivers/firmware/dmi_scan.c:794:9: sparse:     expected void const volatile [noderef] __iomem *addr
+> >     drivers/firmware/dmi_scan.c:794:9: sparse:     got unsigned char [usertype] *dmi_table
+> >     drivers/firmware/dmi_scan.c:1108:13: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char [usertype] *buf @@     got void [noderef] __iomem * @@
+> >     drivers/firmware/dmi_scan.c:1108:13: sparse:     expected unsigned char [usertype] *buf
+> >     drivers/firmware/dmi_scan.c:1108:13: sparse:     got void [noderef] __iomem *
+> >     drivers/firmware/dmi_scan.c:1114:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got unsigned char [usertype] *buf @@
+> >     drivers/firmware/dmi_scan.c:1114:9: sparse:     expected void const volatile [noderef] __iomem *addr
+> >     drivers/firmware/dmi_scan.c:1114:9: sparse:     got unsigned char [usertype] *buf
+> > --
+> >     command-line: note: in included file:
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQUIRE redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_SEQ_CST redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQ_REL redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_RELEASE redefined
+> >     builtin:0:0: sparse: this was the original definition  
+> >>> drivers/irqchip/irq-loongson-htpic.c:80:20: sparse: sparse: symbol 'htpic_syscore_ops' was not declared. Should it be static?  
+> >     drivers/irqchip/irq-loongson-htpic.c:84:12: sparse: sparse: symbol 'htpic_of_init' was not declared. Should it be static?
+> > --
+> >     command-line: note: in included file:
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQUIRE redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_SEQ_CST redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQ_REL redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_RELEASE redefined
+> >     builtin:0:0: sparse: this was the original definition
+> >     drivers/pci/controller/pci-ftpci100.c:37:9: sparse: sparse: preprocessor token PCI_IOSIZE redefined
+> >     drivers/pci/controller/pci-ftpci100.c: note: in included file (through arch/mips/include/asm/addrspace.h, arch/mips/include/asm/barrier.h, arch/mips/include/asm/bitops.h, ...):  
+> >>> arch/mips/include/asm/mach-loongson64/spaces.h:11:9: sparse: this was the original definition  
+> > vim +151 drivers/firmware/dmi_scan.c
+> >
+> > 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  136
+> > e7a19c5624c66a drivers/firmware/dmi_scan.c Jean Delvare    2009-03-30  137  static int __init dmi_walk_early(void (*decode)(const struct dmi_header *,
+> > e7a19c5624c66a drivers/firmware/dmi_scan.c Jean Delvare    2009-03-30  138  		void *))
+> > 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  139  {
+> > 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  140  	u8 *buf;
+> > 6e0ad59e3d838a drivers/firmware/dmi_scan.c Jean Delvare    2015-06-25  141  	u32 orig_dmi_len = dmi_len;
+> > 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  142
+> > 6e0ad59e3d838a drivers/firmware/dmi_scan.c Jean Delvare    2015-06-25  143  	buf = dmi_early_remap(dmi_base, orig_dmi_len);
+> > 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  144  	if (buf == NULL)
+> > c926820085437a drivers/firmware/dmi_scan.c Andy Lutomirski 2017-06-15  145  		return -ENOMEM;
+> > 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  146
+> > eb4c5ea50e60aa drivers/firmware/dmi_scan.c Ivan Khoronzhuk 2015-06-25  147  	dmi_decode_table(buf, decode, NULL);
+> > 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  148
+> > d114a333874725 drivers/firmware/dmi_scan.c Tony Luck       2012-07-20  149  	add_device_randomness(buf, dmi_len);
+> > d114a333874725 drivers/firmware/dmi_scan.c Tony Luck       2012-07-20  150
+> > 6e0ad59e3d838a drivers/firmware/dmi_scan.c Jean Delvare    2015-06-25 @151  	dmi_early_unmap(buf, orig_dmi_len);
+> > ^1da177e4c3f41 arch/i386/kernel/dmi_scan.c Linus Torvalds  2005-04-16  152  	return 0;
+> > ^1da177e4c3f41 arch/i386/kernel/dmi_scan.c Linus Torvalds  2005-04-16  153  }
+> > ^1da177e4c3f41 arch/i386/kernel/dmi_scan.c Linus Torvalds  2005-04-16  154
+> >
+> > :::::: The code at line 151 was first introduced by commit
+> > :::::: 6e0ad59e3d838a2887e7aa657baee5896030d009 firmware: dmi_scan: Trim DMI table length before exporting it
+> >
+> > :::::: TO: Jean Delvare <jdelvare@suse.de>
+> > :::::: CC: Jean Delvare <jdelvare@suse.de>
+> >
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org  
+> 
+> Hi,
+> 
+> It seems that there is no relation between my commit and the sparse warning
+> "drivers/firmware/dmi_scan.c:151:9: sparse: sparse: incorrect type in 
+> argument".
+
+Agreed. However there are two other sparse warnings in the report:
+
+>>> drivers/irqchip/irq-loongson-htpic.c:80:20: sparse: sparse: symbol 'htpic_syscore_ops' was not declared. Should it be static?  
+
+>     drivers/pci/controller/pci-ftpci100.c:37:9: sparse: sparse: preprocessor token PCI_IOSIZE redefined
+>     drivers/pci/controller/pci-ftpci100.c: note: in included file (through arch/mips/include/asm/addrspace.h, arch/mips/include/asm/barrier.h, arch/mips/include/asm/bitops.h, ...):  
+>>> arch/mips/include/asm/mach-loongson64/spaces.h:11:9: sparse: this was the original definition  
+
+They are the ones that would have been uncovered by your change. The
+dmi_scan one must have existed before already.
+
+> I think the following change can make the above warning silent:
+> 
+> diff --git a/drivers/firmware/dmi_scan.c b/drivers/firmware/dmi_scan.c
+> index f191a1f..9e254d9 100644
+> --- a/drivers/firmware/dmi_scan.c
+> +++ b/drivers/firmware/dmi_scan.c
+> @@ -148,7 +148,7 @@ static int __init dmi_walk_early(void 
+> (*decode)(const struct dmi_header *,
+> 
+>          add_device_randomness(buf, dmi_len);
+> 
+> -       dmi_early_unmap(buf, orig_dmi_len);
+> +       dmi_early_unmap((u8 __iomem *)buf, orig_dmi_len);
+>          return 0;
+>   }
+> 
+> If it is OK, I can send a patch later.
+
+Explicit pointer casting is almost always the wrong way to make
+warnings go away. I can't confirm because I'm not able to get sparse to
+work at the moment, but more likely the correct fix would be something
+along the lines of:
+
+--- a/drivers/firmware/dmi_scan.c
++++ b/drivers/firmware/dmi_scan.c
+@@ -137,7 +137,7 @@ static phys_addr_t dmi_base;
+ static int __init dmi_walk_early(void (*decode)(const struct dmi_header *,
+ 		void *))
+ {
+-	u8 *buf;
++	u8 __iomem *buf;
+ 	u32 orig_dmi_len = dmi_len;
+ 
+ 	buf = dmi_early_remap(dmi_base, orig_dmi_len);
+@@ -754,7 +754,7 @@ static BIN_ATTR(DMI, S_IRUSR, raw_table_
+ static int __init dmi_init(void)
+ {
+ 	struct kobject *tables_kobj;
+-	u8 *dmi_table;
++	u8 __iomem *dmi_table;
+ 	int ret = -ENOMEM;
+ 
+ 	if (!dmi_available)
+@@ -1101,7 +1101,7 @@ EXPORT_SYMBOL(dmi_get_bios_year);
+ int dmi_walk(void (*decode)(const struct dmi_header *, void *),
+ 	     void *private_data)
+ {
+-	u8 *buf;
++	u8 __iomem *buf;
+ 
+ 	if (!dmi_available)
+ 		return -ENXIO;
+
+(Note sure why there are only 2 sparse warnings when the same issue is
+present 3 times in the file.)
+
+-- 
+Jean Delvare
+SUSE L3 Support
