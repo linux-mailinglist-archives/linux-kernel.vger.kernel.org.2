@@ -2,143 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE943DAEDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0B03DAEE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhG2W3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:29:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229944AbhG2W3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:29:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1982360720;
-        Thu, 29 Jul 2021 22:29:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627597759;
-        bh=Z5vs1zoSqEBxxqhhSmMqcsfe2C7l5EM32gjPdmoyxEM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ow5YnxaXbEOrfH4JYT2y1RMAesCkN/7tbE/AmLKSds8GczI0Z2cjX8NvoAD0tI9zl
-         5It9feOWMTsxvab3SeVe0xCOyamkWOKwr8fDgv21ShbrHrv/Z8LoEP03gHi2ZdyeSS
-         iiUkZSHEMh/r+ZgR24Bd3OxC4SCNsIH8PfONyr8yPoUM9s6AOm28pumoOJDUkLuBAp
-         8gxh3ZxZ6e8poQNmcPJLRm5B1L6YAuKA821nTVolYIdrBTwNGo8hCT/p6lz4KuN/3i
-         iaFnBo60imEzrzTWVnOj2hkdx/3lV87l+H+Czbg6cuwMyDWojb9mCrlyYJ4FZIgh8Z
-         P/U6AJk1KXKag==
-Date:   Thu, 29 Jul 2021 17:29:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH 3/6] PCI: imx6: add IMX8MM support
-Message-ID: <20210729222917.GA998237@bjorn-Precision-5520>
+        id S232890AbhG2WaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 18:30:13 -0400
+Received: from mail-io1-f46.google.com ([209.85.166.46]:33663 "EHLO
+        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhG2WaK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 18:30:10 -0400
+Received: by mail-io1-f46.google.com with SMTP id n19so9176660ioz.0;
+        Thu, 29 Jul 2021 15:30:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nxHho6RZxjUuYURjfVw+2b6ILg8EjvBd3YtWTTGJ9Is=;
+        b=S/zN7gDbM3Dqyv9tSR3znu98IIja/mHSyq2yh1eq0kHhXEYEWyk3CG7beVadp7Qgn3
+         PBM+ibUw5xDtoRQLTfEm9fqzmtUuKepwBfVFtE9rlny1/51G63mjRoUpZ1F9iBnEaGvU
+         IcxCBLnWPG24xW9vFaKablZODmnhF6Fba1x77aNMaqPgZaGV1sgFPiApMIbX9IhNus6t
+         trItCwEIyoIkOBw2/FNP5KkFeDjoCUtNdxYcz52RlJjzm6QK8M2rOAz9LoHIseDqjXjq
+         V9fIml6sDffHCwdPuYm6kOxkbaFoEf0v0b+x2mjVVwYhDU/XIEkAYrBEJguXR3LPb3mL
+         B+KQ==
+X-Gm-Message-State: AOAM533MDU7EfLG4EL8ezBJ+JwojnG6vD++7VwYfxb+3br43ZRN4+Ta4
+        9ilLDWSYzCn8m8wnyBZbfg==
+X-Google-Smtp-Source: ABdhPJx3FAFP9axGNQ3Quk45L4+xPnWPLhYc926b4evgK46BUcmGvFDnG8jsDH5SjroGIGATVhBwbQ==
+X-Received: by 2002:a02:6f1c:: with SMTP id x28mr6371373jab.95.1627597804911;
+        Thu, 29 Jul 2021 15:30:04 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id y14sm2335867ilv.76.2021.07.29.15.30.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 15:30:04 -0700 (PDT)
+Received: (nullmailer pid 1020064 invoked by uid 1000);
+        Thu, 29 Jul 2021 22:30:02 -0000
+Date:   Thu, 29 Jul 2021 16:30:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
+        Shevchenko <andy.shevchenko@gmail.com>," 
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: panel: Add Samsung S6E3FA2 panel
+Message-ID: <YQMr6slu/Nvt6UYr@robh.at.kernel.org>
+References: <20210725140339.2465677-1-alexeymin@postmarketos.org>
+ <CACRpkdaaQeuVqJbczHndsgmmMv0NycwRDdzFTDwM=BJnc7SseQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210723204958.7186-4-tharvey@gateworks.com>
+In-Reply-To: <CACRpkdaaQeuVqJbczHndsgmmMv0NycwRDdzFTDwM=BJnc7SseQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Capitalize first letter of subject to match history:
-
-  PCI: imx6: Add IMX8MM support
-
-On Fri, Jul 23, 2021 at 01:49:55PM -0700, Tim Harvey wrote:
-> Add IMX8MM support to the existing driver which shares most
-> functionality with the IMX8MM.
+On Mon, Jul 26, 2021 at 09:51:40AM +0200, Linus Walleij wrote:
+> On Sun, Jul 25, 2021 at 4:04 PM Alexey Minnekhanov
+> <alexeymin@postmarketos.org> wrote:
 > 
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 103 +++++++++++++++++++++++++-
->  1 file changed, 102 insertions(+), 1 deletion(-)
+> > The Samsung S6E3FA2 AMOLED cmd LCD panel is used on Samsung Galaxy
+> > S5 (klte) phone.
+> >
+> > Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
+> 
+> Grr gmail put this in my spam folder, sorry for confused mails.
+> 
+> With Sam's comments addressed:
 
-> +	case IMX8MM:
-> +		offset = imx6_pcie_grp_offset(imx6_pcie);
-> +
-> +		dev_info(imx6_pcie->pci->dev, "%s REF_CLK is used!.\n",
-> +				imx6_pcie->ext_osc ? "EXT" : "PLL");
-> +		if (imx6_pcie->ext_osc) {
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MQ_GPR_PCIE_REF_USE_PAD, 0);
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_REF_CLK_SEL,
-> +					IMX8MM_GPR_PCIE_REF_CLK_SEL);
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_AUX_EN,
-> +					IMX8MM_GPR_PCIE_AUX_EN);
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_POWER_OFF, 0);
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_SSC_EN, 0);
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_REF_CLK_SEL,
-> +					IMX8MM_GPR_PCIE_REF_CLK_EXT);
-> +			udelay(100);
-> +			/* Do the PHY common block reset */
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_CMN_RST,
-> +					IMX8MM_GPR_PCIE_CMN_RST);
-> +			udelay(200);
-> +		} else {
-> +			/* Configure the internal PLL as REF clock */
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MQ_GPR_PCIE_REF_USE_PAD, 0);
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_REF_CLK_SEL,
-> +					IMX8MM_GPR_PCIE_REF_CLK_SEL);
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_AUX_EN,
-> +					IMX8MM_GPR_PCIE_AUX_EN);
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_POWER_OFF, 0);
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_SSC_EN, 0);
+What comments? Sam's mails seem to have problems getting to the lists.
 
-Seems like all the above is common to both cases?  If so, it's a shame
-to repeat it because it makes it hard to see what's different.
-
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_REF_CLK_SEL,
-> +					IMX8MM_GPR_PCIE_REF_CLK_PLL);
-> +			udelay(100);
-> +			/* Configure the PHY */
-> +			writel(PCIE_PHY_CMN_REG62_PLL_CLK_OUT,
-> +					imx6_pcie->phy_base + PCIE_PHY_CMN_REG62);
-> +			writel(PCIE_PHY_CMN_REG64_AUX_RX_TX_TERM,
-> +					imx6_pcie->phy_base + PCIE_PHY_CMN_REG64);
-> +			/* Do the PHY common block reset */
-> +			regmap_update_bits(imx6_pcie->iomuxc_gpr, offset,
-> +					IMX8MM_GPR_PCIE_CMN_RST,
-> +					IMX8MM_GPR_PCIE_CMN_RST);
-> +			udelay(200);
-> +		}
-> +		/*
-
-> +		 * In order to pass the compliance tests.
-> +		 * Configure the TRSV regiser of iMX8MM PCIe PHY.
-
-The "In order to ..." line isn't quite a sentence.  Maybe it should be
-joined with the second line?
-
-s/regiser/register/ ?
-
-> +		 */
-> +		writel(PCIE_PHY_TRSV_REG5_GEN1_DEEMP,
-> +				imx6_pcie->phy_base + PCIE_PHY_TRSV_REG5);
-
-> +	/* check for EXT osc */
-
-Since you have a comment here, it would be useful to spell out "osc"
-for newbies like me.  I assume it's short for "oscillator"?
-
-> +	imx6_pcie->ext_osc = of_property_read_bool(node, "fsl,ext-osc");
+Rob
