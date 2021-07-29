@@ -2,175 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97EEF3D9F4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C593D9F55
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbhG2IRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 04:17:49 -0400
-Received: from mail.netline.ch ([148.251.143.180]:57059 "EHLO
-        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234673AbhG2IRs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 04:17:48 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by netline-mail3.netline.ch (Postfix) with ESMTP id 7B59E20201D;
-        Thu, 29 Jul 2021 10:17:44 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
-Received: from netline-mail3.netline.ch ([127.0.0.1])
-        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id umwX2Eu5Zu4W; Thu, 29 Jul 2021 10:17:44 +0200 (CEST)
-Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
-        by netline-mail3.netline.ch (Postfix) with ESMTPA id E115A20201A;
-        Thu, 29 Jul 2021 10:17:43 +0200 (CEST)
-Received: from [::1]
-        by thor with esmtp (Exim 4.94.2)
-        (envelope-from <michel@daenzer.net>)
-        id 1m91Ed-00145r-4F; Thu, 29 Jul 2021 10:17:43 +0200
-To:     Daniel Vetter <daniel@ffwll.ch>
-References: <20210726233854.2453899-1-robdclark@gmail.com>
- <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
- <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
- <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
- <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
- <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
- <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
- <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com>
- <9d5f4415-d470-3bc1-7d52-61ba739706ae@daenzer.net>
- <CAF6AEGu409eY9xznTAaBf2ZDcV_AaDELUzN2afWgiHwB_uBwqg@mail.gmail.com>
- <YQJUKXgf/Q957fmy@phenom.ffwll.local>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-Message-ID: <ff394f2b-b555-e80f-b685-d0d59e2bbe67@daenzer.net>
-Date:   Thu, 29 Jul 2021 10:17:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S234894AbhG2ITY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 04:19:24 -0400
+Received: from mga05.intel.com ([192.55.52.43]:28588 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234256AbhG2ITW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 04:19:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="298414075"
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
+   d="scan'208";a="298414075"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 01:19:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
+   d="scan'208";a="567148206"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga004.jf.intel.com with ESMTP; 29 Jul 2021 01:19:19 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Thu, 29 Jul 2021 01:19:18 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Thu, 29 Jul 2021 01:19:18 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.42) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Thu, 29 Jul 2021 01:19:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T85KWJeIypJ/vAm92ta+HyT0UmUPbyiZGg636G65FkQfWkeK9K2M+rbvk7hMYWU4vra+q7ZNaLNfAbuzctlw0Rb7nLTHjZQLqwj6aEqPB3AQBScoT0cBgXtHlhwjGizpk6SLBTOQZKF+JLPTFZeuqaLyLHSFjQ26/Zc6snyWBdQ5VWH/C3y59mf1QJiF9edoxded1KIsQ8BjitWMXGHYfo+rsFM2s0W9nsPHXZOL7Eoutvkzfp+/a6Dzl7VtYdFvbrV5tjLJjMXoS/C8G7NX9et/apgTjNmKki96DrgdPpC6afIS0aeoXGl+LdpCKmfd5NpR5WAeNa0ENf0sthwi2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SqoyHbRKr+RTvtT38NfTkJKeNDd6xtC5O9YQxQlO9aI=;
+ b=jg7c+Q78vGOFUWJOfHvZTkxI48vjUqaoMvoAk77JfHxre2HOcNIfz71e/+LEyveJxqaifaNDR389ACyHRwjUrKQdB6ABta4TDqf5b+ye0hoJ3xWcwwfYKKhEmN7JDtBijgEoAcQG3g1HyKLrYu08Q03Sz0CTDq4MpC8oL6iOYeXu0JMI60lzrytLn+lNK/NqNzYqeqHeiARBV/9MLUes43nmSCB+R6ZFtBU4m+l6knKcKNDJCPqF9XiJy/3n0qjFKnuqaaPS2FE9A3zQO3lTw5rzwiOSqclifSqdUy79UigKmtKbT+bectb0ZJqLwlSa7cXGCarR0LXgrSvhJAuw+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SqoyHbRKr+RTvtT38NfTkJKeNDd6xtC5O9YQxQlO9aI=;
+ b=pKqxd+wxLshs5MK9Z0vv8Bu2m6DhQKGpwW8yau9Uv6TyRlIDhPQTaUmzQrcnHXAUOuqEr79F6UngdEIAGZFm35hHDF3IA+KD/Sn2Rbd9WgskYU0xrZjbNXUfheJ4Sokw4vwoCTT5aUXZLXF6eoku+SdI7lxS1NkONbU2WzYUPVQ=
+Received: from DM4PR11MB5549.namprd11.prod.outlook.com (2603:10b6:5:388::7) by
+ DM6PR11MB2937.namprd11.prod.outlook.com (2603:10b6:5:62::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4373.19; Thu, 29 Jul 2021 08:19:15 +0000
+Received: from DM4PR11MB5549.namprd11.prod.outlook.com
+ ([fe80::d4bb:d75e:3801:1b2d]) by DM4PR11MB5549.namprd11.prod.outlook.com
+ ([fe80::d4bb:d75e:3801:1b2d%9]) with mapi id 15.20.4373.019; Thu, 29 Jul 2021
+ 08:19:15 +0000
+From:   "Wang, Zhi A" <zhi.a.wang@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Gerd Hoffmann <kraxel@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Subject: Re: refactor the i915 GVT support
+Thread-Topic: refactor the i915 GVT support
+Thread-Index: AQHXfkkPR74j3PcQBUqzVfBaHB7ETatOyPlwgAATUQCAB+h0AIABoDZQgABTFICAAPA6AA==
+Date:   Thu, 29 Jul 2021 08:19:15 +0000
+Message-ID: <9cab9765-79ce-fca0-3599-474f7ffb2034@intel.com>
+References: <20210721155355.173183-1-hch@lst.de>
+ <DM4PR11MB55496531B246A4604FC86998CAE49@DM4PR11MB5549.namprd11.prod.outlook.com>
+ <20210722112636.wj277vqhg4dez5ug@sirius.home.kraxel.org>
+ <20210727121224.GA2145868@nvidia.com>
+ <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
+ <20210728175925.GU1721383@nvidia.com>
+In-Reply-To: <20210728175925.GU1721383@nvidia.com>
+Accept-Language: en-FI, en-US
+Content-Language: aa
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f4860a5c-fade-40ac-1f21-08d952698dec
+x-ms-traffictypediagnostic: DM6PR11MB2937:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB293786FDBDE10C6DF62A3191CAEB9@DM6PR11MB2937.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ecwKHf6tyhchKv/kxb+42nvquhAHj/ECx0s2gbuox6+ZWK/2ZcwLFsyCKi/qYEnDML9F3tnhR8A4/FQSY5NdqSIPfaaIaQTpJ/dzJmq19JIGa1C3fBYD9FWRQcAFndK6KxwK+Z5ktqYuIZZJHLJgkjgZZb2IVKzMkIc7QK0M2riyr1feR7yyVSZt+J8wSe8OuOtqxbVP6L2eWV9Da+KPJWykbvfRKyuuFf91tWVKwkx3XJfpIXD8CNw3OtgGRRh7zy/qbDTpPpmY1d6wvSjET0gdOa2ESTKbF02/MghTvFV7JEccGBxaYgQ9mGq3U0P1tkf6NS1KlxhynCvdJitNKiei0krLqqaEpzC51FKvkyhUg82HcwrVmFOMcurRqQTNtuMtJiS+zW0po1I35/LqVQNYmjQb+ce4qzhbysl1ZMLFnvijSVbNBKK90Onl63flJ0u8X+4ZJmrxBcNnVA+cxE+29CgYTQDRCg67SoTNQYm17mAFTgH2emiBgLnyhzYDLkfqoty8wd3RaE4x9EQnz+26wLZ+nQjYCnFgWZ3kt6ZUizzUibw4jbv9L60EghsfxY7iIAEQ+xfZ0HFwGmw9lWv69+LkhH1wUzZaM/2l9aLkNB66H3swBnuOzEnDHNdkGwC/9w29ogAYtBWOVcaHt5tXAacYTVlCDZkqvZrGpmzPCj9sOqND94GYMme4zOk0byTPBjwgpLqNQGtrrTT0htzpFE1ncUK+YUZ4SBUHYOAd6FWPS0mXZ8LBWC5RKKcEmg9kncLyyp5njmDIlsA0Bw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5549.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(136003)(39860400002)(376002)(71200400001)(54906003)(66946007)(76116006)(66476007)(8936002)(86362001)(478600001)(66556008)(6916009)(66446008)(91956017)(64756008)(2906002)(83380400001)(36756003)(31696002)(316002)(7416002)(122000001)(4326008)(5660300002)(38100700002)(26005)(38070700005)(8676002)(53546011)(6506007)(6486002)(2616005)(6512007)(186003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NmhSb2tDUFJuNWVIcW84ZzNQYU9OTmRYenkxZEFaOHJtTEx3aVlvdHAvOVM5?=
+ =?utf-8?B?clg4L3kwV2NPVUxOb0lDUnp4cTFiMmZLbUlqVm92ZTlGelBtcWV0cHFub2pp?=
+ =?utf-8?B?S2ZpOHlHZ29sVlhyUGprRWRXVUVDbUM2SkNQUWE0UVExZDN2ajBBdjhmS3ZE?=
+ =?utf-8?B?TkpWWFFmR2JxZ21nUWdYQnNVUTZFOUx3OHN0MnFuakY3OGNXZjFJRXVyMnd2?=
+ =?utf-8?B?QVQ5ekRTVmlOaXlmQWxKY3EzZzZwamQ2eFpUNWZHZmNiRXNWd2xjVEhETW5V?=
+ =?utf-8?B?TkdqTEJZaFZwZjJ6c3l4Rm5lWTUyd1AwNWQxdDJLeGJkQ0FDM3lwRlFVbGVs?=
+ =?utf-8?B?SnkrR0N5a2NsWGVlZzdSdHNCZ3dHRU5DYXRsazNmTk05dndVaWJ6dTJZanVB?=
+ =?utf-8?B?S3VIdEhXcjU2ODVENVVxMWt1SzF5c2ZTVDg0Z3RSK0JISnRDSUxVM3NnMGNE?=
+ =?utf-8?B?M2N4Wk9JRENTM3d5bm9mWUFkeEJ0NVlBYyt2Wm1ZTzlsazBYekx6T1M4bkFH?=
+ =?utf-8?B?VE1OMUxLZ1l2TC9wNHVUYWtVVEhsRUJ2dlR0cHlucjZXQ2tlbE1XUW52UmNa?=
+ =?utf-8?B?U0xjdmMzWmcxVnJTbzRXeGVrN09xSVpNZk9xNkM2TlM0azExOGFCZU1MWVFT?=
+ =?utf-8?B?QzNJeS9KOHlabFJNUXVWbUVJckZlY2hSZ1NocG50REZzZmlKOUNOZDFneXJo?=
+ =?utf-8?B?a0FSNm5RMktpQmRrZXVvYitNeVIzYjNsMDY0eVIwakNNWUNnUlJUbWJVd1ZM?=
+ =?utf-8?B?TGZqWWd4UU05bmVRczl4UU55MC8yTFk2MTgvL3pONXNLL2pXT0tvNy93ZWdl?=
+ =?utf-8?B?dkU3d0NHcDl1dHNadFpGVFY5VUtMTHA4dS9KanBBQ1VFakZ4ckNqZHZTeEpy?=
+ =?utf-8?B?NEFFZE1BanZpbUdPL2x0Tmh3U2JsUGVCcHJ3RGRRU3RSdTVFNk1XWU96SlJ5?=
+ =?utf-8?B?bm1lUGxOaFdsOUxzaWNsajdUL1FMUUVuSEpuVGt5L29jUVlUTDV4TTNGbGVT?=
+ =?utf-8?B?Y1pHL3pLUk9RWDRSOVlpQ2J2K2xmaDRrS0lxMWprTllxNHEzMjlReFFnb2dJ?=
+ =?utf-8?B?bFRFSkRIMzlrekc4Q0xxeWVFOWgyczVvWnlaZzMxY2lMUFRuYjJ0SEFhMlNj?=
+ =?utf-8?B?dE91Q0wzR2JOdGtFeUYrYVZTN2gxaVZONWNhaTRVYXQwN0dDMXdhYjRSRXdo?=
+ =?utf-8?B?alo0aStDY1ZsL0xtUVpsWUxsSFBUem1uQXZmamJwVFZDL0VOQ3Yrd2IvT0Nz?=
+ =?utf-8?B?ZTk2NWpYQ255andFcDZ5OExOWlZFWXBWZVhwd1VFTnNJWXQyV0xwRGVaNFhR?=
+ =?utf-8?B?QlRPSWdxU3c0ejJVZHk2QmwzR095VnFpWlcwajRnanJRbmNwbzFtUnNmSWxq?=
+ =?utf-8?B?WlBNNndjT3VBeGprUzZ6bGw4TUxEdnVFL1JBZVlXNFdpMWsrS1Jrd3V2a1Nm?=
+ =?utf-8?B?WkZ3eWt0blpyVEhyS1pDNDZqclEzM2xQa2U0QkVoUVR0NUVWNWFIVE9zZjQ4?=
+ =?utf-8?B?OS9pc0lOaU9Ua1NIUzZIU3RoUk52VVd6K09CRUVQeHNIbVhrR2h3YXRHdzRZ?=
+ =?utf-8?B?VVhNRkp1QWova0RKbGRLSWpMdkdZVTlodWxXM1dQbEcwV0hta3RNM1VTb2Rq?=
+ =?utf-8?B?cXFoblhCbmdnOGF6eFVheWp4b1BhMDF5ZmpmQ1FuR3YxNWxXZ3RmMm8yUE45?=
+ =?utf-8?B?RjNnNjB3R1NDRVFYandGVGdaVTVpTE5Td2dzWW9EYnlnZElPZHFJWCtKZnhF?=
+ =?utf-8?Q?ZucgD1Yh3kgXn52fu4=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A0FD113E3BAC2F42867660D9E2F90829@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <YQJUKXgf/Q957fmy@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5549.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4860a5c-fade-40ac-1f21-08d952698dec
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2021 08:19:15.4636
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7RiDc/xdpDikth3CaOLq75dh94znoXMaXvwrkcMfOm5EJSvYNGrUFNN3mr3xYcgLJ2oPA0RoeT/kmWCvoS2goA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2937
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-29 9:09 a.m., Daniel Vetter wrote:
-> On Wed, Jul 28, 2021 at 08:34:13AM -0700, Rob Clark wrote:
->> On Wed, Jul 28, 2021 at 6:24 AM Michel Dänzer <michel@daenzer.net> wrote:
->>> On 2021-07-28 3:13 p.m., Christian König wrote:
->>>> Am 28.07.21 um 15:08 schrieb Michel Dänzer:
->>>>> On 2021-07-28 1:36 p.m., Christian König wrote:
->>>>>> Am 27.07.21 um 17:37 schrieb Rob Clark:
->>>>>>> On Tue, Jul 27, 2021 at 8:19 AM Michel Dänzer <michel@daenzer.net> wrote:
->>>>>>>> On 2021-07-27 5:12 p.m., Rob Clark wrote:
->>>>>>>>> On Tue, Jul 27, 2021 at 7:50 AM Michel Dänzer <michel@daenzer.net> wrote:
->>>>>>>>>> On 2021-07-27 1:38 a.m., Rob Clark wrote:
->>>>>>>>>>> From: Rob Clark <robdclark@chromium.org>
->>>>>>>>>>>
->>>>>>>>>>> Based on discussion from a previous series[1] to add a "boost" mechanism
->>>>>>>>>>> when, for example, vblank deadlines are missed.  Instead of a boost
->>>>>>>>>>> callback, this approach adds a way to set a deadline on the fence, by
->>>>>>>>>>> which the waiter would like to see the fence signalled.
->>>>>>>>>>>
->>>>>>>>>>> I've not yet had a chance to re-work the drm/msm part of this, but
->>>>>>>>>>> wanted to send this out as an RFC in case I don't have a chance to
->>>>>>>>>>> finish the drm/msm part this week.
->>>>>>>>>>>
->>>>>>>>>>> Original description:
->>>>>>>>>>>
->>>>>>>>>>> In some cases, like double-buffered rendering, missing vblanks can
->>>>>>>>>>> trick the GPU into running at a lower frequence, when really we
->>>>>>>>>>> want to be running at a higher frequency to not miss the vblanks
->>>>>>>>>>> in the first place.
->>>>>>>>>>>
->>>>>>>>>>> This is partially inspired by a trick i915 does, but implemented
->>>>>>>>>>> via dma-fence for a couple of reasons:
->>>>>>>>>>>
->>>>>>>>>>> 1) To continue to be able to use the atomic helpers
->>>>>>>>>>> 2) To support cases where display and gpu are different drivers
->>>>>>>>>>>
->>>>>>>>>>> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.freedesktop.org%2Fseries%2F90331%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C269b2df3e1dc4f0b856d08d951c8c768%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630745091538563%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=eYaSOSS5wOngNAd9wufp5eWCx5GtAwo6GkultJgrjmA%3D&amp;reserved=0
->>>>>>>>>> Unfortunately, none of these approaches will have the full intended effect once Wayland compositors start waiting for client buffers to become idle before using them for an output frame (to prevent output frames from getting delayed by client work). See https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.gnome.org%2FGNOME%2Fmutter%2F-%2Fmerge_requests%2F1880&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C269b2df3e1dc4f0b856d08d951c8c768%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630745091538563%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=1ZkOzLqbiKSyCixGZ0u7Hd%2Fc1YnUZub%2F%2Fx7RuEclFKg%3D&amp;reserved=0 (shameless plug :) for a proof of concept of this for mutter. The boost will only affect the compositor's own GPU work, not the client work (which means no effect at all for fullscreen apps where the compositor can scan out the client buffers directly).
->>>>>>>>>>
->>>>>>>>> I guess you mean "no effect at all *except* for fullscreen..."?
->>>>>>>> I meant what I wrote: The compositor will wait for the next buffer to become idle, so there's no boost from this mechanism for the client drawing to that buffer. And since the compositor does no drawing of its own in this case, there's no boost from that either.
->>>>>>>>
->>>>>>>>
->>>>>>>>> I'd perhaps recommend that wayland compositors, in cases where only a
->>>>>>>>> single layer is changing, not try to be clever and just push the
->>>>>>>>> update down to the kernel.
->>>>>>>> Even just for the fullscreen direct scanout case, that would require some kind of atomic KMS API extension to allow queuing multiple page flips for the same CRTC.
->>>>>>>>
->>>>>>>> For other cases, this would also require a mechanism to cancel a pending atomic commit, for when another surface update comes in before the compositor's deadline, which affects the previously single updating surface as well.
->>>>>>>>
->>>>>>> Well, in the end, there is more than one compositor out there.. and if
->>>>>>> some wayland compositors are going this route, they can also implement
->>>>>>> the same mechanism in userspace using the sysfs that devfreq exports.
->>>>>>>
->>>>>>> But it sounds simpler to me for the compositor to have a sort of "game
->>>>>>> mode" for fullscreen games.. I'm less worried about UI interactive
->>>>>>> workloads, boosting the GPU freq upon sudden activity after a period
->>>>>>> of inactivity seems to work reasonably well there.
->>>>>> At least AMD hardware is already capable of flipping frames on GPU events like finishing rendering (or uploading etc).
->>>>>>
->>>>>> By waiting in userspace on the CPU before send the frame to the hardware you are completely killing of such features.
->>>>>>
->>>>>> For composing use cases that makes sense, but certainly not for full screen applications as far as I can see.
->>>>> Even for fullscreen, the current KMS API only allows queuing a single page flip per CRTC, with no way to cancel or otherwise modify it. Therefore, a Wayland compositor has to set a deadline for the next refresh cycle, and when the deadline passes, it has to select the best buffer available for the fullscreen surface. To make sure the flip will not miss the next refresh cycle, the compositor has to pick an idle buffer. If it picks a non-idle buffer, and the pending rendering does not finish in time for vertical blank, the flip will be delayed by at least one refresh cycle, which results in visible stuttering.
->>>>>
->>>>> (Until the deadline passes, the Wayland compositor can't even know if a previously fullscreen surface will still be fullscreen for the next refresh cycle)
->>>>
->>>> Well then let's extend the KMS API instead of hacking together workarounds in userspace.
->>>
->>> That's indeed a possible solution for the fullscreen / direct scanout case.
->>>
->>> Not for the general compositing case though, since a compositor does not want to composite multiple output frames per display refresh cycle, so it has to make sure the one frame hits the target.
->>
->> I think solving the fullscreen game case is sufficient enough forward
->> progress to be useful.  And the results I'm seeing[1] are sufficiently
->> positive to convince me that dma-fence deadline support is the right
->> thing to do.
-
-I'm not questioning that this approach helps when there's a direct chain of fences from the client to the page flip. I'm pointing out there will not always be such a chain.
-
-
->> But maybe the solution to make this also useful for mutter
-
-It's not just mutter BTW. I understand gamescope has been doing this for some time already. And there seems to be consensus among developers of Wayland compositors that this is needed, so I expect at least all the major compositors to do this longer term.
-
-
->> is to, once we have deadline support, extend it with an ioctl to the
->> dma-fence fd so userspace can be the one setting the deadline.
-
-I was thinking in a similar direction.
-
-> atomic ioctl with TEST_ONLY and SET_DEADLINES? Still gives mutter the
-> option to bail out with an old frame if it's too late?
-
-This is a bit cryptic though, can you elaborate?
-
-
-> Also mutter would need to supply the deadline, because we need to fit the
-> rendering in still before the actual flip. So gets a bit quirky maybe ...
-
-That should be fine. mutter is already keeping track of how long its rendering takes.
-
-
--- 
-Earthling Michel Dänzer               |               https://redhat.com
-Libre software enthusiast             |             Mesa and X developer
+T24gNy8yOC8yMDIxIDg6NTkgUE0sIEphc29uIEd1bnRob3JwZSB3cm90ZToNCj4gT24gV2VkLCBK
+dWwgMjgsIDIwMjEgYXQgMDE6Mzg6NThQTSArMDAwMCwgV2FuZywgWmhpIEEgd3JvdGU6DQo+DQo+
+PiBJIGd1ZXNzIHRob3NlIEFQSXMgeW91IHdlcmUgdGFsa2luZyBhYm91dCBhcmUgS1ZNLW9ubHku
+IEZvciBvdGhlcg0KPj4gaHlwZXJ2aXNvcnMsIGUuZy4gWGVuLCBBUkNOIGNhbm5vdCB1c2UgdGhl
+IEFQSXMgeW91IG1lbnRpb25lZC4gTm90DQo+PiBzdXJlIGlmIHlvdSBoYXZlIGFscmVhZHkgbm90
+aWNlZCB0aGF0IFZGSU8gaXMgS1ZNLW9ubHkgcmlnaHQgbm93Lg0KPiBUaGVyZSBpcyB2ZXJ5IGxp
+dHRsZSBoYXJkIGNvbm5lY3Rpb24gYmV0d2VlbiBWRklPIGFuZCBLVk0sIHNvIG5vLCBJDQo+IGRv
+bid0IHRoaW5rIHRoYXQgaXMgY29tcGxldGVseSB0cnVlLg0KPg0KPiBJbiBhbiBldmVudCwgYW4g
+aW4tdHJlZSB2ZXJzaW9uIG9mIG90aGVyIGh5cGVydmlzb3Igc3VwcG9ydCBmb3IgR1ZUDQo+IG5l
+ZWRzIHRvIGdvIHRocm91Z2ggZW5hYmxpbmcgVkZJTyBzdXBwb3J0IHNvIHRoYXQgdGhlIGV4aXN0
+aW5nIEFQSQ0KPiBtdWx0aXBsZXhlcnMgd2UgaGF2ZSBjYW4gYmUgdXNlZCBwcm9wZXJseSwgbm90
+IGFkZGluZyBhIHNoaW0gbGF5ZXINCj4gdHJ5aW5nIHRvIHJlY3JlYXRlIFZGSU8gaW5zaWRlIGEg
+R1BVIGRyaXZlci4NCg0KV2Ugd2VyZSBkZWxpdmVyaW5nIHRoZSBwcmVzZW50YXRpb24gb2YgR1ZU
+LWcgaW4gWGVuIHN1bW1pdCAyMDE4IGFuZCB3ZSANCndlcmUgdGhpbmtpbmcgYW5kIHRhbGtpbmcg
+YWJvdXQgc3VwcG9ydGluZyBWRklPIGluIFhlbiBkdXJpbmcgdGhlIA0KcHJlc2VudGF0aW9uICh0
+aGUgdmlkZW8gY2FuIGJlIGZvdW5kIGZyb20gWW91dHViZSkuIEJ1dCB3ZSBkaWRuJ3Qgc2VlIA0K
+YW55IG1vdGl2aWF0aW9uIGZyb20gdGhlIFhlbiBjb21tdW5pdHkgdG8gYWRvcHQgaXQuDQoNCklm
+IHBlb3BsZSB0YWtlIGEgbG9vayBpbnRvIHRoZSBjb2RlIGluIFFFTVUsIGluIHRoZSBQQ0ktcGFz
+c3Rocm91Z2ggDQpwYXJ0LCBYZW4gaXMgYWN0dWFsbHkgbm90IHVzaW5nIFZGSU8gZXZlbiBub3dh
+ZGF5cy4gV2Ugd291bGQgYmUgZ2xhZCB0byANCnNlZSBzb21lb25lIGNhbiBpbmZsdWVuY2Ugb24g
+dGhhdCBwYXJ0LCBlc3BlY2ljYWxseSBtYWtpbmcgYWxsIHRoZSANCmluLWtlcm5lbCBoeXBlcnZp
+c29yIHRvIHVzZSBWRklPIGluIFBDSS1wYXNzdGhyb3VnaCBhbmQgc3VwcG9ydGluZyBtZGV2LiAN
+ClRoYXQgd291bGQgYmUgYSBodWdlIGJlbmVmaXQgZm9yIGFsbCB0aGUgdXNlcnMuDQoNCj4+IEdW
+VC1nIGlzIGRlc2lnbmVkIGZvciBtYW55IGh5cGVydmlzb3JzIG5vdCBvbmx5IEtWTS4gSW4gdGhl
+IGRlc2lnbiwNCj4+IHdlIGltcGxlbWVudGVkIGFuIGFic3RyYWN0aW9uIGxheWVyIGZvciBkaWZm
+ZXJlbnQgaHlwZXJ2aXNvcnMuIFlvdQ0KPj4gY2FuIGNoZWNrIHRoZSBsaW5rIGluIHRoZSBwcmV2
+aW91cyBlbWFpbCB3aGljaCBoYXMgYW4gZXhhbXBsZSBvZiBob3cNCj4+IHRoZSBNUFQgbW9kdWxl
+ICJ4ZW5ndCIgc3VwcG9ydHMgR1ZULWcgcnVubmluZyB1bmRlciBYZW4uICBGb3INCj4+IGV4YW1w
+bGUsIGluamVjdGluZyBhIG1zaSBpbiBWRklPL0tWTSBpcyB2aWEgcGxheWluZyB3aXRoDQo+PiBl
+dmVudGZkLiBCdXQgaW4gWGVuLCB3ZSBuZWVkIHRvIGlzc3VlIGEgaHlwZXJjYWxsIGZyb20gRG9t
+MC4NCj4gVGhpcyBpcyBvYnZpb3VzbHkgYmFkIGRlc2lnbiwgWGVuIHNob3VsZCBwbHVnIGludG8g
+dGhlIHN0YW5kYXJkaXplZA0KPiBldmVudGZkIHNjaGVtZSBhcyB3ZWxsIGFuZCB0cmlnZ2VyIGl0
+cyBoeXBlcmNhbGwgdGhpcyB3YXkuIFRoZW4gaXQgY2FuDQo+IGludGVncmF0ZSB3aXRoIHRoZSBl
+eGlzdGluZyBWRklPIGludGVycnVwdCBhYnN0cmFjdGlvbiBpbmZyYXN0cnVjdHVyZS4NCj4NCj4+
+IG90aGVycywgbGlrZSBxdWVyeWluZyBtYXBwaW5ncyBiZXR3ZWVuIEdGTiBhbmQgSEZOLg0KPiBU
+aGlzIHNob3VsZCBiZSBkb25lIHRocm91Z2ggVkZJTyBjb250YWluZXJzLCB0aGVyZSBpcyBub3Ro
+aW5nIEtWTQ0KPiBzcGVjaWZpYyB0aGVyZS4NCj4NCj4+IEFzIHlvdSBjYW4gc2VlLCB0byBzdXJ2
+aXZlIGZyb20gdGhpcyBzaXR1YXRpb24sIHdlIGhhdmUgdG8gcmVseSBvbg0KPj4gYW4gYWJzdHJh
+Y3Rpb24gbGF5ZXIgc28gdGhhdCB3ZSBjYW4gcHJldmVudCBpbnRyb2R1Y2luZyBjb2RpbmcNCj4+
+IGJsb2NrcyBsaWtlIGluIHRoZSBjb3JlIGxvZ2ljOg0KPiBObywgeW91IGhhdmUgdG8gZml4IHRo
+ZSBhYnN0cmFjdGlvbnMgd2UgYWxyZWFkeSBoYXZlIHRvIHN1cHBvcnQgdGhlDQo+IG1hdHJpeCBv
+ZiB0aGluZ3MgeW91IGNhcmUgYWJvdXQuIElmIHRoaXMgY2FuJ3QgYmUgZG9uZSB0aGVuIG1heWJl
+IHdlDQo+IGNhbiBhZGQgbmV3IGFic3RyYWN0aW9ucywgYnV0IGFic3RyYWN0aW9ucyBsaWtlIHRo
+aXMgYWJzb3VsdGVseSBzaG91bGQNCj4gbm90IGJlIGRvbmUgaW5zaWRlIGRyaXZlcnMuDQo+DQo+
+IEphc29uDQoNClRoYXQncyBhIGdvb2QgcG9pbnQgYW5kIHdlIHdlcmUgYWN0dWFsbHkgdGhpbmtp
+bmcgYWJvdXQgdGhpcyBiZWZvcmUgYW5kIA0KSSBiZWxpZXZlIHRoYXQncyB0aGUgY29ycmVjdCBk
+aXJlY3Rpb24uIEJ1dCBqdXN0IGxpa2UgdGhlIHNpdHVhdGlvbiANCm1lbnRpb25lZCBhYm92ZSwg
+aXQgd291bGQgYmUgbmljZSBpZiBwZW9wbGUgY2FuIHJlYWxseSBwdXQgYSBncmVhdCANCmluZmx1
+ZW5jZSBvbiBhbGwgaW4ta2VybmVsIGh5cGVydmlzb3JzIHRvIHVzZSBWRklPIHdoaWNoIGNhbiBy
+ZWFsbHkgDQpiZW5lZml0IGFsbCB0aGUgdXNlcnMuDQoNCkZvciBub3csIHdlIGFyZSBqdXN0IGdv
+aW5nIHRvIHRha2UgY2hyaXN0b3BoJ3MgcGF0Y2hlcy4NCg0KWmhpDQoNCg==
