@@ -2,129 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4763DA005
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C743DA009
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235383AbhG2JEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234972AbhG2JEG (ORCPT
+        id S235387AbhG2JFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:05:03 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3517 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234972AbhG2JFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:04:06 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DDAC061757;
-        Thu, 29 Jul 2021 02:04:03 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id y200so6133764iof.1;
-        Thu, 29 Jul 2021 02:04:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=obmNjwOpYpNIrk2WRzS0fBK8P38CDDlYfyhz5quNEUc=;
-        b=QSCmSlY8mauv1ESXdaQmS8cIJikGHlCYwi9+ErHMzezvQ6/1Vg18aHSiWFuH+JFCka
-         6jursxSH5n2F6Kufg9Vt44FNFSVaBIkd8LHJf2Mb7TNJo6/Q9ObBLpWdnmKbvK2snGpD
-         lbyb1Ds8qNvipV1JMNiRItVom0e49e8pe9UfLLNyzGECrSyyaqfvne/LUG83fGdv0RC+
-         ppNO252CrN9W/Fg6dNFcuxxZxuvmFiqcuhp91h5O67Cw2peWBg/qfVmhMWJULk6CtiTK
-         YRdd1k1TaGW+j/3UVx+4CBXdXqKEdmpVjmCTrFFZF95HhA0JR2FmpehD6rDB0Qho5Gtj
-         iQ5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=obmNjwOpYpNIrk2WRzS0fBK8P38CDDlYfyhz5quNEUc=;
-        b=HnKxgU9zDoDG6RYTZ/kJCHK0KSEKIfENW3hqQ9v2/3f8Hdieepqu5MqgeUnQ3Fr/8/
-         VknT8kisKbazhfpk4dnAW00lwKmiBlbwCuzVyI8z5sZZ87y1kVbS9CWWIR2tRRoVtfkX
-         UHAOem6E6bH0N93v2YxlMQ6r8HRgmYHUPC3sWslhkUBocbu3aFYlcbDdatsQNb1/Zwt1
-         v5nuF43FQnragXOOdDmx0qKnq56HukQpdVI99nrjWkB+0xo8UKY/nBP5kch3HikaaPWJ
-         R48bHKnDU7Yt5wjtrYeLNs4BLBde+FV+vMKQJw7o0nyJxfSxUojKDdOY3PdvqWS7Jslm
-         7Sog==
-X-Gm-Message-State: AOAM530C36UGZKqH218VbeP1sN8HW2V/6/g0Y7n/xjwcg5G7/e1YWcXS
-        jU+dgU1JDi7ddu/Gf8EQMoAiEm+iK88FGdP0
-X-Google-Smtp-Source: ABdhPJwUcldzmoxgaOsLX3ceCtFrwbn0kXUzxzDaZtsezarSFjWMXXNi4Qy1x4yM4N49kPBLWpS5/A==
-X-Received: by 2002:a5d:8596:: with SMTP id f22mr3324274ioj.147.1627549442495;
-        Thu, 29 Jul 2021 02:04:02 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id o13sm1534851ilq.58.2021.07.29.02.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 02:04:01 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 582EA27C0054;
-        Thu, 29 Jul 2021 05:04:01 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 29 Jul 2021 05:04:01 -0400
-X-ME-Sender: <xms:_24CYYQwA5VkM3dtD8jp2S0WmkW4K7nCbiSIsapjAPmLhEcq_SkOhw>
-    <xme:_24CYVxcmMnmCFpiUqk_gmAig20Z1xZul0GMjrN53C-hh-_WmuNgYLLYzG94v3z8i
-    A2akz0FxFFgbBXtuQ>
-X-ME-Received: <xmr:_24CYV1TCp1uRT0LV7VcnB4c-JZnMMI1fbpFibdejBtYH9rBSn7eqsWnqt-VRw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedugddtjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
-    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvg
-X-ME-Proxy: <xmx:_24CYcB46uj77qGu26MhD67VBi9ZsEVR7hKwbuRcb0URoPqLQp9V8Q>
-    <xmx:_24CYRiuleEdv2jnMRMRdL85SA0QpyndiqsUoGr-mgLVIuaQ2tpH4g>
-    <xmx:_24CYYpMK1ZHlLtWE0y4bCFUe_WfI-fLW3Cj3hhHdAECCFGaHuSb7g>
-    <xmx:AW8CYcW-bQM5nkQqAT3FGmI8jqJAA3od-RE6Wu5RaW2kgPE9_fzaLg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jul 2021 05:03:59 -0400 (EDT)
-Date:   Thu, 29 Jul 2021 17:03:37 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Rui Wang <wangrui@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, hev <r@hev.cc>
-Subject: Re: [RFC PATCH] locking/atomic: arch/mips: Fix
- atomic{_64,}_sub_if_positive
-Message-ID: <YQJu6fTIpeuGV+UX@boqun-archlinux>
-References: <20210729082549.144559-1-wangrui@loongson.cn>
+        Thu, 29 Jul 2021 05:05:02 -0400
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gb4B517Xdz6FFxM;
+        Thu, 29 Jul 2021 16:55:41 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 11:04:57 +0200
+Received: from [10.47.27.169] (10.47.27.169) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 29 Jul
+ 2021 10:04:56 +0100
+Subject: Re: [PATCH v2 24/24] iommu: Only log strictness for DMA domains
+To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <will@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <suravee.suthikulpanit@amd.com>,
+        <baolu.lu@linux.intel.com>, <dianders@chromium.org>
+References: <cover.1627468308.git.robin.murphy@arm.com>
+ <b2da9ba999b54acded9198cf92cf9b7d0fce1b45.1627468310.git.robin.murphy@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <d679940d-6781-c850-7eb1-07b7b0864d2a@huawei.com>
+Date:   Thu, 29 Jul 2021 10:04:31 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729082549.144559-1-wangrui@loongson.cn>
+In-Reply-To: <b2da9ba999b54acded9198cf92cf9b7d0fce1b45.1627468310.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.27.169]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Jul 29, 2021 at 04:25:49PM +0800, Rui Wang wrote:
-> This looks like a typo and that caused atomic64 test failed.
+On 28/07/2021 16:58, Robin Murphy wrote:
+> When passthrough is enabled, the default strictness policy becomes
+> irrelevant, since any subsequent runtime override to a DMA domain type
+> now embodies an explicit choice of strictness as well. Save on noise by
+> only logging the default policy when it is meaningfully in effect.
 > 
-> Signed-off-by: Rui Wang <wangrui@loongson.cn>
-> Signed-off-by: hev <r@hev.cc>
+> Signed-off-by: Robin Murphy<robin.murphy@arm.com>
 
-In your upcoming patches, please change this part to your real name.
-Here is a quote from Documentation/process/submitting-patches.rst:
-  
-	using your real name (sorry, no pseudonyms or anonymous contributions.)
+FWIW, small comment below,
 
-Regards,
-Boqun
+Reviewed-by: John Garry <john.garry@huawei.com>
 
 > ---
->  arch/mips/include/asm/atomic.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   drivers/iommu/iommu.c | 9 +++++----
+>   1 file changed, 5 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
-> index 95e1f7f3597f..a0b9e7c1e4fc 100644
-> --- a/arch/mips/include/asm/atomic.h
-> +++ b/arch/mips/include/asm/atomic.h
-> @@ -206,7 +206,7 @@ ATOMIC_OPS(atomic64, xor, s64, ^=, xor, lld, scd)
->   * The function returns the old value of @v minus @i.
->   */
->  #define ATOMIC_SIP_OP(pfx, type, op, ll, sc)				\
-> -static __inline__ int arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
-> +static __inline__ type arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
->  {									\
->  	type temp, result;						\
->  									\
-> -- 
-> 2.32.0
-> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index be399d630953..87d7b299436e 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -144,10 +144,11 @@ static int __init iommu_subsys_init(void)
+>   		(iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
+>   			"(set via kernel command line)" : "");
+>   
+> -	pr_info("DMA domain TLB invalidation policy: %s mode %s\n",
+> -		iommu_dma_strict ? "strict" : "lazy",
+> -		(iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
+> -			"(set via kernel command line)" : "");
+> +	if (!iommu_default_passthrough())
+
+I suppose that you could also do an early return to save indenting...
+
+
+> +		pr_info("DMA domain TLB invalidation policy: %s mode %s\n",
+> +			iommu_dma_strict ? "strict" : "lazy",
+> +			(iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
+> +				"(set via kernel command line)" : "");
+>   
+>   	return 0;
+>   }
+
