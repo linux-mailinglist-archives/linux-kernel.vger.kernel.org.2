@@ -2,193 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B326B3D9C2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4733D9C2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbhG2Ddf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 23:33:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28288 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233588AbhG2Ddd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233590AbhG2Ddd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 28 Jul 2021 23:33:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627529610;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FOYTvQHscc3bjRMvDIJC+iI00m3LtGOUi4Tkr7sZCKY=;
-        b=NciGjeOCz0RT/UfS9SC5Gx2RMJwCm/ugHqzFgoBHi73dlejEFe3vu9lF/2kmM3hOgRD+KY
-        tTZYm8XgbV4LxRoUhY/7LMx2wq7Vrh30OnMM1bo6BIkQKISwYJhlIEZml86JHfxifgnbGT
-        TxO0MFfFXl3r//6J3G7/Zk86NzCB0Vg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-yuJPj04POHymQAhdb0bKLA-1; Wed, 28 Jul 2021 23:33:28 -0400
-X-MC-Unique: yuJPj04POHymQAhdb0bKLA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D63F5185302A;
-        Thu, 29 Jul 2021 03:33:26 +0000 (UTC)
-Received: from T590 (ovpn-13-29.pek2.redhat.com [10.72.13.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 62A491017CE5;
-        Thu, 29 Jul 2021 03:33:16 +0000 (UTC)
-Date:   Thu, 29 Jul 2021 11:33:19 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org,
-        David Jeffery <djeffery@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: New warning in nvme_setup_discard
-Message-ID: <YQIhfwP2z+DGWOxV@T590>
-References: <4729812.CpyZKHjjVO@natalenko.name>
- <3180854.nXyytZ0Y3r@natalenko.name>
- <YQF9YRSdRc+eVD1c@T590>
- <4560968.zrxKzTJTGe@natalenko.name>
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:38544 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233297AbhG2Ddb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 23:33:31 -0400
+Received: by mail-pl1-f180.google.com with SMTP id e21so5280211pla.5;
+        Wed, 28 Jul 2021 20:33:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qlyja0KAkelpC84aM5cKFuhAyqpYkxiAgQFVEIfOoM8=;
+        b=EMCB8wjkDY9iJXW5bFcWm3KASTXKhH0A+d2VA2iBBBdbmM2g+dNxQSR72Cd29jFKCf
+         jzCKWsRZJcalnRB61dU1JToqQmsPyslUqzkwZgdElMBZSdN2kp+HiU70RybT0A6HH9kA
+         szgW/10zhw9tjG9WcmxMKXSF/LGNqzjL4OgN0Qo0FN+05gYBks7S60ryRxOmmtaRtcjh
+         BIVhyDOjVcY4guJmG2CVdwZZNMGG83cIBy+zZe9FOuhzjMRrNrjB++byVKEiBC/8XuE9
+         rX+VFPtSOZZI6WKXv65q9wR+VjufRq7spAdfX8oUGCuR9PYnDdjxfRGrBN3DCpKrXL1r
+         fjsw==
+X-Gm-Message-State: AOAM530ryZXfhhGhyeb4khaHNiwGJA1SLAjUbKetmaG0LYfyYZHC8ZqW
+        Cg0fArFYuK9Xp8YL9JLm3xrELCTGItU=
+X-Google-Smtp-Source: ABdhPJxYYwTYCsxJqnS/i6+sYdPfGYtOw6Tf7fdiIK7614DRD9S50zWhQKo0NlYT9oFjTI3yyAkvgw==
+X-Received: by 2002:a62:191:0:b029:347:7bc9:a94c with SMTP id 139-20020a6201910000b02903477bc9a94cmr2984937pfb.20.1627529607236;
+        Wed, 28 Jul 2021 20:33:27 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:9eeb:60dc:7a3c:6558? ([2601:647:4000:d7:9eeb:60dc:7a3c:6558])
+        by smtp.gmail.com with ESMTPSA id q9sm1524993pgt.65.2021.07.28.20.33.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 20:33:26 -0700 (PDT)
+Subject: Re: [PATCH 3/4] kunit: Add support for suite initialization and
+ cleanup
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
+        linux-kernel@vger.kernel.org,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Yanko Kaneti <yaneti@declera.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+References: <20210723212353.896343-1-bvanassche@acm.org>
+ <20210723212353.896343-4-bvanassche@acm.org>
+ <CAFd5g45X2WhZD++XjRFi=k0HvLonFDCFdC7zRQ9igVhzXQ5T3A@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <89b89a09-ee79-6ce0-5ae1-8d863e9a7eb3@acm.org>
+Date:   Wed, 28 Jul 2021 20:33:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <CAFd5g45X2WhZD++XjRFi=k0HvLonFDCFdC7zRQ9igVhzXQ5T3A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4560968.zrxKzTJTGe@natalenko.name>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 06:38:36PM +0200, Oleksandr Natalenko wrote:
-> Hello.
+On 7/27/21 2:26 PM, Brendan Higgins wrote:
+> On Fri, Jul 23, 2021 at 2:24 PM Bart Van Assche <bvanassche@acm.org> wrote:
+>>
+>> Cc: Brendan Higgins <brendanhiggins@google.com>
+>> Cc: Bodo Stroesser <bostroesser@gmail.com>
+>> Cc: Martin K. Petersen <martin.petersen@oracle.com>
+>> Cc: Yanko Kaneti <yaneti@declera.com>
 > 
-> On středa 28. července 2021 17:53:05 CEST Ming Lei wrote:
-> > Can you collect debug log by applying the following patch against the
-> > last one?
+> Please also CC davidgow@google.com, skhan@linuxfoundation.org,
+> kunit-dev@googlegroups.com, and linux-kselftest@vger.kernel.org for
+> KUnit changes in the future.
+
+Will do.
+
+>> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 > 
-> Yes, please see below.
+> This seems pretty sensible.
 > 
-> > diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> > index 8780e4aa9df2..fbd8a68c619b 100644
-> > --- a/drivers/nvme/host/core.c
-> > +++ b/drivers/nvme/host/core.c
-> > @@ -828,6 +828,24 @@ static inline void nvme_setup_flush(struct nvme_ns *ns,
-> > cmnd->common.nsid = cpu_to_le32(ns->head->ns_id);
-> >  }
-> > 
-> > +static inline void blk_dump_rq(const struct request *req)
-> > +{
-> > +	struct bio *bio;
-> > +	int i = 0;
-> > +
-> > +	printk("dump req %p(f:%x, seg: %d)\n", req, req->cmd_flags,
-> > +			req->nr_phys_segments);
-> > +
-> > +	__rq_for_each_bio(bio, req) {
-> > +		printk("%d-%p: %hx/%hx %llu %u\n",
-> > +                       i++, bio,
-> > +                       bio->bi_flags, bio->bi_opf,
-> > +                       (unsigned long long)bio->bi_iter.bi_sector,
-> > +                       bio->bi_iter.bi_size>>9);
-> > +	}
-> > +}
-> > +
-> > +
-> >  static blk_status_t nvme_setup_discard(struct nvme_ns *ns, struct request
-> > *req, struct nvme_command *cmnd)
-> >  {
-> > @@ -868,6 +886,8 @@ static blk_status_t nvme_setup_discard(struct nvme_ns
-> > *ns, struct request *req, }
-> > 
-> >  	if (WARN_ON_ONCE(n != segments)) {
-> > +		printk("%s: ranges %u segments %u\n", __func__, n, segments);
-> > +		blk_dump_rq(req);
-> >  		if (virt_to_page(range) == ns->ctrl->discard_page)
-> >  			clear_bit_unlock(0, &ns->ctrl->discard_page_busy);
-> >  		else
-> 
-> ```
-> WARNING: CPU: 17 PID: 821 at drivers/nvme/host/core.c:868 nvme_setup_discard+0x1c6/0x220
-> …
-> CPU: 17 PID: 821 Comm: kworker/17:1H Not tainted 5.13.0-pf4 #1
-> Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIOS 3601 05/26/2021
-> Workqueue: kblockd blk_mq_run_work_fn
-> RIP: 0010:nvme_setup_discard+0x1c6/0x220
-> Code: 8b a0 40 0b 00 00 4c 2b 25 f7 ff d7 00 49 c1 fc 06 49 c1 e4 0c 4c 03 25 f8 ff d7 00 4c 89 e5 48 85 d2 0f 85 9b fe ff ff 31 d2 <0f> 0b 48 c7 c6 e0 a8 10 8b 41 0f b7 cd 48 c7 c7 af 09 40 8b e8 14
-> RSP: 0018:ffffafa884517bf0 EFLAGS: 00010297
-> RAX: ffff91602f5b20d0 RBX: ffff915e05743c00 RCX: 0000000000080000
-> RDX: 000000000000000f RSI: 0000000028445c00 RDI: 000000000000000f
-> RBP: ffff91602f5b2000 R08: 000000000b366000 R09: ffff91602f5b2000
-> R10: 000000000000002d R11: fefefefefefefeff R12: ffff91602f5b2000
-> R13: 000000000000000e R14: ffff915e18c77000 R15: ffff915e18c77148
-> FS:  0000000000000000(0000) GS:ffff91650ee40000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00001c90b36879a8 CR3: 000000010d18c000 CR4: 0000000000350ee0
-> Call Trace:
->  nvme_setup_cmd+0x2e4/0x6a0
->  nvme_queue_rq+0x79/0xc90
->  blk_mq_dispatch_rq_list+0x15c/0x810
->  __blk_mq_do_dispatch_sched+0xca/0x320
->  __blk_mq_sched_dispatch_requests+0x14d/0x190
->  blk_mq_sched_dispatch_requests+0x2f/0x60
->  blk_mq_run_work_fn+0x43/0xc0
->  process_one_work+0x24e/0x430
->  worker_thread+0x54/0x4d0
->  kthread+0x1b3/0x1e0
->  ret_from_fork+0x22/0x30
-> ---[ end trace bd51917eae1d7201 ]---
-> nvme_setup_discard: ranges 15 segments 14
-> dump req 000000002c6a085b(f:3, seg: 14)
-> 0-000000002c3297c7: f80/3 675773440 1024
-> 1-0000000098edb2a8: b80/3 188319744 1024
-> 2-00000000f58e3b18: b80/3 675775488 1024
-> 3-00000000f6670c5a: b80/3 188129280 2048
-> 4-00000000ea371a88: b80/3 675585024 2048
-> 5-00000000e9cec043: b80/3 188140544 2048
-> 6-000000006e1126e6: b80/3 675596288 2048
-> 7-000000009466f937: b80/3 188327936 2048
-> 8-000000003c9e2ccd: b80/3 675783680 2048
-> 9-00000000ab322c68: b80/3 188329984 2048
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 
-188329984 = 188327936 + 2048
+Thanks for the review!
 
-> 10-00000000eb2b3fb6: b80/3 675785728 2048
-
-675785728 = 675783680 + 2048
-
-Seems the adjacent bios are cut by coming discard
-range.
-
-Looks it isn't mature to support mixed discard IO merge(
-traditional io merge vs. multi-range merge), I will post
-the previous patch for fixing this issue.
-
-> blk_update_request: I/O error, dev nvme1n1, sector 675773440 op 0x3:(DISCARD) flags 0x0 phys_seg 14 prio class 0
-> nvme_setup_discard: ranges 45 segments 48
-...
-> nvme_setup_discard: ranges 73 segments 75
-...
-> nvme_setup_discard: ranges 5 segments 6
-...
-> nvme_setup_discard: ranges 2 segments 3
-...
-> nvme_setup_discard: ranges 2 segments 3
-...
-> nvme_setup_discard: ranges 2 segments 3
-...
-> nvme_setup_discard: ranges 48 segments 49
-...
-> nvme_setup_discard: ranges 9 segments 10
-
-For the above(ranges < segments), that should be caused by
-blk_recalc_rq_segments(), which can be solved by switching to
-rq_for_each_discard_range() for discard io.
-
-
-Thanks,
-Ming
-
+Bart.
