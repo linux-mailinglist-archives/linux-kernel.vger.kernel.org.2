@@ -2,178 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8263DA84F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F7A3DA882
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhG2QCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233234AbhG2QCK (ORCPT
+        id S234376AbhG2QJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:09:52 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19075 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232963AbhG2QF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:02:10 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3A0C06179E;
-        Thu, 29 Jul 2021 09:02:04 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id jm13so3639348qvb.5;
-        Thu, 29 Jul 2021 09:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:to:cc
-         :subject:from:references:in-reply-to;
-        bh=crl+m4xpN2rQpodK9IBboDzgVn58oWozCut4cofRiKA=;
-        b=pLGZ1EOkiUZRuQU/Do9j/kxjA/lCZMffc0hvACY1Zge+1zX8hdK1Fx7UsnIGykgq/o
-         /G34St8ykVgFj0QntTTbLoIY4Vzw8fNX4mB/0PkWz8oR2G9hmFsWD+6DVTqHWmyPkGvM
-         /nGhNNRebpfn0Sbc/BPRmUmmV2HZUQt1R4wXyLbzUywSzvmpoyb7faXyEGzXxAeP5HSz
-         SxGU22wVHyxE+q5eqpJbe22P1NWroAS2hd4XGrr2KdVewgaeDbD0chche8p/5O5niCeV
-         XdYfwoTz6B2nFOoo1CUF7EBciyUaPcFzmFTyy8aOI5daH3OcFNS/UbfiyWisUIryIDs8
-         grLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:to:cc:subject:from:references:in-reply-to;
-        bh=crl+m4xpN2rQpodK9IBboDzgVn58oWozCut4cofRiKA=;
-        b=s8FLr1HfcLmWSVLoRZ/wKoEyEzZjUytr0uVQVZ25OQ0q0zXrMjqpWgCFtZ1MdAUjFZ
-         6j0CJkS/ehb4+sgvuiTTMHBBq+SwcWeocv5IZgbwmL0LPyXB34yn/rjw/uBFq3PUTvog
-         dtutsnQmaQzgevLFQNIb86FqDI41SSCUAHpnYgmSSEbIn1Y0qC/JgXVl++VGnE5wCIM0
-         u2xCFKs7Pa1NvkOZWyLpgtiuiiOnBdyEKyBTP3QyvyPEfu4WEVuFU8ajhz9pslc0Tcm9
-         Y9R8gI08WfNuHGuNKsPMb6GRdZnCoEfs7VoiuYoV9tKajrdoIj74l5GKUcdaYnr59c8s
-         qSbg==
-X-Gm-Message-State: AOAM531KcgJkb+ui1ZBGWDc53oQB8EfZkW0UneIP2XMKnMZCmLU4Yh2z
-        IOXAw7jkKZ6tV2PXaz+Xl3c=
-X-Google-Smtp-Source: ABdhPJzx2LYBdpKuzt3oweT6Zevzoqq/lpFIJVehrZQ8vtNlnak8IOgeE5kiL2TxoEiusQxeGMMG4A==
-X-Received: by 2002:a0c:c3d1:: with SMTP id p17mr5969024qvi.44.1627574523531;
-        Thu, 29 Jul 2021 09:02:03 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id 6sm1983547qkv.115.2021.07.29.09.02.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 09:02:02 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 29 Jul 2021 12:02:01 -0400
-Message-Id: <CD5R0LBMZ65W.29NU0NCABDJT7@shaak>
-To:     "Peter Rosin" <peda@axentia.se>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v6 08/13] iio: afe: rescale: reduce risk of integer
- overflow
-From:   "Liam Beguin" <liambeguin@gmail.com>
-References: <20210721030613.3105327-1-liambeguin@gmail.com>
- <20210721030613.3105327-9-liambeguin@gmail.com>
- <9e0e4398-873e-b5c0-0f0c-50a186ed2228@axentia.se>
- <CD4C37PEMPOM.91UZ60Q6534Q@shaak>
- <1a6e4851-9119-f524-76ff-a31ef0db8988@axentia.se>
-In-Reply-To: <1a6e4851-9119-f524-76ff-a31ef0db8988@axentia.se>
+        Thu, 29 Jul 2021 12:05:59 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TG43E9006711;
+        Thu, 29 Jul 2021 12:05:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=+hvYv+gTA03BfCESrF6+SKmI0tlkNnXdZDWckobVI8M=;
+ b=Tprljk8GllmYyJd4By/GA+4co1zMZH9JEk3PMJsgxnKJmdh3Fy+iXB08Ffv/fSVC/SFW
+ rmsW2NaoFoTM0JuBVJFVvD3B+igYsWZXjFysUFlZ2sLHmKoItKLBLod24j5WDq6wxmCD
+ AzacmVBatkTnbcn7eSFkgaW180GNtOl8a96S3wBFrG+sDRXJxK5BQs95iU5A1raczhpF
+ 2Nh2wmicFFIgHqhXu0/2nDLjJFr5OT4QMBZK4/5qm+0JcxWQoVrmrSnwxB9AsDYu0MWa
+ r0XNoVzrL/pMsKTfC9BNVKY1LgdpgCedwll4LOdm5dk18lLHD0m3gBrvKndcvNtYvSUz Dg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a3shafnqw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 12:05:12 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TG4Jg9011471;
+        Thu, 29 Jul 2021 12:05:12 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a3shafnpq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 12:05:11 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TG0BOM018534;
+        Thu, 29 Jul 2021 16:05:10 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 3a235xs9c2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 16:05:09 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TG56Uj22151634
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jul 2021 16:05:06 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 296BFA4075;
+        Thu, 29 Jul 2021 16:05:06 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CBEB9A4066;
+        Thu, 29 Jul 2021 16:05:05 +0000 (GMT)
+Received: from osiris (unknown [9.145.0.186])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 29 Jul 2021 16:05:05 +0000 (GMT)
+Date:   Thu, 29 Jul 2021 18:05:04 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH] kcsan: use u64 instead of cycles_t
+Message-ID: <YQLRsNjn/lQwiIcl@osiris>
+References: <20210729142811.1309391-1-hca@linux.ibm.com>
+ <CANpmjNM=rSFwmJCEq6gxHZBdYKVZas4rbnd2gk8GCAEjiJ_5UQ@mail.gmail.com>
+ <20210729155834.GX4397@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210729155834.GX4397@paulmck-ThinkPad-P17-Gen-1>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: qTIWVnuHtf-8duyggWgGst_ghBh7F0Sj
+X-Proofpoint-GUID: 7OxKO8CAHGaWRanJ6MkPTxV7gmUbu9bW
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_12:2021-07-29,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ impostorscore=0 mlxlogscore=939 phishscore=0 priorityscore=1501
+ suspectscore=0 mlxscore=0 spamscore=0 clxscore=1011 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Jul 28, 2021 at 3:47 AM EDT, Peter Rosin wrote:
-> On 2021-07-28 02:07, Liam Beguin wrote:
-> > On Fri Jul 23, 2021 at 5:17 PM EDT, Peter Rosin wrote:
-> >> On 2021-07-21 05:06, Liam Beguin wrote:
-> >>> From: Liam Beguin <lvb@xiphos.com>
-> >>>
-> >>> Reduce the risk of integer overflow by doing the scale calculation wi=
-th
-> >>> 64bit integers and looking for a Greatest Common Divider for both par=
-ts
-> >>> of the fractional value when required.
-> >>>
-> >>> Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> >>> ---
-> >>>  drivers/iio/afe/iio-rescale.c | 15 ++++++++++++---
-> >>>  1 file changed, 12 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-resc=
-ale.c
-> >>> index 6f6a711ae3ae..35fa3b4e53e0 100644
-> >>> --- a/drivers/iio/afe/iio-rescale.c
-> >>> +++ b/drivers/iio/afe/iio-rescale.c
-> >>> @@ -21,12 +21,21 @@
-> >>>  int rescale_process_scale(struct rescale *rescale, int scale_type,
-> >>>  			  int *val, int *val2)
-> >>>  {
-> >>> -	unsigned long long tmp;
-> >>> +	s64 tmp, tmp2;
-> >>> +	u32 factor;
-> >>> =20
-> >>>  	switch (scale_type) {
-> >>>  	case IIO_VAL_FRACTIONAL:
-> >>> -		*val *=3D rescale->numerator;
-> >>> -		*val2 *=3D rescale->denominator;
-> >>> +		if (check_mul_overflow(*val, rescale->numerator, (s32 *)&tmp) ||
-> >>> +		    check_mul_overflow(*val2, rescale->denominator, (s32 *)&tmp2))=
- {
-> >>> +			tmp =3D (s64)*val * rescale->numerator;
-> >>> +			tmp2 =3D (s64)*val2 * rescale->denominator;
-> >>> +			factor =3D gcd(tmp, tmp2);
-> >=20
-> > Hi Peter,
-> >=20
-> >>
-> >> Hi!
-> >>
-> >> Reiterating that gcd() only works for unsigned operands, so this is
-> >> broken for
-> >> negative values.
-> >=20
-> > Apologies, I didn't mean to make it seem like I ignored your comments. =
-I
-> > should've added a note. After you pointed out that gcd() only works for
-> > unsigned elements, I added test cases for negative values, and all test=
-s
-> > passed. I'll look into it more.
->
-> Maybe I've misread the code and gcd is in fact working for negative
-> numbers? However, I imagine it might be arch specific, so testing on
-> a single arch feels insufficient and deeper analysis is required.
->
-> However, looking at lib/math/gcd.c it certainly still looks like
-> negative values will work very poorly, and there is no macro magic
-> in include/linux/gcd.h to handle it by wrapping the core C routine.
+On Thu, Jul 29, 2021 at 08:58:34AM -0700, Paul E. McKenney wrote:
+> On Thu, Jul 29, 2021 at 04:53:10PM +0200, Marco Elver wrote:
+> > +Cc: Paul
+> > 
+> > On Thu, 29 Jul 2021 at 16:28, Heiko Carstens <hca@linux.ibm.com> wrote:
+> > >
+> > > cycles_t has a different type across architectures: unsigned int,
+> > > unsinged long, or unsigned long long. Depending on architecture this
+> > > will generate this warning:
+> > >
+> > > kernel/kcsan/debugfs.c: In function ‘microbenchmark’:
+> > > ./include/linux/kern_levels.h:5:25: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘cycles_t’ {aka ‘long unsigned int’} [-Wformat=]
+> > >
+> > > To avoid this simple change the type of cycle to u64 in
+> > > microbenchmark(), since u64 is of type unsigned long long for all
+> > > architectures.
+> > >
+> > > Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+> > 
+> > Acked-by: Marco Elver <elver@google.com>
+> > 
+> > Do you have a series adding KCSAN support for s390, i.e. would you
+> > like to keep it together with those changes?
+> > 
+> > Otherwise this would go the usual route through Paul's -rcu tree.
+> 
+> Either way, please let me know!
 
-I agree that looking at lib/math/gcd.c odd things might happen with
-negative values. I'll use the the absolute values to calculate the GCD
-as it shouldn't affect the value of factor.
+We will enable KCSAN support for s390 with the next merge window, so
+I'll queue this patch also on the s390 tree.
 
->
-> > rescale_voltage_divider_props() seems to also use gcd() with signed
-> > integers.
->
-> The type of the operands may be s32, but if you look at how those values
-> are populated, and with what they are populated, I think you will find
-> that
-> only positive scale factors are sensible for a voltage divider. Using
-> resistors with so high resistance that s32 is not enough is simply not
-> supported.
-
-That makes sense!
-
-Thanks,
-Liam
-
->
-> Cheers,
-> Peter
->
-> > Thanks,
-> > Liam
-> >=20
-> >>
-> >> Cheers,
-> >> Peter
-> >>
-> >>> +			tmp =3D div_s64(tmp, factor);
-> >>> +			tmp2 =3D div_s64(tmp2, factor);
-> >>> +		}
-> >>> +		*val =3D tmp;
-> >>> +		*val2 =3D tmp2;
-> >>>  		return scale_type;
-> >>>  	case IIO_VAL_INT:
-> >>>  		*val *=3D rescale->numerator;
-> >>>
-> >=20
-
+Thanks!
