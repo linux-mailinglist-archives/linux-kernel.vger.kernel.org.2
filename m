@@ -2,134 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E293DADEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AF83DADE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbhG2Uy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 16:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
+        id S233190AbhG2UtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 16:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhG2UyZ (ORCPT
+        with ESMTP id S229648AbhG2UtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:54:25 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60A1C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:54:21 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id h8so9978049ede.4
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:54:21 -0700 (PDT)
+        Thu, 29 Jul 2021 16:49:14 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA527C061765;
+        Thu, 29 Jul 2021 13:49:09 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id b128so4538093wmb.4;
+        Thu, 29 Jul 2021 13:49:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=usBsehgRLO8yBDJdVm0jGsDqhFCcetjnZvT1SyvVNfs=;
-        b=Gh0TbzRaoBeJs9ialmAwceZRjyffE2dVJy8s9rQSmMN40X/r1/KR2oTIZ9MfXYwJ7T
-         MpTYGfqj+0M/9T1lzVxW4l2LeNuY9HUr/PTt5WzkT283FRGVhbuUX35S5ZOeinJM7Gvg
-         juTcXgBrG0QXHOwuhh1pji9P8lze6PPZDDwi/18RWfQIOmYw3a8XzyV2RqIMbWJXpMCV
-         HawSskzdX0OG5Kyjfmy1ruwWq3K9T8ZEnjYNtyDe14jwqNro9CPrPHm5E+UTHVam4CXp
-         nZQSlZ5Pn0b9NerlvVAzd1NvBjQchg9GB+ZeMqkqiNOqezr13jKi/llk/2toT6AABeuG
-         eD9w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w7rlS789IwgWOu8sIYtR7tqkgkaO1gIx+9/djlmIsjw=;
+        b=hePKOPuIIlnAtoZEz8val+chOEf8rJ7kzDrFbr157HgnPoDVRtY059x6N91MtMpQiN
+         i3MqE5tvyQ5TAyTg9vM6mw/qSOYzsd64vgehdXnhKJbddyoOBIKDmlSBN2ac4AFGM0md
+         vfISX61P1x2bWXSzCmxafEDFt66XYhpjkINkU9Z455HUDmfwuko9p63/HAUp/bwgiHtV
+         IMQPamLEriq+766cvyptqUAYmoC3x0HifCe/YVWKcSv4v3SetAx8o83afYhdy61wJOsS
+         1FLHySZ7pOEur5JsLlXjylFwr/MNuqIHx2d0b4yoR8dExNw5gxakvCgPN0ldJK4BfIiF
+         kTaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=usBsehgRLO8yBDJdVm0jGsDqhFCcetjnZvT1SyvVNfs=;
-        b=l1/TXh21IQNoVgISFy75IldPxychA+T8ZK7SpE+F9Vnx3Z01SsQ6mNicaEMmf2eNNs
-         VScWUg/szYaXjze7MtkL/7b5fuJaIZCJ70vukFoMoMTUWcA1GhGhM+A3WAJVXrL6ArlT
-         JWkClZteSyaAWtcV4a7bR9v164skegW7q3ekJRwdEgTL6kFwDSUPb88uAsvcSUbpZqtW
-         SOM2KNxFOemKWvyON+bwUcCgZY9UvdSltVi+h1a8gSfwyC3k0i6RsCykzR6+/SJOcGBg
-         O3Tsgl6ZQpCHQ9aUAW2BnLEjuPm244X/8ZUt/56X/QWpmhR8f079K5QYIiL1I6bAG/OW
-         O7fQ==
-X-Gm-Message-State: AOAM531kl/DwcWqBHuiawVahGd9sVKIq/qaqxGYz0XmROqBAmRMtA+tG
-        1x1UbXGvk2Q1lEW7NifSKcA=
-X-Google-Smtp-Source: ABdhPJwM+7nJUOTtuEbOTqF070FuYekctKfXehp18mhoRc5l0D4NXnz42aZAWOtK3wPb/R1X9q2/Lg==
-X-Received: by 2002:a05:6402:2919:: with SMTP id ee25mr8299804edb.222.1627592060156;
-        Thu, 29 Jul 2021 13:54:20 -0700 (PDT)
-Received: from localhost.localdomain (i59F726E2.versanet.de. [89.247.38.226])
-        by smtp.gmail.com with ESMTPSA id u2sm1625307edd.82.2021.07.29.13.54.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 13:54:19 -0700 (PDT)
-From:   Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
-To:     jeyu@kernel.org, keescook@chromium.org, nathan@kernel.org,
-        ndesaulniers@google.com
-Cc:     samitolvanen@google.com, treasure4paddy@gmail.com,
-        Miroslav Benes <mbenes@suse.cz>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH v3] kallsyms: strip CLANG CFI postfix ".cfi_jt"
-Date:   Thu, 29 Jul 2021 22:53:12 +0200
-Message-Id: <20210729205317.25685-1-treasure4paddy@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CABCJKudYRiK0KcMHGHeBFcr+Smwa9EM+NFeBpMo_ePqK+zHz0w@mail.gmail.com>
-References: <CABCJKudYRiK0KcMHGHeBFcr+Smwa9EM+NFeBpMo_ePqK+zHz0w@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w7rlS789IwgWOu8sIYtR7tqkgkaO1gIx+9/djlmIsjw=;
+        b=SMtrso0D5Ol+Izz7MwR8cYxvQM03vrMnULhfTZa04AxTJZSbsXgn/IsLEqKwMo9S+d
+         qGBJ6CzH+3+nRK/8LHy1RMzhtPWrcEKOL3BC3WPzl6ai6ip6wHRVGdSrnPfdAudcgKqz
+         EKHzmHRlX/ylJqc/5BN38nusj44nI4b9NSuPzwYLX/7sAtHsf3IpVB+r91YUOYHB9cfj
+         HuWpZL+yO9kDZarHo5lyXUkGFn5Gbc7EuHDO9OlyrC8E5lwaNXO4wJkGcjyk2YUxgYA1
+         wJVtNI69QuLmI0TBw/nYIH8JrE0lgB+nKEaUAAAivd+vUs6xystC63tJ6JpQuaNBFg68
+         ZWCA==
+X-Gm-Message-State: AOAM530cZP4rvBeoeaXmBPCZZNNU8N4KecPsgS5UYjUMfVUmcN94NvQY
+        S2VtjnXl9mrQKU++vl0nVdKo96eXIVqx9zzezds=
+X-Google-Smtp-Source: ABdhPJwrrK8qfqv4dkeGpyNXWI9QqAVnY/HT978HGofFkhk6FkqxWZ2UrgZfiUdhYpi3+dyXWle5jXmbiZpkpyKssrA=
+X-Received: by 2002:a7b:cc8b:: with SMTP id p11mr296283wma.164.1627591748230;
+ Thu, 29 Jul 2021 13:49:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com> <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
+In-Reply-To: <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 29 Jul 2021 13:53:17 -0700
+Message-ID: <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Caleb Connolly <caleb.connolly@linaro.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang CFI adds a postfix ".cfi_jt" to a symbols of extern functions.
-For example this breaks syscall tracer that doesn't expect such postfix,
-so strip out the postfix from the expanded symbol.
+On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+<caleb.connolly@linaro.org> wrote:
+>
+>
+>
+> On 29/07/2021 21:24, Rob Clark wrote:
+> > On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+> > <caleb.connolly@linaro.org> wrote:
+> >>
+> >> Hi Rob,
+> >>
+> >> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
+> >> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
+> >> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
+> >
+> > *ohh*, yeah, ok, that would explain it
+> >
+> >> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
+> >> at the higher frequencies.
+> >>
+> >> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
+> >> glxgear.
+> >>
+> >> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
+> >> at the voltage the hardware needs to be stable.
+> >>
+> >> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
+> >> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
+> >>
+> >
+> > tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
+> > on CC and I added sboyd, maybe one of them knows better.
+> >
+> > In the short term, removing the higher problematic OPPs from dts might
+> > be a better option than this patch (which I'm dropping), since there
+> > is nothing stopping other workloads from hitting higher OPPs.
+> Oh yeah that sounds like a more sensible workaround than mine .
+> >
+> > I'm slightly curious why I didn't have problems at higher OPPs on my
+> > c630 laptop (sdm850)
+> Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
+>
+> Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
+> crash where yours doesn't?
 
-Signed-off-by: Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
----
+I've not heard any reports of similar issues from the handful of other
+folks with c630's on #aarch64-laptops.. but I can't really say if that
+is luck or not.
 
-Change in v3:
-  - Modified commit message to indicate fix is for Clang CFI postfix
-  - Rebased on recent patch from ndesaulniers@google.com.
-  - Fix is enabled even for CONFIG_LTO_CLANG
+Maybe just remove it for affected devices?  But I'll defer to Bjorn.
 
-Change in v2:
-  - Use existing routine in kallsyms to strip postfix ".cfi_jt" from
-    extern function name.
-  - Modified the commit message accordingly
-
- kernel/kallsyms.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 5cabe4dd3ff4..67d015854cbd 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -174,7 +174,8 @@ static bool cleanup_symbol_name(char *s)
- 	 * foo.llvm.974640843467629774. This can break hooking of static
- 	 * functions with kprobes.
- 	 */
--	if (!IS_ENABLED(CONFIG_LTO_CLANG_THIN))
-+	if (!(IS_ENABLED(CONFIG_LTO_CLANG) ||
-+	      IS_ENABLED(CONFIG_LTO_CLANG_THIN)))
- 		return false;
- 
- 	res = strstr(s, ".llvm.");
-@@ -184,16 +185,24 @@ static bool cleanup_symbol_name(char *s)
- 	}
- 
- 	/*
--	 * LLVM appends a hash to static function names when ThinLTO and CFI
--	 * are both enabled, i.e. foo() becomes
--	 * foo$707af9a22804d33c81801f27dcfe489b. This causes confusion and
--	 * potentially breaks user space tools, so we strip the suffix from
--	 * expanded symbol names.
-+	 * LLVM appends a hash to static function names when both
-+	 * (Thin/FULL) LTO and CFI are enabled, i.e. foo() becomes
-+	 * foo$707af9a22804d33c81801f27dcfe489b.
-+	 *
-+	 * In case of non static function symbol <funcsym>,
-+	 * the local jump table will have entry as <funcsym>.cfi_jt.
-+	 *
-+	 * This causes confusion and potentially breaks
-+	 * user space tools and some built-in components.
-+	 * So we strip the suffix from expanded symbol names.
- 	 */
- 	if (!IS_ENABLED(CONFIG_CFI_CLANG))
- 		return false;
- 
- 	res = strrchr(s, '$');
-+	if (!res)
-+		res = strstr(s, ".cfi_jt");
-+
- 	if (res) {
- 		*res = '\0';
- 		return true;
--- 
-2.17.1
-
+BR,
+-R
