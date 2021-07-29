@@ -2,215 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFEE3DA3B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DAD3DA3B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237376AbhG2NPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237236AbhG2NPN (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:15:13 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E212CC061765;
-        Thu, 29 Jul 2021 06:15:08 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id l4-20020a05600c1d04b02902506f89ad2dso5743990wms.1;
-        Thu, 29 Jul 2021 06:15:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=c6fOSGDlfAqD4Y6kzbswq3LBsFrmI0PMsJL9GSOn4CY=;
-        b=aINT36AfwuAJxBj8GqZ9Mklv2DKxqQjj45RME0uEZUYrU/eG0g6zfBn9bGbJjzBJwE
-         P8L5YAoi6PbjVGtj71T6bgceSFVbLb8epWkiRtLjHGVrvwfYGXS7p8JVOiEfwKF9/0IC
-         rjpI7Tv3wvQcymknbQLJussbD0c0/qmGRUmaubU29pwBdTC7KJZhJteM8rTFV01Vq9hf
-         9fuaK81kMterqf9teAJ+fsH8ZOXUa+KAgqxls3GwR41b5zh9jemOfR2hOiE2+bK4+bdi
-         /7A+uf79no3QbxoaDeui4nSiPSei70KtJzjyp2Vlx2dpVyzlu4sxz2zq3BTpS2Ed2eZx
-         2uAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=c6fOSGDlfAqD4Y6kzbswq3LBsFrmI0PMsJL9GSOn4CY=;
-        b=LEXWMDX0fI4K4jpxFPMUV9jYCXZ0xJ7+kU9HPxt1aHV4abhLYhbr3rRvLiRjKWod+U
-         oaNpjW5aEJ4SbWwkasSab00UzbxY6eQLxonk2APGx3kwHD5XC3KOE7kwLZkNH27hAXmc
-         f7TM7DTxfwR5B2THu9EZIGz6355IoXXFmVkl9ckpUMQlIoERxG2H6H6k8K+oM5pjKQAd
-         JR1NyBnRdI9HtxYBoUljuyjPW3FzzzDN0A8+GCxVOKHDJn67v6NdHD6ZqjFTpAN32jQB
-         i2EukKsFR4ewvcMgtAo6QeKqjcTBgNgGQi6y8w0QKk7b8hazGPBBEdkMaoUse8YZcfIB
-         BtFA==
-X-Gm-Message-State: AOAM532fnKJG4QDlfYL1sJYkMB803+dTse7G6O/TT6abA4M3tT7fEirB
-        HP30H6j6k5vQzPyVoVz4CEM=
-X-Google-Smtp-Source: ABdhPJxLUaGXr25u4fM35JJn+UNCHICSG/pFo1jaGXyhFv51OiGjcKdhdxbWFcwZAwJnycEmEUylhA==
-X-Received: by 2002:a1c:cc1a:: with SMTP id h26mr4673696wmb.47.1627564507388;
-        Thu, 29 Jul 2021 06:15:07 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.gmail.com with ESMTPSA id j14sm3575148wru.58.2021.07.29.06.15.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 06:15:07 -0700 (PDT)
-Message-ID: <f5f6f40b58c3d2151a4e899a109bd58764152758.camel@gmail.com>
-Subject: Re: [PATCH v2 2/2] perf tests: Test for PMU alias
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com
-Date:   Thu, 29 Jul 2021 15:15:06 +0200
-In-Reply-To: <20210729070619.20726-3-yao.jin@linux.intel.com>
-References: <20210729070619.20726-1-yao.jin@linux.intel.com>
-         <20210729070619.20726-3-yao.jin@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        id S237417AbhG2NPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:15:47 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:51718 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237236AbhG2NPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:15:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=szPN/IUb4a+Mhtg0in2BOoWLdWFrCWgNEz1rf5rVRSc=; b=g+UaSTqBrLYgUXsX7qNj30vi3O
+        oU5DJzh1/d3hSVyQQdnAtMHlTpdjC0EiWvlMDv1ujH7OxWZXPw0CCoyjMgvtW22TFQT9/At66e6IY
+        7B+URLhr4cNRG1fByKI4ADH0zcerOlV9Q30mTApkv9cNyGkGwaTwqYmDou4oolarVAN4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m95ss-00FJXN-B2; Thu, 29 Jul 2021 15:15:34 +0200
+Date:   Thu, 29 Jul 2021 15:15:34 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Luo Jie <luoj@codeaurora.org>
+Cc:     hkallweit1@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        p.zabel@pengutronix.de, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        robert.marko@sartura.hr, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH 2/3] net: mdio-ipq4019: rename mdio_ipq4019 to mdio_ipq
+Message-ID: <YQKp9gsnjBNmXYIc@lunn.ch>
+References: <20210729125358.5227-1-luoj@codeaurora.org>
+ <20210729125358.5227-2-luoj@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729125358.5227-2-luoj@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, 2021-07-29 at 15:06 +0800, Jin Yao wrote:
-> A perf uncore PMU may have two PMU names, a real name and an alias
-> name. Add one test case to verify the real name and alias name having
-> the same effect.
+On Thu, Jul 29, 2021 at 08:53:57PM +0800, Luo Jie wrote:
+> mdio_ipq driver supports more SOCs such as ipq40xx, ipq807x,
+> ipq60xx and ipq50xx.
 > 
-> Iterate the sysfs to get one event which has an alias and create
-> evlist by adding two evsels. Evsel1 is created by event and evsel2
-> is created by alias.
-> 
-> Test asserts:
-> evsel1->core.attr.type == evsel2->core.attr.type
-> evsel1->core.attr.config == evsel2->core.attr.config
-> 
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> Signed-off-by: Luo Jie <luoj@codeaurora.org>
 > ---
-> v2:
->  - New in v2.
-> 
->  tools/perf/tests/parse-events.c | 79 +++++++++++++++++++++++++++++++++
->  1 file changed, 79 insertions(+)
-> 
-> diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-> index 56a7b6a14195..b416851e4074 100644
-> --- a/tools/perf/tests/parse-events.c
-> +++ b/tools/perf/tests/parse-events.c
-> @@ -6,6 +6,7 @@
->  #include "tests.h"
->  #include "debug.h"
->  #include "pmu.h"
-> +#include "fncache.h"
->  #include <dirent.h>
->  #include <errno.h>
->  #include <sys/types.h>
-> @@ -2190,9 +2191,79 @@ static int test_pmu_events(void)
->         return ret;
->  }
->  
-> +static bool test_alias(char **event, char **alias)
-> +{
-> +       char path[PATH_MAX];
-> +       DIR *dir;
-> +       struct dirent *dent;
-> +       const char *sysfs = sysfs__mountpoint();
-> +       char buf[128];
-> +       FILE *file;
-> +
-> +       if (!sysfs)
-> +               return false;
-> +
-> +       snprintf(path, PATH_MAX, "%s/bus/event_source/devices/", sysfs);
-> +       dir = opendir(path);
-> +       if (!dir)
-> +               return false;
-> +
-> +       while ((dent = readdir(dir))) {
-> +               if (!strcmp(dent->d_name, ".") ||
-> +                   !strcmp(dent->d_name, ".."))
-> +                       continue;
-> +
-> +               snprintf(path, PATH_MAX,
-> "%s/bus/event_source/devices/%s/alias",
-> +                        sysfs, dent->d_name);
-> +
-> +               if (!file_available(path))
-> +                       continue;
-> +
-> +               file = fopen(path, "r");
-> +               if (!file)
-> +                       continue;
-> +
-> +               if (fscanf(file, "%s", buf) != 1) {
-> +                       fclose(file);
-> +                       continue;
-> +               }
+>  drivers/net/mdio/Kconfig                      |  6 +-
+>  drivers/net/mdio/Makefile                     |  2 +-
+>  .../net/mdio/{mdio-ipq4019.c => mdio-ipq.c}   | 66 +++++++++----------
+>  3 files changed, 37 insertions(+), 37 deletions(-)
+>  rename drivers/net/mdio/{mdio-ipq4019.c => mdio-ipq.c} (81%)
 
-ditto as in the first patch.
+Hi Luo
 
-> +
-> +               fclose(file);
-> +               *event = strdup(dent->d_name);
-> +               *alias = strdup(buf);
-> +               return true;
-> +       }
+We don't rename files unless there is a very good reason. It makes
+back porting of fixes harder in stable. There are plenty of examples
+of files with device specific names, but supporting a broad range of
+devices. Take for example lm75, at24.
 
-dir is never closed.
+> -config MDIO_IPQ4019
+> -	tristate "Qualcomm IPQ4019 MDIO interface support"
+> +config MDIO_IPQ
+> +	tristate "Qualcomm IPQ MDIO interface support"
+>  	depends on HAS_IOMEM && OF_MDIO
+>  	depends on GPIOLIB && COMMON_CLK && RESET_CONTROLLER
+>  	help
+>  	  This driver supports the MDIO interface found in Qualcomm
+> -	  IPQ40xx series Soc-s.
+> +	  IPQ40xx, IPQ60XX, IPQ807X and IPQ50XX series Soc-s.
 
-Thanks,
-Riccardo
+Please leave the MDIO_IPQ4019 unchanged, so we don't break backwards
+compatibility, but the changes to the text are O.K.
 
-> +
-> +       return false;
-> +}
-> +
-> +static int test__checkevent_pmu_events_alias(struct evlist *evlist)
-> +{
-> +       struct evsel *evsel1 = evlist__first(evlist);
-> +       struct evsel *evsel2 = evlist__last(evlist);
-> +
-> +       TEST_ASSERT_VAL("wrong type", evsel1->core.attr.type == evsel2-
-> >core.attr.type);
-> +       TEST_ASSERT_VAL("wrong config", evsel1->core.attr.config == evsel2-
-> >core.attr.config);
-> +       return 0;
-> +}
-> +
-> +static int test_pmu_events_alias(char *event, char *alias)
-> +{
-> +       struct evlist_test e = { .id = 0, };
-> +       char name[2 * NAME_MAX + 20];
-> +
-> +       snprintf(name, sizeof(name), "%s/event=1/,%s/event=1/",
-> +                event, alias);
-> +
-> +       e.name  = name;
-> +       e.check = test__checkevent_pmu_events_alias;
-> +       return test_event(&e);
-> +}
-> +
->  int test__parse_events(struct test *test __maybe_unused, int subtest
-> __maybe_unused)
->  {
->         int ret1, ret2 = 0;
-> +       char *event, *alias;
->  
->  #define TEST_EVENTS(tests)                             \
->  do {                                                   \
-> @@ -2217,6 +2288,14 @@ do
-> {                                                     \
->                         return ret;
->         }
->  
-> +       if (test_alias(&event, &alias)) {
-> +               int ret = test_pmu_events_alias(event, alias);
-> +               free(event);
-> +               free(alias);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
->         ret1 = test_terms(test__terms, ARRAY_SIZE(test__terms));
->         if (!ret2)
->                 ret2 = ret1;
+> @@ -31,38 +31,38 @@
+>  /* 0 = Clause 22, 1 = Clause 45 */
+>  #define MDIO_MODE_C45				BIT(8)
+>  
+> -#define IPQ4019_MDIO_TIMEOUT	10000
+> -#define IPQ4019_MDIO_SLEEP		10
+> +#define IPQ_MDIO_TIMEOUT	10000
+> +#define IPQ_MDIO_SLEEP		10
 
+This sort of mass rename will also make back porting fixes
+harder. Please don't do it.
 
+> -static const struct of_device_id ipq4019_mdio_dt_ids[] = {
+> +static const struct of_device_id ipq_mdio_dt_ids[] = {
+>  	{ .compatible = "qcom,ipq4019-mdio" },
+> +	{ .compatible = "qcom,ipq-mdio" },
+>  	{ }
+>  };
+
+Such a generic name is not a good idea. It appears this driver is not
+compatible with the IPQ8064? It is O.K. to add more specific
+compatibles. So you could add
+
+qcom,ipq40xx, qcom,ipq60xx, qcom,ipq807x and qcom,ipq50xx.
+
+But really, there is no need. Take for example snps,dwmac-mdio, which
+is used in all sorts of devices.
+
+   Andrew
