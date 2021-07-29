@@ -2,67 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7613DAC0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EF73DAC12
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbhG2Tth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 15:49:37 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:23159 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229606AbhG2Ttg (ORCPT
+        id S232558AbhG2Ttk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Jul 2021 15:49:40 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:44295 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229664AbhG2Ttg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Jul 2021 15:49:36 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d56 with ME
-        id b7pU2500D21Fzsu037pUqA; Thu, 29 Jul 2021 21:49:31 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 29 Jul 2021 21:49:31 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     narmstrong@baylibre.com, mchehab@kernel.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
-        hverkuil-cisco@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: meson-ge2d: Fix rotation parameter changes detection in 'ge2d_s_ctrl()'
-Date:   Thu, 29 Jul 2021 21:49:25 +0200
-Message-Id: <6cb8efcadcf8c856efb32b7692fc9bf3241e3bc3.1627588010.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
+        by mail.holtmann.org (Postfix) with ESMTPSA id D900ACED1E;
+        Thu, 29 Jul 2021 21:49:31 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: memory leak in h4_recv_buf
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <15df8c9d-8809-7da3-842b-a65bfb06abeb@gmail.com>
+Date:   Thu, 29 Jul 2021 21:49:31 +0200
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <0CE94469-E35F-46CF-BD80-5145B86AA9B2@holtmann.org>
+References: <0000000000006b1779058c0cbdda@google.com>
+ <d71a274f-fdeb-4da1-898e-06f6944e04dan@googlegroups.com>
+ <a125c3e6-7723-185a-3c47-219c201c6785@gmail.com>
+ <E59B3DB2-3D96-459B-9902-C9E729407ED2@holtmann.org>
+ <20210729120706.GU1931@kadam>
+ <AF823758-2063-4E9C-8EF8-9F22107FFB71@holtmann.org>
+ <15df8c9d-8809-7da3-842b-a65bfb06abeb@gmail.com>
+To:     Phi Nguyen <phind.uet@gmail.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is likely a typo here. To be consistent, we should compare
-'fmt.height' with 'ctx->out.pix_fmt.height', not 'ctx->out.pix_fmt.width'.
+Hi Phi,
 
-Fixes: 59a635327ca7 ("media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-I've not looked deeply in the code, but why is this test needed in the
-first place?
-Couldn't we assigned 'ctx->out.pix_fmt = fmt' un-conditionally?
----
- drivers/media/platform/meson/ge2d/ge2d.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>   syzbot found the following crash on:
+>>>>>>   HEAD commit: abf02e29 Merge tag 'pm-5.2-rc6' of
+>>>>>>   git://git.kernel.org/pu <http://git.kernel.org/pu>..
+>>>>>>   git tree: upstream
+>>>>>>   console output:
+>>>>>>   https://syzkaller.appspot.com/x/log.txt?x=1054e6b2a00000
+>>>>>>   <https://syzkaller.appspot.com/x/log.txt?x=1054e6b2a00000>
+>>>>>>   kernel config:
+>>>>>>   https://syzkaller.appspot.com/x/.config?x=56f1da14935c3cce
+>>>>>>   <https://syzkaller.appspot.com/x/.config?x=56f1da14935c3cce>
+>>>>>>   dashboard link:
+>>>>>>   https://syzkaller.appspot.com/bug?extid=97388eb9d31b997fe1d0
+>>>>>>   <https://syzkaller.appspot.com/bug?extid=97388eb9d31b997fe1d0>
+>>>>>>   compiler: gcc (GCC) 9.0.0 20181231 (experimental)
+>>>>>>   syz repro:
+>>>>>>   https://syzkaller.appspot.com/x/repro.syz?x=1073d8aaa00000
+>>>>>>   <https://syzkaller.appspot.com/x/repro.syz?x=1073d8aaa00000>
+>>>>>>   C reproducer:
+>>>>>>   https://syzkaller.appspot.com/x/repro.c?x=17b36fbea00000
+>>>>>>   <https://syzkaller.appspot.com/x/repro.c?x=17b36fbea00000>
+>>>>>>   IMPORTANT: if you fix the bug, please add the following tag to the
+>>>>>>   commit:
+>>>>>>   Reported-by: syzbot+97388e...@syzkaller.appspotmail.com
+>>>>>>   program
+>>>>>>   BUG: memory leak
+>>>>>>   unreferenced object 0xffff88810991fa00 (size 224):
+>>>>>>   comm "syz-executor739", pid 7080, jiffies 4294949854 (age 18.640s)
+>>>>>>   hex dump (first 32 bytes):
+>>>>>>   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+>>>>>>   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+>>>>>>   backtrace:
+>>>>>>   [<00000000da42c09f>] kmemleak_alloc_recursive
+>>>>>>   include/linux/kmemleak.h:43 [inline]
+>>>>>>   [<00000000da42c09f>] slab_post_alloc_hook mm/slab.h:439 [inline]
+>>>>>>   [<00000000da42c09f>] slab_alloc_node mm/slab.c:3269 [inline]
+>>>>>>   [<00000000da42c09f>] kmem_cache_alloc_node+0x153/0x2a0 mm/slab.c:3579
+>>>>>>   [<00000000f6fbcf84>] __alloc_skb+0x6e/0x210 net/core/skbuff.c:194
+>>>>>>   [<00000000ea93fc4c>] alloc_skb include/linux/skbuff.h:1054 [inline]
+>>>>>>   [<00000000ea93fc4c>] bt_skb_alloc include/net/bluetooth/bluetooth.h:339
+>>>>>>   [inline]
+>>>>>>   [<00000000ea93fc4c>] h4_recv_buf+0x26d/0x450
+>>>>>>   drivers/bluetooth/hci_h4.c:182
+>>>>>>   [<00000000e0312475>] h4_recv+0x51/0xb0 drivers/bluetooth/hci_h4.c:116
+>>>>>>   [<00000000ebf11fab>] hci_uart_tty_receive+0xba/0x200
+>>>>>>   drivers/bluetooth/hci_ldisc.c:592
+>>>>>>   [<0000000095e1216e>] tiocsti drivers/tty/tty_io.c:2195 [inline]
+>>>>>>   [<0000000095e1216e>] tty_ioctl+0x81c/0xa30 drivers/tty/tty_io.c:2571
+>>>>>>   [<000000009fa523f0>] vfs_ioctl fs/ioctl.c:46 [inline]
+>>>>>>   [<000000009fa523f0>] file_ioctl fs/ioctl.c:509 [inline]
+>>>>>>   [<000000009fa523f0>] do_vfs_ioctl+0x62a/0x810 fs/ioctl.c:696
+>>>>>>   [<000000000cebb5d9>] ksys_ioctl+0x86/0xb0 fs/ioctl.c:713
+>>>>>>   [<000000001630008a>] __do_sys_ioctl fs/ioctl.c:720 [inline]
+>>>>>>   [<000000001630008a>] __se_sys_ioctl fs/ioctl.c:718 [inline]
+>>>>>>   [<000000001630008a>] __x64_sys_ioctl+0x1e/0x30 fs/ioctl.c:718
+>>>>>>   [<00000000c62091e3>] do_syscall_64+0x76/0x1a0
+>>>>>>   arch/x86/entry/common.c:301
+>>>>>>   [<000000005c213625>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>>>>   BUG: memory leak
+>>>>>>   unreferenced object 0xffff8881204f4400 (size 1024):
+>>>>>>   comm "syz-executor739", pid 7080, jiffies 4294949854 (age 18.640s)
+>>>>>>   hex dump (first 32 bytes):
+>>>>>>   6c 69 62 75 64 65 76 00 fe ed ca fe 28 00 00 00 libudev.....(...
+>>>>>>   28 00 00 00 a0 00 00 00 52 ca da 77 00 00 00 00 (.......R..w....
+>>>>>>   backtrace:
+>>>>>>   [<0000000034504843>] kmemleak_alloc_recursive
+>>>>>>   include/linux/kmemleak.h:43 [inline]
+>>>>>>   [<0000000034504843>] slab_post_alloc_hook mm/slab.h:439 [inline]
+>>>>>>   [<0000000034504843>] slab_alloc_node mm/slab.c:3269 [inline]
+>>>>>>   [<0000000034504843>] kmem_cache_alloc_node_trace+0x15b/0x2a0
+>>>>>>   mm/slab.c:3597
+>>>>>>   [<0000000056d30eb5>] __do_kmalloc_node mm/slab.c:3619 [inline]
+>>>>>>   [<0000000056d30eb5>] __kmalloc_node_track_caller+0x38/0x50
+>>>>>>   mm/slab.c:3634
+>>>>>>   [<00000000df40176c>] __kmalloc_reserve.isra.0+0x40/0xb0
+>>>>>>   net/core/skbuff.c:138
+>>>>>>   [<0000000035340e64>] __alloc_skb+0xa0/0x210 net/core/skbuff.c:206
+>>>>>>   [<00000000ea93fc4c>] alloc_skb include/linux/skbuff.h:1054 [inline]
+>>>>>>   [<00000000ea93fc4c>] bt_skb_alloc include/net/bluetooth/bluetooth.h:339
+>>>>>>   [inline]
+>>>>>>   [<00000000ea93fc4c>] h4_recv_buf+0x26d/0x450
+>>>>>>   drivers/bluetooth/hci_h4.c:182
+>>>>>>   [<00000000e0312475>] h4_recv+0x51/0xb0 drivers/bluetooth/hci_h4.c:116
+>>>>>>   [<00000000ebf11fab>] hci_uart_tty_receive+0xba/0x200
+>>>>>>   drivers/bluetooth/hci_ldisc.c:592
+>>>>>>   [<0000000095e1216e>] tiocsti drivers/tty/tty_io.c:2195 [inline]
+>>>>>>   [<0000000095e1216e>] tty_ioctl+0x81c/0xa30 drivers/tty/tty_io.c:2571
+>>>>>>   [<000000009fa523f0>] vfs_ioctl fs/ioctl.c:46 [inline]
+>>>>>>   [<000000009fa523f0>] file_ioctl fs/ioctl.c:509 [inline]
+>>>>>>   [<000000009fa523f0>] do_vfs_ioctl+0x62a/0x810 fs/ioctl.c:696
+>>>>>>   [<000000000cebb5d9>] ksys_ioctl+0x86/0xb0 fs/ioctl.c:713
+>>>>>>   [<000000001630008a>] __do_sys_ioctl fs/ioctl.c:720 [inline]
+>>>>>>   [<000000001630008a>] __se_sys_ioctl fs/ioctl.c:718 [inline]
+>>>>>>   [<000000001630008a>] __x64_sys_ioctl+0x1e/0x30 fs/ioctl.c:718
+>>>>>>   [<00000000c62091e3>] do_syscall_64+0x76/0x1a0
+>>>>>>   arch/x86/entry/common.c:301
+>>>>>>   [<000000005c213625>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>>>>   ---
+>>>>>>   This bug is generated by a bot. It may contain errors.
+>>>>>>   See https://goo.gl/tpsmEJ <https://goo.gl/tpsmEJ> for more
+>>>>>>   information about syzbot.
+>>>>>>   syzbot engineers can be reached at syzk...@googlegroups.com.
+>>>>>>   syzbot will keep track of this bug report. See:
+>>>>>>   https://goo.gl/tpsmEJ#status <https://goo.gl/tpsmEJ#status> for how
+>>>>>>   to communicate with syzbot.
+>>>>>>   syzbot can test patches for this bug, for details see:
+>>>>>>   https://goo.gl/tpsmEJ#testing-patches
+>>>>>>   <https://goo.gl/tpsmEJ#testing-patches>
+>>>>>> -- 
+>>>>>> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+>>>>>> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com <mailto:syzkaller-bugs+unsubscribe@googlegroups.com>.
+>>>>>> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/d71a274f-fdeb-4da1-898e-06f6944e04dan%40googlegroups.com <https://groups.google.com/d/msgid/syzkaller-bugs/d71a274f-fdeb-4da1-898e-06f6944e04dan%40googlegroups.com?utm_medium=email&utm_source=footer>.
+>>>>> 
+>>>>> The reason of this memory leak is tty_ldisc_receive_buf() and tiocsti()
+>>>>> can access the h4->rx_skb concurrently by calling
+>>>>> hci_uart_tty_receive(), so the rx_skb be overwritten without
+>>>>> deallocating. There used to be an spin_lock in hci_uart_tty_receive(),
+>>>>> but it was removed by commit 7649ffaff1cfe(Bluetooth: Remove useless
+>>>>> rx_lock spinlock).
+>>>> 
+>>>> I don’t have that commit in my Linus’ tree. Where is it?
+>>>> 
+>>> 
+>>> There is a typo in the git hash.  It should be: 7649faff1cfe4 ("Bluetooth:
+>>> Remove useless rx_lock spinlock").
+>>> 
+>>>>> The commit message claims that hci_uart_tty_receive() was only called by
+>>>>> flush_to_ldisc(), but it seems incorrect.
+>>>> 
+>>>> That seems to be a larger problem in the TTY layer if its contract with its users have changed.
+>>> 
+>>> The tiocsti() function has an ancient comment which suggests that the
+>>> documentation has always been wrong.
+>>> 
+>>> *      FIXME: may race normal receive processing
+>> so what are we suppose to do now? Fix this in TTY layer or try to revert this patch?
+>> And does it have to be spinlock or can we use a mutex? My knowledge of the TTY internal are limited and thus, I have no idea what we need to do here. However h4_recv_buf needs to be protected against concurrently calls.
+>> Regards
+>> Marcel
+> Hi Marcel,
+> 
+> So far, I have tested two fixes with syzbot
+> The first one is to bring the spin lock back to hci_uart_tty_receive().
+> The second one is to use tty_buffer_lock_exclusive() in tiocsti() (I based on the document in tty_buffer.c).
+> These two can work well with the syzbot.
 
-diff --git a/drivers/media/platform/meson/ge2d/ge2d.c b/drivers/media/platform/meson/ge2d/ge2d.c
-index a1393fefa8ae..be22bb60e7cf 100644
---- a/drivers/media/platform/meson/ge2d/ge2d.c
-+++ b/drivers/media/platform/meson/ge2d/ge2d.c
-@@ -780,7 +780,7 @@ static int ge2d_s_ctrl(struct v4l2_ctrl *ctrl)
- 		 * parameters, take them in account
- 		 */
- 		if (fmt.width != ctx->out.pix_fmt.width ||
--		    fmt.height != ctx->out.pix_fmt.width ||
-+		    fmt.height != ctx->out.pix_fmt.height ||
- 		    fmt.bytesperline > ctx->out.pix_fmt.bytesperline ||
- 		    fmt.sizeimage > ctx->out.pix_fmt.sizeimage)
- 			ctx->out.pix_fmt = fmt;
--- 
-2.30.2
+if we can fix it in the TTY layer, then that is my preference. If we can’t, then it would be good to know if we can use a mutex instead of spinlock.
+
+Regards
+
+Marcel
 
