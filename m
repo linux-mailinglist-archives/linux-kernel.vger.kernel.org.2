@@ -2,126 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB473DA47C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5077F3DA481
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237666AbhG2NkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:40:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38140 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237641AbhG2NkK (ORCPT
+        id S237695AbhG2NlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237608AbhG2NlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:40:10 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TDd3w0096040;
-        Thu, 29 Jul 2021 09:40:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=GsgaupwAABcdAtoh97UGD0HsZlUsJJoMziZ1dnOIJ9s=;
- b=QWk6YrU0viQTS3vCPgo49s7Jtwqfq+3TbxH9se8EdXEPdGNSGylEbs1u8/e50KYcDium
- R8vl6nqs7u1ZCLJCUjabkvDMJUBl9a/1DX1BHpgrZ30DtxXKgWorp1L2RD9KySM8BFef
- cPj27tS2MY0W1JURWaypGRpG0981pmlwSEfe6fu6bo5GSWX9INtpubPsGVLT9DGFibJ+
- v8ThNdssp9KcWvML9zEmWlkiUX0tHjyiDBdI+0zbfqWAmpICsD9KFeTBys03MnLnQKFP
- fhRpSwyFi7RmgvDC6Yn5PgVA+7G/oLGP1Ce/01WkcjFhpHJxmW9bYFQkAbHnSgIt5/0D Hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3vp9sb25-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 09:40:03 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TDdF9Q096937;
-        Thu, 29 Jul 2021 09:39:42 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3vp9s9g8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 09:39:40 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TDZFGB012109;
-        Thu, 29 Jul 2021 13:39:21 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma01dal.us.ibm.com with ESMTP id 3a3w9g00tt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 13:39:21 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TDdKPA47317264
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Jul 2021 13:39:20 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F0BB97809C;
-        Thu, 29 Jul 2021 13:39:19 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 68E907809E;
-        Thu, 29 Jul 2021 13:39:19 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 29 Jul 2021 13:39:19 +0000 (GMT)
-Subject: Re: [PATCH] tpm: ibmvtpm: Avoid error message when process gets
- signal while waiting
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>, peterhuewe@gmx.de,
-        jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>,
-        Nageswara R Sastry <rnsastry@linux.ibm.com>
-References: <20210712162505.205943-1-stefanb@linux.vnet.ibm.com>
- <20210727024225.swqy5ypcytsngpd6@kernel.org>
- <ad4011fb-fc1f-4019-9856-7d171db3255c@linux.ibm.com>
- <20210728215033.dhnekvksekalhcrn@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <2add3eac-916e-5072-f62d-23c65e23fb17@linux.ibm.com>
-Date:   Thu, 29 Jul 2021 09:39:18 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210728215033.dhnekvksekalhcrn@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ghnNcxYyXnbzGRmOD8bHyCh1pB8OZ3Hf
-X-Proofpoint-GUID: GecJ6_p029p9eqr1BbXj-3oZFijWj_vU
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 29 Jul 2021 09:41:03 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95FBC061765;
+        Thu, 29 Jul 2021 06:40:59 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id j2so6988076wrx.9;
+        Thu, 29 Jul 2021 06:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=4w68rscaz0+YoNz6qjqRAKpGkBdq7Bv5iW8piRmlRkI=;
+        b=oI+fQKNSqEhly+u+/QGKeOk8d6uZ66iEljWZBXVUIcBF9zAG9TEzllAv4x3SuVUVxE
+         3UOtBi7c9CT6QKGCAFfy+ThTUp0rQCmWMBhSYCbDW4hugYuKE7SHuKvoEuKZkLkCAt2a
+         snkCLGwvc4HJ6/xXEGLVz6bVQGfrFJAslZQVE7sYP0wEK/tSvUHhaOk9GZMceUqaI4EL
+         k3dClFaHl+rZVxVxf9c5m+Yd3IKVZiPvoAuANZQT3cJoPQN1jgoAeIc40h511N5bmGuG
+         W1W3je76l2AJX2gIjDiWroIyEYNvaZKYUodUVOVX+AStZIRJy1Uu7NC7bdffUo7w8B0f
+         eDCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=4w68rscaz0+YoNz6qjqRAKpGkBdq7Bv5iW8piRmlRkI=;
+        b=IffUVDeVbrjGTkc2asCbSZH+TG5QRGx/snKyAJK89yWzrqTRLJa1ojPj0fyKRBXijh
+         Ro4j3nQ6+atPf98ruYcnB5xFPYbxkB8b2YaJMJXttMK2HiiJ3jz5pEsPs8Wl6GtulMyP
+         8DyXVHvch/aroL1sp7W3cvt3EfMIgylX6pueVrBO92KJbNJkqJ4l20OlxpiqNzmck2q3
+         YIGNeqeo+g4sY/hWNzJsVPk9tHfUy+bF55+Wf5X1aIpa1mu301rL+0AHrePOMVaSiOWw
+         Gi2BRqwyFwbpiom/p/wNw2VozJEbiS/mfsiQWeSxuJU1iVoye8DITGfwtqqXRUImIbeX
+         4aLQ==
+X-Gm-Message-State: AOAM532XZDnN//Bj74RLxjVp+7XTmkwUIdP9cwoorgID+bGhJnWU3xI0
+        eNguR+4+mZi0tMSjAm7baV8=
+X-Google-Smtp-Source: ABdhPJxhjLM3nWd3D1zfYfg/aITNTg30InX9cJZF62KMdLOk2n1/Hph737MHI3gQ1K4VRR1VxoxVdA==
+X-Received: by 2002:a5d:6dac:: with SMTP id u12mr4926273wrs.153.1627566058333;
+        Thu, 29 Jul 2021 06:40:58 -0700 (PDT)
+Received: from [192.168.1.121] (93-40-209-49.ip40.fastwebnet.it. [93.40.209.49])
+        by smtp.gmail.com with ESMTPSA id l23sm3412282wme.22.2021.07.29.06.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 06:40:57 -0700 (PDT)
+Message-ID: <cb2ebcbb2ea963169823ad052be8ebf9290cc97b.camel@gmail.com>
+Subject: Re: [PATCH 3/3] perf test: Be more consistent in use of TEST_*
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     eranian@google.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 29 Jul 2021 15:39:26 +0200
+In-Reply-To: <20210729062451.1349566-4-irogers@google.com>
+References: <20210729062451.1349566-1-irogers@google.com>
+         <20210729062451.1349566-4-irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- phishscore=0 impostorscore=0 clxscore=1015 mlxscore=0 bulkscore=0
- spamscore=0 mlxlogscore=999 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107290087
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ian,
 
-On 7/28/21 5:50 PM, Jarkko Sakkinen wrote:
-> On Mon, Jul 26, 2021 at 11:00:51PM -0400, Stefan Berger wrote:
->> On 7/26/21 10:42 PM, Jarkko Sakkinen wrote:
->>> On Mon, Jul 12, 2021 at 12:25:05PM -0400, Stefan Berger wrote:
->>>> From: Stefan Berger <stefanb@linux.ibm.com>
->>>>
->>>> When rngd is run as root then lots of these types of message will appear
->>>> in the kernel log if the TPM has been configure to provide random bytes:
->>>>
->>>> [ 7406.275163] tpm tpm0: tpm_transmit: tpm_recv: error -4
->>>>
->>>> The issue is caused by the following call that is interrupted while
->>>> waiting for the TPM's response.
->>>>
->>>> sig = wait_event_interruptible(ibmvtpm->wq,
->>>>                                  !ibmvtpm->tpm_processing_cmd);
->>>>
->>>> The solution is to use wait_event() instead.
->>> Why?
->> So it becomes uninterruptible and these error messages go away.
-> We do not want to make a process uninterruptible. That would prevent
-> killing it.
+On Wed, 2021-07-28 at 23:24 -0700, Ian Rogers wrote:
+> The TEST_OK, TEST_FAIL and TEST_SKIP enum values are used
+> inconsistently. Try to reduce this by swapping constants for enum values
+> to try to be more intention revealing.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/arch/x86/tests/rdpmc.c           |   8 +-
+>  tools/perf/tests/attr.c                     |   2 +-
+>  tools/perf/tests/bitmap.c                   |   2 +-
+>  tools/perf/tests/bp_account.c               |   4 +-
+>  tools/perf/tests/bp_signal.c                |  51 +++++++--
+>  tools/perf/tests/code-reading.c             |  12 +-
+>  tools/perf/tests/cpumap.c                   |  10 +-
+>  tools/perf/tests/dso-data.c                 |   8 +-
+>  tools/perf/tests/dwarf-unwind.c             |  14 ++-
+>  tools/perf/tests/event-times.c              |   2 +-
+>  tools/perf/tests/evsel-roundtrip-name.c     |  14 +--
+>  tools/perf/tests/evsel-tp-sched.c           |  28 ++---
+>  tools/perf/tests/expr.c                     |   4 +-
+>  tools/perf/tests/fdarray.c                  |   4 +-
+>  tools/perf/tests/genelf.c                   |   2 +-
+>  tools/perf/tests/hists_cumulate.c           |   2 +-
+>  tools/perf/tests/hists_filter.c             |  12 +-
+>  tools/perf/tests/hists_link.c               |  33 +++---
+>  tools/perf/tests/keep-tracking.c            |   4 +-
+>  tools/perf/tests/kmod-path.c                |   6 +-
+>  tools/perf/tests/mem.c                      |   4 +-
+>  tools/perf/tests/mem2node.c                 |   2 +-
+>  tools/perf/tests/mmap-basic.c               |  10 +-
+>  tools/perf/tests/mmap-thread-lookup.c       |   2 +-
+>  tools/perf/tests/openat-syscall-all-cpus.c  |   4 +-
+>  tools/perf/tests/openat-syscall-tp-fields.c |   4 +-
+>  tools/perf/tests/openat-syscall.c           |   6 +-
+>  tools/perf/tests/parse-events.c             | 118 ++++++++++----------
+>  tools/perf/tests/parse-metric.c             |  16 +--
+>  tools/perf/tests/parse-no-sample-id-all.c   |   4 +-
+>  tools/perf/tests/perf-hooks.c               |   2 +-
+>  tools/perf/tests/perf-record.c              |   2 +-
+>  tools/perf/tests/perf-time-to-tsc.c         |   4 +-
+>  tools/perf/tests/pfm.c                      |   4 +-
+>  tools/perf/tests/pmu-events.c               |  36 +++---
+>  tools/perf/tests/pmu.c                      |  16 +--
+>  tools/perf/tests/python-use.c               |   2 +-
+>  tools/perf/tests/sample-parsing.c           |  10 +-
+>  tools/perf/tests/stat.c                     |  12 +-
+>  tools/perf/tests/sw-clock.c                 |   8 +-
+>  tools/perf/tests/switch-tracking.c          |   9 +-
+>  tools/perf/tests/task-exit.c                |  12 +-
+>  tools/perf/tests/tests.h                    |   4 +-
+>  tools/perf/tests/thread-map.c               |   8 +-
+>  tools/perf/tests/thread-maps-share.c        |   2 +-
+>  tools/perf/tests/time-utils-test.c          |   2 +-
+>  tools/perf/tests/topology.c                 |   2 +-
+>  tools/perf/tests/vmlinux-kallsyms.c         |   6 +-
+>  tools/perf/tests/wp.c                       |  10 +-
+>  49 files changed, 292 insertions(+), 251 deletions(-)
+> 
+<SNIP>
+> diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
+> index 9866cddebf23..70e92e074dba 100644
+> --- a/tools/perf/tests/code-reading.c
+> +++ b/tools/perf/tests/code-reading.c
+> @@ -725,20 +725,20 @@ int test__code_reading(struct test *test __maybe_unused,
+> int subtest __maybe_unu
+>  
+>         switch (ret) {
+>         case TEST_CODE_READING_OK:
+> -               return 0;
+> +               return TEST_OK;
+>         case TEST_CODE_READING_NO_VMLINUX:
+>                 pr_debug("no vmlinux\n");
+> -               return 0;
+> +               return TEST_SKIP;
+>         case TEST_CODE_READING_NO_KCORE:
+>                 pr_debug("no kcore\n");
+> -               return 0;
+> +               return TEST_SKIP;
+>         case TEST_CODE_READING_NO_ACCESS:
+>                 pr_debug("no access\n");
+> -               return 0;
+> +               return TEST_SKIP;
+>         case TEST_CODE_READING_NO_KERNEL_OBJ:
+>                 pr_debug("no kernel obj\n");
+> -               return 0;
+> +               return TEST_SKIP;
+>         default:
+> -               return -1;
+> +               return TEST_FAIL;
+>         };
+>  }
 
-I guess we'll have to go back to this one then: 
-https://www.spinics.net/lists/linux-integrity/msg16741.html
 
-    Stefan
+I think it's better to separate changes that do not change the current behaviour
+from these changes (0 -> TEST_SKIP) into different patches.
 
+Riccardo
 
->
-> /Jarkko
+> diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
+> index 0472b110fe65..bfcb85a965bb 100644
+> --- a/tools/perf/tests/cpumap.c
+> +++ b/tools/perf/tests/cpumap.c
+> @@ -42,7 +42,7 @@ static int process_event_mask(struct perf_tool *tool
+> __maybe_unused,
+>         }
+>  
+>         perf_cpu_map__put(map);
+> -       return 0;
+> +       return TEST_OK;
+>  }
+>  
+>  static int process_event_cpus(struct perf_tool *tool __maybe_unused,
+> @@ -71,7 +71,7 @@ static int process_event_cpus(struct perf_tool *tool
+> __maybe_unused,
+>         TEST_ASSERT_VAL("wrong cpu", map->map[1] == 256);
+>         TEST_ASSERT_VAL("wrong refcnt", refcount_read(&map->refcnt) == 1);
+>         perf_cpu_map__put(map);
+> -       return 0;
+> +       return TEST_OK;
+>  }
+>  
+>  
+> @@ -94,7 +94,7 @@ int test__cpu_map_synthesize(struct test *test
+> __maybe_unused, int subtest __may
+>                 !perf_event__synthesize_cpu_map(NULL, cpus,
+> process_event_cpus, NULL));
+>  
+>         perf_cpu_map__put(cpus);
+> -       return 0;
+> +       return TEST_OK;
+>  }
+>  
+>  static int cpu_map_print(const char *str)
+> @@ -120,7 +120,7 @@ int test__cpu_map_print(struct test *test __maybe_unused,
+> int subtest __maybe_un
+>         TEST_ASSERT_VAL("failed to convert map", cpu_map_print("1,3-6,8-
+> 10,24,35-37"));
+>         TEST_ASSERT_VAL("failed to convert map", cpu_map_print("1,3-6,8-
+> 10,24,35-37"));
+>         TEST_ASSERT_VAL("failed to convert map", cpu_map_print("1-10,12-20,22-
+> 30,32-40"));
+> -       return 0;
+> +       return TEST_OK;
+>  }
+>  
+>  int test__cpu_map_merge(struct test *test __maybe_unused, int subtest
+> __maybe_unused)
+> @@ -135,5 +135,5 @@ int test__cpu_map_merge(struct test *test __maybe_unused,
+> int subtest __maybe_un
+>         TEST_ASSERT_VAL("failed to merge map: bad result", !strcmp(buf, "1-
+> 2,4-5,7"));
+>         perf_cpu_map__put(b);
+>         perf_cpu_map__put(c);
+> -       return 0;
+> +       return TEST_OK;
+>  }
+<SNIP>
+
