@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACC63DA586
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BA73DA51E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238641AbhG2OCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:02:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49786 "EHLO mail.kernel.org"
+        id S238399AbhG2N6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:58:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238352AbhG2N6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:58:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B89060F4B;
-        Thu, 29 Jul 2021 13:58:38 +0000 (UTC)
+        id S238183AbhG2N5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:57:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D2F360F5E;
+        Thu, 29 Jul 2021 13:57:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567119;
-        bh=GEMrgZ1BSUX+9zlkMV2VjhWoKC9SDQxjvZcaOc7xg3k=;
+        s=korg; t=1627567065;
+        bh=S7P0nhfOfRBupSOYqNTo4tFCg++UMUkYFsS9chBOYA0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VF1wekUuPhczCY1ixXCfKiqI8jQ9cDj7s8aW/qBaTP/mHb4O3BznpEymCCkViWzJQ
-         t6gwiISY764wC7NMtQoeJ0nsM3XZ/Rf6tnbLN99x4n7LXOiyDMErQiYSNKeDFq8M4C
-         rX84j0m4j3HXflTDlzz76LvHCAnBeDzSTJNgVFps=
+        b=vj3I4wsR6+sxNNEntW87FykFkRMMsxlhNKUrUX1sl36nbLvXAfanSP5UBPswoq0AU
+         tNnVKharnBNOJ5fHxtSr4lsuLBz3OowulaquriFc14HPYuDOyeGWUEtd2BrRXVtyAF
+         r9pb6p0xIolK5zLCa26Wb5Kheeg3DONkAoKm6TbE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 07/24] net/802/mrp: fix memleak in mrp_request_join()
+        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 20/21] ARM: dts: versatile: Fix up interrupt controller node names
 Date:   Thu, 29 Jul 2021 15:54:27 +0200
-Message-Id: <20210729135137.500011883@linuxfoundation.org>
+Message-Id: <20210729135143.552064391@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
-References: <20210729135137.267680390@linuxfoundation.org>
+In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
+References: <20210729135142.920143237@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,88 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Sudeep Holla <sudeep.holla@arm.com>
 
-[ Upstream commit 996af62167d0e0ec69b938a3561e96f84ffff1aa ]
+[ Upstream commit 82a1c67554dff610d6be4e1982c425717b3c6a23 ]
 
-I got kmemleak report when doing fuzz test:
+Once the new schema interrupt-controller/arm,vic.yaml is added, we get
+the below warnings:
 
-BUG: memory leak
-unreferenced object 0xffff88810c239500 (size 64):
-comm "syz-executor940", pid 882, jiffies 4294712870 (age 14.631s)
-hex dump (first 32 bytes):
-01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-00 00 00 00 00 00 00 00 01 00 00 00 01 02 00 04 ................
-backtrace:
-[<00000000a323afa4>] slab_alloc_node mm/slub.c:2972 [inline]
-[<00000000a323afa4>] slab_alloc mm/slub.c:2980 [inline]
-[<00000000a323afa4>] __kmalloc+0x167/0x340 mm/slub.c:4130
-[<000000005034ca11>] kmalloc include/linux/slab.h:595 [inline]
-[<000000005034ca11>] mrp_attr_create net/802/mrp.c:276 [inline]
-[<000000005034ca11>] mrp_request_join+0x265/0x550 net/802/mrp.c:530
-[<00000000fcfd81f3>] vlan_mvrp_request_join+0x145/0x170 net/8021q/vlan_mvrp.c:40
-[<000000009258546e>] vlan_dev_open+0x477/0x890 net/8021q/vlan_dev.c:292
-[<0000000059acd82b>] __dev_open+0x281/0x410 net/core/dev.c:1609
-[<000000004e6dc695>] __dev_change_flags+0x424/0x560 net/core/dev.c:8767
-[<00000000471a09af>] rtnl_configure_link+0xd9/0x210 net/core/rtnetlink.c:3122
-[<0000000037a4672b>] __rtnl_newlink+0xe08/0x13e0 net/core/rtnetlink.c:3448
-[<000000008d5d0fda>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
-[<000000004882fe39>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5552
-[<00000000907e6c54>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
-[<00000000e7d7a8c4>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-[<00000000e7d7a8c4>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
-[<00000000e0645d50>] netlink_sendmsg+0x78e/0xc90 net/netlink/af_netlink.c:1929
-[<00000000c24559b7>] sock_sendmsg_nosec net/socket.c:654 [inline]
-[<00000000c24559b7>] sock_sendmsg+0x139/0x170 net/socket.c:674
-[<00000000fc210bc2>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
-[<00000000be4577b5>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
+        arch/arm/boot/dts/versatile-ab.dt.yaml:
+        intc@10140000: $nodename:0: 'intc@10140000' does not match
+        '^interrupt-controller(@[0-9a-f,]+)*$'
 
-Calling mrp_request_leave() after mrp_request_join(), the attr->state
-is set to MRP_APPLICANT_VO, mrp_attr_destroy() won't be called in last
-TX event in mrp_uninit_applicant(), the attr of applicant will be leaked.
-To fix this leak, iterate and free each attr of applicant before rerturning
-from mrp_uninit_applicant().
+	arch/arm/boot/dts/versatile-ab.dt.yaml:
+	intc@10140000: 'clear-mask' does not match any of the regexes
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix the node names for the interrupt controller to conform
+to the standard node name interrupt-controller@.. Also drop invalid
+clear-mask property.
+
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20210701132118.759454-1-sudeep.holla@arm.com'
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/802/mrp.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ arch/arm/boot/dts/versatile-ab.dts | 5 ++---
+ arch/arm/boot/dts/versatile-pb.dts | 2 +-
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/net/802/mrp.c b/net/802/mrp.c
-index bea6e43d45a0..35e04cc5390c 100644
---- a/net/802/mrp.c
-+++ b/net/802/mrp.c
-@@ -292,6 +292,19 @@ static void mrp_attr_destroy(struct mrp_applicant *app, struct mrp_attr *attr)
- 	kfree(attr);
- }
+diff --git a/arch/arm/boot/dts/versatile-ab.dts b/arch/arm/boot/dts/versatile-ab.dts
+index 37bd41ff8dff..151c0220047d 100644
+--- a/arch/arm/boot/dts/versatile-ab.dts
++++ b/arch/arm/boot/dts/versatile-ab.dts
+@@ -195,16 +195,15 @@
+ 		#size-cells = <1>;
+ 		ranges;
  
-+static void mrp_attr_destroy_all(struct mrp_applicant *app)
-+{
-+	struct rb_node *node, *next;
-+	struct mrp_attr *attr;
-+
-+	for (node = rb_first(&app->mad);
-+	     next = node ? rb_next(node) : NULL, node != NULL;
-+	     node = next) {
-+		attr = rb_entry(node, struct mrp_attr, node);
-+		mrp_attr_destroy(app, attr);
-+	}
-+}
-+
- static int mrp_pdu_init(struct mrp_applicant *app)
- {
- 	struct sk_buff *skb;
-@@ -895,6 +908,7 @@ void mrp_uninit_applicant(struct net_device *dev, struct mrp_application *appl)
+-		vic: intc@10140000 {
++		vic: interrupt-controller@10140000 {
+ 			compatible = "arm,versatile-vic";
+ 			interrupt-controller;
+ 			#interrupt-cells = <1>;
+ 			reg = <0x10140000 0x1000>;
+-			clear-mask = <0xffffffff>;
+ 			valid-mask = <0xffffffff>;
+ 		};
  
- 	spin_lock_bh(&app->lock);
- 	mrp_mad_event(app, MRP_EVENT_TX);
-+	mrp_attr_destroy_all(app);
- 	mrp_pdu_queue(app);
- 	spin_unlock_bh(&app->lock);
+-		sic: intc@10003000 {
++		sic: interrupt-controller@10003000 {
+ 			compatible = "arm,versatile-sic";
+ 			interrupt-controller;
+ 			#interrupt-cells = <1>;
+diff --git a/arch/arm/boot/dts/versatile-pb.dts b/arch/arm/boot/dts/versatile-pb.dts
+index 06a0fdf24026..e7e751a858d8 100644
+--- a/arch/arm/boot/dts/versatile-pb.dts
++++ b/arch/arm/boot/dts/versatile-pb.dts
+@@ -7,7 +7,7 @@
  
+ 	amba {
+ 		/* The Versatile PB is using more SIC IRQ lines than the AB */
+-		sic: intc@10003000 {
++		sic: interrupt-controller@10003000 {
+ 			clear-mask = <0xffffffff>;
+ 			/*
+ 			 * Valid interrupt lines mask according to
 -- 
 2.30.2
 
