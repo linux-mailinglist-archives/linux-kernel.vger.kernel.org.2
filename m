@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1F13DA8AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25493DA8B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhG2QQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhG2QQt (ORCPT
+        id S230300AbhG2QRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:17:06 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:53539 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhG2QRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:16:49 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56EBC061765;
-        Thu, 29 Jul 2021 09:16:45 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so6457567oti.0;
-        Thu, 29 Jul 2021 09:16:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PPsPSzxLvC5DRd9zmh1nElMNXIvh5LMndC48uND3l50=;
-        b=PmSYYquQ4lHR2+pqeT/8VPy5ihnhrNFt3FqzGWjTjhU1sro3g6RMUeQrSIWqT1QEtp
-         URzjftDFv6IfB2eI+BBsVClIuTcki8S67ayy5TllJM0vg07XnEeVPwu2R9kzClweIFYm
-         szNGR0q/RXcyvV5Ou7Qn2nCZ8i6umk4giqcO4u6MY6EbwwgKPgrqr1NY3S5u+pLiosOS
-         DeaE7zOxaX2zCRli4e0jF599XbjK9tHAU7FWYO8a+b1H0ciVHkZ8t4/maaF539BvVd8A
-         5lTyY3uBuozXXsdeHWOhK0V+S+qeIyQNCN9scMCJfN39XtqxjfEJpw6iM4rV0T+eSlvn
-         DVvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PPsPSzxLvC5DRd9zmh1nElMNXIvh5LMndC48uND3l50=;
-        b=O4W3VuvJcUnaArfhZizbh7bOvRbVJDspK67Rntuo1ui/h55zL6Bjp07TH7BGP1XYvs
-         xgA/qb2EBZfkjicrPyBUV0UB1jfaTAGoUIdXp73bWDu4X7jXHYuatyEVU/iv7y/FUYIK
-         ycdUL6cHM2IczqwZxmtd3DSuOMJlMiREPrsil2SDuuQ9zbhAoHkbzQpecIQ4cgIRfbsO
-         LU+tlKWK5YCEJkVaLc/MsWn2NDFNeNdXPiF0KsKOrw/sZaEu+ouO74pmsFkCwyNEfk+e
-         7I0tv4yxe03W7RCtH+z/qjBYZ9CorYEVKBGXLzLf8hB3Jaqj0WwInMIcEZLyzuxFA/2f
-         Jx1A==
-X-Gm-Message-State: AOAM5313FJvhj4H8u/JrBPkTjdRxO+f2DXUzDOi16XB9pRE+a+9QzW6Y
-        nHqzoI3iUEX77pFBwu8VyVhJPZgnQrf3lZiM
-X-Google-Smtp-Source: ABdhPJwtNfvn1W6zUgsLjM03xBPfHPlPNAtz1JY9XUWi5b6kD0LOIHYXINce1NRWxdbbbRoiQUqo/Q==
-X-Received: by 2002:a9d:6c8e:: with SMTP id c14mr4210242otr.5.1627575405140;
-        Thu, 29 Jul 2021 09:16:45 -0700 (PDT)
-Received: from ian.penurio.us ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id r5sm584841oti.5.2021.07.29.09.16.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 09:16:44 -0700 (PDT)
-Subject: Re: [RFC PATCH 3/8] block: Add kernel APIs to create & delete block
- device LED triggers
-To:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
-        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
-        kernelnewbies@kernelnewbies.org
-References: <20210729015344.3366750-1-arequipeno@gmail.com>
- <20210729015344.3366750-4-arequipeno@gmail.com>
- <110419.1627530334@turing-police>
-From:   Ian Pilcher <arequipeno@gmail.com>
-Message-ID: <36b97f0a-b435-24fa-df2e-f507a4971bd6@gmail.com>
-Date:   Thu, 29 Jul 2021 11:16:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 29 Jul 2021 12:17:05 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d46 with ME
+        id b4Gz2500421Fzsu034GzEF; Thu, 29 Jul 2021 18:17:00 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 29 Jul 2021 18:17:00 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, curtis.klein@hpe.com
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] watchdog: Fix an invalid memory access in 'watchdog_cdev_unregister()'
+Date:   Thu, 29 Jul 2021 18:16:58 +0200
+Message-Id: <dcb65e66acd1a50d65635b35d0d340846c7d10c7.1627575359.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <110419.1627530334@turing-police>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 10:45 PM, Valdis Klētnieks wrote:
-> Is pr_warn() the right level for this stuff? I'd think this sort of pilot error should
-> be pr_info() or even pr_debug(), if mentioned at all.  pr_warn() would be for
-> something like an unexpected situation like trying to blink an LED but failing.
-> Simple syntax errors should probably just toss a -EINVAL and return.
+A few lines before 'watchdog_hrtimer_pretimeout_stop(wdd)', we explicitly
+set 'wdd->wd_data' to NULL.
+So, it is more than likely than this call will lead to an invalid
+memory access.
 
-Fair point.  I'll change it to pr_info().  I'm reluctant to completely
-"swallow" the error message, as I've been on the other side as a system
-administrator trying to guess at the reason for an error code.
+Move this call before the 'wdd->wd_data = NULL;'
 
-> (Among other things, this allows a userspace script to spam the
-> log by simply repeatedly trying to create the same entry)
+Fixes: 7b7d2fdc8c3e ("watchdog: Add hrtimer-based pretimeout feature")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Completely untested!
+Not sure at all, that it is the way to fix it.
+---
+ drivers/watchdog/watchdog_dev.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Only root, and they've got plenty of ways to do that.
-
-Thanks!
-
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 3bab32485273..ffd8f1a82355 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -1096,6 +1096,8 @@ static void watchdog_cdev_unregister(struct watchdog_device *wdd)
+ 		watchdog_stop(wdd);
+ 	}
+ 
++	watchdog_hrtimer_pretimeout_stop(wdd);
++
+ 	mutex_lock(&wd_data->lock);
+ 	wd_data->wdd = NULL;
+ 	wdd->wd_data = NULL;
+@@ -1103,7 +1105,6 @@ static void watchdog_cdev_unregister(struct watchdog_device *wdd)
+ 
+ 	hrtimer_cancel(&wd_data->timer);
+ 	kthread_cancel_work_sync(&wd_data->work);
+-	watchdog_hrtimer_pretimeout_stop(wdd);
+ 
+ 	put_device(&wd_data->dev);
+ }
 -- 
-========================================================================
-                  In Soviet Russia, Google searches you!
-========================================================================
+2.30.2
+
