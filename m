@@ -2,115 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FA13DAB82
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B7E3DAB87
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhG2S67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229713AbhG2S66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:58:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D1F9600D4;
-        Thu, 29 Jul 2021 18:58:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627585135;
-        bh=NY+6KsF6TgwvjW8V2qdlD2zqaxdlHCFW8WbLHI1uw44=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QwbKTXNKGQlFHhv+nWwVAGS0y7dhrRo4QVZVXmOtNRN5nEqtsizCnwgYVL71jdemC
-         NN4LRUz2GWMm7y5nxjYEDLhzAkGKRRgwxxSk0RtIMXokH62NJ6mpGF6A4PMG9LR/dk
-         TFkkqH24xr7RZti78Lg43eSuDbQW/o4UTfuxqASt48qIZ7hGRVSrrGAHfGoGqApQr4
-         fe/qqMg9s0eu93lcxSA+fP7WwiK2Zm7316Nw0lTenmESdj7Qq2k4auX+VlqVjOzIyH
-         tJgu8hsfbG/DoN1PkOib/PnMN36fOPMKqtasZoBoWlwaNtiGVNPNof0RnW7kK1gS1x
-         /NEEryLj0coQw==
-Date:   Thu, 29 Jul 2021 11:58:50 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 54/64] ipv6: Use struct_group() to zero rt6_info
-Message-ID: <20210729115850.7f913c73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210727205855.411487-55-keescook@chromium.org>
-References: <20210727205855.411487-1-keescook@chromium.org>
-        <20210727205855.411487-55-keescook@chromium.org>
+        id S231594AbhG2TBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhG2TBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 15:01:15 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744B9C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:01:12 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id d73so11822368ybc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tMRycNlt7ES7kF6ezVUYuskwJ/T4IKJjcQobjR4RSD4=;
+        b=cFpi1M7qYM3XfdgHPKkC+vm6dZjwvdn3EfcqmOIMjLRz4TQ3UIZKJjUYKMD3Fokfje
+         CpDCFZnH22rDjKqdDFAnPE7Gv+TC8SgFU7u5Kbtpkl6AO1H7ZzasMqae45NlY+mD7DlR
+         unyPSHCscYq40R6qTALdXsIeSQ8vhRHr6aAJJuEsVkqKjT6WSkBTey38Tc3dRUFZgdJK
+         i5GMfbKdEeEz7U8FjuylRaqKXdxsrSeIakRGyYZs81CWJrmr2K7cvUspdDvg7TDn/D8x
+         jKlvuhH5+OCt4K47XyjlkrQx7o5ut8imc67k+/jnhp8N5qDYMfFgtxByJ56kpcQQb7d/
+         8PhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tMRycNlt7ES7kF6ezVUYuskwJ/T4IKJjcQobjR4RSD4=;
+        b=htJw+V2B6fgXaev+SKxTtIs+yDkv09cvHU0xEhzhIzG2uOmK8Jp2sd2q8sesaGn375
+         1UNXzDK/vgIW9u8NouARCYeRvNjww3Pfb2zSH09W69UOFsWpiXTBYigvZJfoQtzpzRfJ
+         pZ/bf2n5aGQ0RlgMdcj+EwyDukZhayxAbF8mwf4omZyXSuLR2IpyYnphSos0gZRCBxrk
+         OehBFnLxnHNAUJ2hvoyIXPCX55REn0exXLAqdro419PvlsJVT/vjISFb6fmRthktB8tD
+         HOacSwMIcFRChIJTdTHIPM3+Cg+uRU+UX8VjIJonEFcnZtZwKcJJxRFH7cDWvCHS68oh
+         VZVA==
+X-Gm-Message-State: AOAM530WUR48EvdE3LtMIytMxxDr2e+YRfz6SBlX2bdaFbmB4ngAkiTF
+        Z3vdKCJJ9dR2RVtVzDjHdn+m2naQ25M5sMY/r2gsRw==
+X-Google-Smtp-Source: ABdhPJyg/YetziUGJSaXot2KuqGgbTVvVtMmN3N1dHm1mUYPErYLJSr1M1/cI9c92eqYrHnoUX63ULDib3cCo6sf7Fo=
+X-Received: by 2002:a25:b708:: with SMTP id t8mr8963591ybj.139.1627585271495;
+ Thu, 29 Jul 2021 12:01:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210726175357.1572951-1-mizhang@google.com> <20210726175357.1572951-3-mizhang@google.com>
+ <YQL0yjwYzJKJ0pTe@google.com>
+In-Reply-To: <YQL0yjwYzJKJ0pTe@google.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Thu, 29 Jul 2021 12:01:00 -0700
+Message-ID: <CAL715WKwFAPAFfZr=tEoW1QFLFosCtmstLskqxTKjiNZGUK-jA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] KVM: x86/mmu: Avoid collision with !PRESENT SPTEs
+ in TDP MMU lpage stats
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 13:58:45 -0700 Kees Cook wrote:
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memset(), avoid intentionally writing across
-> neighboring fields.
-> 
-> Add struct_group() to mark region of struct rt6_info that should be
-> initialized to zero.
+oh, definitely. Sorry for the confusion.
 
-memset_after() ?
-
-> diff --git a/include/net/ip6_fib.h b/include/net/ip6_fib.h
-> index 15b7fbe6b15c..9816e7444918 100644
-> --- a/include/net/ip6_fib.h
-> +++ b/include/net/ip6_fib.h
-> @@ -205,20 +205,22 @@ struct fib6_info {
->  
->  struct rt6_info {
->  	struct dst_entry		dst;
-> -	struct fib6_info __rcu		*from;
-> -	int				sernum;
-> -
-> -	struct rt6key			rt6i_dst;
-> -	struct rt6key			rt6i_src;
-> -	struct in6_addr			rt6i_gateway;
-> -	struct inet6_dev		*rt6i_idev;
-> -	u32				rt6i_flags;
-> -
-> -	struct list_head		rt6i_uncached;
-> -	struct uncached_list		*rt6i_uncached_list;
-> -
-> -	/* more non-fragment space at head required */
-> -	unsigned short			rt6i_nfheader_len;
-> +	struct_group(init,
-> +		struct fib6_info __rcu		*from;
-> +		int				sernum;
-> +
-> +		struct rt6key			rt6i_dst;
-> +		struct rt6key			rt6i_src;
-> +		struct in6_addr			rt6i_gateway;
-> +		struct inet6_dev		*rt6i_idev;
-> +		u32				rt6i_flags;
-> +
-> +		struct list_head		rt6i_uncached;
-> +		struct uncached_list		*rt6i_uncached_list;
-> +
-> +		/* more non-fragment space at head required */
-> +		unsigned short			rt6i_nfheader_len;
-> +	);
->  };
->  
->  struct fib6_result {
-> diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-> index 6b8051106aba..bbcc605bab57 100644
-> --- a/net/ipv6/route.c
-> +++ b/net/ipv6/route.c
-> @@ -327,9 +327,7 @@ static const struct rt6_info ip6_blk_hole_entry_template = {
->  
->  static void rt6_info_init(struct rt6_info *rt)
->  {
-> -	struct dst_entry *dst = &rt->dst;
-> -
-> -	memset(dst + 1, 0, sizeof(*rt) - sizeof(*dst));
-> +	memset(&rt->init, 0, sizeof(rt->init));
->  	INIT_LIST_HEAD(&rt->rt6i_uncached);
->  }
->  
-
+On Thu, Jul 29, 2021 at 11:34 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Mon, Jul 26, 2021, Mingwei Zhang wrote:
+> > Factor in whether or not the old/new SPTEs are shadow-present when
+> > adjusting the large page stats in the TDP MMU. A modified MMIO SPTE can
+> > toggle the page size bit, as bit 7 is used to store the MMIO generation,
+> > i.e. is_large_pte() can get a false positive when called on a MMIO SPTE.
+> > Ditto for nuking SPTEs with REMOVED_SPTE, which sets bit 7 in its magic
+> > value.
+> >
+> > Opportunistically move the logic below the check to verify at least one
+> > of the old/new SPTEs is shadow present.
+> >
+> > Use is/was_leaf even though is/was_present would suffice.  The code
+> > generation is roughly equivalent since all flags need to be computed
+> > prior to the code in question, and using the *_leaf flags will minimize
+> > the diff in a future enhancement to account all pages, i.e. will change
+> > the check to "is_leaf != was_leaf".
+> >
+> > Suggested-by: Sean Christopherson <seanjc@google.com>
+>
+> There's no hard rule for when to use Suggested-by vs. giving Author credit, but
+> in this case, since you took the patch and changelog verbatim[*] (sans the missing
+> tags below), it's more polite to take the full patch (with me as Author in
+> this case) and add your SOB since you're posting the patch.
+>
+>   Fixes: 1699f65c8b65 ("kvm/x86: Fix 'lpages' kvm stat for TDM MMU")
+>   Cc: stable@vger.kernel.org
+>
+> [*] https://lkml.kernel.org/r/YPho0ME5pSjqRSoc@google.com
+>
+> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
