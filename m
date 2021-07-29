@@ -2,242 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8733DA0BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6473DA0CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235955AbhG2J7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235544AbhG2J7U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:59:20 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2CCC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:59:16 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id h9so6791349ljq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:59:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nIej11/PYcGeLGxt7QOR+AppfCQjgzk8NOs4YUKmoVs=;
-        b=m6MS/ZA3IHYlnwTYoSS9WTrTqje10ox98fXiIHsiSs6fIpuUWgFw5PJ2vLzgiH9wXm
-         oNfNwAKxV9xDmZdElU1gKVLdVXRyThDU+SXgY69YWjaRBJMBtxG0z3wQw7QWTapcts9O
-         iN1OGi3uMFfiO74SU0ONms6KT5r1gWDPbABFRueW9HvNGsN6QmzU07E7pvIPOI8xZ3K5
-         zYg7Tw/HopP5eN/tkjneBmxwAy3udxo8HUBRPuFH6YrHRzIipKqcfi67LLC9yY8F/I15
-         YD19xIMW9/LGzpCQ3bwTc4kf7Yw+RkYA3Z1MMjpkJ62ao7I0D49Apn5ZdAQB1eZwmIgn
-         hnHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nIej11/PYcGeLGxt7QOR+AppfCQjgzk8NOs4YUKmoVs=;
-        b=WiAnjnpgfj/JBrF9EDRGtCyVNyQhdZF+rYJOEOECrhHYxKAphVDayHwK+n9HgizK3u
-         WIBn/lybrBApOvpy6p9ajxgtuWfu8tXVbBScvfjwFys+hQdh0iOvWR7q9sOn8tMomWSv
-         rKv6RVc5mDHYV4CnsZkGWjfF/FHwUoRovoZOUcJ65jvfsDvhze/3eR/dOcrpptI4dIDa
-         +/HGTYF08B73hhxB6UXdj1yZtVb2dMYq+3d+eCtOW0Li7/isUSpIrKoMhWWK/H3ySBdl
-         Vs72V2eBuEx66+O4Nk7RFF0MVNpWlkFO7PYbE9Q17e4/xJ7epptPmXB71tPig6IE9suP
-         SZ6w==
-X-Gm-Message-State: AOAM530uGCczYCznxVjjjbk6+pnLZnT8egZPcmkMa4tY04ZQlisIpdQ2
-        nq536FvJvS2GJx53B8gSuuuc6Y+LWZm7tg==
-X-Google-Smtp-Source: ABdhPJysezjVyG3wOZUNPI2nlc1wYDaL9jMePnngzQ5rByaB9dBKJMmfrXAUe2w0ApMfEdXkx8DVcQ==
-X-Received: by 2002:a2e:b0c5:: with SMTP id g5mr2418335ljl.41.1627552754933;
-        Thu, 29 Jul 2021 02:59:14 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id x3sm117577ljd.66.2021.07.29.02.59.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 02:59:14 -0700 (PDT)
-Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210726231351.655302-1-bjorn.andersson@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <3bb5dc26-6779-6cb4-b9dd-e64c306e9ae6@linaro.org>
-Date:   Thu, 29 Jul 2021 12:59:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235670AbhG2KD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:03:29 -0400
+Received: from smtp-32-i2.italiaonline.it ([213.209.12.32]:58756 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235175AbhG2KD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 06:03:28 -0400
+Received: from oxapps-18-104.iol.local ([10.101.8.114])
+        by smtp-32.iol.local with ESMTPA
+        id 92ssm1HOrPvRT92ssmema3; Thu, 29 Jul 2021 12:03:23 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1627553003; bh=Xs8eN08sziDm55rnNhVcpr91uudi9y0YZFX/Jrmocrk=;
+        h=From;
+        b=gLmvxwlPiY24DoSFqfFTPkm4lFPPbkprab5NVSaN2KpUFY/Qwj3WkDtf2MsTyW6IK
+         dL/Ci9lN8BKQlSyZqjHTbXLAQd8MgnTSvM/EMx7/5Pr6jlEgP69Ypk+j5KVczR/9Yp
+         AAjcqLSUSG7k1jHimTwBsWya1vEGTAcjRe2uRAmkFtDoV2y0xPe5ZTjYWu9XVhKAud
+         DkNrLvdmDmDxQkQuLZxoVDloVgz7yRRpxGvu8qWa43CtQd+U7ZwMuK6TEBG0IqR7W2
+         k5hFekwOARHlrQHDN+GCCQeLOz6PaTY0k+IfbCi1FkCOD0y+mlkyjZEab7UgU7cuPN
+         d0BHcqUmVJYcg==
+X-CNFS-Analysis: v=2.4 cv=NqgUz+RJ c=1 sm=1 tr=0 ts=61027ceb cx=a_exe
+ a=/Ybp6/jOcaliI5wkn0kplg==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
+ a=vesc6bHxzc4A:10 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8 a=8b9GpE9nAAAA:8
+ a=SU5VBOwo6aiSI8lX5M4A:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=T3LWEMljR5ZiDmsYVIUa:22
+Date:   Thu, 29 Jul 2021 12:03:22 +0200 (CEST)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Dillon Hua <dillonhua@gmail.com>
+Cc:     linux-clk@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Gabriel Fernandez <gabriel.fernandez@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com
+Message-ID: <1926284813.753014.1627553002984@mail1.libero.it>
+In-Reply-To: <CAPTRvHkf0cK_4ZidM17rPo99gWDmxgqFt4CDUjqFFwkOeQeFDg@mail.gmail.com>
+References: <20210725160725.10788-1-dariobin@libero.it>
+ <CAPTRvHkf0cK_4ZidM17rPo99gWDmxgqFt4CDUjqFFwkOeQeFDg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v4] clk: stm32f4: fix post divisor setup for
+ I2S/SAI PLLs
 MIME-Version: 1.0
-In-Reply-To: <20210726231351.655302-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
+X-Originating-IP: 185.33.57.41
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: 6kzYpe1z67xWIV8DNCxeZK4Q/cqaATWL
+x-libjamv: WUhzgF/beUU=
+X-CMAE-Envelope: MS4xfMWZymzk0e23HLw9svR11Oa7lRx/VBBLXeLj/dXrKh69/UUQXFHRM3Thl5XQkSyXAKtZ8G17KIoB2/A708uJe0M1SvAjDmjA9QbvJxwVM+00Rp7/2hNR
+ jMPU7wS/bC4yCBOZdISaBQGXM64kqvbIWMeBNMlxv5+p8BTQwGdWPxCpa5Q3E4VkxEz3Sd+FpjqEGItRNqRzXVtZ+VTAIBT0tW88u/jg4CCtUJ1wNFGLQXN8
+ CPdHqlLXPOUrzCew8CxoiQli2T/JMZAlEwgIJyq6Si0VLtHKhH74lA6ywqH6YF7QnG9hbnCVhrQAvPHslfHncLWOi8xBPxYejhuNEs/C4yf0JiBhECeqzZ7/
+ dY56WZuMVceSQqvJYusAN7nM8BqNgnFu5OPi8qCE5bZaa67ugZrgFxJvX4G5uhmoy62NjTv4x7SfUOjaeVyddd98EzYuljbd5B+FAhfnsGI/jhPhqAIg1ZFF
+ UPZW7QkjXjiXRQqb78orlBN+qbPx8SDawMCodz6na+giEN3R0lUmEZVUdkSnR9PhrKUFRPb5KZObGMe5lSj6v7PmFboXQeCWg7bvbg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2021 02:13, Bjorn Andersson wrote:
-> eDP panels might need some power sequencing and backlight management,
-> so make it possible to associate a drm_panel with a DP instance and
-> prepare and enable the panel accordingly.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Hi Dillon,
 
-The idea looks good from my point of view. For v1 could you please 
-extend it with the `if (panel)` checks and handling of the error codes.
+> Il 28/07/2021 12:03 Dillon Hua <dillonhua@gmail.com> ha scritto:
+> 
+>  
+> Hi Dario,
+> 
+> I have a similar patch [1] submitted last year.
+> Unfortunately, it did not get accepted by the maintainer.
+> 
+> Just a reminder here for you, should remove
+> 
+> { STM32F4_RCC_APB2ENR, 26, "ltdc", "apb2_div" },
 
-> ---
-> 
-> This solves my immediate problem on my 8cx laptops, of indirectly controlling
-> the backlight during DPMS. But my panel is powered when I boot it and as such I
-> get the hpd interrupt and I don't actually have to deal with a power on
-> sequence - so I'm posting this as an RFC, hoping to get some input on these
-> other aspects.
-> 
-> If this is acceptable I'd be happy to write up an accompanying DT binding
-> change that marks port 2 of the DP controller's of_graph as a reference to the
-> attached panel.
-> 
->   drivers/gpu/drm/msm/dp/dp_display.c | 15 +++++++++++++--
->   drivers/gpu/drm/msm/dp/dp_display.h |  1 +
->   drivers/gpu/drm/msm/dp/dp_parser.c  | 19 +++++++++++++++++++
->   drivers/gpu/drm/msm/dp/dp_parser.h  |  1 +
->   4 files changed, 34 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 206bf7806f51..1db5a3f752d2 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -10,6 +10,7 @@
->   #include <linux/component.h>
->   #include <linux/of_irq.h>
->   #include <linux/delay.h>
-> +#include <drm/drm_panel.h>
->   
->   #include "msm_drv.h"
->   #include "msm_kms.h"
-> @@ -252,6 +253,8 @@ static int dp_display_bind(struct device *dev, struct device *master,
->   		goto end;
->   	}
->   
-> +	dp->dp_display.drm_panel = dp->parser->drm_panel;
-> +
->   	rc = dp_aux_register(dp->aux, drm);
->   	if (rc) {
->   		DRM_ERROR("DRM DP AUX register failed\n");
-> @@ -867,8 +870,10 @@ static int dp_display_set_mode(struct msm_dp *dp_display,
->   	return 0;
->   }
->   
-> -static int dp_display_prepare(struct msm_dp *dp)
-> +static int dp_display_prepare(struct msm_dp *dp_display)
->   {
-> +	drm_panel_prepare(dp_display->drm_panel);
-> +
->   	return 0;
->   }
->   
-> @@ -886,6 +891,8 @@ static int dp_display_enable(struct dp_display_private *dp, u32 data)
->   	if (!rc)
->   		dp_display->power_on = true;
->   
-> +	drm_panel_enable(dp_display->drm_panel);
-> +
->   	return rc;
->   }
->   
-> @@ -915,6 +922,8 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
->   	if (!dp_display->power_on)
->   		return 0;
->   
-> +	drm_panel_disable(dp_display->drm_panel);
-> +
->   	/* wait only if audio was enabled */
->   	if (dp_display->audio_enabled) {
->   		/* signal the disconnect event */
-> @@ -939,8 +948,10 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
->   	return 0;
->   }
->   
-> -static int dp_display_unprepare(struct msm_dp *dp)
-> +static int dp_display_unprepare(struct msm_dp *dp_display)
->   {
-> +	drm_panel_unprepare(dp_display->drm_panel);
-> +
->   	return 0;
->   }
->   
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
-> index 8b47cdabb67e..ce337824c95d 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
-> @@ -15,6 +15,7 @@ struct msm_dp {
->   	struct device *codec_dev;
->   	struct drm_connector *connector;
->   	struct drm_encoder *encoder;
-> +	struct drm_panel *drm_panel;
->   	bool is_connected;
->   	bool audio_enabled;
->   	bool power_on;
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
-> index fc8a6452f641..e6a6e9007bfd 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-> @@ -6,6 +6,7 @@
->   #include <linux/of_gpio.h>
->   #include <linux/phy/phy.h>
->   
-> +#include <drm/drm_of.h>
->   #include <drm/drm_print.h>
->   
->   #include "dp_parser.h"
-> @@ -276,6 +277,20 @@ static int dp_parser_clock(struct dp_parser *parser)
->   	return 0;
->   }
->   
-> +static int dp_parser_find_panel(struct dp_parser *parser)
-> +{
-> +	struct device_node *np = parser->pdev->dev.of_node;
-> +	int rc;
-> +
-> +	rc = drm_of_find_panel_or_bridge(np, 2, 0, &parser->drm_panel, NULL);
-> +	if (rc == -ENODEV)
-> +		rc = 0;
-> +	else if (rc)
-> +		DRM_ERROR("failed to acquire DRM panel: %d\n", rc);
-> +
-> +	return rc;
-> +}
-> +
->   static int dp_parser_parse(struct dp_parser *parser)
->   {
->   	int rc = 0;
-> @@ -297,6 +312,10 @@ static int dp_parser_parse(struct dp_parser *parser)
->   	if (rc)
->   		return rc;
->   
-> +	rc = dp_parser_find_panel(parser);
-> +	if (rc)
-> +		return rc;
-> +
->   	/* Map the corresponding regulator information according to
->   	 * version. Currently, since we only have one supported platform,
->   	 * mapping the regulator directly.
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.h b/drivers/gpu/drm/msm/dp/dp_parser.h
-> index 3266b529c090..994ca9336acd 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.h
-> @@ -122,6 +122,7 @@ struct dp_parser {
->   	struct dp_display_data disp_data;
->   	const struct dp_regulator_cfg *regulator_cfg;
->   	u32 max_dp_lanes;
-> +	struct drm_panel *drm_panel;
->   
->   	int (*parse)(struct dp_parser *parser);
->   };
-> 
+Thank you for your suggestion.
+While testing the patch on the stm32f469-disco board I didn't
+notice the white screen issue. I'll try to run the tests again. 
+I will let you know.
 
+Thanks and regards,
+Dario
 
--- 
-With best wishes
-Dmitry
+> 
+> from stm32{f429, f469, f746, f769}_gates[]; or else
+> run into white screen after the kernel enters the console.
+> 
+> This patch was verified by Patrice Chotard, you can
+> find  the history from [2].
+> 
+> Hope you can help to submit a patch to include [2], thanks.
+> 
+> [1]
+> https://lore.kernel.org/linux-arm-kernel/1590564453-24499-7-git-send-email-dillon.minfei@gmail.com/
+> https://lore.kernel.org/linux-arm-kernel/1590564453-24499-6-git-send-email-dillon.minfei@gmail.com/
+> 
+> resend this year:
+> https://lore.kernel.org/lkml/1590378348-8115-6-git-send-email-dillon.minfei@gmail.com/
+> 
+> [2]
+> https://lore.kernel.org/lkml/6915fa2a-e211-476f-8317-6825e280c322@foss.st.com/
+> 
+> Thanks
+> Best Regards
+> 
+> Dillon
+> 
+> On Mon, Jul 26, 2021 at 12:08 AM Dario Binacchi <dariobin@libero.it> wrote:
+> >
+> > Enabling the framebuffer leads to a system hang. Running, as a debug
+> > hack, the store_pan() function in drivers/video/fbdev/core/fbsysfs.c
+> > without taking the console_lock, allows to see the crash backtrace on
+> > the serial line.
+> >
+> > ~ # echo 0 0 > /sys/class/graphics/fb0/pan
+> >
+> > [    9.719414] Unhandled exception: IPSR = 00000005 LR = fffffff1
+> > [    9.726937] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
+> > [    9.733008] Hardware name: STM32 (Device Tree Support)
+> > [    9.738296] PC is at clk_gate_is_enabled+0x0/0x28
+> > [    9.743426] LR is at stm32f4_pll_div_set_rate+0xf/0x38
+> > [    9.748857] pc : [<0011e4be>]    lr : [<0011f9e3>]    psr: 0100000b
+> > [    9.755373] sp : 00bc7be0  ip : 00000000  fp : 001f3ac4
+> > [    9.760812] r10: 002610d0  r9 : 01efe920  r8 : 00540560
+> > [    9.766269] r7 : 02e7ddb0  r6 : 0173eed8  r5 : 00000000  r4 : 004027c0
+> > [    9.773081] r3 : 0011e4bf  r2 : 02e7ddb0  r1 : 0173eed8  r0 : 1d3267b8
+> > [    9.779911] xPSR: 0100000b
+> > [    9.782719] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
+> > [    9.788791] Hardware name: STM32 (Device Tree Support)
+> > [    9.794120] [<0000afa1>] (unwind_backtrace) from [<0000a33f>] (show_stack+0xb/0xc)
+> > [    9.802421] [<0000a33f>] (show_stack) from [<0000a8df>] (__invalid_entry+0x4b/0x4c)
+> >
+> > The `pll_num' field in the post_div_data configuration contained a wrong
+> > value which also referenced an uninitialized hardware clock when
+> > clk_register_pll_div() was called.
+> >
+> > Fixes: 517633ef630e ("clk: stm32f4: Add post divisor for I2S & SAI PLLs")
+> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> > Reviewed-by: Gabriel Fernandez <gabriel.fernandez@st.com>
+> >
+> > ---
+> > I added Gabriel Fernandez's 'Reviewed-by' tag as requested by himself
+> > 15 days ago at https://lore.kernel.org/patchwork/patch/1450964/.
+> >
+> > Changes in v4:
+> > - Really add Gabriel Fernandez 'Reviewed-by' tag. In version 3 I forgot
+> >   to add the tag.
+> >
+> > Changes in v3:
+> > - Add Gabriel Fernandez 'Reviewed-by' tag.
+> >
+> > Changes in v2:
+> > - Change  'u8 pll_num' from 'stm32f4_pll_post_div_data' structure into
+> >   'int pll_idx'.
+> >
+> >  drivers/clk/clk-stm32f4.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
+> > index 18117ce5ff85..5c75e3d906c2 100644
+> > --- a/drivers/clk/clk-stm32f4.c
+> > +++ b/drivers/clk/clk-stm32f4.c
+> > @@ -526,7 +526,7 @@ struct stm32f4_pll {
+> >
+> >  struct stm32f4_pll_post_div_data {
+> >         int idx;
+> > -       u8 pll_num;
+> > +       int pll_idx;
+> >         const char *name;
+> >         const char *parent;
+> >         u8 flag;
+> > @@ -557,13 +557,13 @@ static const struct clk_div_table post_divr_table[] = {
+> >
+> >  #define MAX_POST_DIV 3
+> >  static const struct stm32f4_pll_post_div_data  post_div_data[MAX_POST_DIV] = {
+> > -       { CLK_I2SQ_PDIV, PLL_I2S, "plli2s-q-div", "plli2s-q",
+> > +       { CLK_I2SQ_PDIV, PLL_VCO_I2S, "plli2s-q-div", "plli2s-q",
+> >                 CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 0, 5, 0, NULL},
+> >
+> > -       { CLK_SAIQ_PDIV, PLL_SAI, "pllsai-q-div", "pllsai-q",
+> > +       { CLK_SAIQ_PDIV, PLL_VCO_SAI, "pllsai-q-div", "pllsai-q",
+> >                 CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 8, 5, 0, NULL },
+> >
+> > -       { NO_IDX, PLL_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
+> > +       { NO_IDX, PLL_VCO_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PARENT,
+> >                 STM32F4_RCC_DCKCFGR, 16, 2, 0, post_divr_table },
+> >  };
+> >
+> > @@ -1774,7 +1774,7 @@ static void __init stm32f4_rcc_init(struct device_node *np)
+> >                                 post_div->width,
+> >                                 post_div->flag_div,
+> >                                 post_div->div_table,
+> > -                               clks[post_div->pll_num],
+> > +                               clks[post_div->pll_idx],
+> >                                 &stm32f4_clk_lock);
+> >
+> >                 if (post_div->idx != NO_IDX)
+> > --
+> > 2.17.1
+> >
