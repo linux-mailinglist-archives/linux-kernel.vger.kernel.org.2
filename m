@@ -2,151 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA123DA1DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A2B3DA1E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236699AbhG2LOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
+        id S236768AbhG2LPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236669AbhG2LOp (ORCPT
+        with ESMTP id S236312AbhG2LPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:14:45 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB66C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:14:42 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d2so3634732qto.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2K9Otu8LW9SDTcXYYe2i+NmHsFiLd0L5gZwCfWSKEmo=;
-        b=ph0P5vCb0OFIqgeqV14YecFS4sAcx7v1LDkjpxvpx7VtzA6H2FeZks2PCB2rjJKhRX
-         kLhKCbXdc5goS+AdVlhEsnetACl2h0f5owIWTAEgmg3qAoX1BPI5qKBCgRzjYY3TWEE8
-         ap3iJH2pOO1jZIL5BP9xn84HJ5I+j1ydD2+a6LXoDIBVhZXOQcz3MEjsEvct+h/bm6xM
-         gnplsF4FOoT8dTcNlnMELEExf92mE7CBje0LlNJKpk7+qZ+E6tNgyvh8V8ONZmyEUTpg
-         se0Bpo7uSiruq79wFoz3MGg70+MQQOeWPjGdYhZi9vMdfMxab/ZcGI6L01PEAkZcQUwZ
-         /9tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2K9Otu8LW9SDTcXYYe2i+NmHsFiLd0L5gZwCfWSKEmo=;
-        b=ky/zNGQWPgg4FR4w12rNLIgCf6jZx8njwfJOOWQIzpwPzOlopsyHCaCApQoEV79oeL
-         rqF2FgP8I7Jz9Nw2dJtSwFX3JrFvTMPmL/GMfUE67kqdyGK4cyRi796I8KopYJD1JCxK
-         VaYf0COGlCXixL67MhsEfUspkonvTBz0MbfVOBu2v6ybig9XzEHSYEHc82sQKCEfFqLg
-         lA+XP6jbck0/xE87lQictpopOhKS8cJFGnULkeknQx2LcwhEYejRtn2kCOziBn2b+rTh
-         yYF2wOjG/RCcA+RUSPZVI+imgwXMTMRMGKd6Hh7kKJh8+QyYBCNL+hcFlbGl4NeM+ebP
-         dl8g==
-X-Gm-Message-State: AOAM531YGtQwHHtWeSm4BI5pipDZLo4gOFbXXNM4JoawySk2MTApzcJ8
-        uPTeuxjt0llZ1pF+FGPv351rvP5WjtQsaebV
-X-Google-Smtp-Source: ABdhPJwAn3IRMTD72AerbI9G7j4vBNcMivwHurVclQz1qrLLqObsXzzh3n/4sqCOpuRq/b1tT4J2LA==
-X-Received: by 2002:ac8:41c2:: with SMTP id o2mr3599898qtm.237.1627557281670;
-        Thu, 29 Jul 2021 04:14:41 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id j127sm1596873qkf.20.2021.07.29.04.14.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 04:14:41 -0700 (PDT)
-Subject: Re: [PATCH 14/39] arm64: dts: qcom: sdm630: Add TSENS node
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210728222542.54269-1-konrad.dybcio@somainline.org>
- <20210728222542.54269-15-konrad.dybcio@somainline.org>
- <860f1120-c5a4-f531-3ea9-aa90c6b063dc@linaro.org>
- <2318377c-959a-a42b-81b5-44e2629570d5@somainline.org>
- <afee55a8-d7d3-709a-ea4f-0306698c9976@linaro.org>
- <b16d8000-85a7-d957-77d2-d921e5b09829@somainline.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <a7f90fe0-ee24-a47d-089d-e716a5766fcd@linaro.org>
-Date:   Thu, 29 Jul 2021 07:14:40 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 29 Jul 2021 07:15:42 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF2EC061765;
+        Thu, 29 Jul 2021 04:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CblAv96mX27DFrx3HyL6ij0ry5T9+5Rkz5lF7iXCAhs=; b=DlJZj6ih94zYBLueYF1oakpGwr
+        /emKwBozMSJYrxlmQEyYJMzpbI5ykbi+rTagIH4Oif2aOeFQ3cHY8h4J3wcJldZXBExLL1UaRqGWL
+        QEKGUdwLQTIOpzlRqtj5PeeNyCDBBVqyFg0R3Fe5nZctyAf/OR+lBNBrvExucYhFPGbVJcoy09wV5
+        7gE9q8eTcE+2vuGBE7+jUssC0NhxwS8WAJiVQthaegm2UxNpEf0UYQ8RjkslGBr/8rtWd9XuHvlEV
+        Fp+CYakW8L/VL9lEYcKJb9z6RMiT2WKZ4UelgK+3OZdQWpFPzMKDIaQ3do7oOXiuy1tcE81iAZEWz
+        ZEcCyQIA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m940M-003x8x-V5; Thu, 29 Jul 2021 11:15:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 35AB130005A;
+        Thu, 29 Jul 2021 13:15:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0D8172023ADBD; Thu, 29 Jul 2021 13:15:07 +0200 (CEST)
+Date:   Thu, 29 Jul 2021 13:15:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Rui Wang <wangrui@loongson.cn>, Ingo Molnar <mingo@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Guo Ren <guoren@kernel.org>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rui Wang <r@hev.cc>, Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [RFC PATCH v3] locking/atomic: Implement
+ atomic{,64,_long}_{fetch_,}{andnot_or}{,_relaxed,_acquire,_release}()
+Message-ID: <YQKNu3WeMA/eJrLj@hirez.programming.kicks-ass.net>
+References: <20210729093003.146166-1-wangrui@loongson.cn>
+ <20210729095551.GE21151@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <b16d8000-85a7-d957-77d2-d921e5b09829@somainline.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729095551.GE21151@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 29, 2021 at 10:55:52AM +0100, Will Deacon wrote:
 
+> Overall, I'm not thrilled to bits by extending the atomics API with
+> operations that cannot be implemented efficiently on any (?) architectures
+> and are only used by the qspinlock slowpath on machines with more than 16K
+> CPUs.
 
-On 7/29/21 6:55 AM, Konrad Dybcio wrote:
-> 
-> On 29.07.2021 12:54, Thara Gopinath wrote:
->>
->>
->> On 7/29/21 6:52 AM, Konrad Dybcio wrote:
->>>
->>> On 29.07.2021 12:50, Thara Gopinath wrote:
->>>> Hi Konrad,
->>>>
->>>> On 7/28/21 6:25 PM, Konrad Dybcio wrote:
->>>>> This will enable temperature reporting for various SoC
->>>>> components.
->>>>>
->>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
->>>>> ---
->>>>>     .../devicetree/bindings/thermal/qcom-tsens.yaml       |  1 +
->>>>>     arch/arm64/boot/dts/qcom/sdm630.dtsi                  | 11 +++++++++++
->>>>>     2 files changed, 12 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
->>>>> index 4a2eaf28e3fd..d3b9e9b600a2 100644
->>>>> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
->>>>> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
->>>>> @@ -48,6 +48,7 @@ properties:
->>>>>                   - qcom,sc7180-tsens
->>>>>                   - qcom,sc7280-tsens
->>>>>                   - qcom,sc8180x-tsens
->>>>> +              - qcom,sdm630-tsens
->>>>>                   - qcom,sdm845-tsens
->>>>>                   - qcom,sm8150-tsens
->>>>>                   - qcom,sm8250-tsens
->>>>> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>>>> index 1e54828817d5..7e9c80e35fba 100644
->>>>> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>>>> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>>>> @@ -627,6 +627,17 @@ mnoc: interconnect@1745000 {
->>>>>                      <&mmcc AHB_CLK_SRC>;
->>>>>             };
->>>>>     +        tsens: thermal-sensor@10ae000 {
->>>>> +            compatible = "qcom,sdm630-tsens", "qcom,tsens-v2";
->>>>> +            reg = <0x010ae000 0x1000>, /* TM */
->>>>> +                  <0x010ad000 0x1000>; /* SROT */
->>>>> +            #qcom,sensors = <12>;
->>>>
->>>> Are all 12 sensors used ? I see that in a later patch "arm64: dts: qcom: sdm630: Add thermal-zones configuration" only 9 are used.
->>>
->>> Hi,
->>>
->>> if I recall correctly, they all give output but not all of the mappings were documented in the downstream sources and we have no documentation whatsoever :(
->>
->> Right. In that case, why not change #qcom,sensors to 9 and add rest of the sensors if and when needed ?
->>
-> I don't think it makes sense to describe the hardware incorrectly, even if some of it is unused.
+My rationale for proposing this primitive is similar to the existence of
+other composite atomic ops from the Misc (and refcount) class (as per
+atomic_t.txt). They're common/performance sensitive operations that, on
+LL/SC platforms, can be better implemented than a cmpxchg() loop.
 
-My thinking was more along the lines of don't expose unused h/w bits.
+Specifically here, it can be used to implement short xchg() in an
+architecturally neutral way, but more importantly it provides fwd
+progress on LL/SC, while most LL/SC based cmpxchg() implementations are
+arguably broken there.
 
-> 
-> 
-> 
+People seem to really struggle to implement that sanely.
 
--- 
-Warm Regards
-Thara (She/Her/Hers)
+It's such a shame we can't have the compiler generate sane composite
+atomics for us..
+
+> I also think we're lacking documentation justifying when you would use this
+> new primitive over e.g. a sub-word WRITE_ONCE() on architectures that
+> support those, especially for the non-returning variants.
+
+Given the sub-word ordering 'fun', this might come in handy somewhere
+:-) But yes, it's existence is more of a completeness/symmetry argument
+than anything else.
