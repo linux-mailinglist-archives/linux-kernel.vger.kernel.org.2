@@ -2,67 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87A23D9C26
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B326B3D9C2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 05:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbhG2DWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 23:22:34 -0400
-Received: from mga07.intel.com ([134.134.136.100]:18011 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233297AbhG2DWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 23:22:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="276576559"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="276576559"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 20:22:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="517969699"
-Received: from louislifei-optiplex-7050.sh.intel.com (HELO louislifei-OptiPlex-7050) ([10.239.154.151])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Jul 2021 20:22:26 -0700
-Date:   Thu, 29 Jul 2021 11:22:11 +0800
-From:   Li Fei1 <fei1.li@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuox.liu@gmail.com,
-        reinette.chatre@intel.com, zhi.a.wang@intel.com, yu1.wang@intel.com
-Subject: Re: [PATCH] virt: acrn: Do hcall_destroy_vm() before resource release
-Message-ID: <20210729032211.GA10306@louislifei-OptiPlex-7050>
-References: <20210722062736.15050-1-fei1.li@intel.com>
- <YQAcnpQcO8h8/l8V@kroah.com>
+        id S233627AbhG2Ddf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 23:33:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233588AbhG2Ddd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 23:33:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627529610;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FOYTvQHscc3bjRMvDIJC+iI00m3LtGOUi4Tkr7sZCKY=;
+        b=NciGjeOCz0RT/UfS9SC5Gx2RMJwCm/ugHqzFgoBHi73dlejEFe3vu9lF/2kmM3hOgRD+KY
+        tTZYm8XgbV4LxRoUhY/7LMx2wq7Vrh30OnMM1bo6BIkQKISwYJhlIEZml86JHfxifgnbGT
+        TxO0MFfFXl3r//6J3G7/Zk86NzCB0Vg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-yuJPj04POHymQAhdb0bKLA-1; Wed, 28 Jul 2021 23:33:28 -0400
+X-MC-Unique: yuJPj04POHymQAhdb0bKLA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D63F5185302A;
+        Thu, 29 Jul 2021 03:33:26 +0000 (UTC)
+Received: from T590 (ovpn-13-29.pek2.redhat.com [10.72.13.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 62A491017CE5;
+        Thu, 29 Jul 2021 03:33:16 +0000 (UTC)
+Date:   Thu, 29 Jul 2021 11:33:19 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org,
+        David Jeffery <djeffery@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: New warning in nvme_setup_discard
+Message-ID: <YQIhfwP2z+DGWOxV@T590>
+References: <4729812.CpyZKHjjVO@natalenko.name>
+ <3180854.nXyytZ0Y3r@natalenko.name>
+ <YQF9YRSdRc+eVD1c@T590>
+ <4560968.zrxKzTJTGe@natalenko.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YQAcnpQcO8h8/l8V@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4560968.zrxKzTJTGe@natalenko.name>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 10:47:58PM +0800, Greg Kroah-Hartman wrote:
-> On Thu, Jul 22, 2021 at 02:27:36PM +0800, Fei Li wrote:
-> > From: Shuo Liu <shuo.a.liu@intel.com>
-> >
-> > The ACRN hypervisor has scenarios which could run a real-time guest VM.
-> > The real-time guest VM occupies dedicated CPU cores, be assigned with
-> > dedicated PCI devices. It can run without the Service VM after boot up.
-> > hcall_destroy_vm() returns failure when a real-time guest VM refuses.
-> > The clearing of flag ACRN_VM_FLAG_DESTROYED causes some kernel resource
-> > double-freed in a later acrn_vm_destroy().
-> >
-> > Do hcall_destroy_vm() before resource release to drop this chance to
-> > destroy the VM if hypercall fails.
-> >
-> > Fixes: 9c5137aedd11 ("virt: acrn: Introduce VM management interfaces")
-> > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-> > Signed-off-by: Fei Li <fei1.li@intel.com>
-> > ---
+On Wed, Jul 28, 2021 at 06:38:36PM +0200, Oleksandr Natalenko wrote:
+> Hello.
 > 
-> Do you also want this backported to older kernels?  If so, you need to
-> put a cc: stable in here, right?  I'll go add it myself, but be more
-> careful next time please.
-yes, thanks for your kind reminder.
-I will pay great attention next time.
+> On středa 28. července 2021 17:53:05 CEST Ming Lei wrote:
+> > Can you collect debug log by applying the following patch against the
+> > last one?
+> 
+> Yes, please see below.
+> 
+> > diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> > index 8780e4aa9df2..fbd8a68c619b 100644
+> > --- a/drivers/nvme/host/core.c
+> > +++ b/drivers/nvme/host/core.c
+> > @@ -828,6 +828,24 @@ static inline void nvme_setup_flush(struct nvme_ns *ns,
+> > cmnd->common.nsid = cpu_to_le32(ns->head->ns_id);
+> >  }
+> > 
+> > +static inline void blk_dump_rq(const struct request *req)
+> > +{
+> > +	struct bio *bio;
+> > +	int i = 0;
+> > +
+> > +	printk("dump req %p(f:%x, seg: %d)\n", req, req->cmd_flags,
+> > +			req->nr_phys_segments);
+> > +
+> > +	__rq_for_each_bio(bio, req) {
+> > +		printk("%d-%p: %hx/%hx %llu %u\n",
+> > +                       i++, bio,
+> > +                       bio->bi_flags, bio->bi_opf,
+> > +                       (unsigned long long)bio->bi_iter.bi_sector,
+> > +                       bio->bi_iter.bi_size>>9);
+> > +	}
+> > +}
+> > +
+> > +
+> >  static blk_status_t nvme_setup_discard(struct nvme_ns *ns, struct request
+> > *req, struct nvme_command *cmnd)
+> >  {
+> > @@ -868,6 +886,8 @@ static blk_status_t nvme_setup_discard(struct nvme_ns
+> > *ns, struct request *req, }
+> > 
+> >  	if (WARN_ON_ONCE(n != segments)) {
+> > +		printk("%s: ranges %u segments %u\n", __func__, n, segments);
+> > +		blk_dump_rq(req);
+> >  		if (virt_to_page(range) == ns->ctrl->discard_page)
+> >  			clear_bit_unlock(0, &ns->ctrl->discard_page_busy);
+> >  		else
+> 
+> ```
+> WARNING: CPU: 17 PID: 821 at drivers/nvme/host/core.c:868 nvme_setup_discard+0x1c6/0x220
+> …
+> CPU: 17 PID: 821 Comm: kworker/17:1H Not tainted 5.13.0-pf4 #1
+> Hardware name: ASUS System Product Name/Pro WS X570-ACE, BIOS 3601 05/26/2021
+> Workqueue: kblockd blk_mq_run_work_fn
+> RIP: 0010:nvme_setup_discard+0x1c6/0x220
+> Code: 8b a0 40 0b 00 00 4c 2b 25 f7 ff d7 00 49 c1 fc 06 49 c1 e4 0c 4c 03 25 f8 ff d7 00 4c 89 e5 48 85 d2 0f 85 9b fe ff ff 31 d2 <0f> 0b 48 c7 c6 e0 a8 10 8b 41 0f b7 cd 48 c7 c7 af 09 40 8b e8 14
+> RSP: 0018:ffffafa884517bf0 EFLAGS: 00010297
+> RAX: ffff91602f5b20d0 RBX: ffff915e05743c00 RCX: 0000000000080000
+> RDX: 000000000000000f RSI: 0000000028445c00 RDI: 000000000000000f
+> RBP: ffff91602f5b2000 R08: 000000000b366000 R09: ffff91602f5b2000
+> R10: 000000000000002d R11: fefefefefefefeff R12: ffff91602f5b2000
+> R13: 000000000000000e R14: ffff915e18c77000 R15: ffff915e18c77148
+> FS:  0000000000000000(0000) GS:ffff91650ee40000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00001c90b36879a8 CR3: 000000010d18c000 CR4: 0000000000350ee0
+> Call Trace:
+>  nvme_setup_cmd+0x2e4/0x6a0
+>  nvme_queue_rq+0x79/0xc90
+>  blk_mq_dispatch_rq_list+0x15c/0x810
+>  __blk_mq_do_dispatch_sched+0xca/0x320
+>  __blk_mq_sched_dispatch_requests+0x14d/0x190
+>  blk_mq_sched_dispatch_requests+0x2f/0x60
+>  blk_mq_run_work_fn+0x43/0xc0
+>  process_one_work+0x24e/0x430
+>  worker_thread+0x54/0x4d0
+>  kthread+0x1b3/0x1e0
+>  ret_from_fork+0x22/0x30
+> ---[ end trace bd51917eae1d7201 ]---
+> nvme_setup_discard: ranges 15 segments 14
+> dump req 000000002c6a085b(f:3, seg: 14)
+> 0-000000002c3297c7: f80/3 675773440 1024
+> 1-0000000098edb2a8: b80/3 188319744 1024
+> 2-00000000f58e3b18: b80/3 675775488 1024
+> 3-00000000f6670c5a: b80/3 188129280 2048
+> 4-00000000ea371a88: b80/3 675585024 2048
+> 5-00000000e9cec043: b80/3 188140544 2048
+> 6-000000006e1126e6: b80/3 675596288 2048
+> 7-000000009466f937: b80/3 188327936 2048
+> 8-000000003c9e2ccd: b80/3 675783680 2048
+> 9-00000000ab322c68: b80/3 188329984 2048
 
-> 
-> greg k-h
+188329984 = 188327936 + 2048
+
+> 10-00000000eb2b3fb6: b80/3 675785728 2048
+
+675785728 = 675783680 + 2048
+
+Seems the adjacent bios are cut by coming discard
+range.
+
+Looks it isn't mature to support mixed discard IO merge(
+traditional io merge vs. multi-range merge), I will post
+the previous patch for fixing this issue.
+
+> blk_update_request: I/O error, dev nvme1n1, sector 675773440 op 0x3:(DISCARD) flags 0x0 phys_seg 14 prio class 0
+> nvme_setup_discard: ranges 45 segments 48
+...
+> nvme_setup_discard: ranges 73 segments 75
+...
+> nvme_setup_discard: ranges 5 segments 6
+...
+> nvme_setup_discard: ranges 2 segments 3
+...
+> nvme_setup_discard: ranges 2 segments 3
+...
+> nvme_setup_discard: ranges 2 segments 3
+...
+> nvme_setup_discard: ranges 48 segments 49
+...
+> nvme_setup_discard: ranges 9 segments 10
+
+For the above(ranges < segments), that should be caused by
+blk_recalc_rq_segments(), which can be solved by switching to
+rq_for_each_discard_range() for discard io.
+
+
+Thanks,
+Ming
+
