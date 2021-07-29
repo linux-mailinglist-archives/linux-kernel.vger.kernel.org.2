@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F19F3DA527
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D7C3DA529
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238238AbhG2N6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48682 "EHLO mail.kernel.org"
+        id S238056AbhG2N6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:58:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238315AbhG2N6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:58:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99C6760F4A;
-        Thu, 29 Jul 2021 13:57:57 +0000 (UTC)
+        id S238345AbhG2N6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:58:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E239860EB2;
+        Thu, 29 Jul 2021 13:57:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567078;
-        bh=iV3Yb5axYYsQ5pqiV/xMJrY0IaK3V+phWVfNomDkOlw=;
+        s=korg; t=1627567080;
+        bh=eG4K+e4kml3nIwh4MOm+ufy9vp8xoGOkXI9q2LNr8i0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uZTpIVM9w6ktfK4Ym3H5Iy9vgYj7I0aovuI8WzWkSUNo8w+8NnuNISFpzwvodO6RJ
-         sIX8Hwm4XPtKAKTTciYbNYco7VlpjIwlqWlh8ScCD6uvVR/pQLhGvINrf6l0USIOGp
-         jDZ3oW2XUxf4MMLhFHlO+ww6X37FwwE6vSnpV24A=
+        b=oGO0nxCWtvdSF4Gb8sBkA9WY7Edh21hHL4hwwLqP21Ytyddirjg7wcu7F65ymHBLB
+         fhX34fyJQFMgD/KKhqjYTJenFMTZqtv98qkNyPhkU/Z3+i9saZB1+U5Nac8UREIU/4
+         +JniHHRoquvcSf39XzdpL6ePcNee094bZyp2iXWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, "Xu, Yanfei" <yanfei.xu@windriver.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 11/24] rcu-tasks: Dont delete holdouts within trc_inspect_reader()
-Date:   Thu, 29 Jul 2021 15:54:31 +0200
-Message-Id: <20210729135137.616116362@linuxfoundation.org>
+Subject: [PATCH 5.10 12/24] rcu-tasks: Dont delete holdouts within trc_wait_for_one_reader()
+Date:   Thu, 29 Jul 2021 15:54:32 +0200
+Message-Id: <20210729135137.645469128@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
 References: <20210729135137.267680390@linuxfoundation.org>
@@ -42,43 +42,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit 1d10bf55d85d34eb73dd8263635f43fd72135d2d ]
+[ Upstream commit a9ab9cce9367a2cc02a3c7eb57a004dc0b8f380d ]
 
-As Yanfei pointed out, although invoking trc_del_holdout() is safe
-from the viewpoint of the integrity of the holdout list itself,
-the put_task_struct() invoked by trc_del_holdout() can result in
-use-after-free errors due to later accesses to this task_struct structure
-by the RCU Tasks Trace grace-period kthread.
-
-This commit therefore removes this call to trc_del_holdout() from
-trc_inspect_reader() in favor of the grace-period thread's existing call
-to trc_del_holdout(), thus eliminating that particular class of
-use-after-free errors.
+Invoking trc_del_holdout() from within trc_wait_for_one_reader() is
+only a performance optimization because the RCU Tasks Trace grace-period
+kthread will eventually do this within check_all_holdout_tasks_trace().
+But it is not a particularly important performance optimization because
+it only applies to the grace-period kthread, of which there is but one.
+This commit therefore removes this invocation of trc_del_holdout() in
+favor of the one in check_all_holdout_tasks_trace() in the grace-period
+kthread.
 
 Reported-by: "Xu, Yanfei" <yanfei.xu@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tasks.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ kernel/rcu/tasks.h | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 73bbe792fe1e..208acb286ec2 100644
+index 208acb286ec2..b338f514ee5a 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -879,10 +879,9 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
- 		in_qs = likely(!t->trc_reader_nesting);
+@@ -908,7 +908,6 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+ 	// The current task had better be in a quiescent state.
+ 	if (t == current) {
+ 		t->trc_reader_checked = true;
+-		trc_del_holdout(t);
+ 		WARN_ON_ONCE(t->trc_reader_nesting);
+ 		return;
  	}
- 
--	// Mark as checked.  Because this is called from the grace-period
--	// kthread, also remove the task from the holdout list.
-+	// Mark as checked so that the grace-period kthread will
-+	// remove it from the holdout list.
- 	t->trc_reader_checked = true;
--	trc_del_holdout(t);
- 
- 	if (in_qs)
- 		return true;  // Already in quiescent state, done!!!
 -- 
 2.30.2
 
