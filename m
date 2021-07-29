@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF463DAC7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE063DAC80
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhG2UIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 16:08:20 -0400
-Received: from mail-io1-f52.google.com ([209.85.166.52]:36637 "EHLO
-        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232864AbhG2UIK (ORCPT
+        id S232702AbhG2ULY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 16:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhG2ULS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:08:10 -0400
-Received: by mail-io1-f52.google.com with SMTP id f11so8663433ioj.3;
-        Thu, 29 Jul 2021 13:08:06 -0700 (PDT)
+        Thu, 29 Jul 2021 16:11:18 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026DEC061765;
+        Thu, 29 Jul 2021 13:11:14 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id c16so8279825plh.7;
+        Thu, 29 Jul 2021 13:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SFY+mAXfPYLLK9cW7HzO6u98/FnYWTRchgWW3VXCzJY=;
+        b=CZRZWcBHZ3gsBtAsaaCXtu4WXrBPcFPXBjErtIBPrg3LCfGvZKMvnvfzxOpuB8yNuS
+         b7hhyG7Ydp7eXWqF8NZvY4Lk1EBHnBK1p9DWUGTAWBOWxqGVTxU/8wFyMteNvkDgQsu/
+         /D4PUp0w1T3efUYYyJrY/whFdocsigxCWbSaSOONiVqCG1LMGxL/6XSduRWAMFT4NY/0
+         3wGuS5uxtRvB+kGK/10DuuJNLa57PUIf04hkTgiN/AhzEhd5/8FmI3+ezlTqRSIMW9fY
+         /8FKk7lN/0ho69zNfQ/k9avzfqLVlDOOiDcavnkKkuof89/k0Ite+rQ1I6n4ghc6uEWo
+         VU+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QQQE8wWlUIc9jiUxGY8Y8++FTSFD3WIxkiSG4sJyF+s=;
-        b=VMK+wiXkziaVR3kieMKtBkkGlCkOIleGhxBBkLA/q34pOi8PpV+lrzJKxCHYCsz3Q3
-         kZbjhMyHdegM9r4r3wd29cxQ8VLy2BO58t9NnTk0XdzCYjjm1GKQww0xrwv3L4GZSu9Q
-         G96BG+tmANSUJ+g4OpgyjSSVbh+vSeK3XoFYxdi/voQ17SBzvf9a/QohWORxgV7W+k/i
-         dW3krsQj0oikDn/3dl0L0h3c7SnKM+uYIk1OBYlsVX7ZpMk0ZLIMR1xf6Atiev0hFeNW
-         E5sAupDLv2gnNcg7lt9uK/eFyl7dJfb/kQXMyAWC2JcgxUSankcmqKetkYzakJNxOzBZ
-         eehA==
-X-Gm-Message-State: AOAM531kH6nNEyaPKAnzIfYZIPy0KEAw3j/vBEpNfadeFLnqgfLJ3GXb
-        RIGSP+zbnkQRxtfwuW5qQA==
-X-Google-Smtp-Source: ABdhPJzAu+OpfTXKpkGXmhFqSElEoX+tIuPr82w4zZVOYw+Dq5t0e5Zkt4fXkqFXIrPUeahzQCI+Vw==
-X-Received: by 2002:a05:6602:584:: with SMTP id v4mr5410517iox.181.1627589286001;
-        Thu, 29 Jul 2021 13:08:06 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p9sm3065255iod.18.2021.07.29.13.08.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SFY+mAXfPYLLK9cW7HzO6u98/FnYWTRchgWW3VXCzJY=;
+        b=UOgg4bJ8Pu/bQl4W+HpVm/aq2v4DTuFVGm9v5IsLBysWv2G3vQj/RUtIiOyCqs9CDO
+         P+u/Fa5nxSXH5d/U8HzthyJUDWpHXBpvTLS8XM9+XQPlCPBgm1PGGGvdI/LiO1ovfoa8
+         8ZoK4m+2p18uwxWWHY5Zwe0bb5DgeXN+ZZoh8+eyU2vwPoqw5SKYuwZ+ZJejxHR6oY/U
+         P4JFMBOKDE24NeD4L7VJWrtM9TDZAu6Qmv17PTB+ZgxALnWUdFX+Fy9NrFlXtatr2gXj
+         8jFeF0hs82yRUJnkKIKXaN8sSiMYiTKdkr1NmJ0K0eGZcFhMUH2rSSjduIukm8fJoKWT
+         L0oA==
+X-Gm-Message-State: AOAM532KxMWC9HUDq4aHkFKy1pNtms83XTObWFxdGs8+0eW5jpwkJri/
+        QQxFEp2oXEPB+vA20yqi6CeZXa1b1jYg6A==
+X-Google-Smtp-Source: ABdhPJyLfmsnUTsywkKEatkPj6U8cyNcuBN/igDBOIZHeLE0gMDlmQgZxQF2YmSyYSFXYKsLiD5tZA==
+X-Received: by 2002:a17:902:f68d:b029:12c:4619:c63a with SMTP id l13-20020a170902f68db029012c4619c63amr6316218plg.66.1627589473174;
+        Thu, 29 Jul 2021 13:11:13 -0700 (PDT)
+Received: from archl-on1.. ([103.51.72.31])
+        by smtp.gmail.com with ESMTPSA id i25sm4581407pfo.20.2021.07.29.13.11.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 13:08:04 -0700 (PDT)
-Received: (nullmailer pid 798323 invoked by uid 1000);
-        Thu, 29 Jul 2021 20:08:02 -0000
-Date:   Thu, 29 Jul 2021 14:08:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     quic_vamslank@quicinc.com
-Cc:     tglx@linutronix.de, sboyd@kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, mturquette@baylibre.com,
-        Mark Brown <broonie@kernel.org>, bjorn.andersson@linaro.org,
-        Vinod Koul <vkoul@kernel.org>, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        devicetree@vger.kernel.org, maz@kernel.org, robh+dt@kernel.org,
-        Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v2 6/6] dt-bindings: clock: Introduce pdc bindings for
- SDX65
-Message-ID: <YQMKomcbjahYYNgy@robh.at.kernel.org>
-References: <cover.1626986805.git.quic_vamslank@quicinc.com>
- <c9ac6fa07e81cb79c1eb8f2760a040eb0c72f0a6.1626986805.git.quic_vamslank@quicinc.com>
+        Thu, 29 Jul 2021 13:11:12 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        devicetree@vger.kernel.org
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Emiliano Ingrassia <ingrassia@epigenesys.com>
+Subject: [PATCHv1 0/3] Add Reset controller to Ethernet PHY
+Date:   Fri, 30 Jul 2021 01:40:49 +0530
+Message-Id: <20210729201100.3994-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c9ac6fa07e81cb79c1eb8f2760a040eb0c72f0a6.1626986805.git.quic_vamslank@quicinc.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 14:09:43 -0700, quic_vamslank@quicinc.com wrote:
-> From: Vamsi krishna Lanka <quic_vamslank@quicinc.com>
-> 
-> Add compatible for SDX65 pdc.
-> 
-> To: Rob Herring <robh+dt@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Kozlowski <krzk@kernel.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  .../devicetree/bindings/interrupt-controller/qcom,pdc.txt        | 1 +
->  1 file changed, 1 insertion(+)
-> 
+It is being observed some time the Ethernet interface
+will not send / recive any packet after reboot.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Earlier I had submitted Ethernet reset ID patch
+but it did not resolve it issue much, Adding new 
+reset controller of the Ethernet PHY for Amlogic SoC
+could help resolve the issue.
+
+Thanks
+-Anand
+
+Anand Moon (3):
+  arm64: dts: amlogic: add missing ethernet reset ID
+  ARM: dts: meson: Use new reset id for reset controller
+  net: stmmac: dwmac-meson8b: Add reset controller for ethernet phy
+
+ arch/arm/boot/dts/meson8b.dtsi                |  2 +-
+ arch/arm/boot/dts/meson8m2.dtsi               |  2 +-
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi    |  2 ++
+ .../boot/dts/amlogic/meson-g12-common.dtsi    |  2 ++
+ arch/arm64/boot/dts/amlogic/meson-gx.dtsi     |  3 +++
+ .../ethernet/stmicro/stmmac/dwmac-meson8b.c   | 20 +++++++++++++++++++
+ 6 files changed, 29 insertions(+), 2 deletions(-)
+
+-- 
+2.32.0
+
