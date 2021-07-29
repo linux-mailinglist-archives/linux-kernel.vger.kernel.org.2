@@ -2,116 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8677E3DA09C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9553DA0A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235559AbhG2JxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:53:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3108 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235058AbhG2JxI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:53:08 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16T9YOfF159856;
-        Thu, 29 Jul 2021 05:53:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=EErjgagjsOJ6351tBtBEsNPRFPR8zetcAG7oNhArlUg=;
- b=XxR4iBRm9xjhGhqBPYKpFH9sLBiTM7j1kUqklpLT+bNBTA07U2UIUdXjCpncAOQQsMPX
- rivHngBr7jTzTwomKVIdhTD1IHCITvGFS32svqA84djUtlbQ0c61BzdyTxfCFzdXHlkR
- yCx7hQ3n6JHKJp8BCbbe1IQBwOdy/ZZtR5omUttJZYp7MtQK8C7bybgHfI7VRXL6C6nf
- Flerjz5qMuvd6mjjkhmyyyDTGql48GaxlGBsg5EDbZ6cMVjhtv/GhAbizKMNau7YFiS7
- E1qJrpYj/uJ1fjcZsjd0hZsuGTL1XMVoPH1SjQBieOPgmd2ocjY/GKTHP9R2X8UDW14t UA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3fajubck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 05:53:04 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16T9p5SZ075549;
-        Thu, 29 Jul 2021 05:53:04 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3fajubbg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 05:53:03 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16T9r2KO023078;
-        Thu, 29 Jul 2021 09:53:02 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 3a235khm4g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 09:53:02 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16T9qws524576418
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Jul 2021 09:52:59 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E09BD11C04A;
-        Thu, 29 Jul 2021 09:52:58 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6455911C05B;
-        Thu, 29 Jul 2021 09:52:58 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.155.135])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 29 Jul 2021 09:52:58 +0000 (GMT)
-Subject: Re: [PATCH v2 13/13] KVM: s390: pv: add support for UV feature bits
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210728142631.41860-1-imbrenda@linux.ibm.com>
- <20210728142631.41860-14-imbrenda@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Message-ID: <4d26ba27-e235-8f2b-c59c-01d3e0691453@linux.ibm.com>
-Date:   Thu, 29 Jul 2021 11:52:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235647AbhG2Jx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:53:59 -0400
+Received: from elvis.franken.de ([193.175.24.41]:32870 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235610AbhG2Jx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 05:53:58 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1m92jg-00021m-01; Thu, 29 Jul 2021 11:53:52 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id B7A8DC254D; Thu, 29 Jul 2021 11:53:42 +0200 (CEST)
+Date:   Thu, 29 Jul 2021 11:53:42 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Rui Wang <wangrui@loongson.cn>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        hev <r@hev.cc>
+Subject: Re: [RFC PATCH] locking/atomic: arch/mips: Fix
+ atomic{_64,}_sub_if_positive
+Message-ID: <20210729095342.GB8286@alpha.franken.de>
+References: <20210729082549.144559-1-wangrui@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <20210728142631.41860-14-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6YtK1rKxqZZS73Q75O_o-FDQQSAYiX0I
-X-Proofpoint-ORIG-GUID: zqcN2IzNl4fE_BQ9HO6WIS3_a1mglA3N
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_09:2021-07-27,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 malwarescore=0 adultscore=0 impostorscore=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 clxscore=1011 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107290061
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729082549.144559-1-wangrui@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 4:26 PM, Claudio Imbrenda wrote:
-> Add support for Ultravisor feature bits, and take advantage of the
-> functionality advertised to speed up the lazy destroy mechanism.
-
-UV feature bit support is already merged please fix the description and
-subject.
-
+On Thu, Jul 29, 2021 at 04:25:49PM +0800, Rui Wang wrote:
+> This looks like a typo and that caused atomic64 test failed.
 > 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Signed-off-by: Rui Wang <wangrui@loongson.cn>
+> Signed-off-by: hev <r@hev.cc>
 > ---
->  arch/s390/kernel/uv.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  arch/mips/include/asm/atomic.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> index f0af49b09a91..6ec3d7338ec8 100644
-> --- a/arch/s390/kernel/uv.c
-> +++ b/arch/s390/kernel/uv.c
-> @@ -290,7 +290,8 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
->  
->  static bool should_export_before_import(struct uv_cb_header *uvcb, struct mm_struct *mm)
->  {
-> -	return uvcb->cmd != UVC_CMD_UNPIN_PAGE_SHARED &&
-> +	return !test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications) &&
-> +		uvcb->cmd != UVC_CMD_UNPIN_PAGE_SHARED &&
->  		atomic_read(&mm->context.is_protected) > 1;
->  }
->  
-> 
+> diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
+> index 95e1f7f3597f..a0b9e7c1e4fc 100644
+> --- a/arch/mips/include/asm/atomic.h
+> +++ b/arch/mips/include/asm/atomic.h
+> @@ -206,7 +206,7 @@ ATOMIC_OPS(atomic64, xor, s64, ^=, xor, lld, scd)
+>   * The function returns the old value of @v minus @i.
+>   */
+>  #define ATOMIC_SIP_OP(pfx, type, op, ll, sc)				\
+> -static __inline__ int arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
+> +static __inline__ type arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
+>  {									\
+>  	type temp, result;						\
+>  									\
 
+sub_if_postive looks unused to me. Could you send a patch removing it
+instead ? riscv also has a sub_if_positive implementation, which looks
+unused.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
