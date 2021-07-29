@@ -2,92 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B00C3D9ACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78023D9AD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhG2BHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 21:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232837AbhG2BHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 21:07:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6694D6101C;
-        Thu, 29 Jul 2021 01:07:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627520862;
-        bh=Hv6M1j26+F17k/ROjaVlxH5eyQbp1ZGSZNs0YZEsPXc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=B8UpkPYvIfAa1n5O/m0WQe4tkpJf5aEZ0qzBgvvRAUuNMDLbihnOt+SGKY+aeD/CD
-         c/CrUABS+WjMAynDzeUu6EaYQIl649hO1dZeofQY8Nx3jOsmpqzeA5yrYikBtypS94
-         f72YGJ/Hb9r0v7adg9IcIYVjpmAwI2MNHugngfCHrSaAI9HxmbkYqZTmKfbyexZwuQ
-         Lwv5kJ+idvyuvP/8M/2rMiMsPt0VYo3jo7Rt8D3js0wu57z/b+HjytOEG+LCDMbFY0
-         m6a2myGyxw7EsNtXXZDwsyv27z1aZuH482ylX/vCMMHvmRINK6BPPr5q7RE1fSI3BP
-         torVkqJqrapdg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 370655C048D; Wed, 28 Jul 2021 18:07:42 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 18:07:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, tglx@linutronix.de,
-        peterz@infradead.org, rostedt@goodmis.org, dhowells@redhat.com,
-        edumazet@google.com, fweisbec@gmail.com, oleg@redhat.com,
-        joel@joelfernandes.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and updates
-Message-ID: <20210729010742.GP4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-4-paulmck@kernel.org>
- <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1>
- <YQG//899pPl2JIWw@localhost>
- <20210728204720.GN4397@paulmck-ThinkPad-P17-Gen-1>
- <20210728222333.GE293265@lothringen>
+        id S232904AbhG2BKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 21:10:03 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:36055 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232837AbhG2BKB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 21:10:01 -0400
+X-Greylist: delayed 406 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Jul 2021 21:10:01 EDT
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="41940684"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 29 Jul 2021 09:09:58 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(115098:0:AUTH_RELAY)
+        (envelope-from <phoenix@emc.com.tw>); Thu, 29 Jul 2021 09:09:55 +0800 (CST)
+Received: from 49.216.187.106
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2476:0:AUTH_LOGIN)
+        (envelope-from <phoenix@emc.com.tw>); Thu, 29 Jul 2021 09:09:55 +0800 (CST)
+From:   Phoenix Huang <phoenix@emc.com.tw>
+To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com
+Cc:     jingle.wu@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw,
+        Phoenix Huang <phoenix@emc.com.tw>
+Subject: [PATCH] Input: elantench - Fix the firmware misreport coordinates for trackpoint occasionally.
+Date:   Thu, 29 Jul 2021 09:09:40 +0800
+Message-Id: <20210729010940.5752-1-phoenix@emc.com.tw>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728222333.GE293265@lothringen>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 12:23:33AM +0200, Frederic Weisbecker wrote:
-> On Wed, Jul 28, 2021 at 01:47:20PM -0700, Paul E. McKenney wrote:
-> > On Wed, Jul 28, 2021 at 01:37:19PM -0700, Josh Triplett wrote:
-> > > On Wed, Jul 28, 2021 at 10:37:15AM -0700, Paul E. McKenney wrote:
-> > > > This change makes the memory ordering requirements
-> > > > more evident, and it might well also speed up the to-idle and from-idle
-> > > > fastpaths on some architectures.
-> > > 
-> > > Cleaning up the memory ordering requirements certainly seems worthwhile.
-> > > But is there any straightforward benchmark that might quantify the
-> > > "might well also speed up" here? How much does weakening the memory
-> > > ordering buy us, in practice?
-> > 
-> > None that I know of!
-> 
-> I know two:
-> 
-> 1) The whole debate makes us review again (and again) the memory ordering
->    requirements in RCU VS dynticks-idle, which can only be good to enforce
->    correctness.
-> 
-> 2) The more we weaken the ordering, the better we grasp and understand the
->    underlying ordering requirements. Unnecessary full memory barriers tend to
->    obfuscate our ordering expectations, making the code less self-explanatory.
-> 
-> 3) I have terrible ideas to remove a full barrier in the dynticks idle path
->    that should work in practice but not in theory and therefore I'm never going
->    to talk about it unless everyone in the room is drunk.
+Signed-off-by: Phoenix Huang <phoenix@emc.com.tw>
+---
+ drivers/input/mouse/elantech.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Cute!
+diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
+index 2d0bc029619f..07e1098f2d31 100644
+--- a/drivers/input/mouse/elantech.c
++++ b/drivers/input/mouse/elantech.c
+@@ -517,6 +517,17 @@ static void elantech_report_trackpoint(struct psmouse *psmouse,
+ 	case 0x16008020U:
+ 	case 0x26800010U:
+ 	case 0x36808000U:
++	
++		/* This firmware misreport coordinates for trackpoint occasionally.
++		* So we discard these packets by pattern to prevent cursor jumps.
++		*/
++		if (packet[4] == 0x80 || packet[5] == 0x80 ||
++		    packet[1] >> 7 == packet[4] >> 7 ||
++		    packet[2] >> 7 == packet[5] >> 7) {
++		    	elantech_debug("discarding packet [%6ph]\n", packet);
++			break;
++
++		}
+ 		x = packet[4] - (int)((packet[1]^0x80) << 1);
+ 		y = (int)((packet[2]^0x80) << 1) - packet[5];
+ 
+-- 
+2.25.1
 
-On #3/2, I don't drink, so I guess you have to leave me out.  ;-)
-
-The other side of this coin is that weakening ordering often decreases
-robustness and increases complexity.  In unquantifiable ways, of course,
-which can make discussion of the tradeoffs problematic.
-
-							Thanx, Paul
