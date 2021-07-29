@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD0C3D9D73
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931C63D9D70
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234354AbhG2GEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 02:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234093AbhG2GEV (ORCPT
+        id S234099AbhG2GEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 02:04:06 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:49309 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230223AbhG2GEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 02:04:21 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB639C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:04:18 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so7846783pjd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gqlOu5w7sIF9m7Ex8akMtGucE3AKmn8iiHCycTTM/xE=;
-        b=ph5LVGOXWqyvIdu2y1OP4WXRoj1hjrxn2tMBtanm0fgVIqf/Ci5vZR+j5hFfnpT6l6
-         7pXTYJQm5/AgQ7wbdxQK9FLkQKfoo5kDHqsNp8v9VYzzNUfrjgsuV3SHqMsInWz1/Ehm
-         3brKiO0WsbndMAUkGXTuc3TBBBXR3zDBKfnF8qD8Pr0l/u7bKsUsUeDWNQJymO3GjFEj
-         9TKvtt9JJkeLrP3dePxuRwCmQj1rN9dTo1gEMzlQZBRilTrlg9MHO4Sz+wHXIHu6+3H8
-         TyKdyH7bxBfhvYUNHU9D0ZwTkBPNOUhzqqq8FDcdYdIwVXLQuIBCqNZOEH2F/8xTvfz4
-         JWTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gqlOu5w7sIF9m7Ex8akMtGucE3AKmn8iiHCycTTM/xE=;
-        b=nvDsirOIsMP15/pFBQRvhVG6cSPx4TFzwKn7Ek/QGyjT+U4AxtZTNaZBobJZ9YojZl
-         fGuFHgLoieIZ4vshFr/0Eb909qhWZy6kob58X+7k6ZBBMTApbHtzEYiEPD1TA344Yo+X
-         mFs1jgXbJbYhc56x4gHZ+zzVVF9TjHbOpu5IEZEYBGqFOkV5dEiiP0gnsmxSFFlynUu5
-         1ZgIe8KXqZla4XKN9CSnwzKUKp86NTw+dYC7/XnS+a4bgcDeK2xQmqpdZfHlzORNlZci
-         ub6Czl6ztvLapsVOyC4Twjn3U5qXTKHNzrh7CqamYaX31MDcdArQmpUxJRw5CmdJyZKO
-         g/1Q==
-X-Gm-Message-State: AOAM53023proKcYdh6NfB9Jb7gX6tH49onc0G58LUviVyIWV9FeCGOPP
-        msry0g6Mh88kwokoD9xjXzw7QBmoGr18H72FKuw7Aw==
-X-Google-Smtp-Source: ABdhPJzDYXlUsa81+9TOdegbgF8dMAhSsTVDVOveJdyatsUa0SeIZyLEktiOkLl3eKARlGFPUGBpGpqw1eAxyKQ27MY=
-X-Received: by 2002:a17:90a:9b13:: with SMTP id f19mr3547754pjp.229.1627538658277;
- Wed, 28 Jul 2021 23:04:18 -0700 (PDT)
+        Thu, 29 Jul 2021 02:04:04 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 51A46580B39;
+        Thu, 29 Jul 2021 02:04:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 29 Jul 2021 02:04:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=oOA9yKbtZrclxkXt8oi2w9Qy4VI
+        sBkPwwH4Zip+yF2Q=; b=jlS/9w7SQZpmcYyil/QHB10d4j+LqD1BBnEeV4VpVbv
+        YZcHJh/Vq7gQ63HSRfNySSGszZLBGMRyX1HZCbzDmg98A2mDQDi9CL2eo/w+lBeZ
+        9rpP82l3iy8NfhCPOD4RfvQs5zQGdY9wjNBUtjqYjF1AFeAJ3mEGZSxluDAgsqSX
+        YcJUHUl1XVpqLVSIG+P7e52LxOPCsz3M/NPpapeIjUKNYZmhv/lebtp/qOd2meNd
+        rEUU8cBd+lDKoxPGgYkpcbdhX3u974W8teP+KCvkJ4I1cT1OyQrtyR8pToEKAhuh
+        i8/SQExgJwN6Q2vtcdzs1yf3lKlMoM4xPjQPYuouStg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=oOA9yK
+        btZrclxkXt8oi2w9Qy4VIsBkPwwH4Zip+yF2Q=; b=ErtoLAJ54DmhkFR0iJpgqm
+        9ERknF9Qyd1Esscd3Cy/Jh109VV7+BA16zm23A4kNc+Q5nhpTd1Ncu19h+a8bOWD
+        rss1BNt43SQWfUysU2ae1tPSYAAPOhpRkvnWjdcBx0BGuh2FKfDxgxCx3zdnnwTh
+        aGWwKrbBr67B4XNUUAitjbo+WQAYZEHhyBjlCKWFvyHQNYoCqwoPi6adNPoTuDfK
+        FIwj5ID3KnQ9Jh+cEuzw8s8bQZTusEXoKwn4PSHeNwV5LOZvcpQmTqRBkbNI73w9
+        MCEaOoM/fdDer11hxBw/9Ow43j2/r671/LX7PS3SiGFeNBJkqyY6uN7EAlJj1Gpg
+        ==
+X-ME-Sender: <xms:0EQCYbyYxtkJu4glF-PyF7Vmo43tTOkmvx7vk1EntVZdLMEsHu3C3Q>
+    <xme:0EQCYTQMDkRSNrRfWPG-hblj2PmnOTxNvFK7bUM5dB0oC_22euwHulzvy7WykXbDR
+    hcIb45NDz3qsA>
+X-ME-Received: <xmr:0EQCYVVCQuiiDMb-vlKynWBt1gusm3RY0N0qSpi8uTEjqcbSEDY8vYCjsGkVpQytv_Ajx3LMmq2fb0184BL90bN5-mEmdm76>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedtgdelfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepfeefueduhe
+    egtddvueejueeiveelhedthfejudehteejgfegudffgedttdetheeknecuffhomhgrihhn
+    pegsohhothhlihhnrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:0EQCYVgIDo1Ew43r7hAFpqP8nmJpY5A5vd9QDYdocfnL7YV5_tY1qw>
+    <xmx:0EQCYdBh3Od3AAwJM5CHD0pPk69bSsf7bG7F1_I1lMG6ty4Onw0P6g>
+    <xmx:0EQCYeIhXcVY50E1ruC0Z8OVs-Gv2-qNTmHE6IJR-H-yWCCk6BNUhQ>
+    <xmx:0UQCYdansu-BxNZUR8BiGYppnOc_z2YNFJumpJ6Ouh-OROzART6GgQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 29 Jul 2021 02:04:00 -0400 (EDT)
+Date:   Thu, 29 Jul 2021 08:03:58 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     timur@kernel.org, linux@armlinux.org.uk, alcooperx@gmail.com,
+        tklauser@distanz.ch, sean.wang@kernel.org,
+        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
+        yuchen.huang@mediatek.com, huihui.wang@mediatek.com,
+        eddie.huang@mediatek.com, sean.wang@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v1 0/1] Mediatek uart patch
+Message-ID: <YQJEzlb2NyxD1EpD@kroah.com>
+References: <20210729014817.11879-1-zhiyong.tao@mediatek.com>
 MIME-Version: 1.0
-References: <20210728145655.274476-1-wanghai38@huawei.com>
-In-Reply-To: <20210728145655.274476-1-wanghai38@huawei.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 29 Jul 2021 14:03:39 +0800
-Message-ID: <CAMZfGtUpc4LL0wajz5GDwDD70jrVPCA_p4eFbMvMaC4TuR5e6Q@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/memcg: fix NULL pointer dereference in memcg_slab_free_hook()
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729014817.11879-1-zhiyong.tao@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:57 PM Wang Hai <wanghai38@huawei.com> wrote:
->
-> When I use kfree_rcu() to free a large memory allocated by
-> kmalloc_node(), the following dump occurs.
->
-> BUG: kernel NULL pointer dereference, address: 0000000000000020
-> [...]
-> Oops: 0000 [#1] SMP
-> [...]
-> Workqueue: events kfree_rcu_work
-> RIP: 0010:__obj_to_index include/linux/slub_def.h:182 [inline]
-> RIP: 0010:obj_to_index include/linux/slub_def.h:191 [inline]
-> RIP: 0010:memcg_slab_free_hook+0x120/0x260 mm/slab.h:363
-> [...]
-> Call Trace:
->  kmem_cache_free_bulk+0x58/0x630 mm/slub.c:3293
->  kfree_bulk include/linux/slab.h:413 [inline]
->  kfree_rcu_work+0x1ab/0x200 kernel/rcu/tree.c:3300
->  process_one_work+0x207/0x530 kernel/workqueue.c:2276
->  worker_thread+0x320/0x610 kernel/workqueue.c:2422
->  kthread+0x13d/0x160 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->
-> When kmalloc_node() a large memory, page is allocated, not slab,
-> so when freeing memory via kfree_rcu(), this large memory should not
-> be used by memcg_slab_free_hook(), because memcg_slab_free_hook() is
-> is used for slab.
->
-> Using page_objcgs_check() instead of page_objcgs() in
-> memcg_slab_free_hook() to fix this bug.
->
-> Fixes: 270c6a71460e ("mm: memcontrol/slab: Use helpers to access slab page's memcg_data")
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+On Thu, Jul 29, 2021 at 09:48:16AM +0800, Zhiyong Tao wrote:
+> This series includes 1 patches:
+> 1.fix uart corruption issue when rx power off
+> 
+> when uart is used as a communication port with external device(GPS).
+> when external device(GPS) power off, the power of rx pin is also from
+> 1.8v to 0v. Even if there is not any data in rx. But uart rx pin can
+> capture the data "0".
+> If uart don't receive any data in specified cycle, uart will generates
+> BI(Break interrupt) interrupt.
+> If external device(GPS) power off, we found that BI interrupt appeared
+> continuously and very frequently.
+> When uart interrupt type is BI, uart IRQ handler(8250 framwork
+> API:serial8250_handle_irq) will push data to tty buffer.
+> The code path:
+> https://elixir.bootlin.com/linux/latest/source/drivers/tty/serial/8250/8250_port.c#L1917
+> mtk8250_dma_rx_complete is a task of mtk_uart_apdma_rx_handler.
+> mtk8250_dma_rx_complete priority is lower than uart irq
+> handler(serial8250_handle_irq).
+> if we are in process of mtk8250_dma_rx_complete, uart appear BI
+> interrupt:1)serial8250_handle_irq will priority execution.2)it may cause
+> write tty buffer conflict in mtk8250_dma_rx_complete.
+> So the spin lock protect the rx receive data process is not break.
 
-More simpler than v1. Thanks.
+All of this information should be in the changelog for the patch itself.
+There is no need for a "cover letter" for a single patch like this.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Can you redo your 1/1 patch and add the above information to the
+changelog text and resend it as a v2?
+
+thanks,
+
+greg k-h
