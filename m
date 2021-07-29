@@ -2,226 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897503DA672
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F373DA675
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236733AbhG2OcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234206AbhG2OcX (ORCPT
+        id S237139AbhG2Ocx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:32:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53800 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234206AbhG2Ocs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:32:23 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6180DC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:32:19 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id f13so7237457plj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TCqiZ9emwIn3DT8Qsqk3JokMy2CspMehkepsJ5X2OwI=;
-        b=pYmciwP358P4iHb5J1kUSRLLsujMHUNOs6IfYo1L3SmlG0rWOcGEzMCxc6qjBXTyJn
-         DDH6pWCrYwzFt/vPl1abGPC0Gs3TTe4cny88etZlimyWd3AzxTdNyZ6QT45d0F38B96L
-         V3yPQ41hpebZlq4SIo8ju9Ews+sSLWL85P6yV7D7+DFOKY7hOKT6Pu9v1Omqchz7ZFCG
-         +raQzzTRYZs0RtB647vonPTl3GiFFZhtHcoeuNPd4AmLtrWpp/mMFkDV8/Wtb0hcgsQc
-         qSMdAnaj+p05tP9CUTmeyEAb48oDtTdVzIsg/hvB6ViMPfyniuTVSgK9KrJQf3PrYqZC
-         yVyA==
+        Thu, 29 Jul 2021 10:32:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627569164;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U+AwZr6Sn9QIs+ZssO0J9KYH5K5+8QtLBMpUWL2nMG8=;
+        b=ApXiRylYYF9r4MOLx6PO6wZJFjzgEp71UdGlttFgUsqIVp+bxC8JSkdOvI/yaGfysES4pg
+        rO8nJ0JhMi+M+cnVbUiR4hxPJcpR1xq4zDLD6whehpRHN9t81OeOTL73oblCrR6RY0HqB8
+        tTrAvi09xZeKGpfptcifg73aPoYx2VU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-241-MRk-pwWJN9GDxTxW-XRSIg-1; Thu, 29 Jul 2021 10:32:43 -0400
+X-MC-Unique: MRk-pwWJN9GDxTxW-XRSIg-1
+Received: by mail-ed1-f71.google.com with SMTP id b88-20020a509f610000b02903ab1f22e1dcso3028768edf.23
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:32:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TCqiZ9emwIn3DT8Qsqk3JokMy2CspMehkepsJ5X2OwI=;
-        b=g9wGaNUsV2Vgf9SBBXoOWB60rzOxtAqIfhbFlaVFTiJW6T38Yk3AKKEtqh6kWkrbkQ
-         o5tMZKv3LPeLXBVpm7CfYPf6Y2nWB0cqSAZtIqepHLKl1q8Y645z2lAcKx4UbD9+QQiz
-         OxkHkklfoq6IclZcneKQC4kNrARup4AjPVp/PhCxMujgVBgVx0jRjL66cklKQu5leU/8
-         5XJ+hw0YF4myW/2WoVd/2CSDroMRurJwQW2UJ4tiL2Lqmkc3J9IoQNCd9fEwxKecH6/A
-         oSSrUo7zrAFmfB6EzeayCVub7adHET6uYFNslZC73ZJTsmOHMNqGsRxmzcdio3A7/vxb
-         zlRg==
-X-Gm-Message-State: AOAM532Qgox2vYfnFvjPEPgnadsKlwyzYkf31yppIFVomvWfQR9m7gRv
-        A5aBmBnSgIIwn3MXj1PKWk8=
-X-Google-Smtp-Source: ABdhPJy0u0+T52Mob4Ito6crR05tVv7wP86/2LEo3TbMmbfDVRZIhzxPK9wjz9JsmCtRtqAI46W+/Q==
-X-Received: by 2002:a17:90b:609:: with SMTP id gb9mr5714173pjb.156.1627569138906;
-        Thu, 29 Jul 2021 07:32:18 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id n56sm3801845pfv.65.2021.07.29.07.32.14
+        bh=U+AwZr6Sn9QIs+ZssO0J9KYH5K5+8QtLBMpUWL2nMG8=;
+        b=LRizwyVeCbDEBKQMZO71lkhCJL56+FUzxidiEJKp8YTRkgUJh35oTtRq5EjPDTkjVS
+         lBVQy0D66/N7bLthM88S4H+BZH3dozMM1gi9mXNDXNomfKk9uvBjpAExUdBHlEOSbEEp
+         OEM5qs4uD9kGCUKppEOtIYS4Fmpzq6IqrUwUkqCyNXZbbOHXCjh38TfHRrL1JFFPvW0Q
+         SjBsE21tjkltt3o/orpG5OXr+l2aurFeQlrZCz5twOrQvKl5LyyvVl8+ZMOJPy9cGSef
+         lxxhNOGqyp0q0wqKPKARmy/r0ZSw4Q4qz2wfKb7NWkEL62XmviqKq/316A4Z3UUvxVMW
+         r4KQ==
+X-Gm-Message-State: AOAM530rbQsD8UOHD/XF1W7Y/KG1UX/EAl24hiTUIY7NKjHtVtdREejx
+        gvuif8UlcF7jksGNm7sylMPCVEeYEkbJCxKYwIeCzKQ7Z2R9V2DSU6/23KMsvT8dZ+ocrpxmEzm
+        rmBzcQ6khPuM8lTyZVmqLPWT2
+X-Received: by 2002:a05:6402:1011:: with SMTP id c17mr6190136edu.144.1627569162089;
+        Thu, 29 Jul 2021 07:32:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxs6+9eblc+utmokHBKiCdXFfeP7j99/hN0GEZcvgsdBPbt0bOsWWNTTzgN3+EaToPXCjZ7Yw==
+X-Received: by 2002:a05:6402:1011:: with SMTP id c17mr6190116edu.144.1627569161935;
+        Thu, 29 Jul 2021 07:32:41 -0700 (PDT)
+Received: from x1.bristot.me (host-95-239-202-226.retail.telecomitalia.it. [95.239.202.226])
+        by smtp.gmail.com with ESMTPSA id b1sm1050820ejz.24.2021.07.29.07.32.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 07:32:18 -0700 (PDT)
-Subject: Re: [PATCH 1/3] drm: use the lookup lock in drm_is_current_master
-To:     Daniel Vetter <daniel@ffwll.ch>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de
-References: <20210722092929.244629-1-desmondcheongzx@gmail.com>
- <20210722092929.244629-2-desmondcheongzx@gmail.com>
- <YPlKkvelm/mcnCj0@phenom.ffwll.local>
- <YQAaIrNUXa6i2gxD@hirez.programming.kicks-ass.net>
- <YQJSE3TMRydDNhqT@phenom.ffwll.local>
-Cc:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <fbf2ec46-5ef5-7108-450a-13a7c48c30ce@gmail.com>
-Date:   Thu, 29 Jul 2021 22:32:13 +0800
+        Thu, 29 Jul 2021 07:32:41 -0700 (PDT)
+Subject: Re: [PATCH] eventfd: Make signal recursion protection a task bit
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Juri Lelli <jlelli@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        He Zhe <zhe.he@windriver.com>, Jens Axboe <axboe@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
+ <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
+ <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
+ <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
+ <87pmv23lru.ffs@nanos.tec.linutronix.de>
+ <810e01ef-9b71-5b44-8498-b8a377d4e51b@redhat.com> <875ywujlzx.ffs@tglx>
+ <87wnp9idso.ffs@tglx>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <4ebcc02b-4d42-ce69-c515-f27ce4db118c@redhat.com>
+Date:   Thu, 29 Jul 2021 16:32:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YQJSE3TMRydDNhqT@phenom.ffwll.local>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <87wnp9idso.ffs@tglx>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/7/21 3:00 pm, Daniel Vetter wrote:
-> On Tue, Jul 27, 2021 at 04:37:22PM +0200, Peter Zijlstra wrote:
->> On Thu, Jul 22, 2021 at 12:38:10PM +0200, Daniel Vetter wrote:
->>> On Thu, Jul 22, 2021 at 05:29:27PM +0800, Desmond Cheong Zhi Xi wrote:
->>>> Inside drm_is_current_master, using the outer drm_device.master_mutex
->>>> to protect reads of drm_file.master makes the function prone to creating
->>>> lock hierarchy inversions. Instead, we can use the
->>>> drm_file.master_lookup_lock that sits at the bottom of the lock
->>>> hierarchy.
->>>>
->>>> Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->>>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->>>> ---
->>>>   drivers/gpu/drm/drm_auth.c | 9 +++++----
->>>>   1 file changed, 5 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
->>>> index f00354bec3fb..9c24b8cc8e36 100644
->>>> --- a/drivers/gpu/drm/drm_auth.c
->>>> +++ b/drivers/gpu/drm/drm_auth.c
->>>> @@ -63,8 +63,9 @@
->>>>   
->>>>   static bool drm_is_current_master_locked(struct drm_file *fpriv)
->>>>   {
->>>> -	lockdep_assert_held_once(&fpriv->minor->dev->master_mutex);
->>>> -
->>>> +	/* Either drm_device.master_mutex or drm_file.master_lookup_lock
->>>> +	 * should be held here.
->>>> +	 */
->>>
->>> Disappointing that lockdep can't check or conditions for us, a
->>> lockdep_assert_held_either would be really neat in some cases.
->>>
->>> Adding lockdep folks, maybe they have ideas.
->>
->> #ifdef CONFIG_LOCKDEP
->> 	WARN_ON_ONCE(debug_locks && !(lockdep_is_held(&drm_device.master_mutex) ||
->> 				      lockdep_is_held(&drm_file.master_lookup_lock)));
->> #endif
->>
->> doesn't exactly roll off the tongue, but should do as you want I
->> suppose.
->>
->> Would something like:
->>
->> #define lockdep_assert(cond)	WARN_ON_ONCE(debug_locks && !(cond))
->>
->> Such that we can write:
->>
->> 	lockdep_assert(lockdep_is_held(&drm_device.master_mutex) ||
->> 		       lockdep_is_held(&drm_file.master_lookup_lock));
->>
->> make it better ?
+On 7/29/21 1:01 PM, Thomas Gleixner wrote:
+> The recursion protection for eventfd_signal() is based on a per CPU
+> variable and relies on the !RT semantics of spin_lock_irqsave() for
+> protecting this per CPU variable. On RT kernels spin_lock_irqsave() neither
+> disables preemption nor interrupts which allows the spin lock held section
+> to be preempted. If the preempting task invokes eventfd_signal() as well,
+> then the recursion warning triggers.
 > 
-> Yeah I think that's pretty tidy and flexible.
+> Paolo suggested to protect the per CPU variable with a local lock, but
+> that's heavyweight and actually not necessary. The goal of this protection
+> is to prevent the task stack from overflowing, which can be achieved with a
+> per task recursion protection as well.
 > 
-> Desmond, can you pls give this a shot with Peter's patch below?
-> -Daniel
-
-Sounds good, will do. Thanks for the patch, Peter.
-
-Just going to make a small edit:
-s/LOCK_STAT_NOT_HELD/LOCK_STATE_NOT_HELD/
-
-Best wishes,
-Desmond
-
->>
->> ---
->> Subject: locking/lockdep: Provide lockdep_assert{,_once}() helpers
->>
->> Extract lockdep_assert{,_once}() helpers to more easily write composite
->> assertions like, for example:
->>
->> 	lockdep_assert(lockdep_is_held(&drm_device.master_mutex) ||
->> 		       lockdep_is_held(&drm_file.master_lookup_lock));
->>
->> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> ---
->> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
->> index 5cf387813754..0da67341c1fb 100644
->> --- a/include/linux/lockdep.h
->> +++ b/include/linux/lockdep.h
->> @@ -306,31 +306,29 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
->>   
->>   #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
->>   
->> -#define lockdep_assert_held(l)	do {					\
->> -		WARN_ON(debug_locks &&					\
->> -			lockdep_is_held(l) == LOCK_STATE_NOT_HELD);	\
->> -	} while (0)
->> +#define lockdep_assert(cond)		\
->> +	do { WARN_ON(debug_locks && !(cond)); } while (0)
->>   
->> -#define lockdep_assert_not_held(l)	do {				\
->> -		WARN_ON(debug_locks &&					\
->> -			lockdep_is_held(l) == LOCK_STATE_HELD);		\
->> -	} while (0)
->> +#define lockdep_assert_once(cond)	\
->> +	do { WARN_ON_ONCE(debug_locks && !(cond)); } while (0)
->>   
->> -#define lockdep_assert_held_write(l)	do {			\
->> -		WARN_ON(debug_locks && !lockdep_is_held_type(l, 0));	\
->> -	} while (0)
->> +#define lockdep_assert_held(l)		\
->> +	lockdep_assert(lockdep_is_held(l) != LOCK_STAT_NOT_HELD)
->>   
->> -#define lockdep_assert_held_read(l)	do {				\
->> -		WARN_ON(debug_locks && !lockdep_is_held_type(l, 1));	\
->> -	} while (0)
->> +#define lockdep_assert_not_held(l)	\
->> +	lockdep_assert(lockdep_is_held(l) != LOCK_STATE_HELD)
->>   
->> -#define lockdep_assert_held_once(l)	do {				\
->> -		WARN_ON_ONCE(debug_locks && !lockdep_is_held(l));	\
->> -	} while (0)
->> +#define lockdep_assert_held_write(l)	\
->> +	lockdep_assert(lockdep_is_held_type(l, 0))
->>   
->> -#define lockdep_assert_none_held_once()	do {				\
->> -		WARN_ON_ONCE(debug_locks && current->lockdep_depth);	\
->> -	} while (0)
->> +#define lockdep_assert_held_read(l)	\
->> +	lockdep_assert(lockdep_is_held_type(l, 1))
->> +
->> +#define lockdep_assert_held_once(l)		\
->> +	lockdep_assert_once(lockdep_is_held(l) != LOCK_STAT_NOT_HELD)
->> +
->> +#define lockdep_assert_none_held_once()		\
->> +	lockdep_assert_once(!current->lockdep_depth)
->>   
->>   #define lockdep_recursing(tsk)	((tsk)->lockdep_recursion)
->>   
->> @@ -407,6 +405,9 @@ extern int lock_is_held(const void *);
->>   extern int lockdep_is_held(const void *);
->>   #define lockdep_is_held_type(l, r)		(1)
->>   
->> +#define lockdep_assert(c)			do { } while (0)
->> +#define lockdep_assert_once(c)			do { } while (0)
->> +
->>   #define lockdep_assert_held(l)			do { (void)(l); } while (0)
->>   #define lockdep_assert_not_held(l)		do { (void)(l); } while (0)
->>   #define lockdep_assert_held_write(l)		do { (void)(l); } while (0)
->>
+> Replace the per CPU variable with a per task bit similar to other recursion
+> protection bits like task_struct::in_page_owner. This works on both !RT and
+> RT kernels and removes as a side effect the extra per CPU storage.
 > 
+> No functional change for !RT kernels.
+> 
+> Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+
+Testing....
+
+Thanks!
+-- Daniel
 
