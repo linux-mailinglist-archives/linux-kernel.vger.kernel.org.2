@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB12C3D9FD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D00A3D9FE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235105AbhG2ItR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 04:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235260AbhG2ItJ (ORCPT
+        id S235234AbhG2IyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 04:54:21 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:32866 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235257AbhG2IyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 04:49:09 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81058C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 01:49:06 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id r26so9609867lfp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 01:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=NTMBN9R2oG6BOQCzQjvyI34ZK4/8jN/reFjqWxevtoU=;
-        b=qjN+pcBx0X9h1FXQd+WUh92Bqg2RpMOR6FPosicMQ1rgtEENtJIBxLmCg/HMenT607
-         sK7iPTopfqp73oGFK8FsPbPNDD/uiuqOpYJNeJkvEWZDW9BUWdEqntGmnNDLg6I+biO5
-         71Gm/F4I+LavfRuODe/ZW1/4lv4y2utc4H+quF9wqKUcwxwrYTN7p30vNPCHmczBARJq
-         UE3vGiJ4fySroUtFCzwCJA1FOh/kYq56mLDsZhlfVy5UI+moGAocheJ6TywEzyf3orKN
-         49K+pnqbbsnN3cBPi9x4TvMBytj2O0WsaPWWSJrfo+1mZI7aolfjJcAr7tO9qKQ8OHa9
-         Aytw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=NTMBN9R2oG6BOQCzQjvyI34ZK4/8jN/reFjqWxevtoU=;
-        b=T4wiDlFKmYSPYXrDpyKcRD+PZ/fa738DooS+KT8UAuErjs6/3ANp6ZFiWQhKEzKwVu
-         /VmZjMDvAkIKCEuAp5AVRjqhxHN7+updcwPZ99hIuHjE6mnUkq/GHxUGAYkB6Ytx23Jv
-         w+S2w1LqpDF/4Qj2bwlakwodO4+LFTGe57vH7bgYTi2vF2HG34nzTbeJ5xgKC+EHjhTl
-         MTtsS6n22jhR3sXs//lDupcqZFDF3IeN55diIfXi5pqstqFwPwiudmN+OSyCp3BpurV+
-         znBoE4CHA7FgMSjziySJHOLk0HUzJwt9ezlVmwc36ypPOq7dXQdA5WlTeKk2bcsNtH68
-         cTmw==
-X-Gm-Message-State: AOAM533STsNeDhUp416DHKDGIVFLIiQpkPNdoFqsKs28D3edjRUdW2QN
-        xAXwK+Sj9ZxIV14h8wBo5tGlb/efXaUu3unnEfg=
-X-Google-Smtp-Source: ABdhPJyMc7EJQyIAlGw65KZY6UeY0uWTGQK9M0+NqG0GEBPZejRm01+wxgpXwQmD1lR25LG3qv5bOHBcESs3lOFOBjI=
-X-Received: by 2002:ac2:5dc1:: with SMTP id x1mr2948886lfq.87.1627548544917;
- Thu, 29 Jul 2021 01:49:04 -0700 (PDT)
+        Thu, 29 Jul 2021 04:54:18 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 411A81C0B79; Thu, 29 Jul 2021 10:54:14 +0200 (CEST)
+Date:   Thu, 29 Jul 2021 10:54:13 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
+        axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        kernelnewbies@kernelnewbies.org
+Subject: Re: [RFC PATCH 0/8] Add configurable block device LED triggers
+Message-ID: <20210729085413.GA16945@amd>
+References: <20210729015344.3366750-1-arequipeno@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:ab3:664c:0:0:0:0:0 with HTTP; Thu, 29 Jul 2021 01:49:04
- -0700 (PDT)
-Reply-To: janethmark1992@gmail.com
-From:   JANETH MARK <saminukawuahmed@gmail.com>
-Date:   Thu, 29 Jul 2021 08:49:04 +0000
-Message-ID: <CAGkRadzs032oDFRgVOoKzHBE9stRoPXhd7Ybrom2TXqaSGUq7g@mail.gmail.com>
-Subject: GOOD DAY.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
+Content-Disposition: inline
+In-Reply-To: <20210729015344.3366750-1-arequipeno@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Hi,
 
-It is my pleasure to communicate with you, I know that this message
-will be a surprise to you my name is Mrs. Janet Gay Markham, I am
-diagnosed with ovarian cancer which my doctor have confirmed that I
-have only some weeks to live so I have decided you handover the sum of
-($3.5 Million Dollar) through I decided handover the money in my
-account to you for help of the orphanage homes and the needy once.
+--T4sUOijqQbZv57TR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please   kindly reply me here as soon as possible to enable me give
-you more information but before handing over my details to you please
-assure me that you will only take 30%  of the money and share the rest
-to the poor orphanage home and the needy once, thank you am waiting to
-hear from you.
+Hi!
 
-Mrs Janet Gay Markham.
+> This patch series adds configurable (i.e. user-defined) block device LED
+> triggers.
+>=20
+> * Triggers can be created, listed, and deleted via sysfs block class
+>   attributes (led_trigger_{new,list,del}).
+>=20
+> * Once created, block device LED triggers are associated with LEDs just
+>   like any other LED trigger (via /sys/class/leds/${LED}/trigger).
+>=20
+> * Each block device gains a new device attribute (led_trigger) that can
+>   be used to associate the device with a trigger or clear its
+>   association.
+
+That's not how this is normally done.
+
+We normally have a trigger ("block device activity") which can then
+expose parameters ("I watch for read" and "I monitor sda1").
+
+Is there a reason normal solution can not be used?
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--T4sUOijqQbZv57TR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmECbLUACgkQMOfwapXb+vL9tACgnOzb1KvTxmFtIJuKCic5ZIg/
+y44AoKfmCU0r9lJBSrs3cIzBq6G/ZJhY
+=EPbJ
+-----END PGP SIGNATURE-----
+
+--T4sUOijqQbZv57TR--
