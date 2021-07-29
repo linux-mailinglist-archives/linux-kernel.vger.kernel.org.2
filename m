@@ -2,117 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9A73DA082
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F873DA087
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235496AbhG2Jpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235019AbhG2Jpk (ORCPT
+        id S235488AbhG2Jsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:48:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58454 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235364AbhG2Js1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:45:40 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE35C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:45:37 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id x11so8717069ejj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RTIOpBIhIXba+iHfkGbk1sKd2cv7hIyyhFm84TIZ/vI=;
-        b=E5VNFuwlnm/hWZNfsaxVOYyRAJh/Bebb2DIBdcB97U3Jc3u+7UWGojn9MGliXc51d5
-         jFgRckSFdVEMJQkiKmlPNPc0Jcf1jWjNe7T9Cgascuos87PQydPjpztoiOwy2GIJDadM
-         pLf6O4tetR3/th6ahlw7zeWLI6uAhPIn1EMXx+KaEPKOoEUhbGmvqM4bMniaiLWY97aF
-         hNkLbi2YqPYlwg6wdwxxtC1jxf+Y4ZNLN/Y0tws5qXhQRxz0wPbkPxDqgs4ddEWIiIlk
-         0FM0io5HIT+sdoD4ZQS1WzoR79lmxGSuOppkgfA0rGDk69shCyk44L/e+AMX5RdVAVeT
-         a+Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RTIOpBIhIXba+iHfkGbk1sKd2cv7hIyyhFm84TIZ/vI=;
-        b=DXyThN3uYNCxO35/oCWYW5J6JHeYVPIfdf19VrmZWZ/BFfj1CvYGDHAmCAmU8ymW1A
-         StTjJxcz7xH1WNQcv7bd8Hms5qnzw54lbF/67G9CNRfVYGKABpKCsbLDphc3FoEBQtzw
-         UhpMCvliY42wo2rxGJmAwvTOedDZpxMtfb10PMt9MvvrM17t6s7MAcS/iR67lJYqEyPi
-         ogqo3Et5R7l4ZO2T6Gac2Ce+pbNDhJ+wx77FkyOWj3DP4e2iJOOo8SgWx8/WN64IJyfg
-         UjGvvjjehbZR8uQSFkRtqd5x4Sv603o8eJnITz3RN+zzR4gBkI7WcE835kHmbUCR/qy4
-         ma6Q==
-X-Gm-Message-State: AOAM532oel/3qvNdF7XySq3TvPZrNuxG11YauiYCuKWPiZUEg8KD8SE5
-        M5y9lcyG/ZzMxwa0bRLZjSDaiw==
-X-Google-Smtp-Source: ABdhPJyJdvD5DjTCPmr1TXl9bWCrJ7GsZp3ykSnNdM0FEZav34FCo4bqcM0yOwCyBLhr7wsMRKpYSQ==
-X-Received: by 2002:a17:906:cc57:: with SMTP id mm23mr3665043ejb.12.1627551936120;
-        Thu, 29 Jul 2021 02:45:36 -0700 (PDT)
-Received: from localhost.localdomain ([89.18.44.40])
-        by smtp.gmail.com with ESMTPSA id b15sm774965ejv.15.2021.07.29.02.45.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 02:45:35 -0700 (PDT)
-From:   Pavo Banicevic <pavo.banicevic@sartura.hr>
-To:     arkamar@atlas.cz, matt.redfearn@mips.com, mingo@kernel.org,
-        dvlasenk@redhat.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] include/uapi/linux/swab: Fix potentially missing __always_inline
-Date:   Thu, 29 Jul 2021 11:45:58 +0200
-Message-Id: <20210729094558.5935-1-pavo.banicevic@sartura.hr>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Thu, 29 Jul 2021 05:48:27 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 28CBF223F8;
+        Thu, 29 Jul 2021 09:48:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627552104; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1GfBweEzJ55yOPJo4QR7hkQ5bfwkIvX22+qPgnRjBnU=;
+        b=RcUzmr7SrgDCkiebeVulq2M/ksxsRnkGEJ9AE1ao0k7AO1rO1RoprHGp1QgXM2nE+Up2GW
+        8jdLthfvHWDCTW1AlHK196J1S6O8tQRgKG1USUzLTUawiEcP2qqcIwcO7MiVLlmJ40NxY4
+        pyjrZKW1WBY4Tm9JBET76LyevFR1JEk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627552104;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1GfBweEzJ55yOPJo4QR7hkQ5bfwkIvX22+qPgnRjBnU=;
+        b=7e9HAB8T/apMZRYmWvTpA7Jt2bppgxT5c33UFF0r5QIC2sY1X3Ub8fyUlnvixq8510dEhb
+        Rqc7Xl8ggfgBxjAg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 142A5A3B81;
+        Thu, 29 Jul 2021 09:48:24 +0000 (UTC)
+Date:   Thu, 29 Jul 2021 11:48:24 +0200
+Message-ID: <s5him0ta1sn.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
+        Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v2 13/27] ALSA: hda/cs8409: Dont disable I2C clock between consecutive accesses
+In-Reply-To: <20210728134408.369396-14-vitalyr@opensource.cirrus.com>
+References: <20210728134408.369396-1-vitalyr@opensource.cirrus.com>
+        <20210728134408.369396-14-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Redfearn <matt.redfearn@mips.com>
+On Wed, 28 Jul 2021 15:43:54 +0200,
+Vitaly Rodionov wrote:
+> 
+> From: Lucas Tanure <tanureal@opensource.cirrus.com>
+> 
+> Only disable I2C clock 25 ms after not being used.
+> 
+> The current implementation enables and disables the I2C clock for each
+> I2C transaction. Each enable/disable call requires two verb transactions.
+> This means each I2C transaction requires a total of four verb transactions
+> to enable and disable the clock.
+> However, if there are multiple consecutive I2C transactions, it is not
+> necessary to enable and disable the clock each time, instead it is more
+> efficient to enable the clock for the first transaction, and disable it
+> after the final transaction, which would improve performance.
+> This is achieved by using a timeout which disables the clock if no request
+> to enable the clock has occurred for 25 ms.
+> 
+> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> 
+> Changes in v2:
+> Improved delayed work start/cancel implementation, and re-worked commit message
+> adding more explanation why this was required. 
+> 
+> 
+> ---
+>  sound/pci/hda/patch_cs8409.c | 56 +++++++++++++++++++++++++-----------
+>  sound/pci/hda/patch_cs8409.h |  4 +++
+>  2 files changed, 43 insertions(+), 17 deletions(-)
+> 
+> diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+> index 08205c19698c..fafc0f309e70 100644
+> --- a/sound/pci/hda/patch_cs8409.c
+> +++ b/sound/pci/hda/patch_cs8409.c
+> @@ -53,7 +53,9 @@ static struct cs8409_spec *cs8409_alloc_spec(struct hda_codec *codec)
+>  	if (!spec)
+>  		return NULL;
+>  	codec->spec = spec;
+> +	spec->codec = codec;
+>  	codec->power_save_node = 1;
+> +	INIT_DELAYED_WORK(&spec->i2c_clk_work, cs8409_disable_i2c_clock);
+>  	snd_hda_gen_spec_init(&spec->gen);
+>  
+>  	return spec;
+> @@ -72,21 +74,37 @@ static inline void cs8409_vendor_coef_set(struct hda_codec *codec, unsigned int
+>  	snd_hda_codec_write(codec, CS8409_PIN_VENDOR_WIDGET, 0, AC_VERB_SET_PROC_COEF, coef);
+>  }
+>  
+> -/**
+> +/*
+> + * cs8409_disable_i2c_clock - Worker that disable the I2C Clock after 25ms without use
+> + */
+> +static void cs8409_disable_i2c_clock(struct work_struct *work)
+> +{
+> +	struct cs8409_spec *spec = container_of(work, struct cs8409_spec, i2c_clk_work.work);
+> +
+> +	mutex_lock(&spec->cs8409_i2c_mux);
+> +	cs8409_vendor_coef_set(spec->codec, 0x0,
+> +			       cs8409_vendor_coef_get(spec->codec, 0x0) & 0xfffffff7);
+> +	spec->i2c_clck_enabled = 0;
+> +	mutex_unlock(&spec->cs8409_i2c_mux);
 
-Commit bc27fb68aaad ("include/uapi/linux/byteorder, swab: force inlining
-of some byteswap operations") added __always_inline to swab functions
-and commit 283d75737837 ("uapi/linux/stddef.h: Provide __always_inline to
-userspace headers") added a definition of __always_inline for use in
-exported headers when the kernel's compiler.h is not available.
+Here we have a lock in the work, and this would become a problem in
+the below...
 
-However, since swab.h does not include stddef.h, if the header soup does
-not indirectly include it, the definition of __always_inline is missing,
-resulting in a compilation failure, which was observed compiling the
-perf tool using exported headers containing this commit:
+> +}
+> +
+> +/*
+>   * cs8409_enable_i2c_clock - Enable I2C clocks
+>   * @codec: the codec instance
+> - * @enable: Enable or disable I2C clocks
+> - *
+>   * Enable or Disable I2C clocks.
+> + * This must be called when the i2c mutex is locked.
+>   */
+> -static void cs8409_enable_i2c_clock(struct hda_codec *codec, unsigned int enable)
+> +static void cs8409_enable_i2c_clock(struct hda_codec *codec)
+>  {
+> -	unsigned int retval;
+> -	unsigned int newval;
+> +	struct cs8409_spec *spec = codec->spec;
+> +
+> +	cancel_delayed_work_sync(&spec->i2c_clk_work);
 
-In file included from /usr/include/linux/byteorder/little_endian.h:12:0,
-                 from /usr/include/asm/byteorder.h:14,
-                 from tools/include/uapi/linux/perf_event.h:20,
-                 from perf.h:8,
-                 from builtin-bench.c:18:
-/usr/include/linux/swab.h:160:8: error: unknown type name `__always_inline'
- static __always_inline __u16 __swab16p(const __u16 *p)
+Here, cancel_delayed_work_sync().  Since it's called inside the mutex
+mutex (taken in the caller side), it'll lead to a deadlock.
 
-Fix this by replacing the inclusion of linux/compiler.h with
-linux/stddef.h to ensure that we pick up that definition if required,
-without relying on it's indirect inclusion. compiler.h is then included
-indirectly, via stddef.h.
+(I know the i2c mutex lock is moved to this function in a later patch,
+but this makes harder to review.  Given that it's only about the
+performance, it'd better to apply this kind of change at the end of
+series, not in the middle.)
 
-Fixes: 283d75737837 ("uapi/linux/stddef.h: Provide __always_inline to userspace headers")
+In general, making such an async handling really race-free is not that
+trivial.  Even if you call cancel_delayed_work_sync() outside the
+mutex, it's possible that another task wedges itself between
+cancel_work() and the mutex lock and re-enables the work.
 
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-Reviewed-by: Petr Vaněk <arkamar@atlas.cz>
----
+One easier alternative implementation would be rather to allow enable
+/ disable clock reentrant with refcounting.  It accepts the function
+sequence like:
 
-Resending as patch is not really related to previous series and to not wait long for the merge.
+	enable_clock();
+	i2c_write();
+	i2c_write();
+	...
+	disable_clock();
 
----
- include/uapi/linux/swab.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+while another thread calls
 
-diff --git a/include/uapi/linux/swab.h b/include/uapi/linux/swab.h
-index 7272f85d6d6a..3736f2fe1541 100644
---- a/include/uapi/linux/swab.h
-+++ b/include/uapi/linux/swab.h
-@@ -3,7 +3,7 @@
- #define _UAPI_LINUX_SWAB_H
- 
- #include <linux/types.h>
--#include <linux/compiler.h>
-+#include <linux/stddef.h>
- #include <asm/bitsperlong.h>
- #include <asm/swab.h>
- 
--- 
-2.32.0
+	enable_clock();
+	i2c_write();
+	disable_clock();
 
+at the same time.
+
+
+thanks,
+
+Takashi
