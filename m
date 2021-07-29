@@ -2,144 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0CE3DA2AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA0F3DA2B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234912AbhG2L6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:58:40 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:39388
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235269AbhG2L6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:58:39 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 5DB033F10D
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:58:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627559915;
-        bh=mJegt6nAKectUckt+rbFcl6x63P1a1GPjk8ahj5YQQU=;
-        h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=bQGamwfephWaMoWpVCkkn6eCMN3KZaBoWqWicZ/qbKALsfgq4hHLFVuaMtxQWYAe6
-         /SoeM+AKnrhtCw2Izm17aHvKnl1DeKyE39GgEIdY1DKgxYWcAe2hBKDjPE0Lgz4BWp
-         w28yBjEQOLTe14gTT4MVxOGq2cahZs3scRYruWtIWCiHxQq4zZPtQCp/gf5xed38ru
-         0Pi4Y6uqp779oBX/W+n7BelGsVbD6+ubLDIRvE+E9ArgKmalQ0vbqLSULXFFmfj3gi
-         eCG7jKJpRw0Hn05NSmjREt6ODJPb1YsR8ETYYs3Eirrk8fssajqcvSVPS2XEyXIPpq
-         ANnjJ6G20RQwg==
-Received: by mail-ed1-f71.google.com with SMTP id b88-20020a509f610000b02903ab1f22e1dcso2821771edf.23
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:58:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mJegt6nAKectUckt+rbFcl6x63P1a1GPjk8ahj5YQQU=;
-        b=GVN+i1G/xt8JnTv25NTBQ+N25Bd70ktL2M9ZI8h3BwetKocjow4QWjPybwWlSkPhT+
-         k2H1R3orxEVhozGE48Hco4fDHT2qEHBFC3+1vGIBhHAQyd3mf9atI2iSkKNjGRcYMCcx
-         aI/IGxRCp4Qvo41XclCT+xliGYOAtP8CgjlD85uUQ4s5pmDp5iG1sxTg+qfn0D5/TIzN
-         t1ArA08xyZCWw87ZuQEOTfj3rd5E8Zq6IUAsz8qMwcecI1QdVP/OHJPjcZJtbMl0CJJf
-         BCIxiMStNypQcBmblU/KyVftaz6K0Ts0IOWv877W1b6LmADHTPSwWWFmNnmAOauh7efL
-         05mw==
-X-Gm-Message-State: AOAM533UGc6iI3nq640g+LtiAR6FBxHstgIGwgaRo4bezN2ft1j2DGco
-        ATYh2aejZ5WltDZIGfaVAl18HqhJ4NhwbsZI+iqNhJbC+6/q6VmTFMwN73MWGqFDW6VLRT3a6Is
-        RAD5oD8a6GUpOPZLTB+o3eDFhzSVqRaMpYNLOEk4cig==
-X-Received: by 2002:a17:906:c085:: with SMTP id f5mr4338575ejz.250.1627559914477;
-        Thu, 29 Jul 2021 04:58:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzv4BAiKXa3/y/e8C9RanIKpgbXJfSN4+8ZZEBon9lao+WKG0BTNjyji29VQ1OsQPbAi6/DMw==
-X-Received: by 2002:a17:906:c085:: with SMTP id f5mr4338563ejz.250.1627559914327;
-        Thu, 29 Jul 2021 04:58:34 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id n11sm908803ejg.111.2021.07.29.04.58.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 04:58:33 -0700 (PDT)
-Subject: Re: [PATCH 00/12] nfc: constify, continued (part 2)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     patchwork-bot+netdevbpf@kernel.org, davem@davemloft.net
-Cc:     mgreer@animalcreek.com, bongsu.jeon@samsung.com, kuba@kernel.org,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-References: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
- <162755820704.26856.6157999905884570707.git-patchwork-notify@kernel.org>
- <7b0ae615-dcdc-251e-4067-959b31c28159@canonical.com>
-Message-ID: <f3521001-58f3-8c6c-5b07-9dd8dae0cba8@canonical.com>
-Date:   Thu, 29 Jul 2021 13:58:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235269AbhG2MAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 08:00:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234610AbhG2MAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 08:00:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCA4760F21;
+        Thu, 29 Jul 2021 11:59:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627560000;
+        bh=dVlivW1G35KXO37f2DhxEdxNU8sqEfSwmTd1QUrB7vE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JxwqEzyYPYymuA8cRC/Zbn9293xfgv72Y/v8+W5+YllJsHUaHm+agVxifF87zv4PA
+         Sy53L3qxsQQhlRuVFG+E6BpwdOW/ruhUAQ4RKG1eEsz8adfjh9Rzai6OsfgfWzs7Sh
+         OW0jxVXq/dbHGVrSPIwx+Ia1cn/Ygc4XY7Spvpte0kqmcbw59/L/V85UT0lpJBu4An
+         cNvD7MmOHns+xNk2fEIj/1fQEoKZESe0Ek67qwX3djur/c2QLaomNQqh/4JgIKII9/
+         fSjDPjBPMBT7ftwBi4RUhafe/er+7s4Qmfak9qrX65wpMd+aJ/TiEOP54iQahf+afx
+         ufUOA8wUpCEnA==
+Date:   Thu, 29 Jul 2021 13:59:55 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ian Pilcher <arequipeno@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
+        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
+        kernelnewbies@kernelnewbies.org
+Subject: Re: [RFC PATCH 1/8] docs: Add block device LED trigger
+ documentation
+Message-ID: <20210729135955.3e3f591c@thinkpad>
+In-Reply-To: <20210729015344.3366750-2-arequipeno@gmail.com>
+References: <20210729015344.3366750-1-arequipeno@gmail.com>
+        <20210729015344.3366750-2-arequipeno@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <7b0ae615-dcdc-251e-4067-959b31c28159@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/07/2021 13:35, Krzysztof Kozlowski wrote:
-> On 29/07/2021 13:30, patchwork-bot+netdevbpf@kernel.org wrote:
->> Hello:
->>
->> This series was applied to netdev/net-next.git (refs/heads/master):
->>
->> On Thu, 29 Jul 2021 12:40:10 +0200 you wrote:
->>> Hi,
->>>
->>> On top of:
->>> nfc: constify pointed data
->>> https://lore.kernel.org/lkml/20210726145224.146006-1-krzysztof.kozlowski@canonical.com/
->>>
->>> Best regards,
->>> Krzysztof
->>>
->>> [...]
->>
->> Here is the summary with links:
->>   - [01/12] nfc: constify passed nfc_dev
->>     https://git.kernel.org/netdev/net-next/c/dd8987a394c0
->>   - [02/12] nfc: mei_phy: constify buffer passed to mei_nfc_send()
->>     https://git.kernel.org/netdev/net-next/c/894a6e158633
->>   - [03/12] nfc: port100: constify several pointers
->>     https://git.kernel.org/netdev/net-next/c/9a4af01c35a5
->>   - [04/12] nfc: trf7970a: constify several pointers
->>     https://git.kernel.org/netdev/net-next/c/ea050c5ee74a
->>   - [05/12] nfc: virtual_ncidev: constify pointer to nfc_dev
->>     https://git.kernel.org/netdev/net-next/c/83428dbbac51
->>   - [06/12] nfc: nfcsim: constify drvdata (struct nfcsim)
->>     https://git.kernel.org/netdev/net-next/c/582fdc98adc8
->>   - [07/12] nfc: fdp: drop unneeded cast for printing firmware size in dev_dbg()
->>     https://git.kernel.org/netdev/net-next/c/6c755b1d2511
->>   - [08/12] nfc: fdp: use unsigned int as loop iterator
->>     https://git.kernel.org/netdev/net-next/c/c3e26b6dc1b4
->>   - [09/12] nfc: fdp: constify several pointers
->>     https://git.kernel.org/netdev/net-next/c/3d463dd5023b
->>   - [10/12] nfc: microread: constify several pointers
->>     https://git.kernel.org/netdev/net-next/c/a751449f8b47
->>   - [11/12] nfc: mrvl: constify several pointers
->>     https://git.kernel.org/netdev/net-next/c/fe53159fe3e0
+Dear Ian,
+
+On Wed, 28 Jul 2021 20:53:37 -0500
+Ian Pilcher <arequipeno@gmail.com> wrote:
+
+> * Document the sysfs attributes (/sys/class/block/led_trigger_*
+>   and /sys/class/block/${DEV}/led_trigger) that can be used to
+>   create, list, and delete block device LED triggers and to
+>   set and clear device/trigger associations.
 > 
-> Oh, folks, too fast :)
+> * Pull API documentation from block/blk-ledtrig.c (once it
+>   exists).
 > 
-> Sorry for the mess, but the patch 11/12 has one const which is wrong
-> (I sent an email for it) and this should be on top of my
-> previous set:
-> https://lore.kernel.org/lkml/20210726145224.146006-1-krzysztof.kozlowski@canonical.com/
-> which I think you did not take in.
-> 
-> I am not sure if it compiles cleanly without the one above.
+> Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
 
-Hi David,
+thank you for this proposal.
 
-This fails because of missing patchset above:
-../drivers/nfc/fdp/fdp.c: In function ‘fdp_nci_set_production_data’:
-../drivers/nfc/fdp/fdp.c:116:60: warning: passing argument 4 of
-‘nci_prop_cmd’ discards ‘const’ qualifier from pointer target type
-[-Wdiscarded-qualifiers]
-  116 |  return nci_prop_cmd(ndev, NCI_OP_PROP_SET_PDATA_OID, len, data);
+I don't really see the purpose for having multiple different block
+device LED triggers. Moreover we really do not want userspace to be
+able to add LED triggers with arbitrary names, and as many as the
+userspace wants. There is no sense in making userspace be able to
+create 10000 triggers. Also if userspace can create triggers with
+arbitrary names, it could "steal" a name for a real trigger. For
+example if netdev trigger is compiled as a module, and before loading
+someone creates blockdev trigger with name "netdev", the loading of
+netdev trigger will fail.
 
-It also has one issue in patch 11/12. Can you drop this from
-net-dev/master? I can send a v2 of both patchsets combined.
+I would like the blkdev trigger to work in a similar way the netdev
+trigger works:
+- only one trigger, with name "blkdev"
+- when activated on a LED, new sysfs files will be created:
+  * device_name, where user can write sda1, vdb, ...
+  * read (binary value, 1 means blink on read)
+  * write (binary value, 1 means blink on write)
+  * interval (blink interval)
+  Note that device_name could allow multiple names, in theory...
+  Also some other disk states may be included, like error, or something
+- also the blinking itself can be done as is done netdev trigger: every
+  50ms the work function would look at blkdev stats, and if current
+  stat (number of bytes read/written) is different from previous, then
+  blink the LED
 
-Best regards,
-Krzysztof
+Marek
+  
