@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650483DA271
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945C73DA279
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234843AbhG2Lry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        id S234765AbhG2Lsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234595AbhG2Lrx (ORCPT
+        with ESMTP id S232149AbhG2Lst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:47:53 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2B2C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:47:49 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so8822847pji.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:47:49 -0700 (PDT)
+        Thu, 29 Jul 2021 07:48:49 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13F9C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:48:46 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id f13so6695636plj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:48:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K9GiTJuVI5x4RuGCQ02DAiAFTRDb2BIvA8GMDRJSB6k=;
-        b=yv0lO2IkvEcpcHECnb+T9gwzGSAowFwz+9NwBQpZ11PaFdVU/wsxqo5fT/yrr9tE6M
-         Ldm2VOpbXRZAp/Ug5rk1DcmYG25epedmzpza6KBBkPIWWIU7cnkhwi5RdfEKtfrk65s1
-         GcDIOKGueKx7ADdXFb+B0UfN7q529DbF4mAMud1t5ig4ZT4wFlvvW93uLKfhpMPpuYDE
-         +3qoQXZFOEq7/2BkBOo2VE/K4GgooZfWR7x7Q7wbCbqOdGeZ8UTclpJv5e7k8I+pY3do
-         pFVHevMO+EsgGnt9SJ+iP6vbjj8fi2gt0ZptRsIVCs1MsTj5s26K9jP2McPJUIYn8Wko
-         OsqA==
+        bh=vxhHsDrYpm2kI+mPYAlWy7FpBAReDvQpjfpTvihE1ZE=;
+        b=XQRdVrXr9ifqpbu6q9ewzE9YUmb4YMlVLGs9JHdGfMbmKe4kAYHSv4WY20+0qdxfGm
+         5BRybZX5w7SbfyvL9iAXSPOh+xRz8VcvSemDzrTqs4EYxxlH1Eyy7MYcKqSFAWUcrANW
+         iCFxE6oY/wFgElEjL5ktNZGFCcUNqiWgxMdKfhmiVshMAGlHBWppJ0DsRjBLnNKMr0qi
+         osBMKIoO2gsGMbqJSgLmJHcoHZnWU/xvWKoPelN7JheEAJoSsQG8hGpE3X5LyqjG0cgT
+         n8MTJSIDHwUhsK7k+/z9x1Kx2RmeM+/xweoby9TWdXrHItl342LoXyD+wooRp4gOpf+1
+         MCKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K9GiTJuVI5x4RuGCQ02DAiAFTRDb2BIvA8GMDRJSB6k=;
-        b=tjTeMkDG4UF3s3QSrJ9zSobaB3lOsr9B5bwXpvo8lUWXKw/pPNMnLcPLAenvDT2scJ
-         L5A2KjICVmwmRBX6ci/7hzkA2aHz0K/Ry/wYLiCCDXOGKHxjsAhRY8gmktYbihsMr/4O
-         cRT5Fbd4qVRz1g+BL+716pZ657iaIc0iY8+AY2lPDjl7abYFCJITjGkXJaNvXBoFGnBM
-         XhPY2qNbRuco2R9WRB0eW92k4AcRGDmAsSnkkuHIT6gw+GdHbh55Vy0DSmD3d8BW2dTS
-         +DPB55Ft0kKG+nrjjwDE3KwXYMYxGX8TU0wpbpI+8zcFhf5gXBnQOKI9S9JbENypyLjQ
-         chIQ==
-X-Gm-Message-State: AOAM531qx70Q45Cur4C5nVcEHD8W+GnE3lIitOP7JIrAENiXfg9WUmv7
-        nn31ZgJIX8rXbaEt4a4VZzP+LYLZh3OlOb4J45Sz4A==
-X-Google-Smtp-Source: ABdhPJy0UIG7qmOKUr5AtuyIOSotO04zDKZuTO2snDleiMOIl76CIKdVjCd+V8P1Zk5FWrClXpEgXRn8P4tKqvKvU8w=
-X-Received: by 2002:aa7:90c8:0:b029:32c:935f:de5f with SMTP id
- k8-20020aa790c80000b029032c935fde5fmr4738606pfk.79.1627559269461; Thu, 29 Jul
- 2021 04:47:49 -0700 (PDT)
+        bh=vxhHsDrYpm2kI+mPYAlWy7FpBAReDvQpjfpTvihE1ZE=;
+        b=VmQLXkDoR9jRYNra2FINXXoUrj1c5skyTLkvfNi2rd1N2iRykNm7JY0ZAo+//f9Vak
+         FNomnki5Io/DaBS9EUx84Hhqcg0xFkvcEFkB24CQqCN9o5plYyzpFVUScwEpxwjzogii
+         qGnGG5jE0k5Q7cBSnzZ0DUHakTHMUsXsrleo3FeYnffiEXCNCuJsdw9pPEt5PWxIB5YJ
+         ZCUCfT/tuSTPDbOYj3HG/fpcO/d0ZMPgQBlQZ7m9oeBvYMttXWXKyfP5TEaSCNbM0/ek
+         ZbEKK5qOt3ta3cI/OwczAbhzJ7BS/44d3Wxutd74PSQi0EWWn9Drpy7CKUdrXs1N6oH8
+         1KGQ==
+X-Gm-Message-State: AOAM5324jh3Ubcy3NMyKm5wiUXBxsHeI6ibuC+1Bvb8nZ0AL++7aaaLp
+        5n056TVAB4Xrkvv2k5asQLf3+EDSISAKVDUbVXW5Ig==
+X-Google-Smtp-Source: ABdhPJzmjmbRLZHOYGw8ZKDBP8QSe9qxWf7f2rEWUiJPz48ENWI7qEJjpdwkxa7mxaox1V0XGFReV7579lL4tNxFtQs=
+X-Received: by 2002:a17:902:da8a:b029:12c:4261:a2d6 with SMTP id
+ j10-20020a170902da8ab029012c4261a2d6mr4372829plx.50.1627559326287; Thu, 29
+ Jul 2021 04:48:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210728164557.1882787-1-dianders@chromium.org> <20210728094511.2.If8a8ec3bf1855cf0dbb62c005a71d6698c99c125@changeid>
-In-Reply-To: <20210728094511.2.If8a8ec3bf1855cf0dbb62c005a71d6698c99c125@changeid>
+References: <20210728164557.1882787-1-dianders@chromium.org> <20210728094511.3.I842d483139531aa4651da8338512fdf0171ff23c@changeid>
+In-Reply-To: <20210728094511.3.I842d483139531aa4651da8338512fdf0171ff23c@changeid>
 From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 29 Jul 2021 13:47:38 +0200
-Message-ID: <CAG3jFytxZAJZdpMyL1Dye2Q+AaVLBDofV8risAFd=++pLYPvXQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] drm/bridge: ti-sn65dsi86: Fix power off sequence
+Date:   Thu, 29 Jul 2021 13:48:35 +0200
+Message-ID: <CAG3jFyvwTY8azFVcHnSwgSe++ZNEfMvhbgROsLhpY00hwg5ikA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] drm/bridge: ti-sn65dsi86: Add some 100 us delays
 To:     Douglas Anderson <dianders@chromium.org>
 Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
@@ -74,7 +74,6 @@ Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
         rajeevny@codeaurora.org, Lyude Paul <lyude@redhat.com>,
         Thierry Reding <thierry.reding@gmail.com>,
         Steev Klimaszewski <steev@kali.org>,
-        Sandeep Panda <spanda@codeaurora.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -83,75 +82,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hey Doug,
 
-Thank you for submitting this.
+Thanks for submitting this.
 
 On Wed, 28 Jul 2021 at 18:46, Douglas Anderson <dianders@chromium.org> wrote:
 >
-> When testing with a panel that's apparently a little more persnickety
-> about the correct power sequence (specifically Samsung ATNA33XC20), we
-> found that the ti-sn65dsi86 was doing things just slightly wrong.
+> The manual has always said that we need 100 us delays in a few
+> places. Though it hasn't seemed to be a big deal to skip these, let's
+> add them in case it makes something happier.
 >
-> Looking closely at the ti-sn65dsi86's datasheet, the power off
-> sequence is supposed to be:
-> 1. Clear VSTREAM_ENABLE bit
-> 2. Stop DSI stream from GPU. DSI lanes must be placed in LP11 state.
-> 3. Program the ML_TX_MODE to 0x0 (OFF)
-> 4. Program the DP_NUM_LANES register to 0x0
-> 5. Clear the DP_PLL_EN bit.
-> 6. Deassert the EN pin.
-> 7. Remove power from supply pins
+> NOTE: this fixes no known issues but it seems good to make it right.
 >
-> Since we were doing the whole sequence in the "disable", I believe
-> that step #2 (stopping the DSI stream from the GPU) wasn't
-> happening. We also weren't setting DP_NUM_LANES to 0.
->
-> Let's fix this.
->
-> NOTE: things are a little asymmetric now. For instance, we turn the
-> PLL on in "enable" but now we're not turning it off until
-> "post_disable". It would seem to make sense to move the PLL turning on
-> to "pre_enable" to match. Unfortunately, I don't believe that's
-> allowed. It looks as if (in the non-refclk mode which probably nobody
-> is using) we have to wait until the MIPI clock is there before we can
-> enable the PLL. In any case, the way it is here won't really
-> hurt--it'll just leave the PLL on a little longer.
->
-> Fixes: a095f15c00e2 ("drm/bridge: add support for sn65dsi86 bridge driver")
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
 >
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
 > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 9bf889302bcc..5e932070a1c3 100644
+> index 5e932070a1c3..cd0fccdd8dfd 100644
 > --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
 > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -766,10 +766,6 @@ static void ti_sn_bridge_disable(struct drm_bridge *bridge)
+> @@ -307,6 +307,9 @@ static int __maybe_unused ti_sn65dsi86_resume(struct device *dev)
+>                 return ret;
+>         }
 >
->         /* disable video stream */
->         regmap_update_bits(pdata->regmap, SN_ENH_FRAME_REG, VSTREAM_ENABLE, 0);
-> -       /* semi auto link training mode OFF */
-> -       regmap_write(pdata->regmap, SN_ML_TX_MODE_REG, 0);
-> -       /* disable DP PLL */
-> -       regmap_write(pdata->regmap, SN_PLL_ENABLE_REG, 0);
+> +       /* td2: min 100 us after regulators before enabling the GPIO */
+> +       usleep_range(100, 110);
+> +
+>         gpiod_set_value(pdata->enable_gpio, 1);
+>
+>         /*
+> @@ -1096,6 +1099,9 @@ static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
+>
+>         if (!pdata->refclk)
+>                 ti_sn65dsi86_enable_comms(pdata);
+> +
+> +       /* td7: min 100 us after enable before DSI data */
+> +       usleep_range(100, 110);
 >  }
 >
->  static void ti_sn_bridge_set_dsi_rate(struct ti_sn65dsi86 *pdata)
-> @@ -1106,6 +1102,13 @@ static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
->  {
->         struct ti_sn65dsi86 *pdata = bridge_to_ti_sn65dsi86(bridge);
->
-> +       /* semi auto link training mode OFF */
-> +       regmap_write(pdata->regmap, SN_ML_TX_MODE_REG, 0);
-> +       /* Num lanes to 0 as per power sequencing in data sheet */
-> +       regmap_update_bits(pdata->regmap, SN_SSC_CONFIG_REG, DP_NUM_LANES_MASK, 0);
-> +       /* disable DP PLL */
-> +       regmap_write(pdata->regmap, SN_PLL_ENABLE_REG, 0);
-> +
->         if (!pdata->refclk)
->                 ti_sn65dsi86_disable_comms(pdata);
->
+>  static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
 > --
 > 2.32.0.432.gabb21c7263-goog
 >
