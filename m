@@ -2,107 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482873DA30B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36D53DA30D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236876AbhG2MZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 08:25:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231674AbhG2MZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 08:25:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6BE760EFF;
-        Thu, 29 Jul 2021 12:25:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627561532;
-        bh=cTdmOQArPn6ATSTILiIII5np66XMW0StBSbvfoNKh/k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MPi4DVs9K6K7HOerpcXnPq0YSf5HJirjjVTuSp8ZaPgnsK7SMuqvMdcWJesAUgjuS
-         +E8ZEV0BVSU9pG4VeRO9+N3nTkquH3vZTGJAZwi69txRD6yKa1hopE0ZGKVQ2EG5Ie
-         +GZeYtmPTLJlD5cE5GOHJ7Lo3z/tafwMtbArMbS4oZOWPCUKh7YkxKtnQSFDUSNjXL
-         La8VKPyr3CtfqCuSZZkAkxFUts/MCVgSEe7vlupdShDbmghX84n5UGkqUfqLjwPodg
-         69W2zt7FLtFA1LXE1JVRWkPYPp7KrMo7PukN1+BuqPB6p4XNx6AplGzCZwePslkEzW
-         uDXI0drOJOoCA==
-Date:   Thu, 29 Jul 2021 13:25:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: Re: linux-next: manual merge of the drm-msm tree with the drm-next
- tree
-Message-ID: <20210729122521.GM4670@sirena.org.uk>
-References: <20210729111027.33028-1-broonie@kernel.org>
- <2306c0c4-1312-fcc7-1ed3-406fbd72cf63@amd.com>
+        id S236974AbhG2MZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 08:25:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51794 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236888AbhG2MZj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 08:25:39 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TCEURP161610;
+        Thu, 29 Jul 2021 08:25:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=GkmeYWDizMKTMJM7MmskuLB3P8agtCV0s0RJcAVmDWY=;
+ b=oE83htfQgxYtsFm9DNM/wpFHmVfKHfUvYzXs3U9DUQ2vw9GP7Od27LRLdzrQYglQB6QS
+ uPuW32UUf4cg+lTxIgTo0U8epfB3hJPDxaXt2ToQslu9tjHbo8KgonSVwY2IwT6AxzI8
+ /IIt5g8irzxbNK+P6r1ANdWVsM4ova4X6LS9WMDQ8TvOtMjUL1BbSzqNw79VlKa87ir6
+ 0R9Al2B3cp0cPRFDiwv1iE8iHB3JM55mZmr2Eb9/Fc//xKyqQuzXi9ggdDRsZjfzYXs6
+ 4Lzfl9NFTMcXWKPs4YRqMU4oDadaBeiz5DX0w3UvQKNoipaEyK76HJtt8PCCsLvSNY8v ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3v5n0e8y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 08:25:33 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TCEe69162548;
+        Thu, 29 Jul 2021 08:25:33 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3v5n0e88-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 08:25:32 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TCDbWX009633;
+        Thu, 29 Jul 2021 12:25:30 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3a235yhpx3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 12:25:30 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TCPRun23068986
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jul 2021 12:25:27 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 09D554204F;
+        Thu, 29 Jul 2021 12:25:27 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A665742052;
+        Thu, 29 Jul 2021 12:25:26 +0000 (GMT)
+Received: from osiris (unknown [9.145.0.186])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 29 Jul 2021 12:25:26 +0000 (GMT)
+Date:   Thu, 29 Jul 2021 14:25:25 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH 2/4] kfence: add function to mask address bits
+Message-ID: <YQKeNbU4HJhFP8kn@osiris>
+References: <20210728190254.3921642-1-hca@linux.ibm.com>
+ <20210728190254.3921642-3-hca@linux.ibm.com>
+ <YQJdarx6XSUQ1tFZ@elver.google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/YEZ/b5VMxfka8q2"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2306c0c4-1312-fcc7-1ed3-406fbd72cf63@amd.com>
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YQJdarx6XSUQ1tFZ@elver.google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 9tRoZkGVyNh16-45AhbIjXuuDbx5xc_h
+X-Proofpoint-ORIG-GUID: MAwPuY-TnMuaoJ-rs9aFpx9-iJqftGxF
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 priorityscore=1501
+ phishscore=0 clxscore=1015 suspectscore=0 mlxlogscore=980 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 29, 2021 at 09:48:58AM +0200, Marco Elver wrote:
+> On Wed, Jul 28, 2021 at 09:02PM +0200, Heiko Carstens wrote:
+> > From: Sven Schnelle <svens@linux.ibm.com>
+> > 
+> > s390 only reports the page address during a translation fault.
+> > To make the kfence unit tests pass, add a function that might
+> > be implemented by architectures to mask out address bits.
+> > 
+> > Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> > Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+> 
+> I noticed this breaks on x86 if CONFIG_KFENCE_KUNIT_TEST=m, because x86
+> conditionally declares some asm functions if !MODULE.
+> 
+> I think the below is the simplest to fix, and if you agree, please carry
+> it as a patch in this series before this patch.
 
---/YEZ/b5VMxfka8q2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Will do.
 
-On Thu, Jul 29, 2021 at 01:44:42PM +0200, Christian K=F6nig wrote:
-> Am 29.07.21 um 13:10 schrieb Mark Brown:
-> > Hi all,
-> >=20
-> > Today's linux-next merge of the drm-msm tree got a conflict in:
-> >=20
-> >    drivers/gpu/drm/msm/msm_gem.c
-> >=20
-> > between commit:
-> >=20
-> >    60f800b2bdfa ("drm/msm: always wait for the exclusive fence")
-> >=20
-> > from the drm-next tree and commit:
-> >=20
-> >    1d8a5ca436ee ("drm/msm: Conversion to drm scheduler")
-> >=20
-> > from the drm-msm tree.
-> >=20
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> >=20
-> > diff --cc drivers/gpu/drm/msm/msm_gem.c
-> > index 39c35414d7b5,5db07fc287ad..000000000000
-> > --- a/drivers/gpu/drm/msm/msm_gem.c
-> > +++ b/drivers/gpu/drm/msm/msm_gem.c
->=20
-> thanks for the fixup, but something went wrong here. The diff is just emp=
-ty.
->=20
-> Any idea what's going on?
+> With the below, you can add to this patch:
+> 
+> 	Reviewed-by: Marco Elver <elver@google.com>
 
-The change modified a function that is simply deleted so the resulting
-diff was empty.
-
---/YEZ/b5VMxfka8q2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmECnjAACgkQJNaLcl1U
-h9ClJAf/TWC+oENJPpeknzNXIUrMCfFPHDQWjRJnEUz2iV11i4T52TRBBNTS+AdE
-3A+vO8jkqOpikm4CxmsnZ0avYr5r5N7eTdyDXNwkjqSPvbM8hGnbumtw6z5K/psD
-tvaU4lmnYLsQsF0Hvlw5kJHeA9eyyLWzpDn0p2seJSTOMOZZJDRwI0hBsTVaWiky
-XY5Uf7+KWMOdJTVXA2nqIw+2I3VI3Mii4mlhGYlTZMK0CFIlslLk+vklTQG3Uh/d
-fYoWQvPWtcR6yjmxPBOz1dm9JaReNPW1uezE2V0Tm6S57XS3RO/3mr2h8FEt1Qd6
-C35aONXyWUQgyo5yCH4OekASQSYJWA==
-=MA7d
------END PGP SIGNATURE-----
-
---/YEZ/b5VMxfka8q2--
+Done - Thank you! I silently assume this means also you have no
+objections if we carry this via the s390 tree for upstreaming.
