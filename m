@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA5A3DA6E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A253DA6EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237461AbhG2Oyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:54:38 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:36065 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229864AbhG2Oyh (ORCPT
+        id S237805AbhG2OzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhG2OzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:54:37 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 5E59B2B011C1;
-        Thu, 29 Jul 2021 10:54:33 -0400 (EDT)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Thu, 29 Jul 2021 10:54:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=johnericson.me;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm3; bh=k76RUZpT+yXq9JfoZ3nl1UjqDvth
-        +gVcjMm7CyMdORc=; b=OkSINz24DReO2X8KmP7INsQgu9fu3HV80Q+ubVZ++qYd
-        NPi6YmOf+rk0m8f9HkHdOAhsV9/zd8m8pWcsL4Tdehh7wQqbb+jL3Ms0P7FSK005
-        A8qdPJjalSWSybrlxEjtxJ2xhphlzjFkQJHETKV0DZrgzWIP48m60Gqz4m2ruG/1
-        rzJas31a15CWEjP1NSNNYo/SjIMws19kBBcGZOYrpNXA9bz2Cn/Yfko1CfqBeC5M
-        9WBXOzy7FdnnK70GintxZEKq0bUydpAw4V3BsYOhjjpyWTW4n8gwNd3LD+iMfr6J
-        eKzBA6yotdjynd4uFFM495rlZGQTdxbvitT6dBumVw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=k76RUZ
-        pT+yXq9JfoZ3nl1UjqDvth+gVcjMm7CyMdORc=; b=Ea/YojnyJCFCk1RAHynM3s
-        gqBC1hSQp3HTeiL/Hoauv1wSyx+JLS+Peaodmxsl8SGD+OFqxy9vzMw7f0y4c/bx
-        Z0zHizatOCEotFVw8ht3vELUf56sZn9ydmKJuYtAqaYm2ZjRuGE8D0VCxh9jmF1a
-        vZI0GWoR72FX3TMV7EPdAi3RruRix5sHLZBjEBmxuMAFwH9n/6MHUMZKc2qRwpl6
-        hi3M48A0X9+TTF+Nm90qDYlMa6Y9utXs7p3Y3BoTSXhahqA4DE6hKXdoQaB5VQ06
-        MStU0C68pyysZybZy5ikEy7YPbnUwvJ2FqbWwg6qCTZ/llH+ea+Meq9921Yc72UA
-        ==
-X-ME-Sender: <xms:J8ECYYObVXxefpjb2_tNOzHCyGRy97CpQIVK5jJkGSC1gpNNHMLuAw>
-    <xme:J8ECYe8E5RiYQNgi4MRjrpmH-TD0NLP_D0w-K3wnvQrcO3str08M4OjLF3DWJ6jid
-    F9OrJ5VFotJtOwhf1g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheefgdegudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedflfhohhhn
-    ucfgrhhitghsohhnfdcuoehlihhsthesjhhohhhnvghrihgtshhonhdrmhgvqeenucggtf
-    frrghtthgvrhhnpedvhedtvedtiefhieefleelteehgfduveehteevveelieetheektdei
-    keeiheejjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehlihhsthesjhhohhhnvghrihgtshhonhdrmhgv
-X-ME-Proxy: <xmx:J8ECYfQrpiHHfBnPANec00KpFXN7OkXs1t5KoLFSLVvJoVyjVH2DAg>
-    <xmx:J8ECYQtbEQEHQhJDdHTrodNIeqY8--WgE6D5Ac4x9Tq8VJAfxxnh0w>
-    <xmx:J8ECYQdql8AvZWonkeYwV_3tXGZY2clgMV3eHm3Gc_cN09DXP2cNxg>
-    <xmx:KMECYVHOSpoz8M28r1kAtjf1ZmsLg9OTwfM9olgaPtRMYY_Yu5NCHmfG5Ow>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id DC198FA0AA4; Thu, 29 Jul 2021 10:54:31 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-545-g7a4eea542e-fm-20210727.001-g7a4eea54
-Mime-Version: 1.0
-Message-Id: <e048b871-55db-4e7f-96c9-40aabdd076c5@www.fastmail.com>
-In-Reply-To: <20210729142415.qovpzky537zkg3dp@wittgenstein>
-References: <CAHmME9oHBtR4fBBUY8E_Oi7av-=OjOGkSNhQuMJMHhafCjazBw@mail.gmail.com>
- <CALCETrVGLx5yeHo7ExAmJZmPjVjcJiV7p1JOa4iUaW5DRoEvLQ@mail.gmail.com>
- <cf07f0732eb94dbfa67c9d56ceba738e@AcuMS.aculab.com>
- <f8457e20-c3cc-6e56-96a4-3090d7da0cb6@JohnEricson.me>
- <20210729142415.qovpzky537zkg3dp@wittgenstein>
-Date:   Thu, 29 Jul 2021 10:54:08 -0400
-From:   "John Ericson" <list@johnericson.me>
-To:     "Christian Brauner" <christian.brauner@ubuntu.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "David Laight" <David.Laight@ACULAB.COM>,
-        "Andy Lutomirski" <luto@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Kernel Hardening" <kernel-hardening@lists.openwall.com>,
-        "Jann Horn" <jann@thejh.net>,
-        "Christian Brauner" <christian.brauner@canonical.com>
-Subject: Re: Leveraging pidfs for process creation without fork
-Content-Type: text/plain
+        Thu, 29 Jul 2021 10:55:06 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E346C061765;
+        Thu, 29 Jul 2021 07:55:02 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id w6so8764473oiv.11;
+        Thu, 29 Jul 2021 07:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=B3EdUz5kSnhIEeKCBjSBk5i2bybsv3755M0/yOTbDTI=;
+        b=KW/41mDKX3e3sektwlY5RmT8ziahBntyf7WHBJzj9L1lKuASy4FvxfSqewdrXHsgmW
+         rbtSolPWyxzm3Ow7eUq3ogD9NYFl1B9+u8C1WVzKExNQKimiBBPudSbfqpOsuCNkFHIG
+         O83RiT1hAX5iMVmalgz6qy7/JSHSe1bDo7uK7aGh1aQ4iw5u1LWnCNkJ98CPGO40RdTM
+         bPjcnLCtkDBHQo2Ls7xT1ArC9Il7FEY/b9tkVQ9S5p3USu4R1XZmN/bvuv104IadweOI
+         khToirqfTiJ2Zjh+4wcDJlAh/D7UfzOpq47Iox5wJhN9tU3oFRn7uuZ51DFplrGkiWi2
+         VuCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B3EdUz5kSnhIEeKCBjSBk5i2bybsv3755M0/yOTbDTI=;
+        b=P6Dth6e45oXIrD841X/f4GYlTxX+IhSUMrmPBJW7tKBp3ZYwmlUcrYhyYthxlI90y/
+         OFGBb7/YrvZJ73gaQJmguCmTFeVdOUeM6iwlXgFbnJMh16uhWhsTxO2lb4FwC5K0/k5N
+         mnY9ya0aY9Eu9I+oO/c8W8zFohm8bleYpz0r2thpvizJhPVz2WzDb/xcHJIXjkM3t+V6
+         ywVbx0xC0dMl2itu48jLv/hFJswnVQRC2dbRgvFMXUyTG3HR79OTu3OGcpzu9EMO7ECH
+         GdYToFD65wcyMx2Ij477FNad3IDp1RXUBkozQpFGUgm/Z7xpYnS1lOiG38XdIbbCsnZu
+         vuyA==
+X-Gm-Message-State: AOAM532mpgnDWPOhXy2kp2kI1K/gEUHRfY/VxtvtOGz+bxOCEC1/5clq
+        MaadQpnav5moJXl7me8I4Ag=
+X-Google-Smtp-Source: ABdhPJx6+nHV08evZUdonQj6NNZi27UC7UCJnV8IWW40jY+QTOvH/fYFHJ1cBDjfxdLE28vBFHqKzw==
+X-Received: by 2002:a05:6808:216:: with SMTP id l22mr3327611oie.24.1627570501827;
+        Thu, 29 Jul 2021 07:55:01 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.27])
+        by smtp.googlemail.com with ESMTPSA id s6sm570790otd.6.2021.07.29.07.55.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 07:55:01 -0700 (PDT)
+Subject: Re: [PATCH] net: convert fib_treeref from int to refcount_t
+To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
+        kuba@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net
+References: <20210729071350.28919-1-yajun.deng@linux.dev>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <a7769248-d612-4bfe-afe7-b5457a9f0606@gmail.com>
+Date:   Thu, 29 Jul 2021 08:55:00 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210729071350.28919-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wonderful, looking forward to it reading it then!
-
-John
-
-On Thu, Jul 29, 2021, at 10:24 AM, Christian Brauner wrote:
-> On Wed, Jul 28, 2021 at 12:37:57PM -0400, John Cotton Ericson wrote:
-> > Hi,
-> > 
-> > I was excited to learn about about pidfds the other day, precisely in hopes
-> > that it would open the door to such a "sane process creation API". I
-> > searched the LKML, found this thread, and now hope to rekindle the
-> > discussion; my apologies if there has been more discussion since that I
+On 7/29/21 1:13 AM, Yajun Deng wrote:
+> refcount_t type should be used instead of int when fib_treeref is used as
+> a reference counter,and avoid use-after-free risks.
 > 
-> Yeah, I haven't forgotten this discussion. A proposal is on my todo list
-> for this year. So far I've scheduled some time to work on this in the
-> fall.
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>  include/net/dn_fib.h     | 2 +-
+>  include/net/ip_fib.h     | 2 +-
+>  net/decnet/dn_fib.c      | 6 +++---
+>  net/ipv4/fib_semantics.c | 8 ++++----
+>  4 files changed, 9 insertions(+), 9 deletions(-)
 > 
-> Thanks!
-> Christian
+
+
+for net-next so the subject line should be "[PATCH net-next] ...."
+
+Reviewed-by: David Ahern <dsahern@kernel.org>
