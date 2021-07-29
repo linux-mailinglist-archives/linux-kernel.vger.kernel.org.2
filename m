@@ -2,172 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC543D9F24
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D483D9F20
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234869AbhG2IGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 04:06:51 -0400
-Received: from relay-us1.mymailcheap.com ([51.81.35.219]:35570 "EHLO
-        relay-us1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234733AbhG2IGu (ORCPT
+        id S234769AbhG2IFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 04:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235046AbhG2IEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 04:06:50 -0400
-Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.248.207])
-        by relay-us1.mymailcheap.com (Postfix) with ESMTPS id E2A9C20402;
-        Thu, 29 Jul 2021 08:06:46 +0000 (UTC)
-Received: from relay3.mymailcheap.com (relay3.mymailcheap.com [217.182.66.161])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id CD29F260EB;
-        Thu, 29 Jul 2021 08:06:42 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id B28F63F15F;
-        Thu, 29 Jul 2021 10:06:39 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 866EC2A514;
-        Thu, 29 Jul 2021 10:06:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1627545999;
-        bh=MxHmdT4bsC43647pu5QM2aJET0ZwS2Bb3sTp+rRAXqs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=FdCP0ilGJPnQuZ5rudRg5Rk6XLpM8blugW+0fOFYAuI3grN9JWvT0l+bx0inXNtu8
-         tx2zjTY3hiphcqAxb6BCTj+BKLTNeWr3HG8q+syF7TSNONZyky7AYNPWLSSTaVj2qp
-         Na/C7YVFjgrKt1iQs28ekRbskrGVbHdhaygNSDe4=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id J9GZCaWJa08s; Thu, 29 Jul 2021 10:06:38 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Thu, 29 Jul 2021 10:06:38 +0200 (CEST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id D444541BC6;
-        Thu, 29 Jul 2021 08:06:36 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="wL7QlJco";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [192.168.0.46] (unknown [14.154.30.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 8D48D41BC6;
-        Thu, 29 Jul 2021 08:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1627545982; bh=MxHmdT4bsC43647pu5QM2aJET0ZwS2Bb3sTp+rRAXqs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=wL7QlJcoPqMLq/nXtvFWnwybsQmHWtPSTk2Kmy+ZPkht1BUy52Q8B8PhstnLmbZrG
-         kBy4VxKXZnjRXzhI19yi4OzYv8E4a6URGOOQ/J7ZeZ385gv8swRpXmlokN1of0yxRq
-         8IG0vcuhYv2vYraQHY9WhLXD4c44dwzd7TTn8aZ0=
-Message-ID: <1e49692a2f4548ae942e170bc1ae9431a6eb512e.camel@aosc.io>
-Subject: Re: [PATCH v7 06/19] rtc: sun6i: Add support for RTCs without
- external LOSCs
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Date:   Thu, 29 Jul 2021 16:04:10 +0800
-In-Reply-To: <20210616091431.6tm3zdf77p2x3upc@gilmour>
-References: <20210615110636.23403-1-andre.przywara@arm.com>
-         <20210615110636.23403-7-andre.przywara@arm.com>
-         <20210616091431.6tm3zdf77p2x3upc@gilmour>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 
+        Thu, 29 Jul 2021 04:04:33 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B7DC061798
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 01:04:24 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id b128so3109420wmb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 01:04:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iHhkz3MM2znVBopUn3V1Chth9bX7Bpogp99sb0VmtaE=;
+        b=iTWBEDwuhrK8huDbJxyxklHK6C1NKK3p+MGUQ/Te26VOvvdWRmBlWhdl1w2yJIBNkW
+         N1ofWIGdOiHkAENqKU2/Th5t9aAiJmsAtJ+Qd0HPxvYuoxU6QwQjDyNWrzpwe4mP0iNB
+         7o5BNczcwn2ct/Il4TaxnCjcbKpmfpmRjcKxVhRGLzohoUvvXo/e9tWqaOqppN07v3cc
+         zzE9j1oU16CDrq3VlTRWmFHynN9EsLGytLQOF04T2KhXle/WNovd4SgJIREARgG5BIoB
+         6ckfNUE7kd2B9iPlGXlKiD6ybt2J5F5FmWvBTALCqHj4Vj4nRCcfxW8lXKKMYS9TlWLQ
+         dfBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iHhkz3MM2znVBopUn3V1Chth9bX7Bpogp99sb0VmtaE=;
+        b=SCRTb2ptPu0lbVAtChn/e8CewPGSPi+Djq0I0mrmHcoP5sjdv+xRM9Fk1yCvuo8hyK
+         0NZI/P/ZsGiRVmkLAWL4jjJDIOErEUAYWX67FkF2GfrmKMEofBFFjeKOJgz7KJWcIcam
+         nwBfcMnhyYF+glz8caYszZt2fkj4fAAN9dyW09aQPeX3L0LiZdsJin7WVqx/UmBnxCR8
+         wIS7wK4aNGKaj266Ikve4xEjmH88QOit09uPkOUjG1LAvINFaQ7j3C/adzHvlH657BXg
+         46Kicu7w9JFyETDYkxD58lmJBF7wzmhp6CgITDpvlRRGA79De/rSJn7CVdgBU7VCGQtC
+         P5mQ==
+X-Gm-Message-State: AOAM533mq/hbWQIgFIJZlRPvvnke3swiIvO+CjvN5VdrT1wVd7C6YWYs
+        t/lk5xTaLxSHOw8noO3JSD3DRg==
+X-Google-Smtp-Source: ABdhPJxNDr9R2KOVIOpEDQDcUJUTRwCm2JyppVneFr3FKdXuS73yvy03OEuU/9afjVDLW0+D0WgDew==
+X-Received: by 2002:a7b:c2fa:: with SMTP id e26mr13255078wmk.84.1627545862669;
+        Thu, 29 Jul 2021 01:04:22 -0700 (PDT)
+Received: from [10.10.6.131] ([109.120.209.55])
+        by smtp.googlemail.com with ESMTPSA id j1sm7901395wmo.4.2021.07.29.01.04.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 01:04:21 -0700 (PDT)
+Subject: Re: [V2] venus: venc: add support for
+ V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control
+To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org
+References: <1626184787-25020-1-git-send-email-mansur@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <d43738a8-cc29-57c7-d9e4-bf8ee03bfe19@linaro.org>
+Date:   Thu, 29 Jul 2021 11:04:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: D444541BC6
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_TWELVE(0.00)[14];
-         RECEIVED_SPAMHAUS_PBL(0.00)[14.154.30.140:received];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         FREEMAIL_CC(0.00)[csie.org,gmail.com,kernel.org,sholland.org,lists.infradead.org,googlegroups.com,lists.linux.dev,vger.kernel.org,megous.com,towertech.it,bootlin.com];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
+In-Reply-To: <1626184787-25020-1-git-send-email-mansur@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021-06-16星期三的 11:14 +0200，Maxime Ripard写道：
-> Hi,
-> 
-> On Tue, Jun 15, 2021 at 12:06:23PM +0100, Andre Przywara wrote:
-> > Some newer Allwinner RTCs (for instance the one in the H616 SoC)
-> > lack
-> > a pin for an external 32768 Hz oscillator. As a consequence, this
-> > LOSC
-> > can't be selected as the RTC clock source, and we must rely on the
-> > internal RC oscillator.
-> > To allow additions of clocks to the RTC node, add a feature bit to
-> > ignore
-> > any provided clocks for now (the current code would think this is
-> > the
-> > external LOSC). Later DTs and code can then for instance add the
-> > PLL
-> > based clock input, and older kernel won't get confused.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> 
-> Honestly, I don't really know if it's worth it at this point.
-> 
-> If we sums this up:
-> 
->  - The RTC has 2 features that we use, mostly centered around 2
->    registers set plus a global one
-> 
->  - Those 2 features are programmed in a completely different way
-> 
->  - Even the common part is different, given the discussion around the
->    clocks that we have.
-> 
-> What is there to share in that driver aside from the probe, and maybe
-> the interrupt handling? Instead of complicating this further with
-> more
-> special case that you were (rightfully) complaining about, shouldn't
-> we
-> just acknowledge the fact that it's a completely separate design and
-> should be treated as such, with a completely separate driver?
 
-I think our problem is just that we're having a single driver for both
-functionalities (clock manager and RTC).
 
-Personally I don't think we should have seperated driver for clock
-managers, although I am fine with seperated RTC driver for linear days.
-
-By the way, not having a LOSC is only what happens on H616, maybe
-because there should never be a battery-backed H616 device. On R329,
-the RTC part has linear day storage, but it still have LOSC. Because of
-this, I don't think we should duplicate at least at least the current
-sun6i-rtc dual-functionality driver, because the clock funtionality is
-just the same with previous SoCs on R329.
-
+On 7/13/21 4:59 PM, Mansur Alisha Shaik wrote:
+> Add support for V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control for
+> H264 high profile and constrained high profile.
 > 
-> Maxime
+> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.h       |  1 +
+>  drivers/media/platform/qcom/venus/hfi_cmds.c   |  8 ++++++++
+>  drivers/media/platform/qcom/venus/hfi_helper.h |  5 +++++
+>  drivers/media/platform/qcom/venus/venc.c       | 11 +++++++++++
+>  drivers/media/platform/qcom/venus/venc_ctrls.c | 15 ++++++++++++++-
+>  5 files changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 8df2d49..39dfab4 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -234,6 +234,7 @@ struct venc_controls {
+>  	u32 h264_loop_filter_mode;
+>  	s32 h264_loop_filter_alpha;
+>  	s32 h264_loop_filter_beta;
+> +	u32 h264_8x8_transform;
+>  
+>  	u32 hevc_i_qp;
+>  	u32 hevc_p_qp;
+> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
+> index f510247..d121dcb 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_cmds.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
+> @@ -1239,6 +1239,14 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
+>  		break;
+>  	}
+>  
+> +	case HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8: {
+> +		struct hfi_h264_8x8x_transform *in = pdata, *tm = prop_data;
+> +
+> +		tm->enable_type = in->enable_type;
+> +		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*tm);
+> +		break;
+> +	}
+> +
+>  	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
+>  	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
+>  	case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
+> diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
+> index b0a9beb..fe3e523 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_helper.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_helper.h
+> @@ -507,6 +507,7 @@
+>  #define HFI_PROPERTY_PARAM_VENC_MAX_NUM_B_FRAMES		0x2005020
+>  #define HFI_PROPERTY_PARAM_VENC_H264_VUI_BITSTREAM_RESTRC	0x2005021
+>  #define HFI_PROPERTY_PARAM_VENC_PRESERVE_TEXT_QUALITY		0x2005023
+> +#define HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8			0x2005025
+>  #define HFI_PROPERTY_PARAM_VENC_HIER_P_MAX_NUM_ENH_LAYER	0x2005026
+>  #define HFI_PROPERTY_PARAM_VENC_DISABLE_RC_TIMESTAMP		0x2005027
+>  #define HFI_PROPERTY_PARAM_VENC_INITIAL_QP			0x2005028
+> @@ -562,6 +563,10 @@ struct hfi_bitrate {
+>  	u32 layer_id;
+>  };
+>  
+> +struct hfi_h264_8x8x_transform {
 
+s/hfi_h264_8x8x_transform/hfi_h264_8x8_transform
+
+> +	u32 enable_type;
+> +};
+> +
+>  #define HFI_CAPABILITY_FRAME_WIDTH			0x01
+>  #define HFI_CAPABILITY_FRAME_HEIGHT			0x02
+>  #define HFI_CAPABILITY_MBS_PER_FRAME			0x03
+> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+> index 8dd49d4..948369c 100644
+> --- a/drivers/media/platform/qcom/venus/venc.c
+> +++ b/drivers/media/platform/qcom/venus/venc.c
+> @@ -567,6 +567,7 @@ static int venc_set_properties(struct venus_inst *inst)
+>  		struct hfi_h264_vui_timing_info info;
+>  		struct hfi_h264_entropy_control entropy;
+>  		struct hfi_h264_db_control deblock;
+> +		struct hfi_h264_8x8x_transform h264_transform;
+>  
+>  		ptype = HFI_PROPERTY_PARAM_VENC_H264_VUI_TIMING_INFO;
+>  		info.enable = 1;
+> @@ -597,6 +598,16 @@ static int venc_set_properties(struct venus_inst *inst)
+>  		ret = hfi_session_set_property(inst, ptype, &deblock);
+>  		if (ret)
+>  			return ret;
+> +
+> +		ptype = HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8;
+> +		if (ctr->profile.h264 == HFI_H264_PROFILE_HIGH ||
+> +		    ctr->profile.h264 == HFI_H264_PROFILE_CONSTRAINED_HIGH)
+> +			h264_transform.enable_type = ctr->h264_8x8_transform;
+> +
+> +		ret = hfi_session_set_property(inst, ptype, &h264_transform);
+
+h264_transform.enable_type is undefined for other profiles different
+from HIGH and CONSTRAINED_HIGH.
+
+> +		if (ret)
+> +			return ret;
+> +
+>  	}
+>  
+>  	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
+> diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
+> index 637c92f..62beba2 100644
+> --- a/drivers/media/platform/qcom/venus/venc_ctrls.c
+> +++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
+> @@ -319,6 +319,16 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>  	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
+>  		ctr->mastering = *ctrl->p_new.p_hdr10_mastering;
+>  		break;
+> +	case V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM:
+> +		if (ctr->profile.h264 != HFI_H264_PROFILE_HIGH &&
+> +		    ctr->profile.h264 != HFI_H264_PROFILE_CONSTRAINED_HIGH)
+> +			return -EINVAL;
+> +
+> +		if (ctrl->val == 0)
+> +			return -EINVAL;
+
+Can you add a comment why 8x8 transform cannot be disabled for HIGH and
+CONSTRAINED_HIGH profiles.
+
+> +
+> +		ctr->h264_8x8_transform = ctrl->val;
+> +		break;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -334,7 +344,7 @@ int venc_ctrl_init(struct venus_inst *inst)
+>  {
+>  	int ret;
+>  
+> -	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 57);
+> +	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 58);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -438,6 +448,9 @@ int venc_ctrl_init(struct venus_inst *inst)
+>  			  V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MIN_QP, 1, 51, 1, 1);
+>  
+>  	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
+> +		V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM, 0, 1, 1, 0);
+> +
+> +	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
+>  			  V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP, 1, 51, 1, 1);
+>  
+>  	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
+> 
+
+-- 
+regards,
+Stan
