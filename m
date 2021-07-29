@@ -2,98 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63B03DA987
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0747B3DA990
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhG2Q6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:58:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:52986 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229739AbhG2Q6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:58:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A298F1FB;
-        Thu, 29 Jul 2021 09:58:10 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9AF463F73D;
-        Thu, 29 Jul 2021 09:58:08 -0700 (PDT)
-Subject: Re: [PATCH v7 3/4] iommu: rockchip: Add internal ops to handle
- variants
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
-        xxm@rock-chips.com, Ezequiel Garcia <ezequiel@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        iommu@lists.linux-foundation.org, kernel@collabora.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210525121551.606240-1-benjamin.gaignard@collabora.com>
- <20210525121551.606240-4-benjamin.gaignard@collabora.com>
- <c6175f3d-a324-9fb5-bd39-cfe0447ee5e7@collabora.com>
- <3544194.oiGErgHkdL@diego>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <06cdd178-66af-9ff7-5100-3da4e901040f@arm.com>
-Date:   Thu, 29 Jul 2021 17:58:03 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S229922AbhG2RAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhG2RAc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 13:00:32 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67C5C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:00:28 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id z4so7764037wrv.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rFgImdL4oRnQoKBA5pI3AwMwu/TF6E4dvPNBUaLQNFQ=;
+        b=Ym5Ufkl/exEhxT3LXpkyNJPvberJTQmdCqua9HnSvE4M1l834pSV3ErwW2z0EyYWzN
+         25tlJDAdf4Z8milEdWy0tk01sdQ6hArqX5HIewWnMc4zSAriwLR/66Pb62qomNeOfoZ9
+         uHH4jP7oMOLk7iBAtSooAcqjMGyBacUbzwf2prksRZN34Etp9YS6CxBG1OmhWxdt5iwv
+         Cz0hTGe2SZ6LQAjhb/19b6Onsoqj3n+calSmMc1PqDOdl6S5v2E+DIvW1JqZultHFGaZ
+         e0HJto+/7kXHwepNw+rHHp76Vd4deu1YTEZU2A+fO6L5MjxxixVrUs1tBlqHMKsC19AF
+         Ywgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rFgImdL4oRnQoKBA5pI3AwMwu/TF6E4dvPNBUaLQNFQ=;
+        b=qytdJkCgporMPKELFDojbGRHGh0erbYRvXmK2SU6rjTQOdhqztm8dXDqyBDVl4IC2X
+         XUNdCNVLj8wBl99EMI/km9kJv5aZTPwc2IO8vB7WN34IfGwcF6ChI/4nw7dsaTokN7Kp
+         amIK0QB7tTEGqDTnyfNx5ERYG6MktjpfZgy5JsqzrgMKprch+ulp+TeAdNoOLj3gFdDI
+         Od0+AxC8GGki0eh8wOT3t0DJC5v/bNDYgXNt/oUVfigLvXbrZ/l9IMw1NAdmuzXke1LU
+         IZpMVxWANKv4+w5W0gcLyIvIUOkRqzWGe+xPD+w1gavYjbsgEwBd2WIYGcNtWSuGPsgv
+         Wmzg==
+X-Gm-Message-State: AOAM531EiLg996htbKWcDoX5GujABkoQ2nM/s2O2sPZYUAExA3rZRQ18
+        rH3+iK7HYDVa9PBdFKsV04j+lQ==
+X-Google-Smtp-Source: ABdhPJyFz2hml+WnVbZ7VNzv3kjo6OC8XSEJ53KL7oluYjYUSeypg9pkHqCQ9bSEkCwBjaOkz9WNEQ==
+X-Received: by 2002:a5d:53ca:: with SMTP id a10mr4243003wrw.197.1627578027075;
+        Thu, 29 Jul 2021 10:00:27 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:293a:bc89:7514:5218])
+        by smtp.gmail.com with ESMTPSA id q22sm3841194wmc.16.2021.07.29.10.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 10:00:26 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 18:00:23 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] KVM: arm64: Minor optimization of range_is_memory
+Message-ID: <YQLep2cwhyzWu2cL@google.com>
+References: <20210728153232.1018911-1-dbrazdil@google.com>
+ <20210728153232.1018911-3-dbrazdil@google.com>
 MIME-Version: 1.0
-In-Reply-To: <3544194.oiGErgHkdL@diego>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728153232.1018911-3-dbrazdil@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-29 17:08, Heiko Stübner wrote:
-> Hi Dafna,
+On Wednesday 28 Jul 2021 at 15:32:32 (+0000), David Brazdil wrote:
+> Currently range_is_memory finds the corresponding struct memblock_region
+> for both the lower and upper bounds of the given address range with two
+> rounds of binary search, and then checks that the two memblocks are the
+> same. Simplify this by only doing binary search on the lower bound and
+> then checking that the upper bound is in the same memblock.
 > 
-> Am Donnerstag, 29. Juli 2021, 17:59:26 CEST schrieb Dafna Hirschfeld:
->> On 25.05.21 14:15, Benjamin Gaignard wrote:
->>> @@ -879,7 +895,7 @@ static int rk_iommu_enable(struct rk_iommu *iommu)
->>>    
->>>    	for (i = 0; i < iommu->num_mmu; i++) {
->>>    		rk_iommu_write(iommu->bases[i], RK_MMU_DTE_ADDR,
->>> -			       rk_domain->dt_dma);
->>> +			       rk_ops->dma_addr_dte(rk_domain->dt_dma));
->>
->> Hi,
->> This is not related to that patch, I was wondring why are all mmu devices initialized
->> with the same dt_dma?
->> I see for example that the isp0_mmu in rk3399.dtsi has two resources. Can't each resource
->> be initialized with different dt_dma and this way there are two dt tables instead of the two mmus pointing
->> to the same dt table.
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
 > 
-> maybe
-> git log -1 cd6438c5f8446691afa4829fe1a9d7b656204f11
-> 
-> "iommu/rockchip: Reconstruct to support multi slaves
->      
-> There are some IPs, such as video encoder/decoder, contains 2 slave iommus,
-> one for reading and the other for writing. They share the same irq and
-> clock with master.
->      
-> This patch reconstructs to support this case by making them share the same
-> Page Directory, Page Tables and even the register operations.
-> That means every instruction to the reading MMU registers would be
-> duplicated to the writing MMU and vice versa."
+> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> index a6ce991b1467..37d73af69634 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> @@ -189,13 +189,18 @@ static bool find_mem_range(phys_addr_t addr, struct kvm_mem_range *range)
+>  	return false;
+>  }
+>  
+> +static bool is_in_mem_range(phys_addr_t addr, struct kvm_mem_range *range)
+> +{
 
-Right. In theory we *could* maintain a separate pagetable for each IOMMU 
-instance, but it would just lead to a load of complexity and overhead. 
-For a map request, we'd have to do extra work to decide which table(s) 
-need modifying, and duplicate all the work of the actual mapping if it's 
-more than one. For an unmap request, we'd have no choice but to walk 
-*all* the tables backing that domain to figure out which (if any) 
-actually had it mapped in the first place.
+Nit: addr@ could be u64 for consistency -- struct kvm_mem_range holds
+IPAs in general.
 
-Given that we already have distinct read and write permissions for 
-mappings within a single table, there's not even any functional benefit 
-that could be gained in this case (and in the more general case where 
-the device might emit all kinds of transactions from all its interfaces 
-you'd have to maintain identical mappings for all its IOMMUs anyway). 
-Saving memory and code complexity by physically sharing one pagetable 
-and not worrying about trying to do selective TLB maintenance is a 
-bigger win than anything else could be.
+> +	return range->start <= addr && addr < range->end;
+> +}
+> +
+>  static bool range_is_memory(u64 start, u64 end)
+>  {
+> -	struct kvm_mem_range r1, r2;
+> +	struct kvm_mem_range r;
+>  
+> -	if (!find_mem_range(start, &r1) || !find_mem_range(end - 1, &r2))
+> +	if (!find_mem_range(start, &r))
+>  		return false;
+> -	if (r1.start != r2.start)
+> +	if (!is_in_mem_range(end - 1, &r))
+>  		return false;
+>  
+>  	return true;
 
-Robin.
+Nit: maybe drop the second if and simplify to:
+
+	return is_in_mem_range(end - 1, &r);
+
+With that:
+
+Reviewed-by: Quentin Perret <qperret@google.com>
+
+Thanks,
+Quentin
