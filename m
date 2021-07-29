@@ -2,85 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A353DA023
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E057E3DA025
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235405AbhG2JPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
+        id S235425AbhG2JPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235129AbhG2JPo (ORCPT
+        with ESMTP id S235129AbhG2JPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:15:44 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0E8C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:15:41 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id x90so7210992ede.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:15:41 -0700 (PDT)
+        Thu, 29 Jul 2021 05:15:51 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757EEC061757;
+        Thu, 29 Jul 2021 02:15:47 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id d17so9815913lfv.0;
+        Thu, 29 Jul 2021 02:15:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hev-cc.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HJEWXYf+MLVoeyVL4aKf9RaWEeEr+d0jCBcU4Hehaxo=;
-        b=AnEg2zJa2HgclUb2HGoxq7v2MTCXHykSvoYQd/HK1CtNl+LbKX5si0F7hlBYlNCsc/
-         A1Hcib63x2knKIYHDoRtEmSTeNiNXCAcX6o0glPWsC5hscrxnQmerV2Ou3Gdxkin36ZS
-         ZsBEITmnal1ahnz+TC0JkduwhgHOukSSdZv7yhNBQR1zlb0edkI0N5M38xv+Rh2EX5KR
-         9Svw0ABIwdcXxPHHm/VwCuhnfnkySVumKny0DHdH7wobRKZA8EEe9CBAYJafaIXtSamj
-         JbUxQPcw9j4dtrcofRZclrSwjtbFGk7rK5BYzpD3CidKNrqQqEjFjBbYDfq5Y7vCQP5z
-         HI5g==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=S2WOhbKtnksCXQrfbao+yG0WrUawlgDIizHpSnBnnf0=;
+        b=D1AbJjVfa4UVIhgpkG/gleRi/WBc+YSAmXO7N6VAI/6EsbHZDUntTRkVR7HTdTNYyR
+         l4f2aekCso1BFLDzAzoT3tjfZ9aNNDBv8HBGK3IurM5h/q+7XfMtPyvu4LoPBZdILign
+         bweFkU3RXmi6pjX/iQDcJ/vZ/kOznl6/JiEimo7YH1ukGFdZmC8QXdoxgUBULvmQ8A0n
+         CFHV9T2g4WvkpBhXNvC4LgoPnNcRnUlFIQESXY77jnDNIpLxZUKf4WMuHq0YA/OLDmgw
+         Z/yVj9jztRqGhabEHmJVKlWbOzVDx/GMvDC8m7Rud46PvUKAPMayTE4HwcIWCR2mPgrh
+         7Xbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HJEWXYf+MLVoeyVL4aKf9RaWEeEr+d0jCBcU4Hehaxo=;
-        b=oWblWJQa1o1STlSm7ZKwlVsjX9eAEv3poklyLnKMWqa1sI0obRwJp8ZqNxwRvVyr7U
-         27WT4TmhlmHpe1Y40JTiAKsc5xpS05gXVmShVZUnOIAbzQjkCQsNkZqYgXRDWVNXwCgM
-         hjIMHr9GT/c0Lt/4WW3+gbAQRQK496PG6+wv6squKwSlNxfaEDqpCcQErG6OtaKr8RL9
-         cllg2iXP8SRsjfVh5mioGNlHXeLUgN1RXtPCFcJP46rFB0QLQ9TUMd+gwTb2iGU0D66G
-         HiqhMih2NLYdGRuKnyS/+Qr/g3WgvpWXspylNd/BUAei8I1+lFB1Eg1UNkLLPxY+vlMZ
-         k5dA==
-X-Gm-Message-State: AOAM5337TkNMmUpJyCyCKYQAAm4km3LUvCzIpYBWl2XN4rvPDt23HxbY
-        ozVd7PEA/yZILvfuYdzxW2JDW57jux40sPrayB837g==
-X-Google-Smtp-Source: ABdhPJzGO5ZEDGWNIfoyBnRz2S9+ImksyNVrhgBKmRynSisfodXh4WyTGC9T8Thgtd3CToxg9p1mCZgsHir6qf9QKZo=
-X-Received: by 2002:a05:6402:cab:: with SMTP id cn11mr4706255edb.369.1627550140422;
- Thu, 29 Jul 2021 02:15:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=S2WOhbKtnksCXQrfbao+yG0WrUawlgDIizHpSnBnnf0=;
+        b=ox8DBcTnTgGvmyMNc0CautbGiYg2RTcUPhin1kpbc/suoKJx7gtEybPy4Gkm7PMkU3
+         s4p7MNtg6EYoEvzyWhunXh7qj6hbmOqjjuDyqRqH4GvkFs9pM8hiM0ueFBcxaSpHtgjQ
+         krqqqrKwINsJdUxluFktNn5h12+DIWh3d6FNOGkZoFy5LdPgQlq7rVQvh799jJngqQsf
+         kyW21PwHS9K7DpAK46yH7ais6m2MklTH5NIfu0iSra2dpoexHq7nFpbB3eBXAa2KZUDu
+         ER52P9uL8RzCXrtYdpLHBYOaVp/t7Y9Lz+/cbVGlkE8GojIfwwWdKVbBLMQhFEwcMroi
+         iWBw==
+X-Gm-Message-State: AOAM5319MxUPNB5OwvM1Kqo26TGgz/ljYigMHEfKZg193FPkRgzJ65A3
+        iS9n5WSu8xW2E6fI8EjbH/8=
+X-Google-Smtp-Source: ABdhPJxTojV5Vf7auhwpvtT6+k/6OqxJ3aPn3ow4yXkZOCokj3Y2M8c+/CsdBCoUUkBNcyQBvK1Cmg==
+X-Received: by 2002:a19:4341:: with SMTP id m1mr2942235lfj.443.1627550145755;
+        Thu, 29 Jul 2021 02:15:45 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id a13sm247194lfl.206.2021.07.29.02.15.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 02:15:45 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 12:15:42 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Michel =?UTF-8?B?RMOkbnplcg==?= <michel@daenzer.net>,
+        Christian =?UTF-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
+Message-ID: <20210729121542.27d9b1cc@eldfell>
+In-Reply-To: <3675d530-c9fc-7ec9-e157-b6abeeec7c2a@amd.com>
+References: <20210726233854.2453899-1-robdclark@gmail.com>
+        <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
+        <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
+        <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
+        <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
+        <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
+        <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
+        <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com>
+        <9d5f4415-d470-3bc1-7d52-61ba739706ae@daenzer.net>
+        <eedfdc75-72f8-9150-584b-c5e9d16db180@amd.com>
+        <20210728165700.38c39cf8@eldfell>
+        <74e310fa-e544-889f-2389-5abe06f80eb8@amd.com>
+        <20210729112358.237651ff@eldfell>
+        <3675d530-c9fc-7ec9-e157-b6abeeec7c2a@amd.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210729082549.144559-1-wangrui@loongson.cn> <YQJu6fTIpeuGV+UX@boqun-archlinux>
-In-Reply-To: <YQJu6fTIpeuGV+UX@boqun-archlinux>
-From:   hev <r@hev.cc>
-Date:   Thu, 29 Jul 2021 17:15:29 +0800
-Message-ID: <CAHirt9j2G62=7_a4Ow88smnRzOjKMkD1WQoj4uc=mQq9Qf8UFQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] locking/atomic: arch/mips: Fix atomic{_64,}_sub_if_positive
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Rui Wang <wangrui@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/LoBVg6qhcuxdajU4QJB+N2E";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Boqun,
+--Sig_/LoBVg6qhcuxdajU4QJB+N2E
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 29, 2021 at 5:04 PM Boqun Feng <boqun.feng@gmail.com> wrote:
->
-> Hi,
->
-> On Thu, Jul 29, 2021 at 04:25:49PM +0800, Rui Wang wrote:
-> > This looks like a typo and that caused atomic64 test failed.
+On Thu, 29 Jul 2021 10:43:16 +0200
+Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+
+> Am 29.07.21 um 10:23 schrieb Pekka Paalanen:
+> > On Wed, 28 Jul 2021 16:30:13 +0200
+> > Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+> > =20
+> >> Am 28.07.21 um 15:57 schrieb Pekka Paalanen: =20
+> >>> On Wed, 28 Jul 2021 15:31:41 +0200
+> >>> Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+> >>>    =20
+> >>>> Am 28.07.21 um 15:24 schrieb Michel D=C3=A4nzer: =20
+> >>>>> On 2021-07-28 3:13 p.m., Christian K=C3=B6nig wrote: =20
+> >>>>>> Am 28.07.21 um 15:08 schrieb Michel D=C3=A4nzer: =20
+> >>>>>>> On 2021-07-28 1:36 p.m., Christian K=C3=B6nig wrote: =20
+> >>>>>>>> At least AMD hardware is already capable of flipping frames on G=
+PU events like finishing rendering (or uploading etc).
+> >>>>>>>>
+> >>>>>>>> By waiting in userspace on the CPU before send the frame to the =
+hardware you are completely killing of such features.
+> >>>>>>>>
+> >>>>>>>> For composing use cases that makes sense, but certainly not for =
+full screen applications as far as I can see. =20
+> >>>>>>> Even for fullscreen, the current KMS API only allows queuing a si=
+ngle page flip per CRTC, with no way to cancel or otherwise modify it. Ther=
+efore, a Wayland compositor has to set a deadline for the next refresh cycl=
+e, and when the deadline passes, it has to select the best buffer available=
+ for the fullscreen surface. To make sure the flip will not miss the next r=
+efresh cycle, the compositor has to pick an idle buffer. If it picks a non-=
+idle buffer, and the pending rendering does not finish in time for vertical=
+ blank, the flip will be delayed by at least one refresh cycle, which resul=
+ts in visible stuttering.
+> >>>>>>>
+> >>>>>>> (Until the deadline passes, the Wayland compositor can't even kno=
+w if a previously fullscreen surface will still be fullscreen for the next =
+refresh cycle) =20
+> >>>>>> Well then let's extend the KMS API instead of hacking together wor=
+karounds in userspace. =20
+> >>>>> That's indeed a possible solution for the fullscreen / direct scano=
+ut case.
+> >>>>>
+> >>>>> Not for the general compositing case though, since a compositor doe=
+s not want to composite multiple output frames per display refresh cycle, s=
+o it has to make sure the one frame hits the target. =20
+> >>>> Yeah, that's true as well.
+> >>>>
+> >>>> At least as long as nobody invents a mechanism to do this decision on
+> >>>> the GPU instead. =20
+> >>> That would mean putting the whole window manager into the GPU. =20
+> >> Not really. You only need to decide if you want to use the new backing
+> >> store or the old one based on if the new surface is ready or not. =20
+> > Except that a window content update in Wayland must be synchronised with
+> > all the possible and arbitrary other window system state changes, that
+> > will affect how and where other windows will get drawn *this frame*,
+> > how input events are routed, and more.
 > >
-> > Signed-off-by: Rui Wang <wangrui@loongson.cn>
-> > Signed-off-by: hev <r@hev.cc>
->
-> In your upcoming patches, please change this part to your real name.
-> Here is a quote from Documentation/process/submitting-patches.rst:
->
->         using your real name (sorry, no pseudonyms or anonymous contributions.)
-Ok, got it. :-)
+> > But, if the window manager made sure that *only* window contents are
+> > about to change and *all* other state remains as it was, then it would
+> > be possible to let the GPU decide which frame it uses. As long as it
+> > also tells back which one it actually did, so that presentation
+> > feedback etc. can trigger the right Wayland events.
+> >
+> > Wayland has "atomic commits" to windows, and arbitrary protocol
+> > extensions can add arbitrary state to be tracked with it. A bit like KMS
+> > properties. Even atomic commits affecting multiple windows together are
+> > a thing, and they must be latched either all or none.
+> >
+> > So it's quite a lot of work to determine if one can allow the GPU to
+> > choose the buffer it will texture from, or not. =20
+>=20
+> But how does it then help to wait on the CPU instead?
 
-Thank you. I will resend these patches.
+A compositor does not "wait" literally. It would only check which state
+set is ready to be used, and uses the most recent set that is ready. Any
+state sets that are not ready are ignored and reconsidered the next
+time the compositor updates the screen.
 
-Regards
-Rui
+Depending on which state sets are selected for a screen update, the
+global window manager state may be updated accordingly, before the
+drawing commands for the composition can be created.
+
+> See what I'm proposing is to either render the next state of the window=20
+> or compose from the old state (including all atomic properties).
+
+Yes, that's exactly how it would work. It's just that state for a
+window is not an independent thing, it can affect how unrelated windows
+are managed.
+
+A simplified example would be two windows side by side where the
+resizing of one causes the other to move. You can't resize the window
+or move the other until the buffer with the new size is ready. Until
+then the compositor uses the old state.
+
+> E.g. what do you do if you timeout and can't have the new window content=
+=20
+> on time? What's the fallback here?
+
+As there is no wait, there is no timeout either.
+
+If the app happens to be frozen (e.g. some weird bug in fence handling
+to make it never ready, or maybe it's just bugged itself and never
+drawing again), then the app is frozen, and all the rest of the desktop
+continues running normally without a glitch.
+
+
+Thanks,
+pq
+
+--Sig_/LoBVg6qhcuxdajU4QJB+N2E
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmECcb4ACgkQI1/ltBGq
+qqevgw/+MKmK6sPuVfhHb1eCWriLQnS4+VWN8qCqZDOxWoelMi9ZdBxvJGnMvt9u
+5xf6Mq90XuckM1me48ElO6KuuVcMO3V8J4ee8sJRuG/WdPEHzWDHqxF2kTmdH0lM
+7ZBG/trWGr5JSJ+JT8qPMgBauz0LwHS+WY2o2NhgF5KaoqcVljZpbQRdfbyWYqfs
+Hz4luuGorQ46AYy1imRh/LfwZiG2IzRJ2wuBFAaziW+UjkMxnQ7RJKFC/06guzDy
+B+86dERQCrls9PTZJfECHMmOvi/+d6KS6NvlhGUzcp+v0+HDJmiPI5pLEOe2UOCH
+Y0pqXjgZkbNlwEz+ofgQlfkOZHt95nVta61wK1d06oacKVtZHQOrCZjCIKpphpka
+7snCgUzZ3jyPuHVIa7WzduTzDXrraqbKSYpbztsQ7hEZ9asHKMiC4Qq9X0iyuUGy
+U5IHaiGsWsH08R8kRM8ccVZ4orvKxQyKUGR51tEDrmi4W1U7yr5//dj5Zdd8no9R
+AN2YrUzOrvjPq7jza3xkkFCiKzU10n/aiwqjEcMHSk4qASlGu56283zeSqjGm5of
+jVIr+TmgYwoZi43wqgnURWTK3FM6m9RoBrD/D76t7SeyBkY1M7WbXekfrFq0D3oz
+vhkP49LVKt9I2HceIN/5dzKASb8jk9VWbvWIuq4XQIwUcv+gGqU=
+=vcqV
+-----END PGP SIGNATURE-----
+
+--Sig_/LoBVg6qhcuxdajU4QJB+N2E--
