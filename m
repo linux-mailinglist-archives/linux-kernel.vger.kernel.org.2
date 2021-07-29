@@ -2,238 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CBA3DA02A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E133D9FFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235371AbhG2JSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:18:32 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:46540 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235086AbhG2JSb (ORCPT
+        id S235224AbhG2JCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:02:36 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:52365 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234972AbhG2JCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:18:31 -0400
-X-UUID: f20c34cfd17347e1828d8a10ec1c4c1d-20210729
-X-UUID: f20c34cfd17347e1828d8a10ec1c4c1d-20210729
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 471282150; Thu, 29 Jul 2021 17:18:24 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 29 Jul 2021 17:18:23 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 29 Jul 2021 17:18:23 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <rocco.yue@gmail.com>, <chao.song@mediatek.com>,
-        <zhuoliang.zhang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
-Subject: [PATCH net-next] net: ipv6: add IFLA_RA_MTU to expose mtu value in the RA message
-Date:   Thu, 29 Jul 2021 17:02:06 +0800
-Message-ID: <20210729090206.11138-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 29 Jul 2021 05:02:35 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id 91vvmQ8uzXTlc91vwmW2qU; Thu, 29 Jul 2021 11:02:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1627549350; bh=Q7FrPaxICtEbloappFQf85NcaadXsp+cwwXQ0ECeko0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=qXFad112155ZVNcTJxnGkm2tf+eCPfq8KlQF3AhaWQe+U4koJUP3iN/gTJEashugq
+         iyZx/rTsPjrgsKWScMcLGkm0PxuTwSI7LjQwoifQ3322u68IMA2KtoDRPYXw8iJ2CY
+         i6ae0BsefPcytFql5ZbRH9GW7Qq0pjg6iID9FbWim54dI9cYCoaKl941cLidhKNugz
+         fu3ki2O1DmBCF3cm4uinEIe7b6W6Z7x4rYWcleNmKChv4L0nXyOAfFTzn/nA0hiIby
+         k4dPI1mGmthFza8yiKjFtAJ5yDciDdjlTJm9HWdzJms3B9KlCfE7aCtvBDrj7C+C06
+         W0ia0AcsF7ppw==
+Subject: Re: [PATCH] media: atmel: atmel-isc: fix build failures after split
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Eugen Hristev <Eugen.Hristev@microchip.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Ferre <Nicolas.Ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <Ludovic.Desroches@microchip.com>,
+        Arnd Bergmann <arnd@arndb.de>, tomi.valkeinen@ideasonboard.com,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210722090509.1054249-1-arnd@kernel.org>
+ <BN9PR11MB5514AA62DD0F2A65828E62D6E8E49@BN9PR11MB5514.namprd11.prod.outlook.com>
+ <CAK8P3a0xp9BxwSt9+WTngsb1K12NGkroBwEf9p5Wg0Knf5umNQ@mail.gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <8b601ccc-2697-7d5e-aee1-763d3575582b@xs4all.nl>
+Date:   Thu, 29 Jul 2021 11:02:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <CAK8P3a0xp9BxwSt9+WTngsb1K12NGkroBwEf9p5Wg0Knf5umNQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfFSL7ezfVHJ6YjElfu187+UW63loemXLUHLveX1Mv0MJIgDWb2QSSbxnk17LTUz+zl5W6o7PFgGqiOROMAPVD5nz2WOXbtxrYt4uEYQFQqFAijOVUUBG
+ yl40O6bR8yMGIBRY0zylHf3Or7mBjeaTkH8J4Pam6N3Sw7s8EGZTzCEB9hI6sMmqILfyJe0PzuU18obTgozc2CZeHM1+7iNOuubq+v/GLUtrHZSobMEm9uEA
+ 6qL7X1hOdJf+3oPnLeai++wMwxZfkbBi9/dcHXwFyV8impRYS8L53N7taBDlLG51fT+ovF8mVMUeuSG+oWbdeMuiLCpvNJ3ulYP8eSkJexxb/e426yTnEC8X
+ 3QQkRkuKdGCwjIhywKHLw0MmSVXd9iQ3lnhNT+Rqjq8+4oJxn0hCspzfPy1av9LJRbtIFtHaLgbuf3zPUcHwfsKuPlG8zh5Nqx3ZQWnXL49eV+cIlHWEAxpn
+ oYDYIsb6tyQvIKyrVMGNb73yRDBXqgdcrkAB/yWw+knXKz5tdtrKUOR7Yt2XVPZAuKeG8k5DtoQoiB52f6G0pAPIpHO3aQAA+fpXnejyq7Hd/kn79Dx/SZV6
+ Y/7sW8XUxEkCUi2E3+9Pq0hblp25alyYgVHVY8vx1GbHZUV/3fhPfW4i9s76xxQ8urkLuaDutk2ICR0JT9jl/i7xL4R9o9GEUtsVx1JdHa2EQw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel provides a "/proc/sys/net/ipv6/conf/<iface>/mtu"
-file, which can temporarily record the mtu value of the last
-received RA message when the RA mtu value is lower than the
-interface mtu, but this proc has following limitations:
-(1) when the interface mtu (/sys/class/net/<iface>/mtu) is
-updeated, mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) will be
-updated to the value of interface mtu;
-(2) mtu6 (/proc/sys/net/ipv6/conf/<iface>/mtu) only affect
-ipv6 connection, and not affect ipv4.
+On 22/07/2021 13:45, Arnd Bergmann wrote:
+> On Thu, Jul 22, 2021 at 11:22 AM <Eugen.Hristev@microchip.com> wrote:
+>>
+>> Thanks for the patch but I already posted a fix some weeks ago :
+>>
+>> https://lore.kernel.org/linux-arm-kernel/20210705125708.121902-1-eugen.hristev@microchip.com/
+> 
+> Ok, good. Is that going to make it into v5.14?
+> 
+>         Arnd
+> 
 
-Therefore, when the mtu option is carried in the RA message,
-there will be a problem that the user sometimes cannot obtain
-RA mtu value by reading mtu6.
+I'm preparing a PR for v5.14 for today.
 
-After this patch set, if a RA message carries the mtu option,
-you can use RTM_GETLINK to get the mtu value carried in the
-RA message received on the interface.
+Regards,
 
-In this way, If the MTU values that the device receives from the
-network in the PCO IPv4 and the RA IPv6 procedures are different,
-the user space process can read ra_mtu to get the mtu value carried
-in the RA message without worrying about the issue of ipv4 being
-stuck due to the late arrival of RA message. After comparing the
-value of ra_mtu and ipv4 mtu, then the device can use the lower
-MTU value for both IPv4 and IPv6.
-
-Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
----
- include/linux/ipv6.h               |  3 +++
- include/uapi/linux/if_link.h       |  2 +-
- include/uapi/linux/ipv6.h          |  1 +
- net/core/rtnetlink.c               |  7 +++++--
- net/ipv6/addrconf.c                | 13 +++++++++++++
- net/ipv6/ndisc.c                   |  5 +++++
- tools/include/uapi/linux/if_link.h |  1 +
- 7 files changed, 29 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h
-index 70b2ad3b9884..71aa0a3853f8 100644
---- a/include/linux/ipv6.h
-+++ b/include/linux/ipv6.h
-@@ -76,6 +76,7 @@ struct ipv6_devconf {
- 	__s32		disable_policy;
- 	__s32           ndisc_tclass;
- 	__s32		rpl_seg_enabled;
-+	__s32		ra_mtu;
- 
- 	struct ctl_table_header *sysctl_header;
- };
-@@ -321,6 +322,8 @@ struct tcp6_timewait_sock {
- 	struct tcp_timewait_sock   tcp6tw_tcp;
- };
- 
-+u32 inet6_dev_ramtu(struct net_device *dev);
-+
- #if IS_ENABLED(CONFIG_IPV6)
- bool ipv6_mod_enabled(void);
- 
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index 4882e81514b6..ea6c872c5f2c 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -347,7 +347,7 @@ enum {
- 	 */
- 	IFLA_PARENT_DEV_NAME,
- 	IFLA_PARENT_DEV_BUS_NAME,
--
-+	IFLA_RA_MTU,
- 	__IFLA_MAX
- };
- 
-diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
-index 70603775fe91..3dbcf212b766 100644
---- a/include/uapi/linux/ipv6.h
-+++ b/include/uapi/linux/ipv6.h
-@@ -190,6 +190,7 @@ enum {
- 	DEVCONF_NDISC_TCLASS,
- 	DEVCONF_RPL_SEG_ENABLED,
- 	DEVCONF_RA_DEFRTR_METRIC,
-+	DEVCONF_RA_MTU,
- 	DEVCONF_MAX
- };
- 
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index f6af3e74fc44..3f660bbbd7b8 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -37,7 +37,7 @@
- #include <linux/pci.h>
- #include <linux/etherdevice.h>
- #include <linux/bpf.h>
--
-+#include <linux/ipv6.h>
- #include <linux/uaccess.h>
- 
- #include <linux/inet.h>
-@@ -1063,6 +1063,7 @@ static noinline size_t if_nlmsg_size(const struct net_device *dev,
- 	       + nla_total_size(4)  /* IFLA_MAX_MTU */
- 	       + rtnl_prop_list_size(dev)
- 	       + nla_total_size(MAX_ADDR_LEN) /* IFLA_PERM_ADDRESS */
-+	       + nla_total_size(4)  /* IFLA_RA_MTU */
- 	       + 0;
- }
- 
-@@ -1753,7 +1754,8 @@ static int rtnl_fill_ifinfo(struct sk_buff *skb,
- 	    nla_put_u32(skb, IFLA_CARRIER_UP_COUNT,
- 			atomic_read(&dev->carrier_up_count)) ||
- 	    nla_put_u32(skb, IFLA_CARRIER_DOWN_COUNT,
--			atomic_read(&dev->carrier_down_count)))
-+			atomic_read(&dev->carrier_down_count)) ||
-+	    nla_put_u32(skb, IFLA_RA_MTU, inet6_dev_ramtu(dev)))
- 		goto nla_put_failure;
- 
- 	if (rtnl_fill_proto_down(skb, dev))
-@@ -1891,6 +1893,7 @@ static const struct nla_policy ifla_policy[IFLA_MAX+1] = {
- 	[IFLA_PROTO_DOWN_REASON] = { .type = NLA_NESTED },
- 	[IFLA_NEW_IFINDEX]	= NLA_POLICY_MIN(NLA_S32, 1),
- 	[IFLA_PARENT_DEV_NAME]	= { .type = NLA_NUL_STRING },
-+	[IFLA_RA_MTU]		= { .type = NLA_U32 },
- };
- 
- static const struct nla_policy ifla_info_policy[IFLA_INFO_MAX+1] = {
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index 3bf685fe64b9..d213400ee8a0 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -237,6 +237,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
- 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
- 	.disable_policy		= 0,
- 	.rpl_seg_enabled	= 0,
-+	.ra_mtu			= 0,
- };
- 
- static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
-@@ -293,6 +294,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
- 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
- 	.disable_policy		= 0,
- 	.rpl_seg_enabled	= 0,
-+	.ra_mtu			= 0,
- };
- 
- /* Check if link is ready: is it up and is a valid qdisc available */
-@@ -5526,6 +5528,17 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
- 	array[DEVCONF_DISABLE_POLICY] = cnf->disable_policy;
- 	array[DEVCONF_NDISC_TCLASS] = cnf->ndisc_tclass;
- 	array[DEVCONF_RPL_SEG_ENABLED] = cnf->rpl_seg_enabled;
-+	array[DEVCONF_RA_MTU] = cnf->ra_mtu;
-+}
-+
-+u32 inet6_dev_ramtu(struct net_device *dev)
-+{
-+	struct inet6_dev *idev = __in6_dev_get(dev);
-+
-+	if (idev)
-+		return idev->cnf.ra_mtu;
-+
-+	return 0;
- }
- 
- static inline size_t inet6_ifla6_size(void)
-diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
-index c467c6419893..1da626267662 100644
---- a/net/ipv6/ndisc.c
-+++ b/net/ipv6/ndisc.c
-@@ -1496,6 +1496,11 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 		memcpy(&n, ((u8 *)(ndopts.nd_opts_mtu+1))+2, sizeof(mtu));
- 		mtu = ntohl(n);
- 
-+		if (in6_dev->cnf.ra_mtu != mtu) {
-+			in6_dev->cnf.ra_mtu = mtu;
-+			ND_PRINTK(2, info, "update ra_mtu to %d\n", in6_dev->cnf.ra_mtu);
-+		}
-+
- 		if (mtu < IPV6_MIN_MTU || mtu > skb->dev->mtu) {
- 			ND_PRINTK(2, warn, "RA: invalid mtu: %d\n", mtu);
- 		} else if (in6_dev->cnf.mtu6 != mtu) {
-diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
-index d208b2af697f..abc3607b7bab 100644
---- a/tools/include/uapi/linux/if_link.h
-+++ b/tools/include/uapi/linux/if_link.h
-@@ -170,6 +170,7 @@ enum {
- 	IFLA_PROP_LIST,
- 	IFLA_ALT_IFNAME, /* Alternative ifname */
- 	IFLA_PERM_ADDRESS,
-+	IFLA_RA_MTU,
- 	__IFLA_MAX
- };
- 
--- 
-2.18.0
-
+	Hans
