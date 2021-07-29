@@ -2,59 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44A53D9C6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9E33D9C72
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhG2EBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 00:01:36 -0400
-Received: from out1.migadu.com ([91.121.223.63]:58655 "EHLO out1.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229485AbhG2EBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 00:01:34 -0400
+        id S233666AbhG2ECr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 00:02:47 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:25707 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229485AbhG2ECq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 00:02:46 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.15]) by rmmx-syy-dmz-app10-12010 (RichMail) with SMTP id 2eea6102283d7d6-b0042; Thu, 29 Jul 2021 12:02:08 +0800 (CST)
+X-RM-TRANSID: 2eea6102283d7d6-b0042
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr08-12008 (RichMail) with SMTP id 2ee86102283cb6d-fca0b;
+        Thu, 29 Jul 2021 12:02:07 +0800 (CST)
+X-RM-TRANSID: 2ee86102283cb6d-fca0b
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     davem@davemloft.net, kuba@kernel.org, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH v2] bcm63xx_enet: delete a redundant assignment
+Date:   Thu, 29 Jul 2021 12:03:00 +0800
+Message-Id: <20210729040300.25928-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1627531290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l4zsXJLG8PBLt8CZxWxMWv6w5AiWAx+98HcQ2KmFZ54=;
-        b=pPmcr6tI+85vQQMQIJXYyOszbPuThZ14+L4G/zTLIZUXpqbDkelVmnqT68KZ7AWk56l7WI
-        MiXpxUmEyT1warUSplg3J4oqQLQE65QUC8NtE9K6CCkWWUd5rLgVnFMva2oS5AX0LywSBK
-        Eg1vCWzVPV/mOuQS/oVRjlFoUYfsGZg=
-Date:   Thu, 29 Jul 2021 04:01:28 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yajun.deng@linux.dev
-Message-ID: <177cd530dcb2c9f4d09a2b23fdbbc71a@linux.dev>
-Subject: Re: [PATCH] Revert "net: Get rid of consume_skb when tracing is
- off"
-To:     "Herbert Xu" <herbert@gondor.apana.org.au>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-In-Reply-To: <20210728125248.GC2598@gondor.apana.org.au>
-References: <20210728125248.GC2598@gondor.apana.org.au>
- <20210728035605.24510-1-yajun.deng@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-July 28, 2021 8:52 PM, "Herbert Xu" <herbert@gondor.apana.org.au> wrote:=
-=0A=0A> On Wed, Jul 28, 2021 at 11:56:05AM +0800, Yajun Deng wrote:=0A> =
-=0A>> This reverts commit be769db2f95861cc8c7c8fedcc71a8c39b803b10.=0A>> =
-There is trace_kfree_skb() in kfree_skb(), the trace_kfree_skb() is=0A>> =
-also a trace function.=0A>> =0A>> Fixes: be769db2f958 (net: Get rid of co=
-nsume_skb when tracing is off)=0A>> Signed-off-by: Yajun Deng <yajun.deng=
-@linux.dev>=0A> =0A> Please explain in more detail why your patch is need=
-ed. As it=0A> stands I do not understand the reasoning.=0A> =0Aif we don'=
-t define CONFIG_TRACEPOINTS, consume_skb() wolud called kfree_skb(), ther=
-e have=0Atrace_kfree_skb() in kfree_skb(), the trace_kfree_skb() is also =
-a trace function. So we=0Acan trace consume_skb() even if we don't define=
- CONFIG_TRACEPOINTS.=0AThis patch "net: Get rid of consume_skb when traci=
-ng is off" does not seem to be effective.=0A=0A> Thanks,=0A> --=0A> Email=
-: Herbert Xu <herbert@gondor.apana.org.au>=0A> Home Page: http://gondor.a=
-pana.org.au/~herbert=0A> PGP Key: http://gondor.apana.org.au/~herbert/pub=
-key.txt
+In the function bcm_enetsw_probe(), 'ret' will be assigned by
+bcm_enet_change_mtu(), so 'ret = 0' make no sense.
+
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+Changes from v1
+ - fix up the subject
+---
+ drivers/net/ethernet/broadcom/bcm63xx_enet.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/broadcom/bcm63xx_enet.c b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
+index 916824cca..509e10013 100644
+--- a/drivers/net/ethernet/broadcom/bcm63xx_enet.c
++++ b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
+@@ -2646,7 +2646,6 @@ static int bcm_enetsw_probe(struct platform_device *pdev)
+ 	if (!res_mem || irq_rx < 0)
+ 		return -ENODEV;
+ 
+-	ret = 0;
+ 	dev = alloc_etherdev(sizeof(*priv));
+ 	if (!dev)
+ 		return -ENOMEM;
+-- 
+2.20.1.windows.1
+
+
+
