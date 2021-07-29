@@ -2,219 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47573D9DB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3EC3D9DBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234277AbhG2Gew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 02:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
+        id S234311AbhG2Ghq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 02:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234123AbhG2Get (ORCPT
+        with ESMTP id S234079AbhG2Ghp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 02:34:49 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7852C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:34:45 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id r1so4698837iln.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:34:45 -0700 (PDT)
+        Thu, 29 Jul 2021 02:37:45 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9974CC061757;
+        Wed, 28 Jul 2021 23:37:41 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d17so5761064plh.10;
+        Wed, 28 Jul 2021 23:37:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+tVSS016LUwhx9hyDnuL9UJ/gkPRcAcwtfAfy1deii4=;
-        b=KGIuH5ot/6SvrFO+KZa6YgjzSZpvMmh09oqN0KjNShyJ6iphJhOrSNAPckv0H37Y48
-         gAuiR3Mr2po+1uEVIghcdiavTmSi0JLKmfJ9Mg2AUcStmNuSzkaSpwqdqjBMrxeKBMkT
-         h0U/FCiaoDfy/r4U60JRxUSOrDIfsdh19+7tf/rLB5XG+YzOOzoCl/xMcq3Y0a1sq9gB
-         DJhmasuE/rG6RoamidTuI5M4OkZN2rwEYWqRi32OgTmnGKqtWoBe/HjRrN/hDDFQd3xG
-         4Zw7H3yK8f1IpK1A1UhCMjh0BJ2WwqW0KjECjYEpC/Mrp0Eiu+MkC5NjZaODFMklwpaK
-         TmdQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mn2QXsC9iXN6n0TPueHgxmDAwTtq1MsZU9RTs4Fr/hY=;
+        b=fULRnTdszNXc8PP2zScOdaash0b/Ue5x/8SbvvdEgbnSZ9++AHkKX1BMIbqqAWS543
+         T5qpIoeSR5Xfhr2XKcxJjw5LMQzQ1fJGHO5R4iJDoT+cVvAHaLN3ET04tmF9tPqzL82a
+         sI5/C2o/SnRDYWLmjn5TxWbCgRbIIOjq1Cw5CiR4PUvOxMno67YpRr7f24NBUE77mRUB
+         hEgl0SHs7qK6u+8gvhEp9JCJjf1m45Ucz/Grr0B2ZEf+cLeq+MGWY+A8aMvflAYUxqn7
+         eHItlxuEIVouEpLW3G+j/YUt+0JpI32zgc0jJ+r1WI/qfgrK23Ne+Arkh6wdmTQa6V+d
+         HXSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+tVSS016LUwhx9hyDnuL9UJ/gkPRcAcwtfAfy1deii4=;
-        b=JMUXZHppbs3d6BEQ8UQX2cNTCHp3mASnNxFNbVpyfDYgbGVWsZ3kxevRpgHxvX2/wD
-         2UVcpnOdsAsqldSgnliuLKVMaFKFFA63a6exPoWQuJHCH0sjFUAqVDXj6QLG9VVX12Dy
-         z/ROvyeQGfEVt0tWoRe+kSwK6Lmnabf/DU2zjRyZD+KoTBnMd4TjD4r6SEJSKbY9w23f
-         S41caWtoI3/Qbc0mB9nVIKrp5K3polW+xia5vHkUvnCO+k0brg+CmUkjVskGwLRHmE6n
-         qNObm4+/8v8td5/IiQp1++Vwc1R6Oe8u4/DsX1b1OLMq/SNyE7bbQ4Obh7nyThQHDSqc
-         6UGw==
-X-Gm-Message-State: AOAM530eqBnM/xsmbdyjhRv0V2wb6dd8by0af+VLdAhJxZbcRaKGyffq
-        pGi3a7Jwts/zrKrJXLBDU79/OmjTVM8eSPfeYboOtxO4Fp6ZUg==
-X-Google-Smtp-Source: ABdhPJxtW7oK00Qe5dWu/4AW/JMToFmK3GP0PqLrzDJQiyUddzjceoMokmMn1eAbagOhqyoLaZkUo96o7fIvOXrALwU=
-X-Received: by 2002:a92:d741:: with SMTP id e1mr1300490ilq.18.1627540485255;
- Wed, 28 Jul 2021 23:34:45 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mn2QXsC9iXN6n0TPueHgxmDAwTtq1MsZU9RTs4Fr/hY=;
+        b=fwyMH5fnQwQJdf7oGwNgaZa28+9Y3AsbI0wCxXQuQcmYPKGurgD1T0ASiQmfeefIMC
+         U9dLv9iOqUow0Tg3dI8YEfcEZ8m15H1o64DCr1RRa03tQ1+rzhrPPpfHS9lZhNnUyE10
+         ljhVkRFncGpivuW56xFLu4zw1aPZXHViLZ/CfYfD1Ac0hP0lnfvsSUxxmcGrxYZiEKQL
+         cMuRaGE10jsBG08e77Btbf0qE4z/UeerFgCpEFCd7QwE4ZOlr+sJLZsRp+Lxqt11ldbl
+         1Rb3GThG5E1QkBgcHQnbQXzB9iHvkIn/SQCzx4eYkrO8MtfaZqlp1XswZajM9RcjACvF
+         tXtw==
+X-Gm-Message-State: AOAM530bd+xcKdpLdt8zjFSkp+5WOSn24eONpfKkoGsoHTrDdNCIVxou
+        s0ERE7YVplrEAADCjm5SDVis/p9xjYd0NTej
+X-Google-Smtp-Source: ABdhPJzeNf7oxJEGq4s6m5Lmmed75zMgOvhAaBS/fsHPP2WD2ZRwBn/xnghBdV1wHXkZCeKsQX4U9Q==
+X-Received: by 2002:a62:f252:0:b029:344:ea90:e913 with SMTP id y18-20020a62f2520000b0290344ea90e913mr3435106pfl.15.1627540661070;
+        Wed, 28 Jul 2021 23:37:41 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.115])
+        by smtp.gmail.com with ESMTPSA id 33sm2414118pgs.59.2021.07.28.23.37.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 23:37:40 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
+To:     Tejun Heo <tj@kernel.org>
+Cc:     viro@zeniv.linux.org.uk, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
+References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
+ <YP8ovYqISzKC43mt@mtj.duckdns.org>
+ <b2ff6f80-8ec6-e260-ec42-2113e8ce0a18@gmail.com>
+ <YQA1D1GRiF9+px/s@mtj.duckdns.org>
+ <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
+ <YQEKNPrrOuyxTarN@mtj.duckdns.org>
+ <ed8824d5-0557-7d38-97bd-18d6795faa55@gmail.com>
+ <YQF5/8Zb/iY5DS7f@mtj.duckdns.org>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <1a5153d3-5cdc-58c5-858f-3c369d69e881@gmail.com>
+Date:   Thu, 29 Jul 2021 14:37:32 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <1867445.PYKUYFuaPT@kreacher> <000801d78322$e9b94980$bd2bdc80$@telus.net>
- <CAJZ5v0jashhvE4vRNAft1qfZ_Ud==tG1Yh29ad7BSfhk5xjx4A@mail.gmail.com> <2178828.iZASKD2KPV@kreacher>
-In-Reply-To: <2178828.iZASKD2KPV@kreacher>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Wed, 28 Jul 2021 23:34:37 -0700
-Message-ID: <CAAYoRsVko5jG=xqH=KTochqQu95i7PDo_6f1LCPGvAP0=XdVTA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQF5/8Zb/iY5DS7f@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 10:47 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> On Wednesday, July 28, 2021 3:52:51 PM CEST Rafael J. Wysocki wrote:
-> > On Tue, Jul 27, 2021 at 10:06 PM Doug Smythies <dsmythies@telus.net> wrote:
-> > >
-> > > Hi Rafael,
-> > >
-> > > Further to my reply of 2021.07.04  on this, I have
-> > > continued to work with and test this patch set.
-> > >
-> > > On 2021.06.02 11:14 Rafael J. Wysocki wrote:
-> > >
-> > > >This series of patches addresses some theoretical shortcoming in the
-> > > > TEO (Timer Events Oriented) cpuidle governor by reworking its idle
-> > > > state selection logic to some extent.
-> > > >
-> > > > Patches [1-2/5] are introductory cleanups and the substantial changes are
-> > > > made in patches [3-4/5] (please refer to the changelogs of these two
-> > > > patches for details).  The last patch only deals with documentation.
-> > > >
-> > > > Even though this work is mostly based on theoretical considerations, it
-> > > > shows a measurable reduction of the number of cases in which the shallowest
-> > > > idle state is selected while it would be more beneficial to select a deeper
-> > > > one or the deepest idle state is selected while it would be more beneficial to
-> > > > select a shallower one, which should be a noticeable improvement.
-> > >
-> > > I am concentrating in the idle state 0 and 1 area.
-> > > When I disable idle state 0, the expectation is its
-> > > usage will fall to idle state 1. It doesn't.
-> > >
-> > > Conditions:
-> > > CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-> > > HWP: disabled
-> > > CPU frequency scaling driver: intel_pstate, active
-> > > CPU frequency scaling governor: performance.
-> > > Idle configuration: As a COMETLAKE processor, with 4 idle states.
-> > > Sample time for below: 1 minute.
-> > > Workflow: Cross core named pipe token passing, 12 threads.
-> > >
-> > > Kernel 5.14-rc3: idle: teo governor
-> > >
-> > > All idle states enabled: PASS
-> > > Processor: 97 watts
-> > > Idle state 0 entries: 811151
-> > > Idle state 1 entries: 140300776
-> > > Idle state 2 entries: 889
-> > > Idle state 3 entries: 8
-> > >
-> > > Idle state 0 disabled: FAIL <<<<<
-> > > Processor: 96 watts
-> > > Idle state 0 entries: 0
-> > > Idle state 1 entries: 65599283
-> > > Idle state 2 entries: 364399
-> > > Idle state 3 entries: 65112651
-> >
-> > This looks odd.
-> >
-> > Thanks for the report, I'll take a look at this.
->
-> I have found an issue in the code that may be responsible for the
-> observed behavior and should be addressed by the appended patch (not
-> tested yet).
->
-> Basically, the "disabled" check in the second loop over states in
-> teo_select() needs to exclude the first enabled state, because
-> there are no more states to check after that.
->
-> Plus the time span check needs to be done when the given state
-> is about to be selected, because otherwise the function may end up
-> returning a state for which the sums are too low.
->
-> Thanks!
->
-> ---
->  drivers/cpuidle/governors/teo.c |   26 ++++++++++++++------------
->  1 file changed, 14 insertions(+), 12 deletions(-)
->
-> Index: linux-pm/drivers/cpuidle/governors/teo.c
-> ===================================================================
-> --- linux-pm.orig/drivers/cpuidle/governors/teo.c
-> +++ linux-pm/drivers/cpuidle/governors/teo.c
-> @@ -404,25 +404,27 @@ static int teo_select(struct cpuidle_dri
->                         intercept_sum += bin->intercepts;
->                         recent_sum += bin->recent;
->
-> -                       if (dev->states_usage[i].disable)
-> +                       if (dev->states_usage[i].disable && i > idx0)
->                                 continue;
->
->                         span_ns = teo_middle_of_bin(i, drv);
-> -                       if (!teo_time_ok(span_ns)) {
-> -                               /*
-> -                                * The current state is too shallow, so select
-> -                                * the first enabled deeper state.
-> -                                */
-> -                               duration_ns = last_enabled_span_ns;
-> -                               idx = last_enabled_idx;
-> -                               break;
-> -                       }
->
->                         if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
->                             (!alt_intercepts ||
->                              2 * intercept_sum > idx_intercept_sum)) {
-> -                               idx = i;
-> -                               duration_ns = span_ns;
-> +                               if (!teo_time_ok(span_ns) ||
-> +                                   dev->states_usage[i].disable) {
-> +                                       /*
-> +                                        * The current state is too shallow or
-> +                                        * disabled, so select the first enabled
-> +                                        * deeper state.
-> +                                        */
-> +                                       duration_ns = last_enabled_span_ns;
-> +                                       idx = last_enabled_idx;
-> +                               } else {
-> +                                       idx = i;
-> +                                       duration_ns = span_ns;
-> +                               }
->                                 break;
->                         }
 
-Hi Rafael,
+Thanks for your time.
 
-I tried the patch and when I disabled idle state 0
-got, very similar to before:
+Tejun Heo wrote on 2021/7/28 11:38 下午:
+> Hello,
+> 
+> On Wed, Jul 28, 2021 at 05:47:05PM +0800, brookxu wrote:
+>> But considering stability issues(k8s), There are still many production environments use
+>> cgroup v1 without kmem. If kmem is enabled, due to the relatively large granularity
+>> of kmem, this feature can also prevent the abnormal open behavior from making the entire
+>> container unavailable? but I currently do not have this scenario.
+> 
+> Now we are repeating the same points. This simply doesn't justify adding a
+> user-facing feature that we have to maintain for eternity.
 
-Idle state 0 disabled: FAIL
-Processor: 95 watts
-Idle state 0 entries: 0
-Idle state 1 entries: 65,475,534
-Idle state 2 entries: 333144
-Idle state 3 entries: 65,247,048
+Ok, thanks you for your patient reply.
 
-However, I accidently left it for about 30 minutes
-and noticed:
-
-Idle state 0 disabled:
-Processor: 83 watts
-Idle state 0 entries: 0
-Idle state 1 entries: 88,706,831
-Idle state 2 entries: 100
-Idle state 3 entries: 662
-
-I went back to unmodified kernel 5.13-rc3 and
-let it run longer with idle state 0 disabled, and
-after 30 minutes it had changed but nowhere
-near as much:
-
-Idle state 0 disabled:
-Processor: 87 watts
-Idle state 0 entries: 0
-Idle state 1 entries: 70,361,020
-Idle state 2 entries: 71219
-Idle state 3 entries: 27,249,975
-
-... Doug
+> Thanks.
+> 
