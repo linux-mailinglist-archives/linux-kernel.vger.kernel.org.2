@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAE33DAFA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170B63DAFAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 01:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235081AbhG2WyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:54:03 -0400
-Received: from mail-io1-f43.google.com ([209.85.166.43]:44798 "EHLO
-        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234299AbhG2WyB (ORCPT
+        id S234458AbhG2XBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 19:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhG2XBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:54:01 -0400
-Received: by mail-io1-f43.google.com with SMTP id l18so9121226ioh.11;
-        Thu, 29 Jul 2021 15:53:56 -0700 (PDT)
+        Thu, 29 Jul 2021 19:01:30 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EB1C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 16:01:26 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id r26so13980634lfp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 16:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pY7m/Y43lyncS7WapXCMkLBirYxokclAcy/UGj99rQA=;
+        b=XQtQEX/BG2JXB6WBNf/JB98ExbQAGG37D1sqjMTQzcAlbBF3cE9jO6h35na96096Nt
+         9bLwxHZ0OUkMyTGxEIoxMov84KKm2MpsHsc39n6CfhXg+fMQAWyIBI3nG4bncuHMl/08
+         g6bfAX7f+TIZ2iNmLpTBNrEuEjPlYNygVzzo8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GzKTEl+aI5e4Vr90e7NxH6ppG4Jl145GBZiGyVIci40=;
-        b=XlWztQNRypvFt1/llHNj89fbPNVI7CGJVahErCMNjvijyCNukamXm1N/6dXLi54osg
-         CM74h6jjG7zVpG/6xVlpezLugzM2CbGsHbjxQQFPzxeXKeTvOlcPM2Q3Cx7/DMqv8Qvh
-         euRZC5Ez6j0HCN09w62kqH99Iv3jIAyhtloDyCAtO2JFD1nuFeggvVTY/NffdwfACgNv
-         9jzPQBanCSb2urlVKSR5M55bspwPuAqWJpFO7KAbS8FJdsiFHu5obCi8nXtlqbiPUZwb
-         lCe3N+OEnbpppn2lCvrT6v7jZ67Yp1r+bwwLZ4nO2N8tH4vdsNeEt8ODsbN4xePulbvR
-         w1OQ==
-X-Gm-Message-State: AOAM533YGO8wu5m23PjizNJANAizGDAD8OveYcscHkTEMJeBzxQhB/Z0
-        79hfbQX2wOql7P4Qend+ag==
-X-Google-Smtp-Source: ABdhPJzhnT9o0KLHaaYhPruzpf12C4zNGzZkdtuvfbTedRgXSgZ4Vk/8rud1Rrd5UFQNmEltOmu1vw==
-X-Received: by 2002:a02:a999:: with SMTP id q25mr6518689jam.16.1627599236588;
-        Thu, 29 Jul 2021 15:53:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id l9sm2408722ilv.31.2021.07.29.15.53.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 15:53:56 -0700 (PDT)
-Received: (nullmailer pid 1057877 invoked by uid 1000);
-        Thu, 29 Jul 2021 22:53:53 -0000
-Date:   Thu, 29 Jul 2021 16:53:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sam Shih <sam.shih@mediatek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        Sean Wang <sean.wang@kernel.org>,
-        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
-        Matt Mackall <mpm@selenic.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, John Crispin <john@phrozen.org>,
-        Ryder Lee <Ryder.Lee@mediatek.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 10/12] dt-bindings: watchdog: Add compatible for Mediatek
- MT7986
-Message-ID: <YQMxgbD4j+SrXaSQ@robh.at.kernel.org>
-References: <20210726071439.14248-1-sam.shih@mediatek.com>
- <20210726071439.14248-11-sam.shih@mediatek.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pY7m/Y43lyncS7WapXCMkLBirYxokclAcy/UGj99rQA=;
+        b=p9RS4uMp41xb4D+IOEXXYu2145q3RsJnfN1Yc+U3r6XpWcKp28JYmOT+3Es5svt38E
+         8XwOHUIoRImMUcKImVyPNHAu5XOOmeewiNYhyq9vY7iJ/yeVQXv970ynpDFKdS5Jzt11
+         ekftgk2pttz0YLoO9M237cXaW3WWxU0uYvBSloxzTgIidoo8S0rsxfuLEqRri3GL9qiv
+         QlJZh/bl19cqiVALS3QqZhfTfrSY79i8WuJdzQ9UQUZjyGj/Mzc8But68Za972EIYbcD
+         jIs6V+CGAGpYJq2BXhKUvh+AxssZIWf1gtwxVEFR7nMm/V9Y6irp1v/GDgpHJpwUlF9I
+         Yi8g==
+X-Gm-Message-State: AOAM531c3ox81QO9bJddIFFKO2OghzwPJVTxOB0dwAJUcWbRrRliZ15C
+        P0cN53IH/J4iJCvAH3n8IVqPXzeOzFx7fu16
+X-Google-Smtp-Source: ABdhPJwNJSgQWUWYoy/vVdsx1NwlIEB+Aifw+xuxI8zEcY3bB5JwOBxlgD2VUnFtqmxPvv6JD3PzKg==
+X-Received: by 2002:ac2:5e6f:: with SMTP id a15mr2020037lfr.234.1627599685054;
+        Thu, 29 Jul 2021 16:01:25 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id k2sm463838lfu.250.2021.07.29.16.01.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 16:01:24 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id g13so13888608lfj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 16:01:24 -0700 (PDT)
+X-Received: by 2002:a19:c3c1:: with SMTP id t184mr5315383lff.41.1627599683697;
+ Thu, 29 Jul 2021 16:01:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726071439.14248-11-sam.shih@mediatek.com>
+References: <20210729222635.2937453-1-sspatil@android.com> <20210729222635.2937453-2-sspatil@android.com>
+In-Reply-To: <20210729222635.2937453-2-sspatil@android.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 29 Jul 2021 16:01:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh-DWvsFykwAy6uwyv24nasJ39d7SHT+15x+xEXBtSm_Q@mail.gmail.com>
+Message-ID: <CAHk-=wh-DWvsFykwAy6uwyv24nasJ39d7SHT+15x+xEXBtSm_Q@mail.gmail.com>
+Subject: Re: [PATCH 1/1] fs: pipe: wakeup readers everytime new data written
+ is to pipe
+To:     Sandeep Patil <sspatil@android.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable <stable@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 15:14:37 +0800, Sam Shih wrote:
-> This commit adds dt-binding documentation of watchdog for Mediatek MT7986
-> SoC Platform.
-> 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Thu, Jul 29, 2021 at 3:27 PM Sandeep Patil <sspatil@android.com> wrote:
+>
+> So restore the old behavior to wakeup all readers if any new data is
+> written to the pipe.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Ah-hahh.
+
+I've had this slightly smaller patch waiting for the better part of a year:
+
+  https://lore.kernel.org/lkml/CAHk-=wgjR7Nd4CyDoi3SH9kPJp_Td9S-hhFJZMqvp6GS1Ww8eg@mail.gmail.com/
+
+waiting to see if some broken program actually depends on the bogus
+epollet semantics.
+
+Can you verify that that patch fixes the realm-core brokenness too?
+
+             Linus
