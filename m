@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAA93DA13F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E533DA15D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236473AbhG2Kkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:40:47 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34472
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236140AbhG2Kkl (ORCPT
+        id S237259AbhG2Kl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:41:28 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47750
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236233AbhG2Kkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:40:41 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        Thu, 29 Jul 2021 06:40:43 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 11FE93F234
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:40:38 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 28EBB3F0B8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:40:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627555238;
-        bh=a08v9hxy0zgk30tu0EPhwU1/dVMKGIwopyByTRLQTW8=;
+        s=20210705; t=1627555239;
+        bh=8EDO8hbetO1mnknXtDL482rftlukDehwkpBsBwJNSdE=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=JSE+sse5AK/JvJNGhV7vdPnzd3eYs2rDC75u6Mf29C2lO9rRofDhpS6NoU33uy36T
-         ZZ2l7whi5jMpSpt7BwwsFxnnEDsIXDG6zEuAXeOayLqgORFACY2d8kBO8PMt2aPMml
-         5sZBI/qgy4KuXo6oYUufe04N+ny4SKUfDdcEx7qL7WVblBARU4WY9MFvOK9rJBYlMF
-         aDM2xlNid8niIGQWJy8cHOZqORnkxdtr4JNppnzARupATcD1anmF7BNg2s641fbA1q
-         /Z+74eihU+KJ1RFEllS6pL+4hVba1RXmIfiFqlKAZyjmpqoEsE7poabPuNGcQ/qInZ
-         V7sYFKbLGSfJQ==
-Received: by mail-ed1-f71.google.com with SMTP id b13-20020a056402278db029039c013d5b80so2751035ede.7
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:40:38 -0700 (PDT)
+        b=a9F9Kuf66F9m9f0E1H1Fa3W/FWi3TamL+faA3Li+zhob/81THfDgi5d6UrSWYnTz+
+         Epj85cJSFPTD4FemAEJGSNzDjKlqCoCeYIoMWHNy8mhSrP3380vwgSz1z7yCgkZ5qq
+         L0Yf/IJ4az5joXWgMzfKVpRJbJvHUPPLj6kxUDr+yVaoNazvpQ0UGVJiAC9JvlSHFj
+         QOkskfNV1eCNBMMPT8ZNrHVGF63xCJ/R6r6wYc2yzmlPu2ItAyKmfoZpOXpemevB4j
+         W5hSqHwJMTpOMGtPI2S9hWleughg8Z6+PRvYN1dSJlCqRtCmlSpi1Mrg/Pd4pFHW87
+         desx4dr4FIJRA==
+Received: by mail-ed1-f70.google.com with SMTP id u25-20020aa7d8990000b02903bb6a903d90so2732730edq.17
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:40:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a08v9hxy0zgk30tu0EPhwU1/dVMKGIwopyByTRLQTW8=;
-        b=t+h89OfVO39Yf1NMXekovrBkyzqcdFSn98ayqJLI7D7oWSHs0QiKM61xib0sKCil89
-         jV8FCt0nzX0OJAbrfpMDtdb0Ym1eREdBPofZLEj7h1WLutzkPTTi/rwhkgBywbtgRMar
-         Zuwrw8PS8pzcL4pt2eSgwfns7da12j2d9SgwvIsAVwRHooIvNIcwkZCIymJwHxz9EgND
-         qNgEjF+sJJxtOH/kqs49pCvh6XVTeIU4GoODpV1Tm5zGlzChN3J6MVvQgKWZ9HNj5a9M
-         pHaDWmEr/tk3N3cZi8VSCSfMbgLlLqXSLivG3sd3w+nQZLuAM34TlDg7WO5YhSdiaUSK
-         0WDg==
-X-Gm-Message-State: AOAM532pQJlkG3kyq6Og32YSqb9NTOGT6DtIbNJX/bDdxcU47tA/Zk/j
-        kGh57rVboHbv/zKnKsmRPXPNnkZqC511X45eqYVNTTdlwoJ9ES+DrhqwY+OrAB+Dl468lNgb6Ho
-        uwwpDhArojYyPqazzObz7xkdcZHOEEq7k/DLf0gIsTQ==
-X-Received: by 2002:a17:906:94cd:: with SMTP id d13mr4063276ejy.158.1627555237726;
-        Thu, 29 Jul 2021 03:40:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxpcC8Z7IC55TpoG5cbgBRsSSS6C555lTVpoloQhomyURPjel7+zQOzWNYTmYIp//p8tRPZ1g==
-X-Received: by 2002:a17:906:94cd:: with SMTP id d13mr4063260ejy.158.1627555237495;
-        Thu, 29 Jul 2021 03:40:37 -0700 (PDT)
+        bh=8EDO8hbetO1mnknXtDL482rftlukDehwkpBsBwJNSdE=;
+        b=uJonVgkz8XI3GB4oBuD9bqCs0YaOCuwBc+7odGO/mua+dAiEs6nOfSa2ti2HRfqOMn
+         m8dP2jecViNNlSbMdHJjxh0ELcA1q36NQkNMEgSynBOZ4D8JnvlStTDgsrvznwStOOT0
+         e5lHrtB/9JpQeKiaytwYhzgTLenbRAOezdMaMbhoL/Ebwo8BN2avqPdbV5G+DCdHS9o+
+         9OoY48zuMYZ+OHJthmOTIemoSPa+qYbLbYxVvI5SBLiqHoFDiwQFYCik7Fy2ES7MyjmO
+         DIjWDk9Lj3Y66JZ/mJqXPicOhp38vC7Vq5c9e3pwSkm1bHE+ADXnjbUpRpub5Sby19e0
+         oBXA==
+X-Gm-Message-State: AOAM533Sb/8MFDeDyCM2tOLOCnKPcUMm+JUt3UHSuccRnPXb8w4zrQ+T
+        vYRf6yPYKLrDB3cRY0+6QAoEeOQRPtOzAffS5pLC5vqqJRpB5JXSUM6QMrV6mOHaS/pBuSqfK5r
+        Fq8y+YueU6yXK1YbvJ5M89hbi7x+9AvSlkfs6o5s1gg==
+X-Received: by 2002:a17:907:364:: with SMTP id rs4mr4101077ejb.56.1627555238863;
+        Thu, 29 Jul 2021 03:40:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwZOu9E6xI3XjXcxdCN71pcdo7KIqUHufVdue1M53+xuTdudckjsCWW6eu5CVaY3Tc87olLnA==
+X-Received: by 2002:a17:907:364:: with SMTP id rs4mr4101068ejb.56.1627555238733;
+        Thu, 29 Jul 2021 03:40:38 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id c14sm824475ejb.78.2021.07.29.03.40.36
+        by smtp.gmail.com with ESMTPSA id c14sm824475ejb.78.2021.07.29.03.40.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 03:40:37 -0700 (PDT)
+        Thu, 29 Jul 2021 03:40:38 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Mark Greer <mgreer@animalcreek.com>,
@@ -62,9 +62,9 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-wireless@vger.kernel.org
-Subject: [PATCH 03/12] nfc: port100: constify several pointers
-Date:   Thu, 29 Jul 2021 12:40:13 +0200
-Message-Id: <20210729104022.47761-4-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 04/12] nfc: trf7970a: constify several pointers
+Date:   Thu, 29 Jul 2021 12:40:14 +0200
+Message-Id: <20210729104022.47761-5-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
 References: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
@@ -79,141 +79,80 @@ variables can be const for correctness and safety.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/nfc/port100.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ drivers/nfc/trf7970a.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/nfc/port100.c b/drivers/nfc/port100.c
-index ccb5c5fab905..517376c43b86 100644
---- a/drivers/nfc/port100.c
-+++ b/drivers/nfc/port100.c
-@@ -526,7 +526,7 @@ static inline u8 port100_checksum(u16 value)
+diff --git a/drivers/nfc/trf7970a.c b/drivers/nfc/trf7970a.c
+index 1aed44629aaa..8890fcd59c39 100644
+--- a/drivers/nfc/trf7970a.c
++++ b/drivers/nfc/trf7970a.c
+@@ -643,7 +643,7 @@ static void trf7970a_send_err_upstream(struct trf7970a *trf, int errno)
  }
  
- /* The rule: sum(data elements) + checksum = 0 */
--static u8 port100_data_checksum(u8 *data, int datalen)
-+static u8 port100_data_checksum(const u8 *data, int datalen)
+ static int trf7970a_transmit(struct trf7970a *trf, struct sk_buff *skb,
+-			     unsigned int len, u8 *prefix,
++			     unsigned int len, const u8 *prefix,
+ 			     unsigned int prefix_len)
  {
- 	u8 sum = 0;
- 	int i;
-@@ -568,10 +568,10 @@ static void port100_tx_update_payload_len(void *_frame, int len)
- 	le16_add_cpu(&frame->datalen, len);
+ 	struct spi_transfer t[2];
+@@ -1387,9 +1387,10 @@ static int trf7970a_is_iso15693_write_or_lock(u8 cmd)
+ 	}
  }
  
--static bool port100_rx_frame_is_valid(void *_frame)
-+static bool port100_rx_frame_is_valid(const void *_frame)
+-static int trf7970a_per_cmd_config(struct trf7970a *trf, struct sk_buff *skb)
++static int trf7970a_per_cmd_config(struct trf7970a *trf,
++				   const struct sk_buff *skb)
  {
- 	u8 checksum;
--	struct port100_frame *frame = _frame;
-+	const struct port100_frame *frame = _frame;
+-	u8 *req = skb->data;
++	const u8 *req = skb->data;
+ 	u8 special_fcn_reg1, iso_ctrl;
+ 	int ret;
  
- 	if (frame->start_frame != cpu_to_be16(PORT100_FRAME_SOF) ||
- 	    frame->extended_frame != cpu_to_be16(PORT100_FRAME_EXT))
-@@ -589,23 +589,24 @@ static bool port100_rx_frame_is_valid(void *_frame)
- 	return true;
+@@ -1791,7 +1792,7 @@ static int _trf7970a_tg_listen(struct nfc_digital_dev *ddev, u16 timeout,
+ static int trf7970a_tg_listen(struct nfc_digital_dev *ddev, u16 timeout,
+ 			      nfc_digital_cmd_complete_t cb, void *arg)
+ {
+-	struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
++	const struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
+ 
+ 	dev_dbg(trf->dev, "Listen - state: %d, timeout: %d ms\n",
+ 		trf->state, timeout);
+@@ -1803,7 +1804,7 @@ static int trf7970a_tg_listen_md(struct nfc_digital_dev *ddev,
+ 				 u16 timeout, nfc_digital_cmd_complete_t cb,
+ 				 void *arg)
+ {
+-	struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
++	const struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
+ 	int ret;
+ 
+ 	dev_dbg(trf->dev, "Listen MD - state: %d, timeout: %d ms\n",
+@@ -1824,7 +1825,7 @@ static int trf7970a_tg_listen_md(struct nfc_digital_dev *ddev,
+ 
+ static int trf7970a_tg_get_rf_tech(struct nfc_digital_dev *ddev, u8 *rf_tech)
+ {
+-	struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
++	const struct trf7970a *trf = nfc_digital_get_drvdata(ddev);
+ 
+ 	dev_dbg(trf->dev, "Get RF Tech - state: %d, rf_tech: %d\n",
+ 		trf->state, trf->md_rf_tech);
+@@ -1974,7 +1975,7 @@ static void trf7970a_shutdown(struct trf7970a *trf)
+ 	trf7970a_power_down(trf);
  }
  
--static bool port100_rx_frame_is_ack(struct port100_ack_frame *frame)
-+static bool port100_rx_frame_is_ack(const struct port100_ack_frame *frame)
+-static int trf7970a_get_autosuspend_delay(struct device_node *np)
++static int trf7970a_get_autosuspend_delay(const struct device_node *np)
  {
- 	return (frame->start_frame == cpu_to_be16(PORT100_FRAME_SOF) &&
- 		frame->ack_frame == cpu_to_be16(PORT100_FRAME_ACK));
- }
+ 	int autosuspend_delay, ret;
  
--static inline int port100_rx_frame_size(void *frame)
-+static inline int port100_rx_frame_size(const void *frame)
+@@ -1987,7 +1988,7 @@ static int trf7970a_get_autosuspend_delay(struct device_node *np)
+ 
+ static int trf7970a_probe(struct spi_device *spi)
  {
--	struct port100_frame *f = frame;
-+	const struct port100_frame *f = frame;
- 
- 	return sizeof(struct port100_frame) + le16_to_cpu(f->datalen) +
- 	       PORT100_FRAME_TAIL_LEN;
- }
- 
--static bool port100_rx_frame_is_cmd_response(struct port100 *dev, void *frame)
-+static bool port100_rx_frame_is_cmd_response(const struct port100 *dev,
-+					     const void *frame)
- {
--	struct port100_frame *f = frame;
-+	const struct port100_frame *f = frame;
- 
- 	return (PORT100_FRAME_CMD(f) == PORT100_CMD_RESPONSE(dev->cmd->code));
- }
-@@ -655,7 +656,8 @@ static void port100_recv_response(struct urb *urb)
- 	schedule_work(&dev->cmd_complete_work);
- }
- 
--static int port100_submit_urb_for_response(struct port100 *dev, gfp_t flags)
-+static int port100_submit_urb_for_response(const struct port100 *dev,
-+					   gfp_t flags)
- {
- 	dev->in_urb->complete = port100_recv_response;
- 
-@@ -666,7 +668,7 @@ static void port100_recv_ack(struct urb *urb)
- {
- 	struct port100 *dev = urb->context;
- 	struct port100_cmd *cmd = dev->cmd;
--	struct port100_ack_frame *in_frame;
-+	const struct port100_ack_frame *in_frame;
- 	int rc;
- 
- 	cmd->status = urb->status;
-@@ -708,7 +710,7 @@ static void port100_recv_ack(struct urb *urb)
- 	schedule_work(&dev->cmd_complete_work);
- }
- 
--static int port100_submit_urb_for_ack(struct port100 *dev, gfp_t flags)
-+static int port100_submit_urb_for_ack(const struct port100 *dev, gfp_t flags)
- {
- 	dev->in_urb->complete = port100_recv_ack;
- 
-@@ -753,8 +755,9 @@ static int port100_send_ack(struct port100 *dev)
- 	return rc;
- }
- 
--static int port100_send_frame_async(struct port100 *dev, struct sk_buff *out,
--				    struct sk_buff *in, int in_len)
-+static int port100_send_frame_async(struct port100 *dev,
-+				    const struct sk_buff *out,
-+				    const struct sk_buff *in, int in_len)
- {
- 	int rc;
- 
-@@ -960,7 +963,7 @@ static void port100_abort_cmd(struct nfc_digital_dev *ddev)
- 	usb_kill_urb(dev->in_urb);
- }
- 
--static struct sk_buff *port100_alloc_skb(struct port100 *dev, unsigned int size)
-+static struct sk_buff *port100_alloc_skb(const struct port100 *dev, unsigned int size)
- {
- 	struct sk_buff *skb;
- 
-@@ -1152,7 +1155,7 @@ static int port100_in_configure_hw(struct nfc_digital_dev *ddev, int type,
- static void port100_in_comm_rf_complete(struct port100 *dev, void *arg,
- 				       struct sk_buff *resp)
- {
--	struct port100_cb_arg *cb_arg = arg;
-+	const struct port100_cb_arg *cb_arg = arg;
- 	nfc_digital_cmd_complete_t cb = cb_arg->complete_cb;
- 	u32 status;
- 	int rc;
-@@ -1330,7 +1333,7 @@ static void port100_tg_comm_rf_complete(struct port100 *dev, void *arg,
- 					struct sk_buff *resp)
- {
- 	u32 status;
--	struct port100_cb_arg *cb_arg = arg;
-+	const struct port100_cb_arg *cb_arg = arg;
- 	nfc_digital_cmd_complete_t cb = cb_arg->complete_cb;
- 	struct port100_tg_comm_rf_res *hdr;
- 
-@@ -1453,7 +1456,7 @@ static int port100_listen_mdaa(struct nfc_digital_dev *ddev,
- static int port100_listen(struct nfc_digital_dev *ddev, u16 timeout,
- 			  nfc_digital_cmd_complete_t cb, void *arg)
- {
--	struct port100 *dev = nfc_digital_get_drvdata(ddev);
-+	const struct port100 *dev = nfc_digital_get_drvdata(ddev);
- 	struct sk_buff *skb;
- 
- 	skb = port100_alloc_skb(dev, 0);
+-	struct device_node *np = spi->dev.of_node;
++	const struct device_node *np = spi->dev.of_node;
+ 	struct trf7970a *trf;
+ 	int uvolts, autosuspend_delay, ret;
+ 	u32 clk_freq = TRF7970A_13MHZ_CLOCK_FREQUENCY;
 -- 
 2.27.0
 
