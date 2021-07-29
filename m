@@ -2,221 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD633D9DED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BC23D9DFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbhG2HAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
+        id S234453AbhG2HDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234347AbhG2HAl (ORCPT
+        with ESMTP id S234347AbhG2HDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:00:41 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2816CC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:00:39 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id j2so5503065wrx.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:00:39 -0700 (PDT)
+        Thu, 29 Jul 2021 03:03:39 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAA4C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:03:36 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id n28-20020a05600c3b9cb02902552e60df56so3258261wms.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:03:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D42htALMiwE4ICut41D5vsBQfBCeDEae3tqYpmKv8jk=;
-        b=OBAlPYmFEMjLIsQidQskf+lnTNHx3ViYTxgqKf4O8loi2k8YlK8JK+7lqEWNj9D4Zs
-         O3x76HK/w4TARBfEoxJg2AmDqouGm0u8e8Ku8kv5Hvn3ObYAuDRJ9gr69zqlVTFsA8V8
-         BMRfvga/i5W6OVagzBgzYq+FLZYXeor9ILVh0=
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yjmoZLiUD+FWnyezF+2h89AQ15fOMkle7vS/pk0BQrk=;
+        b=CYR8Fi+P5EGNe3xUIak1oGG+oatnt/+x6BC4ocWfsDJ0OG6hWZPlm3OGOeViQJMCdI
+         UWclXE36+8hC86zTZkKVWdW5btkVTJSQq2YTENMQL0xa7ZHmW9YQazg4/NvC/1R8g51w
+         3PDiKAhYS6QM+IpddnmSyaPUtJ7Q4kq36fU0c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=D42htALMiwE4ICut41D5vsBQfBCeDEae3tqYpmKv8jk=;
-        b=BAQXBBQxaneG7wNppYm0ineGFiDEs//pqdKnPcGD/H273CT4BzB+GlJcl3EhVBfQQk
-         JAxzIJhLA4fkRI33ZV5Q5dINcxKCv5GSpv5FzAKzm0suLCjGgXRgArTeiOrCnHOCaqWh
-         L0eZ5RZhNoKUxzINUcQ9IIHlo+PsKtHLhLt6WU9YNbD8kvWZBw5lcialnd10sfncLSne
-         zabP45i+k1a9siuy9Tumbm9dALPzk9gvlYg4q0dCYC8FN5S0R/2G1414qMZonZSrapZQ
-         yK0iG2eLKT37mh+ZzJnUsTI0j0VkAu0ZcxxMQ0YfsXLPWvNGxaxTsaxf2L3ToO65S6P0
-         tjqQ==
-X-Gm-Message-State: AOAM531GoOzb1HZqbAhQyzttAACFqNu/75NIZvk8slLhjz8LAAz5Wzm1
-        1Hp19wb7DDW+BxIX4XNvoHglkw==
-X-Google-Smtp-Source: ABdhPJwsaDiG7vN34aTOe+72G4Pb7gWtL4ldUYgv5ToL6oF5GwhKKiRbM5Gn5XQbuB0yAdNhhwKvlg==
-X-Received: by 2002:adf:ef4b:: with SMTP id c11mr3047231wrp.35.1627542037754;
-        Thu, 29 Jul 2021 00:00:37 -0700 (PDT)
+         :content-transfer-encoding:in-reply-to;
+        bh=yjmoZLiUD+FWnyezF+2h89AQ15fOMkle7vS/pk0BQrk=;
+        b=fqt6S1qRgcfpZoUO8gcYW7z4b2IMxCbWvRiJ8V5+shmXBT+s7mrNqdiQULjLJNWTjZ
+         2GXGUp70n9gb8NwgQQUg4g9JPvG07oL9ZKJu91OiAFhPI+ntIBs2Z4Hyfr4cda/Y6ilp
+         lOybs+cm0xc98IWmd9CWasoig4oagr67iXSiU0W5+r4+QRiTJIsj1YcD9TTEi/t9jqCh
+         cOFGNcju6meC/LnR6DrR/z8wjUh1fQkVthqUtZ+ljmLmRYww4jO6vB+gKVyNT2unAe6n
+         vTqDIK1x7yGKioT6+s9Py/ewn3yBECXZftO4LRcfiumWSoEvS58C575nB9nn2Y/CIITq
+         /moQ==
+X-Gm-Message-State: AOAM532VJWjzGUt58fsI3gn4bVULlQ3e2BJ9Fgu+AzYbxbiTZdoX5mI1
+        WIWoY+y2utaPSkMuadkul38Vcg==
+X-Google-Smtp-Source: ABdhPJxhDZGEhqp03BqW6NXSOqDd5aB+UkvkHgDcGsZFr8Q1/7QVZU8Ur8DP6zd16O+/MOBVdJtmzQ==
+X-Received: by 2002:a05:600c:3587:: with SMTP id p7mr12841259wmq.27.1627542215139;
+        Thu, 29 Jul 2021 00:03:35 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id g138sm2707357wmg.32.2021.07.29.00.00.36
+        by smtp.gmail.com with ESMTPSA id p3sm8448882wmp.25.2021.07.29.00.03.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 00:00:37 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 09:00:35 +0200
+        Thu, 29 Jul 2021 00:03:34 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 09:03:32 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 1/3] drm: use the lookup lock in drm_is_current_master
-Message-ID: <YQJSE3TMRydDNhqT@phenom.ffwll.local>
-Mail-Followup-To: Peter Zijlstra <peterz@infradead.org>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210722092929.244629-1-desmondcheongzx@gmail.com>
- <20210722092929.244629-2-desmondcheongzx@gmail.com>
- <YPlKkvelm/mcnCj0@phenom.ffwll.local>
- <YQAaIrNUXa6i2gxD@hirez.programming.kicks-ass.net>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 1/4] dma-fence: Add deadline awareness
+Message-ID: <YQJSxEVUkZmfL5Cb@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210726233854.2453899-1-robdclark@gmail.com>
+ <20210726233854.2453899-2-robdclark@gmail.com>
+ <50b181fe-6605-b7ac-36a6-8bcda2930e6f@gmail.com>
+ <CAF6AEGuNxi_aeYE37FT3a-atCUWgepxs-9EwxMfpiMaU7wgqdQ@mail.gmail.com>
+ <9edd7083-e6b3-b230-c273-8f2fbe76ca17@amd.com>
+ <703dc9c3-5657-432e-ca0b-25bdd67a2abd@gmail.com>
+ <CAF6AEGvSpvc2po93b2eKB2cSzx_a+BtPWhQgRs-1NFFZfUbJNw@mail.gmail.com>
+ <e5e71356-1c58-04ac-2609-70d268941b8d@amd.com>
+ <CAF6AEGu3NMyRp1pC5iZQoHhKhu_xBFBqkkfbG36dx8bVzYdWMA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YQAaIrNUXa6i2gxD@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF6AEGu3NMyRp1pC5iZQoHhKhu_xBFBqkkfbG36dx8bVzYdWMA@mail.gmail.com>
 X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:37:22PM +0200, Peter Zijlstra wrote:
-> On Thu, Jul 22, 2021 at 12:38:10PM +0200, Daniel Vetter wrote:
-> > On Thu, Jul 22, 2021 at 05:29:27PM +0800, Desmond Cheong Zhi Xi wrote:
-> > > Inside drm_is_current_master, using the outer drm_device.master_mutex
-> > > to protect reads of drm_file.master makes the function prone to creating
-> > > lock hierarchy inversions. Instead, we can use the
-> > > drm_file.master_lookup_lock that sits at the bottom of the lock
-> > > hierarchy.
-> > > 
-> > > Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> > > ---
-> > >  drivers/gpu/drm/drm_auth.c | 9 +++++----
-> > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-> > > index f00354bec3fb..9c24b8cc8e36 100644
-> > > --- a/drivers/gpu/drm/drm_auth.c
-> > > +++ b/drivers/gpu/drm/drm_auth.c
-> > > @@ -63,8 +63,9 @@
-> > >  
-> > >  static bool drm_is_current_master_locked(struct drm_file *fpriv)
-> > >  {
-> > > -	lockdep_assert_held_once(&fpriv->minor->dev->master_mutex);
-> > > -
-> > > +	/* Either drm_device.master_mutex or drm_file.master_lookup_lock
-> > > +	 * should be held here.
-> > > +	 */
-> > 
-> > Disappointing that lockdep can't check or conditions for us, a
-> > lockdep_assert_held_either would be really neat in some cases.
-> > 
-> > Adding lockdep folks, maybe they have ideas.
+On Wed, Jul 28, 2021 at 10:58:51AM -0700, Rob Clark wrote:
+> On Wed, Jul 28, 2021 at 10:23 AM Christian König
+> <christian.koenig@amd.com> wrote:
+> >
+> >
+> >
+> > Am 28.07.21 um 17:15 schrieb Rob Clark:
+> > > On Wed, Jul 28, 2021 at 4:37 AM Christian König
+> > > <ckoenig.leichtzumerken@gmail.com> wrote:
+> > >> Am 28.07.21 um 09:03 schrieb Christian König:
+> > >>> Am 27.07.21 um 16:25 schrieb Rob Clark:
+> > >>>> On Tue, Jul 27, 2021 at 12:11 AM Christian König
+> > >>>> <ckoenig.leichtzumerken@gmail.com> wrote:
+> > >>>>> Am 27.07.21 um 01:38 schrieb Rob Clark:
+> > >>>>>> From: Rob Clark <robdclark@chromium.org>
+> > >>>>>>
+> > >>>>>> Add a way to hint to the fence signaler of an upcoming deadline,
+> > >>>>>> such as
+> > >>>>>> vblank, which the fence waiter would prefer not to miss. This is to
+> > >>>>>> aid
+> > >>>>>> the fence signaler in making power management decisions, like boosting
+> > >>>>>> frequency as the deadline approaches and awareness of missing
+> > >>>>>> deadlines
+> > >>>>>> so that can be factored in to the frequency scaling.
+> > >>>>>>
+> > >>>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > >>>>>> ---
+> > >>>>>>     drivers/dma-buf/dma-fence.c | 39
+> > >>>>>> +++++++++++++++++++++++++++++++++++++
+> > >>>>>>     include/linux/dma-fence.h   | 17 ++++++++++++++++
+> > >>>>>>     2 files changed, 56 insertions(+)
+> > >>>>>>
+> > >>>>>> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+> > >>>>>> index ce0f5eff575d..2e0d25ab457e 100644
+> > >>>>>> --- a/drivers/dma-buf/dma-fence.c
+> > >>>>>> +++ b/drivers/dma-buf/dma-fence.c
+> > >>>>>> @@ -910,6 +910,45 @@ dma_fence_wait_any_timeout(struct dma_fence
+> > >>>>>> **fences, uint32_t count,
+> > >>>>>>     }
+> > >>>>>>     EXPORT_SYMBOL(dma_fence_wait_any_timeout);
+> > >>>>>>
+> > >>>>>> +
+> > >>>>>> +/**
+> > >>>>>> + * dma_fence_set_deadline - set desired fence-wait deadline
+> > >>>>>> + * @fence:    the fence that is to be waited on
+> > >>>>>> + * @deadline: the time by which the waiter hopes for the fence to be
+> > >>>>>> + *            signaled
+> > >>>>>> + *
+> > >>>>>> + * Inform the fence signaler of an upcoming deadline, such as
+> > >>>>>> vblank, by
+> > >>>>>> + * which point the waiter would prefer the fence to be signaled
+> > >>>>>> by.  This
+> > >>>>>> + * is intended to give feedback to the fence signaler to aid in power
+> > >>>>>> + * management decisions, such as boosting GPU frequency if a periodic
+> > >>>>>> + * vblank deadline is approaching.
+> > >>>>>> + */
+> > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t
+> > >>>>>> deadline)
+> > >>>>>> +{
+> > >>>>>> +     unsigned long flags;
+> > >>>>>> +
+> > >>>>>> +     if (dma_fence_is_signaled(fence))
+> > >>>>>> +             return;
+> > >>>>>> +
+> > >>>>>> +     spin_lock_irqsave(fence->lock, flags);
+> > >>>>>> +
+> > >>>>>> +     /* If we already have an earlier deadline, keep it: */
+> > >>>>>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags) &&
+> > >>>>>> +         ktime_before(fence->deadline, deadline)) {
+> > >>>>>> +             spin_unlock_irqrestore(fence->lock, flags);
+> > >>>>>> +             return;
+> > >>>>>> +     }
+> > >>>>>> +
+> > >>>>>> +     fence->deadline = deadline;
+> > >>>>>> +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &fence->flags);
+> > >>>>>> +
+> > >>>>>> +     spin_unlock_irqrestore(fence->lock, flags);
+> > >>>>>> +
+> > >>>>>> +     if (fence->ops->set_deadline)
+> > >>>>>> +             fence->ops->set_deadline(fence, deadline);
+> > >>>>>> +}
+> > >>>>>> +EXPORT_SYMBOL(dma_fence_set_deadline);
+> > >>>>>> +
+> > >>>>>>     /**
+> > >>>>>>      * dma_fence_init - Initialize a custom fence.
+> > >>>>>>      * @fence: the fence to initialize
+> > >>>>>> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+> > >>>>>> index 6ffb4b2c6371..4e6cfe4e6fbc 100644
+> > >>>>>> --- a/include/linux/dma-fence.h
+> > >>>>>> +++ b/include/linux/dma-fence.h
+> > >>>>>> @@ -88,6 +88,7 @@ struct dma_fence {
+> > >>>>>>                 /* @timestamp replaced by @rcu on
+> > >>>>>> dma_fence_release() */
+> > >>>>>>                 struct rcu_head rcu;
+> > >>>>>>         };
+> > >>>>>> +     ktime_t deadline;
+> > >>>>> Mhm, adding the flag sounds ok to me but I'm a bit hesitating adding
+> > >>>>> the
+> > >>>>> deadline as extra field here.
+> > >>>>>
+> > >>>>> We tuned the dma_fence structure intentionally so that it is only 64
+> > >>>>> bytes.
+> > >>>> Hmm, then I guess you wouldn't be a fan of also adding an hrtimer?
+> > >>>>
+> > >>>> We could push the ktime_t (and timer) down into the derived fence
+> > >>>> class, but I think there is going to need to be some extra storage
+> > >>>> *somewhere*.. maybe the fence signaler could get away with just
+> > >>>> storing the nearest upcoming deadline per fence-context instead?
+> > >>> I would just push that into the driver instead.
+> > >>>
+> > >>> You most likely don't want the deadline per fence anyway in complex
+> > >>> scenarios, but rather per frame. And a frame is usually composed from
+> > >>> multiple fences.
+> > > Right, I ended up keeping track of the nearest deadline in patch 5/4
+> > > which added drm/msm support:
+> > >
+> > >    https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.freedesktop.org%2Fpatch%2F447138%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cce6ace85263d448bbc9f08d951d9f06c%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630819606427306%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=ameszAOlClaZNeUDlYr37ZdIytVXNgiEUKuctjXLqZ0%3D&amp;reserved=0
+> > >
+> > > But if we do have the ktime_t in dma_fence in dma_fence, we can add
+> > > some checks and avoid calling back to the driver if a later deadline
+> > > is set on a fence that already has an earlier deadline.  OTOH I
+> > > suppose I can push all that back to the driver to start, and we can
+> > > revisit once we have more drivers implementing deadline support.
+> >
+> > I still think that all of this is rather specific to your use case and
+> > have strong doubt that anybody else will implement that.
 > 
-> #ifdef CONFIG_LOCKDEP
-> 	WARN_ON_ONCE(debug_locks && !(lockdep_is_held(&drm_device.master_mutex) ||
-> 				      lockdep_is_held(&drm_file.master_lookup_lock)));
-> #endif
-> 
-> doesn't exactly roll off the tongue, but should do as you want I
-> suppose.
-> 
-> Would something like:
-> 
-> #define lockdep_assert(cond)	WARN_ON_ONCE(debug_locks && !(cond))
-> 
-> Such that we can write:
-> 
-> 	lockdep_assert(lockdep_is_held(&drm_device.master_mutex) ||
-> 		       lockdep_is_held(&drm_file.master_lookup_lock));
-> 
-> make it better ?
+> i915 does already have a similar thing in it's hand-rolled atomic
+> commit path.  So I think msm won't be the only one.  It should be also
+> useful to the other mobile GPUs with a gpu vs kms driver split,
+> although looking at the other gpu devfreq implementations, I don't
+> think they've yet gotten to this point in the fine tuning..
 
-Yeah I think that's pretty tidy and flexible.
+Yeah I have a dream that maybe i915 will use the atomic commit helpers, I
+originally wrote them with i915 in mind :-) even had patches!
 
-Desmond, can you pls give this a shot with Peter's patch below?
+I also think we'll need this eventually in other areas, Android also has
+some hacks like this to make sure idle->first touch doesn't suck and
+similar things.
 -Daniel
+
 > 
-> ---
-> Subject: locking/lockdep: Provide lockdep_assert{,_once}() helpers
+> BR,
+> -R
 > 
-> Extract lockdep_assert{,_once}() helpers to more easily write composite
-> assertions like, for example:
-> 
-> 	lockdep_assert(lockdep_is_held(&drm_device.master_mutex) ||
-> 		       lockdep_is_held(&drm_file.master_lookup_lock));
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 5cf387813754..0da67341c1fb 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -306,31 +306,29 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
->  
->  #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
->  
-> -#define lockdep_assert_held(l)	do {					\
-> -		WARN_ON(debug_locks &&					\
-> -			lockdep_is_held(l) == LOCK_STATE_NOT_HELD);	\
-> -	} while (0)
-> +#define lockdep_assert(cond)		\
-> +	do { WARN_ON(debug_locks && !(cond)); } while (0)
->  
-> -#define lockdep_assert_not_held(l)	do {				\
-> -		WARN_ON(debug_locks &&					\
-> -			lockdep_is_held(l) == LOCK_STATE_HELD);		\
-> -	} while (0)
-> +#define lockdep_assert_once(cond)	\
-> +	do { WARN_ON_ONCE(debug_locks && !(cond)); } while (0)
->  
-> -#define lockdep_assert_held_write(l)	do {			\
-> -		WARN_ON(debug_locks && !lockdep_is_held_type(l, 0));	\
-> -	} while (0)
-> +#define lockdep_assert_held(l)		\
-> +	lockdep_assert(lockdep_is_held(l) != LOCK_STAT_NOT_HELD)
->  
-> -#define lockdep_assert_held_read(l)	do {				\
-> -		WARN_ON(debug_locks && !lockdep_is_held_type(l, 1));	\
-> -	} while (0)
-> +#define lockdep_assert_not_held(l)	\
-> +	lockdep_assert(lockdep_is_held(l) != LOCK_STATE_HELD)
->  
-> -#define lockdep_assert_held_once(l)	do {				\
-> -		WARN_ON_ONCE(debug_locks && !lockdep_is_held(l));	\
-> -	} while (0)
-> +#define lockdep_assert_held_write(l)	\
-> +	lockdep_assert(lockdep_is_held_type(l, 0))
->  
-> -#define lockdep_assert_none_held_once()	do {				\
-> -		WARN_ON_ONCE(debug_locks && current->lockdep_depth);	\
-> -	} while (0)
-> +#define lockdep_assert_held_read(l)	\
-> +	lockdep_assert(lockdep_is_held_type(l, 1))
-> +
-> +#define lockdep_assert_held_once(l)		\
-> +	lockdep_assert_once(lockdep_is_held(l) != LOCK_STAT_NOT_HELD)
-> +
-> +#define lockdep_assert_none_held_once()		\
-> +	lockdep_assert_once(!current->lockdep_depth)
->  
->  #define lockdep_recursing(tsk)	((tsk)->lockdep_recursion)
->  
-> @@ -407,6 +405,9 @@ extern int lock_is_held(const void *);
->  extern int lockdep_is_held(const void *);
->  #define lockdep_is_held_type(l, r)		(1)
->  
-> +#define lockdep_assert(c)			do { } while (0)
-> +#define lockdep_assert_once(c)			do { } while (0)
-> +
->  #define lockdep_assert_held(l)			do { (void)(l); } while (0)
->  #define lockdep_assert_not_held(l)		do { (void)(l); } while (0)
->  #define lockdep_assert_held_write(l)		do { (void)(l); } while (0)
-> 
+> > >> Thinking more about it we could probably kill the spinlock pointer and
+> > >> make the flags 32bit if we absolutely need that here.
+> > > If we had a 'struct dma_fence_context' we could push the spinlock, ops
+> > > pointer, and u64 context into that and replace with a single
+> > > dma_fence_context ptr, fwiw
+> >
+> > That won't work. We have a lot of use cases where you can't allocate
+> > memory, but must allocate a context.
+> >
+> > Christian.
+> >
+> > >
+> > > BR,
+> > > -R
+> > >
+> > >> But I still don't see the need for that, especially since most drivers
+> > >> probably won't implement it.
+> > >>
+> > >> Regards,
+> > >> Christian.
+> > >>
+> > >>> Regards,
+> > >>> Christian.
+> > >>>
+> > >>>> BR,
+> > >>>> -R
+> > >>>>
+> > >>>>> Regards,
+> > >>>>> Christian.
+> > >>>>>
+> > >>>>>>         u64 context;
+> > >>>>>>         u64 seqno;
+> > >>>>>>         unsigned long flags;
+> > >>>>>> @@ -99,6 +100,7 @@ enum dma_fence_flag_bits {
+> > >>>>>>         DMA_FENCE_FLAG_SIGNALED_BIT,
+> > >>>>>>         DMA_FENCE_FLAG_TIMESTAMP_BIT,
+> > >>>>>>         DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
+> > >>>>>> +     DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+> > >>>>>>         DMA_FENCE_FLAG_USER_BITS, /* must always be last member */
+> > >>>>>>     };
+> > >>>>>>
+> > >>>>>> @@ -261,6 +263,19 @@ struct dma_fence_ops {
+> > >>>>>>          */
+> > >>>>>>         void (*timeline_value_str)(struct dma_fence *fence,
+> > >>>>>>                                    char *str, int size);
+> > >>>>>> +
+> > >>>>>> +     /**
+> > >>>>>> +      * @set_deadline:
+> > >>>>>> +      *
+> > >>>>>> +      * Callback to allow a fence waiter to inform the fence
+> > >>>>>> signaler of an
+> > >>>>>> +      * upcoming deadline, such as vblank, by which point the
+> > >>>>>> waiter would
+> > >>>>>> +      * prefer the fence to be signaled by.  This is intended to
+> > >>>>>> give feedback
+> > >>>>>> +      * to the fence signaler to aid in power management
+> > >>>>>> decisions, such as
+> > >>>>>> +      * boosting GPU frequency.
+> > >>>>>> +      *
+> > >>>>>> +      * This callback is optional.
+> > >>>>>> +      */
+> > >>>>>> +     void (*set_deadline)(struct dma_fence *fence, ktime_t deadline);
+> > >>>>>>     };
+> > >>>>>>
+> > >>>>>>     void dma_fence_init(struct dma_fence *fence, const struct
+> > >>>>>> dma_fence_ops *ops,
+> > >>>>>> @@ -586,6 +601,8 @@ static inline signed long dma_fence_wait(struct
+> > >>>>>> dma_fence *fence, bool intr)
+> > >>>>>>         return ret < 0 ? ret : 0;
+> > >>>>>>     }
+> > >>>>>>
+> > >>>>>> +void dma_fence_set_deadline(struct dma_fence *fence, ktime_t
+> > >>>>>> deadline);
+> > >>>>>> +
+> > >>>>>>     struct dma_fence *dma_fence_get_stub(void);
+> > >>>>>>     struct dma_fence *dma_fence_allocate_private_stub(void);
+> > >>>>>>     u64 dma_fence_context_alloc(unsigned num);
+> >
 
 -- 
 Daniel Vetter
