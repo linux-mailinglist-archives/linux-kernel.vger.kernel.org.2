@@ -2,149 +2,743 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBFE3D9BD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 04:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A813D9BE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 04:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbhG2CcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 22:32:09 -0400
-Received: from mail-eopbgr130085.outbound.protection.outlook.com ([40.107.13.85]:42209
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        id S233443AbhG2ClH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 22:41:07 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40474 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233256AbhG2CcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 22:32:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DUMPyjTa+YhuPCDNfvz2bFzEree/JMH3S0bkbvBGelkD/s9HrU0aCzKVtL1djz7k1+k62Gq0RR2aRd1eG58J1kjkwhcekxZXOx+GoqvGgzMLkAYUxapCKA+E1L3ep/7vY7sVcbvXzwwlhWvswzrZFPZMl1QZMqGxayJWnfISKejdCOgoy8KOFyEAkjU5S8KInk4smG4vQ6sN73azkINneS7LwyuGox0PiZifySTtDe2fHEvB0bVqpPemQeHohNieJU2yDxkOX3dTdvVbBdHACYCDNDHUZkfdbkGUhYeDkPwHAvp9lMeRBuL4L5X54KgbfdoI6ezTyp2Vj9vsMmf1IA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PdetnhdUKgXtf6Y7paH+HdVHwLbVcsmJRdzfeoRydeM=;
- b=BxW/CXUINQwQnXaBhgBrOAMPBLNKrjNIkF/KVer8FkS/VFqFfrrxc1A5rThh6r6ruzv5tk5B+tHSYDjlNlsA8xEAVKL/bCJx5h+W9iTde0HdoLwuaSpbhi/8DnGIjaTEVQS+Oh/dqZEiu7cC5hem5yCaxPvrjLGbVkNikQZc3pDBVEzGH1LoeLK1OZJobU1/jC1pGkF47gE8YI6f7xaCu3w3JzViMZZk0j4f9lENCLu9u5GifNGdtCsiN+aqNMZn1w6oVX6KyxZimSfzap8DFGlYHYxqco+tDZ3+io9Yr8mptByFtRs5M33aFCioYzrdg1Ebsk2pMrDq67Tw1A2bgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PdetnhdUKgXtf6Y7paH+HdVHwLbVcsmJRdzfeoRydeM=;
- b=MK21c6vTI7hMTd0NF1NXZA4M11HYqvEmIbZ/ORmagn81ZZLl6eTLHKomDnGgzRqLXmP9fGjGCdJYfyJIF+d8LNYxf+qJ3PndjqfLhcSXtxezkeEmGlI/DZjuj9QGkKXrrQUGIQmGfMJX6hcsdUT4yEgGiRGawkxIkoA2FYIYcpU=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB8PR04MB5787.eurprd04.prod.outlook.com (2603:10a6:10:ac::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Thu, 29 Jul
- 2021 02:32:02 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9c70:fd2f:f676:4802]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9c70:fd2f:f676:4802%9]) with mapi id 15.20.4373.021; Thu, 29 Jul 2021
- 02:32:02 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V2 net-next 5/7] net: fec: add MAC internal delayed clock
- feature support
-Thread-Topic: [PATCH V2 net-next 5/7] net: fec: add MAC internal delayed clock
- feature support
-Thread-Index: AQHXg6cAboDpCGozNkG/XLYPAsqKlKtYbWuAgADKAeA=
-Date:   Thu, 29 Jul 2021 02:32:02 +0000
-Message-ID: <DB8PR04MB6795AE88083D595D275C3B2CE6EB9@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20210728115203.16263-1-qiangqing.zhang@nxp.com>
- <20210728115203.16263-6-qiangqing.zhang@nxp.com> <YQFlZ+eZRTikjItm@lunn.ch>
-In-Reply-To: <YQFlZ+eZRTikjItm@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8551be45-efb9-4d17-e755-08d952390c9f
-x-ms-traffictypediagnostic: DB8PR04MB5787:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR04MB5787BB4ACD122343369639E6E6EB9@DB8PR04MB5787.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UUHW9MppsXSJriFs0z3OwbDP6KfEWxud37AQzqLn/kCWTVypu/EsoCEitOQlUrT1QRCWY7Z1iRUCt7AhOS2UJQlxDfqssX7VnWJj2ySw6Jw+9Bl9q3oCDxr29gvD0hDWMQJBaqBLs0ubAgL1r3LtB8jU7DdvL5P8Yptt1tyOpDO1EyRMOCqyz2TxB+MHOD35reSa8W1N6cR+ileJYP7kh+U8SqYt8Mae2A/G+/00CIiJRWO3TLRsk/eDpn8QOHV0SwTXOZF8/VTWHO1DcSCpuxYvTVXctYq4aS5/IPJ8IiYyY9N4ISQTzDvKiPC6bBoBFBxV3KAoCqmtMoXKZQhhWRe4KgPNZn9W7vaqDYvAUobKhJMtC7048H0gDrG33ATTqCAGmvloPyaL7AydGQkrrF904AomK/G1U31lmRcQimDuwyKp4VX7LzK8TXBIUgWCqM5dGN+PXCoQkC9jCmAlOCurUkUa1B8K5ydrFBuG5eTuAeSbbnUlD7oxg3u4pwNC7mUoSeoMYXBNB9hFCWqYAFm6fDLi8zdYYXFIbr577ovnRwqXnAT65awXB/0+veIlgNmnD7DX0Lau0OW2u7fihw00ug/e5lncZqwUpQNjknIcTi8gidMr0IppA9yxgvNBzuud7szpA1htv1iifJ0gMJyCMMiFy6SDANLYW42yn5gKOjwJb8inPNXI+acNlghg635cqP55XfHg+Q/iymPvSg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(366004)(136003)(39860400002)(478600001)(9686003)(2906002)(33656002)(71200400001)(26005)(7696005)(55016002)(86362001)(6506007)(38070700005)(5660300002)(186003)(53546011)(52536014)(76116006)(8936002)(83380400001)(66556008)(66946007)(64756008)(54906003)(66476007)(316002)(66446008)(7416002)(4326008)(122000001)(8676002)(38100700002)(6916009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?Q1crMFNoNEpBMVdWTFp1VzdpdlJCWWRqalJPR2dZM2pJQm1tODVWdGo5OFVN?=
- =?gb2312?B?QkdqQ0hjYlVMRkcwN3BxVk5JMTFwU2hCVTN5TmthbkZOUk9oTTcwQ0pBSGpU?=
- =?gb2312?B?OTE1bkEwVWhhRVZ4cWhIL3cybW9CSG9Pdm0wSSt3TTBkMzduOXFERmZPZmxm?=
- =?gb2312?B?TnAwQW83aWkxeXJtSjFyeTF2V2xGS29BL3FrVWlZK3BnWWhkTHljTUhvemJz?=
- =?gb2312?B?cWtoeUpoQVV5T00xNVN5empIcEVLdVplZWRZM1hmRXhVdlVPWDlyeWRYNnJl?=
- =?gb2312?B?Mi90alhsTnlXOXdrbDVRLzk0YyswUEVwQVRQbWdWN0NIMmpmc3JrMEpiWWdT?=
- =?gb2312?B?cXFhOWJ1M2I3K0pKejVaRmxaYUQ3NFM4WUlpbFdQakRLV09xRnZSaS9vSlRn?=
- =?gb2312?B?RDRpTU1rWHVUV2x3d0FicjZ1VmVtWU9XRVNBZUFHckRUOERSbXlVQ1paWjN5?=
- =?gb2312?B?UTdKSHdBbCtJNnVvMC9mbXV3WnczTWZ0ZVhHakVCWjFReFA2ZHg2K3h6Rmc0?=
- =?gb2312?B?VURaWUwvSzhpcUl0NXd2S200M0VGZlVYU0RaTkhDZDNYRlBBM0p3K2NFR21p?=
- =?gb2312?B?U00xNEppMmcwT2w4eHRnZ05naVcxb0RnMThEcnlEdHNVVmk4dEZ1MXJDcWNH?=
- =?gb2312?B?WmVGd1o5UVl4emdLUVdFVUkyYmd5QTVQNXZLQ1NrNHFncGtjeVJ3ZDFVbm12?=
- =?gb2312?B?Y3FmSHJQODBjR0Z6dU05ZmNQZlRENU4vWG5lcXJSdW5wRjRBaE0ydjN5VHoy?=
- =?gb2312?B?M0dTRmRud0cvamZvSjlFR2gvbmcxb2psOWNFZXBTT3RGYkUvckdVUlZWRDYz?=
- =?gb2312?B?ZU9odlVHK2ZTQndVQTZxM2FjNzVPaTRZMU5FUGM4RzRBZjN5V0xwWTZRcjc4?=
- =?gb2312?B?TWNibVRjLzI0bVBKTU9SbHJLWXZFVk9vTDg4aWEzM0poc2VaVmt0eXNZWkZy?=
- =?gb2312?B?UWJZK0Z0MXpXSC9hVkhEZ1BFeXJwSHE2YjJOdzZhV0JrcXlURTVPNzBobEdp?=
- =?gb2312?B?b2hYMy9WVyt5Nkk5Z3ZpM2FmWFk4UC9IaktCZFo0NS9lRHhGOTNPa1d3Q2V6?=
- =?gb2312?B?NDZLejZia05JUlY5eEJhTlFRZkd4MnNiM3BCQ3pzcG1uL0w5ZU12T1lla1pw?=
- =?gb2312?B?SlV2T3VlUkRPRU85bmRhcU1KS2VsbUJoeS9vandZUEkwdU80MkJkYjFXcjZv?=
- =?gb2312?B?YmVHaElhK0h2T2ZjZ1RsMWdjRlk0VE5oNmVzQlBVYXNPbW5BMGZlcmJvY3Zs?=
- =?gb2312?B?VmhQWFRISkxzYjR6bGlvNnBhVXVRKzRFSEFQdWlRNTd3cTNERVBDcU9TdDc2?=
- =?gb2312?B?NzltL1M5U3RGVjZUWVJ4ZXNHNXM5M0NkT2tOQ0NyZ0dxUVR3SDFxQk1JYjdQ?=
- =?gb2312?B?ME9aZVRqVHRxNGNXVGIyeTVnT1VMZERaaWtzeGFoZmRjOXVPM0Jod2pvbmNU?=
- =?gb2312?B?U0czZXk2WEJoMUliWWQ0OGN2aHBBTnphMGxqcDFZVENqTzRaYmxCM2V2Rk80?=
- =?gb2312?B?Tm0wSlpKaW9pZ3RBMi9mVE9rZ2l3aVVqa2NFRWZyWG1reGp4RXRodkE3bXhN?=
- =?gb2312?B?cGNuK0VYcHF6YytrR2xxTDFDZ1E3R2NDNEo1YmVra0ZhbUhEZkpIeEJvSTFx?=
- =?gb2312?B?RlNFclo3Z0RkSHVxaGNNUVBGbDJ5bEpvRVNHamI0NkwrWW9sWnhSbmhjazgy?=
- =?gb2312?B?ekJmMmZaTFhjTkVTalpyOG1mcTJ2ZUZMVjJWMVBtNVMvNXc2aC9rTlY1ZXJw?=
- =?gb2312?Q?VcnudkaMFjIPmvI2L9VoPzPu/cpvYxAMkkuUHoh?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S231370AbhG2ClF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 22:41:05 -0400
+Received: from localhost.localdomain (unknown [121.228.27.69])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj0ArFQJhr6glAA--.25353S2;
+        Thu, 29 Jul 2021 10:40:48 +0800 (CST)
+From:   Rui Wang <wangrui@loongson.cn>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Guo Ren <guoren@kernel.org>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rui Wang <wangrui@loongson.cn>, hev <r@hev.cc>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [RFC PATCH v2] locking/atomic: Implement atomic{,64,_long}_{fetch_,}{andnot_or}{,_relaxed,_acquire,_release}()
+Date:   Thu, 29 Jul 2021 10:40:29 +0800
+Message-Id: <20210729024029.910-1-wangrui@loongson.cn>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8551be45-efb9-4d17-e755-08d952390c9f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2021 02:32:02.6571
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6YdTbQ31vC/PpyJ5lIHyy3OAjgi8dqvWKq+jshPoQyz6iHsJ1SkxAORdaL1fNHpjPoFblWr1GOCJJJxvcuT4hA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5787
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxj0ArFQJhr6glAA--.25353S2
+X-Coremail-Antispam: 1UD129KBjvAXoWfAFy8AF1kXr48GrWDAw1DWrg_yoW8Zw43Wo
+        Z3KFW5tr4Iqry7W395KFyIqr4DXF1jqayrGry0vrsYvF9rZanYqwnrGr1jyr1xX34kAr4k
+        Wr4ftw13trWqqwn5n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYg7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20EY4v20xva
+        j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
+        x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8
+        Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI
+        0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
+        McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
+        v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF
+        7I0E8cxan2IY04v7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbpwZ7UUUUU==
+X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFuZHJldyBMdW5uIDxhbmRy
-ZXdAbHVubi5jaD4NCj4gU2VudDogMjAyMcTqN9TCMjjI1SAyMjoxMQ0KPiBUbzogSm9ha2ltIFpo
-YW5nIDxxaWFuZ3FpbmcuemhhbmdAbnhwLmNvbT4NCj4gQ2M6IGRhdmVtQGRhdmVtbG9mdC5uZXQ7
-IGt1YmFAa2VybmVsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiBzaGF3bmd1b0BrZXJuZWwu
-b3JnOyBzLmhhdWVyQHBlbmd1dHJvbml4LmRlOyBrZXJuZWxAcGVuZ3V0cm9uaXguZGU7DQo+IGZl
-c3RldmFtQGdtYWlsLmNvbTsgZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47DQo+IG5l
-dGRldkB2Z2VyLmtlcm5lbC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51
-eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggVjIgbmV0LW5l
-eHQgNS83XSBuZXQ6IGZlYzogYWRkIE1BQyBpbnRlcm5hbCBkZWxheWVkIGNsb2NrDQo+IGZlYXR1
-cmUgc3VwcG9ydA0KPiANCj4gPiArCS8qIEZvciByZ21paSBpbnRlcm5hbCBkZWxheSwgdmFsaWQg
-dmFsdWVzIGFyZSAwcHMgYW5kIDIwMDBwcyAqLw0KPiA+ICsJaWYgKG9mX3Byb3BlcnR5X3JlYWRf
-dTMyKG5wLCAidHgtaW50ZXJuYWwtZGVsYXktcHMiLCAmcmdtaWlfZGVsYXkpKQ0KPiA+ICsJCWZl
-cC0+cmdtaWlfdHhjX2RseSA9IHRydWU7DQo+ID4gKwlpZiAob2ZfcHJvcGVydHlfcmVhZF91MzIo
-bnAsICJyeC1pbnRlcm5hbC1kZWxheS1wcyIsICZyZ21paV9kZWxheSkpDQo+ID4gKwkJZmVwLT5y
-Z21paV9yeGNfZGx5ID0gdHJ1ZTsNCj4gDQo+IEkgZG9uJ3Qgc2VlIGFueSB2YWxpZGF0aW9uIG9m
-IHRoZSBvbmx5IHN1cHBvcnRlZCB2YWx1ZXMgYXJlIDBwcyBhbmQgMjAwMHBzLg0KDQpIaSBBbmRy
-ZXcsDQoNCkkgYWxzbyB0YWtlIHRoaXMgaW50byBhY2NvdW50LCBzaW5jZSBJIGhhdmUgbGltaXRl
-ZCB0aGUgdmFsdWUgdG8gMCBhbmQgMjAwMCBpbiBmZWMgZHQtYmluZGluZ3MuDQpJdCB3aWxsIHJl
-cG9ydCBlcnJvciB3aGVuIHJ1biBkdGJzX2NoZWNrIGlmIHZhbHVlIGlzIG5vdCBpbnZhbGlkLiBB
-bm90aGVyIHJlYXNvbiBpcyB0aGF0IGFjdHVhbGx5DQp0aGUgdmFsdWUgaXMgbm90IHByb2dyYW0g
-dG8gaGFyZHdhcmUsIHdlIG9ubHkgZW5hYmxlIFJHTUlJIGRlbGF5IG9yIG5vdC4gSWYgbmVlZCwg
-SSB0aGluayB3ZQ0KY2FuIG9ubHkgYWRkIGEgZGV2X3dhcm4oKSBoZXJlLCBpbnN0ZWFkIG9mIHN0
-b3AgdGhlIHByb2JlIHByb2Nlc3M/DQoNCkJlc3QgUmVnYXJkcywNCkpvYWtpbSBaaGFuZw0KPiAJ
-QW5kcmV3DQo=
+This patch introduce a new atomic primitive andnot_or:
+
+ * atomic_andnot_or
+ * atomic_fetch_andnot_or
+ * atomic_fetch_andnot_or_relaxed
+ * atomic_fetch_andnot_or_acquire
+ * atomic_fetch_andnot_or_release
+ * atomic64_andnot_or
+ * atomic64_fetch_andnot_or
+ * atomic64_fetch_andnot_or_relaxed
+ * atomic64_fetch_andnot_or_acquire
+ * atomic64_fetch_andnot_or_release
+ * atomic_long_andnot_or
+ * atomic_long_fetch_andnot_or
+ * atomic_long_fetch_andnot_or_relaxed
+ * atomic_long_fetch_andnot_or_acquire
+ * atomic_long_fetch_andnot_or_release
+
+Signed-off-by: Rui Wang <wangrui@loongson.cn>
+Signed-off-by: hev <r@hev.cc>
+---
+ include/asm-generic/atomic-instrumented.h |  72 +++++-
+ include/asm-generic/atomic-long.h         |  62 ++++-
+ include/linux/atomic-arch-fallback.h      | 262 +++++++++++++++++++++-
+ lib/atomic64_test.c                       |  92 ++++----
+ scripts/atomic/atomics.tbl                |   1 +
+ scripts/atomic/fallbacks/andnot_or        |  24 ++
+ 6 files changed, 470 insertions(+), 43 deletions(-)
+ create mode 100755 scripts/atomic/fallbacks/andnot_or
+
+diff --git a/include/asm-generic/atomic-instrumented.h b/include/asm-generic/atomic-instrumented.h
+index bc45af52c93b..8f5efade88b7 100644
+--- a/include/asm-generic/atomic-instrumented.h
++++ b/include/asm-generic/atomic-instrumented.h
+@@ -599,6 +599,41 @@ atomic_dec_if_positive(atomic_t *v)
+ 	return arch_atomic_dec_if_positive(v);
+ }
+ 
++static __always_inline void
++atomic_andnot_or(int m, int o, atomic_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	arch_atomic_andnot_or(m, o, v);
++}
++
++static __always_inline int
++atomic_fetch_andnot_or(int m, int o, atomic_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	return arch_atomic_fetch_andnot_or(m, o, v);
++}
++
++static __always_inline int
++atomic_fetch_andnot_or_acquire(int m, int o, atomic_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	return arch_atomic_fetch_andnot_or_acquire(m, o, v);
++}
++
++static __always_inline int
++atomic_fetch_andnot_or_release(int m, int o, atomic_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	return arch_atomic_fetch_andnot_or_release(m, o, v);
++}
++
++static __always_inline int
++atomic_fetch_andnot_or_relaxed(int m, int o, atomic_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	return arch_atomic_fetch_andnot_or_relaxed(m, o, v);
++}
++
+ static __always_inline s64
+ atomic64_read(const atomic64_t *v)
+ {
+@@ -1177,6 +1212,41 @@ atomic64_dec_if_positive(atomic64_t *v)
+ 	return arch_atomic64_dec_if_positive(v);
+ }
+ 
++static __always_inline void
++atomic64_andnot_or(s64 m, s64 o, atomic64_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	arch_atomic64_andnot_or(m, o, v);
++}
++
++static __always_inline s64
++atomic64_fetch_andnot_or(s64 m, s64 o, atomic64_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	return arch_atomic64_fetch_andnot_or(m, o, v);
++}
++
++static __always_inline s64
++atomic64_fetch_andnot_or_acquire(s64 m, s64 o, atomic64_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	return arch_atomic64_fetch_andnot_or_acquire(m, o, v);
++}
++
++static __always_inline s64
++atomic64_fetch_andnot_or_release(s64 m, s64 o, atomic64_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	return arch_atomic64_fetch_andnot_or_release(m, o, v);
++}
++
++static __always_inline s64
++atomic64_fetch_andnot_or_relaxed(s64 m, s64 o, atomic64_t *v)
++{
++	instrument_atomic_read_write(v, sizeof(*v));
++	return arch_atomic64_fetch_andnot_or_relaxed(m, o, v);
++}
++
+ #define xchg(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+@@ -1334,4 +1404,4 @@ atomic64_dec_if_positive(atomic64_t *v)
+ })
+ 
+ #endif /* _ASM_GENERIC_ATOMIC_INSTRUMENTED_H */
+-// 1d7c3a25aca5c7fb031c307be4c3d24c7b48fcd5
++// 9c9792d0dcd1fb3de8eeda1225ebbd0d811fb941
+diff --git a/include/asm-generic/atomic-long.h b/include/asm-generic/atomic-long.h
+index 073cf40f431b..0c61626b42d2 100644
+--- a/include/asm-generic/atomic-long.h
++++ b/include/asm-generic/atomic-long.h
+@@ -515,6 +515,36 @@ atomic_long_dec_if_positive(atomic_long_t *v)
+ 	return atomic64_dec_if_positive(v);
+ }
+ 
++static __always_inline void
++atomic_long_andnot_or(long m, long o, atomic_long_t *v)
++{
++	atomic64_andnot_or(m, o, v);
++}
++
++static __always_inline long
++atomic_long_fetch_andnot_or(long m, long o, atomic_long_t *v)
++{
++	return atomic64_fetch_andnot_or(m, o, v);
++}
++
++static __always_inline long
++atomic_long_fetch_andnot_or_acquire(long m, long o, atomic_long_t *v)
++{
++	return atomic64_fetch_andnot_or_acquire(m, o, v);
++}
++
++static __always_inline long
++atomic_long_fetch_andnot_or_release(long m, long o, atomic_long_t *v)
++{
++	return atomic64_fetch_andnot_or_release(m, o, v);
++}
++
++static __always_inline long
++atomic_long_fetch_andnot_or_relaxed(long m, long o, atomic_long_t *v)
++{
++	return atomic64_fetch_andnot_or_relaxed(m, o, v);
++}
++
+ #else /* CONFIG_64BIT */
+ 
+ static __always_inline long
+@@ -1009,6 +1039,36 @@ atomic_long_dec_if_positive(atomic_long_t *v)
+ 	return atomic_dec_if_positive(v);
+ }
+ 
++static __always_inline void
++atomic_long_andnot_or(long m, long o, atomic_long_t *v)
++{
++	atomic_andnot_or(m, o, v);
++}
++
++static __always_inline long
++atomic_long_fetch_andnot_or(long m, long o, atomic_long_t *v)
++{
++	return atomic_fetch_andnot_or(m, o, v);
++}
++
++static __always_inline long
++atomic_long_fetch_andnot_or_acquire(long m, long o, atomic_long_t *v)
++{
++	return atomic_fetch_andnot_or_acquire(m, o, v);
++}
++
++static __always_inline long
++atomic_long_fetch_andnot_or_release(long m, long o, atomic_long_t *v)
++{
++	return atomic_fetch_andnot_or_release(m, o, v);
++}
++
++static __always_inline long
++atomic_long_fetch_andnot_or_relaxed(long m, long o, atomic_long_t *v)
++{
++	return atomic_fetch_andnot_or_relaxed(m, o, v);
++}
++
+ #endif /* CONFIG_64BIT */
+ #endif /* _ASM_GENERIC_ATOMIC_LONG_H */
+-// a624200981f552b2c6be4f32fe44da8289f30d87
++// 3ab842342b36b655b902481be793ba7a04c5a88d
+diff --git a/include/linux/atomic-arch-fallback.h b/include/linux/atomic-arch-fallback.h
+index a3dba31df01e..580d48c42597 100644
+--- a/include/linux/atomic-arch-fallback.h
++++ b/include/linux/atomic-arch-fallback.h
+@@ -1250,6 +1250,136 @@ arch_atomic_dec_if_positive(atomic_t *v)
+ #define arch_atomic_dec_if_positive arch_atomic_dec_if_positive
+ #endif
+ 
++#ifndef arch_atomic_andnot_or
++static __always_inline void
++arch_atomic_andnot_or(int m, int o, atomic_t *v)
++{
++	({
++		int N, O = arch_atomic_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic_try_cmpxchg_relaxed(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic_andnot_or arch_atomic_andnot_or
++#endif
++
++#ifndef arch_atomic_fetch_andnot_or_relaxed
++#ifdef arch_atomic_fetch_andnot_or
++#define arch_atomic_fetch_andnot_or_acquire arch_atomic_fetch_andnot_or
++#define arch_atomic_fetch_andnot_or_release arch_atomic_fetch_andnot_or
++#define arch_atomic_fetch_andnot_or_relaxed arch_atomic_fetch_andnot_or
++#endif /* arch_atomic_fetch_andnot_or */
++
++#ifndef arch_atomic_fetch_andnot_or
++static __always_inline int
++arch_atomic_fetch_andnot_or(int m, int o, atomic_t *v)
++{
++	return ({
++		int N, O = arch_atomic_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic_try_cmpxchg(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic_fetch_andnot_or arch_atomic_fetch_andnot_or
++#endif
++
++#ifndef arch_atomic_fetch_andnot_or_acquire
++static __always_inline int
++arch_atomic_fetch_andnot_or_acquire(int m, int o, atomic_t *v)
++{
++	return ({
++		int N, O = arch_atomic_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic_try_cmpxchg_acquire(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic_fetch_andnot_or_acquire arch_atomic_fetch_andnot_or_acquire
++#endif
++
++#ifndef arch_atomic_fetch_andnot_or_release
++static __always_inline int
++arch_atomic_fetch_andnot_or_release(int m, int o, atomic_t *v)
++{
++	return ({
++		int N, O = arch_atomic_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic_try_cmpxchg_release(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic_fetch_andnot_or_release arch_atomic_fetch_andnot_or_release
++#endif
++
++#ifndef arch_atomic_fetch_andnot_or_relaxed
++static __always_inline int
++arch_atomic_fetch_andnot_or_relaxed(int m, int o, atomic_t *v)
++{
++	return ({
++		int N, O = arch_atomic_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic_try_cmpxchg_relaxed(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic_fetch_andnot_or_relaxed arch_atomic_fetch_andnot_or_relaxed
++#endif
++
++#else /* arch_atomic_fetch_andnot_or_relaxed */
++
++#ifndef arch_atomic_fetch_andnot_or_acquire
++static __always_inline int
++arch_atomic_fetch_andnot_or_acquire(int m, int o, atomic_t *v)
++{
++	int ret = arch_atomic_fetch_andnot_or_relaxed(m, o, v);
++	__atomic_acquire_fence();
++	return ret;
++}
++#define arch_atomic_fetch_andnot_or_acquire arch_atomic_fetch_andnot_or_acquire
++#endif
++
++#ifndef arch_atomic_fetch_andnot_or_release
++static __always_inline int
++arch_atomic_fetch_andnot_or_release(int m, int o, atomic_t *v)
++{
++	__atomic_release_fence();
++	return arch_atomic_fetch_andnot_or_relaxed(m, o, v);
++}
++#define arch_atomic_fetch_andnot_or_release arch_atomic_fetch_andnot_or_release
++#endif
++
++#ifndef arch_atomic_fetch_andnot_or
++static __always_inline int
++arch_atomic_fetch_andnot_or(int m, int o, atomic_t *v)
++{
++	int ret;
++	__atomic_pre_full_fence();
++	ret = arch_atomic_fetch_andnot_or_relaxed(m, o, v);
++	__atomic_post_full_fence();
++	return ret;
++}
++#define arch_atomic_fetch_andnot_or arch_atomic_fetch_andnot_or
++#endif
++
++#endif /* arch_atomic_fetch_andnot_or_relaxed */
++
+ #ifdef CONFIG_GENERIC_ATOMIC64
+ #include <asm-generic/atomic64.h>
+ #endif
+@@ -2357,5 +2487,135 @@ arch_atomic64_dec_if_positive(atomic64_t *v)
+ #define arch_atomic64_dec_if_positive arch_atomic64_dec_if_positive
+ #endif
+ 
++#ifndef arch_atomic64_andnot_or
++static __always_inline void
++arch_atomic64_andnot_or(s64 m, s64 o, atomic64_t *v)
++{
++	({
++		s64 N, O = arch_atomic64_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic64_try_cmpxchg_relaxed(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic64_andnot_or arch_atomic64_andnot_or
++#endif
++
++#ifndef arch_atomic64_fetch_andnot_or_relaxed
++#ifdef arch_atomic64_fetch_andnot_or
++#define arch_atomic64_fetch_andnot_or_acquire arch_atomic64_fetch_andnot_or
++#define arch_atomic64_fetch_andnot_or_release arch_atomic64_fetch_andnot_or
++#define arch_atomic64_fetch_andnot_or_relaxed arch_atomic64_fetch_andnot_or
++#endif /* arch_atomic64_fetch_andnot_or */
++
++#ifndef arch_atomic64_fetch_andnot_or
++static __always_inline s64
++arch_atomic64_fetch_andnot_or(s64 m, s64 o, atomic64_t *v)
++{
++	return ({
++		s64 N, O = arch_atomic64_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic64_try_cmpxchg(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic64_fetch_andnot_or arch_atomic64_fetch_andnot_or
++#endif
++
++#ifndef arch_atomic64_fetch_andnot_or_acquire
++static __always_inline s64
++arch_atomic64_fetch_andnot_or_acquire(s64 m, s64 o, atomic64_t *v)
++{
++	return ({
++		s64 N, O = arch_atomic64_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic64_try_cmpxchg_acquire(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic64_fetch_andnot_or_acquire arch_atomic64_fetch_andnot_or_acquire
++#endif
++
++#ifndef arch_atomic64_fetch_andnot_or_release
++static __always_inline s64
++arch_atomic64_fetch_andnot_or_release(s64 m, s64 o, atomic64_t *v)
++{
++	return ({
++		s64 N, O = arch_atomic64_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic64_try_cmpxchg_release(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic64_fetch_andnot_or_release arch_atomic64_fetch_andnot_or_release
++#endif
++
++#ifndef arch_atomic64_fetch_andnot_or_relaxed
++static __always_inline s64
++arch_atomic64_fetch_andnot_or_relaxed(s64 m, s64 o, atomic64_t *v)
++{
++	return ({
++		s64 N, O = arch_atomic64_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!arch_atomic64_try_cmpxchg_relaxed(v, &O, N));
++		O;
++	});
++}
++#define arch_atomic64_fetch_andnot_or_relaxed arch_atomic64_fetch_andnot_or_relaxed
++#endif
++
++#else /* arch_atomic64_fetch_andnot_or_relaxed */
++
++#ifndef arch_atomic64_fetch_andnot_or_acquire
++static __always_inline s64
++arch_atomic64_fetch_andnot_or_acquire(s64 m, s64 o, atomic64_t *v)
++{
++	s64 ret = arch_atomic64_fetch_andnot_or_relaxed(m, o, v);
++	__atomic_acquire_fence();
++	return ret;
++}
++#define arch_atomic64_fetch_andnot_or_acquire arch_atomic64_fetch_andnot_or_acquire
++#endif
++
++#ifndef arch_atomic64_fetch_andnot_or_release
++static __always_inline s64
++arch_atomic64_fetch_andnot_or_release(s64 m, s64 o, atomic64_t *v)
++{
++	__atomic_release_fence();
++	return arch_atomic64_fetch_andnot_or_relaxed(m, o, v);
++}
++#define arch_atomic64_fetch_andnot_or_release arch_atomic64_fetch_andnot_or_release
++#endif
++
++#ifndef arch_atomic64_fetch_andnot_or
++static __always_inline s64
++arch_atomic64_fetch_andnot_or(s64 m, s64 o, atomic64_t *v)
++{
++	s64 ret;
++	__atomic_pre_full_fence();
++	ret = arch_atomic64_fetch_andnot_or_relaxed(m, o, v);
++	__atomic_post_full_fence();
++	return ret;
++}
++#define arch_atomic64_fetch_andnot_or arch_atomic64_fetch_andnot_or
++#endif
++
++#endif /* arch_atomic64_fetch_andnot_or_relaxed */
++
+ #endif /* _LINUX_ATOMIC_FALLBACK_H */
+-// cca554917d7ea73d5e3e7397dd70c484cad9b2c4
++// 709f9a3b37c43051cce565fa3c78002ee8b83766
+diff --git a/lib/atomic64_test.c b/lib/atomic64_test.c
+index d9d170238165..fedc83118a29 100644
+--- a/lib/atomic64_test.c
++++ b/lib/atomic64_test.c
+@@ -17,12 +17,18 @@
+ #include <asm/cpufeature.h>	/* for boot_cpu_has below */
+ #endif
+ 
+-#define TEST(bit, op, c_op, val)				\
++#define COP(c_op1, c_op2, val1, val2...)			\
++do {								\
++	(void)(r c_op1 val1);					\
++	(void)(r c_op2 val2);					\
++} while (0)
++
++#define TEST(bit, op, c_op1, c_op2, args...)			\
+ do {								\
+ 	atomic##bit##_set(&v, v0);				\
+ 	r = v0;							\
+-	atomic##bit##_##op(val, &v);				\
+-	r c_op val;						\
++	atomic##bit##_##op(args, &v);				\
++	COP(c_op1, c_op2, args);				\
+ 	WARN(atomic##bit##_read(&v) != r, "%Lx != %Lx\n",	\
+ 		(unsigned long long)atomic##bit##_read(&v),	\
+ 		(unsigned long long)r);				\
+@@ -50,12 +56,12 @@ do {								\
+ 	BUG_ON(atomic##bit##_read(&v) != r);			\
+ } while (0)
+ 
+-#define TEST_FETCH(bit, op, c_op, val)				\
++#define TEST_FETCH(bit, op, c_op1, c_op2, args...)		\
+ do {								\
+ 	atomic##bit##_set(&v, v0);				\
+ 	r = v0;							\
+-	r c_op val;						\
+-	BUG_ON(atomic##bit##_##op(val, &v) != v0);		\
++	COP(c_op1, c_op2, args);				\
++	BUG_ON(atomic##bit##_##op(args, &v) != v0);		\
+ 	BUG_ON(atomic##bit##_read(&v) != r);			\
+ } while (0)
+ 
+@@ -64,9 +70,9 @@ do {								\
+ 	FAMILY_TEST(TEST_RETURN, bit, op, c_op, val);		\
+ } while (0)
+ 
+-#define FETCH_FAMILY_TEST(bit, op, c_op, val)			\
++#define FETCH_FAMILY_TEST(bit, op, args...)			\
+ do {								\
+-	FAMILY_TEST(TEST_FETCH, bit, op, c_op, val);		\
++	FAMILY_TEST(TEST_FETCH, bit, op, args);			\
+ } while (0)
+ 
+ #define TEST_ARGS(bit, op, init, ret, expect, args...)		\
+@@ -105,35 +111,38 @@ static __init void test_atomic(void)
+ {
+ 	int v0 = 0xaaa31337;
+ 	int v1 = 0xdeadbeef;
++	int mask = 0x0000ffff;
+ 	int onestwos = 0x11112222;
+ 	int one = 1;
+ 
+ 	atomic_t v;
+ 	int r;
+ 
+-	TEST(, add, +=, onestwos);
+-	TEST(, add, +=, -one);
+-	TEST(, sub, -=, onestwos);
+-	TEST(, sub, -=, -one);
+-	TEST(, or, |=, v1);
+-	TEST(, and, &=, v1);
+-	TEST(, xor, ^=, v1);
+-	TEST(, andnot, &= ~, v1);
++	TEST(, add, +=, , onestwos);
++	TEST(, add, +=, , -one);
++	TEST(, sub, -=, , onestwos);
++	TEST(, sub, -=, , -one);
++	TEST(, or, |=, , v1);
++	TEST(, and, &=, , v1);
++	TEST(, xor, ^=, , v1);
++	TEST(, andnot, &= ~, , v1);
++	TEST(, andnot_or, &= ~, |=, mask, one);
+ 
+ 	RETURN_FAMILY_TEST(, add_return, +=, onestwos);
+ 	RETURN_FAMILY_TEST(, add_return, +=, -one);
+ 	RETURN_FAMILY_TEST(, sub_return, -=, onestwos);
+ 	RETURN_FAMILY_TEST(, sub_return, -=, -one);
+ 
+-	FETCH_FAMILY_TEST(, fetch_add, +=, onestwos);
+-	FETCH_FAMILY_TEST(, fetch_add, +=, -one);
+-	FETCH_FAMILY_TEST(, fetch_sub, -=, onestwos);
+-	FETCH_FAMILY_TEST(, fetch_sub, -=, -one);
++	FETCH_FAMILY_TEST(, fetch_add, +=, , onestwos);
++	FETCH_FAMILY_TEST(, fetch_add, +=, , -one);
++	FETCH_FAMILY_TEST(, fetch_sub, -=, , onestwos);
++	FETCH_FAMILY_TEST(, fetch_sub, -=, , -one);
+ 
+-	FETCH_FAMILY_TEST(, fetch_or,  |=, v1);
+-	FETCH_FAMILY_TEST(, fetch_and, &=, v1);
+-	FETCH_FAMILY_TEST(, fetch_andnot, &= ~, v1);
+-	FETCH_FAMILY_TEST(, fetch_xor, ^=, v1);
++	FETCH_FAMILY_TEST(, fetch_or,  |=, , v1);
++	FETCH_FAMILY_TEST(, fetch_and, &=, , v1);
++	FETCH_FAMILY_TEST(, fetch_andnot, &= ~, , v1);
++	FETCH_FAMILY_TEST(, fetch_xor, ^=, , v1);
++	FETCH_FAMILY_TEST(, fetch_andnot_or, &= ~, |=, mask, one);
+ 
+ 	INC_RETURN_FAMILY_TEST(, v0);
+ 	DEC_RETURN_FAMILY_TEST(, v0);
+@@ -150,6 +159,7 @@ static __init void test_atomic64(void)
+ 	long long v1 = 0xdeadbeefdeafcafeLL;
+ 	long long v2 = 0xfaceabadf00df001LL;
+ 	long long v3 = 0x8000000000000000LL;
++	long long mask = 0x00000000ffffffffLL;
+ 	long long onestwos = 0x1111111122222222LL;
+ 	long long one = 1LL;
+ 	int r_int;
+@@ -163,29 +173,31 @@ static __init void test_atomic64(void)
+ 	BUG_ON(v.counter != r);
+ 	BUG_ON(atomic64_read(&v) != r);
+ 
+-	TEST(64, add, +=, onestwos);
+-	TEST(64, add, +=, -one);
+-	TEST(64, sub, -=, onestwos);
+-	TEST(64, sub, -=, -one);
+-	TEST(64, or, |=, v1);
+-	TEST(64, and, &=, v1);
+-	TEST(64, xor, ^=, v1);
+-	TEST(64, andnot, &= ~, v1);
++	TEST(64, add, +=, , onestwos);
++	TEST(64, add, +=, , -one);
++	TEST(64, sub, -=, , onestwos);
++	TEST(64, sub, -=, , -one);
++	TEST(64, or, |=, , v1);
++	TEST(64, and, &=, , v1);
++	TEST(64, xor, ^=, , v1);
++	TEST(64, andnot, &= ~, , v1);
++	TEST(64, andnot_or, &= ~, |=, mask, one);
+ 
+ 	RETURN_FAMILY_TEST(64, add_return, +=, onestwos);
+ 	RETURN_FAMILY_TEST(64, add_return, +=, -one);
+ 	RETURN_FAMILY_TEST(64, sub_return, -=, onestwos);
+ 	RETURN_FAMILY_TEST(64, sub_return, -=, -one);
+ 
+-	FETCH_FAMILY_TEST(64, fetch_add, +=, onestwos);
+-	FETCH_FAMILY_TEST(64, fetch_add, +=, -one);
+-	FETCH_FAMILY_TEST(64, fetch_sub, -=, onestwos);
+-	FETCH_FAMILY_TEST(64, fetch_sub, -=, -one);
++	FETCH_FAMILY_TEST(64, fetch_add, +=, , onestwos);
++	FETCH_FAMILY_TEST(64, fetch_add, +=, , -one);
++	FETCH_FAMILY_TEST(64, fetch_sub, -=, , onestwos);
++	FETCH_FAMILY_TEST(64, fetch_sub, -=, , -one);
+ 
+-	FETCH_FAMILY_TEST(64, fetch_or,  |=, v1);
+-	FETCH_FAMILY_TEST(64, fetch_and, &=, v1);
+-	FETCH_FAMILY_TEST(64, fetch_andnot, &= ~, v1);
+-	FETCH_FAMILY_TEST(64, fetch_xor, ^=, v1);
++	FETCH_FAMILY_TEST(64, fetch_or,  |=, , v1);
++	FETCH_FAMILY_TEST(64, fetch_and, &=, , v1);
++	FETCH_FAMILY_TEST(64, fetch_andnot, &= ~, , v1);
++	FETCH_FAMILY_TEST(64, fetch_xor, ^=, , v1);
++	FETCH_FAMILY_TEST(64, fetch_andnot_or, &= ~, |=, mask, one);
+ 
+ 	INIT(v0);
+ 	atomic64_inc(&v);
+diff --git a/scripts/atomic/atomics.tbl b/scripts/atomic/atomics.tbl
+index fbee2f6190d9..db6fe1dfcdb4 100755
+--- a/scripts/atomic/atomics.tbl
++++ b/scripts/atomic/atomics.tbl
+@@ -39,3 +39,4 @@ inc_not_zero		b	v
+ inc_unless_negative	b	v
+ dec_unless_positive	b	v
+ dec_if_positive		i	v
++andnot_or		vF	i:m	i:o	v
+diff --git a/scripts/atomic/fallbacks/andnot_or b/scripts/atomic/fallbacks/andnot_or
+new file mode 100755
+index 000000000000..7ca5e5fd0772
+--- /dev/null
++++ b/scripts/atomic/fallbacks/andnot_or
+@@ -0,0 +1,24 @@
++local try_order=${order}
++
++#
++# non-value returning atomics are implicity relaxed
++#
++if [ -z "${retstmt}" ]; then
++	try_order="_relaxed"
++fi
++
++cat <<EOF
++static __always_inline ${ret}
++${arch}${atomic}_${pfx}andnot_or${sfx}${order}(${int} m, ${int} o, ${atomic}_t *v)
++{
++	${retstmt}({
++		${int} N, O = ${arch}${atomic}_read(v);
++		do {
++			N = O;
++			N &= ~m;
++			N |= o;
++		} while (!${arch}${atomic}_try_cmpxchg${try_order}(v, &O, N));
++		O;
++	});
++}
++EOF
+-- 
+2.32.0
+
