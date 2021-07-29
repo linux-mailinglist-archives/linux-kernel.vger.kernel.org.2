@@ -2,120 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010A73DA4B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C9B3DA4B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237874AbhG2NtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:49:02 -0400
-Received: from wforward5-smtp.messagingengine.com ([64.147.123.35]:33165 "EHLO
-        wforward5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237831AbhG2Nsx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237835AbhG2Nsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 29 Jul 2021 09:48:53 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailforward.west.internal (Postfix) with ESMTP id A60611AC0113;
-        Thu, 29 Jul 2021 09:48:48 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 29 Jul 2021 09:48:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=9QPW2T
-        aD5TkdBoSC7awJVUB3Oz/9pHuBCU2Rqw2XRmM=; b=UX5PL0C7EKdRQuy+w/FfN1
-        Bgu9VREKmyd4QqYE2mhCz63k7Z7Nld6DHJpjKy1I0Z94U3NlpQts+L4MhXK/oskt
-        jcOyiHibEl2xKYk2Kkzp1keMK0qQiWq8skd4R6r2uwp6trW+wQg2Mduso3jLFWlR
-        Nz7HqI4TqKDkSRa3xj4k/i3BG9RO57RttgUveqArp3QmP7pRna23+aEviFJqB1Dq
-        NDnPKGs7YygNQ41QOxZ1X8KcQngsJXtJEjIMbnxCuAbaqlXe9kYmNcao3l9aZhAZ
-        ygJ/TyiLHPeJPmzmY5Zdz2MDCagp1Yb4il5oGO6WDeL5JfKfgCTwE4d1+APUwq8g
-        ==
-X-ME-Sender: <xms:uLECYQKaAAPIOcNBK7DO0W4TMK1h7hiIoG_hdXwKSl_rAJIQo_A7mg>
-    <xme:uLECYQJ7bc_skfmUr8G0NnQ8jnuNTliOMdGZNVxOA4wUZrspQCj4o2gmainu193P9
-    lPW9OhfzdGNrj93PLE>
-X-ME-Received: <xmr:uLECYQuEWcfJbTIrmKDjsalZaHiGIU6el4Pm5AXi_jrVNNPHzadhtJ5CUYD7ET6SgSl6WbmPav3Fh-E3IgusIOqSigoU1ap08qX35VT6Qgo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheefgddvkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefvufgjfhfhfffkgggtsehttdertddttddtnecuhfhrohhmpeffrghvihguucfg
-    ughmohhnughsohhnuceouggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpeegtdegheevhfegieekfffhledtjedugeehffegvdev
-    feffheeliefhkeevfeejfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggrvhhiugdrvggu
-    mhhonhgushhonhesohhrrggtlhgvrdgtohhm
-X-ME-Proxy: <xmx:uLECYdaGxtYm92wj4W1DtEK31OUdCPpnhVDymZIMm6hZZuqGbcIwcA>
-    <xmx:uLECYXZxN-0DfUqhYKGBSe33Mcx__DUUoLfCADD-bpwyjnrkmmScrw>
-    <xmx:uLECYZDvOT7HNn0mYPXm_jT8z4lw_Y6F_6QCjHZjJaReJawnYh4PcQ>
-    <xmx:wLECYdwVh-qLAgSXrGx4FCGSkfiSwL3lJRMClSuEh3b8TAkhN8mGChuzs47hFOaZ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jul 2021 09:48:39 -0400 (EDT)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id bb8cfb13;
-        Thu, 29 Jul 2021 13:48:38 +0000 (UTC)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     David Matlack <dmatlack@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
-        Joao Martins <joao.m.martins@oracle.com>
-Subject: Re: [PATCH 2/2] KVM: x86: On emulation failure, convey the exit
- reason to userspace
-In-Reply-To: <YOjGdFXXCqDeVlh4@google.com>
-References: <20210628173152.2062988-1-david.edmondson@oracle.com>
- <20210628173152.2062988-3-david.edmondson@oracle.com>
- <YNygagjfTIuptxL8@google.com> <m2pmw114w5.fsf@oracle.com>
- <YOjGdFXXCqDeVlh4@google.com>
-From:   David Edmondson <david.edmondson@oracle.com>
-Date:   Thu, 29 Jul 2021 14:48:38 +0100
-Message-ID: <cunmtq5temh.fsf@oracle.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237726AbhG2Nsv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:48:51 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2835C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:48:48 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 28A2A3F403;
+        Thu, 29 Jul 2021 15:48:47 +0200 (CEST)
+Subject: Re: [PATCH 14/39] arm64: dts: qcom: sdm630: Add TSENS node
+To:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org, marijn.suijten@somainline.org,
+        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210728222542.54269-1-konrad.dybcio@somainline.org>
+ <20210728222542.54269-15-konrad.dybcio@somainline.org>
+ <860f1120-c5a4-f531-3ea9-aa90c6b063dc@linaro.org>
+ <2318377c-959a-a42b-81b5-44e2629570d5@somainline.org>
+ <afee55a8-d7d3-709a-ea4f-0306698c9976@linaro.org>
+ <b16d8000-85a7-d957-77d2-d921e5b09829@somainline.org>
+ <a7f90fe0-ee24-a47d-089d-e716a5766fcd@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <2ffc4e54-a501-bd2d-3f29-a6df34023445@somainline.org>
+Date:   Thu, 29 Jul 2021 15:48:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <a7f90fe0-ee24-a47d-089d-e716a5766fcd@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 2021-07-09 at 21:58:12 GMT, Sean Christopherson wrote:
+Il 29/07/21 13:14, Thara Gopinath ha scritto:
+> 
+> 
+> On 7/29/21 6:55 AM, Konrad Dybcio wrote:
+>>
+>> On 29.07.2021 12:54, Thara Gopinath wrote:
+>>>
+>>>
+>>> On 7/29/21 6:52 AM, Konrad Dybcio wrote:
+>>>>
+>>>> On 29.07.2021 12:50, Thara Gopinath wrote:
+>>>>> Hi Konrad,
+>>>>>
+>>>>> On 7/28/21 6:25 PM, Konrad Dybcio wrote:
+>>>>>> This will enable temperature reporting for various SoC
+>>>>>> components.
+>>>>>>
+>>>>>> Signed-off-by: AngeloGioacchino Del Regno 
+>>>>>> <angelogioacchino.delregno@somainline.org>
+>>>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+>>>>>> ---
+>>>>>>     .../devicetree/bindings/thermal/qcom-tsens.yaml       |  1 +
+>>>>>>     arch/arm64/boot/dts/qcom/sdm630.dtsi                  | 11 +++++++++++
+>>>>>>     2 files changed, 12 insertions(+)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml 
+>>>>>> b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>>>>>> index 4a2eaf28e3fd..d3b9e9b600a2 100644
+>>>>>> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>>>>>> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>>>>>> @@ -48,6 +48,7 @@ properties:
+>>>>>>                   - qcom,sc7180-tsens
+>>>>>>                   - qcom,sc7280-tsens
+>>>>>>                   - qcom,sc8180x-tsens
+>>>>>> +              - qcom,sdm630-tsens
+>>>>>>                   - qcom,sdm845-tsens
+>>>>>>                   - qcom,sm8150-tsens
+>>>>>>                   - qcom,sm8250-tsens
+>>>>>> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi 
+>>>>>> b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>>>>> index 1e54828817d5..7e9c80e35fba 100644
+>>>>>> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>>>>> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>>>>> @@ -627,6 +627,17 @@ mnoc: interconnect@1745000 {
+>>>>>>                      <&mmcc AHB_CLK_SRC>;
+>>>>>>             };
+>>>>>>     +        tsens: thermal-sensor@10ae000 {
+>>>>>> +            compatible = "qcom,sdm630-tsens", "qcom,tsens-v2";
+>>>>>> +            reg = <0x010ae000 0x1000>, /* TM */
+>>>>>> +                  <0x010ad000 0x1000>; /* SROT */
+>>>>>> +            #qcom,sensors = <12>;
+>>>>>
+>>>>> Are all 12 sensors used ? I see that in a later patch "arm64: dts: qcom: 
+>>>>> sdm630: Add thermal-zones configuration" only 9 are used.
+>>>>
+>>>> Hi,
+>>>>
+>>>> if I recall correctly, they all give output but not all of the mappings were 
+>>>> documented in the downstream sources and we have no documentation whatsoever :(
+>>>
+>>> Right. In that case, why not change #qcom,sensors to 9 and add rest of the 
+>>> sensors if and when needed ?
+>>>
+>> I don't think it makes sense to describe the hardware incorrectly, even if some 
+>> of it is unused.
+> 
+> My thinking was more along the lines of don't expose unused h/w bits.
+> 
 
-> On Fri, Jul 02, 2021, David Edmondson wrote:
->> On Wednesday, 2021-06-30 at 16:48:42 UTC, David Matlack wrote:
->> 
->> > On Mon, Jun 28, 2021 at 06:31:52PM +0100, David Edmondson wrote:
->> >>  	if (!is_guest_mode(vcpu) && static_call(kvm_x86_get_cpl)(vcpu) == 0) {
->> >> -		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
->> >> -		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
->> >> -		vcpu->run->internal.ndata = 0;
->> >> +		prepare_emulation_failure_exit(
->> >> +			vcpu, KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON);
->> >
->> > Should kvm_task_switch and kvm_handle_memory_failure also be updated
->> > like this?
->> 
->> Will do in v2.
->> 
->> sgx_handle_emulation_failure() seems like an existing user of
->> KVM_INTERNAL_ERROR_EMULATION that doesn't follow the new protocol (use
->> the emulation_failure part of the union).
->> 
->> Sean: If I add another flag for this case, what is the existing
->> user-level consumer?
->
-> Doh, the SGX case should have been updated as part of commit c88339d88b0a ("kvm:
-> x86: Allow userspace to handle emulation errors").  The easiest fix for SGX would
-> be to zero out 'flags', bump ndata, and shift the existing field usage.  That
-> would resolve the existing problem of the address being misinterpreted as flags,
-> and would play nice _if_ additional flags are added.  I'll send a patch for that.
->
-> [...]
->
-> Which brings me back to adding another flag when dumping the exit reason.  Unless
-> there is a concrete use case for programmatically taking action in reponse to
-> failed emulation, e.g. attemping emulation in userspace using insn_bytes+insn_size,
-> I think we should not add a flag and instead dump info for debug/triage purposes
-> without committing to an ABI.  I.e. define the ABI such that KVM can dump
-> arbitrary info in the unused portions of data[].
+You're right about not exposing unused HW bits, but even PC x86 motherboards
+(I mean the smbus/i2c drivers for the big holy management/sensors chips) do
+have such a "base" configuration, where some lines are read as 0 because they
+are effectively not connected by hardware.
 
-https://lore.kernel.org/r/20210729133931.1129696-1-david.edmondson@oracle.com
-includes both of these suggestions.
+In order to avoid confusion to other developers, in my personal opinion, it would
+be good go for the current value of 12 (which isn't incorrect, as that's what the
+SoC supports)... I don't think that anyone would be confused by seeing zero
+readings on some sensors (if their device don't support such sensor), as I think
+that everyone is used to that anyway, even if that's in other circumstances...
+
+In any case, luckily that's also safe, because there's no firmware that restricts
+the readings to a subset of sensors in this domain (nobody is going to get a
+hypervisor fault for that).
+
+I would also, in case, propose to see how things go: I would expect other
+developers to push device trees for many SDM630/636/660 devices, including but
+not limited to smartphones and SBCs.. so perhaps if we find out that really
+nobody uses the 12 sensors, or if the very vast majority uses a different amount,
+perhaps we may just transfer the value to device-specific configurations in one
+go, as to avoid unnecessary noise... I think :)))
+
+>>
+>>
+>>
+> 
+
