@@ -2,240 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9768E3DAADD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8553DAAE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhG2SZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhG2SZJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:25:09 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62F4C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:25:05 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id l18so8066355wrv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AumX38cXF00xtMIpucm+lzY/I9660Bm036WY8hFLp9U=;
-        b=QhFdNty21/armeGkmZ2C3PRXaz6vcCnpsyLUnRbyHIi9lnQU2YPuxgUdNaOP6FTzWV
-         0jerIkkvRsfYdBua3a/nwjZpfsznmXpvpiFZoVZMOWA0SNmYo+9zFIBcjEKKvDwl9Brm
-         fB4jxT37kPUh/WBcpvP2XpzRJZsDGjv/SOzWXdAc3zRyNWRWer6XzEskPO0OHNDkUhAT
-         54bWGCREFNrXAQrAp5VnVxlBvI+1ls30iswdrzm/p+PsYPvSFt6wXuHsR+HVmffT1bY+
-         8KFbzW5YfQ7CWOOiDZaQ7cQQlpMc5FTsOg9Lrof6aMqUhKWaSvnbXEtZKsNQ2zc/iVVn
-         eE5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AumX38cXF00xtMIpucm+lzY/I9660Bm036WY8hFLp9U=;
-        b=fYPu8+VPEIsDC4kV7s9smcA88rHCgyPNNNoHNpXCkmrco98PRCq/hCda4MwQykyYQY
-         PECyqUUujA9GKOZBN5dMJgkZQj/DKFjshsz4irGWnOp+tVtRFI16auSgnMUPESeljRLf
-         U4HNdhisQ/yvzur6Cv+aRyLLx4jVPJHk1tHa6lyMwBwK4bSK3sb7fsngGUWOIec2Mlon
-         rXgsAXoIjIP2lV4NimsZNka1PIOp9TcN8bDzsfB2qhHnys/GMVTvYPurpiFpe+/82MyX
-         iETd8j0TnUwNCon6q/CwcsNuw6fl3dQ8wFkkqPW16i+T+eicnGEV/q5JkciEbzsihSCI
-         Wb5Q==
-X-Gm-Message-State: AOAM532UH8RDYeOgHHhlHvjZIGfV7BQQA+sOkUHuHZsDOCATJmrvXNj8
-        DwcoEi9WWaWlNywib1+vKkC7nu9qXu/FWF9addOYsQ==
-X-Google-Smtp-Source: ABdhPJyAmZqzPdf6+B50m6AE3DjxSVEfgWAHBy/0BM9u3lLqDWSAeRxRVD951u6m4pcVy0GK8NcIQp/G4LZpUI7/F/I=
-X-Received: by 2002:adf:e5c4:: with SMTP id a4mr6478749wrn.262.1627583104156;
- Thu, 29 Jul 2021 11:25:04 -0700 (PDT)
+        id S230053AbhG2S2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:28:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhG2S2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:28:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1132660EBD;
+        Thu, 29 Jul 2021 18:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627583293;
+        bh=CBrRBRO/tDGawMDo7/5lR6U7y1rcL3K2D2QD62EAY6s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SSnwQJ29s1xjFeEYWBu1pRC14ZtIm/hTtIUu0k3HawS4MB3N4ncTvbVEzae3ViuU7
+         jMa5AUdbBxSVR+sU86OHV8imvEEQ0yRcLvsmV4wgr9p97tx+SeN1m745TVZBloK3NU
+         +PLPoJvqKc+M0iUzkNEBBMzdETD8o3otG55JX/H678jYHFCZICO3RZvay7zsQNEqPU
+         3cPc9DshIMs//k25ZFoTZ6Az0Yyk/ivATKSGF6hGzGUO8ZndNr3l0ZNfodBZozS8lt
+         +bp3xPA5qOIzn21SiBqnQd6NFa3O1VRuEuw5UPvi8FxVaMdAJRFpvLAjIeTYx7kcAj
+         GpNEVPswy/0ig==
+Date:   Thu, 29 Jul 2021 11:28:11 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        git@andred.net, Omar Sandoval <osandov@osandov.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [RFC PATCH v1] fscrypt: support encrypted and trusted keys
+Message-ID: <YQLzOwnPF1434kUk@gmail.com>
+References: <20210727144349.11215-1-a.fatoum@pengutronix.de>
+ <YQA2fHPwH6EsH9BR@sol.localdomain>
+ <367ea5bb-76cf-6020-cb99-91b5ca82d679@pengutronix.de>
+ <YQGAOTdQRHFv9rlr@gmail.com>
+ <CAFA6WYO-h+ngCAT_PS=bZTQkBBtOpBRUmZNP4zhvRuLDJYQXkA@mail.gmail.com>
+ <1530428a-ad2c-a169-86a7-24bfafb9b9bd@pengutronix.de>
 MIME-Version: 1.0
-References: <20210729062451.1349566-1-irogers@google.com> <20210729062451.1349566-4-irogers@google.com>
- <cb2ebcbb2ea963169823ad052be8ebf9290cc97b.camel@gmail.com>
-In-Reply-To: <cb2ebcbb2ea963169823ad052be8ebf9290cc97b.camel@gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 29 Jul 2021 11:24:52 -0700
-Message-ID: <CAP-5=fV6E5BOSdxOBYCW3KyfgbpxMzHoUh1juxxm5s3tX9Mg-w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] perf test: Be more consistent in use of TEST_*
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     eranian@google.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1530428a-ad2c-a169-86a7-24bfafb9b9bd@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 6:41 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
->
-> Hi Ian,
->
-> On Wed, 2021-07-28 at 23:24 -0700, Ian Rogers wrote:
-> > The TEST_OK, TEST_FAIL and TEST_SKIP enum values are used
-> > inconsistently. Try to reduce this by swapping constants for enum values
-> > to try to be more intention revealing.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/arch/x86/tests/rdpmc.c           |   8 +-
-> >  tools/perf/tests/attr.c                     |   2 +-
-> >  tools/perf/tests/bitmap.c                   |   2 +-
-> >  tools/perf/tests/bp_account.c               |   4 +-
-> >  tools/perf/tests/bp_signal.c                |  51 +++++++--
-> >  tools/perf/tests/code-reading.c             |  12 +-
-> >  tools/perf/tests/cpumap.c                   |  10 +-
-> >  tools/perf/tests/dso-data.c                 |   8 +-
-> >  tools/perf/tests/dwarf-unwind.c             |  14 ++-
-> >  tools/perf/tests/event-times.c              |   2 +-
-> >  tools/perf/tests/evsel-roundtrip-name.c     |  14 +--
-> >  tools/perf/tests/evsel-tp-sched.c           |  28 ++---
-> >  tools/perf/tests/expr.c                     |   4 +-
-> >  tools/perf/tests/fdarray.c                  |   4 +-
-> >  tools/perf/tests/genelf.c                   |   2 +-
-> >  tools/perf/tests/hists_cumulate.c           |   2 +-
-> >  tools/perf/tests/hists_filter.c             |  12 +-
-> >  tools/perf/tests/hists_link.c               |  33 +++---
-> >  tools/perf/tests/keep-tracking.c            |   4 +-
-> >  tools/perf/tests/kmod-path.c                |   6 +-
-> >  tools/perf/tests/mem.c                      |   4 +-
-> >  tools/perf/tests/mem2node.c                 |   2 +-
-> >  tools/perf/tests/mmap-basic.c               |  10 +-
-> >  tools/perf/tests/mmap-thread-lookup.c       |   2 +-
-> >  tools/perf/tests/openat-syscall-all-cpus.c  |   4 +-
-> >  tools/perf/tests/openat-syscall-tp-fields.c |   4 +-
-> >  tools/perf/tests/openat-syscall.c           |   6 +-
-> >  tools/perf/tests/parse-events.c             | 118 ++++++++++----------
-> >  tools/perf/tests/parse-metric.c             |  16 +--
-> >  tools/perf/tests/parse-no-sample-id-all.c   |   4 +-
-> >  tools/perf/tests/perf-hooks.c               |   2 +-
-> >  tools/perf/tests/perf-record.c              |   2 +-
-> >  tools/perf/tests/perf-time-to-tsc.c         |   4 +-
-> >  tools/perf/tests/pfm.c                      |   4 +-
-> >  tools/perf/tests/pmu-events.c               |  36 +++---
-> >  tools/perf/tests/pmu.c                      |  16 +--
-> >  tools/perf/tests/python-use.c               |   2 +-
-> >  tools/perf/tests/sample-parsing.c           |  10 +-
-> >  tools/perf/tests/stat.c                     |  12 +-
-> >  tools/perf/tests/sw-clock.c                 |   8 +-
-> >  tools/perf/tests/switch-tracking.c          |   9 +-
-> >  tools/perf/tests/task-exit.c                |  12 +-
-> >  tools/perf/tests/tests.h                    |   4 +-
-> >  tools/perf/tests/thread-map.c               |   8 +-
-> >  tools/perf/tests/thread-maps-share.c        |   2 +-
-> >  tools/perf/tests/time-utils-test.c          |   2 +-
-> >  tools/perf/tests/topology.c                 |   2 +-
-> >  tools/perf/tests/vmlinux-kallsyms.c         |   6 +-
-> >  tools/perf/tests/wp.c                       |  10 +-
-> >  49 files changed, 292 insertions(+), 251 deletions(-)
-> >
-> <SNIP>
-> > diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
-> > index 9866cddebf23..70e92e074dba 100644
-> > --- a/tools/perf/tests/code-reading.c
-> > +++ b/tools/perf/tests/code-reading.c
-> > @@ -725,20 +725,20 @@ int test__code_reading(struct test *test __maybe_unused,
-> > int subtest __maybe_unu
-> >
-> >         switch (ret) {
-> >         case TEST_CODE_READING_OK:
-> > -               return 0;
-> > +               return TEST_OK;
-> >         case TEST_CODE_READING_NO_VMLINUX:
-> >                 pr_debug("no vmlinux\n");
-> > -               return 0;
-> > +               return TEST_SKIP;
-> >         case TEST_CODE_READING_NO_KCORE:
-> >                 pr_debug("no kcore\n");
-> > -               return 0;
-> > +               return TEST_SKIP;
-> >         case TEST_CODE_READING_NO_ACCESS:
-> >                 pr_debug("no access\n");
-> > -               return 0;
-> > +               return TEST_SKIP;
-> >         case TEST_CODE_READING_NO_KERNEL_OBJ:
-> >                 pr_debug("no kernel obj\n");
-> > -               return 0;
-> > +               return TEST_SKIP;
-> >         default:
-> > -               return -1;
-> > +               return TEST_FAIL;
-> >         };
-> >  }
->
->
-> I think it's better to separate changes that do not change the current behaviour
-> from these changes (0 -> TEST_SKIP) into different patches.
+On Thu, Jul 29, 2021 at 11:07:00AM +0200, Ahmad Fatoum wrote:
+> >> Most people don't change defaults.
+> >>
+> >> Essentially your same argument was used for Dual_EC_DRBG; people argued it was
+> >> okay to standardize because people had the option to choose their own constants
+> >> if they felt the default constants were backdoored.  That didn't really matter,
+> >> though, since in practice everyone just used the default constants.
+> 
+> I'd appreciate your feedback on my CAAM series if you think the defaults
+> can be improved. Trusted keys are no longer restricted to TPMs,
+> so users of other backends shouldn't be dismissed, because one backend
+> can be used with fscrypt by alternative means.
 
-Ack. This is the only case of this I see as TEST_OK would contradict
-the debug output. There are also cases where I've swapped things like
--ENOMEM or -EINVAL for TEST_FAIL for things that generally won't
-happen like malloc failures - the test calling function doesn't handle
--ENOMEM. Separating all of these out into CLs is work I'd prefer to
-avoid, but I agree it makes just eye-balling this as a substitution CL
-hard.
+I already gave feedback:
+https://lkml.kernel.org/keyrings/YGOcZtkw3ZM5kvl6@gmail.com
+https://lkml.kernel.org/keyrings/YGUHBelwhvJDhKoo@gmail.com
+https://lkml.kernel.org/keyrings/YGViOc3DG+Pjuur6@sol.localdomain
 
-Thanks,
-Ian
+> >>>> - trusted and encrypted keys aren't restricted to specific uses in the kernel
+> >>>>   (like the fscrypt-provisioning key type is) but rather are general-purpose.
+> >>>>   Hence, it may be possible to leak their contents to userspace by requesting
+> >>>>   their use for certain algorithms/features, e.g. to encrypt a dm-crypt target
+> >>>>   using a weak cipher that is vulnerable to key recovery attacks.
+> >>>
+> >>> The footgun is already there by allowing users to specify their own
+> >>>
+> >>> raw key. Users can already use $keyid for dm-crypt and then do
+> >>>
+> >>>   $ keyctl pipe $keyid | fscryptctl add_key /mnt
+> >>>
+> >>> The responsibility to not reuse key material already lies with the users,
+> >>> regardless if they handle the raw key material directly or indirectly via
+> >>> a trusted key description/ID.
+> >>
+> >> Elsewhere you are claiming that "trusted" keys can never be disclosed to
+> >> userspace.  So you can't rely on userspace cooperating, right?
+> 
+> The users I meant are humans, e.g. system integrators. They need to think about
+> 
+> burning fuses, signing bootloaders, verifying kernel and root file systems,
+> 
+> encrypting file systems and safekeeping their crypto keys. Ample opportunity for
+> 
+> stuff to go wrong. They would benefit from having relevant kernel functionality
+> 
+> integrate with each other instead of having to carry downstream patches, which
+> we and many others[1] did for years. We now finally have a chance to drop this
+> technical debt thanks to Sumit's trusted key rework and improve user security
+> along the way.
+> 
+> So, Eric, how should we proceed?
+> 
 
-> Riccardo
->
-> > diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
-> > index 0472b110fe65..bfcb85a965bb 100644
-> > --- a/tools/perf/tests/cpumap.c
-> > +++ b/tools/perf/tests/cpumap.c
-> > @@ -42,7 +42,7 @@ static int process_event_mask(struct perf_tool *tool
-> > __maybe_unused,
-> >         }
-> >
-> >         perf_cpu_map__put(map);
-> > -       return 0;
-> > +       return TEST_OK;
-> >  }
-> >
-> >  static int process_event_cpus(struct perf_tool *tool __maybe_unused,
-> > @@ -71,7 +71,7 @@ static int process_event_cpus(struct perf_tool *tool
-> > __maybe_unused,
-> >         TEST_ASSERT_VAL("wrong cpu", map->map[1] == 256);
-> >         TEST_ASSERT_VAL("wrong refcnt", refcount_read(&map->refcnt) == 1);
-> >         perf_cpu_map__put(map);
-> > -       return 0;
-> > +       return TEST_OK;
-> >  }
-> >
-> >
-> > @@ -94,7 +94,7 @@ int test__cpu_map_synthesize(struct test *test
-> > __maybe_unused, int subtest __may
-> >                 !perf_event__synthesize_cpu_map(NULL, cpus,
-> > process_event_cpus, NULL));
-> >
-> >         perf_cpu_map__put(cpus);
-> > -       return 0;
-> > +       return TEST_OK;
-> >  }
-> >
-> >  static int cpu_map_print(const char *str)
-> > @@ -120,7 +120,7 @@ int test__cpu_map_print(struct test *test __maybe_unused,
-> > int subtest __maybe_un
-> >         TEST_ASSERT_VAL("failed to convert map", cpu_map_print("1,3-6,8-
-> > 10,24,35-37"));
-> >         TEST_ASSERT_VAL("failed to convert map", cpu_map_print("1,3-6,8-
-> > 10,24,35-37"));
-> >         TEST_ASSERT_VAL("failed to convert map", cpu_map_print("1-10,12-20,22-
-> > 30,32-40"));
-> > -       return 0;
-> > +       return TEST_OK;
-> >  }
-> >
-> >  int test__cpu_map_merge(struct test *test __maybe_unused, int subtest
-> > __maybe_unused)
-> > @@ -135,5 +135,5 @@ int test__cpu_map_merge(struct test *test __maybe_unused,
-> > int subtest __maybe_un
-> >         TEST_ASSERT_VAL("failed to merge map: bad result", !strcmp(buf, "1-
-> > 2,4-5,7"));
-> >         perf_cpu_map__put(b);
-> >         perf_cpu_map__put(c);
-> > -       return 0;
-> > +       return TEST_OK;
-> >  }
-> <SNIP>
->
+It is probably inevitable that this be added, but you need to document it
+properly and not make misleading claims like "The key material is generated
+within the kernel" (for the TPM "trust" source the default is to use the TPM's
+RNG, *not* the kernel RNG), and "is never disclosed to userspace in clear text"
+(that's only guaranteed to be true for non-malicious userspace).  Also please
+properly document that this is mainly intended for accessing key wrapping
+hardware such as CAAM that can't be accessed from userspace in another way like
+TPMs can.
+
+- Eric
