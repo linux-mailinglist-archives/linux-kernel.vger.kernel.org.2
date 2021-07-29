@@ -2,88 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F993DAAD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9768E3DAADD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhG2SRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
+        id S229844AbhG2SZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhG2SRA (ORCPT
+        with ESMTP id S229620AbhG2SZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:17:00 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52829C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:16:57 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so16915724pja.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:16:57 -0700 (PDT)
+        Thu, 29 Jul 2021 14:25:09 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62F4C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:25:05 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id l18so8066355wrv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QcT13ioi7Udva2v8xy7VeLWfKV+j8bNd/FwGrC91o0U=;
-        b=lQMP3cDFPKZ8xlFcPqczF1/tYUNJ8XQbVOyl5sgdq8YD1lbmSAqbRy4Yqh7/kd8tag
-         WAvK0fWXX6IBAifWgdo6pPDSBXhhwEd4vLh4lpETMHUNw5orLWkUS2Jx6y4Bq618MIkJ
-         IT+zD+l7fRHEb9bv3gmfkOZAOSbQTmuPk9/8B6+RBgpCTDHpxqkXNb9kwpoB915n2tzD
-         0kDAsuVVL+s6ISQxaY2sZQXceXaZeEu/pmx16Ig+G4R4FhfjvjnxisF5X3mbt027jgjP
-         sJ+w/4SBb3pjtj6i/eLFxxC2rNjNvORKLFmW+reRQN/RYUz3beInyiEDzNe7avclDUNq
-         daGA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AumX38cXF00xtMIpucm+lzY/I9660Bm036WY8hFLp9U=;
+        b=QhFdNty21/armeGkmZ2C3PRXaz6vcCnpsyLUnRbyHIi9lnQU2YPuxgUdNaOP6FTzWV
+         0jerIkkvRsfYdBua3a/nwjZpfsznmXpvpiFZoVZMOWA0SNmYo+9zFIBcjEKKvDwl9Brm
+         fB4jxT37kPUh/WBcpvP2XpzRJZsDGjv/SOzWXdAc3zRyNWRWer6XzEskPO0OHNDkUhAT
+         54bWGCREFNrXAQrAp5VnVxlBvI+1ls30iswdrzm/p+PsYPvSFt6wXuHsR+HVmffT1bY+
+         8KFbzW5YfQ7CWOOiDZaQ7cQQlpMc5FTsOg9Lrof6aMqUhKWaSvnbXEtZKsNQ2zc/iVVn
+         eE5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QcT13ioi7Udva2v8xy7VeLWfKV+j8bNd/FwGrC91o0U=;
-        b=c2O6xZjg8V8kT1ZrBrGPll2C3ydxw8qlViSZ1oOEN6IKbD5QdTFnY8bG5KVCjXEbcH
-         sTCTomAU1qU5IRwnIjwKpYI0zvv4B74RLTU0v0fExMI5isGvoW/4mT/y6/7vayB6ZOe6
-         mJMw2KO2ucYvA/FVZww+i4KL5IA2VW1Q9wzVMawQEbCzoKiwlYET1+0DYuYzZKlVFPPM
-         8Riaz4KYgZ9lI90XDigLZPe/yFRIz3LvvfWT35Kz++9+7HPtKFGE1yLgfuZcv1FvM/J/
-         nYotgy8GqRbzu7eeZaKi25iT2Eqye8o9a5ixwxzlSBTwp1tOswTJBonQWB/++zxJ8TTI
-         f3cA==
-X-Gm-Message-State: AOAM5314OFQmOsHnheicZ1q+/U+Za3iG3IPTxcSGl9Ub3dZ9IKgMw9if
-        Qls25rsC8uNaO6LLWXpZohs6RA==
-X-Google-Smtp-Source: ABdhPJxEefGqvCgiv/uyAlzKsO6/AN450gS22ti6+7oyI1PVQ9RAGM2MedXS440jd017Tk/uRGpufQ==
-X-Received: by 2002:a17:902:eb43:b029:12c:76bc:d85f with SMTP id i3-20020a170902eb43b029012c76bcd85fmr4030830pli.23.1627582616701;
-        Thu, 29 Jul 2021 11:16:56 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 21sm4146091pfh.103.2021.07.29.11.16.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 11:16:55 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 18:16:52 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86/mmu: Remove redundant spte present check
- in mmu_set_spte
-Message-ID: <YQLwlP2aW8aarqNM@google.com>
-References: <20210726175357.1572951-1-mizhang@google.com>
- <20210726175357.1572951-2-mizhang@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AumX38cXF00xtMIpucm+lzY/I9660Bm036WY8hFLp9U=;
+        b=fYPu8+VPEIsDC4kV7s9smcA88rHCgyPNNNoHNpXCkmrco98PRCq/hCda4MwQykyYQY
+         PECyqUUujA9GKOZBN5dMJgkZQj/DKFjshsz4irGWnOp+tVtRFI16auSgnMUPESeljRLf
+         U4HNdhisQ/yvzur6Cv+aRyLLx4jVPJHk1tHa6lyMwBwK4bSK3sb7fsngGUWOIec2Mlon
+         rXgsAXoIjIP2lV4NimsZNka1PIOp9TcN8bDzsfB2qhHnys/GMVTvYPurpiFpe+/82MyX
+         iETd8j0TnUwNCon6q/CwcsNuw6fl3dQ8wFkkqPW16i+T+eicnGEV/q5JkciEbzsihSCI
+         Wb5Q==
+X-Gm-Message-State: AOAM532UH8RDYeOgHHhlHvjZIGfV7BQQA+sOkUHuHZsDOCATJmrvXNj8
+        DwcoEi9WWaWlNywib1+vKkC7nu9qXu/FWF9addOYsQ==
+X-Google-Smtp-Source: ABdhPJyAmZqzPdf6+B50m6AE3DjxSVEfgWAHBy/0BM9u3lLqDWSAeRxRVD951u6m4pcVy0GK8NcIQp/G4LZpUI7/F/I=
+X-Received: by 2002:adf:e5c4:: with SMTP id a4mr6478749wrn.262.1627583104156;
+ Thu, 29 Jul 2021 11:25:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726175357.1572951-2-mizhang@google.com>
+References: <20210729062451.1349566-1-irogers@google.com> <20210729062451.1349566-4-irogers@google.com>
+ <cb2ebcbb2ea963169823ad052be8ebf9290cc97b.camel@gmail.com>
+In-Reply-To: <cb2ebcbb2ea963169823ad052be8ebf9290cc97b.camel@gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 29 Jul 2021 11:24:52 -0700
+Message-ID: <CAP-5=fV6E5BOSdxOBYCW3KyfgbpxMzHoUh1juxxm5s3tX9Mg-w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] perf test: Be more consistent in use of TEST_*
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     eranian@google.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021, Mingwei Zhang wrote:
-> Drop an unnecessary is_shadow_present_pte() check when updating the rmaps
-> after installing a non-MMIO SPTE.  set_spte() is used only to create
-> shadow-present SPTEs, e.g. MMIO SPTEs are handled early on, mmu_set_spte()
-> runs with mmu_lock held for write, i.e. the SPTE can't be zapped between
-> writing the SPTE and updating the rmaps.
-> 
-> Opportunistically combine the "new SPTE" logic for large pages and rmaps.
-> 
-> No functional change intended.
-> 
-> Suggested-by: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> ---
+On Thu, Jul 29, 2021 at 6:41 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+>
+> Hi Ian,
+>
+> On Wed, 2021-07-28 at 23:24 -0700, Ian Rogers wrote:
+> > The TEST_OK, TEST_FAIL and TEST_SKIP enum values are used
+> > inconsistently. Try to reduce this by swapping constants for enum values
+> > to try to be more intention revealing.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/arch/x86/tests/rdpmc.c           |   8 +-
+> >  tools/perf/tests/attr.c                     |   2 +-
+> >  tools/perf/tests/bitmap.c                   |   2 +-
+> >  tools/perf/tests/bp_account.c               |   4 +-
+> >  tools/perf/tests/bp_signal.c                |  51 +++++++--
+> >  tools/perf/tests/code-reading.c             |  12 +-
+> >  tools/perf/tests/cpumap.c                   |  10 +-
+> >  tools/perf/tests/dso-data.c                 |   8 +-
+> >  tools/perf/tests/dwarf-unwind.c             |  14 ++-
+> >  tools/perf/tests/event-times.c              |   2 +-
+> >  tools/perf/tests/evsel-roundtrip-name.c     |  14 +--
+> >  tools/perf/tests/evsel-tp-sched.c           |  28 ++---
+> >  tools/perf/tests/expr.c                     |   4 +-
+> >  tools/perf/tests/fdarray.c                  |   4 +-
+> >  tools/perf/tests/genelf.c                   |   2 +-
+> >  tools/perf/tests/hists_cumulate.c           |   2 +-
+> >  tools/perf/tests/hists_filter.c             |  12 +-
+> >  tools/perf/tests/hists_link.c               |  33 +++---
+> >  tools/perf/tests/keep-tracking.c            |   4 +-
+> >  tools/perf/tests/kmod-path.c                |   6 +-
+> >  tools/perf/tests/mem.c                      |   4 +-
+> >  tools/perf/tests/mem2node.c                 |   2 +-
+> >  tools/perf/tests/mmap-basic.c               |  10 +-
+> >  tools/perf/tests/mmap-thread-lookup.c       |   2 +-
+> >  tools/perf/tests/openat-syscall-all-cpus.c  |   4 +-
+> >  tools/perf/tests/openat-syscall-tp-fields.c |   4 +-
+> >  tools/perf/tests/openat-syscall.c           |   6 +-
+> >  tools/perf/tests/parse-events.c             | 118 ++++++++++----------
+> >  tools/perf/tests/parse-metric.c             |  16 +--
+> >  tools/perf/tests/parse-no-sample-id-all.c   |   4 +-
+> >  tools/perf/tests/perf-hooks.c               |   2 +-
+> >  tools/perf/tests/perf-record.c              |   2 +-
+> >  tools/perf/tests/perf-time-to-tsc.c         |   4 +-
+> >  tools/perf/tests/pfm.c                      |   4 +-
+> >  tools/perf/tests/pmu-events.c               |  36 +++---
+> >  tools/perf/tests/pmu.c                      |  16 +--
+> >  tools/perf/tests/python-use.c               |   2 +-
+> >  tools/perf/tests/sample-parsing.c           |  10 +-
+> >  tools/perf/tests/stat.c                     |  12 +-
+> >  tools/perf/tests/sw-clock.c                 |   8 +-
+> >  tools/perf/tests/switch-tracking.c          |   9 +-
+> >  tools/perf/tests/task-exit.c                |  12 +-
+> >  tools/perf/tests/tests.h                    |   4 +-
+> >  tools/perf/tests/thread-map.c               |   8 +-
+> >  tools/perf/tests/thread-maps-share.c        |   2 +-
+> >  tools/perf/tests/time-utils-test.c          |   2 +-
+> >  tools/perf/tests/topology.c                 |   2 +-
+> >  tools/perf/tests/vmlinux-kallsyms.c         |   6 +-
+> >  tools/perf/tests/wp.c                       |  10 +-
+> >  49 files changed, 292 insertions(+), 251 deletions(-)
+> >
+> <SNIP>
+> > diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
+> > index 9866cddebf23..70e92e074dba 100644
+> > --- a/tools/perf/tests/code-reading.c
+> > +++ b/tools/perf/tests/code-reading.c
+> > @@ -725,20 +725,20 @@ int test__code_reading(struct test *test __maybe_unused,
+> > int subtest __maybe_unu
+> >
+> >         switch (ret) {
+> >         case TEST_CODE_READING_OK:
+> > -               return 0;
+> > +               return TEST_OK;
+> >         case TEST_CODE_READING_NO_VMLINUX:
+> >                 pr_debug("no vmlinux\n");
+> > -               return 0;
+> > +               return TEST_SKIP;
+> >         case TEST_CODE_READING_NO_KCORE:
+> >                 pr_debug("no kcore\n");
+> > -               return 0;
+> > +               return TEST_SKIP;
+> >         case TEST_CODE_READING_NO_ACCESS:
+> >                 pr_debug("no access\n");
+> > -               return 0;
+> > +               return TEST_SKIP;
+> >         case TEST_CODE_READING_NO_KERNEL_OBJ:
+> >                 pr_debug("no kernel obj\n");
+> > -               return 0;
+> > +               return TEST_SKIP;
+> >         default:
+> > -               return -1;
+> > +               return TEST_FAIL;
+> >         };
+> >  }
+>
+>
+> I think it's better to separate changes that do not change the current behaviour
+> from these changes (0 -> TEST_SKIP) into different patches.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+Ack. This is the only case of this I see as TEST_OK would contradict
+the debug output. There are also cases where I've swapped things like
+-ENOMEM or -EINVAL for TEST_FAIL for things that generally won't
+happen like malloc failures - the test calling function doesn't handle
+-ENOMEM. Separating all of these out into CLs is work I'd prefer to
+avoid, but I agree it makes just eye-balling this as a substitution CL
+hard.
+
+Thanks,
+Ian
+
+> Riccardo
+>
+> > diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
+> > index 0472b110fe65..bfcb85a965bb 100644
+> > --- a/tools/perf/tests/cpumap.c
+> > +++ b/tools/perf/tests/cpumap.c
+> > @@ -42,7 +42,7 @@ static int process_event_mask(struct perf_tool *tool
+> > __maybe_unused,
+> >         }
+> >
+> >         perf_cpu_map__put(map);
+> > -       return 0;
+> > +       return TEST_OK;
+> >  }
+> >
+> >  static int process_event_cpus(struct perf_tool *tool __maybe_unused,
+> > @@ -71,7 +71,7 @@ static int process_event_cpus(struct perf_tool *tool
+> > __maybe_unused,
+> >         TEST_ASSERT_VAL("wrong cpu", map->map[1] == 256);
+> >         TEST_ASSERT_VAL("wrong refcnt", refcount_read(&map->refcnt) == 1);
+> >         perf_cpu_map__put(map);
+> > -       return 0;
+> > +       return TEST_OK;
+> >  }
+> >
+> >
+> > @@ -94,7 +94,7 @@ int test__cpu_map_synthesize(struct test *test
+> > __maybe_unused, int subtest __may
+> >                 !perf_event__synthesize_cpu_map(NULL, cpus,
+> > process_event_cpus, NULL));
+> >
+> >         perf_cpu_map__put(cpus);
+> > -       return 0;
+> > +       return TEST_OK;
+> >  }
+> >
+> >  static int cpu_map_print(const char *str)
+> > @@ -120,7 +120,7 @@ int test__cpu_map_print(struct test *test __maybe_unused,
+> > int subtest __maybe_un
+> >         TEST_ASSERT_VAL("failed to convert map", cpu_map_print("1,3-6,8-
+> > 10,24,35-37"));
+> >         TEST_ASSERT_VAL("failed to convert map", cpu_map_print("1,3-6,8-
+> > 10,24,35-37"));
+> >         TEST_ASSERT_VAL("failed to convert map", cpu_map_print("1-10,12-20,22-
+> > 30,32-40"));
+> > -       return 0;
+> > +       return TEST_OK;
+> >  }
+> >
+> >  int test__cpu_map_merge(struct test *test __maybe_unused, int subtest
+> > __maybe_unused)
+> > @@ -135,5 +135,5 @@ int test__cpu_map_merge(struct test *test __maybe_unused,
+> > int subtest __maybe_un
+> >         TEST_ASSERT_VAL("failed to merge map: bad result", !strcmp(buf, "1-
+> > 2,4-5,7"));
+> >         perf_cpu_map__put(b);
+> >         perf_cpu_map__put(c);
+> > -       return 0;
+> > +       return TEST_OK;
+> >  }
+> <SNIP>
+>
