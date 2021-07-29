@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FF03DA5FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63FF3DA608
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239055AbhG2OKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239272AbhG2OId (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:08:33 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F36C08EB5B
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:03:31 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id x7so7677175ljn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h4HxCrPv2nHY4WojFwqRRKr/XuvP+P2kNyaf8CVbmQA=;
-        b=UVfa+s2qTXOHLywI++x8/3rTAglgFws2bP4BUnE/ySOTZk6kJfTR+C9VivplKI7fYp
-         eQpA+wZlN/eNBNkC8VBp4F3AwA5Xevn6TQpmUi+ckobTmkn6mh61dvKRziifrb8usds7
-         g15YcY2thd8vbBaLw6zUd/MMWs6hG+xzp8ysoklza/PePYOA0RRSpRa1jaqFx1Ryh4a2
-         eAkBcMarMtkP3pfIocGw7fkSZ0KLaseQXnu66r8OxehggNxrjF2AYhOkXkd6I2Co83iA
-         UENT0ZK/GBnsx9ARBvffU6BDKSZu34bbq49bpH8hM1z1XSjTtHkLJ1qnVJWZwKKe8cK/
-         8kGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h4HxCrPv2nHY4WojFwqRRKr/XuvP+P2kNyaf8CVbmQA=;
-        b=FOzCvJj5NW9KTR90sgJ7KUVMgo9TTkIjRsfHZkUkB388VnOfcWbfh/EC4K2wdI1d2L
-         AfouLFnOrKqM/O3pYcNVxDm+m5l+307E6WaMTEYnuY2e2hsjsx4mv7WKY/BwIQRTct6Y
-         veDoRZHN5/L+3yOo8TgUnBxv9Ts8zPzRe+mhSg6jiFb93Hfu9sj//ASpmqZDRsGv21Mt
-         tg6M3yEDr05FQ7crj4X65c5ax22/4GwOV2XcdQl18ALa360a0tFf039u33IasNd/X1TG
-         lsVR4hKt8C99oa0k9CyMBAaCh1uUWOkAJQy1GRDUAOXVjSQPJ4WBDyfcEeWbi6l+1jR/
-         HT9g==
-X-Gm-Message-State: AOAM533g0dC5d2F19PRWvLJb6EQGlIBJIDgWY1W7+8JwNUBbfLKhpJwO
-        UvEyEVhXpYizty2xhmaVX8/ATyUZE0qstvZAoQRdvg==
-X-Google-Smtp-Source: ABdhPJw3yQovWlC8B1n/adJ/irgUUq1IGOPYdaP+54tBXbWyF1uuvAizWPJwKvpBsDCJXh/62Qn7x6nqY41u+HPWev8=
-X-Received: by 2002:a2e:8e24:: with SMTP id r4mr2975434ljk.34.1627567408888;
- Thu, 29 Jul 2021 07:03:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210728155354.3440560-1-shakeelb@google.com> <8c14efe2-69dc-6eab-3cd5-c042576770e7@huawei.com>
-In-Reply-To: <8c14efe2-69dc-6eab-3cd5-c042576770e7@huawei.com>
-From:   Shakeel Butt <shakeelb@google.com>
+        id S239277AbhG2OLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:11:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234250AbhG2ODU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:03:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A32860F46;
+        Thu, 29 Jul 2021 14:03:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627567397;
+        bh=X4sEiDfkDpXkQx7JEk+KmwG56WVDr7UNS8u2jAOMbNA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SME/CV4vj5SVO/nLDMVi2tNTXB7NM7nF4Z7J0vdMVuuCvpZHQR6BQ8zXoqCbnbwmm
+         J2cEjJx+yC6F9HoKUeOmNQ32sKEO7g9TpccK0KAcfidXPxvsGrw34DitAoxPddi32b
+         p65BDwV/dMuDGhygH5fnkLgXA4yyyZsFowUWtG4T9HoPIk3+tF/EwbaKe0DtHmEJtR
+         lyBANN+TMs4+v+0JzI1f79SZ81EggGOZZj+JHNIKOz/Wan9H7sA5895Ayq3M4tnKix
+         aRLzNJoNBiEhbj6ZUv5O6dVvg6Xg6UjUzGG0nM2N8IASTlMt7u98yoStAm0dEU6a/g
+         7JzWOaxvswdUg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 380435C04E6; Thu, 29 Jul 2021 07:03:17 -0700 (PDT)
 Date:   Thu, 29 Jul 2021 07:03:17 -0700
-Message-ID: <CALvZod6usxk99KFhQVXGxBadsYpUyQ3QuwfSDa_sbqSLjBEgnA@mail.gmail.com>
-Subject: Re: [PATCH] slub: fix unreclaimable slab stat for bulk free
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH rcu 11/18] rcu: Mark lockless ->qsmask read in
+ rcu_check_boost_fail()
+Message-ID: <20210729140317.GU4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-11-paulmck@kernel.org>
+ <YQJsxtypw7M/3XBD@boqun-archlinux>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQJsxtypw7M/3XBD@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:52 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
->
-> On 2021/7/28 23:53, Shakeel Butt wrote:
-> > SLUB uses page allocator for higher order allocations and update
-> > unreclaimable slab stat for such allocations. At the moment, the bulk
-> > free for SLUB does not share code with normal free code path for these
-> > type of allocations and have missed the stat update. So, fix the stat
-> > update by common code. The user visible impact of the bug is the
-> > potential of inconsistent unreclaimable slab stat visible through
-> > meminfo and vmstat.
-> >
-> > Fixes: 6a486c0ad4dc ("mm, sl[ou]b: improve memory accounting")
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+On Thu, Jul 29, 2021 at 04:54:30PM +0800, Boqun Feng wrote:
+> On Wed, Jul 21, 2021 at 01:21:19PM -0700, Paul E. McKenney wrote:
+> > Accesses to ->qsmask are normally protected by ->lock, but there is an
+> > exception in the diagnostic code in rcu_check_boost_fail().  This commit
+> > therefore applies data_race() to this access to avoid KCSAN complaining
+> > about the C-language writes protected by ->lock.
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > > ---
-> >   mm/slub.c | 22 ++++++++++++----------
-> >   1 file changed, 12 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index 6dad2b6fda6f..03770291aa6b 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -3238,6 +3238,16 @@ struct detached_freelist {
-> >       struct kmem_cache *s;
-> >   };
-> >
-> > +static inline void free_nonslab_page(struct page *page)
-> > +{
-> > +     unsigned int order = compound_order(page);
-> > +
-> > +     VM_BUG_ON_PAGE(!PageCompound(page), page);
->
-> Could we add WARN_ON here, or we got nothing when CONFIG_DEBUG_VM is
-> disabled.
+> >  kernel/rcu/tree_stall.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > index 42847caa3909b..6dd6c9aa3f757 100644
+> > --- a/kernel/rcu/tree_stall.h
+> > +++ b/kernel/rcu/tree_stall.h
+> > @@ -766,7 +766,7 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
+> >  
+> >  	rcu_for_each_leaf_node(rnp) {
+> >  		if (!cpup) {
+> > -			if (READ_ONCE(rnp->qsmask)) {
+> > +			if (data_race(READ_ONCE(rnp->qsmask))) {
+> 
+> If the write sides allow normal writes, i.e. allowing store tearing, the
+> READ_ONCE() here could read incomplete writes, which could be anything
+> basically? And we get the same result if we remove the READ_ONCE(),
+> don't we? Yes, I know, without the READ_ONCE(), compilers can do
+> anything to optimize on rnp->qsmask, but the end result is same or
+> similar to reading incomplete writes (which is also a result by compiler
+> optimization). So if we mark something as data_race(), **in theory**, it
+> makes no difference with or without the READ_ONCE(), so I think maybe we
+> can remove the READ_ONCE() here?
 
-I don't have a strong opinion on this. Please send a patch with
-reasoning if you want WARN_ON_ONCE here.
+In this particular case, perhaps.  But there is also the possibility
+of ASSERT_EXCLUSIVE_WRITER() in conjunction with WRITE_ONCE(), and
+data_race(READ_ONCE(()) handles all such cases properly.
+
+Again, the point here is to prevent the compiler from messing with
+the load in strange and unpredictable ways while also telling KCSAN
+that this particular read should not be considered to be part of the
+concurrent algorithm.
+
+							Thanx, Paul
+
+> Regards,
+> Boqun
+> 
+> >  				return false;
+> >  			} else {
+> >  				if (READ_ONCE(rnp->gp_tasks))
+> > -- 
+> > 2.31.1.189.g2e36527f23
+> > 
