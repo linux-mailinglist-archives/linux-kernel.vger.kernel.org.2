@@ -2,126 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626153DA28D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3443DA290
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbhG2Lzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        id S234916AbhG2L4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232122AbhG2Lzg (ORCPT
+        with ESMTP id S231674AbhG2L4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:55:36 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C51C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:55:32 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id m12so1790759wru.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:55:32 -0700 (PDT)
+        Thu, 29 Jul 2021 07:56:17 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F6EC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:56:14 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d1so6717486pll.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:56:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zXAEOLN9SYnmGGjsihLTS/Qt+xjg3BkjUtxD75Hc1B0=;
-        b=qktN/sJt3VVMEgerPW78YecwI/DVI1W01zC9uJlT0gtjdbtEEQxgiPgFQTb1o8KIqq
-         1Xu2+Nb7znYJU3T/0k1QkhZIMww9cREVnqBuIXZIIGAQCUgS8BKwRnJu8vC8a0rbS3xS
-         SmMddVrcFwEHdI3hAwyelcQcPRxTQBN62VZ+LPFetBANe7Lb8LP3WFOC2pJC7yWYEcKY
-         7L58TpZVYUlg2YJ+s45T+Ng+I1kWsR0Fs4pDlCHoAhIIAU4n+S5x+gspJo60xSyZ3Knr
-         soSwa7QBM+vL8ZlYHZBwaWYpQmPojhQvp1lGQkWrGJ+k4uq3pJCbLeLb6evrSIodvYF7
-         IjKg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=reWzh3OdEOGw7F78jU2h0BOb61+Bau+uTHia8Q/89V8=;
+        b=IaL3rGM1C0+p5EI4dwAtMi7JS2l80ZljyAWOK2arkXrKp3nTXS49OP6MfH3eVQW9kD
+         pu5JqNu4HNx5plFv3VYgwzFZLfBBMWq84kURUBKQ5jEe0sqIPEWln+eSnF9MrVUw0exg
+         3CkRUhPvAydBUlUmx18mWAeMCrRGtbIA93B7Qd1h1EUXaPcnWE9VBfY3dY2oT8KjGlBP
+         lKokRCRDeOKHFfCX/dA89sIO8QqdO7o8mZ07wal1pZEe3b5UXOKOWf3Uv0zSiih+6G0j
+         tbE7I0jtp4aVsYUDMWtgRp0CL77BCGx8nKOKl7TQmw2YcUnmFlK6mES5XWRH3Voo3IZb
+         oFFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zXAEOLN9SYnmGGjsihLTS/Qt+xjg3BkjUtxD75Hc1B0=;
-        b=FSKOhwA7QZGScN8SsMwTFa9ggZNc+jXZErB04GXlikenfIxrPdGWOw4XBH+5RyF1LU
-         Kvw6Pfr22dI9WTD3Q63UmjuzQJVmZnIsdGwHNNoeEPBY08GUcAplVs+Xcm6MFCmeSd/x
-         hFWFdD40KBqVloldxhjjtLU7jsEuwaT/ELpMpcUo5bJWvjFxkaKASVQPVlq7Wr5+Po0k
-         6w8AEqkuah8ltR9E9LoijJC0mctFM+0CMDQH5IFliz/buLgAZ7i4GdX8z/zequL/7eNs
-         3RAm0Ts0S3djuBRgqNgql6BDfWKckr1AObXf4ewNNHZ4+QMijruvf7AzHBKuKMNM/1aE
-         klEw==
-X-Gm-Message-State: AOAM531ROWlAtI5jk6x3InzULXy3nEg8VfLliF6rHPQE/Gurx1cvUF+9
-        /zmmrKb+yxy+NPEeiR9BD9ijjQ==
-X-Google-Smtp-Source: ABdhPJw8gVdPhukKi7m7Re7PufSJ5utAmX0FeBiTeQ+8h/WG7HqlU8/4O3cNXce1P+c5pLBaBlNHpA==
-X-Received: by 2002:adf:d225:: with SMTP id k5mr4425617wrh.10.1627559731389;
-        Thu, 29 Jul 2021 04:55:31 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id j14sm3306941wru.58.2021.07.29.04.55.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 04:55:30 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 13:55:29 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>
-Subject: Re: [PATCH net-next 2/2] devlink: Allocate devlink directly in
- requested net namespace
-Message-ID: <YQKXMT4tbzCnkYlA@nanopsycho>
-References: <cover.1627545799.git.leonro@nvidia.com>
- <ca29973a59c9c128ab960e3cbff8dfa95280b6b0.1627545799.git.leonro@nvidia.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=reWzh3OdEOGw7F78jU2h0BOb61+Bau+uTHia8Q/89V8=;
+        b=kyCfycm4R0mq8NcY7MbcHnVw/HYsiCMmnNlCXE1e79/IcEvZzGvMJi+jJr7WR3ieE6
+         TmMGNPn2DSvFlr9S+xInxAsWIe74DmQvaCjlKzbdU7+c0ZSPSmIPbRi68ERObGx4uWdD
+         X9Tvb4V8Xcvmc8p1am0l/u6NKe7R8005qbLyNQg92Y0k5+TYfKA3jn0aukd4hMoru/8w
+         vXhiIUrcV2rFLwW0L57gG7ouPI8Q5lc+vJxse37BHIMfgN8fnDZ0HuIwptgicvb4kpt0
+         TGavLk8mz3vMyx7vO1ZPNdDVMRgMTOdcbjqh0Io6yP2Eh1XyLfLse9iy73SmzU0z4gHP
+         vy/A==
+X-Gm-Message-State: AOAM532q8QDn0+Uqp2BUVs/QffEmy54MzjvOk7h+wu9aPSphc+dRIk3h
+        jIA8+wHnF8vetuWIrRzMZVY=
+X-Google-Smtp-Source: ABdhPJzj0RzK7IZOH+o/pO07TTLehY7nwqiCMVKOOGmOCGDv3SpV5AZLs1+BD7rJnIH0eNdeWFVTmw==
+X-Received: by 2002:a17:902:b218:b029:11a:bf7b:1a80 with SMTP id t24-20020a170902b218b029011abf7b1a80mr4437298plr.82.1627559773713;
+        Thu, 29 Jul 2021 04:56:13 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id e23sm9671103pjt.8.2021.07.29.04.56.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 04:56:12 -0700 (PDT)
+Subject: Re: [PATCH] ntfs: Fix validity check for file name attribute
+To:     Rolf Eike Beer <eb@emlix.com>
+Cc:     anton@tuxera.com, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        skhan@linuxfoundation.org,
+        syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com,
+        rkovhaev@gmail.com
+References: <2424055.QlFIqzKPrH@devpool47>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <e24a9b8c-12c9-eb05-7133-148d16da034b@gmail.com>
+Date:   Thu, 29 Jul 2021 19:56:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca29973a59c9c128ab960e3cbff8dfa95280b6b0.1627545799.git.leonro@nvidia.com>
+In-Reply-To: <2424055.QlFIqzKPrH@devpool47>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thu, Jul 29, 2021 at 10:15:26AM CEST, leon@kernel.org wrote:
->From: Leon Romanovsky <leonro@nvidia.com>
->
->There is no need in extra call indirection and check from impossible
->flow where someone tries to set namespace without prior call
->to devlink_alloc().
->
->Instead of this extra logic and additional EXPORT_SYMBOL, use specialized
->devlink allocation function that receives net namespace as an argument.
->
->Such specialized API allows clear view when devlink initialized in wrong
->net namespace and/or kernel users don't try to change devlink namespace
->under the hood.
->
->Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
->---
-> drivers/net/netdevsim/dev.c |  4 ++--
-> include/net/devlink.h       | 14 ++++++++++++--
-> net/core/devlink.c          | 26 ++++++++------------------
-> 3 files changed, 22 insertions(+), 22 deletions(-)
->
->diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
->index 6348307bfa84..d538a39d4225 100644
->--- a/drivers/net/netdevsim/dev.c
->+++ b/drivers/net/netdevsim/dev.c
->@@ -1431,10 +1431,10 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
-> 	struct devlink *devlink;
-> 	int err;
+On 29/7/21 4:31 pm, Rolf Eike Beer wrote:
+> Hi,
 > 
->-	devlink = devlink_alloc(&nsim_dev_devlink_ops, sizeof(*nsim_dev));
->+	devlink = devlink_alloc_ns(&nsim_dev_devlink_ops, sizeof(*nsim_dev),
->+				   nsim_bus_dev->initial_net);
-> 	if (!devlink)
-> 		return -ENOMEM;
->-	devlink_net_set(devlink, nsim_bus_dev->initial_net);
-> 	nsim_dev = devlink_priv(devlink);
-> 	nsim_dev->nsim_bus_dev = nsim_bus_dev;
-> 	nsim_dev->switch_id.id_len = sizeof(nsim_dev->switch_id.id);
->diff --git a/include/net/devlink.h b/include/net/devlink.h
->index e48a62320407..b4691c40320f 100644
->--- a/include/net/devlink.h
->+++ b/include/net/devlink.h
->@@ -1540,8 +1540,18 @@ static inline struct devlink *netdev_to_devlink(struct net_device *dev)
-> struct ib_device;
+> I was just scanning through some older vulnerabilities and came across
+> CVE-2018-12929, CVE-2018-12930, and CVE-2018-12931, which are all still open
+> according to linuxkernelcves.com (originally reported against 4.15 [1]). I
+> looked into the commits in fs/ntfs/ from 4.15 onwards to see if they were just
+> missed, but I can't spot anything there. RedHat claims to have them fixed in
+> one of their kernels [2].
 > 
-> struct net *devlink_net(const struct devlink *devlink);
->-void devlink_net_set(struct devlink *devlink, struct net *net);
->-struct devlink *devlink_alloc(const struct devlink_ops *ops, size_t priv_size);
->+/* This RAW call is intended for software devices that can
+> Which makes me wonder if the issue fixed here is a duplicate of the any of the
+> above. Is there a reason I can't find any patches for the original issue in
+> tree, like the issue only introduced in a custom patchset that Ubuntu/RedHat
+> were using? Is this thing worth it's own CVE if it's no duplicate?
+> 
+> Greetings,
+> 
+> Eike
+> 
+> 1) https://marc.info/?t=152407734400002&r=1&w=2
+> 2) https://access.redhat.com/errata/RHSA-2019:0641
+> 
 
-Not sure what "RAW call" is, perhaps you can just avoid this here.
+Hi Eike,
 
-Otherwise, this patch looks fine to me:
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Thanks for digging into this. From a first glance, this bug seems most 
+similar to CVE-2018-12929.
 
-[...]
+However, from the logs, the root causes are probably different. The 
+cause of this bug is specifically in the call to 
+ntfs_is_extended_system_file [1], but from what I can see this is not 
+the case for CVE-2018-12929. I don't know enough to comment whether it 
+needs a CVE, but it has been patched on Linux stable (up to 4.4).
+
+It's worth noting that there's another similar bug that was fixed by 
+Rustam Kovhaev (+cc) in ntfs_read_locked_inode [2]. This may or may not 
+have been the issue in CVE-2018-12929.
+
+Link: 
+https://syzkaller.appspot.com/bug?id=a1a1e379b225812688566745c3e2f7242bffc246 
+[1]
+
+Link: 
+https://syzkaller.appspot.com/bug?id=933dab9c03ac47a3d09dd4b0563a0a8fcb35f282 
+[2]
+
+Best wishes,
+Desmond
