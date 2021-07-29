@@ -2,137 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710C33D9CD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA083D9CDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbhG2Ei3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 00:38:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51396 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233540AbhG2Ei2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 00:38:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627533505; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=kEfEwT/ODxxc08E2cVLUhKxwnEHlWMj0LfLS8lLCtPU=;
- b=td2/P6bU03U0go1NDSm8vKjDksy58ugYEVIoztKZg2jf4bD2Ftk1j8E4/Zy1In094oTSiaAb
- TnwJSbDqw/OzTVwyj7WZXKkPgNxTnHeBz6TYmzdS17g7Sp2fNi5sQFzqfdzZeLU+R4lwirfp
- uwBxQt5QC1fiNAFnE5rDhEkOc1w=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 610230c017c2b4047d9ed643 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 04:38:24
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ACE9CC43146; Thu, 29 Jul 2021 04:38:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DFA3C433D3;
-        Thu, 29 Jul 2021 04:38:22 +0000 (UTC)
+        id S233740AbhG2Elj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 00:41:39 -0400
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:47049 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233540AbhG2Elg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 00:41:36 -0400
+Received: by mail-pj1-f42.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so7377854pji.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 21:41:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AbtcFfa/EJaWfMmgo8zAPpzyWQi/Wq16C1gNIwKAQQE=;
+        b=KcKLwJbx4oMHnQgYAgAEWUNbV00HLH9jLZdYsO22NKrTBmWhlN7lVHKy/R5ypsERXL
+         hJFzk74TGgswVcPjCKAPzft8tSSKvFgaj9EGS4dhLAfHvPwt7Dcy1MmT4eGfsK4r2sk9
+         Cc6IJISHmYzAGgZ3a099YWQyPp5kO9pSqqSKjilJR7eiEnJNlO4vJaFJBZb5T0Kzx3Y6
+         QV3Ow5apQollAH7yYTDPiuwqcGlfJHiQZzGGQ5nc9Il731Hbz+Lok+2TATLfTrUQO0ty
+         43t/tha1yp6IsW3SSWcFRHnHM9ufHVQNn7c8XcU2cdWjdyZRc39zvnLajBJuyVQ69eBn
+         TaUQ==
+X-Gm-Message-State: AOAM530spCkOjE2egtoUy9SMuc8VSw/ZT36FYSZip3a/nM/71X+Z2CjO
+        WNbMwnogGIdwKBrtaoHMcJw=
+X-Google-Smtp-Source: ABdhPJy1Lt6DBshmE9OxwqfXpnLrF1I1OwPaGHa6+vaLDut/ffTaZFMmQD16pCFik5zjSPvYJ+hx4w==
+X-Received: by 2002:a17:902:b941:b029:12b:81c3:6919 with SMTP id h1-20020a170902b941b029012b81c36919mr2845783pls.7.1627533692947;
+        Wed, 28 Jul 2021 21:41:32 -0700 (PDT)
+Received: from asus.hsd1.ca.comcast.net ([2601:647:4000:d7:9eeb:60dc:7a3c:6558])
+        by smtp.gmail.com with ESMTPSA id dw15sm1415405pjb.42.2021.07.28.21.41.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 21:41:32 -0700 (PDT)
+From:   Bart Van Assche <bvanassche@acm.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH v2 0/3] Restore the kernel v5.13 text attribute write behavior
+Date:   Wed, 28 Jul 2021 21:41:22 -0700
+Message-Id: <20210729044125.7435-1-bvanassche@acm.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 29 Jul 2021 10:08:22 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Georgi Djakov <djakov@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        isaacm@codeaurora.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 0/3] iommu/drm/msm: Allow non-coherent masters to use
- system cache
-In-Reply-To: <20210728140052.GB22887@mms-0441>
-References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <20210728140052.GB22887@mms-0441>
-Message-ID: <8b2742c8891abe4fec3664730717a089@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Georgi,
+Hi Christoph,
 
-On 2021-07-28 19:30, Georgi Djakov wrote:
-> On Mon, Jan 11, 2021 at 07:45:02PM +0530, Sai Prakash Ranjan wrote:
->> commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
->> removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
->> the memory type setting required for the non-coherent masters to use
->> system cache. Now that system cache support for GPU is added, we will
->> need to set the right PTE attribute for GPU buffers to be sys cached.
->> Without this, the system cache lines are not allocated for GPU.
->> 
->> So the patches in this series introduces a new prot flag IOMMU_LLC,
->> renames IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
->> and makes GPU the user of this protection flag.
-> 
-> Hi Sai,
-> 
-> Thank you for the patchset! Are you planning to refresh it, as it does
-> not apply anymore?
-> 
-
-I was waiting on Will's reply [1]. If there are no changes needed, then
-I can repost the patch.
-
-[1] 
-https://lore.kernel.org/lkml/21239ba603d0bdc4e4c696588a905f88@codeaurora.org/
+This patch series restores the v5.13 text attribute write behavior and also
+adds unit tests for configfs. Please consider these patches for inclusion in
+the Linux kernel.
 
 Thanks,
-Sai
 
-> 
->> 
->> The series slightly depends on following 2 patches posted earlier and
->> is based on msm-next branch:
->>  * https://lore.kernel.org/patchwork/patch/1363008/
->>  * https://lore.kernel.org/patchwork/patch/1363010/
->> 
->> Sai Prakash Ranjan (3):
->>   iommu/io-pgtable: Rename last-level cache quirk to
->>     IO_PGTABLE_QUIRK_PTW_LLC
->>   iommu/io-pgtable-arm: Add IOMMU_LLC page protection flag
->>   drm/msm: Use IOMMU_LLC page protection flag to map gpu buffers
->> 
->>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 3 +++
->>  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 2 +-
->>  drivers/gpu/drm/msm/msm_iommu.c         | 3 +++
->>  drivers/gpu/drm/msm/msm_mmu.h           | 4 ++++
->>  drivers/iommu/io-pgtable-arm.c          | 9 ++++++---
->>  include/linux/io-pgtable.h              | 6 +++---
->>  include/linux/iommu.h                   | 6 ++++++
->>  7 files changed, 26 insertions(+), 7 deletions(-)
->> 
->> 
->> base-commit: 00fd44a1a4700718d5d962432b55c09820f7e709
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
->> member
->> of Code Aurora Forum, hosted by The Linux Foundation
->> 
+Bart.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Changes compared to v1:
+- Instead of making the text attribute write behavior POSIX compliant, restore
+  the v5.13 behavior.
+- Added more unit tests.
+
+Bart Van Assche (3):
+  configfs: Restore the kernel v5.13 text attribute write behavior
+  kunit: Add support for suite initialization and cleanup
+  configfs: Add unit tests
+
+ fs/configfs/Kconfig         |   8 +
+ fs/configfs/Makefile        |   2 +
+ fs/configfs/configfs-test.c | 427 ++++++++++++++++++++++++++++++++++++
+ fs/configfs/file.c          |  18 +-
+ include/kunit/test.h        |   4 +
+ lib/kunit/test.c            |  14 ++
+ 6 files changed, 461 insertions(+), 12 deletions(-)
+ create mode 100644 fs/configfs/configfs-test.c
+
