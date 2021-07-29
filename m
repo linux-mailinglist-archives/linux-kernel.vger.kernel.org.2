@@ -2,111 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8353DABCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2833DABD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbhG2TXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 15:23:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60734 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229653AbhG2TXw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 15:23:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627586629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CLUUShINeg3zB4pIKNSTR17WVfI3x7wR0IScyDb0lIQ=;
-        b=SoiuN1QW376dvkocMXZUKOi2N8QTwiyiGsc6sHW18sST/aUO9mxlLRqaRWCjJNHe2oHG2b
-        lLf1M5OBUD8eaz16nvSUqYmi2I2r/t/UWT4QmFe4K4yltm9M0g+V9IlNJVSbsdQJjUkqoR
-        3k1LK6iKj6Is/Fw1f+uYPvqm67TPcPk=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-_IkW8kJ5NTe8VBClptwxKg-1; Thu, 29 Jul 2021 15:23:47 -0400
-X-MC-Unique: _IkW8kJ5NTe8VBClptwxKg-1
-Received: by mail-ej1-f70.google.com with SMTP id x5-20020a1709064bc5b02905305454f5d1so2331348ejv.10
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:23:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CLUUShINeg3zB4pIKNSTR17WVfI3x7wR0IScyDb0lIQ=;
-        b=k2KTjd2qo8lKUc1fHve1HZRK0J1Wz8p8imUYPW/4lenv6Bgx6gyBT2gksw9eqibPpf
-         yyA5ziZ1njPDJg+Am0BqcCK69rSj6oZvULmazvWJkeWWFUSXR/11Dpj1X2psZKdIFEzV
-         GUyDcSy5V1dNsVs+CtDbIMkJop9DnYyv3jfd0oZ5KSnj6hi1gis0sw57AdoHriNseLmu
-         cOys7TI9qxqvoBFPCAWoIME/vOBVb78MbdaZx3v+3O21bAdYSQNCDnO25mo0u6o5PjY6
-         X5VK/Q+8e6bnVkiwL6wVYfw40pebXM7milByrke2Z/ahgO3xfrb5pbzvUsbyf/PAbI5E
-         DcIw==
-X-Gm-Message-State: AOAM533aVG6dk4R0EmJ/HffUT74RIiOL3ZYSl94bFHf5Sd5T5tCwqJRa
-        yrrLvvdup5w3xCXKLCgX4cisdTo10+vEjOJ2X/O3mYP0V1nSMIiLFhpvAfbcQL37lER9ep7oHwz
-        k9BGZoXLvZlfsqvMNlq/JtGKp
-X-Received: by 2002:a50:a456:: with SMTP id v22mr7669398edb.333.1627586626650;
-        Thu, 29 Jul 2021 12:23:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxcVU8qe4eofOgQYBBJ78ITD74ZtYTi0VNXjTbdltfj+kxbn12NU416uMWOSAUzZ27/KlEvA==
-X-Received: by 2002:a50:a456:: with SMTP id v22mr7669378edb.333.1627586626432;
-        Thu, 29 Jul 2021 12:23:46 -0700 (PDT)
-Received: from x1.bristot.me (host-95-239-202-226.retail.telecomitalia.it. [95.239.202.226])
-        by smtp.gmail.com with ESMTPSA id jy17sm1272810ejc.112.2021.07.29.12.23.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 12:23:46 -0700 (PDT)
-Subject: Re: [PATCH] eventfd: Make signal recursion protection a task bit
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Juri Lelli <jlelli@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        He Zhe <zhe.he@windriver.com>, Jens Axboe <axboe@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
- <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
- <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
- <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
- <87pmv23lru.ffs@nanos.tec.linutronix.de>
- <810e01ef-9b71-5b44-8498-b8a377d4e51b@redhat.com> <875ywujlzx.ffs@tglx>
- <87wnp9idso.ffs@tglx>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <d99d8f37-b217-266b-b7bb-6128dafb549b@redhat.com>
-Date:   Thu, 29 Jul 2021 21:23:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231245AbhG2Tbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:31:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229724AbhG2Tbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 15:31:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89512608FB;
+        Thu, 29 Jul 2021 19:31:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627587100;
+        bh=IRjaTbat4W9DpEHrlCHgReStseh1FP+5O49lG8yTuKM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VFTxTjV2sWVbU2lnJ/4Qe+sO79mCKeiIlkq+8eJpgwhR4TwK2eJqzACgJHjfQlsd7
+         Gtnw5ptHsfTmaZHYCfuPeCSsyzOjeiniqE2+6eLRfa2sNLCjaHvYr/eXygeIa2wNeD
+         AassnoKlDoQNxKy5mbI708/AthsHmYCAskyiKhsCFPxwEAKp1+QCrz+frnfGDuwAl+
+         8FCzUzYO0clqU7Urxm0IoKEgfRZVMpIfxUprsNx5JtZ54LKuUO5M42T1T9Kc4mXQkd
+         OJ4iHVoBdpnOeBG2Gjmrh8dCp7oCCLYygSaQKsZ1wP0j7TQWm7enl8JFasg7jTH+8a
+         tUI4VBFvwvbCA==
+Date:   Thu, 29 Jul 2021 22:31:33 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Maurizio Lombardi <mlombard@redhat.com>
+Cc:     bp@alien8.de, tglx@linutronix.de, x86@kernel.org,
+        pjones@redhat.com, konrad@kernel.org, george.kennedy@oracle.com,
+        rafael@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3] iscsi_ibft: fix crash due to KASLR physical memory
+ remapping
+Message-ID: <YQMCFWYCSqNBRkX4@kernel.org>
+References: <20210729135250.32212-1-mlombard@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <87wnp9idso.ffs@tglx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729135250.32212-1-mlombard@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 1:01 PM, Thomas Gleixner wrote:
-> The recursion protection for eventfd_signal() is based on a per CPU
-> variable and relies on the !RT semantics of spin_lock_irqsave() for
-> protecting this per CPU variable. On RT kernels spin_lock_irqsave() neither
-> disables preemption nor interrupts which allows the spin lock held section
-> to be preempted. If the preempting task invokes eventfd_signal() as well,
-> then the recursion warning triggers.
+On Thu, Jul 29, 2021 at 03:52:50PM +0200, Maurizio Lombardi wrote:
+> Starting with commit a799c2bd29d1
+> ("x86/setup: Consolidate early memory reservations")
+> memory reservations have been moved earlier during the boot process,
+> before the execution of the Kernel Address Space Layout Randomization code.
 > 
-> Paolo suggested to protect the per CPU variable with a local lock, but
-> that's heavyweight and actually not necessary. The goal of this protection
-> is to prevent the task stack from overflowing, which can be achieved with a
-> per task recursion protection as well.
+> setup_arch() calls the iscsi_ibft's find_ibft_region() function
+> to find and reserve the memory dedicated to the iBFT and this function
+> also saves a virtual pointer to the iBFT table for later use.
 > 
-> Replace the per CPU variable with a per task bit similar to other recursion
-> protection bits like task_struct::in_page_owner. This works on both !RT and
-> RT kernels and removes as a side effect the extra per CPU storage.
+> The problem is that if KALSR is active, the physical memory gets
+> remapped somewhere else in the virtual address space and the pointer is
+> no longer valid, this will cause a kernel panic when the iscsi driver tries
+> to dereference it.
 > 
-> No functional change for !RT kernels.
+> [   37.764225] iBFT detected.
+> [   37.778877] BUG: unable to handle page fault for address: ffff888000099fd8
+> [   37.816542] #PF: supervisor read access in kernel mode
+> [   37.844304] #PF: error_code(0x0000) - not-present page
+> [   37.872857] PGD 0 P4D 0
+> [   37.886985] Oops: 0000 [#1] SMP PTI
+> [   37.904809] CPU: 46 PID: 1073 Comm: modprobe Tainted: G               X --------- ---  5.13.0-0.rc2.19.el9.x86_64 #1
+> [   37.956525] Hardware name: HP ProLiant DL580 G7, BIOS P65 10/01/2013
+> [   37.987170] RIP: 0010:ibft_init+0x3e/0xd42 [iscsi_ibft]
+> [   38.012976] Code: 04 25 28 00 00 00 48 89 44 24 08 31 c0 48 83 3d e1 cc 7e d7 00 74 28 48 c7 c7 21 81 1b c0 e8 b3 10 81 d5 48 8b 05 cc cc 7e d7 <0f> b6 70 08 48 63 50 04 40 80 fe 01 75 5e 31 f6 48 01 c2 eb 6e 83
+> [   38.106835] RSP: 0018:ffffb7d288fc3db0 EFLAGS: 00010246
+> [   38.131341] RAX: ffff888000099fd0 RBX: 0000000000000000 RCX: 0000000000000000
+> [   38.167110] RDX: 0000000000000000 RSI: ffff9ba7efb97c80 RDI: ffff9ba7efb97c80
+> [   38.200777] RBP: ffffffffc01c82be R08: 0000000000000000 R09: ffffb7d288fc3bf0
+> [   38.237188] R10: ffffb7d288fc3be8 R11: ffffffff96de70a8 R12: ffff9ba4059d6400
+> [   38.270940] R13: 000055689f1ac050 R14: 000055689df18962 R15: ffffb7d288fc3e78
+> [   38.307167] FS:  00007f9546720b80(0000) GS:ffff9ba7efb80000(0000) knlGS:0000000000000000
+> [   38.351204] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   38.381034] CR2: ffff888000099fd8 CR3: 000000044175e004 CR4: 00000000000206e0
+> [   38.419938] Call Trace:
+> [   38.432679]  ? ibft_create_kobject+0x1d2/0x1d2 [iscsi_ibft]
+> [   38.462584]  do_one_initcall+0x44/0x1d0
+> [   38.480856]  ? kmem_cache_alloc_trace+0x119/0x220
+> [   38.505554]  do_init_module+0x5c/0x270
+> [   38.526578]  __do_sys_init_module+0x12e/0x1b0
+> [   38.548699]  do_syscall_64+0x40/0x80
+> [   38.565679]  entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Fix this bug by saving the address of the physical location
+> of the ibft; later the driver will use isa_bus_to_virt() to get
+> the correct virtual address.
+> Simplify the code by renaming find_ibft_region()
+> to reserve_ibft_region() and remove all the wrappers.
+> 
+> v2: fix a comment in linux/iscsi_ibft.h
+> v3: fix the commit message
+> 
+> Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
 
-Tested-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Thanks!
+> ---
+>  arch/x86/kernel/setup.c            | 10 -------
+>  drivers/firmware/iscsi_ibft.c      | 10 +++++--
+>  drivers/firmware/iscsi_ibft_find.c | 48 +++++++++++-------------------
+>  include/linux/iscsi_ibft.h         | 18 +++++------
+>  4 files changed, 32 insertions(+), 54 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index bff3a784aec5..63b20536c8d2 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -572,16 +572,6 @@ void __init reserve_standard_io_resources(void)
+>  
+>  }
+>  
+> -static __init void reserve_ibft_region(void)
+> -{
+> -	unsigned long addr, size = 0;
+> -
+> -	addr = find_ibft_region(&size);
+> -
+> -	if (size)
+> -		memblock_reserve(addr, size);
+> -}
+> -
+>  static bool __init snb_gfx_workaround_needed(void)
+>  {
+>  #ifdef CONFIG_PCI
+> diff --git a/drivers/firmware/iscsi_ibft.c b/drivers/firmware/iscsi_ibft.c
+> index 7127a04bca19..612a59e213df 100644
+> --- a/drivers/firmware/iscsi_ibft.c
+> +++ b/drivers/firmware/iscsi_ibft.c
+> @@ -84,8 +84,10 @@ MODULE_DESCRIPTION("sysfs interface to BIOS iBFT information");
+>  MODULE_LICENSE("GPL");
+>  MODULE_VERSION(IBFT_ISCSI_VERSION);
+>  
+> +static struct acpi_table_ibft *ibft_addr;
+> +
+>  #ifndef CONFIG_ISCSI_IBFT_FIND
+> -struct acpi_table_ibft *ibft_addr;
+> +phys_addr_t ibft_phys_addr;
+>  #endif
+>  
+>  struct ibft_hdr {
+> @@ -858,11 +860,13 @@ static int __init ibft_init(void)
+>  	int rc = 0;
+>  
+>  	/*
+> -	   As on UEFI systems the setup_arch()/find_ibft_region()
+> +	   As on UEFI systems the setup_arch()/reserve_ibft_region()
+>  	   is called before ACPI tables are parsed and it only does
+>  	   legacy finding.
+>  	*/
+> -	if (!ibft_addr)
+> +	if (ibft_phys_addr)
+> +		ibft_addr = isa_bus_to_virt(ibft_phys_addr);
+> +	else
+>  		acpi_find_ibft_region();
+>  
+>  	if (ibft_addr) {
+> diff --git a/drivers/firmware/iscsi_ibft_find.c b/drivers/firmware/iscsi_ibft_find.c
+> index 64bb94523281..a0594590847d 100644
+> --- a/drivers/firmware/iscsi_ibft_find.c
+> +++ b/drivers/firmware/iscsi_ibft_find.c
+> @@ -31,8 +31,8 @@
+>  /*
+>   * Physical location of iSCSI Boot Format Table.
+>   */
+> -struct acpi_table_ibft *ibft_addr;
+> -EXPORT_SYMBOL_GPL(ibft_addr);
+> +phys_addr_t ibft_phys_addr;
+> +EXPORT_SYMBOL_GPL(ibft_phys_addr);
+>  
+>  static const struct {
+>  	char *sign;
+> @@ -47,13 +47,24 @@ static const struct {
+>  #define VGA_MEM 0xA0000 /* VGA buffer */
+>  #define VGA_SIZE 0x20000 /* 128kB */
+>  
+> -static int __init find_ibft_in_mem(void)
+> +/*
+> + * Routine used to find and reserve the iSCSI Boot Format Table
+> + */
+> +void __init reserve_ibft_region(void)
+>  {
+>  	unsigned long pos;
+>  	unsigned int len = 0;
+>  	void *virt;
+>  	int i;
+>  
+> +	ibft_phys_addr = 0;
+> +
+> +	/* iBFT 1.03 section 1.4.3.1 mandates that UEFI machines will
+> +	 * only use ACPI for this
+> +	 */
+> +	if (efi_enabled(EFI_BOOT))
+> +		return;
+> +
+>  	for (pos = IBFT_START; pos < IBFT_END; pos += 16) {
+>  		/* The table can't be inside the VGA BIOS reserved space,
+>  		 * so skip that area */
+> @@ -70,35 +81,12 @@ static int __init find_ibft_in_mem(void)
+>  				/* if the length of the table extends past 1M,
+>  				 * the table cannot be valid. */
+>  				if (pos + len <= (IBFT_END-1)) {
+> -					ibft_addr = (struct acpi_table_ibft *)virt;
+> -					pr_info("iBFT found at 0x%lx.\n", pos);
+> -					goto done;
+> +					ibft_phys_addr = pos;
+> +					memblock_reserve(ibft_phys_addr, PAGE_ALIGN(len));
+> +					pr_info("iBFT found at 0x%lx.\n", ibft_phys_addr);
+> +					return;
+>  				}
+>  			}
+>  		}
+>  	}
+> -done:
+> -	return len;
+> -}
+> -/*
+> - * Routine used to find the iSCSI Boot Format Table. The logical
+> - * kernel address is set in the ibft_addr global variable.
+> - */
+> -unsigned long __init find_ibft_region(unsigned long *sizep)
+> -{
+> -	ibft_addr = NULL;
+> -
+> -	/* iBFT 1.03 section 1.4.3.1 mandates that UEFI machines will
+> -	 * only use ACPI for this */
+> -
+> -	if (!efi_enabled(EFI_BOOT))
+> -		find_ibft_in_mem();
+> -
+> -	if (ibft_addr) {
+> -		*sizep = PAGE_ALIGN(ibft_addr->header.length);
+> -		return (u64)virt_to_phys(ibft_addr);
+> -	}
+> -
+> -	*sizep = 0;
+> -	return 0;
+>  }
+> diff --git a/include/linux/iscsi_ibft.h b/include/linux/iscsi_ibft.h
+> index b7b45ca82bea..790e7fcfc1a6 100644
+> --- a/include/linux/iscsi_ibft.h
+> +++ b/include/linux/iscsi_ibft.h
+> @@ -13,26 +13,22 @@
+>  #ifndef ISCSI_IBFT_H
+>  #define ISCSI_IBFT_H
+>  
+> -#include <linux/acpi.h>
+> +#include <linux/types.h>
+>  
+>  /*
+> - * Logical location of iSCSI Boot Format Table.
+> - * If the value is NULL there is no iBFT on the machine.
+> + * Physical location of iSCSI Boot Format Table.
+> + * If the value is 0 there is no iBFT on the machine.
+>   */
+> -extern struct acpi_table_ibft *ibft_addr;
+> +extern phys_addr_t ibft_phys_addr;
+>  
+>  /*
+>   * Routine used to find and reserve the iSCSI Boot Format Table. The
+> - * mapped address is set in the ibft_addr variable.
+> + * physical address is set in the ibft_phys_addr variable.
+>   */
+>  #ifdef CONFIG_ISCSI_IBFT_FIND
+> -unsigned long find_ibft_region(unsigned long *sizep);
+> +void reserve_ibft_region(void);
+>  #else
+> -static inline unsigned long find_ibft_region(unsigned long *sizep)
+> -{
+> -	*sizep = 0;
+> -	return 0;
+> -}
+> +static inline void reserve_ibft_region(void) {}
+>  #endif
+>  
+>  #endif /* ISCSI_IBFT_H */
+> -- 
+> 2.27.0
+> 
 
+-- 
+Sincerely yours,
+Mike.
