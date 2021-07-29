@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BA93DA957
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB6B3DA95C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhG2QtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
+        id S232300AbhG2Qt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhG2QtF (ORCPT
+        with ESMTP id S230128AbhG2QtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:49:05 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A1BC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:49:01 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so6484495ota.11
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:49:01 -0700 (PDT)
+        Thu, 29 Jul 2021 12:49:11 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D93C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:49:06 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id c2-20020a0568303482b029048bcf4c6bd9so6491328otu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:49:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JnKJ2XfGe3QxG1IAUIS9aqRbS0aNS+rSnmtcTIQc7o0=;
-        b=fLf4F5IaPsXWpXUpf+5jzd2uZ1d9DwduNnR/XvxjUml2nU8ohD3/yrALKBPqFMCpYH
-         5J/RwZpKuQUaYmaygbn4MODD26hwXAAhFEfABx3XOZIRnabtNYY3mJn+SxCZ2gQSqKlD
-         SeEb61mcUhTimpGnORIG/GIIoPkzX+PEy36lKmomlSCy5AQ2I0dvhP+lpaiY1Q+O8v+/
-         3i+hB+9tQtc/74JfJ1UKdxoC9T7rv38IPmPcAOfbSEJLJG7iwqyvJTB69HLtBmpHx/Py
-         5+z2vj172vuCAHWJFJk0R3i4GiAwNGxRm5A0eMlJAQ9FZoHB5UhiM1U0shG/Ep/V+EaI
-         +qdA==
+        bh=WrlcB3+4WNFz3Xjbx3Wxc+H0S41qUiMFy7lW1c6UWUE=;
+        b=NjigzbSfrwJB+xc6oHONviMAWzce+hxApQGjnf5ugLAVmH4UaeC5DYrti9cYwiTn6H
+         YAh1+kS9DtUAFNoFE2rLHNuUrmTgs7SfSquZ3GeFqz+kOwhpqgP2MatU4ZebLsJUNv3J
+         VKthz43Xag8DW8ZGUz5Iflq2iMhMZ/uUi07Lbrx1w94GvzlQCbCf1oyP9ejygThEGykc
+         bK+mnQkOV5SFz1E+Xm8zfgaz/mCsdccoiPbI8PDcnstcdOCpkYondtQOxQJzGH+bNcsb
+         0f76Ska8Dejg376dbvvvsNDAu8vR4mGvOic7/D8y0GKaCGrr3CmrmZh1WbJ2mCwpXN+e
+         h1gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=JnKJ2XfGe3QxG1IAUIS9aqRbS0aNS+rSnmtcTIQc7o0=;
-        b=CqToD4dwNS2B7MkWfMVfQ/u1018RNreKeD5iakyET6s1lvtWaU9VrEqpb4bKUzxKJD
-         u+hlVUWspEvsfteYJDN8IRGPoQmgm261jUd5OGdVC43kFVao6qb68JJE8x4ueRFvNoEf
-         5zquTJVzJP6LC0cK51MN8Y5glo4rai6i0zL3aRHFbVkTFvaIXbvsOT9bfEwc/hSG+am3
-         cNSkptbOGUGv9LYK382JYCecKg3muMZWu+TjuUyJMu/3wF0Br0M+oOhgmj2I4nUI9V1v
-         iu9M5o/Ik5PxN5VseeKOix8N2FmDGLt3SMkleSj15IAKomDvXidAJ/LIRCwVF5TElYD1
-         Vv2w==
-X-Gm-Message-State: AOAM532srKomDIHXuTlPiopAUXCWhDzkw9JO57ew7l9QOiXE1Y35KHp0
-        gSaINbGhibQY40IymAevub0=
-X-Google-Smtp-Source: ABdhPJyrq3np3AGBDQnPWYAep4cUgu6eZRojPMuUb540gX5vzoSB+4MnM33qIIn/fmlNzF3f99e3uA==
-X-Received: by 2002:a05:6830:25ce:: with SMTP id d14mr4179308otu.87.1627577340430;
-        Thu, 29 Jul 2021 09:49:00 -0700 (PDT)
+        bh=WrlcB3+4WNFz3Xjbx3Wxc+H0S41qUiMFy7lW1c6UWUE=;
+        b=J3VWc8i172EGdbOxwi6BTcaYnCD7oGQmy6opdYKwBmp0FgbdF3zLQ5kup2aaPgbZ74
+         I4eFrPaF6PuIYQt9/Vk+ynuOprTsk480aFw+CEc9xwM5O515KEi17IUGjXxuh4UnDIpN
+         iPv9P5241BdxkSZuanMrES12jAmd3O3TjXrZpjHNzBxgUv6Nlg5fk1aR1h2rtyb8KVAC
+         QwpYiFTcQmONALq8IuRLYMK/ijdhpsw15mQYvhJeQVnRmj5KnlQQUoB0whgTchrOgQKF
+         8JDqq0MMDiaJ7i5nWNt9g4pSpjGjTVAkGcUx/Coalco6hixdUxDuehbSAXxo3elNBPfe
+         u5bg==
+X-Gm-Message-State: AOAM532VJMV9hi4Dli9PDvMm1z3O5HAFQTHibI6e4lx3Bh63R9kacwoQ
+        zo47CVTJmR4H0c5Efnj15uU=
+X-Google-Smtp-Source: ABdhPJwNoXTNF3htP/3Pi5OYoX/B2H2wyqAu6RRXyCQOcwOw6527M/2gcswLwHWO+D/sATuUcJLzSw==
+X-Received: by 2002:a9d:7f94:: with SMTP id t20mr3978256otp.44.1627577345853;
+        Thu, 29 Jul 2021 09:49:05 -0700 (PDT)
 Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
-        by smtp.gmail.com with ESMTPSA id n202sm694066oig.10.2021.07.29.09.48.59
+        by smtp.gmail.com with ESMTPSA id n202sm694066oig.10.2021.07.29.09.49.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 09:48:59 -0700 (PDT)
+        Thu, 29 Jul 2021 09:49:05 -0700 (PDT)
 Sender: Larry Finger <larry.finger@gmail.com>
 From:   Larry Finger <Larry.Finger@lwfinger.net>
 To:     gregkh@linuxfoundation.org
 Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Larry Finger <Larry.Finger@lwfinger.net>
-Subject: [PATCH v2 1/6] staging: r8188eu: Convert header copyright info to SPDX format, part 1
-Date:   Thu, 29 Jul 2021 11:48:09 -0500
-Message-Id: <20210729164814.32097-2-Larry.Finger@lwfinger.net>
+Subject: [PATCH v2 2/6] staging: r8188eu: Convert header copyright info to SPDX format, part 2
+Date:   Thu, 29 Jul 2021 11:48:10 -0500
+Message-Id: <20210729164814.32097-3-Larry.Finger@lwfinger.net>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210729164814.32097-1-Larry.Finger@lwfinger.net>
 References: <20210729164814.32097-1-Larry.Finger@lwfinger.net>
@@ -68,38 +68,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Before this driver can be incorporated in the drivers/net/wireless tree,
 the copyright info in all files must be converted to SPDX notation.
-This patch converts the first 20 files.
+This patch converts the next 23 files.
 
 Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
 ---
-v2 - added public list
+v2 - Added public mailing list
 ---
-.../staging/r8188eu/include/Hal8188EPhyCfg.h  | 22 ++-----------
- .../staging/r8188eu/include/Hal8188EPhyReg.h  | 22 ++-----------
- .../staging/r8188eu/include/Hal8188EPwrSeq.h  | 22 ++-----------
- .../r8188eu/include/Hal8188ERateAdaptive.h    |  4 ++-
- drivers/staging/r8188eu/include/Hal8188EReg.h | 31 ++-----------------
- .../r8188eu/include/HalHWImg8188E_BB.h        | 21 ++-----------
- .../r8188eu/include/HalHWImg8188E_FW.h        | 21 ++-----------
- .../r8188eu/include/HalHWImg8188E_MAC.h       | 21 ++-----------
- .../r8188eu/include/HalHWImg8188E_RF.h        | 21 ++-----------
- drivers/staging/r8188eu/include/HalPhyRf.h    | 25 +++------------
- .../staging/r8188eu/include/HalPhyRf_8188e.h  | 21 ++-----------
- drivers/staging/r8188eu/include/autoconf.h    | 21 ++-----------
- drivers/staging/r8188eu/include/basic_types.h | 22 ++-----------
- drivers/staging/r8188eu/include/cmd_osdep.h   | 22 ++-----------
- drivers/staging/r8188eu/include/drv_types.h   | 22 ++-----------
- .../staging/r8188eu/include/drv_types_linux.h | 22 ++-----------
- drivers/staging/r8188eu/include/ethernet.h    | 23 ++------------
- drivers/staging/r8188eu/include/h2clbk.h      | 21 ++-----------
- drivers/staging/r8188eu/include/hal_com.h     | 22 ++-----------
- drivers/staging/r8188eu/include/hal_intf.h    | 22 ++-----------
- 20 files changed, 53 insertions(+), 375 deletions(-)
+ .../staging/r8188eu/include/HalPwrSeqCmd.h    | 22 ++-----------
+ drivers/staging/r8188eu/include/HalVerDef.h   | 21 ++----------
+ drivers/staging/r8188eu/include/ieee80211.h   | 22 ++-----------
+ .../staging/r8188eu/include/ieee80211_ext.h   | 22 ++-----------
+ drivers/staging/r8188eu/include/if_ether.h    | 21 ++----------
+ .../staging/r8188eu/include/ioctl_cfg80211.h  | 22 ++-----------
+ drivers/staging/r8188eu/include/ip.h          | 22 ++-----------
+ drivers/staging/r8188eu/include/mlme_osdep.h  | 22 ++-----------
+ .../staging/r8188eu/include/mp_custom_oid.h   | 22 ++-----------
+ drivers/staging/r8188eu/include/nic_spec.h    | 21 ++----------
+ drivers/staging/r8188eu/include/odm.h         | 21 ++----------
+ .../staging/r8188eu/include/odm_HWConfig.h    | 21 ++----------
+ .../staging/r8188eu/include/odm_RTL8188E.h    | 22 ++-----------
+ .../r8188eu/include/odm_RegConfig8188E.h      | 22 ++-----------
+ .../r8188eu/include/odm_RegDefine11AC.h       | 21 ++----------
+ .../r8188eu/include/odm_RegDefine11N.h        | 21 ++----------
+ drivers/staging/r8188eu/include/odm_debug.h   | 21 ++----------
+ .../staging/r8188eu/include/odm_interface.h   | 21 ++----------
+ drivers/staging/r8188eu/include/odm_precomp.h | 21 ++----------
+ drivers/staging/r8188eu/include/odm_reg.h     | 33 ++-----------------
+ drivers/staging/r8188eu/include/odm_types.h   | 22 ++-----------
+ drivers/staging/r8188eu/include/osdep_intf.h  | 21 ++----------
+ .../staging/r8188eu/include/osdep_service.h   | 22 ++-----------
+ 23 files changed, 58 insertions(+), 448 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h b/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h
-index 6fb059576a67..63b068fa9f4d 100644
---- a/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h
-+++ b/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h
+diff --git a/drivers/staging/r8188eu/include/HalPwrSeqCmd.h b/drivers/staging/r8188eu/include/HalPwrSeqCmd.h
+index c591e9d1c23b..3b8e263ea6e1 100644
+--- a/drivers/staging/r8188eu/include/HalPwrSeqCmd.h
++++ b/drivers/staging/r8188eu/include/HalPwrSeqCmd.h
 @@ -1,22 +1,6 @@
 -/******************************************************************************
 - *
@@ -123,13 +126,42 @@ index 6fb059576a67..63b068fa9f4d 100644
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/* Copyright(c) 2007 - 2011 Realtek Corporation. */
 +
- #ifndef __INC_HAL8188EPHYCFG_H__
- #define __INC_HAL8188EPHYCFG_H__
+ #ifndef __HALPWRSEQCMD_H__
+ #define __HALPWRSEQCMD_H__
  
-diff --git a/drivers/staging/r8188eu/include/Hal8188EPhyReg.h b/drivers/staging/r8188eu/include/Hal8188EPhyReg.h
-index c324970171cd..8b8c75a1f149 100644
---- a/drivers/staging/r8188eu/include/Hal8188EPhyReg.h
-+++ b/drivers/staging/r8188eu/include/Hal8188EPhyReg.h
+diff --git a/drivers/staging/r8188eu/include/HalVerDef.h b/drivers/staging/r8188eu/include/HalVerDef.h
+index 2a7dc28b8de7..a0f5bf52e75a 100644
+--- a/drivers/staging/r8188eu/include/HalVerDef.h
++++ b/drivers/staging/r8188eu/include/HalVerDef.h
+@@ -1,22 +1,5 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+ #ifndef __HAL_VERSION_DEF_H__
+ #define __HAL_VERSION_DEF_H__
+ 
+diff --git a/drivers/staging/r8188eu/include/ieee80211.h b/drivers/staging/r8188eu/include/ieee80211.h
+index 0e6beaebeb0f..bc9a875cdf35 100644
+--- a/drivers/staging/r8188eu/include/ieee80211.h
++++ b/drivers/staging/r8188eu/include/ieee80211.h
 @@ -1,22 +1,6 @@
 -/******************************************************************************
 - *
@@ -153,15 +185,44 @@ index c324970171cd..8b8c75a1f149 100644
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/* Copyright(c) 2007 - 2011 Realtek Corporation. */
 +
- #ifndef __INC_HAL8188EPHYREG_H__
- #define __INC_HAL8188EPHYREG_H__
- /*--------------------------Define Parameters-------------------------------*/
-diff --git a/drivers/staging/r8188eu/include/Hal8188EPwrSeq.h b/drivers/staging/r8188eu/include/Hal8188EPwrSeq.h
-index df151b76f302..43f41e77a939 100644
---- a/drivers/staging/r8188eu/include/Hal8188EPwrSeq.h
-+++ b/drivers/staging/r8188eu/include/Hal8188EPwrSeq.h
-@@ -1,23 +1,5 @@
--
+ #ifndef __IEEE80211_H
+ #define __IEEE80211_H
+ 
+diff --git a/drivers/staging/r8188eu/include/ieee80211_ext.h b/drivers/staging/r8188eu/include/ieee80211_ext.h
+index fa9e52572fe9..cc53c71d2d8b 100644
+--- a/drivers/staging/r8188eu/include/ieee80211_ext.h
++++ b/drivers/staging/r8188eu/include/ieee80211_ext.h
+@@ -1,22 +1,6 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
++
+ #ifndef __IEEE80211_EXT_H
+ #define __IEEE80211_EXT_H
+ 
+diff --git a/drivers/staging/r8188eu/include/if_ether.h b/drivers/staging/r8188eu/include/if_ether.h
+index db157712a203..5bb79fddeec6 100644
+--- a/drivers/staging/r8188eu/include/if_ether.h
++++ b/drivers/staging/r8188eu/include/if_ether.h
+@@ -1,22 +1,5 @@
 -/******************************************************************************
 - *
 - * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
@@ -184,28 +245,425 @@ index df151b76f302..43f41e77a939 100644
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/* Copyright(c) 2007 - 2011 Realtek Corporation. */
  
- #ifndef __HAL8188EPWRSEQ_H__
- #define __HAL8188EPWRSEQ_H__
-diff --git a/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h b/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h
-index 21996a1173ef..ce4c96d4b84a 100644
---- a/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h
-+++ b/drivers/staging/r8188eu/include/Hal8188ERateAdaptive.h
-@@ -1,7 +1,9 @@
+ #ifndef _LINUX_IF_ETHER_H
+ #define _LINUX_IF_ETHER_H
+diff --git a/drivers/staging/r8188eu/include/ioctl_cfg80211.h b/drivers/staging/r8188eu/include/ioctl_cfg80211.h
+index 037e9a5e5af9..e22481050ef8 100644
+--- a/drivers/staging/r8188eu/include/ioctl_cfg80211.h
++++ b/drivers/staging/r8188eu/include/ioctl_cfg80211.h
+@@ -1,22 +1,6 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright (c) 2011 Realtek Semiconductor Corp. */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. i*/
 +
- #ifndef __INC_RA_H
- #define __INC_RA_H
- /*++
--Copyright (c) Realtek Semiconductor Corp. All rights reserved.
+ #ifndef __IOCTL_CFG80211_H__
+ #define __IOCTL_CFG80211_H__
  
- Module Name:
- 	RateAdaptive.h
-diff --git a/drivers/staging/r8188eu/include/Hal8188EReg.h b/drivers/staging/r8188eu/include/Hal8188EReg.h
-index 06818ac6c330..e04fae68fa4b 100644
---- a/drivers/staging/r8188eu/include/Hal8188EReg.h
-+++ b/drivers/staging/r8188eu/include/Hal8188EReg.h
-@@ -1,31 +1,6 @@
+diff --git a/drivers/staging/r8188eu/include/ip.h b/drivers/staging/r8188eu/include/ip.h
+index 0107ac15c6ed..b7388c8c1b8a 100644
+--- a/drivers/staging/r8188eu/include/ip.h
++++ b/drivers/staging/r8188eu/include/ip.h
+@@ -1,22 +1,6 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
++
+ #ifndef _LINUX_IP_H
+ #define _LINUX_IP_H
+ 
+diff --git a/drivers/staging/r8188eu/include/mlme_osdep.h b/drivers/staging/r8188eu/include/mlme_osdep.h
+index ae1722c67032..096232b0f95b 100644
+--- a/drivers/staging/r8188eu/include/mlme_osdep.h
++++ b/drivers/staging/r8188eu/include/mlme_osdep.h
+@@ -1,22 +1,6 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
++
+ #ifndef	__MLME_OSDEP_H_
+ #define __MLME_OSDEP_H_
+ 
+diff --git a/drivers/staging/r8188eu/include/mp_custom_oid.h b/drivers/staging/r8188eu/include/mp_custom_oid.h
+index be4f11864f63..7bcb857c795d 100644
+--- a/drivers/staging/r8188eu/include/mp_custom_oid.h
++++ b/drivers/staging/r8188eu/include/mp_custom_oid.h
+@@ -1,22 +1,6 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
++
+ #ifndef	__CUSTOM_OID_H
+ #define __CUSTOM_OID_H
+ 
+diff --git a/drivers/staging/r8188eu/include/nic_spec.h b/drivers/staging/r8188eu/include/nic_spec.h
+index cee6f06a4570..77e865398fd1 100644
+--- a/drivers/staging/r8188eu/include/nic_spec.h
++++ b/drivers/staging/r8188eu/include/nic_spec.h
+@@ -1,22 +1,5 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+ 
+ #ifndef __NIC_SPEC_H__
+ #define __NIC_SPEC_H__
+diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
+index 61836c32123f..9bbc3578b459 100644
+--- a/drivers/staging/r8188eu/include/odm.h
++++ b/drivers/staging/r8188eu/include/odm.h
+@@ -1,22 +1,5 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+ 
+ #ifndef	__HALDMOUTSRC_H__
+ #define __HALDMOUTSRC_H__
+diff --git a/drivers/staging/r8188eu/include/odm_HWConfig.h b/drivers/staging/r8188eu/include/odm_HWConfig.h
+index 80f549f196e2..9b2ab3bcf992 100644
+--- a/drivers/staging/r8188eu/include/odm_HWConfig.h
++++ b/drivers/staging/r8188eu/include/odm_HWConfig.h
+@@ -1,22 +1,5 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+ 
+ #ifndef	__HALHWOUTSRC_H__
+ #define __HALHWOUTSRC_H__
+diff --git a/drivers/staging/r8188eu/include/odm_RTL8188E.h b/drivers/staging/r8188eu/include/odm_RTL8188E.h
+index f96ad5af4bd5..d6718186f2d6 100644
+--- a/drivers/staging/r8188eu/include/odm_RTL8188E.h
++++ b/drivers/staging/r8188eu/include/odm_RTL8188E.h
+@@ -1,22 +1,6 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
++
+ #ifndef	__ODM_RTL8188E_H__
+ #define __ODM_RTL8188E_H__
+ 
+diff --git a/drivers/staging/r8188eu/include/odm_RegConfig8188E.h b/drivers/staging/r8188eu/include/odm_RegConfig8188E.h
+index f2bf7a0d9867..86b5b2d24210 100644
+--- a/drivers/staging/r8188eu/include/odm_RegConfig8188E.h
++++ b/drivers/staging/r8188eu/include/odm_RegConfig8188E.h
+@@ -1,22 +1,6 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
++
+ #ifndef __INC_ODM_REGCONFIG_H_8188E
+ #define __INC_ODM_REGCONFIG_H_8188E
+ 
+diff --git a/drivers/staging/r8188eu/include/odm_RegDefine11AC.h b/drivers/staging/r8188eu/include/odm_RegDefine11AC.h
+index 01425f36634c..bba7511cf244 100644
+--- a/drivers/staging/r8188eu/include/odm_RegDefine11AC.h
++++ b/drivers/staging/r8188eu/include/odm_RegDefine11AC.h
+@@ -1,22 +1,5 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+ 
+ #ifndef	__ODM_REGDEFINE11AC_H__
+ #define __ODM_REGDEFINE11AC_H__
+diff --git a/drivers/staging/r8188eu/include/odm_RegDefine11N.h b/drivers/staging/r8188eu/include/odm_RegDefine11N.h
+index 2b888dee3dd5..5d1d73490c1c 100644
+--- a/drivers/staging/r8188eu/include/odm_RegDefine11N.h
++++ b/drivers/staging/r8188eu/include/odm_RegDefine11N.h
+@@ -1,22 +1,5 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+ 
+ #ifndef	__ODM_REGDEFINE11N_H__
+ #define __ODM_REGDEFINE11N_H__
+diff --git a/drivers/staging/r8188eu/include/odm_debug.h b/drivers/staging/r8188eu/include/odm_debug.h
+index 5e58b603d6ac..171fc5cbf27c 100644
+--- a/drivers/staging/r8188eu/include/odm_debug.h
++++ b/drivers/staging/r8188eu/include/odm_debug.h
+@@ -1,22 +1,5 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+ 
+ #ifndef	__ODM_DBG_H__
+ #define __ODM_DBG_H__
+diff --git a/drivers/staging/r8188eu/include/odm_interface.h b/drivers/staging/r8188eu/include/odm_interface.h
+index 0abfa6febb7e..6b589413d56c 100644
+--- a/drivers/staging/r8188eu/include/odm_interface.h
++++ b/drivers/staging/r8188eu/include/odm_interface.h
+@@ -1,22 +1,5 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+ 
+ #ifndef	__ODM_INTERFACE_H__
+ #define __ODM_INTERFACE_H__
+diff --git a/drivers/staging/r8188eu/include/odm_precomp.h b/drivers/staging/r8188eu/include/odm_precomp.h
+index b2fbb5d5ea77..ff2dae597d5b 100644
+--- a/drivers/staging/r8188eu/include/odm_precomp.h
++++ b/drivers/staging/r8188eu/include/odm_precomp.h
+@@ -1,22 +1,5 @@
+-/******************************************************************************
+- *
+- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+- *
+- *
+- ******************************************************************************/
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. i*/
+ 
+ #ifndef	__ODM_PRECOMP_H__
+ #define __ODM_PRECOMP_H__
+diff --git a/drivers/staging/r8188eu/include/odm_reg.h b/drivers/staging/r8188eu/include/odm_reg.h
+index 4221855e333c..81e633fcc0ac 100644
+--- a/drivers/staging/r8188eu/include/odm_reg.h
++++ b/drivers/staging/r8188eu/include/odm_reg.h
+@@ -1,37 +1,10 @@
 -/******************************************************************************
 - *
 - * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
@@ -226,232 +684,30 @@ index 06818ac6c330..e04fae68fa4b 100644
 - *
 - ******************************************************************************/
 -/*  */
--/*  File Name: Hal8188EReg.h */
+-/*  File Name: odm_reg.h */
 -/*  */
 -/*  Description: */
 -/*  */
--/*  This file is for RTL8188E register definition. */
+-/*  This file is for general register definition. */
 -/*  */
 -/*  */
 -/*  */
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
++/* Copyright(c) 2007 - 2011 Realtek Corporation. i*/
 +
- #ifndef	__HAL_8188E_REG_H__
- #define __HAL_8188E_REG_H__
+ #ifndef	__HAL_ODM_REG_H__
+ #define __HAL_ODM_REG_H__
  
-diff --git a/drivers/staging/r8188eu/include/HalHWImg8188E_BB.h b/drivers/staging/r8188eu/include/HalHWImg8188E_BB.h
-index e57452104bfb..8270fdbc2844 100644
---- a/drivers/staging/r8188eu/include/HalHWImg8188E_BB.h
-+++ b/drivers/staging/r8188eu/include/HalHWImg8188E_BB.h
-@@ -1,22 +1,5 @@
--/******************************************************************************
--*
--* Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
--*
--* This program is free software; you can redistribute it and/or modify it
--* under the terms of version 2 of the GNU General Public License as
--* published by the Free Software Foundation.
--*
--* This program is distributed in the hope that it will be useful, but WITHOUT
--* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
--* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
--* more details.
--*
--* You should have received a copy of the GNU General Public License along with
--* this program; if not, write to the Free Software Foundation, Inc.,
--* 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
--*
--*
--******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+-/*  */
+ /*  Register Definition */
+-/*  */
  
- #ifndef __INC_BB_8188E_HW_IMG_H
- #define __INC_BB_8188E_HW_IMG_H
-diff --git a/drivers/staging/r8188eu/include/HalHWImg8188E_FW.h b/drivers/staging/r8188eu/include/HalHWImg8188E_FW.h
-index ce81fea401a1..5ddcd283097b 100644
---- a/drivers/staging/r8188eu/include/HalHWImg8188E_FW.h
-+++ b/drivers/staging/r8188eu/include/HalHWImg8188E_FW.h
-@@ -1,22 +1,5 @@
--/******************************************************************************
--*
--* Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
--*
--* This program is free software; you can redistribute it and/or modify it
--* under the terms of version 2 of the GNU General Public License as
--* published by the Free Software Foundation.
--*
--* This program is distributed in the hope that it will be useful, but WITHOUT
--* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
--* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
--* more details.
--*
--* You should have received a copy of the GNU General Public License along with
--* this program; if not, write to the Free Software Foundation, Inc.,
--* 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
--*
--*
--******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
- 
- #ifndef __INC_FW_8188E_HW_IMG_H
- #define __INC_FW_8188E_HW_IMG_H
-diff --git a/drivers/staging/r8188eu/include/HalHWImg8188E_MAC.h b/drivers/staging/r8188eu/include/HalHWImg8188E_MAC.h
-index acf78b94fddb..391c1754b0b6 100644
---- a/drivers/staging/r8188eu/include/HalHWImg8188E_MAC.h
-+++ b/drivers/staging/r8188eu/include/HalHWImg8188E_MAC.h
-@@ -1,22 +1,5 @@
--/******************************************************************************
--*
--* Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
--*
--* This program is free software; you can redistribute it and/or modify it
--* under the terms of version 2 of the GNU General Public License as
--* published by the Free Software Foundation.
--*
--* This program is distributed in the hope that it will be useful, but WITHOUT
--* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
--* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
--* more details.
--*
--* You should have received a copy of the GNU General Public License along with
--* this program; if not, write to the Free Software Foundation, Inc.,
--* 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
--*
--*
--******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
- 
- #ifndef __INC_MAC_8188E_HW_IMG_H
- #define __INC_MAC_8188E_HW_IMG_H
-diff --git a/drivers/staging/r8188eu/include/HalHWImg8188E_RF.h b/drivers/staging/r8188eu/include/HalHWImg8188E_RF.h
-index 8ecb40d26c70..0c67c3df20b9 100644
---- a/drivers/staging/r8188eu/include/HalHWImg8188E_RF.h
-+++ b/drivers/staging/r8188eu/include/HalHWImg8188E_RF.h
-@@ -1,22 +1,5 @@
--/******************************************************************************
--*
--* Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
--*
--* This program is free software; you can redistribute it and/or modify it
--* under the terms of version 2 of the GNU General Public License as
--* published by the Free Software Foundation.
--*
--* This program is distributed in the hope that it will be useful, but WITHOUT
--* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
--* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
--* more details.
--*
--* You should have received a copy of the GNU General Public License along with
--* this program; if not, write to the Free Software Foundation, Inc.,
--* 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
--*
--*
--******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
- 
- #ifndef __INC_RF_8188E_HW_IMG_H
- #define __INC_RF_8188E_HW_IMG_H
-diff --git a/drivers/staging/r8188eu/include/HalPhyRf.h b/drivers/staging/r8188eu/include/HalPhyRf.h
-index 1ec497100da1..ba3b6133fc13 100644
---- a/drivers/staging/r8188eu/include/HalPhyRf.h
-+++ b/drivers/staging/r8188eu/include/HalPhyRf.h
-@@ -1,25 +1,8 @@
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-- *
-- *
-- ******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
- 
-- #ifndef __HAL_PHY_RF_H__
-- #define __HAL_PHY_RF_H__
-+#ifndef __HAL_PHY_RF_H__
-+#define __HAL_PHY_RF_H__
- 
- #define ODM_TARGET_CHNL_NUM_2G_5G	59
- 
-diff --git a/drivers/staging/r8188eu/include/HalPhyRf_8188e.h b/drivers/staging/r8188eu/include/HalPhyRf_8188e.h
-index 807c301a86e4..d4a27662309f 100644
---- a/drivers/staging/r8188eu/include/HalPhyRf_8188e.h
-+++ b/drivers/staging/r8188eu/include/HalPhyRf_8188e.h
-@@ -1,22 +1,5 @@
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-- *
-- *
-- ******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
- 
- #ifndef __HAL_PHY_RF_8188E_H__
- #define __HAL_PHY_RF_8188E_H__
-diff --git a/drivers/staging/r8188eu/include/autoconf.h b/drivers/staging/r8188eu/include/autoconf.h
-index cfa790794fd3..fcbfc60fad5a 100644
---- a/drivers/staging/r8188eu/include/autoconf.h
-+++ b/drivers/staging/r8188eu/include/autoconf.h
-@@ -1,22 +1,5 @@
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-- *
-- *
-- ******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation.*/
- 
- /*  temporarily flag ******* */
- /*
-diff --git a/drivers/staging/r8188eu/include/basic_types.h b/drivers/staging/r8188eu/include/basic_types.h
-index 8a7ca992674a..9c34e2dad6bb 100644
---- a/drivers/staging/r8188eu/include/basic_types.h
-+++ b/drivers/staging/r8188eu/include/basic_types.h
+ /* MAC REG */
+ #define	ODM_BB_RESET					0x002
+diff --git a/drivers/staging/r8188eu/include/odm_types.h b/drivers/staging/r8188eu/include/odm_types.h
+index f62d8b486a28..4a6c4d33e20e 100644
+--- a/drivers/staging/r8188eu/include/odm_types.h
++++ b/drivers/staging/r8188eu/include/odm_types.h
 @@ -1,22 +1,6 @@
 -/******************************************************************************
 - *
@@ -475,134 +731,13 @@ index 8a7ca992674a..9c34e2dad6bb 100644
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/* Copyright(c) 2007 - 2011 Realtek Corporation. */
 +
- #ifndef __BASIC_TYPES_H__
- #define __BASIC_TYPES_H__
+ #ifndef __ODM_TYPES_H__
+ #define __ODM_TYPES_H__
  
-diff --git a/drivers/staging/r8188eu/include/cmd_osdep.h b/drivers/staging/r8188eu/include/cmd_osdep.h
-index 5a8465e147b3..75ba595f2301 100644
---- a/drivers/staging/r8188eu/include/cmd_osdep.h
-+++ b/drivers/staging/r8188eu/include/cmd_osdep.h
-@@ -1,22 +1,6 @@
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-- *
-- *
-- ******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
-+
- #ifndef __CMD_OSDEP_H_
- #define __CMD_OSDEP_H_
- 
-diff --git a/drivers/staging/r8188eu/include/drv_types.h b/drivers/staging/r8188eu/include/drv_types.h
-index 9aa72a91d467..dce4c602ffe6 100644
---- a/drivers/staging/r8188eu/include/drv_types.h
-+++ b/drivers/staging/r8188eu/include/drv_types.h
-@@ -1,22 +1,6 @@
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2012 Realtek Corporation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-- *
-- *
-- ******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2012 Realtek Corporation. */
-+
- /*-----------------------------------------------------------------------------
- 
- 	For type defines and data structure defines
-diff --git a/drivers/staging/r8188eu/include/drv_types_linux.h b/drivers/staging/r8188eu/include/drv_types_linux.h
-index f5db1dd14317..068a7bcee82f 100644
---- a/drivers/staging/r8188eu/include/drv_types_linux.h
-+++ b/drivers/staging/r8188eu/include/drv_types_linux.h
-@@ -1,22 +1,6 @@
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-- *
-- *
-- ******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
-+
- #ifndef __DRV_TYPES_LINUX_H__
- #define __DRV_TYPES_LINUX_H__
- 
-diff --git a/drivers/staging/r8188eu/include/ethernet.h b/drivers/staging/r8188eu/include/ethernet.h
-index 5b17dcf143a4..898eb296013c 100644
---- a/drivers/staging/r8188eu/include/ethernet.h
-+++ b/drivers/staging/r8188eu/include/ethernet.h
-@@ -1,23 +1,6 @@
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-- *
-- *
-- ******************************************************************************/
--/*! \file */
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2011 Realtek Corporation. */
-+
- #ifndef __INC_ETHERNET_H
- #define __INC_ETHERNET_H
- 
-diff --git a/drivers/staging/r8188eu/include/h2clbk.h b/drivers/staging/r8188eu/include/h2clbk.h
-index 72b67827bc6e..412b611760b3 100644
---- a/drivers/staging/r8188eu/include/h2clbk.h
-+++ b/drivers/staging/r8188eu/include/h2clbk.h
+diff --git a/drivers/staging/r8188eu/include/osdep_intf.h b/drivers/staging/r8188eu/include/osdep_intf.h
+index c4599c583b59..b585c239c64e 100644
+--- a/drivers/staging/r8188eu/include/osdep_intf.h
++++ b/drivers/staging/r8188eu/include/osdep_intf.h
 @@ -1,22 +1,5 @@
 -/******************************************************************************
 - *
@@ -626,12 +761,12 @@ index 72b67827bc6e..412b611760b3 100644
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/* Copyright(c) 2007 - 2011 Realtek Corporation. */
  
- #define _H2CLBK_H_
- 
-diff --git a/drivers/staging/r8188eu/include/hal_com.h b/drivers/staging/r8188eu/include/hal_com.h
-index 652f645d54ff..95167f0b327f 100644
---- a/drivers/staging/r8188eu/include/hal_com.h
-+++ b/drivers/staging/r8188eu/include/hal_com.h
+ #ifndef __OSDEP_INTF_H_
+ #define __OSDEP_INTF_H_
+diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
+index ce76a2c99bbd..5b08e985257a 100644
+--- a/drivers/staging/r8188eu/include/osdep_service.h
++++ b/drivers/staging/r8188eu/include/osdep_service.h
 @@ -1,22 +1,6 @@
 -/******************************************************************************
 - *
@@ -655,38 +790,8 @@ index 652f645d54ff..95167f0b327f 100644
 +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/* Copyright(c) 2007 - 2011 Realtek Corporation. */
 +
- #ifndef __HAL_COMMON_H__
- #define __HAL_COMMON_H__
- 
-diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-index 49539b862863..c829aee518dd 100644
---- a/drivers/staging/r8188eu/include/hal_intf.h
-+++ b/drivers/staging/r8188eu/include/hal_intf.h
-@@ -1,22 +1,6 @@
--/******************************************************************************
-- *
-- * Copyright(c) 2007 - 2012 Realtek Corporation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
-- *
-- *
-- ******************************************************************************/
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-+/* Copyright(c) 2007 - 2012 Realtek Corporation. */
-+
- #ifndef __HAL_INTF_H__
- #define __HAL_INTF_H__
+ #ifndef __OSDEP_SERVICE_H_
+ #define __OSDEP_SERVICE_H_
  
 -- 
 2.32.0
