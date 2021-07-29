@@ -2,118 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C1C3DAB25
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB2C3DAB3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhG2Smv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhG2Smu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:42:50 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C33C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:42:46 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id y9so8424432iox.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=a2jcrKjKBS+gdl5PCdRBVKhfmtzJBVA/IHxSfmpMEXY=;
-        b=fyxwFxZ5LuI1DPZNzJ8ri2+PsiwAu9rjoLFHe8n51OFhFA9qa/cP+WRLe4VevBtOQh
-         3NvAsp65Q4og8vEaASAkhTnjrK2NSAkKw6IBZ5eMUMjGZ6gfwGUK/QoLZxAxehKK5ygJ
-         WXnJK2UT2jvW0VIeXtdTfnFn3Rz7euZba+KSo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a2jcrKjKBS+gdl5PCdRBVKhfmtzJBVA/IHxSfmpMEXY=;
-        b=diUeomHzJfkCdm1502ypvGWOM43Qkr3XFAbkeq57FrKleELyJ5CDjFYZwg+qS/VfzH
-         AiKO8o28g6nU3nEhZN3M0azym6imWC64fQibkAXDG4hudwEWHssWaJbjtiyvwEVzOvUw
-         7oeOFLG7JmAF4YkkeaOTr9VRzz0CFbRisCq8yWl+OpE9dMTpz+DtS9pNUFOx3ONT+hju
-         xvmiuGVJ6xdg/GbT8YY77iKhlLH+SSfQ8qOFRHqOASMjbmMcqtTPoIg/MRWAstxLJcjA
-         fKxW8UtjnjiOFC9E33qXyzl9Gr2x8TxPpj7KQmCSDUslduoImjH25AXEdoEHSch4T/T5
-         GBNA==
-X-Gm-Message-State: AOAM532gUEU+jGRYY3QX47Wo/JWRSA88CLM6IlazaD66bdHhcW0BISta
-        8nxbXB9nuUr6yqZqnLaJPHz1xwRyeUsl/A==
-X-Google-Smtp-Source: ABdhPJyt2mWOI75qeIcEBffn7Ap+3xLN2wsGakY2Lg/XfAtkeHTkM0kbkP3BrxiIdH5/JcC9nNGzLg==
-X-Received: by 2002:a05:6638:204c:: with SMTP id t12mr5558854jaj.129.1627584165955;
-        Thu, 29 Jul 2021 11:42:45 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z6sm2303243ilz.54.2021.07.29.11.42.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 11:42:45 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] kunit: Add support for suite initialization and
- cleanup
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
-        linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org,
-        Bodo Stroesser <bostroesser@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Yanko Kaneti <yaneti@declera.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210729044125.7435-1-bvanassche@acm.org>
- <20210729044125.7435-3-bvanassche@acm.org> <YQJCyigNroTl8J/l@kroah.com>
- <8ab0ea44-760a-61df-0b9a-8b314ca9a0fe@acm.org>
- <733cb812-8696-45f4-356d-cfe5bd85eb9b@linuxfoundation.org>
- <bbe15cf5-229c-13b2-126e-e773c0ba18c2@acm.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <81edb935-aabd-bd05-c3d1-260903b3c726@linuxfoundation.org>
-Date:   Thu, 29 Jul 2021 12:42:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230443AbhG2Sp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:45:29 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:60192 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229676AbhG2Sp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:45:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627584324; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=IYZRATzTbyhYzVY+ZAWqYrwa46uzUlCUhyWiMow0NNQ=; b=U6HWiceFSQQye0CBizvPrmHFAGUKgn2GUj+AXLLXTjanUoyDiNxcUK0hD59IvPPJEZBhgL41
+ 8nbbd4UmA8lZZlA0Cil2cp1+DMWKULbPqxmByRAUPBok+578kVfM0hcqtTijN+rtvmNQwKYB
+ 5R2V96hlc8nWhOtCmi+p5+WUlxo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6102f7359771b05b24b3ce47 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 18:45:09
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5449FC4338A; Thu, 29 Jul 2021 18:45:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [59.89.229.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A73E1C433F1;
+        Thu, 29 Jul 2021 18:45:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A73E1C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [RFC PATCH] drm/msm: Introduce Adreno Features
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Sean Paul <sean@poorly.run>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210729205906.RFC.1.I5645753650f32d9b469d6183a5fd8e5e65a7b7a4@changeid>
+ <CAF6AEGuwvwx0P2KELREccmhCfkQR=QVG6hXqiutEfpAMGDGEKQ@mail.gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <7360bd81-9271-6150-b92a-b8e06ea812f3@codeaurora.org>
+Date:   Fri, 30 Jul 2021 00:15:00 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <bbe15cf5-229c-13b2-126e-e773c0ba18c2@acm.org>
+In-Reply-To: <CAF6AEGuwvwx0P2KELREccmhCfkQR=QVG6hXqiutEfpAMGDGEKQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 11:16 AM, Bart Van Assche wrote:
-> On 7/29/21 9:55 AM, Shuah Khan wrote:
->> On 7/29/21 10:52 AM, Bart Van Assche wrote:
->>> On 7/28/21 10:55 PM, Greg KH wrote:
->>>> On Wed, Jul 28, 2021 at 09:41:24PM -0700, Bart Van Assche wrote:
->>>>> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
->>>>> Cc: David Gow <davidgow@google.com>
->>>>> Cc: Shuah Khan <skhan@linuxfoundation.org>
->>>>> Cc: kunit-dev@googlegroups.com
->>>>> Cc: linux-kselftest@vger.kernel.org
->>>>> Cc: Bodo Stroesser <bostroesser@gmail.com>
->>>>> Cc: Martin K. Petersen <martin.petersen@oracle.com>
->>>>> Cc: Yanko Kaneti <yaneti@declera.com>
->>>>> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
->>>>> ---
->>>>
->>>> I know I do not take patches without any changelog text.  Maybe other
->>>> maintainers are more lax :(
->>>
->>> Almost every patch from me has an elaborate changelog. For this patch I chose not to add a changelog since I think that the subject is self-explanatory?
+On 7/29/2021 9:26 PM, Rob Clark wrote:
+> On Thu, Jul 29, 2021 at 8:31 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
 >>
->> I don't take patches without change logs either. I can't say the subject
->> tells me what you are doing.
+>> Introduce a feature flag in gpulist to easily identify the capabilities
+>> of each gpu revision. This will help to avoid a lot of adreno_is_axxx()
+>> check when we add new features. In the current patch, HW APRIV feature
+>> is converted to a feature flag.
 >>
->> Please add a change log.
+>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>> ---
+>> This patch is rebased on top of the below series:
+>> https://patchwork.freedesktop.org/series/93192/
+>>
+>>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 12 ------------
+>>   drivers/gpu/drm/msm/adreno/adreno_device.c |  3 +++
+>>   drivers/gpu/drm/msm/adreno/adreno_gpu.c    |  3 +++
+>>   drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  9 +++++++++
+>>   4 files changed, 15 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> index 1881e09..b28305b 100644
+>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> @@ -1765,7 +1765,6 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+>>          struct msm_drm_private *priv = dev->dev_private;
+>>          struct platform_device *pdev = priv->gpu_pdev;
+>>          struct adreno_platform_config *config = pdev->dev.platform_data;
+>> -       const struct adreno_info *info;
+>>          struct device_node *node;
+>>          struct a6xx_gpu *a6xx_gpu;
+>>          struct adreno_gpu *adreno_gpu;
+>> @@ -1781,17 +1780,6 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+>>
+>>          adreno_gpu->registers = NULL;
+>>
+>> -       /*
+>> -        * We need to know the platform type before calling into adreno_gpu_init
+>> -        * so that the hw_apriv flag can be correctly set. Snoop into the info
+>> -        * and grab the revision number
+>> -        */
+>> -       info = adreno_info(config->rev);
+>> -
+>> -       if (info && (info->revn == 650 || info->revn == 660 ||
+>> -                       adreno_cmp_rev(ADRENO_REV(6, 3, 5, ANY_ID), info->rev)))
+>> -               adreno_gpu->base.hw_apriv = true;
+>> -
+>>          a6xx_llc_slices_init(pdev, a6xx_gpu);
+>>
+>>          ret = a6xx_set_supported_hw(&pdev->dev, config->rev);
+>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>> index 7b9d605..44321ec 100644
+>> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+>> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>> @@ -276,6 +276,7 @@ static const struct adreno_info gpulist[] = {
+>>                  .rev = ADRENO_REV(6, 5, 0, ANY_ID),
+>>                  .revn = 650,
+>>                  .name = "A650",
+>> +               .features = ADRENO_APRIV,
 > 
-> I will add a changelog. But please note that this patch has been sent to Christoph as configfs maintainer.
+> I guess this should be:
 > 
+>          .features = BIT(ADRENO_APRIV),
 
-Sure. This is a kunit patch - hence Kunit maintainers can comment on it.
-Besides the comment is about missing change log which is rather basic
-kernel dev 101.
+D'oh!
 
-Please take a look at Documentation/process/submitting-patches.rst
-for information on commit logs.
+> 
+>>                  .fw = {
+>>                          [ADRENO_FW_SQE] = "a650_sqe.fw",
+>>                          [ADRENO_FW_GMU] = "a650_gmu.bin",
+>> @@ -289,6 +290,7 @@ static const struct adreno_info gpulist[] = {
+>>                  .rev = ADRENO_REV(6, 6, 0, ANY_ID),
+>>                  .revn = 660,
+>>                  .name = "A660",
+>> +               .features = ADRENO_APRIV,
+>>                  .fw = {
+>>                          [ADRENO_FW_SQE] = "a660_sqe.fw",
+>>                          [ADRENO_FW_GMU] = "a660_gmu.bin",
+>> @@ -301,6 +303,7 @@ static const struct adreno_info gpulist[] = {
+>>          }, {
+>>                  .rev = ADRENO_REV(6, 3, 5, ANY_ID),
+>>                  .name = "Adreno 7c Gen 3",
+>> +               .features = ADRENO_APRIV,
+>>                  .fw = {
+>>                          [ADRENO_FW_SQE] = "a660_sqe.fw",
+>>                          [ADRENO_FW_GMU] = "a660_gmu.bin",
+>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+>> index 9f5a302..e8acadf5 100644
+>> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+>> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+>> @@ -945,6 +945,9 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>          pm_runtime_use_autosuspend(dev);
+>>          pm_runtime_enable(dev);
+>>
+>> +       if (ADRENO_FEAT(adreno_gpu, ADRENO_APRIV))
+>> +               adreno_gpu->base.hw_apriv = true;
+>> +
+>>          return msm_gpu_init(drm, pdev, &adreno_gpu->base, &funcs->base,
+>>                          adreno_gpu->info->name, &adreno_gpu_config);
+>>   }
+>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>> index 50b4d53..61797c3 100644
+>> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+>> @@ -35,6 +35,11 @@ enum adreno_quirks {
+>>          ADRENO_QUIRK_LMLOADKILL_DISABLE = 3,
+>>   };
+>>
+>> +enum adreno_features {
+>> +       /* ADRENO has HW APRIV feature */
+>> +       ADRENO_APRIV,
+>> +};
+>> +
+>>   struct adreno_rev {
+>>          uint8_t  core;
+>>          uint8_t  major;
+>> @@ -63,6 +68,7 @@ struct adreno_info {
+>>          struct adreno_rev rev;
+>>          uint32_t revn;
+>>          const char *name;
+>> +       u32 features;
+>>          const char *fw[ADRENO_FW_MAX];
+>>          uint32_t gmem;
+>>          enum adreno_quirks quirks;
+>> @@ -388,6 +394,9 @@ static inline uint32_t get_wptr(struct msm_ringbuffer *ring)
+>>          return (ring->cur - ring->start) % (MSM_GPU_RINGBUFFER_SZ >> 2);
+>>   }
+>>
+>> +#define ADRENO_FEAT(adreno_gpu, feature) \
+>> +       (adreno_gpu->info->features & (1 << feature))
+> 
+> And also use BIT() here
+> 
+> But I suppose we could also do something like:
+> 
+>      #define ADRENO_FEAT(feature)  BIT(ADRENO_ ## feature)
+>      #define ADRENO_HAS_FEAT(adreno_gpu, feature) \
+>             ((adreno_gpu)->info->features & ADRENO_FEAT(feature))
+> 
+> and then in the gpulist table:
+> 
+>       .features = ADRENO_FEAT(APRIV) | ADRENO_FEAT(FOO) | ADRENO_FEAT(BAR)
+> 
+> that way there is no confusion about whether or not to use BIT()
+> 
+> Otherwise, I like the idea.
 
-thanks,
--- Shuah
+Sounds good to me.
+
+Thanks for the feedback.
+
+-Akhil.
+
+> 
+> BR,
+> -R
+> 
+>> +
+>>   /*
+>>    * Given a register and a count, return a value to program into
+>>    * REG_CP_PROTECT_REG(n) - this will block both reads and writes for _len
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation.
+>>
 
