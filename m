@@ -2,92 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C1B3D9A9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA013D9AA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhG2Ayg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 20:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbhG2Ayf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 20:54:35 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE15C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 17:54:32 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so186001wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 17:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XSg1KClhpY6agnGkYpv/G7LfJe7Hmjfoc58jUe7Kj58=;
-        b=TsvSZ7v9WmHKhOgAONXj0WaM3Jej78yWnLkYYP4G16tw9RhDBmHz6PAIFry9fGA9xQ
-         03WjBF/e9/FL2uXqw5pQq5CRf188ycNhQcopmPHkJYvy8WjMHSYjBt6EucGrKmjR5YF6
-         aWr7DEG/VmCy6c1Nom9cGlSzJtTVNfuTHXwnWUlrareFC17tMh0w1+YiHudxYK6p7fOP
-         +Do8Cq7UB4J7wmCvXpE8UvcxeQdNMINakgsOzAps9y74JAafxAep4htIwJEfoB1g0RK5
-         QBTxLhHOxXXQ+MBeNZiyHili1gHK1vma2xzNRpWisBnDPoeHlByVtaNjr3ECAaqoYcde
-         +Sqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XSg1KClhpY6agnGkYpv/G7LfJe7Hmjfoc58jUe7Kj58=;
-        b=Y9qb5NDfRCrct2WbBfYKwC9y57t7eAISn1ACgtF2Ip9U/oSYgcz8d4VXOvI4z7PvET
-         XqZhQM6Nf68tkUqkBCTYyOQuKzASj1tM2/lzmy5fG8MhUEj0XEaho0QOL+1CYtL4zP2s
-         8KEf3mXIiBf/ng6548trihRNNEK9p3ri/J6AywEqnbVXaw/M2+cvRjFRxP6xWR9Y9r7m
-         HT1L+gKZFSWVSL02TBXPmbrilFSyLM/E4oGsYHA5Qsul9EQjwjb3kHTmmodBj/ok1GdY
-         2apspsfDzdksesx1Ol9jfoCJcMGFmxNpys7VPWUnq3wlMopG/Ey+Xdfq8hRgo8SNI4U3
-         SonQ==
-X-Gm-Message-State: AOAM530244mTQM1Wu2PUeR+HZqUgwQBoWYEiJibxmp9k00h//0yaeBpI
-        +uQeY7NgX981gCqAlNCFjio=
-X-Google-Smtp-Source: ABdhPJzE4/hNCW5Y57W4WcRPxWQmXg7g/IPEA5r3KiXjfej0nyvqskFFYS8Ax0lwSX5krTBdVjFl5Q==
-X-Received: by 2002:a1c:9d91:: with SMTP id g139mr11650562wme.76.1627520071083;
-        Wed, 28 Jul 2021 17:54:31 -0700 (PDT)
-Received: from pc ([196.235.233.206])
-        by smtp.gmail.com with ESMTPSA id t1sm1459628wma.28.2021.07.28.17.54.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 17:54:30 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 01:54:27 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Ross Schmidt <ross.schm.dev@gmail.com>,
-        Marco Cesati <marcocesati@gmail.com>,
-        Brother Matthew De Angelis <matthew.v.deangelis@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ivan Safonov <insafonov@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tablet: acecad: update the reference count of the usb
- interface structure
-Message-ID: <20210729005427.GA784014@pc>
-References: <20210724205542.GA549014@pc>
- <20210727123756.GL1931@kadam>
+        id S233148AbhG2Ayw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 20:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232837AbhG2Ayv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 20:54:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EEC26101C;
+        Thu, 29 Jul 2021 00:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627520089;
+        bh=ySj2WLCx/U6vUSMi0vPV9bFB7St2XGwXoloT+C5A3Nw=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=SFP9YXncg5J/gGtO/esR7/KSWhcLNz1iJ5uG1SyKwNU7FtPsfj8o8gXd3BybRE4lF
+         F9RpYK7o9OaHPVeBE82p8gZCA4coIrA2lTqV9gRrYygxFiHKdXIDLgLnRAaXZctbux
+         s9eRq9YQn65n9TyZNVTHj7gBLxIRwgX+Ho7ajEEWjWkiKVKrxtMMBoqALXT3AMbulV
+         w0MW5jgLNk4xWvOAFnCJw6YqxMMqmQA6R9aFuTwBERthv0KugWxLWSPgGiiX45FKrx
+         XlWRpqJNzoJXiTsrPMPaqSnWjH3qtyS4OH3iCw3a2fR1zGp4LxH0kaBvPtV6f0GlJ8
+         7MUmaPeW23Evw==
+Subject: Re: [f2fs-dev] [PATCH] f2fs: do not submit NEW_ADDR to read node
+ block
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20210726161357.105332-1-jaegeuk@kernel.org>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <26d8629e-ade4-43e7-b95a-073809d59936@kernel.org>
+Date:   Thu, 29 Jul 2021 08:54:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727123756.GL1931@kadam>
+In-Reply-To: <20210726161357.105332-1-jaegeuk@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 03:37:56PM +0300, Dan Carpenter wrote:
-> This commit message doesn't say what the user visible effects are.  If
-> you encountered this bug at runtime then please put the stack trace in
-> the commit mesage.
+On 2021/7/27 0:13, Jaegeuk Kim wrote:
+> After the below patch, give cp is errored, we drop dirty node pages. This
+> can give NEW_ADDR to read node pages. Don't do WARN_ON() which gives
+> generic/475 failure.
 > 
+> Fixes: 28607bf3aa6f ("f2fs: drop dirty node pages when cp is in error status")
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-I made this patch based on the following documentation of
-usb_get_intf():
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-[quote]
-Each live reference to a interface must be refcounted.
-
-Drivers for USB interfaces should normally record such references 
-in their probe methods, when they bind to an interface, and release them 
-by calling usb_put_intf, in their disconnect methods.
-
-[/quote]
-
-Thanx
+Thanks,
