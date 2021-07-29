@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1F53DA876
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EBD3DA7C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhG2QHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:07:35 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:37216 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232841AbhG2QEV (ORCPT
+        id S237913AbhG2PnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:43:10 -0400
+Received: from outbound-smtp08.blacknight.com ([46.22.139.13]:47313 "EHLO
+        outbound-smtp08.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237909AbhG2PnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:04:21 -0400
-X-UUID: 36b79c4521e141579b1629a2cd57443d-20210729
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=FmMPo1YNUA+2iUSxBL6ChqAQr9+S6f3vHwPsCvfChoo=;
-        b=IPdNOmnVtffvAZPsvYRXBno+LDszfNichAqebQd6xhHt5wjPUQeF7ofMuRkkaJLmL3mmaa23XlV4u8D44MO9A/sZjaWPecFBCEVHnWnUIu0yHLmW2n8J37wBQRGTU36zpNqkLGW/uUKVUrJMfnyMKJ1ebuAYzE23HM9sUutPN14=;
-X-UUID: 36b79c4521e141579b1629a2cd57443d-20210729
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 206471542; Thu, 29 Jul 2021 23:59:18 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS32N2.mediatek.inc (172.27.4.72) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 29 Jul 2021 23:59:16 +0800
-Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 29 Jul 2021 23:59:15 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     David Ahern <dsahern@gmail.com>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <rocco.yue@gmail.com>,
-        Rocco Yue <rocco.yue@mediatek.com>
-Subject: Re: [PATCH net-next] net: ipv6: add IFLA_RA_MTU to expose mtu value in the RA message
-Date:   Thu, 29 Jul 2021 23:42:51 +0800
-Message-ID: <20210729154251.1380-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <c4099beb-1c22-ac71-ae05-e3f9a8ab69e2@gmail.com>
-References: <c4099beb-1c22-ac71-ae05-e3f9a8ab69e2@gmail.com>
+        Thu, 29 Jul 2021 11:43:08 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp08.blacknight.com (Postfix) with ESMTPS id 10A421C47F0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 16:43:04 +0100 (IST)
+Received: (qmail 15224 invoked from network); 29 Jul 2021 15:43:03 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Jul 2021 15:43:03 -0000
+Date:   Thu, 29 Jul 2021 16:43:02 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v3 31/35] mm, slub: optionally save/restore irqs in
+ slab_[un]lock()/
+Message-ID: <20210729154302.GF3809@techsingularity.net>
+References: <20210729132132.19691-1-vbabka@suse.cz>
+ <20210729132132.19691-32-vbabka@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 84ED98E54976BBFA2B0C83D314996E8EF6CAE2511184AF380DDEB250A244991C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210729132132.19691-32-vbabka@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTA3LTI5IGF0IDA4OjQxIC0wNjAwLCBEYXZpZCBBaGVybiB3cm90ZToNCj4g
-T24gNy8yOS8yMSAzOjAyIEFNLCBSb2NjbyBZdWUgd3JvdGU6DQo+PiBkaWZmIC0tZ2l0IGEvaW5j
-bHVkZS91YXBpL2xpbnV4L2lmX2xpbmsuaCBiL2luY2x1ZGUvdWFwaS9saW51eC9pZl9saW5rLmgN
-Cj4+IGluZGV4IDQ4ODJlODE1MTRiNi4uZWE2Yzg3MmM1ZjJjIDEwMDY0NA0KPj4gLS0tIGEvaW5j
-bHVkZS91YXBpL2xpbnV4L2lmX2xpbmsuaA0KPj4gKysrIGIvaW5jbHVkZS91YXBpL2xpbnV4L2lm
-X2xpbmsuaA0KPj4gQEAgLTM0Nyw3ICszNDcsNyBAQCBlbnVtIHsNCj4+ICAJICovDQo+PiAgCUlG
-TEFfUEFSRU5UX0RFVl9OQU1FLA0KPj4gIAlJRkxBX1BBUkVOVF9ERVZfQlVTX05BTUUsDQo+PiAt
-DQo+PiArCUlGTEFfUkFfTVRVLA0KPj4gIAlfX0lGTEFfTUFYDQo+PiAgfTsNCj4+ICANCj4+IGRp
-ZmYgLS1naXQgYS9pbmNsdWRlL3VhcGkvbGludXgvaXB2Ni5oIGIvaW5jbHVkZS91YXBpL2xpbnV4
-L2lwdjYuaA0KPj4gaW5kZXggNzA2MDM3NzVmZTkxLi4zZGJjZjIxMmI3NjYgMTAwNjQ0DQo+PiAt
-LS0gYS9pbmNsdWRlL3VhcGkvbGludXgvaXB2Ni5oDQo+PiArKysgYi9pbmNsdWRlL3VhcGkvbGlu
-dXgvaXB2Ni5oDQo+PiBAQCAtMTkwLDYgKzE5MCw3IEBAIGVudW0gew0KPj4gIAlERVZDT05GX05E
-SVNDX1RDTEFTUywNCj4+ICAJREVWQ09ORl9SUExfU0VHX0VOQUJMRUQsDQo+PiAgCURFVkNPTkZf
-UkFfREVGUlRSX01FVFJJQywNCj4+ICsJREVWQ09ORl9SQV9NVFUsDQo+PiAgCURFVkNPTkZfTUFY
-DQo+PiAgfTsNCj4+ICANCj4gDQo+IHlvdSBkbyBub3QgbmVlZCBib3RoIElGTEEgYW5kIERFVkNP
-TkYuIERyb3AgdGhlIERFVkNPTkYgY29tcGxldGVseS4gSUZMQQ0KPiBhdHRyaWJ1dGUgY2FuIGJl
-IHVzZWQgZm9yIGJvdGggaW5zcGVjdGlvbiBhbmQgbm90aWZpY2F0aW9uIG9uIGNoYW5nZS4NCg0K
-SGkgRGF2aWQsDQoNClRoYW5rcyBmb3IgeW91ciByZXZpZXcuDQoNCkJlY2F1c2UgdGhlIHB1cnBv
-c2Ugb2YgdGhpcyBwYXRjaCBpcyBmb3IgdXNlcnNwYWNlIHRvIGNvcnJlY3RseSByZWFkIHRoZQ0K
-cmFfbXR1IHZhbHVlIG9mIGRpZmZlcmVudCBuZXR3b3JrIGRldmljZSwgaWYgdGhlIERFVkNPTkYg
-aXMgY29tcGxldGVseSBkcm9wcGVkLA0KZG9lcyB0aGF0IG1lYW4gSSBjYW4gYWRkIHRoZSAicmFf
-bXR1IiBtZW1iZXIgaW4gdGhlICJzdHJ1Y3QgbmV0X2RldmljZSIgLg0KDQo+IEFsc28gZG8gbm90
-IGFkZCBtYWlsaW5nIGxpc3RzIHRoYXQgY2F1c2UgYm91bmNlcy4gU3BlY2lmaWNhbGx5LCB5b3Ug
-dGVuZA0KPiB0byBhZGQgd3NkX3Vwc3RyZWFtQG1lZGlhdGVrLmNvbSBhcyBhIGNjIGFuZCBldmVy
-eSByZXNwb25zZSB0byB5b3UNCj4gZ2VuZXJhdGVzIGEgYm91bmNlIG1lc3NhZ2UgZm9yIHRoaXMg
-YWRkcmVzcy4NCg0KVGhhbmtzIGZvciBwb2ludGluZyBvdXQgdGhlIHByb2JsZW0sIEkgd2lsbCBy
-ZW1vdmUgaXQgZnJvbSB0aGUgbWFpbGluZyBsaXN0Lg0KDQpCZXN0IFJlZ2FyZHMsDQpSb2Njbw==
+On Thu, Jul 29, 2021 at 03:21:28PM +0200, Vlastimil Babka wrote:
+> For PREEMPT_RT we will need to disable irqs for this bit spinlock. As a
+> preparation, add a flags parameter, and an internal version that takes
+> additional bool parameter to control irq saving/restoring (the flags
+> parameter is compile-time unused if the bool is a constant false).
+> 
+> Convert ___cmpxchg_double_slab(), which also comes with the same bool
+> parameter, to use the internal version.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
+On arm64 allmodconfig, the following build warning was new
+
+ In file included from ./include/linux/spinlock.h:54,
+                  from ./include/linux/mmzone.h:8,
+                  from ./include/linux/gfp.h:6,
+                  from ./include/linux/mm.h:10,
+                  from mm/slub.c:13:
+ mm/slub.c: In function '___cmpxchg_double_slab.isra.0':
+ ./include/linux/irqflags.h:177:3: warning: 'flags' may be used uninitialized in this function [-Wmaybe-uninitialized]
+   177 |   arch_local_irq_restore(flags);  \
+       |   ^~~~~~~~~~~~~~~~~~~~~~
+ mm/slub.c:408:17: note: 'flags' was declared here
+   408 |   unsigned long flags;
+       |                 ^~~~~
+ In file included from ./include/linux/string.h:262,
+                  from ./include/linux/bitmap.h:10,
+                  from ./include/linux/cpumask.h:12,
+
+No idea what's special about arm allmodconfig that confuses the
+compiler.
+
+-- 
+Mel Gorman
+SUSE Labs
