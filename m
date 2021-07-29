@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873593DA4DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BEF3DA4F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237957AbhG2N4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:56:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46382 "EHLO mail.kernel.org"
+        id S237813AbhG2N5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:57:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237924AbhG2N4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:56:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C93F260EB2;
-        Thu, 29 Jul 2021 13:56:30 +0000 (UTC)
+        id S238055AbhG2N5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:57:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D6C360F42;
+        Thu, 29 Jul 2021 13:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627566991;
-        bh=bP7EfWyYpsjKDH4AQ8uVNKRnm8HyzjShB9bWxlcPHOU=;
+        s=korg; t=1627567024;
+        bh=ZF9hGBT6owS1l1SG68qSLZ7neKSLXJUA5Ovk43u9nZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lQBjpMyDI9+zGYMH8TIiMMfXHfEdFgT5GxT6pKBjKJ88YgaVcGnuTqmy/qE4+JUdC
-         U5iGjnfyn9xOTfBsl2zoauqE+AXco55STVcYasV6sDOQTm7AbbcqJ5UYOObzeQT50c
-         sxhc1boZ7AhrI0BlO1M4om3eH08V602hyGVlRfFc=
+        b=SppYj8vdm0bHovfZ+Lwu9TzpCogjpzzA3jvhVpjQMOpwLqlSRpDRLnT2KxrKtKMNf
+         mFuvgFlaErrO+ItvJOFQRVi60BRzmfmft5ieAGkiO7rEf+TnFVwgRgzl0ZIRTlGPRi
+         ij0Jvd+Al9u65icg4BFKPFmqOtPXS4yRTSuVrPcg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hyunchul Lee <hyc.lee@gmail.com>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 16/17] cifs: fix the out of range assignment to bit fields in parse_server_interfaces
-Date:   Thu, 29 Jul 2021 15:54:17 +0200
-Message-Id: <20210729135137.769364154@linuxfoundation.org>
+Subject: [PATCH 5.4 11/21] ipv6: allocate enough headroom in ip6_finish_output2()
+Date:   Thu, 29 Jul 2021 15:54:18 +0200
+Message-Id: <20210729135143.275857205@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729135137.260993951@linuxfoundation.org>
-References: <20210729135137.260993951@linuxfoundation.org>
+In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
+References: <20210729135142.920143237@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hyunchul Lee <hyc.lee@gmail.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit c9c9c6815f9004ee1ec87401ed0796853bd70f1b ]
+[ Upstream commit 5796015fa968a3349027a27dcd04c71d95c53ba5 ]
 
-Because the out of range assignment to bit fields
-are compiler-dependant, the fields could have wrong
-value.
+When TEE target mirrors traffic to another interface, sk_buff may
+not have enough headroom to be processed correctly.
+ip_finish_output2() detect this situation for ipv4 and allocates
+new skb with enogh headroom. However ipv6 lacks this logic in
+ip_finish_output2 and it leads to skb_under_panic:
 
-Signed-off-by: Hyunchul Lee <hyc.lee@gmail.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+ skbuff: skb_under_panic: text:ffffffffc0866ad4 len:96 put:24
+ head:ffff97be85e31800 data:ffff97be85e317f8 tail:0x58 end:0xc0 dev:gre0
+ ------------[ cut here ]------------
+ kernel BUG at net/core/skbuff.c:110!
+ invalid opcode: 0000 [#1] SMP PTI
+ CPU: 2 PID: 393 Comm: kworker/2:2 Tainted: G           OE     5.13.0 #13
+ Hardware name: Virtuozzo KVM, BIOS 1.11.0-2.vz7.4 04/01/2014
+ Workqueue: ipv6_addrconf addrconf_dad_work
+ RIP: 0010:skb_panic+0x48/0x4a
+ Call Trace:
+  skb_push.cold.111+0x10/0x10
+  ipgre_header+0x24/0xf0 [ip_gre]
+  neigh_connected_output+0xae/0xf0
+  ip6_finish_output2+0x1a8/0x5a0
+  ip6_output+0x5c/0x110
+  nf_dup_ipv6+0x158/0x1000 [nf_dup_ipv6]
+  tee_tg6+0x2e/0x40 [xt_TEE]
+  ip6t_do_table+0x294/0x470 [ip6_tables]
+  nf_hook_slow+0x44/0xc0
+  nf_hook.constprop.34+0x72/0xe0
+  ndisc_send_skb+0x20d/0x2e0
+  ndisc_send_ns+0xd1/0x210
+  addrconf_dad_work+0x3c8/0x540
+  process_one_work+0x1d1/0x370
+  worker_thread+0x30/0x390
+  kthread+0x116/0x130
+  ret_from_fork+0x22/0x30
+
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2ops.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv6/ip6_output.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 5a14f518cd97..61955a7c838b 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -386,8 +386,8 @@ parse_server_interfaces(struct network_interface_info_ioctl_rsp *buf,
- 	p = buf;
- 	while (bytes_left >= sizeof(*p)) {
- 		info->speed = le64_to_cpu(p->LinkSpeed);
--		info->rdma_capable = le32_to_cpu(p->Capability & RDMA_CAPABLE);
--		info->rss_capable = le32_to_cpu(p->Capability & RSS_CAPABLE);
-+		info->rdma_capable = le32_to_cpu(p->Capability & RDMA_CAPABLE) ? 1 : 0;
-+		info->rss_capable = le32_to_cpu(p->Capability & RSS_CAPABLE) ? 1 : 0;
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 33444d985681..f26ef5606d8a 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -59,10 +59,38 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ {
+ 	struct dst_entry *dst = skb_dst(skb);
+ 	struct net_device *dev = dst->dev;
++	unsigned int hh_len = LL_RESERVED_SPACE(dev);
++	int delta = hh_len - skb_headroom(skb);
+ 	const struct in6_addr *nexthop;
+ 	struct neighbour *neigh;
+ 	int ret;
  
- 		cifs_dbg(FYI, "%s: adding iface %zu\n", __func__, *iface_count);
- 		cifs_dbg(FYI, "%s: speed %zu bps\n", __func__, info->speed);
++	/* Be paranoid, rather than too clever. */
++	if (unlikely(delta > 0) && dev->header_ops) {
++		/* pskb_expand_head() might crash, if skb is shared */
++		if (skb_shared(skb)) {
++			struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
++
++			if (likely(nskb)) {
++				if (skb->sk)
++					skb_set_owner_w(skb, skb->sk);
++				consume_skb(skb);
++			} else {
++				kfree_skb(skb);
++			}
++			skb = nskb;
++		}
++		if (skb &&
++		    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
++			kfree_skb(skb);
++			skb = NULL;
++		}
++		if (!skb) {
++			IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTDISCARDS);
++			return -ENOMEM;
++		}
++	}
++
+ 	if (ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr)) {
+ 		struct inet6_dev *idev = ip6_dst_idev(skb_dst(skb));
+ 
 -- 
 2.30.2
 
