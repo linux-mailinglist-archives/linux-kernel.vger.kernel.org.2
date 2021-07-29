@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323543DAAF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23E83DAAF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhG2SeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
+        id S231127AbhG2Se7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbhG2SeP (ORCPT
+        with ESMTP id S229721AbhG2Se6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:34:15 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D020C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:34:11 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id k4so4328902wms.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:34:11 -0700 (PDT)
+        Thu, 29 Jul 2021 14:34:58 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F2DC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:34:55 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id l19so11635418pjz.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:34:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rammhold-de.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ndpw+PbnRaSxxnGPYwf+7x2VYYi7mMPrexiG91YMR7M=;
-        b=MP/oa+Z4eaQicBo2B3IhtWp8wnc3+EOxvkxF+R8qoTCJevNJosYcsfol5GcHQ04mL6
-         RL+oiSW9fq73iBFZiPsJuQoqVw/KwJPAbagjyY54WSFIskppPNokJggOEHkWcxt1P2Ll
-         KWr079wVWc6G7rRAIck8FvKERX4kWLlFPoUx+6MomULySTp824WugLSBrGvlQ4rSOGs4
-         F23bAJRUz7rR9+Ivt/amAywoGXdmYA9TyYUZ6/4b2UdunX91LBCEFQG+lQ/KQj/X8eM0
-         SlcIz1+eV0TOXZbn7AjcmD6a4u0BYrUPJebQoZbMhqMCqKCtjN0Nz5Aq2G9+d/CjaORA
-         hlpg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FjblcnAL1F0aR+MZbbpGjWsRwRTKiIvSrT/0NGSt3+I=;
+        b=nt9DNGMEFjiB4wpXsI70TwscttxExMZzW/a/RhpGNhuraJtM+ybGM0wHnFZWHYdKS9
+         Rh/S3ZbxiWOoBouqr+Ih+m0hn1Sx6Dyu7wHwfUtmLYFRnpoBci3YL7EBG445G9wVhz9d
+         WJz7y3JuAyKC1UNgNOMQJCTiqQVT0Sacold172ir9tfZNnAEI9iFGx7N3AkJxaLhTkq4
+         vHDYig6FPRFJ0Veiqp4nuBT3Tx2e25IpggZaOhLRg0ZNa30uZxB0wDLP+cS7EH5SWle3
+         Xe718VAzdOmLSqDFL0UjW3Qkl++oszsnAK/ZL+mNXBxmi3NXR6cwOB5J7bRN6NOLMH9O
+         LTyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ndpw+PbnRaSxxnGPYwf+7x2VYYi7mMPrexiG91YMR7M=;
-        b=R47LvJgsint/imDxH5dLi4WAxI8lpY2sjlML25WAYvgaF7NhMLWjKckTJo/HyTpST0
-         Qjt3kapi8Jv66K989fqYt1wLzf54EwjkmnuxWIqvvaDDuZiDE6E2d13UdkjrARQKBLXb
-         urlYBUKHbB6HUz9V9IsGcET3z5DpHkIv6AMf0NwGHMe/6UqfKWi43iGnAdpT8q0DfBv1
-         S1obHGtCi2LcTEzslnkzTheYBjw3uHrACtNJTZ5nkDOT//OeXAISH/hw1NXYw1dWIbea
-         fUmtET7FzFLHYFK4+knFLMlHS9/EbZw/FILr40KVAI+vVwlWR3+1U5HzTsNHqAgisZCi
-         RmdA==
-X-Gm-Message-State: AOAM530PYNo1YPh/GjSWM2+xa/GSNqMrV8uMw+MLv6ohSBOeFwXCyaSg
-        pi1IZTa/Trp/KpPk6KpmK5utVg==
-X-Google-Smtp-Source: ABdhPJyw+C9zeJrNdLqT1RyupxaRB35i4i/1b+y3wzRoUuU54pQD8LDvOPZyQRjtVpP/QlsQa/QfjQ==
-X-Received: by 2002:a05:600c:3595:: with SMTP id p21mr5952796wmq.105.1627583649738;
-        Thu, 29 Jul 2021 11:34:09 -0700 (PDT)
-Received: from localhost ([2a00:e67:5c9:a:6941:c1d7:e420:cc22])
-        by smtp.gmail.com with ESMTPSA id y197sm10563444wmc.7.2021.07.29.11.34.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FjblcnAL1F0aR+MZbbpGjWsRwRTKiIvSrT/0NGSt3+I=;
+        b=W3qKaOLSeiuXr5VeLbkZLbjO5vBH1O2ndbkKSxTx2mi9qDEQ0j2J0kHEAAhXU1Gc+v
+         5fVYU8CYid+V2BeWN6qx6xAzKm4UItmYBXhmbG5tyTwg0LPwlPg9kHpKzjhU7cn/KfVb
+         WiupEiFfLvHSp4A9IXTyNkPcMqkCFvVMwBiQ6+4wIK1iNpLFggJRidTTN6MVCeA/PWlR
+         CwrUE0I6COzyHytZFGYF/VcHwyt+WDJK74Pyd0DqVcIl6iXUR6IpYwaUdXFbg3hvaQzm
+         ovjDZKWsShDPgGbs+iuDuddYExvGT8SRAg8lUvexRnFHNQTRLz48pFL145I4dPOtnK8y
+         xwVQ==
+X-Gm-Message-State: AOAM532L+Gk8ivGurj+2H5uz91kH4ZBUa93NQ753tN9LpIE56Dd8sMFI
+        oszsGZNjMMf9CjzlRiTH/szu2w==
+X-Google-Smtp-Source: ABdhPJxUjem26RBTJNQlHTYHwsPkTqsWbqnLi1r51MVSPxydecNwkncG1GXgl7vkGg519fHMu3d7Qw==
+X-Received: by 2002:a63:cd4c:: with SMTP id a12mr4882452pgj.449.1627583694654;
+        Thu, 29 Jul 2021 11:34:54 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id s31sm4817959pgm.27.2021.07.29.11.34.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 11:34:08 -0700 (PDT)
-From:   Andreas Rammhold <andreas@rammhold.de>
-To:     James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Andreas Rammhold <andreas@rammhold.de>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] KEYS: trusted: Fix trusted key backends when building as module
-Date:   Thu, 29 Jul 2021 20:33:32 +0200
-Message-Id: <20210729183333.1070629-1-andreas@rammhold.de>
-X-Mailer: git-send-email 2.32.0
+        Thu, 29 Jul 2021 11:34:54 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 18:34:50 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH v2 2/3] KVM: x86/mmu: Avoid collision with !PRESENT SPTEs
+ in TDP MMU lpage stats
+Message-ID: <YQL0yjwYzJKJ0pTe@google.com>
+References: <20210726175357.1572951-1-mizhang@google.com>
+ <20210726175357.1572951-3-mizhang@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726175357.1572951-3-mizhang@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before this commit the kernel could end up with no trusted key sources
-even though both of the currently supported backends (TPM and TEE) were
-compiled as modules. This manifested in the trusted key type not being
-registered at all.
+On Mon, Jul 26, 2021, Mingwei Zhang wrote:
+> Factor in whether or not the old/new SPTEs are shadow-present when
+> adjusting the large page stats in the TDP MMU. A modified MMIO SPTE can
+> toggle the page size bit, as bit 7 is used to store the MMIO generation,
+> i.e. is_large_pte() can get a false positive when called on a MMIO SPTE.
+> Ditto for nuking SPTEs with REMOVED_SPTE, which sets bit 7 in its magic
+> value.
+> 
+> Opportunistically move the logic below the check to verify at least one
+> of the old/new SPTEs is shadow present.
+> 
+> Use is/was_leaf even though is/was_present would suffice.  The code
+> generation is roughly equivalent since all flags need to be computed
+> prior to the code in question, and using the *_leaf flags will minimize
+> the diff in a future enhancement to account all pages, i.e. will change
+> the check to "is_leaf != was_leaf".
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
 
-When checking if a CONFIG_… preprocessor variable is defined we only
-test for the builtin (=y) case and not the module (=m) case. By using
-the IS_REACHABLE() macro we do test for both cases.
+There's no hard rule for when to use Suggested-by vs. giving Author credit, but
+in this case, since you took the patch and changelog verbatim[*] (sans the missing
+tags below), it's more polite to take the full patch (with me as Author in
+this case) and add your SOB since you're posting the patch.
 
+  Fixes: 1699f65c8b65 ("kvm/x86: Fix 'lpages' kvm stat for TDM MMU")
+  Cc: stable@vger.kernel.org
 
-v2:
-* Fixed commit message
-* Switched from IS_DEFINED() to IS_REACHABLE()
+[*] https://lkml.kernel.org/r/YPho0ME5pSjqRSoc@google.com
 
-
-Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
-Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
----
-
-Here is the version that was proposed by Ahmad [1] in response to the
-feedback received in the "[PATCH v2] KEYS: trusted: fix use as module
-when CONFIG_TCG_TPM=m" discussion [2].
-
-I have tested both of the patches on v5.13 and they both fix the problem
-I originally encountered.
-
-[1] https://lore.kernel.org/keyrings/fe39a449-88df-766b-a13a-290f4847d43e@pengutronix.de/
-[2] https://lore.kernel.org/keyrings/20210721160258.7024-1-a.fatoum@pengutronix.de/
-
-
- security/keys/trusted-keys/trusted_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-index d5c891d8d353..5b35f1b87644 100644
---- a/security/keys/trusted-keys/trusted_core.c
-+++ b/security/keys/trusted-keys/trusted_core.c
-@@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
- MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
- 
- static const struct trusted_key_source trusted_key_sources[] = {
--#if defined(CONFIG_TCG_TPM)
-+#if IS_REACHABLE(CONFIG_TCG_TPM)
- 	{ "tpm", &trusted_key_tpm_ops },
- #endif
--#if defined(CONFIG_TEE)
-+#if IS_REACHABLE(CONFIG_TEE)
- 	{ "tee", &trusted_key_tee_ops },
- #endif
- };
--- 
-2.32.0
-
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
