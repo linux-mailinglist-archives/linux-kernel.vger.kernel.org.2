@@ -2,314 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA053D9D37
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618023D9D3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbhG2Fny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 01:43:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:40962 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234005AbhG2Fny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:43:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33675D6E;
-        Wed, 28 Jul 2021 22:43:51 -0700 (PDT)
-Received: from [10.163.65.237] (unknown [10.163.65.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E22DB3F66F;
-        Wed, 28 Jul 2021 22:43:47 -0700 (PDT)
-Subject: Re: [PATCH v4 09/12] mm/debug_vm_pgtable: Use struct
- pgtable_debug_args in PUD modifying tests
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, christophe.leroy@csgroup.eu,
-        cai@lca.pw, catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, chuhu@redhat.com, shan.gavin@gmail.com
-References: <20210727061401.592616-1-gshan@redhat.com>
- <20210727061401.592616-10-gshan@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <5c9d9868-8185-aa21-ee2f-d8b3810e3781@arm.com>
-Date:   Thu, 29 Jul 2021 11:14:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233997AbhG2Fre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 01:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233899AbhG2Frc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 01:47:32 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5AEC061765
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 22:47:29 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id n19so5626267ioz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 22:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w60/VELNDBnq6j43CmiV7Bx6nr6aPzyLJ2Noe+SivnU=;
+        b=VuKnsO+XEmpG5oBRxRnV4vci8jUzDUJaY8oLacnkFTs1pQJf9EeWbGzarIi36gyTGd
+         k+v0GMNZu+INYDyKSbwqC0mWrmrBLymIDpOOpIehPCXQ+Y6ZwbKBHsX3YbQBbhnfE4zP
+         PQ8bi7V7Pf6pIxuHsl9EvhHrpPp6J5iaO9/Ec=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w60/VELNDBnq6j43CmiV7Bx6nr6aPzyLJ2Noe+SivnU=;
+        b=RxSoMt73Y+15FUrJwMrGAhG1ykWFacbmhwGXhM+tbDV7453KAzpVR4fu3X8VuqMutH
+         GY9ww+55qgpSHh8vGeA+zCRIDpWCFlangyGwObs2gjA6Wl2w9RrXrVnlHxE3x1o91//T
+         f3IsH+Wv512np5gypQC+tUx7y9oNUwIAwoiO5FQp70VMV3cZvfmO10YsCc+Rxkp/YfMJ
+         z2ZN12RpAL9IKfzD3dQMGXJaGcZM2S4/fWqdWpcTArIl5vqS+sLxCuyU4GWA34dbd/r7
+         h6CI8coE6mkvY2ftiZeVb9oQZ0ylOOGGETpLOstOoEcHzdgZjHriS4sMdpFZW9yGanCC
+         gBNA==
+X-Gm-Message-State: AOAM533LaiPTFss5YxSVJyr6+9O9KFRQaFOdNjMpN8pKz90uRT9VXNYo
+        qWWYwzOTZgj8ILyPSmmVLZSUd5H55phoogt8tOo7lwWHFkokqg==
+X-Google-Smtp-Source: ABdhPJwsKcPUZyLkIjwGaAUj8BpR75Su46CVaCo58W4CpPpfcjnsCOLGplNVhzoC+fkaqbXezwlnNhfwrLpJ1BoHuSs=
+X-Received: by 2002:a02:6946:: with SMTP id e67mr3016189jac.4.1627537649171;
+ Wed, 28 Jul 2021 22:47:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210727061401.592616-10-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210727174025.10552-1-linux@fw-web.de> <CAJMQK-g8g5QJbBkU-A6th1VSWafxVv2fGtym+enQa_hDVaVoBw@mail.gmail.com>
+ <97C4FA94-B28A-4F0E-9CD3-4E33B01BA353@fw-web.de>
+In-Reply-To: <97C4FA94-B28A-4F0E-9CD3-4E33B01BA353@fw-web.de>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Thu, 29 Jul 2021 13:47:03 +0800
+Message-ID: <CAJMQK-gQeMidjBZ1E=ReMmffC5G8oiFawB4Ey1PNb2ZWXw_1Bg@mail.gmail.com>
+Subject: Re: [PATCH] soc: mmsys: mediatek: add mask to mmsys routes
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, CK Hu <ck.hu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Frank Wunderlich <frank-w@public-files.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 29, 2021 at 1:40 PM Frank Wunderlich <linux@fw-web.de> wrote:
+>
+> Am 29. Juli 2021 05:15:23 MESZ schrieb Hsin-Yi Wang <hsinyi@chromium.org>:
+>
+> >This patch is breaking the mt8183 internal display. I think it's
+> >because  ~routes[i].val; is removed?
+> >Also what should the routes[i].mask be if it's not set in
+> >mmsys_mt8183_routing_table?
+> >
+> >>                         writel_relaxed(reg, mmsys->regs +
+> >routes[i].addr);
+> >>                 }
+> >>  }
+> ><snip>
+>
+> The mask should reset the needed bits,maybe it needs to be adjusted for your ddp components...
+>
+> Can you add some debugs inside loops in mtk_mmsys_ddp_connect and mtk_mmsys_ddp_disconnect (show read val,mask and final mask before write) to show differences before and after the patch?
+>
+ struct mtk_mmsys_routes {
+         u32 from_comp;
+         u32 to_comp;
+         u32 addr;
+ +       u32 mask;
+         u32 val;
+  };
+mask is not the last element, and mmsys_mt8183_routing_table = {
+  {
+    DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
+    MT8183_DISP_OVL0_MOUT_EN, MT8183_OVL0_MOUT_EN_OVL0_2L
+  }
+...
+so the mask and val will be wrong. CK, do you know what mask we should
+set for mt8183? Or can we just set a dummy 0 mask.
 
-
-On 7/27/21 11:43 AM, Gavin Shan wrote:
-> This uses struct pgtable_debug_args in PUD modifying tests. The allocated
-> huge page is used when set_pud_at() is used. The corresponding tests
-> are skipped if the huge page doesn't exist. Besides, the following unused
-> variables in debug_vm_pgtable() are dropped: @prot, @paddr, @pud_aligned.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  mm/debug_vm_pgtable.c | 126 ++++++++++++++++--------------------------
->  1 file changed, 48 insertions(+), 78 deletions(-)
-> 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index 2a7c810b56b4..863871e70268 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -337,55 +337,56 @@ static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx)
->  	WARN_ON(!pud_bad(pud_mkhuge(pud)));
->  }
->  
-> -static void __init pud_advanced_tests(struct mm_struct *mm,
-> -				      struct vm_area_struct *vma, pud_t *pudp,
-> -				      unsigned long pfn, unsigned long vaddr,
-> -				      pgprot_t prot)
-> +static void __init pud_advanced_tests(struct pgtable_debug_args *args)
->  {
-> +	unsigned long vaddr = args->vaddr;
->  	pud_t pud;
->  
->  	if (!has_transparent_hugepage())
->  		return;
->  
-> +	if (args->pud_pfn == ULONG_MAX)
-> +		return;
-> +
->  	pr_debug("Validating PUD advanced\n");
->  	/* Align the address wrt HPAGE_PUD_SIZE */
->  	vaddr &= HPAGE_PUD_MASK;
->  
-> -	pud = pfn_pud(pfn, prot);
-> -	set_pud_at(mm, vaddr, pudp, pud);
-> -	pudp_set_wrprotect(mm, vaddr, pudp);
-> -	pud = READ_ONCE(*pudp);
-> +	pud = pfn_pud(args->pud_pfn, args->page_prot);
-> +	set_pud_at(args->mm, vaddr, args->pudp, pud);
-> +	pudp_set_wrprotect(args->mm, vaddr, args->pudp);
-> +	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(pud_write(pud));
->  
->  #ifndef __PAGETABLE_PMD_FOLDED
-> -	pudp_huge_get_and_clear(mm, vaddr, pudp);
-> -	pud = READ_ONCE(*pudp);
-> +	pudp_huge_get_and_clear(args->mm, vaddr, args->pudp);
-> +	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(!pud_none(pud));
->  #endif /* __PAGETABLE_PMD_FOLDED */
-> -	pud = pfn_pud(pfn, prot);
-> +	pud = pfn_pud(args->pud_pfn, args->page_prot);
->  	pud = pud_wrprotect(pud);
->  	pud = pud_mkclean(pud);
-> -	set_pud_at(mm, vaddr, pudp, pud);
-> +	set_pud_at(args->mm, vaddr, args->pudp, pud);
->  	pud = pud_mkwrite(pud);
->  	pud = pud_mkdirty(pud);
-> -	pudp_set_access_flags(vma, vaddr, pudp, pud, 1);
-> -	pud = READ_ONCE(*pudp);
-> +	pudp_set_access_flags(args->vma, vaddr, args->pudp, pud, 1);
-> +	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(!(pud_write(pud) && pud_dirty(pud)));
->  
->  #ifndef __PAGETABLE_PMD_FOLDED
-> -	pudp_huge_get_and_clear_full(mm, vaddr, pudp, 1);
-> -	pud = READ_ONCE(*pudp);
-> +	pudp_huge_get_and_clear_full(args->mm, vaddr, args->pudp, 1);
-> +	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(!pud_none(pud));
->  #endif /* __PAGETABLE_PMD_FOLDED */
->  
-> -	pud = pfn_pud(pfn, prot);
-> +	pud = pfn_pud(args->pud_pfn, args->page_prot);
->  	pud = pud_mkyoung(pud);
-> -	set_pud_at(mm, vaddr, pudp, pud);
-> -	pudp_test_and_clear_young(vma, vaddr, pudp);
-> -	pud = READ_ONCE(*pudp);
-> +	set_pud_at(args->mm, vaddr, args->pudp, pud);
-> +	pudp_test_and_clear_young(args->vma, vaddr, args->pudp);
-> +	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(pud_young(pud));
->  
-> -	pudp_huge_get_and_clear(mm, vaddr, pudp);
-> +	pudp_huge_get_and_clear(args->mm, vaddr, args->pudp);
->  }
->  
->  static void __init pud_leaf_tests(struct pgtable_debug_args *args)
-> @@ -405,24 +406,14 @@ static void __init pud_leaf_tests(struct pgtable_debug_args *args)
->  }
->  #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
->  static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
-> -static void __init pud_advanced_tests(struct mm_struct *mm,
-> -				      struct vm_area_struct *vma, pud_t *pudp,
-> -				      unsigned long pfn, unsigned long vaddr,
-> -				      pgprot_t prot)
-> -{
-> -}
-> +static void __init pud_advanced_tests(struct pgtable_debug_args *args) { }
->  static void __init pud_leaf_tests(struct pgtable_debug_args *args) { }
->  #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
->  #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
->  static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx) { }
->  static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
->  static void __init pmd_advanced_tests(struct pgtable_debug_args *args) { }
-> -static void __init pud_advanced_tests(struct mm_struct *mm,
-> -				      struct vm_area_struct *vma, pud_t *pudp,
-> -				      unsigned long pfn, unsigned long vaddr,
-> -				      pgprot_t prot)
-> -{
-> -}
-> +static void __init pud_advanced_tests(struct pgtable_debug_args *args) { }
->  static void __init pmd_leaf_tests(struct pgtable_debug_args *args) { }
->  static void __init pud_leaf_tests(struct pgtable_debug_args *args) { }
->  static void __init pmd_savedwrite_tests(struct pgtable_debug_args *args) { }
-> @@ -448,11 +439,11 @@ static void __init pmd_huge_tests(struct pgtable_debug_args *args)
->  	WARN_ON(!pmd_none(pmd));
->  }
->  
-> -static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
-> +static void __init pud_huge_tests(struct pgtable_debug_args *args)
->  {
->  	pud_t pud;
->  
-> -	if (!arch_vmap_pud_supported(prot))
-> +	if (!arch_vmap_pud_supported(args->page_prot))
->  		return;
->  
->  	pr_debug("Validating PUD huge\n");
-> @@ -460,15 +451,15 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
->  	 * X86 defined pud_set_huge() verifies that the given
->  	 * PUD is not a populated non-leaf entry.
->  	 */
-> -	WRITE_ONCE(*pudp, __pud(0));
-> -	WARN_ON(!pud_set_huge(pudp, __pfn_to_phys(pfn), prot));
-> -	WARN_ON(!pud_clear_huge(pudp));
-> -	pud = READ_ONCE(*pudp);
-> +	WRITE_ONCE(*args->pudp, __pud(0));
-> +	WARN_ON(!pud_set_huge(args->pudp, __pfn_to_phys(args->fixed_pud_pfn), args->page_prot));
-> +	WARN_ON(!pud_clear_huge(args->pudp));
-> +	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(!pud_none(pud));
->  }
->  #else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
->  static void __init pmd_huge_tests(struct pgtable_debug_args *args) { }
-> -static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
-> +static void __init pud_huge_tests(struct pgtable_debug_args *args) { }
->  #endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
->  
->  static void __init p4d_basic_tests(struct pgtable_debug_args *args)
-> @@ -490,27 +481,26 @@ static void __init pgd_basic_tests(struct pgtable_debug_args *args)
->  }
->  
->  #ifndef __PAGETABLE_PUD_FOLDED
-> -static void __init pud_clear_tests(struct mm_struct *mm, pud_t *pudp)
-> +static void __init pud_clear_tests(struct pgtable_debug_args *args)
->  {
-> -	pud_t pud = READ_ONCE(*pudp);
-> +	pud_t pud = READ_ONCE(*args->pudp);
->  
-> -	if (mm_pmd_folded(mm))
-> +	if (mm_pmd_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating PUD clear\n");
->  	pud = __pud(pud_val(pud) | RANDOM_ORVALUE);
-> -	WRITE_ONCE(*pudp, pud);
-> -	pud_clear(pudp);
-> -	pud = READ_ONCE(*pudp);
-> +	WRITE_ONCE(*args->pudp, pud);
-> +	pud_clear(args->pudp);
-> +	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(!pud_none(pud));
->  }
->  
-> -static void __init pud_populate_tests(struct mm_struct *mm, pud_t *pudp,
-> -				      pmd_t *pmdp)
-> +static void __init pud_populate_tests(struct pgtable_debug_args *args)
->  {
->  	pud_t pud;
->  
-> -	if (mm_pmd_folded(mm))
-> +	if (mm_pmd_folded(args->mm))
->  		return;
->  
->  	pr_debug("Validating PUD populate\n");
-> @@ -518,16 +508,13 @@ static void __init pud_populate_tests(struct mm_struct *mm, pud_t *pudp,
->  	 * This entry points to next level page table page.
->  	 * Hence this must not qualify as pud_bad().
->  	 */
-> -	pud_populate(mm, pudp, pmdp);
-> -	pud = READ_ONCE(*pudp);
-> +	pud_populate(args->mm, args->pudp, args->start_pmdp);
-> +	pud = READ_ONCE(*args->pudp);
->  	WARN_ON(pud_bad(pud));
->  }
->  #else  /* !__PAGETABLE_PUD_FOLDED */
-> -static void __init pud_clear_tests(struct mm_struct *mm, pud_t *pudp) { }
-> -static void __init pud_populate_tests(struct mm_struct *mm, pud_t *pudp,
-> -				      pmd_t *pmdp)
-> -{
-> -}
-> +static void __init pud_clear_tests(struct pgtable_debug_args *args) { }
-> +static void __init pud_populate_tests(struct pgtable_debug_args *args) { }
->  #endif /* PAGETABLE_PUD_FOLDED */
->  
->  #ifndef __PAGETABLE_P4D_FOLDED
-> @@ -1230,10 +1217,7 @@ static int __init debug_vm_pgtable(void)
->  	pmd_t *pmdp, *saved_pmdp, pmd;
->  	pte_t *ptep;
->  	pgtable_t saved_ptep;
-> -	pgprot_t prot;
-> -	phys_addr_t paddr;
->  	unsigned long vaddr;
-> -	unsigned long pud_aligned;
->  	spinlock_t *ptl = NULL;
->  	int idx, ret;
->  
-> @@ -1242,7 +1226,6 @@ static int __init debug_vm_pgtable(void)
->  	if (ret)
->  		return ret;
->  
-> -	prot = vm_get_page_prot(VMFLAGS);
->  	vaddr = get_random_vaddr();
->  	mm = mm_alloc();
->  	if (!mm) {
-> @@ -1256,19 +1239,6 @@ static int __init debug_vm_pgtable(void)
->  		return 1;
->  	}
->  
-> -	/*
-> -	 * PFN for mapping at PTE level is determined from a standard kernel
-> -	 * text symbol. But pfns for higher page table levels are derived by
-> -	 * masking lower bits of this real pfn. These derived pfns might not
-> -	 * exist on the platform but that does not really matter as pfn_pxx()
-> -	 * helpers will still create appropriate entries for the test. This
-> -	 * helps avoid large memory block allocations to be used for mapping
-> -	 * at higher page table levels.
-> -	 */
-> -	paddr = __pa_symbol(&start_kernel);
-> -
-> -	pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
-> -
->  	pgdp = pgd_offset(mm, vaddr);
->  	p4dp = p4d_alloc(mm, pgdp, vaddr);
->  	pudp = pud_alloc(mm, p4dp, vaddr);
-> @@ -1361,11 +1331,11 @@ static int __init debug_vm_pgtable(void)
->  	pmd_populate_tests(&args);
->  	spin_unlock(ptl);
->  
-> -	ptl = pud_lock(mm, pudp);
-> -	pud_clear_tests(mm, pudp);
-> -	pud_advanced_tests(mm, vma, pudp, pud_aligned, vaddr, prot);
-> -	pud_huge_tests(pudp, pud_aligned, prot);
-> -	pud_populate_tests(mm, pudp, saved_pmdp);
-> +	ptl = pud_lock(args.mm, args.pudp);
-> +	pud_clear_tests(&args);
-> +	pud_advanced_tests(&args);
-> +	pud_huge_tests(&args);
-> +	pud_populate_tests(&args);
->  	spin_unlock(ptl);
->  
->  	spin_lock(&mm->page_table_lock);
-> 
-
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> regards Frank
