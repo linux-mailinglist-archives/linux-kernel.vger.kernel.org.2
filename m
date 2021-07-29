@@ -2,247 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252FD3DA1D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA123DA1DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236627AbhG2LNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:13:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232195AbhG2LNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:13:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7FB160F21;
-        Thu, 29 Jul 2021 11:13:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627557229;
-        bh=MvtQ8xl4DaKhCl1w9NscHSGdK9FzdvJUFFdvS3LdjYQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kV/G5VhWVGkbjH584vznhhDCtFnZH1shb59Sl1uSR1HK2t+HhJ2M8mUZHXf/Z6mth
-         hr4am4YazksiAwy/3K+Sg6606pRurMkdi8M1G1Y0LSHBRTSmkJi9CVp0FtgyR0IhIz
-         xyqzhToyB2bDOieNdmFicurwFcrk10dr7tjr4ipX3j8P+Iy06bxrLkuQmsBQzyqvA8
-         36SWHlz0u0OegcnkaAZLbQVARTRKmMmTVg14UXMDLCj3AxMJGNfx4YjH2FagXsy0jn
-         wDpyVBsUDltkKuaSHPBlBB7x8RQHBaBdlGvh6QU+7v7Ra6AJc6wPFyxWqhKGJseKan
-         QEu3jpIZP2Mww==
-Date:   Thu, 29 Jul 2021 12:13:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, bjorn.andersson@linaro.org,
-        plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
-        perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        bgoswami@codeaurora.org
-Subject: Re: [PATCH v2 04/16] ASoC: qcom: dt-bindings: add bindings Audio
- Processing manager
-Message-ID: <20210729111338.GJ4670@sirena.org.uk>
-References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
- <20210714153039.28373-5-srinivas.kandagatla@linaro.org>
- <20210728173649.GA1290628@robh.at.kernel.org>
- <092018be-50ae-6dda-73cd-6c7eb002dc19@linaro.org>
+        id S236699AbhG2LOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236669AbhG2LOp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 07:14:45 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB66C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:14:42 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d2so3634732qto.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2K9Otu8LW9SDTcXYYe2i+NmHsFiLd0L5gZwCfWSKEmo=;
+        b=ph0P5vCb0OFIqgeqV14YecFS4sAcx7v1LDkjpxvpx7VtzA6H2FeZks2PCB2rjJKhRX
+         kLhKCbXdc5goS+AdVlhEsnetACl2h0f5owIWTAEgmg3qAoX1BPI5qKBCgRzjYY3TWEE8
+         ap3iJH2pOO1jZIL5BP9xn84HJ5I+j1ydD2+a6LXoDIBVhZXOQcz3MEjsEvct+h/bm6xM
+         gnplsF4FOoT8dTcNlnMELEExf92mE7CBje0LlNJKpk7+qZ+E6tNgyvh8V8ONZmyEUTpg
+         se0Bpo7uSiruq79wFoz3MGg70+MQQOeWPjGdYhZi9vMdfMxab/ZcGI6L01PEAkZcQUwZ
+         /9tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2K9Otu8LW9SDTcXYYe2i+NmHsFiLd0L5gZwCfWSKEmo=;
+        b=ky/zNGQWPgg4FR4w12rNLIgCf6jZx8njwfJOOWQIzpwPzOlopsyHCaCApQoEV79oeL
+         rqF2FgP8I7Jz9Nw2dJtSwFX3JrFvTMPmL/GMfUE67kqdyGK4cyRi796I8KopYJD1JCxK
+         VaYf0COGlCXixL67MhsEfUspkonvTBz0MbfVOBu2v6ybig9XzEHSYEHc82sQKCEfFqLg
+         lA+XP6jbck0/xE87lQictpopOhKS8cJFGnULkeknQx2LcwhEYejRtn2kCOziBn2b+rTh
+         yYF2wOjG/RCcA+RUSPZVI+imgwXMTMRMGKd6Hh7kKJh8+QyYBCNL+hcFlbGl4NeM+ebP
+         dl8g==
+X-Gm-Message-State: AOAM531YGtQwHHtWeSm4BI5pipDZLo4gOFbXXNM4JoawySk2MTApzcJ8
+        uPTeuxjt0llZ1pF+FGPv351rvP5WjtQsaebV
+X-Google-Smtp-Source: ABdhPJwAn3IRMTD72AerbI9G7j4vBNcMivwHurVclQz1qrLLqObsXzzh3n/4sqCOpuRq/b1tT4J2LA==
+X-Received: by 2002:ac8:41c2:: with SMTP id o2mr3599898qtm.237.1627557281670;
+        Thu, 29 Jul 2021 04:14:41 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id j127sm1596873qkf.20.2021.07.29.04.14.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 04:14:41 -0700 (PDT)
+Subject: Re: [PATCH 14/39] arm64: dts: qcom: sdm630: Add TSENS node
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210728222542.54269-1-konrad.dybcio@somainline.org>
+ <20210728222542.54269-15-konrad.dybcio@somainline.org>
+ <860f1120-c5a4-f531-3ea9-aa90c6b063dc@linaro.org>
+ <2318377c-959a-a42b-81b5-44e2629570d5@somainline.org>
+ <afee55a8-d7d3-709a-ea4f-0306698c9976@linaro.org>
+ <b16d8000-85a7-d957-77d2-d921e5b09829@somainline.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <a7f90fe0-ee24-a47d-089d-e716a5766fcd@linaro.org>
+Date:   Thu, 29 Jul 2021 07:14:40 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZkK3DH7HIvxYLwhR"
-Content-Disposition: inline
-In-Reply-To: <092018be-50ae-6dda-73cd-6c7eb002dc19@linaro.org>
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <b16d8000-85a7-d957-77d2-d921e5b09829@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ZkK3DH7HIvxYLwhR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 29, 2021 at 10:18:28AM +0100, Srinivas Kandagatla wrote:
-> On 28/07/2021 18:36, Rob Herring wrote:
+On 7/29/21 6:55 AM, Konrad Dybcio wrote:
+> 
+> On 29.07.2021 12:54, Thara Gopinath wrote:
+>>
+>>
+>> On 7/29/21 6:52 AM, Konrad Dybcio wrote:
+>>>
+>>> On 29.07.2021 12:50, Thara Gopinath wrote:
+>>>> Hi Konrad,
+>>>>
+>>>> On 7/28/21 6:25 PM, Konrad Dybcio wrote:
+>>>>> This will enable temperature reporting for various SoC
+>>>>> components.
+>>>>>
+>>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+>>>>> ---
+>>>>>     .../devicetree/bindings/thermal/qcom-tsens.yaml       |  1 +
+>>>>>     arch/arm64/boot/dts/qcom/sdm630.dtsi                  | 11 +++++++++++
+>>>>>     2 files changed, 12 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>>>>> index 4a2eaf28e3fd..d3b9e9b600a2 100644
+>>>>> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>>>>> @@ -48,6 +48,7 @@ properties:
+>>>>>                   - qcom,sc7180-tsens
+>>>>>                   - qcom,sc7280-tsens
+>>>>>                   - qcom,sc8180x-tsens
+>>>>> +              - qcom,sdm630-tsens
+>>>>>                   - qcom,sdm845-tsens
+>>>>>                   - qcom,sm8150-tsens
+>>>>>                   - qcom,sm8250-tsens
+>>>>> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>>>> index 1e54828817d5..7e9c80e35fba 100644
+>>>>> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>>>> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>>>> @@ -627,6 +627,17 @@ mnoc: interconnect@1745000 {
+>>>>>                      <&mmcc AHB_CLK_SRC>;
+>>>>>             };
+>>>>>     +        tsens: thermal-sensor@10ae000 {
+>>>>> +            compatible = "qcom,sdm630-tsens", "qcom,tsens-v2";
+>>>>> +            reg = <0x010ae000 0x1000>, /* TM */
+>>>>> +                  <0x010ad000 0x1000>; /* SROT */
+>>>>> +            #qcom,sensors = <12>;
+>>>>
+>>>> Are all 12 sensors used ? I see that in a later patch "arm64: dts: qcom: sdm630: Add thermal-zones configuration" only 9 are used.
+>>>
+>>> Hi,
+>>>
+>>> if I recall correctly, they all give output but not all of the mappings were documented in the downstream sources and we have no documentation whatsoever :(
+>>
+>> Right. In that case, why not change #qcom,sensors to 9 and add rest of the sensors if and when needed ?
+>>
+> I don't think it makes sense to describe the hardware incorrectly, even if some of it is unused.
 
-> > This all looks fairly similar to the prior Qcom audio binding(s). It
-> > would be nice to not see this all re-invented.
+My thinking was more along the lines of don't expose unused h/w bits.
 
-> AudioReach is a new DSP signal processing framework Which is different to
-> its previous DSP firmware(aka Elite).
-> It makes use of ASoC Topology to load audio graphs on to the DSP which is
-> then managed by APM (Audio Processing Manager) service.
+> 
+> 
+> 
 
-> So internals are not exactly same.
-
-> From device tree side we might end up with similar layout, but there are
-> some subtle differences like clocks are managed by q6prm service instead =
-of
-> q6afe service in old firmware, front-end pcm dais definitions come from A=
-SoC
-> topology.
-
-The software we're running on the hardware shouldn't impact how the
-hardware is described, it should be posible to switch DSP frameworks on
-the same hardware - look at what Intel have done with SoF.
-
->=20
-> Are you suggesting that we should reuse the old bindings (q6afe, q6asm) by
-> add new compatible strings along with differences ?
->=20
->=20
-> > >=20
-> > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > > ---
-> > >   .../devicetree/bindings/sound/qcom,q6apm.yaml | 87 ++++++++++++++++=
-+++
-> > >   include/dt-bindings/sound/qcom,q6apm.h        |  8 ++
-> > >   2 files changed, 95 insertions(+)
-> > >   create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6a=
-pm.yaml
-> > >   create mode 100644 include/dt-bindings/sound/qcom,q6apm.h
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml =
-b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
-> > > new file mode 100644
-> > > index 000000000000..6f27567523a9
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
-> > > @@ -0,0 +1,87 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: "http://devicetree.org/schemas/sound/qcom,q6apm.yaml#"
-> > > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > > +
-> > > +title: Qualcomm Audio Process Manager binding
-> > > +
-> > > +maintainers:
-> > > +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > > +
-> > > +description: |
-> > > +  This binding describes the Qualcomm Audio Process Manager service =
-in DSP
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: qcom,q6apm
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  '#address-cells':
-> > > +    const: 1
-> > > +
-> > > +  '#size-cells':
-> > > +    const: 0
-> > > +
-> > > +#APM Services
-> > > +patternProperties:
-> > > +  'apm@[0-9]+$':
-> >=20
-> > This means '.*apm' for the node name. Did you need a '^'?
-> >=20
-> yes we need begins with '^' , will add that in next version.
->=20
-> > > +    type: object
-> > > +    description:
-> > > +      APM devices use subnodes for services.
-> > > +
-> > > +    properties:
-> > > +      compatible:
-> > > +        enum:
-> > > +          - qcom,q6apm-dais
-> > > +          - qcom,q6apm-bedais
-> > > +
-> > > +      iommus:
-> > > +        maxItems: 1
-> > > +
-> > > +      "#sound-dai-cells":
-> > > +        const: 1
-> > > +
-> > > +      reg:
-> > > +        maxItems: 1
-> > > +
-> > > +    required:
-> > > +      - compatible
-> > > +      - reg
-> > > +      - '#sound-dai-cells'
-> > > +
-> > > +    additionalProperties: false
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    gpr {
-> > > +        #address-cells =3D <1>;
-> > > +        #size-cells =3D <0>;
-> > > +        gprservice@1 {
-> > > +          compatible =3D "qcom,q6apm";
-> > > +          reg =3D <1>;
-> > > +
-> > > +          #address-cells =3D <1>;
-> > > +          #size-cells =3D <0>;
-> > > +
-> > > +          apm@1 {
-> > > +            compatible =3D "qcom,q6apm-dais";
-> > > +            #sound-dai-cells =3D <1>;
-> > > +            reg =3D <1>;
-> > > +          };
-> > > +
-> > > +          apm@2 {
-> > > +            compatible =3D "qcom,q6apm-bedais";
-> > > +            #sound-dai-cells =3D <1>;
-> > > +            reg =3D <2>;
-> > > +          };
-> > > +        };
-> > > +    };
-> > > diff --git a/include/dt-bindings/sound/qcom,q6apm.h b/include/dt-bind=
-ings/sound/qcom,q6apm.h
-> > > new file mode 100644
-> > > index 000000000000..3c3987eb6e95
-> > > --- /dev/null
-> > > +++ b/include/dt-bindings/sound/qcom,q6apm.h
-> > > @@ -0,0 +1,8 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +#ifndef __DT_BINDINGS_Q6_APM_H__
-> > > +#define __DT_BINDINGS_Q6_APM_H__
-> > > +
-> > > +/* Audio Process Manager (APM) virtual ports IDs */
-> > > +#include <dt-bindings/sound/qcom,q6afe.h>
-> >=20
-> > Why add this indirection? Rename the file if you need something to cover
-> > both.
->=20
-> Thats a good idea,
->=20
-> These are basically audio endpoint device ids which should be same across
-> different audio firmwares.
->=20
-> I can rename this to dt-bindings/sound/qcom,adsp-audio-ports.h or somethi=
-ng
-> more generic to be able to reuse.
->=20
-> --srini
-> >=20
-> > > +
-> > > +#endif /* __DT_BINDINGS_Q6_APM_H__ */
-> > > --=20
-> > > 2.21.0
-> > >=20
-> > >=20
-
---ZkK3DH7HIvxYLwhR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmECjWEACgkQJNaLcl1U
-h9C6dwf+PjJAuWxpbfcf4Wp0GacdzLYtni05DNXNG1JPg8AQQeCprQCUSRL2arDU
-QAzRvpaZ2ivgCxafbpCotVqw26j1NviN+NVv+67GSKw+zUASCxEnJh7FwGV7FoSY
-0GwtwNTQ2LIlt8h2OTvQvBwV4AcMLPPbblCm5E5xy4riKvFcE+kizmpBszMNmoXD
-rYt+9yVoOUzi5JEgdTtCIayWucN2N3YyBBtt6iBw6ajBS0J/aJBdM/8O52CKuGdI
-mbI4+LoOWK2/NKMXTjETyN+4rxyhqSLdrHfeonLL3yikKi1Be3ShHqkja+rtAxXB
-27Riss9bwhhhDtgBOynO1tdrh0h33A==
-=/zhk
------END PGP SIGNATURE-----
-
---ZkK3DH7HIvxYLwhR--
+-- 
+Warm Regards
+Thara (She/Her/Hers)
