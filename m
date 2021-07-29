@@ -2,256 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862F73DA002
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4763DA005
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235331AbhG2JDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S235383AbhG2JEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234972AbhG2JDp (ORCPT
+        with ESMTP id S234972AbhG2JEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:03:45 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F4FC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:03:41 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id m19so3244157wms.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:03:41 -0700 (PDT)
+        Thu, 29 Jul 2021 05:04:06 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DDAC061757;
+        Thu, 29 Jul 2021 02:04:03 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id y200so6133764iof.1;
+        Thu, 29 Jul 2021 02:04:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=tZq9WBpGzGj/xoxWMyN/SX4ni6yk9168UnPyM/0Pu34=;
-        b=AgOpHAsmJFKpCTa9G83TzE3YLhb8hw1/WLLX5GEYl2dIt3c2XVR6jRyNGjmQrL0mzc
-         9U0aqmLUNviZcK2p32T3jg7YnfWrHZ163m/SBQcIqMqQk+V2FiDxmnrxyimUBMwhFxCl
-         hCAY9AmZwakr7XF570Xd7LOvwQekMkugfc8mw=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=obmNjwOpYpNIrk2WRzS0fBK8P38CDDlYfyhz5quNEUc=;
+        b=QSCmSlY8mauv1ESXdaQmS8cIJikGHlCYwi9+ErHMzezvQ6/1Vg18aHSiWFuH+JFCka
+         6jursxSH5n2F6Kufg9Vt44FNFSVaBIkd8LHJf2Mb7TNJo6/Q9ObBLpWdnmKbvK2snGpD
+         lbyb1Ds8qNvipV1JMNiRItVom0e49e8pe9UfLLNyzGECrSyyaqfvne/LUG83fGdv0RC+
+         ppNO252CrN9W/Fg6dNFcuxxZxuvmFiqcuhp91h5O67Cw2peWBg/qfVmhMWJULk6CtiTK
+         YRdd1k1TaGW+j/3UVx+4CBXdXqKEdmpVjmCTrFFZF95HhA0JR2FmpehD6rDB0Qho5Gtj
+         iQ5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=tZq9WBpGzGj/xoxWMyN/SX4ni6yk9168UnPyM/0Pu34=;
-        b=M7vhB+c7aEF1EcNE3y2c8qYIqMUbjBS5P3PKLyweHdq522p6rRa+nfyt2gekoUjA8O
-         KK4XPziMA/jcXKgr7tC6v6i6mdiTY6ugh9cztuUxPsWpnljOELajATGhVTy72vJZ4OuV
-         MJTHROadXBAa49Tp0RhyX7MwcfeSDaWan66omxbDs+Rl/A76d53vRVfA9DU66KZF7LTf
-         /1Ch1/4wbJCQwR1Qyp9hC2rcP47qCbIa/fhA0ihFIkwwVds7vwgu3w5rzwxx+DDyqxOG
-         7t1zB6y+QK2x6VOMAOGaTZN8no+3QGKkMY5c87Dd44AsOuTf5vsA9E/d2Az5cckvZvXm
-         uA4A==
-X-Gm-Message-State: AOAM533zFMHMvOz4ucx42ZE0/XX0AAoCVpicgr8FDTQUpcxGw1TSUqWp
-        qkmZ2zJ/9cjQhgBSBdxRD3aC2w==
-X-Google-Smtp-Source: ABdhPJxkrH/kywcVb0qmeLSL3TvP5lRMh3WKdA7FI/99yJ/devreqqfI/qopWniyN+YUr05awdgGLQ==
-X-Received: by 2002:a1c:19c6:: with SMTP id 189mr1261855wmz.174.1627549420023;
-        Thu, 29 Jul 2021 02:03:40 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id p15sm2435632wmi.29.2021.07.29.02.03.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=obmNjwOpYpNIrk2WRzS0fBK8P38CDDlYfyhz5quNEUc=;
+        b=HnKxgU9zDoDG6RYTZ/kJCHK0KSEKIfENW3hqQ9v2/3f8Hdieepqu5MqgeUnQ3Fr/8/
+         VknT8kisKbazhfpk4dnAW00lwKmiBlbwCuzVyI8z5sZZ87y1kVbS9CWWIR2tRRoVtfkX
+         UHAOem6E6bH0N93v2YxlMQ6r8HRgmYHUPC3sWslhkUBocbu3aFYlcbDdatsQNb1/Zwt1
+         v5nuF43FQnragXOOdDmx0qKnq56HukQpdVI99nrjWkB+0xo8UKY/nBP5kch3HikaaPWJ
+         R48bHKnDU7Yt5wjtrYeLNs4BLBde+FV+vMKQJw7o0nyJxfSxUojKDdOY3PdvqWS7Jslm
+         7Sog==
+X-Gm-Message-State: AOAM530C36UGZKqH218VbeP1sN8HW2V/6/g0Y7n/xjwcg5G7/e1YWcXS
+        jU+dgU1JDi7ddu/Gf8EQMoAiEm+iK88FGdP0
+X-Google-Smtp-Source: ABdhPJwUcldzmoxgaOsLX3ceCtFrwbn0kXUzxzDaZtsezarSFjWMXXNi4Qy1x4yM4N49kPBLWpS5/A==
+X-Received: by 2002:a5d:8596:: with SMTP id f22mr3324274ioj.147.1627549442495;
+        Thu, 29 Jul 2021 02:04:02 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id o13sm1534851ilq.58.2021.07.29.02.04.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 02:03:39 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 11:03:36 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Rob Clark <robdclark@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-Message-ID: <YQJu6AqKn7bdT1li@phenom.ffwll.local>
-Mail-Followup-To: Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
-        Rob Clark <robdclark@gmail.com>, Rob Clark <robdclark@chromium.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>, Lee Jones <lee.jones@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
-References: <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
- <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
- <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
- <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
- <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
- <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com>
- <9d5f4415-d470-3bc1-7d52-61ba739706ae@daenzer.net>
- <CAF6AEGu409eY9xznTAaBf2ZDcV_AaDELUzN2afWgiHwB_uBwqg@mail.gmail.com>
- <YQJUKXgf/Q957fmy@phenom.ffwll.local>
- <ff394f2b-b555-e80f-b685-d0d59e2bbe67@daenzer.net>
+        Thu, 29 Jul 2021 02:04:01 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 582EA27C0054;
+        Thu, 29 Jul 2021 05:04:01 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 29 Jul 2021 05:04:01 -0400
+X-ME-Sender: <xms:_24CYYQwA5VkM3dtD8jp2S0WmkW4K7nCbiSIsapjAPmLhEcq_SkOhw>
+    <xme:_24CYVxcmMnmCFpiUqk_gmAig20Z1xZul0GMjrN53C-hh-_WmuNgYLLYzG94v3z8i
+    A2akz0FxFFgbBXtuQ>
+X-ME-Received: <xmr:_24CYV1TCp1uRT0LV7VcnB4c-JZnMMI1fbpFibdejBtYH9rBSn7eqsWnqt-VRw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedugddtjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
+    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:_24CYcB46uj77qGu26MhD67VBi9ZsEVR7hKwbuRcb0URoPqLQp9V8Q>
+    <xmx:_24CYRiuleEdv2jnMRMRdL85SA0QpyndiqsUoGr-mgLVIuaQ2tpH4g>
+    <xmx:_24CYYpMK1ZHlLtWE0y4bCFUe_WfI-fLW3Cj3hhHdAECCFGaHuSb7g>
+    <xmx:AW8CYcW-bQM5nkQqAT3FGmI8jqJAA3od-RE6Wu5RaW2kgPE9_fzaLg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 29 Jul 2021 05:03:59 -0400 (EDT)
+Date:   Thu, 29 Jul 2021 17:03:37 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Rui Wang <wangrui@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, hev <r@hev.cc>
+Subject: Re: [RFC PATCH] locking/atomic: arch/mips: Fix
+ atomic{_64,}_sub_if_positive
+Message-ID: <YQJu6fTIpeuGV+UX@boqun-archlinux>
+References: <20210729082549.144559-1-wangrui@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff394f2b-b555-e80f-b685-d0d59e2bbe67@daenzer.net>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210729082549.144559-1-wangrui@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:17:43AM +0200, Michel Dänzer wrote:
-> On 2021-07-29 9:09 a.m., Daniel Vetter wrote:
-> > On Wed, Jul 28, 2021 at 08:34:13AM -0700, Rob Clark wrote:
-> >> On Wed, Jul 28, 2021 at 6:24 AM Michel Dänzer <michel@daenzer.net> wrote:
-> >>> On 2021-07-28 3:13 p.m., Christian König wrote:
-> >>>> Am 28.07.21 um 15:08 schrieb Michel Dänzer:
-> >>>>> On 2021-07-28 1:36 p.m., Christian König wrote:
-> >>>>>> Am 27.07.21 um 17:37 schrieb Rob Clark:
-> >>>>>>> On Tue, Jul 27, 2021 at 8:19 AM Michel Dänzer <michel@daenzer.net> wrote:
-> >>>>>>>> On 2021-07-27 5:12 p.m., Rob Clark wrote:
-> >>>>>>>>> On Tue, Jul 27, 2021 at 7:50 AM Michel Dänzer <michel@daenzer.net> wrote:
-> >>>>>>>>>> On 2021-07-27 1:38 a.m., Rob Clark wrote:
-> >>>>>>>>>>> From: Rob Clark <robdclark@chromium.org>
-> >>>>>>>>>>>
-> >>>>>>>>>>> Based on discussion from a previous series[1] to add a "boost" mechanism
-> >>>>>>>>>>> when, for example, vblank deadlines are missed.  Instead of a boost
-> >>>>>>>>>>> callback, this approach adds a way to set a deadline on the fence, by
-> >>>>>>>>>>> which the waiter would like to see the fence signalled.
-> >>>>>>>>>>>
-> >>>>>>>>>>> I've not yet had a chance to re-work the drm/msm part of this, but
-> >>>>>>>>>>> wanted to send this out as an RFC in case I don't have a chance to
-> >>>>>>>>>>> finish the drm/msm part this week.
-> >>>>>>>>>>>
-> >>>>>>>>>>> Original description:
-> >>>>>>>>>>>
-> >>>>>>>>>>> In some cases, like double-buffered rendering, missing vblanks can
-> >>>>>>>>>>> trick the GPU into running at a lower frequence, when really we
-> >>>>>>>>>>> want to be running at a higher frequency to not miss the vblanks
-> >>>>>>>>>>> in the first place.
-> >>>>>>>>>>>
-> >>>>>>>>>>> This is partially inspired by a trick i915 does, but implemented
-> >>>>>>>>>>> via dma-fence for a couple of reasons:
-> >>>>>>>>>>>
-> >>>>>>>>>>> 1) To continue to be able to use the atomic helpers
-> >>>>>>>>>>> 2) To support cases where display and gpu are different drivers
-> >>>>>>>>>>>
-> >>>>>>>>>>> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.freedesktop.org%2Fseries%2F90331%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C269b2df3e1dc4f0b856d08d951c8c768%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630745091538563%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=eYaSOSS5wOngNAd9wufp5eWCx5GtAwo6GkultJgrjmA%3D&amp;reserved=0
-> >>>>>>>>>> Unfortunately, none of these approaches will have the full intended effect once Wayland compositors start waiting for client buffers to become idle before using them for an output frame (to prevent output frames from getting delayed by client work). See https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.gnome.org%2FGNOME%2Fmutter%2F-%2Fmerge_requests%2F1880&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C269b2df3e1dc4f0b856d08d951c8c768%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637630745091538563%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=1ZkOzLqbiKSyCixGZ0u7Hd%2Fc1YnUZub%2F%2Fx7RuEclFKg%3D&amp;reserved=0 (shameless plug :) for a proof of concept of this for mutter. The boost will only affect the compositor's own GPU work, not the client work (which means no effect at all for fullscreen apps where the compositor can scan out the client buffers directly).
-> >>>>>>>>>>
-> >>>>>>>>> I guess you mean "no effect at all *except* for fullscreen..."?
-> >>>>>>>> I meant what I wrote: The compositor will wait for the next buffer to become idle, so there's no boost from this mechanism for the client drawing to that buffer. And since the compositor does no drawing of its own in this case, there's no boost from that either.
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>>> I'd perhaps recommend that wayland compositors, in cases where only a
-> >>>>>>>>> single layer is changing, not try to be clever and just push the
-> >>>>>>>>> update down to the kernel.
-> >>>>>>>> Even just for the fullscreen direct scanout case, that would require some kind of atomic KMS API extension to allow queuing multiple page flips for the same CRTC.
-> >>>>>>>>
-> >>>>>>>> For other cases, this would also require a mechanism to cancel a pending atomic commit, for when another surface update comes in before the compositor's deadline, which affects the previously single updating surface as well.
-> >>>>>>>>
-> >>>>>>> Well, in the end, there is more than one compositor out there.. and if
-> >>>>>>> some wayland compositors are going this route, they can also implement
-> >>>>>>> the same mechanism in userspace using the sysfs that devfreq exports.
-> >>>>>>>
-> >>>>>>> But it sounds simpler to me for the compositor to have a sort of "game
-> >>>>>>> mode" for fullscreen games.. I'm less worried about UI interactive
-> >>>>>>> workloads, boosting the GPU freq upon sudden activity after a period
-> >>>>>>> of inactivity seems to work reasonably well there.
-> >>>>>> At least AMD hardware is already capable of flipping frames on GPU events like finishing rendering (or uploading etc).
-> >>>>>>
-> >>>>>> By waiting in userspace on the CPU before send the frame to the hardware you are completely killing of such features.
-> >>>>>>
-> >>>>>> For composing use cases that makes sense, but certainly not for full screen applications as far as I can see.
-> >>>>> Even for fullscreen, the current KMS API only allows queuing a single page flip per CRTC, with no way to cancel or otherwise modify it. Therefore, a Wayland compositor has to set a deadline for the next refresh cycle, and when the deadline passes, it has to select the best buffer available for the fullscreen surface. To make sure the flip will not miss the next refresh cycle, the compositor has to pick an idle buffer. If it picks a non-idle buffer, and the pending rendering does not finish in time for vertical blank, the flip will be delayed by at least one refresh cycle, which results in visible stuttering.
-> >>>>>
-> >>>>> (Until the deadline passes, the Wayland compositor can't even know if a previously fullscreen surface will still be fullscreen for the next refresh cycle)
-> >>>>
-> >>>> Well then let's extend the KMS API instead of hacking together workarounds in userspace.
-> >>>
-> >>> That's indeed a possible solution for the fullscreen / direct scanout case.
-> >>>
-> >>> Not for the general compositing case though, since a compositor does not want to composite multiple output frames per display refresh cycle, so it has to make sure the one frame hits the target.
-> >>
-> >> I think solving the fullscreen game case is sufficient enough forward
-> >> progress to be useful.  And the results I'm seeing[1] are sufficiently
-> >> positive to convince me that dma-fence deadline support is the right
-> >> thing to do.
-> 
-> I'm not questioning that this approach helps when there's a direct chain of fences from the client to the page flip. I'm pointing out there will not always be such a chain.
-> 
-> 
-> >> But maybe the solution to make this also useful for mutter
-> 
-> It's not just mutter BTW. I understand gamescope has been doing this for some time already. And there seems to be consensus among developers of Wayland compositors that this is needed, so I expect at least all the major compositors to do this longer term.
-> 
-> 
-> >> is to, once we have deadline support, extend it with an ioctl to the
-> >> dma-fence fd so userspace can be the one setting the deadline.
-> 
-> I was thinking in a similar direction.
-> 
-> > atomic ioctl with TEST_ONLY and SET_DEADLINES? Still gives mutter the
-> > option to bail out with an old frame if it's too late?
-> 
-> This is a bit cryptic though, can you elaborate?
+Hi,
 
-So essentially when the mutter compositor guesstimator is fairly confident
-about the next frame's composition (recall you're keeping track of clients
-to estimate their usual latency or something like that), then it does a
-TEST_ONLY commit to check it all works and prep the rendering, but _not_
-yet fire it off.
-
-Instead it waits until all buffers complete, and if some don't, pick the
-previous one. Which I guess in an extreme case would mean you need a
-different window tree configuration and maybe different TEST_ONLY check
-and all that, not sure how you solve that.
-
-Anyway, in that TEST_ONLY commit my idea is that you'd also supply all the
-in-fences you expect to depend upon (maybe we need an additional list of
-in-fences for your rendering job), plus a deadline when you want to have
-them done (so that there's enough time for your render job still). And the
-kernel then calls dma_fence_set_deadline on all of them.
-
-Pondering this more, maybe a separate ioctl is simpler where you just
-supply a list of in-fences and deadlines.
-
-The real reason I want to tie this to atomic is for priviledge checking
-reasons. I don't think normal userspace should have the power to set
-arbitrary deadlines like this - at least on i915 it will also give you a
-slight priority boost and stuff like that, to make sure your rendering for
-the current frame goes in ahead of the next frame's prep work.
-
-So maybe just a new ioctl that does this which is limited to the current
-kms owner (aka drm_master)?
-
-In i915 we also do a mild boost for when userspace waits on a buffer
-(assuming it's blocking the cpu), but that boost has a pretty sharp
-decay/cooldown to prevent abuse and keeping the gpu artificially
-upclocked. That really is just meant to avoid the tailspin when you have a
-ping-pong workload between gpu and cpu and both downclock in turn because
-the other side is too slow and the gpu/cpu aren't really busy enough.
-Until you're crawling at idle clocks getting nothing done.
-
-I think on the windows side they "fix" this by making the clock
-adjustments extremely conservative and slow (except when they detect that
-it's a game/benchmark). Good enough for battery tests, not so great in
-reality.
--Daniel
-
-> > Also mutter would need to supply the deadline, because we need to fit the
-> > rendering in still before the actual flip. So gets a bit quirky maybe ...
+On Thu, Jul 29, 2021 at 04:25:49PM +0800, Rui Wang wrote:
+> This looks like a typo and that caused atomic64 test failed.
 > 
-> That should be fine. mutter is already keeping track of how long its rendering takes.
+> Signed-off-by: Rui Wang <wangrui@loongson.cn>
+> Signed-off-by: hev <r@hev.cc>
+
+In your upcoming patches, please change this part to your real name.
+Here is a quote from Documentation/process/submitting-patches.rst:
+  
+	using your real name (sorry, no pseudonyms or anonymous contributions.)
+
+Regards,
+Boqun
+
+> ---
+>  arch/mips/include/asm/atomic.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 
+> diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
+> index 95e1f7f3597f..a0b9e7c1e4fc 100644
+> --- a/arch/mips/include/asm/atomic.h
+> +++ b/arch/mips/include/asm/atomic.h
+> @@ -206,7 +206,7 @@ ATOMIC_OPS(atomic64, xor, s64, ^=, xor, lld, scd)
+>   * The function returns the old value of @v minus @i.
+>   */
+>  #define ATOMIC_SIP_OP(pfx, type, op, ll, sc)				\
+> -static __inline__ int arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
+> +static __inline__ type arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
+>  {									\
+>  	type temp, result;						\
+>  									\
 > -- 
-> Earthling Michel Dänzer               |               https://redhat.com
-> Libre software enthusiast             |             Mesa and X developer
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> 2.32.0
+> 
