@@ -2,137 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73963DA191
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC6E3DA196
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236241AbhG2Kxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:53:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233413AbhG2Kxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:53:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E5860C40;
-        Thu, 29 Jul 2021 10:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627556014;
-        bh=tw6AqWFw33m72IWPa96GClQP3O2//RdQYnMQiK673fk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SZmGzZObuh1DZPTiNEWGUfFgn8ibr/Gaz83ngZssp1DOJdcWQ/QdaptYB5zSw1Ndi
-         4cNUsGsZXSXI8f3z5wppLKyX8W8sTNL3+DKRp0FyIauBnuNQhHnHpoRepv3OKmWZOn
-         3PjnXjWmYt1F8N3xmHJSP7z6o1Ngh+RRWfDFCirVKpg8VVs64Rbn12GCpXdPzzOy7A
-         GG1h4iLhG8usS/cIjHOt+Gx+yaPzg4W3L4SFvSHypy72iP6rpERbvx8+WDJan8XOso
-         cDCTT7pS3uuSydLIGppLrDK/Ti1QgQ8PGgXvrIVLsSzQClmAawc1wLWx1IN38IKl7G
-         5pMhG3Dqabi6w==
-Date:   Thu, 29 Jul 2021 12:53:31 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH rcu 04/18] rcu: Weaken ->dynticks accesses and updates
-Message-ID: <20210729105331.GA301667@lothringen>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-4-paulmck@kernel.org>
- <YQJfjFv8lOnkUkhs@boqun-archlinux>
+        id S236292AbhG2Ky3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231815AbhG2Ky2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 06:54:28 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CD7C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:54:25 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d2so3601734qto.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:54:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A0+vnStwHHWcv0kEG4jL+l5YMwp+7TPgb/XyNRNNEM8=;
+        b=CvQK0lmU1Cgn3fBwhUY4Pb/3oGnP6zXUm6Nt+2u1WR3WPnGboq4LkpWkX5c8MNbLDF
+         JU7Os0PunpXJa/OIfOo4/CqRf+DkTHAp74/fynC9qjy8s4GTaVvF7V7fW7IZ6gwD5sJv
+         hFYdF+9mkl+z2pQ56Nk4KqSqvWEeDGkY/PYmhFJekM2qyjnYwEfmfRIWbvOJwwJlPg1h
+         zQ3FD4mpznFc+Um8TRYFJQ/IZiIyyuVozChoV5/4vqDiw+nS3y4szK2t5j8vSDe0a17U
+         YXpkJ0zGrMmFIg2l6Y5bAy3uoq45/Um1Hd3gDdUY//XxGgTqxVbqbnrNTwwFfRpyvk4+
+         AfUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A0+vnStwHHWcv0kEG4jL+l5YMwp+7TPgb/XyNRNNEM8=;
+        b=N7GXc/FMXkvFFbANe/jwtAMXfpDHGpEM8GeDlapM5JeaLGvTo5OFugL9fiHrxzrEo7
+         74XremrBVP2Hw3gzqLfqoyASds10wq0VeldZnXY3THsxeMMCuoJfWPIkBSoQdx7txtUQ
+         bpAkfFS81B0X+WUC5znw/pDRxkrubVSZqLuWuZY9q4gDCqL1dQR3YwseXISMBHhIw44D
+         993uYj3RKOXJZ7jvTWjBqyKwr2ioKalyhFKzwj/punmqcfRlqA0kXbxLSXs/nSkucUwK
+         27U4hhwWEvvnWYzEAly4JdBiNNPSAyWEm8he+hSy8XBEDDMVjX3vfDueW5MTsjaZIXh1
+         mk9Q==
+X-Gm-Message-State: AOAM533aEIWsmVGpc+TaM/N7oyL8C9FUuoJQMf+KqrbrohmnKl1m3xgu
+        dMqjPC3skr30d78vNl3II34543juht2CZ/vq
+X-Google-Smtp-Source: ABdhPJwCriNjT7vC1Ik6qXt63Lgc1Xgj5G1ZZlfdiSkKzttrxPvV/wdlnks/PTQ2+JCSkb5DNTQkGQ==
+X-Received: by 2002:ac8:724c:: with SMTP id l12mr3667029qtp.372.1627556063856;
+        Thu, 29 Jul 2021 03:54:23 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id a16sm1450021qkn.107.2021.07.29.03.54.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 03:54:23 -0700 (PDT)
+Subject: Re: [PATCH 14/39] arm64: dts: qcom: sdm630: Add TSENS node
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210728222542.54269-1-konrad.dybcio@somainline.org>
+ <20210728222542.54269-15-konrad.dybcio@somainline.org>
+ <860f1120-c5a4-f531-3ea9-aa90c6b063dc@linaro.org>
+ <2318377c-959a-a42b-81b5-44e2629570d5@somainline.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <afee55a8-d7d3-709a-ea4f-0306698c9976@linaro.org>
+Date:   Thu, 29 Jul 2021 06:54:22 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQJfjFv8lOnkUkhs@boqun-archlinux>
+In-Reply-To: <2318377c-959a-a42b-81b5-44e2629570d5@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:58:04PM +0800, Boqun Feng wrote:
-> > The following litmus test, also adapted from the one supplied off-list
-> > by Frederic Weisbecker, models the RCU grace-period kthread detecting
-> > a non-idle CPU that is concurrently transitioning to idle:
-> > 
-> > 	C dynticks-into-idle
-> > 
-> > 	{
-> > 		DYNTICKS=1; (* Initially non-idle. *)
-> > 	}
-> > 
-> > 	P0(int *X, int *DYNTICKS)
-> > 	{
-> > 		int dynticks;
-> > 
-> > 		// Non-idle.
-> > 		WRITE_ONCE(*X, 1);
-> > 		dynticks = READ_ONCE(*DYNTICKS);
-> > 		smp_store_release(DYNTICKS, dynticks + 1);
-> > 		smp_mb();
+
+
+On 7/29/21 6:52 AM, Konrad Dybcio wrote:
 > 
-> this smp_mb() is not needed, as we rely on the release-acquire pair to
-> provide the ordering.
+> On 29.07.2021 12:50, Thara Gopinath wrote:
+>> Hi Konrad,
+>>
+>> On 7/28/21 6:25 PM, Konrad Dybcio wrote:
+>>> This will enable temperature reporting for various SoC
+>>> components.
+>>>
+>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+>>> ---
+>>>    .../devicetree/bindings/thermal/qcom-tsens.yaml       |  1 +
+>>>    arch/arm64/boot/dts/qcom/sdm630.dtsi                  | 11 +++++++++++
+>>>    2 files changed, 12 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>>> index 4a2eaf28e3fd..d3b9e9b600a2 100644
+>>> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>>> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+>>> @@ -48,6 +48,7 @@ properties:
+>>>                  - qcom,sc7180-tsens
+>>>                  - qcom,sc7280-tsens
+>>>                  - qcom,sc8180x-tsens
+>>> +              - qcom,sdm630-tsens
+>>>                  - qcom,sdm845-tsens
+>>>                  - qcom,sm8150-tsens
+>>>                  - qcom,sm8250-tsens
+>>> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>> index 1e54828817d5..7e9c80e35fba 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>> @@ -627,6 +627,17 @@ mnoc: interconnect@1745000 {
+>>>                     <&mmcc AHB_CLK_SRC>;
+>>>            };
+>>>    +        tsens: thermal-sensor@10ae000 {
+>>> +            compatible = "qcom,sdm630-tsens", "qcom,tsens-v2";
+>>> +            reg = <0x010ae000 0x1000>, /* TM */
+>>> +                  <0x010ad000 0x1000>; /* SROT */
+>>> +            #qcom,sensors = <12>;
+>>
+>> Are all 12 sensors used ? I see that in a later patch "arm64: dts: qcom: sdm630: Add thermal-zones configuration" only 9 are used.
 > 
-> This means that if we use different implementations (one w/ smp_mb(),
-> another w/o) rcu_dynticks_inc() for idle-to-nonidle and nonidle-to-idle,
-> we could save a smp_mb(). Thoughts?
+> Hi,
+> 
+> if I recall correctly, they all give output but not all of the mappings were documented in the downstream sources and we have no documentation whatsoever :(
 
-That's exactly what I wanted to propose but everybody was sober. Namely order
-only the RCU read side critical sections before/after idle together:
+Right. In that case, why not change #qcom,sensors to 9 and add rest of 
+the sensors if and when needed ?
 
-     READ side critical section
-     //enter idle
-     //exit idle
-     smp_mb()
-     READ side critical section
+> 
+> 
+> Konrad
+> 
 
-instead of ordering the RCU read side critical section before idle - with the RCU
-idle extended quiescent state - with the RCU read side critical section after idle:
-
-     READ side critical section
-     //enter idle
-     smp_mb();
-     //exit idle
-     smp_mb()
-     READ side critical section
-
-So the side effect now is that if the write side waits for the reader to
-report a quiescent state and scans its dynticks state and see it's not yet in
-RCU idle mode, then later on when the read side enters in RCU idle mode we
-expect it to see the write side updates.
-But after the barrier removal the reader will only see the write side update
-once we exit RCU idle mode.
-
-So the following may happen:
-
-	P0(int *X, int *Y, int *DYNTICKS)
-	{
-		int y;
-
-		WRITE_ONCE(*X, 1);
-		smp_store_release(DYNTICKS, 1); // rcu_eqs_enter
-		//smp_mb() not there anymore
-		y = READ_ONCE(*Y);
-		smp_store_release(DYNTICKS, 2); // rcu_eqs_exit()
-		smp_mb();
-	}
-
-	P1(int *X, int *Y, int *DYNTICKS)
-	{
-		int x;
-		int dynticks;
-		
-		WRITE_ONCE(*Y, 1);
-		smp_mb();
-		dynticks = smp_load_acquire(DYNTICKS);
-		x = READ_ONCE(*X);
-	}
-
-	exists (1:x=0 /\ 0:y=0)
-
-Theoretically it shouldn't matter because the RCU idle mode isn't
-supposed to perform RCU reads. But theoretically again once a CPU
-has reported a quiescent state, any further read is expected to see
-the latest updates from the write side.
-
-So I don't know what to think. In practice I believe it's not a big deal
-because RCU idle mode code is usually a fragile path that just handles
-cpuidle code to put the CPU in/out low power mode. But what about dragons...
+-- 
+Warm Regards
+Thara (She/Her/Hers)
