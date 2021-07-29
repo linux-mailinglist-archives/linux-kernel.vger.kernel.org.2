@@ -2,54 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA013D9AA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA7D3D9AD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233148AbhG2Ayw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 20:54:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232837AbhG2Ayv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 20:54:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EEC26101C;
-        Thu, 29 Jul 2021 00:54:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627520089;
-        bh=ySj2WLCx/U6vUSMi0vPV9bFB7St2XGwXoloT+C5A3Nw=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=SFP9YXncg5J/gGtO/esR7/KSWhcLNz1iJ5uG1SyKwNU7FtPsfj8o8gXd3BybRE4lF
-         F9RpYK7o9OaHPVeBE82p8gZCA4coIrA2lTqV9gRrYygxFiHKdXIDLgLnRAaXZctbux
-         s9eRq9YQn65n9TyZNVTHj7gBLxIRwgX+Ho7ajEEWjWkiKVKrxtMMBoqALXT3AMbulV
-         w0MW5jgLNk4xWvOAFnCJw6YqxMMqmQA6R9aFuTwBERthv0KugWxLWSPgGiiX45FKrx
-         XlWRpqJNzoJXiTsrPMPaqSnWjH3qtyS4OH3iCw3a2fR1zGp4LxH0kaBvPtV6f0GlJ8
-         7MUmaPeW23Evw==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: do not submit NEW_ADDR to read node
- block
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210726161357.105332-1-jaegeuk@kernel.org>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <26d8629e-ade4-43e7-b95a-073809d59936@kernel.org>
-Date:   Thu, 29 Jul 2021 08:54:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233182AbhG2BM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 21:12:56 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:32512 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232837AbhG2BMz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 21:12:55 -0400
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="41939805"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 29 Jul 2021 09:03:11 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(119551:0:AUTH_RELAY)
+        (envelope-from <phoenix@emc.com.tw>); Thu, 29 Jul 2021 09:03:10 +0800 (CST)
+Received: from 49.216.187.106
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2473:0:AUTH_LOGIN)
+        (envelope-from <phoenix@emc.com.tw>); Thu, 29 Jul 2021 09:03:08 +0800 (CST)
+From:   Phoenix Huang <phoenix@emc.com.tw>
+To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com
+Cc:     jingle.wu@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw,
+        Phoenix Huang <phoenix@emc.com.tw>
+Subject: [PATCH] Input: elantench - Fix the firmware misreport coordinates for trackpoint occasionally.
+Date:   Thu, 29 Jul 2021 09:03:06 +0800
+Message-Id: <20210729010306.5339-1-phoenix@emc.com.tw>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210726161357.105332-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/27 0:13, Jaegeuk Kim wrote:
-> After the below patch, give cp is errored, we drop dirty node pages. This
-> can give NEW_ADDR to read node pages. Don't do WARN_ON() which gives
-> generic/475 failure.
-> 
-> Fixes: 28607bf3aa6f ("f2fs: drop dirty node pages when cp is in error status")
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Phoenix Huang <phoenix@emc.com.tw>
+---
+ drivers/input/mouse/elantech.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
+index 2d0bc029619f..a31c2f5b7cf0 100644
+--- a/drivers/input/mouse/elantech.c
++++ b/drivers/input/mouse/elantech.c
+@@ -517,6 +517,17 @@ static void elantech_report_trackpoint(struct psmouse *psmouse,
+ 	case 0x16008020U:
+ 	case 0x26800010U:
+ 	case 0x36808000U:
++	
++		/* This firmware misreport coordinates for trackpoint occasionally.
++		* So we discard these packets by pattern to prevent cursor jumps.
++		*/
++		if (packet[4] == 0x80 || packet[5] == 0x80 ||
++		    packet[1] >> 7 == packet[4] >> 7 ||
++		    packet[2] >> 7 == packet[5] >> 7) {
++		    	elantech_debug("discarding packet [%6ph]\n", packet);
++			break;
++
++		}
+ 		x = packet[4] - (int)((packet[1]^0x80) << 1);
+ 		y = (int)((packet[2]^0x80) << 1) - packet[5];
+ 
+@@ -1678,7 +1689,7 @@ static int elantech_query_info(struct psmouse *psmouse,
+ 		return -EINVAL;
+ 	}
+ 	psmouse_info(psmouse,
+-		     "assuming hardware version %d (with firmware version 0x%02x%02x%02x)\n",
++		     "(7/19) assuming hardware version %d (with firmware version 0x%02x%02x%02x)\n",
+ 		     info->hw_version, param[0], param[1], param[2]);
+ 
+ 	if (info->send_cmd(psmouse, ETP_CAPABILITIES_QUERY,
+-- 
+2.25.1
 
-Thanks,
