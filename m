@@ -2,224 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9903DA8BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1043DA8C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhG2QSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:18:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:52052 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231416AbhG2QSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:18:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 584A41FB;
-        Thu, 29 Jul 2021 09:18:48 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 838BA3F73D;
-        Thu, 29 Jul 2021 09:18:45 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 17:18:43 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
-        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
-        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
-        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: Re: [PATCH v6 11/17] firmware: arm_scmi: Make SCMI transports
- configurable
-Message-ID: <20210729161843.GN6592@e120937-lin>
-References: <20210712141833.6628-1-cristian.marussi@arm.com>
- <20210712141833.6628-12-cristian.marussi@arm.com>
- <20210728145033.wpobgpxane2t2brc@bogus>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728145033.wpobgpxane2t2brc@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S231593AbhG2QTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231193AbhG2QTR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 12:19:17 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F17C0613C1;
+        Thu, 29 Jul 2021 09:19:13 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 190so6469183qkk.12;
+        Thu, 29 Jul 2021 09:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=+KrPCSnHKZvHsetzaaVnpnXvX+hBEhmIj6HrXqly/yw=;
+        b=hbn/daSt/1s1i1oc3sjUwYCXyQaDW0+Mlwv2Pysfhzvc/OXs2haCgtHEO5EdaCK6Ve
+         eGapBu0EK0vdaYskUIGMEy00N0x7IYD4Sl1DTYo7S3DYzRSMufUWfzoJtT/yy9fzG3VI
+         i4txpMPImlvJevkt/snlTeKEleeDR30pnqiis2YWhxCJ63xV3BPOyJ7bF6RCCmJxK27Q
+         HvIJVkZzM7gx0m0mvush8FurK6KhFzhkht8U0TY3yWxB6btlNaqSWa0hQrPq9ER9owAU
+         iWj3h0Hqi73o5ahu0FRTYwB/zsMBWz6450p2bj/kbKfSHzMv7cw80+FwF6wj+u39bClq
+         L3QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=+KrPCSnHKZvHsetzaaVnpnXvX+hBEhmIj6HrXqly/yw=;
+        b=EMILTMtkYJ1fme0hJsx8ZdD73pDHE7pdt57KtgmPtGSpuA3l50gscMIZOSs6m7FZhZ
+         0MY1WGPrLQoXwbjBMQ7QBRaOs9NNcGXcXv05Vsee7cZXCegerSBdxxX3kJJpk1IvQ6Ik
+         gNWHDIWVx/bxByr1D74Im8fPDS+hb8/ZL3YEqc16yRGMHhmx/5ygNjdvq7tR2udvyYBi
+         ZsA2gfx5/MX6vi+P/uESiYNq8ILBhpXLK6cMJ3MZmvRSkL2HEU5dQPys+e/R8GHjhqkv
+         zVW5mIchZOWGGCCNxuT33W/TqEwoYrHjLCj9uGgBmwzTg/KUwfZBvV6W8SgfzBGOU4UA
+         UXDQ==
+X-Gm-Message-State: AOAM532f6Ds1+qknEZcfl+Q0ppnTVZXoFzhF8Bc84G6BBuWrdRrIk3wZ
+        UKe+LUxgsahdaTSs1xNPCfY=
+X-Google-Smtp-Source: ABdhPJz661BdOVblk6GTu7tyQvsCsBpmmzdhPBejYOF/1uRwvlaEFJRUZav+5KfZAaRYNY6k2OwE2w==
+X-Received: by 2002:a05:620a:124e:: with SMTP id a14mr5958489qkl.356.1627575552888;
+        Thu, 29 Jul 2021 09:19:12 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id g26sm1930311qkm.122.2021.07.29.09.19.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 09:19:12 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 29 Jul 2021 12:19:11 -0400
+Message-Id: <CD5RDQA6H2AZ.3R2031X2O3BWK@shaak>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH v6 09/13] iio: afe: rescale: fix precision on fractional
+ log scale
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Peter Rosin" <peda@axentia.se>, <jic23@kernel.org>,
+        <lars@metafoo.de>, <pmeerw@pmeerw.net>
+References: <20210721030613.3105327-1-liambeguin@gmail.com>
+ <20210721030613.3105327-10-liambeguin@gmail.com>
+ <d2dea8ea-5a31-0428-4eac-4e4315d07a42@axentia.se>
+ <CD4CHX6R9QRI.2Q76MYJGTXNWK@shaak>
+ <4e477a42-1cae-06f8-2778-fc734359d6f3@axentia.se>
+In-Reply-To: <4e477a42-1cae-06f8-2778-fc734359d6f3@axentia.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 03:50:33PM +0100, Sudeep Holla wrote:
-> On Mon, Jul 12, 2021 at 03:18:27PM +0100, Cristian Marussi wrote:
-> > Add configuration options to be able to select which SCMI transports have
-> > to be compiled into the SCMI stack.
-> > 
-> > Mailbox and SMC are by default enabled if their related dependencies are
-> > satisfied.
-> > 
-> > While doing that move all SCMI related config options in their own
-> > dedicated submenu.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> > Used a BUILD_BUG_ON() to avoid the scenario where SCMI is configured
-> > without any transport. Coul dnot do in any other way in Kconfig due to
-> > circular dependencies.
-> > 
-> > This will be neeed later on to add new Virtio based transport and
-> > optionally exclude other transports.
-> > ---
+On Wed Jul 28, 2021 at 3:58 AM EDT, Peter Rosin wrote:
+> On 2021-07-28 02:26, Liam Beguin wrote:
+> > On Fri Jul 23, 2021 at 5:20 PM EDT, Peter Rosin wrote:
+> >> On 2021-07-21 05:06, Liam Beguin wrote:
+> >>> From: Liam Beguin <lvb@xiphos.com>
+> >>>
+> >>> The IIO_VAL_FRACTIONAL_LOG2 scale type doesn't return the expected
+> >>> scale. Update the case so that the rescaler returns a fractional type
+> >>> and a more precise scale.
+> >>>
+> >>> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> >>> ---
+> >>>  drivers/iio/afe/iio-rescale.c | 9 +++------
+> >>>  1 file changed, 3 insertions(+), 6 deletions(-)
+> >>>
+> >>> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-resc=
+ale.c
+> >>> index 35fa3b4e53e0..47cd4a6d9aca 100644
+> >>> --- a/drivers/iio/afe/iio-rescale.c
+> >>> +++ b/drivers/iio/afe/iio-rescale.c
+> >>> @@ -44,12 +44,9 @@ int rescale_process_scale(struct rescale *rescale,=
+ int scale_type,
+> >>>  		*val2 =3D rescale->denominator;
+> >>>  		return IIO_VAL_FRACTIONAL;
+> >>>  	case IIO_VAL_FRACTIONAL_LOG2:
+> >>> -		tmp =3D *val * 1000000000LL;
+> >>> -		do_div(tmp, rescale->denominator);
+> >>> -		tmp *=3D rescale->numerator;
+> >>> -		do_div(tmp, 1000000000LL);
+> >>> -		*val =3D tmp;
+> >>> -		return scale_type;
+> >>> +		*val =3D rescale->numerator * *val;
+> >>> +		*val2 =3D rescale->denominator * (1 << *val2);
+> >>> +		return IIO_VAL_FRACTIONAL;
+> >>
+> >> Hi!
+> >=20
+> > Hi Peter,
+> >=20
+> >>
+> >> I do not think this is an uncontested improvement. You have broken the
+> >> case
+> >> where *val2 is "large" before the scale factor is applied.
+> >=20
+> > I was a little reluctant to add this change as I keep increasing the
+> > scope of this series, but since I added tests for all cases, I didn't
+> > want to leave this one out.
+>
+> > Would you rather I drop this patch and the test cases associated to it?
+>
+> Why drop the tests? Are they doing any harm? Or are they testing exactly
+> the problem situation that fail without this patch?
 
-Hi Sudeep,
+They are testing this problem and fail without the patch.
 
-> >  drivers/firmware/Kconfig           | 34 +--------------
-> >  drivers/firmware/arm_scmi/Kconfig  | 70 ++++++++++++++++++++++++++++++
-> >  drivers/firmware/arm_scmi/Makefile |  4 +-
-> >  drivers/firmware/arm_scmi/common.h |  4 +-
-> >  drivers/firmware/arm_scmi/driver.c |  6 ++-
-> >  5 files changed, 80 insertions(+), 38 deletions(-)
-> >  create mode 100644 drivers/firmware/arm_scmi/Kconfig
-> > 
-> > diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> > index 1db738d5b301..8d41f73f5395 100644
-> > --- a/drivers/firmware/Kconfig
-> > +++ b/drivers/firmware/Kconfig
-> > @@ -6,39 +6,7 @@
-> >  
-> >  menu "Firmware Drivers"
-> >  
-> > -config ARM_SCMI_PROTOCOL
-> > -	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
-> > -	depends on ARM || ARM64 || COMPILE_TEST
-> > -	depends on MAILBOX || HAVE_ARM_SMCCC_DISCOVERY
-> > -	help
-> > -	  ARM System Control and Management Interface (SCMI) protocol is a
-> > -	  set of operating system-independent software interfaces that are
-> > -	  used in system management. SCMI is extensible and currently provides
-> > -	  interfaces for: Discovery and self-description of the interfaces
-> > -	  it supports, Power domain management which is the ability to place
-> > -	  a given device or domain into the various power-saving states that
-> > -	  it supports, Performance management which is the ability to control
-> > -	  the performance of a domain that is composed of compute engines
-> > -	  such as application processors and other accelerators, Clock
-> > -	  management which is the ability to set and inquire rates on platform
-> > -	  managed clocks and Sensor management which is the ability to read
-> > -	  sensor data, and be notified of sensor value.
-> > -
-> > -	  This protocol library provides interface for all the client drivers
-> > -	  making use of the features offered by the SCMI.
-> > -
-> > -config ARM_SCMI_POWER_DOMAIN
-> > -	tristate "SCMI power domain driver"
-> > -	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-> > -	default y
-> > -	select PM_GENERIC_DOMAINS if PM
-> > -	help
-> > -	  This enables support for the SCMI power domains which can be
-> > -	  enabled or disabled via the SCP firmware
-> > -
-> > -	  This driver can also be built as a module.  If so, the module
-> > -	  will be called scmi_pm_domain. Note this may needed early in boot
-> > -	  before rootfs may be available.
-> > +source "drivers/firmware/arm_scmi/Kconfig"
-> >  
-> >  config ARM_SCPI_PROTOCOL
-> >  	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
-> > diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-> > new file mode 100644
-> > index 000000000000..479fc8a3533e
-> > --- /dev/null
-> > +++ b/drivers/firmware/arm_scmi/Kconfig
-> > @@ -0,0 +1,70 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +menu "ARM System Control and Management Interface Protocol"
-> > +
-> > +config ARM_SCMI_PROTOCOL
-> > +	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
-> > +	depends on ARM || ARM64 || COMPILE_TEST
-> > +	help
-> > +	  ARM System Control and Management Interface (SCMI) protocol is a
-> > +	  set of operating system-independent software interfaces that are
-> > +	  used in system management. SCMI is extensible and currently provides
-> > +	  interfaces for: Discovery and self-description of the interfaces
-> > +	  it supports, Power domain management which is the ability to place
-> > +	  a given device or domain into the various power-saving states that
-> > +	  it supports, Performance management which is the ability to control
-> > +	  the performance of a domain that is composed of compute engines
-> > +	  such as application processors and other accelerators, Clock
-> > +	  management which is the ability to set and inquire rates on platform
-> > +	  managed clocks and Sensor management which is the ability to read
-> > +	  sensor data, and be notified of sensor value.
-> > +
-> > +	  This protocol library provides interface for all the client drivers
-> > +	  making use of the features offered by the SCMI.
-> > +
-> 
-> May be you can add if condition here to remove the depends on ARM_SCMI_PROTOCOL
-> 
-> if ARM_SCMI_PROTOCOL
-> 
+>
+> In that case, I guess fix the tests to pass and preferably add tests
+> for the *val2 is "large" situation (that this patch breaks) so that the
+> next person trying to improve precision is made aware of the overflow
+> problem. Does that make sense?
 
-I'll do.
+To handle large values of *val2, I could use the same logic as in
+IIO_VAL_FRACTIONAL with check_mul_overflow() and gcd().
 
-> > +config ARM_SCMI_HAVE_TRANSPORT
-> > +	bool
-> > +	help
-> > +	  This declares whether at least one SCMI transport has been configured.
-> > +	  Used to trigger a build bug when trying to build SCMI without any
-> > +	  configured transport.
-> > +
-> > +config ARM_SCMI_TRANSPORT_MAILBOX
-> > +	bool "SCMI transport based on Mailbox"
-> > +	depends on ARM_SCMI_PROTOCOL && MAILBOX
-> 
-> And drop ARM_SCMI_PROTOCOL above
-> 
-
-Ditto
-
-> > +	select ARM_SCMI_HAVE_TRANSPORT
-> > +	default y
-> 
-> Do we need a user visible choice if it is always default on ?
-> 
-
-I'll leave for now as said offline to be able to not build unsupported
-transport.
-
-> > +	help
-> > +	  Enable mailbox based transport for SCMI.
-> > +
-> > +	  If you want the ARM SCMI PROTOCOL stack to include support for a
-> > +	  transport based on mailboxes, answer Y.
-> > +	  A matching DT entry will also be needed to indicate the effective
-> > +	  presence of this kind of transport.
-> > +
-> 
-> I would drop the above comment on matching DT.
-> 
-
-Yes right, I was in doubt in fact if it was sensible place for that
-comment.
-
-> > +config ARM_SCMI_TRANSPORT_SMC
-> > +	bool "SCMI transport based on SMC"
-> > +	depends on ARM_SCMI_PROTOCOL && HAVE_ARM_SMCCC_DISCOVERY
-> 
-> Ditto
-> 
-
-DittoAck :D
-
-> > +	select ARM_SCMI_HAVE_TRANSPORT
-> > +	default y
-> > +	help
-> > +	  Enable SMC based transport for SCMI.
-> > +
-> > +	  If you want the ARM SCMI PROTOCOL stack to include support for a
-> > +	  transport based on SMC, answer Y.
-> > +	  A matching DT entry will also be needed to indicate the effective
-> > +	  presence of this kind of transport.
-> > +
-> 
-> endif #ARM_SCMI_PROTOCOL
-> 
+would that be okay?
 
 Thanks,
-Cristian
+Liam
+
+>
+> Cheers,
+> Peter
+>
+> > Thanks,
+> > Liam
+> >=20
+> >>
+> >> Cheers,
+> >> Peter
+> >>
+> >>>  	case IIO_VAL_INT_PLUS_NANO:
+> >>>  		tmp =3D ((s64)*val * 1000000000LL + *val2) * rescale->numerator;
+> >>>  		tmp =3D div_s64(tmp, rescale->denominator);
+> >>>
+> >=20
+
