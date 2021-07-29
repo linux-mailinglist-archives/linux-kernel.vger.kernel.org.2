@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140693DA825
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB583DA829
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238436AbhG2P7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:59:16 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:36213 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238036AbhG2P6L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:58:11 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id E69D45C010E;
-        Thu, 29 Jul 2021 11:58:03 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 29 Jul 2021 11:58:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=animalcreek.com;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=ahTGRcGEE9+wIDNP0Z6gvlwNfNO
-        vXtR62+7G1xOUlpo=; b=dAjdr+TgHnv2Eba/RgVsG3XsqoPIBieIN8+ypHOme+f
-        HzIHhd3w1egvJStE/G9hosh7PIJxB1rUBB3oFWte2hd+R8MieCZjTSw7ErvStI0O
-        LuemMP8129pCo995OvxlryEMjCZylKH3AdD2CXXeX6j2HRhfWLS5a+ltRC/AfNZ9
-        pNqqsC4Foxtkw9ROn6KFNZJGEp333EM8X0xv+LwM95Z5HiNe17MOU5BmcWnzEIen
-        i7/7PytUdQbIrSob75Xl9KvGaUsh/fEBSUz7X/ElDFX3KoWtYqoloKUL3m+P3oRH
-        v9ZW5LNjLNAl7TKzHvGeyXnD8mLzBhqtn4Nh9o2BOZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ahTGRc
-        GEE9+wIDNP0Z6gvlwNfNOvXtR62+7G1xOUlpo=; b=VsurHzvl5huQ9dXpK1Uo6+
-        0LgCrkdHNO2LaFY/a2jfAFxaBSVsK9GseP+KnGyXhZoR8LmdAktTvYhRHzYxtIvZ
-        OGYGRv10va2f+2PZl/k9D01ud9j6xG2yT2niOU23wQLS3Qsg9DREx5OG9y/ecu05
-        qt6VEihXQZQ4eeREx043VMiooD7ANtt38o3fWR51NtWTazqu1utG0vNdbUhV8e2Y
-        sLO6wkZPkhUB7JA1mxxw1uhRlDQWu1mcKslCyIGKkwzeWpfjWl0OWI9ePxKJKoNh
-        FT4A2uJO5aOd2pILX9DiiW1X0OriUTqU/DAQY1Y7K5hO1OUO0fMYhGFAFjj5S8dw
-        ==
-X-ME-Sender: <xms:C9ACYWHCx_vM9SpHKf7IQ8Mb1P734ae9_TsiLtAYNN75bcE_k4Ch4Q>
-    <xme:C9ACYXUFE0QNXCHmwAonFsHW7KEqHVum95V7oxlBYz2UdzZovOMmhoMKOaPWdgB5P
-    VR8Mgn2CQdu7YYOpA>
-X-ME-Received: <xmr:C9ACYQLJPIihb5KG6S9ccCE1aEOcO7doSAJdBTh7cfPRr2mwfBGC_2N-ZydhxriT5jKRlfB538ednSwNx8ucvjz0-3dZ6Id2CebnUfo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheefgdehtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujghosehttdertddttddvnecuhfhrohhmpeforghrkhcu
-    ifhrvggvrhcuoehmghhrvggvrhesrghnihhmrghltghrvggvkhdrtghomheqnecuggftrf
-    grthhtvghrnhepieeugfdutdefiedtvdfftedufedvjeehgfevveefudfgjeffgeeiteet
-    jedufffhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epmhhgrhgvvghrsegrnhhimhgrlhgtrhgvvghkrdgtohhm
-X-ME-Proxy: <xmx:C9ACYQHONO11FiGHu5ER7cLbFxopPx78wEJTZgZzLcn-kMnazxzFRQ>
-    <xmx:C9ACYcVgwHPmJQqekfcZzE3IJjtrZ_yHyzipFw4ciyRNXkjs8nxOuA>
-    <xmx:C9ACYTPOXKyo9ah6Xcc77nFAtR34dCN4hTP8IG_o7Y5fLdeO-8awOQ>
-    <xmx:C9ACYfHWTLoJN7XD9sXBe53u6jN_WhM0U3Zu_DD_j5uKqJmzpGS-BQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jul 2021 11:58:03 -0400 (EDT)
-Received: by blue.animalcreek.com (Postfix, from userid 1000)
-        id 6508C1360232; Thu, 29 Jul 2021 08:58:02 -0700 (MST)
-Date:   Thu, 29 Jul 2021 08:58:02 -0700
-From:   Mark Greer <mgreer@animalcreek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Mark Greer <mgreer@animalcreek.com>,
-        Bongsu Jeon <bongsu.jeon@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 04/12] nfc: trf7970a: constify several pointers
-Message-ID: <20210729155802.GA242073@animalcreek.com>
-References: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
- <20210729104022.47761-5-krzysztof.kozlowski@canonical.com>
+        id S232822AbhG2QAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:00:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:51362 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238179AbhG2P66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 11:58:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F3091063;
+        Thu, 29 Jul 2021 08:58:54 -0700 (PDT)
+Received: from e121896.arm.com (unknown [10.57.40.10])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 483A93F73D;
+        Thu, 29 Jul 2021 08:58:52 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     acme@kernel.org, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org
+Cc:     leo.yan@linaro.org, suzuki.poulose@arm.com, mike.leach@linaro.org,
+        James Clark <james.clark@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [RFC PATCH 3/6] perf tools: Add disassembly warnings for annotate --stdio
+Date:   Thu, 29 Jul 2021 16:58:02 +0100
+Message-Id: <20210729155805.2830-4-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210729155805.2830-1-james.clark@arm.com>
+References: <20210729155805.2830-1-james.clark@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729104022.47761-5-krzysztof.kozlowski@canonical.com>
-Organization: Animal Creek Technologies, Inc.
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 12:40:14PM +0200, Krzysztof Kozlowski wrote:
-> Several functions do not modify pointed data so arguments and local
-> variables can be const for correctness and safety.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  drivers/nfc/trf7970a.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
+Currently 'perf annotate --stdio' (and --stdio2) will exit without
+printing anything if there are disassembly errors. Apply the same
+error handler that's used for TUI and GTK modes. This makes comparing
+disassembly across the different modes more consistent.
 
-Acked-by: Mark Greer <mgreer@animalcreek.com>
+Signed-off-by: James Clark <james.clark@arm.com>
+---
+ tools/perf/util/annotate.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index aa04a3655236..1ed097bcb78a 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -2787,9 +2787,17 @@ int symbol__tty_annotate2(struct map_symbol *ms, struct evsel *evsel,
+ 	struct rb_root source_line = RB_ROOT;
+ 	struct hists *hists = evsel__hists(evsel);
+ 	char buf[1024];
++	int err;
++
++	err = symbol__annotate2(ms, evsel, opts, NULL);
++	if (err) {
++		char msg[BUFSIZ];
+ 
+-	if (symbol__annotate2(ms, evsel, opts, NULL) < 0)
++		dso->annotate_warned = true;
++		symbol__strerror_disassemble(ms, err, msg, sizeof(msg));
++		ui__error("Couldn't annotate %s:\n%s", sym->name, msg);
+ 		return -1;
++	}
+ 
+ 	if (opts->print_lines) {
+ 		srcline_full_filename = opts->full_path;
+@@ -2813,9 +2821,17 @@ int symbol__tty_annotate(struct map_symbol *ms, struct evsel *evsel,
+ 	struct dso *dso = ms->map->dso;
+ 	struct symbol *sym = ms->sym;
+ 	struct rb_root source_line = RB_ROOT;
++	int err;
++
++	err = symbol__annotate(ms, evsel, opts, NULL);
++	if (err) {
++		char msg[BUFSIZ];
+ 
+-	if (symbol__annotate(ms, evsel, opts, NULL) < 0)
++		dso->annotate_warned = true;
++		symbol__strerror_disassemble(ms, err, msg, sizeof(msg));
++		ui__error("Couldn't annotate %s:\n%s", sym->name, msg);
+ 		return -1;
++	}
+ 
+ 	symbol__calc_percent(sym, evsel);
+ 
+-- 
+2.28.0
+
