@@ -2,75 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25493DA8B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B283DA8B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhG2QRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:17:06 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:53539 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhG2QRF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:17:05 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d46 with ME
-        id b4Gz2500421Fzsu034GzEF; Thu, 29 Jul 2021 18:17:00 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 29 Jul 2021 18:17:00 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     wim@linux-watchdog.org, linux@roeck-us.net, curtis.klein@hpe.com
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] watchdog: Fix an invalid memory access in 'watchdog_cdev_unregister()'
-Date:   Thu, 29 Jul 2021 18:16:58 +0200
-Message-Id: <dcb65e66acd1a50d65635b35d0d340846c7d10c7.1627575359.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S231152AbhG2QSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:18:05 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59721 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229565AbhG2QSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 12:18:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627575480; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=e1dPKh3zKj9PpqF9ZxCzzdvomuVG/QrY82xKdOIhZYE=;
+ b=Ow3KzvW8xpHfq53KgWuTyXvgo/VFAooL88eD5H4io3lFA17GgoWY5+XsjWH3A9nL6UKJHiOf
+ pN3mWnunn+SqMiJ21sVWAYAM9yc9faFVj+bKhaf6yEVGTp/f4nXFpT5F+g+1HEtOwL8vu18A
+ mpoEaHppQUzq7mdcKHob8reNpV8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6102d4ab290ea35ee6eb3ce8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 16:17:46
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 56F3EC4360C; Thu, 29 Jul 2021 16:17:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B5037C433D3;
+        Thu, 29 Jul 2021 16:17:45 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 29 Jul 2021 09:17:45 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        airlied@linux.ie, daniel@ffwll.ch, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] drm/msm/dp: return correct edid checksum after
+ corrupted edid checksum read
+In-Reply-To: <CAE-0n539r5zQx7zX9bECspKUAypQ8VucgeMNTmqAjHOCemVmOg@mail.gmail.com>
+References: <1626191647-13901-1-git-send-email-khsieh@codeaurora.org>
+ <1626191647-13901-6-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n539r5zQx7zX9bECspKUAypQ8VucgeMNTmqAjHOCemVmOg@mail.gmail.com>
+Message-ID: <ef1a1d24e0afe5455d841054660f1e3c@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few lines before 'watchdog_hrtimer_pretimeout_stop(wdd)', we explicitly
-set 'wdd->wd_data' to NULL.
-So, it is more than likely than this call will lead to an invalid
-memory access.
-
-Move this call before the 'wdd->wd_data = NULL;'
-
-Fixes: 7b7d2fdc8c3e ("watchdog: Add hrtimer-based pretimeout feature")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Completely untested!
-Not sure at all, that it is the way to fix it.
----
- drivers/watchdog/watchdog_dev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-index 3bab32485273..ffd8f1a82355 100644
---- a/drivers/watchdog/watchdog_dev.c
-+++ b/drivers/watchdog/watchdog_dev.c
-@@ -1096,6 +1096,8 @@ static void watchdog_cdev_unregister(struct watchdog_device *wdd)
- 		watchdog_stop(wdd);
- 	}
- 
-+	watchdog_hrtimer_pretimeout_stop(wdd);
-+
- 	mutex_lock(&wd_data->lock);
- 	wd_data->wdd = NULL;
- 	wdd->wd_data = NULL;
-@@ -1103,7 +1105,6 @@ static void watchdog_cdev_unregister(struct watchdog_device *wdd)
- 
- 	hrtimer_cancel(&wd_data->timer);
- 	kthread_cancel_work_sync(&wd_data->work);
--	watchdog_hrtimer_pretimeout_stop(wdd);
- 
- 	put_device(&wd_data->dev);
- }
--- 
-2.30.2
-
+On 2021-07-22 12:23, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-07-13 08:54:05)
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c 
+>> b/drivers/gpu/drm/msm/dp/dp_panel.c
+>> index 88196f7..0fdb551 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_panel.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_panel.c
+>> @@ -303,7 +303,12 @@ void dp_panel_handle_sink_request(struct dp_panel 
+>> *dp_panel)
+>>         panel = container_of(dp_panel, struct dp_panel_private, 
+>> dp_panel);
+>> 
+>>         if (panel->link->sink_request & DP_TEST_LINK_EDID_READ) {
+>> -               u8 checksum = 
+>> dp_panel_get_edid_checksum(dp_panel->edid);
+>> +               u8 checksum;
+>> +
+>> +               if (dp_panel->edid)
+>> +                       checksum = 
+>> dp_panel_get_edid_checksum(dp_panel->edid);
+>> +               else
+>> +                       checksum = 
+>> dp_panel->connector->real_edid_checksum;
+> 
+> Is there any reason why we can't use connector->real_edid_checksum all
+> the time?
+> 
+real_edid_checksum only calculated by drm when edid checksum 
+vitrification failed after edid read.
+In the good edid checksum case (edid verification succeed), 
+real_edid_checksum is not calculated by drm.
+>> 
+>>                 dp_link_send_edid_checksum(panel->link, checksum);
+>>                 dp_link_send_test_response(panel->link);
