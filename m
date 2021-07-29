@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067B93DA473
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF193DA46E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237644AbhG2NiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:38:01 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:12225 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237427AbhG2Nh5 (ORCPT
+        id S237597AbhG2NhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237515AbhG2NhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:37:57 -0400
+        Thu, 29 Jul 2021 09:37:13 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F728C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:37:10 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so5855316ota.11
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:37:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1627565875; x=1659101875;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=W8x69J6Q09I5gZNXo9ZYxmS76YuV1xVnU5m8ij7pP8E=;
-  b=DA/R4+ivRRUBpi/GbJS/qOXt6GM09Av6NvTj4S/kPy5Nze2cGHSXEP4o
-   Gjer0bUCKLkolr2viJNkUadg8HStssynuBy7rudQl+D33q5IVNLlanZiK
-   wA7NroVoOxAvTBBudtoJaUhAs2MwxVK8+TmKuqAXnXEQJNUVkVe/7zdIp
-   g=;
-X-IronPort-AV: E=Sophos;i="5.84,278,1620691200"; 
-   d="scan'208";a="128788947"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 29 Jul 2021 13:37:45 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id DAB04A0379;
-        Thu, 29 Jul 2021 13:37:43 +0000 (UTC)
-Received: from uc8bbc9586ea454.ant.amazon.com (10.43.161.175) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 29 Jul 2021 13:37:38 +0000
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>
-CC:     Siddharth Chandrasekaran <sidcha.dev@gmail.com>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>,
-        <linux-hyperv@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Siddharth Chandrasekaran <sidcha@amazon.de>
-Subject: [PATCH] asm-generic/hyperv: Fix struct hv_message_header ordering
-Date:   Thu, 29 Jul 2021 15:37:02 +0200
-Message-ID: <20210729133702.11383-1-sidcha@amazon.de>
-X-Mailer: git-send-email 2.17.1
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gBxV/M7bf2etL/92MOXLTUY4CDfUBQBpgr1XUu4vYcA=;
+        b=oGAthEtoTSzHFxxLQFMLZPF5yd9CQBS7RH1B1es+5lCOp2ehQKryNcj/fXd4xtn1CS
+         XsoxAcnNjO17jL2FmsXRcZf5tJEE77N8xW+WZhLu43aH6J0uy3XPxz1chSLz4zJC7QhO
+         BEJ5G7/MstWPmXNut1M4N44l8dJ+kQ3qvCsPelSUMGB0Ph24D3oFpLiGrrjvWwjQixIb
+         /1lJ/JI8LbCmmixhIPE2mBuzZ32UG33wgT1N1oWmCEmkozn/1TRMtJJzb5oPEXuiwqLY
+         tKPWPTvxYkx/HmZckEQhnQO4RVZLqKm54SaGhAmKAcmoHnzfherPul7fOLtyNK9QnCFJ
+         Cfmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=gBxV/M7bf2etL/92MOXLTUY4CDfUBQBpgr1XUu4vYcA=;
+        b=NQDTdmdiE2Md7rt0q+vQobh9X9kSSlDK5SUMAs2d4UTUKfgvBaYfN/cxQ0rTTUhfS0
+         dH9qlG/ixOVqQb1ip8N8hWgGzmTwCCIrqTIoZgZAroMJpgzfsaZRxpXaoyR/lgn9V/w5
+         UR0QeGnPJhtARRwpcSmilgyaZJXx4toepyfMAY4H4YBeSpMYAUpP5PHV+AdcYALwjHfW
+         iuj1I5xLpPfXRQhNDOq84cxKAlGyebIBoafoeIrXaACV9Yfy7oAWWH3vdq74IoCpPCE7
+         ltVpH/Dz8l3iYkXjd6cm74DN77WgVBWFSM1CDyB9nEbUCGunXNei1kqW4PATpaRYjn/G
+         dd0A==
+X-Gm-Message-State: AOAM532106Cs6d+77swPlc7RFM7Q60fXisUDYATXpGyq13BT8ZLry+Df
+        S+KdsYvaotyM3jJT6WsFdA==
+X-Google-Smtp-Source: ABdhPJzjEk41gfRrNOFiVGteeIFO1VphmT7/VAtIp7bnH9p4eXZFRDKwHQBh5DNB/gtyudCBsu+MnA==
+X-Received: by 2002:a05:6830:1dab:: with SMTP id z11mr3457577oti.107.1627565829930;
+        Thu, 29 Jul 2021 06:37:09 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id m4sm477094oou.0.2021.07.29.06.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 06:37:08 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:e842:87d0:ed02:228a])
+        by serve.minyard.net (Postfix) with ESMTPSA id C921A18005A;
+        Thu, 29 Jul 2021 13:37:07 +0000 (UTC)
+Date:   Thu, 29 Jul 2021 08:37:06 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Wen Yang <wenyang@linux.alibaba.com>
+Cc:     Baoyou Xie <baoyou.xie@alibaba-inc.com>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipmi: rate limit ipmi smi_event failure message
+Message-ID: <20210729133706.GY3406@minyard.net>
+Reply-To: minyard@acm.org
+References: <20210729093228.77098-1-wenyang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.175]
-X-ClientProxiedBy: EX13D15UWA003.ant.amazon.com (10.43.160.182) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729093228.77098-1-wenyang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Hyper-V TLFS Version 6.0b, struct hv_message_header members
-should be defined in the order:
+On Thu, Jul 29, 2021 at 05:32:28PM +0800, Wen Yang wrote:
+> Sometimes we can't get a valid si_sm_data, and we print an error
+> message accordingly. But the ipmi module seem to like retrying a lot,
+> in which case we flood the kernel log with a lot of messages, eg:
 
-	message_type, reserved, message_flags, payload_size
+This is reasonable.  I moved the #define into the dev_warn_ratelimited
+because that looked a little strange, and having the #define really
+didn't add any value.  But that's it, queued for next release.
 
-but we have it defined in the order:
+Thanks,
 
-	message_type, payload_size, message_flags, reserved
+-corey
 
-that is, the payload_size and reserved members swapped. Due to this mix
-up, we were inadvertently causing two issues:
-
-    - The payload_size field has invalid data; it didn't cause an issue
-      so far because we are delivering only timer messages which has fixed
-      size payloads the guest probably did a sizeof(payload) instead
-      relying on the value of payload_size member.
-
-    - The message_flags was always delivered as 0 to the guest;
-      fortunately, according to section 13.3.1 message_flags is also
-      treated as a reserved field.
-
-Although this is not causing an issue now, it might in future (we are
-adding more message types in our VSM implementation) so fix it to
-reflect the specification.
-
-Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
----
- include/asm-generic/hyperv-tlfs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-index 56348a541c50..a5540e9b171f 100644
---- a/include/asm-generic/hyperv-tlfs.h
-+++ b/include/asm-generic/hyperv-tlfs.h
-@@ -284,9 +284,9 @@ union hv_port_id {
- /* Define synthetic interrupt controller message header. */
- struct hv_message_header {
- 	__u32 message_type;
--	__u8 payload_size;
--	union hv_message_flags message_flags;
- 	__u8 reserved[2];
-+	union hv_message_flags message_flags;
-+	__u8 payload_size;
- 	union {
- 		__u64 sender;
- 		union hv_port_id port;
--- 
-2.17.1
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+> 
+> [46318019.164726] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318020.109700] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318021.158677] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318022.212598] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318023.258564] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318024.210455] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318025.260473] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318026.308445] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318027.356389] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318028.298288] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> [46318029.363302] ipmi_si IPI0001:00: Could not set the global enables: 0xc1.
+> 
+> Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+> Cc: Baoyou Xie <baoyou.xie@alibaba-inc.com>
+> Cc: Corey Minyard <minyard@acm.org>
+> Cc: openipmi-developer@lists.sourceforge.net
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  drivers/char/ipmi/ipmi_si_intf.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
+> index 62929a3..f64c3ac 100644
+> --- a/drivers/char/ipmi/ipmi_si_intf.c
+> +++ b/drivers/char/ipmi/ipmi_si_intf.c
+> @@ -591,7 +591,7 @@ static void handle_transaction_done(struct smi_info *smi_info)
+>  		smi_info->handlers->get_result(smi_info->si_sm, msg, 3);
+>  		if (msg[2] != 0) {
+>  			/* Error clearing flags */
+> -			dev_warn(smi_info->io.dev,
+> +			dev_warn_ratelimited(smi_info->io.dev,
+>  				 "Error clearing flags: %2.2x\n", msg[2]);
+>  		}
+>  		smi_info->si_state = SI_NORMAL;
+> @@ -683,10 +683,11 @@ static void handle_transaction_done(struct smi_info *smi_info)
+>  		/* We got the flags from the SMI, now handle them. */
+>  		smi_info->handlers->get_result(smi_info->si_sm, msg, 4);
+>  		if (msg[2] != 0) {
+> -			dev_warn(smi_info->io.dev,
+> -				 "Couldn't get irq info: %x.\n", msg[2]);
+> -			dev_warn(smi_info->io.dev,
+> -				 "Maybe ok, but ipmi might run very slowly.\n");
+> +#define IPMI_WARN_CHECKING_ENABLES "Maybe ok, but ipmi might run very slowly."
+> +
+> +			dev_warn_ratelimited(smi_info->io.dev,
+> +				"Couldn't get irq info: %x, %s\n",
+> +				msg[2], IPMI_WARN_CHECKING_ENABLES);
+>  			smi_info->si_state = SI_NORMAL;
+>  			break;
+>  		}
+> @@ -721,7 +722,7 @@ static void handle_transaction_done(struct smi_info *smi_info)
+>  
+>  		smi_info->handlers->get_result(smi_info->si_sm, msg, 4);
+>  		if (msg[2] != 0)
+> -			dev_warn(smi_info->io.dev,
+> +			dev_warn_ratelimited(smi_info->io.dev,
+>  				 "Could not set the global enables: 0x%x.\n",
+>  				 msg[2]);
+>  
+> @@ -1343,7 +1344,7 @@ static int try_get_dev_id(struct smi_info *smi_info)
+>  
+>  		if (cc != IPMI_CC_NO_ERROR &&
+>  		    ++retry_count <= GET_DEVICE_ID_MAX_RETRY) {
+> -			dev_warn(smi_info->io.dev,
+> +			dev_warn_ratelimited(smi_info->io.dev,
+>  			    "BMC returned 0x%2.2x, retry get bmc device id\n",
+>  			    cc);
+>  			goto retry;
+> -- 
+> 1.8.3.1
+> 
