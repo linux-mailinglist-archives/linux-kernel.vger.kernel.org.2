@@ -2,75 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E333DAC70
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367C83DAC79
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbhG2UH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 16:07:28 -0400
-Received: from mail-il1-f170.google.com ([209.85.166.170]:37732 "EHLO
-        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhG2UH0 (ORCPT
+        id S232827AbhG2UIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 16:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232785AbhG2UIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:07:26 -0400
-Received: by mail-il1-f170.google.com with SMTP id f8so3854755ilr.4;
-        Thu, 29 Jul 2021 13:07:22 -0700 (PDT)
+        Thu, 29 Jul 2021 16:08:02 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D34C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:07:58 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id z2so13265380lft.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jTmFh8dBUxxfIA7MnCPlfr2/MF7WnSFwZKcouyPXsrI=;
+        b=j3mDa6/bGguSlBEB/5YxoKvbffgwh8rRFdcJJYMuubkjWC7CzKoNOZD3yPNxJ5HXdP
+         hr+DzfA66ATd4M7E2M+M9zIPjJABeU+0Z61nfoY9yQ7zilP+BKfpzFqjtu00y0DbImoJ
+         FTcarWb2JwjnWDYZCTMQ30Lw2y2/cEPmgU5RxAZDbsvJT9r52Z8AErywhCQ5AHiYBGnj
+         LQrDuL/pl8MB2hzSyUiTTaSfvn+bLP1LwIqLrY+bKAdNRfLwWBAQXSPX5vOgARcuEjHW
+         8gM3Rf16RdRVskU9QL4fMLoKQ1RhQ6RpT/7d83kUJ4+MU9JieNSqBmgPZyqNihnU1eaq
+         XeCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AjVi3HOc38IAipi+bfXo+kMMpn3RMH+B6clxAHAb76c=;
-        b=diS03Qh+JP08PNujP02dFLghxhKZctYclgD0x2OKx3p1/OvTlE6bBakdYh+7O2krBI
-         b++MJZBsx+EZnKJ7dXBPgVQS1fibdN690evK0/uBGtkhiueVUpVpVAubPYf+9xIDIT96
-         JSRBgDIFaEp/waS+oiWHn5mREvu7+T1Y8Zh5wykTfEkNs0BbuENoIdPWLgtQzvauixtv
-         G/0dS9oeVu/8dfL1BC8hoP1b2Fe+imyR6OdzvdI+aaUtf/WbFYUQZiq+RVONbXStqDId
-         ZlNVC33J0gnONjTyecLKF4s/R0hPSAo1Vk/uhvdxJe2tIALEELKeaHWpltyjutC7l1hX
-         +81A==
-X-Gm-Message-State: AOAM53290kCGAfmTLWuBXYkTuoQgpMm+iC8WxCg5ZK9ALge83q8+tK7H
-        QAmp8Pj+NmYRRDpTDaC7qw==
-X-Google-Smtp-Source: ABdhPJz76WIWBBBfztDGL8PIe0R0FGSKx3wBqv/ZmLHj4fOZfYzL+kYtnOZ4BZTXgeNN0IKjggBTQg==
-X-Received: by 2002:a92:c5c2:: with SMTP id s2mr4986347ilt.180.1627589242144;
-        Thu, 29 Jul 2021 13:07:22 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p14sm2400419ilo.6.2021.07.29.13.07.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 13:07:21 -0700 (PDT)
-Received: (nullmailer pid 797014 invoked by uid 1000);
-        Thu, 29 Jul 2021 20:07:20 -0000
-Date:   Thu, 29 Jul 2021 14:07:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 01/15] dt-bindings: mtd: update mtd-physmap.yaml reference
-Message-ID: <YQMKeA4uO/3Rs01Y@robh.at.kernel.org>
-References: <cover.1626947923.git.mchehab+huawei@kernel.org>
- <ab2ff9ee66110c37691b467ec8b4679e9d426416.1626947923.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jTmFh8dBUxxfIA7MnCPlfr2/MF7WnSFwZKcouyPXsrI=;
+        b=tqpcPYVc3GLLx252LsbVcRU9zs8XME9/lGZuKKY3crMnw/vmdr0zV/D5xd1YfLh7YO
+         od5ErYpNQXGwuEW5zGe5Na/vR7UI4E0q35xkrehg4B9jeLGLcGNs5xBvg+AIXSBlmoC8
+         OTlM8J36qE0QzLKNOpXoS4+lWAHor8tgQNAo6ctmIeH0UUNgR8euH5SCbpxMssfANl05
+         uFL32J/fVVcVSptASBOR/0ZXVaZMkp1J7qk1+P7Me89pACsxINMN9PK9eYk0KYZeDgWr
+         MS7X8S1JX9CWqqRQJQumrbzG6I5WrC3OGNOAGGJWoqN5ps9P8dnyzx7irBsMvdO6PVp+
+         2Idw==
+X-Gm-Message-State: AOAM530TgA3Py7rGFR78szLz6DvbCBZhrUbkDtah4htolfr5tjmUJmN7
+        fd8Dabl7I70dHaTSMqTiYeMMIJv3gMuy6WjGL0jKGg==
+X-Google-Smtp-Source: ABdhPJyCK1cfhDjBCUWkIafk33w1RKfYfFOKKupy9ZzcP8PGybq89vd6BezAvcQkfzUv0BhjixrwfA9GUnzLCWOGh0E=
+X-Received: by 2002:a19:6b14:: with SMTP id d20mr5099285lfa.359.1627589276715;
+ Thu, 29 Jul 2021 13:07:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ab2ff9ee66110c37691b467ec8b4679e9d426416.1626947923.git.mchehab+huawei@kernel.org>
+References: <20210729195632.489978-1-oupton@google.com> <20210729195632.489978-2-oupton@google.com>
+In-Reply-To: <20210729195632.489978-2-oupton@google.com>
+From:   Jing Zhang <jingzhangos@google.com>
+Date:   Thu, 29 Jul 2021 13:07:45 -0700
+Message-ID: <CAAdAUtge_wRL-Ri-TngototL5jixSfDyJm7nTaYBXJqXU0jfmw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] KVM: arm64: Record number of signal exits as a vCPU stat
+To:     Oliver Upton <oupton@google.com>
+Cc:     KVM ARM <kvmarm@lists.cs.columbia.edu>, KVM <kvm@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Peter Shier <pshier@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Guangyu Shi <guangyus@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 11:59:58 +0200, Mauro Carvalho Chehab wrote:
-> Changeset 63f8e9e0ac65 ("dt-bindings: mtd: Convert mtd-physmap to DT schema")
-> renamed: Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> to: Documentation/devicetree/bindings/mtd/mtd-physmap.yaml.
-> 
-> Update its cross-reference accordingly.
-> 
-> Fixes: 63f8e9e0ac65 ("dt-bindings: mtd: Convert mtd-physmap to DT schema")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Thu, Jul 29, 2021 at 12:56 PM Oliver Upton <oupton@google.com> wrote:
+>
+> Most other architectures that implement KVM record a statistic
+> indicating the number of times a vCPU has exited due to a pending
+> signal. Add support for that stat to arm64.
+>
+> Cc: Jing Zhang <jingzhangos@google.com>
+> Signed-off-by: Oliver Upton <oupton@google.com>
 > ---
->  Documentation/devicetree/bindings/mtd/gpmc-nor.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
+>  arch/arm64/include/asm/kvm_host.h | 1 +
+>  arch/arm64/kvm/arm.c              | 1 +
+>  arch/arm64/kvm/guest.c            | 3 ++-
+>  3 files changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 41911585ae0c..70e129f2b574 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -576,6 +576,7 @@ struct kvm_vcpu_stat {
+>         u64 wfi_exit_stat;
+>         u64 mmio_exit_user;
+>         u64 mmio_exit_kernel;
+> +       u64 signal_exits;
+>         u64 exits;
+>  };
+>
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index e9a2b8f27792..60d0a546d7fd 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -783,6 +783,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>                 if (signal_pending(current)) {
+>                         ret = -EINTR;
+>                         run->exit_reason = KVM_EXIT_INTR;
+> +                       ++vcpu->stat.signal_exits;
+>                 }
+>
+>                 /*
+> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> index 1dfb83578277..50fc16ad872f 100644
+> --- a/arch/arm64/kvm/guest.c
+> +++ b/arch/arm64/kvm/guest.c
+> @@ -50,7 +50,8 @@ const struct _kvm_stats_desc kvm_vcpu_stats_desc[] = {
+>         STATS_DESC_COUNTER(VCPU, wfi_exit_stat),
+>         STATS_DESC_COUNTER(VCPU, mmio_exit_user),
+>         STATS_DESC_COUNTER(VCPU, mmio_exit_kernel),
+> -       STATS_DESC_COUNTER(VCPU, exits)
+> +       STATS_DESC_COUNTER(VCPU, exits),
+> +       STATS_DESC_COUNTER(VCPU, signal_exits),
+How about put signal_exits before exits as the same order in
+kvm_vcpu_stat just for readability?
+>  };
+>  static_assert(ARRAY_SIZE(kvm_vcpu_stats_desc) ==
+>                 sizeof(struct kvm_vcpu_stat) / sizeof(u64));
+> --
+> 2.32.0.554.ge1b32706d8-goog
+>
+Reviewed-by: Jing Zhang <jingzhangos@google.com>
 
-Applied, thanks!
+Thanks,
+Jing
