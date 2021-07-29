@@ -2,85 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037803DAA5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628C53DAA38
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhG2ReX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:34:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:53828 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229947AbhG2ReV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:34:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 961571FB;
-        Thu, 29 Jul 2021 10:34:17 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E2C003F73D;
-        Thu, 29 Jul 2021 10:34:15 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] sched: Skip priority checks with
- SCHED_FLAG_KEEP_PARAMS
-To:     Quentin Perret <qperret@google.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        qais.yousef@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-References: <20210719161656.3833943-1-qperret@google.com>
- <20210719161656.3833943-3-qperret@google.com>
- <ad30be79-8fb2-023d-9936-01f7173164e4@arm.com> <YP6++lClPCQvTLcK@google.com>
- <YP/dEMeULqozIqZd@google.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <cb6aaa1d-0bf4-eebc-5ffc-c1e7971564a8@arm.com>
-Date:   Thu, 29 Jul 2021 19:34:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232321AbhG2Rbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229863AbhG2Rba (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 13:31:30 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B0BC061765;
+        Thu, 29 Jul 2021 10:31:25 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id j2so7856246wrx.9;
+        Thu, 29 Jul 2021 10:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pnVzhT/kHdPgZUP65cfJqBoONaapfo5r8e0MrAlb984=;
+        b=jaC3QwjjviykfCntbsWoFJDNF21xu8yghmN2KvvaAwVUR4mtfATAQuHMPuqadbtwUo
+         enKV2slTVRgfCP9UgZzJYDTlQzdrKjzXg40LcjUTktctC59CEkWGBuKgJOqn3kcVELDN
+         Gqxm5cr4MEyeN4XO3INSQNXopzzpjPCRuzeAqoaougPd45yqEiG0QSflJ4YmoIPr+AG2
+         C19SzpImiBO3ayVtb+QZgtJZkr/k/yLA40n2jxJGvVR/esMJm87HNs/Zm41DwU8GfwaN
+         egcbUqeuxrXgU6aRr8UnTTrN6e03v1GHu4m4OBgMNOkR0Q8S9CR9s+XfGM23/WP7MRAM
+         7eBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pnVzhT/kHdPgZUP65cfJqBoONaapfo5r8e0MrAlb984=;
+        b=LtaCzrn8Uas1y2LurY07RxsIL9eXbafMdZexY8GSER3/kBRXZyjsCOTMqHMvl+7x2s
+         HoCyXwM0N/7JFGv0Tr0ABHtM3DZrk/tanwNW4RKkxmwEMumq/I415bQDjdePnnl04YIy
+         yEtO0oNP2/hkovrT6mfXQ2ZdycR+eqye9nT5OFR1iirTO7GSNRhrDlMNuCbmfiRaYoNj
+         ioZ8pjcsH+3rz8e8pMiVGBpLTLoFxMz3FAng8ZVP+uLCAx/gd40x9iRPJa4TAUFjpFe3
+         flNhhTxAVUAUReTuixV64UtyBNFyCjf/aW23FeCydB4vPIYPWvKIyNslW+E4+9m6EdLO
+         z8cQ==
+X-Gm-Message-State: AOAM531D9FkAhVaEpRNKgk8RTO037oulgBKaZYM+lHmX7hV2GVF6AGkc
+        vBpcDA9aade/OIZn3SPnhHxJqum3nKz35mUlo+I=
+X-Google-Smtp-Source: ABdhPJzB3zZoxPwWPnZQvco4cbgtwKh7tKLWjYB2qIguBecvjgdSw2VQJQ94SIm5agk39ycqx5XjveJvKou3TG92Cro=
+X-Received: by 2002:a5d:4348:: with SMTP id u8mr6400529wrr.28.1627579884127;
+ Thu, 29 Jul 2021 10:31:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YP/dEMeULqozIqZd@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1627473242-35926-1-git-send-email-akhilpo@codeaurora.org> <CAE-0n53xMHudWaL7gdnN7jEPE1uLmetZaxYiqToO1AzTZ2R0Mw@mail.gmail.com>
+In-Reply-To: <CAE-0n53xMHudWaL7gdnN7jEPE1uLmetZaxYiqToO1AzTZ2R0Mw@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 29 Jul 2021 10:35:32 -0700
+Message-ID: <CAF6AEGv9G99YqEixdUZCLxEgXX1+EqcjgQP-v5CCuj64sv_bTA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] arm64: dts: qcom: sc7280: Add gpu support
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Douglas Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Andy Gross <agross@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2021 12:16, Quentin Perret wrote:
-> On Monday 26 Jul 2021 at 14:56:10 (+0100), Quentin Perret wrote:
->> On Thursday 22 Jul 2021 at 10:47:33 (+0200), Dietmar Eggemann wrote:
->>> (*) This changes the behaviour when setting uclamp values on a DL task.
->>>
->>> Before uclamp values could be set but now, because of
->>>
->>>   void __getparam_dl(struct task_struct *p, struct sched_attr *attr)
->>>     ..
->>>     attr->sched_flags = dl_se->flags
->>>
->>> SCHED_FLAG_UTIL_CLAMP gets overwritten and  __sched_setscheduler() bails in:
->>>
->>>     if (unlikely(policy == p->policy)) {
->>>       ...
->>>       retval = 0;
->>>       goto unlock;
->>>     }
->>>   change:
->>>
->>> I.e. the:
->>>
->>>       if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)
->>>         goto change;
->>>
->>> can't trigger anymore.
->>
->> Bah, as you said it doesn't seem to be a big deal, but clearly that was
->> unintentional. Let me try and fix this.
-> 
-> While looking at this I found existing bugs in the area. Fixes are here:
-> 
-> https://lore.kernel.org/lkml/20210727101103.2729607-1-qperret@google.com/
-> 
-> And with the above series applied this patch should behave correctly
-> now.
+On Thu, Jul 29, 2021 at 10:19 AM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Akhil P Oommen (2021-07-28 04:54:01)
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> > index 029723a..c88f366 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> > @@ -592,6 +593,85 @@
+> >                         qcom,bcm-voters = <&apps_bcm_voter>;
+> >                 };
+> >
+> > +               gpu@3d00000 {
+> > +                       compatible = "qcom,adreno-635.0", "qcom,adreno";
+> > +                       #stream-id-cells = <16>;
+> > +                       reg = <0 0x03d00000 0 0x40000>,
+> > +                             <0 0x03d9e000 0 0x1000>,
+> > +                             <0 0x03d61000 0 0x800>;
+> > +                       reg-names = "kgsl_3d0_reg_memory",
+> > +                                   "cx_mem",
+> > +                                   "cx_dbgc";
+> > +                       interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
+> > +                       iommus = <&adreno_smmu 0 0x401>;
+> > +                       operating-points-v2 = <&gpu_opp_table>;
+> > +                       qcom,gmu = <&gmu>;
+> > +                       interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
+> > +                       interconnect-names = "gfx-mem";
+> > +
+> > +                       gpu_opp_table: opp-table {
+> > +                               compatible = "operating-points-v2";
+> > +
+> > +                               opp-550000000 {
+> > +                                       opp-hz = /bits/ 64 <550000000>;
+> > +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
+> > +                                       opp-peak-kBps = <6832000>;
+> > +                               };
+> > +
+> > +                               opp-450000000 {
+>
+> Why is 450000000 after 550000000? Is it on purpose? If not intended
+> please sort by frequency.
 
-It does. Like depicted in
+We've used descending order, at least for gpu opp table, on other
+gens, fwiw.. not sure if that just means we were doing it wrong
+previously
 
-https://lkml.kernel.org/r/e6d103f1-f8ee-cad9-c7c0-c9ea5d0f099a@arm.com
+BR,
+-R
 
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>
+> > +                                       opp-hz = /bits/ 64 <450000000>;
+> > +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
+> > +                                       opp-peak-kBps = <4068000>;
+> > +                               };
+> > +
+> > +                               opp-315000000 {
+> > +                                       opp-hz = /bits/ 64 <315000000>;
+> > +                                       opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> > +                                       opp-peak-kBps = <1804000>;
+> > +                               };
+> > +                       };
+> > +               };
+> > +
