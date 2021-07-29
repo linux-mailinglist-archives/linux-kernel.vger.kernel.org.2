@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FBE3DA132
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25F83DA138
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhG2Kkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:40:39 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34408
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235445AbhG2Kkh (ORCPT
+        id S236186AbhG2Kkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:40:41 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:47704
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235755AbhG2Kki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:40:37 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        Thu, 29 Jul 2021 06:40:38 -0400
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 02B653F051
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:40:34 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 4E0413F238
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627555234;
-        bh=U5ZMYZkwqc8RmbQysqq1OTMd/Wgw4WsrTPEA4vYur0c=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=O3jOQYFY6dqrgjVdVuQL9e6Sc0FfoF5VGfll05AhWptCMRmmIBbiGuenWnfO1VrK0
-         Jhdyo5J2n6plCcNoZ7kBC7lGi1z0eCy7lKMkDOxQQaeKalVUsSyHNLUFqWJqb8yWi6
-         aS0IL8ag7MPLBlBDgyzrQN+IfJBcFOGB/M88dUr0KtNvU+70XhQOw5WeNzb/KDdvta
-         W6H7d+1eYYZ1NqzkpravJ0trzDRCE4ewXtuv2JugzqYJbWKWHc1mMQE8vdPP/f0Yhi
-         XejWQkkWi+kMjq1Q3E2K4TTKgx7DUBJoCzQZHSicdVeDtFU+v4gtFhIbDTU8kPmb99
-         eNUqpdbFD5raw==
-Received: by mail-ed1-f69.google.com with SMTP id i89-20020a50b0620000b02903b8906e05b4so2715037edd.19
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:40:34 -0700 (PDT)
+        s=20210705; t=1627555235;
+        bh=2+MASfDeMXItUy0KRRU6qIh2N4zib4Lrz4DxPbXJr60=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=A8W42v4KoNY2p8NkFhp0mtMxil1RQC4pu9cte5lTrt1XD0539BEgQB7PK6aN6ZYP6
+         uKH8w+ZyweDyj5M0Wz1AUqw8IX+K1BzCHq/7c4ze53HhMYT9RsFxw9PhD5FpXzdMbI
+         FEQUyRRrCvYY2fBUtUsebDMlFPly9E7A/WFVUZSrgmrm/It0TKIg95gRzdkdgAy2+e
+         ThACAkGKQCGNhA1TuHUlZvOmM30cYPz/Tj97HxxLkuK2q79DuGYTg74wdFS+Lz+etD
+         S9yfErz6RP/RmowefzlgXKlnIgtpVqjW9Z3AVnkzUAYQ+VNLOHqFzwq2Noyapq9aX5
+         IsuZ4qUNPbY4g==
+Received: by mail-ej1-f72.google.com with SMTP id ci25-20020a1709072679b029058e79f6c38aso1518586ejc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:40:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U5ZMYZkwqc8RmbQysqq1OTMd/Wgw4WsrTPEA4vYur0c=;
-        b=YhmmVsjYYOnxoWNYrA9AUcQiFjtzQhIOWaOK9LTXyvbv66bOYfqytMr4ZVTyQYFvEG
-         gHu6augAGvlJQ0dbyY4I/QCKSu5x5urs4GK1lxwepyEX9LKTrwevCiQWoe41ex0W9qfW
-         kF7+1nRRh7A8hr8jO1y1GP1T0F0KzMFwBKVTwGobTkcSBf76nMZyeuv9I8w8XnWI4k8q
-         P1zDiwZfmyynO6v2vJG/JZ79LicGTuaPRiYRR2hqk067YOAT/ox60DdqGvC9nUVYkBxH
-         Tp3FCOTuPhGKQk5jomcg0IuewpqzILRIFUYntrjezjlhl2vGp+opBCqn9ypT0EFs6v/m
-         47cg==
-X-Gm-Message-State: AOAM532gyvJHYyTKur8cOE7DYBtyDCxZyEkaB1rVitCR8LKCHf6baSEa
-        JX05JEcI3JWSZxGRp0IGnZDYv9Z4Lvqlw7CQA9wQ/Ne5ML2nZNfpPE58XDfjpAP8O7mFXMeCPjl
-        D7F9HvHG0hF7IU9PfW8NrZ6d6vHgUuqrsKr2PuWi5/A==
-X-Received: by 2002:a05:6402:278e:: with SMTP id b14mr5191732ede.277.1627555233654;
-        Thu, 29 Jul 2021 03:40:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0zzZMt4FRxj6/pkKudrZrKtAC8UcrWt1V+5uDuEVakkenlwbpg5EabX2DWunH4RtcpYeAvw==
-X-Received: by 2002:a05:6402:278e:: with SMTP id b14mr5191710ede.277.1627555233472;
-        Thu, 29 Jul 2021 03:40:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2+MASfDeMXItUy0KRRU6qIh2N4zib4Lrz4DxPbXJr60=;
+        b=dfP2qi+bY3kZ20hXcRHiJsHz8YbXFhcwZpadqMS1SxU2QbQCbpU+wFEEM7hD4dus+w
+         WKcJVp3vlzao6ux9kgKQpl9mRmSlHO+zyMnBZf4SAr5e33+jteEsQzKvP8rvCznNqBqa
+         dZa1r2hrIc91cnMrjl6/RC2EMbyHtvyl7K48HzyYUUNNOKyWEEn4P4rUaXdsFRz1hh/Q
+         LALB7KuFKSHuMImeDEM1MWApb/W3pXDZADjbgYOSBX328AbU1bgqRiXa1j27ojuaA5RX
+         ONEQpgJLmI298LJtguSYRjrqkPpDGfaBibrDPSOIUN3vSbXdoMb9OYqFkT37V3FvL2/2
+         kQAg==
+X-Gm-Message-State: AOAM530TBx6mRpJkqBb00sROLvSvc8AknGxH3kxDctZrybaIMkr/j5Sz
+        RK+YAr7BIz3uuNx2axH9+guTlDGKFV9tkVHLHo8Uyu5Xy0SPyhYxacrWnuNuBp+n8Q/b/UCIx7+
+        NYAgTOhtxQzJ0q1rnzQuzrk52mfShXTJdh57HGfeSDQ==
+X-Received: by 2002:a05:6402:b83:: with SMTP id cf3mr5240271edb.12.1627555235093;
+        Thu, 29 Jul 2021 03:40:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwwJDOdp8Ic5sbEoP+ybcJEGMi8R0A1BITHI63lRz6KY4s1GLDvMBVi9ewCQtp/6p2bmUkfPA==
+X-Received: by 2002:a05:6402:b83:: with SMTP id cf3mr5240255edb.12.1627555234989;
+        Thu, 29 Jul 2021 03:40:34 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id c14sm824475ejb.78.2021.07.29.03.40.32
+        by smtp.gmail.com with ESMTPSA id c14sm824475ejb.78.2021.07.29.03.40.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 03:40:32 -0700 (PDT)
+        Thu, 29 Jul 2021 03:40:34 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Mark Greer <mgreer@animalcreek.com>,
@@ -61,61 +62,48 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-wireless@vger.kernel.org
-Subject: [PATCH 00/12] nfc: constify, continued (part 2)
-Date:   Thu, 29 Jul 2021 12:40:10 +0200
-Message-Id: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 01/12] nfc: constify passed nfc_dev
+Date:   Thu, 29 Jul 2021 12:40:11 +0200
+Message-Id: <20210729104022.47761-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
+References: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The struct nfc_dev is not modified by nfc_get_drvdata() and
+nfc_device_name() so it can be made a const.
 
-On top of:
-nfc: constify pointed data
-https://lore.kernel.org/lkml/20210726145224.146006-1-krzysztof.kozlowski@canonical.com/
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ include/net/nfc/nfc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best regards,
-Krzysztof
-
-
-Krzysztof Kozlowski (12):
-  nfc: constify passed nfc_dev
-  nfc: mei_phy: constify buffer passed to mei_nfc_send()
-  nfc: port100: constify several pointers
-  nfc: trf7970a: constify several pointers
-  nfc: virtual_ncidev: constify pointer to nfc_dev
-  nfc: nfcsim: constify drvdata (struct nfcsim)
-  nfc: fdp: drop unneeded cast for printing firmware size in dev_dbg()
-  nfc: fdp: use unsigned int as loop iterator
-  nfc: fdp: constify several pointers
-  nfc: microread: constify several pointers
-  nfc: mrvl: constify several pointers
-  nfc: mrvl: constify static nfcmrvl_if_ops
-
- drivers/nfc/fdp/fdp.c             | 27 +++++++++++-----------
- drivers/nfc/fdp/fdp.h             |  2 +-
- drivers/nfc/fdp/i2c.c             |  6 ++---
- drivers/nfc/mei_phy.c             |  2 +-
- drivers/nfc/microread/i2c.c       |  2 +-
- drivers/nfc/microread/microread.c |  4 ++--
- drivers/nfc/microread/microread.h |  2 +-
- drivers/nfc/nfcmrvl/fw_dnld.c     | 16 +++++++------
- drivers/nfc/nfcmrvl/i2c.c         |  4 ++--
- drivers/nfc/nfcmrvl/main.c        |  4 ++--
- drivers/nfc/nfcmrvl/nfcmrvl.h     |  6 ++---
- drivers/nfc/nfcmrvl/spi.c         |  6 ++---
- drivers/nfc/nfcmrvl/uart.c        |  4 ++--
- drivers/nfc/nfcmrvl/usb.c         |  2 +-
- drivers/nfc/nfcsim.c              |  2 +-
- drivers/nfc/port100.c             | 37 +++++++++++++++++--------------
- drivers/nfc/trf7970a.c            | 17 +++++++-------
- drivers/nfc/virtual_ncidev.c      |  2 +-
- include/net/nfc/nfc.h             |  4 ++--
- 19 files changed, 78 insertions(+), 71 deletions(-)
-
+diff --git a/include/net/nfc/nfc.h b/include/net/nfc/nfc.h
+index c9ff341d57e4..5dee575fbe86 100644
+--- a/include/net/nfc/nfc.h
++++ b/include/net/nfc/nfc.h
+@@ -245,7 +245,7 @@ static inline void nfc_set_drvdata(struct nfc_dev *dev, void *data)
+  *
+  * @dev: The nfc device
+  */
+-static inline void *nfc_get_drvdata(struct nfc_dev *dev)
++static inline void *nfc_get_drvdata(const struct nfc_dev *dev)
+ {
+ 	return dev_get_drvdata(&dev->dev);
+ }
+@@ -255,7 +255,7 @@ static inline void *nfc_get_drvdata(struct nfc_dev *dev)
+  *
+  * @dev: The nfc device whose name to return
+  */
+-static inline const char *nfc_device_name(struct nfc_dev *dev)
++static inline const char *nfc_device_name(const struct nfc_dev *dev)
+ {
+ 	return dev_name(&dev->dev);
+ }
 -- 
 2.27.0
 
