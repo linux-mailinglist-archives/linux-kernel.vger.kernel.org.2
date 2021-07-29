@@ -2,90 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54293DA1C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A2B3DA1C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236457AbhG2LIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:08:06 -0400
-Received: from ni.piap.pl ([195.187.100.5]:58946 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232135AbhG2LIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:08:04 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        by ni.piap.pl (Postfix) with ESMTPSA id A7FFCC369544;
-        Thu, 29 Jul 2021 13:07:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl A7FFCC369544
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1627556877; bh=X7gZQ2nKkMDKLvWi02KX4C5ud6ugo22cktC2Z8oZa8E=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=aJ/hSYI4e/nvTJSHJmdnHzPwN4VQ0QeZBbgauPgLKLmO3h0yowmulL/bHkuYS6tPP
-         Zn7cPYvWr/PQZK6KLjuXiZCm/No0fCNrSeVlSbYR34xTzZQThvOKo/u8ZzT9Mc4q7+
-         UQD/Vt2RB8r35iftonBVYbW43weTQZmnuLxkbxcw=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Tim Harvey <tharvey@gateworks.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] TDA1997x: fix tda1997x_remove()
-References: <m35ywxcq1l.fsf@t19.piap.pl>
-        <a1f99432-f11e-fd4d-4956-ae2864f08a2a@xs4all.nl>
-Sender: khalasa@piap.pl
-Date:   Thu, 29 Jul 2021 13:07:57 +0200
-In-Reply-To: <a1f99432-f11e-fd4d-4956-ae2864f08a2a@xs4all.nl> (Hans Verkuil's
-        message of "Thu, 29 Jul 2021 11:55:47 +0200")
-Message-ID: <m335rxbcoi.fsf@t19.piap.pl>
+        id S236472AbhG2LKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:10:25 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33718 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232135AbhG2LKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 07:10:23 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 02B1F1F43DA0
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] char: tpm: Kconfig: remove bad i2c cr50 select
+In-Reply-To: <20210728215346.rmgvn4woou4iehqx@kernel.org>
+References: <20210727171313.2452236-1-adrian.ratiu@collabora.com>
+ <20210728215346.rmgvn4woou4iehqx@kernel.org>
+Date:   Thu, 29 Jul 2021 14:10:16 +0300
+Message-ID: <87h7gdqstj.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 165310 [Jul 29 2021]
-X-KLMS-AntiSpam-Version: 5.9.20.0
-X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
-X-KLMS-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4, {Tracking_arrow_text}, {Tracking_Text_ENG_RU_Has_Extended_Latin_Letters, eng}, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, t19.piap.pl:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;piap.pl:7.1.1
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2021/07/29 10:23:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/29 07:19:00 #16977611
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hans,
+On Thu, 29 Jul 2021, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> On Tue, Jul 27, 2021 at 08:13:12PM +0300, Adrian Ratiu wrote: 
+>> This fixes a minor bug which went unnoticed during the initial 
+>> driver upstreaming review: TCG_CR50 does not exist in mainline 
+>> kernels, so remove it.   Fixes: 3a253caaad11 ("char: tpm: add 
+>> i2c driver for cr50") Cc: stable@vger.kernel.org Reviewed-by: 
+>> Jarkko Sakkinen <jarkko@kernel.org> Signed-off-by: Adrian Ratiu 
+>> <adrian.ratiu@collabora.com> --- 
+> 
+> These are missing changelog. I guess tags are added, and nothing 
+> else? 
 
-Hans Verkuil <hverkuil@xs4all.nl> writes:
+Hi. That is correct, I've only added the tags you suggested on the 
+first patch, the second patch is identical.
 
->> +++ b/drivers/media/i2c/tda1997x.c
->> @@ -2771,6 +2771,7 @@ static int tda1997x_probe(struct i2c_client *clien=
-t,
->>  		goto err_free_media;
->>  	}
->>=20=20
->> +	i2c_set_clientdata(client, sd);
->>  	return 0;
->>=20=20
->>  err_free_media:
->>=20
+Adrian
+
 >
-> Actually, v4l2_i2c_subdev_init() sets this, and v4l2_i2c_subdev_init() *i=
-s* called.
-> Does it really crash in tda1997x_remove() without this patch?
-
-Yes, the pointer was once invalid (IIRC), and in other cases NULL.
-
-> If so, then I suspect something else is going on.
-
-I'll investigate further, then.
-
-Thanks,
---=20
-Krzysztof "Chris" Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+> /Jarkko
