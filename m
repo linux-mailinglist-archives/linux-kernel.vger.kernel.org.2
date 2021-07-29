@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5947B3DA5A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0455D3DA54A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239029AbhG2OIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:08:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49148 "EHLO mail.kernel.org"
+        id S238244AbhG2OAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:00:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238226AbhG2OA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:00:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA43F6108C;
-        Thu, 29 Jul 2021 13:59:44 +0000 (UTC)
+        id S238237AbhG2N62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:58:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 622AF60EBC;
+        Thu, 29 Jul 2021 13:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567185;
-        bh=ehVN1lUmJP5gTZ3vI5IQKKSPb1DWaFucAs0vsktFrAg=;
+        s=korg; t=1627567105;
+        bh=EN23vqeUyFQKL/fSjyJOpav1qRy5l+MKE1zie0Pd8QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fhvLuVkKGLhXJjumFnTY/RhT1AfWIrozlzTQ5d86QY/wogTpqmHjRPp4koOd9TVLh
-         FT7AqTIOypF+RCwdc8T4gEAb0z3J58YP8MKqosfZrrz+oGgRBLiqaQAKMFFXScxdtO
-         rRQHt5f7uDHZSUUMZN5QvnKi/S+0H/7GwhIrlcMI=
+        b=LAp885ZxGHZfz8uNrGYcvQ3T0VPe8N9SGXe3C80esMoOF6S5lQwplqQcl9GIlqNvW
+         Y1y0JiPgBfMrVYRj7SStAluDwxrHTyG+9uVGZ0xlHPPUCJljijBYp6XjqiDRYu1vvo
+         8qKIT7IYp4gTv8tl7eoAsmO9WE2GzCJlIOeVEHfg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Xu, Yanfei" <yanfei.xu@windriver.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 09/22] rcu-tasks: Dont delete holdouts within trc_wait_for_one_reader()
-Date:   Thu, 29 Jul 2021 15:54:40 +0200
-Message-Id: <20210729135137.632633169@linuxfoundation.org>
+Subject: [PATCH 5.10 21/24] iomap: remove the length variable in iomap_seek_data
+Date:   Thu, 29 Jul 2021 15:54:41 +0200
+Message-Id: <20210729135137.925878051@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729135137.336097792@linuxfoundation.org>
-References: <20210729135137.336097792@linuxfoundation.org>
+In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
+References: <20210729135137.267680390@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul E. McKenney <paulmck@kernel.org>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit a9ab9cce9367a2cc02a3c7eb57a004dc0b8f380d ]
+[ Upstream commit 3ac1d426510f97ace05093ae9f2f710d9cbe6215 ]
 
-Invoking trc_del_holdout() from within trc_wait_for_one_reader() is
-only a performance optimization because the RCU Tasks Trace grace-period
-kthread will eventually do this within check_all_holdout_tasks_trace().
-But it is not a particularly important performance optimization because
-it only applies to the grace-period kthread, of which there is but one.
-This commit therefore removes this invocation of trc_del_holdout() in
-favor of the one in check_all_holdout_tasks_trace() in the grace-period
-kthread.
+The length variable is rather pointless given that it can be trivially
+deduced from offset and size.  Also the initial calculation can lead
+to KASAN warnings.
 
-Reported-by: "Xu, Yanfei" <yanfei.xu@windriver.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reported-by: Leizhen (ThunderTown) <thunder.leizhen@huawei.com>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tasks.h | 1 -
- 1 file changed, 1 deletion(-)
+ fs/iomap/seek.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 71e9d625371a..fcef5f0c60b8 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -937,7 +937,6 @@ static void trc_wait_for_one_reader(struct task_struct *t,
- 	// The current task had better be in a quiescent state.
- 	if (t == current) {
- 		t->trc_reader_checked = true;
--		trc_del_holdout(t);
- 		WARN_ON_ONCE(t->trc_reader_nesting);
- 		return;
+diff --git a/fs/iomap/seek.c b/fs/iomap/seek.c
+index 107ee80c3568..271edcc84a28 100644
+--- a/fs/iomap/seek.c
++++ b/fs/iomap/seek.c
+@@ -186,27 +186,23 @@ loff_t
+ iomap_seek_data(struct inode *inode, loff_t offset, const struct iomap_ops *ops)
+ {
+ 	loff_t size = i_size_read(inode);
+-	loff_t length = size - offset;
+ 	loff_t ret;
+ 
+ 	/* Nothing to be found before or beyond the end of the file. */
+ 	if (offset < 0 || offset >= size)
+ 		return -ENXIO;
+ 
+-	while (length > 0) {
+-		ret = iomap_apply(inode, offset, length, IOMAP_REPORT, ops,
+-				  &offset, iomap_seek_data_actor);
++	while (offset < size) {
++		ret = iomap_apply(inode, offset, size - offset, IOMAP_REPORT,
++				  ops, &offset, iomap_seek_data_actor);
+ 		if (ret < 0)
+ 			return ret;
+ 		if (ret == 0)
+-			break;
+-
++			return offset;
+ 		offset += ret;
+-		length -= ret;
  	}
+ 
+-	if (length <= 0)
+-		return -ENXIO;
+-	return offset;
++	/* We've reached the end of the file without finding data */
++	return -ENXIO;
+ }
+ EXPORT_SYMBOL_GPL(iomap_seek_data);
 -- 
 2.30.2
 
