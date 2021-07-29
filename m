@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7453DA7EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612353DA7F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238010AbhG2Pyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:54:37 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:60716 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237875AbhG2Pyf (ORCPT
+        id S238070AbhG2Pzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237851AbhG2Pz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:54:35 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id fea072fe12c31b53; Thu, 29 Jul 2021 17:54:30 +0200
-Received: from kreacher.localnet (89-64-80-223.dynamic.chello.pl [89.64.80.223])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 564DC669F29;
-        Thu, 29 Jul 2021 17:54:29 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PCI <linux-pci@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        Koba Ko <koba.ko@canonical.com>
-Subject: [PATCH v1.1 1/2] PCI: PM: Avoid forcing PCI_D0 for wakeup reasons inconsistently
-Date:   Thu, 29 Jul 2021 17:54:28 +0200
-Message-ID: <2593738.mvXUDI8C0e@kreacher>
-In-Reply-To: <2207145.ElGaqSPkdT@kreacher>
-References: <4668274.31r3eYUQgx@kreacher> <2207145.ElGaqSPkdT@kreacher>
+        Thu, 29 Jul 2021 11:55:29 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7690EC061765;
+        Thu, 29 Jul 2021 08:55:25 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id u25so9005176oiv.5;
+        Thu, 29 Jul 2021 08:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TV3s+6Ek9QNCMB+l3h/81KjOffdCml0U1KqwweGRv3M=;
+        b=W3qmxYqU0FFMIiEndRoCpJYEarj9iL17Qe7ByS+YdVWNkwvbtvXREX8s9c/GmtnlLP
+         saZpa5ulXRgF9yzHmUx2dwIrOfqU/nFOsn2iHVHe5lFJePtbTc3meLDC+ama3Fbjg0DE
+         MYqSSBDEbTImMeNqshH0XSzTGmeSTPx70YmOXmO1gGA+fa18YGOXhtMm/Xz0/Ov8zeJN
+         NB1jWH968HqaG6VZvwtz28OD7/3DS8vAn92RTP4T48JqjkGMhPcrGvAi6rr9bgjBhNUl
+         eaccPi9gIM1z28VT5y+OSDQgY4/VCmJbZ2xPpH6UrRM9E4AsoNKVb0kNkeAkbZ4hTTrV
+         Tjmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TV3s+6Ek9QNCMB+l3h/81KjOffdCml0U1KqwweGRv3M=;
+        b=FMqoGQtBuwEwuXIWg6P08raBxtXXWNqp3VRxLJ/6rhWmegmvDABKZJAylOk7g0gfqI
+         rZGhubFmizHb/gyy98B37a1u7IlWKrPYwBcMxqKJyzZzt7y5139otJcHsRfDMcjWwK2I
+         AhKdmtr9HfIlNwiqheagifQBF7t3prQ7fIfUmJ5eHepTYOE9NnsICWmrUom2YXI+9RVE
+         4u90Hqs/tcNHoDh71l3f2dRs4s9CSKCwKiYUYreZGPAGRAVpi9j+8W2jAjtper710OLM
+         VuNOIoWLbdMvy1+Hy/66dk0s7pJ1byuWcgn/4X7eZqWFsgRGncUrpwyLyk37V29uBbz1
+         KHbw==
+X-Gm-Message-State: AOAM532ttkLrQ/EB7m0FT2PIWe/cG9u+0MjCEKS0Nn/qKsr40Th2T6jA
+        DmD5XsBzr6rGB3AoZmECg++7ge2Vi9jPG1Kz
+X-Google-Smtp-Source: ABdhPJw+lDVr0eHFBVHNYdcQZ/0qtg70dFXQ9vTVwaLB6U8P5GaqHrNFJ7JH7FtQT5eCOpu1YrDzcQ==
+X-Received: by 2002:a05:6808:144a:: with SMTP id x10mr3598431oiv.82.1627574124908;
+        Thu, 29 Jul 2021 08:55:24 -0700 (PDT)
+Received: from ian.penurio.us ([47.184.51.90])
+        by smtp.gmail.com with ESMTPSA id q187sm681208oif.2.2021.07.29.08.55.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 08:55:24 -0700 (PDT)
+Subject: Re: [RFC PATCH 2/8] block: Add block device LED trigger list
+To:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>
+Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
+        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
+        kernelnewbies@kernelnewbies.org
+References: <20210729015344.3366750-1-arequipeno@gmail.com>
+ <20210729015344.3366750-3-arequipeno@gmail.com>
+ <108872.1627528448@turing-police>
+From:   Ian Pilcher <arequipeno@gmail.com>
+Message-ID: <b98e675d-0671-5dd9-766e-e422b68c3894@gmail.com>
+Date:   Thu, 29 Jul 2021 10:55:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.223
-X-CLIENT-HOSTNAME: 89-64-80-223.dynamic.chello.pl
-X-VADE-SPAMSTATE: spam:low
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrheefgdehtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnegoufhprghmkfhpucdlfedttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepteeggfelteegudehueegieekveduleeuledvueefjeefffegfeejudfgteefhefhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepkeelrdeigedrkedtrddvvdefnecuufhprghmkfhppeekledrieegrdektddrvddvfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrvddvfedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgv
- lhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehhvghlghgrrghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrghirdhhvghnghdrfhgvnhhgsegtrghnohhnihgtrghlrdgtohhmpdhrtghpthhtohepuhhtkhgrrhhshhdrhhdrphgrthgvlhesihhnthgvlhdrtghomhdprhgtphhtthhopehkohgsrgdrkhhosegtrghnohhnihgtrghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
+In-Reply-To: <108872.1627528448@turing-police>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 7/28/21 10:14 PM, Valdis Klētnieks wrote:
+> Is this bisect-clean (as in "will it build properly with that config option
+> set after each of the succeeding patches")?  Usually, the config option
+> is added in the *last* patch, so that even if you have a bisect issue
+> it won't manifest because it's wrapped in a '#ifdef CONFIG_WHATEVER'
+> that can't possibly be compiled in because there's no way for Kconfig
+> to set that variable.
 
-It is inconsistent to return PCI_D0 from pci_target_state() instead
-of the original target state if 'wakeup' is true and the device
-cannot signal PME from D0.
+Yes it is.  I tested compiling each patch with the CONFIG option both
+enabled and disabled.  (You will get an unused function warning for
+blk_ledtrig_find() until patch #3 is applied.)
 
-This only happens when the device cannot signal PME from the original
-target state and any shallower power states (including D0) and that
-case is effectively equivalent to the one in which PME singaling is
-not supported at all.  Since the original target state is returned in
-the latter case, make the function do that in the former one too.
+I'll switch to adding the option in the last patch of the series in the
+future.
 
-Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
-Fixes: 666ff6f83e1d ("PCI/PM: Avoid using device_may_wakeup() for runtime PM")
-Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
-Reported-by: Koba Ko <koba.ko@canonical.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+Thanks!
 
-v1 -> v1.1
-      * Resend under a suitable subject.
-
----
- drivers/pci/pci.c |   16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-Index: linux-pm/drivers/pci/pci.c
-===================================================================
---- linux-pm.orig/drivers/pci/pci.c
-+++ linux-pm/drivers/pci/pci.c
-@@ -2595,16 +2595,20 @@ static pci_power_t pci_target_state(stru
- 	if (dev->current_state == PCI_D3cold)
- 		target_state = PCI_D3cold;
- 
--	if (wakeup) {
-+	if (wakeup && dev->pme_support) {
-+		pci_power_t state = target_state;
-+
- 		/*
- 		 * Find the deepest state from which the device can generate
- 		 * PME#.
- 		 */
--		if (dev->pme_support) {
--			while (target_state
--			      && !(dev->pme_support & (1 << target_state)))
--				target_state--;
--		}
-+		while (state && !(dev->pme_support & (1 << state)))
-+			state--;
-+
-+		if (state)
-+			return state;
-+		else if (dev->pme_support & 1)
-+			return PCI_D0;
- 	}
- 
- 	return target_state;
-
-
-
+-- 
+========================================================================
+                  In Soviet Russia, Google searches you!
+========================================================================
