@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341323DA1F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CFA3DA1FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236701AbhG2LSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
+        id S236640AbhG2LUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236244AbhG2LSL (ORCPT
+        with ESMTP id S234105AbhG2LUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:18:11 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3393CC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:18:07 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id hs10so1401402ejc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:18:07 -0700 (PDT)
+        Thu, 29 Jul 2021 07:20:45 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D84C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:20:42 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id 185so6596626iou.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:20:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=65ZwwJqLgs4c9HtCALozYsS5NsihCPZf/ynWKHwUyR8=;
-        b=KzMZFRO6hmvgYKId5o3d7SOQb8EMTg17Lt7c87ajkq3mxdsrAnZuzjd78zV0hB5Ak3
-         RuFRi/DPGHSeLWQzsrOq8Zd1HeQ2O8CeHk0XTbJtxEGCyWC7asw5mHDbHXgFdTiXRE8N
-         XGJ29IMNwRmw0twXFXZkQcrCvoXJLz/XngDGdADdW7jHpe+J/6pruVphVa6LRvJHmewK
-         /hLCmSB0eIdXXBmW5mIucvOw2q31pAjUa8YFBq2I3h02fldHSdy2aqyUcFe2mihrB1eG
-         TDt65ZvGSiD1eIJ7QY4RhbmAuF26F2phzx/LqqecLEDMpBbsu5/2f6HBamAYpIiIctO0
-         VfGg==
+         :cc;
+        bh=vZk79eZwy6x+5Des0crP9loTl+BHfLniFPJ8a5R3MHM=;
+        b=N9S73oZEJsM8IaumKtSaen8iSrm90EsGjAxvIsq6mvLqFdg840yVPe55yu20oDM675
+         c9QYyK6NVKWNimQ3Ez8XY1IYoGzyqgVr5Q8N/T7Da0Mb6Tj2gUoANAYJGxGarT8ws+8O
+         8o+nBI+FGGRRsfXDlBDOlS9m55FPEXRa8ho7xvIj40FcFhZVRc63J0YxBKvkRmToGbmD
+         LxBLzGJdyp+DfVt4gP7AQFmK0sWsZ6IPCQ0UiWHmPMM29h5qZAHUPvp/LbasSYP1C+QX
+         YNpFAqGyM8taIrfNucEPw4Vjem5ETSJzrkTRal8f7varvQfsKDXQP1k0uY9YK9zRW5Dq
+         cz5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=65ZwwJqLgs4c9HtCALozYsS5NsihCPZf/ynWKHwUyR8=;
-        b=YrnGyxVFVLq1uchtfH6mAZ9E5F+1ZXxk/kAvDliVwTWG56Sr8GH/sr9kOoGjuo/ZYw
-         Lmi0O+UFFG8EMvoWwBv2S0C5mC+gupMmIVZbbJCclqyb9CSgMhwfsMlleA4a9PdtSjvr
-         frBFQnWHQz+OvjuJKACQHJ9d7fXI6wnI6tqQTv6AsVm7SqLkEmcFbuA1byQ+NzZ1B6Bx
-         OPiVCcLAjFcm+ZbpsIR0u969dYVlmayVzfVaYcAXkKdUffTvyuw9WSvUgifWdAqUbYiU
-         sZRmpBzYxMAhw0JrH4P3aKRpj9HsVygU9GGadpu/8Gokh+Nbpn3SQaqOs51V4SoXJw+e
-         e4Zg==
-X-Gm-Message-State: AOAM5309/1z7DU4CaLYjW+AyZs+SKM/ITwyu21S6/IFHzJUL1Jsj6ffw
-        hHKDppa3NB7o6mQlsTSOfOWeYSSePpUojR3qRxMZlA==
-X-Google-Smtp-Source: ABdhPJySfQ1NPMpN+/lsPjW164mn0r8d3REf4kf9pWPQ8yyRotEZCYiRLEJVSRNfO8LG3+VSGEByagnqdZ8GMYanqTw=
-X-Received: by 2002:a17:906:4fd6:: with SMTP id i22mr4214483ejw.92.1627557485657;
- Thu, 29 Jul 2021 04:18:05 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=vZk79eZwy6x+5Des0crP9loTl+BHfLniFPJ8a5R3MHM=;
+        b=czFwMVGQRpG9XMHfFe03m7i+Aw7vFfQOtIzTi2oYFG8V/sYwa4vcRnLgkipMLZyv05
+         +d7IlbPrPstGQnrM+uhtOVzm5dv5tY/j4TyaY87XfOTf0uUleNy10SaY8lHa62H1pAC8
+         t49fMAKhE5tPuPM9U1eXyG//5OtByb5GqGUpUeR92QonoLWO+M2sbcIj4TlIA4Qzrd4n
+         djTNjNitWMAZ6AyVx0Cz19PXVbokCDCFEdGh1ztNM9g7erNL3cUXksG84RvhQKHOWbxY
+         Rs4pesOsk3/GJHxqWEOsE26iPYnHAiu6Z6KfT4N+c2U1MlsoKD0WGpw/45QTn5CgVRKK
+         KYJw==
+X-Gm-Message-State: AOAM53234SdYwNfsP2cNeb58iwJ1nDhjgaC1fYTNHHDjGsDbF8CoQLsg
+        aJIAeVBbk4h0+loaXgyFLq082ZwhCFPgyDWt23syUSbE9ogY6eOr
+X-Google-Smtp-Source: ABdhPJzzBojF1/sBh9mtvv1Ulm2hDVIQ9aPxqmxd3Y8oGPLcI41CcWvzCrzT7v4F9Dw4BJCcmV8ftQYB2KITY9k99PU=
+X-Received: by 2002:a6b:490d:: with SMTP id u13mr3818153iob.176.1627557641844;
+ Thu, 29 Jul 2021 04:20:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
- <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
- <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
- <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
- <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
- <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at> <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
- <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
-In-Reply-To: <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Thu, 29 Jul 2021 08:17:53 -0300
-Message-ID: <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-To:     Richard Weinberger <richard.weinberger@gmail.com>
-Cc:     Pintu Agarwal <pintu.ping@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Sean Nyekjaer <sean@geanix.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>
+References: <20210706114120.197-1-alistair@alistair23.me>
+In-Reply-To: <20210706114120.197-1-alistair@alistair23.me>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Thu, 29 Jul 2021 21:20:14 +1000
+Message-ID: <CAKmqyKP8HKERLS3ckOA3wwpiv6J4tdFXn8-d6wXxDXDGn5iN=w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] regulator: sy7636a: Remove the poll_enable_time
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
-
-On Tue, 27 Jul 2021 at 18:16, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
+On Tue, Jul 6, 2021 at 9:41 PM Alistair Francis <alistair@alistair23.me> wrote:
 >
-> On Thu, Jul 22, 2021 at 1:11 PM Pintu Agarwal <pintu.ping@gmail.com> wrot=
-e:
-> >
-> > On Thu, 22 Jul 2021 at 02:24, Richard Weinberger <richard@nod.at> wrote=
-:
-> > >
-> > > ----- Urspr=C3=BCngliche Mail -----
-> > > >> But let me advertise ubiblock a second time.
-> > > > Sorry, I could not understand about the ubiblock request. Is it
-> > > > possible to elaborate little more ?
-> > > > We are already using squashfs on top of our UBI volumes (including
-> > > > rootfs mounting).
-> > > > This is the kernel command line we pass:
-> > > > rootfstype=3Dsquashfs root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30
-> > > > And CONFIG_MTD_UBI_BLOCK=3Dy is already enabled in our kernel.
-> > > > Do we need to do something different for ubiblock ?
-> > >
-> > > From that command line I understand that you are *not* using squashfs=
- on top of UBI.
-> > > You use mtdblock. ubiblock is a mechanism to turn an UBI volume into =
-a read-only
-> > > block device.
-> > > See: http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
-> > >
-[snip]
+> From testing on hardware the poll_enable_time isn't required and
+> sometimes causes the driver probe to fail so let's remove it.
+>
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
 
-Ouch, so surprised that after all these years someone is doing squashfs/mtd=
-block
-instead of using ubiblock :-)
+Ping
 
-Can we patch either Kconfig or add some warn_once on mtdblock
-usage, suggesting to use ubiblock instead?
+AlistaIr
 
-I remember there was still some use case(s) for mtdblock but I can't rememb=
-er
-now what was it, perhaps we should document the expectations?
-(Is that for JFFS2 to mount?)
-
-Thanks,
-Ezequiel
+> ---
+>  drivers/regulator/sy7636a-regulator.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/regulator/sy7636a-regulator.c b/drivers/regulator/sy7636a-regulator.c
+> index e021ae08cbaa..c3b34cac8c7f 100644
+> --- a/drivers/regulator/sy7636a-regulator.c
+> +++ b/drivers/regulator/sy7636a-regulator.c
+> @@ -13,8 +13,6 @@
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/mfd/sy7636a.h>
+>
+> -#define SY7636A_POLL_ENABLED_TIME 500
+> -
+>  static int sy7636a_get_vcom_voltage_op(struct regulator_dev *rdev)
+>  {
+>         int ret;
+> @@ -61,7 +59,6 @@ static const struct regulator_desc desc = {
+>         .owner = THIS_MODULE,
+>         .enable_reg = SY7636A_REG_OPERATION_MODE_CRL,
+>         .enable_mask = SY7636A_OPERATION_MODE_CRL_ONOFF,
+> -       .poll_enabled_time = SY7636A_POLL_ENABLED_TIME,
+>         .regulators_node = of_match_ptr("regulators"),
+>         .of_match = of_match_ptr("vcom"),
+>  };
+> --
+> 2.31.1
+>
