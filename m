@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964493DAE15
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 23:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DBB3DAE18
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 23:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhG2VT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 17:19:28 -0400
-Received: from mail-il1-f181.google.com ([209.85.166.181]:41913 "EHLO
-        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhG2VT0 (ORCPT
+        id S233706AbhG2VTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 17:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhG2VTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 17:19:26 -0400
-Received: by mail-il1-f181.google.com with SMTP id j18so4289039ile.8;
-        Thu, 29 Jul 2021 14:19:22 -0700 (PDT)
+        Thu, 29 Jul 2021 17:19:41 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BCEC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 14:19:37 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id t18so4971299qta.8
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 14:19:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hI5gfLyD1Tzqc9HNbOUWHN5K+jDpUpe1OJ1d5jQQrt0=;
+        b=PS5qQxOVGyVqgHrT4neWt8aUIyQ4OcaRSh3jgNavcE96MgC4OTRNgy+ykmimuMCCMj
+         BEUrUvwzxDaWp94PgIisXpFJiI8jiWqdGY7JkkzOdJ2n8AD7HacClwU0tDD9ouhFHR9p
+         ImZ5RVfunFsymGWcWNjeSM7OKB8lzdLtQDAHA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ZxbXjNJPmaats8JOtBxvMyMGEAJyQ7EcVf9p6TLrxag=;
-        b=g0SUhrF5y2a2g1o57zSypx89kbCwfPqmIz51yG6kNsKix2L5+c9KVIzpWTwwkjAlkz
-         BTjo4g1df4uvZ37UvjlOaB+mh5IgI3x9bvJyxUy9Rh7sbtWzv/dQTj6+WuuyhG177eFZ
-         qcfFBq6NQ3Lp7eaYgrV9aFr23BYErTEJ87PYYeRJYVvW/mg+GJYF7UNHvSwX6Du5U40s
-         yay8Ne+WQ3mICwFgviZUEdVkKtfDYp/nTtlmg7jCR0APnuAov/cdRO88LdPrxyjwi3OU
-         GvStGgT3Q/QarP8GoquzIaJOTh1TyxuALp7J1azVNU5tdqI/r+zoNTel6LKHCSNoxiBa
-         HSSg==
-X-Gm-Message-State: AOAM533r88G79ZhMo/URaxmjllhTwJ/kal6TxqlfQD2UWB0mouSMDHr/
-        ayFn+Y19uBSVXG5WSC5J/A==
-X-Google-Smtp-Source: ABdhPJzjT567vzS1PYSB5pmxP78UKspCQnniQ22XMj0Plnn7kuFWQumJFbUxQ0hMW2RE7PV8HnvM8A==
-X-Received: by 2002:a92:905:: with SMTP id y5mr5074091ilg.222.1627593561701;
-        Thu, 29 Jul 2021 14:19:21 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id h1sm2813888ioz.22.2021.07.29.14.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 14:19:21 -0700 (PDT)
-Received: (nullmailer pid 909346 invoked by uid 1000);
-        Thu, 29 Jul 2021 21:19:19 -0000
-Date:   Thu, 29 Jul 2021 15:19:19 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH 3/3] dt-bindings: mfd: add "syscon-smc" YAML description
-Message-ID: <YQMbV3elkU0yp92D@robh.at.kernel.org>
-References: <20210723135239.388325-1-clement.leger@bootlin.com>
- <20210723135239.388325-4-clement.leger@bootlin.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hI5gfLyD1Tzqc9HNbOUWHN5K+jDpUpe1OJ1d5jQQrt0=;
+        b=Du7+Or/fLh6TvQ8VU8NlvB41Tlgy7N6btx/nxwvplxIgOS4mQ4BwqG99ncvNt0CmWv
+         EB64GE8JmQ2bobdUBdibe+GVenhBBqb3DXlYK0LZ5pF6vbsnc5pAWT/hhQyERrhT5Cxp
+         7PU/UUtZpOMpUL9ygAc0xsD1+SBi4M/PdfZvzG9yb5xE7aJqdcJ/16v8l5AbLD+ljsPe
+         TdLr41D8/hditkNv7dItnIfAgDOFllxWzzPWxvJb6Pr8XJfkmoR7FoKlUXBm5JYECJs9
+         ghvGoCdI0HgyYTyA+H4//YOTBVo331kcATKdLMVCHwkwr9LHT9H1o5etm9ZavH30UPZv
+         u07g==
+X-Gm-Message-State: AOAM530ttvnE0R9WcUdmaAY7b2NuB5oOMS8zzvweb6ToAPgSkJRYbVk7
+        6sHoRMwWlEteq8maUxRhOMXsv8L+5WewQw==
+X-Google-Smtp-Source: ABdhPJwKHOvf0aFgicv0TOCYzXwystZyH5Q/vcEjbUU+2vMjM3QiXqH2NFATkjHGXXW8rcrbq+I8pg==
+X-Received: by 2002:ac8:7769:: with SMTP id h9mr5924480qtu.388.1627593576588;
+        Thu, 29 Jul 2021 14:19:36 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id i62sm2445643qke.110.2021.07.29.14.19.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 14:19:35 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id k65so12343611yba.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 14:19:35 -0700 (PDT)
+X-Received: by 2002:a25:2904:: with SMTP id p4mr9170962ybp.276.1627593575191;
+ Thu, 29 Jul 2021 14:19:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210723135239.388325-4-clement.leger@bootlin.com>
+References: <20210723002146.1962910-1-dianders@chromium.org>
+ <20210722172104.RFC.1.I1116e79d34035338a45c1fc7cdd14a097909c8e0@changeid> <YQMPOxfQw7zx6evp@robh.at.kernel.org>
+In-Reply-To: <YQMPOxfQw7zx6evp@robh.at.kernel.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 29 Jul 2021 14:19:23 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XYfQkuPseBq32rf2qiiv4fn2uf2wWv7FT3pjkRF9ugdA@mail.gmail.com>
+Message-ID: <CAD=FV=XYfQkuPseBq32rf2qiiv4fn2uf2wWv7FT3pjkRF9ugdA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/8] dt-bindings: drm/panel-simple: Introduce generic
+ eDP panels
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linus W <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 03:52:39PM +0200, Clément Léger wrote:
-> This patch adds documentation for the "syscon-smc" compatible which describes
-> a syscon using a SMC regmap instead of a MMIO one. This allows accessing system
-> controllers that are set as secure by using SMC handled by the secure monitor.
-> 
-> Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-> ---
->  .../devicetree/bindings/mfd/syscon-smc.yaml   | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/syscon-smc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/syscon-smc.yaml b/Documentation/devicetree/bindings/mfd/syscon-smc.yaml
-> new file mode 100644
-> index 000000000000..6ce1392c5e7f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/syscon-smc.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/syscon-smc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: System Controller Registers R/W via SMC Device Tree Bindings
-> +
-> +description: |
-> +  System controller SMC node represents a register region containing a set
-> +  of miscellaneous registers accessed through a secure monitor.
-> +  The typical use-case is the same as the syscon one but when running with a
-> +  secure monitor.
-> +
-> +maintainers:
-> +  - Lee Jones <lee.jones@linaro.org>
-> +
-> +properties:
-> +  compatible:
-> +    anyOf:
-> +      - items:
-> +          - enum:
-> +              - atmel,sama5d2-sfr
-> +
-> +          - const: syscon-smc
+Hi,
 
-I regret having 'syscon' as a compatible, so nak on a 2nd flavor of it. 
-It's only purpose is a hint to Linux to automagically create a regmap for 
-you.
+On Thu, Jul 29, 2021 at 1:27 PM Rob Herring <robh@kernel.org> wrote:
+>
+> IMO, you should move any applicable compatibles to the edp-panel schema.
+> Also, I don't think you should add 'edp-panel' to them. If they can work
+> better with the generic eDP driver, then that should be an internal
+> kernel change without a DT change. Also, if 2 different drivers match on
+> compatible, it's a roll of the dice which driver binds.
 
-All you need is the specific compatible, atmel,sama5d2-sfr, and you can 
-imply the rest of this from it. That's assuming the conclusion is a 
-register read/write interface on SMC is a good idea, but I don't think 
-it is.
+So overall what I was going for is this:
 
-Rob
+1. I want to be able to specify _just_ "edp-panel" for new boards.
+We'll make sure this is how it looks on devices that go through the
+factory and thus we can make sure that the driver can recognize all
+panels that get shipped.
+
+2. For existing boards, I'd like to be able to move them to use
+"edp-panel" but I'm less confident that I can really say exactly what
+panels are out there in the field. Even though our device tree has
+always listed only one panel, in truth boards have shipped with more
+than one and they've just been "compatible enough" with each other
+(this "white lie" is what I'm trying to fix). If somehow the generic
+"edp-panel" doesn't recognize a panel then I wanted to be able to use
+the old timings we'd always had before as a "fallback". That means
+that logically I wanted "edp-panel" to be first and only fallback to
+the old compatible string if we didn't recognize the panel ID that
+came from the EDID. In truth, both compatible strings are handled by
+the same driver the driver patch I submitted tried to be smart.
+
+Perhaps that above is over ambitious and it'd be better to just drop
+the whole "fallback" concept. If a board manufacturer wants to start
+using the "edp-panel" concept then maybe the right idea is to force
+them to bump the "board id" and then we can pick a new device tree
+revision. Then we can make sure all boards that come out of the
+factory with that new "board id" can be identified properly in the
+EDID. This will also get rid of some of the complexity in the driver
+patch, which is nice. I'll plan on doing this and address your other
+feedback for a v2.
+
+
+-Doug
