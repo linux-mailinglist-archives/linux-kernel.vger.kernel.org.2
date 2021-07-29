@@ -2,101 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9F83D9AD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65223D9AE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbhG2BMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 21:12:14 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12417 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbhG2BMN (ORCPT
+        id S233225AbhG2BNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 21:13:45 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:56844 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233067AbhG2BNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 21:12:13 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZsqD0pcxzcjlL;
-        Thu, 29 Jul 2021 09:08:40 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 09:12:06 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 29 Jul 2021 09:12:05 +0800
-Subject: Re: [PATCH 5.10 000/168] 5.10.54-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210726165240.137482144@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <35c993e6-8dfb-b97a-5602-9c28b91393c3@huawei.com>
-Date:   Thu, 29 Jul 2021 09:12:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 28 Jul 2021 21:13:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1627521222; x=1659057222;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=tKayTa4Fur8gXkrlZH2QDOGstOTksSbXKUYa8mjJuFg=;
+  b=wtTSliOVQwVMGc7Wd3oeQkyoaTsEu9QFioBMBSA+CDZPdOgaef6wOWC/
+   wSLe4Fbz8cZ54UJ9Koc0YgFVtqBy3yl+p8CEjPfYXgFL9DE0kPn303RXL
+   0lUp3EZNwatlKzhToitH3IHXboG/xyWSZcphM/YTsA8UDGb4dMTwRkiSr
+   4=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 28 Jul 2021 18:13:42 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Jul 2021 18:13:42 -0700
+Received: from fenglinw-gv.qualcomm.com (10.80.80.8) by
+ nasanexm03e.na.qualcomm.com (10.85.0.48) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 28 Jul 2021 18:13:40 -0700
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sboyd@kernel.org>
+CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
+        <quic_fenglinw@quicinc.com>
+Subject: [PATCH V1 0/9] A bunch of fix and optimization patches in spmi-pmic-arb.c
+Date:   Thu, 29 Jul 2021 09:12:38 +0800
+Message-ID: <1627521167-18848-1-git-send-email-quic_fenglinw@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20210726165240.137482144@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This change series includes some fixes and optimizations in spmi-pmic-arb.c.
+Please see change detail and description in each of the patch. Thanks!
 
+Abhijeet Dharmapurikar (1):
+  spmi: pmic-arb: add a print in cleanup_irq
 
-On 2021/7/27 13:06, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.54 release.
-> There are 168 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 28 Jul 2021 16:52:14 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.54-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Ashay Jaiswal (1):
+  spmi: pmic-arb: add support to dispatch interrupt based on IRQ status
 
-Tested on arm64 and x86 for 5.10.54-rc2,
+David Collins (5):
+  spmi: pmic-arb: check apid against limits before calling irq handler
+  spmi: pmic-arb: correct duplicate APID to PPID mapping logic
+  spmi: pmic-arb: block access for invalid PMIC arbiter v5 SPMI writes
+  spmi: pmic-arb: make interrupt support optional
+  spmi: pmic-arb: increase SPMI transaction timeout delay
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.54-rc2
-Commit: f52d2bc365d20d8768af7bbd794d9f94ed40f7a7
-Compiler: gcc version 7.3.0 (GCC)
+Subbaraman Narayanamurthy (1):
+  spmi: pmic-arb: do not ack and clear peripheral interrupts in
+    cleanup_irq
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+Yimin Peng (1):
+  spmi: pmic-arb: support updating interrupt type flags
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+ drivers/spmi/spmi-pmic-arb.c | 127 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 91 insertions(+), 36 deletions(-)
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+-- 
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
+
