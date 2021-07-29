@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70203DA60A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4DD3DA5B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238381AbhG2OLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:11:46 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3531 "EHLO
+        id S238011AbhG2OJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:09:04 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3534 "EHLO
         frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238395AbhG2ODD (ORCPT
+        with ESMTP id S237579AbhG2OEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:03:03 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBnx5hrdz6FG8j;
-        Thu, 29 Jul 2021 21:53:41 +0800 (CST)
+        Thu, 29 Jul 2021 10:04:51 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBp147Vnz6FGKx;
+        Thu, 29 Jul 2021 21:53:45 +0800 (CST)
 Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 16:02:58 +0200
+ 15.1.2176.2; Thu, 29 Jul 2021 16:03:02 +0200
 Received: from localhost.localdomain (10.69.192.58) by
  lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 15:02:54 +0100
+ 15.1.2176.2; Thu, 29 Jul 2021 15:02:58 +0100
 From:   John Garry <john.garry@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -30,9 +30,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
 CC:     <yao.jin@linux.intel.com>, <linux-kernel@vger.kernel.org>,
         <linux-perf-users@vger.kernel.org>, <irogers@google.com>,
         <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH 08/11] perf test: Add more pmu-events uncore aliases
-Date:   Thu, 29 Jul 2021 21:56:23 +0800
-Message-ID: <1627566986-30605-9-git-send-email-john.garry@huawei.com>
+Subject: [PATCH 09/11] perf pmu: Make pmu_add_sys_aliases() public
+Date:   Thu, 29 Jul 2021 21:56:24 +0800
+Message-ID: <1627566986-30605-10-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
 References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
@@ -46,141 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add more events to cover the scenarios fixed and also inadvertently broken
-by commit c47a5599eda3 ("perf tools: Fix pattern matching for same
-substring in different PMU type").
+Function pmu_add_sys_aliases() will be required for the PMU events test
+for system events aliases, so make it public.
 
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- .../arch/test/test_soc/cpu/uncore.json        | 23 +++++-
- tools/perf/tests/pmu-events.c                 | 72 +++++++++++++++++++
- 2 files changed, 94 insertions(+), 1 deletion(-)
+ tools/perf/util/pmu.c | 2 +-
+ tools/perf/util/pmu.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json b/tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
-index d0a890cc814d..788766f45dbc 100644
---- a/tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
-+++ b/tools/perf/pmu-events/arch/test/test_soc/cpu/uncore.json
-@@ -17,5 +17,26 @@
- 	    "CounterMask": "0",
- 	    "Invert": "0",
- 	    "EdgeDetect": "0"
--  }
-+  },
-+  {
-+	    "EventCode": "0x7",
-+	    "EventName": "uncore_hisi_l3c.rd_hit_cpipe",
-+	    "BriefDescription": "Total read hits",
-+	    "PublicDescription": "Total read hits",
-+	    "Unit": "hisi_sccl,l3c"
-+  },
-+  {
-+	    "EventCode": "0x12",
-+	    "EventName": "uncore_imc_free_running.cache_miss",
-+	    "BriefDescription": "Total cache misses",
-+	    "PublicDescription": "Total cache misses",
-+	    "Unit": "imc_free_running"
-+  },
-+  {
-+	    "EventCode": "0x34",
-+	    "EventName": "uncore_imc.cache_hits",
-+	    "BriefDescription": "Total cache hits",
-+	    "PublicDescription": "Total cache hits",
-+	    "Unit": "imc"
-+  },
- ]
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index 74c7dfe0a97f..0fcdeeda00ec 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -143,9 +143,54 @@ static const struct perf_pmu_test_event unc_cbo_xsnp_response_miss_eviction = {
- 	.matching_pmu = "uncore_cbox_0",
- };
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 238792197006..534b91ccb2a2 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -926,7 +926,7 @@ static int pmu_add_sys_aliases_iter_fn(struct pmu_event *pe, void *data)
+ 	return 0;
+ }
  
-+static const struct perf_pmu_test_event uncore_hisi_l3c_rd_hit_cpipe = {
-+	.event = {
-+		.name = "uncore_hisi_l3c.rd_hit_cpipe",
-+		.event = "event=0x2",
-+		.desc = "Total read hits. Unit: hisi_sccl,l3c ",
-+		.topic = "uncore",
-+		.long_desc = "Total read hits",
-+		.pmu = "hisi_sccl,l3c",
-+	},
-+	.alias_str = "event=0x7",
-+	.alias_long_desc = "Total read hits",
-+	.matching_pmu = "hisi_sccl3_l3c7",
-+};
-+
-+static const struct perf_pmu_test_event uncore_imc_free_running_cache_miss = {
-+	.event = {
-+		.name = "uncore_imc_free_running.cache_miss",
-+		.event = "event=0x12",
-+		.desc = "Total cache misses. Unit: uncore_imc_free_running ",
-+		.topic = "uncore",
-+		.long_desc = "Total cache misses",
-+		.pmu = "uncore_imc_free_running",
-+	},
-+	.alias_str = "event=0x12",
-+	.alias_long_desc = "Total cache misses",
-+	.matching_pmu = "uncore_imc_free_running_0",
-+};
-+
-+static const struct perf_pmu_test_event uncore_imc_cache_hits = {
-+	.event = {
-+		.name = "uncore_imc.cache_hits",
-+		.event = "event=0x34",
-+		.desc = "Total cache hits. Unit: uncore_imc ",
-+		.topic = "uncore",
-+		.long_desc = "Total cache hits",
-+		.pmu = "uncore_imc",
-+	},
-+	.alias_str = "event=0x34",
-+	.alias_long_desc = "Total cache hits",
-+	.matching_pmu = "uncore_imc_0",
-+};
-+
- static const struct perf_pmu_test_event *uncore_events[] = {
- 	&uncore_hisi_ddrc_flux_wcmd,
- 	&unc_cbo_xsnp_response_miss_eviction,
-+	&uncore_hisi_l3c_rd_hit_cpipe,
-+	&uncore_imc_free_running_cache_miss,
-+	&uncore_imc_cache_hits,
- 	NULL
- };
+-static void pmu_add_sys_aliases(struct list_head *head, struct perf_pmu *pmu)
++void pmu_add_sys_aliases(struct list_head *head, struct perf_pmu *pmu)
+ {
+ 	struct pmu_sys_event_iter_data idata = {
+ 		.head = head,
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 926da483a141..033e8211c025 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -81,6 +81,7 @@ struct perf_pmu_alias {
  
-@@ -504,6 +549,33 @@ static struct perf_pmu_test_pmu test_pmus[] = {
- 			&unc_cbo_xsnp_response_miss_eviction,
- 		},
- 	},
-+	{
-+		.pmu = {
-+			.name = (char *)"hisi_sccl3_l3c7",
-+			.is_uncore = 1,
-+		},
-+		.aliases = {
-+			&uncore_hisi_l3c_rd_hit_cpipe,
-+		},
-+	},
-+	{
-+		.pmu = {
-+			.name = (char *)"uncore_imc_free_running_0",
-+			.is_uncore = 1,
-+		},
-+		.aliases = {
-+			&uncore_imc_free_running_cache_miss,
-+		},
-+	},
-+	{
-+		.pmu = {
-+			.name = (char *)"uncore_imc_0",
-+			.is_uncore = 1,
-+		},
-+		.aliases = {
-+			&uncore_imc_cache_hits,
-+		},
-+	},
- };
- 
- /* Test that aliases generated are as expected */
+ struct perf_pmu *perf_pmu__find(const char *name);
+ struct perf_pmu *perf_pmu__find_by_type(unsigned int type);
++void pmu_add_sys_aliases(struct list_head *head, struct perf_pmu *pmu);
+ int perf_pmu__config(struct perf_pmu *pmu, struct perf_event_attr *attr,
+ 		     struct list_head *head_terms,
+ 		     struct parse_events_error *error);
 -- 
 2.26.2
 
