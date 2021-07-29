@@ -2,41 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E653D9E37
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE973D9E3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbhG2HRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:17:12 -0400
-Received: from verein.lst.de ([213.95.11.211]:56128 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234458AbhG2HRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:17:10 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 48E4167373; Thu, 29 Jul 2021 09:17:04 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 09:17:03 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] arch: Kconfig: clean up obsolete use of HAVE_IDE
-Message-ID: <20210729071703.GA31896@lst.de>
-References: <20210728182115.4401-1-lukas.bulwahn@gmail.com>
+        id S234526AbhG2HSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234347AbhG2HSa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 03:18:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB70CC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:18:27 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <jbe@pengutronix.de>)
+        id 1m90JC-000823-TG; Thu, 29 Jul 2021 09:18:22 +0200
+Received: from [2a0a:edc0:0:900:2e4d:54ff:fe67:bfa5] (helo=ginster)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <jbe@pengutronix.de>)
+        id 1m90JB-0002Hk-1m; Thu, 29 Jul 2021 09:18:21 +0200
+Received: from jbe by ginster with local (Exim 4.92)
+        (envelope-from <jbe@pengutronix.de>)
+        id 1m90JB-0002Zi-0i; Thu, 29 Jul 2021 09:18:21 +0200
+From:   Juergen Borleis <jbe@pengutronix.de>
+To:     dmaengine@vger.kernel.org
+Cc:     linux-imx@nxp.com, festevam@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        shawnguo@kernel.org, vkoul@kernel.org, kernel@pengutronix.de
+Subject: [PATCH] dma: imx-dma: configure the generic DMA type to make it work
+Date:   Thu, 29 Jul 2021 09:18:21 +0200
+Message-Id: <20210729071821.9857-1-jbe@pengutronix.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210728182115.4401-1-lukas.bulwahn@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: jbe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good:
+Commit dea7a9f
+  dmaengine: imx-dma: remove dma_slave_config direction usage
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+changes the method from a "configuration when called" to an "configuration
+when used". Due to this, only the cyclic DMA type gets configured
+correctly, while the generic DMA type is left non-configured.
+
+Without this additional call, the struct imxdma_channel::word_size member
+is stuck at DMA_SLAVE_BUSWIDTH_UNDEFINED and imxdma_prep_slave_sg() always
+returns NULL.
+
+Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
+---
+ drivers/dma/imx-dma.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/dma/imx-dma.c b/drivers/dma/imx-dma.c
+index 7f116bb..2ddc31e 100644
+--- a/drivers/dma/imx-dma.c
++++ b/drivers/dma/imx-dma.c
+@@ -812,6 +812,8 @@ static struct dma_async_tx_descriptor *imxdma_prep_slave_sg(
+ 		dma_length += sg_dma_len(sg);
+ 	}
+ 
++	imxdma_config_write(chan, &imxdmac->config, direction);
++
+ 	switch (imxdmac->word_size) {
+ 	case DMA_SLAVE_BUSWIDTH_4_BYTES:
+ 		if (sg_dma_len(sgl) & 3 || sgl->dma_address & 3)
+-- 
+2.20.1
+
