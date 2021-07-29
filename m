@@ -2,122 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D173D9D18
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B38C3D9D1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbhG2Fb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 01:31:27 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:51802 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233129AbhG2Fb0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:31:26 -0400
-Received: by mail-il1-f199.google.com with SMTP id g9-20020a92cda90000b029020cc3319a86so2690430ild.18
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 22:31:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=e4hqHnPtqsXF7Nnjw+AMuPPo4nbxLrKlXGDo7Dm2nAg=;
-        b=iZzOv2hvfS+i0Eg0BwcqPBTKJ1mEkuaYvGDxbFfl76BmQGCiwqvsXp8JasoRkD7ixv
-         DGG8s1ZHj9W5DOvpNYjqk0ANnZsyeyeSaF8r++JVr2Xjd+Y0AOWENvWUSUf5jlZm106X
-         CdhqtpuvylzJxXXcYTYobL4TZ0V8gEPXrVeZYvcjcPXD5K3TX4xEgnQO0FpF6/hNqT3X
-         GbvqKCbzWGbJSts7IolHQJ+YHZLlDWkKNEGPmYmuE9xcPWZow1PF65P5CAhv080wtQgc
-         eDBTtmomjdq4n94QQbrsjxNFisCS0ZdaI3bFlO3UePUldYLqhPI9HdzEdVZfs0CFgTVE
-         ftmg==
-X-Gm-Message-State: AOAM531vDIxjs4CTHcfAH5SFVJPV5uKo3vFvc+meFsTqZum4ue0EKWaW
-        UNvyKAhoEGbHEgzv7AKfm7VbYGwq2/3rQDXV2T52vMfkKC3v
-X-Google-Smtp-Source: ABdhPJwEuQqElPH3Rfv4oo156SiLaBFFaTJEdx8sOWr8wEUyBHrlOQVusYTGroaR6xrHJZil2pUbqvLyQFAXcZWkiBDHmLO072hK
+        id S233893AbhG2Fe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 01:34:59 -0400
+Received: from mga14.intel.com ([192.55.52.115]:7585 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230096AbhG2Fe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 01:34:57 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="212533398"
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
+   d="scan'208";a="212533398"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 22:34:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
+   d="scan'208";a="581183984"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Jul 2021 22:34:53 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m8yh2-0008uE-Cn; Thu, 29 Jul 2021 05:34:52 +0000
+Date:   Thu, 29 Jul 2021 13:34:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 56dbe080de28142d2116bd39e2897bebe6f2ebb6
+Message-ID: <61023dd7.ksY1GIocqpDPCTEO%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:198f:: with SMTP id g15mr2579946ilf.120.1627536683986;
- Wed, 28 Jul 2021 22:31:23 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 22:31:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e874a205c83c6922@google.com>
-Subject: [syzbot] kernel BUG in assoc_array_insert (2)
-From:   syzbot <syzbot+219c8d031f42380c907a@syzkaller.appspotmail.com>
-To:     dhowells@redhat.com, jarkko@kernel.org, jmorris@namei.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 56dbe080de28142d2116bd39e2897bebe6f2ebb6  rcu: Comment rcu_gp_init() code waiting for CPU-hotplug operations
 
-syzbot found the following issue on:
+elapsed time: 720m
 
-HEAD commit:    7d549995d4e0 Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17577e1a300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1dee114394f7d2c2
-dashboard link: https://syzkaller.appspot.com/bug?extid=219c8d031f42380c907a
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+configs tested: 99
+configs skipped: 3
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+219c8d031f42380c907a@syzkaller.appspotmail.com
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210728
+powerpc                     kilauea_defconfig
+m68k                          multi_defconfig
+sh                          polaris_defconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                       holly_defconfig
+x86_64                              defconfig
+arm                       spear13xx_defconfig
+mips                  cavium_octeon_defconfig
+ia64                             allmodconfig
+sh                          rsk7269_defconfig
+m68k                       m5249evb_defconfig
+sh                           sh2007_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                    adder875_defconfig
+sh                          r7780mp_defconfig
+mips                           mtx1_defconfig
+m68k                             allmodconfig
+arm                        vexpress_defconfig
+mips                     loongson2k_defconfig
+sh                          rsk7264_defconfig
+sh                   sh7770_generic_defconfig
+h8300                            alldefconfig
+openrisc                 simple_smp_defconfig
+x86_64                            allnoconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210728
+x86_64               randconfig-a003-20210728
+x86_64               randconfig-a001-20210728
+x86_64               randconfig-a004-20210728
+x86_64               randconfig-a005-20210728
+x86_64               randconfig-a002-20210728
+i386                 randconfig-a005-20210728
+i386                 randconfig-a003-20210728
+i386                 randconfig-a004-20210728
+i386                 randconfig-a002-20210728
+i386                 randconfig-a001-20210728
+i386                 randconfig-a006-20210728
+i386                 randconfig-a016-20210728
+i386                 randconfig-a012-20210728
+i386                 randconfig-a013-20210728
+i386                 randconfig-a014-20210728
+i386                 randconfig-a011-20210728
+i386                 randconfig-a015-20210728
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-------------[ cut here ]------------
-kernel BUG at lib/assoc_array.c:640!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 9793 Comm: kworker/1:8 Not tainted 5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: afs afs_manage_cell_work
-RIP: 0010:assoc_array_insert_into_terminal_node lib/assoc_array.c:640 [inline]
-RIP: 0010:assoc_array_insert+0x1e3e/0x2e70 lib/assoc_array.c:1001
-Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 84 c4 fe ff ff e8 3c ac e0 fd e9 ba fe ff ff e8 02 f2 9a fd <0f> 0b e8 fb f1 9a fd 0f 0b e8 f4 f1 9a fd 0f 0b e8 ed f1 9a fd 0f
-RSP: 0018:ffffc90009c177b0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000000000ff RCX: 0000000000000000
-RDX: ffff888087970100 RSI: ffffffff83d9cece RDI: 0000000000000003
-RBP: 0000000000000011 R08: 0000000000000010 R09: 000000000000000f
-R10: ffffffff83d9c0d9 R11: 000000000000000c R12: 00000000000000ff
-R13: dffffc0000000000 R14: 0000000000000010 R15: 000000000000000c
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1de4db0000 CR3: 0000000020468000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __key_link_begin+0xec/0x250 security/keys/keyring.c:1314
- construct_alloc_key security/keys/request_key.c:404 [inline]
- construct_key_and_link security/keys/request_key.c:499 [inline]
- request_key_and_link+0x798/0x1260 security/keys/request_key.c:637
- request_key_tag+0x4e/0xb0 security/keys/request_key.c:701
- dns_query+0x257/0x6d0 net/dns_resolver/dns_query.c:128
- afs_dns_query+0x122/0x390 fs/afs/addr_list.c:249
- afs_update_cell fs/afs/cell.c:402 [inline]
- afs_manage_cell fs/afs/cell.c:784 [inline]
- afs_manage_cell_work+0xa05/0x11f0 fs/afs/cell.c:840
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Modules linked in:
----[ end trace 02156db422e890c4 ]---
-RIP: 0010:assoc_array_insert_into_terminal_node lib/assoc_array.c:640 [inline]
-RIP: 0010:assoc_array_insert+0x1e3e/0x2e70 lib/assoc_array.c:1001
-Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 84 c4 fe ff ff e8 3c ac e0 fd e9 ba fe ff ff e8 02 f2 9a fd <0f> 0b e8 fb f1 9a fd 0f 0b e8 f4 f1 9a fd 0f 0b e8 ed f1 9a fd 0f
-RSP: 0018:ffffc90009c177b0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000000000ff RCX: 0000000000000000
-RDX: ffff888087970100 RSI: ffffffff83d9cece RDI: 0000000000000003
-RBP: 0000000000000011 R08: 0000000000000010 R09: 000000000000000f
-R10: ffffffff83d9c0d9 R11: 000000000000000c R12: 00000000000000ff
-R13: dffffc0000000000 R14: 0000000000000010 R15: 000000000000000c
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000308a888 CR3: 000000007ed4e000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
+clang tested configs:
+x86_64               randconfig-c001-20210728
+x86_64               randconfig-a016-20210728
+x86_64               randconfig-a011-20210728
+x86_64               randconfig-a014-20210728
+x86_64               randconfig-a013-20210728
+x86_64               randconfig-a012-20210728
+x86_64               randconfig-a015-20210728
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
