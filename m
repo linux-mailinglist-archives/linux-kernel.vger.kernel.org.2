@@ -2,166 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE36A3DA3D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753C63DA3D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237578AbhG2NVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:21:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56670 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237360AbhG2NVo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:21:44 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S237438AbhG2NVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:21:13 -0400
+Received: from mga05.intel.com ([192.55.52.43]:49902 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237381AbhG2NVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:21:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="298462306"
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
+   d="scan'208";a="298462306"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 06:21:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
+   d="scan'208";a="476389400"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Jul 2021 06:21:03 -0700
+Received: from [10.209.86.210] (kliang2-MOBL.ccr.corp.intel.com [10.209.86.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C96BA2003D;
-        Thu, 29 Jul 2021 13:21:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627564900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mj1/v9JenLsc1+hCorxYcobvriApan+7FwrmjTMbS+M=;
-        b=kNgrKnfRfBx/mX+yvxcCSo9RDfu8Nc6kMIBYVIyImeHv7h9tj/Oc80c4gdHtBdrFJ2houE
-        qBg6cF4S4ghmUZYmgjf+cT6rt097FUjdqTEoR0s9ZIIouBaB30k3/braTigSkLFsgb4dqy
-        BKWtyg+9uuko6CfpdgcBZ468Uh/2T34=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627564900;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mj1/v9JenLsc1+hCorxYcobvriApan+7FwrmjTMbS+M=;
-        b=Ag8XHghnu9vk9yh5y9PxmVjKToJMcajeu0wwgOF5CXycsE6h7pR4AWuYhQDvumhBssLpWE
-        jHAIVF3guSweWsAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9705313AF4;
-        Thu, 29 Jul 2021 13:21:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ODE7JGSrAmF9AwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 29 Jul 2021 13:21:40 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v3 03/35] mm, slub: allocate private object map for validate_slab_cache()
-Date:   Thu, 29 Jul 2021 15:21:00 +0200
-Message-Id: <20210729132132.19691-4-vbabka@suse.cz>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729132132.19691-1-vbabka@suse.cz>
-References: <20210729132132.19691-1-vbabka@suse.cz>
+        by linux.intel.com (Postfix) with ESMTPS id 4739A580871;
+        Thu, 29 Jul 2021 06:21:02 -0700 (PDT)
+Subject: Re: [perf] fuzzer triggers unchecked MSR access error: WRMSR to 0x318
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Vince Weaver <vincent.weaver@maine.edu>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Liang, Kan" <kan.liang@intel.com>
+References: <37881148-a43e-5fd4-817c-a875adc7a15f@maine.edu>
+ <YQJxka3dxgdIdebG@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <45bee582-0f89-5125-82e7-92caf8b741ea@linux.intel.com>
+Date:   Thu, 29 Jul 2021 09:21:01 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQJxka3dxgdIdebG@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-validate_slab_cache() is called either to handle a sysfs write, or from a
-self-test context. In both situations it's straightforward to preallocate a
-private object bitmap instead of grabbing the shared static one meant for
-critical sections, so let's do that.
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Acked-by: Christoph Lameter <cl@linux.com>
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
----
- mm/slub.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 66795aec6e10..743c6b7f8bb1 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4674,11 +4674,11 @@ static int count_total(struct page *page)
- #endif
- 
- #ifdef CONFIG_SLUB_DEBUG
--static void validate_slab(struct kmem_cache *s, struct page *page)
-+static void validate_slab(struct kmem_cache *s, struct page *page,
-+			  unsigned long *obj_map)
- {
- 	void *p;
- 	void *addr = page_address(page);
--	unsigned long *map;
- 
- 	slab_lock(page);
- 
-@@ -4686,21 +4686,20 @@ static void validate_slab(struct kmem_cache *s, struct page *page)
- 		goto unlock;
- 
- 	/* Now we know that a valid freelist exists */
--	map = get_map(s, page);
-+	__fill_map(obj_map, s, page);
- 	for_each_object(p, s, addr, page->objects) {
--		u8 val = test_bit(__obj_to_index(s, addr, p), map) ?
-+		u8 val = test_bit(__obj_to_index(s, addr, p), obj_map) ?
- 			 SLUB_RED_INACTIVE : SLUB_RED_ACTIVE;
- 
- 		if (!check_object(s, page, p, val))
- 			break;
- 	}
--	put_map(map);
- unlock:
- 	slab_unlock(page);
- }
- 
- static int validate_slab_node(struct kmem_cache *s,
--		struct kmem_cache_node *n)
-+		struct kmem_cache_node *n, unsigned long *obj_map)
- {
- 	unsigned long count = 0;
- 	struct page *page;
-@@ -4709,7 +4708,7 @@ static int validate_slab_node(struct kmem_cache *s,
- 	spin_lock_irqsave(&n->list_lock, flags);
- 
- 	list_for_each_entry(page, &n->partial, slab_list) {
--		validate_slab(s, page);
-+		validate_slab(s, page, obj_map);
- 		count++;
- 	}
- 	if (count != n->nr_partial) {
-@@ -4722,7 +4721,7 @@ static int validate_slab_node(struct kmem_cache *s,
- 		goto out;
- 
- 	list_for_each_entry(page, &n->full, slab_list) {
--		validate_slab(s, page);
-+		validate_slab(s, page, obj_map);
- 		count++;
- 	}
- 	if (count != atomic_long_read(&n->nr_slabs)) {
-@@ -4741,10 +4740,17 @@ long validate_slab_cache(struct kmem_cache *s)
- 	int node;
- 	unsigned long count = 0;
- 	struct kmem_cache_node *n;
-+	unsigned long *obj_map;
-+
-+	obj_map = bitmap_alloc(oo_objects(s->oo), GFP_KERNEL);
-+	if (!obj_map)
-+		return -ENOMEM;
- 
- 	flush_all(s);
- 	for_each_kmem_cache_node(s, node, n)
--		count += validate_slab_node(s, n);
-+		count += validate_slab_node(s, n, obj_map);
-+
-+	bitmap_free(obj_map);
- 
- 	return count;
- }
--- 
-2.32.0
+On 7/29/2021 5:14 AM, Peter Zijlstra wrote:
+> On Wed, Jul 28, 2021 at 12:49:43PM -0400, Vince Weaver wrote:
+>> [32694.087403] unchecked MSR access error: WRMSR to 0x318 (tried to write 0x0000000000000000) at rIP: 0xffffffff8106f854 (native_write_msr+0x4/0x20)
+>> [32694.101374] Call Trace:
+>> [32694.103974]  perf_clear_dirty_counters+0x86/0x100
+> 
+> Hmm.. if I read this right that's MSR_ARCH_PERFMON_FIXED_CTR0 + i, given
+> that FIXED_CTR0 is 0x309 that gives i == 15, which is FIXED_BTS.
+> 
+> I'm thinking something like this ought to cure things.
+> 
+> ---
+>   arch/x86/events/core.c | 12 +++++++-----
+>   1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 1eb45139fcc6..04edf8017961 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -2489,13 +2489,15 @@ void perf_clear_dirty_counters(void)
+>   		return;
+>   
+>   	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
+> -		/* Metrics and fake events don't have corresponding HW counters. */
+> -		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
+> -			continue;
+> -		else if (i >= INTEL_PMC_IDX_FIXED)
+> +		if (i >= INTEL_PMC_IDX_FIXED) {
+> +			/* Metrics and fake events don't have corresponding HW counters. */
+> +			if ((i - INTEL_PMC_IDX_FIXED) >= x86_pmu.num_counters_fixed)
 
+Yes, the fix is better. My previous implementation tries to pick up all 
+the special cases. It's very likely to miss some special cases like 
+FIXED_BTS and probably any new fake events added later if there are.
+Thanks for the fix.
+
+The x86_pmu.num_counters_fixed should work well on HSW. But we have 
+hybrid machines now. I think we can use
+hybrid(cpuc->pmu, num_counters_fixed) instead, which should be more 
+accurate.
+
+
+Thanks,
+Kan
+
+> +				continue;
+> +
+>   			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
+> -		else
+> +		} else {
+>   			wrmsrl(x86_pmu_event_addr(i), 0);
+> +		}
+>   	}
+>   
+>   	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
+> 
