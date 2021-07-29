@@ -2,272 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8731A3DB00A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 01:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643C33DB516
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbhG2Xvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 19:51:55 -0400
-Received: from rcdn-iport-7.cisco.com ([173.37.86.78]:45804 "EHLO
-        rcdn-iport-7.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234826AbhG2Xvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 19:51:54 -0400
-X-Greylist: delayed 425 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Jul 2021 19:51:54 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=7288; q=dns/txt; s=iport;
-  t=1627602710; x=1628812310;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/Ap9mbPXpL2l+I0gCWzJlCwjSQrqoLRXRbu/ViyjT8A=;
-  b=YAwUwPJX+8Zvr6umXiDLN/gmM+2vp82QcP8yiKABunvdzTtW+ZfZOMPT
-   w99HAr19Nj2WW34DL+488VJagL0+/oHGNQ1A+MKglhcTONDT0kIwlS/di
-   UsQswd6EbpxWUcbouQfOSuEe4Rz8o58OzRruDajfKOrU9S05ceDGgrowH
-   s=;
-X-IronPort-AV: E=Sophos;i="5.84,280,1620691200"; 
-   d="scan'208";a="899786753"
-Received: from rcdn-core-6.cisco.com ([173.37.93.157])
-  by rcdn-iport-7.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 29 Jul 2021 23:44:44 +0000
-Received: from zorba.cisco.com ([10.24.25.127])
-        by rcdn-core-6.cisco.com (8.15.2/8.15.2) with ESMTP id 16TNihvU032246;
-        Thu, 29 Jul 2021 23:44:43 GMT
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Balamurugan Selvarajan <balamsel@cisco.com>,
-        xe-linux-external@cisco.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC-PATCH] net: stmmac: Add KR port support.
-Date:   Thu, 29 Jul 2021 16:44:42 -0700
-Message-Id: <20210729234443.1713722-1-danielwa@cisco.com>
-X-Mailer: git-send-email 2.25.1
+        id S237922AbhG3IhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 04:37:01 -0400
+Received: from gw.cahan.az ([195.155.132.117]:52990 "EHLO gw.cahan.az"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230285AbhG3IhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 04:37:00 -0400
+X-Greylist: delayed 22958 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Jul 2021 04:37:00 EDT
+Received: from gw.cahan.az (localhost.localdomain [127.0.0.1])
+        by gw.cahan.az (Proxmox) with ESMTP id AAD0120994B;
+        Fri, 30 Jul 2021 02:46:10 +0300 (+03)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cahan.az; h=cc
+        :content-description:content-transfer-encoding:content-type
+        :content-type:date:from:from:message-id:mime-version:reply-to
+        :reply-to:subject:subject:to:to; s=gw; bh=wQYgaREREFkvRA0lra2m8X
+        5P90hB1/2xEWjFDoYX6/U=; b=UYz3aZP3FLR7H887uE6lZldpxkyQPDul176oZX
+        8Gtv0i19F3RfWe4fyWneL7ek4JJEYRH91+5G86AW7xt/C4XHNUkCjAaP18PBdEDK
+        EHn8YiB5SR5lGSEjvPJs2DK4bh7omaJpaDO6ySomu2bEAZrJBDHZiR2/DjfHIIKy
+        QQ71+yqwJnWZBkZp54pKWLANF3Mtt3Q12jTScVULghNFmH1LDRluhEM9NnYO/i4N
+        YE9wSh19gdnQCoQy9Lr8YhFN3hO6Bp3T1i96A6xZzAHIYhhS24X5TFgTfGJ8gf3z
+        2zqCSrWCiJGGwRLFVmtTlCaZCBeXFXFacpQ2el52zfSXyLaA==
+Received: from mail2.cahanholding.com (mail2.cahanholding.com [195.155.132.118])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by gw.cahan.az (Proxmox) with ESMTPS id 45F9520A8AA;
+        Fri, 30 Jul 2021 02:46:08 +0300 (+03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail2.cahanholding.com (Postfix) with ESMTP id 78E5D164EC19;
+        Fri, 30 Jul 2021 02:46:03 +0300 (+03)
+Received: from mail2.cahanholding.com ([127.0.0.1])
+        by localhost (mail2.cahanholding.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 8htu-E82_sY7; Fri, 30 Jul 2021 02:46:02 +0300 (+03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail2.cahanholding.com (Postfix) with ESMTP id 3E6D1164EC28;
+        Fri, 30 Jul 2021 02:45:59 +0300 (+03)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail2.cahanholding.com 3E6D1164EC28
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cahan.az;
+        s=selector5; t=1627602359;
+        bh=wQYgaREREFkvRA0lra2m8X5P90hB1/2xEWjFDoYX6/U=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=IL7nO1qXvB++cP202xDBOUqFt4s8urlA+hjCIusb7uFxKDwUdRJpiAbqF8XIg2Cmn
+         XYy4wBheIYrb/p4Tg9SN1p9uXNDtB+ECLU909TCyhgTr6v7RRM+E+K2ZO4xibsT941
+         JwTsED4N2Ivqm9g8twdxbQdMD/J+GLTm2O58UpxObtkRiuC/Xd1TIY3ukPzoRmKZgH
+         /4lN94UpxauJmKEUbpWVZpgWIphd9+9igf9gmatJdpCdZVZbG53thSWXdqqI6TpG8/
+         aSCTvBPBMcgxD4O/BBWSVeRUP/Txv5AckUyT7rmvUyxTx36AQ8T16fpk+y/XRYKu+f
+         Hv5tJzaiafgvw==
+X-Virus-Scanned: amavisd-new at mail2.cahanholding.com
+Received: from mail2.cahanholding.com ([127.0.0.1])
+        by localhost (mail2.cahanholding.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id CHRLYMQiNetq; Fri, 30 Jul 2021 02:45:59 +0300 (+03)
+Received: from fddfd.2lvrh5gmjoeedgv3k5wncq0iee.bx.internal.cloudapp.net (unknown [40.71.123.82])
+        by mail2.cahanholding.com (Postfix) with ESMTPSA id 6EC20164EC0F;
+        Fri, 30 Jul 2021 02:45:29 +0300 (+03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.25.127, [10.24.25.127]
-X-Outbound-Node: rcdn-core-6.cisco.com
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Re: Business Proposal.
+To:     Recipients <quba@cahan.az>
+From:   "Kiyoshi Makoto" <quba@cahan.az>
+Date:   Thu, 29 Jul 2021 23:45:06 +0000
+Reply-To: kiyo.mako9@gmail.com
+Message-Id: <20210729234529.6EC20164EC0F@mail2.cahanholding.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Balamurugan Selvarajan <balamsel@cisco.com>
+Good Day my friend, My name is Kiyoshi Makoto, I have a lucrative business =
+proposal for you which I would like to share with you in an email summary.
 
-For KR port the mii interface is a chip-to-chip
-interface without a mechanical connector. So PHY
-inits are not applicable. In this case MAC is
-configured to operate at forced speed(1000Mbps)
-and full duplex. Modified driver to accommodate
-PHY and NON-PHY mode.
+Although this idea is not new in banking circles, it can change our financi=
+al lives forever if we work together. At your request I can send
+you this summary Or write to me at: kiyo.mako9@gmail.com
 
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Balamurugan Selvarajan <balamsel@cisco.com>
-Signed-off-by: Daniel Walker <danielwa@cisco.com>
----
- drivers/net/ethernet/stmicro/stmmac/common.h  |  2 +
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 89 +++++++++++++------
- 2 files changed, 65 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
-index 5fecc83f175b..6458ce5ec0bd 100644
---- a/drivers/net/ethernet/stmicro/stmmac/common.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/common.h
-@@ -435,6 +435,8 @@ struct dma_features {
- #define MAC_CTRL_REG		0x00000000	/* MAC Control */
- #define MAC_ENABLE_TX		0x00000008	/* Transmitter Enable */
- #define MAC_ENABLE_RX		0x00000004	/* Receiver Enable */
-+#define MAC_FULL_DUPLEX		0x00000800
-+#define MAC_PORT_SELECT		0x00008000
- 
- /* Default LPI timers */
- #define STMMAC_DEFAULT_LIT_LS	0x3E8
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 7b8404a21544..0b31aae65f3a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3212,6 +3212,7 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
- 	bool sph_en;
- 	u32 chan;
- 	int ret;
-+	int speed;
- 
- 	/* DMA initialization and SW reset */
- 	ret = stmmac_init_dma_engine(priv);
-@@ -3226,7 +3227,9 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
- 
- 	/* PS and related bits will be programmed according to the speed */
- 	if (priv->hw->pcs) {
--		int speed = priv->plat->mac_port_sel_speed;
-+		speed = priv->plat->mac_port_sel_speed;
-+		if (priv->plat->phy_interface == PHY_INTERFACE_MODE_NA)
-+			speed = SPEED_1000;
- 
- 		if ((speed == SPEED_10) || (speed == SPEED_100) ||
- 		    (speed == SPEED_1000)) {
-@@ -3256,6 +3259,17 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
- 	/* Enable the MAC Rx/Tx */
- 	stmmac_mac_set(priv, priv->ioaddr, true);
- 
-+	if (priv->plat->phy_interface == PHY_INTERFACE_MODE_NA) {
-+		/*
-+		 * Force MAC PORT SPEED to 1000Mbps and Full Duplex.
-+		 */
-+		u32 ctrl = readl(priv->ioaddr + MAC_CTRL_REG);
-+		ctrl |= MAC_FULL_DUPLEX;
-+		ctrl &= ~(MAC_PORT_SELECT);
-+		writel(ctrl, priv->ioaddr + MAC_CTRL_REG);
-+	}
-+
-+
- 	/* Set the HW DMA mode and the COE */
- 	stmmac_dma_operation_mode(priv);
- 
-@@ -3291,8 +3305,14 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
- 		}
- 	}
- 
--	if (priv->hw->pcs)
--		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, priv->hw->ps, 0);
-+	if (priv->hw->pcs) {
-+		if (priv->plat->phy_interface != PHY_INTERFACE_MODE_NA) {
-+			stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, priv->hw->ps, 0);
-+		} else {
-+			/* Disable Autoneg */
-+			writel(0x0, priv->ioaddr + GMAC_PCS_BASE);
-+		}
-+	}
- 
- 	/* set TX and RX rings length */
- 	stmmac_set_rings_length(priv);
-@@ -3644,12 +3664,14 @@ int stmmac_open(struct net_device *dev)
- 	    priv->hw->pcs != STMMAC_PCS_RTBI &&
- 	    (!priv->hw->xpcs ||
- 	     xpcs_get_an_mode(priv->hw->xpcs, mode) != DW_AN_C73)) {
--		ret = stmmac_init_phy(dev);
--		if (ret) {
--			netdev_err(priv->dev,
--				   "%s: Cannot attach to PHY (error: %d)\n",
--				   __func__, ret);
--			goto init_phy_error;
-+		if (priv->plat->phy_interface != PHY_INTERFACE_MODE_NA) {
-+			ret = stmmac_init_phy(dev);
-+			if (ret) {
-+				netdev_err(priv->dev,
-+					   "%s: Cannot attach to PHY (error: %d)\n",
-+					   __func__, ret);
-+				goto init_phy_error;
-+			}
- 		}
- 	}
- 
-@@ -3705,7 +3727,8 @@ int stmmac_open(struct net_device *dev)
- 
- 	stmmac_init_coalesce(priv);
- 
--	phylink_start(priv->phylink);
-+	if (priv->plat->phy_interface != PHY_INTERFACE_MODE_NA)
-+		phylink_start(priv->phylink);
- 	/* We may have called phylink_speed_down before */
- 	phylink_speed_up(priv->phylink);
- 
-@@ -3716,10 +3739,14 @@ int stmmac_open(struct net_device *dev)
- 	stmmac_enable_all_queues(priv);
- 	netif_tx_start_all_queues(priv->dev);
- 
-+	if (priv->plat->phy_interface == PHY_INTERFACE_MODE_NA)
-+		netif_carrier_on(dev);
-+
- 	return 0;
- 
- irq_error:
--	phylink_stop(priv->phylink);
-+	if (priv->plat->phy_interface != PHY_INTERFACE_MODE_NA)
-+		phylink_stop(priv->phylink);
- 
- 	for (chan = 0; chan < priv->plat->tx_queues_to_use; chan++)
- 		hrtimer_cancel(&priv->tx_queue[chan].txtimer);
-@@ -3728,7 +3755,8 @@ int stmmac_open(struct net_device *dev)
- init_error:
- 	free_dma_desc_resources(priv);
- dma_desc_error:
--	phylink_disconnect_phy(priv->phylink);
-+	if (priv->plat->phy_interface != PHY_INTERFACE_MODE_NA)
-+		phylink_disconnect_phy(priv->phylink);
- init_phy_error:
- 	pm_runtime_put(priv->device);
- 	return ret;
-@@ -3758,8 +3786,10 @@ int stmmac_release(struct net_device *dev)
- 	if (device_may_wakeup(priv->device))
- 		phylink_speed_down(priv->phylink, false);
- 	/* Stop and disconnect the PHY */
--	phylink_stop(priv->phylink);
--	phylink_disconnect_phy(priv->phylink);
-+	if (priv->plat->phy_interface != PHY_INTERFACE_MODE_NA) {
-+		phylink_stop(priv->phylink);
-+		phylink_disconnect_phy(priv->phylink);
-+	}
- 
- 	stmmac_disable_all_queues(priv);
- 
-@@ -6986,12 +7016,15 @@ int stmmac_dvr_probe(struct device *device,
- 	if (priv->hw->pcs != STMMAC_PCS_TBI &&
- 	    priv->hw->pcs != STMMAC_PCS_RTBI) {
- 		/* MDIO bus Registration */
--		ret = stmmac_mdio_register(ndev);
--		if (ret < 0) {
--			dev_err(priv->device,
--				"%s: MDIO bus (id: %d) registration failed",
--				__func__, priv->plat->bus_id);
--			goto error_mdio_register;
-+
-+		if (priv->plat->phy_interface != PHY_INTERFACE_MODE_NA) {
-+			ret = stmmac_mdio_register(ndev);
-+			if (ret < 0) {
-+				dev_err(priv->device,
-+					"%s: MDIO bus (id: %d) registration failed",
-+					__func__, priv->plat->bus_id);
-+				goto error_mdio_register;
-+			}
- 		}
- 	}
- 
-@@ -7004,10 +7037,12 @@ int stmmac_dvr_probe(struct device *device,
- 			goto error_xpcs_setup;
- 	}
- 
--	ret = stmmac_phy_setup(priv);
--	if (ret) {
--		netdev_err(ndev, "failed to setup phy (%d)\n", ret);
--		goto error_phy_setup;
-+	if (priv->plat->phy_interface != PHY_INTERFACE_MODE_NA) {
-+		ret = stmmac_phy_setup(priv);
-+		if (ret) {
-+			netdev_err(ndev, "failed to setup phy (%d)\n", ret);
-+			goto error_phy_setup;
-+		}
- 	}
- 
- 	ret = register_netdev(ndev);
-@@ -7039,11 +7074,13 @@ int stmmac_dvr_probe(struct device *device,
- error_serdes_powerup:
- 	unregister_netdev(ndev);
- error_netdev_register:
--	phylink_destroy(priv->phylink);
-+	if (priv->plat->phy_interface != PHY_INTERFACE_MODE_NA)
-+		phylink_destroy(priv->phylink);
- error_xpcs_setup:
- error_phy_setup:
- 	if (priv->hw->pcs != STMMAC_PCS_TBI &&
--	    priv->hw->pcs != STMMAC_PCS_RTBI)
-+	    priv->hw->pcs != STMMAC_PCS_RTBI &&
-+	    priv->plat->phy_interface != PHY_INTERFACE_MODE_NA)
- 		stmmac_mdio_unregister(ndev);
- error_mdio_register:
- 	stmmac_napi_del(ndev);
--- 
-2.25.1
+Thank You
 
