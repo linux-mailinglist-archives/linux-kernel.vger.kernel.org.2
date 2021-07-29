@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1C23D9D9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0823D9D9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbhG2GZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 02:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
+        id S234386AbhG2GZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 02:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbhG2GZC (ORCPT
+        with ESMTP id S234311AbhG2GZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 02:25:02 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EE3C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:25:00 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id r1-20020a0569021541b029054df41d5cceso5733683ybu.18
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:25:00 -0700 (PDT)
+        Thu, 29 Jul 2021 02:25:05 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC67CC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:25:02 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id j21-20020a25d2150000b029057ac4b4e78fso5789028ybg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:25:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=BFgxncVDj5jCNzVVsA7tSI3+CxqTrEq04XR7t3uim6A=;
-        b=jyZoaRrWr6+mCcNQhxux2+kKNDSn/zDW4PyxlSvUYousZN6mgZ/lqxBJj3D/mxwdSN
-         3m6huorXRcVFzwHtlIYOCCa9jRH8oEAO6sfQPdm+UhhNqJGa4jtbqpfx9ohVuIGWMKA7
-         zEtRDGm42rvD7alADwYSvvvXYZ6cKe+j1SwAbDS/U0VxjHwIUWLQpzzOnAVs4FWSJa+z
-         DWRIyAgGdKUU6S4KsKoE9MtdDk1zTCaPp9ivYYKe4dDW6OduPIsql06/yRGHR76SrgRO
-         hjLOcGYnq14hA40cnPQ4WF4RkfLzEbZ77hroOHrdT1/gyh2K62njRRfX5a+JYgRZbNqn
-         /SNw==
+        bh=XQOuVrSELGecLv75iNCsOnZnEdRh9ikmmSrGWyHBLH4=;
+        b=nSkAEDrWPKITHrK4aSDiZwBJfkAPN0aVDh2CLPGpHosu2Bd2cAE7zlIVI41uPPlt5C
+         6O3tPn2q4hNOJ2hE5AxMrKEM3z7UJ6IfHV/DUhd/cbNL61hYRvzTv+isuu8TryoiRF4V
+         PXi7S6n/GaitUC7ljhQ2NVoWu9HJaAFPZcSmQ9IiWr2zuPsVP3ErdL1qhRpH9U6WhJVo
+         2dekGHrai1pxV1FKvQEt4w+Zmb4gTP9ABaV55NPGHDXm7O232hGhOiuLtD5jI/psSRIU
+         2wiwnZBG8G2s32Bi/agse1e6nXYyJUK/iRHlLvmOY7P/IFrtio9xPdGzHoBrCRyL9d11
+         8pxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=BFgxncVDj5jCNzVVsA7tSI3+CxqTrEq04XR7t3uim6A=;
-        b=JQFkxH9xz/77C8cUy5kd1qrqxVWlT0RT7alfx7BtsHhq74nnfkwY1yryxU1gD5tueJ
-         wUpAhT5yRhkyT0d1AdvRgSDj9PBdd1LAwAb5fGimScfGzI2i5mi4SSouZf2kEtA5Mhu+
-         3ikl+b4fHyWM2IhSAJGbJ+dIzSVZeVv5Du0Go97n5CjI+DEuaDT/o2sPxuKXRqzW/LI2
-         0aI0/aTXgS2xFZq+bjbjtEfjCmSq6olRn/1pnFXSDwhMpaK2tIiCwyCp0ypRSRkHGKGY
-         SUkIwKVDa42QpcRxdzFW83QLIzRuRm8UzJzlmadAOkMWX/HCZtueYsFxaWBmVMufgje/
-         HAiQ==
-X-Gm-Message-State: AOAM531J7wVnEGoxVhg1D88Xp99tG/wi+kRtDK6SRascXUgn0npwDt1C
-        oe4qMxylMQswWfQzHz1f4DKSCOVRzRAr
-X-Google-Smtp-Source: ABdhPJza0pEGLNIWpVqaTumyFFNYcohPp9sSrl3Mba2QXUty4R0wrRhVwA5hXh1VTPh+5BSOzsrmdrMUUfQl
+        bh=XQOuVrSELGecLv75iNCsOnZnEdRh9ikmmSrGWyHBLH4=;
+        b=TIYiM2s0A+8bYFGejx1QjGqLC3GoNTlqXgoWNTLpS5PQZzTBCR38hOUnqqE9FPDTOa
+         eOuXiA9TRdhGDuWxEVPdUBJCh0DQ/SVefeCfZ+5AqEnX7O+My2t6BfWZHUIW2r9rri+0
+         nF6WnNGRAMnZm+5HKWxpvRxZYXSuvxxzTlUosoAkcahYnXU/048UxOG5YwIcHhY0evM8
+         0pXRGF40xZH5tk1f1aWCfcyLfeq1wW2oo1Z4ZpIWn1WczeKORBVtTc9nyG+7RlXzl4IP
+         AT3MI2ZwxQQwxjljsVDFlt+tpJAwTGSQcYIwg1kLWMW/cj/L9UK0alUuYBLvdiHECgqr
+         p2xw==
+X-Gm-Message-State: AOAM5316adUmIGOSCfPegM2tj3hMjxt/lNO1GoM6CkHIMpXdA888VN12
+        6mPhAcm9R9tvwxj382BUwx2qWYMYSn1d
+X-Google-Smtp-Source: ABdhPJwjswcBBLkrhK0DIGp23tkU3dYLX+D7HWt+ntnb3sz0/FXyNlDipDu3K888h6cxRobgzjtaapW0WWp7
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:8f98:bc28:73a6:e8c9])
- (user=irogers job=sendgmr) by 2002:a25:6e55:: with SMTP id
- j82mr4540463ybc.480.1627539899394; Wed, 28 Jul 2021 23:24:59 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 23:24:49 -0700
+ (user=irogers job=sendgmr) by 2002:a25:f503:: with SMTP id
+ a3mr4272078ybe.501.1627539901919; Wed, 28 Jul 2021 23:25:01 -0700 (PDT)
+Date:   Wed, 28 Jul 2021 23:24:50 -0700
 In-Reply-To: <20210729062451.1349566-1-irogers@google.com>
-Message-Id: <20210729062451.1349566-2-irogers@google.com>
+Message-Id: <20210729062451.1349566-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20210729062451.1349566-1-irogers@google.com>
 X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH 1/3] libperf: Prefer exit(EXIT_SUCCESS) over exit(0)
+Subject: [PATCH 2/3] tools perf: Prefer exit(EXIT_*) over exit(0|1)
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -67,26 +67,306 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change exit code to be more intention revealing.
+Change exit code to be more intention revealing, replacing exit(0) with
+exit(EXIT_SUCCESS) and exit(1) with exit(EXIT_FAILURE).
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/lib/perf/tests/test-evlist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/arch/x86/tests/bp-modify.c | 4 ++--
+ tools/perf/bench/inject-buildid.c     | 8 ++++----
+ tools/perf/bench/numa.c               | 2 +-
+ tools/perf/bench/sched-messaging.c    | 6 +++---
+ tools/perf/bench/sched-pipe.c         | 4 ++--
+ tools/perf/bench/syscall.c            | 2 +-
+ tools/perf/builtin-c2c.c              | 2 +-
+ tools/perf/builtin-ftrace.c           | 2 +-
+ tools/perf/builtin-mem.c              | 2 +-
+ tools/perf/builtin-script.c           | 4 ++--
+ tools/perf/perf.c                     | 8 ++++----
+ tools/perf/ui/tui/setup.c             | 4 ++--
+ tools/perf/util/dlfilter.c            | 2 +-
+ tools/perf/util/help-unknown-cmd.c    | 2 +-
+ 14 files changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-index c67c83399170..eceacd4b014c 100644
---- a/tools/lib/perf/tests/test-evlist.c
-+++ b/tools/lib/perf/tests/test-evlist.c
-@@ -251,7 +251,7 @@ static int test_mmap_thread(void)
- 		for (i = 0; i < 100; i++)
- 			prctl(0, 0, 0, 0, 0);
+diff --git a/tools/perf/arch/x86/tests/bp-modify.c b/tools/perf/arch/x86/tests/bp-modify.c
+index dffcf9b52153..9cf1036d0480 100644
+--- a/tools/perf/arch/x86/tests/bp-modify.c
++++ b/tools/perf/arch/x86/tests/bp-modify.c
+@@ -41,12 +41,12 @@ static int spawn_child(void)
+ 
+ 		if (err) {
+ 			pr_debug("failed to PTRACE_TRACEME\n");
+-			exit(1);
++			exit(EXIT_FAILURE);
+ 		}
+ 
+ 		raise(SIGCONT);
+ 		bp_1();
+-		exit(0);
++		exit(EXIT_SUCCESS);
+ 	}
+ 
+ 	return child;
+diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
+index 55d373b75791..8fd1ec0d371e 100644
+--- a/tools/perf/bench/inject-buildid.c
++++ b/tools/perf/bench/inject-buildid.c
+@@ -106,7 +106,7 @@ static void collect_dso(void)
+ 	dsos = calloc(nr_mmaps * DSO_MMAP_RATIO, sizeof(*dsos));
+ 	if (dsos == NULL) {
+ 		printf("  Memory allocation failed\n");
+-		exit(1);
++		exit(EXIT_FAILURE);
+ 	}
+ 
+ 	if (nftw("/usr/lib/", add_dso, 10, FTW_PHYS) < 0)
+@@ -305,7 +305,7 @@ static int setup_injection(struct bench_data *data, bool build_id_all)
+ 
+ 		dev_null_fd = open("/dev/null", O_WRONLY);
+ 		if (dev_null_fd < 0)
+-			exit(1);
++			exit(EXIT_FAILURE);
+ 
+ 		dup2(dev_null_fd, STDERR_FILENO);
+ 
+@@ -314,7 +314,7 @@ static int setup_injection(struct bench_data *data, bool build_id_all)
+ 
+ 		inject_argv = calloc(inject_argc + 1, sizeof(*inject_argv));
+ 		if (inject_argv == NULL)
+-			exit(1);
++			exit(EXIT_FAILURE);
+ 
+ 		inject_argv[0] = strdup("inject");
+ 		inject_argv[1] = strdup("-b");
+@@ -326,7 +326,7 @@ static int setup_injection(struct bench_data *data, bool build_id_all)
+ 
+ 		cmd_inject(inject_argc, inject_argv);
  
 -		exit(0);
 +		exit(EXIT_SUCCESS);
  	}
  
- 	threads = perf_thread_map__new_dummy();
+ 	pthread_create(&data->th, NULL, data_reader, data);
+diff --git a/tools/perf/bench/numa.c b/tools/perf/bench/numa.c
+index f2640179ada9..a2ee96180444 100644
+--- a/tools/perf/bench/numa.c
++++ b/tools/perf/bench/numa.c
+@@ -1551,7 +1551,7 @@ static int __bench_numa(const char *name)
+ 			/* Child process: */
+ 			worker_process(i);
+ 
+-			exit(0);
++			exit(EXIT_SUCCESS);
+ 		}
+ 		pids[i] = pid;
+ 
+diff --git a/tools/perf/bench/sched-messaging.c b/tools/perf/bench/sched-messaging.c
+index 488f6e6ba1a5..d03248837777 100644
+--- a/tools/perf/bench/sched-messaging.c
++++ b/tools/perf/bench/sched-messaging.c
+@@ -149,7 +149,7 @@ static pthread_t create_worker(void *ctx, void *(*func)(void *))
+ 			break;
+ 		case 0:
+ 			(*func) (ctx);
+-			exit(0);
++			exit(EXIT_SUCCESS);
+ 			break;
+ 		default:
+ 			break;
+@@ -182,7 +182,7 @@ static void reap_worker(pthread_t id)
+ 		/* process mode */
+ 		wait(&proc_status);
+ 		if (!WIFEXITED(proc_status))
+-			exit(1);
++			exit(EXIT_FAILURE);
+ 	} else {
+ 		pthread_join(id, &thread_status);
+ 	}
+@@ -319,7 +319,7 @@ int bench_sched_messaging(int argc, const char **argv)
+ 	default:
+ 		/* reaching here is something disaster */
+ 		fprintf(stderr, "Unknown format:%d\n", bench_format);
+-		exit(1);
++		exit(EXIT_FAILURE);
+ 		break;
+ 	}
+ 
+diff --git a/tools/perf/bench/sched-pipe.c b/tools/perf/bench/sched-pipe.c
+index a960e7a93aec..0f5c00a29199 100644
+--- a/tools/perf/bench/sched-pipe.c
++++ b/tools/perf/bench/sched-pipe.c
+@@ -135,7 +135,7 @@ int bench_sched_pipe(int argc, const char **argv)
+ 
+ 		if (!pid) {
+ 			worker_thread(threads + 0);
+-			exit(0);
++			exit(EXIT_SUCCESS);
+ 		} else {
+ 			worker_thread(threads + 1);
+ 		}
+@@ -175,7 +175,7 @@ int bench_sched_pipe(int argc, const char **argv)
+ 	default:
+ 		/* reaching here is something disaster */
+ 		fprintf(stderr, "Unknown format:%d\n", bench_format);
+-		exit(1);
++		exit(EXIT_FAILURE);
+ 		break;
+ 	}
+ 
+diff --git a/tools/perf/bench/syscall.c b/tools/perf/bench/syscall.c
+index 9b751016f4b6..abd49c45ce3b 100644
+--- a/tools/perf/bench/syscall.c
++++ b/tools/perf/bench/syscall.c
+@@ -73,7 +73,7 @@ int bench_syscall_basic(int argc, const char **argv)
+ 	default:
+ 		/* reaching here is something disaster */
+ 		fprintf(stderr, "Unknown format:%d\n", bench_format);
+-		exit(1);
++		exit(EXIT_FAILURE);
+ 		break;
+ 	}
+ 
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index 6dea37f141b2..21ef021b8bbf 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -2889,7 +2889,7 @@ static int parse_record_events(const struct option *opt,
+ 
+ 	if (!strcmp(str, "list")) {
+ 		perf_mem_events__list();
+-		exit(0);
++		exit(EXIT_SUCCESS);
+ 	}
+ 	if (perf_mem_events__parse(str))
+ 		exit(-1);
+diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+index 87cb11a7a3ee..2411aa4443e0 100644
+--- a/tools/perf/builtin-ftrace.c
++++ b/tools/perf/builtin-ftrace.c
+@@ -750,7 +750,7 @@ static int opt_list_avail_functions(const struct option *opt __maybe_unused,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	exit(0);
++	exit(EXIT_SUCCESS);
+ }
+ 
+ static int parse_filter_func(const struct option *opt, const char *str,
+diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+index 0fd2a74dbaca..5d96b6e15992 100644
+--- a/tools/perf/builtin-mem.c
++++ b/tools/perf/builtin-mem.c
+@@ -45,7 +45,7 @@ static int parse_record_events(const struct option *opt,
+ 
+ 	if (!strcmp(str, "list")) {
+ 		perf_mem_events__list();
+-		exit(0);
++		exit(EXIT_SUCCESS);
+ 	}
+ 	if (perf_mem_events__parse(str))
+ 		exit(-1);
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 8c03a9862872..f4763830c7a4 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -2774,7 +2774,7 @@ static int parse_scriptname(const struct option *opt __maybe_unused,
+ 
+ 	if (strcmp(str, "lang") == 0) {
+ 		list_available_languages();
+-		exit(0);
++		exit(EXIT_SUCCESS);
+ 	}
+ 
+ 	script = strchr(str, ':');
+@@ -3175,7 +3175,7 @@ static int list_available_scripts(const struct option *opt __maybe_unused,
+ 			desc->half_liner ? desc->half_liner : "");
+ 	}
+ 
+-	exit(0);
++	exit(EXIT_SUCCESS);
+ }
+ 
+ static int add_dlarg(const struct option *opt __maybe_unused,
+diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+index 2f6b67189b42..ec45dd645030 100644
+--- a/tools/perf/perf.c
++++ b/tools/perf/perf.c
+@@ -214,11 +214,11 @@ static int handle_options(const char ***argv, int *argc, int *envchanged)
+ 				set_argv_exec_path(cmd + 1);
+ 			else {
+ 				puts(get_argv_exec_path());
+-				exit(0);
++				exit(EXIT_SUCCESS);
+ 			}
+ 		} else if (!strcmp(cmd, "--html-path")) {
+ 			puts(system_path(PERF_HTML_PATH));
+-			exit(0);
++			exit(EXIT_SUCCESS);
+ 		} else if (!strcmp(cmd, "-p") || !strcmp(cmd, "--paginate")) {
+ 			use_pager = 1;
+ 		} else if (!strcmp(cmd, "--no-pager")) {
+@@ -258,7 +258,7 @@ static int handle_options(const char ***argv, int *argc, int *envchanged)
+ 				printf("%s ", p->cmd);
+ 			}
+ 			putchar('\n');
+-			exit(0);
++			exit(EXIT_SUCCESS);
+ 		} else if (!strcmp(cmd, "--list-opts")) {
+ 			unsigned int i;
+ 
+@@ -267,7 +267,7 @@ static int handle_options(const char ***argv, int *argc, int *envchanged)
+ 				printf("--%s ", p->long_name);
+ 			}
+ 			putchar('\n');
+-			exit(0);
++			exit(EXIT_SUCCESS);
+ 		} else if (!strcmp(cmd, "--debug")) {
+ 			if (*argc < 2) {
+ 				fprintf(stderr, "No variable specified for --debug.\n");
+diff --git a/tools/perf/ui/tui/setup.c b/tools/perf/ui/tui/setup.c
+index e9bfe856a5de..867c128d1f22 100644
+--- a/tools/perf/ui/tui/setup.c
++++ b/tools/perf/ui/tui/setup.c
+@@ -109,7 +109,7 @@ static void ui__signal_backtrace(int sig)
+ 	size = backtrace(stackdump, ARRAY_SIZE(stackdump));
+ 	backtrace_symbols_fd(stackdump, size, STDOUT_FILENO);
+ 
+-	exit(0);
++	exit(EXIT_SUCCESS);
+ }
+ #else
+ # define ui__signal_backtrace  ui__signal
+@@ -119,7 +119,7 @@ static void ui__signal(int sig)
+ {
+ 	ui__exit(false);
+ 	psignal(sig, "perf");
+-	exit(0);
++	exit(EXIT_SUCCESS);
+ }
+ 
+ int ui__init(void)
+diff --git a/tools/perf/util/dlfilter.c b/tools/perf/util/dlfilter.c
+index ca33fbc5efde..11cf84ef30b1 100644
+--- a/tools/perf/util/dlfilter.c
++++ b/tools/perf/util/dlfilter.c
+@@ -611,5 +611,5 @@ int list_available_dlfilters(const struct option *opt __maybe_unused,
+ 
+ 	free(exec_path);
+ out:
+-	exit(0);
++	exit(EXIT_SUCCESS);
+ }
+diff --git a/tools/perf/util/help-unknown-cmd.c b/tools/perf/util/help-unknown-cmd.c
+index ab9e16123626..fac794d75b14 100644
+--- a/tools/perf/util/help-unknown-cmd.c
++++ b/tools/perf/util/help-unknown-cmd.c
+@@ -114,5 +114,5 @@ const char *help_unknown_cmd(const char *cmd)
+ 			fprintf(stderr, "\t%s\n", main_cmds.names[i]->name);
+ 	}
+ end:
+-	exit(1);
++	exit(EXIT_FAILURE);
+ }
 -- 
 2.32.0.432.gabb21c7263-goog
 
