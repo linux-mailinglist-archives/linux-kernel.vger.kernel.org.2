@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039713DAB7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FA13DAB82
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbhG2S5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:57:51 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:12885 "EHLO m43-7.mailgun.net"
+        id S229721AbhG2S67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:58:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231599AbhG2S5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:57:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627585062; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=5PUhTJkxxglb4jVPAuoIGe5hJA8DvLgM1EKOS/rX92s=; b=GzF3b+6eafRECMP7bRIcHus146XvWVc55b9nSUNDcc2VjLzVcFdQCIQ66tJdlcCt23aCdyDZ
- OCzBEaI/mVKe+7LC+KnGrlcA22eLCD9ZlhVOGkE5ai/aGPkwFc8aMOVk85cf70VNHe25hZuT
- 0dfZv4q4pnD1EKX5aPHXjJVd/7I=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6102fa1be81205dd0aab757e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 18:57:31
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D185AC433D3; Thu, 29 Jul 2021 18:57:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [59.89.229.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 990BEC43460;
-        Thu, 29 Jul 2021 18:57:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 990BEC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add gpu support
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Jonathan Marek <jonathan@marek.ca>, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-References: <1627147740-11590-1-git-send-email-akhilpo@codeaurora.org>
- <CAE-0n52mEy1GReYwcVrffT2KOy4EHMHH-RyCJ_mmxhaeXwGdYA@mail.gmail.com>
- <e1a28bed-a2a9-2bf2-d0f0-3f608a538f69@codeaurora.org>
- <CAE-0n50-1eN3wwDukJi0JoTxCKnYx8NT1Ap2r0WDftQ621iBqQ@mail.gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <308d8f1e-9f23-9d78-42cc-a42ce3463027@codeaurora.org>
-Date:   Fri, 30 Jul 2021 00:27:23 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229713AbhG2S66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:58:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D1F9600D4;
+        Thu, 29 Jul 2021 18:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627585135;
+        bh=NY+6KsF6TgwvjW8V2qdlD2zqaxdlHCFW8WbLHI1uw44=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QwbKTXNKGQlFHhv+nWwVAGS0y7dhrRo4QVZVXmOtNRN5nEqtsizCnwgYVL71jdemC
+         NN4LRUz2GWMm7y5nxjYEDLhzAkGKRRgwxxSk0RtIMXokH62NJ6mpGF6A4PMG9LR/dk
+         TFkkqH24xr7RZti78Lg43eSuDbQW/o4UTfuxqASt48qIZ7hGRVSrrGAHfGoGqApQr4
+         fe/qqMg9s0eu93lcxSA+fP7WwiK2Zm7316Nw0lTenmESdj7Qq2k4auX+VlqVjOzIyH
+         tJgu8hsfbG/DoN1PkOib/PnMN36fOPMKqtasZoBoWlwaNtiGVNPNof0RnW7kK1gS1x
+         /NEEryLj0coQw==
+Date:   Thu, 29 Jul 2021 11:58:50 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 54/64] ipv6: Use struct_group() to zero rt6_info
+Message-ID: <20210729115850.7f913c73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210727205855.411487-55-keescook@chromium.org>
+References: <20210727205855.411487-1-keescook@chromium.org>
+        <20210727205855.411487-55-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n50-1eN3wwDukJi0JoTxCKnYx8NT1Ap2r0WDftQ621iBqQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/2021 10:46 PM, Stephen Boyd wrote:
-> Quoting Akhil P Oommen (2021-07-28 00:17:45)
->> On 7/27/2021 5:46 AM, Stephen Boyd wrote:
->>> Quoting Akhil P Oommen (2021-07-24 10:29:00)
->>>> Add the necessary dt nodes for gpu support in sc7280.
->>>>
->>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->>>> ---
->>>> This patch has dependency on the GPUCC bindings patch here:
->>>> https://patchwork.kernel.org/project/linux-arm-msm/patch/1619519590-3019-4-git-send-email-tdas@codeaurora.org/
->>>
->>> To avoid the dependency the plain numbers can be used.
->>
->> But, won't that reduce readability and make things prone to error?
+On Tue, 27 Jul 2021 13:58:45 -0700 Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memset(), avoid intentionally writing across
+> neighboring fields.
 > 
-> The numbers are not supposed to change so maybe it reduces readability
-> but I don't see how it is prone to error.
+> Add struct_group() to mark region of struct rt6_info that should be
+> initialized to zero.
 
-I cross check GPU's clock list whenever there is a system level issue 
-like NoC errors. So it is convenient to have the clock names here, at 
-least for me. But, I will budge if it is not easy to manage the dependency.
+memset_after() ?
 
-> 
->> If
->> the other patch doesn't get picked up soon, we should try this option.
->> We like to get this patch merged in v5.15.
-> 
-> The clk binding is already picked up but Bjorn would need to merge it
-> into the qcom tree to use it. I don't know what the plan is there.
-> 
+> diff --git a/include/net/ip6_fib.h b/include/net/ip6_fib.h
+> index 15b7fbe6b15c..9816e7444918 100644
+> --- a/include/net/ip6_fib.h
+> +++ b/include/net/ip6_fib.h
+> @@ -205,20 +205,22 @@ struct fib6_info {
+>  
+>  struct rt6_info {
+>  	struct dst_entry		dst;
+> -	struct fib6_info __rcu		*from;
+> -	int				sernum;
+> -
+> -	struct rt6key			rt6i_dst;
+> -	struct rt6key			rt6i_src;
+> -	struct in6_addr			rt6i_gateway;
+> -	struct inet6_dev		*rt6i_idev;
+> -	u32				rt6i_flags;
+> -
+> -	struct list_head		rt6i_uncached;
+> -	struct uncached_list		*rt6i_uncached_list;
+> -
+> -	/* more non-fragment space at head required */
+> -	unsigned short			rt6i_nfheader_len;
+> +	struct_group(init,
+> +		struct fib6_info __rcu		*from;
+> +		int				sernum;
+> +
+> +		struct rt6key			rt6i_dst;
+> +		struct rt6key			rt6i_src;
+> +		struct in6_addr			rt6i_gateway;
+> +		struct inet6_dev		*rt6i_idev;
+> +		u32				rt6i_flags;
+> +
+> +		struct list_head		rt6i_uncached;
+> +		struct uncached_list		*rt6i_uncached_list;
+> +
+> +		/* more non-fragment space at head required */
+> +		unsigned short			rt6i_nfheader_len;
+> +	);
+>  };
+>  
+>  struct fib6_result {
+> diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+> index 6b8051106aba..bbcc605bab57 100644
+> --- a/net/ipv6/route.c
+> +++ b/net/ipv6/route.c
+> @@ -327,9 +327,7 @@ static const struct rt6_info ip6_blk_hole_entry_template = {
+>  
+>  static void rt6_info_init(struct rt6_info *rt)
+>  {
+> -	struct dst_entry *dst = &rt->dst;
+> -
+> -	memset(dst + 1, 0, sizeof(*rt) - sizeof(*dst));
+> +	memset(&rt->init, 0, sizeof(rt->init));
+>  	INIT_LIST_HEAD(&rt->rt6i_uncached);
+>  }
+>  
 
-Bjorn, could you please advise here?
-
--Akhil.
