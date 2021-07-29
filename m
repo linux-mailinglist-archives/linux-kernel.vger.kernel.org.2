@@ -2,134 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40673D9EDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9358C3D9EE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234677AbhG2Hkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbhG2Hku (ORCPT
+        id S234822AbhG2HlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:41:06 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12711 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234713AbhG2HlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:40:50 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4A2C061757;
-        Thu, 29 Jul 2021 00:40:46 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so14230512pja.5;
-        Thu, 29 Jul 2021 00:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w0a44nIazAWCFeMTVCEPSrDUq0YniFKHNtq0Lfg2ohY=;
-        b=t7g76zVFOW82+YW0LTokF9MjLOA1uv5TRTNkErJ+A5zrihX8F4YV0jMNwhp72ra3Qo
-         j6/uIRxl7Syp0Jus87MCUNNvG028aI9vlfEKJYteeFsAGsDwU0e0BnkqUbX/PWk4Invp
-         SBh/7NCKQOn88oLj2/TOukmnNx1mdX2408K+KuJD5EyGTvAUJUtuJRYZwMCOx1I9ECPQ
-         qSkCol4vxbg0TqOU77Urzpd7DNcXd7b7FF5r18vz6vpVLRgaORohwdPZ0oekbGzgbiXd
-         NH0k1oiS1Yzvn10cdydt+xWDWIDA4rFwv4jZ/Od/NzzUSDFuVfLHpyQriy0PGSGGaQ/D
-         nPLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w0a44nIazAWCFeMTVCEPSrDUq0YniFKHNtq0Lfg2ohY=;
-        b=ABS62Z2kmuj702UeIKIMaQNu4I7NtK65TPh3PlJFgJ9+fTzaWIyn3YJHZ86fo341Sr
-         7AJi74qVCIY7OpztHhYfyG7pvcK+fPysn2UpAf9/ZGKwcPhOVorSuO8KyrqWeo9hpOVw
-         9tmKLLv9JO456xwbBg0K+KR88TROieFvp7ETKtw+QKkROh8iPssyPBwFwbyOn8yaH1e0
-         CO1DWgS+978t9sLFsz3pizxKj5OUAHB46njujxCC583i53pp/d8AtOQ0MFKZnsPRrgu+
-         g6WXGEieCkrb2YeFS5/RQ9xNE6cJad4AKWGhqbW/46s8Y5vc8Em60difw4nC010NyDoJ
-         pgiQ==
-X-Gm-Message-State: AOAM531xPqEPIcQE6aKdGEt+ChGZkocsFQiyzDgMOAEY72Fz/Pe8qhxd
-        5ozysMVvmJWZhvBMrSZzu6xstJyYvtg8paTk26FQl8Ug8Xk=
-X-Google-Smtp-Source: ABdhPJw5qTNwYA5vkwxrUjxBj2aoPq1ZzdhxfkGVQkBAcF/mi0Y9RzrkVX6d4p9LIzWpx2R9LR85dj2HijqNc4C4faY=
-X-Received: by 2002:a17:90a:7146:: with SMTP id g6mr3944401pjs.228.1627544446084;
- Thu, 29 Jul 2021 00:40:46 -0700 (PDT)
+        Thu, 29 Jul 2021 03:41:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627544459; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=mcywrMBdeZuhSxrWCJBQ0eAZkSiyZjSxKVnAJ98rhvY=; b=glWu/Mr3kyhbO85SKWQVFJAxoM1fMIZDTBfMcIshcwb8gx1kJc9d7/rIdWaT1m5CvncMFVSj
+ /uit5o6DLKkXftZiTeuhnE6dblSCX+CJlpUctmjB/mgprKnvziIEPskgI790prldrWhGzN6X
+ rU8Lp15YPqno21v9usefwltf3Mk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 61025b869771b05b24496bd7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 07:40:54
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 75D6AC4323A; Thu, 29 Jul 2021 07:40:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47CC0C4338A;
+        Thu, 29 Jul 2021 07:40:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 47CC0C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Rajat Asthana <rajatasthana4@gmail.com>
+Cc:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ath9k_htc: Add a missing spin_lock_init()
+References: <20210727214358.466397-1-rajatasthana4@gmail.com>
+        <87y29qgbff.fsf@codeaurora.org>
+        <738fa8cc-c9c4-66c1-e2ee-fe02caa7ef63@gmail.com>
+Date:   Thu, 29 Jul 2021 10:40:47 +0300
+In-Reply-To: <738fa8cc-c9c4-66c1-e2ee-fe02caa7ef63@gmail.com> (Rajat Asthana's
+        message of "Thu, 29 Jul 2021 00:32:38 +0530")
+Message-ID: <87lf5pftz4.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210723075858.376378-1-andrew@aj.id.au> <CAHp75VeQML7njMZ6x8kC-ZJVexC1xJ6n1cB3JneVMAVfuOJgWw@mail.gmail.com>
- <d019990e-a725-4ef5-bb54-aadee9d18b86@www.fastmail.com> <CAHp75Vc2W+WmwNj1AvH6EiT_80c+5gADV9QzK+asHxpd1Ucppw@mail.gmail.com>
- <6cc64039-f82a-4c1e-ad2c-16fad7aa3178@www.fastmail.com>
-In-Reply-To: <6cc64039-f82a-4c1e-ad2c-16fad7aa3178@www.fastmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 29 Jul 2021 10:40:09 +0300
-Message-ID: <CAHp75Vdx9QA7dmSWK8GHxBBxP0uYjrz=Gm=75yqaWbBX6k3v=w@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/6] leds: Fix pca955x GPIO pin mappings
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Pavel Machek <pavel@ucw.cz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 3:39 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> On Wed, 28 Jul 2021, at 18:43, Andy Shevchenko wrote:
-> > On Wed, Jul 28, 2021 at 8:43 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> > > On Fri, 23 Jul 2021, at 17:45, Andy Shevchenko wrote:
-> > >
-> > > > I was briefly looking into patches 1-4 and suddenly
-> > > > realized that the fix can be similar as in PCA9685 (PWM), I.e. we
-> > > > always have chips for the entire pin space and one may map them
-> > > > accordingly, requested in one realm (LED) in the other (GPIO)
-> > > > automatically is BUSY. Or I missed the point?
-> > >
-> > > No, you haven't missed the point. I will look at the PCA9685 driver.
-> > >
-> > > That said, my goal was to implement the behaviour intended by the
-> > > existing binding (i.e. fix a bug).
-> >
-> > Okay, so it implies that this used to work at some point.
->
-> I don't think this is true. It only "works" if the lines specified as
-> GPIO in the devicetree are contiguous from line 0. That way the pin and
-> GPIO number spaces align. I suspect that's all that's been tested up
-> until this point.
->
-> We now have a board with a PCA9552 where the first 8 pins are LED and
-> the last 8 pins are GPIO, and if you specify this in the devicetree
-> according to the binding you hit the failure to map between the two
-> number spaces.
->
-> > What has
-> > changed from that point? Why can't we simply fix the culprit commit?
->
-> As such nothing has changed, I think it's always been broken, just we
-> haven't had hardware configurations that demonstrated the failure.
->
-> >
-> > > However, userspace would never have
-> > > got the results it expected with the existing driver implementation, so
-> > > I guess you could argue that no such (useful) userspace exists. Given
-> > > that, we could adopt the strategy of always defining a gpiochip
-> > > covering the whole pin space, and parts of the devicetree binding just
-> > > become redundant.
-> >
-> > I'm lost now. GPIO has its own userspace ABI, how does it work right
-> > now in application to this chip?
->
-> As above, it "works" if the GPIOs specified in the devicetree are
-> contiguous from line 0. It's broken if they're not.
+Rajat Asthana <rajatasthana4@gmail.com> writes:
 
-So, "it never works" means there is no bug. Now, what we need is to
-keep the same enumeration scheme, but if you wish to be used half/half
-(or any other ratio), the driver should do like the above mentioned
-PWM, i.e. register entire space and depending on the requestor either
-proceed with a line or mark it as BUSY.
+>> Did you test this on a real device?
+>
+> No, I didn't test this on a real device. Syzkaller has a reproducer
+> for this and I just relied on the fact that the reproducer did not
+> reproduce the warning with this patch.
 
-Ideally, looking into what the chip can do, this should be indeed
-converted to some like pin control + PWM + LED + GPIO drivers. Then
-the function in pin mux configuration can show what exactly is enabled
-on the certain line(s).
-
+This is exactly what worries me with syzbot patches. People just try to
+silence the warning and not thinking how it works on a real device.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
