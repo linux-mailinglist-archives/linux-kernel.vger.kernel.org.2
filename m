@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDEC3D9B39
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED743D9B43
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhG2BtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 21:49:03 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:58838 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233142AbhG2Bs6 (ORCPT
+        id S233263AbhG2Byd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 21:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233153AbhG2Byb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 21:48:58 -0400
-X-UUID: 5e1cf78f69cf47d889255ff36217d3d5-20210729
-X-UUID: 5e1cf78f69cf47d889255ff36217d3d5-20210729
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <zhiyong.tao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1674095973; Thu, 29 Jul 2021 09:48:52 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 29 Jul 2021 09:48:51 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 29 Jul 2021 09:48:49 +0800
-From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
-To:     <timur@kernel.org>, <linux@armlinux.org.uk>, <alcooperx@gmail.com>,
-        <tklauser@distanz.ch>, <sean.wang@kernel.org>
-CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
-        <hui.liu@mediatek.com>, <yuchen.huang@mediatek.com>,
-        <huihui.wang@mediatek.com>, <eddie.huang@mediatek.com>,
-        <sean.wang@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>
-Subject: [PATCH v1] serial: 8250_mtk: fix uart corruption issue when rx power off
-Date:   Thu, 29 Jul 2021 09:48:17 +0800
-Message-ID: <20210729014817.11879-2-zhiyong.tao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210729014817.11879-1-zhiyong.tao@mediatek.com>
-References: <20210729014817.11879-1-zhiyong.tao@mediatek.com>
+        Wed, 28 Jul 2021 21:54:31 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6276C061757;
+        Wed, 28 Jul 2021 18:54:28 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id o20so6293654oiw.12;
+        Wed, 28 Jul 2021 18:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bBOOqkTj7VfQtppJgA3DRf1xTVJ3jngXH3eM9beR2jE=;
+        b=UZkPpHJbUa1GEesgvUr8RRfY/5uEgz/fkHrUhw28ymMT9TuywUDUXPlFoY6RAKFVen
+         izjQux0i9YVdlnuik22EdrnNrOGIC4QKjW+SLFKShfrylFH/OvSAOHdiJTBaJstQ1GJz
+         2SGSy0OAv85CrCbdbtrQE80Hb0b5QYoLH3yS2DZrIn+j6ry9tN1+YFEUMHwTDNElRuMV
+         sSZl0ZafFEzlVyV43HxReGGRSnBVcNygonSh3eRTjnpwWAwGqt9egAKtQR1ilWoffN1D
+         kKajE6Iqk4xD4xFyydMlfhsPp+6ODEVmcC5VyWtpZwJvw3HDIVBrsOwpnT8dQVTTJLPC
+         PrPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bBOOqkTj7VfQtppJgA3DRf1xTVJ3jngXH3eM9beR2jE=;
+        b=QObnXoo0pAMwlCJeeYX2jBr9w2yd+tW2kYfAlGDa0sCf9UJam1X5A9+v0K88c0W5Dd
+         PkNikAjIpaqB2dldKz7B9PFsE977jA6EB4mBCyNJ6odPeyHK0st3Z36kgsItzvoO56Ka
+         sINhk5/FqJQfZ3TXdHaNcqOT7U4YFVA/jn3/PqCbFEWaMfQG0UDL3DP7NAwKBaXTzLMI
+         PciHZnYe36o24ytdMPdCHveDX3MWBMdHr13UXCdWEeDWBr7Ej4j58UdcbIOtyKulUsNX
+         dCTJUCMmjlOjVXJxXe2oQEwjSAxuGmb4np/44oLKUV3YtWP8pn/Ky1eOsM4vMs/KhShD
+         gPOA==
+X-Gm-Message-State: AOAM531ozDKMMprafQrk5nvCoJ2AoYSwPhmmRRRvUB/IcbJRz4cb+2dy
+        Apmr/CHxyVQXWIkS9JaIgR99KQayJNScn1z0
+X-Google-Smtp-Source: ABdhPJzDiG5SfOf1a07BhZr0SfMvHnTgGzGUFjdhVz5hP19aH4QWkq156EjGle0acTV57e58Lp12Pg==
+X-Received: by 2002:a05:6808:1887:: with SMTP id bi7mr47393oib.115.1627523668026;
+        Wed, 28 Jul 2021 18:54:28 -0700 (PDT)
+Received: from ian.penurio.us ([47.184.51.90])
+        by smtp.gmail.com with ESMTPSA id c11sm311424otm.37.2021.07.28.18.54.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 18:54:27 -0700 (PDT)
+From:   Ian Pilcher <arequipeno@gmail.com>
+To:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org
+Cc:     axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
+        kernelnewbies@kernelnewbies.org, Ian Pilcher <arequipeno@gmail.com>
+Subject: [RFC PATCH 0/8] Add configurable block device LED triggers
+Date:   Wed, 28 Jul 2021 20:53:36 -0500
+Message-Id: <20210729015344.3366750-1-arequipeno@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix uart corruption issue when rx power off.
-Add spin lock in mtk8250_dma_rx_complete function in APDMA mode.
+This patch series adds configurable (i.e. user-defined) block device LED
+triggers.
 
-Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
----
- drivers/tty/serial/8250/8250_mtk.c | 5 +++++
- 1 file changed, 5 insertions(+)
+* Triggers can be created, listed, and deleted via sysfs block class
+  attributes (led_trigger_{new,list,del}).
 
-diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
-index f7d3023f860f..fb65dc601b23 100644
---- a/drivers/tty/serial/8250/8250_mtk.c
-+++ b/drivers/tty/serial/8250/8250_mtk.c
-@@ -93,10 +93,13 @@ static void mtk8250_dma_rx_complete(void *param)
- 	struct dma_tx_state state;
- 	int copied, total, cnt;
- 	unsigned char *ptr;
-+	unsigned long flags;
- 
- 	if (data->rx_status == DMA_RX_SHUTDOWN)
- 		return;
- 
-+	spin_lock_irqsave(&up->port.lock, flags);
-+
- 	dmaengine_tx_status(dma->rxchan, dma->rx_cookie, &state);
- 	total = dma->rx_size - state.residue;
- 	cnt = total;
-@@ -120,6 +123,8 @@ static void mtk8250_dma_rx_complete(void *param)
- 	tty_flip_buffer_push(tty_port);
- 
- 	mtk8250_rx_dma(up);
-+
-+	spin_unlock_irqrestore(&up->port.lock, flags);
- }
- 
- static void mtk8250_rx_dma(struct uart_8250_port *up)
+* Once created, block device LED triggers are associated with LEDs just
+  like any other LED trigger (via /sys/class/leds/${LED}/trigger).
+
+* Each block device gains a new device attribute (led_trigger) that can
+  be used to associate the device with a trigger or clear its
+  association.
+
+* My expectation is that most configuration will be done via sysfs
+  (driven by udev), but there also in-kernel APIs for creating,
+  deleting, and (dis)associating triggers.
+
+* Multiple devices can be associated with one trigger, so this supports
+  a single LED driven by multiple devices, multiple device-specific
+  LEDs, or arbitrary combinations.
+
+  Along with support for more than just ATA devices, this is the main
+  difference between this function and the current disk activity
+  trigger.  It makes it suitable for use on systems like the Thecus
+  N5550 NAS, which has a software-driven activity LEDs for each disk.
+
+* In addition to physical block devices, many types of virtual block
+  devices can drive LEDs; device mapper, MD RAID, and loop devices
+  work (but zram swap devices do not).
+
+* The led trigger is "blinked" (75 msec on, 25 msec off) when a request
+  is successfully sent to the low-level driver.  The intent is to
+  provide a visual indication of device activity, not any sort of exact
+  measurement.
+
+* Related to the previous bullet, if the blink function is unable to
+  immediately acquire a lock on the device's LED trigger information
+  it simply returns, so that I/O processing can continue.
+
+It's probably obvious that I'm basically a complete newbie at kernel
+development, so I welcome feedback.
+
+Thanks!
+
+Ian Pilcher (8):
+  docs: Add block device LED trigger documentation
+  block: Add block device LED trigger list
+  block: Add kernel APIs to create & delete block device LED triggers
+  block: Add block class attributes to manage LED trigger list
+  block: Add block device LED trigger info to struct genhd
+  block: Add kernel APIs to set & clear per-block device LED triggers
+  block: Add block device attributes to set & clear LED triggers
+  block: Blink device LED when request is sent to low-level driver
+
+ Documentation/block/index.rst        |   1 +
+ Documentation/block/led-triggers.rst | 124 ++++++
+ block/Kconfig                        |  10 +
+ block/Makefile                       |   1 +
+ block/blk-ledtrig.c                  | 570 +++++++++++++++++++++++++++
+ block/blk-ledtrig.h                  |  51 +++
+ block/blk-mq.c                       |   2 +
+ block/genhd.c                        |  14 +
+ include/linux/blk-ledtrig.h          |  24 ++
+ include/linux/genhd.h                |   4 +
+ 10 files changed, 801 insertions(+)
+ create mode 100644 Documentation/block/led-triggers.rst
+ create mode 100644 block/blk-ledtrig.c
+ create mode 100644 block/blk-ledtrig.h
+ create mode 100644 include/linux/blk-ledtrig.h
+
 -- 
-2.18.0
+2.31.1
 
