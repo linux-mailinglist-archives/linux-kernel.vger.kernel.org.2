@@ -2,155 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10EE3DA68F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39183DA693
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237419AbhG2Ohr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:37:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237035AbhG2Ohp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:37:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627569461;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/IcxmlbvqIO6obnOTeLHYAt4yB5x0e2oIHdv+LJqJUM=;
-        b=LzkhIKxbfftYFKF70yCuks/Xqpc8d4b+LqvT5thgiA0uXCx9S+iL9F/dH46g1MDhbDRfzC
-        3Zq4PctcRifOGdrYCcckhOUj1hc6VF/6L1vW7V5yV1zUg6pYttdeIDdYWIHXDtQwuVAcwx
-        nFtsvowwU0IuY501lXk28bccvI6Ys3E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-EJvzcQfnOieP2E7kCWhRMw-1; Thu, 29 Jul 2021 10:37:38 -0400
-X-MC-Unique: EJvzcQfnOieP2E7kCWhRMw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 15B701008060;
-        Thu, 29 Jul 2021 14:37:37 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B6ACF60864;
-        Thu, 29 Jul 2021 14:37:36 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM fixes for Linux 5.14-rc4
-Date:   Thu, 29 Jul 2021 10:37:36 -0400
-Message-Id: <20210729143736.2012671-1-pbonzini@redhat.com>
+        id S237475AbhG2Oic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:38:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:49488 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237458AbhG2OiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:38:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A0396D;
+        Thu, 29 Jul 2021 07:38:12 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A8EE3F70D;
+        Thu, 29 Jul 2021 07:38:11 -0700 (PDT)
+Subject: Re: WARNING: CPU: 112 PID: 2041 at kernel/sched/sched.h:1453
+To:     Bruno Goncalves <bgoncalv@redhat.com>
+Cc:     CKI Project <cki-project@redhat.com>, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, Memory Management <mm-qe@redhat.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <CA+QYu4oOgrb8n=Qyuky-M0dYPEo_HNMdbNuj2SF4a=aQTE_xvw@mail.gmail.com>
+ <d86333e7-bcde-2adb-e566-21ec97cda8bf@arm.com>
+ <CA+QYu4rCRR_pNQVxSwGpzcLWJKLUA3F7LAtBiU9hPzz3D0k0Cg@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <f5b4beb9-4e75-0f4e-da8b-b7ccc12fee68@arm.com>
+Date:   Thu, 29 Jul 2021 16:38:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CA+QYu4rCRR_pNQVxSwGpzcLWJKLUA3F7LAtBiU9hPzz3D0k0Cg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 29/07/2021 14:36, Bruno Goncalves wrote:
+> On Wed, Jul 28, 2021 at 5:55 PM Dietmar Eggemann
+> <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 28/07/2021 15:11, Bruno Goncalves wrote:
 
-The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
+[...]
 
-  Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
+>> Can't reproduce it on my Juno (arm64) (slow-switching (scpi-cpufreq
+>> driver)).
+> 
+> We seem to be able to reproduce this only on Ampere Altra machines,
+> specifically on mtjade and mtsnow cpus.
+> 
+> # cpupower frequency-info
+> analyzing CPU 0:
+>   driver: cppc_cpufreq
+>   CPUs which run at the same hardware frequency: 0
+>   CPUs which need to have their frequency coordinated by software: 0
+>   maximum transition latency:  Cannot determine or is not supported.
+>   hardware limits: 1000 MHz - 2.80 GHz
+>   available cpufreq governors: conservative ondemand userspace
+> powersave performance schedutil
+>   current policy: frequency should be within 2.00 GHz and 2.80 GHz.
+>                   The governor "schedutil" may decide which speed to use
+>                   within this range.
+>   current CPU frequency: 1.55 GHz (asserted by call to hardware)
+> 
+> # ps -eTo comm,pid,pri,class | grep sugov
+> sugov:0            1082 140 DLN
+> sugov:1            1085 140 DLN
+> ...
+> sugov:78           1319 140 DLN
+> sugov:79           1320 140 DLN
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to 8750f9bbda115f3f79bfe43be85551ee5e12b6ff:
-
-  KVM: add missing compat KVM_CLEAR_DIRTY_LOG (2021-07-27 16:59:01 -0400)
-
-----------------------------------------------------------------
-ARM:
-
-- Fix MTE shared page detection
-
-- Enable selftest's use of PMU registers when asked to
-
-s390:
-
-- restore 5.13 debugfs names
-
-x86:
-
-- fix sizes for vcpu-id indexed arrays
-
-- fixes for AMD virtualized LAPIC (AVIC)
-
-- other small bugfixes
-
-Generic:
-
-- access tracking performance test
-
-- dirty_log_perf_test command line parsing fix
-
-- Fix selftest use of obsolete pthread_yield() in favour of sched_yield()
-
-- use cpu_relax when halt polling
-
-- fixed missing KVM_CLEAR_DIRTY_LOG compat ioctl
-
-----------------------------------------------------------------
-Andrew Jones (2):
-      KVM: selftests: change pthread_yield to sched_yield
-      KVM: arm64: selftests: get-reg-list: actually enable pmu regs in pmu sublist
-
-Christian Borntraeger (1):
-      KVM: s390: restore old debugfs names
-
-David Matlack (2):
-      KVM: selftests: Fix missing break in dirty_log_perf_test arg parsing
-      KVM: selftests: Introduce access_tracking_perf_test
-
-Juergen Gross (1):
-      x86/kvm: fix vcpu-id indexed array sizes
-
-Li RongQing (1):
-      KVM: use cpu_relax when halt polling
-
-Marc Zyngier (1):
-      KVM: arm64: Fix detection of shared VMAs on guest fault
-
-Mauro Carvalho Chehab (1):
-      docs: virt: kvm: api.rst: replace some characters
-
-Maxim Levitsky (3):
-      KVM: SVM: svm_set_vintr don't warn if AVIC is active but is about to be deactivated
-      KVM: SVM: tweak warning about enabled AVIC on nested entry
-      KVM: SVM: use vmcb01 in svm_refresh_apicv_exec_ctrl
-
-Paolo Bonzini (3):
-      Merge tag 'kvmarm-fixes-5.14-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
-      KVM: SVM: delay svm_vcpu_init_msrpm after svm->vmcb is initialized
-      KVM: add missing compat KVM_CLEAR_DIRTY_LOG
-
-Vitaly Kuznetsov (4):
-      KVM: nSVM: Rename nested_svm_vmloadsave() to svm_copy_vmloadsave_state()
-      KVM: nSVM: Swap the parameter order for svm_copy_vmrun_state()/svm_copy_vmloadsave_state()
-      KVM: Documentation: Fix KVM_CAP_ENFORCE_PV_FEATURE_CPUID name
-      KVM: x86: Check the right feature bit for MSR_KVM_ASYNC_PF_ACK access
-
- Documentation/virt/kvm/api.rst                     |  30 +-
- arch/arm64/kvm/mmu.c                               |   2 +-
- arch/s390/include/asm/kvm_host.h                   |  18 +-
- arch/s390/kvm/diag.c                               |  18 +-
- arch/s390/kvm/kvm-s390.c                           |  18 +-
- arch/x86/kvm/ioapic.c                              |   2 +-
- arch/x86/kvm/ioapic.h                              |   4 +-
- arch/x86/kvm/svm/avic.c                            |   2 +-
- arch/x86/kvm/svm/nested.c                          |  10 +-
- arch/x86/kvm/svm/svm.c                             |  26 +-
- arch/x86/kvm/svm/svm.h                             |   6 +-
- arch/x86/kvm/svm/svm_onhyperv.h                    |   2 +-
- arch/x86/kvm/x86.c                                 |   4 +-
- tools/testing/selftests/kvm/.gitignore             |   1 +
- tools/testing/selftests/kvm/Makefile               |   1 +
- tools/testing/selftests/kvm/aarch64/get-reg-list.c |   3 +-
- .../selftests/kvm/access_tracking_perf_test.c      | 429 +++++++++++++++++++++
- tools/testing/selftests/kvm/dirty_log_perf_test.c  |   1 +
- tools/testing/selftests/kvm/steal_time.c           |   2 +-
- virt/kvm/kvm_main.c                                |  29 ++
- 20 files changed, 537 insertions(+), 71 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/access_tracking_perf_test.c
-
+Thanks! In the meantime I got access to an Ampere Altra so I can try
+5.14.0-rc1 later today.
