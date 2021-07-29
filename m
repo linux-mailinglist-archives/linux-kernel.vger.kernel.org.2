@@ -2,718 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7578D3DA0E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D14B3DA0E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbhG2KM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:12:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231488AbhG2KMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:12:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4ADC60F23;
-        Thu, 29 Jul 2021 10:12:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627553542;
-        bh=wZgGcmpyMN7Nk+w3+TI7Qk6lXitpUc49m9RqsVKzl7Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dSMZu+mYsM3F2ctk0DNw9xZ1VCzqXOJ4JH035THwmdpj8nHNZPxpQp37iE1IgbNgY
-         FvXxrAnkccBJ+O6qFfbJ/QEcJzMS/adHZ0/4TJxQnYN5btJd5a24igyHbNtntahCJi
-         2hb8DojqAkAAqfJ0p8uXw7E48LsR+sedaDVgPQCF1ZTMfwEuU5FKb0CnsnUQh7pK8S
-         PzXdBz0phGshHYkoGgARceDidjO/Bw9Nr0JNAv2TC00OSvb/qQtljYF7AbPciwgYiX
-         GI0mo9NPft98EVSXZuLlEtbSG41kUivPb5v0W/t9lsgjEwmtbs5Yzr+A6hUsjVcppJ
-         xXxUeEw6PoNcg==
-Date:   Thu, 29 Jul 2021 12:12:16 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v7 06/10] dt-bindings: phy: Add bindings for HiKey 970
- PCIe PHY
-Message-ID: <20210729121216.6131d2dc@coco.lan>
-In-Reply-To: <CAL_JsqLQX-zkWigA3P4PG2LikCQMq6Lrh8Ok95P4KbcbNS6+_w@mail.gmail.com>
-References: <cover.1626855713.git.mchehab+huawei@kernel.org>
-        <946f2426bc542638240980931eae924c57f2ba27.1626855713.git.mchehab+huawei@kernel.org>
-        <20210723225059.GA2727093@robh.at.kernel.org>
-        <20210724021244.780297ee@coco.lan>
-        <CAL_JsqLA7Z908SQKkZpyEcCvpkWsW3pa42eajpxCSkbUy4rv9g@mail.gmail.com>
-        <20210727015020.403bbf73@coco.lan>
-        <20210727085205.5aafb5c9@coco.lan>
-        <CAL_Jsq+5raGQAK5T4SoC=Jfzsbov-y4u-rdJ3DJt+ryYOK8q2w@mail.gmail.com>
-        <20210728093838.4c7114bf@coco.lan>
-        <CAL_JsqLQX-zkWigA3P4PG2LikCQMq6Lrh8Ok95P4KbcbNS6+_w@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S235672AbhG2KNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:13:05 -0400
+Received: from mail-bn1nam07on2058.outbound.protection.outlook.com ([40.107.212.58]:32901
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231488AbhG2KND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 06:13:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZJnbky6JtX4663ppdG0dmWXLB266rV3RGfoMi6v4Csa1rh/WqGHtuYzJVXRR5ARLgZdjKvZGkc/y/CzS27BOsJ+KKMkzUW8xMY4hL159HyQyZLdTgLZ57Cy3ryuHfUc+CncIEcxoH5UqEWlWlHROXxhQ3dVIiO98r7Mi7kGs5VzvyCawbGIDVs954ccca5pLqJbdBou38wZAs7b45JckySYD/KToWPRNO/fIl8Wwdm09rzUZ+b5Bnn2N0yPQhP8ldlNIWklevY4u/xoD8MSl2T+T9FfcleMpXXiIf8S7qQg8l4P8h12xtgg1Wn7LyUDqtLiZbiVWVNrYJQIOgRIjBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+VzxSlYk5Cqro5ij9API7cbIkton1xzILQo21X1aO/U=;
+ b=lxQ0qqZtyG+WySklgLe2i2UYwEpsCaNegaABCALJJkH3iPImnvbUxwfiVMbVK/4JiKRDm3XeEaD5BKfB4/YvE4toAQqIG0Fc7opPn0uvDuvWs/5DMy6cihoSAqqFWy9LD1j41O0GI9rORHg1LDgUxpb5PZRABdW0IYiI/mcv/Kw74b7ypTACBfhi0euyo69REdMCpGhON+d5cJ/padaAQ0v8od7PJUVMNunL8YPSbtB+1VNlCF7FZKiV5M9inyz3fyAv4rCbhMezqeUkwngn7rcCkkqzQO6Pf7RMFWSa9R5ml4seBI9bUt0pnuDQg/jBFV85GsS2Uf+mJsA+w3VjFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+VzxSlYk5Cqro5ij9API7cbIkton1xzILQo21X1aO/U=;
+ b=gw+iiaHmGYvLkUM1L3S/sPG2WI+1Tbg/98q8suwKVuwD424NU0xiWtlOJ/LxKpFl92IT2fexDRiaSxqjcG2KKyBDr7njM/d2sv+wvBy7s0XeaC0u5xJoXis7D90QPt+fK6Vnj0pfL7HepSz/zaz/c0yD4zQ/KlePWXYVOfYKp/4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5103.namprd12.prod.outlook.com (2603:10b6:5:392::13)
+ by DM4PR12MB5055.namprd12.prod.outlook.com (2603:10b6:5:38a::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20; Thu, 29 Jul
+ 2021 10:12:59 +0000
+Received: from DM4PR12MB5103.namprd12.prod.outlook.com
+ ([fe80::18ea:5df5:f06e:f822]) by DM4PR12MB5103.namprd12.prod.outlook.com
+ ([fe80::18ea:5df5:f06e:f822%3]) with mapi id 15.20.4373.021; Thu, 29 Jul 2021
+ 10:12:59 +0000
+Subject: Re: [PATCH v10 2/3] dmaengine: ptdma: register PTDMA controller as a
+ DMA resource
+To:     Vinod Koul <vkoul@kernel.org>, Sanjay R Mehta <Sanju.Mehta@amd.com>
+Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
+        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
+        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
+        mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+References: <1624207298-115928-1-git-send-email-Sanju.Mehta@amd.com>
+ <1624207298-115928-3-git-send-email-Sanju.Mehta@amd.com>
+ <YQD19B4A/l/ZyySZ@matsya>
+From:   Sanjay R Mehta <sanmehta@amd.com>
+Message-ID: <368f7d3e-bdb1-ea9f-de70-285280420706@amd.com>
+Date:   Thu, 29 Jul 2021 15:42:47 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+In-Reply-To: <YQD19B4A/l/ZyySZ@matsya>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: KL1PR02CA0012.apcprd02.prod.outlook.com
+ (2603:1096:820:c::17) To DM4PR12MB5103.namprd12.prod.outlook.com
+ (2603:10b6:5:392::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.71.123] (165.204.80.7) by KL1PR02CA0012.apcprd02.prod.outlook.com (2603:1096:820:c::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Thu, 29 Jul 2021 10:12:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c420410d-b22b-4ca6-5be0-08d952797116
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5055:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM4PR12MB505509F827B5FA18AC2A06B7E5EB9@DM4PR12MB5055.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DknASLUZUgPDkwzxkw50NsGTDZ76/IBQOs5gMy/VsPjqJ0dq62ej9WhNYp9UlRhflPkG9ATWSxAwbkAiqanbaDTKmjdr6trj8uzVRSm3sWdXloOfmzXYmYs7cW9WJd4nWYMaC8uVYDLFxzowgz/It3qxTStDnPtX3MXsbgiv26vojqv6BsmcNARMsXffRft9vjnLUVFphOej3dRmTPLUzmkWu2GJemBEtRWspw7iqKJPb2Zx21Ikqfq01NdSY7mJpXrEt+7Axo/jq2Mdwv6yLDR6nMU3AovvzpGMcvrEDep03cA3zO+TpNca8ZzKxsGcvjIMrEwvoU/1OhpZOii1jYprgIEOHBGl+RNNH1yZhjniYi+0dilQBhuJnzDrMnmRN9BBYvOjqFDu4eZnmUV/1cWNmfjEm9isXGD1SSYsceeUhwZEjXaHmWL7n1slklQC1E8QvNaE93GFKiGosZqPZD6T37mbFc31UuDbiBexrkjs4VWEzYWgSQ13rHT8BLeWso+qbhO1L6FQMSR7KdnYoVHILLuKTmF8zDyesCMO2U56Ds0cpDC0Gqa9LhOQatCW2FTjILVjzaLeeVlpuAQkFtbQvYN2gquYaNVc1+Znkjt+QtRb/NfDt9nWaJwHNa1nmVYLc40c1/yHNv6YRsiwl4d7mLK4lkQgni2lPp7kGXoEriEiRczziztjtGorj/3J4OTYmg8+iKweA8o2zFs7hIQYo4N/KVXGryDJlUNnReA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5103.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(39860400002)(376002)(346002)(4326008)(16576012)(478600001)(110136005)(83380400001)(36756003)(6636002)(31696002)(5660300002)(316002)(8936002)(6666004)(66946007)(38100700002)(956004)(53546011)(31686004)(2906002)(8676002)(6486002)(4744005)(2616005)(26005)(66556008)(186003)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?STQ4NGFnazB4NUFJZkErT0lRbllUQzJTWTBmWVA0Q1ZoNmpzQURmUEhwZWpV?=
+ =?utf-8?B?Y3UwU2treUVGYjVEeU1yTmxmNnROeDVwUmZKOUxvVnhWcnJlUk1ya052TGRh?=
+ =?utf-8?B?Mi9XV2tMcGtlQjM4c3p1eENPV0ZGb1ZVYjkrOVRtT2kraFN3SHVHOWZNUlN5?=
+ =?utf-8?B?bjFEZVFvSnpIQTJKdHlSQjZxUnF5cWU3VWw3ZCtHa0txVXJtNVl1WTJCd2NP?=
+ =?utf-8?B?OFZiaHlQMkJkajdPZ0hZTEkvazlsejlkb3VSYXJtT1lGdTdtYm1lWGRyMVdl?=
+ =?utf-8?B?K1hnUEJ0c1lGcHhBbmp6VnRTb3Y4OW5OK0dRYjMxdHVYNWhLQTM4TnhJU1pz?=
+ =?utf-8?B?U0YzZGsrZmpSTFZlRm9FWnp4N1pMVFA0M0JxQlNyQ2JRYWxsei9VL3NUZWc2?=
+ =?utf-8?B?WFptTTA5eE0wQWY3WDdEa2RHNDdTU0J1R2JZSVZLUjNWYTZRMXE5RmgvVG9h?=
+ =?utf-8?B?V3RlMEQ0eUlmZDE3MGIvNXhVc2F6eTBtRzNTVUtNMEVSZkFRRVBwZGpOL1RN?=
+ =?utf-8?B?NUJydEZuc05jem53L1ViMHdYTUJ0ZXA2SlRsRzRFT2FEVlpYcU9KQU9lNnky?=
+ =?utf-8?B?TUNuMFBERWI0dk5HK0U3UmV3VEJZS3BqL2VqMlV1RWVIeTZ5VVBlNzR6a2tt?=
+ =?utf-8?B?Wi8vaW02b0pPZ0xIcHdNV3oxQmhwSFVxZ1MxTWVHTmR2VURmeTV3WTFDZ2Zz?=
+ =?utf-8?B?MGROdDdNNE5FYW9MNEVaTFJYQUE5UmRHUVVwZW9Gb1VLdldXbVkybTJ3Wm5K?=
+ =?utf-8?B?Wmp0TGVOdWpMcThVaENBTG1xcmt5TkM1ak9sMmpKc1ZnaDAyYXp4MGdlQjJn?=
+ =?utf-8?B?QkFsUzhHR3Q1WUxiNWtXc2M1Q3RWNWJwRlVGVk01a2hQa1hmNmtITzl1TzRx?=
+ =?utf-8?B?L1NhTlNrMlRGN1hzNS9RMGI5WFMxamdCeXpXR1IvQ3NKVVhGMlhBS1JWNVBl?=
+ =?utf-8?B?dnZJVVhiTzgwL2s1cmhNeUQ3c2d0bUZIVnQ3Unk1V1JuVmc4ZElta1Y0WTRl?=
+ =?utf-8?B?dVVmZlhMWkhVNHdQSTdHbkFLandHd3pHQnA1dENrRkE0Mmd3UXo5THR3aFJk?=
+ =?utf-8?B?Nm1GcnAwZzZkVVFxTjNxMmxoeXRZbkRmeUJ4WEpwYmdLcWhLZnk1UUVoS3V6?=
+ =?utf-8?B?MlMyMzZPRE43UnVZN1U2T2ZYdTFWQXRBRURUREx5S3R0NXE3Z0VtZHlGc1ZO?=
+ =?utf-8?B?ZlZBNWlDaWhndFZWWG5mUlA5d3RNS1oxOVpSdG96WktjcU5oK3Y0V1I3MDNs?=
+ =?utf-8?B?d3V2QzB1RTF6TkFxZGpTK2RlQ0hxUzVhS3U5YUs1ZFFoRVVCUXhxMmYyYzh4?=
+ =?utf-8?B?b25sL21IMGRua28weCtsTzNBMVRnbVZXNGhYZGZEcGc0TGk2ZUlOSk9nbk0z?=
+ =?utf-8?B?OG1vOHh4cUV2YitnUHlVc3NNYzZocnBZdE9OZklPQW0wclZ5VHZYaUQ0OFFM?=
+ =?utf-8?B?UThMVTZvZTVnaE51cEhiaHAvYkljTnBhMnJlUEc2cTZGY0ZhZ3pzc1MxN3FI?=
+ =?utf-8?B?V2lXbnlWYnBSS1lzUXZLNHhKTE1ERXdEYTZlbXlKZDhMYWtPa3p4OFJCL3JW?=
+ =?utf-8?B?NWlSSlpaMWFyVVE4VjBqeEcxTUN4cU9WbkhqVXZqTmNRQmZ6TTh4WVc3OFdk?=
+ =?utf-8?B?a2NVczg3K0JldTVTQ29PUGQxWFhBdll1YWorb0pYZGpONHJlUXI3RkRWb0pj?=
+ =?utf-8?B?eDZub0RvbnBSNzRzTHFOSEVYWm1CcEsybEFUamN3TlpobE9Weno5YlY2dnlj?=
+ =?utf-8?Q?cwDSsCbpQlrLJEM+JIGpMyS6FlTfjZ0YLkqOBM/?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c420410d-b22b-4ca6-5be0-08d952797116
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5103.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 10:12:59.2412
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9bD93Jc6XVNymJzzifVm58GJ8JHYZDNj0TpF7L2vQnqq6pOgRD01FbgIXwTcUd5clpKhbM+aPCtaOO/WRSEPOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-Em Wed, 28 Jul 2021 08:28:26 -0600
-Rob Herring <robh@kernel.org> escreveu:
 
-> > > pcie@f4000000 { // RP: Bus 0, Device 0
-> > >     compatible = "hisilicon,kirin970-pcie";
-> > >     ...
-> > >     reset-gpios = <&gpio7 0 0>;  // PERST to switch
-> > >
-> > >     pcie@0 { // PCIe switch: Bus 1, Device 0
-> > >         reg = <0 0 0 0 0>;
-> > >         compatible = "pciclass,0604";
-> > >         device_type = "pci";
-> > >
-> > >         pcie@1 { // NC (Can omit this node)
-> > >             reg = <0x80 0 0 0 0>;
-> > >             compatible = "pciclass,0604";
-> > >             device_type = "pci";
-> > >         };
-> > >
-> > >         pcie@4 { // M.2
-> > >             reg = <0x200 0 0 0 0>;  
-> >
-> > Not sure what to put at reg. I suspect that the best would be to follow
-> > the PEX port number, as, if one day someone decides to implement an
-> > I2C driver, this might be useful.  
+On 7/28/2021 11:45 AM, Vinod Koul wrote:
+> [CAUTION: External Email]
 > 
-> It's defined in the PCI bus binding. Basically, it's the BDF of the
-> device. However, as the bus number is dynamic, I think we want to
-> leave that as 0 for FDT. The function is optional and always 0 in this
-> case.
-
-Ok. I'll use 0 there.
-
-> > >             compatible = "pciclass,0604";
-> > >             device_type = "pci";
-> > >             reset-gpios = <&gpio7 1 0>; // PERST to M.2 slot  
-> >
-> > We also need the clock-req phandle for the three devices.  
+> On 20-06-21, 11:41, Sanjay R Mehta wrote:
+>> From: Sanjay R Mehta <sanju.mehta@amd.com>
+>>
+>> Register ptdma queue to Linux dmaengine framework as general-purpose
+>> DMA channels.
 > 
-> Hopefully, you can figure out where those belong now...
-
-I added it here too.
-
-> > With regards to the clock-req phandles, those should be enabled before
-> > the PHY clocks, in order to avoid the SError issue.  
+> Mostly looks good, one question below:
 > 
-> Huh? What exactly causes an SError. Has to be some bus access.
-
-I'm not sure, but I got lots of those when playing with drivers
-for this SoC. It is not easy to check the root case when such
-errors happen, as the backtrace is useless.
-
+>> +static struct pt_dma_desc *pt_alloc_dma_desc(struct pt_dma_chan *chan,
+>> +                                          unsigned long flags)
+>> +{
+>> +     struct pt_dma_desc *desc;
+>> +
+>> +     desc = kmem_cache_zalloc(chan->pt->dma_desc_cache, GFP_NOWAIT);
+>> +     if (!desc)
+>> +             return NULL;
+>> +
+>> +     vchan_tx_prep(&chan->vc, &desc->vd, flags);
+>> +
+>> +     desc->pt = chan->pt;
+>> +     desc->issued_to_hw = 0;
+>> +     desc->status = DMA_IN_PROGRESS;
 > 
-> > It should be easy to implement this at the the PCIe driver, but, this
-> > should happen in early stages at the power-on sequence (before enabling
-> > the DWC PHY clocks). So, the PCIe driver (or the PHY) will need to
-> > walk the child nodes and get all the 'reset-gpios' properties.
-> >
-> > For the sake of avoiding to duplicate the walk-though and parsing
-> > logic, I would do it only at the PHY driver.  
+> where is this descriptor freed?
 > 
-> Everyone else handles this stuff in their PCIe driver. You are not special...
+This descriptor is freed in the pt_do_cleanup() function.
+pt_do_cleanup() is set as a callback routine for "chan->vc.desc_free" in
+the init code.
+
+- Sanjay.
+
+> --
+> ~Vinod
 > 
-> I have a plan to make the PERST handling common across all PCIe host
-> drivers and also make the PHY handling common across DWC drivers.
-> Don't make that harder.
-
-It turns that changing this to work the way you're expecting was
-a lot simpler than I was expecting ;-)
-
-The enclosed patch, applied on the top of my past series, does that.
-
-I'll rebase my patch series to take this change into account.
-
-Could you please check if the DTS there is OK from your side?
-I'll then change the dt-schema to match such change.
-
-Thanks,
-Mauro
-
-[PATCH] PCI: kirin: change DT schema to use child nodes
-
-Instead of having multiple PERST# pins as part of pcie,
-add PCIe child slots, and place there the information related
-to clock request and PERST# signals.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index cae90cd0b06a..a17562bb4dff 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -687,9 +687,6 @@ pcie_phy: pcie-phy@fc000000 {
- 				      "apb_phy", "apb_sys",
- 				      "aclk";
- 
--			clkreq-gpios = <&gpio20 6 0 >, <&gpio27 3 0 >,
--				       <&gpio17 0 0 >;
--
- 			/* vboost iboost pre post main */
- 			hisilicon,eye-diagram-param = <0xFFFFFFFF 0xFFFFFFFF
- 						       0xFFFFFFFF 0xFFFFFFFF
-@@ -726,8 +723,40 @@ &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
- 					 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
- 					<0x0 0 0 4
- 					 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
--			reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
--				      <&gpio3 1 0 >, <&gpio27 4 0 >;
-+			reset-gpios = <&gpio7 0 0 >;
-+
-+			pcie@4 { // Lane 4: M.2
-+				reg = <0 0 0 0 0>;
-+				compatible = "pciclass,0604";
-+				device_type = "pci";
-+				reset-gpios = <&gpio7 1 0>;
-+				clkreq-gpios = <&gpio27 3 0 >;
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
-+
-+			pcie@5 { // Lane 5: Mini PCIe
-+				reg = <0 0 0 0 0>;
-+				compatible = "pciclass,0604";
-+				device_type = "pci";
-+				reset-gpios = <&gpio7 2 0>;
-+				clkreq-gpios = <&gpio17 0 0 >;
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
-+
-+			pcie@7 { // Lane 7: Ethernet
-+				reg = <0 0 0 0 0>;
-+				compatible = "pciclass,0604";
-+				device_type = "pci";
-+				reset-gpios = <&gpio7 3 0>;
-+				clkreq-gpios = <&gpio20 0 0 >;
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
- 		};
- 
- 		/* UFS */
-diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-index 9dad14929538..5f515c4c6076 100644
---- a/drivers/pci/controller/dwc/pcie-kirin.c
-+++ b/drivers/pci/controller/dwc/pcie-kirin.c
-@@ -52,6 +52,19 @@
- #define PCIE_DEBOUNCE_PARAM	0xF0F400
- #define PCIE_OE_BYPASS		(0x3 << 28)
- 
-+/*
-+ * Max number of connected PCI slots at an external PCI bridge
-+ *
-+ * This is used on HiKey 970, which has a PEX 8606 bridge with has
-+ * 4 connected lanes (lane 0 upstream, and the other tree lanes,
-+ * one connected to an in-board Ethernet adapter and the other two
-+ * connected to M.2 and mini PCI slots.
-+ *
-+ * Each slot has a different clock source and uses a separate PERST#
-+ * pin.
-+ */
-+#define MAX_PCI_SLOTS		3
-+
- enum pcie_kirin_phy_type {
- 	PCIE_KIRIN_INTERNAL_PHY,
- 	PCIE_KIRIN_EXTERNAL_PHY
-@@ -64,6 +77,18 @@ struct kirin_pcie {
- 	struct regmap   *apb;
- 	struct phy	*phy;
- 	void		*phy_priv;	/* only for PCIE_KIRIN_INTERNAL_PHY */
-+
-+	/* DWC PERST# */
-+	int		gpio_id_dwc_perst;
-+
-+	int		num_slots;
-+	/* Per-slot PERST# */
-+	int		gpio_id_reset[MAX_PCI_SLOTS];
-+	const char	*reset_names[MAX_PCI_SLOTS];
-+
-+	/* Per-slot clkreq */
-+	int		gpio_id_clkreq[MAX_PCI_SLOTS];
-+	const char	*clkreq_names[MAX_PCI_SLOTS];
- };
- 
- /*
-@@ -108,7 +133,6 @@ struct hi3660_pcie_phy {
- 	struct clk	*phy_ref_clk;
- 	struct clk	*aclk;
- 	struct clk	*aux_clk;
--	int		gpio_id_reset;
- };
- 
- /* Registers in PCIePHY */
-@@ -171,16 +195,6 @@ static int hi3660_pcie_phy_get_resource(struct hi3660_pcie_phy *phy)
- 	if (IS_ERR(phy->sysctrl))
- 		return PTR_ERR(phy->sysctrl);
- 
--	/* gpios */
--	phy->gpio_id_reset = of_get_named_gpio(dev->of_node,
--					       "reset-gpios", 0);
--	if (phy->gpio_id_reset == -EPROBE_DEFER) {
--		return -EPROBE_DEFER;
--	} else if (!gpio_is_valid(phy->gpio_id_reset)) {
--		dev_err(phy->dev, "unable to get a valid gpio pin\n");
--		return -ENODEV;
--	}
--
- 	return 0;
- }
- 
-@@ -297,16 +311,6 @@ static int hi3660_pcie_phy_power_on(struct kirin_pcie *pcie)
- 	if (ret)
- 		goto disable_clks;
- 
--	/* perst assert Endpoint */
--	if (!gpio_request(phy->gpio_id_reset, "pcie_perst")) {
--		usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
--		ret = gpio_direction_output(phy->gpio_id_reset, 1);
--		if (ret)
--			goto disable_clks;
--		usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
--		return 0;
--	}
--
- disable_clks:
- 	hi3660_pcie_phy_clk_ctrl(phy, false);
- 	return ret;
-@@ -347,11 +351,54 @@ static const struct regmap_config pcie_kirin_regmap_conf = {
- 	.reg_stride = 4,
- };
- 
-+static int kirin_pcie_parse_port(struct kirin_pcie *kirin_pcie,
-+				 struct platform_device *pdev,
-+				 struct device_node *node)
-+{
-+	struct device *dev = &pdev->dev;
-+	int i = kirin_pcie->num_slots;
-+	char name[32];
-+
-+	if (i + 1 > MAX_PCI_SLOTS) {
-+		dev_err(dev, "Too many PCI slots!\n");
-+		return -EINVAL;
-+	}
-+
-+	kirin_pcie->num_slots++;
-+
-+	/* perst reset gpio */
-+	kirin_pcie->gpio_id_reset[i] = of_get_named_gpio(node,
-+							 "reset-gpios", 0);
-+
-+	if (kirin_pcie->gpio_id_reset[i] < 0) {
-+		dev_err(dev, "%d: Missing PERST# for %pOF\n", i, node);
-+		return kirin_pcie->gpio_id_reset[i];
-+	}
-+
-+	/* clkreq gpio */
-+	kirin_pcie->gpio_id_clkreq[i] = of_get_named_gpio(node,
-+							  "clkreq-gpios", 0);
-+	if (kirin_pcie->gpio_id_clkreq[i] < 0) {
-+		dev_err(dev, "%d: Missing clqreq for %pOF\n", i, node);
-+		return kirin_pcie->gpio_id_clkreq[i];
-+	}
-+
-+	sprintf(name, "pcie_clkreq_%d", i);
-+	kirin_pcie->clkreq_names[i] = devm_kstrdup_const(dev, name,
-+							 GFP_KERNEL);
-+	if (!kirin_pcie->clkreq_names[i])
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
- static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
- 				    struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-+	struct device_node *node = dev->of_node, *child;
- 	void __iomem *apb_base;
-+	int ret;
- 
- 	apb_base = devm_platform_ioremap_resource_byname(pdev, "apb");
- 	if (IS_ERR(apb_base))
-@@ -362,6 +409,29 @@ static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
- 	if (IS_ERR(kirin_pcie->apb))
- 		return PTR_ERR(kirin_pcie->apb);
- 
-+	/* pcie internal PERST# gpio */
-+	kirin_pcie->gpio_id_dwc_perst = of_get_named_gpio(dev->of_node,
-+							  "reset-gpios", 0);
-+	if (kirin_pcie->gpio_id_dwc_perst == -EPROBE_DEFER) {
-+		return -EPROBE_DEFER;
-+	} else if (!gpio_is_valid(kirin_pcie->gpio_id_dwc_perst)) {
-+		dev_err(dev, "unable to get a valid gpio pin\n");
-+		return -ENODEV;
-+	}
-+
-+	/* Parse OF children */
-+	for_each_available_child_of_node(node, child) {
-+		ret = of_pci_get_devfn(child);
-+		if (ret < 0) {
-+			dev_info(dev, "failed to parse devfn: %d\n", ret);
-+			return ret;
-+		}
-+
-+		ret = kirin_pcie_parse_port(kirin_pcie, pdev, child);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
-@@ -419,9 +489,31 @@ static int kirin_pcie_wr_own_conf(struct pci_bus *bus, unsigned int devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
-+static int kirin_pcie_add_bus(struct pci_bus *bus)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(bus->sysdata);
-+	struct kirin_pcie *kirin_pcie = to_kirin_pcie(pci);
-+	int i, ret;
-+
-+	/* perst assert Endpoint */
-+	usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
-+
-+	/* Send PERST# to each slot */
-+	for (i = 0; i < kirin_pcie->num_slots; i++) {
-+		ret = gpio_direction_output(kirin_pcie->gpio_id_reset[i], 1);
-+		if (ret)
-+			return ret;
-+	}
-+	usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
-+
-+	return 0;
-+}
-+
-+
- static struct pci_ops kirin_pci_ops = {
- 	.read = kirin_pcie_rd_own_conf,
- 	.write = kirin_pcie_wr_own_conf,
-+	.add_bus = kirin_pcie_add_bus,
- };
- 
- static u32 kirin_pcie_read_dbi(struct dw_pcie *pci, void __iomem *base,
-@@ -477,6 +569,46 @@ static int kirin_pcie_host_init(struct pcie_port *pp)
- 	return 0;
- }
- 
-+static int kirin_pcie_gpio_request(struct kirin_pcie *kirin_pcie,
-+				   struct device *dev)
-+{
-+	int ret, i;
-+
-+	for (i = 0; i < kirin_pcie->num_slots; i++) {
-+		if (!gpio_is_valid(kirin_pcie->gpio_id_reset[i])) {
-+			dev_err(dev, "unable to get a valid %s gpio\n",
-+				kirin_pcie->reset_names[i]);
-+			return -ENODEV;
-+		}
-+
-+		ret = devm_gpio_request(dev, kirin_pcie->gpio_id_reset[i],
-+					kirin_pcie->reset_names[i]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	for (i = 0; i < kirin_pcie->num_slots; i++) {
-+		if (!gpio_is_valid(kirin_pcie->gpio_id_clkreq[i])) {
-+			dev_err(dev, "unable to get a valid %s gpio\n",
-+				kirin_pcie->clkreq_names[i]);
-+			return -ENODEV;
-+		}
-+
-+		ret = devm_gpio_request(dev, kirin_pcie->gpio_id_clkreq[i],
-+					kirin_pcie->clkreq_names[i]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	for (i = 0; i < kirin_pcie->num_slots; i++) {
-+		ret = gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 0);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return ret;
-+}
-+
- static const struct dw_pcie_ops kirin_dw_pcie_ops = {
- 	.read_dbi = kirin_pcie_read_dbi,
- 	.write_dbi = kirin_pcie_write_dbi,
-@@ -499,24 +631,43 @@ static int kirin_pcie_power_on(struct platform_device *pdev,
- 		if (ret)
- 			return ret;
- 
--		return hi3660_pcie_phy_power_on(kirin_pcie);
-+		ret = kirin_pcie_gpio_request(kirin_pcie, dev);
-+		if (ret)
-+			return ret;
-+
-+		ret = hi3660_pcie_phy_power_on(kirin_pcie);
-+		if (ret)
-+			return ret;
-+	} else {
-+		kirin_pcie->phy = devm_of_phy_get(dev, dev->of_node, NULL);
-+		if (IS_ERR(kirin_pcie->phy))
-+			return PTR_ERR(kirin_pcie->phy);
-+
-+		ret = phy_init(kirin_pcie->phy);
-+		if (ret)
-+			goto err;
-+
-+		ret = phy_power_on(kirin_pcie->phy);
-+		if (ret)
-+			goto err;
- 	}
- 
--	kirin_pcie->phy = devm_of_phy_get(dev, dev->of_node, NULL);
--	if (IS_ERR(kirin_pcie->phy))
--		return PTR_ERR(kirin_pcie->phy);
-+	/* perst assert Endpoint */
-+	usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
- 
--	ret = phy_init(kirin_pcie->phy);
--	if (ret)
--		goto err;
-+	if (!gpio_request(kirin_pcie->gpio_id_dwc_perst, "pcie_perst")) {
-+		ret = gpio_direction_output(kirin_pcie->gpio_id_dwc_perst, 1);
-+		if (ret)
-+			goto err;
-+	}
- 
--	ret = phy_power_on(kirin_pcie->phy);
--	if (ret)
--		goto err;
-+	usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
- 
- 	return 0;
- err:
--	phy_exit(kirin_pcie->phy);
-+	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
-+		phy_exit(kirin_pcie->phy);
-+
- 	return ret;
- }
- 
-diff --git a/drivers/phy/hisilicon/phy-hi3670-pcie.c b/drivers/phy/hisilicon/phy-hi3670-pcie.c
-index 82cc5fc4eac2..ac6052a05788 100644
---- a/drivers/phy/hisilicon/phy-hi3670-pcie.c
-+++ b/drivers/phy/hisilicon/phy-hi3670-pcie.c
-@@ -87,9 +87,6 @@
- #define NOC_PW_MASK         0x10000
- #define NOC_PW_SET_BIT      0x1
- 
--/* Number of GPIOs required by PHY */
--#define MAX_GPIO_RESETS		4
--#define MAX_GPIO_CLKREQ		3
- #define NUM_EYEPARAM		5
- 
- /* info located in sysctrl */
-@@ -108,10 +105,6 @@
- #define CRGCTRL_PCIE_ASSERT_BIT		0x8c000000
- 
- /* Time for delay */
--#define REF_2_PERST_MIN		20000
--#define REF_2_PERST_MAX		25000
--#define PERST_2_ACCESS_MIN	10000
--#define PERST_2_ACCESS_MAX	12000
- #define PIPE_CLK_WAIT_MIN	550
- #define PIPE_CLK_WAIT_MAX	600
- #define TIME_CMOS_MIN		100
-@@ -131,12 +124,6 @@ struct hi3670_pcie_phy {
- 	struct clk	*phy_ref_clk;
- 	struct clk	*aclk;
- 	struct clk	*aux_clk;
--	int		n_gpio_resets;
--	int		n_gpio_clkreq;
--	int		gpio_id_reset[MAX_GPIO_RESETS];
--	const char	*reset_names[MAX_GPIO_RESETS];
--	int		gpio_id_clkreq[MAX_GPIO_CLKREQ];
--	const char	*clkreq_names[MAX_GPIO_CLKREQ];
- 	u32		eye_param[NUM_EYEPARAM];
- };
- 
-@@ -230,40 +217,6 @@ static void hi3670_pcie_set_eyeparam(struct hi3670_pcie_phy *phy)
- 	kirin_apb_natural_phy_writel(phy, val, LANEN_DIG_ASIC_TX_OVRD_IN_1);
- }
- 
--static int hi3670_pcie_gpio_request(struct hi3670_pcie_phy *phy,
--				    struct device *dev)
--{
--	int ret, i;
--
--	for (i = 0; i < phy->n_gpio_resets; i++) {
--		if (!gpio_is_valid(phy->gpio_id_reset[i])) {
--			dev_err(dev, "unable to get a valid %s gpio\n",
--				phy->reset_names[i]);
--			return -ENODEV;
--		}
--
--		ret = devm_gpio_request(dev, phy->gpio_id_reset[i],
--					phy->reset_names[i]);
--		if (ret)
--			return ret;
--	}
--
--	for (i = 0; i < phy->n_gpio_clkreq; i++) {
--		if (!gpio_is_valid(phy->gpio_id_clkreq[i])) {
--			dev_err(dev, "unable to get a valid %s gpio\n",
--				phy->clkreq_names[i]);
--			return -ENODEV;
--		}
--
--		ret = devm_gpio_request(dev, phy->gpio_id_clkreq[i],
--					phy->clkreq_names[i]);
--		if (ret)
--			return ret;
--	}
--
--	return ret;
--}
--
- static void hi3670_pcie_natural_cfg(struct hi3670_pcie_phy *phy)
- {
- 	u32 val;
-@@ -558,8 +511,6 @@ static int hi3670_pcie_get_resources_from_pcie(struct hi3670_pcie_phy *phy)
- 	struct device_node *pcie_port;
- 	struct device *dev = phy->dev;
- 	struct device *pcie_dev;
--	char name[32];
--	int i;
- 
- 	pcie_port = of_get_child_by_name(dev->parent->of_node, "pcie");
- 	if (!pcie_port) {
-@@ -588,27 +539,6 @@ static int hi3670_pcie_get_resources_from_pcie(struct hi3670_pcie_phy *phy)
- 		return -ENODEV;
- 	}
- 
--	/* perst reset gpios */
--	phy->n_gpio_resets = of_gpio_named_count(pcie_dev->of_node,
--						 "reset-gpios");
--	if (phy->n_gpio_resets > MAX_GPIO_RESETS) {
--		dev_err(dev, "Too many GPIO resets!\n");
--		return -EINVAL;
--	}
--	for (i = 0; i < phy->n_gpio_resets; i++) {
--		phy->gpio_id_reset[i] = of_get_named_gpio(pcie_dev->of_node,
--							  "reset-gpios", i);
--		if (phy->gpio_id_reset[i] < 0)
--			return phy->gpio_id_reset[i];
--
--		sprintf(name, "pcie_perst_%d", i);
--
--		phy->reset_names[i] = devm_kstrdup_const(dev, name,
--							 GFP_KERNEL);
--		if (!phy->reset_names[i])
--			return -ENOMEM;
--	}
--
- 	return 0;
- }
- 
-@@ -663,7 +593,6 @@ static int kirin_pcie_clk_ctrl(struct hi3670_pcie_phy *phy, bool enable)
- static int hi3670_pcie_phy_init(struct phy *generic_phy)
- {
- 	struct hi3670_pcie_phy *phy = phy_get_drvdata(generic_phy);
--	struct device *dev = phy->dev;
- 	int ret;
- 
- 	/*
-@@ -681,15 +610,6 @@ static int hi3670_pcie_phy_init(struct phy *generic_phy)
- 	if (ret)
- 		return ret;
- 
--	/* phy regulator needs to be powered on before calling it */
--	return hi3670_pcie_gpio_request(phy, dev);
--}
--
--static int hi3670_pcie_phy_power_on(struct phy *generic_phy)
--{
--	struct hi3670_pcie_phy *phy = phy_get_drvdata(generic_phy);
--	int val, ret, i;
--
- 	/* Power supply for Host */
- 	regmap_write(phy->sysctrl,
- 		     SCTRL_PCIE_CMOS_OFFSET, SCTRL_PCIE_CMOS_BIT);
-@@ -697,11 +617,13 @@ static int hi3670_pcie_phy_power_on(struct phy *generic_phy)
- 
- 	hi3670_pcie_phy_oe_enable(phy);
- 
--	for (i = 0; i < phy->n_gpio_clkreq; i++) {
--		ret = gpio_direction_output(phy->gpio_id_clkreq[i], 0);
--		if (ret)
--			return ret;
--	}
-+	return 0;
-+}
-+
-+static int hi3670_pcie_phy_power_on(struct phy *generic_phy)
-+{
-+	struct hi3670_pcie_phy *phy = phy_get_drvdata(generic_phy);
-+	int val, ret;
- 
- 	ret = kirin_pcie_clk_ctrl(phy, true);
- 	if (ret)
-@@ -732,15 +654,6 @@ static int hi3670_pcie_phy_power_on(struct phy *generic_phy)
- 	regmap_write(phy->apb, SOC_PCIECTRL_CTRL12_ADDR, val);
- 	udelay(10);
- 
--	/* perst assert Endpoints */
--	usleep_range(21000, 23000);
--	for (i = 0; i < phy->n_gpio_resets; i++) {
--		ret = gpio_direction_output(phy->gpio_id_reset[i], 1);
--		if (ret)
--			return ret;
--	}
--	usleep_range(10000, 11000);
--
- 	ret = is_pipe_clk_stable(phy);
- 	if (!ret)
- 		goto disable_clks;
-@@ -781,9 +694,6 @@ static int hi3670_pcie_phy_get_resources(struct hi3670_pcie_phy *phy,
- 					 struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct device_node *np = dev->of_node;
--	char name[32];
--	int i;
- 
- 	/* syscon */
- 	phy->crgctrl = syscon_regmap_lookup_by_compatible("hisilicon,hi3670-crgctrl");
-@@ -824,25 +734,6 @@ static int hi3670_pcie_phy_get_resources(struct hi3670_pcie_phy *phy,
- 	if (IS_ERR(phy->base))
- 		return PTR_ERR(phy->base);
- 
--	/* clock request gpios */
--	phy->n_gpio_clkreq = of_gpio_named_count(np, "clkreq-gpios");
--	if (phy->n_gpio_clkreq > MAX_GPIO_CLKREQ) {
--		dev_err(dev, "Too many GPIO clock requests!\n");
--		return -EINVAL;
--	}
--	for (i = 0; i < phy->n_gpio_clkreq; i++) {
--		phy->gpio_id_clkreq[i] = of_get_named_gpio(dev->of_node,
--							   "clkreq-gpios", i);
--		if (phy->gpio_id_clkreq[i] < 0)
--			return phy->gpio_id_clkreq[i];
--
--		sprintf(name, "pcie_clkreq_%d", i);
--		phy->clkreq_names[i] = devm_kstrdup_const(dev, name,
--							  GFP_KERNEL);
--		if (!phy->clkreq_names[i])
--			return -ENOMEM;
--	}
--
- 	hi3670_pcie_get_eyeparam(phy);
- 
- 	return 0;
-
