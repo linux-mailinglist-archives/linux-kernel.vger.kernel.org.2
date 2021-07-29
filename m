@@ -2,125 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2843DA10D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2123DA116
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235695AbhG2K3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:29:46 -0400
-Received: from mail.netline.ch ([148.251.143.180]:37974 "EHLO
-        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235309AbhG2K3p (ORCPT
+        id S235644AbhG2Kcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:32:39 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:40933 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235309AbhG2Kch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:29:45 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by netline-mail3.netline.ch (Postfix) with ESMTP id E66A520201A;
-        Thu, 29 Jul 2021 12:29:40 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
-Received: from netline-mail3.netline.ch ([127.0.0.1])
-        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id 1L6nuNw0PY7d; Thu, 29 Jul 2021 12:28:38 +0200 (CEST)
-Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
-        by netline-mail3.netline.ch (Postfix) with ESMTPA id B4F5F20201B;
-        Thu, 29 Jul 2021 12:28:37 +0200 (CEST)
-Received: from [::1]
-        by thor with esmtp (Exim 4.94.2)
-        (envelope-from <michel@daenzer.net>)
-        id 1m93HI-001Kjn-Oa; Thu, 29 Jul 2021 12:28:36 +0200
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-References: <20210726233854.2453899-1-robdclark@gmail.com>
- <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
- <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
- <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
- <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
- <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
- <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
- <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com>
- <9d5f4415-d470-3bc1-7d52-61ba739706ae@daenzer.net>
- <eedfdc75-72f8-9150-584b-c5e9d16db180@amd.com>
- <20210728165700.38c39cf8@eldfell>
- <74e310fa-e544-889f-2389-5abe06f80eb8@amd.com>
- <20210729112358.237651ff@eldfell>
- <3675d530-c9fc-7ec9-e157-b6abeeec7c2a@amd.com>
- <20210729121542.27d9b1cc@eldfell>
- <15cf73a8-eda4-3559-561a-a05a14f445d0@gmail.com>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-Message-ID: <4def9567-f88d-3b7c-5ed2-d1686a25fbb3@daenzer.net>
-Date:   Thu, 29 Jul 2021 12:28:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 29 Jul 2021 06:32:37 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 0C8F45808AB;
+        Thu, 29 Jul 2021 06:32:34 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 29 Jul 2021 06:32:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=4
+        p33TcQrDT0su6nNnp8CfeYZh0a1YwnH+3qX4uO2KEI=; b=OHtBvYsNvP4S3/81C
+        uQeJ5TScMUoomJei1HmFbMroPPA7HmjVZ5qHybtjMH5R2xQJJYlA6be2A7kLGaWe
+        PR5LsvTVnsXvA+gZgey9rSxqsrEoLy3sFdqj1ulmlfWCKkr7FbYYDA2mf4fW1Eco
+        5D7VTvpjIOL9fSGLGbNns+1HFugVby2TeyHVxdEHijLqdX5L3s3pElMkDXP/72hh
+        is75qYrGfb3XJn8oWYgu4ztv8aN4V5582lqiXtjdM9A3271ioJG6VghDsHR3OcaB
+        WyrYMkgAj9fSwMfdiYvEqHORWaVmAU4HfM6ubDBj77VgTJi6oyKBs1LXX1AFhOzH
+        uKy0Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=4p33TcQrDT0su6nNnp8CfeYZh0a1YwnH+3qX4uO2K
+        EI=; b=itDMqA4EcVciNeJfRnM99ptZB3Nr7NQk2gVFYhAaW0CC1o/2mcgvYxp7o
+        UkkO6Tgd/BGeAZb0vUock7BjgXnvbIi1Uf2vYaDNGhfxtikVizlybgCdlUS4vckW
+        aOd4oANVn+hCLzTmVRnS3NwB0SBxKJJvd8Mgb89BQ5lbwNKyNvv9T1N67GMlFq2Q
+        HeJYgVB4xJ2WemOREXF9WswK2lmvHDI5/okUUN2mSaRkkzMHIIOO9BiGQb21c9Ys
+        3TbOwc18kQtu+bOpmJcN8QdZNgj3kDFZ8PJutiIRj5rrm3ivHY8FCb8UNwU96pYV
+        wGkHiLaBf52N0GcqSjaLwdcd7xLfg==
+X-ME-Sender: <xms:v4MCYX2DTjNRxkbQcXeAo13T3ts4ic8DjrOrpBO8p7S7FKJbOIfUQw>
+    <xme:v4MCYWFmwkdlOSCSSnRZqKfCBmS7BDLO-nolzpjGLT7qZDjwTX040DvrfRy4Wie6H
+    WGJUvX3XX8Rwa0vLOA>
+X-ME-Received: <xmr:v4MCYX4VjazlhTG6a62ad0zE_cOY--q1jx2qPYBaVxCspkcZ19BAhf9E9Nt1Ud5laL42iRIZqb6nd0LGT2f9d-KW5e7c6-U_Htb5>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedugddvtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepgfejjeekjedttdethedtfeelteefffduvdevvdfhtdeiudetleejgeelfeef
+    uedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:v4MCYc3GbJLGUxfYCXOWqOLWAkAGcb2x_prAYoVQUR6XSq0liXmI6g>
+    <xmx:v4MCYaGXLFp6wLczjM-wGqeNStOoe5D8Gf2AlTQ4eRgn_yPxYlEyIg>
+    <xmx:v4MCYd_RiVwZTSl2LFjYKW6feKrhEcBF5vvsupfOJ5U9LnacTkI9xg>
+    <xmx:woMCYRcYD6mI_zYUGYXj5ILDso__6Uhyv7DcKgKC5EqsnUg2L9Bnog>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 29 Jul 2021 06:32:31 -0400 (EDT)
+Date:   Thu, 29 Jul 2021 12:32:28 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ondrej Jirman <megous@megous.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v7 06/19] rtc: sun6i: Add support for RTCs without
+ external LOSCs
+Message-ID: <20210729103228.prdav7eobi52y3ny@gilmour>
+References: <20210615110636.23403-1-andre.przywara@arm.com>
+ <20210615110636.23403-7-andre.przywara@arm.com>
+ <20210616091431.6tm3zdf77p2x3upc@gilmour>
+ <1e49692a2f4548ae942e170bc1ae9431a6eb512e.camel@aosc.io>
 MIME-Version: 1.0
-In-Reply-To: <15cf73a8-eda4-3559-561a-a05a14f445d0@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1e49692a2f4548ae942e170bc1ae9431a6eb512e.camel@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-29 12:14 p.m., Christian König wrote:
-> Am 29.07.21 um 11:15 schrieb Pekka Paalanen:
->> [SNIP]
->>> But how does it then help to wait on the CPU instead?
->> A compositor does not "wait" literally. It would only check which state
->> set is ready to be used, and uses the most recent set that is ready. Any
->> state sets that are not ready are ignored and reconsidered the next
->> time the compositor updates the screen.
-> 
-> Mhm, then I'm not understanding what Michel's changes are actually doing.
+On Thu, Jul 29, 2021 at 04:04:10PM +0800, Icenowy Zheng wrote:
+> =E5=9C=A8 2021-06-16=E6=98=9F=E6=9C=9F=E4=B8=89=E7=9A=84 11:14 +0200=EF=
+=BC=8CMaxime Ripard=E5=86=99=E9=81=93=EF=BC=9A
+> > Hi,
+> >=20
+> > On Tue, Jun 15, 2021 at 12:06:23PM +0100, Andre Przywara wrote:
+> > > Some newer Allwinner RTCs (for instance the one in the H616 SoC)
+> > > lack
+> > > a pin for an external 32768 Hz oscillator. As a consequence, this
+> > > LOSC
+> > > can't be selected as the RTC clock source, and we must rely on the
+> > > internal RC oscillator.
+> > > To allow additions of clocks to the RTC node, add a feature bit to
+> > > ignore
+> > > any provided clocks for now (the current code would think this is
+> > > the
+> > > external LOSC). Later DTs and code can then for instance add the
+> > > PLL
+> > > based clock input, and older kernel won't get confused.
+> > >=20
+> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> >=20
+> > Honestly, I don't really know if it's worth it at this point.
+> >=20
+> > If we sums this up:
+> >=20
+> > =C2=A0- The RTC has 2 features that we use, mostly centered around 2
+> > =C2=A0=C2=A0 registers set plus a global one
+> >=20
+> > =C2=A0- Those 2 features are programmed in a completely different way
+> >=20
+> > =C2=A0- Even the common part is different, given the discussion around =
+the
+> > =C2=A0=C2=A0 clocks that we have.
+> >=20
+> > What is there to share in that driver aside from the probe, and maybe
+> > the interrupt handling? Instead of complicating this further with
+> > more
+> > special case that you were (rightfully) complaining about, shouldn't
+> > we
+> > just acknowledge the fact that it's a completely separate design and
+> > should be treated as such, with a completely separate driver?
+>=20
+> I think our problem is just that we're having a single driver for both
+> functionalities (clock manager and RTC).
+>=20
+> Personally I don't think we should have seperated driver for clock
+> managers, although I am fine with seperated RTC driver for linear days.
 
-In a nutshell, my mutter MR holds back all Wayland state changes which were committed together with a new buffer (and dependent later ones) until the dma-buf file descriptors for that buffer have become readable. This is achieved by adding the fds to the main event loop (if they aren't readable already when the buffer is committed), and when they become readable, all corresponding state changes are propagated such that they will be taken into account for drawing the next frame.
+Why do you think it's a bad idea to have the RTC and clocks in the same
+driver?
 
-
->> Depending on which state sets are selected for a screen update, the
->> global window manager state may be updated accordingly, before the
->> drawing commands for the composition can be created.
->>
->>> See what I'm proposing is to either render the next state of the window
->>> or compose from the old state (including all atomic properties).
->> Yes, that's exactly how it would work. It's just that state for a
->> window is not an independent thing, it can affect how unrelated windows
->> are managed.
->>
->> A simplified example would be two windows side by side where the
->> resizing of one causes the other to move. You can't resize the window
->> or move the other until the buffer with the new size is ready. Until
->> then the compositor uses the old state.
->>
->>> E.g. what do you do if you timeout and can't have the new window content
->>> on time? What's the fallback here?
->> As there is no wait, there is no timeout either.
->>
->> If the app happens to be frozen (e.g. some weird bug in fence handling
->> to make it never ready, or maybe it's just bugged itself and never
->> drawing again), then the app is frozen, and all the rest of the desktop
->> continues running normally without a glitch.
-> 
-> But that is in contradict to what you told me before.
-> 
-> See when the window should move but fails to draw it's new content what happens?
-> 
-> Are the other windows which would be affected by the move not drawn as well?
-
-Basically, the compositor draws its output as if the new buffer and all connected Wayland state changes had not been committed yet.
-
-
--- 
-Earthling Michel Dänzer               |               https://redhat.com
-Libre software enthusiast             |             Mesa and X developer
+Maxime
