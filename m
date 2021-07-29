@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D673D9A02
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5869E3D9A0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbhG2ANj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 20:13:39 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:26564 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232727AbhG2ANe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 20:13:34 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 16T0Cuue027152;
-        Thu, 29 Jul 2021 09:12:57 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 16T0Cuue027152
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627517577;
-        bh=YqJ9c/GjkU+qY5J6Ldxh46l7uiwa/TKEk8lJzU+RyjU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=o9d66vvFcU3pe4jIt+V8N0R+pPUCN7g3q2lyRq0IZRE8Yl2VY0ZaZxuyGzkebFFdW
-         b6AgtVcv+qmsbceOGDPXeT/2p+tbR4meBfGdt6Y+M47duWhst4Y8/6Pz/zdA0Lw5IJ
-         cyPxGfTHBqlAAa4djSyd+wsjpJ14Tp2N6ZWB4/f8fJHfciqM2SBmN3unCTlCQbStwb
-         ku6qO7Ag3tVsQ3dGETWuktRruGNIIC/qDCSLVOzVh0NwGku44fax4ozqKnC8Gc9kRY
-         5XCCGlV0fGhXmYqKwANqOnjEFPAN84aKVAq9m1/AUF+bpNgC5ywd7NclF6EvJIL3cq
-         CWD8fZsAFsBOw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        John S Gruber <johnsgruber@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: cancel sub_make_done for the install target to fix DKMS
-Date:   Thu, 29 Jul 2021 09:12:54 +0900
-Message-Id: <20210729001254.327661-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232967AbhG2ASC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 20:18:02 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38561 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232841AbhG2ASB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 20:18:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627517879; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=llW9tgikf+tI7XzUzcPhyL+rus4BGtWqJmBZw8FH9Bs=; b=PaZOodIvXKrAkaQ7gxSvLya85agpKlxyDHahoOvI4udE8C3rRtkB0E2ZVBT+ldKtcVK/aULz
+ gCwLZAUzjkgTs5K8OUVixHXazJdEDcOLp0M8gy02Ch5wp+wiqH3CfEoA65HnY57wIQKNzzD2
+ pAnrmAkSUUQalEC2lxBtN6TeunM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6101f3aeb653fbdadd28d884 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 00:17:50
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DB8D1C4338A; Thu, 29 Jul 2021 00:17:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9CDCBC43460;
+        Thu, 29 Jul 2021 00:17:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9CDCBC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v2 0/2] Fix serial number usage in MHI bus
+Date:   Wed, 28 Jul 2021 17:17:38 -0700
+Message-Id: <1627517860-39417-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit bcf637f54f6d ("kbuild: parse C= and M= before changing the
-working directory"), external modules invoked by DKMS fail to build
-because M= option is not parsed.
+In some cases, device may boot straight to the mission mode. The serial number
+and OEM PK hash values would remain unpopulated in those cases. Hence, move the
+reads for those to the power up preparation phase such that controllers always
+have them populated. Also, in order to maintain consistency with the way OEM PK
+hash is displayed and improve the current way, depict serial number in
+hexadecimals.
 
-I wanted to add 'unset sub_make_done' in install.sh but similar scripts,
-arch/*/boot/install.sh, are duplicated, so I set sub_make_done empty
-in the top Makefile.
+Tested on: X86_64 architecture with SDX65 on Ubuntu 18.04 distribution.
 
-Fixes: bcf637f54f6d ("kbuild: parse C= and M= before changing the working directory")
-Reported-by: John S Gruber <johnsgruber@gmail.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+v2:
+-Fixed nitpick for 0x%x
+-Minor update to commit message for "Depict serial number" patch
+-Added reviewed-by tags
 
- Makefile | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Bhaumik Bhatt (2):
+  bus: mhi: core: Move serial number read to power up phase
+  bus: mhi: core: Depict serial number in hexadecimals
 
-diff --git a/Makefile b/Makefile
-index bb10a93edf5c..4193092f7c38 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1316,6 +1316,16 @@ PHONY += scripts_unifdef
- scripts_unifdef: scripts_basic
- 	$(Q)$(MAKE) $(build)=scripts scripts/unifdef
- 
-+# ---------------------------------------------------------------------------
-+# Install
-+
-+# Many distros have the custom install script, /sbin/kernelinstall.
-+# If DKMS is installed, 'make install' will eventually recuses back
-+# to the this Makefile to build and install external modules.
-+# Cancel sub_make_done so that options such as M=, V=, etc. are parsed.
-+
-+install: sub_make_done=
-+
- # ---------------------------------------------------------------------------
- # Tools
- 
+ drivers/bus/mhi/core/boot.c | 17 +----------------
+ drivers/bus/mhi/core/init.c | 19 +++++++++++++++++--
+ 2 files changed, 18 insertions(+), 18 deletions(-)
+
 -- 
-2.27.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
