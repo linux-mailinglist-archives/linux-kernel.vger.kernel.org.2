@@ -2,231 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086E33DA78C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A683DA78B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236878AbhG2P0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238066AbhG2PYp (ORCPT
+        id S237661AbhG2P0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:26:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46148 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238050AbhG2PYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:24:45 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD16C0617A2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 08:24:00 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id k3so6303958ilu.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 08:24:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vr3x2S2ad3bEabZ4cAaFlDASrLr43fOgpwuX6i/1qV4=;
-        b=T3+uQNic9EooPybGPjiaBEbXoSCQC03G5yZQ9K6kNLDEPwT1gFqXYeXvczYk/MjOiV
-         rPBCBpCy7fFl+eXH7fPQyXZBK1X6Q7hDlfeQvyjZqNBhVL+rACxEZ+eoFZa45AoP0VWK
-         koqBsEor2bboQ8B6e9HxVuDPGzzeNTAUW2qKVLBrAvfRwOIabiPVbwavNg13Q0XVPQkq
-         iuEOSXwz/YhOYnDfa1HOWu1HXK/TjLSOJOI9elXe20wEBtXu5TwcVwxHEDbkZf6Y3Vlw
-         zfKK77Hk6UevXuFwV5lHfOFibTQP1ZvszVYL6LdUCeZtW7Opo7aQIkQAJ4kpzY3sgjAF
-         +YVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vr3x2S2ad3bEabZ4cAaFlDASrLr43fOgpwuX6i/1qV4=;
-        b=kI6gDzinchr/UQqvaQVzmfBRlUVdFS0WFOQmFUsR4KHfkj/k/nd7psIqYfrev3/0Px
-         k2a2okyeQf/BO3ujd6H8Drd6IDK0iUozwLYdzD2YbSK72n92ZLmmNB0cY5F/iVzEQvXc
-         iuEEwQksw/RSUtSZWfqfY4nnLVPs5/5ondHNt0QwTj/YT3hgHpadVjr/HI5ZqvB92bOI
-         icGBbuyQI668JwLsDmY/vg1+Srk3QilQSBvY/AfJ8s9S3KbljW0pp1QN1O2Fq2rCI8Qc
-         vhnUKM79NdqyIwiggBIqEgCzpCi1zrrYeKtgixDn2CB9uUDK/qilvrbhhayxqIyOoRFA
-         6LFg==
-X-Gm-Message-State: AOAM5303WSNBLwz736u5FquRuyFNhGBAlG/maNVbBDf5ZjQHpWx5KB6b
-        XI/tbUlSbRy7JPGXOYlmqM9x04adqZFUsyY+iklKcQ==
-X-Google-Smtp-Source: ABdhPJwcv8eRvN2OcA2xpvSBStU8L6+W10VSuM5aiJfcv61xtopfdtWCVwQ9jMeLMTuBlJ+7mvhjstd8xvKqI2H1DnY=
-X-Received: by 2002:a92:b74d:: with SMTP id c13mr4095746ilm.176.1627572239293;
- Thu, 29 Jul 2021 08:23:59 -0700 (PDT)
+        Thu, 29 Jul 2021 11:24:30 -0400
+Date:   Thu, 29 Jul 2021 17:24:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627572242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Uwv2h2GSM4shfGQAgPrAhSb9T6CgEPT3X+fH1BOdcKE=;
+        b=iIure9/ogHNXLyPV3HtV/R2xk1yb4v28ngBBdA5+z1LE3qD7ZMmcjkEovxqo6Zv7Bk4qPC
+        IrZQ684FFN8oKy8Be5gl+32xHyFXpnHt8GDJJOdr8gDCOGCUGKdUI9lOm/Ux4fZbDBIe3Q
+        MaHT/tRibo+wiG325QTDL1mSctRTEQ+IAq+9oMIg+yk9XkOu9k9wVxkZdJhNOfHurAW7xh
+        FIN5rJbFY8yucJjGJnYfqwWgMu8TfnCLcKbMjD19/C62lk5d1QuQmU9xrwQQxIvNJwt2wA
+        gamM8wtl6cXvQ/iw+BPhBfaPE3Ol7Q9lAaaOF10HNLYzoI4lMT1eQbQQKaSbmQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627572242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Uwv2h2GSM4shfGQAgPrAhSb9T6CgEPT3X+fH1BOdcKE=;
+        b=YO3GxbyN7hHbdRhhRL9ZkKWMyKrz6cnK8G3eLj7VWCR2yfJ1seJx/z/s3mPriOufdGfZ3t
+        tzbuY1vXVGZJ06Aw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v3 00/35] SLUB: reduce irq disabled scope and make it RT
+ compatible
+Message-ID: <20210729152400.ed35ocv5jtpf3ns5@linutronix.de>
+References: <20210729132132.19691-1-vbabka@suse.cz>
 MIME-Version: 1.0
-References: <1867445.PYKUYFuaPT@kreacher> <000801d78322$e9b94980$bd2bdc80$@telus.net>
- <CAJZ5v0jashhvE4vRNAft1qfZ_Ud==tG1Yh29ad7BSfhk5xjx4A@mail.gmail.com>
- <2178828.iZASKD2KPV@kreacher> <CAAYoRsVko5jG=xqH=KTochqQu95i7PDo_6f1LCPGvAP0=XdVTA@mail.gmail.com>
-In-Reply-To: <CAAYoRsVko5jG=xqH=KTochqQu95i7PDo_6f1LCPGvAP0=XdVTA@mail.gmail.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Thu, 29 Jul 2021 08:23:48 -0700
-Message-ID: <CAAYoRsWQ25O=7msQfvH5qRRK80JrpfLOQdG2BQrGx9_wpOX_wQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210729132132.19691-1-vbabka@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:34 PM Doug Smythies <dsmythies@telus.net> wrote:
->
-> On Wed, Jul 28, 2021 at 10:47 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> >
-> > On Wednesday, July 28, 2021 3:52:51 PM CEST Rafael J. Wysocki wrote:
-> > > On Tue, Jul 27, 2021 at 10:06 PM Doug Smythies <dsmythies@telus.net> wrote:
-> > > >
-> > > > Hi Rafael,
-> > > >
-> > > > Further to my reply of 2021.07.04  on this, I have
-> > > > continued to work with and test this patch set.
-> > > >
-> > > > On 2021.06.02 11:14 Rafael J. Wysocki wrote:
-> > > >
-> > > > >This series of patches addresses some theoretical shortcoming in the
-> > > > > TEO (Timer Events Oriented) cpuidle governor by reworking its idle
-> > > > > state selection logic to some extent.
-> > > > >
-> > > > > Patches [1-2/5] are introductory cleanups and the substantial changes are
-> > > > > made in patches [3-4/5] (please refer to the changelogs of these two
-> > > > > patches for details).  The last patch only deals with documentation.
-> > > > >
-> > > > > Even though this work is mostly based on theoretical considerations, it
-> > > > > shows a measurable reduction of the number of cases in which the shallowest
-> > > > > idle state is selected while it would be more beneficial to select a deeper
-> > > > > one or the deepest idle state is selected while it would be more beneficial to
-> > > > > select a shallower one, which should be a noticeable improvement.
-> > > >
-> > > > I am concentrating in the idle state 0 and 1 area.
-> > > > When I disable idle state 0, the expectation is its
-> > > > usage will fall to idle state 1. It doesn't.
-> > > >
-> > > > Conditions:
-> > > > CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-> > > > HWP: disabled
-> > > > CPU frequency scaling driver: intel_pstate, active
-> > > > CPU frequency scaling governor: performance.
-> > > > Idle configuration: As a COMETLAKE processor, with 4 idle states.
-> > > > Sample time for below: 1 minute.
-> > > > Workflow: Cross core named pipe token passing, 12 threads.
-> > > >
-> > > > Kernel 5.14-rc3: idle: teo governor
-> > > >
-> > > > All idle states enabled: PASS
-> > > > Processor: 97 watts
-> > > > Idle state 0 entries: 811151
-> > > > Idle state 1 entries: 140300776
-> > > > Idle state 2 entries: 889
-> > > > Idle state 3 entries: 8
-> > > >
-> > > > Idle state 0 disabled: FAIL <<<<<
-> > > > Processor: 96 watts
-> > > > Idle state 0 entries: 0
-> > > > Idle state 1 entries: 65599283
-> > > > Idle state 2 entries: 364399
-> > > > Idle state 3 entries: 65112651
-> > >
-> > > This looks odd.
-> > >
-> > > Thanks for the report, I'll take a look at this.
-> >
-> > I have found an issue in the code that may be responsible for the
-> > observed behavior and should be addressed by the appended patch (not
-> > tested yet).
-> >
-> > Basically, the "disabled" check in the second loop over states in
-> > teo_select() needs to exclude the first enabled state, because
-> > there are no more states to check after that.
-> >
-> > Plus the time span check needs to be done when the given state
-> > is about to be selected, because otherwise the function may end up
-> > returning a state for which the sums are too low.
-> >
-> > Thanks!
-> >
-> > ---
-> >  drivers/cpuidle/governors/teo.c |   26 ++++++++++++++------------
-> >  1 file changed, 14 insertions(+), 12 deletions(-)
-> >
-> > Index: linux-pm/drivers/cpuidle/governors/teo.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/cpuidle/governors/teo.c
-> > +++ linux-pm/drivers/cpuidle/governors/teo.c
-> > @@ -404,25 +404,27 @@ static int teo_select(struct cpuidle_dri
-> >                         intercept_sum += bin->intercepts;
-> >                         recent_sum += bin->recent;
-> >
-> > -                       if (dev->states_usage[i].disable)
-> > +                       if (dev->states_usage[i].disable && i > idx0)
-> >                                 continue;
-> >
-> >                         span_ns = teo_middle_of_bin(i, drv);
-> > -                       if (!teo_time_ok(span_ns)) {
-> > -                               /*
-> > -                                * The current state is too shallow, so select
-> > -                                * the first enabled deeper state.
-> > -                                */
-> > -                               duration_ns = last_enabled_span_ns;
-> > -                               idx = last_enabled_idx;
-> > -                               break;
-> > -                       }
-> >
-> >                         if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
-> >                             (!alt_intercepts ||
-> >                              2 * intercept_sum > idx_intercept_sum)) {
-> > -                               idx = i;
-> > -                               duration_ns = span_ns;
-> > +                               if (!teo_time_ok(span_ns) ||
-> > +                                   dev->states_usage[i].disable) {
-> > +                                       /*
-> > +                                        * The current state is too shallow or
-> > +                                        * disabled, so select the first enabled
-> > +                                        * deeper state.
-> > +                                        */
-> > +                                       duration_ns = last_enabled_span_ns;
-> > +                                       idx = last_enabled_idx;
-> > +                               } else {
-> > +                                       idx = i;
-> > +                                       duration_ns = span_ns;
-> > +                               }
-> >                                 break;
-> >                         }
->
-> Hi Rafael,
->
-> I tried the patch and when I disabled idle state 0
-> got, very similar to before:
->
-> Idle state 0 disabled: FAIL
-> Processor: 95 watts
-> Idle state 0 entries: 0
-> Idle state 1 entries: 65,475,534
-> Idle state 2 entries: 333144
-> Idle state 3 entries: 65,247,048
->
-> However, I accidently left it for about 30 minutes
-> and noticed:
->
-> Idle state 0 disabled:
-> Processor: 83 watts
-> Idle state 0 entries: 0
-> Idle state 1 entries: 88,706,831
-> Idle state 2 entries: 100
-> Idle state 3 entries: 662
->
-> I went back to unmodified kernel 5.13-rc3 and
+On 2021-07-29 15:20:57 [+0200], Vlastimil Babka wrote:
+> Changes since v2 [5]:
 
-Sorry, 5.14-rc3.
+With PARTIAL enabled on top of -rc3:
 
-> let it run longer with idle state 0 disabled, and
-> after 30 minutes it had changed but nowhere
-> near as much:
->
-> Idle state 0 disabled:
-> Processor: 87 watts
-> Idle state 0 entries: 0
-> Idle state 1 entries: 70,361,020
-> Idle state 2 entries: 71219
-> Idle state 3 entries: 27,249,975
+| root@debpg:~# grep ^kmalloc-512 /proc/slabinfo
+| kmalloc-512         3552   3552    512   32    4 : tunables    0    0    =
+0 : slabdata    111    111      0
+| root@debpg:~# hackbench -g80
+| Running in process mode with 80 groups using 40 file descriptors each (=
+=3D=3D 3200 tasks)
+| Each sender will pass 100 messages of 100 bytes
+| Time: 0.643
+| root@debpg:~# grep ^kmalloc-512 /proc/slabinfo
+| kmalloc-512       954080 954080    512   32    4 : tunables    0    0    =
+0 : slabdata  29815  29815      0
+| root@debpg:~# hackbench -g80
+| Running in process mode with 80 groups using 40 file descriptors each (=
+=3D=3D 3200 tasks)
+| Each sender will pass 100 messages of 100 bytes
+| Time: 0.604
+| root@debpg:~# grep ^kmalloc-512 /proc/slabinfo
+| kmalloc-512       1647904 1647904    512   32    4 : tunables    0    0  =
+  0 : slabdata  51497  51497      0
+| root@debpg:~# echo 1 > /sys/kernel/slab/kmalloc-512/shrink=20
+| root@debpg:~# grep ^kmalloc-512 /proc/slabinfo
+| kmalloc-512          640   1120    512   32    4 : tunables    0    0    =
+0 : slabdata     35     35      0
 
-Addendum: So far the workflow used for this
-thread has been event based. If I switch to
-a timer based workflow, everything works as
-expected for both kernels, 5.14-rc3 unmodified
-and modified with the patch from herein.
+otherwise a few more hackbench invocations without manual shirnk lead to
+OOM-killer:
+| oom-kill:constraint=3DCONSTRAINT_NONE,nodemask=3D(null),cpuset=3D/,mems_a=
+llowed=3D0,task=3Dsystemd-logind,pid=3D1713,uid=3D0
+| Out of memory: Killed process 1713 (systemd-logind) total-vm:15720kB, ano=
+n-rss:956kB, file-rss:0kB, shmem-rss:0kB, UID:0 pgtables:72kB oom_score_adj=
+:0
+| Mem-Info:
+| active_anon:56 inactive_anon:24782 isolated_anon:0
+|  active_file:13 inactive_file:45 isolated_file:0
+|  unevictable:0 dirty:0 writeback:0
+|  slab_reclaimable:8749 slab_unreclaimable:894017
+|  mapped:68 shmem:118 pagetables:28612 bounce:0
+|  free:8407 free_pcp:36 free_cma:0
+| Node 0 active_anon:224kB inactive_anon:99128kB active_file:260kB inactive=
+_file:712kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:76=
+4kB dirty:0kB writebaco
+| Node 0 DMA free:15360kB min:28kB low:40kB high:52kB reserved_highatomic:0=
+KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unev=
+ictable:0kB writependiB
+| lowmem_reserve[]: 0 1939 3915 3915
+| Node 0 DMA32 free:11696kB min:3960kB low:5944kB high:7928kB reserved_high=
+atomic:0KB active_anon:0kB inactive_anon:40740kB active_file:0kB inactive_f=
+ile:4kB unevictable:0kB
+| lowmem_reserve[]: 0 0 1975 1975
+| Node 0 Normal free:5692kB min:4032kB low:6052kB high:8072kB reserved_high=
+atomic:0KB active_anon:224kB inactive_anon:58440kB active_file:440kB inacti=
+ve_file:100kB unevictaB
+| lowmem_reserve[]: 0 0 0 0
+| Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*10=
+24kB (U) 1*2048kB (M) 3*4096kB (M) =3D 15360kB
+| Node 0 DMA32: 11*4kB (UM) 15*8kB (M) 20*16kB (UME) 12*32kB (UME) 7*64kB (=
+ME) 5*128kB (UME) 4*256kB (UM) 6*512kB (ME) 4*1024kB (M) 1*2048kB (M) 0*409=
+6kB =3D 12196kB
+| Node 0 Normal: 324*4kB (UME) 221*8kB (UME) 60*16kB (UM) 24*32kB (UME) 5*6=
+4kB (UM) 2*128kB (U) 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB =3D 5368kB
+| Node 0 hugepages_total=3D0 hugepages_free=3D0 hugepages_surp=3D0 hugepage=
+s_size=3D2048kB
+| 189 total pagecache pages
+| 0 pages in swap cache
+| Swap cache stats: add 0, delete 0, find 0/0
+| Free swap  =3D 0kB
+| Total swap =3D 0kB
+| 1048432 pages RAM
+| 0 pages HighMem/MovableOnly
+| 41108 pages reserved
+| Unreclaimable slab info:
+=E2=80=A6
+| kmalloc-512          2144352KB    2144352KB
 
-... Doug
+This does not happen if I disable SLUB_CPU_PARTIAL.
+
+Sebastian
