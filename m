@@ -2,167 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D573DAED3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1863DAED4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbhG2W1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
+        id S232944AbhG2W1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 18:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbhG2W1g (ORCPT
+        with ESMTP id S232672AbhG2W1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:27:36 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4A4C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:27:31 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so17846643pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:27:31 -0700 (PDT)
+        Thu, 29 Jul 2021 18:27:37 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2287DC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:27:34 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id i10so8700664pla.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:27:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=B+QdeEzKa7UGI7quNzIlqUk5zLUPhgyuAsRaG6gQ5IY=;
-        b=WMq+7+IlsWHXF4HeIvz63NNsfXkMKCbTTamxqofx03/G8LbaagqbDyseNJVHndzT9Y
-         CrPjke5OxZdTR76+IXA9lm8zDJVQSOTMmcX3ijL4Fpk+g8jGLLYg0BAAZT3BSa75EvpQ
-         5RbVT4osAxt1WW5wGRyLp4n7AhR6xdlAKBfwZiJibhmbXfhiGs7u3QC5UaLkdONdHKL0
-         b8iEv/DyMBUbTrH0QZvnCryG2eMIBptpgAh8Yd3IUB8voSIoRmnri9JcHux2QUOtZ/Zq
-         LL4Y2/yBUTguhU12uMuqjyuQd4+TvfaKr0sz3gg1oMmcoKRtekhCYABu0NWrkEeFZwu9
-         /RpQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U7V9Ap3CLbBdQCnG02pu0xdSqMhicUYByn9SxkAU8rw=;
+        b=Ffk8XpysnuqjpLBT6TZqn4W5/OEbtQF8oVqJwVgwx/tfDyKtg04s3+tvbENJTzrV5J
+         4NJrhbizq83pOW9DriO0IT1D4PRHNil84BWsETrNpx1o81V0zVMAYWrhvFiYbCRUk2MD
+         zG5yXj3ZhDiLFDAKQK4BizaWGfbivzK8Ia7+s06Ffs9L6mTHg6b2P3eFLnVlrfwT7WPO
+         zByAMI0AQb70/64I2++woOOagf26a1zTqhRimG2LA8iijcdW37HJhjl3r+9q2qJIk7SM
+         e9i3dvi3rB1sEJuHMPEhTCJ5YGvU3pkRsprjZZm28ZHEaP82OdR6kEcxqbW5GzfTj/Ng
+         aG5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=B+QdeEzKa7UGI7quNzIlqUk5zLUPhgyuAsRaG6gQ5IY=;
-        b=Q2/G+pH+lnd8pz7I5kvi8B5RaLmg7Hg2trQQkVH1W9NXhOaJwf1TSz+ZLgIEGHIlW4
-         VLeGBUUgRYqKKL0xe0GttgCtcIpo7o/tlT8sAHd7LmXReP7K0uQtJVLFlDk+pC0XbLRd
-         HLCRYn8PBM7RdepehcQdITW6gUHWa0zcQTKuQ2VcozmpHScdFVuDnJjdBQbnplt8CVo8
-         uMUNWfrIdhRJYzEvkFD/TMJ3GYwB9PAGbv5WAEnb8D5vHFS6KVrbna90lzyx40jb9pOP
-         SbLq0jPR65pSf3keRlwPPS56NBPRjNESsMjnB9L25VzFJKFcTyWTbT7vml+lg3ygtAx/
-         nA3g==
-X-Gm-Message-State: AOAM533t4klCleKfNqJlpgsseD86y1Js7nqjvvAKGXnz/ZCamdHK2tXP
-        3XTkZNtWq7iAOvs8LBCe6Z7/0Q==
-X-Google-Smtp-Source: ABdhPJx+Gc8+F5ihI3VBpAYkqcuqCY0quYPQO6lq0gbUrjCef5HWDouQvALe38N+Y6qlDcjHSRiK1w==
-X-Received: by 2002:a17:902:ab98:b029:12b:acc0:e18c with SMTP id f24-20020a170902ab98b029012bacc0e18cmr6570044plr.10.1627597651515;
-        Thu, 29 Jul 2021 15:27:31 -0700 (PDT)
-Received: from sspatil2.c.googlers.com.com (190.40.105.34.bc.googleusercontent.com. [34.105.40.190])
-        by smtp.gmail.com with ESMTPSA id 5sm4761989pfp.154.2021.07.29.15.27.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U7V9Ap3CLbBdQCnG02pu0xdSqMhicUYByn9SxkAU8rw=;
+        b=X4AFBKA1NjJz1IK3o86D5CdOsUCjswe+okUGNaXo6U4LZVXCkeiLtwaxRNCkn/MngG
+         S9+1WP9M49xryBzSj1r0c3bK6eLkRpc8gXaMk0beUssciyV7XdU6/fGRJybpT+cdKaz6
+         dImgDd0nO5E1iDCQcZWWKNiu/TCfDum3J3BlIkNqmf7KbaHYiHknbupmPLQsm4C+HdEG
+         IVv/3dyYZxphTVRf0BuSia7SVpCnkL2VlPhzm3ICjUQLd5eBBSvrD5FoZcJIeyRDPIvz
+         aG88T/5qDlROsbhST0JjVVa/1tcN5qp4CqtvzTaISBgbtyDvlNI//UB+TM0Kgf9X3fym
+         DuOg==
+X-Gm-Message-State: AOAM532n3szFQCiXAtSCS7KIwxjEnGsL+efWhQholdApISluUr0ZZ3Ka
+        G8RpEC29p2qx8jXjsLutnoGtPW06mgf/ew==
+X-Google-Smtp-Source: ABdhPJwUIJmnIsqgtiT+cHGl4vPiaiiOn9b6WyOeTGaDzqUNureByRM1AZxpT7XVVs9zcWtSUdzInA==
+X-Received: by 2002:a17:902:d492:b029:12b:dd74:5c79 with SMTP id c18-20020a170902d492b029012bdd745c79mr6407841plg.45.1627597653314;
+        Thu, 29 Jul 2021 15:27:33 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z124sm5138144pgb.6.2021.07.29.15.27.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 15:27:31 -0700 (PDT)
-From:   Sandeep Patil <sspatil@android.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sandeep Patil <sspatil@android.com>, torvalds@linux-foundation.org,
-        dhowells@redhat.com, gregkh@linuxfoundation.org,
-        stable@vger.kernel.org, kernel-team@android.com
-Subject: [PATCH 1/1] fs: pipe: wakeup readers everytime new data written is to pipe
-Date:   Thu, 29 Jul 2021 22:26:35 +0000
-Message-Id: <20210729222635.2937453-2-sspatil@android.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-In-Reply-To: <20210729222635.2937453-1-sspatil@android.com>
-References: <20210729222635.2937453-1-sspatil@android.com>
+        Thu, 29 Jul 2021 15:27:32 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 22:27:28 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Edmondson <david.edmondson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        David Matlack <dmatlack@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH v3 1/3] KVM: x86: kvm_x86_ops.get_exit_info should
+ include the exit reason
+Message-ID: <YQMrUOjZMD1eiIeE@google.com>
+References: <20210729133931.1129696-1-david.edmondson@oracle.com>
+ <20210729133931.1129696-2-david.edmondson@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729133931.1129696-2-david.edmondson@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit '1b6b26ae7053 ("pipe: fix and clarify pipe write wakeup logic")'
-changed pipe_write() to wakeup readers only if the pipe was empty.
-Prior to this change, threads waiting in epoll_wait(EPOLLET | EPOLLIN)
-on non-empty pipes would get woken up on new data.
+Shortlog is a bit odd, "should" is subjective and makes this sound like a bug fix.
 
-It meant an applications that,
-   1. used pipe + epoll for notifications between threads / processes
-   2. Didn't drain the pipe on each epoll wakeup unless the pipe was full
-started to experience hang / timeouts in threads stuck in epoll_wait()
+  KVM: x86: Get exit_reason as part of kvm_x86_ops.get_exit_info
 
-So restore the old behavior to wakeup all readers if any new data is
-written to the pipe.
+On Thu, Jul 29, 2021, David Edmondson wrote:
+> Extend the get_exit_info static call to provide the reason for the VM
+> exit. Modify relevant trace points to use this rather than extracting
+> the reason in the caller.
+> 
+> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+> ---
+> -static void svm_get_exit_info(struct kvm_vcpu *vcpu, u64 *info1, u64 *info2,
+> +static void svm_get_exit_info(struct kvm_vcpu *vcpu, u64 *reason,
+> +			      u64 *info1, u64 *info2,
+>  			      u32 *intr_info, u32 *error_code)
+>  {
+>  	struct vmcb_control_area *control = &to_svm(vcpu)->vmcb->control;
+>  
+> +	*reason = control->exit_code;
+>  	*info1 = control->exit_info_1;
+>  	*info2 = control->exit_info_2;
+>  	*intr_info = control->exit_int_info;
 
-Fixes: 1b6b26ae7053 ("pipe: fix and clarify pipe write wakeup logic")
-Signed-off-by: Sandeep Patil <sspatil@android.com>
----
- fs/pipe.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+...
 
-diff --git a/fs/pipe.c b/fs/pipe.c
-index bfd946a9ad01..dda22a316bb3 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -406,7 +406,7 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 	ssize_t ret = 0;
- 	size_t total_len = iov_iter_count(from);
- 	ssize_t chars;
--	bool was_empty = false;
-+	bool do_wakeup = false;
- 	bool wake_next_writer = false;
- 
- 	/* Null write succeeds. */
-@@ -429,10 +429,11 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- #endif
- 
- 	/*
--	 * Only wake up if the pipe started out empty, since
--	 * otherwise there should be no readers waiting.
-+	 * Wake up readers if the pipe was written to. Regardless
-+	 * of whether it was empty or not. Otherwise, threads
-+	 * waiting with EPOLLET will hang until the pipe is emptied.
- 	 *
--	 * If it wasn't empty we try to merge new data into
-+	 * If pipe wasn't empty we try to merge new data into
- 	 * the last buffer.
- 	 *
- 	 * That naturally merges small writes, but it also
-@@ -440,9 +441,8 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 	 * spanning multiple pages.
- 	 */
- 	head = pipe->head;
--	was_empty = pipe_empty(head, pipe->tail);
- 	chars = total_len & (PAGE_SIZE-1);
--	if (chars && !was_empty) {
-+	if (chars && !pipe_empty(head, pipe->tail)) {
- 		unsigned int mask = pipe->ring_size - 1;
- 		struct pipe_buffer *buf = &pipe->bufs[(head - 1) & mask];
- 		int offset = buf->offset + buf->len;
-@@ -460,6 +460,7 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 			}
- 
- 			buf->len += ret;
-+			do_wakeup = true;
- 			if (!iov_iter_count(from))
- 				goto out;
- 		}
-@@ -526,6 +527,7 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 			ret += copied;
- 			buf->offset = 0;
- 			buf->len = copied;
-+			do_wakeup = true;
- 
- 			if (!iov_iter_count(from))
- 				break;
-@@ -553,13 +555,12 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 		 * become empty while we dropped the lock.
- 		 */
- 		__pipe_unlock(pipe);
--		if (was_empty) {
-+		if (do_wakeup) {
- 			wake_up_interruptible_sync_poll(&pipe->rd_wait, EPOLLIN | EPOLLRDNORM);
- 			kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
- 		}
- 		wait_event_interruptible_exclusive(pipe->wr_wait, pipe_writable(pipe));
- 		__pipe_lock(pipe);
--		was_empty = pipe_empty(pipe->head, pipe->tail);
- 		wake_next_writer = true;
- 	}
- out:
-@@ -576,7 +577,7 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 	 * how (for example) the GNU make jobserver uses small writes to
- 	 * wake up pending jobs
- 	 */
--	if (was_empty) {
-+	if (do_wakeup) {
- 		wake_up_interruptible_sync_poll(&pipe->rd_wait, EPOLLIN | EPOLLRDNORM);
- 		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
- 	}
--- 
-2.32.0.554.ge1b32706d8-goog
+> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+> index b484141ea15b..2228565beda2 100644
+> --- a/arch/x86/kvm/trace.h
+> +++ b/arch/x86/kvm/trace.h
+> @@ -273,11 +273,11 @@ TRACE_EVENT(kvm_apic,
+>  
+>  #define TRACE_EVENT_KVM_EXIT(name)					     \
+>  TRACE_EVENT(name,							     \
+> -	TP_PROTO(unsigned int exit_reason, struct kvm_vcpu *vcpu, u32 isa),  \
+> -	TP_ARGS(exit_reason, vcpu, isa),				     \
+> +	TP_PROTO(struct kvm_vcpu *vcpu, u32 isa),			     \
+> +	TP_ARGS(vcpu, isa),						     \
+>  									     \
+>  	TP_STRUCT__entry(						     \
+> -		__field(	unsigned int,	exit_reason	)	     \
+> +		__field(	u64,		exit_reason	)	     \
 
+Converting to a u64 is unnecessary and misleading.  vmcs.EXIT_REASON and
+vmcb.EXIT_CODE are both u32s, a.k.a. unsigned ints.  There is vmcb.EXIT_CODE_HI,
+but that's not being included, and AFAICT isn't even sanity checked by KVM.
+
+>  		__field(	unsigned long,	guest_rip	)	     \
+>  		__field(	u32,	        isa             )	     \
+>  		__field(	u64,	        info1           )	     \
