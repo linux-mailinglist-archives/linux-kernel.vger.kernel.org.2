@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0971E3D9F0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5293A3D9F11
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 09:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhG2H6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 03:58:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234564AbhG2H6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 03:58:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF1D361076;
-        Thu, 29 Jul 2021 07:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627545530;
-        bh=16w8tjNGUuA8ZhSM8S/EHlfbPlfcx70VQXMUVV2Qy44=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h44270+mej1tnOX3bTJAWKajY9Eg2bFZD9vqpvAZH9O00H6USFEQi2ZFUgDO5E31d
-         FgvZTsGyJnZ/fQ5TABjE6cfvncsfRFcXq49YrYi2mariEmXV4lI5kRYQYqpgYj7kL4
-         Gw6L9EruUBTlZrC5C6Yr6/VOflLd8O/5gtQGi3HRGrJmzu9104FeF217JheV3Sk+G5
-         SRFecnsrn+FG07oEdN7sIrYWqBQ8/sPv7IqQut60YL6YL6cVjHsFK+RDVyQNFcmQmV
-         57fNyAz4euOwJ4AZiYFtDgsMnnsFb7Flx6G9Udc1MckuFEz+ReLHebbhtYa5mL4S6m
-         1HIQVFyJRP+ZA==
-Received: by mail-pj1-f46.google.com with SMTP id m2-20020a17090a71c2b0290175cf22899cso8130586pjs.2;
-        Thu, 29 Jul 2021 00:58:50 -0700 (PDT)
-X-Gm-Message-State: AOAM531DcOrF4G2UbmVeerSgNnlvrd6mGBe1/qlJTBCUADUbE+Z/uVzE
-        eQovmoA4d4WIewKB8NLLhAKDkhiBu3A6S4CEKYM=
-X-Google-Smtp-Source: ABdhPJyLfEm9zQ+88StFRsgV2WIB1afC8LOB0HwWdLjj15UEc88VvzVqXt5VaCEnuMqaq4STNTkEd+ohEQB1w29Bha8=
-X-Received: by 2002:a17:902:8ec9:b029:12b:a69d:4146 with SMTP id
- x9-20020a1709028ec9b029012ba69d4146mr3626136plo.32.1627545530457; Thu, 29 Jul
- 2021 00:58:50 -0700 (PDT)
+        id S234872AbhG2H73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 03:59:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36881 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234816AbhG2H72 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 03:59:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627545564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7nDUOIF/JsfT4/fHJaQASN5rYHGU5Rj+oIbOobnebAM=;
+        b=Bcv2AGrwnN7zpuaN9hQU47RiXogx7VeGYeiSitXD50McEx5GwTwwc/YNGD2VL30hFMhczz
+        fqb7MGv0qAgX23F/NHi7dZIf39TyArHyOVwBFi2u1D5bMWGir9RehUuTrhvEFmTwC96as4
+        yQaZep89Gtl8iAZpra6HrJeNMdzuvZg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-110-yYQyT4dSNI2FfeFgizGEhg-1; Thu, 29 Jul 2021 03:59:23 -0400
+X-MC-Unique: yYQyT4dSNI2FfeFgizGEhg-1
+Received: by mail-wm1-f70.google.com with SMTP id o32-20020a05600c5120b0290225ef65c35dso1940431wms.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 00:59:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=7nDUOIF/JsfT4/fHJaQASN5rYHGU5Rj+oIbOobnebAM=;
+        b=WIRYsnpX3EoEx22rpsXA8h9BrBPdqfB18ls+CXh25jjDommLqi3idg2pU+y/BSCxbj
+         iEK2VidiLg9k90JNZ0sC+Ssvqegy0iDOAWMBpAlO74H/0V54IneHRLwxqBbcej4M3xj+
+         t14o11DC2H3krU0TDDGM1/TPvyEa4ySyCSswLW1IVP5yA6UN3Ipnkm9ufLULs/RE8Wvr
+         wn4Mp1w9hc71FeV4obwHt0scVFZp08do3nJ/qZrC64JKS5CnHPVTjIa4YZ0hXmkeZMR1
+         V2AZFCb2osRipXyRcP3nE3lnvOQLSHOgTgtj4BqHhNT3gZavpLeJjqLBv1K3ihMntWAF
+         gvLw==
+X-Gm-Message-State: AOAM531EPtX8cM+H27jjJar0NcRxYhI8OK3BJYOU2qBOdaxGSDA7eVLo
+        TqtRb9BSqKRRYoEdGCb4o0rD6+AlLJfkAluW38coU+U1F9lurK5ivyEGP+v3NEzF8ujZL+wduVj
+        UmjFTLx8SpXJHIosX16THkZwr
+X-Received: by 2002:a05:600c:304a:: with SMTP id n10mr10134539wmh.79.1627545561750;
+        Thu, 29 Jul 2021 00:59:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwja3dqB2JXnMi7QQvi6Yr4FWdfEmAOTIml73IaKBjzKspoUBQyTcifjGO4KTfwdMepC8ee3g==
+X-Received: by 2002:a05:600c:304a:: with SMTP id n10mr10134524wmh.79.1627545561582;
+        Thu, 29 Jul 2021 00:59:21 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id d5sm2352326wre.77.2021.07.29.00.59.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 00:59:21 -0700 (PDT)
+Subject: Re: [PATCH] device-dax: use fallback nid when numa_node is invalid
+To:     Justin He <Justin.He@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>
+Cc:     "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        nd <nd@arm.com>
+References: <20210728082226.22161-1-justin.he@arm.com>
+ <20210728082226.22161-2-justin.he@arm.com>
+ <fc31c6ab-d147-10c0-7678-d820bc8ec96e@redhat.com>
+ <AM6PR08MB437663A6F8ABE7FCBC22B4E0F7EB9@AM6PR08MB4376.eurprd08.prod.outlook.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <f005a360-6669-1da6-5707-00b114831db2@redhat.com>
+Date:   Thu, 29 Jul 2021 09:59:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210531130657.971257589@linuxfoundation.org> <20210531130704.193621612@linuxfoundation.org>
-In-Reply-To: <20210531130704.193621612@linuxfoundation.org>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Thu, 29 Jul 2021 09:58:38 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPeD7_sE4H7b3ZUYFrQmH4w4H_Npzs5NVL-cgqWYLjPW+Q@mail.gmail.com>
-Message-ID: <CAJKOXPeD7_sE4H7b3ZUYFrQmH4w4H_Npzs5NVL-cgqWYLjPW+Q@mail.gmail.com>
-Subject: Re: [PATCH 5.10 182/252] drm/amd/amdgpu: fix refcount leak
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jingwen Chen <Jingwen.Chen2@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <AM6PR08MB437663A6F8ABE7FCBC22B4E0F7EB9@AM6PR08MB4376.eurprd08.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 at 16:06, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Jingwen Chen <Jingwen.Chen2@amd.com>
->
-> [ Upstream commit fa7e6abc75f3d491bc561734312d065dc9dc2a77 ]
->
-> [Why]
-> the gem object rfb->base.obj[0] is get according to num_planes
-> in amdgpufb_create, but is not put according to num_planes
->
-> [How]
-> put rfb->base.obj[0] in amdgpu_fbdev_destroy according to num_planes
->
-> Signed-off-by: Jingwen Chen <Jingwen.Chen2@amd.com>
-> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-> Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c | 3 +++
->  1 file changed, 3 insertions(+)
+Hi Justin,
 
-The original commit looks like a partial fix for 37ac3dc00da0
-("drm/amdgpu: Use device specific BO size & stride check.") which came
-in v5.14. Or putting it differently: this does not look entirely good
-without 37ac3dc00da0 which is a fix for f258907fdd83 ("drm/amdgpu:
-Verify bo size can fit framebuffer size on init.") merged in v5.13.
+>>>
+>>
+>> Note that this patch conflicts with:
+>>
+>> https://lkml.kernel.org/r/20210723125210.29987-7-david@redhat.com
+>>
+>> But nothing fundamental. Determining a single NID is similar to how I'm
+>> handling it for ACPI:
+>>
+>> https://lkml.kernel.org/r/20210723125210.29987-6-david@redhat.com
+>>
+> 
+> Okay, got it. Thanks for the reminder.
+> Seems my patch is not useful after your patch.
+> 
 
-Backporting it earlier might cause use-after-free errors (due to GEM
-refcnt dropping too early).
+I think your patch still makes sense. With
 
-Can the AMD guys:
-1. Confirm where this should be backported (for example not for v4.19,
-v5.4, v5.10, v5.12)?
-2. Mark fixes with the "Fixes" tag so we know where the fix should go?
-Please include such checks in your Acking and Reviewing (unless Acks
-and Reviews are just formality, not a check).
+https://lore.kernel.org/linux-acpi/20210723125210.29987-7-david@redhat.com/
 
-Best regards,
-Krzysztof
+We'd have to detect the node id in the first loop instead.
+
+-- 
+Thanks,
+
+David / dhildenb
+
