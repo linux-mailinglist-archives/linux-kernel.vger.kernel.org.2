@@ -2,82 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79313D9D28
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF7A3D9D30
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 07:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234054AbhG2Fl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 01:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhG2FlU (ORCPT
+        id S233945AbhG2FnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 01:43:00 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7891 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230300AbhG2Fm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:41:20 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B2EC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 22:41:17 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so13805568pja.5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 22:41:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+HcpLcsh3CNoV+plaqHbpcChysjrZ/XdusYt6GxVw9c=;
-        b=DcIJNfrfd9acLnz+K8zFDe8LrcphOUGZZBq5aI6EbzPV4L6yHCZBeg1Rw7ApJaCO4X
-         HWfwLpABI1tGiw7g3IelNruyBKpK5WgwIrpxo3p/2bTitSDU2ef7Sunmcz2GA21O2me6
-         SyRYFQFvp62zsqWo9VpE8BWa6sLniiXXzkixlsYKgAxUFUef6lZFVrafwg46MxYI0Yl8
-         q+ilXoXQ9Fh4HacyntUfd9FEI3LiDg24dusH1D0C8KgT1RjN8+seFzZKXssTZ4wfPP8m
-         VpL3X+NwcDOrO2Bh7OEPL8/dpwbxxXA684mSsmxQKBxPqdJtUNdXLA3gkGGg28hwHao3
-         fvLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+HcpLcsh3CNoV+plaqHbpcChysjrZ/XdusYt6GxVw9c=;
-        b=S3Y/IOPIqZ0MMssB+CsJSNIBWS6W5T+BHlGRqfrokit8coY8pVQnRRU/8hbHUuJaP0
-         tufWigWmY3QK/wWS89DaxycPWVS0gMC6QB1W9/2xeuLbYnv+jgxZJA97pbOODtwKGTew
-         wiZZlMDe6g14iUoz4DhSn+DVZW45xgJGSs9/eyK8b2YKDHJy37hvrADm/2PAkfNN+fav
-         h1h35JA6EMqwTZh6yzszXdiKzBF87QHiOLv28ted+qP5v2PHGLvhSfEx6YR9xGilX8q6
-         KMbpFuTohyxl61VCqdWVwnJuCP1aHVYwJpK5FloJ64Q+MzdOfVDffARxvBZ9GbESa/DZ
-         BYkw==
-X-Gm-Message-State: AOAM531mkIpmi7pFfeHepmDuoQeAO3uZWvLAIFMhfSsFcIzGgcvmrH/M
-        mW+rgQaLmOdPaLkq0fa7DEgYAUK5aKr/xxmZDLO00g==
-X-Google-Smtp-Source: ABdhPJzIH77wtaexeyTdeU5SwfT/arZde8HQawX/NMnry5UO5r2XsSkpJedRgNwR2CgaGzJ4adMaVOdYIsd71kiLb7A=
-X-Received: by 2002:a17:902:e742:b029:12b:5431:24fe with SMTP id
- p2-20020a170902e742b029012b543124femr3215224plf.20.1627537277324; Wed, 28 Jul
- 2021 22:41:17 -0700 (PDT)
+        Thu, 29 Jul 2021 01:42:59 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZzqJ5DXfz81Sd;
+        Thu, 29 Jul 2021 13:39:08 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 13:42:54 +0800
+Received: from SWX921481.china.huawei.com (10.126.201.210) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 13:42:48 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <andriy.shevchenko@linux.intel.com>, <yury.norov@gmail.com>,
+        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
+CC:     <akpm@linux-foundation.org>, <dave.hansen@intel.com>,
+        <linux@rasmusvillemoes.dk>, <rafael@kernel.org>,
+        <rdunlap@infradead.org>, <agordeev@linux.ibm.com>,
+        <sbrivio@redhat.com>, <jianpeng.ma@intel.com>,
+        <valentin.schneider@arm.com>, <peterz@infradead.org>,
+        <bristot@redhat.com>, <guodong.xu@linaro.org>,
+        <tangchengchang@huawei.com>, <prime.zeng@hisilicon.com>,
+        <yangyicong@huawei.com>, <tim.c.chen@linux.intel.com>,
+        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH v8 0/5] use bin_attribute to break the size limitation of cpumap ABI
+Date:   Thu, 29 Jul 2021 17:42:03 +1200
+Message-ID: <20210729054208.1800-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-References: <20210728155354.3440560-1-shakeelb@google.com>
-In-Reply-To: <20210728155354.3440560-1-shakeelb@google.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 29 Jul 2021 13:40:37 +0800
-Message-ID: <CAMZfGtW+XMp=EKqH4EgRzAG+RiZeOgj5=c73UE5SB7rTNWcR+A@mail.gmail.com>
-Subject: Re: [PATCH] slub: fix unreclaimable slab stat for bulk free
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.201.210]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemi761-chm.china.huawei.com (10.1.198.147)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:54 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> SLUB uses page allocator for higher order allocations and update
-> unreclaimable slab stat for such allocations. At the moment, the bulk
-> free for SLUB does not share code with normal free code path for these
-> type of allocations and have missed the stat update. So, fix the stat
-> update by common code. The user visible impact of the bug is the
-> potential of inconsistent unreclaimable slab stat visible through
-> meminfo and vmstat.
->
-> Fixes: 6a486c0ad4dc ("mm, sl[ou]b: improve memory accounting")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+v8:
+  - add Reviewed-by tags of Jonathan Cameron which I missed in v7;
+  - add Reviewed-by tags of Andy Shevchenko
+  - add Yury's patch extending comment in this series
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+v7:
+  - update doc in code for new APIs according to the comments of
+    Andy Shevchenko;
+  - other minor cleanup and commit log fix according to the comments
+    of Andy Shevchenko
+
+v6:
+  -minor cleanup according to Andy Shevchenko's comment;
+  -take bitmap_print_to_buf back according to Yury Norov's comment and
+   fix the documents; and also take the bitmap testcase back.
+  -Sorry, Yury, I don't think it is doable to move memory allocation
+   to drivers.
+   Considering a driver like topology.c, we have M CPUs and each CPU
+   has N various nodes like core_siblings, package_cpus, die_cpus etc,
+   we can't know the size of each node of each CPU in advance. The best
+   time to get the size of each node is really when users read the sysfs
+   node. otherwise, we have to scan M*N nodes in drivers in advance to
+   figure out the exact size of buffers we need.
+   On the other hand, it is crazily tricky to ask a bundle of drivers to
+   find a proper place to save the pointer of allocated buffers so that
+   they can be re-used in second read of the same bin_attribute node.
+   And I doubt it is really useful to save the address of buffers
+   somewhere. Immediately freeing it seems to be a correct option to
+   avoid runtime waste of memory. We can't predict when users will read
+   topology ABI and which node users will read.
+   Finally, reading topology things wouldn't be the really cpu-bound
+   things in user applications, hardly this kind of ABI things can be
+   a performance bottleneck. Users use numactl and lstopo commands to
+   read ABIs but nobody will do it again and again. And a normal
+   application won't do topology repeatly. So the overhead caused by
+   malloc/free in the new bitmap API doesn't really matter.
+   if we really want a place to re-used the buffer and avoid malloc/free,
+   it seems this should be done in some common place rather than each
+   driver. still it is hard to find the best place.
+
+   Thanks for the comments of Yury and Andy in v5.
+
+v5:
+  -remove the bitmap API bitmap_print_to_buf, alternatively, only provide
+   cpumap_print_to_buf API as what we really care about is cpumask for
+   this moment. we can freely take bitmap_print_to_buf back once we find
+   the second user.
+   hopefully this can alleviate Yury's worries on possible abuse of a new
+   bitmap API.
+  -correct the document of cpumap_print_to_buf;
+  -In patch1, clearly explain why we need this new API in commit log;
+  -Also refine the commit log of patch 2 and 3;
+  -As the modification is narrowed to the scope of cpumask, the kunit
+   test of bitmap_print_to_buf doesn't apply in the new patchset. so
+   test case patch4/4 is removed.
+
+   Thanks for the comments of Greg, Yury, Andy. Thanks for Jonathan's
+   review.
+
+v4:
+  -add test cases for bitmap_print_to_buf API;
+  -add Reviewed-by of Jonathan Cameron for patches 1-3, thanks!
+
+v3:
+  -fixed the strlen issue and patch #1,#2,#3 minor formatting issues, thanks
+   to Andy Shevchenko and Jonathan Cameron.
+
+v2:
+  -split the original patch #1 into two patches and use kasprintf() in
+  -patch #1 to simplify the code. do some minor formatting adjustments.
+
+Background:
+
+the whole story began from this thread when Jonatah and me tried to add a
+new topology level-cluster which exists on kunpeng920 and X86 Jacobsville:
+https://lore.kernel.org/lkml/YFRGIedW1fUlnmi+@kroah.com/
+https://lore.kernel.org/lkml/YFR2kwakbcGiI37w@kroah.com/
+
+in the discussion, Greg had some concern about the potential one page size
+limitation of sysfs ABI for topology. Greg's comment is reasonable
+and I think we should address the problem.
+
+For this moment, numa node, cpu topology and some other drivers are using
+cpu bitmap and list to expose hardware topology. When cpu number is large,
+the page buffer of sysfs won't be able to hold the whole bitmask or list.
+This doesn't really happen nowadays for bitmask as the maximum NR_CPUS
+is 8196 for X86_64 and 4096 for ARM64 since
+8196 * 9 / 32 = 2305
+is still smaller than 4KB page size.
+
+So the existing BUILD_BUG_ON() in drivers/base/node.c is pretty much
+preventing future problems when hardware gets more and more CPUs:
+static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
+{
+ 	cpumask_var_t mask;
+ 	struct node *node_dev = to_node(dev);
+
+	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
+	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
+}
+
+But those ABIs exposing cpu lists are much more tricky as a list could be
+like: 0, 3, 5, 7, 9, 11... etc. so nobody knows the size till the last
+moment. Comparing to bitmask, list is easier to exceed one page.
+
+In the previous discussion, Greg and Dave Hansen preferred to remove this
+kind of limitation totally and remove the BUILD_BUG_ON() in
+drivers/base/node.c together:
+https://lore.kernel.org/lkml/1619679819-45256-2-git-send-email-tiantao6@hisilicon.com/
+https://lore.kernel.org/lkml/YIueOR4fOYa1dSAb@kroah.com/
+
+Todo:
+
+right now, only topology and node are addressed. there are many other
+drivers are calling cpumap_print_to_pagebuf() and have the similar
+problems. we are going to address them one by one after this patchset
+settles down.
+
+Barry Song (1):
+  lib: test_bitmap: add bitmap_print_to_buf test cases
+
+Tian Tao (3):
+  cpumask: introduce cpumap_print_to_buf to support large bitmask and
+    list
+  topology: use bin_attribute to break the size limitation of cpumap ABI
+  drivers/base/node.c: use bin_attribute to break the size limitation of
+    cpumap ABI
+
+Yury Norov (1):
+  bitmap: extend comment to bitmap_print_to_buf
+
+ drivers/base/node.c     |  51 +++++++++-----
+ drivers/base/topology.c | 115 ++++++++++++++++--------------
+ include/linux/bitmap.h  |   2 +
+ include/linux/cpumask.h |  63 +++++++++++++++++
+ lib/bitmap.c            |  96 +++++++++++++++++++++++++
+ lib/test_bitmap.c       | 150 ++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 407 insertions(+), 70 deletions(-)
+
+-- 
+2.25.1
+
