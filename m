@@ -2,127 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5253DA1A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560E53DA1A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236001AbhG2K7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234156AbhG2K7S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:59:18 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694B8C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:59:14 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id ec13so7091111edb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:59:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hev-cc.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cqjLFNVfBDWAnhToFHoZWvbNeERTdn0BoKdbQkjb8Lo=;
-        b=eCt1VY/bP2pVbt0ZgN5ZfGDJmAqrjEE+qlEID+dEqfmef5hWpQl6F+yBsIGgGhLyF4
-         Bz3jVcRHSsGWSLJi+6x2S2OuO6IP47x123Hk4wxe/7I+X7YvYthgqoJpxMfWqYf9DUW1
-         sb7NxXHPLyEX3qVZKjkFmpYk6bq9BGVH4F+IKPqQTnxBuHFOY9xPf+LGAl9SI8WNi8rE
-         UpkkbbW4dKfjxBC45JtI8giYqRyKAgR5xUQOnaUh20n9h5wcpm/UfGinIMoBsI+UmqIt
-         sJN2/phVXhgVzs06VYNQM+2RAhDVqj4aZurHaXK6Pca8CE2RRyNLiYt8CyJTvlmj4365
-         +rtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cqjLFNVfBDWAnhToFHoZWvbNeERTdn0BoKdbQkjb8Lo=;
-        b=MTLSMRYT9U1xbWmhXoTQ3teJeHP3rzvsf4vWtU1v7TB55oSmYoUWvYzMxaGUOl5jMW
-         LGQALfh3XLRvon+AtUmVlMIuKG6TNa+F1+qomdudWDc4g2BaxJE0ImOTO48oUw50Un7i
-         78BGFG0eE4tgL26izPh06P8Ogs9TQs3M2HeDoBiysNjq3awJ8cZNau9n7pQS8WipqqqK
-         r306jHPoc9YtQRM4ZMR327pgnWxZJdlruLRStCtin9hRcP/Un1SFlER8/K7y9W4Cl6Gu
-         2DMx7eBOQhU+kERk3DA1fz6Gmn06f9Fd3kQlbfVpvxAolazPYmRsxrjJ7r+AbRsTP2s4
-         5CwA==
-X-Gm-Message-State: AOAM533Lt2a7d9lTx0zOiTgiyuqhrpKBU+BO+dcn1w+8rli4bQbomO1v
-        XE8+0jP/EBtqnL/rDmwLsNWCiorkKcGujXMqUH4HGw==
-X-Google-Smtp-Source: ABdhPJxkguyURA9a6iefXWLZvRL5hydiVvuH8w5gi+2Q6zxsNLdJa+ccYesHTZ4iYu+TX9+XAVWGGXim9zt6sfTg0To=
-X-Received: by 2002:a05:6402:516f:: with SMTP id d15mr5526812ede.210.1627556353053;
- Thu, 29 Jul 2021 03:59:13 -0700 (PDT)
+        id S236110AbhG2K7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:59:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:44962 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234156AbhG2K7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 06:59:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D97D6D;
+        Thu, 29 Jul 2021 03:59:09 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 32E8D3F66F;
+        Thu, 29 Jul 2021 03:59:07 -0700 (PDT)
+Subject: Re: [PATCH v2 00/24] iommu: Refactor DMA domain strictness
+To:     "chenxiang (M)" <chenxiang66@hisilicon.com>, joro@8bytes.org,
+        will@kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        dianders@chromium.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>
+References: <cover.1627468308.git.robin.murphy@arm.com>
+ <49c7ca2c-11a3-ff93-05bc-feb482a79980@hisilicon.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <942c3da1-fb79-967a-d50e-4cbf5331261c@arm.com>
+Date:   Thu, 29 Jul 2021 11:59:01 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210729093003.146166-1-wangrui@loongson.cn> <20210729095551.GE21151@willie-the-truck>
-In-Reply-To: <20210729095551.GE21151@willie-the-truck>
-From:   hev <r@hev.cc>
-Date:   Thu, 29 Jul 2021 18:58:59 +0800
-Message-ID: <CAHirt9j+UJiNpgmeSOMnUnYomOLgi1oD44ZCzEWA9OAzrnAMaw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3] locking/atomic: Implement atomic{,64,_long}_{fetch_,}{andnot_or}{,_relaxed,_acquire,_release}()
-To:     Will Deacon <will@kernel.org>
-Cc:     Rui Wang <wangrui@loongson.cn>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Guo Ren <guoren@kernel.org>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <49c7ca2c-11a3-ff93-05bc-feb482a79980@hisilicon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Will,
+On 2021-07-29 03:55, chenxiang (M) wrote:
+> Hi Robin,
+> 
+> 
+> 在 2021/7/28 23:58, Robin Murphy 写道:
+>> Hi all,
+>>
+>> Here's v2 where things start to look more realistic, hence the expanded
+>> CC list. The patches are now based on the current iommu/core branch to
+>> take John's iommu_set_dma_strict() cleanup into account.
+>>
+>> The series remiains in two (or possibly 3) logical parts - for people
+>> CC'd on cookie cleanup patches, the later parts should not affect you
+>> since your drivers don't implement non-strict mode anyway; the cleanup
+>> is all pretty straightforward, but please do yell at me if I've managed
+>> to let a silly mistake slip through and broken your driver.
+>>
+>> This time I have also build-tested x86 as well as arm64 :)
+> 
+> I have tested those patchset on ARM64 with SMMUV3, and the testcases are 
+> as follows:
+> - Boot with iommu.strict=0, running fio and it works well;
+> - Boot with iommu.strict=1, running fio and it works well;
+> - Change strict mode to lazy mode when building, the change takes effect;
+> - Boot without iommu.strict(default strict mode), change the sysfs 
+> interface type from DMA to DMA-FQ dynamically during running fio, and it 
+> works well;
+> - Boot without iommu.strict(default strict mode), change the sysfs 
+> interface type from DMA-FQ to DMA dynamically, and it is not allowed and 
+> print "Device or resource busy"
+> (i know it is qualified, and we can change no-strict mode to strict by 
+> unbind the driver -> change the sysfs interface (type)->bind the driver 
+> (tested this and it works well),
+> but i have a small question: is it also possible to change from DMA-FQ 
+> to DMA dynamically? )
 
-On Thu, Jul 29, 2021 at 5:55 PM Will Deacon <will@kernel.org> wrote:
->
-> On Thu, Jul 29, 2021 at 05:30:03PM +0800, Rui Wang wrote:
-> > This patch introduce a new atomic primitive andnot_or:
-> >
-> >  * atomic_andnot_or
-> >  * atomic_fetch_andnot_or
-> >  * atomic_fetch_andnot_or_relaxed
-> >  * atomic_fetch_andnot_or_acquire
-> >  * atomic_fetch_andnot_or_release
-> >  * atomic64_andnot_or
-> >  * atomic64_fetch_andnot_or
-> >  * atomic64_fetch_andnot_or_relaxed
-> >  * atomic64_fetch_andnot_or_acquire
-> >  * atomic64_fetch_andnot_or_release
-> >  * atomic_long_andnot_or
-> >  * atomic_long_fetch_andnot_or
-> >  * atomic_long_fetch_andnot_or_relaxed
-> >  * atomic_long_fetch_andnot_or_acquire
-> >  * atomic_long_fetch_andnot_or_release
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Rui Wang <wangrui@loongson.cn>
-> > ---
-> >  include/asm-generic/atomic-instrumented.h |  72 +++++-
-> >  include/asm-generic/atomic-long.h         |  62 ++++-
-> >  include/linux/atomic-arch-fallback.h      | 262 +++++++++++++++++++++-
-> >  lib/atomic64_test.c                       |  92 ++++----
-> >  scripts/atomic/atomics.tbl                |   1 +
-> >  scripts/atomic/fallbacks/andnot_or        |  25 +++
-> >  6 files changed, 471 insertions(+), 43 deletions(-)
-> >  create mode 100755 scripts/atomic/fallbacks/andnot_or
->
-> Please see my other comments on the other patches you posted:
->
-> https://lore.kernel.org/r/20210729093923.GD21151@willie-the-truck
->
-> Overall, I'm not thrilled to bits by extending the atomics API with
-> operations that cannot be implemented efficiently on any (?) architectures
-> and are only used by the qspinlock slowpath on machines with more than 16K
-> CPUs.
->
-> I also think we're lacking documentation justifying when you would use this
-> new primitive over e.g. a sub-word WRITE_ONCE() on architectures that
-> support those, especially for the non-returning variants.
->
-> Will
+As patch #22 mentions, I think it's possible in principle, but it's 
+certainly trickier. When enabling a flush queue, it doesn't matter if it 
+takes a while for other threads to notice that cookie->fq_domain is now 
+set and stop doing synchronous invalidations (and in the SMMU case it 
+seems like there are probably enough dependencies to additionally 
+prevent the io_pgtable quirk being observable before that). However when 
+disabling, we'd need to be absolutely sure that the driver *has* started 
+invalidating strictly before we stop queueing freed IOVAs, plus we need 
+to be absolutely sure that we've stopped queueing freed IOVAs before we 
+attempt to tear down the flush queue itself. I'm not sure off-hand how 
+feasible it would be to put all that synchronisation in the right places 
+without it also impacting normal operation.
 
-I have tried to explain in another thread. At the beginning, I thought
-about implementing xchg_mask for the sub-word xchg, but now I agree
-that atomic andnot_or is clearer and more general.
+Furthermore, as also noted, there doesn't seem to be a good reason for 
+ever actually needing to do that. If a device isn't trusted, it should 
+be given a strict domain *before* any driver has a chance to start doing 
+anything, or your trust model is broken and pretty useless. I can 
+imagine some niche debugging/benchmarking cases where it might help save 
+a bit of effort, but nothing with a strong enough justification to be 
+worth supporting in mainline.
 
-Peter, what do you think?
+> Anyway, please feel free to add :
+> Tested-by: Xiang Chen <chenxiang66@hisilicon.com>
 
-Regards,
-Rui
+That's great, thanks!
+
+Robin.
+
+>> Changes in v2:
+>>
+>> - Add iommu_is_dma_domain() helper to abstract flag check (and help
+>>    avoid silly typos like the one in v1).
+>> - Tweak a few commit messages for spelling and (hopefully) clarity.
+>> - Move the iommu_create_device_direct_mappings() update to patch #14
+>>    where it should have been.
+>> - Rewrite patch #20 as a conversion of the now-existing option.
+>> - Clean up the ops->flush_iotlb_all check which is also made redundant
+>>    by the new domain type
+>> - Add patch #24, which is arguably tangential, but it was something I
+>>    spotted during the rebase, so...
+>>
+>> Once again, the whole lot is available on a branch here:
+>>
+>> https://gitlab.arm.com/linux-arm/linux-rm/-/tree/iommu/fq
+>>
+>> Thanks,
+>> Robin.
+>>
+>>
+>> CC: Marek Szyprowski <m.szyprowski@samsung.com>
+>> CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>> CC: Geert Uytterhoeven <geert+renesas@glider.be>
+>> CC: Yong Wu <yong.wu@mediatek.com>
+>> CC: Heiko Stuebner <heiko@sntech.de>
+>> CC: Chunyan Zhang <chunyan.zhang@unisoc.com>
+>> CC: Chunyan Zhang <chunyan.zhang@unisoc.com>
+>> CC: Maxime Ripard <mripard@kernel.org>
+>> CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
+>>
+>> Robin Murphy (24):
+>>    iommu: Pull IOVA cookie management into the core
+>>    iommu/amd: Drop IOVA cookie management
+>>    iommu/arm-smmu: Drop IOVA cookie management
+>>    iommu/vt-d: Drop IOVA cookie management
+>>    iommu/exynos: Drop IOVA cookie management
+>>    iommu/ipmmu-vmsa: Drop IOVA cookie management
+>>    iommu/mtk: Drop IOVA cookie management
+>>    iommu/rockchip: Drop IOVA cookie management
+>>    iommu/sprd: Drop IOVA cookie management
+>>    iommu/sun50i: Drop IOVA cookie management
+>>    iommu/virtio: Drop IOVA cookie management
+>>    iommu/dma: Unexport IOVA cookie management
+>>    iommu/dma: Remove redundant "!dev" checks
+>>    iommu: Introduce explicit type for non-strict DMA domains
+>>    iommu/amd: Prepare for multiple DMA domain types
+>>    iommu/arm-smmu: Prepare for multiple DMA domain types
+>>    iommu/vt-d: Prepare for multiple DMA domain types
+>>    iommu: Express DMA strictness via the domain type
+>>    iommu: Expose DMA domain strictness via sysfs
+>>    iommu: Merge strictness and domain type configs
+>>    iommu/dma: Factor out flush queue init
+>>    iommu: Allow enabling non-strict mode dynamically
+>>    iommu/arm-smmu: Allow non-strict in pgtable_quirks interface
+>>    iommu: Only log strictness for DMA domains
+>>
+>>   .../ABI/testing/sysfs-kernel-iommu_groups     |  2 +
+>>   drivers/iommu/Kconfig                         | 80 +++++++++----------
+>>   drivers/iommu/amd/iommu.c                     | 21 +----
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 25 ++++--
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.c         | 29 ++++---
+>>   drivers/iommu/arm/arm-smmu/qcom_iommu.c       |  8 --
+>>   drivers/iommu/dma-iommu.c                     | 44 +++++-----
+>>   drivers/iommu/exynos-iommu.c                  | 18 +----
+>>   drivers/iommu/intel/iommu.c                   | 23 ++----
+>>   drivers/iommu/iommu.c                         | 53 +++++++-----
+>>   drivers/iommu/ipmmu-vmsa.c                    | 27 +------
+>>   drivers/iommu/mtk_iommu.c                     |  6 --
+>>   drivers/iommu/rockchip-iommu.c                | 11 +--
+>>   drivers/iommu/sprd-iommu.c                    |  6 --
+>>   drivers/iommu/sun50i-iommu.c                  | 12 +--
+>>   drivers/iommu/virtio-iommu.c                  |  8 --
+>>   include/linux/dma-iommu.h                     |  9 ++-
+>>   include/linux/iommu.h                         | 15 +++-
+>>   18 files changed, 171 insertions(+), 226 deletions(-)
+>>
+> 
+> 
