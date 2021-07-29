@@ -2,111 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EC93DA288
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626153DA28D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbhG2LyT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Jul 2021 07:54:19 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:58842 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233413AbhG2LyS (ORCPT
+        id S234664AbhG2Lzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232122AbhG2Lzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:54:18 -0400
-Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id EE60DCED16;
-        Thu, 29 Jul 2021 13:54:13 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH v2 1/3] Bluetooth: hci_h5: add WAKEUP_DISABLE flag
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAJQfnxFikFjkGn6_+n=ycH4byzTMWY51C=+VJOycg_ZXmg=qqA@mail.gmail.com>
-Date:   Thu, 29 Jul 2021 13:54:13 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Hilda Wu <hildawu@realtek.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <F610BDE8-CC34-4665-91D8-C32EDFD73F75@holtmann.org>
-References: <20210715225146.v2.1.I68649745bd11a83265f1e816bf34ecc82775e95a@changeid>
- <57AE120A-78AE-4990-8D7F-BA8D8077B610@holtmann.org>
- <CAJQfnxFzj9m43wntnb2gvXkJS6B5+aQGsu7v6hc4H4ktAopk7g@mail.gmail.com>
- <A2D33DB0-40DD-4F14-BFB9-9FB34DB003A8@holtmann.org>
- <CAJQfnxFikFjkGn6_+n=ycH4byzTMWY51C=+VJOycg_ZXmg=qqA@mail.gmail.com>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Thu, 29 Jul 2021 07:55:36 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C51C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:55:32 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id m12so1790759wru.12
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zXAEOLN9SYnmGGjsihLTS/Qt+xjg3BkjUtxD75Hc1B0=;
+        b=qktN/sJt3VVMEgerPW78YecwI/DVI1W01zC9uJlT0gtjdbtEEQxgiPgFQTb1o8KIqq
+         1Xu2+Nb7znYJU3T/0k1QkhZIMww9cREVnqBuIXZIIGAQCUgS8BKwRnJu8vC8a0rbS3xS
+         SmMddVrcFwEHdI3hAwyelcQcPRxTQBN62VZ+LPFetBANe7Lb8LP3WFOC2pJC7yWYEcKY
+         7L58TpZVYUlg2YJ+s45T+Ng+I1kWsR0Fs4pDlCHoAhIIAU4n+S5x+gspJo60xSyZ3Knr
+         soSwa7QBM+vL8ZlYHZBwaWYpQmPojhQvp1lGQkWrGJ+k4uq3pJCbLeLb6evrSIodvYF7
+         IjKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zXAEOLN9SYnmGGjsihLTS/Qt+xjg3BkjUtxD75Hc1B0=;
+        b=FSKOhwA7QZGScN8SsMwTFa9ggZNc+jXZErB04GXlikenfIxrPdGWOw4XBH+5RyF1LU
+         Kvw6Pfr22dI9WTD3Q63UmjuzQJVmZnIsdGwHNNoeEPBY08GUcAplVs+Xcm6MFCmeSd/x
+         hFWFdD40KBqVloldxhjjtLU7jsEuwaT/ELpMpcUo5bJWvjFxkaKASVQPVlq7Wr5+Po0k
+         6w8AEqkuah8ltR9E9LoijJC0mctFM+0CMDQH5IFliz/buLgAZ7i4GdX8z/zequL/7eNs
+         3RAm0Ts0S3djuBRgqNgql6BDfWKckr1AObXf4ewNNHZ4+QMijruvf7AzHBKuKMNM/1aE
+         klEw==
+X-Gm-Message-State: AOAM531ROWlAtI5jk6x3InzULXy3nEg8VfLliF6rHPQE/Gurx1cvUF+9
+        /zmmrKb+yxy+NPEeiR9BD9ijjQ==
+X-Google-Smtp-Source: ABdhPJw8gVdPhukKi7m7Re7PufSJ5utAmX0FeBiTeQ+8h/WG7HqlU8/4O3cNXce1P+c5pLBaBlNHpA==
+X-Received: by 2002:adf:d225:: with SMTP id k5mr4425617wrh.10.1627559731389;
+        Thu, 29 Jul 2021 04:55:31 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id j14sm3306941wru.58.2021.07.29.04.55.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 04:55:30 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 13:55:29 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH net-next 2/2] devlink: Allocate devlink directly in
+ requested net namespace
+Message-ID: <YQKXMT4tbzCnkYlA@nanopsycho>
+References: <cover.1627545799.git.leonro@nvidia.com>
+ <ca29973a59c9c128ab960e3cbff8dfa95280b6b0.1627545799.git.leonro@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca29973a59c9c128ab960e3cbff8dfa95280b6b0.1627545799.git.leonro@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
-
->>>>> Some RTL chips resets the FW on suspend, so wakeup is disabled on
->>>>> those chips. This patch introduces this WAKEUP_DISABLE flag so that
->>>>> chips that doesn't reset FW on suspend can leave the flag unset and
->>>>> is allowed to wake the host.
->>>>> 
->>>>> This patch also left RTL8822 WAKEUP_DISABLE flag unset, therefore
->>>>> allowing it to wake the host, and preventing reprobing on resume.
->>>>> 
->>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
->>>>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
->>>>> Reviewed-by: Hilda Wu <hildawu@realtek.com>
->>>>> 
->>>>> ---
->>>>> 
->>>>> Changes in v2:
->>>>> * Remove unnecessary variable
->>>>> 
->>>>> drivers/bluetooth/hci_h5.c | 83 +++++++++++++++++++++++++++-----------
->>>>> 1 file changed, 59 insertions(+), 24 deletions(-)
->>>> 
->>>> so the set does not apply cleanly to bluetooth-next
->>>> 
->>>> Applying: Bluetooth: hci_h5: Add runtime suspend
->>>> error: patch failed: drivers/bluetooth/hci_h5.c:11
->>>> error: drivers/bluetooth/hci_h5.c: patch does not apply
->>> 
->>> Hmm, it applies cleanly for me. Not sure what's going on.
->>> Anyway I rebased and made a little change as v3, please take a look!
->> 
->> the v3 applied cleanly.
->> 
->>>> 
->>>> 
->>>> And I am really close to not accepting any patches for hci_h5.c anymore. This thing turns into crazy hacking and nobody is taking my hint to redo this as clean H:5 3-Wire serdev standalone driver.
->>> 
->>> Pardon my unfamiliarity, but could you share more about your vision of
->>> a clean h5 driver? Should the RTL component be moved out to btrtl?
->>> Do we have something as a reference?
->> 
->> so a while back I send a bt3wire.c sample driver around. That would be a good starting point.
->> 
->> Anyhow, the problem is that hci_uart.ko is inherent a line discipline driver from 2.4.x kernel days and it has been stacked and hacked on top of it. It has become a burden, especially in the light that you can have clean serdev based drivers now (like btmtkuart.c).
->> 
->> And yes, it would be following the 3-Wire H:5 spec and then deal with vendor specific details like btusb.c for example. And my hope would be that especially in the Realtek and Broadcom (RPi3 etc.) cases this can move into vendor specific blocks and shared between USB and UART transports.
->> 
->> I also send around a btuart.c sample driver that is solely serdev based and should replace all the cases where we have H:4 as transport.
->> 
+Thu, Jul 29, 2021 at 10:15:26AM CEST, leon@kernel.org wrote:
+>From: Leon Romanovsky <leonro@nvidia.com>
+>
+>There is no need in extra call indirection and check from impossible
+>flow where someone tries to set namespace without prior call
+>to devlink_alloc().
+>
+>Instead of this extra logic and additional EXPORT_SYMBOL, use specialized
+>devlink allocation function that receives net namespace as an argument.
+>
+>Such specialized API allows clear view when devlink initialized in wrong
+>net namespace and/or kernel users don't try to change devlink namespace
+>under the hood.
+>
+>Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>---
+> drivers/net/netdevsim/dev.c |  4 ++--
+> include/net/devlink.h       | 14 ++++++++++++--
+> net/core/devlink.c          | 26 ++++++++------------------
+> 3 files changed, 22 insertions(+), 22 deletions(-)
+>
+>diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
+>index 6348307bfa84..d538a39d4225 100644
+>--- a/drivers/net/netdevsim/dev.c
+>+++ b/drivers/net/netdevsim/dev.c
+>@@ -1431,10 +1431,10 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
+> 	struct devlink *devlink;
+> 	int err;
 > 
-> Thanks for the pointers!
+>-	devlink = devlink_alloc(&nsim_dev_devlink_ops, sizeof(*nsim_dev));
+>+	devlink = devlink_alloc_ns(&nsim_dev_devlink_ops, sizeof(*nsim_dev),
+>+				   nsim_bus_dev->initial_net);
+> 	if (!devlink)
+> 		return -ENOMEM;
+>-	devlink_net_set(devlink, nsim_bus_dev->initial_net);
+> 	nsim_dev = devlink_priv(devlink);
+> 	nsim_dev->nsim_bus_dev = nsim_bus_dev;
+> 	nsim_dev->switch_id.id_len = sizeof(nsim_dev->switch_id.id);
+>diff --git a/include/net/devlink.h b/include/net/devlink.h
+>index e48a62320407..b4691c40320f 100644
+>--- a/include/net/devlink.h
+>+++ b/include/net/devlink.h
+>@@ -1540,8 +1540,18 @@ static inline struct devlink *netdev_to_devlink(struct net_device *dev)
+> struct ib_device;
 > 
-> The files you mentioned are rather hard to find, so below I paste the
-> URL where I found them in case anyone else is also interested.
-> 
-> [RFC v2] Bluetooth: Add new serdev based driver for UART attached controllers
-> https://www.spinics.net/lists/linux-bluetooth/msg74918.html
-> 
-> [RFC] Bluetooth: Add new serdev based driver for 3-Wire attached controllers
-> https://www.spinics.net/lists/linux-bluetooth/msg74839.html
+> struct net *devlink_net(const struct devlink *devlink);
+>-void devlink_net_set(struct devlink *devlink, struct net *net);
+>-struct devlink *devlink_alloc(const struct devlink_ops *ops, size_t priv_size);
+>+/* This RAW call is intended for software devices that can
 
-exactly these. I posted my initial work so that it can be continued by people with easier access to hardware.
+Not sure what "RAW call" is, perhaps you can just avoid this here.
 
-Regards
+Otherwise, this patch looks fine to me:
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
-Marcel
-
+[...]
