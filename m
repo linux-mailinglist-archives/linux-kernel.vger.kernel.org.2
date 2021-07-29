@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE363D9FC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CF93D9FA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235170AbhG2Ikw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 04:40:52 -0400
-Received: from mx1.emlix.com ([136.243.223.33]:38728 "EHLO mx1.emlix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234880AbhG2Ikv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 04:40:51 -0400
-X-Greylist: delayed 537 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Jul 2021 04:40:51 EDT
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id 58CCD5F93A;
-        Thu, 29 Jul 2021 10:31:50 +0200 (CEST)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     desmondcheongzx@gmail.com
-Cc:     anton@tuxera.com, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        skhan@linuxfoundation.org,
-        syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ntfs: Fix validity check for file name attribute
-Date:   Thu, 29 Jul 2021 10:31:45 +0200
-Message-ID: <2424055.QlFIqzKPrH@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <20210614050540.289494-1-desmondcheongzx@gmail.com>
+        id S235072AbhG2Igu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 04:36:50 -0400
+Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:52316 "EHLO
+        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234886AbhG2Igt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 04:36:49 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id EE591CAED6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:36:45 +0100 (IST)
+Received: (qmail 32396 invoked from network); 29 Jul 2021 08:36:45 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 29 Jul 2021 08:36:45 -0000
+Date:   Thu, 29 Jul 2021 09:36:44 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v14 049/138] mm/memcg: Add folio_lruvec_relock_irq() and
+ folio_lruvec_relock_irqsave()
+Message-ID: <20210729083644.GD3809@techsingularity.net>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <20210715033704.692967-50-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2416868.LEy6h3IvCX"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210715033704.692967-50-willy@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart2416868.LEy6h3IvCX
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Rolf Eike Beer <eb@emlix.com>
-To: desmondcheongzx@gmail.com
-Cc: anton@tuxera.com, gregkh@linuxfoundation.org, linux-kernel-mentees@lists.linuxfoundation.org, linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, skhan@linuxfoundation.org, syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ntfs: Fix validity check for file name attribute
-Date: Thu, 29 Jul 2021 10:31:45 +0200
-Message-ID: <2424055.QlFIqzKPrH@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <20210614050540.289494-1-desmondcheongzx@gmail.com>
+On Thu, Jul 15, 2021 at 04:35:35AM +0100, Matthew Wilcox (Oracle) wrote:
+> These are the folio equivalents of relock_page_lruvec_irq() and
+> folio_lruvec_relock_irqsave().  Also convert page_matches_lruvec()
+> to folio_matches_lruvec().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Hi,
+When build testing what you had in your for-next branch, I got a new
+warning for powerpc defconfig
 
-I was just scanning through some older vulnerabilities and came across=20
-CVE-2018-12929, CVE-2018-12930, and CVE-2018-12931, which are all still ope=
-n=20
-according to linuxkernelcves.com (originally reported against 4.15 [1]). I=
-=20
-looked into the commits in fs/ntfs/ from 4.15 onwards to see if they were j=
-ust=20
-missed, but I can't spot anything there. RedHat claims to have them fixed i=
-n=20
-one of their kernels [2].
+ In file included from ./include/linux/mmzone.h:8,
+                  from ./include/linux/gfp.h:6,
+                  from ./include/linux/mm.h:10,
+                  from mm/swap.c:17:
+ mm/swap.c: In function 'release_pages':
+ ./include/linux/spinlock.h:290:3: warning: 'flags' may be used uninitialized in this function [-Wmaybe-uninitialized]
+   290 |   _raw_spin_unlock_irqrestore(lock, flags); \
+       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+ mm/swap.c:906:16: note: 'flags' was declared here
+   906 |  unsigned long flags;
+       |                ^~~~~
 
-Which makes me wonder if the issue fixed here is a duplicate of the any of =
-the=20
-above. Is there a reason I can't find any patches for the original issue in=
-=20
-tree, like the issue only introduced in a custom patchset that Ubuntu/RedHa=
-t=20
-were using? Is this thing worth it's own CVE if it's no duplicate?
+I'm fairly sure it's a false positive and the compiler just cannot figure
+out that flags are only accessed when lruvec is !NULL and once lruvec is
+!NULL, flags are valid
 
-Greetings,
-
-Eike
-
-1) https://marc.info/?t=3D152407734400002&r=3D1&w=3D2
-2) https://access.redhat.com/errata/RHSA-2019:0641
-=2D-=20
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-=46on +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
-Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
-Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
-=2E: DE 205 198 055
-
-emlix - smart embedded open source
-
---nextPart2416868.LEy6h3IvCX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYQJncQAKCRCr5FH7Xu2t
-/EknBACWisFFpJAxn+isaQff639lnnAPEn8ABLf1II4r/EFgnqoBuSrAMvVfJvjC
-IxOI3aCtR9XtK6GjB5q4FI4YoE+jd7K+bwR//lInCvwnZdaPZvBGM0DFCzJ62kWl
-P6HYTgnZvbNoThgf0S2GB0e/KoU7BH5hVvFSpIHBQoqSkRHRJQ==
-=+ScD
------END PGP SIGNATURE-----
-
---nextPart2416868.LEy6h3IvCX--
-
-
-
+diff --git a/mm/swap.c b/mm/swap.c
+index 6f382abeccf9..96a23af8d1c7 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -903,7 +903,7 @@ void release_pages(struct page **pages, int nr)
+ 	int i;
+ 	LIST_HEAD(pages_to_free);
+ 	struct lruvec *lruvec = NULL;
+-	unsigned long flags;
++	unsigned long flags = 0;
+ 	unsigned int lock_batch;
+ 
+ 	for (i = 0; i < nr; i++) {
