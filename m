@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DCE3DAB5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2901E3DAB61
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhG2Svm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:51:42 -0400
-Received: from mail-pj1-f52.google.com ([209.85.216.52]:36733 "EHLO
-        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbhG2Svc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:51:32 -0400
-Received: by mail-pj1-f52.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso17136951pjb.1;
-        Thu, 29 Jul 2021 11:51:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tB5r7jCOOPtFx6Q3Xg17uNrYOv0JnsNx/+HyvJ9HcMY=;
-        b=Wq5T3tNUCbzAFjmKGUZybPrFiOdbKuj1NpgpeoPIo07SzN1wEDqnZ3Sr5bo95BQmtr
-         OmZL7eH4zCyJzF2i4N1MKJ2M7YM0aGaQtqNj6YZyzXzFu4YcKwmpZZS5TRVLklydDySh
-         UHtxgvdwbKfPN6QfGiE00e25xoXFHhImhq14dYohXrv7bYokLVIpfk8WGv0Xo31jrCHe
-         nRWA7YR1aWJY6az9tcm4ogUtCYG3vZYm/DCV50t2ihMjVVIo9GQ0f9+bQn6PmWC+0wRe
-         2B1gcLgz/oqT0OULQMKRufbEl5P7XtyoF36K/44eaOgMIVyypmtZ+aK/FiLtBRV6+KFE
-         Q8LQ==
-X-Gm-Message-State: AOAM53314o2wz0y9luaOWk2+KwQaMK2BQnkJ9efeV4v3dcYbr13iYadK
-        WLnDjhWjPDrWLk/d0Ud2yuQ=
-X-Google-Smtp-Source: ABdhPJwS111Y8fetmdxFNjjKDlXVD2Q9U/D66wiGaEpHbEsop7x+AynHKIzIY7ubQ2y77VVIU9YKtA==
-X-Received: by 2002:a65:578a:: with SMTP id b10mr5034953pgr.135.1627584687707;
-        Thu, 29 Jul 2021 11:51:27 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:6f70:be34:681b:b1e9:776f])
-        by smtp.gmail.com with ESMTPSA id r18sm4980703pgk.54.2021.07.29.11.51.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 11:51:24 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 11:51:23 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     Tom Rix <trix@redhat.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>,
-        "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>
-Subject: Re: [PATCH] fpga: region: handle compat_id as an uuid
-Message-ID: <YQL4qyAmqj322HTz@epycbox.lan>
-References: <20210726202650.4074614-1-trix@redhat.com>
- <6f30a4c6-61a0-bb57-9f13-bcad3f3589b8@intel.com>
- <ba28bac6-9c6d-de73-523f-b8ba4bef84de@redhat.com>
- <DM6PR11MB38199F872DC94971D9C8A53885EA9@DM6PR11MB3819.namprd11.prod.outlook.com>
+        id S230151AbhG2SwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:52:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229758AbhG2Sv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:51:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84EF960F6F;
+        Thu, 29 Jul 2021 18:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627584715;
+        bh=tsqDaOZILSnFIe7Ys4Y1mPvwuoKDC2Ozm73ShrxzQvw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kA7fiUJK0zDOT2xounu9ATyQIVX6WTV+9hJcy0wUZBqle6fS2Jp4FgplTLhVPSJzX
+         69YzTFUiPC71XNvAv1vTBhrbbn8o5gUl3bBZbp/Z4wA5Z4XuvJAJSm/xd/l+UR1i18
+         eybR+IQ15ZhE6ftEN3Fr9xR7NyrYCP0+bsE9P2wS9OMi92ZWFYS9ualFcYZwoRS35A
+         37V2XS/953dhNJl8AqBu3gx1PVVTPJEIZJrv8A3IDN6odt93XDONN7GTC/CIAIlw7q
+         5GTzCUMbeFchwQDUv2Ys7Qlsq11FAZszbzAnQH0cJA7iCjKWvpq8VASuai+vf4R+vq
+         hmfOZalAVCJqQ==
+Received: by mail-ej1-f53.google.com with SMTP id gn26so12404473ejc.3;
+        Thu, 29 Jul 2021 11:51:55 -0700 (PDT)
+X-Gm-Message-State: AOAM530gYv5Du+fiv4pNyQO/tdrCmV8CXq5Ltfxn1tRHvi/0tFbW/v3v
+        dbl5F5370MRlL8VimPnTlpQ7nmYl3DOJv1S8vw==
+X-Google-Smtp-Source: ABdhPJw+U3/xnWkBrMx0ZBUNX+CSiwAtcIvqTL+PFrgW9wAMPznZjq98b9kbNpTcpJRNsVQyJsHOgCT/tviiTxxZkgg=
+X-Received: by 2002:a17:906:d287:: with SMTP id ay7mr5751654ejb.360.1627584714064;
+ Thu, 29 Jul 2021 11:51:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB38199F872DC94971D9C8A53885EA9@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <a4rEWQfScKM8Y0B7u0NXSAdvKC6Xzesp1OWGUYjeWaA@cp3-web-016.plabs.ch>
+ <20210728171807.GA1269122@robh.at.kernel.org> <yp8UA_I1d4WXcVkLUE7V6sKBGPOzNwpbmKl0UTzLxvyt-l-AgpNKvFcN038I7DDQB8qx8yOnE3OiUlzLrBqY-KY7Yub2FWWRosPmFsu_1jc=@protonmail.com>
+In-Reply-To: <yp8UA_I1d4WXcVkLUE7V6sKBGPOzNwpbmKl0UTzLxvyt-l-AgpNKvFcN038I7DDQB8qx8yOnE3OiUlzLrBqY-KY7Yub2FWWRosPmFsu_1jc=@protonmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 29 Jul 2021 12:51:42 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLNqKOs0WZvBF5L45VZu2OWtjxGyLoMCP-mGA3KbUVxOw@mail.gmail.com>
+Message-ID: <CAL_JsqLNqKOs0WZvBF5L45VZu2OWtjxGyLoMCP-mGA3KbUVxOw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] dt-bindings: extcon: usbc-tusb320: Add TUSB320L
+ compatible string
+To:     Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Michael Auchter <michael.auchter@ni.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 01:36:56AM +0000, Wu, Hao wrote:
-> > On 7/26/21 3:12 PM, Russ Weight wrote:
-> > > On 7/26/21 1:26 PM, trix@redhat.com wrote:
-> > >> From: Tom Rix <trix@redhat.com>
-> > >>
-> > >> An fpga region's compat_id is exported by the sysfs
-> > >> as a 128 bit hex string formed by concatenating two
-> > >> 64 bit values together.
-> > >>
-> > >> The only user of compat_id is dfl.  Its user library
-> > >> opae converts this value into a uuid.
-> > >>
-> > >> ex/
-> > >> $ cat /sys/class/fpga_region/region1/compat_id
-> > >> f3c9941350814aadbced07eb84a6d0bb
-> > >>
-> > >> Is reported as
-> > >> $ fpgainfo bmc
-> > >> ...
-> > >> Pr Interface Id                  : f3c99413-5081-4aad-bced-07eb84a6d0bb
-> > >>
-> > >> Storing a uuid as 2 64 bit values is vendor specific.
-> > >> And concatenating them together is vendor specific.
-> > >>
-> > >> It is better to store and print out as a vendor neutral uuid.
-> > >>
-> > >> Change fpga_compat_id from a struct to a union.
-> > >> Keep the old 64 bit values for dfl.
-> > >> Sysfs output is now
-> > >> f3c99413-5081-4aad-bced-07eb84a6d0bb
-> > > I'm fowarding feedback from Tim Whisonant, one of the OPAE userspace
-> > > developers:
+On Wed, Jul 28, 2021 at 11:33 AM Yassine Oudjana
+<y.oudjana@protonmail.com> wrote:
+>
+> On Wednesday, July 28th, 2021 at 9:18 PM, Rob Herring <robh@kernel.org> wrote:
+>
+> > On Tue, 27 Jul 2021 09:57:15 +0000, Yassine Oudjana wrote:
+> >
+> > > Add a compatible string for TUSB320L.
 > > >
-> > > I think that this change to the sysfs for the compat_id node will
-> > > end up breaking the SDK, which does not expect the '-' characters to
-> > > be included when parsing the sysfs value. Currently, it is parsed as
-> > > a raw hex string without regard to any '-' characters. This goes for
-> > > any "guid" currently exported by sysfs and for what we read in the
-> > > device MMIO space.
-> > 
-> > Yes, it will.
-> > 
-> > And there are other places, like dfl-afu-main.c:afu_id_show()
-> > 
-> > outputs raw hex that sdk turns into a uuid.
-> > 
-> > 
-> > Some options.
-> > 
-> > If no one but dfl will ever use it, then v1 of patchset.
-> > 
-> > If others can use it but don't want to change dfl, then v2 of patchset,
-> > my favorite.
-> > 
-> > Or this one for uuid for everyone, what have been v3 but changed too much.
-> > 
-> > 
-> > could dfl change generally to output uuid's to the sysfs ?
-> > 
-> > this would be generally helpful and a one time disruption to the sdk.
-> 
-> This change limited the output format to uuid_t, but if any hardware doesn't
-> use uuid_t on hardware may have to convert it back from the sysfs output in
-> userspace. Leave it to print hardware values (e.g. from register), and convert
-> it in userspace should be fine too I think.
+> > > Signed-off-by: Yassine Oudjana y.oudjana@protonmail.com
+> > > -------------------------------------------------------
+> > >
+> > > .../devicetree/bindings/extcon/extcon-usbc-tusb320.yaml | 4 +++-
+> > >
+> > > 1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > Please add Acked-by/Reviewed-by tags when posting new versions. However,
+> >
+> > there's no need to repost patches only to add the tags. The upstream
+> >
+> > maintainer will do that for acks received on the version they apply.
+> >
+> > If a tag was not added on purpose, please state why and what changed.
+>
+> I changed indentation in this version to fix a dt_binding_check warning:
+> ../Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.yaml:15:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
 
-I'm not entirely sure. I seem to recall there being examples of sysfs
-files returning different things for different drivers.
+That's certainly small enough change to keep any tag.
 
-That being said it seems largely cosmetic to add the '-' in between.
+> I wasn't sure if I had to state changes in each individual patch, so
+> I ended up only stating them in the cover letter:
+> https://lore.kernel.org/lkml/a1IcsWeSdRxWaMFcwV1k7z3l1HaAkyRCo2zLdOWb8w@cp4-web-014.plabs.ch/
 
-If it breaks userspace, I'm against it. If you *need* it make a
-compat_uuid entry or something in that case?
+It is best to put the changes for specific patches in that patch and
+use the cover letter as a summary of changes.
 
-- Moritz
+Rob
