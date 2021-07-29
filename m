@@ -2,105 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068393DA45A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783873DA44D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237954AbhG2NaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237851AbhG2N3O (ORCPT
+        id S237784AbhG2NaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:30:00 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28574 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237879AbhG2N3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:29:17 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TD3j8l140775;
         Thu, 29 Jul 2021 09:29:14 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7628AC061796
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:29:11 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id 15-20020ac84e8f0000b029024e8c2383c1so2752050qtp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=vQtosGJFAOrUOiBl4clG9WDMUZRQZWton/qwil1k0+Q=;
-        b=dXygFS4MzHesaeMqbwJ0+cZ0afNQ4/u5vTF/RgsqUpPCSvO1FUb9yuOtobHsreJWqr
-         dUqlIAu7Fvz+I43aDHKZyp8VKGAJcvdmKnnkeHIjZqt8EhOzaHANhcXh8RtV0Ilxlnt9
-         4Pl/Gc+kDSrSP77EuPnHl91zLmkSkct+Gl67dPohs9YPPdMJ8ph+HGp8BjrsrKxaXVEy
-         OoSuN3lBXk7s1yZPSllQnVPCpAnlYGI91eJ1m/mdcSbcCE+Z2qNsccfX2HfuY/+rJJcM
-         noOMmdViiMNvT23lNHKkf8AZYFmTtkC55+7rWH4afynTCCzcjLC8ILshwjJH8cojfSWr
-         oXXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=vQtosGJFAOrUOiBl4clG9WDMUZRQZWton/qwil1k0+Q=;
-        b=e+7iRHTxW6ZQ8KWUoD2dM0migoSFurLBzLd1AjsQrrOMH+zsHh2PF+isnBd2mtsTXQ
-         fG+QZI9jk8R52aRG9DJAwKfW+MdcwjzxsvgOXR6IUomJAzzj2m4B6WFz/RUl66pcCGCq
-         fU5fbMXPzu4ksiqZFLn2nAFf7eBICj7UELoPKTfN+gkJNi2NXA5soTHgAjT86nSbwD6p
-         5exN1/oQ10DRgnZM4kq1Tqm0Zr5PKEX9bQK+6mzRxW+rQPv+s91Ffe3UpA2BsxLf07HW
-         g/vXoQFfiAJKn1CTiizezVLvp8WN8rypUccYJGrSdee9UzfukRq4SAz5FODO5nyGDogW
-         h/MA==
-X-Gm-Message-State: AOAM530V+u2nn2BNJI6HDTeTm5qOIHTnPl//80nodkS7aeWMYSKo1UtB
-        awoR8WXk7Dw+kx6Lpgxl6Hfj14d7Rq0Z
-X-Google-Smtp-Source: ABdhPJzMM++UNzruvJmyLbB/7mURxGlTSkGbvn6rPkDW6SXHchtq4/8ma0IIMxLOdpKM8oJyuuW51EsCRzfk
-X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:293a:bc89:7514:5218])
- (user=qperret job=sendgmr) by 2002:a05:6214:104b:: with SMTP id
- l11mr5321061qvr.40.1627565350559; Thu, 29 Jul 2021 06:29:10 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 14:28:18 +0100
-In-Reply-To: <20210729132818.4091769-1-qperret@google.com>
-Message-Id: <20210729132818.4091769-22-qperret@google.com>
-Mime-Version: 1.0
-References: <20210729132818.4091769-1-qperret@google.com>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH v3 21/21] KVM: arm64: Make __pkvm_create_mappings static
-From:   Quentin Perret <qperret@google.com>
-To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        tabba@google.com, dbrazdil@google.com, kernel-team@android.com,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=D+Krm7wEIcHILJq+e+8dlm/GDNOuGXd8hlsV+fg3L+A=;
+ b=B7gZZ8KPJ6x+FDNpG73yB/sMdKfunQMVQzsnr0X/HF6xMmAO/I2zQaUI6ho3+MNFFnNM
+ wE4HP2SYXyD07ro9Huo0mT3UqyQLRMB4FLcVw/zNDqDl7ehzSUBUMaJePPgtCPc1jL8s
+ 6fTDUd2eLRHbe/BKIknAwJnGJilACNRWMbW3wxuA50k3/R4+UwRX0+vxnsc7U0Mv9R3j
+ qzXYutg8ileIwhHsgVr5xpzHNvmHXr/lko3jXkk08/wG59FGeQJggx2KLoQCK/p3KPVW
+ H/8doQpFzIsK8Dm9T4eG86oXodGx3Ewz+3YxtCUpB2ugKiBNNjtNBxULMYZGY/bH8tlH xA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3qb6mr28-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 09:29:14 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TD3xW9142523;
+        Thu, 29 Jul 2021 09:29:13 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3qb6mr1m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 09:29:13 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TDJ3JY029273;
+        Thu, 29 Jul 2021 13:29:12 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma01fra.de.ibm.com with ESMTP id 3a235ks4km-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 13:29:12 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TDT8uE27787618
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jul 2021 13:29:08 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63408A4054;
+        Thu, 29 Jul 2021 13:29:08 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 004F4A405B;
+        Thu, 29 Jul 2021 13:29:08 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.1.151])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Jul 2021 13:29:07 +0000 (GMT)
+Date:   Thu, 29 Jul 2021 15:28:35 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Janosch Frank <frankja@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 05/13] KVM: s390: pv: handle secure storage
+ exceptions for normal guests
+Message-ID: <20210729152835.1f470ba8@p-imbrenda>
+In-Reply-To: <103c158c-dba6-7421-af8d-4d771c1cf087@linux.ibm.com>
+References: <20210728142631.41860-1-imbrenda@linux.ibm.com>
+        <20210728142631.41860-6-imbrenda@linux.ibm.com>
+        <103c158c-dba6-7421-af8d-4d771c1cf087@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: fsFJnLjPDBwVZnGG07JOHGk5GRJ0EOSH
+X-Proofpoint-ORIG-GUID: KXl1dRyg6QSw7fpwRzcobsWec5VHOKce
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ suspectscore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
+ phishscore=0 bulkscore=0 impostorscore=0 clxscore=1015 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __pkvm_create_mappings() function is no longer used outside of
-nvhe/mm.c, make it static.
+On Thu, 29 Jul 2021 14:17:11 +0200
+Janosch Frank <frankja@linux.ibm.com> wrote:
 
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- arch/arm64/kvm/hyp/include/nvhe/mm.h | 2 --
- arch/arm64/kvm/hyp/nvhe/mm.c         | 4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+> On 7/28/21 4:26 PM, Claudio Imbrenda wrote:
+> > With upcoming patches, normal guests might touch secure pages.
+> > 
+> > This patch extends the existing exception handler to convert the
+> > pages to non secure also when the exception is triggered by a
+> > normal guest.
+> > 
+> > This can happen for example when a secure guest reboots; the first
+> > stage of a secure guest is non secure, and in general a secure guest
+> > can reboot into non-secure mode.
+> > 
+> > If the secure memory of the previous boot has not been cleared up
+> > completely yet, a non-secure guest might touch secure memory, which
+> > will need to be handled properly.
+> > 
+> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> > ---
+> >  arch/s390/mm/fault.c | 12 +++++++++++-
+> >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> > index eb68b4f36927..b89d625ea2ec 100644
+> > --- a/arch/s390/mm/fault.c
+> > +++ b/arch/s390/mm/fault.c
+> > @@ -767,6 +767,7 @@ void do_secure_storage_access(struct pt_regs
+> > *regs) struct vm_area_struct *vma;
+> >  	struct mm_struct *mm;
+> >  	struct page *page;
+> > +	struct gmap *gmap;
+> >  	int rc;
+> >  
+> >  	/*
+> > @@ -796,6 +797,16 @@ void do_secure_storage_access(struct pt_regs
+> > *regs) }
+> >  
+> >  	switch (get_fault_type(regs)) {
+> > +	case GMAP_FAULT:
+> > +		gmap = (struct gmap *)S390_lowcore.gmap;
+> > +		/*
+> > +		 * Very unlikely, but if it happens, simply try
+> > again.
+> > +		 * The next attempt will trigger a different
+> > exception.
+> > +		 */  
+> 
+> If we keep this the way it currently is then the comment needs to go
+> to the EFAULT check since it makes no sense above the
+> gmap_translate().
+> 
+> > +		addr = __gmap_translate(gmap, addr);  
+> 
+> So we had a valid gmap PTE to end up here where the guest touched a
+> secure page and triggered the exception. But we suddenly can't
+> translate the gaddr to a vmaddr because the gmap tracking doesn't
+> have an entry for the address.
+> 
+> My first instinct is to SIGSEGV the process since I can't come up
+> with a way out of this situation except for the process to map this
+> back in. The only reason I can think of that it was removed from the
+> mapping is malicious intent or a bug.
+> 
+> I think this is needs a VM_FAULT_BADMAP and a do_fault_error() call.
 
-diff --git a/arch/arm64/kvm/hyp/include/nvhe/mm.h b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-index c76d7136ed9b..c9a8f535212e 100644
---- a/arch/arm64/kvm/hyp/include/nvhe/mm.h
-+++ b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-@@ -24,8 +24,6 @@ int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back);
- int pkvm_cpu_set_vector(enum arm64_hyp_spectre_vector slot);
- int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot);
- int pkvm_create_mappings_locked(void *from, void *to, enum kvm_pgtable_prot prot);
--int __pkvm_create_mappings(unsigned long start, unsigned long size,
--			   unsigned long phys, enum kvm_pgtable_prot prot);
- unsigned long __pkvm_create_private_mapping(phys_addr_t phys, size_t size,
- 					    enum kvm_pgtable_prot prot);
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/mm.c b/arch/arm64/kvm/hyp/nvhe/mm.c
-index 6fbe8e8030f6..2fabeceb889a 100644
---- a/arch/arm64/kvm/hyp/nvhe/mm.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mm.c
-@@ -23,8 +23,8 @@ u64 __io_map_base;
- struct memblock_region hyp_memory[HYP_MEMBLOCK_REGIONS];
- unsigned int hyp_memblock_nr;
- 
--int __pkvm_create_mappings(unsigned long start, unsigned long size,
--			  unsigned long phys, enum kvm_pgtable_prot prot)
-+static int __pkvm_create_mappings(unsigned long start, unsigned long size,
-+				  unsigned long phys, enum kvm_pgtable_prot prot)
- {
- 	int err;
- 
--- 
-2.32.0.432.gabb21c7263-goog
+fair enough, the next version will have that
+
+> > +		if (addr == -EFAULT)
+> > +			break;
+> > +		fallthrough;
+> >  	case USER_FAULT:
+> >  		mm = current->mm;
+> >  		mmap_read_lock(mm);
+> > @@ -824,7 +835,6 @@ void do_secure_storage_access(struct pt_regs
+> > *regs) if (rc)
+> >  			BUG();
+> >  		break;
+> > -	case GMAP_FAULT:
+> >  	default:
+> >  		do_fault_error(regs, VM_READ | VM_WRITE,
+> > VM_FAULT_BADMAP); WARN_ON_ONCE(1);
+> >   
+> 
 
