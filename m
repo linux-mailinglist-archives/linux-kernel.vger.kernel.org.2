@@ -2,133 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A556D3DA095
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8677E3DA09C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235587AbhG2JvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:51:16 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58638 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235382AbhG2JvO (ORCPT
+        id S235559AbhG2JxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:53:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3108 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235058AbhG2JxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:51:14 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 01D06223F8;
-        Thu, 29 Jul 2021 09:51:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627552271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gefFb5cyHhMaoQsGNrPUy3tjbh0HwOPsM3pF6okurmc=;
-        b=ahcKikCV19gicEIOaapvvk2ILb6kJgaybpf4JoAQqHielEgOq/eQhuYQ/sOljz2WJd85L0
-        jsnlNJRIvEpB/Ld5PphY7n6KEx5MiQRWxbau9S6PJGmrb6r4udScjo4tENg1ohB4L08MZh
-        p8tTlmdC54NzTeTkL5MM1W8vuti/soo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627552271;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gefFb5cyHhMaoQsGNrPUy3tjbh0HwOPsM3pF6okurmc=;
-        b=M5Nzm+8E1WAJ2586pAX9L9oweNcLyfa8DHlxIF06rlgRsCSMGnryVdTY5m3f7AHm1JtIg0
-        Ga+0wuyp0G6jnTAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D790312FF9;
-        Thu, 29 Jul 2021 09:51:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 4ol+Mw56AmGcQgAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 29 Jul 2021 09:51:10 +0000
-Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-To:     Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
- <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
- <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
- <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
- <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
- <69da2ecd-a797-e264-fbfa-13108dc7a573@suse.cz>
- <84a7bd02cf109c6a5a8c7cc2bfc2898cb98270aa.camel@gmx.de>
- <5be1a703-9a0a-4115-1d69-634e5e8ecefd@suse.cz>
- <bd121f5db01404774dbecc70bd7155f8431d8046.camel@gmx.de>
- <76dedfc3-0497-1776-d006-486b9bfd88da@suse.cz>
- <72a045663bf8f091ae11dd328d5e085541d54fcd.camel@gmx.de>
- <18ca0ce9-3407-61e1-31d6-5c48e80eb5bb@suse.cz>
- <73f032c2-70f1-77b6-9fd2-9aca52fd5b4d@suse.cz>
- <b41fa4f2-8368-f33a-10c2-68554b16eb1e@suse.cz>
- <e3470ab357b48bccfbd1f5133b982178a7d2befb.camel@gmx.de>
- <26c181c9-ec48-09e2-2d73-6fc769a19c76@suse.cz>
- <7970e9c3de5d29b93f692001a3796da1b3df45b4.camel@gmx.de>
- <74c71cac-f36a-9c42-2ab1-837c6a068306@suse.cz>
- <93f6d2ca59a2470ea35f3c5561a82c139191ddca.camel@gmx.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <ea7694ef-f3b5-a075-8c65-f211515e2716@suse.cz>
-Date:   Thu, 29 Jul 2021 11:51:10 +0200
+        Thu, 29 Jul 2021 05:53:08 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16T9YOfF159856;
+        Thu, 29 Jul 2021 05:53:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=EErjgagjsOJ6351tBtBEsNPRFPR8zetcAG7oNhArlUg=;
+ b=XxR4iBRm9xjhGhqBPYKpFH9sLBiTM7j1kUqklpLT+bNBTA07U2UIUdXjCpncAOQQsMPX
+ rivHngBr7jTzTwomKVIdhTD1IHCITvGFS32svqA84djUtlbQ0c61BzdyTxfCFzdXHlkR
+ yCx7hQ3n6JHKJp8BCbbe1IQBwOdy/ZZtR5omUttJZYp7MtQK8C7bybgHfI7VRXL6C6nf
+ Flerjz5qMuvd6mjjkhmyyyDTGql48GaxlGBsg5EDbZ6cMVjhtv/GhAbizKMNau7YFiS7
+ E1qJrpYj/uJ1fjcZsjd0hZsuGTL1XMVoPH1SjQBieOPgmd2ocjY/GKTHP9R2X8UDW14t UA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3fajubck-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 05:53:04 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16T9p5SZ075549;
+        Thu, 29 Jul 2021 05:53:04 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3fajubbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 05:53:03 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16T9r2KO023078;
+        Thu, 29 Jul 2021 09:53:02 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 3a235khm4g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 09:53:02 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16T9qws524576418
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jul 2021 09:52:59 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E09BD11C04A;
+        Thu, 29 Jul 2021 09:52:58 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6455911C05B;
+        Thu, 29 Jul 2021 09:52:58 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.155.135])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Jul 2021 09:52:58 +0000 (GMT)
+Subject: Re: [PATCH v2 13/13] KVM: s390: pv: add support for UV feature bits
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210728142631.41860-1-imbrenda@linux.ibm.com>
+ <20210728142631.41860-14-imbrenda@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Message-ID: <4d26ba27-e235-8f2b-c59c-01d3e0691453@linux.ibm.com>
+Date:   Thu, 29 Jul 2021 11:52:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <93f6d2ca59a2470ea35f3c5561a82c139191ddca.camel@gmx.de>
+In-Reply-To: <20210728142631.41860-14-imbrenda@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 6YtK1rKxqZZS73Q75O_o-FDQQSAYiX0I
+X-Proofpoint-ORIG-GUID: zqcN2IzNl4fE_BQ9HO6WIS3_a1mglA3N
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_09:2021-07-27,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 malwarescore=0 adultscore=0 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 clxscore=1011 bulkscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290061
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 6:51 AM, Mike Galbraith wrote:
-> On Wed, 2021-07-28 at 18:59 +0200, Vlastimil Babka wrote:
->> On 7/27/21 6:09 AM, Mike Galbraith wrote:
->> > On Mon, 2021-07-26 at 23:26 +0200, Vlastimil Babka wrote:
->> > > On 7/26/21 7:00 PM, Mike Galbraith wrote:
->> > > >
->> > > > Why not do something like the below?...
->> > >
->> > > Yep, sounds like a good approach, thanks. Percpu partial is not *the*
->> > > SLUB fast path, so it should be sufficient without the lockless cmpxchg
->> > > tricks. Will incorporate in updated series.
->>
->> The updated series incorporating hopefully all fixes from Mike and
->> bigeasy, and rebased to 5.14-rc3 (Thomas told me RT is moving to it), is
->> here:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slub-local-lock-v3r0
+On 7/28/21 4:26 PM, Claudio Imbrenda wrote:
+> Add support for Ultravisor feature bits, and take advantage of the
+> functionality advertised to speed up the lazy destroy mechanism.
+
+UV feature bit support is already merged please fix the description and
+subject.
+
 > 
-> I had to resurrect the hunk below to build with lockdep, but modulo
-> dinky speedbump, the same RT testdrive that previously exploded was as
-> entertainment free as such testing is supposed to be.
-
-Ah forgot about that, I'll include it too. Thanks for testing!
-
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 > ---
->  mm/slub.c |    4 ++++
->  1 file changed, 4 insertions(+)
+>  arch/s390/kernel/uv.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2890,7 +2890,11 @@ static void *___slab_alloc(struct kmem_c
-> 
->  load_freelist:
-> 
-> +#ifdef CONFIG_PREEMPT_RT
-> +	lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock.lock));
-> +#else
->  	lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock));
-> +#endif
-> 
->  	/*
->  	 * freelist is pointing to the list of objects to be used.
-> 
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index f0af49b09a91..6ec3d7338ec8 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -290,7 +290,8 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
+>  
+>  static bool should_export_before_import(struct uv_cb_header *uvcb, struct mm_struct *mm)
+>  {
+> -	return uvcb->cmd != UVC_CMD_UNPIN_PAGE_SHARED &&
+> +	return !test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications) &&
+> +		uvcb->cmd != UVC_CMD_UNPIN_PAGE_SHARED &&
+>  		atomic_read(&mm->context.is_protected) > 1;
+>  }
+>  
 > 
 
