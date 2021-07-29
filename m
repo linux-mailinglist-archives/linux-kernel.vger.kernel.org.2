@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50683DA933
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CFA3DA93E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhG2Qf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:35:27 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25656 "EHLO mga03.intel.com"
+        id S229918AbhG2QkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:40:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhG2QfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:35:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="212961209"
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="212961209"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 09:35:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="476466664"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Jul 2021 09:35:13 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id A2030108; Thu, 29 Jul 2021 19:35:42 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/2] iommu/vt-d: Drop the kernel doc annotation
-Date:   Thu, 29 Jul 2021 19:35:38 +0300
-Message-Id: <20210729163538.40101-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210729163538.40101-1-andriy.shevchenko@linux.intel.com>
-References: <20210729163538.40101-1-andriy.shevchenko@linux.intel.com>
+        id S229620AbhG2QkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 12:40:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3D2060F43;
+        Thu, 29 Jul 2021 16:39:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627576800;
+        bh=066N9zoYxC70xPKHHC7PsWtEF/DGHX1hf91lY6M/Xmc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=o4pUFYpwxAs+5qG0HE67O7LqFccjeU1VEpQPOxzYrABXt53ai2QP/cIkBpbSVtMy/
+         0NWXPYDe3iQQm7Bl7giUpOJKRFCNQI9uoMaPA59+ADqxz6Voij4LipxwhDmjzWWjMt
+         qC1l9b2ZUGjWgwj7QD3Zg0zJPboENP0G5OBDl10szs8rgt/i+zam3As4PjBxsrBpvI
+         J8C7zKzGUn8kD9ZTevXOVxP9M5i41PNbkJVB9aV9CqnUn1I4c4jclF+vYcEjVYvVne
+         nNm3vrGk0ObcYOLi1wNYWAsz0xhK+fntlRGbN7uXK/StPUPOqzwanuX1Kitg37qSFy
+         cyMbst5ShhUeA==
+From:   Mark Brown <broonie@kernel.org>
+To:     gregkh@linuxfoundation.org, Jiri Slaby <jslaby@suse.cz>
+Cc:     Mark Brown <broonie@kernel.org>, linux-serial@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 1/2] cx20442: tty_ldisc_ops::write_wakeup is optional
+Date:   Thu, 29 Jul 2021 17:39:45 +0100
+Message-Id: <162757633788.53168.6787766542680028320.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210722115141.516-1-jslaby@suse.cz>
+References: <20210722115141.516-1-jslaby@suse.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel doc validator is unhappy with the following
+On Thu, 22 Jul 2021 13:51:40 +0200, Jiri Slaby wrote:
+> TTY layer does nothing if tty_ldisc_ops::write_wakeup is NULL, so there
+> is no need to implement an empty one in cx20442. Drop it.
 
-.../perf.c:16: warning: Function parameter or member 'latency_lock' not described in 'DEFINE_SPINLOCK'
-.../perf.c:16: warning: expecting prototype for perf.c(). Prototype was for DEFINE_SPINLOCK() instead
+Applied to
 
-Drop kernel doc annotation since the top comment is not in the required format.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/iommu/intel/perf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks!
 
-diff --git a/drivers/iommu/intel/perf.c b/drivers/iommu/intel/perf.c
-index 73b7ec705552..0e8e03252d92 100644
---- a/drivers/iommu/intel/perf.c
-+++ b/drivers/iommu/intel/perf.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--/**
-+/*
-  * perf.c - performance monitor
-  *
-  * Copyright (C) 2021 Intel Corporation
--- 
-2.30.2
+[1/2] cx20442: tty_ldisc_ops::write_wakeup is optional
+      commit: d7a3a6801913a4b57a7e525c4906d348213acfb0
+[2/2] v253_init: eliminate pointer to string
+      commit: dfe1114638d1888916fd9ceb50314e19f632dfad
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
