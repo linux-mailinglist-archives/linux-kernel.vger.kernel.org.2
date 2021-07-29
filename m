@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F8A3DA76F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261A13DA775
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237560AbhG2PWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:22:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237851AbhG2PV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230171AbhG2PWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:22:44 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:19379 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230140AbhG2PV3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 29 Jul 2021 11:21:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78F5660F6F;
-        Thu, 29 Jul 2021 15:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627572028;
-        bh=0qRItNNqVu8zfNEhkI6lQ1f99lsFwPpdEwh6oAob7zg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LgOdWV6wH+oSwuXgfbHVWS5VuXIOmPutB22ujAKjF2LYIUXWe3lghgaLG1y+YnbSj
-         jPSpbu9CapaCtZSwvP9nNo8SN7EsEMQJoma6RaOhB++QQ6gb9KztT4xFcitxW6ESeS
-         NcHHmfMf1MHTPdmDMMpsK3RKdjSfJnJ8RWsGe7AhHmiN9DKTzBixJjPgM4RUuhmuxy
-         6SWaDZvQ1Lv3d368fSVjJA+5OIIy8huEQvA5Ui7g9dyXpLcOn9yWkOkYB8eWpp491K
-         gwbxeweG237cCEYkEF5rzDM0YgJsQzAuOz3A5k7UhLlbLeISRaGB2NeQQ8J0Sfyf4o
-         ffv+dfwDlbcOA==
-Received: by mail-ej1-f42.google.com with SMTP id go31so11315252ejc.6;
-        Thu, 29 Jul 2021 08:20:28 -0700 (PDT)
-X-Gm-Message-State: AOAM532lX434hLhoA6KihgIOu20tbl1BfkzOtRidDeYsAx35mfZ5Fifd
-        bTHS3BeMLEiGNx6siGbkXhYJZrd+O/IGYhhzrw==
-X-Google-Smtp-Source: ABdhPJzIzmyTxtOz/wextmHAw+KU5WQry2z11p9/WrOUFwGXVTXlS25TsvwKMcGrTXjTJ+rAWonhQ+kNbp+O9zDwciY=
-X-Received: by 2002:a17:906:95ce:: with SMTP id n14mr4797386ejy.130.1627572027002;
- Thu, 29 Jul 2021 08:20:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1627559126.git.mchehab+huawei@kernel.org> <2cf7bd80d0b54f7658a64febf79d3a36e70aba86.1627559126.git.mchehab+huawei@kernel.org>
-In-Reply-To: <2cf7bd80d0b54f7658a64febf79d3a36e70aba86.1627559126.git.mchehab+huawei@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 29 Jul 2021 09:20:15 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+JgWMf8XPdHQ9GRdA+7EODJ47vwuz0jGkkyeETZPXz9Q@mail.gmail.com>
-Message-ID: <CAL_Jsq+JgWMf8XPdHQ9GRdA+7EODJ47vwuz0jGkkyeETZPXz9Q@mail.gmail.com>
-Subject: Re: [PATCH 3/5] dt-bindings: PCI: kirin: Add support for Kirin970
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627572077; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=NbJPes2JZFM1rbr55unsdW4cU+ak6ueJQ+FFDzIUtdY=; b=TWYBb3PbuVytjv3z66261si0dW3/JnLEO6c+434v6PQvghyy91bKHMKZlT79aMggTox+fEbp
+ 7WiaF4VcSKu24j0PmajD9EbaONsHwAAakNrzkw0oahc5RrTdw48cYOJox25/fKxPPSgQ0U/S
+ FDAr07htVSA/MYqoDMpEqvrawRQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6102c751e81205dd0a8757d5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 15:20:49
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 54E28C41611; Thu, 29 Jul 2021 15:20:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2920C43460;
+        Thu, 29 Jul 2021 15:20:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B2920C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>
+Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Douglas Anderson <dianders@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, Eric Anholt <eric@anholt.net>,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] Support Adreno 7c Gen 3 gpu
+Date:   Thu, 29 Jul 2021 20:50:33 +0530
+Message-Id: <1627572036-28289-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 5:56 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Add a new compatible, plus the new bindings needed by
-> HiKey970 board.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../bindings/pci/hisilicon,kirin-pcie.yaml    | 61 ++++++++++++++++++-
->  1 file changed, 60 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-> index 90cab09e8d4b..bb0c3a081d68 100644
-> --- a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-> @@ -24,11 +24,13 @@ properties:
->      contains:
->        enum:
->          - hisilicon,kirin960-pcie
-> +        - hisilicon,kirin970-pcie
->
->    reg:
->      description: |
->        Should contain dbi, apb, config registers location and length.
-> -      For HiKey960, it should also contain phy.
-> +      For HiKey960, it should also contain phy. All other devices
-> +      should use a separate phy driver.
->      minItems: 3
->      maxItems: 4
->
-> @@ -47,6 +49,7 @@ examples:
->    - |
->      #include <dt-bindings/interrupt-controller/arm-gic.h>
->      #include <dt-bindings/clock/hi3660-clock.h>
-> +    #include <dt-bindings/clock/hi3670-clock.h>
->
->      soc {
->        #address-cells = <2>;
-> @@ -83,4 +86,60 @@ examples:
->          clock-names = "pcie_phy_ref", "pcie_aux", "pcie_apb_phy",
->                        "pcie_apb_sys", "pcie_aclk";
->        };
-> +
-> +      pcie@f5000000 {
-> +        compatible = "hisilicon,kirin970-pcie";
-> +        reg = <0x0 0xf4000000 0x0 0x1000000>,
-> +              <0x0 0xfc180000 0x0 0x1000>,
-> +              <0x0 0xf5000000 0x0 0x2000>;
-> +        reg-names = "dbi", "apb", "config";
-> +        bus-range = <0x0  0x1>;
-> +        msi-parent = <&its_pcie>;
-> +        #address-cells = <3>;
-> +        #size-cells = <2>;
-> +        device_type = "pci";
-> +        phys = <&pcie_phy>;
-> +        ranges = <0x02000000 0x0 0x00000000
-> +                  0x0 0xf6000000
-> +                  0x0 0x02000000>;
-> +        num-lanes = <1>;
-> +        #interrupt-cells = <1>;
-> +        interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-names = "msi";
-> +        interrupt-map-mask = <0 0 0 7>;
-> +        interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-> +                        <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-> +                        <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-> +                        <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
-> +        pcie@4,0 { // Lane 4: M.2
-> +          reg = <0 0 0 0 0>;
-> +          compatible = "pciclass,0604";
-> +          device_type = "pci";
-> +          reset-gpios = <&gpio7 1 0>;
-> +          clkreq-gpios = <&gpio27 3 0 >;
+This series adds support for the gpu found in the Snapdragon 7c Gen 3
+compute platform. This gpu is similar to the exisiting a660 gpu with
+minor delta in the programing sequence. As the Adreno GPUs are moving
+away from a numeric chipid based naming scheme to a string, it was
+decided to use 0x06030500 as the gpu id of this gpu to communicate
+to the userspace driver.
 
-Looking at the schematics some more, this is not right. CLKREQ# is an
-input from the device, and they are not connected to any GPIO (just
-pulled high) on hikey970. These GPIOs are simply clock enables and
-very much specific to hikey. So I'd call this 'hisilicon,clken-gpios'
-and you can just stick them in the host bridge node.
+Changes in v3:
+- Add a cover letter.
 
-I think the way the board should have been designed is the CLKREQ#
-signals to the clock driver chip OE signals. Then there'd be no s/w
-control needed.
+Changes in v2:
+- Use rev to identify SKU
+- Introduce adreno_is_a660_family() (Rob)
+- Remove revn for 7c3 (Rob)
+- Remove CPR register programing since they are not required for 7c3
 
-Rob
+Akhil P Oommen (3):
+  drm/msm/a6xx: Fix llcc configuration for a660 gpu
+  drm/msm/a6xx: Use rev to identify SKU
+  drm/msm/a6xx: Add support for Adreno 7c Gen 3 gpu
+
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c      |  8 ++-
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.h      |  1 +
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 87 ++++++++++++++++++------------
+ drivers/gpu/drm/msm/adreno/a6xx_hfi.c      | 32 +++++++++++
+ drivers/gpu/drm/msm/adreno/adreno_device.c | 27 +++++++---
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h    | 18 ++++++-
+ 6 files changed, 129 insertions(+), 44 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
+
