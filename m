@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9123D9FBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB12C3D9FD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235384AbhG2Ijl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 04:39:41 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:37070 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235249AbhG2Ijg (ORCPT
+        id S235105AbhG2ItR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 04:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235260AbhG2ItJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 04:39:36 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16T8aE1j008773;
-        Thu, 29 Jul 2021 04:39:33 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3a3kfd0x1e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 04:39:32 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 16T8dV58060929
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Jul 2021 04:39:31 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Thu, 29 Jul 2021
- 04:39:30 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Thu, 29 Jul 2021 04:39:30 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 16T8dPfe011624;
-        Thu, 29 Jul 2021 04:39:29 -0400
-From:   <alexandru.tachici@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>
-Subject: [PATCH 3/3] iio: adc: ad7923: Fix IRQ flag
-Date:   Thu, 29 Jul 2021 11:47:31 +0300
-Message-ID: <20210729084731.79135-4-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210729084731.79135-1-alexandru.tachici@analog.com>
-References: <20210729084731.79135-1-alexandru.tachici@analog.com>
+        Thu, 29 Jul 2021 04:49:09 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81058C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 01:49:06 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id r26so9609867lfp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 01:49:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=NTMBN9R2oG6BOQCzQjvyI34ZK4/8jN/reFjqWxevtoU=;
+        b=qjN+pcBx0X9h1FXQd+WUh92Bqg2RpMOR6FPosicMQ1rgtEENtJIBxLmCg/HMenT607
+         sK7iPTopfqp73oGFK8FsPbPNDD/uiuqOpYJNeJkvEWZDW9BUWdEqntGmnNDLg6I+biO5
+         71Gm/F4I+LavfRuODe/ZW1/4lv4y2utc4H+quF9wqKUcwxwrYTN7p30vNPCHmczBARJq
+         UE3vGiJ4fySroUtFCzwCJA1FOh/kYq56mLDsZhlfVy5UI+moGAocheJ6TywEzyf3orKN
+         49K+pnqbbsnN3cBPi9x4TvMBytj2O0WsaPWWSJrfo+1mZI7aolfjJcAr7tO9qKQ8OHa9
+         Aytw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=NTMBN9R2oG6BOQCzQjvyI34ZK4/8jN/reFjqWxevtoU=;
+        b=T4wiDlFKmYSPYXrDpyKcRD+PZ/fa738DooS+KT8UAuErjs6/3ANp6ZFiWQhKEzKwVu
+         /VmZjMDvAkIKCEuAp5AVRjqhxHN7+updcwPZ99hIuHjE6mnUkq/GHxUGAYkB6Ytx23Jv
+         w+S2w1LqpDF/4Qj2bwlakwodO4+LFTGe57vH7bgYTi2vF2HG34nzTbeJ5xgKC+EHjhTl
+         MTtsS6n22jhR3sXs//lDupcqZFDF3IeN55diIfXi5pqstqFwPwiudmN+OSyCp3BpurV+
+         znBoE4CHA7FgMSjziySJHOLk0HUzJwt9ezlVmwc36ypPOq7dXQdA5WlTeKk2bcsNtH68
+         cTmw==
+X-Gm-Message-State: AOAM533STsNeDhUp416DHKDGIVFLIiQpkPNdoFqsKs28D3edjRUdW2QN
+        xAXwK+Sj9ZxIV14h8wBo5tGlb/efXaUu3unnEfg=
+X-Google-Smtp-Source: ABdhPJyMc7EJQyIAlGw65KZY6UeY0uWTGQK9M0+NqG0GEBPZejRm01+wxgpXwQmD1lR25LG3qv5bOHBcESs3lOFOBjI=
+X-Received: by 2002:ac2:5dc1:: with SMTP id x1mr2948886lfq.87.1627548544917;
+ Thu, 29 Jul 2021 01:49:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: NGywlPBw_IeahO-gyU2wQvIDL0WKV5Ru
-X-Proofpoint-GUID: NGywlPBw_IeahO-gyU2wQvIDL0WKV5Ru
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_09:2021-07-27,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 bulkscore=0
- malwarescore=0 clxscore=1015 mlxscore=0 spamscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107290056
+Received: by 2002:ab3:664c:0:0:0:0:0 with HTTP; Thu, 29 Jul 2021 01:49:04
+ -0700 (PDT)
+Reply-To: janethmark1992@gmail.com
+From:   JANETH MARK <saminukawuahmed@gmail.com>
+Date:   Thu, 29 Jul 2021 08:49:04 +0000
+Message-ID: <CAGkRadzs032oDFRgVOoKzHBE9stRoPXhd7Ybrom2TXqaSGUq7g@mail.gmail.com>
+Subject: GOOD DAY.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+ Hi,
 
-Correct IRQ flag here is falling.
+It is my pleasure to communicate with you, I know that this message
+will be a surprise to you my name is Mrs. Janet Gay Markham, I am
+diagnosed with ovarian cancer which my doctor have confirmed that I
+have only some weeks to live so I have decided you handover the sum of
+($3.5 Million Dollar) through I decided handover the money in my
+account to you for help of the orphanage homes and the needy once.
 
-Fixes: da4d3d6bb9f6 ("iio: adc: ad-sigma-delta: Allow custom IRQ flags")
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
----
- drivers/iio/adc/ad7793.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please   kindly reply me here as soon as possible to enable me give
+you more information but before handing over my details to you please
+assure me that you will only take 30%  of the money and share the rest
+to the poor orphanage home and the needy once, thank you am waiting to
+hear from you.
 
-diff --git a/drivers/iio/adc/ad7793.c b/drivers/iio/adc/ad7793.c
-index ef3e2d3ecb0c..0e7ab3fb072a 100644
---- a/drivers/iio/adc/ad7793.c
-+++ b/drivers/iio/adc/ad7793.c
-@@ -206,7 +206,7 @@ static const struct ad_sigma_delta_info ad7793_sigma_delta_info = {
- 	.has_registers = true,
- 	.addr_shift = 3,
- 	.read_mask = BIT(6),
--	.irq_flags = IRQF_TRIGGER_LOW,
-+	.irq_flags = IRQF_TRIGGER_FALLING,
- };
- 
- static const struct ad_sd_calib_data ad7793_calib_arr[6] = {
--- 
-2.25.1
-
+Mrs Janet Gay Markham.
