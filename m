@@ -2,168 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0F63DA1ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341323DA1F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236718AbhG2LQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
+        id S236701AbhG2LSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236312AbhG2LQg (ORCPT
+        with ESMTP id S236244AbhG2LSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:16:36 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547A0C061765;
-        Thu, 29 Jul 2021 04:16:33 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id EFFE71F43E00
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: [PATCH] media: vivid: drop CONFIG_FB dependency
-Date:   Thu, 29 Jul 2021 12:16:15 +0100
-Message-Id: <bf74a4670438864ca2e6bde47121554490350729.1627557341.git.guillaume.tucker@collabora.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 29 Jul 2021 07:18:11 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3393CC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:18:07 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id hs10so1401402ejc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=65ZwwJqLgs4c9HtCALozYsS5NsihCPZf/ynWKHwUyR8=;
+        b=KzMZFRO6hmvgYKId5o3d7SOQb8EMTg17Lt7c87ajkq3mxdsrAnZuzjd78zV0hB5Ak3
+         RuFRi/DPGHSeLWQzsrOq8Zd1HeQ2O8CeHk0XTbJtxEGCyWC7asw5mHDbHXgFdTiXRE8N
+         XGJ29IMNwRmw0twXFXZkQcrCvoXJLz/XngDGdADdW7jHpe+J/6pruVphVa6LRvJHmewK
+         /hLCmSB0eIdXXBmW5mIucvOw2q31pAjUa8YFBq2I3h02fldHSdy2aqyUcFe2mihrB1eG
+         TDt65ZvGSiD1eIJ7QY4RhbmAuF26F2phzx/LqqecLEDMpBbsu5/2f6HBamAYpIiIctO0
+         VfGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=65ZwwJqLgs4c9HtCALozYsS5NsihCPZf/ynWKHwUyR8=;
+        b=YrnGyxVFVLq1uchtfH6mAZ9E5F+1ZXxk/kAvDliVwTWG56Sr8GH/sr9kOoGjuo/ZYw
+         Lmi0O+UFFG8EMvoWwBv2S0C5mC+gupMmIVZbbJCclqyb9CSgMhwfsMlleA4a9PdtSjvr
+         frBFQnWHQz+OvjuJKACQHJ9d7fXI6wnI6tqQTv6AsVm7SqLkEmcFbuA1byQ+NzZ1B6Bx
+         OPiVCcLAjFcm+ZbpsIR0u969dYVlmayVzfVaYcAXkKdUffTvyuw9WSvUgifWdAqUbYiU
+         sZRmpBzYxMAhw0JrH4P3aKRpj9HsVygU9GGadpu/8Gokh+Nbpn3SQaqOs51V4SoXJw+e
+         e4Zg==
+X-Gm-Message-State: AOAM5309/1z7DU4CaLYjW+AyZs+SKM/ITwyu21S6/IFHzJUL1Jsj6ffw
+        hHKDppa3NB7o6mQlsTSOfOWeYSSePpUojR3qRxMZlA==
+X-Google-Smtp-Source: ABdhPJySfQ1NPMpN+/lsPjW164mn0r8d3REf4kf9pWPQ8yyRotEZCYiRLEJVSRNfO8LG3+VSGEByagnqdZ8GMYanqTw=
+X-Received: by 2002:a17:906:4fd6:: with SMTP id i22mr4214483ejw.92.1627557485657;
+ Thu, 29 Jul 2021 04:18:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
+ <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
+ <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
+ <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
+ <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
+ <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at> <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
+ <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
+In-Reply-To: <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Thu, 29 Jul 2021 08:17:53 -0300
+Message-ID: <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
+Subject: Re: MTD: How to get actual image size from MTD partition
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     Pintu Agarwal <pintu.ping@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        Greg KH <greg@kroah.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Sean Nyekjaer <sean@geanix.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the vivid dependency on CONFIG_FB by compiling out parts of the
-code that make use of the framebuffer API when not enabled.  This is
-particularly useful as CONFIG_FB is not selected any more by
-DRM_FBDEV_EMULATION.
+Hi Richard,
 
-Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
----
- drivers/media/test-drivers/vivid/Kconfig       | 5 +----
- drivers/media/test-drivers/vivid/Makefile      | 5 ++++-
- drivers/media/test-drivers/vivid/vivid-core.c  | 7 +++++++
- drivers/media/test-drivers/vivid/vivid-ctrls.c | 4 ++++
- 4 files changed, 16 insertions(+), 5 deletions(-)
+On Tue, 27 Jul 2021 at 18:16, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> On Thu, Jul 22, 2021 at 1:11 PM Pintu Agarwal <pintu.ping@gmail.com> wrot=
+e:
+> >
+> > On Thu, 22 Jul 2021 at 02:24, Richard Weinberger <richard@nod.at> wrote=
+:
+> > >
+> > > ----- Urspr=C3=BCngliche Mail -----
+> > > >> But let me advertise ubiblock a second time.
+> > > > Sorry, I could not understand about the ubiblock request. Is it
+> > > > possible to elaborate little more ?
+> > > > We are already using squashfs on top of our UBI volumes (including
+> > > > rootfs mounting).
+> > > > This is the kernel command line we pass:
+> > > > rootfstype=3Dsquashfs root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30
+> > > > And CONFIG_MTD_UBI_BLOCK=3Dy is already enabled in our kernel.
+> > > > Do we need to do something different for ubiblock ?
+> > >
+> > > From that command line I understand that you are *not* using squashfs=
+ on top of UBI.
+> > > You use mtdblock. ubiblock is a mechanism to turn an UBI volume into =
+a read-only
+> > > block device.
+> > > See: http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
+> > >
+[snip]
 
-diff --git a/drivers/media/test-drivers/vivid/Kconfig b/drivers/media/test-drivers/vivid/Kconfig
-index c3abde2986b2..06ad350f1903 100644
---- a/drivers/media/test-drivers/vivid/Kconfig
-+++ b/drivers/media/test-drivers/vivid/Kconfig
-@@ -1,13 +1,10 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config VIDEO_VIVID
- 	tristate "Virtual Video Test Driver"
--	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64 && FB
-+	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64
- 	depends on HAS_DMA
- 	select FONT_SUPPORT
- 	select FONT_8x16
--	select FB_CFB_FILLRECT
--	select FB_CFB_COPYAREA
--	select FB_CFB_IMAGEBLIT
- 	select VIDEOBUF2_VMALLOC
- 	select VIDEOBUF2_DMA_CONTIG
- 	select VIDEO_V4L2_TPG
-diff --git a/drivers/media/test-drivers/vivid/Makefile b/drivers/media/test-drivers/vivid/Makefile
-index b12ad0152a3e..a9e4bc8dc599 100644
---- a/drivers/media/test-drivers/vivid/Makefile
-+++ b/drivers/media/test-drivers/vivid/Makefile
-@@ -3,10 +3,13 @@ vivid-objs := vivid-core.o vivid-ctrls.o vivid-vid-common.o vivid-vbi-gen.o \
- 		vivid-vid-cap.o vivid-vid-out.o vivid-kthread-cap.o vivid-kthread-out.o \
- 		vivid-radio-rx.o vivid-radio-tx.o vivid-radio-common.o \
- 		vivid-rds-gen.o vivid-sdr-cap.o vivid-vbi-cap.o vivid-vbi-out.o \
--		vivid-osd.o vivid-meta-cap.o vivid-meta-out.o \
-+		vivid-meta-cap.o vivid-meta-out.o \
- 		vivid-kthread-touch.o vivid-touch-cap.o
- ifeq ($(CONFIG_VIDEO_VIVID_CEC),y)
-   vivid-objs += vivid-cec.o
- endif
-+ifeq ($(CONFIG_FB),y)
-+  vivid-objs += vivid-osd.o
-+endif
- 
- obj-$(CONFIG_VIDEO_VIVID) += vivid.o
-diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
-index d2bd2653cf54..71f3b9af4ffc 100644
---- a/drivers/media/test-drivers/vivid/vivid-core.c
-+++ b/drivers/media/test-drivers/vivid/vivid-core.c
-@@ -1021,9 +1021,11 @@ static int vivid_detect_feature_set(struct vivid_dev *dev, int inst,
- 	/* do we have a modulator? */
- 	*has_modulator = dev->has_radio_tx;
- 
-+#if IS_ENABLED(CONFIG_FB)
- 	if (dev->has_vid_cap)
- 		/* do we have a framebuffer for overlay testing? */
- 		dev->has_fb = node_type & 0x10000;
-+#endif
- 
- 	/* can we do crop/compose/scaling while capturing? */
- 	if (no_error_inj && *ccs_cap == -1)
-@@ -1355,6 +1357,7 @@ static int vivid_create_queues(struct vivid_dev *dev)
- 			return ret;
- 	}
- 
-+#if IS_ENABLED(CONFIG_FB)
- 	if (dev->has_fb) {
- 		/* Create framebuffer for testing capture/output overlay */
- 		ret = vivid_fb_init(dev);
-@@ -1363,6 +1366,8 @@ static int vivid_create_queues(struct vivid_dev *dev)
- 		v4l2_info(&dev->v4l2_dev, "Framebuffer device registered as fb%d\n",
- 			  dev->fb_info.node);
- 	}
-+#endif
-+
- 	return 0;
- }
- 
-@@ -2069,12 +2074,14 @@ static int vivid_remove(struct platform_device *pdev)
- 				video_device_node_name(&dev->radio_tx_dev));
- 			video_unregister_device(&dev->radio_tx_dev);
- 		}
-+#if IS_ENABLED(CONFIG_FB)
- 		if (dev->has_fb) {
- 			v4l2_info(&dev->v4l2_dev, "unregistering fb%d\n",
- 				dev->fb_info.node);
- 			unregister_framebuffer(&dev->fb_info);
- 			vivid_fb_release_buffers(dev);
- 		}
-+#endif
- 		if (dev->has_meta_cap) {
- 			v4l2_info(&dev->v4l2_dev, "unregistering %s\n",
- 				  video_device_node_name(&dev->meta_cap_dev));
-diff --git a/drivers/media/test-drivers/vivid/vivid-ctrls.c b/drivers/media/test-drivers/vivid/vivid-ctrls.c
-index 8dc50fe22972..081470a1d88a 100644
---- a/drivers/media/test-drivers/vivid/vivid-ctrls.c
-+++ b/drivers/media/test-drivers/vivid/vivid-ctrls.c
-@@ -305,6 +305,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_ro_int32 = {
- 
- /* Framebuffer Controls */
- 
-+#if IS_ENABLED(CONFIG_FB)
- static int vivid_fb_s_ctrl(struct v4l2_ctrl *ctrl)
- {
- 	struct vivid_dev *dev = container_of(ctrl->handler,
-@@ -328,6 +329,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_clear_fb = {
- 	.name = "Clear Framebuffer",
- 	.type = V4L2_CTRL_TYPE_BUTTON,
- };
-+#endif /* IS_ENABLED(CONFIG_FB) */
- 
- 
- /* Video User Controls */
-@@ -1761,8 +1763,10 @@ int vivid_create_controls(struct vivid_dev *dev, bool show_ccs_cap,
- 	    (dev->has_vbi_cap && dev->has_vbi_out))
- 		v4l2_ctrl_new_custom(hdl_loop_cap, &vivid_ctrl_loop_video, NULL);
- 
-+#if IS_ENABLED(CONFIG_FB)
- 	if (dev->has_fb)
- 		v4l2_ctrl_new_custom(hdl_fb, &vivid_ctrl_clear_fb, NULL);
-+#endif
- 
- 	if (dev->has_radio_rx) {
- 		v4l2_ctrl_new_custom(hdl_radio_rx, &vivid_ctrl_radio_hw_seek_mode, NULL);
--- 
-2.20.1
+Ouch, so surprised that after all these years someone is doing squashfs/mtd=
+block
+instead of using ubiblock :-)
 
+Can we patch either Kconfig or add some warn_once on mtdblock
+usage, suggesting to use ubiblock instead?
+
+I remember there was still some use case(s) for mtdblock but I can't rememb=
+er
+now what was it, perhaps we should document the expectations?
+(Is that for JFFS2 to mount?)
+
+Thanks,
+Ezequiel
