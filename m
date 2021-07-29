@@ -2,135 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FEE3DA408
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DCB3DA40C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237492AbhG2NZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45496 "EHLO
+        id S237519AbhG2N0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237344AbhG2NZ4 (ORCPT
+        with ESMTP id S237550AbhG2N0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:25:56 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55881C061765;
-        Thu, 29 Jul 2021 06:25:53 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id nb11so10731361ejc.4;
-        Thu, 29 Jul 2021 06:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0yqI1c2xw6Ag4eb0/wFVzwBfqXP1l2U+gD4rpUuRLoc=;
-        b=rBzqcLkQUSK/5Xxs67ffLOpTFT5R7Lgl8aYDi8EIGc3wNbbGhsKCgH6E6buXmf+D71
-         ezaPl7v8a3PFO117edsBvpz3i7LaFpArjdii14swjFFY7nlYB3SC3JzB18urKI6f6xOR
-         VVh2upVCSS0AXzHPsGlbo1qiv8cPl5ABZDFOb39wUFaYIQRa1JXM7/ERZ9XIPqDd0sth
-         Ae6pW5ERAFJZf3S3sBeZ57wFI/5GZGf8JrsIvmmPB9X7uT1xaRqyCGYacVlIm+EzLUwf
-         NeDV4GLuigXikY+FrxJlWDfS6Bf52rd6JzyFd3tXpSUuoBngecUT8v2tHKcfQICiyq8V
-         DJCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0yqI1c2xw6Ag4eb0/wFVzwBfqXP1l2U+gD4rpUuRLoc=;
-        b=cL0d8AVSs3JHk0WI4bhYfq/AgPVWPWumZoZPaVCHTIDi2JvJEDB4gEoW5wvK1eNzUA
-         P9hh/8ecrJxbDcSO3tpoBBU+SA8xQ0NJ21nq0gRwcQ4+uRwnGYx0osuzCT/KSAtfyenf
-         piRnAkQEQGSlE6+OzE/zphbHGJV74ZlaF2sIxSXcwz6FRg2dFq/qFdXfdJNs5qk7jELW
-         J3ym/7oz2mhzwaaS/x58CKJ5+FpQIPE/LNGdOJGwBUKHTTF98WhNMs2CSlft6Dpve//I
-         sn2qICVr+ywi4UvXtyn35qTilY3Zg0P0DQxbGqmPNWDIJLnDx5SbFCZTFm+GtkMK6B4/
-         onwQ==
-X-Gm-Message-State: AOAM532ek4sohpDZCJgqxmG9KnZziPSV5N1VflXcw5yqAwv7cxYgx8p/
-        cUSpdQctoFnB+filQuXhbVY+uWaYEA+BwCDvkZ4=
-X-Google-Smtp-Source: ABdhPJx1gOhljOB1Dl3tZLRJDmAsBaEumKcoFb6pN85XzBviPWkXKr7euYXCy0Mr6I0AoYuuuQ04uaXw3MPCPyxjt6A=
-X-Received: by 2002:a17:906:3915:: with SMTP id f21mr4712718eje.178.1627565151886;
- Thu, 29 Jul 2021 06:25:51 -0700 (PDT)
+        Thu, 29 Jul 2021 09:26:14 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9187FC061765;
+        Thu, 29 Jul 2021 06:26:11 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 61D393F359;
+        Thu, 29 Jul 2021 15:26:08 +0200 (CEST)
+Subject: Re: [PATCH v7 5/5] dt-bindings: soc: qcom: spm: Document SDM660 and
+ MSM8998 compatibles
+To:     Rob Herring <robh@kernel.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
+        jami.kettunen@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
+        stephan@gerhold.net
+References: <20210622141117.358893-1-angelogioacchino.delregno@somainline.org>
+ <20210622141117.358893-6-angelogioacchino.delregno@somainline.org>
+ <20210713222111.GA944952@robh.at.kernel.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <285d7b38-da08-e263-d664-1cdf73d7c0d1@somainline.org>
+Date:   Thu, 29 Jul 2021 15:26:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210605034447.92917-1-dong.menglong@zte.com.cn>
- <20210605034447.92917-3-dong.menglong@zte.com.cn> <20210605115019.umjumoasiwrclcks@wittgenstein>
- <CADxym3bs1r_+aPk9Z_5Y7QBBV_RzUbW9PUqSLB7akbss_dJi_g@mail.gmail.com>
- <20210607103147.yhniqeulw4pmvjdr@wittgenstein> <20210607121524.GB3896@www>
- <20210617035756.GA228302@www> <20210617143834.ybxk6cxhpavlf4gg@wittgenstein>
- <CADxym3aLQNJaWjdkMVAjuVk_btopv6jHrVjtP+cKwH8x6R7ojQ@mail.gmail.com>
- <20210727123701.zlcrrf4p2fsmeeas@wittgenstein> <YQEQTO+AwC67BT4u@alley>
-In-Reply-To: <YQEQTO+AwC67BT4u@alley>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 29 Jul 2021 21:25:40 +0800
-Message-ID: <CADxym3a3=Xjj4LkRDMyiCnFm3BfG7s_iGoR1EjNWA9ytoS2tSQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] init/do_mounts.c: create second mount for initramfs
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>, johan@kernel.org,
-        ojeda@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
-        joe@perches.com, Jan Kara <jack@suse.cz>, hare@suse.de,
-        Jens Axboe <axboe@kernel.dk>, tj@kernel.org,
-        gregkh@linuxfoundation.org, song@kernel.org,
-        NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Barret Rhoden <brho@google.com>, f.fainelli@gmail.com,
-        palmerdabbelt@google.com, wangkefeng.wang@huawei.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, vbabka@suse.cz,
-        Alexander Potapenko <glider@google.com>,
-        johannes.berg@intel.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>, jojing64@gmail.com,
-        terrelln@fb.com, geert@linux-m68k.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, arnd@arndb.de,
-        Chris Down <chris@chrisdown.name>, mingo@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Josh Triplett <josh@joshtriplett.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210713222111.GA944952@robh.at.kernel.org>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Il 14/07/21 00:21, Rob Herring ha scritto:
+> On Tue, Jun 22, 2021 at 04:11:17PM +0200, AngeloGioacchino Del Regno wrote:
+>> The driver was updated to add SAW2 v4.1 support for new SoCs: document
+>> the new compatibles.
+> 
+> Can't take patches without a S-o-b. Run checkpatch.pl, it points this
+> out for you.
+> 
 
-On Wed, Jul 28, 2021 at 4:07 PM Petr Mladek <pmladek@suse.com> wrote:
->
-[...]
->
-> I guess that you have seen the following message printed by
-> console_on_rootfs():
->
->       "Warning: unable to open an initial console."
->
-> This function is responsible for opening stdin, stdout, stderr
-> file to be used by the init process.
->
-> I am not sure how this is supposed to work with the pivot_root
-> and initramfs.
->
->
-> Some more details:
->
-> console_on_rootfs() tries to open /dev/console. It is created
-> by tty_init(). The open() callback calls:
->
->   + tty_kopen()
->     + tty_lookup_driver()
->       + console_device()
->
-> , where console_device() iterates over all registered consoles
->   and returns the first with tty binding.
->
-> There is ttynull_console that might be used as a fallback. But I
-> am not sure if this is what you want.
+I am truly sorry for missing my S-o-b.
 
-I didn't figure out the relation between initramfs and initial console,
-could you please tell me how this warning came up? I can't
-reproduce it in qemu with this command:
+>> ---
+>>   .../bindings/soc/qcom/qcom,spm.yaml           | 21 +++++++++++++++++++
+>>   1 file changed, 21 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,spm.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,spm.yaml
+>> index 4aaa319b2932..0faf52700dec 100644
+>> --- a/Documentation/devicetree/bindings/soc/qcom/qcom,spm.yaml
+>> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,spm.yaml
+>> @@ -17,6 +17,10 @@ description: |
+>>   properties:
+>>     compatible:
+>>       enum:
+>> +      - qcom,sdm660-gold-saw2-v4.1-l2
+>> +      - qcom,sdm660-silver-saw2-v4.1-l2
+>> +      - qcom,msm8998-gold-saw2-v4.1-l2
+>> +      - qcom,msm8998-silver-saw2-v4.1-l2
+> 
+> What's the difference between gold and silver? Are the h/w instances
+> different (I realize the CPUs are) in some way? How does the OS use the
+> different compatible strings?
+> 
 
-qemu-system-x86_64 -nographic -m 2048M -smp cores=4,sockets=1 -s
--kernel ./bzImage -initrd ./rootfs.cpio -append "rdinit=/init
-console=ttyS0"
+They have different configuration parameters and the HW instances should
+be different indeed (at least from what I remember), plus they're always
+at different iostart.
 
-Thanks!
-Menglong Dong
+The driver is using the different compatible strings to choose which
+configuration gets written. You can also avoid writing the configuration
+to one of them or both (if you wish to lose capabilities given by this
+driver, perhaps also if you want to simply never use the gold cluster, for
+example).
 
->
-> Best Regards,
-> Petr
+
+>>         - qcom,msm8974-saw2-v2.1-cpu
+>>         - qcom,apq8084-saw2-v2.1-cpu
+>>         - qcom,apq8064-saw2-v1.1-cpu
+>> @@ -33,6 +37,8 @@ additionalProperties: false
+>>   
+>>   examples:
+>>     - |
+>> +
+>> +    /* Example 1: SoC using SAW2 and kpss-acc-v2 CPUIdle */
+>>       cpus {
+>>           #address-cells = <1>;
+>>           #size-cells = <0>;
+>> @@ -52,4 +58,19 @@ examples:
+>>           reg = <0xf9089000 0x1000>;
+>>       };
+>>   
+>> +  - |
+>> +
+>> +    /* Example 2: New-gen multi cluster SoC using SAW only for L2;
+>> +     * This does not require any cpuidle driver, nor any cpu phandle.
+>> +     */
+>> +    power-controller@17812000 {
+>> +        compatible = "qcom,msm8998-gold-saw2-v4.1-l2", "qcom,saw2";
+>> +        reg = <0x17812000 0x1000>;
+>> +    };
+>> +
+>> +    power-controller@17912000 {
+>> +        compatible = "qcom,msm8998-silver-saw2-v4.1-l2", "qcom,saw2";
+>> +        reg = <0x17912000 0x1000>;
+>> +    };
+>> +
+>>   ...
+>> -- 
+>> 2.32.0
+>>
+>>
+
