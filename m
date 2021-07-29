@@ -2,244 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5383DA02C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6913DA02F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235428AbhG2JSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
+        id S235485AbhG2JS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235396AbhG2JSf (ORCPT
+        with ESMTP id S235141AbhG2JS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:18:35 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20B4C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:18:31 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id l18so6033463wrv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:18:31 -0700 (PDT)
+        Thu, 29 Jul 2021 05:18:56 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38024C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:18:53 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id t25so478929uar.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:18:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l+nZIaXTzSWTbnhdYn/fQ9vw1KtraaQBcGvKxiJnOVw=;
-        b=pgNV599SAM1Wu4Z7W8wsHZQ9LL9gipMaS3MRne6sF27+vnoGq0peDXC87s6c+LvmGJ
-         viSc63sQ1dvtrJU5VSDchu9C/V6kxepVWxb5y8EGL6N+NW7+G5XZd3KbYYnINiFbgRUI
-         93uRowNHnRysb1ZxP9YIHHrx7E2/fnq1/Ti1P/X+iGbwocR2dyvxkfpEvshholb2rLWJ
-         zmSo3aLoMIfkFTctYIyUl3RtJbDeCzi67pYa3G8kYHBNu5wnl1IMAAdohfSFKOHpE78J
-         bWI1iztAGgNT0s6piNUm2/0XaSzpwl6rs/GjvjmuXtDCwCOls5sSfaVis0RuBvAUQdeP
-         4mVg==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=K/lXyeXMePgg9Tg9pFQn8T3gDDjXBGK+r9eruIO3A3k=;
+        b=V9lCMCLjHRIYx0GxMpDYyc6OF1mEzYVmjtUdeNSgEYPRRyHT3BK0ldEsqHF6YLr5sJ
+         BHYR6/jearmR+tu9epFF61n7fqmg3Ed55sSthVD9vXyI3oLejWOZ2DwO5ZTJCu2dnK8r
+         5ZBvq2cVhFXSoPwbU7kiFe6J8EypDCl69Nil8NxviZd9Ns4NOeOJhySBb1NHCZ5sFbz/
+         yA818yyUzJi2qq2DCjRa8EFOQ8/55P62bJATBkwCPGae55Gq2xykbgBzsyb3NWlLfT/R
+         fII1aOpdi3QUvLVLiJledch4C6DbfxEonZUL7fF91DGhtCDOrQKwzvOJAVqq2Zk1CsDc
+         M4ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l+nZIaXTzSWTbnhdYn/fQ9vw1KtraaQBcGvKxiJnOVw=;
-        b=UHzApqRsIszoxO/RJFXAreRewXx/2AaXjiNkeqkzf91xsD8BkFsjVTjib9cls20Qiu
-         S5ssiKZ6r5zyPn63duXxg49k76KLG2vYe7AmLG9LQgQtstdLZQqeaMS1obzRl7eyr1sn
-         Xc51GrUXbxPxW4+mCC0JzIG68qCZNU2TLUHyxAGtJJL/EEKhNkFUDHPrkuhgLinXPtnf
-         FzkR73kVWh1bLnO3CsKQHD0XeCpGZemMyIMawfzuUAMfMFhwDYW0wRKXKpNLCwNmS0rc
-         yiuIXgqxC5ZxmiOD/lyTakIFzb2HZNr2aOytM4DkTBmq9zy+sfb6BkDkH0FEWa8ON0Fu
-         fwmw==
-X-Gm-Message-State: AOAM530smHwSHtgCwTojLjrUhCtip08Cz8xydO5kmauxO18x7pgUVkqQ
-        EyNpor5FJwI/SRxDBYnJHPW2Vw==
-X-Google-Smtp-Source: ABdhPJwbtN/KMFdWqOjpEGAIAmb/E5eMPOUmcD3QrH3AYbFGdp5HdwIorhiQ1NargruMZelfvpx5ow==
-X-Received: by 2002:adf:eb4c:: with SMTP id u12mr3809891wrn.111.1627550310476;
-        Thu, 29 Jul 2021 02:18:30 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id c2sm2634105wrs.60.2021.07.29.02.18.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 02:18:29 -0700 (PDT)
-Subject: Re: [PATCH v2 04/16] ASoC: qcom: dt-bindings: add bindings Audio
- Processing manager
-To:     Rob Herring <robh@kernel.org>
-Cc:     bjorn.andersson@linaro.org, broonie@kernel.org,
-        plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
-        perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        bgoswami@codeaurora.org
-References: <20210714153039.28373-1-srinivas.kandagatla@linaro.org>
- <20210714153039.28373-5-srinivas.kandagatla@linaro.org>
- <20210728173649.GA1290628@robh.at.kernel.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <092018be-50ae-6dda-73cd-6c7eb002dc19@linaro.org>
-Date:   Thu, 29 Jul 2021 10:18:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=K/lXyeXMePgg9Tg9pFQn8T3gDDjXBGK+r9eruIO3A3k=;
+        b=BQ3UmgzIVQ1iUEwMwavB2tDVM2/MQQ3jfyLa64lqvE/7Mb4QlrYbPh266PU9oguzjX
+         Wj0g2E/R/kbcDfnRlgpbWnDC//9Sp60uSvQ63JQLC+TzfSPEshtVAB55tCkUKQJLKXo3
+         NWp4PMrCbtBoJJxiWSITOageLuGq2xJMb4RIMr+waA96VFOQGH6+OijyD5InJO9mKHCB
+         qfot4gabgeh10UPw7arH8E9Ex63hbymz0x1rnq2ApMbW+PhSJ27upFcgpm3eCK+smiwH
+         V5m2WOJmzKrOyC1ZxpC731n8yTJkGnbB79YBZcXbozxFHzHm3vTJgdXPQ1VOm5s6O3zm
+         d7fQ==
+X-Gm-Message-State: AOAM5331rLEIsA6MzKZztUjAY6/Q3eDbNQmBg7mCDsgXnNra3DOwiPLA
+        dPML+Jp5+lX28QY7C/JsclXglKRY5sk5SR8lpK9WmYBirSd+Huu0
+X-Google-Smtp-Source: ABdhPJzQT+IAJNav+2Rbcop5K3d9qAyL74sYzE6S8RjR5Xbvl392DwaXWd3bca67o4dErLuMDuV5YkkLiinYkUoKwfM=
+X-Received: by 2002:ab0:1d81:: with SMTP id l1mr3389110uak.133.1627550331987;
+ Thu, 29 Jul 2021 02:18:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210728173649.GA1290628@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   koos vriezen <koos.vriezen@gmail.com>
+Date:   Thu, 29 Jul 2021 11:18:41 +0200
+Message-ID: <CAGCbPWR7dk7fWxMGQW2ygSEbgPLbfaQiiVb2J6Tczdt_oOCheg@mail.gmail.com>
+Subject: bisected: 5befc7c26e nvme impl non-mdts gives smartd error log entries
+To:     linux-kernel@vger.kernel.org, eith Busch <kbusch@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Rob for the review,
+Hi,
 
-On 28/07/2021 18:36, Rob Herring wrote:
-> On Wed, Jul 14, 2021 at 04:30:27PM +0100, Srinivas Kandagatla wrote:
->> This patch adds bindings support for Qualcomm Audio Processing Manager
->> service in Audio DSP.
->>
->> Audio Process Manager is one of the static service in DSP which is
->> responsible for Command/response handling, graph Management
->> and Control/Event management between modules.
-> 
-> This all looks fairly similar to the prior Qcom audio binding(s). It
-> would be nice to not see this all re-invented.
-> 
-AudioReach is a new DSP signal processing framework Which is different 
-to its previous DSP firmware(aka Elite).
-It makes use of ASoC Topology to load audio graphs on to the DSP which 
-is then managed by APM (Audio Processing Manager) service.
+On my XPS 13 9380 I get local mails with content
 
-So internals are not exactly same.
+"
+The following warning/error was logged by the smartd daemon:
 
- From device tree side we might end up with similar layout, but there 
-are some subtle differences like clocks are managed by q6prm service 
-instead of q6afe service in old firmware, front-end pcm dais definitions 
-come from ASoC topology.
+Device: /dev/nvme0, number of Error Log entries increased from 28 to 29
 
-Are you suggesting that we should reuse the old bindings (q6afe, q6asm) 
-by add new compatible strings along with differences ?
+Device info:
+PM981 NVMe Samsung 512GB, S/N:S3ZHNF0KB11472, FW:EXA74D1Q, 512 GB
+"
+
+after boot and increasing numbers after resume. Git bisect report:
+
+git bisect start
+# good: [9f4ad9e425a1d3b6a34617b8ea226d56a119a717] Linux 5.12
+git bisect good 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
+# bad: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
+git bisect bad 62fb9874f5da54fdb243003b386128037319b219
+# bad: [85f3f17b5db2dd9f8a094a0ddc665555135afd22] Merge branch
+'md-fixes' of https://git.kernel.org/pub/scm/linux/kernel/git/song/
+md into block-5.13
+git bisect bad 85f3f17b5db2dd9f8a094a0ddc665555135afd22
+# good: [ca62e9090d229926f43f20291bb44d67897baab7] Merge tag
+'regulator-v5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/br
+oonie/regulator
+git bisect good ca62e9090d229926f43f20291bb44d67897baab7
+# good: [68a32ba14177d4a21c4a9a941cf1d7aea86d436f] Merge tag
+'drm-next-2021-04-28' of git://anongit.freedesktop.org/drm/drm
+git bisect good 68a32ba14177d4a21c4a9a941cf1d7aea86d436f
+# bad: [be18cd1fcae2ed7db58d92d20733dfa8aa0a5173] Merge tag
+'mmc-v5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc
+git bisect bad be18cd1fcae2ed7db58d92d20733dfa8aa0a5173
+# bad: [fc0586062816559defb14c947319ef8c4c326fb3] Merge tag
+'for-5.13/drivers-2021-04-27' of git://git.kernel.dk/linux-block
+git bisect bad fc0586062816559defb14c947319ef8c4c326fb3
+# good: [42dec9a936e7696bea1f27d3c5a0068cd9aa95fd] Merge tag
+'perf-core-2021-04-28' of git://git.kernel.org/pub/scm/linux/kernel/g
+it/tip/tip
+git bisect good 42dec9a936e7696bea1f27d3c5a0068cd9aa95fd
+# bad: [2958a995edc94654df690318df7b9b49e5a3ef88] block/rnbd-clt:
+Support polling mode for IO latency optimization
+git bisect bad 2958a995edc94654df690318df7b9b49e5a3ef88
+# bad: [b60b270b3db617811e593db5d5920ed98e67ce49] swim3: support highmem
+git bisect bad b60b270b3db617811e593db5d5920ed98e67ce49
+# good: [de5878048e11f1ec44164ebb8994de132074367a] nvmet: remove
+unnecessary ctrl parameter
+git bisect good de5878048e11f1ec44164ebb8994de132074367a
+# bad: [5befc7c26e5a98cd49789fb1beb52c62bd472dba] nvme: implement
+non-mdts command limits
+git bisect bad 5befc7c26e5a98cd49789fb1beb52c62bd472dba
+# good: [d8e7b462f5b8b93920c6c6a191be887b32306e6b] nvmet-tcp: enable
+optional queue idle period tracking
+git bisect good d8e7b462f5b8b93920c6c6a191be887b32306e6b
+# good: [25a64e4e7ef6da605a86ec1bff18d2c3c6ed5329] nvme: remove
+superfluous else in nvme_ctrl_loss_tmo_store
+git bisect good 25a64e4e7ef6da605a86ec1bff18d2c3c6ed5329
+# good: [dd8f7fa908f66dd44abcd83cbb50410524b9f8ef] nvme: retrigger ANA
+log update if group descriptor isn't found
+git bisect good dd8f7fa908f66dd44abcd83cbb50410524b9f8ef
+# good: [c881a23fb6f7eb901155d25ba8dd1af0b8c7923b] nvme: disallow
+passthru cmd from targeting a nsid != nsid of the block dev
+git bisect good c881a23fb6f7eb901155d25ba8dd1af0b8c7923b
+# first bad commit: [5befc7c26e5a98cd49789fb1beb52c62bd472dba] nvme:
+implement non-mdts command limits
+
+Reverted 5befc7c26e (first 8609c63fce nvme: fix handling of large MDTS
+values) on 5.13.6 I don't see the error anymore.
 
 
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   .../devicetree/bindings/sound/qcom,q6apm.yaml | 87 +++++++++++++++++++
->>   include/dt-bindings/sound/qcom,q6apm.h        |  8 ++
->>   2 files changed, 95 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
->>   create mode 100644 include/dt-bindings/sound/qcom,q6apm.h
->>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
->> new file mode 100644
->> index 000000000000..6f27567523a9
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
->> @@ -0,0 +1,87 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/sound/qcom,q6apm.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: Qualcomm Audio Process Manager binding
->> +
->> +maintainers:
->> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> +
->> +description: |
->> +  This binding describes the Qualcomm Audio Process Manager service in DSP
->> +
->> +properties:
->> +  compatible:
->> +    const: qcom,q6apm
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  '#address-cells':
->> +    const: 1
->> +
->> +  '#size-cells':
->> +    const: 0
->> +
->> +#APM Services
->> +patternProperties:
->> +  'apm@[0-9]+$':
-> 
-> This means '.*apm' for the node name. Did you need a '^'?
-> 
-yes we need begins with '^' , will add that in next version.
+Best regards,
 
->> +    type: object
->> +    description:
->> +      APM devices use subnodes for services.
->> +
->> +    properties:
->> +      compatible:
->> +        enum:
->> +          - qcom,q6apm-dais
->> +          - qcom,q6apm-bedais
->> +
->> +      iommus:
->> +        maxItems: 1
->> +
->> +      "#sound-dai-cells":
->> +        const: 1
->> +
->> +      reg:
->> +        maxItems: 1
->> +
->> +    required:
->> +      - compatible
->> +      - reg
->> +      - '#sound-dai-cells'
->> +
->> +    additionalProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    gpr {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +        gprservice@1 {
->> +          compatible = "qcom,q6apm";
->> +          reg = <1>;
->> +
->> +          #address-cells = <1>;
->> +          #size-cells = <0>;
->> +
->> +          apm@1 {
->> +            compatible = "qcom,q6apm-dais";
->> +            #sound-dai-cells = <1>;
->> +            reg = <1>;
->> +          };
->> +
->> +          apm@2 {
->> +            compatible = "qcom,q6apm-bedais";
->> +            #sound-dai-cells = <1>;
->> +            reg = <2>;
->> +          };
->> +        };
->> +    };
->> diff --git a/include/dt-bindings/sound/qcom,q6apm.h b/include/dt-bindings/sound/qcom,q6apm.h
->> new file mode 100644
->> index 000000000000..3c3987eb6e95
->> --- /dev/null
->> +++ b/include/dt-bindings/sound/qcom,q6apm.h
->> @@ -0,0 +1,8 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef __DT_BINDINGS_Q6_APM_H__
->> +#define __DT_BINDINGS_Q6_APM_H__
->> +
->> +/* Audio Process Manager (APM) virtual ports IDs */
->> +#include <dt-bindings/sound/qcom,q6afe.h>
-> 
-> Why add this indirection? Rename the file if you need something to cover
-> both.
-
-Thats a good idea,
-
-These are basically audio endpoint device ids which should be same 
-across different audio firmwares.
-
-I can rename this to dt-bindings/sound/qcom,adsp-audio-ports.h or 
-something more generic to be able to reuse.
-
---srini
-> 
->> +
->> +#endif /* __DT_BINDINGS_Q6_APM_H__ */
->> -- 
->> 2.21.0
->>
->>
+Koos Vriezen
