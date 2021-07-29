@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBEE3DA04F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04453DA054
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 11:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235421AbhG2JfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 05:35:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47158 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235622AbhG2JfO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:35:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627551311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GL8yo4T1lYqtt20r6KuqjoBVUtGlVQrRHRnGsjw+oeA=;
-        b=SVYGhUtff7HVqm4ldfTMiE7mUIbwMuKzfA5sz9KowUGAKOldUacrdry0waHK2eo/DEbNl3
-        +8vE63TtUPwIEgN4A+StEo24H/JBfdkXa0/TPLZDBvxJtYrgeNbwuIVAxeTHjhLtdG6vAO
-        JYoywO5jYEL8tBAUW5p14s8PRLgdJo8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-125-L8oo0smRNz-VgcmTYZGk_A-1; Thu, 29 Jul 2021 05:35:07 -0400
-X-MC-Unique: L8oo0smRNz-VgcmTYZGk_A-1
-Received: by mail-ed1-f71.google.com with SMTP id l10-20020aa7caca0000b02903b874f26036so2638418edt.20
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 02:35:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GL8yo4T1lYqtt20r6KuqjoBVUtGlVQrRHRnGsjw+oeA=;
-        b=JyrX5lCi5LKq3QKKpKJX6U6I2TsX41IffFZ54YMdFkXtud7O5JXrlhX+pafFpNr8+g
-         9usu7eMBhIOSdlqMMUp5tBkMuRxiOp3UBTuM/bjT03cv8rRPVmntJFdDBKrT43YfqkvQ
-         qsmSmlvtaumDuI/m8pHmGzBB6P3y2prxZONFCnpx02ZGu7dIT857TzJR2JKDgSBDTpd9
-         7tsb3J/E5mFUkVPC4p7jBDgYmNAlbV11MIvV1VP+ydQf9aGfLYpQ0+7vEd84F2GKA5Kd
-         0vvL21HTWNyj4uw5zF7PWV/6i94zg56dfguKe5MCYaTLeKUmJahe+YJCxnn3Z2bBQXao
-         xm/Q==
-X-Gm-Message-State: AOAM531ITt3KG1YNenOXE1Sj18pB8Rd7UxYE3DNeBOm4UoJKO2luGoDt
-        Lo4sutIxxocERsWODlBOC3uq6mO/MEeCKPU15KXVl8kWBSqWgXEFIYgRVqo5DHaU3RTOg6650AF
-        Y9BzobpJ5kp/x0Iuynx2VYqiU
-X-Received: by 2002:a17:907:2bd0:: with SMTP id gv16mr3889706ejc.49.1627551306420;
-        Thu, 29 Jul 2021 02:35:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxyDBQjZYIdLYt3llFOHVemIJWYi3AdcSIncArF9cUKmxLCuKQxPAnyKhTmwPhu61dMMjraXw==
-X-Received: by 2002:a17:907:2bd0:: with SMTP id gv16mr3889691ejc.49.1627551306230;
-        Thu, 29 Jul 2021 02:35:06 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id s24sm786053ejd.19.2021.07.29.02.35.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 02:35:05 -0700 (PDT)
-Subject: Re: [PATCH v2 9/9] KVM: X86: Optimize zapping rmap
-To:     Sean Christopherson <seanjc@google.com>,
-        Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20210625153214.43106-1-peterx@redhat.com>
- <20210625153419.43671-1-peterx@redhat.com> <YQHOdhMoFW821HAu@google.com>
- <YQHTocEdMzsJQuzL@t490s> <YQHa1xuNKhqRr4Fq@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c2c83189-6bc4-1f3b-36da-be19b940dcf9@redhat.com>
-Date:   Thu, 29 Jul 2021 11:35:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235750AbhG2JhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 05:37:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:43394 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235633AbhG2JhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 05:37:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7761D1FB;
+        Thu, 29 Jul 2021 02:37:04 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B5533F73D;
+        Thu, 29 Jul 2021 02:37:02 -0700 (PDT)
+Subject: Re: [PATCH v2 18/24] iommu: Express DMA strictness via the domain
+ type
+To:     Lu Baolu <baolu.lu@linux.intel.com>, joro@8bytes.org,
+        will@kernel.org
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, john.garry@huawei.com,
+        dianders@chromium.org
+References: <cover.1627468308.git.robin.murphy@arm.com>
+ <50bee17e9248ccfccb33a10238210d4ff4f4cf4d.1627468309.git.robin.murphy@arm.com>
+ <b479f1f9-ecf2-2798-2df8-ae3d4c06bc63@linux.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <f2858a7f-e665-ff6a-38d6-b9d591287fac@arm.com>
+Date:   Thu, 29 Jul 2021 10:36:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <YQHa1xuNKhqRr4Fq@google.com>
+In-Reply-To: <b479f1f9-ecf2-2798-2df8-ae3d4c06bc63@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/07/21 00:31, Sean Christopherson wrote:
->> If that'll be a performance concern, no objection to hard code it.
-> It's more about unnecessary complexity than it is about performance, e.g. gcc-10
-> generates identical code for both version (which did surprise the heck out of me).
+On 2021-07-29 08:13, Lu Baolu wrote:
+> Hi Robin,
+> 
+> On 7/28/21 11:58 PM, Robin Murphy wrote:
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 982545234cf3..eecb5657de69 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -136,6 +136,9 @@ static int __init iommu_subsys_init(void)
+>>           }
+>>       }
+>> +    if (!iommu_default_passthrough() && !iommu_dma_strict)
+>> +        iommu_def_domain_type = IOMMU_DOMAIN_DMA_FQ;
+> 
+> iommu_dma_strict could be changed later by the vendor iommu driver via
+> iommu_set_dma_strict(). This seems not to be the right place to set
+> iommu_def_domain_type.
 
-If you think of what's needed to produce decent (as fast as C) code out 
-of STL code, that's not surprising. :)  Pretty cool that it lets people 
-write nicer C code too, though.
+Ah yes, good catch once again, thanks!
 
-> If we really want to isolate pte_list_destroy(), I would vote for something like
-> this (squashed in).   pte_list_remove() already calls mmu_spte_clear_track_bits(),
-> so that particular separation of concerns has already gone out the window.
+I think this *is* the right place to initially set it to honour the 
+command-line option, since that matches what we do for passthrough. 
+However also like passthrough we'll need to keep things in sync if it's 
+updated later, like this:
 
-Yes, that's fair enough.  Thanks for the review!
 
-Paolo
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 87d7b299436e..593d4555bc57 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -359,6 +359,8 @@ early_param("iommu.strict", iommu_dma_setup);
+  void iommu_set_dma_strict(void)
+  {
+         iommu_dma_strict = true;
++       if (iommu_def_domain_type == IOMMU_DOMAIN_DMA_FQ)
++               iommu_def_domain_type = IOMMU_DOMAIN_DMA;
+  }
 
+  static ssize_t iommu_group_attr_show(struct kobject *kobj,
+
+
+Does that seem reasonable? I'm not sure there's any cleaner way to do it 
+since we don't want to inadvertently clobber the default type if the 
+user has given us something funky like "intel_iommu=strict 
+iommu.passthrough=1".
+
+Cheers,
+Robin.
+
+> 
+>> +
+>>       pr_info("Default domain type: %s %s\n",
+>>           iommu_domain_type_str(iommu_def_domain_type),
+>>           (iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
+> 
+> Best regards,
+> baolu
