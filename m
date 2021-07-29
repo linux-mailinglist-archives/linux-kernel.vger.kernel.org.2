@@ -2,314 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBEB3D9D97
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8C43D9DB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 08:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhG2GYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 02:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233934AbhG2GYb (ORCPT
+        id S234241AbhG2Gc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 02:32:58 -0400
+Received: from zg8tmja5ljk3lje4mi4ymjia.icoremail.net ([209.97.182.222]:36212
+        "HELO zg8tmja5ljk3lje4mi4ymjia.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S234079AbhG2Gc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 02:24:31 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF67C061765
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:24:28 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id p145so7344095ybg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 23:24:28 -0700 (PDT)
+        Thu, 29 Jul 2021 02:32:57 -0400
+X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Jul 2021 02:32:57 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kzKRWTU7+AX4+rdpwzLuOhzoLvzsonm5mcKnbVtQ4tU=;
-        b=B2ZleEZwM94jMNhr/fjsB1NsRMVOrPDMa5BS+hWv4tKL+Ip4QQsV/r5cHrcsa7SeXE
-         aonNdF1BlWilknpneZf9GUeHfs6C/7ZUCyQ8aewpwNFhF0awUr5VytpVrUW3XhPYq+IO
-         gqEposaS766qAvQwPlgDtf1urujNPYc/hjIbXceCzTp7D4S+M8EuOLWlPhCPgtAZ8G9d
-         O12eOU/esMjq01lBVthNuP1gbCNVG4pVxl3dnKM7xd5xGikrDmDqCKVne7Sqz5kBkZta
-         AcIxPBAKsGbVZSQf/zGnxLePUJxnbKqE5qOUcU5IPUEwMlZoFvKRHYh2vYGYigjLonih
-         QDUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kzKRWTU7+AX4+rdpwzLuOhzoLvzsonm5mcKnbVtQ4tU=;
-        b=ozgKkmEWIABGBsD1mehGrSNQrDvXoVvIWGwY+10/4gzAIz9qse60zpP4mbC33NOgGD
-         ehlQJ7/A/tc9n9ZNnFUQUS56164eoO0SdKEw6uPvdf6Ed7aLy9QPmwga0/1qm+Vj8ihw
-         s+Wosoddgb1rBSV/IcyI1Nv/qRazCFpxFLRxeK5LyMfC6RPGMvF9vhgKbFjO6rqBZiqV
-         jzXldR5uzVv5j0Tzsr2Ms4z1GQgfvSdwvSrtTa0IcnVr+BxeA+5zTuX075uAlY6lnm1Z
-         PuIF+Vr/oPmTSMdez2HqNEsO5NSSFInULBD8r0Z6lLKXj90M85X14zcaC0cgCKumTTOy
-         TijQ==
-X-Gm-Message-State: AOAM531hUnKG/NUqLxV94oCk+K3oIwKqBO+vGtwb4wjlotfnB9RPG6xY
-        QUaSc7AMeye9MXuJVFg12scVOd+S87fVmEWeMNTVrw==
-X-Google-Smtp-Source: ABdhPJy8Mb8fv3p85dG9REBVolOJC4s9uDr4iVPzRmp4CdU+nyzxggm5LFnarKTWT/tmBnT9RluJIFLLNRfBlOXZul0=
-X-Received: by 2002:a25:10d4:: with SMTP id 203mr4625563ybq.454.1627539867423;
- Wed, 28 Jul 2021 23:24:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210726175357.1572951-1-mizhang@google.com> <20210726175357.1572951-4-mizhang@google.com>
- <YQAoBXm80KRjb1nY@google.com>
-In-Reply-To: <YQAoBXm80KRjb1nY@google.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Wed, 28 Jul 2021 23:24:16 -0700
-Message-ID: <CAL715WJPB6NK2zY1MB+53bTH8K+_HS7r1vpcJTFioa1mqr4_qw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] KVM: x86/mmu: Add detailed page size stats
-To:     David Matlack <dmatlack@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Jing Zhang <jingzhangos@google.com>
+        d=pku.edu.cn; s=dkim; h=Received:Message-ID:Subject:From:To:Cc:
+        Date:In-Reply-To:Content-Type:User-Agent:MIME-Version:
+        Content-Transfer-Encoding; bh=4pYo2P+z6W9nuwjuJxarPM7VOIN56+10mm
+        lJH9CAsPI=; b=iaKo9egXwKn7hDCfeY1GQBa+JjMC3rl4fwvXvaWWk1Zdz8Lpb8
+        2t2naPDZDH8SkoUjskZHAzEUEvSbGBgGoRi22+8u8OgvPx+IHkuBSK0dXVi9K2a3
+        oFy0pmCLtlAb+Z/wRSLFwwRC69bkqiCPgqm+SK5nkKcJVaXowGngFVYXU=
+Received: from [172.31.209.114] (unknown [222.29.156.242])
+        by front02 (Coremail) with SMTP id 54FpogC3vrKtSQJhZ3l_AQ--.15093S2;
+        Thu, 29 Jul 2021 14:24:45 +0800 (CST)
+Message-ID: <600fdad9d3955671b1a5af12d40a4e409bc7ba5f.camel@pku.edu.cn>
+Subject: Re: [PATCH] x86/fault: Fix wrong signal when vsyscall fails with
+ pkey
+From:   Jiashuo Liang <liangjs@pku.edu.cn>
+To:     dave.hansen@intel.com
+Cc:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        liangjs@pku.edu.cn, linux-kernel@vger.kernel.org, luto@kernel.org,
+        mingo@redhat.com, peterz@infradead.org, tglx@linutronix.de,
+        x86@kernel.org
+Date:   Thu, 29 Jul 2021 14:24:45 +0800
+In-Reply-To: <87c4acb3-c3a9-c682-138b-0f85246e9cb8@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: 54FpogC3vrKtSQJhZ3l_AQ--.15093S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr1DAw1DKw1fWw4xArWUArb_yoWrXw45pF
+        yrCayDKFZ7Xr9I9an7X34UZ34F9ay7KF1DKr1xta4a93s8ZrySvr10vw48ury7A397t3WU
+        tF40vw1DWa1kXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU901xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4
+        x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE14v_
+        GF1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWkJr1UJwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x0JU-J5rUUUUU=
+X-CM-SenderInfo: isqqijqrtqmio6sn3hxhgxhubq/1tbiAwERBVPy7sZOGwABsL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David and Ben,
+On Wed, 2021-07-28 at 10:57 -0700, Dave Hansen wrote:
+>> When emulating vsyscall, the kernel may fail to access user-given memory
+>> pages that are protected by pkey. In such a case, the kernel should send a
+>> SIGSEGV signal with si_code=SEGV_PKUERR and si_pkey=pkey.
+> 
+> This could use a bit more context.
+> 
+> First of all this is for user address space faults in the
+> do_user_addr_fault() path.  Second, the buggy code is under a
+> !user_mode() check, so this must be a kernel fault in the user address
+> space.  Third, the only notice this problem when the page fault handler
+> ends up delivering a signal as a result of the fault.  Most cases will
+> simply return an error code to the faulting kernel code which will see
+> -EFAULT come back from copy_to/from_user() and friends.
+> 
+> The *only* condition in which we generate that signal from the fault
+> handler is when current->thread.sig_on_uaccess_err=1, and the only place
+> that gets used is in emulate_vsyscall().
+> 
+> This makes me want to add some code that tickles vsyscall emulation in
+> the pkey selftests, but I think I'll resist the urge for now. :)
+> 
+> Is that all correct?
 
-Thank you both for the suggestions. It Makes sense to me and I will
-update the patch set with the change added in the next version.
+Right.
 
-Regards.
--Mingwei
+>> So a new parameter "pkey" is added to kernelmode_fixup_or_oops to fix it.
+> 
+> Yeah, I think that's the right fix.  You also need this:
+> 
+> Fixes: 5042d40a264c ("x86/fault: Bypass no_context() for implicit kernel
+> faults from usermode")
+> 
+> I believe that's where this issue originated.
 
-On Tue, Jul 27, 2021 at 8:36 AM David Matlack <dmatlack@google.com> wrote:
->
-> On Mon, Jul 26, 2021 at 10:53:57AM -0700, Mingwei Zhang wrote:
-> > Existing KVM code tracks the number of large pages regardless of their
-> > sizes. Therefore, when large page of 1GB (or larger) is adopted, the
-> > information becomes less useful because lpages counts a mix of 1G and 2M
-> > pages.
-> >
-> > So remove the lpages since it is easy for user space to aggregate the info.
-> > Instead, provide a comprehensive page stats of all sizes from 4K to 512G.
-> >
-> > Suggested-by: Ben Gardon <bgardon@google.com>
-> > Suggested-by: Jing Zhang <jingzhangos@google.com>
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > ---
-> >  arch/x86/include/asm/kvm_host.h | 10 +++++++++-
-> >  arch/x86/kvm/mmu.h              |  2 ++
-> >  arch/x86/kvm/mmu/mmu.c          | 32 +++++++++++++++++++-------------
-> >  arch/x86/kvm/mmu/tdp_mmu.c      | 15 ++-------------
-> >  arch/x86/kvm/x86.c              |  7 +++++--
-> >  5 files changed, 37 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > index 974cbfb1eefe..2e4b6fd36e62 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -1206,9 +1206,17 @@ struct kvm_vm_stat {
-> >       u64 mmu_recycled;
-> >       u64 mmu_cache_miss;
-> >       u64 mmu_unsync;
-> > -     u64 lpages;
-> >       u64 nx_lpage_splits;
-> >       u64 max_mmu_page_hash_collisions;
-> > +     union {
-> > +             struct {
-> > +                     atomic64_t pages_4k;
-> > +                     atomic64_t pages_2m;
-> > +                     atomic64_t pages_1g;
-> > +                     atomic64_t pages_512g;
-> > +             };
-> > +             atomic64_t pages[4];
-> > +     } page_stats;
-> >  };
-> >
-> >  struct kvm_vcpu_stat {
-> > diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> > index 83e6c6965f1e..ad5638815311 100644
-> > --- a/arch/x86/kvm/mmu.h
-> > +++ b/arch/x86/kvm/mmu.h
-> > @@ -240,4 +240,6 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
-> >       return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
-> >  }
-> >
-> > +void kvm_update_page_stats(struct kvm *kvm, int level, int count);
-> > +
-> >  #endif
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 442cc554ebd6..7e0fc760739b 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -588,16 +588,22 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
-> >       return flush;
-> >  }
-> >
-> > +void kvm_update_page_stats(struct kvm *kvm, int level, int count)
-> > +{
-> > +     atomic64_add(count, &kvm->stat.page_stats.pages[level - 1]);
-> > +}
-> > +
-> >  /*
-> >   * Rules for using mmu_spte_clear_track_bits:
-> >   * It sets the sptep from present to nonpresent, and track the
-> >   * state bits, it is used to clear the last level sptep.
-> >   * Returns non-zero if the PTE was previously valid.
-> >   */
-> > -static int mmu_spte_clear_track_bits(u64 *sptep)
-> > +static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
-> >  {
-> >       kvm_pfn_t pfn;
-> >       u64 old_spte = *sptep;
-> > +     int level = sptep_to_sp(sptep)->role.level;
-> >
-> >       if (!spte_has_volatile_bits(old_spte))
-> >               __update_clear_spte_fast(sptep, 0ull);
-> > @@ -607,6 +613,9 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
-> >       if (!is_shadow_present_pte(old_spte))
-> >               return 0;
-> >
-> > +     if (is_last_spte(old_spte, level))
-> > +             kvm_update_page_stats(kvm, level, -1);
-> > +
-> >       pfn = spte_to_pfn(old_spte);
-> >
-> >       /*
-> > @@ -984,9 +993,10 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
-> >       }
-> >  }
-> >
-> > -static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
-> > +static void pte_list_remove(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> > +                         u64 *sptep)
-> >  {
-> > -     mmu_spte_clear_track_bits(sptep);
-> > +     mmu_spte_clear_track_bits(kvm, sptep);
-> >       __pte_list_remove(sptep, rmap_head);
-> >  }
-> >
-> > @@ -1119,7 +1129,7 @@ static u64 *rmap_get_next(struct rmap_iterator *iter)
-> >
-> >  static void drop_spte(struct kvm *kvm, u64 *sptep)
-> >  {
-> > -     if (mmu_spte_clear_track_bits(sptep))
-> > +     if (mmu_spte_clear_track_bits(kvm, sptep))
-> >               rmap_remove(kvm, sptep);
-> >  }
-> >
-> > @@ -1129,7 +1139,6 @@ static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
-> >       if (is_large_pte(*sptep)) {
-> >               WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
-> >               drop_spte(kvm, sptep);
-> > -             --kvm->stat.lpages;
-> >               return true;
-> >       }
-> >
-> > @@ -1386,7 +1395,7 @@ static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> >       while ((sptep = rmap_get_first(rmap_head, &iter))) {
-> >               rmap_printk("spte %p %llx.\n", sptep, *sptep);
-> >
-> > -             pte_list_remove(rmap_head, sptep);
-> > +             pte_list_remove(kvm, rmap_head, sptep);
-> >               flush = true;
-> >       }
-> >
-> > @@ -1421,13 +1430,13 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> >               need_flush = 1;
-> >
-> >               if (pte_write(pte)) {
-> > -                     pte_list_remove(rmap_head, sptep);
-> > +                     pte_list_remove(kvm, rmap_head, sptep);
-> >                       goto restart;
-> >               } else {
-> >                       new_spte = kvm_mmu_changed_pte_notifier_make_spte(
-> >                                       *sptep, new_pfn);
-> >
-> > -                     mmu_spte_clear_track_bits(sptep);
-> > +                     mmu_spte_clear_track_bits(kvm, sptep);
-> >                       mmu_spte_set(sptep, new_spte);
-> >               }
-> >       }
-> > @@ -2232,8 +2241,6 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
-> >       if (is_shadow_present_pte(pte)) {
-> >               if (is_last_spte(pte, sp->role.level)) {
-> >                       drop_spte(kvm, spte);
-> > -                     if (is_large_pte(pte))
-> > -                             --kvm->stat.lpages;
-> >               } else {
-> >                       child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
-> >                       drop_parent_pte(child, spte);
-> > @@ -2692,8 +2699,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
-> >       trace_kvm_mmu_set_spte(level, gfn, sptep);
-> >
-> >       if (!was_rmapped) {
-> > -             if (is_large_pte(*sptep))
-> > -                     ++vcpu->kvm->stat.lpages;
-> > +             kvm_update_page_stats(vcpu->kvm, level, 1);
-> >               rmap_count = rmap_add(vcpu, sptep, gfn);
-> >               if (rmap_count > RMAP_RECYCLE_THRESHOLD)
-> >                       rmap_recycle(vcpu, sptep, gfn);
-> > @@ -5669,7 +5675,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
-> >               if (sp->role.direct && !kvm_is_reserved_pfn(pfn) &&
-> >                   sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
-> >                                                              pfn, PG_LEVEL_NUM)) {
-> > -                     pte_list_remove(rmap_head, sptep);
-> > +                     pte_list_remove(kvm, rmap_head, sptep);
-> >
-> >                       if (kvm_available_flush_tlb_with_range())
-> >                               kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
-> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> > index cba2ab5db2a0..eae404c15364 100644
-> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> > @@ -413,7 +413,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
-> >       bool was_leaf = was_present && is_last_spte(old_spte, level);
-> >       bool is_leaf = is_present && is_last_spte(new_spte, level);
-> >       bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
-> > -     bool was_large, is_large;
-> >
-> >       WARN_ON(level > PT64_ROOT_MAX_LEVEL);
-> >       WARN_ON(level < PG_LEVEL_4K);
-> > @@ -472,18 +471,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
-> >               return;
-> >       }
-> >
-> > -     /*
-> > -      * Update large page stats if a large page is being zapped, created, or
-> > -      * is replacing an existing shadow page.
-> > -      */
-> > -     was_large = was_leaf && is_large_pte(old_spte);
-> > -     is_large = is_leaf && is_large_pte(new_spte);
-> > -     if (was_large != is_large) {
-> > -             if (was_large)
-> > -                     atomic64_sub(1, (atomic64_t *)&kvm->stat.lpages);
-> > -             else
-> > -                     atomic64_add(1, (atomic64_t *)&kvm->stat.lpages);
-> > -     }
-> > +     if (is_leaf != was_leaf)
-> > +             kvm_update_page_stats(kvm, level, is_leaf ? 1 : -1);
-> >
-> >       if (was_leaf && is_dirty_spte(old_spte) &&
-> >           (!is_present || !is_dirty_spte(new_spte) || pfn_changed))
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 8166ad113fb2..3858d36d3c49 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -235,9 +235,12 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
-> >       STATS_DESC_COUNTER(VM, mmu_recycled),
-> >       STATS_DESC_COUNTER(VM, mmu_cache_miss),
-> >       STATS_DESC_ICOUNTER(VM, mmu_unsync),
-> > -     STATS_DESC_ICOUNTER(VM, lpages),
-> >       STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
-> > -     STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
-> > +     STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions),
-> > +     STATS_DESC_ICOUNTER(VM, page_stats.pages_4k),
-> > +     STATS_DESC_ICOUNTER(VM, page_stats.pages_2m),
-> > +     STATS_DESC_ICOUNTER(VM, page_stats.pages_1g),
-> > +     STATS_DESC_ICOUNTER(VM, page_stats.pages_512g)
->
-> FYI this will make the stat names "page_stats.pages_4k",
-> "page_stats.pages_2m", etc. Is that ok?
->
-> If you want the stat names to be just "pages_4k", "pages_2m", etc. you
-> can make the page_stats union anonymous.
->
-> >  };
-> >  static_assert(ARRAY_SIZE(kvm_vm_stats_desc) ==
-> >               sizeof(struct kvm_vm_stat) / sizeof(u64));
-> > --
-> > 2.32.0.432.gabb21c7263-goog
-> >
+Yeah, we need to add it.
+
+> How did you find this, by the way?
+
+I was learning about memory protection key. So I read the related code in
+kernel and spotted this.
+
+>>  arch/x86/mm/fault.c | 23 +++++++++++++++--------
+>>  1 file changed, 15 insertions(+), 8 deletions(-)
+>> 
+>> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+>> index b2eefdefc108..883294282e1e 100644
+>> --- a/arch/x86/mm/fault.c
+>> +++ b/arch/x86/mm/fault.c
+>> @@ -710,7 +710,8 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
+>>  
+>>  static noinline void
+>>  kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+>> -			 unsigned long address, int signal, int si_code)
+>> +			 unsigned long address, int signal, int si_code,
+>> +			 u32 pkey)
+>>  {
+>>  	WARN_ON_ONCE(user_mode(regs));
+>>  
+>> @@ -735,8 +736,12 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+>>  
+>>  			set_signal_archinfo(address, error_code);
+>>  
+>> -			/* XXX: hwpoison faults will set the wrong code. */
+>> -			force_sig_fault(signal, si_code, (void __user *)address);
+>> +			if (si_code == SEGV_PKUERR) {
+>> +				force_sig_pkuerr((void __user *)address, pkey);
+>> +			} else {
+>> +				/* XXX: hwpoison faults will set the wrong code. */
+>> +				force_sig_fault(signal, si_code, (void __user *)address);
+>> +			}
+>>  		}
+>>  
+>>  		/*
+>> @@ -798,7 +803,8 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+>>  	struct task_struct *tsk = current;
+>>  
+>>  	if (!user_mode(regs)) {
+>> -		kernelmode_fixup_or_oops(regs, error_code, address, pkey, si_code);
+>> +		kernelmode_fixup_or_oops(regs, error_code, address,
+>> +					 SIGSEGV, si_code, pkey);
+>>  		return;
+>>  	}
+>>  
+>> @@ -930,7 +936,8 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
+>>  {
+>>  	/* Kernel mode? Handle exceptions or die: */
+>>  	if (!user_mode(regs)) {
+>> -		kernelmode_fixup_or_oops(regs, error_code, address, SIGBUS, BUS_ADRERR);
+>> +		kernelmode_fixup_or_oops(regs, error_code, address,
+>> +					 SIGBUS, BUS_ADRERR, 0);
+>>  		return;
+>>  	}
+> 
+> Could we please use ARCH_DEFAULT_PKEY instead of 0's in all these call
+> sites?  I just detest seeing mystery functions with lots of 0's and 1's
+> as parameters.
+
+I agree that using ARCH_DEFAULT_PKEY is better. I think I am supposed to
+send a patch v2 for the update?
+
+By the way, the magic pkey number 0 also appears when bad_area_nosemaphore
+calls __bad_area_nosemaphore and bad_area calls __bad_area. Do they need to
+be changed to ARCH_DEFAULT_PKEY as well?
+
+Thanks!
+
+Jiashuo Liang
+
+
