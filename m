@@ -2,170 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CF93DA45C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDF03DA37A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237962AbhG2NaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:30:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46862 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237906AbhG2N3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:29:20 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TD4JLu118166;
-        Thu, 29 Jul 2021 09:29:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=hLi+1k3Q2pOofVD6JJ72KnRHLVvkzl1EJJ/kEUSRp6E=;
- b=dtY5UjOe8+eHpAi8FY9nzRi5m8MnI8uwWlt9gpPYlX9UutblUmKSXb9G6NjQsDrpKKHj
- vWYk+QlYwZas2r9FjUzOTUjVKmeriyBmplcvc+842+/FePY1ANWACJUONO3u2hOyW4Nv
- v33PLVEtl24pXD4J72NMdRQLMJMr1UWu1DuUtCgnvy1nKilcvuM/GVSfnPVJMl75HdoI
- 78JLTXPUx/AIOE1eEYdeCCTQBYRj89g6UYSdwIQcfvYXHQB1ZMFhNMFfU4X5TjaeFDVG
- kB/VRPOlUBUDbb2m2HgE+gvV/682c4NjCl3W4NP/H/kTlfGUZi6w6f+7bNw/7uWcWPSA vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a3v5s2t2d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 09:29:16 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TD4Xru119820;
-        Thu, 29 Jul 2021 09:29:16 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a3v5s2t1j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 09:29:16 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TDIw2R013339;
-        Thu, 29 Jul 2021 13:29:14 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3a235m1qwy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 13:29:14 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TDQQDh33554826
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Jul 2021 13:26:26 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D8854A4068;
-        Thu, 29 Jul 2021 13:29:10 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6B80DA4060;
-        Thu, 29 Jul 2021 13:29:10 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.1.151])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 29 Jul 2021 13:29:10 +0000 (GMT)
-Date:   Thu, 29 Jul 2021 14:52:04 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Janosch Frank <frankja@linux.ibm.com>
-Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
-        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/13] KVM: s390: pv: avoid stall notifications for
- some UVCs
-Message-ID: <20210729145204.2d8c1430@p-imbrenda>
-In-Reply-To: <6bbeded3-ef94-6c83-f093-796d76b70792@linux.ibm.com>
-References: <20210728142631.41860-1-imbrenda@linux.ibm.com>
-        <20210728142631.41860-2-imbrenda@linux.ibm.com>
-        <6bbeded3-ef94-6c83-f093-796d76b70792@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: gK13XRLPxf-tCKcnhGqyx5OsBHWFH6__
-X-Proofpoint-GUID: BhRXjfRSW6J1HrsUV3U88QBodu2a0cCS
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015 bulkscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107290084
+        id S237411AbhG2MzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 08:55:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:25878 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237369AbhG2MzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 08:55:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627563301; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=6KbRnv1WSKDO9nbls2nTXvR0S1bslILj0H/eogKAD+I=; b=tcy4x2iMoAGkfSmziuPtJIWP8IK43fwpS2tsQ2BqQPOHcc1hpsQvw2xXKpr971PxyR7e/Foq
+ gnCEr9z8hF78TUMaEK09ZyuU3jlyWAfjhzMwoLtPfRPcyqYyFcbVvoyurK/syvkS7kh7zECW
+ kKb2v064j/8+n1zFV+9/1a9zdMU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6102a50417c2b4047d449661 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 12:54:28
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0428CC433D3; Thu, 29 Jul 2021 12:54:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akronite-sh-dev02.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9E341C433D3;
+        Thu, 29 Jul 2021 12:54:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9E341C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=luoj@codeaurora.org
+From:   Luo Jie <luoj@codeaurora.org>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, p.zabel@pengutronix.de, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        robert.marko@sartura.hr
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        sricharan@codeaurora.org, Luo Jie <luoj@codeaurora.org>
+Subject: [PATCH 1/3] net: mdio-ipq4019: Add mdio reset function
+Date:   Thu, 29 Jul 2021 20:53:56 +0800
+Message-Id: <20210729125358.5227-1-luoj@codeaurora.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jul 2021 11:58:39 +0200
-Janosch Frank <frankja@linux.ibm.com> wrote:
+Support PHY reset function and MDIO clock frequency configuration.
 
-> On 7/28/21 4:26 PM, Claudio Imbrenda wrote:
-> > Improve make_secure_pte to avoid stalls when the system is heavily
-> > overcommitted. This was especially problematic in
-> > kvm_s390_pv_unpack, because of the loop over all pages that needed
-> > unpacking.
-> > 
-> > Also fix kvm_s390_pv_init_vm to avoid stalls when the system is
-> > heavily overcommitted.  
-> 
-> Fixes tag?
+Signed-off-by: Luo Jie <luoj@codeaurora.org>
+---
+ drivers/net/mdio/Kconfig        |  1 +
+ drivers/net/mdio/mdio-ipq4019.c | 71 +++++++++++++++++++++++++++++++++
+ 2 files changed, 72 insertions(+)
 
-will be in the next version
-
-> > 
-> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> > ---
-> >  arch/s390/kernel/uv.c | 11 ++++++++---
-> >  arch/s390/kvm/pv.c    |  2 +-
-> >  2 files changed, 9 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> > index aeb0a15bcbb7..fd0faa51c1bb 100644
-> > --- a/arch/s390/kernel/uv.c
-> > +++ b/arch/s390/kernel/uv.c
-> > @@ -196,11 +196,16 @@ static int make_secure_pte(pte_t *ptep,
-> > unsigned long addr, if (!page_ref_freeze(page, expected))
-> >  		return -EBUSY;
-> >  	set_bit(PG_arch_1, &page->flags);
-> > -	rc = uv_call(0, (u64)uvcb);
-> > +	rc = __uv_call(0, (u64)uvcb);  
-> 
-> We should exchange rc with cc since that's what we get back from
-> __uv_call(). Technically we always get a cc but for the other
-> functions it's only ever 0/1 which translates to success/error so rc
-> is ok.
-
-will be in the next version
-
-> >  	page_ref_unfreeze(page, expected);
-> > -	/* Return -ENXIO if the page was not mapped, -EINVAL
-> > otherwise */
-> > -	if (rc)
-> > +	/*
-> > +	 * Return -ENXIO if the page was not mapped, -EINVAL for
-> > other errors.
-> > +	 * If busy or partially completed, return -EAGAIN.
-> > +	 */
-> > +	if (rc == 1)
-> >  		rc = uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
-> > +	else if (rc > 1)
-> > +		rc = -EAGAIN;
-> >  	return rc;  
-> 
-> Could you define the CCs in uv.h and check against the constants here
-> so it's easier to understand that the rc > 1 checks against a "UV was
-> busy please re-issue the call again" cc?
->
-> Maybe also make it explicit for cc 2 and 3 instead of cc > 1
-
-will be in the next version
-
-> >  }
-> >  
-> > diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-> > index c8841f476e91..e007df11a2fe 100644
-> > --- a/arch/s390/kvm/pv.c
-> > +++ b/arch/s390/kvm/pv.c
-> > @@ -196,7 +196,7 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16
-> > *rc, u16 *rrc) uvcb.conf_base_stor_origin =
-> > (u64)kvm->arch.pv.stor_base; uvcb.conf_virt_stor_origin =
-> > (u64)kvm->arch.pv.stor_var; 
-> > -	cc = uv_call(0, (u64)&uvcb);
-> > +	cc = uv_call_sched(0, (u64)&uvcb);
-> >  	*rc = uvcb.header.rc;
-> >  	*rrc = uvcb.header.rrc;
-> >  	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len
-> > %llx rc %x rrc %x", 
-> 
+diff --git a/drivers/net/mdio/Kconfig b/drivers/net/mdio/Kconfig
+index 99a6c13a11af..06a605ffb950 100644
+--- a/drivers/net/mdio/Kconfig
++++ b/drivers/net/mdio/Kconfig
+@@ -169,6 +169,7 @@ config MDIO_OCTEON
+ config MDIO_IPQ4019
+ 	tristate "Qualcomm IPQ4019 MDIO interface support"
+ 	depends on HAS_IOMEM && OF_MDIO
++	depends on GPIOLIB && COMMON_CLK && RESET_CONTROLLER
+ 	help
+ 	  This driver supports the MDIO interface found in Qualcomm
+ 	  IPQ40xx series Soc-s.
+diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
+index 9cd71d896963..01f5b9393537 100644
+--- a/drivers/net/mdio/mdio-ipq4019.c
++++ b/drivers/net/mdio/mdio-ipq4019.c
+@@ -11,6 +11,9 @@
+ #include <linux/of_mdio.h>
+ #include <linux/phy.h>
+ #include <linux/platform_device.h>
++#include <linux/gpio/consumer.h>
++#include <linux/reset.h>
++#include <linux/clk.h>
+ 
+ #define MDIO_MODE_REG				0x40
+ #define MDIO_ADDR_REG				0x44
+@@ -31,8 +34,16 @@
+ #define IPQ4019_MDIO_TIMEOUT	10000
+ #define IPQ4019_MDIO_SLEEP		10
+ 
++/* MDIO clock source frequency is fixed to 100M */
++#define QCA_MDIO_CLK_RATE	100000000
++
++#define QCA_PHY_SET_DELAY_US	100000
++
+ struct ipq4019_mdio_data {
+ 	void __iomem	*membase;
++	void __iomem *eth_ldo_rdy;
++	struct reset_control *reset_ctrl;
++	struct clk *mdio_clk;
+ };
+ 
+ static int ipq4019_mdio_wait_busy(struct mii_bus *bus)
+@@ -171,10 +182,61 @@ static int ipq4019_mdio_write(struct mii_bus *bus, int mii_id, int regnum,
+ 	return 0;
+ }
+ 
++static int ipq_mdio_reset(struct mii_bus *bus)
++{
++	struct ipq4019_mdio_data *priv = bus->priv;
++	struct device *dev = bus->parent;
++	struct gpio_desc *reset_gpio;
++	u32 val;
++	int i, ret;
++
++	/* To indicate CMN_PLL that ethernet_ldo has been ready if needed */
++	if (!IS_ERR(priv->eth_ldo_rdy)) {
++		val = readl(priv->eth_ldo_rdy);
++		val |= BIT(0);
++		writel(val, priv->eth_ldo_rdy);
++		fsleep(QCA_PHY_SET_DELAY_US);
++	}
++
++	/* Reset GEPHY if need */
++	if (!IS_ERR(priv->reset_ctrl)) {
++		reset_control_assert(priv->reset_ctrl);
++		fsleep(QCA_PHY_SET_DELAY_US);
++		reset_control_deassert(priv->reset_ctrl);
++		fsleep(QCA_PHY_SET_DELAY_US);
++	}
++
++	/* Configure MDIO clock frequency */
++	if (!IS_ERR(priv->mdio_clk)) {
++		ret = clk_set_rate(priv->mdio_clk, QCA_MDIO_CLK_RATE);
++		if (ret)
++			return ret;
++
++		ret = clk_prepare_enable(priv->mdio_clk);
++		if (ret)
++			return ret;
++	}
++
++	/* Reset PHYs by gpio pins */
++	for (i = 0; i < gpiod_count(dev, "phy-reset"); i++) {
++		reset_gpio = gpiod_get_index_optional(dev, "phy-reset", i, GPIOD_OUT_HIGH);
++		if (IS_ERR(reset_gpio))
++			continue;
++		gpiod_set_value_cansleep(reset_gpio, 0);
++		fsleep(QCA_PHY_SET_DELAY_US);
++		gpiod_set_value_cansleep(reset_gpio, 1);
++		fsleep(QCA_PHY_SET_DELAY_US);
++		gpiod_put(reset_gpio);
++	}
++
++	return 0;
++}
++
+ static int ipq4019_mdio_probe(struct platform_device *pdev)
+ {
+ 	struct ipq4019_mdio_data *priv;
+ 	struct mii_bus *bus;
++	struct resource *res;
+ 	int ret;
+ 
+ 	bus = devm_mdiobus_alloc_size(&pdev->dev, sizeof(*priv));
+@@ -182,14 +244,23 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	priv = bus->priv;
++	priv->eth_ldo_rdy = IOMEM_ERR_PTR(-EINVAL);
+ 
+ 	priv->membase = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(priv->membase))
+ 		return PTR_ERR(priv->membase);
+ 
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	if (res)
++		priv->eth_ldo_rdy = devm_ioremap_resource(&pdev->dev, res);
++
++	priv->reset_ctrl = devm_reset_control_get_exclusive(&pdev->dev, "gephy_mdc_rst");
++	priv->mdio_clk = devm_clk_get(&pdev->dev, "gcc_mdio_ahb_clk");
++
+ 	bus->name = "ipq4019_mdio";
+ 	bus->read = ipq4019_mdio_read;
+ 	bus->write = ipq4019_mdio_write;
++	bus->reset = ipq_mdio_reset;
+ 	bus->parent = &pdev->dev;
+ 	snprintf(bus->id, MII_BUS_ID_SIZE, "%s%d", pdev->name, pdev->id);
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
