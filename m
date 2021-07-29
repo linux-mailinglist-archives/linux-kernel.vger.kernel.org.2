@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE203DABC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15203DABC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhG2TVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 15:21:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26480 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229606AbhG2TVR (ORCPT
+        id S231978AbhG2TWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:22:14 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:40525 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhG2TWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 15:21:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627586473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bbi3e3he60RiuUGGMSO9VXfHUkHWKRL5IulkRfQYiGc=;
-        b=cWHZA75i8Rj9JWtLZyL14Yy9PclJcVdVJzknfcJO8/DCAF/3Gc3LZzn2vhuZQ38zYmPoMU
-        CpjRnD4F0H8uGEkpxAHTDM2f1m9FKf70+nqH6zW4KLzLW8FDjLGELUzs1YJw3NLjsF6t93
-        a7AVAEZBWxW2XTVAzQaDo6LpKDlmc/E=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-63-DNMq_51bM-C_ZIyIVtLvqQ-1; Thu, 29 Jul 2021 15:21:10 -0400
-X-MC-Unique: DNMq_51bM-C_ZIyIVtLvqQ-1
-Received: by mail-io1-f69.google.com with SMTP id i10-20020a5e850a0000b029053ee90daa50so4436978ioj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 12:21:10 -0700 (PDT)
+        Thu, 29 Jul 2021 15:22:12 -0400
+Received: by mail-pl1-f169.google.com with SMTP id c16so8137438plh.7;
+        Thu, 29 Jul 2021 12:22:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bbi3e3he60RiuUGGMSO9VXfHUkHWKRL5IulkRfQYiGc=;
-        b=sYY1Zj4OJqXVee6/WlPOH6kimPwG9DUl2Y8viPDyB1BzJdO6faYF+IViG/T0zk6nSr
-         zHmvLQo87bOImqjkpfzMZ163k17rlbN9wxmECyqsb8R85bsBHc9vjORyoH1N6VDQqbwn
-         gjZr+pvjVCyW6dGr+VEW2QtyMzbG09LC0HxZTke1y03nsx6dE9lz1Oaq/M59wi/2lO+a
-         vzw5drIn0h19q9rI7B9xWnCd0pWilxnpKNFz6ajyWfjPpeV/VvenLxvNCGIY4RJPa+1b
-         o+YKEmQEI7S4LZ4RS6FLlOMdam8r1Yv8sjGZ7TySTnXJQ4V5W49iYG4iUr5wTHkkftZf
-         wmpg==
-X-Gm-Message-State: AOAM532CiVej34rbab0lsXyzIFY+Qy6MRYW506Wrbd8MjZddKSX3xFis
-        jcVEJumAOe3Rp+pqQSq4Csi9AFDzerwcwN41BdWMp4D7DNqg/0Yd5cL9G98LtoqhMsQwmFBrCHc
-        pFmX8c3lvQb6WarVjTfSr8O7+Oh5/1A2RxksxJ5+R
-X-Received: by 2002:a92:cec5:: with SMTP id z5mr4491194ilq.226.1627586469740;
-        Thu, 29 Jul 2021 12:21:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxOuQC+UO8jwrToghqrOxaVwYt0H/hgmEJH6fXw8UUq2yKjcvEnl6h9LWqvIArjFChiUoIMvKUieVweDInY/mQ=
-X-Received: by 2002:a92:cec5:: with SMTP id z5mr4491181ilq.226.1627586469553;
- Thu, 29 Jul 2021 12:21:09 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yZ0lluIYyP/MXBJ+IRMNV99KvccYsXlf1DWrrHOIiss=;
+        b=qGXaMdZfgS6tiOQ8TxVfEAwpfz3kclTp3mkXqPwkalxLDoLeJpl67Z1wrvPHeH1jgz
+         6KcJXRT4i/Svt3Hlin34VhSO2wkI7VjXki+ymL2sQ5RboqgPBBH5mdRtB8DmWJGs+k8O
+         k4BlAfm2/TXE/n7KK3L5Elj3KL5H8/iknqqnX8kqk5PxnA90DthovhESNMz3EYeO8ztW
+         FfAE79EHxNuzUMlYa8uz27Occ60G16WWmZEiM1lkL/new0Wdj06d+ue4FOrFAe4DZ6Lb
+         4P5jY/zV+4w5MRr9D0j99CUZr3XIJHehJ/i9b3dWsL3I1ycWr54G/SMPzf0H1eSJPXgu
+         HFXQ==
+X-Gm-Message-State: AOAM531Nta70X03LGcGAWTSOJsbsInYfNbjWkGRlJqhXiPlHOiscgXOX
+        Ahw+XGjgKSMXernEccON6VE=
+X-Google-Smtp-Source: ABdhPJx88t+rVzQn63rRH3qW13fakl9IITl46nPf4CI42kgu+DExhaAWnap/3sz0Aa8hQg+jiGdSrg==
+X-Received: by 2002:a17:90a:bd98:: with SMTP id z24mr16474852pjr.99.1627586528943;
+        Thu, 29 Jul 2021 12:22:08 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:684a:6173:abee:6f13])
+        by smtp.gmail.com with ESMTPSA id s193sm4594659pfc.183.2021.07.29.12.22.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 12:22:08 -0700 (PDT)
+Subject: Re: [PATCH v2 2/3] kunit: Add support for suite initialization and
+ cleanup
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
+        linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Yanko Kaneti <yaneti@declera.com>
+References: <20210729044125.7435-1-bvanassche@acm.org>
+ <20210729044125.7435-3-bvanassche@acm.org> <YQJCyigNroTl8J/l@kroah.com>
+ <8ab0ea44-760a-61df-0b9a-8b314ca9a0fe@acm.org>
+ <733cb812-8696-45f4-356d-cfe5bd85eb9b@linuxfoundation.org>
+ <bbe15cf5-229c-13b2-126e-e773c0ba18c2@acm.org>
+ <81edb935-aabd-bd05-c3d1-260903b3c726@linuxfoundation.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <5f356522-e61b-9605-5f82-e805efcaef3d@acm.org>
+Date:   Thu, 29 Jul 2021 12:22:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210729135250.32212-1-mlombard@redhat.com> <YQLfU4gzvAJYvBmx@fedora>
-In-Reply-To: <YQLfU4gzvAJYvBmx@fedora>
-From:   Maurizio Lombardi <mlombard@redhat.com>
-Date:   Thu, 29 Jul 2021 21:20:58 +0200
-Message-ID: <CAFL455k-wObZ_tZk_OzmLnbP-9+Ay34ExKwg8h971DDZrk-JyQ@mail.gmail.com>
-Subject: Re: [PATCH V3] iscsi_ibft: fix crash due to KASLR physical memory remapping
-To:     Konrad Rzeszutek Wilk <konrad@darnok.org>
-Cc:     Mike Rapoport <rppt@kernel.org>, bp@alien8.de, tglx@linutronix.de,
-        x86@kernel.org, Peter Jones <pjones@redhat.com>, konrad@kernel.org,
-        George Kennedy <george.kennedy@oracle.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <81edb935-aabd-bd05-c3d1-260903b3c726@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=C4=8Dt 29. 7. 2021 v 19:03 odes=C3=ADlatel Konrad Rzeszutek Wilk
-<konrad@darnok.org> napsal:
-> One part that I think you are saying but just want to double-check is
-> that the isa_bus_to_virt() virtual addresses it returns - those are
-> different every boot when KASLR is enabled, right?
->
+On 7/29/21 11:42 AM, Shuah Khan wrote:
+> Please take a look at Documentation/process/submitting-patches.rst
+> for information on commit logs.
 
-Yes.
-If KASLR is disabled, the physical memory is mapped at virtual base
-address 0xffff888000000000 (on AMD64);
-if enabled, KASLR will randomize it.
+As one can see below, I'm already familiar with the kernel development 
+process:
 
-Maurizio
+$ git log --author="Bart Van Assche" | grep -c ^commit
+1664
 
+Bart.
