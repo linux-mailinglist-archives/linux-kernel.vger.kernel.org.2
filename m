@@ -2,161 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5BB3DA34C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55DC3DA355
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237251AbhG2Mod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 08:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35424 "EHLO
+        id S237265AbhG2MqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 08:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236868AbhG2Mob (ORCPT
+        with ESMTP id S237203AbhG2MqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 08:44:31 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86F2C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 05:44:28 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id w10so3806584qtj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 05:44:28 -0700 (PDT)
+        Thu, 29 Jul 2021 08:46:18 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF6DC0613D3;
+        Thu, 29 Jul 2021 05:46:14 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id e5so7393771ljp.6;
+        Thu, 29 Jul 2021 05:46:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=REukLMYHB9mfVFO1/bdDCKtlszA1rKroqNl1QPX1pLU=;
-        b=BDIdGkUehfGKUuxsy+fvkDkr2GBCODc7I8zNcJ8SRMTrosiAzd9wV8k4ho+9DmoVTN
-         ZgZpaPFz7rYUXgm3Bnd50vGzEYEK+sYhEMHsoUgf3j65MNdadi6mEO5UCXCGxYCi7qgX
-         WFQcsZIJ2Fu8s/P9vhc/OdXyMBvqwLC7WP0Iwa+/QtOk7YrcQNVx6G9CqL2RRUSlnYx+
-         k+NmAzUBe1pYR9aFm77nsezouOeWql6Zc5QqwXSsoTfMq7LS2fboyKrpB9zlkED9oWMI
-         qlKDmSAP2MAK0Brfbz6z46cmYAxkk12/imrm0s0s2JWDb0U311Dnmemk3PmuxKxEui7s
-         sudg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aOPMjYxSfcLxQO5DXf2cS5DmYr4eh4QbyClofMVpXyI=;
+        b=XkvrSAPqzJi48W/X2lSLbgNnRGe8o+NyrHsiPiJmsHlrRDqEo+cdPj+rz0MrAGhGHg
+         HGzNB36puxEs4gcm8P2OgFjqET6Dnh83N+BWbBOKhNTmBXYXZ2p3Lngm6TUnUsW8ZYnx
+         5GUIu6gBncw4hEKlLN1kq+flJmLKVkALxejlGTn824E74q4GyInamllYGPvcifmfw2xv
+         PNUziFALxnNMxABcU/Zzc20YSQQMRV3Tglgko/5uSSrZ/CF6cI+K7L8GdGEhsamXWEl5
+         zQsTuRPwAR2OCyr/2xrpXoWXStoE/4u9U2Vgc0EBLO1r9gS2j+7HRtPGg1J3e8MFjHm5
+         RYNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=REukLMYHB9mfVFO1/bdDCKtlszA1rKroqNl1QPX1pLU=;
-        b=DAYpcQC/BB46CQSageyBEXoPSHMLBViM09kJwlXV63Wi2U02YQXW3cDZzd2K1LIHqz
-         n1CsfpU0cMaD1+HVKf6Iod8fTcNWcchnTrAq0eJ0bxFptUt7Ysb/CgR/Idt2PZo3Hwu7
-         SWOvGw7DeZas69QwWZa0I5XJfGnlWjmiddNj3wPv38bj0uFMUVPTfiHgSWXUyXfW+bQp
-         sj6dAVI70oN1BKPIYe6wvfF9nNvdnhBcgIPhsWR7c2SgDYVEWlbGW8doPmj41mPdxjAk
-         7cU3ClN9WnXNftVmQ2+P3707uQdKENpoYkqwv3GY9oSksYxlxfnMwv1IlwBsgnItQYgZ
-         BVCw==
-X-Gm-Message-State: AOAM532nE9NpvCguJRIwHfef/RgiN9CIBfNX8RkfviUC/qi25Z5zaPmM
-        I7d+F3OV1S6XiotjS4lhspePOgE4ntSlQ9oF74q8pQ==
-X-Google-Smtp-Source: ABdhPJx8p5Gioov6LW3dMuKZCxQ7H3nKyaoIEb0t3AIauct+JwrIEuRpWs9dp5K8G8EOr4CSz9yHAnha7BrG6YV+cpk=
-X-Received: by 2002:a05:622a:10d:: with SMTP id u13mr4063224qtw.369.1627562667841;
- Thu, 29 Jul 2021 05:44:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aOPMjYxSfcLxQO5DXf2cS5DmYr4eh4QbyClofMVpXyI=;
+        b=CXrhoKIiYCPivu4Qs/h+8L5uhBLWDet7a8TkoV7MTzdQN1dZDXgOjo7fKuaratfdM7
+         sPJCu5jShgMQm7Q5CjRziul8H9TfMGrZucMOnnnbrNTVY4U00hxo8xJ4///fdGVA0szL
+         HDZuKQi/3x+nmR4qLJroTphBMY530Owk1QpEDjsyMSpF3HHmMiHWa/jnMO3HPGxWOyjE
+         /hajak/F/fYgmf+LE2vk50eZu7IMek0CGotQkeb/M2xzmmErSVYMedZVmv2EWo77M6Ta
+         tBSpURx8EpaTPPCx7ChALjHCOV+P2UrhTJm7TqwnkNCGfvPulqyNq/g3HL/iJ5uiI0Av
+         +KOg==
+X-Gm-Message-State: AOAM5324dE0N95NZ7NJFxrH11DTpr/yk9N1ISS/9eWqraMIURtQV7ung
+        7aMgAPv6ULN/0wSXLprRE2s=
+X-Google-Smtp-Source: ABdhPJwKZygKILp6tWJIGvxjQHtv30yI9MQglDPErSO/+wyW06OS+yj8lxy6IJrs4N2UOVXBGm43tw==
+X-Received: by 2002:a05:651c:1587:: with SMTP id h7mr2795884ljq.110.1627562772640;
+        Thu, 29 Jul 2021 05:46:12 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.213])
+        by smtp.gmail.com with ESMTPSA id g28sm295555lfj.279.2021.07.29.05.46.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 05:46:12 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 15:45:56 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] media: em28xx: add missing em28xx_close_extension
+Message-ID: <20210729154556.6e257405@gmail.com>
+In-Reply-To: <3b1de658-ebf0-e45f-49ef-953e3467e7d4@xs4all.nl>
+References: <7df1705e-b2c7-ddfc-9cc5-582fb1a304e5@xs4all.nl>
+        <20210721194307.12155-1-paskripkin@gmail.com>
+        <3b1de658-ebf0-e45f-49ef-953e3467e7d4@xs4all.nl>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <20210728190254.3921642-1-hca@linux.ibm.com> <20210728190254.3921642-3-hca@linux.ibm.com>
-In-Reply-To: <20210728190254.3921642-3-hca@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 29 Jul 2021 14:43:51 +0200
-Message-ID: <CAG_fn=VS_WFjL+qjm79Jvq5M0KaNScvX2vCw=aNxPx14Hffa0A@mail.gmail.com>
-Subject: Re: [PATCH 2/4] kfence: add function to mask address bits
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Marco Elver <elver@google.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 9:03 PM Heiko Carstens <hca@linux.ibm.com> wrote:
->
-> From: Sven Schnelle <svens@linux.ibm.com>
->
-> s390 only reports the page address during a translation fault.
-> To make the kfence unit tests pass, add a function that might
-> be implemented by architectures to mask out address bits.
->
-> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-> ---
->  mm/kfence/kfence_test.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-> index 942cbc16ad26..eb6307c199ea 100644
-> --- a/mm/kfence/kfence_test.c
-> +++ b/mm/kfence/kfence_test.c
-> @@ -23,8 +23,15 @@
->  #include <linux/tracepoint.h>
->  #include <trace/events/printk.h>
->
-> +#include <asm/kfence.h>
-> +
->  #include "kfence.h"
->
-> +/* May be overridden by <asm/kfence.h>. */
-> +#ifndef arch_kfence_test_address
-> +#define arch_kfence_test_address(addr) (addr)
-> +#endif
-> +
->  /* Report as observed from console. */
->  static struct {
->         spinlock_t lock;
-> @@ -82,6 +89,7 @@ static const char *get_access_type(const struct expect_=
-report *r)
->  /* Check observed report matches information in @r. */
->  static bool report_matches(const struct expect_report *r)
->  {
-> +       unsigned long addr =3D (unsigned long)r->addr;
->         bool ret =3D false;
->         unsigned long flags;
->         typeof(observed.lines) expect;
-> @@ -131,22 +139,25 @@ static bool report_matches(const struct expect_repo=
-rt *r)
->         switch (r->type) {
->         case KFENCE_ERROR_OOB:
->                 cur +=3D scnprintf(cur, end - cur, "Out-of-bounds %s at",=
- get_access_type(r));
-> +               addr =3D arch_kfence_test_address(addr);
+On Thu, 29 Jul 2021 11:45:19 +0200
+Hans Verkuil <hverkuil@xs4all.nl> wrote:
 
-Can we normalize addr once before (or after) this switch?
+> On 21/07/2021 21:43, Pavel Skripkin wrote:
+> > If em28xx dev has ->dev_next pointer, we need to delete dev_next
+> > list node from em28xx_extension_devlist on disconnect to avoid UAF
+> > bugs and corrupted list bugs, since driver frees this pointer on
+> > disconnect.
+> > 
+> > Fixes: 1a23f81b7dc3 ("V4L/DVB (9979): em28xx: move usb probe code
+> > to a proper place") Reported-and-tested-by:
+> > syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com> ---
+> > 
+> > Changes in v2:
+> > 	Previous patch was completely broken. I've done some
+> > debugging again and found true root case of the reported bug.
+> > 
+> > ---
+> >  drivers/media/usb/em28xx/em28xx-cards.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/media/usb/em28xx/em28xx-cards.c
+> > b/drivers/media/usb/em28xx/em28xx-cards.c index
+> > c1e0dccb7408..d56b040e1bd7 100644 ---
+> > a/drivers/media/usb/em28xx/em28xx-cards.c +++
+> > b/drivers/media/usb/em28xx/em28xx-cards.c @@ -4139,8 +4139,10 @@
+> > static void em28xx_usb_disconnect(struct usb_interface *intf) 
+> >  	em28xx_close_extension(dev);
+> >  
+> > -	if (dev->dev_next)
+> > +	if (dev->dev_next) {
+> >  		em28xx_release_resources(dev->dev_next);
+> > +		em28xx_close_extension(dev->dev_next);
+> 
+> Wouldn't it be better to swap these two?
+> 
+> That order is also used for em28xx_close_extension(dev) and
+> em28xx_release_resources(dev).
+> 
+> You do need to store dev->dev_next in a temp variable, though.
+> 
 
->                 break;
->         case KFENCE_ERROR_UAF:
->                 cur +=3D scnprintf(cur, end - cur, "Use-after-free %s at"=
-, get_access_type(r));
-> +               addr =3D arch_kfence_test_address(addr);
->                 break;
->         case KFENCE_ERROR_CORRUPTION:
->                 cur +=3D scnprintf(cur, end - cur, "Corrupted memory at")=
-;
->                 break;
->         case KFENCE_ERROR_INVALID:
->                 cur +=3D scnprintf(cur, end - cur, "Invalid %s at", get_a=
-ccess_type(r));
-> +               addr =3D arch_kfence_test_address(addr);
->                 break;
->         case KFENCE_ERROR_INVALID_FREE:
->                 cur +=3D scnprintf(cur, end - cur, "Invalid free of");
->                 break;
->         }
->
-> -       cur +=3D scnprintf(cur, end - cur, " 0x%p", (void *)r->addr);
-> +       cur +=3D scnprintf(cur, end - cur, " 0x%p", (void *)addr);
->
->         spin_lock_irqsave(&observed.lock, flags);
->         if (!report_available())
-> --
-> 2.25.1
->
+Hi, Hans!
+
+I don't understand why I need to store dev->dev_next in a temp
+variable. I don't see code in em28xx_release_resources() or
+em28xx_close_extension() that zeroes this pointer.
 
 
---=20
-Alexander Potapenko
-Software Engineer
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+With regards,
+Pavel Skripkin
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+
