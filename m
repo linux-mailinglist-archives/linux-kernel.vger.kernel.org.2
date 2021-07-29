@@ -2,165 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965F13DAE0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 23:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964493DAE15
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 23:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbhG2VR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 17:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233599AbhG2VRZ (ORCPT
+        id S229992AbhG2VT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 17:19:28 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:41913 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhG2VT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 17:17:25 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA29C061799
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 14:17:21 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id u2so223410plg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 14:17:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KIFjrjBCZBNta1aQPIC9IIdRRedMm/calMcivWflCR8=;
-        b=IXbpigOGv034+BPFdHTh5nWBpOSuoy+RJOgOOHXXBCs3NudbgzAKsQWHlFKOLDU1zm
-         X3CIScRE6+lWU9jgRp2OhY+mwoJN3QHNwhkU57w2jAShQFUvi3yxhPy3hVvC4fnRGHWL
-         ze050lryO68WPb0CCLy3Mm1XvF60JTOT+dgMSey7555btM4cl+f3R4rjJ7FplQuFgKWc
-         F139FIoilaUAJwj5zF8BZE/e1teHbBn7S6vnv2O0VSf8jY1tfB1XLbBYelv1yaBk/U/R
-         GL31TAf8DzIPSteeN6fa7Nli2hABDXDebGEz2vIVf0r8QCWuch+e0wFEcGhVTTwam2ID
-         jgqw==
+        Thu, 29 Jul 2021 17:19:26 -0400
+Received: by mail-il1-f181.google.com with SMTP id j18so4289039ile.8;
+        Thu, 29 Jul 2021 14:19:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KIFjrjBCZBNta1aQPIC9IIdRRedMm/calMcivWflCR8=;
-        b=cmR7hbfPlYmuTKt/FP/4m1iDVRT29mO2kmH9EZc39+PkjrhLpLNvZ3gCGRcmkMl7tH
-         acqYexgkn+tDI0fQLCF+rlIm/m+HbAHMpLyE5obUbTjEkrlMVZlrKAVrwIAp3JFtBCkX
-         Wly85ggXUfCvcoCux/k1b2+nDZyEvcQpTdX0oC9sDN5crrJcLqfYSs74DdxcMCJrNnh5
-         2sOebe/lsBALI6Rbr/6AV13daRCBoRwJJbAzTgUhOfWsIDxscJfYoJS7SW059CA4N0pK
-         5urlF5K33Q+7/AvND3Cxi/xTbq3r2l/5Ej456boq+SBMThV1ZtAKbiecDsDfKmas4qzm
-         NC0Q==
-X-Gm-Message-State: AOAM532/mPPfvmvbCOpZ01Lppy5SihOlQPlFYG7H7sx1LjydfJqTgng+
-        xmgKWO4ycsvQOiAS8VqAId+3SQ==
-X-Google-Smtp-Source: ABdhPJwiMHGtwAApoWJJub1wHV/rXIFjlReZXf08aJmnLVL/GQq0q33W99afFvy9vCUJtjQUu9zjHQ==
-X-Received: by 2002:a17:902:6b4b:b029:12b:f96f:dc03 with SMTP id g11-20020a1709026b4bb029012bf96fdc03mr6512439plt.14.1627593441149;
-        Thu, 29 Jul 2021 14:17:21 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f15sm4876552pgv.92.2021.07.29.14.17.20
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZxbXjNJPmaats8JOtBxvMyMGEAJyQ7EcVf9p6TLrxag=;
+        b=g0SUhrF5y2a2g1o57zSypx89kbCwfPqmIz51yG6kNsKix2L5+c9KVIzpWTwwkjAlkz
+         BTjo4g1df4uvZ37UvjlOaB+mh5IgI3x9bvJyxUy9Rh7sbtWzv/dQTj6+WuuyhG177eFZ
+         qcfFBq6NQ3Lp7eaYgrV9aFr23BYErTEJ87PYYeRJYVvW/mg+GJYF7UNHvSwX6Du5U40s
+         yay8Ne+WQ3mICwFgviZUEdVkKtfDYp/nTtlmg7jCR0APnuAov/cdRO88LdPrxyjwi3OU
+         GvStGgT3Q/QarP8GoquzIaJOTh1TyxuALp7J1azVNU5tdqI/r+zoNTel6LKHCSNoxiBa
+         HSSg==
+X-Gm-Message-State: AOAM533r88G79ZhMo/URaxmjllhTwJ/kal6TxqlfQD2UWB0mouSMDHr/
+        ayFn+Y19uBSVXG5WSC5J/A==
+X-Google-Smtp-Source: ABdhPJzjT567vzS1PYSB5pmxP78UKspCQnniQ22XMj0Plnn7kuFWQumJFbUxQ0hMW2RE7PV8HnvM8A==
+X-Received: by 2002:a92:905:: with SMTP id y5mr5074091ilg.222.1627593561701;
+        Thu, 29 Jul 2021 14:19:21 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id h1sm2813888ioz.22.2021.07.29.14.19.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 14:17:20 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 21:17:16 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
-        Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3 V3] KVM, SEV: Refactor out function for unregistering
- encrypted regions
-Message-ID: <YQMa3IDQK+DIJiOY@google.com>
-References: <20210726195015.2106033-1-pgonda@google.com>
- <20210726195015.2106033-2-pgonda@google.com>
+        Thu, 29 Jul 2021 14:19:21 -0700 (PDT)
+Received: (nullmailer pid 909346 invoked by uid 1000);
+        Thu, 29 Jul 2021 21:19:19 -0000
+Date:   Thu, 29 Jul 2021 15:19:19 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH 3/3] dt-bindings: mfd: add "syscon-smc" YAML description
+Message-ID: <YQMbV3elkU0yp92D@robh.at.kernel.org>
+References: <20210723135239.388325-1-clement.leger@bootlin.com>
+ <20210723135239.388325-4-clement.leger@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210726195015.2106033-2-pgonda@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210723135239.388325-4-clement.leger@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prefer "KVM: SVM:" or "KVM: SEV:" in the shortlog, i.e. colon instead of comma
-after KVM.
-
-On Mon, Jul 26, 2021, Peter Gonda wrote:
-> Factor out helper function for freeing the encrypted region list.
+On Fri, Jul 23, 2021 at 03:52:39PM +0200, Clément Léger wrote:
+> This patch adds documentation for the "syscon-smc" compatible which describes
+> a syscon using a SMC regmap instead of a MMIO one. This allows accessing system
+> controllers that are set as secure by using SMC handled by the secure monitor.
 > 
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
-> Reviewed-by: Marc Orr <marcorr@google.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Clément Léger <clement.leger@bootlin.com>
 > ---
->  arch/x86/kvm/svm/sev.c | 26 +++++++++++++++++---------
->  1 file changed, 17 insertions(+), 9 deletions(-)
+>  .../devicetree/bindings/mfd/syscon-smc.yaml   | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/syscon-smc.yaml
 > 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index b59c464bcdfa..6cb61d36fd5e 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1775,11 +1775,25 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
->  	return ret;
->  }
->  
-> +static void unregister_enc_regions(struct kvm *kvm,
-> +					    struct list_head *mem_regions)
-
-Indentation is wonky.  There's an extra tab and an extra space.
-
-> +{
-> +	struct enc_region *pos, *q;
+> diff --git a/Documentation/devicetree/bindings/mfd/syscon-smc.yaml b/Documentation/devicetree/bindings/mfd/syscon-smc.yaml
+> new file mode 100644
+> index 000000000000..6ce1392c5e7f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/syscon-smc.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/syscon-smc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	lockdep_assert_held(&kvm->lock);
+> +title: System Controller Registers R/W via SMC Device Tree Bindings
 > +
-> +	if (list_empty(mem_regions))
-> +		return;
+> +description: |
+> +  System controller SMC node represents a register region containing a set
+> +  of miscellaneous registers accessed through a secure monitor.
+> +  The typical use-case is the same as the syscon one but when running with a
+> +  secure monitor.
 > +
-> +	list_for_each_entry_safe(pos, q, mem_regions, list) {
-> +		__unregister_enc_region_locked(kvm, pos);
-> +		cond_resched();
-> +	}
-> +}
+> +maintainers:
+> +  - Lee Jones <lee.jones@linaro.org>
 > +
->  void sev_vm_destroy(struct kvm *kvm)
->  {
->  	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> -	struct list_head *head = &sev->regions_list;
-> -	struct list_head *pos, *q;
->  
->  	if (!sev_guest(kvm))
->  		return;
-> @@ -1803,13 +1817,7 @@ void sev_vm_destroy(struct kvm *kvm)
->  	 * if userspace was terminated before unregistering the memory regions
->  	 * then lets unpin all the registered memory.
->  	 */
-> -	if (!list_empty(head)) {
-> -		list_for_each_safe(pos, q, head) {
-> -			__unregister_enc_region_locked(kvm,
-> -				list_entry(pos, struct enc_region, list));
-> -			cond_resched();
-> -		}
-> -	}
-> +	unregister_enc_regions(kvm, &sev->regions_list);
->  
->  	mutex_unlock(&kvm->lock);
+> +properties:
+> +  compatible:
+> +    anyOf:
+> +      - items:
+> +          - enum:
+> +              - atmel,sama5d2-sfr
+> +
+> +          - const: syscon-smc
 
-Is there any reason for taking kvm->lock in this path?  The VM is being destroyed,
-there should be no other references, i.e. this is the only task that can be doing
-anything with @kvm.
+I regret having 'syscon' as a compatible, so nak on a 2nd flavor of it. 
+It's only purpose is a hint to Linux to automagically create a regmap for 
+you.
 
-The lock is harmless, it just always gives me pause to see the cond_resched()
-while holding kvm->lock.
+All you need is the specific compatible, atmel,sama5d2-sfr, and you can 
+imply the rest of this from it. That's assuming the conclusion is a 
+register read/write interface on SMC is a good idea, but I don't think 
+it is.
 
-> -- 
-> 2.32.0.432.gabb21c7263-goog
-> 
+Rob
