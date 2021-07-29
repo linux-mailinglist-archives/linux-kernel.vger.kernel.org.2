@@ -2,153 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C9B3DA4B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9033DA530
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237835AbhG2Nsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237726AbhG2Nsv (ORCPT
+        id S238340AbhG2N7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:59:00 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:35303 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237882AbhG2N6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:48:51 -0400
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2835C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:48:48 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 28A2A3F403;
-        Thu, 29 Jul 2021 15:48:47 +0200 (CEST)
-Subject: Re: [PATCH 14/39] arm64: dts: qcom: sdm630: Add TSENS node
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org, marijn.suijten@somainline.org,
-        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210728222542.54269-1-konrad.dybcio@somainline.org>
- <20210728222542.54269-15-konrad.dybcio@somainline.org>
- <860f1120-c5a4-f531-3ea9-aa90c6b063dc@linaro.org>
- <2318377c-959a-a42b-81b5-44e2629570d5@somainline.org>
- <afee55a8-d7d3-709a-ea4f-0306698c9976@linaro.org>
- <b16d8000-85a7-d957-77d2-d921e5b09829@somainline.org>
- <a7f90fe0-ee24-a47d-089d-e716a5766fcd@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <2ffc4e54-a501-bd2d-3f29-a6df34023445@somainline.org>
-Date:   Thu, 29 Jul 2021 15:48:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 29 Jul 2021 09:58:15 -0400
+X-Greylist: delayed 500 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Jul 2021 09:58:13 EDT
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id D664982275;
+        Thu, 29 Jul 2021 16:49:48 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1627566588;
+        bh=/MKAVqF330OXqSqehagKEw9t1KWF1unCEBI529H5BYk=;
+        h=From:To:CC:Subject:Date;
+        b=FGQPyd+47iBHO/7R9ScRC/1bq2+R/EEvX/tclARfmMiXE4KvqC1ISDkr0jvbunD4g
+         4Ap6JtaJBA6GnSE6GJofvsoGu+uqMJbajrdLCRuvm0TJiOhRxLmeH95Q0DqWGWv+NW
+         lrUC0j3n4kw38Do7RVa+mlda+VvUBsSAeNu6geWA=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 16:49:48 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
+        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
+        <andy.lavr@gmail.com>, <kari.argillander@gmail.com>,
+        <oleksandr@natalenko.name>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v27 00/10] NTFS read-write driver GPL implementation by Paragon Software
+Date:   Thu, 29 Jul 2021 16:49:33 +0300
+Message-ID: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <a7f90fe0-ee24-a47d-089d-e716a5766fcd@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 29/07/21 13:14, Thara Gopinath ha scritto:
-> 
-> 
-> On 7/29/21 6:55 AM, Konrad Dybcio wrote:
->>
->> On 29.07.2021 12:54, Thara Gopinath wrote:
->>>
->>>
->>> On 7/29/21 6:52 AM, Konrad Dybcio wrote:
->>>>
->>>> On 29.07.2021 12:50, Thara Gopinath wrote:
->>>>> Hi Konrad,
->>>>>
->>>>> On 7/28/21 6:25 PM, Konrad Dybcio wrote:
->>>>>> This will enable temperature reporting for various SoC
->>>>>> components.
->>>>>>
->>>>>> Signed-off-by: AngeloGioacchino Del Regno 
->>>>>> <angelogioacchino.delregno@somainline.org>
->>>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
->>>>>> ---
->>>>>>     .../devicetree/bindings/thermal/qcom-tsens.yaml       |  1 +
->>>>>>     arch/arm64/boot/dts/qcom/sdm630.dtsi                  | 11 +++++++++++
->>>>>>     2 files changed, 12 insertions(+)
->>>>>>
->>>>>> diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml 
->>>>>> b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
->>>>>> index 4a2eaf28e3fd..d3b9e9b600a2 100644
->>>>>> --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
->>>>>> +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
->>>>>> @@ -48,6 +48,7 @@ properties:
->>>>>>                   - qcom,sc7180-tsens
->>>>>>                   - qcom,sc7280-tsens
->>>>>>                   - qcom,sc8180x-tsens
->>>>>> +              - qcom,sdm630-tsens
->>>>>>                   - qcom,sdm845-tsens
->>>>>>                   - qcom,sm8150-tsens
->>>>>>                   - qcom,sm8250-tsens
->>>>>> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi 
->>>>>> b/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>>>>> index 1e54828817d5..7e9c80e35fba 100644
->>>>>> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>>>>> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>>>>> @@ -627,6 +627,17 @@ mnoc: interconnect@1745000 {
->>>>>>                      <&mmcc AHB_CLK_SRC>;
->>>>>>             };
->>>>>>     +        tsens: thermal-sensor@10ae000 {
->>>>>> +            compatible = "qcom,sdm630-tsens", "qcom,tsens-v2";
->>>>>> +            reg = <0x010ae000 0x1000>, /* TM */
->>>>>> +                  <0x010ad000 0x1000>; /* SROT */
->>>>>> +            #qcom,sensors = <12>;
->>>>>
->>>>> Are all 12 sensors used ? I see that in a later patch "arm64: dts: qcom: 
->>>>> sdm630: Add thermal-zones configuration" only 9 are used.
->>>>
->>>> Hi,
->>>>
->>>> if I recall correctly, they all give output but not all of the mappings were 
->>>> documented in the downstream sources and we have no documentation whatsoever :(
->>>
->>> Right. In that case, why not change #qcom,sensors to 9 and add rest of the 
->>> sensors if and when needed ?
->>>
->> I don't think it makes sense to describe the hardware incorrectly, even if some 
->> of it is unused.
-> 
-> My thinking was more along the lines of don't expose unused h/w bits.
-> 
+This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-You're right about not exposing unused HW bits, but even PC x86 motherboards
-(I mean the smbus/i2c drivers for the big holy management/sensors chips) do
-have such a "base" configuration, where some lines are read as 0 because they
-are effectively not connected by hardware.
+Having decades of expertise in commercial file systems development and huge
+test coverage, we at Paragon Software GmbH want to make our contribution to
+the Open Source Community by providing implementation of NTFS Read-Write
+driver for the Linux Kernel.
 
-In order to avoid confusion to other developers, in my personal opinion, it would
-be good go for the current value of 12 (which isn't incorrect, as that's what the
-SoC supports)... I don't think that anyone would be confused by seeing zero
-readings on some sensors (if their device don't support such sensor), as I think
-that everyone is used to that anyway, even if that's in other circumstances...
+This is fully functional NTFS Read-Write driver. Current version works with
+NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
 
-In any case, luckily that's also safe, because there's no firmware that restricts
-the readings to a subset of sensors in this domain (nobody is going to get a
-hypervisor fault for that).
+We plan to support this version after the codebase once merged, and add new
+features and fix bugs. For example, full journaling support over JBD will be
+added in later updates.
 
-I would also, in case, propose to see how things go: I would expect other
-developers to push device trees for many SDM630/636/660 devices, including but
-not limited to smartphones and SBCs.. so perhaps if we find out that really
-nobody uses the 12 sensors, or if the very vast majority uses a different amount,
-perhaps we may just transfer the value to device-specific configurations in one
-go, as to avoid unnecessary noise... I think :)))
+v2:
+ - patch splitted to chunks (file-wise)
+ - build issues fixed
+ - sparse and checkpatch.pl errors fixed
+ - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+ - cosmetics + code cleanup
 
->>
->>
->>
-> 
+v3:
+ - added acl, noatime, no_acs_rules, prealloc mount options
+ - added fiemap support
+ - fixed encodings support
+ - removed typedefs
+ - adapted Kernel-way logging mechanisms
+ - fixed typos and corner-case issues
+
+v4:
+ - atomic_open() refactored
+ - code style updated
+ - bugfixes
+
+v5:
+- nls/nls_alt mount options added
+- Unicode conversion fixes
+- Improved very fragmented files operations
+- logging cosmetics
+
+v6:
+- Security Descriptors processing changed
+  added system.ntfs_security xattr to set
+  SD
+- atomic_open() optimized
+- cosmetics
+
+v7:
+- Security Descriptors validity checks added (by Mark Harmstone)
+- atomic_open() fixed for the compressed file creation with directio
+  case
+- remount support
+- temporarily removed readahead usage
+- cosmetics
+
+v8:
+- Compressed files operations fixed
+
+v9:
+- Further cosmetics applied as suggested
+by Joe Perches
+
+v10:
+- operations with compressed/sparse files on very fragmented volumes improved
+- reduced memory consumption for above cases
+
+v11:
+- further compressed files optimizations: reads/writes are now skipping bufferization
+- journal wipe to the initial state optimized (bufferization is also skipped)
+- optimized run storage (re-packing cluster metainformation)
+- fixes based on Matthew Wilcox feedback to the v10
+- compressed/sparse/normal could be set for empty files with 'system.ntfs_attrib' xattr
+
+v12:
+- nls_alt mount option removed after discussion with Pali Rohar
+- fixed ni_repack()
+- fixed resident files transition to non-resident when size increasing
+
+v13:
+- nested_lock fix (lockdep)
+- out-of-bounds read fix (KASAN warning)
+- resident->nonresident transition fixed for compressed files
+- load_nls() missed fix applied
+- some sparse utility warnings fixes
+
+v14:
+- support for additional compression types (we've adapted WIMLIB's
+  implementation, authored by Eric Biggers, into ntfs3)
+
+v15:
+- kernel test robot warnings fixed
+- lzx/xpress compression license headers updated
+
+v16:
+- lzx/xpress moved to initial ntfs-3g plugin code
+- mutexes instead of a global spinlock for compresions
+- FALLOC_FL_PUNCH_HOLE and FALLOC_FL_COLLAPSE_RANGE implemented
+- CONFIG_NTFS3_FS_POSIX_ACL added
+
+v17:
+- FALLOC_FL_COLLAPSE_RANGE fixed
+- fixes for Mattew Wilcox's and Andy Lavr's concerns
+
+v18:
+- ntfs_alloc macro splitted into two ntfs_malloc + ntfs_zalloc
+- attrlist.c: always use ntfs_cmp_names instead of memcmp; compare entry names
+  only for entry with vcn == 0
+- dir.c: remove unconditional ni_lock in ntfs_readdir
+- fslog.c: corrected error case behavior
+- index.c: refactored due to modification of ntfs_cmp_names; use rw_semaphore
+  for read/write access to alloc_run and bitmap_run while ntfs_readdir
+- run.c: separated big/little endian code in functions
+- upcase.c: improved ntfs_cmp_names, thanks to Kari Argillander for idea
+  and 'bothcase' implementation
+
+v19:
+- fixed directory bitmap for 2MB cluster size
+- fixed rw_semaphore init for directories
+
+v20:
+- fixed issue with incorrect hidden/system attribute setting on
+  root subdirectories
+- use kvmalloc instead of kmalloc for runs array
+- fixed index behavior on volumes with cluster size more than 4k
+- current build info is added into module info instead of printing on insmod
+
+v21:
+- fixes for clang CFI checks
+- fixed sb->s_maxbytes for 32bit clusters
+- user.DOSATTRIB is no more intercepted by ntfs3
+- corrected xattr limits;  is used
+- corrected CONFIG_NTFS3_64BIT_CLUSTER usage
+- info about current build is added into module info and printing
+on insmod (by Andy Lavr's request)
+note: v21 is applicable for 'linux-next' not older than 2021.01.28
+
+v22:
+- ntfs_cmp_names() fixed
+- raise warning if 'nls->uni2char' fails
+- hot fix free clusters code optimized
+- use clang-format 11.0 instead of 10.0 to format code
+
+v23:
+- corrections for Kernel Test Robot warnings
+- kmem_cache_create() utilized to allocate memory in bitmap.c
+- cosmetics and comments thru the code
+
+v24:
+- BIO_MAX_PAGES -> BIO_MAX_VECS (fix for build issue of v23 vs linux-next)
+- minor optimization for LogFile: do not fill it with -1, if it's already there
+- index.c: removed 'inline' in definition of hdr_find_split() and hdr_insert_head()
+
+v25:
+- restore fs/Makefile in patch
+- refactor ntfs_create_inode() to use error-valued pointer
+- use mi_get_ref to fill MFT_REF
+- minimize checkpatch.pl warnings: replace LogFile with \x24LogFile when printing
+
+v26:
+- fixed coccinelle warnings
+- fslog.c: fix memory leak and memory overwrite
+
+v27:
+- iov_iter_copy_from_user_atomic() replaced by copy_page_from_iter_atomic()
+and  iov_iter_advance() removed
+
+Konstantin Komarov (10):
+  fs/ntfs3: Add headers and misc files
+  fs/ntfs3: Add initialization of super block
+  fs/ntfs3: Add bitmap
+  fs/ntfs3: Add file operations and implementation
+  fs/ntfs3: Add attrib operations
+  fs/ntfs3: Add compression
+  fs/ntfs3: Add NTFS journal
+  fs/ntfs3: Add Kconfig, Makefile and doc
+  fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+  fs/ntfs3: Add MAINTAINERS
+
+ Documentation/filesystems/ntfs3.rst |  107 +
+ MAINTAINERS                         |    7 +
+ fs/Kconfig                          |    1 +
+ fs/Makefile                         |    1 +
+ fs/ntfs3/Kconfig                    |   46 +
+ fs/ntfs3/Makefile                   |   36 +
+ fs/ntfs3/attrib.c                   | 2082 +++++++++++
+ fs/ntfs3/attrlist.c                 |  456 +++
+ fs/ntfs3/bitfunc.c                  |  135 +
+ fs/ntfs3/bitmap.c                   | 1519 ++++++++
+ fs/ntfs3/debug.h                    |   64 +
+ fs/ntfs3/dir.c                      |  594 +++
+ fs/ntfs3/file.c                     | 1130 ++++++
+ fs/ntfs3/frecord.c                  | 3071 ++++++++++++++++
+ fs/ntfs3/fslog.c                    | 5181 +++++++++++++++++++++++++++
+ fs/ntfs3/fsntfs.c                   | 2542 +++++++++++++
+ fs/ntfs3/index.c                    | 2641 ++++++++++++++
+ fs/ntfs3/inode.c                    | 2034 +++++++++++
+ fs/ntfs3/lib/decompress_common.c    |  332 ++
+ fs/ntfs3/lib/decompress_common.h    |  352 ++
+ fs/ntfs3/lib/lib.h                  |   26 +
+ fs/ntfs3/lib/lzx_decompress.c       |  683 ++++
+ fs/ntfs3/lib/xpress_decompress.c    |  155 +
+ fs/ntfs3/lznt.c                     |  452 +++
+ fs/ntfs3/namei.c                    |  578 +++
+ fs/ntfs3/ntfs.h                     | 1238 +++++++
+ fs/ntfs3/ntfs_fs.h                  | 1085 ++++++
+ fs/ntfs3/record.c                   |  609 ++++
+ fs/ntfs3/run.c                      | 1111 ++++++
+ fs/ntfs3/super.c                    | 1500 ++++++++
+ fs/ntfs3/upcase.c                   |  105 +
+ fs/ntfs3/xattr.c                    | 1046 ++++++
+ 32 files changed, 30919 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+ create mode 100644 fs/ntfs3/attrib.c
+ create mode 100644 fs/ntfs3/attrlist.c
+ create mode 100644 fs/ntfs3/bitfunc.c
+ create mode 100644 fs/ntfs3/bitmap.c
+ create mode 100644 fs/ntfs3/debug.h
+ create mode 100644 fs/ntfs3/dir.c
+ create mode 100644 fs/ntfs3/file.c
+ create mode 100644 fs/ntfs3/frecord.c
+ create mode 100644 fs/ntfs3/fslog.c
+ create mode 100644 fs/ntfs3/fsntfs.c
+ create mode 100644 fs/ntfs3/index.c
+ create mode 100644 fs/ntfs3/inode.c
+ create mode 100644 fs/ntfs3/lib/decompress_common.c
+ create mode 100644 fs/ntfs3/lib/decompress_common.h
+ create mode 100644 fs/ntfs3/lib/lib.h
+ create mode 100644 fs/ntfs3/lib/lzx_decompress.c
+ create mode 100644 fs/ntfs3/lib/xpress_decompress.c
+ create mode 100644 fs/ntfs3/lznt.c
+ create mode 100644 fs/ntfs3/namei.c
+ create mode 100644 fs/ntfs3/ntfs.h
+ create mode 100644 fs/ntfs3/ntfs_fs.h
+ create mode 100644 fs/ntfs3/record.c
+ create mode 100644 fs/ntfs3/run.c
+ create mode 100644 fs/ntfs3/super.c
+ create mode 100644 fs/ntfs3/upcase.c
+ create mode 100644 fs/ntfs3/xattr.c
+
+
+base-commit: 5a4cee98ea757e1a2a1354b497afdf8fafc30a20
+-- 
+2.25.4
 
