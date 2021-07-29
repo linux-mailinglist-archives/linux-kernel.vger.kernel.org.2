@@ -2,79 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D196E3DA477
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB473DA47C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237645AbhG2Njz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237549AbhG2Njx (ORCPT
+        id S237666AbhG2NkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:40:11 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38140 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237641AbhG2NkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:39:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD06C061765;
-        Thu, 29 Jul 2021 06:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eMa0YczQh56TUFbbWyxfwHlTTQoGvHMpB6e+MNq/9K8=; b=h8kgfYDQp0cFRzhl/YiMK30XSA
-        lVZ+YcItMsqqARcnt2J+RhnPymwOokLRVAoDXRA0M9jE8EDxAdanXojxuRYWNQOfhE0r7Bo8IQsnb
-        AO10KyccKR6Rg+SS3J1I5tMCmWGG+rndlxRvMEmYL+nv5K/GckQRl7/QMgy3PFZoykbA25Kv1TP1Z
-        zubzdQj3sKFAU/4EK3HYkeNxXivYGSP2kIbz0LFp9Vd/es6yxNAIvE+aF43C4Orp4RazGboKjbux7
-        sjCKJcsCAPrEsbAiQRY9aYOBv2KzpHkObKUN2SwYkwwjPNC2Zx+iuqGRrU4xh5tkuvvNPM/DSarnr
-        pCXwDj6Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m96Fa-00H7Ct-5C; Thu, 29 Jul 2021 13:39:16 +0000
-Date:   Thu, 29 Jul 2021 14:39:02 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v14 049/138] mm/memcg: Add folio_lruvec_relock_irq() and
- folio_lruvec_relock_irqsave()
-Message-ID: <YQKvdvzBhuCg2O52@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <20210715033704.692967-50-willy@infradead.org>
- <20210729083644.GD3809@techsingularity.net>
+        Thu, 29 Jul 2021 09:40:10 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TDd3w0096040;
+        Thu, 29 Jul 2021 09:40:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=GsgaupwAABcdAtoh97UGD0HsZlUsJJoMziZ1dnOIJ9s=;
+ b=QWk6YrU0viQTS3vCPgo49s7Jtwqfq+3TbxH9se8EdXEPdGNSGylEbs1u8/e50KYcDium
+ R8vl6nqs7u1ZCLJCUjabkvDMJUBl9a/1DX1BHpgrZ30DtxXKgWorp1L2RD9KySM8BFef
+ cPj27tS2MY0W1JURWaypGRpG0981pmlwSEfe6fu6bo5GSWX9INtpubPsGVLT9DGFibJ+
+ v8ThNdssp9KcWvML9zEmWlkiUX0tHjyiDBdI+0zbfqWAmpICsD9KFeTBys03MnLnQKFP
+ fhRpSwyFi7RmgvDC6Yn5PgVA+7G/oLGP1Ce/01WkcjFhpHJxmW9bYFQkAbHnSgIt5/0D Hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3vp9sb25-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 09:40:03 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TDdF9Q096937;
+        Thu, 29 Jul 2021 09:39:42 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3vp9s9g8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 09:39:40 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TDZFGB012109;
+        Thu, 29 Jul 2021 13:39:21 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma01dal.us.ibm.com with ESMTP id 3a3w9g00tt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 13:39:21 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TDdKPA47317264
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jul 2021 13:39:20 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F0BB97809C;
+        Thu, 29 Jul 2021 13:39:19 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 68E907809E;
+        Thu, 29 Jul 2021 13:39:19 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Jul 2021 13:39:19 +0000 (GMT)
+Subject: Re: [PATCH] tpm: ibmvtpm: Avoid error message when process gets
+ signal while waiting
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>, peterhuewe@gmx.de,
+        jgg@ziepe.ca, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
+        George Wilson <gcwilson@linux.ibm.com>,
+        Nageswara R Sastry <rnsastry@linux.ibm.com>
+References: <20210712162505.205943-1-stefanb@linux.vnet.ibm.com>
+ <20210727024225.swqy5ypcytsngpd6@kernel.org>
+ <ad4011fb-fc1f-4019-9856-7d171db3255c@linux.ibm.com>
+ <20210728215033.dhnekvksekalhcrn@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <2add3eac-916e-5072-f62d-23c65e23fb17@linux.ibm.com>
+Date:   Thu, 29 Jul 2021 09:39:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210728215033.dhnekvksekalhcrn@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ghnNcxYyXnbzGRmOD8bHyCh1pB8OZ3Hf
+X-Proofpoint-GUID: GecJ6_p029p9eqr1BbXj-3oZFijWj_vU
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729083644.GD3809@techsingularity.net>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 clxscore=1015 mlxscore=0 bulkscore=0
+ spamscore=0 mlxlogscore=999 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 09:36:44AM +0100, Mel Gorman wrote:
-> On Thu, Jul 15, 2021 at 04:35:35AM +0100, Matthew Wilcox (Oracle) wrote:
-> > These are the folio equivalents of relock_page_lruvec_irq() and
-> > folio_lruvec_relock_irqsave().  Also convert page_matches_lruvec()
-> > to folio_matches_lruvec().
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> When build testing what you had in your for-next branch, I got a new
-> warning for powerpc defconfig
-> 
->  In file included from ./include/linux/mmzone.h:8,
->                   from ./include/linux/gfp.h:6,
->                   from ./include/linux/mm.h:10,
->                   from mm/swap.c:17:
->  mm/swap.c: In function 'release_pages':
->  ./include/linux/spinlock.h:290:3: warning: 'flags' may be used uninitialized in this function [-Wmaybe-uninitialized]
->    290 |   _raw_spin_unlock_irqrestore(lock, flags); \
->        |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->  mm/swap.c:906:16: note: 'flags' was declared here
->    906 |  unsigned long flags;
->        |                ^~~~~
-> 
-> I'm fairly sure it's a false positive and the compiler just cannot figure
-> out that flags are only accessed when lruvec is !NULL and once lruvec is
-> !NULL, flags are valid
 
-Yes, I read it over carefully and I can't see a way in which this
-can happen.  Weird that this change made the compiler unable to figure
-that out.  Pushed out a new for-next with your patch included.  Thanks!
+On 7/28/21 5:50 PM, Jarkko Sakkinen wrote:
+> On Mon, Jul 26, 2021 at 11:00:51PM -0400, Stefan Berger wrote:
+>> On 7/26/21 10:42 PM, Jarkko Sakkinen wrote:
+>>> On Mon, Jul 12, 2021 at 12:25:05PM -0400, Stefan Berger wrote:
+>>>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>>>
+>>>> When rngd is run as root then lots of these types of message will appear
+>>>> in the kernel log if the TPM has been configure to provide random bytes:
+>>>>
+>>>> [ 7406.275163] tpm tpm0: tpm_transmit: tpm_recv: error -4
+>>>>
+>>>> The issue is caused by the following call that is interrupted while
+>>>> waiting for the TPM's response.
+>>>>
+>>>> sig = wait_event_interruptible(ibmvtpm->wq,
+>>>>                                  !ibmvtpm->tpm_processing_cmd);
+>>>>
+>>>> The solution is to use wait_event() instead.
+>>> Why?
+>> So it becomes uninterruptible and these error messages go away.
+> We do not want to make a process uninterruptible. That would prevent
+> killing it.
 
+I guess we'll have to go back to this one then: 
+https://www.spinics.net/lists/linux-integrity/msg16741.html
+
+    Stefan
+
+
+>
+> /Jarkko
