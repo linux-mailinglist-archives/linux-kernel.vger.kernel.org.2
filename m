@@ -2,138 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D831F3DAAA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BD53DAAA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhG2SDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhG2SDm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:03:42 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FDAC061765;
-        Thu, 29 Jul 2021 11:03:38 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id q6so9533600oiw.7;
-        Thu, 29 Jul 2021 11:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fuxy55vow1KuFQW+e5yb6EGMBOauB93N2LgKK+CL0WI=;
-        b=lqemvRFpqTzI7XRonm35qDC/47Br7jRmw5ZIeL7tPnv93kH67cCBJr/fPOx0tOyAzQ
-         6IfcJvP+MHZTUFYB4KH6Jk64YnqTyAjUwN31KI2nZxPUe82DeTL4/gnq56XlmATMB6VI
-         mLtoV7wS796JFGhZNZ61OJbinHuIuU7SKgYeYlSbLYlo5NTTtwV4D+LolFH7ymXpGuk1
-         qU+5JjACZqTol+3S8iQRAxZe0XK231tx62Yk25uiOmFUuf0p1+dAkix2N2gqFfQzUChP
-         +PWEwDahEdlToZaRN7o8QQ+6XjY4kYZunY5Oi67FJOqxc6f4FGqi0I6soKpdNh7+dnlR
-         BlaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fuxy55vow1KuFQW+e5yb6EGMBOauB93N2LgKK+CL0WI=;
-        b=a5fHhOqw/jI3BrLorjX2uPGO85eDPXTBDRSsGz1cGirguD63dCp882U7rSIpJuQn2O
-         acEmg+ThSm83699EGw+PPkUVBu1Ft6D2gMAOxIgKF1VLobdAMQQ6fBdNTgcIl6SNKnj6
-         VPKsAzf9UMhIATbfsARTwBWqeinWpzS8IFZNtrglWs1AjnwPRg8r/LkZHb7dKJos9Ylp
-         ydx+nEnUsEUm+9gCF4xpSEefnR4zGyXH7z5N+MewIlWPsOMn9tJtVkbyTDfZi/3pnGbL
-         G+/DjrTijtBV6lTHJu1bkW8rSpYawiIwnHq6gT2Xs3H9tKsa7vqu/11yegqNlcycXeIV
-         3iOg==
-X-Gm-Message-State: AOAM533YOhbqaJBh4sAUHTT5x3/iE/KluNratGTAKg+AlClvBiOu6yZT
-        uIfSJOpJYUV+cxhpI29CrLQm+G1yl59ufvEf
-X-Google-Smtp-Source: ABdhPJyXmsbTqz9YWsoEDwcIymc9NYbh3+0BQLzPGgII3gFC3V5UIKDJp3lClz/q8gWq/3T9+FnrkA==
-X-Received: by 2002:aca:7589:: with SMTP id q131mr10222440oic.76.1627581818302;
-        Thu, 29 Jul 2021 11:03:38 -0700 (PDT)
-Received: from ian.penurio.us ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id n202sm732402oig.10.2021.07.29.11.03.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 11:03:37 -0700 (PDT)
-Subject: Re: [RFC PATCH 1/8] docs: Add block device LED trigger documentation
-To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-Cc:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org,
-        axboe@kernel.dk, pavel@ucw.cz, linux-kernel@vger.kernel.org,
-        kernelnewbies@kernelnewbies.org
-References: <20210729015344.3366750-1-arequipeno@gmail.com>
- <20210729015344.3366750-2-arequipeno@gmail.com>
- <20210729135955.3e3f591c@thinkpad>
-From:   Ian Pilcher <arequipeno@gmail.com>
-Message-ID: <9e75ce6e-0823-6701-4f1d-7e06fc4cddc1@gmail.com>
-Date:   Thu, 29 Jul 2021 13:03:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210729135955.3e3f591c@thinkpad>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231158AbhG2SFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:05:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:63575 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229577AbhG2SFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:05:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627581908; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=jGAZNpvv9zROAVlHGnt4zPV0nfKI5c1XmksYWoQ4fn0=; b=p29aS+d67LvPFQOPh3b2dskCmUrfqDbg4pGbz4U9oK1XOvTwBym3hVbXdXxkUZJZ5mlDbXK8
+ GtLD1Ml4NC7PnR+drH4s3tQGZp/MGjKmgZUTmUfyrsg+Eueo+KvL9QEK5K4BAaB687Pwe6hP
+ WP6Z9kPiOQoPPKziFMhrOJkcKvQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6102edcd1dd16c87885da9d0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 18:05:01
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 85B93C43217; Thu, 29 Jul 2021 18:05:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC769C433D3;
+        Thu, 29 Jul 2021 18:04:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DC769C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     sboyd@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        mka@chromium.org
+Cc:     viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dianders@chromium.org, tdas@codeaurora.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH 0/4] Fixup register offsets to support per core L3 DCVS
+Date:   Thu, 29 Jul 2021 23:34:41 +0530
+Message-Id: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 6:59 AM, Marek Behún wrote:
-> I don't really see the purpose for having multiple different block
-> device LED triggers. 
+Qualcomm SoCs (starting with SM8350) support per core voting for L3 cache
+frequency. The patch series re-arranges the cpufreq register offsets to
+allow access for the L3 interconnect to implement per core control i.e.
+the first 0x100 is now accessed by the L3 interconnect driver instead.
 
-Is there a different/better way to control per-device LEDs?  (I'm
-thinking of something like my NAS, which has 5 drive bays, each with
-its own activity LED.)
+L3 interconnect provider node on SC7280 SoC:
+epss_l3: interconnect@18590000 {
+	compatible = "qcom,sc7280-epss-l3";
+        reg = <0 0x18590000 0 0x1000>, <0 0x18591000 0 0x100>,
+	      <0 0x18592000 0 0x100>, <0 0x18593000 0 0x100>;
+	...
+};
 
-> Moreover we really do not want userspace to be
-> able to add LED triggers with arbitrary names, and as many as the
-> userspace wants.
+CPUFREQ node on SC7280 SoC:
+cpufreq_hw: cpufreq@18591000 {
+	compatible = "qcom,cpufreq-epss";
+	reg = <0 0x18591100 0 0x900>,
+	      <0 0x18592100 0 0x900>,
+	      <0 0x18593100 0 0x900>;
+	...
+};
 
-To be slightly flippant, why not?  "Userspace" in this case is the
-system/device administrator.  They presumably know what LEDs they have
-and what they want to use them for, something which the kernel cannot
-know (assuming a "generic" disto kernel).
+The patch series also prevents binding breakage by using the
+SM8250/SM8350 EPSS compatible.
 
-> There is no sense in making userspace be able to
-> create 10000 triggers.
+Sibi Sankar (4):
+  dt-bindings: cpufreq: cpufreq-qcom-hw: Add compatible for SM8250/8350
+  cpufreq: qcom: Re-arrange register offsets to support per core L3 DCVS
+  arm64: dts: qcom: sc7280: Fixup the cpufreq node
+  arm64: dts: qcom: sm8350: Fixup the cpufreq node
 
-It would certainly be possible to impose a limit on the number of
-triggers that could be created.  But then someone has to decide what
-that limit should be.  Personally, I lean very much toward giving the
-system administrator the freedom to configure their system as they see
-fit, even if that means that they can break it.  (Where "break"
-basically means that they need to reboot.)
-
-> Also if userspace can create triggers with
-> arbitrary names, it could "steal" a name for a real trigger. For
-> example if netdev trigger is compiled as a module, and before loading
-> someone creates blockdev trigger with name "netdev", the loading of
-> netdev trigger will fail.
-
-Would adding a prefix to the LED trigger name address your concern
-about arbitrary names and potential conflicts?  I.e. the system
-administrator creates a block device LED trigger named "foo", and it
-shows up as an LED trigger named "blkdev:foo" (or something like that).
-
-> I would like the blkdev trigger to work in a similar way the netdev
-> trigger works:
-> - only one trigger, with name "blkdev"
-> - when activated on a LED, new sysfs files will be created:
->    * device_name, where user can write sda1, vdb, ...
->    * read (binary value, 1 means blink on read)
->    * write (binary value, 1 means blink on write)
->    * interval (blink interval)
->    Note that device_name could allow multiple names, in theory...
->    Also some other disk states may be included, like error, or something
-
-How would you support multiple, per-device LEDs (the NAS use case above)
-in this scheme?
-
-> - also the blinking itself can be done as is done netdev trigger: every
->    50ms the work function would look at blkdev stats, and if current
->    stat (number of bytes read/written) is different from previous, then
->    blink the LED
-
-Is there a reason that you prefer this approach to simply having the
-block layer "fire" the trigger?
-
-Thanks for the feedback!
+ .../bindings/cpufreq/cpufreq-qcom-hw.txt           |  6 +++++-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |  6 +++---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi               |  9 ++++-----
+ drivers/cpufreq/qcom-cpufreq-hw.c                  | 23 ++++++++++++++++++----
+ 4 files changed, 31 insertions(+), 13 deletions(-)
 
 -- 
-========================================================================
-                  In Soviet Russia, Google searches you!
-========================================================================
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
