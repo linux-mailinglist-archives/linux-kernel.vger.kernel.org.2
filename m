@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A85B3DAAC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EFD3DAABD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 20:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhG2SHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 14:07:30 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59966 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhG2SH3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:07:29 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 99F84223C1;
-        Thu, 29 Jul 2021 18:07:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627582045; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=HDYq/z6PdlUP94JVU6Rwiyjo1kknfFWM1ZaRitbslAg=;
-        b=OyK+nmD/1YC1IwC4vzHOZ+akmru4RH8Ta2rxBG9a/4m2fFyedDOoQtc8RX7s5JD4gw4ik3
-        G6VKj2mkXic8CvXrD/evP5TsbYaHuof6V01XY6hO1Q7KOc1gjB7YpVkVB7wYdizodMTuOO
-        5zUZmja5y2Jbehn2uJoCRcSCwxvCtio=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627582045;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=HDYq/z6PdlUP94JVU6Rwiyjo1kknfFWM1ZaRitbslAg=;
-        b=saIlOc2vBXoN4+PtV/7gJZRgyBzk+WJidP64t6Fu5pQxCTrNy6jLj+s4cNpoym+TDSquqy
-        CMYF+L8sJHHbhOCw==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 71848A3B87;
-        Thu, 29 Jul 2021 18:07:25 +0000 (UTC)
-Date:   Thu, 29 Jul 2021 20:07:24 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: checkpatch does not like quoting patch subject with doublequotes
-Message-ID: <20210729180724.GG21290@kitsune.suse.cz>
+        id S231834AbhG2SF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 14:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231741AbhG2SFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:05:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0255D60F48;
+        Thu, 29 Jul 2021 18:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627581951;
+        bh=8zGF+OBoP8ttiKmrQ7W7ZNfkGg4xx8z7Inx+6zv+QcA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HBFKmVYg+GW2yxpX1XqqkIhpQG9De+xExuYAE96Sn6X4cR1/5OM/+xdo1M7j7dKbb
+         RdGT7Jwhp004Ul13WwlCxTWa5MzvDG+YbO5cq3M2FZeHpWyF0at4hu7v5N0JpkbzGS
+         ybCeHa2hFTxJF1KK356Al9/PNB7U1kBZqv2pziDdFMeUkJo/hPW5KePPAdC6jAOkZg
+         5r2vwbmCOFJXeTOoPqzGZyhA+8nFusy+ZIe//tpKu9pkzHkJCxHujAdPho3sPP7Vy5
+         nkWLkeHUukL7FRySu8BmHK0ZU50EW1nIhLglK/laR96rFGXFWC9abohC4l4cYFcg8s
+         f+8oFVQ+RVWhw==
+Date:   Thu, 29 Jul 2021 13:08:23 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [GIT PULL] fallthrough fixes for Clang for 5.14-rc4
+Message-ID: <20210729180823.GA7908@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The following changes since commit ff1176468d368232b684f75e82563369208bc371:
 
-I got the following message from checkpatch:
+  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
 
-WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
-#18: 
-commit 7c6986ade69e ("powerpc/stacktrace: Fix spurious "stale" traces in raise_backtrace_ipi()")
+are available in the Git repository at:
 
-ERROR: Please use git commit description style 'commit <12+ chars of sha1> ("<title line>")' - ie: 'commit 7c6986ade69e ("powerpc/stacktrace: Fix spurious "stale" traces in raise_backtrace_ipi()")'
-#18: 
-commit 7c6986ade69e ("powerpc/stacktrace: Fix spurious "stale" traces in raise_backtrace_ipi()")
+  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/fallthrough-fixes-clang-5.14-rc4
 
-total: 1 errors, 1 warnings, 7 lines checked
+for you to fetch changes up to cb163627e6d32dbaca4d89b2292788cee895b06d:
 
-NOTE: For some of the reported defects, checkpatch may be able to
-      mechanically convert to the typical style using --fix or --fix-inplace.
+  scsi: fas216: Fix fall-through warning for Clang (2021-07-29 12:51:16 -0500)
 
-0001-powerpc-stacktrace-Include-linux-delay.h.patch has style problems, please review.
+----------------------------------------------------------------
+fallthrough fixes for Clang for 5.14-rc4
 
-NOTE: If any of the errors are false positives, please report
-      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+Hi Linus,
 
-AFAICT there is not problem with the way the patch is quoted but rather
-checkpatch is confused by the patch subject containing double quotes.
-
-Can you please have a look?
+Please, pull the following patches that fix some fall-through warnings
+when building with Clang and -Wimplicit-fallthrough on ARM.
 
 Thanks
 
-Michal
+----------------------------------------------------------------
+Gustavo A. R. Silva (3):
+      ARM: riscpc: Fix fall-through warning for Clang
+      scsi: acornscsi: Fix fall-through warning for clang
+      scsi: fas216: Fix fall-through warning for Clang
+
+ arch/arm/mach-rpc/riscpc.c   | 1 +
+ drivers/scsi/arm/acornscsi.c | 1 +
+ drivers/scsi/arm/fas216.c    | 1 +
+ 3 files changed, 3 insertions(+)
