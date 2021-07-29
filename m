@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A2B3DA1C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357C63DA1CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236472AbhG2LKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:10:25 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:33718 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbhG2LKX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:10:23 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 02B1F1F43DA0
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] char: tpm: Kconfig: remove bad i2c cr50 select
-In-Reply-To: <20210728215346.rmgvn4woou4iehqx@kernel.org>
-References: <20210727171313.2452236-1-adrian.ratiu@collabora.com>
- <20210728215346.rmgvn4woou4iehqx@kernel.org>
-Date:   Thu, 29 Jul 2021 14:10:16 +0300
-Message-ID: <87h7gdqstj.fsf@collabora.com>
+        id S236558AbhG2LKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:10:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232135AbhG2LKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 07:10:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7502360F01;
+        Thu, 29 Jul 2021 11:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627557043;
+        bh=6AqU7a9rl08gRBYUbq6F+fFWAGWmA5ea41X21vUy4Zw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eyIIHSLugjELWDryt0+Qe2+FjxRwKWJ7m0qCad9dQg269MF69+hZLtvhh44+IQFYj
+         Lk+qD43GDJoF/BkFL9Emc9uw/bZDWtnpXazp8nmuYjwb8sV/YWsBK0ZUEzh9C788mf
+         xWP1sLnBEEThghdmm+7/c6zIJ3z9huJXSIbfTwTauXvU0TrAf2oX5F4tFM2JQJQCWI
+         iPaqfnjxVDs90SjMR10I3gvyjKZULhJC0Pv4DpYS3PExr8MH23UOU6KpNe2/zby3D/
+         wytVpBaoN1Fo3VzeAcDqPbHoUOEH/j0tRtdgPXNM+dHt6vgjHs8XC0Vb6ixaXkxN38
+         47/Kfl3/tVJRg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
+Cc:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>
+Subject: linux-next: manual merge of the drm-msm tree with the drm-next tree
+Date:   Thu, 29 Jul 2021 12:10:27 +0100
+Message-Id: <20210729111027.33028-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jul 2021, Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> On Tue, Jul 27, 2021 at 08:13:12PM +0300, Adrian Ratiu wrote: 
->> This fixes a minor bug which went unnoticed during the initial 
->> driver upstreaming review: TCG_CR50 does not exist in mainline 
->> kernels, so remove it.   Fixes: 3a253caaad11 ("char: tpm: add 
->> i2c driver for cr50") Cc: stable@vger.kernel.org Reviewed-by: 
->> Jarkko Sakkinen <jarkko@kernel.org> Signed-off-by: Adrian Ratiu 
->> <adrian.ratiu@collabora.com> --- 
-> 
-> These are missing changelog. I guess tags are added, and nothing 
-> else? 
+Hi all,
 
-Hi. That is correct, I've only added the tags you suggested on the 
-first patch, the second patch is identical.
+Today's linux-next merge of the drm-msm tree got a conflict in:
 
-Adrian
+  drivers/gpu/drm/msm/msm_gem.c
 
->
-> /Jarkko
+between commit:
+
+  60f800b2bdfa ("drm/msm: always wait for the exclusive fence")
+
+from the drm-next tree and commit:
+
+  1d8a5ca436ee ("drm/msm: Conversion to drm scheduler")
+
+from the drm-msm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+diff --cc drivers/gpu/drm/msm/msm_gem.c
+index 39c35414d7b5,5db07fc287ad..000000000000
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
