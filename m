@@ -2,74 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538463DA247
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8473DA24F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234171AbhG2Li4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Jul 2021 07:38:56 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:54595 "EHLO
+        id S233759AbhG2Llt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Jul 2021 07:41:49 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:42394 "EHLO
         mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbhG2Liz (ORCPT
+        with ESMTP id S229869AbhG2Lls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:38:55 -0400
+        Thu, 29 Jul 2021 07:41:48 -0400
 Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 8BF25CED14;
-        Thu, 29 Jul 2021 13:38:50 +0200 (CEST)
+        by mail.holtmann.org (Postfix) with ESMTPSA id 43710CED14;
+        Thu, 29 Jul 2021 13:41:44 +0200 (CEST)
 Content-Type: text/plain;
         charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH v2] Bluetooth: skip invalid hci_sync_conn_complete_evt
+Subject: Re: [PATCH] Bluetooth: btusb: Enable MSFT extension for TyphoonPeak,
+ GarfieldPeak, and WCN6855 controllers
 From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210728075105.415214-1-desmondcheongzx@gmail.com>
-Date:   Thu, 29 Jul 2021 13:38:50 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        skhan@linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
+In-Reply-To: <20210727140425.1.I1ac63dde4853d7b38a018b20b3d6d3d539378df3@changeid>
+Date:   Thu, 29 Jul 2021 13:41:43 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org
 Content-Transfer-Encoding: 8BIT
-Message-Id: <72819085-5564-4386-AD94-2901083CDE65@holtmann.org>
-References: <20210728075105.415214-1-desmondcheongzx@gmail.com>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-Id: <71AEBFF9-4FAA-4C86-A297-561174C1D3F9@holtmann.org>
+References: <20210727140425.1.I1ac63dde4853d7b38a018b20b3d6d3d539378df3@changeid>
+To:     Michael Sun <michaelfsun@google.com>
 X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Desmond,
+Hi Michael,
 
-> Syzbot reported a corrupted list in kobject_add_internal [1]. This
-> happens when multiple HCI_EV_SYNC_CONN_COMPLETE event packets with
-> status 0 are sent for the same HCI connection. This causes us to
-> register the device more than once which corrupts the kset list.
-> 
-> As this is forbidden behavior, we add a check for whether we're
-> trying to process the same HCI_EV_SYNC_CONN_COMPLETE event multiple
-> times for one connection. If that's the case, the event is invalid, so
-> we report an error that the device is misbehaving, and ignore the
-> packet.
-> 
-> Link: https://syzkaller.appspot.com/bug?extid=66264bf2fd0476be7e6c [1]
-> Reported-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
-> Tested-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> ---
-> 
-> v1 -> v2:
-> - Added more comments to explain the reasoning behind the new check, and
-> a bt_dev_err message upon detecting the invalid event. As suggested by
-> Marcel Holtmann.
-> 
-> net/bluetooth/hci_event.c | 16 ++++++++++++++++
-> 1 file changed, 16 insertions(+)
+> The Intel TyphoonPeak, GarfieldPeak and Qualcomm WCN6855 Bluetooth
+> controllers support the Microsoft vendor extension, enable them by
+> setting VsMsftOpCode accordingly.
 
-I shortened the error message and then applied your patch to bluetooth-next tree.
+please send two patches, one that enables Intel hardware and another one for Qualcomm chips. I am not a big fan of intermixing vendor specific parts in the same patch if not absolutely needed.
 
 Regards
 
