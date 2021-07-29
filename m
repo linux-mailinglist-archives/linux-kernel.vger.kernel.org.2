@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC783DA601
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2633DA5FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239229AbhG2OLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:11:15 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:39914 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238548AbhG2OHL (ORCPT
+        id S239190AbhG2OK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:10:58 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:20651 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238774AbhG2OHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:07:11 -0400
-Received: by mail-wr1-f42.google.com with SMTP id b11so1775955wrx.6;
-        Thu, 29 Jul 2021 07:07:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8LofI00GAwLkUAnxAUd4xKumAPYSByZWAAynmglCQoo=;
-        b=q1b6B0HkXqq6P43gcgLMIHU6Ks/hfTA1OMSMPH/UvlpedIaGJAImLN1++8tF3vszIc
-         1fY1Yqn1VD5cJ4ZAzpmWud+YZENUbwq1cgW6DW7lHw3u9DNk7mnc8kCqOQHjEetNDGVC
-         23Z7TGRNnw2F/Q3vnOKKIAyRcVhm9iSkD4hSqOdyZYoUgJXifZjOhlroahvj7+TtYlYE
-         20vVujKaucgBN0DjgHsFJmRGfxCe6oKBQZ2jwRNufwy9HuKTnkkz+6DDT8SE6nnHf01U
-         Wk6H5n2rXpgi1XDhcSo1k8v90xEaInhQaJmtT4LtnkTyemjb4cL+LHaIvVARXMM1Remi
-         nNNw==
-X-Gm-Message-State: AOAM530HYBk3HE/8WnShK1hYGAWrQ42Hn1IJsA+L9riZaoJIDLvM6jAt
-        0SHO1UexznYr6J2SvnyCuP0=
-X-Google-Smtp-Source: ABdhPJzyQQcNlTQOQAYqPAwVB0LNrL0j3MkejU/yVyGKgSEKW5TBNC+ecp+5xsLrh6HC+pPYI3mKGA==
-X-Received: by 2002:a5d:5750:: with SMTP id q16mr5182030wrw.9.1627567627396;
-        Thu, 29 Jul 2021 07:07:07 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id u2sm10170996wmm.37.2021.07.29.07.07.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 07:07:06 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 14:07:05 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Siddharth Chandrasekaran <sidcha@amazon.de>,
-        Siddharth Chandrasekaran <sidcha.dev@gmail.com>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>,
-        linux-hyperv@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] asm-generic/hyperv: Fix struct hv_message_header ordering
-Message-ID: <20210729140705.wj5tokeq6lkxm2yy@liuwe-devbox-debian-v2>
-References: <20210729133702.11383-1-sidcha@amazon.de>
- <87eebh9qhd.fsf@vitty.brq.redhat.com>
+        Thu, 29 Jul 2021 10:07:49 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 16TE77x7030502;
+        Thu, 29 Jul 2021 23:07:08 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 16TE77x7030502
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1627567628;
+        bh=OkmM0pXDX7v2EhLXhxLu/LZ8oreIh62vNVpYZPlZlb0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LvG/zWy7K+8KpgQvwZOKvSf+IAn/+5SgGChyU10gxmnDnwK0GTtwJwTtHCDcycMAy
+         VGiH3WqIAV3N1PIswFixnBph97hXUjUj7juVB6E9iYe3E6sjbjiFwAf3VkamJFhtJ1
+         lFRn/hSbuI+7Cv4RGEA2EjFGB14wSRxtElajldZxqdgj+RiQYdPRWKHufBYqEqjMuY
+         QEDzHc8UuW9gFZHojwBGBeC7IitTM/3PC9at9lJOFe4T6HyeMGRdRC/kphvSOzs4MS
+         rJfFBMpS9pa6iCbaoS6FHB2LuEPGmXdnGl593HwZUJO7OxWq0OORxlBCZefyc/nL/F
+         gKq2/9o3vjJIw==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Ley Foon Tan <ley.foon.tan@intel.com>, linux-kernel@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] nios2: move the install rule to arch/nios2/Makefile
+Date:   Thu, 29 Jul 2021 23:07:06 +0900
+Message-Id: <20210729140706.443527-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eebh9qhd.fsf@vitty.brq.redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:52:46PM +0200, Vitaly Kuznetsov wrote:
-> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
-> 
-> > According to Hyper-V TLFS Version 6.0b, struct hv_message_header members
-> > should be defined in the order:
-> >
-> > 	message_type, reserved, message_flags, payload_size
-> >
-> > but we have it defined in the order:
-> >
-> > 	message_type, payload_size, message_flags, reserved
-> >
-> > that is, the payload_size and reserved members swapped. 
-> 
-> Indeed,
-> 
-> typedef struct
-> {
-> 	HV_MESSAGE_TYPE MessageType;
-> 	UINT16 Reserved;
-> 	HV_MESSAGE_FLAGS MessageFlags;
-> 	UINT8 PayloadSize;
-> 	union
-> 	{
-> 		UINT64 OriginationId;
-> 		HV_PARTITION_ID Sender;
-> 		HV_PORT_ID Port;
-> 	};
-> } HV_MESSAGE_HEADER;
+Currently, the install target in arch/nios2/Makefile descends into
+arch/nios2/boot/Makefile to invoke the shell script, but it is no
+good reason to do so.
 
-Well. I think TLFS is wrong. Let me ask around.
+arch/nios2/Makefile can run the shell script directly.
 
-Wei.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/nios2/Makefile      | 3 ++-
+ arch/nios2/boot/Makefile | 3 ---
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/nios2/Makefile b/arch/nios2/Makefile
+index 52c03e60b114..72e8ff065cf7 100644
+--- a/arch/nios2/Makefile
++++ b/arch/nios2/Makefile
+@@ -60,7 +60,8 @@ $(BOOT_TARGETS): vmlinux
+ 	$(Q)$(MAKE) $(build)=$(nios2-boot) $(nios2-boot)/$@
+ 
+ install:
+-	$(Q)$(MAKE) $(build)=$(nios2-boot) BOOTIMAGE=$(KBUILD_IMAGE) install
++	sh $(srctree)/$(nios2-boot)/install.sh $(KERNELRELEASE) \
++	$(KBUILD_IMAGE) System.map "$(INSTALL_PATH)"
+ 
+ define archhelp
+   echo  '* vmImage         - Kernel-only image for U-Boot ($(KBUILD_IMAGE))'
+diff --git a/arch/nios2/boot/Makefile b/arch/nios2/boot/Makefile
+index 37dfc7e584bc..8c3ad76602f3 100644
+--- a/arch/nios2/boot/Makefile
++++ b/arch/nios2/boot/Makefile
+@@ -30,6 +30,3 @@ $(obj)/zImage: $(obj)/compressed/vmlinux FORCE
+ 
+ $(obj)/compressed/vmlinux: $(obj)/vmlinux.gz FORCE
+ 	$(Q)$(MAKE) $(build)=$(obj)/compressed $@
+-
+-install:
+-	sh $(srctree)/$(src)/install.sh $(KERNELRELEASE) $(BOOTIMAGE) System.map "$(INSTALL_PATH)"
+-- 
+2.27.0
+
