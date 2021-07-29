@@ -2,94 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8253D3DA5FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA833DA5E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239162AbhG2OKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:10:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238857AbhG2OH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:07:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09D8A6054F;
-        Thu, 29 Jul 2021 14:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627567673;
-        bh=3BqLLykrOHv7GrNy26CHO6BhcUQk9jcyV1ViRuIHq5w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rjTxoVNx+0CPwjmljDa3NUqVrbGdoOjCvICs8nqofQ/XQychD9hg5X6ssibECY6tn
-         67q1Gd8e2eHBEmzpynESsCXjopJoU79oZHuQdKNWSfZe7Nd+/7nQDKcRUaQjm6U5Hs
-         lSehCLOUB8VGPS13FYbmJA5NdhDAE/3CXUSePAX/vyodSvZ+cTWLnysDE+Qrw6GvZp
-         9iwcAWEtSgY7JXG05r17TKwsnbSaKsmvoqjD99sRblYqfN2rHdkBuT4HDRLBRyd0VB
-         8AxLrgrlo7pKw2LcLxNzJK0ccb8M/cX0gSItxBy5NCsFgBxH8kuBKSbE9FYtLaZmDA
-         blciR1p3Yix+A==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip v10 12/16] kprobes: Enable stacktrace from pt_regs in kretprobe handler
-Date:   Thu, 29 Jul 2021 23:07:48 +0900
-Message-Id: <162756766854.301564.16064835736239439658.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162756755600.301564.4957591913842010341.stgit@devnote2>
-References: <162756755600.301564.4957591913842010341.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S239016AbhG2OKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239404AbhG2OIj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:08:39 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03D5C06179F
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:08:10 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id d18so11264300lfb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lwNLTldvysoG6tP7eIB3Yg8TEfTEJ3xDLJQLZ28G+x0=;
+        b=ca8DsYUc24s41ooMqz6bT/mgYTru4NdbtwqBEbRuShpsTGyE31LKnPMoDmbN6HJgae
+         T3XclT4Mp6G2PVuj3pAxbeBDiW8zQ5b0M8gOBAbQQ1kKb1evXN8CQOArbqXjCeQrNh4t
+         5Fwwt93YDujobI3MgwpyuzQeNcJpOFC0A3R5AHrfpGp5BwqrXLaohpnhngja/9BPCg8K
+         ATNtt/CjGXQp82sXcI8UXuSlFo3fBTtskkQWH/euvVFcgTl++V+fKe9hXFQK4G97jmxE
+         G0PzqU3GabBA13Y0IQ40/T8ckbx6nKyWZ+69XG8cWNXqy/h3FzpZ74FKsD4xvbT5Z7q0
+         NpkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lwNLTldvysoG6tP7eIB3Yg8TEfTEJ3xDLJQLZ28G+x0=;
+        b=PJzt61lM7Z4xinoK84cQxKbciOTTzt597Vh284vy82mCe4VLVz+NpmU/6APHdhC7K2
+         5S/sYCHJhIYmbG4BI3J0pOMnpMpTmNJbDRPbSdGavof3rk3gTECDLzSowg7xga1Fjw5E
+         K8vooejby2oPAcUPAp9usWFs7vQIQAn5tzGKzFJ9vmsC1UW1jMSja1rBD7eESnMuhVIy
+         ngEIETwNLlZkAot/OEJQZL/ryF5KWIbKP1ET/8wL0/c58A5sA/Oduown8p5LTK+CW2iM
+         R0njDPmTWuRwV1rGBDvrjPFQNE1Q5BJ+kyXFyhoJxvpG9SSUlk4hKpRmg6+LPEV04iSQ
+         1zvg==
+X-Gm-Message-State: AOAM532V54kQxo1ytO55Mpyh9c9fIlw3fanUw9pDU557C00+iQCvqw8D
+        cEda08TP1lvye7AlPnQz/PGRZH+fHrXyrZeSAa57Ww==
+X-Google-Smtp-Source: ABdhPJxzsVh6pp93QiKfxjIjrrpuuxS478uv8YrBKf6UNnyMlYtAAsGPSXEFCrLUZI+jfZaQNNAx9za8VUvfFCwbV3M=
+X-Received: by 2002:a19:ae0f:: with SMTP id f15mr4037438lfc.117.1627567688416;
+ Thu, 29 Jul 2021 07:08:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-2-linmiaohe@huawei.com>
+In-Reply-To: <20210729125755.16871-2-linmiaohe@huawei.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 29 Jul 2021 07:07:57 -0700
+Message-ID: <CALvZod7Z0MNqDOVGEJSjXKmJdKYM2V4U7R1j0Z7vbW9Fn0TpJg@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mm, memcg: remove unused functions
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Matthew Wilcox <willy@infradead.org>, alexs@kernel.org,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the ORC unwinder from pt_regs requires setting up regs->ip
-correctly, set the correct return address to the regs->ip before
-calling user kretprobe handler.
+On Thu, Jul 29, 2021 at 5:57 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> Since commit 2d146aa3aa84 ("mm: memcontrol: switch to rstat"), last user
+> of memcg_stat_item_in_bytes() is gone. And since commit fa40d1ee9f15 ("mm:
+> vmscan: memcontrol: remove mem_cgroup_select_victim_node()"), only the
+> declaration of mem_cgroup_select_victim_node() is remained here. Remove
+> them.
+>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-This allows the kretrprobe handler to trace stack from the
-kretprobe's pt_regs by stack_trace_save_regs() (eBPF will do
-this), instead of stack tracing from the handler context by
-stack_trace_save() (ftrace will do this).
-
-Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- Changes in v9:
-  - Update comment to explain specifically why this is necessary.
- Changes in v8:
-  - Update comment to clarify why this is needed.
- Changes in v3:
-  - Cast the correct_ret_addr to unsigned long.
----
- kernel/kprobes.c |    7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 833f07f33115..ebc587b9a346 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1937,6 +1937,13 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 		BUG_ON(1);
- 	}
- 
-+	/*
-+	 * Set the return address as the instruction pointer, because if the
-+	 * user handler calls stack_trace_save_regs() with this 'regs',
-+	 * the stack trace will start from the instruction pointer.
-+	 */
-+	instruction_pointer_set(regs, (unsigned long)correct_ret_addr);
-+
- 	/* Run the user handler of the nodes. */
- 	first = current->kretprobe_instances.first;
- 	while (first) {
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
