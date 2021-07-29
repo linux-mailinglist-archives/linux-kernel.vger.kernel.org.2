@@ -2,204 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733793DAD7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C626C3DAD80
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbhG2UXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 16:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35570 "EHLO
+        id S233056AbhG2UYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 16:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbhG2UXt (ORCPT
+        with ESMTP id S233085AbhG2UYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:23:49 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4CFC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:23:45 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id h11so9092171ljo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:23:45 -0700 (PDT)
+        Thu, 29 Jul 2021 16:24:09 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFEFC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:24:05 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id h2so13314066lfu.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:24:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zItpp9hN+Ox0fGbxSWTqxYyC7gmKerkf7vHtH6r/daA=;
-        b=Z3cIIrUEl5uj15iDeDNAaHFESBCGt6SWOh/H+5hV7w7VkRMlp2sDa/4VlZYdXy2CuN
-         5TE/4VeEUfgCR3Cdz6VLyjUISYhLUtxXWdcC3e3uFMcC1A6lzwTUWDj/sz2Jl0oGz0Jl
-         VdVcwn7mEAfcNElwn1S1DZxWoidpr2NgAQ77XkkdKwp9jOJ449K5ra634GW15dsJWIX0
-         CuNCQdeIyPG+iJtX6odyueFw3XxyLzheatR7Xp6XM8ADzOQR32bZmLA9r4mWg6uBHn9E
-         OOj0mQp3yWQq+Ew2z+1QZ0CnxHPzjssnPLnlceYcxOpwpHst1S1Lb3lhez4F042aarkg
-         UcLA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gj7yCj3TgjmiQPtQl0jHjvThrzk1CYgb/iJobvGGefk=;
+        b=tl09esBor3zjI+pKbOaNgY4vHM/cu59XWi6upaP0j5ZXoIJjMeDMjLYtUFUsLyn+iW
+         xo6xMo/kZo6MvUbXVq76eALXaBvUOZuBqlFleNDkQojj1DTWOmrC+aM1kCGXye8VKf1V
+         wv5J3wu2RvdOaHyo1pFpCK9ko2I2tywWIMm0rCQ7J+cZ3Y5oZUSlXXhMXGc2XIr7/aU5
+         QVP8igM173wDGREtV03oDcqNYlUSnhMYfx4/tjWFc2pj3LxwDw8Zq7wrvTwvpJRi1WSE
+         qRY+A8YZFNHyax+N2dPeGqxEchGSO2B8vG23E2kN0nYBnY/q/TEi1FkqHdqRXowpjLkx
+         m0nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zItpp9hN+Ox0fGbxSWTqxYyC7gmKerkf7vHtH6r/daA=;
-        b=hJI9g+N3p0PiWyotDxBRlV+Hj4IjjUU0C5VT+fWKukvTMdm+u9/YzyLXwT56XWbJGx
-         8gfgLJKxqso+JoHpA5+4pC2Krpri+ZHgkTx1irgtQBVeLgftKbZ2IMc4dRSw+ZRspCeT
-         doPAy5Hos9JE/lQD7xUPReDLJ1rFQIuI1B+rF54/A17MwySPN+xnfYq0W/9SQWaoR0E8
-         suLBeCi9NbFOG0ydeg5GUaQbNZueYmYZvdMleNkzOZQwuK1LyuqhZUGZJVrsOgtc/IRO
-         Xcy6oD2lobzP0/heBWFCRk5IFAcaBMMAjeFnh8P4E25mVsdHnpq5VBBIWakYJSwRXXJO
-         AYvw==
-X-Gm-Message-State: AOAM531Fe54vjQrAi0vB/iPrRPSvNzJNgXJwMqdVPRGX3evnSsibcJJs
-        RqZPWooTeNnql9HLAJ5TAVtbOA==
-X-Google-Smtp-Source: ABdhPJyF6OVGokvPtT5sxy3b0J3+h3E84HoeOanc5G5G6wQkJWEMtOFnUSafEyqe3BF216Dx31Rm1A==
-X-Received: by 2002:a2e:7602:: with SMTP id r2mr4066231ljc.33.1627590222430;
-        Thu, 29 Jul 2021 13:23:42 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id p4sm228456ljg.2.2021.07.29.13.23.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 13:23:42 -0700 (PDT)
-Subject: Re: [PATCH 04/11] drm/msm/disp/dpu1: Add DSC support in RM
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-5-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <c8e9b236-4438-c2b3-a9a3-80f1c1c517a9@linaro.org>
-Date:   Thu, 29 Jul 2021 23:23:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gj7yCj3TgjmiQPtQl0jHjvThrzk1CYgb/iJobvGGefk=;
+        b=CRR4WraXUWwh+6QHmt8JOOV26zwEnvJdayMQdGpa/89hzvLUfGHcGcfoZZUf4vBd/n
+         BnsXDU/jTi9/L0guCCIMgRUwZSjK5/Sp++BfPIsi+SmfdwWuGoRRmdTArLyEqk9Fjp0Z
+         3LbPKLljhaWgBLJqMKyhxNkwwOHSM6mlaSeOqu8RJFrtk5u26I8RoLm8fxTAmlZFclkp
+         XbadRfd/lwyEk5QIecNCN8yt1hEj3SxesZp+QFMI8Ox8XJ/WMtQ9LJGWfb7M22/iqubv
+         GMBOEYTzisa3tQOi2ch36xzFedE9IAqHfXpuQFDDNRcCmKwjj+XIZD0Y9vrrSUFHcV7p
+         LjoQ==
+X-Gm-Message-State: AOAM530zUG7jZW72goZ6JmgiUI1DD0Bctvft0h6l24nNr4LFnlGYF5xz
+        icbzRXNPGVIpqWdXbYsBhQyCBnjQT+CP5al5s4dU1g==
+X-Google-Smtp-Source: ABdhPJzPxiDGiDFKysX5izFriQkSlWyo919HiI1mAjdl/EIF2YA5xH+2Ix5p0VGNtGuJGYezdz59xwCBRVN47iNQNuc=
+X-Received: by 2002:a05:6512:3237:: with SMTP id f23mr4870368lfe.524.1627590243514;
+ Thu, 29 Jul 2021 13:24:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210715065203.709914-5-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210729195632.489978-1-oupton@google.com> <20210729195632.489978-2-oupton@google.com>
+ <CAAdAUtge_wRL-Ri-TngototL5jixSfDyJm7nTaYBXJqXU0jfmw@mail.gmail.com>
+In-Reply-To: <CAAdAUtge_wRL-Ri-TngototL5jixSfDyJm7nTaYBXJqXU0jfmw@mail.gmail.com>
+From:   Oliver Upton <oupton@google.com>
+Date:   Thu, 29 Jul 2021 13:23:52 -0700
+Message-ID: <CAOQ_QshrXJx42AS4Efu3gSZj1fnGgJ9FMFCydtdZ9h3Zj8cy=A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] KVM: arm64: Record number of signal exits as a vCPU stat
+To:     Jing Zhang <jingzhangos@google.com>
+Cc:     KVM ARM <kvmarm@lists.cs.columbia.edu>, KVM <kvm@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <Alexandru.Elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Peter Shier <pshier@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Guangyu Shi <guangyus@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/2021 09:51, Vinod Koul wrote:
-> This add the bits in RM to enable the DSC blocks
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h |  1 +
->   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c  | 32 +++++++++++++++++++++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h  |  1 +
->   3 files changed, 34 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> index d6717d6672f7..d56c05146dfe 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> @@ -165,6 +165,7 @@ struct dpu_global_state {
->   	uint32_t ctl_to_enc_id[CTL_MAX - CTL_0];
->   	uint32_t intf_to_enc_id[INTF_MAX - INTF_0];
->   	uint32_t dspp_to_enc_id[DSPP_MAX - DSPP_0];
-> +	uint32_t dsc_to_enc_id[DSC_MAX - DSC_0];
->   };
->   
->   struct dpu_global_state
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> index fd2d104f0a91..4da6d72b7996 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> @@ -11,6 +11,7 @@
->   #include "dpu_hw_intf.h"
->   #include "dpu_hw_dspp.h"
->   #include "dpu_hw_merge3d.h"
-> +#include "dpu_hw_dsc.h"
->   #include "dpu_encoder.h"
->   #include "dpu_trace.h"
->   
-> @@ -75,6 +76,14 @@ int dpu_rm_destroy(struct dpu_rm *rm)
->   			dpu_hw_intf_destroy(hw);
->   		}
->   	}
-> +	for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
-> +		struct dpu_hw_dsc *hw;
-> +
-> +		if (rm->intf_blks[i]) {
+On Thu, Jul 29, 2021 at 1:07 PM Jing Zhang <jingzhangos@google.com> wrote:
+>
+> On Thu, Jul 29, 2021 at 12:56 PM Oliver Upton <oupton@google.com> wrote:
+> >
+> > Most other architectures that implement KVM record a statistic
+> > indicating the number of times a vCPU has exited due to a pending
+> > signal. Add support for that stat to arm64.
+> >
+> > Cc: Jing Zhang <jingzhangos@google.com>
+> > Signed-off-by: Oliver Upton <oupton@google.com>
+> > ---
+> >  arch/arm64/include/asm/kvm_host.h | 1 +
+> >  arch/arm64/kvm/arm.c              | 1 +
+> >  arch/arm64/kvm/guest.c            | 3 ++-
+> >  3 files changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> > index 41911585ae0c..70e129f2b574 100644
+> > --- a/arch/arm64/include/asm/kvm_host.h
+> > +++ b/arch/arm64/include/asm/kvm_host.h
+> > @@ -576,6 +576,7 @@ struct kvm_vcpu_stat {
+> >         u64 wfi_exit_stat;
+> >         u64 mmio_exit_user;
+> >         u64 mmio_exit_kernel;
+> > +       u64 signal_exits;
+> >         u64 exits;
+> >  };
+> >
+> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> > index e9a2b8f27792..60d0a546d7fd 100644
+> > --- a/arch/arm64/kvm/arm.c
+> > +++ b/arch/arm64/kvm/arm.c
+> > @@ -783,6 +783,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+> >                 if (signal_pending(current)) {
+> >                         ret = -EINTR;
+> >                         run->exit_reason = KVM_EXIT_INTR;
+> > +                       ++vcpu->stat.signal_exits;
+> >                 }
+> >
+> >                 /*
+> > diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> > index 1dfb83578277..50fc16ad872f 100644
+> > --- a/arch/arm64/kvm/guest.c
+> > +++ b/arch/arm64/kvm/guest.c
+> > @@ -50,7 +50,8 @@ const struct _kvm_stats_desc kvm_vcpu_stats_desc[] = {
+> >         STATS_DESC_COUNTER(VCPU, wfi_exit_stat),
+> >         STATS_DESC_COUNTER(VCPU, mmio_exit_user),
+> >         STATS_DESC_COUNTER(VCPU, mmio_exit_kernel),
+> > -       STATS_DESC_COUNTER(VCPU, exits)
+> > +       STATS_DESC_COUNTER(VCPU, exits),
+> > +       STATS_DESC_COUNTER(VCPU, signal_exits),
+> How about put signal_exits before exits as the same order in
+> kvm_vcpu_stat just for readability?
 
-rm->dsc_blks[i]
+Definitely.
 
-> +			hw = to_dpu_hw_dsc(rm->dsc_blks[i]);
-> +			dpu_hw_dsc_destroy(hw);
-> +		}
-> +	}
->   
->   	return 0;
->   }
-> @@ -221,6 +230,19 @@ int dpu_rm_init(struct dpu_rm *rm,
->   		rm->dspp_blks[dspp->id - DSPP_0] = &hw->base;
->   	}
->   
-> +	for (i = 0; i < cat->dsc_count; i++) {
-> +		struct dpu_hw_dsc *hw;
-> +		const struct dpu_dsc_cfg *dsc = &cat->dsc[i];
-> +
-> +		hw = dpu_hw_dsc_init(dsc->id, mmio, cat);
-> +		if (IS_ERR_OR_NULL(hw)) {
-> +			rc = PTR_ERR(hw);
-> +			DPU_ERROR("failed dsc object creation: err %d\n", rc);
-> +			goto fail;
-> +		}
-> +		rm->dsc_blks[dsc->id - DSC_0] = &hw->base;
-> +	}
-> +
->   	return 0;
->   
->   fail:
-> @@ -476,6 +498,9 @@ static int _dpu_rm_reserve_intf(
->   	}
->   
->   	global_state->intf_to_enc_id[idx] = enc_id;
-> +
-> +	global_state->dsc_to_enc_id[0] = enc_id;
-> +	global_state->dsc_to_enc_id[1] = enc_id;
+> >  };
+> >  static_assert(ARRAY_SIZE(kvm_vcpu_stats_desc) ==
+> >                 sizeof(struct kvm_vcpu_stat) / sizeof(u64));
+> > --
+> > 2.32.0.554.ge1b32706d8-goog
+> >
+> Reviewed-by: Jing Zhang <jingzhangos@google.com>
 
-This is not correct. At least this should be guarded with an if, 
-checking that DSC is requested. Also we'd need to check that DSC 0 and 1 
-are not allocated.
-
->   	return 0;
->   }
->   
-> @@ -567,6 +592,8 @@ void dpu_rm_release(struct dpu_global_state *global_state,
->   		ARRAY_SIZE(global_state->ctl_to_enc_id), enc->base.id);
->   	_dpu_rm_clear_mapping(global_state->intf_to_enc_id,
->   		ARRAY_SIZE(global_state->intf_to_enc_id), enc->base.id);
-> +	_dpu_rm_clear_mapping(global_state->dsc_to_enc_id,
-> +		ARRAY_SIZE(global_state->dsc_to_enc_id), enc->base.id);
->   }
->   
->   int dpu_rm_reserve(
-> @@ -640,6 +667,11 @@ int dpu_rm_get_assigned_resources(struct dpu_rm *rm,
->   		hw_to_enc_id = global_state->dspp_to_enc_id;
->   		max_blks = ARRAY_SIZE(rm->dspp_blks);
->   		break;
-> +	case DPU_HW_BLK_DSC:
-> +		hw_blks = rm->dsc_blks;
-> +		hw_to_enc_id = global_state->dsc_to_enc_id;
-> +		max_blks = ARRAY_SIZE(rm->dsc_blks);
-> +		break;
->   	default:
->   		DPU_ERROR("blk type %d not managed by rm\n", type);
->   		return 0;
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> index 1f12c8d5b8aa..278d2a510b80 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> @@ -30,6 +30,7 @@ struct dpu_rm {
->   	struct dpu_hw_blk *intf_blks[INTF_MAX - INTF_0];
->   	struct dpu_hw_blk *dspp_blks[DSPP_MAX - DSPP_0];
->   	struct dpu_hw_blk *merge_3d_blks[MERGE_3D_MAX - MERGE_3D_0];
-> +	struct dpu_hw_blk *dsc_blks[DSC_MAX - DSC_0];
->   
->   	uint32_t lm_max_width;
->   };
-> 
-
-
--- 
-With best wishes
-Dmitry
+Thanks Jing!
