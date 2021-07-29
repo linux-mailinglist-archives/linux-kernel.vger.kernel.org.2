@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54ED23DAE3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 23:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9562C3DAE53
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 23:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234175AbhG2VYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 17:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
+        id S234153AbhG2V13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 17:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233989AbhG2VY1 (ORCPT
+        with ESMTP id S233967AbhG2V12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 17:24:27 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2DAC0613D5;
-        Thu, 29 Jul 2021 14:24:23 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so11592650pjd.0;
-        Thu, 29 Jul 2021 14:24:23 -0700 (PDT)
+        Thu, 29 Jul 2021 17:27:28 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26ECAC061765;
+        Thu, 29 Jul 2021 14:27:24 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id c16so8514809plh.7;
+        Thu, 29 Jul 2021 14:27:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CRgHZ2BBSgqwW2a2rpM9WCsD0d71Vahfn60hOqytatA=;
-        b=NJaQyjufKu5UPM6xUx+chw7zJ8jQ3QZybWr7GcSAeIRb3mh+3QZYhdzLiepTYYFNPE
-         BHQRr+MoqpNHQCEntokn5RKOfMtpL6oweobwP4GwogPfRq72rnLTsFlazVUV0GnGNfA+
-         uK2TOVl180ldeX51cqHRuXeaLOUceag++yYbIM9P+AtEBnrhc+H0lydYmTushKghciPC
-         Imw0hHIMoT30WyBbo/U6zI3qqSR3HE02V/lEiqYEvOORkRo33Ei+qYrBtBtSC4GzY3jP
-         dvqiXorKQZZZN7jqE1B9VDvH9Hqnl6hJM9y8gtCnaQoZktMCsAQSpHiHB/UdRd3TJAU5
-         8rqw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CmUz25v47EVa8gRZMq5MLvl4L4iFYPzewIDb5rn7kIM=;
+        b=SORUYDWsPT1mdtbTKodQJcv9mUm1olu6HMr4QDAkVdC+quIpbsQcHkbJlqdK4TXOSL
+         MtWLhjVlUb1zReImAq0EdZTUjGgE//o1T+UnAHL5a9KIXw5s+qvWDL9LLWESASgQgkwj
+         Ir5R/rcLaHiqf5NzeCffZ/Gs5Ronm9P/VFKO+4HJH1GIoulmE5CUbEiO2RyQr3eO7Rn6
+         hEuLUZmW/0RrVUShatRfqHxBAmuqMJ8QQhzKOCcGc+zMDUw+lhDVTBVyNt/GLhPvLYim
+         7In52S/+PV5DBJG+c0dStIuFe+9NcCZ0h0MUP3YbZzbyzvjTxr1ugmv8arPjJiV41HBP
+         MzUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CRgHZ2BBSgqwW2a2rpM9WCsD0d71Vahfn60hOqytatA=;
-        b=dz48uuF3f0Zq1FS3d6sW50WQMTAcIwId30lCkUP1yyNTOp0O1PTuXBXlC5+7xNillY
-         SosRwZbz31viZvCl66d31gkaYZAvpWu62t4RCViqQzShJikwMpfK+y2FaIWcot1vbzfW
-         0+MtHQ3XuiolKdotBM8evnugkQvshSYWG3rCtJp/j22+m0jhkg7cpxIgihjjVi4TIVsR
-         oMv93AstL3WQ1IhK+YQNAeokEZ5x8QF5A5yiABRhyKMD9nvY4W7E4wSXvU+kqDGHag6e
-         LuV+yhEQxzfBHaKAZoWZR1lM3h7qmjh5WS5wH5l5LzYjqhL3TUzXOJpULCBng2FLtqMO
-         BTOg==
-X-Gm-Message-State: AOAM5326zisS8P1/3UD4Ckc/LN2bBr0yTqaTE+SbffLgzpd/P932rjQU
-        ePFHMFutD8hX6f1YPnySZ5U6+07mxYg=
-X-Google-Smtp-Source: ABdhPJy45q4MV82IN2SwvkEJx1i+Sd6Vfggh5Kl6LB2ESsBdePfyvX7lw42Sx7py2t79dFwaA8+LPA==
-X-Received: by 2002:a17:902:bd83:b029:12c:1fea:7dc with SMTP id q3-20020a170902bd83b029012c1fea07dcmr6371902pls.59.1627593862310;
-        Thu, 29 Jul 2021 14:24:22 -0700 (PDT)
-Received: from [10.67.49.140] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id p11sm4346619pju.20.2021.07.29.14.24.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 14:24:21 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/21] 5.4.137-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210729135142.920143237@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6d7db723-f9d1-959d-ed6f-d6b9ecff0d07@gmail.com>
-Date:   Thu, 29 Jul 2021 14:24:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CmUz25v47EVa8gRZMq5MLvl4L4iFYPzewIDb5rn7kIM=;
+        b=RXKw8AHvbq3BrvZ5MUCC5iN0z8zLlAeP55BJXKhBBU+29xTw9uju5vSPppVs1wefcw
+         aWz9kuSmZuoq26B0R+cPk3Ba994IuiFyblpSXZQvMaMxEAMHP8PBXv2QkXhEHOVb8+cc
+         RJF2F+W1aHFmhFj4Cc9CmNAS5WQmfZenj5JLkrkCyZxpxghrHOBFcwRdbrHIWtKZAMH8
+         eIPEN7VYj+qzOSMoTf68k6ZBV51hm6fV9ta5E6501yUPMSmR2QnA2VjlSE6YiHxLlvUj
+         xv85CJ2ncSYq791rIXm5kU3feJa03nw8g8xq/gmgPTsiu/LpGKmY53S68+lMUTowmRtH
+         y+kw==
+X-Gm-Message-State: AOAM531+6vQ46NlP3im7tn60wK9lIZeXGJBPZIuTqEp3F4427j8uD4h2
+        IL4XzTn/TLLSZVwUs1FcFfVuPp6Fyws0q3t9Uvg=
+X-Google-Smtp-Source: ABdhPJzcwd8CEaU5dsVlvlXTZD3ucVxwPiCBIwPZZKnWXpoWb19DKemjYFPzIC1Px66OiyySjVG1CK1cfBOjKtHRZT8=
+X-Received: by 2002:a62:1609:0:b029:3ab:afdb:acf3 with SMTP id
+ 9-20020a6216090000b02903abafdbacf3mr2117397pfw.43.1627594043670; Thu, 29 Jul
+ 2021 14:27:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210727001252.1287673-1-jiang.wang@bytedance.com>
+ <20210727001252.1287673-3-jiang.wang@bytedance.com> <6100363add8a9_199a412089@john-XPS-13-9370.notmuch>
+ <CAM_iQpVedTzRbf-bC7WuGMFYF=qnUxbnUdqJ9+FaxrTAn5DkTw@mail.gmail.com> <6101a56bf2a11_1e1ff620813@john-XPS-13-9370.notmuch>
+In-Reply-To: <6101a56bf2a11_1e1ff620813@john-XPS-13-9370.notmuch>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 29 Jul 2021 14:27:12 -0700
+Message-ID: <CAM_iQpXiqhfL9M04x1hvJ_6zCCUoDAv1_ywysu=O7wnCUuJaTw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/5] af_unix: add unix_stream_proto for sockmap
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jiang Wang <jiang.wang@bytedance.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 6:54 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.137 release.
-> There are 21 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.137-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Wed, Jul 28, 2021 at 11:44 AM John Fastabend
+<john.fastabend@gmail.com> wrote:
+>
+> Cong Wang wrote:
+> > On Tue, Jul 27, 2021 at 9:37 AM John Fastabend <john.fastabend@gmail.com> wrote:
+> > > Do we really need an unhash hook for unix_stream? I'm doing some testing
+> > > now to pull it out of TCP side as well. It seems to be an artifact of old
+> > > code that is no longer necessary. On TCP side at least just using close()
+> > > looks to be enough now.
+> >
+> > How do you handle the disconnection from remote without ->unhash()?
+>
+> Would close() not work for stream/dgram sockets?
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+close() is called when the local closes the sockets, but when the remote
+closes or disconnects it, unhash() is called. This is why TCP calls unhash()
+to remove the socket from established socket hash table. unhash() itself
+might not make much sense for AF_UNIX as it probably does not need a
+hash table to track established ones, however, the idea is the same, that
+is, we have to handle remote disconnections here.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Thanks.
