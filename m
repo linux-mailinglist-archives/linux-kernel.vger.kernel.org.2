@@ -2,149 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D583DAEBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D7D3DAEC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbhG2WPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33172 "EHLO
+        id S234363AbhG2WR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 18:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhG2WPR (ORCPT
+        with ESMTP id S230078AbhG2WRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:15:17 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930F7C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:15:12 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id r17so13784918lfe.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:15:12 -0700 (PDT)
+        Thu, 29 Jul 2021 18:17:55 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB91FC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:17:51 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so11628295pjh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 15:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cMLNPPri6qLYLmbcVjGDPuvyqtHljwKPt/Kw2945Q8E=;
-        b=gPVrciZQ0H8OrEVgkRGpPXwmnlXGi7IWOCVNplY7URViIvt6MrB0kGudrK2Rk5TNc+
-         ZcVQyfxpcAPc3nx1OlPimwZBQanmsrWD3TCAbWJ8wtmeenHGiR60rDWiJbOFqpe9RAGd
-         XhUvkfca3FOIF/QVPFCHWWoboKq82Y6QK36tVzauhDzGBIHYR5G3StQ8DKjg3gOmkyn1
-         0dYct0XQJQbYA2J0BgabP/EmLcqPIJ2An8UQX/AU/IIblCqcNCFfiBQwbELmzU1kMbey
-         480no7OxS/qbxI1QyNSwu85Z6VZ99JWTdQJhnZ4Vg0ITHvnf0dVnWo+TlwyhapRvLmFN
-         UhQg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u/ilw5NBsJP2nmfyHHjlurYIq9TKi0gAKv2Zlvey2RQ=;
+        b=iXGP91wf4OD7DIgLvU0aEpgvSVV8t+Qo7h/khRV7r9XjB3YXodcxAisfJqkUiFfZVo
+         uhYuF2xP/aaD5jMqrPBHziMaTTzcHOYIXrUj0ymvflER627ZyMRfYXIJ+2ecEgOdQYFq
+         OPokrPnYKzrpY28qLjfS/2kDH2yby5xHdcv1eG6/Jwu04A5jsXKcfCTGytafS6F1HfDL
+         lnCmIA5UGS8alBwdl+Y21xoWu0M+SgVGhGCr4GoNOC+5vxE2v9T99ZeJ/V9ArLL6l/PB
+         HBkKvZvgxgDmAXiZrokSdtopoAhlUkEWixyfWEooNVbrFq54cty6TzQOZQUoSVuAENZr
+         NVzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cMLNPPri6qLYLmbcVjGDPuvyqtHljwKPt/Kw2945Q8E=;
-        b=P92eyBf7V7Ae2OtdbA1m7m12mjbZ9c+9UB9T43gDJMsb6B168RWbhRp0BkxyChNegn
-         2jp1iCVt2pjVN4K4rCUX1+vqaK9rfdXJxFd511PWc8QCNPmkSvjCcJfL7yOPlqbuOFHL
-         KEQsNWotZ0JXzbKNCCiUWgHG+UBJ23YJpIYPi84UpmnAqwQT97O5N7aRJQy0zT/6+9Ar
-         wlgEh6CNyAa6fkqKzV/MUx1mTQiQfpBUWUMPqNpItWK26YMIUAzUFUxFtuq+oNaOVl3n
-         LLQNBjI5oYLLpgDn9dE4UCXYYecmLMFtBewm2Z5vc2PIWnOlwujyZuFr7GfSjLMPQD2H
-         Fp7g==
-X-Gm-Message-State: AOAM532gYrCklp7pGYgltyXQPMdhKc8/rdG62osJOEpTOfaA4jsXopTA
-        KEJt+xo27AwTZuGxalhVvjhyyw==
-X-Google-Smtp-Source: ABdhPJxntgaYB/1tvYMlU6ktcdkPNVEahQjjruAi4HU1XiR/oTZsvA4LvveewHUduXk6h9s+8nKR3g==
-X-Received: by 2002:a05:6512:118c:: with SMTP id g12mr4806358lfr.143.1627596910850;
-        Thu, 29 Jul 2021 15:15:10 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id j14sm455041lfc.20.2021.07.29.15.15.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 15:15:10 -0700 (PDT)
-Subject: Re: [PATCH 06/11] drm/msm/disp/dpu1: Add DSC support in hw_ctl
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20210715065203.709914-1-vkoul@kernel.org>
- <20210715065203.709914-7-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <79e693c8-ff9c-d4a8-d4a8-8a1f075f77c7@linaro.org>
-Date:   Fri, 30 Jul 2021 01:15:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u/ilw5NBsJP2nmfyHHjlurYIq9TKi0gAKv2Zlvey2RQ=;
+        b=cmWapuZ38KMkO9dwS0TDfblmFcLfIhm3fx4qnta7K5hj4FD+ghe6So+RbwFYew+yKX
+         EKVUMJqOrBgSa4JqnIPJiNd2GAj8jRr2ahjpESHH58IhHGGmnnFYXstxRNQbVizpT0Tj
+         XeDRgljp5ZUsKnak42Ujgeh2hCmzZf5t986NBvM8AgFDKHuBl0wClQyGn2HvaHQaoO2M
+         Bday/OhXjpB7gV2fQnkiBRUhKEzjrbBjC5v7rkHEKHxHSXLDFRyFVFX902vd2gpulFf6
+         uVy6lSqVSJ+z9o0ntP0N2ftgAlSXxaLp2Tobg7zfYk91Inc4gFT/hP4QdK8p9HmZIaCg
+         97Vg==
+X-Gm-Message-State: AOAM532aIvlpLavt40diVPNqzzFR+WCAx4O7iY7qLfP1hyp5EYynVTwv
+        87ZIQpSGIstvPog5ZQj8IdvU/g==
+X-Google-Smtp-Source: ABdhPJxNdMwRYF6ewrVP/p926bsrmvoQLpd3Z3rK+e9SQlATNhMyMA66r9XA0q3U1bfPe2CULBPeeA==
+X-Received: by 2002:a62:e809:0:b029:32c:2dcf:60ed with SMTP id c9-20020a62e8090000b029032c2dcf60edmr7283033pfi.5.1627597071180;
+        Thu, 29 Jul 2021 15:17:51 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id k6sm5063456pgb.43.2021.07.29.15.17.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 15:17:50 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 22:17:46 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm@vger.kernel.org, Lars Bull <larsbull@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3 V3] KVM, SEV: Add support for SEV intra host migration
+Message-ID: <YQMpChJVo13/Njnc@google.com>
+References: <20210726195015.2106033-1-pgonda@google.com>
+ <20210726195015.2106033-3-pgonda@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210715065203.709914-7-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726195015.2106033-3-pgonda@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/2021 09:51, Vinod Koul wrote:
-> Later gens of hardware have DSC bits moved to hw_ctl, so configure these
-> bits so that DSC would work there as well
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> index 2d4645e01ebf..aeea6add61ee 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> @@ -25,6 +25,8 @@
->   #define   CTL_MERGE_3D_ACTIVE           0x0E4
->   #define   CTL_INTF_ACTIVE               0x0F4
->   #define   CTL_MERGE_3D_FLUSH            0x100
-> +#define   CTL_DSC_ACTIVE                0x0E8
-> +#define   CTL_DSC_FLUSH                0x104
->   #define   CTL_INTF_FLUSH                0x110
->   #define   CTL_INTF_MASTER               0x134
->   #define   CTL_FETCH_PIPE_ACTIVE         0x0FC
-> @@ -34,6 +36,7 @@
->   
->   #define DPU_REG_RESET_TIMEOUT_US        2000
->   #define  MERGE_3D_IDX   23
-> +#define  DSC_IDX        22
->   #define  INTF_IDX       31
->   #define CTL_INVALID_BIT                 0xffff
->   
-> @@ -120,6 +123,7 @@ static u32 dpu_hw_ctl_get_pending_flush(struct dpu_hw_ctl *ctx)
->   
->   static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
->   {
-> +	DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH, BIT(0) | BIT(1) | BIT(2) | BIT(3));
+On Mon, Jul 26, 2021, Peter Gonda wrote:
+> To avoid exposing this internal state to userspace and prevent other
+> processes from importing state they shouldn't have access to, the send
+> returns a token to userspace that is handed off to the target VM. The
+> target passes in this token to receive the sent state. The token is only
+> valid for one-time use. Functionality on the source becomes limited
+> after send has been performed. If the source is destroyed before the
+> target has received, the token becomes invalid.
 
-Please pass DSC indices using intf cfg and use them to configure 
-register writes.
+...
 
->   
->   	if (ctx->pending_flush_mask & BIT(MERGE_3D_IDX))
->   		DPU_REG_WRITE(&ctx->hw, CTL_MERGE_3D_FLUSH,
-> @@ -128,7 +132,7 @@ static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
->   		DPU_REG_WRITE(&ctx->hw, CTL_INTF_FLUSH,
->   				ctx->pending_intf_flush_mask);
->   
-> -	DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, ctx->pending_flush_mask);
-> +	DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, ctx->pending_flush_mask |  BIT(DSC_IDX));
+> +11. KVM_SEV_INTRA_HOST_RECEIVE
+> +-------------------------------------
+> +
+> +The KVM_SEV_INTRA_HOST_RECEIVE command is used to transfer staged SEV
+> +info to a target VM from some source VM. SEV on the target VM should be active
+> +when receive is performed, but not yet launched and without any pinned memory.
+> +The launch commands should be skipped after receive because they should have
+> +already been performed on the source.
+> +
+> +Parameters (in/out): struct kvm_sev_intra_host_receive
+> +
+> +Returns: 0 on success, -negative on error
+> +
+> +::
+> +
+> +    struct kvm_sev_intra_host_receive {
+> +        __u64 info_token;    /* token referencing the staged info */
 
-Only if DSCs are used
+Sorry to belatedly throw a wrench in things, but why use a token approach?  This
+is only intended for migrating between two userspace VMMs using the same KVM 
+module, which can access both the source and target KVM instances (VMs/guests).
+Rather than indirectly communicate through a token, why not communidate directly?
+Same idea as svm_vm_copy_asid_from().
 
->   }
->   
->   static inline void dpu_hw_ctl_trigger_flush(struct dpu_hw_ctl *ctx)
-> @@ -507,6 +511,7 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
->   	if (cfg->merge_3d)
->   		DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
->   			      BIT(cfg->merge_3d - MERGE_3D_0));
-> +	DPU_REG_WRITE(c, CTL_DSC_ACTIVE, BIT(0) | BIT(1) | BIT(2) | BIT(3));
+The locking needs special consideration, e.g. attempting to take kvm->lock on
+both the source and dest could deadlock if userspace is malicious and
+double-migrates, but I think a flag and global spinlock to state that migration
+is in-progress would suffice.                                                                                 
 
-And here
+Locking aside, this would reduce the ABI to a single ioctl(), should avoid most 
+if not all temporary memory allocations, and would obviate the need for patch 1 
+since there's no limbo state, i.e. the encrypted regions are either owned by the
+source or the dest.
 
->   }
->   
->   static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
-> 
+I think the following would work?  Another thought would be to make the helpers
+and "lock for multi-lock" flag arch-agnostic, e.g. the logic below works iff
+this is the only path that takes two kvm->locks simultaneous.
 
+static int svm_sev_lock_for_migration(struct kvm *kvm)
+{
+	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+	int ret = 0;
 
--- 
-With best wishes
-Dmitry
+	/*
+	 * Bail if this VM is already involved in a migration to avoid deadlock
+	 * between two VMs trying to migrate to/from each other.
+	 */
+	spin_lock(&sev_migration_lock);
+	if (sev->migration_in_progress)
+		ret = -EINVAL;
+	else
+		sev->migration_in_progress = true;
+	spin_unlock(&sev_migration_lock);
+
+	if (!ret)
+		mutex_lock(&kvm->lock);
+
+	return ret;
+}
+
+static void svm_unlock_after_migration(struct kvm *kvm)
+{
+	mutex_unlock(&kvm->lock);
+	WRITE_ONCE(sev->migration_in_progress, false);
+}
+
+int svm_sev_migrate_from(struct kvm *kvm, unsigned int source_fd)
+{
+	struct file *source_kvm_file;
+	struct kvm *source_kvm;
+	int ret = -EINVAL;
+
+	ret = svm_sev_lock_for_migration(kvm);
+	if (ret)
+		return ret;
+
+	if (!sev_guest(kvm))
+		goto out_unlock;
+
+	source_kvm_file = fget(source_fd);
+	if (!file_is_kvm(source_kvm_file)) {
+		ret = -EBADF;
+		goto out_fput;
+	}
+
+	source_kvm = source_kvm_file->private_data;
+	ret = svm_sev_lock_for_migration(source_kvm);
+	if (ret)
+		goto out_fput;
+
+	if (!sev_guest(source_kvm)) {
+		ret = -EINVAL;
+		goto out_source;
+	}
+
+	<migration magic>
+
+out_source:
+	svm_unlock_after_migration(&source_kvm->lock);
+out_fpu:
+	if (source_kvm_file)
+		fput(source_kvm_file);
+out_unlock:
+	svm_unlock_after_migration(kvm);
+	return ret;
+}
