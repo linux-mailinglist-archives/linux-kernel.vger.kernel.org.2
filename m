@@ -2,111 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDBD3DA667
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897503DA672
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235368AbhG2O3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:29:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28343 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234361AbhG2O3S (ORCPT
+        id S236733AbhG2OcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234206AbhG2OcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:29:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627568954;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8rprxl3FocOXbhXJPD5+gp5oklLSxk2ZLSSYEsUHTlc=;
-        b=FgLCunXTXE7c24XOqCIic3p/zu5cUUS+gtzAiD5NFy+UZE8RTdCJO+K38Fwon9Z0TunQOH
-        ovXje0vT56aKGa626XZA8RzOx5UijR7LpearDJcvQ9vHJNpZQq8vUBwxNxHmQdm6IVMKH/
-        T0XnI33d7itEAcpfW2eebut8SNtDdEc=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-276-XQXYweBrPfqhVoTGWAQe_g-1; Thu, 29 Jul 2021 10:29:13 -0400
-X-MC-Unique: XQXYweBrPfqhVoTGWAQe_g-1
-Received: by mail-qv1-f71.google.com with SMTP id a2-20020a0562141302b02903303839b843so4006771qvv.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:29:13 -0700 (PDT)
+        Thu, 29 Jul 2021 10:32:23 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6180DC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:32:19 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id f13so7237457plj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TCqiZ9emwIn3DT8Qsqk3JokMy2CspMehkepsJ5X2OwI=;
+        b=pYmciwP358P4iHb5J1kUSRLLsujMHUNOs6IfYo1L3SmlG0rWOcGEzMCxc6qjBXTyJn
+         DDH6pWCrYwzFt/vPl1abGPC0Gs3TTe4cny88etZlimyWd3AzxTdNyZ6QT45d0F38B96L
+         V3yPQ41hpebZlq4SIo8ju9Ews+sSLWL85P6yV7D7+DFOKY7hOKT6Pu9v1Omqchz7ZFCG
+         +raQzzTRYZs0RtB647vonPTl3GiFFZhtHcoeuNPd4AmLtrWpp/mMFkDV8/Wtb0hcgsQc
+         qSMdAnaj+p05tP9CUTmeyEAb48oDtTdVzIsg/hvB6ViMPfyniuTVSgK9KrJQf3PrYqZC
+         yVyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8rprxl3FocOXbhXJPD5+gp5oklLSxk2ZLSSYEsUHTlc=;
-        b=EPsNq2BjHmUJTru9pt7sG6oI4X2Lle0g/hRU0pMNkaO4AZ7E899+N+5dTgNcruqtiz
-         X2vl1c+/eqY4AKpXkaU+bc4Xiya/qIO86sgyJQIkC/cEWdgsuSkQpeIl/tI9a7k47Oh1
-         VRLo1hK0cTXz/qrh2Zpd5vuTelj8uv/SAbr94DC2XJTFH0ptN0Z05rVUxQrJs596MnzD
-         0imf7T0U9Yf9+y69dR+r8NybW+rDE8loRia6Z2E0SYgwdEKRqGT5sqpRSx0kn6fk3Lij
-         NzYOHAQQy9UX2DltgafIeM3F5qOM5OS5I3yRuHNk8KzEWWd3FYgxzSirh+zY78WhTXvf
-         WUng==
-X-Gm-Message-State: AOAM531kTGy74GNXTOl+SdT3eWifP5JIHZxgx6rMO5ckT3f1aBbVRJkT
-        jWIp4Bokz6U8KKgsJGmwY56maPJxmnk5eBSOqujrJL2+GmDHgQDaYspUGzLUKeS5Tweu9PE9wNg
-        TYdhuYliTWbJ0yacab8aWvXntihcycZ0fiRBLycC2
-X-Received: by 2002:ae9:dcc6:: with SMTP id q189mr5451215qkf.390.1627568952829;
-        Thu, 29 Jul 2021 07:29:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7GAxKW9wCI+aT6box4kBql7mgRZBjdR1yCI+w2rMZPZJFjbkNS0X/5I4dfmGXa+D7YqpbFHFfXuDvHA30Dpg=
-X-Received: by 2002:ae9:dcc6:: with SMTP id q189mr5451198qkf.390.1627568952606;
- Thu, 29 Jul 2021 07:29:12 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TCqiZ9emwIn3DT8Qsqk3JokMy2CspMehkepsJ5X2OwI=;
+        b=g9wGaNUsV2Vgf9SBBXoOWB60rzOxtAqIfhbFlaVFTiJW6T38Yk3AKKEtqh6kWkrbkQ
+         o5tMZKv3LPeLXBVpm7CfYPf6Y2nWB0cqSAZtIqepHLKl1q8Y645z2lAcKx4UbD9+QQiz
+         OxkHkklfoq6IclZcneKQC4kNrARup4AjPVp/PhCxMujgVBgVx0jRjL66cklKQu5leU/8
+         5XJ+hw0YF4myW/2WoVd/2CSDroMRurJwQW2UJ4tiL2Lqmkc3J9IoQNCd9fEwxKecH6/A
+         oSSrUo7zrAFmfB6EzeayCVub7adHET6uYFNslZC73ZJTsmOHMNqGsRxmzcdio3A7/vxb
+         zlRg==
+X-Gm-Message-State: AOAM532Qgox2vYfnFvjPEPgnadsKlwyzYkf31yppIFVomvWfQR9m7gRv
+        A5aBmBnSgIIwn3MXj1PKWk8=
+X-Google-Smtp-Source: ABdhPJy0u0+T52Mob4Ito6crR05tVv7wP86/2LEo3TbMmbfDVRZIhzxPK9wjz9JsmCtRtqAI46W+/Q==
+X-Received: by 2002:a17:90b:609:: with SMTP id gb9mr5714173pjb.156.1627569138906;
+        Thu, 29 Jul 2021 07:32:18 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id n56sm3801845pfv.65.2021.07.29.07.32.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 07:32:18 -0700 (PDT)
+Subject: Re: [PATCH 1/3] drm: use the lookup lock in drm_is_current_master
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
+        airlied@linux.ie, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de
+References: <20210722092929.244629-1-desmondcheongzx@gmail.com>
+ <20210722092929.244629-2-desmondcheongzx@gmail.com>
+ <YPlKkvelm/mcnCj0@phenom.ffwll.local>
+ <YQAaIrNUXa6i2gxD@hirez.programming.kicks-ass.net>
+ <YQJSE3TMRydDNhqT@phenom.ffwll.local>
+Cc:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <fbf2ec46-5ef5-7108-450a-13a7c48c30ce@gmail.com>
+Date:   Thu, 29 Jul 2021 22:32:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210726153621.2658658-1-gregkh@linuxfoundation.org> <202107261049.DC0C9178@keescook>
-In-Reply-To: <202107261049.DC0C9178@keescook>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Thu, 29 Jul 2021 16:29:01 +0200
-Message-ID: <CAOssrKdjuUbyHmzwLJFtu-KibPgG3s=LoDq3fgzkv=kTG+mZiQ@mail.gmail.com>
-Subject: Re: [PATCH net] af_unix: fix garbage collect vs. MSG_PEEK
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQJSE3TMRydDNhqT@phenom.ffwll.local>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 9:27 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Jul 26, 2021 at 05:36:21PM +0200, Greg Kroah-Hartman wrote:
-> > From: Miklos Szeredi <mszeredi@redhat.com>
-> >
-> > Gc assumes that in-flight sockets that don't have an external ref can't
->
-> I think this commit log could be expanded. I had to really study things
-> to even beging to understand what was going on. I assume "Gc" here means
-> specifically unix_gc()?
+On 29/7/21 3:00 pm, Daniel Vetter wrote:
+> On Tue, Jul 27, 2021 at 04:37:22PM +0200, Peter Zijlstra wrote:
+>> On Thu, Jul 22, 2021 at 12:38:10PM +0200, Daniel Vetter wrote:
+>>> On Thu, Jul 22, 2021 at 05:29:27PM +0800, Desmond Cheong Zhi Xi wrote:
+>>>> Inside drm_is_current_master, using the outer drm_device.master_mutex
+>>>> to protect reads of drm_file.master makes the function prone to creating
+>>>> lock hierarchy inversions. Instead, we can use the
+>>>> drm_file.master_lookup_lock that sits at the bottom of the lock
+>>>> hierarchy.
+>>>>
+>>>> Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>>>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>>>> ---
+>>>>   drivers/gpu/drm/drm_auth.c | 9 +++++----
+>>>>   1 file changed, 5 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+>>>> index f00354bec3fb..9c24b8cc8e36 100644
+>>>> --- a/drivers/gpu/drm/drm_auth.c
+>>>> +++ b/drivers/gpu/drm/drm_auth.c
+>>>> @@ -63,8 +63,9 @@
+>>>>   
+>>>>   static bool drm_is_current_master_locked(struct drm_file *fpriv)
+>>>>   {
+>>>> -	lockdep_assert_held_once(&fpriv->minor->dev->master_mutex);
+>>>> -
+>>>> +	/* Either drm_device.master_mutex or drm_file.master_lookup_lock
+>>>> +	 * should be held here.
+>>>> +	 */
+>>>
+>>> Disappointing that lockdep can't check or conditions for us, a
+>>> lockdep_assert_held_either would be really neat in some cases.
+>>>
+>>> Adding lockdep folks, maybe they have ideas.
+>>
+>> #ifdef CONFIG_LOCKDEP
+>> 	WARN_ON_ONCE(debug_locks && !(lockdep_is_held(&drm_device.master_mutex) ||
+>> 				      lockdep_is_held(&drm_file.master_lookup_lock)));
+>> #endif
+>>
+>> doesn't exactly roll off the tongue, but should do as you want I
+>> suppose.
+>>
+>> Would something like:
+>>
+>> #define lockdep_assert(cond)	WARN_ON_ONCE(debug_locks && !(cond))
+>>
+>> Such that we can write:
+>>
+>> 	lockdep_assert(lockdep_is_held(&drm_device.master_mutex) ||
+>> 		       lockdep_is_held(&drm_file.master_lookup_lock));
+>>
+>> make it better ?
+> 
+> Yeah I think that's pretty tidy and flexible.
+> 
+> Desmond, can you pls give this a shot with Peter's patch below?
+> -Daniel
 
-Yeah, the original description was not too good.  Commit cbcf01128d0a
-("af_unix: fix garbage collect vs MSG_PEEK") now in Linus' tree has a
-much expanded description.
+Sounds good, will do. Thanks for the patch, Peter.
 
-> I note that unix_tot_inflight isn't an atomic but is read outside of
-> locking by unix_release_sock() and wait_for_unix_gc(), which seems wrong
-> (or at least inefficient).
+Just going to make a small edit:
+s/LOCK_STAT_NOT_HELD/LOCK_STATE_NOT_HELD/
 
-I don't think it matters in practice.   Do you have specific worries?
+Best wishes,
+Desmond
 
-> Doesn't this mean total_refs and inflight_refs can still get out of
-> sync? What keeps an skb from being "visible" to unix_peek_fds() between
-> the unix_gx() spin_unlock() and the unix_peek_fds() fget()?
->
-> A: unix_gx():
->         spin_lock()
->         find "total_refs == inflight_refs", add to hitlist
->         spin_unlock()
-> B: unix_peek_fds():
->         fget()
-> A: unix_gc():
->         walk hitlist and free(skb)
-> B: unix_peek_fds():
->         *use freed skb*
->
-> I feel like I must be missing something since the above race would
-> appear to exist even for unix_attach_fds()/unix_detach_fds():
-
-What you are missing is that anything that could have been peeked must
-not have been garbage collected.  I.e. the garbage collection
-algorithm will find that there's an external in-flight reference to
-the peeked socket and so it will not add it to the hitlist.
-
-Thanks,
-Miklos
+>>
+>> ---
+>> Subject: locking/lockdep: Provide lockdep_assert{,_once}() helpers
+>>
+>> Extract lockdep_assert{,_once}() helpers to more easily write composite
+>> assertions like, for example:
+>>
+>> 	lockdep_assert(lockdep_is_held(&drm_device.master_mutex) ||
+>> 		       lockdep_is_held(&drm_file.master_lookup_lock));
+>>
+>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> ---
+>> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+>> index 5cf387813754..0da67341c1fb 100644
+>> --- a/include/linux/lockdep.h
+>> +++ b/include/linux/lockdep.h
+>> @@ -306,31 +306,29 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
+>>   
+>>   #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
+>>   
+>> -#define lockdep_assert_held(l)	do {					\
+>> -		WARN_ON(debug_locks &&					\
+>> -			lockdep_is_held(l) == LOCK_STATE_NOT_HELD);	\
+>> -	} while (0)
+>> +#define lockdep_assert(cond)		\
+>> +	do { WARN_ON(debug_locks && !(cond)); } while (0)
+>>   
+>> -#define lockdep_assert_not_held(l)	do {				\
+>> -		WARN_ON(debug_locks &&					\
+>> -			lockdep_is_held(l) == LOCK_STATE_HELD);		\
+>> -	} while (0)
+>> +#define lockdep_assert_once(cond)	\
+>> +	do { WARN_ON_ONCE(debug_locks && !(cond)); } while (0)
+>>   
+>> -#define lockdep_assert_held_write(l)	do {			\
+>> -		WARN_ON(debug_locks && !lockdep_is_held_type(l, 0));	\
+>> -	} while (0)
+>> +#define lockdep_assert_held(l)		\
+>> +	lockdep_assert(lockdep_is_held(l) != LOCK_STAT_NOT_HELD)
+>>   
+>> -#define lockdep_assert_held_read(l)	do {				\
+>> -		WARN_ON(debug_locks && !lockdep_is_held_type(l, 1));	\
+>> -	} while (0)
+>> +#define lockdep_assert_not_held(l)	\
+>> +	lockdep_assert(lockdep_is_held(l) != LOCK_STATE_HELD)
+>>   
+>> -#define lockdep_assert_held_once(l)	do {				\
+>> -		WARN_ON_ONCE(debug_locks && !lockdep_is_held(l));	\
+>> -	} while (0)
+>> +#define lockdep_assert_held_write(l)	\
+>> +	lockdep_assert(lockdep_is_held_type(l, 0))
+>>   
+>> -#define lockdep_assert_none_held_once()	do {				\
+>> -		WARN_ON_ONCE(debug_locks && current->lockdep_depth);	\
+>> -	} while (0)
+>> +#define lockdep_assert_held_read(l)	\
+>> +	lockdep_assert(lockdep_is_held_type(l, 1))
+>> +
+>> +#define lockdep_assert_held_once(l)		\
+>> +	lockdep_assert_once(lockdep_is_held(l) != LOCK_STAT_NOT_HELD)
+>> +
+>> +#define lockdep_assert_none_held_once()		\
+>> +	lockdep_assert_once(!current->lockdep_depth)
+>>   
+>>   #define lockdep_recursing(tsk)	((tsk)->lockdep_recursion)
+>>   
+>> @@ -407,6 +405,9 @@ extern int lock_is_held(const void *);
+>>   extern int lockdep_is_held(const void *);
+>>   #define lockdep_is_held_type(l, r)		(1)
+>>   
+>> +#define lockdep_assert(c)			do { } while (0)
+>> +#define lockdep_assert_once(c)			do { } while (0)
+>> +
+>>   #define lockdep_assert_held(l)			do { (void)(l); } while (0)
+>>   #define lockdep_assert_not_held(l)		do { (void)(l); } while (0)
+>>   #define lockdep_assert_held_write(l)		do { (void)(l); } while (0)
+>>
+> 
 
