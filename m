@@ -2,102 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD083DAA17
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDCE3DAA1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbhG2R1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:27:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42218 "EHLO mail.kernel.org"
+        id S231929AbhG2R2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:28:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:53628 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229556AbhG2R1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:27:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1637B601FA;
-        Thu, 29 Jul 2021 17:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627579630;
-        bh=kssTgqcbXEPlcdsvyvqpSjM1LIWESEJ+zCyffEvb604=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YzdV9ItjgDa2iZKwe24iIX4qYDNymVr5eVUv7OJS1Ygxh2TLodDNSrffuR9zlPADi
-         vjvOg9KwUNWxcUQVuCi1D1qllzOv/ryKTAGgtpvKEbPcRdu3VgmoXScsRweEPa/DjN
-         78ak1uvc6m1PHtiuwtPFt7liiv8GcWfscpXa+XAOwWoTnV2NS8RMFM/1O6yjdFZkKU
-         gHDpVXyKeXV2mMPBECU9HPcTVCNSWZJzcDzUpPFUjMecJ9xcPOBQIckHKnZr3abr2p
-         7qKd8NAjlcispml/XK/ONvohYmYEDylbbBUATeg5B0RvKFD4pSJ19Yc/HPfVThpxz7
-         aSwIlAPRjI+oQ==
-Date:   Thu, 29 Jul 2021 20:27:07 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Shay Drory <shayd@nvidia.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH mlx5-next 1/5] RDMA/mlx5: Replace struct mlx5_core_mkey
- by u32 key
-Message-ID: <YQLk65qM6oJ1J9fg@unreal>
-References: <cover.1624362290.git.leonro@nvidia.com>
- <2e0feba18d8fe310b2ed38fbfbdd4af7a9b84bf1.1624362290.git.leonro@nvidia.com>
- <20210729152803.GA2394514@nvidia.com>
+        id S229620AbhG2R2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 13:28:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0EDDF1FB;
+        Thu, 29 Jul 2021 10:28:16 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56C033F73D;
+        Thu, 29 Jul 2021 10:28:15 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: [PATCH 0/2] irqchip/gic-v3: Fix selection of partition domain for EPPIs
+Date:   Thu, 29 Jul 2021 17:27:46 +0000
+Message-Id: <20210729172748.28841-1-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729152803.GA2394514@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 12:28:03PM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 22, 2021 at 03:08:19PM +0300, Leon Romanovsky wrote:
-> 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mr.c b/drivers/net/ethernet/mellanox/mlx5/core/mr.c
-> > index 50af84e76fb6..7a76b5eb1c1a 100644
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/mr.c
-> > @@ -35,13 +35,11 @@
-> >  #include <linux/mlx5/driver.h>
-> >  #include "mlx5_core.h"
-> >  
-> > -int mlx5_core_create_mkey(struct mlx5_core_dev *dev,
-> > -			  struct mlx5_core_mkey *mkey,
-> > -			  u32 *in, int inlen)
-> > +int mlx5_core_create_mkey(struct mlx5_core_dev *dev, u32 *mkey, u32 *in,
-> > +			  int inlen)
-> >  {
-> >  	u32 lout[MLX5_ST_SZ_DW(create_mkey_out)] = {};
-> >  	u32 mkey_index;
-> > -	void *mkc;
-> >  	int err;
-> >  
-> >  	MLX5_SET(create_mkey_in, in, opcode, MLX5_CMD_OP_CREATE_MKEY);
-> > @@ -50,38 +48,32 @@ int mlx5_core_create_mkey(struct mlx5_core_dev *dev,
-> >  	if (err)
-> >  		return err;
-> >  
-> > -	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
-> >  	mkey_index = MLX5_GET(create_mkey_out, lout, mkey_index);
-> > -	mkey->iova = MLX5_GET64(mkc, mkc, start_addr);
-> > -	mkey->size = MLX5_GET64(mkc, mkc, len);
-> > -	mkey->key |= mlx5_idx_to_mkey(mkey_index);
-> > -	mkey->pd = MLX5_GET(mkc, mkc, pd);
-> > -	init_waitqueue_head(&mkey->wait);
-> > +	*mkey |= mlx5_idx_to_mkey(mkey_index);
-> 
-> 
-> This conflicts with 0232fc2ddcf4 ("net/mlx5: Reset mkey index on creation")
-> 
-> Please resend/rebase. I think it should be fixed like
-> 
-> 	mkey_index = MLX5_GET(create_mkey_out, lout, mkey_index);
-> 	*mkey = (u32)mlx5_mkey_variant(mkey->key) | mlx5_idx_to_mkey(mkey_index);
-> 
-> 	mlx5_core_dbg(dev, "out 0x%x, mkey 0x%x\n", mkey_index,	*mkey);
-> ?
+Hello!
 
-Yes, this is how it is fixed in my tree. I just waited till you finish the review.
+gic_irq_domain_translate()'s GIC_IRQ_TYPE_PARTITION code knows about EPPI, and
+gic_populate_ppi_partitions() sets them up, but gic_irq_domain_select() and
+partition_domain_translate() didn't get the memo, meaning partitioned EPPI
+don't work.
 
-> 
-> (though I will look at the rest of the series today, so don't rush on
-> this)
-> 
-> Jason
+I'm not aware of a platform affected by this, so I don't think its stable
+material.
+
+Based on rc1, available here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git irqchip/ppi_partition/eppi_fixes/v1
+
+
+Thanks,
+
+James Morse (2):
+  irqchip/gic-v3: Add __gic_get_ppi_index() to find the PPI number from
+    hwirq
+  irqchip/gic-v3: Fix selection of partition domain for EPPIs
+
+ drivers/irqchip/irq-gic-v3.c | 61 +++++++++++++++++++++++++++++-------
+ 1 file changed, 50 insertions(+), 11 deletions(-)
+
+-- 
+2.30.2
+
