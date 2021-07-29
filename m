@@ -2,75 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013423DA284
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D203DA286
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233906AbhG2Lwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:52:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43656 "EHLO mail.kernel.org"
+        id S234594AbhG2LxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:53:15 -0400
+Received: from smtpbg604.qq.com ([59.36.128.82]:50263 "EHLO smtpbg604.qq.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231674AbhG2Lwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:52:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C6560720;
-        Thu, 29 Jul 2021 11:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627559557;
-        bh=TcHKExQZ71Wdyku14F28gAs13SSIwm1sfNPVSRj02YQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YF+5Dl6T36a8JJ9JpPN+19QDeqNTNKFjbw6UOykXm7cNTHgPrxRZiZAH+suLojlor
-         WiEWFmrio0Mj+bhxg2n+823tskVJWg1z69W/Ukt2DGyZDXvxkShiYyPKhO0/a//BlW
-         Avd8BOf/iIxXQPJUN+TSnbw9l6JuK+ESyjT2nMRwStPTBeBctWi0pdVlD1By8gDNyB
-         F8HFJB2m8HXQO7h9CV9JFPfEAucsHyeFAFJ8YP24VbEm+SEGwTaJmvco2xGfJ15Bc1
-         j1j3RwnnVOdFJp2uLEg4+24aZDvG67fDDTE6yPkqplv/sZay8rThHRuhAxIyEyq9+N
-         NyijGvbQqNn0Q==
-Received: from johan by xi with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1m94Zy-0002fM-P7; Thu, 29 Jul 2021 13:51:58 +0200
-Date:   Thu, 29 Jul 2021 13:51:58 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: ch341: fix character loss at high transfer
- rates
-Message-ID: <YQKWXlTj02OW/h5S@hovoldconsulting.com>
-References: <20210724152739.18726-1-w@1wt.eu>
+        id S233413AbhG2LxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 07:53:14 -0400
+X-QQ-mid: bizesmtp52t1627559574tmijf3m2
+Received: from ficus.lan (unknown [171.223.99.141])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Thu, 29 Jul 2021 19:52:53 +0800 (CST)
+X-QQ-SSF: 01000000002000B0C000B00A0000000
+X-QQ-FEAT: g9nl15ZGxlhDVMSj6Uem5DcjAIeccceCz6DFsJDcQaz5JJU7e3eMSyK1+61mi
+        /Sjas9lCh/ziJHwd3XHvFK5wuv0V73xCjEFL0+lC84UWds6KnsUNc126y1unYxau9WR8h0H
+        M0FNzAT3HCpt3xRuLYw1Hr1zV6jIMfA9WsGfwmw0E8D161ROFI4t8HQG+hPZm4JRFJk2zAp
+        EUKCTcYxKK9ZrYiR58sLZBVUhtTePK7BpAIo+gol3ZBfliNKO66P1B3GTlpeuANzIRwUPIj
+        dEireyFDmqdQMQNWD2ghMGfK2JTdobNETd0f+nN+HrhBLydsmm0z/c4a1CkoB0h0ZcoF/gl
+        feVLzkJVNkqWswY0DHLNH+/Gt96XA==
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org, kjain@linux.ibm.com,
+        cuibixuan@huawei.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] powerpc/perf/24x7: use 'unsigned int' instead of 'unsigned'
+Date:   Thu, 29 Jul 2021 19:52:52 +0800
+Message-Id: <20210729115252.40895-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210724152739.18726-1-w@1wt.eu>
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 05:27:39PM +0200, Willy Tarreau wrote:
-> The chip supports high transfer rates, but with the small default buffers
-> (64 bytes read), some entire blocks are regularly lost. This typically
-> happens at 1.5 Mbps (which is the default speed on Rockchip devices) when
-> used as a console to access U-Boot where the output of the "help" command
-> misses many lines and where "printenv" mangles the environment.
-> 
-> The FTDI driver doesn't suffer at all from this. One difference is that
-> it uses 512 bytes rx buffers and 256 bytes tx buffers. Adopting these
-> values completely resolved the issue, even the output of "dmesg" is
-> reliable. I preferred to leave the Tx value unchanged as it is not
-> involved in this issue, while a change could increase the risk of
-> triggering the same issue with other devices having too small buffers.
+Replace the 'unsigned' with 'unsigned int' which is more accurate.
 
-Since these device do not support automatic flow control this is indeed
-the best we can to do here (otherwise I'd probably prefer framing it
-more as an optimisation than a fix).
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ arch/powerpc/perf/hv-24x7.c | 38 ++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-> I verified that it backports well (and works) at least to 5.4. It's of
-> low importance enough to be dropped where it doesn't trivially apply
-> anymore.
+diff --git a/arch/powerpc/perf/hv-24x7.c b/arch/powerpc/perf/hv-24x7.c
+index 1816f560a465..d767724a1162 100644
+--- a/arch/powerpc/perf/hv-24x7.c
++++ b/arch/powerpc/perf/hv-24x7.c
+@@ -33,7 +33,7 @@ static bool aggregate_result_elements;
+ 
+ static cpumask_t hv_24x7_cpumask;
+ 
+-static bool domain_is_valid(unsigned domain)
++static bool domain_is_valid(unsigned int domain)
+ {
+ 	switch (domain) {
+ #define DOMAIN(n, v, x, c)		\
+@@ -47,7 +47,7 @@ static bool domain_is_valid(unsigned domain)
+ 	}
+ }
+ 
+-static bool is_physical_domain(unsigned domain)
++static bool is_physical_domain(unsigned int domain)
+ {
+ 	switch (domain) {
+ #define DOMAIN(n, v, x, c)		\
+@@ -128,7 +128,7 @@ static bool domain_needs_aggregation(unsigned int domain)
+ 			  domain <= HV_PERF_DOMAIN_VCPU_REMOTE_NODE));
+ }
+ 
+-static const char *domain_name(unsigned domain)
++static const char *domain_name(unsigned int domain)
+ {
+ 	if (!domain_is_valid(domain))
+ 		return NULL;
+@@ -146,7 +146,7 @@ static const char *domain_name(unsigned domain)
+ 	return NULL;
+ }
+ 
+-static bool catalog_entry_domain_is_valid(unsigned domain)
++static bool catalog_entry_domain_is_valid(unsigned int domain)
+ {
+ 	/* POWER8 doesn't support virtual domains. */
+ 	if (interface_version == 1)
+@@ -258,7 +258,7 @@ static char *event_name(struct hv_24x7_event_data *ev, int *len)
+ 
+ static char *event_desc(struct hv_24x7_event_data *ev, int *len)
+ {
+-	unsigned nl = be16_to_cpu(ev->event_name_len);
++	unsigned int nl = be16_to_cpu(ev->event_name_len);
+ 	__be16 *desc_len = (__be16 *)(ev->remainder + nl - 2);
+ 
+ 	*len = be16_to_cpu(*desc_len) - 2;
+@@ -267,9 +267,9 @@ static char *event_desc(struct hv_24x7_event_data *ev, int *len)
+ 
+ static char *event_long_desc(struct hv_24x7_event_data *ev, int *len)
+ {
+-	unsigned nl = be16_to_cpu(ev->event_name_len);
++	unsigned int nl = be16_to_cpu(ev->event_name_len);
+ 	__be16 *desc_len_ = (__be16 *)(ev->remainder + nl - 2);
+-	unsigned desc_len = be16_to_cpu(*desc_len_);
++	unsigned int desc_len = be16_to_cpu(*desc_len_);
+ 	__be16 *long_desc_len = (__be16 *)(ev->remainder + nl + desc_len - 2);
+ 
+ 	*len = be16_to_cpu(*long_desc_len) - 2;
+@@ -296,8 +296,8 @@ static void *event_end(struct hv_24x7_event_data *ev, void *end)
+ {
+ 	void *start = ev;
+ 	__be16 *dl_, *ldl_;
+-	unsigned dl, ldl;
+-	unsigned nl = be16_to_cpu(ev->event_name_len);
++	unsigned int dl, ldl;
++	unsigned int nl = be16_to_cpu(ev->event_name_len);
+ 
+ 	if (nl < 2) {
+ 		pr_debug("%s: name length too short: %d", __func__, nl);
+@@ -398,7 +398,7 @@ static long h_get_24x7_catalog_page(char page[], u64 version, u32 index)
+  *		- Specifying (i.e overriding) values for other parameters
+  *		  is undefined.
+  */
+-static char *event_fmt(struct hv_24x7_event_data *event, unsigned domain)
++static char *event_fmt(struct hv_24x7_event_data *event, unsigned int domain)
+ {
+ 	const char *sindex;
+ 	const char *lpar;
+@@ -529,9 +529,9 @@ static struct attribute *device_str_attr_create(char *name, int name_max,
+ 	return NULL;
+ }
+ 
+-static struct attribute *event_to_attr(unsigned ix,
++static struct attribute *event_to_attr(unsigned int ix,
+ 				       struct hv_24x7_event_data *event,
+-				       unsigned domain,
++				       unsigned int domain,
+ 				       int nonce)
+ {
+ 	int event_name_len;
+@@ -599,7 +599,7 @@ event_to_long_desc_attr(struct hv_24x7_event_data *event, int nonce)
+ 	return device_str_attr_create(name, nl, nonce, desc, dl);
+ }
+ 
+-static int event_data_to_attrs(unsigned ix, struct attribute **attrs,
++static int event_data_to_attrs(unsigned int ix, struct attribute **attrs,
+ 				   struct hv_24x7_event_data *event, int nonce)
+ {
+ 	*attrs = event_to_attr(ix, event, event->domain, nonce);
+@@ -614,8 +614,8 @@ struct event_uniq {
+ 	struct rb_node node;
+ 	const char *name;
+ 	int nl;
+-	unsigned ct;
+-	unsigned domain;
++	unsigned int ct;
++	unsigned int domain;
+ };
+ 
+ static int memord(const void *d1, size_t s1, const void *d2, size_t s2)
+@@ -628,8 +628,8 @@ static int memord(const void *d1, size_t s1, const void *d2, size_t s2)
+ 	return memcmp(d1, d2, s1);
+ }
+ 
+-static int ev_uniq_ord(const void *v1, size_t s1, unsigned d1, const void *v2,
+-		       size_t s2, unsigned d2)
++static int ev_uniq_ord(const void *v1, size_t s1, unsigned int d1,
++			const void *v2, size_t s2, unsigned int d2)
+ {
+ 	int r = memord(v1, s1, v2, s2);
+ 
+@@ -643,7 +643,7 @@ static int ev_uniq_ord(const void *v1, size_t s1, unsigned d1, const void *v2,
+ }
+ 
+ static int event_uniq_add(struct rb_root *root, const char *name, int nl,
+-			  unsigned domain)
++			  unsigned int domain)
+ {
+ 	struct rb_node **new = &(root->rb_node), *parent = NULL;
+ 	struct event_uniq *data;
+@@ -1398,7 +1398,7 @@ static int single_24x7_request(struct perf_event *event, u64 *count)
+ static int h_24x7_event_init(struct perf_event *event)
+ {
+ 	struct hv_perf_caps caps;
+-	unsigned domain;
++	unsigned int domain;
+ 	unsigned long hret;
+ 	u64 ct;
+ 
+-- 
+2.32.0
 
-This should be fine to backport to all stable trees.
-
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Willy Tarreau <w@1wt.eu>
-
-Now applied for 5.14, thanks.
-
-Johan
