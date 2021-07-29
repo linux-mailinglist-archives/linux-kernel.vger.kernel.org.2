@@ -2,271 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7193DAF2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65A13DAEA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 00:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbhG2WgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 18:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
+        id S234213AbhG2WBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 18:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234445AbhG2WfQ (ORCPT
+        with ESMTP id S234107AbhG2WBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 18:35:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AE3C0617A0;
-        Thu, 29 Jul 2021 15:35:10 -0700 (PDT)
-Message-ID: <20210729222543.311207034@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627598108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=0EFERMseOgGp4ED8VGrniueRywqbBbmEkuB4rNqG78M=;
-        b=iK0/YPv7B6vrRwygNr/aWJnd4VVkL1ZKn2kQxcI/dQnLtz4ft5VuCOlaqUc0kIiEGBJBBN
-        GugXI1BpHhXUee/zOtQ3QYIkQtoADzIgpO66fLYCUXA99uL/eVGkBU8+FjaNVFSDh90xOx
-        ttbd4eCIlG4LzZPnOdODCjUZEAUmpm+A5ttd92ox6GYtcI6rILn2yd0kYasy8M2/MzGZlQ
-        dfb4A1+oNObxX+o9RjZR7UwxskIYDhgotxxjBsMZqaUjFq4GsXZMIsJSGzhxRk56UP4dbb
-        G+YAA0m5fmB2uw21y2YeLNLkVrTZio7gl7BtTbjZmL4b7s52vrzu9mgn4SGYXw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627598108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=0EFERMseOgGp4ED8VGrniueRywqbBbmEkuB4rNqG78M=;
-        b=rAEPIoE0COfVWKBOWFxx8T9/cGARQwv/RBsWXCm3fq8hcG1iXWzNzYxnWm4W/QkhcApOdC
-        uLZsHfb3XCaAhiCA==
-Date:   Thu, 29 Jul 2021 23:51:58 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Kevin Tian <kevin.tian@intel.com>,
-        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-s390@vger.kernel.org,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [patch V2 19/19] PCI/MSI: Use new mask/unmask functions
-References: <20210729215139.889204656@linutronix.de>
+        Thu, 29 Jul 2021 18:01:42 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB29CC061765;
+        Thu, 29 Jul 2021 15:01:38 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso11521855pjf.4;
+        Thu, 29 Jul 2021 15:01:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=G7IzZslmA118MFcScvf6yYPBrs6UuXOCa4NAljF0kc4=;
+        b=glEGFySN2OBBRtbbPsBsgcpCztB/gzXfomLDxG8UPPbR/4bkw2yfrui68S1ycvu1WS
+         b3/ust4Ar31th7VSxIKsL68jJCGYgVflGp0zqoIXQY6Qin63xKleT1LfHttuLG6RPUUw
+         QIv3EU53WJpSreKqfKbLLKM1P39omR0IHgMhQA4uDdeBXTLh8n+kFbijBiRCCK+QW5ql
+         6T4Ys8UP7NlfwqHZWId2iFhlWImyPEeFi/bpYVeP4T0Uomfjnvw+prMqPtp0Vakm4bgr
+         6vzfPDIyECUUAHomlOpmfCTimX/0DU7upwicbR8SxecmVGd/hSA/0OBYVcpBJi8uFq9L
+         n3aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=G7IzZslmA118MFcScvf6yYPBrs6UuXOCa4NAljF0kc4=;
+        b=pswjzYCoaiEAMrdigmbCyfqQaXhzGJ/ax7GxEhY9JbK/vToV3nk044zZTuDIWwkQ8+
+         9D+1G9E2ER71natp9wwjvnoSGr1T9mZzItcDYic79xNT5Yu8+EAeNDmoe4E3bV2itamz
+         6skkZWouZ7CsvKrFirXqOQ3Vy8SVzuLHnZvg8Dbt/17eL/wj0EeI1gRi6iCu10kAt3YM
+         OHtPzFEZRW/zWBXFwlYZjsdOBQ1ZFhO53C/Qq3mbJi1LK+Wzc+s5xFt77SIzc7zUqpAX
+         5FfX2FLS4o8R1gFqYFucmRWeOu0KmPaLA3BlrEWdBYLillAsaUAWQZzOBl6OD329hHwn
+         47yw==
+X-Gm-Message-State: AOAM532rxlQT7cReqYe6x36UoCWIo3M1IhapiAkS73PYhz4wl/yCPRgj
+        2guFYfyaGQH/XqpAi0vNvBA=
+X-Google-Smtp-Source: ABdhPJxpRZYrifihnzWcM+QHEgynAoAUn/C5C2ftscKZmlImXL61pmWpLhQIVB1F57glTzcRJvO47g==
+X-Received: by 2002:a17:902:9f88:b029:12c:c06:2645 with SMTP id g8-20020a1709029f88b029012c0c062645mr6420768plq.21.1627596098422;
+        Thu, 29 Jul 2021 15:01:38 -0700 (PDT)
+Received: from localhost.localdomain ([1.145.37.91])
+        by smtp.gmail.com with ESMTPSA id a18sm4595144pfi.6.2021.07.29.15.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 15:01:37 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 08:01:31 +1000
+From:   "G. Branden Robinson" <g.branden.robinson@gmail.com>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        landlock@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [PATCH v2 1/4] landlock.7: Add a new page to introduce Landlock
+Message-ID: <20210729220129.ymfdnybbpvej4qck@localhost.localdomain>
+References: <20210712155745.831580-1-mic@digikod.net>
+ <20210712155745.831580-2-mic@digikod.net>
+ <3f1b943b-2477-2c4e-c835-d6616888176c@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zsrbbanbf4dzahm3"
+Content-Disposition: inline
+In-Reply-To: <3f1b943b-2477-2c4e-c835-d6616888176c@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch the PCI/MSI core to use the new mask/unmask functions. No functional
-change.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V2: New patch
----
- drivers/pci/msi.c |  102 +++++++++++-------------------------------------------
- 1 file changed, 21 insertions(+), 81 deletions(-)
+--zsrbbanbf4dzahm3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -135,74 +135,6 @@ void __weak arch_restore_msi_irqs(struct
-  * reliably as devices without an INTx disable bit will then generate a
-  * level IRQ which will never be cleared.
-  */
--static void __pci_msi_desc_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
--{
--	raw_spinlock_t *lock = &desc->dev->msi_lock;
--	unsigned long flags;
--
--	if (pci_msi_ignore_mask || !desc->msi_attrib.maskbit)
--		return;
--
--	raw_spin_lock_irqsave(lock, flags);
--	desc->msi_mask &= ~mask;
--	desc->msi_mask |= flag;
--	pci_write_config_dword(msi_desc_to_pci_dev(desc), desc->mask_pos,
--			       desc->msi_mask);
--	raw_spin_unlock_irqrestore(lock, flags);
--}
--
--static void msi_mask_irq(struct msi_desc *desc, u32 mask, u32 flag)
--{
--	__pci_msi_desc_mask_irq(desc, mask, flag);
--}
--
--static void __iomem *pci_msix_desc_addr(struct msi_desc *desc)
--{
--	return desc->mask_base + desc->msi_attrib.entry_nr * PCI_MSIX_ENTRY_SIZE;
--}
--
--/*
-- * This internal function does not flush PCI writes to the device.
-- * All users must ensure that they read from the device before either
-- * assuming that the device state is up to date, or returning out of this
-- * file.  This saves a few milliseconds when initialising devices with lots
-- * of MSI-X interrupts.
-- */
--static u32 __pci_msix_desc_mask_irq(struct msi_desc *desc, u32 flag)
--{
--	void __iomem *desc_addr = pci_msix_desc_addr(desc);
--	u32 ctrl = desc->msix_ctrl;
--
--	if (pci_msi_ignore_mask || desc->msi_attrib.is_virtual)
--		return 0;
--
--	ctrl &= ~PCI_MSIX_ENTRY_CTRL_MASKBIT;
--	if (ctrl & PCI_MSIX_ENTRY_CTRL_MASKBIT)
--		ctrl |= PCI_MSIX_ENTRY_CTRL_MASKBIT;
--
--	writel(ctrl, desc_addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
--
--	return ctrl;
--}
--
--static void msix_mask_irq(struct msi_desc *desc, u32 flag)
--{
--	desc->msix_ctrl = __pci_msix_desc_mask_irq(desc, flag);
--}
--
--static void msi_set_mask_bit(struct irq_data *data, u32 flag)
--{
--	struct msi_desc *desc = irq_data_get_msi_desc(data);
--
--	if (desc->msi_attrib.is_msix) {
--		msix_mask_irq(desc, flag);
--		readl(desc->mask_base);		/* Flush write to device */
--	} else {
--		unsigned offset = data->irq - desc->irq;
--		msi_mask_irq(desc, 1 << offset, flag << offset);
--	}
--}
--
- static inline __attribute_const__ u32 msi_multi_mask(struct msi_desc *desc)
- {
- 	/* Don't shift by >= width of type */
-@@ -234,6 +166,11 @@ static inline void pci_msi_unmask(struct
- 	pci_msi_update_mask(desc, mask, 0);
- }
- 
-+static inline void __iomem *pci_msix_desc_addr(struct msi_desc *desc)
-+{
-+	return desc->mask_base + desc->msi_attrib.entry_nr * PCI_MSIX_ENTRY_SIZE;
-+}
-+
- /*
-  * This internal function does not flush PCI writes to the device.  All
-  * users must ensure that they read from the device before either assuming
-@@ -289,7 +226,9 @@ static void __pci_msi_unmask_desc(struct
-  */
- void pci_msi_mask_irq(struct irq_data *data)
- {
--	msi_set_mask_bit(data, 1);
-+	struct msi_desc *desc = irq_data_get_msi_desc(data);
-+
-+	__pci_msi_mask_desc(desc, BIT(data->irq - desc->irq));
- }
- EXPORT_SYMBOL_GPL(pci_msi_mask_irq);
- 
-@@ -299,7 +238,9 @@ EXPORT_SYMBOL_GPL(pci_msi_mask_irq);
-  */
- void pci_msi_unmask_irq(struct irq_data *data)
- {
--	msi_set_mask_bit(data, 0);
-+	struct msi_desc *desc = irq_data_get_msi_desc(data);
-+
-+	__pci_msi_unmask_desc(desc, BIT(data->irq - desc->irq));
- }
- EXPORT_SYMBOL_GPL(pci_msi_unmask_irq);
- 
-@@ -352,7 +293,8 @@ void __pci_write_msi_msg(struct msi_desc
- 		/* Don't touch the hardware now */
- 	} else if (entry->msi_attrib.is_msix) {
- 		void __iomem *base = pci_msix_desc_addr(entry);
--		bool unmasked = !(entry->msix_ctrl & PCI_MSIX_ENTRY_CTRL_MASKBIT);
-+		u32 ctrl = entry->msix_ctrl;
-+		bool unmasked = !(ctrl & PCI_MSIX_ENTRY_CTRL_MASKBIT);
- 
- 		if (entry->msi_attrib.is_virtual)
- 			goto skip;
-@@ -366,14 +308,14 @@ void __pci_write_msi_msg(struct msi_desc
- 		 * undefined."
- 		 */
- 		if (unmasked)
--			__pci_msix_desc_mask_irq(entry, PCI_MSIX_ENTRY_CTRL_MASKBIT);
-+			pci_msix_write_vector_ctrl(entry, ctrl | PCI_MSIX_ENTRY_CTRL_MASKBIT);
- 
- 		writel(msg->address_lo, base + PCI_MSIX_ENTRY_LOWER_ADDR);
- 		writel(msg->address_hi, base + PCI_MSIX_ENTRY_UPPER_ADDR);
- 		writel(msg->data, base + PCI_MSIX_ENTRY_DATA);
- 
- 		if (unmasked)
--			__pci_msix_desc_mask_irq(entry, 0);
-+			pci_msix_write_vector_ctrl(entry, ctrl);
- 
- 		/* Ensure that the writes are visible in the device */
- 		readl(base + PCI_MSIX_ENTRY_DATA);
-@@ -491,7 +433,7 @@ static void __pci_restore_msi_state(stru
- 	arch_restore_msi_irqs(dev);
- 
- 	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &control);
--	msi_mask_irq(entry, msi_multi_mask(entry), entry->msi_mask);
-+	pci_msi_update_mask(entry, 0, 0);
- 	control &= ~PCI_MSI_FLAGS_QSIZE;
- 	control |= (entry->msi_attrib.multiple << 4) | PCI_MSI_FLAGS_ENABLE;
- 	pci_write_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, control);
-@@ -522,7 +464,7 @@ static void __pci_restore_msix_state(str
- 
- 	arch_restore_msi_irqs(dev);
- 	for_each_pci_msi_entry(entry, dev)
--		msix_mask_irq(entry, entry->msix_ctrl);
-+		pci_msix_write_vector_ctrl(entry, entry->msix_ctrl);
- 
- 	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_MASKALL, 0);
- }
-@@ -704,7 +646,6 @@ static int msi_capability_init(struct pc
- {
- 	struct msi_desc *entry;
- 	int ret;
--	unsigned mask;
- 
- 	pci_msi_set_enable(dev, 0);	/* Disable MSI during set up */
- 
-@@ -713,8 +654,7 @@ static int msi_capability_init(struct pc
- 		return -ENOMEM;
- 
- 	/* All MSIs are unmasked by default; mask them all */
--	mask = msi_multi_mask(entry);
--	msi_mask_irq(entry, mask, mask);
-+	pci_msi_mask(entry, msi_multi_mask(entry));
- 
- 	list_add_tail(&entry->list, dev_to_msi_list(&dev->dev));
- 
-@@ -741,7 +681,7 @@ static int msi_capability_init(struct pc
- 	return 0;
- 
- err:
--	msi_mask_irq(entry, mask, 0);
-+	pci_msi_unmask(entry, msi_multi_mask(entry));
- 	free_msi_irqs(dev);
- 	return ret;
- }
-@@ -1021,7 +961,7 @@ static void pci_msi_shutdown(struct pci_
- 	dev->msi_enabled = 0;
- 
- 	/* Return the device with MSI unmasked as initial states */
--	msi_mask_irq(desc, msi_multi_mask(desc), 0);
-+	pci_msi_unmask(desc, msi_multi_mask(desc));
- 
- 	/* Restore dev->irq to its default pin-assertion IRQ */
- 	dev->irq = desc->msi_attrib.default_irq;
-@@ -1107,7 +1047,7 @@ static void pci_msix_shutdown(struct pci
- 
- 	/* Return the device with MSI-X masked as initial states */
- 	for_each_pci_msi_entry(entry, dev)
--		__pci_msix_desc_mask_irq(entry, 1);
-+		pci_msix_mask(entry);
- 
- 	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
- 	pci_intx_for_msi(dev, 1);
+Hi, Alex!
 
+[regrets for the huge CC--those not interested in English/linux-man
+style issues can skip this]
+
+At 2021-07-29T16:56:37+0200, Alejandro Colomar (man-pages) wrote:
+> On 7/12/21 5:57 PM, Micka=EBl Sala=FCn wrote:
+> > +For instance, one process's thread may apply Landlock rules to itself,
+>=20
+> s/process's/process'/
+
+Many English language authorities would disagree with you, but I'll skip
+digging up citations to them because the Linux man-pages project's
+practice is already firmly in the other direction.
+
+$ git grep "s's\>" | wc -l
+322
+
+Moreover, "process's" is extensively attested as most of those...
+
+$ git grep "process's" | wc -l
+320
+
+=2E..and a global change in the opposite direction from your
+recommendation is credited to mtk in the Changes.old file.
+
+$ grep -B2 "process' " Changes.old |head -n 3
+A few files
+    mtk
+        s/process' /process's/
+
+Finding examples of the opposite practice is complicated by the use of
+apostrophes as single quotes (these usually _aren't_ confounded by code
+examples, however, since it would be incorrect C language syntax to
+quote a string literal with them).  There are many such occurrences in
+Changes.old; I'll skip them.  The remainder are few enough that I'll
+quote them here.
+
+$ git grep -E "s'(\s|$)" man*
+man2/adjtimex.2:Linux uses David L.\& Mills' clock adjustment algorithm (se=
+e RFC\ 5905).
+man2/move_pages.2:.\" FIXME Describe the result if pointers in the 'pages' =
+array are
+man2/utimensat.2:.\" given a 'times' array in which both tv_nsec fields are=
+ UTIME_NOW, which
+man2/utimensat.2:.\" provides equivalent functionality to specifying 'times=
+' as NULL, the
+man3/getaddrinfo.3:.\" 2008-02-26, mtk; clarify discussion of NULL 'hints' =
+argument; other
+man3/printf.3:thousands' grouping character is used.
+man3/printf.3:the output is to be grouped with thousands' grouping characte=
+rs
+man3/printf.3:.\" no thousands' separator, no NaN or infinity, no "%m$" and=
+ "*m$".
+man3/scanf.3:This specifies that the input number may include thousands'
+man3/xdr.3:the array elements' C form, and their external
+man3/xdr.3:the array elements' C form, and their external
+man5/elf.5:The array element is unused and the other members' values are un=
+defined.
+man5/proc.5:under the default overcommit 'guess' mode (i.e., 0 in
+man5/proc.5:because other nodes' memory may be free,
+man7/bootparam.7:The Linux kernel accepts certain 'command-line options' or=
+ 'boot time
+man7/bootparam.7:parameters' at the moment it is started.
+man7/bootparam.7:The option 'reboot=3Dbios' will
+man7/bootparam.7:A SCSI device can have a number of 'subdevices' contained =
+within
+man7/hier.7:Users' mailboxes.
+man7/mount_namespaces.7:the root directory under several users' home direct=
+ories.
+man7/uri.7:schemes; see those tools' documentation for information on those=
+ schemes.
+man7/uri.7:detects the users' environment (e.g., text or graphics,
+man8/ld.so.8:and do not apply to those objects' children,
+
+Of the above,
+
+1. most are correct uses of the English plural possessive ("nodes'");
+2. a few occur in comments, where they're fine if present as
+   commentary--if they're "commented out" chunks of man page source,
+   they should follow man page formatting rules in the event they
+   require "resurrection";
+3. we see some uses of apostrophes as quotation marks; and
+4. David L. Mills's name is marked as a plural possessive.  The
+   application of apostrophe+s to singular proper names ending in "s" is
+   a debated issue, and there is probably some room for personal
+   preference on the part of the bearer of the name.
+
+Two side issues:
+
+A. Regarding point 3, I'd say this illustrates advantages of using
+special character escape sequences like \[lq] and \[rq] for quotation.
+First, you will get paired quotation marks in UTF-8, PDF, and HTML
+output.  Second, you won't encounter false positives in searches like
+the above.  Third, you semantically enrich the content.  On the
+downside, adopting special character escapes would likely mean having to
+choose between U.S. and U.K. quotation styles[1].
+
+B. Regarding another active thread we're in, I observe
+
+man2/adjtimex.2:Linux uses David L.\& Mills' clock adjustment algorithm (se=
+e RFC\ 5905).
+
+as another case where \~ recommends itself over "\ "; this isn't even a
+code example, and it illustrates the desirability of decoupling
+non-breaking from participation in space adjustment.
+
+Popping the stack, have I persuaded you on the plural possessive front?
+:)
+
+Best regards,
+Branden
+
+[1] https://man7.org/linux/man-pages/man7/groff_char.7.html (search for
+    "the apostrophe")
+
+--zsrbbanbf4dzahm3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEh3PWHWjjDgcrENwa0Z6cfXEmbc4FAmEDJTEACgkQ0Z6cfXEm
+bc6Zyw//WgUu23zxMMBNirfowQgJF1JyjYmdTjF7XgmjUXjcwu1NZrXyqx4R3jxh
+u/9FXRuUoo/zBfl/OxOic4hy6W8jzBKSsHUGO1jZQ8BPV/JnXjdIjoTw6QevbQhr
+1F/rPc42X3pExyEn8cByZY6BcIPTAdKjmvFjaMZ1845iGvYdJQXuYnisfeMXQH0A
+mukuAldSdQM8y+EONDe1sUy5u/qiF1lqQCHo2UgG6XGW0NsOzwgzi8LCYZ4zgADK
+GT5EPc/Ah61OUZQRoR4ShXpqgUIeqjreBNAYvOW6R8Kovxm5HC4TtP/cPaIvqOoC
+n0BGxTm8vXV3/1LlNM+iDtwmwcAxyUKOsolkCEJ8EwpJFFpfqkWaEO3kLfnQ8DBm
+lrLaQtLDBWyFFeNs9i4boKfXRCbrADNRemA0UJmoBENtTxi6c/Iky8inPrJgbo73
+dIQZfBS5MM/WFg9Ss1/Ocr8dOHs8N8GgrRGhRBDwuGWPs1ET2qg992JbOiv7TyBA
+ldngIV+D4oCpBEZpJeFmilizs2JwATGJwL6Cq2zl74N8KGK2YpZ59e17fm6VjpIi
+LOMkl3tbrYqpZgFQtHvyEKNqZZYBH/NoLCXlpOQo9vk+/c9ELLBzI4FcnfIqtzLy
+NilzxhjxcyN7fgp1FF3yP+5dy94KYxsnBBuD3/vAV3CFhLFGyAY=
+=MWQH
+-----END PGP SIGNATURE-----
+
+--zsrbbanbf4dzahm3--
