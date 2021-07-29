@@ -2,174 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0693DA107
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B143DA10A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235686AbhG2K11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235155AbhG2K1Z (ORCPT
+        id S235746AbhG2K2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:28:18 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33740
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235510AbhG2K2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:27:25 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CB2C061757;
-        Thu, 29 Jul 2021 03:27:22 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id u15-20020a05600c19cfb02902501bdb23cdso6495731wmq.0;
-        Thu, 29 Jul 2021 03:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/r4EMpOiWcNrACqTgelxOYdk1xzSfi6/Cy6AgoDN22Y=;
-        b=Qy7yfveaKvQAIF2AvFybTcHBlX5Ow+E0pCDwqqfj+E8R7cpMrapK6IqD6ACX2irdfT
-         cQsVlHNSo841rZ/vkfwJntF44EmLAysG8PZfavHv0YxbfsHMRhm5NOBimG/dUu38lgzU
-         Jo3cyJ8rqgwuJayZkWRZ7HRGDBJl4lyeh1Kc9POJoIep3UQ8Rz7m4bgzwajTgJ5iWeEO
-         spCCtrH+KE1/FYfBIOpsVv+bO0H5/8UBSD2zhquwA+BoZT3FSvbDAKlM0NY4SSIUZvz0
-         SK/DbIiC+TyjMnXQS+aaLQXb0YBAzC4Bf3Ih6hb181zzf8e9/CfChBatfvhmoyM7FY52
-         B2KQ==
+        Thu, 29 Jul 2021 06:28:16 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 5CB2E3F10D
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:28:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627554490;
+        bh=3lP5TEMwTNPyCtaRO7YTrbYiyPUNNmQTosdLpyAOjSM=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=If9TBU+wQQeikjra/bfR40KQSWIg674pX9vm6rPYNpMT7ywLBytNcy9UDo/OfGsJp
+         awGZFLTrwcZ+QgBOq+StGJE9aN9kANw5hegfyybTbXxQUmaEuBWv4LjlIDPhpkGbsV
+         a37PmWgxlMysmVftYEndMLJicq/A5QsmO2bXwxHY6TYe2FBDQj+7HD6wz1sYoy3yXS
+         6M8OqYHAD/Dw3tRXXPrUFj51zWy8m/VP7D+Umn/YCycAuvjIoRJqp2pxUy5YbjFuRP
+         svmzLycM68Sw6RyZ2EOKMmMQvjsOu5wPC4ofuTDFb9yOV9oJFYyIJJQio5ITi97i3w
+         vSEqi65TCQ/jA==
+Received: by mail-ed1-f70.google.com with SMTP id c20-20020a0564021014b029039994f9cab9so1272734edu.22
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 03:28:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/r4EMpOiWcNrACqTgelxOYdk1xzSfi6/Cy6AgoDN22Y=;
-        b=VajPgtglzM4EoSntNk/c+b2OwlNJm60i/Gm90kA7D0T+l0rzaoRenApF05vGrLycn6
-         7Jm9mGSs6KATbqbeWDKtCt9FfP3YeJQLxWk8qLXmyEJ1tVcb/XPRhbIy5OX+2EWPIIbY
-         BygRYeBQbiRiBbdq2igkF9b37n5CPNBCeiwSWXIl7u9wD2a3fvQ+ZgEj8YJKu1oQA3LH
-         K0crAj52ngc/n/xhQ517fZcrS1kLaqRNhKp6WLve9bL//zcgF2nu0iZbn/h5ntxcS9rm
-         VHDMWTHTFI5+DFdmOBuCy5pT0/4UE/ol+xqp7a4bJT8PQaAaAuLeemjjFn4UeW3TTg0E
-         67/A==
-X-Gm-Message-State: AOAM5304j6OWoP6hjYDbUM6IBdGBnWlUTCF1peipXNjKsSk8z+mLxwnL
-        Tx9fpyFcyu+/ruU8+rIZ/wU=
-X-Google-Smtp-Source: ABdhPJwpOxPu9pntuzs0c5YuvjJxhVSBEzf/L50+L72rf1Ve1FbdpyUm+S1f5kyP2b7FC0p5kVaCDA==
-X-Received: by 2002:a7b:c399:: with SMTP id s25mr13825686wmj.180.1627554441427;
-        Thu, 29 Jul 2021 03:27:21 -0700 (PDT)
-Received: from michael-VirtualBox.xsight.ent ([31.168.255.170])
-        by smtp.googlemail.com with ESMTPSA id u2sm9441420wmm.37.2021.07.29.03.27.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3lP5TEMwTNPyCtaRO7YTrbYiyPUNNmQTosdLpyAOjSM=;
+        b=FCmK2ICsPdwMzU9dk8ke1HaYWVPfy17Dlf0x4486Ktw5RSrY2Kt6DmT4JbdGQvZQXq
+         nkf10YSkLQxke1JGPniUZz3Kg7l7KYqwK5wyhJBfPYttW1BhBwjEZl8zGa52B1EEy4iF
+         9ffEZQNWy5h4u3Sk/TOVdQRspJ3Uv34qy58kWOsao251w8Y8H9h3C5vS8rKlggRW6xAc
+         m9bHa5XpaNPAlsi6k/AeSlnMCW9AOkdXruluEI1mFUPFvwI6VhkyoMYgVa3nqNpVhbBn
+         OhN2jp0Ik81SOwixqKPPNQASjOxs1hMh7d1RLqddNavSnpwVT2dWWA+w+2jwNXwRVxaE
+         FCWg==
+X-Gm-Message-State: AOAM531X62QnJj8SxoIw6sKoWVNAMQ2NVgqIlMompf4KoUm8zIuGDFlE
+        npoHeGfmWgQD77MmX5YvD1/4KijSXfVwO3jmgMM34wWEJouZYqSGdrCTJMTzfvS6lPrxcooacvQ
+        gcR8uNqdfDkynJjuUyUPalX4NBC9KEP552jsfSyEFOA==
+X-Received: by 2002:a05:6402:2789:: with SMTP id b9mr5046979ede.201.1627554489070;
+        Thu, 29 Jul 2021 03:28:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzDLD2DRNNjgpMQdhV0g9xtas8XsRGAMIj1z025QIlHTNhjbpRJ8xFwsiV6UpjuwmkQEz3hpw==
+X-Received: by 2002:a05:6402:2789:: with SMTP id b9mr5046964ede.201.1627554488915;
+        Thu, 29 Jul 2021 03:28:08 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id kf3sm824603ejc.118.2021.07.29.03.28.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 03:27:20 -0700 (PDT)
-From:   Michael Zaidman <michael.zaidman@gmail.com>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        aaron.jones@ftdichip.com
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Michael Zaidman <michael.zaidman@gmail.com>
-Subject: [PATCH v2] HID: ft260: fix device removal due to USB disconnect
-Date:   Thu, 29 Jul 2021 13:26:03 +0300
-Message-Id: <20210729102603.3844-1-michael.zaidman@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <nycvar.YFH.7.76.2107281147160.8253@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2107281147160.8253@cbobk.fhfr.pm>
+        Thu, 29 Jul 2021 03:28:08 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Tomas Winkler <tomas.winkler@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH] mei: constify passed buffers and structures
+Date:   Thu, 29 Jul 2021 12:28:03 +0200
+Message-Id: <20210729102803.46289-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit fixes a functional regression introduced by the commit 82f09a637dd3
-("HID: ft260: improve error handling of ft260_hid_feature_report_get()")
-when upon USB disconnect, the FTDI FT260 i2c device is still available within
-the /dev folder.
+Buffers and structures passed to MEI bus and client API can be made
+const for safer code and clear indication that it is not modified.
 
-In my company's product, where the host USB to FT260 USB connection is
-hard-wired in the PCB, the issue is not reproducible. To reproduce it, I used
-the VirtualBox Ubuntu 20.04 VM and the UMFT260EV1A development module for the
-FTDI FT260 chip:
-
-Plug the UMFT260EV1A module into a USB port and attach it to VM.
-
-The VM shows 2 i2c devices under the /dev:
-    michael@michael-VirtualBox:~$ ls /dev/i2c-*
-    /dev/i2c-0  /dev/i2c-1
-
-The i2c-0 is not related to the FTDI FT260:
-    michael@michael-VirtualBox:~$ cat /sys/bus/i2c/devices/i2c-0/name
-    SMBus PIIX4 adapter at 4100
-
-The i2c-1 is created by hid-ft260.ko:
-    michael@michael-VirtualBox:~$ cat /sys/bus/i2c/devices/i2c-1/name
-    FT260 usb-i2c bridge on hidraw1
-
-Now, detach the FTDI FT260 USB device from VM. We expect the /dev/i2c-1
-to disappear, but it's still here:
-    michael@michael-VirtualBox:~$ ls /dev/i2c-*
-    /dev/i2c-0  /dev/i2c-1
-
-And the kernel log shows:
-    [  +0.001202] usb 2-2: USB disconnect, device number 3
-    [  +0.000109] ft260 0003:0403:6030.0002: failed to retrieve system status
-    [  +0.000316] ft260 0003:0403:6030.0003: failed to retrieve system status
-
-It happens because the commit 82f09a637dd3 changed the ft260_get_system_config()
-return logic. This caused the ft260_is_interface_enabled() to exit with error
-upon the FT260 device USB disconnect, which in turn, aborted the ft260_remove()
-before deleting the FT260 i2c device and cleaning its sysfs stuff.
-
-This commit restores the FT260 USB removal functionality and improves the
-ft260_is_interface_enabled() code to handle correctly all chip modes defined
-by the device interface configuration pins DCNF0 and DCNF1.
-
-Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
-Acked-by: Aaron Jones (FTDI-UK) <aaron.jones@ftdichip.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/hid/hid-ft260.c | 23 +++++++----------------
- 1 file changed, 7 insertions(+), 16 deletions(-)
+ drivers/misc/mei/bus.c     | 18 +++++++++---------
+ drivers/misc/mei/client.h  |  2 +-
+ drivers/misc/mei/mei_dev.h |  2 +-
+ include/linux/mei_cl_bus.h |  9 +++++----
+ 4 files changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-index f43a8406cb9a..e73776ae6976 100644
---- a/drivers/hid/hid-ft260.c
-+++ b/drivers/hid/hid-ft260.c
-@@ -742,7 +742,7 @@ static int ft260_is_interface_enabled(struct hid_device *hdev)
- 	int ret;
- 
- 	ret = ft260_get_system_config(hdev, &cfg);
--	if (ret)
-+	if (ret < 0)
- 		return ret;
- 
- 	ft260_dbg("interface:  0x%02x\n", interface);
-@@ -754,23 +754,16 @@ static int ft260_is_interface_enabled(struct hid_device *hdev)
- 	switch (cfg.chip_mode) {
- 	case FT260_MODE_ALL:
- 	case FT260_MODE_BOTH:
--		if (interface == 1) {
-+		if (interface == 1)
- 			hid_info(hdev, "uart interface is not supported\n");
--			return 0;
--		}
--		ret = 1;
-+		else
-+			ret = 1;
- 		break;
- 	case FT260_MODE_UART:
--		if (interface == 0) {
--			hid_info(hdev, "uart is unsupported on interface 0\n");
--			ret = 0;
--		}
-+		hid_info(hdev, "uart interface is not supported\n");
- 		break;
- 	case FT260_MODE_I2C:
--		if (interface == 1) {
--			hid_info(hdev, "i2c is unsupported on interface 1\n");
--			ret = 0;
--		}
-+		ret = 1;
- 		break;
- 	}
- 	return ret;
-@@ -1004,11 +997,9 @@ static int ft260_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 
- static void ft260_remove(struct hid_device *hdev)
+diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
+index 935acc6bbf3c..09188d9afc06 100644
+--- a/drivers/misc/mei/bus.c
++++ b/drivers/misc/mei/bus.c
+@@ -31,7 +31,7 @@
+  *
+  * Return: written size bytes or < 0 on error
+  */
+-ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length, u8 vtag,
++ssize_t __mei_cl_send(struct mei_cl *cl, const u8 *buf, size_t length, u8 vtag,
+ 		      unsigned int mode)
  {
--	int ret;
- 	struct ft260_device *dev = hid_get_drvdata(hdev);
+ 	struct mei_device *bus;
+@@ -232,8 +232,8 @@ ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length, u8 *vtag,
+  *  * < 0 on error
+  */
  
--	ret = ft260_is_interface_enabled(hdev);
--	if (ret <= 0)
-+	if (!dev)
- 		return;
+-ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
+-			    u8 vtag)
++ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, const u8 *buf,
++			    size_t length, u8 vtag)
+ {
+ 	struct mei_cl *cl = cldev->cl;
  
- 	sysfs_remove_group(&hdev->dev.kobj, &ft260_attr_group);
+@@ -296,7 +296,7 @@ EXPORT_SYMBOL_GPL(mei_cldev_recv_nonblock_vtag);
+  *  * written size in bytes
+  *  * < 0 on error
+  */
+-ssize_t mei_cldev_send(struct mei_cl_device *cldev, u8 *buf, size_t length)
++ssize_t mei_cldev_send(struct mei_cl_device *cldev, const u8 *buf, size_t length)
+ {
+ 	return mei_cldev_send_vtag(cldev, buf, length, 0);
+ }
+@@ -552,7 +552,7 @@ EXPORT_SYMBOL_GPL(mei_cldev_ver);
+  *
+  * Return: true if me client is initialized and connected
+  */
+-bool mei_cldev_enabled(struct mei_cl_device *cldev)
++bool mei_cldev_enabled(const struct mei_cl_device *cldev)
+ {
+ 	return mei_cl_is_connected(cldev->cl);
+ }
+@@ -771,8 +771,8 @@ EXPORT_SYMBOL_GPL(mei_cldev_disable);
+  * Return: id on success; NULL if no id is matching
+  */
+ static const
+-struct mei_cl_device_id *mei_cl_device_find(struct mei_cl_device *cldev,
+-					    struct mei_cl_driver *cldrv)
++struct mei_cl_device_id *mei_cl_device_find(const struct mei_cl_device *cldev,
++					    const struct mei_cl_driver *cldrv)
+ {
+ 	const struct mei_cl_device_id *id;
+ 	const uuid_le *uuid;
+@@ -815,8 +815,8 @@ struct mei_cl_device_id *mei_cl_device_find(struct mei_cl_device *cldev,
+  */
+ static int mei_cl_device_match(struct device *dev, struct device_driver *drv)
+ {
+-	struct mei_cl_device *cldev = to_mei_cl_device(dev);
+-	struct mei_cl_driver *cldrv = to_mei_cl_driver(drv);
++	const struct mei_cl_device *cldev = to_mei_cl_device(dev);
++	const struct mei_cl_driver *cldrv = to_mei_cl_driver(drv);
+ 	const struct mei_cl_device_id *found_id;
+ 
+ 	if (!cldev)
+diff --git a/drivers/misc/mei/client.h b/drivers/misc/mei/client.h
+index b12cdcde9436..418056fb1489 100644
+--- a/drivers/misc/mei/client.h
++++ b/drivers/misc/mei/client.h
+@@ -160,7 +160,7 @@ int mei_cl_vt_support_check(const struct mei_cl *cl);
+  *
+  * Return: true if the host client is connected
+  */
+-static inline bool mei_cl_is_connected(struct mei_cl *cl)
++static inline bool mei_cl_is_connected(const struct mei_cl *cl)
+ {
+ 	return  cl->state == MEI_FILE_CONNECTED;
+ }
+diff --git a/drivers/misc/mei/mei_dev.h b/drivers/misc/mei/mei_dev.h
+index b7b6ef344e80..694f866f87ef 100644
+--- a/drivers/misc/mei/mei_dev.h
++++ b/drivers/misc/mei/mei_dev.h
+@@ -356,7 +356,7 @@ struct mei_hw_ops {
+ /* MEI bus API*/
+ void mei_cl_bus_rescan_work(struct work_struct *work);
+ void mei_cl_bus_dev_fixup(struct mei_cl_device *dev);
+-ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length, u8 vtag,
++ssize_t __mei_cl_send(struct mei_cl *cl, const u8 *buf, size_t length, u8 vtag,
+ 		      unsigned int mode);
+ ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length, u8 *vtag,
+ 		      unsigned int mode, unsigned long timeout);
+diff --git a/include/linux/mei_cl_bus.h b/include/linux/mei_cl_bus.h
+index 07f5ef8fc456..c6786c12b207 100644
+--- a/include/linux/mei_cl_bus.h
++++ b/include/linux/mei_cl_bus.h
+@@ -91,12 +91,13 @@ void mei_cldev_driver_unregister(struct mei_cl_driver *cldrv);
+ 		      mei_cldev_driver_register,\
+ 		      mei_cldev_driver_unregister)
+ 
+-ssize_t mei_cldev_send(struct mei_cl_device *cldev, u8 *buf, size_t length);
++ssize_t mei_cldev_send(struct mei_cl_device *cldev, const u8 *buf,
++		       size_t length);
+ ssize_t mei_cldev_recv(struct mei_cl_device *cldev, u8 *buf, size_t length);
+ ssize_t mei_cldev_recv_nonblock(struct mei_cl_device *cldev, u8 *buf,
+ 				size_t length);
+-ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
+-			    u8 vtag);
++ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, const u8 *buf,
++			    size_t length, u8 vtag);
+ ssize_t mei_cldev_recv_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
+ 			    u8 *vtag);
+ ssize_t mei_cldev_recv_nonblock_vtag(struct mei_cl_device *cldev, u8 *buf,
+@@ -114,6 +115,6 @@ void mei_cldev_set_drvdata(struct mei_cl_device *cldev, void *data);
+ 
+ int mei_cldev_enable(struct mei_cl_device *cldev);
+ int mei_cldev_disable(struct mei_cl_device *cldev);
+-bool mei_cldev_enabled(struct mei_cl_device *cldev);
++bool mei_cldev_enabled(const struct mei_cl_device *cldev);
+ 
+ #endif /* _LINUX_MEI_CL_BUS_H */
 -- 
-2.25.1
+2.27.0
 
