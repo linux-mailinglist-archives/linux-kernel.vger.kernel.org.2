@@ -2,182 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16E83DA970
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096853DA974
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 18:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhG2Qu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 12:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232195AbhG2Qu4 (ORCPT
+        id S229898AbhG2Qwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 12:52:32 -0400
+Received: from mail-pl1-f176.google.com ([209.85.214.176]:46982 "EHLO
+        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhG2Qwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:50:56 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5334AC061796
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:50:49 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id t101-20020a25aaee0000b0290578c0c455b2so7258855ybi.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 09:50:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=ylYcXn1I/C5/EruhE/ifxy8Gri68DuJqkeFXLL+fN5g=;
-        b=BBNZEUxpdzDxN9t94KfFCjGR9iBMGkTi9PWw5nc21I4mNwBZYd8Z8FRexA4+M3bg5u
-         xrCl6OCU/lEKjcDgE8E7CCAubEAgYKQe6wN6kJ8VsdkNb6d00t0sQcH+5prrqs9gMgUz
-         czk8i3RDwmA5po52czoCd3Z5w+1AehgoupP+ghAd/mEUoBSPKMkdYvsSH2YaTgmcgFBA
-         am5V/96qHqqWxtsywwMJX5of9IxBXj9POlRjx29oeimRVL6TiugEJgTKpwIrFdWaGzGp
-         Trv/NAPHPQnaeXTaPC40WU7qHI7DYAUoA6cUpSQguqi4Rq8uurvPrR0G1YJ+8wKr7UvZ
-         zWJA==
+        Thu, 29 Jul 2021 12:52:31 -0400
+Received: by mail-pl1-f176.google.com with SMTP id t21so7620307plr.13;
+        Thu, 29 Jul 2021 09:52:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ylYcXn1I/C5/EruhE/ifxy8Gri68DuJqkeFXLL+fN5g=;
-        b=DrxUfBHkGX7Xfn4nri6KJm/pKYXSydsRVSJN0o2Y6kJLHBtKNspaF2mu8yXgqfkpVb
-         dX6grXzlMEcKDLqm6MJfjGGLvykdfvMneUmvf/cA1xdM8XZM9DK+YpOTmGZr6qEU3/XQ
-         XfhLGnCQzWzXfK3WkE1XR20vhrYi6oMRCPi4X1ilx+um/xBR2tWi60llNJI+M/raI/pL
-         yPjVJZqFNt1U+ZihmXbzzfyQ0zbjaHno20SOruS7nm6uJP+BC0UswVI2MMKH8928cEVR
-         P4lzl4SDPCZY/aE9dE3EQlL+Cl4dD10FnASCBd5B+EADrqmNaV36AJOwVt7mNVJ0ISfA
-         5ytQ==
-X-Gm-Message-State: AOAM531I9HLY0jcsPAnj/XrHublqgGcQUUXh4fYPWYR63uUJOQf5I7o0
-        2J8lomczeOHC4swwJpQnGFODs2fIYMrFiPJ1Dmw=
-X-Google-Smtp-Source: ABdhPJwI/00H9XAupr++60gtOSPMpO6+vqnsx3bZt7qMIMWSb4tBxazgKfnF1xTZ7YyUePGOkKozBKiJufZbKb41dFY=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:8132:32f4:cf29:1268])
- (user=ndesaulniers job=sendgmr) by 2002:a25:31c5:: with SMTP id
- x188mr7825846ybx.185.1627577448502; Thu, 29 Jul 2021 09:50:48 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 09:50:39 -0700
-In-Reply-To: <20210729165039.23896-1-ndesaulniers@google.com>
-Message-Id: <20210729165039.23896-3-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20210729165039.23896-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH v3 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
- CC=clang LLVM_IAS=1
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wwPUoRTaLbK4rgKgTlstegWdypx9v1mMPe8BKMA/iC8=;
+        b=a8Cjq4ELz5yw6Msp4Xh3wZPkn9yKqrVx/0rDrdVLL2y0KgPTmlI2Fdra8sDs9ZnSuZ
+         fDuEXE8sjKTpXGaUl/Ze422SfM04NsYRld00uZxF6T1hNZUu9q26Kn4zpmkmRSVqKECL
+         1Aa5/ql/kYKJ2mA2gufULb74hSMl7gonwzgksMRcJjcMlHK4DM5rjpBEKBcTrJlFjnNN
+         OrWctnfIKlBar5TxKtW7r7MGvhNln7iA2NeaFxHaEhp+a19oX//JL4x/iF/6xRKZSWEc
+         jaYowhjJjkHY6nD1YvCUGVyRxfXqjo2BHOFyfe3/FQ9EI9vIapSNh6+cdxiLRLLPl5Z8
+         NxSg==
+X-Gm-Message-State: AOAM533ffve/D46yhCGmkfmfcgJQhAv6wz4US6cW/Ov+vZW5GeDouCW6
+        dMD2h2+Qt18Me11wCqATDX8=
+X-Google-Smtp-Source: ABdhPJwMyDZB+8N+xgFObxmm6hS/y6HF7YhY7Lo6LBOmXdpj6ZGQowIiRMiuyz/fbu7J2/sKwjicxA==
+X-Received: by 2002:a17:90b:3704:: with SMTP id mg4mr15418493pjb.201.1627577546799;
+        Thu, 29 Jul 2021 09:52:26 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:684a:6173:abee:6f13])
+        by smtp.gmail.com with ESMTPSA id m6sm4667358pgs.75.2021.07.29.09.52.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 09:52:26 -0700 (PDT)
+Subject: Re: [PATCH v2 2/3] kunit: Add support for suite initialization and
+ cleanup
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
+        linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Yanko Kaneti <yaneti@declera.com>
+References: <20210729044125.7435-1-bvanassche@acm.org>
+ <20210729044125.7435-3-bvanassche@acm.org> <YQJCyigNroTl8J/l@kroah.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <8ab0ea44-760a-61df-0b9a-8b314ca9a0fe@acm.org>
+Date:   Thu, 29 Jul 2021 09:52:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <YQJCyigNroTl8J/l@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We get constant feedback that the command line invocation of make is too
-long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-target triple, or is an absolute path outside of $PATH, but it's mostly
-redundant for a given SRCARCH. SRCARCH itself is derived from ARCH
-(normalized for a few different targets).
+On 7/28/21 10:55 PM, Greg KH wrote:
+> On Wed, Jul 28, 2021 at 09:41:24PM -0700, Bart Van Assche wrote:
+>> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+>> Cc: David Gow <davidgow@google.com>
+>> Cc: Shuah Khan <skhan@linuxfoundation.org>
+>> Cc: kunit-dev@googlegroups.com
+>> Cc: linux-kselftest@vger.kernel.org
+>> Cc: Bodo Stroesser <bostroesser@gmail.com>
+>> Cc: Martin K. Petersen <martin.petersen@oracle.com>
+>> Cc: Yanko Kaneti <yaneti@declera.com>
+>> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+>> ---
+> 
+> I know I do not take patches without any changelog text.  Maybe other
+> maintainers are more lax :(
 
-If CROSS_COMPILE is not set, simply set --target= for CLANG_FLAGS,
-KBUILD_CFLAGS, and KBUILD_AFLAGS based on $SRCARCH.
+Almost every patch from me has an elaborate changelog. For this patch I 
+chose not to add a changelog since I think that the subject is 
+self-explanatory?
 
-Previously, we'd cross compile via:
-$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make LLVM=1 LLVM_IAS=1
-Now:
-$ ARCH=arm64 make LLVM=1 LLVM_IAS=1
+Thanks,
 
-For native builds (not involving cross compilation) we now explicitly
-specify a target triple rather than rely on the implicit host triple.
+Bart.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1399
-Suggested-by: Arnd Bergmann <arnd@kernel.org>
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes v2 -> v3:
-* Drop check/requirement for LLVM=1, as per Masahiro.
-* Change oneliner from LLVM=1 LLVM_IAS=1 to CC=clang LLVM_IAS=1.
-* Don't carry forward Nathan's RB/TB tags. :( Sorry Nathan, but thank
-  you for testing+reviewing v2.
-* Update wording of docs slightly.
-
-Changes v1 -> v2:
-* Fix typos in commit message as per Geert and Masahiro.
-* Use SRCARCH instead of ARCH, simplifying x86 handling, as per
-  Masahiro. Add his sugguested by tag.
-* change commit oneline from 'drop' to 'infer.'
-* Add detail about explicit host --target and relationship of ARCH to
-  SRCARCH, as per Masahiro.
-
-Changes RFC -> v1:
-* Rebase onto linux-kbuild/for-next
-* Keep full target triples since missing the gnueabi suffix messes up
-  32b ARM. Drop Fangrui's sugguested by tag. Update commit message to
-  drop references to arm64.
-* Flush out TODOS.
-* Add note about -EL/-EB, -m32/-m64.
-* Add note to Documentation/.
-
- Documentation/kbuild/llvm.rst |  6 ++++++
- scripts/Makefile.clang        | 32 ++++++++++++++++++++++++++++++--
- 2 files changed, 36 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-index b18401d2ba82..aef1587fc09b 100644
---- a/Documentation/kbuild/llvm.rst
-+++ b/Documentation/kbuild/llvm.rst
-@@ -46,6 +46,12 @@ example: ::
- 
- 	clang --target=aarch64-linux-gnu foo.c
- 
-+When both ``CC=clang`` (set via ``LLVM=1``) and ``LLVM_IAS=1`` are used,
-+``CROSS_COMPILE`` becomes unnecessary and can be inferred from ``ARCH``.
-+Example: ::
-+
-+	ARCH=arm64 make LLVM=1 LLVM_IAS=1
-+
- LLVM Utilities
- --------------
- 
-diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-index 297932e973d4..a1b46811bdc6 100644
---- a/scripts/Makefile.clang
-+++ b/scripts/Makefile.clang
-@@ -1,6 +1,34 @@
--ifneq ($(CROSS_COMPILE),)
-+# Individual arch/{arch}/Makfiles should use -EL/-EB to set intended endianness
-+# and -m32/-m64 to set word size based on Kconfigs instead of relying on the
-+# target triple.
-+ifeq ($(CROSS_COMPILE),)
-+ifeq ($(LLVM_IAS),1)
-+ifeq ($(SRCARCH),arm)
-+CLANG_FLAGS	+= --target=arm-linux-gnueabi
-+else ifeq ($(SRCARCH),arm64)
-+CLANG_FLAGS	+= --target=aarch64-linux-gnu
-+else ifeq ($(SRCARCH),hexagon)
-+CLANG_FLAGS	+= --target=hexagon-linux-gnu
-+else ifeq ($(SRCARCH),m68k)
-+CLANG_FLAGS	+= --target=m68k-linux-gnu
-+else ifeq ($(SRCARCH),mips)
-+CLANG_FLAGS	+= --target=mipsel-linux-gnu
-+else ifeq ($(SRCARCH),powerpc)
-+CLANG_FLAGS	+= --target=powerpc64le-linux-gnu
-+else ifeq ($(SRCARCH),riscv)
-+CLANG_FLAGS	+= --target=riscv64-linux-gnu
-+else ifeq ($(SRCARCH),s390)
-+CLANG_FLAGS	+= --target=s390x-linux-gnu
-+else ifeq ($(SRCARCH),x86)
-+CLANG_FLAGS	+= --target=x86_64-linux-gnu
-+else
-+$(error Specify CROSS_COMPILE or add '--target=' option to scripts/Makefile.clang)
-+endif # SRCARCH
-+endif # LLVM_IAS
-+else
- CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
--endif
-+endif # CROSS_COMPILE
-+
- ifeq ($(LLVM_IAS),1)
- CLANG_FLAGS	+= -integrated-as
- else
--- 
-2.32.0.432.gabb21c7263-goog
 
