@@ -2,276 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375243DAA72
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F803DAA74
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbhG2Rlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:41:47 -0400
-Received: from mail.efficios.com ([167.114.26.124]:45494 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhG2Rlr (ORCPT
+        id S229863AbhG2RnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229485AbhG2RnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:41:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id EB5C536AD35;
-        Thu, 29 Jul 2021 13:41:42 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id hLSABypVzIhc; Thu, 29 Jul 2021 13:41:42 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id EC92636A9F1;
-        Thu, 29 Jul 2021 13:41:41 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com EC92636A9F1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1627580502;
-        bh=9FHrxazBbNDFxr2Yk3a6KYf7wJdmBuaPedsPdnOh7E0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=GHpgqNssSUrplwk8g18PQWSjQkGFUR4p/mmG1pIODM8fAQHOZhxGlvEOoJmbBeH0W
-         OBcnkkE+oTyxGNT6+1L8JIP3Xk/aahY7VJ0EerT+XlQUifLR35L1K/ue3wgkfOcqCs
-         hZvf6mosdOdKBXhEiyoVeuxsrDUF5Msb+P05+/tBQiEB9+lVsGaiYXJYXRplSgnbT7
-         2nkW6RPQxDtTKLuB1SvsYpyl2EcFmjVzW+uzCz8g5VDm7MbjQOT6wq8KT7liTwyAQd
-         3Am38FsK+2ehjmsj8Q9/CFN8SnM0/1kd32HErlxnI5DXPzftRLu5r5WIbeJuMe9uno
-         9NMMCa4rpr+gw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 5mkeh_Zlf2GS; Thu, 29 Jul 2021 13:41:41 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id BE39536AE97;
-        Thu, 29 Jul 2021 13:41:41 -0400 (EDT)
-Date:   Thu, 29 Jul 2021 13:41:41 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <251687084.10484.1627580501645.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210729155713.GW4397@paulmck-ThinkPad-P17-Gen-1>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1> <2135064974.9081.1627496585724.JavaMail.zimbra@efficios.com> <20210728185854.GK4397@paulmck-ThinkPad-P17-Gen-1> <20210728194505.GA1500024@paulmck-ThinkPad-P17-Gen-1> <874308613.9545.1627502582005.JavaMail.zimbra@efficios.com> <20210728202802.GL4397@paulmck-ThinkPad-P17-Gen-1> <1929727713.10248.1627569678176.JavaMail.zimbra@efficios.com> <20210729155713.GW4397@paulmck-ThinkPad-P17-Gen-1>
-Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and
- updates
+        Thu, 29 Jul 2021 13:43:01 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C34DC061765;
+        Thu, 29 Jul 2021 10:42:57 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso16863115pjb.1;
+        Thu, 29 Jul 2021 10:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MRoPJio2MUhOU0/m1G20970+YlOhtWlEzTe9sZ5FefE=;
+        b=JvMYmBi5p9PZelD1NaHz1n+P41kdfl+ssE1Y0qC0mmY7wp5TnYcug1wCbaoiliGpn9
+         Ymil3yI60pM07jB8Pz61KGNx0W6KsT1Qc4KlP1MjujRJi/huIfRrCXaAKWA+IJ5p40qB
+         i+ieiSTHdgz2TqmqNLzQbvpbXE/DjR/2Q2Tew+DeH+CSQKDgNh2JJ6J1ddEnvOZP6O48
+         Sx8KlmF+9mthyvh15veA2zvY4AGydVEgZjoyJSHKGGGHTlt451O+jqctXLS1TiP503Js
+         2b1deNsHg0czefe+9eOR+V70Zg2PbLOXQc6/hiABN2/9o7EahjrAmoHyM+TP9cn4Hcs9
+         NeJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MRoPJio2MUhOU0/m1G20970+YlOhtWlEzTe9sZ5FefE=;
+        b=bolqKP/2QQwaHJIPR54/Rgp6fenHAv45BmEewlSoXi3IY9RIWpBRWG7JpLcg6fmvYT
+         oziAFYDgYx/ca6XEOQPMNtKkojxb+7FfvumtwK6bOTwdfiyDuHEXaCjuJHzJ6lTAU1KE
+         9Ei3hqVnGHIZoyBfxjIJUbIv5pJG1no3Aj1mex63doNeFOQ2sU1wggD79uX9zM/Prbdr
+         N/ajOwqaK9iQC+fF4ZPR/EqMOcnaanFNktPmf0P0CEbf9o8bOpNN65CKHHZCUysafQev
+         moCv7ewY4hnyhTlWwwsrK7pUvtKtRVWeuBLj5r7+trqf6TEeTWpyngaN3X0/gMwFSKoO
+         ncQA==
+X-Gm-Message-State: AOAM5324xY2GH/eqIt+khSzHMZlHdC5zKJCS6o5QiryL0ByKtSSOeoRI
+        F5sBKO4VIwSo/r/TYgfzqlZWwrgsBbAhKjv8
+X-Google-Smtp-Source: ABdhPJzVVsEOYzsLtrsbTin/WwJSnu2eLbQUAEXBqMqjcS0/MPBbBhnisjst3ypzyx8vNAcxKNPTNw==
+X-Received: by 2002:a65:4242:: with SMTP id d2mr4676368pgq.243.1627580576671;
+        Thu, 29 Jul 2021 10:42:56 -0700 (PDT)
+Received: from [192.168.1.38] (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id y12sm1672446pgk.7.2021.07.29.10.42.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 10:42:56 -0700 (PDT)
+Subject: Re: memory leak in h4_recv_buf
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <0000000000006b1779058c0cbdda@google.com>
+ <d71a274f-fdeb-4da1-898e-06f6944e04dan@googlegroups.com>
+ <a125c3e6-7723-185a-3c47-219c201c6785@gmail.com>
+ <E59B3DB2-3D96-459B-9902-C9E729407ED2@holtmann.org>
+ <20210729120706.GU1931@kadam>
+ <AF823758-2063-4E9C-8EF8-9F22107FFB71@holtmann.org>
+From:   Phi Nguyen <phind.uet@gmail.com>
+Message-ID: <15df8c9d-8809-7da3-842b-a65bfb06abeb@gmail.com>
+Date:   Fri, 30 Jul 2021 01:42:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: Weaken ->dynticks accesses and updates
-Thread-Index: GYP2H7cUv+M6D07hJngSQx4VFy+/ZA==
+In-Reply-To: <AF823758-2063-4E9C-8EF8-9F22107FFB71@holtmann.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 29, 2021, at 11:57 AM, paulmck paulmck@kernel.org wrote:
+On 7/29/2021 11:39 PM, Marcel Holtmann wrote:
+> Hi Dan,
+> 
+>>>>>    syzbot found the following crash on:
+>>>>>    HEAD commit: abf02e29 Merge tag 'pm-5.2-rc6' of
+>>>>>    git://git.kernel.org/pu <http://git.kernel.org/pu>..
+>>>>>    git tree: upstream
+>>>>>    console output:
+>>>>>    https://syzkaller.appspot.com/x/log.txt?x=1054e6b2a00000
+>>>>>    <https://syzkaller.appspot.com/x/log.txt?x=1054e6b2a00000>
+>>>>>    kernel config:
+>>>>>    https://syzkaller.appspot.com/x/.config?x=56f1da14935c3cce
+>>>>>    <https://syzkaller.appspot.com/x/.config?x=56f1da14935c3cce>
+>>>>>    dashboard link:
+>>>>>    https://syzkaller.appspot.com/bug?extid=97388eb9d31b997fe1d0
+>>>>>    <https://syzkaller.appspot.com/bug?extid=97388eb9d31b997fe1d0>
+>>>>>    compiler: gcc (GCC) 9.0.0 20181231 (experimental)
+>>>>>    syz repro:
+>>>>>    https://syzkaller.appspot.com/x/repro.syz?x=1073d8aaa00000
+>>>>>    <https://syzkaller.appspot.com/x/repro.syz?x=1073d8aaa00000>
+>>>>>    C reproducer:
+>>>>>    https://syzkaller.appspot.com/x/repro.c?x=17b36fbea00000
+>>>>>    <https://syzkaller.appspot.com/x/repro.c?x=17b36fbea00000>
+>>>>>    IMPORTANT: if you fix the bug, please add the following tag to the
+>>>>>    commit:
+>>>>>    Reported-by: syzbot+97388e...@syzkaller.appspotmail.com
+>>>>>    program
+>>>>>    BUG: memory leak
+>>>>>    unreferenced object 0xffff88810991fa00 (size 224):
+>>>>>    comm "syz-executor739", pid 7080, jiffies 4294949854 (age 18.640s)
+>>>>>    hex dump (first 32 bytes):
+>>>>>    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+>>>>>    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+>>>>>    backtrace:
+>>>>>    [<00000000da42c09f>] kmemleak_alloc_recursive
+>>>>>    include/linux/kmemleak.h:43 [inline]
+>>>>>    [<00000000da42c09f>] slab_post_alloc_hook mm/slab.h:439 [inline]
+>>>>>    [<00000000da42c09f>] slab_alloc_node mm/slab.c:3269 [inline]
+>>>>>    [<00000000da42c09f>] kmem_cache_alloc_node+0x153/0x2a0 mm/slab.c:3579
+>>>>>    [<00000000f6fbcf84>] __alloc_skb+0x6e/0x210 net/core/skbuff.c:194
+>>>>>    [<00000000ea93fc4c>] alloc_skb include/linux/skbuff.h:1054 [inline]
+>>>>>    [<00000000ea93fc4c>] bt_skb_alloc include/net/bluetooth/bluetooth.h:339
+>>>>>    [inline]
+>>>>>    [<00000000ea93fc4c>] h4_recv_buf+0x26d/0x450
+>>>>>    drivers/bluetooth/hci_h4.c:182
+>>>>>    [<00000000e0312475>] h4_recv+0x51/0xb0 drivers/bluetooth/hci_h4.c:116
+>>>>>    [<00000000ebf11fab>] hci_uart_tty_receive+0xba/0x200
+>>>>>    drivers/bluetooth/hci_ldisc.c:592
+>>>>>    [<0000000095e1216e>] tiocsti drivers/tty/tty_io.c:2195 [inline]
+>>>>>    [<0000000095e1216e>] tty_ioctl+0x81c/0xa30 drivers/tty/tty_io.c:2571
+>>>>>    [<000000009fa523f0>] vfs_ioctl fs/ioctl.c:46 [inline]
+>>>>>    [<000000009fa523f0>] file_ioctl fs/ioctl.c:509 [inline]
+>>>>>    [<000000009fa523f0>] do_vfs_ioctl+0x62a/0x810 fs/ioctl.c:696
+>>>>>    [<000000000cebb5d9>] ksys_ioctl+0x86/0xb0 fs/ioctl.c:713
+>>>>>    [<000000001630008a>] __do_sys_ioctl fs/ioctl.c:720 [inline]
+>>>>>    [<000000001630008a>] __se_sys_ioctl fs/ioctl.c:718 [inline]
+>>>>>    [<000000001630008a>] __x64_sys_ioctl+0x1e/0x30 fs/ioctl.c:718
+>>>>>    [<00000000c62091e3>] do_syscall_64+0x76/0x1a0
+>>>>>    arch/x86/entry/common.c:301
+>>>>>    [<000000005c213625>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>>>    BUG: memory leak
+>>>>>    unreferenced object 0xffff8881204f4400 (size 1024):
+>>>>>    comm "syz-executor739", pid 7080, jiffies 4294949854 (age 18.640s)
+>>>>>    hex dump (first 32 bytes):
+>>>>>    6c 69 62 75 64 65 76 00 fe ed ca fe 28 00 00 00 libudev.....(...
+>>>>>    28 00 00 00 a0 00 00 00 52 ca da 77 00 00 00 00 (.......R..w....
+>>>>>    backtrace:
+>>>>>    [<0000000034504843>] kmemleak_alloc_recursive
+>>>>>    include/linux/kmemleak.h:43 [inline]
+>>>>>    [<0000000034504843>] slab_post_alloc_hook mm/slab.h:439 [inline]
+>>>>>    [<0000000034504843>] slab_alloc_node mm/slab.c:3269 [inline]
+>>>>>    [<0000000034504843>] kmem_cache_alloc_node_trace+0x15b/0x2a0
+>>>>>    mm/slab.c:3597
+>>>>>    [<0000000056d30eb5>] __do_kmalloc_node mm/slab.c:3619 [inline]
+>>>>>    [<0000000056d30eb5>] __kmalloc_node_track_caller+0x38/0x50
+>>>>>    mm/slab.c:3634
+>>>>>    [<00000000df40176c>] __kmalloc_reserve.isra.0+0x40/0xb0
+>>>>>    net/core/skbuff.c:138
+>>>>>    [<0000000035340e64>] __alloc_skb+0xa0/0x210 net/core/skbuff.c:206
+>>>>>    [<00000000ea93fc4c>] alloc_skb include/linux/skbuff.h:1054 [inline]
+>>>>>    [<00000000ea93fc4c>] bt_skb_alloc include/net/bluetooth/bluetooth.h:339
+>>>>>    [inline]
+>>>>>    [<00000000ea93fc4c>] h4_recv_buf+0x26d/0x450
+>>>>>    drivers/bluetooth/hci_h4.c:182
+>>>>>    [<00000000e0312475>] h4_recv+0x51/0xb0 drivers/bluetooth/hci_h4.c:116
+>>>>>    [<00000000ebf11fab>] hci_uart_tty_receive+0xba/0x200
+>>>>>    drivers/bluetooth/hci_ldisc.c:592
+>>>>>    [<0000000095e1216e>] tiocsti drivers/tty/tty_io.c:2195 [inline]
+>>>>>    [<0000000095e1216e>] tty_ioctl+0x81c/0xa30 drivers/tty/tty_io.c:2571
+>>>>>    [<000000009fa523f0>] vfs_ioctl fs/ioctl.c:46 [inline]
+>>>>>    [<000000009fa523f0>] file_ioctl fs/ioctl.c:509 [inline]
+>>>>>    [<000000009fa523f0>] do_vfs_ioctl+0x62a/0x810 fs/ioctl.c:696
+>>>>>    [<000000000cebb5d9>] ksys_ioctl+0x86/0xb0 fs/ioctl.c:713
+>>>>>    [<000000001630008a>] __do_sys_ioctl fs/ioctl.c:720 [inline]
+>>>>>    [<000000001630008a>] __se_sys_ioctl fs/ioctl.c:718 [inline]
+>>>>>    [<000000001630008a>] __x64_sys_ioctl+0x1e/0x30 fs/ioctl.c:718
+>>>>>    [<00000000c62091e3>] do_syscall_64+0x76/0x1a0
+>>>>>    arch/x86/entry/common.c:301
+>>>>>    [<000000005c213625>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>>>    ---
+>>>>>    This bug is generated by a bot. It may contain errors.
+>>>>>    See https://goo.gl/tpsmEJ <https://goo.gl/tpsmEJ> for more
+>>>>>    information about syzbot.
+>>>>>    syzbot engineers can be reached at syzk...@googlegroups.com.
+>>>>>    syzbot will keep track of this bug report. See:
+>>>>>    https://goo.gl/tpsmEJ#status <https://goo.gl/tpsmEJ#status> for how
+>>>>>    to communicate with syzbot.
+>>>>>    syzbot can test patches for this bug, for details see:
+>>>>>    https://goo.gl/tpsmEJ#testing-patches
+>>>>>    <https://goo.gl/tpsmEJ#testing-patches>
+>>>>> -- 
+>>>>> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+>>>>> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com <mailto:syzkaller-bugs+unsubscribe@googlegroups.com>.
+>>>>> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/d71a274f-fdeb-4da1-898e-06f6944e04dan%40googlegroups.com <https://groups.google.com/d/msgid/syzkaller-bugs/d71a274f-fdeb-4da1-898e-06f6944e04dan%40googlegroups.com?utm_medium=email&utm_source=footer>.
+>>>>
+>>>> The reason of this memory leak is tty_ldisc_receive_buf() and tiocsti()
+>>>> can access the h4->rx_skb concurrently by calling
+>>>> hci_uart_tty_receive(), so the rx_skb be overwritten without
+>>>> deallocating. There used to be an spin_lock in hci_uart_tty_receive(),
+>>>> but it was removed by commit 7649ffaff1cfe(Bluetooth: Remove useless
+>>>> rx_lock spinlock).
+>>>
+>>> I don’t have that commit in my Linus’ tree. Where is it?
+>>>
+>>
+>> There is a typo in the git hash.  It should be: 7649faff1cfe4 ("Bluetooth:
+>> Remove useless rx_lock spinlock").
+>>
+>>>> The commit message claims that hci_uart_tty_receive() was only called by
+>>>> flush_to_ldisc(), but it seems incorrect.
+>>>
+>>> That seems to be a larger problem in the TTY layer if its contract with its users have changed.
+>>
+>> The tiocsti() function has an ancient comment which suggests that the
+>> documentation has always been wrong.
+>>
+>> *      FIXME: may race normal receive processing
+> 
+> so what are we suppose to do now? Fix this in TTY layer or try to revert this patch?
+> 
+> And does it have to be spinlock or can we use a mutex? My knowledge of the TTY internal are limited and thus, I have no idea what we need to do here. However h4_recv_buf needs to be protected against concurrently calls.
+> 
+> Regards
+> 
+> Marcel
+> 
+Hi Marcel,
 
-> On Thu, Jul 29, 2021 at 10:41:18AM -0400, Mathieu Desnoyers wrote:
->> ----- On Jul 28, 2021, at 4:28 PM, paulmck paulmck@kernel.org wrote:
->> 
->> > On Wed, Jul 28, 2021 at 04:03:02PM -0400, Mathieu Desnoyers wrote:
->> >> ----- On Jul 28, 2021, at 3:45 PM, paulmck paulmck@kernel.org wrote:
->> >> [...]
->> >> > 
->> >> > And how about like this?
->> >> > 
->> >> >						Thanx, Paul
->> >> > 
->> >> > ------------------------------------------------------------------------
->> >> > 
->> >> > commit cb8914dcc6443cca15ce48d937a93c0dfdb114d3
->> >> > Author: Paul E. McKenney <paulmck@kernel.org>
->> >> > Date:   Wed Jul 28 12:38:42 2021 -0700
->> >> > 
->> >> >    rcu: Move rcu_dynticks_eqs_online() to rcu_cpu_starting()
->> >> >    
->> >> >    The purpose of rcu_dynticks_eqs_online() is to adjust the ->dynticks
->> >> >    counter of an incoming CPU if required.  It is currently is invoked
->> >> 
->> >> "is currently is" -> "is currently"
->> > 
->> > Good catch, fixed!
->> > 
->> >> >    from rcutree_prepare_cpu(), which runs before the incoming CPU is
->> >> >    running, and thus on some other CPU.  This makes the per-CPU accesses in
->> >> >    rcu_dynticks_eqs_online() iffy at best, and it all "works" only because
->> >> >    the running CPU cannot possibly be in dyntick-idle mode, which means
->> >> >    that rcu_dynticks_eqs_online() never has any effect.  One could argue
->> >> >    that this means that rcu_dynticks_eqs_online() is unnecessary, however,
->> >> >    removing it makes the CPU-online process vulnerable to slight changes
->> >> >    in the CPU-offline process.
->> >> 
->> >> Why favor moving this from the prepare_cpu to the cpu_starting hotplug step,
->> >> rather than using the target cpu's rdp from rcutree_prepare_cpu ? Maybe there
->> >> was a good reason for having this very early in the prepare_cpu step ?
->> > 
->> > Some years back, there was a good reason. This reason was that
->> > rcutree_prepare_cpu() marked the CPU as being online from an RCU
->> > viewpoint.  But now rcu_cpu_starting() is the one that marks the CPU as
->> > being online, so the ->dynticks check can be deferred to this function.
->> > 
->> >> Also, the commit message refers to this bug as having no effect because the
->> >> running CPU cannot possibly be in dyntick-idle mode. I understand that calling
->> >> this function was indeed effect-less, but then why is it OK for the CPU coming
->> >> online to skip this call in the first place ? This commit message hints at
->> >> "slight changes in the CPU-offline process" which could break it, but therer is
->> >> no explanation of what makes this not an actual bug fix.
->> > 
->> > Because rcutorture would not have suffered in silence had this
->> > situation ever arisen.
->> 
->> Testing can usually prove the presence of a bug, but it's rather tricky to prove
->> the absence of bug.
-> 
-> In general, true enough.
-> 
-> But in this particular case, a WARN would have deterministically triggered
-> the very next time that this CPU found its way either to the idle loop
-> or to nohz_full usermode execution.
-> 
->> > I have updated the commit log to answer these questions as shown
->> > below.  Thoughts?
->> 
->> I'm still concerned about one scenario wrt moving rcu_dynticks_eqs_online()
->> from rcutree_prepare_cpu to rcu_cpu_starting. What happens if an interrupt
->> handler, or a NMI handler, nests early over the CPU-online startup code ?
->> AFAIU, this interrupt handler could contain RCU read-side critical sections,
->> but if the eqs state does not show the CPU as "online", I wonder whether it
->> will work as expected.
-> 
-> Interrupts are still disabled at this point in the onlining process,
-> my _irqsave() locks notwithstanding.
-> 
-> You are right about NMI handlers, but there would be much more damage
-> from an early NMI handler than mere RCU issues.  And this can be handled
-> as described in the next paragraph.
-> 
-> Now, there are architectures (including x86) that need RCU readers
-> before notify_cpu_starting() time (which is where rcu_cpu_starting()
-> is invoked by default, and those architectures can (and do) simply
-> place a call to rcu_cpu_starting() at an earlier appropriate point in
-> the architecture-specific CPU-bringup code.  And this is in fact the
-> reason for the ->cpu_started check at the beginning of rcu_cpu_starting().
-> So an architecture using NMIs early in the CPU-bringup code should
-> invoke rcu_cpu_starting() before enabling NMIs.
-> 
-> So why not just be safe and mark the CPU online early in the process?
-> 
-> Because that could result in unbounded grace periods and strange
-> deadlocks.  These deadlocks were broken earlier by code that assumed that
-> a CPU could not possibly take more than one jiffy to come online, but that
-> assumption is clearly broken on todays systems, even the bare-metal ones.
-> 
-> In theory, I could change the raw_spin_lock_irqsave_rcu_node() to
-> raw_spin_lock_rcu_node(), rely on the lockdep_assert_irqs_disabled()
-> in the matching raw_spin_unlock_rcu_node(), and ditch the "flags"
-> local variable, but rcu_report_qs_rnp() needs that "flags" argument.
-> 
-> OK, I guess one approach is to get the "flags" value from local_save_flags()
-> and get rid of the _irqsave and _irq restore.  Assuming lockdep is
-> functional that early in CPU bringup.
-> 
-> But would that really be better than status quo?
+So far, I have tested two fixes with syzbot
+The first one is to bring the spin lock back to hci_uart_tty_receive().
+The second one is to use tty_buffer_lock_exclusive() in tiocsti() (I 
+based on the document in tty_buffer.c).
+These two can work well with the syzbot.
 
-I'm OK with your explanation about the fact that interrupts and NMIs scenarios
-are correctly handled, so moving this call from prepare_cpu to cpu_starting
-is fine with me.
-
-Thanks,
-
-Mathieu
-
-> 
->							Thanx, Paul
-> 
->> Thanks,
->> 
->> Mathieu
->> 
->> > 
->> >							Thanx, Paul
->> > 
->> > ------------------------------------------------------------------------
->> > 
->> > commit 516c8c4cc6fce62539f7e0182739812db4591c1d
->> > Author: Paul E. McKenney <paulmck@kernel.org>
->> > Date:   Wed Jul 28 12:38:42 2021 -0700
->> > 
->> >    rcu: Move rcu_dynticks_eqs_online() to rcu_cpu_starting()
->> >    
->> >    The purpose of rcu_dynticks_eqs_online() is to adjust the ->dynticks
->> >    counter of an incoming CPU when required.  It is currently invoked
->> >    from rcutree_prepare_cpu(), which runs before the incoming CPU is
->> >    running, and thus on some other CPU.  This makes the per-CPU accesses in
->> >    rcu_dynticks_eqs_online() iffy at best, and it all "works" only because
->> >    the running CPU cannot possibly be in dyntick-idle mode, which means
->> >    that rcu_dynticks_eqs_online() never has any effect.
->> >    
->> >    It is currently OK for rcu_dynticks_eqs_online() to have no effect, but
->> >    only because the CPU-offline process just happens to leave ->dynticks in
->> >    the correct state.  After all, if ->dynticks were in the wrong state on a
->> >    just-onlined CPU, rcutorture would complain bitterly the next time that
->> >    CPU went idle, at least in kernels built with CONFIG_RCU_EQS_DEBUG=y,
->> >    for example, those built by rcutorture scenario TREE04.  One could
->> >    argue that this means that rcu_dynticks_eqs_online() is unnecessary,
->> >    however, removing it would make the CPU-online process vulnerable to
->> >    slight changes in the CPU-offline process.
->> >    
->> >    One could also ask why it is safe to move the rcu_dynticks_eqs_online()
->> >    call so late in the CPU-online process.  Indeed, there was a time when it
->> >    would not have been safe, which does much to explain its current location.
->> >    However, the marking of a CPU as online from an RCU perspective has long
->> >    since moved from rcutree_prepare_cpu() to rcu_cpu_starting(), and all
->> >    that is required is that ->dynticks be set correctly by the time that
->> >    the CPU is marked as online from an RCU perspective.  After all, the RCU
->> >    grace-period kthread does not check to see if offline CPUs are also idle.
->> >    (In case you were curious, this is one reason why there is quiescent-state
->> >    reporting as part of the offlining process.)
->> >    
->> >    This commit therefore moves the call to rcu_dynticks_eqs_online() from
->> >    rcutree_prepare_cpu() to rcu_cpu_starting(), this latter being guaranteed
->> >    to be running on the incoming CPU.  The call to this function must of
->> >    course be placed before this rcu_cpu_starting() announces this CPU's
->> >    presence to RCU.
->> >    
->> >    Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> >    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->> > 
->> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> > index 0172a5fd6d8de..aa00babdaf544 100644
->> > --- a/kernel/rcu/tree.c
->> > +++ b/kernel/rcu/tree.c
->> > @@ -4129,7 +4129,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
->> > 	rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
->> > 	rdp->blimit = blimit;
->> > 	rdp->dynticks_nesting = 1;	/* CPU not up, no tearing. */
->> > -	rcu_dynticks_eqs_online();
->> > 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
->> > 
->> > 	/*
->> > @@ -4249,6 +4248,7 @@ void rcu_cpu_starting(unsigned int cpu)
->> > 	mask = rdp->grpmask;
->> > 	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
->> > 	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
->> > +	rcu_dynticks_eqs_online();
->> > 	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
->> > 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
->> >  	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
->> 
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
-> > http://www.efficios.com
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Regards,
+Phi
