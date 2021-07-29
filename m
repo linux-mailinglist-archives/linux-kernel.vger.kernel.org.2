@@ -2,80 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8B93DA68D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10EE3DA68F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236909AbhG2Ohn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234361AbhG2Ohl (ORCPT
+        id S237419AbhG2Ohr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:37:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24060 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237035AbhG2Ohp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:37:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FC3C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:37:38 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 16:37:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627569457;
+        Thu, 29 Jul 2021 10:37:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627569461;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q3j0ee1psoaa6qUiXuAcXFw3sFimJ34Oy5I7OWpLkmI=;
-        b=MG2n9jfbbMMlEIiPGNcIjnU83vFV51DifEPCp1izB501UMtNFb7jBZA2Vj5tM5Q17/SAtF
-        uNkm0SkhrtEInJ4W0Y7lFU7Q8qEFJRLtdaNZFJczE2Xa16XZyFgt3acAvgbVkIN4k2YVbv
-        R5ZSuxuVK87QOiUEkH0Q8GbwS1iFmKsWA6WMOhDWcBXHM7H7F6pH28VKPj3v2gyFBjMRCb
-        fa0JH58S2LZtfnfMLx7rc3G10d7dw5IiHmzoj5H3ebQglccf0J8dfjQiYdHoZcP35q6Z01
-        ieY+42PUdquQYzyXJfi6ou6nuWnLwPjNP46GhQH/SBWZY3lD/ebGFeSwXaZ0UA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627569457;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q3j0ee1psoaa6qUiXuAcXFw3sFimJ34Oy5I7OWpLkmI=;
-        b=tCkHw3Nyv12WLuyHqnC0Vc17D5SA8ZLH3RugHTc5YaYGLmFjX4LbdPBctX644AKOQhHB+J
-        TbT6SUWoRSzbeSDQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [RFC v2 00/34] SLUB: reduce irq disabled scope and make it RT
- compatible
-Message-ID: <20210729143735.wuql2keewd444nvq@linutronix.de>
-References: <20210609113903.1421-1-vbabka@suse.cz>
- <20210702182944.lqa7o2a25to6czju@linutronix.de>
- <35b26e48-a96a-41b0-826e-43e43660c9d6@suse.cz>
- <20210729134939.iulryxjarhjmpugz@linutronix.de>
- <627eddeb-3dc0-056e-ae07-f14c4b1a1b8e@suse.cz>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/IcxmlbvqIO6obnOTeLHYAt4yB5x0e2oIHdv+LJqJUM=;
+        b=LzkhIKxbfftYFKF70yCuks/Xqpc8d4b+LqvT5thgiA0uXCx9S+iL9F/dH46g1MDhbDRfzC
+        3Zq4PctcRifOGdrYCcckhOUj1hc6VF/6L1vW7V5yV1zUg6pYttdeIDdYWIHXDtQwuVAcwx
+        nFtsvowwU0IuY501lXk28bccvI6Ys3E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-EJvzcQfnOieP2E7kCWhRMw-1; Thu, 29 Jul 2021 10:37:38 -0400
+X-MC-Unique: EJvzcQfnOieP2E7kCWhRMw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 15B701008060;
+        Thu, 29 Jul 2021 14:37:37 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B6ACF60864;
+        Thu, 29 Jul 2021 14:37:36 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fixes for Linux 5.14-rc4
+Date:   Thu, 29 Jul 2021 10:37:36 -0400
+Message-Id: <20210729143736.2012671-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <627eddeb-3dc0-056e-ae07-f14c4b1a1b8e@suse.cz>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-29 16:17:26 [+0200], Vlastimil Babka wrote:
-> I forgot to point that out in the cover letter, but with v3 this change to
-> raw_spinlock_t is AFAICS no longer possible (at least with
-> CONFIG_SLUB_CPU_PARTIAL) because in put_cpu_partial() we now take the local_lock
-> and it can be called from get_partial_node() which takes the list_lock.
+Linus,
 
-I saw increased latency numbers with CONFIG_SLUB_CPU_PARTIAL before it
-got disabled for other reasons so I'm not too sad if it remains
-disabled.
+The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
 
-> Hm but SLUB should never call the page allocator from under list_lock in my series?
+  Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
 
-oh yes. I run into CPU_PARTIAL instead. Sorry for the confusion. So
-without PARTIAL it says "24,643 CPUs utilized" and no warnings :)
+are available in the Git repository at:
 
-Sebastian
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 8750f9bbda115f3f79bfe43be85551ee5e12b6ff:
+
+  KVM: add missing compat KVM_CLEAR_DIRTY_LOG (2021-07-27 16:59:01 -0400)
+
+----------------------------------------------------------------
+ARM:
+
+- Fix MTE shared page detection
+
+- Enable selftest's use of PMU registers when asked to
+
+s390:
+
+- restore 5.13 debugfs names
+
+x86:
+
+- fix sizes for vcpu-id indexed arrays
+
+- fixes for AMD virtualized LAPIC (AVIC)
+
+- other small bugfixes
+
+Generic:
+
+- access tracking performance test
+
+- dirty_log_perf_test command line parsing fix
+
+- Fix selftest use of obsolete pthread_yield() in favour of sched_yield()
+
+- use cpu_relax when halt polling
+
+- fixed missing KVM_CLEAR_DIRTY_LOG compat ioctl
+
+----------------------------------------------------------------
+Andrew Jones (2):
+      KVM: selftests: change pthread_yield to sched_yield
+      KVM: arm64: selftests: get-reg-list: actually enable pmu regs in pmu sublist
+
+Christian Borntraeger (1):
+      KVM: s390: restore old debugfs names
+
+David Matlack (2):
+      KVM: selftests: Fix missing break in dirty_log_perf_test arg parsing
+      KVM: selftests: Introduce access_tracking_perf_test
+
+Juergen Gross (1):
+      x86/kvm: fix vcpu-id indexed array sizes
+
+Li RongQing (1):
+      KVM: use cpu_relax when halt polling
+
+Marc Zyngier (1):
+      KVM: arm64: Fix detection of shared VMAs on guest fault
+
+Mauro Carvalho Chehab (1):
+      docs: virt: kvm: api.rst: replace some characters
+
+Maxim Levitsky (3):
+      KVM: SVM: svm_set_vintr don't warn if AVIC is active but is about to be deactivated
+      KVM: SVM: tweak warning about enabled AVIC on nested entry
+      KVM: SVM: use vmcb01 in svm_refresh_apicv_exec_ctrl
+
+Paolo Bonzini (3):
+      Merge tag 'kvmarm-fixes-5.14-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
+      KVM: SVM: delay svm_vcpu_init_msrpm after svm->vmcb is initialized
+      KVM: add missing compat KVM_CLEAR_DIRTY_LOG
+
+Vitaly Kuznetsov (4):
+      KVM: nSVM: Rename nested_svm_vmloadsave() to svm_copy_vmloadsave_state()
+      KVM: nSVM: Swap the parameter order for svm_copy_vmrun_state()/svm_copy_vmloadsave_state()
+      KVM: Documentation: Fix KVM_CAP_ENFORCE_PV_FEATURE_CPUID name
+      KVM: x86: Check the right feature bit for MSR_KVM_ASYNC_PF_ACK access
+
+ Documentation/virt/kvm/api.rst                     |  30 +-
+ arch/arm64/kvm/mmu.c                               |   2 +-
+ arch/s390/include/asm/kvm_host.h                   |  18 +-
+ arch/s390/kvm/diag.c                               |  18 +-
+ arch/s390/kvm/kvm-s390.c                           |  18 +-
+ arch/x86/kvm/ioapic.c                              |   2 +-
+ arch/x86/kvm/ioapic.h                              |   4 +-
+ arch/x86/kvm/svm/avic.c                            |   2 +-
+ arch/x86/kvm/svm/nested.c                          |  10 +-
+ arch/x86/kvm/svm/svm.c                             |  26 +-
+ arch/x86/kvm/svm/svm.h                             |   6 +-
+ arch/x86/kvm/svm/svm_onhyperv.h                    |   2 +-
+ arch/x86/kvm/x86.c                                 |   4 +-
+ tools/testing/selftests/kvm/.gitignore             |   1 +
+ tools/testing/selftests/kvm/Makefile               |   1 +
+ tools/testing/selftests/kvm/aarch64/get-reg-list.c |   3 +-
+ .../selftests/kvm/access_tracking_perf_test.c      | 429 +++++++++++++++++++++
+ tools/testing/selftests/kvm/dirty_log_perf_test.c  |   1 +
+ tools/testing/selftests/kvm/steal_time.c           |   2 +-
+ virt/kvm/kvm_main.c                                |  29 ++
+ 20 files changed, 537 insertions(+), 71 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/access_tracking_perf_test.c
+
