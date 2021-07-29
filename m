@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2E13DA445
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663443DA448
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237982AbhG2N3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        id S237802AbhG2N3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237733AbhG2N3A (ORCPT
+        with ESMTP id S237764AbhG2N3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:29:00 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50EAC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:55 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id b6-20020a0cbf460000b02902dbb4e0a8f2so3931685qvj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:55 -0700 (PDT)
+        Thu, 29 Jul 2021 09:29:01 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8058BC061796
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:58 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id g187-20020a1c20c40000b02902458d430db6so820371wmg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:28:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=RPFJCEtaWTMugcF+NjceDUD4B85Vp1oeldRispcGqoY=;
-        b=bCde7WqPKlxY/xHp5JNTJjJWBNhOJVIwYFfYXuBL6y9hVFcJKQjvu1Mgb3V+PuXsnX
-         mqBCCgRgi/wqWG8KCgA+CMGVirqrgoaOVCFuzncfBsxc8XcDVkSloOQL2ifClKz0If3Y
-         1wGjcqXn9IBvEFZrjB/A6wvBdmg9otbA4SPJIe1YnoJj2Zoifvf6c0fZu36QDT+x1w2U
-         MwG1JN/XJryBjI4GbZ9IGY2pInQUGfILqs/7RNeTqPYGYAb8DyV5wZCuO40ax1atjGrB
-         w8RvMOQRQqGwRk0P2fFmfVIf+LG2HiF0+IJYdhgVjWw3xx+9XsPAm+vszSyUj/0eUuYl
-         Xufw==
+        bh=OjC24vlLeAeaPgTOLWCqiGMhh2YFKJ1LYBLN6vgVBCE=;
+        b=FUVDUhP/Rgin9C5BP59XMAHUmYRtf8wsXok+/g39vfdccCUCbbIVDOgFIm6+T7feET
+         OomVLcyL10A24g9qFkGVaYhLGSLUP+7LPM2rYyJvJcTC/EXcS3QMcQy9Zjn2OfviE4Vv
+         pqDLpQ9h2b8lvFh1vVNIwNeokffqlvkzEHZ/4KbVuW5P3FYo7Kz/ngnmtxczHYdDl2aY
+         dn8R3JChCBT+YQ6mC/tGYOavge71IRXVQjA3y7zhUwAZ9lCCEAZhdKwSqg682Veyp4Op
+         H6zjmSwxexlMkOT79IpXhHTF8vO1H6IiZx2lHKa9zI3DieJ1lud/goMYV8Lz8Fg4Utho
+         4szg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=RPFJCEtaWTMugcF+NjceDUD4B85Vp1oeldRispcGqoY=;
-        b=Qr/B7AbX6mBxQ9OQ6JNOFGd4Ecf2GminuCDyawkZp9opKZcn33IDrOICc7S1ZK3666
-         SFMaN3ASTuf5E4t1RIzSET1DFrqb3DuaR8CwLXcnn+fmW5XhK229dYgdgt4O8IBTgXQa
-         RIsWYbHBhXldWLBZVZlruU2KV5trNPV+6CO4f57v4Ra1sh8NERc0THb2+SNCHtD6dFfe
-         R2OYPgf0zIfLgtvz9fo2JZXdt3qCIJKLed4w2nTZXSIumDUAHwzP5SVqQWpCuV5RXm7J
-         5bI5bkmVlD9s6Syl0xVa3kePrU6AJAORRKYS5AgBYAnq+bJ0xMAMD5vVssmOF1jIwP8F
-         qy2g==
-X-Gm-Message-State: AOAM531WuDNg5OcSpc9Ql3f4GGGdIfmdAn6CNkteU7yoKFtdsYcBGM7j
-        cRZtz2lteqgRrcdPBXBPglXSuLK7x7ZM
-X-Google-Smtp-Source: ABdhPJxO1maZxYuMOOkc4lCtsFIycuYzMEuf8no7IwacnRivc5nMk/nvcqWV/4Hs90Z3Rs5fFhvpcPIxnoD0
+        bh=OjC24vlLeAeaPgTOLWCqiGMhh2YFKJ1LYBLN6vgVBCE=;
+        b=T2aJSQ3awN3C2Malw2FdUyAnFLkJUjpsAEG+pSkS0N8/IOWL4rDcg8EwNaw9ICRrXN
+         yXu7yBH4yko2NuWd6iQaU4ZVFlBzQzaKXFnaI1WJmX9tMdH/5IlXLX8TPCc0R2gvhlMU
+         dukF4UzsfUhLAYEl/hq+Ca7B1LXNGpBWVfX5zUZCyhAnrvlIgo7F7B75cOFi6KozmbLE
+         7SJsRj0qwAeT/0VUCxWXzsF1bP91ZB452REtZvbtxT/TykjScU+iUac0VYsYLuEdNZP5
+         muLY1j2R0IGCrv9ljGyShXwrGmX1ur4AwFy+1PCUds4KSrftKhMH4pl86sYOzbMWNBXk
+         JkpA==
+X-Gm-Message-State: AOAM533eB4AkkGAoMTczKL23h3kesnp7fNPJ/XnAJdnqwyp+zsRyYUI7
+        JZurHamLIR3b5hBMdYwpCFPxukUU5Evt
+X-Google-Smtp-Source: ABdhPJypNTDOJ5B4zDhDCdj5CCbjzdEdEoifMoEeuxe0LOvoyI2vi5S+2I0+5g7DpCtXnyU4MWjdIokkLn73
 X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:293a:bc89:7514:5218])
- (user=qperret job=sendgmr) by 2002:ad4:4a8c:: with SMTP id
- h12mr5181240qvx.62.1627565334836; Thu, 29 Jul 2021 06:28:54 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 14:28:11 +0100
+ (user=qperret job=sendgmr) by 2002:a1c:1b14:: with SMTP id
+ b20mr3965963wmb.170.1627565337101; Thu, 29 Jul 2021 06:28:57 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 14:28:12 +0100
 In-Reply-To: <20210729132818.4091769-1-qperret@google.com>
-Message-Id: <20210729132818.4091769-15-qperret@google.com>
+Message-Id: <20210729132818.4091769-16-qperret@google.com>
 Mime-Version: 1.0
 References: <20210729132818.4091769-1-qperret@google.com>
 X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH v3 14/21] KVM: arm64: Expose pkvm_hyp_id
+Subject: [PATCH v3 15/21] KVM: arm64: Introduce addr_is_memory()
 From:   Quentin Perret <qperret@google.com>
 To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
         suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
@@ -64,41 +64,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow references to the hypervisor's owner id from outside
-mem_protect.c.
+Introduce a helper usable in nVHE protected mode to check whether a
+physical address is in a RAM region or not.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/hyp/include/nvhe/mem_protect.h | 2 ++
- arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h | 1 +
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
 diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-index 47c2a0c51612..cc86598654b9 100644
+index cc86598654b9..5968fbbb3514 100644
 --- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
 +++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-@@ -46,6 +46,8 @@ struct host_kvm {
- };
- extern struct host_kvm host_kvm;
- 
-+extern const u8 pkvm_hyp_id;
-+
+@@ -51,6 +51,7 @@ extern const u8 pkvm_hyp_id;
  int __pkvm_prot_finalize(void);
  int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end);
  
++bool addr_is_memory(phys_addr_t phys);
+ int host_stage2_idmap_locked(u64 start, u64 end, enum kvm_pgtable_prot prot);
+ int host_stage2_set_owner_locked(u64 start, u64 end, u8 owner_id);
+ int kvm_host_prepare_stage2(void *pgt_pool_base);
 diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-index a7f6134789e0..bb18940c3d12 100644
+index bb18940c3d12..4532f3d55a1a 100644
 --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
 +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -31,7 +31,7 @@ static struct hyp_pool host_s2_pool;
- u64 id_aa64mmfr0_el1_sys_val;
- u64 id_aa64mmfr1_el1_sys_val;
+@@ -196,6 +196,13 @@ static bool find_mem_range(phys_addr_t addr, struct kvm_mem_range *range)
+ 	return false;
+ }
  
--static const u8 pkvm_hyp_id = 1;
-+const u8 pkvm_hyp_id = 1;
- 
- static void *host_s2_zalloc_pages_exact(size_t size)
++bool addr_is_memory(phys_addr_t phys)
++{
++	struct kvm_mem_range range;
++
++	return find_mem_range(phys, &range);
++}
++
+ static bool range_is_memory(u64 start, u64 end)
  {
+ 	struct kvm_mem_range r1, r2;
 -- 
 2.32.0.432.gabb21c7263-goog
 
