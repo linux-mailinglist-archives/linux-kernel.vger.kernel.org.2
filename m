@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653003DA5AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F823DA619
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239511AbhG2OIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:08:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238414AbhG2OBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:01:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7A460F46;
-        Thu, 29 Jul 2021 14:00:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567239;
-        bh=dfkJ5JWovbN7hrPh+/DOSX2blRKtDHtFfpmCFJcwVBA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lDjgwEqBeUxy8ewu5AMQ3JFDqXpJeM7vG8T/ti9w7t0fMs7/564vxsdmgXmjLNecy
-         QIMzMQ/rhxOMnSU6gqKlKJxBZpIjuK8YPaCq9rbWtXryVkyNeWvtq6obKcFKUmv8hX
-         zUuKtVTEuNZvuNb1VS80UwK/RHGSsrQ3a5yUBgMk=
-Date:   Thu, 29 Jul 2021 16:00:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Phillip Potter <phil@philpotter.co.uk>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: Re: [PATCH v4 0/6] staging: r8188eu: add newer/better RTL8188eu
- driver
-Message-ID: <YQK0ZMY34AFYtzN4@kroah.com>
-References: <20210727232219.2948-1-phil@philpotter.co.uk>
- <20210728074605.pp5rs4c65tofnqot@viti.kaiser.cx>
- <CAA=Fs0mH9YAVhr24YeE3jpZrnuDGhOuhj=Sb9Ekkpb-xoC5LYg@mail.gmail.com>
- <20210729133730.lnxqzawnvksp4skg@viti.kaiser.cx>
+        id S237934AbhG2OMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:12:23 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:63101 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238691AbhG2OCV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:02:21 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 16TE0RBp024554;
+        Thu, 29 Jul 2021 23:00:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 16TE0RBp024554
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1627567228;
+        bh=u6b4AXGUg3yFnIadRXqo5WiC6FwPdXiHB94UaUvbQN4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EgTTiA10chfaojkw9B8vkyVnSzSKjfHMlMhzdOQKkvC6564emNoSqMmM1ZZ7hE+qg
+         i2K3Ng6V1pGAmzYVTdyAxfjPBYwafn8aByBMtphKb6g91gPXRoe0sVeEhk1+pO9LGe
+         iY7VAdvQcl2dOfw8RrCUpfLszWfe061ZAWAAxp92cAXYFcDrFModSx1QwGBYF2IZZv
+         Wb+VdjGYyPkPh9c3mEi8GLT+08jLTXzh16RqfeKLYI3hvQ1yJflGdhkokY4rZTmXNG
+         b7hVLcWLCKyrpgXC37rOJQlx3++Vt+GF1V0Gpr1Mx2MorhqTkCa3SGGY4f2+ZGK3PJ
+         2JccSelt2r8rg==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     "H . Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] x86/build: remove the left-over bzlilo target
+Date:   Thu, 29 Jul 2021 23:00:22 +0900
+Message-Id: <20210729140023.442101-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729133730.lnxqzawnvksp4skg@viti.kaiser.cx>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:37:30PM +0200, Martin Kaiser wrote:
-> Hi Phil and all,
-> 
-> Thus wrote Phillip Potter (phil@philpotter.co.uk):
-> 
-> > I see what you are saying for sure - I think we've both sunk a fair
-> > few patches into the existing driver :-)
-> 
-> > That said, from what Larry has mentioned, this newer driver would
-> > still be a better bet overall due to the additional work that has
-> > already happened on it out-of-tree. The Realtek driver you reference
-> > probably has no CFG80211 support etc. would be my guess, but I am
-> > going off what others have suggested in terms of proposing this
-> > patchset. I can't honestly say what the risk of this happening again
-> > would be, but minimal I'd imagine.
-> 
-> ok, understood. That's an important feature. I see that Greg accepted
-> your patches, there's no point in arguing any more ;-)
-> 
-> Greg and Larry: Would you mind sharing your ideas about getting
-> rtl8188eu support mainline? Do you imagine that we clean up this driver
-> until it can be moved out of staging?
+Commit f279b49f13bd ("x86/boot: Modernize genimage script; hdimage+EFI
+support") remove the 'bzlilo' target from arch/x86/boot/Makefile.
 
-Yes, it's that "simple" :)
+Remove the left-over from arch/x86/Makefile.
 
-> If so, we'd probably have to resolve name conflicts with other realtek
-> drivers and rename lots of functions.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Odds are that will happen as the code is cleaned up, right?
+ arch/x86/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Or would a cleanup of the new rtl8188eu driver be a preparation for
-> adding bits and pieces of it to rtlwifi?
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 0fa7dc73b5d8..4f784d9ac925 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -275,8 +275,8 @@ endif
+ $(BOOT_TARGETS): vmlinux
+ 	$(Q)$(MAKE) $(build)=$(boot) $@
+ 
+-PHONY += install bzlilo
+-install bzlilo:
++PHONY += install
++install:
+ 	$(Q)$(MAKE) $(build)=$(boot) $@
+ 
+ PHONY += vdso_install
+-- 
+2.27.0
 
-Do you think it will fit into that framework?
-
-thanks,
-
-greg k-h
