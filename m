@@ -2,111 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E91C3DA348
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5BB3DA34C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237219AbhG2MmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 08:42:11 -0400
-Received: from mga07.intel.com ([134.134.136.100]:28495 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234459AbhG2MmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 08:42:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="276650385"
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="276650385"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 05:42:06 -0700
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="518185758"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.209.5]) ([10.254.209.5])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 05:42:04 -0700
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, john.garry@huawei.com,
-        dianders@chromium.org
-Subject: Re: [PATCH v2 18/24] iommu: Express DMA strictness via the domain
- type
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
-        will@kernel.org
-References: <cover.1627468308.git.robin.murphy@arm.com>
- <50bee17e9248ccfccb33a10238210d4ff4f4cf4d.1627468309.git.robin.murphy@arm.com>
- <b479f1f9-ecf2-2798-2df8-ae3d4c06bc63@linux.intel.com>
- <f2858a7f-e665-ff6a-38d6-b9d591287fac@arm.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <b5167dc8-3b04-f65a-dd69-d338fda341f1@linux.intel.com>
-Date:   Thu, 29 Jul 2021 20:42:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237251AbhG2Mod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 08:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236868AbhG2Mob (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 08:44:31 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86F2C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 05:44:28 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id w10so3806584qtj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 05:44:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=REukLMYHB9mfVFO1/bdDCKtlszA1rKroqNl1QPX1pLU=;
+        b=BDIdGkUehfGKUuxsy+fvkDkr2GBCODc7I8zNcJ8SRMTrosiAzd9wV8k4ho+9DmoVTN
+         ZgZpaPFz7rYUXgm3Bnd50vGzEYEK+sYhEMHsoUgf3j65MNdadi6mEO5UCXCGxYCi7qgX
+         WFQcsZIJ2Fu8s/P9vhc/OdXyMBvqwLC7WP0Iwa+/QtOk7YrcQNVx6G9CqL2RRUSlnYx+
+         k+NmAzUBe1pYR9aFm77nsezouOeWql6Zc5QqwXSsoTfMq7LS2fboyKrpB9zlkED9oWMI
+         qlKDmSAP2MAK0Brfbz6z46cmYAxkk12/imrm0s0s2JWDb0U311Dnmemk3PmuxKxEui7s
+         sudg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=REukLMYHB9mfVFO1/bdDCKtlszA1rKroqNl1QPX1pLU=;
+        b=DAYpcQC/BB46CQSageyBEXoPSHMLBViM09kJwlXV63Wi2U02YQXW3cDZzd2K1LIHqz
+         n1CsfpU0cMaD1+HVKf6Iod8fTcNWcchnTrAq0eJ0bxFptUt7Ysb/CgR/Idt2PZo3Hwu7
+         SWOvGw7DeZas69QwWZa0I5XJfGnlWjmiddNj3wPv38bj0uFMUVPTfiHgSWXUyXfW+bQp
+         sj6dAVI70oN1BKPIYe6wvfF9nNvdnhBcgIPhsWR7c2SgDYVEWlbGW8doPmj41mPdxjAk
+         7cU3ClN9WnXNftVmQ2+P3707uQdKENpoYkqwv3GY9oSksYxlxfnMwv1IlwBsgnItQYgZ
+         BVCw==
+X-Gm-Message-State: AOAM532nE9NpvCguJRIwHfef/RgiN9CIBfNX8RkfviUC/qi25Z5zaPmM
+        I7d+F3OV1S6XiotjS4lhspePOgE4ntSlQ9oF74q8pQ==
+X-Google-Smtp-Source: ABdhPJx8p5Gioov6LW3dMuKZCxQ7H3nKyaoIEb0t3AIauct+JwrIEuRpWs9dp5K8G8EOr4CSz9yHAnha7BrG6YV+cpk=
+X-Received: by 2002:a05:622a:10d:: with SMTP id u13mr4063224qtw.369.1627562667841;
+ Thu, 29 Jul 2021 05:44:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f2858a7f-e665-ff6a-38d6-b9d591287fac@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210728190254.3921642-1-hca@linux.ibm.com> <20210728190254.3921642-3-hca@linux.ibm.com>
+In-Reply-To: <20210728190254.3921642-3-hca@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 29 Jul 2021 14:43:51 +0200
+Message-ID: <CAG_fn=VS_WFjL+qjm79Jvq5M0KaNScvX2vCw=aNxPx14Hffa0A@mail.gmail.com>
+Subject: Re: [PATCH 2/4] kfence: add function to mask address bits
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Marco Elver <elver@google.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/29 17:36, Robin Murphy wrote:
-> On 2021-07-29 08:13, Lu Baolu wrote:
->> Hi Robin,
->>
->> On 7/28/21 11:58 PM, Robin Murphy wrote:
->>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>> index 982545234cf3..eecb5657de69 100644
->>> --- a/drivers/iommu/iommu.c
->>> +++ b/drivers/iommu/iommu.c
->>> @@ -136,6 +136,9 @@ static int __init iommu_subsys_init(void)
->>>           }
->>>       }
->>> +    if (!iommu_default_passthrough() && !iommu_dma_strict)
->>> +        iommu_def_domain_type = IOMMU_DOMAIN_DMA_FQ;
->>
->> iommu_dma_strict could be changed later by the vendor iommu driver via
->> iommu_set_dma_strict(). This seems not to be the right place to set
->> iommu_def_domain_type.
-> 
-> Ah yes, good catch once again, thanks!
-> 
-> I think this *is* the right place to initially set it to honour the 
-> command-line option, since that matches what we do for passthrough. 
-> However also like passthrough we'll need to keep things in sync if it's 
-> updated later, like this:
-> 
-> 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 87d7b299436e..593d4555bc57 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -359,6 +359,8 @@ early_param("iommu.strict", iommu_dma_setup);
->   void iommu_set_dma_strict(void)
->   {
->          iommu_dma_strict = true;
-> +       if (iommu_def_domain_type == IOMMU_DOMAIN_DMA_FQ)
-> +               iommu_def_domain_type = IOMMU_DOMAIN_DMA;
->   }
-> 
->   static ssize_t iommu_group_attr_show(struct kobject *kobj,
-> 
-> 
-> Does that seem reasonable? I'm not sure there's any cleaner way to do it 
-> since we don't want to inadvertently clobber the default type if the 
-> user has given us something funky like "intel_iommu=strict 
-> iommu.passthrough=1".
+On Wed, Jul 28, 2021 at 9:03 PM Heiko Carstens <hca@linux.ibm.com> wrote:
+>
+> From: Sven Schnelle <svens@linux.ibm.com>
+>
+> s390 only reports the page address during a translation fault.
+> To make the kfence unit tests pass, add a function that might
+> be implemented by architectures to mask out address bits.
+>
+> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+> ---
+>  mm/kfence/kfence_test.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
+> index 942cbc16ad26..eb6307c199ea 100644
+> --- a/mm/kfence/kfence_test.c
+> +++ b/mm/kfence/kfence_test.c
+> @@ -23,8 +23,15 @@
+>  #include <linux/tracepoint.h>
+>  #include <trace/events/printk.h>
+>
+> +#include <asm/kfence.h>
+> +
+>  #include "kfence.h"
+>
+> +/* May be overridden by <asm/kfence.h>. */
+> +#ifndef arch_kfence_test_address
+> +#define arch_kfence_test_address(addr) (addr)
+> +#endif
+> +
+>  /* Report as observed from console. */
+>  static struct {
+>         spinlock_t lock;
+> @@ -82,6 +89,7 @@ static const char *get_access_type(const struct expect_=
+report *r)
+>  /* Check observed report matches information in @r. */
+>  static bool report_matches(const struct expect_report *r)
+>  {
+> +       unsigned long addr =3D (unsigned long)r->addr;
+>         bool ret =3D false;
+>         unsigned long flags;
+>         typeof(observed.lines) expect;
+> @@ -131,22 +139,25 @@ static bool report_matches(const struct expect_repo=
+rt *r)
+>         switch (r->type) {
+>         case KFENCE_ERROR_OOB:
+>                 cur +=3D scnprintf(cur, end - cur, "Out-of-bounds %s at",=
+ get_access_type(r));
+> +               addr =3D arch_kfence_test_address(addr);
 
-Yeah! It's reasonable as far as I can see.
+Can we normalize addr once before (or after) this switch?
 
-Best regards,
-baolu
+>                 break;
+>         case KFENCE_ERROR_UAF:
+>                 cur +=3D scnprintf(cur, end - cur, "Use-after-free %s at"=
+, get_access_type(r));
+> +               addr =3D arch_kfence_test_address(addr);
+>                 break;
+>         case KFENCE_ERROR_CORRUPTION:
+>                 cur +=3D scnprintf(cur, end - cur, "Corrupted memory at")=
+;
+>                 break;
+>         case KFENCE_ERROR_INVALID:
+>                 cur +=3D scnprintf(cur, end - cur, "Invalid %s at", get_a=
+ccess_type(r));
+> +               addr =3D arch_kfence_test_address(addr);
+>                 break;
+>         case KFENCE_ERROR_INVALID_FREE:
+>                 cur +=3D scnprintf(cur, end - cur, "Invalid free of");
+>                 break;
+>         }
+>
+> -       cur +=3D scnprintf(cur, end - cur, " 0x%p", (void *)r->addr);
+> +       cur +=3D scnprintf(cur, end - cur, " 0x%p", (void *)addr);
+>
+>         spin_lock_irqsave(&observed.lock, flags);
+>         if (!report_available())
+> --
+> 2.25.1
+>
 
-> 
-> Cheers,
-> Robin.
-> 
->>
->>> +
->>>       pr_info("Default domain type: %s %s\n",
->>>           iommu_domain_type_str(iommu_def_domain_type),
->>>           (iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
->>
->> Best regards,
->> baolu
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
