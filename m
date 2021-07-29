@@ -2,112 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F373DA675
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719E33DA67F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237139AbhG2Ocx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:32:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53800 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234206AbhG2Ocs (ORCPT
+        id S237502AbhG2Odu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:33:50 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:16754 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237252AbhG2Ods (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:32:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627569164;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U+AwZr6Sn9QIs+ZssO0J9KYH5K5+8QtLBMpUWL2nMG8=;
-        b=ApXiRylYYF9r4MOLx6PO6wZJFjzgEp71UdGlttFgUsqIVp+bxC8JSkdOvI/yaGfysES4pg
-        rO8nJ0JhMi+M+cnVbUiR4hxPJcpR1xq4zDLD6whehpRHN9t81OeOTL73oblCrR6RY0HqB8
-        tTrAvi09xZeKGpfptcifg73aPoYx2VU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-MRk-pwWJN9GDxTxW-XRSIg-1; Thu, 29 Jul 2021 10:32:43 -0400
-X-MC-Unique: MRk-pwWJN9GDxTxW-XRSIg-1
-Received: by mail-ed1-f71.google.com with SMTP id b88-20020a509f610000b02903ab1f22e1dcso3028768edf.23
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:32:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=U+AwZr6Sn9QIs+ZssO0J9KYH5K5+8QtLBMpUWL2nMG8=;
-        b=LRizwyVeCbDEBKQMZO71lkhCJL56+FUzxidiEJKp8YTRkgUJh35oTtRq5EjPDTkjVS
-         lBVQy0D66/N7bLthM88S4H+BZH3dozMM1gi9mXNDXNomfKk9uvBjpAExUdBHlEOSbEEp
-         OEM5qs4uD9kGCUKppEOtIYS4Fmpzq6IqrUwUkqCyNXZbbOHXCjh38TfHRrL1JFFPvW0Q
-         SjBsE21tjkltt3o/orpG5OXr+l2aurFeQlrZCz5twOrQvKl5LyyvVl8+ZMOJPy9cGSef
-         lxxhNOGqyp0q0wqKPKARmy/r0ZSw4Q4qz2wfKb7NWkEL62XmviqKq/316A4Z3UUvxVMW
-         r4KQ==
-X-Gm-Message-State: AOAM530rbQsD8UOHD/XF1W7Y/KG1UX/EAl24hiTUIY7NKjHtVtdREejx
-        gvuif8UlcF7jksGNm7sylMPCVEeYEkbJCxKYwIeCzKQ7Z2R9V2DSU6/23KMsvT8dZ+ocrpxmEzm
-        rmBzcQ6khPuM8lTyZVmqLPWT2
-X-Received: by 2002:a05:6402:1011:: with SMTP id c17mr6190136edu.144.1627569162089;
-        Thu, 29 Jul 2021 07:32:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxs6+9eblc+utmokHBKiCdXFfeP7j99/hN0GEZcvgsdBPbt0bOsWWNTTzgN3+EaToPXCjZ7Yw==
-X-Received: by 2002:a05:6402:1011:: with SMTP id c17mr6190116edu.144.1627569161935;
-        Thu, 29 Jul 2021 07:32:41 -0700 (PDT)
-Received: from x1.bristot.me (host-95-239-202-226.retail.telecomitalia.it. [95.239.202.226])
-        by smtp.gmail.com with ESMTPSA id b1sm1050820ejz.24.2021.07.29.07.32.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 07:32:41 -0700 (PDT)
-Subject: Re: [PATCH] eventfd: Make signal recursion protection a task bit
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Juri Lelli <jlelli@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        He Zhe <zhe.he@windriver.com>, Jens Axboe <axboe@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
- <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
- <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
- <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
- <87pmv23lru.ffs@nanos.tec.linutronix.de>
- <810e01ef-9b71-5b44-8498-b8a377d4e51b@redhat.com> <875ywujlzx.ffs@tglx>
- <87wnp9idso.ffs@tglx>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <4ebcc02b-4d42-ce69-c515-f27ce4db118c@redhat.com>
-Date:   Thu, 29 Jul 2021 16:32:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <87wnp9idso.ffs@tglx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 29 Jul 2021 10:33:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627569225; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=+jKQCMrkI6SnfJLefy3To/tENpXlXiE65yiHBQB3XR0=; b=RXinlA4KRy6XDez8aImuKmYiDXku8aJNqoNulpo5+NG+ZWJlUM+u6ZD2As9IIi0aZzKVXLiS
+ weiWHLzNr2pM0o4khBWEj8Dr/ehGkYcuJF6sTmD4hRFN19ppeXl/0ILJIZFEez93daRvSKIQ
+ P90j8cWhuUDfhiuJQPQ5Peu0NzY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6102bc28290ea35ee65dd69c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 29 Jul 2021 14:33:12
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DFB5BC43149; Thu, 29 Jul 2021 14:33:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8B12AC43460;
+        Thu, 29 Jul 2021 14:33:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8B12AC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>
+Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] drm/msm/a6xx: Fix llcc configuration for a660 gpu
+Date:   Thu, 29 Jul 2021 20:02:58 +0530
+Message-Id: <20210729200230.v2.1.I110b87677ef16d97397fb7c81c07a16e1f5d211e@changeid>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 1:01 PM, Thomas Gleixner wrote:
-> The recursion protection for eventfd_signal() is based on a per CPU
-> variable and relies on the !RT semantics of spin_lock_irqsave() for
-> protecting this per CPU variable. On RT kernels spin_lock_irqsave() neither
-> disables preemption nor interrupts which allows the spin lock held section
-> to be preempted. If the preempting task invokes eventfd_signal() as well,
-> then the recursion warning triggers.
-> 
-> Paolo suggested to protect the per CPU variable with a local lock, but
-> that's heavyweight and actually not necessary. The goal of this protection
-> is to prevent the task stack from overflowing, which can be achieved with a
-> per task recursion protection as well.
-> 
-> Replace the per CPU variable with a per task bit similar to other recursion
-> protection bits like task_struct::in_page_owner. This works on both !RT and
-> RT kernels and removes as a side effect the extra per CPU storage.
-> 
-> No functional change for !RT kernels.
-> 
-> Reported-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Add the missing scache_cntl0 register programing which is required for
+a660 gpu.
 
-Testing....
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
 
-Thanks!
--- Daniel
+(no changes since v1)
+
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 46 ++++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 9c5e461..183b9f9 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -1383,13 +1383,13 @@ static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
+ {
+ 	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
+ 	struct msm_gpu *gpu = &adreno_gpu->base;
+-	u32 cntl1_regval = 0;
++	u32 gpu_scid, cntl1_regval = 0;
+ 
+ 	if (IS_ERR(a6xx_gpu->llc_mmio))
+ 		return;
+ 
+ 	if (!llcc_slice_activate(a6xx_gpu->llc_slice)) {
+-		u32 gpu_scid = llcc_get_slice_id(a6xx_gpu->llc_slice);
++		gpu_scid = llcc_get_slice_id(a6xx_gpu->llc_slice);
+ 
+ 		gpu_scid &= 0x1f;
+ 		cntl1_regval = (gpu_scid << 0) | (gpu_scid << 5) | (gpu_scid << 10) |
+@@ -1409,26 +1409,34 @@ static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
+ 		}
+ 	}
+ 
+-	if (cntl1_regval) {
++	if (!cntl1_regval)
++		return;
++
++	/*
++	 * Program the slice IDs for the various GPU blocks and GPU MMU
++	 * pagetables
++	 */
++	if (!a6xx_gpu->have_mmu500) {
++		a6xx_llc_write(a6xx_gpu,
++			REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, cntl1_regval);
++
+ 		/*
+-		 * Program the slice IDs for the various GPU blocks and GPU MMU
+-		 * pagetables
++		 * Program cacheability overrides to not allocate cache
++		 * lines on a write miss
+ 		 */
+-		if (a6xx_gpu->have_mmu500)
+-			gpu_rmw(gpu, REG_A6XX_GBIF_SCACHE_CNTL1, GENMASK(24, 0),
+-				cntl1_regval);
+-		else {
+-			a6xx_llc_write(a6xx_gpu,
+-				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, cntl1_regval);
+-
+-			/*
+-			 * Program cacheability overrides to not allocate cache
+-			 * lines on a write miss
+-			 */
+-			a6xx_llc_rmw(a6xx_gpu,
+-				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 0x03);
+-		}
++		a6xx_llc_rmw(a6xx_gpu,
++			REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 0x03);
++		return;
+ 	}
++
++	gpu_rmw(gpu, REG_A6XX_GBIF_SCACHE_CNTL1, GENMASK(24, 0), cntl1_regval);
++
++	/* On A660, the SCID programming for UCHE traffic is done in
++	 * A6XX_GBIF_SCACHE_CNTL0[14:10]
++	 */
++	if (adreno_is_a660(adreno_gpu))
++		gpu_rmw(gpu, REG_A6XX_GBIF_SCACHE_CNTL0, (0x1f << 10) |
++			(1 << 8), (gpu_scid << 10) | (1 << 8));
+ }
+ 
+ static void a6xx_llc_slices_destroy(struct a6xx_gpu *a6xx_gpu)
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
 
