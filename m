@@ -2,141 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50C23DA790
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715AA3DA786
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237849AbhG2P1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 11:27:24 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41700 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhG2P1X (ORCPT
+        id S238016AbhG2PZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 11:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238020AbhG2PXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 11:27:23 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4475B223F2;
-        Thu, 29 Jul 2021 15:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627572439; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Su0HafVKInKv9fAX9yenEdE8BQ0rZJiMRpS8/sYSBpM=;
-        b=2m4o1jAutkkxbCchsC0/ltO7ri+MQNeN+iSk68eVk2gzxMCZsIv7wvePctYX9JCJXWTI0+
-        mK5wbsntXlQoBxe14uUivf/4DxfHb72y0yenrHybVkmlZUrZzxwAJeyCG1UVicUHOGTXDw
-        oCtcZDRfVEh30WKY9+d3xzQy5qCceRI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627572439;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Su0HafVKInKv9fAX9yenEdE8BQ0rZJiMRpS8/sYSBpM=;
-        b=e4hdKnOoWeLEXkI5lFQ17CM/YDwiDSd4BXl+XgROO0ln/RybY94SV7GFqjg6L3/Z6fYcMY
-        I1MNYr2IqhrwIsBQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1CAB313738;
-        Thu, 29 Jul 2021 15:27:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id UUxiBtfIAmE5LgAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 29 Jul 2021 15:27:19 +0000
-Subject: Re: [PATCH v3 00/35] SLUB: reduce irq disabled scope and make it RT
- compatible
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jann Horn <jannh@google.com>
-References: <20210729132132.19691-1-vbabka@suse.cz>
- <20210729152400.ed35ocv5jtpf3ns5@linutronix.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <803269ba-d4f4-6016-067f-8f9e02b3c794@suse.cz>
-Date:   Thu, 29 Jul 2021 17:27:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 29 Jul 2021 11:23:21 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281B4C0613D3;
+        Thu, 29 Jul 2021 08:23:17 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id l4-20020a05600c1d04b02902506f89ad2dso5975353wms.1;
+        Thu, 29 Jul 2021 08:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rBpQQ4PrkRZY0WtM7KbjU/FjfELe0vopn+N+lTuqMUk=;
+        b=Dr+kc8ks6iyXT9LWSb5Du3HdAHPz7RDalBOKm0Og6v/tOp9R0FVfTLQLEb6YjgcFAZ
+         OODEOtCXWQbWffIcrKm4DBgFkXgZzYwHrt+TnvY8sHMYbODXN5+AC287YYQ1Ml2myFyc
+         lrSos/ncgWbQkBjX/3rJpjjDb/w6OxPEEKcNHNnikoGDo+nLRGD2Lw+wleq+XK+7sWBw
+         xn+dBHPBJMl5k0iAstt3pf8RPQLevB6s/P7bjl/Cxbw+u1yMBrE24gQMmZmmeVacKJeS
+         a5VfkAXtDy6sJ6hPFJv0pet+bPSamucYCLdgJS/zhsmD74VZ85w4fHPzJiF4Ge1OKqbA
+         dyDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rBpQQ4PrkRZY0WtM7KbjU/FjfELe0vopn+N+lTuqMUk=;
+        b=AC/GqKdxpMX74r0opqPEx49hHRW1AKZL3PWeD6PCGT42KhhUyt2hHkFNBf1Hg26AdX
+         /OrOEaZjqbR5Tz42pXdXCzXv/BpfkHYYM2E3rZmH81ivBd8gc+o4bPBpu3t+Jw9Q/Ijt
+         ITYOSUWntHJK6mj9eOBlA+eWiN7Yqt5xzQ1IH79W5Rbuh/NsFNNGuc/ef5AIi755Gy6o
+         jg1JOkNkkHkwZjxBWgFS86DfrMsP43J15lOIu7K0z9NCGpmjgsX+6tFG95VgEx61Y5ZL
+         9tloEcabfJzHBJywkFqGKFr7mC2+4OhN/yvi1NnJUh6ieH6x6VbnsUSRptMnFc+RXslN
+         Ax5A==
+X-Gm-Message-State: AOAM530qMHgLVVSzaaAJrERTs4c5hOVgv9rYEQofvZGWEEzL9A24zMcC
+        zbm2/8/V8ACdJj7W8B44BoBegxNSRRyo79hEXs8=
+X-Google-Smtp-Source: ABdhPJxzPEUgqOVmodbHdeZsVfk006v7VDK8qP5MqAnzI/Dj02PkT1mP2Sz1xjDX1yMh4Lyhth6wY2YnuSQUJxmpC8s=
+X-Received: by 2002:a05:600c:4401:: with SMTP id u1mr15603401wmn.49.1627572195705;
+ Thu, 29 Jul 2021 08:23:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210729152400.ed35ocv5jtpf3ns5@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210729200230.v2.1.I110b87677ef16d97397fb7c81c07a16e1f5d211e@changeid>
+ <20210729200230.v2.2.I286ef007fcadd9e6ee3b2c0ad948f990735f9610@changeid>
+In-Reply-To: <20210729200230.v2.2.I286ef007fcadd9e6ee3b2c0ad948f990735f9610@changeid>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 29 Jul 2021 08:27:25 -0700
+Message-ID: <CAF6AEGtv0R=SjwpV7NEX6-4sHTF_CxbqgFXNWN+PT9hJJb7N2A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] drm/msm/a6xx: Use rev to identify SKU
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 5:24 PM, Sebastian Andrzej Siewior wrote:
-> On 2021-07-29 15:20:57 [+0200], Vlastimil Babka wrote:
->> Changes since v2 [5]:
-> 
-> With PARTIAL enabled on top of -rc3:
+On Thu, Jul 29, 2021 at 7:33 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>
+> Use rev instead of revn to identify the SKU. This is in
+> preparation to the introduction of 7c3 gpu which won't have a
+> revn.
+>
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> ---
+>
+> (no changes since v1)
+>
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 183b9f9..0da1a66 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -1675,11 +1675,11 @@ static u32 a618_get_speed_bin(u32 fuse)
+>         return UINT_MAX;
+>  }
+>
+> -static u32 fuse_to_supp_hw(struct device *dev, u32 revn, u32 fuse)
+> +static u32 fuse_to_supp_hw(struct device *dev, struct adreno_rev rev, u32 fuse)
+>  {
+>         u32 val = UINT_MAX;
+>
+> -       if (revn == 618)
+> +       if (adreno_cmp_rev(ADRENO_REV(6, 1, 8, ANY_ID), rev))
 
-Is that also PREEMPT_RT? Interesting...
+Looks like adreno_cmp_rev() ended up in patch 3/3 when it should have
+been in this patch..
 
-> | root@debpg:~# grep ^kmalloc-512 /proc/slabinfo
-> | kmalloc-512         3552   3552    512   32    4 : tunables    0    0    0 : slabdata    111    111      0
-> | root@debpg:~# hackbench -g80
-> | Running in process mode with 80 groups using 40 file descriptors each (== 3200 tasks)
-> | Each sender will pass 100 messages of 100 bytes
-> | Time: 0.643
-> | root@debpg:~# grep ^kmalloc-512 /proc/slabinfo
-> | kmalloc-512       954080 954080    512   32    4 : tunables    0    0    0 : slabdata  29815  29815      0
-> | root@debpg:~# hackbench -g80
-> | Running in process mode with 80 groups using 40 file descriptors each (== 3200 tasks)
-> | Each sender will pass 100 messages of 100 bytes
-> | Time: 0.604
-> | root@debpg:~# grep ^kmalloc-512 /proc/slabinfo
-> | kmalloc-512       1647904 1647904    512   32    4 : tunables    0    0    0 : slabdata  51497  51497      0
-> | root@debpg:~# echo 1 > /sys/kernel/slab/kmalloc-512/shrink 
-> | root@debpg:~# grep ^kmalloc-512 /proc/slabinfo
-> | kmalloc-512          640   1120    512   32    4 : tunables    0    0    0 : slabdata     35     35      0
-> 
-> otherwise a few more hackbench invocations without manual shirnk lead to
-> OOM-killer:
-> | oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0,task=systemd-logind,pid=1713,uid=0
-> | Out of memory: Killed process 1713 (systemd-logind) total-vm:15720kB, anon-rss:956kB, file-rss:0kB, shmem-rss:0kB, UID:0 pgtables:72kB oom_score_adj:0
-> | Mem-Info:
-> | active_anon:56 inactive_anon:24782 isolated_anon:0
-> |  active_file:13 inactive_file:45 isolated_file:0
-> |  unevictable:0 dirty:0 writeback:0
-> |  slab_reclaimable:8749 slab_unreclaimable:894017
-> |  mapped:68 shmem:118 pagetables:28612 bounce:0
-> |  free:8407 free_pcp:36 free_cma:0
-> | Node 0 active_anon:224kB inactive_anon:99128kB active_file:260kB inactive_file:712kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:764kB dirty:0kB writebaco
-> | Node 0 DMA free:15360kB min:28kB low:40kB high:52kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writependiB
-> | lowmem_reserve[]: 0 1939 3915 3915
-> | Node 0 DMA32 free:11696kB min:3960kB low:5944kB high:7928kB reserved_highatomic:0KB active_anon:0kB inactive_anon:40740kB active_file:0kB inactive_file:4kB unevictable:0kB
-> | lowmem_reserve[]: 0 0 1975 1975
-> | Node 0 Normal free:5692kB min:4032kB low:6052kB high:8072kB reserved_highatomic:0KB active_anon:224kB inactive_anon:58440kB active_file:440kB inactive_file:100kB unevictaB
-> | lowmem_reserve[]: 0 0 0 0
-> | Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-> | Node 0 DMA32: 11*4kB (UM) 15*8kB (M) 20*16kB (UME) 12*32kB (UME) 7*64kB (ME) 5*128kB (UME) 4*256kB (UM) 6*512kB (ME) 4*1024kB (M) 1*2048kB (M) 0*4096kB = 12196kB
-> | Node 0 Normal: 324*4kB (UME) 221*8kB (UME) 60*16kB (UM) 24*32kB (UME) 5*64kB (UM) 2*128kB (U) 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 5368kB
-> | Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
-> | 189 total pagecache pages
-> | 0 pages in swap cache
-> | Swap cache stats: add 0, delete 0, find 0/0
-> | Free swap  = 0kB
-> | Total swap = 0kB
-> | 1048432 pages RAM
-> | 0 pages HighMem/MovableOnly
-> | 41108 pages reserved
-> | Unreclaimable slab info:
-> …
-> | kmalloc-512          2144352KB    2144352KB
-> 
-> This does not happen if I disable SLUB_CPU_PARTIAL.
-> 
-> Sebastian
-> 
+But I guess we could also move this into adreno_is_a618() and use that here
 
+BR,
+-R
+
+>                 val = a618_get_speed_bin(fuse);
+>
+>         if (val == UINT_MAX) {
+> @@ -1692,8 +1692,7 @@ static u32 fuse_to_supp_hw(struct device *dev, u32 revn, u32 fuse)
+>         return (1 << val);
+>  }
+>
+> -static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+> -               u32 revn)
+> +static int a6xx_set_supported_hw(struct device *dev, struct adreno_rev rev)
+>  {
+>         u32 supp_hw = UINT_MAX;
+>         u16 speedbin;
+> @@ -1714,7 +1713,7 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+>         }
+>         speedbin = le16_to_cpu(speedbin);
+>
+> -       supp_hw = fuse_to_supp_hw(dev, revn, speedbin);
+> +       supp_hw = fuse_to_supp_hw(dev, rev, speedbin);
+>
+>  done:
+>         ret = devm_pm_opp_set_supported_hw(dev, &supp_hw, 1);
+> @@ -1785,7 +1784,7 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+>
+>         a6xx_llc_slices_init(pdev, a6xx_gpu);
+>
+> -       ret = a6xx_set_supported_hw(&pdev->dev, a6xx_gpu, info->revn);
+> +       ret = a6xx_set_supported_hw(&pdev->dev, config->rev);
+>         if (ret) {
+>                 a6xx_destroy(&(a6xx_gpu->base.base));
+>                 return ERR_PTR(ret);
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation.
+>
