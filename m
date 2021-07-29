@@ -2,80 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA833DA5E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EFC3DA5EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239016AbhG2OKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239404AbhG2OIj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:08:39 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03D5C06179F
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:08:10 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id d18so11264300lfb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 07:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lwNLTldvysoG6tP7eIB3Yg8TEfTEJ3xDLJQLZ28G+x0=;
-        b=ca8DsYUc24s41ooMqz6bT/mgYTru4NdbtwqBEbRuShpsTGyE31LKnPMoDmbN6HJgae
-         T3XclT4Mp6G2PVuj3pAxbeBDiW8zQ5b0M8gOBAbQQ1kKb1evXN8CQOArbqXjCeQrNh4t
-         5Fwwt93YDujobI3MgwpyuzQeNcJpOFC0A3R5AHrfpGp5BwqrXLaohpnhngja/9BPCg8K
-         ATNtt/CjGXQp82sXcI8UXuSlFo3fBTtskkQWH/euvVFcgTl++V+fKe9hXFQK4G97jmxE
-         G0PzqU3GabBA13Y0IQ40/T8ckbx6nKyWZ+69XG8cWNXqy/h3FzpZ74FKsD4xvbT5Z7q0
-         NpkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lwNLTldvysoG6tP7eIB3Yg8TEfTEJ3xDLJQLZ28G+x0=;
-        b=PJzt61lM7Z4xinoK84cQxKbciOTTzt597Vh284vy82mCe4VLVz+NpmU/6APHdhC7K2
-         5S/sYCHJhIYmbG4BI3J0pOMnpMpTmNJbDRPbSdGavof3rk3gTECDLzSowg7xga1Fjw5E
-         K8vooejby2oPAcUPAp9usWFs7vQIQAn5tzGKzFJ9vmsC1UW1jMSja1rBD7eESnMuhVIy
-         ngEIETwNLlZkAot/OEJQZL/ryF5KWIbKP1ET/8wL0/c58A5sA/Oduown8p5LTK+CW2iM
-         R0njDPmTWuRwV1rGBDvrjPFQNE1Q5BJ+kyXFyhoJxvpG9SSUlk4hKpRmg6+LPEV04iSQ
-         1zvg==
-X-Gm-Message-State: AOAM532V54kQxo1ytO55Mpyh9c9fIlw3fanUw9pDU557C00+iQCvqw8D
-        cEda08TP1lvye7AlPnQz/PGRZH+fHrXyrZeSAa57Ww==
-X-Google-Smtp-Source: ABdhPJxzsVh6pp93QiKfxjIjrrpuuxS478uv8YrBKf6UNnyMlYtAAsGPSXEFCrLUZI+jfZaQNNAx9za8VUvfFCwbV3M=
-X-Received: by 2002:a19:ae0f:: with SMTP id f15mr4037438lfc.117.1627567688416;
- Thu, 29 Jul 2021 07:08:08 -0700 (PDT)
+        id S239118AbhG2OKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:10:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238877AbhG2OIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:08:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB5B160EBD;
+        Thu, 29 Jul 2021 14:07:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627567682;
+        bh=b5f2P/y2shO+S47LUkQKIDybO3DPdanNyRLlemEbyJM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=F6jIp4PSzC0dAghIWd5eNkMSkrKI9BWHTnI/eidIH/dRdhqlrInpzCbBCTH5Ghzjp
+         xdg9Pthx75BSCXcJ/JtZs5aKd5VXPX/l2jqdn+gyuL60ZIkA1Vr326u9/JtryhnWCM
+         vTDFOtFRzLoLgoao++F1nR90CpWmnzfOijJJGm2sb7LdNBbTQCrY8fQPxk7LlSmsH4
+         0p/3wVaCDRmFWmmDoV0Y9sxFvcQacRuBsUmFF0TLTUzs00Gn9H/8O/SU6Ss1wnwijO
+         0JuibN1Cdaa7mLHPX57nug8y8VdaMO5WLIeq6du4DYl0GrfAovDkUieWZOc1wL0iRA
+         uxXdo12iiNTCw==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH -tip v10 13/16] x86/kprobes: Push a fake return address at kretprobe_trampoline
+Date:   Thu, 29 Jul 2021 23:07:58 +0900
+Message-Id: <162756767828.301564.16335053369674561101.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <162756755600.301564.4957591913842010341.stgit@devnote2>
+References: <162756755600.301564.4957591913842010341.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-2-linmiaohe@huawei.com>
-In-Reply-To: <20210729125755.16871-2-linmiaohe@huawei.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 29 Jul 2021 07:07:57 -0700
-Message-ID: <CALvZod7Z0MNqDOVGEJSjXKmJdKYM2V4U7R1j0Z7vbW9Fn0TpJg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm, memcg: remove unused functions
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Matthew Wilcox <willy@infradead.org>, alexs@kernel.org,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 5:57 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> Since commit 2d146aa3aa84 ("mm: memcontrol: switch to rstat"), last user
-> of memcg_stat_item_in_bytes() is gone. And since commit fa40d1ee9f15 ("mm:
-> vmscan: memcontrol: remove mem_cgroup_select_victim_node()"), only the
-> declaration of mem_cgroup_select_victim_node() is remained here. Remove
-> them.
->
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Change __kretprobe_trampoline() to push the address of the
+__kretprobe_trampoline() as a fake return address at the bottom
+of the stack frame. This fake return address will be replaced
+with the correct return address in the trampoline_handler().
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+With this change, the ORC unwinder can check whether the return
+address is modified by kretprobes or not.
+
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Tested-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ Changes in v9:
+  - Update changelog and comment.
+  - Remove unneeded type casting.
+---
+ arch/x86/kernel/kprobes/core.c |   34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index d1436d7463fd..7e1111c19605 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -1022,28 +1022,33 @@ asm(
+ 	".global __kretprobe_trampoline\n"
+ 	".type __kretprobe_trampoline, @function\n"
+ 	"__kretprobe_trampoline:\n"
+-	/* We don't bother saving the ss register */
+ #ifdef CONFIG_X86_64
+-	"	pushq %rsp\n"
++	/* Push a fake return address to tell the unwinder it's a kretprobe. */
++	"	pushq $__kretprobe_trampoline\n"
+ 	UNWIND_HINT_FUNC
++	/* Save the 'sp - 8', this will be fixed later. */
++	"	pushq %rsp\n"
+ 	"	pushfq\n"
+ 	SAVE_REGS_STRING
+ 	"	movq %rsp, %rdi\n"
+ 	"	call trampoline_handler\n"
+-	/* Replace saved sp with true return address. */
+-	"	movq %rax, 19*8(%rsp)\n"
+ 	RESTORE_REGS_STRING
++	/* In trampoline_handler(), 'regs->flags' is copied to 'regs->sp'. */
++	"	addq $8, %rsp\n"
+ 	"	popfq\n"
+ #else
+-	"	pushl %esp\n"
++	/* Push a fake return address to tell the unwinder it's a kretprobe. */
++	"	pushl $__kretprobe_trampoline\n"
+ 	UNWIND_HINT_FUNC
++	/* Save the 'sp - 4', this will be fixed later. */
++	"	pushl %esp\n"
+ 	"	pushfl\n"
+ 	SAVE_REGS_STRING
+ 	"	movl %esp, %eax\n"
+ 	"	call trampoline_handler\n"
+-	/* Replace saved sp with true return address. */
+-	"	movl %eax, 15*4(%esp)\n"
+ 	RESTORE_REGS_STRING
++	/* In trampoline_handler(), 'regs->flags' is copied to 'regs->sp'. */
++	"	addl $4, %esp\n"
+ 	"	popfl\n"
+ #endif
+ 	"	ret\n"
+@@ -1063,8 +1068,10 @@ STACK_FRAME_NON_STANDARD_FP(__kretprobe_trampoline);
+ /*
+  * Called from __kretprobe_trampoline
+  */
+-__used __visible void *trampoline_handler(struct pt_regs *regs)
++__used __visible void trampoline_handler(struct pt_regs *regs)
+ {
++	unsigned long *frame_pointer;
++
+ 	/* fixup registers */
+ 	regs->cs = __KERNEL_CS;
+ #ifdef CONFIG_X86_32
+@@ -1072,8 +1079,17 @@ __used __visible void *trampoline_handler(struct pt_regs *regs)
+ #endif
+ 	regs->ip = (unsigned long)&__kretprobe_trampoline;
+ 	regs->orig_ax = ~0UL;
++	regs->sp += sizeof(long);
++	frame_pointer = &regs->sp + 1;
++
++	/* Replace fake return address with real one. */
++	*frame_pointer = kretprobe_trampoline_handler(regs, frame_pointer);
+ 
+-	return (void *)kretprobe_trampoline_handler(regs, &regs->sp);
++	/*
++	 * Copy FLAGS to 'pt_regs::sp' so that __kretprobe_trapmoline()
++	 * can do RET right after POPF.
++	 */
++	regs->sp = regs->flags;
+ }
+ NOKPROBE_SYMBOL(trampoline_handler);
+ 
+
