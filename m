@@ -2,146 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DD13DAC89
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724A43DACD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbhG2UMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 16:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhG2UMA (ORCPT
+        id S233365AbhG2UQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 16:16:12 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:59102 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232322AbhG2UP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:12:00 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3872CC061765;
-        Thu, 29 Jul 2021 13:11:56 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so11323981pjd.0;
-        Thu, 29 Jul 2021 13:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uFCBpDGM4hFIxc9yi8Eu0cialujSpGXKpLF4MnHX0N4=;
-        b=o4j5NmYtOd2b6pXYrmg7YUJhk/ntJ1U45lCUKITehyjndOnUXczd6eaYzoajkza/Dq
-         6JmJHdTr3dahediTrHJt7WkawEEXnmo7o0mHt1OMLJ7Icx1CsA9ssknXBPvw/KtA9KKs
-         UZHUviyVuD4nVGIu72SAfEwiYGfF6qDKUUD4WXfIArHFFCbdE1p/bDYZlnZFF5mLYS+5
-         P/Z6+xx2Rdx+bT/x7S4oGHAs6+FWAz5F79dFDwOY8J+CoqJL//mHSTFz8Xg/YZfxb6Qi
-         5Ref+r7ObgYFgExWA9S24uP5m/MhSwEALIPKaDywkjZQtU5jtUmgIoKKMRtGdmQhLA8A
-         kovA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uFCBpDGM4hFIxc9yi8Eu0cialujSpGXKpLF4MnHX0N4=;
-        b=qtjmiGt2S/+DohxnezWRTXGAaLsw8hdN5bYwPHx0TJlKz3vcoBZT3x3TOw6J88DxhZ
-         NqnnXROKOREJNPxGKGkkJW2/RFtJMHRkPl/savJ6O2bl9T7tmE0AP13bJtxMCr5QGyT2
-         X6e85vdTP0LOKeIjlxwkvpzL3IqF95vlpcKd1T0TZ8n8p2U8/2QP4qf+aR/PP6nR6VJw
-         02/rstuBQp50gnIhzCXMR6woQnGrEszYL76WdzdM5WTt6sd6pAT5bdSIvf2omxS2ZIpQ
-         36pyHi4yfxF1L6z0zDtJ+yvyKgI7OtCZkksBchAz9puN+W1K6T0xCuL7gOWPVAlEyl5q
-         lofg==
-X-Gm-Message-State: AOAM53306utLtL4o08MMekmOfYnoreHA4z3B9sLNSBSOZHHan0Tg3nY/
-        A8CJBKZzvaDUD1nV+dQkJPPHBPTSalj3+w==
-X-Google-Smtp-Source: ABdhPJwEDY6ObvS9IMV5cadka+41K/yJUlnwQzWz9TVouPF536akBdpkO0DPS1yrDa4svM2C/vlRWQ==
-X-Received: by 2002:a17:90b:34e:: with SMTP id fh14mr6956614pjb.100.1627589515588;
-        Thu, 29 Jul 2021 13:11:55 -0700 (PDT)
-Received: from archl-on1.. ([103.51.72.31])
-        by smtp.gmail.com with ESMTPSA id i25sm4581407pfo.20.2021.07.29.13.11.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 13:11:55 -0700 (PDT)
-From:   Anand Moon <linux.amoon@gmail.com>
-To:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        devicetree@vger.kernel.org
-Cc:     Anand Moon <linux.amoon@gmail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>
-Subject: [PATCHv1 3/3] net: stmmac: dwmac-meson8b: Add reset controller for ethernet phy
-Date:   Fri, 30 Jul 2021 01:40:52 +0530
-Message-Id: <20210729201100.3994-4-linux.amoon@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729201100.3994-1-linux.amoon@gmail.com>
-References: <20210729201100.3994-1-linux.amoon@gmail.com>
+        Thu, 29 Jul 2021 16:15:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:MIME-Version:Message-Id:Date:Cc:To:From
+        :references:content-disposition:in-reply-to;
+        bh=7rAmHnoYgxgYjh3HpXE3zIryStVPnDAXEkL4Vf4StFI=; b=L5MNdXu2RkyJTJf1U2kRvC9rdG
+        Fi2zQ1Jo3u1ckG/sUDTfnnmRyNWyUMZVsCZU5ucjiSE8C7rbOZzmh1mIa+nIyi3p3yQ8QIqp8/8xs
+        cM2jhkuv4pfRuvlROkJ6z1cv/rfzQGi+rw77mVN27FJvbTmHpYWyID7OpgY0TpEjoXxQB12zUEd2r
+        qyL1Zv3YKYpHBX2i1FpWwa4P7p3I9m48iblFE7zjLA4rM23n63DmfJ4gAgeBygMx7BL4dr76mc0ma
+        v5/O9IEdo/7kZsErHJx4AGKvqOqjGEMEdx65oFZOavjAfDwmsYJuN/6fgpzQ96CduuqfEm7ibrvmU
+        gsRgMH7A==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m9CRW-0008VK-N8; Thu, 29 Jul 2021 14:15:48 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m9CRT-0001TQ-GA; Thu, 29 Jul 2021 14:15:43 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Thu, 29 Jul 2021 14:15:18 -0600
+Message-Id: <20210729201539.5602-1-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_NO_TEXT autolearn=no autolearn_force=no version=3.4.2
+Subject: [PATCH v3 00/21] .map_sg() error cleanup
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add reset controller for Ethernet phy reset on every boot for
-Amlogic SoC.
+Hi,
 
-Cc: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Anand Moon <linux.amoon@gmail.com>
----
- .../ethernet/stmicro/stmmac/dwmac-meson8b.c   | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+This v3 of the series is spun out and expanded from my work to add
+P2PDMA support to DMA map operations[1]. v2 is at [2]. The main changes
+in v1 are to more carefully define the meaning of the error codes for
+dma_map_sgtable().
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-index c7a6588d9398..8b3b5e8c2a8a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-@@ -17,6 +17,7 @@
- #include <linux/of_net.h>
- #include <linux/mfd/syscon.h>
- #include <linux/platform_device.h>
-+#include <linux/reset.h>
- #include <linux/stmmac.h>
- 
- #include "stmmac_platform.h"
-@@ -95,6 +96,7 @@ struct meson8b_dwmac {
- 	u32				tx_delay_ns;
- 	u32				rx_delay_ps;
- 	struct clk			*timing_adj_clk;
-+	struct reset_control		*eth_reset;
- };
- 
- struct meson8b_dwmac_clk_configs {
-@@ -384,6 +386,17 @@ static int meson8b_init_prg_eth(struct meson8b_dwmac *dwmac)
- 	meson8b_dwmac_mask_bits(dwmac, PRG_ETH0, PRG_ETH0_TX_AND_PHY_REF_CLK,
- 				PRG_ETH0_TX_AND_PHY_REF_CLK);
- 
-+	/* Make sure the Ethernet PHY is properly reseted, as U-Boot may leave
-+	 * it at deasserted state, and thus it may fail to reset EMAC.
-+	 *
-+	 * This assumes the driver has exclusive access to the EPHY reset.
-+	 */
-+	ret = reset_control_reset(dwmac->eth_reset);
-+	if (ret) {
-+		dev_err(dwmac->dev, "Cannot reset internal PHY\n");
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
-@@ -465,6 +478,13 @@ static int meson8b_dwmac_probe(struct platform_device *pdev)
- 		goto err_remove_config_dt;
- 	}
- 
-+	dwmac->eth_reset = devm_reset_control_get_exclusive(dwmac->dev, "ethreset");
-+	if (IS_ERR_OR_NULL(dwmac->eth_reset)) {
-+		dev_err(dwmac->dev, "Failed to get Ethernet reset\n");
-+		ret = PTR_ERR(dwmac->eth_reset);
-+		goto err_remove_config_dt;
-+	}
-+
- 	ret = meson8b_init_rgmii_delays(dwmac);
- 	if (ret)
- 		goto err_remove_config_dt;
--- 
-2.32.0
+The P2PDMA work requires distinguishing different error conditions in
+a map_sg operation. dma_map_sgtable() already allows for returning an
+error code (where as dma_map_sg() is only allowed to return zero)
+however, it currently only returns -EINVAL when a .map_sg() call returns
+zero.
 
+This series cleans up all .map_sg() implementations to return appropriate
+error codes. After the cleanup, dma_map_sg() will still return zero,
+however dma_map_sgtable() will pass the error code from the .map_sg()
+call. Thanks go to Martn Oliveira for doing a lot of the cleanup of the
+obscure implementations.
+
+The patch set is based off of v5.14-rc2 and a git repo can be found
+here:
+
+  https://github.com/sbates130272/linux-p2pmem map_sg_err_cleanup_v2
+
+Thanks,
+
+Logan
+
+[1] https://lore.kernel.org/linux-block/20210513223203.5542-1-logang@deltatee.com/
+[2] https://lore.kernel.org/linux-mips/20210723175008.22410-1-logang@deltatee.com/
+
+--
+
+Changes in v3:
+  - Move the validation of errnos into __dma_map_sg_attrs() (Per
+    Christoph)
+  - Fix the out of date commit message in patch 21 (Per Eike)
+Changes in v2:
+  - Attempt to define the meanings of the errors returned by
+    dma_map_sgtable() and restrict the valid return codes of
+    .map_sg implementations. (Per Christoph)
+  - Change dma_map_sgtable() to EXPORT_SYMBOL_GPL() (Per Christoph)
+  - Add patches to remove the erroneous setting of sg->dma_address
+    to DMA_MAP_ERROR in a few .map_sg(0 implementations. (Per
+    Christoph).
+
+--
+
+Logan Gunthorpe (10):
+  dma-mapping: Allow map_sg() ops to return negative error codes
+  dma-direct: Return appropriate error code from dma_direct_map_sg()
+  iommu: Return full error code from iommu_map_sg[_atomic]()
+  dma-iommu: Return error code from iommu_dma_map_sg()
+  ARM/dma-mapping: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  powerpc/iommu: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  s390/pci: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  sparc/iommu: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  x86/amd_gart: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  dma-mapping: Disallow .map_sg operations from returning zero on error
+
+Martin Oliveira (11):
+  alpha: return error code from alpha_pci_map_sg()
+  ARM/dma-mapping: return error code from .map_sg() ops
+  ia64/sba_iommu: return error code from sba_map_sg_attrs()
+  MIPS/jazzdma: return error code from jazz_dma_map_sg()
+  powerpc/iommu: return error code from .map_sg() ops
+  s390/pci: return error code from s390_dma_map_sg()
+  sparc/iommu: return error codes from .map_sg() ops
+  parisc: return error code from .map_sg() ops
+  xen: swiotlb: return error code from xen_swiotlb_map_sg()
+  x86/amd_gart: return error code from gart_map_sg()
+  dma-mapping: return error code from dma_dummy_map_sg()
+
+ arch/alpha/kernel/pci_iommu.c           | 10 ++-
+ arch/arm/mm/dma-mapping.c               | 26 +++++---
+ arch/ia64/hp/common/sba_iommu.c         |  6 +-
+ arch/mips/jazz/jazzdma.c                |  2 +-
+ arch/powerpc/kernel/iommu.c             |  6 +-
+ arch/powerpc/platforms/ps3/system-bus.c |  2 +-
+ arch/powerpc/platforms/pseries/vio.c    |  5 +-
+ arch/s390/pci/pci_dma.c                 | 13 ++--
+ arch/sparc/kernel/iommu.c               |  6 +-
+ arch/sparc/kernel/pci_sun4v.c           |  6 +-
+ arch/sparc/mm/iommu.c                   |  2 +-
+ arch/x86/kernel/amd_gart_64.c           | 18 +++---
+ drivers/iommu/dma-iommu.c               | 23 ++++---
+ drivers/iommu/iommu.c                   | 15 +++--
+ drivers/parisc/ccio-dma.c               |  2 +-
+ drivers/parisc/sba_iommu.c              |  2 +-
+ drivers/xen/swiotlb-xen.c               |  2 +-
+ include/linux/dma-map-ops.h             |  5 +-
+ include/linux/dma-mapping.h             | 35 +++--------
+ include/linux/iommu.h                   | 22 +++----
+ kernel/dma/direct.c                     |  2 +-
+ kernel/dma/dummy.c                      |  2 +-
+ kernel/dma/mapping.c                    | 82 ++++++++++++++++++++++---
+ 23 files changed, 177 insertions(+), 117 deletions(-)
+
+
+base-commit: ff1176468d368232b684f75e82563369208bc371
+--
+2.20.1
