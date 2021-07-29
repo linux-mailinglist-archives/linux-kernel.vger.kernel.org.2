@@ -2,170 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8653D9A2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D923D9A33
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 02:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbhG2AmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 20:42:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:3511 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232837AbhG2AmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 20:42:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="193055855"
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="193055855"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 17:42:09 -0700
-X-IronPort-AV: E=Sophos;i="5.84,276,1620716400"; 
-   d="scan'208";a="506802079"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2021 17:42:09 -0700
-Date:   Wed, 28 Jul 2021 17:42:08 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/7] x86/sgx: Provide indication of life-cycle of EPC
- pages
-Message-ID: <20210729004208.GA1510081@agluck-desk2.amr.corp.intel.com>
-References: <20210719182009.1409895-1-tony.luck@intel.com>
- <20210728204653.1509010-1-tony.luck@intel.com>
- <20210728204653.1509010-2-tony.luck@intel.com>
- <17054ca5-0ef7-4b28-ab26-b1b96aa7403f@intel.com>
- <f2685d7c8dc14792a4e0f9807f742ea6@intel.com>
- <fd8f8e79-f63f-7d6f-277e-1ad08ab7b6b8@intel.com>
- <YQHpGq0GyAsYpE+D@google.com>
- <b05acb65cebc4718a5cc2503ced7455d@intel.com>
- <YQHxLG5fSTWPgez6@google.com>
+        id S233023AbhG2Ap0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 20:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232890AbhG2ApZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 20:45:25 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3722AC061757;
+        Wed, 28 Jul 2021 17:45:23 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id q3so4677672wrx.0;
+        Wed, 28 Jul 2021 17:45:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=v7cnCuDq5ZGSk7DH1MRlBzKJ5po3ZMRHzGSaZzKFHNw=;
+        b=qK4kP9aMdzNl3v5ZMFoQSSP9i8SlzpJY6ZT6nDqMJGCUCdHA7gjlqJCPYJh4LdZok9
+         okA2UjqD44XRE+VV5Gv13WsmFMGetkAaVDBwUWIMat89C0ib38VdjS/H3D2XlqLWIMJG
+         9IpmdhA2Sj1ZfPSld9UD6sAvcy3BLeimRYOWtBVlV4i49FNKpgYwDfQodQLZNY9mSfdF
+         J6GsDw6S/FRkhHdqrAJSygWvHJ4axzyvSax4b2pjORnBhukksWGNCi83EH+OPhUKlJzb
+         yoQIndGSHH5R36Ue/7Cn9hFeO3AzQ5S1i1pqdPVWQTMNMvL3xQGdaJmzjyKfEjzEeNYC
+         S0ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=v7cnCuDq5ZGSk7DH1MRlBzKJ5po3ZMRHzGSaZzKFHNw=;
+        b=I2CHukvJnPUG0201UsR1xHBWVAF4lvOe9flHY02MhVLYZzEHMA/+1/W//n5v8GySsg
+         Hf/y+byNhwgzN7/Pz65tdOWafzPn4AmPrMG9VmDwNseMhdrLl7ANVV7dqe8pLIIsn+rg
+         aecsSrC0uRRiZLt7d2xHOaCbts7pCUup37hg8wwSrLP35WIORe0xn8LtuokGbvDYLJtA
+         BcgnAiApI4Tv/ECkhXVLHIOdOuuzJQynPpdK3gIPdVqUXF+o1K+ZNyD8NX3bTBTc4R1M
+         xKfm36gitrFrjwUJPyF5pphYxL9Idr5NKm1PI3rx+3MUkxJpUMwdWz6kIZwVk2H4X7/c
+         Ws+Q==
+X-Gm-Message-State: AOAM532BE/gEze1tH8uFScHxCVB9QgitEe8TRW8rodsp+GkfBAqfWBCO
+        baoSEIT/2AygZyu93WWO4DAiBrvGNNo=
+X-Google-Smtp-Source: ABdhPJydHV0/TpHwnh7Pqvu2Yfv/vzGJcLDJNjBt+jjufRwprnYFLBtZNQlrUHeVm+qEU5W1Anu4Mw==
+X-Received: by 2002:adf:cf07:: with SMTP id o7mr1821855wrj.216.1627519521830;
+        Wed, 28 Jul 2021 17:45:21 -0700 (PDT)
+Received: from pc ([196.235.233.206])
+        by smtp.gmail.com with ESMTPSA id q72sm1954094wme.14.2021.07.28.17.45.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 17:45:21 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 01:45:12 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND v2] hid-elo: update the reference count of the usb device
+ structure
+Message-ID: <20210729004451.GA783805@pc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQHxLG5fSTWPgez6@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 12:07:08AM +0000, Sean Christopherson wrote:
-> On Wed, Jul 28, 2021, Luck, Tony wrote:
-> > > -       epc_page = sgx_alloc_epc_page(NULL, true);
-> > > +       epc_page = sgx_alloc_epc_page(va_page, true);
-> > 
-> > Providing a real value for the owner seems much better than all the hacks
-> > to invent a value to use instead of NULL.
-> > 
-> > Can you add a "Signed-off-by"? Then I'll replace my part 0001 with your version.
+Use usb_get_dev() to increment the reference count of the usb device
+structure in order to avoid releasing the structure while it is still in
+use. And use usb_put_dev() to decrement the reference count and thus,
+when it will be equal to 0 the structure will be released.
 
-My commit comment (updated to match how the code actually changed).
-Sean's code.
-
-N.B. I added the kernel doc entry for the new argument to sgx_alloc_va_page()
-
-+ * @va_page:   struct sgx_va_page connected to this VA page
-
-If you have something better, then I will swap that line out too.
-
--Tony
-
-From: Sean Christopherson <seanjc@google.com>
-Subject: [PATCH] x86/sgx: Provide indication of life-cycle of EPC pages
-
-SGX EPC pages go through the following life cycle:
-
-        DIRTY ---> FREE ---> IN-USE --\
-                    ^                 |
-                    \-----------------/
-
-Recovery action for poison for a DIRTY or FREE page is simple. Just
-make sure never to allocate the page. IN-USE pages need some extra
-handling.
-
-It would be good to use the sgx_epc_page->owner field as an indicator
-of where an EPC page is currently in that cycle (owner != NULL means
-the EPC page is IN-USE). But there is one caller, sgx_alloc_va_page(),
-that calls with NULL.
-
-Fix up the one holdout to provide a non-NULL owner.
-
-Also change the type of "owner" to "void *" (since it can have other
-types besides "struct sgx_encl_page *").
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
 ---
- arch/x86/kernel/cpu/sgx/encl.c  | 5 +++--
- arch/x86/kernel/cpu/sgx/encl.h  | 2 +-
- arch/x86/kernel/cpu/sgx/ioctl.c | 2 +-
- arch/x86/kernel/cpu/sgx/sgx.h   | 2 +-
- 4 files changed, 6 insertions(+), 5 deletions(-)
+Change since v1:
+	Modification of the description
 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 001808e3901c..ad8c61933b0a 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -667,6 +667,7 @@ int sgx_encl_test_and_clear_young(struct mm_struct *mm,
- 
- /**
-  * sgx_alloc_va_page() - Allocate a Version Array (VA) page
-+ * @va_page:	struct sgx_va_page connected to this VA page
-  *
-  * Allocate a free EPC page and convert it to a Version Array (VA) page.
-  *
-@@ -674,12 +675,12 @@ int sgx_encl_test_and_clear_young(struct mm_struct *mm,
-  *   a VA page,
-  *   -errno otherwise
-  */
--struct sgx_epc_page *sgx_alloc_va_page(void)
-+struct sgx_epc_page *sgx_alloc_va_page(struct sgx_va_page *va_page)
+ drivers/hid/hid-elo.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/hid/hid-elo.c b/drivers/hid/hid-elo.c
+index 0d22713a3874..383dfda8c12f 100644
+--- a/drivers/hid/hid-elo.c
++++ b/drivers/hid/hid-elo.c
+@@ -228,13 +228,15 @@ static int elo_probe(struct hid_device *hdev, const struct hid_device_id *id)
  {
- 	struct sgx_epc_page *epc_page;
+ 	struct elo_priv *priv;
  	int ret;
++	struct usb_device *udev;
  
--	epc_page = sgx_alloc_epc_page(NULL, true);
-+	epc_page = sgx_alloc_epc_page(va_page, true);
- 	if (IS_ERR(epc_page))
- 		return ERR_CAST(epc_page);
+ 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
  
-diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-index fec43ca65065..3d12dbeae14a 100644
---- a/arch/x86/kernel/cpu/sgx/encl.h
-+++ b/arch/x86/kernel/cpu/sgx/encl.h
-@@ -111,7 +111,7 @@ void sgx_encl_put_backing(struct sgx_backing *backing, bool do_write);
- int sgx_encl_test_and_clear_young(struct mm_struct *mm,
- 				  struct sgx_encl_page *page);
+ 	INIT_DELAYED_WORK(&priv->work, elo_work);
+-	priv->usbdev = interface_to_usbdev(to_usb_interface(hdev->dev.parent));
++	udev = interface_to_usbdev(to_usb_interface(hdev->dev.parent));
++	priv->usbdev = usb_get_dev(udev);
  
--struct sgx_epc_page *sgx_alloc_va_page(void);
-+struct sgx_epc_page *sgx_alloc_va_page(struct sgx_va_page *va_page);
- unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page);
- void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset);
- bool sgx_va_page_full(struct sgx_va_page *va_page);
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 83df20e3e633..655ce0bb069d 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -30,7 +30,7 @@ static struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl)
- 		if (!va_page)
- 			return ERR_PTR(-ENOMEM);
+ 	hid_set_drvdata(hdev, priv);
  
--		va_page->epc_page = sgx_alloc_va_page();
-+		va_page->epc_page = sgx_alloc_va_page(va_page);
- 		if (IS_ERR(va_page->epc_page)) {
- 			err = ERR_CAST(va_page->epc_page);
- 			kfree(va_page);
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 4628acec0009..4e1a410b8a62 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -29,7 +29,7 @@
- struct sgx_epc_page {
- 	unsigned int section;
- 	unsigned int flags;
--	struct sgx_encl_page *owner;
-+	void *owner;
- 	struct list_head list;
- };
+@@ -265,6 +267,8 @@ static void elo_remove(struct hid_device *hdev)
+ {
+ 	struct elo_priv *priv = hid_get_drvdata(hdev);
  
++	usb_put_dev(priv->usbdev);
++
+ 	hid_hw_stop(hdev);
+ 	cancel_delayed_work_sync(&priv->work);
+ 	kfree(priv);
 -- 
-2.29.2
+2.25.1
 
