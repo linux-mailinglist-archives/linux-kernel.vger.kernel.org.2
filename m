@@ -2,218 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0145D3DA6B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE4E3DA6C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbhG2Omw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:42:52 -0400
-Received: from mail.efficios.com ([167.114.26.124]:41520 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237295AbhG2Olw (ORCPT
+        id S237668AbhG2OrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237825AbhG2OoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:41:52 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id DEE1A369AE3;
-        Thu, 29 Jul 2021 10:41:22 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id CWqFcYkL-vGL; Thu, 29 Jul 2021 10:41:18 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6CAFB369A46;
-        Thu, 29 Jul 2021 10:41:18 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 6CAFB369A46
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1627569678;
-        bh=imOEQJggP8apNWlmWM1pp9n9c+v+640+TBqxfmwfWtI=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=PbC9dT2My8p6XygR5lOTkt2EJuykhkCPHo+GM/EcQ/rT/oWDr4+mtjuO1zc0WXbBH
-         Oo25CXt39C2w88PHvqHjj8Y2imNsZieTIHeEWVF5kLEz2Pu2psh8MNvavD8ZtdfZTK
-         0ghfNBHMPeaiBtkvQMyk12dNT/Ov5GIYk2WzMfxFLkAi8yYDN9u705308TUG6YVcKx
-         rR8++xovYn9Oqx/PA70V6qiquZyfIPc9ImIuk7sK5Pj5qqM3sD6zbHHUFU4vatPTSU
-         Zh7aBMrrWSCxnISZkVZ1ItS1PW8tfab+sFL25xR+Vw1Xb9pzFw1g+ICX4QKzU9GWN4
-         jKJKbiW64Se5w==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WHHQgscXqbFY; Thu, 29 Jul 2021 10:41:18 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 48E953698FE;
-        Thu, 29 Jul 2021 10:41:18 -0400 (EDT)
-Date:   Thu, 29 Jul 2021 10:41:18 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@fb.com>, Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        fweisbec <fweisbec@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <1929727713.10248.1627569678176.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210728202802.GL4397@paulmck-ThinkPad-P17-Gen-1>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1> <20210721202127.2129660-4-paulmck@kernel.org> <20210728173715.GA9416@paulmck-ThinkPad-P17-Gen-1> <2135064974.9081.1627496585724.JavaMail.zimbra@efficios.com> <20210728185854.GK4397@paulmck-ThinkPad-P17-Gen-1> <20210728194505.GA1500024@paulmck-ThinkPad-P17-Gen-1> <874308613.9545.1627502582005.JavaMail.zimbra@efficios.com> <20210728202802.GL4397@paulmck-ThinkPad-P17-Gen-1>
-Subject: Re: [PATCH v2 rcu 04/18] rcu: Weaken ->dynticks accesses and
- updates
+        Thu, 29 Jul 2021 10:44:24 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529CFC0613C1;
+        Thu, 29 Jul 2021 07:44:20 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id c16so7241113wrp.13;
+        Thu, 29 Jul 2021 07:44:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QONJvagN9ws6tf6fSosJAxib6FmQVL/pCUAju2Cappc=;
+        b=OhQraQEWoeuRYN19Ds7AMR7+SvajLjAHKcJZGuXkkdVWK/PTtxKc8cE8qfNueWiqQg
+         hKUV2IUqQYHt9DCtA2BHMlR13ix7IVhiuQgJGW+N75Yu0CMCIrRLOlBFMV+lgwQAJVb/
+         vn2W0ifo0WKnR+OO3OZapcHCpmMukO5a7aQmqnhwqSkYjDLJKhhi6QondtoGFn85jvVy
+         t4twblJVYRxQEa0xN2eQ2BQo83Chr2yZJBgtRLkEd+QMUfbzAIuG2WSkzPouMUnae5SJ
+         T2eVVap002Htki+P75/mjPaaFiXRClJhLw6+QIuuiFSgftLLcCdX1XIUx4/vWQpAki+f
+         5NKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QONJvagN9ws6tf6fSosJAxib6FmQVL/pCUAju2Cappc=;
+        b=DvZ8b1ZOPnugZ9JnymBq/WkJZXHRxhfskE3WrIrpwQgW5/jTFQDkCI1nBufU1v0m0G
+         kiL+A2duEyyeI6ASmuF7OZrzcUhseae0wXiV28bb8oYznruw2+HVuy8t71qW4sNakrXP
+         ix2OX2OhDZzann3/YuLzoVVSmxW7bIl5Tzri3olk7fgshHO/qpbiphbfUMn7H1/hW6JW
+         oMiVnzNqNgxvLS16Lde1zGh6ShJ8SnMgiqybXjDN4CPSNM5iWqUrL54nXIsPAnAEMNVv
+         7s4FIsCzdBGrK9b33PjmP4Ji3DQ4Z7PboauXABImNF08v+CLNZR4nxfgJj4ojGhmZCeJ
+         eDag==
+X-Gm-Message-State: AOAM532Iuyv24TCjj373W1EwExAmxC3sojUb7n8jCxKL2Evk5SkXjilv
+        Z0Es8DK8S+t4Tg4gR0wAnk9QMsJYQ2akOm78
+X-Google-Smtp-Source: ABdhPJyeYQP9mZmrNRMGNDAbza/Vs5f4RZMsz/ei4HZNiOV5tYzw0s+MbsAu8yiVPiLrkc/Vm8BBpA==
+X-Received: by 2002:a5d:5481:: with SMTP id h1mr1387970wrv.93.1627569858933;
+        Thu, 29 Jul 2021 07:44:18 -0700 (PDT)
+Received: from ltoban.skidata.net (195-192-77-216.dyn.cablelink.at. [195.192.77.216])
+        by smtp.gmail.com with ESMTPSA id 6sm9549423wmi.3.2021.07.29.07.44.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 07:44:18 -0700 (PDT)
+From:   Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>
+Cc:     andreas.obergschwandtner@gmail.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: tegra: tamonten: Fix UART pad setting
+Date:   Thu, 29 Jul 2021 16:42:26 +0200
+Message-Id: <20210729144226.111900-1-andreas.obergschwandtner@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: Weaken ->dynticks accesses and updates
-Thread-Index: ixJkojOxsNGlWYgstuju2nSnDslUDg==
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 28, 2021, at 4:28 PM, paulmck paulmck@kernel.org wrote:
+This patch fixes the tristate and pullup configuration for UART 1 to 3
+on the Tamonten SOM.
 
-> On Wed, Jul 28, 2021 at 04:03:02PM -0400, Mathieu Desnoyers wrote:
->> ----- On Jul 28, 2021, at 3:45 PM, paulmck paulmck@kernel.org wrote:
->> [...]
->> > 
->> > And how about like this?
->> > 
->> >						Thanx, Paul
->> > 
->> > ------------------------------------------------------------------------
->> > 
->> > commit cb8914dcc6443cca15ce48d937a93c0dfdb114d3
->> > Author: Paul E. McKenney <paulmck@kernel.org>
->> > Date:   Wed Jul 28 12:38:42 2021 -0700
->> > 
->> >    rcu: Move rcu_dynticks_eqs_online() to rcu_cpu_starting()
->> >    
->> >    The purpose of rcu_dynticks_eqs_online() is to adjust the ->dynticks
->> >    counter of an incoming CPU if required.  It is currently is invoked
->> 
->> "is currently is" -> "is currently"
-> 
-> Good catch, fixed!
-> 
->> >    from rcutree_prepare_cpu(), which runs before the incoming CPU is
->> >    running, and thus on some other CPU.  This makes the per-CPU accesses in
->> >    rcu_dynticks_eqs_online() iffy at best, and it all "works" only because
->> >    the running CPU cannot possibly be in dyntick-idle mode, which means
->> >    that rcu_dynticks_eqs_online() never has any effect.  One could argue
->> >    that this means that rcu_dynticks_eqs_online() is unnecessary, however,
->> >    removing it makes the CPU-online process vulnerable to slight changes
->> >    in the CPU-offline process.
->> 
->> Why favor moving this from the prepare_cpu to the cpu_starting hotplug step,
->> rather than using the target cpu's rdp from rcutree_prepare_cpu ? Maybe there
->> was a good reason for having this very early in the prepare_cpu step ?
-> 
-> Some years back, there was a good reason. This reason was that
-> rcutree_prepare_cpu() marked the CPU as being online from an RCU
-> viewpoint.  But now rcu_cpu_starting() is the one that marks the CPU as
-> being online, so the ->dynticks check can be deferred to this function.
-> 
->> Also, the commit message refers to this bug as having no effect because the
->> running CPU cannot possibly be in dyntick-idle mode. I understand that calling
->> this function was indeed effect-less, but then why is it OK for the CPU coming
->> online to skip this call in the first place ? This commit message hints at
->> "slight changes in the CPU-offline process" which could break it, but therer is
->> no explanation of what makes this not an actual bug fix.
-> 
-> Because rcutorture would not have suffered in silence had this
-> situation ever arisen.
+Signed-off-by: Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>
+---
+ arch/arm/boot/dts/tegra20-tamonten.dtsi | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Testing can usually prove the presence of a bug, but it's rather tricky to prove
-the absence of bug.
-
-> 
-> I have updated the commit log to answer these questions as shown
-> below.  Thoughts?
-
-I'm still concerned about one scenario wrt moving rcu_dynticks_eqs_online()
-from rcutree_prepare_cpu to rcu_cpu_starting. What happens if an interrupt
-handler, or a NMI handler, nests early over the CPU-online startup code ?
-AFAIU, this interrupt handler could contain RCU read-side critical sections,
-but if the eqs state does not show the CPU as "online", I wonder whether it
-will work as expected.
-
-Thanks,
-
-Mathieu
-
-> 
->							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 516c8c4cc6fce62539f7e0182739812db4591c1d
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Wed Jul 28 12:38:42 2021 -0700
-> 
->    rcu: Move rcu_dynticks_eqs_online() to rcu_cpu_starting()
->    
->    The purpose of rcu_dynticks_eqs_online() is to adjust the ->dynticks
->    counter of an incoming CPU when required.  It is currently invoked
->    from rcutree_prepare_cpu(), which runs before the incoming CPU is
->    running, and thus on some other CPU.  This makes the per-CPU accesses in
->    rcu_dynticks_eqs_online() iffy at best, and it all "works" only because
->    the running CPU cannot possibly be in dyntick-idle mode, which means
->    that rcu_dynticks_eqs_online() never has any effect.
->    
->    It is currently OK for rcu_dynticks_eqs_online() to have no effect, but
->    only because the CPU-offline process just happens to leave ->dynticks in
->    the correct state.  After all, if ->dynticks were in the wrong state on a
->    just-onlined CPU, rcutorture would complain bitterly the next time that
->    CPU went idle, at least in kernels built with CONFIG_RCU_EQS_DEBUG=y,
->    for example, those built by rcutorture scenario TREE04.  One could
->    argue that this means that rcu_dynticks_eqs_online() is unnecessary,
->    however, removing it would make the CPU-online process vulnerable to
->    slight changes in the CPU-offline process.
->    
->    One could also ask why it is safe to move the rcu_dynticks_eqs_online()
->    call so late in the CPU-online process.  Indeed, there was a time when it
->    would not have been safe, which does much to explain its current location.
->    However, the marking of a CPU as online from an RCU perspective has long
->    since moved from rcutree_prepare_cpu() to rcu_cpu_starting(), and all
->    that is required is that ->dynticks be set correctly by the time that
->    the CPU is marked as online from an RCU perspective.  After all, the RCU
->    grace-period kthread does not check to see if offline CPUs are also idle.
->    (In case you were curious, this is one reason why there is quiescent-state
->    reporting as part of the offlining process.)
->    
->    This commit therefore moves the call to rcu_dynticks_eqs_online() from
->    rcutree_prepare_cpu() to rcu_cpu_starting(), this latter being guaranteed
->    to be running on the incoming CPU.  The call to this function must of
->    course be placed before this rcu_cpu_starting() announces this CPU's
->    presence to RCU.
->    
->    Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 0172a5fd6d8de..aa00babdaf544 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4129,7 +4129,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
-> 	rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
-> 	rdp->blimit = blimit;
-> 	rdp->dynticks_nesting = 1;	/* CPU not up, no tearing. */
-> -	rcu_dynticks_eqs_online();
-> 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
-> 
-> 	/*
-> @@ -4249,6 +4248,7 @@ void rcu_cpu_starting(unsigned int cpu)
-> 	mask = rdp->grpmask;
-> 	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
-> 	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
-> +	rcu_dynticks_eqs_online();
-> 	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
-> 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
->  	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
-
+diff --git a/arch/arm/boot/dts/tegra20-tamonten.dtsi b/arch/arm/boot/dts/tegra20-tamonten.dtsi
+index 95e6bccdb4f6..dd4d506683de 100644
+--- a/arch/arm/boot/dts/tegra20-tamonten.dtsi
++++ b/arch/arm/boot/dts/tegra20-tamonten.dtsi
+@@ -185,8 +185,9 @@ conf_ata {
+ 				nvidia,pins = "ata", "atb", "atc", "atd", "ate",
+ 					"cdev1", "cdev2", "dap1", "dtb", "gma",
+ 					"gmb", "gmc", "gmd", "gme", "gpu7",
+-					"gpv", "i2cp", "pta", "rm", "slxa",
+-					"slxk", "spia", "spib", "uac";
++					"gpv", "i2cp", "irrx", "irtx", "pta",
++					"rm", "slxa", "slxk", "spia", "spib",
++					"uac";
+ 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+ 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+ 			};
+@@ -211,7 +212,7 @@ conf_crtp {
+ 			conf_ddc {
+ 				nvidia,pins = "ddc", "dta", "dtd", "kbca",
+ 					"kbcb", "kbcc", "kbcd", "kbce", "kbcf",
+-					"sdc";
++					"sdc", "uad", "uca";
+ 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+ 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+ 			};
+@@ -221,10 +222,9 @@ conf_hdint {
+ 					"lvp0", "owc", "sdb";
+ 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+ 			};
+-			conf_irrx {
+-				nvidia,pins = "irrx", "irtx", "sdd", "spic",
+-					"spie", "spih", "uaa", "uab", "uad",
+-					"uca", "ucb";
++			conf_sdd {
++				nvidia,pins = "sdd", "spic", "spie", "spih",
++					"uaa", "uab", "ucb";
+ 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+ 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+ 			};
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.31.1
+
