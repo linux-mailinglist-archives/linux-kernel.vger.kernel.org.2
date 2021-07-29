@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4EF3DA617
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91F33DA616
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237539AbhG2OMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:12:12 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3523 "EHLO
+        id S238059AbhG2OML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:12:11 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3524 "EHLO
         frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238044AbhG2OCd (ORCPT
+        with ESMTP id S238347AbhG2OCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:02:33 -0400
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBnM2gTZz6FFs2;
-        Thu, 29 Jul 2021 21:53:11 +0800 (CST)
+        Thu, 29 Jul 2021 10:02:37 -0400
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbBfg1ZPLz6J9rs;
+        Thu, 29 Jul 2021 21:47:23 +0800 (CST)
 Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 16:02:28 +0200
+ 15.1.2176.2; Thu, 29 Jul 2021 16:02:32 +0200
 Received: from localhost.localdomain (10.69.192.58) by
  lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 15:02:24 +0100
+ 15.1.2176.2; Thu, 29 Jul 2021 15:02:28 +0100
 From:   John Garry <john.garry@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -30,10 +30,12 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
 CC:     <yao.jin@linux.intel.com>, <linux-kernel@vger.kernel.org>,
         <linux-perf-users@vger.kernel.org>, <irogers@google.com>,
         <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH 00/11] perf test: Improve pmu-events support
-Date:   Thu, 29 Jul 2021 21:56:15 +0800
-Message-ID: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
+Subject: [PATCH 01/11] perf test: Factor out pmu-events event comparison
+Date:   Thu, 29 Jul 2021 21:56:16 +0800
+Message-ID: <1627566986-30605-2-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
+References: <1627566986-30605-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.58]
@@ -44,53 +46,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently it has been shown that the pmu-events tests do not always catch
-broken uncore PMU alias support.
+Factor out event comparison which will be used in multiple places.
 
-The main problem is that the alias matching only tests uncore PMUs which
-are present in the host system, so pretty useless.
+Also test "pmu" and "compat" fields.
 
-This series improves that by using fake uncore PMUs, and verifying aliases
-generated for those PMUs match known expected values.
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ tools/perf/tests/pmu-events.c | 119 +++++++++++++++++++---------------
+ 1 file changed, 66 insertions(+), 53 deletions(-)
 
-This means that even if one arch does not have PMUs which support some
-special aliasing, like multiple tokens, we can still have a fake uncore
-PMU test on that arch.
-
-Support is also added to test system PMUs alias matching.
-
-Based on 5.14-rc1 + "perf pmu: Fix alias matching".
-
-John Garry (11):
-  perf test: Factor out pmu-events event comparison
-  perf jevents: Relocate test events to cpu folder
-  perf test: Declare pmu-events test events separately
-  perf test: Factor out pmu-events alias comparison
-  perf test: Test pmu-events core aliases separately
-  perf pmu: Check .is_uncore field in pmu_add_cpu_aliases_map()
-  perf test: Re-add pmu-event uncore PMU alias test
-  perf test: Add more pmu-events uncore aliases
-  perf pmu: Make pmu_add_sys_aliases() public
-  perf jevents: Print SoC name per system event table
-  perf test: Add pmu-events sys event support
-
- .../{test_cpu => test_soc/cpu}/branch.json    |   0
- .../{test_cpu => test_soc/cpu}/cache.json     |   0
- .../{test_cpu => test_soc/cpu}/other.json     |   0
- .../{test_cpu => test_soc/cpu}/uncore.json    |  23 +-
- .../arch/test/test_soc/sys/uncore.json        |   9 +
- tools/perf/pmu-events/jevents.c               |   5 +-
- tools/perf/pmu-events/pmu-events.h            |   1 +
- tools/perf/tests/pmu-events.c                 | 699 +++++++++++++-----
- tools/perf/util/pmu.c                         |   5 +-
- tools/perf/util/pmu.h                         |   1 +
- 10 files changed, 533 insertions(+), 210 deletions(-)
- rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/branch.json (100%)
- rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/cache.json (100%)
- rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/other.json (100%)
- rename tools/perf/pmu-events/arch/test/{test_cpu => test_soc/cpu}/uncore.json (51%)
- create mode 100644 tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
-
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index b8aff8fb50d8..c064f08c63c9 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -161,6 +161,71 @@ static struct pmu_events_map *__test_pmu_get_events_map(void)
+ 	return NULL;
+ }
+ 
++static int compare_pmu_events(struct pmu_event *e1, const struct pmu_event *e2)
++{
++	if (!is_same(e1->desc, e2->desc)) {
++		pr_debug2("testing event e1 %s: mismatched desc, %s vs %s\n",
++			  e1->name, e1->desc, e2->desc);
++		return -1;
++	}
++
++	if (!is_same(e1->topic, e2->topic)) {
++		pr_debug2("testing event e1 %s: mismatched topic, %s vs %s\n",
++			  e1->name, e1->topic, e2->topic);
++		return -1;
++	}
++
++	if (!is_same(e1->long_desc, e2->long_desc)) {
++		pr_debug2("testing event e1 %s: mismatched long_desc, %s vs %s\n",
++			  e1->name, e1->long_desc, e2->long_desc);
++		return -1;
++	}
++
++	if (!is_same(e1->unit, e2->unit)) {
++		pr_debug2("testing event e1 %s: mismatched unit, %s vs %s\n",
++			  e1->name, e1->unit, e2->unit);
++		return -1;
++	}
++
++	if (!is_same(e1->perpkg, e2->perpkg)) {
++		pr_debug2("testing event e1 %s: mismatched perpkg, %s vs %s\n",
++			  e1->name, e1->perpkg, e2->perpkg);
++		return -1;
++	}
++
++	if (!is_same(e1->metric_expr, e2->metric_expr)) {
++		pr_debug2("testing event e1 %s: mismatched metric_expr, %s vs %s\n",
++			  e1->name, e1->metric_expr, e2->metric_expr);
++		return -1;
++	}
++
++	if (!is_same(e1->metric_name, e2->metric_name)) {
++		pr_debug2("testing event e1 %s: mismatched metric_name, %s vs %s\n",
++			  e1->name,	e1->metric_name, e2->metric_name);
++		return -1;
++	}
++
++	if (!is_same(e1->deprecated, e2->deprecated)) {
++		pr_debug2("testing event e1 %s: mismatched deprecated, %s vs %s\n",
++			  e1->name, e1->deprecated, e2->deprecated);
++		return -1;
++	}
++
++	if (!is_same(e1->pmu, e2->pmu)) {
++		pr_debug2("testing event e1 %s: mismatched pmu string, %s vs %s\n",
++			  e1->name, e1->pmu, e2->pmu);
++		return -1;
++	}
++
++	if (!is_same(e1->compat, e2->compat)) {
++		pr_debug2("testing event e1 %s: mismatched compat string, %s vs %s\n",
++			  e1->name, e1->compat, e2->compat);
++		return -1;
++	}
++
++	return 0;
++}
++
+ /* Verify generated events from pmu-events.c is as expected */
+ static int test_pmu_event_table(void)
+ {
+@@ -193,60 +258,8 @@ static int test_pmu_event_table(void)
+ 			found = true;
+ 			map_events++;
+ 
+-			if (!is_same(table->desc, te->desc)) {
+-				pr_debug2("testing event table %s: mismatched desc, %s vs %s\n",
+-					  table->name, table->desc, te->desc);
+-				return -1;
+-			}
+-
+-			if (!is_same(table->topic, te->topic)) {
+-				pr_debug2("testing event table %s: mismatched topic, %s vs %s\n",
+-					  table->name, table->topic,
+-					  te->topic);
+-				return -1;
+-			}
+-
+-			if (!is_same(table->long_desc, te->long_desc)) {
+-				pr_debug2("testing event table %s: mismatched long_desc, %s vs %s\n",
+-					  table->name, table->long_desc,
+-					  te->long_desc);
+-				return -1;
+-			}
+-
+-			if (!is_same(table->unit, te->unit)) {
+-				pr_debug2("testing event table %s: mismatched unit, %s vs %s\n",
+-					  table->name, table->unit,
+-					  te->unit);
+-				return -1;
+-			}
+-
+-			if (!is_same(table->perpkg, te->perpkg)) {
+-				pr_debug2("testing event table %s: mismatched perpkg, %s vs %s\n",
+-					  table->name, table->perpkg,
+-					  te->perpkg);
+-				return -1;
+-			}
+-
+-			if (!is_same(table->metric_expr, te->metric_expr)) {
+-				pr_debug2("testing event table %s: mismatched metric_expr, %s vs %s\n",
+-					  table->name, table->metric_expr,
+-					  te->metric_expr);
++			if (compare_pmu_events(table, te))
+ 				return -1;
+-			}
+-
+-			if (!is_same(table->metric_name, te->metric_name)) {
+-				pr_debug2("testing event table %s: mismatched metric_name, %s vs %s\n",
+-					  table->name,  table->metric_name,
+-					  te->metric_name);
+-				return -1;
+-			}
+-
+-			if (!is_same(table->deprecated, te->deprecated)) {
+-				pr_debug2("testing event table %s: mismatched deprecated, %s vs %s\n",
+-					  table->name, table->deprecated,
+-					  te->deprecated);
+-				return -1;
+-			}
+ 
+ 			pr_debug("testing event table %s: pass\n", table->name);
+ 		}
 -- 
 2.26.2
 
