@@ -2,219 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536243DA322
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE0A3DA330
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237200AbhG2M3C convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 29 Jul 2021 08:29:02 -0400
-Received: from mga11.intel.com ([192.55.52.93]:3060 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237163AbhG2M3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 08:29:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="209757533"
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="209757533"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 05:28:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="476374217"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Jul 2021 05:28:58 -0700
-Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Thu, 29 Jul 2021 05:28:57 -0700
-Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
- HASMSX602.ger.corp.intel.com (10.184.107.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Thu, 29 Jul 2021 15:28:55 +0300
-Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
- HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2242.010;
- Thu, 29 Jul 2021 15:28:55 +0300
-From:   "Winkler, Tomas" <tomas.winkler@intel.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "Lubart, Vitaly" <vitaly.lubart@intel.com>,
-        "Usyskin, Alexander" <alexander.usyskin@intel.com>
-Subject: RE: [PATCH] mei: constify passed buffers and structures
-Thread-Topic: [PATCH] mei: constify passed buffers and structures
-Thread-Index: AQHXhGRx9NxxichEQkCmnvTG9cR/oatZ4aBA
-Date:   Thu, 29 Jul 2021 12:28:55 +0000
-Message-ID: <037bb77223bc4622b1df2ab2679a4492@intel.com>
-References: <20210729102803.46289-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210729102803.46289-1-krzysztof.kozlowski@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.184.70.1]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S236942AbhG2Mb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 08:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235692AbhG2Mb0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 08:31:26 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E0FC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 05:31:23 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id gn26so10447802ejc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 05:31:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hev-cc.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pAlRh+wkGLyuqbFE3mr2cV+7ToRtmCbSYmRIkhraGpE=;
+        b=UI0iLaZSvS2VBycjWJ/oRfi0kO5sohzTVNh1WgPnrZKPdTOryFS+e7uxhmd6Z1uBIC
+         CU2dSKnfGAlPK9OM4zTEvLDAJcBSw1df9hlTEZhB9amzZSekW26AIelZyLezbD0c4elT
+         9q8iMeE6novwkdTrpFFKvOFebBVLr7RRVfmYc8zgcuWYilzNNp9nIZOL6MEKOeRgDaCi
+         y1tRwo2yHwlU08DPzyNbU19XpiGdfHKFa54a9hUJ+9M7a9nvNacGZ7VkF6nSQbN4PUNg
+         qu6ciUNGDV/epCrMmYb5lvjd8MtuCgY2rWyVCYjCbDfx4la1A7LB3DJZadO6pb1xLgHX
+         99gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pAlRh+wkGLyuqbFE3mr2cV+7ToRtmCbSYmRIkhraGpE=;
+        b=ol+4gpMHCaHWGxOSxL7WW2EyvqAuxnk3h/IxT/K3kUmIRvLM8QC3cS5tVbECr2THUk
+         AuMEtAevVo/E1HbtJqdnYP0vdR6kWoODc97zg2joBRK32xxrvKX8XC6r4dy8rZ88nI/1
+         e9Io+EJZInjlWqPlwYnn9tIJYVpXa9/8F3MXzoBsiBtW41Tm3xunWlkYv0V0WXC15l8q
+         UE5HxqdDtgJVLCVxCGqmHJ7cOxKPDWnVP2xTnamcY0kM2X6cayLGCFJYE0bt/DK9QvT8
+         z8Q2iHSYk9A1AkCwlaY7otwCn4Icjm1FK8aZpPXwXIzz0CYmYQ2snOFiuEnpv5aUM03l
+         Z8YA==
+X-Gm-Message-State: AOAM533RGwBWr9xPps6oZrTh2eUqo4B9EEK3UiTbcsEQ+M2Ph9K8lStJ
+        A9ztePQwp/dbuR3GZA95yqdywPlVZeAqmipTHl00Og==
+X-Google-Smtp-Source: ABdhPJzGMBIS1kNQcPwfN3izh/E+lCtFwROA5mgT/2cDCtPpqNGrCMPpEJvcQ2dN7IOXHRivD1NKqk+/sc0PwqQIX+k=
+X-Received: by 2002:a17:906:ce4c:: with SMTP id se12mr4515044ejb.292.1627561881596;
+ Thu, 29 Jul 2021 05:31:21 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210729082549.144559-1-wangrui@loongson.cn> <20210729095342.GB8286@alpha.franken.de>
+In-Reply-To: <20210729095342.GB8286@alpha.franken.de>
+From:   hev <r@hev.cc>
+Date:   Thu, 29 Jul 2021 20:31:11 +0800
+Message-ID: <CAHirt9hLATcnSw9HXSo-TZ+buNHJXJvFtJEy56_Bi+mOfckNjw@mail.gmail.com>
+Subject: Re: [RFC PATCH] locking/atomic: arch/mips: Fix atomic{_64,}_sub_if_positive
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Rui Wang <wangrui@loongson.cn>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Thomas,
 
+On Thu, Jul 29, 2021 at 5:53 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Thu, Jul 29, 2021 at 04:25:49PM +0800, Rui Wang wrote:
+> > This looks like a typo and that caused atomic64 test failed.
+> >
+> > Signed-off-by: Rui Wang <wangrui@loongson.cn>
+> > Signed-off-by: hev <r@hev.cc>
+> > ---
+> >  arch/mips/include/asm/atomic.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
+> > index 95e1f7f3597f..a0b9e7c1e4fc 100644
+> > --- a/arch/mips/include/asm/atomic.h
+> > +++ b/arch/mips/include/asm/atomic.h
+> > @@ -206,7 +206,7 @@ ATOMIC_OPS(atomic64, xor, s64, ^=, xor, lld, scd)
+> >   * The function returns the old value of @v minus @i.
+> >   */
+> >  #define ATOMIC_SIP_OP(pfx, type, op, ll, sc)                         \
+> > -static __inline__ int arch_##pfx##_sub_if_positive(type i, pfx##_t * v)      \
+> > +static __inline__ type arch_##pfx##_sub_if_positive(type i, pfx##_t * v)     \
+> >  {                                                                    \
+> >       type temp, result;                                              \
+> >                                                                       \
+>
+> sub_if_postive looks unused to me. Could you send a patch removing it
+> instead ? riscv also has a sub_if_positive implementation, which looks
+> unused.
+I found atomic{_64,}_dec_if_postive is based on sub_if_postive, and
+used in many places:
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Sent: Thursday, July 29, 2021 13:28
-> To: Winkler, Tomas <tomas.winkler@intel.com>; Arnd Bergmann
-> <arnd@arndb.de>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>;
-> linux-kernel@vger.kernel.org
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Subject: [PATCH] mei: constify passed buffers and structures
-> 
-> Buffers and structures passed to MEI bus and client API can be made const
-> for safer code and clear indication that it is not modified.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+kernel/kmod.c:    if (atomic_dec_if_positive(&kmod_concurrent_max) < 0) {
+kernel/kmod.c:
+atomic_dec_if_positive(&kmod_concurrent_max) >= 0,
+kernel/module.c:        ret = atomic_dec_if_positive(&module->refcnt);
+...
+drivers/net/ethernet/mellanox/mlx5/core/eswitch.c:
+atomic64_dec_if_positive(&esw->user_count);
+drivers/net/netdevsim/fib.c:        atomic64_dec_if_positive(&entry->num);
+drivers/net/netdevsim/fib.c:        atomic64_dec_if_positive(&entry->num);
 
-Acked-by: Tomas Winkler <tomas.winkler@intel.com> 
+Are you sure to remove it?
 
-> ---
->  drivers/misc/mei/bus.c     | 18 +++++++++---------
->  drivers/misc/mei/client.h  |  2 +-
->  drivers/misc/mei/mei_dev.h |  2 +-
->  include/linux/mei_cl_bus.h |  9 +++++----
->  4 files changed, 16 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c index
-> 935acc6bbf3c..09188d9afc06 100644
-> --- a/drivers/misc/mei/bus.c
-> +++ b/drivers/misc/mei/bus.c
-> @@ -31,7 +31,7 @@
->   *
->   * Return: written size bytes or < 0 on error
->   */
-> -ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length, u8 vtag,
-> +ssize_t __mei_cl_send(struct mei_cl *cl, const u8 *buf, size_t length,
-> +u8 vtag,
->  		      unsigned int mode)
->  {
->  	struct mei_device *bus;
-> @@ -232,8 +232,8 @@ ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf,
-> size_t length, u8 *vtag,
->   *  * < 0 on error
->   */
-> 
-> -ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, u8 *buf, size_t
-> length,
-> -			    u8 vtag)
-> +ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, const u8 *buf,
-> +			    size_t length, u8 vtag)
->  {
->  	struct mei_cl *cl = cldev->cl;
-> 
-> @@ -296,7 +296,7 @@
-> EXPORT_SYMBOL_GPL(mei_cldev_recv_nonblock_vtag);
->   *  * written size in bytes
->   *  * < 0 on error
->   */
-> -ssize_t mei_cldev_send(struct mei_cl_device *cldev, u8 *buf, size_t length)
-> +ssize_t mei_cldev_send(struct mei_cl_device *cldev, const u8 *buf,
-> +size_t length)
->  {
->  	return mei_cldev_send_vtag(cldev, buf, length, 0);  } @@ -552,7
-> +552,7 @@ EXPORT_SYMBOL_GPL(mei_cldev_ver);
->   *
->   * Return: true if me client is initialized and connected
->   */
-> -bool mei_cldev_enabled(struct mei_cl_device *cldev)
-> +bool mei_cldev_enabled(const struct mei_cl_device *cldev)
->  {
->  	return mei_cl_is_connected(cldev->cl);  } @@ -771,8 +771,8 @@
-> EXPORT_SYMBOL_GPL(mei_cldev_disable);
->   * Return: id on success; NULL if no id is matching
->   */
->  static const
-> -struct mei_cl_device_id *mei_cl_device_find(struct mei_cl_device *cldev,
-> -					    struct mei_cl_driver *cldrv)
-> +struct mei_cl_device_id *mei_cl_device_find(const struct mei_cl_device
-> *cldev,
-> +					    const struct mei_cl_driver *cldrv)
->  {
->  	const struct mei_cl_device_id *id;
->  	const uuid_le *uuid;
-> @@ -815,8 +815,8 @@ struct mei_cl_device_id *mei_cl_device_find(struct
-> mei_cl_device *cldev,
->   */
->  static int mei_cl_device_match(struct device *dev, struct device_driver
-> *drv)  {
-> -	struct mei_cl_device *cldev = to_mei_cl_device(dev);
-> -	struct mei_cl_driver *cldrv = to_mei_cl_driver(drv);
-> +	const struct mei_cl_device *cldev = to_mei_cl_device(dev);
-> +	const struct mei_cl_driver *cldrv = to_mei_cl_driver(drv);
->  	const struct mei_cl_device_id *found_id;
-> 
->  	if (!cldev)
-> diff --git a/drivers/misc/mei/client.h b/drivers/misc/mei/client.h index
-> b12cdcde9436..418056fb1489 100644
-> --- a/drivers/misc/mei/client.h
-> +++ b/drivers/misc/mei/client.h
-> @@ -160,7 +160,7 @@ int mei_cl_vt_support_check(const struct mei_cl
-> *cl);
->   *
->   * Return: true if the host client is connected
->   */
-> -static inline bool mei_cl_is_connected(struct mei_cl *cl)
-> +static inline bool mei_cl_is_connected(const struct mei_cl *cl)
->  {
->  	return  cl->state == MEI_FILE_CONNECTED;  } diff --git
-> a/drivers/misc/mei/mei_dev.h b/drivers/misc/mei/mei_dev.h index
-> b7b6ef344e80..694f866f87ef 100644
-> --- a/drivers/misc/mei/mei_dev.h
-> +++ b/drivers/misc/mei/mei_dev.h
-> @@ -356,7 +356,7 @@ struct mei_hw_ops {
->  /* MEI bus API*/
->  void mei_cl_bus_rescan_work(struct work_struct *work);  void
-> mei_cl_bus_dev_fixup(struct mei_cl_device *dev); -ssize_t
-> __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length, u8 vtag,
-> +ssize_t __mei_cl_send(struct mei_cl *cl, const u8 *buf, size_t length,
-> +u8 vtag,
->  		      unsigned int mode);
->  ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length, u8 *vtag,
->  		      unsigned int mode, unsigned long timeout); diff --git
-> a/include/linux/mei_cl_bus.h b/include/linux/mei_cl_bus.h index
-> 07f5ef8fc456..c6786c12b207 100644
-> --- a/include/linux/mei_cl_bus.h
-> +++ b/include/linux/mei_cl_bus.h
-> @@ -91,12 +91,13 @@ void mei_cldev_driver_unregister(struct
-> mei_cl_driver *cldrv);
->  		      mei_cldev_driver_register,\
->  		      mei_cldev_driver_unregister)
-> 
-> -ssize_t mei_cldev_send(struct mei_cl_device *cldev, u8 *buf, size_t length);
-> +ssize_t mei_cldev_send(struct mei_cl_device *cldev, const u8 *buf,
-> +		       size_t length);
->  ssize_t mei_cldev_recv(struct mei_cl_device *cldev, u8 *buf, size_t length);
-> ssize_t mei_cldev_recv_nonblock(struct mei_cl_device *cldev, u8 *buf,
->  				size_t length);
-> -ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, u8 *buf, size_t
-> length,
-> -			    u8 vtag);
-> +ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, const u8 *buf,
-> +			    size_t length, u8 vtag);
->  ssize_t mei_cldev_recv_vtag(struct mei_cl_device *cldev, u8 *buf, size_t
-> length,
->  			    u8 *vtag);
->  ssize_t mei_cldev_recv_nonblock_vtag(struct mei_cl_device *cldev, u8
-> *buf, @@ -114,6 +115,6 @@ void mei_cldev_set_drvdata(struct
-> mei_cl_device *cldev, void *data);
-> 
->  int mei_cldev_enable(struct mei_cl_device *cldev);  int
-> mei_cldev_disable(struct mei_cl_device *cldev); -bool
-> mei_cldev_enabled(struct mei_cl_device *cldev);
-> +bool mei_cldev_enabled(const struct mei_cl_device *cldev);
-> 
->  #endif /* _LINUX_MEI_CL_BUS_H */
+Regards,
+Rui
+
+>
+> Thomas.
+>
 > --
-> 2.27.0
-
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
