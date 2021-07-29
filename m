@@ -2,186 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672713DAC6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E333DAC70
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 22:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhG2UGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 16:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhG2UG2 (ORCPT
+        id S232707AbhG2UH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 16:07:28 -0400
+Received: from mail-il1-f170.google.com ([209.85.166.170]:37732 "EHLO
+        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhG2UH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:06:28 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09040C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:06:25 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id n12so8358906wrr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 13:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=orEZU3YWRIPfL2Wlo/hgQ+Zfxy//ARMfeeEtYN2miI0=;
-        b=PHWtzWLZg/vbTbQwYSj9IVbigjXSpJz3+iGNDaCdmA37AA6pP3syQ3E8yVXt68ROkE
-         aT8+vP0/8KJmJ+4k5mVW5KoISPAQt9mYRbmKPV9ZkUbbM0dhbjYoNZwScDKdjbQvCIs1
-         u37eDD4NLuI4LW8LS3TdsbbTETZ74+2me2IW0GFUfBzNk14ESFTjmUYxIEJ9wOf5JXE/
-         d1NT82q8XGYdqq2g32qHQYqT5v36KZ9EOcQ5EaDX6RTwSw5f6SScBQjmgykMu9H3lbJM
-         u/W7EFBHVtA2SVbYeGLgx+qczGGs+ePR2CUAj+6SwhW9R9mbyvxwPvNFJFgJ5bmm8ycV
-         6Kiw==
+        Thu, 29 Jul 2021 16:07:26 -0400
+Received: by mail-il1-f170.google.com with SMTP id f8so3854755ilr.4;
+        Thu, 29 Jul 2021 13:07:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=orEZU3YWRIPfL2Wlo/hgQ+Zfxy//ARMfeeEtYN2miI0=;
-        b=Ydgu3G/D9OJllPJaACCqHMkOFoCyiEOyYla0htZHcEtNlvKCO0/FOqoEnsDCTivtut
-         tl+u4s7Uv0zhTgJQz3EKiWIbJg+FexhCLLKmkkbftiv1fTcYc+yQsMIF5uDGGrf8jDwS
-         jnnPv9k0/ZB8nS7Fsr5pSr6SarRqk03gRoCuAwubK9KFZZmVLjEiJnuQ/p1s71VuFP2W
-         IB5mwOqoVrQ7Yc5laS+q2hR2nNYXqFBP5Rmi1KujMfBC1wK5T3yHuaKo726wtbQlzCSJ
-         zvC8sDhrLiOEzinxWbnZOlcUMPRYpKAuwSbOA/U5l7TR95gm3AcveZEm7SNeHTTs61c6
-         iRVA==
-X-Gm-Message-State: AOAM532BVHCeP1kg0P5RnZQzI2laKTpC+a5JtW+nneQMtaCEhZLQjL7M
-        EsorewwihDvSDFdeBhoMzKlkjN5L3DlYkgxR
-X-Google-Smtp-Source: ABdhPJwz51aKsXX7yYtXDXB43ennBdi6yWs9BV+AnNUgLR/wq7FEawLfPiAsm7CvVooy4myXa977cg==
-X-Received: by 2002:a5d:63d1:: with SMTP id c17mr6618159wrw.328.1627589183227;
-        Thu, 29 Jul 2021 13:06:23 -0700 (PDT)
-Received: from [192.168.1.12] (host-80-41-121-59.as13285.net. [80.41.121.59])
-        by smtp.gmail.com with ESMTPSA id j13sm7796608wms.24.2021.07.29.13.06.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 13:06:22 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210729183942.2839925-1-robdclark@gmail.com>
-From:   Caleb Connolly <caleb.connolly@linaro.org>
-Message-ID: <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
-Date:   Thu, 29 Jul 2021 21:06:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AjVi3HOc38IAipi+bfXo+kMMpn3RMH+B6clxAHAb76c=;
+        b=diS03Qh+JP08PNujP02dFLghxhKZctYclgD0x2OKx3p1/OvTlE6bBakdYh+7O2krBI
+         b++MJZBsx+EZnKJ7dXBPgVQS1fibdN690evK0/uBGtkhiueVUpVpVAubPYf+9xIDIT96
+         JSRBgDIFaEp/waS+oiWHn5mREvu7+T1Y8Zh5wykTfEkNs0BbuENoIdPWLgtQzvauixtv
+         G/0dS9oeVu/8dfL1BC8hoP1b2Fe+imyR6OdzvdI+aaUtf/WbFYUQZiq+RVONbXStqDId
+         ZlNVC33J0gnONjTyecLKF4s/R0hPSAo1Vk/uhvdxJe2tIALEELKeaHWpltyjutC7l1hX
+         +81A==
+X-Gm-Message-State: AOAM53290kCGAfmTLWuBXYkTuoQgpMm+iC8WxCg5ZK9ALge83q8+tK7H
+        QAmp8Pj+NmYRRDpTDaC7qw==
+X-Google-Smtp-Source: ABdhPJz76WIWBBBfztDGL8PIe0R0FGSKx3wBqv/ZmLHj4fOZfYzL+kYtnOZ4BZTXgeNN0IKjggBTQg==
+X-Received: by 2002:a92:c5c2:: with SMTP id s2mr4986347ilt.180.1627589242144;
+        Thu, 29 Jul 2021 13:07:22 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id p14sm2400419ilo.6.2021.07.29.13.07.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 13:07:21 -0700 (PDT)
+Received: (nullmailer pid 797014 invoked by uid 1000);
+        Thu, 29 Jul 2021 20:07:20 -0000
+Date:   Thu, 29 Jul 2021 14:07:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH 01/15] dt-bindings: mtd: update mtd-physmap.yaml reference
+Message-ID: <YQMKeA4uO/3Rs01Y@robh.at.kernel.org>
+References: <cover.1626947923.git.mchehab+huawei@kernel.org>
+ <ab2ff9ee66110c37691b467ec8b4679e9d426416.1626947923.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210729183942.2839925-1-robdclark@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab2ff9ee66110c37691b467ec8b4679e9d426416.1626947923.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above 
-the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more 
-aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
-
-Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable 
-at the higher frequencies.
-
-Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in 
-glxgear.
-
-I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run 
-at the voltage the hardware needs to be stable.
-
-Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have 
-CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
-
-
-On 29/07/2021 19:39, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Thu, 22 Jul 2021 11:59:58 +0200, Mauro Carvalho Chehab wrote:
+> Changeset 63f8e9e0ac65 ("dt-bindings: mtd: Convert mtd-physmap to DT schema")
+> renamed: Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> to: Documentation/devicetree/bindings/mtd/mtd-physmap.yaml.
 > 
-> The more frequent frequency transitions resulting from clamping freq to
-> minimum when the GPU is idle seems to be causing some issue with the bus
-> getting voted off when it should be on.  (An enable racing with an async
-> disable?)  This might be a problem outside of the GPU, as I can't
-> reproduce this on a618 which uses the same GMU fw and same mechanism to
-> communicate with GMU to set opp.  For now, just revert to previous
-> devfreq behavior on a630 until the issue is understood.
+> Update its cross-reference accordingly.
 > 
-> Reported-by: Caleb Connolly <caleb.connolly@linaro.org>
-> Fixes: 9bc95570175a ("drm/msm: Devfreq tuning")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Fixes: 63f8e9e0ac65 ("dt-bindings: mtd: Convert mtd-physmap to DT schema")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->   drivers/gpu/drm/msm/adreno/adreno_gpu.c |  3 +++
->   drivers/gpu/drm/msm/msm_gpu.h           |  2 ++
->   drivers/gpu/drm/msm/msm_gpu_devfreq.c   | 12 ++++++++++++
->   3 files changed, 17 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index 748665232d29..9fd08b413010 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -945,6 +945,9 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->   	pm_runtime_use_autosuspend(dev);
->   	pm_runtime_enable(dev);
->   
-> +	if (adreno_is_a630(adreno_gpu))
-> +		gpu->devfreq.disable_freq_clamping = true;
-> +
->   	return msm_gpu_init(drm, pdev, &adreno_gpu->base, &funcs->base,
->   			adreno_gpu->info->name, &adreno_gpu_config);
->   }
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-> index 0e4b45bff2e6..7e11b667f939 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> @@ -112,6 +112,8 @@ struct msm_gpu_devfreq {
->   	 * it is inactive.
->   	 */
->   	unsigned long idle_freq;
-> +
-> +	bool disable_freq_clamping;
->   };
->   
->   struct msm_gpu {
-> diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> index 0a1ee20296a2..a832af436251 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> +++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> @@ -94,6 +94,12 @@ void msm_devfreq_init(struct msm_gpu *gpu)
->   	if (!gpu->funcs->gpu_busy)
->   		return;
->   
-> +	/* Revert to previous polling interval if we aren't using freq clamping
-> +	 * to preserve previous behavior
-> +	 */
-> +	if (gpu->devfreq.disable_freq_clamping)
-> +		msm_devfreq_profile.polling_ms = 10;
-> +
->   	msm_devfreq_profile.initial_freq = gpu->fast_rate;
->   
->   	/*
-> @@ -151,6 +157,9 @@ void msm_devfreq_active(struct msm_gpu *gpu)
->   	unsigned int idle_time;
->   	unsigned long target_freq = df->idle_freq;
->   
-> +	if (gpu->devfreq.disable_freq_clamping)
-> +		return;
-> +
->   	/*
->   	 * Hold devfreq lock to synchronize with get_dev_status()/
->   	 * target() callbacks
-> @@ -186,6 +195,9 @@ void msm_devfreq_idle(struct msm_gpu *gpu)
->   	struct msm_gpu_devfreq *df = &gpu->devfreq;
->   	unsigned long idle_freq, target_freq = 0;
->   
-> +	if (gpu->devfreq.disable_freq_clamping)
-> +		return;
-> +
->   	/*
->   	 * Hold devfreq lock to synchronize with get_dev_status()/
->   	 * target() callbacks
+>  Documentation/devicetree/bindings/mtd/gpmc-nor.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
 
--- 
-Kind Regards,
-Caleb (they/them)
+Applied, thanks!
