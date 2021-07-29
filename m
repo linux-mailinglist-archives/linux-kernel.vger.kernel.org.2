@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A1E3D9B63
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFC03D9B68
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 04:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233399AbhG2B7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 21:59:15 -0400
-Received: from mail-pl1-f181.google.com ([209.85.214.181]:42797 "EHLO
-        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233241AbhG2B7O (ORCPT
+        id S233300AbhG2CBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 22:01:00 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7888 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233162AbhG2CA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 21:59:14 -0400
-Received: by mail-pl1-f181.google.com with SMTP id t3so2929816plg.9;
-        Wed, 28 Jul 2021 18:59:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/EMnvbg1lkcKUNHoTGAUlLRl80RwVqD1WDQs78+Ryng=;
-        b=T9QUZci9xRPUsyFylgg8iNO/vYQvXXH1GjnR9a+ORlVU3giTSq46ZzzVStYhQzQyVX
-         mOLRviPqB0U0VzfefMBPrH2zxRJ8GXRxTSnReCaP7uZGRjeqYbmTj93lORJJYJYJ+UWt
-         spwGognRDV14UtNOyYroC6Y6TKIm0ruPupWUwVNOCUMrsBxsb31ONXNerdH/j3a918F6
-         b1iQAdIoESQs2Q/T/v45hA59MGszluDk35P6uZRV+9iIQLaLnO8CBrwXv8iBRKbboxGV
-         uMTQpXMyK7EDxu9YSaNqUtqbtZszoI002WWUymzMfCKU66bgkqv4ECGRQIqAtlfHSLyw
-         K/9A==
-X-Gm-Message-State: AOAM532Ht9g9o9CnvXn1jL8DQg1Vp5ec/nrS1+YgPRE2L2uysG8WfphN
-        eGEAyBFxq8vZAXzvyRBjlEk=
-X-Google-Smtp-Source: ABdhPJwy46rGfGzBPHT0dDc2OF3JHAeIdHBXsVA3/Hjfoi4OURPDSpbVi+xEgy37JuU2Z3C+YFQFpw==
-X-Received: by 2002:aa7:93dc:0:b029:328:d6c9:cae7 with SMTP id y28-20020aa793dc0000b0290328d6c9cae7mr2579458pff.53.1627523950822;
-        Wed, 28 Jul 2021 18:59:10 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:9eeb:60dc:7a3c:6558? ([2601:647:4000:d7:9eeb:60dc:7a3c:6558])
-        by smtp.gmail.com with ESMTPSA id z16sm1344383pgu.21.2021.07.28.18.59.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 18:59:10 -0700 (PDT)
-Subject: Re: [PATCH 19/64] ip: Use struct_group() for memcpy() regions
-To:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-20-keescook@chromium.org> <YQDxaYrHu0PeBIuX@kroah.com>
- <202107281358.8E12638@keescook>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <45855f4f-f7cf-b7b3-bcd6-c9ebc3a55c64@acm.org>
-Date:   Wed, 28 Jul 2021 18:59:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 28 Jul 2021 22:00:57 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZtv72w4zz81YK;
+        Thu, 29 Jul 2021 09:57:07 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 10:00:53 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 10:00:51 +0800
+Subject: Re: [PATCH v2 5/7] kallsyms: Rename is_kernel() and is_kernel_text()
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <mingo@redhat.com>, <davem@davemloft.net>, <ast@kernel.org>,
+        <ryabinin.a.a@gmail.com>, <mpe@ellerman.id.au>,
+        <benh@kernel.crashing.org>, <paulus@samba.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nathan Chancellor <nathan@kernel.org>, <bpf@vger.kernel.org>
+References: <20210728081320.20394-1-wangkefeng.wang@huawei.com>
+ <20210728081320.20394-6-wangkefeng.wang@huawei.com>
+ <20210728112836.289865f5@oasis.local.home>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <1551f9cc-eaf8-efef-0590-e2549eebe4ae@huawei.com>
+Date:   Thu, 29 Jul 2021 10:00:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <202107281358.8E12638@keescook>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210728112836.289865f5@oasis.local.home>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 2:01 PM, Kees Cook wrote:
-> On Wed, Jul 28, 2021 at 07:55:53AM +0200, Greg Kroah-Hartman wrote:
->>>  struct ethhdr {
->>> -	unsigned char	h_dest[ETH_ALEN];	/* destination eth addr	*/
->>> -	unsigned char	h_source[ETH_ALEN];	/* source ether addr	*/
->>> +	union {
->>> +		struct {
->>> +			unsigned char h_dest[ETH_ALEN];	  /* destination eth addr */
->>> +			unsigned char h_source[ETH_ALEN]; /* source ether addr	  */
->>> +		};
->>> +		struct {
->>> +			unsigned char h_dest[ETH_ALEN];	  /* destination eth addr */
->>> +			unsigned char h_source[ETH_ALEN]; /* source ether addr	  */
->>> +		} addrs;
->>
->> A union of the same fields in the same structure in the same way?
->>
->> Ah, because struct_group() can not be used here?  Still feels odd to see
->> in a userspace-visible header.
-> 
-> Yeah, there is some inconsistency here. I will clean this up for v2.
-> 
-> Is there a place we can put kernel-specific macros for use in UAPI
-> headers? (I need to figure out where things like __kernel_size_t get
-> defined...)
 
-How about using two memset() calls to clear h_dest[] and h_source[]
-instead of modifying the uapi header?
+On 2021/7/28 23:28, Steven Rostedt wrote:
+> On Wed, 28 Jul 2021 16:13:18 +0800
+> Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>
+>> The is_kernel[_text]() function check the address whether or not
+>> in kernel[_text] ranges, also they will check the address whether
+>> or not in gate area, so use better name.
+> Do you know what a gate area is?
+>
+> Because I believe gate area is kernel text, so the rename just makes it
+> redundant and more confusing.
 
-Thanks,
+Yes, the gate area(eg, vectors part on ARM32, similar on x86/ia64) is 
+kernel text.
 
-Bart.
+I want to keep the 'basic' section boundaries check, which only check 
+the start/end
 
+of sections, all in section.h,  could we use 'generic' or 'basic' or 
+'core' in the naming?
 
+  * is_kernel_generic_data()	--- come from core_kernel_data() in kernel.h
+  * is_kernel_generic_text()
+
+The old helper could remain unchanged, any suggestion, thanks.
+
+>
+> -- Steve
+> .
+>
