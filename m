@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908043DA16A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1B83DA16C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 12:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236145AbhG2Kni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 06:43:38 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3518 "EHLO
+        id S236195AbhG2Knu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 06:43:50 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3519 "EHLO
         frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235607AbhG2Knh (ORCPT
+        with ESMTP id S229591AbhG2Kns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:43:37 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gb6F30FB3z6GDSW;
-        Thu, 29 Jul 2021 18:28:23 +0800 (CST)
+        Thu, 29 Jul 2021 06:43:48 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gb6FJ0kqvz6GDTD;
+        Thu, 29 Jul 2021 18:28:36 +0800 (CST)
 Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 12:43:31 +0200
+ 15.1.2176.2; Thu, 29 Jul 2021 12:43:44 +0200
 Received: from A2006125610.china.huawei.com (10.47.90.183) by
  lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 11:43:24 +0100
+ 15.1.2176.2; Thu, 29 Jul 2021 11:43:37 +0100
 From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
 To:     <linux-arm-kernel@lists.infradead.org>,
         <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
@@ -31,10 +31,12 @@ CC:     <maz@kernel.org>, <will@kernel.org>, <catalin.marinas@arm.com>,
         <suzuki.poulose@arm.com>, <jean-philippe@linaro.org>,
         <Alexandru.Elisei@arm.com>, <qperret@google.com>,
         <linuxarm@huawei.com>
-Subject: [PATCH v3 0/4] kvm/arm: New VMID allocator based on asid
-Date:   Thu, 29 Jul 2021 11:40:05 +0100
-Message-ID: <20210729104009.382-1-shameerali.kolothum.thodi@huawei.com>
+Subject: [PATCH v3 1/4] KVM: arm64: Introduce a new VMID allocator for KVM
+Date:   Thu, 29 Jul 2021 11:40:06 +0100
+Message-ID: <20210729104009.382-2-shameerali.kolothum.thodi@huawei.com>
 X-Mailer: git-send-email 2.12.0.windows.1
+In-Reply-To: <20210729104009.382-1-shameerali.kolothum.thodi@huawei.com>
+References: <20210729104009.382-1-shameerali.kolothum.thodi@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
@@ -46,99 +48,221 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+A new VMID allocator for arm64 KVM use. This is based on
+arm64 ASID allocator algorithm.
 
-Major changes since v2 (Based on Will's feedback)
-  -Dropped adding a new static key and cpufeature for retrieving
-   supported VMID bits. Instead, we now make use of the 
-   kvm_arm_vmid_bits variable (patch #2).
+One major deviation from the ASID allocator is the way we
+flush the context. Unlike ASID allocator, we expect less
+frequent rollover in the case of VMIDs. Hence, instead of
+marking the CPU as flush_pending and issuing a local context
+invalidation on the next context switch, we broadcast TLB
+flush + I-cache invalidation over the inner shareable domain
+on rollover.
 
-  -Since we expect less frequent rollover in the case of VMIDs,
-   the TLB invalidation is now broadcasted on rollover instead
-   of keeping per CPU flush_pending info and issuing a local
-   context flush.  
-
- -Clear active_vmids on vCPU schedule out to avoid unnecessarily
-  reserving the VMID space(patch #3). 
-
- -I have kept the struct kvm_vmid as it is for now(instead of a
-  typedef as suggested), as we may soon add another variable to
-  it when we introduce Pinned KVM VMID support.
-
-Sanity tested on HiSilicon D06 board.
-
-Thanks,
-Shameer
-
-
-RFCv1 --> v2
-   - Dropped "pinned VMID" support for now.
-   - Dropped RFC tag.
-
-History(from RFC v1):
--------------------
-
-Please find the RFC series here,
-https://lore.kernel.org/kvmarm/20210506165232.1969-1-shameerali.kolothum.thodi@huawei.com/
-
-This is based on a suggestion from Will [0] to try out the asid
-based kvm vmid solution as a separate VMID allocator instead of
-the shared lib approach attempted in v4[1].
-
-The idea is to compare both the approaches and see whether the
-shared lib solution with callbacks make sense or not. 
-
-Though we are not yet using the pinned vmids yet, patch #2 has
-code for pinned vmid support. This is just to help the comparison.
-
-Test Setup/Results
-----------------
-The measurement was made with maxcpus set to 8 and with the
-number of VMID limited to 4-bit. The test involves running
-concurrently 40 guests with 2 vCPUs. Each guest will then
-execute hackbench 5 times before exiting.
-
-The performance difference between the current algo and the
-new one are(avg. of 10 runs):
-    - 1.9% less entry/exit from the guest
-    - 0.5% faster
-
-This is more or less comparable to v4 numbers.
-
-For the complete series, please see,
-https://github.com/hisilicon/kernel-dev/tree/private-v5.12-rc7-vmid-2nd-rfc
-
-and for the shared asid lib v4 solution,
-https://github.com/hisilicon/kernel-dev/tree/private-v5.12-rc7-asid-v4
-
-As you can see there are ofcourse code duplication with this
-approach but may be it is more easy to maintain considering
-the complexity involved.
-
-Please take a look and let me know your feedback.
-
-Thanks,
-Shameer
-
-Julien Grall (1):
-  KVM: arm64: Align the VMID allocation with the arm64 ASID one
-
-Shameer Kolothum (3):
-  KVM: arm64: Introduce a new VMID allocator for KVM
-  KVM: arm64: Make VMID bits accessible outside of allocator
-  KVM: arm64: Clear active_vmids on vCPU schedule out
-
- arch/arm64/include/asm/kvm_host.h     |  10 +-
- arch/arm64/include/asm/kvm_mmu.h      |   4 +-
- arch/arm64/kernel/image-vars.h        |   3 +
- arch/arm64/kvm/Makefile               |   2 +-
- arch/arm64/kvm/arm.c                  | 122 +++++------------
- arch/arm64/kvm/hyp/nvhe/mem_protect.c |   3 +-
- arch/arm64/kvm/mmu.c                  |   1 -
- arch/arm64/kvm/vmid.c                 | 182 ++++++++++++++++++++++++++
- 8 files changed, 228 insertions(+), 99 deletions(-)
+Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+---
+ arch/arm64/include/asm/kvm_host.h |   4 +
+ arch/arm64/kvm/vmid.c             | 176 ++++++++++++++++++++++++++++++
+ 2 files changed, 180 insertions(+)
  create mode 100644 arch/arm64/kvm/vmid.c
 
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 41911585ae0c..9df15811e7df 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -685,6 +685,10 @@ int kvm_arm_pvtime_get_attr(struct kvm_vcpu *vcpu,
+ int kvm_arm_pvtime_has_attr(struct kvm_vcpu *vcpu,
+ 			    struct kvm_device_attr *attr);
+ 
++int kvm_arm_vmid_alloc_init(void);
++void kvm_arm_vmid_alloc_free(void);
++void kvm_arm_vmid_update(struct kvm_vmid *kvm_vmid);
++
+ static inline void kvm_arm_pvtime_vcpu_init(struct kvm_vcpu_arch *vcpu_arch)
+ {
+ 	vcpu_arch->steal.base = GPA_INVALID;
+diff --git a/arch/arm64/kvm/vmid.c b/arch/arm64/kvm/vmid.c
+new file mode 100644
+index 000000000000..b2dc12549405
+--- /dev/null
++++ b/arch/arm64/kvm/vmid.c
+@@ -0,0 +1,176 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * VMID allocator.
++ *
++ * Based on Arm64 ASID allocator algorithm.
++ * Please refer arch/arm64/mm/context.c for detailed
++ * comments on algorithm.
++ *
++ * Copyright (C) 2002-2003 Deep Blue Solutions Ltd, all rights reserved.
++ * Copyright (C) 2012 ARM Ltd.
++ */
++
++#include <linux/bitfield.h>
++#include <linux/bitops.h>
++
++#include <asm/kvm_asm.h>
++#include <asm/kvm_mmu.h>
++
++static unsigned int kvm_arm_vmid_bits;
++static DEFINE_RAW_SPINLOCK(cpu_vmid_lock);
++
++static atomic64_t vmid_generation;
++static unsigned long *vmid_map;
++
++static DEFINE_PER_CPU(atomic64_t, active_vmids);
++static DEFINE_PER_CPU(u64, reserved_vmids);
++
++#define VMID_MASK		(~GENMASK(kvm_arm_vmid_bits - 1, 0))
++#define VMID_FIRST_VERSION	(1UL << kvm_arm_vmid_bits)
++
++#define NUM_USER_VMIDS		VMID_FIRST_VERSION
++#define vmid2idx(vmid)		((vmid) & ~VMID_MASK)
++#define idx2vmid(idx)		vmid2idx(idx)
++
++#define vmid_gen_match(vmid) \
++	(!(((vmid) ^ atomic64_read(&vmid_generation)) >> kvm_arm_vmid_bits))
++
++static void flush_context(void)
++{
++	int cpu;
++	u64 vmid;
++
++	bitmap_clear(vmid_map, 0, NUM_USER_VMIDS);
++
++	for_each_possible_cpu(cpu) {
++		vmid = atomic64_xchg_relaxed(&per_cpu(active_vmids, cpu), 0);
++
++		/* Preserve reserved VMID */
++		if (vmid == 0)
++			vmid = per_cpu(reserved_vmids, cpu);
++		__set_bit(vmid2idx(vmid), vmid_map);
++		per_cpu(reserved_vmids, cpu) = vmid;
++	}
++
++	/*
++	 * Unlike ASID allocator, we expect less frequent rollover in
++	 * case of VMIDs. Hence, instead of marking the CPU as
++	 * flush_pending and issuing a local context invalidation on
++	 * the next context-switch, we broadcast TLB flush + I-cache
++	 * invalidation over the inner shareable domain on rollover.
++	 */
++	 kvm_call_hyp(__kvm_flush_vm_context);
++}
++
++static bool check_update_reserved_vmid(u64 vmid, u64 newvmid)
++{
++	int cpu;
++	bool hit = false;
++
++	/*
++	 * Iterate over the set of reserved VMIDs looking for a match
++	 * and update to use newvmid (i.e. the same VMID in the current
++	 * generation).
++	 */
++	for_each_possible_cpu(cpu) {
++		if (per_cpu(reserved_vmids, cpu) == vmid) {
++			hit = true;
++			per_cpu(reserved_vmids, cpu) = newvmid;
++		}
++	}
++
++	return hit;
++}
++
++static u64 new_vmid(struct kvm_vmid *kvm_vmid)
++{
++	static u32 cur_idx = 1;
++	u64 vmid = atomic64_read(&kvm_vmid->id);
++	u64 generation = atomic64_read(&vmid_generation);
++
++	if (vmid != 0) {
++		u64 newvmid = generation | (vmid & ~VMID_MASK);
++
++		if (check_update_reserved_vmid(vmid, newvmid))
++			return newvmid;
++
++		if (!__test_and_set_bit(vmid2idx(vmid), vmid_map))
++			return newvmid;
++	}
++
++	vmid = find_next_zero_bit(vmid_map, NUM_USER_VMIDS, cur_idx);
++	if (vmid != NUM_USER_VMIDS)
++		goto set_vmid;
++
++	/* We're out of VMIDs, so increment the global generation count */
++	generation = atomic64_add_return_relaxed(VMID_FIRST_VERSION,
++						 &vmid_generation);
++	flush_context();
++
++	/* We have more VMIDs than CPUs, so this will always succeed */
++	vmid = find_next_zero_bit(vmid_map, NUM_USER_VMIDS, 1);
++
++set_vmid:
++	__set_bit(vmid, vmid_map);
++	cur_idx = vmid;
++	return idx2vmid(vmid) | generation;
++}
++
++void kvm_arm_vmid_update(struct kvm_vmid *kvm_vmid)
++{
++	unsigned long flags;
++	unsigned int cpu;
++	u64 vmid, old_active_vmid;
++
++	vmid = atomic64_read(&kvm_vmid->id);
++
++	/*
++	 * Please refer comments in check_and_switch_context() in
++	 * arch/arm64/mm/context.c.
++	 */
++	old_active_vmid = atomic64_read(this_cpu_ptr(&active_vmids));
++	if (old_active_vmid && vmid_gen_match(vmid) &&
++	    atomic64_cmpxchg_relaxed(this_cpu_ptr(&active_vmids),
++				     old_active_vmid, vmid))
++		return;
++
++	raw_spin_lock_irqsave(&cpu_vmid_lock, flags);
++
++	/* Check that our VMID belongs to the current generation. */
++	vmid = atomic64_read(&kvm_vmid->id);
++	if (!vmid_gen_match(vmid)) {
++		vmid = new_vmid(kvm_vmid);
++		atomic64_set(&kvm_vmid->id, vmid);
++	}
++
++	cpu = smp_processor_id();
++
++	atomic64_set(this_cpu_ptr(&active_vmids), vmid);
++	raw_spin_unlock_irqrestore(&cpu_vmid_lock, flags);
++}
++
++/*
++ * Initialize the VMID allocator
++ */
++int kvm_arm_vmid_alloc_init(void)
++{
++	kvm_arm_vmid_bits = kvm_get_vmid_bits();
++
++	/*
++	 * Expect allocation after rollover to fail if we don't have
++	 * at least one more VMID than CPUs. VMID #0 is always reserved.
++	 */
++	WARN_ON(NUM_USER_VMIDS - 1 <= num_possible_cpus());
++	atomic64_set(&vmid_generation, VMID_FIRST_VERSION);
++	vmid_map = kcalloc(BITS_TO_LONGS(NUM_USER_VMIDS),
++			   sizeof(*vmid_map), GFP_KERNEL);
++	if (!vmid_map)
++		return -ENOMEM;
++
++	return 0;
++}
++
++void kvm_arm_vmid_alloc_free(void)
++{
++	kfree(vmid_map);
++}
 -- 
 2.17.1
 
