@@ -2,547 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B23E3D9CDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178A53D9CE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 06:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbhG2Elq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 00:41:46 -0400
-Received: from mail-pj1-f48.google.com ([209.85.216.48]:39755 "EHLO
-        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbhG2Elk (ORCPT
+        id S233705AbhG2EpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 00:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233540AbhG2EpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 00:41:40 -0400
-Received: by mail-pj1-f48.google.com with SMTP id k4-20020a17090a5144b02901731c776526so13599282pjm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 21:41:38 -0700 (PDT)
+        Thu, 29 Jul 2021 00:45:00 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98EDC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 21:44:57 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id u15-20020a05600c19cfb02902501bdb23cdso5900951wmq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Jul 2021 21:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=u83h2L86nsZYv8NbsUw74aEmeDWcUY3MuHoKCqJtf3Q=;
+        b=osuOOAGzKZCQN2G6lLQxjelORkW+B702aR8NElkuPml+50JPAG1/hjCVIQuvpSDC6x
+         xkhOX4ycDxb5l+LTI3Y7jd18fGTbG+Vy5qHmMc/UAS05vmYWu6agpe8oxhsTM0WmzDwR
+         oKrWjZK/4zhTudepws6vmrRtbvk3kG8jaDP1DvrJ09MPljsU8NrfS2w5nDYYA0XuTHfA
+         D/8VtQGvWSqx7bLPEcws5G4+6a/UOIJ/5beHmU4FwL6sx8NmTU6VnrPLWmFP0KB7tvgj
+         mln5JvqQsNOGMEIkxZBbEwGB98HLaUnokYNopUabJOTvMOD3nlyX7vlwXWDUKnHpXGj3
+         56Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=j7afIPVy5Vq0vvbFvjc6gUAvV5MZBN34Wkvs9Tm8Hx0=;
-        b=qQzdeTxAy8AfjsWtl4LRhLSaM1U6ASLO6ZT1FRlDa/t8vgT/bKNFq5GGMMEZ4giXdv
-         Q5839+9QxLE1cSnCyTIic2DZSk1AQxx02GSZ8d24du9gYAtufsOVjFNw/hJC4Jv9j9XS
-         kWhfesr2jteUnHk8Pr+e9V5UIYqalEYnIAEjtIWVaItDwx7QD8MMTs0bED2iA83VanNO
-         jraoB5trz2WI/Dod3wRKztpP9w9fMDPx4/tJiO/PKuSAAfm95ObCROqkdEQcKaqwVclI
-         FXMXzBSxx5gQSl/yuV9gvw6LuO+E2tR44Nomu5+CgtTwEtsLRmthAm0irlUUzTe1con7
-         tvFA==
-X-Gm-Message-State: AOAM532VoNtkY/fwH9lXzDxZPreyR4El6Ic3nNno+YseHQiamHcdgVFh
-        pgi23niqYgv5zE/KWUmao+8=
-X-Google-Smtp-Source: ABdhPJzNOR9YQZ8II1j9kTfqfznVgSGiP10Y/fLP2OGGGQhjhulAO1FF4/JfosDJk8Qu4qC0k4lkug==
-X-Received: by 2002:a63:7209:: with SMTP id n9mr2214615pgc.253.1627533697735;
-        Wed, 28 Jul 2021 21:41:37 -0700 (PDT)
-Received: from asus.hsd1.ca.comcast.net ([2601:647:4000:d7:9eeb:60dc:7a3c:6558])
-        by smtp.gmail.com with ESMTPSA id dw15sm1415405pjb.42.2021.07.28.21.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 21:41:37 -0700 (PDT)
-From:   Bart Van Assche <bvanassche@acm.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bodo Stroesser <bostroesser@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Yanko Kaneti <yaneti@declera.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-Subject: [PATCH v2 3/3] configfs: Add unit tests
-Date:   Wed, 28 Jul 2021 21:41:25 -0700
-Message-Id: <20210729044125.7435-4-bvanassche@acm.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729044125.7435-1-bvanassche@acm.org>
-References: <20210729044125.7435-1-bvanassche@acm.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=u83h2L86nsZYv8NbsUw74aEmeDWcUY3MuHoKCqJtf3Q=;
+        b=OzLw4Hop30SEKVQhzvGeLS/0O70DEaCCfJLgS7fG+0FQonPjdh9wydnrcvRT6JAQfj
+         67ZQuCroudsT7afywjvME1CBH4fE2dZnNiqZksBHDEAABLgPwV0VT0jASc6tsImihtBP
+         kX2jNpwvlbh842hHeDTnzmLe0I51QywQwQK8yrfJSVQ7cHoZmm3+8bXm8hNO7y5tdcqg
+         +AkwcAu8+3KXIXLuX3csQeRS3sLUNhe9zRWQIK2pNjzf0UvRIoRcav+wbowna7Bqm2f3
+         PUYyPjpueUcVWu40NwXMqrW9wB8OhRvct+DmUyUuWqwo+29Pb4/EOjhO6B9D0UOLAnnX
+         /VAw==
+X-Gm-Message-State: AOAM532UeD9TPUg6+giVtdhnfFz38XisIoEylOeqIo6Ml0IIhIgSQhZ0
+        evZBQiYTySsiMoXUZB2KiY7Bmm+7kvklqKXlNKYWeQ==
+X-Google-Smtp-Source: ABdhPJx3AQqf4zvFFpHRKjBF4rtaCGTSInvaYCd5ZKGhNsldGk+5Zhf+1VA69+8ubyBIdHyyBLnabPeEhNqmszyblZM=
+X-Received: by 2002:a05:600c:b46:: with SMTP id k6mr2719010wmr.134.1627533896307;
+ Wed, 28 Jul 2021 21:44:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <mhng-6c25dda6-4c85-447c-ad9c-7641f2858b10@palmerdabbelt-glaptop> <mhng-40d64bc7-5a95-4a16-af45-1d7fd7c6167e@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-40d64bc7-5a95-4a16-af45-1d7fd7c6167e@palmerdabbelt-glaptop>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 29 Jul 2021 10:14:44 +0530
+Message-ID: <CAAhSdy2rvi1v4Txbd18JE6pad+iW8resE8_6+7ZnNiQKUMhgkQ@mail.gmail.com>
+Subject: Re: [PATCH v7 1/1] RISC-V: Use SBI SRST extension when available
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Testing configfs read and write behavior is non-trivial and tedious.
-Hence these configfs kunit tests that make it easier to test configfs
-text and binary attribute support. This is how I run these tests:
+On Thu, Jul 29, 2021 at 10:00 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Sun, 11 Jul 2021 11:59:33 PDT (-0700), Palmer Dabbelt wrote:
+> > On Fri, 09 Jul 2021 22:01:02 PDT (-0700), Anup Patel wrote:
+> >>
+> >>
+> >> =EF=BB=BFOn 08/07/21, 9:22 AM, "Anup Patel" <anup@brainfault.org> wrot=
+e:
+> >>
+> >>     On Wed, Jul 7, 2021 at 1:57 AM Palmer Dabbelt <palmerdabbelt@googl=
+e.com> wrote:
+> >>     >
+> >>     > On Mon, 21 Jun 2021 21:46:46 PDT (-0700), anup@brainfault.org wr=
+ote:
+> >>     > > Hi Palmer,
+> >>     > >
+> >>     > > On Wed, Jun 9, 2021 at 5:43 PM Anup Patel <anup.patel@wdc.com>=
+ wrote:
+> >>     > >>
+> >>     > >> The SBI SRST extension provides a standard way to poweroff an=
+d
+> >>     > >> reboot the system irrespective to whether Linux RISC-V S-mode
+> >>     > >> is running natively (HS-mode) or inside Guest/VM (VS-mode).
+> >>     > >>
+> >>     > >> The SBI SRST extension is available in the SBI v0.3 specifica=
+tion.
+> >>     > >> (Refer, https://github.com/riscv/riscv-sbi-doc/releases/tag/v=
+0.3.0-rc1)
+> >>     > >
+> >>     > > Can you please consider this patch for Linux-5.14-rc1 ?
+> >>     > >
+> >>     > > The SBI v0.3 spec is already frozen and this patch has been
+> >>     > > floating on LKML for quite a few months now.
+> >>     >
+> >>     > I didn't realize that SBI-0.3 had been frozed.  That link is to =
+a RC,
+> >>     > the cooresponding v0.3.0 tag isn't in that repo.  Can you give m=
+e a
+> >>     > pointer to the frozen spec?
+> >>
+> >>     Here's the link to SBI v0.3.0 tag:
+> >>     https://github.com/riscv/riscv-sbi-doc/releases/tag/v0.3.0
+> >>
+> >>     We treat RC tags as frozen in SBI spec because no functional
+> >>     changes are done in SBI spec after it is tagged as RC. We only
+> >>     do typo fixes and clarifications on SBI spec RC release.
+> >
+> > Treating the 0.3.0-rc1 as frozen as soon as it's released is a
+> > terrifying policy: some of the fixes I sent in after I saw rc1 released
+> > change the actual meaning of the text, even if they were meant to chang=
+e
+> > them to what I thought the intended meaning was supposed to be.  That
+> > means the actual text of 0.3.0-rc1 and 0.3.0 conflict with each other.
+> > Given that frozen comes with a guarntee of backwards compatibility, doe=
+s
+> > that mean that the behavior allowed by 0.3.0-rc1 is compliant with the
+> > SBI, even if it was likely just allowed by a wording mistake?
+> >
+> > If you're going to freeze things at rc1 then you really need to be quit=
+e
+> > explicit about that, as generally the point of RCs is to elicit
+> > review/testing.  Looks like I was the only person to have provided any
+> > review, so I guess I was the only one who assumed "We don't expect any
+> > significant functional changes. We will wait for any further feedback
+> > and release the official v0.3 in a month or so." actually meant "this i=
+s
+> > frozen".
+> >
+> >> Can you take this patch for Linux-5.14 ??
+> >
+> > No, sorry, it's way too late for that.  Please be specific about when
+> > you freeze specifications in the future, so we can all stay on the same
+> > page.
+>
+> I went and talked to Krste, and he says that there's a whole process for
+> freezing extensions that this hasn't gone through.  They don't have
+> anything written down that I can point to, but can you guys please just
+> get on the same page about this?  It seems like every time I talk to
+> someone from the RISC-V foundation I get a conflicting description of
+> what's going on, and I'm entirely out of patience when it comes to
+> getting blamed for all the chaos over there.
 
-set -e
-if [ -e .config ]; then
-    make ARCH=um mrproper
-fi
-if [ ! -e .kunit/.kunitconfig ]; then
-    cat <<EOF >.kunit/.kunitconfig
-CONFIG_CONFIGFS_FS=y
-CONFIG_CONFIGFS_KUNIT_TEST=y
-CONFIG_KUNIT=y
-CONFIG_PROVE_LOCKING=y
-CONFIG_SYSFS=y
-CONFIG_UBSAN=y
-EOF
-    cp .kunit/.kunitconfig .kunit/.config
-fi
-./tools/testing/kunit/kunit.py run
+The RISC-V SBI is a pure software specification and not a ISA specification=
+.
+In fact, this is not even non-ISA specification dealing with a MMIO
+(or hardware) device. There is no process defined for RISC-V software
+specifications.
 
-Cc: Bodo Stroesser <bostroesser@gmail.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: Yanko Kaneti <yaneti@declera.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
----
- fs/configfs/Kconfig         |   8 +
- fs/configfs/Makefile        |   2 +
- fs/configfs/configfs-test.c | 427 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 437 insertions(+)
- create mode 100644 fs/configfs/configfs-test.c
+The last SBI v0.2 release was done by you (Palmer). At that time, you
+simply tagged the SBI v0.2 release and announced it everywhere.
 
-diff --git a/fs/configfs/Kconfig b/fs/configfs/Kconfig
-index 272b64456999..9f8f3d8ca67d 100644
---- a/fs/configfs/Kconfig
-+++ b/fs/configfs/Kconfig
-@@ -10,3 +10,11 @@ config CONFIGFS_FS
- 
- 	  Both sysfs and configfs can and should exist together on the
- 	  same system. One is not a replacement for the other.
-+
-+config CONFIGFS_KUNIT_TEST
-+	tristate "Configfs Kunit test" if !KUNIT_ALL_TESTS
-+	depends on CONFIGFS_FS && KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Run the configfs unit tests at boot time. For more information, see
-+	  also the Kunit documentation in Documentation/dev-tools/kunit/.
-diff --git a/fs/configfs/Makefile b/fs/configfs/Makefile
-index 0200498ede27..388003fa9f37 100644
---- a/fs/configfs/Makefile
-+++ b/fs/configfs/Makefile
-@@ -6,3 +6,5 @@
- obj-$(CONFIG_CONFIGFS_FS)	+= configfs.o
- 
- configfs-objs	:= inode.o file.o dir.o symlink.o mount.o item.o
-+
-+obj-$(CONFIG_CONFIGFS_KUNIT_TEST) += configfs-test.o
-diff --git a/fs/configfs/configfs-test.c b/fs/configfs/configfs-test.c
-new file mode 100644
-index 000000000000..03044c5fc9b6
---- /dev/null
-+++ b/fs/configfs/configfs-test.c
-@@ -0,0 +1,427 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <kunit/test.h>
-+#include <linux/configfs.h>
-+#include <linux/fs.h>
-+#include <linux/namei.h>
-+#include <linux/uio.h>
-+
-+/*
-+ * Maximum number of bytes supported by the configfs attributes in this unit
-+ * test.
-+ */
-+enum { ATTR_MAX_SIZE = 256 };
-+
-+static struct test_item {
-+	uint32_t nbytes;
-+	char data[ATTR_MAX_SIZE];
-+} bin_attr, text_attr;
-+
-+static ssize_t attr_read(struct test_item *ti, void *buf, size_t len)
-+{
-+	size_t nbytes = min_t(size_t, len, ti->nbytes);
-+
-+	memcpy(buf, ti->data, nbytes);
-+	return nbytes;
-+}
-+
-+static ssize_t attr_write(struct test_item *ti, const void *buf, size_t len)
-+{
-+	if (len > ATTR_MAX_SIZE)
-+		return -EINVAL;
-+	ti->nbytes = len;
-+	memcpy(ti->data, buf, len);
-+	return len;
-+}
-+
-+static DEFINE_SEMAPHORE(bin_attr_written);
-+
-+static ssize_t bin_attr_read(struct config_item *item, void *buf, size_t len)
-+{
-+	return buf ? attr_read(&bin_attr, buf, len) : bin_attr.nbytes;
-+}
-+
-+static ssize_t bin_attr_write(struct config_item *item, const void *buf,
-+			      size_t len)
-+{
-+	up(&bin_attr_written);
-+	return attr_write(&bin_attr, buf, len);
-+}
-+
-+CONFIGFS_BIN_ATTR(, bin_attr, NULL, ATTR_MAX_SIZE);
-+
-+static struct configfs_bin_attribute *bin_attrs[] = {
-+	&attr_bin_attr,
-+	NULL,
-+};
-+
-+static ssize_t text_attr_show(struct config_item *item, char *buf)
-+{
-+	return attr_read(&text_attr, buf, strlen(buf));
-+}
-+
-+static ssize_t text_attr_store(struct config_item *item, const char *buf,
-+			       size_t size)
-+{
-+	return attr_write(&text_attr, buf, size);
-+}
-+
-+CONFIGFS_ATTR(, text_attr);
-+
-+static struct configfs_attribute *text_attrs[] = {
-+	&attr_text_attr,
-+	NULL,
-+};
-+
-+static const struct config_item_type test_configfs_type = {
-+	.ct_owner	= THIS_MODULE,
-+	.ct_bin_attrs	= bin_attrs,
-+	.ct_attrs	= text_attrs,
-+};
-+
-+/*
-+ * Return the file mode if @path exists or an error code if opening @path via
-+ * filp_open() in read-only mode failed.
-+ */
-+int get_file_mode(const char *path)
-+{
-+	struct file *file;
-+	int res;
-+
-+	file = filp_open(path, O_RDONLY, 0400);
-+	if (IS_ERR(file)) {
-+		res = PTR_ERR(file);
-+		goto out;
-+	}
-+	res = file_inode(file)->i_mode;
-+	filp_close(file, NULL);
-+
-+out:
-+	return res;
-+}
-+
-+static int mkdir(const char *name, umode_t mode)
-+{
-+	struct dentry *dentry;
-+	struct path path;
-+	int err;
-+
-+	err = get_file_mode(name);
-+	if (err >= 0 && S_ISDIR(err))
-+		return 0;
-+
-+	dentry = kern_path_create(AT_FDCWD, name, &path, LOOKUP_DIRECTORY);
-+	if (IS_ERR(dentry))
-+		return PTR_ERR(dentry);
-+
-+	err = vfs_mkdir(&init_user_ns, d_inode(path.dentry), dentry, mode);
-+	done_path_create(&path, dentry);
-+
-+	return err;
-+}
-+
-+static int mount_configfs(void)
-+{
-+	int res;
-+
-+	res = get_file_mode("/sys/kernel/config/unit-test");
-+	if (res >= 0)
-+		return 0;
-+	res = mkdir("/sys", 0755);
-+	if (res < 0)
-+		return res;
-+	res = mkdir("/sys/kernel", 0755);
-+	if (res < 0)
-+		return res;
-+	res = mkdir("/sys/kernel/config", 0755);
-+	if (res < 0)
-+		return res;
-+	pr_info("mounting configfs ...\n");
-+	res = do_mount("", "/sys/kernel/config", "configfs", 0, NULL);
-+	if (res < 0)
-+		pr_err("mounting configfs failed: %d\n", res);
-+	else
-+		pr_info("mounted configfs.\n");
-+	return res;
-+}
-+
-+static void unmount_configfs(void)
-+{
-+	/* How to unmount a filesystem from kernel code? */
-+}
-+
-+#define KUNIT_EXPECT_MODE(test, left_arg, mask, right)			\
-+({									\
-+	const int left = (left_arg);					\
-+									\
-+	KUNIT_EXPECT_TRUE_MSG(test, left >= 0 && (left & mask) == right, \
-+		"(" #left_arg "(%d) & " #mask ") != " #right, left);	\
-+})
-+
-+static void configfs_mounted(struct kunit *test)
-+{
-+	KUNIT_EXPECT_MODE(test, get_file_mode("/"), 0500, 0500);
-+	KUNIT_EXPECT_MODE(test, get_file_mode("/sys"), 0500, 0500);
-+	KUNIT_EXPECT_MODE(test, get_file_mode("/sys/kernel"), 0500, 0500);
-+	KUNIT_EXPECT_MODE(test, get_file_mode("/sys/kernel/config"), 0500, 0500);
-+	KUNIT_EXPECT_MODE(test, get_file_mode("/sys/kernel/config/unit-test"),
-+			  0500, 0500);
-+	KUNIT_EXPECT_MODE(test, get_file_mode
-+			  ("/sys/kernel/config/unit-test/text_attr"),
-+			  0700, 0600);
-+}
-+
-+static void configfs_text_attr(struct kunit *test)
-+{
-+	struct file *f = filp_open("/sys/kernel/config/unit-test/text_attr",
-+				   O_RDWR, 0);
-+	static const char text1[] =
-+		"The quick brown fox jumps over the lazy dog";
-+	const int off1 = 0;
-+	const int len1 = strlen(text1);
-+	static const char text2[] = "huge";
-+	const int off2 = strlen(text1) - strlen(text2) - 4;
-+	const int len2 = strlen(text2);
-+	char text3[sizeof(text1)];
-+	int res;
-+	loff_t pos;
-+
-+	KUNIT_EXPECT_EQ(test, PTR_ERR_OR_ZERO(f), 0);
-+	if (IS_ERR(f))
-+		return;
-+	/* Write at a non-zero offset. */
-+	pos = off2;
-+	res = kernel_write(f, text2, len2, &pos);
-+	KUNIT_EXPECT_EQ(test, res, len2);
-+	KUNIT_EXPECT_EQ(test, pos, off2 + len2);
-+	/* Verify the effect of the above kernel_write() call. */
-+	pos = 0;
-+	res = kernel_read(f, text3, sizeof(text3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, len2);
-+	KUNIT_EXPECT_EQ(test, pos, len2);
-+	if (res >= 0) {
-+		text3[res] = '\0';
-+		KUNIT_EXPECT_STREQ(test, text3, text2);
-+	}
-+	/* Write at offset zero. */
-+	pos = off1;
-+	res = kernel_write(f, text1, len1, &pos);
-+	KUNIT_EXPECT_EQ(test, res, len1);
-+	KUNIT_EXPECT_EQ(test, pos, len1);
-+	/* Verify the effect of the above kernel_write() call. */
-+	pos = 0;
-+	res = kernel_read(f, text3, sizeof(text3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, len1);
-+	KUNIT_EXPECT_EQ(test, pos, len1);
-+	if (res >= 0) {
-+		text3[res] = '\0';
-+		KUNIT_EXPECT_STREQ(test, text3, text1);
-+	}
-+	/* Write at a non-zero offset. */
-+	pos = off2;
-+	res = kernel_write(f, text2, len2, &pos);
-+	KUNIT_EXPECT_EQ(test, res, len2);
-+	KUNIT_EXPECT_EQ(test, pos, off2 + len2);
-+	/* Verify that the above kernel_write() call truncated the attribute. */
-+	pos = 0;
-+	res = kernel_read(f, text3, sizeof(text3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, len2);
-+	KUNIT_EXPECT_EQ(test, pos, len2);
-+	if (res >= 0) {
-+		text3[res] = '\0';
-+		KUNIT_EXPECT_STREQ(test, text3, text2);
-+	}
-+	/* Read from offset 1. */
-+	pos = 1;
-+	res = kernel_read(f, text3, sizeof(text3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, len2 - 1);
-+	KUNIT_EXPECT_EQ(test, pos, len2);
-+	if (res >= 0) {
-+		text3[res] = '\0';
-+		KUNIT_EXPECT_STREQ(test, text3, text2 + 1);
-+	}
-+	/* Write at offset -1. */
-+	pos = -1;
-+	res = kernel_write(f, text1, len1, &pos);
-+	KUNIT_EXPECT_EQ(test, res, -EINVAL);
-+	/* Write at the largest possible positive offset. */
-+	pos = LLONG_MAX - len1;
-+	res = kernel_write(f, text1, len1, &pos);
-+	KUNIT_EXPECT_EQ(test, res, len1);
-+	/* Read from offset -1. */
-+	pos = -1;
-+	res = kernel_read(f, text3, sizeof(text3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, -EINVAL);
-+	/* Read from the largest possible positive offset. */
-+	pos = LLONG_MAX - sizeof(text3);
-+	res = kernel_read(f, text3, sizeof(text3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, 0);
-+	/* Verify the effect of the latest kernel_write() call. */
-+	pos = 0;
-+	res = kernel_read(f, text3, sizeof(text3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, len1);
-+	KUNIT_EXPECT_EQ(test, pos, len1);
-+	if (res >= 0) {
-+		text3[res] = '\0';
-+		KUNIT_EXPECT_STREQ(test, text3, text1);
-+	}
-+	filp_close(f, NULL);
-+}
-+
-+#define KUNIT_EXPECT_MEMEQ(test, left, right, len)			\
-+	KUNIT_EXPECT_TRUE_MSG(test, memcmp(left, right, len) == 0,	\
-+			      #left " != " #right ": %.*s <> %.*s",	\
-+			      (int)len, left, (int)len, right)
-+
-+static void configfs_bin_attr(struct kunit *test)
-+{
-+	struct file *f = filp_open("/sys/kernel/config/unit-test/bin_attr",
-+				   O_RDWR, 0);
-+	static const u8 data1[] =
-+		"\xff\x00The quick brown fox jumps over the lazy dog";
-+	const int off1 = 0;
-+	const int len1 = sizeof(data1) - 1;
-+	static const u8 data2[] = "huge";
-+	const int off2 = len1 - strlen(data2) - 4;
-+	const int len2 = strlen(data2);
-+	u8 data3[sizeof(data1)];
-+	int res;
-+	loff_t pos;
-+
-+	bin_attr.nbytes = len1;
-+
-+	KUNIT_EXPECT_EQ(test, PTR_ERR_OR_ZERO(f), 0);
-+	if (IS_ERR(f))
-+		return;
-+	/* Write at offset zero. */
-+	pos = off1;
-+	res = kernel_write(f, data1, len1, &pos);
-+	KUNIT_EXPECT_EQ(test, res, len1);
-+	KUNIT_EXPECT_EQ(test, pos, off1 + len1);
-+	/* Write at a non-zero offset. */
-+	pos = off2;
-+	res = kernel_write(f, data2, len2, &pos);
-+	KUNIT_EXPECT_EQ(test, res, len2);
-+	KUNIT_EXPECT_EQ(test, pos, off2 + len2);
-+	filp_close(f, NULL);
-+
-+	/*
-+	 * buffer->bin_attr->write() is called from inside
-+	 * configfs_release_bin_file() and the latter function is
-+	 * called asynchronously. Hence the down() calls below to wait
-+	 * until the write method has been called.
-+	 */
-+	down(&bin_attr_written);
-+	down(&bin_attr_written);
-+
-+	f = filp_open("/sys/kernel/config/unit-test/bin_attr", O_RDONLY, 0);
-+	KUNIT_EXPECT_EQ(test, PTR_ERR_OR_ZERO(f), 0);
-+	if (IS_ERR(f))
-+		return;
-+	/* Verify the effect of the two kernel_write() calls. */
-+	pos = 0;
-+	res = kernel_read(f, data3, sizeof(data3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, len1);
-+	KUNIT_EXPECT_EQ(test, pos, len1);
-+	if (res >= 0) {
-+		data3[res] = '\0';
-+		KUNIT_EXPECT_MEMEQ(test, data3,
-+			"\xff\x00The quick brown fox jumps over the huge dog",
-+			len1);
-+	}
-+	/* Read from offset 1. */
-+	pos = 1;
-+	res = kernel_read(f, data3, sizeof(data3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, len1 - 1);
-+	KUNIT_EXPECT_EQ(test, pos, len1);
-+	if (res >= 0) {
-+		data3[res] = '\0';
-+		KUNIT_EXPECT_MEMEQ(test, data3,
-+			"\x00The quick brown fox jumps over the huge dog",
-+			len1 - 1);
-+	}
-+	filp_close(f, NULL);
-+
-+	f = filp_open("/sys/kernel/config/unit-test/bin_attr", O_RDWR, 0);
-+	KUNIT_EXPECT_EQ(test, PTR_ERR_OR_ZERO(f), 0);
-+	if (IS_ERR(f))
-+		return;
-+	/* Write at offset -1. */
-+	pos = -1;
-+	res = kernel_write(f, data1, len1, &pos);
-+	KUNIT_EXPECT_EQ(test, res, -EINVAL);
-+	/* Write at the largest possible positive offset. */
-+	pos = LLONG_MAX - len1;
-+	res = kernel_write(f, data1, len1, &pos);
-+	KUNIT_EXPECT_EQ(test, res, -EFBIG);
-+	filp_close(f, NULL);
-+
-+	/* Wait until the .write() function has been called. */
-+	down(&bin_attr_written);
-+
-+	KUNIT_EXPECT_EQ(test, bin_attr.nbytes, 0);
-+
-+	f = filp_open("/sys/kernel/config/unit-test/bin_attr", O_RDONLY, 0);
-+	KUNIT_EXPECT_EQ(test, PTR_ERR_OR_ZERO(f), 0);
-+	if (IS_ERR(f))
-+		return;
-+	/* Read from offset -1. */
-+	pos = -1;
-+	res = kernel_read(f, data3, sizeof(data3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, -EINVAL);
-+	/* Read from the largest possible positive offset. */
-+	pos = LLONG_MAX - sizeof(data3);
-+	res = kernel_read(f, data3, sizeof(data3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, 0);
-+	KUNIT_EXPECT_EQ(test, pos, LLONG_MAX - sizeof(data3));
-+	/* Read from offset zero. */
-+	pos = 0;
-+	res = kernel_read(f, data3, sizeof(data3), &pos);
-+	KUNIT_EXPECT_EQ(test, res, 0);
-+	KUNIT_EXPECT_EQ(test, pos, 0);
-+	filp_close(f, NULL);
-+}
-+
-+static struct kunit_case configfs_test_cases[] = {
-+	KUNIT_CASE(configfs_mounted),
-+	KUNIT_CASE(configfs_text_attr),
-+	KUNIT_CASE(configfs_bin_attr),
-+	{},
-+};
-+
-+static struct configfs_subsystem test_subsys = {
-+	.su_group = {
-+		.cg_item = {
-+			.ci_namebuf = "unit-test",
-+			.ci_type    = &test_configfs_type,
-+		}
-+	},
-+};
-+
-+static int configfs_suite_init(void)
-+{
-+	int res;
-+
-+	config_group_init(&test_subsys.su_group);
-+	mutex_init(&test_subsys.su_mutex);
-+	res = configfs_register_subsystem(&test_subsys);
-+	if (res < 0) {
-+		pr_err("Registration of configfs subsystem failed: %d\n", res);
-+		return res;
-+	}
-+	return mount_configfs();
-+}
-+
-+static void configfs_suite_exit(void)
-+{
-+	configfs_unregister_subsystem(&test_subsys);
-+	unmount_configfs();
-+}
-+
-+static struct kunit_suite configfs_test_module = {
-+	.name		= "configfs unit tests",
-+	.init_suite	= configfs_suite_init,
-+	.exit_suite	= configfs_suite_exit,
-+	.test_cases	= configfs_test_cases,
-+};
-+kunit_test_suites(&configfs_test_module);
+Regards,
+Anup
+
+>
+> >
+> >>
+> >> Regards,
+> >> Anup
+> >>
+> >>     Regards,
+> >>     Anup
+> >>
+> >>     >
+> >>     > >
+> >>     > > Regards,
+> >>     > > Anup
+> >>     > >
+> >>     > >>
+> >>     > >> This patch extends Linux RISC-V SBI implementation to detect
+> >>     > >> and use SBI SRST extension.
+> >>     > >>
+> >>     > >> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> >>     > >> Reviewed-by: Atish Patra <atish.patra@wdc.com>
+> >>     > >> ---
+> >>     > >>  arch/riscv/include/asm/sbi.h | 24 ++++++++++++++++++++++++
+> >>     > >>  arch/riscv/kernel/sbi.c      | 35 ++++++++++++++++++++++++++=
++++++++++
+> >>     > >>  2 files changed, 59 insertions(+)
+> >>     > >>
+> >>     > >> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/includ=
+e/asm/sbi.h
+> >>     > >> index 0d42693cb65e..289621da4a2a 100644
+> >>     > >> --- a/arch/riscv/include/asm/sbi.h
+> >>     > >> +++ b/arch/riscv/include/asm/sbi.h
+> >>     > >> @@ -27,6 +27,7 @@ enum sbi_ext_id {
+> >>     > >>         SBI_EXT_IPI =3D 0x735049,
+> >>     > >>         SBI_EXT_RFENCE =3D 0x52464E43,
+> >>     > >>         SBI_EXT_HSM =3D 0x48534D,
+> >>     > >> +       SBI_EXT_SRST =3D 0x53525354,
+> >>     > >>  };
+> >>     > >>
+> >>     > >>  enum sbi_ext_base_fid {
+> >>     > >> @@ -70,6 +71,21 @@ enum sbi_hsm_hart_status {
+> >>     > >>         SBI_HSM_HART_STATUS_STOP_PENDING,
+> >>     > >>  };
+> >>     > >>
+> >>     > >> +enum sbi_ext_srst_fid {
+> >>     > >> +       SBI_EXT_SRST_RESET =3D 0,
+> >>     > >> +};
+> >>     > >> +
+> >>     > >> +enum sbi_srst_reset_type {
+> >>     > >> +       SBI_SRST_RESET_TYPE_SHUTDOWN =3D 0,
+> >>     > >> +       SBI_SRST_RESET_TYPE_COLD_REBOOT,
+> >>     > >> +       SBI_SRST_RESET_TYPE_WARM_REBOOT,
+> >>     > >> +};
+> >>     > >> +
+> >>     > >> +enum sbi_srst_reset_reason {
+> >>     > >> +       SBI_SRST_RESET_REASON_NONE =3D 0,
+> >>     > >> +       SBI_SRST_RESET_REASON_SYS_FAILURE,
+> >>     > >> +};
+> >>     > >> +
+> >>     > >>  #define SBI_SPEC_VERSION_DEFAULT       0x1
+> >>     > >>  #define SBI_SPEC_VERSION_MAJOR_SHIFT   24
+> >>     > >>  #define SBI_SPEC_VERSION_MAJOR_MASK    0x7f
+> >>     > >> @@ -148,6 +164,14 @@ static inline unsigned long sbi_minor_ve=
+rsion(void)
+> >>     > >>         return sbi_spec_version & SBI_SPEC_VERSION_MINOR_MASK=
+;
+> >>     > >>  }
+> >>     > >>
+> >>     > >> +/* Make SBI version */
+> >>     > >> +static inline unsigned long sbi_mk_version(unsigned long maj=
+or,
+> >>     > >> +                                           unsigned long min=
+or)
+> >>     > >> +{
+> >>     > >> +       return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
+> >>     > >> +               SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
+> >>     > >> +}
+> >>     > >> +
+> >>     > >>  int sbi_err_map_linux_errno(int err);
+> >>     > >>  #else /* CONFIG_RISCV_SBI */
+> >>     > >>  static inline int sbi_remote_fence_i(const unsigned long *ha=
+rt_mask) { return -1; }
+> >>     > >> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.=
+c
+> >>     > >> index 7402a417f38e..9a84f0cb5175 100644
+> >>     > >> --- a/arch/riscv/kernel/sbi.c
+> >>     > >> +++ b/arch/riscv/kernel/sbi.c
+> >>     > >> @@ -7,6 +7,7 @@
+> >>     > >>
+> >>     > >>  #include <linux/init.h>
+> >>     > >>  #include <linux/pm.h>
+> >>     > >> +#include <linux/reboot.h>
+> >>     > >>  #include <asm/sbi.h>
+> >>     > >>  #include <asm/smp.h>
+> >>     > >>
+> >>     > >> @@ -501,6 +502,32 @@ int sbi_remote_hfence_vvma_asid(const un=
+signed long *hart_mask,
+> >>     > >>  }
+> >>     > >>  EXPORT_SYMBOL(sbi_remote_hfence_vvma_asid);
+> >>     > >>
+> >>     > >> +static void sbi_srst_reset(unsigned long type, unsigned long=
+ reason)
+> >>     > >> +{
+> >>     > >> +       sbi_ecall(SBI_EXT_SRST, SBI_EXT_SRST_RESET, type, rea=
+son,
+> >>     > >> +                 0, 0, 0, 0);
+> >>     > >> +       pr_warn("%s: type=3D0x%lx reason=3D0x%lx failed\n",
+> >>     > >> +               __func__, type, reason);
+> >>     > >> +}
+> >>     > >> +
+> >>     > >> +static int sbi_srst_reboot(struct notifier_block *this,
+> >>     > >> +                          unsigned long mode, void *cmd)
+> >>     > >> +{
+> >>     > >> +       sbi_srst_reset((mode =3D=3D REBOOT_WARM || mode =3D=
+=3D REBOOT_SOFT) ?
+> >>     > >> +                      SBI_SRST_RESET_TYPE_WARM_REBOOT :
+> >>     > >> +                      SBI_SRST_RESET_TYPE_COLD_REBOOT,
+> >>     > >> +                      SBI_SRST_RESET_REASON_NONE);
+> >>     > >> +       return NOTIFY_DONE;
+> >>     > >> +}
+> >>     > >> +
+> >>     > >> +static struct notifier_block sbi_srst_reboot_nb;
+> >>     > >> +
+> >>     > >> +static void sbi_srst_power_off(void)
+> >>     > >> +{
+> >>     > >> +       sbi_srst_reset(SBI_SRST_RESET_TYPE_SHUTDOWN,
+> >>     > >> +                      SBI_SRST_RESET_REASON_NONE);
+> >>     > >> +}
+> >>     > >> +
+> >>     > >>  /**
+> >>     > >>   * sbi_probe_extension() - Check if an SBI extension ID is s=
+upported or not.
+> >>     > >>   * @extid: The extension ID to be probed.
+> >>     > >> @@ -608,6 +635,14 @@ void __init sbi_init(void)
+> >>     > >>                 } else {
+> >>     > >>                         __sbi_rfence    =3D __sbi_rfence_v01;
+> >>     > >>                 }
+> >>     > >> +               if ((sbi_spec_version >=3D sbi_mk_version(0, =
+3)) &&
+> >>     > >> +                   (sbi_probe_extension(SBI_EXT_SRST) > 0)) =
+{
+> >>     > >> +                       pr_info("SBI SRST extension detected\=
+n");
+> >>     > >> +                       pm_power_off =3D sbi_srst_power_off;
+> >>     > >> +                       sbi_srst_reboot_nb.notifier_call =3D =
+sbi_srst_reboot;
+> >>     > >> +                       sbi_srst_reboot_nb.priority =3D 192;
+> >>     > >> +                       register_restart_handler(&sbi_srst_re=
+boot_nb);
+> >>     > >> +               }
+> >>     > >>         } else {
+> >>     > >>                 __sbi_set_timer =3D __sbi_set_timer_v01;
+> >>     > >>                 __sbi_send_ipi  =3D __sbi_send_ipi_v01;
+> >>     > >> --
+> >>     > >> 2.25.1
+> >>     > >>
+> >>
