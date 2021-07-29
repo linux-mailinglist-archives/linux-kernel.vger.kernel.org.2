@@ -2,162 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE993DA36D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 14:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CF93DA45C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237289AbhG2Myg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 08:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237375AbhG2MwG (ORCPT
+        id S237962AbhG2NaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:30:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46862 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237906AbhG2N3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 08:52:06 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DDAC06179B;
-        Thu, 29 Jul 2021 05:49:48 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id q2so6825754plr.11;
-        Thu, 29 Jul 2021 05:49:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q0SGRNEWOSLrhO9/bSDBCi5NITuZ+vRSfRGxTziJabU=;
-        b=hzKyL5WmsMRD8k+m34XXrgdj7/1e9J85KeDCiJLjzHeqLjqVNN2QCjPp4LTbl8n7tq
-         kiYmXEtjueHlVfkLJ8A0fmKvkAGZq+7s4OPYyA0r0BplF5amF3k3XUoUsQgPz8D0bLYG
-         d/uu5na8UGcsGtBUkC2kT3gdJO2GxEqPZL2kiRMtbua3knkxb2jI3qoK7y+jAWGsPcYP
-         PEdCF+dn9EI6vMVdi6PlEaCnPYi6emG2vaA6WRsUJGCwTl68cpIhDOIIyYkeJamoSXUa
-         bu5X6znaixSj3iryQEAayd0uzQ2zW3G7sNXtamd3fsj3KVhp3gkX0Kdn2h9rosJI0OHl
-         wWSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q0SGRNEWOSLrhO9/bSDBCi5NITuZ+vRSfRGxTziJabU=;
-        b=OUyq0n8QUKUlPrMGXZ270dd8bo19ulnMogPOA/8OpZIYhyOqsCYuc10cO6h86kDxLL
-         f4GNmqQG4K+JDboKH4a8Qm68zESLtTyo58NF13xmCJUw32KKg7bXBTrqbZEPXaibpC4+
-         mrpCrwnHstnvMGYwW0M5tzD7dej1V9nG96hgV+CzpgKN0Dw/EVBxrLwoKcNEOrglsVjV
-         DI3Rii8Yr6k/hIlZerYo/HtxIiHIF4XyXcNnYz73p4qfmLqSQwEemUdppbE8KgXMnHAd
-         Pj8NYtsf0kGoWu6WjHpXZ8wfHJQxROmQB6OvHt0kHEjWeGVIHsuQs75NnWjGwfwPW/CB
-         ogFg==
-X-Gm-Message-State: AOAM533hEsUv3W0o7J3GlLGs0LxJMQ0Z+fKDt7pVJxg4SGw0ZNh0ElI+
-        chGlsYJR4f2RLa2vf0IWS68=
-X-Google-Smtp-Source: ABdhPJxEQWV2usuKh29jSoH2loa36HykTtuvI7jMK52U0Q907fZvwTlhcl4mO3CPvQocl1ZpGKnVjQ==
-X-Received: by 2002:aa7:9086:0:b029:39b:6377:17c1 with SMTP id i6-20020aa790860000b029039b637717c1mr5007664pfa.11.1627562987803;
-        Thu, 29 Jul 2021 05:49:47 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:18:efec::4b1])
-        by smtp.gmail.com with ESMTPSA id k198sm3710340pfd.148.2021.07.29.05.49.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 05:49:47 -0700 (PDT)
-Subject: Re: [PATCH 03/13] x86/HV: Add new hvcall guest address host
- visibility support
-To:     Dave Hansen <dave.hansen@intel.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, rientjes@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        rppt@kernel.org, kirill.shutemov@linux.intel.com,
-        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, xen-devel@lists.xenproject.org,
-        pgonda@google.com, david@redhat.com, keescook@chromium.org,
-        hannes@cmpxchg.org, sfr@canb.auug.org.au,
-        michael.h.kelley@microsoft.com
-Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, anparri@microsoft.com
-References: <20210728145232.285861-1-ltykernel@gmail.com>
- <20210728145232.285861-4-ltykernel@gmail.com>
- <c00e269c-da4c-c703-0182-0221c73a76cc@intel.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <ccbe6f4c-5ffe-4d63-67ab-6384fcb8691d@gmail.com>
-Date:   Thu, 29 Jul 2021 20:49:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 29 Jul 2021 09:29:20 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TD4JLu118166;
+        Thu, 29 Jul 2021 09:29:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=hLi+1k3Q2pOofVD6JJ72KnRHLVvkzl1EJJ/kEUSRp6E=;
+ b=dtY5UjOe8+eHpAi8FY9nzRi5m8MnI8uwWlt9gpPYlX9UutblUmKSXb9G6NjQsDrpKKHj
+ vWYk+QlYwZas2r9FjUzOTUjVKmeriyBmplcvc+842+/FePY1ANWACJUONO3u2hOyW4Nv
+ v33PLVEtl24pXD4J72NMdRQLMJMr1UWu1DuUtCgnvy1nKilcvuM/GVSfnPVJMl75HdoI
+ 78JLTXPUx/AIOE1eEYdeCCTQBYRj89g6UYSdwIQcfvYXHQB1ZMFhNMFfU4X5TjaeFDVG
+ kB/VRPOlUBUDbb2m2HgE+gvV/682c4NjCl3W4NP/H/kTlfGUZi6w6f+7bNw/7uWcWPSA vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a3v5s2t2d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 09:29:16 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TD4Xru119820;
+        Thu, 29 Jul 2021 09:29:16 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a3v5s2t1j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 09:29:16 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TDIw2R013339;
+        Thu, 29 Jul 2021 13:29:14 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3a235m1qwy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 13:29:14 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TDQQDh33554826
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jul 2021 13:26:26 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D8854A4068;
+        Thu, 29 Jul 2021 13:29:10 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6B80DA4060;
+        Thu, 29 Jul 2021 13:29:10 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.1.151])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Jul 2021 13:29:10 +0000 (GMT)
+Date:   Thu, 29 Jul 2021 14:52:04 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Janosch Frank <frankja@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] KVM: s390: pv: avoid stall notifications for
+ some UVCs
+Message-ID: <20210729145204.2d8c1430@p-imbrenda>
+In-Reply-To: <6bbeded3-ef94-6c83-f093-796d76b70792@linux.ibm.com>
+References: <20210728142631.41860-1-imbrenda@linux.ibm.com>
+        <20210728142631.41860-2-imbrenda@linux.ibm.com>
+        <6bbeded3-ef94-6c83-f093-796d76b70792@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <c00e269c-da4c-c703-0182-0221c73a76cc@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: gK13XRLPxf-tCKcnhGqyx5OsBHWFH6__
+X-Proofpoint-GUID: BhRXjfRSW6J1HrsUV3U88QBodu2a0cCS
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave:
-      Thanks for your review.
+On Thu, 29 Jul 2021 11:58:39 +0200
+Janosch Frank <frankja@linux.ibm.com> wrote:
 
-On 7/28/2021 11:29 PM, Dave Hansen wrote:
-> On 7/28/21 7:52 AM, Tianyu Lan wrote:
->> @@ -1986,7 +1988,9 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
->>   	int ret;
->>   
->>   	/* Nothing to do if memory encryption is not active */
->> -	if (!mem_encrypt_active())
->> +	if (hv_is_isolation_supported())
->> +		return hv_set_mem_enc(addr, numpages, enc);
->> +	else if (!mem_encrypt_active())
->>   		return 0;
+> On 7/28/21 4:26 PM, Claudio Imbrenda wrote:
+> > Improve make_secure_pte to avoid stalls when the system is heavily
+> > overcommitted. This was especially problematic in
+> > kvm_s390_pv_unpack, because of the loop over all pages that needed
+> > unpacking.
+> > 
+> > Also fix kvm_s390_pv_init_vm to avoid stalls when the system is
+> > heavily overcommitted.  
 > 
-> __set_memory_enc_dec() is turning into a real mess.  SEV, TDX and now
-> Hyper-V are messing around in here.
-> 
-> It doesn't help that these additions are totally uncommented.  Even
-> worse is that hv_set_mem_enc() was intentionally named "enc" when it
-> presumably has nothing to do with encryption.
-> 
-> This needs to be refactored.  The current __set_memory_enc_dec() can
-> become __set_memory_enc_pgtable().  It gets used for the hypervisors
-> that get informed about "encryption" status via page tables: SEV and TDX.
-> 
-> Then, rename hv_set_mem_enc() to hv_set_visible_hcall().  You'll end up
-> with:
-> 
-> int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
-> {
-> 	if (hv_is_isolation_supported())
-> 		return hv_set_visible_hcall(...);
-> 
-> 	if (mem_encrypt_active() || ...)
-> 		return __set_memory_enc_pgtable();
-> 
-> 	/* Nothing to do */
-> 	return 0;
-> }
-> 
-> That tells the story pretty effectively, in code.
+> Fixes tag?
 
-Yes, this is good idea. Thanks for your suggestion.
+will be in the next version
 
+> > 
+> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> > ---
+> >  arch/s390/kernel/uv.c | 11 ++++++++---
+> >  arch/s390/kvm/pv.c    |  2 +-
+> >  2 files changed, 9 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> > index aeb0a15bcbb7..fd0faa51c1bb 100644
+> > --- a/arch/s390/kernel/uv.c
+> > +++ b/arch/s390/kernel/uv.c
+> > @@ -196,11 +196,16 @@ static int make_secure_pte(pte_t *ptep,
+> > unsigned long addr, if (!page_ref_freeze(page, expected))
+> >  		return -EBUSY;
+> >  	set_bit(PG_arch_1, &page->flags);
+> > -	rc = uv_call(0, (u64)uvcb);
+> > +	rc = __uv_call(0, (u64)uvcb);  
 > 
->> +int hv_set_mem_enc(unsigned long addr, int numpages, bool enc)
->> +{
->> +	return hv_set_mem_host_visibility((void *)addr,
->> +			numpages * HV_HYP_PAGE_SIZE,
->> +			enc ? VMBUS_PAGE_NOT_VISIBLE
->> +			: VMBUS_PAGE_VISIBLE_READ_WRITE);
->> +}
-> 
-> I know this is off in Hyper-V code, but this just makes my eyes bleed.
-> I'd much rather see something which is less compact but readable.
+> We should exchange rc with cc since that's what we get back from
+> __uv_call(). Technically we always get a cc but for the other
+> functions it's only ever 0/1 which translates to success/error so rc
+> is ok.
 
-OK. Will update.
+will be in the next version
 
+> >  	page_ref_unfreeze(page, expected);
+> > -	/* Return -ENXIO if the page was not mapped, -EINVAL
+> > otherwise */
+> > -	if (rc)
+> > +	/*
+> > +	 * Return -ENXIO if the page was not mapped, -EINVAL for
+> > other errors.
+> > +	 * If busy or partially completed, return -EAGAIN.
+> > +	 */
+> > +	if (rc == 1)
+> >  		rc = uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
+> > +	else if (rc > 1)
+> > +		rc = -EAGAIN;
+> >  	return rc;  
 > 
->> +/* Hyper-V GPA map flags */
->> +#define	VMBUS_PAGE_NOT_VISIBLE		0
->> +#define	VMBUS_PAGE_VISIBLE_READ_ONLY	1
->> +#define	VMBUS_PAGE_VISIBLE_READ_WRITE	3
-> 
-> That looks suspiciously like an enum.
+> Could you define the CCs in uv.h and check against the constants here
+> so it's easier to understand that the rc > 1 checks against a "UV was
+> busy please re-issue the call again" cc?
 >
+> Maybe also make it explicit for cc 2 and 3 instead of cc > 1
 
-OK. Will update.
+will be in the next version
+
+> >  }
+> >  
+> > diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+> > index c8841f476e91..e007df11a2fe 100644
+> > --- a/arch/s390/kvm/pv.c
+> > +++ b/arch/s390/kvm/pv.c
+> > @@ -196,7 +196,7 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16
+> > *rc, u16 *rrc) uvcb.conf_base_stor_origin =
+> > (u64)kvm->arch.pv.stor_base; uvcb.conf_virt_stor_origin =
+> > (u64)kvm->arch.pv.stor_var; 
+> > -	cc = uv_call(0, (u64)&uvcb);
+> > +	cc = uv_call_sched(0, (u64)&uvcb);
+> >  	*rc = uvcb.header.rc;
+> >  	*rrc = uvcb.header.rrc;
+> >  	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len
+> > %llx rc %x rrc %x", 
+> 
 
