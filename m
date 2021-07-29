@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213E93DAA11
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD083DAA17
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhG2R0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhG2RZ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:25:56 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37827C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:25:53 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id c3so6695309ilh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1TJn11KWxh6Ms0mK4tEBNoyeY+OXDD+P+VEKQkQD+NY=;
-        b=gArWMxjXXqu1OGyaMxDZQLC7i3MHPcCwF64UUfAPXyDJCorXxfzg5a5vysUeCi0oTs
-         7wFR6iAl9vrkIiIim8d796MbceV1SQt3ohDK1ASDKT6JrvVjxpWxD8wEaGlV/tnO57t3
-         RmC0xlJtZW/UDFxt5uAXeyNkypjdqlbCYCZn4FR/6qqp4gdTPuPWTE8T6vE1kiYtNXZv
-         UZfE+jUng3gWHY8JQ1PLBmsioi9bcfuEB7t/MyPzXlGUYCT8EjD1ypK1T7hGkc5P3te4
-         4YwtB2Au81Hle8YpONuLo35dtXRlJUYybfoeR6F2rTFIP6zhpArk30NC+p/P0VeWvg2P
-         ejaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1TJn11KWxh6Ms0mK4tEBNoyeY+OXDD+P+VEKQkQD+NY=;
-        b=BXQK+ZoTwDpbyt/hLucmTnFFwof3z9H21iFEN4x0qEcdo8AVA+rysDc+6MO7EGk8mj
-         cjKICk6Qkh/pJYGowOAR6gQn0X7OWmvTanvAWWmdzYOMObFnGt6utn6NCwW6HxCjVVog
-         AwWmE+6VCDLCYmnwqc3Jf5HAc+ZqsolSCGuyY6Y+iurUHcMM02rLFbJ70+Rmxf49bKyC
-         h/22lr+BOjXgBGh+v0lD/kM38AlsDaASxVBJLukjx11P+Qa0oNxn1ePS2XDZdDNDPxFc
-         vsyS3i8YdYdBFoPpzv9m7F1xFM0CZTvjZ7vd3/L1p0uY9aY4LCb15MHOHj1DG9PHiu1g
-         kkSA==
-X-Gm-Message-State: AOAM530YrgY/YYxBhjJYYPcBYTGVS9XzE116YEikbTikZI3VLnR+8hf/
-        A6QxwXnqxvt4q2a/DxSUgczH3NkFs4oiCdenhIpyNQ==
-X-Google-Smtp-Source: ABdhPJxBgdfROfnlNJH7EqhAkcAqMv7RaO3xL0u4dbECwCJh6xgg0R0BASRody0t0fg1QO6ecx070wnnTrtihecu8Do=
-X-Received: by 2002:a92:6503:: with SMTP id z3mr4427664ilb.258.1627579552466;
- Thu, 29 Jul 2021 10:25:52 -0700 (PDT)
+        id S232110AbhG2R1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:27:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229556AbhG2R1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 13:27:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1637B601FA;
+        Thu, 29 Jul 2021 17:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627579630;
+        bh=kssTgqcbXEPlcdsvyvqpSjM1LIWESEJ+zCyffEvb604=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YzdV9ItjgDa2iZKwe24iIX4qYDNymVr5eVUv7OJS1Ygxh2TLodDNSrffuR9zlPADi
+         vjvOg9KwUNWxcUQVuCi1D1qllzOv/ryKTAGgtpvKEbPcRdu3VgmoXScsRweEPa/DjN
+         78ak1uvc6m1PHtiuwtPFt7liiv8GcWfscpXa+XAOwWoTnV2NS8RMFM/1O6yjdFZkKU
+         gHDpVXyKeXV2mMPBECU9HPcTVCNSWZJzcDzUpPFUjMecJ9xcPOBQIckHKnZr3abr2p
+         7qKd8NAjlcispml/XK/ONvohYmYEDylbbBUATeg5B0RvKFD4pSJ19Yc/HPfVThpxz7
+         aSwIlAPRjI+oQ==
+Date:   Thu, 29 Jul 2021 20:27:07 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Aharon Landau <aharonl@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Shay Drory <shayd@nvidia.com>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH mlx5-next 1/5] RDMA/mlx5: Replace struct mlx5_core_mkey
+ by u32 key
+Message-ID: <YQLk65qM6oJ1J9fg@unreal>
+References: <cover.1624362290.git.leonro@nvidia.com>
+ <2e0feba18d8fe310b2ed38fbfbdd4af7a9b84bf1.1624362290.git.leonro@nvidia.com>
+ <20210729152803.GA2394514@nvidia.com>
 MIME-Version: 1.0
-References: <20210729092831.38106-1-ligang.bdlg@bytedance.com>
-In-Reply-To: <20210729092831.38106-1-ligang.bdlg@bytedance.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 29 Jul 2021 10:25:16 -0700
-Message-ID: <CAJHvVchhhUXyi2YbaqMW53y=bT50kmOBjjbApaMG8QZPQ=h1OQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mm: mmap_lock: remove redundant "\n" in TP_printk
-To:     Gang Li <ligang.bdlg@bytedance.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729152803.GA2394514@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+On Thu, Jul 29, 2021 at 12:28:03PM -0300, Jason Gunthorpe wrote:
+> On Tue, Jun 22, 2021 at 03:08:19PM +0300, Leon Romanovsky wrote:
+> 
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mr.c b/drivers/net/ethernet/mellanox/mlx5/core/mr.c
+> > index 50af84e76fb6..7a76b5eb1c1a 100644
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/mr.c
+> > @@ -35,13 +35,11 @@
+> >  #include <linux/mlx5/driver.h>
+> >  #include "mlx5_core.h"
+> >  
+> > -int mlx5_core_create_mkey(struct mlx5_core_dev *dev,
+> > -			  struct mlx5_core_mkey *mkey,
+> > -			  u32 *in, int inlen)
+> > +int mlx5_core_create_mkey(struct mlx5_core_dev *dev, u32 *mkey, u32 *in,
+> > +			  int inlen)
+> >  {
+> >  	u32 lout[MLX5_ST_SZ_DW(create_mkey_out)] = {};
+> >  	u32 mkey_index;
+> > -	void *mkc;
+> >  	int err;
+> >  
+> >  	MLX5_SET(create_mkey_in, in, opcode, MLX5_CMD_OP_CREATE_MKEY);
+> > @@ -50,38 +48,32 @@ int mlx5_core_create_mkey(struct mlx5_core_dev *dev,
+> >  	if (err)
+> >  		return err;
+> >  
+> > -	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+> >  	mkey_index = MLX5_GET(create_mkey_out, lout, mkey_index);
+> > -	mkey->iova = MLX5_GET64(mkc, mkc, start_addr);
+> > -	mkey->size = MLX5_GET64(mkc, mkc, len);
+> > -	mkey->key |= mlx5_idx_to_mkey(mkey_index);
+> > -	mkey->pd = MLX5_GET(mkc, mkc, pd);
+> > -	init_waitqueue_head(&mkey->wait);
+> > +	*mkey |= mlx5_idx_to_mkey(mkey_index);
+> 
+> 
+> This conflicts with 0232fc2ddcf4 ("net/mlx5: Reset mkey index on creation")
+> 
+> Please resend/rebase. I think it should be fixed like
+> 
+> 	mkey_index = MLX5_GET(create_mkey_out, lout, mkey_index);
+> 	*mkey = (u32)mlx5_mkey_variant(mkey->key) | mlx5_idx_to_mkey(mkey_index);
+> 
+> 	mlx5_core_dbg(dev, "out 0x%x, mkey 0x%x\n", mkey_index,	*mkey);
+> ?
 
-On Thu, Jul 29, 2021 at 2:28 AM Gang Li <ligang.bdlg@bytedance.com> wrote:
->
-> Ftrace core will add "\n" automatically on print. "\n" in TP_printk
-> will create blank line, so remove it.
->
-> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
-> ---
->  include/trace/events/mmap_lock.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/include/trace/events/mmap_lock.h b/include/trace/events/mmap_lock.h
-> index 0abff67b96f0..5f980c92e3e9 100644
-> --- a/include/trace/events/mmap_lock.h
-> +++ b/include/trace/events/mmap_lock.h
-> @@ -32,7 +32,7 @@ TRACE_EVENT_FN(mmap_lock_start_locking,
->         ),
->
->         TP_printk(
-> -               "mm=%p memcg_path=%s write=%s\n",
-> +               "mm=%p memcg_path=%s write=%s",
->                 __entry->mm,
->                 __get_str(memcg_path),
->                 __entry->write ? "true" : "false"
-> @@ -63,7 +63,7 @@ TRACE_EVENT_FN(mmap_lock_acquire_returned,
->         ),
->
->         TP_printk(
-> -               "mm=%p memcg_path=%s write=%s success=%s\n",
-> +               "mm=%p memcg_path=%s write=%s success=%s",
->                 __entry->mm,
->                 __get_str(memcg_path),
->                 __entry->write ? "true" : "false",
-> @@ -92,7 +92,7 @@ TRACE_EVENT_FN(mmap_lock_released,
->         ),
->
->         TP_printk(
-> -               "mm=%p memcg_path=%s write=%s\n",
-> +               "mm=%p memcg_path=%s write=%s",
->                 __entry->mm,
->                 __get_str(memcg_path),
->                 __entry->write ? "true" : "false"
-> --
-> 2.20.1
->
+Yes, this is how it is fixed in my tree. I just waited till you finish the review.
+
+> 
+> (though I will look at the rest of the series today, so don't rush on
+> this)
+> 
+> Jason
