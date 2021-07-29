@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8493D9ADC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664A73D9B06
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 03:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233215AbhG2BNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Jul 2021 21:13:22 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7886 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233200AbhG2BNT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Jul 2021 21:13:19 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZsrB1lq6z81YX;
-        Thu, 29 Jul 2021 09:09:30 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 09:13:15 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 29 Jul 2021 09:13:15 +0800
-Subject: Re: [PATCH 4.19 000/119] 4.19.199-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210727112108.341674321@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <a8795dce-c33c-72a0-c214-dccb79d9404b@huawei.com>
-Date:   Thu, 29 Jul 2021 09:13:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S233208AbhG2BWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Jul 2021 21:22:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232837AbhG2BWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Jul 2021 21:22:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4127E608FB;
+        Thu, 29 Jul 2021 01:22:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627521767;
+        bh=d0zv6RtbSmg5wdXW/LCxn3s+mk2wN2t8jhgBEjbtGcc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=i6G5Yx3LUfltP2gYE3dSAYTM95ux/dp35zDFndVUcM+TfanOFNDYYHIcLykSo6+j9
+         YUUgXI05NgJKg5EYRAjF1BqMu53YGvSs5kiOCVudslok1nJadGH3lotbzM1zjAxCIB
+         qmpQ5F/yzhIf8oBontwcdfvcyY6EUzUK1Yq4MI64anGhz/vXe+zJNAm+0+9ARfs3tl
+         77bmbHBEJXiY9jh/eFNZIdDqv31qH/W9WuHkQf7cAlzHGUGovTu30eOQiRwsxFb33a
+         VaeiYmAlyOkLEDcCQYOakvmzs1jHGBZiH2lhfpJttzFsKzge8wl4sUfZeQNGoYGDIx
+         AfgarM/OLsTgg==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
+        Chao Yu <chao@kernel.org>
+Subject: [PATCH RESEND] f2fs: fix wrong checkpoint_changed value in f2fs_remount()
+Date:   Thu, 29 Jul 2021 09:22:17 +0800
+Message-Id: <20210729012217.788321-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
-In-Reply-To: <20210727112108.341674321@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In f2fs_remount(), return value of test_opt() is an unsigned int type
+variable, however when we compare it to a bool type variable, it cause
+wrong result, fix it.
 
+Fixes: 4354994f097d ("f2fs: checkpoint disabling")
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ fs/f2fs/super.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-On 2021/7/27 19:21, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.199 release.
-> There are 119 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 29 Jul 2021 11:20:50 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.199-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 41765e90caa2..18c1ffb8710e 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2062,11 +2062,10 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	bool need_restart_ckpt = false, need_stop_ckpt = false;
+ 	bool need_restart_flush = false, need_stop_flush = false;
+ 	bool no_extent_cache = !test_opt(sbi, EXTENT_CACHE);
+-	bool disable_checkpoint = test_opt(sbi, DISABLE_CHECKPOINT);
++	bool enable_checkpoint = !test_opt(sbi, DISABLE_CHECKPOINT);
+ 	bool no_io_align = !F2FS_IO_ALIGNED(sbi);
+ 	bool no_atgc = !test_opt(sbi, ATGC);
+ 	bool no_compress_cache = !test_opt(sbi, COMPRESS_CACHE);
+-	bool checkpoint_changed;
+ #ifdef CONFIG_QUOTA
+ 	int i, j;
+ #endif
+@@ -2111,8 +2110,6 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	err = parse_options(sb, data, true);
+ 	if (err)
+ 		goto restore_opts;
+-	checkpoint_changed =
+-			disable_checkpoint != test_opt(sbi, DISABLE_CHECKPOINT);
+ 
+ 	/*
+ 	 * Previous and new state of filesystem is RO,
+@@ -2234,7 +2231,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 		need_stop_flush = true;
+ 	}
+ 
+-	if (checkpoint_changed) {
++	if (enable_checkpoint == !!test_opt(sbi, DISABLE_CHECKPOINT)) {
+ 		if (test_opt(sbi, DISABLE_CHECKPOINT)) {
+ 			err = f2fs_disable_checkpoint(sbi);
+ 			if (err)
+-- 
+2.22.1
 
-Tested on arm64 and x86 for 4.19.199-rc3,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.199-rc3
-Commit: b72fc3c0016d5ba671bf6e5ee31852a03d8c3a0d
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8858
-passed: 8858
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8858
-passed: 8858
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
