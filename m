@@ -2,65 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75B73DA23D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69DC3DA23C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 13:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbhG2Lf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 07:35:59 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:39156 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229523AbhG2Lfx (ORCPT
+        id S234524AbhG2Lfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 07:35:51 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:37742
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231645AbhG2Lfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:35:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UhLNSTM_1627558548;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UhLNSTM_1627558548)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 29 Jul 2021 19:35:48 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/mempolicy: Use readable NUMA_NO_NODE macro instead of magic numer
-Date:   Thu, 29 Jul 2021 19:35:43 +0800
-Message-Id: <1b77c0ce21183fa86f4db250b115cf5e27396528.1627558356.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 29 Jul 2021 07:35:50 -0400
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 16DEB3F0FD
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 11:35:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627558546;
+        bh=ecITBiExnfrz7s+2RNbpApFu8QtFtMdKsbfQbWi6TUo=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=jDFB8hynE9ZQwWHiGA6bOgl34CotqcdGlqgND74z+l5eKCqYmIoffXUvip3EDsdwC
+         cdmTqidmf2qhbREL2UsCSjJfHjMwiZFIK2vgjoQF+sqErVC2c/c8itsiTHlC/jSUAW
+         YUU8WC1fjEmUU+5TAfFTqyVdKaygGi3fnO0mtO25meIETEKrJvzlkcvcn+pF2HemVR
+         BzBuK9FIe/ym0ZdstE2nN/y7PsMpCKmG8FrxSOy+v9UqhRDJZOzAvp0Te+0CPiWUl9
+         RqZX1hsPO+a/lkU0CXHIxP3xYDtXpenGMIUyUNhIYhMjBx8ouF0UFjaBuXWWAJ9jkR
+         wctEuFnQwqdPQ==
+Received: by mail-ej1-f72.google.com with SMTP id x5-20020a1709064bc5b02905305454f5d1so1865596ejv.10
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 04:35:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ecITBiExnfrz7s+2RNbpApFu8QtFtMdKsbfQbWi6TUo=;
+        b=NwRsKGO0+fSWVYPElJadK8mYDFQ0db/VqaVd+9XcEbSHr2gBMZwe/WExEszBQGd751
+         TPyb8UTrHT/DGBlU3ZBGxcFew1e+7UAjU/rVkJ5BbmVUS8TE6XQ71cfIJDr7UBAFe96e
+         ELmaW+7QU6u3hmeETL/m3igKu8xmsj3UhkhcI9YZFCjMp6uGqr6SKkqUdCvbMfFrrWFW
+         zl9WQdLNnOZ6ACZim/H6VXyfcbcHkPq+qBCz+5m1J7ZBVip2mcZ+mbdsKpD/jWXrsWFS
+         5zdUVAQ31fKW277/+cH8O6RU1Gx9W/qxwttp5aAS7/TtteNDIRvVhGxbzpKCyrfmAAdh
+         ZiPg==
+X-Gm-Message-State: AOAM533kK50djNPHWIKiIE8Rr9opqOriHW4dLFtCmzH772ttoRzJSWq3
+        1/eFTsU2BcwxVjHUpDDqfmyB3hvpgJ4DzmV0wZhNk68xTvslkFVmX5ep/75AKlCaVAuvp3SKBV+
+        qx/gsgbzP26ZpbG2WBukMPddZ/hZKK3XmvpksYchfmQ==
+X-Received: by 2002:a05:6402:124e:: with SMTP id l14mr5714536edw.356.1627558545852;
+        Thu, 29 Jul 2021 04:35:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOaujUGXPLJ56H1P6zQk70UrsB6Pwk0g/7UcJ0l0bQB/BF2GdMVdpMGIjWRvJLxo2hy2jOyQ==
+X-Received: by 2002:a05:6402:124e:: with SMTP id l14mr5714522edw.356.1627558545691;
+        Thu, 29 Jul 2021 04:35:45 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id u10sm868329ejf.121.2021.07.29.04.35.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 04:35:45 -0700 (PDT)
+Subject: Re: [PATCH 00/12] nfc: constify, continued (part 2)
+To:     patchwork-bot+netdevbpf@kernel.org
+Cc:     mgreer@animalcreek.com, bongsu.jeon@samsung.com,
+        davem@davemloft.net, kuba@kernel.org, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+References: <20210729104022.47761-1-krzysztof.kozlowski@canonical.com>
+ <162755820704.26856.6157999905884570707.git-patchwork-notify@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <7b0ae615-dcdc-251e-4067-959b31c28159@canonical.com>
+Date:   Thu, 29 Jul 2021 13:35:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <162755820704.26856.6157999905884570707.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The caller of mpol_misplaced() already use NUMA_NO_NODE to check
-whether current page node is misplaced, thus using NUMA_NO_NODE
-in mpol_misplaced() instead of magic number is more readable.
+On 29/07/2021 13:30, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+> 
+> This series was applied to netdev/net-next.git (refs/heads/master):
+> 
+> On Thu, 29 Jul 2021 12:40:10 +0200 you wrote:
+>> Hi,
+>>
+>> On top of:
+>> nfc: constify pointed data
+>> https://lore.kernel.org/lkml/20210726145224.146006-1-krzysztof.kozlowski@canonical.com/
+>>
+>> Best regards,
+>> Krzysztof
+>>
+>> [...]
+> 
+> Here is the summary with links:
+>   - [01/12] nfc: constify passed nfc_dev
+>     https://git.kernel.org/netdev/net-next/c/dd8987a394c0
+>   - [02/12] nfc: mei_phy: constify buffer passed to mei_nfc_send()
+>     https://git.kernel.org/netdev/net-next/c/894a6e158633
+>   - [03/12] nfc: port100: constify several pointers
+>     https://git.kernel.org/netdev/net-next/c/9a4af01c35a5
+>   - [04/12] nfc: trf7970a: constify several pointers
+>     https://git.kernel.org/netdev/net-next/c/ea050c5ee74a
+>   - [05/12] nfc: virtual_ncidev: constify pointer to nfc_dev
+>     https://git.kernel.org/netdev/net-next/c/83428dbbac51
+>   - [06/12] nfc: nfcsim: constify drvdata (struct nfcsim)
+>     https://git.kernel.org/netdev/net-next/c/582fdc98adc8
+>   - [07/12] nfc: fdp: drop unneeded cast for printing firmware size in dev_dbg()
+>     https://git.kernel.org/netdev/net-next/c/6c755b1d2511
+>   - [08/12] nfc: fdp: use unsigned int as loop iterator
+>     https://git.kernel.org/netdev/net-next/c/c3e26b6dc1b4
+>   - [09/12] nfc: fdp: constify several pointers
+>     https://git.kernel.org/netdev/net-next/c/3d463dd5023b
+>   - [10/12] nfc: microread: constify several pointers
+>     https://git.kernel.org/netdev/net-next/c/a751449f8b47
+>   - [11/12] nfc: mrvl: constify several pointers
+>     https://git.kernel.org/netdev/net-next/c/fe53159fe3e0
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- mm/mempolicy.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Oh, folks, too fast :)
 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index cedc816..038510d 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -2470,8 +2470,8 @@ static void sp_free(struct sp_node *n)
-  * node id.  Policy determination "mimics" alloc_page_vma().
-  * Called from fault path where we know the vma and faulting address.
-  *
-- * Return: -1 if the page is in a node that is valid for this policy, or a
-- * suitable node ID to allocate a replacement page from.
-+ * Return: NUMA_NO_NODE if the page is in a node that is valid for this
-+ * policy, or a suitable node ID to allocate a replacement page from.
-  */
- int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long addr)
- {
-@@ -2482,7 +2482,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
- 	int thiscpu = raw_smp_processor_id();
- 	int thisnid = cpu_to_node(thiscpu);
- 	int polnid = NUMA_NO_NODE;
--	int ret = -1;
-+	int ret = NUMA_NO_NODE;
- 
- 	pol = get_vma_policy(vma, addr);
- 	if (!(pol->flags & MPOL_F_MOF))
--- 
-1.8.3.1
+Sorry for the mess, but the patch 11/12 has one const which is wrong
+(I sent an email for it) and this should be on top of my
+previous set:
+https://lore.kernel.org/lkml/20210726145224.146006-1-krzysztof.kozlowski@canonical.com/
+which I think you did not take in.
 
+I am not sure if it compiles cleanly without the one above.
+
+Best regards,
+Krzysztof
