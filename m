@@ -2,127 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0CB3DA602
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653003DA5AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 16:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238836AbhG2OLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 10:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238495AbhG2OHG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:07:06 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A99C0619E5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:59:58 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id t68so6004240qkf.8
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 06:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KUvzSeTHiMYYDqDJxB7rJ4PNsknIyxmHg+DiEVHfwLI=;
-        b=iOwiVk+59SLzINH9AVvJnCRQz3piAW2z7tpru53kHm1k8PiIusFJtd0SQ4xDI4FFc3
-         bZRCI6YMKhRT2u+U7GBQrmyv91J8yRGOkgseXRyYp7xA0e9h6yRbXixo5JdSxDfEAs4W
-         sPxNOOwyfZFAAikVc79dsioyppviL3Wil4CQGo+DfLT7Ue0Gg4uRNRiJvoVSesolCxYI
-         r/ec+r0NELHo0Yq/AxQB2kqG6MJ2iDFiU4M6evSHPfKc/MiE8MpoaypA8dItdSXeMmzY
-         m1RgqdrArXNTrH/8k9p75lPGfzFckmisE2hIDyzz9R9qUOJcypGIT0WoDmlU3RJ+PCvi
-         xp8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KUvzSeTHiMYYDqDJxB7rJ4PNsknIyxmHg+DiEVHfwLI=;
-        b=BAy0EaSy0tEkmw5qLlRluTsyQ0fq44IqlSQnlR3nqMMYep7nl3XIzJImaCAPXa60WQ
-         /KsmMLY5ZYyCfkmIWtTgc5EEDQ7zcVXGTZJgUTbxFFbOCGGDSOn8/h/dlbIlBs7VX8Do
-         awG7o5//Q3MVzlyzTB4JKysWrnhGa8yQCcuTuSKHBnKo2eNd7tU0/3QI0UApb6vS5lKV
-         mw06nlmLCXZJce1M+pLQbSkS76joEyN3CrMkuvUgCV1i9orasyx2bVKRpD5lQSL0Lorx
-         arqr+XNSDB4/yBYqC25M/SHKmMh9XPgJAMJmZoJAifA++dQDusBlkQ9e2ugAC5308I9R
-         Hz3A==
-X-Gm-Message-State: AOAM533cPwSnafV0OcBrLXanrYy9xPtnkDm5dtxMNX44u17wEYrRcVAG
-        UlXt+WABxTuHgZhv2Kivs/L60fhjbXfJ8oLexU5hjQ==
-X-Google-Smtp-Source: ABdhPJxSrKNbOK3NA1s7QIBVfkGMkfAw4PxjPNutIFyYV824DbkgAHKPEK0RIiQ0e7hLN3J7hdZ8bMltngwlkwTbnFk=
-X-Received: by 2002:a37:a5ca:: with SMTP id o193mr5414456qke.352.1627567197517;
- Thu, 29 Jul 2021 06:59:57 -0700 (PDT)
+        id S239511AbhG2OIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 10:08:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238414AbhG2OBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7A460F46;
+        Thu, 29 Jul 2021 14:00:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627567239;
+        bh=dfkJ5JWovbN7hrPh+/DOSX2blRKtDHtFfpmCFJcwVBA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lDjgwEqBeUxy8ewu5AMQ3JFDqXpJeM7vG8T/ti9w7t0fMs7/564vxsdmgXmjLNecy
+         QIMzMQ/rhxOMnSU6gqKlKJxBZpIjuK8YPaCq9rbWtXryVkyNeWvtq6obKcFKUmv8hX
+         zUuKtVTEuNZvuNb1VS80UwK/RHGSsrQ3a5yUBgMk=
+Date:   Thu, 29 Jul 2021 16:00:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Phillip Potter <phil@philpotter.co.uk>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: Re: [PATCH v4 0/6] staging: r8188eu: add newer/better RTL8188eu
+ driver
+Message-ID: <YQK0ZMY34AFYtzN4@kroah.com>
+References: <20210727232219.2948-1-phil@philpotter.co.uk>
+ <20210728074605.pp5rs4c65tofnqot@viti.kaiser.cx>
+ <CAA=Fs0mH9YAVhr24YeE3jpZrnuDGhOuhj=Sb9Ekkpb-xoC5LYg@mail.gmail.com>
+ <20210729133730.lnxqzawnvksp4skg@viti.kaiser.cx>
 MIME-Version: 1.0
-References: <20210728190254.3921642-1-hca@linux.ibm.com> <20210728190254.3921642-3-hca@linux.ibm.com>
- <CAG_fn=VS_WFjL+qjm79Jvq5M0KaNScvX2vCw=aNxPx14Hffa0A@mail.gmail.com> <yt9dtukdteoj.fsf@linux.ibm.com>
-In-Reply-To: <yt9dtukdteoj.fsf@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 29 Jul 2021 15:59:21 +0200
-Message-ID: <CAG_fn=XHr2j+xVaxjxqSUKU7ddDoekvxVoac9sSJ+Yk3voRUnA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] kfence: add function to mask address bits
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>, Marco Elver <elver@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729133730.lnxqzawnvksp4skg@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 3:47 PM Sven Schnelle <svens@linux.ibm.com> wrote:
->
-> Alexander Potapenko <glider@google.com> writes:
->
-> > On Wed, Jul 28, 2021 at 9:03 PM Heiko Carstens <hca@linux.ibm.com> wrote:
-> >>
-> >> From: Sven Schnelle <svens@linux.ibm.com>
-> >>
-> >> s390 only reports the page address during a translation fault.
-> >> To make the kfence unit tests pass, add a function that might
-> >> be implemented by architectures to mask out address bits.
-> >>
-> >> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-> >> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-> >> ---
-> >>  mm/kfence/kfence_test.c | 13 ++++++++++++-
-> >>  1 file changed, 12 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-> >> index 942cbc16ad26..eb6307c199ea 100644
-> >> --- a/mm/kfence/kfence_test.c
-> >> +++ b/mm/kfence/kfence_test.c
-> >> @@ -23,8 +23,15 @@
-> >>  #include <linux/tracepoint.h>
-> >>  #include <trace/events/printk.h>
-> >>
-> >> +#include <asm/kfence.h>
-> >> +
-> >>  #include "kfence.h"
-> >>
-> >> +/* May be overridden by <asm/kfence.h>. */
-> >> +#ifndef arch_kfence_test_address
-> >> +#define arch_kfence_test_address(addr) (addr)
-> >> +#endif
-> >> +
-> >>  /* Report as observed from console. */
-> >>  static struct {
-> >>         spinlock_t lock;
-> >> @@ -82,6 +89,7 @@ static const char *get_access_type(const struct expect_report *r)
-> >>  /* Check observed report matches information in @r. */
-> >>  static bool report_matches(const struct expect_report *r)
-> >>  {
-> >> +       unsigned long addr = (unsigned long)r->addr;
-> >>         bool ret = false;
-> >>         unsigned long flags;
-> >>         typeof(observed.lines) expect;
-> >> @@ -131,22 +139,25 @@ static bool report_matches(const struct expect_report *r)
-> >>         switch (r->type) {
-> >>         case KFENCE_ERROR_OOB:
-> >>                 cur += scnprintf(cur, end - cur, "Out-of-bounds %s at", get_access_type(r));
-> >> +               addr = arch_kfence_test_address(addr);
-> >
-> > Can we normalize addr once before (or after) this switch?
-> >
->
+On Thu, Jul 29, 2021 at 03:37:30PM +0200, Martin Kaiser wrote:
+> Hi Phil and all,
+> 
+> Thus wrote Phillip Potter (phil@philpotter.co.uk):
+> 
+> > I see what you are saying for sure - I think we've both sunk a fair
+> > few patches into the existing driver :-)
+> 
+> > That said, from what Larry has mentioned, this newer driver would
+> > still be a better bet overall due to the additional work that has
+> > already happened on it out-of-tree. The Realtek driver you reference
+> > probably has no CFG80211 support etc. would be my guess, but I am
+> > going off what others have suggested in terms of proposing this
+> > patchset. I can't honestly say what the risk of this happening again
+> > would be, but minimal I'd imagine.
+> 
+> ok, understood. That's an important feature. I see that Greg accepted
+> your patches, there's no point in arguing any more ;-)
+> 
+> Greg and Larry: Would you mind sharing your ideas about getting
+> rtl8188eu support mainline? Do you imagine that we clean up this driver
+> until it can be moved out of staging?
 
-> I don't think so. When reporing corrupted memory or an invalid free the
-> address is not generated by hardware but kfence itself, and therefore we
-> would strip valid bits.
+Yes, it's that "simple" :)
 
-Ah, sorry, I missed that.
+> If so, we'd probably have to resolve name conflicts with other realtek
+> drivers and rename lots of functions.
+
+Odds are that will happen as the code is cleaned up, right?
+
+> Or would a cleanup of the new rtl8188eu driver be a preparation for
+> adding bits and pieces of it to rtlwifi?
+
+Do you think it will fit into that framework?
+
+thanks,
+
+greg k-h
