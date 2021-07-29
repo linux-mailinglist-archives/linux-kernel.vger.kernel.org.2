@@ -2,468 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39483DA3FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1056B3DA44A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237989AbhG2NY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:24:29 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56788 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237575AbhG2NVu (ORCPT
+        id S237859AbhG2N35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:29:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15098 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237752AbhG2N3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:21:50 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 37E072004A;
-        Thu, 29 Jul 2021 13:21:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627564907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iYVSGOrkM21pFT/e3cbIa7LDokPHVe2XjRbFkyu6gbs=;
-        b=ka/CQZFiV4uQ+BgQtewmzJHG8OTrVSG8635ZnaWDBjrEZ8Eo5YJiUA+9O7FvDZVDWDUsya
-        M9Q0zWsxBZUspTm2JgWqRNk0ML8NsezSWkg4Vytbx3PKeJTA310Wa5Qi76ju4QmSbRr5da
-        SahyZkD75Dv2wPrNEp1Tg5oIuk1ATRQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627564907;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iYVSGOrkM21pFT/e3cbIa7LDokPHVe2XjRbFkyu6gbs=;
-        b=f8GyvePlzEV49b58OpBGdHuX5qv1P0eAmg2hjv5hb60jDffWRsgIRL6HUw9YF6Sk12SXea
-        axFGmwq94b7DG+Dg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F11BB13AE9;
-        Thu, 29 Jul 2021 13:21:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uLw8OmqrAmF9AwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 29 Jul 2021 13:21:46 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v3 35/35] mm, slub: convert kmem_cpu_slab protection to local_lock
-Date:   Thu, 29 Jul 2021 15:21:32 +0200
-Message-Id: <20210729132132.19691-36-vbabka@suse.cz>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729132132.19691-1-vbabka@suse.cz>
-References: <20210729132132.19691-1-vbabka@suse.cz>
+        Thu, 29 Jul 2021 09:29:11 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TDSLcK064929;
+        Thu, 29 Jul 2021 09:29:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=UlOZAV3njL9WgqZBD8YgjqqBRmlVJi6DL813I4lx2rE=;
+ b=Z5b5nnjjaXk8iHz+dsjeJlcmsHWgHWcnUCZucaOA0C/jfGMOXZcthS0F5fpzKnaQWnne
+ w79U0ITFzJpubb8axxMHj8KkpCUt8LDTwOoJoOJm6TcZ+9WcNJn3XAOOOSPIpZMtvUwo
+ HpDDMskuUgK5LvBi+Lc3ndlbHWBOQRrohk+c0G5OPyb9xgyujSpSaMbMSJe4SyaQcFYl
+ 9Uyfa8JLsX9siovWKwqN3Llr81Ya5SKA7gRzQKN4Cj1wjzgfNCiMVuOPuB8Zwr2h7eUP
+ IMgFzzUOgpKqppqvyIAAZ15QaqkRmzO0wjEKAv7Ib+vE1a6vuVE5p21kgHTI377IzVtz uA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3w8cr0nu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 09:29:07 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16TDSwQE072095;
+        Thu, 29 Jul 2021 09:29:07 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a3w8cr0n3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 09:29:06 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16TDIh3H017669;
+        Thu, 29 Jul 2021 13:29:04 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 3a235ks4ht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 13:29:04 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16TDT0pO27001110
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Jul 2021 13:29:01 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C923DA4060;
+        Thu, 29 Jul 2021 13:29:00 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5AE63A405C;
+        Thu, 29 Jul 2021 13:29:00 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.1.151])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 29 Jul 2021 13:29:00 +0000 (GMT)
+Date:   Thu, 29 Jul 2021 15:22:05 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     kvm@vger.kernel.org, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] KVM: s390: pv: avoid stall notifications for
+ some UVCs
+Message-ID: <20210729152205.73d39a65@p-imbrenda>
+In-Reply-To: <87h7gd2y5c.fsf@redhat.com>
+References: <20210728142631.41860-1-imbrenda@linux.ibm.com>
+        <20210728142631.41860-2-imbrenda@linux.ibm.com>
+        <87h7gd2y5c.fsf@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SxWz63jsLsS7B6Gg-v2kr-IWBqk9ZxJu
+X-Proofpoint-ORIG-GUID: OPLqKlrIQPiVMfVwBdLbob15-vblMzzr
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_10:2021-07-29,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Embed local_lock into struct kmem_cpu_slab and use the irq-safe versions of
-local_lock instead of plain local_irq_save/restore. On !PREEMPT_RT that's
-equivalent, with better lockdep visibility. On PREEMPT_RT that means better
-preemption.
+On Thu, 29 Jul 2021 12:49:03 +0200
+Cornelia Huck <cohuck@redhat.com> wrote:
 
-However, the cost on PREEMPT_RT is the loss of lockless fast paths which only
-work with cpu freelist. Those are designed to detect and recover from being
-preempted by other conflicting operations (both fast or slow path), but the
-slow path operations assume they cannot be preempted by a fast path operation,
-which is guaranteed naturally with disabled irqs. With local locks on
-PREEMPT_RT, the fast paths now also need to take the local lock to avoid races.
+> On Wed, Jul 28 2021, Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
+> 
+> > Improve make_secure_pte to avoid stalls when the system is heavily
+> > overcommitted. This was especially problematic in
+> > kvm_s390_pv_unpack, because of the loop over all pages that needed
+> > unpacking.
+> >
+> > Also fix kvm_s390_pv_init_vm to avoid stalls when the system is
+> > heavily overcommitted.
+> >
+> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> > ---
+> >  arch/s390/kernel/uv.c | 11 ++++++++---
+> >  arch/s390/kvm/pv.c    |  2 +-
+> >  2 files changed, 9 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> > index aeb0a15bcbb7..fd0faa51c1bb 100644
+> > --- a/arch/s390/kernel/uv.c
+> > +++ b/arch/s390/kernel/uv.c
+> > @@ -196,11 +196,16 @@ static int make_secure_pte(pte_t *ptep,
+> > unsigned long addr, if (!page_ref_freeze(page, expected))
+> >  		return -EBUSY;
+> >  	set_bit(PG_arch_1, &page->flags);
+> > -	rc = uv_call(0, (u64)uvcb);
+> > +	rc = __uv_call(0, (u64)uvcb);
+> >  	page_ref_unfreeze(page, expected);
+> > -	/* Return -ENXIO if the page was not mapped, -EINVAL
+> > otherwise */
+> > -	if (rc)
+> > +	/*
+> > +	 * Return -ENXIO if the page was not mapped, -EINVAL for
+> > other errors.
+> > +	 * If busy or partially completed, return -EAGAIN.
+> > +	 */
+> > +	if (rc == 1)
+> >  		rc = uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
+> > +	else if (rc > 1)
+> > +		rc = -EAGAIN;
+> >  	return rc;
+> >  }  
+> 
+> Possibly dumb question: when does the call return > 1?
 
-In the allocation fastpath slab_alloc_node() we can just defer to the slowpath
-__slab_alloc() which also works with cpu freelist, but under the local lock.
-In the free fastpath do_slab_free() we have to add a new local lock protected
-version of freeing to the cpu freelist, as the existing slowpath only works
-with the page freelist.
+this is exactly what Janosch meant :)
 
-Also update the comment about locking scheme in SLUB to reflect changes done
-by this series.
+the next version will have #defines for the 4 possible CC values.
 
-[ Mike Galbraith <efault@gmx.de>: use local_lock() without irq in PREEMPT_RT
-  scope; debugging of RT crashes resulting in put_cpu_partial() locking changes ]
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- include/linux/slub_def.h |   2 +
- mm/slub.c                | 146 ++++++++++++++++++++++++++++++---------
- 2 files changed, 115 insertions(+), 33 deletions(-)
+in short:
+0 OK
+1 error
+2 busy (nothing done, try again)
+3 partial (something done but not all, try again)
 
-diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-index dcde82a4434c..b5bcac29b979 100644
---- a/include/linux/slub_def.h
-+++ b/include/linux/slub_def.h
-@@ -10,6 +10,7 @@
- #include <linux/kfence.h>
- #include <linux/kobject.h>
- #include <linux/reciprocal_div.h>
-+#include <linux/local_lock.h>
- 
- enum stat_item {
- 	ALLOC_FASTPATH,		/* Allocation from cpu slab */
-@@ -41,6 +42,7 @@ enum stat_item {
- 	NR_SLUB_STAT_ITEMS };
- 
- struct kmem_cache_cpu {
-+	local_lock_t lock;	/* Protects the fields below except stat */
- 	void **freelist;	/* Pointer to next available object */
- 	unsigned long tid;	/* Globally unique transaction id */
- 	struct page *page;	/* The slab from which we are allocating */
-diff --git a/mm/slub.c b/mm/slub.c
-index 91e04e20cf60..695ffaf28c25 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -46,13 +46,21 @@
- /*
-  * Lock order:
-  *   1. slab_mutex (Global Mutex)
-- *   2. node->list_lock
-- *   3. slab_lock(page) (Only on some arches and for debugging)
-+ *   2. node->list_lock (Spinlock)
-+ *   3. kmem_cache->cpu_slab->lock (Local lock)
-+ *   4. slab_lock(page) (Only on some arches or for debugging)
-+ *   5. object_map_lock (Only for debugging)
-  *
-  *   slab_mutex
-  *
-  *   The role of the slab_mutex is to protect the list of all the slabs
-  *   and to synchronize major metadata changes to slab cache structures.
-+ *   Also synchronizes memory hotplug callbacks.
-+ *
-+ *   slab_lock
-+ *
-+ *   The slab_lock is a wrapper around the page lock, thus it is a bit
-+ *   spinlock.
-  *
-  *   The slab_lock is only used for debugging and on arches that do not
-  *   have the ability to do a cmpxchg_double. It only protects:
-@@ -61,6 +69,8 @@
-  *	C. page->objects	-> Number of objects in page
-  *	D. page->frozen		-> frozen state
-  *
-+ *   Frozen slabs
-+ *
-  *   If a slab is frozen then it is exempt from list management. It is not
-  *   on any list except per cpu partial list. The processor that froze the
-  *   slab is the one who can perform list operations on the page. Other
-@@ -68,6 +78,8 @@
-  *   froze the slab is the only one that can retrieve the objects from the
-  *   page's freelist.
-  *
-+ *   list_lock
-+ *
-  *   The list_lock protects the partial and full list on each node and
-  *   the partial slab counter. If taken then no new slabs may be added or
-  *   removed from the lists nor make the number of partial slabs be modified.
-@@ -79,10 +91,36 @@
-  *   slabs, operations can continue without any centralized lock. F.e.
-  *   allocating a long series of objects that fill up slabs does not require
-  *   the list lock.
-- *   Interrupts are disabled during allocation and deallocation in order to
-- *   make the slab allocator safe to use in the context of an irq. In addition
-- *   interrupts are disabled to ensure that the processor does not change
-- *   while handling per_cpu slabs, due to kernel preemption.
-+ *
-+ *   cpu_slab->lock local lock
-+ *
-+ *   This locks protect slowpath manipulation of all kmem_cache_cpu fields
-+ *   except the stat counters. This is a percpu structure manipulated only by
-+ *   the local cpu, so the lock protects against being preempted or interrupted
-+ *   by an irq. Fast path operations rely on lockless operations instead.
-+ *   On PREEMPT_RT, the local lock does not actually disable irqs (and thus
-+ *   prevent the lockless operations), so fastpath operations also need to take
-+ *   the lock and are no longer lockless.
-+ *
-+ *   lockless fastpaths
-+ *
-+ *   The fast path allocation (slab_alloc_node()) and freeing (do_slab_free())
-+ *   are fully lockless when satisfied from the percpu slab (and when
-+ *   cmpxchg_double is possible to use, otherwise slab_lock is taken).
-+ *   They also don't disable preemption or migration or irqs. They rely on
-+ *   the transaction id (tid) field to detect being preempted or moved to
-+ *   another cpu.
-+ *
-+ *   irq, preemption, migration considerations
-+ *
-+ *   Interrupts are disabled as part of list_lock or local_lock operations, or
-+ *   around the slab_lock operation, in order to make the slab allocator safe
-+ *   to use in the context of an irq.
-+ *
-+ *   In addition, preemption (or migration on PREEMPT_RT) is disabled in the
-+ *   allocation slowpath, bulk allocation, and put_cpu_partial(), so that the
-+ *   local cpu doesn't change in the process and e.g. the kmem_cache_cpu pointer
-+ *   doesn't have to be revalidated in each section protected by the local lock.
-  *
-  * SLUB assigns one slab for allocation to each processor.
-  * Allocations only occur from these slabs called cpu slabs.
-@@ -2227,9 +2265,13 @@ static inline void note_cmpxchg_failure(const char *n,
- static void init_kmem_cache_cpus(struct kmem_cache *s)
- {
- 	int cpu;
-+	struct kmem_cache_cpu *c;
- 
--	for_each_possible_cpu(cpu)
--		per_cpu_ptr(s->cpu_slab, cpu)->tid = init_tid(cpu);
-+	for_each_possible_cpu(cpu) {
-+		c = per_cpu_ptr(s->cpu_slab, cpu);
-+		local_lock_init(&c->lock);
-+		c->tid = init_tid(cpu);
-+	}
- }
- 
- /*
-@@ -2440,10 +2482,10 @@ static void unfreeze_partials(struct kmem_cache *s)
- 	struct page *partial_page;
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 	partial_page = this_cpu_read(s->cpu_slab->partial);
- 	this_cpu_write(s->cpu_slab->partial, NULL);
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
- 	if (partial_page)
- 		__unfreeze_partials(s, partial_page);
-@@ -2476,7 +2518,7 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- 	int pages = 0;
- 	int pobjects = 0;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 
- 	oldpage = this_cpu_read(s->cpu_slab->partial);
- 
-@@ -2504,7 +2546,7 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- 
- 	this_cpu_write(s->cpu_slab->partial, page);
- 
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
- 	if (page_to_unfreeze) {
- 		__unfreeze_partials(s, page_to_unfreeze);
-@@ -2528,7 +2570,7 @@ static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c,
- 	struct page *page;
- 
- 	if (lock)
--		local_irq_save(flags);
-+		local_lock_irqsave(&s->cpu_slab->lock, flags);
- 
- 	freelist = c->freelist;
- 	page = c->page;
-@@ -2538,7 +2580,7 @@ static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c,
- 	c->tid = next_tid(c->tid);
- 
- 	if (lock)
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
- 	if (page)
- 		deactivate_slab(s, page, freelist);
-@@ -2826,9 +2868,9 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		goto deactivate_slab;
- 
- 	/* must check again c->page in case we got preempted and it changed */
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 	if (unlikely(page != c->page)) {
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		goto reread_page;
- 	}
- 	freelist = c->freelist;
-@@ -2839,7 +2881,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- 	if (!freelist) {
- 		c->page = NULL;
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		stat(s, DEACTIVATE_BYPASS);
- 		goto new_slab;
- 	}
-@@ -2848,7 +2890,11 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- load_freelist:
- 
--	lockdep_assert_irqs_disabled();
-+#ifdef CONFIG_PREEMPT_RT
-+	lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock.lock));
-+#else
-+	lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock));
-+#endif
- 
- 	/*
- 	 * freelist is pointing to the list of objects to be used.
-@@ -2858,39 +2904,39 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	VM_BUG_ON(!c->page->frozen);
- 	c->freelist = get_freepointer(s, freelist);
- 	c->tid = next_tid(c->tid);
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 	return freelist;
- 
- deactivate_slab:
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 	if (page != c->page) {
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		goto reread_page;
- 	}
- 	freelist = c->freelist;
- 	c->page = NULL;
- 	c->freelist = NULL;
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 	deactivate_slab(s, page, freelist);
- 
- new_slab:
- 
- 	if (slub_percpu_partial(c)) {
--		local_irq_save(flags);
-+		local_lock_irqsave(&s->cpu_slab->lock, flags);
- 		if (unlikely(c->page)) {
--			local_irq_restore(flags);
-+			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 			goto reread_page;
- 		}
- 		if (unlikely(!slub_percpu_partial(c))) {
--			local_irq_restore(flags);
-+			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 			/* we were preempted and partial list got empty */
- 			goto new_objects;
- 		}
- 
- 		page = c->page = slub_percpu_partial(c);
- 		slub_set_percpu_partial(c, page);
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		stat(s, CPU_PARTIAL_ALLOC);
- 		goto redo;
- 	}
-@@ -2943,7 +2989,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- retry_load_page:
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 	if (unlikely(c->page)) {
- 		void *flush_freelist = c->freelist;
- 		struct page *flush_page = c->page;
-@@ -2952,7 +2998,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		c->freelist = NULL;
- 		c->tid = next_tid(c->tid);
- 
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
- 		deactivate_slab(s, flush_page, flush_freelist);
- 
-@@ -3071,7 +3117,15 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
- 
- 	object = c->freelist;
- 	page = c->page;
--	if (unlikely(!object || !page || !node_match(page, node))) {
-+	/*
-+	 * We cannot use the lockless fastpath on PREEMPT_RT because if a
-+	 * slowpath has taken the local_lock_irqsave(), it is not protected
-+	 * against a fast path operation in an irq handler. So we need to take
-+	 * the slow path which uses local_lock. It is still relatively fast if
-+	 * there is a suitable cpu freelist.
-+	 */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) ||
-+	    unlikely(!object || !page || !node_match(page, node))) {
- 		object = __slab_alloc(s, gfpflags, node, addr, c);
- 	} else {
- 		void *next_object = get_freepointer_safe(s, object);
-@@ -3331,6 +3385,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
- 	barrier();
- 
- 	if (likely(page == c->page)) {
-+#ifndef CONFIG_PREEMPT_RT
- 		void **freelist = READ_ONCE(c->freelist);
- 
- 		set_freepointer(s, tail_obj, freelist);
-@@ -3343,6 +3398,31 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
- 			note_cmpxchg_failure("slab_free", s, tid);
- 			goto redo;
- 		}
-+#else /* CONFIG_PREEMPT_RT */
-+		/*
-+		 * We cannot use the lockless fastpath on PREEMPT_RT because if
-+		 * a slowpath has taken the local_lock_irqsave(), it is not
-+		 * protected against a fast path operation in an irq handler. So
-+		 * we need to take the local_lock. We shouldn't simply defer to
-+		 * __slab_free() as that wouldn't use the cpu freelist at all.
-+		 */
-+		void **freelist;
-+
-+		local_lock(&s->cpu_slab->lock);
-+		c = this_cpu_ptr(s->cpu_slab);
-+		if (unlikely(page != c->page)) {
-+			local_unlock(&s->cpu_slab->lock);
-+			goto redo;
-+		}
-+		tid = c->tid;
-+		freelist = c->freelist;
-+
-+		set_freepointer(s, tail_obj, freelist);
-+		c->freelist = head;
-+		c->tid = next_tid(tid);
-+
-+		local_unlock(&s->cpu_slab->lock);
-+#endif
- 		stat(s, FREE_FASTPATH);
- 	} else
- 		__slab_free(s, page, head, tail_obj, cnt, addr);
-@@ -3513,7 +3593,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 	 * handlers invoking normal fastpath.
- 	 */
- 	c = slub_get_cpu_ptr(s->cpu_slab);
--	local_irq_disable();
-+	local_lock_irq(&s->cpu_slab->lock);
- 
- 	for (i = 0; i < size; i++) {
- 		void *object = kfence_alloc(s, s->object_size, flags);
-@@ -3534,7 +3614,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 			 */
- 			c->tid = next_tid(c->tid);
- 
--			local_irq_enable();
-+			local_unlock_irq(&s->cpu_slab->lock);
- 
- 			/*
- 			 * Invoking slow path likely have side-effect
-@@ -3548,7 +3628,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 			c = this_cpu_ptr(s->cpu_slab);
- 			maybe_wipe_obj_freeptr(s, p[i]);
- 
--			local_irq_disable();
-+			local_lock_irq(&s->cpu_slab->lock);
- 
- 			continue; /* goto for-loop */
- 		}
-@@ -3557,7 +3637,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 		maybe_wipe_obj_freeptr(s, p[i]);
- 	}
- 	c->tid = next_tid(c->tid);
--	local_irq_enable();
-+	local_unlock_irq(&s->cpu_slab->lock);
- 	slub_put_cpu_ptr(s->cpu_slab);
- 
- 	/*
--- 
-2.32.0
+> gmap_make_secure() will do a wait_on_page_writeback() for -EAGAIN, is
+> that always the right thing to do?
+
+it's the easiest way to get to a place where we will be able to
+reschedule if needed.
+
+wait_on_page_writeback will probably do nothing in that case because
+the page is not in writeback.
+
+(a few minutes later)
+
+actually I have checked, it seems that the -EAGAIN gets eventually
+propagated to places where it's not checked properly!
+
+this will need some more fixing
 
