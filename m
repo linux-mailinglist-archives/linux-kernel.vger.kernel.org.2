@@ -2,105 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607773D9FD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3823D9FBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 10:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235293AbhG2IrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 04:47:22 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:47186 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234878AbhG2IrU (ORCPT
+        id S235289AbhG2Ijg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 04:39:36 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:35198 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234986AbhG2Ije (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 04:47:20 -0400
-X-UUID: 1be3e42e7bef43cba7867ad3766c9ec9-20210729
-X-UUID: 1be3e42e7bef43cba7867ad3766c9ec9-20210729
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <zhiyong.tao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1199891843; Thu, 29 Jul 2021 16:47:15 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 29 Jul 2021 16:47:14 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 29 Jul 2021 16:47:13 +0800
-From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
-To:     <timur@kernel.org>, <linux@armlinux.org.uk>, <alcooperx@gmail.com>,
-        <tklauser@distanz.ch>, <sean.wang@kernel.org>
-CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
-        <hui.liu@mediatek.com>, <yuchen.huang@mediatek.com>,
-        <huihui.wang@mediatek.com>, <eddie.huang@mediatek.com>,
-        <sean.wang@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>
-Subject: [PATCH v2 1/1] serial: 8250_mtk: fix uart corruption issue when rx power off
-Date:   Thu, 29 Jul 2021 16:46:40 +0800
-Message-ID: <20210729084640.17613-2-zhiyong.tao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210729084640.17613-1-zhiyong.tao@mediatek.com>
-References: <20210729084640.17613-1-zhiyong.tao@mediatek.com>
+        Thu, 29 Jul 2021 04:39:34 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16T8aFdo008858;
+        Thu, 29 Jul 2021 04:39:31 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3a3kfd0x1b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 04:39:30 -0400
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 16T8dTkw045916
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 29 Jul 2021 04:39:29 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Thu, 29 Jul 2021 01:39:27 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Thu, 29 Jul 2021 01:39:27 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Thu, 29 Jul 2021 01:39:27 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 16T8dPfb011624;
+        Thu, 29 Jul 2021 04:39:26 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>
+Subject: [PATCH 0/3] iio: adc: Fix flags in sigma-delta drivers
+Date:   Thu, 29 Jul 2021 11:47:28 +0300
+Message-ID: <20210729084731.79135-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MTK:  N
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: ufcYpsXLRoBiqHoVL95R9TEYzmNTd4sB
+X-Proofpoint-GUID: ufcYpsXLRoBiqHoVL95R9TEYzmNTd4sB
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-29_09:2021-07-27,2021-07-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 clxscore=1011 mlxscore=0 spamscore=0 mlxlogscore=751
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix uart corruption issue when rx power off.
-Add spin lock in mtk8250_dma_rx_complete function in APDMA mode.
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-when uart is used as a communication port with external device(GPS).
-when external device(GPS) power off, the power of rx pin is also from
-1.8v to 0v. Even if there is not any data in rx. But uart rx pin can
-capture the data "0".
-If uart don't receive any data in specified cycle, uart will generates
-BI(Break interrupt) interrupt.
-If external device(GPS) power off, we found that BI interrupt appeared
-continuously and very frequently.
-When uart interrupt type is BI, uart IRQ handler(8250 framwork
-API:serial8250_handle_irq) will push data to tty buffer.
-mtk8250_dma_rx_complete is a task of mtk_uart_apdma_rx_handler.
-mtk8250_dma_rx_complete priority is lower than uart irq
-handler(serial8250_handle_irq).
-if we are in process of mtk8250_dma_rx_complete, uart appear BI
-interrupt:1)serial8250_handle_irq will priority execution.2)it may cause
-write tty buffer conflict in mtk8250_dma_rx_complete.
-So the spin lock protect the rx receive data process is not break.
+Some sigma-delta drivers use wrong irq_flags specified in the
+ad_sigma_delta_info struct. Add the flags corresponding to the
+interrupt type specified in the data-sheets of each chip.
 
-Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
----
- drivers/tty/serial/8250/8250_mtk.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Alexandru Tachici (3):
+  iio: adc: ad7192: Fix IRQ flag
+  iio: adc: ad7780: Fix IRQ flag
+  iio: adc: ad7923: Fix IRQ flag
 
-diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
-index f7d3023f860f..fb65dc601b23 100644
---- a/drivers/tty/serial/8250/8250_mtk.c
-+++ b/drivers/tty/serial/8250/8250_mtk.c
-@@ -93,10 +93,13 @@ static void mtk8250_dma_rx_complete(void *param)
- 	struct dma_tx_state state;
- 	int copied, total, cnt;
- 	unsigned char *ptr;
-+	unsigned long flags;
- 
- 	if (data->rx_status == DMA_RX_SHUTDOWN)
- 		return;
- 
-+	spin_lock_irqsave(&up->port.lock, flags);
-+
- 	dmaengine_tx_status(dma->rxchan, dma->rx_cookie, &state);
- 	total = dma->rx_size - state.residue;
- 	cnt = total;
-@@ -120,6 +123,8 @@ static void mtk8250_dma_rx_complete(void *param)
- 	tty_flip_buffer_push(tty_port);
- 
- 	mtk8250_rx_dma(up);
-+
-+	spin_unlock_irqrestore(&up->port.lock, flags);
- }
- 
- static void mtk8250_rx_dma(struct uart_8250_port *up)
--- 
-2.18.0
+ drivers/iio/adc/ad7192.c | 1 +
+ drivers/iio/adc/ad7780.c | 2 +-
+ drivers/iio/adc/ad7793.c | 2 +-
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
+--
+2.25.1
