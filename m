@@ -2,313 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93903DABA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE783DABA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 21:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232114AbhG2TIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 15:08:34 -0400
-Received: from mail-il1-f177.google.com ([209.85.166.177]:44678 "EHLO
-        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbhG2TId (ORCPT
+        id S232179AbhG2TKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 15:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229896AbhG2TK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 15:08:33 -0400
-Received: by mail-il1-f177.google.com with SMTP id o7so6946967ilh.11;
-        Thu, 29 Jul 2021 12:08:28 -0700 (PDT)
+        Thu, 29 Jul 2021 15:10:29 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A978CC061765;
+        Thu, 29 Jul 2021 12:10:24 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id o12so4116309vst.3;
+        Thu, 29 Jul 2021 12:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EK+RQQzIvJGIypNn7+XU6/k/SR55Rpg31IWG4uCDYMI=;
+        b=bvyQButd1d3pw6Jv1xulreK/CzyeKf+SHiW+4oSbQiiQite9588wypA8gCOkmvdav9
+         NPRB5bM8dr0olJz9yb5xMWWGFTcG6a2nOna2LJJau4EVZZatNUctpHaKRNWWjnX5V1U7
+         Y/vxsWQ0l+9joZZNo0xUHFRODtHrXYsqTSffFJvFDvkNIX4RL/rAC7FeAA027hfpYDbi
+         +xf5RARipN22eWvA4bF1J4HrVe2kfxhPMMEIVm6TnaET78sVI6Q6HXkyblX03Caa8pcq
+         dSTT+HxiCDaun0LlkdihnHKaPeXfBb6IarHZRlUr9xAaF7Jx6qoCyVS2Q6DyTjqzFpFy
+         6Qbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HmDYTMDrb5z+wR/I3Bgep+1Plzvx/T7uZyiKlMv4WDc=;
-        b=GveE0qFDfkN/8lTwzt+EAqWRHKaMNrQdalWmAWdRxy3UfT79g8NlOq36Xj8q9gdwfy
-         VTAFic/7sNO4K/8qLWf3R4RMRwBi6K6gXOIXUoaMUpQ5HJDTMEgEgHk3nYqTWNgQpPGl
-         DB3RdPOxGTzKWntVz01dHM6lrT+Bf/WWuUkT+7Ka2G0adfUUvxzOaaeUj6p7/g+zlwIa
-         jIaYEcI9vonsyZuaLewzweEWMo3k4MkazqNmeAwPBSJlseA28aDSsX9fiC+L4Pd78Kpo
-         VmS37yqSJRclDFlgee94+Bc04EwGg2nYLp4UxRvvizOvYVTsIMeyUODaJ1NzC0cjnkua
-         SXJw==
-X-Gm-Message-State: AOAM531xtPDigktzoZFMDEsumv9QIAEGHxalEenuY7Qc5TD70+Z/jUPN
-        nRwDqJhAGA5Vemp/Kr+YDQ==
-X-Google-Smtp-Source: ABdhPJzo5t2afAZSo7+QVOK17vpxXGg6rQM1gUcfwrGEIFPcxdTBNVn/G0Kjax4Mwehv6E92N252OQ==
-X-Received: by 2002:a92:dad0:: with SMTP id o16mr4695293ilq.65.1627585708145;
-        Thu, 29 Jul 2021 12:08:28 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id q10sm2975639ion.3.2021.07.29.12.08.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 12:08:27 -0700 (PDT)
-Received: (nullmailer pid 704017 invoked by uid 1000);
-        Thu, 29 Jul 2021 19:08:24 -0000
-Date:   Thu, 29 Jul 2021 13:08:24 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
-        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, Bernie Liang <bliang@analogixsemi.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        Zhen Li <zhenli@analogixsemi.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 1/4] dt-bindings:drm/bridge:anx7625:add vendor define
- flags
-Message-ID: <YQL8qLpN41ocV9N0@robh.at.kernel.org>
-References: <cover.1626685856.git.xji@analogixsemi.com>
- <85126d087cb045ea5e00a5100fc7d81840744a68.1626685856.git.xji@analogixsemi.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EK+RQQzIvJGIypNn7+XU6/k/SR55Rpg31IWG4uCDYMI=;
+        b=HS2GyyJpMbrLWsXVFj2unWB1prYwzFQqf+Le+briUaDxucpQzVjA2fd5WGFPJn97gl
+         Qu9bO952RQyQrsbY2aDWodxbfYG1DELe8EhtGySAczJ0VsBKUB6KosNpsWLojtB9QZe5
+         Gzu9eDfTOtrsGCFKl0HPO9IiBYNDjABaP2FZItYZ0yAiTn+KsNhoPmhK3Simi8UM5/s1
+         PQJh5erW6vSEZdKexNoW57umVbuEk7DKr3//W+88LntCFWl32gTRGiAMSagQG892srNA
+         Vy3QVhNlAOui0wCOxwuhkKSx8J6BwMnUINoK7V2i273OM1nfbgPPh6mTyjIsGaF1mtfw
+         oGcg==
+X-Gm-Message-State: AOAM532Q+uYNjMX9lfgbF0DP60O4JZqXLXcuL1gnxK1BT3xnHBYUJUWt
+        0HSDibV/19t1UyNOJnpaYJzoBRGa+KabT3egzyA=
+X-Google-Smtp-Source: ABdhPJxI7C8GwnmztYDPQj1OGETcAJoKnduIzlZK3+vj1jqp7b9pW8/bO0PRFvHR3O7NMGaMjb+D0FgNhVmRnDplD+A=
+X-Received: by 2002:a67:fe47:: with SMTP id m7mr3541014vsr.28.1627585823800;
+ Thu, 29 Jul 2021 12:10:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85126d087cb045ea5e00a5100fc7d81840744a68.1626685856.git.xji@analogixsemi.com>
+References: <20210728041253.15382-1-sergio.paracuellos@gmail.com> <CAMpxmJUnXpOhvaQuNPbFt3TY363vrsEWV1KXxhyBm7cJ-PWvwQ@mail.gmail.com>
+In-Reply-To: <CAMpxmJUnXpOhvaQuNPbFt3TY363vrsEWV1KXxhyBm7cJ-PWvwQ@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Thu, 29 Jul 2021 21:10:12 +0200
+Message-ID: <CAMhs-H93GxOHdD4dNAWeyMOrnU2u3QLYK7v=0XF6DQixjhjxag@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] gpiolib: convert 'devprop_gpiochip_set_names' to
+ support multiple gpiochip banks per device
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Gregory Fong <gregory.0xf0@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        NeilBrown <neil@brown.name>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 06:10:09PM +0800, Xin Ji wrote:
-> Add 'bus-type' and 'data-lanes' define for port0. Define DP tx lane0,
-> lane1 swing register array define, and audio enable flag.
-> 
-> The device which cannot pass DP tx PHY CTS caused by long PCB trace or
-> embedded MUX, adjusting ANX7625 PHY parameters can pass the CTS test. The
-> adjusting type include Pre-emphasis, Vp-p, Rterm(Resistor Termination)
-> and Rsel(Driven Strength). Each lane has maximum 20 registers for
-> these settings.
-> 
-> For the DP tx swing setting, each lane has 10 different combination for
-> swing, as Pre0: swing3|swing2|swing1|swing0, Pre1: swing2|swing1|swing0,
-> Pre2: swing1|swing0, Pre3: swing0.
-> 
-> Register definition as:
-> [Boost_ctrl]
-> These registers control post cursor manual, increase the Boost_Ctrl
-> setting can increase Pre-emphasis value separately.
-> Lane	Condition	Register address
-> Lane0	Swing0_Pre0	0x7a:0x00 bit[3:0]
-> Lane0	Swing1_Pre0	0x7a:0x01 bit[3:0]
-> Lane0	Swing2_Pre0	0x7a:0x02 bit[3:0]
-> Lane0	Swing3_Pre0	0x7a:0x03 bit[3:0]
-> Lane0	Swing0_Pre1	0x7a:0x04 bit[3:0]
-> Lane0	Swing1_Pre1	0x7a:0x05 bit[3:0]
-> Lane0	Swing2_Pre1	0x7a:0x06 bit[3:0]
-> Lane0	Swing0_Pre2	0x7a:0x07 bit[3:0]
-> Lane0	Swing1_Pre2	0x7a:0x08 bit[3:0]
-> Lane0	Swing0_Pre3	0x7a:0x09 bit[3:0]
-> Lane1	Swing0_Pre0	0x7a:0x14 bit[3:0]
-> Lane1	Swing1_Pre0	0x7a:0x15 bit[3:0]
-> Lane1	Swing2_Pre0	0x7a:0x16 bit[3:0]
-> Lane1	Swing3_Pre0	0x7a:0x17 bit[3:0]
-> Lane1	Swing0_Pre1	0x7a:0x18 bit[3:0]
-> Lane1	Swing1_Pre1	0x7a:0x19 bit[3:0]
-> Lane1	Swing2_Pre1	0x7a:0x1a bit[3:0]
-> Lane1	Swing0_Pre2	0x7a:0x1b bit[3:0]
-> Lane1	Swing1_Pre2	0x7a:0x1c bit[3:0]
-> Lane1	Swing0_Pre3	0x7a:0x1d bit[3:0]
-> 
-> [Swing_ctrl]
-> These registers control swing manual, increase Swing_Ctrl setting can
-> increase Vp-p value separately.
-> Lane	Condition	Register address
-> Lane0	Swing0_Pre0	0x7a:0x00 bit[6:4]
-> Lane0	Swing1_Pre0	0x7a:0x01 bit[6:4]
-> Lane0	Swing2_Pre0	0x7a:0x02 bit[6:4]
-> Lane0	Swing3_Pre0	0x7a:0x03 bit[6:4]
-> Lane0	Swing0_Pre1	0x7a:0x04 bit[6:4]
-> Lane0	Swing1_Pre1	0x7a:0x05 bit[6:4]
-> Lane0	Swing2_Pre1	0x7a:0x06 bit[6:4]
-> Lane0	Swing0_Pre2	0x7a:0x07 bit[6:4]
-> Lane0	Swing1_Pre2	0x7a:0x08 bit[6:4]
-> Lane0	Swing0_Pre3	0x7a:0x09 bit[6:4]
-> Lane1	Swing0_Pre0	0x7a:0x14 bit[6:4]
-> Lane1	Swing1_Pre0	0x7a:0x15 bit[6:4]
-> Lane1	Swing2_Pre0	0x7a:0x16 bit[6:4]
-> Lane1	Swing3_Pre0	0x7a:0x17 bit[6:4]
-> Lane1	Swing0_Pre1	0x7a:0x18 bit[6:4]
-> Lane1	Swing1_Pre1	0x7a:0x19 bit[6:4]
-> Lane1	Swing2_Pre1	0x7a:0x1a bit[6:4]
-> Lane1	Swing0_Pre2	0x7a:0x1b bit[6:4]
-> Lane1	Swing1_Pre2	0x7a:0x1c bit[6:4]
-> Lane1	Swing0_Pre3	0x7a:0x1d bit[6:4]
-> 
-> [Rsel_ctrl]
-> These registers control resistor compensation manual, increase Rsel_ctrl
-> can increase the IO driven strength, increase Vp-p simultaneously.
-> Lane	Condition	Register address
-> Lane0	Swing0_Pre0	0x7a:0x0a bit[4:0]
-> Lane0	Swing1_Pre0	0x7a:0x0b bit[4:0]
-> Lane0	Swing2_Pre0	0x7a:0x0c bit[4:0]
-> Lane0	Swing3_Pre0	0x7a:0x0d bit[4:0]
-> Lane0	Swing0_Pre1	0x7a:0x0e bit[4:0]
-> Lane0	Swing1_Pre1	0x7a:0x0f bit[4:0]
-> Lane0	Swing2_Pre1	0x7a:0x10 bit[4:0]
-> Lane0	Swing0_Pre2	0x7a:0x11 bit[4:0]
-> Lane0	Swing1_Pre2	0x7a:0x12 bit[4:0]
-> Lane0	Swing0_Pre3	0x7a:0x13 bit[4:0]
-> Lane1	Swing0_Pre0	0x7a:0x1e bit[4:0]
-> Lane1	Swing1_Pre0	0x7a:0x1f bit[4:0]
-> Lane1	Swing2_Pre0	0x7a:0x20 bit[4:0]
-> Lane1	Swing3_Pre0	0x7a:0x21 bit[4:0]
-> Lane1	Swing0_Pre1	0x7a:0x22 bit[4:0]
-> Lane1	Swing1_Pre1	0x7a:0x23 bit[4:0]
-> Lane1	Swing2_Pre1	0x7a:0x24 bit[4:0]
-> Lane1	Swing0_Pre2	0x7a:0x25 bit[4:0]
-> Lane1	Swing1_Pre2	0x7a:0x26 bit[4:0]
-> Lane1	Swing0_Pre3	0x7a:0x27 bit[4:0]
-> 
-> [Rterm_ctrl]
-> These registers adjust 50ohm impedance of DP tx
-> 00:55 ohm
-> 01:50 ohm(default)
-> 10:45 ohm
-> 11:40 ohm
-> Lane	Condition	Register address
-> Lane0	Swing0_Pre0	0x7a:0x0a bit[6:5]
-> Lane0	Swing1_Pre0	0x7a:0x0b bit[6:5]
-> Lane0	Swing2_Pre0	0x7a:0x0c bit[6:5]
-> Lane0	Swing3_Pre0	0x7a:0x0d bit[6:5]
-> Lane0	Swing0_Pre1	0x7a:0x0e bit[6:5]
-> Lane0	Swing1_Pre1	0x7a:0x0f bit[6:5]
-> Lane0	Swing2_Pre1	0x7a:0x10 bit[6:5]
-> Lane0	Swing0_Pre2	0x7a:0x11 bit[6:5]
-> Lane0	Swing1_Pre2	0x7a:0x12 bit[6:5]
-> Lane0	Swing0_Pre3	0x7a:0x13 bit[6:5]
-> lane1	Swing0_Pre0	0x7a:0x1e bit[6:5]
-> Lane1	Swing1_Pre0	0x7a:0x1f bit[6:5]
-> Lane1	Swing2_Pre0	0x7a:0x20 bit[6:5]
-> Lane1	Swing3_Pre0	0x7a:0x21 bit[6:5]
-> Lane1	Swing0_Pre1	0x7a:0x22 bit[6:5]
-> Lane1	Swing1_Pre1	0x7a:0x23 bit[6:5]
-> Lane1	Swing2_Pre1	0x7a:0x24 bit[6:5]
-> Lane1	Swing0_Pre2	0x7a:0x25 bit[6:5]
-> Lane1	Swing1_Pre2	0x7a:0x26 bit[6:5]
-> Lane1	Swing0_Pre3	0x7a:0x27 bit[6:5]
+On Thu, Jul 29, 2021 at 7:43 PM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+>
+> On Wed, Jul 28, 2021 at 6:12 AM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> >
+> > There are some unfortunate cases where the DT representation
+> > of the device and the Linux internal representation differs.
+> > Such drivers for devices are forced to implement a custom function
+> > to avoid the core code 'devprop_gpiochip_set_names' to be executed
+> > since in any other case every gpiochip inside will got repeated
+> > names through its internal gpiochip banks. To avoid this antipattern
+> > this changes are introduced trying to adapt core 'devprop_gpiochip_set_names'
+> > to get a correct behaviour for every single situation.
+> >
+> > This series introduces a new 'offset' field in the gpiochip structure
+> > that can be used for those unfortunate drivers that must define multiple
+> > gpiochips per device.
+> >
+> > Drivers affected by this situation are also updated. These are
+> > 'gpio-mt7621' and 'gpio-brcmstb'.
+> >
+> > Motivation for this series available at [0].
+> >
+> > Thanks in advance for your feedback.
+> >
+> > Best regards,
+> >     Sergio Paracuellos
+> >
+> > Changes in v4:
+> >   - Add comma in warning message for clarity.
+> >   - Collect Gregory Fong Reviewed-by for PATCH 1/3.
+> >
+> > Changes in v3:
+> >   - Reflow a string literal to be on one line in PATCH 1/3.
+> >   - reflow commit messages PATCH 2/3 and PATCH 3/3 to occupy a little bit
+> >     more available space per line.
+> >
+> > Changes in v2:
+> >   - Address Gregory Fong comments in v1 of the series [1].
+> >   - Collect Andy Shevchenko Reviewed-by for the series.
+> >   - Collect Gregory Fong Acked-by for PATCH 3/3.
+> >
+> > [0]: https://lkml.org/lkml/2021/6/26/198
+> > [1]: https://lkml.org/lkml/2021/7/8/47
+> >
+> > Sergio Paracuellos (3):
+> >   gpiolib: convert 'devprop_gpiochip_set_names' to support multiple
+> >     gpiochip banks per device
+> >   gpio: mt7621: support gpio-line-names property
+> >   gpio: brcmstb: remove custom 'brcmstb_gpio_set_names'
+> >
+> >  drivers/gpio/gpio-brcmstb.c | 45 +------------------------------------
+> >  drivers/gpio/gpio-mt7621.c  |  1 +
+> >  drivers/gpio/gpiolib.c      | 32 +++++++++++++++++++++-----
+> >  include/linux/gpio/driver.h |  4 ++++
+> >  4 files changed, 33 insertions(+), 49 deletions(-)
+> >
+> > --
+> > 2.25.1
+> >
+>
+> Patches queued for next. Thanks!
 
-All this information should be in the properties description. But the 
-above form is not all that clear in defining how to fill in the 
-properties. You need to describe what is in each word of the properties 
-and assume the reader has the datasheet. 
-> 
-> Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> ---
->  .../display/bridge/analogix,anx7625.yaml      | 55 ++++++++++++++++++-
->  1 file changed, 54 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> index ab48ab2f4240..77b160d7c269 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> @@ -43,6 +43,24 @@ properties:
->    vdd33-supply:
->      description: Regulator that provides the supply 3.3V power.
->  
-> +  analogix,lane0-swing:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 1
-> +    maxItems: 20
-> +    description:
-> +      an array of swing register setting for DP tx lane0 PHY.
-> +
-> +  analogix,lane1-swing:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 1
-> +    maxItems: 20
-> +    description:
-> +      an array of swing register setting for DP tx lane1 PHY.
-> +
-> +  analogix,audio-enable:
-> +    type: boolean
-> +    description: let the driver enable audio HDMI codec function or not.
-> +
->    ports:
->      $ref: /schemas/graph.yaml#/properties/ports
->  
-> @@ -50,13 +68,43 @@ properties:
->        port@0:
->          $ref: /schemas/graph.yaml#/properties/port
+Thanks!
 
-This needs to be #/$defs/port-base instead since you are adding child 
-properties.
-
-Also needs 'unevaluatedProperties: false'.
-
->          description:
-> -          Video port for MIPI DSI input.
-> +          MIPI DSI/DPI input.
-> +
-> +        properties:
-> +          endpoint:
-> +            $ref: /schemas/media/video-interfaces.yaml#
-> +            type: object
-> +            additionalProperties: false
-> +
-> +            properties:
-> +              remote-endpoint: true
-> +              bus-type: true
-
-All the possible bus-type values are supported by this h/w?
-
-> +              data-lanes: true
-> +
-> +            required:
-> +              - remote-endpoint
-
-Drop this.
-
-> +
-> +        required:
-> +          - endpoint
-
-Drop this.
-
-> +
->  
->        port@1:
->          $ref: /schemas/graph.yaml#/properties/port
->          description:
->            Video port for panel or connector.
->  
-> +        properties:
-> +          endpoint:
-> +            $ref: /schemas/media/video-interfaces.yaml#
-
-No additional properties, you don't need this reference or the rest of 
-this addition.
-
-> +            type: object
-> +            additionalProperties: false
-> +
-> +            properties:
-> +              remote-endpoint: true
-> +
-> +            required:
-> +              - remote-endpoint
-> +
->      required:
->        - port@0
->        - port@1
-> @@ -87,6 +135,9 @@ examples:
->              vdd10-supply = <&pp1000_mipibrdg>;
->              vdd18-supply = <&pp1800_mipibrdg>;
->              vdd33-supply = <&pp3300_mipibrdg>;
-> +            analogix,audio-enable;
-> +            analogix,lane0-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-> +            analogix,lane1-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-
-If the values are only 8-bit, then make the type uint8-array.
-
->  
->              ports {
->                  #address-cells = <1>;
-> @@ -96,6 +147,8 @@ examples:
->                      reg = <0>;
->                      anx7625_in: endpoint {
->                          remote-endpoint = <&mipi_dsi>;
-> +                        bus-type = <5>;
-> +                        data-lanes = <0 1 2 3>;
->                      };
->                  };
->  
-> -- 
-> 2.25.1
-> 
-> 
+Best regards,
+    Sergio Paracuellos
