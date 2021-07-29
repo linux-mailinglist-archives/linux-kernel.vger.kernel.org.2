@@ -2,267 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CEE3DA39B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86323DA3A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237416AbhG2NAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
+        id S237425AbhG2NCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237222AbhG2NAI (ORCPT
+        with ESMTP id S237222AbhG2NCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:00:08 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E6AC061765;
-        Thu, 29 Jul 2021 06:00:04 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id a7so7409082ljq.11;
-        Thu, 29 Jul 2021 06:00:04 -0700 (PDT)
+        Thu, 29 Jul 2021 09:02:10 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83771C061765;
+        Thu, 29 Jul 2021 06:02:06 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id f13so6921510plj.2;
+        Thu, 29 Jul 2021 06:02:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=AHWPERw4sOTyW9nOFgWwND9PpAneImCTb0cpl6K5gvs=;
-        b=mtGbGNk2k161S/Gm15U/+Z2gGE+is3TIdkV8JtsakjCI8IdyuVy0scRQVDwULgZWGv
-         IJX/1JNvyKEDIv639JKIUaajuAnEi1WYpYRErbhXEluembincigkVZ4xoPCfx/z8FHeT
-         otRDxDiz5TeRACOAExCYKBoTEEjozKJdT/XH1iX1DwG73jPn2J/7gB9AzNBn9X9D0Qfp
-         9mGNq6amPqZaUjFyCbpMRRpM+ayk6hW9+n33Jbe11NGOqK7UdZqjEeLcZwYYXzLCI639
-         EjfjjADfvpHIIowMVHxd5mvPS5Nzfj7Oh0sdVUfl4P1dXpn67USiHeJPAqwn9Hm1h6H0
-         lBeA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xWZDnZQ7Uje44tOvyd+WhPXcE6YbxVNUTkV2DmxlC/I=;
+        b=ExonRuvAP6deeZWP4ARMhx8XszTEeQWKqexdxGr8TsuL+Bz8VPrFj6Y730SphdAQDC
+         84Fqe2zxnVuAY/b+yUA8Eq195vN/ev0qbH1bKyG9MpEY83Z3AAYzJOmRRNOSb1q264YH
+         H1r0MDXkAlN2lmoLmNB9pMzmaE8qMyQJV2yXvzwM4lU7+cUmxyAefZ33Vtx/QsvY0B2Y
+         7299cOKI8WViF8nwItNn9KeFY/6ShDYN3GG/09Lm/PkrJetdxTquTYKbp14IyHKNKJri
+         w4KULmdKqUg3LoIRw+FRYrv+H/B2Jf9av5u6lx3SllYemnIcK4W70fMX/uAcJnqsyzu9
+         1r1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=AHWPERw4sOTyW9nOFgWwND9PpAneImCTb0cpl6K5gvs=;
-        b=eVRtYwAU7kwn2XT6vNBhxvc8FRiIiJWXyILL1IPDIKe3tMhkNNIGrwZyikUS8mVEnE
-         hE2/rgEEHEIBUk+NFP20WH1HzOurXRTMDOVdiaASWjeyE+KJvntNzrE9DAijfa705L+6
-         jFj793di4Rd8xsFsxendlzRjKFMEZeIZRL3sXuMx7w8KbRETlr8r6JVA6XD3Tjcybfns
-         QTr8pIXfpDyJPqVq9Sli4fV1QEr2Vi7MjX31xwKBoRWs2YOV/ESvNhJzmejRXrvUNX5V
-         iw41cwMDNaxanJgze5z49LDlg9NZaLh3uplC9siEhAXdQdniizX8IyeibORIOJnXHxGz
-         4y+Q==
-X-Gm-Message-State: AOAM5339kJIzVNizyJCrXkFFY8OTVJ41o7mXtSlTSsjPDnbt3c+EsR4R
-        LYX2LpxnuJaYStiyf9s+45I=
-X-Google-Smtp-Source: ABdhPJzuMUS5G4/ARO2Qj5l6VTMlQgRTGvkYy4bK2qvRsoQmQDNC9IWOALqJEInVvvf9ldMGUtKQ6g==
-X-Received: by 2002:a2e:bc1a:: with SMTP id b26mr2883094ljf.132.1627563602984;
-        Thu, 29 Jul 2021 06:00:02 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id y24sm298653lfe.255.2021.07.29.06.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 06:00:02 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 15:59:59 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>, Simon Ser <contact@emersion.fr>
-Cc:     Michel =?UTF-8?B?RMOkbnplcg==?= <michel@daenzer.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Roy Sun <Roy.Sun@amd.com>,
-        Christian =?UTF-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-Message-ID: <20210729155959.665fc1a6@eldfell>
-In-Reply-To: <YQKclVvL+QeeL6cP@phenom.ffwll.local>
-References: <CAJs_Fx4O4w5djx3-q5zja51-ko_nQ0X2nEk3qoZB_axpBVSrKA@mail.gmail.com>
-        <f6d73ec5-85f9-1b18-f2d2-a5f3b7333efa@gmail.com>
-        <c9ee242e-542e-e189-a1ec-c1be34d66c93@daenzer.net>
-        <04d44873-d8e6-6ae7-f0f9-17bcb484d697@amd.com>
-        <9d5f4415-d470-3bc1-7d52-61ba739706ae@daenzer.net>
-        <CAF6AEGu409eY9xznTAaBf2ZDcV_AaDELUzN2afWgiHwB_uBwqg@mail.gmail.com>
-        <YQJUKXgf/Q957fmy@phenom.ffwll.local>
-        <ff394f2b-b555-e80f-b685-d0d59e2bbe67@daenzer.net>
-        <YQJu6AqKn7bdT1li@phenom.ffwll.local>
-        <20210729123732.3259a9bf@eldfell>
-        <YQKclVvL+QeeL6cP@phenom.ffwll.local>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xWZDnZQ7Uje44tOvyd+WhPXcE6YbxVNUTkV2DmxlC/I=;
+        b=OKSsg36e2e0ZcnJpSj2aoLw7c6+REdPtjvpZ/b1IqKRyUvsRcP9N16R+FrCqK8UK/f
+         7AekgCk+pEXIGbjUJsosowiKw/P/z35J3ic/Cflhq9jJtTgnZF75LMCdHTbFNrJy+GeM
+         jbmkvPs72e2YdwAagE83Q3/SWQAHGBW4H2aXdNGH/PSgcXoW+mT3dB0U7N5liIQFfVI4
+         7DnEyCfvAN15hvQ8MWRKpYrysmhUjCt4nslMC5XDTb5S58Ekv7PbHh19d4isTs5yGPMD
+         vqe6U+klAS2j6e5MAP/UPP/eNRA6YXyYCadPUK9W0SvIBcpEvAxuPko3UXywvSmxZLAL
+         QRsA==
+X-Gm-Message-State: AOAM531dX/7sgntf3H/1rq+UMQYYzdKThFIzYGN5cG46iWGxyJnYZgSA
+        nz1rxUK/zGspf/yvmlWd5o0=
+X-Google-Smtp-Source: ABdhPJyrI/P/7aQeOr7fGMy78ZxY6RcR1Rwj4jALXoPGmX2VorLJRrRMQ6J111Dxy7HnP0DgW7LcpA==
+X-Received: by 2002:a05:6a00:24c6:b029:332:6773:165c with SMTP id d6-20020a056a0024c6b02903326773165cmr4937276pfv.33.1627563725957;
+        Thu, 29 Jul 2021 06:02:05 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id w2sm9730504pjt.14.2021.07.29.06.01.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 06:02:05 -0700 (PDT)
+Subject: Re: [PATCH 03/13] x86/HV: Add new hvcall guest address host
+ visibility support
+To:     Dave Hansen <dave.hansen@intel.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, rientjes@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
+        saravanand@fb.com, xen-devel@lists.xenproject.org,
+        pgonda@google.com, david@redhat.com, keescook@chromium.org,
+        hannes@cmpxchg.org, sfr@canb.auug.org.au,
+        michael.h.kelley@microsoft.com
+Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, anparri@microsoft.com
+References: <20210728145232.285861-1-ltykernel@gmail.com>
+ <20210728145232.285861-4-ltykernel@gmail.com>
+ <a2444c36-0103-8e1c-7005-d97f77f90e85@intel.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <0d956a05-7d24-57a0-f4a9-dccc849b52fc@gmail.com>
+Date:   Thu, 29 Jul 2021 21:01:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Bp9P0PhOYSeF=xCOV=ad2n.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <a2444c36-0103-8e1c-7005-d97f77f90e85@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Bp9P0PhOYSeF=xCOV=ad2n.
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 7/29/2021 1:06 AM, Dave Hansen wrote:
+> On 7/28/21 7:52 AM, Tianyu Lan wrote:
+>> @@ -1986,7 +1988,9 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+>>   	int ret;
+>>   
+>>   	/* Nothing to do if memory encryption is not active */
+>> -	if (!mem_encrypt_active())
+>> +	if (hv_is_isolation_supported())
+>> +		return hv_set_mem_enc(addr, numpages, enc);
+>> +	else if (!mem_encrypt_active())
+>>   		return 0;
+> 
+> One more thing.  If you're going to be patching generic code, please
+> start using feature checks that can get optimized away at runtime.
+> hv_is_isolation_supported() doesn't look like the world's cheapest
+> check.  It can't be inlined and costs at least a function call.
 
-On Thu, 29 Jul 2021 14:18:29 +0200
-Daniel Vetter <daniel@ffwll.ch> wrote:
-
-> On Thu, Jul 29, 2021 at 12:37:32PM +0300, Pekka Paalanen wrote:
-> > On Thu, 29 Jul 2021 11:03:36 +0200
-> > Daniel Vetter <daniel@ffwll.ch> wrote:
-> >  =20
-> > > On Thu, Jul 29, 2021 at 10:17:43AM +0200, Michel D=C3=A4nzer wrote: =
-=20
-> > > > On 2021-07-29 9:09 a.m., Daniel Vetter wrote:   =20
-> > > > > On Wed, Jul 28, 2021 at 08:34:13AM -0700, Rob Clark wrote:   =20
-> > > > >> On Wed, Jul 28, 2021 at 6:24 AM Michel D=C3=A4nzer <michel@daenz=
-er.net> wrote:   =20
-> > > > >>> On 2021-07-28 3:13 p.m., Christian K=C3=B6nig wrote:   =20
-> > > > >>>> Am 28.07.21 um 15:08 schrieb Michel D=C3=A4nzer:   =20
-> > > > >>>>> On 2021-07-28 1:36 p.m., Christian K=C3=B6nig wrote:   =20
-> > > > >>>>>> Am 27.07.21 um 17:37 schrieb Rob Clark:   =20
-> > > > >>>>>>> On Tue, Jul 27, 2021 at 8:19 AM Michel D=C3=A4nzer <michel@=
-daenzer.net> wrote:   =20
-> > > > >>>>>>>> On 2021-07-27 5:12 p.m., Rob Clark wrote:   =20
-> > > > >>>>>>>>> On Tue, Jul 27, 2021 at 7:50 AM Michel D=C3=A4nzer <miche=
-l@daenzer.net> wrote:   =20
-> > > > >>>>>>>>>> On 2021-07-27 1:38 a.m., Rob Clark wrote:   =20
-> > > > >>>>>>>>>>> From: Rob Clark <robdclark@chromium.org>
-> > > > >>>>>>>>>>>
-> > > > >>>>>>>>>>> Based on discussion from a previous series[1] to add a =
-"boost" mechanism
-> > > > >>>>>>>>>>> when, for example, vblank deadlines are missed.  Instea=
-d of a boost
-> > > > >>>>>>>>>>> callback, this approach adds a way to set a deadline on=
- the fence, by
-> > > > >>>>>>>>>>> which the waiter would like to see the fence signalled.=
- =20
-> >=20
-> > ...
-> >  =20
-> > > > I'm not questioning that this approach helps when there's a direct
-> > > > chain of fences from the client to the page flip. I'm pointing out
-> > > > there will not always be such a chain.
-> > > >=20
-> > > >    =20
-> > > > >> But maybe the solution to make this also useful for mutter   =20
-> > > >=20
-> > > > It's not just mutter BTW. I understand gamescope has been doing
-> > > > this for some time already. And there seems to be consensus among
-> > > > developers of Wayland compositors that this is needed, so I expect
-> > > > at least all the major compositors to do this longer term.
-> > > >=20
-> > > >    =20
-> > > > >> is to, once we have deadline support, extend it with an ioctl to
-> > > > >> the dma-fence fd so userspace can be the one setting the
-> > > > >> deadline.   =20
-> > > >=20
-> > > > I was thinking in a similar direction.
-> > > >    =20
-> > > > > atomic ioctl with TEST_ONLY and SET_DEADLINES? Still gives mutter
-> > > > > the option to bail out with an old frame if it's too late?   =20
-> > > >=20
-> > > > This is a bit cryptic though, can you elaborate?   =20
-> > >=20
-> > > So essentially when the mutter compositor guesstimator is fairly
-> > > confident about the next frame's composition (recall you're keeping
-> > > track of clients to estimate their usual latency or something like
-> > > that), then it does a TEST_ONLY commit to check it all works and prep
-> > > the rendering, but _not_ yet fire it off.
-> > >=20
-> > > Instead it waits until all buffers complete, and if some don't, pick
-> > > the previous one. Which I guess in an extreme case would mean you
-> > > need a different window tree configuration and maybe different
-> > > TEST_ONLY check and all that, not sure how you solve that.
-> > >=20
-> > > Anyway, in that TEST_ONLY commit my idea is that you'd also supply
-> > > all the in-fences you expect to depend upon (maybe we need an
-> > > additional list of in-fences for your rendering job), plus a deadline
-> > > when you want to have them done (so that there's enough time for your
-> > > render job still). And the kernel then calls dma_fence_set_deadline
-> > > on all of them.
-> > >=20
-> > > Pondering this more, maybe a separate ioctl is simpler where you just
-> > > supply a list of in-fences and deadlines.
-> > >=20
-> > > The real reason I want to tie this to atomic is for priviledge
-> > > checking reasons. I don't think normal userspace should have the
-> > > power to set arbitrary deadlines like this - at least on i915 it will
-> > > also give you a slight priority boost and stuff like that, to make
-> > > sure your rendering for the current frame goes in ahead of the next
-> > > frame's prep work.
-> > >=20
-> > > So maybe just a new ioctl that does this which is limited to the
-> > > current kms owner (aka drm_master)? =20
-> >=20
-> > Yeah.
-> >=20
-> > Why not have a Wayland compositor *always* "set the deadlines" for the
-> > next screen update as soon as it gets the wl_surface.commit with the
-> > new buffer and fences (a simplified description of what is actually
-> > necessary to take a new window state set into use)? =20
->=20
-> Yeah taht's probably best. And if the frame is scheduled (video at 24fps
-> or whatever) you can also immediately set the deadline for that too, just
-> a few frames later. Always minus compositor budget taken into account.
->=20
-> > The Wayland client posted the frame to the compositor, so surely it
-> > wants it ready and displayed ASAP. If we happen to have a Wayland frame
-> > queuing extension, then also take that into account when setting the
-> > deadline.
-> >=20
-> > Then, *independently* of that, the compositor will choose which frames
-> > it will actually use in its composition when the time comes.
-> >=20
-> > No need for any KMS atomic commit fiddling, userspace just explicitly
-> > sets the deadline on the fence and that's it. You could tie the
-> > privilege of setting deadlines to simply holding DRM master on whatever
-> > device? So the ioctl would need both the fence and any DRM device fd. =
-=20
->=20
-> Yeah tying that up with atomic doesn't make sense.
->=20
-> > A rogue application opening a DRM device and becoming DRM master on it
-> > just to be able to abuse deadlines feels both unlikely and with
-> > insignificant consequences. It stops the obvious abuse, and if someone
-> > actually goes the extra effort, then so what. =20
->=20
-> With logind you can't become drm master just for lolz anymore, so I'm not
-> worried about that. On such systems only logind has the rights to access
-> the primary node, everyone doing headless goes through the render node.
-
-Mm, I hope the DRM leasing protocols don't rely on clients being able
-to open KMS nodes anymore... they used to at some point, I think, for
-the initial resource discovery before actually leasing anything.
-
-"only logind has rights" might be a bit off still.
-
-> So just limiting the deadline ioctl to current kms owner is imo perfectly
-> good enough for a security model.
-
-There could be multiple DRM devices. Including VKMS. Some of them not
-used. The deadline setting ioctl can't guarantee the fenced buffer is
-going to be used on the same DRM device the ioctl was called with. Or
-used at all with KMS.
-
-Anyway, even if that is not completely secure, I wouldn't think that
-setting deadlines can do more than change GPU job priorities and power
-consumption, which seem quite benign. It's enough hoops to jump through
-that I think it stops everything we care to stop.
+Yes, you are right. How about adding a static branch key for the check 
+of isolation VM? This may reduce the check cost.
 
 
-Thanks,
-pq
-
---Sig_/Bp9P0PhOYSeF=xCOV=ad2n.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmECpk8ACgkQI1/ltBGq
-qqeTphAAjdrSd2HmqryE0+cM7PrpS/OxFyqco/zB3Hz7kdTiRPJYyhBSN4DEg0jD
-p+0NJL6iRgeGYTNsWd4VXPXWCQyCSz9GXrngylCabrP/M4h+S4126ei0ldzXDvXU
-ml0hdFohySDgwv6MuyzhSPI7byR3NMU7rWRJh2fAwNHaglp7jVL1aH5FZvQduNeR
-3Y00KJKfEzxeBhtO3Lje/RzP/n/Fyx+k/ysKQoPJIam/+NTvPAGOjVswX+wakiYA
-IQNvmO5g2GVr0vhjzdOR9YPvJCEIsHtIz7HOes962Vumm8qLdyJqW8jI+WLtUwSq
-6fyT/s0hcbWdiiyhiUlAxcas1U7yJ4CBJ7z5L7DhffVZ4EyK2TW4xgdzmkzM3AQx
-mwDmTFUD7xQ6Jj5V2o2kHk3EoRqYvXyi/XXcrJT8Hwyuybu8zJE5OISeofSUoFjI
-WLrmzAzffc8SFVfx6OpdjHT4/wC+PEQTa5JFlv15BY4auicbmu+BxqxcyKoKkRK3
-rUWFNUsW4lHsrEyh7QPuT1Ikc+K9H6cJZoKzcsfaMMKWush2O2FAgPjlpOkcgY34
-oXr8e50sXcjrwxHOUcXLl92n7h/vXAKuS2a+lVDU/QuVT7V3VY39xnnefnhZY3kU
-8DmUOwzPJNtfLrrl6+3MLu315tzDg+X9KxRw18k+zKxZI1zyZAE=
-=jYId
------END PGP SIGNATURE-----
-
---Sig_/Bp9P0PhOYSeF=xCOV=ad2n.--
