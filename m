@@ -2,179 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41573DA9F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A893DA9F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 19:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhG2RTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 13:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231574AbhG2RTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:19:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B51C60F22;
-        Thu, 29 Jul 2021 17:19:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627579178;
-        bh=sLhNKbF5DaDIRKTN0m0Kzjv1hybrIrBlw4Aqis83rY4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=brnPWJsv+BqRanrJoqCSVM0xr2LwPLUCKuUM1pvGbeF6RTiUN71ybB7m51uTxAHpw
-         LX9Bo76CZerIMmV3wfJSNJjJmgiwpT0Et9AoxH8WwcOIvd+miDp4eWJIDQJp0xX4fj
-         4jPGRwg1D8EMiyuAmElqjkugVck9UWxe50YfzTLT54P4FtpbKMomJHN9G7Edt2pSi3
-         YC1lGhQ3id/BZ4t2qIh/AiUg3zy39f70cyzIZoRznIQFzxuirCd6Z56EEv0wtoC9mv
-         xupbuhGxp/pUtt3Acrm0/6McrjyhGY//yw227nYTY6J5QJh9UDMFMFtwv/U4cqVgI8
-         P2cXGNV8afxFA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Parav Pandit <parav@nvidia.com>
-Subject: [PATCH net-next v2 2/2] devlink: Allocate devlink directly in requested net namespace
-Date:   Thu, 29 Jul 2021 20:19:25 +0300
-Message-Id: <ab6449b87dba621df34c6d1af9d3f951b9329a23.1627578998.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1627578998.git.leonro@nvidia.com>
-References: <cover.1627578998.git.leonro@nvidia.com>
+        id S231991AbhG2RTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 13:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230527AbhG2RTh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 13:19:37 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C8DC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:19:33 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id f20-20020a9d6c140000b02904bb9756274cso6591176otq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 10:19:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=JcuPL2E0yGh3YMQ5Ryjgd8htxcjiWk/JLPxwWfyTTEI=;
+        b=KLCY003udwzbwW5s6LyNduchb1uN48eo8fIMzMQLlYES2R18futSNL9RxxsZHwnYbd
+         /b5ktnC/xdeo/sJ5ZpltOyfNxiFZiBjHJlGRUh7CFaOpRJGZeE42o5mq2Ex2oELSBlCN
+         IGYOONXVZ2/HJiKfQ9cKd2unJKWBj40fZ1+3Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=JcuPL2E0yGh3YMQ5Ryjgd8htxcjiWk/JLPxwWfyTTEI=;
+        b=NIpD3v5c9btZP0RM8sXBdMXrO9A2JyiZUUvftBUm7oZdQn1Tv2kX5EgQ488O4pQlWo
+         s6AEA5YX0LXBPFo5mvGhSFaCGPJd+o+xHBgfGwMG+I2AXLnCppS1MjmEyrHoe3yV4A4Y
+         8BcO1rs78iyBjaRiO/JxajqniegjKHE92XVaQZWKj46qXAqLVdus99PtiDS7MxYP2J13
+         kK+Bh43STE8b9WGNc5sfIhkhF0P11jGW8p2S133xFRUsPM1ivjF6GxFa6YcEpvr3/saf
+         VYu4g9dQ5U//hiu3iyNsXRUIt2AXZYpbxhd8IQ6ciwCzIQKyFflYlzC+r5hAcqV8pcaL
+         ejiA==
+X-Gm-Message-State: AOAM532xOkYbhY8jVINvEqVfrOvKkhLL4/cXIb0FNRYGP3UF/9z4Xdij
+        4gvuPxRPySaCCwim6n7frCcsl++ukiYjieuzUfN5DQ==
+X-Google-Smtp-Source: ABdhPJxm3TNkTt83zHPFaTJ+JLOdxmNPIABd6fWr/eYibpJ0bq8EyQFF2n6jRlWgUra5oNFfYz42SdCYS/JjQAGbOPI=
+X-Received: by 2002:a9d:650e:: with SMTP id i14mr4267279otl.233.1627579173391;
+ Thu, 29 Jul 2021 10:19:33 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 29 Jul 2021 12:19:33 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1627473242-35926-1-git-send-email-akhilpo@codeaurora.org>
+References: <1627473242-35926-1-git-send-email-akhilpo@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 29 Jul 2021 12:19:32 -0500
+Message-ID: <CAE-0n53xMHudWaL7gdnN7jEPE1uLmetZaxYiqToO1AzTZ2R0Mw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] arm64: dts: qcom: sc7280: Add gpu support
+To:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Quoting Akhil P Oommen (2021-07-28 04:54:01)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 029723a..c88f366 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -592,6 +593,85 @@
+>                         qcom,bcm-voters = <&apps_bcm_voter>;
+>                 };
+>
+> +               gpu@3d00000 {
+> +                       compatible = "qcom,adreno-635.0", "qcom,adreno";
+> +                       #stream-id-cells = <16>;
+> +                       reg = <0 0x03d00000 0 0x40000>,
+> +                             <0 0x03d9e000 0 0x1000>,
+> +                             <0 0x03d61000 0 0x800>;
+> +                       reg-names = "kgsl_3d0_reg_memory",
+> +                                   "cx_mem",
+> +                                   "cx_dbgc";
+> +                       interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
+> +                       iommus = <&adreno_smmu 0 0x401>;
+> +                       operating-points-v2 = <&gpu_opp_table>;
+> +                       qcom,gmu = <&gmu>;
+> +                       interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
+> +                       interconnect-names = "gfx-mem";
+> +
+> +                       gpu_opp_table: opp-table {
+> +                               compatible = "operating-points-v2";
+> +
+> +                               opp-550000000 {
+> +                                       opp-hz = /bits/ 64 <550000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
+> +                                       opp-peak-kBps = <6832000>;
+> +                               };
+> +
+> +                               opp-450000000 {
 
-There is no need in extra call indirection and check from impossible
-flow where someone tries to set namespace without prior call
-to devlink_alloc().
+Why is 450000000 after 550000000? Is it on purpose? If not intended
+please sort by frequency.
 
-Instead of this extra logic and additional EXPORT_SYMBOL, use specialized
-devlink allocation function that receives net namespace as an argument.
-
-Such specialized API allows clear view when devlink initialized in wrong
-net namespace and/or kernel users don't try to change devlink namespace
-under the hood.
-
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/net/netdevsim/dev.c |  4 ++--
- include/net/devlink.h       | 14 ++++++++++++--
- net/core/devlink.c          | 26 ++++++++------------------
- 3 files changed, 22 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-index 6348307bfa84..d538a39d4225 100644
---- a/drivers/net/netdevsim/dev.c
-+++ b/drivers/net/netdevsim/dev.c
-@@ -1431,10 +1431,10 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
- 	struct devlink *devlink;
- 	int err;
- 
--	devlink = devlink_alloc(&nsim_dev_devlink_ops, sizeof(*nsim_dev));
-+	devlink = devlink_alloc_ns(&nsim_dev_devlink_ops, sizeof(*nsim_dev),
-+				   nsim_bus_dev->initial_net);
- 	if (!devlink)
- 		return -ENOMEM;
--	devlink_net_set(devlink, nsim_bus_dev->initial_net);
- 	nsim_dev = devlink_priv(devlink);
- 	nsim_dev->nsim_bus_dev = nsim_bus_dev;
- 	nsim_dev->switch_id.id_len = sizeof(nsim_dev->switch_id.id);
-diff --git a/include/net/devlink.h b/include/net/devlink.h
-index e48a62320407..08f4c6191e72 100644
---- a/include/net/devlink.h
-+++ b/include/net/devlink.h
-@@ -1540,8 +1540,18 @@ static inline struct devlink *netdev_to_devlink(struct net_device *dev)
- struct ib_device;
- 
- struct net *devlink_net(const struct devlink *devlink);
--void devlink_net_set(struct devlink *devlink, struct net *net);
--struct devlink *devlink_alloc(const struct devlink_ops *ops, size_t priv_size);
-+/* This call is intended for software devices that can create
-+ * devlink instances in other namespaces than init_net.
-+ *
-+ * Drivers that operate on real HW must use devlink_alloc() instead.
-+ */
-+struct devlink *devlink_alloc_ns(const struct devlink_ops *ops,
-+				 size_t priv_size, struct net *net);
-+static inline struct devlink *devlink_alloc(const struct devlink_ops *ops,
-+					    size_t priv_size)
-+{
-+	return devlink_alloc_ns(ops, priv_size, &init_net);
-+}
- int devlink_register(struct devlink *devlink, struct device *dev);
- void devlink_unregister(struct devlink *devlink);
- void devlink_reload_enable(struct devlink *devlink);
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index fbca61ad9bbc..fd2fc2befba9 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -108,19 +108,6 @@ struct net *devlink_net(const struct devlink *devlink)
- }
- EXPORT_SYMBOL_GPL(devlink_net);
- 
--static void __devlink_net_set(struct devlink *devlink, struct net *net)
--{
--	write_pnet(&devlink->_net, net);
--}
--
--void devlink_net_set(struct devlink *devlink, struct net *net)
--{
--	if (WARN_ON(devlink->dev))
--		return;
--	__devlink_net_set(devlink, net);
--}
--EXPORT_SYMBOL_GPL(devlink_net_set);
--
- static struct devlink *devlink_get_from_attrs(struct net *net,
- 					      struct nlattr **attrs)
- {
-@@ -3921,7 +3908,7 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
- 		return err;
- 
- 	if (dest_net && !net_eq(dest_net, curr_net))
--		__devlink_net_set(devlink, dest_net);
-+		write_pnet(&devlink->_net, dest_net);
- 
- 	err = devlink->ops->reload_up(devlink, action, limit, actions_performed, extack);
- 	devlink_reload_failed_set(devlink, !!err);
-@@ -8776,15 +8763,18 @@ static bool devlink_reload_actions_valid(const struct devlink_ops *ops)
- }
- 
- /**
-- *	devlink_alloc - Allocate new devlink instance resources
-+ *	devlink_alloc_ns - Allocate new devlink instance resources
-+ *	in specific namespace
-  *
-  *	@ops: ops
-  *	@priv_size: size of user private data
-+ *	@net: net namespace
-  *
-  *	Allocate new devlink instance resources, including devlink index
-  *	and name.
-  */
--struct devlink *devlink_alloc(const struct devlink_ops *ops, size_t priv_size)
-+struct devlink *devlink_alloc_ns(const struct devlink_ops *ops,
-+				 size_t priv_size, struct net *net)
- {
- 	struct devlink *devlink;
- 
-@@ -8799,7 +8789,7 @@ struct devlink *devlink_alloc(const struct devlink_ops *ops, size_t priv_size)
- 		return NULL;
- 	devlink->ops = ops;
- 	xa_init_flags(&devlink->snapshot_ids, XA_FLAGS_ALLOC);
--	__devlink_net_set(devlink, &init_net);
-+	write_pnet(&devlink->_net, net);
- 	INIT_LIST_HEAD(&devlink->port_list);
- 	INIT_LIST_HEAD(&devlink->rate_list);
- 	INIT_LIST_HEAD(&devlink->sb_list);
-@@ -8815,7 +8805,7 @@ struct devlink *devlink_alloc(const struct devlink_ops *ops, size_t priv_size)
- 	mutex_init(&devlink->reporters_lock);
- 	return devlink;
- }
--EXPORT_SYMBOL_GPL(devlink_alloc);
-+EXPORT_SYMBOL_GPL(devlink_alloc_ns);
- 
- /**
-  *	devlink_register - Register devlink instance
--- 
-2.31.1
-
+> +                                       opp-hz = /bits/ 64 <450000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
+> +                                       opp-peak-kBps = <4068000>;
+> +                               };
+> +
+> +                               opp-315000000 {
+> +                                       opp-hz = /bits/ 64 <315000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +                                       opp-peak-kBps = <1804000>;
+> +                               };
+> +                       };
+> +               };
+> +
