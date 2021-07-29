@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7D43DA50B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C693DA4D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Jul 2021 15:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238264AbhG2N5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 09:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47690 "EHLO mail.kernel.org"
+        id S237876AbhG2N4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 09:56:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237789AbhG2N5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 09:57:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EDC960EB2;
-        Thu, 29 Jul 2021 13:57:21 +0000 (UTC)
+        id S237790AbhG2N4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 09:56:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 275C86023F;
+        Thu, 29 Jul 2021 13:56:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627567041;
-        bh=ZgYjrjVfXUcydEKwdoLCKbh6pLx5YHoRym9sok9+W2Q=;
+        s=korg; t=1627566977;
+        bh=PJ/qHj/B7i57lcyVeOUYBHc5p+9c4QkIKIPaFRrJKFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b8ZVCP4QELhF5JuAec3aMljPMENQ5CqLi8HA6AbnfclUfm/qH/kLaU1BC2VHmOoNO
-         rOlCNAZdkHLf26cD+/CVu+E0qhDarw9ZYJ9ocz2fonO90UPB6mL/RpmyprAwAERdc/
-         XO42/6mCuaSJBIyMgRF558DTRDLlH/tQp7oTkncc=
+        b=l23BkD04gqJRz1T8NnEorOGzGhm7RT9B1uLIpfMjj1XwooTiOQn7mm4l0JCKG687K
+         FRpiVLMvpGSJjJrIVlP/8hobZHAjgco2kSlOK0rsVHVnEiyCGMTF64tuIn4uWsZZ1B
+         8RIt/BwAHa6u8uvJrJ620p79e7noL9XgkRtQ5uO4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zubin Mithra <zsm@chromium.org>
-Subject: [PATCH 5.4 03/21] KVM: x86: determine if an exception has an error code only when injecting it.
-Date:   Thu, 29 Jul 2021 15:54:10 +0200
-Message-Id: <20210729135143.030739379@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?S=C3=A9rgio?= <surkamp@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 10/17] sctp: move 198 addresses from unusable to private scope
+Date:   Thu, 29 Jul 2021 15:54:11 +0200
+Message-Id: <20210729135137.588920574@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210729135142.920143237@linuxfoundation.org>
-References: <20210729135142.920143237@linuxfoundation.org>
+In-Reply-To: <20210729135137.260993951@linuxfoundation.org>
+References: <20210729135137.260993951@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Levitsky <mlevitsk@redhat.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit b97f074583736c42fb36f2da1164e28c73758912 upstream.
+[ Upstream commit 1d11fa231cabeae09a95cb3e4cf1d9dd34e00f08 ]
 
-A page fault can be queued while vCPU is in real paged mode on AMD, and
-AMD manual asks the user to always intercept it
-(otherwise result is undefined).
-The resulting VM exit, does have an error code.
+The doc draft-stewart-tsvwg-sctp-ipv4-00 that restricts 198 addresses
+was never published. These addresses as private addresses should be
+allowed to use in SCTP.
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Message-Id: <20210225154135.405125-2-mlevitsk@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Zubin Mithra <zsm@chromium.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+As Michael Tuexen suggested, this patch is to move 198 addresses from
+unusable to private scope.
 
+Reported-by: Sérgio <surkamp@gmail.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ include/net/sctp/constants.h | 4 +---
+ net/sctp/protocol.c          | 3 ++-
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -475,8 +475,6 @@ static void kvm_multiple_exception(struc
+diff --git a/include/net/sctp/constants.h b/include/net/sctp/constants.h
+index 48d74674d5e9..bc22e44ffcdf 100644
+--- a/include/net/sctp/constants.h
++++ b/include/net/sctp/constants.h
+@@ -348,8 +348,7 @@ enum {
+ #define SCTP_SCOPE_POLICY_MAX	SCTP_SCOPE_POLICY_LINK
  
- 	if (!vcpu->arch.exception.pending && !vcpu->arch.exception.injected) {
- 	queue:
--		if (has_error && !is_protmode(vcpu))
--			has_error = false;
- 		if (reinject) {
- 			/*
- 			 * On vmentry, vcpu->arch.exception.pending is only
-@@ -7592,6 +7590,13 @@ static void update_cr8_intercept(struct
- 	kvm_x86_ops->update_cr8_intercept(vcpu, tpr, max_irr);
- }
+ /* Based on IPv4 scoping <draft-stewart-tsvwg-sctp-ipv4-00.txt>,
+- * SCTP IPv4 unusable addresses: 0.0.0.0/8, 224.0.0.0/4, 198.18.0.0/24,
+- * 192.88.99.0/24.
++ * SCTP IPv4 unusable addresses: 0.0.0.0/8, 224.0.0.0/4, 192.88.99.0/24.
+  * Also, RFC 8.4, non-unicast addresses are not considered valid SCTP
+  * addresses.
+  */
+@@ -357,7 +356,6 @@ enum {
+ 	((htonl(INADDR_BROADCAST) == a) ||  \
+ 	 ipv4_is_multicast(a) ||	    \
+ 	 ipv4_is_zeronet(a) ||		    \
+-	 ipv4_is_test_198(a) ||		    \
+ 	 ipv4_is_anycast_6to4(a))
  
-+static void kvm_inject_exception(struct kvm_vcpu *vcpu)
-+{
-+       if (vcpu->arch.exception.error_code && !is_protmode(vcpu))
-+               vcpu->arch.exception.error_code = false;
-+       kvm_x86_ops->queue_exception(vcpu);
-+}
-+
- static int inject_pending_event(struct kvm_vcpu *vcpu)
- {
- 	int r;
-@@ -7599,7 +7604,7 @@ static int inject_pending_event(struct k
- 	/* try to reinject previous events if any */
- 
- 	if (vcpu->arch.exception.injected)
--		kvm_x86_ops->queue_exception(vcpu);
-+		kvm_inject_exception(vcpu);
- 	/*
- 	 * Do not inject an NMI or interrupt if there is a pending
- 	 * exception.  Exceptions and interrupts are recognized at
-@@ -7665,7 +7670,7 @@ static int inject_pending_event(struct k
- 			}
- 		}
- 
--		kvm_x86_ops->queue_exception(vcpu);
-+		kvm_inject_exception(vcpu);
- 	}
- 
- 	/* Don't consider new event if we re-injected an event */
+ /* Flags used for the bind address copy functions.  */
+diff --git a/net/sctp/protocol.c b/net/sctp/protocol.c
+index dd5125658255..7207a9769f1a 100644
+--- a/net/sctp/protocol.c
++++ b/net/sctp/protocol.c
+@@ -412,7 +412,8 @@ static enum sctp_scope sctp_v4_scope(union sctp_addr *addr)
+ 		retval = SCTP_SCOPE_LINK;
+ 	} else if (ipv4_is_private_10(addr->v4.sin_addr.s_addr) ||
+ 		   ipv4_is_private_172(addr->v4.sin_addr.s_addr) ||
+-		   ipv4_is_private_192(addr->v4.sin_addr.s_addr)) {
++		   ipv4_is_private_192(addr->v4.sin_addr.s_addr) ||
++		   ipv4_is_test_198(addr->v4.sin_addr.s_addr)) {
+ 		retval = SCTP_SCOPE_PRIVATE;
+ 	} else {
+ 		retval = SCTP_SCOPE_GLOBAL;
+-- 
+2.30.2
+
 
 
