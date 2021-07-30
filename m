@@ -2,220 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5A73DB44D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40EC3DB451
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237817AbhG3HKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 03:10:35 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:58949 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237572AbhG3HKc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:10:32 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0UhPpHcj_1627629023;
-Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UhPpHcj_1627629023)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 30 Jul 2021 15:10:24 +0800
-From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
-To:     peterz@infradead.org
-Cc:     anderson@cs.unc.edu, baruah@wustl.edu, bsegall@google.com,
-        changhuaixin@linux.alibaba.com, dietmar.eggemann@arm.com,
-        dtcccc@linux.alibaba.com, juri.lelli@redhat.com,
-        khlebnikov@yandex-team.ru, linux-kernel@vger.kernel.org,
-        luca.abeni@santannapisa.it, mgorman@suse.de, mingo@redhat.com,
-        odin@uged.al, odin@ugedal.com, pauld@redhead.com, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com, tj@kernel.org,
-        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
-        xiyou.wangcong@gmail.com
-Subject: [PATCH 2/2] sched/fair: Add document for burstable CFS bandwidth
-Date:   Fri, 30 Jul 2021 15:09:56 +0800
-Message-Id: <20210730070956.44019-3-changhuaixin@linux.alibaba.com>
-X-Mailer: git-send-email 2.14.4.44.g2045bb6
-In-Reply-To: <20210730070956.44019-1-changhuaixin@linux.alibaba.com>
-References: <20210730070956.44019-1-changhuaixin@linux.alibaba.com>
+        id S237689AbhG3HMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:12:41 -0400
+Received: from ni.piap.pl ([195.187.100.5]:37406 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237572AbhG3HMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 03:12:40 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        by ni.piap.pl (Postfix) with ESMTPSA id CAEDFC36956D;
+        Fri, 30 Jul 2021 09:12:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl CAEDFC36956D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1627629154; bh=tiyho+ksOuS7E+whKYZ8Awa+pPodo/HKYJgqPKeF7IQ=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=Pa9pOQrMvjBA9AnfMgkGxnMX19EAnsmY6+XVevJnziWyIEM+LF5x4fdJkfquKraM8
+         zmsUhFwDzAZ2rFJ/u/YHTshW9WUxMNSAYlgN5wYGrt135lKieJVMFeWhHjlAUaLu0z
+         3H7lvN0zXFC0N7dn4Kq3kYhriIIstAyPhyNyTxL4=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v3] dt-binding: media: document ON Semi AR0521 sensor
+ bindings
+References: <m37dhkdrat.fsf@t19.piap.pl>
+        <YP9ccgd7WNpHuLgG@pendragon.ideasonboard.com>
+        <m3o8aoavrv.fsf@t19.piap.pl>
+        <20210727105830.GH3@valkosipuli.retiisi.eu>
+Sender: khalasa@piap.pl
+Date:   Fri, 30 Jul 2021 09:12:33 +0200
+In-Reply-To: <20210727105830.GH3@valkosipuli.retiisi.eu> (Sakari Ailus's
+        message of "Tue, 27 Jul 2021 13:58:30 +0300")
+Message-ID: <m3pmv09swu.fsf@t19.piap.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 165318 [Jul 30 2021]
+X-KLMS-AntiSpam-Version: 5.9.20.0
+X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
+X-KLMS-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4, {Tracking_Text_ENG_RU_Has_Extended_Latin_Letters, eng}, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, piap.pl:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;t19.piap.pl:7.1.1
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2021/07/30 05:50:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/30 04:15:00 #16998356
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Basic description of usage and effect for CFS Bandwidth Control Burst.
+Sakari, Laurent,
 
-Co-developed-by: Shanpei Chen <shanpeic@linux.alibaba.com>
-Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
-Co-developed-by: Tianchen Ding <dtcccc@linux.alibaba.com>
-Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
-Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
----
- Documentation/admin-guide/cgroup-v2.rst |  8 ++++
- Documentation/scheduler/sched-bwc.rst   | 85 +++++++++++++++++++++++++++++----
- 2 files changed, 83 insertions(+), 10 deletions(-)
+Sakari Ailus <sakari.ailus@iki.fi> writes:
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 5c7377b5bd3e..c79477089c53 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1016,6 +1016,8 @@ All time durations are in microseconds.
- 	- nr_periods
- 	- nr_throttled
- 	- throttled_usec
-+	- nr_bursts
-+	- burst_usec
- 
-   cpu.weight
- 	A read-write single value file which exists on non-root
-@@ -1047,6 +1049,12 @@ All time durations are in microseconds.
- 	$PERIOD duration.  "max" for $MAX indicates no limit.  If only
- 	one number is written, $MAX is updated.
- 
-+  cpu.max.burst
-+	A read-write single value file which exists on non-root
-+	cgroups.  The default is "0".
-+
-+	The burst in the range [0, $QUOTA].
-+
-   cpu.pressure
- 	A read-write nested-keyed file.
- 
-diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
-index 1fc73555f5c4..0b2a3b2e3369 100644
---- a/Documentation/scheduler/sched-bwc.rst
-+++ b/Documentation/scheduler/sched-bwc.rst
-@@ -22,39 +22,89 @@ cfs_quota units at each period boundary. As threads consume this bandwidth it
- is transferred to cpu-local "silos" on a demand basis. The amount transferred
- within each of these updates is tunable and described as the "slice".
- 
-+Burst feature
-+-------------
-+This feature borrows time now against our future underrun, at the cost of
-+increased interference against the other system users. All nicely bounded.
-+
-+Traditional (UP-EDF) bandwidth control is something like:
-+
-+  (U = \Sum u_i) <= 1
-+
-+This guaranteeds both that every deadline is met and that the system is
-+stable. After all, if U were > 1, then for every second of walltime,
-+we'd have to run more than a second of program time, and obviously miss
-+our deadline, but the next deadline will be further out still, there is
-+never time to catch up, unbounded fail.
-+
-+The burst feature observes that a workload doesn't always executes the full
-+quota; this enables one to describe u_i as a statistical distribution.
-+
-+For example, have u_i = {x,e}_i, where x is the p(95) and x+e p(100)
-+(the traditional WCET). This effectively allows u to be smaller,
-+increasing the efficiency (we can pack more tasks in the system), but at
-+the cost of missing deadlines when all the odds line up. However, it
-+does maintain stability, since every overrun must be paired with an
-+underrun as long as our x is above the average.
-+
-+That is, suppose we have 2 tasks, both specify a p(95) value, then we
-+have a p(95)*p(95) = 90.25% chance both tasks are within their quota and
-+everything is good. At the same time we have a p(5)p(5) = 0.25% chance
-+both tasks will exceed their quota at the same time (guaranteed deadline
-+fail). Somewhere in between there's a threshold where one exceeds and
-+the other doesn't underrun enough to compensate; this depends on the
-+specific CDFs.
-+
-+At the same time, we can say that the worst case deadline miss, will be
-+\Sum e_i; that is, there is a bounded tardiness (under the assumption
-+that x+e is indeed WCET).
-+
-+The interferenece when using burst is valued by the possibilities for
-+missing the deadline and the average WCET. Test results showed that when
-+there many cgroups or CPU is under utilized, the interference is
-+limited. More details are shown in:
-+https://lore.kernel.org/lkml/5371BD36-55AE-4F71-B9D7-B86DC32E3D2B@linux.alibaba.com/
-+
- Management
- ----------
--Quota and period are managed within the cpu subsystem via cgroupfs.
-+Quota, period and burst are managed within the cpu subsystem via cgroupfs.
- 
- .. note::
-    The cgroupfs files described in this section are only applicable
-    to cgroup v1. For cgroup v2, see
-    :ref:`Documentation/admin-guide/cgroup-v2.rst <cgroup-v2-cpu>`.
- 
--- cpu.cfs_quota_us: the total available run-time within a period (in
--  microseconds)
-+- cpu.cfs_quota_us: run-time replenished within a period (in microseconds)
- - cpu.cfs_period_us: the length of a period (in microseconds)
- - cpu.stat: exports throttling statistics [explained further below]
-+- cpu.cfs_burst_us: the maximum accumulated run-time (in microseconds)
- 
- The default values are::
- 
- 	cpu.cfs_period_us=100ms
--	cpu.cfs_quota=-1
-+	cpu.cfs_quota_us=-1
-+	cpu.cfs_burst_us=0
- 
- A value of -1 for cpu.cfs_quota_us indicates that the group does not have any
- bandwidth restriction in place, such a group is described as an unconstrained
- bandwidth group. This represents the traditional work-conserving behavior for
- CFS.
- 
--Writing any (valid) positive value(s) will enact the specified bandwidth limit.
--The minimum quota allowed for the quota or period is 1ms. There is also an
--upper bound on the period length of 1s. Additional restrictions exist when
--bandwidth limits are used in a hierarchical fashion, these are explained in
--more detail below.
-+Writing any (valid) positive value(s) no smaller than cpu.cfs_burst_us will
-+enact the specified bandwidth limit. The minimum quota allowed for the quota or
-+period is 1ms. There is also an upper bound on the period length of 1s.
-+Additional restrictions exist when bandwidth limits are used in a hierarchical
-+fashion, these are explained in more detail below.
- 
- Writing any negative value to cpu.cfs_quota_us will remove the bandwidth limit
- and return the group to an unconstrained state once more.
- 
-+A value of 0 for cpu.cfs_burst_us indicates that the group can not accumulate
-+any unused bandwidth. It makes the traditional bandwidth control behavior for
-+CFS unchanged. Writing any (valid) positive value(s) no larger than
-+cpu.cfs_quota_us into cpu.cfs_burst_us will enact the cap on unused bandwidth
-+accumulation.
-+
- Any updates to a group's bandwidth specification will result in it becoming
- unthrottled if it is in a constrained state.
- 
-@@ -74,7 +124,7 @@ for more fine-grained consumption.
- 
- Statistics
- ----------
--A group's bandwidth statistics are exported via 3 fields in cpu.stat.
-+A group's bandwidth statistics are exported via 5 fields in cpu.stat.
- 
- cpu.stat:
- 
-@@ -82,6 +132,9 @@ cpu.stat:
- - nr_throttled: Number of times the group has been throttled/limited.
- - throttled_time: The total time duration (in nanoseconds) for which entities
-   of the group have been throttled.
-+- nr_bursts: Number of periods burst occurs.
-+- burst_usec: Cumulative wall-time that any CPUs has used above quota in
-+  respective periods
- 
- This interface is read-only.
- 
-@@ -179,3 +232,15 @@ Examples
- 
-    By using a small period here we are ensuring a consistent latency
-    response at the expense of burst capacity.
-+
-+4. Limit a group to 40% of 1 CPU, and allow accumulate up to 20% of 1 CPU
-+   additionally, in case accumulation has been done.
-+
-+   With 50ms period, 20ms quota will be equivalent to 40% of 1 CPU.
-+   And 10ms burst will be equivalent to 20% of 1 CPU.
-+
-+	# echo 20000 > cpu.cfs_quota_us /* quota = 20ms */
-+	# echo 50000 > cpu.cfs_period_us /* period = 50ms */
-+	# echo 10000 > cpu.cfs_burst_us /* burst = 10ms */
-+
-+   Larger buffer setting (no larger than quota) allows greater burst capacity.
--- 
-2.14.4.44.g2045bb6
+> I think Laurent meant:
+>
+> 	    bus-type:
+> 	      const: 4
 
+Ok I found what it means :-)
+--=20
+Krzysztof "Chris" Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
