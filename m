@@ -2,123 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1C03DC131
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24003DC134
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbhG3WjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232672AbhG3WjK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:39:10 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D548CC06175F;
-        Fri, 30 Jul 2021 15:39:03 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id o20so15229838oiw.12;
-        Fri, 30 Jul 2021 15:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kHsJiQapAD/4QVzp2UfVWPI1mPGl8hWS1HwKG0EoffI=;
-        b=EknXuDek8jF0zTx1Y6OGTJgCoMEk2IHb0z2K9LcvMEFrTwZafNc4Epex8TgdgFHEJZ
-         8YU1LCLDv/YS9tpv58B29IyQ2sUIATKtitdjroBIVHnxCv7Gy+Q1ex/B+ezdvTFJ+OXv
-         LBsp/720y8GMxzZ0VQXEFJoBmCyBgeX+RADeukUeqkr4YISjb/nRaO7jPvmcRMcNygAS
-         ZDpfkhI6YE6FgMwDABZWkwdAqvgd/9MMIG7I34el74iwm/hY4JG1VXb4A15LTcM56s6M
-         dl1p+K7sv607ACwtL7NqmGMLLAgpTcAgAAU1PJA1gauZP6hwABsHLy3vFPpmecJZJ8dz
-         +IhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kHsJiQapAD/4QVzp2UfVWPI1mPGl8hWS1HwKG0EoffI=;
-        b=INDxjFki8P0kui09iaia2mrXEkAcUenauYy7PBy/IoLy3IYpvfRBhBj1SPJrYrx1uU
-         SvUR1NsV6o5Bc4pEFXAIbgRYuq0DHBonfvlapAOKRMtZoIPFIZT6oHPIMUmw+8pj7aH0
-         qf9Flx/0PuwtETDNVtzseKZBIADvfkkPr3eXd3UGwEpGKnCpeVyEcQrwmFkn9qJ3iRmF
-         Au5xyUOzA0VeZZSXYJ1T/LXcyn01H1qnmNiR8s0uY5WT6SXJG/TPeeNTlRVRj79ypUs6
-         GkFN6cmlVzc5zaPtzFChlTBRRvonX9h+MJqRgyFurLTV2yiMjpEgXmRWrUrsTeTOpHck
-         i23Q==
-X-Gm-Message-State: AOAM531+HxCYgaPI5tWWC1LKoe9aH61ZClsa7u0EVwWKCW9b2j1iBGt5
-        ADYQLbUFg/f2iL024e5A2Ds=
-X-Google-Smtp-Source: ABdhPJwRoP+fyy7PhBPevGqhOuI02Ixpjrz7IDxiDwyq3nQDQ2Ni+sY22MZpTPdHBwEw7tstRuOF8A==
-X-Received: by 2002:a54:4d8f:: with SMTP id y15mr3682712oix.32.1627684743299;
-        Fri, 30 Jul 2021 15:39:03 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i20sm463729ook.12.2021.07.30.15.39.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 15:39:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tero Kristo <t-kristo@ti.com>
-References: <fe8cf65f-f949-9326-8f32-fda7134c8da6@siemens.com>
- <211cd54b-29b4-e58a-341b-beffc05cfe85@roeck-us.net>
- <def0c2e9-e035-7ffc-3216-27f461555ae5@siemens.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] watchdog: Respect handle_boot_enabled when setting last
- last_hw_keepalive
-Message-ID: <ccbd43d8-af29-2a5d-991f-def7f7adec40@roeck-us.net>
-Date:   Fri, 30 Jul 2021 15:39:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232948AbhG3Wlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:41:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231189AbhG3Wlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 18:41:31 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 527EA60524;
+        Fri, 30 Jul 2021 22:41:25 +0000 (UTC)
+Date:   Fri, 30 Jul 2021 18:41:18 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kamal Agrawal <kamaagra@codeaurora.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        mhiramat@kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] tracing: Fix NULL pointer dereference in start_creating
+Message-ID: <20210730184118.0ea8ef20@oasis.local.home>
+In-Reply-To: <1627651386-21315-1-git-send-email-kamaagra@codeaurora.org>
+References: <1627651386-21315-1-git-send-email-kamaagra@codeaurora.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <def0c2e9-e035-7ffc-3216-27f461555ae5@siemens.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/21 2:37 PM, Jan Kiszka wrote:
-> On 30.07.21 22:49, Guenter Roeck wrote:
->> On 7/30/21 12:39 PM, Jan Kiszka wrote:
->>> From: Jan Kiszka <jan.kiszka@siemens.com>
->>>
->>> We must not pet a running watchdog when handle_boot_enabled is off
->>> because this requests to only start doing that via userspace, not during
->>> probing.
->>>
->>
->> The scope of the changed function is quite limited. See the
->> definition of watchdog_set_last_hw_keepalive(). On top of that,
->> __watchdog_ping() does a bit more than just ping the watchdog,
->> and it only pings the watchdog in limited circumstances. On top of that,
->> the scope of handle_boot_enabled is different: If enabled, it tells
->> the watchdog core to keep pinging a watchdog until userspace opens
->> the device. This is about continuous pings, not about an initial one.
->> Given that, I'd rather have the watchdog subsystem issue an additional
->> ping than risking a regression.
->>
->> The only driver calling watchdog_set_last_hw_keepalive() is rti_wdt.c.
->> Does this patch solve a specific problem observed with that watchdog ?
+On Fri, 30 Jul 2021 18:53:06 +0530
+Kamal Agrawal <kamaagra@codeaurora.org> wrote:
+
+> The event_trace_add_tracer() can fail. In this case, it leads to a crash
+> in start_creating with below call stack. Handle the error scenario
+> properly in trace_array_create_dir.
 > 
-> Yes, it unbreaks support for handle_boot_enabled=no by not starting the
-> automatic pinging of the kernel until userspace opens the device.
-> Without this fix, the core will prematurely start kernel-side pinging,
-> and hanging userspace will never be detected.
+> Call trace:
+> down_write+0x7c/0x204
+> start_creating.25017+0x6c/0x194
+> tracefs_create_file+0xc4/0x2b4
+> init_tracer_tracefs+0x5c/0x940
+> trace_array_create_dir+0x58/0xb4
+> trace_array_create+0x1bc/0x2b8
+> trace_array_get_by_name+0xdc/0x18c
 > 
-Good point. You are correct.
+> Fixes: 4114fbfd
 
-I think it should also check for watchdog_hw_running(wdd), though.
-The function should not really be called if the watchdog isn't
-running, but it should still not ping the watchdog in that case.
+Thanks, I'll queue this up.
 
-Something like
+-- Steve
 
-     if (watchdog_hw_running(wdd) && handle_boot_enabled)
-	return __watchdog_ping(wdd);
+> Signed-off-by: Kamal Agrawal <kamaagra@codeaurora.org>
+> ---
+>  kernel/trace/trace.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index c59dd35..33899a7 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -9135,8 +9135,10 @@ static int trace_array_create_dir(struct trace_array *tr)
+>  		return -EINVAL;
+>  
+>  	ret = event_trace_add_tracer(tr->dir, tr);
+> -	if (ret)
+> +	if (ret) {
+>  		tracefs_remove(tr->dir);
+> +		return ret;
+> +	}
+>  
+>  	init_tracer_tracefs(tr, tr->dir);
+>  	__update_tracer_options(tr);
 
-     return 0;
-
-Also, I think it would make sense to add your additional comment
-to the patch description. The problem isn't only that the watchdog
-is pinged once, the problem is that it starts _automatic_
-pinging which it really should not do.
-
-Thanks,
-Guenter
