@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484C13DBE4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10873DBE54
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhG3SYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 14:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
+        id S230184AbhG3SZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 14:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhG3SYL (ORCPT
+        with ESMTP id S230349AbhG3SZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 14:24:11 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837ACC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:24:05 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id dk2so2864004qvb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:24:05 -0700 (PDT)
+        Fri, 30 Jul 2021 14:25:07 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D39BC0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:25:02 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id x15-20020a05683000cfb02904d1f8b9db81so10440873oto.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:25:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=lpTj1qbBhUjsFO3ShCuhQlstpCRBWbI+98sXsatNNS0=;
-        b=nvoJbYYos3edtySrFC3sNrtYaePSz35pEA5Ucgp1us801EwDxgvhYHe5xNUt49wnQB
-         lDiR+WepP+JDWFGZN2Q/6QOTpDLIpexO3Zue5iOIOpHt2rKLkRCgpiThEhipLoyi5fLw
-         gJHy4qphNLyXadI5deevRbOP0hbFtDyzzryQlXAnSMtYnBQGJyU6WwAdKip701vZWNs+
-         CDs9NsrICj5g8BBPD2Kk5B05I9xoDzpcyrdomLOXdV/sF/dWZ/BSO50js90EXjZEmi+G
-         blAKza0sOUe2ubzjERyRsT5yt86446xj4z75KbGmQPytlq8V3KbHQNvL9U5E0IhyzoQU
-         jerA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XpB+LNmPBgnS5Lf6x+b5cG5d1sMq85HwbCnNpZE2zYo=;
+        b=FLU28j8+ohjlgupR219GFzrIl9IH9/YzqxQJSUxHtE5VtGLhrgsFSje8to6mUj/aga
+         x8nInA/4b1SZwqh/E285vMfeKvkbUkoZiHeV5oxS8JUVQLxRozEbb1HUzzi845CHrDBt
+         bH1RLWLP2fGKQKmFMPdNozclJavXJ1RtQ9W1Ruat6YfxfmKna0mnbxpgJnpnz+MApimw
+         JFI1/pM187pK04w61eo5JjNf2ZlDqDzDfs7YLwOWOmHFCAK24b6vFe2/nSOx/nPPc7fP
+         IASY8hUWbtG53IMu3z7y0g2dS8huQ1EQq2BfmjIjTt84iWoT2Jk2MUoYLWoy37YbYT79
+         fwaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=lpTj1qbBhUjsFO3ShCuhQlstpCRBWbI+98sXsatNNS0=;
-        b=iOTYZt6XRzsRn4uL6FitDa1bWJp3NBMpDxKwsC8SNsmmskPp5veLRR7gSnxMxMZ1p8
-         DZELbKCumsjgaTAyzx4KIOSnA7KgtxJZChIev6+IfgYHkrkN7MwOYhkD3YqRNipKUWRA
-         JJPpKHlRNdQB9KA9NtVfcQitFOARO3Ga61sNfCDyeYMzS/jH3zQQ5w2/AdKaF21VEByr
-         qKAN9WnkIgFEWBE792tjfAlnK1f1lQyp3SrML6Mydu55TY5/n1p+21SSC7kmxOPgi+dS
-         ZFtFP/W2CuPV6RCJCR5M8qhE45GzzwRw2c98T2+m8BBID9a+eChhb1/YOL1MfE97zbuH
-         Dm+Q==
-X-Gm-Message-State: AOAM531vZW+0ITE6lCl5GOrloJ9qaqoKzXz0+96V0kpRWosOLDD6YFkr
-        VnWbEmg0ZcxrZMqB+dXkAMMOVyi+xM7hsVBb8U0=
-X-Google-Smtp-Source: ABdhPJw+y5SDv+Hi0+xbHWjkczzC5L1I5eDhwD8mikOK4YXyK9lP9vyXYvMJmMR4GdUWcr+TjpS87MY+IU8dfriy0vI=
-X-Received: by 2002:ad4:46ed:: with SMTP id h13mr4238934qvw.56.1627669444698;
- Fri, 30 Jul 2021 11:24:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XpB+LNmPBgnS5Lf6x+b5cG5d1sMq85HwbCnNpZE2zYo=;
+        b=L7QjOVtAKBPpYGj1ccCzl+j6YGswMuf1Lvg51e61gYHcKzUegIqujml3fPVqxkvhSN
+         NdWBzdilNH0pn40HD7aq5tnFgwQVnSAcA/d2ivOJRTQg+PAN6bGoLnjn/YRt57ZIrs9W
+         BnObdJgHJL2rI9c4RCDWPwWFscOLJIQmkQaO8HqmjcmWHKk2pg9rzkmFke1G31Jfg1SF
+         Q6Ec10+gJ0MShDta+0L0kLqjbdJt+OBF4SC7r0MpYsE9amJfZ/pGXvk088oUHVfS5Uc4
+         vN8/1MW/HwLmY3ZZ0tJdGTqdzIAbpWymT9b0v+cDj0GY0U2j9axlh7wDrvHpSWRNEJXA
+         7UXQ==
+X-Gm-Message-State: AOAM530w5DUOWzQzA23J8HP03dpeGotlgayQIE6XuaMw72YW3/Vd1Zy3
+        52EbsOzwRyOahPBDNiwKcU99zw==
+X-Google-Smtp-Source: ABdhPJx4vNZHT6X7wQKRFb2JUuvmKANycbmxpNeZfUiQDWntbLArDTfaRDIDFIss/nuk9dA3LyoMKw==
+X-Received: by 2002:a05:6830:25c6:: with SMTP id d6mr3126063otu.226.1627669501571;
+        Fri, 30 Jul 2021 11:25:01 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id i10sm357103ood.48.2021.07.30.11.25.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 11:25:01 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 13:24:58 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>, robh+dt@kernel.org,
+        will@kernel.org, saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
+        agross@kernel.org, mathieu.poirier@linaro.org,
+        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
+        dianders@chromium.org, swboyd@chromium.org
+Subject: Re: [PATCH 6/9] arm64: dts: qcom: sc7280: Update reserved memory map
+Message-ID: <YQRD+va2mn9e+QKJ@builder.lan>
+References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
+ <1624564058-24095-7-git-send-email-sibis@codeaurora.org>
+ <YNoQ1d1hUyIh/qxz@google.com>
+ <f74c03b939dfd83a1013906e1c771666@codeaurora.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6214:625:0:0:0:0 with HTTP; Fri, 30 Jul 2021 11:24:04
- -0700 (PDT)
-Reply-To: westernunion-claimcollector@collector.org
-From:   WESTERN UNION MONEY TRANSFER OFFICE <mr.grecadams@gmail.com>
-Date:   Fri, 30 Jul 2021 19:24:04 +0100
-Message-ID: <CAEjXcM37HNV7zUz9oiKGo7wMKpsWihjt_FJsSHQTzEZDX4bZFw@mail.gmail.com>
-Subject: THE MONEY HAS BEEN SENT, PLEASE CONFIRM
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f74c03b939dfd83a1013906e1c771666@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
+On Wed 30 Jun 15:02 CDT 2021, Sibi Sankar wrote:
 
+> On 2021-06-28 23:41, Matthias Kaehlcke wrote:
+> > On Fri, Jun 25, 2021 at 01:17:35AM +0530, Sibi Sankar wrote:
+> > 
+> > > Subject: arm64: dts: qcom: sc7280: Update reserved memory map
+> > 
+> > That's very vague. Also personally I'm not a fan of patches that touch
+> > SoC and board files with a commit message that only mentions the SoC, as
+> > is frequently done for IDP boards. Why not split this in (at least) two,
+> > one for adding the missing memory regions to the SoC, and one for the
+> > IDP.
+> > 
+> 
+> sure will split this up.
+> 
+> > > Add missing regions and remove unused regions from the reserved memory
+> > > map, as described in version 1.
+> > 
+> > What is this 'version 1'?
+> 
+> lol, it's the memory map version number
+> and it's not entirely internal to qc so
+> we have been mentioning them in commit
+> messages from older SoCs. I'll just drop
+> it when I re-spin the series since it
+> doesn't add much value.
+> 
 
-Dear Beneficiary;
+Every now and then we run into issues with the reserved-memory layout,
+where knowing were the numbers comes from is useful information to have
+in order to characterize the issue and come up with a fix.
 
-Our Operation Manager has extract your 1st payment of $5,000.00 out of
-your total fund of ($1.5million) We need your full  information for
-the transfer.
+So including information about where those numbers came from is useful,
+even if it's referencing a version of a document that's not public.
 
-We scheduled installment sums of USD $5,000.00 daily through the cash
-fast Western Union, payment at counter as directed and we have
-commenced the relevant programming and the documentations of the said
-fund, as we are instructed to make the first payment of USD$5,000.00
-MTCN available in your name upon the receipt of your information from
-you as follows.
-
-Your Name,
-
-Address,
-
-Telephone
-
-ID CARD
-
-Contact our Operational Manager,Mr WETAYEM MYSHEAR through our office
-email for more enlightenment on your money.
-
-Email (westernunion.collector@collector.org)
-
-Thanks
-
-Managnment
+Regards,
+Bjorn
