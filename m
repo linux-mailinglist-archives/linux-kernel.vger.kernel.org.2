@@ -2,176 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B08C3DB4E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D663DB4EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhG3IHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 04:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
+        id S237961AbhG3IKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 04:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbhG3IG4 (ORCPT
+        with ESMTP id S230422AbhG3IKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 04:06:56 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFE7C061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:06:51 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d1so10193464pll.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:06:51 -0700 (PDT)
+        Fri, 30 Jul 2021 04:10:06 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AB7C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:10:00 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id x3so8650214qkl.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:10:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Zm9ze6NcDMmKTtzUJRmbUQg85ybXUDcN1daZdih1WjE=;
-        b=onZBHEQbJavX+A5KRaetjgjzUwDmd3WCx9N9tbq25vGwq8nGrSKPYOUZvsmHEyOmWZ
-         M+OOTZh5N2bVPdOJKKUW0J6lyGyB/gqr98pG3kRWp6HVtXZtkS3klXocUCX+WCWIt8oD
-         +6eXSNqMZPOHcBKpetSx0mhW+ZpAp4LEt9PFIRVm/NHWfWJXAsy73etXU6K85KQHqWLb
-         JaycqPhwfCq4En3t7KTHKtpBJWWDjmhnH8ugeLZwoW4SCKMBPDZWv3g69zS2Txoyi3z0
-         /ajIPha64CrownvM58gbSPAOQ7kcQVbDTAw8K5AVvnznWduE+XeeQTiQbAed6jWcke8j
-         jweA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=iO85ZMC6Pth+31xPvVbOO8VKXEmUR+jk3X7hFax1vLE=;
+        b=gL63kdkFN7iyXAPotPB2doPP4eoWZKnl2sfroPBPAmL0gzVw5Upydd4gfixGG7s4WC
+         giXC1QKX0/mEwYnfv2DX5x83kim9pV5K+Gm8NMUXleRvZrKLiKonmPtcs7J3ioWqHe6F
+         Ckfr9iXkkJcyYmswDgsxzVxSxBIysXhiyCXSKrZy8vVuiXmWrD2T+1NhJYm15q+9DkgU
+         XwXZEF2H4svRElS8LTbSdUa4RDEDk42LvlEa7OxioJzfqS/+4IOmq0XGsfWVqB2JgtX/
+         zTuwoWGUPFo1/OuUj+lNosYVHJAFcNXFHYHIbWeDozDiEk7Ux5ckytcnsj1H/ae+IAiB
+         bTCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zm9ze6NcDMmKTtzUJRmbUQg85ybXUDcN1daZdih1WjE=;
-        b=kOrxiMzrD6dlasHOIouIH2GLNlsSpEVJgIGgXnX1y5XiA6phKDAaGyE/0ZMYRDTPBd
-         dOhnbwAy26a7QNrrRJYQ0q33Jy6ndgCzZjJl7wFHKz766Tp5Lt0Q6gcrIhFBjRzKMT3h
-         3bTK6oRoR6rglov3GslKJw6mO1hX9162Q5oZwg97CXvzO9a03ZYOo4IapXx1QoAFdu9h
-         JSEsFsXPGD6tTVgvg9OATA7jLgeAn8Yh6kUA1caqHHd7wP9NH2EWuj4MxM/J9QxABMvs
-         ELH1gXFjoMb62f/tYkGNxNBtHt4BGHpEb+eJPIt8K/XH15OSfag4BLlBuOdbbxXo6SEX
-         Me7Q==
-X-Gm-Message-State: AOAM532SCuuqccbIzP1cQS6ogQBv0XUJoDXmUwjN18jHHjU9ithJImM3
-        WZasBBIA78inLth7qKqsxMo=
-X-Google-Smtp-Source: ABdhPJyjRArgqkf3xuf3FtJ1loWdS7BbIoDktTv4OVnTPGAPLzlWFDLZqp+Y+Y7pidu7lZiihP0LDQ==
-X-Received: by 2002:a63:5506:: with SMTP id j6mr1211210pgb.19.1627632410498;
-        Fri, 30 Jul 2021 01:06:50 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id e8sm1295050pfm.218.2021.07.30.01.06.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 01:06:49 -0700 (PDT)
-Subject: Re: [PATCH 2/2] drm: add lockdep assert to
- drm_is_current_master_locked
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210730041515.1430237-1-desmondcheongzx@gmail.com>
- <20210730041515.1430237-3-desmondcheongzx@gmail.com>
- <YQOXTW8kSHdNjhiY@boqun-archlinux>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <35518f4b-5e4a-b284-1f86-5cba64941211@gmail.com>
-Date:   Fri, 30 Jul 2021 16:06:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=iO85ZMC6Pth+31xPvVbOO8VKXEmUR+jk3X7hFax1vLE=;
+        b=MVP5DV/LVgfEaSuh2sOR83+y7fbn5HnOpzO8PJ6x81T6MwjzCYt3c25zgm+q0HMsEw
+         qIj+KGz9ylpRm5guJdMxCVPYwTdKPIx3iEtHnRhvTukTv46GzuaH8COlP99vfrHXSpue
+         P1tcirEt2Xe+jttkK35SWJpljXliAtQpaYnb6Rkie+JpeIt1S5bWEzZvqjE/NgYzY0Ya
+         mRtu2fmMUZE7KQbg6T1BtzDKUnKZBRE4zEES4Z2zrpwvo+44JiZw2G0SthqEYlHWq26a
+         Gw8BJfKZGQGaUgtIxtru1avtzKOAiBdDCJRQkuAzAu3RLK2rNGajnQklSYr6oi4Qy6e+
+         X5qQ==
+X-Gm-Message-State: AOAM532P2+1rQ82TnvtMd79nFUe3j1mQ/Gsp10VjiyzU9a+5u3Fi5Xjy
+        cvAIhE1+YOtsPKJMpu4aeBtfVA==
+X-Google-Smtp-Source: ABdhPJzxLMkX99MbqShrEgAY7r7lr2pFJKeO21G4hsIJ29P9sxgcQLfSXm9uBiPHU0BoiYUpJA2ihQ==
+X-Received: by 2002:ae9:e90e:: with SMTP id x14mr1119707qkf.118.1627632599619;
+        Fri, 30 Jul 2021 01:09:59 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id w71sm571098qkb.67.2021.07.30.01.09.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 01:09:58 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 01:09:56 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH 15/16] tmpfs: permit changing size of memlocked file
+In-Reply-To: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
+Message-ID: <ed60e16e-3fcc-35f8-3880-cd39f24be9c3@google.com>
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YQOXTW8kSHdNjhiY@boqun-archlinux>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/7/21 2:08 pm, Boqun Feng wrote:
-> On Fri, Jul 30, 2021 at 12:15:15PM +0800, Desmond Cheong Zhi Xi wrote:
->> In drm_is_current_master_locked, accessing drm_file.master should be
->> protected by either drm_file.master_lookup_lock or
->> drm_device.master_mutex. This was previously awkward to assert with
->> lockdep.
->>
->> Following patch ("locking/lockdep: Provide lockdep_assert{,_once}()
->> helpers"), this assertion is now convenient so we add it in.
->>
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->> ---
->>   drivers/gpu/drm/drm_auth.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
->> index 9c24b8cc8e36..6f4d7ff23c80 100644
->> --- a/drivers/gpu/drm/drm_auth.c
->> +++ b/drivers/gpu/drm/drm_auth.c
->> @@ -63,9 +63,9 @@
->>   
->>   static bool drm_is_current_master_locked(struct drm_file *fpriv)
->>   {
->> -	/* Either drm_device.master_mutex or drm_file.master_lookup_lock
->> -	 * should be held here.
->> -	 */
->> +	lockdep_assert_once(lockdep_is_held(&fpriv->master_lookup_lock) ||
->> +			    lockdep_is_held(&fpriv->minor->dev->master_mutex));
->> +
-> 
-> I think it's better to also add the lockdep_assert() of & (i.e. both
-> held) in the updater side, and have comments pointing to each other.
-> 
-> Is it convenient to do in this patchset? If the updater side doesn't
-> need to put the lockdep_assert() (maybe the lock acquire code and the
-> update code are in the same function), it's still better to add some
+We have users who change the size of their memlocked file by F_MEM_UNLOCK,
+ftruncate, F_MEM_LOCK.  That risks swapout in between, and is distasteful:
+particularly if the file is very large (when shmem_unlock_mapping() has a
+lot of work to move pages off the Unevictable list, only for them to be
+moved back there later on).
 
-Thanks for the feedback, Boqun.
+Modify shmem_setattr() to grow or shrink, and shmem_fallocate() to grow,
+the locked extent.  But forbid (EPERM) both if current_ucounts() differs
+from the locker's mlock_ucounts (without even a CAP_IPC_LOCK override).
+They could be permitted (the caller already has unsealed write access),
+but it's probably less confusing to restrict size change to the locker.
 
-Yeah, I think the updater side maybe doesn't need new lockdep_assert()
-because what currently happens is either
+But leave shmem_write_begin() as is, preventing the memlocked file from
+being extended implicitly by writes beyond EOF: I think that it's best to
+demand an explicit size change, by truncate or fallocate, when memlocked.
 
-	lockdep_assert_held_once(&dev->master_mutex);
-	/* 6 lines of prep */
-	spin_lock(&fpriv->master_lookup_lock);
-	fpriv->master = new_value;
-or
-	mutex_lock(&dev->master_mutex);
-	/* 3 lines of checks */
-		spin_lock(&file_priv->master_lookup_lock);
-		file_priv->master = new_value;
+(But notice in testing "echo x >memlockedfile" how the O_TRUNC succeeds
+but the write fails: would F_MEM_UNLOCK on truncation to 0 be better?)
 
-> comments like:
-> 
-> 	/*
-> 	 * To update drm_file.master, both drm_file.master_lookup_lock
-> 	 * and drm_device.master_mutex are needed, therefore holding
-> 	 * either of them is safe and enough for the read side.
-> 	 */
-> 
-> Just feel it's better to explain the lock design either in the
-> lockdep_assert() or comments.
-> 
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ mm/shmem.c | 48 ++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 38 insertions(+), 10 deletions(-)
 
-But clarifying the lock design in the documentation sounds like a really
-good idea.
-
-Probably a good place for this would be in the kerneldoc where we also
-explain the lifetime rules and usage of the pointer outside drm_auth.c:
-
-diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
-index 726cfe0ff5f5..a3acb7ac3550 100644
---- a/include/drm/drm_file.h
-+++ b/include/drm/drm_file.h
-@@ -233,6 +233,10 @@ struct drm_file {
-  	 * this only matches &drm_device.master if the master is the currently
-  	 * active one.
-  	 *
-+	 * To update @master, both &drm_device.master_mutex and
-+	 * @master_lookup_lock need to be held, therefore holding either of
-+	 * them is safe and enough for the read side.
-+	 *
-  	 * When dereferencing this pointer, either hold struct
-  	 * &drm_device.master_mutex for the duration of the pointer's use, or
-  	 * use drm_file_get_master() if struct &drm_device.master_mutex is not
-
-Best wishes,
-Desmond
-
-> Regards,
-> Boqun
-> 
->>   	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
->>   }
->>   
->> -- 
->> 2.25.1
->>
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 1ddb910e976c..fa4a264453bf 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1123,15 +1123,30 @@ static int shmem_setattr(struct user_namespace *mnt_userns,
+ 
+ 		/* protected by i_mutex */
+ 		if ((newsize < oldsize && (info->seals & F_SEAL_SHRINK)) ||
+-		    (newsize > oldsize && (info->seals & F_SEAL_GROW)) ||
+-		    (newsize != oldsize && info->mlock_ucounts))
++		    (newsize > oldsize && (info->seals & F_SEAL_GROW)))
+ 			return -EPERM;
+ 
+ 		if (newsize != oldsize) {
+-			error = shmem_reacct_size(SHMEM_I(inode)->flags,
+-					oldsize, newsize);
++			struct ucounts *ucounts = info->mlock_ucounts;
++
++			if (ucounts && ucounts != current_ucounts())
++				return -EPERM;
++			error = shmem_reacct_size(info->flags,
++						  oldsize, newsize);
+ 			if (error)
+ 				return error;
++			if (ucounts) {
++				loff_t mlock = round_up(newsize, PAGE_SIZE) -
++						round_up(oldsize, PAGE_SIZE);
++				if (mlock < 0) {
++					user_shm_unlock(-mlock, ucounts, false);
++				} else if (mlock > 0 &&
++					!user_shm_lock(mlock, ucounts, false)) {
++					shmem_reacct_size(info->flags,
++							  newsize, oldsize);
++					return -EPERM;
++				}
++			}
+ 			i_size_write(inode, newsize);
+ 			inode->i_ctime = inode->i_mtime = current_time(inode);
+ 		}
+@@ -2784,6 +2799,7 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+ 	struct shmem_inode_info *info = SHMEM_I(inode);
+ 	struct shmem_falloc shmem_falloc;
+ 	pgoff_t start, index, end, undo_fallocend;
++	loff_t mlock = 0;
+ 	int error;
+ 
+ 	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE))
+@@ -2830,13 +2846,23 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+ 	if (error)
+ 		goto out;
+ 
+-	if ((info->seals & F_SEAL_GROW) && offset + len > inode->i_size) {
+-		error = -EPERM;
+-		goto out;
+-	}
+-	if (info->mlock_ucounts && offset + len > inode->i_size) {
++	if (offset + len > inode->i_size) {
+ 		error = -EPERM;
+-		goto out;
++		if (info->seals & F_SEAL_GROW)
++			goto out;
++		if (info->mlock_ucounts) {
++			if (info->mlock_ucounts != current_ucounts() ||
++			    (mode & FALLOC_FL_KEEP_SIZE))
++				goto out;
++			mlock = round_up(offset + len, PAGE_SIZE) -
++				round_up(inode->i_size, PAGE_SIZE);
++			if (mlock > 0 &&
++			    !user_shm_lock(mlock, info->mlock_ucounts, false)) {
++				mlock = 0;
++				goto out;
++			}
++		}
++		error = 0;
+ 	}
+ 
+ 	start = offset >> PAGE_SHIFT;
+@@ -2932,6 +2958,8 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+ 	inode->i_private = NULL;
+ 	spin_unlock(&inode->i_lock);
+ out:
++	if (error && mlock > 0)
++		user_shm_unlock(mlock, info->mlock_ucounts, false);
+ 	inode_unlock(inode);
+ 	return error;
+ }
+-- 
+2.26.2
 
