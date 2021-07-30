@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93343DB864
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581F13DB86A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238724AbhG3MMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 08:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238687AbhG3ML7 (ORCPT
+        id S238755AbhG3MN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 08:13:29 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:36815 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230355AbhG3MN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 08:11:59 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF524C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 05:11:53 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id a14so9176824ila.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 05:11:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4oJIeZcOcOPJ/i4mLzpMBQLS6AE+13Y8avAKoNcxP1k=;
-        b=b4hXRZsxrIvCyPKxJq3eohsD6mPpTgbVVsSl0RpV8nR1xxxbYJEKpZQ3dWayQpOsjA
-         vpGWfxPgwdMrJik+8vPk1we4h/If4ZARe17ciIzx61mMB4BrieDoxBOIq+5d9lt18jPE
-         ol/7Yy5zR0HV7uUPAwCLDNsgO1oVqqN4gXDNE=
+        Fri, 30 Jul 2021 08:13:27 -0400
+Received: by mail-oi1-f179.google.com with SMTP id y18so12921321oiv.3;
+        Fri, 30 Jul 2021 05:13:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4oJIeZcOcOPJ/i4mLzpMBQLS6AE+13Y8avAKoNcxP1k=;
-        b=m1ro/VWcFt2SbYtyWhIWSMoOfP013MueOz8KKY5Sy5YY7d7GEn5+TsoRe+L5+p8Qth
-         K7K9TOYh4PrWDn3lkZSOOwgvBJVXCyriTNK5AgMcIv0M+54JaAQ+SdFX3qG43+HbXQv/
-         OgF4PLaYUFbuJhCuodoERceVXPLFI9YfMXQ5JYa9FOm5dQxORnAJlPqNq6pvR+1/yYTP
-         9szUjYRaEatSD3ifCNrlisBZMDZBJuXyV42tnh2EGEpFMCxbA+qtRU8qGsagb5YxuZ5S
-         LrG9XlPRMbjLRIIzg913e8BtzDLodRimvxEZxvXZn2y0U62c34t5plaAqHSii6WGTLTz
-         x71Q==
-X-Gm-Message-State: AOAM531wp4fh5TZuyuSZmjYj+TzWN78oSdpHqxHCe5MhqsNhuQRZBXgA
-        pBo0mQL0RKE1XURQFqXR++88ctZqECu3oAkAX20xoAELzCo=
-X-Google-Smtp-Source: ABdhPJzdzY/EkBXtzNbk992cCacQT8oJznIwK+0lfo184G1dL4ZfQrzWixcBHtE9NkEBCuM0gHsmDH2Vwoch4Bq+ytI=
-X-Received: by 2002:a92:d441:: with SMTP id r1mr1209740ilm.106.1627647113059;
- Fri, 30 Jul 2021 05:11:53 -0700 (PDT)
+        bh=h/nWd7/gRGV1qmwqjSQqAFbq0T5N0Ue6f9xRmUkU8nE=;
+        b=fBbJsZ2AERbldlv6Oni+QBQNC30lXFlL8WtLXR77069BvNv6//2Wg1hNFNUbjDOndv
+         n15pOBidjrH96JR5JpIWrkqsLkATa8tuA4kaq258ZDn68bVjbmdE81BaDVMGX8aUhcTo
+         YfSbfru4rYiG92d/ty5nZEh5U4F1em3pBXyKb/1PK5qhYWRa9SXtVYEdCd7UEDIQHIEG
+         XPy8gBZTA5crfskNTPys8hpScLAht0ZAC8mspm4ygY0xAJBJk5Z4RoFcNgYm2/5AVsLt
+         pI6tMSZgFrKLaWU9naBBhqcfC/u4/CGgm++CQKCO2DR/6knMqGGYu4Vm4vv6vQu8dhwO
+         fEMA==
+X-Gm-Message-State: AOAM532wWdg6BUIAxYRIhjA2KhLtVKeSUhAwdTQLj9HZHDbFkdiQrQ8g
+        U8akIqgGI+YaWymXig+V6ANQ9ndOqMHzn9n6p68=
+X-Google-Smtp-Source: ABdhPJz45M3knNhHMrzCYlaLNNR4m0GdsnXb7oHj0LtftPm2N3HMDgTHqU060pmcerIRLKGkOElBDfIUzpjvPVPoojY=
+X-Received: by 2002:a05:6808:198c:: with SMTP id bj12mr1556667oib.71.1627647201379;
+ Fri, 30 Jul 2021 05:13:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210727110232.2503763-1-hsinyi@chromium.org> <20210727110232.2503763-3-hsinyi@chromium.org>
- <CAL_JsqJT1_TKc9QDxGKZ=WrK8_JGwke9MarMzjUvJJPJD8A5Jg@mail.gmail.com>
-In-Reply-To: <CAL_JsqJT1_TKc9QDxGKZ=WrK8_JGwke9MarMzjUvJJPJD8A5Jg@mail.gmail.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Fri, 30 Jul 2021 20:11:27 +0800
-Message-ID: <CAJMQK-jnPg5bzPVRsq=9LEMooUN6CerdMqiXhgY5rZVkuB5UjQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] dt-bindings: mediatek: convert pinctrl to yaml
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Andy Teng <andy.teng@mediatek.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <4668274.31r3eYUQgx@kreacher> <1791325.tdWV9SEqCh@kreacher> <YQPUOgxldaqpxOxL@lahna>
+In-Reply-To: <YQPUOgxldaqpxOxL@lahna>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 30 Jul 2021 14:13:09 +0200
+Message-ID: <CAJZ5v0gZ=Zk+RO_+=8hUtkeTgB9dHGcNVHsiTJdw_EZEsiKWSQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] PCI: PM: Enable PME if it can be signaled from D3cold
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Koba Ko <koba.ko@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:17 PM Rob Herring <robh+dt@kernel.org> wrote:
+On Fri, Jul 30, 2021 at 12:28 PM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
 >
-> On Tue, Jul 27, 2021 at 5:02 AM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> On Thu, Jul 29, 2021 at 04:49:10PM +0200, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > >
-> > Convert mt65xx, mt6796, mt7622, mt8183 bindings to yaml.
+> > PME signaling is only enabled by __pci_enable_wake() if the target
+> > device can signal PME from the given target power state (to avoid
+> > pointless reconfiguration of the device), but if the hierarchy above
+> > the device goes into D3cold, the device itself will end up in D3cold
+> > too, so if it can signal PME from D3cold, it should be enabled to
+> > do so in __pci_enable_wake().
 > >
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > ---
-<snip>
+> > [Note that if the device does not end up in D3cold and it cannot
+> >  signal PME from the original target power state, it will not signal
+> >  PME, so in that case the behavior does not change.]
+> >
+> > Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
+> > Fixes: 5bcc2fb4e815 ("PCI PM: Simplify PCI wake-up code")
+> > Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+>
+> Also this solves the reported issue so,
+>
+> Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-thanks for reviewing. All comments addressed in v2.
+Thank you!
+
+I'll queue up these two patches for 5.15 barring any objections from Bjorn.
