@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAA53DBB74
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791DF3DBBD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhG3OzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:55:09 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:35822 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238909AbhG3OzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:55:02 -0400
-Received: from BC-Mail-Ex20.internal.baidu.com (unknown [172.31.51.14])
-        by Forcepoint Email with ESMTPS id 07156AC1C1E2DC5980F1;
-        Fri, 30 Jul 2021 22:54:50 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex20.internal.baidu.com (172.31.51.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Fri, 30 Jul 2021 22:54:49 +0800
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Fri, 30 Jul 2021 22:54:49 +0800
-Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
- BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
- 15.01.2308.014; Fri, 30 Jul 2021 22:54:49 +0800
-From:   "Cai,Huoqing" <caihuoqing@baidu.com>
-To:     Shakeel Butt <shakeelb@google.com>, Hu Haowen <src.res@email.cn>
-CC:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        "Johannes Weiner" <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Cgroups <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] cgroup: Fix typo in comments and documents
-Thread-Topic: [PATCH] cgroup: Fix typo in comments and documents
-Thread-Index: AQHXhQIDu+2rYoYCcECzux5whjnjEKtbAdqAgAATPICAAIZdwA==
-Date:   Fri, 30 Jul 2021 14:54:49 +0000
-Message-ID: <437db356f1b44a19837dc7f24f9adfcb@baidu.com>
-References: <20210730051605.2626-1-caihuoqing@baidu.com>
- <0516372e-0120-ff52-bf9a-cf1cda9a633f@email.cn>
- <CALvZod6sUh0XQGVb4wEfzGNDcrLabgmjEdu+wh0g1c=cvvci4Q@mail.gmail.com>
-In-Reply-To: <CALvZod6sUh0XQGVb4wEfzGNDcrLabgmjEdu+wh0g1c=cvvci4Q@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.12.190.132]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S239564AbhG3PN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:13:58 -0400
+Received: from m12-17.163.com ([220.181.12.17]:52885 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239423AbhG3PN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 11:13:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=9WQ7F
+        AT/naVSWd89d2D+8E1VEIXkJQgc9nMIZJSn5IQ=; b=cMVI7ogYq8hsgRvR3U4Zt
+        YltVVf8y488o/Bx8+HdFQIcUinHGegBT/XmMwhfHPzVjy7+rPxVOCAe7WoaMDP99
+        M+qOE2rz0KCaltaW1IvWg9wksMHtHYlqSnEV6aPN/03jsVV2zPePuLPwIfad9RsO
+        KUv8hOtM0BHvJiG613tKew=
+Received: from localhost (unknown [183.195.9.44])
+        by smtp13 (Coremail) with SMTP id EcCowAB3hTksEwRhAgsvDg--.20349S2;
+        Fri, 30 Jul 2021 22:56:44 +0800 (CST)
+From:   Yanbo Qiao <qiaoyanbo_310@163.com>
+To:     anton@tuxera.com
+Cc:     linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Yanbo Qiao <qiaoyanbo_310@163.com>, Hui Su <suhui@zeku.com>
+Subject: [PATCH] fs/ntfs: delete unused header file
+Date:   Fri, 30 Jul 2021 22:55:18 +0800
+Message-Id: <20210730145518.147805-1-qiaoyanbo_310@163.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowAB3hTksEwRhAgsvDg--.20349S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZw1Utw1fAry5Gr1UGF1fXrb_yoWxZrc_Ga
+        n7Ar48Xw1UtF9rK3Zaka93JF4293W8Jrn5Zw10gFW3CF4Ygayqg34kJws0yrW7u398Gr45
+        WFZ5Was0vry3tjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0QVyPUUUUU==
+X-Originating-IP: [183.195.9.44]
+X-CM-SenderInfo: 5tld055dqe0sqtrqqiywtou0bp/1tbi8AzfT1uocuItYwAAsB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rm9yZ2V0IGl0IC0gLQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogU2hha2Vl
-bCBCdXR0IDxzaGFrZWVsYkBnb29nbGUuY29tPiANClNlbnQ6IDIwMjHlubQ35pyIMzDml6UgMjI6
-NTMNClRvOiBIdSBIYW93ZW4gPHNyYy5yZXNAZW1haWwuY24+DQpDYzogQ2FpLEh1b3FpbmcgPGNh
-aWh1b3FpbmdAYmFpZHUuY29tPjsgVGVqdW4gSGVvIDx0akBrZXJuZWwub3JnPjsgWmVmYW4gTGkg
-PGxpemVmYW4ueEBieXRlZGFuY2UuY29tPjsgSm9oYW5uZXMgV2VpbmVyIDxoYW5uZXNAY21weGNo
-Zy5vcmc+OyBKb25hdGhhbiBDb3JiZXQgPGNvcmJldEBsd24ubmV0PjsgQ2dyb3VwcyA8Y2dyb3Vw
-c0B2Z2VyLmtlcm5lbC5vcmc+OyBsaW51eC1kb2NAdmdlci5rZXJuZWwub3JnOyBMS01MIDxsaW51
-eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPg0KU3ViamVjdDogUmU6IFtQQVRDSF0gY2dyb3VwOiBG
-aXggdHlwbyBpbiBjb21tZW50cyBhbmQgZG9jdW1lbnRzDQoNCk9uIEZyaSwgSnVsIDMwLCAyMDIx
-IGF0IDY6NDQgQU0gSHUgSGFvd2VuIDxzcmMucmVzQGVtYWlsLmNuPiB3cm90ZToNCj4NCj4NCj4g
-5ZyoIDIwMjEvNy8zMCDkuIvljYgxOjE2LCBDYWkgSHVvcWluZyDlhpnpgZM6DQo+ID4gRml4IHR5
-cG86IGlmZiAgPT0+IGlmDQoNClRoaXMgaXMgbm90IGEgdHlwby4gJ2lmZicgbWVhbnMgJ2lmIGFu
-ZCBvbmx5IGlmJy4gRm9yIGRldGFpbHMgc2VlIGh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtp
-L0lmX2FuZF9vbmx5X2lmLg0K
+The linux/time.h file is referenced using the
+current_kernel_time() function.The current_kernel_time()
+was moved from fs/ntfs/time.h, so delete the header file.
+
+Signed-off-by: Yanbo Qiao <qiaoyanbo_310@163.com>
+Signed-off-by: Hui Su <suhui@zeku.com>
+---
+ fs/ntfs/time.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/ntfs/time.h b/fs/ntfs/time.h
+index 6b63261300cc..2c92abb5d8d2 100644
+--- a/fs/ntfs/time.h
++++ b/fs/ntfs/time.h
+@@ -8,7 +8,6 @@
+ #ifndef _LINUX_NTFS_TIME_H
+ #define _LINUX_NTFS_TIME_H
+ 
+-#include <linux/time.h>		/* For current_kernel_time(). */
+ #include <asm/div64.h>		/* For do_div(). */
+ 
+ #include "endian.h"
+-- 
+2.30.2
+
+
