@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F7A3DC058
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5A93DC05F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbhG3VjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 17:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
+        id S231276AbhG3VoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 17:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232322AbhG3Vil (ORCPT
+        with ESMTP id S229997AbhG3VoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 17:38:41 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4334C0613C1;
-        Fri, 30 Jul 2021 14:38:34 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id p38so5649695lfa.0;
-        Fri, 30 Jul 2021 14:38:34 -0700 (PDT)
+        Fri, 30 Jul 2021 17:44:23 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2044BC06175F;
+        Fri, 30 Jul 2021 14:44:17 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id h9so14318427ljq.8;
+        Fri, 30 Jul 2021 14:44:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=yLXPblcRDB2e05zOf4kHv3HzeYLhfWQaVsNCdJRIDlU=;
-        b=GFPiExi40QXxFrlgXj+pDS+2S1/BbNETpI5U4PkFtdqyhr+cljTUknLzB5d2gIM3yK
-         YhOvW7sgBVU0QgRkdFoJs7D+dw88vCCuSgzyY6n4eS6dCiGp1KpGlJEnUmcPoy/EGPvC
-         6wyxZTN2dlmOeTl/pJl+NQ0oIoDqvKV6xkJ3cf8RC7C7gkm97hjp0AmQBWD8QZtCKf9K
-         JuDukEnBXryYeKOmq+TqLEeZ7oyEvJYWKwwftEQW0uaaikqkUc/wcBrTT804MSqjTNXg
-         IEh9rUD0a4YVcosjKxIKYT06DoAv2Mst6idfS+vxbpAvqPs67y8SkwIflcrwwbDGvSUi
-         PPaA==
+        bh=iUWsYGbYRvDKidtDFAD37LhSTu0mAAw/UZoF5BX5je4=;
+        b=OBxPLbMIP9Zg1tCsP+gAveHb7Z/9qmetZxjEySQkmkZVrdOtfdVFg9vR/2s0vrE7DJ
+         G4Y0G7XB7bsR6NcAgROrFQwttHTY69EXUww9skhLiR5Ku/WZCTgtjHknOKmDg4IiahMC
+         i+tawWXEKt0K+gQw0otdQKclH++pyPaMd3vxryxAwIirSEPOt/Y1AcwOTvn3Z+5vkpga
+         aj6I0mprZrERwbxMRtiO9f+kz5/A+cvg6gTqXW3Q4NLZxQ9WVs6HXLd4gpXceCpRnIPJ
+         sZXx8GtiqDzZkQM86doOwKekydU+wTRpSBdhOQc99y5m83gJASGOX0mjzRnjRYSSgd8B
+         F7CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=yLXPblcRDB2e05zOf4kHv3HzeYLhfWQaVsNCdJRIDlU=;
-        b=fN++q37/J7U39EqrAUV78Q3MpgMX08tNQXJmooTDldj23s5ohGSpCgW9iQFLJs98SV
-         bwMnn+VO/H9FOMXxkgxFrajQ8Tt6lhZeIWsQdZJHonIbAdS1RrW7qdKzLFmzaItfAA4+
-         Z+zZDGUbqKwGTX7p7lYgGzvXILNSiZU65O58bvSMRMkXxvuoNmMrISbZcqum58Sz36OA
-         l5xbdcWLrgJabq3685HzUnAz9B1kFIflFg8L8UhcN5E/YnK+OMy8ey9FhfE6o/TQxRUR
-         g8NFd2EEqd17DdVpHF5CSlt345dmapZnNDewCN9rKjBbNM12CYy2ddi/Pbf3khZaoxHg
-         1UTQ==
-X-Gm-Message-State: AOAM533KMtgrnndE8kXlt0MyVe5+pOTDFjMADzlbc8LBdm2w9vnFkkjJ
-        1fqAHMBeCjyoJ6VLTr+66NU=
-X-Google-Smtp-Source: ABdhPJzoWsLXZWbdU4xjzqJyPcdIeoDTQ0FIGpaqB+EYeYNTmh1szh/H15kin37XS6oc8jXHEeOToA==
-X-Received: by 2002:a05:6512:230b:: with SMTP id o11mr3593469lfu.292.1627681113067;
-        Fri, 30 Jul 2021 14:38:33 -0700 (PDT)
+        bh=iUWsYGbYRvDKidtDFAD37LhSTu0mAAw/UZoF5BX5je4=;
+        b=a90sbxe2qyUAU3g5EwalWSp3xt38EyOH9ei7WNWL9yMdz8RqXM4C/+fako/19BKdXT
+         NJgocqhgBzbwF9/90KTmGjXPAqhYdoJbewJXprW0u15JAfjshmalFFDOwlOxgOaHrhDe
+         ZYVLGVWnCezaBGg0+QxZc8A0Y2ZaMfIT3QtLzvgrrgiYBuMLLJUeJDoowZX20eY0Zgzl
+         Zkx+H61fEmeVrh8Xo8JQLF3vr0CFylv+vLpIa83ivCRNGW9TCFkdx/h+hkbvTwGg4DPu
+         J02UZKm3m61wLyfO52EyjTtl7JNdTvedIbFKG1pHoSMONy6IdPx/JHZEFD7sPkU0095e
+         f2Ww==
+X-Gm-Message-State: AOAM530x3MIORUg3oQoUaNdsg64/qIvd470h0C/vVbOXNtq9ABDJd2j9
+        IcE+jRHMesW1Cj2McRdCkfc=
+X-Google-Smtp-Source: ABdhPJx/siIPONhywOb1T7C7lk6QtoW4/5xKjW34rQU/7G6Jr2RCrRQRgPnwO1B6wzgDxNa7PZHQUQ==
+X-Received: by 2002:a05:651c:b06:: with SMTP id b6mr3027530ljr.171.1627681455465;
+        Fri, 30 Jul 2021 14:44:15 -0700 (PDT)
 Received: from localhost.localdomain ([94.103.227.213])
-        by smtp.gmail.com with ESMTPSA id t17sm177373ljk.102.2021.07.30.14.38.32
+        by smtp.gmail.com with ESMTPSA id d18sm175512ljc.64.2021.07.30.14.44.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 14:38:32 -0700 (PDT)
+        Fri, 30 Jul 2021 14:44:15 -0700 (PDT)
 From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     mkrufky@linuxtv.org, mchehab@kernel.org, crope@iki.fi
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     petkan@nucleusys.com, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-Subject: [PATCH] media: mxl111sf: change mutex_init() location
-Date:   Sat, 31 Jul 2021 00:38:29 +0300
-Message-Id: <20210730213829.2909-1-paskripkin@gmail.com>
+        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Subject: [PATCH] net: pegasus: fix uninit-value in get_interrupt_interval
+Date:   Sat, 31 Jul 2021 00:44:11 +0300
+Message-Id: <20210730214411.1973-1-paskripkin@gmail.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,56 +64,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported, that mxl111sf_ctrl_msg() uses uninitialized
-mutex. The problem was in wrong mutex_init() location.
+Syzbot reported uninit value pegasus_probe(). The problem was in missing
+error handling.
 
-Previous mutex_init(&state->msg_lock) call was in ->init() function, but
-dvb_usbv2_init() has this order of calls:
+get_interrupt_interval() internally calls read_eprom_word() which can
+fail in some cases. For example: failed to receive usb control message.
+These cases should be handled to prevent uninit value bug, since
+read_eprom_word() will not initialize passed stack variable in case of
+internal failure.
 
-	dvb_usbv2_init()
-	  dvb_usbv2_adapter_init()
-	    dvb_usbv2_adapter_frontend_init()
-	      props->frontend_attach()
+Fail log:
 
-	  props->init()
+BUG: KMSAN: uninit-value in get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
+BUG: KMSAN: uninit-value in pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
+CPU: 1 PID: 825 Comm: kworker/1:1 Not tainted 5.12.0-rc6-syzkaller #0
+...
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
+ pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
+....
 
-Since mxl111sf_frontend_attach_atsc_mh() calls mxl111sf_ctrl_msg()
-internally we need to initialize state->msg_lock in it to make lockdep
-happy.
+Local variable ----data.i@pegasus_probe created at:
+ get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
+ pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
+ get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
+ pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
 
-Reported-and-tested-by: syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-Fixes: 8572211842af ("[media] mxl111sf: convert to new DVB USB")
+Reported-and-tested-by: syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- drivers/media/usb/dvb-usb-v2/mxl111sf.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/usb/pegasus.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb-v2/mxl111sf.c b/drivers/media/usb/dvb-usb-v2/mxl111sf.c
-index 7865fa0a8295..2e5663ffa7ce 100644
---- a/drivers/media/usb/dvb-usb-v2/mxl111sf.c
-+++ b/drivers/media/usb/dvb-usb-v2/mxl111sf.c
-@@ -931,8 +931,6 @@ static int mxl111sf_init(struct dvb_usb_device *d)
- 		  .len = sizeof(eeprom), .buf = eeprom },
- 	};
+diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
+index 9a907182569c..bc2dbf86496b 100644
+--- a/drivers/net/usb/pegasus.c
++++ b/drivers/net/usb/pegasus.c
+@@ -735,12 +735,16 @@ static inline void disable_net_traffic(pegasus_t *pegasus)
+ 	set_registers(pegasus, EthCtrl0, sizeof(tmp), &tmp);
+ }
  
--	mutex_init(&state->msg_lock);
--
- 	ret = get_chip_info(state);
- 	if (mxl_fail(ret))
- 		pr_err("failed to get chip info during probe");
-@@ -979,8 +977,12 @@ static int mxl111sf_frontend_attach_mh(struct dvb_usb_adapter *adap)
- static int mxl111sf_frontend_attach_atsc_mh(struct dvb_usb_adapter *adap)
+-static inline void get_interrupt_interval(pegasus_t *pegasus)
++static inline int get_interrupt_interval(pegasus_t *pegasus)
  {
- 	int ret;
-+	struct mxl111sf_state *state = d_to_priv(adap_to_d(adap));
+ 	u16 data;
+ 	u8 interval;
++	int ret;
 +
- 	pr_debug("%s\n", __func__);
++	ret = read_eprom_word(pegasus, 4, &data);
++	if (ret < 0)
++		return ret;
  
-+	mutex_init(&state->msg_lock);
+-	read_eprom_word(pegasus, 4, &data);
+ 	interval = data >> 8;
+ 	if (pegasus->usb->speed != USB_SPEED_HIGH) {
+ 		if (interval < 0x80) {
+@@ -755,6 +759,8 @@ static inline void get_interrupt_interval(pegasus_t *pegasus)
+ 		}
+ 	}
+ 	pegasus->intr_interval = interval;
 +
- 	ret = mxl111sf_lgdt3305_frontend_attach(adap, 0);
- 	if (ret < 0)
- 		return ret;
++	return 0;
+ }
+ 
+ static void set_carrier(struct net_device *net)
+@@ -1149,7 +1155,9 @@ static int pegasus_probe(struct usb_interface *intf,
+ 				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
+ 
+ 	pegasus->features = usb_dev_id[dev_index].private;
+-	get_interrupt_interval(pegasus);
++	res = get_interrupt_interval(pegasus);
++	if (res)
++		goto out2;
+ 	if (reset_mac(pegasus)) {
+ 		dev_err(&intf->dev, "can't reset MAC\n");
+ 		res = -EIO;
 -- 
 2.32.0
 
