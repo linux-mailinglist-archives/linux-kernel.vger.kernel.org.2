@@ -2,179 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8FB3DBF88
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C743DBF8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhG3UU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:20:26 -0400
-Received: from relay05.th.seeweb.it ([5.144.164.166]:46531 "EHLO
-        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhG3UUZ (ORCPT
+        id S231671AbhG3UU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231500AbhG3UUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:20:25 -0400
-Received: from [192.168.1.59] (bband-dyn19.178-41-181.t-com.sk [178.41.181.19])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 653B03E7DD;
-        Fri, 30 Jul 2021 22:20:17 +0200 (CEST)
-Date:   Fri, 30 Jul 2021 22:20:11 +0200
-From:   Martin Botka <martin.botka@somainline.org>
-Subject: Re: [RESEND PATCH v2 3/3] rpmcc: Add support for SM6125
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     martin.botka1@gmail.com, ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        paul.bouchara@somainline.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <N5R2XQ.AHZHRMRZKWYV1@somainline.org>
-In-Reply-To: <162742239972.2368309.5551349117052770211@swboyd.mtv.corp.google.com>
-References: <20210629102624.194378-1-martin.botka@somainline.org>
-        <20210629102624.194378-4-martin.botka@somainline.org>
-        <162742239972.2368309.5551349117052770211@swboyd.mtv.corp.google.com>
-X-Mailer: geary/40.0
+        Fri, 30 Jul 2021 16:20:55 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2647C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:20:48 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id l4so14071455ljq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6ZdxsXIhfZeShR0BpG7ZM9hlF98/ed3x62uZjV8NOlc=;
+        b=JLaAC3h6i7sv+zobgB6FCO8AkNHOnE+QSegQ6bJPG6zSD18coezaJg3a+0CFIZQDfS
+         8q2bUhPPeq8m6y39/0m8Oj0eweVmITzggzzvOvTbMRziX1ZII5ODNwmvKf5pQ2aAcIyR
+         aejTL5OimVzszTLBmMh/RQY5fS6aDnBUyroYVcmtGcurAfL/38PbaRCFUlL8bEkPg2M6
+         iI76uy2PSOch+Xjq8lgsVsP5Q7CyTB9B37NnsW/dBhrfXzwYpdNeOp7Sl5aILWZ13KJ5
+         TvQtlXaQ1w+IqLoPVg9nOVqxFjaQA1nx72kNzlQ/DV8S+Ow1gRYts2kwwuBIlJeGLIkG
+         Uu+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6ZdxsXIhfZeShR0BpG7ZM9hlF98/ed3x62uZjV8NOlc=;
+        b=V6BdHO1ECK2YuClh3nAKt4V3o0l0Mt8qMjNo+35EVJ8Wlxa59n4gLYSZqdWIPy5KvL
+         KDaV+PEoao15/AD3A4zX14k2GMqm7tpXAdBoySbdhGaj+RJ2mw/02H29GTtMdPQ2/enG
+         /wvyjQEyyQ+VZbRNIbjMHpw0bn1gV6Ci6l+qgJDVjSbPfVUT2WglVZKmHA1DT5deT0DB
+         4O2ZoxBR97FhIYjENEQvpty0AaeKt5kyrxQ/ufTkEa+HvuYZhtHB0Y5k5g+kRfajIYxg
+         L5ZvVlXItnHPTXsyS70+5kbyfXW2HAGj8tdefFxWkYPDpN/Uns8DgB3J5JefbkGw8pqb
+         uUCQ==
+X-Gm-Message-State: AOAM533SQgWzevsvzvS7J7+v3y2RyVg7RvgRfNveX2yCvKJ4NulIT+Qi
+        XxYDI+Ird2PXQLswgOp4SQ7XM4GhpW52W/9KAhKqkA==
+X-Google-Smtp-Source: ABdhPJxOp5UzhKE8mQDqRvlDz8V9c71SjR7m9HyAJLUxJZSu5SbSBuLRrcen1tdS0S3uE6PnU0rTNbtfAOPrHw/7VOw=
+X-Received: by 2002:a05:651c:329:: with SMTP id b9mr2900217ljp.116.1627676446795;
+ Fri, 30 Jul 2021 13:20:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <20210729141937.445051-1-masahiroy@kernel.org>
+In-Reply-To: <20210729141937.445051-1-masahiroy@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 30 Jul 2021 13:20:34 -0700
+Message-ID: <CAKwvOd=AM1zus+apNQ14oS05bQPoSuhSdjUhPUD-4EU5x2KFSA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] powerpc: remove unused zInstall target from arch/powerpc/boot/Makefile
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>,
+        linux-kernel@vger.kernel.org, Jordan Niethe <jniethe5@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Bill Wendling <morbo@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Actually not all.
+On Thu, Jul 29, 2021 at 7:22 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Commit c913e5f95e54 ("powerpc/boot: Don't install zImage.* from make
+> install") added the zInstall target to arch/powerpc/boot/Makefile,
+> but you cannot use it since the corresponding hook is missing in
+> arch/powerpc/Makefile.
+>
+> It has never worked since its addition. Nobody has complained about
+> it for 7 years, which means this code was unneeded.
+>
+> With this removal, the install.sh will be passed in with 4 parameters.
+> Simplify the shell script.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-On Tue, Jul 27 2021 at 02:46:39 PM -0700, Stephen Boyd 
-<sboyd@kernel.org> wrote:
-> Quoting Martin Botka (2021-06-29 03:26:23)
->>  diff --git a/drivers/clk/qcom/clk-smd-rpm.c 
->> b/drivers/clk/qcom/clk-smd-rpm.c
->>  index 8200c26b968c..51458f740ba0 100644
->>  --- a/drivers/clk/qcom/clk-smd-rpm.c
->>  +++ b/drivers/clk/qcom/clk-smd-rpm.c
->>  @@ -1059,6 +1059,61 @@ static const struct rpm_smd_clk_desc 
->> rpm_clk_sdm660 = {
->>          .num_clks = ARRAY_SIZE(sdm660_clks),
->>   };
->> 
->>  +/* SM6125 */
->>  +DEFINE_CLK_SMD_RPM_BRANCH(sm6125, bi_tcxo, bi_tcxo_ao,
->>  +                                       QCOM_SMD_RPM_MISC_CLK, 0, 
->> 19200000);
->>  +DEFINE_CLK_SMD_RPM(sm6125, cnoc_clk, cnoc_a_clk, 
->> QCOM_SMD_RPM_BUS_CLK, 1);
->>  +DEFINE_CLK_SMD_RPM(sm6125, bimc_clk, bimc_a_clk, 
->> QCOM_SMD_RPM_MEM_CLK, 0);
-> 
-> Can we use msm8916_bimc_clk?
-> 
->>  +DEFINE_CLK_SMD_RPM(sm6125, snoc_clk, snoc_a_clk, 
->> QCOM_SMD_RPM_BUS_CLK, 2);
->>  +DEFINE_CLK_SMD_RPM_BRANCH(sm6125, qdss_clk, qdss_a_clk,
->>  +                                       QCOM_SMD_RPM_MISC_CLK, 1, 
->> 19200000);
->>  +DEFINE_CLK_SMD_RPM(sm6125, ce1_clk, ce1_a_clk, 
->> QCOM_SMD_RPM_CE_CLK, 0);
-> 
-> Can we use msm8992_ce1_clk?
-> 
->>  +DEFINE_CLK_SMD_RPM(sm6125, ipa_clk, ipa_a_clk, 
->> QCOM_SMD_RPM_IPA_CLK, 0);
-> 
-> Can we use msm8976_ipa_clk?
-> 
->>  +DEFINE_CLK_SMD_RPM(sm6125, qup_clk, qup_a_clk, 
->> QCOM_SMD_RPM_QUP_CLK, 0);
->>  +DEFINE_CLK_SMD_RPM(sm6125, mmnrt_clk, mmnrt_a_clk, 
->> QCOM_SMD_RPM_MMAXI_CLK, 0);
->>  +DEFINE_CLK_SMD_RPM(sm6125, mmrt_clk, mmrt_a_clk, 
->> QCOM_SMD_RPM_MMAXI_CLK, 1);
->>  +DEFINE_CLK_SMD_RPM(sm6125, snoc_periph_clk, snoc_periph_a_clk,
->>  +                                               
->> QCOM_SMD_RPM_BUS_CLK, 0);
->>  +DEFINE_CLK_SMD_RPM(sm6125, snoc_lpass_clk, snoc_lpass_a_clk,
->>  +                                               
->> QCOM_SMD_RPM_BUS_CLK, 5);
->>  +
->>  +/* SMD_XO_BUFFER */
->>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk1, ln_bb_clk1_a, 1);
-> 
-> msm8916?
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-msm8916 one is not ln_.
-
-> 
->>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk2, ln_bb_clk2_a, 2);
-> 
-> msm8916?
-
-Same reason.
-
-> 
->>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk3, ln_bb_clk3_a, 3);
-> 
-> sdm660?
-> 
->>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, rf_clk1, rf_clk1_a, 4);
-> 
-> msm8916?
-> 
->>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, rf_clk2, rf_clk2_a, 5);
-> 
-> msm8916?
-> 
->>  +
->>  +static struct clk_smd_rpm *sm6125_clks[] = {
->>  +       [RPM_SMD_XO_CLK_SRC] = &sm6125_bi_tcxo,
->>  +       [RPM_SMD_XO_A_CLK_SRC] = &sm6125_bi_tcxo_ao,
->>  +       [RPM_SMD_SNOC_CLK] = &sm6125_snoc_clk,
->>  +       [RPM_SMD_SNOC_A_CLK] = &sm6125_snoc_a_clk,
->>  +       [RPM_SMD_BIMC_CLK] = &sm6125_bimc_clk,
->>  +       [RPM_SMD_BIMC_A_CLK] = &sm6125_bimc_a_clk,
->>  +       [RPM_SMD_QDSS_CLK] = &sm6125_qdss_clk,
->>  +       [RPM_SMD_QDSS_A_CLK] = &sm6125_qdss_a_clk,
->>  +       [RPM_SMD_RF_CLK1] = &sm6125_rf_clk1,
->>  +       [RPM_SMD_RF_CLK1_A] = &sm6125_rf_clk1_a,
->>  +       [RPM_SMD_RF_CLK2] = &sm6125_rf_clk2,
->>  +       [RPM_SMD_RF_CLK2_A] = &sm6125_rf_clk2_a,
->>  +       [RPM_SMD_LN_BB_CLK1] = &sm6125_ln_bb_clk1,
->>  +       [RPM_SMD_LN_BB_CLK1_A] = &sm6125_ln_bb_clk1_a,
->>  +       [RPM_SMD_LN_BB_CLK2] = &sm6125_ln_bb_clk2,
->>  +       [RPM_SMD_LN_BB_CLK2_A] = &sm6125_ln_bb_clk2_a,
->>  +       [RPM_SMD_LN_BB_CLK3] = &sm6125_ln_bb_clk3,
->>  +       [RPM_SMD_LN_BB_CLK3_A] = &sm6125_ln_bb_clk3_a,
->>  +       [RPM_SMD_CNOC_CLK] = &sm6125_cnoc_clk,
->>  +       [RPM_SMD_CNOC_A_CLK] = &sm6125_cnoc_a_clk,
->>  +       [RPM_SMD_CE1_CLK] = &sm6125_ce1_clk,
->>  +       [RPM_SMD_CE1_A_CLK] = &sm6125_ce1_a_clk,
->>  +};
->>  +
->>  +static const struct rpm_smd_clk_desc rpm_clk_sm6125 = {
->>  +       .clks = sm6125_clks,
->>  +       .num_clks = ARRAY_SIZE(sm6125_clks),
->>  +};
->>  +
->>   static const struct of_device_id rpm_smd_clk_match_table[] = {
->>          { .compatible = "qcom,rpmcc-msm8916", .data = 
->> &rpm_clk_msm8916 },
->>          { .compatible = "qcom,rpmcc-msm8936", .data = 
->> &rpm_clk_msm8936 },
->>  diff --git a/include/linux/soc/qcom/smd-rpm.h 
->> b/include/linux/soc/qcom/smd-rpm.h
->>  index f2645ec52520..b737d7e456e4 100644
->>  --- a/include/linux/soc/qcom/smd-rpm.h
->>  +++ b/include/linux/soc/qcom/smd-rpm.h
->>  @@ -28,6 +28,7 @@ struct qcom_smd_rpm;
->>   #define QCOM_SMD_RPM_NCPA      0x6170636E
->>   #define QCOM_SMD_RPM_NCPB      0x6270636E
->>   #define QCOM_SMD_RPM_OCMEM_PWR 0x706d636f
->>  +#define QCOM_SMD_RPM_QUP_CLK   0x00707571
->>   #define QCOM_SMD_RPM_QPIC_CLK  0x63697071
->>   #define QCOM_SMD_RPM_SMPA      0x61706d73
->>   #define QCOM_SMD_RPM_SMPB      0x62706d73
-> 
-> Two patches are adding this in different places.
+> ---
+>
+>  arch/powerpc/boot/Makefile   |  6 +-----
+>  arch/powerpc/boot/install.sh | 13 -------------
+>  2 files changed, 1 insertion(+), 18 deletions(-)
+>
+> diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
+> index e312ea802aa6..a702f9d1ec0d 100644
+> --- a/arch/powerpc/boot/Makefile
+> +++ b/arch/powerpc/boot/Makefile
+> @@ -448,11 +448,7 @@ $(obj)/zImage.initrd:      $(addprefix $(obj)/, $(initrd-y))
+>  install: $(CONFIGURE) $(addprefix $(obj)/, $(image-y))
+>         sh -x $(srctree)/$(src)/install.sh "$(KERNELRELEASE)" vmlinux System.map "$(INSTALL_PATH)"
+>
+> -# Install the vmlinux and other built boot targets.
+> -zInstall: $(CONFIGURE) $(addprefix $(obj)/, $(image-y))
+> -       sh -x $(srctree)/$(src)/install.sh "$(KERNELRELEASE)" vmlinux System.map "$(INSTALL_PATH)" $^
+> -
+> -PHONY += install zInstall
+> +PHONY += install
+>
+>  # anything not in $(targets)
+>  clean-files += $(image-) $(initrd-) cuImage.* dtbImage.* treeImage.* \
+> diff --git a/arch/powerpc/boot/install.sh b/arch/powerpc/boot/install.sh
+> index b6a256bc96ee..658c93ca7437 100644
+> --- a/arch/powerpc/boot/install.sh
+> +++ b/arch/powerpc/boot/install.sh
+> @@ -15,7 +15,6 @@
+>  #   $2 - kernel image file
+>  #   $3 - kernel map file
+>  #   $4 - default install path (blank if root directory)
+> -#   $5 and more - kernel boot files; zImage*, uImage, cuImage.*, etc.
+>  #
+>
+>  # Bail with error code if anything goes wrong
+> @@ -41,15 +40,3 @@ fi
+>
+>  cat $2 > $4/$image_name
+>  cp $3 $4/System.map
+> -
+> -# Copy all the bootable image files
+> -path=$4
+> -shift 4
+> -while [ $# -ne 0 ]; do
+> -       image_name=`basename $1`
+> -       if [ -f $path/$image_name ]; then
+> -               mv $path/$image_name $path/$image_name.old
+> -       fi
+> -       cat $1 > $path/$image_name
+> -       shift
+> -done;
+> --
+> 2.27.0
+>
 
 
+-- 
+Thanks,
+~Nick Desaulniers
