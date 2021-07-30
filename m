@@ -2,178 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9123DBE2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6443DBE2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbhG3SOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 14:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44218 "EHLO
+        id S230299AbhG3SPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 14:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbhG3SOi (ORCPT
+        with ESMTP id S229921AbhG3SPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 14:14:38 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B68FC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:14:32 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id o20so14291059oiw.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:14:32 -0700 (PDT)
+        Fri, 30 Jul 2021 14:15:03 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C87FC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:14:57 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id h8so14394710ede.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:14:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rc/AVBrPvwRzL0X+38wuA19xK4WI9HXXJR3Jq5n4fXQ=;
-        b=xYJmqMzetizp0d//qDjERSNMBhxRyux6KG7YP2MFGsAsCLdzNYIxIGvLq72ICr6kA0
-         7NVEv8zMWEg31G6nLcqRW6+ZASOFyb+NpqFEIqCTn0zYr8WRcODGX7wv8M08ovyZb23C
-         sP9Qfy2ZXqsXXY5cY3P8Nq5RRwsJKifpeCn7Nv/TFYHERVQsVMbGAKxF7hHcAOVdrTei
-         Uc45+ONVn/6Ym/QqRYZnm2wdnwosEErgmclvVjGvkJCEPI7aGhJdyWn4qSDnjqtChTUL
-         t0BlCervYZbFqXQTNub2ob5yqo+q6D1gRnOoFGifZaHcIdACfCxm4dS0JE/Ny9Oixfgk
-         GDUA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RLzGmg23wIZLMApLuoWPPi+Aep//XD12yszpCHUj1tU=;
+        b=dtilBrvGD4Paiw5gtN95xp+rtU8nDFhHQEQh9n8pNS7e0IRW05ywg0na2P1Gw0MpDO
+         MMw1ba8EPu1FCEvBUY3RIO8oZGf57gmSV89cR+S3wroFGPgd4nvu2wU+l5RrXtBgtI9K
+         zaeAV+AJqrbhoiydjFA3qn+V4Bm4E3bHEJ/1MMZ520zgCzsno6fLb/MFcqEcqw1h5DJY
+         iAsTxROnNdA1APDuuNccrzgSpVRJeO73QbNUYgBk8bAZzgMcC5X5DbhS1DheWpW2Op4w
+         xy4eQUZnkCOWJ48ZdqBEs2X4E4iUyhka7osiqGLSnWCbZEQ2VvU4g2as2zMFIQPN4Qm/
+         ec5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rc/AVBrPvwRzL0X+38wuA19xK4WI9HXXJR3Jq5n4fXQ=;
-        b=FeDLVlFHqplkxEnn6+Dmb5Qw2tEzsEViUcRstypD71E0j3G/tK+LXhp+u2FYExr8NF
-         tkDVMqLScA3HZyQU3qEI9rdf1RRRvfRuSN9WqoTefB0v/jsWvVjlDWfiMWiITHaJEH7O
-         3zAjrCYILInU0cA9UbObxeVJCEWl9szd1NVwe7Rp4rIDtGIDts4ZVcoq2jdLFAaU1OFA
-         8cnNdc4WLnUX0cUdirk2r/5TkfHUhqGuv6hPBRhCR8L8N68zKyf1kqalQcN7X/mup1kv
-         x/ZFr1wSET67bRTbkCW08MIx4mihyQ/L05GVDrrCKDleZfzvcWnAP5VA9XWOROWARWcR
-         AKuw==
-X-Gm-Message-State: AOAM531At/6lBzR9bF5abpVGwQ0XVZV2FkHAG+grwWn/cBK6buZ5d8mW
-        UWR/JzsHQ7tZHBBJZcLBSPheDQ==
-X-Google-Smtp-Source: ABdhPJyVl7na4KYIky1m9tZxqT+FUSR85EjHbfQ9B74ux1IwE7cz7uqU4l7VpSa8Qfwv+/C9/mFriQ==
-X-Received: by 2002:a05:6808:1807:: with SMTP id bh7mr2793707oib.52.1627668871361;
-        Fri, 30 Jul 2021 11:14:31 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id p10sm189286oop.46.2021.07.30.11.14.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RLzGmg23wIZLMApLuoWPPi+Aep//XD12yszpCHUj1tU=;
+        b=PL4ZnbuG8AeFc4rRxxQCnJJan9dVYX9nqVspRcUYH8H/XOoeEYfE6WVqENSauF563w
+         8UTZ9FrvZ2oQUQYWxTbQ5geWaQTU4QXCY4tvp4aTGItEaY7lMl6vz/1UBIT4a4IJhgPv
+         mU099cdrt9K/hfDbYdF/knC3wV2/XLxE28xYBHMggbp6PlpdAbha25+YOXNXPGM5YqZ3
+         kJ3ci4aiDZ06tB71595uRWJzGeYJ4IqrEaXV9Kwoy0kTQgSxhvMwO4Izc2Bj0lk0lKsX
+         /NRq8au0XfNx9IsyLZSywbQ8Qjvbgynpo9F8XblOp0jRT5HnJ0o1OVp3EUvjzsYbPw9i
+         OpaQ==
+X-Gm-Message-State: AOAM530GBcIQLVP9HsNrIbnJxvgFjhiegBGO+6tDdAUnvF8vcYGemdGY
+        HMveZpZfyICqrdKUIvTKzKg=
+X-Google-Smtp-Source: ABdhPJxx5K1MTv2lyaSEQT9WQlWlEBXpUucttGaqcRBZ299ooz10Gy3aZl6zE+A+dVc3BcOsdMHPeA==
+X-Received: by 2002:a05:6402:280e:: with SMTP id h14mr4403812ede.187.1627668896126;
+        Fri, 30 Jul 2021 11:14:56 -0700 (PDT)
+Received: from localhost.localdomain (host-79-26-32-124.retail.telecomitalia.it. [79.26.32.124])
+        by smtp.gmail.com with ESMTPSA id a35sm1036984edf.80.2021.07.30.11.14.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 11:14:30 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 13:14:28 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>, robh+dt@kernel.org,
-        will@kernel.org, saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 9/9] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
-Message-ID: <YQRBhOeHO7LMDdWu@builder.lan>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-10-git-send-email-sibis@codeaurora.org>
- <YNodaqE9n9+sQUFq@google.com>
- <c561f99cb281c28581d10e5805190df8@codeaurora.org>
+        Fri, 30 Jul 2021 11:14:55 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: r8188eu: Fix different base types in assignments and parameters
+Date:   Fri, 30 Jul 2021 20:14:52 +0200
+Message-Id: <20210730181452.23062-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c561f99cb281c28581d10e5805190df8@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30 Jun 15:08 CDT 2021, Sibi Sankar wrote:
+Fix sparse warnings of different base types in assignments
+and in passing function parameters.
 
-> On 2021-06-29 00:35, Matthias Kaehlcke wrote:
-> > On Fri, Jun 25, 2021 at 01:17:38AM +0530, Sibi Sankar wrote:
-> > > Update MSS node to support MSA based modem boot on SC7280 SoCs.
-> > > 
-> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> > > ---
-> > >  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  7 +++++++
-> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 19 ++++++++++++++++---
-> > >  2 files changed, 23 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > > b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > > index 191e8a92d153..d66e3ca42ad5 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > > +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> > > @@ -343,3 +343,10 @@
-> > >  		bias-pull-up;
-> > >  	};
-> > >  };
-> > > +
-> > > +&remoteproc_mpss {
-> > > +	status = "okay";
-> > > +	compatible = "qcom,sc7280-mss-pil";
-> > > +	iommus = <&apps_smmu 0x124 0x0>, <&apps_smmu 0x488 0x7>;
-> > > +	memory-region = <&mba_mem &mpss_mem>;
-> > > +};
-> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > index 56ea172f641f..6d3687744440 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > @@ -586,7 +586,8 @@
-> > > 
-> > >  		remoteproc_mpss: remoteproc@4080000 {
-> > >  			compatible = "qcom,sc7280-mpss-pas";
-> > > -			reg = <0 0x04080000 0 0x10000>;
-> > > +			reg = <0 0x04080000 0 0x10000>, <0 0x04180000 0 0x48>;
-> > > +			reg-names = "qdsp6", "rmb";
-> > 
-> > Binding needs update?
-> > 
-> > Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml:
-> > 
-> >   reg:
-> >       maxItems: 1
-> > 
-> > > 
-> > >  			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_EDGE_RISING>,
-> > >  					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-> > > @@ -597,8 +598,11 @@
-> > >  			interrupt-names = "wdog", "fatal", "ready", "handover",
-> > >  					  "stop-ack", "shutdown-ack";
-> > > 
-> > > -			clocks = <&rpmhcc RPMH_CXO_CLK>;
-> > > -			clock-names = "xo";
-> > > +			clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
-> > > +				 <&gcc GCC_MSS_OFFLINE_AXI_CLK>,
-> > > +				 <&gcc GCC_MSS_SNOC_AXI_CLK>,
-> > > +				 <&rpmhcc RPMH_CXO_CLK>;
-> > > +			clock-names = "iface", "offline", "snoc_axi", "xo";
-> > 
-> > Binding needs update?
-> > 
-> > Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml:
-> > 
-> >   clocks:
-> >     items:
-> >       - description: XO clock
-> >   clock-names:
-> >     items:
-> >       - const: xo
-> 
-> qcom,sc7280-mpss-pas compatible requires
-> just the xo clock and one reg space whereas
-> the qcom,sc7280-mss-pil compatible requires
-> the additional clks and reg spaces. We just
-> overload properties where re-use is possible
-> across boards. Hence it would be wrong to
-> list those clks/reg spaces as requirements
-> for the pas compatible.
-> 
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_br_ext.c | 46 ++++++++++++++++++-----
+ 1 file changed, 36 insertions(+), 10 deletions(-)
 
-Our decision to describe the platform node as a superset of the
-resources needed by the pas and pil variants was never reflected in the
-DT bindings; resulting in the issue that the superset doesn't validate
-against the pas binding and both bindings are full of platform-specific
-conditionals.
+diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+index e00302137a60..31ca2e548555 100644
+--- a/drivers/staging/r8188eu/core/rtw_br_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+@@ -71,7 +71,7 @@ static inline int __nat25_add_pppoe_tag(struct sk_buff *skb, struct pppoe_tag *t
+ 	struct pppoe_hdr *ph = (struct pppoe_hdr *)(skb->data + ETH_HLEN);
+ 	int data_len;
+ 
+-	data_len = tag->tag_len + TAG_HDR_LEN;
++	data_len = be16_to_cpu(tag->tag_len) + TAG_HDR_LEN;
+ 	if (skb_tailroom(skb) < data_len) {
+ 		_DEBUG_ERR("skb_tailroom() failed in add SID tag!\n");
+ 		return -1;
+@@ -134,42 +134,68 @@ static inline void __nat25_generate_ipv4_network_addr(unsigned char *networkAddr
+ }
+ 
+ static inline void __nat25_generate_ipx_network_addr_with_node(unsigned char *networkAddr,
+-				unsigned int *ipxNetAddr, unsigned char *ipxNodeAddr)
++				__be32 *ipxNetAddr, unsigned char *ipxNodeAddr)
+ {
++	union {
++                unsigned int f0;
++                unsigned char f1[IPX_NODE_LEN];
++        } addr;
++
+ 	memset(networkAddr, 0, MAX_NETWORK_ADDR_LEN);
+ 
+ 	networkAddr[0] = NAT25_IPX;
+-	memcpy(networkAddr+1, (unsigned char *)ipxNetAddr, 4);
++	addr.f0 = be32_to_cpu(*ipxNetAddr);
++	memcpy(networkAddr+1, addr.f1, 4);
+ 	memcpy(networkAddr+5, ipxNodeAddr, 6);
+ }
+ 
+ static inline void __nat25_generate_ipx_network_addr_with_socket(unsigned char *networkAddr,
+-				unsigned int *ipxNetAddr, unsigned short *ipxSocketAddr)
++				__be32 *ipxNetAddr, __be16 *ipxSocketAddr)
+ {
++	union {
++		unsigned int f0;
++		unsigned char f1[4];
++	} addr;
++
+ 	memset(networkAddr, 0, MAX_NETWORK_ADDR_LEN);
+ 
+ 	networkAddr[0] = NAT25_IPX;
+-	memcpy(networkAddr+1, (unsigned char *)ipxNetAddr, 4);
+-	memcpy(networkAddr+5, (unsigned char *)ipxSocketAddr, 2);
++	addr.f0 = be32_to_cpu(*ipxNetAddr);
++	memcpy(networkAddr+1, addr.f1, 4);
++	addr.f0 ^= addr.f0;
++	addr.f0 = be16_to_cpu(*ipxSocketAddr);
++	memcpy(networkAddr+5, addr.f1, 2);
+ }
+ 
+ static inline void __nat25_generate_apple_network_addr(unsigned char *networkAddr,
+-				unsigned short *network, unsigned char *node)
++				__be16 *network, unsigned char *node)
+ {
++	union {
++                unsigned short f0;
++                unsigned char f1[2];
++        } addr;
++
+ 	memset(networkAddr, 0, MAX_NETWORK_ADDR_LEN);
+ 
+ 	networkAddr[0] = NAT25_APPLE;
+-	memcpy(networkAddr+1, (unsigned char *)network, 2);
++	addr.f0 = be16_to_cpu(*network);
++	memcpy(networkAddr+1, addr.f1, 2);
+ 	networkAddr[3] = *node;
+ }
+ 
+ static inline void __nat25_generate_pppoe_network_addr(unsigned char *networkAddr,
+-				unsigned char *ac_mac, unsigned short *sid)
++				unsigned char *ac_mac, __be16 *sid)
+ {
++	union {
++                unsigned short f0;
++                unsigned char f1[2];
++        } addr;
++
+ 	memset(networkAddr, 0, MAX_NETWORK_ADDR_LEN);
+ 
+ 	networkAddr[0] = NAT25_PPPOE;
+-	memcpy(networkAddr+1, (unsigned char *)sid, 2);
++	addr.f0 = be16_to_cpu(*sid);
++	memcpy(networkAddr+1, addr.f1, 2);
+ 	memcpy(networkAddr+3, (unsigned char *)ac_mac, 6);
+ }
+ 
+-- 
+2.32.0
 
-To resolve the two issues I think we should split the current binding(s)
-in a set of platform-centric bindings, that captures the idea of
-describing the superset.
-
-To reduce the duplication - that already exists between the two
-bindings - I think we should break those out in a common part.
-
-
-I'm however fine with not delaying this series further, if we agree that
-the end result matches what we would put in a combined qcom,sc7280-mpss
-binding.
-
-Regards,
-Bjorn
