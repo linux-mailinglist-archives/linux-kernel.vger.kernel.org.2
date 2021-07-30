@@ -2,74 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD3E3DB783
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6493DB784
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238586AbhG3LBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 07:01:49 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58554 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238403AbhG3LBs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 07:01:48 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 45C601FDCF;
-        Fri, 30 Jul 2021 11:01:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627642903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ThOpI7C0pMIlV0++9QHZ7uva2O6QS4+sKxpDyiRGL/c=;
-        b=Nd0Uj40MSt6N1IsjilGKhDJ59etMjE4cezlQchiF6L/vHhx0isLshmFDH9zPSAXBJYWpiP
-        ujeeenV2n4tn90e7NSrkrFK8RDa9TRZ1HMoUMFUCziSDyeNS09rR6FRGBqfVWB95Hd2YYm
-        A0GwstSy3q0AvtRxt47tsEBfbdSpHtg=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E926AA3B87;
-        Fri, 30 Jul 2021 11:01:42 +0000 (UTC)
-Date:   Fri, 30 Jul 2021 13:01:41 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2 0/2] printk: Add printk.console_verbose boot param
-Message-ID: <YQPcFQci7p9lE50u@alley>
-References: <20210713011511.215808-1-dima@arista.com>
+        id S238599AbhG3LCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 07:02:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:40444 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238403AbhG3LCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 07:02:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4EE51FB;
+        Fri, 30 Jul 2021 04:02:09 -0700 (PDT)
+Received: from [10.163.66.9] (unknown [10.163.66.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D78C13F73D;
+        Fri, 30 Jul 2021 04:02:05 -0700 (PDT)
+Subject: Re: [PATCH 05/10] coresight: trbe: Allow driver to choose a different
+ alignment
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-6-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <646d73c5-0015-d296-2ac8-63f8bd5a4dc0@arm.com>
+Date:   Fri, 30 Jul 2021 16:32:54 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713011511.215808-1-dima@arista.com>
+In-Reply-To: <20210728135217.591173-6-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-07-13 02:15:09, Dmitry Safonov wrote:
-> v1 to v2 Changes:
-> - Add printk.console_verbose boot parameter instead of compile-time
->   CONFIG_CONSOLE_LOGLEVEL_PANIC (see v1 discussion with Petr)
-> - I didn't rename console_verbose() to console_verbose_panic() as
->   I need it to be always disabled regardless oops/panic/lockdep.
-> - I noticed console_silent() which is unused for long time, remove it.
-> 
-> v1: https://lore.kernel.org/lkml/20210622143350.1105701-1-dima@arista.com/
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Ogness <john.ogness@linutronix.de>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> 
-> Dmitry Safonov (2):
->   printk: Remove console_silent()
->   printk: Add printk.console_verbose boot parameter
 
-The patchset is comitted in printk/linux.git, branch
-for-5.15-verbose-console.
 
-Best Regards,
-Petr
+On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
+> The TRBE hardware mandates a minimum alignment for the TRBPTR_EL1,
+> advertised via the TRBIDR_EL1. This is used by the driver to
+> align the buffer write head. This patch allows the driver to
+> choose a different alignment from that of the hardware, by
+> decoupling the alignment tracking. This will be useful for
+> working around errata.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 9735d514c5e1..9ea28813182b 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -92,7 +92,8 @@ static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
+>  /*
+>   * struct trbe_cpudata: TRBE instance specific data
+>   * @trbe_flag		- TRBE dirty/access flag support
+> - * @tbre_align		- Actual TRBE alignment required for TRBPTR_EL1.
+> + * @trbe_hw_align	- Actual TRBE alignment required for TRBPTR_EL1.
+> + * @trbe_align		- Software alignment used for the TRBPTR_EL1,
+>   * @cpu			- CPU this TRBE belongs to.
+>   * @mode		- Mode of current operation. (perf/disabled)
+>   * @drvdata		- TRBE specific drvdata
+> @@ -100,6 +101,7 @@ static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
+>   */
+>  struct trbe_cpudata {
+>  	bool trbe_flag;
+> +	u64 trbe_hw_align;
+>  	u64 trbe_align;
+>  	int cpu;
+>  	enum cs_mode mode;
+> @@ -906,7 +908,7 @@ static ssize_t align_show(struct device *dev, struct device_attribute *attr, cha
+>  {
+>  	struct trbe_cpudata *cpudata = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "%llx\n", cpudata->trbe_align);
+> +	return sprintf(buf, "%llx\n", cpudata->trbe_hw_align);
+>  }
+>  static DEVICE_ATTR_RO(align);
+>  
+> @@ -995,11 +997,13 @@ static void arm_trbe_probe_cpu(void *info)
+>  	}
+>  
+>  	trbe_check_errata(cpudata);
+> -	cpudata->trbe_align = 1ULL << get_trbe_address_align(trbidr);
+> -	if (cpudata->trbe_align > SZ_2K) {
+> +
+> +	cpudata->trbe_hw_align = 1ULL << get_trbe_address_align(trbidr);
+> +	if (cpudata->trbe_hw_align > SZ_2K) {
+>  		pr_err("Unsupported alignment on cpu %d\n", cpu);
+>  		goto cpu_clear;
+>  	}
+> +	cpudata->trbe_align = cpudata->trbe_hw_align;
+
+When it changes, it must be asserted that trbe_align would be a multiple
+of trbe_hw_align before existing from arm_trbe_probe_cpu().
+
+>  	cpudata->trbe_flag = get_trbe_flag_update(trbidr);
+>  	cpudata->cpu = cpu;
+>  	cpudata->drvdata = drvdata;
+> 
+
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
