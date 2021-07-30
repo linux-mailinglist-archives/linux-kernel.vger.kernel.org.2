@@ -2,136 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293FD3DC15E
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C1E3DC164
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbhG3W7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
+        id S233996AbhG3W7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbhG3W7r (ORCPT
+        with ESMTP id S233491AbhG3W7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:59:47 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41711C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:42 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id u2so4559214plg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:42 -0700 (PDT)
+        Fri, 30 Jul 2021 18:59:52 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C065C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:46 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id on10-20020a17090b1d0ab029017773c0b9aeso5738380pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V2dvuvNFpryb1cvQLGlVrhhfsTfSnu/5+tUDbUkQolo=;
-        b=sCMXYE8BPVu/dKEp3RQsjKh5BuJC1zZZb4+9CntVolv0Jbrb/288cSPWlbgdYB6uV8
-         WJXTQDArwMcZuEtSPpFWbXRWRAWq6AvaG6OKGWySn3W8iDAsfRyVvtdb1/efkiAlUIUW
-         n7KgCTW1pAQ8LyKDcl2tVh/E5CWElNXrwCZmEevGnBD7Pn0mnmpbVXIjrhbcv4C5m963
-         eoeYNJGNPQUSRSipE7Kfd9amGgFWJIUqyeyILlgygBlypxHV+pfv0CgeLk7sG0mF4Lc/
-         MdIVR+f/eT+lmsmqc7z9fRROYhrxD8JPegsJJ+4ESDXsUCKfqNjW34r9okUBJARXwgH9
-         6rUg==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=9ncP48pmN4Ci01oF1W88DG8WSTju1eWdQa4Lz01EI4I=;
+        b=S9U/7kbnNHeRVptR7ZYbDatTggvsTxb4oBtv55hGK33ime4Gl4Oj368COnoS7NZp8O
+         bh0jsV8SCX65qQLQmls8tn8c3JxBs0NbQFEkrId/QJkg69xRngyp4Qnkkc2o7UCQNeQF
+         5qMLPQEQuVpr/zulDWvwuovYq/zgCPXBANLrASo21zp24WDuXyqGqZYnOAzlDmfJgf40
+         AbaZSIAJ3QG/zxNsf22lZzoGqjpxGlNU8vBJHSkGoO18tIY/a+c/2OomANcbDnTkjYxx
+         JAKf1zBL7MAS8B1O3P3EOxCNm2BJ8LP4hIru0YNKY7SKlVNQGZSXg185xDyyxdZ33i4Y
+         rR9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V2dvuvNFpryb1cvQLGlVrhhfsTfSnu/5+tUDbUkQolo=;
-        b=QQ4jGiMea69g0j6uSoFkDAB4NL9/rkVgzEBPFh5DQU5STn76HX8N3GsJ6Ulgce6jmJ
-         ndII3PB5ETNQAyoWS55PqHWsKLcx9KnoDy41ORUQG4+Sm6RGR2gWUDeYSYX1jf1Rzpo0
-         O4YOjTz2ZSoVX5IP3eg5v+cfpujsezcd2i6MB+Wu95x2i/b/gCgJrG29Tee1GHTyXoS4
-         Zg+yOUyoocyOCLdFGJBDjmOe/1O4sLNdyImVC1I/KGp4hAmjsDXFwI1xNOmU2TGtHJD6
-         mu0+gCsOTus6xSoW76CUowuEC6R2tc/WJITiFuoeNbfWTVeDsSs7ej1zIZ3iBbRCeOVS
-         ZxEg==
-X-Gm-Message-State: AOAM530Ne7Dkrc+DvTrfpuj4yxkXznuUv9cwZO+dxL0xtpRk8fpgBFIX
-        PA/uieKWkrdBeLEqxzIyhxJiyA==
-X-Google-Smtp-Source: ABdhPJy5fOXlF8mlpIqzL8jUb2C6BgbXxOZyyEYs4oEPgoSBaa6t7Y9gQXLYxESft75tpRgo3kepEw==
-X-Received: by 2002:a17:902:b713:b029:12b:b249:693f with SMTP id d19-20020a170902b713b029012bb249693fmr4511815pls.17.1627685981632;
-        Fri, 30 Jul 2021 15:59:41 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:200:160:995:7f22:dc59])
-        by smtp.gmail.com with ESMTPSA id a20sm3235150pjh.46.2021.07.30.15.59.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 15:59:40 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 15:59:36 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, Marco Elver <elver@google.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, clang-built-linux@googlegroups.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] vmlinux.lds.h: Handle clang's module.{c,d}tor sections
-Message-ID: <20210730225936.ce3hcjdg2sptvbh7@google.com>
-References: <20210730223815.1382706-1-nathan@kernel.org>
- <CAKwvOdnJ9VMZfZrZprD6k0oWxVJVSNePUM7fbzFTJygXfO24Pw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnJ9VMZfZrZprD6k0oWxVJVSNePUM7fbzFTJygXfO24Pw@mail.gmail.com>
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=9ncP48pmN4Ci01oF1W88DG8WSTju1eWdQa4Lz01EI4I=;
+        b=gf0PfGo+VH7HrVihvU/ES6lWrCvnfAXtE1TOePuG3gogxca/+7MNdN9FxQTWoRdF9d
+         0ePMq/mVCeuHhINDbwVCR3JaE2ohTbQwTlIcVuysYyi851IksTDb9AwyM96VwtH835bP
+         E1vlaQpk7Gz52aZTZLncvcJmevDFEgRsM9t3MmmTUpENRQiBKA4HNjbRZ9tssIgNDpUW
+         O8DWMAByGJ4ETyLsFEWmDyueK/dyC/WoTa+Ih+0arK4t+5E1vjTOtlMHib1ClCd8VLZP
+         agQDqH8qdXwWWfGTaVclxXCzef415X2Ara3ZprjK4DHScFy6RZoCj0MAVJ/2hGt/bDam
+         V1VQ==
+X-Gm-Message-State: AOAM530RUHTIB3bOTkd81lLGOkNZQATiZzFLfDhE7ZVU836Kh68Pa8TI
+        TqW8h91Sbqux67zGR0xFFMBYrDRLtaug
+X-Google-Smtp-Source: ABdhPJxJTEcU1T/Pp8EdstFVdYpYzwoODHnhIZWBfVWzmLeXI3/vDjjYQduXinkZDpj/F9vz5YO2rbmLYDp2
+X-Received: from mihenry-linux-desktop.kir.corp.google.com ([2620:15c:29:204:a198:4c3e:b951:58e3])
+ (user=mizhang job=sendgmr) by 2002:a17:90a:fe0b:: with SMTP id
+ ck11mr5413401pjb.11.1627685985634; Fri, 30 Jul 2021 15:59:45 -0700 (PDT)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date:   Fri, 30 Jul 2021 15:59:37 -0700
+In-Reply-To: <20210730225939.3852712-1-mizhang@google.com>
+Message-Id: <20210730225939.3852712-2-mizhang@google.com>
+Mime-Version: 1.0
+References: <20210730225939.3852712-1-mizhang@google.com>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v3 1/3] KVM: x86/mmu: Remove redundant spte present check in mmu_set_spte
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-30, Nick Desaulniers wrote:
->On Fri, Jul 30, 2021 at 3:38 PM Nathan Chancellor <nathan@kernel.org> wrote:
->>
->> A recent change in LLVM causes module_{c,d}tor sections to appear when
->> CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
->> because these are not handled anywhere:
->>
->> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being placed in '.text.asan.module_ctor'
->> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being placed in '.text.asan.module_dtor'
->> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being placed in '.text.tsan.module_ctor'
->
->^ .text.tsan.*
+Drop an unnecessary is_shadow_present_pte() check when updating the rmaps
+after installing a non-MMIO SPTE.  set_spte() is used only to create
+shadow-present SPTEs, e.g. MMIO SPTEs are handled early on, mmu_set_spte()
+runs with mmu_lock held for write, i.e. the SPTE can't be zapped between
+writing the SPTE and updating the rmaps.
 
-I was wondering why the orphan section warning only arose recently.
-Now I see: the function asan.module_ctor has the SHF_GNU_RETAIN flag, so
-it is in a separate section even with -fno-function-sections (default).
+Opportunistically combine the "new SPTE" logic for large pages and rmaps.
 
-It seems that with -ffunction-sections the issue should have been caught
-much earlier.
+No functional change intended.
 
->>
->> Place them in the TEXT_TEXT section so that these technologies continue
->> to work with the newer compiler versions. All of the KASAN and KCSAN
->> KUnit tests continue to pass after this change.
->>
->> Cc: stable@vger.kernel.org
->> Link: https://github.com/ClangBuiltLinux/linux/issues/1432
->> Link: https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865
->> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->> ---
->>  include/asm-generic/vmlinux.lds.h | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
->> index 17325416e2de..3b79b1e76556 100644
->> --- a/include/asm-generic/vmlinux.lds.h
->> +++ b/include/asm-generic/vmlinux.lds.h
->> @@ -586,6 +586,7 @@
->>                 NOINSTR_TEXT                                            \
->>                 *(.text..refcount)                                      \
->>                 *(.ref.text)                                            \
->> +               *(.text.asan .text.asan.*)                              \
->
->Will this match .text.tsan.module_ctor?
+Suggested-by: Ben Gardon <bgardon@google.com>
 
-asan.module_ctor is the only function AddressSanitizer synthesizes in the instrumented translation unit.
-There is no function called "asan".
+Reviewed-by: Ben Gardon <bgardon@google.com>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-(Even if a function "asan" exists due to -ffunction-sections
--funique-section-names, TEXT_MAIN will match .text.asan, so the
-.text.asan pattern will match nothing.)
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index b888385d1933..442cc554ebd6 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2690,15 +2690,13 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+ 
+ 	pgprintk("%s: setting spte %llx\n", __func__, *sptep);
+ 	trace_kvm_mmu_set_spte(level, gfn, sptep);
+-	if (!was_rmapped && is_large_pte(*sptep))
+-		++vcpu->kvm->stat.lpages;
+ 
+-	if (is_shadow_present_pte(*sptep)) {
+-		if (!was_rmapped) {
+-			rmap_count = rmap_add(vcpu, sptep, gfn);
+-			if (rmap_count > RMAP_RECYCLE_THRESHOLD)
+-				rmap_recycle(vcpu, sptep, gfn);
+-		}
++	if (!was_rmapped) {
++		if (is_large_pte(*sptep))
++			++vcpu->kvm->stat.lpages;
++		rmap_count = rmap_add(vcpu, sptep, gfn);
++		if (rmap_count > RMAP_RECYCLE_THRESHOLD)
++			rmap_recycle(vcpu, sptep, gfn);
+ 	}
+ 
+ 	return ret;
+-- 
+2.32.0.554.ge1b32706d8-goog
 
->Do we want to add these conditionally on
->CONFIG_KASAN_GENERIC/CONFIG_KCSAN like we do for SANITIZER_DISCARDS?
->
->>                 TEXT_CFI_JT                                             \
->>         MEM_KEEP(init.text*)                                            \
->>         MEM_KEEP(exit.text*)                                            \
->>
->> base-commit: 4669e13cd67f8532be12815ed3d37e775a9bdc16
->> --
->
->
->-- 
->Thanks,
->~Nick Desaulniers
