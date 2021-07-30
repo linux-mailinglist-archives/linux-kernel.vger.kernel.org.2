@@ -2,163 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50423DB120
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9703B3DB128
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235791AbhG3C3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 22:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
+        id S235887AbhG3CbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 22:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbhG3C3c (ORCPT
+        with ESMTP id S235464AbhG3CbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 22:29:32 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C27C061765;
-        Thu, 29 Jul 2021 19:29:27 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id a14so7918005ila.1;
-        Thu, 29 Jul 2021 19:29:27 -0700 (PDT)
+        Thu, 29 Jul 2021 22:31:15 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AFCC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 19:31:10 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so12294648pjh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 19:31:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=QeHotJjJc3ECxkXaUSL9CsnihU3YDOrBs2SQnUF73R4=;
-        b=F1NVJbag9cOonSXYlxMIWsdTp1za0D+hChGTKIMF0ZPE9UHMOab7hWjaqkm//WH82x
-         s117SygQkZlF68srGFhpqOgKQ7n/20Gl9g/6u5e+tKPvW58wjl1DdClGFvdWUmw0g5M+
-         EHs96zwVbMEtV8/qON1tQrstpQdzPlsw1uGjbB2AQ3YjulyZO9qb6jg01cLSpthlzVz+
-         eeuoBcqrP7EDG54EuESGU08ar5WPte+7ZegDxAE7k/tDgqKePIoJVzQgYEv9LwD/Bnbo
-         devit/0n1UGNLzWeh2KJLZYgyjNACf3hjfjix+x/5HaLa1ChlYwfCOf+wke1ixGzEflZ
-         B8NQ==
+        bh=fUqZ0NLVZxg4yvCXyE1lEs/e7e2cakQ+3GgW8pZJCvA=;
+        b=etYre1AjERNhjyVA/9+2+oLRj921sU45jCtD5h5fRrioHVxndRb/wVYqd+Gvs/9PWN
+         W5TIwCrEKVrSomZp1XNcHMR3yLthFd9Qftp86Ybrvy7SLYwhXBueLu90Yc4ejQUhYSOC
+         pE6uT73BOuVftlnSqfS6+2EzGpdU+4QF+7NHo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=QeHotJjJc3ECxkXaUSL9CsnihU3YDOrBs2SQnUF73R4=;
-        b=VMf+LiUMUIOn8ZdVwzeAftdvOvRtz+lF5rR/RReM/ogM7oWDEDAcA4Qb6tVjugXSjl
-         mq0VwfxwKHIq0ZVov6agEMdNuJ8lcBVv6b/z6ZSwbv9Wj7RrM/BhveHQXcJJnRZb5XCN
-         +PQ3bSiCqul2neJus72+kyyJAfBJDoNl78mDRlgPDw84FyPrbB68IQIqcaAqaACr5Y5Q
-         R6NeiJ+63r2UQI+UL4+sxvwzwAVjr75JLLtM2refx54oZeR8W+GYkwTgFG7+78LE1mat
-         kNt+NDpAcKst15kLNRAVUwbhjorl9DFI0Q/nI1gmE3MVioH5KjXOzzDn04XIYXIMQXKw
-         n0VQ==
-X-Gm-Message-State: AOAM532yhZDXiJ1Exkaa2wtau9KeDqhCQ1g9JtwszXiPk4x1oLdms6xq
-        xIy0CNjS42WKw8Uu2Yp9fM0=
-X-Google-Smtp-Source: ABdhPJwUdbrwjaG+48nemknI5rQPG5KCH7rLSP/tMRXY6xez3t4sgVSCIqiv81EoNGjLihcJCcQF/Q==
-X-Received: by 2002:a92:d10c:: with SMTP id a12mr217675ilb.100.1627612167192;
-        Thu, 29 Jul 2021 19:29:27 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id t11sm73693ilp.66.2021.07.29.19.29.25
+        bh=fUqZ0NLVZxg4yvCXyE1lEs/e7e2cakQ+3GgW8pZJCvA=;
+        b=TO47HHbbJFq7EA9vTMXbv9kkgs7XXAuH7qkQgYvRgKm98s0qzS8omi0W3oHvH20GLj
+         U2OpELz7BsskvxIoT8vSX1KMu4h3Wu4oA49jP/wEDAUcBQtPY/qUJIkrLAkYoxUou5m6
+         nr+bG3O02Lwd/7CDXy/EKTI2idDG0Kfv1EXJ92R0KZ01O+uSDPMLkIvNVY16QR+ago0b
+         jlIeIX/DYGQRLpYCZQ2RTNO5z/M3/tRKCBkMV+SF9FnI1jx7ZpHuMR9wpkMPDJlkjomm
+         PoRvvcW1P5QEjuaOk4XehbggJyEDndyjeHueDN775KhRd3e20P31HolZjOr0ZMtOIRZZ
+         w3Tw==
+X-Gm-Message-State: AOAM531cGVpwT15VLvoUla5c7AT6GwqcyET5eE5oDy1qB0aHi5uKR5Pt
+        h0BrHT9Dr6pk2oZTsdH4nipTpw==
+X-Google-Smtp-Source: ABdhPJxIpjyYfp2wSF3KUcMBsoeqagBGHs5J6YJ1XjDsi8DNMVFxuffmFFgkMO9ZoPoLSYu5GHbnWw==
+X-Received: by 2002:a05:6a00:168a:b029:2fb:6bb0:aba with SMTP id k10-20020a056a00168ab02902fb6bb00abamr526959pfc.32.1627612270101;
+        Thu, 29 Jul 2021 19:31:10 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q13sm218718pjq.10.2021.07.29.19.31.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 19:29:26 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 7174427C0054;
-        Thu, 29 Jul 2021 22:29:25 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 29 Jul 2021 22:29:25 -0400
-X-ME-Sender: <xms:A2QDYVOLowlpEvRrV9hfo1HR897GHZGYYowzpUfJy2Nf_m6s9vADEg>
-    <xme:A2QDYX8ASby-OVReSGusaZExFSUqOe7mEB9-PjJ-VK8WsBFaQ08560VKCDAyE7P9u
-    D04PhxmkrYPISaUrQ>
-X-ME-Received: <xmr:A2QDYUSo-09UGMR4658vtKMNFhY_srdLNjd2kzG-xYSBNuhWpQs66KI3xNUhAw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeggdegtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
-    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvg
-X-ME-Proxy: <xmx:A2QDYRsp54LXuBVOtWs1cWT3Ycf2QdfvEI4yBXk6rGj88xGv4HzBUQ>
-    <xmx:A2QDYdeGgvYKNvbCpwIv79iMaKSCRG3wecKLF-CcOk6cUYzTgn-kFA>
-    <xmx:A2QDYd0v03t65b6SqVcNklhMCJsAOvmkyP3IGlmbg_Yt7HTvdO-brg>
-    <xmx:BWQDYYuBcnjzo_-HBGfzwBgJJDiorvyj-_0R2MgMoqt6eSjnSqBNzIlsrUk>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Jul 2021 22:29:23 -0400 (EDT)
-Date:   Fri, 30 Jul 2021 10:28:58 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH rcu 11/18] rcu: Mark lockless ->qsmask read in
- rcu_check_boost_fail()
-Message-ID: <YQNj6v2o5hG/MoXZ@boqun-archlinux>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-11-paulmck@kernel.org>
- <YQJsxtypw7M/3XBD@boqun-archlinux>
- <20210729140317.GU4397@paulmck-ThinkPad-P17-Gen-1>
+        Thu, 29 Jul 2021 19:31:09 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 19:31:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 48/64] drbd: Use struct_group() to zero algs
+Message-ID: <202107291845.1E1528D@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-49-keescook@chromium.org>
+ <1cc74e5e-8d28-6da4-244e-861eac075ca2@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729140317.GU4397@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <1cc74e5e-8d28-6da4-244e-861eac075ca2@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 07:03:17AM -0700, Paul E. McKenney wrote:
-> On Thu, Jul 29, 2021 at 04:54:30PM +0800, Boqun Feng wrote:
-> > On Wed, Jul 21, 2021 at 01:21:19PM -0700, Paul E. McKenney wrote:
-> > > Accesses to ->qsmask are normally protected by ->lock, but there is an
-> > > exception in the diagnostic code in rcu_check_boost_fail().  This commit
-> > > therefore applies data_race() to this access to avoid KCSAN complaining
-> > > about the C-language writes protected by ->lock.
-> > > 
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > >  kernel/rcu/tree_stall.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > > index 42847caa3909b..6dd6c9aa3f757 100644
-> > > --- a/kernel/rcu/tree_stall.h
-> > > +++ b/kernel/rcu/tree_stall.h
-> > > @@ -766,7 +766,7 @@ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup)
-> > >  
-> > >  	rcu_for_each_leaf_node(rnp) {
-> > >  		if (!cpup) {
-> > > -			if (READ_ONCE(rnp->qsmask)) {
-> > > +			if (data_race(READ_ONCE(rnp->qsmask))) {
+On Wed, Jul 28, 2021 at 02:45:55PM -0700, Bart Van Assche wrote:
+> On 7/27/21 1:58 PM, Kees Cook wrote:
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memset(), avoid intentionally writing across
+> > neighboring fields.
 > > 
-> > If the write sides allow normal writes, i.e. allowing store tearing, the
-> > READ_ONCE() here could read incomplete writes, which could be anything
-> > basically? And we get the same result if we remove the READ_ONCE(),
-> > don't we? Yes, I know, without the READ_ONCE(), compilers can do
-> > anything to optimize on rnp->qsmask, but the end result is same or
-> > similar to reading incomplete writes (which is also a result by compiler
-> > optimization). So if we mark something as data_race(), **in theory**, it
-> > makes no difference with or without the READ_ONCE(), so I think maybe we
-> > can remove the READ_ONCE() here?
-> 
-> In this particular case, perhaps.  But there is also the possibility
-> of ASSERT_EXCLUSIVE_WRITER() in conjunction with WRITE_ONCE(), and
-> data_race(READ_ONCE(()) handles all such cases properly.
-> 
-> Again, the point here is to prevent the compiler from messing with
-> the load in strange and unpredictable ways while also telling KCSAN
-> that this particular read should not be considered to be part of the
-> concurrent algorithm.
-> 
-
-Thanks for explaining this ;-)
-
-I guess I'm just a little concerned that things may end up with using
-data_race(READ_ONCE()) everywhere instead of data_race(), because who
-doesn't want his/her racy code to be 1) not reported by KCSan (using
-data_race()), and 2) less racy (using READ_ONCE())? ;-)
-
-Regards,
-Boqun
-
-> 							Thanx, Paul
-> 
-> > Regards,
-> > Boqun
+> > Add a struct_group() for the algs so that memset() can correctly reason
+> > about the size.
 > > 
-> > >  				return false;
-> > >  			} else {
-> > >  				if (READ_ONCE(rnp->gp_tasks))
-> > > -- 
-> > > 2.31.1.189.g2e36527f23
-> > > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >   drivers/block/drbd/drbd_main.c     | 3 ++-
+> >   drivers/block/drbd/drbd_protocol.h | 6 ++++--
+> >   drivers/block/drbd/drbd_receiver.c | 3 ++-
+> >   3 files changed, 8 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
+> > index 55234a558e98..b824679cfcb2 100644
+> > --- a/drivers/block/drbd/drbd_main.c
+> > +++ b/drivers/block/drbd/drbd_main.c
+> > @@ -729,7 +729,8 @@ int drbd_send_sync_param(struct drbd_peer_device *peer_device)
+> >   	cmd = apv >= 89 ? P_SYNC_PARAM89 : P_SYNC_PARAM;
+> >   	/* initialize verify_alg and csums_alg */
+> > -	memset(p->verify_alg, 0, 2 * SHARED_SECRET_MAX);
+> > +	BUILD_BUG_ON(sizeof(p->algs) != 2 * SHARED_SECRET_MAX);
+> > +	memset(&p->algs, 0, sizeof(p->algs));
+> >   	if (get_ldev(peer_device->device)) {
+> >   		dc = rcu_dereference(peer_device->device->ldev->disk_conf);
+> > diff --git a/drivers/block/drbd/drbd_protocol.h b/drivers/block/drbd/drbd_protocol.h
+> > index dea59c92ecc1..a882b65ab5d2 100644
+> > --- a/drivers/block/drbd/drbd_protocol.h
+> > +++ b/drivers/block/drbd/drbd_protocol.h
+> > @@ -283,8 +283,10 @@ struct p_rs_param_89 {
+> >   struct p_rs_param_95 {
+> >   	u32 resync_rate;
+> > -	char verify_alg[SHARED_SECRET_MAX];
+> > -	char csums_alg[SHARED_SECRET_MAX];
+> > +	struct_group(algs,
+> > +		char verify_alg[SHARED_SECRET_MAX];
+> > +		char csums_alg[SHARED_SECRET_MAX];
+> > +	);
+> >   	u32 c_plan_ahead;
+> >   	u32 c_delay_target;
+> >   	u32 c_fill_target;
+> > diff --git a/drivers/block/drbd/drbd_receiver.c b/drivers/block/drbd/drbd_receiver.c
+> > index 1f740e42e457..6df2539e215b 100644
+> > --- a/drivers/block/drbd/drbd_receiver.c
+> > +++ b/drivers/block/drbd/drbd_receiver.c
+> > @@ -3921,7 +3921,8 @@ static int receive_SyncParam(struct drbd_connection *connection, struct packet_i
+> >   	/* initialize verify_alg and csums_alg */
+> >   	p = pi->data;
+> > -	memset(p->verify_alg, 0, 2 * SHARED_SECRET_MAX);
+> > +	BUILD_BUG_ON(sizeof(p->algs) != 2 * SHARED_SECRET_MAX);
+> > +	memset(&p->algs, 0, sizeof(p->algs));
+> 
+> Using struct_group() introduces complexity. Has it been considered not to
+> modify struct p_rs_param_95 and instead to use two memset() calls instead of
+> one (one memset() call per member)?
+
+I went this direction because using two memset()s (or memcpy()s in other
+patches) changes the machine code. It's not much of a change, but it
+seems easier to justify "no binary changes" via the use of struct_group().
+
+If splitting the memset() is preferred, I can totally do that instead.
+:)
+
+-Kees
+
+-- 
+Kees Cook
