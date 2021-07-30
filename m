@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C766E3DB26A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6533DB26F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhG3Eiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 00:38:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55480 "EHLO mail.kernel.org"
+        id S230234AbhG3Ena (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 00:43:30 -0400
+Received: from ozlabs.ru ([107.174.27.60]:42188 "EHLO ozlabs.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhG3Eiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 00:38:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4B46103B;
-        Fri, 30 Jul 2021 04:38:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627619925;
-        bh=tD4NnTylNSsCZ9xiCzjSNWEXJJJDNb6Se5lb5F1OcYw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=toiNWdL04FsePRojqRJIzvv75RA0Lqux0uewva6xZNg/8+SNhPETyhI9IUaDHc0nP
-         dLbX29AD9Ewde6vsYtAWR/NX1gam5MiODiU+gF4sHGp4VMfUMLseThhhhpg13TX6Rl
-         RWvDpfkK7vCzJhrQiVSYh84T5CtpQznwl2kwtzPw=
-Date:   Fri, 30 Jul 2021 06:38:42 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Alistair Delva <adelva@google.com>,
-        William McVicker <willmcvicker@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Mitch Phillips <mitchp@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        donnyxia@google.com
-Subject: Re: [PATCH 5.13 191/223] selftest: use mmap instead of
- posix_memalign to allocate memory
-Message-ID: <YQOCUu0nALesF1HB@kroah.com>
-References: <20210726153846.245305071@linuxfoundation.org>
- <20210726153852.445207631@linuxfoundation.org>
- <CAMn1gO42sPYDajZN7MuysTeGJmxvby=sFuU1eXt0APo_Y5FFSQ@mail.gmail.com>
+        id S229609AbhG3En3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 00:43:29 -0400
+Received: from fstn1-p1.ozlabs.ibm.com. (localhost [IPv6:::1])
+        by ozlabs.ru (Postfix) with ESMTP id 76B7CAE80062;
+        Fri, 30 Jul 2021 00:43:20 -0400 (EDT)
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>, linux-kernel@vger.kernel.org,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org
+Subject: [PATCH kernel] powerpc/powernv: Check if powernv_rng is initialized
+Date:   Fri, 30 Jul 2021 14:43:15 +1000
+Message-Id: <20210730044315.956125-1-aik@ozlabs.ru>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMn1gO42sPYDajZN7MuysTeGJmxvby=sFuU1eXt0APo_Y5FFSQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:58:11AM -0700, Peter Collingbourne wrote:
-> On Mon, Jul 26, 2021 at 9:16 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Peter Collingbourne <pcc@google.com>
-> >
-> > commit 0db282ba2c12c1515d490d14a1ff696643ab0f1b upstream.
-> >
-> > This test passes pointers obtained from anon_allocate_area to the
-> > userfaultfd and mremap APIs.  This causes a problem if the system
-> > allocator returns tagged pointers because with the tagged address ABI
-> > the kernel rejects tagged addresses passed to these APIs, which would
-> > end up causing the test to fail.  To make this test compatible with such
-> > system allocators, stop using the system allocator to allocate memory in
-> > anon_allocate_area, and instead just use mmap.
-> >
-> > Link: https://lkml.kernel.org/r/20210714195437.118982-3-pcc@google.com
-> > Link: https://linux-review.googlesource.com/id/Icac91064fcd923f77a83e8e133f8631c5b8fc241
-> > Fixes: c47174fc362a ("userfaultfd: selftest")
-> > Co-developed-by: Lokesh Gidra <lokeshgidra@google.com>
-> > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> > Signed-off-by: Peter Collingbourne <pcc@google.com>
-> > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > Cc: Dave Martin <Dave.Martin@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Andrea Arcangeli <aarcange@redhat.com>
-> > Cc: Alistair Delva <adelva@google.com>
-> > Cc: William McVicker <willmcvicker@google.com>
-> > Cc: Evgenii Stepanov <eugenis@google.com>
-> > Cc: Mitch Phillips <mitchp@google.com>
-> > Cc: Andrey Konovalov <andreyknvl@gmail.com>
-> > Cc: <stable@vger.kernel.org>    [5.4]
-> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  tools/testing/selftests/vm/userfaultfd.c |    6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > --- a/tools/testing/selftests/vm/userfaultfd.c
-> > +++ b/tools/testing/selftests/vm/userfaultfd.c
-> > @@ -197,8 +197,10 @@ static int anon_release_pages(char *rel_
-> >
-> >  static void anon_allocate_area(void **alloc_area)
-> >  {
-> > -       if (posix_memalign(alloc_area, page_size, nr_pages * page_size)) {
-> > -               fprintf(stderr, "out of memory\n");
-> > +       *alloc_area = mmap(NULL, nr_pages * page_size, PROT_READ | PROT_WRITE,
-> > +                          MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-> > +       if (*alloc_area == MAP_FAILED)
-> 
-> Hi Greg,
-> 
-> It looks like your backport of this patch (and the backports to stable
-> kernels) are missing a left brace here.
+The powernv-rng driver has 2 users - the bare metal powernv platform and
+the KVM's H_RANDOM hcall. The hcall handler works fine when it is L0 KVM
+but fails in L1 KVM as there is no support for the HW registers in L1 VMs
+and such support is not advertised either (== no "ibm,power-rng" in
+the FDT). So when a nested VM tries H_RANDOM, the L1 KVM crashes on
+in_be64(rng->regs).
 
-Already fixed up in the latest -rc releases, right?
+This checks the pointers and returns an error if the feature is not
+set up.
 
-thanks,
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+---
 
-greg k-h
+
+Randomly randomized H_RANDOM:
+
+00:00:45 executing program 10:
+r0 = openat$kvm(0xffffffffffffff9c, &(0x7f0000000000), 0x0, 0x0)
+r1 = ioctl$KVM_CREATE_VM(r0, 0x2000ae01, 0x0)
+r2 = ioctl$KVM_CREATE_VCPU(r1, 0x2000ae41, 0x0)
+ioctl$KVM_SET_REGS(r2, 0x8188ae82, &(0x7f00000001c0)={[0x0, 0x0, 0xffffffffffffffe1, 0x0, 0x0, 0x200000953, 0x0, 0xfffffffffffffffe, 0x0, 0x0, 0x2], 0x2000})
+syz_kvm_setup_cpu$ppc64(0xffffffffffffffff, r2, &(0x7f0000e80000/0x180000)=nil, 0x0, 0x0, 0x0, 0x0, 0x0)
+r3 = openat$kvm(0xffffffffffffff9c, &(0x7f0000000100), 0x0, 0x0)
+syz_kvm_setup_cpu$ppc64(r1, r2, &(0x7f0000e70000/0x180000)=nil, &(0x7f0000000080)=[{0x0, &(0x7f0000000280)="0000e03d0080ef61e403ef790000ef650900ef61647b007c0000e03f0000ff63e403ff7b0000ff679952ff6370e63f7e0000603c00006360e4036378000063640003636018a8803c28bf8460e4038478ef97846436888460b6f6a03c88d6a560e403a5781beda564d879a5602665c03cb08dc660e403c67806b3c664966fc660d53fe03cddf1e760e403e7785c41e7646623e76022000044463fb1f20000803e00809462e403947a0000946604009462a6a6607f4abb4c130000603f00007b63e4037b7b00007b679a367b6332d9c17c201c994f7201004cbb7a603f72047b63e4037b7b955f7b6799947b636401607f", 0xf0}], 0x1, 0x0, &(0x7f00000000c0)=[@featur2={0x1, 0x1000}], 0x1)
+
+
+cpu 0xd: Vector: 300 (Data Access) at [c00000001599f590]
+    pc: c00000000011d2bc: powernv_get_random_long+0x4c/0xc0
+    lr: c00000000011d298: powernv_get_random_long+0x28/0xc0
+    sp: c00000001599f830
+   msr: 800000000280b033
+   dar: 0
+ dsisr: 40000000
+  current = 0xc0000000614c7f80
+  paca    = 0xc0000000fff81700	 irqmask: 0x03	 irq_happened: 0x01
+    pid   = 31576, comm = syz-executor.10
+
+Linux version 5.14.0-rc2-le_f29cf1ff9a23_a+fstn1 (aik@fstn1-p1) (gcc (Ubuntu 10.3.0-1ubuntu1) 10.3.0, GNU ld (GNU Binutils for Ubuntu) 2.36.1) #263 SMP Thu Jul 29 17:56:12 AEST 2021
+enter ? for help
+[c00000001599f860] c0000000001e45f8 kvmppc_pseries_do_hcall+0x5d8/0x2190
+[c00000001599f8f0] c0000000001ea2dc kvmppc_vcpu_run_hv+0x31c/0x14d0
+[c00000001599f9c0] c0000000001bd518 kvmppc_vcpu_run+0x48/0x60
+[c00000001599f9f0] c0000000001b74b0 kvm_arch_vcpu_ioctl_run+0x580/0x7d0
+[c00000001599fa90] c00000000019e6f8 kvm_vcpu_ioctl+0x418/0xd00
+[c00000001599fc70] c00000000079d8c4 sys_ioctl+0xb44/0x2100
+[c00000001599fd90] c00000000003b704 system_call_exception+0x224/0x410
+[c00000001599fe10] c00000000000c0e8 system_call_vectored_common+0xe8/0x278
+
+
+
+---
+ arch/powerpc/platforms/powernv/rng.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/powerpc/platforms/powernv/rng.c b/arch/powerpc/platforms/powernv/rng.c
+index 72c25295c1c2..070d0963995d 100644
+--- a/arch/powerpc/platforms/powernv/rng.c
++++ b/arch/powerpc/platforms/powernv/rng.c
+@@ -105,6 +105,8 @@ int powernv_get_random_long(unsigned long *v)
+ 	struct powernv_rng *rng;
+ 
+ 	rng = get_cpu_var(powernv_rng);
++	if (!rng || !rng->regs)
++		return 0;
+ 
+ 	*v = rng_whiten(rng, in_be64(rng->regs));
+ 
+-- 
+2.30.2
+
