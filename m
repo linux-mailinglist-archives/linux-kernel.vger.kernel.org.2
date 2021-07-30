@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723AE3DBA46
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72F03DBA7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239374AbhG3OVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239116AbhG3OR0 (ORCPT
+        id S239703AbhG3OXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:23:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55524 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239153AbhG3OR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Jul 2021 10:17:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637ECC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:17:21 -0700 (PDT)
-Message-ID: <20210730135206.018846923@linutronix.de>
+Message-ID: <20210730135206.074657252@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627654640;
+        s=2020; t=1627654641;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=zzNPUf3/4DPPXty2kwIZpiXgqfc0EVhR6qR+2JLeMp8=;
-        b=2a/f9Wz4UYGN+I6JFyUEscztPrI0EMFScFlCoNnHdehJZcQo/6aB+s7j84pzdQd/GXIm7O
-        kVJMcJm2xWRVfEZ7TdrhSsAk/36yKU/t37hPqHpUoknyVdb1jUMh53A5NkQbNVGMdZH0jo
-        NaDOHkIMys7Q1bUR8yw1LIDYx/sbKKn3jcSNl3k2P18S0CncJsylBP9VriGfJ/Yc2bRxLa
-        AjQMIFfr8PjeZBWON73MkVAclnGOWlb2/V01k0AOO9j9h00df1WGXi775qEmTUNTGqKL7j
-        XGA5a0tvFhpLvazJLJxcr6tDGqCiq2P+nEj8nLvE+v70yCI0WeZXV2zpKO6b9A==
+        bh=zmnhIKtCEBdBUbPTeaXsAflTQ/pCUB3Yr2SAQ9wy2GY=;
+        b=1U0fQemOpdYycmuxg0qbAkSepZPxaM2eRqIZ0tVmBSF+cwnD4d+73MNDkaWw3BRR4zXBTV
+        X+G8VakrOkNXuhdlZ54DWTa8OG3kzb3pDuqBMJoIRAxI56QVdGgg8SJM0fBq4ZGI8gkZOh
+        fyZbo6pYSXObbth7fm2LGUMKhNHE7CdHGTJ0yHetFVN6/19T67ejKMy8gebsib9TcU+G8D
+        u41bv9GSN35dyIW3F13wI/Mi907xreQyHn3M4qyXWJQJFQHOImniWTZDzV3gQXS/hJ4qE+
+        iI31fGJfcfzdkGIZ4E2aY5n8tZuGA2NypFHTaAvisiQDIKfdenu+CNn6dBQ8kw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627654640;
+        s=2020e; t=1627654641;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=zzNPUf3/4DPPXty2kwIZpiXgqfc0EVhR6qR+2JLeMp8=;
-        b=Q1ZRZtEMzuTP0Ljp5wdpEXees6i1uT1+FaGTzAm5VQKsPnQeT9gtrHAl0wXVq3Lu7JcArn
-        Mwy3Y0p+rP+elRDw==
-Date:   Fri, 30 Jul 2021 15:50:22 +0200
+        bh=zmnhIKtCEBdBUbPTeaXsAflTQ/pCUB3Yr2SAQ9wy2GY=;
+        b=/fwO36HlQp+gbquv+hv5HHUCvqLzFujkvJ/axmLVXzACkgVYSgEyYCuW0Ge1AGPdZf0v+I
+        pdOv9E9dVmeZjpAA==
+Date:   Fri, 30 Jul 2021 15:50:23 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,7 +45,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 15/63] locking: Add base code for RT rw_semaphore and rwlock
+Subject: [patch 16/63] locking/rwsem: Add rtmutex based R/W semaphore implementation
 References: <20210730135007.155909613@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,338 +56,246 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-On PREEMPT_RT rw_semaphores and rwlocks are substituted with a rtmutex and
-a reader count. The implementation is writer unfair as it is not feasible
-to do priority inheritance on multiple readers, but experience has shown
-that realtime workloads are not the typical workloads which are sensitive
-to writer starvation.
+The RT specific R/W semaphore implementation used to restrict the number of
+readers to one because a writer cannot block on multiple readers and
+inherit its priority or budget.
 
-The inner workings of rw_semaphores and rwlocks on RT are almost indentical
-except for the task state and signal handling. rw_semaphores are not state
-preserving over a contention, they are expected to enter and leave with state
-== TASK_RUNNING. rwlocks have a mechanism to preserve the state of the task
-at entry and restore it after unblocking taking potential non-lock related
-wakeups into account. rw_semaphores can also be subject to signal handling
-interrupting a blocked state, while rwlocks ignore signals.
+The single reader restricting was painful in various ways:
 
-To avoid code duplication, provide a shared implementation which takes the
-small difference vs. state and signals into account. The code is included
-into the relevant rw_semaphore/rwlock base code and compiled for each use
-case seperately.
+ - Performance bottleneck for multi-threaded applications in the page fault
+   path (mmap sem)
+
+ - Progress blocker for drivers which are carefully crafted to avoid the
+   potential reader/writer deadlock in mainline.
+
+The analysis of the writer code paths shows, that properly written RT tasks
+should not take them. Syscalls like mmap(), file access which take mmap sem
+write locked have unbound latencies which are completely unrelated to mmap
+sem. Other R/W sem users like graphics drivers are not suitable for RT tasks
+either.
+
+So there is little risk to hurt RT tasks when the RT rwsem implementation is
+done in the following way:
+
+ - Allow concurrent readers
+
+ - Make writers block until the last reader left the critical section. This
+   blocking is not subject to priority/budget inheritance.
+
+ - Readers blocked on a writer inherit their priority/budget in the normal
+   way.
+
+There is a drawback with this scheme. R/W semaphores become writer unfair
+though the applications which have triggered writer starvation (mostly on
+mmap_sem) in the past are not really the typical workloads running on a RT
+system. So while it's unlikely to hit writer starvation, it's possible. If
+there are unexpected workloads on RT systems triggering it, the problem
+has to be revisited.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/rwbase_rt.h  |   38 ++++++
- kernel/locking/rwbase_rt.c |  263 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 301 insertions(+)
- create mode 100644 include/linux/rwbase_rt.h
- create mode 100644 kernel/locking/rwbase_rt.c
+V2: Fix indent fail (Peter Z)
 ---
---- /dev/null
-+++ b/include/linux/rwbase_rt.h
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#ifndef _LINUX_RW_BASE_RT_H
-+#define _LINUX_RW_BASE_RT_H
+ include/linux/rwsem.h  |   58 ++++++++++++++++++++++++++
+ kernel/locking/rwsem.c |  108 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 166 insertions(+)
+---
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -16,6 +16,9 @@
+ #include <linux/spinlock.h>
+ #include <linux/atomic.h>
+ #include <linux/err.h>
 +
-+#include <linux/rtmutex.h>
-+#include <linux/atomic.h>
++#ifndef CONFIG_PREEMPT_RT
 +
-+#define READER_BIAS		(1U << 31)
-+#define WRITER_BIAS		(1U << 30)
+ #ifdef CONFIG_RWSEM_SPIN_ON_OWNER
+ #include <linux/osq_lock.h>
+ #endif
+@@ -119,6 +122,61 @@ static inline int rwsem_is_contended(str
+ 	return !list_empty(&sem->wait_list);
+ }
+ 
++#else /* !CONFIG_PREEMPT_RT */
 +
-+struct rwbase_rt {
-+	atomic_t		readers;
-+	struct rt_mutex_base	rtmutex;
++#include <linux/rwbase_rt.h>
++
++struct rw_semaphore {
++	struct rwbase_rt	rwbase;
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++	struct lockdep_map	dep_map;
++#endif
 +};
 +
-+#define __RWBASE_INITIALIZER(name)				\
-+{								\
-+	.readers = ATOMIC_INIT(READER_BIAS),			\
-+	.rtmutex = __RT_MUTEX_BASE_INITIALIZER(name.rtmutex),	\
-+}
++#define __RWSEM_INITIALIZER(name)				\
++	{							\
++		.rwbase = __RWBASE_INITIALIZER(name),		\
++		RW_DEP_MAP_INIT(name)				\
++	}
 +
-+#define init_rwbase_rt(rwbase)					\
-+	do {							\
-+		rt_mutex_base_init(&(rwbase)->rtmutex);		\
-+		atomic_set(&(rwbase)->readers, READER_BIAS);	\
-+	} while (0)
++#define DECLARE_RWSEM(lockname) \
++	struct rw_semaphore lockname = __RWSEM_INITIALIZER(lockname)
 +
-+
-+static __always_inline bool rw_base_is_locked(struct rwbase_rt *rwb)
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++extern void  __rwsem_init(struct rw_semaphore *rwsem, const char *name,
++			  struct lock_class_key *key);
++#else
++static inline void  __rwsem_init(struct rw_semaphore *rwsem, const char *name,
++				 struct lock_class_key *key)
 +{
-+	return atomic_read(&rwb->readers) != READER_BIAS;
-+}
-+
-+static __always_inline bool rw_base_is_contended(struct rwbase_rt *rwb)
-+{
-+	return atomic_read(&rwb->readers) > 0;
 +}
 +#endif
---- /dev/null
-+++ b/kernel/locking/rwbase_rt.c
-@@ -0,0 +1,263 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++
++#define init_rwsem(sem)						\
++do {								\
++	static struct lock_class_key __key;			\
++								\
++	init_rwbase_rt(&(sem)->rwbase);			\
++	__rwsem_init((sem), #sem, &__key);			\
++} while (0)
++
++static __always_inline int rwsem_is_locked(struct rw_semaphore *sem)
++{
++	return rw_base_is_locked(&sem->rwbase);
++}
++
++static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
++{
++	return rw_base_is_contended(&sem->rwbase);
++}
++
++#endif /* CONFIG_PREEMPT_RT */
 +
 +/*
-+ * RT-specific reader/writer semaphores and reader/writer locks
-+ *
-+ * down_write/write_lock()
-+ *  1) Lock rtmutex
-+ *  2) Remove the reader BIAS to force readers into the slow path
-+ *  3) Wait until all readers have left the critical region
-+ *  4) Mark it write locked
-+ *
-+ * up_write/write_unlock()
-+ *  1) Remove the write locked marker
-+ *  2) Set the reader BIAS so readers can use the fast path again
-+ *  3) Unlock rtmutex to release blocked readers
-+ *
-+ * down_read/read_lock()
-+ *  1) Try fast path acquisition (reader BIAS is set)
-+ *  2) Take tmutex::wait_lock which protects the writelocked flag
-+ *  3) If !writelocked, acquire it for read
-+ *  4) If writelocked, block on tmutex
-+ *  5) unlock rtmutex, goto 1)
-+ *
-+ * up_read/read_unlock()
-+ *  1) Try fast path release (reader count != 1)
-+ *  2) Wake the writer waiting in down_write()/write_lock() #3
-+ *
-+ * down_read/read_lock()#3 has the consequence, that rw semaphores and rw
-+ * locks on RT are not writer fair, but writers, which should be avoided in
-+ * RT tasks (think mmap_sem), are subject to the rtmutex priority/DL
-+ * inheritance mechanism.
-+ *
-+ * It's possible to make the rw primitives writer fair by keeping a list of
-+ * active readers. A blocked writer would force all newly incoming readers
-+ * to block on the rtmutex, but the rtmutex would have to be proxy locked
-+ * for one reader after the other. We can't use multi-reader inheritance
-+ * because there is no way to support that with SCHED_DEADLINE.
-+ * Implementing the one by one reader boosting/handover mechanism is a
-+ * major surgery for a very dubious value.
-+ *
-+ * The risk of writer starvation is there, but the pathological use cases
-+ * which trigger it are not necessarily the typical RT workloads.
-+ *
-+ * Common code shared between RT rw_semaphore and rwlock
++ * The functions below are the same for all rwsem implementations including
++ * the RT specific variant.
 + */
 +
-+static __always_inline int rwbase_read_trylock(struct rwbase_rt *rwb)
-+{
-+	int r;
+ /*
+  * lock for reading
+  */
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -28,6 +28,7 @@
+ #include <linux/rwsem.h>
+ #include <linux/atomic.h>
+ 
++#ifndef CONFIG_PREEMPT_RT
+ #include "lock_events.h"
+ 
+ /*
+@@ -1344,6 +1345,113 @@ static inline void __downgrade_write(str
+ 		rwsem_downgrade_wake(sem);
+ }
+ 
++#else /* !CONFIG_PREEMPT_RT */
 +
-+	/*
-+	 * Increment reader count, if sem->readers < 0, i.e. READER_BIAS is
-+	 * set.
-+	 */
-+	for (r = atomic_read(&rwb->readers); r < 0;) {
-+		if (likely(atomic_try_cmpxchg(&rwb->readers, &r, r + 1)))
-+			return 1;
-+	}
-+	return 0;
++#include "rtmutex.c"
++
++#define rwbase_set_and_save_current_state(state)	\
++	set_current_state(state)
++
++#define rwbase_restore_current_state()			\
++	__set_current_state(TASK_RUNNING)
++
++#define rwbase_rtmutex_lock_state(rtm, state)		\
++	__rt_mutex_lock(rtm, state)
++
++#define rwbase_rtmutex_slowlock_locked(rtm, state)	\
++	__rt_mutex_slowlock_locked(rtm, state)
++
++#define rwbase_rtmutex_unlock(rtm)			\
++	__rt_mutex_unlock(rtm)
++
++#define rwbase_rtmutex_trylock(rtm)			\
++	__rt_mutex_trylock(rtm)
++
++#define rwbase_signal_pending_state(state, current)	\
++	signal_pending_state(state, current)
++
++#define rwbase_schedule()				\
++	schedule()
++
++#include "rwbase_rt.c"
++
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++void __rwsem_init(struct rw_semaphore *sem, const char *name,
++		  struct lock_class_key *key)
++{
++	debug_check_no_locks_freed((void *)sem, sizeof(*sem));
++	lockdep_init_map(&sem->dep_map, name, key, 0);
++}
++EXPORT_SYMBOL(__rwsem_init);
++#endif
++
++static inline void __down_read(struct rw_semaphore *sem)
++{
++	rwbase_read_lock(&sem->rwbase, TASK_UNINTERRUPTIBLE);
 +}
 +
-+static int __sched __rwbase_read_lock(struct rwbase_rt *rwb,
-+				      unsigned int state)
++static inline int __down_read_interruptible(struct rw_semaphore *sem)
 +{
-+	struct rt_mutex_base *rtm = &rwb->rtmutex;
-+	int ret;
-+
-+	raw_spin_lock_irq(&rtm->wait_lock);
-+	/*
-+	 * Allow readers as long as the writer has not completely
-+	 * acquired the semaphore for write.
-+	 */
-+	if (atomic_read(&rwb->readers) != WRITER_BIAS) {
-+		atomic_inc(&rwb->readers);
-+		raw_spin_unlock_irq(&rtm->wait_lock);
-+		return 0;
-+	}
-+
-+	/*
-+	 * Call into the slow lock path with the rtmutex->wait_lock
-+	 * held, so this can't result in the following race:
-+	 *
-+	 * Reader1		Reader2		Writer
-+	 *			down_read()
-+	 *					down_write()
-+	 *					rtmutex_lock(m)
-+	 *					wait()
-+	 * down_read()
-+	 * unlock(m->wait_lock)
-+	 *			up_read()
-+	 *			wake(Writer)
-+	 *					lock(m->wait_lock)
-+	 *					sem->writelocked=true
-+	 *					unlock(m->wait_lock)
-+	 *
-+	 *					up_write()
-+	 *					sem->writelocked=false
-+	 *					rtmutex_unlock(m)
-+	 *			down_read()
-+	 *					down_write()
-+	 *					rtmutex_lock(m)
-+	 *					wait()
-+	 * rtmutex_lock(m)
-+	 *
-+	 * That would put Reader1 behind the writer waiting on
-+	 * Reader2 to call up_read() which might be unbound.
-+	 */
-+
-+	/*
-+	 * For rwlocks this returns 0 unconditionally, so the below
-+	 * !ret conditionals are optimized out.
-+	 */
-+	ret = rwbase_rtmutex_slowlock_locked(rtm, state);
-+
-+	/*
-+	 * On success the rtmutex is held, so there can't be a writer
-+	 * active. Increment the reader count and immediately drop the
-+	 * rtmutex again.
-+	 *
-+	 * rtmutex->wait_lock has to be unlocked in any case of course.
-+	 */
-+	if (!ret)
-+		atomic_inc(&rwb->readers);
-+	raw_spin_unlock_irq(&rtm->wait_lock);
-+	if (!ret)
-+		rwbase_rtmutex_unlock(rtm);
-+	return ret;
++	return rwbase_read_lock(&sem->rwbase, TASK_INTERRUPTIBLE);
 +}
 +
-+static __always_inline int rwbase_read_lock(struct rwbase_rt *rwb,
-+					    unsigned int state)
++static inline int __down_read_killable(struct rw_semaphore *sem)
 +{
-+	if (rwbase_read_trylock(rwb))
-+		return 0;
-+
-+	return __rwbase_read_lock(rwb, state);
++	return rwbase_read_lock(&sem->rwbase, TASK_KILLABLE);
 +}
 +
-+static void __sched __rwbase_read_unlock(struct rwbase_rt *rwb,
-+					 unsigned int state)
++static inline int __down_read_trylock(struct rw_semaphore *sem)
 +{
-+	struct rt_mutex_base *rtm = &rwb->rtmutex;
-+	struct task_struct *owner;
-+
-+	raw_spin_lock_irq(&rtm->wait_lock);
-+	/*
-+	 * Wake the writer, i.e. the rtmutex owner. It might release the
-+	 * rtmutex concurrently in the fast path (due to a signal), but to
-+	 * clean up rwb->readers it needs to acquire rtm->wait_lock. The
-+	 * worst case which can happen is a spurious wakeup.
-+	 */
-+	owner = rt_mutex_owner(rtm);
-+	if (owner)
-+		wake_up_state(owner, state);
-+
-+	raw_spin_unlock_irq(&rtm->wait_lock);
++	return rwbase_read_trylock(&sem->rwbase);
 +}
 +
-+static __always_inline void rwbase_read_unlock(struct rwbase_rt *rwb,
-+					       unsigned int state)
++static inline void __up_read(struct rw_semaphore *sem)
 +{
-+	/*
-+	 * rwb->readers can only hit 0 when a writer is waiting for the
-+	 * active readers to leave the critical region.
-+	 */
-+	if (unlikely(atomic_dec_and_test(&rwb->readers)))
-+		__rwbase_read_unlock(rwb, state);
++	rwbase_read_unlock(&sem->rwbase, TASK_NORMAL);
 +}
 +
-+static inline void __rwbase_write_unlock(struct rwbase_rt *rwb, int bias,
-+					 unsigned long flags)
++static inline void __sched __down_write(struct rw_semaphore *sem)
 +{
-+	struct rt_mutex_base *rtm = &rwb->rtmutex;
-+
-+	atomic_add(READER_BIAS - bias, &rwb->readers);
-+	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
-+	rwbase_rtmutex_unlock(rtm);
++	rwbase_write_lock(&sem->rwbase, TASK_UNINTERRUPTIBLE);
 +}
 +
-+static inline void rwbase_write_unlock(struct rwbase_rt *rwb)
++static inline int __sched __down_write_killable(struct rw_semaphore *sem)
 +{
-+	struct rt_mutex_base *rtm = &rwb->rtmutex;
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-+	__rwbase_write_unlock(rwb, WRITER_BIAS, flags);
++	return rwbase_write_lock(&sem->rwbase, TASK_KILLABLE);
 +}
 +
-+static inline void rwbase_write_downgrade(struct rwbase_rt *rwb)
++static inline int __down_write_trylock(struct rw_semaphore *sem)
 +{
-+	struct rt_mutex_base *rtm = &rwb->rtmutex;
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-+	/* Release it and account current as reader */
-+	__rwbase_write_unlock(rwb, WRITER_BIAS - 1, flags);
++	return rwbase_write_trylock(&sem->rwbase);
 +}
 +
-+static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
-+				     unsigned int state)
++static inline void __up_write(struct rw_semaphore *sem)
 +{
-+	struct rt_mutex_base *rtm = &rwb->rtmutex;
-+	unsigned long flags;
-+
-+	/* Take the rtmutex as a first step */
-+	if (rwbase_rtmutex_lock_state(rtm, state))
-+		return -EINTR;
-+
-+	/* Force readers into slow path */
-+	atomic_sub(READER_BIAS, &rwb->readers);
-+
-+	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-+	/*
-+	 * set_current_state() for rw_semaphore
-+	 * current_save_and_set_rtlock_wait_state() for rwlock
-+	 */
-+	rwbase_set_and_save_current_state(state);
-+
-+	/* Block until all readers have left the critical region. */
-+	for (; atomic_read(&rwb->readers);) {
-+		/* Optimized out for rwlocks */
-+		if (rwbase_signal_pending_state(state, current)) {
-+			__set_current_state(TASK_RUNNING);
-+			__rwbase_write_unlock(rwb, 0, flags);
-+			return -EINTR;
-+		}
-+		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
-+
-+		/*
-+		 * Schedule and wait for the readers to leave the critical
-+		 * section. The last reader leaving it wakes the waiter.
-+		 */
-+		if (atomic_read(&rwb->readers) != 0)
-+			rwbase_schedule();
-+		set_current_state(state);
-+		raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-+	}
-+
-+	atomic_set(&rwb->readers, WRITER_BIAS);
-+	rwbase_restore_current_state();
-+	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
-+	return 0;
++	rwbase_write_unlock(&sem->rwbase);
 +}
 +
-+static inline int rwbase_write_trylock(struct rwbase_rt *rwb)
++static inline void __downgrade_write(struct rw_semaphore *sem)
 +{
-+	struct rt_mutex_base *rtm = &rwb->rtmutex;
-+	unsigned long flags;
-+
-+	if (!rwbase_rtmutex_trylock(rtm))
-+		return 0;
-+
-+	atomic_sub(READER_BIAS, &rwb->readers);
-+
-+	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-+	if (!atomic_read(&rwb->readers)) {
-+		atomic_set(&rwb->readers, WRITER_BIAS);
-+		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
-+		return 1;
-+	}
-+	__rwbase_write_unlock(rwb, 0, flags);
-+	return 0;
++	rwbase_write_downgrade(&sem->rwbase);
 +}
++
++/* Debug stubs for the common API */
++#define DEBUG_RWSEMS_WARN_ON(c, sem)
++
++static inline void __rwsem_set_reader_owned(struct rw_semaphore *sem,
++					    struct task_struct *owner)
++{
++}
++
++static inline bool is_rwsem_reader_owned(struct rw_semaphore *sem)
++{
++	int count = atomic_read(&sem->rwbase.readers);
++
++	return count < 0 && count != READER_BIAS;
++}
++
++#endif /* CONFIG_PREEMPT_RT */
++
+ /*
+  * lock for reading
+  */
 
