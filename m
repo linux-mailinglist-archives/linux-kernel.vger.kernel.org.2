@@ -2,135 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661443DC082
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E312F3DC08F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhG3VzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 17:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
+        id S232663AbhG3V5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 17:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbhG3VzD (ORCPT
+        with ESMTP id S231178AbhG3V4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 17:55:03 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A3EC0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:54:58 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id h2so20666725lfu.4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:54:57 -0700 (PDT)
+        Fri, 30 Jul 2021 17:56:49 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C297C0617B1;
+        Fri, 30 Jul 2021 14:56:25 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id h9so3843894ejs.4;
+        Fri, 30 Jul 2021 14:56:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=faoOQY/6RWuADuNoVKpvGyxjDEO3XlGf6d50QEfJC7g=;
-        b=ZQTRYuq1mRX8347xP8HSAXAa4cJLeXraaLaLYL6GLXd30yRuEBjaeqrsy85g43yYk5
-         qLCsVgwyL8FkDBESZHruuTsLAyBTkQnuT3Vdy2mjdnlfsgpDmGzMKFBRpwV2ygbNxOTf
-         +CPnpcZehxcxeSZrCHIO7fHrA+bst+Q0S8ecOHsXa0Cek5/yA/tOB8OYSPZ4EybqyMBa
-         8sVkfE+a6tPRFTb8Hhhn2z2Jwy7OuAQbIEre9GIbU2hh63V1UL0vvgeD57HAwbWobnHw
-         ubnVRE8Yv7iQKp1rsRr4Owh7MlmsZHB0rd5yx6kr2++tj+LitwuPlmMR2YlKO78RnkkQ
-         67AQ==
+        bh=4PGd/pIyrnd9ii9aiOJADxaPJbcRb7d0IRplRSuPHpo=;
+        b=dbaq5a2220DjhsTlYvCWntQ0BOusszu2je5PRR9jRZn5fZr+yRsq23Oa62wfeoIgiX
+         Fz5/2M0u+Hu5AMRBjkD4ZV1W95rTTfNhUVND6/lluArC29Yqb7QEGcSrc3KagfeIM6oJ
+         k3zCQuQf1nOTrxLhHdW8d2w5j+9FjH+S27jAl3+Q77cWknD7Cxx9zLkzX9O93er/gvsI
+         hA669WgZ7j9U72hd61edjgaa4l+mDW/DWhmzYj+1sHdQvWmrMVQKPNazh5zku+/Pkiit
+         X8k+U4p2k9vndTdP3/2XCSuAH1+28A5g28+K7Rfo+fQZRElS7BmEGzbG7Qzbg+HoPfWO
+         G01Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=faoOQY/6RWuADuNoVKpvGyxjDEO3XlGf6d50QEfJC7g=;
-        b=nbZOfWFnjpDDoqtrJbOGscwIpEVNHfurZjPDgU2UsieRamBp6II9g9z0VhgebN724g
-         xvhMlE2si9PDp1urp8e4Vtd3a9A1giS7rS3fJria07bZL2bD+XlURjCUkEQH3WdbmmZn
-         1XopawReh9ko2fhNPcFLKK8mymWtZ4V4szMaACC4YK2mMpT2vWHxl4neOhqYfBZOB0xL
-         NPa/tu1ltZTOb+X4E6W3+/XPBeanJ6cNwYDZ+fhNPECZ5WNOERJ86pYCv1PmXcOmBhJv
-         n/f4etiMlk+BZOrBmmGdO+6p3KRqQ1ivOxfnqg5ptJMYEkHb1piXQiqJSf3P6AYFqng6
-         jRSg==
-X-Gm-Message-State: AOAM5329viRD9vw4060K21DuZXUUrwKGBIuM9Rhp7+gAD+YJOpa52ssk
-        yphfFu+leyQs5+CwQQ1b628Uu2XOdvuBjRuunyrYMw==
-X-Google-Smtp-Source: ABdhPJwNZcILhR4pmttwbOSL1t8zmWVjqLvvRkn0ZAkRoCwb18QBN4ePQhIpGSSwCZaexTshyitcDN707vjVtpzE27Q=
-X-Received: by 2002:ac2:59c4:: with SMTP id x4mr2916374lfn.547.1627682096028;
- Fri, 30 Jul 2021 14:54:56 -0700 (PDT)
+        bh=4PGd/pIyrnd9ii9aiOJADxaPJbcRb7d0IRplRSuPHpo=;
+        b=Jo8oynNMzvfr+Steyz47cX67difILIa9KuLSHibEtYfppfRDebOSsgsn4pJVd4DGjq
+         VK/6drw7s6EQfB1GTkfnUUFtqGVHsN7QXmjiYPJdoOt0/W2FZ8MrT9SajuBKgZ00XNx+
+         c9KAQTaH2VIujFckV06zLubd5j3BZn+w9Go+L3aCZuPpGyR2z/Rlq2jLf9m3EXDkTn9p
+         Mjibwvl3KbDYgmFZiWJN2cPqChOVjqLeruxaCt5aKL9vsAjlYms6Y1QEJ/YlZmaLfA+Y
+         KF8JvPO7H0ilYsIxogjLl7XaOUDncBtzeiSwfyl//9cGpnTaUVa2cUiL/0X1SB8lxsaz
+         WJIw==
+X-Gm-Message-State: AOAM533eX41KLQzD9uN67K8vbpPRcdJgCsTzljZo3Y0jnuymVozmEIDj
+        NTfHdEXjDrBiIb/zdkHjTyPMbYAvzWKMtUshdPE=
+X-Google-Smtp-Source: ABdhPJyXE4pPHAFxm/nipCJwTtYmXsOWVqwYGGw8YUN64nEt4hQdURUPR1ed3ZyGCzMBkcpUubQ0BaCwxY+e9DYCLMc=
+X-Received: by 2002:a17:906:1919:: with SMTP id a25mr4774953eje.161.1627682184064;
+ Fri, 30 Jul 2021 14:56:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210730201701.3146910-1-ndesaulniers@google.com>
-In-Reply-To: <20210730201701.3146910-1-ndesaulniers@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 30 Jul 2021 14:54:45 -0700
-Message-ID: <CAKwvOdk7yxOd6gStOqaJMdf9RW+cDdX1M1ScFJA70y5GZmSwNw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] infer --target from SRCARCH for CC=clang
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <b44e3619-712e-90af-89d2-e4ba654c5110@google.com>
+In-Reply-To: <b44e3619-712e-90af-89d2-e4ba654c5110@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 30 Jul 2021 14:56:12 -0700
+Message-ID: <CAHbLzko5oU_1X=M1LFr=4hNDvs0BF0UY+_8e0RHMhUqspMHV3Q@mail.gmail.com>
+Subject: Re: [PATCH 04/16] huge tmpfs: revert shmem's use of transhuge_vma_enabled()
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
         Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 1:17 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Fri, Jul 30, 2021 at 12:36 AM Hugh Dickins <hughd@google.com> wrote:
 >
-> We get constant feedback that the command line invocation of make is too
-> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-> target triple, or is an absolute path outside of $PATH, but it's mostly
-> redundant for a given ARCH.
->
-> Instead, let's infer it from SRCARCH, and move some flag handling into a
-> new file included from the top level Makefile.
->
-> Changes v3 -> v4:
-> * Remove the requirement that LLVM_IAS=1 be set, as per Masahiro.
-> * Remove the Documentation/ change from patch 2, as per Masahiro and
->   Nathan.
-> * Add Documentation/ change as patch 3, from Masahiro.
-> * Reword commit message of patch 2, as per Nathan.
-> * Change patch 2 oneline to refer to --target and CC=clang (not
->   CROSS_COMPILE).
-> * Carry Arnd's and Nathan's AB/RB/TB tags, confirmed ok on IRC+discord.
->
-> Changes v2 -> v3:
-> * Remove requirement that LLVM=1 be set. Instead, if building with just
->   CC=clang LLVM_IAS=1 instead of LLVM=1 LLVM_IAS=1, you should use
->   LD=ld.lld explicitly, or LD=aarch64-linux-gnu-ld. (As per Masahiro)
->   Example:
->
->   $ ARCH=arm64 make CC=clang LLVM_IAS=1 LD=ld.lld OBJCOPY=llvm-objcopy \
->     STRIP=llvm-strip -j72 defconfig all
->
->   (It's still preferable to use LLVM=1 IMO, but this is maximally
->   flexible.)
-> * Change oneliner from LLVM=1 to CC=clang.
-> * Update Docs slightly.
->
-> Changes v1 -> v2:
-> * patch 1/2 untouched.
-> * Fix typos in commit message as per Geert and Masahiro.
-> * Use SRCARCH instead of ARCH, simplifying x86 handling, as per
->   Masahiro. Add his sugguested by tag.
-> * change commit oneline from 'drop' to 'infer.'
-> * Add detail about explicit host --target and relationship of ARCH to
->   SRCARCH, as per Masahiro.
->
-> *** BLURB HERE ***
+> 5.14 commit e6be37b2e7bd ("mm/huge_memory.c: add missing read-only THP
+> checking in transparent_hugepage_enabled()") added transhuge_vma_enabled()
+> as a wrapper for two very different checks: shmem_huge_enabled() prefers
+> to show those two checks explicitly, as before.
 
-Err, sorry, it looks like I did:
-$ git format-patch HEAD~2 ...
-when I meant to do HEAD~3 ..., will resend.
+Basically I have no objection to separating them again. But IMHO they
+seem not very different. Or just makes things easier for the following
+patches?
 
 >
-> Nick Desaulniers (2):
->   Makefile: infer --target from ARCH for CC=clang
->   Documentation/llvm: update CROSS_COMPILE inferencing
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> ---
+>  mm/shmem.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
->  Documentation/kbuild/llvm.rst | 17 +++++++++++++++++
->  scripts/Makefile.clang        | 30 ++++++++++++++++++++++++++++--
->  2 files changed, 45 insertions(+), 2 deletions(-)
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index ce3ccaac54d6..c6fa6f4f2db8 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -4003,7 +4003,8 @@ bool shmem_huge_enabled(struct vm_area_struct *vma)
+>         loff_t i_size;
+>         pgoff_t off;
 >
->
-> base-commit: 27932b6a2088eac7a5afa5471963b926cfbb4de7
-> prerequisite-patch-id: 0d3072ecb5fd06ff6fd6ea81fe601f6c54c23910
+> -       if (!transhuge_vma_enabled(vma, vma->vm_flags))
+> +       if ((vma->vm_flags & VM_NOHUGEPAGE) ||
+> +           test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
+>                 return false;
+>         if (shmem_huge == SHMEM_HUGE_FORCE)
+>                 return true;
 > --
-> 2.32.0.554.ge1b32706d8-goog
+> 2.26.2
 >
-
-
--- 
-Thanks,
-~Nick Desaulniers
