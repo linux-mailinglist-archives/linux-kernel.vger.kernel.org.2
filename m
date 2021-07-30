@@ -2,234 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C72C3DBBD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5244F3DBBD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239405AbhG3PMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 11:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52536 "EHLO
+        id S239523AbhG3PM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239348AbhG3PMp (ORCPT
+        with ESMTP id S239276AbhG3PM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 11:12:45 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F154C06175F;
-        Fri, 30 Jul 2021 08:12:39 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id mt6so15664954pjb.1;
-        Fri, 30 Jul 2021 08:12:39 -0700 (PDT)
+        Fri, 30 Jul 2021 11:12:57 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795D0C0613C1;
+        Fri, 30 Jul 2021 08:12:51 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id s48so16486915ybi.7;
+        Fri, 30 Jul 2021 08:12:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DiREYRtexA0I7S1KnqFrcLIiv/74eDGMLWe+dU114C0=;
-        b=JMMDofxBypjNtHZUFLmtUfIxq6MocEIgnaCq+ez7fM6xZgmpF0wJmMuG7dUNZkwrl+
-         Qxpu8JAOs90quA8Lg1Ax+FdKJ4ucO9pQ42IBVmiLNS3wKF6WC5caf5K2Aps7R+1+d4FT
-         z5fe7akHfjIUQ0lmzafj/roOEe3mTvbceCeSolkw5+ECl81M19Ulg2Wy+Khvr/gBhbfp
-         6d6g2+YO2n67Qn5XIXDS8so8n0euGnnSMAduYc7WBVdvc6PGCXfRJpNTFj/6GCIJQv7k
-         LHqWLzbIzudgq2A4o5geF9EwVRk48F9dou7EnrIwYAJS8wfrYuawZESi75hYBSqx7WOn
-         sfMw==
+        bh=MFWb5ReFHG9Qg18Snz/SW+OnDom1C9cZbldQUCdkKvw=;
+        b=o5kQpx8LrRodDLjVZrkuF/iDFyMtWzz9ew64tl4B5afEttXbhuZezzXzWft2zUP5Dy
+         UcN2rCB/wGoYCpULEhl5jMLPgQZDa1fgwF9HREgevvbX6nd0C9nUrXKxWY3Nz25m0z94
+         HQx+3zVqw3JWzep0eFZn340khidKXdzBvQGvX3jURa/0y2d8Dnlbq8bZePvtOoRAwLSr
+         hAU/Rmg+fcqL8WdI6EJOq+qZ8HdKFh+2fzjtu6S+zZR9bqDDzC6Q1Dt+msn0q5BQpFnV
+         QYLOWucAIZcqyvWvtnuXxgLwdMXa1QGlHfB/UvamVEXzjm8OAaG930RNcIewhNhrmOYr
+         mDtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DiREYRtexA0I7S1KnqFrcLIiv/74eDGMLWe+dU114C0=;
-        b=NL8HmsDQdo8tD199QGkTw/tZiXiqmOssz1yny4YAxG/Z/gV9jFwTd27evBJ1kgRt1g
-         iqY3yTwHLjXcfRvj0bLyP31UeRCJotW0wz2AjHzawznCqLTeDrGJQaRQDlurf4COfDrb
-         f7JDOKMPF389rprq7st63x8LFB2YSXwN2WWat34aZ7anooovO6lDNiAEXiVbESl0NtIL
-         WQmZajpp0K8wX2wyqIJ9kUjfhCColSzTfIgHGy5ZQV8FaaHG9YEZwwWY34Xj40mPGX2S
-         UtTcSBhY9RYYcn+/qCgRbVAyl4PQbV112q9AqF9aG7O7ze9uln66SVpzShNq9l4LXaRg
-         CJAQ==
-X-Gm-Message-State: AOAM530dzR+N7I0qcqOhBJeCvyxBGzPyVq/M+erXai3MWY55aQSd4mnZ
-        qKTHoAlV5v7T9xoqWB5x0ljgqObGdyRxc95y/xE=
-X-Google-Smtp-Source: ABdhPJzZSDH5uc43hERebvJdjVFz5phkw7dcWmRs7gzFR8fSgvsEMdnv/WC92UEdmil1uI6T6wK/nbJLBIsVQelxwWw=
-X-Received: by 2002:a05:6a00:2ba:b029:3b0:9ade:afb1 with SMTP id
- q26-20020a056a0002bab02903b09adeafb1mr1413120pfs.73.1627657958462; Fri, 30
- Jul 2021 08:12:38 -0700 (PDT)
+        bh=MFWb5ReFHG9Qg18Snz/SW+OnDom1C9cZbldQUCdkKvw=;
+        b=XaRo4mIM/0l3LS5vGZKNJovmbt1nk+CFvTsqeS+rPa0g3tXtJEu8gtirnP8poUWfpk
+         f+2ajtJ3OgLVX/oFNEOR9CE+P7K6wc3Nc6P3nNd5xrxkUuLwVrVP59ugJrpXP/j56LEI
+         T85LDevthEFmg1piuLOEDKTtpgPoBg4Ow+2wP+1MlRJmpOU93HFVO9okKSTsDoJ3sw5I
+         UbLrWQi5ekW0yNM6EpV3+972+6WmWBlMY8aX/VJQ4Z0Sj9UhOP6NVKJafXfmty88QebH
+         Hxvd57RohahI295u51PS1zr9rHAcJV3fdym5a/o7YEt2413nmvD6R2ccwh+bC1DlZrSu
+         H7wg==
+X-Gm-Message-State: AOAM530IGI4989Xm375VDzNBinxYm38MtalBgk9rL+tzzLnHZjcsUY4O
+        FrOdqBWlAY7RfC02JLZHGesSoP+3oZWEp2a8mJjTvOa9saI=
+X-Google-Smtp-Source: ABdhPJwSbNJMRFq5P7d/BDOUhlE2m8nVbAT/REQJMtWGEvx4/xrIgzApd253SEcgaC/ectgWIbIlw72jEiK4DfRcLKE=
+X-Received: by 2002:a25:2985:: with SMTP id p127mr3850822ybp.386.1627657970588;
+ Fri, 30 Jul 2021 08:12:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210730144922.29111-1-semen.protsenko@linaro.org> <20210730144922.29111-11-semen.protsenko@linaro.org>
-In-Reply-To: <20210730144922.29111-11-semen.protsenko@linaro.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 30 Jul 2021 18:11:58 +0300
-Message-ID: <CAHp75VdzXXM64CoS3P9f=8e3hwOa-vY44+s6sqOhBmNCTFxtYQ@mail.gmail.com>
-Subject: Re: [PATCH 10/12] clk: samsung: Add Exynos850 clock driver stub
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20210730140210.728367-1-pgwipeout@gmail.com> <9bb0e700-eb12-af14-76d6-3a90d434339b@arm.com>
+In-Reply-To: <9bb0e700-eb12-af14-76d6-3a90d434339b@arm.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Fri, 30 Jul 2021 11:12:39 -0400
+Message-ID: <CAMdYzYpXwWdddVFFFQ=0MY0zCOR++n3gurkg-q7Jtrr7X_icQA@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: rockchip: add thermal fan control to rockpro64
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        devicetree@vger.kernel.org,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 5:51 PM Sam Protsenko
-<semen.protsenko@linaro.org> wrote:
+On Fri, Jul 30, 2021 at 10:33 AM Robin Murphy <robin.murphy@arm.com> wrote:
 >
-> For now it's just a stub driver to make serial driver work. Later it
-
-make the serial
-
-> will be implemented properly.
+> Hi Peter,
 >
-> This driver doesn't really change clocks, only registers the UART clock
-> as a fixed-rate clock. Without this clock driver the UART driver won't
-> work, as it's trying to obtain "uart" clock and fails if it's not able
-> to.
-
-
-> From drivers/tty/serial/samsung_tty.c:
+> On 2021-07-30 15:02, Peter Geis wrote:
+> > The rockpro64 had a fan node since
+> > commit 5882d65c1691 ("arm64: dts: rockchip: Add PWM fan for RockPro64")
+> > however it was never tied into the thermal driver for automatic control.
+> >
+> > Add the links to the thermal node to permit the kernel to handle this
+> > automatically.
+> > Borrowed from the (rk3399-khadas-edge.dtsi).
+> >
+> > Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> > ---
+> >
+> > Changelog:
+> > v2:
+> > Adjusted fan setpoints for less noise
+> >
+> >   .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 57 +++++++++++++++++++
+> >   1 file changed, 57 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> > index 6bff8db7d33e..0d79e6ae1c3a 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+> > @@ -69,6 +69,7 @@ diy_led: led-1 {
+> >
+> >       fan: pwm-fan {
+> >               compatible = "pwm-fan";
+> > +             cooling-levels = <0 100 150 200 255>;
+> >               #cooling-cells = <2>;
+> >               fan-supply = <&vcc12v_dcin>;
+> >               pwms = <&pwm1 0 50000 0>;
+> > @@ -245,6 +246,34 @@ &cpu_b1 {
+> >       cpu-supply = <&vdd_cpu_b>;
+> >   };
+> >
+> > +&cpu_thermal {
+> > +     trips {
+> > +             cpu_warm: cpu_warm {
+> > +                     temperature = <55000>;
+> > +                     hysteresis = <2000>;
+> > +                     type = "active";
+> > +             };
 >
-> 8<------------------------------------------------------------------->8
->     ourport->clk = clk_get(&platdev->dev, "uart");
->     if (IS_ERR(ourport->clk)) {
->         pr_err("%s: Controller clock not found\n",
->                 dev_name(&platdev->dev));
->         ret = PTR_ERR(ourport->clk);
->         goto err;
->     }
-> 8<------------------------------------------------------------------->8
+> (Heh, it still tickles me to see these points I arbitrarily made up
+> being faithfully copied around - I guess that means I got them right!)
 
-This is not needed in the commit message.
+On the rockpro64 these points work quite nicely, I compile the kernel
+natively so I hit the first one easily.
 
-> In order to get functional serial console we have to implement that
-
-get a functional
-
-> minimal clock driver with "uart" clock. It's not necessary to actually
-> configure clocks, as those are already configured in bootloader, so
-> kernel can rely on that for now.
-
-> 80 column limit is broken here to make checkpatch happy, otherwise it
-> swears about incorrect __initconst usage.
-
-Again, no need to be in the commit message, use the comment field for
-this (after the cutter '---' line below).
-
-
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  drivers/clk/samsung/Makefile        |  1 +
->  drivers/clk/samsung/clk-exynos850.c | 63 +++++++++++++++++++++++++++++
->  2 files changed, 64 insertions(+)
->  create mode 100644 drivers/clk/samsung/clk-exynos850.c
 >
-> diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
-> index 028b2e27a37e..c46cf11e4d0b 100644
-> --- a/drivers/clk/samsung/Makefile
-> +++ b/drivers/clk/samsung/Makefile
-> @@ -17,6 +17,7 @@ obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK) += clk-exynos5433.o
->  obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
->  obj-$(CONFIG_EXYNOS_CLKOUT)    += clk-exynos-clkout.o
->  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)  += clk-exynos7.o
-> +obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)  += clk-exynos850.o
->  obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
->  obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
->  obj-$(CONFIG_S3C2412_COMMON_CLK)+= clk-s3c2412.o
-> diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-> new file mode 100644
-> index 000000000000..3192ec9bb90b
-> --- /dev/null
-> +++ b/drivers/clk/samsung/clk-exynos850.c
-> @@ -0,0 +1,63 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2019 Samsung Electronics Co., Ltd.
-> + * Copyright (C) 2021 Linaro Ltd.
-> + *
-> + * Common Clock Framework support for Exynos850 SoC.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/clkdev.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
+> > +
+> > +             cpu_hot: cpu_hot {
+> > +                     temperature = <65000>;
+> > +                     hysteresis = <2000>;
+> > +                     type = "active";
+> > +             };
+> > +     };
+> > +
+> > +     cooling-maps {
+> > +             map2 {
+> > +                     trip = <&cpu_warm>;
+> > +                     cooling-device = <&fan THERMAL_NO_LIMIT 1>;
+> > +             };
+> > +
+> > +             map3 {
+> > +                     trip = <&cpu_hot>;
+> > +                     cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
+> > +             };
+> > +     };
+> > +};
+> > +
+> >   &emmc_phy {
+> >       status = "okay";
+> >   };
+> > @@ -281,6 +310,34 @@ &gpu {
+> >       status = "okay";
+> >   };
+> >
+> > +&gpu_thermal {
+> > +     trips {
+> > +             gpu_warm: gpu_warm {
+> > +                     temperature = <55000>;
+> > +                     hysteresis = <2000>;
+> > +                     type = "active";
+> > +             };
+> > +
+> > +             gpu_hot: gpu_hot {
+> > +                     temperature = <65000>;
+> > +                     hysteresis = <2000>;
+> > +                     type = "active";
+> > +             };
+> > +     };
+> > +
+> > +     cooling-maps {
+> > +             map1 {
+> > +                     trip = <&gpu_warm>;
+> > +                     cooling-device = <&fan THERMAL_NO_LIMIT 1>;
+> > +             };
+> > +
+> > +             map2 {
+> > +                     trip = <&gpu_hot>;
+> > +                     cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
+> > +             };
+> > +     };
+> > +};
+>
+> Unless something's changed since commit a793e19c15f2 ("arm64: dts:
+> rockchip: Fix NanoPC-T4 cooling maps"), multiple cooling maps don't
+> actually share a singe cooling device properly[1]. The Khadas Edge DT
+> dates from right around the same time so I guess it crossed over with
+> that discussion and never got fixed.
+>
+> In hindsight, I do seem to remember my fan being a bit more jumpy around
+> the trip points than it is today, which may well have been the two maps
+> fighting each other...
+>
+> Robin.
+>
+> [1]
+> https://lore.kernel.org/linux-rockchip/55b9018e-672e-522b-d0a0-c5655be0f353@linaro.org/
 
-+ blank line?
+Interesting, so instead of "or-ing" the signals to the fan, the
+thermal just fights with itself?
+That explains interesting states where it can't decide if it wants to
+run or not.
 
-> +#include <dt-bindings/clock/exynos850.h>
-> +
-> +#include "clk.h"
-> +
-> +/* Fixed rate clocks generated outside the SoC */
-> +static struct samsung_fixed_rate_clock exynos850_fixed_rate_ext_clks[] __initdata = {
-> +       FRATE(OSCCLK, "fin_pll", NULL, 0, 26000000),
-> +};
-> +
-> +/*
-> + * Model the UART clock as a fixed-rate clock for now, to make serial driver
-> + * work. This clock is already configured in the bootloader.
-> + */
-> +static const struct samsung_fixed_rate_clock exynos850_peri_clks[] __initconst = {
-> +       FRATE(DOUT_UART, "DOUT_UART", NULL, 0, 200000000),
-> +};
-> +
-> +static const struct of_device_id ext_clk_match[] __initconst = {
+I'll pull the gpu portion and submit a v3, thanks!
 
-> +       { .compatible = "samsung,exynos850-oscclk", .data = (void *)0 },
-
-0 is the default for static variables.
-
-> +       {},
-
-No comma needed for the terminator lines.
-
-> +};
-> +
-> +void __init exynos850_clk_init(struct device_node *np)
-> +{
-> +       void __iomem *reg_base;
-> +       struct samsung_clk_provider *ctx;
-
-> +       if (!np)
-> +               panic("%s: unable to determine soc\n", __func__);
-
-Check for the sake of additional code?
-
-> +       reg_base = of_iomap(np, 0);
-
-This will fail when np == NULL.
-
-> +       if (!reg_base)
-> +               panic("%s: failed to map registers\n", __func__);
-> +
-> +       ctx = samsung_clk_init(np, reg_base, CLK_NR_CLKS);
-> +       if (!ctx)
-> +               panic("%s: unable to allocate ctx\n", __func__);
-> +
-> +       samsung_clk_of_register_fixed_ext(ctx,
-> +                       exynos850_fixed_rate_ext_clks,
-> +                       ARRAY_SIZE(exynos850_fixed_rate_ext_clks),
-> +                       ext_clk_match);
-> +
-> +       samsung_clk_register_fixed_rate(ctx, exynos850_peri_clks,
-> +                       ARRAY_SIZE(exynos850_peri_clks));
-> +
-> +       samsung_clk_of_add_provider(np, ctx);
-> +}
-> +
-> +CLK_OF_DECLARE(exynos850_clk, "samsung,exynos850-clock", exynos850_clk_init);
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+>
+> > +
+> >   &i2c0 {
+> >       clock-frequency = <400000>;
+> >       i2c-scl-rising-time-ns = <168>;
+> >
