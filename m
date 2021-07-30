@@ -2,249 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABD13DBB80
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E113DBBA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239424AbhG3PBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 11:01:54 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:52309 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239030AbhG3PBx (ORCPT
+        id S239872AbhG3PHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239545AbhG3PG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 11:01:53 -0400
+        Fri, 30 Jul 2021 11:06:26 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80488C061796;
+        Fri, 30 Jul 2021 08:06:17 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id l19so15675389pjz.0;
+        Fri, 30 Jul 2021 08:06:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1627657310; x=1659193310;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=kmZvjwXOQUAejKr+gnf0Zxf4PHoVVd4Xm45+XI/Os8g=;
-  b=ivuOCU/zqKiSYOpxPOmrf7rR2xTnHX1QGbMyEF7HiQpWx81U3XEv/9kJ
-   8ggkjTfbv2X+pObBJfDk1zcLlHLd8yJLmwR+bPRZFC7QiT+3uui5odJJC
-   j4OpDfF8C9DG7NGTAebk0sGU2uR9Odu9KA2dt+2Ur+kIR6f7bnvYw/grD
-   8=;
-X-IronPort-AV: E=Sophos;i="5.84,282,1620691200"; 
-   d="scan'208";a="129091375"
-Subject: Re: [PATCH 4/4] KVM: selftests: Test access to XMM fast hypercalls
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 30 Jul 2021 15:01:43 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id 18728A1C90;
-        Fri, 30 Jul 2021 15:01:39 +0000 (UTC)
-Received: from u366d62d47e3651.ant.amazon.com (10.43.161.175) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Fri, 30 Jul 2021 15:01:36 +0000
-Date:   Fri, 30 Jul 2021 17:01:32 +0200
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-CC:     <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        <linux-kernel@vger.kernel.org>
-Message-ID: <20210730150131.GA31075@u366d62d47e3651.ant.amazon.com>
-References: <20210730122625.112848-1-vkuznets@redhat.com>
- <20210730122625.112848-5-vkuznets@redhat.com>
- <20210730143530.GD20232@u366d62d47e3651.ant.amazon.com>
- <878s1namap.fsf@vitty.brq.redhat.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j4ZgEJOfXo95728K0jGJfzXIz0FRfV/cneRN75qZrqQ=;
+        b=RYSukXXaDiTWFtkfzjGMnrY5AtjXo3ekM4msyBFRkvSH/TySNfOTHwCE/PhG9kdVJL
+         R1wnWFYftLZDkXbwiM9HrP5xrkcrqWL2C1H6mgL/4aCrF2sUWSCzUZ/SDFiw2Tm9koZV
+         tfbSSKWC8UHnq+p1aI60ONQmsygE/3kEFW8mV0pR6cNDGD9Crd7MUHw3KBIsLqjP/Izj
+         O86E1rGgmzXY/Esy3lPlCxYpHIdLPLrjS/8MXVyxqYsCRXbngYphM5XZiROupBcI5XQI
+         AivpQIYjHNVIA1REcQcEWf9My5E3hq9jzRtltxQqI8tWNG7hmvhwKWsS0zE25TPLseU0
+         um4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j4ZgEJOfXo95728K0jGJfzXIz0FRfV/cneRN75qZrqQ=;
+        b=WDQ8jC5Db40b5zUunWCvLSI8RSbkGKA+bQv90L3jHdWFvimkBzkBjL2RuFgurhJN1s
+         p1kLnT+gfFPPrsIckCxMtb7Rzs2hxI2qc4K8QJmbx3snWOHR7keAGSIUgbhja3fFBRMj
+         Lm5XCwvFRNsRmkEZ8hTyjJtNX1zMwriHeA6JZCEO9bUrRgBYe9wNE2vJLyJUqHOHZDT1
+         agtIf2jWn1kDh0QAbQJllIR7H6hzKakapkYdgK/dQ63Dylfy9IInvPdNIY5BH/FBFmAk
+         jI/YZcxEhmzeI9Sn3Y4EHTnoqluLXFNSoK08L36r+lkYEDzkbuSX4xYHDWyKOOP7pPr4
+         kFXQ==
+X-Gm-Message-State: AOAM533JM9jwWRqq2dWGjZu4LKjzCNw0X7poehcV/z1nsy2MotUkxqGN
+        eSDFAOvG5grXYmSissAHx2pW/VhsypzjwavA9wU=
+X-Google-Smtp-Source: ABdhPJy/BIrSVXKqer4o5xhukF4lXZQz2FWdUUGvQfpUZDWhqRqB5m1fbC/n8w5fR4df3nx8XFgBh7lC/jIZxo28Khs=
+X-Received: by 2002:a17:902:ac90:b029:12c:e7a:c183 with SMTP id
+ h16-20020a170902ac90b029012c0e7ac183mr2963181plr.21.1627657576975; Fri, 30
+ Jul 2021 08:06:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <878s1namap.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.161.175]
-X-ClientProxiedBy: EX13D45UWB003.ant.amazon.com (10.43.161.67) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+References: <20210730144922.29111-1-semen.protsenko@linaro.org> <20210730144922.29111-7-semen.protsenko@linaro.org>
+In-Reply-To: <20210730144922.29111-7-semen.protsenko@linaro.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 30 Jul 2021 18:05:37 +0300
+Message-ID: <CAHp75Vfj8UZdNeU0Ghg9qac6Ks3S1SLZOfZOKTWKp2y2vrcA6A@mail.gmail.com>
+Subject: Re: [PATCH 06/12] tty: serial: samsung: Add Exynos850 SoC data
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 04:50:06PM +0200, Vitaly Kuznetsov wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> 
-> 
-> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
-> 
-> > On Fri, Jul 30, 2021 at 02:26:25PM +0200, Vitaly Kuznetsov wrote:
-> >> HYPERV_CPUID_FEATURES.EDX and an 'XMM fast' hypercall is issued.
-> >>
-> >> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> >> ---
-> >>  .../selftests/kvm/include/x86_64/hyperv.h     |  5 ++-
-> >>  .../selftests/kvm/x86_64/hyperv_features.c    | 41 +++++++++++++++++--
-> >>  2 files changed, 42 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/tools/testing/selftests/kvm/include/x86_64/hyperv.h b/tools/testing/selftests/kvm/include/x86_64/hyperv.h
-> >> index 412eaee7884a..b66910702c0a 100644
-> >> --- a/tools/testing/selftests/kvm/include/x86_64/hyperv.h
-> >> +++ b/tools/testing/selftests/kvm/include/x86_64/hyperv.h
-> >> @@ -117,7 +117,7 @@
-> >>  #define HV_X64_GUEST_DEBUGGING_AVAILABLE               BIT(1)
-> >>  #define HV_X64_PERF_MONITOR_AVAILABLE                  BIT(2)
-> >>  #define HV_X64_CPU_DYNAMIC_PARTITIONING_AVAILABLE      BIT(3)
-> >> -#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE          BIT(4)
-> >> +#define HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE           BIT(4)
-> >>  #define HV_X64_GUEST_IDLE_STATE_AVAILABLE              BIT(5)
-> >>  #define HV_FEATURE_FREQUENCY_MSRS_AVAILABLE            BIT(8)
-> >>  #define HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE           BIT(10)
-> >> @@ -182,4 +182,7 @@
-> >>  #define HV_STATUS_INVALID_CONNECTION_ID                18
-> >>  #define HV_STATUS_INSUFFICIENT_BUFFERS         19
-> >>
-> >> +/* hypercall options */
-> >> +#define HV_HYPERCALL_FAST_BIT          BIT(16)
-> >> +
-> >>  #endif /* !SELFTEST_KVM_HYPERV_H */
-> >> diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_features.c b/tools/testing/selftests/kvm/x86_64/hyperv_features.c
-> >> index af27c7e829c1..91d88aaa9899 100644
-> >> --- a/tools/testing/selftests/kvm/x86_64/hyperv_features.c
-> >> +++ b/tools/testing/selftests/kvm/x86_64/hyperv_features.c
-> >> @@ -47,6 +47,7 @@ static void do_wrmsr(u32 idx, u64 val)
-> >>  }
-> >>
-> >>  static int nr_gp;
-> >> +static int nr_ud;
-> >>
-> >>  static inline u64 hypercall(u64 control, vm_vaddr_t input_address,
-> >>                             vm_vaddr_t output_address)
-> >> @@ -80,6 +81,12 @@ static void guest_gp_handler(struct ex_regs *regs)
-> >>                 regs->rip = (uint64_t)&wrmsr_end;
-> >>  }
-> >>
-> >> +static void guest_ud_handler(struct ex_regs *regs)
-> >> +{
-> >> +       nr_ud++;
-> >> +       regs->rip += 3;
-> >> +}
-> >> +
-> >>  struct msr_data {
-> >>         uint32_t idx;
-> >>         bool available;
-> >> @@ -90,6 +97,7 @@ struct msr_data {
-> >>  struct hcall_data {
-> >>         uint64_t control;
-> >>         uint64_t expect;
-> >> +       bool ud_expected;
-> >>  };
-> >>
-> >>  static void guest_msr(struct msr_data *msr)
-> >> @@ -117,13 +125,26 @@ static void guest_msr(struct msr_data *msr)
-> >>  static void guest_hcall(vm_vaddr_t pgs_gpa, struct hcall_data *hcall)
-> >>  {
-> >>         int i = 0;
-> >> +       u64 res, input, output;
-> >>
-> >>         wrmsr(HV_X64_MSR_GUEST_OS_ID, LINUX_OS_ID);
-> >>         wrmsr(HV_X64_MSR_HYPERCALL, pgs_gpa);
-> >>
-> >>         while (hcall->control) {
-> >> -               GUEST_ASSERT(hypercall(hcall->control, pgs_gpa,
-> >> -                                      pgs_gpa + 4096) == hcall->expect);
-> >> +               nr_ud = 0;
-> >> +               if (!(hcall->control & HV_HYPERCALL_FAST_BIT)) {
-> >> +                       input = pgs_gpa;
-> >> +                       output = pgs_gpa + 4096;
-> >> +               } else {
-> >> +                       input = output = 0;
-> >> +               }
-> >> +
-> >> +               res = hypercall(hcall->control, input, output);
-> >> +               if (hcall->ud_expected)
-> >> +                       GUEST_ASSERT(nr_ud == 1);
-> >
-> > Should we also do WRITE_ONCE(nr_ur, 0) here?
-> 
-> It could probably make sense to replace 'nr_ud = 0' above with this so
-> compiler doesn't screw us up one day..
-> 
-> > or perhaps pass the the
-> > expected value of nr_ud + 1 in hcall->ud_expected from caller and do,
-> >
-> >     if (hcall->ud_expected)
-> >         GUEST_ASSERT(nr_ud == hcall->ud_expected);
-> >
-> > This way there can be other test that can also expect a UD.
-> 
-> My idea was that we don't really need to count #UDs for now, just
-> checking the fact that it happened is OK so I reset nr_ud before doing
-> the hypercall and check it after. It is possible to add more tests with
-> 'ud_expected' this way.
+On Fri, Jul 30, 2021 at 5:50 PM Sam Protsenko
+<semen.protsenko@linaro.org> wrote:
+>
+> Add serial driver data for Exynos850 SoC. This driver data is basically
+> reusing EXYNOS_COMMON_SERIAL_DRV_DATA, which is common for all Exynos
+> chips, but also enables USI init, which was added in previous commit:
+> "tty: serial: samsung: Init USI to keep clocks running".
 
-Oops, my bad, didn't notice that you were resetting nr_ud before
-hypercall(). Thanks for clarifying.
+...
 
-Reviewed-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+> +static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
+> +       EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
 
-~ Sid.
+> +       .fifosize = { 0, },
 
-> >
-> >> +               else
-> >> +                       GUEST_ASSERT(res == hcall->expect);
-> >> +
-> >>                 GUEST_SYNC(i++);
-> >>         }
-> >>
-> >> @@ -552,8 +573,18 @@ static void guest_test_hcalls_access(struct kvm_vm *vm, struct hcall_data *hcall
-> >>                         recomm.ebx = 0xfff;
-> >>                         hcall->expect = HV_STATUS_SUCCESS;
-> >>                         break;
-> >> -
-> >>                 case 17:
-> >> +                       /* XMM fast hypercall */
-> >> +                       hcall->control = HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE | HV_HYPERCALL_FAST_BIT;
-> >> +                       hcall->ud_expected = true;
-> >> +                       break;
-> >> +               case 18:
-> >> +                       feat.edx |= HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE;
-> >> +                       hcall->ud_expected = false;
-> >> +                       hcall->expect = HV_STATUS_SUCCESS;
-> >> +                       break;
-> >> +
-> >> +               case 19:
-> >>                         /* END */
-> >>                         hcall->control = 0;
-> >>                         break;
-> >> @@ -625,6 +656,10 @@ int main(void)
-> >>         /* Test hypercalls */
-> >>         vm = vm_create_default(VCPU_ID, 0, guest_hcall);
-> >>
-> >> +       vm_init_descriptor_tables(vm);
-> >> +       vcpu_init_descriptor_tables(vm, VCPU_ID);
-> >> +       vm_install_exception_handler(vm, UD_VECTOR, guest_ud_handler);
-> >> +
-> >>         /* Hypercall input/output */
-> >>         hcall_page = vm_vaddr_alloc_pages(vm, 2);
-> >>         memset(addr_gva2hva(vm, hcall_page), 0x0, 2 * getpagesize());
-> >> --
-> >> 2.31.1
-> >>
-> >
-> >
-> >
-> > Amazon Development Center Germany GmbH
-> > Krausenstr. 38
-> > 10117 Berlin
-> > Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-> > Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-> > Sitz: Berlin
-> > Ust-ID: DE 289 237 879
-> >
-> >
-> >
-> 
-> --
-> Vitaly
-> 
+0 is the default for static globally defined variables.
 
+> +};
 
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+-- 
+With Best Regards,
+Andy Shevchenko
