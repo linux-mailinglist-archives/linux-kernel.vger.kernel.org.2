@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773433DB41F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01ABC3DB419
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238093AbhG3G52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:57:28 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:39444
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237771AbhG3G5G (ORCPT
+        id S237927AbhG3G5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:57:14 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:55362
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237719AbhG3G5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:57:06 -0400
+        Fri, 30 Jul 2021 02:57:07 -0400
 Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 212D33F09F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:57:01 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 82DA13F228
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:57:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627628221;
-        bh=uMkuh0xJL9kOCZ9QqooVEWp1gQQGTQsw+N/FjbB0TVA=;
+        s=20210705; t=1627628222;
+        bh=y9Uo/os+3OziqdNdxRl0CGuCizZoyhHNVP1pooBGgac=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=RItneORzbFobrF69cKvXESD2VKYRFFuA2Q+lvZjoCCQqtg2ChDl8E4AJiHp2KeWHR
-         BHrBkRo/3hC4lpqNRjSLKvyYU6+BoYwX3wJFLhLh81Yc0J8UFtao1XhK919kgjaZE1
-         nXlGRLtF7Uqw1a7slJDU77x6GTqXIP0w623Q+shz46KXwNE1gYyixfuliJGDVwkWIX
-         HuHgPlmtYa6FtKVzW2BOzlgGwYbuXyEDJJdDskvVbMLmgIfulmzS2xqqclBF8cEXq9
-         IV5w7FFKys7y0Q9CAAyq8N1z0xZeQysMHIjtv8ohnb+du9TBDAOZ2rLq9jjsK7Ibuf
-         m5URSnRWzg5Vg==
-Received: by mail-ed1-f72.google.com with SMTP id n24-20020aa7c7980000b02903bb4e1d45aaso4128082eds.15
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:57:01 -0700 (PDT)
+        b=uBXvW9MWOczwFySCI4NDwt2ZPDMyW451Vys3Q514BRAhJJ/l4uULjLAFH/iNlLwe8
+         i2Vob0SHAEG/GnyeS/eQ8EYQpMDwBi4BMhTFCPQNGAzsuqwrWHS7vQAlyvxzGhbGSD
+         uDejQS+QeWytxVi7J1JRjYqGdxg06MAZMTYkdl29vyiuOpERjKFqIVwaMzEToyyVPq
+         F0jphNQ40XJDCy5I5GKV9ha2L7n6knRKcvbVH9JDcKmwfg5SgHJCxClv1LlCHiRaGa
+         /jht3jYt87hwT6tj+SO10TABexe4cpu+6L0ZWQ5gW++n4E4SDzxx48eDlC0g5Y0OIM
+         PJ9ZN30j2asbw==
+Received: by mail-ed1-f72.google.com with SMTP id n24-20020aa7c7980000b02903bb4e1d45aaso4128114eds.15
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:57:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uMkuh0xJL9kOCZ9QqooVEWp1gQQGTQsw+N/FjbB0TVA=;
-        b=t6Ys3h0mvybjjhrOEopgdl0HGhoCWOwHueCWFSFgs/b3JVx0cxOT9Xatq+2x8lMkzl
-         apHGl/CqZTCR2LgNohxHd2vHUOs281lppiCl9/5maK19ZUXKMtX8P9+VxKMDjcat//B7
-         qSbj4DQ0JsrrcT7YsVsf1aHBzY5Vj+RU17PNpgN72DJ0Ze77WvvnZOrkBf7jgdfhNxIU
-         4/lzLczVmnKHJUkvVH6EFI+WaExRICvBd0tYGKDBgRPgbTTbOvQXPTx1f+nnlxMg3nGM
-         5MOj4qkLh+S+JB8BiOJPKYuKlhWpIoZKAUwhezHsMOdLPFeoXn44IYDmNZ/JisC1JKCr
-         uXaQ==
-X-Gm-Message-State: AOAM532MnriVYdj64qIp+H03il9c7Ve9nBI9m9/IATS995rT2nfI0N1x
-        mpmDOjxaQaEMMT/rj5Ic5rdwijql2Ks/4Xd2vu3hUGMeDgq9gru9qIdnz8cooFm63bx7VS5IDSH
-        NLHihfXy17xZP/DBS5X17t91TCTrJwUnEDniiPC2ELA==
-X-Received: by 2002:a05:6402:12c3:: with SMTP id k3mr1256090edx.11.1627628220770;
-        Thu, 29 Jul 2021 23:57:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy249EMjXhhLOII3g1QVNXj3KSHREF64ze36f1NsRGL8cSO00wiQTtOxZODPiFyBjAFmzq0rA==
-X-Received: by 2002:a05:6402:12c3:: with SMTP id k3mr1256073edx.11.1627628220561;
-        Thu, 29 Jul 2021 23:57:00 -0700 (PDT)
+        bh=y9Uo/os+3OziqdNdxRl0CGuCizZoyhHNVP1pooBGgac=;
+        b=oPFeqH76KHqrrrxexdwZ92imTmgJaD+V3mTyR3oNXlDdOoiFNFSZYs3fOvcerkRPtc
+         zUPO+AFDFgtThU5G1O0zOiTUrqm0SKw7wk1cONDdzAAadrNio0oSlZj5GghEHbCLjDVb
+         mz9FYY6ndHbpw+vvjw+wKOHQu2Bt6tlOgqOeqRCUg5TLTWjGZ0uKN6a4p9LHjAvPc/Ti
+         //aQ87ebjjy3KhRzr4Qn4aHbxw59W48BdpkgTe//nNCqfQGVcPknNpojUiDEuGGIt0AL
+         Qi6iBbZMtwkJ/wf2wFVvN5Xzfae0RbkffeKCMhGEDCnWVEgAdVx3X97x6aZh19ucd+nk
+         rnRA==
+X-Gm-Message-State: AOAM533U1ZfFtmUogwEJaWAoyQ2uYTU3tzKlvC6S9b2qbzzs1GaWgwu/
+        wRZ6T++zxw+HJfcdkWQPdS41LMialOYrnDdhf8ahfawHmtxN7gLdwFXdxkQ1OHqtDNRWVWjfMm3
+        hT1uwRES2UhTKs6VsnEzcLIbV9av0F67Na4GpyN96gQ==
+X-Received: by 2002:a17:907:1c21:: with SMTP id nc33mr1135597ejc.436.1627628221831;
+        Thu, 29 Jul 2021 23:57:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz89YqE2coEuxrHG66HbiJMUGqlqHkcPyCTLLvJ2b6xbRP9Loj3KGN/HienVTCbi1eYYbPvvQ==
+X-Received: by 2002:a17:907:1c21:: with SMTP id nc33mr1135591ejc.436.1627628221721;
+        Thu, 29 Jul 2021 23:57:01 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id m9sm238518ejn.91.2021.07.29.23.56.59
+        by smtp.gmail.com with ESMTPSA id m9sm238518ejn.91.2021.07.29.23.57.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 23:57:00 -0700 (PDT)
+        Thu, 29 Jul 2021 23:57:01 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/8] nfc: constify several pointers to u8, char and sk_buff
-Date:   Fri, 30 Jul 2021 08:56:21 +0200
-Message-Id: <20210730065625.34010-5-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v2 5/8] nfc: constify local pointer variables
+Date:   Fri, 30 Jul 2021 08:56:22 +0200
+Message-Id: <20210730065625.34010-6-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210730065625.34010-1-krzysztof.kozlowski@canonical.com>
 References: <20210730065625.34010-1-krzysztof.kozlowski@canonical.com>
@@ -71,456 +71,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several functions receive pointers to u8, char or sk_buff but do not
-modify the contents so make them const.  This allows doing the same for
-local variables and in total makes the code a little bit safer.
+Few pointers to struct nfc_target and struct nfc_se can be made const.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- include/net/nfc/nfc.h   |  4 ++--
- net/nfc/core.c          |  4 ++--
- net/nfc/hci/llc_shdlc.c | 10 ++++-----
- net/nfc/llcp.h          |  8 +++----
- net/nfc/llcp_commands.c | 46 ++++++++++++++++++++++-------------------
- net/nfc/llcp_core.c     | 44 +++++++++++++++++++++------------------
- net/nfc/nfc.h           |  2 +-
- 7 files changed, 63 insertions(+), 55 deletions(-)
+ drivers/nfc/pn544/pn544.c | 4 ++--
+ net/nfc/core.c            | 2 +-
+ net/nfc/hci/core.c        | 8 ++++----
+ net/nfc/netlink.c         | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/net/nfc/nfc.h b/include/net/nfc/nfc.h
-index 901779138e2b..5dee575fbe86 100644
---- a/include/net/nfc/nfc.h
-+++ b/include/net/nfc/nfc.h
-@@ -266,7 +266,7 @@ struct sk_buff *nfc_alloc_send_skb(struct nfc_dev *dev, struct sock *sk,
- struct sk_buff *nfc_alloc_recv_skb(unsigned int size, gfp_t gfp);
+diff --git a/drivers/nfc/pn544/pn544.c b/drivers/nfc/pn544/pn544.c
+index c2b4555ab4b7..092f03b80a78 100644
+--- a/drivers/nfc/pn544/pn544.c
++++ b/drivers/nfc/pn544/pn544.c
+@@ -809,7 +809,7 @@ static int pn544_hci_discover_se(struct nfc_hci_dev *hdev)
+ #define PN544_SE_MODE_ON	0x01
+ static int pn544_hci_enable_se(struct nfc_hci_dev *hdev, u32 se_idx)
+ {
+-	struct nfc_se *se;
++	const struct nfc_se *se;
+ 	u8 enable = PN544_SE_MODE_ON;
+ 	static struct uicc_gatelist {
+ 		u8 head;
+@@ -864,7 +864,7 @@ static int pn544_hci_enable_se(struct nfc_hci_dev *hdev, u32 se_idx)
  
- int nfc_set_remote_general_bytes(struct nfc_dev *dev,
--				 u8 *gt, u8 gt_len);
-+				 const u8 *gt, u8 gt_len);
- u8 *nfc_get_local_general_bytes(struct nfc_dev *dev, size_t *gb_len);
+ static int pn544_hci_disable_se(struct nfc_hci_dev *hdev, u32 se_idx)
+ {
+-	struct nfc_se *se;
++	const struct nfc_se *se;
+ 	u8 disable = PN544_SE_MODE_OFF;
  
- int nfc_fw_download_done(struct nfc_dev *dev, const char *firmware_name,
-@@ -280,7 +280,7 @@ int nfc_dep_link_is_up(struct nfc_dev *dev, u32 target_idx,
- 		       u8 comm_mode, u8 rf_mode);
- 
- int nfc_tm_activated(struct nfc_dev *dev, u32 protocol, u8 comm_mode,
--		     u8 *gb, size_t gb_len);
-+		     const u8 *gb, size_t gb_len);
- int nfc_tm_deactivated(struct nfc_dev *dev);
- int nfc_tm_data_received(struct nfc_dev *dev, struct sk_buff *skb);
- 
+ 	se = nfc_find_se(hdev->ndev, se_idx);
 diff --git a/net/nfc/core.c b/net/nfc/core.c
-index 6ade54149b73..08182e209144 100644
+index 08182e209144..3c645c1d99c9 100644
 --- a/net/nfc/core.c
 +++ b/net/nfc/core.c
-@@ -636,7 +636,7 @@ int nfc_disable_se(struct nfc_dev *dev, u32 se_idx)
- 	return rc;
- }
- 
--int nfc_set_remote_general_bytes(struct nfc_dev *dev, u8 *gb, u8 gb_len)
-+int nfc_set_remote_general_bytes(struct nfc_dev *dev, const u8 *gb, u8 gb_len)
+@@ -824,7 +824,7 @@ EXPORT_SYMBOL(nfc_targets_found);
+  */
+ int nfc_target_lost(struct nfc_dev *dev, u32 target_idx)
  {
- 	pr_debug("dev_name=%s gb_len=%d\n", dev_name(&dev->dev), gb_len);
+-	struct nfc_target *tg;
++	const struct nfc_target *tg;
+ 	int i;
  
-@@ -665,7 +665,7 @@ int nfc_tm_data_received(struct nfc_dev *dev, struct sk_buff *skb)
- EXPORT_SYMBOL(nfc_tm_data_received);
- 
- int nfc_tm_activated(struct nfc_dev *dev, u32 protocol, u8 comm_mode,
--		     u8 *gb, size_t gb_len)
-+		     const u8 *gb, size_t gb_len)
- {
- 	int rc;
- 
-diff --git a/net/nfc/hci/llc_shdlc.c b/net/nfc/hci/llc_shdlc.c
-index 6b747856d095..aef750d7787c 100644
---- a/net/nfc/hci/llc_shdlc.c
-+++ b/net/nfc/hci/llc_shdlc.c
-@@ -123,7 +123,7 @@ static bool llc_shdlc_x_lteq_y_lt_z(int x, int y, int z)
- 		return ((y >= x) || (y < z)) ? true : false;
- }
- 
--static struct sk_buff *llc_shdlc_alloc_skb(struct llc_shdlc *shdlc,
-+static struct sk_buff *llc_shdlc_alloc_skb(const struct llc_shdlc *shdlc,
- 					   int payload_len)
- {
+ 	pr_debug("dev_name %s n_target %d\n", dev_name(&dev->dev), target_idx);
+diff --git a/net/nfc/hci/core.c b/net/nfc/hci/core.c
+index ff94ac774937..ceb87db57cdb 100644
+--- a/net/nfc/hci/core.c
++++ b/net/nfc/hci/core.c
+@@ -128,7 +128,7 @@ static void nfc_hci_msg_rx_work(struct work_struct *work)
+ 	struct nfc_hci_dev *hdev = container_of(work, struct nfc_hci_dev,
+ 						msg_rx_work);
  	struct sk_buff *skb;
-@@ -137,7 +137,7 @@ static struct sk_buff *llc_shdlc_alloc_skb(struct llc_shdlc *shdlc,
- }
- 
- /* immediately sends an S frame. */
--static int llc_shdlc_send_s_frame(struct llc_shdlc *shdlc,
-+static int llc_shdlc_send_s_frame(const struct llc_shdlc *shdlc,
- 				  enum sframe_type sframe_type, int nr)
+-	struct hcp_message *message;
++	const struct hcp_message *message;
+ 	u8 pipe;
+ 	u8 type;
+ 	u8 instruction;
+@@ -182,9 +182,9 @@ void nfc_hci_cmd_received(struct nfc_hci_dev *hdev, u8 pipe, u8 cmd,
+ 			  struct sk_buff *skb)
  {
- 	int r;
-@@ -159,7 +159,7 @@ static int llc_shdlc_send_s_frame(struct llc_shdlc *shdlc,
- }
+ 	u8 status = NFC_HCI_ANY_OK;
+-	struct hci_create_pipe_resp *create_info;
+-	struct hci_delete_pipe_noti *delete_info;
+-	struct hci_all_pipe_cleared_noti *cleared_info;
++	const struct hci_create_pipe_resp *create_info;
++	const struct hci_delete_pipe_noti *delete_info;
++	const struct hci_all_pipe_cleared_noti *cleared_info;
+ 	u8 gate;
  
- /* immediately sends an U frame. skb may contain optional payload */
--static int llc_shdlc_send_u_frame(struct llc_shdlc *shdlc,
-+static int llc_shdlc_send_u_frame(const struct llc_shdlc *shdlc,
- 				  struct sk_buff *skb,
- 				  enum uframe_modifier uframe_modifier)
+ 	pr_debug("from pipe %x cmd %x\n", pipe, cmd);
+diff --git a/net/nfc/netlink.c b/net/nfc/netlink.c
+index 70467a82be8f..49089c50872e 100644
+--- a/net/nfc/netlink.c
++++ b/net/nfc/netlink.c
+@@ -530,7 +530,7 @@ int nfc_genl_se_transaction(struct nfc_dev *dev, u8 se_idx,
+ 
+ int nfc_genl_se_connectivity(struct nfc_dev *dev, u8 se_idx)
  {
-@@ -361,7 +361,7 @@ static void llc_shdlc_connect_complete(struct llc_shdlc *shdlc, int r)
- 	wake_up(shdlc->connect_wq);
- }
+-	struct nfc_se *se;
++	const struct nfc_se *se;
+ 	struct sk_buff *msg;
+ 	void *hdr;
  
--static int llc_shdlc_connect_initiate(struct llc_shdlc *shdlc)
-+static int llc_shdlc_connect_initiate(const struct llc_shdlc *shdlc)
- {
- 	struct sk_buff *skb;
- 
-@@ -377,7 +377,7 @@ static int llc_shdlc_connect_initiate(struct llc_shdlc *shdlc)
- 	return llc_shdlc_send_u_frame(shdlc, skb, U_FRAME_RSET);
- }
- 
--static int llc_shdlc_connect_send_ua(struct llc_shdlc *shdlc)
-+static int llc_shdlc_connect_send_ua(const struct llc_shdlc *shdlc)
- {
- 	struct sk_buff *skb;
- 
-diff --git a/net/nfc/llcp.h b/net/nfc/llcp.h
-index 97853c9cefc7..d49d4bf2e37c 100644
---- a/net/nfc/llcp.h
-+++ b/net/nfc/llcp.h
-@@ -221,15 +221,15 @@ struct sock *nfc_llcp_accept_dequeue(struct sock *sk, struct socket *newsock);
- 
- /* TLV API */
- int nfc_llcp_parse_gb_tlv(struct nfc_llcp_local *local,
--			  u8 *tlv_array, u16 tlv_array_len);
-+			  const u8 *tlv_array, u16 tlv_array_len);
- int nfc_llcp_parse_connection_tlv(struct nfc_llcp_sock *sock,
--				  u8 *tlv_array, u16 tlv_array_len);
-+				  const u8 *tlv_array, u16 tlv_array_len);
- 
- /* Commands API */
- void nfc_llcp_recv(void *data, struct sk_buff *skb, int err);
--u8 *nfc_llcp_build_tlv(u8 type, u8 *value, u8 value_length, u8 *tlv_length);
-+u8 *nfc_llcp_build_tlv(u8 type, const u8 *value, u8 value_length, u8 *tlv_length);
- struct nfc_llcp_sdp_tlv *nfc_llcp_build_sdres_tlv(u8 tid, u8 sap);
--struct nfc_llcp_sdp_tlv *nfc_llcp_build_sdreq_tlv(u8 tid, char *uri,
-+struct nfc_llcp_sdp_tlv *nfc_llcp_build_sdreq_tlv(u8 tid, const char *uri,
- 						  size_t uri_len);
- void nfc_llcp_free_sdp_tlv(struct nfc_llcp_sdp_tlv *sdp);
- void nfc_llcp_free_sdp_tlv_list(struct hlist_head *sdp_head);
-diff --git a/net/nfc/llcp_commands.c b/net/nfc/llcp_commands.c
-index 475061c79c44..3c4172a5aeb5 100644
---- a/net/nfc/llcp_commands.c
-+++ b/net/nfc/llcp_commands.c
-@@ -15,7 +15,7 @@
- #include "nfc.h"
- #include "llcp.h"
- 
--static u8 llcp_tlv_length[LLCP_TLV_MAX] = {
-+static const u8 llcp_tlv_length[LLCP_TLV_MAX] = {
- 	0,
- 	1, /* VERSION */
- 	2, /* MIUX */
-@@ -29,7 +29,7 @@ static u8 llcp_tlv_length[LLCP_TLV_MAX] = {
- 
- };
- 
--static u8 llcp_tlv8(u8 *tlv, u8 type)
-+static u8 llcp_tlv8(const u8 *tlv, u8 type)
- {
- 	if (tlv[0] != type || tlv[1] != llcp_tlv_length[tlv[0]])
- 		return 0;
-@@ -37,7 +37,7 @@ static u8 llcp_tlv8(u8 *tlv, u8 type)
- 	return tlv[2];
- }
- 
--static u16 llcp_tlv16(u8 *tlv, u8 type)
-+static u16 llcp_tlv16(const u8 *tlv, u8 type)
- {
- 	if (tlv[0] != type || tlv[1] != llcp_tlv_length[tlv[0]])
- 		return 0;
-@@ -46,37 +46,37 @@ static u16 llcp_tlv16(u8 *tlv, u8 type)
- }
- 
- 
--static u8 llcp_tlv_version(u8 *tlv)
-+static u8 llcp_tlv_version(const u8 *tlv)
- {
- 	return llcp_tlv8(tlv, LLCP_TLV_VERSION);
- }
- 
--static u16 llcp_tlv_miux(u8 *tlv)
-+static u16 llcp_tlv_miux(const u8 *tlv)
- {
- 	return llcp_tlv16(tlv, LLCP_TLV_MIUX) & 0x7ff;
- }
- 
--static u16 llcp_tlv_wks(u8 *tlv)
-+static u16 llcp_tlv_wks(const u8 *tlv)
- {
- 	return llcp_tlv16(tlv, LLCP_TLV_WKS);
- }
- 
--static u16 llcp_tlv_lto(u8 *tlv)
-+static u16 llcp_tlv_lto(const u8 *tlv)
- {
- 	return llcp_tlv8(tlv, LLCP_TLV_LTO);
- }
- 
--static u8 llcp_tlv_opt(u8 *tlv)
-+static u8 llcp_tlv_opt(const u8 *tlv)
- {
- 	return llcp_tlv8(tlv, LLCP_TLV_OPT);
- }
- 
--static u8 llcp_tlv_rw(u8 *tlv)
-+static u8 llcp_tlv_rw(const u8 *tlv)
- {
- 	return llcp_tlv8(tlv, LLCP_TLV_RW) & 0xf;
- }
- 
--u8 *nfc_llcp_build_tlv(u8 type, u8 *value, u8 value_length, u8 *tlv_length)
-+u8 *nfc_llcp_build_tlv(u8 type, const u8 *value, u8 value_length, u8 *tlv_length)
- {
- 	u8 *tlv, length;
- 
-@@ -130,7 +130,7 @@ struct nfc_llcp_sdp_tlv *nfc_llcp_build_sdres_tlv(u8 tid, u8 sap)
- 	return sdres;
- }
- 
--struct nfc_llcp_sdp_tlv *nfc_llcp_build_sdreq_tlv(u8 tid, char *uri,
-+struct nfc_llcp_sdp_tlv *nfc_llcp_build_sdreq_tlv(u8 tid, const char *uri,
- 						  size_t uri_len)
- {
- 	struct nfc_llcp_sdp_tlv *sdreq;
-@@ -190,9 +190,10 @@ void nfc_llcp_free_sdp_tlv_list(struct hlist_head *head)
- }
- 
- int nfc_llcp_parse_gb_tlv(struct nfc_llcp_local *local,
--			  u8 *tlv_array, u16 tlv_array_len)
-+			  const u8 *tlv_array, u16 tlv_array_len)
- {
--	u8 *tlv = tlv_array, type, length, offset = 0;
-+	const u8 *tlv = tlv_array;
-+	u8 type, length, offset = 0;
- 
- 	pr_debug("TLV array length %d\n", tlv_array_len);
- 
-@@ -239,9 +240,10 @@ int nfc_llcp_parse_gb_tlv(struct nfc_llcp_local *local,
- }
- 
- int nfc_llcp_parse_connection_tlv(struct nfc_llcp_sock *sock,
--				  u8 *tlv_array, u16 tlv_array_len)
-+				  const u8 *tlv_array, u16 tlv_array_len)
- {
--	u8 *tlv = tlv_array, type, length, offset = 0;
-+	const u8 *tlv = tlv_array;
-+	u8 type, length, offset = 0;
- 
- 	pr_debug("TLV array length %d\n", tlv_array_len);
- 
-@@ -295,7 +297,7 @@ static struct sk_buff *llcp_add_header(struct sk_buff *pdu,
- 	return pdu;
- }
- 
--static struct sk_buff *llcp_add_tlv(struct sk_buff *pdu, u8 *tlv,
-+static struct sk_buff *llcp_add_tlv(struct sk_buff *pdu, const u8 *tlv,
- 				    u8 tlv_length)
- {
- 	/* XXX Add an skb length check */
-@@ -389,9 +391,10 @@ int nfc_llcp_send_connect(struct nfc_llcp_sock *sock)
- {
- 	struct nfc_llcp_local *local;
- 	struct sk_buff *skb;
--	u8 *service_name_tlv = NULL, service_name_tlv_length;
--	u8 *miux_tlv = NULL, miux_tlv_length;
--	u8 *rw_tlv = NULL, rw_tlv_length, rw;
-+	const u8 *service_name_tlv = NULL;
-+	const u8 *miux_tlv = NULL;
-+	const u8 *rw_tlv = NULL;
-+	u8 service_name_tlv_length, miux_tlv_length,  rw_tlv_length, rw;
- 	int err;
- 	u16 size = 0;
- 	__be16 miux;
-@@ -465,8 +468,9 @@ int nfc_llcp_send_cc(struct nfc_llcp_sock *sock)
- {
- 	struct nfc_llcp_local *local;
- 	struct sk_buff *skb;
--	u8 *miux_tlv = NULL, miux_tlv_length;
--	u8 *rw_tlv = NULL, rw_tlv_length, rw;
-+	const u8 *miux_tlv = NULL;
-+	const u8 *rw_tlv = NULL;
-+	u8 miux_tlv_length, rw_tlv_length, rw;
- 	int err;
- 	u16 size = 0;
- 	__be16 miux;
-diff --git a/net/nfc/llcp_core.c b/net/nfc/llcp_core.c
-index cc997518f79d..eaeb2b1cfa6a 100644
---- a/net/nfc/llcp_core.c
-+++ b/net/nfc/llcp_core.c
-@@ -301,7 +301,7 @@ static char *wks[] = {
- 	"urn:nfc:sn:snep",
- };
- 
--static int nfc_llcp_wks_sap(char *service_name, size_t service_name_len)
-+static int nfc_llcp_wks_sap(const char *service_name, size_t service_name_len)
- {
- 	int sap, num_wks;
- 
-@@ -325,7 +325,7 @@ static int nfc_llcp_wks_sap(char *service_name, size_t service_name_len)
- 
- static
- struct nfc_llcp_sock *nfc_llcp_sock_from_sn(struct nfc_llcp_local *local,
--					    u8 *sn, size_t sn_len)
-+					    const u8 *sn, size_t sn_len)
- {
- 	struct sock *sk;
- 	struct nfc_llcp_sock *llcp_sock, *tmp_sock;
-@@ -522,7 +522,7 @@ static int nfc_llcp_build_gb(struct nfc_llcp_local *local)
- {
- 	u8 *gb_cur, version, version_length;
- 	u8 lto_length, wks_length, miux_length;
--	u8 *version_tlv = NULL, *lto_tlv = NULL,
-+	const u8 *version_tlv = NULL, *lto_tlv = NULL,
- 	   *wks_tlv = NULL, *miux_tlv = NULL;
- 	__be16 wks = cpu_to_be16(local->local_wks);
- 	u8 gb_len = 0;
-@@ -612,7 +612,7 @@ u8 *nfc_llcp_general_bytes(struct nfc_dev *dev, size_t *general_bytes_len)
- 	return local->gb;
- }
- 
--int nfc_llcp_set_remote_gb(struct nfc_dev *dev, u8 *gb, u8 gb_len)
-+int nfc_llcp_set_remote_gb(struct nfc_dev *dev, const u8 *gb, u8 gb_len)
- {
- 	struct nfc_llcp_local *local;
- 
-@@ -639,27 +639,27 @@ int nfc_llcp_set_remote_gb(struct nfc_dev *dev, u8 *gb, u8 gb_len)
- 				     local->remote_gb_len - 3);
- }
- 
--static u8 nfc_llcp_dsap(struct sk_buff *pdu)
-+static u8 nfc_llcp_dsap(const struct sk_buff *pdu)
- {
- 	return (pdu->data[0] & 0xfc) >> 2;
- }
- 
--static u8 nfc_llcp_ptype(struct sk_buff *pdu)
-+static u8 nfc_llcp_ptype(const struct sk_buff *pdu)
- {
- 	return ((pdu->data[0] & 0x03) << 2) | ((pdu->data[1] & 0xc0) >> 6);
- }
- 
--static u8 nfc_llcp_ssap(struct sk_buff *pdu)
-+static u8 nfc_llcp_ssap(const struct sk_buff *pdu)
- {
- 	return pdu->data[1] & 0x3f;
- }
- 
--static u8 nfc_llcp_ns(struct sk_buff *pdu)
-+static u8 nfc_llcp_ns(const struct sk_buff *pdu)
- {
- 	return pdu->data[2] >> 4;
- }
- 
--static u8 nfc_llcp_nr(struct sk_buff *pdu)
-+static u8 nfc_llcp_nr(const struct sk_buff *pdu)
- {
- 	return pdu->data[2] & 0xf;
- }
-@@ -801,7 +801,7 @@ static struct nfc_llcp_sock *nfc_llcp_connecting_sock_get(struct nfc_llcp_local
- }
- 
- static struct nfc_llcp_sock *nfc_llcp_sock_get_sn(struct nfc_llcp_local *local,
--						  u8 *sn, size_t sn_len)
-+						  const u8 *sn, size_t sn_len)
- {
- 	struct nfc_llcp_sock *llcp_sock;
- 
-@@ -815,9 +815,10 @@ static struct nfc_llcp_sock *nfc_llcp_sock_get_sn(struct nfc_llcp_local *local,
- 	return llcp_sock;
- }
- 
--static u8 *nfc_llcp_connect_sn(struct sk_buff *skb, size_t *sn_len)
-+static const u8 *nfc_llcp_connect_sn(const struct sk_buff *skb, size_t *sn_len)
- {
--	u8 *tlv = &skb->data[2], type, length;
-+	u8 type, length;
-+	const u8 *tlv = &skb->data[2];
- 	size_t tlv_array_len = skb->len - LLCP_HEADER_SIZE, offset = 0;
- 
- 	while (offset < tlv_array_len) {
-@@ -875,7 +876,7 @@ static void nfc_llcp_recv_ui(struct nfc_llcp_local *local,
- }
- 
- static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
--				  struct sk_buff *skb)
-+				  const struct sk_buff *skb)
- {
- 	struct sock *new_sk, *parent;
- 	struct nfc_llcp_sock *sock, *new_sock;
-@@ -893,7 +894,7 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
- 			goto fail;
- 		}
- 	} else {
--		u8 *sn;
-+		const u8 *sn;
- 		size_t sn_len;
- 
- 		sn = nfc_llcp_connect_sn(skb, &sn_len);
-@@ -1112,7 +1113,7 @@ static void nfc_llcp_recv_hdlc(struct nfc_llcp_local *local,
- }
- 
- static void nfc_llcp_recv_disc(struct nfc_llcp_local *local,
--			       struct sk_buff *skb)
-+			       const struct sk_buff *skb)
- {
- 	struct nfc_llcp_sock *llcp_sock;
- 	struct sock *sk;
-@@ -1155,7 +1156,8 @@ static void nfc_llcp_recv_disc(struct nfc_llcp_local *local,
- 	nfc_llcp_sock_put(llcp_sock);
- }
- 
--static void nfc_llcp_recv_cc(struct nfc_llcp_local *local, struct sk_buff *skb)
-+static void nfc_llcp_recv_cc(struct nfc_llcp_local *local,
-+			     const struct sk_buff *skb)
- {
- 	struct nfc_llcp_sock *llcp_sock;
- 	struct sock *sk;
-@@ -1188,7 +1190,8 @@ static void nfc_llcp_recv_cc(struct nfc_llcp_local *local, struct sk_buff *skb)
- 	nfc_llcp_sock_put(llcp_sock);
- }
- 
--static void nfc_llcp_recv_dm(struct nfc_llcp_local *local, struct sk_buff *skb)
-+static void nfc_llcp_recv_dm(struct nfc_llcp_local *local,
-+			     const struct sk_buff *skb)
- {
- 	struct nfc_llcp_sock *llcp_sock;
- 	struct sock *sk;
-@@ -1226,12 +1229,13 @@ static void nfc_llcp_recv_dm(struct nfc_llcp_local *local, struct sk_buff *skb)
- }
- 
- static void nfc_llcp_recv_snl(struct nfc_llcp_local *local,
--			      struct sk_buff *skb)
-+			      const struct sk_buff *skb)
- {
- 	struct nfc_llcp_sock *llcp_sock;
--	u8 dsap, ssap, *tlv, type, length, tid, sap;
-+	u8 dsap, ssap, type, length, tid, sap;
-+	const u8 *tlv;
- 	u16 tlv_len, offset;
--	char *service_name;
-+	const char *service_name;
- 	size_t service_name_len;
- 	struct nfc_llcp_sdp_tlv *sdp;
- 	HLIST_HEAD(llc_sdres_list);
-diff --git a/net/nfc/nfc.h b/net/nfc/nfc.h
-index 889fefd64e56..de2ec66d7e83 100644
---- a/net/nfc/nfc.h
-+++ b/net/nfc/nfc.h
-@@ -48,7 +48,7 @@ void nfc_llcp_mac_is_up(struct nfc_dev *dev, u32 target_idx,
- 			u8 comm_mode, u8 rf_mode);
- int nfc_llcp_register_device(struct nfc_dev *dev);
- void nfc_llcp_unregister_device(struct nfc_dev *dev);
--int nfc_llcp_set_remote_gb(struct nfc_dev *dev, u8 *gb, u8 gb_len);
-+int nfc_llcp_set_remote_gb(struct nfc_dev *dev, const u8 *gb, u8 gb_len);
- u8 *nfc_llcp_general_bytes(struct nfc_dev *dev, size_t *general_bytes_len);
- int nfc_llcp_data_received(struct nfc_dev *dev, struct sk_buff *skb);
- struct nfc_llcp_local *nfc_llcp_find_local(struct nfc_dev *dev);
 -- 
 2.27.0
 
