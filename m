@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7DB3DBC84
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735CE3DBCA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhG3Pqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 11:46:40 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:33796 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhG3Pqf (ORCPT
+        id S230464AbhG3PzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhG3PzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 11:46:35 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16UFkOHH079028;
-        Fri, 30 Jul 2021 10:46:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1627659984;
-        bh=zWC1wL/dUjWpagi3NkYNtcyulwt6EbuLhREI65OuVh8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=b5YPgB7cOC1aOGkX5cKu5Z9BG3EWiHGJGow70JsQKvURTNLDPAb3O7JnTJjTNO6HS
-         D8UQUvkQNclF9dJALnGSZkAIgEzxJJ+UXObimvFX6/SN/HfJ6EtY4w6e/4WGMC3q6d
-         Y+yEl61+eoqLyuf17nftu8xfI2y6CNOkUB/o0N+s=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16UFkOIb117897
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Jul 2021 10:46:24 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 30
- Jul 2021 10:46:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 30 Jul 2021 10:46:24 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16UFkOjH060973;
-        Fri, 30 Jul 2021 10:46:24 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Lokesh Vutla <lokeshvutla@ti.com>, <kristo@kernel.org>
-CC:     Nishanth Menon <nm@ti.com>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Vignesh R <vigneshr@ti.com>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] arm64: dts: ti: k3-am64: Add PWM nodes
-Date:   Fri, 30 Jul 2021 10:46:23 -0500
-Message-ID: <162765993452.9115.3360387735192186820.b4-ty@ti.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210721113625.17299-1-lokeshvutla@ti.com>
-References: <20210721113625.17299-1-lokeshvutla@ti.com>
+        Fri, 30 Jul 2021 11:55:03 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F3BC061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 08:54:59 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id e5so11572971pld.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 08:54:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xuQ5Hj99GyYFnsFA2x3KGejJmiGy5PTCVic7W2UmUVM=;
+        b=i8iEwRekyx9YY80vpNYzYzcv5OeckV3RGzwqyH18FjgbOjESwgFhvxtt/RHxz2lEAz
+         q/O43nTE1HzTgaQmzppw1noxz8tqRN9C5dh07SH/h6AkFBKm4G8dQCkjOUoxABEjDdB/
+         beNBRfUupNeK7qImXC+EmFVZE91QT0TGOxfqchc3mvyoxFbpo5QhRfWbDxsAwzGsMmqu
+         1dcc1dvvQ88sBhOKOU9QqLqTwdGNTkg3AWbGWJJW0vqOM9hn911jK3DgMMrY3wVSi1SN
+         x+Rc+agHYASHqhMOVOiCN4VODfxmnohFgKa+uIGkg+hk5MGJOJL7vOFGqvJ41I36/u7k
+         1S9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=xuQ5Hj99GyYFnsFA2x3KGejJmiGy5PTCVic7W2UmUVM=;
+        b=phrxh6/H4mLzzPGbuw9NyF9svu+bM3G2LWp2digf0SgIdIB0DGpKJg1xiqtbQ0iCg2
+         H+Q6GBmh4d7mrFncV9ZFYspRaPiRd/WeY8v6M0aaqi7no7RLtE6iHO87ZIEPv5PJVVP+
+         h1zFaMVnqvbrNscTkBDWclCaUZ6je2Ob2wwMqWhw7Y4fdQ6UxGaRABsHN+kxbP2b9RkF
+         3uaxfbTWg5S9b6ufheXLVU7no4FSrCXyUdux+6If9ONm/TLlmd4BEbsd+mBMQhiL4Bk2
+         J4P8lLdLORGr0Pe+PmJ4GnH4GFCpVE2A/xnKVAcxTVjfUk+JAphKq7P+MH8u/s1TdZhp
+         NClw==
+X-Gm-Message-State: AOAM530k4BFFAG0cefLaXGSGYxpsPuD8sICLXWloDrQwvegEdW2BX7r7
+        ba9NNeU74ZGHBaPT+rTjx/8=
+X-Google-Smtp-Source: ABdhPJz8Z0MztyBrhb9z3w9WjA3M/TRQyK8d+cnXd7EsIYHIqBt2B0Al6ZiaUbRb9cgaEdsN//2MmQ==
+X-Received: by 2002:a05:6a00:1307:b029:308:1e2b:a24b with SMTP id j7-20020a056a001307b02903081e2ba24bmr3582208pfu.57.1627660498526;
+        Fri, 30 Jul 2021 08:54:58 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:5ec3])
+        by smtp.gmail.com with ESMTPSA id k25sm2816656pfa.213.2021.07.30.08.54.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 08:54:57 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 30 Jul 2021 05:54:53 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] workqueue: Fix typo in comments
+Message-ID: <YQQgzciYUKg0gio1@mtj.duckdns.org>
+References: <20210730063951.2745-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730063951.2745-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 17:06:21 +0530, Lokesh Vutla wrote:
-> Add epwm and ecap nodes for AM64 boards.
-> 
-> Changes since v1:
-> - Mark all un-used pwm nodes as disabled.
-> 
-> Lokesh Vutla (4):
->   arm64: dts: ti: k3-am64-main: Add epwm nodes
->   arm64: dts: ti: k3-am64-main: Add ecap pwm nodes
->   arm64: dts: ti: k3-am642-evm: Add pwm nodes
->   arm64: dts: ti: k3-am642-sk: Add pwm nodes
-> 
-> [...]
+On Fri, Jul 30, 2021 at 02:39:51PM +0800, Cai Huoqing wrote:
+> Fix typo:
+> *assing  ==> assign
+> *iff  ==> if
 
-Hi Lokesh Vutla,
+iff is if and only if and isn't a typo.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Thanks.
 
-[1/4] arm64: dts: ti: k3-am64-main: Add epwm nodes
-      commit: 13a9a3ef66248a1b6e9acaaa5292d96f8635935b
-[2/4] arm64: dts: ti: k3-am64-main: Add ecap pwm nodes
-      commit: ae0df139b51a8448afb38e9706f257ab56fea097
-[3/4] arm64: dts: ti: k3-am642-evm: Add pwm nodes
-      commit: 8032affdf5a156a467d3b109f32cd9f57ea7afda
-[4/4] arm64: dts: ti: k3-am642-sk: Add pwm nodes
-      commit: c1fa5ac6c2f475b5140e6323801ed93c24e7e5cf
-
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+tejun
