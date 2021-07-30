@@ -2,67 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252743DB721
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF8E3DB722
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238455AbhG3K0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:26:44 -0400
-Received: from mga11.intel.com ([192.55.52.93]:53264 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238274AbhG3K0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:26:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="209959346"
-X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
-   d="scan'208";a="209959346"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 03:26:38 -0700
-X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
-   d="scan'208";a="418432773"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 03:26:34 -0700
-Received: by lahna (sSMTP sendmail emulation); Fri, 30 Jul 2021 13:26:31 +0300
-Date:   Fri, 30 Jul 2021 13:26:31 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        Koba Ko <koba.ko@canonical.com>
-Subject: Re: [PATCH v1.1 1/2] PCI: PM: Avoid forcing PCI_D0 for wakeup
- reasons inconsistently
-Message-ID: <YQPT1y2hA+/UPReI@lahna>
-References: <4668274.31r3eYUQgx@kreacher>
- <2207145.ElGaqSPkdT@kreacher>
- <2593738.mvXUDI8C0e@kreacher>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2593738.mvXUDI8C0e@kreacher>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S238477AbhG3K0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:26:48 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:52228 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238274AbhG3K0q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 06:26:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UhR-l2X_1627640797;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UhR-l2X_1627640797)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 30 Jul 2021 18:26:40 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     emma@anholt.net
+Cc:     mripard@kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        p.zabel@pengutronix.de, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/vc4: hdmi: make vc4_hdmi_codec_pdata static
+Date:   Fri, 30 Jul 2021 18:26:34 +0800
+Message-Id: <1627640794-15718-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 05:54:28PM +0200, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> It is inconsistent to return PCI_D0 from pci_target_state() instead
-> of the original target state if 'wakeup' is true and the device
-> cannot signal PME from D0.
-> 
-> This only happens when the device cannot signal PME from the original
-> target state and any shallower power states (including D0) and that
-> case is effectively equivalent to the one in which PME singaling is
-> not supported at all.  Since the original target state is returned in
-> the latter case, make the function do that in the former one too.
-> 
-> Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
-> Fixes: 666ff6f83e1d ("PCI/PM: Avoid using device_may_wakeup() for runtime PM")
-> Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+This symbol is not used outside of vc4_hdmi.c, so marks it static.
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Fix the following sparse warning:
+
+drivers/gpu/drm/vc4/vc4_hdmi.c:1479:25: warning: symbol
+'vc4_hdmi_codec_pdata' was not declared. Should it be static?
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index b20530c..ca08b64 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -1476,7 +1476,7 @@ static int vc4_hdmi_audio_get_eld(struct device *dev, void *data,
+ 	.audio_startup = vc4_hdmi_audio_startup,
+ };
+ 
+-struct hdmi_codec_pdata vc4_hdmi_codec_pdata = {
++static struct hdmi_codec_pdata vc4_hdmi_codec_pdata = {
+ 	.ops = &vc4_hdmi_codec_ops,
+ 	.max_i2s_channels = 8,
+ 	.i2s = 1,
+-- 
+1.8.3.1
+
