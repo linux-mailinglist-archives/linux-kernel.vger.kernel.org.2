@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E29A3DB6FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736C53DB701
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238544AbhG3KMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
+        id S238557AbhG3KMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238450AbhG3KMj (ORCPT
+        with ESMTP id S238508AbhG3KMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:12:39 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F0AC061765;
-        Fri, 30 Jul 2021 03:12:34 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so3390889wms.2;
-        Fri, 30 Jul 2021 03:12:34 -0700 (PDT)
+        Fri, 30 Jul 2021 06:12:53 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92552C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:12:48 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id r26so16916599lfp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:12:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N/MCCg30Xeynt7z4zI1PDq0MPJma9ilr3kGKBL4lUsY=;
-        b=mZLnpFM34Wx8nDNwIlSEFAXcLHABV3cCTTjwGW4dSAVlah6yjrJ89SGRMIoHgvg2gz
-         Wg46laaFrwEjVijvsNIfqbKyaia0qo6Rknpzb1mWUC9wmR79zfVqF8iuTDbajdTxtXqB
-         4ECVD5o6hX5L+2ik71lTlIUse16GnKG9IZjQTFXgh1MJ/zCUzHfSr6wRttH2dFFXo8n2
-         H8+oFlV+sppGMuhjPDQTKMcNQTFtfdXsLcuDVI9ETZdaPs2QAyn7su8iDHhu1zruhtrq
-         eIqxc58wUDuyZBFmVBmx/YURcu89LGM8iPAq9HbhFVfWylZ4J+ieedsh3qT12zeLbF/B
-         dZYg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HsLkR/HJFOyd8pJoENYFHYMDBN3NZwnHjc6YfxQ3dl8=;
+        b=ufYOgMEhc1ClDU5ltnOjlo1fbyMTvyLpxFyvjbI9XtsIHVAZHCdbhp0d+9DS4+8f55
+         i8BlPirCwoIhJVvr0ykIjapnTlTga7LQDfmsiy8V6V/j0V+nMeSUvOLU1sztX3HZP4jg
+         xKMhIyx1MQ/JXcU9BoWL7n4TVRvhilF1W/kB5/ZGn8Wb0Pl6ZxdBjEpMN6HMAVIzAacr
+         oxUcF1lO+N6pPm2OgLQKNSn/Zxbsi1RVx5DylobncgX0k+nQZhw3icIaT82YqrMawXQb
+         bi7390Fet4KRv4C4Cj8VPXpc4JTZWjHqdOzS5SO1/4LwYZNRgZdmmAzF7QHSBYWhP7Zi
+         LaRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N/MCCg30Xeynt7z4zI1PDq0MPJma9ilr3kGKBL4lUsY=;
-        b=MRt/324/gxdfekjwnrBoO2bZQLrTau4Y/Kg8j//BYljNCOdfyTnC3f7bPehNN9W1Mm
-         5HM1eN0cNEPD+hDYDasBs83SDTVsEQMT0ZFOsPIz/ZWLIVuSokc/JevrmouRz9NghEko
-         FgdANf4KqAG4J7mcBqnah89xz+J65Rn/16GA7MaR/AMLzzBcvAqJ1sSmx2XrBqENwpz3
-         zSB5EOndeSlQXpAJuyILi+lwsEfuw73QvTLg2EkXmtzhcvFCFhdTCp8yJu2GGQNBH6b7
-         xpqqmVgD0O8JSELcQfx1yXdA9aOtloNF9cXNbjOy83Eaq/NKipr94ZFQWpWPRecboKan
-         XjcQ==
-X-Gm-Message-State: AOAM531QGh6AfnAKdfvxI98ctPKWzcuLEFOEKHI11vVb7aimZSKrNeMJ
-        dYPJPz/xT3toXOldx4mFLnr9ZLgNTZ43sg==
-X-Google-Smtp-Source: ABdhPJwlfubSkGJ4x6+1NW8pSASiZ8x6eYvTWRMHAHe7J35QJWQdCaa7SBVkWYC/Ox8zgyvujmhJsg==
-X-Received: by 2002:a7b:cb01:: with SMTP id u1mr2042972wmj.44.1627639952921;
-        Fri, 30 Jul 2021 03:12:32 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id y19sm1348321wmq.5.2021.07.30.03.12.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 03:12:32 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 11:12:30 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/24] 5.10.55-rc1 review
-Message-ID: <YQPQjlxNB1rIQ+hb@debian>
-References: <20210729135137.267680390@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HsLkR/HJFOyd8pJoENYFHYMDBN3NZwnHjc6YfxQ3dl8=;
+        b=agnt6yClwlyuLE4gjNxWyg+ka27XScY19iE6cbNFBtL+Uwu9S21CStmxkH6xhlMwW8
+         elfzWdUGbPBca8obngEkl8v4UMHcpYh1UCSLK1d6slgu+JjyA1hhjUk5yANr/Psi1kfm
+         6oGnVN4GJoTpKr3wa9Dcz/XtLFoGWWjmLgLOJu/VHbAQsHiydMNGEv5XMxD3N3rawavQ
+         y3PvLKjIZ/2OKc3HcdYmCd+14/z5qhn+U/3/Likxr3tBXzGGV7HnpMmtY1fXhUFm2l32
+         Ld99K8TO55wZzLnpHp96Rsyam2QTNi64DJkY3tqrKsBePn3iUWCt6i5oozDR/FHJyUt4
+         4Mnw==
+X-Gm-Message-State: AOAM530qpegEvzUH9Yufh3Feo2o+ES7o79FLEhOpfoaDFTOOk1ykjL3Z
+        9RjHLOFRdinp/4hLohHrnavMWL4OiY75keOMQ8EzlQ==
+X-Google-Smtp-Source: ABdhPJypPfA3Px4jtbDVZYY7wb0UeRHMt02OLb/ww/GLw1XchMeZyH86gddeb+fVz5pKilqK3LE9PJ1U8EOkFaDyLzQ=
+X-Received: by 2002:a19:c7cd:: with SMTP id x196mr638110lff.465.1627639966985;
+ Fri, 30 Jul 2021 03:12:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729135137.267680390@linuxfoundation.org>
+References: <20210717045627.1739959-1-daniel@0x0f.com>
+In-Reply-To: <20210717045627.1739959-1-daniel@0x0f.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 30 Jul 2021 12:12:36 +0200
+Message-ID: <CACRpkdbE+_DJFhBCmtz5JwJupf7QkkWZhXrgf1KG_3rPqvEm0w@mail.gmail.com>
+Subject: Re: [PATCH 00/10] gpio: msc313: Add gpio support for ssd20xd
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Romain Perier <romain.perier@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Sat, Jul 17, 2021 at 6:56 AM Daniel Palmer <daniel@0x0f.com> wrote:
 
-On Thu, Jul 29, 2021 at 03:54:20PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.55 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 31 Jul 2021 13:51:22 +0000.
-> Anything received after that time might be too late.
+> This is a little series to add a compatible string for the Sigmastar
+> SSD201 and SSD202D to the msc313 gpio driver, add the specific offsets
+> for the pins on these chips, and then a bunch of DT wiring stuff so
+> that the LEDs on the M5 stack unitv2 work and it can control the
+> power switch for the USB connected.
+>
+> Daniel Palmer (10):
+>   dt-bindings: gpio: msc313: Add compatible for ssd20xd
+>   dt-bindings: gpio: msc313: Add offsets for ssd20xd
+>   gpio: msc313: Code clean ups
+>   gpio: msc313: Add support for SSD201 and SSD202D
 
-Build test:
-mips (gcc version 11.1.1 20210723): 63 configs -> no failure
-arm (gcc version 11.1.1 20210723): 105 configs -> no new failure
-arm64 (gcc version 11.1.1 20210723): 3 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+I suppose Bartosz can just merge the 4 first patches into the
+GPIO tree and you can take the rest into the SoC tree?
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
-arm64: Booted on rpi4b (4GB model). No regression.
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+Yours,
+Linus Walleij
