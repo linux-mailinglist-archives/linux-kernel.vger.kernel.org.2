@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F2A3DB460
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957683DB469
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbhG3HSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 03:18:21 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43468 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237733AbhG3HSO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:18:14 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7D68D2020B;
-        Fri, 30 Jul 2021 07:18:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627629487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cyZcoypMsiPyV5D5l5wSyscmkn1Z3KKgfGDueS4Lb8Q=;
-        b=GXcQ+AQRPZJ+G9sddnPaaK086EH9kpql9cfa/M7rnCoYYva1VeOrv39m3yuBfqLvG/hmtm
-        zIL8dEPA2skQc0m4Gm69R5UdSDqG86/k0qiGUZPPoks7j7TRoCWxOS8ApDYgPOkchj5ycQ
-        9JaOXOFZXnkGxrtmQ4JVPg1/khQ7yaw=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4F3551374D;
-        Fri, 30 Jul 2021 07:18:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id wAzgEa+nA2FufQAAGKfGzw
-        (envelope-from <jgross@suse.com>); Fri, 30 Jul 2021 07:18:07 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 3/3] xen: assume XENFEAT_gnttab_map_avail_bits being set for pv guests
-Date:   Fri, 30 Jul 2021 09:18:04 +0200
-Message-Id: <20210730071804.4302-4-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210730071804.4302-1-jgross@suse.com>
-References: <20210730071804.4302-1-jgross@suse.com>
+        id S237869AbhG3HSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:18:52 -0400
+Received: from mga07.intel.com ([134.134.136.100]:32138 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237639AbhG3HSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 03:18:50 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="276823009"
+X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
+   d="scan'208";a="276823009"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 00:18:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
+   d="scan'208";a="664728415"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Jul 2021 00:18:41 -0700
+Date:   Fri, 30 Jul 2021 15:18:40 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
+ multiple preferred nodes
+Message-ID: <20210730071840.GA87305@shbuild999.sh.intel.com>
+References: <1626077374-81682-2-git-send-email-feng.tang@intel.com>
+ <YQFOB4UDK+dNZeOV@dhcp22.suse.cz>
+ <20210728141156.GC43486@shbuild999.sh.intel.com>
+ <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
+ <20210729070918.GA96680@shbuild999.sh.intel.com>
+ <YQKvZDXmRSVVRvfi@dhcp22.suse.cz>
+ <20210729151242.GA42865@shbuild999.sh.intel.com>
+ <YQLVf3pkQTHLemAZ@dhcp22.suse.cz>
+ <20210730030502.GA87066@shbuild999.sh.intel.com>
+ <YQOeAgPS9+FUseIx@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQOeAgPS9+FUseIx@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XENFEAT_gnttab_map_avail_bits is always set in Xen 4.0 and newer.
-Remove coding assuming it might be zero.
+On Fri, Jul 30, 2021 at 08:36:50AM +0200, Michal Hocko wrote:
+> On Fri 30-07-21 11:05:02, Feng Tang wrote:
+> > On Thu, Jul 29, 2021 at 06:21:19PM +0200, Michal Hocko wrote:
+> > > On Thu 29-07-21 23:12:42, Feng Tang wrote:
+> > > > On Thu, Jul 29, 2021 at 03:38:44PM +0200, Michal Hocko wrote:
+> > > [...]
+> > > > > Also the
+> > > > > semantic to give nodes some ordering based on their numbers sounds
+> > > > > rather weird to me.
+> > > > 
+> > > > I agree, and as I admitted in the first reply, this need to be fixed.
+> > > 
+> > > OK. I was not really clear that we are on the same page here.
+> > > 
+> > > > > The semantic I am proposing is to allocate from prefered nodes in
+> > > > > distance order starting from the local node.
+> > > > 
+> > > > So the plan is:
+> > > > * if the local node is set in 'prefer-many's nodemask, then chose
+> > > > * otherwise chose the node with the shortest distance to local node
+> > > > ?
+> > > 
+> > > Yes and what I am trying to say is that you will achieve that simply by
+> > > doing the following in policy_node:
+> > > 	if (policy->mode == MPOL_PREFERRED_MANY)
+> > > 		return nd;
+> > 
+> > One thing is, it's possible that 'nd' is not set in the preferred
+> > nodemask. 
+> 
+> Yes, and there shouldn't be any problem with that.  The given node is
+> only used to get the respective zonelist (order distance ordered list of
+> zones to try). get_page_from_freelist will then use the preferred node
+> mask to filter this zone list. Is that more clear now?
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- drivers/xen/gntdev.c | 36 ++----------------------------------
- 1 file changed, 2 insertions(+), 34 deletions(-)
+Yes, from the code, the policy_node() is always coupled with
+policy_nodemask(), which secures the 'nodemask' limit. Thanks for
+the clarification!
 
-diff --git a/drivers/xen/gntdev.c b/drivers/xen/gntdev.c
-index a3e7be96527d..1e7f6b1c0c97 100644
---- a/drivers/xen/gntdev.c
-+++ b/drivers/xen/gntdev.c
-@@ -266,20 +266,13 @@ static int find_grant_ptes(pte_t *pte, unsigned long addr, void *data)
- {
- 	struct gntdev_grant_map *map = data;
- 	unsigned int pgnr = (addr - map->vma->vm_start) >> PAGE_SHIFT;
--	int flags = map->flags | GNTMAP_application_map | GNTMAP_contains_pte;
-+	int flags = map->flags | GNTMAP_application_map | GNTMAP_contains_pte |
-+		    (1 << _GNTMAP_guest_avail0);
- 	u64 pte_maddr;
- 
- 	BUG_ON(pgnr >= map->count);
- 	pte_maddr = arbitrary_virt_to_machine(pte).maddr;
- 
--	/*
--	 * Set the PTE as special to force get_user_pages_fast() fall
--	 * back to the slow path.  If this is not supported as part of
--	 * the grant map, it will be done afterwards.
--	 */
--	if (xen_feature(XENFEAT_gnttab_map_avail_bits))
--		flags |= (1 << _GNTMAP_guest_avail0);
--
- 	gnttab_set_map_op(&map->map_ops[pgnr], pte_maddr, flags,
- 			  map->grants[pgnr].ref,
- 			  map->grants[pgnr].domid);
-@@ -288,14 +281,6 @@ static int find_grant_ptes(pte_t *pte, unsigned long addr, void *data)
- 	return 0;
- }
- 
--#ifdef CONFIG_X86
--static int set_grant_ptes_as_special(pte_t *pte, unsigned long addr, void *data)
--{
--	set_pte_at(current->mm, addr, pte, pte_mkspecial(*pte));
--	return 0;
--}
--#endif
--
- int gntdev_map_grant_pages(struct gntdev_grant_map *map)
- {
- 	int i, err = 0;
-@@ -1055,23 +1040,6 @@ static int gntdev_mmap(struct file *flip, struct vm_area_struct *vma)
- 		err = vm_map_pages_zero(vma, map->pages, map->count);
- 		if (err)
- 			goto out_put_map;
--	} else {
--#ifdef CONFIG_X86
--		/*
--		 * If the PTEs were not made special by the grant map
--		 * hypercall, do so here.
--		 *
--		 * This is racy since the mapping is already visible
--		 * to userspace but userspace should be well-behaved
--		 * enough to not touch it until the mmap() call
--		 * returns.
--		 */
--		if (!xen_feature(XENFEAT_gnttab_map_avail_bits)) {
--			apply_to_page_range(vma->vm_mm, vma->vm_start,
--					    vma->vm_end - vma->vm_start,
--					    set_grant_ptes_as_special, NULL);
--		}
--#endif
- 	}
- 
- 	return 0;
--- 
-2.26.2
+And for the mempolicy_slab_node(), it seems to be a little different,
+and we may need to reuse its logic for 'bind' policy, which is similar
+to what we've discussed, pick a nearest node to the local node. And
+similar for mpol_misplaced(). Thoughts?
 
+Thanks,
+Feng
+
+> -- 
+> Michal Hocko
+> SUSE Labs
