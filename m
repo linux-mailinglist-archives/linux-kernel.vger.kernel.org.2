@@ -2,58 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172D53DB0B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 03:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7327F3DB0BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 03:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235019AbhG3BlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 21:41:16 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:43430 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbhG3BlQ (ORCPT
+        id S235469AbhG3BmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 21:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234857AbhG3BmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 21:41:16 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m9HWN-00540v-3i; Fri, 30 Jul 2021 01:41:07 +0000
-Date:   Fri, 30 Jul 2021 01:41:07 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     John Cotton Ericson <mail@johnericson.me>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Jann Horn <jann@thejh.net>,
-        Christian Brauner <christian.brauner@canonical.com>
-Subject: Re: Leveraging pidfs for process creation without fork
-Message-ID: <YQNYs+BKenJHBMSP@zeniv-ca.linux.org.uk>
-References: <CAHmME9oHBtR4fBBUY8E_Oi7av-=OjOGkSNhQuMJMHhafCjazBw@mail.gmail.com>
- <CALCETrVGLx5yeHo7ExAmJZmPjVjcJiV7p1JOa4iUaW5DRoEvLQ@mail.gmail.com>
- <cf07f0732eb94dbfa67c9d56ceba738e@AcuMS.aculab.com>
- <f8457e20-c3cc-6e56-96a4-3090d7da0cb6@JohnEricson.me>
- <20210729142415.qovpzky537zkg3dp@wittgenstein>
+        Thu, 29 Jul 2021 21:42:00 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AF3C061796
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 18:41:56 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id c16so9130460plh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 18:41:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z2Wamgmh73Y+Ncu8fAmHIQj7M7ZAYEMLRlTXvopvkv0=;
+        b=ijAtp7BbL9OeTMvwqZJ4C6mfxUVgFhIHqoi2Bpn7KTv+xzkqR66BceM/5iMj6cpOfn
+         epnzVaw1UhfDENDcgJ4dZ7tPhk6gmw29M697vajTqTUL4EanTqtO6s3pVRsJvTdO4U4i
+         durS8L9aynseywI9b6j0HfM/aNYNqA/7lc1W4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z2Wamgmh73Y+Ncu8fAmHIQj7M7ZAYEMLRlTXvopvkv0=;
+        b=iMj0z2JnmApoDpUq/ZsqPaRDrmlLdAFstYqVlSee5MWr84NGjXQGjiQkoxZ4AnqjbS
+         5dEGSbq068rBsNmhX/vcZAPrSp1JvIgpBZCeVq0oamR/aZRvXHsTKwXK91rR7zxFSH/5
+         k2kjRekaMT71eQoFaYE3U0ts0pZ3cPOE+l1FkKm1ozImP666D5aCXaWGgEQadCIiS1EP
+         pT3eFRLiFE8E8ibYtC2/CgQLCJH8zAFiObDJ8pgK9kA6TDb4hQgoQ82pbT15+I55x9O+
+         Ez6bK67nIEEiJixMnhC0aS9KI4eHiYsu5YW1p7odhokEKx9jq5ESv+lPBViTxPPJoEC0
+         YrAw==
+X-Gm-Message-State: AOAM533kO0QjeS1djz+z5q1NncpKzopIREEIoeMwXu7YUwbemAMzej/k
+        v0t2t9ScMgI+lGycz7REvh4PwA==
+X-Google-Smtp-Source: ABdhPJw0813YKZxQ8DT1LgMIuVe3PAz9HErWNrX605I57TwGhBJvYb9BvbSpZ8Miqi8+VnzV2jJFmA==
+X-Received: by 2002:a05:6a00:ac8:b029:320:a6bb:880d with SMTP id c8-20020a056a000ac8b0290320a6bb880dmr239521pfl.41.1627609316347;
+        Thu, 29 Jul 2021 18:41:56 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s25sm97149pgv.87.2021.07.29.18.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 18:41:55 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 18:41:54 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 62/64] netlink: Avoid false-positive memcpy() warning
+Message-ID: <202107291839.6AEFA1E8@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-63-keescook@chromium.org>
+ <YQDv+oG7ok0T1L+r@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729142415.qovpzky537zkg3dp@wittgenstein>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <YQDv+oG7ok0T1L+r@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 04:24:15PM +0200, Christian Brauner wrote:
-> On Wed, Jul 28, 2021 at 12:37:57PM -0400, John Cotton Ericson wrote:
-> > Hi,
+On Wed, Jul 28, 2021 at 07:49:46AM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Jul 27, 2021 at 01:58:53PM -0700, Kees Cook wrote:
+> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > field bounds checking for memcpy(), memmove(), and memset(), avoid
+> > intentionally writing across neighboring fields.
 > > 
-> > I was excited to learn about about pidfds the other day, precisely in hopes
-> > that it would open the door to such a "sane process creation API". I
-> > searched the LKML, found this thread, and now hope to rekindle the
-> > discussion; my apologies if there has been more discussion since that I
+> > Add a flexible array member to mark the end of struct nlmsghdr, and
+> > split the memcpy() to avoid false positive memcpy() warning:
+> > 
+> > memcpy: detected field-spanning write (size 32) of single field (size 16)
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  include/uapi/linux/netlink.h | 1 +
+> >  net/netlink/af_netlink.c     | 4 +++-
+> >  2 files changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/uapi/linux/netlink.h b/include/uapi/linux/netlink.h
+> > index 4c0cde075c27..ddeaa748df5e 100644
+> > --- a/include/uapi/linux/netlink.h
+> > +++ b/include/uapi/linux/netlink.h
+> > @@ -47,6 +47,7 @@ struct nlmsghdr {
+> >  	__u16		nlmsg_flags;	/* Additional flags */
+> >  	__u32		nlmsg_seq;	/* Sequence number */
+> >  	__u32		nlmsg_pid;	/* Sending process port ID */
+> > +	__u8		contents[];
 > 
-> Yeah, I haven't forgotten this discussion. A proposal is on my todo list
-> for this year. So far I've scheduled some time to work on this in the
-> fall.
+> Is this ok to change a public, userspace visable, structure?
+> 
+> Nothing breaks?
 
-Keep in mind that quite a few places in kernel/exit.c very much rely upon the
-lack of anything outside of thread group adding threads into it.  Same for
-fs/exec.c.
+It really shouldn't break anything. Adding a flex array doesn't change
+the size. And with Rasmus's suggestion (naming it "nlmsg_content") it
+should be safe against weird global macro collisions, etc.
+
+-- 
+Kees Cook
