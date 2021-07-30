@@ -2,234 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353003DBFE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1723DBFEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbhG3UjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:39:24 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:31202 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230217AbhG3UjV (ORCPT
+        id S231463AbhG3Ulx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhG3Ulw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:39:21 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16UKa7r2013229;
-        Fri, 30 Jul 2021 20:37:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=WQqZO2vXgRMAEHOwfeKW9pvCxNym6y/aItCMeaAsAXU=;
- b=olBVhedoSR0HyLxxaOOgS/a493vrgoE/vHjB1qCQMRSOSMkXWtAMIIzT/mgyAUMlX2a+
- 4R7x0iCWahUWZ2JGvCB3NkCUA4h6KThCiDqWSXf6OXTxu6pBBRAgG5SM0JP5zsymF4RN
- tKDuJxLyG8GE4VZxGTolR8vFsrBaLzpG3S5CRhNPsQqcDYBpsyiTcsNpRKVSaCq196Au
- oKSySFhUaitkfkM+jyqM+0QQi40s8xw+0oFUC7kD2AlEM3aiA8QYAeVGTgzVyv+HT2cD
- w6/fK3xgCh4LttpWT0ZXWGViQl6mOqpN14tSjsL29h7b18f4IrL48GZkoEw/vf1E/Ju9 OA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=WQqZO2vXgRMAEHOwfeKW9pvCxNym6y/aItCMeaAsAXU=;
- b=gR7P6ADvIldouOpafOj/tiG2rFjyQCQdqDp7kgnnyKPCov4DwD4ZvRkeLdokRmTnOSoW
- dCbGXm5i+9iW00b7G9zuek/bRuoFjBonzDgZdbnYNUp2n9gPNNiBlhdHLqG3GkZ9xgXM
- aeIkjbUEpQClN74QIFlBB1dQdEXUVpG+8b5Zv8+paXELjvWPmWHDBpBbIwcqjUuUl7+f
- WiVxHv5YwDpnI1gLp+zv0Iw0KmYSp7+5vEd3anfI63XBw+hmUPiVJK7z4gkYA41sTAqj
- ennltRZ+OkjZ+KOHmu8L0R3e99nSb2qaSuc+7UuCx8UuyVZBWM5UVEN0VXdZKHrFbEf/ mQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a488da6us-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Jul 2021 20:37:42 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16UKZpMW026681;
-        Fri, 30 Jul 2021 20:37:41 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by aserp3030.oracle.com with ESMTP id 3a4ngv12th-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Jul 2021 20:37:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OwwTLA62HnA7D6mAwuAHj/MSfi+6JM6uBib2mZgfGOBl4fJfVuVGnL97TUyi+zVoZUYlmC+m99q/W3FyydP2mnWkEIeF5SOsfW+hwPeUgG2FLzJiH1qMjD3pOTP2Q6dtIvHLNS/3pDhYo7TK+MlmjgKHF5UVll/FhjP9j6G+VWcsaagoxhFSY/KRWVuZAKfwuOAb+UB5OIfT7eCCcI9ljc3w2u1HwSz7Lmk+/8hAS9srVCrEas0u0Q+SUMp5kpjr6+bK27vRLBK9LFW6tyOAPiIRwFuPbs7ptA63ttyNWsdETPPZFQqKCX7CDH3NQvs9akHd+gUqxuQyDO01sGCMmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WQqZO2vXgRMAEHOwfeKW9pvCxNym6y/aItCMeaAsAXU=;
- b=AJ+Ura8vH5oA34c9wvlKyuwRSyqVVWtOGQQfdzmIHlCYhj7iqVjksaXML8VSA91MwqJy10MEfQnxGE2ROrsBl51npCcCV/Ik26uRDGpJqXevx16Sd1ze5T6hpVugyVA34NAwsuj48fXHGJJUPAYGK+g6qNvAKPVYHTJmKd0Hj/RAMP3ViE64IeicB7vVx5h8xfJF5HXcBeqgzkww+aQO9Tp7wQHJ3GxxytRdUWqErKnWoRgzjLx4I16AIrA0/Kxp4JnKOPGlGrHx1unlaJnwXUfH7Fj7muWT5mXcErxqmUuPeFKwsJdl/F8LizQuDSI2dfNKVmtY+PngEYA7QrXdjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 30 Jul 2021 16:41:52 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C08C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:41:46 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so16097012pjh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WQqZO2vXgRMAEHOwfeKW9pvCxNym6y/aItCMeaAsAXU=;
- b=M3qwMaSy1cNSgKlaKFRGkoV871IF3xOdtm1/pORV0cUKxkegNdV9N7V5yNfSk/IWti6yt86e0ouiK/cD+Fck/+RKYB1Hrkk9ZmzIEzpYGv7SPFU5UatApjCE1DV8Vb1o6/w0J3JT5uE6cdRokxC5r5dURfa5Cp3y7wijRbEf2vI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by MN2PR10MB4253.namprd10.prod.outlook.com (2603:10b6:208:1d6::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Fri, 30 Jul
- 2021 20:37:39 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f10d:29d2:cb38:ed0]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f10d:29d2:cb38:ed0%8]) with mapi id 15.20.4373.025; Fri, 30 Jul 2021
- 20:37:38 +0000
-Subject: Re: [PATCH v1 4/5] PCI: Adapt all code locations to not use struct
- pci_dev::driver directly
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>, kernel@pengutronix.de,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Russell Currey <ruscur@russell.cc>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Michael Buesch <m@bues.ch>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org
-References: <20210729203740.1377045-1-u.kleine-koenig@pengutronix.de>
- <20210729203740.1377045-5-u.kleine-koenig@pengutronix.de>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <2b5e8cb5-fac2-5da2-f87b-d287d2c5ea81@oracle.com>
-Date:   Fri, 30 Jul 2021 16:37:31 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <20210729203740.1377045-5-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: CH0PR03CA0207.namprd03.prod.outlook.com
- (2603:10b6:610:e4::32) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iGe3a44MKzp7hLQkGT4D/Xx3gHqLq0hzI8UAi85GNqw=;
+        b=TmGetRmin6MgmAKL/h0wdXzjCugBlEBEIK09snStOeePSa8kW64PlGuJzkqZLhfDRU
+         AJbPtfF7i0vAdJFBkxe9Q0lpZD9QA1DivovKWsMFS0xUwDDOETY8UY6YkGBPYhF9gMiv
+         83F0kpmNfD023b455IX6oUyLR0wtNUf6ca047rpfBN7qU+rJIWxKTWqWWvs9GFQ0pnnT
+         US95RW7W2ZbQMe/MjYgHSrnoSBvGOLarFpcHu5bRDedoJ7zoy/5g2dIUcSNKI7d7erVh
+         VS87upuUEMYVTKdM63afnqMHLlG2lWcVMEgxPj1DYk6wWtMB6n7pj45jbAHAJ4YoGga8
+         VXJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iGe3a44MKzp7hLQkGT4D/Xx3gHqLq0hzI8UAi85GNqw=;
+        b=QXM6WkF8OsMiwdosYElN3AJil5kV+7XoiL4AmM2fYj6e1Kx3jftaRBU9KzfqPfZHk7
+         Q31vvc5wa4IJUvn8yv5DgNjT5pzronuttznMogAyUBcucA0cv3g4gAQRzD6GIkAjAP5l
+         GScn/5wUtz4/fQvTIgEtkCnxuLtkrHaIvjNKyoYN5ogjXmRVx1dDvNKt2X9yDchGfjqT
+         5JwVSBNdv4Z27gxWfY4NCipb9uYx8s6Th9kdDUgcEai5DogZ4V9oXgrfa96GlE9OCkOe
+         Oc/RihgGd7TB5+OvQewLLZeijrUa+pl3gv4ZZurjAyZemiPHxvmDKKe8R/HgLYMgoTZJ
+         lcBQ==
+X-Gm-Message-State: AOAM531XQ6yxYalClK2HntaH5D1NVaFZCf77RzLv269m/kjW9g1f0WgW
+        cV2t/rcCzXs+r/uco2lMEuZ9Rw==
+X-Google-Smtp-Source: ABdhPJzuxOTTAum430R3h8k8t8GJddigk/qji8DXsIAUwzaogcmfCbHxt1c1IReEAD974D4EYFJMCA==
+X-Received: by 2002:a65:4286:: with SMTP id j6mr32138pgp.10.1627677705242;
+        Fri, 30 Jul 2021 13:41:45 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x24sm3245180pjk.43.2021.07.30.13.41.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 13:41:44 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 20:41:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tao Xu <tao3.xu@intel.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
+Message-ID: <YQRkBI9RFf6lbifZ@google.com>
+References: <20210525051204.1480610-1-tao3.xu@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.74.103.140] (160.34.89.140) by CH0PR03CA0207.namprd03.prod.outlook.com (2603:10b6:610:e4::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Fri, 30 Jul 2021 20:37:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 96576103-4114-4377-14bd-08d95399dedd
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4253:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4253B4C0F753BFF1FA01C0B38AEC9@MN2PR10MB4253.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: s6ovWgFeuFXbSv56/21AW+kfDUirYVwOPMw5MTa/HnbouQolX0Q48Fc4cLIkdalDaE1j2C2BIBId9QbD6Jd+F6lOrw35+RryNbJ1G8epQziPi4gZAfSOlZZeLnEzKCTJ90ascCHYrReDB4HLVBZH6Huv91YItm4KenDYCoSWBhj7W6IUzH+BUOe+a/L9gF0u785j8yaFEF2PN9rK42iFyTQTuwPmwP1h5S/rxodsSYfKgEh8S926zVQha7qxnCaUpRCMJ6lu62nuaQKAY/2srG5fMMN1gBlRlFTOvaIwVZokZLxQ2gFWjaFIj+XFPfezwAG+zww1EUu6b4ghgp+mSVNobpOJftrgfhMjut93w2jDWWxILz5cE4NW3GsoM+pk2d3xPanaRjawdmOPNLTnr0HBX3zoxQUnbhJpwdiIqnZyUDC6j2qHq3dBCMJ09DE+I/6ljbGaF0Qn9v2/Ery/wP2LqjIMOUo/CYUSPhqwUd7EiiUSTK/k/X/AlPa9lYTH6TVbjnkHuHHwRmigOkdzvF8Qd5ZKTqGDmn24lqJ2klYP5HMOlEh9AgyrmXZFfg9hFluxLL4A22ZGmUjUruBaTnuUGsNmABSKd+6+8jU54Bx7acBuWntyieY62mmkeSswkgUxSNRYVh/KeiFgbScPNAed7hWSc7yjRUt4EuHrXT53/UIN7tKPG+QdXOmiv3Bio5pUewx1Ja7MTT8CEW4noMxLAsTYWtpRcoY7GZj5Oqc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(39860400002)(346002)(366004)(31686004)(2906002)(8936002)(31696002)(6486002)(7366002)(110136005)(8676002)(5660300002)(36756003)(316002)(2616005)(7416002)(16576012)(38100700002)(44832011)(7406005)(86362001)(66556008)(26005)(186003)(956004)(66476007)(478600001)(4744005)(4326008)(53546011)(66946007)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NW1WdmlybHdpdHhFcWhFSXZpZXFPK1BkNkhKeWxWSjd2SDM5NWZ4OFcrVTFT?=
- =?utf-8?B?eGQ0bE9PWEx4bHQ5NkJMc0Yvb3BBSXB2YmtXeHlScGhuU3krc0lOTVBFdWpl?=
- =?utf-8?B?TmpYRG1BTkVGRkw2MGJKUFFvRkZiSzRPaW4zMnFEVUo5eWNuQXQ4dERLR2w5?=
- =?utf-8?B?ME9YMWdQQVVaNTgrdlA0QkhwcnhGK1NUeUpvdlEzSk80ZlJXMU0zdms3QW00?=
- =?utf-8?B?QjhrdHpVVXltNUViVW9vK3ZlNmpXSnpPNFFybExiUUFYSFRNaXl1RkNJMThT?=
- =?utf-8?B?SXN4MUU3dWFiaisyWW9MZTc1YjBVMGdMOTR5b1B6OTdETkl3THFiSG4rdGhE?=
- =?utf-8?B?RDRCdTlLOVZYakdZYXhvQWZHeDQ5SysxN012d1FSN0p5RkZ1Kyt3RE9MSHB4?=
- =?utf-8?B?c3VFZWZnVDJ4RWZicnJ6dW9FYkROVndzdHU0KzVNc0pacndrYVNWVm9FNENZ?=
- =?utf-8?B?Z09ZdCsvMlA0cFBoVkV0UzhtU0tOcWFKaFBCRlphUElDOHQ0UEp4VWlnZ2NK?=
- =?utf-8?B?T1RMaXZHMzhIcUp1WGlDVUxhcGRaMTJnaVBlYUtqQnpjY0syS25ZZ3BmVlhr?=
- =?utf-8?B?V2ZTbnduUWlwT2x4ZTByNEhjUWxsVXdzOFRNWFZaY1BTZzBMKzhLeEtpKzd0?=
- =?utf-8?B?bTZvRkR6Szl3bDFoQStmQVM5QTJjRVdrbTV3cG9aZnV1QTF0WW9YYkJZOVlC?=
- =?utf-8?B?WTVGUFoxUU15Mm5qUy84d2VkLyt5VnlxbWJqRWhjSjlITWNBZVliRDZEbDdr?=
- =?utf-8?B?OWdjY0NvaEF5YlR5bWNPN2ttdDZ1OWxwNWx4MEt4anRSL1U2alRyQWpZS3No?=
- =?utf-8?B?RzFCT1p0L3ZQRHEyVjBveklmZzZxbjAyUHo2QnM0ekRNY0VRTVlnZHVUUmo5?=
- =?utf-8?B?b29QYmxsSHNKend3R1oxVUlpY1VuMDdodHk1SVZldWN0M0JsZU02ZXNvWDJw?=
- =?utf-8?B?TlJvbFNtRXRvY1ZKY25FVjBnRlVlT2hlK3ZncXZJcUcxQWVrcVorZEloQ0Z1?=
- =?utf-8?B?YjBidFh3WWlSa2JYUHNKTVI3T2ZJdmtST3YwZVZveHBjVkdNZURMZ2hiTDNO?=
- =?utf-8?B?TVA3NlVqOWVvbVNXYWpPcHVxdkV0QXhZZlVaTHZkVmxSWnBCOXkvTm1jUHZS?=
- =?utf-8?B?YVR1d1QyTzlJSmVXYkNoSHZyZzBRbFBheGFNTTFwRTRLRUN1Ui9YZEZYSkZJ?=
- =?utf-8?B?OXlTbnlud1dyZ3FEalREWExqTTFoRnh6cmdieTRiV2R5dXE4aExtcTNQbGZt?=
- =?utf-8?B?U2NDS0dtZ2h2aXU5UnhnUWVFOUl5L1hSYkUvczRwZkhaMXR4UGxnVUI1VG1U?=
- =?utf-8?B?dmp1VmEyTmxJVDY2dXBNRlZUM2Rta2JkMVVLbmhaWnhqYlNmbzh1R2d3M3A0?=
- =?utf-8?B?YUxMbTdWWFBBRC9mZm5EN0R4QzJuQVFSZmtDeCtkVFA3RmxiVlV1SmdIbmZq?=
- =?utf-8?B?VUpRMFBiOTlSNWlWMURBUHFuQ21samlEOXAxcmoxSi9oUGdTdkwxaEw0eDgz?=
- =?utf-8?B?dWd5TVFKRFIyb3BTQU94RXNSeXlqRXFXVHF6RytTY2hDaVlTQU50WVloSDRD?=
- =?utf-8?B?aUdxNGFLTmJITXREUE1FQS9xaktxNElxUnY5cFBIcEdzZUIrd3pyS3M4L0l2?=
- =?utf-8?B?cnlFbjZ5S0pqajFJeTV0KzRCK1BhUndKVVVTdWJHQWw1NUtXT0xoUGRvMXJv?=
- =?utf-8?B?dEVqZys1dVZoWEp0YWdvRmFteGV0L1JyRDE5UFBuSjZ2SVFiOE9sQXcyc1NI?=
- =?utf-8?Q?EYn00mTAVHJlTHteaHmu1hCGNpvNUR0DxNjrjdj?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96576103-4114-4377-14bd-08d95399dedd
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 20:37:38.7750
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MYW0UmmAZESi7E9HqplJenptPPPpkZg9GTDBk/J5JkiaC7jkFeeumgUZ8WLSyI/faLrx9128OvOsyBsR90qjAO1uS5oH8QnETj+5eGZA91A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4253
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10061 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=909
- mlxscore=0 phishscore=0 bulkscore=0 suspectscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107300140
-X-Proofpoint-GUID: KbCouSxoq4ys_s-0Tgq7VsQevDeTuMTo
-X-Proofpoint-ORIG-GUID: KbCouSxoq4ys_s-0Tgq7VsQevDeTuMTo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525051204.1480610-1-tao3.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/29/21 4:37 PM, Uwe Kleine-König wrote:
-
-> --- a/drivers/pci/xen-pcifront.c
-> +++ b/drivers/pci/xen-pcifront.c
-> @@ -599,12 +599,12 @@ static pci_ers_result_t pcifront_common_process(int cmd,
->  	result = PCI_ERS_RESULT_NONE;
+On Tue, May 25, 2021, Tao Xu wrote:
+>  #endif /* __KVM_X86_VMX_CAPS_H */
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 4bceb5ca3a89..c0ad01c88dac 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -205,6 +205,10 @@ module_param(ple_window_max, uint, 0444);
+>  int __read_mostly pt_mode = PT_MODE_SYSTEM;
+>  module_param(pt_mode, int, S_IRUGO);
 >  
->  	pcidev = pci_get_domain_bus_and_slot(domain, bus, devfn);
-> -	if (!pcidev || !pcidev->driver) {
-> +	pdrv = pci_driver_of_dev(pcidev);
-> +	if (!pcidev || !pdrv) {
+> +/* Default is 0, less than 0 (for example, -1) disables notify window. */
+> +static int __read_mostly notify_window;
 
+I'm not sure I like the idea of trusting ucode to select an appropriate internal
+threshold.  Unless the internal threshold is architecturally defined to be at
+least N nanoseconds or whatever, I think KVM should provide its own sane default.
+E.g. it's not hard to imagine a scenario where a ucode patch gets rolled out that
+adjusts the threshold and starts silently degrading guest performance.
 
-If pcidev is NULL we are dead by the time we reach 'if' statement.
+Even if the internal threshold isn't architecturally constrained, it would be very,
+very helpful if Intel could publish the per-uarch/stepping thresholds, e.g. to give
+us a ballpark idea of how agressive KVM can be before it risks false positives.
 
+> +module_param(notify_window, int, 0644);
 
--boris
+I really like the idea of making the module param writable, but doing so will
+require far more effort.  At an absolute minimum, the module param would need to
+be snapshotted at VM creation time, a la lapic_timer_advance_ns, otherwise the
+behavior is non-deterministic.
 
+But I don't think snapshotting is a worthwhile approach because the main reason
+for adjusting the window while guests are running is probably going to be to relax
+the window because guest's are observing degraded performance.  Hopefully that
+never happens, but the "CPU adds a magic internal buffer" behavior makes me more
+than a bit nervous.
 
+And on the other hand, adding a ton of logic to forcefully update every VMCS is
+likely overkill.
 
->  		dev_err(&pdev->xdev->dev, "device or AER driver is NULL\n");
->  		pci_dev_put(pcidev);
->  		return result;
+So, that takes us back to providing a sane, somewhat conservative default.  I've
+said in the past that ideally the notify_window would be as small as possible,
+but pushing it down to single digit cycles swings the pendulum too far in the
+other direction.
+
+> +
+>  static DEFINE_STATIC_KEY_FALSE(vmx_l1d_should_flush);
+>  static DEFINE_STATIC_KEY_FALSE(vmx_l1d_flush_cond);
+>  static DEFINE_MUTEX(vmx_l1d_flush_mutex);
+> @@ -2539,7 +2543,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+>  			SECONDARY_EXEC_PT_USE_GPA |
+>  			SECONDARY_EXEC_PT_CONCEAL_VMX |
+>  			SECONDARY_EXEC_ENABLE_VMFUNC |
+> -			SECONDARY_EXEC_BUS_LOCK_DETECTION;
+> +			SECONDARY_EXEC_BUS_LOCK_DETECTION |
+> +			SECONDARY_EXEC_NOTIFY_VM_EXITING;
+>  		if (cpu_has_sgx())
+>  			opt2 |= SECONDARY_EXEC_ENCLS_EXITING;
+>  		if (adjust_vmx_controls(min2, opt2,
+> @@ -4376,6 +4381,9 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>  	if (!vcpu->kvm->arch.bus_lock_detection_enabled)
+>  		exec_control &= ~SECONDARY_EXEC_BUS_LOCK_DETECTION;
+>  
+> +	if (cpu_has_notify_vm_exiting() && notify_window < 0)
+> +		exec_control &= ~SECONDARY_EXEC_NOTIFY_VM_EXITING;
+> +
+>  	vmx->secondary_exec_control = exec_control;
+>  }
+>  
+> @@ -4423,6 +4431,9 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+>  		vmx->ple_window_dirty = true;
 >  	}
-> -	pdrv = pcidev->driver;
+>  
+> +	if (cpu_has_notify_vm_exiting() && notify_window >= 0)
+> +		vmcs_write32(NOTIFY_WINDOW, notify_window);
+
+I'm all for punting full nested support to a future patch, but _this_ patch
+absolutely needs to apply KVM's notify_window to vmcs02, otherwise L1 can simply
+run in L2 to avoid the restriction.  init_vmcs() is used only for vmcs01, i.e.
+prepare_vmcs02_constant_state() needs to set the correct vmcs.NOTIFY_WINDOW,
+and prepare_vmcs02_early() needs to set/clear SECONDARY_EXEC_NOTIFY_VM_EXITING
+appropriately.
+
+> +
+>  	vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, 0);
+>  	vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, 0);
+>  	vmcs_write32(CR3_TARGET_COUNT, 0);           /* 22.2.1 */
+> @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
+>  	return 0;
+>  }
+>  
+> +static int handle_notify(struct kvm_vcpu *vcpu)
+> +{
+> +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
+> +
+> +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
+
+What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
+
+> +		/*
+> +		 * Notify VM exit happened while executing iret from NMI,
+> +		 * "blocked by NMI" bit has to be set before next VM entry.
+> +		 */
+> +		if (enable_vnmi &&
+> +		    (exit_qual & INTR_INFO_UNBLOCK_NMI))
+> +			vmcs_set_bits(GUEST_INTERRUPTIBILITY_INFO,
+> +				      GUEST_INTR_STATE_NMI);
+
+Hmm, logging of some kind is probably a good idea if this exit occurs, e.g. so
+that the host can (a) get an indication that a guest is potentially malicious and
+(b) rule out (or confirm) notify_window exits as the source of degraded guest
+performance.
+
+Maybe add a per-vCPU stat, "u64 notify_window_exits"?
+
+Another thought would be to also do pr_info/warn_ratelimited if a vCPU gets
+multiple notify_window exits and doesn't appear to be making forward progress,
+e.g. same RIP observed two notify_window exits in a row.  Even if the guest is
+making forward progress, displaying the guest RIP and instruction (if possible)
+could be useful in triaging why the guest appears to be getting false positives.
+
+> +		return 1;
+> +	}
+> +
+> +	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+> +	vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_NO_EVENT_WINDOW;
+> +	vcpu->run->internal.ndata = 1;
+> +	vcpu->run->internal.data[0] = exit_qual;
+
+Unless an invalid context can _never_ happen, or is already fatal to the guest,
+I don't think effectively killing the guest is a good idea.  KVM doesn't know
+for certain that the guest was being malicious, all it knows is that the CPU
+didn't open an event window for some arbitrary amount of time (arbitrary because
+the internal threshold is likely to be uarch specific).  KVM is getting exits,
+which means it's getting a chance to check for signals, etc..., so resuming the
+guest is ok.
+
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * The exit handlers return 1 if the exit was handled fully and guest execution
+>   * may resume.  Otherwise they set the kvm_run parameter to indicate what needs
+> @@ -5699,6 +5735,7 @@ static int (*kvm_vmx_exit_handlers[])(struct kvm_vcpu *vcpu) = {
+>  	[EXIT_REASON_PREEMPTION_TIMER]	      = handle_preemption_timer,
+>  	[EXIT_REASON_ENCLS]		      = handle_encls,
+>  	[EXIT_REASON_BUS_LOCK]                = handle_bus_lock_vmexit,
+> +	[EXIT_REASON_NOTIFY]		      = handle_notify,
+>  };
 >  
