@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970593DC09F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDE23DC0B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhG3V6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 17:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232982AbhG3V50 (ORCPT
+        id S232963AbhG3WEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:04:35 -0400
+Received: from mailout.easymail.ca ([64.68.200.34]:40910 "EHLO
+        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230515AbhG3WEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 17:57:26 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406C1C061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:57:20 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id j9-20020a2581490000b02905897d81c63fso6450642ybm.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=YFm85Wduq5y+10ZdlPwZKrCLoXRuDpiE2SUIBEh05mI=;
-        b=U0mvENCWcvRKyRvn2QhOha2v5msMUAgGJd6qWARN8JlVW+SveSBU9AHZzHY30udLTL
-         dI8y2k2L3gKEb44JexJ+BqMr5Yec1/6JguqFBD3HOjiUhVoW3weEYXfUtrCucRvhlVJt
-         vEUh4gDN3mGnHfGk8IIovXQp7Cyey8l3UV2eGc23s2qBtcg1BBUWYn2db+YCaEtLcWT+
-         4qQYphnmueeR0vQkQGS0jkiWyz2GS6mEbgEOOap5n3f2FX/5lmDHG7qwbCxTaMF1td4v
-         S1EP0zPv7XZL2zo+MmGcMphWl2vOXBdAiqwMurtYO7Vt0KxOGVIJtQjPFYuF6BTklkgL
-         eu5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=YFm85Wduq5y+10ZdlPwZKrCLoXRuDpiE2SUIBEh05mI=;
-        b=lZtcWEJhwyzPHeIa3IWlLFiGzeA1aBQnp7GxqOJWjW9s1lIvbaswW1afktzJL7N8Km
-         LCGB3bk3mYlAS5x3/cwFU7vi4JAX0znA6Xog/SGp8BL7Eo3DQir6gq682aWXJNTADfC4
-         9hXbu8S4nkoaEvuSYA83jzuJt5NuQvwsbZn3be3QrmiMH6kfkMWBz05tw846jvnRQLg1
-         IWyxT4zNktyP8wnfZQUZtrdbna+RYSbmPw5nURJEGq6FMztOM6kcyEeKxptdkr12BsNS
-         7mQFveIkT+hdTJcuKFbOw6oNALrFM0PLv+4OGPxxj40HWMo5GewFWU/mNmguEUZiJOst
-         7Vtg==
-X-Gm-Message-State: AOAM533eQuZ7OZqSdBxTnocSrmtiTp7+u+8MjgEIsfb8QVYdHnQLbhrf
-        Qpq8bTEXA4e/EZjKbtJ7o9af6bbLFMsrLcsNo4c=
-X-Google-Smtp-Source: ABdhPJzdLBT8dtfCnaLy3CE11KSU6t4LX4eIvQ8k5CuX6emkmHk9XAUJ1ZA/83lNHoKbhGP4p5mChGd3H//kC7ZmI1g=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:ca8b:b433:7c1d:90d])
- (user=ndesaulniers job=sendgmr) by 2002:a25:aea0:: with SMTP id
- b32mr5811780ybj.474.1627682239441; Fri, 30 Jul 2021 14:57:19 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 14:57:08 -0700
-In-Reply-To: <20210730215708.276437-1-ndesaulniers@google.com>
-Message-Id: <20210730215708.276437-4-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20210730215708.276437-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v5 3/3] Documentation/llvm: update CROSS_COMPILE inferencing
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 30 Jul 2021 18:04:34 -0400
+X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Jul 2021 18:04:33 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id 77EAD8280F;
+        Fri, 30 Jul 2021 21:57:17 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo01-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo01-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qb7Laqtfqbm5; Fri, 30 Jul 2021 21:57:17 +0000 (UTC)
+Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        by mailout.easymail.ca (Postfix) with ESMTPA id 26CCF8262C;
+        Fri, 30 Jul 2021 21:57:17 +0000 (UTC)
+Received: from [192.168.1.4] (internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id 6AF7A3EE3E;
+        Fri, 30 Jul 2021 15:57:16 -0600 (MDT)
+Subject: Re: [PATCH] scsi: BusLogic: use %X for u32 sized integer rather than
+ %lX
+To:     Colin King <colin.king@canonical.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210730095031.26981-1-colin.king@canonical.com>
+From:   Khalid Aziz <khalid@gonehiking.org>
+Message-ID: <c0d9a73c-3817-ea12-8cda-8970ac849191@gonehiking.org>
+Date:   Fri, 30 Jul 2021 15:57:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210730095031.26981-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted by Masahiro, document how we can generally infer CROSS_COMPILE
-(and the more specific details about --target and --prefix) based on
-ARCH.
+On 7/30/21 3:50 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> An earlier fix changed the print format specifier for adapter->bios_addr
+> to use %lX however the integer is a u32 so the fix was wrong. Fix this
+> by using the correct %X format specifier.
+> 
+> Addresses-Coverity: ("Invalid type in argument")
+> Fixes: 43622697117c ("scsi: BusLogic: use %lX for unsigned long rather than %X")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/scsi/BusLogic.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+> index adddcd589941..bd615db5c58c 100644
+> --- a/drivers/scsi/BusLogic.c
+> +++ b/drivers/scsi/BusLogic.c
+> @@ -1711,7 +1711,7 @@ static bool __init blogic_reportconfig(struct blogic_adapter *adapter)
+>  	if (adapter->adapter_bus_type != BLOGIC_PCI_BUS) {
+>  		blogic_info("  DMA Channel: None, ", adapter);
+>  		if (adapter->bios_addr > 0)
+> -			blogic_info("BIOS Address: 0x%lX, ", adapter,
+> +			blogic_info("BIOS Address: 0x%X, ", adapter,
+>  					adapter->bios_addr);
+>  		else
+>  			blogic_info("BIOS Address: None, ", adapter);
+> 
 
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- Documentation/kbuild/llvm.rst | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-index b18401d2ba82..4292f0686316 100644
---- a/Documentation/kbuild/llvm.rst
-+++ b/Documentation/kbuild/llvm.rst
-@@ -63,6 +63,23 @@ They can be enabled individually. The full list of the parameters: ::
- Currently, the integrated assembler is disabled by default. You can pass
- ``LLVM_IAS=1`` to enable it.
- 
-+Omitting CROSS_COMPILE
-+----------------------
-+
-+As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
-+
-+Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
-+``--prefix=<path>`` to search for the GNU assembler.
-+
-+If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
-+from ``ARCH``.
-+
-+That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
-+
-+For example, to cross-compile the arm64 kernel::
-+
-+	ARCH=arm64 make LLVM=1 LLVM_IAS=1
-+
- Supported Architectures
- -----------------------
- 
--- 
-2.32.0.554.ge1b32706d8-goog
-
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
