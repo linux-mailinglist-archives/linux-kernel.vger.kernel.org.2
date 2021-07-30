@@ -2,382 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBDD3DB2BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3143DB2BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236973AbhG3FSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
+        id S236993AbhG3FTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236642AbhG3FS3 (ORCPT
+        with ESMTP id S236642AbhG3FTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:18:29 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06D6C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:18:24 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id a20so9762424plm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2Ab74AhJwzRIRCGKgVVDL+7Qsvq0Oe+eaDr5ToQWIrM=;
-        b=H+H2wlj1EE0u8J1jTx+Ex7m4hUnl2baCHpp7Ad6LGMkcRw+7rwr6QGwxb0Zw9Z/+YZ
-         DC6ul5wmzHs0mM3UfV3S41rlBtNoNOYF/ElpLjwU7Rwtcok8UhOXdNYqfuAN5Wm5foQU
-         zF8jYbWZRDaJDt48rN5h8JAOE7qOchc2sKPvVpNQF4u2PJtoqzcJvwuylbikxxxBgDQM
-         DhgJ740i061uzWWiqbaXQObrbX06D5xNBY9/Sz4hPeIVW354g1t2U/AAyHVRLupwrkRW
-         gnjYSQU4fDBBflA0HkHlqTrdcD0dbsOqIeBXch7dFTd5zikxgKHkU98oAFvL9/OINjFE
-         By6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2Ab74AhJwzRIRCGKgVVDL+7Qsvq0Oe+eaDr5ToQWIrM=;
-        b=Jx6F7WzfLk0PYOlQSoeh338FphM3Aw9sQjjTcZsNqtqsVnZ2ZfQDq538rKueDmZk0+
-         P+mIUhyL2quuewzgZYvyLA8snNMhUeN68CSv+jJ+KiO6CS3L2oVuZgUFFjOy3ddE6kDI
-         yTAYwnTbLy9oTafB3kwe0uHtWXqQVn5NWCJxo+8awotUud/73zNi666KzgAvWkZ/+u6e
-         JER1zWDLcWbN5pI4TmmWZrevEkIHaazBjA+JJeDi/4GgJB3cqUcNCZ+cOignFsmdkira
-         G3t4maxqECW1hVm47t7NUXZOBZ3Ftw7TKMAA4fZjdO1PVytXIOabrwQB4LwF2wF3kL/+
-         nltQ==
-X-Gm-Message-State: AOAM532Tm8jVmwQXhHfIhwPmaoht4hw09upxaw0B7dGM0wEXBmPwYdFe
-        WZvobh9/K5H8ikFM+GTp5+c=
-X-Google-Smtp-Source: ABdhPJwwZ7bfmA1WBWMnM9nSkPgl9E1SBdUL8MZLDqWCk8kGpHCkK3PjMOb59kmfJI125sxO51R0cw==
-X-Received: by 2002:a17:903:244d:b029:12c:3c0:f21d with SMTP id l13-20020a170903244db029012c03c0f21dmr882043pls.65.1627622304272;
-        Thu, 29 Jul 2021 22:18:24 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id c4sm655444pfo.45.2021.07.29.22.18.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 22:18:23 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: clean up unused kerneldoc in drm_lease.c
-Date:   Fri, 30 Jul 2021 13:17:59 +0800
-Message-Id: <20210730051759.1570630-1-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 30 Jul 2021 01:19:05 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36DEC061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:18:59 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m9Kv8-0003HC-P6; Fri, 30 Jul 2021 07:18:54 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m9Kv7-0004To-1a; Fri, 30 Jul 2021 07:18:53 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m9Kv7-0005G4-0L; Fri, 30 Jul 2021 07:18:53 +0200
+Date:   Fri, 30 Jul 2021 07:18:50 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     patches@arm.linux.org.uk, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+Subject: Re: [PATCH] ARM: move the (z/u)install rules to arch/arm/Makefile
+Message-ID: <20210730051850.v4erhjhrfxr6hb3n@pengutronix.de>
+References: <20210729140351.442678-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="oq7pwxvlfu5omslo"
+Content-Disposition: inline
+In-Reply-To: <20210729140351.442678-1-masahiroy@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kerneldoc in drm_lease.c is unused because none of the functions
-are driver interfaces as the symbols are not exported.
 
-Since they aren't used and much of the existing comments don't provide
-any insights (e.g. they just repeat the function name or list out the
-function parameters), they should be removed to make them easier to
-maintain and to make useful info more obvious.
+--oq7pwxvlfu5omslo
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As a note, many of the comments mention whether idr_mutex should be
-held, but these are mostly redundant in cases where the function
-contains lockdep assertions or grabs the mutex.
+On Thu, Jul 29, 2021 at 11:03:51PM +0900, Masahiro Yamada wrote:
+> Currently, the (z/u)install targets in arch/arm/Makefile descend into
+> arch/arm/boot/Makefile to invoke the shell script, but there is no
+> good reason to do so.
+>=20
+> arch/arm/Makefile can run the shell script directly.
 
-To simplify review, here's the reasoning behind each update.
+I didn't test, but I think this works in general. There shouldn't be a
+principal problem as e.g. mips also doesn't have install in
+arch/$(ARCH)/boot/Makefile.
 
-drm_lease_owner:
-function name is self-descriptive
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-_drm_find_lessee:
-function name is self-descriptive
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-_drm_lease_held_master:
-function name and signature are self-descriptive
+--oq7pwxvlfu5omslo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-_drm_has_leased:
-kerneldoc is summarized into a comment because the function name could
-be interpreted ambiguously (check if the object has been leased VS
-check if the master has a lease on the object)
+-----BEGIN PGP SIGNATURE-----
 
-_drm_lease_held:
-Retain the idr_mutex comment because the function does not directly
-grab the mutex or use a lockdep assertion.
-Otherwise, the function name is self-descriptive.
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEDi7cACgkQwfwUeK3K
+7AlHhAf8DMPkrcCyAHgKhcZL5lWJQzYOfE26BEfGaT1zW/N2oDuLTHmiL47V5kCA
++NVQ+9lbqylWbt89go2IArfkn+MFZQRPRXQ1LjvfBkczXjaLBAKUQDOK/NfSLuJT
+ck6DCYKxOLayzkrhRJRXX4ACVT+Y93IxCGl/6LTGHBvqgrmWHOjqU+yQ3+sVa+Ao
+7N6U+aFzDR6exCoC4qQYHdkCv079m24atunhtg+SLWH6ody1WeX09h7DINBM38MG
+BJ1RO6qm0ukeZbp8UdrKGHCYOAlP+tYx9uoDJe21pooe3Oh84oaBNDxiY7l7Qh0H
+YpgkUqsQ2LkO6CGyUI7esggS42QYjg==
+=p2Qs
+-----END PGP SIGNATURE-----
 
-drm_lease_held:
-function name is self-descriptive
-
-drm_lease_filter_crtcs:
-Kerneldoc is summarized into a comment because the function name could
-be interpreted ambiguously (filter leases based on crtcs mask VS
-filter crtcs mask based on leases)
-
-drm_lease_create:
-Kerneldoc removed.
-Useful function details such as atomic leasing are retained.
-Errno interpretations are useful and retained.
-
-drm_lease_destroy:
-function name is self-descriptive. Additional information is also
-removed as they're already present as comments inside the function.
-
-_drm_lease_revoke:
-function name is self-descriptive
-
-drm_lease_revoke:
-function name is self-descriptive
-
-drm_mode_create_lease_ioctl:
-Kerneldoc removed, but useful function details retained.
-
-drm_mode_list_lessees_ioctl:
-function name is self-descriptive. Additional details restate what the
-code does.
-
-drm_mode_get_lease_ioctl:
-Function summary retained to clarify that it's the leased objects that
-are returned, not the lease structure.
-
-drm_mode_revoke_lease_ioctl:
-Kerneldoc removed, but useful function details retained.
-
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
----
- drivers/gpu/drm/drm_lease.c | 131 +++---------------------------------
- 1 file changed, 8 insertions(+), 123 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
-index 79be797e8689..dee4f24a1808 100644
---- a/drivers/gpu/drm/drm_lease.c
-+++ b/drivers/gpu/drm/drm_lease.c
-@@ -71,14 +71,6 @@
- 
- static uint64_t drm_lease_idr_object;
- 
--/**
-- * drm_lease_owner - return ancestor owner drm_master
-- * @master: drm_master somewhere within tree of lessees and lessors
-- *
-- * RETURN:
-- *
-- * drm_master at the top of the tree (i.e, with lessor NULL
-- */
- struct drm_master *drm_lease_owner(struct drm_master *master)
- {
- 	while (master->lessor != NULL)
-@@ -86,16 +78,6 @@ struct drm_master *drm_lease_owner(struct drm_master *master)
- 	return master;
- }
- 
--/**
-- * _drm_find_lessee - find lessee by id (idr_mutex held)
-- * @master: drm_master of lessor
-- * @lessee_id: id
-- *
-- * RETURN:
-- *
-- * drm_master of the lessee if valid, NULL otherwise
-- */
--
- static struct drm_master*
- _drm_find_lessee(struct drm_master *master, int lessee_id)
- {
-@@ -103,17 +85,6 @@ _drm_find_lessee(struct drm_master *master, int lessee_id)
- 	return idr_find(&drm_lease_owner(master)->lessee_idr, lessee_id);
- }
- 
--/**
-- * _drm_lease_held_master - check to see if an object is leased (or owned) by master (idr_mutex held)
-- * @master: the master to check the lease status of
-- * @id: the id to check
-- *
-- * Checks if the specified master holds a lease on the object. Return
-- * value:
-- *
-- *	true		'master' holds a lease on (or owns) the object
-- *	false		'master' does not hold a lease.
-- */
- static int _drm_lease_held_master(struct drm_master *master, int id)
- {
- 	lockdep_assert_held(&master->dev->mode_config.idr_mutex);
-@@ -122,17 +93,7 @@ static int _drm_lease_held_master(struct drm_master *master, int id)
- 	return true;
- }
- 
--/**
-- * _drm_has_leased - check to see if an object has been leased (idr_mutex held)
-- * @master: the master to check the lease status of
-- * @id: the id to check
-- *
-- * Checks if any lessee of 'master' holds a lease on 'id'. Return
-- * value:
-- *
-- *	true		Some lessee holds a lease on the object.
-- *	false		No lessee has a lease on the object.
-- */
-+/* Checks if the given object has been leased to some lessee of drm_master */
- static bool _drm_has_leased(struct drm_master *master, int id)
- {
- 	struct drm_master *lessee;
-@@ -144,17 +105,7 @@ static bool _drm_has_leased(struct drm_master *master, int id)
- 	return false;
- }
- 
--/**
-- * _drm_lease_held - check drm_mode_object lease status (idr_mutex held)
-- * @file_priv: the master drm_file
-- * @id: the object id
-- *
-- * Checks if the specified master holds a lease on the object. Return
-- * value:
-- *
-- *	true		'master' holds a lease on (or owns) the object
-- *	false		'master' does not hold a lease.
-- */
-+/* Called with idr_mutex held */
- bool _drm_lease_held(struct drm_file *file_priv, int id)
- {
- 	bool ret;
-@@ -172,17 +123,6 @@ bool _drm_lease_held(struct drm_file *file_priv, int id)
- 	return ret;
- }
- 
--/**
-- * drm_lease_held - check drm_mode_object lease status (idr_mutex not held)
-- * @file_priv: the master drm_file
-- * @id: the object id
-- *
-- * Checks if the specified master holds a lease on the object. Return
-- * value:
-- *
-- *	true		'master' holds a lease on (or owns) the object
-- *	false		'master' does not hold a lease.
-- */
- bool drm_lease_held(struct drm_file *file_priv, int id)
- {
- 	struct drm_master *master;
-@@ -207,13 +147,9 @@ bool drm_lease_held(struct drm_file *file_priv, int id)
- 	return ret;
- }
- 
--/**
-- * drm_lease_filter_crtcs - restricted crtc set to leased values (idr_mutex not held)
-- * @file_priv: requestor file
-- * @crtcs_in: bitmask of crtcs to check
-- *
-- * Reconstructs a crtc mask based on the crtcs which are visible
-- * through the specified file.
-+/*
-+ * Given a bitmask of crtcs to check, reconstructs a crtc mask based on the
-+ * crtcs which are visible through the specified file.
-  */
- uint32_t drm_lease_filter_crtcs(struct drm_file *file_priv, uint32_t crtcs_in)
- {
-@@ -258,10 +194,6 @@ uint32_t drm_lease_filter_crtcs(struct drm_file *file_priv, uint32_t crtcs_in)
- }
- 
- /*
-- * drm_lease_create - create a new drm_master with leased objects (idr_mutex not held)
-- * @lessor: lease holder (or owner) of objects
-- * @leases: objects to lease to the new drm_master
-- *
-  * Uses drm_master_create to allocate a new drm_master, then checks to
-  * make sure all of the desired objects can be leased, atomically
-  * leasing them to the new drmmaster.
-@@ -330,15 +262,6 @@ static struct drm_master *drm_lease_create(struct drm_master *lessor, struct idr
- 	return ERR_PTR(error);
- }
- 
--/**
-- * drm_lease_destroy - a master is going away (idr_mutex not held)
-- * @master: the drm_master being destroyed
-- *
-- * All lessees will have been destroyed as they
-- * hold a reference on their lessor. Notify any
-- * lessor for this master so that it can check
-- * the list of lessees.
-- */
- void drm_lease_destroy(struct drm_master *master)
- {
- 	struct drm_device *dev = master->dev;
-@@ -372,10 +295,6 @@ void drm_lease_destroy(struct drm_master *master)
- 	DRM_DEBUG_LEASE("drm_lease_destroy done %d\n", master->lessee_id);
- }
- 
--/**
-- * _drm_lease_revoke - revoke access to all leased objects (idr_mutex held)
-- * @top: the master losing its lease
-- */
- static void _drm_lease_revoke(struct drm_master *top)
- {
- 	int object;
-@@ -414,10 +333,6 @@ static void _drm_lease_revoke(struct drm_master *top)
- 	}
- }
- 
--/**
-- * drm_lease_revoke - revoke access to all leased objects (idr_mutex not held)
-- * @top: the master losing its lease
-- */
- void drm_lease_revoke(struct drm_master *top)
- {
- 	mutex_lock(&top->dev->mode_config.idr_mutex);
-@@ -549,12 +464,7 @@ static int fill_object_idr(struct drm_device *dev,
- 	return ret;
- }
- 
--/**
-- * drm_mode_create_lease_ioctl - create a new lease
-- * @dev: the drm device
-- * @data: pointer to struct drm_mode_create_lease
-- * @lessor_priv: the file being manipulated
-- *
-+/*
-  * The master associated with the specified file will have a lease
-  * created containing the objects specified in the ioctl structure.
-  * A file descriptor will be allocated for that and returned to the
-@@ -676,18 +586,6 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 	return ret;
- }
- 
--/**
-- * drm_mode_list_lessees_ioctl - list lessee ids
-- * @dev: the drm device
-- * @data: pointer to struct drm_mode_list_lessees
-- * @lessor_priv: the file being manipulated
-- *
-- * Starting from the master associated with the specified file,
-- * the master with the provided lessee_id is found, and then
-- * an array of lessee ids associated with leases from that master
-- * are returned.
-- */
--
- int drm_mode_list_lessees_ioctl(struct drm_device *dev,
- 			       void *data, struct drm_file *lessor_priv)
- {
-@@ -734,15 +632,7 @@ int drm_mode_list_lessees_ioctl(struct drm_device *dev,
- 	return ret;
- }
- 
--/**
-- * drm_mode_get_lease_ioctl - list leased objects
-- * @dev: the drm device
-- * @data: pointer to struct drm_mode_get_lease
-- * @lessee_priv: the file being manipulated
-- *
-- * Return the list of leased objects for the specified lessee
-- */
--
-+/* Return the list of leased objects for the specified lessee */
- int drm_mode_get_lease_ioctl(struct drm_device *dev,
- 			     void *data, struct drm_file *lessee_priv)
- {
-@@ -796,12 +686,7 @@ int drm_mode_get_lease_ioctl(struct drm_device *dev,
- 	return ret;
- }
- 
--/**
-- * drm_mode_revoke_lease_ioctl - revoke lease
-- * @dev: the drm device
-- * @data: pointer to struct drm_mode_revoke_lease
-- * @lessor_priv: the file being manipulated
-- *
-+/*
-  * This removes all of the objects from the lease without
-  * actually getting rid of the lease itself; that way all
-  * references to it still work correctly
--- 
-2.25.1
-
+--oq7pwxvlfu5omslo--
