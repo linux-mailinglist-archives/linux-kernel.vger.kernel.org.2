@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8813DB8B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAD63DB8B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238822AbhG3Mi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 08:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238723AbhG3Mi1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 08:38:27 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19908C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 05:38:22 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id r23so12148658lji.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 05:38:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0TPrFNXDo3fiyz0l/s2CJAtmfo7kIvxhcbaJib7tKDk=;
-        b=vpScR3U25Ovsfdyt7Y7crUtNpsGq4dweZaIpvd8TbQumwlSW4i5tBuVwczmFcoNcag
-         E5iJtmPSdE/flOnlqdoR7VnY2Urk4sEyFZoAqDFiQJO4l9KdnfJleH0V44thWadtf/Pp
-         O5XP0NtMiDiHDoIV9gE95mHJYDORJ7LY9PJIAXJP+sX16UMVzKbr+c8A3E3WyFcfvKef
-         6xpUyXD21hyy0FeF/GtvAkJOw8bvd2wZLqzKPjMCgab5KGN4rAkcNQ+qAj07dMlSCrnd
-         XwWPyN8bK8PK5WXgLWMPU7HuJ5GnwHucT8meJhzA7QvtdiyCQideDgaHRNQFqE3wsUG1
-         8sXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0TPrFNXDo3fiyz0l/s2CJAtmfo7kIvxhcbaJib7tKDk=;
-        b=kbTkQ9pGOJIgKFUdlQfON7ZfoP+bj0xL9o3ojVE7UbpOhLwoh8stEfOSA3xzwTyVAy
-         0hOPrrSXcTNGCRHH6pav1FCKO36qKk7bQe6U4P3xbhr7O8nULp5vRwOXaPi3AgAxo34A
-         61zyyl6698nBu2XV+Edfpmqz+82+gKVWOjE5X8WXpwx9LBPOslZRIdLqn2qR1nv/Ebtf
-         aMEJdXicNN7bCMgripWwmvzOLLT9mfTmQiNZUo+STsUHZBd8QWQW3h4MJJgVL/gu5voK
-         kaTntdAYfWrwfdKGuGJptgb8Y2hY4ywYkvu+NZKEZp+LUCGgTssI5PvGn7oQBLQUe4M0
-         IubQ==
-X-Gm-Message-State: AOAM531Uo5Gn7KiFE/iiivNdv2+GFUkltrx+NhiafY7+n7d1+ZH3NCcl
-        Qb5dMnIXgYTm/wYix5sU24XFRTaWB5Y0eQIvCF81lQ==
-X-Google-Smtp-Source: ABdhPJwQP9rYUjp+G/nfNIv5a0w33o23MO0STAgKSfw8PMCWe/ucqXTK5QcMMJ+7QOP5dAlI1PRu3SaENWjQzVQNYHU=
-X-Received: by 2002:a2e:888f:: with SMTP id k15mr1528246lji.326.1627648700492;
- Fri, 30 Jul 2021 05:38:20 -0700 (PDT)
+        id S238862AbhG3Mic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 08:38:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238723AbhG3Mia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 08:38:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 387E560527;
+        Fri, 30 Jul 2021 12:38:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627648706;
+        bh=o6XJinuY1CMi7OTgS2kgmVPjGGg7c5qp+9A1WHaEJeA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gvoj29gJx02m2wpzcfnFS/kvmf3bt/1JtnNfvnmVMt0Lx2mLv077D9LYeQ8y72IH0
+         xK7eY6PADSRu2OsCVvpOgpjAhzPFWY1mHS734NAu8xlCOZninU5TDITouDswtHyKSw
+         P3JBAGxK/A/RaI5GJ88s2JjmWV8wTvJD6GeSneGoOy+h0sFgdzdEt0TZb8xSe3HOm4
+         u2tfhCEiq9PMqvLkaFdD+G0Kjszw5bHG2+spn+Tz2kk6wnn/xPpOOad0XKW61WJQmM
+         jjnwoQbbY/tYqJkEJptW8MQeCiH/J8O2mrj8RAvRIoylG5xwq5hgQ3fOsk1ILcWfee
+         PDCgxrH809nqg==
+Date:   Fri, 30 Jul 2021 13:38:21 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qperret@google.com, dbrazdil@google.com,
+        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 05/16] KVM: arm64: Plumb MMIO checking into the fault
+ handling
+Message-ID: <20210730123820.GA23756@willie-the-truck>
+References: <20210715163159.1480168-1-maz@kernel.org>
+ <20210715163159.1480168-6-maz@kernel.org>
+ <20210727181120.GD19173@willie-the-truck>
+ <87y29qd9hb.wl-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210721030134.10562-1-jiaxun.yang@flygoat.com> <20210721030134.10562-7-jiaxun.yang@flygoat.com>
-In-Reply-To: <20210721030134.10562-7-jiaxun.yang@flygoat.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 30 Jul 2021 14:38:09 +0200
-Message-ID: <CACRpkdbFw0SE8iHs+Y+D-oUBrjxkB_1gqdL2TCYHtd8EsT_edw@mail.gmail.com>
-Subject: Re: [PATCH v3 6/9] pinctrl: pistachio: Make it as an option
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-phy@lists.infradead.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y29qd9hb.wl-maz@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 5:02 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+On Wed, Jul 28, 2021 at 11:21:52AM +0100, Marc Zyngier wrote:
+> On Tue, 27 Jul 2021 19:11:21 +0100,
+> Will Deacon <will@kernel.org> wrote:
+> > 
+> > On Thu, Jul 15, 2021 at 05:31:48PM +0100, Marc Zyngier wrote:
+> > > Plumb the MMIO checking code into the MMIO fault handling code.
+> > > Nothing allows a region to be registered yet, so there should be
+> > > no funtional change either.
+> > 
+> > Typo: functional
+> > 
+> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > > ---
+> > >  arch/arm64/kvm/mmio.c | 10 ++++++++++
+> > >  1 file changed, 10 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/kvm/mmio.c b/arch/arm64/kvm/mmio.c
+> > > index 3dd38a151d2a..fd5747279d27 100644
+> > > --- a/arch/arm64/kvm/mmio.c
+> > > +++ b/arch/arm64/kvm/mmio.c
+> > > @@ -6,6 +6,7 @@
+> > >  
+> > >  #include <linux/kvm_host.h>
+> > >  #include <asm/kvm_emulate.h>
+> > > +#include <asm/kvm_mmu.h>
+> > >  #include <trace/events/kvm.h>
+> > >  
+> > >  #include "trace.h"
+> > > @@ -130,6 +131,10 @@ int io_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa)
+> > >  	int len;
+> > >  	u8 data_buf[8];
+> > >  
+> > > +	/* Check failed? Return to the guest for debriefing... */
+> > > +	if (!kvm_check_ioguard_page(vcpu, fault_ipa))
+> > > +		return 1;
+> > > +
+> > >  	/*
+> > >  	 * No valid syndrome? Ask userspace for help if it has
+> > >  	 * volunteered to do so, and bail out otherwise.
+> > > @@ -156,6 +161,11 @@ int io_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa)
+> > >  	len = kvm_vcpu_dabt_get_as(vcpu);
+> > >  	rt = kvm_vcpu_dabt_get_rd(vcpu);
+> > >  
+> > > +	/* If we cross a page boundary, check that too... */
+> > > +	if (((fault_ipa + len - 1) & PAGE_MASK) != (fault_ipa & PAGE_MASK) &&
+> > > +	    !kvm_check_ioguard_page(vcpu, fault_ipa + len - 1))
+> > > +		return 1;
+> > > +
+> > 
+> > I find this a little odd as the checks straddle the invalid syndrome check,
+> > meaning that the relative priorities of KVM_ARCH_FLAG_MMIO_GUARD and
+> > KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER are unclear.
+> 
+> Good point. And the combination of both flags on its own is odd. Maybe
+> KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER should be ignored or deemed
+> incompatible with the MMIO guard feature.
+> 
+> The lack of syndrome information means that we cannot really test for
+> the boundaries of the access (len is invalid), so I'd be tempted to
+> inject an abort in this case.
+> 
+> Thoughts?
 
-> So it will be avilable for generic MIPS kernel.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+I agree. Probably worth rejecting both flags anyway so the VMM knows what
+it's getting, but injecting an abort into the guest if we don't have
+sufficient syndrom information to triage it safely feels like the right
+thing to do.
 
-I just applied this one patch to the pinctrl tree, let's see if
-it works!
-
-Yours,
-Linus Walleij
+Will
