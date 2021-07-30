@@ -2,226 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2A93DB6C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBD13DB68F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238584AbhG3KE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:04:27 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:32041 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238454AbhG3KEF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:04:05 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AMRBiS6u+ze944rzB4eEYS/Vi7skDntV00zEX?=
- =?us-ascii?q?/kB9WHVpmszxra6TdZMgpHvJYVcqKRYdcL+7WJVoLUmxyXcX2/h1AV7BZniEhI?=
- =?us-ascii?q?LAFugLhuGO/9SKIUzDH4BmupuIC5IOauEYE2IK9vrS0U2pFco62tmb/OSNjefa?=
- =?us-ascii?q?9X1kSgZncMhbnn5EIzfeAktrXxNHGJZ8MJKd4/BMrz2mdW9SQd+8AhA+LpD+ju?=
- =?us-ascii?q?yOhJT7egQHGhJizAGPiAmj4Ln8HwPd/jp2aUIo/Ysf?=
-X-IronPort-AV: E=Sophos;i="5.84,281,1620662400"; 
-   d="scan'208";a="112074026"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 30 Jul 2021 18:02:26 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id C023B4D0D4A3;
-        Fri, 30 Jul 2021 18:02:20 +0800 (CST)
-Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Fri, 30 Jul 2021 18:02:17 +0800
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Fri, 30 Jul 2021 18:02:15 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Fri, 30 Jul 2021 18:02:13 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <dm-devel@redhat.com>
-CC:     <djwong@kernel.org>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <agk@redhat.com>,
-        <snitzer@redhat.com>
-Subject: [PATCH RESEND v6 7/9] dm: Introduce ->rmap() to find bdev offset
-Date:   Fri, 30 Jul 2021 18:01:56 +0800
-Message-ID: <20210730100158.3117319-8-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com>
-References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com>
+        id S238371AbhG3KCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:02:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:39828 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230160AbhG3KBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 06:01:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3BBC1FB;
+        Fri, 30 Jul 2021 03:01:12 -0700 (PDT)
+Received: from [10.163.66.9] (unknown [10.163.66.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50CB13F73D;
+        Fri, 30 Jul 2021 03:01:08 -0700 (PDT)
+Subject: Re: [PATCH 02/10] coresight: trbe: Add a helper to calculate the
+ trace generated
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
+References: <20210728135217.591173-1-suzuki.poulose@arm.com>
+ <20210728135217.591173-3-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <3f3643fc-95b5-43b2-c512-72a7357f9ca8@arm.com>
+Date:   Fri, 30 Jul 2021 15:31:56 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: C023B4D0D4A3.A24E5
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <20210728135217.591173-3-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pmem device could be a target of mapped device.  In order to find out
-the global location on a mapped device, we introduce this to translate
-offset from target device to mapped device.
-
-Currently, we implement it on linear target, which is easy to do the
-translation.  Other targets will be supported in the future.  However,
-some targets may not support it because of the non-linear mapping.
-
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- block/genhd.c                 | 56 +++++++++++++++++++++++++++++++++++
- drivers/md/dm-linear.c        | 20 +++++++++++++
- include/linux/device-mapper.h |  5 ++++
- include/linux/genhd.h         |  1 +
- 4 files changed, 82 insertions(+)
-
-diff --git a/block/genhd.c b/block/genhd.c
-index af4d2ab4a633..7a595da0cbec 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -669,6 +669,62 @@ void blk_request_module(dev_t devt)
- 		request_module("block-major-%d", MAJOR(devt));
- }
- 
-+/*
-+ * bdget_disk - do bdget() by gendisk and partition number
-+ * @disk: gendisk of interest
-+ * @partno: partition number
-+ *
-+ * Find partition @partno from @disk, do bdget() on it.
-+ *
-+ * CONTEXT:
-+ * Don't care.
-+ *
-+ * RETURNS:
-+ * Resulting block_device on success, NULL on failure.
-+ */
-+static inline struct block_device *bdget_disk(struct gendisk *disk, int partno)
-+{
-+	struct block_device *bdev = NULL;
-+
-+	rcu_read_lock();
-+	bdev = xa_load(&disk->part_tbl, partno);
-+	if (bdev && !bdgrab(bdev))
-+		bdev = NULL;
-+	rcu_read_unlock();
-+
-+	return bdev;
-+}
-+
-+/**
-+ * bdget_disk_sector - get block device by given sector number
-+ * @disk: gendisk of interest
-+ * @sector: sector number
-+ *
-+ * RETURNS: the found block device where sector locates in
-+ */
-+struct block_device *bdget_disk_sector(struct gendisk *disk, sector_t sector)
-+{
-+	struct block_device *part = NULL, *p;
-+	unsigned long idx;
-+
-+	rcu_read_lock();
-+	xa_for_each(&disk->part_tbl, idx, p) {
-+		if (p->bd_partno == 0)
-+			continue;
-+		if (p->bd_start_sect <= sector &&
-+			sector < p->bd_start_sect + bdev_nr_sectors(p)) {
-+			part = p;
-+			break;
-+		}
-+	}
-+	rcu_read_unlock();
-+	if (!part)
-+		part = disk->part0;
-+
-+	return bdget_disk(disk, part->bd_partno);
-+}
-+EXPORT_SYMBOL(bdget_disk_sector);
-+
- /*
-  * print a full list of all partitions - intended for places where the root
-  * filesystem can't be mounted and thus to give the victim some idea of what
-diff --git a/drivers/md/dm-linear.c b/drivers/md/dm-linear.c
-index c91f1e2e2f65..d28577bd358b 100644
---- a/drivers/md/dm-linear.c
-+++ b/drivers/md/dm-linear.c
-@@ -5,6 +5,7 @@
-  */
- 
- #include "dm.h"
-+#include "dm-core.h"
- #include <linux/module.h>
- #include <linux/init.h>
- #include <linux/blkdev.h>
-@@ -119,6 +120,24 @@ static void linear_status(struct dm_target *ti, status_type_t type,
- 	}
- }
- 
-+static int linear_rmap(struct dm_target *ti, sector_t offset,
-+		       rmap_callout_fn fn, void *data)
-+{
-+	struct linear_c *lc = (struct linear_c *) ti->private;
-+	struct mapped_device *md = ti->table->md;
-+	struct block_device *bdev;
-+	sector_t disk_sect = offset - dm_target_offset(ti, lc->start);
-+	int rc = -ENODEV;
-+
-+	bdev = bdget_disk_sector(md->disk, offset);
-+	if (!bdev)
-+		return rc;
-+
-+	rc = fn(ti, bdev, disk_sect, data);
-+	bdput(bdev);
-+	return rc;
-+}
-+
- static int linear_prepare_ioctl(struct dm_target *ti, struct block_device **bdev)
- {
- 	struct linear_c *lc = (struct linear_c *) ti->private;
-@@ -235,6 +254,7 @@ static struct target_type linear_target = {
- 	.ctr    = linear_ctr,
- 	.dtr    = linear_dtr,
- 	.map    = linear_map,
-+	.rmap   = linear_rmap,
- 	.status = linear_status,
- 	.prepare_ioctl = linear_prepare_ioctl,
- 	.iterate_devices = linear_iterate_devices,
-diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
-index 7457d49acf9a..4069983c4618 100644
---- a/include/linux/device-mapper.h
-+++ b/include/linux/device-mapper.h
-@@ -58,6 +58,10 @@ typedef void (*dm_dtr_fn) (struct dm_target *ti);
-  * = 2: The target wants to push back the io
-  */
- typedef int (*dm_map_fn) (struct dm_target *ti, struct bio *bio);
-+typedef int (*rmap_callout_fn) (struct dm_target *ti, struct block_device *bdev,
-+				sector_t sect, void *data);
-+typedef int (*dm_rmap_fn) (struct dm_target *ti, sector_t offset,
-+			   rmap_callout_fn fn, void *data);
- typedef int (*dm_clone_and_map_request_fn) (struct dm_target *ti,
- 					    struct request *rq,
- 					    union map_info *map_context,
-@@ -184,6 +188,7 @@ struct target_type {
- 	dm_ctr_fn ctr;
- 	dm_dtr_fn dtr;
- 	dm_map_fn map;
-+	dm_rmap_fn rmap;
- 	dm_clone_and_map_request_fn clone_and_map_rq;
- 	dm_release_clone_request_fn release_clone_rq;
- 	dm_endio_fn end_io;
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index 13b34177cc85..7de6fdc14de6 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -223,6 +223,7 @@ static inline void add_disk_no_queue_reg(struct gendisk *disk)
- }
- 
- extern void del_gendisk(struct gendisk *gp);
-+extern struct block_device *bdget_disk_sector(struct gendisk *disk, sector_t sector);
- 
- void set_disk_ro(struct gendisk *disk, bool read_only);
- 
--- 
-2.32.0
 
 
+On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
+> We collect the trace from the TRBE on FILL event from IRQ context
+> and when via update_buffer(), when the event is stopped. Let us
+> consolidate how we calculate the trace generated into a helper.
+> 
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 48 ++++++++++++--------
+>  1 file changed, 30 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 0368bf405e35..a0168ad204b3 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -528,6 +528,30 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
+>  	return TRBE_FAULT_ACT_SPURIOUS;
+>  }
+>  
+> +static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
+> +					 struct trbe_buf *buf,
+> +					 bool wrap)
+> +{
+> +	u64 write;
+> +	u64 start_off, end_off;
+> +
+> +	/*
+> +	 * If the TRBE has wrapped around the write pointer has
+> +	 * wrapped and should be treated as limit.
+> +	 */
+> +	if (wrap)
+> +		write = get_trbe_limit_pointer();
+> +	else
+> +		write = get_trbe_write_pointer();
+> +
+> +	end_off = write - buf->trbe_base;
+> +	start_off = PERF_IDX2OFF(handle->head, buf);
+> +
+> +	if (WARN_ON_ONCE(end_off < start_off))
+> +		return 0;
+> +	return (end_off - start_off);
+> +}
+> +
+>  static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
+>  				   struct perf_event *event, void **pages,
+>  				   int nr_pages, bool snapshot)
+> @@ -589,9 +613,9 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+>  	struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
+>  	struct trbe_buf *buf = config;
+>  	enum trbe_fault_action act;
+> -	unsigned long size, offset;
+> -	unsigned long write, base, status;
+> +	unsigned long size, status;
+>  	unsigned long flags;
+> +	bool wrap = false;
+>  
+>  	WARN_ON(buf->cpudata != cpudata);
+>  	WARN_ON(cpudata->cpu != smp_processor_id());
+> @@ -633,8 +657,6 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+>  	 * handle gets freed in etm_event_stop().
+>  	 */
+>  	trbe_drain_and_disable_local();
+> -	write = get_trbe_write_pointer();
+> -	base = get_trbe_base_pointer();
+>  
+>  	/* Check if there is a pending interrupt and handle it here */
+>  	status = read_sysreg_s(SYS_TRBSR_EL1);
+> @@ -658,20 +680,11 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+>  			goto done;
+>  		}
+>  
+> -		/*
+> -		 * Otherwise, the buffer is full and the write pointer
+> -		 * has reached base. Adjust this back to the Limit pointer
+> -		 * for correct size. Also, mark the buffer truncated.
+> -		 */
+> -		write = get_trbe_limit_pointer();
+>  		perf_aux_output_flag(handle, PERF_AUX_FLAG_COLLISION);
+> +		wrap = true;
+>  	}
+>  
+> -	offset = write - base;
+> -	if (WARN_ON_ONCE(offset < PERF_IDX2OFF(handle->head, buf)))
+> -		size = 0;
+> -	else
+> -		size = offset - PERF_IDX2OFF(handle->head, buf);
+> +	size = trbe_get_trace_size(handle, buf, wrap);
+>  
+>  done:
+>  	local_irq_restore(flags);
+> @@ -752,11 +765,10 @@ static int trbe_handle_overflow(struct perf_output_handle *handle)
+>  {
+>  	struct perf_event *event = handle->event;
+>  	struct trbe_buf *buf = etm_perf_sink_config(handle);
+> -	unsigned long offset, size;
+> +	unsigned long size;
+>  	struct etm_event_data *event_data;
+>  
+> -	offset = get_trbe_limit_pointer() - get_trbe_base_pointer();
+> -	size = offset - PERF_IDX2OFF(handle->head, buf);
+> +	size = trbe_get_trace_size(handle, buf, true);
+>  	if (buf->snapshot)
+>  		handle->head += size;
+>  
+> 
 
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
