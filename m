@@ -2,116 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38963DBAA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9FA3DBA97
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239119AbhG3Ob4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239299AbhG3Oby (ORCPT
+        id S239214AbhG3Oad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:30:33 -0400
+Received: from smtp-190e.mail.infomaniak.ch ([185.125.25.14]:53157 "EHLO
+        smtp-190e.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239150AbhG3Oac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:31:54 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B576C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:31:49 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id h11so12590461ljo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g9e2gORjPncqut/lk+rir6sVzd/s93Oq97n1N2vAdLQ=;
-        b=XGWUnR+AMlm5KbE7ohB//psgoZYeUKtPBYVg8mLRqZnYZ/LTos3O9DeFjsU1SjGYEM
-         1K7YRWmmPBWy5skTMvkp7mn9GriKGGrNZ/ATdpxXlPbwYONAmwx4psjv0tmN44DLHSsS
-         I6uvHTBzZKrwzWMgxf4DHmJeV11FTLFjupXkR7jRiL/G19Wh+r64t1HJrR9VI1kM0xa3
-         Adeb3/+ZZJI1eKbHh12FRkORlTei2CWkMx1Zj51QhyPjPQyHwuaVWBBg87IpuAOrhw50
-         ECZk00KdeT/AQvz7Oq9xJBtIc8KnKQmKQ6RAGNFEAAul7sLXmjgzx4B9mu2a8+jblkOr
-         MtOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g9e2gORjPncqut/lk+rir6sVzd/s93Oq97n1N2vAdLQ=;
-        b=mvrqR/UzFroBBVL1cljzhCNkRzT4BFPBBryxn7Idhd8fJ0YC3zp3pKtFgOGW20jCuT
-         xdAeFf5m0ZfVN7ax6/Fwvk6B+MGgGi+3DaaCXBcYCyuXksjiKbEBvomdNWZrGKvnocf1
-         pjQsjgtGzOU0maPUNDhl1GFrmq0tHTz8sl1g+v3yPi0fPRb26aDHFdhY6tb/kls/ISnk
-         S95O2kyrGH2DseecYCFs9R//03hApUv95uISLyXDq0oVsP+XW9yds6N9zEOoASDOxQsU
-         PmBsgR9QzIHbKBM83NgDBi1ihz7uGr+VWNMWElm+s5ge3wW804YqpXbhaNY4H5SfAFvB
-         xLyg==
-X-Gm-Message-State: AOAM531FOxCoP1DYh+Q2KcTBVnUiwcXvthqLtlCYL33i5Suy+dCblHfi
-        OeVkpp0l8ZSsxCv3tjwL7VQlUb0p20XjyACzAEQG+g==
-X-Google-Smtp-Source: ABdhPJwUi6ruX2JvFdTxX3N//7AGHOcJenoElF/S1ILL5z+OMowHXbAfQoJ32ZPpcT2tJBoucpswDQEtQOdQPOsCKaU=
-X-Received: by 2002:a2e:bc14:: with SMTP id b20mr1876294ljf.200.1627655507652;
- Fri, 30 Jul 2021 07:31:47 -0700 (PDT)
+        Fri, 30 Jul 2021 10:30:32 -0400
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4GbqYt0TVXzMpst1;
+        Fri, 30 Jul 2021 16:30:26 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4GbqYr1MZFzlmrrl;
+        Fri, 30 Jul 2021 16:30:24 +0200 (CEST)
+Subject: Re: [PATCH v2 1/4] landlock.7: Add a new page to introduce Landlock
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        landlock@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        "G. Branden Robinson" <g.branden.robinson@gmail.com>
+References: <20210712155745.831580-1-mic@digikod.net>
+ <20210712155745.831580-2-mic@digikod.net>
+ <3f1b943b-2477-2c4e-c835-d6616888176c@gmail.com>
+ <c5036c5c-37a1-57d2-e5dc-1f41a5ed0d31@digikod.net>
+ <a3b271e6-e03f-dab8-b04c-c76315cdd98e@gmail.com>
+ <1a698059-d9dd-5aa0-2765-42e704c3a697@gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <e0f0a037-268d-04df-91bf-e3ade4968f12@digikod.net>
+Date:   Fri, 30 Jul 2021 16:32:20 +0200
+User-Agent: 
 MIME-Version: 1.0
-References: <20210730134552.853350-1-bert@biot.com> <20210730134552.853350-4-bert@biot.com>
-In-Reply-To: <20210730134552.853350-4-bert@biot.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 30 Jul 2021 16:31:36 +0200
-Message-ID: <CACRpkdYvMtE8b-Xiy6=Aiz20jvY0M0Bz9XmcEQDHhqeS+LErEA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] ARM: dts: Add basic support for EcoNet EN7523
-To:     Bert Vermeulen <bert@biot.com>, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        John Crispin <john@phrozen.org>, Felix Fietkau <nbd@nbd.name>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1a698059-d9dd-5aa0-2765-42e704c3a697@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paging Marc Z and Catalin just so they can see this:
+Thanks Alejandro for the detailed explanations, that's useful!
 
-On Fri, Jul 30, 2021 at 3:49 PM Bert Vermeulen <bert@biot.com> wrote:
-
-> From: John Crispin <john@phrozen.org>
->
-> Add basic support for EcoNet EN7523, enough for booting to console.
->
-> The UART is basically 8250-compatible, except for the clock selection.
-> A clock-frequency value is synthesized to get this to run at 115200 bps.
->
-> Signed-off-by: John Crispin <john@phrozen.org>
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-(...)
-> +       gic: interrupt-controller@09000000 {
-> +               compatible = "arm,gic-v3";
-> +               interrupt-controller;
-> +               #interrupt-cells = <3>;
-> +               #address-cells = <1>;
-> +               #size-cells = <1>;
-> +               reg = <0x09000000 0x20000>,
-> +                         <0x09080000 0x80000>;
-> +               interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +               its: gic-its@09020000 {
-> +                       compatible = "arm,gic-v3-its";
-> +                       msi-controller;
-> +                       #msi-cell = <1>;
-> +                       reg = <0x090200000 0x20000>;
-> +               };
-> +       };
-
-Yup GICv3 on ARM32-only silicon.
-
-> +       timer {
-> +               compatible = "arm,armv8-timer";
-> +               interrupt-parent = <&gic>;
-> +               interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-> +                            <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-> +                            <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-> +                            <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
-> +               clock-frequency = <25000000>;
-> +       };
-
-Also arm,armv8-timer on ARM32-only silicon.
-
-This is kind of a first.
-
-Yours,
-Linus Walleij
+On 30/07/2021 14:59, Alejandro Colomar (man-pages) wrote:
+> Hi Mickaël,
+> 
+> On 7/30/21 2:41 PM, Alejandro Colomar (man-pages) wrote:
+> [...]
+>>
+>>
+>>
+>> I hope this was helpful :)
+>>
+>> Cheers,
+>>
+>> Alex
+>>
+>>
+>>
+>>
+>> But, let's use .I
+> 
+> I hit send too soon.  Let's continue.
+> 
+> As for current usage, yes, there are many uses of .IR to mean .I, but
+> for new code, we're only using .I (or .B) when possible.
+> 
+>>
+>>
+>> CC: Branden
+>>
+>>>
+>>>>
+>>>> If there was a misunderstanding about this, I'm sorry.
+>>>>
+>>>>> * Append punctuation to ".IR" and ".BR" when it makes sense (requested
+>>>>>     by Alejandro Colomar).
+>>>>> * Cut lines according to the semantic newline rules (requested by
+>>>>>     Alejandro Colomar).
+>>>>> * Remove roman style from ".TP" section titles (requested by Alejandro
+>>>>>     Colomar).
+>>>>> * Add comma after "i.e." and "e.g.".
+>>>>> * Move the example in a new EXAMPLES section.
+>>>>> * Improve title.
+>>>>> * Explain the LSM acronym at first use.
+>>>>> ---
+>>>>>    man7/landlock.7 | 356
+>>>>> ++++++++++++++++++++++++++++++++++++++++++++++++
+>>>>>    1 file changed, 356 insertions(+)
+>>>>>    create mode 100644 man7/landlock.7
+>>>>>
+>>>>> diff --git a/man7/landlock.7 b/man7/landlock.7
+>>>>> new file mode 100644
+>>>>> index 000000000000..c89f5b1cabb6
+>>>>> --- /dev/null
+>>>>> +++ b/man7/landlock.7
+>>>>> @@ -0,0 +1,356 @@
+>>>>> +.\" Copyright © 2017-2020 Mickaël Salaün <mic@digikod.net>
+>>>>> +.\" Copyright © 2019-2020 ANSSI
+>>>>> +.\" Copyright © 2021 Microsoft Corporation
+>>>>> +.\"
+>>>>> +.\" %%%LICENSE_START(VERBATIM)
+>>>>> +.\" Permission is granted to make and distribute verbatim copies
+>>>>> of this
+>>>>> +.\" manual provided the copyright notice and this permission
+>>>>> notice are
+>>>>> +.\" preserved on all copies.
+>>>>> +.\"
+>>>>> +.\" Permission is granted to copy and distribute modified versions of
+>>>>> this
+>>>>> +.\" manual under the conditions for verbatim copying, provided
+>>>>> that the
+>>>>> +.\" entire resulting derived work is distributed under the terms of a
+>>>>> +.\" permission notice identical to this one.
+>>>>> +.\"
+>>>>> +.\" Since the Linux kernel and libraries are constantly changing,
+>>>>> this
+>>>>> +.\" manual page may be incorrect or out-of-date.  The author(s)
+>>>>> assume no
+>>>>> +.\" responsibility for errors or omissions, or for damages resulting
+>>>>> from
+>>>>> +.\" the use of the information contained herein.  The author(s)
+>>>>> may not
+>>>>> +.\" have taken the same level of care in the production of this
+>>>>> manual,
+>>>>> +.\" which is licensed free of charge, as they might when working
+>>>>> +.\" professionally.
+>>>>> +.\"
+>>>>> +.\" Formatted or processed versions of this manual, if
+>>>>> unaccompanied by
+>>>>> +.\" the source, must acknowledge the copyright and authors of this
+>>>>> work.
+>>>>> +.\" %%%LICENSE_END
+>>>>> +.\"
+>>>>> +.TH LANDLOCK 7 2021-06-27 Linux "Linux Programmer's Manual"
+>>>>> +.SH NAME
+>>>>> +Landlock \- unprivileged access-control
+>>>>> +.SH DESCRIPTION
+>>>>> +Landlock is an access-control system that enables any processes to //
+>>>>> securely /J/
+>>>
+>>> Why adding a line break here? This line is 75 columns as stated by the
+>>> documentation: https://man7.org/linux/man-pages/man7/man-pages.7.html
+>>> I guess it helps for semantic newlines, right? If so, what are the
+>>> rules?
+> 
+> Yes, they were because of semantic newlines.
+> 
+> The "rules" are:
+> 
+> Follow mainly "semantic newlines" style (forgetting about the line
+> length), which will give you a text that (mostly) fits into 75 or 80
+> columns.
+> 
+> If after doing that there are some lines that exceed the 75 or 80 column
+> right margin, consider fixing that line by breaking it at a different
+> point or maybe breaking it further.  The 80 column limit is a hard limit
+> (I can't read anything past the 80 col), while the 75 limit is a bit
+> softer (that's for allowing quotes in reviews) (if fitting a line into
+> col 75 would break it in a weird way, don't do it).
+> 
+> If I didn't explain myself enough, please tell me.
+> 
+>>>>> +upper layer.
+>>>>> +From a Landlock policy point of view,
+>>>>> +each OverlayFS layers and merge hierarchies are standalone and
+>>>>> contains
+>>>>> +their own set of files and directories,
+>>>>> +which is different from bind mounts.
+>>>>
+>>>>
+>>>> Incorrect mix of singular and plural, I think.
+>>> >> Is it OK with s/contains/contain/?
+> 
+> I think so.
+> 
+>>>
+>>>>
+>>>>> +A policy restricting an OverlayFS layer will not restrict the
+>>>>> resulted
+>>>>> +merged hierarchy, and vice versa.
+>>>>> +Landlock users should then only think about file hierarchies they
+>>>>> want to
+>>>>> +allow access to, regardless of the underlying filesystem.
+>>>>> +.\"
+>>>>> +.SS Inheritance
+>>>>> +Every new thread resulting from a
+>>>>> +.BR clone (2)
+>>>>> +inherits Landlock domain restrictions from its parent.
+>>>>> +This is similar to the
+>>>>> +.BR seccomp (2)
+>>>>> +inheritance or any other LSM dealing with task's
+>>>>
+>>>> Not sure:
+>>>>
+>>>> s/task/a task/
+>>>> or
+>>>> s/task's/tasks'/
+>>>
+>>> I'll take "tasks'".
+> 
+> Okay.
+> 
+>>>
+>>>>
+>>>>> +.BR credentials (7).
+>>>>> +For instance, one process's thread may apply Landlock rules to
+>>>>> itself,
+>>>>
+>>>> s/process's/process'/
+>>>
+>>> As pointed out by Branden, this is correct.
+> 
+> That's right. :)
+> 
+>>>
+>>>>
+>>>>> +.BR chdir (2),
+>>>>> +.BR truncate (2),
+>>>>> +.BR stat (2),
+>>>>> +.BR flock (2),
+>>>>> +.BR chmod (2),
+>>>>> +.BR chown (2),
+>>>>> +.BR setxattr (2),
+>>>>> +.BR utime (2),
+>>>>> +.BR ioctl (2),
+>>>>> +.BR fcntl (2),
+>>>>> +.BR access (2).
+>>>>> +Future Landlock evolutions will enable to restrict them.
+>>>>> +.SH EXAMPLES
+>>>> I'd prefer a complete example with a main function, if you can come up
+>>>> with such one.  If not, this will be ok.
+>>>
+>>> I think it is clearer to not to use a full main to explain these basic
+>>> steps. A full working example is linked though.
+> 
+> Ahh sorry, I didn't see the link.
+> I'll have a look at it.
+> 
+>>>
+>>>>
+>>>>
+>>>>> +We first need to create the ruleset that will contain our rules.
+>>>>> +For this example,
+>>>>> +the ruleset will contain rules that only allow read actions,
+>>>>> +but write actions will be denied.
+>>>>> +The ruleset then needs to handle both of these kind of actions.
+>>>>> +See below for the description of filesystem actions.
+>>>>> +.PP
+>>>>> +.in +4n
+>>>>> +.EX
+>>>>> +int ruleset_fd;
+>>>>> +struct landlock_ruleset_attr ruleset_attr = {
+>>>>> +    .handled_access_fs =
+>>>>> +        LANDLOCK_ACCESS_FS_EXECUTE |
+>>>>> +        LANDLOCK_ACCESS_FS_WRITE_FILE |
+>>>>> +        LANDLOCK_ACCESS_FS_READ_FILE |
+>>>>> +        LANDLOCK_ACCESS_FS_READ_DIR |
+>>>>> +        LANDLOCK_ACCESS_FS_REMOVE_DIR |
+>>>>> +        LANDLOCK_ACCESS_FS_REMOVE_FILE |
+>>>>> +        LANDLOCK_ACCESS_FS_MAKE_CHAR |
+>>>>> +        LANDLOCK_ACCESS_FS_MAKE_DIR |
+>>>>> +        LANDLOCK_ACCESS_FS_MAKE_REG |
+>>>>> +        LANDLOCK_ACCESS_FS_MAKE_SOCK |
+>>>>> +        LANDLOCK_ACCESS_FS_MAKE_FIFO |
+>>>>> +        LANDLOCK_ACCESS_FS_MAKE_BLOCK |
+>>>>> +        LANDLOCK_ACCESS_FS_MAKE_SYM,
+>>>>> +};
+>>>>> +
+>>>>> +ruleset_fd = landlock_create_ruleset(&ruleset_attr,
+>>>>> sizeof(ruleset_attr), 0);
+>>>>> +if (ruleset_fd < 0) {
+>>>>> +    perror("Failed to create a ruleset");
+>>>>> +    return 1;
+>>>>> +}
+>>>>> +.EE
+>>>>> +.in
+>>>>> +.PP
+>>>>> +We can now add a new rule to this ruleset thanks to the returned file
+>>>>> +descriptor referring to this ruleset.
+>>>>> +The rule will only allow reading the file hierarchy
+>>>>> +.IR /usr .
+>>>
+>>> Why ".IR" is correct here?
+> 
+> "/usr" needs to be formatted, but "." not.
+> 
+> [
+> .I /usr
+> .
+> ]
+> 
+> Would add a space: /usr .
+> So we need a solution that formats only part of a space-separated token;
+> that's what .IR does.  I hope the last email explained that well.
+> 
+> Thanks,
+> 
+> Alex
+> 
+> 
