@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29D63DB3D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6173DB3D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237707AbhG3GrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:47:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57279 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237639AbhG3GrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:47:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627627632; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=u6/VhKDvNapmJ++tzvHtIP/NbM1e04D44812udHNKgc=; b=LtdTg3CDtEWiQyTnpd5dFiZPLWwXNFDY6LDE+ZBCIULkxYNcHA6R+eSxZ1Zk22uydbspjfzX
- X3CQczS5GuDd0gfUPgaGAwbyj0rjd4eFcf61fwKlCWWXaHhhdgNxn3tqnLjjGEQf0UfgfMit
- TXtC1I9S4ThqWbJwThSfjUKSq7I=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6103a05b96a66e66b275acf1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Jul 2021 06:46:51
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4D26EC43144; Fri, 30 Jul 2021 06:46:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D760C43460;
+        id S237681AbhG3Gqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:46:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41512 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237616AbhG3Gqx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 02:46:53 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D83C11FDB2;
         Fri, 30 Jul 2021 06:46:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D760C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        srinivas.kandagatla@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rbokka@codeaurora.org,
-        dianders@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v3 4/4] arm64: dts: qcom: sc7280: Add qfprom node
-Date:   Fri, 30 Jul 2021 12:16:13 +0530
-Message-Id: <1627627573-32454-5-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1627627573-32454-1-git-send-email-rnayak@codeaurora.org>
-References: <1627627573-32454-1-git-send-email-rnayak@codeaurora.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627627607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9qUmfJ205mXFr7otIjDg3EOb6cwhRcnR91bxEVSEz+8=;
+        b=CJHgYMs1CvZagyfxxxI3oeb8NfQGKjLgWO/PUNDHKEgTVynQASUGA8s6blb1AWsd2frYz2
+        sq1XsTCNSHlmJ3uSMeG9rQFwB7/EqyORaLPfg6BFw0nYMgKy8CG6RTKkqYsdspUVMww3GR
+        C4dS7HVczMazNbEDpVhfBz2IHr8Eu48=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id ADEB1A3B88;
+        Fri, 30 Jul 2021 06:46:47 +0000 (UTC)
+Date:   Fri, 30 Jul 2021 08:46:45 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        willy@infradead.org, alexs@kernel.org, richard.weiyang@gmail.com,
+        songmuchun@bytedance.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
+Message-ID: <YQOgVfSrQRWdfiJH@dhcp22.suse.cz>
+References: <20210729125755.16871-1-linmiaohe@huawei.com>
+ <20210729125755.16871-3-linmiaohe@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729125755.16871-3-linmiaohe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the qfprom node and its properties for the sc7280 SoC.
+On Thu 29-07-21 20:57:52, Miaohe Lin wrote:
+> Since percpu_charge_mutex is only used inside drain_all_stock(), we can
+> narrow the scope of percpu_charge_mutex by moving it here.
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Makes sense and this is usually my preference as well. We used to have
+other caller back then so I couldn't.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 029723a..e87b210 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -442,6 +442,19 @@
- 			#mbox-cells = <2>;
- 		};
- 
-+		qfprom: efuse@784000 {
-+			compatible = "qcom,sc7280-qfprom", "qcom,qfprom";
-+			reg = <0 0x00784000 0 0xa20>,
-+			      <0 0x00780000 0 0xa20>,
-+			      <0 0x00782000 0 0x120>,
-+			      <0 0x00786000 0 0x1fff>;
-+			clocks = <&gcc GCC_SEC_CTRL_CLK_SRC>;
-+			clock-names = "core";
-+			power-domains = <&rpmhpd SC7280_MX>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+		};
-+
- 		sdhc_1: sdhci@7c4000 {
- 			compatible = "qcom,sc7280-sdhci", "qcom,sdhci-msm-v5";
- 			status = "disabled";
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6580c2381a3e..a03e24e57cd9 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2050,7 +2050,6 @@ struct memcg_stock_pcp {
+>  #define FLUSHING_CACHED_CHARGE	0
+>  };
+>  static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
+> -static DEFINE_MUTEX(percpu_charge_mutex);
+>  
+>  #ifdef CONFIG_MEMCG_KMEM
+>  static void drain_obj_stock(struct obj_stock *stock);
+> @@ -2209,6 +2208,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>   */
+>  static void drain_all_stock(struct mem_cgroup *root_memcg)
+>  {
+> +	static DEFINE_MUTEX(percpu_charge_mutex);
+>  	int cpu, curcpu;
+>  
+>  	/* If someone's already draining, avoid adding running more workers. */
+> -- 
+> 2.23.0
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Michal Hocko
+SUSE Labs
