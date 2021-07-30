@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AAE3DBA71
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B263DBA74
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239265AbhG3OXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239269AbhG3OSX (ORCPT
+        id S239345AbhG3OXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:23:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56208 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239267AbhG3OSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Jul 2021 10:18:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8811C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:18:18 -0700 (PDT)
-Message-ID: <20210730135208.582335575@linutronix.de>
+Message-ID: <20210730135208.637100512@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627654697;
+        s=2020; t=1627654698;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=InlKvlbFR24Za+t4YqM3FChyrHlvWA0FFOOPA9y0IVU=;
-        b=3Y9x97gFoNQ+ZOl+MSJbFlW+HHYAeN9QMofsmxB9oiuCscPF3rixR6H4E2q8msVqYuL6QU
-        jiteLoIUnWWf4YU7ArJIPUf7HHasUVX+ClzWEke4T/4sdgjyU/6rXXHSkXHJZ9+Vm3bI12
-        4tb+dlHnYgBnH4TAEeIil0c3+ndSz2wH9GooIhaxbdWpvqSrhIw3TANzte799PxqcUGqFQ
-        m07+nhncq0ZjpzywwPOnc/tHlA9ZKvmzlkzN3GKct/EFyc1kem/fwBs2fMH7VqpDbRBDJE
-        IPHYUH4ipp3Omw0NWpdUSEmx0MNaUDlDRZjjE/VssM+I5K2bPHBqsJUG6MYzpQ==
+        bh=URiW1DpWQn2DQGU5xY05q85pYyCqEZVgNpP6syhj+00=;
+        b=4I1x3Q/SzKukFiEZnmQLRSXPDNvEIjxGzvDkN0q67JpCJm1IcPC0A0BtHKoXF3ibJ4TslA
+        MkJSZPeq+tu62Jxl1khM/17Ou+q4rCAfqygq6BOVMHoQFmJp3SGoag0Vgbt0/RFEiffG+t
+        eXVAEoaiqeT6mf3mD6GREuJGMxFC7M28ckbEoB3mFUNcdAf8Ci783siSGx5Zwd+dM8Yjzq
+        WlGh9JJuYvXNXuiqIdypauuHkqJURq1gGG3oSoFQtyRIyNdvuN+N72YUP+CsVJroBYBn8H
+        jdr0lCsN75Dr8OIfEYKYLDz0FbbShTy1IKGlXfNCeuomPHM6P9hMH9Qj4xawfg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627654697;
+        s=2020e; t=1627654698;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=InlKvlbFR24Za+t4YqM3FChyrHlvWA0FFOOPA9y0IVU=;
-        b=3ktaWslrTmSFbBwU6pklptJR1LBNhEJozg9v0bEJbGWG2Tky+RRN7XKJ1M4zRlB8ZiyRPh
-        /0JSI47QQ9fX+pAg==
-Date:   Fri, 30 Jul 2021 15:51:08 +0200
+        bh=URiW1DpWQn2DQGU5xY05q85pYyCqEZVgNpP6syhj+00=;
+        b=ytSQEh/JB+QJ0A/0XFx5dzgzk8k46WDeybM1rSqn7/YbY12z0m00m5SHEfKBymjVQfhBrO
+        Kem8VmvFlUX26UCQ==
+Date:   Fri, 30 Jul 2021 15:51:09 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -47,9 +44,8 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Waiman Long <longman@redhat.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Gregory Haskins <ghaskins@novell.com>
-Subject: [patch 61/63] locking/rtmutex: Implement equal priority lock stealing
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: [patch 62/63] locking/rtmutex: Add adaptive spinwait mechanism
 References: <20210730135007.155909613@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,108 +54,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gregory Haskins <ghaskins@novell.com>
+From: Steven Rostedt <rostedt@goodmis.org>
 
-The current logic only allows lock stealing to occur if the current task is
-of higher priority than the pending owner.
+Going to sleep when a spinlock or rwlock is contended can be quite
+inefficient when the contention time is short and the lock owner is running
+on a different CPU. The MCS mechanism is not applicable to rtmutex based
+locks, so provide a simple adaptive spinwait mechanism for the RT specific
+spin/rwlock implementations.
 
-Signficant throughput improvements can be gained by allowing the lock
-stealing to include tasks of equal priority when the contended lock is a
-spin_lock or a rw_lock and the tasks are not in a RT scheduling task.
+[ tglx: Provide a contemporary changelog ]
 
-The assumption was that the system will make faster progress by allowing
-the task already on the CPU to take the lock rather than waiting for the
-system to wake up a different task.
-
-This does add a degree of unfairness, but in reality no negative side
-effects have been observed in the many years that this has been used in the
-RT kernel.
-
-[ tglx: Refactored and rewritten several times by Steve Rostedt, Sebastian
-  	Siewior and myself ]
-
-Signed-off-by: Gregory Haskins <ghaskins@novell.com>
+Originally-by: Gregory Haskins <ghaskins@novell.com>
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/locking/rtmutex.c |   52 +++++++++++++++++++++++++++++++----------------
- 1 file changed, 35 insertions(+), 17 deletions(-)
+ kernel/locking/rtmutex.c |   50 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
 ---
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -321,6 +321,26 @@ static __always_inline int rt_mutex_wait
- 	return 1;
- }
+@@ -8,6 +8,11 @@
+  *  Copyright (C) 2005-2006 Timesys Corp., Thomas Gleixner <tglx@timesys.com>
+  *  Copyright (C) 2005 Kihon Technologies Inc., Steven Rostedt
+  *  Copyright (C) 2006 Esben Nielsen
++ * Adaptive Spinlocks:
++ *  Copyright (C) 2008 Novell, Inc., Gregory Haskins, Sven Dietrich,
++ *				     and Peter Morreale,
++ * Adaptive Spinlocks simplification:
++ *  Copyright (C) 2008 Red Hat, Inc., Steven Rostedt <srostedt@redhat.com>
+  *
+  *  See Documentation/locking/rt-mutex-design.rst for details.
+  */
+@@ -1529,6 +1534,43 @@ static __always_inline int __rt_mutex_lo
+  * Functions required for spin/rw_lock substitution on RT kernels
+  */
  
-+static inline bool rt_mutex_steal(struct rt_mutex_waiter *waiter,
-+				  struct rt_mutex_waiter *top_waiter)
++#ifdef CONFIG_SMP
++/*
++ * Note that owner is a speculative pointer and dereferencing relies
++ * on rcu_read_lock() and the check against the lock owner.
++ */
++static bool rtlock_adaptive_spinwait(struct rt_mutex_base *lock,
++				     struct task_struct *owner)
 +{
-+	if (rt_mutex_waiter_less(waiter, top_waiter))
-+		return true;
++	bool res = true;
 +
-+#ifdef RT_MUTEX_BUILD_SPINLOCKS
-+	/*
-+	 * Note that RT tasks are excluded from same priority (lateral)
-+	 * steals to prevent the introduction of an unbounded latency.
-+	 */
-+	if (rt_prio(waiter->prio) || dl_prio(waiter->prio))
-+		return false;
-+
-+	return rt_mutex_waiter_equal(waiter, top_waiter);
-+#else
-+	return false;
-+#endif
-+}
-+
- #define __node_2_waiter(node) \
- 	rb_entry((node), struct rt_mutex_waiter, tree_entry)
- 
-@@ -906,19 +926,21 @@ try_to_take_rt_mutex(struct rt_mutex_bas
- 	 * trylock attempt.
- 	 */
- 	if (waiter) {
--		/*
--		 * If waiter is not the highest priority waiter of
--		 * @lock, give up.
--		 */
--		if (waiter != rt_mutex_top_waiter(lock))
--			return 0;
-+		struct rt_mutex_waiter *top_waiter = rt_mutex_top_waiter(lock);
- 
- 		/*
--		 * We can acquire the lock. Remove the waiter from the
--		 * lock waiters tree.
-+		 * If waiter is the highest priority waiter of @lock,
-+		 * or allowed to steal it, take it over.
- 		 */
--		rt_mutex_dequeue(lock, waiter);
--
-+		if (waiter == top_waiter || rt_mutex_steal(waiter, top_waiter)) {
-+			/*
-+			 * We can acquire the lock. Remove the waiter from the
-+			 * lock waiters tree.
-+			 */
-+			rt_mutex_dequeue(lock, waiter);
-+		} else {
-+			return 0;
++	rcu_read_lock();
++	for (;;) {
++		/* Owner changed. Trylock again */
++		if (owner != rt_mutex_owner(lock))
++			break;
++		/*
++		 * Ensure that owner->on_cpu is dereferenced _after_
++		 * checking the above to be valid.
++		 */
++		barrier();
++		if (!owner->on_cpu) {
++			res = false;
++			break;
 +		}
- 	} else {
- 		/*
- 		 * If the lock has waiters already we check whether @task is
-@@ -929,13 +951,9 @@ try_to_take_rt_mutex(struct rt_mutex_bas
- 		 * not need to be dequeued.
- 		 */
- 		if (rt_mutex_has_waiters(lock)) {
--			/*
--			 * If @task->prio is greater than or equal to
--			 * the top waiter priority (kernel view),
--			 * @task lost.
--			 */
--			if (!rt_mutex_waiter_less(task_to_waiter(task),
--						  rt_mutex_top_waiter(lock)))
-+			/* Check whether the trylock can steal it. */
-+			if (!rt_mutex_steal(task_to_waiter(task),
-+					    rt_mutex_top_waiter(lock)))
- 				return 0;
++		cpu_relax();
++	}
++	rcu_read_unlock();
++	return res;
++}
++#else
++static bool rtlock_adaptive_spinwait(struct rt_mutex_base *lock,
++				     struct task_struct *owner)
++{
++	return false;
++}
++#endif
++
+ /**
+  * rtlock_slowlock_locked - Slow path lock acquisition for RT locks
+  * @lock:	The underlying rt mutex
+@@ -1536,6 +1578,7 @@ static __always_inline int __rt_mutex_lo
+ static void __sched rtlock_slowlock_locked(struct rt_mutex_base *lock)
+ {
+ 	struct rt_mutex_waiter waiter;
++	struct task_struct *owner;
  
- 			/*
+ 	lockdep_assert_held(&lock->wait_lock);
+ 
+@@ -1554,9 +1597,14 @@ static void __sched rtlock_slowlock_lock
+ 		if (try_to_take_rt_mutex(lock, current, &waiter))
+ 			break;
+ 
++		if (&waiter == rt_mutex_top_waiter(lock))
++			owner = rt_mutex_owner(lock);
++		else
++			owner = NULL;
+ 		raw_spin_unlock_irq(&lock->wait_lock);
+ 
+-		schedule_rtlock();
++		if (!owner || !rtlock_adaptive_spinwait(lock, owner))
++			schedule_rtlock();
+ 
+ 		raw_spin_lock_irq(&lock->wait_lock);
+ 		set_current_state(TASK_RTLOCK_WAIT);
 
