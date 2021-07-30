@@ -2,78 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151073DB352
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0163DB35E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237451AbhG3GNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:13:19 -0400
-Received: from smtpbg704.qq.com ([203.205.195.105]:48982 "EHLO
-        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237404AbhG3GNR (ORCPT
+        id S237497AbhG3GO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237274AbhG3GO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:13:17 -0400
-X-QQ-mid: bizesmtp35t1627625584tl3ok1bc
-Received: from localhost.localdomain (unknown [111.207.172.18])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Fri, 30 Jul 2021 14:13:03 +0800 (CST)
-X-QQ-SSF: 0140000000200020B000B00C0000000
-X-QQ-FEAT: mAJfWfDYrJMFKo/smnihNzXYVpGbb8bW+e935fclzJ2KY6EBRKw7JkDbpyZRm
-        VwqvqvQj2mecuSB8MgH5l0E1Vx+CG969aCl7N6AW0xYw0Cscns66xVLv10mEMfDX9k7H9mE
-        x1ozpXglwIt6lcaaHmdSvL56aYLxby/cNg7miouF/LfNr5bJ28b7r2GQyGabPD+jv2pCKSn
-        MKvMbnFo9t/Ggt5/28JNhkoH4ERA5NQ3Ht7hPvtztmeUBGtjEjshT5+sKZcnDGZlHod8HKk
-        gHjU5Raq+HbjzhUHO8UHIA3zZYsBFzSvGAcwBjiiS0veBszl2hLlXuZq/WVTZR0dQ3LmebD
-        xgdTYP+bVxedfzAH/g=
-X-QQ-GoodBg: 2
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] drm:This patch fixes the checkpatch.pl error to msm_drv.c
-Date:   Fri, 30 Jul 2021 14:13:01 +0800
-Message-Id: <20210730061301.32492-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 30 Jul 2021 02:14:27 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C129C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:14:23 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1m9Lmn-00007Y-RD; Fri, 30 Jul 2021 08:14:21 +0200
+Subject: Re: [PATCH v3] KEYS: trusted: Fix trusted key backends when building
+ as module
+To:     Andreas Rammhold <andreas@rammhold.de>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>
+Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210730012822.3460913-1-andreas@rammhold.de>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <c8a0e8a1-96ee-3288-ce5b-7f9d77f719c1@pengutronix.de>
+Date:   Fri, 30 Jul 2021 08:14:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210730012822.3460913-1-andreas@rammhold.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign7
-X-QQ-Bgrelay: 1
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: do not initialise statics to false
+On 30.07.21 03:28, Andreas Rammhold wrote:
+> Before this commit the kernel could end up with no trusted key sources
+> even though both of the currently supported backends (TPM and TEE) were
+> compiled as modules. This manifested in the trusted key type not being
+> registered at all.
+> 
+> When checking if a CONFIG_… preprocessor variable is defined we only
+> test for the builtin (=y) case and not the module (=m) case. By using
+> the IS_REACHABLE() macro we do test for both cases.
+> 
+> Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
+> Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- drivers/gpu/drm/msm/msm_drv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 9b8fa2ad0d84..d9ca4bc9620b 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -59,7 +59,7 @@ static const struct drm_mode_config_helper_funcs mode_config_helper_funcs = {
- };
- 
- #ifdef CONFIG_DRM_MSM_REGISTER_LOGGING
--static bool reglog = false;
-+static bool reglog;
- MODULE_PARM_DESC(reglog, "Enable register read/write logging");
- module_param(reglog, bool, 0600);
- #else
-@@ -76,7 +76,7 @@ static char *vram = "16m";
- MODULE_PARM_DESC(vram, "Configure VRAM size (for devices without IOMMU/GPUMMU)");
- module_param(vram, charp, 0);
- 
--bool dumpstate = false;
-+bool dumpstate;
- MODULE_PARM_DESC(dumpstate, "Dump KMS state on errors");
- module_param(dumpstate, bool, 0600);
- 
+> 
+> ---
+> 
+> v3:
+> * Fixed patch formatting
+> 
+> v2:
+> * Fixed commit message
+> * Switched from IS_DEFINED() to IS_REACHABLE()
+> 
+>  security/keys/trusted-keys/trusted_core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+> index d5c891d8d353..5b35f1b87644 100644
+> --- a/security/keys/trusted-keys/trusted_core.c
+> +++ b/security/keys/trusted-keys/trusted_core.c
+> @@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
+>  MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
+>  
+>  static const struct trusted_key_source trusted_key_sources[] = {
+> -#if defined(CONFIG_TCG_TPM)
+> +#if IS_REACHABLE(CONFIG_TCG_TPM)
+>  	{ "tpm", &trusted_key_tpm_ops },
+>  #endif
+> -#if defined(CONFIG_TEE)
+> +#if IS_REACHABLE(CONFIG_TEE)
+>  	{ "tee", &trusted_key_tee_ops },
+>  #endif
+>  };
+> 
+
+
 -- 
-2.20.1
-
-
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
