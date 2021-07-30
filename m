@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F253DBFD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379E83DBFDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhG3UaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:30:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230316AbhG3UaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:30:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id ABF7360F48;
-        Fri, 30 Jul 2021 20:30:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627677005;
-        bh=BxFASqzSnYPlDWdTMu1GjoSjF4sTklDOEVzC0i1cYmM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=d9CKrnIqfCqcflDOt7Hz6EPPflStrjkcV8vYcwTmG5h+cQgLQt/8CH6Lvp/YDhMoU
-         RtUp7+NCo6QJOSXueMZJK+vo7phkEZ7K1y0Q8gGrXOpwZ8uQY1mIBJKoMB4sFbksFL
-         7JiGx7wmUZgc4DR+a8AHNQIUPAWVew7gEJJ3Z+G9VYofnabvHdPqsnjZSWkpdBPAu9
-         Tb8dPYb4aaT5+9g0TUwt+ui2rhnXdfN5o6Wa3JQacQTzIduxD6PphfQnNEenr6KFRB
-         ZHfEcgkllqBTgHAj/vIaejKGUI52UudAPu0Pt7K8uUueP3WEd2cCVkGhcKYzH3Jlwg
-         FY9ZTMk/2eepA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 977A060A85;
-        Fri, 30 Jul 2021 20:30:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231390AbhG3Uft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:35:49 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:40483 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230471AbhG3Ufr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 16:35:47 -0400
+Received: (qmail 265720 invoked by uid 1000); 30 Jul 2021 16:35:41 -0400
+Date:   Fri, 30 Jul 2021 16:35:41 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Jade Alglave <j.alglave@ucl.ac.uk>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC] LKMM: Add volatile_if()
+Message-ID: <20210730203541.GA262784@rowland.harvard.edu>
+References: <20210605145739.GB1712909@rowland.harvard.edu>
+ <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210606012903.GA1723421@rowland.harvard.edu>
+ <20210606115336.GS18427@gate.crashing.org>
+ <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
+ <20210606182213.GA1741684@rowland.harvard.edu>
+ <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
+ <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
+ <20210607115234.GA7205@willie-the-truck>
+ <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/2] Clean devlink net namespace operations
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162767700561.11153.17362580046562666251.git-patchwork-notify@kernel.org>
-Date:   Fri, 30 Jul 2021 20:30:05 +0000
-References: <cover.1627578998.git.leonro@nvidia.com>
-In-Reply-To: <cover.1627578998.git.leonro@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, jiri@nvidia.com,
-        leonro@nvidia.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, parav@nvidia.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, Jul 30, 2021 at 06:20:22PM +0100, Jade Alglave wrote:
+> Dear all,
 
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Thu, 29 Jul 2021 20:19:23 +0300 you wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+> Sincere apologies in taking so long to reply. I attach a technical
+> report which describes the status of dependencies in the Arm memory
+> model. 
 > 
-> Changelog:
-> v2:
->  * Patch 1: Dropped cmd argument
-> v1: https://lore.kernel.org/lkml/cover.1627564383.git.leonro@nvidia.com
->  * Patch 1:
->    * Renamed function name
->    * Added bool parameter to the notifier function
->  * Patch 2:
->    * added Jiri's ROB and dropped word "RAW" from the comment"
-> v0: https://lore.kernel.org/lkml/cover.1627545799.git.leonro@nvidia.com
+> I have also released the corresponding cat files and a collection of
+> interesting litmus tests over here:
+> https://github.com/herd/herdtools7/commit/f80bd7c2e49d7d3adad22afc62ff4768d65bf830
 > 
-> [...]
+> I hope this material can help inform this conversation and I would love
+> to hear your thoughts.
 
-Here is the summary with links:
-  - [net-next,v2,1/2] devlink: Break parameter notification sequence to be before/after unload/load driver
-    https://git.kernel.org/netdev/net-next/c/05a7f4a8dff1
-  - [net-next,v2,2/2] devlink: Allocate devlink directly in requested net namespace
-    https://git.kernel.org/netdev/net-next/c/26713455048e
+Jade:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Here are a few very preliminary reactions (I haven't finished reading the 
+entire paper yet).
 
+P.2: Typo: "the register X1 contains the address x" should be "the 
+register X1 contains the address of x".
 
+P.4 and later: Several complicated instructions (including CSEL, CAS, and 
+SWP) are mentioned but not explained; the text assumes that the reader 
+already understands what these instructions do.  A brief description of 
+their effects would help readers like me who aren't very familiar with the 
+ARM instruction set.
+
+P.4: The text describing Instrinsic dependencies in CSEL instructions says 
+that if cond is true then there is an Intrinsic control dependencies from 
+the read of PSTATE.NZCV to the read of Xm.  Why is this so?  Can't the CPU 
+read Xm unconditionally before it knows whether the value will be used?
+
+P.17: The definition of "Dependency through registers" uses the acronym 
+"PE", but the acronym isn't defined anywhere.
+
+P.14: In the description of Figure 18, I wasn't previously aware -- 
+although perhaps I should have been -- that ARM could speculatively place 
+a Store in a local store buffer, allowing it to be forwarded to a po-later 
+Read.  Why doesn't the same mechanism apply to Figure 20, allowing the 
+Store in D to be speculatively placed in a local store buffer and 
+forwarded to E?  Is this because conditional branches are predicted but 
+loads aren't?  If so, that is a significant difference.
+
+More to come...
+
+Alan
