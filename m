@@ -2,37 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11FC3DB9D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C863DB9D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239053AbhG3Nzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 09:55:51 -0400
-Received: from mga07.intel.com ([134.134.136.100]:64512 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231173AbhG3Nzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 09:55:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="276877236"
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="276877236"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 06:55:45 -0700
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="518953369"
-Received: from spichard-mobl1.amr.corp.intel.com (HELO [10.212.106.239]) ([10.212.106.239])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 06:55:43 -0700
-Subject: Re: [PATCH v1] ASoC: Intel: kbl_da7219_max98357a: fix drv_name
-To:     Lukasz Majczak <lma@semihalf.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>
-Cc:     upstream@semihalf.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20210730115906.144300-1-lma@semihalf.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <58b46549-9b42-1832-b1e1-680d56c3f393@linux.intel.com>
-Date:   Fri, 30 Jul 2021 08:55:41 -0500
+        id S238971AbhG3N42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 09:56:28 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:57090
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238998AbhG3N41 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 09:56:27 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 8BAAA3F246
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627653381;
+        bh=lARzsFFKndNN9dr3t+/u0cyc0ObFsz25/ZNbpOuqiCk=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=BFTuQGJz0deDosa4zG7ihL4XwFHAEo7iw3+9Y1z7AU9cuHLVN7OwcYuYFaSwnhnjy
+         pr6nxKoZZYaoX58Gg53F27T2TgvErEwMvX03H2alzwanQsJilwidKdBGFyNu1S5wRe
+         VJTsnyudwiCb4fkF3PKBIAQvVDr+WBntSFJ/zfENgmuOPVaduZHY9Psu1o9lt9XQPK
+         Kdoxi98OQCdh/OuKVLEjfKhNowlIRYErjU92SSZbZImDONUDwPR3VkQit0fqjQbu+f
+         8FETe3/7RMh9vQ8o984oSnC3/yFgOPory8IFHadx4UdNc6kzN1naruLWIpTlyWQnMb
+         09+PJsVZb7UZg==
+Received: by mail-ed1-f72.google.com with SMTP id c16-20020aa7d6100000b02903bc4c2a387bso4599687edr.21
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:56:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lARzsFFKndNN9dr3t+/u0cyc0ObFsz25/ZNbpOuqiCk=;
+        b=O7CK8v0wGlJMzpfUkdTGqYOEULL+8hdpqPnAF3uxaPm6wW4OhTW+CwF+AuT+tUI0tJ
+         FTJgY95B9NMnlKTprkK0BBg9V3UwIXE4Pjeme9P3pSN7lnDXIQdEh+DnCf6ZpKrG9f/c
+         3p4R72FU/CQ//S+zMKX+EIeq8icC6N1yu+7/gkY3+kOHtKJH5luk3tni//g6Eszqa1xh
+         0I840c2KDb7C1SUwXiEo/1rgfazYr2twJAm0MSv9Ci717FhhtYkmBa2MKnGFlNHHe6Jt
+         QZjCSaW34zypD+S7dhCnq78W+xZJoH4hT/Nuf8GZL3J+7SkfeB0f6schLMj4Ac7bQl5I
+         u7sA==
+X-Gm-Message-State: AOAM533U5/uL7a2wXMvZ4vta8jehrBKYQBn9YatxGCJnyou0iAZ7WF/7
+        faaOPZkf1ywT4oYgpRh83UbR6airQqXylKK5IyKW9QD8WKtkaYeBjBOKn0h00Uv8Ubt9g1dB/kY
+        f3R0JkH3aRRkUDouv8BrMks074WAr3tFWnV1JgmtDgQ==
+X-Received: by 2002:a05:6402:51c7:: with SMTP id r7mr3249732edd.150.1627653380984;
+        Fri, 30 Jul 2021 06:56:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVO/TZcid1GbI+VKszynUFz37DfSLb78lTq4sraurPgpb2E6eKicuL9nwvbLgEGd+vhDfkZg==
+X-Received: by 2002:a05:6402:51c7:: with SMTP id r7mr3249721edd.150.1627653380787;
+        Fri, 30 Jul 2021 06:56:20 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id m26sm730890edf.4.2021.07.30.06.56.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 06:56:20 -0700 (PDT)
+Subject: Re: [PATCH v2 7/8] nfc: hci: pass callback data param as pointer in
+ nci_request()
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210730065625.34010-1-krzysztof.kozlowski@canonical.com>
+ <20210730065625.34010-8-krzysztof.kozlowski@canonical.com>
+ <20210730064922.078bd222@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <53f89bae-fcb5-8e7c-0b03-effa156584fe@canonical.com>
+Date:   Fri, 30 Jul 2021 15:56:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210730115906.144300-1-lma@semihalf.com>
+In-Reply-To: <20210730064922.078bd222@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -40,56 +77,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/30/21 6:59 AM, Lukasz Majczak wrote:
-> platform_id for kbl_da7219_max98357a was shrunk for kbl_da7219_mx98357a,
-> but the drv_name was changed for kbl_da7219_max98373. Tested on a
-> Pixelbook (Atlas).
+On 30/07/2021 15:49, Jakub Kicinski wrote:
+> On Fri, 30 Jul 2021 08:56:24 +0200 Krzysztof Kozlowski wrote:
+>> The nci_request() receives a callback function and unsigned long data
+>> argument "opt" which is passed to the callback.  Almost all of the
+>> nci_request() callers pass pointer to a stack variable as data argument.
+>> Only few pass scalar value (e.g. u8).
+>>
+>> All such callbacks do not modify passed data argument and in previous
+>> commit they were made as const.  However passing pointers via unsigned
+>> long removes the const annotation.  The callback could simply cast
+>> unsigned long to a pointer to writeable memory.
+>>
+>> Use "const void *" as type of this "opt" argument to solve this and
+>> prevent modifying the pointed contents.  This is also consistent with
+>> generic pattern of passing data arguments - via "void *".  In few places
+>> passing scalar values, use casts via "unsigned long" to suppress any
+>> warnings.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > 
-> Fixes: 94efd726b947 ("ASoC: Intel: kbl_da7219_max98357a: shrink platform_id below 20 characters")
-> Cc: <stable@vger.kernel.org> # 5.4+
-> Reported-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> Tested-by: Lukasz Majczak <lma@semihalf.com>
-> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
-> ---
->  sound/soc/intel/common/soc-acpi-intel-kbl-match.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> This generates a bunch of warnings:
 > 
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-> index ba5ff468c265..8cab91a00b1a 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
-> @@ -87,7 +87,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->  	},
->  	{
->  		.id = "DLGS7219",
-> -		.drv_name = "kbl_da7219_max98357a",
-> +		.drv_name = "kbl_da7219_mx98357a",
+> net/nfc/nci/core.c:381:51: warning: Using plain integer as NULL pointer
+> net/nfc/nci/core.c:388:50: warning: Using plain integer as NULL pointer
+> net/nfc/nci/core.c:494:57: warning: Using plain integer as NULL pointer
+> net/nfc/nci/core.c:520:65: warning: Using plain integer as NULL pointer
+> net/nfc/nci/core.c:570:44: warning: Using plain integer as NULL pointer
+> net/nfc/nci/core.c:815:34: warning: Using plain integer as NULL pointer
+> net/nfc/nci/core.c:856:50: warning: Using plain integer as NULL pointer
 
-that one is correct, that was a miss
+Indeed. Not that code before was better - the logic was exactly the
+same. I might think more how to avoid these and maybe pass pointer to
+stack value (like in other cases).
 
->  		.fw_filename = "intel/dsp_fw_kbl.bin",
->  		.machine_quirk = snd_soc_acpi_codec_list,
->  		.quirk_data = &kbl_7219_98357_codecs,
-> @@ -113,7 +113,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
->  	},
->  	{
->  		.id = "DLGS7219",
-> -		.drv_name = "kbl_da7219_mx98373",
-> +		.drv_name = "kbl_da7219_max98373",
+The 7/8 and 8/8 could be skipped in such case.
 
-this one is wrong though? The correct name was already present, you're
-reverting back to the wrong name.
-
-there's another one that I missed, do you mind changing this as well?
-
-soc-acpi-intel-cml-match.c:             .drv_name = "cml_da7219_max98357a",
-
-Should be "cml_da7219_mx98357a"
-
-
->  		.fw_filename = "intel/dsp_fw_kbl.bin",
->  		.machine_quirk = snd_soc_acpi_codec_list,
->  		.quirk_data = &kbl_7219_98373_codecs,
 > 
+> BTW applying this set will resolve the warnings introduced by applying
+> "part 2" out of order, right? No further action needed?
+
+Yes, it will resolve all warnings. No further action needed, at least I
+am not aware of any new issues.
+
+Best regards,
+Krzysztof
