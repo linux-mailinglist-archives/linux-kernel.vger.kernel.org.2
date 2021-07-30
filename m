@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6533DB26F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C113DB272
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhG3Ena (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 00:43:30 -0400
-Received: from ozlabs.ru ([107.174.27.60]:42188 "EHLO ozlabs.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhG3En3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 00:43:29 -0400
-Received: from fstn1-p1.ozlabs.ibm.com. (localhost [IPv6:::1])
-        by ozlabs.ru (Postfix) with ESMTP id 76B7CAE80062;
-        Fri, 30 Jul 2021 00:43:20 -0400 (EDT)
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>, linux-kernel@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org
-Subject: [PATCH kernel] powerpc/powernv: Check if powernv_rng is initialized
-Date:   Fri, 30 Jul 2021 14:43:15 +1000
-Message-Id: <20210730044315.956125-1-aik@ozlabs.ru>
-X-Mailer: git-send-email 2.30.2
+        id S230352AbhG3Epr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 00:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhG3Epp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 00:45:45 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67943C0613C1;
+        Thu, 29 Jul 2021 21:45:41 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id o185so11441006oih.13;
+        Thu, 29 Jul 2021 21:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zEWrjTmo3MRUFNpFLl3xWErCSGWlUtWoDdfX2AHaVUI=;
+        b=RqBAr9ka+yi/PzlKqTMaJt6e0IVUvRZ9aDYZHsCdEm8qpBUoE0TQUUKnV0bKK1KvAs
+         Rum1G1L8K/ODaF8c1SRiNiTVLW+Rh8kg9RefwnBGjemoC0sdWnIElUIz3Qn9eztAdR1y
+         2H23/nzqWTPr+0orDB9pOQG9NIuI8/2b3K/vaY8u1Oi2HP39xffFLdwj+A0uGtPAQQU6
+         F0i/cK3BTknOK03/tLsNM6bnKtwZlQUnml8/dN5wZPHYYp8QwqdTZ9Jg8U1zhx3kVzrR
+         vi6/TeeTmp1kDlvSktLjG/xvRZijeyL+wQEXRVzlmqK1M0zv5ErG2CQLIwsS63QBStlg
+         4y5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=zEWrjTmo3MRUFNpFLl3xWErCSGWlUtWoDdfX2AHaVUI=;
+        b=UbOHEjJbwkhyvu8oCLhEMxRU/5va/Se5fJjVaPqOKvpHThfy/vD6nUvqD2n2L0k7lT
+         BwL+uRRb89YMeInXlevfvbcWKz8e/6ZRrFgPhepZ8aMnX81w9/lrjVFifdY2R9A1IIv1
+         nlc6mVQnEhWaWHRKHCQOfZK9N3/9duwIQxeTczo124MKd6VZ1WFIN5VWCgg+aVfrA5cl
+         O70z13jgFjEIbnDdfwRU7o/YfP14xcjqXeNNYGqr3yQGJCu3Vx1tyb+qt23QauowxhRt
+         DgA4pYB4omTWymdh+seJ1v9hZOaBOiKmNFvxRO6ofoxCdsYsIB+ajabV9oZKdZzJogzO
+         u3VQ==
+X-Gm-Message-State: AOAM533/Pw/Zt2nIAfXQXeeq4hcOqAF7gxQgMN9BNXn0H4wV/gxmzAje
+        SnocBdgJMz5bMEuK71fJhuA=
+X-Google-Smtp-Source: ABdhPJz61dqqcK+n5Axb1Waxu7+0cvefK3q7Pe2mYa5sv6JQBavFLROP0E25WdcZeZP8p8c5E3umew==
+X-Received: by 2002:aca:6109:: with SMTP id v9mr510193oib.147.1627620340741;
+        Thu, 29 Jul 2021 21:45:40 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f16sm119238oiw.29.2021.07.29.21.45.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 21:45:40 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 29 Jul 2021 21:45:38 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Artem Lapkin <email2tema@gmail.com>
+Cc:     narmstrong@baylibre.com, wim@linux-watchdog.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        christianshewitt@gmail.com, martin.blumenstingl@googlemail.com,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+Subject: Re: [PATCH v4 1/3] watchdog: meson_gxbb_wdt: add nowayout parameter
+Message-ID: <20210730044538.GA2110311@roeck-us.net>
+References: <20210730041355.2810397-1-art@khadas.com>
+ <20210730041355.2810397-2-art@khadas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730041355.2810397-2-art@khadas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The powernv-rng driver has 2 users - the bare metal powernv platform and
-the KVM's H_RANDOM hcall. The hcall handler works fine when it is L0 KVM
-but fails in L1 KVM as there is no support for the HW registers in L1 VMs
-and such support is not advertised either (== no "ibm,power-rng" in
-the FDT). So when a nested VM tries H_RANDOM, the L1 KVM crashes on
-in_be64(rng->regs).
+On Fri, Jul 30, 2021 at 12:13:53PM +0800, Artem Lapkin wrote:
+> Add nowayout module parameter
+> 
+> Signed-off-by: Artem Lapkin <art@khadas.com>
+> ---
 
-This checks the pointers and returns an error if the feature is not
-set up.
+<Formletter>  
+Change log goes here. If it is missing, I won't know what changed.
+That means I will have to dig out older patch versions to compare.
+That costs time and would hold up both this patch as well as all other
+patches which I still have to review.
 
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
----
+For this reason, I will not review patches without change log.
+</Formletter>
 
+The change is small and recent enough that I remember, so
 
-Randomly randomized H_RANDOM:
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-00:00:45 executing program 10:
-r0 = openat$kvm(0xffffffffffffff9c, &(0x7f0000000000), 0x0, 0x0)
-r1 = ioctl$KVM_CREATE_VM(r0, 0x2000ae01, 0x0)
-r2 = ioctl$KVM_CREATE_VCPU(r1, 0x2000ae41, 0x0)
-ioctl$KVM_SET_REGS(r2, 0x8188ae82, &(0x7f00000001c0)={[0x0, 0x0, 0xffffffffffffffe1, 0x0, 0x0, 0x200000953, 0x0, 0xfffffffffffffffe, 0x0, 0x0, 0x2], 0x2000})
-syz_kvm_setup_cpu$ppc64(0xffffffffffffffff, r2, &(0x7f0000e80000/0x180000)=nil, 0x0, 0x0, 0x0, 0x0, 0x0)
-r3 = openat$kvm(0xffffffffffffff9c, &(0x7f0000000100), 0x0, 0x0)
-syz_kvm_setup_cpu$ppc64(r1, r2, &(0x7f0000e70000/0x180000)=nil, &(0x7f0000000080)=[{0x0, &(0x7f0000000280)="0000e03d0080ef61e403ef790000ef650900ef61647b007c0000e03f0000ff63e403ff7b0000ff679952ff6370e63f7e0000603c00006360e4036378000063640003636018a8803c28bf8460e4038478ef97846436888460b6f6a03c88d6a560e403a5781beda564d879a5602665c03cb08dc660e403c67806b3c664966fc660d53fe03cddf1e760e403e7785c41e7646623e76022000044463fb1f20000803e00809462e403947a0000946604009462a6a6607f4abb4c130000603f00007b63e4037b7b00007b679a367b6332d9c17c201c994f7201004cbb7a603f72047b63e4037b7b955f7b6799947b636401607f", 0xf0}], 0x1, 0x0, &(0x7f00000000c0)=[@featur2={0x1, 0x1000}], 0x1)
+but please keep this in mind for future submissions.
 
+Thanks,
+Guenter
 
-cpu 0xd: Vector: 300 (Data Access) at [c00000001599f590]
-    pc: c00000000011d2bc: powernv_get_random_long+0x4c/0xc0
-    lr: c00000000011d298: powernv_get_random_long+0x28/0xc0
-    sp: c00000001599f830
-   msr: 800000000280b033
-   dar: 0
- dsisr: 40000000
-  current = 0xc0000000614c7f80
-  paca    = 0xc0000000fff81700	 irqmask: 0x03	 irq_happened: 0x01
-    pid   = 31576, comm = syz-executor.10
-
-Linux version 5.14.0-rc2-le_f29cf1ff9a23_a+fstn1 (aik@fstn1-p1) (gcc (Ubuntu 10.3.0-1ubuntu1) 10.3.0, GNU ld (GNU Binutils for Ubuntu) 2.36.1) #263 SMP Thu Jul 29 17:56:12 AEST 2021
-enter ? for help
-[c00000001599f860] c0000000001e45f8 kvmppc_pseries_do_hcall+0x5d8/0x2190
-[c00000001599f8f0] c0000000001ea2dc kvmppc_vcpu_run_hv+0x31c/0x14d0
-[c00000001599f9c0] c0000000001bd518 kvmppc_vcpu_run+0x48/0x60
-[c00000001599f9f0] c0000000001b74b0 kvm_arch_vcpu_ioctl_run+0x580/0x7d0
-[c00000001599fa90] c00000000019e6f8 kvm_vcpu_ioctl+0x418/0xd00
-[c00000001599fc70] c00000000079d8c4 sys_ioctl+0xb44/0x2100
-[c00000001599fd90] c00000000003b704 system_call_exception+0x224/0x410
-[c00000001599fe10] c00000000000c0e8 system_call_vectored_common+0xe8/0x278
-
-
-
----
- arch/powerpc/platforms/powernv/rng.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/powerpc/platforms/powernv/rng.c b/arch/powerpc/platforms/powernv/rng.c
-index 72c25295c1c2..070d0963995d 100644
---- a/arch/powerpc/platforms/powernv/rng.c
-+++ b/arch/powerpc/platforms/powernv/rng.c
-@@ -105,6 +105,8 @@ int powernv_get_random_long(unsigned long *v)
- 	struct powernv_rng *rng;
- 
- 	rng = get_cpu_var(powernv_rng);
-+	if (!rng || !rng->regs)
-+		return 0;
- 
- 	*v = rng_whiten(rng, in_be64(rng->regs));
- 
--- 
-2.30.2
-
+>  drivers/watchdog/meson_gxbb_wdt.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
+> index 5a9ca10fbcfa..5aebc3a09652 100644
+> --- a/drivers/watchdog/meson_gxbb_wdt.c
+> +++ b/drivers/watchdog/meson_gxbb_wdt.c
+> @@ -29,6 +29,11 @@
+>  #define GXBB_WDT_TCNT_SETUP_MASK		(BIT(16) - 1)
+>  #define GXBB_WDT_TCNT_CNT_SHIFT			16
+>  
+> +static bool nowayout = WATCHDOG_NOWAYOUT;
+> +module_param(nowayout, bool, 0);
+> +MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started default="
+> +		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+> +
+>  struct meson_gxbb_wdt {
+>  	void __iomem *reg_base;
+>  	struct watchdog_device wdt_dev;
+> @@ -175,6 +180,7 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
+>  	data->wdt_dev.max_hw_heartbeat_ms = GXBB_WDT_TCNT_SETUP_MASK;
+>  	data->wdt_dev.min_timeout = 1;
+>  	data->wdt_dev.timeout = DEFAULT_TIMEOUT;
+> +	watchdog_set_nowayout(&data->wdt_dev, nowayout);
+>  	watchdog_set_drvdata(&data->wdt_dev, data);
+>  
+>  	/* Setup with 1ms timebase */
+> -- 
+> 2.25.1
+> 
