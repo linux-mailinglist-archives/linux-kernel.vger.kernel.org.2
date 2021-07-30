@@ -2,124 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6CD3DB1E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC063DB1DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237099AbhG3DSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 23:18:22 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13214 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235022AbhG3DSH (ORCPT
+        id S234986AbhG3DQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 23:16:19 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12333 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229971AbhG3DQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 23:18:07 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GbXW72N22z1CQbF;
-        Fri, 30 Jul 2021 11:12:03 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+        Thu, 29 Jul 2021 23:16:14 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GbXVN0SRnz7ylK;
+        Fri, 30 Jul 2021 11:11:24 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Jul 2021 11:16:09 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 30 Jul 2021 11:18:01 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 30 Jul 2021 11:18:00 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>, <maz@kernel.org>,
-        <mark.rutland@arm.com>, <dbrazdil@google.com>, <qperret@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <lipeng321@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 4/4] net: hns3: add ethtool priv-flag for TX push
-Date:   Fri, 30 Jul 2021 11:14:24 +0800
-Message-ID: <1627614864-50824-5-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1627614864-50824-1-git-send-email-huangguangbin2@huawei.com>
-References: <1627614864-50824-1-git-send-email-huangguangbin2@huawei.com>
+ 15.1.2176.2; Fri, 30 Jul 2021 11:16:08 +0800
+Subject: Re: [PATCH v14 00/11] KVM: x86/pmu: Guest Last Branch Recording
+ Enabling
+To:     <like.xu.linux@gmail.com>, <alex.shi@linux.alibaba.com>,
+        <like.xu.linux@gmail.com>
+References: <20210201051039.255478-1-like.xu@linux.intel.com>
+ <6102A1A5.90901@huawei.com>
+CC:     <ak@linux.intel.com>, <jmattson@google.com>, <joro@8bytes.org>,
+        <kan.liang@intel.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <pbonzini@redhat.com>,
+        <seanjc@google.com>, <vkuznets@redhat.com>,
+        <wanpengli@tencent.com>, <wei.w.wang@intel.com>, <x86@kernel.org>,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>
+From:   Liuxiangdong <liuxiangdong5@huawei.com>
+Message-ID: <61036EEC.4020006@huawei.com>
+Date:   Fri, 30 Jul 2021 11:15:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
+In-Reply-To: <6102A1A5.90901@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huazhong Tan <tanhuazhong@huawei.com>
+Hi, like.
 
-Add a control private flag in ethtool for enable/disable
-TX push feature.
+Does it have requirement on CPU if we want to use LBR in Guest?
 
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
-Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  1 +
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  5 ++++-
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 19 ++++++++++++++++++-
- 3 files changed, 23 insertions(+), 2 deletions(-)
+I have tried linux-5.14-rc3 on different CPUs. And I can use lbr on 
+Haswell, Broadwell, skylake and icelake, but I cannot use lbr on IvyBridge.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index f19336bbd88a..48d1f369f00e 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -807,6 +807,7 @@ struct hnae3_roce_private_info {
- 
- enum hnae3_pflag {
- 	HNAE3_PFLAG_LIMIT_PROMISC,
-+	HNAE3_PFLAG_PUSH_ENABLE,
- 	HNAE3_PFLAG_MAX
- };
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index a5cf5c4f612e..c992fe18525e 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -5128,8 +5128,11 @@ static int hns3_client_init(struct hnae3_handle *handle)
- 	if (hnae3_ae_dev_rxd_adv_layout_supported(ae_dev))
- 		set_bit(HNS3_NIC_STATE_RXD_ADV_LAYOUT_ENABLE, &priv->state);
- 
--	if (test_bit(HNAE3_DEV_SUPPORT_TX_PUSH_B, ae_dev->caps))
-+	if (test_bit(HNAE3_DEV_SUPPORT_TX_PUSH_B, ae_dev->caps)) {
- 		set_bit(HNS3_NIC_STATE_TX_PUSH_ENABLE, &priv->state);
-+		handle->priv_flags |= BIT(HNAE3_PFLAG_PUSH_ENABLE);
-+		set_bit(HNAE3_PFLAG_PUSH_ENABLE, &handle->supported_pflags);
-+	}
- 
- 	set_bit(HNS3_NIC_STATE_INITED, &priv->state);
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 155a58e11089..0b2557d4441d 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -423,8 +423,25 @@ static void hns3_update_limit_promisc_mode(struct net_device *netdev,
- 	hns3_request_update_promisc_mode(handle);
- }
- 
-+static void hns3_update_state(struct net_device *netdev,
-+			      enum hns3_nic_state state, bool enable)
-+{
-+	struct hns3_nic_priv *priv = netdev_priv(netdev);
-+
-+	if (enable)
-+		set_bit(state, &priv->state);
-+	else
-+		clear_bit(state, &priv->state);
-+}
-+
-+static void hns3_update_push_state(struct net_device *netdev, bool enable)
-+{
-+	hns3_update_state(netdev, HNS3_NIC_STATE_TX_PUSH_ENABLE, enable);
-+}
-+
- static const struct hns3_pflag_desc hns3_priv_flags[HNAE3_PFLAG_MAX] = {
--	{ "limit_promisc",	hns3_update_limit_promisc_mode }
-+	{ "limit_promisc",	hns3_update_limit_promisc_mode },
-+	{ "tx_push_enable",	hns3_update_push_state }
- };
- 
- static int hns3_get_sset_count(struct net_device *netdev, int stringset)
--- 
-2.8.1
+Thanks!
+
+
+On 2021/7/29 20:40, Liuxiangdong wrote:
+> Hi, like.
+>
+> This patch set has been merged in 5.12 kernel tree so we can use LBR 
+> in Guest.
+> Does it have requirement on CPU?
+> I can use lbr in guest on skylake and icelake, but cannot on IvyBridge.
+>
+> I can see lbr formats(000011b) in perf_capabilities msr(0x345), but 
+> there is still
+> error when I try.
+>
+> $ perf record -b
+> Error:
+> cycles: PMU Hardware doesn't support sampling/overflow-interrupts. Try 
+> 'perf stat'
+>
+> Host CPU:
+> Architecture:                    x86_64
+> CPU op-mode(s):                  32-bit, 64-bit
+> Byte Order:                      Little Endian
+> Address sizes:                   46 bits physical, 48 bits virtual
+> CPU(s):                          24
+> On-line CPU(s) list:             0-23
+> Thread(s) per core:              2
+> Core(s) per socket:              6
+> Socket(s):                       2
+> NUMA node(s):                    2
+> Vendor ID:                       GenuineIntel
+> CPU family:                      6
+> Model:                           62
+> Model name:                      Intel(R) Xeon(R) CPU E5-2620 v2 @ 
+> 2.10GHz
+> Stepping:                        4
+>
+>
+> Thanks!
+> Xiangdong Liu
 
