@@ -2,73 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03603DB999
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AC63DBA31
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239006AbhG3Nt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 09:49:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231137AbhG3Nt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 09:49:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4497160E76;
-        Fri, 30 Jul 2021 13:49:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627652963;
-        bh=cjyn1FQlgULSs6XOeucG41KDKpvDgok3AqwrydFEJ2U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SUaOcX5+vXK+N2TAySbwzC2loMfkHgtJWmXNx/9t1JpCFKMxwwZ6MS3cpkxRQue6+
-         c2KrhE9w+pqX9JMhm5Ed0BBxl7mQpWhoE0GregUiQDtQ0mpMJavfjXC/CaT8mRQiIK
-         CVbrgTx+VfgXnSq0Xj603iPpptb0selFZ5noyCh7tEX104Ykb9u3KqJfDq/I4hOsjC
-         Dj7gU0xjKTBw7pC79IMCOXXAg1Cd3WPZ5X/Ce1Pukeq07JI2Emm5h7hRGlW/hIA1ry
-         09QvKRsxLw2cDBYPaMh9ETa38X8PVssDh7p22zgaSIvAPJ/gX7wRLBLKowEvvr/Ds7
-         HoT+PyviC+xuQ==
-Date:   Fri, 30 Jul 2021 06:49:22 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 7/8] nfc: hci: pass callback data param as pointer in
- nci_request()
-Message-ID: <20210730064922.078bd222@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210730065625.34010-8-krzysztof.kozlowski@canonical.com>
-References: <20210730065625.34010-1-krzysztof.kozlowski@canonical.com>
-        <20210730065625.34010-8-krzysztof.kozlowski@canonical.com>
+        id S239232AbhG3OSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhG3ORI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:17:08 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA41C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:17:03 -0700 (PDT)
+Message-ID: <20210730135007.155909613@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627654621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3dwkQqVN0O/XgqhhpTJNyHtqfqPVZPgBJ9TED+4MNhE=;
+        b=QSgxcf9O8/VIy96QVuD6UJRkqEkHizYVe8se7cwf1jntBa6aWC5p0jBolG0D6KCTFQHl5V
+        txpgMhDs7jFz0nbOT69HgFijBoBu38erhDBMqjDl+K88nolpAgqI329jVVMsXFa5sBhx0y
+        o+ZfKIKslM45JfW36KNdt1hzKSNU5cwGn+P5JSfd41SGcE6DtLb/0IdRhdM0dhKJxy6+q1
+        rFRkey3lZiwsJkvf6rs1GMpXo2cKZim7oOv+4JcEqjSvET2HrXyMgxqBHzTN1RcB/LAloP
+        b8EOF6IVGeF9fIDaA7KTCJD4AHWYeHfyPpAsJIaFhlrOqldEBTI1YdPld6x4HQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627654621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3dwkQqVN0O/XgqhhpTJNyHtqfqPVZPgBJ9TED+4MNhE=;
+        b=gPFMUgQHVR352zZFbi1yrgloBn111jLTAE0X0JvrhKbijIpNEioNCs9JHJD7zscZ1yC5Lg
+        EOv6yHxgs8iPrzBw==
+Date:   Fri, 30 Jul 2021 15:50:07 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: [patch 00/63] locking, sched: The PREEMPT-RT locking infrastructure
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 08:56:24 +0200 Krzysztof Kozlowski wrote:
-> The nci_request() receives a callback function and unsigned long data
-> argument "opt" which is passed to the callback.  Almost all of the
-> nci_request() callers pass pointer to a stack variable as data argument.
-> Only few pass scalar value (e.g. u8).
-> 
-> All such callbacks do not modify passed data argument and in previous
-> commit they were made as const.  However passing pointers via unsigned
-> long removes the const annotation.  The callback could simply cast
-> unsigned long to a pointer to writeable memory.
-> 
-> Use "const void *" as type of this "opt" argument to solve this and
-> prevent modifying the pointed contents.  This is also consistent with
-> generic pattern of passing data arguments - via "void *".  In few places
-> passing scalar values, use casts via "unsigned long" to suppress any
-> warnings.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-This generates a bunch of warnings:
-
-net/nfc/nci/core.c:381:51: warning: Using plain integer as NULL pointer
-net/nfc/nci/core.c:388:50: warning: Using plain integer as NULL pointer
-net/nfc/nci/core.c:494:57: warning: Using plain integer as NULL pointer
-net/nfc/nci/core.c:520:65: warning: Using plain integer as NULL pointer
-net/nfc/nci/core.c:570:44: warning: Using plain integer as NULL pointer
-net/nfc/nci/core.c:815:34: warning: Using plain integer as NULL pointer
-net/nfc/nci/core.c:856:50: warning: Using plain integer as NULL pointer
-
-BTW applying this set will resolve the warnings introduced by applying
-"part 2" out of order, right? No further action needed?
+Rm9sa3MsCgp0aGUgZm9sbG93aW5nIHNlcmllcyBpcyBhbiB1cGRhdGUgdG8gVjEgd2hpY2ggY2Fu
+IGJlIGZvdW5kIGhlcmU6CgogIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTA3MTMxNTEw
+NTQuNzAwNzE5OTQ5QGxpbnV0cm9uaXguZGUKCkl0IGNvbnRhaW5zIHRoZSBidWxrIG9mIHRoZSBQ
+UkVFTVBULVJUIGxvY2tpbmcgaW5mcmFzdHJ1Y3R1cmUuIEluClBSRUVNUFQtUlQgZW5hYmxlZCBr
+ZXJuZWxzIHRoZSBmb2xsb3dpbmcgbG9ja2luZyBwcmltaXRpdmVzIGFyZSBzdWJzdGl0dXRlZApi
+eSBSVC1NdXRleCBiYXNlZCB2YXJpYW50czoKCiAgbXV0ZXgsIHJ3X3NlbWFwaG9yZSwgc3Bpbmxv
+Y2ssIHJ3bG9jawoKc2VtYXBob3JlcyBhcmUgbm90IHN1YnN0aXR1dGVkIGJlY2F1c2UgdGhleSBk
+byBub3QgcHJvdmlkZSBzdHJpY3Qgb3duZXIKc2VtYW50aWNzLgoKd3dfbXV0ZXhlcyBhcmUgYWxz
+byBub3Qgc3Vic3RpdHV0ZWQgYmVjYXVzZSB0aGUgdXNhZ2Ugc2l0ZXMgYXJlIG5vdCByZWFsbHkK
+UlQgcmVsZXZhbnQgYW5kIGl0IHdvdWxkIHJlcXVpcmUgYSBmdWxsIHJlaW1wbGVtZW50YXRpb24g
+dG8gbWFrZSB0aGVtIHdvcmsKY29ycmVjdGx5IGJhc2VkIG9uIHJ0bXV0ZXguIFRoYXQgbWlnaHQg
+Y2hhbmdlIGluIHRoZSBmdXR1cmUsIGJ1dCBmb3Igbm93CnV0aWxpemluZyB0aGUgZXhpc3Rpbmcg
+dmFyaWFudCBpcyBjb25zaWRlcmVkIGEgc2FmZSBhbmQgc2FuZSBjaG9pY2UuCgpPZiBjb3Vyc2Ug
+cmF3X3NwaW5sb2NrcyBhcmUgbm90IHRvdWNoZWQgZWl0aGVyIGFzIHRoZXkgcHJvdGVjdCBsb3cg
+bGV2ZWwKb3BlcmF0aW9ucyBpbiB0aGUgc2NoZWR1bGVyLCB0aW1lcnMgYW5kIGhhcmR3YXJlIGFj
+Y2Vzcy4KClRoZSBtb3N0IGludGVyZXN0aW5nIHBhcnRzIG9mIHRoZSBzZXJpZXMgd2hpY2ggbmVl
+ZCBhIGxvdCBvZiBleWViYWxscwphcmU6CgogIC0gdGhlIHNjaGVkdWxlciBiaXRzIHdoaWNoIHBy
+b3ZpZGUgdGhlIGluZnJhc3RydWN0dXJlIGZvciBzcGlubG9jayBhbmQKICAgIHJ3bG9jayBzdWJz
+dGl0dXRpb24gdG8gZW5zdXJlIHRoYXQgdGhlIHRhc2sgc3RhdGUgaXMgcHJlc2VydmVkIHdoZW4K
+ICAgIGJsb2NraW5nIG9uIHN1Y2ggYSBsb2NrIGFuZCBhIHJlZ3VsYXIgd2FrZXVwIGlzIGhhbmRs
+ZWQgY29ycmVjdGx5IGFuZAogICAgbm90IGxvc3QKCiAgLSB0aGUgcnRtdXRleCBjb3JlIGltcGxl
+bWVudGF0aW9uIHRvIGhhbmRsZSBsb2NrIGNvbnRlbnRpb24gb24gc3BpbmxvY2tzCiAgICBhbmQg
+cndsb2NrcyBjb3JyZWN0bHkgdnMuIHRoZSB0YXNrIHN0YXRlCgogIC0gdGhlIHJ3X3NlbWFwaG9y
+ZS9yd2xvY2sgc3Vic3RpdHV0aW9ucyB3aGljaCB1dGlsaXplIHRoZSBzYW1lCiAgICBpbXBsZW1l
+bnRhdGlvbiB2cy4gdGhlIHJlYWRlci93cml0ZXIgaGFuZGxpbmcKCiAgLSB0aGUgaXNvbGF0aW9u
+IG9mIHRoZSB3d19tdXRleCBjb2RlIHdoaWNoIGFsbG93cyB0byBidWlsZCBpdCBzdGFuZCBhbG9u
+ZS4KICAgIFRoZSB0eXBlZGVmIGJhc2VkIHNvbHV0aW9uIG1pZ2h0IGxvb2sgYSBiaXQgb2RkIG9u
+IHRoZSBmaXJzdCBnbGFuY2UsCiAgICBidXQgdGhhdCB0dXJuZWQgb3V0IHRvIGJlIHRoZSBsZWFz
+dCBpbnRydXNpdmUgdmFyaWFudC4KCiAgLSB0aGUgUEkgZnV0ZXggcmVsYXRlZCBiaXRzIHRvIGhh
+bmRsZSB0aGUgaW50ZXJhY3Rpb24gYmV0d2VlbiBibG9ja2luZwogICAgb24gdGhlIHVuZGVybHlp
+bmcgcnRtdXRleCBhbmQgY29udGVudGlvbiBvbiB0aGUgaGFzaCBidWNrZXQgbG9jayB3aGljaAog
+ICAgaXMgY29udmVydGVkIHRvIGEgJ3NsZWVwaW5nIHNwaW5sb2NrJy4KClRoZSByZXN0IHN1cmVs
+eSBuZWVkcyBhIHRob3JvdWdoIHJldmlldyBhcyB3ZWxsLCBidXQgdGhvc2UgcGFydHMgYXJlIHBy
+ZXR0eQpzdHJhaWdodCBmb3J3YXJkLiBRdWl0ZSBzb21lIGNvZGUgcmVzdHJ1Y3R1cmluZyBhbmQg
+dGhlIGFjdHVhbCB3cmFwcGVyCmZ1bmN0aW9ucyB0byByZXBsYWNlIHRoZSBleGlzdGluZyAhUlQg
+aW1wbGVtZW50YXRpb25zLgoKVGhlIHNlcmllcyBzdXJ2aXZlZCBxdWl0ZSBzb21lIGludGVybmFs
+IHRlc3RpbmcgaW4gUlQga2VybmVscyBhbmQgaXMgcGFydApvZiB0aGUgcmVjZW50IDUuMTQtcmMz
+LXJ0MiByZWxlYXNlLgoKRm9yICFSVCBrZXJuZWxzIHRoZXJlIGlzIG5vIGZ1bmN0aW9uYWwgY2hh
+bmdlLgoKVGhlIHNlcmllcyBpcyBhbHNvIGF2YWlsYWJsZSBmcm9tIGdpdDoKCiAgZ2l0Oi8vZ2l0
+Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IHJ0bXV0
+ZXgKCmFuZCBmdWxseSBpbnRlZ3JhdGVkIGludG8gdGhlIHY1LjE0LXJjMy1ydDIgcmVsZWFzZToK
+CiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjEwNzMwMTMxMjU2LjdkM2pjY21wdWl3NXBy
+NG9AbGludXRyb25peC5kZQoKQ2hhbmdlcyB2cy4gVjE6CgogIC0gU2ltcGxpZnkgdGhlIHNjaGVk
+dWxlciBzdGF0ZSBsb2dpYyAoUGV0ZXIgWmlqbHN0cmEpCgogIC0gU3BsaXQgb3V0IHJ0X211dGV4
+X2Jhc2UgdG8gYXZvaWQgdGhhdCB3cmFwcGVkIGxvY2tzIGNhcnJ5IGFuIHVudXNlZAogICAgbG9j
+a2RlcCBtYXAsIHdoaWNoIGluIHR1cm4gYXZvaWRzIGV4dHJhIGludGVyZmFjZXMuIChQZXRlciBa
+aWpsc3RyYSkKCiAgLSBQaWNrIHVwIFBldGVyJ3MgaW5pdGlhbCB2ZXJzaW9uIG9mIGFuIHJ0bXV0
+ZXggYmFzZWQgd3dfbXV0ZXggYW5kIG1ha2UKICAgIGl0IHdvcmsuIFRoaXMgcmVwbGFjZXMgdGhl
+IG11dGV4LmMgc3BsaXQgb2YgVjEKCiAgLSBQaWNrIHVwIHRoZSBCVUcgLT4gbG9ja2RlcF9hc3Nl
+cnRfaGVsZCgpIHBhdGNoIGZyb20gUGV0ZXIKCiAgLSBFeHRlbmQgYWRhcHRpdmUgc3BpbndhaXQg
+dG8gYWxsIHJ0bXV0ZXggYmFzZWQgbG9ja3Mgd2hpY2ggbWFrZXMKICAgIGhhY2tiZW5jaCBsZXNz
+IHVuaGFwcHkuCgogIC0gVmFyaW91cyByZXZpZXcgY29tbWVudHMgYWRkcmVzc2VkCgpUaGFua3Ms
+CgoJdGdseAotLS0KIGEva2VybmVsL2xvY2tpbmcvbXV0ZXgtZGVidWcuaCAgICAgICAgICAgICAg
+ICAgICAgfCAgIDI5IAogYi9pbmNsdWRlL2xpbnV4L3JidHJlZV90eXBlcy5oICAgICAgICAgICAg
+ICAgICAgICB8ICAgMzQgCiBiL2luY2x1ZGUvbGludXgvcndiYXNlX3J0LmggICAgICAgICAgICAg
+ICAgICAgICAgIHwgICAzOCAKIGIvaW5jbHVkZS9saW51eC9yd2xvY2tfcnQuaCAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgMTQwICsrCiBiL2luY2x1ZGUvbGludXgvc3BpbmxvY2tfcnQuaCAgICAg
+ICAgICAgICAgICAgICAgIHwgIDE1MSArKysKIGIvaW5jbHVkZS9saW51eC9zcGlubG9ja190eXBl
+c19yYXcuaCAgICAgICAgICAgICAgfCAgIDY1ICsKIGIva2VybmVsL2xvY2tpbmcvcnRtdXRleF9h
+cGkuYyAgICAgICAgICAgICAgICAgICAgfCAgNTkwICsrKysrKysrKysrCiBiL2tlcm5lbC9sb2Nr
+aW5nL3J3YmFzZV9ydC5jICAgICAgICAgICAgICAgICAgICAgIHwgIDI2MyArKysrKwogYi9rZXJu
+ZWwvbG9ja2luZy9zcGlubG9ja19ydC5jICAgICAgICAgICAgICAgICAgICB8ICAyNTcgKysrKysK
+IGIva2VybmVsL2xvY2tpbmcvd3dfbXV0ZXguaCAgICAgICAgICAgICAgICAgICAgICAgfCAgNTY5
+ICsrKysrKysrKysrCiBiL2tlcm5lbC9sb2NraW5nL3d3X3J0X211dGV4LmMgICAgICAgICAgICAg
+ICAgICAgIHwgICA3NiArCiBkcml2ZXJzL3N0YWdpbmcvbWVkaWEvYXRvbWlzcC9wY2kvYXRvbWlz
+cF9pb2N0bC5jIHwgICAgNCAKIGluY2x1ZGUvbGludXgvZGVidWdfbG9ja3MuaCAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgICAzIAogaW5jbHVkZS9saW51eC9tdXRleC5oICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgOTMgKwogaW5jbHVkZS9saW51eC9wcmVlbXB0LmggICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgIDQgCiBpbmNsdWRlL2xpbnV4L3JidHJlZS5oICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwgICAzMCAKIGluY2x1ZGUvbGludXgvcnRtdXRleC5oICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgIDU1IC0KIGluY2x1ZGUvbGludXgvcndsb2NrX3R5cGVz
+LmggICAgICAgICAgICAgICAgICAgICAgfCAgIDM5IAogaW5jbHVkZS9saW51eC9yd3NlbS5oICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNTggKwogaW5jbHVkZS9saW51eC9zY2hlZC5o
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNzcgKwogaW5jbHVkZS9saW51eC9zY2hl
+ZC93YWtlX3EuaCAgICAgICAgICAgICAgICAgICAgICB8ICAgMTQgCiBpbmNsdWRlL2xpbnV4L3Nw
+aW5sb2NrLmggICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxNSAKIGluY2x1ZGUvbGludXgv
+c3BpbmxvY2tfYXBpX3NtcC5oICAgICAgICAgICAgICAgICAgfCAgICAzIAogaW5jbHVkZS9saW51
+eC9zcGlubG9ja190eXBlcy5oICAgICAgICAgICAgICAgICAgICB8ICAgNDUgCiBpbmNsdWRlL2xp
+bnV4L3d3X211dGV4LmggICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA1MCAtCiBrZXJuZWwv
+S2NvbmZpZy5sb2NrcyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgMiAKIGtlcm5l
+bC9mdXRleC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNDc5ICsrKysr
+KystLQoga2VybmVsL2xvY2tpbmcvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgIDMgCiBrZXJuZWwvbG9ja2luZy9tdXRleC1kZWJ1Zy5jICAgICAgICAgICAgICAgICAgICAg
+IHwgICAgNSAKIGtlcm5lbC9sb2NraW5nL211dGV4LmMgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgfCAgNDMxIC0tLS0tLS0tCiBrZXJuZWwvbG9ja2luZy9tdXRleC5oICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgICAzMyAKIGtlcm5lbC9sb2NraW5nL3J0bXV0ZXguYyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgfCAxMDgyICsrKysrKysrKy0tLS0tLS0tLS0tLS0KIGtlcm5lbC9sb2Nr
+aW5nL3J0bXV0ZXhfY29tbW9uLmggICAgICAgICAgICAgICAgICAgfCAgMTIyICstCiBrZXJuZWwv
+bG9ja2luZy9yd3NlbS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEwOSArKwoga2Vy
+bmVsL2xvY2tpbmcvc3BpbmxvY2suYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDcgCiBr
+ZXJuZWwvbG9ja2luZy9zcGlubG9ja19kZWJ1Zy5jICAgICAgICAgICAgICAgICAgIHwgICAgNSAK
+IGtlcm5lbC9yY3UvdHJlZV9wbHVnaW4uaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA2
+IAoga2VybmVsL3NjaGVkL2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAx
+MTMgKy0KIGxpYi9LY29uZmlnLmRlYnVnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgIDExIAogbGliL3Rlc3RfbG9ja3VwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAgIDggCiA0MCBmaWxlcyBjaGFuZ2VkLCAzNzMzIGluc2VydGlvbnMoKyksIDEzODUgZGVs
+ZXRpb25zKC0pCgoK
