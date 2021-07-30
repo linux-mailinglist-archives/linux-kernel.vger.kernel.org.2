@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96F23DBA4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A858B3DBA5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239289AbhG3OVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239188AbhG3ORi (ORCPT
+        id S239463AbhG3OVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:21:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55692 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239189AbhG3ORj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:17:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D137BC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:17:33 -0700 (PDT)
-Message-ID: <20210730135206.585846510@linutronix.de>
+        Fri, 30 Jul 2021 10:17:39 -0400
+Message-ID: <20210730135206.641495415@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627654652;
+        s=2020; t=1627654653;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=dGBThjxXnhFfezTIvdezCpwkyjcmdDxXQJxwz9iU5J0=;
-        b=zRfAMTsYekp7QWLgZJKCujtjF6E+LmtJIUv88DkFbLFVe5DgR0InYPsIIvaCpq9k3PPhrQ
-        cAheCeMaLdV2a6Ldi4n/rwsJB1fUgFrKLE9Bh1OFO4j92VsUtePzikgc2MahhAVYl8Fl1X
-        I/v0LfNh1UPSbK1T/Ubnxs4jw0h4s9Z1HWWQXMfnKdsa1QjliW7bMwfYD5urqZNHNLzb/N
-        9fZ4cdMGhYlG0j0kIWUoX9EuBHA3tKOIjHR4YExTxd/I06BlY82A3SllgVFW6Uyekxr8kW
-        FlWB4ZLfYTGmty9IA7qS9t3xty+U9m0cn/nSU3jiT4ZSZbhK4bKBO7Kx5L7K9A==
+        bh=ePGbhKE2F+pdLqGDckaId6eUuM3YumbfHtNk25es/Qs=;
+        b=WbbiOIPV9sFhXGDqBNCjygUF+j9RNvPD4LQbluO1dUF6u+fjb/AgJ1JJY8C6qZIxI76PzA
+        3r5kLYLKDZ/8l765oZh6nPWHdUrkj8c7EsO/9KaN9kciBHiDkT3EKsAnM9IZGVykHbex9Q
+        8rNa+4lLSfjoK5KjVlFG9wlN2EdCa1L+9cPZAX9+0tdIvO/koFrQoI6ZK3uHTs64OAkflE
+        aLIAL/1O/5/ZISqKsoqW6i/c0XhRzkBDthuVMvwsyWapj3102AGU5nUGLuV6xIPKd9gHgE
+        jqWq6k0/umc8w6sjvzQoas9jWEz+jlZ97qLKU0tZTayrJT0HCpt304XpyMQo5Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627654652;
+        s=2020e; t=1627654653;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=dGBThjxXnhFfezTIvdezCpwkyjcmdDxXQJxwz9iU5J0=;
-        b=BryBF1E3JBvmyt6qIr7CQXLnaWTMx5abdUM/GCiyImZ5taMxPuDiai1nG9hPQdJ3Vf3+Ix
-        JiyqYlbr4u0xx9AA==
-Date:   Fri, 30 Jul 2021 15:50:32 +0200
+        bh=ePGbhKE2F+pdLqGDckaId6eUuM3YumbfHtNk25es/Qs=;
+        b=H34WLBl7dUcdgQdVY9X3avzVLPX0oHET0rQSDPWLcBUBO6DIkowNMuFXfWu+2EhZHScsUE
+        LZ+37/r24XuiQzBQ==
+Date:   Fri, 30 Jul 2021 15:50:33 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,7 +45,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 25/63] rbtree: Split out the rbtree type definitions
+Subject: [patch 26/63] locking/rtmutex: Include only rbtree types
 References: <20210730135007.155909613@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,102 +62,23 @@ kernels, but on RT enabled kernels spinlocks are based on rtmutexes which
 creates another circular header dependency as spinlocks.h will require
 rtmutex.h.
 
-Split out the type definitions and move them into their own header file so
-the rtmutex header can include just those.
+Include rbtree_types.h instead.
 
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/rbtree.h       |   30 +-----------------------------
- include/linux/rbtree_types.h |   34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 29 deletions(-)
- create mode 100644 include/linux/rbtree_types.h
+ include/linux/rtmutex.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 ---
---- a/include/linux/rbtree.h
-+++ b/include/linux/rbtree.h
-@@ -19,22 +19,11 @@
+--- a/include/linux/rtmutex.h
++++ b/include/linux/rtmutex.h
+@@ -14,7 +14,7 @@
+ #define __LINUX_RT_MUTEX_H
  
- #include <linux/kernel.h>
- #include <linux/stddef.h>
+ #include <linux/linkage.h>
+-#include <linux/rbtree.h>
 +#include <linux/rbtree_types.h>
- #include <linux/rcupdate.h>
+ #include <linux/spinlock_types_raw.h>
  
--struct rb_node {
--	unsigned long  __rb_parent_color;
--	struct rb_node *rb_right;
--	struct rb_node *rb_left;
--} __attribute__((aligned(sizeof(long))));
--    /* The alignment might seem pointless, but allegedly CRIS needs it */
--
--struct rb_root {
--	struct rb_node *rb_node;
--};
--
- #define rb_parent(r)   ((struct rb_node *)((r)->__rb_parent_color & ~3))
- 
--#define RB_ROOT	(struct rb_root) { NULL, }
- #define	rb_entry(ptr, type, member) container_of(ptr, type, member)
- 
- #define RB_EMPTY_ROOT(root)  (READ_ONCE((root)->rb_node) == NULL)
-@@ -112,23 +101,6 @@ static inline void rb_link_node_rcu(stru
- 			typeof(*pos), field); 1; }); \
- 	     pos = n)
- 
--/*
-- * Leftmost-cached rbtrees.
-- *
-- * We do not cache the rightmost node based on footprint
-- * size vs number of potential users that could benefit
-- * from O(1) rb_last(). Just not worth it, users that want
-- * this feature can always implement the logic explicitly.
-- * Furthermore, users that want to cache both pointers may
-- * find it a bit asymmetric, but that's ok.
-- */
--struct rb_root_cached {
--	struct rb_root rb_root;
--	struct rb_node *rb_leftmost;
--};
--
--#define RB_ROOT_CACHED (struct rb_root_cached) { {NULL, }, NULL }
--
- /* Same as rb_first(), but O(1) */
- #define rb_first_cached(root) (root)->rb_leftmost
- 
---- /dev/null
-+++ b/include/linux/rbtree_types.h
-@@ -0,0 +1,34 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _LINUX_RBTREE_TYPES_H
-+#define _LINUX_RBTREE_TYPES_H
-+
-+struct rb_node {
-+	unsigned long  __rb_parent_color;
-+	struct rb_node *rb_right;
-+	struct rb_node *rb_left;
-+} __attribute__((aligned(sizeof(long))));
-+/* The alignment might seem pointless, but allegedly CRIS needs it */
-+
-+struct rb_root {
-+	struct rb_node *rb_node;
-+};
-+
-+/*
-+ * Leftmost-cached rbtrees.
-+ *
-+ * We do not cache the rightmost node based on footprint
-+ * size vs number of potential users that could benefit
-+ * from O(1) rb_last(). Just not worth it, users that want
-+ * this feature can always implement the logic explicitly.
-+ * Furthermore, users that want to cache both pointers may
-+ * find it a bit asymmetric, but that's ok.
-+ */
-+struct rb_root_cached {
-+	struct rb_root rb_root;
-+	struct rb_node *rb_leftmost;
-+};
-+
-+#define RB_ROOT (struct rb_root) { NULL, }
-+#define RB_ROOT_CACHED (struct rb_root_cached) { {NULL, }, NULL }
-+
-+#endif
+ extern int max_lock_depth; /* for sysctl */
 
