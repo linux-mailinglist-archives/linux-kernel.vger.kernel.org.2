@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066633DB9EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3673DB9F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239096AbhG3OCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:02:51 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33569 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231137AbhG3OCt (ORCPT
+        id S239121AbhG3ODk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:03:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62022 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239044AbhG3ODa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:02:49 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9367E5C0093;
-        Fri, 30 Jul 2021 10:02:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 30 Jul 2021 10:02:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=AWxV+BgGTu0QHIp9fEqiV3+Doi0
-        FTh+yjS3KUrF3PGc=; b=CPCT7PPLiTfNf5fjTf3qyD53d41gfk43HFScQD/1QqW
-        63Lm3fnVvoRD4UJXBhheUt8BQTIBcGWP8yEAkl4iCH3XTnooZRNeHKHEQnL3Lz9V
-        4gU46SR1gH402hDOko6QwIJV5lhM9ZO4c3W9OLVlzFBlDfhusvPVN3ih/cSbmaEs
-        AuapVVbWYVL9eOd6rBK0DNnm56Dv/W2OJQ953X9CNfhY0AoijOkNt+3L2bhV+f/1
-        CihxpxTIs/nzQpN3wpAIk0i6c6pfAM1UkbUGn9z2TUHR2RkPgHmMeDc9eaK74OFz
-        tBg1ekgPL4ip6FxLYDjOXPm7o85JDVWLkU8ebWakznA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=AWxV+B
-        gGTu0QHIp9fEqiV3+Doi0FTh+yjS3KUrF3PGc=; b=JfIWpRDL9zQ2Qs0G7fe2KE
-        GkvxQRHD6jTVfbVmqufw62ziomFzHrT9BfdTXTZIyinManMiJA2G1zNNI1Szp9LF
-        tDBDaXXhC1Ul5r0nBRRrLG2DGJb9edl8m2AFN7ho0HuuFhdCDsUl7bpz3/EkY8DE
-        29+u0QExhgXG3UHYZij9He4JYqe6jMBy4Piq+gSRr0COYZMIXlZEwJrAUDzcJ7mU
-        C2Uhy7VgrDFDAvzjkQuTXVjp6FMfFp/FldatRk3roz6fV3l6e4GfzHjsv1B2FoLn
-        dKUATAMQfU9rf24Oueto5r5KGTFZe/vECExfT6QIsZR526dw87XZoF434RKOCGqw
-        ==
-X-ME-Sender: <xms:hAYEYYy24qZVSzDBQmfo9ytlqG__5L8hWKOcnBFGMaUYrD6PKK5lrQ>
-    <xme:hAYEYcSdj7cMIqrnC0lUHZQ8WUBcUoEQ8hKRVNEVAy4aeOPA2eOY1-XlGB-Ut3ueM
-    7dsbALITvGY4Q>
-X-ME-Received: <xmr:hAYEYaWc9I_vm-Y-0sMdbBM8q-1EgI8ewsbUzXCwsfXkS1FflxKLzw0jiwNJMCUyGx6QaexqF6Gh6bKlv50k17HkcXE99jRB>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheehgdeijecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:hAYEYWhc4tIi588BtQHMEDtWi0PRn4D71SDwdV6BdK8EJlAPZlOeYQ>
-    <xmx:hAYEYaCMisXU4DInAMKTRP_RBf8pG8i31IIyAUFYBsr2uO2u-eVKQA>
-    <xmx:hAYEYXI8vHqJqz61O3LAZnU2RJpvL7UIpD84qI3zYrbiwr1f3Sjz2w>
-    <xmx:hAYEYc3W2ge9vWQd9W0T-ZBnupQUjtOLvb0A4JOU-nVZWcUQy6h0Xg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 30 Jul 2021 10:02:43 -0400 (EDT)
-Date:   Fri, 30 Jul 2021 16:02:41 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Phillip Potter <phil@philpotter.co.uk>
-Subject: Re: build failure after merge of the staging tree
-Message-ID: <YQQGgReGba/Ld40y@kroah.com>
-References: <20210730135340.17863-1-broonie@kernel.org>
+        Fri, 30 Jul 2021 10:03:30 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16UDlDuT007928;
+        Fri, 30 Jul 2021 10:03:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Vp0U8yxVJgFQ41zGrYD8eUzgmT5mkO9NlAdJeTljdrw=;
+ b=QegEPTH0bAHHFrBL85fsAkXTEAWqnkVLqaIyVsC80+ZcAZy1ernC7owkLvSl+FKe0Bo+
+ pTkVfxHaWkOBVzLCAulfYfCRIcVvR0iMeOyvfvO+L3NdlISQQZj5URyBH6n4n6nmH42J
+ ZZUhScWGTzcXMPKD7A4xmYGMmfyn0eVjrmwrxbjMtDLK3ghfg8A1tb+nhHhyP7DAI23G
+ P704v2geHUSNHWrk/Js6XaH7e5somWXbT2DwWYo6sZNxpuYpkfd1yEMjefn+HfItGRMw
+ TpRSBfxmGfWc7V8SMQwFuEsA0+KgGJ+ERYySTgYXuIIvh2pJEarVzKBDeVRIn4hQ+1e0 QA== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a4jm7gf2f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Jul 2021 10:03:21 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16UE3BOs017783;
+        Fri, 30 Jul 2021 14:03:18 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3a235m4346-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Jul 2021 14:03:18 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16UE3GP430933376
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Jul 2021 14:03:16 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 28CA4A4069;
+        Fri, 30 Jul 2021 14:03:16 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 207FCA4059;
+        Fri, 30 Jul 2021 14:03:14 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.54.226])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Jul 2021 14:03:13 +0000 (GMT)
+Message-ID: <2c731f07bd08f01f2a3e032814bc65ae9a8494ad.camel@linux.ibm.com>
+Subject: Re: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
+ digest_list_del
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Fri, 30 Jul 2021 10:03:13 -0400
+In-Reply-To: <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+         <20210726163700.2092768-7-roberto.sassu@huawei.com>
+         <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
+         <ef7c85dcb096479e95c8c60ccda4d700@huawei.com>
+         <1ef95096bee13578b3f906dd9f708c6af9d6ff18.camel@linux.ibm.com>
+         <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wNsyaJ4RvqTcomgd160mG9KIFib2kW1P
+X-Proofpoint-ORIG-GUID: wNsyaJ4RvqTcomgd160mG9KIFib2kW1P
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730135340.17863-1-broonie@kernel.org>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-30_05:2021-07-30,2021-07-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
+ bulkscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 impostorscore=0
+ suspectscore=0 spamscore=0 adultscore=0 priorityscore=1501 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2107300087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 02:53:40PM +0100, Mark Brown wrote:
-> Hi all,
-> 
-> After merging the staging tree, today's linux-next build (x86
-> allmodconfig) failed like this:
-> 
-> /tmp/next/build/drivers/staging/r8188eu/core/rtw_ap.c:22:10: fatal error: osdep_service.h: No such file or directory
->  #include <osdep_service.h>
->           ^~~~~~~~~~~~~~~~~
-> compilation terminated.
-> make[4]: *** [/tmp/next/build/scripts/Makefile.build:271: drivers/staging/r8188eu/core/rtw_ap.o] Error 1
-> make[4]: *** Waiting for unfinished jobs....
-> /tmp/next/build/drivers/staging/r8188eu/core/rtw_br_ext.c:29:10: fatal error: drv_types.h: No such file or directory
->  #include <drv_types.h>
->           ^~~~~~~~~~~~~
-> compilation terminated.
-> 
-> Caused by commit
-> 
->   15865124feed880978b7 ("staging: r8188eu: introduce new core dir for RTL8188eu driver")
-> 
-> I've used the staging tree from yesterday instead.
+Hi Roberto,
 
-Ah, are you building with O= ?  That might be the problem here, I think
-I had to fix up that mess with the older driver in the past...
+On Fri, 2021-07-30 at 13:16 +0000, Roberto Sassu wrote:
+> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > Sent: Friday, July 30, 2021 2:40 PM
+
+> > "critical data", in this context, should probably be used for verifying
+> > the in memory file digests and other state information haven't been
+> > compromised.
+> 
+> Actually, this is what we are doing currently. To keep the
+> implementation simple, once the file or the buffer are uploaded
+> to the kernel, they will not be modified, just accessed through
+> the indexes.
+
+My main concern about digest lists is their integrity, from loading the
+digest lists to their being stored in memory.  A while back, there was
+some work on defining a write once memory allocator.  I don't recall
+whatever happened to it.  This would be a perfect usecase for that
+memory allocator.
 
 thanks,
 
-greg k-h
+Mimi
+
