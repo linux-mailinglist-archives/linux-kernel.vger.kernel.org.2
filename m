@@ -2,112 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1E73DB76C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73F23DB769
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238600AbhG3Kvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:51:50 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12427 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238587AbhG3Kvs (ORCPT
+        id S238574AbhG3Kvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238543AbhG3Kvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:51:48 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GbkdR63rhzcjkH;
-        Fri, 30 Jul 2021 18:48:11 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 30 Jul 2021 18:51:41 +0800
-Received: from SWX921481.china.huawei.com (10.126.202.167) by
- dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 30 Jul 2021 18:51:37 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <mark.rutland@arm.com>, <tyhicks@linux.microsoft.com>,
-        <linux@roeck-us.net>, <maz@kernel.org>, <tabba@google.com>,
-        <lecopzer.chen@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@arm.com>,
-        "Qi Liu" <liuqi115@huawei.com>
-Subject: [PATCH] arm64: fix the doc of RANDOMIZE_MODULE_REGION_FULL
-Date:   Fri, 30 Jul 2021 22:50:56 +1200
-Message-ID: <20210730105056.19784-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Fri, 30 Jul 2021 06:51:32 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BC2C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:51:26 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id l19so14666498pjz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:51:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=workware-net-au.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eUV5nhL5QABYzSLeXK88oyatwPt6Dns+LgdiyB39L3A=;
+        b=JZz7/1b+6xO0d2CXQG2M+4cqJ/Df/EaCm1OGhxdaEj18vuefNVknh1SNs0uM9IIQ1i
+         FCOSX6qfWJlq4ulzWt1KYJD9WrX0NBhfOPddV2jVOeen+CzqF9fOT89JZnrENmZZVHTw
+         nuv2iSXmoj9DLQYSXfdE88l/mYcUtJaUMes6yMge2xwaO42UO+IUAcwmg/YYaAemMLE4
+         1AFCSGVNGiavdbaR/olnHFCaQ0QgZzBduEubTJ/Qly8CGKPI7DKHFyZE0uT4gpR1Rlzy
+         o3/FDtU45gek7w5gwopj2fpYRPlN4Sa7pzzdxPCTguiNfcOMUhMcMt8r173SiJqa9eZt
+         UmrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eUV5nhL5QABYzSLeXK88oyatwPt6Dns+LgdiyB39L3A=;
+        b=BTVOsVDAfRLWGIhYcXaiQH7tgrITQhuNiA7ZCVEfV2ZX3j7XB1Za4GVkO5x3ABWZog
+         A1/TJzgS71KyL3L/AjMIeG8g8fKMbWaxbrehmfkzJVLepfFcU3PiLuazWjMBCfLjH6co
+         C+IaP7qkAxpdVCrjkHiNlB1sz6KWqkeVAwigYxZ6/fzvp1QT/t0NGF5CvmjhnxCRQrhE
+         fJg3cGvBD4Fgd8zgXv2tE1wjmSXfbgp44vWHoGaoTA/X9mujFlD3StvG3v+GlmqlnsyI
+         FYweWRRWO0EZ4Uhp/vw/sAGWz500BFxr70LPc92OWQSMjap0WbJSY0AGzUHcIWwZ8Tqt
+         lCkA==
+X-Gm-Message-State: AOAM532nAmCcKLmt4j+CXWT14X6UOweawFCsuEFnOVpWaQLIn1Go57B/
+        XCSyjkCJ5HxkG6/q+AuCaFMjdA==
+X-Google-Smtp-Source: ABdhPJzwNCu1Uf2wgff23wJkV6LR2TaRS0u1Vu6IM9EMm8XredlJFm4xRDD2CB3QXTUjlKr7yVUv4w==
+X-Received: by 2002:a17:902:c202:b029:12c:9970:bdf9 with SMTP id 2-20020a170902c202b029012c9970bdf9mr94247pll.30.1627642286219;
+        Fri, 30 Jul 2021 03:51:26 -0700 (PDT)
+Received: from workware.net.au (117-20-69-228.751445.bne.nbn.aussiebb.net. [117.20.69.228])
+        by smtp.gmail.com with ESMTPSA id h14sm1922347pfo.47.2021.07.30.03.51.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 03:51:25 -0700 (PDT)
+From:   Steve Bennett <steveb@workware.net.au>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Steve Bennett <steveb@workware.net.au>
+Subject: [PATCH] net: phy: micrel: Fix detection of ksz87xx switch
+Date:   Fri, 30 Jul 2021 20:51:20 +1000
+Message-Id: <20210730105120.93743-1-steveb@workware.net.au>
+X-Mailer: git-send-email 2.24.2 (Apple Git-127)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.202.167]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi761-chm.china.huawei.com (10.1.198.147)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Obviously kaslr is setting the module region to 2GB rather than 4GB since
-commit b2eed9b588112 ("arm64/kernel: kaslr: reduce module randomization
-range to 2 GB").
-On the other hand, module_alloc() can fall back to a 2GB window even though
-RANDOMIZE_MODULE_REGION_FULL is not set. In this case, PLT is still needed.
-So fix the doc to be more precise to avoid any confusion to the readers of
-the code.
+The previous logic was wrong such that the ksz87xx
+switch was not identified correctly.
 
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Ard Biesheuvel <ard.biesheuvel@arm.com>
-Cc: Qi Liu <liuqi115@huawei.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Signed-off-by: Steve Bennett <steveb@workware.net.au>
 ---
- arch/arm64/Kconfig        | 7 ++++---
- arch/arm64/kernel/kaslr.c | 4 +++-
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/phy/micrel.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b5b13a932561..525c1f0b2430 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1800,11 +1800,11 @@ config RANDOMIZE_BASE
- 	  If unsure, say N.
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 4d53886f7d51..a4acec02c8cb 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -401,11 +401,11 @@ static int ksz8041_config_aneg(struct phy_device *phydev)
+ }
  
- config RANDOMIZE_MODULE_REGION_FULL
--	bool "Randomize the module region over a 4 GB range"
-+	bool "Randomize the module region over a 2 GB range"
- 	depends on RANDOMIZE_BASE
- 	default y
- 	help
--	  Randomizes the location of the module region inside a 4 GB window
-+	  Randomizes the location of the module region inside a 2 GB window
- 	  covering the core kernel. This way, it is less likely for modules
- 	  to leak information about the location of core kernel data structures
- 	  but it does imply that function calls between modules and the core
-@@ -1812,7 +1812,8 @@ config RANDOMIZE_MODULE_REGION_FULL
+ static int ksz8051_ksz8795_match_phy_device(struct phy_device *phydev,
+-					    const u32 ksz_phy_id)
++					    const u32 ksz_8051)
+ {
+ 	int ret;
  
- 	  When this option is not set, the module region will be randomized over
- 	  a limited range that contains the [_stext, _etext] interval of the
--	  core kernel, so branch relocations are always in range.
-+	  core kernel, so branch relocations are almost always in range unless
-+	  the region is exhausted and we fall back to a larger 2GB area.
+-	if ((phydev->phy_id & MICREL_PHY_ID_MASK) != ksz_phy_id)
++	if ((phydev->phy_id & MICREL_PHY_ID_MASK) != PHY_ID_KSZ8051)
+ 		return 0;
  
- config CC_HAVE_STACKPROTECTOR_SYSREG
- 	def_bool $(cc-option,-mstack-protector-guard=sysreg -mstack-protector-guard-reg=sp_el0 -mstack-protector-guard-offset=0)
-diff --git a/arch/arm64/kernel/kaslr.c b/arch/arm64/kernel/kaslr.c
-index cfa2cfde3019..2bc43014ced3 100644
---- a/arch/arm64/kernel/kaslr.c
-+++ b/arch/arm64/kernel/kaslr.c
-@@ -162,7 +162,9 @@ u64 __init kaslr_early_init(void)
- 		 * a PAGE_SIZE multiple in the range [_etext - MODULES_VSIZE,
- 		 * _stext) . This guarantees that the resulting region still
- 		 * covers [_stext, _etext], and that all relative branches can
--		 * be resolved without veneers.
-+		 * be resolved without veneers unless this region is exhausted
-+		 * and we fall back to get memory from a larger 2GB window in
-+		 * module_alloc()
- 		 */
- 		module_range = MODULES_VSIZE - (u64)(_etext - _stext);
- 		module_alloc_base = (u64)_etext + offset - MODULES_VSIZE;
+ 	ret = phy_read(phydev, MII_BMSR);
+@@ -418,7 +418,7 @@ static int ksz8051_ksz8795_match_phy_device(struct phy_device *phydev,
+ 	 * the switch does not.
+ 	 */
+ 	ret &= BMSR_ERCAP;
+-	if (ksz_phy_id == PHY_ID_KSZ8051)
++	if (ksz_8051)
+ 		return ret;
+ 	else
+ 		return !ret;
+@@ -426,7 +426,7 @@ static int ksz8051_ksz8795_match_phy_device(struct phy_device *phydev,
+ 
+ static int ksz8051_match_phy_device(struct phy_device *phydev)
+ {
+-	return ksz8051_ksz8795_match_phy_device(phydev, PHY_ID_KSZ8051);
++	return ksz8051_ksz8795_match_phy_device(phydev, 1);
+ }
+ 
+ static int ksz8081_config_init(struct phy_device *phydev)
+@@ -535,7 +535,7 @@ static int ksz8061_config_init(struct phy_device *phydev)
+ 
+ static int ksz8795_match_phy_device(struct phy_device *phydev)
+ {
+-	return ksz8051_ksz8795_match_phy_device(phydev, PHY_ID_KSZ87XX);
++	return ksz8051_ksz8795_match_phy_device(phydev, 0);
+ }
+ 
+ static int ksz9021_load_values_from_of(struct phy_device *phydev,
 -- 
-2.25.1
+2.24.2 (Apple Git-127)
 
