@@ -2,64 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF2B3DB99D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AC23DBA73
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238978AbhG3Nu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 09:50:59 -0400
-Received: from mga17.intel.com ([192.55.52.151]:16708 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231137AbhG3Nu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 09:50:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="193378837"
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="193378837"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 06:50:53 -0700
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="508128490"
-Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.24.117]) ([10.213.24.117])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 06:50:51 -0700
-Subject: Re: [PATCH v1] ASoC: Intel: kbl_da7219_max98357a: fix drv_name
-To:     Lukasz Majczak <lma@semihalf.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     upstream@semihalf.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20210730115906.144300-1-lma@semihalf.com>
-From:   Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <bd223956-93c8-1fb6-325d-0afb34ad2f23@intel.com>
+        id S239364AbhG3OXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239226AbhG3OSB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:18:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A554CC0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:17:53 -0700 (PDT)
+Message-ID: <20210730135207.478773842@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627654672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=/O2vRlgWt2h6zx9U9kb1PnD3u84r4EBg9NX0SVErgnM=;
+        b=Q0ERIcX04JtYDTSHXqQGbzuYflNlcJrZmg0OEE5XpR0YSSzU0frNPnKkype5q5UzhjycEa
+        yVBQP8qNYPFnAIQCp1UoaxAgsT3GKJ39aY4wf/kKsQSBjhKIix8sv5tBUp95mKQr+av0uI
+        fcmvzHAPDn2cnAyctT7GoW9t2ityC/UmS77X3CbQw5o8XykBR5iYZ4YLyHXKuA1SIC7A+j
+        QeUMvIQ2gi5RGEpXpt12bdPNwNl6RbBsR2rpyEdcEdmA3iQE8DXyIeo8G4xdVHLwQZWiuF
+        J6amwKAg+LoUcsgMY7nGnAk/O0MSu+lhw6lrNfKcMCePjVGzqQVqaAtJDIfpUA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627654672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=/O2vRlgWt2h6zx9U9kb1PnD3u84r4EBg9NX0SVErgnM=;
+        b=MV3zf0uSILeArQYxupj9fwrnEiGvwk91uwRqh59A4uHvt2anqsKSebnk9rugkKYgBkSYz/
+        c5rxC8ZlBgiHPgDA==
 Date:   Fri, 30 Jul 2021 15:50:48 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: [patch 41/63] locking/ww_mutex: Abstract waiter iteration
+References: <20210730135007.155909613@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210730115906.144300-1-lma@semihalf.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-30 1:59 PM, Lukasz Majczak wrote:
-> platform_id for kbl_da7219_max98357a was shrunk for kbl_da7219_mx98357a,
-> but the drv_name was changed for kbl_da7219_max98373. Tested on a
-> Pixelbook (Atlas).
+From: Peter Zijlstra <peterz@infradead.org>
 
-Reasoning behind Pierre's initial commit is valid and I believe 
-kbl_da7219_max98373 name change was simply unintended. To make the 
-situation clearer, please be more elaborate in commit's message.
+Split out the waiter iteration functions so they can be substituted for a
+rtmutex based ww_mutex later.
 
-> Fixes: 94efd726b947 ("ASoC: Intel: kbl_da7219_max98357a: shrink platform_id below 20 characters")
-> Cc: <stable@vger.kernel.org> # 5.4+
-> Reported-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/locking/ww_mutex.h |   57 ++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 53 insertions(+), 4 deletions(-)
+---
+--- a/kernel/locking/ww_mutex.h
++++ b/kernel/locking/ww_mutex.h
+@@ -1,5 +1,49 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ 
++static inline struct mutex_waiter *
++__ww_waiter_first(struct mutex *lock)
++{
++	struct mutex_waiter *w;
++
++	w = list_first_entry(&lock->wait_list, struct mutex_waiter, list);
++	if (list_entry_is_head(w, &lock->wait_list, list))
++		return NULL;
++
++	return w;
++}
++
++static inline struct mutex_waiter *
++__ww_waiter_next(struct mutex *lock, struct mutex_waiter *w)
++{
++	w = list_next_entry(w, list);
++	if (list_entry_is_head(w, &lock->wait_list, list))
++		return NULL;
++
++	return w;
++}
++
++static inline struct mutex_waiter *
++__ww_waiter_prev(struct mutex *lock, struct mutex_waiter *w)
++{
++	w = list_prev_entry(w, list);
++	if (list_entry_is_head(w, &lock->wait_list, list))
++		return NULL;
++
++	return w;
++}
++
++static inline struct mutex_waiter *
++__ww_waiter_last(struct mutex *lock)
++{
++	struct mutex_waiter *w;
++
++	w = list_last_entry(&lock->wait_list, struct mutex_waiter, list);
++	if (list_entry_is_head(w, &lock->wait_list, list))
++		return NULL;
++
++	return w;
++}
++
+ /*
+  * Wait-Die:
+  *   The newer transactions are killed when:
+@@ -161,7 +205,9 @@ static void
+ 
+ 	lockdep_assert_held(&lock->wait_lock);
+ 
+-	list_for_each_entry(cur, &lock->wait_list, list) {
++	for (cur = __ww_waiter_first(lock); cur;
++	     cur = __ww_waiter_next(lock, cur)) {
++
+ 		if (!cur->ww_ctx)
+ 			continue;
+ 
+@@ -263,8 +309,9 @@ static inline int
+ 	 * If there is a waiter in front of us that has a context, then its
+ 	 * stamp is earlier than ours and we must kill ourself.
+ 	 */
+-	cur = waiter;
+-	list_for_each_entry_continue_reverse(cur, &lock->wait_list, list) {
++	for (cur = __ww_waiter_prev(lock, waiter); cur;
++	     cur = __ww_waiter_prev(lock, cur)) {
++
+ 		if (!cur->ww_ctx)
+ 			continue;
+ 
+@@ -309,7 +356,9 @@ static inline int
+ 	 * may wound the lock holder.
+ 	 */
+ 	pos = &lock->wait_list;
+-	list_for_each_entry_reverse(cur, &lock->wait_list, list) {
++	for (cur = __ww_waiter_last(lock); cur;
++	     cur = __ww_waiter_prev(lock, cur)) {
++
+ 		if (!cur->ww_ctx)
+ 			continue;
+ 
 
-Please reword to: Suggested-by. I certainly wasn't the one who found the 
-problem first, but I did provide the initial fix.
-
-I don't see any problem is the code, so besides formalities:
-
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-
-
-Thanks,
-Czarek
