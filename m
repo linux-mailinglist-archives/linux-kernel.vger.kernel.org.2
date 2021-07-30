@@ -2,117 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DB03DBF84
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8FB3DBF88
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhG3UTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:19:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28079 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230239AbhG3UTd (ORCPT
+        id S231438AbhG3UU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:20:26 -0400
+Received: from relay05.th.seeweb.it ([5.144.164.166]:46531 "EHLO
+        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230217AbhG3UUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:19:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627676367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/zFJyWsxPQk78UOPs/+ij8Jx+cS7quRI3uqSv1o/GPo=;
-        b=QNvYEo7mmZGtsHfSXh3xDaJL2wGN8RMuT2p4TFgCsNZm+NWQAbc2z+EeCd1u8vA87qfFd6
-        5yttv9pxZTC/+jLiN5EVdEjKNykilnKaxF6usutP3kpWuVSZ3RVZE0YnS1uZeP4z4kJ3yN
-        uRAHHeaCUtTol6uSX+dUo89GRVDE1Wo=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-XfY28MBaND2X3LNT57gYqA-1; Fri, 30 Jul 2021 16:19:24 -0400
-X-MC-Unique: XfY28MBaND2X3LNT57gYqA-1
-Received: by mail-qv1-f70.google.com with SMTP id v15-20020a0ccd8f0000b0290335f005a486so6686651qvm.22
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:19:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/zFJyWsxPQk78UOPs/+ij8Jx+cS7quRI3uqSv1o/GPo=;
-        b=OeAtcgg1Na/5obeh89f+oDH3fG8jGOxry5mNlIghTXPBDAZ8ZJogw9o9J0fC+2tONK
-         irXJvnWhKDYYl8IUSq7ynK3AqcLX0py9HSwOlqn9UaY3j6vons287EkWbhyxxtVARQsG
-         Gozf1Izo88pThCD3ogU0heejOoqFqgEWdN/6LKZCmBcHb9ztCyjlQ0riIzQuLKlUFTPc
-         3aTjQfCuEeyl53tSMAIf6Bkh38kQJNi79cYLFcwcuGX6HbiYmkg6zf6Q3flLZz8Qf4bi
-         rB4kPW1RIKq4YIABN4UB1cf2Bgqc2MlbDE3nTXYmHa5TKDTt2CeS+tNl8ydNzXqNy7dt
-         QREw==
-X-Gm-Message-State: AOAM533OlmwfaCmvqWIUyi/iJbc/UWfJLh2iNY5099GnSpbYe3YmmXd9
-        MVhxsHI7NgbdtkiK6XFiOyhhYLdXrWmuQyxfJOxyjWreIcFcFO+46R6yHrJ9Xkxg+OjvmgClGyf
-        mlfIXsYVrq7rRagD5lyuZECZj
-X-Received: by 2002:ad4:522c:: with SMTP id r12mr4643071qvq.17.1627676363800;
-        Fri, 30 Jul 2021 13:19:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzpcJumONCf8DoskE6RaFKasSWi6GXBAhPM3j6dnrtWg/hV7L9H+UMK1U8vpHb8qp71Nb1+Ow==
-X-Received: by 2002:ad4:522c:: with SMTP id r12mr4643056qvq.17.1627676363551;
-        Fri, 30 Jul 2021 13:19:23 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id w26sm1388000qki.6.2021.07.30.13.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 13:19:22 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 16:19:21 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hamza Mahfooz <someguy@effective-light.com>
-Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: const-ify all relevant uses of struct
- kvm_memory_slot
-Message-ID: <YQReyaxp/rwypHbR@t490s>
-References: <20210713023338.57108-1-someguy@effective-light.com>
+        Fri, 30 Jul 2021 16:20:25 -0400
+Received: from [192.168.1.59] (bband-dyn19.178-41-181.t-com.sk [178.41.181.19])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 653B03E7DD;
+        Fri, 30 Jul 2021 22:20:17 +0200 (CEST)
+Date:   Fri, 30 Jul 2021 22:20:11 +0200
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: Re: [RESEND PATCH v2 3/3] rpmcc: Add support for SM6125
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     martin.botka1@gmail.com, ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        paul.bouchara@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <N5R2XQ.AHZHRMRZKWYV1@somainline.org>
+In-Reply-To: <162742239972.2368309.5551349117052770211@swboyd.mtv.corp.google.com>
+References: <20210629102624.194378-1-martin.botka@somainline.org>
+        <20210629102624.194378-4-martin.botka@somainline.org>
+        <162742239972.2368309.5551349117052770211@swboyd.mtv.corp.google.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210713023338.57108-1-someguy@effective-light.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Hamza,
+Actually not all.
 
-On Mon, Jul 12, 2021 at 10:33:38PM -0400, Hamza Mahfooz wrote:
-> @@ -1467,16 +1467,20 @@ rmap_walk_init_level(struct slot_rmap_walk_iterator *iterator, int level)
->  
->  static void
->  slot_rmap_walk_init(struct slot_rmap_walk_iterator *iterator,
-> -		    struct kvm_memory_slot *slot, int start_level,
-> +		    const struct kvm_memory_slot *slot, int start_level,
->  		    int end_level, gfn_t start_gfn, gfn_t end_gfn)
->  {
-> -	iterator->slot = slot;
-> -	iterator->start_level = start_level;
-> -	iterator->end_level = end_level;
-> -	iterator->start_gfn = start_gfn;
-> -	iterator->end_gfn = end_gfn;
-> +	struct slot_rmap_walk_iterator iter = {
-> +		.slot = slot,
-> +		.start_gfn = start_gfn,
-> +		.end_gfn = end_gfn,
-> +		.start_level = start_level,
-> +		.end_level = end_level,
-> +	};
-> +
-> +	rmap_walk_init_level(&iter, iterator->start_level);
+On Tue, Jul 27 2021 at 02:46:39 PM -0700, Stephen Boyd 
+<sboyd@kernel.org> wrote:
+> Quoting Martin Botka (2021-06-29 03:26:23)
+>>  diff --git a/drivers/clk/qcom/clk-smd-rpm.c 
+>> b/drivers/clk/qcom/clk-smd-rpm.c
+>>  index 8200c26b968c..51458f740ba0 100644
+>>  --- a/drivers/clk/qcom/clk-smd-rpm.c
+>>  +++ b/drivers/clk/qcom/clk-smd-rpm.c
+>>  @@ -1059,6 +1059,61 @@ static const struct rpm_smd_clk_desc 
+>> rpm_clk_sdm660 = {
+>>          .num_clks = ARRAY_SIZE(sdm660_clks),
+>>   };
+>> 
+>>  +/* SM6125 */
+>>  +DEFINE_CLK_SMD_RPM_BRANCH(sm6125, bi_tcxo, bi_tcxo_ao,
+>>  +                                       QCOM_SMD_RPM_MISC_CLK, 0, 
+>> 19200000);
+>>  +DEFINE_CLK_SMD_RPM(sm6125, cnoc_clk, cnoc_a_clk, 
+>> QCOM_SMD_RPM_BUS_CLK, 1);
+>>  +DEFINE_CLK_SMD_RPM(sm6125, bimc_clk, bimc_a_clk, 
+>> QCOM_SMD_RPM_MEM_CLK, 0);
+> 
+> Can we use msm8916_bimc_clk?
+> 
+>>  +DEFINE_CLK_SMD_RPM(sm6125, snoc_clk, snoc_a_clk, 
+>> QCOM_SMD_RPM_BUS_CLK, 2);
+>>  +DEFINE_CLK_SMD_RPM_BRANCH(sm6125, qdss_clk, qdss_a_clk,
+>>  +                                       QCOM_SMD_RPM_MISC_CLK, 1, 
+>> 19200000);
+>>  +DEFINE_CLK_SMD_RPM(sm6125, ce1_clk, ce1_a_clk, 
+>> QCOM_SMD_RPM_CE_CLK, 0);
+> 
+> Can we use msm8992_ce1_clk?
+> 
+>>  +DEFINE_CLK_SMD_RPM(sm6125, ipa_clk, ipa_a_clk, 
+>> QCOM_SMD_RPM_IPA_CLK, 0);
+> 
+> Can we use msm8976_ipa_clk?
+> 
+>>  +DEFINE_CLK_SMD_RPM(sm6125, qup_clk, qup_a_clk, 
+>> QCOM_SMD_RPM_QUP_CLK, 0);
+>>  +DEFINE_CLK_SMD_RPM(sm6125, mmnrt_clk, mmnrt_a_clk, 
+>> QCOM_SMD_RPM_MMAXI_CLK, 0);
+>>  +DEFINE_CLK_SMD_RPM(sm6125, mmrt_clk, mmrt_a_clk, 
+>> QCOM_SMD_RPM_MMAXI_CLK, 1);
+>>  +DEFINE_CLK_SMD_RPM(sm6125, snoc_periph_clk, snoc_periph_a_clk,
+>>  +                                               
+>> QCOM_SMD_RPM_BUS_CLK, 0);
+>>  +DEFINE_CLK_SMD_RPM(sm6125, snoc_lpass_clk, snoc_lpass_a_clk,
+>>  +                                               
+>> QCOM_SMD_RPM_BUS_CLK, 5);
+>>  +
+>>  +/* SMD_XO_BUFFER */
+>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk1, ln_bb_clk1_a, 1);
+> 
+> msm8916?
 
-Here it should be s/iterator->//.
+msm8916 one is not ln_.
 
->  
-> -	rmap_walk_init_level(iterator, iterator->start_level);
-> +	memcpy(iterator, &iter, sizeof(struct slot_rmap_walk_iterator));
->  }
+> 
+>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk2, ln_bb_clk2_a, 2);
+> 
+> msm8916?
 
-This patch breaks kvm/queue with above issue.  Constify of kvm_memory_slot
-pointer should have nothing to do with this so at least it should need a
-separate patch.  At the meantime I also don't understand why memcpy() here,
-which seems to be even slower..
+Same reason.
 
--- 
-Peter Xu
+> 
+>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk3, ln_bb_clk3_a, 3);
+> 
+> sdm660?
+> 
+>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, rf_clk1, rf_clk1_a, 4);
+> 
+> msm8916?
+> 
+>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, rf_clk2, rf_clk2_a, 5);
+> 
+> msm8916?
+> 
+>>  +
+>>  +static struct clk_smd_rpm *sm6125_clks[] = {
+>>  +       [RPM_SMD_XO_CLK_SRC] = &sm6125_bi_tcxo,
+>>  +       [RPM_SMD_XO_A_CLK_SRC] = &sm6125_bi_tcxo_ao,
+>>  +       [RPM_SMD_SNOC_CLK] = &sm6125_snoc_clk,
+>>  +       [RPM_SMD_SNOC_A_CLK] = &sm6125_snoc_a_clk,
+>>  +       [RPM_SMD_BIMC_CLK] = &sm6125_bimc_clk,
+>>  +       [RPM_SMD_BIMC_A_CLK] = &sm6125_bimc_a_clk,
+>>  +       [RPM_SMD_QDSS_CLK] = &sm6125_qdss_clk,
+>>  +       [RPM_SMD_QDSS_A_CLK] = &sm6125_qdss_a_clk,
+>>  +       [RPM_SMD_RF_CLK1] = &sm6125_rf_clk1,
+>>  +       [RPM_SMD_RF_CLK1_A] = &sm6125_rf_clk1_a,
+>>  +       [RPM_SMD_RF_CLK2] = &sm6125_rf_clk2,
+>>  +       [RPM_SMD_RF_CLK2_A] = &sm6125_rf_clk2_a,
+>>  +       [RPM_SMD_LN_BB_CLK1] = &sm6125_ln_bb_clk1,
+>>  +       [RPM_SMD_LN_BB_CLK1_A] = &sm6125_ln_bb_clk1_a,
+>>  +       [RPM_SMD_LN_BB_CLK2] = &sm6125_ln_bb_clk2,
+>>  +       [RPM_SMD_LN_BB_CLK2_A] = &sm6125_ln_bb_clk2_a,
+>>  +       [RPM_SMD_LN_BB_CLK3] = &sm6125_ln_bb_clk3,
+>>  +       [RPM_SMD_LN_BB_CLK3_A] = &sm6125_ln_bb_clk3_a,
+>>  +       [RPM_SMD_CNOC_CLK] = &sm6125_cnoc_clk,
+>>  +       [RPM_SMD_CNOC_A_CLK] = &sm6125_cnoc_a_clk,
+>>  +       [RPM_SMD_CE1_CLK] = &sm6125_ce1_clk,
+>>  +       [RPM_SMD_CE1_A_CLK] = &sm6125_ce1_a_clk,
+>>  +};
+>>  +
+>>  +static const struct rpm_smd_clk_desc rpm_clk_sm6125 = {
+>>  +       .clks = sm6125_clks,
+>>  +       .num_clks = ARRAY_SIZE(sm6125_clks),
+>>  +};
+>>  +
+>>   static const struct of_device_id rpm_smd_clk_match_table[] = {
+>>          { .compatible = "qcom,rpmcc-msm8916", .data = 
+>> &rpm_clk_msm8916 },
+>>          { .compatible = "qcom,rpmcc-msm8936", .data = 
+>> &rpm_clk_msm8936 },
+>>  diff --git a/include/linux/soc/qcom/smd-rpm.h 
+>> b/include/linux/soc/qcom/smd-rpm.h
+>>  index f2645ec52520..b737d7e456e4 100644
+>>  --- a/include/linux/soc/qcom/smd-rpm.h
+>>  +++ b/include/linux/soc/qcom/smd-rpm.h
+>>  @@ -28,6 +28,7 @@ struct qcom_smd_rpm;
+>>   #define QCOM_SMD_RPM_NCPA      0x6170636E
+>>   #define QCOM_SMD_RPM_NCPB      0x6270636E
+>>   #define QCOM_SMD_RPM_OCMEM_PWR 0x706d636f
+>>  +#define QCOM_SMD_RPM_QUP_CLK   0x00707571
+>>   #define QCOM_SMD_RPM_QPIC_CLK  0x63697071
+>>   #define QCOM_SMD_RPM_SMPA      0x61706d73
+>>   #define QCOM_SMD_RPM_SMPB      0x62706d73
+> 
+> Two patches are adding this in different places.
+
 
