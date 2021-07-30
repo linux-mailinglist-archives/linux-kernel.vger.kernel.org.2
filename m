@@ -2,223 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873CF3DB4DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B08C3DB4E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238018AbhG3IGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 04:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S230345AbhG3IHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 04:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238004AbhG3IGq (ORCPT
+        with ESMTP id S230422AbhG3IG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 04:06:46 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDE2C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:06:40 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id m12so4140664qvt.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:06:40 -0700 (PDT)
+        Fri, 30 Jul 2021 04:06:56 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFE7C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:06:51 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d1so10193464pll.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:06:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=1kfuy3p4fQPWj8BIXMnfIDnrdaVNjXGHJ629/sTHhN0=;
-        b=CGPy5pxveZbPA1YkH+RTGRMS6aPEOFmKcznpUhPyKtR9PWFd7pRCReXbF5wpNnlYp/
-         9SpcE6rwiUrLzJQyIfAD/Yzb5gZ3Mv8DewkIbl39cqv3QD3ds4jZEJSD49UlWMzu+xLT
-         5JlghbqtaO9QyjG6S5rwyAiGMYfZTJVtRuFXIRVXiwjvyY71TgPJTMDUX+0TaOp+wGx9
-         kZgUaTLM3vhSlQud2H2zdrvR9FR1S6J7SWdH6M1/RsHPz5Pq7alHk4GsDrodUH/l+fXh
-         vXErqQtQA1uE+Mggx8zNjo9CJz9yMyRMqxCpNn4IOIPbAFTZ9xwBw1wqz0A9YfmLWtvb
-         J0sg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Zm9ze6NcDMmKTtzUJRmbUQg85ybXUDcN1daZdih1WjE=;
+        b=onZBHEQbJavX+A5KRaetjgjzUwDmd3WCx9N9tbq25vGwq8nGrSKPYOUZvsmHEyOmWZ
+         M+OOTZh5N2bVPdOJKKUW0J6lyGyB/gqr98pG3kRWp6HVtXZtkS3klXocUCX+WCWIt8oD
+         +6eXSNqMZPOHcBKpetSx0mhW+ZpAp4LEt9PFIRVm/NHWfWJXAsy73etXU6K85KQHqWLb
+         JaycqPhwfCq4En3t7KTHKtpBJWWDjmhnH8ugeLZwoW4SCKMBPDZWv3g69zS2Txoyi3z0
+         /ajIPha64CrownvM58gbSPAOQ7kcQVbDTAw8K5AVvnznWduE+XeeQTiQbAed6jWcke8j
+         jweA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=1kfuy3p4fQPWj8BIXMnfIDnrdaVNjXGHJ629/sTHhN0=;
-        b=NZ+8o22Hzw50jRi4qDfcMbZhTZPspCRufRV0esyM+yodxQMqcn/oipBli/iyEfTQfV
-         UcqWUQ2hzXLXCSDKzmoeHbMLSHlYRMZ/Qi3vPTqNwKO/xCFrejk9V/JI35DA0Afy0Nit
-         Y0CPzh9CP5mw4pNgZPeTu48q8Sa+ooNkY4OamDJw7NdBMO2L+WnXDPaFHXgmDBZRL3oE
-         Ck/nUKn4F8ddK2dfShryeUhWPi46ZK7H8Al5Pq5X/rq8PEqlwbCuhcw3Hp+95FLuH//A
-         AbGx42Wrfl9UJfeqhe2atMrE4MZrItWdVXxfe6dDeb5OV9Yp75JYwxIcujc8g4ETMJv5
-         RmnQ==
-X-Gm-Message-State: AOAM531rwbM7g1J8AYMwCQwHqt5dc54//bxE+XeLqdEvRzUwyN92GCZU
-        MW/aWkGmN3vlFKkxlTaEPC5MiQ==
-X-Google-Smtp-Source: ABdhPJzjhVOQvAERKlBjHv/dpZ6fohKVV28g9IpIkBW8etwIftV8Ohu4XnZ/N7AaWt7UMH4c2S5Vmg==
-X-Received: by 2002:a05:6214:ca5:: with SMTP id s5mr1431061qvs.58.1627632398575;
-        Fri, 30 Jul 2021 01:06:38 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id t8sm328269qtq.28.2021.07.30.01.06.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 01:06:37 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 01:06:35 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 14/16] mm: user_shm_lock(,,getuc) and
- user_shm_unlock(,,putuc)
-In-Reply-To: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
-Message-ID: <4bd4072-7eb0-d1a5-ce49-82f4b24bd070@google.com>
-References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Zm9ze6NcDMmKTtzUJRmbUQg85ybXUDcN1daZdih1WjE=;
+        b=kOrxiMzrD6dlasHOIouIH2GLNlsSpEVJgIGgXnX1y5XiA6phKDAaGyE/0ZMYRDTPBd
+         dOhnbwAy26a7QNrrRJYQ0q33Jy6ndgCzZjJl7wFHKz766Tp5Lt0Q6gcrIhFBjRzKMT3h
+         3bTK6oRoR6rglov3GslKJw6mO1hX9162Q5oZwg97CXvzO9a03ZYOo4IapXx1QoAFdu9h
+         JSEsFsXPGD6tTVgvg9OATA7jLgeAn8Yh6kUA1caqHHd7wP9NH2EWuj4MxM/J9QxABMvs
+         ELH1gXFjoMb62f/tYkGNxNBtHt4BGHpEb+eJPIt8K/XH15OSfag4BLlBuOdbbxXo6SEX
+         Me7Q==
+X-Gm-Message-State: AOAM532SCuuqccbIzP1cQS6ogQBv0XUJoDXmUwjN18jHHjU9ithJImM3
+        WZasBBIA78inLth7qKqsxMo=
+X-Google-Smtp-Source: ABdhPJyjRArgqkf3xuf3FtJ1loWdS7BbIoDktTv4OVnTPGAPLzlWFDLZqp+Y+Y7pidu7lZiihP0LDQ==
+X-Received: by 2002:a63:5506:: with SMTP id j6mr1211210pgb.19.1627632410498;
+        Fri, 30 Jul 2021 01:06:50 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id e8sm1295050pfm.218.2021.07.30.01.06.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 01:06:49 -0700 (PDT)
+Subject: Re: [PATCH 2/2] drm: add lockdep assert to
+ drm_is_current_master_locked
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210730041515.1430237-1-desmondcheongzx@gmail.com>
+ <20210730041515.1430237-3-desmondcheongzx@gmail.com>
+ <YQOXTW8kSHdNjhiY@boqun-archlinux>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <35518f4b-5e4a-b284-1f86-5cba64941211@gmail.com>
+Date:   Fri, 30 Jul 2021 16:06:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YQOXTW8kSHdNjhiY@boqun-archlinux>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-user_shm_lock() and user_shm_unlock() have to get and put a reference on
-the ucounts structure, and get fails at overflow.  That will be awkward
-for the next commit (shrinking ought not to fail), so add an argument
-(always true in this commit) to condition that get and put.  It would
-be even easier to do the put_ucounts() separately when unlocking, but
-messy for the get_ucounts() when locking: better to keep them symmetric.
+On 30/7/21 2:08 pm, Boqun Feng wrote:
+> On Fri, Jul 30, 2021 at 12:15:15PM +0800, Desmond Cheong Zhi Xi wrote:
+>> In drm_is_current_master_locked, accessing drm_file.master should be
+>> protected by either drm_file.master_lookup_lock or
+>> drm_device.master_mutex. This was previously awkward to assert with
+>> lockdep.
+>>
+>> Following patch ("locking/lockdep: Provide lockdep_assert{,_once}()
+>> helpers"), this assertion is now convenient so we add it in.
+>>
+>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>> ---
+>>   drivers/gpu/drm/drm_auth.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+>> index 9c24b8cc8e36..6f4d7ff23c80 100644
+>> --- a/drivers/gpu/drm/drm_auth.c
+>> +++ b/drivers/gpu/drm/drm_auth.c
+>> @@ -63,9 +63,9 @@
+>>   
+>>   static bool drm_is_current_master_locked(struct drm_file *fpriv)
+>>   {
+>> -	/* Either drm_device.master_mutex or drm_file.master_lookup_lock
+>> -	 * should be held here.
+>> -	 */
+>> +	lockdep_assert_once(lockdep_is_held(&fpriv->master_lookup_lock) ||
+>> +			    lockdep_is_held(&fpriv->minor->dev->master_mutex));
+>> +
+> 
+> I think it's better to also add the lockdep_assert() of & (i.e. both
+> held) in the updater side, and have comments pointing to each other.
+> 
+> Is it convenient to do in this patchset? If the updater side doesn't
+> need to put the lockdep_assert() (maybe the lock acquire code and the
+> update code are in the same function), it's still better to add some
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- fs/hugetlbfs/inode.c | 4 ++--
- include/linux/mm.h   | 4 ++--
- ipc/shm.c            | 4 ++--
- mm/mlock.c           | 9 +++++----
- mm/shmem.c           | 6 +++---
- 5 files changed, 14 insertions(+), 13 deletions(-)
+Thanks for the feedback, Boqun.
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index cdfb1ae78a3f..381902288f4d 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -1465,7 +1465,7 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
- 
- 	if (creat_flags == HUGETLB_SHMFS_INODE && !can_do_hugetlb_shm()) {
- 		*ucounts = current_ucounts();
--		if (user_shm_lock(size, *ucounts)) {
-+		if (user_shm_lock(size, *ucounts, true)) {
- 			task_lock(current);
- 			pr_warn_once("%s (%d): Using mlock ulimits for SHM_HUGETLB is deprecated\n",
- 				current->comm, current->pid);
-@@ -1499,7 +1499,7 @@ struct file *hugetlb_file_setup(const char *name, size_t size,
- 	iput(inode);
- out:
- 	if (*ucounts) {
--		user_shm_unlock(size, *ucounts);
-+		user_shm_unlock(size, *ucounts, true);
- 		*ucounts = NULL;
- 	}
- 	return file;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index f1be2221512b..43cb5a6f97ff 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1713,8 +1713,8 @@ extern bool can_do_mlock(void);
- #else
- static inline bool can_do_mlock(void) { return false; }
- #endif
--extern bool user_shm_lock(loff_t size, struct ucounts *ucounts);
--extern void user_shm_unlock(loff_t size, struct ucounts *ucounts);
-+extern bool user_shm_lock(loff_t size, struct ucounts *ucounts, bool getuc);
-+extern void user_shm_unlock(loff_t size, struct ucounts *ucounts, bool putuc);
- 
- /*
-  * Parameter block passed down to zap_pte_range in exceptional cases.
-diff --git a/ipc/shm.c b/ipc/shm.c
-index 748933e376ca..3e63809d38b7 100644
---- a/ipc/shm.c
-+++ b/ipc/shm.c
-@@ -289,7 +289,7 @@ static void shm_destroy(struct ipc_namespace *ns, struct shmid_kernel *shp)
- 		shmem_lock(shm_file, 0, shp->mlock_ucounts);
- 	else if (shp->mlock_ucounts)
- 		user_shm_unlock(i_size_read(file_inode(shm_file)),
--				shp->mlock_ucounts);
-+				shp->mlock_ucounts, true);
- 	fput(shm_file);
- 	ipc_update_pid(&shp->shm_cprid, NULL);
- 	ipc_update_pid(&shp->shm_lprid, NULL);
-@@ -699,7 +699,7 @@ static int newseg(struct ipc_namespace *ns, struct ipc_params *params)
- 	ipc_update_pid(&shp->shm_cprid, NULL);
- 	ipc_update_pid(&shp->shm_lprid, NULL);
- 	if (is_file_hugepages(file) && shp->mlock_ucounts)
--		user_shm_unlock(size, shp->mlock_ucounts);
-+		user_shm_unlock(size, shp->mlock_ucounts, true);
- 	fput(file);
- 	ipc_rcu_putref(&shp->shm_perm, shm_rcu_free);
- 	return error;
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 7df88fce0fc9..5afa3eba9a13 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -818,7 +818,7 @@ SYSCALL_DEFINE0(munlockall)
-  */
- static DEFINE_SPINLOCK(shmlock_user_lock);
- 
--bool user_shm_lock(loff_t size, struct ucounts *ucounts)
-+bool user_shm_lock(loff_t size, struct ucounts *ucounts, bool getuc)
- {
- 	unsigned long lock_limit, locked;
- 	long memlock;
-@@ -836,7 +836,7 @@ bool user_shm_lock(loff_t size, struct ucounts *ucounts)
- 		dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_MEMLOCK, locked);
- 		goto out;
- 	}
--	if (!get_ucounts(ucounts)) {
-+	if (getuc && !get_ucounts(ucounts)) {
- 		dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_MEMLOCK, locked);
- 		goto out;
- 	}
-@@ -846,10 +846,11 @@ bool user_shm_lock(loff_t size, struct ucounts *ucounts)
- 	return allowed;
- }
- 
--void user_shm_unlock(loff_t size, struct ucounts *ucounts)
-+void user_shm_unlock(loff_t size, struct ucounts *ucounts, bool putuc)
- {
- 	spin_lock(&shmlock_user_lock);
- 	dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_MEMLOCK, (size + PAGE_SIZE - 1) >> PAGE_SHIFT);
- 	spin_unlock(&shmlock_user_lock);
--	put_ucounts(ucounts);
-+	if (putuc)
-+		put_ucounts(ucounts);
- }
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 35c0f5c7120e..1ddb910e976c 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1163,7 +1163,7 @@ static void shmem_evict_inode(struct inode *inode)
- 
- 	if (shmem_mapping(inode->i_mapping)) {
- 		if (info->mlock_ucounts) {
--			user_shm_unlock(inode->i_size, info->mlock_ucounts);
-+			user_shm_unlock(inode->i_size, info->mlock_ucounts, true);
- 			info->mlock_ucounts = NULL;
- 		}
- 		shmem_unacct_size(info->flags, inode->i_size);
-@@ -2276,13 +2276,13 @@ int shmem_lock(struct file *file, int lock, struct ucounts *ucounts)
- 	 * no serialization needed when called from shm_destroy().
- 	 */
- 	if (lock && !(info->flags & VM_LOCKED)) {
--		if (!user_shm_lock(inode->i_size, ucounts))
-+		if (!user_shm_lock(inode->i_size, ucounts, true))
- 			goto out_nomem;
- 		info->flags |= VM_LOCKED;
- 		mapping_set_unevictable(file->f_mapping);
- 	}
- 	if (!lock && (info->flags & VM_LOCKED) && ucounts) {
--		user_shm_unlock(inode->i_size, ucounts);
-+		user_shm_unlock(inode->i_size, ucounts, true);
- 		info->flags &= ~VM_LOCKED;
- 		mapping_clear_unevictable(file->f_mapping);
- 	}
--- 
-2.26.2
+Yeah, I think the updater side maybe doesn't need new lockdep_assert()
+because what currently happens is either
+
+	lockdep_assert_held_once(&dev->master_mutex);
+	/* 6 lines of prep */
+	spin_lock(&fpriv->master_lookup_lock);
+	fpriv->master = new_value;
+or
+	mutex_lock(&dev->master_mutex);
+	/* 3 lines of checks */
+		spin_lock(&file_priv->master_lookup_lock);
+		file_priv->master = new_value;
+
+> comments like:
+> 
+> 	/*
+> 	 * To update drm_file.master, both drm_file.master_lookup_lock
+> 	 * and drm_device.master_mutex are needed, therefore holding
+> 	 * either of them is safe and enough for the read side.
+> 	 */
+> 
+> Just feel it's better to explain the lock design either in the
+> lockdep_assert() or comments.
+> 
+
+But clarifying the lock design in the documentation sounds like a really
+good idea.
+
+Probably a good place for this would be in the kerneldoc where we also
+explain the lifetime rules and usage of the pointer outside drm_auth.c:
+
+diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
+index 726cfe0ff5f5..a3acb7ac3550 100644
+--- a/include/drm/drm_file.h
++++ b/include/drm/drm_file.h
+@@ -233,6 +233,10 @@ struct drm_file {
+  	 * this only matches &drm_device.master if the master is the currently
+  	 * active one.
+  	 *
++	 * To update @master, both &drm_device.master_mutex and
++	 * @master_lookup_lock need to be held, therefore holding either of
++	 * them is safe and enough for the read side.
++	 *
+  	 * When dereferencing this pointer, either hold struct
+  	 * &drm_device.master_mutex for the duration of the pointer's use, or
+  	 * use drm_file_get_master() if struct &drm_device.master_mutex is not
+
+Best wishes,
+Desmond
+
+> Regards,
+> Boqun
+> 
+>>   	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
+>>   }
+>>   
+>> -- 
+>> 2.25.1
+>>
 
