@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E643DB3C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF003DB3CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237562AbhG3GpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:45:19 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41458 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237205AbhG3GpS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:45:18 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1187F1FDB1;
-        Fri, 30 Jul 2021 06:45:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627627513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WGSyxiu3mrpSdkjXI3OCcCS7NGg99qcrN67xRlpt+bI=;
-        b=IWh87TmkxKW563aoJcyB30+0gBdeVgoR4oJhyn/AYZvZFSpSJXs26QYdLwE5pjm4gdPxBa
-        hzHiMc9UMDaYVP718QqWr/dn9w7IizFkFnIHAKFFvOfwzZNUDRrGAKFN8A0EdbAuy5/vSv
-        JbSeOr284ji3GsEFA12JxCn9klheDSo=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S237611AbhG3Gqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:46:44 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:57279 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237185AbhG3Gqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 02:46:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627627598; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=IFl9D1FTUR50lNt/xruo5NKP3MfR2CWffZI/KUbWDCU=; b=D8V/bBr4NrO496MdZGXxHHJIvlzwpDDdeCLjbdoaeWvqg7wJsunQWX7FJHIb6SG9sZgQNAdv
+ qb+Gt89GrrA2Ziyc1EWmnbG6wLK9ViAUGjGFDdBm5RHmRnOZgCuvGUvzpI8We9V1WIIXbMj7
+ moUrVXIXzybQlWrlGk/WUA3ix4g=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6103a04d96a66e66b27596d4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Jul 2021 06:46:37
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F109AC4360C; Fri, 30 Jul 2021 06:46:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C9291A3B88;
-        Fri, 30 Jul 2021 06:45:12 +0000 (UTC)
-Date:   Fri, 30 Jul 2021 08:45:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        willy@infradead.org, alexs@kernel.org, richard.weiyang@gmail.com,
-        songmuchun@bytedance.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 1/5] mm, memcg: remove unused functions
-Message-ID: <YQOf+OAKmGxE6+k/@dhcp22.suse.cz>
-References: <20210729125755.16871-1-linmiaohe@huawei.com>
- <20210729125755.16871-2-linmiaohe@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729125755.16871-2-linmiaohe@huawei.com>
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4FC01C433F1;
+        Fri, 30 Jul 2021 06:46:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4FC01C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        srinivas.kandagatla@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rbokka@codeaurora.org,
+        dianders@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v3 0/4] nvmem: qfprom: Add binding updates and power-domain handling
+Date:   Fri, 30 Jul 2021 12:16:09 +0530
+Message-Id: <1627627573-32454-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 29-07-21 20:57:51, Miaohe Lin wrote:
-> Since commit 2d146aa3aa84 ("mm: memcontrol: switch to rstat"), last user
-> of memcg_stat_item_in_bytes() is gone. And since commit fa40d1ee9f15 ("mm:
-> vmscan: memcontrol: remove mem_cgroup_select_victim_node()"), only the
-> declaration of mem_cgroup_select_victim_node() is remained here. Remove
-> them.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+v3:
+* Dropped the description in bindings patch
+* Added a patch to fix ordering in qfprom_disable_fuse_blowing()
+* Fixed devm_add_action_or_reset() order
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+v2:
+* pm_runtime calls made unconditionally, should work even without the power-domains property in DT
+* Added the missing pm_runtime_disable() handling
+* DT patch rebased on msm/for-next
 
-> ---
->  include/linux/memcontrol.h | 12 ------------
->  1 file changed, 12 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 7028d8e4a3d7..04437504444f 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -606,13 +606,6 @@ static inline bool PageMemcgKmem(struct page *page)
->  	return folio_memcg_kmem(page_folio(page));
->  }
->  
-> -static __always_inline bool memcg_stat_item_in_bytes(int idx)
-> -{
-> -	if (idx == MEMCG_PERCPU_B)
-> -		return true;
-> -	return vmstat_item_in_bytes(idx);
-> -}
-> -
->  static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
->  {
->  	return (memcg == root_mem_cgroup);
-> @@ -916,11 +909,6 @@ static inline bool mem_cgroup_online(struct mem_cgroup *memcg)
->  	return !!(memcg->css.flags & CSS_ONLINE);
->  }
->  
-> -/*
-> - * For memory reclaim.
-> - */
-> -int mem_cgroup_select_victim_node(struct mem_cgroup *memcg);
-> -
->  void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
->  		int zid, int nr_pages);
->  
-> -- 
-> 2.23.0
+--
+qfprom devices on sc7280 have an additional requirement to vote on a power-domain
+performance state to reliably blow fuses. Add the binding updates and handle this in
+the driver, also add the DT node for sc7280 platform.
+
+Rajendra Nayak (4):
+  dt-bindings: nvmem: qfprom: Add optional power-domains property
+  nvmem: qfprom: Fix up qfprom_disable_fuse_blowing() ordering
+  nvmem: qfprom: sc7280: Handle the additional power-domains vote
+  arm64: dts: qcom: sc7280: Add qfprom node
+
+ .../devicetree/bindings/nvmem/qcom,qfprom.yaml     |  3 +++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 13 +++++++++
+ drivers/nvmem/qfprom.c                             | 31 +++++++++++++++++++---
+ 3 files changed, 44 insertions(+), 3 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
