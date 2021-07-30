@@ -2,118 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AE93DB884
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FD53DB87F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238772AbhG3MXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 08:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51184 "EHLO mail.kernel.org"
+        id S238698AbhG3MW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 08:22:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:41336 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230355AbhG3MXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 08:23:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D9660F0F;
-        Fri, 30 Jul 2021 12:23:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627647814;
-        bh=bPik6kInDNnV6gh3+hQKpM2WNZeBL0CbzIVEhgD+rMk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B4oBdkGd+2sCLaXRtb1oRBWbXKQLfmaav2fHnpuTaXExwWmG0rK4pDzoYR9jfnaJ7
-         vun0Z/fd//kPxFSDdbDSf20wkbyRtK9wjcOEs+vl6YMyFuiwCvWZh8JFb0gGPBowOK
-         h/GZhLcStDKhKx9AUfg6mAzeU5GFx9C0FbYfz2HVguK/N5+ge4+4xmn3SAqtFWjr/X
-         lt1Tw/5MB2uI9H05IgQy5bP1vvA1UACplZ6KRFx2Jsnwi7t+mXqt7sjog0ieqnpddb
-         I9Q9PLIUqNrDNzbCiAEbJmwgPLXLkClaXcXuLIep2vrGIznn/IGoOq7wrnGrOkfUTN
-         KsujCt1ZocPmQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1m9RXU-0000Cc-N2; Fri, 30 Jul 2021 14:22:57 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Charles Yeh <charlesyeh522@gmail.com>,
-        =?UTF-8?q?Yeh=2ECharles=20=5B=E8=91=89=E6=A6=AE=E9=91=AB=5D?= 
-        <charles-yeh@prolific.com.tw>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chris <chris@cyber-anlage.de>,
-        stable@vger.kernel.org
-Subject: [PATCH] USB: serial: pl2303: fix HX type detection
-Date:   Fri, 30 Jul 2021 14:21:56 +0200
-Message-Id: <20210730122156.718-1-johan@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <YQPsgPey1V+7ccGq@hovoldconsulting.com>
-References: <YQPsgPey1V+7ccGq@hovoldconsulting.com>
+        id S230325AbhG3MWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 08:22:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45EE1D6E;
+        Fri, 30 Jul 2021 05:22:20 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4726E3F70D;
+        Fri, 30 Jul 2021 05:22:19 -0700 (PDT)
+Subject: Re: WARNING: CPU: 112 PID: 2041 at kernel/sched/sched.h:1453
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+To:     Bruno Goncalves <bgoncalv@redhat.com>
+Cc:     CKI Project <cki-project@redhat.com>, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, Memory Management <mm-qe@redhat.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <CA+QYu4oOgrb8n=Qyuky-M0dYPEo_HNMdbNuj2SF4a=aQTE_xvw@mail.gmail.com>
+ <d86333e7-bcde-2adb-e566-21ec97cda8bf@arm.com>
+ <CA+QYu4rCRR_pNQVxSwGpzcLWJKLUA3F7LAtBiU9hPzz3D0k0Cg@mail.gmail.com>
+ <f5b4beb9-4e75-0f4e-da8b-b7ccc12fee68@arm.com>
+Message-ID: <1ea2fa5c-ae81-2389-7f02-2227636582e4@arm.com>
+Date:   Fri, 30 Jul 2021 14:22:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f5b4beb9-4e75-0f4e-da8b-b7ccc12fee68@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device release number for HX-type devices is configurable in
-EEPROM/OTPROM and cannot be used reliably for type detection.
+On 29/07/2021 16:38, Dietmar Eggemann wrote:
+> On 29/07/2021 14:36, Bruno Goncalves wrote:
+>> On Wed, Jul 28, 2021 at 5:55 PM Dietmar Eggemann
+>> <dietmar.eggemann@arm.com> wrote:
+>>>
+>>> On 28/07/2021 15:11, Bruno Goncalves wrote:
+> 
+> [...]
+> 
+>>> Can't reproduce it on my Juno (arm64) (slow-switching (scpi-cpufreq
+>>> driver)).
+>>
+>> We seem to be able to reproduce this only on Ampere Altra machines,
+>> specifically on mtjade and mtsnow cpus.
+>>
+>> # cpupower frequency-info
+>> analyzing CPU 0:
+>>   driver: cppc_cpufreq
+>>   CPUs which run at the same hardware frequency: 0
+>>   CPUs which need to have their frequency coordinated by software: 0
+>>   maximum transition latency:  Cannot determine or is not supported.
+>>   hardware limits: 1000 MHz - 2.80 GHz
+>>   available cpufreq governors: conservative ondemand userspace
+>> powersave performance schedutil
+>>   current policy: frequency should be within 2.00 GHz and 2.80 GHz.
+>>                   The governor "schedutil" may decide which speed to use
+>>                   within this range.
+>>   current CPU frequency: 1.55 GHz (asserted by call to hardware)
+>>
+>> # ps -eTo comm,pid,pri,class | grep sugov
+>> sugov:0            1082 140 DLN
+>> sugov:1            1085 140 DLN
+>> ...
+>> sugov:78           1319 140 DLN
+>> sugov:79           1320 140 DLN
+> 
+> Thanks! In the meantime I got access to an Ampere Altra so I can try
+> 5.14.0-rc1 later today.
 
-Assume all (non-H) devices with bcdUSB 1.1 and unknown bcdDevice to be
-of HX type while adding a bcdDevice check for HXD and TB (1.1 and 2.0,
-respectively).
+The task causing this seem to be the new `cppc_fie` DL task introduced
+by commit 1eb5dde674f5 "cpufreq: CPPC: Add support for frequency
+invariance" in v5.14-rc1.
 
-Reported-by: Chris <chris@cyber-anlage.de>
-Fixes: 8a7bf7510d1f ("USB: serial: pl2303: amend and tighten type detection")
-Cc: stable@vger.kernel.org	# 5.13
-Signed-off-by: Johan Hovold <johan@kernel.org>
+With `CONFIG_ACPI_CPPC_CPUFREQ_FIE=y` and schedutil cpufreq governor on
+slow-switching system:
+
+DL task curr=`sugov:X` makes p=`cppc_fie` migrate and since it is in
+`non_contending` state, migrate_task_rq_dl() calls 
+
+  sub_running_bw()->__sub_running_bw()->cpufreq_update_util()->
+  rq_clock()->assert_clock_updated()
+
+on p. 
+
+Can you try this snippet? It should fix it.
+
+--8<--
+
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Date: Fri, 30 Jul 2021 14:03:40 +0200
+Subject: [PATCH] sched/deadline: Fix missing clock update in
+ migrate_task_rq_dl()
+
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 ---
- drivers/usb/serial/pl2303.c | 41 ++++++++++++++++++++++---------------
- 1 file changed, 25 insertions(+), 16 deletions(-)
+ kernel/sched/deadline.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/serial/pl2303.c b/drivers/usb/serial/pl2303.c
-index 2f2f5047452b..17601e32083e 100644
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -418,24 +418,33 @@ static int pl2303_detect_type(struct usb_serial *serial)
- 	bcdDevice = le16_to_cpu(desc->bcdDevice);
- 	bcdUSB = le16_to_cpu(desc->bcdUSB);
- 
--	switch (bcdDevice) {
--	case 0x100:
--		/*
--		 * Assume it's an HXN-type if the device doesn't support the old read
--		 * request value.
--		 */
--		if (bcdUSB == 0x200 && !pl2303_supports_hx_status(serial))
--			return TYPE_HXN;
-+	switch (bcdUSB) {
-+	case 0x110:
-+		switch (bcdDevice) {
-+		case 0x300:
-+			return TYPE_HX;
-+		case 0x400:
-+			return TYPE_HXD;
-+		default:
-+			return TYPE_HX;
-+		}
- 		break;
--	case 0x300:
--		if (bcdUSB == 0x200)
-+	case 0x200:
-+		switch (bcdDevice) {
-+		case 0x100:
-+			/*
-+			 * Assume it's an HXN-type if the device doesn't
-+			 * support the old read request value.
-+			 */
-+			if (!pl2303_supports_hx_status(serial))
-+				return TYPE_HXN;
-+			break;
-+		case 0x300:
- 			return TYPE_TA;
--
--		return TYPE_HX;
--	case 0x400:
--		return TYPE_HXD;
--	case 0x500:
--		return TYPE_TB;
-+		case 0x500:
-+			return TYPE_TB;
-+		}
-+		break;
- 	}
- 
- 	dev_err(&serial->interface->dev,
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index aaacd6cfd42f..4920f498492f 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1733,6 +1733,7 @@ static void migrate_task_rq_dl(struct task_struct *p, int new_cpu __maybe_unused
+ 	 */
+ 	raw_spin_rq_lock(rq);
+ 	if (p->dl.dl_non_contending) {
++		update_rq_clock(rq);
+ 		sub_running_bw(&p->dl, &rq->dl);
+ 		p->dl.dl_non_contending = 0;
+ 		/*
 -- 
-2.31.1
-
+2.25.1
