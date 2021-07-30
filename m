@@ -2,191 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B8A3DB4DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA84A3DB4E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237986AbhG3IGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 04:06:37 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:51975 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhG3IGc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 04:06:32 -0400
-Received: from [10.0.2.15] ([86.243.172.93])
-        by mwinf5d81 with ME
-        id bL6H2500D21Fzsu03L6HAb; Fri, 30 Jul 2021 10:06:25 +0200
-X-ME-Helo: [10.0.2.15]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 30 Jul 2021 10:06:25 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH v27 07/10] fs/ntfs3: Add NTFS journal
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org
-Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
-        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
-        mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com, kari.argillander@gmail.com,
-        oleksandr@natalenko.name
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210729134943.778917-8-almaz.alexandrovich@paragon-software.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <526c746b-2615-6a27-f753-4655571a5462@wanadoo.fr>
-Date:   Fri, 30 Jul 2021 10:06:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S237970AbhG3IGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 04:06:54 -0400
+Received: from mga03.intel.com ([134.134.136.65]:13027 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230422AbhG3IGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 04:06:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="213084655"
+X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
+   d="scan'208";a="213084655"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 01:06:43 -0700
+X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
+   d="scan'208";a="635393118"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 01:06:29 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1m9NXA-003JSv-6T; Fri, 30 Jul 2021 11:06:20 +0300
+Date:   Fri, 30 Jul 2021 11:06:20 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel@pengutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Russell Currey <ruscur@russell.cc>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Michael Buesch <m@bues.ch>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v1 0/5] PCI: Drop duplicated tracking of a pci_dev's
+ bound driver
+Message-ID: <YQOy/OTvY66igEoe@smile.fi.intel.com>
+References: <20210729203740.1377045-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210729134943.778917-8-almaz.alexandrovich@paragon-software.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210729203740.1377045-1-u.kleine-koenig@pengutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-below are a few comments based on a cppcheck run.
-Don't take it too seriously into consideration. It could be either some 
-useless code that could be removed or some issues in the logic.
-
-It is reported only if a new iteration is done and if it makes sense to 
-change something.
-
-CJ
-
-Le 29/07/2021 à 15:49, Konstantin Komarov a écrit :
-> This adds NTFS journal
+On Thu, Jul 29, 2021 at 10:37:35PM +0200, Uwe Kleine-K�nig wrote:
+> Hello,
 > 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->   fs/ntfs3/fslog.c | 5181 ++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 5181 insertions(+)
->   create mode 100644 fs/ntfs3/fslog.c
+> struct pci_dev tracks the bound pci driver twice. This series is about
+> removing this duplication.
 > 
-> diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
-> new file mode 100644
-> index 000000000..53da12252
-> --- /dev/null
-> +++ b/fs/ntfs3/fslog.c
+> The first two patches are just cleanups. The third patch introduces a
+> wrapper that abstracts access to struct pci_dev->driver. In the next
+> patch (hopefully) all users are converted to use the new wrapper and
+> finally the fifth patch removes the duplication.
+> 
+> Note this series is only build tested (allmodconfig on several
+> architectures).
+> 
+> I'm open to restructure this series if this simplifies things. E.g. the
+> use of the new wrapper in drivers/pci could be squashed into the patch
+> introducing the wrapper. Patch 4 could be split by maintainer tree or
+> squashed into patch 3 completely.
 
-[...]
+I see only patch 4 and this cover letter...
 
-> +/*
-> + * last_log_lsn
-> + *
-> + * This routine walks through the log pages for a file, searching for the
-> + * last log page written to the file
-> + */
-> +static int last_log_lsn(struct ntfs_log *log)
-> +{
+-- 
+With Best Regards,
+Andy Shevchenko
 
-[...]
 
-> +tail_read:
-> +	first_tail = first_tail_prev;
-> +	final_off = final_off_prev;
-> +
-> +	second_tail = second_tail_prev;
-> +	second_off = second_off_prev;
-> +
-> +	page_cnt = page_pos = 1;
-> +
-> +	curpage_off = seq_base == log->seq_num ? min(log->next_page, page_off)
-> +					       : log->next_page;
-> +
-> +	wrapped_file =
-> +		curpage_off == log->first_page &&
-> +		!(log->l_flags & (NTFSLOG_NO_LAST_LSN | NTFSLOG_REUSE_TAIL));
-> +
-> +	expected_seq = wrapped_file ? (log->seq_num + 1) : log->seq_num;
-> +
-> +	nextpage_off = curpage_off;
-
-This 'nextpage_off' is overwritten a few lines below.
-Either it is useless, either there is an issue in the logic.
-
-> +
-> +next_page:
-> +	tail_page = NULL;
-> +	/* Read the next log page */
-> +	err = read_log_page(log, curpage_off, &page, &usa_error);
-> +
-> +	/* Compute the next log page offset the file */
-> +	nextpage_off = next_page_off(log, curpage_off);
-> +	wrapped = nextpage_off == log->first_page;
-here.
-
-> +
-> +	if (tails > 1) {
-> +		struct RECORD_PAGE_HDR *cur_page =
-> +			Add2Ptr(page_bufs, curpage_off - page_off);
-> +
-> +		if (curpage_off == saved_off) {
-> +			tail_page = cur_page;
-> +			goto use_tail_page;
-> +		}
-> +
-
-[...]
-
-> +int log_replay(struct ntfs_inode *ni, bool *initialized)
-> +{
-
-[...]
-
-> +
-> +	vcn = le64_to_cpu(lrh->target_vcn);
-> +	vcn &= ~(log->clst_per_page - 1);
-> +
-
-This 'vcn' is overwritten a few lines below.
-Either it is useless, either there is an issue in the logic.
-
-> +add_allocated_vcns:
-> +	for (i = 0, vcn = le64_to_cpu(lrh->target_vcn),
-
-here
-
-> +	    size = (vcn + 1) << sbi->cluster_bits;
-> +	     i < t16; i++, vcn += 1, size += sbi->cluster_size) {
-> +		attr = oa->attr;
-> +		if (!attr->non_res) {
-> +			if (size > le32_to_cpu(attr->res.data_size))
-> +				attr->res.data_size = cpu_to_le32(size);
-> +		} else {
-> +			if (size > le64_to_cpu(attr->nres.data_size))
-> +				attr->nres.valid_size = attr->nres.data_size =
-> +					attr->nres.alloc_size =
-> +						cpu_to_le64(size);
-> +		}
-> +	}
-> +
-> +	t16 = le16_to_cpu(lrh->undo_op);
-> +	if (can_skip_action(t16))
-> +		goto read_next_log_undo_action;
-> +
-> +	/* Point to the Redo data and get its length */
-> +	data = Add2Ptr(lrh, le16_to_cpu(lrh->undo_off));
-> +	dlen = le16_to_cpu(lrh->undo_len);
-> +
-> +	/* it is time to apply the undo action */
-> +	err = do_action(log, oe, lrh, t16, data, dlen, rec_len, NULL);
-
-This 'err' is unused.
-Maybe there is nothing that we can do, or the error handling is missing.
-
-> +
-> +read_next_log_undo_action:
-> +	/*
-> +	 * Keep reading and looping back until we have read the
-> +	 * last record for this transaction
-> +	 */
-> +	err = read_next_log_rec(log, lcb, &rec_lsn);
-> +	if (err)
-> +		goto out;
-> +
-
-[...]
