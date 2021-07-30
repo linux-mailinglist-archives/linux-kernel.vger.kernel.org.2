@@ -2,93 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EFC3DBBB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C3B3DBBBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239482AbhG3PH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 11:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239746AbhG3PHo (ORCPT
+        id S239510AbhG3PJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:09:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35928 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239030AbhG3PJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 11:07:44 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99ED1C061254;
-        Fri, 30 Jul 2021 08:07:01 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so14890118pjd.0;
-        Fri, 30 Jul 2021 08:07:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uiql/ha2ebfW9JafWLNa34BRrz0ryy5kT8baVUuANhk=;
-        b=dxZ/F7jjBAza4XWmk7fQUv9x7HrhHcNGgQwWh4PiQha3P4nwT8We8aIixjV5pBer+R
-         7N/VW4x2mw/Puh47jAdbOLO0baiHozAQT3ATnIbGQ+Xgl3N7m1wX0YMU2obOX3Z6krfJ
-         Pxh5sLqMyurNqu67qrsyD+b89auN4iw2K9SPdPUda98TrGlI5vlHUQ8sIGoI2NU5Ve3M
-         IGiYkT0NmiWjB7BmpN+Ornw0XTIBaeIDYh+ZAp1tHkCOmH9EYpSZBTFeat2jMO+XhLKe
-         rHDPrsvt/MhnTQDlElBEAuSmnzV4GcVd5Xx+AXG4O3GQ5DkRZUwTKoCoAJ9kqZoTmUDc
-         MG9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uiql/ha2ebfW9JafWLNa34BRrz0ryy5kT8baVUuANhk=;
-        b=mS7EhRT6gjsxJ+MlXfVDtYSs0dcgEvn9cQDofy0Mnyt67797yxkG/osiq4KA4e8DMo
-         /DkukA3J/JLaNCUc+kVYA2cgVJq+SDa1bKcB12BlNCaRlDZLEoySvLi3OwHw5NhIl3gx
-         oiZGCpsvION9SE4JMWjXmTjB+LUoXpR1RX4ZSjBfx+B7AlWcvrOljzAvcgNd8QYd5ZxH
-         UPp2JSdlvhGsxkYIuD+MSRY8LobTlLuMFhOFMvvubF1u0+JpiC6NKKDb29FE3n2srhSL
-         MHpJwLEzDx8n9l6vLAbaQF9yDHI1icvf4UT2bJv8ScWyah6ZgNTr2lymWp9ydLXfx16x
-         yTig==
-X-Gm-Message-State: AOAM530apO8/8j3ZvBdYC5CCzEoiN3KYUPWVeb77YcQfTQXmjCYJxhrW
-        rxDTpjknVDLvDgwu4dK18fJKtoRpQhdxL4jt32k=
-X-Google-Smtp-Source: ABdhPJzsp0hO1dNwvtZE+1MPAcv7pD8a7agbhA/n10XRqCnLqbVfBHV+EPCctybPzpGOfYdE6uDE85HH76t/0IQ9yf4=
-X-Received: by 2002:a63:5a5b:: with SMTP id k27mr2771088pgm.74.1627657621176;
- Fri, 30 Jul 2021 08:07:01 -0700 (PDT)
+        Fri, 30 Jul 2021 11:09:38 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8022A20261;
+        Fri, 30 Jul 2021 15:09:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627657772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PewmghU2Couc38HMuAXRIJRdxdZpqKISKEL9LkxlGXw=;
+        b=m32RFSN03HsyR6LMfDu3cVlNl/piAvHbYqy6dEEKHRSZM9Z/CHN0unfaiRnO7UZ9UFzqSR
+        WehhpA5Xo8eeE+TbS2yoms4YN0Clxc83rtKuu9fR7278hrqRq8HN4lyKhzZK7RxSIIkRp4
+        MUzGXfhxydGsS7qr+WbWoNkxcjcEi7o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627657772;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PewmghU2Couc38HMuAXRIJRdxdZpqKISKEL9LkxlGXw=;
+        b=w1VCpaNUUNiVdp3wJEdGoU2dSvIPf6chr7uoqFXucgj/ovNDLhhaREff7YYRjIggtl8tVF
+        VBqWXpuFtHN74jDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E0C413C32;
+        Fri, 30 Jul 2021 15:09:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id SSpcGiwWBGFVHAAAMHmgww
+        (envelope-from <dbueso@suse.de>); Fri, 30 Jul 2021 15:09:32 +0000
 MIME-Version: 1.0
-References: <20210730144922.29111-1-semen.protsenko@linaro.org> <20210730144922.29111-9-semen.protsenko@linaro.org>
-In-Reply-To: <20210730144922.29111-9-semen.protsenko@linaro.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 30 Jul 2021 18:06:21 +0300
-Message-ID: <CAHp75VcugLnV6D8xhkMHuW-X6LCtHDDnghD2G+vqwYmRvFP9Nw@mail.gmail.com>
-Subject: Re: [PATCH 08/12] MAINTAINERS: Cover Samsung clock YAML bindings
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 30 Jul 2021 08:09:32 -0700
+From:   Davidlohr Bueso <dbueso@suse.de>
+To:     cgel.zte@gmail.com
+Cc:     keescook@chromium.org, christian.brauner@ubuntu.com,
+        ktkhai@virtuozzo.com, jamorris@linux.microsoft.com,
+        varad.gautam@suse.com, legion@kernel.org,
+        linux-kernel@vger.kernel.org, Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Subject: Re: [PATCH] ipc: add set_ownership() and permissions() callbacks for
+ posix mqueue sysctl
+In-Reply-To: <20210729030651.536326-1-ran.xiaokai@zte.com.cn>
+References: <20210729030651.536326-1-ran.xiaokai@zte.com.cn>
+User-Agent: Roundcube Webmail
+Message-ID: <4b67a8df7823cc14ffb69657c82562b2@suse.de>
+X-Sender: dbueso@suse.de
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 5:50 PM Sam Protsenko
-<semen.protsenko@linaro.org> wrote:
->
-> New device tree bindings are usually added in YAML format. Fix "SAMSUNG
-> SOC CLOCK DRIVERS" entry to cover both txt and yaml docs for Exynos
-> clock drivers.
+On 2021-07-28 20:06, cgel.zte@gmail.com wrote:
+> This patch adds a ctl_table_set per ipc namespace, and also the
+> set_ownership() and permissions() callbacks for the new ctl_table_root
+> for ipc mqueue syscgtls.
+                   ^^ sysctls
 
-Fixes tag?
+This makes sense to me, just some nits below.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Acked-by: Davidlohr Bueso <dbueso@suse.de>
+
+> 
+> Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+> ---
+...
+> +static int set_permissions(struct ctl_table_header *head,
+> +				struct ctl_table *table)
+> +{
+> +	struct ipc_namespace *ipc_ns =
+> +		container_of(head->set, struct ipc_namespace, mq_set);
+> +	struct user_namespace *user_ns = ipc_ns->user_ns;
+> +	int mode;
+> +
+> +	/* Allow users with CAP_SYS_RESOURCE unrestrained access */
+> +	if (ns_capable(user_ns, CAP_SYS_RESOURCE))
+> +		mode = (table->mode & S_IRWXU) >> 6;
+> +	else
+> +	/* Allow all others at most read-only access */
+> +		mode = table->mode & S_IROTH;
+
+Please use curly braces for the else.
+
+> +	return (mode << 6) | (mode << 3) | mode;
+> +}
+> +
+> +static void set_ownership(struct ctl_table_header *head,
+> +				struct ctl_table *table,
+> +				kuid_t *uid, kgid_t *gid)
+> +{
+> +	struct ipc_namespace *ipc_ns =
+> +		container_of(head->set, struct ipc_namespace, mq_set);
+> +	struct user_namespace *user_ns = ipc_ns->user_ns;
+> +	kuid_t ns_root_uid;
+> +	kgid_t ns_root_gid;
+> +
+> +	ns_root_uid = make_kuid(user_ns, 0);
+> +	if (uid_valid(ns_root_uid))
+> +		*uid = ns_root_uid;
+> +
+> +	ns_root_gid = make_kgid(user_ns, 0);
+> +	if (gid_valid(ns_root_gid))
+> +		*gid = ns_root_gid;
+> +}
+
+Could set_permissions() and set_ownership() be factored such that we can 
+avoid duplicated code between ipc and net ns? Something like:
+
+void set_permissions(struct ctl_table_header *head, struct ctl_table 
+*table)
+{
+     struct ipc_namespace *ipc_ns = container_of(head->set, struct 
+ipc_namespace, mq_set);
+     set_permissions_common(ipc_ns->user_ns);
+}
+
+Thanks,
+Davidlohr
