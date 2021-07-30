@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B013DB615
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97113DB61D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238372AbhG3Jem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:34:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238356AbhG3Jec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:34:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D74B061019;
-        Fri, 30 Jul 2021 09:34:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627637667;
-        bh=AyZq286GxOzlTPT6NwaDtxxaeeo+pRSi6ddl1AxdRy4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cj7sLJt9ZYR4ZSGjKUviFXa1tBXGUFeNKogl5uby272IwYnNM7joGPvCPA3/hBjnB
-         RAtrkN2nwigreOu6vhnjK6eximxGUGECRjRBeQ9zoKbeEt2H4j8MFSKwBa7Xv+eg8Q
-         Sce5iB19zLdBOv7slmotk7Ky3ddLJLnwBLMfugv//saK3XdJp0HF1w/Sl3DVzqiS3L
-         V2eSmAV4o4298JSDdyFctl6aylq9t3FrEAyrRSCiI0RLBsHgBuoWdscLfx1e35yqKq
-         3e1z/GHUEf75Y7T0LZBLGC0Iuj00HyvDIrKt3nH46v9bhuRqUkBKaX2CG17CZ859Tp
-         4E/ALiZN7wSoQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m9OuO-006qwF-MH; Fri, 30 Jul 2021 11:34:24 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: [PATCH v2 4/4] dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
-Date:   Fri, 30 Jul 2021 11:34:21 +0200
-Message-Id: <1e9669ef81f523f4e16f10d8c720507dea3dc444.1627637448.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1627637448.git.mchehab+huawei@kernel.org>
-References: <cover.1627637448.git.mchehab+huawei@kernel.org>
+        id S238315AbhG3JgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:36:21 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:1163 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238200AbhG3JgT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 05:36:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1627637775; x=1659173775;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=cP+JhXq5Nalma4gVWY0bx4G6vVp3XZYSMJqhpGkBToc=;
+  b=K4gWx3xuRC3u6e1IWMd6ov2gCBbM/JIXwaZWvjVbQTQHkJonXCWpZrP+
+   m/bZod786THzGvnNdTguEd7hfePQhHrmIp10CA5T9xS374lPb+YQllFN7
+   tlbqDf3iWxROXLmJbdto07yNgS+u4wQ8g20duNVwUqIQQ16TAWQJRr09k
+   E=;
+X-IronPort-AV: E=Sophos;i="5.84,281,1620691200"; 
+   d="scan'208";a="15928374"
+Subject: Re: [PATCH] asm-generic/hyperv: Fix struct hv_message_header ordering
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 30 Jul 2021 09:36:07 +0000
+Received: from EX13D28EUC003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com (Postfix) with ESMTPS id D6F42A2241;
+        Fri, 30 Jul 2021 09:36:06 +0000 (UTC)
+Received: from u366d62d47e3651.ant.amazon.com (10.43.160.85) by
+ EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Fri, 30 Jul 2021 09:36:01 +0000
+Date:   Fri, 30 Jul 2021 11:35:57 +0200
+From:   Siddharth Chandrasekaran <sidcha@amazon.de>
+To:     Wei Liu <wei.liu@kernel.org>
+CC:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Siddharth Chandrasekaran <sidcha.dev@gmail.com>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        <linux-hyperv@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>, Arnd Bergmann <arnd@arndb.de>
+Message-ID: <20210730091649.GA13442@u366d62d47e3651.ant.amazon.com>
+References: <20210729133702.11383-1-sidcha@amazon.de>
+ <87eebh9qhd.fsf@vitty.brq.redhat.com>
+ <20210729140705.wj5tokeq6lkxm2yy@liuwe-devbox-debian-v2>
+ <20210729142652.GA25242@uc8bbc9586ea454.ant.amazon.com>
+ <20210729165638.f5idr2ag3pdbpd6u@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210729165638.f5idr2ag3pdbpd6u@liuwe-devbox-debian-v2>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.43.160.85]
+X-ClientProxiedBy: EX13D38UWC001.ant.amazon.com (10.43.162.170) To
+ EX13D28EUC003.ant.amazon.com (10.43.164.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the bindings for HiKey 970 (hi3670) PCIe PHY
-interface, supported via the pcie-kirin driver.
+On Thu, Jul 29, 2021 at 04:56:38PM +0000, Wei Liu wrote:
+> On Thu, Jul 29, 2021 at 04:26:54PM +0200, Siddharth Chandrasekaran wrote:
+> > On Thu, Jul 29, 2021 at 02:07:05PM +0000, Wei Liu wrote:
+> > > On Thu, Jul 29, 2021 at 03:52:46PM +0200, Vitaly Kuznetsov wrote:
+> > > > Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+> > > >
+> > > > > According to Hyper-V TLFS Version 6.0b, struct hv_message_header members
+> > > > > should be defined in the order:
+> > > > >
+> > > > >     message_type, reserved, message_flags, payload_size
+> > > > >
+> > > > > but we have it defined in the order:
+> > > > >
+> > > > >     message_type, payload_size, message_flags, reserved
+> > > > >
+> > > > > that is, the payload_size and reserved members swapped.
+> > > >
+> > > > Indeed,
+> > > >
+> > > > typedef struct
+> > > > {
+> > > >       HV_MESSAGE_TYPE MessageType;
+> > > >       UINT16 Reserved;
+> > > >       HV_MESSAGE_FLAGS MessageFlags;
+> > > >       UINT8 PayloadSize;
+> > > >       union
+> > > >       {
+> > > >               UINT64 OriginationId;
+> > > >               HV_PARTITION_ID Sender;
+> > > >               HV_PORT_ID Port;
+> > > >       };
+> > > > } HV_MESSAGE_HEADER;
+> > >
+> > > Well. I think TLFS is wrong. Let me ask around.
+> >
+> > TBH, I hadn't considered that possibility :). I assumed it was a
+> > regression on our side. But I spent some time tracing the history of that
+> > struct all the way back to when it was in staging (in 2009) and now I'm
+> > inclined to believe a later version of TLFS is at fault here.
+> >
+> > Based on what we decide in this thread, I will open an issue on the TLFS
+> > GitHub repository.
+> >
+> 
+> I have confirmation TLFS is wrong and shall be fixed. Feel free to open
+> an issue on GitHub too.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../phy/hisilicon,phy-hi3670-pcie.yaml        | 86 +++++++++++++++++++
- 1 file changed, 86 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+Thanks for the confirmation, I created an issue [1] to track this.
 
-diff --git a/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-new file mode 100644
-index 000000000000..1e0153e4f4a5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-@@ -0,0 +1,86 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/hisilicon,phy-hi3670-pcie.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HiSilicon Kirin970 PCIe PHY
-+
-+maintainers:
-+  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-+
-+description: |+
-+  Bindings for PCIe PHY on HiSilicon Kirin 970.
-+
-+properties:
-+  compatible:
-+    const: hisilicon,hi970-pcie-phy
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+    description: PHY Control registers
-+
-+  phy-supply:
-+    description: The PCIe PHY power supply
-+
-+  clocks:
-+    items:
-+      - description: PCIe PHY clock
-+      - description: PCIe AUX clock
-+      - description: PCIe APB PHY clock
-+      - description: PCIe APB SYS clock
-+      - description: PCIe ACLK clock
-+
-+  clock-names:
-+    items:
-+      - const: phy_ref
-+      - const: aux
-+      - const: apb_phy
-+      - const: apb_sys
-+      - const: aclk
-+
-+  clkreq-gpios:
-+    description: Clock request GPIOs
-+    maxItems: 3
-+
-+  hisilicon,eye-diagram-param:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description: Eye diagram for phy.
-+
-+required:
-+  - "#phy-cells"
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - hisilicon,eye-diagram-param
-+  - phy-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/hi3670-clock.h>
-+
-+    soc {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+      pcie_phy: pcie-phy@fc000000 {
-+        compatible = "hisilicon,hi970-pcie-phy";
-+        reg = <0x0 0xfc000000 0x0 0x80000>;
-+        #phy-cells = <0>;
-+        phy-supply = <&ldo33>;
-+        clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
-+                 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
-+                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
-+                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
-+                 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
-+        clock-names = "phy_ref", "aux",
-+                      "apb_phy", "apb_sys", "aclk";
-+        hisilicon,eye-diagram-param = <0xffffffff 0xffffffff
-+                                       0xffffffff 0xffffffff 0xffffffff>;
-+      };
-+    };
--- 
-2.31.1
+~ Sid.
+
+[1]: https://github.com/MicrosoftDocs/Virtualization-Documentation/issues/1624
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
