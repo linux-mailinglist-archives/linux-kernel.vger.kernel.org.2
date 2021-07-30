@@ -2,114 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44EB3DBAB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EA53DBAC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239184AbhG3OiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbhG3OiL (ORCPT
+        id S239437AbhG3Ojt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:39:49 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:46184 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239339AbhG3Ojl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:38:11 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC076C06175F;
-        Fri, 30 Jul 2021 07:38:06 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id z6-20020a9d24860000b02904d14e47202cso970168ota.4;
-        Fri, 30 Jul 2021 07:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SI25ow92uZg+BEB0RQ5f76l9YsfOVkkwHkMuJVkTQbo=;
-        b=nm4KNOhAX8VAnpPT8J2+3gPGVJx389TFMyTRjhX1GK0PKsMo+5ydL2u2hu+ZwdrVCU
-         xLw6Pgq65ioerSCoN4qgMojjtq8JkGM4T3oDoGbGfOq1SbLJcG4nGPNTbW7Q1odLbhXb
-         po8ou6GMAi79k3Uwr+Ctk2LyJmDG96fLK8Gi83aE+tacL7aGE3B/G3GFqlYGFKng8z0U
-         btC8zhVBbKQ7UyocO06TiOKIAnFtK0dKIvQtJFWZy1jpy2RgrUIFMOrDp+JBDS3x2Fjx
-         52oTEIqnEoR3JYvhn9Lw8vH4nYjG9EU73G9BYSOlNuM7F116E8UWnOrlPYEjPk8bEK2q
-         okiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SI25ow92uZg+BEB0RQ5f76l9YsfOVkkwHkMuJVkTQbo=;
-        b=Db/R2rBaH7gZ5Om/ZkLeyhc5I2ZuQOC4C42Vehp1rnE0Cl1kJz997O/Ubgq0kcirlq
-         RENlWG46m7/U6Zfg1O8vYB6MNzCdlojzuTa5Ah5oI5DCME6FWn0N3WDwzmtJgOV+odJ4
-         Chr/E2AQOAyCJptkYASo0/bOejAdNb/st7qw9V0fw+iYv1rtCxwNGBPf63SrI0d6P3p3
-         n9ycMBBpwIU1jrCCuoF7iJ22c7b/teCQylSBKbdpPIcSOoid1t3LhScQyXN6ja09RoHL
-         Wy636YVBO1Z7lygmsuC0zlmeovFU902wQA/D8NybQ2X1TFCK5E8wJq8a24BSVMh9Hf1t
-         s6AQ==
-X-Gm-Message-State: AOAM530qKQ+rk4IQF/24rGkvjdq9fedKFbmKezy+rKg/wPW1Z0zGIE7K
-        Rv4p/oTU3bJfbd0/14FMXofAwwArSHzYmeTkexY=
-X-Google-Smtp-Source: ABdhPJyp6Y5YIGa0VrmyMO+wfLAp/fxsN36Xdb5hvOSq9M3mXfE2z2vcjQmGShhZgxi19K0zkyBH9EQR8bYYK9iBaRo=
-X-Received: by 2002:a05:6830:1c2f:: with SMTP id f15mr2283318ote.23.1627655886012;
- Fri, 30 Jul 2021 07:38:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210730030347.13996-1-rdunlap@infradead.org>
-In-Reply-To: <20210730030347.13996-1-rdunlap@infradead.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 30 Jul 2021 10:37:54 -0400
-Message-ID: <CADnq5_PPYtdb17WLtgjeS3THXBeHw_DyMKueZ4LP8cVS1G8Tcw@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/amdgpu: fix checking pmops when PM_SLEEP is not enabled
-To:     Randy Dunlap <rdunlap@infradead.org>
+        Fri, 30 Jul 2021 10:39:41 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 846070bec0f569d8; Fri, 30 Jul 2021 16:39:35 +0200
+Received: from kreacher.localnet (89-64-81-8.dynamic.chello.pl [89.64.81.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 78DF7669F3A;
+        Fri, 30 Jul 2021 16:39:34 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v1 1/2] cpuidle: teo: Fix alternative idle state lookup
+Date:   Fri, 30 Jul 2021 16:38:07 +0200
+Message-ID: <1794352.tdWV9SEqCh@kreacher>
+In-Reply-To: <4336554.LvFx2qVVIh@kreacher>
+References: <4336554.LvFx2qVVIh@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-CLIENT-IP: 89.64.81.8
+X-CLIENT-HOSTNAME: 89-64-81-8.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrheehgdejgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdekuddrkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrkedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegushhmhihthhhivghssehtvghluhhsrdhnvghtpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Alex
+There are three mistakes in the loop in teo_select() that is looking
+for an alternative candidate idle state.  First, it should walk all
+of the idle states shallower than the current candidate one,
+including all of the disabled ones, but it terminates after the first
+enabled idle state.  Second, it should not terminate its last step
+if idle state 0 is disabled (which is related to the first issue).
+Finally, it may return the current alternative candidate idle state
+prematurely if the time span criterion is not met by the idle state
+under consideration at the moment.
 
-On Thu, Jul 29, 2021 at 11:03 PM Randy Dunlap <rdunlap@infradead.org> wrote=
-:
->
-> 'pm_suspend_target_state' is only available when CONFIG_PM_SLEEP
-> is set/enabled. OTOH, when both SUSPEND and HIBERNATION are not set,
-> PM_SLEEP is not set, so this variable cannot be used.
->
-> ../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c: In function =E2=80=98amdgpu_=
-acpi_is_s0ix_active=E2=80=99:
-> ../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c:1046:11: error: =E2=80=98pm_s=
-uspend_target_state=E2=80=99 undeclared (first use in this function); did y=
-ou mean =E2=80=98__KSYM_pm_suspend_target_state=E2=80=99?
->     return pm_suspend_target_state =3D=3D PM_SUSPEND_TO_IDLE;
->            ^~~~~~~~~~~~~~~~~~~~~~~
->            __KSYM_pm_suspend_target_state
->
-> Also use shorter IS_ENABLED(CONFIG_foo) notation for checking the
-> 2 config symbols.
->
-> Fixes: 91b03fc6b50c ("drm/amdgpu: Check pmops for desired suspend state")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
-> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-next@vger.kernel.org
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- linext-20210729.orig/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> +++ linext-20210729/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-> @@ -1040,7 +1040,7 @@ void amdgpu_acpi_detect(void)
->   */
->  bool amdgpu_acpi_is_s0ix_active(struct amdgpu_device *adev)
->  {
-> -#if defined(CONFIG_AMD_PMC) || defined(CONFIG_AMD_PMC_MODULE)
-> +#if IS_ENABLED(CONFIG_AMD_PMC) && IS_ENABLED(CONFIG_PM_SLEEP)
->         if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
->                 if (adev->flags & AMD_IS_APU)
->                         return pm_suspend_target_state =3D=3D PM_SUSPEND_=
-TO_IDLE;
+To address the issues mentioned above, make the loop in question walk
+all of the idle states shallower than the current candidate idle state
+all the way down to idle state 0 and rearrange the checks in it.
+
+Fixes: 77577558f25d ("cpuidle: teo: Rework most recent idle duration values treatment")
+Reported-by: Doug Smythies <dsmythies@telus.net>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpuidle/governors/teo.c |   40 +++++++++++++++++++++++++++-------------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
+
+Index: linux-pm/drivers/cpuidle/governors/teo.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/teo.c
++++ linux-pm/drivers/cpuidle/governors/teo.c
+@@ -397,32 +397,46 @@ static int teo_select(struct cpuidle_dri
+ 		intercept_sum = 0;
+ 		recent_sum = 0;
+ 
+-		for (i = idx - 1; i >= idx0; i--) {
++		for (i = idx - 1; i >= 0; i--) {
+ 			struct teo_bin *bin = &cpu_data->state_bins[i];
+ 			s64 span_ns;
+ 
+ 			intercept_sum += bin->intercepts;
+ 			recent_sum += bin->recent;
+ 
++			span_ns = teo_middle_of_bin(i, drv);
++
++			if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
++			    (!alt_intercepts ||
++			     2 * intercept_sum > idx_intercept_sum)) {
++				if (teo_time_ok(span_ns) &&
++				    !dev->states_usage[i].disable) {
++					idx = i;
++					duration_ns = span_ns;
++				} else {
++					/*
++					 * The current state is too shallow or
++					 * disabled, so take the first enabled
++					 * deeper state with suitable time span.
++					 */
++					idx = last_enabled_idx;
++					duration_ns = last_enabled_span_ns;
++				}
++				break;
++			}
++
+ 			if (dev->states_usage[i].disable)
+ 				continue;
+ 
+-			span_ns = teo_middle_of_bin(i, drv);
+ 			if (!teo_time_ok(span_ns)) {
+ 				/*
+-				 * The current state is too shallow, so select
+-				 * the first enabled deeper state.
++				 * The current state is too shallow, but if an
++				 * alternative candidate state has been found,
++				 * it may still turn out to be a better choice.
+ 				 */
+-				duration_ns = last_enabled_span_ns;
+-				idx = last_enabled_idx;
+-				break;
+-			}
++				if (last_enabled_idx != idx)
++					continue;
+ 
+-			if ((!alt_recent || 2 * recent_sum > idx_recent_sum) &&
+-			    (!alt_intercepts ||
+-			     2 * intercept_sum > idx_intercept_sum)) {
+-				idx = i;
+-				duration_ns = span_ns;
+ 				break;
+ 			}
+ 
+
+
+
