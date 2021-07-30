@@ -2,124 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD813DBD9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2AA3DBDA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhG3RVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 13:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbhG3RV3 (ORCPT
+        id S230231AbhG3RVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 13:21:40 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:56114
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230199AbhG3RVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:21:29 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B45C06175F;
-        Fri, 30 Jul 2021 10:21:24 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id a14so10182258ila.1;
-        Fri, 30 Jul 2021 10:21:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=eLN7+9c7Xaj+kBy2zNIikaePL1RMYLLJgx5wBfi1ffM=;
-        b=tvbbI6MK46oyskEsShabdhLDtl0o5udZfC/1/4axn1HquUpJlgOTAKDTg+TaeSnEMs
-         en0gYSGH9GUv+T+IH6ykxTJs+JDxj4U0EIOB49X4ESiYdznOSW/759ybfSojUYGFaxFK
-         7bN0OCeU3dj7ErnkALieuEQR+KCnMyLqy8UQVy8gt03oJCD6cB6MLKP6jd/FM5U46Nx1
-         6PT9yTSXWHynBmkqDsISB23D7c+B+i6VanYnzHIYOz7nWtpuHQrt02J4pxfgRvVmQ9/B
-         MTxVoPJvz2YHATbhTywKpTAGnxQF/23sAtFsjWjTh4ulLXPasDUt/xFckx4XFqdZXYn5
-         Vg8A==
+        Fri, 30 Jul 2021 13:21:39 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 5D5CE3F23D
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 17:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627665693;
+        bh=o5z17HicOMnibSKxbfutUtdmQTlkkNRFgUGIEJq9A5o=;
+        h=From:To:Cc:References:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=iP1hWkWZT5MwdLvttmMex0l/IDza+w9yJmXaClovbGuDZQk3A2vKh1UBx7N6XEXUf
+         GNXXL8D5F3rXZ5Gk+bybOiO4/AKiZ7BIjrf5nXR6f/srdiMQJrjD9ug4gTS6YHKUel
+         ZAj8ig1/r+6/u6DxOfF5AWYwJ7EZ2kdNKbLo5orIKO84lDxlBO6O/uitwevsCqDyXt
+         KSvAX6pY3v035Z1khVp0+xT81wAuBHXccX256pOfkSlKBKQItACijOQLvezemEmR2e
+         acouAcnqVlz5aWFP0O0Kz/JaVgqa2l5eApzLQ07eyR6uNpREj44eMVSq34ifNmACXo
+         xIKWVdmtXeorQ==
+Received: by mail-ed1-f70.google.com with SMTP id c20-20020a0564021014b029039994f9cab9so3479955edu.22
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:21:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
+        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=eLN7+9c7Xaj+kBy2zNIikaePL1RMYLLJgx5wBfi1ffM=;
-        b=THgM+1si/IMU5d0eNKlsq7dghwlJk60px/siApV6KHAIK5yxWZiOn3ElZv0OMj/RQL
-         m65WCrhWiUhbpmo7uDoSNpoE7XoKHCXd4zUaMgIGGU3lI0Gx9Vg3Ddve3vVcefmKxklU
-         QTKYJt/3ND+L4nVRIf7v1RnaeHm15fUo+JzLRxTQQ84cIJlYBwcSk5XcQgsID2dv9x0s
-         x02l+TgKwvrKf4yH/NWWUfuwtgAWykIbU8+6rAwtBctd1PlsDgWK8/Ntk/NUsqBBE+4r
-         MENhSJ7zvUmZLtvWJKciadyKecqWpPIjRWF3J9keegpEUhdyh4a0kMwiNe7onmsrAzSi
-         tCSw==
-X-Gm-Message-State: AOAM531TzunTJLB0BPfpL/7JbQWo2zg++LEjtAFLlNHa/SMmUMKza7j1
-        6PA3pmgHW+2GwHJoUGiVB4Y=
-X-Google-Smtp-Source: ABdhPJxW8Kb8ESDrERihXtPqHK3BaZP1+FOig63zzh5s+7nQsmc9v+ldNxOLS+IbP9kF216Vn8KIhQ==
-X-Received: by 2002:a92:d9c6:: with SMTP id n6mr2701165ilq.142.1627665684203;
-        Fri, 30 Jul 2021 10:21:24 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id l5sm1407204ion.44.2021.07.30.10.21.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 10:21:23 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC net-next 2/2] net: dsa: mt7530: trap packets from standalone ports to the CPU
-Date:   Sat, 31 Jul 2021 01:21:14 +0800
-Message-Id: <20210730171935.GA517710@haswell-ubuntu20>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210730161852.4weylgdkcyacxhci@skbuf>
-References: <20210728175327.1150120-1-dqfext@gmail.com> <20210728175327.1150120-3-dqfext@gmail.com> <20210729152805.o2pur7pp2kpxvvnq@skbuf> <CALW65jbHwRhekX=7xoFvts2m7xTRM4ti9zpTiah8ed0n0fCrRg@mail.gmail.com> <20210729165027.okmfa3ulpd3e6gte@skbuf> <CALW65jYYmpnDou0dC3=1AjL9tmo_9jqLSWmusJkeqRb4mSwCGQ@mail.gmail.com> <20210730161852.4weylgdkcyacxhci@skbuf>
+        bh=o5z17HicOMnibSKxbfutUtdmQTlkkNRFgUGIEJq9A5o=;
+        b=t+a6r9pKjfnq03Y1lJkpxaWEgFJLbM5O84A3eI23Ya+cYmRbxKekSom/3neX77f01T
+         252S+d/v0itEF9FBBBGaVXWN4iFPfl4Iqdymucedk8lgyOFnT9n+krx11wzc6o6FRVR4
+         QHyyvoaAuKTsPJ8Nf6Ex5/Va7JPG4Kj4Kv9u6iO6X5p3WB/jJtO+xOnLnFdmmms9i096
+         JblWwiYMk2DKXh+IazcyyjG53OoJwGYrpMBImiGm3VLHfwiikYXvgIm2Lc4NVm4jNifp
+         TjfA4aZAMgW/DQfSDHXC/3VQ7g7n/3wil61Ivce31zeV+M8Q0x+lJhMrAHtU3mn7dCbU
+         i9ww==
+X-Gm-Message-State: AOAM531hlxbNbm3hWNrOjQ9BiFY2aHD4NQKOkc2sn8aSyxxBXniE8v6s
+        60bRxy0foVxboqXyun++7cGwLDVzYL2nzMtEZZx99ASe477Hq3eevS3wtTILqf5ZeSS72MqZMdd
+        Ym5XGzt6F0Be7RZT16IodCehKKzF+41x5P7W1DsC62g==
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr3758107ejc.192.1627665692502;
+        Fri, 30 Jul 2021 10:21:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzFiKJlif1uhqb84VdmehIjJr5DEUQdSGnnvL110bm0Y0Y4Awj/aQgY4XpZWPb/ITBePmMBnw==
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr3758080ejc.192.1627665692316;
+        Fri, 30 Jul 2021 10:21:32 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id p16sm944758eds.73.2021.07.30.10.21.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 10:21:31 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <5e35b0a7-13aa-3c62-ca49-14af2fcb2a08@canonical.com>
+Subject: Re: [PATCH 00/12] Add minimal support for Exynos850 SoC
+Message-ID: <c3486111-0ec9-9679-d2a2-68b2f33a2450@canonical.com>
+Date:   Fri, 30 Jul 2021 19:21:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <5e35b0a7-13aa-3c62-ca49-14af2fcb2a08@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 07:18:52PM +0300, Vladimir Oltean wrote:
-> > It turns out that only PVC.VLAN_ATTR contributes to VLAN awareness.
-> > Port matrix mode just skips the VLAN table lookup. The reference
-> > manual is somehow misleading when describing PORT_VLAN modes (See Page
-> > 17 of MT7531 Reference Manual, available at
-> > http://wiki.banana-pi.org/Banana_Pi_BPI-R64#Resources). It states that
-> > PORT_MEM (VLAN port member) is used for destination if the VLAN table
-> > lookup hits, but actually it uses **PORT_MEM & PORT_MATRIX** (bitwise
-> > AND of VLAN port member and port matrix) instead, which means we can
-> > have two or more separate VLAN-aware bridges with the same PVID and
-> > traffic won't leak between them.
+On 30/07/2021 17:18, Krzysztof Kozlowski wrote:
+> On 30/07/2021 16:49, Sam Protsenko wrote:
+>> This patch series adds initial platform support for Samsung Exynos850
+>> SoC [1]. With this patchset it's possible to run the kernel with BusyBox
+>> rootfs as a RAM disk. More advanced platform support (like MMC driver
+>> additions) will be added later. The idea is to keep the first submission
+>> minimal to ease the review, and then build up on top of that.
+>>
+>> [1] https://www.samsung.com/semiconductor/minisite/exynos/products/mobileprocessor/exynos-850/
+>>
 > 
-> Ah, but it's not completely misleading. It does say:
+> Great work!
 > 
-> 	2'b01: Fallback mode
-> 
-> 	Enable 802.1Q function for all the received frames.
-> 	Do not discard received frames due to ingress membership violation.
-> 	**Frames whose VID is missed on the VLAN table will be filtered
-> 	by the Port Matrix Member**.
-> 
-> (emphasis mine on the last paragraph)
-> 
-> > So I came up with a solution: Set PORT_VLAN to fallback mode when in
-> > VLAN-unaware mode, this way, even VLAN-unaware bridges will use
-> > independent VLAN filtering.
-> 
-> If you did indeed test that the Port Matrix is still used to enforce
-> separation between ports if the VLAN table _does_ match and we're in
-> fallback mode, then we should be okay.
+> What's the SoC revision number (should be accessible via
+> /sys/bus/soc/devices/soc0/)? Recent wrap in numbering of Exynos chips
+> might bring confusion...
 
-Yes, that's what I mean. Tested as well.
+Judging by vendor's sources it is quite confusing. It looks mostly like
+Exynos3830 but in few other cases it uses Exynos9 compatibles (Exynos9,
+Exynos9820). Only in few places there is Exynos850. Marketing department
+made it so confusing...  The revision embedded in SoC would be very
+interesting.
 
-> 
-> > Then assign all standalone ports to a reserved VLAN.
-> 
-> You mean all standalone ports to the same VLAN ID, like 4095, or each
-> standalone port to a separate reserved VLAN ID? As long as address
-> learning is disabled on the standalone ports, I guess using a single
-> VLAN ID like 4095 for all of them is just fine, the Port Matrix will
-> take care of the rest.
+Anyway, judging by current versioning, there is a risk Samsung will come
+with a new chipset name conflicting with existing ones. It already
+overflowed.
 
-I just found a cleaner solution: Leaving standalone ports in port matrix
-mode. As all bridges use independent VLAN learning, standalone ports'
-FDB lookup with FID 0 won't hit.
+It's even worse with a thingy called "Exynos9 auto" which hides
+numbering even more.
+
+
+Best regards,
+Krzysztof
