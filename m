@@ -2,143 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BD53DB81D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AA03DB81F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238659AbhG3Lzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 07:55:33 -0400
-Received: from mail-bn8nam08on2057.outbound.protection.outlook.com ([40.107.100.57]:31616
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238222AbhG3Lzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 07:55:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b9adAxqmta1jgKN/JXAe2L53ZG5v+pZR4k+iNPdHtNBjmsmLYARmiizgIp9gso38GIYfzqDukOIMw4lRuSV+fdCR7P4X7nhldLRK3ZsE5y4twBSpTp97blnyRat6n2kccBfCX6akBUrr+P6Kp154yK9+NR8ZChk2HqF4/CgU/MOWSDnwut6QGd2myueXpTNYergc0vmocDgSJC6b827WXRvlaoeFCeVlrDCnOSnIsLxLoV+qfvZfozyoniDUWPiLTI5PaGIcPyBpEo7vxOGixeZnvUaduWoFLisv/T03YX8KI/ZM66rKpOzLnZDftzE3ali9hfXgYfiopBBgNthrvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=135e5s5iWEcEoyiM7VPcpLx9QNtZtzKolKeJZt2zgpQ=;
- b=Zo4gmtp++F2P9Jrd1tNqaDGwytocn1mpxysI4P8frPVAiQRBurKULIjeifofVo1Nxj0DQB8FDJ9UE8C2udiWtHQnMR1zkvQebHGJIMxAfYhWOrXh0/mP5TBX3hWpJW0BV7byJOLv6KWlRU8CgyMaQ1QZE7w5yZwJ/HelJaZNtSpNrPRbnpdo/pTW/mZ35mCncA3MrqtmAXkdgrpXYC3n9hJIPhaWSgnHRDgRPZPo+kDQG0iVuC/rEj5oH35+nMoZLwKGsGFscKKTw5uwsgdOI8QdyjyQ//TyR5z6jrfGP02YEww3lGjIOR0ApxJMzm2U6vSulfHchhXsLaJ5w30+/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=135e5s5iWEcEoyiM7VPcpLx9QNtZtzKolKeJZt2zgpQ=;
- b=i2xkvfbEoo87cjK5XbwzBVtrqIV0PiHW40GEdPNVKuySprju7rpNX4/d+5DnLTYlZX/7uBNdc/rlA9jZ4svssfx+D5AwlZDQ+Vhk3vRanw0nsGbmqJ7KJe7pRBLZ3KJE0NHArgBT2KN5VrnBL/4LmImRr6dM5NQPu1vA3hJ/PtRD8wSp+mFXjO/rk2kNHtxMswNYHuFPJ4n4Pwc/eGrGh5fopdEVhRqZelj1z5Tygwow80SDwdvNbVdktqncRRfM7xJmEFctUMJZ1RCg9Vvvm9ctLyaIg2/fX9bP9hBkWd5BoylIWryZBX12UrT07nFl6sfvX+Ppu6Kc/TzJLFWHnQ==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5352.namprd12.prod.outlook.com (2603:10b6:208:314::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Fri, 30 Jul
- 2021 11:55:25 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4373.025; Fri, 30 Jul 2021
- 11:55:25 +0000
-Date:   Fri, 30 Jul 2021 08:55:23 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "aviadye@nvidia.com" <aviadye@nvidia.com>,
-        "oren@nvidia.com" <oren@nvidia.com>,
-        "shahafs@nvidia.com" <shahafs@nvidia.com>,
-        "parav@nvidia.com" <parav@nvidia.com>,
-        "artemp@nvidia.com" <artemp@nvidia.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "ACurrid@nvidia.com" <ACurrid@nvidia.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "targupta@nvidia.com" <targupta@nvidia.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "yan.y.zhao@intel.com" <yan.y.zhao@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v4 00/11] Introduce vfio-pci-core subsystem
-Message-ID: <20210730115523.GV1721383@nvidia.com>
-References: <20210603160809.15845-1-mgurtovoy@nvidia.com>
- <01765c3bb55f48cf866dc3732a483eff@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01765c3bb55f48cf866dc3732a483eff@huawei.com>
-X-ClientProxiedBy: CH2PR03CA0028.namprd03.prod.outlook.com
- (2603:10b6:610:59::38) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S238633AbhG3L6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 07:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238275AbhG3L6g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 07:58:36 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D06AC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 04:58:32 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id y34so17399538lfa.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 04:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TUMiykQNfMbAmHAwrv+rEI/bGM+ClnUap5p0JH7cDWk=;
+        b=nOEuMX16PEbcv7Ku8Wq0OOJf4JaQLloyxnXX69y4ciEH+9JpQLa5sHl8FFzp6P+HZN
+         A3TPw0IuNgRaZBkIBzQUZSVSAUhQtNi/3TR98vof2uhGG45DmUck1crDb0YJ1jPjO1rQ
+         BAdKrrooSGJhQRwqoWTg6r/dM6D2V43cVZdH5WQAMTVgj6gyp9iAj8RMflYWtJ+InJfx
+         oeOarek4Cip/AJVkDOOfFxfUteS6BH1V17sl7k/G1qR6RgusjFS7P2A7538buW5i0twT
+         3lyBoozMlsRPrBYb9rBoPox7Or6Yi5dwoxKO1x/2PnOH3xYFitQBJ9fbvcJ0/5+MMvXg
+         JJYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TUMiykQNfMbAmHAwrv+rEI/bGM+ClnUap5p0JH7cDWk=;
+        b=ECIESUM47xS+XW0Fcg61M2JNIC44VB7zmIdw506a12ZpJ2JKo29IMbuaJfKbm6m2MS
+         h4nQLe/HjLMYjL3b4KNGkx+6Nl30I24QPAZiY0wu4d3BaojuAiSm97Sub3UFLpQPQq+L
+         2HW86JbcHVAVltRNyYAF2vs9k2BqlFBA3j+fRi8gdDO7Y7Df13oC62/D3/Sf24MbPoTQ
+         UTis4e9rZha6z8/PpFYuSx0qT8I68cUopHAjlRBpq5YyQkzb2TQdv0BYxqj/yp1Q6JEL
+         263+v/MiEsd8JRsU4DZ5NZh9YhaY1+0uVHMIxNmZ2cUAHJgb41irQh8eaLKtZ8AyHigo
+         LCUw==
+X-Gm-Message-State: AOAM533hIJYskqTd/D/tVQHwn3HM/kbrJU2cQXTIuRo4V4Z/l322pXGn
+        H80Rwy93mqvWWUPxhK8oNNJdoM93Li+b1tABdbXohw==
+X-Google-Smtp-Source: ABdhPJwEx3oEbRgthFsX8r5lKXXApepAFs4jKYkBuxT5GrK36PWVmz/RO1TegRk5uc5YVBYD9kcProL40+fEW37UOkI=
+X-Received: by 2002:ac2:4c4c:: with SMTP id o12mr1587755lfk.157.1627646310474;
+ Fri, 30 Jul 2021 04:58:30 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR03CA0028.namprd03.prod.outlook.com (2603:10b6:610:59::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Fri, 30 Jul 2021 11:55:24 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m9R6p-00AepH-BA; Fri, 30 Jul 2021 08:55:23 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 954a0fb1-3502-4f1b-2973-08d95350eaa6
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5352:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53522013A165328753B75FF3C2EC9@BL1PR12MB5352.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MU+ZIn15qW/cJDMl9e+HqMYCdaTX/0CD7zU4HMGtnj6X/LwCUEBnNU4oH2FNXfpdwCvRrLf/0GgexZ/TOE+y36vPag6UJeTMnGijuiAS3vmB37N+6DpN8iA4jQRvnbdAXSRVb1by1kPXNxYHzbfDAbvd+lCtxvAyoSE57/rZRtSGgTOKvOprafh5gdpdxVEYPnsSccH/thfiHmHBHLQP+A34K5XUcTiA9TNQyIFqeWsiVSgsTo4EKUuub+qD7XtGUJoYJSksw1YmYGedoVQ/f2J0swjlxAkkya5ssaMuAMibjyn0nP7rYD/8VDlIKB3/yJBzU5i0EutTXxQUV0lk9UaMt6wVbk73sufPgZaZUrMIg3JYH1Xhq8R6sAWB/KI95KpK0ywYKt3Kz4GSchIeqNC1tVnHMhdIC7VqaIiiuP+2ZP4lpvXfQi5UCXsJeVJFwRkjfR/ovHzupBs9KGVIrl5Vx+OPKbvd//1yLN/6LxT5f9cod8A7kmaRkobC3HpHCPh9lcL+2TzQagaA6XW4xXdtGqptsfJHsBW1d7KzolSvpGXlFHZFcTNorwYHXUUNWgwzd6CLH/yVPWZZtKuQUzvSiLp/JDAyVY+KOpGfKMusc2lXTWkSNQJ+2YBZWbpAeAmf7ZSTTmJy8ERvAO7GNK/J75bfS1e4s1RV/k7+5OQyg2wKCdZ8Uq6+tDlsrfCHgVRwDHsIRFa3oe0ixXq5n0iCl8z6GVUEL74WiZJMerk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(396003)(136003)(366004)(66556008)(6916009)(83380400001)(426003)(186003)(8936002)(54906003)(26005)(66476007)(8676002)(33656002)(2616005)(478600001)(5660300002)(9786002)(9746002)(66946007)(1076003)(4744005)(966005)(4326008)(86362001)(316002)(2906002)(36756003)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?351FPqBzd4iZMzJSbHsMgiUyFmynsHACWWWLxqWysyfEjcaq+NIHZbn1Mw+r?=
- =?us-ascii?Q?uRzE7HuUm1WfxSVRIvPwpexgcXkYC2Id82/A9lnsTg33Clbm9ZZbJUVLem9u?=
- =?us-ascii?Q?2LSiB7mwl23ut5yUzAXPN8DhK8nCLRUrdNAJa4cd6Xsw6pbEXf5Zg3k+G1xz?=
- =?us-ascii?Q?vRv3beKrkSpgtCCrHF0PpaTWh8mF+22f6mND6LFzbW/MFdaK1frDP3aaCLXZ?=
- =?us-ascii?Q?0qats/yUC0FgeD9e0o1WSYb4KaTxW4JeB0vf01qiWcO2W//DksWxf84VK77y?=
- =?us-ascii?Q?nU5PiS6KOWvgTlr7/sL1lAMYPFtb1uS+DP9mGO3F1lacp2GPb7nhYksujw/E?=
- =?us-ascii?Q?WYHKI7C748Tdw6BZWpC+r7FIlXiDOXVlX5PauneQTEWLUY3jZu1I8iFl9VgR?=
- =?us-ascii?Q?Yzyaj2VNTI8PaLs547RxRYUcmCOiHAuM3+pjMvmVqpxnay2zY9WSrUIZTRFj?=
- =?us-ascii?Q?hBPCZ5npNn1jNP6vE7OibTRT2Qfncl14hGsE2Ge1DmmHdmBQ8kjo6WZ6nsK5?=
- =?us-ascii?Q?Yfqvjs8SxsKNG6AzCbL5VDzWmLmbVmpFrqt4FYfV8RBvHQdMmKjbOPuCVH4h?=
- =?us-ascii?Q?QSgi9s3BCI20lf7OsNLQ8vHSASYo6bvi6jpP/F2a4IAWh3Ml5S3+Ew0/7oez?=
- =?us-ascii?Q?i4/csFwF3FbtQhSBeMyFu9+uCWmAkSJjZkV/Jr6Yun0D4v1B6ft7VwU1U9Yj?=
- =?us-ascii?Q?UpNSTy6WdaT4phOxTjRfuK1cH0Pu1tpH3WLccWDEH0Err6eAjilORkq4yS+h?=
- =?us-ascii?Q?2aBtSUJ0iC0Co10xQEgGa9cKEWq+Nbi2GPGFcYaoSZ7HMTUQgIBOWogweqWW?=
- =?us-ascii?Q?BtmAJtFNB36+CbPHHQ/uRqUjOlJSx6tVV+NGExvIVEwhQFNfdzTzt3QGRv0L?=
- =?us-ascii?Q?5sAsC2CNMd1MHXYMugDDwqlsBgfFqNuEy52DsrVLajXnEkNC9dE6CzNdo8/n?=
- =?us-ascii?Q?J5yxD2Gho/lYdRtlbWwVF1cqjNYqrj3iCkl7OVY11CI0nK1kU5VSqKHb/gDr?=
- =?us-ascii?Q?LEOdttmqiFbcdPw0zTDFwEWf6jDDAf1pJCJBmDrpTzSuYAlfR3ppNJrwpcAr?=
- =?us-ascii?Q?ehkIWsso4G/y6S/nCtgPcHF/cHLxh0ImQ+kPs6BS54hzfBPbHrsvfl/nnlMY?=
- =?us-ascii?Q?U+kAMy5ZIofxDeioN8MVQkPkwjdMrL/hzNjJsta1uE4Bh0q1mWgCULCnVOkQ?=
- =?us-ascii?Q?jTvmypaRTSfJ/QJE1cKturVnFWz3o5I9dMUUUS/ak10ObHjJ6mXnkWAzLi7V?=
- =?us-ascii?Q?ZSAOFIHlW5g0jolWeDn8IPTVHpzS2bRl+7+PxGBj+9a047QBv1AeJCsJZK1f?=
- =?us-ascii?Q?b9QGcxt+t06p2GwP09SEa9H9?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 954a0fb1-3502-4f1b-2973-08d95350eaa6
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 11:55:25.2985
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I4+FcO6Nvuaxqdka3AOuseoE6djVDJdAoji9wwNN6gUkBYF3GjMGlRx8zTIXmhdl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5352
+References: <20210716162724.26047-1-lakshmi.sowjanya.d@intel.com>
+ <20210716162724.26047-2-lakshmi.sowjanya.d@intel.com> <CACRpkdZdK38iwwCQKqUQ1Xbd-5kf8NFjAxT8pvq+e7jT+wiThA@mail.gmail.com>
+ <YQPis1mVrVNwplKY@smile.fi.intel.com>
+In-Reply-To: <YQPis1mVrVNwplKY@smile.fi.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 30 Jul 2021 13:58:19 +0200
+Message-ID: <CACRpkdb+N_FFqZpk9fsECM5q+T9UPzZoCpKzDX5T5f5F_QuWtQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: Add bindings for Intel
+ Keembay pinctrl driver
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Saha, Tamal" <tamal.saha@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 07:53:00AM +0000, Shameerali Kolothum Thodi wrote:
-> Hi Max/ Yishai,
-> 
-> (Sorry I picked this thread instead of the [1] here as I don't have that
-> in my mailbox)
-> 
-> I see that an update to this series has been posted by Yishai [1] and it mentions
-> about a branch with all relevant patches,
-> 
-> " A preview of all the patches can be seen here:
-> https://github.com/jgunthorpe/linux/commits/mlx5_vfio_pci"
-> 
-> But sorry I couldn't find the patches in the branch above. Could you
-> please check and let me know.
+On Fri, Jul 30, 2021 at 1:30 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Fri, Jul 30, 2021 at 11:05:43AM +0200, Linus Walleij wrote:
+> > Since this is one of those "Intel but Arm" things I don't know how
+> > Andy feels about picking up the patch to his Intel pinctrl tree
+> > (I think we discussed it in the past) so I need to know how to handle
+> > this. It'd be great if Andy queues "all Intel stuff" but I don't want
+> > to force unfamiliar stuff on him either.
+> >
+> > Andy? Do you pick this (when finished) or should I?
+>
+> I think it's for you. Mika and I are about Intel pin controllers on x86.
 
-I fixed it
+OK I'll deal with it, I do have some experience with some
+other funny Intel-Arm silicon like XScale IXP4xx etc.
 
-Jason
+Yours,
+Linus Walleij
