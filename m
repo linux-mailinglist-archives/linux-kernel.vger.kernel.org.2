@@ -2,211 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4213E3DB917
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0B63DB91D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238897AbhG3NNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 09:13:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54828 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238745AbhG3NND (ORCPT
+        id S238745AbhG3NNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 09:13:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39758 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238904AbhG3NNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 09:13:03 -0400
-Date:   Fri, 30 Jul 2021 15:12:56 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627650778;
+        Fri, 30 Jul 2021 09:13:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627650817;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=BWcVGmbWyWcoDB2biQikuWjpg7PJH7JnLeQSr4fcBOg=;
-        b=DaEvOh7YBqxJ+XBiAlMmoj4cwx0qHJfc1k0o40j77w6yquj3Jpu1FKh6yd9b7SqxrquO4Y
-        PZEu1yNjA10HdhanONlMulyKCIMuI4pKvmbEzELMcOlBeDRfUluNMVYeuZzSlPfzHmWGgw
-        +15wG9GBI4My0hJZdS08EGXyL5es9c9DLfoM0iueckZ/xnpSbchSQPC3+0+W4+8vT9uNUA
-        jUcL7DUPENvOFbXEclGmS6VGCYyXe0uFRd5uKPxujcR4kH9b/tJhUmJMFIDP06WW4MLdLW
-        LFpOKnQI29I+/da2v33CVywEdhSaQARzxew8V40/J9XkI+GX+B7MX2J55OZgIg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627650778;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=BWcVGmbWyWcoDB2biQikuWjpg7PJH7JnLeQSr4fcBOg=;
-        b=F5JpWNEHN/KAgXKk89pnOpY2SJ0NP5pnxj/X2jgZSGx5XR//BorHTZTXH4q0Opam8Fqjeb
-        O0uS4Wl7AcYCmjAA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.14-rc3-rt2
-Message-ID: <20210730131256.7d3jccmpuiw5pr4o@linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DvyXapxVzn+zrn+bjqa/tYPCaA3lgxakfkU7dEkt2Gk=;
+        b=N/glq5dWiufBFcqIXf41uSBX8hakjkXggDZ/AwZM/eiro+hyM2zMQTWlXVJzOhyo8gYU+G
+        JTEE3gV90ZnP7qttyp1i0+aPAuPIqtMyYSD4qSOo447UShLjq45fmI8WcE22/iEV5meHcs
+        1/JKFcv72ZwITNlKH93b6YyJOAIG0Hw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-nXL6IcJvOO2QZGOWolXgYw-1; Fri, 30 Jul 2021 09:13:36 -0400
+X-MC-Unique: nXL6IcJvOO2QZGOWolXgYw-1
+Received: by mail-wm1-f71.google.com with SMTP id d72-20020a1c1d4b0000b029025164ff3ebfso3184071wmd.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:13:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=DvyXapxVzn+zrn+bjqa/tYPCaA3lgxakfkU7dEkt2Gk=;
+        b=jQDOXduxFvVIlQDx9uPfwHhv0VF0jnvq6KSXfjSOEQqC/SvOdLuRqa4nzzhvfFT+aS
+         lAH7C5Iyy8RmgQbVePEemC5hJ3dlBuggOCWNTrscwMT/7FOViEXmFplPxtpk0nwdoBNj
+         hphBcUk+wEC89J7N6LTUrK7pehQWRjRvxVgty01UGsElt3xWsgiwUzhddhdi1hjeJD83
+         QGa52TJiohiL27Wxu1JFdF8dE21nDPLe76Tyt9sRJTnemYTQ27kiDbjI4kzp+JxrhyHN
+         G2mr+cOSsy+3ah2eXHevGQAMwgyH4N/oiKDcXPZghMqtN9EzUOouAkdy2sxilZM8oqxF
+         iGlg==
+X-Gm-Message-State: AOAM533wsi0Oy7gEAwD4BxxH/3khBFtlLtUNADcQLykmGAkGiLAPs/6R
+        SkgL64fcvJYnNFbSElZuYSq7GjfLKCKI057VvlNd8WgfCBQQN+muf893BpaoZbLKNVqRMu1C8Tw
+        fviJO0wTvCFQdRxmkA9/5K20Z
+X-Received: by 2002:a5d:504d:: with SMTP id h13mr1681131wrt.132.1627650815261;
+        Fri, 30 Jul 2021 06:13:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwD2MsKHFFU4eOyDr26wAYTuvNeP0131zeNhnr5KNwTAgbS7faVz5h/KI8ty6cYFADK7C8aww==
+X-Received: by 2002:a5d:504d:: with SMTP id h13mr1681103wrt.132.1627650815058;
+        Fri, 30 Jul 2021 06:13:35 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-97-57.dyn.eolo.it. [146.241.97.57])
+        by smtp.gmail.com with ESMTPSA id x12sm1775128wrt.35.2021.07.30.06.13.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 06:13:34 -0700 (PDT)
+Message-ID: <bc53b476f8a3a1bafb73c2f5072c0bad03bc1709.camel@redhat.com>
+Subject: Re: [PATCH] sock: allow reading and changing sk_userlocks with
+ setsockopt
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, Andrei Vagin <avagin@gmail.com>
+Date:   Fri, 30 Jul 2021 15:13:31 +0200
+In-Reply-To: <20210730105406.318726-1-ptikhomirov@virtuozzo.com>
+References: <20210730105406.318726-1-ptikhomirov@virtuozzo.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Fri, 2021-07-30 at 13:54 +0300, Pavel Tikhomirov wrote:
+> SOCK_SNDBUF_LOCK and SOCK_RCVBUF_LOCK flags disable automatic socket
+> buffers adjustment done by kernel (see tcp_fixup_rcvbuf() and
+> tcp_sndbuf_expand()). If we've just created a new socket this adjustment
+> is enabled on it, but if one changes the socket buffer size by
+> setsockopt(SO_{SND,RCV}BUF*) it becomes disabled.
+> 
+> CRIU needs to call setsockopt(SO_{SND,RCV}BUF*) on each socket on
+> restore as it first needs to increase buffer sizes for packet queues
+> restore and second it needs to restore back original buffer sizes. So
+> after CRIU restore all sockets become non-auto-adjustable, which can
+> decrease network performance of restored applications significantly.
 
-I'm pleased to announce the v5.14-rc3-rt2 patch set. 
+I'm wondering if you could just tune tcp_rmem instead?
 
-Changes since v5.14-rc3-rt1:
+> CRIU need to be able to restore sockets with enabled/disabled adjustment
+> to the same state it was before dump, so let's add special setsockopt
+> for it.
+> 
+> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+> ---
+> Here is a corresponding CRIU commits using these new feature to fix slow
+> download speed problem after migration:
+> https://github.com/checkpoint-restore/criu/pull/1568 
+> 
+> Origin of the problem:
+> 
+> We have a customer in Virtuozzo who mentioned that nginx server becomes
+> slower after container migration. Especially it is easy to mention when
+> you wget some big file via localhost from the same container which was
+> just migrated. 
+>  
+> By strace-ing all nginx processes I see that nginx worker process before
+> c/r sends data to local wget with big chunks ~1.5Mb, but after c/r it
+> only succeeds to send by small chunks ~64Kb.
+> 
+> Before: 
+> sendfile(12, 13, [7984974] => [9425600], 11479629) = 1440626 <0.000180> 
+>  
+> After: 
+> sendfile(8, 13, [1507275] => [1568768], 17957328) = 61493 <0.000675> 
+> 
+> Smaller buffer can explain the decrease in download speed. So as a POC I
+> just commented out all buffer setting manipulations and that helped.
+> 
+> ---
+>  arch/alpha/include/uapi/asm/socket.h  |  2 ++
+>  arch/mips/include/uapi/asm/socket.h   |  2 ++
+>  arch/parisc/include/uapi/asm/socket.h |  2 ++
+>  arch/sparc/include/uapi/asm/socket.h  |  2 ++
+>  include/uapi/asm-generic/socket.h     |  2 ++
+>  net/core/sock.c                       | 12 ++++++++++++
+>  6 files changed, 22 insertions(+)
+> 
+> diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
+> index 6b3daba60987..1dd9baf4a6c2 100644
+> --- a/arch/alpha/include/uapi/asm/socket.h
+> +++ b/arch/alpha/include/uapi/asm/socket.h
+> @@ -129,6 +129,8 @@
+>  
+>  #define SO_NETNS_COOKIE		71
+>  
+> +#define SO_BUF_LOCK		72
+> +
+>  #if !defined(__KERNEL__)
+>  
+>  #if __BITS_PER_LONG == 64
+> diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/asm/socket.h
+> index cdf404a831b2..1eaf6a1ca561 100644
+> --- a/arch/mips/include/uapi/asm/socket.h
+> +++ b/arch/mips/include/uapi/asm/socket.h
+> @@ -140,6 +140,8 @@
+>  
+>  #define SO_NETNS_COOKIE		71
+>  
+> +#define SO_BUF_LOCK		72
+> +
+>  #if !defined(__KERNEL__)
+>  
+>  #if __BITS_PER_LONG == 64
+> diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
+> index 5b5351cdcb33..8baaad52d799 100644
+> --- a/arch/parisc/include/uapi/asm/socket.h
+> +++ b/arch/parisc/include/uapi/asm/socket.h
+> @@ -121,6 +121,8 @@
+>  
+>  #define SO_NETNS_COOKIE		0x4045
+>  
+> +#define SO_BUF_LOCK		0x4046
+> +
+>  #if !defined(__KERNEL__)
+>  
+>  #if __BITS_PER_LONG == 64
+> diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi/asm/socket.h
+> index 92675dc380fa..e80ee8641ac3 100644
+> --- a/arch/sparc/include/uapi/asm/socket.h
+> +++ b/arch/sparc/include/uapi/asm/socket.h
+> @@ -122,6 +122,8 @@
+>  
+>  #define SO_NETNS_COOKIE          0x0050
+>  
+> +#define SO_BUF_LOCK              0x0051
+> +
+>  #if !defined(__KERNEL__)
+>  
+>  
+> diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
+> index d588c244ec2f..1f0a2b4864e4 100644
+> --- a/include/uapi/asm-generic/socket.h
+> +++ b/include/uapi/asm-generic/socket.h
+> @@ -124,6 +124,8 @@
+>  
+>  #define SO_NETNS_COOKIE		71
+>  
+> +#define SO_BUF_LOCK		72
+> +
+>  #if !defined(__KERNEL__)
+>  
+>  #if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index a3eea6e0b30a..843094f069f3 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -1357,6 +1357,14 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+>  		ret = sock_bindtoindex_locked(sk, val);
+>  		break;
+>  
+> +	case SO_BUF_LOCK:
+> +		{
+> +		int mask = SOCK_SNDBUF_LOCK | SOCK_RCVBUF_LOCK;
 
-  - To cope with SLUB based hackbench regression adaptive spinning has
-    been introduced for all rtmutex based locks. This improves the
-    hackbench time significantly.
+What about define a marco with the above mask, and avoid the local
+variable declaration and brackets??!
 
-Known issues
-     - netconsole triggers WARN.
+Thanks!
 
-     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
+Paolo
 
-The delta patch against v5.14-rc3-rt1 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/incr/patch-5.14-rc3-rt1-rt2.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.14-rc3-rt2
-
-The RT patch against v5.14-rc3 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patch-5.14-rc3-rt2.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patches-5.14-rc3-rt2.tar.xz
-
-Sebastian
-
-
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index 58762a3970ed7..e347bbc12641d 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1277,6 +1277,43 @@ static __always_inline void __rt_mutex_unlock(struct rt_mutex_base *lock)
- 	rt_mutex_slowunlock(lock);
- }
- 
-+#ifdef CONFIG_SMP
-+/*
-+ * Note that owner is a speculative pointer and dereferencing relies
-+ * on rcu_read_lock() and the check against the lock owner.
-+ */
-+static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
-+				     struct task_struct *owner)
-+{
-+	bool res = true;
-+
-+	rcu_read_lock();
-+	for (;;) {
-+		/* Owner changed. Trylock again */
-+		if (owner != rt_mutex_owner(lock))
-+			break;
-+		/*
-+		 * Ensure that owner->on_cpu is dereferenced _after_
-+		 * checking the above to be valid.
-+		 */
-+		barrier();
-+		if (!owner->on_cpu) {
-+			res = false;
-+			break;
-+		}
-+		cpu_relax();
-+	}
-+	rcu_read_unlock();
-+	return res;
-+}
-+#else
-+static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
-+				     struct task_struct *owner)
-+{
-+	return false;
-+}
-+#endif
-+
- #ifdef RT_MUTEX_BUILD_MUTEX
- /*
-  * Functions required for:
-@@ -1361,6 +1398,7 @@ static int __sched rt_mutex_slowlock_block(struct rt_mutex_base *lock,
- 					   struct rt_mutex_waiter *waiter)
- {
- 	struct rt_mutex *rtm = container_of(lock, struct rt_mutex, rtmutex);
-+	struct task_struct *owner;
- 	int ret = 0;
- 
- 	for (;;) {
-@@ -1383,9 +1421,14 @@ static int __sched rt_mutex_slowlock_block(struct rt_mutex_base *lock,
- 				break;
- 		}
- 
-+		if (waiter == rt_mutex_top_waiter(lock))
-+			owner = rt_mutex_owner(lock);
-+		else
-+			owner = NULL;
- 		raw_spin_unlock_irq(&lock->wait_lock);
- 
--		schedule();
-+		if (!owner || !rtmutex_adaptive_spinwait(lock, owner))
-+			schedule();
- 
- 		raw_spin_lock_irq(&lock->wait_lock);
- 		set_current_state(state);
-@@ -1534,43 +1577,6 @@ static __always_inline int __rt_mutex_lock(struct rt_mutex_base *lock,
-  * Functions required for spin/rw_lock substitution on RT kernels
-  */
- 
--#ifdef CONFIG_SMP
--/*
-- * Note that owner is a speculative pointer and dereferencing relies
-- * on rcu_read_lock() and the check against the lock owner.
-- */
--static bool rtlock_adaptive_spinwait(struct rt_mutex_base *lock,
--				     struct task_struct *owner)
--{
--	bool res = true;
--
--	rcu_read_lock();
--	for (;;) {
--		/* Owner changed. Trylock again */
--		if (owner != rt_mutex_owner(lock))
--			break;
--		/*
--		 * Ensure that owner->on_cpu is dereferenced _after_
--		 * checking the above to be valid.
--		 */
--		barrier();
--		if (!owner->on_cpu) {
--			res = false;
--			break;
--		}
--		cpu_relax();
--	}
--	rcu_read_unlock();
--	return res;
--}
--#else
--static bool rtlock_adaptive_spinwait(struct rt_mutex_base *lock,
--				     struct task_struct *owner)
--{
--	return false;
--}
--#endif
--
- /**
-  * rtlock_slowlock_locked - Slow path lock acquisition for RT locks
-  * @lock:	The underlying rt mutex
-@@ -1603,7 +1609,7 @@ static void __sched rtlock_slowlock_locked(struct rt_mutex_base *lock)
- 			owner = NULL;
- 		raw_spin_unlock_irq(&lock->wait_lock);
- 
--		if (!owner || !rtlock_adaptive_spinwait(lock, owner))
-+		if (!owner || !rtmutex_adaptive_spinwait(lock, owner))
- 			schedule_rtlock();
- 
- 		raw_spin_lock_irq(&lock->wait_lock);
-diff --git a/localversion-rt b/localversion-rt
-index 6f206be67cd28..c3054d08a1129 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt1
-+-rt2
