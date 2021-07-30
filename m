@@ -2,135 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D91C3DC1A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554603DC1A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbhG3XlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 19:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhG3XlM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 19:41:12 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C01C06175F;
-        Fri, 30 Jul 2021 16:41:07 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id b7so15443986edu.3;
-        Fri, 30 Jul 2021 16:41:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jSLUnuuq5fV++9tMx9L7dLU+YzP6IguTmZ4Xmh+94Bg=;
-        b=nJKDksbiCLIFAtUQDafEvw8Tzb1I9e/ExJonodW9mAQVo7IJwENFLNXkXhOxQeKsnF
-         poz0zfkeaJomNjwwRAtTVImPZ92rp8E3H3CqyHF5VgrqRpilrelaFtxpKdggbwdknlCr
-         +frMG9q5tu10/1KIxHyes8BTAmU+QlEfUuJ7sO5JvAx8phaVDZzW5wzyVupRCAacJXNr
-         8tyaFCL2nt6rxITYE0xsb5sZ+Hy2cz09YeQZxlkcM0wHwtYgFgMRZMbJKLv2Z6DzZe5m
-         cDi/yh4U3O7fgoOk1CIomGbWhRk9XwpRqGI0XGnw7VcJq6oDOZAdFx31F6W6U9IWMDge
-         aGRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jSLUnuuq5fV++9tMx9L7dLU+YzP6IguTmZ4Xmh+94Bg=;
-        b=s+uiL59t5wzD51UH+syFsE0X75ihfncp2mVPIPLknL/CgeTqYWuAfG6QqT7iVUhgMR
-         5SMsHEoxFRkalz5GNAWqJBulPS82iNQ3GhcrQHGdJTE6xTpA6WkU7hSwpJJ/LelM8gp6
-         WtPAvR0/uhW579GWQW6+zLC8YrudWJCylYQhaInfhRA2UsgufLqZMW3Sa2gwQGsOSJn6
-         05zV2cYPhwhJsXN5vz3jmAESpmrhnHXtdv0zYreiVbqZbC0zoHJMuCtdLVAXPSUiag0D
-         APkfyzAsZhwEQQIRELUSZAxFxb1O2OITtBwpF4aiVgg90ImxwcKEs6swSvqcR8B/YeGJ
-         xmfw==
-X-Gm-Message-State: AOAM530EbjgnbcuqB8z7J+XZ6uZXSnGu8MytyhLP1U3zASWmPG3qqMRO
-        bUcCnYFDu+U91ZzC/TSqf0fv1yil5yxmqiGhSMA=
-X-Google-Smtp-Source: ABdhPJxfYN/q50PwtEt3EJiGj5Xb4PpKv5m7TrjWQ6Yme3cRMXL+6f6psAPwR3C5mFjRRECnBjMITxj+5Mu6oUPn4q4=
-X-Received: by 2002:a50:ce45:: with SMTP id k5mr6111555edj.168.1627688466110;
- Fri, 30 Jul 2021 16:41:06 -0700 (PDT)
+        id S234243AbhG3XlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 19:41:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234151AbhG3XlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 19:41:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B779660EE2;
+        Fri, 30 Jul 2021 23:41:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627688478;
+        bh=dBi7PUBE2gAdvWe3vzHih6pDhoOWgVe0oOpHF6CMmv0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=K5bSvfe73MQxuPsUIQtW18p5P4kjucbXM28QkJf0LkNCJjBnF5y2tgrNNnXc7DbNw
+         LzcNrLEA9+GD8aC0Y+BvuUId8xztzSYG4bya5iSwkx0Nr63cX5qXlCGNn6vphomzET
+         esMGkYdMNV6XaCUZMGKs6i2r1qX7FIjZvJYe0IzvEW1h5KHwk3JrBAyZg5MPQCNVD4
+         2xpjuORpF0QBWyO4oYvVoajlMD3OvBK1q46GjDc4zZ78q+EZkmPdDUegnpQzXqvODN
+         XwToiCiXhT0UKH+UcOQogQ/sVKiHz9C0SvUCj/LvcdKfFwmPslduNajAFGEaM6jAXg
+         rYhA7gktPFZ6w==
+Subject: Re: [PATCH] f2fs: introduce nosmall_discard mount option
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
+References: <20210730100530.4401-1-chao@kernel.org>
+ <YQREtmDLBNKSQViC@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <c0af2126-7383-a579-e020-6480216c46fe@kernel.org>
+Date:   Sat, 31 Jul 2021 07:41:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <e6e572-f314-8a43-41a7-7582759d24@google.com>
-In-Reply-To: <e6e572-f314-8a43-41a7-7582759d24@google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 30 Jul 2021 16:40:54 -0700
-Message-ID: <CAHbLzkp2s+Tkd1kdD4XPU-BF_rDy3Ck7+peTg+WdOWORMjwK-g@mail.gmail.com>
-Subject: Re: [PATCH 09/16] huge tmpfs: decide stat.st_blksize by shmem_is_huge()
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQREtmDLBNKSQViC@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:51 AM Hugh Dickins <hughd@google.com> wrote:
->
-> 4.18 commit 89fdcd262fd4 ("mm: shmem: make stat.st_blksize return huge
-> page size if THP is on") added is_huge_enabled() to decide st_blksize:
-> now that hugeness can be defined per file, that too needs to be replaced
-> by shmem_is_huge().
->
-> Unless they have been fcntl'ed F_HUGEPAGE, this does give a different
-> answer (No) for small files on a "huge=within_size" mount: but that can
-> be considered a minor bugfix.  And a different answer (No) for unfcntl'ed
-> files on a "huge=advise" mount: I'm reluctant to complicate it, just to
-> reproduce the same debatable answer as before.
->
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+On 2021/7/31 2:28, Jaegeuk Kim wrote:
+> how about adding "discard_gran=[small|segment|section]", and keeping discard_map
+> in the small case only? And, I think we should set the section mode for zoned
+> device automatically.
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+Yup, better,
 
-> ---
->  mm/shmem.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 67a4b7a4849b..f50f2ede71da 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -712,15 +712,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
->  }
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->
-> -static inline bool is_huge_enabled(struct shmem_sb_info *sbinfo)
-> -{
-> -       if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
-> -           (shmem_huge == SHMEM_HUGE_FORCE || sbinfo->huge) &&
-> -           shmem_huge != SHMEM_HUGE_DENY)
-> -               return true;
-> -       return false;
-> -}
-> -
->  /*
->   * Like add_to_page_cache_locked, but error if expected item has gone.
->   */
-> @@ -1101,7 +1092,6 @@ static int shmem_getattr(struct user_namespace *mnt_userns,
->  {
->         struct inode *inode = path->dentry->d_inode;
->         struct shmem_inode_info *info = SHMEM_I(inode);
-> -       struct shmem_sb_info *sb_info = SHMEM_SB(inode->i_sb);
->
->         if (info->alloced - info->swapped != inode->i_mapping->nrpages) {
->                 spin_lock_irq(&info->lock);
-> @@ -1110,7 +1100,7 @@ static int shmem_getattr(struct user_namespace *mnt_userns,
->         }
->         generic_fillattr(&init_user_ns, inode, stat);
->
-> -       if (is_huge_enabled(sb_info))
-> +       if (shmem_is_huge(NULL, inode, 0))
->                 stat->blksize = HPAGE_PMD_SIZE;
->
->         return 0;
-> --
-> 2.26.2
->
+About the naming, it look discard_gran is not clear here, since there is another
+sysfs entry /sys/fs/f2fs/<devname>/discard_granularity has the same name, and
+also semantics of newly added mount option is not only control the smallest discard
+size, but also indicate discard start offset should be aligned to segment or section.
+So how about using: "aligned_discard=[none|segment|section]" instead?
+
+Thanks,
