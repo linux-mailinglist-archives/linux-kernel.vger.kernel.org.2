@@ -2,452 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9213DB6C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062CE3DB6CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238625AbhG3KEd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Jul 2021 06:04:33 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6645 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238550AbhG3KEO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:04:14 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4GbjZD3pQtz18NRB;
-        Fri, 30 Jul 2021 18:00:20 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 30 Jul 2021 18:04:07 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Fri, 30 Jul 2021 18:04:06 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-CC:     "liuqi (BA)" <liuqi115@huawei.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
-Thread-Topic: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
-Thread-Index: AQHXfJkyPamnf4yoyEqhBrLk7zE456tMmTOAgAIsGRD//9DNAIABRquggAt7BNA=
-Date:   Fri, 30 Jul 2021 10:04:06 +0000
-Message-ID: <e63531dc8b7040219761e72fb9b1e74a@hisilicon.com>
-References: <20210719122417.10355-1-liuqi115@huawei.com>
-        <20210721174153.34c1898dc9eea135eb0b8be8@kernel.org>
-        <332df5b7d7bb4bd096b6521ffefaabe6@hisilicon.com>
- <20210723000318.5594c86e7c454aed82d9465d@kernel.org> 
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.38]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S238514AbhG3KFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:05:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238454AbhG3KFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 06:05:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B929460F12;
+        Fri, 30 Jul 2021 10:05:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627639536;
+        bh=MiGJ5tAiT7WWd+8Ka3WiO9RRDncQn21ay0hbxcmXhzI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JIHInTtgTr/rk+RipxHra15BDI0L1w8T3lYIMlW9chqAHNXC5qjAEch68n1chHlbB
+         XQSDFFIubmjsCqr7/c0o2lVpQ5BWaevBV3Ik/K+rMPCCcCAZCTjZqIzHxnc9OoLDM5
+         +BJMcN4hnbqJCpJ2Tyr56sWQMjDEFv2yhX5Q1G5LeAvjJl29JU6GoG6bhYU/Fj2LAA
+         wzkzXkbHkgxyokZMtz66fHZ4L4NBTbndcyht0kQBLxie0bjxHvubkvbt1whOivm4BZ
+         b5TFzw9rp2e1hCJ7u1rHT4TARiOX7KVMLFXJCcSSwggRSaGu1XauKGNEGEkTg2S+uS
+         Ol13tQ/LYE//Q==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
+        Chao Yu <chao@kernel.org>
+Subject: [PATCH] f2fs: introduce nosmall_discard mount option
+Date:   Fri, 30 Jul 2021 18:05:30 +0800
+Message-Id: <20210730100530.4401-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As James Z reported in bugzilla:
 
+https://bugzilla.kernel.org/show_bug.cgi?id=213877
 
-> -----Original Message-----
-> From: Song Bao Hua (Barry Song)
-> Sent: Friday, July 23, 2021 2:43 PM
-> To: 'Masami Hiramatsu' <mhiramat@kernel.org>
-> Cc: liuqi (BA) <liuqi115@huawei.com>; catalin.marinas@arm.com;
-> will@kernel.org; naveen.n.rao@linux.ibm.com; anil.s.keshavamurthy@intel.com;
-> davem@davemloft.net; linux-arm-kernel@lists.infradead.org; Zengtao (B)
-> <prime.zeng@hisilicon.com>; robin.murphy@arm.com; Linuxarm
-> <linuxarm@huawei.com>; linux-kernel@vger.kernel.org
-> Subject: RE: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
-> 
-> 
-> 
-> > -----Original Message-----
-> > From: Masami Hiramatsu [mailto:mhiramat@kernel.org]
-> > Sent: Friday, July 23, 2021 3:03 AM
-> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > Cc: liuqi (BA) <liuqi115@huawei.com>; catalin.marinas@arm.com;
-> > will@kernel.org; naveen.n.rao@linux.ibm.com;
-> anil.s.keshavamurthy@intel.com;
-> > davem@davemloft.net; linux-arm-kernel@lists.infradead.org; Zengtao (B)
-> > <prime.zeng@hisilicon.com>; robin.murphy@arm.com; Linuxarm
-> > <linuxarm@huawei.com>; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
-> >
-> > Hi Song,
-> >
-> > On Thu, 22 Jul 2021 10:24:54 +0000
-> > "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
-> >
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Masami Hiramatsu [mailto:mhiramat@kernel.org]
-> > > > Sent: Wednesday, July 21, 2021 8:42 PM
-> > > > To: liuqi (BA) <liuqi115@huawei.com>
-> > > > Cc: catalin.marinas@arm.com; will@kernel.org;
-> naveen.n.rao@linux.ibm.com;
-> > > > anil.s.keshavamurthy@intel.com; davem@davemloft.net;
-> > > > linux-arm-kernel@lists.infradead.org; Song Bao Hua (Barry Song)
-> > > > <song.bao.hua@hisilicon.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> > > > robin.murphy@arm.com; Linuxarm <linuxarm@huawei.com>;
-> > > > linux-kernel@vger.kernel.org
-> > > > Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
-> > > >
-> > > > Hi Qi,
-> > > >
-> > > > Thanks for your effort!
-> > > >
-> > > > On Mon, 19 Jul 2021 20:24:17 +0800
-> > > > Qi Liu <liuqi115@huawei.com> wrote:
-> > > >
-> > > > > This patch introduce optprobe for ARM64. In optprobe, probed
-> > > > > instruction is replaced by a branch instruction to detour
-> > > > > buffer. Detour buffer contains trampoline code and a call to
-> > > > > optimized_callback(). optimized_callback() calls opt_pre_handler()
-> > > > > to execute kprobe handler.
-> > > >
-> > > > OK so this will replace only one instruction.
-> > > >
-> > > > >
-> > > > > Limitations:
-> > > > > - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
-> > > > > guarantee the offset between probe point and kprobe pre_handler
-> > > > > is not larger than 128MiB.
-> > > >
-> > > > Hmm, shouldn't we depends on !CONFIG_ARM64_MODULE_PLTS? Or,
-> > > > allocate an intermediate trampoline area similar to arm optprobe
-> > > > does.
-> > >
-> > > Depending on !CONFIG_ARM64_MODULE_PLTS will totally disable
-> > > RANDOMIZE_BASE according to arch/arm64/Kconfig:
-> > > config RANDOMIZE_BASE
-> > > 	bool "Randomize the address of the kernel image"
-> > > 	select ARM64_MODULE_PLTS if MODULES
-> > > 	select RELOCATABLE
-> >
-> > Yes, but why it is required for "RANDOMIZE_BASE"?
-> > Does that imply the module call might need to use PLT in
-> > some cases?
-> >
-> > >
-> > > Depending on !RANDOMIZE_MODULE_REGION_FULL seems to be still
-> > > allowing RANDOMIZE_BASE via avoiding long jump according to:
-> > > arch/arm64/Kconfig:
-> > >
-> > > config RANDOMIZE_MODULE_REGION_FULL
-> > > 	bool "Randomize the module region over a 4 GB range"
-> > > 	depends on RANDOMIZE_BASE
-> > > 	default y
-> > > 	help
-> > > 	  Randomizes the location of the module region inside a 4 GB window
-> > > 	  covering the core kernel. This way, it is less likely for modules
-> > > 	  to leak information about the location of core kernel data structures
-> > > 	  but it does imply that function calls between modules and the core
-> > > 	  kernel will need to be resolved via veneers in the module PLT.
-> > >
-> > > 	  When this option is not set, the module region will be randomized over
-> > > 	  a limited range that contains the [_stext, _etext] interval of the
-> > > 	  core kernel, so branch relocations are always in range.
-> >
-> > Hmm, this dependency looks strange. If it always in range, don't we need
-> > PLT for modules?
-> >
-> > Cataline, would you know why?
-> > Maybe it's a KASLR's Kconfig issue?
-> 
-> I actually didn't see any problem after making this change:
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index e07e7de9ac49..6440671b72e0 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1781,7 +1781,6 @@ config RELOCATABLE
-> 
->  config RANDOMIZE_BASE
->         bool "Randomize the address of the kernel image"
-> -       select ARM64_MODULE_PLTS if MODULES
->         select RELOCATABLE
->         help
->           Randomizes the virtual address at which the kernel image is
-> @@ -1801,6 +1800,7 @@ config RANDOMIZE_BASE
->  config RANDOMIZE_MODULE_REGION_FULL
->         bool "Randomize the module region over a 4 GB range"
->         depends on RANDOMIZE_BASE
-> +       select ARM64_MODULE_PLTS if MODULES
->         default y
->         help
->           Randomizes the location of the module region inside a 4 GB window
-> 
-> and having this config:
-> # zcat /proc/config.gz | grep RANDOMIZE_BASE
-> CONFIG_RANDOMIZE_BASE=y
-> 
-> # zcat /proc/config.gz | grep RANDOMIZE_MODULE_REGION_FULL
-> # CONFIG_RANDOMIZE_MODULE_REGION_FULL is not set
-> 
-> # zcat /proc/config.gz | grep ARM64_MODULE_PLTS
-> # CONFIG_ARM64_MODULE_PLTS is not set
-> 
-> Modules work all good:
-> # lsmod
-> Module                  Size  Used by
-> btrfs                1355776  0
-> blake2b_generic        20480  0
-> libcrc32c              16384  1 btrfs
-> xor                    20480  1 btrfs
-> xor_neon               16384  1 xor
-> zstd_compress         163840  1 btrfs
-> raid6_pq              110592  1 btrfs
-> ctr                    16384  0
-> md5                    16384  0
-> ip_tunnel              32768  0
-> ipv6                  442368  28
-> 
-> 
-> I am not quite sure if there is a corner case. If no,
-> I would think the kconfig might be some improper.
+[1.] One-line summary of the problem:
+Mount multiple SMR block devices exceed certain number cause system non-response
 
-The corner case is that even CONFIG_RANDOMIZE_MODULE_REGION_FULL
-is not enabled, but if CONFIG_ARM64_MODULE_PLTS is enabled, when
-we can't get memory from the 128MB area in case the area is exhausted,
-we will fall back in module_alloc() to a 2GB area as long as either
-of the below two conditions is met:
+[2.] Full description of the problem/report:
+Created some F2FS on SMR devices (mkfs.f2fs -m), then mounted in sequence. Each device is the same Model: HGST HSH721414AL (Size 14TB).
+Empirically, found that when the amount of SMR device * 1.5Gb > System RAM, the system ran out of memory and hung. No dmesg output. For example, 24 SMR Disk need 24*1.5GB = 36GB. A system with 32G RAM can only mount 21 devices, the 22nd device will be a reproducible cause of system hang.
+The number of SMR devices with other FS mounted on this system does not interfere with the result above.
 
-1. KASAN is not enabled
-2. KASAN is enabled and CONFIG_KASAN_VMALLOC is also enabled.
+[3.] Keywords (i.e., modules, networking, kernel):
+F2FS, SMR, Memory
 
-void *module_alloc(unsigned long size)
-{
-	u64 module_alloc_end = module_alloc_base + MODULES_VSIZE;
-	gfp_t gfp_mask = GFP_KERNEL;
-	void *p;
+[4.] Kernel information
+[4.1.] Kernel version (uname -a):
+Linux 5.13.4-200.fc34.x86_64 #1 SMP Tue Jul 20 20:27:29 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
 
-	/* Silence the initial allocation */
-	if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS))
-		gfp_mask |= __GFP_NOWARN;
+[4.2.] Kernel .config file:
+Default Fedora 34 with f2fs-tools-1.14.0-2.fc34.x86_64
 
-	if (IS_ENABLED(CONFIG_KASAN_GENERIC) ||
-	    IS_ENABLED(CONFIG_KASAN_SW_TAGS))
-		/* don't exceed the static module region - see below */
-		module_alloc_end = MODULES_END;
+[5.] Most recent kernel version which did not have the bug:
+None
 
-	p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
-				module_alloc_end, gfp_mask, PAGE_KERNEL, 0,
-				NUMA_NO_NODE, __builtin_return_address(0));
+[6.] Output of Oops.. message (if applicable) with symbolic information
+     resolved (see Documentation/admin-guide/oops-tracing.rst)
+None
 
-	if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
-	    (IS_ENABLED(CONFIG_KASAN_VMALLOC) ||
-	     (!IS_ENABLED(CONFIG_KASAN_GENERIC) &&
-	      !IS_ENABLED(CONFIG_KASAN_SW_TAGS))))
-		/*
-		 * KASAN without KASAN_VMALLOC can only deal with module
-		 * allocations being served from the reserved module region,
-		 * since the remainder of the vmalloc region is already
-		 * backed by zero shadow pages, and punching holes into it
-		 * is non-trivial. Since the module region is not randomized
-		 * when KASAN is enabled without KASAN_VMALLOC, it is even
-		 * less likely that the module region gets exhausted, so we
-		 * can simply omit this fallback in that case.
-		 */
-		p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
-				module_alloc_base + SZ_2G, GFP_KERNEL,
-				PAGE_KERNEL, 0, NUMA_NO_NODE,
-				__builtin_return_address(0));
+[7.] A small shell script or example program which triggers the
+     problem (if possible)
+mount /dev/sdX /mnt/0X
 
-	if (p && (kasan_module_alloc(p, size) < 0)) {
-		vfree(p);
-		return NULL;
-	}
+[8.] Memory consumption
 
-	return p;
-}
+With 24 * 14T SMR Block device with F2FS
+free -g
+              total        used        free      shared  buff/cache   available
+Mem:             46          36           0           0          10          10
+Swap:             0           0           0
 
-This should be happening quite rarely. But maybe arm64's document
-needs some minor fixup, otherwise, it is quite confusing.
+With 3 * 14T SMR Block device with F2FS
+free -g
+               total        used        free      shared  buff/cache   available
+Mem:               7           5           0           0           1           1
+Swap:              7           0           7
 
-> >
-> > >
-> > > and
-> > >
-> > > arch/arm64/kernel/kaslr.c:
-> > > 	if (IS_ENABLED(CONFIG_RANDOMIZE_MODULE_REGION_FULL)) {
-> > > 		/*
-> > > 		 * Randomize the module region over a 2 GB window covering the
-> > > 		 * kernel. This reduces the risk of modules leaking information
-> > > 		 * about the address of the kernel itself, but results in
-> > > 		 * branches between modules and the core kernel that are
-> > > 		 * resolved via PLTs. (Branches between modules will be
-> > > 		 * resolved normally.)
-> > > 		 */
-> > > 		module_range = SZ_2G - (u64)(_end - _stext);
-> > > 		module_alloc_base = max((u64)_end + offset - SZ_2G,
-> > > 					(u64)MODULES_VADDR);
-> > > 	} else {
-> > > 		/*
-> > > 		 * Randomize the module region by setting module_alloc_base to
-> > > 		 * a PAGE_SIZE multiple in the range [_etext - MODULES_VSIZE,
-> > > 		 * _stext) . This guarantees that the resulting region still
-> > > 		 * covers [_stext, _etext], and that all relative branches can
-> > > 		 * be resolved without veneers.
-> > > 		 */
-> > > 		module_range = MODULES_VSIZE - (u64)(_etext - _stext);
-> > > 		module_alloc_base = (u64)_etext + offset - MODULES_VSIZE;
-> > > 	}
-> > >
-> > > So depending on ! ARM64_MODULE_PLTS seems to narrow the scenarios
-> > > while depending on ! RANDOMIZE_MODULE_REGION_FULL  permit more
-> > > machines to use optprobe.
-> >
-> > OK, I see that the code ensures the range will be in the MODULE_VSIZE (=128MB).
-> >
-> > >
-> > > I am not quite sure I am 100% right but tests seem to back this.
-> > > hopefully Catalin and Will can correct me.
-> > >
-> > > >
-> > > > >
-> > > > > Performance of optprobe on Hip08 platform is test using kprobe
-> > > > > example module[1] to analyze the latency of a kernel function,
-> > > > > and here is the result:
-> > > > >
-> > > > > [1]
-> > > >
-> >
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sa
-> > > > mples/kprobes/kretprobe_example.c
-> > > > >
-> > > > > kprobe before optimized:
-> > > > > [280709.846380] do_empty returned 0 and took 1530 ns to execute
-> > > > > [280709.852057] do_empty returned 0 and took 550 ns to execute
-> > > > > [280709.857631] do_empty returned 0 and took 440 ns to execute
-> > > > > [280709.863215] do_empty returned 0 and took 380 ns to execute
-> > > > > [280709.868787] do_empty returned 0 and took 360 ns to execute
-> > > > > [280709.874362] do_empty returned 0 and took 340 ns to execute
-> > > > > [280709.879936] do_empty returned 0 and took 320 ns to execute
-> > > > > [280709.885505] do_empty returned 0 and took 300 ns to execute
-> > > > > [280709.891075] do_empty returned 0 and took 280 ns to execute
-> > > > > [280709.896646] do_empty returned 0 and took 290 ns to execute
-> > > > > [280709.902220] do_empty returned 0 and took 290 ns to execute
-> > > > > [280709.907807] do_empty returned 0 and took 290 ns to execute
-> > > > >
-> > > > > optprobe:
-> > > > > [ 2965.964572] do_empty returned 0 and took 90 ns to execute
-> > > > > [ 2965.969952] do_empty returned 0 and took 80 ns to execute
-> > > > > [ 2965.975332] do_empty returned 0 and took 70 ns to execute
-> > > > > [ 2965.980714] do_empty returned 0 and took 60 ns to execute
-> > > > > [ 2965.986128] do_empty returned 0 and took 80 ns to execute
-> > > > > [ 2965.991507] do_empty returned 0 and took 70 ns to execute
-> > > > > [ 2965.996884] do_empty returned 0 and took 70 ns to execute
-> > > > > [ 2966.002262] do_empty returned 0 and took 80 ns to execute
-> > > > > [ 2966.007642] do_empty returned 0 and took 70 ns to execute
-> > > > > [ 2966.013020] do_empty returned 0 and took 70 ns to execute
-> > > > > [ 2966.018400] do_empty returned 0 and took 70 ns to execute
-> > > > > [ 2966.023779] do_empty returned 0 and took 70 ns to execute
-> > > > > [ 2966.029158] do_empty returned 0 and took 70 ns to execute
-> > > >
-> > > > Great result!
-> > > > I have other comments on the code below.
-> > > >
-> > > > [...]
-> > > > > diff --git a/arch/arm64/kernel/probes/kprobes.c
-> > > > b/arch/arm64/kernel/probes/kprobes.c
-> > > > > index 6dbcc89f6662..83755ad62abe 100644
-> > > > > --- a/arch/arm64/kernel/probes/kprobes.c
-> > > > > +++ b/arch/arm64/kernel/probes/kprobes.c
-> > > > > @@ -11,6 +11,7 @@
-> > > > >  #include <linux/kasan.h>
-> > > > >  #include <linux/kernel.h>
-> > > > >  #include <linux/kprobes.h>
-> > > > > +#include <linux/moduleloader.h>
-> > > > >  #include <linux/sched/debug.h>
-> > > > >  #include <linux/set_memory.h>
-> > > > >  #include <linux/slab.h>
-> > > > > @@ -113,9 +114,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe
-> *p)
-> > > > >
-> > > > >  void *alloc_insn_page(void)
-> > > > >  {
-> > > > > -	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START,
-> > VMALLOC_END,
-> > > > > -			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
-> > > > > -			NUMA_NO_NODE, __builtin_return_address(0));
-> > > > > +	void *page;
-> > > > > +
-> > > > > +	page = module_alloc(PAGE_SIZE);
-> > > > > +	if (!page)
-> > > > > +		return NULL;
-> > > > > +
-> > > > > +	set_vm_flush_reset_perms(page);
-> > > > > +	/*
-> > > > > +	 * First make the page read-only, and only then make it executable
-> > to
-> > > > > +	 * prevent it from being W+X in between.
-> > > > > +	 */
-> > > > > +	set_memory_ro((unsigned long)page, 1);
-> > > > > +	set_memory_x((unsigned long)page, 1);
-> > > > > +
-> > > > > +	return page;
-> > > >
-> > > > Isn't this a separated change? Or any reason why you have to
-> > > > change this function?
-> > >
-> > > As far as I can tell, this is still related with the 128MB
-> > > short jump limitation.
-> > > VMALLOC_START, VMALLOC_END is an fixed virtual address area
-> > > which isn't necessarily modules will be put.
-> > > So this patch is moving to module_alloc() which will get
-> > > memory between module_alloc_base and module_alloc_end.
-> >
-> > Ah, I missed that point. Yes, VMALLOC_START and VMALLOC_END
-> > are not correct range.
-> >
-> > >
-> > > Together with depending on !RANDOMIZE_MODULE_REGION_FULL,
-> > > this makes all kernel, module and trampoline in short
-> > > jmp area.
-> > >
-> > > As long as we can figure out a way to support long jmp
-> > > for optprobe, the change in alloc_insn_page() can be
-> > > dropped.
-> >
-> > No, I think above change is rather readable, so it is OK.
-> >
-> > >
-> > > Masami, any reference code from any platform to support long
-> > > jump for optprobe? For long jmp, we need to put jmp address
-> > > to a memory and then somehow load the target address
-> > > to PC. Right now, we are able to replace an instruction
-> > > only. That is the problem.
-> >
-> > Hmm, I had read a paper about 2-stage jump idea 15years ago. That
-> > paper allocated an intermediate trampoline (like PLT) which did a long
-> > jump to the real trampoline on SPARC.
-> > (something like, "push x0; ldr x0, [pc+8]; br x0; <immediate-addr>" for
-> > a slot of the intermediate trampoline.)
-> >
-> > For the other (simpler) solution example is optprobe in powerpc
-> > (arch/powerpc/kernel/optprobes_head.S). That reserves a buffer page
-> > in the text section, and use it.
-> >
-> > But I think your current implementation is good enough for the
-> > first step. If someone needs CONFIG_RANDOMIZE_MODULE_REGION_FULL
-> > and optprobe, we can revisit this point.
-> >
-> > Thank you,
+The root cause is, there are three bitmaps:
+- cur_valid_map
+- ckpt_valid_map
+- discard_map
+and each of them will cost ~500MB memory, {cur, ckpt}_valid_map are
+necessary, but discard_map is optional, since this bitmap will only be
+useful in mountpoint that small discard is enabled.
 
+For a blkzoned device such as SMR or ZNS devices, f2fs will only issue
+discard for a section(zone) when all blocks of that section are invalid,
+so, for such device, we don't need small discard functionality at all.
 
-Thanks
-Barry
+This patch introduces a new mountoption "nosmall_discard" to support
+disabling small discard functionality, note that the mountoption can not
+be removed by remount() due to related metadata should always be
+initialized during mount().
+
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ Documentation/filesystems/f2fs.rst |  4 ++
+ fs/f2fs/f2fs.h                     |  3 ++
+ fs/f2fs/segment.c                  | 81 +++++++++++++++++++-----------
+ fs/f2fs/super.c                    | 17 ++++++-
+ 4 files changed, 75 insertions(+), 30 deletions(-)
+
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index ff9e7cc97c65..9ce32fd1c90f 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -312,6 +312,10 @@ inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+ 			 Documentation/block/inline-encryption.rst.
+ atgc			 Enable age-threshold garbage collection, it provides high
+ 			 effectiveness and efficiency on background GC.
++nosmall_discard		 Support to disable small discard, with this, filesystem will
++			 only issue discard aligned to segment or section in lfs mode,
++			 it is useful for large sized SMR or ZNS devices to reduce
++			 memory cost.
+ ======================== ============================================================
+ 
+ Debugfs Entries
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 5d16486feb8f..fb0ce582808f 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -99,6 +99,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
+ #define F2FS_MOUNT_MERGE_CHECKPOINT	0x10000000
+ #define	F2FS_MOUNT_GC_MERGE		0x20000000
+ #define F2FS_MOUNT_COMPRESS_CACHE	0x40000000
++#define F2FS_MOUNT_NOSMALL_DISCARD	0x80000000
+ 
+ #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
+ #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
+@@ -302,6 +303,8 @@ struct discard_entry {
+ /* default discard granularity of inner discard thread, unit: block count */
+ #define DEFAULT_DISCARD_GRANULARITY		16
+ 
++#define SEGMENT_ALIGNED_DISCARD_GRANULARITY	512
++
+ /* max discard pend list number */
+ #define MAX_PLIST_NUM		512
+ #define plist_idx(blk_num)	((blk_num) >= MAX_PLIST_NUM ?		\
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index f9b7fb785e1d..73b532601aef 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -1871,6 +1871,7 @@ static int f2fs_issue_discard(struct f2fs_sb_info *sbi,
+ 	unsigned int offset;
+ 	block_t i;
+ 	int err = 0;
++	bool small_discard = !test_opt(sbi, NOSMALL_DISCARD);
+ 
+ 	bdev = f2fs_target_device(sbi, blkstart, NULL);
+ 
+@@ -1893,8 +1894,10 @@ static int f2fs_issue_discard(struct f2fs_sb_info *sbi,
+ 		se = get_seg_entry(sbi, GET_SEGNO(sbi, i));
+ 		offset = GET_BLKOFF_FROM_SEG0(sbi, i);
+ 
+-		if (!f2fs_test_and_set_bit(offset, se->discard_map))
+-			sbi->discard_blks--;
++		if (small_discard) {
++			if (!f2fs_test_and_set_bit(offset, se->discard_map))
++				sbi->discard_blks--;
++		}
+ 	}
+ 
+ 	if (len)
+@@ -1918,7 +1921,8 @@ static bool add_discard_addrs(struct f2fs_sb_info *sbi, struct cp_control *cpc,
+ 	struct list_head *head = &SM_I(sbi)->dcc_info->entry_list;
+ 	int i;
+ 
+-	if (se->valid_blocks == max_blocks || !f2fs_hw_support_discard(sbi))
++	if (se->valid_blocks == max_blocks || !f2fs_hw_support_discard(sbi) ||
++			test_opt(sbi, NOSMALL_DISCARD))
+ 		return false;
+ 
+ 	if (!force) {
+@@ -2056,6 +2060,9 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+ 	}
+ 	mutex_unlock(&dirty_i->seglist_lock);
+ 
++	if (test_opt(sbi, NOSMALL_DISCARD))
++		goto wakeup;
++
+ 	/* send small discards */
+ 	list_for_each_entry_safe(entry, this, head, list) {
+ 		unsigned int cur_pos = 0, next_pos, len, total_len = 0;
+@@ -2089,6 +2096,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+ 		dcc->nr_discards -= total_len;
+ 	}
+ 
++wakeup:
+ 	wake_up_discard_thread(sbi, false);
+ }
+ 
+@@ -2108,6 +2116,9 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+ 		return -ENOMEM;
+ 
+ 	dcc->discard_granularity = DEFAULT_DISCARD_GRANULARITY;
++	if (test_opt(sbi, NOSMALL_DISCARD))
++		dcc->discard_granularity = SEGMENT_ALIGNED_DISCARD_GRANULARITY;
++
+ 	INIT_LIST_HEAD(&dcc->entry_list);
+ 	for (i = 0; i < MAX_PLIST_NUM; i++)
+ 		INIT_LIST_HEAD(&dcc->pend_list[i]);
+@@ -2255,8 +2266,10 @@ static void update_sit_entry(struct f2fs_sb_info *sbi, block_t blkaddr, int del)
+ 			del = 0;
+ 		}
+ 
+-		if (!f2fs_test_and_set_bit(offset, se->discard_map))
+-			sbi->discard_blks--;
++		if (!test_opt(sbi, NOSMALL_DISCARD)) {
++			if (!f2fs_test_and_set_bit(offset, se->discard_map))
++				sbi->discard_blks--;
++		}
+ 
+ 		/*
+ 		 * SSR should never reuse block which is checkpointed
+@@ -2297,8 +2310,10 @@ static void update_sit_entry(struct f2fs_sb_info *sbi, block_t blkaddr, int del)
+ 			}
+ 		}
+ 
+-		if (f2fs_test_and_clear_bit(offset, se->discard_map))
+-			sbi->discard_blks++;
++		if (!test_opt(sbi, NOSMALL_DISCARD)) {
++			if (f2fs_test_and_clear_bit(offset, se->discard_map))
++				sbi->discard_blks++;
++		}
+ 	}
+ 	if (!f2fs_test_bit(offset, se->ckpt_valid_map))
+ 		se->ckpt_valid_blocks += del;
+@@ -4282,6 +4297,7 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
+ 	unsigned int sit_segs, start;
+ 	char *src_bitmap, *bitmap;
+ 	unsigned int bitmap_size, main_bitmap_size, sit_bitmap_size;
++	unsigned int discard_map = test_opt(sbi, NOSMALL_DISCARD) ? 0 : 1;
+ 
+ 	/* allocate memory for SIT information */
+ 	sit_i = f2fs_kzalloc(sbi, sizeof(struct sit_info), GFP_KERNEL);
+@@ -4304,9 +4320,9 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
+ 		return -ENOMEM;
+ 
+ #ifdef CONFIG_F2FS_CHECK_FS
+-	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * 4;
++	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * (3 + discard_map);
+ #else
+-	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * 3;
++	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * (2 + discard_map);
+ #endif
+ 	sit_i->bitmap = f2fs_kvzalloc(sbi, bitmap_size, GFP_KERNEL);
+ 	if (!sit_i->bitmap)
+@@ -4326,8 +4342,10 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
+ 		bitmap += SIT_VBLOCK_MAP_SIZE;
+ #endif
+ 
+-		sit_i->sentries[start].discard_map = bitmap;
+-		bitmap += SIT_VBLOCK_MAP_SIZE;
++		if (discard_map) {
++			sit_i->sentries[start].discard_map = bitmap;
++			bitmap += SIT_VBLOCK_MAP_SIZE;
++		}
+ 	}
+ 
+ 	sit_i->tmp_map = f2fs_kzalloc(sbi, SIT_VBLOCK_MAP_SIZE, GFP_KERNEL);
+@@ -4462,6 +4480,7 @@ static int build_sit_entries(struct f2fs_sb_info *sbi)
+ 	unsigned int readed, start_blk = 0;
+ 	int err = 0;
+ 	block_t total_node_blocks = 0;
++	bool small_discard = !test_opt(sbi, NOSMALL_DISCARD);
+ 
+ 	do {
+ 		readed = f2fs_ra_meta_pages(sbi, start_blk, BIO_MAX_VECS,
+@@ -4489,17 +4508,19 @@ static int build_sit_entries(struct f2fs_sb_info *sbi)
+ 			if (IS_NODESEG(se->type))
+ 				total_node_blocks += se->valid_blocks;
+ 
+-			/* build discard map only one time */
+-			if (is_set_ckpt_flags(sbi, CP_TRIMMED_FLAG)) {
+-				memset(se->discard_map, 0xff,
+-					SIT_VBLOCK_MAP_SIZE);
+-			} else {
+-				memcpy(se->discard_map,
+-					se->cur_valid_map,
+-					SIT_VBLOCK_MAP_SIZE);
+-				sbi->discard_blks +=
+-					sbi->blocks_per_seg -
+-					se->valid_blocks;
++			if (small_discard) {
++				/* build discard map only one time */
++				if (is_set_ckpt_flags(sbi, CP_TRIMMED_FLAG)) {
++					memset(se->discard_map, 0xff,
++						SIT_VBLOCK_MAP_SIZE);
++				} else {
++					memcpy(se->discard_map,
++						se->cur_valid_map,
++						SIT_VBLOCK_MAP_SIZE);
++					sbi->discard_blks +=
++						sbi->blocks_per_seg -
++						se->valid_blocks;
++				}
+ 			}
+ 
+ 			if (__is_large_section(sbi))
+@@ -4535,13 +4556,15 @@ static int build_sit_entries(struct f2fs_sb_info *sbi)
+ 		if (IS_NODESEG(se->type))
+ 			total_node_blocks += se->valid_blocks;
+ 
+-		if (is_set_ckpt_flags(sbi, CP_TRIMMED_FLAG)) {
+-			memset(se->discard_map, 0xff, SIT_VBLOCK_MAP_SIZE);
+-		} else {
+-			memcpy(se->discard_map, se->cur_valid_map,
+-						SIT_VBLOCK_MAP_SIZE);
+-			sbi->discard_blks += old_valid_blocks;
+-			sbi->discard_blks -= se->valid_blocks;
++		if (small_discard) {
++			if (is_set_ckpt_flags(sbi, CP_TRIMMED_FLAG)) {
++				memset(se->discard_map, 0xff, SIT_VBLOCK_MAP_SIZE);
++			} else {
++				memcpy(se->discard_map, se->cur_valid_map,
++							SIT_VBLOCK_MAP_SIZE);
++				sbi->discard_blks += old_valid_blocks;
++				sbi->discard_blks -= se->valid_blocks;
++			}
+ 		}
+ 
+ 		if (__is_large_section(sbi)) {
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 18c1ffb8710e..98f0a84d1b1f 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -155,6 +155,7 @@ enum {
+ 	Opt_atgc,
+ 	Opt_gc_merge,
+ 	Opt_nogc_merge,
++	Opt_nosmall_discard,
+ 	Opt_err,
+ };
+ 
+@@ -231,6 +232,7 @@ static match_table_t f2fs_tokens = {
+ 	{Opt_atgc, "atgc"},
+ 	{Opt_gc_merge, "gc_merge"},
+ 	{Opt_nogc_merge, "nogc_merge"},
++	{Opt_nosmall_discard, "nosmall_discard"},
+ 	{Opt_err, NULL},
+ };
+ 
+@@ -1173,6 +1175,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 		case Opt_nogc_merge:
+ 			clear_opt(sbi, GC_MERGE);
+ 			break;
++		case Opt_nosmall_discard:
++			set_opt(sbi, NOSMALL_DISCARD);
++			break;
+ 		default:
+ 			f2fs_err(sbi, "Unrecognized mount option \"%s\" or missing value",
+ 				 p);
+@@ -1925,6 +1930,8 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+ 
+ 	if (test_opt(sbi, ATGC))
+ 		seq_puts(seq, ",atgc");
++	if (test_opt(sbi, NOSMALL_DISCARD))
++		seq_puts(seq, ",nosmall_discard");
+ 	return 0;
+ }
+ 
+@@ -2066,6 +2073,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	bool no_io_align = !F2FS_IO_ALIGNED(sbi);
+ 	bool no_atgc = !test_opt(sbi, ATGC);
+ 	bool no_compress_cache = !test_opt(sbi, COMPRESS_CACHE);
++	bool small_discard = !test_opt(sbi, NOSMALL_DISCARD);
+ #ifdef CONFIG_QUOTA
+ 	int i, j;
+ #endif
+@@ -2166,6 +2174,12 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 		goto restore_opts;
+ 	}
+ 
++	if (small_discard == !!test_opt(sbi, NOSMALL_DISCARD)) {
++		err = -EINVAL;
++		f2fs_warn(sbi, "switch nosmall_discard option is not allowed");
++		goto restore_opts;
++	}
++
+ 	if ((*flags & SB_RDONLY) && test_opt(sbi, DISABLE_CHECKPOINT)) {
+ 		err = -EINVAL;
+ 		f2fs_warn(sbi, "disabling checkpoint not compatible with read-only");
+@@ -3779,7 +3793,8 @@ static void f2fs_tuning_parameters(struct f2fs_sb_info *sbi)
+ 	/* adjust parameters according to the volume size */
+ 	if (sm_i->main_segments <= SMALL_VOLUME_SEGMENTS) {
+ 		F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_REUSE;
+-		sm_i->dcc_info->discard_granularity = 1;
++		if (!test_opt(sbi, NOSMALL_DISCARD))
++			sm_i->dcc_info->discard_granularity = 1;
+ 		sm_i->ipu_policy = 1 << F2FS_IPU_FORCE;
+ 	}
+ 
+-- 
+2.22.1
 
