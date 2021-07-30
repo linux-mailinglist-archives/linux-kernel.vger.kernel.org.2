@@ -2,133 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3313DBAFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885683DBAFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239185AbhG3Oqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:46:47 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:28319 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239142AbhG3Oqp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:46:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627656401; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=lpsMp8nA04lN8qY1AphLLtY4CXCE1cSpSalnWmM+VjA=; b=LNTzrGs6n5Lfq7ViMnxy6Gx4zeLVAKZV6kU1VV6/nGWWkfrm6F+0cafjlw9tNm5k4o4fgGJ1
- 3/YGxYPFsawbDASowXRS5+OsM5aDAzvh2MM1KV4w1i6jZ+0psr69Czj5m+t+3MEbzkBO6JI8
- /5h49rFKKLyUOLMWLSXjb4zJivk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 610410bc17c2b4047d7060bf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Jul 2021 14:46:20
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 33ED4C43145; Fri, 30 Jul 2021 14:46:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.158.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5BD52C433F1;
-        Fri, 30 Jul 2021 14:46:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5BD52C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH V5] mm: compaction: support triggering of proactive
- compaction by user
-To:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
-        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        dave.hansen@linux.intel.com, mgorman@techsingularity.net,
-        nigupta@nvidia.com, corbet@lwn.net, rppt@kernel.org,
-        khalid.aziz@oracle.com, rientjes@google.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        vinmenon@codeaurora.org
-References: <1627653207-12317-1-git-send-email-charante@codeaurora.org>
- <8fe4ba65-28e1-02d8-cf4d-74aaa76fe9df@suse.cz>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <690ffed8-9c2a-1a9e-e592-a103b09e05a7@codeaurora.org>
-Date:   Fri, 30 Jul 2021 20:16:09 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239220AbhG3Oqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:46:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:43052 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239185AbhG3Oqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:46:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A67E71042;
+        Fri, 30 Jul 2021 07:46:32 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.13.245])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 495CB3F66F;
+        Fri, 30 Jul 2021 07:46:30 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 15:46:27 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
+        John Crispin <john@phrozen.org>, Felix Fietkau <nbd@nbd.name>
+Subject: Re: [PATCH 3/5] ARM: dts: Add basic support for EcoNet EN7523
+Message-ID: <20210730144627.GB19569@C02TD0UTHF1T.local>
+References: <20210730134552.853350-1-bert@biot.com>
+ <20210730134552.853350-4-bert@biot.com>
 MIME-Version: 1.0
-In-Reply-To: <8fe4ba65-28e1-02d8-cf4d-74aaa76fe9df@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730134552.853350-4-bert@biot.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Vlastimil!!
-
-On 7/30/2021 7:36 PM, Vlastimil Babka wrote:
->> The proactive compaction[1] gets triggered for every 500msec and run
->> compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
->> pages based on the value set to sysctl.compaction_proactiveness.
->> Triggering the compaction for every 500msec in search of
->> COMPACTION_HPAGE_ORDER pages is not needed for all applications,
->> especially on the embedded system usecases which may have few MB's of
->> RAM. Enabling the proactive compaction in its state will endup in
->> running almost always on such systems.
->>
->> Other side, proactive compaction can still be very much useful for
->> getting a set of higher order pages in some controllable
->> manner(controlled by using the sysctl.compaction_proactiveness). So, on
->> systems where enabling the proactive compaction always may proove not
->> required, can trigger the same from user space on write to its sysctl
->> interface. As an example, say app launcher decide to launch the memory
->> heavy application which can be launched fast if it gets more higher
->> order pages thus launcher can prepare the system in advance by
->> triggering the proactive compaction from userspace.
->>
->> This triggering of proactive compaction is done on a write to
->> sysctl.compaction_proactiveness by user.
->>
->> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
->>
->> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-Thanks for the tag here.
-
+On Fri, Jul 30, 2021 at 03:45:50PM +0200, Bert Vermeulen wrote:
+> From: John Crispin <john@phrozen.org>
 > 
->> @@ -2895,9 +2920,16 @@ static int kcompactd(void *p)
->>  	while (!kthread_should_stop()) {
->>  		unsigned long pflags;
->>  
->> +		/*
->> +		 * Avoid the unnecessary wakeup for proactive compaction
->> +		 * when it is disabled.
->> +		 */
->> +		if (!sysctl_compaction_proactiveness)
->> +			timeout = MAX_SCHEDULE_TIMEOUT;
-> Does this part actually logically belong more to your previous patch that
-> optimized the deferred timeouts?
-
-IMO, it won't fit there. Reason is that when user writes
-sysctl_compaction_proactiveness = 0, it will goes to sleep with
-MAX_SCHEDULE_TIMEOUT. Say now user writes non-zero value to
-sysctl_compaction_proactiveness then no condition is there to wake it up
-for proactive compaction, means, it will still be in sleep with
-MAX_SCHEDULE_TIMEOUT.
-
-Thus this logic is put in this patch, where, proactive compaction work
-will be scheduled immediately on switch of proactiveness value from zero
-to a non-zero.
-
+> Add basic support for EcoNet EN7523, enough for booting to console.
 > 
+> The UART is basically 8250-compatible, except for the clock selection.
+> A clock-frequency value is synthesized to get this to run at 115200 bps.
+> 
+> Signed-off-by: John Crispin <john@phrozen.org>
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
+> ---
+>  arch/arm/boot/dts/Makefile       |   2 +
+>  arch/arm/boot/dts/en7523-evb.dts |  17 ++++
+>  arch/arm/boot/dts/en7523.dtsi    | 128 +++++++++++++++++++++++++++++++
+>  3 files changed, 147 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/en7523-evb.dts
+>  create mode 100644 arch/arm/boot/dts/en7523.dtsi
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+[...]
+
+> +	gic: interrupt-controller@09000000 {
+> +		compatible = "arm,gic-v3";
+> +		interrupt-controller;
+> +		#interrupt-cells = <3>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		reg = <0x09000000 0x20000>,
+> +			  <0x09080000 0x80000>;
+> +		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_LOW>;
+> +
+> +		its: gic-its@09020000 {
+> +			compatible = "arm,gic-v3-its";
+> +			msi-controller;
+> +			#msi-cell = <1>;
+> +			reg = <0x090200000 0x20000>;
+> +		};
+> +	};
+> +
+> +	timer {
+> +		compatible = "arm,armv8-timer";
+
+This should be "arm,armv7-timer".
+
+> +		interrupt-parent = <&gic>;
+> +		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+> +			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+> +			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+> +			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
+
+GICv3 doesn't have a cpumask in its PPI description, so the
+GIC_CPU_MASK_SIMPLE() bits should be removed.
+
+> +		clock-frequency = <25000000>;
+
+Please have your FW configure CNTFRQ on each CPU; the clock-frequency
+property in the DT is a workaround for broken FW, and it's *vastly*
+preferable for FW to configure this correctly (e.g. as it means VMs
+should "just work").
+
+Thanks,
+Mark.
