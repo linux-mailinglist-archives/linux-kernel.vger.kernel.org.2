@@ -2,101 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2C43DBF76
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407273DBF7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhG3UP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:15:29 -0400
-Received: from mga09.intel.com ([134.134.136.24]:15991 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229921AbhG3UP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:15:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10061"; a="213151318"
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="213151318"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 13:15:22 -0700
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="477104119"
-Received: from cwschule-mobl.amr.corp.intel.com (HELO [10.212.156.26]) ([10.212.156.26])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 13:15:22 -0700
-Subject: Re: [PATCH v9 25/26] intel_idle/amx: Add SPR support with XTILEDATA
- capability
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, thiago.macieira@intel.com,
-        jing2.liu@intel.com, ravi.v.shankar@intel.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-26-chang.seok.bae@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <9db9731e-7182-1546-d22b-5618ee2cd24b@intel.com>
-Date:   Fri, 30 Jul 2021 13:15:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210730145957.7927-26-chang.seok.bae@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231382AbhG3URN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229921AbhG3URM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 16:17:12 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9EFC061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:17:06 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id s123-20020a2577810000b02904f84a5c5297so11762169ybc.16
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 13:17:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=8AtCRYZlS4QAcv/oikz1vcPY2UcNkw1l4cMxrL2XXUs=;
+        b=Xt4ghdxr6eTKUrRyzxYXaojhwSFQ7W/mNOY5xzvZOdguRvdnZPlc9JztK+oJrmpo01
+         u5FgXq++fGEkr75EiujjyuAD9IlzLnoCrUzyKWJny08lygMXyrRCsjnwZlrfMbYTRDUx
+         OF3qkUfpfGQVtrRbVyRdGrEfCbqIhbWMKRttku0FH2cXq2kjdGVbP+Dcq+Fiy9QX6L36
+         XnWkHlFh0xc5ZVJlnbQEUABBL6i4Tuenl1sp3c5Wpa1hDIkgPFh5i5S8EfLyEC6Lw2kb
+         ADWBm9nVwL7HO35r8Atq7+VH1qhGVGfsv3/GC5RIFtZUGunaU2ee5zLznBz636qPekkc
+         wZ8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=8AtCRYZlS4QAcv/oikz1vcPY2UcNkw1l4cMxrL2XXUs=;
+        b=fAtbDiOz8jiJxiFOebIOhutYt2c6w1p5MpSNe/pn/Ut2lv4ofMF2LReI+3N0DS8nW9
+         B6jvDqyvnWWXvUFZyoIKqsUYbP0rO1AqhwYYvLoVBb3UJxnxy0Sfh0mIMZXjFAJ5dXtu
+         LzWf0zdQRiMBQ+j8AGWXCIPlD5IDtHOi77jmYGQNoH7lPB8kCLptEpjUk+BkMHs6Wnsl
+         MIzGH1HIk7mpSNZ4RxKkOaw3ruwuZJvAje2SStkjLdJKUBzT8cJ317J9OPqMPchgk5CN
+         uI0mqlfmX2cJvB1/NFwpPO+A8GLYcy1MQLIn72kx8Y8MMirLY67jC4rH0ZI7b+Egyd84
+         VhOA==
+X-Gm-Message-State: AOAM532GPMc2kiF/ziD8NHe0/hmbrnnLWbZdAlcQSSm3uyYFm42eomX8
+        V6VZIkEc+KcqQnlAydxiTzYMJTVi4uENDZFvznQ=
+X-Google-Smtp-Source: ABdhPJwbn3Yz6zvVwbYDxHU2FejYVja/oVIqOYHTckrFhld53TQ6LmttsGWcDaorA8B2crL65f17e2u0DaFAagAkrIU=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:ca8b:b433:7c1d:90d])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:7bc2:: with SMTP id
+ w185mr5271445ybc.3.1627676225211; Fri, 30 Jul 2021 13:17:05 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 13:16:59 -0700
+Message-Id: <20210730201701.3146910-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v4 0/2] infer --target from SRCARCH for CC=clang
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/21 7:59 AM, Chang S. Bae wrote:
-> SPR supports AMX, and so this custom table uses idle entry points that know
-> how to initialize AMX TMM state, if necessary.
+We get constant feedback that the command line invocation of make is too
+long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+target triple, or is an absolute path outside of $PATH, but it's mostly
+redundant for a given ARCH.
 
-That's pretty direct with where this is showing up.
+Instead, let's infer it from SRCARCH, and move some flag handling into a
+new file included from the top level Makefile.
 
-But, the cover letter is quite a bit more cagey:
+Changes v3 -> v4:
+* Remove the requirement that LLVM_IAS=1 be set, as per Masahiro.
+* Remove the Documentation/ change from patch 2, as per Masahiro and
+  Nathan.
+* Add Documentation/ change as patch 3, from Masahiro.
+* Reword commit message of patch 2, as per Nathan.
+* Change patch 2 oneline to refer to --target and CC=clang (not
+  CROSS_COMPILE).
+* Carry Arnd's and Nathan's AB/RB/TB tags, confirmed ok on IRC+discord.
 
-> Intel Advanced Matrix Extensions (AMX)[1][2] will be shipping on servers
-> soon.
+Changes v2 -> v3:
+* Remove requirement that LLVM=1 be set. Instead, if building with just
+  CC=clang LLVM_IAS=1 instead of LLVM=1 LLVM_IAS=1, you should use
+  LD=ld.lld explicitly, or LD=aarch64-linux-gnu-ld. (As per Masahiro)
+  Example:
 
-If you do another version of these, it might be handy to make sure those
-are as consistent as possible.
+  $ ARCH=arm64 make CC=clang LLVM_IAS=1 LD=ld.lld OBJCOPY=llvm-objcopy \
+    STRIP=llvm-strip -j72 defconfig all
+
+  (It's still preferable to use LLVM=1 IMO, but this is maximally
+  flexible.)
+* Change oneliner from LLVM=1 to CC=clang.
+* Update Docs slightly.
+
+Changes v1 -> v2:
+* patch 1/2 untouched.
+* Fix typos in commit message as per Geert and Masahiro.
+* Use SRCARCH instead of ARCH, simplifying x86 handling, as per
+  Masahiro. Add his sugguested by tag.
+* change commit oneline from 'drop' to 'infer.'
+* Add detail about explicit host --target and relationship of ARCH to
+  SRCARCH, as per Masahiro.
+
+*** BLURB HERE ***
+
+Nick Desaulniers (2):
+  Makefile: infer --target from ARCH for CC=clang
+  Documentation/llvm: update CROSS_COMPILE inferencing
+
+ Documentation/kbuild/llvm.rst | 17 +++++++++++++++++
+ scripts/Makefile.clang        | 30 ++++++++++++++++++++++++++++--
+ 2 files changed, 45 insertions(+), 2 deletions(-)
+
+
+base-commit: 27932b6a2088eac7a5afa5471963b926cfbb4de7
+prerequisite-patch-id: 0d3072ecb5fd06ff6fd6ea81fe601f6c54c23910
+-- 
+2.32.0.554.ge1b32706d8-goog
+
