@@ -2,199 +2,452 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC293DB6C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9213DB6C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238556AbhG3KEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:04:13 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48164 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238396AbhG3KD4 (ORCPT
+        id S238625AbhG3KEd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Jul 2021 06:04:33 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6645 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238550AbhG3KEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:03:56 -0400
-Received: from [IPv6:2a02:810a:880:f54:51e7:d967:c146:d0c] (unknown [IPv6:2a02:810a:880:f54:51e7:d967:c146:d0c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id EAD381F4479B;
-        Fri, 30 Jul 2021 11:02:25 +0100 (BST)
-Subject: Re: [PATCH v3, 00/15] Using component framework to support multi
- hardware decode
-To:     yunfei dong <yunfei.dong@mediatek.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-References: <20210727101051.24418-1-yunfei.dong@mediatek.com>
- <2b562943-534a-b53d-696d-9f2a4836f76e@collabora.com>
- <1627546086.17009.7.camel@mhfsdcap03>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <e053d727-b04d-686e-b1e0-528e039f3c26@collabora.com>
-Date:   Fri, 30 Jul 2021 12:02:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <1627546086.17009.7.camel@mhfsdcap03>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Fri, 30 Jul 2021 06:04:14 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4GbjZD3pQtz18NRB;
+        Fri, 30 Jul 2021 18:00:20 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 30 Jul 2021 18:04:07 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Fri, 30 Jul 2021 18:04:06 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+CC:     "liuqi (BA)" <liuqi115@huawei.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+Thread-Topic: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+Thread-Index: AQHXfJkyPamnf4yoyEqhBrLk7zE456tMmTOAgAIsGRD//9DNAIABRquggAt7BNA=
+Date:   Fri, 30 Jul 2021 10:04:06 +0000
+Message-ID: <e63531dc8b7040219761e72fb9b1e74a@hisilicon.com>
+References: <20210719122417.10355-1-liuqi115@huawei.com>
+        <20210721174153.34c1898dc9eea135eb0b8be8@kernel.org>
+        <332df5b7d7bb4bd096b6521ffefaabe6@hisilicon.com>
+ <20210723000318.5594c86e7c454aed82d9465d@kernel.org> 
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.38]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 29.07.21 10:08, yunfei dong wrote:
-> On Tue, 2021-07-27 at 12:55 +0200, Dafna Hirschfeld wrote:
->> Thank you for the patchset.
->>
->> Could you provide information on how you
->> tested the code.
->> Did you test it on chromeos userspace?
->> Did you use the test-tast framework?
->> What tests did you run?
->>
->> Dafna
->>
-> Hi Dafna,
+> -----Original Message-----
+> From: Song Bao Hua (Barry Song)
+> Sent: Friday, July 23, 2021 2:43 PM
+> To: 'Masami Hiramatsu' <mhiramat@kernel.org>
+> Cc: liuqi (BA) <liuqi115@huawei.com>; catalin.marinas@arm.com;
+> will@kernel.org; naveen.n.rao@linux.ibm.com; anil.s.keshavamurthy@intel.com;
+> davem@davemloft.net; linux-arm-kernel@lists.infradead.org; Zengtao (B)
+> <prime.zeng@hisilicon.com>; robin.murphy@arm.com; Linuxarm
+> <linuxarm@huawei.com>; linux-kernel@vger.kernel.org
+> Subject: RE: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
 > 
-> I just merge the code to kernel 4.19 and build pass.
-
-Since those patches are sent to upstream , you should probably also make
-sure that they are built on the media_tree repo.
-
-> When the system boot up, I will play some vdec h264/vp8/vp9 bitstreams.
-> The code should be ok when all bitstreams can play well.
 > 
-> For MT8173 is statefull decode, I won't change the arch and component is
-> used for stateless decode(mt8192), mt8183 not use component arch also.
-> Only if decode driver can play well, the change should be ok for mt8173.
 > 
-> I needn't to do tast test for mt8173 for the arch not be changed.
-
-But the frist patches in that series are general bug fixes that influance all arch
-
-Thanks,
-Dafna
-
+> > -----Original Message-----
+> > From: Masami Hiramatsu [mailto:mhiramat@kernel.org]
+> > Sent: Friday, July 23, 2021 3:03 AM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: liuqi (BA) <liuqi115@huawei.com>; catalin.marinas@arm.com;
+> > will@kernel.org; naveen.n.rao@linux.ibm.com;
+> anil.s.keshavamurthy@intel.com;
+> > davem@davemloft.net; linux-arm-kernel@lists.infradead.org; Zengtao (B)
+> > <prime.zeng@hisilicon.com>; robin.murphy@arm.com; Linuxarm
+> > <linuxarm@huawei.com>; linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+> >
+> > Hi Song,
+> >
+> > On Thu, 22 Jul 2021 10:24:54 +0000
+> > "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
+> >
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Masami Hiramatsu [mailto:mhiramat@kernel.org]
+> > > > Sent: Wednesday, July 21, 2021 8:42 PM
+> > > > To: liuqi (BA) <liuqi115@huawei.com>
+> > > > Cc: catalin.marinas@arm.com; will@kernel.org;
+> naveen.n.rao@linux.ibm.com;
+> > > > anil.s.keshavamurthy@intel.com; davem@davemloft.net;
+> > > > linux-arm-kernel@lists.infradead.org; Song Bao Hua (Barry Song)
+> > > > <song.bao.hua@hisilicon.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> > > > robin.murphy@arm.com; Linuxarm <linuxarm@huawei.com>;
+> > > > linux-kernel@vger.kernel.org
+> > > > Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+> > > >
+> > > > Hi Qi,
+> > > >
+> > > > Thanks for your effort!
+> > > >
+> > > > On Mon, 19 Jul 2021 20:24:17 +0800
+> > > > Qi Liu <liuqi115@huawei.com> wrote:
+> > > >
+> > > > > This patch introduce optprobe for ARM64. In optprobe, probed
+> > > > > instruction is replaced by a branch instruction to detour
+> > > > > buffer. Detour buffer contains trampoline code and a call to
+> > > > > optimized_callback(). optimized_callback() calls opt_pre_handler()
+> > > > > to execute kprobe handler.
+> > > >
+> > > > OK so this will replace only one instruction.
+> > > >
+> > > > >
+> > > > > Limitations:
+> > > > > - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
+> > > > > guarantee the offset between probe point and kprobe pre_handler
+> > > > > is not larger than 128MiB.
+> > > >
+> > > > Hmm, shouldn't we depends on !CONFIG_ARM64_MODULE_PLTS? Or,
+> > > > allocate an intermediate trampoline area similar to arm optprobe
+> > > > does.
+> > >
+> > > Depending on !CONFIG_ARM64_MODULE_PLTS will totally disable
+> > > RANDOMIZE_BASE according to arch/arm64/Kconfig:
+> > > config RANDOMIZE_BASE
+> > > 	bool "Randomize the address of the kernel image"
+> > > 	select ARM64_MODULE_PLTS if MODULES
+> > > 	select RELOCATABLE
+> >
+> > Yes, but why it is required for "RANDOMIZE_BASE"?
+> > Does that imply the module call might need to use PLT in
+> > some cases?
+> >
+> > >
+> > > Depending on !RANDOMIZE_MODULE_REGION_FULL seems to be still
+> > > allowing RANDOMIZE_BASE via avoiding long jump according to:
+> > > arch/arm64/Kconfig:
+> > >
+> > > config RANDOMIZE_MODULE_REGION_FULL
+> > > 	bool "Randomize the module region over a 4 GB range"
+> > > 	depends on RANDOMIZE_BASE
+> > > 	default y
+> > > 	help
+> > > 	  Randomizes the location of the module region inside a 4 GB window
+> > > 	  covering the core kernel. This way, it is less likely for modules
+> > > 	  to leak information about the location of core kernel data structures
+> > > 	  but it does imply that function calls between modules and the core
+> > > 	  kernel will need to be resolved via veneers in the module PLT.
+> > >
+> > > 	  When this option is not set, the module region will be randomized over
+> > > 	  a limited range that contains the [_stext, _etext] interval of the
+> > > 	  core kernel, so branch relocations are always in range.
+> >
+> > Hmm, this dependency looks strange. If it always in range, don't we need
+> > PLT for modules?
+> >
+> > Cataline, would you know why?
+> > Maybe it's a KASLR's Kconfig issue?
 > 
-> Thanks,
-> Yunfei Dong
->>
->> On 27.07.21 12:10, Yunfei Dong wrote:
->>> This series adds support for multi hardware decode into mtk-vcodec, by first
->>> adding component framework to manage each hardware information: interrupt,
->>> clock, register bases and power. Secondly add core thread to deal with core
->>> hardware message, at the same time, add msg queue for different hardware
->>> share messages. Lastly, the architecture of different specs are not the same,
->>> using specs type to separate them.
->>>
->>> This series has been tested with both MT8183 and MT8173. Decoding was working
->>> for both chips.
->>>
->>> Patches 1,2 rewrite get register bases and power on/off interface.
->>>
->>> Patch 3-5 add component framework to support multi hardware.
->>>
->>> Patches 6-14 add interfaces to support core hardware.
->>> ----
->>> This patch dependents on "media: mtk-vcodec: support for MT8183 decoder"[1].
->>>
->>> Multi hardware decode is based on stateless decoder, MT8183 is the first time
->>> to add stateless decoder. Otherwise it will cause conflict. Please also accept
->>> this patch together with [1].
->>>
->>> [1]https://lore.kernel.org/patchwork/project/lkml/list/?series=507084
->>> ----
->>> Changes compared with v2:
->>> - Fix return value for patch 1/15
->>> - Add this new patch to align vdec and venc wake up ctx interface for patch 2/15
->>> - Fix comments for patch 4/15
->>> - Change txt files to yaml for patch 5/15
->>> - Generalize wake up ctx interface for stateless and stateful decode for patch 7/15
->>> - Add document for structs and functions for patch 8/15
->>> - Add condition to check the return value of kthread_run for patch 11/15
->>> - Fix yaml check fail for patch 13/15
->>>
->>> Changes compared with v1:
->>> - Fix many comments for patch 3/14
->>> - Remove unnecessary code for patch 4/14
->>> - Using enum mtk_vdec_hw_count instead of magic numbers for patch 6/14
->>> - Reconstructed get/put lat buffer for lat and core hardware for patch 7/14
->>> - Using yaml format to instead of txt file for patch 12/14
->>>
->>> Yunfei Dong (15):
->>>     media: mtk-vcodec: Get numbers of register bases from DT
->>>     media: mtk-vcodec: Align vcodec wake up interrupt interface
->>>     media: mtk-vcodec: Refactor vcodec pm interface
->>>     media: mtk-vcodec: Use component framework to manage each hardware
->>>       information
->>>     dt-bindings: media: mtk-vcodec: Separate video encoder and decoder
->>>       dt-bindings
->>>     media: mtk-vcodec: Use pure single core for MT8183
->>>     media: mtk-vcodec: Add irq interface for multi hardware
->>>     media: mtk-vcodec: Add msg queue feature for lat and core architecture
->>>     media: mtk-vcodec: Generalize power and clock on/off interfaces
->>>     media: mtk-vcodec: Add new interface to lock different hardware
->>>     media: mtk-vcodec: Add core thread
->>>     media: mtk-vcodec: Support 34bits dma address for vdec
->>>     dt-bindings: media: mtk-vcodec: Adds decoder dt-bindings for mt8192
->>>     media: mtk-vcodec: Add core dec and dec end ipi msg
->>>     media: mtk-vcodec: Use codec type to separate different hardware
->>>
->>>    .../media/mediatek,vcodec-comp-decoder.yaml   | 154 +++++++++
->>>    .../media/mediatek,vcodec-decoder.yaml        | 138 ++++++++
->>>    .../media/mediatek,vcodec-encoder.yaml        | 128 ++++++++
->>>    .../bindings/media/mediatek-vcodec.txt        | 130 --------
->>>    drivers/media/platform/mtk-vcodec/Makefile    |   2 +
->>>    .../platform/mtk-vcodec/mtk_vcodec_dec.c      |   4 +-
->>>    .../platform/mtk-vcodec/mtk_vcodec_dec.h      |   1 +
->>>    .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  | 296 +++++++++++++++---
->>>    .../platform/mtk-vcodec/mtk_vcodec_dec_hw.c   | 184 +++++++++++
->>>    .../platform/mtk-vcodec/mtk_vcodec_dec_hw.h   |  48 +++
->>>    .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   |  98 ++++--
->>>    .../platform/mtk-vcodec/mtk_vcodec_dec_pm.h   |  13 +-
->>>    .../mtk-vcodec/mtk_vcodec_dec_stateful.c      |   1 +
->>>    .../mtk-vcodec/mtk_vcodec_dec_stateless.c     |   1 +
->>>    .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  76 ++++-
->>>    .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |  12 +-
->>>    .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   |   1 -
->>>    .../platform/mtk-vcodec/mtk_vcodec_intr.c     |  27 +-
->>>    .../platform/mtk-vcodec/mtk_vcodec_intr.h     |   4 +-
->>>    .../platform/mtk-vcodec/mtk_vcodec_util.c     |  87 ++++-
->>>    .../platform/mtk-vcodec/mtk_vcodec_util.h     |   8 +-
->>>    .../platform/mtk-vcodec/vdec/vdec_h264_if.c   |   2 +-
->>>    .../mtk-vcodec/vdec/vdec_h264_req_if.c        |   2 +-
->>>    .../platform/mtk-vcodec/vdec/vdec_vp8_if.c    |   2 +-
->>>    .../platform/mtk-vcodec/vdec/vdec_vp9_if.c    |   2 +-
->>>    .../media/platform/mtk-vcodec/vdec_drv_if.c   |  21 +-
->>>    .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  16 +-
->>>    .../platform/mtk-vcodec/vdec_msg_queue.c      | 290 +++++++++++++++++
->>>    .../platform/mtk-vcodec/vdec_msg_queue.h      | 157 ++++++++++
->>>    .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  46 ++-
->>>    .../media/platform/mtk-vcodec/vdec_vpu_if.h   |  22 ++
->>>    .../platform/mtk-vcodec/venc/venc_h264_if.c   |   2 +-
->>>    .../platform/mtk-vcodec/venc/venc_vp8_if.c    |   2 +-
->>>    33 files changed, 1697 insertions(+), 280 deletions(-)
->>>    create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
->>>    create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-decoder.yaml
->>>    create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
->>>    delete mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec.txt
->>>    create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
->>>    create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.h
->>>    create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
->>>    create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
->>>
+> I actually didn't see any problem after making this change:
 > 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index e07e7de9ac49..6440671b72e0 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1781,7 +1781,6 @@ config RELOCATABLE
+> 
+>  config RANDOMIZE_BASE
+>         bool "Randomize the address of the kernel image"
+> -       select ARM64_MODULE_PLTS if MODULES
+>         select RELOCATABLE
+>         help
+>           Randomizes the virtual address at which the kernel image is
+> @@ -1801,6 +1800,7 @@ config RANDOMIZE_BASE
+>  config RANDOMIZE_MODULE_REGION_FULL
+>         bool "Randomize the module region over a 4 GB range"
+>         depends on RANDOMIZE_BASE
+> +       select ARM64_MODULE_PLTS if MODULES
+>         default y
+>         help
+>           Randomizes the location of the module region inside a 4 GB window
+> 
+> and having this config:
+> # zcat /proc/config.gz | grep RANDOMIZE_BASE
+> CONFIG_RANDOMIZE_BASE=y
+> 
+> # zcat /proc/config.gz | grep RANDOMIZE_MODULE_REGION_FULL
+> # CONFIG_RANDOMIZE_MODULE_REGION_FULL is not set
+> 
+> # zcat /proc/config.gz | grep ARM64_MODULE_PLTS
+> # CONFIG_ARM64_MODULE_PLTS is not set
+> 
+> Modules work all good:
+> # lsmod
+> Module                  Size  Used by
+> btrfs                1355776  0
+> blake2b_generic        20480  0
+> libcrc32c              16384  1 btrfs
+> xor                    20480  1 btrfs
+> xor_neon               16384  1 xor
+> zstd_compress         163840  1 btrfs
+> raid6_pq              110592  1 btrfs
+> ctr                    16384  0
+> md5                    16384  0
+> ip_tunnel              32768  0
+> ipv6                  442368  28
+> 
+> 
+> I am not quite sure if there is a corner case. If no,
+> I would think the kconfig might be some improper.
+
+The corner case is that even CONFIG_RANDOMIZE_MODULE_REGION_FULL
+is not enabled, but if CONFIG_ARM64_MODULE_PLTS is enabled, when
+we can't get memory from the 128MB area in case the area is exhausted,
+we will fall back in module_alloc() to a 2GB area as long as either
+of the below two conditions is met:
+
+1. KASAN is not enabled
+2. KASAN is enabled and CONFIG_KASAN_VMALLOC is also enabled.
+
+void *module_alloc(unsigned long size)
+{
+	u64 module_alloc_end = module_alloc_base + MODULES_VSIZE;
+	gfp_t gfp_mask = GFP_KERNEL;
+	void *p;
+
+	/* Silence the initial allocation */
+	if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS))
+		gfp_mask |= __GFP_NOWARN;
+
+	if (IS_ENABLED(CONFIG_KASAN_GENERIC) ||
+	    IS_ENABLED(CONFIG_KASAN_SW_TAGS))
+		/* don't exceed the static module region - see below */
+		module_alloc_end = MODULES_END;
+
+	p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
+				module_alloc_end, gfp_mask, PAGE_KERNEL, 0,
+				NUMA_NO_NODE, __builtin_return_address(0));
+
+	if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+	    (IS_ENABLED(CONFIG_KASAN_VMALLOC) ||
+	     (!IS_ENABLED(CONFIG_KASAN_GENERIC) &&
+	      !IS_ENABLED(CONFIG_KASAN_SW_TAGS))))
+		/*
+		 * KASAN without KASAN_VMALLOC can only deal with module
+		 * allocations being served from the reserved module region,
+		 * since the remainder of the vmalloc region is already
+		 * backed by zero shadow pages, and punching holes into it
+		 * is non-trivial. Since the module region is not randomized
+		 * when KASAN is enabled without KASAN_VMALLOC, it is even
+		 * less likely that the module region gets exhausted, so we
+		 * can simply omit this fallback in that case.
+		 */
+		p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
+				module_alloc_base + SZ_2G, GFP_KERNEL,
+				PAGE_KERNEL, 0, NUMA_NO_NODE,
+				__builtin_return_address(0));
+
+	if (p && (kasan_module_alloc(p, size) < 0)) {
+		vfree(p);
+		return NULL;
+	}
+
+	return p;
+}
+
+This should be happening quite rarely. But maybe arm64's document
+needs some minor fixup, otherwise, it is quite confusing.
+
+> >
+> > >
+> > > and
+> > >
+> > > arch/arm64/kernel/kaslr.c:
+> > > 	if (IS_ENABLED(CONFIG_RANDOMIZE_MODULE_REGION_FULL)) {
+> > > 		/*
+> > > 		 * Randomize the module region over a 2 GB window covering the
+> > > 		 * kernel. This reduces the risk of modules leaking information
+> > > 		 * about the address of the kernel itself, but results in
+> > > 		 * branches between modules and the core kernel that are
+> > > 		 * resolved via PLTs. (Branches between modules will be
+> > > 		 * resolved normally.)
+> > > 		 */
+> > > 		module_range = SZ_2G - (u64)(_end - _stext);
+> > > 		module_alloc_base = max((u64)_end + offset - SZ_2G,
+> > > 					(u64)MODULES_VADDR);
+> > > 	} else {
+> > > 		/*
+> > > 		 * Randomize the module region by setting module_alloc_base to
+> > > 		 * a PAGE_SIZE multiple in the range [_etext - MODULES_VSIZE,
+> > > 		 * _stext) . This guarantees that the resulting region still
+> > > 		 * covers [_stext, _etext], and that all relative branches can
+> > > 		 * be resolved without veneers.
+> > > 		 */
+> > > 		module_range = MODULES_VSIZE - (u64)(_etext - _stext);
+> > > 		module_alloc_base = (u64)_etext + offset - MODULES_VSIZE;
+> > > 	}
+> > >
+> > > So depending on ! ARM64_MODULE_PLTS seems to narrow the scenarios
+> > > while depending on ! RANDOMIZE_MODULE_REGION_FULL  permit more
+> > > machines to use optprobe.
+> >
+> > OK, I see that the code ensures the range will be in the MODULE_VSIZE (=128MB).
+> >
+> > >
+> > > I am not quite sure I am 100% right but tests seem to back this.
+> > > hopefully Catalin and Will can correct me.
+> > >
+> > > >
+> > > > >
+> > > > > Performance of optprobe on Hip08 platform is test using kprobe
+> > > > > example module[1] to analyze the latency of a kernel function,
+> > > > > and here is the result:
+> > > > >
+> > > > > [1]
+> > > >
+> >
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sa
+> > > > mples/kprobes/kretprobe_example.c
+> > > > >
+> > > > > kprobe before optimized:
+> > > > > [280709.846380] do_empty returned 0 and took 1530 ns to execute
+> > > > > [280709.852057] do_empty returned 0 and took 550 ns to execute
+> > > > > [280709.857631] do_empty returned 0 and took 440 ns to execute
+> > > > > [280709.863215] do_empty returned 0 and took 380 ns to execute
+> > > > > [280709.868787] do_empty returned 0 and took 360 ns to execute
+> > > > > [280709.874362] do_empty returned 0 and took 340 ns to execute
+> > > > > [280709.879936] do_empty returned 0 and took 320 ns to execute
+> > > > > [280709.885505] do_empty returned 0 and took 300 ns to execute
+> > > > > [280709.891075] do_empty returned 0 and took 280 ns to execute
+> > > > > [280709.896646] do_empty returned 0 and took 290 ns to execute
+> > > > > [280709.902220] do_empty returned 0 and took 290 ns to execute
+> > > > > [280709.907807] do_empty returned 0 and took 290 ns to execute
+> > > > >
+> > > > > optprobe:
+> > > > > [ 2965.964572] do_empty returned 0 and took 90 ns to execute
+> > > > > [ 2965.969952] do_empty returned 0 and took 80 ns to execute
+> > > > > [ 2965.975332] do_empty returned 0 and took 70 ns to execute
+> > > > > [ 2965.980714] do_empty returned 0 and took 60 ns to execute
+> > > > > [ 2965.986128] do_empty returned 0 and took 80 ns to execute
+> > > > > [ 2965.991507] do_empty returned 0 and took 70 ns to execute
+> > > > > [ 2965.996884] do_empty returned 0 and took 70 ns to execute
+> > > > > [ 2966.002262] do_empty returned 0 and took 80 ns to execute
+> > > > > [ 2966.007642] do_empty returned 0 and took 70 ns to execute
+> > > > > [ 2966.013020] do_empty returned 0 and took 70 ns to execute
+> > > > > [ 2966.018400] do_empty returned 0 and took 70 ns to execute
+> > > > > [ 2966.023779] do_empty returned 0 and took 70 ns to execute
+> > > > > [ 2966.029158] do_empty returned 0 and took 70 ns to execute
+> > > >
+> > > > Great result!
+> > > > I have other comments on the code below.
+> > > >
+> > > > [...]
+> > > > > diff --git a/arch/arm64/kernel/probes/kprobes.c
+> > > > b/arch/arm64/kernel/probes/kprobes.c
+> > > > > index 6dbcc89f6662..83755ad62abe 100644
+> > > > > --- a/arch/arm64/kernel/probes/kprobes.c
+> > > > > +++ b/arch/arm64/kernel/probes/kprobes.c
+> > > > > @@ -11,6 +11,7 @@
+> > > > >  #include <linux/kasan.h>
+> > > > >  #include <linux/kernel.h>
+> > > > >  #include <linux/kprobes.h>
+> > > > > +#include <linux/moduleloader.h>
+> > > > >  #include <linux/sched/debug.h>
+> > > > >  #include <linux/set_memory.h>
+> > > > >  #include <linux/slab.h>
+> > > > > @@ -113,9 +114,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe
+> *p)
+> > > > >
+> > > > >  void *alloc_insn_page(void)
+> > > > >  {
+> > > > > -	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START,
+> > VMALLOC_END,
+> > > > > -			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
+> > > > > -			NUMA_NO_NODE, __builtin_return_address(0));
+> > > > > +	void *page;
+> > > > > +
+> > > > > +	page = module_alloc(PAGE_SIZE);
+> > > > > +	if (!page)
+> > > > > +		return NULL;
+> > > > > +
+> > > > > +	set_vm_flush_reset_perms(page);
+> > > > > +	/*
+> > > > > +	 * First make the page read-only, and only then make it executable
+> > to
+> > > > > +	 * prevent it from being W+X in between.
+> > > > > +	 */
+> > > > > +	set_memory_ro((unsigned long)page, 1);
+> > > > > +	set_memory_x((unsigned long)page, 1);
+> > > > > +
+> > > > > +	return page;
+> > > >
+> > > > Isn't this a separated change? Or any reason why you have to
+> > > > change this function?
+> > >
+> > > As far as I can tell, this is still related with the 128MB
+> > > short jump limitation.
+> > > VMALLOC_START, VMALLOC_END is an fixed virtual address area
+> > > which isn't necessarily modules will be put.
+> > > So this patch is moving to module_alloc() which will get
+> > > memory between module_alloc_base and module_alloc_end.
+> >
+> > Ah, I missed that point. Yes, VMALLOC_START and VMALLOC_END
+> > are not correct range.
+> >
+> > >
+> > > Together with depending on !RANDOMIZE_MODULE_REGION_FULL,
+> > > this makes all kernel, module and trampoline in short
+> > > jmp area.
+> > >
+> > > As long as we can figure out a way to support long jmp
+> > > for optprobe, the change in alloc_insn_page() can be
+> > > dropped.
+> >
+> > No, I think above change is rather readable, so it is OK.
+> >
+> > >
+> > > Masami, any reference code from any platform to support long
+> > > jump for optprobe? For long jmp, we need to put jmp address
+> > > to a memory and then somehow load the target address
+> > > to PC. Right now, we are able to replace an instruction
+> > > only. That is the problem.
+> >
+> > Hmm, I had read a paper about 2-stage jump idea 15years ago. That
+> > paper allocated an intermediate trampoline (like PLT) which did a long
+> > jump to the real trampoline on SPARC.
+> > (something like, "push x0; ldr x0, [pc+8]; br x0; <immediate-addr>" for
+> > a slot of the intermediate trampoline.)
+> >
+> > For the other (simpler) solution example is optprobe in powerpc
+> > (arch/powerpc/kernel/optprobes_head.S). That reserves a buffer page
+> > in the text section, and use it.
+> >
+> > But I think your current implementation is good enough for the
+> > first step. If someone needs CONFIG_RANDOMIZE_MODULE_REGION_FULL
+> > and optprobe, we can revisit this point.
+> >
+> > Thank you,
+
+
+Thanks
+Barry
+
