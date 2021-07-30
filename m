@@ -2,106 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA363DB5A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37CD3DB5A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238119AbhG3JIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:08:30 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44764 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbhG3JI2 (ORCPT
+        id S238164AbhG3JJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230335AbhG3JJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:08:28 -0400
-Received: by mail-io1-f72.google.com with SMTP id 5-20020a5d9c450000b029050b6f9cfe31so5126666iof.11
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:08:24 -0700 (PDT)
+        Fri, 30 Jul 2021 05:09:30 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B87C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:09:25 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id t2so5045935vsa.11
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:09:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C1//LZ4o9bUA4dg1AgHjS+mwziRpkBn+ySaK4ZjppZk=;
+        b=v7hqIbZovsisJFkgQACA9jFXmxfez6Xk+l0364CqR0UjELBQwlRHq2IEaDqoYxtfL3
+         LMAZ2C3S+SM5SxEB0kpUbHukDcy3VHbrUnh7IddL0awWnEnacbIRt5Yf07BH/dug8l7x
+         w4bRtipS5U0WBXkrub2kolienm5dFJIuzXMK8pyvRlkrcJOi69DdpDNhB0UKVEXc7e11
+         fJXKDkZCYCL2QEm++mb1mZOjYYAcbAyfBK6bu6uiyUJrMuCCMlC789uF468XzfOV1xyU
+         UXnU6kB1JIoE1r6LcsSxgo5u614RM+0Pg6NYcWLKyuxAJbP0HRIZafg2Sh5E9hHcNyrJ
+         ivRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=LOpcD94JT6AcjBsndlStT+OJkcVIsjkFHCRw2q3qaPk=;
-        b=I4lpBgHczV3nbpHg00xVWHLToIbtMuxrRmTmOJJMmUaYlxYfYZneU0OJLKiVMykO6o
-         /b2b0eOUU2CnkeU3i1tV1EyXx6RLNBg46+yEz1yK7UE0DFH4EBIvOSWrC90EbhzDmaOJ
-         NUQ0uXRBwHQUDEl7neToJfznmbQsHUIZgARWuBLdqDZcRwYVAAz37U1HlUbLGlUtgxQZ
-         9ON0kHPhlRLhUOpzxXODf+bf8CWkmHq7PqxASZocoZs7IsT8NToT7qifXsR8ysMK81hQ
-         6IojjdAR5PopFYFHMw+K4OvUlMVDd1+VG7pKZ7Pd5shFXEzBZFWOGjVOHdBiFO+m2RR2
-         vEPw==
-X-Gm-Message-State: AOAM533nsXFmC2nhAHDIjbjmtSfo9hoF/gYvoFQdyM277g54ul7PjVjV
-        b9+Y/h9giyVGyEknYW3Sy6Y7NXtAlg+QMPw3XucDqdFoQy+U
-X-Google-Smtp-Source: ABdhPJwVEG4Km2ZcQNtPuFJ0+Rrl60q/LXm69xoLDvx2qxU+8/1um3GnFQ6DhlsX06A5ZmMys8QUb/Mr7xl7OcTozuXA6BaKU+mG
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C1//LZ4o9bUA4dg1AgHjS+mwziRpkBn+ySaK4ZjppZk=;
+        b=i4Gt5/RzTTQjewn4aRQERnkXQJVOYTKHcWq/0YjZ4VT5zEe2zWE7iUPy6eO73C1Jk+
+         TYJk8+481OJE95CS6ZlSFZd8jWLoiRtAn0at/6s5JJC0Urv8ByfSuUnzieo+JGchgOs1
+         5RAqUMNFqNUVbFr4xiDqb4sxExsG9cM6P+hPiLtvDHg7BcA4Ax+i/lgY5dtGsxkq/AOJ
+         KNTnxCB/NL5va4kRnvNgBmaR4W5CAxM++gvBiRwBHsNVoI6luTri38J33AlMSiLoTfEt
+         Uy7CYNn24V/e9+vX7dXS0xaIUYvdGu+LifAVC7rUkJxLebXL6g1cZp2YxMVSObPXLR0K
+         e1Dg==
+X-Gm-Message-State: AOAM53131rSvRYtUUKpaWaYu2+b9E6xm5cvuG54hqVMTAl3wiSLqUlKB
+        85O0T7rbbT3SR1eRTw7a+ifPcR8yjdsfljJVT96G1w==
+X-Google-Smtp-Source: ABdhPJyltU9gwBHPo5rmJd2V6wVW/Srwe4VDfgYC5mNRc9eowFaKCrKzuhrzsuSArCYg75ore/6DdyeLezLQ4d4lIyg=
+X-Received: by 2002:a67:fe57:: with SMTP id m23mr676372vsr.42.1627636163744;
+ Fri, 30 Jul 2021 02:09:23 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9eda:: with SMTP id a26mr351194ioe.166.1627636104124;
- Fri, 30 Jul 2021 02:08:24 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 02:08:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cf5b1805c8538f2e@google.com>
-Subject: [syzbot] UBSAN: array-index-out-of-bounds in __anon_vma_prepare
-From:   syzbot <syzbot+66bddd4a39f264bee945@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+References: <20210728073700.120449-1-suleiman@google.com> <YQEQ9zdlBrgpOukj@hirez.programming.kicks-ass.net>
+In-Reply-To: <YQEQ9zdlBrgpOukj@hirez.programming.kicks-ass.net>
+From:   Suleiman Souhlal <suleiman@google.com>
+Date:   Fri, 30 Jul 2021 18:09:12 +0900
+Message-ID: <CABCjUKBXCFO4-cXAUdbYEKMz4VyvZ5hD-1yP9H7S7eL8XsqO-g@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] KVM: Support Heterogeneous RT VCPU Configurations.
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Suleiman Souhlal <ssouhlal@freebsd.org>,
+        Joel Fernandes <joelaf@google.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Peter,
 
-syzbot found the following issue on:
+On Wed, Jul 28, 2021 at 5:11 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Jul 28, 2021 at 04:36:58PM +0900, Suleiman Souhlal wrote:
+> > Hello,
+> >
+> > This series attempts to solve some issues that arise from
+> > having some VCPUs be real-time while others aren't.
+> >
+> > We are trying to play media inside a VM on a desktop environment
+> > (Chromebooks), which requires us to have some tasks in the guest
+> > be serviced at real-time priority on the host so that the media
+> > can be played smoothly.
+> >
+> > To achieve this, we give a VCPU real-time priority on the host
+> > and use isolcpus= to ensure that only designated tasks are allowed
+> > to run on the RT VCPU.
+>
+> WTH do you need isolcpus for that? What's wrong with cpusets?
 
-HEAD commit:    ff1176468d36 Linux 5.14-rc3
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10034f0e300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=40eef000d7648480
-dashboard link: https://syzkaller.appspot.com/bug?extid=66bddd4a39f264bee945
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-userspace arch: i386
+I regret mentioning isolcpus here.
+The patchset doesn't dictate how the guest is supposed to use RT.
+cpusets also work.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> > In order to avoid priority inversions (for example when the RT
+> > VCPU preempts a non-RT that's holding a lock that it wants to
+> > acquire), we dedicate a host core to the RT vcpu: Only the RT
+> > VCPU is allowed to run on that CPU, while all the other non-RT
+> > cores run on all the other host CPUs.
+> >
+> > This approach works on machines that have a large enough number
+> > of CPUs where it's possible to dedicate a whole CPU for this,
+> > but we also have machines that only have 2 CPUs and doing this
+> > on those is too costly.
+> >
+> > This patch series makes it possible to have a RT VCPU without
+> > having to dedicate a whole host core for it.
+> > It does this by making it so that non-RT VCPUs can't be
+> > preempted if they are in a critical section, which we
+> > approximate as having interrupts disabled or non-zero
+> > preempt_count. Once the VCPU is found to not be in a critical
+> > section anymore, it will give up the CPU.
+> > There measures to ensure that preemption isn't delayed too
+> > many times.
+> >
+> > (I realize that the hooks in the scheduler aren't very
+> > tasteful, but I couldn't figure out a better way.
+> > SVM support will be added when sending the patch for
+> > inclusion.)
+> >
+> > Feedback or alternatives are appreciated.
+>
+> This is disguisting and completely wrecks the host scheduling. You're
+> placing guest over host, that's fundamentally wrong.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+66bddd4a39f264bee945@syzkaller.appspotmail.com
+I understand the sentiment.
 
-================================================================================
-UBSAN: array-index-out-of-bounds in kernel/locking/osq_lock.c:34:9
-index 117901062 is out of range for type 'long unsigned int [8]'
-CPU: 1 PID: 25857 Comm: kworker/u4:3 Not tainted 5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:288
- decode_cpu kernel/locking/osq_lock.c:34 [inline]
- osq_lock+0x5ab/0x600 kernel/locking/osq_lock.c:111
- rwsem_optimistic_spin kernel/locking/rwsem.c:746 [inline]
- rwsem_down_write_slowpath+0x1bb/0x11d0 kernel/locking/rwsem.c:1025
- __down_write_common kernel/locking/rwsem.c:1261 [inline]
- __down_write_common kernel/locking/rwsem.c:1258 [inline]
- __down_write kernel/locking/rwsem.c:1270 [inline]
- down_write+0x137/0x150 kernel/locking/rwsem.c:1407
- anon_vma_lock_write include/linux/rmap.h:116 [inline]
- __anon_vma_prepare+0xbf/0x560 mm/rmap.c:203
- anon_vma_prepare include/linux/rmap.h:149 [inline]
- do_anonymous_page mm/memory.c:3765 [inline]
- handle_pte_fault mm/memory.c:4556 [inline]
- __handle_mm_fault+0x4338/0x5320 mm/memory.c:4693
- handle_mm_fault+0x1c8/0x790 mm/memory.c:4791
- faultin_page mm/gup.c:951 [inline]
- __get_user_pages+0x806/0x1430 mm/gup.c:1173
- __get_user_pages_locked mm/gup.c:1359 [inline]
- __get_user_pages_remote+0x18f/0x840 mm/gup.c:1865
- get_user_pages_remote+0x63/0x90 mm/gup.c:1938
- get_arg_page+0xba/0x200 fs/exec.c:220
- copy_string_kernel+0x1b4/0x520 fs/exec.c:631
- kernel_execve+0x25c/0x460 fs/exec.c:1961
- call_usermodehelper_exec_async+0x2e3/0x580 kernel/umh.c:112
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-================================================================================
+For what it's worth, the patchset doesn't completely rely on a
+well-behaved guest: It only delays preemption a bounded number of
+times, after which it yields back no matter what.
 
+> NAK!
+>
+> If you want co-ordinated RT scheduling, look at paravirtualized deadline
+> scheduling.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thanks for the suggestion, I will look into it.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- Suleiman
