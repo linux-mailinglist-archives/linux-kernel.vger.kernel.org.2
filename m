@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F3D3DB661
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2372F3DB666
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238494AbhG3JvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:51:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238333AbhG3Jud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:50:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3E616109D;
-        Fri, 30 Jul 2021 09:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627638628;
-        bh=Z6BIJsdcYwnFuOM9ZkHExFNeqE4EIBKp7kCuktxqcXg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PYTzYbRk1LDcAudkz17VQp8UM7b+5bTWrIIrAe7/rpu1fvFrpGyd9ln/9vgjc7UwO
-         YnqTb32+4uYsGvbHPEt7p6ccl50jMLOM67uuv08r9GRz42/4upgeLT5oR7jhqWnRJ6
-         ptXfiixcua1cbDfYyf0Bl3R7GU1GucjCrRzYdLho/q/nZst5jkTbA1IvDxkCtYEuJU
-         oNdphmYm7qiP36p/UAY7oxGexId2GRy3XIptC4ZF6cNz85bWbv+guPONzG/5KpSOSh
-         FVOK2Rp5/F6NOPNmxtphIa1BdmAHrTGhzeetRJwf/KQHhkdN+8UAOUNpqSUPTEAwSV
-         PPmUli8/PASGw==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m9P9t-006s4Y-LI; Fri, 30 Jul 2021 11:50:25 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [PATCH v8 11/11] PCI: kirin: Allow removing the driver
-Date:   Fri, 30 Jul 2021 11:50:14 +0200
-Message-Id: <9a482c476a0e99e3f9f4bc6ddb14890daf0b0fd0.1627637745.git.mchehab+huawei@kernel.org>
+        id S238499AbhG3JvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:51:14 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:51976
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238447AbhG3Jus (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 05:50:48 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 25B883F112;
+        Fri, 30 Jul 2021 09:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627638638;
+        bh=YK/QXYKtOtVXVIFn4gCLUCZeIPFhKc4MjoA0AhD8gYc=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=MYX9DglRtGitHkflKpZaTCP5xpmESK+l3RIUBKUzWlJEBXkM5czOJi5T590rnN/yq
+         hHEEiPCJYGgaD1z/IA5XL1C6MeZXpobW7srjS0w56oD8EXaVMJ+hdXyr2Y66bVWQTW
+         YMZSGD9coPJERUcinUpN/m9E3/z5a+HYIfYiRiptKLBXee+ZwYD6VJfxH95ywf7Q9S
+         G9O/8kt5RhZdu/H6qOQFMdkBBa4gDq1DzM3FVtNfsQYa8WF20Y8b4JYmGn9Nzuo/Av
+         1V12iOvkQY/v5EcXRc23riAk8JURBE1R5vLCVRHg2DM0njnB6DWr1VWsRlMV/BI02T
+         4eQQZnBeEgWgg==
+From:   Colin King <colin.king@canonical.com>
+To:     Khalid Aziz <khalid@gonehiking.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: BusLogic: use %X for u32 sized integer rather than %lX
+Date:   Fri, 30 Jul 2021 10:50:31 +0100
+Message-Id: <20210730095031.26981-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1627637745.git.mchehab+huawei@kernel.org>
-References: <cover.1627637745.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that everything is in place at the poweroff sequence,
-this driver can use module_platform_driver(), which allows
-it to be removed.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+An earlier fix changed the print format specifier for adapter->bios_addr
+to use %lX however the integer is a u32 so the fix was wrong. Fix this
+by using the correct %X format specifier.
+
+Addresses-Coverity: ("Invalid type in argument")
+Fixes: 43622697117c ("scsi: BusLogic: use %lX for unsigned long rather than %X")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/pci/controller/dwc/pcie-kirin.c | 2 +-
+ drivers/scsi/BusLogic.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-index bdf45d29cdc3..25aa840b0ee3 100644
---- a/drivers/pci/controller/dwc/pcie-kirin.c
-+++ b/drivers/pci/controller/dwc/pcie-kirin.c
-@@ -831,7 +831,7 @@ static struct platform_driver kirin_pcie_driver = {
- 		.suppress_bind_attrs	= true,
- 	},
- };
--builtin_platform_driver(kirin_pcie_driver);
-+module_platform_driver(kirin_pcie_driver);
- 
- MODULE_DEVICE_TABLE(of, kirin_pcie_match);
- MODULE_DESCRIPTION("PCIe host controller driver for Kirin Phone SoCs");
+diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+index adddcd589941..bd615db5c58c 100644
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -1711,7 +1711,7 @@ static bool __init blogic_reportconfig(struct blogic_adapter *adapter)
+ 	if (adapter->adapter_bus_type != BLOGIC_PCI_BUS) {
+ 		blogic_info("  DMA Channel: None, ", adapter);
+ 		if (adapter->bios_addr > 0)
+-			blogic_info("BIOS Address: 0x%lX, ", adapter,
++			blogic_info("BIOS Address: 0x%X, ", adapter,
+ 					adapter->bios_addr);
+ 		else
+ 			blogic_info("BIOS Address: None, ", adapter);
 -- 
 2.31.1
 
