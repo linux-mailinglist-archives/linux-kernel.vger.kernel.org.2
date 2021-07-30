@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBF33DBC33
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CED43DBC3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239565AbhG3PYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 11:24:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239398AbhG3PYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 11:24:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2A2260F46;
-        Fri, 30 Jul 2021 15:24:41 +0000 (UTC)
-Date:   Fri, 30 Jul 2021 16:24:39 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        Marco Elver <elver@google.com>,
-        Nicholas Tang <nicholas.tang@mediatek.com>,
-        Andrew Yang <andrew.yang@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH 1/2] kasan, mm: reset tag when access metadata
-Message-ID: <20210730152438.GA2690@arm.com>
-References: <20210727040021.21371-1-Kuan-Ying.Lee@mediatek.com>
- <20210727040021.21371-2-Kuan-Ying.Lee@mediatek.com>
- <CANpmjNM03Pag9OvBBVnWnSBePRxsT+BvZtBwrh_61Qzmvp+dvA@mail.gmail.com>
- <b6b96caf30e62996fa3b75ae8d146c9cc0dcbbf6.camel@mediatek.com>
- <20210727192217.GV13920@arm.com>
- <CA+fCnZdprormHJHHuEMC07+OnHdC9MLb9PLpBnE1P9TvrVisfw@mail.gmail.com>
+        id S239711AbhG3PZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:25:10 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:35572
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239750AbhG3PZI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 11:25:08 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id BC4373F251
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:25:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627658702;
+        bh=x+6pX9ZPyUiM1Rt9roeiBBTX1oDHG2m/9+XL3uN84UM=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=D6JryoivxvbJZijNhsbU9QBiuFI7KQQ/VMLdi1YKtEnqwJoHhmGOKSOrszWcLLHfp
+         bIQdmhJeH2N4LFBjwuVNYlCTfY8ZHb5MwHH3slOWqUSBBNfq7whDOPHxNRAWqLuOOF
+         0iTGNI2kecRJ73W2iO/UgNttsK+6AfEfXoxLCYJGEmLvXZh3+sNgIo/Lid8rIKMnJO
+         YeHqhv43wy0k+TiF8U8GVYxBYBJuHoE14Mo/TYtC25i+UNby1Vr2HfGhr6bEMzaEIg
+         biFpnXldSI+pvpS2qFaMXyOT8cuEBAsPrZ7dnz6uuRrmrq2f1acV+jyxQl8xzFc+w6
+         FzbHNwbqD6rwg==
+Received: by mail-ed1-f70.google.com with SMTP id j22-20020a50ed160000b02903ab03a06e86so4761931eds.14
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 08:25:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x+6pX9ZPyUiM1Rt9roeiBBTX1oDHG2m/9+XL3uN84UM=;
+        b=QasG/8zskCCPPO/LBj+nNCMPeW4nB8jMbqunbOAIW8HmnwB5EF9rT/S5PEm6DylWC6
+         b2BrzwnRDgsk0hJrpFLMOkjovDkF+V0ArWp/MVM38T03VbMbbm+xHlhDWXCfHFmRq/qf
+         MUhrks+nQZT2M2lbdk0iUDy+7+IOJHVwXqtaNpsTFDF/Om01OiZpdH7C2uSVRZmw1lwh
+         4KQrWAlTdcYSwEDtGg84KHQ7ZE8UXDLtChzDCsHuT3SI5uLlNQ2rjWspXp/MLVWcqT6K
+         3I/t0syGMGFEPDVkk98YQw9GImV+qkfurDMOmiwppD7kf21r5UO5+EhIJYun8WB+0n5h
+         ix1g==
+X-Gm-Message-State: AOAM5306KsCeivKAsVP3Ap5fSoV9ZkZXGjT9gu9YgH16j4Ob4apzwo/6
+        RtyIehnPEb9qzWKdyB6jdIQBQdlqZ1W1WcODFHcUyTfa9xvWwmkBG7wdyG+HY1zoT5QA3mLWPT0
+        jpbcMVAVepBEfCF16YtIYmYvjRkoDO7wnM3Jz09iP+g==
+X-Received: by 2002:a17:907:75cd:: with SMTP id jl13mr2947115ejc.327.1627658702302;
+        Fri, 30 Jul 2021 08:25:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyqqUP+KIIGoq9q1WH1X67AGbVHunzdzYqA1b+ewcbCdTxqa8OY5fibzCtJefglr1Ece6TTig==
+X-Received: by 2002:a17:907:75cd:: with SMTP id jl13mr2947093ejc.327.1627658702183;
+        Fri, 30 Jul 2021 08:25:02 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id p3sm699984ejy.20.2021.07.30.08.24.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 08:25:01 -0700 (PDT)
+Subject: Re: [PATCH 03/12] dt-bindings: pinctrl: samsung: Add Exynos850 doc
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-4-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <61a6c636-6f72-d086-79b8-e87dbab6b456@canonical.com>
+Date:   Fri, 30 Jul 2021 17:24:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+fCnZdprormHJHHuEMC07+OnHdC9MLb9PLpBnE1P9TvrVisfw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210730144922.29111-4-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 04:57:20PM +0200, Andrey Konovalov wrote:
-> On Tue, Jul 27, 2021 at 9:22 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> >
-> > On Tue, Jul 27, 2021 at 04:32:02PM +0800, Kuan-Ying Lee wrote:
-> > > On Tue, 2021-07-27 at 09:10 +0200, Marco Elver wrote:
-> > > > +Cc Catalin
-> > > >
-> > > > On Tue, 27 Jul 2021 at 06:00, Kuan-Ying Lee <
-> > > > Kuan-Ying.Lee@mediatek.com> wrote:
-> > > > >
-> > > > > Hardware tag-based KASAN doesn't use compiler instrumentation, we
-> > > > > can not use kasan_disable_current() to ignore tag check.
-> > > > >
-> > > > > Thus, we need to reset tags when accessing metadata.
-> > > > >
-> > > > > Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-> > > >
-> > > > This looks reasonable, but the patch title is not saying this is
-> > > > kmemleak, nor does the description say what the problem is. What
-> > > > problem did you encounter? Was it a false positive?
-> > >
-> > > kmemleak would scan kernel memory to check memory leak.
-> > > When it scans on the invalid slab and dereference, the issue
-> > > will occur like below.
-> > >
-> > > So I think we should reset the tag before scanning.
-> > >
-> > > # echo scan > /sys/kernel/debug/kmemleak
-> > > [  151.905804]
-> > > ==================================================================
-> > > [  151.907120] BUG: KASAN: out-of-bounds in scan_block+0x58/0x170
-> > > [  151.908773] Read at addr f7ff0000c0074eb0 by task kmemleak/138
-> > > [  151.909656] Pointer tag: [f7], memory tag: [fe]
-> >
-> > It would be interesting to find out why the tag doesn't match. Kmemleak
-> > should in principle only scan valid objects that have been allocated and
-> > the pointer can be safely dereferenced. 0xfe is KASAN_TAG_INVALID, so it
-> > either goes past the size of the object (into the red zone) or it still
-> > accesses the object after it was marked as freed but before being
-> > released from kmemleak.
-> >
-> > With slab, looking at __cache_free(), it calls kasan_slab_free() before
-> > ___cache_free() -> kmemleak_free_recursive(), so the second scenario is
-> > possible. With slub, however, slab_free_hook() first releases the object
-> > from kmemleak before poisoning it. Based on the stack dump, you are
-> > using slub, so it may be that kmemleak goes into the object red zones.
-> >
-> > I'd like this clarified before blindly resetting the tag.
+On 30/07/2021 16:49, Sam Protsenko wrote:
+> Document compatible string for Exynos850 SoC. Nothing else is changed,
+> as Exynos850 SoC uses already existing samsung pinctrl driver.
 > 
-> AFAIK, kmemleak scans the whole object including the leftover redzone
-> for kmalloc-allocated objects.
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/pinctrl/samsung-pinctrl.txt | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Looking at the report, there are 11 0xf7 granules, which amounts to
-> 176 bytes, and the object is allocated from the kmalloc-256 cache. So
-> when kmemleak accesses the last 256-176 bytes, it causes faults, as
-> those are marked with KASAN_KMALLOC_REDZONE == KASAN_TAG_INVALID ==
-> 0xfe.
-> 
-> Generally, resetting tags in kasan_disable/enable_current() section
-> should be fine to suppress MTE faults, provided those sections had
-> been added correctly in the first place.
 
-Thanks for the explanation, the patch makes sense. FWIW:
+The patch should be first in the series - dt-bindings go at beginning.
+Although no need to resend just for this.
+If the resend happens, the fix ("pinctrl: samsung: Fix pinctrl bank pin
+count") should be sent separately (no mixing fixes and new features)
+because they are independent and usually easier for review.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+
+Best regards,
+Krzysztof
