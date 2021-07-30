@@ -2,167 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF263DBEC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8F13DBEC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbhG3TKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:10:14 -0400
-Received: from mga18.intel.com ([134.134.136.126]:51006 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230335AbhG3TKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:10:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10061"; a="200359127"
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="200359127"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 12:10:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="664956482"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Jul 2021 12:10:03 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m9XtS-000AGS-Th; Fri, 30 Jul 2021 19:10:02 +0000
-Date:   Sat, 31 Jul 2021 03:09:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/clang-fallthrough] BUILD SUCCESS
- cb163627e6d32dbaca4d89b2292788cee895b06d
-Message-ID: <61044e7c.kYNoJT4OoXX0ysBA%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231305AbhG3TLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhG3TK7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 15:10:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31724C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:10:54 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m9Xu8-00068d-Ao; Fri, 30 Jul 2021 21:10:44 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m9Xu5-0005yh-PK; Fri, 30 Jul 2021 21:10:41 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m9Xu5-0007KF-Nx; Fri, 30 Jul 2021 21:10:41 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Chen-Yu Tsai <wens@csie.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Rich Felker <dalias@libc.org>,
+        =?UTF-8?q?Samuel=20Iglesias=20Gons=C3=A1lvez?= 
+        <siglesias@igalia.com>, linux-m68k@lists.linux-m68k.org,
+        linux-sh@vger.kernel.org
+Subject: [PATCH v2 0/4] Some cleanups after making bus_type::remove return void
+Date:   Fri, 30 Jul 2021 21:10:31 +0200
+Message-Id: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/clang-fallthrough
-branch HEAD: cb163627e6d32dbaca4d89b2292788cee895b06d  scsi: fas216: Fix fall-through warning for Clang
+Hello,
 
-elapsed time: 1478m
+compared to (implicit) v1 that can be found at
+https://lore.kernel.org/lkml/20210727080840.3550927-1-u.kleine-koenig@pengutronix.de
+I rebased on top of
+git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git's
+driver-core-next where Greg already applied one of the patches.
 
-configs tested: 109
-configs skipped: 3
+Patch #1 has an updated commit log, the other three patches are
+unmodified.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+There are no interdependencies between these patches apart from the two
+zorro patches. So the patches can also be taken independently by their
+respective maintainers.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210728
-i386                 randconfig-c001-20210730
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210728
-x86_64               randconfig-a003-20210728
-x86_64               randconfig-a001-20210728
-x86_64               randconfig-a004-20210728
-x86_64               randconfig-a005-20210728
-x86_64               randconfig-a002-20210728
-i386                 randconfig-a005-20210728
-i386                 randconfig-a003-20210728
-i386                 randconfig-a004-20210728
-i386                 randconfig-a002-20210728
-i386                 randconfig-a001-20210728
-i386                 randconfig-a006-20210728
-i386                 randconfig-a005-20210730
-i386                 randconfig-a004-20210730
-i386                 randconfig-a003-20210730
-i386                 randconfig-a002-20210730
-i386                 randconfig-a006-20210730
-i386                 randconfig-a001-20210730
-x86_64               randconfig-a015-20210730
-x86_64               randconfig-a014-20210730
-x86_64               randconfig-a013-20210730
-x86_64               randconfig-a011-20210730
-x86_64               randconfig-a012-20210730
-x86_64               randconfig-a016-20210730
-x86_64               randconfig-a016-20210729
-x86_64               randconfig-a011-20210729
-x86_64               randconfig-a014-20210729
-x86_64               randconfig-a013-20210729
-x86_64               randconfig-a012-20210729
-x86_64               randconfig-a015-20210729
-i386                 randconfig-a013-20210730
-i386                 randconfig-a016-20210730
-i386                 randconfig-a012-20210730
-i386                 randconfig-a011-20210730
-i386                 randconfig-a014-20210730
-i386                 randconfig-a015-20210730
-i386                 randconfig-a016-20210728
-i386                 randconfig-a012-20210728
-i386                 randconfig-a013-20210728
-i386                 randconfig-a014-20210728
-i386                 randconfig-a011-20210728
-i386                 randconfig-a015-20210728
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                    rhel-8.3-kselftests
+Uwe Kleine-König (4):
+  nubus: Simplify check in remove callback
+  sh: superhyway: Simplify check in remove callback
+  zorro: Simplify remove callback
+  zorro: Drop useless (and hardly used) .driver member in struct
+    zorro_dev
 
-clang tested configs:
-x86_64               randconfig-c001-20210730
-x86_64               randconfig-a001-20210730
-x86_64               randconfig-a006-20210730
-x86_64               randconfig-a005-20210730
-x86_64               randconfig-a004-20210730
-x86_64               randconfig-a002-20210730
-x86_64               randconfig-a003-20210730
-x86_64               randconfig-a016-20210728
-x86_64               randconfig-a011-20210728
-x86_64               randconfig-a014-20210728
-x86_64               randconfig-a013-20210728
-x86_64               randconfig-a012-20210728
-x86_64               randconfig-a015-20210728
+ drivers/nubus/bus.c                |  2 +-
+ drivers/sh/superhyway/superhyway.c |  2 +-
+ drivers/zorro/zorro-driver.c       | 13 ++++---------
+ include/linux/zorro.h              |  1 -
+ 4 files changed, 6 insertions(+), 12 deletions(-)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+base-commit: b2c943e52705b211d1aa0633c9196150cf30be47
+-- 
+2.30.2
+
