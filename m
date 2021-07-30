@@ -2,127 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AD23DBECD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACE53DBED2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhG3TLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:11:31 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59898 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231143AbhG3TL3 (ORCPT
+        id S231423AbhG3TLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231244AbhG3TLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:11:29 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16UJ4XvQ155898;
-        Fri, 30 Jul 2021 15:11:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=aCvQ/zlOFEmWQJR05jB5BMz1wTvrloq8ZnJNoFyxCgA=;
- b=V/SnNDT/aGi/sMiEOokM2ekMamcQy0RLeeIiVZMZFrWO4O48mozPYBmM7QceGF/kMjoF
- DMRH1CMMcD1prddxzZSc2osDyLb2koTOn63pL/bJHCC0NVbvu0GjZucRAbi3VY1jzgiX
- k2U0vlOBcuDq7xKB9HtUvSgt0ZeERnZYsi6MQ2f4pcAiBtvZfadmwm7p9jG4aoLhWf+s
- r61lhWE5Pm+dFsZBkjM2lLXem1NOgsRbAguI2TxxRxHJhsgAE0TBuURSwD9idolC0zj1
- YudaNTxlJCF4XJhOzk7/sNz3XehoVufKcyPnDECxYOXBiam7FZWRehMBo9IHIwCK0wAb Jw== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a4pnc953r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jul 2021 15:11:09 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16UJ7IfF029591;
-        Fri, 30 Jul 2021 19:11:08 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03wdc.us.ibm.com with ESMTP id 3a235rncgm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jul 2021 19:11:08 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16UJB7a410879584
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Jul 2021 19:11:07 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B8D352806A;
-        Fri, 30 Jul 2021 19:11:06 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5186A28067;
-        Fri, 30 Jul 2021 19:11:03 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.21.31])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 30 Jul 2021 19:11:03 +0000 (GMT)
-Subject: Re: [PATCH 36/64] scsi: ibmvscsi: Avoid multi-field memset() overflow
- by aiming at srp
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
+        Fri, 30 Jul 2021 15:11:43 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C8BC061796
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:11:32 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so22233561pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:11:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n8Xzq3g5EUvGu5nqxpWUkOTLx58MtbEpXoxV2GjBSeQ=;
+        b=Sv7WsQpzJXuZ2SUhzG2bGjpWNnytpUZdCK8FYoFWF9yOt4mZznLl0b5TaHZC7Qu401
+         ChnKZAQFWipERZDAB1wdwpm+weuk5ABCbHWmkxILOkO6uCKJuakBpGwrGsxzM1RtC4k0
+         qEDUu4Tm1UonZUugjieoXPSLmFbmnayCWGU9qqr4S0OtvgXuaf2cCnFTOGNJEwAUxD2h
+         Fgs/r/RrnYyywObNfkOltfO5503+Y0VfrDZbeQRFD+mwxRlPMaMkcjSdc+4lZp7Zt24f
+         nmZmbYDIemJ0fA4/bqoNsQPXYKSEdsi1cEs1Mz0NdOtPsISC4V4z1wpTQbO5d/aUePbg
+         xNbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n8Xzq3g5EUvGu5nqxpWUkOTLx58MtbEpXoxV2GjBSeQ=;
+        b=naZP/MYTD6edMzxjVXEJqOx8BE/l/F45IitmRNvxSDzzWyQ3cwqL6t6a60CMpr8/Us
+         AI2jleSgFG38sUxfQGIrKDET86Ee2dEJls5wAcUHjOUPgsNxMj9U29yBesLYRziPFMNQ
+         T/tZwkdzqNMd6EooWqV5K68eBsfJwZ6xRLbzikd0ouHe6wIZqYKe3Tkcm1hZHM9VtPEI
+         jCS876MHZRTnxwypZWbo2YOwvcuzZ32vxYem9v3ziHfqqLGkOqmCMkefn+dVz+YZL4QL
+         5BgW3gkGObWzEj7IDjXUPo6cFhxmrjtacH4BjlewMFpTmIoWQ1vuDHCFF9/7VyAfCpIH
+         JYLQ==
+X-Gm-Message-State: AOAM5317TEcPn2BdVLY9BhgxWAQrufQDApEY+ueQ4E/LHMg5k353aASN
+        VwG9UKuoVgxDq2eaJ//AXOoS+A==
+X-Google-Smtp-Source: ABdhPJyXyX6iKm7qrBPH2IumcnmmX6q4RO4ehWBMCE7OPZk8FXLocXu7ds1yO4SUF+quMbUTidipmQ==
+X-Received: by 2002:a65:40cc:: with SMTP id u12mr3008779pgp.18.1627672292048;
+        Fri, 30 Jul 2021 12:11:32 -0700 (PDT)
+Received: from sspatil2.c.googlers.com (226.75.127.34.bc.googleusercontent.com. [34.127.75.226])
+        by smtp.gmail.com with ESMTPSA id y64sm3625985pgy.32.2021.07.30.12.11.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 12:11:31 -0700 (PDT)
+Subject: Re: [PATCH 1/1] fs: pipe: wakeup readers everytime new data written
+ is to pipe
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Brian King <brking@linux.vnet.ibm.com>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-37-keescook@chromium.org>
- <yq135rzp79c.fsf@ca-mkp.ca.oracle.com> <202107281152.515A3BA@keescook>
- <yq1k0l9oktw.fsf@ca-mkp.ca.oracle.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <3ffbcf75-166e-5802-1d8e-9c7739961b80@linux.ibm.com>
-Date:   Fri, 30 Jul 2021 12:11:02 -0700
+        stable <stable@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+References: <20210729222635.2937453-1-sspatil@android.com>
+ <20210729222635.2937453-2-sspatil@android.com>
+ <CAHk-=wh-DWvsFykwAy6uwyv24nasJ39d7SHT+15x+xEXBtSm_Q@mail.gmail.com>
+From:   Sandeep Patil <sspatil@android.com>
+Message-ID: <cee514d6-8551-8838-6d61-098d04e226ca@android.com>
+Date:   Fri, 30 Jul 2021 19:11:29 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <yq1k0l9oktw.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAHk-=wh-DWvsFykwAy6uwyv24nasJ39d7SHT+15x+xEXBtSm_Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: FY4mG5iTa3n7SX9d8VHWXVbFzyl_6wEi
-X-Proofpoint-GUID: FY4mG5iTa3n7SX9d8VHWXVbFzyl_6wEi
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-30_11:2021-07-30,2021-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
- adultscore=0 phishscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107300129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 8:35 PM, Martin K. Petersen wrote:
-> 
-> Kees,
-> 
->> For example, change it to:
+On 7/29/21 11:01 PM, Linus Torvalds wrote:
+> On Thu, Jul 29, 2021 at 3:27 PM Sandeep Patil <sspatil@android.com> wrote:
 >>
->> +	BUILD_BUG_ON(sizeof(evt_struct->iu.srp) != SRP_MAX_IU_LEN);
->> +	memset(&evt_struct->iu.srp, 0x00, sizeof(evt_struct->iu.srp));
->>  	srp_cmd = &evt_struct->iu.srp.cmd;
->> -	memset(srp_cmd, 0x00, SRP_MAX_IU_LEN);
+>> So restore the old behavior to wakeup all readers if any new data is
+>> written to the pipe.
 > 
->> For the moment, I'll leave the patch as-is unless you prefer having
->> the BUILD_BUG_ON(). :)
+> Ah-hahh.
 > 
-> I'm OK with the BUILD_BUG_ON(). Hopefully Tyrel or Brian will chime in.
+> I've had this slightly smaller patch waiting for the better part of a year:
 > 
+>    https://lore.kernel.org/lkml/CAHk-=wgjR7Nd4CyDoi3SH9kPJp_Td9S-hhFJZMqvp6GS1Ww8eg@mail.gmail.com/
+> 
+> waiting to see if some broken program actually depends on the bogus
+> epollet semantics.
+> 
+> Can you verify that that patch fixes the realm-core brokenness too?
 
-All the other srp structs are at most 64 bytes and the size of the union is
-explicitly set to SRP_MAX_IU_LEN by the last field of the union.
+Yes, your patch fixes all apps on Android I can test that include this 
+library.
 
-union srp_iu {
-        struct srp_login_req login_req;
-        struct srp_login_rsp login_rsp;
-        struct srp_login_rej login_rej;
-        struct srp_i_logout i_logout;
-        struct srp_t_logout t_logout;
-        struct srp_tsk_mgmt tsk_mgmt;
-        struct srp_cmd cmd;
-        struct srp_rsp rsp;
-        u8 reserved[SRP_MAX_IU_LEN];
-};
+fwiw, the library seems to have been fixed. However, I am not sure
+how long it will be for all apps to take that update :(.
 
-So, in my mind if SRP_MAX_IU_LEN ever changes so does the size of the union
-making the BUILD_BUG_ON() superfluous. But it doesn't really hurt anything either.
-
--Tyrel
+- ssp
