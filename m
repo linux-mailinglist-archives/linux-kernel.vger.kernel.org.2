@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220083DB217
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AFD3DB21C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhG3ELS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 00:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
+        id S230120AbhG3EOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 00:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhG3ELQ (ORCPT
+        with ESMTP id S229465AbhG3EOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 00:11:16 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18321C061765;
-        Thu, 29 Jul 2021 21:11:11 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id k1so9492125plt.12;
-        Thu, 29 Jul 2021 21:11:11 -0700 (PDT)
+        Fri, 30 Jul 2021 00:14:15 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E1FC061765;
+        Thu, 29 Jul 2021 21:14:08 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id j1so13274585pjv.3;
+        Thu, 29 Jul 2021 21:14:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qJu6CB2LN4QTrxCEOBdOuFEubSp0osjxUw486lmLCCE=;
-        b=ZDBlqPk7rrZwfBnBjR5AX1bDAs/03F78a8y9TTalCyS6aeo4BVkIxfh1ObzxANaAgE
-         HW8wbFpOlmHwbaCPm5cRL/enrnPzB27Dnubwd4H3F+8zFrVlyM1Smb2LawbtRzGY3LRC
-         Gb93dNjedTrLXFAZ6ab+LBvUZZSxiYikb+dLVy6ty9M5d/daHgOsw8Q+y0rAzywv5rJ1
-         9vUlTT3Rv5WnELmp/i+W4sb7zRlI3Awvh+AERZBSYUZe0JKeGzcixyqH3H8gStqkO4Ji
-         /TjYveizM/zetfPUG8Kk34aKNf2XAzZdOlHSD7bm+KS1YwZA/iLQszfwSj+JpCnElXrL
-         5VoQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FvBye5rA/i9gJCLB0CYRwCAx++TS4yW2nWLT0eFIDrs=;
+        b=LM53Mom3pAe12LlSUSgtZ5ylKfMyFJjf5WMVbBecCzsYqGT6TJwMrbkAGzm5GuglFC
+         J5J+NyaD9DARU7gJak+K+kpsn8LgqMus75VKWHz8FdoQaTPJRzUYW/ATfFVPbk6Qht8n
+         xw00ZlNgJXoL8dwYgdKd+CUYFsS7uMlyY6SCog/flKzdX/5ktIqytA2KmnRt3q9GH+iB
+         2smWWuvjScseZ5auSrwwYY1RcubGLQndhrtJ1xG5RtE65K6q3RMr7kKWMyEXk/BM2Ovj
+         uTHFrhYKsCEuyD8yGpziNWPWEvWmcCiz9A95/fM5eqonSjAm/YoCwG+at48mj4keZo88
+         KYKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qJu6CB2LN4QTrxCEOBdOuFEubSp0osjxUw486lmLCCE=;
-        b=NhZbm4qE0y8PHoUerwDq4y3U6M2jXrhtlWOwKOSNlYe0ahrd0Ix8V7j2HznFId6b66
-         MkEhaNAhCvVKqpF4acPbpANrpUnGjuVCMm6KLaR0ZISpYE494rrTpSDzpFgsfSYxrA7C
-         LsfOXxv8VJpjDMET9n6EAHUuU2J6ObGkNYTeoBk94NowpytPuSbyUl8YiNHACVUxpCCu
-         VW+2qj8AHXCcmERjsVXni8Q+I+fAbHrWrVQ7DuJJydq9ajGbkKdCpjb61/wjO5Nc2dVE
-         4fy+sPpOnsLYIHvrniYhF1gUv8NL4+ioM+v79VG9H9FfSQZrAmEUGyeRuM7MisnExdFr
-         0ItA==
-X-Gm-Message-State: AOAM530/og5KYoU95IJ2MeBl/97lgE6G57hWm9y5q6ZHzsEaJ7t4oSJw
-        j97q814A3uMZ1ufYSV9eu0o=
-X-Google-Smtp-Source: ABdhPJz3KIEE78AyymdsWAIZFHiwRfrHYC57wifeuRqjNg3M8sSkO4co7S92ZJfiJ7qm9o4/XVu3Vw==
-X-Received: by 2002:a17:90a:b795:: with SMTP id m21mr872416pjr.143.1627618270672;
-        Thu, 29 Jul 2021 21:11:10 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:18:efec::4b1])
-        by smtp.gmail.com with ESMTPSA id s7sm418969pfk.12.2021.07.29.21.10.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 21:11:10 -0700 (PDT)
-Subject: Re: [PATCH 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap
- function for HV IVM
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, arnd@arndb.de, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, rientjes@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        rppt@kernel.org, kirill.shutemov@linux.intel.com,
-        aneesh.kumar@linux.ibm.com, krish.sadhukhan@oracle.com,
-        saravanand@fb.com, xen-devel@lists.xenproject.org,
-        pgonda@google.com, david@redhat.com, keescook@chromium.org,
-        hannes@cmpxchg.org, sfr@canb.auug.org.au,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, anparri@microsoft.com
-References: <20210728145232.285861-1-ltykernel@gmail.com>
- <20210728145232.285861-11-ltykernel@gmail.com> <YQLXYVaWWdBfF7Sm@fedora>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <7afbbc7f-8f02-ca6c-0c8c-bbf01fae70ea@gmail.com>
-Date:   Fri, 30 Jul 2021 12:10:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        bh=FvBye5rA/i9gJCLB0CYRwCAx++TS4yW2nWLT0eFIDrs=;
+        b=JIFyt8o1QUGXTkZxxVyapPDlpeUoOLcw9W5jt92wmqy3+G4iFlxPrOahXLRtytl/ab
+         Jqrscs4sZSg8oXX2TVf1AUleX7uzghFexd4/roqKYPvOuffLSDvucq3h3XoLarfFCkT9
+         9/qLJUNYr0VlBH1HCGiAuM7KY1nGcAOCdCreAeUzt8Z+fLzOhW54/qg7td0rSc0lvepp
+         sz4AiSHF7osQ+tnmJZb2Nvh3apRqhoxP9t4SlDubBx60paCLL+YfHzHaaleWGRpljgpS
+         TF+fx35boVBIUH0VQ/ANNRQzBVr2zsDRAzqyFDMgsWuH13pUria2/ZcWu1ycfZ+AaRqD
+         LpuA==
+X-Gm-Message-State: AOAM532zPA/WMTvUysd7xEW68HTt+KAeAe9x6yxVsP82Iiynlf5E8ClT
+        sG51tCgmJn4iv2nId0AiDxs=
+X-Google-Smtp-Source: ABdhPJxj+dPUybLbzjGkjBAZMwKOW+2eA2JMyK/N7eKR/7OU03jVYZtj58Mg0Tkhs3MQukajGNwvbg==
+X-Received: by 2002:a17:902:e9c4:b029:12c:9108:d85 with SMTP id 4-20020a170902e9c4b029012c91080d85mr645895plk.28.1627618448302;
+        Thu, 29 Jul 2021 21:14:08 -0700 (PDT)
+Received: from localhost.localdomain (104.194.74.249.16clouds.com. [104.194.74.249])
+        by smtp.gmail.com with ESMTPSA id x4sm440943pfb.27.2021.07.29.21.14.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 21:14:07 -0700 (PDT)
+From:   Artem Lapkin <email2tema@gmail.com>
+X-Google-Original-From: Artem Lapkin <art@khadas.com>
+To:     narmstrong@baylibre.com
+Cc:     wim@linux-watchdog.org, linux@roeck-us.net, khilman@baylibre.com,
+        jbrunet@baylibre.com, christianshewitt@gmail.com,
+        martin.blumenstingl@googlemail.com, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+Subject: [PATCH v4 0/3] watchdog: meson_gxbb_wdt: improve
+Date:   Fri, 30 Jul 2021 12:13:52 +0800
+Message-Id: <20210730041355.2810397-1-art@khadas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YQLXYVaWWdBfF7Sm@fedora>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad:
-      Thanks for your review.
+* Added nowayout module parameter
+* Added timeout module parameter
+* Removed watchdog_stop_on_reboot
 
-On 7/30/2021 12:29 AM, Konrad Rzeszutek Wilk wrote:
->> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
->> index 1fa81c096c1d..6866e5784b53 100644
->> --- a/kernel/dma/swiotlb.c
->> +++ b/kernel/dma/swiotlb.c
->> @@ -194,8 +194,13 @@ static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
->>   		mem->slots[i].alloc_size = 0;
->>   	}
->>   
->> -	set_memory_decrypted((unsigned long)vaddr, bytes >> PAGE_SHIFT);
->> -	memset(vaddr, 0, bytes);
->> +	mem->vaddr = dma_map_decrypted(vaddr, bytes);
->> +	if (!mem->vaddr) {
->> +		pr_err("Failed to decrypt memory.\n");
-> I am wondering if it would be worth returning an error code in this
-> function instead of just printing an error?
+https://lore.kernel.org/linux-watchdog/20210729072308.1908904-1-art@khadas.com/T/#t
 
-Yes, this is good idea and will update in the next version.
+Artem Lapkin (3):
+  watchdog: meson_gxbb_wdt: add nowayout parameter
+  watchdog: meson_gxbb_wdt: add timeout parameter
+  watchdog: meson_gxbb_wdt: remove stop_on_reboot
 
-> 
-> For this patch I think it is Ok, but perhaps going forward this would be
-> better done as I am thinking - is there some global guest->hyperv
-> reporting mechanism so that if this fails - it ends up being bubbled up
-> to the HyperV console-ish?
+ drivers/watchdog/meson_gxbb_wdt.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Hyper-V has such panic page report mechanism. Guest can pass one page 
-log to host during crash.
+-- 
+2.25.1
 
