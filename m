@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DDD3DB837
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552BD3DB834
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238768AbhG3MG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 08:06:57 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:50296 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238661AbhG3MG4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 08:06:56 -0400
-Date:   Fri, 30 Jul 2021 12:06:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1627646777;
-        bh=DnTVkMNQyN7PF/kN3hZUf5ZArPpdOn2CWrXvEvbbJ0o=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=Ek+XMqgmxpioWv9+WLQRr9W6kHOgU7YBsYgkdtTsDz79ZmMXaQNWaY8h6zwMJglBH
-         V1fmvNDdjONJOr+EN0tCbYm7+QZxNtQ75qKee1vRS4ks0t+4H2qxd8tTEDrKdD3orw
-         Z9Zvl1ThmdNm52jQLWYvCrCZgSfy10pLEYJCrTpE=
-To:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH 0/5] interconnect: qcom: Add MSM8996 interconnect driver
-Message-ID: <6JHqObH1HYWVEuXCDMTC0NMw0Uz7kXUT0mxvgR23I@cp4-web-030.plabs.ch>
+        id S238752AbhG3MGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 08:06:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238736AbhG3MGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 08:06:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F1A860C41;
+        Fri, 30 Jul 2021 12:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627646798;
+        bh=p6LB3X1GqM8vlAqHFQjYyPK8Pdu8hNmPwBeOntH+zFE=;
+        h=Date:From:To:cc:Subject:From;
+        b=p+WFv+34FjpkpZ4D5jm87dwjdalexuKRlO8r9umfgdBH9XZP9JGntLauPDQ+53Tnu
+         6tdgyG5sMy0xaCuGIDipI0+c9n55DTu2txiw7idGSymaAjtAdHSKrrGKdLtn/+v7Ak
+         bcVRJ5/zWBbtyByI+EF22wesrFdC7DKJrMYUFVj69dcA5kVNuwRG1aaoX9FZIalAWz
+         DYoIc64G7XXzcwQLrKKKR+vBoqVpNdyMF6FNl8TgSutYICqmd964WyNkjMth5Z6OXG
+         qX/Gcm9EY+WdAPkPANoQGq8fYZ0RrXiL89ZiY9GFZVL4vYzVRac62xftXSTo6LygVR
+         Dto5+gdaIqiqg==
+Date:   Fri, 30 Jul 2021 14:06:35 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [GIT PULL] HID fixes
+Message-ID: <nycvar.YFH.7.76.2107301403090.8253@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds a driver for interconnects on MSM8996. This fixes some rar=
-e display underflows
-and causes a slight heat reduction.
+Linus,
 
-The driver currently supports all NoCs on MSM8996 except a0noc, due to some=
- issues with writing
-to its registers.
+please pull from
 
-Yassine Oudjana (5):
-  interconnect: qcom: sdm660: Commonize RPM-QoS
-  dt-bindings: interconnect: Move SDM660 to a new RPM-QoS file
-  interconnect: qcom: Add MSM8996 interconnect provider driver
-  dt-bindings: interconnect: Add Qualcomm MSM8996 DT bindings
-  arm64: dts: qcom: msm8996: Add interconnect support
+  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
 
- .../{qcom,sdm660.yaml =3D> qcom,rpm-qos.yaml}   |  23 +-
- arch/arm64/boot/dts/qcom/msm8996.dtsi         |  84 +++
- drivers/interconnect/qcom/Kconfig             |  14 +-
- drivers/interconnect/qcom/Makefile            |   4 +
- drivers/interconnect/qcom/icc-rpm-qos.c       | 237 ++++++++
- drivers/interconnect/qcom/icc-rpm-qos.h       | 133 ++++
- drivers/interconnect/qcom/icc-rpmh.c          |   6 +-
- drivers/interconnect/qcom/icc-rpmh.h          |   2 +-
- drivers/interconnect/qcom/msm8996.c           | 574 ++++++++++++++++++
- drivers/interconnect/qcom/msm8996.h           | 149 +++++
- drivers/interconnect/qcom/sc7180.c            |   2 +-
- drivers/interconnect/qcom/sc7280.c            |   2 +-
- drivers/interconnect/qcom/sdm660.c            | 346 +----------
- drivers/interconnect/qcom/sdm845.c            |   2 +-
- drivers/interconnect/qcom/sdx55.c             |   2 +-
- drivers/interconnect/qcom/sm8150.c            |   2 +-
- drivers/interconnect/qcom/sm8250.c            |   2 +-
- drivers/interconnect/qcom/sm8350.c            |   2 +-
- .../dt-bindings/interconnect/qcom,msm8996.h   | 163 +++++
- 19 files changed, 1391 insertions(+), 358 deletions(-)
- rename Documentation/devicetree/bindings/interconnect/{qcom,sdm660.yaml =
-=3D> qcom,rpm-qos.yaml} (82%)
- create mode 100644 drivers/interconnect/qcom/icc-rpm-qos.c
- create mode 100644 drivers/interconnect/qcom/icc-rpm-qos.h
- create mode 100644 drivers/interconnect/qcom/msm8996.c
- create mode 100644 drivers/interconnect/qcom/msm8996.h
- create mode 100644 include/dt-bindings/interconnect/qcom,msm8996.h
+to receive HID subsystem fixes.
 
---=20
-2.32.0
+=====
+- resume timing fix for intel-ish driver from Ye Xiang
+- fix for using incorrect MMIO register in amd_sfh driver from Dylan 
+  MacKenzie
+- Cintiq 24HDT / 27QHDT regression fix and touch processing fix for Wacom 
+  driver from Jason Gerecke
+- device removal bugfix for ft260 driver from Michael Zaidman
+- other small assorted fixes
+=====
 
+Thanks.
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      HID: fix typo in Kconfig
+
+Colin Ian King (1):
+      HID: Kconfig: Fix spelling mistake "Uninterruptable" -> "Uninterruptible"
+
+Dylan MacKenzie (1):
+      HID: amd_sfh: Use correct MMIO register for DMA address
+
+Haochen Tong (1):
+      HID: apple: Add support for Keychron K1 wireless keyboard
+
+Jason Gerecke (2):
+      HID: wacom: Re-enable touch by default for Cintiq 24HDT / 27QHDT
+      HID: wacom: Skip processing of touches with negative slot values
+
+Luke D. Jones (1):
+      HID: asus: Remove check for same LED brightness on set
+
+Michael Zaidman (2):
+      HID: ft260: fix format type warning in ft260_word_show()
+      HID: ft260: fix device removal due to USB disconnect
+
+Ye Xiang (1):
+      HID: intel-ish-hid: use async resume function
+
+ drivers/hid/Kconfig                          |  2 +-
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.c       |  2 +-
+ drivers/hid/hid-apple.c                      |  2 ++
+ drivers/hid/hid-asus.c                       |  3 ---
+ drivers/hid/hid-ft260.c                      | 27 +++++++++-----------------
+ drivers/hid/intel-ish-hid/ishtp-hid-client.c | 15 +++++++++++++-
+ drivers/hid/intel-ish-hid/ishtp-hid.h        |  1 +
+ drivers/hid/intel-ish-hid/ishtp/bus.c        | 29 +++++++++++++++++++++-------
+ drivers/hid/usbhid/Kconfig                   |  2 +-
+ drivers/hid/wacom_wac.c                      |  5 ++++-
+ include/linux/intel-ish-client-if.h          |  2 ++
+ 11 files changed, 57 insertions(+), 33 deletions(-)
+
+-- 
+Jiri Kosina
+SUSE Labs
 
