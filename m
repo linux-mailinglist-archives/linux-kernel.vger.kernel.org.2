@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A923DB5A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743043DB5A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238077AbhG3JGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
+        id S238155AbhG3JGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbhG3JGA (ORCPT
+        with ESMTP id S230335AbhG3JGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:06:00 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EEDC061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:05:56 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id h2so16548972lfu.4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:05:55 -0700 (PDT)
+        Fri, 30 Jul 2021 05:06:20 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F0EBC061765;
+        Fri, 30 Jul 2021 02:06:15 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id k1so10297032plt.12;
+        Fri, 30 Jul 2021 02:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7fjXkwTW0XnvdKErYY4YL2ErCAYkMkBwM+Rl2m8Fj6I=;
-        b=eGvLfG7jvtnjTQ7y+uCAzJHDZINAwVBBBlKWuE7mlsW14wdA2ixv+vViZ8bNRmLRFU
-         LcZoDot0roZma+aktjsr9qvzqe8VziNoIxS6VbmN/Ana/GyH3CH2OW5qUr74F+/Ta7qV
-         vC+gStNco8y/HFqsuHSWQXiHCoqm2WKHBfHpK+PodFsejdDk7xYD8NJ0fkdozpy5zQUu
-         7H4wxOHYbkp987bOegnd8nuNL4HbDbj9g38tCQeSg2sX+1DQUFUdUbpnCAR+TwYhIWqu
-         wnQepbb3xRK2LFHiVbYJaR1RDMCVGatNdlDwUrBc9nVMV0ZB1pg+jhVJts5TEcUb9qkV
-         Li3w==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Mw1aFNNIOpDd6NtZ8F40EUdFGaW5gJZPJaFX36P2GH4=;
+        b=PDhCB3WiEMgvoVoN6RSvr91JVfbkdxrwkvEDMIF9wzT17E0CzubrymEuVPOlE3NOXN
+         /8YACLQCPhk56eQzxEZ8WPwnoCBJCMN7Za/s2Qc+zun84neby2kck5aOfEATqEsFOjv4
+         bY6gn+7RP2/VJCJ3b/Is1HGQMZz43jUOsLtcr0Rf67qfHpm5xmzm5jruRJriT9QIjK2r
+         hr0r31VDMsfbop9DWXSF9lSkxTL5tf8EjGiufZDdbKnWkYA0ezlGEXuYiJD9EQy9iUtX
+         n2ATYssATUEy0lzTmo0MTGdFs9u9+Nmsi9AvJGXN+HERe7iaUBpvt46rKMY25YasxSnf
+         duKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7fjXkwTW0XnvdKErYY4YL2ErCAYkMkBwM+Rl2m8Fj6I=;
-        b=uVQi59bw5Jcsqom9JWJxqKHfHqHBz/9VJ5fl/hYvp1En13s/dkKt7yEs9Sar5hPYVN
-         j9sjBLAsnIco+ZGQAnGwZ2uY8I8Lms37oN5OPVZm5X4U1722w1sgMr7Vn9cXKN/k8HRC
-         k2G7Ej1eJwqzXnBynVxqmG3dTppnNXqWl2Q3pdpjxV1xBvtsfIsUi1e5qD1/ISVekPbJ
-         grYUV0d5icr66XOegsRa+Ne582Fjgu1JG/gSqsR15PkGijy4B1i4ZRPK6GX1uKJlir0Q
-         rB4DLF5XZL9UK960g7+5sVq5G4STSXDmTuBcsn+dx8JmpmNkVQUueOgq0p90tfQhP/xp
-         yRqg==
-X-Gm-Message-State: AOAM532+cM/Vk0lZNcoMoon+BJqH20M6omfgfU8Zswse77LvkLKz/lmJ
-        ChT9Dxa8fgsr2V2BUikL2bMe0R0LooX6ZRZBu0haqQ==
-X-Google-Smtp-Source: ABdhPJzIglz1+X4aSDlLJ6cYQdggCLwPPABBzmggXznaSbU40ecn/VSlTll3FYW9jH0fHE4V0yz43gnugLU0kCh26VA=
-X-Received: by 2002:ac2:5d4a:: with SMTP id w10mr1160863lfd.529.1627635954345;
- Fri, 30 Jul 2021 02:05:54 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Mw1aFNNIOpDd6NtZ8F40EUdFGaW5gJZPJaFX36P2GH4=;
+        b=qAINuhKqvQbY4tZX8reobiv5P3N4jaXnY3NMtJZ6q32X7JlD7DOvUoTqzheqYrP2ti
+         Ee7I3WcgD6txGfvEzK/3pu324+JZfdK8XlWm6qkeq/R0IWPTDMgJjn0HTXx7dsi5Nz3Z
+         k3enIczScHh7O7O3HLw/Grgw04s/q4CHW1fIjg5O29t5veYUP7C0imuvR2LDjJAL9GGf
+         4k6Ps0XSaA82xzv4j8AoVRCjcwHj5qLB9sx/DcwTXttZjTCBMHHAmU6dhy0PFRQbPPFR
+         oqSzSfamFVXBfeG0UHLjOn8h1c0yRZDzofZlSVCNAesAV5UyT3DqDJkbllzgt5SGM6po
+         B84w==
+X-Gm-Message-State: AOAM5330Ldd1g2pQDncaBt9n7JGcZPGgj6VWjShvtYNQyCHIuB1OhXNQ
+        g4MkuTTxlbCmihlTapF4ns//b2nb9Q0isoenJ2E=
+X-Google-Smtp-Source: ABdhPJwMP6iBF4QEFfQd4ZEwB71ogfa04DRHUob13iYfVP9XXnAjEIO+neixEejSZo4OBjngk8pIMA==
+X-Received: by 2002:a17:903:49:b029:12b:1c88:101b with SMTP id l9-20020a1709030049b029012b1c88101bmr1771853pla.30.1627635974881;
+        Fri, 30 Jul 2021 02:06:14 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id a16sm1570122pfo.66.2021.07.30.02.06.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 02:06:14 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] Bluetooth: fix inconsistent lock state in
+ rfcomm_connect_ind
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        skhan@linuxfoundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210721093832.78081-1-desmondcheongzx@gmail.com>
+ <20210721093832.78081-3-desmondcheongzx@gmail.com>
+ <06E57598-5723-459D-9CE3-4DD8D3145D86@holtmann.org>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <40f38642-faa9-8c63-4306-6477e272cfbe@gmail.com>
+Date:   Fri, 30 Jul 2021 17:06:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210716162724.26047-1-lakshmi.sowjanya.d@intel.com> <20210716162724.26047-2-lakshmi.sowjanya.d@intel.com>
-In-Reply-To: <20210716162724.26047-2-lakshmi.sowjanya.d@intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 30 Jul 2021 11:05:43 +0200
-Message-ID: <CACRpkdZdK38iwwCQKqUQ1Xbd-5kf8NFjAxT8pvq+e7jT+wiThA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: Add bindings for Intel
- Keembay pinctrl driver
-To:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Saha, Tamal" <tamal.saha@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <06E57598-5723-459D-9CE3-4DD8D3145D86@holtmann.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lakshmi,
+Hi Marcel,
 
-sorry for slow review.
+On 30/7/21 3:53 am, Marcel Holtmann wrote:
+> Hi Desmond,
+> 
+>> Commit fad003b6c8e3d ("Bluetooth: Fix inconsistent lock state with
+>> RFCOMM") fixed a lockdep warning due to sk->sk_lock.slock being
+>> acquired without disabling softirq while the lock is also used in
+>> softirq context. This was done by disabling interrupts before calling
+>> bh_lock_sock in rfcomm_sk_state_change.
+>>
+>> Later, this was changed in commit e6da0edc24ee ("Bluetooth: Acquire
+>> sk_lock.slock without disabling interrupts") to disable softirqs
+>> only.
+>>
+>> However, there is another instance of sk->sk_lock.slock being acquired
+>> without disabling softirq in rfcomm_connect_ind. This patch fixes this
+>> by disabling local bh before the call to bh_lock_sock.
+> 
+> back in the days, the packet processing was done in a tasklet, but these days it is done in a workqueue. So shouldn’t this be just converted into a lock_sock(). Am I missing something?
+> 
 
-Since this is one of those "Intel but Arm" things I don't know how
-Andy feels about picking up the patch to his Intel pinctrl tree
-(I think we discussed it in the past) so I need to know how to handle
-this. It'd be great if Andy queues "all Intel stuff" but I don't want
-to force unfamiliar stuff on him either.
+Thanks for the info. I think you're right, I just didn't understand very 
+much when I wrote this patch.
 
-Andy? Do you pick this (when finished) or should I?
+If I'm understanding correctly, it seems that both the bh_lock_sock in 
+rfcomm_connect_ind, and spin_lock_bh in rfcomm_sk_state_change need to 
+be changed to lock_sock, otherwise they don't provide any 
+synchronization with other functions in RFCOMM that use lock_sock.
 
-On Fri, Jul 16, 2021 at 6:27 PM <lakshmi.sowjanya.d@intel.com> wrote:
+If that sounds correct I can prepare the patch for that.
 
-> +        interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
-
-Did we discuss this before? Are these hierarchical or does these IRQs
-map to more than one GPIO line?
-
-If they are hieararchical then the driver should just pick the lines
-in hierarchy from the parent with no data in the driver, but if one
-of these IRQ lines maps to more than one GPIO line they should
-be like this.
-
-Yours,
-Linus Walleij
+Best wishes,
+Desmond
