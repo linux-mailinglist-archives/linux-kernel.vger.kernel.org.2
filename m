@@ -2,131 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FF53DB960
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00753DB962
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238995AbhG3NdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 09:33:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20520 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238979AbhG3NdV (ORCPT
+        id S238926AbhG3Nfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 09:35:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhG3Nfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 09:33:21 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16UD4JRt083591;
-        Fri, 30 Jul 2021 09:33:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=UJPQ9VbDNI1euybHi4NIJ6hXWWUgW7x0UOukPqMkAzI=;
- b=VK3ng8HuyO/qImuua2YfEQW7OF8V1rwMmQoBYX6XT/8lYmKFwchUeM4HxNMe7L0HhGB0
- WciZooGopAnutB67g0SMdJxOkqffLMqb06uyTctr70uaPwxDfnxvAsoY5RsD/cbUm07f
- ucXdpdKiSa0s2nCxQxBaVmurNqJdV2UPBK1zdKxWRujxgnQuFThzGh3UXaw+v26cHOGT
- QzhnGcyulikgVZXNJ5RcPpsR98hEwIaFiq7Je69bbdu7qsdVPi/gDrhozUdktF3Tf1KQ
- unLJ7IhCk3mDdiEwVzZ6GIhcooZ+HCRmT3BbelPiiHQ9G+n2Vhhxm5ZDfszVW9yR1FWw qg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a4g23mp4k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jul 2021 09:33:15 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16UD5U6e095868;
-        Fri, 30 Jul 2021 09:33:14 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a4g23mp42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jul 2021 09:33:14 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16UDT2ki003953;
-        Fri, 30 Jul 2021 13:33:13 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma03dal.us.ibm.com with ESMTP id 3a235tw37w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jul 2021 13:33:13 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16UDXBqC10027386
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Jul 2021 13:33:12 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBFC06A051;
-        Fri, 30 Jul 2021 13:33:11 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 532C06A064;
-        Fri, 30 Jul 2021 13:33:10 +0000 (GMT)
-Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.77.143.250])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 30 Jul 2021 13:33:10 +0000 (GMT)
-Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
-        pbonzini@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <20210719193503.793910-3-akrowiak@linux.ibm.com>
- <20210721164550.5402fe1c.pasic@linux.ibm.com>
- <c3b80f79-6795-61ce-2dd1-f4cc7110e417@linux.ibm.com>
- <20210723162625.59cead27.pasic@linux.ibm.com>
- <5380652f-e68f-bbd0-10c0-c7d541065843@linux.ibm.com>
- <20210726223628.4d7759bf.pasic@linux.ibm.com>
- <20210726220317.GA1721383@nvidia.com>
- <20210727004329.3bcc7d4f.pasic@linux.ibm.com>
- <a5eeac87-069d-171b-5558-3e99e7bda539@linux.ibm.com>
- <20210728214257.5e5c28c4.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <8e0b4b16-ce45-449e-4849-29919da3a70f@linux.ibm.com>
-Date:   Fri, 30 Jul 2021 09:33:09 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 30 Jul 2021 09:35:39 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911F3C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:35:33 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id b7so13245782edu.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nLxc1jc3feOHhz7WBeAx0UeYJk853JxA+UhIeYOmLsg=;
+        b=vGYtC+xatjVO9a7TE1NC52YzEjpr2glEYO2CFpnpeE+wsfIXvFvkzppM7o1B9Wjd82
+         IERqTP3thMUnY9N7WMJrlEnXGVe7efOrKIwBygiz1MM8neNT3SKcz3n7ktBSjXwr6ibk
+         Inb6kkJcC8Oxx75jPqhSTbZ3isb7lejJFsZYW32sb8MUOqJYWjWbVPp39L+zMsyvbpFW
+         QtbClYod0ZFZnpIzAPkioxjrlVmDWkijB34y6gYqa/p3sY4U4hGnvUkmv/ii/dDpnZGV
+         CU815gpbcJEoEsBuUK3o7qbMHvi0Hp/C/u0YnBdBCXLGXzHYbnPzM1PtbMdQ1w1E4R2T
+         GcWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nLxc1jc3feOHhz7WBeAx0UeYJk853JxA+UhIeYOmLsg=;
+        b=O10RWKVVKCjx8FxfQ/K5Zlo5rJmOpBwwDnw+viZ1ILm3If6T8YtYDOWMbN3wefK4GL
+         ddMM2suQC49sy24i5hwFty3Hw3w7FPTT6A05MSt/XosLEAHfMU1b1uKqO9PdTb7gcqFN
+         f9y0y4iQHKBNeLzuxJDttB9a7VSfaCX5e2p/3rXutLQPbs1D2XUf4ZcO8EfA6xf+jcu/
+         FQakmz7+azNobic6730b5Lk3riMBU2wrAyH7RXhytsya7c+zKpwj+msHskgCWW70w8gi
+         qs5eZzwwPjticXSaT76ohiZuiv27VJoMjcYZuUMqqlWmQKRaMIfFxvNLX6O9fQdiKdor
+         EkWQ==
+X-Gm-Message-State: AOAM531BZWURw7QD0U9WRLDLuFKEfZZ0RiPKqv66vCGQS7CLoZP0OU6q
+        K/0jhkieQMvOZv9h/NOw3xs=
+X-Google-Smtp-Source: ABdhPJx3r8u/i1roSHt0Vytz2NfyK2xo4IhBTgVTzp54fHigaQ4kHpsO0ytmXO3unteuGw7qFvOv7A==
+X-Received: by 2002:a05:6402:3094:: with SMTP id de20mr2350772edb.272.1627652131890;
+        Fri, 30 Jul 2021 06:35:31 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.215])
+        by smtp.gmail.com with ESMTPSA id m3sm702103edb.7.2021.07.30.06.35.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 06:35:31 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 15:35:29 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Sterba <dsterba@suse.cz>
+Subject: Re: [PATCH] staging: rtl8723bs: remove unused BIT macros definitions
+Message-ID: <20210730133528.GE1433@agape.jhs>
+References: <20210730132103.4996-1-fabioaiuto83@gmail.com>
+ <YQP/dFZJiEcOb3yH@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210728214257.5e5c28c4.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5qCbVJV3xaAXmeXxXzIkkudf94U1v6hF
-X-Proofpoint-ORIG-GUID: SJpn8fi77RYkL1W3rrjNxRcCagEKb78y
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-30_05:2021-07-30,2021-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- malwarescore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
- bulkscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107300085
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQP/dFZJiEcOb3yH@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Greg,
 
+On Fri, Jul 30, 2021 at 03:32:36PM +0200, Greg KH wrote:
+> On Fri, Jul 30, 2021 at 03:21:03PM +0200, Fabio Aiuto wrote:
+> > BIT(x) macro used all over the driver is defined in
+> > include/vsdo/bit.h as
+> > 
+> > - #define BIT(nr)	(UL(1) << (nr))
+> > 
+> > which is safer than the local BIT macros declared.
+> > Local macros shift a signed integer which brings
+> > unespected results. For example:
+> > 
+> > (unsigned long)(1 << 31) => 0xffffffff80000000
+> > 
+> > shift.c:
+> > 
+> > int main() {
+> >         printf("%lx\n", (unsigned long)(1 << 31));
+> >         printf("%lx\n", (unsigned long)(1U << 31));
+> >         return 0;
+> > }
+> > ---
+> > 
+> > $ ./shift
+> > ffffffff80000000
+> > 80000000
+> > ---
+> 
+> Don't put "---" in a changelog text, otherwise the signed-off-by will be
+> cut off.  Can you resend it with that changed to something else like
+> "---------------" or anything else?
+> 
+> thanks,
+> 
+> greg k-h
 
-On 7/28/21 3:42 PM, Halil Pasic wrote:
-> On Wed, 28 Jul 2021 09:43:03 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> This solution was suggested by Jason G and it does in fact resolve
->> the lockdep splat encountered when starting an SE guest with
->> access to crypto resources. There is a chance that the KVM lock
->> can get held while waiting for the lock on the matrix_dev->mutex,
->> but this does not seem like a grave concern to me.
-> Yes I agree. I was thinking along the lines: matrix modifications
-> via the sysfs take the matrix_dev->lock so the level of contention
-> may depend on what userspace is doing...
+sure I'm about to send a v2,
 
-The probe/remove functions also take the matrix_dev->lock
-as does the handle_pqap() function. In any case, while all of
-those are possible, in our implementation of AP queue
-pass-through, the two functions that take the KVM lock
-are invoked when the guest is starting or shutting down,
-or when the mdev is hot plugged/unplugged. For the cases of
-guest startup/shutdown, it would seem that holding the
-kvm->lock while waiting for the matrix_dev->lock shouldn't
-be a big problem since the guest will either not be fully up
-yet or on its way down. I suppose the hot plug/unplug case
-could potentially cause the guest vcpus to pause while processing,
-but how often do you anticipate a hot plug to take place?
+thank you,
 
->
-> Regards,
-> Halil
-
+fabio
