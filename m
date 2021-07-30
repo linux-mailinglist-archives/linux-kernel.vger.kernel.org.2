@@ -2,199 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218233DB886
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010293DB89B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238788AbhG3MYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 08:24:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52236 "EHLO
+        id S230325AbhG3M27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 08:28:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50315 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230355AbhG3MYA (ORCPT
+        by vger.kernel.org with ESMTP id S230355AbhG3M26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 08:24:00 -0400
+        Fri, 30 Jul 2021 08:28:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627647835;
+        s=mimecast20190719; t=1627648133;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o099h3eyKLatB2qTEqr+nt7BhMYNRVj70jWcHx8N7L4=;
-        b=N/Xcb3MabH+IcDbm09v1Ypoue4ZUvR9YVI9Q9qEQGO3gWqRIj6wnQ42CNgwLRJb/g/tbeJ
-        rWpoyGJ/iFXmiuNs2bWX4NSRQBnfVkaIv5eRD9H4zlel4TO3/GqPLD+mjjkBbnJ7wiQct6
-        FFrhK8TXrjS4vtpCPHJxyCGO8bMYK0s=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-225-vHeLarpSO6yLM1D2R2501g-1; Fri, 30 Jul 2021 08:23:54 -0400
-X-MC-Unique: vHeLarpSO6yLM1D2R2501g-1
-Received: by mail-wr1-f72.google.com with SMTP id s22-20020adf97960000b02901535eae4100so3178291wrb.14
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 05:23:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=o099h3eyKLatB2qTEqr+nt7BhMYNRVj70jWcHx8N7L4=;
-        b=H+47jQLXKm159vReerCvCF/rFN3Cpo/uWscy3gfZJDcXBJ15L98vaNX9VBHTyVf6Ml
-         kxaDFv6uq74GqkCs8/bnWcWKyqTXKxQimN07XzX8G3z3DVRYYXPvwBHTJpWJt6aBqtU9
-         P0yombWMgbAbuMiojxi6y7DJ93bJ3kLzLuFp225oW1B07Q+VKw3qPfa1tuDV8SCgaPCT
-         yBtVctHE/ii2Hl2xvIo2vChCfgtfV1mjhJ8qIklRzbrvY1abPY2H/2zioNA2TG6takmt
-         pyduVEXPp0TbaWE1cfMNU3jbcQOC1rWBqlR2fm8Rh30nMi0qqERXx+x9eDV2sjXkxbTp
-         kZOw==
-X-Gm-Message-State: AOAM532M82FkH5UIQOljzA15JnLhMJs5RuB7hDIW1YdjLETJJJv1THnb
-        FbuzP/sz1BW+fzWot+yajtboTbhd3cvvm2zAO4YzSj64UZbyD3UjYgRctcZBWCGwomV/ahvAqzR
-        Llbaa2F7dXiq46/S2D6ONb4M8
-X-Received: by 2002:a05:600c:350a:: with SMTP id h10mr184481wmq.184.1627647833323;
-        Fri, 30 Jul 2021 05:23:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy7H0CLmKXC7bceTQEaG3gTwuLm+5FooguUuol7APR+1g3WafQj2fDWXl80uW7T1OCOEd1scw==
-X-Received: by 2002:a05:600c:350a:: with SMTP id h10mr184451wmq.184.1627647833106;
-        Fri, 30 Jul 2021 05:23:53 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id k7sm1550622wms.48.2021.07.30.05.23.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 05:23:52 -0700 (PDT)
-Subject: Re: [PATCH v1] mm/madvise: report SIGBUS as -EFAULT for
- MADV_POPULATE_(READ|WRITE)
-To:     linux-kernel@vger.kernel.org, akpm@linuxfoundation.org
-Cc:     linux-mm@kvack.org, Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Ram Pai <linuxram@us.ibm.com>, Shuah Khan <shuah@kernel.org>
-References: <20210726154932.102880-1-david@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <dfd5ee42-0789-4373-4e1b-f6e902a80230@redhat.com>
-Date:   Fri, 30 Jul 2021 14:23:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=KoGVkv7H3/+ygZF2TyDEKy9CxxMUqYhhWlGnltJvuyM=;
+        b=KkQG5D1TCYO2nTrgr9Y4lXY96IA+n+fF5suLjuEYaG3Y0b2PLQm0ler3exNreJLHXanUjB
+        MsfjN0aiG6M1VVRXCLHsMKzUDWh73lnyClNdytPGMJ0kVlQ9ngQ1z1PbccQcm6bqGuFoJy
+        MbhEXqVF6qmFjAwq1jWQmPoTz1vp2Xs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-pZHFfejSPfasBYxYWzJMww-1; Fri, 30 Jul 2021 08:28:50 -0400
+X-MC-Unique: pZHFfejSPfasBYxYWzJMww-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B47E6190A7A5;
+        Fri, 30 Jul 2021 12:28:48 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.32.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E6465779D0;
+        Fri, 30 Jul 2021 12:28:47 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 8652D22037A; Fri, 30 Jul 2021 08:24:18 -0400 (EDT)
+Date:   Fri, 30 Jul 2021 08:24:18 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@lst.de, virtio-fs@redhat.com,
+        v9fs-developer@lists.sourceforge.net, stefanha@redhat.com,
+        miklos@szeredi.hu
+Subject: Re: [PATCH v3 3/3] fs: simplify get_filesystem_list /
+ get_all_fs_names
+Message-ID: <YQPvcilZ09yByXb5@redhat.com>
+References: <20210714202321.59729-1-vgoyal@redhat.com>
+ <20210714202321.59729-4-vgoyal@redhat.com>
+ <YQNOY9H/6mJMWRNN@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210726154932.102880-1-david@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQNOY9H/6mJMWRNN@zeniv-ca.linux.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
-
-sorry for not CCing you, absolutely no clue why I accidentally dropped 
-you. Can you give this patch a churn? It would be great if we could get 
-that into 5.14, so we don't have to deal with differing behavior between 
-Linux versions.
-
-Cheers!
-
-On 26.07.21 17:49, David Hildenbrand wrote:
-> Doing some extended tests and polishing the man page update for
-> MADV_POPULATE_(READ|WRITE), I realized that we end up converting also
-> SIGBUS (via -EFAULT) to -EINVAL, making it look like yet another
-> madvise() user error.
+On Fri, Jul 30, 2021 at 12:57:07AM +0000, Al Viro wrote:
+> On Wed, Jul 14, 2021 at 04:23:21PM -0400, Vivek Goyal wrote:
 > 
-> We want to report only problematic mappings and permission problems that
-> the user could have know as -EINVAL.
+> > +static int __init split_fs_names(char *page, char *names)
+> >  {
+> > +	int count = 0;
+> > +	char *p = page;
+> >  
+> > +	strcpy(p, root_fs_names);
+> > +	while (*p++) {
+> > +		if (p[-1] == ',')
+> > +			p[-1] = '\0';
+> >  	}
+> > +	*p = '\0';
+> > +
+> > +	for (p = page; *p; p += strlen(p)+1)
+> > +		count++;
+> >  
+> > +	return count;
+> >  }
 > 
-> Let's not convert -EFAULT arising due to SIGBUS (or SIGSEGV) to
-> -EINVAL, but instead indicate -EFAULT to user space. While we could also
-> convert it to -ENOMEM, using -EFAULT looks more helpful when user space
-> might want to troubleshoot what's going wrong: MADV_POPULATE_(READ|WRITE)
-> is not part of an final Linux release and we can still adjust the behavior.
-> 
-> Fixes: 4ca9b3859dac ("mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault page tables")
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Rik van Riel <riel@surriel.com>
-> Cc: Michael S. Tsirkin <mst@redhat.com>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Richard Henderson <rth@twiddle.net>
-> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> Cc: Matt Turner <mattst88@gmail.com>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>
-> Cc: Ram Pai <linuxram@us.ibm.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->   mm/gup.c     | 7 +++++--
->   mm/madvise.c | 4 +++-
->   2 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 42b8b1fa6521..b94717977d17 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1558,9 +1558,12 @@ long faultin_vma_page_range(struct vm_area_struct *vma, unsigned long start,
->   		gup_flags |= FOLL_WRITE;
->   
->   	/*
-> -	 * See check_vma_flags(): Will return -EFAULT on incompatible mappings
-> -	 * or with insufficient permissions.
-> +	 * We want to report -EINVAL instead of -EFAULT for any permission
-> +	 * problems or incompatible mappings.
->   	 */
-> +	if (check_vma_flags(vma, gup_flags))
-> +		return -EINVAL;
-> +
->   	return __get_user_pages(mm, start, nr_pages, gup_flags,
->   				NULL, NULL, locked);
->   }
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 6d3d348b17f4..5c065bc8b5f6 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -862,10 +862,12 @@ static long madvise_populate(struct vm_area_struct *vma,
->   			switch (pages) {
->   			case -EINTR:
->   				return -EINTR;
-> -			case -EFAULT: /* Incompatible mappings / permissions. */
-> +			case -EINVAL: /* Incompatible mappings / permissions. */
->   				return -EINVAL;
->   			case -EHWPOISON:
->   				return -EHWPOISON;
-> +			case -EFAULT: /* VM_FAULT_SIGBUS or VM_FAULT_SIGSEGV */
-> +				return -EFAULT;
->   			default:
->   				pr_warn_once("%s: unhandled return value: %ld\n",
->   					     __func__, pages);
-> 
+> Ummm....  The last part makes no sense - it counts '\0' in the array
+> pointed to be page, until the first double '\0' in there.  All of
+> which had been put there by the loop immediately prior to that one...
 
+I want split_fs_names() to replace ',' with space as well as return
+number of null terminated strings found. So first loop just replaces
+',' with '\0' and second loop counts number of strings.
 
--- 
-Thanks,
+Previously split_fs_names() was only replacing ',' with '\0'. Now
+we are changing the semantics and returning number of strings
+left in the buffer after the replacement.
 
-David / dhildenb
+I initilaly thought that if I can manage it with single loop but
+there were quite a few corner cases. So I decided to use two
+loops instead. One for replacement and one for counting.
+
+> 
+> Incidentally, it treats stray ,, in root_fs_names as termination;
+> is that intentional?
+
+Just trying to keep the existing behavior. Existing get_fs_names(), also
+replaces all instances of ',' with '\0'. So if there are two consecutive,
+',', that will result in two consecutive '\0' and caller will view
+it as end of buffer. 
+
+IOW, rootfsnames=foo,,bar will effectively be treated as "rootfsname=foo".
+
+That's the current behavior and I did not try to improve on it just
+keeps on increasing the size of patches. That's probably an improvement
+for some other day if somebody cares.
+
+Thanks
+Vivek
 
