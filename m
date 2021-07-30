@@ -2,83 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581F13DB86A
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D513DB86C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 14:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238755AbhG3MN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 08:13:29 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:36815 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbhG3MN1 (ORCPT
+        id S238731AbhG3MNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 08:13:32 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:33353 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230355AbhG3MNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 08:13:27 -0400
-Received: by mail-oi1-f179.google.com with SMTP id y18so12921321oiv.3;
-        Fri, 30 Jul 2021 05:13:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h/nWd7/gRGV1qmwqjSQqAFbq0T5N0Ue6f9xRmUkU8nE=;
-        b=fBbJsZ2AERbldlv6Oni+QBQNC30lXFlL8WtLXR77069BvNv6//2Wg1hNFNUbjDOndv
-         n15pOBidjrH96JR5JpIWrkqsLkATa8tuA4kaq258ZDn68bVjbmdE81BaDVMGX8aUhcTo
-         YfSbfru4rYiG92d/ty5nZEh5U4F1em3pBXyKb/1PK5qhYWRa9SXtVYEdCd7UEDIQHIEG
-         XPy8gBZTA5crfskNTPys8hpScLAht0ZAC8mspm4ygY0xAJBJk5Z4RoFcNgYm2/5AVsLt
-         pI6tMSZgFrKLaWU9naBBhqcfC/u4/CGgm++CQKCO2DR/6knMqGGYu4Vm4vv6vQu8dhwO
-         fEMA==
-X-Gm-Message-State: AOAM532wWdg6BUIAxYRIhjA2KhLtVKeSUhAwdTQLj9HZHDbFkdiQrQ8g
-        U8akIqgGI+YaWymXig+V6ANQ9ndOqMHzn9n6p68=
-X-Google-Smtp-Source: ABdhPJz45M3knNhHMrzCYlaLNNR4m0GdsnXb7oHj0LtftPm2N3HMDgTHqU060pmcerIRLKGkOElBDfIUzpjvPVPoojY=
-X-Received: by 2002:a05:6808:198c:: with SMTP id bj12mr1556667oib.71.1627647201379;
- Fri, 30 Jul 2021 05:13:21 -0700 (PDT)
+        Fri, 30 Jul 2021 08:13:30 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 46B16580A67;
+        Fri, 30 Jul 2021 08:13:25 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 30 Jul 2021 08:13:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=x45utzlm+I7LrH8ONZBODJozoR
+        9FeoJBITa/+rubT3U=; b=eo9zfwKlAVXNANjwmyhN7WFznBQ4fS7eYSfJGEEcmM
+        fFAbxuKuoZfNVRxqqRIuIZ/rt1m6NC+T6JcZUg7paU2FUieDo4GtLbY66w1s5OwF
+        evK3YL8p2ECWXsUDYHfDs4VUzIKuvYgbJjVznSEualkYUM/HE8rIXzsZexhMd3y9
+        JSMpMuq2/ibdmK2z74rzudwhqV6hSx4FR7Eu5kPkFTY2+5J2FAdrgF82VVHhAgOD
+        qmDpsD9J2GfFocN3BeU5x1r28Bxe5EdRE7RFHbPff1NTAcqEFphcBou9O9mc6Uxa
+        q6T5xsGITcOWiuU0xMe3CwPTsPjQoGICqcTF9Bfz3quQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=x45utzlm+I7LrH8ON
+        ZBODJozoR9FeoJBITa/+rubT3U=; b=LcUdOX3Pc9Azq97zQxEqR4AFItkJYY/zm
+        ds/MONvHH1WEh1A2eBNixHMDM3qwyYVE2KY5FP/Q5gtPZSfkAr39AklMJQk18akW
+        tj+NE5mWl40VGX4XncHUDoQrkiF8rs91+BNIy+66Ps2k+DgoMYIX174Wm8RFlrKZ
+        x/cyuA//VnHGP0H9AovSid85/FiIRAQZ6diPs9u4Y9Ij70Zo8ZtVlyi6UAxZK4t0
+        c7QJwS16eKxmmDmASsjWlx3aRZTk1+LMB4kX72F4JlsAxwum5pE1dhb/Lg2zib8+
+        kkvwLfyL8F+8ZTlXS8q8JbxlHxGSzKoQtuolS1tZEhjFeycaG/mcg==
+X-ME-Sender: <xms:4-wDYRcNbeXAJImrKVzm1ssXhJWPqq4yO_guaex22bOYuvTEx9Fvyg>
+    <xme:4-wDYfNYW_R_a6t0vzf_bCDX9ka5xFaqHuM6hXLvDBPsPLz_5f4FpzmN8vXLEqJ_Q
+    3ZuWn_nLdghg3-EN-U>
+X-ME-Received: <xmr:4-wDYaiJM87oHU5dELNL8Qx7ktsn1_ebPlgNnEBPIO-fnzOIOxLObdmsllB6z5-Qndcpsu9SboAWH6xE-dySiLsiGvzM435XXDtx5Hw7>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheehgdeghecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheptehlihhsthgrihhr
+    ucfhrhgrnhgtihhsuceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenuc
+    ggtffrrghtthgvrhhnpefghfegkeejtddvfeekjeelgeffhefhvddvvddtvefgfffftdek
+    geeljeefvdeiudenucffohhmrghinhepvghinhhkrdgtohhmnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhishht
+    rghirhdvfedrmhgv
+X-ME-Proxy: <xmx:4-wDYa_4YfXIKT7bHHOvDaK1h1eGPAab96Wa8aaw2UzrS9o17THhQQ>
+    <xmx:4-wDYdvgu78Mufgq-oS7IJRB0nGp3A3tP75FkFigv1znadG0xjxMdg>
+    <xmx:4-wDYZEbziNTM6ugR8dxegpBnO9je7QsVK4GwjbNaktwiYfUjo1qcw>
+    <xmx:5ewDYdNAov7PpYv9K5a8n32mD21GBPuWIVe47phUT6Wqt3xmUJAp-w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 30 Jul 2021 08:13:17 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     robh+dt@kernel.org, thierry.reding@gmail.com, sam@ravnborg.org,
+        krzk@kernel.org, shawnguo@kernel.org, daniel@0x0f.com,
+        linux@rempel-privat.de, kuninori.morimoto.gx@renesas.com,
+        max.Merchel@tq-group.com, geert+renesas@glider.be,
+        airlied@linux.ie, daniel@ffwll.ch
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, alistair23@gmail.com,
+        Alistair Francis <alistair@alistair23.me>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5] drm/panel: Add support for E Ink VB3300-KCA
+Date:   Fri, 30 Jul 2021 22:13:10 +1000
+Message-Id: <20210730121310.131-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <4668274.31r3eYUQgx@kreacher> <1791325.tdWV9SEqCh@kreacher> <YQPUOgxldaqpxOxL@lahna>
-In-Reply-To: <YQPUOgxldaqpxOxL@lahna>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 30 Jul 2021 14:13:09 +0200
-Message-ID: <CAJZ5v0gZ=Zk+RO_+=8hUtkeTgB9dHGcNVHsiTJdw_EZEsiKWSQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] PCI: PM: Enable PME if it can be signaled from D3cold
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        Koba Ko <koba.ko@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:28 PM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> On Thu, Jul 29, 2021 at 04:49:10PM +0200, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > PME signaling is only enabled by __pci_enable_wake() if the target
-> > device can signal PME from the given target power state (to avoid
-> > pointless reconfiguration of the device), but if the hierarchy above
-> > the device goes into D3cold, the device itself will end up in D3cold
-> > too, so if it can signal PME from D3cold, it should be enabled to
-> > do so in __pci_enable_wake().
-> >
-> > [Note that if the device does not end up in D3cold and it cannot
-> >  signal PME from the original target power state, it will not signal
-> >  PME, so in that case the behavior does not change.]
-> >
-> > Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
-> > Fixes: 5bcc2fb4e815 ("PCI PM: Simplify PCI wake-up code")
-> > Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
->
-> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
->
-> Also this solves the reported issue so,
->
-> Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Add support for the 10.3" E Ink panel described at:
+https://www.eink.com/product.html?type=productdetail&id=7
 
-Thank you!
+Signed-off-by: Alistair Francis <alistair@alistair23.me>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+---
+v5:
+ - Add .connector_type
 
-I'll queue up these two patches for 5.15 barring any objections from Bjorn.
+ .../bindings/display/panel/panel-simple.yaml  |  2 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 ++
+ drivers/gpu/drm/panel/panel-simple.c          | 30 +++++++++++++++++++
+ 3 files changed, 34 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index b3797ba2698b..799e20222551 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -128,6 +128,8 @@ properties:
+         # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+       - edt,etm0700g0dh6
+       - edt,etm0700g0edh6
++        # E Ink VB3300-KCA
++      - eink,vb3300-kca
+         # Evervision Electronics Co. Ltd. VGG804821 5.0" WVGA TFT LCD Panel
+       - evervision,vgg804821
+         # Foxlink Group 5" WVGA TFT LCD panel
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 71da86e7b3a2..31745c45dd92 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -339,6 +339,8 @@ patternProperties:
+     description: eGalax_eMPIA Technology Inc
+   "^einfochips,.*":
+     description: Einfochips
++  "^eink,.*":
++    description: E Ink Corporation
+   "^elan,.*":
+     description: Elan Microelectronic Corp.
+   "^element14,.*":
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 21939d4352cf..90d96091f09f 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -2046,6 +2046,33 @@ static const struct panel_desc edt_etm0700g0bdh6 = {
+ 	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
+ };
+ 
++static const struct display_timing eink_vb3300_kca_timing = {
++	.pixelclock = { 40000000, 40000000, 40000000 },
++	.hactive = { 334, 334, 334 },
++	.hfront_porch = { 1, 1, 1 },
++	.hback_porch = { 1, 1, 1 },
++	.hsync_len = { 1, 1, 1 },
++	.vactive = { 1405, 1405, 1405 },
++	.vfront_porch = { 1, 1, 1 },
++	.vback_porch = { 1, 1, 1 },
++	.vsync_len = { 1, 1, 1 },
++	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
++		 DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_POSEDGE,
++};
++
++static const struct panel_desc eink_vb3300_kca = {
++	.timings = &eink_vb3300_kca_timing,
++	.num_timings = 1,
++	.bpc = 6,
++	.size = {
++		.width = 157,
++		.height = 209,
++	},
++	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
++	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
++	.connector_type = DRM_MODE_CONNECTOR_DPI,
++};
++
+ static const struct display_timing evervision_vgg804821_timing = {
+ 	.pixelclock = { 27600000, 33300000, 50000000 },
+ 	.hactive = { 800, 800, 800 },
+@@ -4350,6 +4377,9 @@ static const struct of_device_id platform_of_match[] = {
+ 	}, {
+ 		.compatible = "edt,etm0700g0edh6",
+ 		.data = &edt_etm0700g0bdh6,
++	}, {
++		.compatible = "eink,vb3300-kca",
++		.data = &eink_vb3300_kca,
+ 	}, {
+ 		.compatible = "evervision,vgg804821",
+ 		.data = &evervision_vgg804821,
+-- 
+2.31.1
+
