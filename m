@@ -2,105 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8753DB222
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E1B3DB21A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 06:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhG3EOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 00:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhG3EO3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 00:14:29 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8640FC0613D3;
-        Thu, 29 Jul 2021 21:14:25 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id k1so9501247plt.12;
-        Thu, 29 Jul 2021 21:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=THlXvdugKjy738Af7uzCz/sE8sNAleTeISkp07PWT4A=;
-        b=H35Ors0FFD34qtaXeNIP4c1cwPkkHP4ht1nwzgRtEWswKY8aa7wM0bzDdrblMnMRiE
-         Fcuxs+17mCV4wQSM7/e6+MN730M2l6A5Jb0b0SuEHDsezAOw/q21R86m+3D9jXMRLrco
-         Y0HtifeTjE6szdCS6sbtte1nvlYq8DLuhUDzhzxzzOMlZwzF23VOCxGx/FxAfVrcdZe0
-         YTuS0LMXEgs/i3yBPygZylVqAYYj4xioM36QXq+RXoBBwQM/vHbhNwjQX28zMUtfyplX
-         iRGU3qcPingRUYPqlWeh86+yOmTZgC1hcdKt+xURMvWVXmoE+JvLGPJuo40vDaR7vTPC
-         twaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=THlXvdugKjy738Af7uzCz/sE8sNAleTeISkp07PWT4A=;
-        b=UrnG2xEozui4Md0usRuJsYc8pHmy7oFx7xdAIBoNEOKmpEXUza8lH3ubmdMOq3S3wQ
-         EsA/MU4xkXE8eIfJCDUJStJTxcGMe7eubHTqy11+NOPfJK+6uH+7rTuUQRz4NPd63hLD
-         MqDC9TLfd72YVf7Z14FCI+bhk6LUN8KNN2X7fbH2x1kEk5LlGlbg+mHZ1rTzuN63LWvq
-         x+T31v3CKulUeN/VvcLXol2Vo3H6J82rRR0HlVyqb8x3Mw1QsnlkRzr0QYC+hZ6XXySA
-         CRqxo1hqfEVJRIG7VVQi8mpoLjPihS2B1nq4dU9KeamkjRkYYa1ql5Mka7xmdYw/1c3F
-         LKBQ==
-X-Gm-Message-State: AOAM5327IuzJpEmZjnS7AYjg4k+8jmkmFNXu7pFYNul3Ob3o3ShQ0uv/
-        h8YW2Mr+KMixqkYzLwJUfkY=
-X-Google-Smtp-Source: ABdhPJxvMMQTQ8ZucVsWnf6w8qPI5/FCghjRAAqBf7VfGnkGVfCSZ1aInLllbvRQCIWqY/rqbG7lDQ==
-X-Received: by 2002:a63:1f5c:: with SMTP id q28mr527713pgm.114.1627618465126;
-        Thu, 29 Jul 2021 21:14:25 -0700 (PDT)
-Received: from localhost.localdomain (104.194.74.249.16clouds.com. [104.194.74.249])
-        by smtp.gmail.com with ESMTPSA id x4sm440943pfb.27.2021.07.29.21.14.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 21:14:24 -0700 (PDT)
-From:   Artem Lapkin <email2tema@gmail.com>
-X-Google-Original-From: Artem Lapkin <art@khadas.com>
-To:     narmstrong@baylibre.com
-Cc:     wim@linux-watchdog.org, linux@roeck-us.net, khilman@baylibre.com,
-        jbrunet@baylibre.com, christianshewitt@gmail.com,
-        martin.blumenstingl@googlemail.com, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: [PATCH v4 3/3] watchdog: meson_gxbb_wdt: remove stop_on_reboot
-Date:   Fri, 30 Jul 2021 12:13:55 +0800
-Message-Id: <20210730041355.2810397-4-art@khadas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210730041355.2810397-1-art@khadas.com>
-References: <20210730041355.2810397-1-art@khadas.com>
+        id S230043AbhG3ENv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 00:13:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:35928 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhG3ENu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 00:13:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5725931B;
+        Thu, 29 Jul 2021 21:13:46 -0700 (PDT)
+Received: from [10.163.66.9] (unknown [10.163.66.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CDD93F73D;
+        Thu, 29 Jul 2021 21:13:42 -0700 (PDT)
+Subject: Re: [PATCH v2 03/10] coresight: etm-pmu: Ensure the AUX handle is
+ valid
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        jinlmao@qti.qualcomm.com
+References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
+ <20210723124611.3828908-4-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <acd70df3-fdce-a08c-02f0-4cd6d806e6ba@arm.com>
+Date:   Fri, 30 Jul 2021 09:44:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210723124611.3828908-4-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove watchdog_stop_on_reboot()
 
-Meson platform still have some hardware drivers problems for some
-configurations which can freeze device on shutdown/reboot stage and i
-think better to have reboot warranty by default.
 
-I feel that it is important to keep the watchdog running during the
-reboot sequence, in the event that an abnormal driver freezes the reboot
-process.
+On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
+> The ETM perf infrastructure closes out a handle during event_stop
+> or on an error in starting the event. In either case, it is possible
+> for a "sink" to update/close the handle, under certain circumstances.
+> (e.g no space in ring buffer.). So, ensure that we handle this
+> gracefully in the PMU driver by verifying the handle is still valid.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  .../hwtracing/coresight/coresight-etm-perf.c  | 27 ++++++++++++++++---
+>  1 file changed, 24 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index 6f398377fec9..a6ab603afee4 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -450,8 +450,15 @@ static void etm_event_start(struct perf_event *event, int flags)
+>  fail_disable_path:
+>  	coresight_disable_path(path);
+>  fail_end_stop:
+> -	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+> -	perf_aux_output_end(handle, 0);
+> +	/*
+> +	 * Check if the handle is still associated with the event,
+> +	 * to handle cases where if the sink failed to start the
+> +	 * trace and TRUNCATED the handle already.
+> +	 */
+> +	if (READ_ONCE(handle->event)) {
+> +		perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+> +		perf_aux_output_end(handle, 0);
+> +	}
 
-This is my personal opinion and I hope the driver authors will agree
-with my proposal, or just ignore this commit if not.
+Makes sense as perf_aux_output_[flag|end]() helpers do not
+validate the 'handle' themselves.
 
-https://lore.kernel.org/linux-watchdog/20210729072308.1908904-1-art@khadas.com/T/#t
+>  fail:
+>  	event->hw.state = PERF_HES_STOPPED;
+>  	goto out;
+> @@ -519,7 +526,21 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>  
+>  		size = sink_ops(sink)->update_buffer(sink, handle,
+>  					      event_data->snk_config);
+> -		perf_aux_output_end(handle, size);
+> +		/*
+> +		 * Make sure the handle is still valid as the
+> +		 * sink could have closed it from an IRQ.
+> +		 * The sink driver must handle the race with
+> +		 * update_buffer() and IRQ. Thus either we
+> +		 * should get a valid handle and valid size
+> +		 * (which may be 0).
+> +		 *
+> +		 * But we should never get a non-zero size with
+> +		 * an invalid handle.
+> +		 */
+> +		if (READ_ONCE(handle->event))
+> +			perf_aux_output_end(handle, size);
+> +		else
+> +			WARN_ON(size);
 
-Signed-off-by: Artem Lapkin <art@khadas.com>
----
- drivers/watchdog/meson_gxbb_wdt.c | 1 -
- 1 file changed, 1 deletion(-)
+Right.
 
-diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
-index 945f5e65db57..d3c9e2f6e63b 100644
---- a/drivers/watchdog/meson_gxbb_wdt.c
-+++ b/drivers/watchdog/meson_gxbb_wdt.c
-@@ -198,7 +198,6 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
- 
- 	meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
- 
--	watchdog_stop_on_reboot(&data->wdt_dev);
- 	return devm_watchdog_register_device(dev, &data->wdt_dev);
- }
- 
--- 
-2.25.1
+>  	}
+>  
+>  	/* Disabling the path make its elements available to other sessions */
+> 
 
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
