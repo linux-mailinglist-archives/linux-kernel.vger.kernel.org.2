@@ -2,105 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0163DB35E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D443DB364
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237497AbhG3GO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237274AbhG3GO1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:14:27 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C129C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:14:23 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1m9Lmn-00007Y-RD; Fri, 30 Jul 2021 08:14:21 +0200
-Subject: Re: [PATCH v3] KEYS: trusted: Fix trusted key backends when building
- as module
-To:     Andreas Rammhold <andreas@rammhold.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210730012822.3460913-1-andreas@rammhold.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <c8a0e8a1-96ee-3288-ce5b-7f9d77f719c1@pengutronix.de>
-Date:   Fri, 30 Jul 2021 08:14:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237285AbhG3GPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:15:25 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:38758 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237004AbhG3GPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 02:15:22 -0400
+Received: from BJHW-Mail-Ex03.internal.baidu.com (unknown [10.127.64.13])
+        by Forcepoint Email with ESMTPS id 945B73908C7E8E837FA7;
+        Fri, 30 Jul 2021 14:15:11 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-Mail-Ex03.internal.baidu.com (10.127.64.13) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Fri, 30 Jul 2021 14:15:11 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Fri, 30 Jul 2021 14:15:11 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <rostedt@goodmis.org>, <mingo@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, Cai Huoqing <caihuoqing@baidu.com>
+Subject: [PATCH] tracing: Fix typo in comments, print info and function
+Date:   Fri, 30 Jul 2021 14:15:04 +0800
+Message-ID: <20210730061504.2687-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210730012822.3460913-1-andreas@rammhold.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex27.internal.baidu.com (172.31.51.21) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.07.21 03:28, Andreas Rammhold wrote:
-> Before this commit the kernel could end up with no trusted key sources
-> even though both of the currently supported backends (TPM and TEE) were
-> compiled as modules. This manifested in the trusted key type not being
-> registered at all.
-> 
-> When checking if a CONFIG_… preprocessor variable is defined we only
-> test for the builtin (=y) case and not the module (=m) case. By using
-> the IS_REACHABLE() macro we do test for both cases.
-> 
-> Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
-> Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Fix typo:
+*singe  ==> single
+*outputing  ==> outputting
+*ingore  ==> ignore
+*preapre  ==> prepare
+*overlayed  ==> overlaid
+*alloced  ==> allocated
+*varaibles  ==> variables
+*timestemp  ==> timestamp
+*reseted  ==> reset
+*overwite  ==> overwrite
 
-Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ kernel/trace/ring_buffer.c           | 4 ++--
+ kernel/trace/ring_buffer_benchmark.c | 2 +-
+ kernel/trace/trace.c                 | 8 ++++----
+ kernel/trace/trace_branch.c          | 2 +-
+ kernel/trace/trace_events_filter.c   | 2 +-
+ kernel/trace/trace_osnoise.c         | 6 +++---
+ 6 files changed, 12 insertions(+), 12 deletions(-)
 
-> 
-> ---
-> 
-> v3:
-> * Fixed patch formatting
-> 
-> v2:
-> * Fixed commit message
-> * Switched from IS_DEFINED() to IS_REACHABLE()
-> 
->  security/keys/trusted-keys/trusted_core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-> index d5c891d8d353..5b35f1b87644 100644
-> --- a/security/keys/trusted-keys/trusted_core.c
-> +++ b/security/keys/trusted-keys/trusted_core.c
-> @@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
->  MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
->  
->  static const struct trusted_key_source trusted_key_sources[] = {
-> -#if defined(CONFIG_TCG_TPM)
-> +#if IS_REACHABLE(CONFIG_TCG_TPM)
->  	{ "tpm", &trusted_key_tpm_ops },
->  #endif
-> -#if defined(CONFIG_TEE)
-> +#if IS_REACHABLE(CONFIG_TEE)
->  	{ "tee", &trusted_key_tee_ops },
->  #endif
->  };
-> 
-
-
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index e592d1df6f88..f915ac0fa691 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -5979,7 +5979,7 @@ static __init int test_ringbuffer(void)
+ 		pr_info("CPU %d:\n", cpu);
+ 		pr_info("              events:    %ld\n", total_events);
+ 		pr_info("       dropped bytes:    %ld\n", total_dropped);
+-		pr_info("       alloced bytes:    %ld\n", total_alloc);
++		pr_info("     allocated bytes:    %ld\n", total_alloc);
+ 		pr_info("       written bytes:    %ld\n", total_written);
+ 		pr_info("       biggest event:    %d\n", big_event_size);
+ 		pr_info("      smallest event:    %d\n", small_event_size);
+@@ -6016,7 +6016,7 @@ static __init int test_ringbuffer(void)
+ 		pr_info(" recorded size bytes:   %ld\n", total_size);
+ 		if (total_lost)
+ 			pr_info(" With dropped events, record len and size may not match\n"
+-				" alloced and written from above\n");
++				" allocated and written from above\n");
+ 		if (!total_lost) {
+ 			if (RB_WARN_ON(buffer, total_len != total_alloc ||
+ 				       total_size != total_written))
+diff --git a/kernel/trace/ring_buffer_benchmark.c b/kernel/trace/ring_buffer_benchmark.c
+index 78e576575b79..62a3d26e591e 100644
+--- a/kernel/trace/ring_buffer_benchmark.c
++++ b/kernel/trace/ring_buffer_benchmark.c
+@@ -431,7 +431,7 @@ static int __init ring_buffer_benchmark_init(void)
+ {
+ 	int ret;
+ 
+-	/* make a one meg buffer in overwite mode */
++	/* make a one meg buffer in overwrite mode */
+ 	buffer = ring_buffer_alloc(1000000, RB_FL_OVERWRITE);
+ 	if (!buffer)
+ 		return -ENOMEM;
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 28b6429e140e..ad0eb7fb37ed 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -124,7 +124,7 @@ cpumask_var_t __read_mostly	tracing_buffer_mask;
+  * If there is an oops (or kernel panic) and the ftrace_dump_on_oops
+  * is set, then ftrace_dump is called. This will output the contents
+  * of the ftrace buffers to the console.  This is very useful for
+- * capturing traces that lead to crashes and outputing it to a
++ * capturing traces that lead to crashes and outputting it to a
+  * serial console.
+  *
+  * It is default off, but you can enable it with either specifying
+@@ -4847,7 +4847,7 @@ static int tracing_release(struct inode *inode, struct file *file)
+ 		iter->trace->close(iter);
+ 
+ 	if (!iter->snapshot && tr->stop_count)
+-		/* reenable tracing if it was previously enabled */
++		/* re-enable tracing if it was previously enabled */
+ 		tracing_start_tr(tr);
+ 
+ 	__trace_array_put(tr);
+@@ -9464,7 +9464,7 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
+ 	ftrace_init_tracefs(tr, d_tracer);
+ }
+ 
+-static struct vfsmount *trace_automount(struct dentry *mntpt, void *ingore)
++static struct vfsmount *trace_automount(struct dentry *mntpt, void *ignore)
+ {
+ 	struct vfsmount *mnt;
+ 	struct file_system_type *type;
+@@ -9999,7 +9999,7 @@ __init static int tracer_alloc_buffers(void)
+ 	 * buffer. The memory will be removed once the "instance" is removed.
+ 	 */
+ 	ret = cpuhp_setup_state_multi(CPUHP_TRACE_RB_PREPARE,
+-				      "trace/RB:preapre", trace_rb_cpu_prepare,
++				      "trace/RB:prepare", trace_rb_cpu_prepare,
+ 				      NULL);
+ 	if (ret < 0)
+ 		goto out_free_cpumask;
+diff --git a/kernel/trace/trace_branch.c b/kernel/trace/trace_branch.c
+index e47fdb4c92fb..c69a192ca728 100644
+--- a/kernel/trace/trace_branch.c
++++ b/kernel/trace/trace_branch.c
+@@ -274,7 +274,7 @@ static void branch_stat_show(struct seq_file *m,
+ 	long percent;
+ 
+ 	/*
+-	 * The miss is overlayed on correct, and hit on incorrect.
++	 * The miss is overlaid on correct, and hit on incorrect.
+ 	 */
+ 	percent = get_incorrect_percent(p);
+ 
+diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
+index c9124038b140..aeb4e9892a72 100644
+--- a/kernel/trace/trace_events_filter.c
++++ b/kernel/trace/trace_events_filter.c
+@@ -91,7 +91,7 @@ static bool is_not(const char *str)
+ }
+ 
+ /**
+- * prog_entry - a singe entry in the filter program
++ * prog_entry - a single entry in the filter program
+  * @target:	     Index to jump to on a branch (actually one minus the index)
+  * @when_to_branch:  The value of the result of the predicate to do a branch
+  * @pred:	     The predicate to execute.
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index a7e3c24dee13..5f6347b1166d 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -500,7 +500,7 @@ cond_move_thread_delta_start(struct osnoise_variables *osn_var, u64 duration)
+ /*
+  * get_int_safe_duration - Get the duration of a window
+  *
+- * The irq, softirq and thread varaibles need to have its duration without
++ * The irq, softirq and thread variables need to have its duration without
+  * the interference from higher priority interrupts. Instead of keeping a
+  * variable to discount the interrupt interference from these variables, the
+  * starting time of these variables are pushed forward with the interrupt's
+@@ -1083,7 +1083,7 @@ static int run_osnoise(void)
+ 	stop_in = osnoise_data.stop_tracing * NSEC_PER_USEC;
+ 
+ 	/*
+-	 * Start timestemp
++	 * Start timestamp
+ 	 */
+ 	start = time_get();
+ 
+@@ -1888,7 +1888,7 @@ static int __osnoise_tracer_start(struct trace_array *tr)
+ 	if (retval)
+ 		return retval;
+ 	/*
+-	 * Make sure NMIs see reseted values.
++	 * Make sure NMIs see reset values.
+ 	 */
+ 	barrier();
+ 	trace_osnoise_callback_enabled = true;
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.25.1
+
