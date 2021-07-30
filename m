@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DAE3DBA65
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BE13DBA61
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239468AbhG3OW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239249AbhG3OSL (ORCPT
+        id S239501AbhG3OWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:22:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56072 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239250AbhG3OSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:18:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47882C061796
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:18:07 -0700 (PDT)
-Message-ID: <20210730135208.088118644@linutronix.de>
+        Fri, 30 Jul 2021 10:18:12 -0400
+Message-ID: <20210730135208.145227915@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627654686;
+        s=2020; t=1627654687;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=050tNCinaLUdQNXcoguk6eMn+NPBp94IeU5KyABcng4=;
-        b=y9ztiu9BAP49GUM8CUsl8yObyAedLbzEcD9/S3N376eHevxhSI5s2+4syphUY7p9N9ESTh
-        o5frmwiq/cvOLQlHvPJW8Ek+LaOlNVvFwft6/lms8QB023l85/djSKmauka3P4WUpwmOkO
-        bkUMODuMmynHkzt68zHREjUlxsYltFu8zRxEztXP6lOl3a8KVRhCLYZHNuVmJ2m13p07pi
-        X94zZcneW6SQASUx3qGIuBqxfGWZLM2J4x0+Kz1V87M1gllbT2lB05XPHOaL60QXq1XfVl
-        fzQX9g7u08KM4qdTJmvxvuKF/Cu64OOpWwTtI/8hh0eVeJvZN6X7s5H1ftSCIw==
+        bh=35IiguvMjyN9HS4qOQgfmae19noJXTGdkXOwXWuAzuM=;
+        b=pVguvrUrowCeNuWkmsJ5HLTPEz0K2Iq6NneExYEJMFxnsuqdMVnVrtEk+K2HWGB5/60iWQ
+        7rjxOxFR2rm/jJe7vLB+HW7i8Sv3dvMnkKoV6wuvcBAu5xv0fk9CjRt64e8XMu5KdEq1Vf
+        UA5OfD/M9uXlq4KChi323rwAuwQ9Wdbdoik5AdMJ1Wf55AL+m/f9CNBx2t8WV6a8WEb0I0
+        TZPAmoj/BSokiDUeeA28yOKJva8OFef4BtJg785YVo4Ezii8K4AcBRPmqmj1nnlu0tTj+k
+        5QPqrvNfOz9gfT8rUftEZZ0BNsuZGwPSPv9E70ENrHXHTBohKo3xoK++rXOOTg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627654686;
+        s=2020e; t=1627654687;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=050tNCinaLUdQNXcoguk6eMn+NPBp94IeU5KyABcng4=;
-        b=eja7F0NruUB7SKb9Aw5Fsb9LrbrNV2ahXIqtVKmEOwLdmJoiX3cmU6VSR1Qv5eypUfqK7P
-        1Yr/WSFRVHprnuAQ==
-Date:   Fri, 30 Jul 2021 15:50:59 +0200
+        bh=35IiguvMjyN9HS4qOQgfmae19noJXTGdkXOwXWuAzuM=;
+        b=yz8MInCJ5o29cKH7WXJ9IWVZQxuFe8qJoIp0XCS8fxyvYFpDmBBVQE1dnegJ0aB0aEc4+M
+        tWkX5UBOB+6/ZYBg==
+Date:   Fri, 30 Jul 2021 15:51:00 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -48,7 +45,8 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 52/63] lib/test_lockup: Adapt to changed variables.
+Subject: [patch 53/63] futex: Validate waiter correctly in
+ futex_proxy_trylock_atomic()
 References: <20210730135007.155909613@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,46 +55,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-The inner parts of certain locks (mutex, rwlocks) changed due to a rework for
-RT and non RT code. Most users remain unaffected, but those who fiddle around
-in the inner parts need to be updated.
+The loop in futex_requeue() has a sanity check for the waiter which is
+missing in futex_proxy_trylock_atomic(). In theory the key2 check is
+sufficient, but futexes are cursed so add it for completness and paranoia
+sake.
 
-Match the struct names to the new layout.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- lib/test_lockup.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/futex.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 ---
---- a/lib/test_lockup.c
-+++ b/lib/test_lockup.c
-@@ -485,13 +485,13 @@ static int __init test_lockup_init(void)
- 		       offsetof(spinlock_t, lock.wait_lock.magic),
- 		       SPINLOCK_MAGIC) ||
- 	    test_magic(lock_rwlock_ptr,
--		       offsetof(rwlock_t, rtmutex.wait_lock.magic),
-+		       offsetof(rwlock_t, rwbase.rtmutex.wait_lock.magic),
- 		       SPINLOCK_MAGIC) ||
- 	    test_magic(lock_mutex_ptr,
--		       offsetof(struct mutex, lock.wait_lock.magic),
-+		       offsetof(struct mutex, rtmutex.wait_lock.magic),
- 		       SPINLOCK_MAGIC) ||
- 	    test_magic(lock_rwsem_ptr,
--		       offsetof(struct rw_semaphore, rtmutex.wait_lock.magic),
-+		       offsetof(struct rw_semaphore, rwbase.rtmutex.wait_lock.magic),
- 		       SPINLOCK_MAGIC))
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1879,6 +1879,10 @@ futex_proxy_trylock_atomic(u32 __user *p
+ 	if (!top_waiter)
+ 		return 0;
+ 
++	/* Ensure that this is a waiter sitting in futex_wait_requeue_pi() */
++	if (!top_waiter->rt_waiter || top_waiter->pi_state)
++		ret = -EINVAL;
++
+ 	/* Ensure we requeue to the expected futex. */
+ 	if (!match_futex(top_waiter->requeue_pi_key, key2))
  		return -EINVAL;
- #else
-@@ -502,7 +502,7 @@ static int __init test_lockup_init(void)
- 		       offsetof(rwlock_t, magic),
- 		       RWLOCK_MAGIC) ||
- 	    test_magic(lock_mutex_ptr,
--		       offsetof(struct mutex, wait_lock.rlock.magic),
-+		       offsetof(struct mutex, wait_lock.magic),
- 		       SPINLOCK_MAGIC) ||
- 	    test_magic(lock_rwsem_ptr,
- 		       offsetof(struct rw_semaphore, wait_lock.magic),
 
