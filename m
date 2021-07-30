@@ -2,232 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490AF3DB72C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E363DB732
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238462AbhG3KbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:31:15 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49724 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238383AbhG3KbN (ORCPT
+        id S238457AbhG3Kg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238400AbhG3Kgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:31:13 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 594DB20231;
-        Fri, 30 Jul 2021 10:31:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627641068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vt8/YhSJKNNx9QkWGDkMDhlAmAAvXARLGQDxeBa6ufg=;
-        b=gizfu+hFLkeObyDvzkVU6ex5kTDPx8ctD9GG4wgVRLDdJL5IcaTF95gJFyr3/ickHFk3s9
-        hvL84jrZfgjP/o2WTlkcrzsETyYij43LLv6N/mVGmf8ZEnMjtXgeItBG3/HtaXkPXpmBx4
-        HNvdEhiJRNeWXE9SO3WxQ3OE5MM+kZI=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 19C851332A;
-        Fri, 30 Jul 2021 10:31:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id xnBmBOzUA2H3NgAAGKfGzw
-        (envelope-from <jgross@suse.com>); Fri, 30 Jul 2021 10:31:08 +0000
-Subject: Re: [PATCH v2 3/3] xen/blkfront: don't trust the backend response
- data blindly
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>
-References: <20210708124345.10173-1-jgross@suse.com>
- <20210708124345.10173-4-jgross@suse.com>
- <9ef58781-bd7d-48bc-2b59-bb71d2ba83b8@suse.com>
-Message-ID: <68a2de1d-e377-61b0-6c69-5391ef95dbcd@suse.com>
-Date:   Fri, 30 Jul 2021 12:31:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 30 Jul 2021 06:36:54 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7864C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:36:48 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id y4so8958133ilp.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tc+l6IEqpvy1hdws8BKtGV49kuQokwaVCXGVVOzHHCc=;
+        b=gwO2/D0xsalGvz2CGTqlI5nm0Ipv5QR5Owe3xhWXsiN+xXgeVzFhXTEbNglSQ7sHWt
+         ogbEfYZ2kw3ABHTpHmRfEnkKvfOHPFwwLfekbbwkUAku7HMDZimVqaTrxMhop38pxVgZ
+         bEnxVTr21N2qcUtpOj77A9wlRnk09haiJ0oE1JCG/VlJ5peDuDkv5/JmQ2+fkCcA3UiD
+         si8Y+rqWWY5P7bfhgQXQSXH6yX4b7/zsmi8UCc67BbfcKKp9LXkzZCeQEtDwei5jTGkX
+         geqiQ7E7DXJQiBFPG3N3L66fkfwsHgr/eAlEXy1MqEw4pOH0ZE0JUJt9wMgEZLls/2xE
+         ZA+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tc+l6IEqpvy1hdws8BKtGV49kuQokwaVCXGVVOzHHCc=;
+        b=YrAraiqahfCQL4uBql6z6XXMJm7E3ka3GONNH4HDtKWFSf/IcO238ioWUHAwWawV/P
+         oMddVQ7ILtK4QgdrOxQQwpfSSIz2C8RAFWK4cnv8Wze5CR+1UA5Nnpuoqp3jo2+ErXLy
+         M6p6qmCubKX32j4A30aYj8eeKSy4bswI04HoDwJL+BcJc61fbqIaXZsHhJzsp1QGS0DW
+         shBli2QEuE3u+wb21Hwlhp5mzAkqkpN6Bi3Ev5oAAUZ0CjhgijlNRZ/9abtRmMlBD2UR
+         xOUldJL87UagnY8m2Yhj2dDquathnTkxhMgRXBFRwZkUQ/MgYtPqOoDKGtv17EKPU+ec
+         8nEg==
+X-Gm-Message-State: AOAM533JDuv+czC2MXFDvfO0WUIWfmH1kDEh5fDpLllhPX3IkxA+D+Bo
+        Z4vWHFl1DKEKNTOcng7tIR4=
+X-Google-Smtp-Source: ABdhPJyRLLc8gWjjiLY6kweLh2zR6BL6YXchhv94St08qL7mdSeO62rur2kxt2Dch93iUe7LrcXlNA==
+X-Received: by 2002:a05:6e02:1e06:: with SMTP id g6mr1428038ila.41.1627641408428;
+        Fri, 30 Jul 2021 03:36:48 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id o13sm592826ilq.58.2021.07.30.03.36.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 03:36:47 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 5D79327C0054;
+        Fri, 30 Jul 2021 06:36:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 30 Jul 2021 06:36:47 -0400
+X-ME-Sender: <xms:PtYDYYtFOz-tNWzRCZkXKQRJY3cfXwMhICGU2zbJNOB1DSHqBQDbBg>
+    <xme:PtYDYVea0Ro5pwZe_mBE1wjkEYbsEffknNeEuhHriurrryxjMQhvsl-bBigM8kLbO
+    0LW0w5IeD0Ty8cXIQ>
+X-ME-Received: <xmr:PtYDYTw5fW3TtSNNFR9uq9tQFPfFPyoEqRkefBNiT2pYH6f1ePAlexyRI_k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheehgddviecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtggdttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpeeuueekfffhhffhveehvdfhfedvfeffgeeguefhfedvvdffuddvgfeiveetudef
+    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:PtYDYbOy8C8xACDWMNrVNfV-OWry_9XOD33Rwnf5ssEqhratqwkf8Q>
+    <xmx:PtYDYY-sUN15Fd45FiSHPugab4m4n7-bQzEGs4FkaUu-pOqn27_Kzw>
+    <xmx:PtYDYTWPHE2bkcJcgSC_8gB3yFoUNF1l05vFaY1SQgKrXFPB_-89LQ>
+    <xmx:P9YDYXkVA_eL-ie9VapksLHW4ZWl4G_FA4CJuekW66CzkrfOX7Pq4w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 30 Jul 2021 06:36:46 -0400 (EDT)
+Date:   Fri, 30 Jul 2021 18:36:20 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lockdep/selftests: Fix duplicate included
+ locking-selftest-softirq.h
+Message-ID: <YQPWJD6CRL78DENY@boqun-archlinux>
+References: <1627640682-14225-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <9ef58781-bd7d-48bc-2b59-bb71d2ba83b8@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="oBKf4UbLa2cZL4ydTpLJ9rpN8QZRR1Tzp"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627640682-14225-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oBKf4UbLa2cZL4ydTpLJ9rpN8QZRR1Tzp
-Content-Type: multipart/mixed; boundary="Fs9fFVdDQyI76PhF6fBPzFP6Z0OPPYTbw";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
- Jens Axboe <axboe@kernel.dk>
-Message-ID: <68a2de1d-e377-61b0-6c69-5391ef95dbcd@suse.com>
-Subject: Re: [PATCH v2 3/3] xen/blkfront: don't trust the backend response
- data blindly
-References: <20210708124345.10173-1-jgross@suse.com>
- <20210708124345.10173-4-jgross@suse.com>
- <9ef58781-bd7d-48bc-2b59-bb71d2ba83b8@suse.com>
-In-Reply-To: <9ef58781-bd7d-48bc-2b59-bb71d2ba83b8@suse.com>
+Hi,
 
---Fs9fFVdDQyI76PhF6fBPzFP6Z0OPPYTbw
-Content-Type: multipart/mixed;
- boundary="------------0763F2C13F835991244788E3"
-Content-Language: en-US
+On Fri, Jul 30, 2021 at 06:24:42PM +0800, Jiapeng Chong wrote:
+> Clean up the following includecheck warning:
+> 
+> ./lib/locking-selftest.c: locking-selftest-softirq.h is included more
+> than once.
+> 
 
-This is a multi-part message in MIME format.
---------------0763F2C13F835991244788E3
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Those inclusions in the file are used as poor man's template, IOW, the
+header files redefine some names so that we can use one template to
+generate many similar functions.
 
-On 30.07.21 12:08, Juergen Gross wrote:
-> On 08.07.21 14:43, Juergen Gross wrote:
->> Today blkfront will trust the backend to send only sane response data.=
+So no need to fix, thanks! But if you have a better idea to generate
+functions, please let me know ;-)
 
->> In order to avoid privilege escalations or crashes in case of maliciou=
-s
->> backends verify the data to be within expected limits. Especially make=
+Regards,
+Boqun
 
->> sure that the response always references an outstanding request.
->>
->> Introduce a new state of the ring BLKIF_STATE_ERROR which will be
->> switched to in case an inconsistency is being detected. Recovering fro=
-m
->> this state is possible only via removing and adding the virtual device=
-
->> again (e.g. via a suspend/resume cycle).
->>
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->=20
-> Any comments for this patch?
-
-Please ignore this request for comments, I already got some.
-
-
-Juergen
-
---------------0763F2C13F835991244788E3
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------0763F2C13F835991244788E3--
-
---Fs9fFVdDQyI76PhF6fBPzFP6Z0OPPYTbw--
-
---oBKf4UbLa2cZL4ydTpLJ9rpN8QZRR1Tzp
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmED1OsFAwAAAAAACgkQsN6d1ii/Ey+G
-swgAiz8NuFkaQ7ElqLbx2o1dzlbpDVFXqPFBuw3v2mZOdo6M7VMFrAD4fiMXRDro8/kcPQd2Wyje
-UnEKLVCtZFJc6D/m6gCNjNsVBfmPDnhM6cCFa89sHq6OGtOko2cw9oWaO1oNvMF9xCIsM54p9TBD
-/Odd/NuHlfBGZs0v53SDBk3z6HQnHV1Sqsqs4YSgOwyXVDueqRhEqxyxJ6/j7toNZzqIE5pwedt/
-3nwwdsebV+RuSEa11CowAEQzFkyDRzKyApFApB4ja5OfXWpRC0mkIOF9mIryjdKQzMcE05Q90SVe
-ND43fFGM4O2Ruhyu2UpoxpGM5Vk8sk+XycRffVPeFQ==
-=w04J
------END PGP SIGNATURE-----
-
---oBKf4UbLa2cZL4ydTpLJ9rpN8QZRR1Tzp--
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Fixes: cae2ed9aa573 ("[PATCH] lockdep: locking API self tests")
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  lib/locking-selftest.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+> index 161108e..6010445 100644
+> --- a/lib/locking-selftest.c
+> +++ b/lib/locking-selftest.c
+> @@ -1252,7 +1252,6 @@ static void rwsem_ABBA3(void)
+>  #include "locking-selftest-wlock.h"
+>  GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_hard_wlock)
+>  
+> -#include "locking-selftest-softirq.h"
+>  #include "locking-selftest-rlock.h"
+>  GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_rlock)
+>  
+> @@ -1306,7 +1305,6 @@ static void rwsem_ABBA3(void)
+>  #include "locking-selftest-wlock.h"
+>  GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_hard_wlock)
+>  
+> -#include "locking-selftest-softirq.h"
+>  #include "locking-selftest-rlock.h"
+>  GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_rlock)
+>  
+> -- 
+> 1.8.3.1
+> 
