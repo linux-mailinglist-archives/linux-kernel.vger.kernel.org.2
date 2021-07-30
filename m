@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586D53DC0E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3751B3DC0F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbhG3WTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:19:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51318 "EHLO mail.kernel.org"
+        id S234112AbhG3WTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:19:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232817AbhG3WSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232956AbhG3WSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Jul 2021 18:18:40 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A0F561019;
+        by mail.kernel.org (Postfix) with ESMTPSA id B436361077;
         Fri, 30 Jul 2021 22:18:34 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1m9apt-002V1A-EH; Fri, 30 Jul 2021 18:18:33 -0400
+        id 1m9apt-002V1C-F5; Fri, 30 Jul 2021 18:18:33 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -28,9 +28,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 03/17] libtracefs: Add comparing start and end fields in tracefs_sql()
-Date:   Fri, 30 Jul 2021 18:18:10 -0400
-Message-Id: <20210730221824.595597-4-rostedt@goodmis.org>
+Subject: [PATCH 04/17] libtracefs: Add unit test to test tracefs_sql() compare
+Date:   Fri, 30 Jul 2021 18:18:11 -0400
+Message-Id: <20210730221824.595597-5-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210730221824.595597-1-rostedt@goodmis.org>
 References: <20210730221824.595597-1-rostedt@goodmis.org>
@@ -42,235 +42,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add comparing a field and showing the differences between start and end
-for tracefs_sql().
-
-For example:
-
-  SELECT (end.common_timestamp.usecs - start.common_timestamp.usecs) AS
-    lat FROM sched_waking AS start JOIN sched_switch AS end ON
-    start.pid = stop.next_pid
+Add a test to test passing time from sched_waking to sched_switch to
+show wake up latency.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/sqlhist-parse.h   |  4 ++
- src/sqlhist.y         | 19 ++++++++++
- src/tracefs-sqlhist.c | 85 ++++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 107 insertions(+), 1 deletion(-)
+ utest/tracefs-utest.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/src/sqlhist-parse.h b/src/sqlhist-parse.h
-index aa5232eea451..ebf4f61b5461 100644
---- a/src/sqlhist-parse.h
-+++ b/src/sqlhist-parse.h
-@@ -57,7 +57,11 @@ int table_start(struct sqlhist_bison *sb);
+diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
+index 89bb1cce61f7..f4e1a6b90a46 100644
+--- a/utest/tracefs-utest.c
++++ b/utest/tracefs-utest.c
+@@ -50,6 +50,9 @@
+ #define SQL_2_EVENT	"wakeup_2"
+ #define SQL_2_SQL	"select woke.next_pid as woke_pid, wake.common_pid as waking_pid from sched_waking as wake join sched_switch as woke on woke.next_pid = wake.pid"
  
- void *add_field(struct sqlhist_bison *sb, const char *field, const char *label);
- 
-+void *add_filter(struct sqlhist_bison *sb, void *A, void *B, enum filter_type op);
++#define SQL_3_EVENT	"wakeup_lat"
++#define SQL_3_SQL	"select start.pid, end.next_prio as prio, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start join sched_switch as end on start.pid = end.next_pid"
 +
- int add_match(struct sqlhist_bison *sb, void *A, void *B);
-+void *add_compare(struct sqlhist_bison *sb, void *A, void *B, enum compare_type type);
-+int add_where(struct sqlhist_bison *sb, void *expr);
+ static struct tracefs_instance *test_instance;
+ static struct tep_handle *test_tep;
+ struct test_sample {
+@@ -354,6 +357,13 @@ static void test_instance_trace_sql(struct tracefs_instance *instance)
+ 	tracefs_synth_free(synth);
+ 	trace_seq_reset(&seq);
  
- int add_selection(struct sqlhist_bison *sb, void *item, const char *label);
- int add_from(struct sqlhist_bison *sb, void *item);
-diff --git a/src/sqlhist.y b/src/sqlhist.y
-index ecb0a0ed44b3..f92c93ed5ecd 100644
---- a/src/sqlhist.y
-+++ b/src/sqlhist.y
-@@ -48,6 +48,10 @@ extern void yyerror(char *fmt, ...);
- %type <string> name label
- 
- %type <expr>  selection_expr field item named_field join_clause
-+%type <expr>  selection_addition
-+%type <expr>  compare compare_list compare_cmds compare_items
-+%type <expr>  compare_and_or
-+%type <expr>  str_val val
- 
- %%
- 
-@@ -85,6 +89,21 @@ selection :
- selection_expr :
-    field
-  | '(' field ')'		{  $$ = $2; }
-+ | selection_addition
-+ | '(' selection_addition ')'	{  $$ = $2; }
-+ ;
++	synth = tracefs_sql(tep, SQL_3_EVENT, SQL_3_SQL, NULL);
++	CU_TEST(synth != NULL);
++	ret = tracefs_synth_show(&seq, instance, synth);
++	CU_TEST(ret == 0);
++	tracefs_synth_free(synth);
++	trace_seq_reset(&seq);
 +
-+selection_addition :
-+   field '+' field
-+				{
-+					$$ = add_compare(sb, $1, $3, COMPARE_ADD);
-+					CHECK_RETURN_PTR($$);
-+				}
-+ | field '-' field
-+				{
-+					$$ = add_compare(sb, $1, $3, COMPARE_SUB);
-+					CHECK_RETURN_PTR($$);
-+				}
-  ;
- 
- item :
-diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index 7ec0c11b902e..cf2661773679 100644
---- a/src/tracefs-sqlhist.c
-+++ b/src/tracefs-sqlhist.c
-@@ -42,17 +42,32 @@ struct field {
- 	const char		*field;
- };
- 
-+struct filter {
-+	enum filter_type	type;
-+	struct expr		*lval;
-+	struct expr		*rval;
-+};
-+
- struct match {
- 	struct match		*next;
- 	struct expr		*lval;
- 	struct expr		*rval;
- };
- 
-+struct compare {
-+	enum compare_type	type;
-+	struct expr		*lval;
-+	struct expr		*rval;
-+	const char		*name;
-+};
-+
- enum expr_type
- {
- 	EXPR_NUMBER,
- 	EXPR_STRING,
- 	EXPR_FIELD,
-+	EXPR_FILTER,
-+	EXPR_COMPARE,
- };
- 
- struct expr {
-@@ -61,6 +76,8 @@ struct expr {
- 	enum expr_type		type;
- 	union {
- 		struct field	field;
-+		struct filter	filter;
-+		struct compare	compare;
- 		const char	*string;
- 		long		number;
- 	};
-@@ -209,8 +226,14 @@ __hidden int add_selection(struct sqlhist_bison *sb, void *select,
- 	switch (expr->type) {
- 	case EXPR_FIELD:
- 		break;
-+	case EXPR_COMPARE:
-+		if (!name)
-+			return -1;
-+		expr->compare.name = name;
-+		break;
- 	case EXPR_NUMBER:
- 	case EXPR_STRING:
-+	case EXPR_FILTER:
- 	default:
- 		return -1;
- 	}
-@@ -277,8 +300,10 @@ static void *create_expr(enum expr_type type, struct expr **expr_p)
- 
- 	switch (type) {
- 	case EXPR_FIELD:	return &expr->field;
-+	case EXPR_COMPARE:	return &expr->compare;
- 	case EXPR_NUMBER:	return &expr->number;
- 	case EXPR_STRING:	return &expr->string;
-+	case EXPR_FILTER:	return &expr->filter;
- 	}
- 
- 	return NULL;
-@@ -292,6 +317,9 @@ static void *create_expr(enum expr_type type, struct expr **expr_p)
- #define create_field(var, expr)				\
- 	__create_expr(var, struct field, FIELD, expr)
- 
-+#define create_compare(var, expr)				\
-+	__create_expr(var, struct compare, COMPARE, expr)
-+
- __hidden void *add_field(struct sqlhist_bison *sb,
- 			 const char *field_name, const char *label)
- {
-@@ -331,6 +359,21 @@ __hidden int add_match(struct sqlhist_bison *sb, void *A, void *B)
- 
- 	return 0;
+ 	tep_free(tep);
+ 	trace_seq_destroy(&seq);
  }
-+__hidden void *add_compare(struct sqlhist_bison *sb,
-+			   void *A, void *B, enum compare_type type)
-+{
-+	struct compare *compare;
-+	struct expr *expr;
-+
-+	create_compare(compare, &expr);
-+
-+	compare = &expr->compare;
-+	compare->lval = A;
-+	compare->rval = B;
-+	compare->type = type;
-+
-+	return expr;
-+}
- 
- __hidden int add_from(struct sqlhist_bison *sb, void *item)
- {
-@@ -522,6 +565,39 @@ static void assign_match(const char *system, const char *event,
- 	}
- }
- 
-+static int build_compare(struct tracefs_synth *synth,
-+			 const char *system, const char *event,
-+			 struct compare *compare)
-+{
-+	const char *start_field;
-+	const char *end_field;
-+	struct field *lval, *rval;
-+	enum tracefs_synth_calc calc;
-+	int ret;
-+
-+	lval = &compare->lval->field;
-+	rval = &compare->rval->field;
-+
-+	if (lval->system == system &&
-+	    lval->event == event) {
-+		start_field = lval->field;
-+		end_field = rval->field;
-+		calc = TRACEFS_SYNTH_DELTA_START;
-+	} else {
-+		start_field = rval->field;
-+		end_field = lval->field;
-+		calc = TRACEFS_SYNTH_DELTA_END;
-+	}
-+
-+	if (compare->type == COMPARE_ADD)
-+		calc = TRACEFS_SYNTH_ADD;
-+
-+	ret = tracefs_synth_add_compare_field(synth, start_field,
-+					      end_field, calc,
-+					      compare->name);
-+	return ret;
-+}
-+
- static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 					 const char *name,
- 					 struct sql_table *table)
-@@ -602,7 +678,14 @@ static struct tracefs_synth *build_synth(struct tep_handle *tep,
- 				goto free;
- 			continue;
- 		}
--		goto free;
-+
-+		if (expr->type != EXPR_COMPARE)
-+			goto free;
-+
-+		ret = build_compare(synth, start_system, end_system,
-+				    &expr->compare);
-+		if (ret < 0)
-+			goto free;
- 	}
- 
- 	return synth;
 -- 
 2.30.2
 
