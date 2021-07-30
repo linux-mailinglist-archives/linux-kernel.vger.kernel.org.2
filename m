@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD843DBF8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46D53DBF91
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhG3UVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:21:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24297 "EHLO
+        id S232148AbhG3UVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:21:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32288 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231702AbhG3UVF (ORCPT
+        by vger.kernel.org with ESMTP id S231485AbhG3UVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Jul 2021 16:21:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627676458;
+        s=mimecast20190719; t=1627676460;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=XO2HFhZDrRX79fzjYOS5YH3FCFpPu+mgYLlCLH/GDt4=;
-        b=SHvBZPPRmp6YAzE8Y706dix9ERv17KgZsC8cMFzCZyku0s9P+NOlhFm7JCTsGciyR/OCgN
-        /9haNXvgC8whgAtUG/HXIBfCgrBtTeyUh336bKkvONitji98jA8Z3T2YLlEfO2/7+qcO1F
-        4QCdAfD+YKb3rNmde96gBRItLiouXAA=
+         references:references; bh=vXZSz0HCBB2+J4tanGcw9DeXAWynm4MZs09478Eb8HA=;
+        b=iYr01cKUudqU6Frs249kSE+oHFBbJO96TLqPqnzsHMsVLQcYuI6/s4Ot+tNVyRDvFhxy4K
+        bmrr0bVDygQ5I+4bs97RgygbMdP20p/yJjB+qIkH8Cxg2uFpyrD1Iy9VgVH/5mMX1gSFAs
+        E1uB7qnZpTl754dD+KRs9TtqW8UyGlQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-Ec1eXWvwMkiybvYsWAHnbQ-1; Fri, 30 Jul 2021 16:20:57 -0400
-X-MC-Unique: Ec1eXWvwMkiybvYsWAHnbQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-406-zy9TcVIbNxCAYNb1MyhGbg-1; Fri, 30 Jul 2021 16:20:57 -0400
+X-MC-Unique: zy9TcVIbNxCAYNb1MyhGbg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6D7B871805;
-        Fri, 30 Jul 2021 20:20:55 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30AAC1853026;
+        Fri, 30 Jul 2021 20:20:56 +0000 (UTC)
 Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 76E4A5D740;
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5ACE110074F8;
         Fri, 30 Jul 2021 20:20:48 +0000 (UTC)
 Received: by fuller.cnet (Postfix, from userid 1000)
-        id 7FF5C41752B4; Fri, 30 Jul 2021 17:20:28 -0300 (-03)
-Message-ID: <20210730202010.270885685@fuller.cnet>
+        id 848AB41752B5; Fri, 30 Jul 2021 17:20:28 -0300 (-03)
+Message-ID: <20210730202010.301022755@fuller.cnet>
 User-Agent: quilt/0.66
-Date:   Fri, 30 Jul 2021 17:18:29 -0300
+Date:   Fri, 30 Jul 2021 17:18:30 -0300
 From:   Marcelo Tosatti <mtosatti@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Nitesh Lal <nilal@redhat.com>,
@@ -47,158 +47,106 @@ Cc:     Nitesh Lal <nilal@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
         Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [patch 2/4] task isolation: sync vmstats on return to userspace
+Subject: [patch 3/4] mm: vmstat: move need_update
 References: <20210730201827.269106165@fuller.cnet>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The logic to disable vmstat worker thread, when entering
-nohz full, does not cover all scenarios. For example, it is possible
-for the following to happen:
+Move need_update() function up in vmstat.c, needed by next patch.
+No code changes.
 
-1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
-2) app runs mlock, which increases counters for mlock'ed pages.
-3) start -RT loop
-
-Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
-the mlock, vmstat shepherd can restart vmstat worker thread on
-the CPU in question.
-
-To fix this, use the task isolation prctl interface to quiesce 
-deferred actions when returning to userspace.
+Remove a duplicate comment while at it.
 
 Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
-Index: linux-2.6/include/linux/task_isolation.h
-===================================================================
---- linux-2.6.orig/include/linux/task_isolation.h
-+++ linux-2.6/include/linux/task_isolation.h
-@@ -32,8 +32,20 @@ int prctl_task_isolation_ctrl_get(unsign
- int prctl_task_isolation_ctrl_set(unsigned long arg2, unsigned long arg3,
- 				  unsigned long arg4, unsigned long arg5);
- 
-+void __isolation_exit_to_user_mode_prepare(void);
-+
-+static inline void isolation_exit_to_user_mode_prepare(void)
-+{
-+	if (current->isol_info != NULL)
-+		__isolation_exit_to_user_mode_prepare();
-+}
-+
- #else
- 
-+static void isolation_exit_to_user_mode_prepare(void)
-+{
-+}
-+
- static inline void tsk_isol_exit(struct task_struct *tsk)
- {
- }
-Index: linux-2.6/include/linux/vmstat.h
-===================================================================
---- linux-2.6.orig/include/linux/vmstat.h
-+++ linux-2.6/include/linux/vmstat.h
-@@ -21,6 +21,14 @@ int sysctl_vm_numa_stat_handler(struct c
- 		void *buffer, size_t *length, loff_t *ppos);
- #endif
- 
-+#ifdef CONFIG_SMP
-+void sync_vmstat(void);
-+#else
-+static inline void sync_vmstat(void)
-+{
-+}
-+#endif
-+
- struct reclaim_stat {
- 	unsigned nr_dirty;
- 	unsigned nr_unqueued_dirty;
-Index: linux-2.6/kernel/entry/common.c
-===================================================================
---- linux-2.6.orig/kernel/entry/common.c
-+++ linux-2.6/kernel/entry/common.c
-@@ -6,6 +6,7 @@
- #include <linux/livepatch.h>
- #include <linux/audit.h>
- #include <linux/tick.h>
-+#include <linux/task_isolation.h>
- 
- #include "common.h"
- 
-@@ -287,6 +288,7 @@ static void syscall_exit_to_user_mode_pr
- static __always_inline void __syscall_exit_to_user_mode_work(struct pt_regs *regs)
- {
- 	syscall_exit_to_user_mode_prepare(regs);
-+	isolation_exit_to_user_mode_prepare();
- 	local_irq_disable_exit_to_user();
- 	exit_to_user_mode_prepare(regs);
- }
-Index: linux-2.6/kernel/task_isolation.c
-===================================================================
---- linux-2.6.orig/kernel/task_isolation.c
-+++ linux-2.6/kernel/task_isolation.c
-@@ -17,6 +17,8 @@
- #include <linux/string.h>
- #include <linux/sysfs.h>
- #include <linux/init.h>
-+#include <linux/mm.h>
-+#include <linux/vmstat.h>
- 
- static unsigned long default_quiesce_mask;
- 
-@@ -145,6 +147,17 @@ int prctl_task_isolation_ctrl_get(unsign
- 	return current->isol_info->active_mask;
- }
- 
-+void __isolation_exit_to_user_mode_prepare(void)
-+{
-+	struct isol_info *i = current->isol_info;
-+
-+	if (i->active_mask != ISOL_F_QUIESCE)
-+		return;
-+
-+	if (i->quiesce_mask & ISOL_F_QUIESCE_VMSTATS)
-+		sync_vmstat();
-+}
-+
- struct qoptions {
- 	unsigned long mask;
- 	char *name;
 Index: linux-2.6/mm/vmstat.c
 ===================================================================
 --- linux-2.6.orig/mm/vmstat.c
 +++ linux-2.6/mm/vmstat.c
-@@ -1964,6 +1964,27 @@ static void vmstat_shepherd(struct work_
- 		round_jiffies_relative(sysctl_stat_interval));
- }
+@@ -1794,6 +1794,37 @@ static const struct seq_operations vmsta
+ static DEFINE_PER_CPU(struct delayed_work, vmstat_work);
+ int sysctl_stat_interval __read_mostly = HZ;
  
-+void sync_vmstat(void)
++/*
++ * Check if the diffs for a certain cpu indicate that
++ * an update is needed.
++ */
++static bool need_update(int cpu)
 +{
-+	int cpu;
++	pg_data_t *last_pgdat = NULL;
++	struct zone *zone;
 +
-+	cpu = get_cpu();
++	for_each_populated_zone(zone) {
++		struct per_cpu_zonestat *pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
++		struct per_cpu_nodestat *n;
 +
-+	refresh_cpu_vm_stats(false);
-+	put_cpu();
++		/*
++		 * The fast way of checking if there are any vmstat diffs.
++		 */
++		if (memchr_inv(pzstats->vm_stat_diff, 0, NR_VM_ZONE_STAT_ITEMS *
++			       sizeof(pzstats->vm_stat_diff[0])))
++			return true;
 +
-+	/*
-+	 * If task is migrated to another CPU between put_cpu
-+	 * and cancel_delayed_work_sync, the code below might
-+	 * cancel vmstat_update work for a different cpu
-+	 * (than the one from which the vmstats were flushed).
-+	 *
-+	 * However, vmstat shepherd will re-enable it later,
-+	 * so its harmless.
-+	 */
-+	cancel_delayed_work_sync(&per_cpu(vmstat_work, cpu));
++		if (last_pgdat == zone->zone_pgdat)
++			continue;
++		last_pgdat = zone->zone_pgdat;
++		n = per_cpu_ptr(zone->zone_pgdat->per_cpu_nodestats, cpu);
++		if (memchr_inv(n->vm_node_stat_diff, 0, NR_VM_NODE_STAT_ITEMS *
++			       sizeof(n->vm_node_stat_diff[0])))
++		    return true;
++	}
++	return false;
 +}
 +
- static void __init start_shepherd_timer(void)
+ #ifdef CONFIG_PROC_FS
+ static void refresh_vm_stats(struct work_struct *work)
  {
- 	int cpu;
+@@ -1874,42 +1905,6 @@ static void vmstat_update(struct work_st
+ }
+ 
+ /*
+- * Switch off vmstat processing and then fold all the remaining differentials
+- * until the diffs stay at zero. The function is used by NOHZ and can only be
+- * invoked when tick processing is not active.
+- */
+-/*
+- * Check if the diffs for a certain cpu indicate that
+- * an update is needed.
+- */
+-static bool need_update(int cpu)
+-{
+-	pg_data_t *last_pgdat = NULL;
+-	struct zone *zone;
+-
+-	for_each_populated_zone(zone) {
+-		struct per_cpu_zonestat *pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
+-		struct per_cpu_nodestat *n;
+-
+-		/*
+-		 * The fast way of checking if there are any vmstat diffs.
+-		 */
+-		if (memchr_inv(pzstats->vm_stat_diff, 0, NR_VM_ZONE_STAT_ITEMS *
+-			       sizeof(pzstats->vm_stat_diff[0])))
+-			return true;
+-
+-		if (last_pgdat == zone->zone_pgdat)
+-			continue;
+-		last_pgdat = zone->zone_pgdat;
+-		n = per_cpu_ptr(zone->zone_pgdat->per_cpu_nodestats, cpu);
+-		if (memchr_inv(n->vm_node_stat_diff, 0, NR_VM_NODE_STAT_ITEMS *
+-			       sizeof(n->vm_node_stat_diff[0])))
+-		    return true;
+-	}
+-	return false;
+-}
+-
+-/*
+  * Switch off vmstat processing and then fold all the remaining differentials
+  * until the diffs stay at zero. The function is used by NOHZ and can only be
+  * invoked when tick processing is not active.
 
 
