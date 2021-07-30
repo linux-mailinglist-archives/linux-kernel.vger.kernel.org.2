@@ -2,158 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5F03DC147
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D7A3DC149
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhG3Wwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
+        id S233599AbhG3WyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbhG3Wwk (ORCPT
+        with ESMTP id S230395AbhG3Wx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:52:40 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C46C061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:52:33 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id q6so15293041oiw.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:52:33 -0700 (PDT)
+        Fri, 30 Jul 2021 18:53:59 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0483CC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:53:54 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id r26so20929645lfp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:53:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7YaEvaHo4DrC0W6456B2yUlU59Vy6Pd8qtDVybWHYoQ=;
-        b=QmiSOesf5CY5VSmypoZf0BlSlPuupVnb2fKUGKiCKMoKiZjGumEQntKXIGI6X9FERi
-         sqcVq0JNz6OFTebyDquEYoD+ei3R6ov/Wiq+CZAHqKxoy8cMXuc1OVUDyAj4YHQmlIzY
-         TeHYCg2yv+3v2ml1Fne/PbECazZZyZcjvHkPs=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yYbtWfX/VpaE9nHQJkZCw7fSJcFmIUlyV/5TayfE7hA=;
+        b=Fqxp+6NowYbKv5rRJ/gXfT9fQE7WNRfQMz7ewsVfXqQCI/6qccNDGPRAZ8zIWLRWJw
+         fn5tMHr8L2OzrRt1sMfOgIznX3bwi2JxoMG5PJWoRba5cMouN2loaRB8zJe9tVwaWunw
+         MagpwR4oinoVQdlPXNhpjkx0/5EUNLis/kcmw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7YaEvaHo4DrC0W6456B2yUlU59Vy6Pd8qtDVybWHYoQ=;
-        b=W0iR8NF/OM2Pp+uBYsW9+/xRruVrv7QIamrVEs9aiz55jmZ4xwGOHEBMJN9AiKd+W0
-         MK0fX3FLvlNmuLLdc7BzUb7lcQiIJn/IfeVxt9drNjORm2186h8V5KWVoWWgi41OY2La
-         s/hmF6qSDvf6iKCkcbosTzO+FYBezjSIXbBIQx9stdAufOzVIo0Upc3F9SqCP5FeJTxV
-         VbQI1VcvGLDHQmwGNkX1Jhx/A1xP0zsT9l1F2m9TfIYlUDgjZyMzslBspBp+5k8CvYR1
-         yPj8Ca/VbZ/GUaWFlB4Bcqs8M+uw5PgFk1/JqQEclvzzZ7t0o81CkeADMNBfsedJ9l7m
-         8JtQ==
-X-Gm-Message-State: AOAM530rHGwvYhplIEsG/5DwShyWvTEgXfiHSe1+Qm5urpcw9ZgqWf8p
-        +wCdeNXYG+LN0f8+oGPUt/y9oyKQkEBB8w==
-X-Google-Smtp-Source: ABdhPJyavFpbeFUiYZt3tWXuUIvQDxsX6/mrUaQ2REGi6SfE3NPcnP1mV6nBy9R+P9dmYS3pWR9m8A==
-X-Received: by 2002:a54:459a:: with SMTP id z26mr3490294oib.91.1627685552906;
-        Fri, 30 Jul 2021 15:52:32 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o101sm539525ota.61.2021.07.30.15.52.31
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yYbtWfX/VpaE9nHQJkZCw7fSJcFmIUlyV/5TayfE7hA=;
+        b=cv0/oeewrjuTW/zAIjFZYFuUIdNpFEOPD7LYQI+S1ywwgudkdA/74McGdsbD7j5Put
+         WtAK3y/J6e54E8NUH9DEnZd2IOhI00ZvigN+nsyZXZbvpUZRpmcjKIo5FA6ba0Xc1iUN
+         dWnFc0sOhwNo2WuHHK6B2kAaQgAikRUEdmULPParebIF1O8VX/yxaFN8WkUsMitsq09K
+         U7xiiLo0hc3umwJHjt+nqldxIvb0bBN0JOuHs2Nc/T75C8F41osyP4RYPjFR+1YIFp14
+         CqIbPinly0Nzy5BktVDpZsFoECIPH4D1O/CIBKuCnkbFb+VyHIPzXr+JcqRbx7OUj9bX
+         hz2w==
+X-Gm-Message-State: AOAM532TQZiHxiHA16lYBj+Z1yUoH3JNspl116cCXNCvQPLXhmRf7U/T
+        Kj9bpvM2GBy5Ly3E/PUYhVyhNDEQctuoy6Xxkhs=
+X-Google-Smtp-Source: ABdhPJzqiYGwlXMmUfFotmfh5t83GxppdgOLikcOT8bO9MeoVFJ8J6nwm60ecULEuiYuAPas7L6Tew==
+X-Received: by 2002:a05:6512:708:: with SMTP id b8mr3601669lfs.13.1627685632220;
+        Fri, 30 Jul 2021 15:53:52 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id p21sm254243lfa.264.2021.07.30.15.53.50
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 15:52:32 -0700 (PDT)
-Subject: Re: [PATCH v2] vhci_hcd: USB port can get stuck in the disabled state
-To:     Michael <msbroadf@gmail.com>
-Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210721235526.10588-1-msbroadf@gmail.com>
- <7b02cb66-d672-ae95-01ea-c6015725e1ac@linuxfoundation.org>
- <CALdjXpA4_eXen6RjhsEBYt8CQs-2gzwYs9h9q0Z2LKZ=rXVp+Q@mail.gmail.com>
- <ad07410b-05d6-6a12-13df-14e31cbf50ff@linuxfoundation.org>
- <CALdjXpBPRraC8xxORgE3SXw4xFnTW-Y6rLbcS+Cx0xYq3+aBeQ@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <976d34c0-d603-1f16-edbd-ad6c8881ad4e@linuxfoundation.org>
-Date:   Fri, 30 Jul 2021 16:52:31 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 30 Jul 2021 15:53:51 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id r26so20929502lfp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:53:50 -0700 (PDT)
+X-Received: by 2002:ac2:44ad:: with SMTP id c13mr3528996lfm.377.1627685630269;
+ Fri, 30 Jul 2021 15:53:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALdjXpBPRraC8xxORgE3SXw4xFnTW-Y6rLbcS+Cx0xYq3+aBeQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210729222635.2937453-1-sspatil@android.com> <20210729222635.2937453-2-sspatil@android.com>
+ <CAHk-=wh-DWvsFykwAy6uwyv24nasJ39d7SHT+15x+xEXBtSm_Q@mail.gmail.com>
+ <cee514d6-8551-8838-6d61-098d04e226ca@android.com> <CAHk-=wjStQurUzSAPVajL6Rj=CaPuSSgwaMO=0FJzFvSD66ACw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjStQurUzSAPVajL6Rj=CaPuSSgwaMO=0FJzFvSD66ACw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 30 Jul 2021 15:53:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjrfasYJUaZ-rJmYt9xa=DqmJ5-sVRG7cJ2X8nNcSXp9g@mail.gmail.com>
+Message-ID: <CAHk-=wjrfasYJUaZ-rJmYt9xa=DqmJ5-sVRG7cJ2X8nNcSXp9g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] fs: pipe: wakeup readers everytime new data written
+ is to pipe
+To:     Sandeep Patil <sspatil@android.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable <stable@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/21 5:58 PM, Michael wrote:
-> Here is the lsusb on the client when the device fails to attach
-> ---------------------------------------
-> michael@ubuntu:~$ lsusb
-> Bus 006 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-> Bus 005 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
-> Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
-> Bus 002 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
-> 
-> 
-> Here is the lsusb on the host before use
-> -----------------------------------------------------
-> pi@raspberrypi:~ $ lsusb
-> Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-> Bus 001 Device 003: ID 045e:02e6 Microsoft Corp. Wireless XBox Controller Dongle
-> Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
-> Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-> 
+On Fri, Jul 30, 2021 at 12:23 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> I'll mull it over a bit more, but whatever I'll do I'll do before rc4
+> and mark it for stable.
 
-Sorry for the delay on this. I had to make time to do some research on
-usb_reset_device() calls from probe routines.
+Ok, I ended up committing the minimal possible change (and fixing up
+the comment above it).
 
- From what you said in another email:
+It's very much *not* the original behavior either, but that original
+behavior was truly insane ("wake up for each hunk written"), and I'm
+trying to at least keep the kernel code from doing actively stupid
+things.
 
-"The device is in the  VDEV_ST_USED state when a reset occurs and so its
-never re-enabled"
+Since that old patch of mine worked for your test-case, then clearly
+that realm-core library didn't rely on _that_ kind of insane internal
+kernel implementation details exposed as semantics. So The minimal
+patch basically says "each write() system call wil do at least one
+wake-up, whether really necessary or not".
 
-Right if device is in VDEV_ST_USED state, vhci treats reset as invalid.
+I also intentionally kept the read side untouched, in that there
+apparently still isn't a case that would need the confused semantics
+for read events.
 
-Your commit log says:
+End result: the commit message is a lot bigger than the patch, with
+most of it being trying to explain the background.
 
-"When a remote usb device is attached to the local Virtual USB
-Host Controller Root Hub port, the bound device driver may send a
-port reset command. For example to initialize firmware (eg. btusb does this).
-This port reset command can be sent at any time, however the VHCI hcd
-root hub is only expecting reset to occur before the device receives
-SET_ADDRESS. The USB port should always be enabled after a reset
-(because the port is virtual and there is no possibility of hardware errors)"
+I've pushed it out as commit 3a34b13a88ca ("pipe: make pipe writes
+always wake up readers"). Holler if you notice anything odd remaining.
 
-It appears btusb driver issues reset as a workaround: btusb_setup_intel()
-
-        /* The controller has a bug with the first HCI command sent to it
-          * returning number of completed commands as zero. This would stall the
-          * command processing in the Bluetooth core.
-          *
-          * As a workaround, send HCI Reset command first which will reset the
-          * number of completed commands and allow normal command processing
-          * from now on.
-          */
-
-Another "Toggle the hard reset line" workaround for Realtek devices:
-See btusb_rtl_cmd_timeout()
-
-Both of these cases are workarounds. Is this what you are referring to about
-btusb doing reset?
-
-Specific to this bug report and mt76, other network/wireless usb drivers
-call usb_reset_device() from their probe routines unconditionally. These
-are the calls from normal paths and not fw load/error paths.
-
-rtl8152_probe(), carl9170_usb_probe(), mt7663u_probe() and so on. Looking
-at these probe routines, it appears some of them do that to avoid problems
-in disconnect path.
-
-I have two questions:
-- Is it necessary to do usb_reset_device() in net/wireless usb driver
-   probe routines?
-- Are these legit calls according to protocol?
-
-If yes, we can look into changing vhci to handle this case for net/wireless
-usb drivers. I would not delete the check though. I would add VDEV_ST_USED
-check in addition to VDEV_ST_NOTASSIGNED with some comments on why this is
-necessary.
-
-Furthermore there is a bug in the line pr_err("vhci_device speed not set\n");
-(L479) because resetting a full-speed device is not an error.
-
-This is a separate issue is separate. vhci is missing USB_SPEED_FULL checks
-at various places. This has to be done as a separate work.
-
-thanks,
--- Shuah
-
-
+              Linus
