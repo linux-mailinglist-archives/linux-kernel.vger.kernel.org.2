@@ -2,325 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA483DC0D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F1B3DC0D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbhG3WPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
+        id S232833AbhG3WPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhG3WO6 (ORCPT
+        with ESMTP id S229685AbhG3WPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:14:58 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68334C061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:14:53 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id t3so10629969plg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:14:53 -0700 (PDT)
+        Fri, 30 Jul 2021 18:15:41 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A894C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:15:36 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id w200-20020a25c7d10000b02905585436b530so12045960ybe.21
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vddn+vvtKgOVqzqDSz65GCCZWuHGFXaCgkycC5H7nuc=;
-        b=CiiI2ggcFke2Cr1DprT/sGjOE+M7Pnh/YovUHL38sLnQfa3VHnPEYmbKc1Q/XVJJj6
-         /GWBpssQk3TAKFZV6gK2nUjZ3tUNYiZGrN4poHwQFadaDARw8sszZk8vdQuvgzS+tKC2
-         2wVnjUY/N2dHnrSNXDFaYHLTomommF54LseqJzPdlmfmVaFbVLXqJeJGaAqab4WUQWKX
-         yMnCafHV8vOmYwsMZRQR/hRanbpxsJp15hOch+8SIzwEus9nBdhl44DZjbYY606UucQw
-         PBht786uWvmBszeKy8ykIOJwvq3PTe6iMUaPn7CVYcwKPtOiv4masIJA/g22ALVtWkmS
-         4c6A==
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=LU5DBdfWbcb7nq9Hpjh9AB6SsnxaUwrgsobOqLYPM9o=;
+        b=XpXwBkjGlVd2d6XL3s1SwLhwX8JZVK/cIvIbDFd3yRnmsGMBWKV8TuZpR0HUdQgXnU
+         iJku5j3MvE5vmpW5QtBm45oQLb3xIvvX1uDHFvWv4VSw8nv96esBAsAF+Vagm8rLf/Ur
+         Lk2WJIBDh/sCMPKcDjiiEmEkw9Nl108PBzM/SHCHl13YB5kSXKtRQGdfsuoMkb9xOF+j
+         /vIHapRP1+NZ4FgJU7HzaHuXc9rwpBk5ILuL9tZbhJYGKlbSI94xBhsCF/vdwVgctge4
+         StTqwvLN6o3c0IVSplYxXw9kh7/2lxtoZ1cco9qjSBPG5aAT5PPOAZZydmxMhk2jPoEQ
+         Xwcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vddn+vvtKgOVqzqDSz65GCCZWuHGFXaCgkycC5H7nuc=;
-        b=V715V+MosUGPfrIdv25oKvdxDvmk19WQWkYqCySKMuGMZf5BkIZkTDUu6wrRExaOPy
-         d18kSiAtCQFKYXmfPk+l6RfY0txz+NPL4Fqx5Ni2EL1UQzlRuV7FKD1/BiMP8PZZ+oVK
-         4XvTupkvPXH1FN7ULYPKW93TApOg5NEc/cbM/LZ7nZCoMTG/WTUvNs3ixcwArBUVo2Dn
-         nbbFY5YvVRhh1uf443GHtsrN8ItU7ENldpqA0bdf+DMxWVyeTUeYxR3sBAZc59l9ux7G
-         0ZaFe/OPu79XM/jYlNi/Ki1JHcRZNrw2gq1nIRnIROr4xgJbEmxDIECjmR96nscRKCEY
-         JwEQ==
-X-Gm-Message-State: AOAM533flsd1r571d+xZkQ7QiG17Rzk5GvixeCABRRtd0OhFw8znz3l9
-        DlKdc3OWOvj95+KpQsUa+FIOng==
-X-Google-Smtp-Source: ABdhPJyZ5+BXJu7Tm6hcHq5Ca+eHHgIjoij+V2bh6ieawtkrN8emuis0lJHS2P1caSnA+hF1wWsBOA==
-X-Received: by 2002:a63:1359:: with SMTP id 25mr2255674pgt.79.1627683292597;
-        Fri, 30 Jul 2021 15:14:52 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i25sm3464475pfo.20.2021.07.30.15.14.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 15:14:51 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 22:14:48 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Edmondson <david.edmondson@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        David Matlack <dmatlack@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v3 2/3] KVM: x86: On emulation failure, convey the exit
- reason, etc. to userspace
-Message-ID: <YQR52JRv8jgj+Dv8@google.com>
-References: <20210729133931.1129696-1-david.edmondson@oracle.com>
- <20210729133931.1129696-3-david.edmondson@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729133931.1129696-3-david.edmondson@oracle.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=LU5DBdfWbcb7nq9Hpjh9AB6SsnxaUwrgsobOqLYPM9o=;
+        b=NEwPbSQMtAHnamCJuDXYivCo2n/u+auhwRsn9DpepF1Up9JSBs/zoLif8tjZYeTKVv
+         rFHcudZXuTlstaCEX8Sdh5gA0JvTy6I2Df6FLIOm5r8/YR9sAA8trzyq1Qdm21nbXOlV
+         QKEAnFZ9h2v1prJHMG5yTdeEINH44AO+rf7QYjlijUp2uhqpI8MJClLK6FJYMAsN12I1
+         hX4gtUPQSdyimhrq2fKUXoWGaUkMoDavSSTI5drEbp3g8491NPv6/ztya9qAkJ2eQC9k
+         tt/Ks/iEiHPkXJKoeARdAmOTeJ3Dus0zlc11XflTgNhH8DhskFKaoZzXVbl9Z3AX0exw
+         Dpig==
+X-Gm-Message-State: AOAM5306xyhGvzOAr5T1JzV2OLqGwh3jb4WNoo0ZCMg+PmR8FuxyPNn4
+        JwO8lsGm4KO52aOyje4M7XLtd+FZPlYHqq0/cw==
+X-Google-Smtp-Source: ABdhPJxe1XYsmM6riS+UPT68QnUlgiHQqg3WENQUZg+apcfgwViegTCzjryTSQLvJ8lc2lb5AY9O5HG6KBsLJh2l9A==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:3576:2dfb:a2a7:68b7])
+ (user=almasrymina job=sendgmr) by 2002:a25:2ac2:: with SMTP id
+ q185mr2013749ybq.66.1627683335290; Fri, 30 Jul 2021 15:15:35 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 15:15:22 -0700
+Message-Id: <20210730221522.524256-1-almasrymina@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v1] mm, hugepages: add mremap() support for hugepage backed vma
+From:   Mina Almasry <almasrymina@google.com>
+Cc:     Ken Chen <kenchen@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Chris Kennelly <ckennelly@google.com>
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021, David Edmondson wrote:
-> Should instruction emulation fail, include the VM exit reason, etc. in
-> the emulation_failure data passed to userspace, in order that the VMM
-> can report it as a debugging aid when describing the failure.
-> 
-> Suggested-by: Joao Martins <joao.m.martins@oracle.com>
-> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  5 ++++
->  arch/x86/kvm/vmx/vmx.c          |  5 +---
->  arch/x86/kvm/x86.c              | 53 ++++++++++++++++++++++++++-------
->  include/uapi/linux/kvm.h        |  7 +++++
->  4 files changed, 56 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index dfb902930cdc..17da43c1aa67 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1630,6 +1630,11 @@ extern u64 kvm_mce_cap_supported;
->  int kvm_emulate_instruction(struct kvm_vcpu *vcpu, int emulation_type);
->  int kvm_emulate_instruction_from_buffer(struct kvm_vcpu *vcpu,
->  					void *insn, int insn_len);
-> +void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu,
-> +					bool instruction_bytes,
-> +					void *data, unsigned int ndata);
-> +void kvm_prepare_emulation_failure_exit_with_reason(struct kvm_vcpu *vcpu,
-> +						    bool instruction_bytes);
->  
->  void kvm_enable_efer_bits(u64);
->  bool kvm_valid_efer(struct kvm_vcpu *vcpu, u64 efer);
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index fefdecb0ff3d..a8d303c7c099 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -5367,10 +5367,7 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
->  
->  		if (vmx->emulation_required && !vmx->rmode.vm86_active &&
->  		    vcpu->arch.exception.pending) {
-> -			vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-> -			vcpu->run->internal.suberror =
-> -						KVM_INTERNAL_ERROR_EMULATION;
-> -			vcpu->run->internal.ndata = 0;
-> +			kvm_prepare_emulation_failure_exit_with_reason(vcpu, false);
->  			return 0;
->  		}
->  
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index a4fd10604f72..a97bacd8922f 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -7456,7 +7456,9 @@ void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc_eip)
->  }
->  EXPORT_SYMBOL_GPL(kvm_inject_realmode_interrupt);
->  
-> -static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
-> +void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu,
-> +					bool instruction_bytes,
-> +					void *data, unsigned int ndata)
+From: Ken Chen <kenchen@google.com>
 
-'data' should be a 'u64 *', and 'ndata' should be a 'u8' that is actual ndata as
-opposed to the size.  The obvious alternative would be to rename ndata to size,
-but IMO that's unnecessarily complex, it's much easier to force the caller to work
-with u64s.  That also reduces the probablity of KVM mangling data[] by dumping
-unrelated fields into a single data[] entry, or by leaving stale chunks (if the
-incoming data is not a multiple of 8 bytes).
+Support mremap() for hugepage backed vma segment by simply repositioning
+page table entries. The page table entries are repositioned to the new
+virtual address on mremap().
 
->  {
->  	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
->  	u32 insn_size = ctxt->fetch.end - ctxt->fetch.data;
-> @@ -7464,10 +7466,10 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
->  
->  	run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
->  	run->emulation_failure.suberror = KVM_INTERNAL_ERROR_EMULATION;
-> -	run->emulation_failure.ndata = 0;
-> +	run->emulation_failure.ndata = 1; /* Always include the flags. */
->  	run->emulation_failure.flags = 0;
->  
-> -	if (insn_size) {
-> +	if (instruction_bytes && insn_size) {
->  		run->emulation_failure.ndata = 3;
->  		run->emulation_failure.flags |=
->  			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
-> @@ -7477,7 +7479,42 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
->  		memcpy(run->emulation_failure.insn_bytes,
->  		       ctxt->fetch.data, insn_size);
->  	}
-> +
-> +	ndata = min((size_t)ndata, sizeof(run->internal.data) -
-> +		    run->emulation_failure.ndata * sizeof(u64));
-> +	if (ndata) {
-> +		unsigned int offset =
-> +			offsetof(struct kvm_run, emulation_failure.flags) +
-> +			run->emulation_failure.ndata * sizeof(u64);
-> +
-> +		memcpy((void *)run + offset, data, ndata);
-> +		run->emulation_failure.ndata += ndata / sizeof(u64);
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_prepare_emulation_failure_exit);
+Hugetlb mremap() support is of course generic; my motivating use case
+is a library (hugepage_text), which reloads the ELF text of executables
+in hugepages. This significantly increases the execution performance of
+said executables.
 
-NAK on exporting this particular helper, it consumes vcpu->arch.emulate_ctxt,
-which ideally wouldn't even be visible to vendor code (stupid SVM erratum).  The
-emulation context will rarely, if ever, be valid if this is called from vendor code.
+Restricts the mremap operation on hugepages to up to the size of the
+original mapping as the underlying hugetlb reservation is not yet
+capable of handling remapping to a larger size.
 
-The SGX call is effectively guarded by instruction_bytes=false, but that's a
-messy approach as the handle_emulation_failure() patch is the _only_ case where
-emulate_ctxt can be valid.
+Tested with a simple mmap/mremap test case, roughly:
 
-> +void kvm_prepare_emulation_failure_exit_with_reason(struct kvm_vcpu *vcpu,
-> +						    bool instruction_bytes)
-> +{
-> +	struct {
-> +		__u64 exit_reason;
+void* haddr = mmap(NULL, size, PROT_READ | PROT_WRITE | PROT_EXEC,
+		MAP_ANONYMOUS | MAP_SHARED, -1, 0);
 
-As mentioned in the prior patch, exit_reason is probably best kept to a u32 at
-this time.
+void* taddr = mmap(NULL, size, PROT_NONE,
+		MAP_HUGETLB | MAP_ANONYMOUS | MAP_SHARED, -1, 0);
 
-> +		__u64 exit_info1;
-> +		__u64 exit_info2;
-> +		__u32 intr_info;
-> +		__u32 error_code;
-> +	} exit_reason;
+void* raddr = mremap(haddr, size, size, MREMAP_MAYMOVE | MREMAP_FIXED, taddr);
 
-Oooh, you're dumping all the fields in kvm_run.  That took me forever to realize
-because the struct is named "exit_reason".  Unless there's a naming conflict,
-'data' would be the simplest, and if that's already taken, maybe 'info'?
+Signed-off-by: Mina Almasry <almasrymina@google.com>
 
-I'm also not sure an anonymous struct is going to be the easiest to maintain.
-I do like that the fields all have names, but on the other hand the data should
-be padded so that each field is in its own data[] entry when dumped to userspace.
-IMO, the padding complexity isn't worth the naming niceness since this code
-doesn't actually care about what each field contains.
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Ken Chen <kenchen@google.com>
+Cc: Chris Kennelly <ckennelly@google.com>
 
-> +
-> +	static_call(kvm_x86_get_exit_info)(vcpu,
-> +					   &exit_reason.exit_reason,
-> +					   &exit_reason.exit_info1,
-> +					   &exit_reason.exit_info2,
-> +					   &exit_reason.intr_info,
-> +					   &exit_reason.error_code);
-> +
-> +	kvm_prepare_emulation_failure_exit(vcpu, instruction_bytes,
-> +					   &exit_reason, sizeof(exit_reason));
+---
+ include/linux/hugetlb.h | 13 ++++++
+ mm/hugetlb.c            | 89 +++++++++++++++++++++++++++++++++++++++++
+ mm/mremap.c             | 75 ++++++++++++++++++++++++++++++++--
+ 3 files changed, 174 insertions(+), 3 deletions(-)
 
-Retrieiving the exit reason and info should probably be in the inner helper, the
-only case where the info will be stale is the VMX !unrestricted_guest
-handle_invalid_guest_state() path, but even then I think the last VM-Exit info
-would be interesting/relevant.  That should allow for a cleaner API too.
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index f7ca1a3870ea5..685a289b58401 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -124,6 +124,7 @@ struct hugepage_subpool *hugepage_new_subpool(struct hstate *h, long max_hpages,
+ void hugepage_put_subpool(struct hugepage_subpool *spool);
 
-This is what I came up with after a fair bit of massaging.  The get_exit_info()
-call is beyond gross, but I still think I like it more than a struct?  A
-build-time assertion that the struct size is a multiple of 8 would allay my
-concerns over leaking stack state to userspace, so I'm not totally opposed to it.
+ void reset_vma_resv_huge_pages(struct vm_area_struct *vma);
++void clear_vma_resv_huge_pages(struct vm_area_struct *vma);
+ int hugetlb_sysctl_handler(struct ctl_table *, int, void *, size_t *, loff_t *);
+ int hugetlb_overcommit_handler(struct ctl_table *, int, void *, size_t *,
+ 		loff_t *);
+@@ -132,6 +133,8 @@ int hugetlb_treat_movable_handler(struct ctl_table *, int, void *, size_t *,
+ int hugetlb_mempolicy_sysctl_handler(struct ctl_table *, int, void *, size_t *,
+ 		loff_t *);
 
-	struct {
-		u32 exit_reason;
-		u32 pad1;
-		u64 info1;
-		u64 info2;
-		u32 intr_info;
-		u32 pad2;
-		u32 error_code;
-		u32 pad3;
-	} info;
-	u64 ninfo = sizeof(info) / sizeof(u64);
++int move_hugetlb_page_tables(struct vm_area_struct *vma, unsigned long old_addr,
++			     unsigned long new_addr, unsigned long len);
+ int copy_hugetlb_page_range(struct mm_struct *, struct mm_struct *, struct vm_area_struct *);
+ long follow_hugetlb_page(struct mm_struct *, struct vm_area_struct *,
+ 			 struct page **, struct vm_area_struct **,
+@@ -218,6 +221,10 @@ static inline void reset_vma_resv_huge_pages(struct vm_area_struct *vma)
+ {
+ }
 
-	BUILD_BUG_ON(sizeof(info) % sizeof(u64));
++static inline void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
++{
++}
++
+ static inline unsigned long hugetlb_total_pages(void)
+ {
+ 	return 0;
+@@ -265,6 +272,12 @@ static inline int copy_hugetlb_page_range(struct mm_struct *dst,
+ 	return 0;
+ }
 
-	/*
-	 * Zero the whole struct used to retrieve the exit info to ensure the
-	 * padding does not leak stack data to userspace.
-	 */
-	memset(&info, 0, sizeof(info));
++#define move_hugetlb_page_tables(vma, old_addr, new_addr, len)                 \
++	({                                                                     \
++		BUG();                                                         \
++		0;                                                             \
++	})
++
+ static inline void hugetlb_report_meminfo(struct seq_file *m)
+ {
+ }
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 528947da65c8f..bd26b00caf3cf 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1004,6 +1004,23 @@ void reset_vma_resv_huge_pages(struct vm_area_struct *vma)
+ 		vma->vm_private_data = (void *)0;
+ }
 
-	static_call(kvm_x86_get_exit_info)(vcpu, &info.exit_reason,
-					   &info.info1, &info.info2,
-					   &info.intr_info, &info.error_code);
++/*
++ * Reset and decrement one ref on hugepage private reservation.
++ * Called with mm->mmap_sem writer semaphore held.
++ * This function should be only used by move_vma() and operate on
++ * same sized vma. It should never come here with last ref on the
++ * reservation.
++ */
++void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
++{
++	struct resv_map *reservations = vma_resv_map(vma);
++
++	if (reservations && is_vma_resv_set(vma, HPAGE_RESV_OWNER))
++		kref_put(&reservations->refs, resv_map_release);
++
++	reset_vma_resv_huge_pages(vma);
++}
++
+ /* Returns true if the VMA has associated reserve pages */
+ static bool vma_has_reserves(struct vm_area_struct *vma, long chg)
+ {
+@@ -4429,6 +4446,73 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+ 	return ret;
+ }
 
++static bool vma_shareable(struct vm_area_struct *vma, unsigned long addr);
++
++static void move_huge_pte(struct vm_area_struct *vma, unsigned long old_addr,
++			  unsigned long new_addr, pte_t *src_pte)
++{
++	struct address_space *mapping = vma->vm_file->f_mapping;
++	struct hstate *h = hstate_vma(vma);
++	struct mm_struct *mm = vma->vm_mm;
++	pte_t *dst_pte, pte;
++	spinlock_t *src_ptl, *dst_ptl;
++
++	/* Shared pagetables need more thought here if we re-enable them */
++	BUG_ON(vma_shareable(vma, old_addr));
++
++	/* Prevent race with file truncation */
++	i_mmap_lock_write(mapping);
++
++	dst_pte = huge_pte_offset(mm, new_addr, huge_page_size(h));
++	dst_ptl = huge_pte_lock(h, mm, dst_pte);
++	src_ptl = huge_pte_lockptr(h, mm, src_pte);
++	/*
++	 * We don't have to worry about the ordering of src and dst ptlocks
++	 * because exclusive mmap_sem (or the i_mmap_lock) prevents deadlock.
++	 */
++	if (src_ptl != dst_ptl)
++		spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
++
++	pte = huge_ptep_get_and_clear(mm, old_addr, src_pte);
++	set_huge_pte_at(mm, new_addr, dst_pte, pte);
++
++	if (src_ptl != dst_ptl)
++		spin_unlock(src_ptl);
++	spin_unlock(dst_ptl);
++	i_mmap_unlock_write(mapping);
++}
++
++int move_hugetlb_page_tables(struct vm_area_struct *vma, unsigned long old_addr,
++			     unsigned long new_addr, unsigned long len)
++{
++	struct hstate *h = hstate_vma(vma);
++	unsigned long sz = huge_page_size(h);
++	struct mm_struct *mm = vma->vm_mm;
++	unsigned long old_end = old_addr + len;
++	pte_t *src_pte, *dst_pte;
++	struct mmu_notifier_range range;
++
++	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm, old_addr,
++				old_end);
++	mmu_notifier_invalidate_range_start(&range);
++	for (; old_addr < old_end; old_addr += sz, new_addr += sz) {
++		src_pte = huge_pte_offset(mm, old_addr, sz);
++		if (!src_pte)
++			continue;
++		if (huge_pte_none(huge_ptep_get(src_pte)))
++			continue;
++		dst_pte = huge_pte_alloc(mm, vma, new_addr, sz);
++		if (!dst_pte)
++			break;
++
++		move_huge_pte(vma, old_addr, new_addr, src_pte);
++	}
++	flush_tlb_range(vma, old_end - len, old_end);
++	mmu_notifier_invalidate_range_end(&range);
++
++	return len + old_addr - old_end;
++}
++
+ void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+ 			    unsigned long start, unsigned long end,
+ 			    struct page *ref_page)
+@@ -6043,6 +6127,11 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
+ }
 
+ #else /* !CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
++static bool vma_shareable(struct vm_area_struct *vma, unsigned long addr)
++{
++	return false;
++}
++
+ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		      unsigned long addr, pud_t *pud)
+ {
+diff --git a/mm/mremap.c b/mm/mremap.c
+index badfe17ade1f0..3c0ee2bb9c439 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -489,6 +489,9 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
+ 	old_end = old_addr + len;
+ 	flush_cache_range(vma, old_addr, old_end);
 
-void __kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, u64 *data,
-					  u8 ndata);
-void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu);
++	if (is_vm_hugetlb_page(vma))
++		return move_hugetlb_page_tables(vma, old_addr, new_addr, len);
++
+ 	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
+ 				old_addr, old_end);
+ 	mmu_notifier_invalidate_range_start(&range);
+@@ -642,6 +645,57 @@ static unsigned long move_vma(struct vm_area_struct *vma,
+ 		mremap_userfaultfd_prep(new_vma, uf);
+ 	}
 
-static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, u64 *data,
-					   u8 ndata, u8 *insn_bytes, u8 insn_size)
-{
-	struct kvm_run *run = vcpu->run;
-	u8 ndata_start;
-	u64 info[5];
++	if (is_vm_hugetlb_page(vma)) {
++		/*
++		 * Clear the old hugetlb private page reservation.
++		 * It has already been transferred to new_vma.
++		 *
++		 * The reservation tracking for hugetlb private mapping is
++		 * done in two places:
++		 * 1. implicit vma size, e.g. vma->vm_end - vma->vm_start
++		 * 2. tracking of hugepages that has been faulted in already,
++		 *    this is done via a linked list hanging off
++		 *    vma_resv_map(vma).
++		 *
++		 * Each hugepage vma also has hugepage specific vm_ops method
++		 * and there is an imbalance in the open() and close method.
++		 *
++		 * In the open method (hugetlb_vm_op_open), a ref count is
++		 * obtained on the structure that tracks faulted in pages.
++		 *
++		 * In the close method, it unconditionally returns pending
++		 * reservation on the vma as well as release a kref count and
++		 * calls release function upon last reference.
++		 *
++		 * Because of this unbalanced operation in the open/close
++		 * method, this code runs into trouble in the mremap() path:
++		 * copy_vma will copy the pointer to the reservation structure,
++		 * then calls vma->vm_ops->open() method, which only increments
++		 * ref count on the tracking structure and does not do actual
++		 * reservation.  In the same code sequence from move_vma(), the
++		 * close() method is called as a result of cleaning up original
++		 * vma segment from a call to do_munmap().  At this stage, the
++		 * tracking and reservation is out of balance, e.g. the
++		 * reservation is returned, however there is an active ref on
++		 * the tracking structure.
++		 *
++		 * When the remap'ed vma unmaps (either implicit at process
++		 * exit or explicit munmap), the reservation will be returned
++		 * again because hugetlb_vm_op_close calculate pending
++		 * reservation unconditionally based on size of vma.  This
++		 * cause h->resv_huge_pages. to underflow and no more hugepages
++		 * can be allocated to application in certain situation.
++		 *
++		 * We need to reset and clear the tracking reservation, such
++		 * that we don't prematurely returns hugepage reservation at
++		 * mremap time.  The reservation should only be returned at
++		 * munmap() time.  This is totally undesired, however, we
++		 * don't want to re-factor hugepage reservation code at this
++		 * stage for prod kernel. Resetting is the least risky method.
++		 */
++		clear_vma_resv_huge_pages(vma);
++	}
++
+ 	/* Conceal VM_ACCOUNT so old reservation is not undone */
+ 	if (vm_flags & VM_ACCOUNT && !(flags & MREMAP_DONTUNMAP)) {
+ 		vma->vm_flags &= ~VM_ACCOUNT;
+@@ -736,9 +790,6 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+ 			(vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP)))
+ 		return ERR_PTR(-EINVAL);
 
-	/*
-	 * Zero the whole array used to retrieve the exit info, casting to u32
-	 * for select entries will leave some chunks uninitialized.
-	 */
-	memset(&info, 0, sizeof(info));
+-	if (is_vm_hugetlb_page(vma))
+-		return ERR_PTR(-EINVAL);
+-
+ 	/* We can't remap across vm area boundaries */
+ 	if (old_len > vma->vm_end - addr)
+ 		return ERR_PTR(-EFAULT);
+@@ -949,6 +1000,24 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
 
-	static_call(kvm_x86_get_exit_info)(vcpu, (u32 *)&info[0], &info[1],
-					   &info[2], (u32 *)&info[3],
-					   (u32 *)&info[4]);
+ 	if (mmap_write_lock_killable(current->mm))
+ 		return -EINTR;
++	vma = find_vma(mm, addr);
++	if (!vma || vma->vm_start > addr)
++		goto out;
++
++	if (is_vm_hugetlb_page(vma)) {
++		struct hstate *h __maybe_unused = hstate_vma(vma);
++
++		if (old_len & ~huge_page_mask(h) ||
++		    new_len & ~huge_page_mask(h))
++			goto out;
++
++		/*
++		 * Don't allow remap expansion, because the underlying hugetlb
++		 * reservation is not yet capable to handle split reservation.
++		 */
++		if (new_len > old_len)
++			goto out;
++	}
 
-	run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-	run->emulation_failure.suberror = KVM_INTERNAL_ERROR_EMULATION;
-
-	/*
-	 * There's currently space for 13 entries, but 5 are used for the exit
-	 * reason and info.  Restrict to 4 to reduce the maintenance burden
-	 * when expanding kvm_run.emulation_failure in the future.
-	 */
-	if (WARN_ON_ONCE(ndata > 4))
-		ndata = 4;
-
-	if (insn_size) {
-		ndata_start = 3;
-		run->emulation_failure.flags =
-			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
-		run->emulation_failure.insn_size = insn_size;
-		memset(run->emulation_failure.insn_bytes, 0x90,
-		       sizeof(run->emulation_failure.insn_bytes));
-		memcpy(run->emulation_failure.insn_bytes, insn_bytes, insn_size);
-	} else {
-		/* Always include the flags as a 'data' entry. */
-		ndata_start = 1;
-		run->emulation_failure.flags = 0;
-	}
-
-	memcpy(&run->internal.data[ndata_start], info, ARRAY_SIZE(info));
-	memcpy(&run->internal.data[ndata_start + ARRAY_SIZE(info)], data, ndata);
-}
-
-static void prepare_emulation_ctxt_failure_exit(struct kvm_vcpu *vcpu)
-{
-	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
-
-	prepare_emulation_failure_exit(vcpu, NULL, 0, ctxt->fetch.data,
-				       ctxt->fetch.end - ctxt->fetch.data);
-}
-
-void __kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, u64 *data,
-					  u8 ndata)
-{
-	prepare_emulation_failure_exit(vcpu, data, ndata, NULL, 0);
-}
-EXPORT_SYMBOL_GPL(__kvm_prepare_emulation_failure_exit);
-
-void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
-{
-	__kvm_prepare_emulation_failure_exit(vcpu, NULL, 0);
-}
-EXPORT_SYMBOL_GPL(kvm_prepare_emulation_failure_exit);
+ 	if (flags & (MREMAP_FIXED | MREMAP_DONTUNMAP)) {
+ 		ret = mremap_to(addr, old_len, new_addr, new_len,
+--
+2.32.0.554.ge1b32706d8-goog
