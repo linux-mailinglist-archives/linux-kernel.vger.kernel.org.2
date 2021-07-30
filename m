@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9CB3DB3E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774A23DB3E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbhG3GuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:50:10 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41742 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237278AbhG3GuI (ORCPT
+        id S237698AbhG3GvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237463AbhG3GvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:50:08 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 4A6841FDB2;
-        Fri, 30 Jul 2021 06:50:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627627803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xojnLgK/32nxOjCn8ZrhjIhAgNUPqzZVxeCUL5Yhwn8=;
-        b=hAr/6b2qqY+vI9OuPMkGd1wYvnwVpqYOzmgAWJVVfz/cuy4qh4vYDL8ENtabW+YJ+NeJuV
-        S+MgrWHeMKCcm8MUeT3IoYVeA5003ijTHbYjXne5Fz+LyJAh2BJittkpTk5+5blrGinP4y
-        b0qhbxN2wMXENaebAmqI7+QsEl98acY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 0D53EA3B87;
-        Fri, 30 Jul 2021 06:50:02 +0000 (UTC)
-Date:   Fri, 30 Jul 2021 08:50:02 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Miaohe Lin <linmiaohe@huawei.com>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        shakeelb@google.com, willy@infradead.org, alexs@kernel.org,
-        richard.weiyang@gmail.com, songmuchun@bytedance.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
-Message-ID: <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
-References: <20210729125755.16871-1-linmiaohe@huawei.com>
- <20210729125755.16871-3-linmiaohe@huawei.com>
- <YQNsxVPsRSBZcfGG@carbon.lan>
+        Fri, 30 Jul 2021 02:51:06 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9222C061765;
+        Thu, 29 Jul 2021 23:51:02 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id m13so10189885iol.7;
+        Thu, 29 Jul 2021 23:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t11HKxEEH4asV/wZXTqt9J2Oni9bsKp96UbDJNXP4DE=;
+        b=aKIp6ToGQeADU6hv6MlwcrPSol1BzQUQs9GX42LLESv9E8jJ095bPtgdnQ0Fzf+x+b
+         1yX6Yw4wR8GVGcufOq4oDpF6tFNaxHFrwXQINBq28/V+VAoQ/lSl/9kbpcskxqN+mP/+
+         OBSP9OfRfi7fKoGGda7RGbmkUYdDpVEOM/BFPmJ1LIht+22HIdoSjkEeWVfmb9s/UcDA
+         oJUmHRIr0dfYxGaLDKTK7E9pV00xMkD/3RVLo+IVsRn/IHYRexYkfR7qsjg7pG0REDvc
+         OKTabGVA4ktuF5yx1DE+oz8Llp2YZwh0z0NtkvssKuJcC6HYdQgvqHj8DNMJkm973biG
+         IUaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t11HKxEEH4asV/wZXTqt9J2Oni9bsKp96UbDJNXP4DE=;
+        b=qUgCiYuxNKyR0g/bNNtyK3SEVkDttEgqotBacC8YwvUxAnpRzYf9xi33kHChAB5Nxq
+         NehKljiDR29Co2nYKqMuKYG8lU0QsL8k0MKP3wV53r5wo8ff9KY/IyruHqHTlZ0tPIIj
+         peUjqxdVqgMnDgeI+XAv2SwVCHQQOOAxbRz/1VKYIHjfkk/pMxielTuRGTyoQ4u3JVQ6
+         jiLTZh/EqxhEQiI7/RqT5JZ35Q2dBzRSyQF0+4zL2nRIPBp/tmPGvzIyHTjUY2uvNyVI
+         /3VvDD4tAIZIQqBdFHTk/7XU1fMC0739rR23KtLqN18JYNBMo073yeidXfBOAJfAVghJ
+         gKNg==
+X-Gm-Message-State: AOAM533m1dd8zlI+qbr9sRh/Yth1EqoHOUe5ecoxJQeIfDhZHD8NJIQ9
+        MPywAz0AsbpfwCww4Ot59HO9PbAIgNdRAtJpEet7kiV9
+X-Google-Smtp-Source: ABdhPJyOF5nkGh/vdzLEcEPiQt8GaA5L8wh8PI6zmY2VPiGoxjiKfolqJBFRP1sRzcl5wz98kTRuH3ENrb6h6Dd1qdY=
+X-Received: by 2002:a02:9508:: with SMTP id y8mr953957jah.28.1627627862194;
+ Thu, 29 Jul 2021 23:51:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQNsxVPsRSBZcfGG@carbon.lan>
+References: <20210729165039.23896-1-ndesaulniers@google.com>
+ <20210729165039.23896-3-ndesaulniers@google.com> <44117d0c-51b7-1f68-f752-ba53de503b14@kernel.org>
+ <CAKwvOdm0xs4ikb0K0_b8Az0T=Kxu_-6AHjWHOhjsKZb3hTrH2A@mail.gmail.com>
+In-Reply-To: <CAKwvOdm0xs4ikb0K0_b8Az0T=Kxu_-6AHjWHOhjsKZb3hTrH2A@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 30 Jul 2021 08:50:51 +0200
+Message-ID: <CANiq72kya-9zeGN4uTqLMbAUMDGu-SQXRAwS9UTxceeObbN9yg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ CC=clang LLVM_IAS=1
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 29-07-21 20:06:45, Roman Gushchin wrote:
-> On Thu, Jul 29, 2021 at 08:57:52PM +0800, Miaohe Lin wrote:
-> > Since percpu_charge_mutex is only used inside drain_all_stock(), we can
-> > narrow the scope of percpu_charge_mutex by moving it here.
-> > 
-> > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> > ---
-> >  mm/memcontrol.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 6580c2381a3e..a03e24e57cd9 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -2050,7 +2050,6 @@ struct memcg_stock_pcp {
-> >  #define FLUSHING_CACHED_CHARGE	0
-> >  };
-> >  static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
-> > -static DEFINE_MUTEX(percpu_charge_mutex);
-> >  
-> >  #ifdef CONFIG_MEMCG_KMEM
-> >  static void drain_obj_stock(struct obj_stock *stock);
-> > @@ -2209,6 +2208,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
-> >   */
-> >  static void drain_all_stock(struct mem_cgroup *root_memcg)
-> >  {
-> > +	static DEFINE_MUTEX(percpu_charge_mutex);
-> >  	int cpu, curcpu;
-> 
-> It's considered a good practice to protect data instead of code paths. After
-> the proposed change it becomes obvious that the opposite is done here: the mutex
-> is used to prevent a simultaneous execution of the code of the drain_all_stock()
-> function.
+On Fri, Jul 30, 2021 at 2:19 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> maximally flexible."  We don't want folks generally using CC=clang;
+> preferably they'd use LLVM=1.  I need to rewrite our docs to make that
+> more explicit and straightforward.  And if folks would prefer to use
+> CC=clang for whatever reason, let them explicitly state CROSS_COMPILE
+> then.
 
-The purpose of the lock was indeed to orchestrate callers more than any
-data structure consistency.
- 
-> Actually we don't need a mutex here: nobody ever sleeps on it. So I'd replace
-> it with a simple atomic variable or even a single bitfield. Then the change will
-> be better justified, IMO.
+Perhaps it would be nice to clarify the "level of support" for
+`CC=clang` too, in particular long-term when `LLVM=1` works for all
+architectures.
 
-Yes, mutex can be replaced by an atomic in a follow up patch.
--- 
-Michal Hocko
-SUSE Labs
+In other words, is `CC=clang` going to remain supported/maintained, or
+it will be something that will still compile/boot but not expected to
+be used by anyone in production, or dropped altogether (not the `CC`
+option itself, of course, I refer to the mix of toolchains)?
+
+Thanks,
+
+Cheers,
+Miguel
