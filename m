@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141A63DC01F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7132E3DC023
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbhG3VKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 17:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231982AbhG3VKo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 17:10:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED25C061765;
-        Fri, 30 Jul 2021 14:10:39 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 21:10:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627679436;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=qMLj7LoyKYMS7jxdCGqk9QKiXWPC4NuhSIGwaA6lW2U=;
-        b=naKH4D3FibfFDBa0cEljlmlfJkBWop6acTRZ40KDcTqBIHjpfA3ipvRxRqvNpe2QWv632n
-        yNi4HE0YEOMjp7UEbxH+gGi/K8a0MzfXPnFVasLcsyLMra64DCIArABeGU/AP0KPc+YB+f
-        Nm1vkShJ6JFS+of7RsymB3uGUXsk6TPqZuLGpssC6ZJioXgaSBy0F0Qh5+6tz+EyFCnsk+
-        iXAuSY5lxk/BRbv4QLj+e/cCblVQ5d3DkJvNU2zSHNYKd7LVvG9zTfdx+5/Ahl8gmMqTcN
-        4BjcOD7GVcZvaUAaaFEzvfasy4utZmo6J6zFEI2u3XANWM1c+VYBxdiI1txwZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627679436;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=qMLj7LoyKYMS7jxdCGqk9QKiXWPC4NuhSIGwaA6lW2U=;
-        b=XINCMXWg2rW2UlCmCw7nxp/3XOB4l3m/BiaAYUpAMnCIi3E88tBySfnblZHzq6XRfZKalp
-        sr106biNvoRfW9CA==
-From:   tip-bot2 for =?utf-8?q?C=C3=A9dric?= Le Goater 
-        <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Improve "hwirq" output in /proc and /sys/
-Cc:     clg@kaod.org, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
+        id S231555AbhG3VT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 17:19:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230310AbhG3VT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 17:19:58 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEB3A60F3A;
+        Fri, 30 Jul 2021 21:19:52 +0000 (UTC)
+Date:   Fri, 30 Jul 2021 17:19:51 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] tracing / histogram: Give calculation hist_fields a size
+Message-ID: <20210730171951.59c7743f@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <162767943540.395.16803004880839169459.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Commit-ID:     d92df42d7685445a2b6c815d9230d9699d9d400b
-Gitweb:        https://git.kernel.org/tip/d92df42d7685445a2b6c815d9230d9699d9=
-d400b
-Author:        C=C3=A9dric Le Goater <clg@kaod.org>
-AuthorDate:    Thu, 01 Jul 2021 15:27:50 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 30 Jul 2021 23:07:31 +02:00
+When working on my user space applications, I found a bug in the synthetic
+event code where the automated synthetic event field was not matching the
+event field calculation it was attached to. Looking deeper into it, it was
+because the calculation hist_field was not given a size.
 
-genirq: Improve "hwirq" output in /proc and /sys/
+The synthetic event fields are matched to their hist_fields either by
+having the field have an identical string type, or if that does not match,
+then the size and signed values are used to match the fields.
 
-The HW IRQ numbers generated by the PCI MSI layer can be quite large
-on a pSeries machine when running under the IBM Hypervisor and they
-appear as negative. Use '%lu' instead to show them correctly.
+The problem arose when I tried to match a calculation where the fields
+were "unsigned int". My tool created a synthetic event of type "u32". But
+it failed to match. The string was:
 
-Signed-off-by: C=C3=A9dric Le Goater <clg@kaod.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+  diff=field1-field2:onmatch(event).trace(synth,$diff)
 
+Adding debugging into the kernel, I found that the size of "diff" was 0.
+And since it was given "unsigned int" as a type, the histogram fallback
+code used size and signed. The signed matched, but the size of u32 (4) did
+not match zero, and the event failed to be created.
+
+This can be worse if the field you want to match is not one of the
+acceptable fields for a synthetic event. As event fields can have any type
+that is supported in Linux, this can cause an issue. For example, if a
+type is an enum. Then there's no way to use that with any calculations.
+
+Have the calculation field simply take on the size of what it is
+calculating.
+
+Cc: stable@vger.kernel.org
+Fixes: 100719dcef447 ("tracing: Add simple expression support to hist triggers")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/irq/irqdesc.c | 2 +-
- kernel/irq/proc.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/trace/trace_events_hist.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index fadb937..4e3c29b 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -188,7 +188,7 @@ static ssize_t hwirq_show(struct kobject *kobj,
-=20
- 	raw_spin_lock_irq(&desc->lock);
- 	if (desc->irq_data.domain)
--		ret =3D sprintf(buf, "%d\n", (int)desc->irq_data.hwirq);
-+		ret =3D sprintf(buf, "%lu\n", desc->irq_data.hwirq);
- 	raw_spin_unlock_irq(&desc->lock);
-=20
- 	return ret;
-diff --git a/kernel/irq/proc.c b/kernel/irq/proc.c
-index 7c5cd42..ee595ec 100644
---- a/kernel/irq/proc.c
-+++ b/kernel/irq/proc.c
-@@ -513,7 +513,7 @@ int show_interrupts(struct seq_file *p, void *v)
- 		seq_printf(p, " %8s", "None");
- 	}
- 	if (desc->irq_data.domain)
--		seq_printf(p, " %*d", prec, (int) desc->irq_data.hwirq);
-+		seq_printf(p, " %*lu", prec, desc->irq_data.hwirq);
- 	else
- 		seq_printf(p, " %*s", prec, "");
- #ifdef CONFIG_GENERIC_IRQ_SHOW_LEVEL
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 34325f41ebc0..362db9b81b8d 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -2287,6 +2287,10 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+ 
+ 	expr->operands[0] = operand1;
+ 	expr->operands[1] = operand2;
++
++	/* The operand sizes should be the same, so just pick one */
++	expr->size = operand1->size;
++
+ 	expr->operator = field_op;
+ 	expr->name = expr_str(expr, 0);
+ 	expr->type = kstrdup(operand1->type, GFP_KERNEL);
+-- 
+2.31.1
+
