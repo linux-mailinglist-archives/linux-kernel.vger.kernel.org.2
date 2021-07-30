@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23173DBD67
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CA23DBD6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhG3Q5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhG3Q5A (ORCPT
+        id S230049AbhG3Q6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:58:55 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:50313 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhG3Q6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:57:00 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC855C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:56:52 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso21713682pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:56:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NHmczmIzJufSB3Li/LucyxkDOJfl+luasFO2GMfh3i8=;
-        b=EwcggOYo/KbZsqbv7CnLQji1AaGLnOh5sUY2NEpMi13aXZro2JK54VQT6EA0LGqEhp
-         1dUrc+sHK5QUBLJMqWCOkVhRORDMasbGc+TOD24B7tNkfpzuGSMo8PWaKmEy1U7xtHUx
-         q2Tra7+g6UGs9nC/2zTwsRW3ZjjJMQUqLUuu86eJdfpsqEdwAhNF1wbUviE7h7v3e4No
-         ZhEeZbFW48Wecy/exed5zVehY2v7yXNhQFiz7UAWuLehu8RXOsgutb5gJvvx4xh51f0m
-         ch4nma24ljAdFeNIidkVIV4YCjh9zTv7Sz9NEIs3gib/XxkJ9DakVPEgZNpUgkRMS3f3
-         pmpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NHmczmIzJufSB3Li/LucyxkDOJfl+luasFO2GMfh3i8=;
-        b=R1IEbU2xepsuM6JzdIS4K0p9zAGAIqsJnnq+bi25XVJ8NcssPqg6qLEdk8Vkya1/CP
-         XDvwSCAVqJxNYyFkxtU4xrVW2QiptXkgPzeN+GUcteCBnIofKGTcYOszOO3a9felKTdY
-         IK2Vx6fWarCdRC2w6Hof6+dq5egb66A1AfGD8DpnfJrx50NelCc8hiyBnVtWWLEEXIQz
-         Xb3YnQqCn2xFcepndo8ArRePqly3N2+voSIF+ifBQXCtS6CLepbcJ2GHAeSQg5onisT5
-         nRS4NASlNWdDZhdW7RZWko533w0c0Ym7ZE7ajMjsA+Fmd5nJhe8BY+5xIPhgxVYbz5o8
-         ryMA==
-X-Gm-Message-State: AOAM530QpHrLDL+GrAWCIPMsM5zH2ATXXqNEivlAi5lBhr9SABUoYPfM
-        fdcN30jWEjKdbTGYKig6Ub/eog==
-X-Google-Smtp-Source: ABdhPJzWI6FoTcaZNj62M9u9nn73qB7KjElQlQVRB3Sn9a2CCf11QZlLRjOgsi/YapsBA2ELYgUCvw==
-X-Received: by 2002:a63:4e11:: with SMTP id c17mr3123982pgb.54.1627664212050;
-        Fri, 30 Jul 2021 09:56:52 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f3sm2904882pfe.123.2021.07.30.09.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 09:56:51 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 16:56:47 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Oliver Upton <oupton@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Peter Shier <pshier@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Guangyu Shi <guangyus@google.com>
-Subject: Re: [PATCH v2 3/3] KVM: arm64: Use generic KVM xfer to guest work
- function
-Message-ID: <YQQvT7vAnRrcAcx/@google.com>
-References: <20210729220916.1672875-1-oupton@google.com>
- <20210729220916.1672875-4-oupton@google.com>
- <878s1o2l6j.wl-maz@kernel.org>
- <CAOQ_QsjFzdjYgYSxNLH=8O84FJB+O8KtH0VnzdQ9HnLZwxwpNQ@mail.gmail.com>
+        Fri, 30 Jul 2021 12:58:54 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M6pck-1mFZ3e0yLO-008Nfc; Fri, 30 Jul 2021 18:58:48 +0200
+Received: by mail-wr1-f42.google.com with SMTP id b7so12136097wri.8;
+        Fri, 30 Jul 2021 09:58:48 -0700 (PDT)
+X-Gm-Message-State: AOAM531eDRfgJ9BBXaIbDQLO2Evo2TLnrpEfmoPMr2lKTg0J977jgO78
+        +z0h01Gt5LpjsmREt/VrloDnTIUZngehcqmF9/o=
+X-Google-Smtp-Source: ABdhPJy7kIRftgcOsUIvubT/kY0wdhrkgHsA1t4CJ1qrkDveMapXnbRVLdeEXDe+NNubpO7E0EuS3D437a9Fe6JXjf4=
+X-Received: by 2002:adf:f7c5:: with SMTP id a5mr4082182wrq.99.1627664327852;
+ Fri, 30 Jul 2021 09:58:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ_QsjFzdjYgYSxNLH=8O84FJB+O8KtH0VnzdQ9HnLZwxwpNQ@mail.gmail.com>
+References: <YQQr+twAYHk2jXs6@boqun-archlinux>
+In-Reply-To: <YQQr+twAYHk2jXs6@boqun-archlinux>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 30 Jul 2021 18:58:30 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0w09Ga_OXAqhA0JcgR-LBc32a296dZhpTyPDwVSgaNkw@mail.gmail.com>
+Message-ID: <CAK8P3a0w09Ga_OXAqhA0JcgR-LBc32a296dZhpTyPDwVSgaNkw@mail.gmail.com>
+Subject: Re: [Question] Alignment requirement for readX() and writeX()
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Gary Guo <gary@garyguo.net>, Hector Martin <marcan@marcan.st>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:6ZwEwgrZqBzI62Thl/IRhZ6eSXn1rpmVuqEgDWhwBimD7/Ipl8P
+ m6saedJonejXDUwssT7FIXdyNKor4WftKz1mBoS3dJnldexXo9KIi8VjTPDIiRuw//rHkVj
+ QiKaTAdOCDpZuBhSMVXTrQe4/F0o7BrHIZL3BUYByAbc5RkhgEw0UI+RNQJbUVzTBKExZZ0
+ zL588YzlU7ms8D5C19fgQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9x3rCfk/btE=:StU2yG4DZub69SFxY30ReF
+ kB4KACEetFB5An8/E/agqNO4L+IpyqgsO1JObv9w9xFa/KTFk6ujcFA6yTNiXGaoZZK9FHmFr
+ gTa1vkVj5hi4Vk8O1uBscC/ijbiL4i450a34cTbPTN1AAvIcOGLp1AWsX/YT0cFmx2wKyn4Gu
+ J8Ab24tRJSd1xFRZYPi7SdeVlbJE2PN9L4LRmZ4Lrp2YYS6wcbVcGYRerGsMROQfbJyueMXE0
+ /hcZI9O307+79UgUM7Q2LJQJY3DlB9OCnscy7P+NLXYaZ4bXz6NTl8BtpUxUozMs0MNw4pnhH
+ oCGYdl1Z4PmNMY9kwaDPjzkrQR+9V0MteorIMFCni9l/EygFjgLAO829lfkzHh/kZMbz+3UP7
+ dFHETWzGBnTQRwjBslIL4aRcwxonw6poQ25FGZpvqxyz44SOokFQ0IzBG2vdewPLQQ6Yx5+Mm
+ iDzVPsJAumpPOlajixKLiJ4BmpDW2+fxQ+CZmmPmI4sotDXGAjuJcmGwQ9J0YS6X70fa0na3Y
+ 0IPfpOlLgKY8/PtWOjXkPVkOj0JZUtIUMN66hiMtPwAwTQ3br/Za0rGikdace9ZACt5EcrMhK
+ ZR5hg35dDGuBU9qMZi0SoDmj2US6lkEks1j20XKlhVtVeTfCwwaWRPguosdp3e2m4+s9DHN/y
+ Dcurbh5dvC02gPVdJRj+mHaob20bApao/INI3AlXr5THTvHJ/Gy4lIgQWirA9/Qi1auFHyT87
+ U9l4Kjb9SpwRCcUCZQNKgLvIdGgDaMSzFv9ttvAF++Sdjyj32On/dGw3JI05BWqLTdtJbUTJU
+ 17u4LDcepWEjfRtewTSxEchF1xWvo1uOtUz1WOk7kxOeAbzOC7zYEdUOLdLZDy1OcYL935Ppg
+ 4QbKI/oaZ1CW3jU6z6IMDtBTca942K+KdWv6I9aaIJVEsTQlEIbK3VpxuND86/C6MCZQuJBei
+ hZLqwy67VdaxnpwIXLVWIG9wPofaDIzwJyw5QhOav5ma9f+XdThZE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021, Oliver Upton wrote:
-> 
-> On Fri, Jul 30, 2021 at 2:41 AM Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > On Thu, 29 Jul 2021 23:09:16 +0100, Oliver Upton <oupton@google.com> wrote:
-> > > @@ -714,6 +715,13 @@ static bool vcpu_mode_is_bad_32bit(struct kvm_vcpu *vcpu)
-> > >               static_branch_unlikely(&arm64_mismatched_32bit_el0);
-> > >  }
-> > >
-> > > +static bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
-> > > +{
-> > > +     return kvm_request_pending(vcpu) ||
-> > > +                     need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
-> > > +                     xfer_to_guest_mode_work_pending();
-> >
-> > Here's what xfer_to_guest_mode_work_pending() says:
-> >
-> > <quote>
-> >  * Has to be invoked with interrupts disabled before the transition to
-> >  * guest mode.
-> > </quote>
-> >
-> > At the point where you call this, we already are in guest mode, at
-> > least in the KVM sense.
-> 
-> I believe the comment is suggestive of guest mode in the hardware
-> sense, not KVM's vcpu->mode designation. I got this from
-> arch/x86/kvm/x86.c:vcpu_enter_guest() to infer the author's
-> intentions.
+On Fri, Jul 30, 2021 at 6:43 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+>
+> Hi,
+>
+> The background is that I'm reviewing Wedson's PR on IoMem for
+> Rust-for-Linux project:
+>
+>         https://github.com/Rust-for-Linux/linux/pull/462
+>
+> readX() and writeX() are used to provide Rust code to read/write IO
+> memory. And I want to find whether we need to check the alignment of the
+> pointer. I wonder whether the addresses passed to readX() and writeX()
+> need to be aligned to the size of the accesses (e.g. the parameter of
+> readl() has to be a 4-byte aligned pointer).
+>
+> The only related information I get so far is the following quote in
+> Documentation/driver-io/device-io.rst:
+>
+>         On many platforms, I/O accesses must be aligned with respect to
+>         the access size; failure to do so will result in an exception or
+>         unpredictable results.
+>
+> Does it mean all readX() and writeX() need to use aligned addresses?
+> Or the alignment requirement is arch-dependent, i.e. if the architecture
+> supports and has enabled misalignment load and store, no alignment
+> requirement on readX() and writeX(), otherwise still need to use aligned
+> addresses.
+>
+> I know different archs have their own alignment requirement on memory
+> accesses, just want to make sure the requirement of the readX() and
+> writeX() APIs.
 
-Yeah, the comment is referring to hardware guest mode.  The intent is to verify
-there is no work to be done before making the expensive world switch.  There's
-no meaningful interaction with vcpu->mode, on x86 it's simply more convenient
-from a code perspective to throw it into kvm_vcpu_exit_request().
+I am not aware of any driver that requires unaligned access on __iomem
+pointers, and since it definitely doesn't work on most architectures, I think
+having an unconditional alignment check makes sense.
+
+What would the alignment check look like? Is there a way to annotate
+a pointer that is 'void __iomem *' in C as having a minimum alignment
+when it gets passed into a function that uses readl()/writel() on it?
+
+       Arnd
