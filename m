@@ -2,130 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE2E3DB324
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CB13DB330
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237286AbhG3GBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:01:25 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:59332 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229999AbhG3GBY (ORCPT
+        id S237226AbhG3GGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237056AbhG3GGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:01:24 -0400
-X-UUID: 133bdf798d1d4bdea61193d3e62c6a14-20210730
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qN+SSS+RDr3jspXwlX0b2sqOdjALlK8YN/RxXhX+HtU=;
-        b=F5tJrVikPsZsZt+aDmcnRYAKw2SUgurm3iZQ/Ieh0koIjw7ItGOeRbvggTjlu3ldloprb/G0RDMBzZYbCyQaE9B9fHhprZXGT5f/TETvr5aiCxa2dXJyHaQOR6lEiE1aclzzAn6d38siifOGDhX/9wJb4gSnpOFigtdV6cT7bb0=;
-X-UUID: 133bdf798d1d4bdea61193d3e62c6a14-20210730
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <sam.shih@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2073826091; Fri, 30 Jul 2021 14:01:16 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Jul
- 2021 14:01:14 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 30 Jul 2021 14:01:14 +0800
-Message-ID: <083a0e8fdd07c0f940285dce2dc26cb0f5e798a6.camel@mediatek.com>
-Subject: Re: [PATCH 01/12] dt-bindings: clock: mediatek: document clk
- bindings for mediatek mt7986 SoC
-From:   Sam Shih <sam.shih@mediatek.com>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-CC:     Rob Herring <robh+dt@kernel.org>, Sean Wang <sean.wang@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Fri, 30 Jul 2021 02:06:32 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0A5C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:06:27 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id k4-20020a17090a5144b02901731c776526so19225696pjm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:06:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IesK2FI21HpbnxZx4yJeBJ/OA9fhmSX4VPo4yVAWFag=;
+        b=lIobNunjbYmru1ujEnR+ElRxW3RY7/BL+bzrtIaGaicjd6cYbzyNY1lVt/hEDV779F
+         ZbrOHXHwsPMJf6lzaIv/KY1TAEbtjPhi+LJR8ecSGlZrEWDd72yogtD/8w5N5E0J8E/9
+         4yNGD3XauminhdNf7u1HJO8GfDs+8YlWTPmfI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IesK2FI21HpbnxZx4yJeBJ/OA9fhmSX4VPo4yVAWFag=;
+        b=osU9aGIRl3aiqOBuAnmiRyDZ99mhvGEld0N3cKZnHIDEXYGYYPLoo4rYYhaYpPzimJ
+         g24kd6QMVlGZuU7f4ujWPlNKPc19hng8GASj8lP+GWtYSqd9E6QKKDmgqV/yFv4o/WV8
+         9naXR7JTe02hxgS9aGtfgxjUr1ZUNyAursaWq9wsDTM1CFLUaRV9kf3nLkzKrDMaMybC
+         nY5y/xIFk+cHPFGxXkKPA/zE5wzOqN2EKbtj8NER1UfBdR/LynZMpL7v25mE8eY6kpa/
+         lbU/LNIOnPCWWAtxDXd2ktY0JAgVFnzJkw1fOegsAds0tkF4KARZF7BHh+SwKZF5EOSZ
+         CB0g==
+X-Gm-Message-State: AOAM532gemCpTZITo0pKGnXHeud+A4MnUMMYrb0kHpGHSYqs8OfTjHBK
+        QjgreoM9NptQNKDZ6bXNOlqJHQ==
+X-Google-Smtp-Source: ABdhPJzeUonVBgQ9NzzIA7kKbTvq5SBrLVxVHXebCyU1ipbT+iV0p67058qXEDQM1C04AViV+Ahtag==
+X-Received: by 2002:a17:902:aa89:b029:12c:17dc:43b0 with SMTP id d9-20020a170902aa89b029012c17dc43b0mr1167657plr.81.1627625186985;
+        Thu, 29 Jul 2021 23:06:26 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id nl2sm714675pjb.10.2021.07.29.23.06.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 23:06:26 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 23:06:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     dsterba@suse.cz, Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        "Seiya Wang" <seiya.wang@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-crypto@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Ryder Lee <Ryder.Lee@mediatek.com>
-Date:   Fri, 30 Jul 2021 14:01:14 +0800
-In-Reply-To: <CAGXv+5GeEBAkXKfA=S7XGOLYtCRihP5ov6kSiw+eevPAi74GAQ@mail.gmail.com>
-References: <20210726071439.14248-1-sam.shih@mediatek.com>
-         <20210726071439.14248-2-sam.shih@mediatek.com>
-         <CAGXv+5GeEBAkXKfA=S7XGOLYtCRihP5ov6kSiw+eevPAi74GAQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 02/64] mac80211: Use flex-array for radiotap header bitmap
+Message-ID: <202107292305.DB86BAC@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-3-keescook@chromium.org>
+ <20210728073556.GP1931@kadam>
+ <20210728092323.GW5047@twin.jikos.cz>
+ <202107281454.F96505E15@keescook>
+ <20210729104547.GT5047@suse.cz>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729104547.GT5047@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCk9uIE1vbiwgMjAyMS0wNy0yNiBhdCAxNzoyMCArMDgwMCwgQ2hlbi1ZdSBUc2FpIHdy
-b3RlOg0KPiBGdXJ0aGVybW9yZSwgYmFzZWQgb24gdGhlIGRyaXZlciBwYXRjaCBhbmQgdGhlIGZh
-Y3QgdGhhdCB0aGV5IHNoYXJlDQo+IHRoZQ0KPiBzYW1lIGNvbXBhdGlibGUgc3RyaW5nLCBpdCBz
-ZWVtcyB5b3Ugc2hvdWxkbid0IG5lZWQgdG8gaGF2ZSB0d28NCj4gY29tcGF0aWJsZQ0KPiBzdHJp
-bmdzIGZvciB0d28gaWRlbnRpY2FsIGhhcmR3YXJlIGJsb2Nrcy4gVGhlIG5lZWQgZm9yIHNlcGFy
-YXRlDQo+IGVudHJpZXMNCj4gdG8gaGF2ZSBkaWZmZXJlbnQgY2xvY2sgbmFtZXMgaXMgYW4gaW1w
-bGVtZW50YXRpb24gZGV0YWlsLiBQbGVhc2UNCj4gY29uc2lkZXINCj4gdXNpbmcgYW5kIHN1cHBv
-cnRpbmcgY2xvY2stb3V0cHV0LW5hbWVzLg0KPiANCj4gQWxzbywgcGxlYXNlIGNoZWNrIG91dCB0
-aGUgTVQ4MTk1IGNsb2NrIGRyaXZlciBzZXJpZXMgWzFdLiBJJ20NCj4gZ3Vlc3NpbmcNCj4gYSBs
-b3Qgb2YgdGhlIGNvbW1lbnRzIGFwcGx5IHRvIHRoaXMgb25lIGFzIHdlbGwuDQo+IA0KPiBSZWdh
-cmRzDQo+IENoZW5ZdQ0KPiANCj4gWzFdIA0KPiBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19f
-aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtbWVkaWF0ZWsvMjAyMTA2MTYyMjQ3NDMuNTEw
-OS0xLWNodW4tamllLmNoZW5AbWVkaWF0ZWsuY29tL1QvKnRfXztJdyEhQ1RSTktBOXdNZzBBUmJ3
-ITI5cGI0VEppR0hMdkxiWUpnREIyRGhmOE1wdzVWVTh6Vi1XM05yTWFuX1JQUXJ0V1QyRWRSVHl5
-aldwdTBuWkUkDQo+ICANCj4gDQoNCkkgaGF2ZSBvcmdhbml6ZWQgeW91ciBjb21tZW50cyBpbiAi
-TWVkaWF0ZWsgTVQ4MTk1IGNsb2NrIHN1cHBvcnQiDQpzZXJpZXMgaW50byB0aGUgZm9sbG93aW5n
-IGxpc3QsIHJlcGx5IHRvIHlvdXIgaGVyZToNCg0KPiBkdC1iaW5kaW5nOiBNb3ZlIHRoZSBub3Qt
-dG8tYmUtZXhwb3NlZCBjbG9jayB0byBkcml2ZXIgZGlyZWN0b3J5IG9yDQo+IHNpbXBseSBsZWZ0
-IG91dA0KT2theSwgdGhhbmtzIGZvciB5b3VyIGNvbW1lbnQsIEkgd2lsbCB1cGRhdGUgdGhpcyBp
-biB0aGUgbmV4dCBwYXRjaCBzZXQNCg0KPiBkZXNjcmliZSBzb21lIG9mIHRoZSBjbG9jayByZWxh
-dGlvbnMgYmV0d2VlbiB0aGUgdmFyaW91cyBjbG9jaw0KPiBjb250cm9sbGVycw0KSSBoYXZlIGNo
-ZWNrZWQgdGhlIGZpbGVzIGluDQoiRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Fy
-bS9tZWRpYXRlayIsIEl0IHNlZW1zIHRoYXQgYWxsDQpNZWRpYVRlayBTb0MgY2xvY2tzIGFyZSBz
-aW1wbHkgZGVzY3JpYmVkIGJ5IGVhY2ggY29udHJvbGxlciwgbGlrZQ0KIm1lZGlhdGVrLGluZnJh
-Y2ZnLnR4dCIgYW5kICJtZWRpYXRlayx0b3Bja2dlbi50eHQiLCBhbmQgdGhvc2UgZG9jdW1lbnQN
-Cm9ubHkgaW5jbHVkZSBjb21wYXRpYmxlIHN0cmluZ3MgaW5mb3JtYXRpb24gYW5kIGV4YW1wbGVz
-Lg0KQ2FuIHdlIGluc2VydCB0aGUgY2xvY2sgcmVsYXRpb25zaGlwIG9mIE1UNzk4NiBkaXJlY3Rs
-bHkgaW4gY29tbW9uDQpkb2N1bWVudHM/DQpPciB3ZSBzaG91bGQgYWRkIGEgbmV3ICJtZWRpYXRl
-ayxtdDc5ODYtY2xvY2sueWFtbCIgYW5kIG1vdmUgY29tcGF0aWJsZQ0Kc3RyaW5ncyBpbmZvcm1h
-dGlvbiBhbmQgZXhhbXBsZSB0byB0aGlzIGZpbGUsIGFuZCBpbnNlcnQgY2xvY2sNCnJlbGF0aW9u
-c2hpcCBkZXNjcmlwdGlvbnMgdG8gdGhpcyBmaWxlPyBXb3VsZG7igJl0IGl0IGJlIHN0cmFuZ2Ug
-dG8gc2tpcA0KZXhpc3RpbmcgZmlsZXMgYW5kIGNyZWF0ZSBhIG5ldyBvbmU/DQoNCj4gZXh0ZXJu
-YWwgb3NjaWxsYXRvcidzIGNhc2UsIHRoZSBvc2NpbGxhdG9yIGlzIGRlc2NyaWJlZCBpbiB0aGUg
-ZGV2aWNlDQo+IHRyZWUNClllcywgd2UgaGF2ZSAiY2xreHRhbCIgaW4gdGhlIERULCB3aGljaCBz
-dGFuZHMgZm9yIGV4dGVybmFsIG9zY2lsbGF0b3IsDQpBbGwgY2xvY2tzIGluIGFwbWl4ZWRzeXMg
-dXNlICJjbGt4dGFsIiBhcyB0aGUgcGFyZW50IGNsb2NrDQoNCj4gRHVhbCBsaWNlbnNlIHBsZWFz
-ZSAoYW5kIHRoZSBkdHMgZmlsZXMpLg0KT2theSwgdGhhbmtzIGZvciB5b3VyIGNvbW1lbnQsIEkg
-d2lsbCB1cGRhdGUgdGhpcyBpbiB0aGUgbmV4dCBwYXRjaCBzZXQNCg0KPiBXaHkgYXJlIHRoaXMg
-YW5kIG90aGVyIDE6MSBmYWN0b3IgY2xrcyBuZWVkZWQ/IFRoZXkgbG9vayBsaWtlDQo+IHBsYWNl
-aG9sZGVycy4gUGxlYXNlIHJlbW92ZSB0aGVtLg0KT2theSwgdGhhbmtzIGZvciB5b3VyIGNvbW1l
-bnQsIEkgd2lsbCB1cGRhdGUgdGhpcyBpbiB0aGUgbmV4dCBwYXRjaCBzZXQNCg0KPiBNZXJnZSBk
-dXBsaWNhdGUgcGFyZW50IGluc3RhbmNlcw0KV2UgaGF2ZSBjb25zaWRlcmVkIHRoaXMgaW4gdGhl
-IE1UNzk4NiBiYXNpYyBjbG9jayBkcml2ZXIsIGJ1dCBJIHdpbGwNCmNoZWNrIGFnYWluLiBJZiBj
-b3JyZWN0aW9ucyBhcmUgbmVlZGVkLCBJIHdpbGwgbWFrZSBjaGFuZ2VzIGluIHRoZSBuZXh0DQpw
-YXRjaCBzZXQuDQoNCj4gTGVha2luZyBjbGtfZGF0YSBpZiBzb21lIGZ1bmN0aW9uIHJldHVybiBm
-YWlsDQpPa2F5LCB0aGFua3MgZm9yIHlvdXIgY29tbWVudCwgSSB3aWxsIHVwZGF0ZSB0aGlzIGlu
-IHRoZSBuZXh0IHBhdGNoIHNldA0KDQo+IFRoaXMgZmlsZSBjb250YWlucyBmb3VyIGRyaXZlcnMu
-IFRoZXkgZG8gbm90IGhhdmUgZGVwZW5kIG9uIGVhY2gNCj4gb3RoZXIsIGFuZCBkbyBub3QgbmVl
-ZCB0byBiZSBpbiB0aGUgc2FtZSBmaWxlLiBQbGVhc2Ugc3BsaXQgdGhlbSBpbnRvDQo+IGRpZmZl
-cmVuIGZpbGVzIGFuZCBwcmVmZXJhYmx5IGRpZmZlcmVudCBwYXRjaGVzDQpPa2F5LCB0aGFua3Mg
-Zm9yIHlvdXIgY29tbWVudCwgSSB3aWxsIHNlcGFyYXRlIHRob3NlIGNsb2NrIGRyaXZlcnMgaW4N
-CnRoZSBuZXh0IHBhdGNoIHNldA0KDQo+IElzIHRoZXJlIGFueSBwYXJ0aWN1bGFyIHJlYXNvbiBm
-b3IgYXJjaF9pbml0Y2FsbA0KV2UgaGF2ZSBjb25zaWRlcmVkIHRoaXMgaW4gTVQ3OTg2IGJhc2lj
-IGNsb2NrIGRyaXZlciwgYW5kIHVzZQ0KQ0xLX09GX0RFQ0xBUkUgaW5zdGVhZCBvZiBhcmNoX2lu
-aXRjYWxsLg0KDQpBbm90aGVyIHF1ZXN0aW9uOg0KU2hvdWxkIHRoZSBjbG9jayBwYXRjaGVzIGlu
-ICJBZGQgYmFzaWMgU29DIHN1cHBvcnQgZm9yIE1lZGlhVGVrIG10Nzk4NiINCm5lZWQgdG8gYmUg
-c2VwYXJhdGVkIGludG8gYW5vdGhlciBwYXRjaCBzZXJpZXMsIHN1Y2ggYXMgTVQ4MTk1DQoiTWVk
-aWF0ZWsgTVQ4MTk1IGNsb2NrIHN1cHBvcnQiID8gDQoNCg0KUmVnYXJkcw0KU2FtDQo=
+On Thu, Jul 29, 2021 at 12:45:47PM +0200, David Sterba wrote:
+> On Wed, Jul 28, 2021 at 02:54:52PM -0700, Kees Cook wrote:
+> > On Wed, Jul 28, 2021 at 11:23:23AM +0200, David Sterba wrote:
+> > > On Wed, Jul 28, 2021 at 10:35:56AM +0300, Dan Carpenter wrote:
+> > > > @@ -372,7 +372,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+> > > >  			ieee80211_calculate_rx_timestamp(local, status,
+> > > >  							 mpdulen, 0),
+> > > >  			pos);
+> > > > -		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_TSFT);
+> > > > +		rthdr->data.it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_TSFT);
+> > > 
+> > > A drive-by comment, not related to the patchset, but rather the
+> > > ieee80211 driver itself.
+> > > 
+> > > Shift expressions with (1 << NUMBER) can be subtly broken once the
+> > > NUMBER is 31 and the value gets silently cast to a 64bit type. It will
+> > > become 0xfffffffff80000000.
+> > > 
+> > > I've checked the IEEE80211_RADIOTAP_* defintions if this is even remotely
+> > > possible and yes, IEEE80211_RADIOTAP_EXT == 31. Fortunatelly it seems to
+> > > be used with used with a 32bit types (eg. _bitmap_shifter) so there are
+> > > no surprises.
+> > > 
+> > > The recommended practice is to always use unsigned types for shifts, so
+> > > "1U << ..." at least.
+> > 
+> > Ah, good catch! I think just using BIT() is the right replacement here,
+> > yes? I suppose that should be a separate patch.
+> 
+> I found definition of BIT in vdso/bits.h, that does not sound like a
+> standard header, besides that it shifts 1UL, that may not be necessary
+> everywhere. IIRC there were objections against using the macro at all.
 
+3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO") moved it
+there from linux/bits.h, and linux/bits.h now includes vdso/bits.h, so
+it is still ever-present. :)
+
+-- 
+Kees Cook
