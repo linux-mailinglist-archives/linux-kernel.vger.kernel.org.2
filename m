@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FE53DC0DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8901E3DC0E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbhG3WSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:18:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51246 "EHLO mail.kernel.org"
+        id S233946AbhG3WSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:18:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229604AbhG3WSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232589AbhG3WSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Jul 2021 18:18:39 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9080560F13;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DC6A61040;
         Fri, 30 Jul 2021 22:18:34 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1m9apt-002V1S-Ic; Fri, 30 Jul 2021 18:18:33 -0400
+        id 1m9apt-002V1V-JQ; Fri, 30 Jul 2021 18:18:33 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -28,9 +28,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 08/17] libtracefs: Make parser unique to libtracefs
-Date:   Fri, 30 Jul 2021 18:18:15 -0400
-Message-Id: <20210730221824.595597-9-rostedt@goodmis.org>
+Subject: [PATCH 09/17] libtracefs: Add line number and index to expr structure
+Date:   Fri, 30 Jul 2021 18:18:16 -0400
+Message-Id: <20210730221824.595597-10-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210730221824.595597-1-rostedt@goodmis.org>
 References: <20210730221824.595597-1-rostedt@goodmis.org>
@@ -42,51 +42,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add %define api.prefix and defines to have the parser global variables use
-tracefs_* instead of yy*, as without this, if a tool that links to this
-library, and tries to use the synth sql parsing, it may end up using its
-own yyparse() and friends functions.
+In order to have better error messages, record the line number and index
+when an expr structure is created. Then this can be used to show where in
+the SQL sequence a problem was found if the building of the synth event
+has issues.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- src/sqlhist.y         | 10 ++++++++++
- src/tracefs-sqlhist.c |  2 +-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ src/tracefs-sqlhist.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/src/sqlhist.y b/src/sqlhist.y
-index ce9cb58fb3a9..9d03a457ae84 100644
---- a/src/sqlhist.y
-+++ b/src/sqlhist.y
-@@ -30,6 +30,16 @@ extern void yyerror(struct sqlhist_bison *, char *fmt, ...);
- %}
- 
- %define api.pure
-+
-+/* Change the globals to use tracefs_ prefix */
-+%define api.prefix{tracefs_}
-+%code provides
-+{
-+  #define YYSTYPE TRACEFS_STYPE
-+  #define yylex tracefs_lex
-+  #define yyerror tracefs_error
-+}
-+
- %lex-param {void *scanner}
- %parse-param {struct sqlhist_bison *sb}
- 
 diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
-index e8f77d60659f..933b3609733b 100644
+index 933b3609733b..887c2441a39e 100644
 --- a/src/tracefs-sqlhist.c
 +++ b/src/tracefs-sqlhist.c
-@@ -1021,7 +1021,7 @@ struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
- 		return NULL;
- 	}
+@@ -72,6 +72,8 @@ struct expr {
+ 	struct expr		*free_list;
+ 	struct expr		*next;
+ 	enum expr_type		type;
++	int			line;
++	int			idx;
+ 	union {
+ 		struct field	field;
+ 		struct filter	filter;
+@@ -300,6 +302,8 @@ static void *create_expr(struct sqlhist_bison *sb,
+ 	sb->table->exprs = expr;
  
--	ret = yyparse(&sb);
-+	ret = tracefs_parse(&sb);
- 	yylex_destroy(sb.scanner);
+ 	expr->type = type;
++	expr->line = sb->line_no;
++	expr->idx = sb->line_idx;
  
- 	if (ret)
+ 	switch (type) {
+ 	case EXPR_FIELD:	return &expr->field;
 -- 
 2.30.2
 
