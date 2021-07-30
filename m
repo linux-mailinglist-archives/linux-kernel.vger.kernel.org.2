@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFEE3DBA43
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDA03DBA44
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239357AbhG3OUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:20:52 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55540 "EHLO
+        id S239305AbhG3OUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:20:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55564 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239157AbhG3OR2 (ORCPT
+        with ESMTP id S239161AbhG3ORb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:17:28 -0400
-Message-ID: <20210730135206.132096140@linutronix.de>
+        Fri, 30 Jul 2021 10:17:31 -0400
+Message-ID: <20210730135206.188262987@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627654642;
+        s=2020; t=1627654643;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ZZpHziA17kMN+v6ClQrLytiLmanT8bjiO3noWBdUrE0=;
-        b=KrwQyZ44YVyIzaVra7pDGOcYPM6VgZNaEZJjZPaaYjrNWoxOGrhjjTIJr0BcU3p6zXOgGH
-        UIinmhWC9PHj2IrcVRMOUjRmVOL4/wXYQh7jnGRO1986rVfLoAlpQAYe1xpIK4olDDEgG0
-        0l+NJSZfA2cvBxCLbubLmGZIlv5SCKkOQFLlhNHy3DMCm3eXsqt4RxlZK6BXSOGCJRcI3Z
-        L0V2vPuuTR4jbb6XP9Mshq/UK53rsmPx5DGqYoVXYh8pWHYdyxMAvB/keCsn4Q9NXkw8UN
-        VT/8XWB5sSWYYG35c6JA4qXQ8zJlFuZ4nYaYFLs1c2Lbgz9YxJqNmV1WJbSDjA==
+        bh=kPHQSdoRDDQ+gtY5Ph5Qk1JzSjWNCTU5piibPZKDGHI=;
+        b=xGNU71IP7NIZf+EnrHmdo3o8REY3Z60k07Ueu1b9HdLeeW6NE2wAZYsI6/tQTpPStjqV12
+        O28DTP2nTduh372kvruhqCwPY/be1tXRffe4kvxvoSdEzx6gPZ/O+UgKUi2HWhAqDIxaDF
+        scFuws6ler7jY4tan9LO+ShwMrM12xbRIz8OEqNVwyZd9GA+cdZMik1hNSd1Y2YbMfLHFx
+        CJ9g5NrzstIe1mBYxGZTkOu39uCQlo8RreiS8OFxYdcNvX0Oc+tl4fJfYrfGqjd4HK+crW
+        5w7NlQCO1eTKcNxTFcmmd/jgrc/NV9GHo9hPExmE/bWrIya7VZTY0Kvehcxsng==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627654642;
+        s=2020e; t=1627654643;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ZZpHziA17kMN+v6ClQrLytiLmanT8bjiO3noWBdUrE0=;
-        b=fAo8QnM17AE+C8xGNn/dlc7qDa8LikZLh95Fi5gBgH32OpGpoJ8ZAd4GO14+o1b6Jp8i9O
-        ePFA3URIs9Q03/Dg==
-Date:   Fri, 30 Jul 2021 15:50:24 +0200
+        bh=kPHQSdoRDDQ+gtY5Ph5Qk1JzSjWNCTU5piibPZKDGHI=;
+        b=iwWfc4BPcPngQnBNalJBqeKpPA/i9RoSNUnTiOOxJApzQajHOfTj3nM/4dGvHuiDI4LadE
+        AeVwtvwERx1npiBA==
+Date:   Fri, 30 Jul 2021 15:50:25 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -45,7 +45,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 17/63] locking/rtmutex: Add wake_state to rt_mutex_waiter
+Subject: [patch 18/63] locking/rtmutex: Provide rt_wake_q and helpers
 References: <20210730135007.155909613@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,75 +56,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Regular sleeping locks like mutexes, rtmutexes and rw_semaphores are always
-entering and leaving a blocking section with task state == TASK_RUNNING.
+To handle the difference of wakeups for regular sleeping locks (mutex,
+rtmutex, rw_semaphore) and the wakeups for 'sleeping' spin/rwlocks on
+PREEMPT_RT enabled kernels correctly, it is required to provide a
+wake_q construct which allows to keep them seperate.
 
-On a non-RT kernel spinlocks and rwlocks never affect the task state, but
-on RT kernels these locks are converted to rtmutex based 'sleeping' locks.
+Provide a wrapper around wake_q and the required helpers, which will be
+extended with the state handling later.
 
-So in case of contention the task goes to block which requires to carefully
-preserve the task state and restore it after acquiring the lock taking
-regular wakeups for the task into account which happened while the task was
-blocked. This state preserving is achieved by having a seperate task state
-for blocking on a RT spin/rwlock and a saved_state field in task_struct
-along with careful handling of these wakeup scenarios in try_to_wake_up().
-
-To avoid conditionals in the rtmutex code, store the wake state which has
-to be used for waking a lock waiter in rt_mutex_waiter which allows to
-handle the regular and RT spin/rwlocks by handing it to wake_up_state().
+No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V2: Use unsigned int for wake_state (Peter Z.)
+V2: Rename according to PeterZ
 ---
- kernel/locking/rtmutex.c        |    2 +-
- kernel/locking/rtmutex_common.h |    9 +++++++++
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ kernel/locking/rtmutex.c        |   15 +++++++++++++++
+ kernel/locking/rtmutex_common.h |   14 ++++++++++++++
+ 2 files changed, 29 insertions(+)
 ---
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -692,7 +692,7 @@ static int __sched rt_mutex_adjust_prio_
- 		 * to get the lock.
- 		 */
- 		if (prerequeue_top_waiter != rt_mutex_top_waiter(lock))
--			wake_up_process(rt_mutex_top_waiter(lock)->task);
-+			wake_up_state(waiter->task, waiter->wake_state);
- 		raw_spin_unlock_irq(&lock->wait_lock);
- 		return 0;
- 	}
---- a/kernel/locking/rtmutex_common.h
-+++ b/kernel/locking/rtmutex_common.h
-@@ -25,6 +25,7 @@
-  * @pi_tree_entry:	pi node to enqueue into the mutex owner waiters tree
-  * @task:		task reference to the blocked task
-  * @lock:		Pointer to the rt_mutex on which the waiter blocks
-+ * @wake_state:		Wakeup state to use (TASK_NORMAL or TASK_RTLOCK_WAIT)
-  * @prio:		Priority of the waiter
-  * @deadline:		Deadline of the waiter if applicable
-  */
-@@ -33,6 +34,7 @@ struct rt_mutex_waiter {
- 	struct rb_node		pi_tree_entry;
- 	struct task_struct	*task;
- 	struct rt_mutex_base	*lock;
-+	unsigned int		wake_state;
- 	int			prio;
- 	u64			deadline;
- };
-@@ -158,9 +160,16 @@ static inline void rt_mutex_init_waiter(
- 	debug_rt_mutex_init_waiter(waiter);
- 	RB_CLEAR_NODE(&waiter->pi_tree_entry);
- 	RB_CLEAR_NODE(&waiter->tree_entry);
-+	waiter->wake_state = TASK_NORMAL;
- 	waiter->task = NULL;
+@@ -347,6 +347,21 @@ static __always_inline void rt_mutex_adj
+ 	rt_mutex_setprio(p, pi_task);
  }
  
-+static inline void rtlock_init_rtmutex_waiter(struct rt_mutex_waiter *waiter)
++/* RT mutex specific wake_q wrappers */
++static __always_inline void rt_mutex_wake_q_add(struct rt_wake_q_head *wqh,
++						struct rt_mutex_waiter *w)
 +{
-+	rt_mutex_init_waiter(waiter);
-+	waiter->wake_state = TASK_RTLOCK_WAIT;
++	wake_q_add(&wqh->head, w->task);
 +}
 +
- #else /* CONFIG_RT_MUTEXES */
- /* Used in rcu/tree_plugin.h */
- static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
++static __always_inline void rt_mutex_wake_up_q(struct rt_wake_q_head *wqh)
++{
++	wake_up_q(&wqh->head);
++
++	/* Pairs with preempt_disable() in mark_wakeup_next_waiter() */
++	preempt_enable();
++}
++
+ /*
+  * Deadlock detection is conditional:
+  *
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -39,6 +39,20 @@ struct rt_mutex_waiter {
+ 	u64			deadline;
+ };
+ 
++/**
++ * rt_wake_q_head - Wrapper around regular wake_q_head to support
++ *		    "sleeping" spinlocks on RT
++ * @head:	The regular wake_q_head for sleeping lock variants
++ */
++struct rt_wake_q_head {
++	struct wake_q_head	head;
++};
++
++#define DEFINE_RT_WAKE_Q(name)						\
++	struct rt_wake_q_head name = {					\
++		.head		= WAKE_Q_HEAD_INITIALIZER(name.head),	\
++	}
++
+ /*
+  * PI-futex support (proxy locking functions, etc.):
+  */
 
