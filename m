@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C933F3DB2D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0063DB2DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhG3FcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        id S236666AbhG3FeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbhG3FcW (ORCPT
+        with ESMTP id S231705AbhG3FeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:32:22 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B21C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:32:18 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id e21so9741133pla.5
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:32:18 -0700 (PDT)
+        Fri, 30 Jul 2021 01:34:03 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 475B9C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:33:59 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id n21so5153365wmq.5
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 22:33:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=tc/E0qrtXkKG5TqRhI2Z9x1vlmmiIqFXZ6WxPD+IjN0=;
-        b=ajAyDT4MLNPRQ3vOGK024+ZLMZe0q08hEQ/v2442VjDZjJB0GkXFWTNhtuA0WlnQn6
-         0J5PzKV5vZmT1Vo0AEK+1MqBwSwDd+4WFbb6u9Scl+/xCpWRbtj+rPlVQH3y4z6l8NUI
-         DNKn5+R4w1qMoiKKC2VdewVm54jEEq6co9ha5KDuxG2XDjQhqstBRzbAGJFFxEFitTWQ
-         VI5QGbjuiBCNH4wOOST7J6aVibyFeCuGjlE46fcHf1gGEu0PMMPC+/fB3MyL0D/AsoH/
-         oUuzAZBEoRUZUep34XZvsPFZhrymYdppo7+Ei8acXH24ifE0T+PknoENv6T5mZWJe7Ho
-         Yqrw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C1WY5v0DZXHTp8X+jU1XBLMpyZKc7p/7Jj3rqiqH4LA=;
+        b=lSscHTftFvVptU0RS+B9xY4/Kl/vKO0fmd8RJGUtS0QJ7Cr+HIxgoDwzNcHLV2KcRq
+         yaT6keM0oGDXc3g8ZUrvahCgeQ8zhc0bV9uDYtmXoO/w4FeCIKbeGql0cmwWkc9uMWNp
+         7J4wlepD4tHdJAgjt3sIf2nWEEpOnAVnSd3s25CSzaItqfe23aRogMnFmjUcQ0H8SVhj
+         Qao+bSdulih83AGQIt98is8fwF9t6zY8EyA301QW4G1xdTWL5faEh+ATQZax/v91wtpJ
+         fKK/bm2q5IXTx0xCN7WDvo7cKg67B0PK75se07A5oWQyPOfJLPWKax5F6WtOFWWqgXxO
+         KjIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=tc/E0qrtXkKG5TqRhI2Z9x1vlmmiIqFXZ6WxPD+IjN0=;
-        b=dB5cdufL5JVUjzpHWuhRZ4Lmsnz469AykcgDMWTKqNVmIx3hAvJH+s6oT/EvAURNUG
-         NT7UvvviIfZn/kD42W+gQH/loHVED4553VJOzR1aJq/f4skDJ+z4VNfLRg32yAWzN+Nr
-         gAPOe6ZbAQcvoiZdRpsm/EY6GlKrNqh4gNeqIr4WY3Ipo8+BNBQNAeVxRfIkxeFA8VqO
-         uJ4xIWsaXQp//sO4r21ThgdRwK1scXWPiu85Z4NQcNAj+34UceI4x+UQXRFG9SOQJpvX
-         EZoOyxAbdVMRNZ3GgdW/E64qyGUYgGEsRyWgg8MizArx2auYOPGoe8ZvcnjdADCtwidQ
-         iELA==
-X-Gm-Message-State: AOAM531fL2ZfrlTu2hER9E6V+xgTGX65wh4olscux7A7Ex7ceRi8Mx3N
-        UhsBlYfJBvJV4yaWIwcSzmcq4A==
-X-Google-Smtp-Source: ABdhPJyNuONqblrBqBkC6RaWPNkLKL/Yze00pMoniSvyjSfV8VO6bjonJnl0e4xqrrbztDp5x1ZRsA==
-X-Received: by 2002:a17:90a:e7c7:: with SMTP id kb7mr1190320pjb.43.1627623137771;
-        Thu, 29 Jul 2021 22:32:17 -0700 (PDT)
-Received: from [10.76.46.68] ([61.120.150.72])
-        by smtp.gmail.com with ESMTPSA id 81sm364046pfv.185.2021.07.29.22.32.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 22:32:17 -0700 (PDT)
-Subject: Re: Re: [PATCH 3/3] mm: mmap_lock: add ip to mmap_lock tracepoints
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-References: <20210729092853.38242-1-ligang.bdlg@bytedance.com>
- <CAJHvVcjBH+Vry8v5T0FWyFWWDY6_AqSxZcVQxXRm=LR8v=ML-Q@mail.gmail.com>
-From:   Gang Li <ligang.bdlg@bytedance.com>
-Message-ID: <585f936d-9d27-a481-f590-bd07f98f34de@bytedance.com>
-Date:   Fri, 30 Jul 2021 13:32:12 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C1WY5v0DZXHTp8X+jU1XBLMpyZKc7p/7Jj3rqiqH4LA=;
+        b=RNL6kDjc3ATw/Cheo1slGwxJK8aa3T7wfDXT6u50vLST0DNwydl9QipGrJsII1FaDh
+         TOk2z/vTd7scflRE8uQgskQUePxB+oIIvWHG0QhKu8nEfn5+5wnRpMvyuWg2T9deqOgC
+         WRTGvmdC68o88S17GIwi1SpcFeJnDEg2IqcFZZ0/CGvuC8/Jr7IrNtgky8XHBfxT7RlZ
+         /pciPOBKUIG0MDyrQjYezOyVdMbdlj++Obqds2sOTLwhbQGrKYZS3VvHDeHuUrPKKywZ
+         ub0Y61HKm3lN907x3d1uM59Z54q1H+o9tTY6SBW1ypJC3wrgKWavvVj98vpLNRIgyTeD
+         r4ng==
+X-Gm-Message-State: AOAM530hjnFLqgLpjMLgA4sozmNqwl+mnR/lDju77KT0qVvcxFyaXaLK
+        1oAAc/KCeyKfQc+QArcoR5MffC21s61p8JzBAbo39w==
+X-Google-Smtp-Source: ABdhPJy99kphmNZI2cUkbVS6HIZYZEcjuxBuzxR25itmrpo9gyztj1XHxGHYctWdO87pV6jxujWlnPyusuvuvlFn3Fw=
+X-Received: by 2002:a1c:1dcf:: with SMTP id d198mr981162wmd.103.1627623237784;
+ Thu, 29 Jul 2021 22:33:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJHvVcjBH+Vry8v5T0FWyFWWDY6_AqSxZcVQxXRm=LR8v=ML-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210715213138.1363079-1-dlatypov@google.com> <20210715213138.1363079-2-dlatypov@google.com>
+ <20210723064328.GA7986@gondor.apana.org.au> <CAGS_qxqOD+Bcvy7xti7_eg8+H1cJcfp94BtnRhuzijDcaGF_uA@mail.gmail.com>
+ <20210730025544.GA12781@gondor.apana.org.au>
+In-Reply-To: <20210730025544.GA12781@gondor.apana.org.au>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 30 Jul 2021 13:33:46 +0800
+Message-ID: <CABVgOSnde5VmF8TLfF=B4Nbvo7C5GUJ91OY9Rct-ksyPaTtpcw@mail.gmail.com>
+Subject: Re: [RFC v1 1/2] crypto: tcrypt: minimal conversion to run under KUnit
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Daniel Latypov <dlatypov@google.com>, davem@davemloft.net,
+        linux-crypto@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks! I have tried your suggestion. They are great, especially 
-synthetic-events.
+On Fri, Jul 30, 2021 at 10:55 AM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Fri, Jul 23, 2021 at 12:31:28PM -0700, Daniel Latypov wrote:
+> >
+> > Thanks, that makes a lot of sense.
+> > In that case, how useful would `kunit.py run` be? I.e. Do people
+> > mostly want to see numbers on bare metal?
+>
+> I think it's a mix of both.  As in performance on bare metal and
+> under virtualisation may be of interest.  I don't think you're going
+> to be going through kunit for the speed tests though, because you
+> need to supply module parameters for tcrypt to do that.
 
-If don't print ip per event, we can only guess which one cause the 
-contention by "hitcount".
+FYI, there is a patch for kunit_tool which will allow kernel
+parameters to be passed through:
+https://patchwork.kernel.org/project/linux-kselftest/patch/20210715160819.1107685-1-dlatypov@google.com/
 
- > 
-(https://www.kernel.org/doc/html/latest/trace/histogram.html#synthetic-events)
+That being said, no-one's ever used any of the KUnit tooling for
+performance testing before, as far as I know, so whether or not it
+turns out to be useful or not remains to be seen. With this patch,
+it'd at least be an option if you wanted to try it.
 
-But it seems that they only support histogram, can I print the
-synthetic-events args per event in /sys/kernel/debug/tracing/trace
-like other events? I haven't found that in kernel doc.
-
-On 7/30/21 1:33 AM, Axel Rasmussen wrote:
-> Not a strong objection, but I think this can be achieved already using either:
-> 
-> - The "stacktrace" feature which histogram triggers support
-> (https://www.kernel.org/doc/html/latest/trace/histogram.html)
-> - bpftrace's kstack/ustack feature
-> (https://github.com/iovisor/bpftrace/blob/master/docs/tutorial_one_liners.md#lesson-9-profile-on-cpu-kernel-stacks)
-> 
-> I haven't tried it out myself, but I suspect you could construct a
-> synthetic event
-> (https://www.kernel.org/doc/html/latest/trace/histogram.html#synthetic-events)
-> which adds in the stack trace, then it ought to function a lot like it
-> would with this patch.
-> 
-> Then again, it's not like this change is huge by any means. So, if you
-> find this more convenient than those alternatives, you can take:
-> 
-> Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
-> 
-> It's possible Steven or Tom have a more strong opinion on this though. ;)
-> 
-> On Thu, Jul 29, 2021 at 2:29 AM Gang Li <ligang.bdlg@bytedance.com> wrote:
->>
->> The mmap_lock is acquired on most (all?) mmap / munmap / page fault
->> operations, so a multi-threaded process which does a lot of these
->> can experience significant contention. Sometimes we want to know
->> where the lock is hold. And it's hard to locate without collecting ip.
->>
->> Here's an example: TP_printk("ip=%pS",ip)
->> Log looks like this: "ip=do_user_addr_fault+0x274/0x640"
->>
->> We can find out who cause the contention amd make some improvements
->> for it.
->>
->> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
-
+-- David
