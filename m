@@ -2,63 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BAB3DB2BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE25C3DB2C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhG3FXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:23:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhG3FXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:23:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A561760EC0;
-        Fri, 30 Jul 2021 05:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627622577;
-        bh=zWQoFuvSGRkaWrMDBZYBHS+7L+3+XOedxJZ92sz89LU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KxNa0A1dMdHpzEckFrW9pi9fQW8uTkFDXbvhGo7T6es3r7feLWURFgaLQFxcQmC0e
-         FX72qDCbSgSLcsKVX7tFl/OEh4zbUBPRwJAzBxzFsjxrG0bE3ppgD2Ddmqy7myKuI6
-         /2/2u7dpwbiYvd+/5DNyUAQmQ/HiQ21ktGotWBII=
-Date:   Fri, 30 Jul 2021 07:22:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        andriy.shevchenko@linux.intel.com, yury.norov@gmail.com,
-        linux-kernel@vger.kernel.org, dave.hansen@intel.com,
-        linux@rasmusvillemoes.dk, rafael@kernel.org, rdunlap@infradead.org,
-        agordeev@linux.ibm.com, sbrivio@redhat.com, jianpeng.ma@intel.com,
-        valentin.schneider@arm.com, peterz@infradead.org,
-        bristot@redhat.com, guodong.xu@linaro.org,
-        tangchengchang@huawei.com, prime.zeng@hisilicon.com,
-        yangyicong@huawei.com, tim.c.chen@linux.intel.com,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v8 0/5] use bin_attribute to break the size limitation of
- cpumap ABI
-Message-ID: <YQOMrk2UxvMnjCBR@kroah.com>
-References: <20210729054208.1800-1-song.bao.hua@hisilicon.com>
- <20210729105000.857e7225f0a73d6af98db116@linux-foundation.org>
+        id S233620AbhG3FZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:25:20 -0400
+Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:36116 "EHLO
+        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230108AbhG3FZP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 01:25:15 -0400
+Received: from MTA-15-3.privateemail.com (MTA-15-1.privateemail.com [198.54.118.208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id B32F18021A;
+        Fri, 30 Jul 2021 01:25:09 -0400 (EDT)
+Received: from mta-15.privateemail.com (localhost [127.0.0.1])
+        by mta-15.privateemail.com (Postfix) with ESMTP id 59CA718000BB;
+        Fri, 30 Jul 2021 01:25:07 -0400 (EDT)
+Received: from hal-station.. (unknown [10.20.151.210])
+        by mta-15.privateemail.com (Postfix) with ESMTPA id 8E7D118000AD;
+        Fri, 30 Jul 2021 01:25:06 -0400 (EDT)
+From:   Hamza Mahfooz <someguy@effective-light.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Hamza Mahfooz <someguy@effective-light.com>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH] apparmor: use per file locks for transactional queries
+Date:   Fri, 30 Jul 2021 01:23:55 -0400
+Message-Id: <20210730052355.77289-1-someguy@effective-light.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210729105000.857e7225f0a73d6af98db116@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:50:00AM -0700, Andrew Morton wrote:
-> On Thu, 29 Jul 2021 17:42:03 +1200 Barry Song <song.bao.hua@hisilicon.com> wrote:
-> 
-> >  drivers/base/node.c     |  51 +++++++++-----
-> >  drivers/base/topology.c | 115 ++++++++++++++++--------------
-> >  include/linux/bitmap.h  |   2 +
-> >  include/linux/cpumask.h |  63 +++++++++++++++++
-> >  lib/bitmap.c            |  96 +++++++++++++++++++++++++
-> >  lib/test_bitmap.c       | 150 ++++++++++++++++++++++++++++++++++++++++
-> >  6 files changed, 407 insertions(+), 70 deletions(-)
-> 
-> I'm assuming this is more a gregkh thing than an akpm thing?
+As made mention of in commit 1dea3b41e84c5 ("apparmor: speed up
+transactional queries"), a single lock is currently used to synchronize
+transactional queries. We can, use the lock allocated for each file by
+VFS instead.
 
-Yeah, I can take this, thanks!
+Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+---
+ security/apparmor/apparmorfs.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-greg k-h
+diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
+index 2ee3b3d29f10..c0b626a271a0 100644
+--- a/security/apparmor/apparmorfs.c
++++ b/security/apparmor/apparmorfs.c
+@@ -812,8 +812,6 @@ struct multi_transaction {
+ };
+ 
+ #define MULTI_TRANSACTION_LIMIT (PAGE_SIZE - sizeof(struct multi_transaction))
+-/* TODO: replace with per file lock */
+-static DEFINE_SPINLOCK(multi_transaction_lock);
+ 
+ static void multi_transaction_kref(struct kref *kref)
+ {
+@@ -847,10 +845,10 @@ static void multi_transaction_set(struct file *file,
+ 	AA_BUG(n > MULTI_TRANSACTION_LIMIT);
+ 
+ 	new->size = n;
+-	spin_lock(&multi_transaction_lock);
++	spin_lock(&file->f_lock);
+ 	old = (struct multi_transaction *) file->private_data;
+ 	file->private_data = new;
+-	spin_unlock(&multi_transaction_lock);
++	spin_unlock(&file->f_lock);
+ 	put_multi_transaction(old);
+ }
+ 
+@@ -879,9 +877,10 @@ static ssize_t multi_transaction_read(struct file *file, char __user *buf,
+ 	struct multi_transaction *t;
+ 	ssize_t ret;
+ 
+-	spin_lock(&multi_transaction_lock);
++	spin_lock(&file->f_lock);
+ 	t = get_multi_transaction(file->private_data);
+-	spin_unlock(&multi_transaction_lock);
++	spin_unlock(&file->f_lock);
++
+ 	if (!t)
+ 		return 0;
+ 
+-- 
+2.32.0
+
