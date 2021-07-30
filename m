@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F853DBB69
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E968E3DBB6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239302AbhG3Ox2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
+        id S239325AbhG3OyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239244AbhG3OxZ (ORCPT
+        with ESMTP id S239209AbhG3OyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:53:25 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2238FC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:53:20 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id r26so18468425lfp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:53:20 -0700 (PDT)
+        Fri, 30 Jul 2021 10:54:16 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3845C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:54:11 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id x90so13540877ede.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:54:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WwILEX7NR1VzEi/uBdrHjZ2rhekLFtKl+IjEJ6PsRbo=;
-        b=eSRscB5LQZ42d/wJxzzYPB1M2Ev+d8TH1pk1kq7FZs6bBPalAKZ3cFxeJSuSpu3dN0
-         Em59MuepSMmpBso4Ynu1+27CaFcZ/iVxU8JvxIa1juSCTwjR6YMwx9wll3fjX5aCGryx
-         45DqbbN+Vkr/RNTQXWcM1pYi75BmOfzzVzQXBH9/jduPm+5mKvBVTvWDtNNS2TWuLZA7
-         SjJ+vWgQYQe8cUdVUakQ72OAzF+V4E0mXkB/PO+kFm4hQvjmJr/4XUmQZIE0UtBv6/no
-         Cz6pNjN2L+umPZr0BsmaHwqvuBPvKfnA6X6V143fY0lGA+TJgx0m3RbMz7Vh66AHtjOK
-         lPuQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NjK4WEz3AVk1erWrJk/Bhjdi80m8gkUV910wGJeEiO4=;
+        b=Ryh/EijDu6Xx/fEpSLSwXJ6ImGC/M/pWSubB4VyuKmqEn3cV+jilQO8IXmoI3rlDdd
+         WDs5L3X7YB9Q+vnc+zdri10Dn4XfuZT2aPKS4SFlADLNpCjG6eJ2EM9lGJrM9tpW4eq+
+         Ufdl16psWyhSqQkdoHtIqHx/oXz+RyIN+EwaV4olxo2/PuG9XwLzOe4VY8x1WeAYCvIB
+         4n0+UAghHgq2kTn3c9lSfBAGL5Aj42ooCwAC+qKJp9CEPx2kWxnXMm7OWqyeBAmkzagy
+         /aPsSXkt4RZdedmg6vE9v6ntu4WLRV7C4Xc09qcGA5WMOWNpxUJFnNHxb8hT5AlYqvMD
+         IZhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WwILEX7NR1VzEi/uBdrHjZ2rhekLFtKl+IjEJ6PsRbo=;
-        b=a2bVbLCAhCKvp6ul9WwZJm450X5MYwTL37AOyhx7LuvNDcq8f7a0eJUr93f2w95awr
-         tursUwIO5laedikgNX2oJuQUcJq/76sMBPjbefWtf/I7Vc98OKH2IukeNx/CUBjLHnTD
-         udmP/O1piNRLoibJqUZuR5EjppjvobT5sgjx5PfZipKVLM8SxhSbUXdW6B0PwqWQfRm/
-         WdtuxfzVbnQU0tkFyubod/WPyM0/rhEI9rfOm6VJYMYqtWsToWIUiZOnFd92xMX6xdcc
-         dk+ov7sM3NhDO/dTt0plR0qzwjCqEhuzZDYJ2UIU0HAj7mn3HN0Kv18mTow7c9tA5m1G
-         QjMg==
-X-Gm-Message-State: AOAM530T8yR2i29bFPwx5ysSIYjTZK9dY6iaMjlei0hzsoQjxKlCQmmC
-        HrQWR5VDXPUH+ytgah8dneXilQ0PtmF73kMW24zbpw==
-X-Google-Smtp-Source: ABdhPJwjcrWpoUYw/qBMqmhargQPTVX8q6Pq2/amq2QpdOcbNvK2a9I91gSNOQFdTDGdy12DFX+Mc+m7GdywLBd8974=
-X-Received: by 2002:a19:4803:: with SMTP id v3mr1839747lfa.83.1627656798290;
- Fri, 30 Jul 2021 07:53:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NjK4WEz3AVk1erWrJk/Bhjdi80m8gkUV910wGJeEiO4=;
+        b=His1a58gF88lAcWDU2NsnHo5F2cO9O/sQCdMAHgREqKZ3Qf2c3pK7AaIh0xvFJaSSR
+         srMLnyAzbUyo0/WaWR1+FGsrIJsKN8j/LxWvPyDbf2/ltB41azPYfRj4pN18851iM4fg
+         L0O9TYFQuetm08bSRR14QajLSOcGN1S7dCuaGZnD8NZlv2NUXb10HRmgdJOlECzJrpPX
+         w0pGoqiEFAs6OkCB0P9lL/i6tsLIU896qZI9ftES92TECy3IzhHyigXLv4wCJUPiF89i
+         dPbZIxcDQaavAQrT7s0qisuyea3ANXIb9JY+Hdc/Cx0Qyi7LV3YHsNZJzOlkO/vMyM21
+         Ir2A==
+X-Gm-Message-State: AOAM532ZP6+Ij/vWO3r0OM5R02xmygJar4DJrgMeelinZe7yc6NPh9Wl
+        qfkAPJGg0lCTE3do/BzVcbDUwzPTPB8=
+X-Google-Smtp-Source: ABdhPJzBm3OMhrr4mkBzW/9Q4Ypwxy2UnSxfLxJGY6Q2BTal6iNmZjTRWQriXSo+sI8SQS4ptr8oeg==
+X-Received: by 2002:aa7:cdcc:: with SMTP id h12mr3391296edw.39.1627656850318;
+        Fri, 30 Jul 2021 07:54:10 -0700 (PDT)
+Received: from agape ([5.171.81.215])
+        by smtp.gmail.com with ESMTPSA id r7sm808630edd.48.2021.07.30.07.54.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 07:54:10 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] staging: rtl8723bs: little cleanup
+Date:   Fri, 30 Jul 2021 16:54:04 +0200
+Message-Id: <cover.1627656773.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210730051605.2626-1-caihuoqing@baidu.com> <0516372e-0120-ff52-bf9a-cf1cda9a633f@email.cn>
-In-Reply-To: <0516372e-0120-ff52-bf9a-cf1cda9a633f@email.cn>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 30 Jul 2021 07:53:07 -0700
-Message-ID: <CALvZod6sUh0XQGVb4wEfzGNDcrLabgmjEdu+wh0g1c=cvvci4Q@mail.gmail.com>
-Subject: Re: [PATCH] cgroup: Fix typo in comments and documents
-To:     Hu Haowen <src.res@email.cn>
-Cc:     Cai Huoqing <caihuoqing@baidu.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 6:44 AM Hu Haowen <src.res@email.cn> wrote:
->
->
-> =E5=9C=A8 2021/7/30 =E4=B8=8B=E5=8D=881:16, Cai Huoqing =E5=86=99=E9=81=
-=93:
-> > Fix typo: iff  =3D=3D> if
+This patch series does some little cleanup
 
-This is not a typo. 'iff' means 'if and only if'. For details see
-https://en.wikipedia.org/wiki/If_and_only_if.
+Fabio Aiuto (4):
+  staging: rtl8723bs: fix camel case issue in struct wlan_bssid_ex
+  staging: rtl8723bs: remove unnecessary parentheses
+  staging: rtl8723bs: align condition to match open parentheses
+  staging: rtl8723bs: put condition parentheses at the end of a line
+
+ drivers/staging/rtl8723bs/core/rtw_mlme.c         | 13 ++++++-------
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c     |  8 ++++----
+ drivers/staging/rtl8723bs/core/rtw_wlan_util.c    |  2 +-
+ drivers/staging/rtl8723bs/include/wlan_bssdef.h   |  2 +-
+ drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c |  2 +-
+ drivers/staging/rtl8723bs/os_dep/ioctl_linux.c    | 12 ++++++------
+ 6 files changed, 19 insertions(+), 20 deletions(-)
+
+-- 
+2.20.1
+
