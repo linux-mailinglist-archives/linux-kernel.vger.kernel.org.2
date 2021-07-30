@@ -2,164 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8053DB5DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562443DB5DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238182AbhG3J0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238183AbhG3J0H (ORCPT
+        id S238229AbhG3J0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:26:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56684 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238105AbhG3J0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:26:07 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E67EC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:26:01 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id j2so10418553wrx.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linbit-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AkuGs7W3jKofUPHLtLFgYg9f4YA+eRGF5if/gTr/VXg=;
-        b=lylUtumRYNonwKmsPvuJom3wxBHkLf4anhWQaqkh04Z4ai4zZJd08vdZ7peV9SRpsh
-         8kDAxoMFjhA4/LA7o2la5MrwwsntBQgGjb0I1dUZFTJHnBuxsue7dB41Zed6v8YvFnQx
-         EtWmNPzKWs0OwoVonXjeCSLzamGDsOrch7MlE+WtH/ppN38tQ4p8HLRgifhRRjoPlQkI
-         e7dhso1fixnA6ExwMDoIvam1wge26Ggl97vNBtGlzBzaYUrpPxGPV5UmfIV5g4S/Vge/
-         4ukVRSa4etHYaDGK4EAFlKuotQCFXCnz8HEMRP8pLWuHCS1V7/wsG8+TQIpv8pIama72
-         IoVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=AkuGs7W3jKofUPHLtLFgYg9f4YA+eRGF5if/gTr/VXg=;
-        b=MstvQxiRAJ3/HHJcyw+hTis21e3zYvEw7QZXXVCTj+3LffDUpvy6mCok1WJ/2HcD6V
-         6ammaKKiXO7IQftUEMpNPlKIabCPdFwooFHHeAjup6mMrvyIGkX5ipILFiAygYMv++1z
-         usVEK+4m05ijlpVaDiYtp8ICjMvHUDjf480te4LJ8RJyVo2cMWn0NkbwzyoyHup4VyIS
-         9DSFPeM8kTIWXQVgQc2dqhgu4N6kRwwBJzzcImYGqvPdcL0V8iS/Tx0AkI5+qWENyuZS
-         BUmACIoAQ0jfK93RCe9wwO2tsnldSbaet2ksaXyY9uBZBxTvHdPNa7IQOQHQj3WPV/8e
-         hz9w==
-X-Gm-Message-State: AOAM532zqamjv8S9OyelX1B7OUxI56LC8TEmumjmSs/hayiyTD9GLdhI
-        1rZIXMA91XdjCsGNcF6uNs3KZw==
-X-Google-Smtp-Source: ABdhPJzeDirH6vZRgzsjdA+6SGrdUfGDvYu5Q0o7XkuF8nVr9uoOebNL2C+zT2PnMdIeL/CWiOquwA==
-X-Received: by 2002:a5d:6448:: with SMTP id d8mr1920645wrw.295.1627637160119;
-        Fri, 30 Jul 2021 02:26:00 -0700 (PDT)
-Received: from grappa.linbit (62-99-137-214.static.upcbusiness.at. [62.99.137.214])
-        by smtp.gmail.com with ESMTPSA id v15sm1259298wmj.39.2021.07.30.02.25.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 02:25:59 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 11:25:57 +0200
-From:   Lars Ellenberg <lars.ellenberg@linbit.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 48/64] drbd: Use struct_group() to zero algs
-Message-ID: <20210730092557.GC909654@grappa.linbit>
-Mail-Followup-To: Bart Van Assche <bvanassche@acm.org>,
-        Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-49-keescook@chromium.org>
- <1cc74e5e-8d28-6da4-244e-861eac075ca2@acm.org>
- <202107291845.1E1528D@keescook>
- <0d71917d-967f-beaa-d83e-a60fa254627c@acm.org>
+        Fri, 30 Jul 2021 05:26:30 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 35F4F22403;
+        Fri, 30 Jul 2021 09:26:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627637185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=KLOQ45tHzHizx5aX7vlKbtwG56MywBepSJB+3y/J3Tc=;
+        b=uyzDER+QUurfThKtVP3oER06ju28BMg5KqItSY0E+H65vbfhfpNK3fN+FNbupsalv+jkdT
+        XgFWGeSve/iCGZYPrH9Ut2yJUEYs3LUabKIEeTJn8FIo95mdeigRzq1ca5jS8aPtZRDwIO
+        CKYPoNU7bo2W+ywawr0yXSnK6NYOYeU=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D541313748;
+        Fri, 30 Jul 2021 09:26:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id G5/PMsDFA2GeIwAAGKfGzw
+        (envelope-from <jgross@suse.com>); Fri, 30 Jul 2021 09:26:24 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org
+Subject: [PATCH v2 0/2] xen: fix max_pfn handling for pv guests
+Date:   Fri, 30 Jul 2021 11:26:20 +0200
+Message-Id: <20210730092622.9973-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d71917d-967f-beaa-d83e-a60fa254627c@acm.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 07:57:47PM -0700, Bart Van Assche wrote:
-> On 7/29/21 7:31 PM, Kees Cook wrote:
-> > On Wed, Jul 28, 2021 at 02:45:55PM -0700, Bart Van Assche wrote:
-> >> On 7/27/21 1:58 PM, Kees Cook wrote:
-> >>> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> >>> field bounds checking for memset(), avoid intentionally writing across
-> >>> neighboring fields.
-> >>>
-> >>> Add a struct_group() for the algs so that memset() can correctly reason
-> >>> about the size.
-> >>>
-> >>> Signed-off-by: Kees Cook <keescook@chromium.org>
-> >>> ---
-> >>>   drivers/block/drbd/drbd_main.c     | 3 ++-
-> >>>   drivers/block/drbd/drbd_protocol.h | 6 ++++--
-> >>>   drivers/block/drbd/drbd_receiver.c | 3 ++-
-> >>>   3 files changed, 8 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
-> >>> index 55234a558e98..b824679cfcb2 100644
-> >>> --- a/drivers/block/drbd/drbd_main.c
-> >>> +++ b/drivers/block/drbd/drbd_main.c
-> >>> @@ -729,7 +729,8 @@ int drbd_send_sync_param(struct drbd_peer_device *peer_device)
-> >>>   	cmd = apv >= 89 ? P_SYNC_PARAM89 : P_SYNC_PARAM;
-> >>>   	/* initialize verify_alg and csums_alg */
-> >>> -	memset(p->verify_alg, 0, 2 * SHARED_SECRET_MAX);
-> >>> +	BUILD_BUG_ON(sizeof(p->algs) != 2 * SHARED_SECRET_MAX);
-> >>> +	memset(&p->algs, 0, sizeof(p->algs));
-> >>>   	if (get_ldev(peer_device->device)) {
-> >>>   		dc = rcu_dereference(peer_device->device->ldev->disk_conf);
-> >>> diff --git a/drivers/block/drbd/drbd_protocol.h b/drivers/block/drbd/drbd_protocol.h
-> >>> index dea59c92ecc1..a882b65ab5d2 100644
-> >>> --- a/drivers/block/drbd/drbd_protocol.h
-> >>> +++ b/drivers/block/drbd/drbd_protocol.h
-> >>> @@ -283,8 +283,10 @@ struct p_rs_param_89 {
-> >>>   struct p_rs_param_95 {
-> >>>   	u32 resync_rate;
-> >>> -	char verify_alg[SHARED_SECRET_MAX];
-> >>> -	char csums_alg[SHARED_SECRET_MAX];
-> >>> +	struct_group(algs,
-> >>> +		char verify_alg[SHARED_SECRET_MAX];
-> >>> +		char csums_alg[SHARED_SECRET_MAX];
-> >>> +	);
-> >>>   	u32 c_plan_ahead;
-> >>>   	u32 c_delay_target;
-> >>>   	u32 c_fill_target;
-> >>> diff --git a/drivers/block/drbd/drbd_receiver.c b/drivers/block/drbd/drbd_receiver.c
-> >>> index 1f740e42e457..6df2539e215b 100644
-> >>> --- a/drivers/block/drbd/drbd_receiver.c
-> >>> +++ b/drivers/block/drbd/drbd_receiver.c
-> >>> @@ -3921,7 +3921,8 @@ static int receive_SyncParam(struct drbd_connection *connection, struct packet_i
-> >>>   	/* initialize verify_alg and csums_alg */
-> >>>   	p = pi->data;
-> >>> -	memset(p->verify_alg, 0, 2 * SHARED_SECRET_MAX);
-> >>> +	BUILD_BUG_ON(sizeof(p->algs) != 2 * SHARED_SECRET_MAX);
-> >>> +	memset(&p->algs, 0, sizeof(p->algs));
-> >>
-> >> Using struct_group() introduces complexity. Has it been considered not to
-> >> modify struct p_rs_param_95 and instead to use two memset() calls instead of
-> >> one (one memset() call per member)?
-> > 
-> > I went this direction because using two memset()s (or memcpy()s in other
-> > patches) changes the machine code. It's not much of a change, but it
-> > seems easier to justify "no binary changes" via the use of struct_group().
-> > 
-> > If splitting the memset() is preferred, I can totally do that instead.
-> > :)
-> 
-> I don't have a strong opinion about this. Lars, do you want to comment
-> on this patch?
+Fix some bad naming and setting of max_pfn related variables.
 
+Juergen Gross (2):
+  xen: fix setting of max_pfn in shared_info
+  xen: rename wrong named pfn related variables
 
-Fine either way. "no binary changes" sounds good ;-)
+ arch/x86/include/asm/xen/page.h |  4 ++--
+ arch/x86/xen/p2m.c              | 33 ++++++++++++++++++---------------
+ arch/x86/xen/setup.c            |  2 +-
+ 3 files changed, 21 insertions(+), 18 deletions(-)
 
-Thanks,
-    Lars
+-- 
+2.26.2
 
