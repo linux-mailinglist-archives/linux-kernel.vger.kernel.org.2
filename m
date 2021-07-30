@@ -2,65 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2601D3DB7D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C833DB7DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238612AbhG3L26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 07:28:58 -0400
-Received: from mga18.intel.com ([134.134.136.126]:63062 "EHLO mga18.intel.com"
+        id S238688AbhG3LaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 07:30:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:40714 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230157AbhG3L25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 07:28:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="200287672"
-X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
-   d="scan'208";a="200287672"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 04:28:52 -0700
-X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
-   d="scan'208";a="581891449"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 04:28:50 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m9Qh2-003Mv2-6A; Fri, 30 Jul 2021 14:28:44 +0300
-Date:   Fri, 30 Jul 2021 14:28:44 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 1/1] ARM: Drop ARCH_NR_GPIOS definition
-Message-ID: <YQPibElzH2jP6OWL@smile.fi.intel.com>
-References: <20210510114107.43006-1-andriy.shevchenko@linux.intel.com>
- <CACRpkdb30HKOobtP++PqWc7UwM8qV4JC=UPAmUjUgFN_JANa+g@mail.gmail.com>
- <CAHp75Vc1qU0sBbLOZdTgjJ_pfN73Utg4wtRV8Ohu-OiaeJuycg@mail.gmail.com>
- <YOxFdUCVTT9mFXtk@smile.fi.intel.com>
- <CACRpkdZDOGrY8Ks7nne4KrV2dg4x87e3UdbB=pSZncTa7XFgUA@mail.gmail.com>
+        id S238660AbhG3LaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 07:30:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95D5E1FB;
+        Fri, 30 Jul 2021 04:29:55 -0700 (PDT)
+Received: from [10.57.86.111] (unknown [10.57.86.111])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D4BD53F73D;
+        Fri, 30 Jul 2021 04:29:53 -0700 (PDT)
+Subject: Re: [PATCH v2 02/10] coresight: etm4x: Use Trace Filtering controls
+ dynamically
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        coresight@lists.linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        jinlmao@qti.qualcomm.com
+References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
+ <20210723124611.3828908-3-suzuki.poulose@arm.com>
+ <0c975635-d4d2-3f9f-4c4c-3a67d05cda21@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <4002f56a-9541-cdf9-2663-fe27482e78d2@arm.com>
+Date:   Fri, 30 Jul 2021 12:29:51 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZDOGrY8Ks7nne4KrV2dg4x87e3UdbB=pSZncTa7XFgUA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <0c975635-d4d2-3f9f-4c4c-3a67d05cda21@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 11:44:05AM +0200, Linus Walleij wrote:
-> On Mon, Jul 12, 2021 at 3:37 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
+On 30/07/2021 04:48, Anshuman Khandual wrote:
 > 
-> > Any new on this, please?
-> >
-> > It's kinda not good when the (simplest) patch is stuck like this :-(
+> On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
+>> The Trace Filtering support (FEAT_TRF) ensures that the ETM
+>> can be prohibited from generating any trace for a given EL.
+>> This is much stricter knob, than the TRCVICTLR exception level
 > 
-> Ooops, my fault. Now it is in Russell's patch tracker:
-> https://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=9103/1
+> Could you please explain 'stricter' ? Are you suggesting that TRCVICTLR
+> based exception filtering some times might not implement the filtering
+> even if configured ?
+> 
 
-Thanks!
+Sure, the TRVICTLR only ensures that the ETM doesn't generate
+any "branch" trace packets. But that doesn't prevent it from
+generating the "Context" packets which may contain the kernel
+addresses, if they are generated while in Kernel.
 
--- 
-With Best Regards,
-Andy Shevchenko
+But, the FEAT_TRF strictly prevents the trace unit from generating
+any packets while it is "prohibited". Thus it is a much better
+control to prevent kernel address leaks via the trace.
 
+>> masks. At the moment, we do a onetime enable trace at user and
+>> kernel and leave it untouched for the kernel life time.
+>>
+>> This patch makes the switch dynamic, by honoring the filters
+>> set by the user and enforcing them in the TRFCR controls.
+> 
+> TRFCR actually helps in making the exception level filtering dynamic
+> which was not possible earlier with TRCVICTLR.
+> 
+>> We also rename the cpu_enable_tracing() appropriately to
+>> cpu_detect_trace_filtering() and the drvdata member
+>> trfc => trfcr to indicate the "value" of the TRFCR_EL1.
+> 
+> Makes sense.
+> 
+>>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Al Grant <al.grant@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>   .../coresight/coresight-etm4x-core.c          | 61 ++++++++++++++-----
+>>   drivers/hwtracing/coresight/coresight-etm4x.h |  5 +-
+>>   .../coresight/coresight-self-hosted-trace.h   |  7 +++
+>>   3 files changed, 55 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> index 3e548dac9b05..adba84b29455 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> @@ -237,6 +237,43 @@ struct etm4_enable_arg {
+>>   	int rc;
+>>   };
+>>   
+>> +/*
+>> + * etm4x_prohibit_trace - Prohibit the CPU from tracing at all ELs.
+>> + * When the CPU supports FEAT_TRF, we could move the ETM to a trace
+>> + * prohibited state by filtering the Exception levels via TRFCR_EL1.
+>> + */
+>> +static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
+>> +{
+>> +	if (drvdata->trfcr)
+>> +		cpu_prohibit_trace();
+> 
+> Should it be as etm4x_allow_trace() instead, where drvdata->trfcr
+> indicates the presence of FEAT_TRF - just to be clear ?
+> 
+> 	/* If the CPU doesn't support FEAT_TRF, nothing to do */
+> 	if (!drvdata->trfcr)
+> 		return;
+> 
+> 	cpu_prohibit_trace();
+> 
+
+OK
+
+>> +}
+>> +
+>> +/*
+>> + * etm4x_allow_trace - Allow CPU tracing in the respective ELs,
+>> + * as configured by the drvdata->config.mode for the current
+>> + * session. Even though we have TRCVICTLR bits to filter the
+>> + * trace in the ELs, it doesn't prevent the ETM from generating
+>> + * a packet (e.g, TraceInfo) that might contain the addresses from
+>> + * the excluded levels. Thus we use the additional controls provided
+>> + * via the Trace Filtering controls (FEAT_TRF) to make sure no trace
+>> + * is generated for the excluded ELs.
+>> + */
+>> +static void etm4x_allow_trace(struct etmv4_drvdata *drvdata)
+>> +{
+>> +	u64 trfcr = drvdata->trfcr;
+>> +
+>> +	/* If the CPU doesn't support FEAT_TRF, nothing to do */
+>> +	if (!trfcr)
+>> +		return;
+>> +
+>> +	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
+>> +		trfcr &= ~TRFCR_ELx_ExTRE;
+>> +	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
+>> +		trfcr &= ~TRFCR_ELx_E0TRE;
+>> +
+>> +	write_trfcr(trfcr);
+>> +}
+>> +
+>>   #ifdef CONFIG_ETM4X_IMPDEF_FEATURE
+>>   
+>>   #define HISI_HIP08_AMBA_ID		0x000b6d01
+>> @@ -441,6 +478,7 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+>>   	if (etm4x_is_ete(drvdata))
+>>   		etm4x_relaxed_write32(csa, TRCRSR_TA, TRCRSR);
+>>   
+>> +	etm4x_allow_trace(drvdata);
+>>   	/* Enable the trace unit */
+>>   	etm4x_relaxed_write32(csa, 1, TRCPRGCTLR);
+>>   
+>> @@ -719,7 +757,6 @@ static int etm4_enable(struct coresight_device *csdev,
+>>   static void etm4_disable_hw(void *info)
+>>   {
+>>   	u32 control;
+>> -	u64 trfcr;
+>>   	struct etmv4_drvdata *drvdata = info;
+>>   	struct etmv4_config *config = &drvdata->config;
+>>   	struct coresight_device *csdev = drvdata->csdev;
+>> @@ -746,12 +783,7 @@ static void etm4_disable_hw(void *info)
+>>   	 * If the CPU supports v8.4 Trace filter Control,
+>>   	 * set the ETM to trace prohibited region.
+>>   	 */
+>> -	if (drvdata->trfc) {
+>> -		trfcr = read_sysreg_s(SYS_TRFCR_EL1);
+>> -		write_sysreg_s(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE),
+>> -			       SYS_TRFCR_EL1);
+>> -		isb();
+>> -	}
+>> +	etm4x_prohibit_trace(drvdata);
+>>   	/*
+>>   	 * Make sure everything completes before disabling, as recommended
+>>   	 * by section 7.3.77 ("TRCVICTLR, ViewInst Main Control Register,
+>> @@ -767,9 +799,6 @@ static void etm4_disable_hw(void *info)
+>>   	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1))
+>>   		dev_err(etm_dev,
+>>   			"timeout while waiting for PM stable Trace Status\n");
+>> -	if (drvdata->trfc)
+>> -		write_sysreg_s(trfcr, SYS_TRFCR_EL1);
+>> -
+>>   	/* read the status of the single shot comparators */
+>>   	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+>>   		config->ss_status[i] =
+>> @@ -964,15 +993,15 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
+>>   	return false;
+>>   }
+>>   
+>> -static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
+>> +static void cpu_detect_trace_filtering(struct etmv4_drvdata *drvdata)
+>>   {
+>>   	u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
+>>   	u64 trfcr;
+>>   
+>> +	drvdata->trfcr = 0;
+>>   	if (!cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_TRACE_FILT_SHIFT))
+>>   		return;
+>>   
+>> -	drvdata->trfc = true;
+>>   	/*
+>>   	 * If the CPU supports v8.4 SelfHosted Tracing, enable
+>>   	 * tracing at the kernel EL and EL0, forcing to use the
+>> @@ -986,7 +1015,7 @@ static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
+>>   	if (is_kernel_in_hyp_mode())
+>>   		trfcr |= TRFCR_EL2_CX;
+>>   
+>> -	write_trfcr(trfcr);
+>> +	drvdata->trfcr = trfcr;
+>>   }
+>>   
+>>   static void etm4_init_arch_data(void *info)
+>> @@ -1177,7 +1206,7 @@ static void etm4_init_arch_data(void *info)
+>>   	/* NUMCNTR, bits[30:28] number of counters available for tracing */
+>>   	drvdata->nr_cntr = BMVAL(etmidr5, 28, 30);
+>>   	etm4_cs_lock(drvdata, csa);
+>> -	cpu_enable_tracing(drvdata);
+>> +	cpu_detect_trace_filtering(drvdata);
+>>   }
+>>   
+>>   static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
+>> @@ -1673,7 +1702,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>>   	int ret = 0;
+>>   
+>>   	/* Save the TRFCR irrespective of whether the ETM is ON */
+>> -	if (drvdata->trfc)
+>> +	if (drvdata->trfcr)
+>>   		drvdata->save_trfcr = read_trfcr();
+>>   	/*
+>>   	 * Save and restore the ETM Trace registers only if
+>> @@ -1782,7 +1811,7 @@ static void __etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>>   
+>>   static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>>   {
+>> -	if (drvdata->trfc)
+>> +	if (drvdata->trfcr)
+>>   		write_trfcr(drvdata->save_trfcr);
+>>   	if (drvdata->state_needs_restore)
+>>   		__etm4_cpu_restore(drvdata);
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+>> index 82cba16b73a6..724819592c2e 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+>> @@ -919,7 +919,8 @@ struct etmv4_save_state {
+>>    * @nooverflow:	Indicate if overflow prevention is supported.
+>>    * @atbtrig:	If the implementation can support ATB triggers
+>>    * @lpoverride:	If the implementation can support low-power state over.
+>> - * @trfc:	If the implementation supports Arm v8.4 trace filter controls.
+>> + * @trfcr:	If the CPU supportfs FEAT_TRF, value of the TRFCR_ELx with
+> 
+> Typo here. 	   ^^^^^^ s/supportfs/supports
+> 
+>> + *		trace allowed at user and kernel ELs. Otherwise, 0.
+> 
+> The sentence here does not make sense. Is not the exception level ELx and EL0
+> can be filtered out independently ? Should this be something like ...
+
+The value holds a superset of the possible "allowed" configurations.
+We do this to avoid setting the TRFCR_CX everytime depending on the
+kernel EL (only possible from EL2). So we initialize the field
+with value of TRCR_ELx with all the ELs enabled. This can be filtered
+later by the driver accordingly. This will also serve as marker
+to check the availability of the feature.
+
+Thanks
+Suzuki
+
+
+> 
+> "If the CPU supports FEAT_TRF, value of the TRFCR_ELx - indicating whether
+> trace is allowed at user [and/or] kernel ELs. Otherwise, 0."
+> 
+>>    * @config:	structure holding configuration parameters.
+>>    * @save_trfcr:	Saved TRFCR_EL1 register during a CPU PM event.
+>>    * @save_state:	State to be preserved across power loss
+>> @@ -972,7 +973,7 @@ struct etmv4_drvdata {
+>>   	bool				nooverflow;
+>>   	bool				atbtrig;
+>>   	bool				lpoverride;
+>> -	bool				trfc;
+>> +	u64				trfcr;
+>>   	struct etmv4_config		config;
+>>   	u64				save_trfcr;
+>>   	struct etmv4_save_state		*save_state;
+>> diff --git a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+>> index 53b35a28075e..586d26e0cba3 100644
+>> --- a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+>> +++ b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+>> @@ -22,4 +22,11 @@ static inline void write_trfcr(u64 val)
+>>   	isb();
+>>   }
+>>   
+>> +static inline void cpu_prohibit_trace(void)
+>> +{
+>> +	u64 trfcr = read_trfcr();
+>> +
+>> +	/* Prohibit tracing at EL0 & the kernel EL */
+>> +	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
+>> +}
+>>   #endif			/*  __CORESIGHT_SELF_HOSTED_TRACE_H */
+>>
 
