@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3673DB9F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F493DB9F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239121AbhG3ODk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:03:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62022 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239044AbhG3ODa (ORCPT
+        id S239131AbhG3OD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:03:58 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:41376
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239141AbhG3ODs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:03:30 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16UDlDuT007928;
-        Fri, 30 Jul 2021 10:03:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=Vp0U8yxVJgFQ41zGrYD8eUzgmT5mkO9NlAdJeTljdrw=;
- b=QegEPTH0bAHHFrBL85fsAkXTEAWqnkVLqaIyVsC80+ZcAZy1ernC7owkLvSl+FKe0Bo+
- pTkVfxHaWkOBVzLCAulfYfCRIcVvR0iMeOyvfvO+L3NdlISQQZj5URyBH6n4n6nmH42J
- ZZUhScWGTzcXMPKD7A4xmYGMmfyn0eVjrmwrxbjMtDLK3ghfg8A1tb+nhHhyP7DAI23G
- P704v2geHUSNHWrk/Js6XaH7e5somWXbT2DwWYo6sZNxpuYpkfd1yEMjefn+HfItGRMw
- TpRSBfxmGfWc7V8SMQwFuEsA0+KgGJ+ERYySTgYXuIIvh2pJEarVzKBDeVRIn4hQ+1e0 QA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a4jm7gf2f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jul 2021 10:03:21 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16UE3BOs017783;
-        Fri, 30 Jul 2021 14:03:18 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3a235m4346-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 30 Jul 2021 14:03:18 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16UE3GP430933376
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Jul 2021 14:03:16 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 28CA4A4069;
-        Fri, 30 Jul 2021 14:03:16 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 207FCA4059;
-        Fri, 30 Jul 2021 14:03:14 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.54.226])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 30 Jul 2021 14:03:13 +0000 (GMT)
-Message-ID: <2c731f07bd08f01f2a3e032814bc65ae9a8494ad.camel@linux.ibm.com>
-Subject: Re: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
- digest_list_del
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Fri, 30 Jul 2021 10:03:13 -0400
-In-Reply-To: <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
-         <20210726163700.2092768-7-roberto.sassu@huawei.com>
-         <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
-         <ef7c85dcb096479e95c8c60ccda4d700@huawei.com>
-         <1ef95096bee13578b3f906dd9f708c6af9d6ff18.camel@linux.ibm.com>
-         <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wNsyaJ4RvqTcomgd160mG9KIFib2kW1P
-X-Proofpoint-ORIG-GUID: wNsyaJ4RvqTcomgd160mG9KIFib2kW1P
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 30 Jul 2021 10:03:48 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 8ADC83F224
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:03:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627653817;
+        bh=/Gja+i0Dvjadolanru2/enXX4OvFq4ZgMqAnNw717vc=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=oP4EGFHbuM8HS4pOQxnH9iULeVWfme2ZJ8xcYQ0LIo7UrTLG4zBT5yAE49NR1V768
+         btPaRhXEY7j+T2h/j1yq2xBcg8x8qekZTCg6h+5E06+VROclcOn4VKIuXeZgomD+ts
+         +E4cvh5Q3/kNwhkKmpttzbZyb0nKESOn+jezeiYe8XiIA5nq93fivLqk+YSlVX75vI
+         7ik8E2uhpzUQs9DrJQZA+YLgYJlI0PAHY8R5nLpM+H5P5RBtck2CQgchyK6snAkC6L
+         /wWnibRLgsQptTiDrnbVNcjlDmhkB3Bt2iVt0yZ8C+zEBj2vsRmLVLaQ1BrxTzWc0H
+         2IzwhpnttFctg==
+Received: by mail-ed1-f69.google.com with SMTP id p2-20020a50c9420000b02903a12bbba1ebso4641126edh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:03:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/Gja+i0Dvjadolanru2/enXX4OvFq4ZgMqAnNw717vc=;
+        b=DWC8wN+xYDxTNxjsfF33C5KazXzmUqCMy2Ki15kxa00l3wgZCBfZXRBcSo/3GRjbtD
+         5WFwkGsPryPeuleCiL2Tn2USoeDk0A4fQOX4NmjgZ56ts/5gR/z0OduNrM97QQE6u0IV
+         lio+44MkPRmBRUOMwP54+w7AV7ec/j4UGCFfT/cPkfUMoinZ3af6fmadbSWaCl91L2nk
+         3nJjMf0cosl1sGI1WwLEA+C6Z9F5iwvP+IWfodLV1hCLOIKNsRILrKH7+krv20G2WKIw
+         6LFhTpgVNnH7OfbowAwfdKb2aKjnTiU70MuUchYyl1TZjSqjk8KwprS19tqyjEMQpI4o
+         JFPQ==
+X-Gm-Message-State: AOAM5333K1qD0nZPGpA0wcABez+s1KgLEWgbShx896dOUnYO0ISKwKWb
+        gYwJg5pa7AnoCEbPCNUlClTBAydmaSs8xy6fCn0WogccMx9O3/JGeKUBsqVWz42JfDymPC6tmO8
+        wEOoZ/eCutstoxcSLWfj4BNGZ8Kj9rR/v+FKYsmhdDA==
+X-Received: by 2002:a17:907:c26:: with SMTP id ga38mr2672503ejc.38.1627653814543;
+        Fri, 30 Jul 2021 07:03:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWNcPSq0sChCf8yeGm1VCDTCj5y7YK0ZOAnQUkLnjkO9q0Hq9IldEhamlXvjbuzBlZKUTmgQ==
+X-Received: by 2002:a17:907:c26:: with SMTP id ga38mr2672213ejc.38.1627653809436;
+        Fri, 30 Jul 2021 07:03:29 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id w6sm765114edd.22.2021.07.30.07.03.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 07:03:28 -0700 (PDT)
+Subject: Re: [PATCH v2 7/8] nfc: hci: pass callback data param as pointer in
+ nci_request()
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210730065625.34010-1-krzysztof.kozlowski@canonical.com>
+ <20210730065625.34010-8-krzysztof.kozlowski@canonical.com>
+ <20210730064922.078bd222@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <53f89bae-fcb5-8e7c-0b03-effa156584fe@canonical.com>
+ <20210730065830.547df546@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6f609952-cf76-58f9-1917-f06f3f376843@canonical.com>
+Date:   Fri, 30 Jul 2021 16:03:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-30_05:2021-07-30,2021-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- bulkscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 impostorscore=0
- suspectscore=0 spamscore=0 adultscore=0 priorityscore=1501 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2107300087
+In-Reply-To: <20210730065830.547df546@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roberto,
-
-On Fri, 2021-07-30 at 13:16 +0000, Roberto Sassu wrote:
-> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > Sent: Friday, July 30, 2021 2:40 PM
-
-> > "critical data", in this context, should probably be used for verifying
-> > the in memory file digests and other state information haven't been
-> > compromised.
+On 30/07/2021 15:58, Jakub Kicinski wrote:
+> On Fri, 30 Jul 2021 15:56:19 +0200 Krzysztof Kozlowski wrote:
+>> On 30/07/2021 15:49, Jakub Kicinski wrote:
+>>> This generates a bunch of warnings:
+>>>
+>>> net/nfc/nci/core.c:381:51: warning: Using plain integer as NULL pointer
+>>> net/nfc/nci/core.c:388:50: warning: Using plain integer as NULL pointer
+>>> net/nfc/nci/core.c:494:57: warning: Using plain integer as NULL pointer
+>>> net/nfc/nci/core.c:520:65: warning: Using plain integer as NULL pointer
+>>> net/nfc/nci/core.c:570:44: warning: Using plain integer as NULL pointer
+>>> net/nfc/nci/core.c:815:34: warning: Using plain integer as NULL pointer
+>>> net/nfc/nci/core.c:856:50: warning: Using plain integer as NULL pointer  
+>>
+>> Indeed. Not that code before was better - the logic was exactly the
+>> same. I might think more how to avoid these and maybe pass pointer to
+>> stack value (like in other cases).
+>>
+>> The 7/8 and 8/8 could be skipped in such case.
 > 
-> Actually, this is what we are doing currently. To keep the
-> implementation simple, once the file or the buffer are uploaded
-> to the kernel, they will not be modified, just accessed through
-> the indexes.
+> We don't usually take parts of series, would you mind resending first 6
+> or respinning with the warnings addressed?
 
-My main concern about digest lists is their integrity, from loading the
-digest lists to their being stored in memory.  A while back, there was
-some work on defining a write once memory allocator.  I don't recall
-whatever happened to it.  This would be a perfect usecase for that
-memory allocator.
+Sure, no problem.
 
-thanks,
 
-Mimi
-
+Best regards,
+Krzysztof
