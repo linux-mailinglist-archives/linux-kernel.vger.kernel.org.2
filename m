@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0EF3DC0DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F923DC0F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233170AbhG3WSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:18:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51268 "EHLO mail.kernel.org"
+        id S234790AbhG3WTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232376AbhG3WSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:18:39 -0400
+        id S233004AbhG3WSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 18:18:40 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9498B60F94;
+        by mail.kernel.org (Postfix) with ESMTPSA id B428061076;
         Fri, 30 Jul 2021 22:18:34 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@rostedt.homelinux.com>)
-        id 1m9apt-002V1L-Gs; Fri, 30 Jul 2021 18:18:33 -0400
+        id 1m9apt-002V1O-Hc; Fri, 30 Jul 2021 18:18:33 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-trace-devel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
@@ -28,9 +28,9 @@ Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
         Clark Williams <williams@redhat.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 06/17] libtracefs: Add unit test to test tracefs_sql() where clause
-Date:   Fri, 30 Jul 2021 18:18:13 -0400
-Message-Id: <20210730221824.595597-7-rostedt@goodmis.org>
+Subject: [PATCH 07/17] libtracefs: Make sqlhist parser reentrant
+Date:   Fri, 30 Jul 2021 18:18:14 -0400
+Message-Id: <20210730221824.595597-8-rostedt@goodmis.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210730221824.595597-1-rostedt@goodmis.org>
 References: <20210730221824.595597-1-rostedt@goodmis.org>
@@ -42,62 +42,251 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add a test to test filtering of events via the WHERE clause.
+Update bison and flex to be reentrant, and not depend on any global
+variables.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- utest/tracefs-utest.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ src/sqlhist-parse.h   |  3 +--
+ src/sqlhist.l         | 26 ++++++++++++++++----------
+ src/sqlhist.y         | 10 ++++++++--
+ src/tracefs-sqlhist.c | 41 ++++++++++++++++++++++++-----------------
+ 4 files changed, 49 insertions(+), 31 deletions(-)
 
-diff --git a/utest/tracefs-utest.c b/utest/tracefs-utest.c
-index f4e1a6b90a46..645c84c31f0e 100644
---- a/utest/tracefs-utest.c
-+++ b/utest/tracefs-utest.c
-@@ -53,6 +53,13 @@
- #define SQL_3_EVENT	"wakeup_lat"
- #define SQL_3_SQL	"select start.pid, end.next_prio as prio, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start join sched_switch as end on start.pid = end.next_pid"
+diff --git a/src/sqlhist-parse.h b/src/sqlhist-parse.h
+index 0933bfe9a574..7c1b97ca65af 100644
+--- a/src/sqlhist-parse.h
++++ b/src/sqlhist-parse.h
+@@ -10,6 +10,7 @@ struct str_hash;
+ struct sql_table;
  
-+#define SQL_4_EVENT	"wakeup_lat_2"
-+#define SQL_4_SQL	"select start.pid, end.next_prio as prio, (end.TIMESTAMP_USECS - start.TIMESTAMP_USECS) as lat from sched_waking as start join sched_switch as end on start.pid = end.next_pid where (start.prio >= 1 && start.prio < 100) || !(start.pid >= 0 && start.pid <= 1) && end.prev_pid != 0"
+ struct sqlhist_bison {
++	void			*scanner;
+ 	const char		*buffer;
+ 	size_t			buffer_size;
+ 	size_t			buffer_idx;
+@@ -20,8 +21,6 @@ struct sqlhist_bison {
+ 	struct str_hash         *str_hash[1 << HASH_BITS];
+ };
+ 
+-extern struct sqlhist_bison *sb;
+-
+ #include "sqlhist.tab.h"
+ 
+ enum filter_type {
+diff --git a/src/sqlhist.l b/src/sqlhist.l
+index 476f7fd1f1ec..958c46051148 100644
+--- a/src/sqlhist.l
++++ b/src/sqlhist.l
+@@ -4,21 +4,26 @@
+ #include <stdarg.h>
+ #include "sqlhist-parse.h"
+ 
+-extern int my_yyinput(char *buf, int max);
++extern int my_yyinput(void *extra, char *buf, int max);
+ 
+ #undef YY_INPUT
+-#define YY_INPUT(b, r, m) ({r = my_yyinput(b, m);})
++#define YY_INPUT(b, r, m) ({r = my_yyinput(yyextra, b, m);})
+ 
+ #define YY_NO_INPUT
+ #define YY_NO_UNPUT
+ 
+ #define YY_EXTRA_TYPE struct sqlhist_bison *
+ 
+-#define HANDLE_COLUMN do { sb->line_idx += strlen(yytext); } while (0)
++#define yytext yyg->yytext_r
 +
-+#define SQL_5_EVENT	"irq_lat"
-+#define SQL_5_SQL	"select end.common_pid as pid, (end.common_timestamp.usecs - start.common_timestamp.usecs) as irq_lat from irq_disable as start join irq_enable as end on start.common_pid = end.common_pid, start.parent_offs == end.parent_offs where start.common_pid != 0"
-+#define SQL_5_START	"irq_disable"
++#define TRACE_SB	((struct sqlhist_bison *)yyextra)
++#define HANDLE_COLUMN do { TRACE_SB->line_idx += strlen(yytext); } while (0)
+ 
+ %}
+ 
+ %option caseless
++%option reentrant
++%option bison-bridge
+ 
+ field		[a-z_][a-z0-9_\.]*
+ qstring		\"[^\"]*\"
+@@ -36,25 +41,25 @@ where { HANDLE_COLUMN; return WHERE; }
+ 
+ {qstring} {
+ 	HANDLE_COLUMN;
+-	yylval.string = store_str(sb, yytext);
++	yylval->string = store_str(TRACE_SB, yyg->yytext_r);
+ 	return STRING;
+ }
+ 
+ {field} {
+ 	HANDLE_COLUMN;
+-	yylval.string = store_str(sb, yytext);
++	yylval->string = store_str(TRACE_SB, yyg->yytext_r);
+ 	return FIELD;
+ }
+ 
+ {hexnum} {
+ 	HANDLE_COLUMN;
+-	yylval.number = strtol(yytext, NULL, 0);
++	yylval->number = strtol(yyg->yytext_r, NULL, 0);
+ 	return NUMBER;
+ }
+ 
+ {number} {
+ 	HANDLE_COLUMN;
+-	yylval.number = strtol(yytext, NULL, 0);
++	yylval->number = strtol(yyg->yytext_r, NULL, 0);
+ 	return NUMBER;
+ }
+ 
+@@ -69,18 +74,19 @@ where { HANDLE_COLUMN; return WHERE; }
+ [\!()\-\+\*/,=] { HANDLE_COLUMN; return yytext[0]; }
+ 
+ [ \t] { HANDLE_COLUMN; }
+-\n { sb->line_idx = 0; sb->line_no++; }
++\n { TRACE_SB->line_idx = 0; TRACE_SB->line_no++; }
+ 
+ . { HANDLE_COLUMN; return PARSE_ERROR; }
+ %%
+ 
+-int yywrap(void)
++int yywrap(void *data)
+ {
+ 	return 1;
+ }
+ 
+-void yyerror(const char *fmt, ...)
++void yyerror(struct sqlhist_bison *sb, char *fmt, ...)
+ {
++	struct yyguts_t * yyg = (struct yyguts_t*)sb->scanner;
+ 	va_list ap;
+ 
+ 	va_start(ap, fmt);
+diff --git a/src/sqlhist.y b/src/sqlhist.y
+index 8dcc824bb9f1..ce9cb58fb3a9 100644
+--- a/src/sqlhist.y
++++ b/src/sqlhist.y
+@@ -6,8 +6,10 @@
+ 
+ #include "sqlhist-parse.h"
+ 
+-extern int yylex(void);
+-extern void yyerror(char *fmt, ...);
++#define scanner sb->scanner
 +
- static struct tracefs_instance *test_instance;
- static struct tep_handle *test_tep;
- struct test_sample {
-@@ -336,6 +343,7 @@ static void test_instance_trace_sql(struct tracefs_instance *instance)
- 	struct tracefs_synth *synth;
- 	struct trace_seq seq;
- 	struct tep_handle *tep;
-+	struct tep_event *event;
++extern int yylex(YYSTYPE *yylval, void *);
++extern void yyerror(struct sqlhist_bison *, char *fmt, ...);
+ 
+ #define CHECK_RETURN_PTR(x)					\
+ 	do {							\
+@@ -27,6 +29,10 @@ extern void yyerror(char *fmt, ...);
+ 
+ %}
+ 
++%define api.pure
++%lex-param {void *scanner}
++%parse-param {struct sqlhist_bison *sb}
++
+ %union {
+ 	int	s32;
+ 	char	*string;
+diff --git a/src/tracefs-sqlhist.c b/src/tracefs-sqlhist.c
+index e47bc57c5add..e8f77d60659f 100644
+--- a/src/tracefs-sqlhist.c
++++ b/src/tracefs-sqlhist.c
+@@ -14,8 +14,6 @@
+ #include "tracefs-local.h"
+ #include "sqlhist-parse.h"
+ 
+-struct sqlhist_bison *sb;
+-
+ extern int yylex_init(void* ptr_yy_globals);
+ extern int yylex_init_extra(struct sqlhist_bison *sb, void* ptr_yy_globals);
+ extern int yylex_destroy (void * yyscanner );
+@@ -98,8 +96,10 @@ struct sql_table {
+ 	struct expr		**next_selection;
+ };
+ 
+-__hidden int my_yyinput(char *buf, int max)
++__hidden int my_yyinput(void *extra, char *buf, int max)
+ {
++	struct sqlhist_bison *sb = extra;
++
+ 	if (!sb || !sb->buffer)
+ 		return -1;
+ 
+@@ -284,7 +284,8 @@ static struct expr *find_field(struct sqlhist_bison *sb,
+ 	return NULL;
+ }
+ 
+-static void *create_expr(enum expr_type type, struct expr **expr_p)
++static void *create_expr(struct sqlhist_bison *sb,
++			 enum expr_type type, struct expr **expr_p)
+ {
+ 	struct expr *expr;
+ 
+@@ -313,7 +314,7 @@ static void *create_expr(enum expr_type type, struct expr **expr_p)
+ 
+ #define __create_expr(var, type, ENUM, expr)			\
+ 	do {							\
+-		var = (type *)create_expr(EXPR_##ENUM, expr);	\
++		var = (type *)create_expr(sb, EXPR_##ENUM, expr);	\
+ 	} while(0)
+ 
+ #define create_field(var, expr)				\
+@@ -999,8 +1000,8 @@ static void free_sb(struct sqlhist_bison *sb)
+ struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
+ 				  const char *sql_buffer, char **err)
+ {
+-	struct sqlhist_bison local_sb;
+ 	struct tracefs_synth *synth = NULL;
++	struct sqlhist_bison sb;
  	int ret;
  
- 	tep = tracefs_local_events(NULL);
-@@ -364,6 +372,23 @@ static void test_instance_trace_sql(struct tracefs_instance *instance)
- 	tracefs_synth_free(synth);
- 	trace_seq_reset(&seq);
+ 	if (!tep || !sql_buffer) {
+@@ -1008,27 +1009,33 @@ struct tracefs_synth *tracefs_sql(struct tep_handle *tep, const char *name,
+ 		return NULL;
+ 	}
  
-+	synth = tracefs_sql(tep, SQL_4_EVENT, SQL_4_SQL, NULL);
-+	CU_TEST(synth != NULL);
-+	ret = tracefs_synth_show(&seq, instance, synth);
-+	CU_TEST(ret == 0);
-+	tracefs_synth_free(synth);
-+	trace_seq_reset(&seq);
+-	memset(&local_sb, 0, sizeof(local_sb));
++	memset(&sb, 0, sizeof(sb));
 +
-+	event = tep_find_event_by_name(tep, NULL, SQL_5_START);
-+	if (event) {
-+		synth = tracefs_sql(tep, SQL_5_EVENT, SQL_5_SQL, NULL);
-+		CU_TEST(synth != NULL);
-+		ret = tracefs_synth_show(&seq, instance, synth);
-+		CU_TEST(ret == 0);
-+		tracefs_synth_free(synth);
-+		trace_seq_reset(&seq);
++	sb.buffer = sql_buffer;
++	sb.buffer_size = strlen(sql_buffer);
++	sb.buffer_idx = 0;
+ 
+-	local_sb.buffer = sql_buffer;
+-	local_sb.buffer_size = strlen(sql_buffer);
+-	local_sb.buffer_idx = 0;
++	ret = yylex_init_extra(&sb, &sb.scanner);
++	if (ret < 0) {
++		yylex_destroy(sb.scanner);
++		return NULL;
 +	}
-+
- 	tep_free(tep);
- 	trace_seq_destroy(&seq);
+ 
+-	sb = &local_sb;
+-	ret = yyparse();
++	ret = yyparse(&sb);
++	yylex_destroy(sb.scanner);
+ 
+ 	if (ret)
+ 		goto free;
+ 
+-	synth = build_synth(tep, name, sb->table);
++	synth = build_synth(tep, name, sb.table);
+ 
+  free:
+ 	if (!synth) {
+-		if (sb->parse_error_str && err) {
+-			*err = sb->parse_error_str;
+-			sb->parse_error_str = NULL;
++		if (sb.parse_error_str && err) {
++			*err = sb.parse_error_str;
++			sb.parse_error_str = NULL;
+ 		}
+ 	}
+-	free_sb(sb);
++	free_sb(&sb);
+ 	return synth;
  }
 -- 
 2.30.2
