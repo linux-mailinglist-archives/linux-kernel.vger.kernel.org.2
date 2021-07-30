@@ -2,192 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4A53DBCF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E5C3DBD00
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhG3QUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:20:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42695 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229479AbhG3QUO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:20:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627662007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6sxbrTXcrTd5pHC9K2KxbmQLHh8u1jEYeqbDBwTE+r4=;
-        b=hlRYVNkNN82UU8Pg+hSQAkvoeSMZ0IT0CXenEn07lNFID8W+4d7BZzdRanBrSjcJ8zf9k8
-        l8Z2ufu3l3Dv4pY9o3hDTbWFLR5GW3fmHIbirY3V7xdrKpa6ULy/4jfYkRAtS1HgEAEYr7
-        08LCTUPF6h6eOifCGGdYXkH6C4581Po=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-8InSzytvM_W1vVtx5MT0NQ-1; Fri, 30 Jul 2021 12:20:06 -0400
-X-MC-Unique: 8InSzytvM_W1vVtx5MT0NQ-1
-Received: by mail-wm1-f69.google.com with SMTP id d72-20020a1c1d4b0000b029025164ff3ebfso3343727wmd.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:20:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6sxbrTXcrTd5pHC9K2KxbmQLHh8u1jEYeqbDBwTE+r4=;
-        b=OMOt+ZzIMXifgHz/MWSrL75N+Pkz78PiaiRWpsn8vNyAmF26fHJsMP1JygCSHg1Tkh
-         yhfQytcmeBDSWZ46Uzb80OOJUVYQssx0ydYUYoTnJklmuDofRHl1DGQvmcglvmtTIhXW
-         5IIpZCeYNGxP7DLDxeYh3HZs5i8T70/FpeSQrOitv8DbrZWOqpkFeCENg1rp4AuhtlhT
-         Up862v7YeKnN5+IPOgdMQqcphRAo3A4WVeHu8MfDXh+VWOljoGFAnzrbJNVsP9jx4WhU
-         AX5G2H99iGn5mcVt2wZno3AxfDmVKgNz+AuZ/rcD2Xik+TavHF0iT27zCmO17D4HrfNU
-         KsCQ==
-X-Gm-Message-State: AOAM53264vIOGObLjTERMVuMtkQD10BujdP0fylQkpskkL01XKYJ1iw5
-        l+NHJsfCLRaPNnpSRxipocmp+GpNuNb425jElGkpodvhsoVfNsFOFEsTSEWhqiDqnduhtsNoXCw
-        pj9VeYM8qQCFADHj2MaigGac=
-X-Received: by 2002:adf:8b86:: with SMTP id o6mr86921wra.116.1627662004390;
-        Fri, 30 Jul 2021 09:20:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwueOQ6ozH2s/dDrfAY4tQiAwkhHfpipARtKccXK0pW5HfzXL3N4gPkJFLi4GaS2oJfkRKhFA==
-X-Received: by 2002:adf:8b86:: with SMTP id o6mr86898wra.116.1627662004124;
-        Fri, 30 Jul 2021 09:20:04 -0700 (PDT)
-Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
-        by smtp.gmail.com with ESMTPSA id b15sm2619315wrr.27.2021.07.30.09.20.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 09:20:02 -0700 (PDT)
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, mhocko@suse.com,
-        penguin-kernel@i-love.sakura.ne.jp, rientjes@google.com,
-        llong@redhat.com, neelx@redhat.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mm/oom_kill: show oom eligibility when displaying the current memory state of all tasks
-Date:   Fri, 30 Jul 2021 17:20:02 +0100
-Message-Id: <20210730162002.279678-1-atomlin@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        id S229750AbhG3QX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:23:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229477AbhG3QX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 12:23:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDF9660F4B;
+        Fri, 30 Jul 2021 16:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627662201;
+        bh=FW5LB4/droceMkapj9/opDRSSB08Hj67ZWxOidv6Bak=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pi4Pi51yNSIBNhSaMwGePr9C1LErMMOjm7VEeu4XA+T1AoBJXCXLGmB8IrxI1e9M9
+         nQnmJWRnj1dEdcCOyUhUASV58lg6mp8Q9Ch3HUwvo+M1dye9AB0F+qXy56B2fcuIL/
+         7yekJ7i6GVA27N22fvtF6si8l9zFY4GT5rxgQq2NQAS5Dq0oMzhdZOivz31N74h7Nk
+         aHOOn63rsKKmynnbkepxhaPwWuzDvmlg+3JxANOZXAENVNOzRAfw28Hod0z5Ejznzw
+         M68M4cIHmzUAo0PYkJMwhcdiiHP27Sm3RhbIw2ew0QAaHWd8z7SZn4SYwA/sDM82Ju
+         Son813H1X1wtg==
+Received: by mail-ed1-f44.google.com with SMTP id p21so13934540edi.9;
+        Fri, 30 Jul 2021 09:23:21 -0700 (PDT)
+X-Gm-Message-State: AOAM532ZYV22ULwtX4p25ZZWyaSdFIeqnEx0DQndjaFGhfEc5/JPF203
+        /WcB2NwfJe8b5y2aoHe0RsbjCBmFUtbeJmgriA==
+X-Google-Smtp-Source: ABdhPJzMdtcUi1zO0dPd4SSrt2q34Yx/1YxBJlURSGlVXMthQEd0rhojXPsJpfAwWhNd3aUVC/s1oj1cE69g15qMsjo=
+X-Received: by 2002:a05:6402:718:: with SMTP id w24mr3884876edx.49.1627662200337;
+ Fri, 30 Jul 2021 09:23:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1627459111-2907-1-git-send-email-chunfeng.yun@mediatek.com> <1627459111-2907-7-git-send-email-chunfeng.yun@mediatek.com>
+In-Reply-To: <1627459111-2907-7-git-send-email-chunfeng.yun@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 31 Jul 2021 00:23:09 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_95Qpv-RjxzWteQ-+p=P0siC2c0vAQdkx-V7bfCwgn34g@mail.gmail.com>
+Message-ID: <CAAOTY_95Qpv-RjxzWteQ-+p=P0siC2c0vAQdkx-V7bfCwgn34g@mail.gmail.com>
+Subject: Re: [PATCH 7/9] phy: phy-mtk-hdmi: convert to devm_platform_ioremap_resource
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-phy@lists.infradead.org, DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v2:
- - Use single character (e.g. 'R' for MMF_OOM_SKIP) as suggested
-   by Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
- - Add new header to oom_dump_tasks documentation
- - Provide further justification
+Hi, Chunfeng:
 
+Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=882=
+8=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=883:59=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Use devm_platform_ioremap_resource to simplify code
 
-The output generated by dump_tasks() can be helpful to determine why
-there was an OOM condition and which rogue task potentially caused it.
-Please note that this is only provided when sysctl oom_dump_tasks is
-enabled.
+Acked-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-At the present time, when showing potential OOM victims, we do not
-exclude any task that are not OOM eligible e.g. those that have
-MMF_OOM_SKIP set; it is possible that the last OOM killable victim was
-already OOM killed, yet the OOM reaper failed to reclaim memory and set
-MMF_OOM_SKIP. This can be confusing (or perhaps even be misleading) to the
-viewer. Now, we already unconditionally display a task's oom_score_adj_min
-value that can be set to OOM_SCORE_ADJ_MIN which is indicative of an
-"unkillable" task.
-
-This patch provides a clear indication with regard to the OOM ineligibility
-(and why) of each displayed task with the addition of a new column namely
-"oom_skipped". An example is provided below:
-
-    [ 5084.524970] [ pid ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom_skipped name
-    [ 5084.526397] [660417]     0 660417    35869      683   167936        0         -1000 M conmon
-    [ 5084.526400] [660452]     0 660452   175834      472    86016        0          -998  pod
-    [ 5084.527460] [752415]     0 752415    35869      650   172032        0         -1000 M conmon
-    [ 5084.527462] [752575] 1001050000 752575   184205    11158   700416        0           999  npm
-    [ 5084.527467] [753606] 1001050000 753606   183380    46843  2134016        0           999  node
-    [ 5084.527581] Memory cgroup out of memory: Killed process 753606 (node) total-vm:733520kB, anon-rss:161228kB, file-rss:26144kB, shmem-rss:0kB, UID:1001050000
-
-So, a single character 'M' is for OOM_SCORE_ADJ_MIN, 'R' MMF_OOM_SKIP and
-'V' for in_vfork().
-
-
-Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
----
- Documentation/admin-guide/sysctl/vm.rst |  5 ++--
- mm/oom_kill.c                           | 31 +++++++++++++++++++++----
- 2 files changed, 30 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-index 003d5cc3751b..4c79fa00ddb3 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -650,8 +650,9 @@ oom_dump_tasks
- Enables a system-wide task dump (excluding kernel threads) to be produced
- when the kernel performs an OOM-killing and includes such information as
- pid, uid, tgid, vm size, rss, pgtables_bytes, swapents, oom_score_adj
--score, and name.  This is helpful to determine why the OOM killer was
--invoked, to identify the rogue task that caused it, and to determine why
-+score, oom eligibility status and name.  This is helpful to determine why
-+the OOM killer was invoked, to identify the rogue task that caused it, and
-+to determine why
- the OOM killer chose the task it did to kill.
- 
- If this is set to zero, this information is suppressed.  On very
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index c729a4c4a1ac..36daa6917b62 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -160,6 +160,27 @@ static inline bool is_sysrq_oom(struct oom_control *oc)
- 	return oc->order == -1;
- }
- 
-+/**
-+ * is_task_eligible_oom - determine if and why a task cannot be OOM killed
-+ * @tsk: task to check
-+ *
-+ * Needs to be called with task_lock().
-+ */
-+static const char * const is_task_oom_eligible(struct task_struct *p)
-+{
-+	long adj;
-+
-+	adj = (long)p->signal->oom_score_adj;
-+	if (adj == OOM_SCORE_ADJ_MIN)
-+		return "M";
-+	else if (test_bit(MMF_OOM_SKIP, &p->mm->flags)
-+		return "R";
-+	else if (in_vfork(p))
-+		return "V";
-+	else
-+		return "";
-+}
-+
- /* return true if the task is not adequate as candidate victim task. */
- static bool oom_unkillable_task(struct task_struct *p)
- {
-@@ -401,12 +422,13 @@ static int dump_task(struct task_struct *p, void *arg)
- 		return 0;
- 	}
- 
--	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %s\n",
-+	pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %1s %s\n",
- 		task->pid, from_kuid(&init_user_ns, task_uid(task)),
- 		task->tgid, task->mm->total_vm, get_mm_rss(task->mm),
- 		mm_pgtables_bytes(task->mm),
- 		get_mm_counter(task->mm, MM_SWAPENTS),
--		task->signal->oom_score_adj, task->comm);
-+		task->signal->oom_score_adj, is_task_oom_eligible(task),
-+		task->comm);
- 	task_unlock(task);
- 
- 	return 0;
-@@ -420,12 +442,13 @@ static int dump_task(struct task_struct *p, void *arg)
-  * memcg, not in the same cpuset, or bound to a disjoint set of mempolicy nodes
-  * are not shown.
-  * State information includes task's pid, uid, tgid, vm size, rss,
-- * pgtables_bytes, swapents, oom_score_adj value, and name.
-+ * pgtables_bytes, swapents, oom_score_adj value, oom eligibility status
-+ * and name.
-  */
- static void dump_tasks(struct oom_control *oc)
- {
- 	pr_info("Tasks state (memory values in pages):\n");
--	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name\n");
-+	pr_info("[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj oom_skipped name\n");
- 
- 	if (is_memcg_oom(oc))
- 		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
--- 
-2.31.1
-
+>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  drivers/phy/mediatek/phy-mtk-hdmi.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/phy/mediatek/phy-mtk-hdmi.c b/drivers/phy/mediatek/p=
+hy-mtk-hdmi.c
+> index 8ad8f717ef43..5fb4217fb8e0 100644
+> --- a/drivers/phy/mediatek/phy-mtk-hdmi.c
+> +++ b/drivers/phy/mediatek/phy-mtk-hdmi.c
+> @@ -100,7 +100,6 @@ static int mtk_hdmi_phy_probe(struct platform_device =
+*pdev)
+>  {
+>         struct device *dev =3D &pdev->dev;
+>         struct mtk_hdmi_phy *hdmi_phy;
+> -       struct resource *mem;
+>         struct clk *ref_clk;
+>         const char *ref_clk_name;
+>         struct clk_init_data clk_init =3D {
+> @@ -116,11 +115,9 @@ static int mtk_hdmi_phy_probe(struct platform_device=
+ *pdev)
+>         if (!hdmi_phy)
+>                 return -ENOMEM;
+>
+> -       mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -       hdmi_phy->regs =3D devm_ioremap_resource(dev, mem);
+> -       if (IS_ERR(hdmi_phy->regs)) {
+> +       hdmi_phy->regs =3D devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(hdmi_phy->regs))
+>                 return PTR_ERR(hdmi_phy->regs);
+> -       }
+>
+>         ref_clk =3D devm_clk_get(dev, "pll_ref");
+>         if (IS_ERR(ref_clk)) {
+> --
+> 2.18.0
+>
