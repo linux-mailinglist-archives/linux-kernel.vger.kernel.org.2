@@ -2,268 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F193DC1A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D91C3DC1A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbhG3Xjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 19:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39488 "EHLO
+        id S234188AbhG3XlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 19:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhG3Xjq (ORCPT
+        with ESMTP id S231209AbhG3XlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 19:39:46 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61F2C0613C1;
-        Fri, 30 Jul 2021 16:39:40 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id q2so12892056plr.11;
-        Fri, 30 Jul 2021 16:39:40 -0700 (PDT)
+        Fri, 30 Jul 2021 19:41:12 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C01C06175F;
+        Fri, 30 Jul 2021 16:41:07 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id b7so15443986edu.3;
+        Fri, 30 Jul 2021 16:41:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/funuoKDMV4S7FuS+9nBRn5+wd8zcXBynQL67/rRzq0=;
-        b=YIiyNNzatCqhQBd/xc5obRQgnenLFiVi1virBraOXWQ3+pS6eZKnFsZkFp11D+q5dx
-         F2L35I+VsCJL5SvmGEW6esJysGOoKZSBJTpjZ9lJeB8cgsIhynqkFBYkX8Two3LEeNS8
-         XVWpNkaK5ydE6FS0J7euigTHQZfuo6qAL5W1ZvyfRG9Wmset6jMnxlawoCRTeHn5nE5S
-         7sd29vPz8MyTiAjL1jD5S0IzVK6qMPqcYaR2rFYJAfQgVbYznI8NdMwNVH+pEaqAhom2
-         8BkSIkwS+CivGNT8xnpQbedi5arDEordLaS1ouXxHvjXEKGcpluQ4+It0Enx0Gju92Bt
-         FX0w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jSLUnuuq5fV++9tMx9L7dLU+YzP6IguTmZ4Xmh+94Bg=;
+        b=nJKDksbiCLIFAtUQDafEvw8Tzb1I9e/ExJonodW9mAQVo7IJwENFLNXkXhOxQeKsnF
+         poz0zfkeaJomNjwwRAtTVImPZ92rp8E3H3CqyHF5VgrqRpilrelaFtxpKdggbwdknlCr
+         +frMG9q5tu10/1KIxHyes8BTAmU+QlEfUuJ7sO5JvAx8phaVDZzW5wzyVupRCAacJXNr
+         8tyaFCL2nt6rxITYE0xsb5sZ+Hy2cz09YeQZxlkcM0wHwtYgFgMRZMbJKLv2Z6DzZe5m
+         cDi/yh4U3O7fgoOk1CIomGbWhRk9XwpRqGI0XGnw7VcJq6oDOZAdFx31F6W6U9IWMDge
+         aGRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/funuoKDMV4S7FuS+9nBRn5+wd8zcXBynQL67/rRzq0=;
-        b=lpAOxeRmKRC0ahePrjm9HfTxQVe4RvVn9t6mIvcGmFJE3PlIU93GoK8GxxbYa/wlK8
-         MObziHO0yvint1kV0pRRQsvjsUamfrQNlclop/k/tLB3xF56obdIdcy1oiACAHYa+PvU
-         JZiHT14e3nbSt9eh0T/0E/9mXYVi+jOHauvgxymguOOaUDw241Laea21Whoz+qqlOCvo
-         LSh6cTQnIvXw8HXQwoqb2barrnUTr5Z7ELVOyXYCPfPQ4hD+TtZTnh1zTwgXxSHCLsD+
-         MjC4duMcQScmcGSoqmHD6x40iikg1ZNJltsmbPDkVXNoPR4aS1ZHmWARbVgUKdPKvW4C
-         ONEA==
-X-Gm-Message-State: AOAM532u8c9LiE4Tx7HGxJe1YrPEIuKxp1q8OmQCgpvAcjTVKRgkUg4i
-        X3lHm5h/xN225urNUVATv6s=
-X-Google-Smtp-Source: ABdhPJy08DWWWoW8txSwC0QIeRWvPtsJGC7xJTL3aQEF25eFbI+lUe51HkpM9cXeafZ1HxcTdy2dgg==
-X-Received: by 2002:a17:902:9002:b029:12b:f33e:33ec with SMTP id a2-20020a1709029002b029012bf33e33ecmr4614917plp.6.1627688380189;
-        Fri, 30 Jul 2021 16:39:40 -0700 (PDT)
-Received: from localhost.localdomain ([1.145.37.91])
-        by smtp.gmail.com with ESMTPSA id y15sm4156564pga.34.2021.07.30.16.39.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 16:39:39 -0700 (PDT)
-Date:   Sat, 31 Jul 2021 09:39:32 +1000
-From:   "G. Branden Robinson" <g.branden.robinson@gmail.com>
-To:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        landlock@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v2 1/4] landlock.7: Add a new page to introduce Landlock
-Message-ID: <20210730233931.lbtq67esmeuo4o6d@localhost.localdomain>
-References: <20210712155745.831580-1-mic@digikod.net>
- <20210712155745.831580-2-mic@digikod.net>
- <3f1b943b-2477-2c4e-c835-d6616888176c@gmail.com>
- <c5036c5c-37a1-57d2-e5dc-1f41a5ed0d31@digikod.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jSLUnuuq5fV++9tMx9L7dLU+YzP6IguTmZ4Xmh+94Bg=;
+        b=s+uiL59t5wzD51UH+syFsE0X75ihfncp2mVPIPLknL/CgeTqYWuAfG6QqT7iVUhgMR
+         5SMsHEoxFRkalz5GNAWqJBulPS82iNQ3GhcrQHGdJTE6xTpA6WkU7hSwpJJ/LelM8gp6
+         WtPAvR0/uhW579GWQW6+zLC8YrudWJCylYQhaInfhRA2UsgufLqZMW3Sa2gwQGsOSJn6
+         05zV2cYPhwhJsXN5vz3jmAESpmrhnHXtdv0zYreiVbqZbC0zoHJMuCtdLVAXPSUiag0D
+         APkfyzAsZhwEQQIRELUSZAxFxb1O2OITtBwpF4aiVgg90ImxwcKEs6swSvqcR8B/YeGJ
+         xmfw==
+X-Gm-Message-State: AOAM530EbjgnbcuqB8z7J+XZ6uZXSnGu8MytyhLP1U3zASWmPG3qqMRO
+        bUcCnYFDu+U91ZzC/TSqf0fv1yil5yxmqiGhSMA=
+X-Google-Smtp-Source: ABdhPJxfYN/q50PwtEt3EJiGj5Xb4PpKv5m7TrjWQ6Yme3cRMXL+6f6psAPwR3C5mFjRRECnBjMITxj+5Mu6oUPn4q4=
+X-Received: by 2002:a50:ce45:: with SMTP id k5mr6111555edj.168.1627688466110;
+ Fri, 30 Jul 2021 16:41:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aahkqoefdilbcf2r"
-Content-Disposition: inline
-In-Reply-To: <c5036c5c-37a1-57d2-e5dc-1f41a5ed0d31@digikod.net>
-User-Agent: NeoMutt/20180716
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <e6e572-f314-8a43-41a7-7582759d24@google.com>
+In-Reply-To: <e6e572-f314-8a43-41a7-7582759d24@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 30 Jul 2021 16:40:54 -0700
+Message-ID: <CAHbLzkp2s+Tkd1kdD4XPU-BF_rDy3Ck7+peTg+WdOWORMjwK-g@mail.gmail.com>
+Subject: Re: [PATCH 09/16] huge tmpfs: decide stat.st_blksize by shmem_is_huge()
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 30, 2021 at 12:51 AM Hugh Dickins <hughd@google.com> wrote:
+>
+> 4.18 commit 89fdcd262fd4 ("mm: shmem: make stat.st_blksize return huge
+> page size if THP is on") added is_huge_enabled() to decide st_blksize:
+> now that hugeness can be defined per file, that too needs to be replaced
+> by shmem_is_huge().
+>
+> Unless they have been fcntl'ed F_HUGEPAGE, this does give a different
+> answer (No) for small files on a "huge=within_size" mount: but that can
+> be considered a minor bugfix.  And a different answer (No) for unfcntl'ed
+> files on a "huge=advise" mount: I'm reluctant to complicate it, just to
+> reproduce the same debatable answer as before.
+>
+> Signed-off-by: Hugh Dickins <hughd@google.com>
 
---aahkqoefdilbcf2r
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-Hi, Micka=C3=ABl!
-
-I'm going to rearrange your message to reply to it to put the shortest
-point first, as I am nervous of people tiring of my info dumps,
-especially with such an efflorescent CC list.
-
-At 2021-07-30T14:15:48+0200, Micka=C3=ABl Sala=C3=BCn wrote:
-> >> +The rule will only allow reading the file hierarchy
-> >> +.IR /usr .
->=20
-> Why ".IR" is correct here?
-
-Because you don't want a space or a line break in the output between
-"/usr" and the period.
-
-Line breaks in *roff input usually mean "insert a word break here".[1]
-
-[the long version]
-> When do we really need .IR? Isn't `.I "foo bar"` the same as `.IR foo
-> bar`? What do you use roman for?
->=20
-> Where can we find these preferences? The best I found was
-> https://www.man7.org/linux/man-pages/man7/groff_man.7.html but it
-> doesn't explain what to use. The current man pages seems to use both
-> interchangeably.
-
-This is a good news/bad news situation for me.  As the maintainer of
-that man page, I'm delighted to hear that you found it the best resource
-of its type.  But that you came away still not knowing when or why to
-use .IR tells me I still have work to do.
-
-One of the things I did after the groff 1.22.4 release (December 2018)
-was to split groff_man(7) into two pages.  The one you've linked is the
-terser reference for seasoned (perhaps salty) man page writers.  Near
-the top of it you'll find this.
-
-       This document presents the macros thematically; for those needing
-       only a quick reference, the following table lists them
-       alphabetically, with cross-references to appropriate subsections
-       below.
-
-       Man page authors and maintainers who are not already experienced
-       groff users should consult groff_man_style(7), an expanded
-       version of this document, for additional explanations and advice.
-       It covers only those concepts required for man page document
-       maintenance, and not the full breadth of the groff typesetting
-       system.
-
-There, at <https://www.man7.org/linux/man-pages/man7/groff_man.7.html>,
-I'd direct you to the following.
-
-   Font style macros
-       The man macro package is limited in its font styling options,
-       offering only bold (.B), italic (.I), and roman.  Italic text is
-       usually set underscored instead on terminal devices.  The .SM and
-       .SB macros set text in roman or bold, respectively, at a smaller
-       point size; these differ visually from regular-sized roman or
-       bold text only on typesetter devices.  It is often necessary to
-       set text in different styles without intervening space.  The
-       macros .BI, .BR, .IB, .IR, .RB, and .RI, where =E2=80=9CB=E2=80=9D, =
-=E2=80=9CI=E2=80=9D, and =E2=80=9CR=E2=80=9D
-       indicate bold, italic, and roman, respectively, set their odd-
-       and even-numbered arguments in alternating styles, with no space
-       separating them.
-[...]
-       .I [text]
-              Set text in italics.  If the macro is given no arguments,
-              the text of the next input line is set in italics.
-
-              Use italics for file and path names, for environment
-              variables, for enumeration or preprocessor constants in C,
-              for variable (user-determined) portions of syntax
-              synopses, for the first occurrence (only) of a technical
-              concept being introduced, for names of works of software
-              (including commands and functions, but excluding names of
-              operating systems or their kernels), and anywhere a
-              parameter requiring replacement by the user is
-              encountered.  An exception involves variable text in a
-              context that is already marked up in italics, such as file
-              or path names with variable components; in such cases,
-              follow the convention of mathematical typography: set the
-              file or path name in italics as usual but use roman for
-              the variable part (see .IR and .RI below), and italics
-              again in running roman text when referring to the variable
-              material.
-[...]
-       Note what is not prescribed for setting in bold or italics above:
-       elements of =E2=80=9Csynopsis language=E2=80=9D such as ellipses and=
- brackets
-       around options; proper names and adjectives; titles of anything
-       other than works of literature or software; identifiers for
-       standards documents or technical reports such as CSTR #54,
-       RFC 1918, Unicode 13.0, or POSIX.1-2017; acronyms; and
-       occurrences after the first of a technical term or piece of
-       jargon.  Again, the names of operating systems and their kernels
-       are, by practically universal convention, set in roman.
-
-       Be frugal with italics for emphasis, and particularly with bold.
-       Brief runs of literal text, such as references to individual
-       characters or short strings, including section and subsection
-       headings of man pages, are suitable objects for quotation; see
-       the \(lq, \(rq, \(oq, and \(cq escapes in subsection
-       =E2=80=9CPortability=E2=80=9D below.
-
-       Unlike the above font style macros, the font style alternation
-       macros below accept only arguments on the same line as the macro
-       call.  Italic corrections are applied as appropriate.  If space
-       is required within one of the arguments, first consider whether
-       the same result could be achieved with as much clarity by using
-       the single-style macros on separate input lines.  When it cannot,
-       double-quote an argument containing embedded space characters.
-       Setting all three different styles within a word presents
-       challenges; it is possible with the \c and/or \f escapes, but see
-       subsection =E2=80=9CPortability=E2=80=9D below for caveats.
-[...]
-       .IR italic-text roman-text ...
-              Set each argument in italics and roman, alternately.
-
-                     This is the first command of the
-                     .IR prologue .
-
-I'd appreciate feedback from anyone on how I can improve the above.
-
-> >> +upper layer.
-> >> +From a Landlock policy point of view,
-> >> +each OverlayFS layers and merge hierarchies are standalone and contai=
-ns
-> >> +their own set of files and directories,
-> >> +which is different from bind mounts.
-> >=20
-> >=20
-> > Incorrect mix of singular and plural, I think.
->=20
-> Is it OK with s/contains/contain/?
-
-That's correct, but you also need s/their/its/.
-
-A handy technique for resolving inflection/agreement problems in English
-is to drop phrases from the sentence in a way that preserves its
-structure; this usually makes clear what should be done.
-
-In this case, "... Each ... contains its own set."
-
-Native speakers screw this up even in simpler cases; e.g.,
-
-  *"The spaces in between leave room for you and I to grow."
-
-We get thrown by the conjunction "and", which makes the language organ
-in our brain think of plural number.  But no native speaker ever commits
-the error
-
-  *"Will you buy a hamburger for I?"
-
-unless for deliberate effect.  (Though there is probably some hamlet in
-the West Midlands of England or something where this is standard. :-| )
-
-Regards,
-Branden
-
-[1] "Usually."  In roff terms, this generalization applies to text lines
-    (not control lines; that is, lines starting with a control
-    character) that do not end with the output line continuation escape
-    sequence, '\c'.
-
---aahkqoefdilbcf2r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEh3PWHWjjDgcrENwa0Z6cfXEmbc4FAmEEjaMACgkQ0Z6cfXEm
-bc4kCg/+Ih9W+OUJ+Y20UiJc+piOJG+EXx9h3UHhbUcVJJD2lMj5L9xtQJu0rL3V
-xc1uAR/KaY4hz07IKVOkXJc+dqkSYv5bUyzN8UsMgOwucAWyu6htlAtSZywMqIcR
-GL57hK2J6/5QabGxj0yZ8+8v0EETvD35l0vFsjD9C1tA7xgsuxJogKiWdNBHNeRa
-achLdI+8+oP3Z5/de+wGYWL8yZdEoT1NMpotbz5AiQhiTEBePN3Ld8AZtAuI2Gyr
-pgluNmS/dyi93mPLQUJ7esBVbKaX0JnlIXn9UYvDRbzeCpUYcsUJTfJ1BNvXYlR8
-R0/OhJS5HoTU/Nzb5rWA607S6BYr4VS5EwAEAcYqRhBA7cCDDdLWL4kHj6ETQXc4
-rorn7X+ner/fHDNR9iDItCavGnPABdJCmRoRjUqNtxVy0FIqyGF5DBWVDgonIyd8
-CVr9yHpkpxDrVIC9dUx8EqmDokLbgx+9CZuYH1rdX7OsARZW+0HH635l2lveQV6E
-46z1BEZzf0zhOP3oUbgsTcgXFnbKBW8OPviUrxqBuRxirb2D5RSEoqelHCz5vCyK
-NafJStZv9SQdJyoCJUNu4anBLTgsW9OrzafbW8GhDggJobESI4WXDYmvCJwoD7bC
-qEJvu8k/48tVbfoiIZHlA4ql02iENRKb/JST48XC62Vvj4Nd6i4=
-=2G4r
------END PGP SIGNATURE-----
-
---aahkqoefdilbcf2r--
+> ---
+>  mm/shmem.c | 12 +-----------
+>  1 file changed, 1 insertion(+), 11 deletions(-)
+>
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 67a4b7a4849b..f50f2ede71da 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -712,15 +712,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+>  }
+>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>
+> -static inline bool is_huge_enabled(struct shmem_sb_info *sbinfo)
+> -{
+> -       if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+> -           (shmem_huge == SHMEM_HUGE_FORCE || sbinfo->huge) &&
+> -           shmem_huge != SHMEM_HUGE_DENY)
+> -               return true;
+> -       return false;
+> -}
+> -
+>  /*
+>   * Like add_to_page_cache_locked, but error if expected item has gone.
+>   */
+> @@ -1101,7 +1092,6 @@ static int shmem_getattr(struct user_namespace *mnt_userns,
+>  {
+>         struct inode *inode = path->dentry->d_inode;
+>         struct shmem_inode_info *info = SHMEM_I(inode);
+> -       struct shmem_sb_info *sb_info = SHMEM_SB(inode->i_sb);
+>
+>         if (info->alloced - info->swapped != inode->i_mapping->nrpages) {
+>                 spin_lock_irq(&info->lock);
+> @@ -1110,7 +1100,7 @@ static int shmem_getattr(struct user_namespace *mnt_userns,
+>         }
+>         generic_fillattr(&init_user_ns, inode, stat);
+>
+> -       if (is_huge_enabled(sb_info))
+> +       if (shmem_is_huge(NULL, inode, 0))
+>                 stat->blksize = HPAGE_PMD_SIZE;
+>
+>         return 0;
+> --
+> 2.26.2
+>
