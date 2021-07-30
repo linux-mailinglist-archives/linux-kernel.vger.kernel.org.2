@@ -2,141 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D18B3DB1BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4983DB1C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbhG3DHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 23:07:55 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25830 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230199AbhG3DHw (ORCPT
+        id S235581AbhG3DIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 23:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230199AbhG3DIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 23:07:52 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U33VFT018309;
-        Thu, 29 Jul 2021 20:07:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=54NPDS6lB4VPZ4bo5JGJQTtu3qHWneipWZYY8A8LkxI=;
- b=Tm0lOPz7orr9fWBuz7xeb5TE1pTWHrB2M/RTmikDu60rx0g6Ezjw2sR4mpmtvuSVWrJk
- 3IfsKMMUQ+5KZNaF7FOZuOcI5QQ19ThYbf77x13Vjts2qacZWpmuIeUJdqJ/BALok13w
- yOdfLhNrExpu6Txalb1mOXLi39iu8SLqkpI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a3a9r35f2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 29 Jul 2021 20:07:33 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 20:07:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fbMigbb5CLOleRbIWqrxijHzKQmqo3p3S1xgiBhxTQLtIqkw6g4UTyqmp0rTVfMzkzlJgCXT5OIx8MsJxlhVwW0/sQLtQsy6/kSF+YPON6qc/YbNOaQHmKN6s1Esk85tudqvxwQIaybIjehKXrFNagArqOk+2JbfpRS5KKdWd1G9+IjV+LqEUHC4lChX5iQU+NjxHhdfJ7rnRRy4pMmro5cv4b9td84O2+EpcXW9x6/pUSq0jo3x24B7yNeOnPhOonin6zkubaFe8DunsTSH0lIQ3Dmy3itl7VvBnsksMGERxUsq74UPl436qOsPSvOJ8Ehg4jBwfFe5FzFJ+FQbPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=54NPDS6lB4VPZ4bo5JGJQTtu3qHWneipWZYY8A8LkxI=;
- b=iaFdOMEp2e9+ncHtpaBEfxkI6DXNmpe7GJNiePUZQShDMkSCKhbXlyX9AT2y4E3LHRkUCRRmKKLEwltAroCNrz+uutN2DHuj5AP7EmOHHFTp1n2aVNvLrkC4CdlzROxV4OrvVTdTtiD0KnyH+wdOWDxhge5lRZSKZZKLsMJf3FR4Y9/6yfxroS1qfTxsIhCn64dbev9VkasKWyyTxa74k3iXRZEKHvUk5SCoDq+PoUp2JCp8f6K7zCFjGUz9HWiVf/H/ikjsbfINnA3yEyvXHrwxjZLVEcD5oaWvuHM4hQLh3fN7gufsObs0gUKoq2IIDqWK0jhDbFm0NhElPtdq9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by SJ0PR15MB4472.namprd15.prod.outlook.com (2603:10b6:a03:375::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Fri, 30 Jul
- 2021 03:07:32 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::9520:2bcd:e6fd:1dc7]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::9520:2bcd:e6fd:1dc7%6]) with mapi id 15.20.4352.034; Fri, 30 Jul 2021
- 03:07:32 +0000
-Date:   Thu, 29 Jul 2021 20:07:27 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
-        <shakeelb@google.com>, <willy@infradead.org>, <alexs@kernel.org>,
-        <richard.weiyang@gmail.com>, <songmuchun@bytedance.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <cgroups@vger.kernel.org>
-Subject: Re: [PATCH 3/5] mm, memcg: save some atomic ops when flush is
- already true
-Message-ID: <YQNs71JoXrxTnAA8@carbon.lan>
-References: <20210729125755.16871-1-linmiaohe@huawei.com>
- <20210729125755.16871-4-linmiaohe@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210729125755.16871-4-linmiaohe@huawei.com>
-X-ClientProxiedBy: MWHPR12CA0060.namprd12.prod.outlook.com
- (2603:10b6:300:103::22) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Thu, 29 Jul 2021 23:08:51 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB141C061765;
+        Thu, 29 Jul 2021 20:08:46 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id e21so9368131pla.5;
+        Thu, 29 Jul 2021 20:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=FGli0G5ovwMHnEV6R6FenXzO7sxU6LjELt5khjX4A+E=;
+        b=VwkM08Y4LHHttykzFq9x2l4TW7pUVaswpnJEDUXkUUO6TvEdalDhhzjDRjP/kMBD9u
+         qpLNqlTxaZK05gifeKOCGD6S4KLAdt9/05m3dlBenlzWHFYbEEMC4l8fu0FDuQ0mzgIa
+         0BI49FXDhHei5M+V4BrSiSPPA3dgOz23OTYfAfRjFrtPRVoLaLUpc8LBKHCeTXi/uPr+
+         1uq71jl1jAwKzadVYCiE/+6P9XGE2TPDZuHm8pJBixaj4Npf9qkknRTn3Cm5LUHbCO35
+         8jbL7TJeSqgXaix5/TUw2R1Fp/1T7HXoDe/r6mEF73oiu6UOQoZEZMpePhlKnRl0BCMd
+         vOpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=FGli0G5ovwMHnEV6R6FenXzO7sxU6LjELt5khjX4A+E=;
+        b=KyXKt1BUEhyTPjohmb5OvahjRVqYM47W4/JBrQwTfzgVF8815gE5FNVitt+uY46FCQ
+         oqJP62uHsyWiipxHCBwyMRndC5buMo6mOW3XtyGeP73VxJhGmqeV7TjV33KCYAkJxGOF
+         aFGN/el6obj4rmxHcaFPT/7PQEylO8PMLnDiZ7YT7b47c7Pj79wUnls3j9UUeOI6oIn5
+         kOMIp84YYzFJEZqHHYQuEjg8R+tA4zmz2bH/YXotBgpQ1c6SRmtw8RFpBc02XAWE2hlN
+         UpCfOOZMedCvMkHwExpcoBWqck39NMggVtqO1cF5PYtciJhreAaJ3u6KqP381ggkEUL/
+         Pe4g==
+X-Gm-Message-State: AOAM530mZHUNy/HI2EYOxDt4zg+L1BL1CXO3bfKKBsChgqevtu2nSgKr
+        7d8ckoPf8SHEzKXvxkPThCuavaBp0bCLXA==
+X-Google-Smtp-Source: ABdhPJyza6LJi7DuYemwCdW4J3yYhmFdBbdaVD3GRF+khUjcrsEl27kn2s/1EEByESWhy6DjnGXoaQ==
+X-Received: by 2002:a17:90b:1b06:: with SMTP id nu6mr755732pjb.192.1627614526229;
+        Thu, 29 Jul 2021 20:08:46 -0700 (PDT)
+Received: from localhost ([108.161.26.224])
+        by smtp.gmail.com with ESMTPSA id p10sm283859pgr.14.2021.07.29.20.08.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 20:08:44 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 20:08:38 -0700
+From:   Matt Turner <mattst88@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Arnd Bergmann <arnd@arndb.de>, Chen Li <chenli@uniontech.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        David Hildenbrand <david@redhat.com>,
+        gushengxian <gushengxian@yulong.com>,
+        He Zhe <zhe.he@windriver.com>, Mike Rapoport <rppt@kernel.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        tangchunyou <tangchunyou@yulong.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PULL] alpha.git
+Message-ID: <20210730030838.5mp7srx73wuttx5m@ivybridge>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.lan (2620:10d:c090:400::5:166a) by MWHPR12CA0060.namprd12.prod.outlook.com (2603:10b6:300:103::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Fri, 30 Jul 2021 03:07:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f7bece4d-f77c-41d6-392e-08d953072c1e
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4472:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB4472589F429C8863BCBC7DFABEEC9@SJ0PR15MB4472.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HR7cawqF7XEeq7/QweUYsqlB15nK+QMGpHwsy+2A9M1mP/1PDZZ3V0UENzqT8Xjgu72BY9pnK0ZRbybeFXSkcWwWUPWU1IlHgGl5V2fCuqG0EaWwxHS0pnts9jYMPpPkBjOeBN3XS0ebpT0xS9xSXAmHuoi+kPkemdwTEUTSvS/YT6vJGWBbCUABayto6Fe21CYSVBPk1Es4VQvMPuhZC0laYhkxWwQ0xSOnOltFgFT9X20r4xg9JIwKFedsADjZKfJWOYhTOQygiDv4LhxdFmSrTTgX9aK6mJsxgTH5T0vK+LUqbDgZQdbmoxRdvAwOcpKJtYcI8ZTDumo4k0+KIsLTlD+28YiZDFfvhMi7LWeLl9JFn8+fIRA8pCSJYwPTAW66pj5GW76qah9IOBpVVchazHvxEzhzNxHkEf4NYxZmGcqFAsEnFGFx7OWMaGH1folaLD3TJUu24uDCZaRH6DmB8STehXj+AG4kzytlBT8I4mVPZKzHBOhSrYh0dASWTBQ6iMXpargzIUAt6c8MT6oBoHWuVm0KELbr/LkA6N0AjHABAxXfmZOE+QngSfTK64gF1UAjlpK7XrYmsCtjX5tWBkdZpDwu5XyWX9JDwRCfh/hiRmo1XUlpr0bUWlSL2iLKE9yZSEg8xE4uTxl+ZQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(346002)(376002)(136003)(86362001)(6506007)(316002)(6916009)(558084003)(5660300002)(6666004)(186003)(2906002)(55016002)(9686003)(478600001)(66476007)(4326008)(7696005)(52116002)(8936002)(38100700002)(66946007)(66556008)(7416002)(8676002)(8886007)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KgQs4gQE9YFYqIm6i32x/5cffsZFAWZrtf8J5irE0b9+ajnbwpBsIChr0cOu?=
- =?us-ascii?Q?1Q2mRFM54pIC8KkP+W0aMRG6csAg71NraCeKz2b//jDSG/hCDhF3DqPWQKN+?=
- =?us-ascii?Q?GeJ7xTM8uGICGptCVreg3BUzWqvxf2pii8wLhKTpE3GfqCTmHlkGvEd0IXf2?=
- =?us-ascii?Q?hFHP8sIrepLLPm7ATcLVmDr3GVKNP512jigEfn/IOTt+DhwqRn+6idyyn3oQ?=
- =?us-ascii?Q?fUSynXga4BCa1yqdLw0L0t+FEArZLAndMx21M4LryQOXYLEgOo10a4g1Bhz9?=
- =?us-ascii?Q?Yd8WR5V3orkUs3hcmsbtCtApLMofeNMZjjQsyY2sf3iYpPC0W4O5dSoWhiY8?=
- =?us-ascii?Q?Z6YYKsQDNS217YYG41mMohEPGFFG9+lCBCKAsVcE12Ezx8GlkOowBd63PH2p?=
- =?us-ascii?Q?aaDOnRsT6RPk6lYPeICzF503aG78IiOK6sEyAgm4IWP22exnYdUsXTv8NPaw?=
- =?us-ascii?Q?HeJE93Hy+psdawYZC4v0TeyDrFLYuf26Oe0Tp9SM2aJkVm6t0S/M8nnzCC8z?=
- =?us-ascii?Q?/agSexBOwusEAUcrFArUoAUjAhWqA1sbxorWTWIpeSZnepnJiuBWaKPA5bpk?=
- =?us-ascii?Q?4pVT+58Kfug/9GH1vTSejLFofFcyWo+oJthu8d4Oc0jkbPyPV2Z4WXSbmWLN?=
- =?us-ascii?Q?DlJ1OMxMZvMLlbv9un4yr4AF8W2Sb9r/KA6XZPbk0iqiirMJyvDgW7X22J9/?=
- =?us-ascii?Q?V/al+31OX5d0gN5r9058OjWBHTCnvOhgLnD0c56NNT8XRHmpbV0tG7i7pRwg?=
- =?us-ascii?Q?4fkIWNeQCKBuN9DbrGwJgusw0BGDPM6EMr5U4bXVQvGJyy8dtT2ck4B9XnqH?=
- =?us-ascii?Q?bshvNM2/g2bmUtKoIu1fesphD2hl13gc3Y6w65Y39K4R9iDVJO77h5BtwusQ?=
- =?us-ascii?Q?MMZSu5vaG3hBOyBFwWpcKdupFRFIArTtKpBBhkCkoc3sQsB7AQCh0sjn99rw?=
- =?us-ascii?Q?H8ahKrRcVcGAuVgx/Db52BS8G8mj0rFmYsX+7UotwGj9FVT3wu+6CoiTziu2?=
- =?us-ascii?Q?kaDpOVutdh7HuRcunQuNLBN/apd7rTvyznPVdE3mQNq5feV1AZ53ZlqfOw34?=
- =?us-ascii?Q?XZkuE/BPAYjEH1+R232cX51zHdfmVfCSBNdl7W83jZrKGZx0u/HEbPk170M0?=
- =?us-ascii?Q?13dxwU2n/2uzyymVBdqcH60LarMCQszV8v6vpa81mG3F6HXWzXER13RV48b2?=
- =?us-ascii?Q?UNUPAyZxEzRtWP/1QsC1dsjk2+cMADI00OycxT0JzPNQSxWVeHIBcK+14ZQ9?=
- =?us-ascii?Q?lZlA5hCeNOWDeoS4NitGHHlGO7lYkVVq4LMmsDqBwa2VaDYg6UUW6DYhlySr?=
- =?us-ascii?Q?bJXPJCpbE9j1H3sbV46q4PzNjwTJjlf9X/lpPINKge7bew=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7bece4d-f77c-41d6-392e-08d953072c1e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 03:07:32.1069
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aYPIFnRpB82fgtyaaU0CRWlwoiDyXPxiYflxxWgLwLb0/GzB6gQx0jqJHgNo5M/E
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4472
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: hBBE5eT0Z9ZVDj-cFplQssiBlVFQH3Yh
-X-Proofpoint-ORIG-GUID: hBBE5eT0Z9ZVDj-cFplQssiBlVFQH3Yh
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_20:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=582
- clxscore=1015 adultscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
- spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107300017
-X-FB-Internal: deliver
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="v4v74npvwpxrqo5o"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 08:57:53PM +0800, Miaohe Lin wrote:
-> Add 'else' to save some atomic ops in obj_stock_flush_required() when
-> flush is already true. No functional change intended here.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Acked-by: Roman Gushchin <guro@fb.com>
+--v4v74npvwpxrqo5o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Linus,
+
+Please pull a few changes for alpha. They're mostly small janitorial fixes but
+there's also more important ones: a patch to drop the alpha-specific x86 binary
+loader (from David Hildenbrand), a regression fix for at least Marvel platforms
+(from Mike Rapoport), and a fix for a scary-looking typo (from Zheng Yongjun).
+
+Thanks,
+Matt
+
+The following changes since commit ff1176468d368232b684f75e82563369208bc371:
+
+  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/mattst88/alpha.git for-linus
+
+for you to fetch changes up to 640b7ea5f888b521dcf28e2564ce75d08a783fd7:
+
+  alpha: register early reserved memory in memblock (2021-07-28 20:49:18 -0700)
+
+----------------------------------------------------------------
+Alexander A. Klimov (1):
+      alpha: Kconfig: Replace HTTP links with HTTPS ones
+
+Arnd Bergmann (1):
+      alpha: fp_emul: avoid init/cleanup_module names
+
+Chen Li (1):
+      alpha: remove undef inline in compiler.h
+
+Corentin Labbe (2):
+      alpha: __udiv_qrnnd should be exported
+      alpha: defconfig: add necessary configs for boot testing
+
+David Hildenbrand (1):
+      binfmt: remove support for em86 (alpha only)
+
+He Zhe (1):
+      alpha: Add syscall_get_return_value()
+
+Mike Rapoport (1):
+      alpha: register early reserved memory in memblock
+
+Prarit Bhargava (1):
+      alpha: Send stop IPI to send to online CPUs
+
+Zheng Yongjun (1):
+      alpha: convert comma to semicolon
+
+gushengxian (2):
+      alpha: Remove space between * and parameter name
+      alpha: fix spelling mistakes
+
+tangchunyou (1):
+      alpha: fix typos in a comment
+
+ arch/alpha/Kconfig                |   2 +-
+ arch/alpha/boot/bootp.c           |   2 +-
+ arch/alpha/boot/bootpz.c          |   2 +-
+ arch/alpha/boot/misc.c            |   2 +-
+ arch/alpha/configs/defconfig      |   1 +
+ arch/alpha/include/asm/compiler.h |  11 ----
+ arch/alpha/include/asm/syscall.h  |   6 +++
+ arch/alpha/kernel/osf_sys.c       |   4 +-
+ arch/alpha/kernel/perf_event.c    |   2 +-
+ arch/alpha/kernel/process.c       |   2 +-
+ arch/alpha/kernel/setup.c         |  13 ++---
+ arch/alpha/kernel/smp.c           |   2 +-
+ arch/alpha/kernel/sys_nautilus.c  |   2 +-
+ arch/alpha/kernel/traps.c         |   2 +-
+ arch/alpha/math-emu/math.c        |   8 ++-
+ fs/Kconfig.binfmt                 |  15 ------
+ fs/Makefile                       |   1 -
+ fs/binfmt_em86.c                  | 110 --------------------------------------
+ 18 files changed, 31 insertions(+), 156 deletions(-)
+ delete mode 100644 fs/binfmt_em86.c
+
+--v4v74npvwpxrqo5o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQGTBAABCgB9FiEEvu9JS1spHrMAon8T7S7Rn4WzaCwFAmEDbTBfFIAAAAAALgAo
+aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldEJF
+RUY0OTRCNUIyOTFFQjMwMEEyN0YxM0VEMkVEMTlGODVCMzY4MkMACgkQ7S7Rn4Wz
+aCxBlwf6A1KJKyMAmG5vLTMwLOMxFX5C4lv+PZPADoUSejlowMNbZfR2YDmDQ0G8
+l/tE11JM/2TSX5vcj+Hku7QlhO32QiW3bkd6eZMzFSG3ZDWmwIICVrsyPIqbr5xq
+FgU6X0l5ng13XJwA6OlHOUcNuv08Y2i69KByWu4shw6tP7TBA/y5LH39iC7qg/dB
+ETuQckM+03hiVGtxQLKPHA/zP3BQDn1SjdYm9MlNrQ9VVQSyPRSMsqKw6n2/CPrY
+zxn3WCNMtaS4KcH/kuBPDW5u3p26xAXLCZ2Fi91bCp7deFYp1p1lKyeVUO6Bn5CA
+IEU1D9PjRVQpVcttmxvYeN+IDXpwrA==
+=CT1b
+-----END PGP SIGNATURE-----
+
+--v4v74npvwpxrqo5o--
