@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79263DC045
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4FB3DC046
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 23:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhG3V1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 17:27:03 -0400
+        id S232750AbhG3V1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 17:27:05 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232466AbhG3V05 (ORCPT
+        with ESMTP id S232460AbhG3V1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 17:26:57 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D3BC061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:26:51 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so22593266pja.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:26:51 -0700 (PDT)
+        Fri, 30 Jul 2021 17:27:00 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D03C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:26:53 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso16194895pjf.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 14:26:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=37Nacw64+KOiMZmL+vH2rc7D0NFwBJZ1GX41lOzA7sI=;
-        b=k3dRWkT1xUJQUM1V3eFMcOCXVOa7G3HDa077JfJ6+aehexe59cOrNfpB0XemFMroc7
-         9fP1fXGIEoJ8JUIUXS0nvYt0g7InyqCzjz5uw5aaB6YNXKRPz3KVs6jgRqfLRflWaoNM
-         EtrOjelZ44Et6gdFGNEK/YWJ3uD9WIzm5XkIY=
+        bh=/9pe0vp/2S/yyqFRQwYtuI91YF1fj5/j9qd/6MVyxqs=;
+        b=BHXVq1MELYCtBV1DweXqBcVD2kudADL1JM8qpK0g3TeRhog1FtBWSIOx+tkx0O2qeR
+         f0uNhIkDdWYsdXndWcG4IeUH9hqRqUc84qcym81SiRG6Sm3AS1vYv15zDyEN4rp3RLcI
+         4qNTMUpBQgkmsR043IFfKWNnWLfZnFcZHfa5I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=37Nacw64+KOiMZmL+vH2rc7D0NFwBJZ1GX41lOzA7sI=;
-        b=N/jIWOB0FmS62ocKm0WZWb2gIZXnPahHrWKfhc1xj2k3KQ1/tM8zoBLImNbB5/JDMO
-         OqgS2Q7WdKsF6pdoklJ1irP5U29h4VcZ5IdWTiYOBsR2oCNwYThXTXz6784y6zLVx5tr
-         Ozr0RrTrj0oSQ4z1Uxa4PODYkwE/pzRJemuihmMPQo43j4kfGInSAjyZbHOPMKGGtzZr
-         ehlrdpovPMR7R6HWgoxxt+ssSiEaxv2n/HG/BaoXJQHo/KY1tHi3LEwruc7j77ZnoQot
-         9Kkl+96GMVb7jXC8n4wmcsXjEZXSwF/ca3QrvWaH3zRwqVuc9efiFWL9UWH2NgjQOdGc
-         Rvnw==
-X-Gm-Message-State: AOAM530y1WTuMVa6libdiOWNOEOhOUBcl5ebKaay/+MVpa3OZyUhP+bw
-        FVWbxiC04OirnRu+mYLgqIcmnA==
-X-Google-Smtp-Source: ABdhPJyd5vlwWOM/HeeHAZX/FPiTwLb2eJnUBso0gVxPSxpB1owLbAxI8YeEzKhk0K0yQ86ZtY/f3Q==
-X-Received: by 2002:a63:2308:: with SMTP id j8mr4059101pgj.166.1627680411233;
-        Fri, 30 Jul 2021 14:26:51 -0700 (PDT)
+        bh=/9pe0vp/2S/yyqFRQwYtuI91YF1fj5/j9qd/6MVyxqs=;
+        b=M0WY7PTAaEDMy2pAQBW7uZF8ssNOqL7H5QHlVuSu29jjG3oM6nKyIGcR0O3gyGg8n0
+         OuWXAdl/6tjp5RK/KD8THEIegXxSzA2MtQnHfhazbDG8chR92MGnVFoa4NZe2YFpVsrR
+         /9KFmZOH6FFgLQaRfpfGB7Fx2NX8NzK65m1Hnq2rdTr6UgbUkiVDCobiI77XhQYgOHLL
+         ZYIi8wYyHfgUmMp/R5+eMOJQ4EJvftLhUagVwK5ay0kR+rjZLOoombeOfR08tKWcBoMA
+         RIHueTmA99ZIje0XOysDXjcNMeIO/SKupC1c+sUmfisXJnLjOEKB6jQkWOffZuDq7IND
+         aiCg==
+X-Gm-Message-State: AOAM532mA3xXeuV6LFuK3nBWHOL6A9VuYwX7FcLDz2ZeP8m1m0jH3a9n
+        8zp1muFaA37fbsYdvrOrD+JuCw==
+X-Google-Smtp-Source: ABdhPJxBN3lxm1xi3KDrnnKCQfeCE7CY6sVtsiHHzl5j9dYSm4NyqWLxct5ErQnSu186qB/gdEC1Pg==
+X-Received: by 2002:a62:7c4d:0:b029:3b0:b284:fd9c with SMTP id x74-20020a627c4d0000b02903b0b284fd9cmr2739725pfc.11.1627680413218;
+        Fri, 30 Jul 2021 14:26:53 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:3424:e0ac:5a92:d061])
-        by smtp.gmail.com with ESMTPSA id u21sm3484625pfh.163.2021.07.30.14.26.49
+        by smtp.gmail.com with ESMTPSA id u21sm3484625pfh.163.2021.07.30.14.26.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 14:26:50 -0700 (PDT)
+        Fri, 30 Jul 2021 14:26:52 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Rob Herring <robh+dt@kernel.org>
@@ -60,9 +60,9 @@ Cc:     Sam Ravnborg <sam@ravnborg.org>,
         Linus W <linus.walleij@linaro.org>,
         Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/6] drm/panel-simple: Don't re-read the EDID every time we power off the panel
-Date:   Fri, 30 Jul 2021 14:26:23 -0700
-Message-Id: <20210730142537.v2.4.Ib810fb3bebd0bd6763e4609e1a6764d06064081e@changeid>
+Subject: [PATCH v2 5/6] drm/panel-simple: Split the delay structure out of the panel description
+Date:   Fri, 30 Jul 2021 14:26:24 -0700
+Message-Id: <20210730142537.v2.5.I11c226341f8e86d376a53d5ec11cb82f6fd2c38c@changeid>
 X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 In-Reply-To: <20210730212625.3071831-1-dianders@chromium.org>
 References: <20210730212625.3071831-1-dianders@chromium.org>
@@ -72,41 +72,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The simple-panel driver is for panels that are not hot-pluggable at
-runtime. Let's keep our cached EDID around until driver unload.
+In the case where we can read an EDID for a panel the only part of the
+panel description that can't be found directly from the EDID is the
+description of the delays. Let's break the delay structure out so that
+we can specify just the delays for panels that are detected by EDID.
+
+This is simple code motion. No functional change is intended.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
-(no changes since v1)
+Changes in v2:
+- Rebased atop revert of delays between GPIO & regulator
 
- drivers/gpu/drm/panel/panel-simple.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/panel/panel-simple.c | 159 ++++++++++++++-------------
+ 1 file changed, 82 insertions(+), 77 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index ff8b59471c71..b06bf30c65d0 100644
+index b06bf30c65d0..7d80bb20e6e0 100644
 --- a/drivers/gpu/drm/panel/panel-simple.c
 +++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -350,9 +350,6 @@ static int panel_simple_suspend(struct device *dev)
- 	regulator_disable(p->supply);
- 	p->unprepared_time = ktime_get();
+@@ -41,6 +41,87 @@
+ #include <drm/drm_mipi_dsi.h>
+ #include <drm/drm_panel.h>
  
--	kfree(p->edid);
--	p->edid = NULL;
--
- 	return 0;
- }
- 
-@@ -834,6 +831,9 @@ static int panel_simple_remove(struct device *dev)
- 	if (panel->ddc && (!panel->aux || panel->ddc != &panel->aux->ddc))
- 		put_device(&panel->ddc->dev);
- 
-+	kfree(panel->edid);
-+	panel->edid = NULL;
++/**
++ * struct panel_delay - Describes delays for a simple panel.
++ */
++struct panel_delay {
++	/**
++	 * @prepare: Time for the panel to become ready.
++	 *
++	 * The time (in milliseconds) that it takes for the panel to
++	 * become ready and start receiving video data
++	 */
++	unsigned int prepare;
 +
- 	return 0;
- }
++	/**
++	 * @hpd_absent_delay: Time to wait if HPD isn't hooked up.
++	 *
++	 * Add this to the prepare delay if we know Hot Plug Detect
++	 * isn't used.
++	 */
++	unsigned int hpd_absent_delay;
++
++	/**
++	 * @prepare_to_enable: Time between prepare and enable.
++	 *
++	 * The minimum time, in milliseconds, that needs to have passed
++	 * between when prepare finished and enable may begin. If at
++	 * enable time less time has passed since prepare finished,
++	 * the driver waits for the remaining time.
++	 *
++	 * If a fixed enable delay is also specified, we'll start
++	 * counting before delaying for the fixed delay.
++	 *
++	 * If a fixed prepare delay is also specified, we won't start
++	 * counting until after the fixed delay. We can't overlap this
++	 * fixed delay with the min time because the fixed delay
++	 * doesn't happen at the end of the function if a HPD GPIO was
++	 * specified.
++	 *
++	 * In other words:
++	 *   prepare()
++	 *     ...
++	 *     // do fixed prepare delay
++	 *     // wait for HPD GPIO if applicable
++	 *     // start counting for prepare_to_enable
++	 *
++	 *   enable()
++	 *     // do fixed enable delay
++	 *     // enforce prepare_to_enable min time
++	 */
++	unsigned int prepare_to_enable;
++
++	/**
++	 * @enable: Time for the panel to display a valid frame.
++	 *
++	 * The time (in milliseconds) that it takes for the panel to
++	 * display the first valid frame after starting to receive
++	 * video data.
++	 */
++	unsigned int enable;
++
++	/**
++	 * @disable: Time for the panel to turn the display off.
++	 *
++	 * The time (in milliseconds) that it takes for the panel to
++	 * turn the display off (no content is visible).
++	 */
++	unsigned int disable;
++
++	/**
++	 * @unprepare: Time to power down completely.
++	 *
++	 * The time (in milliseconds) that it takes for the panel
++	 * to power itself down completely.
++	 *
++	 * This time is used to prevent a future "prepare" from
++	 * starting until at least this many milliseconds has passed.
++	 * If at prepare time less time has passed since unprepare
++	 * finished, the driver waits for the remaining time.
++	 */
++	unsigned int unprepare;
++};
++
+ /**
+  * struct panel_desc - Describes a simple panel.
+  */
+@@ -85,83 +166,7 @@ struct panel_desc {
+ 	} size;
  
+ 	/** @delay: Structure containing various delay values for this panel. */
+-	struct {
+-		/**
+-		 * @delay.prepare: Time for the panel to become ready.
+-		 *
+-		 * The time (in milliseconds) that it takes for the panel to
+-		 * become ready and start receiving video data
+-		 */
+-		unsigned int prepare;
+-
+-		/**
+-		 * @delay.hpd_absent_delay: Time to wait if HPD isn't hooked up.
+-		 *
+-		 * Add this to the prepare delay if we know Hot Plug Detect
+-		 * isn't used.
+-		 */
+-		unsigned int hpd_absent_delay;
+-
+-		/**
+-		 * @delay.prepare_to_enable: Time between prepare and enable.
+-		 *
+-		 * The minimum time, in milliseconds, that needs to have passed
+-		 * between when prepare finished and enable may begin. If at
+-		 * enable time less time has passed since prepare finished,
+-		 * the driver waits for the remaining time.
+-		 *
+-		 * If a fixed enable delay is also specified, we'll start
+-		 * counting before delaying for the fixed delay.
+-		 *
+-		 * If a fixed prepare delay is also specified, we won't start
+-		 * counting until after the fixed delay. We can't overlap this
+-		 * fixed delay with the min time because the fixed delay
+-		 * doesn't happen at the end of the function if a HPD GPIO was
+-		 * specified.
+-		 *
+-		 * In other words:
+-		 *   prepare()
+-		 *     ...
+-		 *     // do fixed prepare delay
+-		 *     // wait for HPD GPIO if applicable
+-		 *     // start counting for prepare_to_enable
+-		 *
+-		 *   enable()
+-		 *     // do fixed enable delay
+-		 *     // enforce prepare_to_enable min time
+-		 */
+-		unsigned int prepare_to_enable;
+-
+-		/**
+-		 * @delay.enable: Time for the panel to display a valid frame.
+-		 *
+-		 * The time (in milliseconds) that it takes for the panel to
+-		 * display the first valid frame after starting to receive
+-		 * video data.
+-		 */
+-		unsigned int enable;
+-
+-		/**
+-		 * @delay.disable: Time for the panel to turn the display off.
+-		 *
+-		 * The time (in milliseconds) that it takes for the panel to
+-		 * turn the display off (no content is visible).
+-		 */
+-		unsigned int disable;
+-
+-		/**
+-		 * @delay.unprepare: Time to power down completely.
+-		 *
+-		 * The time (in milliseconds) that it takes for the panel
+-		 * to power itself down completely.
+-		 *
+-		 * This time is used to prevent a future "prepare" from
+-		 * starting until at least this many milliseconds has passed.
+-		 * If at prepare time less time has passed since unprepare
+-		 * finished, the driver waits for the remaining time.
+-		 */
+-		unsigned int unprepare;
+-	} delay;
++	struct panel_delay delay;
+ 
+ 	/** @bus_format: See MEDIA_BUS_FMT_... defines. */
+ 	u32 bus_format;
 -- 
 2.32.0.554.ge1b32706d8-goog
 
