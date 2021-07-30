@@ -2,205 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3153DBAA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4D03DBAAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239238AbhG3Odm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
+        id S239328AbhG3Oel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239200AbhG3Odk (ORCPT
+        with ESMTP id S239301AbhG3Oek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:33:40 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F035C061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:33:35 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id m9so12637071ljp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:33:34 -0700 (PDT)
+        Fri, 30 Jul 2021 10:34:40 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34443C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:34:35 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id g13so18256335lfj.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dQGtz4NxA/KCcb2UkEKczuSorFz82jXK+AMOuFhIpSY=;
-        b=RDXh6xhSHzVcHoLlZtkJY8rwf+9yeKe0yYYIuU3JvH6YO4ghrz6ojczlapHQhwLmCd
-         Fe+TAjzwdXYjAv06/eyWHH3Q10DkSfI9d/AfMDP7wA867e2ePSETc1r6V984B2jOSxuf
-         amMOK/ZmyhihhEhZ8f/Sa3NU/ODRr5XPRXRIR9lvPBR3s9csTgQ1WHhVYHwGmlpeK9IT
-         dDVZYTaWI9Vc59rDlXVpmgnW6t6/qB7KFS8XKcZdocIlK2yLURmYOJJfjNhhBnZ5DHFd
-         FjPTbYr5RJa7XU4gvoi6v4QJy5l1V9kf7uESMvX+FkIFC6dNkaxHkyQDRuwJkGyuXETd
-         ziGA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xSgqIVTtq5UONijeW+mzTphiez5rc1w48HNnCIiwK84=;
+        b=CIyiRXRGYHuk3LmHN8018NyKnwACKK2uN9BmxalIleHZbaCPFsCOS+oUNFprtCg7zt
+         RIUgF1GRBP2cLt3ebJuYHaiVfdrVp8Lt4e1d5B70En0EKGvklb1KWCSg24tgBv+GipsI
+         sTQkJ/zjPwuINbfBo/Xt+eCVFWQ/A2UA7iz+8uaMXrzCGyDH78zwjQOIyRgS87O3bF4k
+         VXMJ9dazIl1Jlz9W+9T4UA7OmukOb/FZ1gDlAqUWZUPTWCtDHZ4KpDnBxu2uk210HxQH
+         LxXgbCVedqpGd4LyNcPGie9cebzvWMQWpVxc5dMEw5f5YTmxd/rYu5b15Yr4iITAtdUK
+         MtLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dQGtz4NxA/KCcb2UkEKczuSorFz82jXK+AMOuFhIpSY=;
-        b=hgQR2TwhdRh8JfeitYZx/1wM4RG2WzrxfgcCzuyfKJdMQIESdJvjgXeDNxBmF3fsYG
-         zbBwv8lYKldht0FVMjAc3dkR4fF8LitMs8nbSt47TOKQDGSYZIi/u6pod7zJk6oakIDp
-         JzM0oX1p1/LG7PQaHvEbw3sP1p9S5KgIJ12N0Fojs3RE8Bzm72qoXOoaZHlfEEls9faB
-         GKqeezrcmbGavTaHgSK48gZJbBZtA+9uXLckGj9Mz6flXpySKW601v8j6saqyUXam41E
-         ZG3rNLgBA9HzB/LjZTmrcSw/TpUBkDtQsfLt7EdVm1mRBsF4lWwhpQQAHvWQDp8jFdmn
-         uIfQ==
-X-Gm-Message-State: AOAM530DAVqkzXcrtqN6eTGJTPpkfet8QWU26uva8H8tv+o2qCMVVjmg
-        Ejcrr9n5rgH48ANromCCZFJk9VHbx3jSGYo/ericbw==
-X-Google-Smtp-Source: ABdhPJzgGnVq10vXKLaHBZpfgLUJ0afJNvNbZo+mH2b7grVgG96TtjH9fn8FrBCfPY3RGRFW6+8Q94qxjfL1Nl+Zq/g=
-X-Received: by 2002:a2e:a68f:: with SMTP id q15mr1890524lje.314.1627655612988;
- Fri, 30 Jul 2021 07:33:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xSgqIVTtq5UONijeW+mzTphiez5rc1w48HNnCIiwK84=;
+        b=j+nd9c5LFE3avYyinUZyrTPFWpbM6ljSt/Pllzj4OTAjGHxo+fiK/UxDomEFdnEdC9
+         SCL7Sw/33dZZWWE/lZYfhjqhSmHDcgeKSXa8COqYrV3ZZ5mES5tA6sYCrRAH/7tR4YfJ
+         uUPNAxTd4P7hRKTOPdmzPTTldjR2H1t3KvOxMEjUU45U1mdBIIF305UXag2/14mvOWV+
+         lFmsS7lwMYwHlUJEDk7bWoK7NfT3WFWsx/+fSJkoSIfwLQgk6RLyKVOYdUCC+/fbA81Z
+         UI5DbgBpE2z/ENPYpsLSkEQ/V+ma1WnVK0TT63dyfODL23ESNN4kXan//wf/4iL1vOjt
+         MaxQ==
+X-Gm-Message-State: AOAM531/a0W9l4SoA/VsGJ84lDlITAI5KKsXKxL1dxirzoMgfNKaLRxZ
+        D8Cl+5Jx1u+Uyb5iMfXEFPx03Q==
+X-Google-Smtp-Source: ABdhPJwlX395sRsAy1IIc1TyNBLG9nnDiLvGWmkSVsix4XNfHBArxDCsXYQAR2sV5kpMymcVSb6mfg==
+X-Received: by 2002:a05:6512:128e:: with SMTP id u14mr2054793lfs.483.1627655673490;
+        Fri, 30 Jul 2021 07:34:33 -0700 (PDT)
+Received: from mutt (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id v4sm165462lfd.172.2021.07.30.07.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 07:34:33 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 16:34:31 +0200
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     sudeep.holla@arm.com, lorenzo.pieralisi@arm.com,
+        liviu.dudau@arm.com, linux-arm-kernel@lists.infradead.org,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, sashal@kernel.org, arnd@arndb.de,
+        lkft-triage@lists.linaro.org,
+        Linux Kernel Functional Testing <lkft@linaro.org>
+Subject: Re: [PATCH 2/2] arm64: dts: juno: Enable more SMMUs
+Message-ID: <20210730143431.GB1517404@mutt>
+References: <720d0a9a42e33148fcac45cd39a727093a32bf32.1614965598.git.robin.murphy@arm.com>
+ <a730070d718cb119f77c8ca1782a0d4189bfb3e7.1614965598.git.robin.murphy@arm.com>
+ <0a1d437d-9ea0-de83-3c19-e07f560ad37c@arm.com>
 MIME-Version: 1.0
-References: <20210729220916.1672875-1-oupton@google.com> <20210729220916.1672875-4-oupton@google.com>
- <878s1o2l6j.wl-maz@kernel.org>
-In-Reply-To: <878s1o2l6j.wl-maz@kernel.org>
-From:   Oliver Upton <oupton@google.com>
-Date:   Fri, 30 Jul 2021 07:33:21 -0700
-Message-ID: <CAOQ_QsjFzdjYgYSxNLH=8O84FJB+O8KtH0VnzdQ9HnLZwxwpNQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] KVM: arm64: Use generic KVM xfer to guest work function
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Peter Shier <pshier@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Guangyu Shi <guangyus@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0a1d437d-9ea0-de83-3c19-e07f560ad37c@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marc,
+On 2021-07-30 13:17, Robin Murphy wrote:
+> On 2021-07-30 12:35, Anders Roxell wrote:
+> > From: Robin Murphy <robin.murphy@arm.com>
+> > 
+> > > Now that PCI inbound window restrictions are handled generically between
+> > > the of_pci resource parsing and the IOMMU layer, and described in the
+> > > Juno DT, we can finally enable the PCIe SMMU without the risk of DMA
+> > > mappings inadvertently allocating unusable addresses.
+> > > 
+> > > Similarly, the relevant support for IOMMU mappings for peripheral
+> > > transfers has been hooked up in the pl330 driver for ages, so we can
+> > > happily enable the DMA SMMU without that breaking anything either.
+> > > 
+> > > Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> > 
+> > When we build a kernel with 64k page size and run the ltp syscalls we
+> > sporadically see a kernel crash while doing a mkfs on a connected SATA
+> > drive.  This is happening every third test run on any juno-r2 device in
+> > the lab with the same kernel image (stable-rc 5.13.y, mainline and next)
+> > with gcc-11.
+> 
+> Hmm, I guess 64K pages might make a difference in that we'll chew through
+> IOVA space a lot faster with small mappings...
+> 
+> I'll have to try to reproduce this locally, since the interesting thing
+> would be knowing what DMA address it was trying to use that went wrong, but
+> IOMMU tracepoints and/or dma-debug are going to generate an crazy amount of
+> data to sift through and try to correlate - having done it before it's not
+> something I'd readily ask someone else to do for me :)
+> 
+> On a hunch, though, does it make any difference if you remove the first
+> entry from the PCIe "dma-ranges" (the 0x2c1c0000 one)?
 
-On Fri, Jul 30, 2021 at 2:41 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> Hi Oliver,
->
-> On Thu, 29 Jul 2021 23:09:16 +0100,
-> Oliver Upton <oupton@google.com> wrote:
-> >
-> > Clean up handling of checks for pending work by switching to the generic
-> > infrastructure to do so.
-> >
-> > We pick up handling for TIF_NOTIFY_RESUME from this switch, meaning that
-> > task work will be correctly handled.
-> >
-> > Signed-off-by: Oliver Upton <oupton@google.com>
-> > ---
-> >  arch/arm64/kvm/Kconfig |  1 +
-> >  arch/arm64/kvm/arm.c   | 27 ++++++++++++++-------------
-> >  2 files changed, 15 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-> > index a4eba0908bfa..8bc1fac5fa26 100644
-> > --- a/arch/arm64/kvm/Kconfig
-> > +++ b/arch/arm64/kvm/Kconfig
-> > @@ -26,6 +26,7 @@ menuconfig KVM
-> >       select HAVE_KVM_ARCH_TLB_FLUSH_ALL
-> >       select KVM_MMIO
-> >       select KVM_GENERIC_DIRTYLOG_READ_PROTECT
-> > +     select KVM_XFER_TO_GUEST_WORK
-> >       select SRCU
-> >       select KVM_VFIO
-> >       select HAVE_KVM_EVENTFD
-> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> > index 60d0a546d7fd..9762e2129813 100644
-> > --- a/arch/arm64/kvm/arm.c
-> > +++ b/arch/arm64/kvm/arm.c
-> > @@ -6,6 +6,7 @@
-> >
-> >  #include <linux/bug.h>
-> >  #include <linux/cpu_pm.h>
-> > +#include <linux/entry-kvm.h>
-> >  #include <linux/errno.h>
-> >  #include <linux/err.h>
-> >  #include <linux/kvm_host.h>
-> > @@ -714,6 +715,13 @@ static bool vcpu_mode_is_bad_32bit(struct kvm_vcpu *vcpu)
-> >               static_branch_unlikely(&arm64_mismatched_32bit_el0);
-> >  }
-> >
-> > +static bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
-> > +{
-> > +     return kvm_request_pending(vcpu) ||
-> > +                     need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
-> > +                     xfer_to_guest_mode_work_pending();
->
-> Here's what xfer_to_guest_mode_work_pending() says:
->
-> <quote>
->  * Has to be invoked with interrupts disabled before the transition to
->  * guest mode.
-> </quote>
->
-> At the point where you call this, we already are in guest mode, at
-> least in the KVM sense.
+I did this change, and run the job 7 times and could not reproduce the
+issue.
 
-I believe the comment is suggestive of guest mode in the hardware
-sense, not KVM's vcpu->mode designation. I got this from
-arch/x86/kvm/x86.c:vcpu_enter_guest() to infer the author's
-intentions.
+diff --git a/arch/arm64/boot/dts/arm/juno-base.dtsi b/arch/arm64/boot/dts/arm/juno-base.dtsi
+index 8e7a66943b01..d3148730e951 100644
+--- a/arch/arm64/boot/dts/arm/juno-base.dtsi
++++ b/arch/arm64/boot/dts/arm/juno-base.dtsi
+@@ -545,8 +545,7 @@ pcie_ctlr: pcie@40000000 {
+                         <0x02000000 0x00 0x50000000 0x00 0x50000000 0x0 0x08000000>,
+                         <0x42000000 0x40 0x00000000 0x40 0x00000000 0x1 0x00000000>;
+                /* Standard AXI Translation entries as programmed by EDK2 */
+-               dma-ranges = <0x02000000 0x0 0x2c1c0000 0x0 0x2c1c0000 0x0 0x00040000>,
+-                            <0x02000000 0x0 0x80000000 0x0 0x80000000 0x0 0x80000000>,
++               dma-ranges = <0x02000000 0x0 0x80000000 0x0 0x80000000 0x0 0x80000000>,
+                             <0x43000000 0x8 0x00000000 0x8 0x00000000 0x2 0x00000000>;
+                #interrupt-cells = <1>;
+                interrupt-map-mask = <0 0 0 7>;
 
->
-> > +}
-> > +
-> >  /**
-> >   * kvm_arch_vcpu_ioctl_run - the main VCPU run function to execute guest code
-> >   * @vcpu:    The VCPU pointer
-> > @@ -757,7 +765,11 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
-> >               /*
-> >                * Check conditions before entering the guest
-> >                */
-> > -             cond_resched();
-> > +             if (__xfer_to_guest_mode_work_pending()) {
-> > +                     ret = xfer_to_guest_mode_handle_work(vcpu);
->
-> xfer_to_guest_mode_handle_work() already does the exact equivalent of
-> __xfer_to_guest_mode_work_pending(). Why do we need to do it twice?
 
-Right, there's no need to do the check twice.
-
->
-> > +                     if (!ret)
-> > +                             ret = 1;
-> > +             }
-> >
-> >               update_vmid(&vcpu->arch.hw_mmu->vmid);
-> >
-> > @@ -776,16 +788,6 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
-> >
-> >               kvm_vgic_flush_hwstate(vcpu);
-> >
-> > -             /*
-> > -              * Exit if we have a signal pending so that we can deliver the
-> > -              * signal to user space.
-> > -              */
-> > -             if (signal_pending(current)) {
-> > -                     ret = -EINTR;
-> > -                     run->exit_reason = KVM_EXIT_INTR;
-> > -                     ++vcpu->stat.signal_exits;
-> > -             }
-> > -
-> >               /*
-> >                * If we're using a userspace irqchip, then check if we need
-> >                * to tell a userspace irqchip about timer or PMU level
-> > @@ -809,8 +811,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
-> >                */
-> >               smp_store_mb(vcpu->mode, IN_GUEST_MODE);
-> >
-> > -             if (ret <= 0 || need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
-> > -                 kvm_request_pending(vcpu)) {
-> > +             if (ret <= 0 || kvm_vcpu_exit_request(vcpu)) {
->
-> If you are doing this, please move the userspace irqchip handling into
-> the helper as well, so that we have a single function dealing with
-> collecting exit reasons.
-
-Sure thing.
-
-Thanks for the quick review, Marc!
-
---
-Best,
-Oliver
+Cheers,
+Anders
