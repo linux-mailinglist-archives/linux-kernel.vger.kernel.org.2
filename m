@@ -2,132 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1243DB106
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3763DB109
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235664AbhG3CJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 22:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58964 "EHLO
+        id S235723AbhG3CJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 22:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbhG3CJc (ORCPT
+        with ESMTP id S230133AbhG3CJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 22:09:32 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F4EC061765;
-        Thu, 29 Jul 2021 19:09:29 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id j18so4841124ile.8;
-        Thu, 29 Jul 2021 19:09:29 -0700 (PDT)
+        Thu, 29 Jul 2021 22:09:46 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8779C061765;
+        Thu, 29 Jul 2021 19:09:42 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id q2so9194955plr.11;
+        Thu, 29 Jul 2021 19:09:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QxqMJC3Xkqptbj7jiRiylO7ezNGtuGhPY6uv3BBuL78=;
-        b=Jy0WFDHB6TL+JzlXeZXGXRMT7sdxQrYste3cn8VKqMSFq+kxnrxRRAD+SGc8OKsdke
-         XOP37UxKq3EsGTyW7WUShQqV9O1He0NEChIsoHn+0z9l8uTG+gMsgPahC40iY0kK6L5u
-         AB2EvyI7D9SHeYTT8jQR4juJz9R8PBp3IMyxCjVhHE8gfwP9h1D/SOLPtHkoRGM+/jjD
-         kB8lFmecbjTVvSeUBrogOCfYzxObRqtMUguuHu0l90i4MxsbywU3wjH7V8MPLEK8z1W0
-         e3ga0GO4H8t+SQuHWJ/4uSy0dJpKvBxD/ZUh0C3KaLrPMbYj/Aicl2AEUMFpooL7t4fv
-         5jWQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mQTBEXw5fXJfZ/TwuYgDsyZEqK+e8q8zwd2JV8rkUI4=;
+        b=OfGWAGjzAWRnxyGCUY9JGgohLkj7/XotbZNbRMRePBmKhyRjovGp4Mil5rMe9Bfe8w
+         28R6ip0kNr8cokWRSu+7t/PM0bcWy+SVysaVQg3HVxKhC064UJfUNHT+7HiPOY8OLYaV
+         VQC9I7qXtGfo7eJoro5z1WriftwnGTe0NWAgEp5PTDldjw+L2KmlJYT5NBUP6EpGQ5Te
+         26vFNtMlVFW7hQO/E65B5quQa9NuFlPS2YLbSjPWpuZ+ssAfOcDfRATVFkoV7H2/CelC
+         vHj4AYfKOmdQWJcskAr8/ted2PMQXBvqb27RSFk06zZ2Me8zb44z55P0wTzyD8eSlwZ4
+         61dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QxqMJC3Xkqptbj7jiRiylO7ezNGtuGhPY6uv3BBuL78=;
-        b=Su8d8qp349RV7LCpAIi7Jk6ETJPlChdA0BBdL0KfULmOXzjPH7GuNkTmPIiyi/jGGH
-         XcIX3ww/OjN1JGSRCxqL1+r/kmuoCCHVva9XhC/ZiQkkjH0iiLtHiIoxKzlLaG8NIKZk
-         pN3D5Ip8fSobmZD/Q2tuif/9DOa+jOKRVA7gwT/9lqtWgOkqufabC1e72kuOTxtcmwoa
-         i/Bx/x5bQ+1Lx/fFhMEooDG5z5gF7acb+fEfK3WaBGXAE0gfp9BI+D4b/dutk5OmJP1N
-         xCY+1tJBAY8/TvcVgZCqKbbm/EousiECd5mKffrSacf1nur7a/6xo2b5gd6KPvK/q5Dn
-         BAeA==
-X-Gm-Message-State: AOAM530YKzMVUlj0y+kgHhD8I5LWVbnxLa1hERdkKnXBqbJmIqLXhXkv
-        P0/+6zOO6ugpgve8lPOJQS725TQ5E5nNGUPB4oQ=
-X-Google-Smtp-Source: ABdhPJzBsShOhxk9cSEtPV39lcj3OF5ThN73CmwlEzrAlKuHBCBHYgy/yo68wnLdLMeHRgPd1aZFJu4g/uMN4LjH3ys=
-X-Received: by 2002:a05:6e02:d09:: with SMTP id g9mr144092ilj.153.1627610968479;
- Thu, 29 Jul 2021 19:09:28 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mQTBEXw5fXJfZ/TwuYgDsyZEqK+e8q8zwd2JV8rkUI4=;
+        b=mXGHZyC9ICHwWnjsdBnRi+Vns/qhltHiS7wZTR9zoOXm1XWuyjbcZl7s/bqbN+eTcc
+         inYSauRE8wnEDVodFUwoShdLqbbcsOk+Gtk2S86bTxNi4gXMlXA56MB2DGh6ICEoUB9T
+         zLUZrNtwDmFH+5VMEy1QaB5F4su9J9tcXL4MNij/Jn2OD2q47M0SQdpQzGr9C+XFYMhS
+         XGc/jYAhX6Ndc7R0BH8Y6+L5fmuhxxS6hWi9p6MQ3ou1wp2fBTMgAdTIqpsBbPzjQDBC
+         qxGALyv7I+3AlKF2EXxnThV1mZA80bhIFUAuBTuzwcJq+p67ncPJbFASYFUtN0ee+0fP
+         lCdw==
+X-Gm-Message-State: AOAM531LXxhe1AB8mfCwxLJcb09T2HkVRCg31bh34MNm7EXN+tiXSYS0
+        hbRMobVG3VTyqasRA53ZPqYCWkO+ZmbSyQ==
+X-Google-Smtp-Source: ABdhPJxzYy0eDc122NozJm3aBmbqmBJ5fVRTEXvGjyk5uvhCfuUmHEXE6dQCDztcS/LXKKxZNjPh0g==
+X-Received: by 2002:a17:903:300d:b029:12c:916f:fedd with SMTP id o13-20020a170903300db029012c916ffeddmr255937pla.19.1627610982286;
+        Thu, 29 Jul 2021 19:09:42 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.114])
+        by smtp.gmail.com with ESMTPSA id x19sm145629pfa.104.2021.07.29.19.09.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 19:09:41 -0700 (PDT)
+Subject: Re: [PATCH v2] blk-throtl: optimize IOPS throttle for large IO
+ scenarios
+To:     Tejun Heo <tj@kernel.org>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <40915233274d31bb0659ff9f3be8900a5a0e81ba.1627462548.git.brookxu@tencent.com>
+ <YQLhRrkZrmKTzfbP@mtj.duckdns.org>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <1ce9bcbb-8eea-f51f-f80a-22caf5f2e0d8@gmail.com>
+Date:   Fri, 30 Jul 2021 10:09:34 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210729072308.1908904-1-art@khadas.com> <20210729072308.1908904-4-art@khadas.com>
- <024cd37a-39a0-d43b-9a2f-cec43eb3b9e8@roeck-us.net>
-In-Reply-To: <024cd37a-39a0-d43b-9a2f-cec43eb3b9e8@roeck-us.net>
-From:   Art Nikpal <email2tema@gmail.com>
-Date:   Fri, 30 Jul 2021 10:09:17 +0800
-Message-ID: <CAKaHn9+EE+ZLeL1fmhU7j9AKsZ63H7MaJokhT_jnVGAvsLr9gw@mail.gmail.com>
-Subject: Re: [PATCH] watchdog: meson_gxbb_wdt: remove stop_on_reboot
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, wim@linux-watchdog.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
-        Gouwa Wang <gouwa@khadas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQLhRrkZrmKTzfbP@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes i totally agree with you , i will rewrite this patches again
-properly and explain more detail about why need remove
-watchdog_stop_on_reboot
+Thanks for you time.
 
-i have check already other watchdog sources / half of them have
-watchdog_stop_on_reboot another half dont have it , and i think both
-have some reasons
+Tejun Heo wrote on 2021/7/30 1:11 上午:
+> Hello,
+> 
+> On Wed, Jul 28, 2021 at 05:01:41PM +0800, brookxu wrote:
+>> diff --git a/block/blk-merge.c b/block/blk-merge.c
+>> index a11b3b5..86ff943 100644
+>> --- a/block/blk-merge.c
+>> +++ b/block/blk-merge.c
+>> @@ -348,6 +348,8 @@ void __blk_queue_split(struct bio **bio, unsigned int *nr_segs)
+>>  		trace_block_split(split, (*bio)->bi_iter.bi_sector);
+>>  		submit_bio_noacct(*bio);
+>>  		*bio = split;
+>> +
+>> +		blk_throtl_recharge_bio(*bio);
+> 
+> Can you rename this blk_throtl_charge_bio_split()?
 
-> I'll be happy tolisten to input from others.
+Ok, i will do it in next version.
 
-Same will be happy.
+>> @@ -524,6 +537,11 @@ static struct blkg_policy_data *throtl_pd_alloc(gfp_t gfp,
+>>  	tg->idletime_threshold = DFL_IDLE_THRESHOLD;
+>>  	tg->idletime_threshold_conf = DFL_IDLE_THRESHOLD;
+>>  
+>> +	atomic_set(&tg->io_split_cnt[0], 0);
+>> +	atomic_set(&tg->io_split_cnt[1], 0);
+>> +	atomic_set(&tg->last_io_split_cnt[0], 0);
+>> +	atomic_set(&tg->last_io_split_cnt[1], 0);
+> 
+> We likely don't need these. pd's zeroed on allocation.
 
-Our situation very simple - meson platform still have some hardware
-drivers problems for some configuration which can freeze device on
-shutdown/reboot stage and i hope better to have some reboot warranty
+Right, i will remove these init code.
 
-> some reboots take longer than the watchdog timeout.
-I have check this situation to - our drivers shutdown stage its about
-1 sec default watchdog timeout 30 sec i think its enough - cant see
-any problem
-anybody can use watchdog.stop_on_reboot=1 if need freeze identification.
+>> @@ -877,10 +900,19 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
+>>  	else
+>>  		tg->bytes_disp[rw] = 0;
+>>  
+>> -	if (tg->io_disp[rw] >= io_trim)
+>> +	if (tg_io_disp(tg, rw) >= io_trim) {
+> 
+> Instead of checking this in multiple places, would it be simpler to transfer
+> the atomic counters to the existing counters whenever we enter blk-throtl
+> and leave the rest of the code as-is?
 
-Artem
+If we do this, we need to do similar processing on the bio submission path and the bio
+resubmission path in pending_timer. It seems that the code is more complicated?
 
-On Thu, Jul 29, 2021 at 10:23 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 7/29/21 12:23 AM, Artem Lapkin wrote:
-> > Remove watchdog_stop_on_reboot()
-> >
->
-> This warrants a much longer explanation to even be considered.
-> Your explanation/reasoning needs to be here. Others won't have
-> the benefit of reading the summary e-mail, even more so since
-> you declined to number and sequence the series.
->
-> Personally' I don't find it acceptable, but I'll be happy to
-> listen to input from others. Such changes should be based on
-> real problems, not on personal opinions. If we accept this patch,
-> someone else might come in later reverting it with the personal
-> opinion that some reboots take longer than the watchdog timeout.
->
-> Guenter
->
-> > Signed-off-by: Artem Lapkin <art@khadas.com>
-> > ---
-> >   drivers/watchdog/meson_gxbb_wdt.c | 1 -
-> >   1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
-> > index 3f3866878..cafc6cdc0 100644
-> > --- a/drivers/watchdog/meson_gxbb_wdt.c
-> > +++ b/drivers/watchdog/meson_gxbb_wdt.c
-> > @@ -198,7 +198,6 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
-> >
-> >       meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
-> >
-> > -     watchdog_stop_on_reboot(&data->wdt_dev);
-> >       return devm_watchdog_register_device(dev, &data->wdt_dev);
-> >   }
-> >
-> >
->
+> Thanks.
+> 
