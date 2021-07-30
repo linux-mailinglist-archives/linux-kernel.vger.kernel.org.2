@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767CF3DBAEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7FA3DBABD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239051AbhG3On5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:43:57 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60500 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhG3On4 (ORCPT
+        id S239299AbhG3Ojh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239172AbhG3Oje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:43:56 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5F1002025B;
-        Fri, 30 Jul 2021 14:43:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627656230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/MxUMQqOErt5s9kpr2UduIMjgtyEA7lRScXZz1pXJbc=;
-        b=ODCClVam2dZUbrsTJ/mME//+Gky6EjgfZCbKl8MaZ9yN2mJsL94B9fm8BeQ8tu+1PH/Crt
-        Echx3i0AwwSc+BiGo1q52Jd0RZGf5XD1jAC4txjoR795rNMVRmwYwgUZK/oO7JPpI8vMh+
-        MNGHStvofmUKDKDmb2edgm7ZLSiWRNQ=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 56C2FA3B87;
-        Fri, 30 Jul 2021 14:43:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1FAB6DB284; Fri, 30 Jul 2021 16:41:03 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes fro 5.14-rc4
-Date:   Fri, 30 Jul 2021 16:40:59 +0200
-Message-Id: <cover.1627655635.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 30 Jul 2021 10:39:34 -0400
+Received: from smtp-bc09.mail.infomaniak.ch (smtp-bc09.mail.infomaniak.ch [IPv6:2001:1600:3:17::bc09])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF9EC061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:39:27 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4GbqmD1BM3zMqHk4;
+        Fri, 30 Jul 2021 16:39:24 +0200 (CEST)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4GbqmC6S5kzlmrs8;
+        Fri, 30 Jul 2021 16:39:23 +0200 (CEST)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     Alejandro Colomar <alx.manpages@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        landlock@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
+Subject: [PATCH v3 0/4] Add Landlock man pages
+Date:   Fri, 30 Jul 2021 16:41:12 +0200
+Message-Id: <20210730144116.332091-1-mic@digikod.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,48 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Mickaël Salaün <mic@linux.microsoft.com>
+
 Hi,
 
-a few more fixes, please pull thanks.
+These four documents give a global overview of Landlock and explain each
+system calls.  This is mainly a formatting of the current kernel
+documentation with some new additional details.
 
-* fix -Warray-bounds warning, to help external patchset to make it
-  default treewide
+This third patch series mostly fixes formatting pointed out by Alejandro
+Colomar.
 
-* fix writeable device accounting (syzbot report)
+This patch series can be found in a Git repository:
+https://github.com/landlock-lsm/man-pages/commits/landlock-v3
 
-* fix fsync and log replay after a rename and inode eviction
+Previous version:
+https://lore.kernel.org/linux-man/20210712155745.831580-1-mic@digikod.net/
 
-* fix potentially lost error code when submitting multiple bios for
-  compressed range
+Regards,
 
-----------------------------------------------------------------
-The following changes since commit c7c3a6dcb1efd52949acc1e640be9aad1206a13a:
+Mickaël Salaün (4):
+  landlock.7: Add a new page to introduce Landlock
+  landlock_create_ruleset.2: Document new syscall
+  landlock_add_rule.2: Document new syscall
+  landlock_restrict_self.2: Document new syscall
 
-  btrfs: store a block_device in struct btrfs_ordered_extent (2021-07-22 15:50:15 +0200)
+ man2/landlock_add_rule.2       | 144 +++++++++++++
+ man2/landlock_create_ruleset.2 | 139 +++++++++++++
+ man2/landlock_restrict_self.2  | 133 ++++++++++++
+ man7/landlock.7                | 361 +++++++++++++++++++++++++++++++++
+ 4 files changed, 777 insertions(+)
+ create mode 100644 man2/landlock_add_rule.2
+ create mode 100644 man2/landlock_create_ruleset.2
+ create mode 100644 man2/landlock_restrict_self.2
+ create mode 100644 man7/landlock.7
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc3-tag
+base-commit: fbe71b1b79e72be3b9afc44b5d479e7fd84b598a
+-- 
+2.32.0
 
-for you to fetch changes up to 7280305eb57dd32735f795ed4ee679bf9854f9d0:
-
-  btrfs: calculate number of eb pages properly in csum_tree_block (2021-07-29 13:01:04 +0200)
-
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs: calculate number of eb pages properly in csum_tree_block
-
-Desmond Cheong Zhi Xi (1):
-      btrfs: fix rw device counting in __btrfs_free_extra_devids
-
-Filipe Manana (1):
-      btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction
-
-Goldwyn Rodrigues (1):
-      btrfs: mark compressed range uptodate only if all bio succeed
-
- fs/btrfs/compression.c | 2 +-
- fs/btrfs/disk-io.c     | 2 +-
- fs/btrfs/tree-log.c    | 4 ++--
- fs/btrfs/volumes.c     | 1 +
- 4 files changed, 5 insertions(+), 4 deletions(-)
