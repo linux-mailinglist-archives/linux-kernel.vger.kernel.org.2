@@ -2,126 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663233DBA93
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A43A3DBA95
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239156AbhG3O3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:29:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:42758 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239105AbhG3O3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:29:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D31BD6D;
-        Fri, 30 Jul 2021 07:29:08 -0700 (PDT)
-Received: from [10.57.86.111] (unknown [10.57.86.111])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F48C3F70D;
-        Fri, 30 Jul 2021 07:29:06 -0700 (PDT)
-Subject: Re: [PATCH 05/10] coresight: trbe: Allow driver to choose a different
- alignment
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
-References: <20210728135217.591173-1-suzuki.poulose@arm.com>
- <20210728135217.591173-6-suzuki.poulose@arm.com>
- <646d73c5-0015-d296-2ac8-63f8bd5a4dc0@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <43d802e7-d321-6386-19ee-d3bd8e0c1bbb@arm.com>
-Date:   Fri, 30 Jul 2021 15:29:05 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S239217AbhG3O35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:29:57 -0400
+Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:10765 "EHLO
+        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhG3O3z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:29:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1627655391; x=1659191391;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=4ugGiWQLoikc/lxB+XFb2AusVBQMiZ2U9lIaxumsem8=;
+  b=UBa70MqBX7NOlP4fYWMWG7nAdfG1RD+awih3V3tJoKgaguzUKxCZ03W7
+   Xm7rDXA8WMAVcP4TqN+KxtNoYi1TBWphmD8Ozmu48A4qeVrvmMAIvV0RR
+   Z0TGGMbEgoCoAFoRWBqIfBqJv1O1o1Ewf1M0Wot2QUKBLh0683u7FfyLA
+   A=;
+X-IronPort-AV: E=Sophos;i="5.84,282,1620691200"; 
+   d="scan'208";a="947326459"
+Subject: Re: [PATCH 1/4] KVM: x86: hyper-v: Check access to hypercall before reading
+ XMM registers
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 30 Jul 2021 14:29:43 +0000
+Received: from EX13D28EUC003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com (Postfix) with ESMTPS id 97D37A232E;
+        Fri, 30 Jul 2021 14:29:42 +0000 (UTC)
+Received: from u366d62d47e3651.ant.amazon.com (10.43.160.41) by
+ EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Fri, 30 Jul 2021 14:29:38 +0000
+Date:   Fri, 30 Jul 2021 16:29:34 +0200
+From:   Siddharth Chandrasekaran <sidcha@amazon.de>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+CC:     <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        <linux-kernel@vger.kernel.org>
+Message-ID: <20210730142933.GA20232@u366d62d47e3651.ant.amazon.com>
+References: <20210730122625.112848-1-vkuznets@redhat.com>
+ <20210730122625.112848-2-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <646d73c5-0015-d296-2ac8-63f8bd5a4dc0@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210730122625.112848-2-vkuznets@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.43.160.41]
+X-ClientProxiedBy: EX13D10UWB001.ant.amazon.com (10.43.161.111) To
+ EX13D28EUC003.ant.amazon.com (10.43.164.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/2021 12:02, Anshuman Khandual wrote:
+On Fri, Jul 30, 2021 at 02:26:22PM +0200, Vitaly Kuznetsov wrote:
+> In case guest doesn't have access to the particular hypercall we can avoid
+> reading XMM registers.
 > 
-> 
-> On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
->> The TRBE hardware mandates a minimum alignment for the TRBPTR_EL1,
->> advertised via the TRBIDR_EL1. This is used by the driver to
->> align the buffer write head. This patch allows the driver to
->> choose a different alignment from that of the hardware, by
->> decoupling the alignment tracking. This will be useful for
->> working around errata.
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-trbe.c | 12 ++++++++----
->>   1 file changed, 8 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->> index 9735d514c5e1..9ea28813182b 100644
->> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->> @@ -92,7 +92,8 @@ static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
->>   /*
->>    * struct trbe_cpudata: TRBE instance specific data
->>    * @trbe_flag		- TRBE dirty/access flag support
->> - * @tbre_align		- Actual TRBE alignment required for TRBPTR_EL1.
->> + * @trbe_hw_align	- Actual TRBE alignment required for TRBPTR_EL1.
->> + * @trbe_align		- Software alignment used for the TRBPTR_EL1,
->>    * @cpu			- CPU this TRBE belongs to.
->>    * @mode		- Mode of current operation. (perf/disabled)
->>    * @drvdata		- TRBE specific drvdata
->> @@ -100,6 +101,7 @@ static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
->>    */
->>   struct trbe_cpudata {
->>   	bool trbe_flag;
->> +	u64 trbe_hw_align;
->>   	u64 trbe_align;
->>   	int cpu;
->>   	enum cs_mode mode;
->> @@ -906,7 +908,7 @@ static ssize_t align_show(struct device *dev, struct device_attribute *attr, cha
->>   {
->>   	struct trbe_cpudata *cpudata = dev_get_drvdata(dev);
->>   
->> -	return sprintf(buf, "%llx\n", cpudata->trbe_align);
->> +	return sprintf(buf, "%llx\n", cpudata->trbe_hw_align);
->>   }
->>   static DEVICE_ATTR_RO(align);
->>   
->> @@ -995,11 +997,13 @@ static void arm_trbe_probe_cpu(void *info)
->>   	}
->>   
->>   	trbe_check_errata(cpudata);
->> -	cpudata->trbe_align = 1ULL << get_trbe_address_align(trbidr);
->> -	if (cpudata->trbe_align > SZ_2K) {
->> +
->> +	cpudata->trbe_hw_align = 1ULL << get_trbe_address_align(trbidr);
->> +	if (cpudata->trbe_hw_align > SZ_2K) {
->>   		pr_err("Unsupported alignment on cpu %d\n", cpu);
->>   		goto cpu_clear;
->>   	}
->> +	cpudata->trbe_align = cpudata->trbe_hw_align;
-> 
-> When it changes, it must be asserted that trbe_align would be a multiple
-> of trbe_hw_align before existing from arm_trbe_probe_cpu().
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-We only set it to PAGE_SIZE, which is one of 4K, 16K, 64K all of which
-are aligned to 2K or any of the smaller alignment supported by TRBE.
+Reviewed-by: Siddharth Chandrasekaran <sidcha@amazon.de>
 
 
-> 
->>   	cpudata->trbe_flag = get_trbe_flag_update(trbidr);
->>   	cpudata->cpu = cpu;
->>   	cpudata->drvdata = drvdata;
->>
-> 
-> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> 
 
-Thanks
-Suzuki
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
