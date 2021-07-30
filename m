@@ -2,110 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957683DB469
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181E13DB46B
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237869AbhG3HSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 03:18:52 -0400
-Received: from mga07.intel.com ([134.134.136.100]:32138 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237639AbhG3HSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:18:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="276823009"
-X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
-   d="scan'208";a="276823009"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 00:18:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,281,1620716400"; 
-   d="scan'208";a="664728415"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Jul 2021 00:18:41 -0700
-Date:   Fri, 30 Jul 2021 15:18:40 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
- multiple preferred nodes
-Message-ID: <20210730071840.GA87305@shbuild999.sh.intel.com>
-References: <1626077374-81682-2-git-send-email-feng.tang@intel.com>
- <YQFOB4UDK+dNZeOV@dhcp22.suse.cz>
- <20210728141156.GC43486@shbuild999.sh.intel.com>
- <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
- <20210729070918.GA96680@shbuild999.sh.intel.com>
- <YQKvZDXmRSVVRvfi@dhcp22.suse.cz>
- <20210729151242.GA42865@shbuild999.sh.intel.com>
- <YQLVf3pkQTHLemAZ@dhcp22.suse.cz>
- <20210730030502.GA87066@shbuild999.sh.intel.com>
- <YQOeAgPS9+FUseIx@dhcp22.suse.cz>
+        id S237705AbhG3HVW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Jul 2021 03:21:22 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:44859 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237630AbhG3HVV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 03:21:21 -0400
+X-Greylist: delayed 164101 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Jul 2021 03:21:21 EDT
+Received: (Authenticated sender: clement.leger@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id D5C9FC0008;
+        Fri, 30 Jul 2021 07:21:14 +0000 (UTC)
+Date:   Fri, 30 Jul 2021 09:21:13 +0200
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH 3/3] dt-bindings: mfd: add "syscon-smc" YAML description
+Message-ID: <20210730092113.25ce7f7c@fixe.home>
+In-Reply-To: <YQMbV3elkU0yp92D@robh.at.kernel.org>
+References: <20210723135239.388325-1-clement.leger@bootlin.com>
+        <20210723135239.388325-4-clement.leger@bootlin.com>
+        <YQMbV3elkU0yp92D@robh.at.kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQOeAgPS9+FUseIx@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 08:36:50AM +0200, Michal Hocko wrote:
-> On Fri 30-07-21 11:05:02, Feng Tang wrote:
-> > On Thu, Jul 29, 2021 at 06:21:19PM +0200, Michal Hocko wrote:
-> > > On Thu 29-07-21 23:12:42, Feng Tang wrote:
-> > > > On Thu, Jul 29, 2021 at 03:38:44PM +0200, Michal Hocko wrote:
-> > > [...]
-> > > > > Also the
-> > > > > semantic to give nodes some ordering based on their numbers sounds
-> > > > > rather weird to me.
-> > > > 
-> > > > I agree, and as I admitted in the first reply, this need to be fixed.
-> > > 
-> > > OK. I was not really clear that we are on the same page here.
-> > > 
-> > > > > The semantic I am proposing is to allocate from prefered nodes in
-> > > > > distance order starting from the local node.
-> > > > 
-> > > > So the plan is:
-> > > > * if the local node is set in 'prefer-many's nodemask, then chose
-> > > > * otherwise chose the node with the shortest distance to local node
-> > > > ?
-> > > 
-> > > Yes and what I am trying to say is that you will achieve that simply by
-> > > doing the following in policy_node:
-> > > 	if (policy->mode == MPOL_PREFERRED_MANY)
-> > > 		return nd;
+Le Thu, 29 Jul 2021 15:19:19 -0600,
+Rob Herring <robh@kernel.org> a écrit :
+
+> On Fri, Jul 23, 2021 at 03:52:39PM +0200, Clément Léger wrote:
+> > This patch adds documentation for the "syscon-smc" compatible which
+> > describes a syscon using a SMC regmap instead of a MMIO one. This
+> > allows accessing system controllers that are set as secure by using
+> > SMC handled by the secure monitor.
 > > 
-> > One thing is, it's possible that 'nd' is not set in the preferred
-> > nodemask. 
+> > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
+> > ---
+> >  .../devicetree/bindings/mfd/syscon-smc.yaml   | 57
+> > +++++++++++++++++++ 1 file changed, 57 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/mfd/syscon-smc.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mfd/syscon-smc.yaml
+> > b/Documentation/devicetree/bindings/mfd/syscon-smc.yaml new file
+> > mode 100644 index 000000000000..6ce1392c5e7f
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mfd/syscon-smc.yaml
+> > @@ -0,0 +1,57 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mfd/syscon-smc.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: System Controller Registers R/W via SMC Device Tree Bindings
+> > +
+> > +description: |
+> > +  System controller SMC node represents a register region
+> > containing a set
+> > +  of miscellaneous registers accessed through a secure monitor.
+> > +  The typical use-case is the same as the syscon one but when
+> > running with a
+> > +  secure monitor.
+> > +
+> > +maintainers:
+> > +  - Lee Jones <lee.jones@linaro.org>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    anyOf:
+> > +      - items:
+> > +          - enum:
+> > +              - atmel,sama5d2-sfr
+> > +
+> > +          - const: syscon-smc  
 > 
-> Yes, and there shouldn't be any problem with that.  The given node is
-> only used to get the respective zonelist (order distance ordered list of
-> zones to try). get_page_from_freelist will then use the preferred node
-> mask to filter this zone list. Is that more clear now?
+> I regret having 'syscon' as a compatible, so nak on a 2nd flavor of
+> it. It's only purpose is a hint to Linux to automagically create a
+> regmap for you.
 
-Yes, from the code, the policy_node() is always coupled with
-policy_nodemask(), which secures the 'nodemask' limit. Thanks for
-the clarification!
+Indeed.
 
-And for the mempolicy_slab_node(), it seems to be a little different,
-and we may need to reuse its logic for 'bind' policy, which is similar
-to what we've discussed, pick a nearest node to the local node. And
-similar for mpol_misplaced(). Thoughts?
+> 
+> All you need is the specific compatible, atmel,sama5d2-sfr, and you
+> can imply the rest of this from it. That's assuming the conclusion is
+> a register read/write interface on SMC is a good idea, but I don't
+> think it is.
 
-Thanks,
-Feng
+Ok noted, I'll try to find something else to implement that.
 
-> -- 
-> Michal Hocko
-> SUSE Labs
+Clément
+
+> 
+> Rob
+
