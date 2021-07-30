@@ -2,112 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF57C3DB035
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574BA3DB03A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235411AbhG3ATX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 20:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
+        id S235444AbhG3AW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 20:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235353AbhG3ATV (ORCPT
+        with ESMTP id S234931AbhG3AW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 20:19:21 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB442C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 17:19:16 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id b21so9795134ljo.13
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 17:19:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sdWfDCJ/BnpSi88/sBE0t81V5bfAq7zpAMM0ZeL7bXw=;
-        b=BALfDfaIU52dOkdhgi3958ygiyewSiZd/p8RdUrdIdjC7JUVLSCp9mAqns3CxtyQy2
-         5/3UMJlV79lCh6/AmihvIf0trZeBHtj0u1ZY/h/U7moLru0kPv1zQx0Y31kegPyqyAqL
-         ufFEsb5tdT9yxFSQe7zP5D4pZ21JcFyXueEyrL637FX1N2n6E5boqpbioyyaNljfbFxM
-         7T6NbO2kcddZnJwbfeUfO4ooO6V2BSP9Wy/ilwC8qzfVklYMYIkaxzjVJfHQrmkhOdN2
-         4lf0lgsHQUCsgdReykUspUj9qS/jnLx39Fh/71sZM7S/8F9l3xrtYnFYAIYk9oetEiYe
-         vdEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sdWfDCJ/BnpSi88/sBE0t81V5bfAq7zpAMM0ZeL7bXw=;
-        b=ZbqBneG4TQ3/QSRzvcZ5nzDyRGDGKT7G00n+NsDCHGKuIrbT2YKVI5QZQB4ngG1ZGZ
-         A5IhkHAwhoj38FYhUqGmwanKrNri9g7N8G3n1nJFFQPs5hoBF1KpoM4RWkmtv0goM35K
-         AyPltGth5RPUfmyi+pbtHlDraz02P5eQViAUxjZryLyTQXk1DZ/lHV7le3zMmZ3nkEdS
-         NPefDgVFhodTG1e5O6kzjZBHuRS9v0bdNaPWdaWUDHedXa/HDcmEADHmxCTmhjDdnj8r
-         MTxOp/mzcZV8SGElpjkQxQ/4xws6eqUj6PH5I3vqV8DfBfPqPMxwVGFiqqO11R1NvgO2
-         kImA==
-X-Gm-Message-State: AOAM53283SV2NerREBdmoKbDAlgoRcJxB+tVy83ss/iCxEkKcaN/02pw
-        JJ4EEhySOxqVNSoEd5R76RFP0lJ53HOYZmaJ4JVYgQ==
-X-Google-Smtp-Source: ABdhPJwWmH5ArkOIqPVwVZuQtBaUrWYJbCFYb7NadmZtZmLpwGWzD5SzE0Mjkl/u0ZFGg6RB4CGp6ZdoGY6dQ1gaIvU=
-X-Received: by 2002:a05:651c:329:: with SMTP id b9mr4549340ljp.116.1627604354847;
- Thu, 29 Jul 2021 17:19:14 -0700 (PDT)
+        Thu, 29 Jul 2021 20:22:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2969CC061765;
+        Thu, 29 Jul 2021 17:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tE/KgBIHE9thkmJ6RceOo7MQucdTlt7o/ncInkLoM0s=; b=Rt7Lk9i7wK7Q2lEvlOM/zMRLea
+        4+D0GEek1DofZzx01P1tB7QUFIZCkHct5JwYRRtFD9Mk5XWSyfSZgq9YYo08PRpALXIlxj1EYVo7A
+        eDfrTwhnv3GLY9XPPQdns8H1hwcjTOuHaC97LzygTeZDlrQzdCJBDN+rA80yGf7+1KaXd7/Zlxjmk
+        57OxFUXUIFW6NHPoASua3nTH99BXWuSmgjlTnapvndTjzRTm8uusq0W52gbnJ/Fq0xO2MxP2DZMng
+        oRqn+I84MdcpFcYIviEmBfagPaqrCVInjitUFQLRfubUAGWaS2CQj52Vtr5XSAMC6WNNlO3YfBhEj
+        p2g79j0Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m9GIc-006Vgq-T1; Fri, 30 Jul 2021 00:22:50 +0000
+Date:   Thu, 29 Jul 2021 17:22:50 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     hare@suse.de, dgilbert@interlog.com, jeyu@kernel.org,
+        lucas.demarchi@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] common/module: add a patient module rmmod
+Message-ID: <YQNGWqqIHKNRugcE@bombadil.infradead.org>
+References: <20210727201045.2540681-1-mcgrof@kernel.org>
+ <20210727201045.2540681-4-mcgrof@kernel.org>
 MIME-Version: 1.0
-References: <20210729165039.23896-1-ndesaulniers@google.com>
- <20210729165039.23896-3-ndesaulniers@google.com> <44117d0c-51b7-1f68-f752-ba53de503b14@kernel.org>
-In-Reply-To: <44117d0c-51b7-1f68-f752-ba53de503b14@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 29 Jul 2021 17:19:03 -0700
-Message-ID: <CAKwvOdm0xs4ikb0K0_b8Az0T=Kxu_-6AHjWHOhjsKZb3hTrH2A@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
- CC=clang LLVM_IAS=1
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727201045.2540681-4-mcgrof@kernel.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 2:00 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> While I understand that the LLVM=1 LLVM_IAS=1 case works perfectly fine
-> with this series, I am of the belief that making it work for CC=clang
-> LLVM_IAS=1 is a mistake because there is no way for that configuration
-> to work for cross compiling without CROSS_COMPILE.
+On Tue, Jul 27, 2021 at 01:10:44PM -0700, Luis Chamberlain wrote:
+> Furthermore... experience on older kernels shows it may be a while
+> before we can actually remove the module even *after*
+> /sys/module/$module/refcnt is 0. This is only currently observed
+> on older kernels.
 
-So with v3 of this change, rather than:
+Sadly this is incorrect, after running a test without any sleep
+once refcnt is 0 also fails on linux-next, just that the failure rate
+is much lower, at about ~ 1/1642.
 
-$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang -j72
+So the sleep is still relevant even if testing with linux-next.
 
-If you wanted to omit CROSS_COMPILE, you'd need:
-
-$ ARCH=arm64 make CC=clang LLVM_IAS=1 LD=ld.lld OBJCOPY=llvm-objcopy
-STRIP=llvm-strip
-
-or
-
-$ ARCH=arm64 make CC=clang LLVM_IAS=1 LD=aarch64-linux-gnu-ld
-OBJCOPY=aarch64-linux-gnu-objcopy STRIP=aarch64-linux-gnu-strip
-
-That's straight up worse IMO and defeats the purpose of "shortening
-the command line," which should be the goal.  Not "making CC=clang
-maximally flexible."  We don't want folks generally using CC=clang;
-preferably they'd use LLVM=1.  I need to rewrite our docs to make that
-more explicit and straightforward.  And if folks would prefer to use
-CC=clang for whatever reason, let them explicitly state CROSS_COMPILE
-then.
-
-So I agree with Nathan, and hope Masahiro will reconsider that perhaps
-the v2 variant that required LLVM=1 maybe makes more sense.
-
-Either way, I need to fix the comment in the new script, commit
-message, and docs, so v4 is necessary.
-
-I'm tempted to add a rewrite of our docs to say "just use LLVM=1"
-front and center, then get into finer grain details below, moving this
-second patch to be the third in a series.  Let's see what Masahiro's
-thoughts are though first. (I do appreciate them, even when I
-disagree).
--- 
-Thanks,
-~Nick Desaulniers
+  Luis
