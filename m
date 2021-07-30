@@ -2,165 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE7E3DB0D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 03:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA123DB0D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 03:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234812AbhG3Byw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 21:54:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:61238 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229667AbhG3Byv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 21:54:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="192606373"
-X-IronPort-AV: E=Sophos;i="5.84,280,1620716400"; 
-   d="scan'208";a="192606373"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 18:54:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,280,1620716400"; 
-   d="scan'208";a="518667688"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jul 2021 18:54:45 -0700
-Date:   Fri, 30 Jul 2021 09:48:59 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, "Wu, Hao" <hao.wu@intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>
-Subject: Re: [PATCH] fpga: region: handle compat_id as an uuid
-Message-ID: <20210730014859.GA436611@yilunxu-OptiPlex-7050>
-References: <20210726202650.4074614-1-trix@redhat.com>
- <6f30a4c6-61a0-bb57-9f13-bcad3f3589b8@intel.com>
- <ba28bac6-9c6d-de73-523f-b8ba4bef84de@redhat.com>
- <DM6PR11MB38199F872DC94971D9C8A53885EA9@DM6PR11MB3819.namprd11.prod.outlook.com>
- <YQL4qyAmqj322HTz@epycbox.lan>
- <a5b4b303-7d9b-27d7-4c1e-cd29fea8cdb9@redhat.com>
+        id S234745AbhG3BuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 21:50:22 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13213 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhG3BuU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 21:50:20 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GbVYr64VTz1CPJN;
+        Fri, 30 Jul 2021 09:44:16 +0800 (CST)
+Received: from [10.174.178.209] (10.174.178.209) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 30 Jul 2021 09:50:14 +0800
+Subject: Re: [PATCH 4/5] mm, memcg: avoid possible NULL pointer dereferencing
+ in mem_cgroup_init()
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <shakeelb@google.com>, <guro@fb.com>, <alexs@kernel.org>,
+        <richard.weiyang@gmail.com>, <songmuchun@bytedance.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>
+References: <20210729125755.16871-1-linmiaohe@huawei.com>
+ <20210729125755.16871-5-linmiaohe@huawei.com>
+ <YQKyn8bKRblCDuND@casper.infradead.org>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <d174dcca-aad4-0534-4d6a-767e01dafd8b@huawei.com>
+Date:   Fri, 30 Jul 2021 09:50:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5b4b303-7d9b-27d7-4c1e-cd29fea8cdb9@redhat.com>
+In-Reply-To: <YQKyn8bKRblCDuND@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.209]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 12:16:47PM -0700, Tom Rix wrote:
+On 2021/7/29 21:52, Matthew Wilcox wrote:
+> On Thu, Jul 29, 2021 at 08:57:54PM +0800, Miaohe Lin wrote:
+>> rtpn might be NULL in very rare case. We have better to check it before
+>> dereferencing it. Since memcg can live with NULL rb_tree_per_node in
+>> soft_limit_tree, warn this case and continue.
 > 
-> On 7/29/21 11:51 AM, Moritz Fischer wrote:
-> > On Wed, Jul 28, 2021 at 01:36:56AM +0000, Wu, Hao wrote:
-> > > > On 7/26/21 3:12 PM, Russ Weight wrote:
-> > > > > On 7/26/21 1:26 PM, trix@redhat.com wrote:
-> > > > > > From: Tom Rix <trix@redhat.com>
-> > > > > > 
-> > > > > > An fpga region's compat_id is exported by the sysfs
-> > > > > > as a 128 bit hex string formed by concatenating two
-> > > > > > 64 bit values together.
-> > > > > > 
-> > > > > > The only user of compat_id is dfl.  Its user library
-> > > > > > opae converts this value into a uuid.
-> > > > > > 
-> > > > > > ex/
-> > > > > > $ cat /sys/class/fpga_region/region1/compat_id
-> > > > > > f3c9941350814aadbced07eb84a6d0bb
-> > > > > > 
-> > > > > > Is reported as
-> > > > > > $ fpgainfo bmc
-> > > > > > ...
-> > > > > > Pr Interface Id                  : f3c99413-5081-4aad-bced-07eb84a6d0bb
-> > > > > > 
-> > > > > > Storing a uuid as 2 64 bit values is vendor specific.
-> > > > > > And concatenating them together is vendor specific.
-> > > > > > 
-> > > > > > It is better to store and print out as a vendor neutral uuid.
-> > > > > > 
-> > > > > > Change fpga_compat_id from a struct to a union.
-> > > > > > Keep the old 64 bit values for dfl.
-> > > > > > Sysfs output is now
-> > > > > > f3c99413-5081-4aad-bced-07eb84a6d0bb
-> > > > > I'm fowarding feedback from Tim Whisonant, one of the OPAE userspace
-> > > > > developers:
-> > > > > 
-> > > > > I think that this change to the sysfs for the compat_id node will
-> > > > > end up breaking the SDK, which does not expect the '-' characters to
-> > > > > be included when parsing the sysfs value. Currently, it is parsed as
-> > > > > a raw hex string without regard to any '-' characters. This goes for
-> > > > > any "guid" currently exported by sysfs and for what we read in the
-> > > > > device MMIO space.
-> > > > Yes, it will.
-> > > > 
-> > > > And there are other places, like dfl-afu-main.c:afu_id_show()
-> > > > 
-> > > > outputs raw hex that sdk turns into a uuid.
-> > > > 
-> > > > 
-> > > > Some options.
-> > > > 
-> > > > If no one but dfl will ever use it, then v1 of patchset.
-> > > > 
-> > > > If others can use it but don't want to change dfl, then v2 of patchset,
-> > > > my favorite.
-> > > > 
-> > > > Or this one for uuid for everyone, what have been v3 but changed too much.
-> > > > 
-> > > > 
-> > > > could dfl change generally to output uuid's to the sysfs ?
-> > > > 
-> > > > this would be generally helpful and a one time disruption to the sdk.
-> > > This change limited the output format to uuid_t, but if any hardware doesn't
-> > > use uuid_t on hardware may have to convert it back from the sysfs output in
-> > > userspace. Leave it to print hardware values (e.g. from register), and convert
-> > > it in userspace should be fine too I think.
-> > I'm not entirely sure. I seem to recall there being examples of sysfs
-> > files returning different things for different drivers.
-> > 
-> > That being said it seems largely cosmetic to add the '-' in between.
-> > 
-> > If it breaks userspace, I'm against it. If you *need* it make a
-> > compat_uuid entry or something in that case?
-> 
-> My gripe is
-> 
-> For a nominally common interface, compat_id has a vendor specific output.
-> 
-> If for example another vendor wanted to use this field but their natural
-> format was an OF string.
-> 
-> 16 bytes of raw hex would not work for them, so they would roll their own.
-> 
-> which defeats the purpose of a common interface.
-> 
-> 
-> The language in the docs as-is is vague on the output format.
-> 
-> DFL is the only user of the interface.
-> 
-> So ver 2
-> 
-> https://lore.kernel.org/linux-fpga/4ab7dd2d-c215-6333-6860-6f7d0ac64c3d@redhat.com/
-> 
-> Keeps the output as-is for dfl, so nothing breaks in userspace
-> 
-> And adds flexibility for vendors to output their appropriate natural form.
-> 
-> So compat_id becomes generally useful.
+> Why would we need to warn?  the GFP flags don't contain NOWARN, so
+> we already know an allocation failed.
 
-Mixing types seems be strongly against in Documentation/filesystems/sysfs.rst.
-So in my opinion there should be a determined format for the output. The
-concern for this patch is which one is a better format, uuid style or
-128 bit raw hex?
+I see. Will remove it. Many thanks!
 
-And I vote for 128 bit raw hex, as other vendors may not use uuid_t as
-the identifier, may be an OF string. So we don't have to force them
-decorate it as the uuid style.
+> .
+> 
 
-Thanks
-Yilun
-
-> 
-> 
-> Tom
-> 
-> 
-> > 
-> > - Moritz
-> > 
