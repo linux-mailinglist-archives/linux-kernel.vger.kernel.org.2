@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826FE3DBEB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63023DBEBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhG3TFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
+        id S230414AbhG3THR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbhG3TFP (ORCPT
+        with ESMTP id S230408AbhG3THP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:05:15 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95CFC0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:05:09 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id d22so4375597uaw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:05:09 -0700 (PDT)
+        Fri, 30 Jul 2021 15:07:15 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC109C06175F;
+        Fri, 30 Jul 2021 12:07:09 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id hs10so9925366ejc.0;
+        Fri, 30 Jul 2021 12:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lI7MSErWXqY8bqPMsLO7ItBW3m+DVtFHrgMs+xiZXJA=;
-        b=bD1vPWsa2lKCLWxXOLT+1UnDwNSAZJwXtAOcVDw+V/e40KbH2sue31nkHNrjIfFRB/
-         BslMGwza2qlB9k4lB4tO8GZi4lLygpVjJnrgAiTX9A7XBavBoVYpWz3C439RTw40hYb7
-         73WS9zbvN0I0GTONPEJId0bIjO6Zedp5S1f6UUSWvz+fMoo07JM1RVxe7VoY2BjtChkG
-         tINUW4cLZsSrQXDv/IC1J4t5H4sO1p60pLv1CLwlu7PZSlznBrwaq8HglsTegVI/57/i
-         EWGSpjcw2sq4qEWxwTHVfSifkhwulE/3Tp9P4dX00x66yvod5f/3IpJCqOX4iPM3SVa+
-         24Jw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e8f4lcsPiJ3HGD4KPSWDS3ppWYq9M+P3wkpoyc+VO8w=;
+        b=VzNCpodjTbGJ1h3RWJ4m7xZ0UvZI+Qk7PN1WqC8uE1LMFt1elPjP2OFe3tLRuyNdnE
+         3z2j1nfPaTGY2n6tTyZn2MhgpX6B2Gx4WPV3is5QXHCOUOAYHA0pfSjW1aSKmwvFX0cD
+         GZmKWnkVxtaj40+n51S8Edx7eFmJBYNYV4NPqfI+R3tFa2sNrFtoZ606NZk4E58U42cM
+         //03VjkkcXuMg7ipYDa7kkp7i7z1QPeeySFPn5BAGBicX0bCVM1Wb+ZXzbmeL8gCnn2A
+         CtmIcNJkXWWeKEqi7cWRxvlRH4k4a1TTLG/3CP6QqGkQGKQjPQ59P3uqzu3wWji00cQw
+         ZqsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lI7MSErWXqY8bqPMsLO7ItBW3m+DVtFHrgMs+xiZXJA=;
-        b=TiestjY/sU7ZoKnGIP/ooSKf5MZRRF0pRbgaqhxLjawZbYz2cluLL0bNeiMP9vPNZJ
-         5dy5RaacR7Odlj/es7JEsE9Wt25Sc0ZIE1AlyyqQeTMw5CV3lfO7rAGXnqrdJ6dDY4H9
-         yhhaMYGQ6bCNIxXFlut9NOrUHGIbEjFvLtGjDkNlp28Yath0VZJsrTRCNOcq2V8jeHfz
-         HI0etE7jUcicUXfUT4A0QHBthD3zAjGlZUQpl3iVA0IMebSih6yxnjVo0vGHKve9jU3z
-         CVgovFKo333yv8HXn1AyWGeAgEbnqE3RmR/4Df2fEJ2YJxbNNLm7raQDb94Bm3gYGinv
-         kdXg==
-X-Gm-Message-State: AOAM530vIN5Q3LjMhExYEMt1LqQngGdSKULp6Kepmu7kU3kAfFek94hc
-        VPa6cV/WPXhRjiul90F5vL1P4gDUmIjGTGPldhYN/w==
-X-Google-Smtp-Source: ABdhPJxKt0a6oYMaEe+KWlQ+pBTttefGnJsa9zMvoC3nKXiwFjF1SfuJWc7o7a7CAIlZOh6JUnBHXF86ZK2SwHk1TRQ=
-X-Received: by 2002:ab0:4e22:: with SMTP id g34mr3841963uah.17.1627671908951;
- Fri, 30 Jul 2021 12:05:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e8f4lcsPiJ3HGD4KPSWDS3ppWYq9M+P3wkpoyc+VO8w=;
+        b=r+B/rmS3tOc3el6TK3z6zA966wZyjG9AFD5kB1pcPuqLONr5Sv2OanlrNJqVzGGCB+
+         O6hE/TJjAoJookM9cJhIlsCvsuXN0BWcQvVV3+cAtKbbH+SrN8p9sVvf0Sgpk9SobX13
+         oO2CK9IRgMfQkXFyPhK1u25LpqXeC3DJSxsEhQAvSIZKIjhSa/ZbMB2pbAuZEKz1UOQw
+         HC4bnlcWAhp8nr9maEisv+7aOwuhcs4UJxk436Il4S6HM6jC1SkK5pZgb/4r7050ebdx
+         10nQs9zUPTtWqPZfk4TQZoib9weUdPsJVBal/HclJo9ViL5Div4bO5x8GNBBdEQ/M188
+         elZw==
+X-Gm-Message-State: AOAM5319JH9sSoz9eJMt/htr9l4zI7Dfrov/tUsWszcypWeW6hWrFSiw
+        WTrac3OAd368NwkUQ1lDEcI=
+X-Google-Smtp-Source: ABdhPJw7sKiaK516UBNTL6irnVQE7OfE7dl0ZV5DJI/pu6FmwyKwV5ypwy5U+LfXesW1jZecq43tkg==
+X-Received: by 2002:a17:907:1b02:: with SMTP id mp2mr4139238ejc.196.1627672028400;
+        Fri, 30 Jul 2021 12:07:08 -0700 (PDT)
+Received: from skbuf ([82.76.66.29])
+        by smtp.gmail.com with ESMTPSA id br3sm858993ejb.103.2021.07.30.12.07.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 12:07:08 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 22:07:06 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 1/2] net: dsa: tag_mtk: skip address learning on
+ transmit to standalone ports
+Message-ID: <20210730190706.jm7uizyqltmle2bi@skbuf>
+References: <20210728175327.1150120-1-dqfext@gmail.com>
+ <20210728175327.1150120-2-dqfext@gmail.com>
+ <20210728183705.4gea64qlbe64kkpl@skbuf>
+ <20210730162403.p2dnwvwwgsxttomg@skbuf>
+ <20210730190020.638409-1-dqfext@gmail.com>
 MIME-Version: 1.0
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-8-semen.protsenko@linaro.org> <45da758c-d32d-293b-f4c7-12b58ebca8ac@canonical.com>
-In-Reply-To: <45da758c-d32d-293b-f4c7-12b58ebca8ac@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Fri, 30 Jul 2021 22:04:57 +0300
-Message-ID: <CAPLW+4=xa-cMR-oqOmEV=su6k=pWE8qSupYoq5evaDr=T26aEA@mail.gmail.com>
-Subject: Re: [PATCH 07/12] dt-bindings: serial: samsung: Add Exynos850 doc
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730190020.638409-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 at 19:35, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 30/07/2021 16:49, Sam Protsenko wrote:
-> > Add compatible string for Exynos850 SoC.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 1 +
-> >  1 file changed, 1 insertion(+)
->
-> Thanks for the patches!
->
-> Please put this one before other serial changes but does not have to be
-> first in the entire series.
->
+On Sat, Jul 31, 2021 at 03:00:20AM +0800, DENG Qingfang wrote:
+> On Fri, Jul 30, 2021 at 07:24:03PM +0300, Vladimir Oltean wrote:
+> > Considering that you also have the option of setting
+> > ds->assisted_learning_on_cpu_port = true and this will have less false
+> > positives, what are the reasons why you did not choose that approach?
+> 
+> After enabling it, I noticed .port_fdb_{add,del} are called with VID=0
+> (which it does not use now) unless I turn on VLAN filtering. Is that
+> normal?
 
-Done. Will be present in v2.
-
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->
-> Best regards,
-> Krzysztof
+They are called with the VID from the learned packet.
+If the bridge is VLAN-unaware, the MAC SA is learned with VID 0.
+Generally, VID 0 is always used for VLAN-unaware bridging. You can
+privately translate VID 0 to whatever VLAN ID you use in VLAN-unaware
+mode.
