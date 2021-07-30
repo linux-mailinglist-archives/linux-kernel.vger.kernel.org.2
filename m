@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BF23DBCCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CFF3DBCD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhG3QF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:05:57 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:38676
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229466AbhG3QFy (ORCPT
+        id S229697AbhG3QHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhG3QHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:05:54 -0400
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 45D033F24F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 16:05:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627661148;
-        bh=ckOz90kE72EEodkfysirBp4bfPPhomkbsSq4zFCD8p4=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=ivOSwVeQ0XHeXJBn214ExMBSMaX2KvjrEqvC+7lTcxGxtfWL13XYfOQpgoFMqebyL
-         lKFXypmXXtKLme757tve6gpoWOI7zOxyYNZgqjALJxUvxOtTabZIWt4GCV8pH9pGNr
-         uH5TNdRyTINpmfX10QPA19OX2vYHPuTv2CtnFEes1iwLWMSsQiahHYyvamYA6K9VkG
-         JCF73vvZFCBmbl3EWPkbfzNPMXxtMj5mOxerhiQyBn4IsPLzPQ1lDzlub4DfgPLPZr
-         gv6YGzFsgOfDfMMAKTIXQdBY4PqKp7vH4tAPYitmmTgV5nXROYHrlFZ7jdbzpufSZT
-         jbATtbenVqPVg==
-Received: by mail-ej1-f70.google.com with SMTP id n9-20020a1709063789b02905854bda39fcso3272084ejc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:05:46 -0700 (PDT)
+        Fri, 30 Jul 2021 12:07:12 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8161C061765;
+        Fri, 30 Jul 2021 09:07:06 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id mt6so15912440pjb.1;
+        Fri, 30 Jul 2021 09:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3CUKiPjVhRqbcpNjTZQwL56wlHZezFNK9/SuBkCMsYo=;
+        b=Vitr0fqnQypj1qamhMaglBiB17MtNukUrISqQJQNwvJadI4SCPnZhFi5tVzRGDziQL
+         TzZG/rVZrnvwJfYIY7xVlSslwlEWcoIQl1bnmZLvpmUQExTJ7SmC5cI7Tm7l+nxlcbax
+         McUoJYyyJLoaFecRt8ixolN7evBlu7UTi+yRS5E3stLpmQNPgyd+MAzfxPyS9e3LxRca
+         eYAUm7mr0WFq9XGmpHtFu5eKuRF6SCw1Mmc5QEJnkrj/jNRGXoX9mzSmq/GZsMc1ikh2
+         rVj66/ueTDslhkUmgwR1VnvDvPE7wNwj4StGN/KdPrDF1PgpDFzFt6lMx/5gCpBw+dFo
+         JeKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ckOz90kE72EEodkfysirBp4bfPPhomkbsSq4zFCD8p4=;
-        b=Dq0ECHCTcLIuI3+mqvO2WZjFHNj8XMq/26pScolIPs513BHoaO9c7Xx31bzSHJqupG
-         cIqHHttu90aq9uU4U2uoly3OJHeR3tRfMJXzPB1My+jx/tshGxbwDF7VdUCdT+4Nb3Po
-         8jhwcGqocFeFdx4nQj60pS21onPw7e9Q+4Z5wjffr2HDFIt1G85uNF4S7FaMgem0wnkM
-         1fPB4QFLZaeM6DFK9rjP2toysXc7AdO1kRNJ0UUa8S+oALc2xGnXpB0oLBnbTJOWY8BB
-         cT+y5bYoDiQL3tm08/qIRofUit3vnzSPJKl16hP7uDwD9/GRparT86oJ2WCdm43wRIzA
-         WegA==
-X-Gm-Message-State: AOAM531KASm6iCnJuCWX4vXrCk4RgqnH6/LdHcFGgamyYZ80Pi2J4MP4
-        ODjr5J7luTFIZB5ym2lXx1/QQdmSR8afCc2ulbacld3Bi/40QWe+PnwOMmk3swTqJPTTx5JCxZa
-        cTaIP2vAUQ3X/LzDltjMhSDMRy/ykyjt6hsvMWoHpjA==
-X-Received: by 2002:a17:906:c0cd:: with SMTP id bn13mr3270800ejb.251.1627661145661;
-        Fri, 30 Jul 2021 09:05:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz7c3uXOvkRzFd+EjfGwOi9GkfnP6xyPWeV21oXtz+M8LxzO4q9ZXaaXNPEO6I0wjp44bYNLA==
-X-Received: by 2002:a17:906:c0cd:: with SMTP id bn13mr3270781ejb.251.1627661145512;
-        Fri, 30 Jul 2021 09:05:45 -0700 (PDT)
-Received: from [192.168.8.102] ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id b3sm697246ejb.7.2021.07.30.09.05.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 09:05:45 -0700 (PDT)
-Subject: Re: [PATCH 06/12] tty: serial: samsung: Add Exynos850 SoC data
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-7-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <5826bc3e-e9e8-a9bb-4541-21c1b944a60e@canonical.com>
-Date:   Fri, 30 Jul 2021 18:05:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=3CUKiPjVhRqbcpNjTZQwL56wlHZezFNK9/SuBkCMsYo=;
+        b=fZIuRmGPBwvURLpp0fyh7VLqmEPpDh7mXUUh0meOtSfgSaHfbUnZR5/5jjWVG9Ha80
+         wmkOvULI94GIns3nzX8cN8pZmpjv39uK2PAsESUIfy6Uh3tDsOTZGcLi7jo2r6CgzMvy
+         38HIttImsWQ2ekTys1zGiEZj0q5mPmFEuC6PhgOcNB/T5e+txYMCb3VXE9MhgNjx5Pi6
+         VYMQK/OMnijWkbnUgqGA+0Su2b/QA/H+7PwrgDHnN+WmUBDI1ZIsA/ab9YDc/DxmQK9+
+         VcYVtQ9vrK6oVhK26MFGv8KFkpQOI0894X/42unchYdxZqo8OqugGj8y5jPYHbEhaHbz
+         UUGA==
+X-Gm-Message-State: AOAM533g+G0wyITP1mI2XZwRnYVOLkgWpJ+jd/OibTaFAJCP0eBMMTe5
+        Ac5G8p4WcBmOKuTeJMaAnLI=
+X-Google-Smtp-Source: ABdhPJwCYY5sKLZ7W+Fx+QYea/+AFAuvAgAFpz9bWR4bmHin8WeVYlz4vm0b+Dvj94m5Pdg7vFYv/w==
+X-Received: by 2002:a17:90a:748f:: with SMTP id p15mr2671143pjk.179.1627661226174;
+        Fri, 30 Jul 2021 09:07:06 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:5ec3])
+        by smtp.gmail.com with ESMTPSA id x7sm2966394pfc.96.2021.07.30.09.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 09:07:05 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 30 Jul 2021 06:07:01 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2] blk-throtl: optimize IOPS throttle for large IO
+ scenarios
+Message-ID: <YQQjpQEBbdAgMUM7@mtj.duckdns.org>
+References: <40915233274d31bb0659ff9f3be8900a5a0e81ba.1627462548.git.brookxu@tencent.com>
+ <YQLhRrkZrmKTzfbP@mtj.duckdns.org>
+ <1ce9bcbb-8eea-f51f-f80a-22caf5f2e0d8@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210730144922.29111-7-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ce9bcbb-8eea-f51f-f80a-22caf5f2e0d8@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/2021 16:49, Sam Protsenko wrote:
-> Add serial driver data for Exynos850 SoC. This driver data is basically
-> reusing EXYNOS_COMMON_SERIAL_DRV_DATA, which is common for all Exynos
-> chips, but also enables USI init, which was added in previous commit:
-> "tty: serial: samsung: Init USI to keep clocks running".
+On Fri, Jul 30, 2021 at 10:09:34AM +0800, brookxu wrote:
+> >> @@ -877,10 +900,19 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
+> >>  	else
+> >>  		tg->bytes_disp[rw] = 0;
+> >>  
+> >> -	if (tg->io_disp[rw] >= io_trim)
+> >> +	if (tg_io_disp(tg, rw) >= io_trim) {
+> > 
+> > Instead of checking this in multiple places, would it be simpler to transfer
+> > the atomic counters to the existing counters whenever we enter blk-throtl
+> > and leave the rest of the code as-is?
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  drivers/tty/serial/samsung_tty.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> index 75ccbb08df4a..d059b516a0f4 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -2814,11 +2814,19 @@ static struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
->  	.fifosize = { 64, 256, 16, 256 },
->  };
->  
-> +static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
-> +	EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
-> +	.fifosize = { 0, },
+> If we do this, we need to do similar processing on the bio submission path and the bio
+> resubmission path in pending_timer. It seems that the code is more complicated?
 
-This does not look correct. You rely on samsung,uart-fifosize property
-but it is optional.
+Yeah, basically whenever we enter blk-throtl. Factored to a function,
+calling it on entry should be fairly clean, right? I wonder whether it'd be
+better to consolidate all atomic counter handling in a single location and
+all it does is transferring whatever's accumulated to the usual counters.
+Also, when you're reading & resetting the atomic counters, can you use a
+pattern like the following?
 
+  main_counter += atomic_xchg(counter, 0);
 
-Best regards,
-Krzysztof
+Right now, there's a race window between reading and resetting.
+
+Thanks.
+
+-- 
+tejun
