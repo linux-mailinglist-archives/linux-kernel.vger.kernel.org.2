@@ -2,91 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF503DBCC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BF23DBCCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbhG3QFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:05:16 -0400
-Received: from mail-pj1-f52.google.com ([209.85.216.52]:37608 "EHLO
-        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhG3QFO (ORCPT
+        id S229648AbhG3QF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:05:57 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:38676
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229466AbhG3QFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:05:14 -0400
-Received: by mail-pj1-f52.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso21506834pjq.2;
-        Fri, 30 Jul 2021 09:05:08 -0700 (PDT)
+        Fri, 30 Jul 2021 12:05:54 -0400
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 45D033F24F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 16:05:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627661148;
+        bh=ckOz90kE72EEodkfysirBp4bfPPhomkbsSq4zFCD8p4=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=ivOSwVeQ0XHeXJBn214ExMBSMaX2KvjrEqvC+7lTcxGxtfWL13XYfOQpgoFMqebyL
+         lKFXypmXXtKLme757tve6gpoWOI7zOxyYNZgqjALJxUvxOtTabZIWt4GCV8pH9pGNr
+         uH5TNdRyTINpmfX10QPA19OX2vYHPuTv2CtnFEes1iwLWMSsQiahHYyvamYA6K9VkG
+         JCF73vvZFCBmbl3EWPkbfzNPMXxtMj5mOxerhiQyBn4IsPLzPQ1lDzlub4DfgPLPZr
+         gv6YGzFsgOfDfMMAKTIXQdBY4PqKp7vH4tAPYitmmTgV5nXROYHrlFZ7jdbzpufSZT
+         jbATtbenVqPVg==
+Received: by mail-ej1-f70.google.com with SMTP id n9-20020a1709063789b02905854bda39fcso3272084ejc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:05:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Mb1gO+6STzLWuQhCsk6+1XZIXPWL26jkAcu9s9eX/WM=;
-        b=LOtV3XNjZJohMmWgMYVuJTC7qRGR7Bmo2BFoyfuyY8/8WpDTTJDibU4S88ng2z0TwQ
-         j7q9YBy6RQBkYihYVQI+Le+hLa5snX7YUhtZK5KjWE4dC7kLo01htdu/ZOEaJSihI5I1
-         7B+f2JjFtSi9wQ35DnkExeAcZVtKMbQ/GBjii3l2NXSlS+8mDcfDW713To2fWmAMQZ50
-         WEr/HPfxU7ii0vYMHbmTyqVlax3zS9p3IswT0krHqHX/pBynvf3b8m+XvOf2Ls2zm3zf
-         S/yvK6e5eCu4SYx0AbX6+hbRlm/KxrNOLTmFy4c98Aa3cTEdSDVF8nCZ2O8GWZTEjZ/g
-         x5BQ==
-X-Gm-Message-State: AOAM533jWpYEU2JWyAGfWPdPsQFXdIaJQCQ3X96dwvaUPmTGzdboaDHS
-        t/Xejicxqw8SxeVDnRAYNAU=
-X-Google-Smtp-Source: ABdhPJwy2js4U4Iak2ex7sFLzTif9lZyITB6DErOQjLoUeAcFMkysbqnCLlnlpw94AUCOgqEqlpJxw==
-X-Received: by 2002:aa7:9546:0:b029:32e:5fdf:9576 with SMTP id w6-20020aa795460000b029032e5fdf9576mr3353456pfq.5.1627661107884;
-        Fri, 30 Jul 2021 09:05:07 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:684a:6173:abee:6f13])
-        by smtp.gmail.com with ESMTPSA id r128sm2997972pfc.155.2021.07.30.09.05.06
+        bh=ckOz90kE72EEodkfysirBp4bfPPhomkbsSq4zFCD8p4=;
+        b=Dq0ECHCTcLIuI3+mqvO2WZjFHNj8XMq/26pScolIPs513BHoaO9c7Xx31bzSHJqupG
+         cIqHHttu90aq9uU4U2uoly3OJHeR3tRfMJXzPB1My+jx/tshGxbwDF7VdUCdT+4Nb3Po
+         8jhwcGqocFeFdx4nQj60pS21onPw7e9Q+4Z5wjffr2HDFIt1G85uNF4S7FaMgem0wnkM
+         1fPB4QFLZaeM6DFK9rjP2toysXc7AdO1kRNJ0UUa8S+oALc2xGnXpB0oLBnbTJOWY8BB
+         cT+y5bYoDiQL3tm08/qIRofUit3vnzSPJKl16hP7uDwD9/GRparT86oJ2WCdm43wRIzA
+         WegA==
+X-Gm-Message-State: AOAM531KASm6iCnJuCWX4vXrCk4RgqnH6/LdHcFGgamyYZ80Pi2J4MP4
+        ODjr5J7luTFIZB5ym2lXx1/QQdmSR8afCc2ulbacld3Bi/40QWe+PnwOMmk3swTqJPTTx5JCxZa
+        cTaIP2vAUQ3X/LzDltjMhSDMRy/ykyjt6hsvMWoHpjA==
+X-Received: by 2002:a17:906:c0cd:: with SMTP id bn13mr3270800ejb.251.1627661145661;
+        Fri, 30 Jul 2021 09:05:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7c3uXOvkRzFd+EjfGwOi9GkfnP6xyPWeV21oXtz+M8LxzO4q9ZXaaXNPEO6I0wjp44bYNLA==
+X-Received: by 2002:a17:906:c0cd:: with SMTP id bn13mr3270781ejb.251.1627661145512;
+        Fri, 30 Jul 2021 09:05:45 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id b3sm697246ejb.7.2021.07.30.09.05.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 09:05:07 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: Allow async suspend/resume callbacks
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Vincent Palomares <paillon@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-References: <20210728012743.1063928-1-paillon@google.com>
- <DM6PR04MB6575579560F7CB1B71103F28FCEB9@DM6PR04MB6575.namprd04.prod.outlook.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <1630ebc3-b40e-31e3-1efa-67717e186b0a@acm.org>
-Date:   Fri, 30 Jul 2021 09:05:05 -0700
+        Fri, 30 Jul 2021 09:05:45 -0700 (PDT)
+Subject: Re: [PATCH 06/12] tty: serial: samsung: Add Exynos850 SoC data
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-7-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <5826bc3e-e9e8-a9bb-4541-21c1b944a60e@canonical.com>
+Date:   Fri, 30 Jul 2021 18:05:43 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <DM6PR04MB6575579560F7CB1B71103F28FCEB9@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210730144922.29111-7-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/21 11:48 PM, Avri Altman wrote:
-> Vincent wrote:
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index b87ff68aa9aa..9ec5c308a0ea 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -9625,6 +9625,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem
->> *mmio_base, unsigned int irq)
->>          async_schedule(ufshcd_async_scan, hba);
->>          ufs_sysfs_add_nodes(hba->dev);
->>
->> +       device_enable_async_suspend(dev);
->>          return 0;
-> Isn't device_enable_async_suspend is being called for each lun in scsi_sysfs_add_sdev Anyway?
+On 30/07/2021 16:49, Sam Protsenko wrote:
+> Add serial driver data for Exynos850 SoC. This driver data is basically
+> reusing EXYNOS_COMMON_SERIAL_DRV_DATA, which is common for all Exynos
+> chips, but also enables USI init, which was added in previous commit:
+> "tty: serial: samsung: Init USI to keep clocks running".
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  drivers/tty/serial/samsung_tty.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+> index 75ccbb08df4a..d059b516a0f4 100644
+> --- a/drivers/tty/serial/samsung_tty.c
+> +++ b/drivers/tty/serial/samsung_tty.c
+> @@ -2814,11 +2814,19 @@ static struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
+>  	.fifosize = { 64, 256, 16, 256 },
+>  };
+>  
+> +static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
+> +	EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
+> +	.fifosize = { 0, },
 
-Hi Avri,
+This does not look correct. You rely on samsung,uart-fifosize property
+but it is optional.
 
-Our measurements have shown that resume takes longer than it should with 
-encryption enabled. While suspending we change the power mode of the UFS 
-device to a mode in which it loses crypto keys. Restoring crypto keys 
-during resume (blk_ksm_reprogram_all_keys()) takes about 31 ms. This is 
-the long pole and takes much more time than resuming LUNs. This patch 
-makes UFS resume happen concurrently with resuming other devices in the 
-system instead of serializing it. Measurements have shown that this 
-patch significantly improves the time needed to resume an Android device.
 
-Bart.
+Best regards,
+Krzysztof
