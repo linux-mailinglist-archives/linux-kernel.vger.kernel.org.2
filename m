@@ -2,142 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A883DBE0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66493DBE1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhG3SBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 14:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhG3SBg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 14:01:36 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39A8C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:01:28 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so10386604oth.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Evxari8pyz24e9FIUREJeCKN2EWIhSQAii1TFXJzCCY=;
-        b=pWmzybgP2uH6Xct/bn8VKXPNUZiel+66+a10yMo9Yn/cJ8M0EQS7jwwnAuhvGX2G9X
-         ggGe847SFyPYasmJjqKZix0adboS+6nuToqhqGcvC14+ewLIIpQUNuPdeScqX0Xy84yi
-         6GRQbGoC6lIPpYPJZjNUTUSd9plIKZgoUVnPDSLLh6k9HFCPbYraqFY3fIsdlMbZw1zQ
-         HmOQgqQX8faAM6L/wj+BfpvqDZtOE8qKWWMxJk3oyLeAGMEORlCnc2+wnAhi3Eak0SWr
-         KOJKRniimkig2YGVO2tFLkhUYKfQzQC+a27Xr79FyQpzyodqCoqoKDCxB3//ISBu+OV/
-         bDVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Evxari8pyz24e9FIUREJeCKN2EWIhSQAii1TFXJzCCY=;
-        b=hS7kvKPfcMi0GNlfD50IsDNJjiEKosRErkOcIo/jOVW6dL6c79GFuBGu1QorgG6yV3
-         SsM+wEvV+JZDgI+1UxHRNkvEZ9c5+32fRfzpOaBgAkNBz0p9UI2mK9Ma9tdUgBeNs13K
-         GAf6hFdTDyuzthZNRALlqlptFiC95X/5C588o3yRd0Y1eXpO6wbIy/gcRB5nChPA0OB+
-         8xlkbdDax+DVUV3fThcJqTdQE/1ZRx9KLn/AN5vGAmttjHMcXEziyvuZ9vFt+kpJWRJs
-         /Atp/JjyhBeNFZO/qQKb5KJA19ffdko/c55T2ra7XlrBYdLeOzEzRnzCMCzrBNuvxkfO
-         cbZA==
-X-Gm-Message-State: AOAM53305G/IEKerIB0+bqQuK6ThKNeQJRbIOTtAgUIqYmxqi9kgPO9R
-        PigbVYxdmNJj6m1rOIQy8Ufs9Q==
-X-Google-Smtp-Source: ABdhPJyM20sXYUTWFCFT41x2cBXeSIY5u5HP5ptz2I1dplE37EBEWz2jsC/Tk56mQfPv4HM9TdjBpg==
-X-Received: by 2002:a9d:67c8:: with SMTP id c8mr2937898otn.80.1627668088370;
-        Fri, 30 Jul 2021 11:01:28 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b21sm343431oov.26.2021.07.30.11.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 11:01:27 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 13:01:25 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 8/9] arm64: dts: qcom: sc7280: Add Q6V5 MSS node
-Message-ID: <YQQ+dV08CBERVTEK@builder.lan>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-9-git-send-email-sibis@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624564058-24095-9-git-send-email-sibis@codeaurora.org>
+        id S230229AbhG3SLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 14:11:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229773AbhG3SLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 14:11:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 28D6A60F01;
+        Fri, 30 Jul 2021 18:11:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627668678;
+        bh=6pd6BtYsvZmPnllMMHXgFFQg9egNZubzn8f0z01CXjs=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=YqIbegzckNxmGwY7eMbFOO6SczdCCsElVmEzdysdN5MytFjgw+qxcoisTs3QI2e3I
+         s/qyIoAxTG7rmwYMjGb+PEScz4c1PGliaSj60lAjYGTwtyOD94mGDn4d6kF5MhSE4e
+         tAQX4hGi+ALTejb0C4hYAVS0awADnhLC0ZkzeAl9bmigFb7TbceKmEVa1v3a0Q/Svu
+         rXXBIkRpGpkQFy4E1rVUaw2nszHtgsfXE8XS4bUDFbpOYVwgAvtN6ZlQHF+XjQUSWY
+         QIRZAiTdi5SAxwPIo+xaJHhWbPAdWvVBzckJQ7Dw8t9GCVFolMI016KJBaKL9eI5Xf
+         kFxADqc8KliSg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 160E5609F6;
+        Fri, 30 Jul 2021 18:11:18 +0000 (UTC)
+Subject: Re: [GIT PULL] HID fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <nycvar.YFH.7.76.2107301403090.8253@cbobk.fhfr.pm>
+References: <nycvar.YFH.7.76.2107301403090.8253@cbobk.fhfr.pm>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <nycvar.YFH.7.76.2107301403090.8253@cbobk.fhfr.pm>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
+X-PR-Tracked-Commit-Id: db8d3a21275c807a4047a21bde3b57d49ca55d82
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8723bc8fb38cf4ff18e23ed31d424ba39e81a7cb
+Message-Id: <162766867803.11392.8954061527846874648.pr-tracker-bot@kernel.org>
+Date:   Fri, 30 Jul 2021 18:11:18 +0000
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24 Jun 14:47 CDT 2021, Sibi Sankar wrote:
+The pull request you sent on Fri, 30 Jul 2021 14:06:35 +0200 (CEST):
 
-> This patch adds Q6V5 MSS PAS remoteproc node for SC7280 SoCs.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8723bc8fb38cf4ff18e23ed31d424ba39e81a7cb
 
-Regards,
-Bjorn
+Thank you!
 
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 40 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 3fb6a6ef39f8..56ea172f641f 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -584,6 +584,46 @@
->  			#power-domain-cells = <1>;
->  		};
->  
-> +		remoteproc_mpss: remoteproc@4080000 {
-> +			compatible = "qcom,sc7280-mpss-pas";
-> +			reg = <0 0x04080000 0 0x10000>;
-> +
-> +			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_EDGE_RISING>,
-> +					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-> +					      <&modem_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
-> +					      <&modem_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
-> +					      <&modem_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
-> +					      <&modem_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
-> +			interrupt-names = "wdog", "fatal", "ready", "handover",
-> +					  "stop-ack", "shutdown-ack";
-> +
-> +			clocks = <&rpmhcc RPMH_CXO_CLK>;
-> +			clock-names = "xo";
-> +
-> +			power-domains = <&rpmhpd SC7280_CX>,
-> +					<&rpmhpd SC7280_MSS>;
-> +			power-domain-names = "cx", "mss";
-> +
-> +			memory-region = <&mpss_mem>;
-> +
-> +			qcom,qmp = <&aoss_qmp>;
-> +
-> +			qcom,smem-states = <&modem_smp2p_out 0>;
-> +			qcom,smem-state-names = "stop";
-> +
-> +			status = "disabled";
-> +
-> +			glink-edge {
-> +				interrupts-extended = <&ipcc IPCC_CLIENT_MPSS
-> +							     IPCC_MPROC_SIGNAL_GLINK_QMP
-> +							     IRQ_TYPE_EDGE_RISING>;
-> +				mboxes = <&ipcc IPCC_CLIENT_MPSS
-> +						IPCC_MPROC_SIGNAL_GLINK_QMP>;
-> +				label = "modem";
-> +				qcom,remote-pid = <1>;
-> +			};
-> +		};
-> +
->  		stm@6002000 {
->  			compatible = "arm,coresight-stm", "arm,primecell";
->  			reg = <0 0x06002000 0 0x1000>,
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
