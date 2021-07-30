@@ -2,132 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004BC3DB1C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A34FF3DB1EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235717AbhG3DId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 23:08:33 -0400
-Received: from mail-mw2nam10on2073.outbound.protection.outlook.com ([40.107.94.73]:54343
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230199AbhG3DI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 23:08:29 -0400
+        id S236845AbhG3DSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 23:18:40 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:61796 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235022AbhG3DSj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 23:18:39 -0400
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16U33wKK025430;
+        Fri, 30 Jul 2021 03:18:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=PPS06212021;
+ bh=bFMi6/1RnUwrKZ1RaAKFYB8NEbjz27JwQHDRZjrjubg=;
+ b=HyxiDA06QkU6+j5xvVM8dV4DickuJKqSDyP+zBe1geTP+lJ0rM+uVGMnIJuX0DIuzsMT
+ o0s5RJ0YaTu5Xbd48Bn04S2K2uBOt8GIG5VjYxkE71gkO3PI0hv9s/yFgIZmAXJuYSA8
+ wvZd25UnWRXsz+GqAPVHFdraHqjaaYPgssWwm8sA8LO4Y/jxLFv9TtU6trj+T0Re/SYL
+ DrmrBbiIjpK3F/pc5tfq4Tb8SRxVfFRn2I//7dFmKiItPfeZK2xQGuab6eTy6Gnb+RI2
+ Tb2jx38pCzrfR4m/r7WBLYDBN/HQy4T0gb4FxddO6x2l9Nve/KFm5jQq59rEQlS6V6Km UA== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
+        by mx0a-0064b401.pphosted.com with ESMTP id 3a420eraew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Jul 2021 03:18:26 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mCxISTSGfD2yhgcuc4ICmZDetFLd5g+sYdxgfPwuhHo7PYLuHYaP+UbMaGD2EHH6zagCZQGUWjPK8KLAFLxXuwYoRpyFyuFoMFVe6xzLyVgY1VO9ODAe7+8BEB4EyMd0R/RjXE1Z1PL3dhuQU1LcqjZfOxj5RrFpBujbLoclG7a6+8JXAile9cH5R3XJxb0MwNcull3JLyxrOpXC71fV9+bfoApeJ22vFMhv+DfKZp5pM3t12Rw+9LaHnOWxkx+aNs/gRAcTXe+P9/AHTOdcOm0ky2gjgFRPkNB6a1J2k9ZUKR7YjqQSyetkmf5055HTj8uGNBFHlnjI5ryjfPvubA==
+ b=c9GSJb9WCQzynI1nco8WBfuOpbwIoE294Jrn2CdsuKqxWfflzAKyR575oGDE/9SpCwAWHIT5CBNKok2Ww88O0FEjUM/Y5C5Y7aTFMGToJvR5brfK0LMdntPvUFVRmGb/qIkZ6r6sS/WPIXCs9yV9X2GkOwHRzVnagZm5IUwrpcF1CpD0nlkJZCTxl2MxEQssi3fd8b4JQBZnDpWb619jF8TK/Wy+yEeBnEm83O/YvMZPRJEFetBFiRc0xfJj/8IBoMrEodLiHSHs11URrzR7BJKwU71b5t1mY46ALMplqPucvY+itY2ckOP5gi6msSzS72kHCIviZ8ysCFkGrrJhyg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qrjkqutmIfi7hXlEFlbngy7GtX/xSMLlhjU8w0Agf3M=;
- b=DxrjRhIbF/jSXlQHy9L6yqlEmxMMA+qBdnSI80hsEwE+2SKT0yI4Aj2c1n2/HtEjZ4wHS0hENLP/KqrOXFCyo4hzcLA19buMTjVWzqxNMsdwbCMz9kASXvwA02xkYVQV6bB8FDMTqowyBHKwDl+cct2H8EOYPtY+lkKE+aaPtEhFFowKXxm+nyZUjJug6wpv+Qrqau8TWsSqj+BP4nvjugO+9MeKcq8MIJJIUFEtD1mCJ3D1hdfIwAUL6ZdlFmHmjGRCta5Cv+vaHRIZvz1MpJn2uVN+0YtDJfVDF6kedcYoR349Tu8p+jzmx42PsJs5xpt8fTEeXXpuLX4mbBvmCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qrjkqutmIfi7hXlEFlbngy7GtX/xSMLlhjU8w0Agf3M=;
- b=AqayNUrVVKmqjilUye0X8lHxfP3qYvsqD8bV4kPbj/w7zu0FVFO+Ka1DqxAGAxAqvSYTpZTmwlAUM1cacf9k7SPE8csuWanvkLSadqpmK5xnAKkWQrYOHUsfyinAroWjp6nCDgUHBTppJ/PG6OTFqTzLhyk38cfKtd7QtuuqR90k0orUZI2qmwclEPBQZuaNd46nJS1xLuRu+jQr33x2mriubJUS1H3xwnuga2JhcgmXwo8CcqSqkOPgcDvZW3BRIatuSbWJeHSC3zcMKb3isUpM1CbUCTRxUqCjxG0Ggst70tvT1QePhJn3NjARVjh0Bm/yJAU7G8JrFeqoQC3+hA==
-Received: from DM3PR12CA0127.namprd12.prod.outlook.com (2603:10b6:0:51::23) by
- CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4373.20; Fri, 30 Jul 2021 03:08:24 +0000
-Received: from DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
- (2603:10b6:0:51:cafe::93) by DM3PR12CA0127.outlook.office365.com
- (2603:10b6:0:51::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20 via Frontend
- Transport; Fri, 30 Jul 2021 03:08:24 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT034.mail.protection.outlook.com (10.13.173.47) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4373.18 via Frontend Transport; Fri, 30 Jul 2021 03:08:23 +0000
-Received: from [172.17.173.69] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Jul
- 2021 03:08:22 +0000
-Subject: Re: [RFC 09/11] tools: gpio: Add new hardware clock type
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210625235532.19575-1-dipenp@nvidia.com>
- <20210625235532.19575-10-dipenp@nvidia.com>
- <CACRpkdaqKJLUdf3NiFHaTgu6buyhMb_D1yKyHF4M=eTQ94pe-g@mail.gmail.com>
-X-Nvconfidentiality: public
-From:   Dipen Patel <dipenp@nvidia.com>
-Message-ID: <b87fa5d8-bef9-9046-9747-d4428ddf58ea@nvidia.com>
-Date:   Thu, 29 Jul 2021 20:17:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ bh=bFMi6/1RnUwrKZ1RaAKFYB8NEbjz27JwQHDRZjrjubg=;
+ b=jY5WnuwFuM7QGvt3Tz7RUo7OT8QOmd/0UnRSgxzlyqFuvLiBAId05CNi0eh5QbhZlo3hcGbJDeCw9qH92SQ7VgJ5E9K5688wOtKtfptW7HOkcYL5637FGCBGJfGlmoDBZtIV8qpfiUjgyt7nKZDqaHLiPpdbZrVs4KoMRE5YW9P9ejhiNcvyGSWWA7NXIrm3t4t+668Zgd/YGTFMXFyPJzZu1KOiAb52DvjgCL/vzUyxF8XIPeb4qZfcLlGespOMAwoouMaT7oOb1U6/CpSGH2402iEZOkXkaUCJge1+RntKd1DT8h3mCe57db/vnsE9O4RzGv5WSfeMmYESgZj+mQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR1101MB2152.namprd11.prod.outlook.com (2603:10b6:910:23::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.29; Fri, 30 Jul
+ 2021 03:18:25 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::def:cd0:ce93:8a7]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::def:cd0:ce93:8a7%7]) with mapi id 15.20.4352.031; Fri, 30 Jul 2021
+ 03:18:25 +0000
+From:   quanyang.wang@windriver.com
+To:     Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Quanyang Wang <quanyang.wang@windriver.com>
+Subject: [PATCH] spi: spi-zynq-qspi: use wait_for_completion_timeout to make zynq_qspi_exec_mem_op not interruptible
+Date:   Fri, 30 Jul 2021 11:17:53 +0800
+Message-Id: <20210730031753.1317917-1-quanyang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2P15301CA0003.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:202:1::13) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdaqKJLUdf3NiFHaTgu6buyhMb_D1yKyHF4M=eTQ94pe-g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by HK2P15301CA0003.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.2 via Frontend Transport; Fri, 30 Jul 2021 03:18:22 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 62d89e40-519b-46ad-40b4-08d953074af4
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:
-X-Microsoft-Antispam-PRVS: <CO6PR12MB544452E0D0E171D7B9590E24AEEC9@CO6PR12MB5444.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
+X-MS-Office365-Filtering-Correlation-Id: f536a04b-2181-4c35-f910-08d95308b128
+X-MS-TrafficTypeDiagnostic: CY4PR1101MB2152:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR1101MB2152922382BEF41C10CF0304F0EC9@CY4PR1101MB2152.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7O8DdNptP8n48qd5NUoAWzzq6ESrFkPSc2cgX0bHy+oH3GxxjK/eKqMJi4Bv5UbBnzHxvvSCmryv1A9UTGhHeYetp3vccjZsScztUt0RM+KyAc/NmkJE92/7b8LY9uRCXFLsx9g4Q5PrbLrFId1a/F83a7XhtiZyT5gq8HDIqjQunrbGbHeuP7PcNJAmLWJzKOFuBdIza4k8X3KV98gFrD00NQJXKxlaifI1c54j1LHnd6jpwna84Y/pQlDj4r/fG/1AEQLwBtxmKu5rVNueQocVJfrGpvgo+UYHNK99kQ9z4djUg+tULT2NHULEC1tkd+LnWR5k+8LugPlr/EGE2le4BL33IiwuHi1LqKuLvC8Og/i9TJD/30wGR5Yih73LZaP37ugXVSwKTuoMzrl8/buGgh5sj5UbVGoLg3x5yzWkLbJbxWYQvn2bN6RKjBN7xuNwmJcXF/FI4oCGN06OIAYishP+N6b5mJTEA+xG6uPTEmBf73LAYDcDwO7loOx8PzFqHIXZ6pMofAQuTrHDxs7Ia/TEdmTWX+ZQK3nr+Mr8XIssQkPgXuj6TAadk4xQHn3QLLBs6qy4e971mFGOFjgcIfe7YxH1depk+TPJFM/9sGfu9gYDV/2rtaMq4d5SRB7MGaGFk3wXJsDsob7D4J+0yZpgtwFf9MWwGnR9dWujuKtTNb0DzjE5U96lwdVn0uDc9yPvHX85TLbLB8jurpGEa1pAf7wwx1kcUa8sAoA=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(396003)(136003)(36840700001)(46966006)(82310400003)(4326008)(16526019)(316002)(26005)(82740400003)(7416002)(31686004)(4744005)(53546011)(186003)(336012)(16576012)(8676002)(36906005)(5660300002)(7636003)(2616005)(54906003)(83380400001)(86362001)(426003)(478600001)(6916009)(8936002)(2906002)(36756003)(70586007)(356005)(36860700001)(70206006)(31696002)(47076005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 03:08:23.6044
+X-Microsoft-Antispam-Message-Info: B3KCWL/Ep++cgbDpuTlj1+xAoU93CmP7SMejqjCJQt9vRQ/+r8DOz2ceSQ1h3xQK8gLWIYP2FQ1DtMLnUBDfooCVAq3DRXXlBaZkAjOBTDlNtZ6ZnZxpVaykJtLaOjDIC5g4WAd3f86yBp29U4WP2vkjagyEwWyhzTOBM+ZTVoPUiVSBhQpO+dHMVcZ5Bk48EG7V3WRS/L4h69zq/nGVvjAHFTE4tdVVL8pzUuSyuUGTZGsHfrt0/xKyIhjqjB9aUpjVjY7sTp4E6jL72GWtivEiPBB5wZJOAEzaFRq649k4lCBb4wQAS4Vo4GuhhzGFza3kbSVq9CAxp7qHX9EHW8j3QP5zfZH8IAJsRTsVhHK/zHzrtYHnr/PdkHsbK5HxrE2hirDirYIaqYJf1Tp/i0W15xVSOgkWzorNHu54UUX6kof/kjVCabMj30Gz3CjTrjp7eWCCDrmBoc7fHKLvWZeQJU4WuzCp5LLSLxbjvs4SzHFAg17NzWZqnE3t7+Akn8THdzOY9XpWbWyjWEp8J1wQtS+Mp/k28UidUfYy3TO1sXw//Gl+XBNnQwUBgQbvyxImYpiXtXTI/oClok4xzmPZkeE2WbcJdmyibiJJ8etXTMJOXjomitQuHFBVf6Z+FxtY6VwKvZmpiNqfNsqpmGF0H80iBoi/g6WvkEF2QcFqmWBO8aE3phLqp79EAqe7WLIjztJPJdIJf3mrMHjKZg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(346002)(136003)(366004)(376002)(107886003)(8936002)(26005)(83380400001)(52116002)(110136005)(38100700002)(4326008)(2906002)(36756003)(6486002)(38350700002)(86362001)(1076003)(478600001)(186003)(66556008)(316002)(956004)(66946007)(2616005)(8676002)(6666004)(66476007)(6512007)(5660300002)(6506007)(9686003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MTN2f7iazvL4ENdFTn6nmNBsd4j89LCSgZkkonADRXBmTX+xdW4ukyOdpFJ9?=
+ =?us-ascii?Q?z3azXpEr0dBk29NgrfuDiIcjf5NdjFp5NafIa3YTJcgtuJ3RemGOf1nwkpyk?=
+ =?us-ascii?Q?ti/FyhjGumAyATV8XCR22hFYbegonat9WEiGK0gFBZ6i5aPeLlaJuRwb89Qo?=
+ =?us-ascii?Q?ViZ6RsB6f0v/n5kwLkHpCqHotf8lYAyu+bew6nCewpmPAMvJ3t4zxrBAo+NT?=
+ =?us-ascii?Q?yLEv73Xzwplz3gGIpvdifVCXfsbWSlmt/rkv/JNHewuANNmgtSQpg8PSItmV?=
+ =?us-ascii?Q?sPmLDp7tvQ9TukOdtS8Xt478mz8VC9H7iF5HpGWOCs6pM8l98vXuCIn9FXU6?=
+ =?us-ascii?Q?z7FLJi0yccSihwjfqaJBkvoC2uvS+3ZfiAsA6ECtcBt7Z3G7uoQe6K7Ymqvj?=
+ =?us-ascii?Q?vTJmW6DNuJGOLJN2veDTJnA6YCxWBuFBQOnrYsWG/xXxVnwlDJrRRBBUqVb8?=
+ =?us-ascii?Q?9DdCWiK+XfeKLB4f40z/CPiTzVNQlAmYZQ64vvPbSqEP6k/ZdIszbAusg03J?=
+ =?us-ascii?Q?XRQpNLBIaZwtBLGeQd6y0hBdeFEokZiK8UCIqkILrelJKYNz273g73F3E0YI?=
+ =?us-ascii?Q?fB3y+t5nC0QEQ7ZI9dP1z/Yw4ekOGJOTonP0YPKXs8YicGhfWLRn/1vWrxV5?=
+ =?us-ascii?Q?CdXVcaZtqbY9cG07p6FB12vHMLIu81OEl6ua6TzKJKLIsIPggd4ZsAabpDQq?=
+ =?us-ascii?Q?1JZkNBJ/xd+Vpkihl0+4WnqMVtk//jvI8qTX0WOFk2oHu2hDTJ8iuzGHHqu0?=
+ =?us-ascii?Q?p4/YfIpWYKGOhSWdmBwmALx2Q2IkLR0oRwQcMBi8wu0GF8CPtqhR0ePqROt+?=
+ =?us-ascii?Q?AKM/8Yviv/5o5ikmGHA7e1oYwPkGEBgZSWcMfsuf+iiiVrcbxEie/em0wj0r?=
+ =?us-ascii?Q?p8MkgyuPirfnx+Zgh2WPnSd9wzYZrKl1MAAhFWski+7ROPVPHl7fmPW6OUb6?=
+ =?us-ascii?Q?o7duBxF8oS7oKHihtKpXpb+GwAuWLaUiJNFPgwhNPB/4l7ZIc2MgVo0T11VZ?=
+ =?us-ascii?Q?crCKurLqn9FJpKbHlERG86kb3wLBonS0/0fnD181hVT0aIPr7Dqsv0kYzAHW?=
+ =?us-ascii?Q?Jv1zMAJzbMSysgPoUrc9qexJC7XL4u3cWIygbttIgxnaeecXGX/JiZWrjC5o?=
+ =?us-ascii?Q?uwsd5KrGFUstCyL0jniELv7U0Of27tLmtcGzKfFP/3fjQXjyqqFJuTUN21zu?=
+ =?us-ascii?Q?mAq9Ub5WlLzst7UIGwcdI4AJitbt9MI0eq0h4M7lzW+2yRDUJL/wnRoWlBsq?=
+ =?us-ascii?Q?mkgvl4qWdrEkgII5yLBDa8etFIF85qhBY0HkYgChB/zAkfmdSRubKXmNVgZ5?=
+ =?us-ascii?Q?OGBRLQ5XECD23IArW/lcGVxr?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f536a04b-2181-4c35-f910-08d95308b128
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 03:18:24.8750
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62d89e40-519b-46ad-40b4-08d953074af4
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5444
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WVedTjJUhn+HdhOo29oOoBA2/Fmhy+1HSYlySrosy4bNMnwQ9cNDPG+3GUpdnAK5kaXyzmxv2zGju34gpvdSZPQzM5G+BBn+i4L6NfcnclQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2152
+X-Proofpoint-ORIG-GUID: ljPzSQXVy6ysv6HI1gkHXn_YqfDSITQs
+X-Proofpoint-GUID: ljPzSQXVy6ysv6HI1gkHXn_YqfDSITQs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-07-30_03,2021-07-29_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 adultscore=0 phishscore=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
+ spamscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107300018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-On 6/27/21 4:36 AM, Linus Walleij wrote:
-> On Sat, Jun 26, 2021 at 1:48 AM Dipen Patel <dipenp@nvidia.com> wrote:
->
->> gpiolib-cdev is extended to support hardware clock type, this
->> patch reflects that fact.
->>
->> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
-> (...)
->>                 case 'w':
->>                         config.flags |= GPIO_V2_LINE_FLAG_EVENT_CLOCK_REALTIME;
->>                         break;
->> +               case 't':
->> +                       config.flags |= GPIO_V2_LINE_FLAG_EVENT_CLOCK_HARDWARE;
->> +                       break;
-> After the checking of the command line options we need a small sanity
-> check so we don't try to enable both realtime and hardware clock
-> at the same time, we will only be able to request one of them.
+The function wait_for_completion_interruptible_timeout will return
+-ERESTARTSYS immediately when receiving SIGKILL signal which is sent
+by "jffs2_gcd_mtd" during umounting jffs2. This will break the SPI memory
+operation because the data transmitting may begin before the command or
+address transmitting completes. Use wait_for_completion_timeout to prevent
+the process from being interruptible.
 
-This will any way fail at gpiolib-cdev layer. Do we want to add it here
+Fixes: 67dca5e580f1 ("spi: spi-mem: Add support for Zynq QSPI controller")
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ drivers/spi/spi-zynq-qspi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-as well?
+diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
+index 9262c6418463..cfa222c9bd5e 100644
+--- a/drivers/spi/spi-zynq-qspi.c
++++ b/drivers/spi/spi-zynq-qspi.c
+@@ -545,7 +545,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
+ 		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+ 		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+ 				ZYNQ_QSPI_IXR_RXTX_MASK);
+-		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
++		if (!wait_for_completion_timeout(&xqspi->data_completion,
+ 							       msecs_to_jiffies(1000)))
+ 			err = -ETIMEDOUT;
+ 	}
+@@ -563,7 +563,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
+ 		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+ 		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+ 				ZYNQ_QSPI_IXR_RXTX_MASK);
+-		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
++		if (!wait_for_completion_timeout(&xqspi->data_completion,
+ 							       msecs_to_jiffies(1000)))
+ 			err = -ETIMEDOUT;
+ 	}
+@@ -579,7 +579,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
+ 		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+ 		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+ 				ZYNQ_QSPI_IXR_RXTX_MASK);
+-		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
++		if (!wait_for_completion_timeout(&xqspi->data_completion,
+ 							       msecs_to_jiffies(1000)))
+ 			err = -ETIMEDOUT;
+ 
+@@ -603,7 +603,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
+ 		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
+ 		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
+ 				ZYNQ_QSPI_IXR_RXTX_MASK);
+-		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
++		if (!wait_for_completion_timeout(&xqspi->data_completion,
+ 							       msecs_to_jiffies(1000)))
+ 			err = -ETIMEDOUT;
+ 	}
+-- 
+2.25.1
 
->
-> Yours,
-> Linus Walleij
