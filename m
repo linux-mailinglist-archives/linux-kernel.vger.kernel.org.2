@@ -2,202 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284323DBD81
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78443DBD8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhG3RLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 13:11:12 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:45352 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbhG3RLJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:11:09 -0400
-Received: from localhost.localdomain (unknown [223.178.63.20])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CAF7E205CFA8;
-        Fri, 30 Jul 2021 10:11:00 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CAF7E205CFA8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1627665064;
-        bh=loHt2GULj8ZdlkayrHjIIFAEp8B/fCNQFqOnpFghIf4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eAo2b7K6+W2EGt/aUB4xADlkAzWWCp1+ahUVZeezo2CtHhoPYtqR/8z4eHIK9VNW6
-         ZfTrjFO/5lJGsdVNszLsk+IvRWD+8Gn7NKLFqkS6LYpcoIFYWP92UhGZLV6CjDSDuZ
-         Pp5mtQ0uIUKHBs8ff1E8CKIxlxBI1nzm0x2bLtmk=
-From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
-To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        nunodasneves@linux.microsoft.com
-Subject: [PATCH v4] hyperv: root partition faults writing to VP ASSIST MSR PAGE
-Date:   Fri, 30 Jul 2021 22:40:56 +0530
-Message-Id: <20210730171056.2820-1-kumarpraveen@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230133AbhG3RRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 13:17:03 -0400
+Received: from smtp-36.italiaonline.it ([213.209.10.36]:48425 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229761AbhG3RRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 13:17:01 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([79.45.223.112])
+        by smtp-36.iol.local with ESMTPA
+        id 9W7tmvxuai9pC9W7xmkmuu; Fri, 30 Jul 2021 19:16:55 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1627665415; bh=byHMCPhGZ+GTEHiz8XqPFAP8SrcBPUm0jTW9VfwGYOY=;
+        h=From;
+        b=Ben7FH+9T6DVWKZOGqC/MWsm5wIS4XKn54DitfWke9aeyEojXFhEOlqu6M20AM1KD
+         JbaQpdOfxOOtpfYwpdVj6iAuGXyjI/sOsP5TLWWvxRX21XXXNeqTPesIQIs5Mf5g6C
+         dBfoUipL16tuJVLA4s4f41C22AG9Hgzx0ccmDmmEITY58HZ7aDS1AygE8P6QXJgh+u
+         R19WwlxWx6OqGbv3Dom87u8fiBRjPKvs+QioXHKh2GGhyR2X+84WwVa0bVLpJ1bo8/
+         T86nSLUksveG3sBao4pJxCMBCcdCHRzqR+jlE6QDD9cn97q8MDVqHqnNt5tEwqGkq3
+         Uz/G1pyd1V5Bg==
+X-CNFS-Analysis: v=2.4 cv=RqYAkAqK c=1 sm=1 tr=0 ts=61043407 cx=a_exe
+ a=bNRYHniHET+FA3QFAnazSw==:117 a=bNRYHniHET+FA3QFAnazSw==:17 a=gEfo2CItAAAA:8
+ a=faqJUPsDrVUeZvGr8DYA:9 a=Sf5sUmNcCa837iNl:21 a=jsU-foglF0TQYXlV:21
+ a=sptkURWiP4Gy88Gu7hUp:22
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v3] dt-bindings: net: can: c_can: convert to json-schema
+Date:   Fri, 30 Jul 2021 19:16:46 +0200
+Message-Id: <20210730171646.2406-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfNEl38DIm46sYo5x2RN/cpQMMGVk1GQcqlOmoXyZIRQM6+rUaKxqIilWxWW/3wXJxChimr3dTLjccutauXzSnJAjrrRuLYRd3JVRHgy1Fk4JF5iIS1EJ
+ h/lqDBxiHdDd2u5G5X643k8ag0Z/i9+CGmL+uoSfsPXKk5Nc8JoOiFVRfPDH1OYTmK+g9C1S+vBlgeWSnHznmYukabZUXwr0JuSrxaP+zbK5L5LBCdf9qXp1
+ Ysp6yUTRuXjXlT3Yk9Mgp5Ypl+olmWHnxUJhPyfmf5AZEuGln+LIL0t0zuxBaxrM+M6WlIhh1nwzUQqdZ23BfxMe3bLtMifsPRgMqy9piR8kOAzX6od1+MO1
+ VrODlPpaYpYxUX1GOhb51aMVtAVXsNPjKh7h/nfwjB87YsAu0w9m8w+hmebudyyoYhY2HXr8lO3xVv76wY0vV6xGy9JdNgd00czyZrrKRK4S2J/EtUienJik
+ 4dlaMUzLTYXvMo3OYYobGFG21BAfVDGr6UtkiGdg1DdneSu31vv+8VD+yxo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For Root partition the VP assist pages are pre-determined by the
-hypervisor. The Root kernel is not allowed to change them to
-different locations. And thus, we are getting below stack as in
-current implementation Root is trying to perform write to specific
-MSR.
+Convert the Bosch C_CAN/D_CAN controller device tree binding
+documentation to json-schema.
 
-[ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
-write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
-(native_write_msr+0x4/0x30)
-[ 2.784867] Call Trace:
-[ 2.791507] hv_cpu_init+0xf1/0x1c0
-[ 2.798144] ? hyperv_report_panic+0xd0/0xd0
-[ 2.804806] cpuhp_invoke_callback+0x11a/0x440
-[ 2.811465] ? hv_resume+0x90/0x90
-[ 2.818137] cpuhp_issue_call+0x126/0x130
-[ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
-[ 2.831427] ? hyperv_report_panic+0xd0/0xd0
-[ 2.838075] ? hyperv_report_panic+0xd0/0xd0
-[ 2.844723] ? hv_resume+0x90/0x90
-[ 2.851375] __cpuhp_setup_state+0x3d/0x90
-[ 2.858030] hyperv_init+0x14e/0x410
-[ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
-[ 2.871349] apic_intr_mode_init+0x8b/0x100
-[ 2.878017] x86_late_time_init+0x20/0x30
-[ 2.884675] start_kernel+0x459/0x4fb
-[ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
+Document missing properties.
+Remove "ti,hwmods" as it is no longer used in TI dts.
+Make "clocks" required as it is used in all dts.
+Correct nodename in the example.
 
-Since, the hypervisor already provides the VP assist page for root
-partition, we need to memremap the memory from hypervisor for root
-kernel to use. The mapping is done in hv_cpu_init during bringup and
-is unmaped in hv_cpu_die during teardown.
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
 
-Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
 ---
- arch/x86/hyperv/hv_init.c          | 63 ++++++++++++++++++++----------
- arch/x86/include/asm/hyperv-tlfs.h |  9 +++++
- 2 files changed, 52 insertions(+), 20 deletions(-)
 
-changelog:
-v1: initial patch
-v2: commit message changes, removal of HV_MSR_APIC_ACCESS_AVAILABLE
-    check and addition of null check before reading the VP assist MSR
-    for root partition
-v3: added new data structure to handle VP ASSIST MSR page and done
-    handling in hv_cpu_init and hv_cpu_die
-v4: better code alignment, VP ASSIST handling correction for root
-    partition in hv_cpu_die and renaming of hv_vp_assist_msr_contents
-    attribute
----
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 6f247e7e07eb..70263f6330d9 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -44,6 +44,7 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
- 
- static int hv_cpu_init(unsigned int cpu)
- {
-+	union hv_vp_assist_msr_contents msr = {0};
- 	struct hv_vp_assist_page **hvp = &hv_vp_assist_page[smp_processor_id()];
- 	int ret;
- 
-@@ -54,25 +55,34 @@ static int hv_cpu_init(unsigned int cpu)
- 	if (!hv_vp_assist_page)
- 		return 0;
- 
--	/*
--	 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's Section
--	 * 5.2.1 "GPA Overlay Pages"). Here it must be zeroed out to make sure
--	 * we always write the EOI MSR in hv_apic_eoi_write() *after* the
--	 * EOI optimization is disabled in hv_cpu_die(), otherwise a CPU may
--	 * not be stopped in the case of CPU offlining and the VM will hang.
--	 */
- 	if (!*hvp) {
--		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
--	}
--
--	if (*hvp) {
--		u64 val;
--
--		val = vmalloc_to_pfn(*hvp);
--		val = (val << HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT) |
--			HV_X64_MSR_VP_ASSIST_PAGE_ENABLE;
--
--		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, val);
-+		if (hv_root_partition) {
-+			/*
-+			 * For Root partition we get the hypervisor provided VP ASSIST
-+			 * PAGE, instead of allocating a new page.
-+			 */
-+			rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-+			*hvp = memremap(msr.pfn <<
-+					HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT,
-+					PAGE_SIZE, MEMREMAP_WB);
-+		} else {
-+			/*
-+			 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's
-+			 * Section 5.2.1 "GPA Overlay Pages"). Here it must be zeroed
-+			 * out to make sure we always write the EOI MSR in
-+			 * hv_apic_eoi_write() *after* theEOI optimization is disabled
-+			 * in hv_cpu_die(), otherwise a CPU may not be stopped in the
-+			 * case of CPU offlining and the VM will hang.
-+			 */
-+			*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
-+			if (*hvp)
-+				msr.pfn = vmalloc_to_pfn(*hvp);
-+		}
-+		WARN_ON(!(*hvp));
-+		if (*hvp) {
-+			msr.enable = 1;
-+			wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-+		}
- 	}
- 
- 	return 0;
-@@ -170,8 +180,21 @@ static int hv_cpu_die(unsigned int cpu)
- 
- 	hv_common_cpu_die(cpu);
- 
--	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
--		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
-+	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
-+		union hv_vp_assist_msr_contents msr = {0};
-+		if (hv_root_partition) {
-+			/*
-+			 * For Root partition the VP ASSIST page is mapped to
-+			 * hypervisor provided page, and thus, we unmap the
-+			 * page here and nullify it, so that in future we have
-+			 * correct page address mapped in hv_cpu_init.
-+			 */
-+			memunmap(hv_vp_assist_page[cpu]);
-+			hv_vp_assist_page[cpu] = NULL;
-+			rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-+		}
-+		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
-+	}
- 
- 	if (hv_reenlightenment_cb == NULL)
- 		return 0;
-diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-index f1366ce609e3..2322d6bd5883 100644
---- a/arch/x86/include/asm/hyperv-tlfs.h
-+++ b/arch/x86/include/asm/hyperv-tlfs.h
-@@ -288,6 +288,15 @@ union hv_x64_msr_hypercall_contents {
- 	} __packed;
- };
- 
-+union hv_vp_assist_msr_contents {
-+	u64 as_uint64;
-+	struct {
-+		u64 enable:1;
-+		u64 reserved:11;
-+		u64 pfn:52;
-+	} __packed;
-+};
+Changes in v3:
+ - Add type (phandle-array) and size (maxItems: 2) to syscon-raminit
+   property.
+
+Changes in v2:
+ - Drop Documentation references.
+
+ .../bindings/net/can/bosch,c_can.yaml         | 85 +++++++++++++++++++
+ .../devicetree/bindings/net/can/c_can.txt     | 65 --------------
+ 2 files changed, 85 insertions(+), 65 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
+
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+new file mode 100644
+index 000000000000..416db97fbf9d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+@@ -0,0 +1,85 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/bosch,c_can.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- struct hv_reenlightenment_control {
- 	__u64 vector:8;
- 	__u64 reserved1:8;
++title: Bosch C_CAN/D_CAN controller Device Tree Bindings
++
++description: Bosch C_CAN/D_CAN controller for CAN bus
++
++maintainers:
++  - Dario Binacchi <dariobin@libero.it>
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - bosch,c_can
++          - bosch,d_can
++          - ti,dra7-d_can
++          - ti,am3352-d_can
++      - items:
++          - enum:
++              - ti,am4372-d_can
++          - const: ti,am3352-d_can
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  power-domains:
++    description: |
++      Should contain a phandle to a PM domain provider node and an args
++      specifier containing the DCAN device id value. It's mandatory for
++      Keystone 2 66AK2G SoCs only.
++    maxItems: 1
++
++  clocks:
++    description: |
++      CAN functional clock phandle.
++    maxItems: 1
++
++  clock-names:
++    maxItems: 1
++
++  syscon-raminit:
++    description: |
++      Handle to system control region that contains the RAMINIT register,
++      register offset to the RAMINIT register and the CAN instance number (0
++      offset).
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    maxItems: 2
++
++required:
++ - compatible
++ - reg
++ - interrupts
++ - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    can@481d0000 {
++        compatible = "bosch,d_can";
++        reg = <0x481d0000 0x2000>;
++        interrupts = <55>;
++        interrupt-parent = <&intc>;
++        status = "disabled";
++    };
++  - |
++    can@0 {
++        compatible = "ti,am3352-d_can";
++        reg = <0x0 0x2000>;
++        clocks = <&dcan1_fck>;
++        clock-names = "fck";
++        syscon-raminit = <&scm_conf 0x644 1>;
++        interrupts = <55>;
++        status = "disabled";
++    };
+diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
+deleted file mode 100644
+index 366479806acb..000000000000
+--- a/Documentation/devicetree/bindings/net/can/c_can.txt
++++ /dev/null
+@@ -1,65 +0,0 @@
+-Bosch C_CAN/D_CAN controller Device Tree Bindings
+--------------------------------------------------
+-
+-Required properties:
+-- compatible		: Should be "bosch,c_can" for C_CAN controllers and
+-			  "bosch,d_can" for D_CAN controllers.
+-			  Can be "ti,dra7-d_can", "ti,am3352-d_can" or
+-			  "ti,am4372-d_can".
+-- reg			: physical base address and size of the C_CAN/D_CAN
+-			  registers map
+-- interrupts		: property with a value describing the interrupt
+-			  number
+-
+-The following are mandatory properties for DRA7x, AM33xx and AM43xx SoCs only:
+-- ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
+-			  instance number
+-
+-The following are mandatory properties for Keystone 2 66AK2G SoCs only:
+-- power-domains		: Should contain a phandle to a PM domain provider node
+-			  and an args specifier containing the DCAN device id
+-			  value. This property is as per the binding,
+-			  Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
+-- clocks		: CAN functional clock phandle. This property is as per the
+-			  binding,
+-			  Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+-
+-Optional properties:
+-- syscon-raminit	: Handle to system control region that contains the
+-			  RAMINIT register, register offset to the RAMINIT
+-			  register and the CAN instance number (0 offset).
+-
+-Note: "ti,hwmods" field is used to fetch the base address and irq
+-resources from TI, omap hwmod data base during device registration.
+-Future plan is to migrate hwmod data base contents into device tree
+-blob so that, all the required data will be used from device tree dts
+-file.
+-
+-Example:
+-
+-Step1: SoC common .dtsi file
+-
+-	dcan1: d_can@481d0000 {
+-		compatible = "bosch,d_can";
+-		reg = <0x481d0000 0x2000>;
+-		interrupts = <55>;
+-		interrupt-parent = <&intc>;
+-		status = "disabled";
+-	};
+-
+-(or)
+-
+-	dcan1: d_can@481d0000 {
+-		compatible = "bosch,d_can";
+-		ti,hwmods = "d_can1";
+-		reg = <0x481d0000 0x2000>;
+-		interrupts = <55>;
+-		interrupt-parent = <&intc>;
+-		status = "disabled";
+-	};
+-
+-Step 2: board specific .dts file
+-
+-	&dcan1 {
+-		status = "okay";
+-	};
 -- 
-2.25.1
+2.17.1
 
