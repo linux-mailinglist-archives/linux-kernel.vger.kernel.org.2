@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F4F3DBB77
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E853DBB7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239495AbhG3O7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
+        id S239326AbhG3PAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239558AbhG3O6W (ORCPT
+        with ESMTP id S239095AbhG3O6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:58:22 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4687C0617BF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:57:32 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id y7so11340749eda.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:57:32 -0700 (PDT)
+        Fri, 30 Jul 2021 10:58:55 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A98C061384
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:57:40 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id j77so14447836ybj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/FskvzB/Uu7kITCTpEs9Kzb0h3ZTsKYWrhXodwFjiIk=;
-        b=qdwGk32T8LIniVGMFzFAJe6RX68qQNMkrxYLkZOSF0T3vabQA/oH99TgvDLAWpUnVw
-         EMBEBrTyyu0bszCCLjMP+rMRob7mlE+AovtCZo27qSMkPTfe3g4yfg3QDpcCqjJ89AuG
-         5iZit8yuHeSIYaG0jTc9sVQLYXBZw3Oj72RnERwCr0dEmHLBHAXxmyrR6JdjEoMnNvM2
-         oy8pFEKMaJ0In9p6GeDe3RQvqg0ySFCkiFuMb0Me2Voz97GzdR0EOgdUS19VKNUiQBYH
-         8vYVD3AOWJfaGfatwjNQbmUH4uofJCPG5u97wjWpuM3UV+70caNlBUULFH5JOjXfwi1q
-         iRbw==
+        bh=37x8w0UYvLcVBgIUnWgo+PPV937yKLBY+SfU728blww=;
+        b=Nh0DDzzSH9/W/vuSHcrfHS4tX6BVYIipubEgEk6nqQGRauR3Kjdmr4p6MwQRvyTzPa
+         HZj8nWmjGVX/XgGv7lj5Wj0jzIQV+5G4nrJ6Cd/hFGGXEFJG9LaVCFnm/2ryaoNbm+fj
+         BnX2OV8kicXKEWMO0asIm0Ao4WRkzZUXg0fwuoH6rlcsG7qZVgw7NuqF1YusYFYmbada
+         zUvsgOnbni19kXc/c5UYuj1jJPlhp55fFRpZAK+pRtAJeJr6z4sp41VNBaKIgeCthe1h
+         PXC0oGSMn8nywPNirdR99UIUfcNhydA3QjpWqui0nDN0f25yJPARQRoSwpxr+bZN5x6t
+         63uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/FskvzB/Uu7kITCTpEs9Kzb0h3ZTsKYWrhXodwFjiIk=;
-        b=TXuR8BHwgPaK2NfTtZ4Ja4/V3GSF2MSJRvCcpjp6wSO67KBpCWIR1Y6Tz9hHR8Oe05
-         S/nOWMb/mekFxwOcI4gJoJA0AxRd/rhaE61FUHWTaIw6nvUYPNnOrZUde/840dVEYobX
-         S4XUjsf6JDbmbaoZzDTtg1v+Aszj09w28kWhJ5nB9si3sgaQPQmo76c2cPM1mxqk/Mz9
-         jWugPl1bH4sFNnhqEwHxXEp/QIToxafXFfEB691n9iPWr0N0UYA/Ak8JFZ6xeQ4wNzNk
-         sKzRnAnprM8PqkORxSHKmuaxtmjZ8ORwlz24NoVOWSAcVmFONM+BH/y100VyzqJ6G7Ot
-         9rXg==
-X-Gm-Message-State: AOAM531Pd9+D8lxUYVU+7F2qUgo5C+KQ397pBY28hJDxOwCCVNWhO9HH
-        dgFOCLAu6ss5QKeikWmpJ97dhGCZI0SOa4OjvBFVS7hd5BQ=
-X-Google-Smtp-Source: ABdhPJwSaMVLnatukbBUZ5bbG5wTLiLIbZNXBz6UHbZ62TjHZpcXELPVn/H+RxE5RRcBCR7Zb+SxC2GibF9zBMAwoE0=
-X-Received: by 2002:a50:eb88:: with SMTP id y8mr3436558edr.70.1627657051382;
- Fri, 30 Jul 2021 07:57:31 -0700 (PDT)
+        bh=37x8w0UYvLcVBgIUnWgo+PPV937yKLBY+SfU728blww=;
+        b=XpBOhx1GED8rSGHpS26ubt+06id5VU2NZLEw3xq7Z0wsLs6rOEUYj1gZyDCK6FTvIW
+         RGuekd+4lAh22wXMihdg/Ti8BiXLfC3y/0qNhOagLiA1mxxZOJKoSGnZDRcWnNvaR1Bf
+         vCqYnxiOfD8T+0MFM64P2/LD7ptj7LfMysbuLI4oxM9ugg2VZ3Llb2rkHi5+VIq2oZDz
+         +zdUBHyCVSXtm+v3F/ZAMEqMYrI4nu4djnbcRA3XoHFVPsub5Cd4nntGPkcekUJ+DPZT
+         /O/fuX97bpk91iUJOWNLhsv+Xayj+xAEz3M4OQGdXd9zqTXPu30Rz0pCEgaA3g1h0l/O
+         muWA==
+X-Gm-Message-State: AOAM532u29HdYViAZssue2XMTK8O1Y1ciwqYycb7eTeBSut3hf+65OTq
+        44kcge/nkXdNLuqO8EQFnqdSTjiS2YhFPUfh4f4Jpw==
+X-Google-Smtp-Source: ABdhPJyWpTSfdHbBre+1lzAhAENFLLbKmABxKRKEbNWOSKpkoHZ+FO80HY+Ia/CDITLyxL0ubS/GvhoCNX1/Vxxnv2o=
+X-Received: by 2002:a25:10d4:: with SMTP id 203mr3610734ybq.454.1627657060077;
+ Fri, 30 Jul 2021 07:57:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210727040021.21371-1-Kuan-Ying.Lee@mediatek.com>
- <20210727040021.21371-2-Kuan-Ying.Lee@mediatek.com> <CANpmjNM03Pag9OvBBVnWnSBePRxsT+BvZtBwrh_61Qzmvp+dvA@mail.gmail.com>
- <b6b96caf30e62996fa3b75ae8d146c9cc0dcbbf6.camel@mediatek.com> <20210727192217.GV13920@arm.com>
-In-Reply-To: <20210727192217.GV13920@arm.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Fri, 30 Jul 2021 16:57:20 +0200
-Message-ID: <CA+fCnZdprormHJHHuEMC07+OnHdC9MLb9PLpBnE1P9TvrVisfw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kasan, mm: reset tag when access metadata
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Cc:     Marco Elver <elver@google.com>,
-        Nicholas Tang <nicholas.tang@mediatek.com>,
-        Andrew Yang <andrew.yang@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+References: <720d0a9a42e33148fcac45cd39a727093a32bf32.1614965598.git.robin.murphy@arm.com>
+ <a730070d718cb119f77c8ca1782a0d4189bfb3e7.1614965598.git.robin.murphy@arm.com>
+ <0a1d437d-9ea0-de83-3c19-e07f560ad37c@arm.com> <20210730143431.GB1517404@mutt>
+ <8b358507-dbdf-b05b-c1da-2ec9903a2912@arm.com>
+In-Reply-To: <8b358507-dbdf-b05b-c1da-2ec9903a2912@arm.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Fri, 30 Jul 2021 16:57:28 +0200
+Message-ID: <CADYN=9KV6u5ZTRWwpyNQt-FtnT3Fn0P6chQwodxOSg67_Qs7yg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: juno: Enable more SMMUs
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     sudeep.holla@arm.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        liviu.dudau@arm.com,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+        linux-stable <stable@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        lkft-triage@lists.linaro.org,
+        Linux Kernel Functional Testing <lkft@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 9:22 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+On Fri, 30 Jul 2021 at 16:44, Robin Murphy <robin.murphy@arm.com> wrote:
 >
-> On Tue, Jul 27, 2021 at 04:32:02PM +0800, Kuan-Ying Lee wrote:
-> > On Tue, 2021-07-27 at 09:10 +0200, Marco Elver wrote:
-> > > +Cc Catalin
-> > >
-> > > On Tue, 27 Jul 2021 at 06:00, Kuan-Ying Lee <
-> > > Kuan-Ying.Lee@mediatek.com> wrote:
-> > > >
-> > > > Hardware tag-based KASAN doesn't use compiler instrumentation, we
-> > > > can not use kasan_disable_current() to ignore tag check.
-> > > >
-> > > > Thus, we need to reset tags when accessing metadata.
-> > > >
-> > > > Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-> > >
-> > > This looks reasonable, but the patch title is not saying this is
-> > > kmemleak, nor does the description say what the problem is. What
-> > > problem did you encounter? Was it a false positive?
+> On 2021-07-30 15:34, Anders Roxell wrote:
+> > On 2021-07-30 13:17, Robin Murphy wrote:
+> >> On 2021-07-30 12:35, Anders Roxell wrote:
+> >>> From: Robin Murphy <robin.murphy@arm.com>
+> >>>
+> >>>> Now that PCI inbound window restrictions are handled generically between
+> >>>> the of_pci resource parsing and the IOMMU layer, and described in the
+> >>>> Juno DT, we can finally enable the PCIe SMMU without the risk of DMA
+> >>>> mappings inadvertently allocating unusable addresses.
+> >>>>
+> >>>> Similarly, the relevant support for IOMMU mappings for peripheral
+> >>>> transfers has been hooked up in the pl330 driver for ages, so we can
+> >>>> happily enable the DMA SMMU without that breaking anything either.
+> >>>>
+> >>>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> >>>
+> >>> When we build a kernel with 64k page size and run the ltp syscalls we
+> >>> sporadically see a kernel crash while doing a mkfs on a connected SATA
+> >>> drive.  This is happening every third test run on any juno-r2 device in
+> >>> the lab with the same kernel image (stable-rc 5.13.y, mainline and next)
+> >>> with gcc-11.
+> >>
+> >> Hmm, I guess 64K pages might make a difference in that we'll chew through
+> >> IOVA space a lot faster with small mappings...
+> >>
+> >> I'll have to try to reproduce this locally, since the interesting thing
+> >> would be knowing what DMA address it was trying to use that went wrong, but
+> >> IOMMU tracepoints and/or dma-debug are going to generate an crazy amount of
+> >> data to sift through and try to correlate - having done it before it's not
+> >> something I'd readily ask someone else to do for me :)
+> >>
+> >> On a hunch, though, does it make any difference if you remove the first
+> >> entry from the PCIe "dma-ranges" (the 0x2c1c0000 one)?
 > >
-> > kmemleak would scan kernel memory to check memory leak.
-> > When it scans on the invalid slab and dereference, the issue
-> > will occur like below.
+> > I did this change, and run the job 7 times and could not reproduce the
+> > issue.
+>
+> Thanks! And hold that thought; if it works then I suspect it probably is
+> the best fix, but I'll double-check and write it up properly next week.
+
+Thank you Robin.
+
+Cheers,
+Anders
+
+>
+> Cheers,
+> Robin.
+>
+> > diff --git a/arch/arm64/boot/dts/arm/juno-base.dtsi b/arch/arm64/boot/dts/arm/juno-base.dtsi
+> > index 8e7a66943b01..d3148730e951 100644
+> > --- a/arch/arm64/boot/dts/arm/juno-base.dtsi
+> > +++ b/arch/arm64/boot/dts/arm/juno-base.dtsi
+> > @@ -545,8 +545,7 @@ pcie_ctlr: pcie@40000000 {
+> >                           <0x02000000 0x00 0x50000000 0x00 0x50000000 0x0 0x08000000>,
+> >                           <0x42000000 0x40 0x00000000 0x40 0x00000000 0x1 0x00000000>;
+> >                  /* Standard AXI Translation entries as programmed by EDK2 */
+> > -               dma-ranges = <0x02000000 0x0 0x2c1c0000 0x0 0x2c1c0000 0x0 0x00040000>,
+> > -                            <0x02000000 0x0 0x80000000 0x0 0x80000000 0x0 0x80000000>,
+> > +               dma-ranges = <0x02000000 0x0 0x80000000 0x0 0x80000000 0x0 0x80000000>,
+> >                               <0x43000000 0x8 0x00000000 0x8 0x00000000 0x2 0x00000000>;
+> >                  #interrupt-cells = <1>;
+> >                  interrupt-map-mask = <0 0 0 7>;
 > >
-> > So I think we should reset the tag before scanning.
 > >
-> > # echo scan > /sys/kernel/debug/kmemleak
-> > [  151.905804]
-> > ==================================================================
-> > [  151.907120] BUG: KASAN: out-of-bounds in scan_block+0x58/0x170
-> > [  151.908773] Read at addr f7ff0000c0074eb0 by task kmemleak/138
-> > [  151.909656] Pointer tag: [f7], memory tag: [fe]
->
-> It would be interesting to find out why the tag doesn't match. Kmemleak
-> should in principle only scan valid objects that have been allocated and
-> the pointer can be safely dereferenced. 0xfe is KASAN_TAG_INVALID, so it
-> either goes past the size of the object (into the red zone) or it still
-> accesses the object after it was marked as freed but before being
-> released from kmemleak.
->
-> With slab, looking at __cache_free(), it calls kasan_slab_free() before
-> ___cache_free() -> kmemleak_free_recursive(), so the second scenario is
-> possible. With slub, however, slab_free_hook() first releases the object
-> from kmemleak before poisoning it. Based on the stack dump, you are
-> using slub, so it may be that kmemleak goes into the object red zones.
->
-> I'd like this clarified before blindly resetting the tag.
-
-AFAIK, kmemleak scans the whole object including the leftover redzone
-for kmalloc-allocated objects.
-
-Looking at the report, there are 11 0xf7 granules, which amounts to
-176 bytes, and the object is allocated from the kmalloc-256 cache. So
-when kmemleak accesses the last 256-176 bytes, it causes faults, as
-those are marked with KASAN_KMALLOC_REDZONE == KASAN_TAG_INVALID ==
-0xfe.
-
-Generally, resetting tags in kasan_disable/enable_current() section
-should be fine to suppress MTE faults, provided those sections had
-been added correctly in the first place.
+> > Cheers,
+> > Anders
+> >
