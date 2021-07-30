@@ -2,131 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3ADF3DBE9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0761F3DBE9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhG3TAk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Jul 2021 15:00:40 -0400
-Received: from aposti.net ([89.234.176.197]:54948 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230475AbhG3TA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:00:28 -0400
-Date:   Fri, 30 Jul 2021 20:00:08 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2] clocksource: Ingenic: Improve the code.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
-        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
-Message-Id: <8GN2XQ.MOCZ4R16ZTRH1@crapouillou.net>
-In-Reply-To: <1627638188-116163-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1627638188-116163-1-git-send-email-zhouyanjie@wanyeetech.com>
+        id S231154AbhG3TAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhG3TAe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 15:00:34 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125EFC061765;
+        Fri, 30 Jul 2021 12:00:30 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id y200so12670291iof.1;
+        Fri, 30 Jul 2021 12:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=LW9Axg6PO2+fAhkVIielz/2kuUe/8kVjL2M0TRJoppw=;
+        b=h7Wff98sS/D3hYcTAQd9yf/JkVaCdiSHAqFI7XGUFgQn0PsjpPMP6lFqvGDPX+GUx3
+         tV9rgybUcmKNS1+Im0jIqkUUZsfNKGKTQ9Pb1udvrIdAP6k6wAoZCXF40YOIkDtxRhnJ
+         AcyCyYuqEonB/Xfe/i7796npkV50tMNLbPEuN2K2R7BRrMSb3HKS66QYfe/tiQI46E6C
+         lS68qjy8vANHhH47BAiRcX72HhDn1oMpfDzGuvAQanZ8ihb7Rl9U6msuPixBqOuGjzX2
+         AkKBNhokvZ0rrRJIdp64lpJBKSOkgqX+dC6osTkB7mTvi+XVJduQNDWM3MCeCylnLCsV
+         bOwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=LW9Axg6PO2+fAhkVIielz/2kuUe/8kVjL2M0TRJoppw=;
+        b=RgpGXTsXiDtzxJGu8sS3bCuA3w8+hHbZ6AVBiyofu6JRK0YC+4Qi+Y5uvkw/Bn5SHm
+         6GXWPC+u+Ybc4My/AWULrEyz8bURIhrNYOaA56XQkbQPpxaHNfWYbMI8ZNfFNyOfSMQu
+         UFrnrwOQmWWkqZ8LoPPXeFoeiJre6ITHkufandggp+lGkE7LdzgqM8IBWoMkbvVCsFJJ
+         nz4XCPZwzLP+g1ixDwT4K1l4TjbAk2Q5A0eSBkfDSjDsWXasDaEgGx9EQ1EkhF0JyZQl
+         UGglzE2I8GCXmW0B9st4Z6UQe1GhG0Y/KzFoItSJDjJBAriLhPF+3U35CqG9dlgPaMN4
+         t7Gw==
+X-Gm-Message-State: AOAM532F256D24kTGQ99Uo0hXskc1jvSIxm66fHCZSRWu35nCt3evWyE
+        kD+eXC3HUbD0ZqfWLf/ye34=
+X-Google-Smtp-Source: ABdhPJww/+ckhdc92jt2T7e4jkYlM9JINk8XOuefIN5BFo+AtM3w9Tc+bDl5jNoH+2PkQCj9U8jaRQ==
+X-Received: by 2002:a05:6602:2d10:: with SMTP id c16mr2254956iow.40.1627671629552;
+        Fri, 30 Jul 2021 12:00:29 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id x4sm1336069ilj.52.2021.07.30.12.00.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 12:00:28 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next 1/2] net: dsa: tag_mtk: skip address learning on transmit to standalone ports
+Date:   Sat, 31 Jul 2021 03:00:20 +0800
+Message-Id: <20210730190020.638409-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210730162403.p2dnwvwwgsxttomg@skbuf>
+References: <20210728175327.1150120-1-dqfext@gmail.com> <20210728175327.1150120-2-dqfext@gmail.com> <20210728183705.4gea64qlbe64kkpl@skbuf> <20210730162403.p2dnwvwwgsxttomg@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jul 30, 2021 at 07:24:03PM +0300, Vladimir Oltean wrote:
+> Considering that you also have the option of setting
+> ds->assisted_learning_on_cpu_port = true and this will have less false
+> positives, what are the reasons why you did not choose that approach?
 
-Le ven., juil. 30 2021 at 17:43:08 +0800, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Use "FIELD_GET()" and "FIELD_PREP()" to simplify the code.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-
-Thanks!
--Paul
-
-> ---
-> 
-> Notes:
->     v1->v2:
->     Split "val = (val & ~OSTCCR_PRESCALEx_MASK) | 
-> FIELD_PREP(OSTCCR_PRESCALEx_MASK, prescale)"
->     into "val &= ~OSTCCR_PRESCALEx_MASK" and "val |= 
-> FIELD_PREP(OSTCCR_PRESCALEx_MASK, prescale)"
->     as Paul Cercueil's suggestion.
-> 
->  drivers/clocksource/ingenic-sysost.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/clocksource/ingenic-sysost.c 
-> b/drivers/clocksource/ingenic-sysost.c
-> index a129840..cb6fc2f 100644
-> --- a/drivers/clocksource/ingenic-sysost.c
-> +++ b/drivers/clocksource/ingenic-sysost.c
-> @@ -4,6 +4,7 @@
->   * Copyright (c) 2020 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com>
->   */
-> 
-> +#include <linux/bitfield.h>
->  #include <linux/bitops.h>
->  #include <linux/clk.h>
->  #include <linux/clk-provider.h>
-> @@ -34,8 +35,6 @@
->  /* bits within the OSTCCR register */
->  #define OSTCCR_PRESCALE1_MASK	0x3
->  #define OSTCCR_PRESCALE2_MASK	0xc
-> -#define OSTCCR_PRESCALE1_LSB	0
-> -#define OSTCCR_PRESCALE2_LSB	2
-> 
->  /* bits within the OSTCR register */
->  #define OSTCR_OST1CLR			BIT(0)
-> @@ -98,7 +97,7 @@ static unsigned long 
-> ingenic_ost_percpu_timer_recalc_rate(struct clk_hw *hw,
-> 
->  	prescale = readl(ost_clk->ost->base + info->ostccr_reg);
-> 
-> -	prescale = (prescale & OSTCCR_PRESCALE1_MASK) >> 
-> OSTCCR_PRESCALE1_LSB;
-> +	prescale = FIELD_GET(OSTCCR_PRESCALE1_MASK, prescale);
-> 
->  	return parent_rate >> (prescale * 2);
->  }
-> @@ -112,7 +111,7 @@ static unsigned long 
-> ingenic_ost_global_timer_recalc_rate(struct clk_hw *hw,
-> 
->  	prescale = readl(ost_clk->ost->base + info->ostccr_reg);
-> 
-> -	prescale = (prescale & OSTCCR_PRESCALE2_MASK) >> 
-> OSTCCR_PRESCALE2_LSB;
-> +	prescale = FIELD_GET(OSTCCR_PRESCALE2_MASK, prescale);
-> 
->  	return parent_rate >> (prescale * 2);
->  }
-> @@ -151,7 +150,8 @@ static int 
-> ingenic_ost_percpu_timer_set_rate(struct clk_hw *hw, unsigned long re
->  	int val;
-> 
->  	val = readl(ost_clk->ost->base + info->ostccr_reg);
-> -	val = (val & ~OSTCCR_PRESCALE1_MASK) | (prescale << 
-> OSTCCR_PRESCALE1_LSB);
-> +	val &= ~OSTCCR_PRESCALE1_MASK;
-> +	val |= FIELD_PREP(OSTCCR_PRESCALE1_MASK, prescale);
->  	writel(val, ost_clk->ost->base + info->ostccr_reg);
-> 
->  	return 0;
-> @@ -166,7 +166,8 @@ static int 
-> ingenic_ost_global_timer_set_rate(struct clk_hw *hw, unsigned long re
->  	int val;
-> 
->  	val = readl(ost_clk->ost->base + info->ostccr_reg);
-> -	val = (val & ~OSTCCR_PRESCALE2_MASK) | (prescale << 
-> OSTCCR_PRESCALE2_LSB);
-> +	val &= ~OSTCCR_PRESCALE2_MASK;
-> +	val |= FIELD_PREP(OSTCCR_PRESCALE2_MASK, prescale);
->  	writel(val, ost_clk->ost->base + info->ostccr_reg);
-> 
->  	return 0;
-> --
-> 2.7.4
-> 
-
-
+After enabling it, I noticed .port_fdb_{add,del} are called with VID=0
+(which it does not use now) unless I turn on VLAN filtering. Is that
+normal?
