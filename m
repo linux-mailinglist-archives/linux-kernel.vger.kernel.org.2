@@ -2,99 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885683DBAFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE4F3DBB00
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239220AbhG3Oqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:46:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:43052 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239185AbhG3Oqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:46:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A67E71042;
-        Fri, 30 Jul 2021 07:46:32 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.13.245])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 495CB3F66F;
-        Fri, 30 Jul 2021 07:46:30 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 15:46:27 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        John Crispin <john@phrozen.org>, Felix Fietkau <nbd@nbd.name>
-Subject: Re: [PATCH 3/5] ARM: dts: Add basic support for EcoNet EN7523
-Message-ID: <20210730144627.GB19569@C02TD0UTHF1T.local>
-References: <20210730134552.853350-1-bert@biot.com>
- <20210730134552.853350-4-bert@biot.com>
+        id S239273AbhG3Oq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239283AbhG3Oqu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:46:50 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BF3C0613CF;
+        Fri, 30 Jul 2021 07:46:44 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627656403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IWM7g/MHdOxxc/s3DimjSaz1UmZ27Jw8JVxb2NbbEeo=;
+        b=GVUTXY706Ds1lW8XaMWrQL7MMlXRhuV3ro5+Molu4QSaLEUHGNa6C6f5nHIJ9sebuUuk3I
+        W79Ae+7dysvi+QQFnWRfJPk1EvZkP/l485IRsvyNRMQyY8n63dLo+JfV4EHZFljIEgEtiu
+        PaogBzaKvAcrsCs66q8Tm3USbBIBGzGcsL4Kw9m32LXG9Rd2FaJ721Qha8x+bBKB6NRxez
+        LIYU74Vi1R3mkOUf31IajvCXF6qSoQSwI7iYTVeY69lw9D1bK8XB6tnoPmoig52x8hoxkD
+        jN8or1dvTGSTiEAIygSKi6G4eEcvK54wKx+9sNEJa2X5gV1P4yY8zyuItBo7Eg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627656403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IWM7g/MHdOxxc/s3DimjSaz1UmZ27Jw8JVxb2NbbEeo=;
+        b=Ro/iJy1ukVNFCA69rc4b6HtUpnMD9Ba7KvOop10ADSOCJ18BL6GiqM2BxR3MqASSbPA6Dr
+        6MJDaVbL8jMUciAA==
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     chao.qin@intel.com, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, tglx@linutronix.de,
+        rostedt@goodmis.org, mgross@linux.intel.com, paul.mei@intel.com,
+        lili.li@intel.com
+Subject: Re: [PREEMPT_RT][PATCH] printk: Enhance the condition check of msleep in pr_flush()
+In-Reply-To: <20210730140143.53wls2g7xf2ktdgv@linutronix.de>
+References: <20210719022649.3444072-1-chao.qin@intel.com> <87mtqiuzd4.fsf@jogness.linutronix.de> <20210730140143.53wls2g7xf2ktdgv@linutronix.de>
+Date:   Fri, 30 Jul 2021 16:52:42 +0206
+Message-ID: <87k0l7svu5.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730134552.853350-4-bert@biot.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 03:45:50PM +0200, Bert Vermeulen wrote:
-> From: John Crispin <john@phrozen.org>
-> 
-> Add basic support for EcoNet EN7523, enough for booting to console.
-> 
-> The UART is basically 8250-compatible, except for the clock selection.
-> A clock-frequency value is synthesized to get this to run at 115200 bps.
-> 
-> Signed-off-by: John Crispin <john@phrozen.org>
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> ---
->  arch/arm/boot/dts/Makefile       |   2 +
->  arch/arm/boot/dts/en7523-evb.dts |  17 ++++
->  arch/arm/boot/dts/en7523.dtsi    | 128 +++++++++++++++++++++++++++++++
->  3 files changed, 147 insertions(+)
->  create mode 100644 arch/arm/boot/dts/en7523-evb.dts
->  create mode 100644 arch/arm/boot/dts/en7523.dtsi
+On 2021-07-30, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+> On 2021-07-19 17:01:51 [+0206], John Ogness wrote:
+>> On 2021-07-19, chao.qin@intel.com wrote:
+>> > --- a/kernel/printk/printk.c
+>> > +++ b/kernel/printk/printk.c
+>> > @@ -3620,7 +3620,8 @@ bool pr_flush(int timeout_ms, bool reset_on_progress)
+>> >  	u64 diff;
+>> >  	u64 seq;
+>> >  
+>> > -	may_sleep = (preemptible() && !in_softirq());
+>> > +	may_sleep = (preemptible() && !in_softirq()
+>> > +			&& (system_state >= SYSTEM_RUNNING));
+>
+> I don't have more context but scheduling should work starting with
+> SYSTEM_SCHEDULING.
 
-[...]
+I also thought this, but a quick test shows that is not the case. For
+example, init/main.c:kernel_init() is called in preemptible context, but
+msleep() will hang if called at the beginning of that function.
 
-> +	gic: interrupt-controller@09000000 {
-> +		compatible = "arm,gic-v3";
-> +		interrupt-controller;
-> +		#interrupt-cells = <3>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		reg = <0x09000000 0x20000>,
-> +			  <0x09080000 0x80000>;
-> +		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +		its: gic-its@09020000 {
-> +			compatible = "arm,gic-v3-its";
-> +			msi-controller;
-> +			#msi-cell = <1>;
-> +			reg = <0x090200000 0x20000>;
-> +		};
-> +	};
-> +
-> +	timer {
-> +		compatible = "arm,armv8-timer";
-
-This should be "arm,armv7-timer".
-
-> +		interrupt-parent = <&gic>;
-> +		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-> +			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-> +			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-> +			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
-
-GICv3 doesn't have a cpumask in its PPI description, so the
-GIC_CPU_MASK_SIMPLE() bits should be removed.
-
-> +		clock-frequency = <25000000>;
-
-Please have your FW configure CNTFRQ on each CPU; the clock-frequency
-property in the DT is a workaround for broken FW, and it's *vastly*
-preferable for FW to configure this correctly (e.g. as it means VMs
-should "just work").
-
-Thanks,
-Mark.
+John Ogness
