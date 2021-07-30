@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2C83DB941
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913613DB946
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238953AbhG3NVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 09:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbhG3NVL (ORCPT
+        id S238945AbhG3NXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 09:23:53 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:49658 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230480AbhG3NXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 09:21:11 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A6DC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:21:06 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id p21so13127578edi.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:21:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1MF64PGrmt62Tg3j2Q8W8RIILeBRNoYtBq41HoRE+f8=;
-        b=Wk4r4UmWMdTkahOuUTgKY3b/kkLo4kOnU9ruGThHRLnmCjrbxGhF5ByAcM9knzRGB/
-         ydVnqqok/wpUfdE8PN5Sfu57qiGKeRsx17qopPatENupqKtN0eh3J6qdyCCuEGvX3Iq1
-         N6FVjC0wQJYzfC9oHKSQf6pvatKt+mc9An6GlaEGuYm5BYs1OfoXsgp+VbTMzPRTAx8T
-         fvp1tOlZbMmC0NNQAYDDNfQp5qHgwQD3ElL5nuOqmxRNBBW/ANjnFPLrpsW7Nh2RmD9U
-         V1h8PGNaiabQvlDPZaBCTYC2hmF12jU0ZmJyLvO3nKuCcsh8ztKFdkvUEZIkv6VYCYyW
-         YUaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1MF64PGrmt62Tg3j2Q8W8RIILeBRNoYtBq41HoRE+f8=;
-        b=m+O+km+g7eBUR6/n3ypuFr5VobKtqWJ5fff948Z4HEZ6zUn82Cw9kLpYcNpp0XJBaM
-         wfvK1OALIA16CG//g3gsg4oDBotjk7oyJpEoBIp3LykWnqTqjJbhONyWll/b1UWt3noc
-         OZ6N+pK9fACfxadJ0CQbUsIY/v6bmV1xiKApEc+PAMiid0i0ZZetrZXptvznyy/5cisW
-         vQhsBN7Fmsrah/6v5lwi3V3rjDg29gk1oZJMzqoIPiI8ZCQTd1X9+i+LnLjsTyObLtbV
-         1rbdNZwulLWYky0Ovw9QFzdzHUUM9z4plYkCzmCmDXS9YEB7+qPVswU7/jZDw+sLlNz8
-         CXvA==
-X-Gm-Message-State: AOAM532TCKfSX2dOu8QNqG6vqJSYVwVWPjE3hx4v7IOxtxyrHpPJqUeS
-        /CdwapIA7/PluiEPPa33fapHB/TNqcw=
-X-Google-Smtp-Source: ABdhPJzKMddgf17FtXkd9arNIjU06NhHc9zNsFPHVoNUFbMZgzmVc9mSKSbA9gAUjnq01M62vz7LEA==
-X-Received: by 2002:a05:6402:1c83:: with SMTP id cy3mr3000977edb.231.1627651265147;
-        Fri, 30 Jul 2021 06:21:05 -0700 (PDT)
-Received: from agape ([5.171.81.215])
-        by smtp.gmail.com with ESMTPSA id lw22sm560218ejb.74.2021.07.30.06.21.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 06:21:04 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Sterba <dsterba@suse.cz>
-Subject: [PATCH] staging: rtl8723bs: remove unused BIT macros definitions
-Date:   Fri, 30 Jul 2021 15:21:03 +0200
-Message-Id: <20210730132103.4996-1-fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 30 Jul 2021 09:23:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627651428; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=g1LIqeq8dIBjRdXEj0V0n2bb4vQ4QikSF0Ljhxz7LBI=; b=XeCYTGYI5rxTWyiF2Qe8Wu3J1m5ON5RVkhNO8WN2BtDwi/3Kz8OrOhX8/e1B8O72b5+cs7jC
+ toAp0FPI9P/7nddCZxWxaoJ0/oQqznzmEWGsxkR7jNNLI7oJgJfvKZ6rfw364jxXV6DmS7/N
+ Afpw2HwCxCHLHDHNzNUI22b4pvQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6103fd4b96a66e66b28b9b42 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Jul 2021 13:23:23
+ GMT
+Sender: kamaagra=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E9875C4338A; Fri, 30 Jul 2021 13:23:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from kamaagra-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kamaagra)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8F917C433F1;
+        Fri, 30 Jul 2021 13:23:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8F917C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kamaagra@codeaurora.org
+From:   Kamal Agrawal <kamaagra@codeaurora.org>
+To:     rostedt@goodmis.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, mhiramat@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org
+Subject: [PATCH] tracing: Fix NULL pointer dereference in start_creating
+Date:   Fri, 30 Jul 2021 18:53:06 +0530
+Message-Id: <1627651386-21315-1-git-send-email-kamaagra@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BIT(x) macro used all over the driver is defined in
-include/vsdo/bit.h as
+The event_trace_add_tracer() can fail. In this case, it leads to a crash
+in start_creating with below call stack. Handle the error scenario
+properly in trace_array_create_dir.
 
-- #define BIT(nr)	(UL(1) << (nr))
+Call trace:
+down_write+0x7c/0x204
+start_creating.25017+0x6c/0x194
+tracefs_create_file+0xc4/0x2b4
+init_tracer_tracefs+0x5c/0x940
+trace_array_create_dir+0x58/0xb4
+trace_array_create+0x1bc/0x2b8
+trace_array_get_by_name+0xdc/0x18c
 
-which is safer than the local BIT macros declared.
-Local macros shift a signed integer which brings
-unespected results. For example:
-
-(unsigned long)(1 << 31) => 0xffffffff80000000
-
-shift.c:
-
-int main() {
-        printf("%lx\n", (unsigned long)(1 << 31));
-        printf("%lx\n", (unsigned long)(1U << 31));
-        return 0;
-}
+Fixes: 4114fbfd
+Signed-off-by: Kamal Agrawal <kamaagra@codeaurora.org>
 ---
+ kernel/trace/trace.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-$ ./shift
-ffffffff80000000
-80000000
----
-
-So just remove redundant, less safe macro declarations.
-
-Suggested-by: David Sterba <dsterba@suse.cz>
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/include/osdep_service.h | 4 ----
- drivers/staging/rtl8723bs/include/wifi.h          | 8 --------
- 2 files changed, 12 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/include/osdep_service.h b/drivers/staging/rtl8723bs/include/osdep_service.h
-index b49838c7e457..bde415db4114 100644
---- a/drivers/staging/rtl8723bs/include/osdep_service.h
-+++ b/drivers/staging/rtl8723bs/include/osdep_service.h
-@@ -14,10 +14,6 @@
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index c59dd35..33899a7 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -9135,8 +9135,10 @@ static int trace_array_create_dir(struct trace_array *tr)
+ 		return -EINVAL;
  
- #include <osdep_service_linux.h>
+ 	ret = event_trace_add_tracer(tr->dir, tr);
+-	if (ret)
++	if (ret) {
+ 		tracefs_remove(tr->dir);
++		return ret;
++	}
  
--#ifndef BIT
--	#define BIT(x)	(1 << (x))
--#endif
--
- #define BIT0	0x00000001
- #define BIT1	0x00000002
- #define BIT2	0x00000004
-diff --git a/drivers/staging/rtl8723bs/include/wifi.h b/drivers/staging/rtl8723bs/include/wifi.h
-index 0bd7b662b972..f03e26818d45 100644
---- a/drivers/staging/rtl8723bs/include/wifi.h
-+++ b/drivers/staging/rtl8723bs/include/wifi.h
-@@ -7,14 +7,6 @@
- #ifndef _WIFI_H_
- #define _WIFI_H_
- 
--
--#ifdef BIT
--/* error	"BIT define occurred earlier elsewhere!\n" */
--#undef BIT
--#endif
--#define BIT(x)	(1 << (x))
--
--
- #define WLAN_ETHHDR_LEN		14
- #define WLAN_ETHADDR_LEN	6
- #define WLAN_IEEE_OUI_LEN	3
+ 	init_tracer_tracefs(tr, tr->dir);
+ 	__update_tracer_options(tr);
 -- 
-2.20.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
 
