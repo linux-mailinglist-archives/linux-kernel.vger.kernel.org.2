@@ -2,98 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7B53DB1AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084273DB1AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234966AbhG3DFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 23:05:14 -0400
-Received: from mga07.intel.com ([134.134.136.100]:30228 "EHLO mga07.intel.com"
+        id S235257AbhG3DFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 23:05:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:34888 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhG3DFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 23:05:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10060"; a="276795839"
-X-IronPort-AV: E=Sophos;i="5.84,280,1620716400"; 
-   d="scan'208";a="276795839"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 20:05:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,280,1620716400"; 
-   d="scan'208";a="518685854"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Jul 2021 20:05:03 -0700
-Date:   Fri, 30 Jul 2021 11:05:02 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v6 1/6] mm/mempolicy: Add MPOL_PREFERRED_MANY for
- multiple preferred nodes
-Message-ID: <20210730030502.GA87066@shbuild999.sh.intel.com>
-References: <1626077374-81682-1-git-send-email-feng.tang@intel.com>
- <1626077374-81682-2-git-send-email-feng.tang@intel.com>
- <YQFOB4UDK+dNZeOV@dhcp22.suse.cz>
- <20210728141156.GC43486@shbuild999.sh.intel.com>
- <YQGB5cB5NlgOuNIN@dhcp22.suse.cz>
- <20210729070918.GA96680@shbuild999.sh.intel.com>
- <YQKvZDXmRSVVRvfi@dhcp22.suse.cz>
- <20210729151242.GA42865@shbuild999.sh.intel.com>
- <YQLVf3pkQTHLemAZ@dhcp22.suse.cz>
+        id S235025AbhG3DFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 23:05:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E66E331B;
+        Thu, 29 Jul 2021 20:05:12 -0700 (PDT)
+Received: from [10.163.66.9] (unknown [10.163.66.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 42F373F73D;
+        Thu, 29 Jul 2021 20:05:10 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH v2 01/10] coresight: etm4x: Save restore TRFCR_EL1
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        jinlmao@qti.qualcomm.com
+References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
+ <20210723124611.3828908-2-suzuki.poulose@arm.com>
+Message-ID: <817947b6-ad09-cb8e-488d-f52067b13a57@arm.com>
+Date:   Fri, 30 Jul 2021 08:35:58 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQLVf3pkQTHLemAZ@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210723124611.3828908-2-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 06:21:19PM +0200, Michal Hocko wrote:
-> On Thu 29-07-21 23:12:42, Feng Tang wrote:
-> > On Thu, Jul 29, 2021 at 03:38:44PM +0200, Michal Hocko wrote:
-> [...]
-> > > Also the
-> > > semantic to give nodes some ordering based on their numbers sounds
-> > > rather weird to me.
-> > 
-> > I agree, and as I admitted in the first reply, this need to be fixed.
+
+
+On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
+> When the CPU enters a low power mode, the TRFCR_EL1 contents could be
+> reset. Thus we need to save/restore the TRFCR_EL1 along with the ETM4x
+> registers to allow the tracing.
 > 
-> OK. I was not really clear that we are on the same page here.
+> The TRFCR related helpers are in a new header file, as we need to use
+> them for TRBE in the later patches.
 > 
-> > > The semantic I am proposing is to allocate from prefered nodes in
-> > > distance order starting from the local node.
-> > 
-> > So the plan is:
-> > * if the local node is set in 'prefer-many's nodemask, then chose
-> > * otherwise chose the node with the shortest distance to local node
-> > ?
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+> Changes since v1:
+>  - Moved the TRFCR helpers in to a new header file
+> ---
+>  .../coresight/coresight-etm4x-core.c          | 43 +++++++++++++------
+>  drivers/hwtracing/coresight/coresight-etm4x.h |  2 +
+>  .../coresight/coresight-self-hosted-trace.h   | 25 +++++++++++
+>  3 files changed, 58 insertions(+), 12 deletions(-)
+>  create mode 100644 drivers/hwtracing/coresight/coresight-self-hosted-trace.h
 > 
-> Yes and what I am trying to say is that you will achieve that simply by
-> doing the following in policy_node:
-> 	if (policy->mode == MPOL_PREFERRED_MANY)
-> 		return nd;
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index da27cd4a3c38..3e548dac9b05 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -39,6 +39,7 @@
+>  
+>  #include "coresight-etm4x.h"
+>  #include "coresight-etm-perf.h"
+> +#include "coresight-self-hosted-trace.h"
+>  
+>  static int boot_enable;
+>  module_param(boot_enable, int, 0444);
+> @@ -985,7 +986,7 @@ static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
+>  	if (is_kernel_in_hyp_mode())
+>  		trfcr |= TRFCR_EL2_CX;
+>  
+> -	write_sysreg_s(trfcr, SYS_TRFCR_EL1);
+> +	write_trfcr(trfcr);
+>  }
+>  
+>  static void etm4_init_arch_data(void *info)
+> @@ -1528,7 +1529,7 @@ static void etm4_init_trace_id(struct etmv4_drvdata *drvdata)
+>  	drvdata->trcid = coresight_get_trace_id(drvdata->cpu);
+>  }
+>  
+> -static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+> +static int __etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  {
+>  	int i, ret = 0;
+>  	struct etmv4_save_state *state;
+> @@ -1667,7 +1668,23 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  	return ret;
+>  }
+>  
+> -static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+> +static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+> +{
+> +	int ret = 0;
+> +
+> +	/* Save the TRFCR irrespective of whether the ETM is ON */
+> +	if (drvdata->trfc)
+> +		drvdata->save_trfcr = read_trfcr();
+> +	/*
+> +	 * Save and restore the ETM Trace registers only if
+> +	 * the ETM is active.
+> +	 */
+> +	if (local_read(&drvdata->mode) && drvdata->save_state)
+> +		ret = __etm4_cpu_save(drvdata);
+> +	return ret;
+> +}
+> +
+> +static void __etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>  {
+>  	int i;
+>  	struct etmv4_save_state *state = drvdata->save_state;
+> @@ -1763,6 +1780,14 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>  	etm4_cs_lock(drvdata, csa);
+>  }
+>  
+> +static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+> +{
+> +	if (drvdata->trfc)
+> +		write_trfcr(drvdata->save_trfcr);
+> +	if (drvdata->state_needs_restore)
+> +		__etm4_cpu_restore(drvdata);
+> +}
+> +
+>  static int etm4_cpu_pm_notify(struct notifier_block *nb, unsigned long cmd,
+>  			      void *v)
+>  {
+> @@ -1774,23 +1799,17 @@ static int etm4_cpu_pm_notify(struct notifier_block *nb, unsigned long cmd,
+>  
+>  	drvdata = etmdrvdata[cpu];
+>  
+> -	if (!drvdata->save_state)
+> -		return NOTIFY_OK;
+> -
+>  	if (WARN_ON_ONCE(drvdata->cpu != cpu))
+>  		return NOTIFY_BAD;
+>  
+>  	switch (cmd) {
+>  	case CPU_PM_ENTER:
+> -		/* save the state if self-hosted coresight is in use */
+> -		if (local_read(&drvdata->mode))
+> -			if (etm4_cpu_save(drvdata))
+> -				return NOTIFY_BAD;
+> +		if (etm4_cpu_save(drvdata))
+> +			return NOTIFY_BAD;
+>  		break;
+>  	case CPU_PM_EXIT:
+>  	case CPU_PM_ENTER_FAILED:
+> -		if (drvdata->state_needs_restore)
+> -			etm4_cpu_restore(drvdata);
+> +		etm4_cpu_restore(drvdata);
+>  		break;
+>  	default:
+>  		return NOTIFY_DONE;
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> index e5b79bdb9851..82cba16b73a6 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> @@ -921,6 +921,7 @@ struct etmv4_save_state {
+>   * @lpoverride:	If the implementation can support low-power state over.
+>   * @trfc:	If the implementation supports Arm v8.4 trace filter controls.
+>   * @config:	structure holding configuration parameters.
+> + * @save_trfcr:	Saved TRFCR_EL1 register during a CPU PM event.
+>   * @save_state:	State to be preserved across power loss
+>   * @state_needs_restore: True when there is context to restore after PM exit
+>   * @skip_power_up: Indicates if an implementation can skip powering up
+> @@ -973,6 +974,7 @@ struct etmv4_drvdata {
+>  	bool				lpoverride;
+>  	bool				trfc;
+>  	struct etmv4_config		config;
+> +	u64				save_trfcr;
+>  	struct etmv4_save_state		*save_state;
+>  	bool				state_needs_restore;
+>  	bool				skip_power_up;
+> diff --git a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+> new file mode 100644
+> index 000000000000..53b35a28075e
+> --- /dev/null
+> +++ b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+> @@ -0,0 +1,25 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +
+> +/*
+> + * Arm v8 Self-Hosted trace support.
+> + *
+> + * Copyright (C) 2021 ARM Ltd.
+> + */
+> +
+> +#ifndef __CORESIGHT_SELF_HOSTED_TRACE_H
+> +#define __CORESIGHT_SELF_HOSTED_TRACE_H
+> +
+> +#include <asm/sysreg.h>
+> +
+> +static inline u64 read_trfcr(void)
+> +{
+> +	return read_sysreg_s(SYS_TRFCR_EL1);
+> +}
+> +
+> +static inline void write_trfcr(u64 val)
+> +{
+> +	write_sysreg_s(val, SYS_TRFCR_EL1);
+> +	isb();
+> +}
+> +
+> +#endif			/*  __CORESIGHT_SELF_HOSTED_TRACE_H */
+> 
 
-One thing is, it's possible that 'nd' is not set in the preferred
-nodemask. 
-
-For policy_node(), most of its caller use the local node id as 'nd'
-parameter. For HBM and PMEM memory nodes, they are cpuless nodes,
-so they will not be a 'local node', but some use cases only prefer
-these nodes.
-
-Thanks,
-Feng
-
-> -- 
-> Michal Hocko
-> SUSE Labs
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
