@@ -2,131 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EEF3DBD64
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23173DBD67
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhG3Qz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:55:26 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:56521 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhG3QzY (ORCPT
+        id S230046AbhG3Q5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229938AbhG3Q5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:55:24 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MxHLs-1n77cc1pTE-00xbBO; Fri, 30 Jul 2021 18:55:18 +0200
-Received: by mail-wr1-f45.google.com with SMTP id h14so12087408wrx.10;
-        Fri, 30 Jul 2021 09:55:18 -0700 (PDT)
-X-Gm-Message-State: AOAM531x36drL025206zfhSfsIdVNUVYtXIIdwh7tJXRkoxahAE6fFFe
-        5pch65HRs5BPODEUF4YRSt9avNT68PPACJ16s+4=
-X-Google-Smtp-Source: ABdhPJx8pRQBP+fRbShwuYvNiG34iB85ht3PkP357n80b2tOp0dc7/DUvny3sNOHPUMU7TLnQH+oHIK/GgO7nACZa6s=
-X-Received: by 2002:adf:f446:: with SMTP id f6mr4206493wrp.361.1627664118110;
- Fri, 30 Jul 2021 09:55:18 -0700 (PDT)
+        Fri, 30 Jul 2021 12:57:00 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC855C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:56:52 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso21713682pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NHmczmIzJufSB3Li/LucyxkDOJfl+luasFO2GMfh3i8=;
+        b=EwcggOYo/KbZsqbv7CnLQji1AaGLnOh5sUY2NEpMi13aXZro2JK54VQT6EA0LGqEhp
+         1dUrc+sHK5QUBLJMqWCOkVhRORDMasbGc+TOD24B7tNkfpzuGSMo8PWaKmEy1U7xtHUx
+         q2Tra7+g6UGs9nC/2zTwsRW3ZjjJMQUqLUuu86eJdfpsqEdwAhNF1wbUviE7h7v3e4No
+         ZhEeZbFW48Wecy/exed5zVehY2v7yXNhQFiz7UAWuLehu8RXOsgutb5gJvvx4xh51f0m
+         ch4nma24ljAdFeNIidkVIV4YCjh9zTv7Sz9NEIs3gib/XxkJ9DakVPEgZNpUgkRMS3f3
+         pmpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NHmczmIzJufSB3Li/LucyxkDOJfl+luasFO2GMfh3i8=;
+        b=R1IEbU2xepsuM6JzdIS4K0p9zAGAIqsJnnq+bi25XVJ8NcssPqg6qLEdk8Vkya1/CP
+         XDvwSCAVqJxNYyFkxtU4xrVW2QiptXkgPzeN+GUcteCBnIofKGTcYOszOO3a9felKTdY
+         IK2Vx6fWarCdRC2w6Hof6+dq5egb66A1AfGD8DpnfJrx50NelCc8hiyBnVtWWLEEXIQz
+         Xb3YnQqCn2xFcepndo8ArRePqly3N2+voSIF+ifBQXCtS6CLepbcJ2GHAeSQg5onisT5
+         nRS4NASlNWdDZhdW7RZWko533w0c0Ym7ZE7ajMjsA+Fmd5nJhe8BY+5xIPhgxVYbz5o8
+         ryMA==
+X-Gm-Message-State: AOAM530QpHrLDL+GrAWCIPMsM5zH2ATXXqNEivlAi5lBhr9SABUoYPfM
+        fdcN30jWEjKdbTGYKig6Ub/eog==
+X-Google-Smtp-Source: ABdhPJzWI6FoTcaZNj62M9u9nn73qB7KjElQlQVRB3Sn9a2CCf11QZlLRjOgsi/YapsBA2ELYgUCvw==
+X-Received: by 2002:a63:4e11:: with SMTP id c17mr3123982pgb.54.1627664212050;
+        Fri, 30 Jul 2021 09:56:52 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id f3sm2904882pfe.123.2021.07.30.09.56.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 09:56:51 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 16:56:47 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Oliver Upton <oupton@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <Alexandru.Elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Peter Shier <pshier@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Guangyu Shi <guangyus@google.com>
+Subject: Re: [PATCH v2 3/3] KVM: arm64: Use generic KVM xfer to guest work
+ function
+Message-ID: <YQQvT7vAnRrcAcx/@google.com>
+References: <20210729220916.1672875-1-oupton@google.com>
+ <20210729220916.1672875-4-oupton@google.com>
+ <878s1o2l6j.wl-maz@kernel.org>
+ <CAOQ_QsjFzdjYgYSxNLH=8O84FJB+O8KtH0VnzdQ9HnLZwxwpNQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210730134552.853350-1-bert@biot.com> <20210730134552.853350-5-bert@biot.com>
- <CAK8P3a3OuJ3pMSdEA4Rt3aWvvuX2+_Bg5x7-kZ1++fvvJvgGxA@mail.gmail.com> <d5498cc1-f700-998f-4e98-918081f2ac66@phrozen.org>
-In-Reply-To: <d5498cc1-f700-998f-4e98-918081f2ac66@phrozen.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 30 Jul 2021 18:55:02 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1c9bVjACjAN=2d+XiBn+yWgHHs9CEUmik7U61+3MzFhw@mail.gmail.com>
-Message-ID: <CAK8P3a1c9bVjACjAN=2d+XiBn+yWgHHs9CEUmik7U61+3MzFhw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] ARM: Add basic support for EcoNet EN7523 SoC
-To:     John Crispin <john@phrozen.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Bert Vermeulen <bert@biot.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Mike Rapoport <rppt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Djm3HiGtPborGwABFKLa69C29V921SpSOe07xLTEUvN1ltcib6i
- oU/7+2bli17JFsiITTU2UsrQHCJmRtJnoY+9zlZktzDif2QGD2dXiaFyoWQmdkMc4Yn9dvz
- qq63H6S93Jzyzu4jS+tuYMPvIOpvPsrkTlP1ul+Z4mbsqZFt0YYJs53i4gPmF95zUdLdOsO
- Oz61d1ljFEleqlOSPbCNg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gKgZSZRph+M=:9190HjctsZ8ZsfU/3fz5Zy
- XcLcDmqmyjFh8xMVT/kyrd4nwiYHOx8vPve6q0MleNDzdMM3zW8jH6qQDS/Zhvk5/P90B717m
- 8kFR9YakEvKAdj3dgaYyC9mdwjVNYlfPa4fshumIOzV9Ng5huI/M+TEs7HOq5slDWgVfxdwK8
- vXpsWTkOke/BxCuYubNJlk06DKhovUgZ0Oa27GP2Z8cbPTUd44le8YRnh8UiHJwKINUZYS/Dy
- 3qNeLeELScI8Mgxao9CWL3sQTTzwDxHrwcqvy/zWCCHEtu/GmzxGEZj2FLE17uD0s2TuPVkM/
- M0Ammy4P3/4+zavBbnlh2+pJ6p+TUCWLq+AWUH7djVJJPFGzQVgnV3aumJB8M2vzmaSUgl3nQ
- WZAz9N6OEvs7Mx9rZ9M7awuPRSsyvLf4PzKKjalNIqjEV1OlsRFWRCLZSwgaH37uQnExogVfI
- +awAMCrZWXtldPs1yvMOXj5Vf+W+K42oLvAUibLTTxBqP5CDrau96Z/r0N2tDld244CP1NAq1
- 4Qnksqd3n9GwzDid+vUU1OhjFnyN4SG88yZ1kz4Q5dvC/hWbrmGKBJbm3j7EJ2Mdm89HUcGdP
- 7Y4X+TUEstGvKNz/xu1Qx16PS+72YrqzoWedbSEAAhL1hOB15Iy5tQxLCAqqSdU4CnldljMT1
- Z8ezGMN7kEcA7PWFA1Z9Vha9m0KP2AF8t0Jlgy7pb55J7DoLVbHNuZA2CnaS1fyOBeGsdNH0A
- i5/ZyrWprd6QxAxQpvAGf6GKoySxNQiKN5VrJQ7VqCFvW9yA5w2pbmCGu00eBzPDxh4eaRSNR
- NVd9PswvNDIe8FKva1HPGIoociPuFQmH3wN47wvm6WSAT18B7Gl5bEahKAoRSIXceWA1Yb80k
- Ex++Yo6sRmjecHpjyFpxpBXefdBwXsVemgc7LICKM=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ_QsjFzdjYgYSxNLH=8O84FJB+O8KtH0VnzdQ9HnLZwxwpNQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 5:16 PM John Crispin <john@phrozen.org> wrote:
-> On 30.07.21 16:48, Arnd Bergmann wrote:
-> > Given how closely related this probably is to MT7623/MT7622, should this
-> > perhaps just be part of arch/arm/mach-mediatek? According to
-> > https://wikidevi.wi-cat.ru/MediaTek#xPON, the older (mips based) MT752x
-> > chips are apparently just rebranded to EN752x after the business unit
-> > was spun off, but I guess they are still in the same family.
->
-> Hi,
->
-> ECNT (what was once known as trendchip) is now a subsidary of MTK (and
-> not a BU if I am understanding it correctly).
->
-> the EN7523 is rather similar to the MT7622 for some parts, other parts
-> (spi, flash, wdt, gpio, .. drivers all needed to be rewritten and will
-> be part of the next series).
->
-> the older MIPS silicon shares almost no IP with the current ARM silicon.
+On Fri, Jul 30, 2021, Oliver Upton wrote:
+> 
+> On Fri, Jul 30, 2021 at 2:41 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 29 Jul 2021 23:09:16 +0100, Oliver Upton <oupton@google.com> wrote:
+> > > @@ -714,6 +715,13 @@ static bool vcpu_mode_is_bad_32bit(struct kvm_vcpu *vcpu)
+> > >               static_branch_unlikely(&arm64_mismatched_32bit_el0);
+> > >  }
+> > >
+> > > +static bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
+> > > +{
+> > > +     return kvm_request_pending(vcpu) ||
+> > > +                     need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
+> > > +                     xfer_to_guest_mode_work_pending();
+> >
+> > Here's what xfer_to_guest_mode_work_pending() says:
+> >
+> > <quote>
+> >  * Has to be invoked with interrupts disabled before the transition to
+> >  * guest mode.
+> > </quote>
+> >
+> > At the point where you call this, we already are in guest mode, at
+> > least in the KVM sense.
+> 
+> I believe the comment is suggestive of guest mode in the hardware
+> sense, not KVM's vcpu->mode designation. I got this from
+> arch/x86/kvm/x86.c:vcpu_enter_guest() to infer the author's
+> intentions.
 
-Ah, so I guess the old Trendchip parts were separately developed separately
-from the Ralink parts before the original acquisition, and then Ralink/Mediatek
-combined the two product lines before spinning off the dsl products into
-a new subsidiary.
-
-> not really my call to decide which folder this should live in. it seemed
-> natural to just give it its own folder, as ECNT is not a BU of MTK.
->
-> we can change that however if required.
-
-My preference would be to have a common directory for both,
-but I'm not going to require that. From the kernel perspective the
-main question is actually not who makes the parts but who is going
-to maintain the code.
-
-Matthias is doing a good job taking care of the Mediatek parts,
-and he's familiar with the arm-soc process. If there is enough overlap
-between the Mediatek and EcoNet devices that we would expect
-either conflicts between binding/driver patches, or that you would want
-each other to review the patches for related parts, then it would
-make most sense to have a common directory and maintainer
-entry for both, with all patches going through the same git tree.
-
-It would also be nice to have someone listed as second maintainer
-for mediatek, since Matthias is currently the only one listed there.
-(Doesn't have to be you, I don't mean to drag you into taking up
-more work if you don't want to).
-
-Please discuss this between the three of you (Bert, John and
-Matthias), and let me know what you think works best for all of
-you.
-
-       Arnd
+Yeah, the comment is referring to hardware guest mode.  The intent is to verify
+there is no work to be done before making the expensive world switch.  There's
+no meaningful interaction with vcpu->mode, on x86 it's simply more convenient
+from a code perspective to throw it into kvm_vcpu_exit_request().
