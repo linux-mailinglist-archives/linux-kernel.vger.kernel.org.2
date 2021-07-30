@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9963DB5E0
+	by mail.lfdr.de (Postfix) with ESMTP id B625A3DB5E1
 	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238253AbhG3J0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:26:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37968 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238196AbhG3J0a (ORCPT
+        id S238265AbhG3J0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:26:35 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56714 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238209AbhG3J0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:26:30 -0400
+        Fri, 30 Jul 2021 05:26:31 -0400
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 87F3E2021E;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D026F2240A;
         Fri, 30 Jul 2021 09:26:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1627637185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lW2pCPIM4lkygbLbwGLWABzG2cZ+/JhuOV4NXj3t6fM=;
-        b=ds4Q914sXEHoQze6n+6web45Hx/QT2RBD7lWXXbaqKASz3CCwlhuto+m6zphSRvkdNnbVp
-        P5ZTquFXRO2Jtc+H4WB6rmyh/3gFa0AdN3pdg5iL3M+fL27oMsl5rFPuJmCQ+aqoBPdN6p
-        CWDFOKRcHk6eV1+KUfFmLeLHKB1XO38=
+        bh=3qVuz5gWClPtgxEZQpa8+8C1kUk+SDB64ahqtgECpn8=;
+        b=SebqX/TBG+6Jymm7zXT/FeRAPxnYMQdDVRARBH4DcJiYOhL0X4uZAL0pQJwzRsl3s1ylp4
+        Rz8+w4zHs50hoNWDj7sk/wZURGfrsc08XKmH08ku/zs+EKEscpD9gYAdivzCxCeeZQhDZF
+        mVcTNcsTFKrY5hajqFS4F7RCZo/8Ajw=
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3CE7313748;
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 8EE9913748;
         Fri, 30 Jul 2021 09:26:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id KNeODcHFA2GeIwAAGKfGzw
+        id YG2xIcHFA2GeIwAAGKfGzw
         (envelope-from <jgross@suse.com>); Fri, 30 Jul 2021 09:26:25 +0000
 From:   Juergen Gross <jgross@suse.com>
 To:     xen-devel@lists.xenproject.org, x86@kernel.org,
@@ -45,11 +45,10 @@ Cc:     Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH v2 1/2] xen: fix setting of max_pfn in shared_info
-Date:   Fri, 30 Jul 2021 11:26:21 +0200
-Message-Id: <20210730092622.9973-2-jgross@suse.com>
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH v2 2/2] xen: rename wrong named pfn related variables
+Date:   Fri, 30 Jul 2021 11:26:22 +0200
+Message-Id: <20210730092622.9973-3-jgross@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210730092622.9973-1-jgross@suse.com>
 References: <20210730092622.9973-1-jgross@suse.com>
@@ -59,47 +58,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xen PV guests are specifying the highest used PFN via the max_pfn
-field in shared_info. This value is used by the Xen tools when saving
-or migrating the guest.
+There are some variables in Xen specific coding which names imply them
+holding a PFN, while in reality they are containing numbers of PFNs.
 
-Unfortunately this field is misnamed, as in reality it is specifying
-the number of pages (including any memory holes) of the guest, so it
-is the highest used PFN + 1. Renaming isn't possible, as this is a
-public Xen hypervisor interface which needs to be kept stable.
+Rename them accordingly.
 
-The kernel will set the value correctly initially at boot time, but
-when adding more pages (e.g. due to memory hotplug or ballooning) a
-real PFN number is stored in max_pfn. This is done when expanding the
-p2m array, and the PFN stored there is even possibly wrong, as it
-should be the last possible PFN of the just added P2M frame, and not
-one which led to the P2M expansion.
-
-Fix that by setting shared_info->max_pfn to the last possible PFN + 1.
-
-Fixes: 98dd166ea3a3c3 ("x86/xen/p2m: hint at the last populated P2M entry")
-Cc: stable@vger.kernel.org
 Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
 ---
- arch/x86/xen/p2m.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+V2:
+- adjust comment (Jan Beulich)
+---
+ arch/x86/include/asm/xen/page.h |  4 ++--
+ arch/x86/xen/p2m.c              | 33 ++++++++++++++++++---------------
+ arch/x86/xen/setup.c            |  2 +-
+ 3 files changed, 21 insertions(+), 18 deletions(-)
 
+diff --git a/arch/x86/include/asm/xen/page.h b/arch/x86/include/asm/xen/page.h
+index 1a162e559753..3590d6bf42c7 100644
+--- a/arch/x86/include/asm/xen/page.h
++++ b/arch/x86/include/asm/xen/page.h
+@@ -51,7 +51,7 @@ extern unsigned long *machine_to_phys_mapping;
+ extern unsigned long  machine_to_phys_nr;
+ extern unsigned long *xen_p2m_addr;
+ extern unsigned long  xen_p2m_size;
+-extern unsigned long  xen_max_p2m_pfn;
++extern unsigned long  xen_p2m_max_size;
+ 
+ extern int xen_alloc_p2m_entry(unsigned long pfn);
+ 
+@@ -144,7 +144,7 @@ static inline unsigned long __pfn_to_mfn(unsigned long pfn)
+ 
+ 	if (pfn < xen_p2m_size)
+ 		mfn = xen_p2m_addr[pfn];
+-	else if (unlikely(pfn < xen_max_p2m_pfn))
++	else if (unlikely(pfn < xen_p2m_max_size))
+ 		return get_phys_to_machine(pfn);
+ 	else
+ 		return IDENTITY_FRAME(pfn);
 diff --git a/arch/x86/xen/p2m.c b/arch/x86/xen/p2m.c
-index ac06ca32e9ef..5e6e236977c7 100644
+index 5e6e236977c7..d75d9e077d13 100644
 --- a/arch/x86/xen/p2m.c
 +++ b/arch/x86/xen/p2m.c
-@@ -618,8 +618,8 @@ int xen_alloc_p2m_entry(unsigned long pfn)
+@@ -95,8 +95,8 @@ unsigned long *xen_p2m_addr __read_mostly;
+ EXPORT_SYMBOL_GPL(xen_p2m_addr);
+ unsigned long xen_p2m_size __read_mostly;
+ EXPORT_SYMBOL_GPL(xen_p2m_size);
+-unsigned long xen_max_p2m_pfn __read_mostly;
+-EXPORT_SYMBOL_GPL(xen_max_p2m_pfn);
++unsigned long xen_p2m_max_size __read_mostly;
++EXPORT_SYMBOL_GPL(xen_p2m_max_size);
+ 
+ #ifdef CONFIG_XEN_MEMORY_HOTPLUG_LIMIT
+ #define P2M_LIMIT CONFIG_XEN_MEMORY_HOTPLUG_LIMIT
+@@ -120,8 +120,10 @@ static pte_t *p2m_identity_pte;
+  * Used to set HYPERVISOR_shared_info->arch.max_pfn so the toolstack
+  * can avoid scanning the whole P2M (which may be sized to account for
+  * hotplugged memory).
++ *
++ * All populated P2M entries have an index lower than xen_p2m_pfn_limit.
+  */
+-static unsigned long xen_p2m_last_pfn;
++static unsigned long xen_p2m_pfn_limit;
+ 
+ static inline unsigned p2m_top_index(unsigned long pfn)
+ {
+@@ -239,7 +241,7 @@ void __ref xen_build_mfn_list_list(void)
+ 		p2m_mid_mfn_init(p2m_mid_missing_mfn, p2m_missing);
+ 	}
+ 
+-	for (pfn = 0; pfn < xen_max_p2m_pfn && pfn < MAX_P2M_PFN;
++	for (pfn = 0; pfn < xen_p2m_max_size && pfn < MAX_P2M_PFN;
+ 	     pfn += P2M_PER_PAGE) {
+ 		topidx = p2m_top_index(pfn);
+ 		mididx = p2m_mid_index(pfn);
+@@ -284,7 +286,7 @@ void xen_setup_mfn_list_list(void)
+ 	else
+ 		HYPERVISOR_shared_info->arch.pfn_to_mfn_frame_list_list =
+ 			virt_to_mfn(p2m_top_mfn);
+-	HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
++	HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_pfn_limit;
+ 	HYPERVISOR_shared_info->arch.p2m_generation = 0;
+ 	HYPERVISOR_shared_info->arch.p2m_vaddr = (unsigned long)xen_p2m_addr;
+ 	HYPERVISOR_shared_info->arch.p2m_cr3 =
+@@ -302,7 +304,7 @@ void __init xen_build_dynamic_phys_to_machine(void)
+ 	for (pfn = xen_start_info->nr_pages; pfn < xen_p2m_size; pfn++)
+ 		xen_p2m_addr[pfn] = INVALID_P2M_ENTRY;
+ 
+-	xen_max_p2m_pfn = xen_p2m_size;
++	xen_p2m_max_size = xen_p2m_size;
+ }
+ 
+ #define P2M_TYPE_IDENTITY	0
+@@ -353,7 +355,7 @@ static void __init xen_rebuild_p2m_list(unsigned long *p2m)
+ 			pfn_pte(PFN_DOWN(__pa(p2m_identity)), PAGE_KERNEL_RO));
+ 	}
+ 
+-	for (pfn = 0; pfn < xen_max_p2m_pfn; pfn += chunk) {
++	for (pfn = 0; pfn < xen_p2m_max_size; pfn += chunk) {
+ 		/*
+ 		 * Try to map missing/identity PMDs or p2m-pages if possible.
+ 		 * We have to respect the structure of the mfn_list_list
+@@ -413,21 +415,22 @@ void __init xen_vmalloc_p2m_tree(void)
+ 	static struct vm_struct vm;
+ 	unsigned long p2m_limit;
+ 
+-	xen_p2m_last_pfn = xen_max_p2m_pfn;
++	xen_p2m_pfn_limit = xen_p2m_max_size;
+ 
+ 	p2m_limit = (phys_addr_t)P2M_LIMIT * 1024 * 1024 * 1024 / PAGE_SIZE;
+ 	vm.flags = VM_ALLOC;
+-	vm.size = ALIGN(sizeof(unsigned long) * max(xen_max_p2m_pfn, p2m_limit),
++	vm.size = ALIGN(sizeof(unsigned long) *
++			max(xen_p2m_max_size, p2m_limit),
+ 			PMD_SIZE * PMDS_PER_MID_PAGE);
+ 	vm_area_register_early(&vm, PMD_SIZE * PMDS_PER_MID_PAGE);
+ 	pr_notice("p2m virtual area at %p, size is %lx\n", vm.addr, vm.size);
+ 
+-	xen_max_p2m_pfn = vm.size / sizeof(unsigned long);
++	xen_p2m_max_size = vm.size / sizeof(unsigned long);
+ 
+ 	xen_rebuild_p2m_list(vm.addr);
+ 
+ 	xen_p2m_addr = vm.addr;
+-	xen_p2m_size = xen_max_p2m_pfn;
++	xen_p2m_size = xen_p2m_max_size;
+ 
+ 	xen_inv_extra_mem();
+ }
+@@ -438,7 +441,7 @@ unsigned long get_phys_to_machine(unsigned long pfn)
+ 	unsigned int level;
+ 
+ 	if (unlikely(pfn >= xen_p2m_size)) {
+-		if (pfn < xen_max_p2m_pfn)
++		if (pfn < xen_p2m_max_size)
+ 			return xen_chk_extra_mem(pfn);
+ 
+ 		return IDENTITY_FRAME(pfn);
+@@ -618,9 +621,9 @@ int xen_alloc_p2m_entry(unsigned long pfn)
  	}
  
  	/* Expanded the p2m? */
--	if (pfn > xen_p2m_last_pfn) {
--		xen_p2m_last_pfn = pfn;
-+	if (pfn >= xen_p2m_last_pfn) {
-+		xen_p2m_last_pfn = ALIGN(pfn + 1, P2M_PER_PAGE);
- 		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
+-	if (pfn >= xen_p2m_last_pfn) {
+-		xen_p2m_last_pfn = ALIGN(pfn + 1, P2M_PER_PAGE);
+-		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
++	if (pfn >= xen_p2m_pfn_limit) {
++		xen_p2m_pfn_limit = ALIGN(pfn + 1, P2M_PER_PAGE);
++		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_pfn_limit;
  	}
  
+ 	return 0;
+diff --git a/arch/x86/xen/setup.c b/arch/x86/xen/setup.c
+index 8bfc10330107..1caddd3fa0e1 100644
+--- a/arch/x86/xen/setup.c
++++ b/arch/x86/xen/setup.c
+@@ -816,7 +816,7 @@ char * __init xen_memory_setup(void)
+ 				n_pfns = PFN_DOWN(addr + chunk_size) - pfn_s;
+ 				extra_pages -= n_pfns;
+ 				xen_add_extra_mem(pfn_s, n_pfns);
+-				xen_max_p2m_pfn = pfn_s + n_pfns;
++				xen_p2m_max_size = pfn_s + n_pfns;
+ 			} else
+ 				discard = true;
+ 		}
 -- 
 2.26.2
 
