@@ -2,86 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBE13DC006
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E88F3DC008
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhG3Utc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:49:32 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58840 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhG3Ut3 (ORCPT
+        id S231904AbhG3UuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:50:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhG3UuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:49:29 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627678163;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uqi2XqGkI8u0LpsGdXDAcsLF+VndL2iSN5iYDs7Vj2E=;
-        b=HS9dY7/0A/gGRrSJkeh/un5zvIV3mG7lRXVGzKipoXN6/ONKyo0q14r7kPGOxKRcfE4qzt
-        UHkclIfsEDYfhnX9dKwF6+FB/EAyJfbJhmbii4akdtLMUDb2UXiS0wAgmRsCKpIrVVLyY8
-        Dx9ulhXvJvyAtCx40H4WBVjuKfGxTl/sdLmGkG24wlWRGaEmsQb3VoenytRP7sHtWS0CNw
-        dmgAQiEIcHv6Tx119T64QiSdMVWzxQRoln89k36gQEyFGlbKRFXLBB+oo5g9x3GDSTsdlL
-        ryU/19aaZO/IlPwAFRExYPPIggOPbgV4gYYj2o/H4nZDdcv2XNMxJXyDXOlYdg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627678163;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uqi2XqGkI8u0LpsGdXDAcsLF+VndL2iSN5iYDs7Vj2E=;
-        b=ys5OwQ6pwA6iphMbA2d9rWNeASY9bCQNC9TYiTpQU3om337x2Bj9s67Cs6iebdU0qiaR4E
-        Cg61xH8RY8+t3KBQ==
-To:     Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: v5.14-rc3-rt1 losing wakeups?
-In-Reply-To: <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
-References: <20210730110753.jvli6alm63h5lefy@linutronix.de>
- <2ae27233ab091d09a7d1e971a47144b40dd51fa0.camel@gmx.de>
-Date:   Fri, 30 Jul 2021 22:49:22 +0200
-Message-ID: <87pmuzsf1p.ffs@tglx>
+        Fri, 30 Jul 2021 16:50:00 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB106C06175F;
+        Fri, 30 Jul 2021 13:49:54 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id y18so14942887oiv.3;
+        Fri, 30 Jul 2021 13:49:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HIi93naNiyfUpRS4wrUtDUKNxAJrKkvwb1z4MM0cLOo=;
+        b=FZBsXQY90co+fKBiKYbWzGf5yOvnmjX+NHsOJh349fckGe7VFk0Dhyc8QxcyrKA8pW
+         92Q10NsoNNnKQ0Ubv/j3GxDFArQezHqpw+kHuB+yMJM8ZrMhimNaTfYbImgQj/fGfxd1
+         u4cPUlvxWz4q+/DAneCZflSU3o4BHKCkzWdmK3Nm815cujAa0B42ZC9TjPZSDgdJ4xoq
+         kFF4MXxuPlDy6toQnvm52A+1aLgcynUGhqYCRMmetGSG5jUaF9M31qbQdfSqnlfB4bUF
+         subDZTcosDnWdpfUaA+yVBOZj3OC6+n8XwxjJi80tH9M90TcmehRTRBbKdgIGdj5dkc7
+         Nbdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HIi93naNiyfUpRS4wrUtDUKNxAJrKkvwb1z4MM0cLOo=;
+        b=fYZQteZEBngLa+MnBgH4HdZEbaEr1D3z/0F4RNFEww2fSgqy4Omei0iKZw90dK2u1V
+         ZcI9LnXTKpkqr1AO3BHuWwLUEWNOhvK//s4Xudz2G4e3dmXS9UcCmjxhatktQrW86Iuf
+         Q1cUb/+R0Cl+mtH6hzWhKmC5/n/8DRznFofnnpY+XFxfH4i3p10GYhf9pj9I0xNL5AD8
+         l4fcZ/vXe0+aMCGaLFVco4fiKBa6+HOTiZ32aFSmLz0UkDN5tKlBN1AnwY81bxfzgiFO
+         LF2GQY0Poze1wZZP0rAcs0a/yOHazXMtnucbQ/jQn5O3TeUucJKjU0fPeO3hvwoqso71
+         S15Q==
+X-Gm-Message-State: AOAM530cGcAs1DwP8s1+oFJsrOQd65mtBDuW+s31EMaHeNot0ZsW/Srz
+        x+jSoE915tKOjfgRJc2KPwE=
+X-Google-Smtp-Source: ABdhPJzS5QZfjydYip9AAMB6tYhxXb7OggPWh2e4+LV5nIFzRtwxWwWjih95jTjjAhSPJJ6oP+TIQA==
+X-Received: by 2002:a05:6808:683:: with SMTP id k3mr3222541oig.171.1627678194308;
+        Fri, 30 Jul 2021 13:49:54 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e31sm483829ote.22.2021.07.30.13.49.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Jul 2021 13:49:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tero Kristo <t-kristo@ti.com>
+References: <fe8cf65f-f949-9326-8f32-fda7134c8da6@siemens.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] watchdog: Respect handle_boot_enabled when setting last
+ last_hw_keepalive
+Message-ID: <211cd54b-29b4-e58a-341b-beffc05cfe85@roeck-us.net>
+Date:   Fri, 30 Jul 2021 13:49:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <fe8cf65f-f949-9326-8f32-fda7134c8da6@siemens.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mike,
+On 7/30/21 12:39 PM, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
+> 
+> We must not pet a running watchdog when handle_boot_enabled is off
+> because this requests to only start doing that via userspace, not during
+> probing.
+> 
 
-On Fri, Jul 30 2021 at 17:21, Mike Galbraith wrote:
-> On Fri, 2021-07-30 at 13:07 +0200, Sebastian Andrzej Siewior wrote:
->> Dear RT folks!
->>
->> I'm pleased to announce the v5.14-rc3-rt1 patch set.
->
-> Damn, I was hoping to figure out wth is going on before the 62 patch
-> version of tglx/rtmutex branch made its way out into the big wide
-> world, but alas, I was too slow.
->
-> I started meeting GUI hangs as soon as I merged the 62 patch series
-> into my 5.13-rt based master tree.  I took tglx/rtmutex (977db8e523f5)
-> back to 5.13-rt to make sure it wasn't some booboo I had made in the
-> rolled forward tree, but the hangs followed the backport, and I just
-> met them in virgin v5.14-rc3-rt1, so unfortunately it wasn't some local
-> booboo, there's a bug lurking.  Maybe a config sensitive one, as what
-> I'm seeing on my box seems unlikely to escape into the wild otherwise.
->
-> First symptom is KDE/Plasma's task manager going comatose.  Notice soon
+The scope of the changed function is quite limited. See the
+definition of watchdog_set_last_hw_keepalive(). On top of that,
+__watchdog_ping() does a bit more than just ping the watchdog,
+and it only pings the watchdog in limited circumstances. On top of that,
+the scope of handle_boot_enabled is different: If enabled, it tells
+the watchdog core to keep pinging a watchdog until userspace opens
+the device. This is about continuous pings, not about an initial one.
+Given that, I'd rather have the watchdog subsystem issue an additional
+ping than risking a regression.
 
-KDE/Plasma points at the new fangled rtmutex based ww_mutex from
-Peter. I tried to test the heck out of it...
+The only driver calling watchdog_set_last_hw_keepalive() is rti_wdt.c.
+Does this patch solve a specific problem observed with that watchdog ?
 
-Which graphics driver is in use on that machine?
+Guenter
 
-> been helpful anyway, box at a glance looks fine.  With lockdep enabled,
-> a failing kernel gets so buggered it isn't even able to crashdump.
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> ---
+>   drivers/watchdog/watchdog_dev.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+> index 3bab32485273..3c93d00bb284 100644
+> --- a/drivers/watchdog/watchdog_dev.c
+> +++ b/drivers/watchdog/watchdog_dev.c
+> @@ -1172,7 +1172,10 @@ int watchdog_set_last_hw_keepalive(struct watchdog_device *wdd,
+>   
+>   	wd_data->last_hw_keepalive = ktime_sub(now, ms_to_ktime(last_ping_ms));
+>   
+> -	return __watchdog_ping(wdd);
+> +	if (handle_boot_enabled)
+> +		return __watchdog_ping(wdd);
+> +
+> +	return 0;
+>   }
+>   EXPORT_SYMBOL_GPL(watchdog_set_last_hw_keepalive);
+>   
+> 
 
-Ouch.
-
-Thanks,
-
-        tglx
