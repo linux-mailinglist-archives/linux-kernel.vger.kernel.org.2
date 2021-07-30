@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514CD3DBAC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767CF3DBAEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239407AbhG3Ojq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:39:46 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:57384 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239172AbhG3Ojl (ORCPT
+        id S239051AbhG3On5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:43:57 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60500 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhG3On4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:39:41 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 2a845c5bd94e4d5e; Fri, 30 Jul 2021 16:39:33 +0200
-Received: from kreacher.localnet (89-64-81-8.dynamic.chello.pl [89.64.81.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id EA4C6669F3A;
-        Fri, 30 Jul 2021 16:39:32 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v1 2/2] cpuidle: teo: Rename two local variables in teo_select()
-Date:   Fri, 30 Jul 2021 16:38:52 +0200
-Message-ID: <12823871.uLZWGnKmhe@kreacher>
-In-Reply-To: <4336554.LvFx2qVVIh@kreacher>
-References: <4336554.LvFx2qVVIh@kreacher>
+        Fri, 30 Jul 2021 10:43:56 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5F1002025B;
+        Fri, 30 Jul 2021 14:43:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627656230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/MxUMQqOErt5s9kpr2UduIMjgtyEA7lRScXZz1pXJbc=;
+        b=ODCClVam2dZUbrsTJ/mME//+Gky6EjgfZCbKl8MaZ9yN2mJsL94B9fm8BeQ8tu+1PH/Crt
+        Echx3i0AwwSc+BiGo1q52Jd0RZGf5XD1jAC4txjoR795rNMVRmwYwgUZK/oO7JPpI8vMh+
+        MNGHStvofmUKDKDmb2edgm7ZLSiWRNQ=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 56C2FA3B87;
+        Fri, 30 Jul 2021 14:43:50 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1FAB6DB284; Fri, 30 Jul 2021 16:41:03 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes fro 5.14-rc4
+Date:   Fri, 30 Jul 2021 16:40:59 +0200
+Message-Id: <cover.1627655635.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.81.8
-X-CLIENT-HOSTNAME: 89-64-81-8.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrheehgdejgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdekuddrkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrkedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegushhmhihthhhivghssehtvghluhhsrdhnvghtpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Hi,
 
-Rename two local variables in teo_select() so that their names better
-reflect their purpose.
+a few more fixes, please pull thanks.
 
-No functional impact.
+* fix -Warray-bounds warning, to help external patchset to make it
+  default treewide
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpuidle/governors/teo.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+* fix writeable device accounting (syzbot report)
 
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -382,8 +382,8 @@ static int teo_select(struct cpuidle_dri
- 	alt_intercepts = 2 * idx_intercept_sum > cpu_data->total - idx_hit_sum;
- 	alt_recent = idx_recent_sum > NR_RECENT / 2;
- 	if (alt_recent || alt_intercepts) {
--		s64 last_enabled_span_ns = duration_ns;
--		int last_enabled_idx = idx;
-+		s64 first_suitable_span_ns = duration_ns;
-+		int first_suitable_idx = idx;
- 
- 		/*
- 		 * Look for the deepest idle state whose target residency had
-@@ -419,8 +419,8 @@ static int teo_select(struct cpuidle_dri
- 					 * disabled, so take the first enabled
- 					 * deeper state with suitable time span.
- 					 */
--					idx = last_enabled_idx;
--					duration_ns = last_enabled_span_ns;
-+					idx = first_suitable_idx;
-+					duration_ns = first_suitable_span_ns;
- 				}
- 				break;
- 			}
-@@ -434,14 +434,14 @@ static int teo_select(struct cpuidle_dri
- 				 * alternative candidate state has been found,
- 				 * it may still turn out to be a better choice.
- 				 */
--				if (last_enabled_idx != idx)
-+				if (first_suitable_idx != idx)
- 					continue;
- 
- 				break;
- 			}
- 
--			last_enabled_span_ns = span_ns;
--			last_enabled_idx = i;
-+			first_suitable_span_ns = span_ns;
-+			first_suitable_idx = i;
- 		}
- 	}
- 
+* fix fsync and log replay after a rename and inode eviction
 
+* fix potentially lost error code when submitting multiple bios for
+  compressed range
 
+----------------------------------------------------------------
+The following changes since commit c7c3a6dcb1efd52949acc1e640be9aad1206a13a:
 
+  btrfs: store a block_device in struct btrfs_ordered_extent (2021-07-22 15:50:15 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc3-tag
+
+for you to fetch changes up to 7280305eb57dd32735f795ed4ee679bf9854f9d0:
+
+  btrfs: calculate number of eb pages properly in csum_tree_block (2021-07-29 13:01:04 +0200)
+
+----------------------------------------------------------------
+David Sterba (1):
+      btrfs: calculate number of eb pages properly in csum_tree_block
+
+Desmond Cheong Zhi Xi (1):
+      btrfs: fix rw device counting in __btrfs_free_extra_devids
+
+Filipe Manana (1):
+      btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction
+
+Goldwyn Rodrigues (1):
+      btrfs: mark compressed range uptodate only if all bio succeed
+
+ fs/btrfs/compression.c | 2 +-
+ fs/btrfs/disk-io.c     | 2 +-
+ fs/btrfs/tree-log.c    | 4 ++--
+ fs/btrfs/volumes.c     | 1 +
+ 4 files changed, 5 insertions(+), 4 deletions(-)
