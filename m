@@ -2,287 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32463DBD2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2A33DBD31
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 18:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhG3Qg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 12:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
+        id S229757AbhG3QnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 12:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhG3Qg4 (ORCPT
+        with ESMTP id S229587AbhG3QnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 12:36:56 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649A4C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:36:50 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id u25so13914363oiv.5
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 09:36:50 -0700 (PDT)
+        Fri, 30 Jul 2021 12:43:10 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DB4C06175F;
+        Fri, 30 Jul 2021 09:43:05 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id y4so10094376ilp.0;
+        Fri, 30 Jul 2021 09:43:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+VAdv+WeR1jvOvgcgnqcYxpRfRpHfv5qO3GWKK9dmZw=;
-        b=LMBohOITePzc4wVsTkFVhKygBXZW4iqgqr2pshr0IqV5u30sIL8eN1nNetsNSxtslD
-         lXY9rHs5iWFhNBa36KgiFggL/E2bEc/L8pGCNbdfg5n5ujjQBUPZcBtvrw/HipQOqqy3
-         Rphy/TGaj1NfoXlRQKp8Bc4McAATWnXDGrWIVHkz+NHASH3PqVvlEk0SqeWV3NzUTqbm
-         FgFfUetOtWSOCy+eEHRQRXo2tLraleRZ92zu3BDHRO2LoXBwTcu3+WEZv5NvKVYIQGrP
-         QaOBRSHoD9iI3iFSoYye911ZQngN9QIpB84gvYZxoZ2R+IR7XxwyRiEjWLf+ScM01e/+
-         eAyg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=bT/0Kzd2YZDLnX/zoL8eI8LS99wdxcWIOuQmVA36SH0=;
+        b=ZcGRvxSrY8XdP3mdiMnSsHiydBE7qjQfB8raUtlkA6ssFveeYhGzg2uYiU1qdhCn4h
+         nIneeHPCd9Z30jCFzRE/a7npaxYUN60cOCBe2im59+djftJRaDEGa007VYYyFthQGO+i
+         alWZ5oAM3z/iTUJs6yuIyCbD+90VO8A0n27yKax9pLxuiPVU9PhjpyMmXmVqM8L/Qj7U
+         RzFurSnxBC1aaILmliY4+lbn79ySZABJmwRPByhdKWeAEL6yVEeEGkRtb2FZc5Es17y1
+         lI5c78zBQNN7ijzrLhEt8ZcUXdXy7aYvDo/QqS6vxYUVIqrVk1zjsui6vgWZHgL6NQJu
+         IJ8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+VAdv+WeR1jvOvgcgnqcYxpRfRpHfv5qO3GWKK9dmZw=;
-        b=Yn7+lLlrJWfcyBWjL9+7jkhIcwczXbpreNuczS+JEWpwsA/Qni1zwT0Mlmd+HNd8PL
-         Vh7Cn+XvQBP+/oQ/zYeN2vJaPBOWfpL4wvIqQoFISxndV5Hwy4X+Lf5vAzmkg/hQ7jYH
-         odU8HALp8yqhUTOogUbw4mbtP6Q/Lk0musCaunFt+Ee1zyd+WohX4aUrKZkwOjdGyytD
-         8+l6O5tIijArbZbKpAXtLfWEJ69aL9zEFA4LWQmx4bleC9k+qXvVHEYZoMBH8r5LItUg
-         NEmCAvy3EbtunezkMw3W05ApGirLM6S+H3k8CoMzcnUU/NUws1CpxPdXME/OJ+85Wzfp
-         t2rg==
-X-Gm-Message-State: AOAM533r1HiCh/GWlQUTYdgx1pDCsnpy7NUuAAC5N6B8fi62aVfNRlTH
-        Rl/ReNASXvnbPRuIibaOcZu/3Q==
-X-Google-Smtp-Source: ABdhPJy9S4ERYG+NYbJHmT2b4l+CRSgIl/ARguLUHnMpNudWlcP48MLgOOQajgy8+J2pt07NuVzEjQ==
-X-Received: by 2002:aca:f54c:: with SMTP id t73mr2367532oih.175.1627663009726;
-        Fri, 30 Jul 2021 09:36:49 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w24sm372033otp.28.2021.07.30.09.36.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=bT/0Kzd2YZDLnX/zoL8eI8LS99wdxcWIOuQmVA36SH0=;
+        b=dyP1VFzVxU6OvYL3q1QtnSuwNmDN73A7tubXirFBh5E8rcVqNIyCUBViFlRErO10um
+         jwXg/iaq7m1+WbXp6cacMEnXy6SQk1CkgyjuI4c+yrbEuYRWlukrUFV13vgcos6L1B3m
+         U0QJ3IA6NYz0nOkuyh3ImKoyTisPwEpVrQxC7xE8hW5Ep5XFQamg2BiDu74uaoEqLXNo
+         QdL+FdD6Yq0XvMYAObOxDA7Fc1H9f19UkV1TlxyfYzCGmbKOiBaedHgibfRo/NXuFIMq
+         KeO73BGykkizR7Cc+rf1gb6/OTHq3YQ2vJVR/xLex9sO88sXu2DrWERidbU7F4le4ult
+         VSpA==
+X-Gm-Message-State: AOAM530/R7iAb40oF2Hl28HgjpHgb2bUthVHiDwEnK5CHjdHfjruRx7e
+        G/nkITbmKymFtuOFm6inJXs=
+X-Google-Smtp-Source: ABdhPJzD1MVMK0+xkWYxEsznSkNjsD4NRkF9kibxZVLKgsYFrSBndJ6t5/fyc9k2QfOA9BtPO6tXHw==
+X-Received: by 2002:a92:6d07:: with SMTP id i7mr2509313ilc.104.1627663384509;
+        Fri, 30 Jul 2021 09:43:04 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id u12sm1028678ill.55.2021.07.30.09.43.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 09:36:49 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 11:36:46 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     mka@chromium.org, swboyd@chromium.org, robh+dt@kernel.org,
-        ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
-        ohad@wizery.com, mathieu.poirier@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rishabhb@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH v4 04/13] remoteproc: qcom: q6v5: Use qmp_send to update
- co-processor load state
-Message-ID: <YQQqnoOJLP9ixWn1@builder.lan>
-References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
- <1626755807-11865-5-git-send-email-sibis@codeaurora.org>
+        Fri, 30 Jul 2021 09:43:04 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1E92127C005B;
+        Fri, 30 Jul 2021 12:43:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 30 Jul 2021 12:43:03 -0400
+X-ME-Sender: <xms:FCwEYZ5D5Fp26xUCtvJImfbVcz_KVZe95Fm-rS1SMD3Ay8DI5ac3qw>
+    <xme:FCwEYW7ajmmb5DOP370q57kPiH40JjmOLFsoyaDlgIdYbqmKs5qFA7dk-pHYRTJMY
+    eecO-NVgV37hXpulw>
+X-ME-Received: <xmr:FCwEYQct2gKVfjBfJTj0FarECVFZagcUUTgFBpx77xAzHReCAcPqRpNzF5Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheehgdeljecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkgggtugesthdtredttddtvdenucfhrhhomhepuehoqhhunhcuhfgv
+    nhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtthgvrh
+    hnpeeuvddtudetleektdfhhfdvvedvudfgvddvhfetudffhfehieeukeekjeeugfduuden
+    ucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhs
+    ohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnh
+    hgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:FCwEYSLisBRyl0ztxw9Qb5az0zsxL_ShM26lDNE9bkkAa4GEZWuZTQ>
+    <xmx:FCwEYdKYFuq1VUk6S0SxQ8O3ApPqTGXraSe_K3TD2MWCck51Fo3-pA>
+    <xmx:FCwEYbxZanf1TlH8dPb9St7Cn9dX2mr1RHCe54IN5WW4BXIOmul3Gw>
+    <xmx:FiwEYSrcOxdUyneyM-8ymNkNXyTCKiilYT2JWvnz0kbg6SH-9_88Hg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 30 Jul 2021 12:43:00 -0400 (EDT)
+Date:   Sat, 31 Jul 2021 00:42:34 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Gary Guo <gary@garyguo.net>, Hector Martin <marcan@marcan.st>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [Question] Alignment requirement for readX() and writeX()
+Message-ID: <YQQr+twAYHk2jXs6@boqun-archlinux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1626755807-11865-5-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19 Jul 23:36 CDT 2021, Sibi Sankar wrote:
+Hi,
 
-> The power domains exposed by the AOSS QMP driver control the load state
-> resources linked to modem, adsp, cdsp remoteprocs. These are used to
-> notify the Always on Subsystem (AOSS) that a particular co-processor is
-> up/down. AOSS uses this information to wait for the co-processors to
-> suspend before starting its sleep sequence.
-> 
-> These co-processors enter low-power modes independent to that of the
-> application processor and the load state resources linked to them are
-> expected to remain unaltered across system suspend/resume cycles. To
-> achieve this behavior lets stop using the power-domains exposed by the
-> AOSS QMP node and replace them with generic qmp_send interface instead.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
-> 
-> v4:
->  * Drop unused pdev and kfree the load state string in q6v5_deinit
->    /probe path for patch 4. [Matthias]
-> 
->  drivers/remoteproc/qcom_q6v5.c      | 57 ++++++++++++++++++++++++-
->  drivers/remoteproc/qcom_q6v5.h      |  7 ++-
->  drivers/remoteproc/qcom_q6v5_adsp.c |  7 ++-
->  drivers/remoteproc/qcom_q6v5_mss.c  | 44 ++++---------------
->  drivers/remoteproc/qcom_q6v5_pas.c  | 85 +++++++++----------------------------
->  drivers/remoteproc/qcom_q6v5_wcss.c |  4 +-
->  6 files changed, 96 insertions(+), 108 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5.c b/drivers/remoteproc/qcom_q6v5.c
-> index 7e9244c748da..997ff21271f7 100644
-> --- a/drivers/remoteproc/qcom_q6v5.c
-> +++ b/drivers/remoteproc/qcom_q6v5.c
-> @@ -16,8 +16,28 @@
->  #include "qcom_common.h"
->  #include "qcom_q6v5.h"
->  
-> +#define Q6V5_LOAD_STATE_MSG_LEN	64
->  #define Q6V5_PANIC_DELAY_MS	200
->  
-> +static int q6v5_load_state_toggle(struct qcom_q6v5 *q6v5, bool enable)
-> +{
-> +	char buf[Q6V5_LOAD_STATE_MSG_LEN] = {};
-> +	int ret;
-> +
-> +	if (IS_ERR(q6v5->qmp))
+The background is that I'm reviewing Wedson's PR on IoMem for
+Rust-for-Linux project:
+	
+	https://github.com/Rust-for-Linux/linux/pull/462
 
-I would prefer that you keep it NULL when there's no qmp.
+readX() and writeX() are used to provide Rust code to read/write IO
+memory. And I want to find whether we need to check the alignment of the
+pointer. I wonder whether the addresses passed to readX() and writeX()
+need to be aligned to the size of the accesses (e.g. the parameter of
+readl() has to be a 4-byte aligned pointer).
 
-> +		return 0;
-> +
-> +	snprintf(buf, sizeof(buf),
-> +		 "{class: image, res: load_state, name: %s, val: %s}",
-> +		 q6v5->load_state, enable ? "on" : "off");
-> +
-> +	ret = qmp_send(q6v5->qmp, buf, sizeof(buf));
-> +	if (ret)
-> +		dev_err(q6v5->dev, "failed to toggle load state\n");
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * qcom_q6v5_prepare() - reinitialize the qcom_q6v5 context before start
->   * @q6v5:	reference to qcom_q6v5 context to be reinitialized
-> @@ -26,6 +46,12 @@
->   */
->  int qcom_q6v5_prepare(struct qcom_q6v5 *q6v5)
->  {
-> +	int ret;
-> +
-> +	ret = q6v5_load_state_toggle(q6v5, true);
-> +	if (ret)
-> +		return ret;
-> +
->  	reinit_completion(&q6v5->start_done);
->  	reinit_completion(&q6v5->stop_done);
->  
-> @@ -47,6 +73,7 @@ EXPORT_SYMBOL_GPL(qcom_q6v5_prepare);
->  int qcom_q6v5_unprepare(struct qcom_q6v5 *q6v5)
->  {
->  	disable_irq(q6v5->handover_irq);
-> +	q6v5_load_state_toggle(q6v5, false);
->  
->  	return !q6v5->handover_issued;
->  }
-> @@ -196,12 +223,13 @@ EXPORT_SYMBOL_GPL(qcom_q6v5_panic);
->   * @pdev:	platform_device reference for acquiring resources
->   * @rproc:	associated remoteproc instance
->   * @crash_reason: SMEM id for crash reason string, or 0 if none
-> + * @load_state: load state resource string
->   * @handover:	function to be called when proxy resources should be released
->   *
->   * Return: 0 on success, negative errno on failure
->   */
->  int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device *pdev,
-> -		   struct rproc *rproc, int crash_reason,
-> +		   struct rproc *rproc, int crash_reason, const char *load_state,
->  		   void (*handover)(struct qcom_q6v5 *q6v5))
->  {
->  	int ret;
-> @@ -286,9 +314,36 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device *pdev,
->  		return PTR_ERR(q6v5->state);
->  	}
->  
-> +	q6v5->load_state = kstrdup_const(load_state, GFP_KERNEL);
+The only related information I get so far is the following quote in
+Documentation/driver-io/device-io.rst:
 
-Can't you use devm_kstrdup_const(&pdev->dev, ...) for this?
+	On many platforms, I/O accesses must be aligned with respect to
+	the access size; failure to do so will result in an exception or
+	unpredictable results.
 
-> +	q6v5->qmp = qmp_get(&pdev->dev);
-> +	if (IS_ERR(q6v5->qmp)) {
-> +		if (PTR_ERR(q6v5->qmp) != -ENODEV) {
-> +			if (PTR_ERR(q6v5->qmp) != -EPROBE_DEFER)
-> +				dev_err(&pdev->dev, "failed to acquire load state\n");
-> +			kfree_const(q6v5->load_state);
+Does it mean all readX() and writeX() need to use aligned addresses?
+Or the alignment requirement is arch-dependent, i.e. if the architecture
+supports and has enabled misalignment load and store, no alignment
+requirement on readX() and writeX(), otherwise still need to use aligned
+addresses.
 
-Then you don't need to free it here.
+I know different archs have their own alignment requirement on memory
+accesses, just want to make sure the requirement of the readX() and
+writeX() APIs.
 
-> +			return PTR_ERR(q6v5->qmp);
-> +		}
-> +	} else {
-> +		if (!q6v5->load_state) {
-> +			dev_err(&pdev->dev, "load state resource string empty\n");
-> +			return -EINVAL;
-
-I see two cases here:
-
-1) kstrdup_const() failed to allocate memory, the error print is
-unnecessary and misleading and it would be more appropriate to return
--ENOMEM.
-
-2) kstrdup_const() failed because you passed load_state == NULL, in
-which case the error message could be more helpful by saying "unexpected
-qcom,qmp property found" or something like that.
-
-> +		}
-> +	}
-> +
->  	return 0;
->  }
->  EXPORT_SYMBOL_GPL(qcom_q6v5_init);
->  
-> +/**
-> + * qcom_q6v5_deinit() - deinitialize the q6v5 common struct
-> + * @q6v5:	reference to qcom_q6v5 context to be deinitialized
-> + */
-> +void qcom_q6v5_deinit(struct qcom_q6v5 *q6v5)
-> +{
-> +	kfree_const(q6v5->load_state);
-> +	qmp_put(q6v5->qmp);
-> +}
-> +EXPORT_SYMBOL_GPL(qcom_q6v5_deinit);
-> +
->  MODULE_LICENSE("GPL v2");
->  MODULE_DESCRIPTION("Qualcomm Peripheral Image Loader for Q6V5");
-> diff --git a/drivers/remoteproc/qcom_q6v5.h b/drivers/remoteproc/qcom_q6v5.h
-> index 1c212f670cbc..f35e04471ed7 100644
-> --- a/drivers/remoteproc/qcom_q6v5.h
-> +++ b/drivers/remoteproc/qcom_q6v5.h
-> @@ -5,6 +5,7 @@
->  
->  #include <linux/kernel.h>
->  #include <linux/completion.h>
-> +#include <linux/soc/qcom/qcom_aoss.h>
->  
->  struct rproc;
->  struct qcom_smem_state;
-> @@ -15,6 +16,8 @@ struct qcom_q6v5 {
->  	struct rproc *rproc;
->  
->  	struct qcom_smem_state *state;
-> +	struct qmp *qmp;
-> +
->  	unsigned stop_bit;
->  
->  	int wdog_irq;
-> @@ -32,12 +35,14 @@ struct qcom_q6v5 {
->  
->  	bool running;
->  
-> +	const char *load_state;
->  	void (*handover)(struct qcom_q6v5 *q6v5);
->  };
->  
->  int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device *pdev,
-> -		   struct rproc *rproc, int crash_reason,
-> +		   struct rproc *rproc, int crash_reason, const char *load_state,
->  		   void (*handover)(struct qcom_q6v5 *q6v5));
-> +void qcom_q6v5_deinit(struct qcom_q6v5 *q6v5);
->  
->  int qcom_q6v5_prepare(struct qcom_q6v5 *q6v5);
->  int qcom_q6v5_unprepare(struct qcom_q6v5 *q6v5);
-> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
-> index 8b0d8bbacd2e..098362e6e233 100644
-> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> @@ -185,7 +185,9 @@ static int adsp_start(struct rproc *rproc)
->  	int ret;
->  	unsigned int val;
->  
-> -	qcom_q6v5_prepare(&adsp->q6v5);
-> +	ret = qcom_q6v5_prepare(&adsp->q6v5);
-> +	if (ret)
-> +		return ret;
-
-In the (hopefully unlikely) case that we have instances of
-qcom_q6v5_prepare() failing today, the switch to the new qmp interface
-would also introduce a regression in the same commit.
-
-Could you please add the error handling in a separate commit? Just so
-that we can pinpoint which of the two changes caused any issues if we
-need to bisect this?
+Thanks a lot!
 
 Regards,
-Bjorn
+Boqun
