@@ -2,125 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0C13DB2A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EE63DB2AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 07:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237013AbhG3FPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 01:15:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234928AbhG3FPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:15:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AAA660F9B;
-        Fri, 30 Jul 2021 05:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627622098;
-        bh=Rd0qV6oPrMRK9x5RQHEA0i4kdEU0U+RcVzNm4XOeux8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T6hObKQmOk4AFgIpQT4y2Zsi4Q75SgNjFNnS8pRLR4KFvnEyagvEfbTCdxstRLsYG
-         rjTcpLBlDG/oVJ8lnaqbcwXAZTVT9l8C6Cy6bhh3Fo+ilPrCNthbqlfZm24+7rNODV
-         PAMI7xMjSKfCoNPXlo3uccVRt1pE46rn5PvW/dE4=
-Date:   Fri, 30 Jul 2021 07:14:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel@pengutronix.de, linux-pci@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Russell Currey <ruscur@russell.cc>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Michael Buesch <m@bues.ch>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v1 0/5] PCI: Drop duplicated tracking of a pci_dev's
- bound driver
-Message-ID: <YQOKz0l6aaU8PGLV@kroah.com>
-References: <20210729203740.1377045-1-u.kleine-koenig@pengutronix.de>
+        id S231592AbhG3FQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 01:16:19 -0400
+Received: from mail-qv1-f52.google.com ([209.85.219.52]:39816 "EHLO
+        mail-qv1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236868AbhG3FPN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 01:15:13 -0400
+Received: by mail-qv1-f52.google.com with SMTP id d3so4610105qvq.6;
+        Thu, 29 Jul 2021 22:15:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bAVnIwvX8e+qAileedKRPA1lXMF1MMPyPKuAP+v6VTE=;
+        b=k36FmHnHnGxnGkctuvPT42ARDcdeYPraICBZ1t767HY9xnE6VExUQ3znh8YVZOlfKg
+         A/MGQgwvrvN2lZ+psMYtWttD/8NgDXk6KF9WE9OxCadruWF4CLduUw/UCyrdgFuv383c
+         Htk4HVyXeJX6O25jgyHVkKjCmNWzdXTEl/RZOscYfnwTLlR7RvKuRHFy6QnminEgaQTV
+         3+XEnPxRbUM0YGlEEYjfCJfjrgiTZyylTdRWyotGUgW/I8sByj4K0fuz7NHA2Nh4Ich6
+         lCTw+TRM7r+EoRHrmhrlee+kqp+069pQQWmgbNHLz8MAkP8S8sH4TohxGeOft2viQMkp
+         W73w==
+X-Gm-Message-State: AOAM531fdxMvLn8641u+wnBUWHPFxoAmFX7JH8IBroKs79Y/9Zo39Ywt
+        W2q9xbO5QJGgfX7qe6cGrutuYXqNQqnhaw==
+X-Google-Smtp-Source: ABdhPJxfBdhJhTrTWdy4gWRNXEwFjtq6eNZPUAhNjMDAUyNYnoe5sjL7JjoSQDxVxlxXDp+idDp9KQ==
+X-Received: by 2002:a0c:fa44:: with SMTP id k4mr922937qvo.59.1627622107267;
+        Thu, 29 Jul 2021 22:15:07 -0700 (PDT)
+Received: from [10.68.32.40] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id bl40sm343832qkb.64.2021.07.29.22.15.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 22:15:06 -0700 (PDT)
+Subject: Re: [BUG] FLOPPY DRIVER since 5.10.20
+From:   Denis Efremov <efremov@linux.com>
+To:     linux-block@vger.kernel.org,
+        Linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>, Kurt Garloff <kurt@garloff.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wim Osterholt <wim@djo.tudelft.nl>, dmarkh@cfl.rr.com,
+        markh@compro.net
+References: <de10cb47-34d1-5a88-7751-225ca380f735@compro.net>
+ <e49603c2-ac36-12b0-57cf-ff5ab30115bc@linux.com>
+ <f5501a7c-4387-259d-66d2-f10db0cf36ff@cfl.rr.com>
+ <f1277dcb-6bf8-b149-ad4e-68a4109d4e67@linux.com>
+ <1cf8e751-db77-441e-53b4-d6e979bbe046@compro.net>
+ <751150dd-251f-bc68-0cd0-4a10b70ab79a@linux.com>
+Message-ID: <ffb8ca1c-ac8c-95c4-c05a-1269c4831b0a@linux.com>
+Date:   Fri, 30 Jul 2021 08:15:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <751150dd-251f-bc68-0cd0-4a10b70ab79a@linux.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210729203740.1377045-1-u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 10:37:35PM +0200, Uwe Kleine-König wrote:
-> Hello,
-> 
-> struct pci_dev tracks the bound pci driver twice. This series is about
-> removing this duplication.
-> 
-> The first two patches are just cleanups. The third patch introduces a
-> wrapper that abstracts access to struct pci_dev->driver. In the next
-> patch (hopefully) all users are converted to use the new wrapper and
-> finally the fifth patch removes the duplication.
-> 
-> Note this series is only build tested (allmodconfig on several
-> architectures).
-> 
-> I'm open to restructure this series if this simplifies things. E.g. the
-> use of the new wrapper in drivers/pci could be squashed into the patch
-> introducing the wrapper. Patch 4 could be split by maintainer tree or
-> squashed into patch 3 completely.
-> 
-> Best regards
-> Uwe
-> 
-> Uwe Kleine-König (5):
->   PCI: Simplify pci_device_remove()
->   PCI: Drop useless check from pci_device_probe()
->   PCI: Provide wrapper to access a pci_dev's bound driver
->   PCI: Adapt all code locations to not use struct pci_dev::driver
->     directly
->   PCI: Drop duplicated tracking of a pci_dev's bound driver
+Hi,
 
-Other than my objection to patch 5/5 lack of changelog, looks sane to
-me:
+On 7/26/21 7:34 PM, Denis Efremov wrote:
+> 
+> 
+> On 7/26/21 3:23 PM, Mark Hounschell wrote:
+>> On 7/26/21 7:37 AM, Denis Efremov wrote:
+>>>
+>>>
+>>> On 7/26/21 2:17 PM, Mark Hounschell wrote:
+>>>> On 7/26/21 3:57 AM, Denis Efremov wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On 7/23/21 9:47 PM, Mark Hounschell wrote:
+>>>>>>
+>>>>>> These 2 incremental patches, patch-5.10.19-20 and patch-5.11.2-3 have broken the user land fd = open("/dev/fd0", (O_RDWR | O_NDELAY)); functionality.
+>>>>>
+>>>>> Thank you for the report, I'm looking into this.
+>>>>>
+>>>>>> Since FOREVER before the patch, when using O_NDELAY, one could open the floppy device with no media inserted or even with write protected media without error. "Read-only file system" status is returned only when we actually tried to write to it. We have software still in use today that relies on this functionality.
+>>>>>
+>>>>> If it's a project with open sources could you please give a link?
+>>>>>
+>>>>> Regards,
+>>>>> Denis
+>>>>>
+>>>> This is immaterial but fdutils and libdsk both use rely on this flag. Who can know who else does. The point is it should NOT have been changed.
+>>>
+>>> Yes, I asked this only to add utils and this behavior to the tests.
+>>> And be more specific about why we should preserve this behavior in
+>>> next commit messages.
+>>>
+>>
+>> Well, first thing is now you can't open a floppy with a write protected floppy installed. I don't think that was intended but that is now how it is.
+>>
+>> Next there are commands that can be sent to the floppy via "ioctl(fd, FDRAWCMD,Â  &raw_cmd);" that do NOT require a floppy diskette to be installed.
+>>
+>> All commands issued to the device that require a floppy diskette without a diskette installed fail with the proper status letting you know the device is not ready / no diskette installed. That goes for write protected floppies too.
+>>
+>> There is no reason to force a user to only be able to operate on Linux fdformat formatted floppies.
+>>
+> 
+> It appears that the story behind the issue is long enough.
+> I'll try to sum up the things:
+> [1] 09954bad4487 floppy: refactor open() flags handling
+> [2] ff06db1efb2a floppy: fix open(O_ACCMODE) for ioctl-only open
+> [3] 468c298ad3ed Revert "floppy: fix open(O_ACCMODE) for ioctl-only open"
+> [4] f2791e7eadf4 Revert "floppy: refactor open() flags handling"
+> [5] 8a0c014cd205 floppy: reintroduce O_NDELAY fix
+> 
+> In [1] we tried to fix O_NDELAY behavior because it's hard to define
+> proper non-blocking behavior for floppies. We also added
+> "!(mode & (FMODE_READ|FMODE_WRITE))" sanity check for open in that patch.
+> Motivation for the changes was that it's easy to livelock the system with
+> floppy's O_NDELAY and syzkaller spotted it. Just for the record, /dev/fd0
+> is only accessible by the root user in recent distros. 
+> 
+> Patch [1] broke ioctl-only opens in fdutils because:
+> $ grep -nre open ./setfdprm.c 
+> 60:     if ((fd = open(argv[0],3)) < 0) { /* 3 == no access at all */
+> Patch [2] reverted "!(mode & (FMODE_READ|FMODE_WRITE))" to fix ioctls.
+> I guess [2] was not enough and Jens completely reverted [1] with [3] [4].
+> 
+> The last [5] patch restores the open function to the [2] state (it's possible
+> to use ioctl with open O_ACCMODE). [5] was added because libblkid use O_NONBLOCK
+> for probing devices, and floppy driver prints many I/O errors to the kernel log.
+> There are also problems with mounts after. I'm afraid simple revert for [5] is
+> not enough, otherwise we will face libblkid issues once again.I'll try to test the things and find a more elegant solution.
+> 
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I performed some tests and here is a small example that can be reproduced
+even with qemu.
+With O_NDELAY fix:
+$ fdlist # no floppy inserted
+fdlist (): drive fd0 does not exist
+
+Without O_NDELAY fix:
+$ fdlist # no floppy inserted
+NAME   TYPE  STATUS
+ fd0  2880K  not mounted
+
+That's because of O_RDONLY|O_NDELAY open in probe_drive:
+https://sources.debian.org/src/fdutils/5.6-2/src/fdmount.c/#L390
+
+I guess that's why the original patch was reverted
+f2791e7eadf4 Revert "floppy: refactor open() flags handling"
+We still have software that depends on O_NDELAY in floppies
+and this patch will be reverted again.
+
+Meanwhile I can't fully reproduce the issues with libblkid.
+I know that systemd-udevd tries to open /dev/fd0 during boot
+with O_RDONLY|O_NDELAY. With O_NDELAY implemented we don't call
+floppy_revalidate() which result in an attempt to read block 0
+https://elixir.bootlin.com/linux/v5.10.20/source/drivers/block/floppy.c#L4127
+However, *with* O_NDELAY fix we try to read block 0 and get kernel
+log errors if no floppy inserted:
+[    1.732360] blk_update_request: I/O error, dev fd0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[    1.732822] floppy: error 10 while reading block 0
+If floppy inserted this results in a boot delay on a
+real system.
+
+Jiri, Kurt, can you give more details about test conditions
+for O_NDELAY problem or maybe even provide some examples?
+
+Maybe it will cheaper to implement a special probing for
+floppies in new software than drop O_NDELAY for all already
+written software. Of course, if there is no cheap and obvious
+in-kernel fix.
+
+Denis
