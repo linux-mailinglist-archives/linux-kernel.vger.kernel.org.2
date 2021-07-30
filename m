@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363303DB403
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DBE3DB420
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237697AbhG3G4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:56:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42778 "EHLO mail.kernel.org"
+        id S237771AbhG3G5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:57:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:38180 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237463AbhG3G4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:56:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C549E60F6B;
-        Fri, 30 Jul 2021 06:56:38 +0000 (UTC)
-Subject: Re: [PATCH] m68k: coldfire: return success for clk_enable(NULL)
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Defang Bo <bodefang@126.com>, Steven King <sfking@fdwdc.com>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-References: <20210729122702.GA27150@kili>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <10e74100-2f3b-6c71-3e13-ba9a33766bf1@linux-m68k.org>
-Date:   Fri, 30 Jul 2021 16:56:36 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238009AbhG3G5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 02:57:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5DA631B;
+        Thu, 29 Jul 2021 23:57:29 -0700 (PDT)
+Received: from [10.163.66.9] (unknown [10.163.66.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 032513F66F;
+        Thu, 29 Jul 2021 23:57:26 -0700 (PDT)
+Subject: Re: [PATCH v2 10/10] coresight: trbe: Prohibit trace before disabling
+ TRBE
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        jinlmao@qti.qualcomm.com
+References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
+ <20210723124611.3828908-11-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <bca52780-a66e-5dda-eb4f-0f2f3f9ad78c@arm.com>
+Date:   Fri, 30 Jul 2021 12:28:15 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210729122702.GA27150@kili>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210723124611.3828908-11-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -37,40 +42,88 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 29/7/21 10:27 pm, Dan Carpenter wrote:
-> The clk_enable is supposed work when CONFIG_HAVE_CLK is false, but it
-> returns -EINVAL.  That means some drivers fail during probe.
+
+On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
+> We must prohibit the CPU from tracing before we disable
+> the TRBE and only re-enable it when we are sure the TRBE
+> has been enabled back. Otherwise, leave the CPU in
+> prohibited state.
 > 
-> [    1.680000] flexcan: probe of flexcan.0 failed with error -22
-> 
-> Fixes: c1fb1bf64bb6 ("m68k: let clk_enable() return immediately if clk is NULL")
-> Fixes: bea8bcb12da0 ("m68knommu: Add support for the Coldfire m5441x.")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-Thanks Dan.
-Applied to the m68knommu git tree, for-next branch, with Marc's Acked-by added.
-
-Regards
-Greg
-
-
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > ---
-> I can't actually compile test this, but it's correct.
+>  .../hwtracing/coresight/coresight-self-hosted-trace.h    | 4 +++-
+>  drivers/hwtracing/coresight/coresight-trbe.c             | 9 +++++++++
+>  2 files changed, 12 insertions(+), 1 deletion(-)
 > 
->   arch/m68k/coldfire/clk.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> diff --git a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+> index 586d26e0cba3..34372482a3cd 100644
+> --- a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+> +++ b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
+> @@ -22,11 +22,13 @@ static inline void write_trfcr(u64 val)
+>  	isb();
+>  }
+>  
+> -static inline void cpu_prohibit_trace(void)
+> +static inline u64 cpu_prohibit_trace(void)
+>  {
+>  	u64 trfcr = read_trfcr();
+>  
+>  	/* Prohibit tracing at EL0 & the kernel EL */
+>  	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
+> +	/* Return the original value of the TRFCR */
+> +	return trfcr;
+>  }
+>  #endif			/*  __CORESIGHT_SELF_HOSTED_TRACE_H */
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index e7567727e8fc..b8586c170889 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -16,6 +16,7 @@
+>  #define pr_fmt(fmt) DRVNAME ": " fmt
+>  
+>  #include <asm/barrier.h>
+> +#include "coresight-self-hosted-trace.h"
+>  #include "coresight-trbe.h"
+>  
+>  #define PERF_IDX2OFF(idx, buf) ((idx) % ((buf)->nr_pages << PAGE_SHIFT))
+> @@ -764,6 +765,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>  	enum trbe_fault_action act;
+>  	u64 status;
+>  	bool truncated = false;
+> +	u64 trfcr;
+>  
+>  	/* Reads to TRBSR_EL1 is fine when TRBE is active */
+>  	status = read_sysreg_s(SYS_TRBSR_EL1);
+> @@ -774,6 +776,8 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>  	if (!is_trbe_irq(status))
+>  		return IRQ_NONE;
+>  
+> +	/* Prohibit the CPU from tracing before we disable the TRBE */
+> +	trfcr = cpu_prohibit_trace();
+>  	/*
+>  	 * Ensure the trace is visible to the CPUs and
+>  	 * any external aborts have been resolved.
+> @@ -805,9 +809,14 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>  	/*
+>  	 * If the buffer was truncated, ensure perf callbacks
+>  	 * have completed, which will disable the event.
+> +	 *
+> +	 * Otherwise, restore the trace filter controls to
+> +	 * allow the tracing.
+>  	 */
+>  	if (truncated)
+>  		irq_work_run();
+> +	else
+> +		write_trfcr(trfcr);
+>  
+>  	return IRQ_HANDLED;
+>  }
 > 
-> diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
-> index 2ed841e94111..d03b6c4aa86b 100644
-> --- a/arch/m68k/coldfire/clk.c
-> +++ b/arch/m68k/coldfire/clk.c
-> @@ -78,7 +78,7 @@ int clk_enable(struct clk *clk)
->   	unsigned long flags;
->   
->   	if (!clk)
-> -		return -EINVAL;
-> +		return 0;
->   
->   	spin_lock_irqsave(&clk_lock, flags);
->   	if ((clk->enabled++ == 0) && clk->clk_ops)
-> 
+
+The change LGTM. But the commit message needs to add some more details
+like that in V2 which explained how traces from ETE could be routed to
+ATB if not put in trace prohibited state, for all exception levels etc.
