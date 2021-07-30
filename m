@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFC63DC172
+	by mail.lfdr.de (Postfix) with ESMTP id BBF6F3DC173
 	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbhG3XK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 19:10:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41610 "EHLO mail.kernel.org"
+        id S234005AbhG3XKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 19:10:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231189AbhG3XKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 19:10:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 595D860F3A;
-        Fri, 30 Jul 2021 23:10:18 +0000 (UTC)
+        id S231192AbhG3XK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 19:10:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A93C560F46;
+        Fri, 30 Jul 2021 23:10:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627686618;
-        bh=w9NvLT/heYN9xj4Ig1BaKv52ZiK0MFDCpg3ReVUUmp4=;
+        s=k20201202; t=1627686621;
+        bh=Sjp4XaUrf6HxEvu7npUCI/ehDdZe1dulAD0sjDUDhlE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=iKYlKWRg6Cii9P2skSLuCxyut1MOHM6Pz2d1rVlLlPEry3FjtfnXNR9rFf4WwZj2J
-         Hc2k6/ehpnfnd8a0s0PhXUB8N4DivlxOlltb59TzNUz66TS8dtLG31zb3ViXJuflfX
-         9ASOgaDKhdwqnAd743lng7wb1/Q22Dg5hoJR97vFVVcy9f35zlXaIK99bGkrMPJPWq
-         pJIW2LAoUBWIUEYndj3yZapr40n3xFh3cicCBJ5WDpCuC/R/rI6n3wtPMJveTSibCk
-         i3higMiIsIiCpZVPAaDenFJEJX5cSCKjq8cXCfIfZaT6an+wmqUFjbcMmPYpdTqU8k
-         sghmH6zqCLIZg==
+        b=pZi95NbTenUi7hiYCLIAEqQotMERG486710SuDJBpXbvvyMMj+Hx5SULOJwKx4MIp
+         vL0/Jb0RGToYrsp/CxNovfgeheQiyJGmDfofh9zOHO55CUK4W/8XLpUYqVjVTSEWSC
+         2y4BdnbB56jyv0c1EL1UykMdB8n92HsGOEk4TyyZoyAD6cobmGgU8/3a5PKGqMq8em
+         cBmcERKIIts514xMYueCDbb9zpAC9GbSz1eTjknGjmLekXmhW4nOODLrsg1LXtRTN6
+         TYagR0+z86XzdH0wY26dEhvrh7/6mR4z1bn/lm/V6J8NYheTsIqharXpHxJzXe1t+X
+         BZFAGa+0UaQOQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 47A2260A7F;
-        Fri, 30 Jul 2021 23:10:18 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for 5.14-rc4
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A28E9609F6;
+        Fri, 30 Jul 2021 23:10:21 +0000 (UTC)
+Subject: Re: [GIT PULL] ACPI fixes for v5.14-rc4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210730202302.2197672-1-kuba@kernel.org>
-References: <20210730202302.2197672-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210730202302.2197672-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc4
-X-PR-Tracked-Commit-Id: 8d67041228acf41addabdee5a60073e1b729e308
+In-Reply-To: <CAJZ5v0h_QSqNjAz9EEp4DBk0jQSE3W+m5niC_7KWgvETwS1Yyg@mail.gmail.com>
+References: <CAJZ5v0h_QSqNjAz9EEp4DBk0jQSE3W+m5niC_7KWgvETwS1Yyg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-pm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0h_QSqNjAz9EEp4DBk0jQSE3W+m5niC_7KWgvETwS1Yyg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.14-rc4
+X-PR-Tracked-Commit-Id: e83f54eacf137de228a52c20c74e77f575684600
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c7d102232649226a69dddd58a4942cf13cff4f7c
-Message-Id: <162768661823.18102.3433634530260932718.pr-tracker-bot@kernel.org>
-Date:   Fri, 30 Jul 2021 23:10:18 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: e1dab4c02de0b495a9393915d71e452f8e77a464
+Message-Id: <162768662165.18102.14339168640741366406.pr-tracker-bot@kernel.org>
+Date:   Fri, 30 Jul 2021 23:10:21 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 30 Jul 2021 13:23:02 -0700:
+The pull request you sent on Fri, 30 Jul 2021 20:52:44 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc4
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.14-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c7d102232649226a69dddd58a4942cf13cff4f7c
+https://git.kernel.org/torvalds/c/e1dab4c02de0b495a9393915d71e452f8e77a464
 
 Thank you!
 
