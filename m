@@ -2,233 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3429B3DB5F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F124C3DB602
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238284AbhG3Jcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238223AbhG3Jcu (ORCPT
+        id S238326AbhG3Jdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:33:33 -0400
+Received: from out28-51.mail.aliyun.com ([115.124.28.51]:60641 "EHLO
+        out28-51.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238156AbhG3Jdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:32:50 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00C1C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:32:44 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id h1so10645866iol.9
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z+HszHCjicRVinPAkgiPIP+xtCEpWxlQtRPDlzMA4dw=;
-        b=hLiDZgqoc2mqGGzVG0XTePpocnHV5/Z4F12ZRFN7cXNXdnjWsaT3BppF5NYmsP61BN
-         5d+/gi6MNMKsOHODssMMcZ4pF+lW11ffAaNCAIdPEehKBxQvLdcTl9VsSrQtzOfzVE1M
-         p5EaGNxH1nS0dqgTTROg+3uV58szbOKz3szTpdZNW2XObFCScHoZ5nC26Ujb7kl1vHE7
-         CCSZk+ytoZkAwuS+Dn5UD3NpA57UX6bIVGuaENP30GfUiBky6k3Mh1xxgHLa1I7zU8Ws
-         al9oa5bIxQoBTlVXnMrGT5QG0O6gsLI+VncLRSbJi6vF6q5YqguXzYN1XfhmrZE/90/h
-         v68w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z+HszHCjicRVinPAkgiPIP+xtCEpWxlQtRPDlzMA4dw=;
-        b=pFV4KwYCmRVaDfEQ49Mj2RKiZiORUNjQeo5BDCGKN4133RvGO7A/mDPDrucx9jS09i
-         OH4MWfNQFxTjeKNd8/QFHODYig8fefBSlp3kYKpOS2yYXAhWiOCGEwkjo5Gpz3zC+b2R
-         h/iEYfMOhlsdfrZbr/QzxWiXsqBTwzLqD54DyHDioiqQCGqBN+/uOJvWETL5xaBBVamE
-         TWeq0Uf4OdKeOhg47EUPLa6jdC54VL3leYlieReImu1TLphFsX9ObSAOb1jx1gjZ6Ijg
-         MXrVA34kiJP/cF9MLVMnA3T9vlQG+2pfloq7/Of66SN0P2lYa9jY/xoMBz4+/v3/REE6
-         fXRQ==
-X-Gm-Message-State: AOAM533ZJiZvqnaVxwYx5ECYQjfMjo05PGq1D1DjoL7xIUowVTkw4vT8
-        wtw1x3V1ZASzPrGzEW2ZMQq8LfDq6EdQ6BRlaG1gew==
-X-Google-Smtp-Source: ABdhPJwn4Oqi0vXmNn+fAS1CTHv+7Tuqimbyvgc4WZbbOxn28bIgGdkzLLvNTRihvLcZdK06Wgtc8JhqRshJ5S/Y98Q=
-X-Received: by 2002:a02:cf2e:: with SMTP id s14mr1483427jar.74.1627637564075;
- Fri, 30 Jul 2021 02:32:44 -0700 (PDT)
+        Fri, 30 Jul 2021 05:33:32 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07529395|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.126289-0.000848962-0.872862;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.Kt0Ea8-_1627637603;
+Received: from 192.168.88.131(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Kt0Ea8-_1627637603)
+          by smtp.aliyun-inc.com(10.147.41.120);
+          Fri, 30 Jul 2021 17:33:25 +0800
+Subject: Re: [PATCH 1/2] dt-bindings: dwc2: Add bindings for new Ingenic SoCs.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        hminas@synopsys.com, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+References: <1627116521-124612-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1627116521-124612-2-git-send-email-zhouyanjie@wanyeetech.com>
+ <CLWQWQ.DBCX3I00Y95T2@crapouillou.net>
+ <ad64396d-d7ab-b8dd-4086-f565e91edb00@wanyeetech.com>
+ <TKQSWQ.K11YHBO0B4FM2@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <0bffb545-212c-2711-43ac-39efc1074c8b@wanyeetech.com>
+Date:   Fri, 30 Jul 2021 17:33:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20210727101051.24418-1-yunfei.dong@mediatek.com> <20210727101051.24418-5-yunfei.dong@mediatek.com>
-In-Reply-To: <20210727101051.24418-5-yunfei.dong@mediatek.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 30 Jul 2021 17:32:33 +0800
-Message-ID: <CA+Px+wXNRw6aNgpfA8qRd1tw0Tx+0jSj-dG-9_wjmxNOsji7_w@mail.gmail.com>
-Subject: Re: [PATCH v3, 04/15] media: mtk-vcodec: Use component framework to
- manage each hardware information
-To:     Yunfei Dong <Yunfei.Dong@mediatek.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <TKQSWQ.K11YHBO0B4FM2@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 06:10:40PM +0800, Yunfei Dong wrote:
-> +static struct component_match *mtk_vcodec_match_add(
-> +     struct mtk_vcodec_dev *vdec_dev)
-> + {
-Remove the extra space before {.
+Hi Paul,
 
-> +     struct platform_device *pdev = vdec_dev->plat_dev;
-> +     struct component_match *match = NULL;
-> +     int i;
-> +
-> +     for (i = 0; i < ARRAY_SIZE(mtk_vdec_drv_ids); i++) {
-> +             struct device_node *comp_node;
-> +             enum mtk_vdec_hw_id comp_idx;
-> +             const struct of_device_id *of_id;
-Failed to see benifits to declare here in the case.  To be neat, move
-the variable declaration to the beginning of function.
-
-> +
-> +             comp_node = of_find_compatible_node(NULL, NULL,
-> +                     mtk_vdec_drv_ids[i].compatible);
-> +             if (!comp_node)
-> +                     continue;
-If moving of_id assignment to the beginning of for-loop, use of_id->compatible.
-
-> +
-> +             if (!of_device_is_available(comp_node)) {
-> +                     of_node_put(comp_node);
-> +                     dev_err(&pdev->dev, "Fail to get MMSYS node\n");
-> +                     continue;
-> +             }
-> +
-> +             of_id = &mtk_vdec_drv_ids[i];
-> +             if (!of_id) {
-> +                     dev_err(&pdev->dev, "Failed to get match node\n");
-> +                     return ERR_PTR(-EINVAL);
-> +             }
-Move the block to the beginning of for-loop.  Looking to other blocks
-around, does it make more sense to use `continue` instead of `return`?
-
-> +
-> +             comp_idx = (enum mtk_vdec_hw_id)of_id->data;
-> +             mtk_v4l2_debug(4, "Get component:hw_id(%d),vdec_dev(0x%p),comp_node(0x%p)\n",
-> +                     comp_idx, vdec_dev, comp_node);
-> +             vdec_dev->component_node[comp_idx] = comp_node;
-> +
-> +             component_match_add_release(&pdev->dev, &match, mtk_vdec_release_of,
-> +                     mtk_vdec_compare_of, comp_node);
-> +             of_node_put(comp_node);
-I thought it shouldn't call of_node_put(...) which is already
-delegated to component framework (mtk_vdec_release_of).
-
-> +     }
-> +
-> +   return match;
-Fix the indent.
-
-> +static int mtk_vcodec_init_dec_params(struct mtk_vcodec_dev *dev)
-> +{
-> +     struct platform_device *pdev = dev->plat_dev;
-> +     int ret;
-> +
-> +     ret = mtk_vcodec_get_reg_bases(dev);
-> +     if (ret)
-> +             return ret;
-> +
-> +     if (!dev->is_comp_supported) {
-> +             dev->dec_irq = platform_get_irq(pdev, 0);
-> +             if (dev->dec_irq < 0) {
-> +                     dev_err(&pdev->dev, "failed to get irq number");
-> +                     return dev->dec_irq;
-> +             }
-> +
-> +             irq_set_status_flags(dev->dec_irq, IRQ_NOAUTOEN);
-> +             ret = devm_request_irq(&pdev->dev, dev->dec_irq,
-> +                             mtk_vcodec_dec_irq_handler, 0, pdev->name, dev);
-> +             if (ret) {
-> +                     dev_err(&pdev->dev, "failed to install dev->dec_irq %d (%d)",
-> +                             dev->dec_irq, ret);
-> +                     return ret;
-> +             }
-> +
-> +             ret = mtk_vcodec_init_dec_pm(pdev, &dev->pm);
-> +             if (ret < 0) {
-> +                     dev_err(&pdev->dev, "failed to get mt vcodec clock source");
-> +                     return ret;
-> +             }
-> +     }
-> +
-> +     return ret;
-To be concise, return 0.
-
-> +     comp_node =
-> +             of_find_compatible_node(NULL, NULL, "mediatek,mtk-vcodec-core");
-> +     if (!comp_node)
-> +             dev->is_comp_supported = false;
-> +     else
-> +             dev->is_comp_supported = true;
-> +     of_node_put(comp_node);
-Looking up "mediatek,mtk-vcodec-core" to determine if it uses
-component framework sounds like a sub-optimal method.
-
-> @@ -311,7 +429,6 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->               MTK_VCODEC_DEC_NAME);
->       video_set_drvdata(vfd_dec, dev);
->       dev->vfd_dec = vfd_dec;
-> -     platform_set_drvdata(pdev, dev);
+On 2021/7/25 下午6:31, Paul Cercueil wrote:
+> Hi Zhou,
 >
->       dev->m2m_dev_dec = v4l2_m2m_init(&mtk_vdec_m2m_ops);
->       if (IS_ERR((__force void *)dev->m2m_dev_dec)) {
-> @@ -362,8 +479,17 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->       mtk_v4l2_debug(0, "decoder registered as /dev/video%d",
->               vfd_dec->num);
+> Le sam., juil. 24 2021 at 20:52:30 +0800, Zhou Yanjie 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> Hi Paul,
+>>
+>> On 2021/7/24 下午6:46, Paul Cercueil wrote:
+>>> Hi Zhou,
+>>>
+>>> Le sam., juil. 24 2021 at 16:48:40 +0800, 周琰杰 (Zhou Yanjie) 
+>>> <zhouyanjie@wanyeetech.com> a écrit :
+>>>> Add the dwc2 bindings for the JZ4775 SoC, the JZ4780 SoC, the X1000 
+>>>> SoC,
+>>>> the X1600 SoC, the X1830 SoC, and the X2000 SoC from Ingenic.
+>>>>
+>>>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>>>> ---
+>>>>  Documentation/devicetree/bindings/usb/dwc2.yaml | 6 ++++++
+>>>>  1 file changed, 6 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml 
+>>>> b/Documentation/devicetree/bindings/usb/dwc2.yaml
+>>>> index 10c7d9b..e779d33 100644
+>>>> --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
+>>>> +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+>>>> @@ -14,6 +14,12 @@ properties:
+>>>>      oneOf:
+>>>>        - const: brcm,bcm2835-usb
+>>>>        - const: hisilicon,hi6220-usb
+>>>> +      - const: ingenic,jz4775-otg
+>>>> +      - const: ingenic,jz4780-otg
+>>>> +      - const: ingenic,x1000-otg
+>>>> +      - const: ingenic,x1600-otg
+>>>> +      - const: ingenic,x1830-otg
+>>>> +      - const: ingenic,x2000-otg
+>>>
+>>> I don't know if all these IPs are the exact same, but if they are, 
+>>> they all should have "ingenic,jz4775-otg" as the fallback.
+>>
+>>
+>> I'm not too sure whether they are exactly the same, but comparing the 
+>> code in Ingenics SDK,
+>>
+>> the code of the USB part of jz4775, jz4780, and x1000 are the same, 
+>> the code of the USB part
+>>
+>> of x1600 and x1830 are the same, and the USB part code of X2000 are 
+>> different from all of them.
 >
-> -     return 0;
-> +     if (dev->is_comp_supported) {
-> +             ret = mtk_vcodec_init_master(dev);
-> +             if (ret < 0)
-> +                     goto err_component_match;
-> +     } else {
-> +             platform_set_drvdata(pdev, dev);
-> +     }
-Has asked the same question in [1].  Why it removes the
-platform_set_drvdata() above?  mtk_vcodec_init_master() also calls
-platform_set_drvdata().
+> In doubt - it's better to keep separate compatible strings, so this is 
+> OK.
 
-[1]: https://patchwork.linuxtv.org/project/linux-media/patch/20210707062157.21176-4-yunfei.dong@mediatek.com/
 
-> +     return 0;
-> +err_component_match:
-> +     video_unregister_device(vfd_dec);
-Why video_unregister_device()?  It is already called [2].
+Sure.
 
-[2]: https://elixir.bootlin.com/linux/v5.14-rc3/source/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c#L344
 
-> @@ -379,9 +505,8 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->  err_dec_alloc:
->       v4l2_device_unregister(&dev->v4l2_dev);
->  err_res:
-> -     mtk_vcodec_release_dec_pm(&dev->pm);
-Shouldn't remove it.  mtk_vcodec_init_dec_params() also needs to undo
-in the path.
+Thanks and best regards!
 
-Refactoring them to mtk_vcodec_init_dec_params() makes the error
-handling more complicated.
 
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> index 973b0b3649c6..d6bb723db106 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> @@ -17,6 +17,11 @@
->  #include <media/videobuf2-core.h>
->  #include "mtk_vcodec_util.h"
 >
-> +#define VDEC_HW_ACTIVE       0x10
-> +#define VDEC_IRQ_CFG 0x11
-> +#define VDEC_IRQ_CLR 0x10
-> +#define VDEC_IRQ_CFG_REG     0xa4
-If moving to mtk_vcodec_dec_hw.h or mtk_vcodec_dec_hw.c makes more sense?
+> Cheers,
+> -Paul
+>
