@@ -2,193 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0E33DB4ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2D83DB4EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238006AbhG3IL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 04:11:59 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:45270 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbhG3IL6 (ORCPT
+        id S238021AbhG3IMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 04:12:45 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52554 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230324AbhG3IMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 04:11:58 -0400
-Received: from [10.0.2.15] ([86.243.172.93])
-        by mwinf5d81 with ME
-        id bLBr2500S21Fzsu03LBrEA; Fri, 30 Jul 2021 10:11:53 +0200
-X-ME-Helo: [10.0.2.15]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 30 Jul 2021 10:11:53 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH v27 03/10] fs/ntfs3: Add bitmap
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org
-Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
-        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
-        mark@harmstone.com, nborisov@suse.com,
-        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
-        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
-        andy.lavr@gmail.com, kari.argillander@gmail.com,
-        oleksandr@natalenko.name
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210729134943.778917-4-almaz.alexandrovich@paragon-software.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <33a0225a-7264-ff4c-b48e-d1a1c3d368c4@wanadoo.fr>
-Date:   Fri, 30 Jul 2021 10:11:51 +0200
+        Fri, 30 Jul 2021 04:12:44 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 02DFC1FDB8;
+        Fri, 30 Jul 2021 08:12:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627632759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+339LBJ9PxJVX12IlhGrAQaGOlRtRXO0GLukTqdTFyE=;
+        b=slCzJsYdkeU2B359I5tZk58MMBfUptrkBeH04UaINMgtWdaQS4Iz4HWILCW1xATEL5UdwB
+        qrMS4Arl8a37FjSC9/OCeHNwSZUVXonXS3+yw5SJSOPaaPUuT0mCfrizxU29n9VzOoiskO
+        Eh+tj0PMPllM5ib6kZjTXKWsl/z4OCU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627632759;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+339LBJ9PxJVX12IlhGrAQaGOlRtRXO0GLukTqdTFyE=;
+        b=+LpZlHaPyhTPNxAiz9rHxmFyTQgpsDc5hA/NMDa+aO73ZmMJInqdYSEnQ302ZBU3mLSSGz
+        DeimzStQ1LTtgkAg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D9E02134AE;
+        Fri, 30 Jul 2021 08:12:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id XbdrNHa0A2FODQAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Fri, 30 Jul 2021 08:12:38 +0000
+Subject: Re: [PATCH 3/3] mm: mmap_lock: add ip to mmap_lock tracepoints
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        Gang Li <ligang.bdlg@bytedance.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+References: <20210729092853.38242-1-ligang.bdlg@bytedance.com>
+ <CAJHvVcjBH+Vry8v5T0FWyFWWDY6_AqSxZcVQxXRm=LR8v=ML-Q@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <34dcbcac-7794-c067-3d71-7a1404c41b6c@suse.cz>
+Date:   Fri, 30 Jul 2021 10:12:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210729134943.778917-4-almaz.alexandrovich@paragon-software.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAJHvVcjBH+Vry8v5T0FWyFWWDY6_AqSxZcVQxXRm=LR8v=ML-Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 29/07/2021 à 15:49, Konstantin Komarov a écrit :
-> This adds bitmap
+On 7/29/21 7:33 PM, Axel Rasmussen wrote:
+> Not a strong objection, but I think this can be achieved already using either:
 > 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->   fs/ntfs3/bitfunc.c |  135 ++++
->   fs/ntfs3/bitmap.c  | 1519 ++++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 1654 insertions(+)
->   create mode 100644 fs/ntfs3/bitfunc.c
->   create mode 100644 fs/ntfs3/bitmap.c
+> - The "stacktrace" feature which histogram triggers support
+> (https://www.kernel.org/doc/html/latest/trace/histogram.html)
+> - bpftrace's kstack/ustack feature
+> (https://github.com/iovisor/bpftrace/blob/master/docs/tutorial_one_liners.md#lesson-9-profile-on-cpu-kernel-stacks)
 > 
-> diff --git a/fs/ntfs3/bitfunc.c b/fs/ntfs3/bitfunc.c
-> new file mode 100644
-> index 000000000..2de5faef2
-> --- /dev/null
-> +++ b/fs/ntfs3/bitfunc.c
+> I haven't tried it out myself, but I suspect you could construct a
+> synthetic event
+> (https://www.kernel.org/doc/html/latest/trace/histogram.html#synthetic-events)
+> which adds in the stack trace, then it ought to function a lot like it
+> would with this patch.
+> 
+> Then again, it's not like this change is huge by any means. So, if you
+> find this more convenient than those alternatives, you can take:
+> 
+> Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+> 
+> It's possible Steven or Tom have a more strong opinion on this though. ;)
 
-[...]
-
-> +bool are_bits_set(const ulong *lmap, size_t bit, size_t nbits)
-> +{
-> +	u8 mask;
-> +	size_t pos = bit & 7;
-> +	const u8 *map = (u8 *)lmap + (bit >> 3);
-> +
-> +	if (pos) {
-> +		if (8 - pos >= nbits) {
-> +			mask = fill_mask[pos + nbits] & zero_mask[pos];
-> +			return !nbits || (*map & mask) == mask;
-> +		}
-> +
-> +		mask = zero_mask[pos];
-> +		if ((*map++ & mask) != mask)
-> +			return false;
-> +		nbits -= 8 - pos;
-> +	}
-> +
-> +	pos = ((size_t)map) & (sizeof(size_t) - 1);
-> +	if (pos) {
-> +		pos = sizeof(size_t) - pos;
-> +		if (nbits >= pos * 8) {
-> +			for (nbits -= pos * 8; pos; pos--, map++) {
-> +				if (*map != 0xFF)
-> +					return false;
-> +			}
-> +		}
-> +	}
-> +
-> +	for (pos = nbits / BITS_IN_SIZE_T; pos; pos--, map += sizeof(size_t)) {
-> +		if (*((size_t *)map) != MINUS_ONE_T)
-> +			return false;
-> +	}
-> +
-> +	for (pos = (nbits % BITS_IN_SIZE_T) >> 3; pos; pos--, map++) {
-> +		if (*map != 0xFF)
-> +			return false;
-> +	}
-> +
-> +	pos = nbits & 7;
-> +	if (pos) {
-> +		u8 mask = fill_mask[pos];
-
-There is no need to define a new 'mask' variable here, it just shadows 
-the already existing one. 'u8' can be removed.
-
-> +
-> +		if ((*map & mask) != mask)
-> +			return false;
-> +	}
-> +
-> +	// All bits are ones
-> +	return true;
-> +}
-> diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
-> new file mode 100644
-> index 000000000..32aab0031
-> --- /dev/null
-> +++ b/fs/ntfs3/bitmap.c
-
-[...]
-
-> +bool wnd_is_used(struct wnd_bitmap *wnd, size_t bit, size_t bits)
-> +{
-> +	bool ret = false;
-> +	struct super_block *sb = wnd->sb;
-> +	size_t iw = bit >> (sb->s_blocksize_bits + 3);
-> +	u32 wbits = 8 * sb->s_blocksize;
-> +	u32 wbit = bit & (wbits - 1);
-> +	size_t end;
-> +	struct rb_node *n;
-> +	struct e_node *e;
-> +
-> +	if (RB_EMPTY_ROOT(&wnd->start_tree))
-> +		goto use_wnd;
-> +
-> +	end = bit + bits;
-> +	n = rb_lookup(&wnd->start_tree, end - 1);
-> +	if (!n)
-> +		goto use_wnd;
-> +
-> +	e = rb_entry(n, struct e_node, start.node);
-> +	if (e->start.key + e->count.key > bit)
-> +		return false;
-> +
-> +use_wnd:
-> +	while (iw < wnd->nwnd && bits) {
-> +		u32 tail, op;
-> +
-> +		if (unlikely(iw + 1 == wnd->nwnd))
-> +			wbits = wnd->bits_last;
-> +
-> +		tail = wbits - wbit;
-> +		op = tail < bits ? tail : bits;
-> +
-> +		if (wnd->free_bits[iw]) {
-> +			bool ret;
-
-This 'ret' shadows the one defined above. It looks spurious and could 
-certainly be removed.
-However is looks safe because...
-
-> +			struct buffer_head *bh = wnd_map(wnd, iw);
-> +
-> +			if (IS_ERR(bh))
-> +				goto out;
-> +
-> +			ret = are_bits_set((ulong *)bh->b_data, wbit, op);
-> +			put_bh(bh);
-> +			if (!ret)
-> +				goto out;
-
-... if *this* 'ret' is false, the *other* 'ret' is false as well.
-
-> +		}
-> +
-> +		bits -= op;
-> +		wbit = 0;
-> +		iw += 1;
-> +	}
-> +	ret = true;
-> +
-> +out:
-> +	return ret;
-> +}
-
-[...]
+I generally dislike tracepoints with an ip. Often you then find out it's not
+enough to distinguish what you need (due to some commonly shared wrapper doing
+the call) and you need more of the backtrace anyway.
