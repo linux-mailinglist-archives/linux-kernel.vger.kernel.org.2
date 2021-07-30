@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181E13DB46B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F67B3DB46F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237705AbhG3HVW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Jul 2021 03:21:22 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:44859 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237630AbhG3HVV (ORCPT
+        id S237814AbhG3HXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237679AbhG3HXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:21:21 -0400
-X-Greylist: delayed 164101 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Jul 2021 03:21:21 EDT
-Received: (Authenticated sender: clement.leger@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id D5C9FC0008;
-        Fri, 30 Jul 2021 07:21:14 +0000 (UTC)
-Date:   Fri, 30 Jul 2021 09:21:13 +0200
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH 3/3] dt-bindings: mfd: add "syscon-smc" YAML description
-Message-ID: <20210730092113.25ce7f7c@fixe.home>
-In-Reply-To: <YQMbV3elkU0yp92D@robh.at.kernel.org>
-References: <20210723135239.388325-1-clement.leger@bootlin.com>
-        <20210723135239.388325-4-clement.leger@bootlin.com>
-        <YQMbV3elkU0yp92D@robh.at.kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 30 Jul 2021 03:23:01 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DD4C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:22:57 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id 129so8569103qkg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:22:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version;
+        bh=W19ulHdbRii8uGULgM4xCYIrYZn/kkVxbVYhZIEWkWk=;
+        b=IWpcSmeCeF6GGdHsOxfv5cO5VtTb2UpZlZv2kMHjrK1vD6llmIA49c41Kip/TzTPQC
+         8pyBPuaKLUt3CjflHMs0OcSM+lv74B8UjBe+RIJUDmnzvVHB/Bbg4VUAjDXfXjK+BcTp
+         MmJPREd21f/WQPa3PW2F8+95/NsMu7LXr6OSruWBxnRNlia9jC4qRKe3RsVg1R5wuih3
+         94Y2iPdQjcGv3Xae+Nov4IWLssQ3IhpyOAHDgRmhqziDfcNMB3WJ1I7WzK5+NhU6zq/F
+         4BrZa229o2W9RrXccNVRCyv1J+u+UhtBoHYbQWfKC0saEpi1N9y2FUBDFT2sA+xQVltK
+         DKug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
+        bh=W19ulHdbRii8uGULgM4xCYIrYZn/kkVxbVYhZIEWkWk=;
+        b=X6WZ8yPASCshTmci43GxaWqE27fwfs9+qQCynq0X5T5WqdOKS+b2nfY+yMbq4xLJm6
+         Csr+gGUlzAW6n6nP3+Vb2zfFHhVsh49jm2HOiLdzfOO+lffV5OxiKdM++GiBvQv1J+I4
+         bqjxm/YbjZVEtWZEheSfWvHomKI+u//5+WOIcHi5l5tKovomCjLYqlviU1BBK3C+rwj2
+         pzXnZzU8lZzXhglkJUkhrBdmkuLPLMViHzygVHbphuKRGqpYKHulfA/uouZPDjl4e+to
+         T7k34LRQIXfO36CCTHUuys/H4EPQ892/76X8awBEF03bJeA8pzliiZbthWNha+U5RseT
+         aAow==
+X-Gm-Message-State: AOAM531HUu9fUwANFTWn/GphIBGwvGMOgJm24DUuwS1pHKV0nfS7HcJv
+        TqucUyrFnmS8fUtkndppTX4OuQ==
+X-Google-Smtp-Source: ABdhPJykA6Jb3yBOp5zc/TcieykN44zj2IVlu/Hldx8zKyLBorE+22RYQHjNgr4D6QAgGwOovh/0Sw==
+X-Received: by 2002:a05:620a:1227:: with SMTP id v7mr998851qkj.3.1627629776350;
+        Fri, 30 Jul 2021 00:22:56 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id b204sm490194qkg.76.2021.07.30.00.22.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 00:22:55 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 00:22:41 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH 00/16] tmpfs: HUGEPAGE and MEM_LOCK fcntls and memfds
+Message-ID: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Thu, 29 Jul 2021 15:19:19 -0600,
-Rob Herring <robh@kernel.org> a écrit :
+A series of HUGEPAGE and MEM_LOCK tmpfs fcntls and memfd_create flags,
+after fixes (not essential for stable) and cleanups in related areas.
 
-> On Fri, Jul 23, 2021 at 03:52:39PM +0200, Clément Léger wrote:
-> > This patch adds documentation for the "syscon-smc" compatible which
-> > describes a syscon using a SMC regmap instead of a MMIO one. This
-> > allows accessing system controllers that are set as secure by using
-> > SMC handled by the secure monitor.
-> > 
-> > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-> > ---
-> >  .../devicetree/bindings/mfd/syscon-smc.yaml   | 57
-> > +++++++++++++++++++ 1 file changed, 57 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/mfd/syscon-smc.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mfd/syscon-smc.yaml
-> > b/Documentation/devicetree/bindings/mfd/syscon-smc.yaml new file
-> > mode 100644 index 000000000000..6ce1392c5e7f
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mfd/syscon-smc.yaml
-> > @@ -0,0 +1,57 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mfd/syscon-smc.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: System Controller Registers R/W via SMC Device Tree Bindings
-> > +
-> > +description: |
-> > +  System controller SMC node represents a register region
-> > containing a set
-> > +  of miscellaneous registers accessed through a secure monitor.
-> > +  The typical use-case is the same as the syscon one but when
-> > running with a
-> > +  secure monitor.
-> > +
-> > +maintainers:
-> > +  - Lee Jones <lee.jones@linaro.org>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    anyOf:
-> > +      - items:
-> > +          - enum:
-> > +              - atmel,sama5d2-sfr
-> > +
-> > +          - const: syscon-smc  
-> 
-> I regret having 'syscon' as a compatible, so nak on a 2nd flavor of
-> it. It's only purpose is a hint to Linux to automagically create a
-> regmap for you.
+Against 5.14-rc3: currently no conflict with linux-next or mmotm.
 
-Indeed.
+01/16 huge tmpfs: fix fallocate(vanilla) advance over huge pages
+02/16 huge tmpfs: fix split_huge_page() after FALLOC_FL_KEEP_SIZE
+03/16 huge tmpfs: remove shrinklist addition from shmem_setattr()
+04/16 huge tmpfs: revert shmem's use of transhuge_vma_enabled()
+05/16 huge tmpfs: move shmem_huge_enabled() upwards
+06/16 huge tmpfs: shmem_is_huge(vma, inode, index)
+07/16 memfd: memfd_create(name, MFD_HUGEPAGE) for shmem huge pages
+08/16 huge tmpfs: fcntl(fd, F_HUGEPAGE) and fcntl(fd, F_NOHUGEPAGE)
+09/16 huge tmpfs: decide stat.st_blksize by shmem_is_huge()
+10/16 tmpfs: fcntl(fd, F_MEM_LOCK) to memlock a tmpfs file
+11/16 tmpfs: fcntl(fd, F_MEM_LOCKED) to test if memlocked
+12/16 tmpfs: refuse memlock when fallocated beyond i_size
+13/16 mm: bool user_shm_lock(loff_t size, struct ucounts *)
+14/16 mm: user_shm_lock(,,getuc) and user_shm_unlock(,,putuc)
+15/16 tmpfs: permit changing size of memlocked file
+16/16 memfd: memfd_create(name, MFD_MEM_LOCK) for memlocked shmem
 
-> 
-> All you need is the specific compatible, atmel,sama5d2-sfr, and you
-> can imply the rest of this from it. That's assuming the conclusion is
-> a register read/write interface on SMC is a good idea, but I don't
-> think it is.
+ fs/fcntl.c                 |    8 
+ fs/hugetlbfs/inode.c       |    4 
+ include/linux/mm.h         |    4 
+ include/linux/shmem_fs.h   |   31 ++-
+ include/uapi/linux/fcntl.h |   17 +
+ include/uapi/linux/memfd.h |    4 
+ ipc/shm.c                  |    4 
+ mm/huge_memory.c           |    6 
+ mm/khugepaged.c            |    2 
+ mm/memfd.c                 |   27 ++
+ mm/mlock.c                 |   19 -
+ mm/shmem.c                 |  397 ++++++++++++++++++++++++++-------------
+ 12 files changed, 370 insertions(+), 153 deletions(-)
 
-Ok noted, I'll try to find something else to implement that.
-
-Clément
-
-> 
-> Rob
-
+Hugh
