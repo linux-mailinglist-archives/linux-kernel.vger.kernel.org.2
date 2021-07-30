@@ -2,436 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98543DBFB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8643DBFBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 22:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhG3UXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 16:23:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230217AbhG3UXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:23:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E129760F36;
-        Fri, 30 Jul 2021 20:23:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627676583;
-        bh=xAWRaVkt8EIuJcletqg0dJy1gSZ0Q0zRa2LPHG3KKdM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZTV5Qp5Lvii0Cz55jb7a9CXd4frU52Lqz8DJitG7YDRUjLwSmNLXWOqIprZJos99c
-         uZ04oCdUv3mfHbWKP//tRgsOFJI0QfgHf1SwqkGWDTzOVWb8644qM0Syxmr1be+RdL
-         0kTOuT5IdFySdxgjvol5JDUhm54opYzB/hV0SV0jcSzbCUG/O4P+mB+NAgRCplqgu2
-         abZ7WVgFaaE9QH2BVfUsYz43ntWTI06Wb6VN9v+xtTkShzWee9ZyOfPLH1f8b+rSCi
-         B+yUVxrB7PnABgL0JvfAxuuSwgBTj0FQKfLc/Moby1t6rB9C5xuB00NfL7V8ZDIpfE
-         rKs7ceKn8J0HA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Networking for 5.14-rc4
-Date:   Fri, 30 Jul 2021 13:23:02 -0700
-Message-Id: <20210730202302.2197672-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S231535AbhG3UYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 16:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230316AbhG3UYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 16:24:09 -0400
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DCFC061765;
+        Fri, 30 Jul 2021 13:24:03 -0700 (PDT)
+Received: from [192.168.1.59] (bband-dyn19.178-41-181.t-com.sk [178.41.181.19])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 4BBEF3EA5A;
+        Fri, 30 Jul 2021 22:24:01 +0200 (CEST)
+Date:   Fri, 30 Jul 2021 22:23:55 +0200
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: Re: [RESEND PATCH v2 3/3] rpmcc: Add support for SM6125
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     martin.botka1@gmail.com, ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        paul.bouchara@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <VBR2XQ.FOVZA5CIE6Z12@somainline.org>
+In-Reply-To: <N5R2XQ.AHZHRMRZKWYV1@somainline.org>
+References: <20210629102624.194378-1-martin.botka@somainline.org>
+        <20210629102624.194378-4-martin.botka@somainline.org>
+        <162742239972.2368309.5551349117052770211@swboyd.mtv.corp.google.com>
+        <N5R2XQ.AHZHRMRZKWYV1@somainline.org>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+Completely ignore it. Brain fart.
+
+On Fri, Jul 30 2021 at 10:20:11 PM +0200, Martin Botka 
+<martin.botka@somainline.org> wrote:
+> Actually not all.
+> 
+> On Tue, Jul 27 2021 at 02:46:39 PM -0700, Stephen Boyd 
+> <sboyd@kernel.org> wrote:
+>> Quoting Martin Botka (2021-06-29 03:26:23)
+>>>  diff --git a/drivers/clk/qcom/clk-smd-rpm.c 
+>>> b/drivers/clk/qcom/clk-smd-rpm.c
+>>>  index 8200c26b968c..51458f740ba0 100644
+>>>  --- a/drivers/clk/qcom/clk-smd-rpm.c
+>>>  +++ b/drivers/clk/qcom/clk-smd-rpm.c
+>>>  @@ -1059,6 +1059,61 @@ static const struct rpm_smd_clk_desc 
+>>> rpm_clk_sdm660 = {
+>>>          .num_clks = ARRAY_SIZE(sdm660_clks),
+>>>   };
+>>> 
+>>>  +/* SM6125 */
+>>>  +DEFINE_CLK_SMD_RPM_BRANCH(sm6125, bi_tcxo, bi_tcxo_ao,
+>>>  +                                       QCOM_SMD_RPM_MISC_CLK, 0, 
+>>> 19200000);
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, cnoc_clk, cnoc_a_clk, 
+>>> QCOM_SMD_RPM_BUS_CLK, 1);
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, bimc_clk, bimc_a_clk, 
+>>> QCOM_SMD_RPM_MEM_CLK, 0);
+>> 
+>> Can we use msm8916_bimc_clk?
+>> 
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, snoc_clk, snoc_a_clk, 
+>>> QCOM_SMD_RPM_BUS_CLK, 2);
+>>>  +DEFINE_CLK_SMD_RPM_BRANCH(sm6125, qdss_clk, qdss_a_clk,
+>>>  +                                       QCOM_SMD_RPM_MISC_CLK, 1, 
+>>> 19200000);
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, ce1_clk, ce1_a_clk, 
+>>> QCOM_SMD_RPM_CE_CLK, 0);
+>> 
+>> Can we use msm8992_ce1_clk?
+>> 
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, ipa_clk, ipa_a_clk, 
+>>> QCOM_SMD_RPM_IPA_CLK, 0);
+>> 
+>> Can we use msm8976_ipa_clk?
+>> 
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, qup_clk, qup_a_clk, 
+>>> QCOM_SMD_RPM_QUP_CLK, 0);
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, mmnrt_clk, mmnrt_a_clk, 
+>>> QCOM_SMD_RPM_MMAXI_CLK, 0);
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, mmrt_clk, mmrt_a_clk, 
+>>> QCOM_SMD_RPM_MMAXI_CLK, 1);
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, snoc_periph_clk, snoc_periph_a_clk,
+>>>  +                                               
+>>> QCOM_SMD_RPM_BUS_CLK, 0);
+>>>  +DEFINE_CLK_SMD_RPM(sm6125, snoc_lpass_clk, snoc_lpass_a_clk,
+>>>  +                                               
+>>> QCOM_SMD_RPM_BUS_CLK, 5);
+>>>  +
+>>>  +/* SMD_XO_BUFFER */
+>>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk1, ln_bb_clk1_a, 1);
+>> 
+>> msm8916?
+> 
+> msm8916 one is not ln_.
+> 
+>> 
+>>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk2, ln_bb_clk2_a, 2);
+>> 
+>> msm8916?
+> 
+> Same reason.
+> 
+>> 
+>>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk3, ln_bb_clk3_a, 3);
+>> 
+>> sdm660?
+>> 
+>>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, rf_clk1, rf_clk1_a, 4);
+>> 
+>> msm8916?
+>> 
+>>>  +DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, rf_clk2, rf_clk2_a, 5);
+>> 
+>> msm8916?
+>> 
+>>>  +
+>>>  +static struct clk_smd_rpm *sm6125_clks[] = {
+>>>  +       [RPM_SMD_XO_CLK_SRC] = &sm6125_bi_tcxo,
+>>>  +       [RPM_SMD_XO_A_CLK_SRC] = &sm6125_bi_tcxo_ao,
+>>>  +       [RPM_SMD_SNOC_CLK] = &sm6125_snoc_clk,
+>>>  +       [RPM_SMD_SNOC_A_CLK] = &sm6125_snoc_a_clk,
+>>>  +       [RPM_SMD_BIMC_CLK] = &sm6125_bimc_clk,
+>>>  +       [RPM_SMD_BIMC_A_CLK] = &sm6125_bimc_a_clk,
+>>>  +       [RPM_SMD_QDSS_CLK] = &sm6125_qdss_clk,
+>>>  +       [RPM_SMD_QDSS_A_CLK] = &sm6125_qdss_a_clk,
+>>>  +       [RPM_SMD_RF_CLK1] = &sm6125_rf_clk1,
+>>>  +       [RPM_SMD_RF_CLK1_A] = &sm6125_rf_clk1_a,
+>>>  +       [RPM_SMD_RF_CLK2] = &sm6125_rf_clk2,
+>>>  +       [RPM_SMD_RF_CLK2_A] = &sm6125_rf_clk2_a,
+>>>  +       [RPM_SMD_LN_BB_CLK1] = &sm6125_ln_bb_clk1,
+>>>  +       [RPM_SMD_LN_BB_CLK1_A] = &sm6125_ln_bb_clk1_a,
+>>>  +       [RPM_SMD_LN_BB_CLK2] = &sm6125_ln_bb_clk2,
+>>>  +       [RPM_SMD_LN_BB_CLK2_A] = &sm6125_ln_bb_clk2_a,
+>>>  +       [RPM_SMD_LN_BB_CLK3] = &sm6125_ln_bb_clk3,
+>>>  +       [RPM_SMD_LN_BB_CLK3_A] = &sm6125_ln_bb_clk3_a,
+>>>  +       [RPM_SMD_CNOC_CLK] = &sm6125_cnoc_clk,
+>>>  +       [RPM_SMD_CNOC_A_CLK] = &sm6125_cnoc_a_clk,
+>>>  +       [RPM_SMD_CE1_CLK] = &sm6125_ce1_clk,
+>>>  +       [RPM_SMD_CE1_A_CLK] = &sm6125_ce1_a_clk,
+>>>  +};
+>>>  +
+>>>  +static const struct rpm_smd_clk_desc rpm_clk_sm6125 = {
+>>>  +       .clks = sm6125_clks,
+>>>  +       .num_clks = ARRAY_SIZE(sm6125_clks),
+>>>  +};
+>>>  +
+>>>   static const struct of_device_id rpm_smd_clk_match_table[] = {
+>>>          { .compatible = "qcom,rpmcc-msm8916", .data = 
+>>> &rpm_clk_msm8916 },
+>>>          { .compatible = "qcom,rpmcc-msm8936", .data = 
+>>> &rpm_clk_msm8936 },
+>>>  diff --git a/include/linux/soc/qcom/smd-rpm.h 
+>>> b/include/linux/soc/qcom/smd-rpm.h
+>>>  index f2645ec52520..b737d7e456e4 100644
+>>>  --- a/include/linux/soc/qcom/smd-rpm.h
+>>>  +++ b/include/linux/soc/qcom/smd-rpm.h
+>>>  @@ -28,6 +28,7 @@ struct qcom_smd_rpm;
+>>>   #define QCOM_SMD_RPM_NCPA      0x6170636E
+>>>   #define QCOM_SMD_RPM_NCPB      0x6270636E
+>>>   #define QCOM_SMD_RPM_OCMEM_PWR 0x706d636f
+>>>  +#define QCOM_SMD_RPM_QUP_CLK   0x00707571
+>>>   #define QCOM_SMD_RPM_QPIC_CLK  0x63697071
+>>>   #define QCOM_SMD_RPM_SMPA      0x61706d73
+>>>   #define QCOM_SMD_RPM_SMPB      0x62706d73
+>> 
+>> Two patches are adding this in different places.
+> 
 
-The following changes since commit 9f42f674a89200d4f465a7db6070e079f3c6145f:
 
-  Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux (2021-07-22 10:38:19 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc4
-
-for you to fetch changes up to 8d67041228acf41addabdee5a60073e1b729e308:
-
-  Merge tag 'linux-can-fixes-for-5.14-20210730' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can (2021-07-30 19:29:52 +0200)
-
-----------------------------------------------------------------
-Networking fixes for 5.14-rc4, including fixes from bpf, can, WiFi (mac80211)
-and netfilter trees.
-
-Current release - regressions:
-
- - mac80211: fix starting aggregation sessions on mesh interfaces
-
-Current release - new code bugs:
-
- - sctp: send pmtu probe only if packet loss in Search Complete state
-
- - bnxt_en: add missing periodic PHC overflow check
-
- - devlink: fix phys_port_name of virtual port and merge error
-
- - hns3: change the method of obtaining default ptp cycle
-
- - can: mcba_usb_start(): add missing urb->transfer_dma initialization
-
-Previous releases - regressions:
-
- - set true network header for ECN decapsulation
-
- - mlx5e: RX, avoid possible data corruption w/ relaxed ordering and LRO
-
- - phy: re-add check for PHY_BRCM_DIS_TXCRXC_NOENRGY on the BCM54811 PHY
-
- - sctp: fix return value check in __sctp_rcv_asconf_lookup
-
-Previous releases - always broken:
-
- - bpf:
-       - more spectre corner case fixes, introduce a BPF nospec
-         instruction for mitigating Spectre v4
-       - fix OOB read when printing XDP link fdinfo
-       - sockmap: fix cleanup related races
-
- - mac80211: fix enabling 4-address mode on a sta vif after assoc
-
- - can:
-       - raw: raw_setsockopt(): fix raw_rcv panic for sock UAF
-       - j1939: j1939_session_deactivate(): clarify lifetime of
-              session object, avoid UAF
-       - fix number of identical memory leaks in USB drivers
-
- - tipc:
-       - do not blindly write skb_shinfo frags when doing decryption
-       - fix sleeping in tipc accept routine
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Andrii Nakryiko (1):
-      Merge branch 'sockmap fixes picked up by stress tests'
-
-Arkadiusz Kubalewski (2):
-      i40e: Fix logic of disabling queues
-      i40e: Fix firmware LLDP agent related warning
-
-Arnd Bergmann (1):
-      netfilter: nfnl_hook: fix unused variable warning
-
-Aya Levin (4):
-      net/mlx5e: Consider PTP-RQ when setting RX VLAN stripping
-      net/mlx5e: Fix page allocation failure for trap-RQ over SF
-      net/mlx5e: Fix page allocation failure for ptp-RQ over SF
-      net/mlx5: Unload device upon firmware fatal error
-
-Catherine Sullivan (1):
-      gve: Update MAINTAINERS list
-
-Chen Shen (1):
-      sctp: delete addr based on sin6_scope_id
-
-Chris Mi (1):
-      net/mlx5: Fix mlx5_vport_tbl_attr chain from u16 to u32
-
-Dan Carpenter (1):
-      can: hi311x: fix a signedness bug in hi3110_cmd()
-
-Daniel Borkmann (5):
-      bpf: Remove superfluous aux sanitation on subprog rejection
-      bpf: Fix pointer arithmetic mask tightening under state pruning
-      bpf, selftests: Add test cases for pointer alu from multiple paths
-      bpf: Introduce BPF nospec instruction for mitigating Spectre v4
-      bpf: Fix leakage due to insufficient speculative store bypass mitigation
-
-David S. Miller (8):
-      Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf
-      Merge tag 'mac80211-for-net-2021-07-23' of git://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211
-      Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
-      Merge branch 'ionic-fixes'
-      Merge tag 'linux-can-fixes-for-5.14-20210724' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can
-      Merge branch 'sctp-pmtu-probe'
-      Merge tag 'mlx5-fixes-2021-07-27' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
-      Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-
-Dima Chumak (1):
-      net/mlx5e: Fix nullptr in mlx5e_hairpin_get_mdev()
-
-Dongliang Mu (1):
-      netfilter: nf_tables: fix audit memory leak in nf_tables_commit
-
-Felix Fietkau (2):
-      mac80211: fix starting aggregation sessions on mesh interfaces
-      mac80211: fix enabling 4-address mode on a sta vif after assoc
-
-Florian Westphal (1):
-      netfilter: conntrack: adjust stop timestamp to real expiry value
-
-Geetha sowjanya (2):
-      octeontx2-af: Fix PKIND overlap between LBK and LMAC interfaces
-      octeontx2-pf: Fix interface down flag on error
-
-Gilad Naaman (1):
-      net: Set true network header for ECN decapsulation
-
-Hariprasad Kelam (1):
-      octeontx2-pf: Dont enable backpressure on LBK links
-
-Harshvardhan Jha (1):
-      net: qede: Fix end of loop tests for list_for_each_entry
-
-Hoang Le (1):
-      tipc: fix sleeping in tipc accept routine
-
-Jakub Kicinski (1):
-      Merge tag 'linux-can-fixes-for-5.14-20210730' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can
-
-Jedrzej Jagielski (2):
-      i40e: Fix queue-to-TC mapping on Tx
-      i40e: Fix log TC creation failure when max num of queues is exceeded
-
-Jiapeng Chong (1):
-      mlx4: Fix missing error code in mlx4_load_one()
-
-Joakim Zhang (1):
-      arm64: dts: imx8mp: remove fallback compatible string for FlexCAN
-
-Johan Almbladh (1):
-      mac80211: Do not strip skb headroom on monitor frames
-
-Johannes Berg (1):
-      nl80211: limit band information in non-split data
-
-John Fastabend (3):
-      bpf, sockmap: Zap ingress queues after stopping strparser
-      bpf, sockmap: On cleanup we additionally need to remove cached skb
-      bpf, sockmap: Fix memleak on ingress msg enqueue
-
-Kangmin Park (1):
-      ipv6: decrease hop limit counter in ip6_forward()
-
-Kevin Lo (1):
-      net: phy: broadcom: re-add check for PHY_BRCM_DIS_TXCRXC_NOENRGY on the BCM54811 PHY
-
-Krzysztof Kozlowski (1):
-      nfc: nfcsim: fix use after free during module unload
-
-Letu Ren (1):
-      net/qla3xxx: fix schedule while atomic in ql_wait_for_drvr_lock and ql_adapter_reset
-
-Loic Poulain (1):
-      wwan: core: Fix missing RTM_NEWLINK event for default link
-
-Lorenz Bauer (1):
-      bpf: Fix OOB read when printing XDP link fdinfo
-
-Lukasz Cieplicki (1):
-      i40e: Add additional info to PHY type error
-
-Maor Dickman (2):
-      net/mlx5e: Disable Rx ntuple offload for uplink representor
-      net/mlx5: E-Switch, Set destination vport vhca id only when merged eswitch is supported
-
-Maor Gottlieb (1):
-      net/mlx5: Fix flow table chaining
-
-Marc Kleine-Budde (2):
-      can: mcp251xfd: mcp251xfd_irq(): stop timestamping worker in case error in IRQ
-      MAINTAINERS: add Yasushi SHOJI as reviewer for the Microchip CAN BUS Analyzer Tool driver
-
-Marcelo Ricardo Leitner (1):
-      sctp: fix return value check in __sctp_rcv_asconf_lookup
-
-Matteo Croce (1):
-      virt_wifi: fix error on connect
-
-Maxim Mikityanskiy (1):
-      net/mlx5e: Add NETIF_F_HW_TC to hw_features when HTB offload is available
-
-Michael Chan (1):
-      bnxt_en: Add missing periodic PHC overflow check
-
-Mohammad Athari Bin Ismail (1):
-      net: stmmac: add est_irq_status callback function for GMAC 4.10 and 5.10
-
-Nguyen Dinh Phi (1):
-      cfg80211: Fix possible memory leak in function cfg80211_bss_update
-
-Oleksij Rempel (1):
-      can: j1939: j1939_session_deactivate(): clarify lifetime of session object
-
-Pablo Neira Ayuso (3):
-      netfilter: flowtable: avoid possible false sharing
-      netfilter: nft_last: avoid possible false sharing
-      netfilter: nft_nat: allow to specify layer 4 protocol NAT only
-
-Parav Pandit (1):
-      devlink: Fix phys_port_name of virtual port and merge error
-
-Paul Jakma (1):
-      NIU: fix incorrect error return, missed in previous revert
-
-Pavel Skripkin (6):
-      net: qrtr: fix memory leaks
-      net: llc: fix skb_over_panic
-      can: mcba_usb_start(): add missing urb->transfer_dma initialization
-      can: usb_8dev: fix memory leak
-      can: ems_usb: fix memory leak
-      can: esd_usb2: fix memory leak
-
-Roi Dayan (1):
-      net/mlx5: E-Switch, handle devcom events only for ports on the same device
-
-Shannon Nelson (5):
-      ionic: make all rx_mode work threadsafe
-      ionic: catch no ptp support earlier
-      ionic: remove intr coalesce update from napi
-      ionic: fix up dim accounting for tx and rx
-      ionic: count csum_none when offload enabled
-
-Somnath Kotur (1):
-      bnxt_en: Fix static checker warning in bnxt_fw_reset_task()
-
-Stephane Grosjean (1):
-      can: peak_usb: pcan_usb_handle_bus_evt(): fix reading rxerr/txerr values
-
-Subbaraya Sundeep (1):
-      octeontx2-af: Fix uninitialized variables in rvu_switch
-
-Sunil Goutham (2):
-      octeontx2-af: Remove unnecessary devm_kfree
-      octeontx2-af: Do NIX_RX_SW_SYNC twice
-
-Tang Bin (2):
-      nfc: s3fwrn5: fix undefined parameter values in dev_err()
-      nfc: s3fwrn5: fix undefined parameter values in dev_err()
-
-Tariq Toukan (1):
-      net/mlx5e: RX, Avoid possible data corruption when relaxed ordering and LRO combined
-
-Vladimir Oltean (1):
-      net: dsa: mv88e6xxx: silently accept the deletion of VID 0 too
-
-Wang Hai (2):
-      tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
-      sis900: Fix missing pci_disable_device() in probe and remove
-
-Xin Long (4):
-      tipc: fix implicit-connect for SYN+
-      tipc: do not write skb_shinfo frags when doing decrytion
-      sctp: improve the code for pmtu probe send and recv update
-      sctp: send pmtu probe only if packet loss in Search Complete state
-
-Yufeng Mo (1):
-      net: hns3: change the method of obtaining default ptp cycle
-
-Zhang Changzhong (1):
-      can: j1939: j1939_xtp_rx_dat_one(): fix rxtimer value between consecutive TP.DT to 750ms
-
-Ziyang Xuan (1):
-      can: raw: raw_setsockopt(): fix raw_rcv panic for sock UAF
-
-zhang kai (1):
-      net: let flow have same hash in two directions
-
- MAINTAINERS                                        |  12 +-
- arch/arm/net/bpf_jit_32.c                          |   3 +
- arch/arm64/boot/dts/freescale/imx8mp.dtsi          |   4 +-
- arch/arm64/net/bpf_jit_comp.c                      |  13 ++
- arch/mips/net/ebpf_jit.c                           |   3 +
- arch/powerpc/net/bpf_jit_comp32.c                  |   6 +
- arch/powerpc/net/bpf_jit_comp64.c                  |   6 +
- arch/riscv/net/bpf_jit_comp32.c                    |   4 +
- arch/riscv/net/bpf_jit_comp64.c                    |   4 +
- arch/s390/net/bpf_jit_comp.c                       |   5 +
- arch/sparc/net/bpf_jit_comp_64.c                   |   3 +
- arch/x86/net/bpf_jit_comp.c                        |   7 +
- arch/x86/net/bpf_jit_comp32.c                      |   6 +
- drivers/net/can/spi/hi311x.c                       |   2 +-
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c     |   1 +
- drivers/net/can/usb/ems_usb.c                      |  14 +-
- drivers/net/can/usb/esd_usb2.c                     |  16 +-
- drivers/net/can/usb/mcba_usb.c                     |   2 +
- drivers/net/can/usb/peak_usb/pcan_usb.c            |  10 +-
- drivers/net/can/usb/usb_8dev.c                     |  15 +-
- drivers/net/dsa/mv88e6xxx/chip.c                   |   2 +-
- drivers/net/ethernet/broadcom/bnxt/bnxt.c          |   5 +-
- drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c      |   7 +
- drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.h      |   4 +
- drivers/net/ethernet/dec/tulip/winbond-840.c       |   7 +-
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_ptp.c |  36 +++-
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_ptp.h |  10 +-
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c     |   6 +-
- drivers/net/ethernet/intel/i40e/i40e_main.c        |  61 +++---
- drivers/net/ethernet/intel/i40e/i40e_txrx.c        |  50 +++++
- drivers/net/ethernet/intel/i40e/i40e_txrx.h        |   2 +
- drivers/net/ethernet/marvell/octeontx2/af/cgx.c    |   2 +-
- drivers/net/ethernet/marvell/octeontx2/af/npc.h    |   3 +
- drivers/net/ethernet/marvell/octeontx2/af/rvu.c    |   6 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    |  17 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    |  11 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_switch.c |  11 +-
- .../ethernet/marvell/octeontx2/nic/otx2_common.c   |  14 +-
- .../ethernet/marvell/octeontx2/nic/otx2_ethtool.c  |   7 +-
- .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   5 +
- drivers/net/ethernet/mellanox/mlx4/main.c          |   1 +
- drivers/net/ethernet/mellanox/mlx5/core/dev.c      |   5 +-
- .../net/ethernet/mellanox/mlx5/core/en/params.c    |  11 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c   |   7 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/trap.c  |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  38 ++--
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |  33 ++-
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.h  |   2 +-
- .../ethernet/mellanox/mlx5/core/eswitch_offloads.c |  10 +-
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c  |  10 +-
- drivers/net/ethernet/mellanox/mlx5/core/health.c   |  12 +-
- drivers/net/ethernet/pensando/ionic/ionic_lif.c    | 197 +++++++++---------
- drivers/net/ethernet/pensando/ionic/ionic_lif.h    |  11 +-
- drivers/net/ethernet/pensando/ionic/ionic_phc.c    |  10 +-
- drivers/net/ethernet/pensando/ionic/ionic_txrx.c   |  41 ++--
- drivers/net/ethernet/qlogic/qede/qede_filter.c     |   4 +-
- drivers/net/ethernet/qlogic/qla3xxx.c              |   6 +-
- drivers/net/ethernet/sis/sis900.c                  |   7 +-
- drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c  |   2 +
- drivers/net/ethernet/sun/niu.c                     |   3 +-
- drivers/net/phy/broadcom.c                         |   2 +-
- drivers/net/wireless/virt_wifi.c                   |  52 +++--
- drivers/net/wwan/wwan_core.c                       |   2 +
- drivers/nfc/nfcsim.c                               |   3 +-
- drivers/nfc/s3fwrn5/firmware.c                     |   2 +-
- include/linux/bpf_types.h                          |   1 +
- include/linux/bpf_verifier.h                       |   3 +-
- include/linux/filter.h                             |  15 ++
- include/linux/skmsg.h                              |  54 +++--
- include/net/llc_pdu.h                              |  31 ++-
- include/net/sctp/structs.h                         |   5 +-
- kernel/bpf/core.c                                  |  19 +-
- kernel/bpf/disasm.c                                |  16 +-
- kernel/bpf/verifier.c                              | 148 +++++--------
- net/can/j1939/transport.c                          |  11 +-
- net/can/raw.c                                      |  20 +-
- net/core/devlink.c                                 |  10 +-
- net/core/flow_dissector.c                          |  18 +-
- net/core/skmsg.c                                   |  39 +++-
- net/ipv4/ip_tunnel.c                               |   2 +-
- net/ipv6/ip6_output.c                              |   5 +-
- net/llc/af_llc.c                                   |  10 +-
- net/llc/llc_s_ac.c                                 |   2 +-
- net/mac80211/cfg.c                                 |  19 ++
- net/mac80211/ieee80211_i.h                         |   2 +
- net/mac80211/mlme.c                                |   4 +-
- net/mac80211/rx.c                                  |   3 +-
- net/mac80211/tx.c                                  |  57 ++---
- net/netfilter/nf_conntrack_core.c                  |   7 +-
- net/netfilter/nf_flow_table_core.c                 |   6 +-
- net/netfilter/nf_tables_api.c                      |  12 ++
- net/netfilter/nfnetlink_hook.c                     |   2 +
- net/netfilter/nft_last.c                           |  20 +-
- net/netfilter/nft_nat.c                            |   4 +-
- net/qrtr/qrtr.c                                    |   6 +-
- net/sctp/input.c                                   |   2 +-
- net/sctp/ipv6.c                                    |   5 +-
- net/sctp/sm_statefuns.c                            |  15 +-
- net/sctp/transport.c                               |  45 ++--
- net/tipc/crypto.c                                  |  14 +-
- net/tipc/socket.c                                  |  30 +--
- net/wireless/nl80211.c                             |   5 +-
- net/wireless/scan.c                                |   6 +-
- .../selftests/bpf/verifier/value_ptr_arith.c       | 229 +++++++++++++++++++++
- 104 files changed, 1230 insertions(+), 547 deletions(-)
