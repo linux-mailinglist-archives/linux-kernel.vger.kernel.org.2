@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0863DBA8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99463DBA8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239146AbhG3OZH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Jul 2021 10:25:07 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3543 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239691AbhG3OY6 (ORCPT
+        id S239081AbhG3O0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231277AbhG3O02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:24:58 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gbq9c47xbz6L9kH;
-        Fri, 30 Jul 2021 22:12:52 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 30 Jul 2021 16:24:51 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Fri, 30 Jul 2021 16:24:51 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Igor Stoppa <igor.stoppa@huawei.com>
-Subject: RE: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
- digest_list_del
-Thread-Topic: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
- digest_list_del
-Thread-Index: AQHXgjzPxJ6WuoGgH0KyG3D/y7w0xqtaWSsAgADBDpCAAD+ygIAAIhjQ///1QYCAACKD8A==
-Date:   Fri, 30 Jul 2021 14:24:51 +0000
-Message-ID: <bd0787e0ee4f47baa41abf47976e536c@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
-         <20210726163700.2092768-7-roberto.sassu@huawei.com>
-         <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
-         <ef7c85dcb096479e95c8c60ccda4d700@huawei.com>
-         <1ef95096bee13578b3f906dd9f708c6af9d6ff18.camel@linux.ibm.com>
-         <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
- <2c731f07bd08f01f2a3e032814bc65ae9a8494ad.camel@linux.ibm.com>
-In-Reply-To: <2c731f07bd08f01f2a3e032814bc65ae9a8494ad.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 30 Jul 2021 10:26:28 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C20C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:26:23 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id h9so12615993ljq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 07:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2oGSD96sNs3fe87T1syyoEjF/gXarcKaHn7imJsZ/wE=;
+        b=B9ydlXTx9KHjIbQb/934UeJRtQlmjkfbDf4yiVi1GKeyPlWGSR1DeJEsbK6TcpIRWD
+         HKTulJjdYnAeOKo4giQBx4ccFpzmqYVKeIWClW99gfsw9fHmX5nGrD4LnRe2yEVgnKgi
+         GqPezmzlgv1ZVCDLB0+dPZRecoNc0/HFiRYR/DnrMWrQV93KCCBvx+zydMb91b8OSyvY
+         0/IiM8Noz8DYh5xZpnOQHp+rii0YKIAbsXkFOfkDMfv0qSNkIIkp6qlw+9dLduM7L6Dg
+         AN9dUJeC8JyfWd1bThscIeaOVPIlNpaD0KZKAPIIyhVpreGPDy/noXgcT/ESkx+ZjEjj
+         D97A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2oGSD96sNs3fe87T1syyoEjF/gXarcKaHn7imJsZ/wE=;
+        b=A3fSzRAD42EzpccruhVaWUU1Vcc5/oSxtU1GrQ04+UQF7VX0bMoAPobEXH3qfsB2Vp
+         spQrNZvkBwkKdfjB7BO/QrzA6xo4yqIHe0SctwY21qfPQhEf2whHzBpwoqF0eseZiQYq
+         8nmq7S4dRnWcko8k2XoqwQTB9NDTxL3OBGdRKwXQKCzqCfmP/0zgi7+1NDozkCr/Os1q
+         V5skkatxZOtOvn8TIvUo/b9xxEZrHBEJQ/7qFW81+tc/6pRqFUvAF3sVztzecdpzsUy2
+         HJjOCoGN4AJrYMwNpfrXMZc4oJPzzRtC8DKF6firlCXXKLFatHc8iEeiIOtD8yQjyDp3
+         ukBw==
+X-Gm-Message-State: AOAM533AqiuMpoGf9/P1xa421NpcJNLoSku/nFn8hLj4zRoO1NLzgB8C
+        0UVj15unlIPJfgkHZX3OCVmEYyqmXWnu6fIysJNQ+Q==
+X-Google-Smtp-Source: ABdhPJyXkDVghehLAHsT/bHp3R4sMxvHWJVGvcrXAo37QXvpkXPTqUtapaXCnDfhYmgE66Lq9qmwg0xmfjUAVpkwhew=
+X-Received: by 2002:a2e:b04e:: with SMTP id d14mr1942283ljl.74.1627655182215;
+ Fri, 30 Jul 2021 07:26:22 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210730134552.853350-1-bert@biot.com>
+In-Reply-To: <20210730134552.853350-1-bert@biot.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 30 Jul 2021 16:26:11 +0200
+Message-ID: <CACRpkdbU_=GcX2Xem0QfK8bY9RGiyPCBhbxWEubxqtyN1W-xDQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Add support for EcoNet EN7523 SoC
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        John Crispin <john@phrozen.org>, Felix Fietkau <nbd@nbd.name>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Friday, July 30, 2021 4:03 PM
-> Hi Roberto,
-> 
-> On Fri, 2021-07-30 at 13:16 +0000, Roberto Sassu wrote:
-> > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > > Sent: Friday, July 30, 2021 2:40 PM
-> 
-> > > "critical data", in this context, should probably be used for verifying
-> > > the in memory file digests and other state information haven't been
-> > > compromised.
-> >
-> > Actually, this is what we are doing currently. To keep the
-> > implementation simple, once the file or the buffer are uploaded
-> > to the kernel, they will not be modified, just accessed through
-> > the indexes.
-> 
-> My main concern about digest lists is their integrity, from loading the
-> digest lists to their being stored in memory.  A while back, there was
-> some work on defining a write once memory allocator.  I don't recall
-> whatever happened to it.  This would be a perfect usecase for that
-> memory allocator.
+On Fri, Jul 30, 2021 at 3:48 PM Bert Vermeulen <bert@biot.com> wrote:
 
-Adding Igor in CC.
+> This patchset adds support for the EcoNet EN7523 SoC, intended primarily
+> for xPON/xDSL routers.
+>
+> John Crispin (4):
+>   dt-bindings: Add vendor prefix for EcoNet
+>   dt-bindings: arm: econet: Add binding for EN7523 SoC and EVB
+>   ARM: dts: Add basic support for EcoNet EN7523
+>   ARM: Add basic support for EcoNet EN7523 SoC
 
-Regarding loading, everything uploaded to the kernel is carefully
-evaluated. This should not be a concern. Regarding making them
-read-only, probably if you can subvert digest lists you can also
-remove the read-only protection (unless you use an hypervisor).
+Given that this uses GIC v3 and so forth I recognize that this is brand new
+ARM32 silicon. :O
 
-Thanks
+All patches look good. Very interesting platform!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> Mimi
-
+Yours,
+Linus Walleij
