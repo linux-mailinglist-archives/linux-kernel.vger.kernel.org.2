@@ -2,175 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4983DB1C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436593DB1CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 05:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235581AbhG3DIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 23:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230199AbhG3DIv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 23:08:51 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB141C061765;
-        Thu, 29 Jul 2021 20:08:46 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id e21so9368131pla.5;
-        Thu, 29 Jul 2021 20:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=FGli0G5ovwMHnEV6R6FenXzO7sxU6LjELt5khjX4A+E=;
-        b=VwkM08Y4LHHttykzFq9x2l4TW7pUVaswpnJEDUXkUUO6TvEdalDhhzjDRjP/kMBD9u
-         qpLNqlTxaZK05gifeKOCGD6S4KLAdt9/05m3dlBenlzWHFYbEEMC4l8fu0FDuQ0mzgIa
-         0BI49FXDhHei5M+V4BrSiSPPA3dgOz23OTYfAfRjFrtPRVoLaLUpc8LBKHCeTXi/uPr+
-         1uq71jl1jAwKzadVYCiE/+6P9XGE2TPDZuHm8pJBixaj4Npf9qkknRTn3Cm5LUHbCO35
-         8jbL7TJeSqgXaix5/TUw2R1Fp/1T7HXoDe/r6mEF73oiu6UOQoZEZMpePhlKnRl0BCMd
-         vOpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=FGli0G5ovwMHnEV6R6FenXzO7sxU6LjELt5khjX4A+E=;
-        b=KyXKt1BUEhyTPjohmb5OvahjRVqYM47W4/JBrQwTfzgVF8815gE5FNVitt+uY46FCQ
-         oqJP62uHsyWiipxHCBwyMRndC5buMo6mOW3XtyGeP73VxJhGmqeV7TjV33KCYAkJxGOF
-         aFGN/el6obj4rmxHcaFPT/7PQEylO8PMLnDiZ7YT7b47c7Pj79wUnls3j9UUeOI6oIn5
-         kOMIp84YYzFJEZqHHYQuEjg8R+tA4zmz2bH/YXotBgpQ1c6SRmtw8RFpBc02XAWE2hlN
-         UpCfOOZMedCvMkHwExpcoBWqck39NMggVtqO1cF5PYtciJhreAaJ3u6KqP381ggkEUL/
-         Pe4g==
-X-Gm-Message-State: AOAM530mZHUNy/HI2EYOxDt4zg+L1BL1CXO3bfKKBsChgqevtu2nSgKr
-        7d8ckoPf8SHEzKXvxkPThCuavaBp0bCLXA==
-X-Google-Smtp-Source: ABdhPJyza6LJi7DuYemwCdW4J3yYhmFdBbdaVD3GRF+khUjcrsEl27kn2s/1EEByESWhy6DjnGXoaQ==
-X-Received: by 2002:a17:90b:1b06:: with SMTP id nu6mr755732pjb.192.1627614526229;
-        Thu, 29 Jul 2021 20:08:46 -0700 (PDT)
-Received: from localhost ([108.161.26.224])
-        by smtp.gmail.com with ESMTPSA id p10sm283859pgr.14.2021.07.29.20.08.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 20:08:44 -0700 (PDT)
-Date:   Thu, 29 Jul 2021 20:08:38 -0700
-From:   Matt Turner <mattst88@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Arnd Bergmann <arnd@arndb.de>, Chen Li <chenli@uniontech.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        David Hildenbrand <david@redhat.com>,
-        gushengxian <gushengxian@yulong.com>,
-        He Zhe <zhe.he@windriver.com>, Mike Rapoport <rppt@kernel.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        tangchunyou <tangchunyou@yulong.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PULL] alpha.git
-Message-ID: <20210730030838.5mp7srx73wuttx5m@ivybridge>
+        id S235181AbhG3DKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 23:10:54 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51568 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230196AbhG3DKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 23:10:47 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1m9Iud-0000dZ-3J; Fri, 30 Jul 2021 11:10:15 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1m9IuN-0003AF-8T; Fri, 30 Jul 2021 11:09:59 +0800
+Date:   Fri, 30 Jul 2021 11:09:59 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Markku-Juhani O . Saarinen" <mjos@iki.fi>,
+        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        "YiLin . Li" <YiLin.Li@linux.alibaba.com>
+Subject: Re: [PATCH v3 0/4] Introduce x86 assembler accelerated
+ implementation for SM4 algorithm
+Message-ID: <20210730030959.GA12121@gondor.apana.org.au>
+References: <20210720034642.19230-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="v4v74npvwpxrqo5o"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210720034642.19230-1-tianjia.zhang@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 20, 2021 at 11:46:38AM +0800, Tianjia Zhang wrote:
+> This patchset extracts the public SM4 algorithm as a separate library,
+> At the same time, the acceleration implementation of SM4 in arm64 was
+> adjusted to adapt to this SM4 library. Then introduces an accelerated
+> implementation of the instruction set on x86_64.
+> 
+> This optimization supports the four modes of SM4, ECB, CBC, CFB, and
+> CTR. Since CBC and CFB do not support multiple block parallel
+> encryption, the optimization effect is not obvious. And all selftests
+> have passed already.
+> 
+> The main algorithm implementation comes from SM4 AES-NI work by
+> libgcrypt and Markku-Juhani O. Saarinen at:
+> https://github.com/mjosaarinen/sm4ni
+> 
+> Benchmark on Intel Xeon Cascadelake, the data comes from the mode 218
+> and mode 518 of tcrypt. The abscissas are blocks of different lengths.
+> The data is tabulated and the unit is Mb/s:
+> 
+> sm4-generic   |    16      64     128     256    1024    1420    4096
+>       ECB enc | 40.99   46.50   48.05   48.41   49.20   49.25   49.28
+>       ECB dec | 41.07   46.99   48.15   48.67   49.20   49.25   49.29
+>       CBC enc | 37.71   45.28   46.77   47.60   48.32   48.37   48.40
+>       CBC dec | 36.48   44.82   46.43   47.45   48.23   48.30   48.36
+>       CFB enc | 37.94   44.84   46.12   46.94   47.57   47.46   47.68
+>       CFB dec | 37.50   42.84   43.74   44.37   44.85   44.80   44.96
+>       CTR enc | 39.20   45.63   46.75   47.49   48.09   47.85   48.08
+>       CTR dec | 39.64   45.70   46.72   47.47   47.98   47.88   48.06
+> sm4-aesni-avx
+>       ECB enc | 33.75  134.47  221.64  243.43  264.05  251.58  258.13
+>       ECB dec | 34.02  134.92  223.11  245.14  264.12  251.04  258.33
+>       CBC enc | 38.85   46.18   47.67   48.34   49.00   48.96   49.14
+>       CBC dec | 33.54  131.29  223.88  245.27  265.50  252.41  263.78
+>       CFB enc | 38.70   46.10   47.58   48.29   49.01   48.94   49.19
+>       CFB dec | 32.79  128.40  223.23  244.87  265.77  253.31  262.79
+>       CTR enc | 32.58  122.23  220.29  241.16  259.57  248.32  256.69
+>       CTR dec | 32.81  122.47  218.99  241.54  258.42  248.58  256.61
+> 
+> ---
+> v3 changes:
+>   * Remove single block algorithm that does not greatly improve performance
+>   * Remove accelerated for sm4 key expand, which is not performance-critical
+>   * Fix the warning on arm64/sm4-ce
+> 
+> v2 changes:
+>   * SM4 library functions use "sm4_" prefix instead of "crypto_" prefix
+>   * sm4-aesni-avx supports accelerated implementation of four specific modes
+>   * tcrypt benchmark supports sm4-aesni-avx
+>   * fixes of other reviews
+> 
+> 
+> Tianjia Zhang (4):
+>   crypto: sm4 - create SM4 library based on sm4 generic code
+>   crypto: arm64/sm4-ce - Make dependent on sm4 library instead of
+>     sm4-generic
+>   crypto: x86/sm4 - add AES-NI/AVX/x86_64 implementation
+>   crypto: tcrypt - add the asynchronous speed test for SM4
+> 
+>  arch/arm64/crypto/Kconfig              |   2 +-
+>  arch/arm64/crypto/sm4-ce-glue.c        |  20 +-
+>  arch/x86/crypto/Makefile               |   3 +
+>  arch/x86/crypto/sm4-aesni-avx-asm_64.S | 589 +++++++++++++++++++++++++
+>  arch/x86/crypto/sm4_aesni_avx_glue.c   | 459 +++++++++++++++++++
+>  crypto/Kconfig                         |  22 +
+>  crypto/sm4_generic.c                   | 180 +-------
+>  crypto/tcrypt.c                        |  26 +-
+>  include/crypto/sm4.h                   |  25 +-
+>  lib/crypto/Kconfig                     |   3 +
+>  lib/crypto/Makefile                    |   3 +
+>  lib/crypto/sm4.c                       | 176 ++++++++
+>  12 files changed, 1330 insertions(+), 178 deletions(-)
+>  create mode 100644 arch/x86/crypto/sm4-aesni-avx-asm_64.S
+>  create mode 100644 arch/x86/crypto/sm4_aesni_avx_glue.c
+>  create mode 100644 lib/crypto/sm4.c
 
---v4v74npvwpxrqo5o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Linus,
-
-Please pull a few changes for alpha. They're mostly small janitorial fixes but
-there's also more important ones: a patch to drop the alpha-specific x86 binary
-loader (from David Hildenbrand), a regression fix for at least Marvel platforms
-(from Mike Rapoport), and a fix for a scary-looking typo (from Zheng Yongjun).
-
-Thanks,
-Matt
-
-The following changes since commit ff1176468d368232b684f75e82563369208bc371:
-
-  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mattst88/alpha.git for-linus
-
-for you to fetch changes up to 640b7ea5f888b521dcf28e2564ce75d08a783fd7:
-
-  alpha: register early reserved memory in memblock (2021-07-28 20:49:18 -0700)
-
-----------------------------------------------------------------
-Alexander A. Klimov (1):
-      alpha: Kconfig: Replace HTTP links with HTTPS ones
-
-Arnd Bergmann (1):
-      alpha: fp_emul: avoid init/cleanup_module names
-
-Chen Li (1):
-      alpha: remove undef inline in compiler.h
-
-Corentin Labbe (2):
-      alpha: __udiv_qrnnd should be exported
-      alpha: defconfig: add necessary configs for boot testing
-
-David Hildenbrand (1):
-      binfmt: remove support for em86 (alpha only)
-
-He Zhe (1):
-      alpha: Add syscall_get_return_value()
-
-Mike Rapoport (1):
-      alpha: register early reserved memory in memblock
-
-Prarit Bhargava (1):
-      alpha: Send stop IPI to send to online CPUs
-
-Zheng Yongjun (1):
-      alpha: convert comma to semicolon
-
-gushengxian (2):
-      alpha: Remove space between * and parameter name
-      alpha: fix spelling mistakes
-
-tangchunyou (1):
-      alpha: fix typos in a comment
-
- arch/alpha/Kconfig                |   2 +-
- arch/alpha/boot/bootp.c           |   2 +-
- arch/alpha/boot/bootpz.c          |   2 +-
- arch/alpha/boot/misc.c            |   2 +-
- arch/alpha/configs/defconfig      |   1 +
- arch/alpha/include/asm/compiler.h |  11 ----
- arch/alpha/include/asm/syscall.h  |   6 +++
- arch/alpha/kernel/osf_sys.c       |   4 +-
- arch/alpha/kernel/perf_event.c    |   2 +-
- arch/alpha/kernel/process.c       |   2 +-
- arch/alpha/kernel/setup.c         |  13 ++---
- arch/alpha/kernel/smp.c           |   2 +-
- arch/alpha/kernel/sys_nautilus.c  |   2 +-
- arch/alpha/kernel/traps.c         |   2 +-
- arch/alpha/math-emu/math.c        |   8 ++-
- fs/Kconfig.binfmt                 |  15 ------
- fs/Makefile                       |   1 -
- fs/binfmt_em86.c                  | 110 --------------------------------------
- 18 files changed, 31 insertions(+), 156 deletions(-)
- delete mode 100644 fs/binfmt_em86.c
-
---v4v74npvwpxrqo5o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQGTBAABCgB9FiEEvu9JS1spHrMAon8T7S7Rn4WzaCwFAmEDbTBfFIAAAAAALgAo
-aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldEJF
-RUY0OTRCNUIyOTFFQjMwMEEyN0YxM0VEMkVEMTlGODVCMzY4MkMACgkQ7S7Rn4Wz
-aCxBlwf6A1KJKyMAmG5vLTMwLOMxFX5C4lv+PZPADoUSejlowMNbZfR2YDmDQ0G8
-l/tE11JM/2TSX5vcj+Hku7QlhO32QiW3bkd6eZMzFSG3ZDWmwIICVrsyPIqbr5xq
-FgU6X0l5ng13XJwA6OlHOUcNuv08Y2i69KByWu4shw6tP7TBA/y5LH39iC7qg/dB
-ETuQckM+03hiVGtxQLKPHA/zP3BQDn1SjdYm9MlNrQ9VVQSyPRSMsqKw6n2/CPrY
-zxn3WCNMtaS4KcH/kuBPDW5u3p26xAXLCZ2Fi91bCp7deFYp1p1lKyeVUO6Bn5CA
-IEU1D9PjRVQpVcttmxvYeN+IDXpwrA==
-=CT1b
------END PGP SIGNATURE-----
-
---v4v74npvwpxrqo5o--
+All applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
