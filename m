@@ -2,116 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23E93DBC7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A113DBC82
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 17:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhG3PqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 11:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhG3Pp7 (ORCPT
+        id S232361AbhG3PqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 11:46:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36405 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231757AbhG3PqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 11:45:59 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA8EC061765;
-        Fri, 30 Jul 2021 08:45:54 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id m9so12948243ljp.7;
-        Fri, 30 Jul 2021 08:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fawJYldHWdolrAXivi3QZBGiBpcFEP0a9w0quyUwKgg=;
-        b=Mw3YNdZqALvcqSSDyfJu3hRXiVJIQ2Nw4EEYPsD/NtQ4uui/gJ19vEbXkqspQPXWxJ
-         pHHLDl0O9qdQT7bpST4PYSMbOvIT9W8FD/vghqRkndNEOeS9j6FQ/RgQbW2uXF0lOBg9
-         6nmQ9RHZ1/KyA15CW+htmxqFO9p9qr2oEFiSh12xGBNMyKEcEE/8zz6AECB+P4g8KR5P
-         Yi5TFhF2EBD69uf1RqHkm9d9htaWhJuBHoaKWO2Ok4l/ENProie48WcdWtqoIPOEAB20
-         2NLOgBXXPvGxQv/vrfFB6xrAIkagxumIsTarzdY1W0FaNS2VYJddsI3N+mAAE1cLKfk0
-         2j+Q==
+        Fri, 30 Jul 2021 11:46:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627659957;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v843r1H19fuvp9lOYve4s5WGr4F2Kw+kURwizO/7O5c=;
+        b=UD3n/Wg33EXMcpyCQ8rYRnsI3gPTMZZNYMLFzUBTXli9PejDSkTsLFSgASru8NntYdh7a3
+        6wo4X1N9/GkW399HRb25yUc1UWdXKeV+PykNjY/qfxT1wJjw2V6hQo3nrFJoTgUir6psUV
+        NYYUlc7lEcnIQcrcy8pr3RJm7BRKxkA=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-yFKYUKgPP-O1R89tb21J9A-1; Fri, 30 Jul 2021 11:45:56 -0400
+X-MC-Unique: yFKYUKgPP-O1R89tb21J9A-1
+Received: by mail-qv1-f71.google.com with SMTP id w10-20020a0cfc4a0000b0290335dd22451dso4046264qvp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 08:45:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fawJYldHWdolrAXivi3QZBGiBpcFEP0a9w0quyUwKgg=;
-        b=OYYV4A9PiRonLOomSYwhZQtE/1dgsJ4UXAunZYAN4iWxDXIuu30noSuUgSuGpWfUFv
-         Gr7qB0rIqXdx00ePUssA1gfeSub5rYO+qLJzHH+9NEne6L7bSYRuvedGpjldMkliX33E
-         pk6LGI2q50S6TWC+WOajD9Si2lItPcoTRIUsezuBV4Gemz6z9YmTrXP0+fStrCS0mmbJ
-         cUU9V7hQJM4K+Bpt5vonsKpsLp6pgzWTB1RA8JLNLmYTJKsenFTDK61YOGED2/CbxOlz
-         4q9dMay0OKPF8YKjJHfk8u72GWqj6SyFviQ1TbV2i9ZvaEXGwxwOPPujOBqygoUjqsZy
-         gUeg==
-X-Gm-Message-State: AOAM53131U+qT76lTtZyX+Fy3Ppn0l1XJMhywXQcNZ4ow57PYz10OdAH
-        ZZtTllIg2c9ftkotVDn/l5E5OknvzjzeAV4vQW4=
-X-Google-Smtp-Source: ABdhPJxz/WdjDi4lGXhyCZtm24i63rrHi90X5+zc4DeLWMG83ZlGAInQMG/QwUP6GwNdDdJSBSf107Bte0SF5U6V1MU=
-X-Received: by 2002:a2e:98d1:: with SMTP id s17mr1956928ljj.457.1627659952804;
- Fri, 30 Jul 2021 08:45:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v843r1H19fuvp9lOYve4s5WGr4F2Kw+kURwizO/7O5c=;
+        b=BDVvBZJ6h4JJMiFlNuGeiguvBTN+bc2ZDuSirCuASJBe/Q7ARGvzxEgLn8QhtDbvoe
+         7GWDLsvsURQdDshyVjGfIRuzcE4vFxceA+D0ZhDYEqD2iZuRseTDCkSHdG1COv6nOnvj
+         n/uKa5moQTor9Xo8x34ZQ1JWY6u86hZ6PdPn16SdiOPacCXSE3tEEFL4y2GljvHsYNp6
+         yF/mLNktRwDHmClK/e9zoo5zTkqrbJivI7cvuRfgwu4SQt9KC2eEk3MkV3UEZ32wniYc
+         N7YqOFmvXlogM05KBTAmzlH7IpZNpNeIeL4GRQtphA2huTDP8PwJWXff2uOXOkQOl1FK
+         9r6Q==
+X-Gm-Message-State: AOAM531xPkqXAxjRaEAjXfXQqgYIbu7L0aSarw+VIgFbb5ODV1WQ+y+j
+        BGPoRpKB/pMN+hks9vO0YOsndHwmybaodUbvWaNd3kcZvfjT4SaWKUctA2igEZ8uqHY5wnNEyFG
+        Y4s9VpG/rVR1DrMxyCW82Pho4
+X-Received: by 2002:a37:9c06:: with SMTP id f6mr2876484qke.86.1627659955641;
+        Fri, 30 Jul 2021 08:45:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwWeRvDhIJ9F0bX4i2icD9PnnSiOFPbOzhKHxUdd15Tr9p1tA6mPJsh/VKc26FhSw7eDPIZ4w==
+X-Received: by 2002:a37:9c06:: with SMTP id f6mr2876468qke.86.1627659955378;
+        Fri, 30 Jul 2021 08:45:55 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id d4sm735084qty.15.2021.07.30.08.45.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 08:45:54 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 11:45:53 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 8/9] KVM: X86: Optimize pte_list_desc with per-array
+ counter
+Message-ID: <YQQesQVqWSOvb5ET@t490s>
+References: <20210625153214.43106-1-peterx@redhat.com>
+ <20210625153415.43620-1-peterx@redhat.com>
+ <YQHGXhOc5gO9aYsL@google.com>
 MIME-Version: 1.0
-References: <20210728175327.1150120-1-dqfext@gmail.com> <20210728175327.1150120-3-dqfext@gmail.com>
- <20210729152805.o2pur7pp2kpxvvnq@skbuf> <CALW65jbHwRhekX=7xoFvts2m7xTRM4ti9zpTiah8ed0n0fCrRg@mail.gmail.com>
- <20210729165027.okmfa3ulpd3e6gte@skbuf>
-In-Reply-To: <20210729165027.okmfa3ulpd3e6gte@skbuf>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Fri, 30 Jul 2021 23:45:41 +0800
-Message-ID: <CALW65jYYmpnDou0dC3=1AjL9tmo_9jqLSWmusJkeqRb4mSwCGQ@mail.gmail.com>
-Subject: Re: [RFC net-next 2/2] net: dsa: mt7530: trap packets from standalone
- ports to the CPU
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YQHGXhOc5gO9aYsL@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:50 AM Vladimir Oltean <olteanv@gmail.com> wrote:
-> I have the MT7621 GSW, and sadly this reference manual isn't the best in
-> explaining what is and what is not possible. For example, I am still not
-> clear what is meant by "VID1" and "VID0". Is "VID1" the inner (customer)
-> VLAN tag, and "VID0" the outer (service) VLAN tag, or "VID1" means the
-> actual VLAN ID 1?
->
-> And the bits 3:1 of VAWD1 (VLAN table access register) indicate a FID
-> field per VLAN. I cannot find the piece that you quoted in this manual.
-> But what I expect to happen for a Transparent Port is that the packets
-> are always classified to that port's PVID, and the VLAN Table is looked
-> up with that PVID. There, it will find the FID, which this driver
-> currently always configures as zero. In my manual's description, in the
-> "Transparent Port" chapter, it does explicitly say:
->
->         VID0 and VID1 will store PVID as the default VID which is used
->         to look up the VLAN table.
->
-> So I get the impression that the phrase "the VLAN table is not applicable"
-> is not quite correct, but I might be wrong...
+On Wed, Jul 28, 2021 at 09:04:30PM +0000, Sean Christopherson wrote:
+> >  struct pte_list_desc {
+> >  	u64 *sptes[PTE_LIST_EXT];
+> > +	/*
+> > +	 * Stores number of entries stored in the pte_list_desc.  No need to be
+> > +	 * u64 but just for easier alignment.  When PTE_LIST_EXT, means full.
+> > +	 */
+> > +	u64 spte_count;
+> 
+> Per my feedback to the previous patch, this should be above sptes[] so that rmaps
+> with <8 SPTEs only touch one cache line.  No idea if it actually matters in
+> practice, but I can't see how it would harm anything.
 
-Alright, I think I've made some progress.
-In the current code, we only use two combinations to toggle user
-ports' VLAN awareness: one is PCR.PORT_VLAN set to port matrix mode
-with PVC.VLAN_ATTR set to transparent port, the other is PCR.PORT_VLAN
-set to security mode with PVC.VLAN_ATTR set to user port.
+Since at it, I'll further move "more" to be at the entry too, so I think it
+optimizes full entries case too.
 
-It turns out that only PVC.VLAN_ATTR contributes to VLAN awareness.
-Port matrix mode just skips the VLAN table lookup. The reference
-manual is somehow misleading when describing PORT_VLAN modes (See Page
-17 of MT7531 Reference Manual, available at
-http://wiki.banana-pi.org/Banana_Pi_BPI-R64#Resources). It states that
-PORT_MEM (VLAN port member) is used for destination if the VLAN table
-lookup hits, but actually it uses **PORT_MEM & PORT_MATRIX** (bitwise
-AND of VLAN port member and port matrix) instead, which means we can
-have two or more separate VLAN-aware bridges with the same PVID and
-traffic won't leak between them.
+/*
+ * Slight optimization of cacheline layout, by putting `more' and `spte_count'
+ * at the start; then accessing it will only use one single cacheline for
+ * either full (entries==PTE_LIST_EXT) case or entries<=6.
+ */
+struct pte_list_desc {
+	struct pte_list_desc *more;
+	/*
+	 * Stores number of entries stored in the pte_list_desc.  No need to be
+	 * u64 but just for easier alignment.  When PTE_LIST_EXT, means full.
+	 */
+	u64 spte_count;
+	u64 *sptes[PTE_LIST_EXT];
+};
 
-So I came up with a solution: Set PORT_VLAN to fallback mode when in
-VLAN-unaware mode, this way, even VLAN-unaware bridges will use
-independent VLAN filtering. Then assign all standalone ports to a
-reserved VLAN.
+Thanks,
+
+-- 
+Peter Xu
+
