@@ -2,67 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D053DB50D
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D853DB50A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238100AbhG3IaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 04:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbhG3IaJ (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 04:30:09 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E50C061765;
-        Fri, 30 Jul 2021 01:30:03 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id g15so10259288wrd.3;
-        Fri, 30 Jul 2021 01:30:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=n+JT42UW3IX9wla9IjzVJHPpAx8LymWRP5IJmE/8TXw=;
-        b=TBuannp55Fo6X9qwBaBst5wqKodJRSvCB7kPMWugQpuHcP9OPhi9oam5JoZ2T2JOED
-         WgvlbFXIc7UacXzKaNGoBu7y4yfvyu+mCQtt7b3f1D7ffoDl14iUBGcPQ2KYH0Olq9mP
-         gLRF8hm/hNqOXIZgXFqjKOLbT5gy4NMpXS5sMKOOJuh+vJHcBp+7aZ9mqvoJdRvuUtsI
-         A5cDdIRlsIFN+53cK5zNGQk1p1dxo05fZYqpovxgMO6Qo7IE+LriWPX72jPg+34vpH+e
-         8bS3uKSG4A3XQGAeDq7jNpftjcoERyobuP1yWLKOOfIUMw2gBAcsLJeqTno9NWNsH69l
-         23Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=n+JT42UW3IX9wla9IjzVJHPpAx8LymWRP5IJmE/8TXw=;
-        b=s43ObTzCY0ZzC15QXGY0fhFMMLVxlNVRI3lpTMP647dY7tjtlYpf9TU7lyg9K9mfaq
-         +Ff8Uqb0/Y03MaSuPcnbMNtdv3NhK6E6lGkm/rJfk0euMEREVMtJ9UcxoZqUo3ROqCTR
-         VYB/nd9BuiSYisFz0+mSR1aHdOxj8Ill+GxF6JZdDrVXq51idT+MhZA3rzgsH7N/wS9R
-         fm2ZdMty61p3XyGaX2lbtfZ4ERbyRRliLr8/5PGynm9EYuYx4pAt9O5Mx/uzGLg+/n8T
-         64JfC/j0xxq3RmbBn7dRQnBbYZpbEcmvR4fFbwVq9EV9n6xvZkengXqqahJvBaJgCE0m
-         itSQ==
-X-Gm-Message-State: AOAM531+HQrVsDZe3POSpIYcDdDjLdZlXhaIwPyZshScT7q8uGok7BGN
-        IBiFZJRO4qa8hDkcrpp2cgI1yhjBZmymFsO16H8=
-X-Google-Smtp-Source: ABdhPJzg5X/gQWMkIcI6BElZvWcGuhFc6ckR3N2jFxooaYHCkeFlz20H6F/OsGLrX+urA/cfHC0YoA==
-X-Received: by 2002:a5d:6146:: with SMTP id y6mr1674453wrt.278.1627633802106;
-        Fri, 30 Jul 2021 01:30:02 -0700 (PDT)
-Received: from [192.168.1.121] (93-40-209-49.ip40.fastwebnet.it. [93.40.209.49])
-        by smtp.gmail.com with ESMTPSA id l2sm891233wmq.0.2021.07.30.01.30.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 01:30:01 -0700 (PDT)
-Message-ID: <071252c1bcf72a3fddd5664ca82b05b6589957cc.camel@gmail.com>
-Subject: Re: [PATCH v3 1/2] perf pmu: Add PMU alias support
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com
-Date:   Fri, 30 Jul 2021 10:28:30 +0200
-In-Reply-To: <20210730070717.30997-2-yao.jin@linux.intel.com>
-References: <20210730070717.30997-1-yao.jin@linux.intel.com>
-         <20210730070717.30997-2-yao.jin@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        id S238081AbhG3I3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 04:29:06 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:43487 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237956AbhG3I3C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 04:29:02 -0400
+Received: from [10.0.2.15] ([86.243.172.93])
+        by mwinf5d81 with ME
+        id bLUv2500421Fzsu03LUvMV; Fri, 30 Jul 2021 10:28:56 +0200
+X-ME-Helo: [10.0.2.15]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 30 Jul 2021 10:28:56 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH v27 02/10] fs/ntfs3: Add initialization of super block
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
+        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
+        mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, kari.argillander@gmail.com,
+        oleksandr@natalenko.name
+References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+ <20210729134943.778917-3-almaz.alexandrovich@paragon-software.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <22a587a2-a7d0-2250-7f3d-8e6fe3b98a28@wanadoo.fr>
+Date:   Fri, 30 Jul 2021 10:28:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210729134943.778917-3-almaz.alexandrovich@paragon-software.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -70,170 +48,232 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-thanks for your quick revision. 
+below are a few comments based on a cppcheck run.
+Don't take it too seriously into consideration, this is just some minor 
+clean-up.
 
-There is still one small memory issue with a variable not being freed, which I
-noticed when running this patchset together with John's patchset.
+The only one that may look interested is in 'indx_find()'
 
-On Fri, 2021-07-30 at 15:07 +0800, Jin Yao wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
+CJ
+
+
+Le 29/07/2021 à 15:49, Konstantin Komarov a écrit :
+> This adds initialization of super block
 > 
-> A perf uncore PMU may have two PMU names, a real name and an alias. The
-> alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
-> The perf tool should support the alias as well.
-> 
-> Add alias_name in the struct perf_pmu to store the alias. For the PMU
-> which doesn't have an alias. It's NULL.
-> 
-> Introduce two X86 specific functions to retrieve the real name and the
-> alias separately.
-> 
-> Only go through the sysfs to retrieve the mapping between the real name
-> and the alias once. The result is cached in a list, uncore_pmu_list.
-> 
-> Nothing changed for the other ARCHs.
-> 
-> With the patch, the perf tool can monitor the PMU with either the real
-> name or the alias.
-> 
-> Use the real name,
->  $ perf stat -e uncore_cha_2/event=1/ -x,
->    4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
-> 
-> Use the alias,
->  $ perf stat -e uncore_type_0_2/event=1/ -x,
->    3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
-> 
-> Co-developed-by: Jin Yao <yao.jin@linux.intel.com>
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 > ---
-> v3:
->  - Use fgets to read alias string from sysfs.
->  - Resource cleanup.
+>   fs/ntfs3/fsntfs.c | 2542 +++++++++++++++++++++++++++++++++++++++++++
+>   fs/ntfs3/index.c  | 2641 +++++++++++++++++++++++++++++++++++++++++++++
+>   fs/ntfs3/inode.c  | 2034 ++++++++++++++++++++++++++++++++++
+>   fs/ntfs3/super.c  | 1500 +++++++++++++++++++++++++
+>   4 files changed, 8717 insertions(+)
+>   create mode 100644 fs/ntfs3/fsntfs.c
+>   create mode 100644 fs/ntfs3/index.c
+>   create mode 100644 fs/ntfs3/inode.c
+>   create mode 100644 fs/ntfs3/super.c
 > 
-> v2:
->  - No change.
-> 
->  tools/perf/arch/x86/util/pmu.c | 129 ++++++++++++++++++++++++++++++++-
->  tools/perf/util/parse-events.y |   3 +-
->  tools/perf/util/pmu.c          |  26 ++++++-
->  tools/perf/util/pmu.h          |   5 ++
->  4 files changed, 158 insertions(+), 5 deletions(-)
-> 
-<SNIP>
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 44b90d638ad5..cc9af7942e7b 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -944,13 +944,28 @@ static int pmu_max_precise(const char *name)
->         return max_precise;
->  }
->  
-> -static struct perf_pmu *pmu_lookup(const char *name)
-> +char * __weak
-> +pmu_find_real_name(const char *name)
+> diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+> new file mode 100644
+> index 000000000..327356b08
+> --- /dev/null
+> +++ b/fs/ntfs3/fsntfs.c
+
+[...]
+
+> +int ntfs_look_for_free_space(struct ntfs_sb_info *sbi, CLST lcn, CLST len,
+> +			     CLST *new_lcn, CLST *new_len,
+> +			     enum ALLOCATE_OPT opt)
 > +{
-> +       return strdup(name);
-> +}
+
+[...]
+
 > +
-> +char * __weak
-> +pmu_find_alias_name(const char *name __maybe_unused)
+> +	if (zlen <= NTFS_MIN_MFT_ZONE)
+> +		goto no_space;
+> +
+> +	/* How many clusters to cat from zone */
+> +	zlcn = wnd_zone_bit(wnd);
+> +	zlen2 = zlen >> 1;
+> +	ztrim = len > zlen ? zlen : (len > zlen2 ? len : zlen2);
+> +	new_zlen = zlen - ztrim;
+> +
+> +	if (new_zlen < NTFS_MIN_MFT_ZONE) {
+> +		new_zlen = NTFS_MIN_MFT_ZONE;
+> +		if (new_zlen > zlen)
+> +			new_zlen = zlen;
+
+Unless I missed something, 'zlen' is known to be > NTFS_MIN_MFT_ZONE 
+here (see a few lines above).
+And, if this 'if' is taken, 'new_zlen' is <= NTFS_MIN_MFT_ZONE.
+
+So this test can never match and can be removed. (or removed by a 
+comment if it makes sense)
+
+> +	}
+> +
+> +	wnd_zone_set(wnd, zlcn, new_zlen);
+> +
+> +	/* allocate continues clusters */
+> +	*new_len =
+> +		wnd_find(wnd, len, 0,
+> +			 BITMAP_FIND_MARK_AS_USED | BITMAP_FIND_FULL, &a_lcn);
+
+[...]
+
+> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
+> new file mode 100644
+> index 000000000..931a7241e
+> --- /dev/null
+> +++ b/fs/ntfs3/index.c
+> @@ -0,0 +1,2641 @@
+
+[...]
+
+> +static const struct NTFS_DE *hdr_find_split(const struct INDEX_HDR *hdr)
 > +{
-> +       return NULL;
+> +	size_t o;
+> +	const struct NTFS_DE *e = hdr_first_de(hdr);
+> +	u32 used_2 = le32_to_cpu(hdr->used) >> 1;
+> +	u16 esize = le16_to_cpu(e->size);
+
+e is NULL check the line after.
+
+> +
+> +	if (!e || de_is_last(e))
+> +		return NULL;
+> +
+> +	for (o = le32_to_cpu(hdr->de_off) + esize; o < used_2; o += esize) {
+> +		const struct NTFS_DE *p = e;
+> +
+> +		e = Add2Ptr(hdr, o);
+> +
+> +		/* We must not return END entry */
+> +		if (de_is_last(e))
+> +			return p;
+> +
+> +		esize = le16_to_cpu(e->size);
+> +	}
+> +
+> +	return e;
 > +}
+
+[...]
+
+> +int indx_find(struct ntfs_index *indx, struct ntfs_inode *ni,
+> +	      const struct INDEX_ROOT *root, const void *key, size_t key_len,
+> +	      const void *ctx, int *diff, struct NTFS_DE **entry,
+> +	      struct ntfs_fnd *fnd)
+> +{
+> +	int err;
+> +	struct NTFS_DE *e;
+> +	const struct INDEX_HDR *hdr;
+> +	struct indx_node *node;
 > +
-> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
->  {
->         struct perf_pmu *pmu;
-> +       char *name;
->         LIST_HEAD(format);
->         LIST_HEAD(aliases);
->         __u32 type;
->  
-> +       name = pmu_find_real_name(lookup_name);
-
-name is not freed if one of the following checks fails.
-
-	/*
-	 * The pmu data we store & need consists of the pmu
-	 * type value and format definitions. Load both right
-	 * now.
-	 */
-	if (pmu_format(name, &format))
-		return NULL;
-
-	/*
-	 * Check the type first to avoid unnecessary work.
-	 */
-	if (pmu_type(name, &type))
-		return NULL;
-
-	if (pmu_aliases(name, &aliases))
-		return NULL;
-
-Thanks,
-Riccardo
-
-
-> @@ -973,7 +988,8 @@ static struct perf_pmu *pmu_lookup(const char *name)
->                 return NULL;
->  
->         pmu->cpus = pmu_cpumask(name);
-> -       pmu->name = strdup(name);
-> +       pmu->name = name;
-> +       pmu->alias_name = pmu_find_alias_name(name);
->         pmu->type = type;
->         pmu->is_uncore = pmu_is_uncore(name);
->         if (pmu->is_uncore)
-> @@ -1003,7 +1019,8 @@ static struct perf_pmu *pmu_find(const char *name)
->         struct perf_pmu *pmu;
->  
->         list_for_each_entry(pmu, &pmus, list)
-> -               if (!strcmp(pmu->name, name))
-> +               if (!strcmp(pmu->name, name) ||
-> +                   (pmu->alias_name && !strcmp(pmu->alias_name, name)))
->                         return pmu;
->  
->         return NULL;
-> @@ -1898,6 +1915,9 @@ bool perf_pmu__has_hybrid(void)
->  
->  int perf_pmu__match(char *pattern, char *name, char *tok)
->  {
-> +       if (!name)
-> +               return -1;
+> +	if (!root)
+> +		root = indx_get_root(&ni->dir, ni, NULL, NULL);
 > +
->         if (fnmatch(pattern, name, 0))
->                 return -1;
->  
-> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> index 926da483a141..f6ca9f6a06ef 100644
-> --- a/tools/perf/util/pmu.h
-> +++ b/tools/perf/util/pmu.h
-> @@ -21,6 +21,7 @@ enum {
->  #define PERF_PMU_FORMAT_BITS 64
->  #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
->  #define CPUS_TEMPLATE_CPU      "%s/bus/event_source/devices/%s/cpus"
-> +#define MAX_PMU_NAME_LEN 128
->  
->  struct perf_event_attr;
->  
-> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
->  
->  struct perf_pmu {
->         char *name;
-> +       char *alias_name;       /* PMU alias name */
->         char *id;
->         __u32 type;
->         bool selectable;
-> @@ -135,4 +137,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu,
-> __u64 config,
->  bool perf_pmu__has_hybrid(void);
->  int perf_pmu__match(char *pattern, char *name, char *tok);
->  
-> +char *pmu_find_real_name(const char *name);
-> +char *pmu_find_alias_name(const char *name);
+> +	if (!root) {
+> +		err = -EINVAL;
+> +		goto out;
+> +	}
 > +
->  #endif /* __PMU_H */
+> +	hdr = &root->ihdr;
+> +
+> +	/* Check cache */
+> +	e = fnd->level ? fnd->de[fnd->level - 1] : fnd->root_de;
+> +	if (e && !de_is_last(e) &&
+> +	    !(*indx->cmp)(key, key_len, e + 1, le16_to_cpu(e->key_size), ctx)) {
+> +		*entry = e;
+> +		*diff = 0;
+> +		return 0;
+> +	}
+> +
+> +	/* Soft finder reset */
+> +	fnd_clear(fnd);
+> +
+> +	/* Lookup entry that is <= to the search value */
+> +	e = hdr_find_e(indx, hdr, key, key_len, ctx, diff);
+> +	if (!e)
+> +		return -EINVAL;
+> +
+> +	if (fnd)
 
+This NULL check looks spurious because 'fnd' has already been 
+dereferenced several times at this point.
+Either it is useless, either there is some trouble elsewhere.
 
+> +		fnd->root_de = e;
+> +
+> +	err = 0;
+> +
+
+[...]
+
+> +static int indx_create_allocate(struct ntfs_index *indx, struct ntfs_inode *ni,
+> +				CLST *vbn)
+> +{
+> +	int err = -ENOMEM;
+
+This initialization is overwritten below.
+It can be removed.
+
+> +	struct ntfs_sb_info *sbi = ni->mi.sbi;
+> +	struct ATTRIB *bitmap;
+> +	struct ATTRIB *alloc;
+> +	u32 data_size = 1u << indx->index_bits;
+> +	u32 alloc_size = ntfs_up_cluster(sbi, data_size);
+> +	CLST len = alloc_size >> sbi->cluster_bits;
+> +	const struct INDEX_NAMES *in = &s_index_names[indx->type];
+> +	CLST alen;
+> +	struct runs_tree run;
+> +
+> +	run_init(&run);
+> +
+> +	err = attr_allocate_clusters(sbi, &run, 0, 0, len, NULL, 0, &alen, 0,
+> +				     NULL);
+
+here
+
+> +	if (err)
+> +		goto out;
+> +
+> +	err = ni_insert_nonresident(ni, ATTR_ALLOC, in->name, in->name_len,
+> +				    &run, 0, len, 0, &alloc, NULL);
+
+[...]
+
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> new file mode 100644
+> index 000000000..c56343124
+> --- /dev/null
+> +++ b/fs/ntfs3/super.c
+
+[...]
+
+> +static int ntfs_sync_fs(struct super_block *sb, int wait)
+> +{
+> +	int err = 0, err2;
+> +	struct ntfs_sb_info *sbi = sb->s_fs_info;
+> +	struct ntfs_inode *ni;
+> +	struct inode *inode;
+> +
+> +	ni = sbi->security.ni;
+> +	if (ni) {
+> +		inode = &ni->vfs_inode;
+> +		err2 = _ni_write_inode(inode, wait);
+> +		if (err2 && !err)
+
+'err' is known to be 0 here, so this test can be simplified.
+
+> +			err = err2;
+> +	}
+> +
+> +	ni = sbi->objid.ni;
+> +	if (ni) {
+> +		inode = &ni->vfs_inode;
+> +		err2 = _ni_write_inode(inode, wait);
+> +		if (err2 && !err)
+> +			err = err2;
+> +	}
+
+[...]
