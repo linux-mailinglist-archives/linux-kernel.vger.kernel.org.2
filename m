@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53403DB714
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120813DB716
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238437AbhG3KVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:21:15 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3539 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238387AbhG3KVI (ORCPT
+        id S238406AbhG3KZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:25:11 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:53016 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238274AbhG3KZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:21:08 -0400
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GbjqL5Syzz6G9Gw;
-        Fri, 30 Jul 2021 18:11:42 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 30 Jul 2021 12:21:02 +0200
-Received: from [10.47.25.95] (10.47.25.95) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Jul
- 2021 11:21:01 +0100
-Subject: Re: [PATCH v2 19/24] iommu: Expose DMA domain strictness via sysfs
-To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <will@kernel.org>
-CC:     <iommu@lists.linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <suravee.suthikulpanit@amd.com>,
-        <baolu.lu@linux.intel.com>, <dianders@chromium.org>
-References: <cover.1627468308.git.robin.murphy@arm.com>
- <dd26592103c7613ef9fdff703d0d2ed2df8305c2.1627468310.git.robin.murphy@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <5078e29c-029c-8bab-613f-46c94507c64d@huawei.com>
-Date:   Fri, 30 Jul 2021 11:20:42 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-MIME-Version: 1.0
-In-Reply-To: <dd26592103c7613ef9fdff703d0d2ed2df8305c2.1627468310.git.robin.murphy@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.25.95]
-X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        Fri, 30 Jul 2021 06:25:01 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UhQblfO_1627640692;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UhQblfO_1627640692)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 30 Jul 2021 18:24:55 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, will@kernel.org, longman@redhat.com,
+        boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] lockdep/selftests: Fix duplicate included locking-selftest-softirq.h
+Date:   Fri, 30 Jul 2021 18:24:42 +0800
+Message-Id: <1627640682-14225-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2021 16:58, Robin Murphy wrote:
-> The sysfs interface for default domain types exists primarily so users
-> can choose the performance/security tradeoff relevant to their own
-> workload. As such, the choice between the policies for DMA domains fits
-> perfectly as an additional point on that scale - downgrading a
-> particular device from a strict default to non-strict may be enough to
-> let it reach the desired level of performance, while still retaining
-> more peace of mind than with a wide-open identity domain. Now that we've
-> abstracted non-strict mode as a distinct type of DMA domain, allow it to
-> be chosen through the user interface as well.
-> 
-> Signed-off-by: Robin Murphy<robin.murphy@arm.com>
-> ---
+Clean up the following includecheck warning:
 
-Reviewed-by: John Garry <john.garry@huawei.com>
+./lib/locking-selftest.c: locking-selftest-softirq.h is included more
+than once.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: cae2ed9aa573 ("[PATCH] lockdep: locking API self tests")
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ lib/locking-selftest.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 161108e..6010445 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -1252,7 +1252,6 @@ static void rwsem_ABBA3(void)
+ #include "locking-selftest-wlock.h"
+ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_hard_wlock)
+ 
+-#include "locking-selftest-softirq.h"
+ #include "locking-selftest-rlock.h"
+ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion2_soft_rlock)
+ 
+@@ -1306,7 +1305,6 @@ static void rwsem_ABBA3(void)
+ #include "locking-selftest-wlock.h"
+ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_hard_wlock)
+ 
+-#include "locking-selftest-softirq.h"
+ #include "locking-selftest-rlock.h"
+ GENERATE_PERMUTATIONS_3_EVENTS(irq_read_recursion3_soft_rlock)
+ 
+-- 
+1.8.3.1
+
