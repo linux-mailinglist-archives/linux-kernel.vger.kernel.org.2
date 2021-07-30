@@ -2,136 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94D03DB3F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57D83DB404
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237680AbhG3GxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbhG3GxH (ORCPT
+        id S237752AbhG3G5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:57:03 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:55274
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237600AbhG3G5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:53:07 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53FDC061765;
-        Thu, 29 Jul 2021 23:53:03 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id r5so8356822ilc.13;
-        Thu, 29 Jul 2021 23:53:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j6IF2835VrIHwDYkTgZV/+UoCjQH2G1E3gkSxTW7I4w=;
-        b=K8mj6p+ayOG673+GlZiXV/IYCS1RDMIdPmDN71kg7b/4hCa4ztjyAcw1g/VrEPbHVN
-         sva4/ol5hrLN8kJ/VYsfP9v1Cl3LcYvhdg6uY6C821zlozKRO33c9Y3D7fK0O6lJbsT0
-         wSJ60IykQ6HGfBPAszYFiQ8t7ysXukJMWsu4so228rtzlj1Evu0eMjrMFnNj0vikup/y
-         u6xdEAXSfea46EmaaRLT82Yw3SeK1DDA2AGf86vQEFP7Gqdbp3hBCmAZvhjzYVfRzX/J
-         nRxOCqjAzl5OuiB1Z3qPRKcrvIGAzyUWHZH/LESWGcjHyKi0s+UMr30geOc2k0s7qBZt
-         QQ5g==
+        Fri, 30 Jul 2021 02:57:02 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id E6D923F0FF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 06:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627628216;
+        bh=H0iqXvcx2Sb6gUihpF2rOO1152k8ULgDqjgBbDt6/wQ=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=WuoCXE7p1ViXZA1n9mL0SYV+xIkaEp7ILvOr00UfwLZjFfYmmjQPnQITUIQUsvJqJ
+         ifNKNkE7OZUUXHnhalqaVoWE2zdmIJvctb7zebqqUrNkaQF93UUL5R9Ug9Rw8LN8ED
+         3kc9Qy3nuNfEkPK+uEY455wA71DdPBIuCuYndlVG4uHsvMubU4sntDvx+RCnEwXLj3
+         YS8jYM/m06Fvp5gpz3UT4qleQ8G+JgSvidzLRzeJZwioUEQALjwlNCvVogDpR2t+pR
+         gnPFfNaPAtyW1oYaYDJ0LSErFtMZ4hYZEgPH1RGLugtDMjsGRQZm8CLqZq8RpmSnWJ
+         fPAVOe5iGB16g==
+Received: by mail-ed1-f72.google.com with SMTP id b13-20020a056402278db029039c013d5b80so4161822ede.7
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 23:56:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j6IF2835VrIHwDYkTgZV/+UoCjQH2G1E3gkSxTW7I4w=;
-        b=FFRYaj269Er3mNDFSq7n1ugheCwuubGcUodBQG9U4U3UwiSxjjjTgxl1N6oSQimJD6
-         KZ1hqNIvb702Bg3enDaYOUcV7jTWZAjp1+ZTrlf8Aq9SXM/wC7cuI+7k6MqUUpWP0bTL
-         wOfNBi+WxCtgEBRxGcIaABdOOwGJdVLjCMFJe1V1JASRvCZCvx08t7P6GEAWTu+Qo5Hw
-         Ev/3TdvF0NZTPAE3bifvPCnk6N+2l7KFU/KWNiZxDLuYaAcj345R5DFbBlLrXmiBgGVn
-         mZNi5xaxPG8pAJhRcTND6gq9dhe5DqFDML9bzWQ00L3n+nsbIvSpQmRCFKquhN0xQV+w
-         CC5w==
-X-Gm-Message-State: AOAM5325QIlv1lQf2EFZLYOMagtXhRIRFPqxGTdpfmyMP/ayKM8AyI7M
-        gGextEIhxI8J3a/iYr8AE5gxPjLef6AAcAvPEI4=
-X-Google-Smtp-Source: ABdhPJzj4gqNEOi1QeT0MXntI3totaMLSia+EA4wE+PYYt0Fc0LmOB2npBvlj4Pe0hYU2ZzQVHS8mscsCIZZ5BftD3c=
-X-Received: by 2002:a05:6e02:d09:: with SMTP id g9mr72441ilj.153.1627627983180;
- Thu, 29 Jul 2021 23:53:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H0iqXvcx2Sb6gUihpF2rOO1152k8ULgDqjgBbDt6/wQ=;
+        b=o01ACgPY23KfCNyIzlF0Npt383K3WZ/2V2nFbqC0wDL5jRdqLsNhZuPrgqnlxMOH+i
+         9O7YIOaeeR3tzA5WBV358DL2kZIwWZ/kPuOi8IyqYWKDYQdDajTRybOzrKpRKEOE76Qa
+         Xa1CqeEpfimvkSv+2OsR7QrfrXs2Llz5twZ9sj/Ou650joO3IkqHZUF4Ynwi524yuxDI
+         Np3Snxw6ZLCKJ0T8YQ6EHJNPC16WZMhMRnP44vT3K+jwR587LDzklg1MPuRwSqD1mbWH
+         NWJmUOCS+sDKASkWhjihXZqltLEPq8nMn6JrMtQ6HVyXGDq09zxqHuHKocpScP8xJC6j
+         mxNw==
+X-Gm-Message-State: AOAM532GdzUypa3cVEJLCl5Mp/L0HP/EMwgpWYyyVAkASl4qxNm2mgBn
+        OVfNcOYraKFc8yJG27O0iZfhv6hsom07GI7U84KD0ipvl5bOZCZZYcsHyQDKyVrklbx+5kAxaz/
+        96dmvLVxrd0IAoszbx83iwgb1OkFaN/vm05G17tuouw==
+X-Received: by 2002:a17:906:9251:: with SMTP id c17mr1210630ejx.516.1627628216643;
+        Thu, 29 Jul 2021 23:56:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzdiRODyaxS5ozEQ1SGCvSq92XcTRg9NN5AZlQaqiA2V+ZljzQ10rzB6+WfdmPHGFnit/Pcsw==
+X-Received: by 2002:a17:906:9251:: with SMTP id c17mr1210618ejx.516.1627628216466;
+        Thu, 29 Jul 2021 23:56:56 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id m9sm238518ejn.91.2021.07.29.23.56.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 23:56:56 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/8] nfc: constify pointed data - missed part
+Date:   Fri, 30 Jul 2021 08:56:17 +0200
+Message-Id: <20210730065625.34010-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210730041355.2810397-1-art@khadas.com> <20210730041355.2810397-4-art@khadas.com>
- <20210730045857.GC2110311@roeck-us.net>
-In-Reply-To: <20210730045857.GC2110311@roeck-us.net>
-From:   Art Nikpal <email2tema@gmail.com>
-Date:   Fri, 30 Jul 2021 14:52:51 +0800
-Message-ID: <CAKaHn9LjZUFJu9+6B3nEZkAXGeAPkXTNcToRnvtSJjEXBJULKw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] watchdog: meson_gxbb_wdt: remove stop_on_reboot
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, wim@linux-watchdog.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
-        Gouwa Wang <gouwa@khadas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you very much for the helpful and detailed comments
+Hi,
 
-Artem
+This was previously sent [1] but got lost. It was a  prerequisite to part two of NFC const [2].
 
-On Fri, Jul 30, 2021 at 12:59 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Fri, Jul 30, 2021 at 12:13:55PM +0800, Artem Lapkin wrote:
-> > Remove watchdog_stop_on_reboot()
-> >
-> > Meson platform still have some hardware drivers problems for some
-> > configurations which can freeze device on shutdown/reboot stage and i
-> > think better to have reboot warranty by default.
-> >
-> > I feel that it is important to keep the watchdog running during the
-> > reboot sequence, in the event that an abnormal driver freezes the reboot
-> > process.
-> >
-> > This is my personal opinion and I hope the driver authors will agree
-> > with my proposal, or just ignore this commit if not.
-> >
-> > https://lore.kernel.org/linux-watchdog/20210729072308.1908904-1-art@khadas.com/T/#t
-> >
->
-> A much better description would be something like
->
-> "The Meson platform still has some hardware drivers problems for some
->  configurations which can freeze devices on shutdown/reboot.
->  Remove watchdog_stop_on_reboot() to catch this situation and ensure
->  that the reboot happens anyway.
->  Users who still want to stop the watchdog on reboot can still do so
->  using the watchdog.stop_on_reboot=1 module parameter.
->  "
->
-> That leaves the personal opinion out of the picture and provides both
-> a rationale for the change and an alternative for people who want
-> to stop the watchdog on reboot anyway.
->
-> > Signed-off-by: Artem Lapkin <art@khadas.com>
->
-> As mentioned, I'd still like to get an opinion from the driver
-> author and/or some other users of this platform. However, I'll
-> accept the patch with the above description change if I don't get
-> additional feedback.
->
-> Thanks,
-> Guenter
->
-> > ---
-> >  drivers/watchdog/meson_gxbb_wdt.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
-> > index 945f5e65db57..d3c9e2f6e63b 100644
-> > --- a/drivers/watchdog/meson_gxbb_wdt.c
-> > +++ b/drivers/watchdog/meson_gxbb_wdt.c
-> > @@ -198,7 +198,6 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
-> >
-> >       meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
-> >
-> > -     watchdog_stop_on_reboot(&data->wdt_dev);
-> >       return devm_watchdog_register_device(dev, &data->wdt_dev);
-> >  }
-> >
-> > --
-> > 2.25.1
-> >
+Changes since v1:
+1. Add patch 1/8 fixing up nfcmrvl_spi_parse_dt()
+
+[1] https://lore.kernel.org/lkml/20210726145224.146006-1-krzysztof.kozlowski@canonical.com/
+[2] https://lore.kernel.org/linux-nfc/20210729104022.47761-1-krzysztof.kozlowski@canonical.com/T/#m199fbdde180fa005a10addf28479fcbdc6263eab
+
+Best regards,
+Krzysztof
+
+
+Krzysztof Kozlowski (8):
+  nfc: mrvl: correct nfcmrvl_spi_parse_dt() device_node argument
+  nfc: annotate af_nfc_exit() as __exit
+  nfc: hci: annotate nfc_llc_init() as __init
+  nfc: constify several pointers to u8, char and sk_buff
+  nfc: constify local pointer variables
+  nfc: nci: constify several pointers to u8, sk_buff and other structs
+  nfc: hci: pass callback data param as pointer in nci_request()
+  nfc: hci: cleanup unneeded spaces
+
+ drivers/nfc/nfcmrvl/spi.c  |   2 +-
+ drivers/nfc/pn544/pn544.c  |   4 +-
+ include/net/nfc/nci_core.h |  18 ++---
+ include/net/nfc/nfc.h      |   4 +-
+ net/nfc/af_nfc.c           |   2 +-
+ net/nfc/core.c             |   6 +-
+ net/nfc/hci/core.c         |   8 +--
+ net/nfc/hci/llc.c          |   2 +-
+ net/nfc/hci/llc_shdlc.c    |  10 +--
+ net/nfc/llcp.h             |   8 +--
+ net/nfc/llcp_commands.c    |  46 +++++++------
+ net/nfc/llcp_core.c        |  44 ++++++------
+ net/nfc/nci/core.c         | 134 ++++++++++++++++++-------------------
+ net/nfc/nci/data.c         |  12 ++--
+ net/nfc/nci/hci.c          |  52 +++++++-------
+ net/nfc/nci/ntf.c          |  87 +++++++++++++-----------
+ net/nfc/nci/rsp.c          |  48 +++++++------
+ net/nfc/nci/spi.c          |   2 +-
+ net/nfc/netlink.c          |   2 +-
+ net/nfc/nfc.h              |   2 +-
+ 20 files changed, 255 insertions(+), 238 deletions(-)
+
+-- 
+2.27.0
+
