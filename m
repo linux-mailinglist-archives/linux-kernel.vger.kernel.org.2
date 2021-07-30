@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344443DB483
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DAC3DB485
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237749AbhG3HaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 03:30:07 -0400
-Received: from wforward1-smtp.messagingengine.com ([64.147.123.30]:33407 "EHLO
-        wforward1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230337AbhG3HaF (ORCPT
+        id S237861AbhG3Hag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:30:36 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:21187 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230337AbhG3Haf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:30:05 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailforward.west.internal (Postfix) with ESMTP id CB48D1AC0033;
-        Fri, 30 Jul 2021 03:29:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Fri, 30 Jul 2021 03:29:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=dEzoO3
-        e5Gf3/WxsXdgCVKNFItf3m4OWNnkjH5aZyCb8=; b=TGFFDRvqsUHtG8TmZTiDri
-        TRx628qViMWRHtLWzvUBrH6qQu7HAOVWfCv8bMiXj/U2KIPmBfclXIuBc3DvvGbs
-        wY7zLPy0f34Q7IZ0DjLTVv4FTwSrl+KStZoKOzJZHjVwD1BHZc8AcaBs85jSXThc
-        v5f0oniZOrFxBMcFYD9nbJdXoM14CPwo1CGKDbK0Fen63pPg5dpXnvhZJ++ezgcQ
-        /NPgxegdbEUwD+XKL1U6AmPPaJcOo2esL5Tuyq/sPhvgk4t0R675fYcZvYyoFDWS
-        IqMhVUSuqECyH48mDeOtlUgHdIHpk/oGTr4dFdwCe+Y8aPgz4JFkn9fmd6f65deg
-        ==
-X-ME-Sender: <xms:dKoDYY_hsbCZBSV7lomj82SZhW9uk3sQDDRNYAj6SU_lhoh-5oWOBQ>
-    <xme:dKoDYQugLUZV-Sd5xPn6YYL9y2-iVUBjgP8o6DRgYzXMK2BypbON5eB-81ldZBxD-
-    kmEUwp702lj-EAioKA>
-X-ME-Received: <xmr:dKoDYeBeu-r_IA2oKPCyxwwOMN0kxZeCrn_N0Z8o7gWznraeYnyr6Io2kyA28Mdm-U_04wfVQdb5GFvpLvy9PwEy1lRJI2OpeThk9s3-FN8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeggddutddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvffujghfhfffkfggtgesthdtredttddttdenucfhrhhomhepffgrvhhiugcu
-    gfgumhhonhgushhonhcuoegumhgvsegumhgvrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    fhkeeguedtvdegffffteehjedvjeeitefgfefgffdugeffffegudehgeetgeelkeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegumhgvsegumh
-    gvrdhorhhg
-X-ME-Proxy: <xmx:dKoDYYcRaEQh_lnu_ii9Q1dNQ5UVBQfUaQ6qZvRbOsEjpyBt9hIvQw>
-    <xmx:dKoDYdOExhZ2PaEzpsQQbM1mj4rwXfa2L3x9c-wFrp_86sg9pb3ljA>
-    <xmx:dKoDYSm8RvtdQe2cUePJKqN61xGu_XkeBDjPO0_R77DyIN_zLW0odw>
-    <xmx:dqoDYUkyVJdx73gLiAHEA4JYCnxsU09V6LdHrgz5cPFerDNqYTXaa3yalhzi9pQY>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 30 Jul 2021 03:29:54 -0400 (EDT)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 26d30f0b;
-        Fri, 30 Jul 2021 07:29:53 +0000 (UTC)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        David Matlack <dmatlack@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH v3 1/3] KVM: x86: kvm_x86_ops.get_exit_info should
- include the exit reason
-In-Reply-To: <YQMrUOjZMD1eiIeE@google.com>
-References: <20210729133931.1129696-1-david.edmondson@oracle.com>
- <20210729133931.1129696-2-david.edmondson@oracle.com>
- <YQMrUOjZMD1eiIeE@google.com>
-From:   David Edmondson <dme@dme.org>
-Date:   Fri, 30 Jul 2021 08:29:53 +0100
-Message-ID: <cunsfzwmf7y.fsf@dme.org>
+        Fri, 30 Jul 2021 03:30:35 -0400
+Received: from [10.0.2.15] ([86.243.172.93])
+        by mwinf5d81 with ME
+        id bKWP2500H21Fzsu03KWPbY; Fri, 30 Jul 2021 09:30:29 +0200
+X-ME-Helo: [10.0.2.15]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 30 Jul 2021 09:30:29 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH v27 05/10] fs/ntfs3: Add attrib operations
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
+        willy@infradead.org, rdunlap@infradead.org, joe@perches.com,
+        mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, kari.argillander@gmail.com,
+        oleksandr@natalenko.name
+References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+ <20210729134943.778917-6-almaz.alexandrovich@paragon-software.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <46dbc10f-37a1-80f7-b4b5-e49eb867eff2@wanadoo.fr>
+Date:   Fri, 30 Jul 2021 09:30:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210729134943.778917-6-almaz.alexandrovich@paragon-software.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 2021-07-29 at 22:27:28 GMT, Sean Christopherson wrote:
+Hi,
 
-> Shortlog is a bit odd, "should" is subjective and makes this sound like a bug fix.
->
->   KVM: x86: Get exit_reason as part of kvm_x86_ops.get_exit_info
+below are a few comments based on a cppcheck run.
+Don't take it too seriously into consideration, this is just a minor 
+clean-up.
 
-Okay.
+It is reported only if a new iteration is done and if it makes sense to 
+include it.
 
-> On Thu, Jul 29, 2021, David Edmondson wrote:
->> Extend the get_exit_info static call to provide the reason for the VM
->> exit. Modify relevant trace points to use this rather than extracting
->> the reason in the caller.
->> 
->> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
->> ---
->> -static void svm_get_exit_info(struct kvm_vcpu *vcpu, u64 *info1, u64 *info2,
->> +static void svm_get_exit_info(struct kvm_vcpu *vcpu, u64 *reason,
->> +			      u64 *info1, u64 *info2,
->>  			      u32 *intr_info, u32 *error_code)
->>  {
->>  	struct vmcb_control_area *control = &to_svm(vcpu)->vmcb->control;
->>  
->> +	*reason = control->exit_code;
->>  	*info1 = control->exit_info_1;
->>  	*info2 = control->exit_info_2;
->>  	*intr_info = control->exit_int_info;
->
-> ...
->
->> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
->> index b484141ea15b..2228565beda2 100644
->> --- a/arch/x86/kvm/trace.h
->> +++ b/arch/x86/kvm/trace.h
->> @@ -273,11 +273,11 @@ TRACE_EVENT(kvm_apic,
->>  
->>  #define TRACE_EVENT_KVM_EXIT(name)					     \
->>  TRACE_EVENT(name,							     \
->> -	TP_PROTO(unsigned int exit_reason, struct kvm_vcpu *vcpu, u32 isa),  \
->> -	TP_ARGS(exit_reason, vcpu, isa),				     \
->> +	TP_PROTO(struct kvm_vcpu *vcpu, u32 isa),			     \
->> +	TP_ARGS(vcpu, isa),						     \
->>  									     \
->>  	TP_STRUCT__entry(						     \
->> -		__field(	unsigned int,	exit_reason	)	     \
->> +		__field(	u64,		exit_reason	)	     \
->
-> Converting to a u64 is unnecessary and misleading.  vmcs.EXIT_REASON and
-> vmcb.EXIT_CODE are both u32s, a.k.a. unsigned ints.  There is vmcb.EXIT_CODE_HI,
-> but that's not being included, and AFAICT isn't even sanity checked by KVM.
+CJ
 
-Thanks for pointing this out, I can only blame brain fade.
+Le 29/07/2021 à 15:49, Konstantin Komarov a écrit :
+> This adds attrib operations
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>   fs/ntfs3/attrib.c   | 2082 +++++++++++++++++++++++++++++++++++++++++++
+>   fs/ntfs3/attrlist.c |  456 ++++++++++
+>   fs/ntfs3/xattr.c    | 1046 ++++++++++++++++++++++
+>   3 files changed, 3584 insertions(+)
+>   create mode 100644 fs/ntfs3/attrib.c
+>   create mode 100644 fs/ntfs3/attrlist.c
+>   create mode 100644 fs/ntfs3/xattr.c
+> 
+> diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
+> new file mode 100644
+> index 000000000..bca85e7b6
+> --- /dev/null
+> +++ b/fs/ntfs3/attrib.c
 
->>  		__field(	unsigned long,	guest_rip	)	     \
->>  		__field(	u32,	        isa             )	     \
->>  		__field(	u64,	        info1           )	     \
+[...]
+
+> +/*
+> + * load runs for given range [from to)
+> + */
+> +int attr_load_runs_range(struct ntfs_inode *ni, enum ATTR_TYPE type,
+> +			 const __le16 *name, u8 name_len, struct runs_tree *run,
+> +			 u64 from, u64 to)
+> +{
+> +	struct ntfs_sb_info *sbi = ni->mi.sbi;
+> +	u8 cluster_bits = sbi->cluster_bits;
+> +	CLST vcn = from >> cluster_bits;
+
+This initialization is overwritten in the for loop below.
+It can be removed.
+
+> +	CLST vcn_last = (to - 1) >> cluster_bits;
+> +	CLST lcn, clen;
+> +	int err;
+> +
+> +	for (vcn = from >> cluster_bits; vcn <= vcn_last; vcn += clen) {
+
+here
+
+> +		if (!run_lookup_entry(run, vcn, &lcn, &clen, NULL)) {
+> +			err = attr_load_runs_vcn(ni, type, name, name_len, run,
+> +						 vcn);
+> +			if (err)
+> +				return err;
+> +			clen = 0; /*next run_lookup_entry(vcn) must be success*/
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+
+[...]
