@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1D73DBA3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73953DBA3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239254AbhG3OUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:20:25 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55354 "EHLO
+        id S239278AbhG3OUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:20:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55350 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239105AbhG3ORM (ORCPT
+        with ESMTP id S239111AbhG3ORM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 30 Jul 2021 10:17:12 -0400
-Message-ID: <20210730135205.376440332@linutronix.de>
+Message-ID: <20210730135205.434944891@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627654626;
+        s=2020; t=1627654627;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=TS8ghfuzxLraDP30o0BJRuf0/rSI8vZMiaSFLJc7YZs=;
-        b=O1bHCToEzt+oSxBRCol9HjBhZKPWYWehbzpOpgXBKVxHCzFvUG+uAyLzLLYPFIt0Jbh4n4
-        +4yUAVdg+ZkMDDP83KPwOdVCM1lcAsZ5xlQM7/P0LMv56BdE7HVzSBKP3t/ZeMhTW3jtin
-        7BCflE362ub/IlwvZotfPCIoE/8DX0it4hwcxZekygJYEWNCNIv8YfRErMqUfmzeM0LMny
-        7EMJ8pHlKRHh1W08ank+tk0Yrrrv1O3y5B5KqL8dgNImlilgsRlJQeiPGYKPZYeyw7IQ0v
-        Y8a0M/5AZXD+Mi9dTa8MvzsD361j77pwR74p4AolO/6rfORe20dXcsRXnWfoEg==
+        bh=yFddNLcBiutB/8vMLREBAPQ8WzNzATHga0WkaGc9nqk=;
+        b=Rmooj/i5QN/LtyCq0Q/sj8b7JbEEnrfBXXJ+G1bCAlf8O2dPB90Yv2hLt6Sjbufj2JvYDE
+        nT/RmwMSduadWwTLwrWXOqKsOf9/uR+q2Q5/79KaBUB5hijfhZ3efwhL2i0IjDeCgLX/a7
+        c7UpDVPwGBd2/frZrvn9whK51B0+g0cnM64FvdV/63c6ABESf357G4TvTdWeHrw/lUjXQv
+        RlikQffgUVxe1fIPoiGlDEpr4oy3GOy7CRle16lAeAUgqgyrXlgtgqdHtbn+iGsqtL3A/V
+        qADcFhGcgysB4fDc4vbGEq3XMdrvNv0gGQPO4hxVQw/nCjLtYrZtIAHnGaP0Yw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627654626;
+        s=2020e; t=1627654627;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=TS8ghfuzxLraDP30o0BJRuf0/rSI8vZMiaSFLJc7YZs=;
-        b=Ka3NgZAowQqN/KdsdnizVijqKwioPqyfkoqYBryg0xyv+uN4OWYnGhAzOax+FWaL5/x7VC
-        JJm4kSxdeUiklaDA==
-Date:   Fri, 30 Jul 2021 15:50:11 +0200
+        bh=yFddNLcBiutB/8vMLREBAPQ8WzNzATHga0WkaGc9nqk=;
+        b=rGptN9ky84KqLNLX9ICYmkfnBm6WZFm7YFYcI0QT66K3zi2BT5upjJzNDhliElAj95p+BY
+        keXszrqGGhmXzPDw==
+Date:   Fri, 30 Jul 2021 15:50:12 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -45,7 +45,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>
-Subject: [patch 04/63] sched: Rework the __schedule() preempt argument
+Subject: [patch 05/63] sched: Provide schedule point for RT locks
 References: <20210730135007.155909613@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,157 +56,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-PREEMPT_RT needs to hand a special state into __schedule() when a task
-blocks on a 'sleeping' spin/rwlock. This is required to handle
-rcu_note_context_switch() correctly without having special casing in the
-RCU code. From an RCU point of view the blocking on the sleeping spinlock
-is equivalent to preemption because the task might be in a read side
-critical section.
+RT enabled kernels substitute spin/rwlocks with 'sleeping' variants based
+on rtmutex. Blocking on such a lock is similar to preemption versus:
 
-schedule_debug() also has a check which would trigger with the !preempt
-case, but that could be handled differently.
+ - I/O scheduling and worker handling because these functions might block
+   on another substituted lock or come from a lock contention within these
+   functions.
 
-To avoid adding another argument and extra checks which cannot be optimized
-out by the compiler the following solution has been chosen:
+ - RCU considers this like a preemption because the task might be in a read
+   side critical section.
 
- - Replace the boolean 'preempt' argument with an unsigned integer
-   'sched_mode' argument and define constants to hand in:
-   (0 == No preemption, 1 = preemption).
-
- - Add two masks to apply on that mode one for the debug/rcu invocations
-   and one for the actual scheduling decision.
-
-   For a non RT kernel these masks are UINT_MAX, i.e. all bits are set
-   which allows the compiler to optimze the AND operation out because it is
-   not masking out anything. IOW, it's not different from the boolean.
-
-   RT enabled kernels will define these masks seperately.
-
-No functional change.
+Add a seperate scheduling point for this and hand a new scheduling mode
+argument to __schedule() which allows along with seperate mode masks to
+handle this gracefully from within the scheduler without proliferating that
+to other subsystems like RCU.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V2: Simplify the masking logic
+V2: Adopt to the simplified mask logic
 ---
- kernel/sched/core.c |   34 +++++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ include/linux/sched.h |    3 +++
+ kernel/sched/core.c   |   20 +++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
 ---
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -294,6 +294,9 @@ extern long schedule_timeout_idle(long t
+ asmlinkage void schedule(void);
+ extern void schedule_preempt_disabled(void);
+ asmlinkage void preempt_schedule_irq(void);
++#ifdef CONFIG_PREEMPT_RT
++ extern void schedule_rtlock(void);
++#endif
+ 
+ extern int __must_check io_schedule_prepare(void);
+ extern void io_schedule_finish(int token);
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -5822,6 +5822,18 @@ pick_next_task(struct rq *rq, struct tas
- #endif /* CONFIG_SCHED_CORE */
+@@ -5831,7 +5831,13 @@ pick_next_task(struct rq *rq, struct tas
+  */
+ #define SM_NONE			0x0
+ #define SM_PREEMPT		0x1
+-#define SM_MASK_PREEMPT		(~0U)
++#define SM_RTLOCK_WAIT		0x2
++
++#ifndef CONFIG_PREEMPT_RT
++# define SM_MASK_PREEMPT	(~0U)
++#else
++# define SM_MASK_PREEMPT	SM_PREEMPT
++#endif
  
  /*
-+ * Constants for the sched_mode argument of __schedule().
-+ *
-+ * The mode argument allows RT enabled kernels to differentiate a
-+ * preemption from blocking on an 'sleeping' spin/rwlock. Note, that
-+ * SM_MASK_PREEMPT for !RT has all bits set which allows the compiler to
-+ * optimize the AND operation out and just check for zero.
-+ */
-+#define SM_NONE			0x0
-+#define SM_PREEMPT		0x1
-+#define SM_MASK_PREEMPT		(~0U)
-+
-+/*
   * __schedule() is the main scheduler function.
-  *
-  * The main means of driving the scheduler and thus entering this function are:
-@@ -5860,7 +5872,7 @@ pick_next_task(struct rq *rq, struct tas
-  *
-  * WARNING: must be called with preemption disabled!
-  */
--static void __sched notrace __schedule(bool preempt)
-+static void __sched notrace __schedule(unsigned int sched_mode)
- {
- 	struct task_struct *prev, *next;
- 	unsigned long *switch_count;
-@@ -5873,13 +5885,13 @@ static void __sched notrace __schedule(b
- 	rq = cpu_rq(cpu);
- 	prev = rq->curr;
- 
--	schedule_debug(prev, preempt);
-+	schedule_debug(prev, !!sched_mode);
- 
- 	if (sched_feat(HRTICK) || sched_feat(HRTICK_DL))
- 		hrtick_clear(rq);
- 
- 	local_irq_disable();
--	rcu_note_context_switch(preempt);
-+	rcu_note_context_switch(!!sched_mode);
- 
- 	/*
- 	 * Make sure that signal_pending_state()->signal_pending() below
-@@ -5913,7 +5925,7 @@ static void __sched notrace __schedule(b
- 	 *  - ptrace_{,un}freeze_traced() can change ->state underneath us.
- 	 */
- 	prev_state = READ_ONCE(prev->__state);
--	if (!preempt && prev_state) {
-+	if (!(sched_mode & SM_MASK_PREEMPT) && prev_state) {
- 		if (signal_pending_state(prev_state, prev)) {
- 			WRITE_ONCE(prev->__state, TASK_RUNNING);
- 		} else {
-@@ -5979,7 +5991,7 @@ static void __sched notrace __schedule(b
- 		migrate_disable_switch(rq, prev);
- 		psi_sched_switch(prev, next, !task_on_rq_queued(prev));
- 
--		trace_sched_switch(preempt, prev, next);
-+		trace_sched_switch(sched_mode & SM_MASK_PREEMPT, prev, next);
- 
- 		/* Also unlocks the rq: */
- 		rq = context_switch(rq, prev, next, &rf);
-@@ -6000,7 +6012,7 @@ void __noreturn do_task_dead(void)
- 	/* Tell freezer to ignore us: */
- 	current->flags |= PF_NOFREEZE;
- 
--	__schedule(false);
-+	__schedule(SM_NONE);
- 	BUG();
- 
- 	/* Avoid "noreturn function does return" - but don't continue if BUG() is a NOP: */
-@@ -6061,7 +6073,7 @@ asmlinkage __visible void __sched schedu
- 	sched_submit_work(tsk);
- 	do {
- 		preempt_disable();
--		__schedule(false);
-+		__schedule(SM_NONE);
- 		sched_preempt_enable_no_resched();
- 	} while (need_resched());
- 	sched_update_worker(tsk);
-@@ -6089,7 +6101,7 @@ void __sched schedule_idle(void)
- 	 */
- 	WARN_ON_ONCE(current->__state);
- 	do {
--		__schedule(false);
-+		__schedule(SM_NONE);
- 	} while (need_resched());
+@@ -6136,6 +6142,18 @@ void __sched schedule_preempt_disabled(v
+ 	preempt_disable();
  }
  
-@@ -6142,7 +6154,7 @@ static void __sched notrace preempt_sche
- 		 */
- 		preempt_disable_notrace();
- 		preempt_latency_start(1);
--		__schedule(true);
-+		__schedule(SM_PREEMPT);
- 		preempt_latency_stop(1);
- 		preempt_enable_no_resched_notrace();
- 
-@@ -6221,7 +6233,7 @@ asmlinkage __visible void __sched notrac
- 		 * an infinite recursion.
- 		 */
- 		prev_ctx = exception_enter();
--		__schedule(true);
-+		__schedule(SM_PREEMPT);
- 		exception_exit(prev_ctx);
- 
- 		preempt_latency_stop(1);
-@@ -6370,7 +6382,7 @@ asmlinkage __visible void __sched preemp
++#ifdef CONFIG_PREEMPT_RT
++void __sched notrace schedule_rtlock(void)
++{
++	do {
++		preempt_disable();
++		__schedule(SM_RTLOCK_WAIT);
++		sched_preempt_enable_no_resched();
++	} while (need_resched());
++}
++NOKPROBE_SYMBOL(schedule_rtlock);
++#endif
++
+ static void __sched notrace preempt_schedule_common(void)
+ {
  	do {
- 		preempt_disable();
- 		local_irq_enable();
--		__schedule(true);
-+		__schedule(SM_PREEMPT);
- 		local_irq_disable();
- 		sched_preempt_enable_no_resched();
- 	} while (need_resched());
 
