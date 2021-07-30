@@ -2,272 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642613DB136
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20D73DB13A
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236162AbhG3CjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 22:39:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229949AbhG3CjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 22:39:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B1DE60F4A;
-        Fri, 30 Jul 2021 02:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627612748;
-        bh=6B3cVhx4nV2A6xXvK3y3d2QgXJRAdj2dPPUe5a3+gR0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YvR6wk3vhV0GEB5HSt4Hv9ev7AY7CtQVerfzNu4BbRtfcYBZvOfomHCO4C8Sav45r
-         H51hdMv2RXso7C/PTknw9rbSltwZHK3wjX8F9e9qOtbkRN2VO1Bsh4PqA8R/gTlrFA
-         /u+uv/T957dYErrqAuSjAo7p6wZTxhky0ZWmIkUk5/6h/zdn4aHVeOJT/IRZ5iF1b/
-         h+95gimEfe1hzLnVdC2O5BTosamqmjEkMLQcovyb6xsuJvWR/ArhaydtmuFJBrwFEa
-         DlsvAwh5MC7OwQSB7o14QRn9UfvqM6Bsu52qWsphHS0uMTRqVJKLbo9E840/AAXGmP
-         995J1gGEBhJzw==
-Date:   Fri, 30 Jul 2021 08:09:03 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     quic_vamslank@quicinc.com
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        tglx@linutronix.de, maz@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] clk: qcom: Add new PLL type for SDX65
-Message-ID: <YQNmR27CQnN1snyK@matsya>
-References: <cover.1626986805.git.quic_vamslank@quicinc.com>
- <223a1d8020d50c35ff2621f95d69b4a626b6893b.1626986805.git.quic_vamslank@quicinc.com>
+        id S229949AbhG3Cjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 22:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235919AbhG3Cj3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 22:39:29 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C7CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 19:39:25 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id mt6so13046445pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 19:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NHuO3a4lOV1ak/eQfFp+AAaG2sMLeGDAKzyV4AOK0RE=;
+        b=j8UqRed6HOKlyVkSoS05EJXewa+eUCRzTuOxtwGX5fDIEozj4tBUf/Pb6CHGAaLmaA
+         0lvkqjJ4PTgUwIVlwmbeuhhcBcZAYaZZ7EQBi+8oHJhkCGFeyBQklkhQLoPwf8W6+nzt
+         YRqHGvdjQepkZ10ZG9+WbgEXKCY3JTIc9WoQ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NHuO3a4lOV1ak/eQfFp+AAaG2sMLeGDAKzyV4AOK0RE=;
+        b=Mk18c+bbYtsx7nwrAEsc8ct/dFdpEgyAfCdSTqkE2VRYo+H7dZorHuNJ7HTeYefsg2
+         8Fuv4GqkXzqq+xXTh6dt5m8YD5RMEAkW/6ewUhmiU3gNDUyz9qC4oLdLfaltdMYKhRuW
+         7pAyRRk5ZXqYMWOHI20Be2NlFeG0L/XA6l62StiLvuAgGuZGukYq3EECJuW76f5CZXaA
+         DtD1bZ4mdaBd6Uf0KCmGz9qfGaNlFNyENA7eJhP0rO4PXO4APvqsBD3xoLEXoI8Wfey+
+         bl6o4bGm3A9ffnI46T+AaXz55QzYMrOwgmzLwfTMR3d7/qE0RFdh3A7J+AIAeAxmoYOm
+         38FA==
+X-Gm-Message-State: AOAM530mRK8oTdii3e5/LiVJXZGxe/cd2NA5wtpjq8BcAGe6t5DWCd7Z
+        iYChrObHLdls6/GIryhMTdtDfQ==
+X-Google-Smtp-Source: ABdhPJzo5u8p9hbDXhUl8yhRH+ETwKt9UE7110pr1bIcu8dZOn97UljUZ8gMIyei6sG4Pc+UC9HyCw==
+X-Received: by 2002:a17:902:c409:b029:12c:8d18:a03 with SMTP id k9-20020a170902c409b029012c8d180a03mr518065plk.81.1627612764988;
+        Thu, 29 Jul 2021 19:39:24 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x7sm195258pfn.70.2021.07.29.19.39.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 19:39:24 -0700 (PDT)
+Date:   Thu, 29 Jul 2021 19:39:23 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 34/64] fortify: Detect struct member overflows in
+ memcpy() at compile-time
+Message-ID: <202107291938.B26E4916@keescook>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-35-keescook@chromium.org>
+ <d2f9f21c-4d6e-9458-5887-ca5166d07942@rasmusvillemoes.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <223a1d8020d50c35ff2621f95d69b4a626b6893b.1626986805.git.quic_vamslank@quicinc.com>
+In-Reply-To: <d2f9f21c-4d6e-9458-5887-ca5166d07942@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Vamsi,
-
-On 22-07-21, 14:09, quic_vamslank@quicinc.com wrote:
-> From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-
-Can you please add the type of pll in patch title. Something like Add
-LUCID_EVO pll
-
+On Wed, Jul 28, 2021 at 01:19:59PM +0200, Rasmus Villemoes wrote:
+> On 27/07/2021 22.58, Kees Cook wrote:
 > 
-> Add a new PLL type for SDX65 SoC from Qualcomm.
+> > At its core, FORTIFY_SOURCE uses the compiler's __builtin_object_size()
+> > internal[0] to determine the available size at a target address based on
+> > the compile-time known structure layout details. It operates in two
+> > modes: outer bounds (0) and inner bounds (1). In mode 0, the size of the
+> > enclosing structure is used. In mode 1, the size of the specific field
+> > is used. For example:
+> > 
+> > 	struct object {
+> > 		u16 scalar1;	/* 2 bytes */
+> > 		char array[6];	/* 6 bytes */
+> > 		u64 scalar2;	/* 8 bytes */
+> > 		u32 scalar3;	/* 4 bytes */
+> > 	} instance;
+> > 
+> >
+> > __builtin_object_size(instance.array, 0) == 18, since the remaining size
+> > of the enclosing structure starting from "array" is 18 bytes (6 + 8 + 4).
 > 
-> Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> ---
->  drivers/clk/qcom/clk-alpha-pll.c | 170 +++++++++++++++++++++++++++++++
->  drivers/clk/qcom/clk-alpha-pll.h |   4 +
->  2 files changed, 174 insertions(+)
+> I think the compiler would usually end up making that struct size 24,
+> with 4 bytes of trailing padding (at least when alignof(u64) is 8). In
+> that case, does __builtin_object_size(instance.array, 0) actually
+> evaluate to 18, or to 22? A quick test on x86-64 suggests the latter, so
+> the memcpy(, , 20) would not be a violation.
 > 
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> index c6eb99169ddc..93c8917b7273 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.c
-> +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> + * Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
->   * Copyright (c) 2015, 2018, The Linux Foundation. All rights reserved.
->   */
->  
-> @@ -126,6 +127,20 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
->  		[PLL_OFF_TEST_CTL_U] = 0x1c,
->  		[PLL_OFF_STATUS] = 0x2c,
->  	},
-> +        [CLK_ALPHA_PLL_TYPE_LUCID_EVO] = {
-> +                [PLL_OFF_OPMODE] = 0x04,
-> +                [PLL_OFF_STATUS] = 0x0c,
-> +                [PLL_OFF_L_VAL] = 0x10,
-> +                [PLL_OFF_ALPHA_VAL] = 0x14,
-> +                [PLL_OFF_USER_CTL] = 0x18,
-> +                [PLL_OFF_USER_CTL_U] = 0x1c,
-> +                [PLL_OFF_CONFIG_CTL] = 0x20,
-> +                [PLL_OFF_CONFIG_CTL_U] = 0x24,
-> +                [PLL_OFF_CONFIG_CTL_U1] = 0x28,
-> +                [PLL_OFF_TEST_CTL] = 0x2c,
-> +                [PLL_OFF_TEST_CTL_U] = 0x30,
-> +                [PLL_OFF_TEST_CTL_U1] = 0x34,
-> +        },
->  };
->  EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
->  
-> @@ -155,12 +170,14 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
->  
->  /* LUCID PLL specific settings and offsets */
->  #define LUCID_PCAL_DONE		BIT(27)
-> +#define LUCID_EVO_PLL_L_VAL_MASK        GENMASK(15, 0)
->  
->  /* LUCID 5LPE PLL specific settings and offsets */
->  #define LUCID_5LPE_PCAL_DONE		BIT(11)
->  #define LUCID_5LPE_ALPHA_PLL_ACK_LATCH	BIT(13)
->  #define LUCID_5LPE_PLL_LATCH_INPUT	BIT(14)
->  #define LUCID_5LPE_ENABLE_VOTE_RUN	BIT(21)
-> +#define LUCID_EVO_ENABLE_VOTE_RUN       BIT(25)
->  
->  #define pll_alpha_width(p)					\
->  		((PLL_ALPHA_VAL_U(p) - PLL_ALPHA_VAL(p) == 4) ?	\
-> @@ -1777,3 +1794,156 @@ const struct clk_ops clk_alpha_pll_postdiv_lucid_5lpe_ops = {
->  	.set_rate = clk_lucid_5lpe_pll_postdiv_set_rate,
->  };
->  EXPORT_SYMBOL(clk_alpha_pll_postdiv_lucid_5lpe_ops);
-> +
-> +static int alpha_pll_lucid_evo_enable(struct clk_hw *hw)
-> +{
-> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> Perhaps it's better to base the example on something which doesn't have
+> potential trailing padding - so either add another 4 byte member, or
+> also make scalar2 u32.
 
-Use a regmap ptr like we do for other functions here?
-
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* If in FSM mode, just vote for it */
-> +	if (val & LUCID_EVO_ENABLE_VOTE_RUN) {
-> +		ret = clk_enable_regmap(hw);
-> +		if (ret)
-> +			return ret;
-> +		return wait_for_pll_enable_lock(pll);
-> +	}
-> +
-> +	/* Check if PLL is already enabled */
-> +	ret = trion_pll_is_enabled(pll, pll->clkr.regmap);
-> +	if (ret < 0)
-> +		return ret;
-> +	else if (ret) {
-> +		pr_warn("%s PLL is already enabled\n",
-> +				clk_hw_get_name(&pll->clkr.hw));
-> +		return 0;
-> +	}
-> +
-> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll),
-> +			PLL_RESET_N, PLL_RESET_N);
-
-this and others should fit in a single line (with regmap ptr)
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Set operation mode to RUN */
-> +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_RUN);
-> +
-> +	ret = wait_for_pll_enable_lock(pll);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Enable the PLL outputs */
-> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll),
-> +			PLL_OUT_MASK, PLL_OUT_MASK);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Enable the global PLL outputs */
-> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll),
-> +			PLL_OUTCTRL, PLL_OUTCTRL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Ensure that the write above goes through before returning. */
-> +	mb();
-
-why is this required?
-
-> +	return ret;
-> +}
-> +
-> +static void alpha_pll_lucid_evo_disable(struct clk_hw *hw)
-> +{
-> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-
-regmap here too
-
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> +	if (ret)
-> +		return;
-> +
-> +	/* If in FSM mode, just unvote it */
-> +	if (val & LUCID_EVO_ENABLE_VOTE_RUN) {
-> +		clk_disable_regmap(hw);
-> +		return;
-> +	}
-> +
-> +	/* Disable the global PLL output */
-> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll),
-> +			PLL_OUTCTRL, 0);
-> +	if (ret)
-> +		return;
-> +
-> +	/* Disable the PLL outputs */
-> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll),
-> +			PLL_OUT_MASK, 0);
-> +	if (ret)
-> +		return;
-> +
-> +	/* Place the PLL mode in STANDBY */
-> +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll),
-> +			PLL_STANDBY);
-> +}
-> +
-> +static unsigned long alpha_pll_lucid_evo_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-
-too long pls split to two lines!
-
-> +{
-> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
-> +	u32 l, frac;
-> +
-> +	regmap_read(pll->clkr.regmap, PLL_L_VAL(pll), &l);
-> +	l &= LUCID_EVO_PLL_L_VAL_MASK;
-> +	regmap_read(pll->clkr.regmap, PLL_ALPHA_VAL(pll), &frac);
-> +
-> +	return alpha_pll_calc_rate(parent_rate, l, frac, ALPHA_REG_16BIT_WIDTH);
-> +}
-
-looks like you should reuse clk_trion_pll_recalc_rate() instead...
-
-> +
-> +static int clk_lucid_evo_pll_postdiv_set_rate(struct clk_hw *hw,
-> +		unsigned long rate, unsigned long parent_rate)
-> +{
-> +	struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
-> +	int i, val = 0, div, ret;
-> +
-> +	/*
-> +	 * If the PLL is in FSM mode, then treat set_rate callback as a
-> +	 * no-operation.
-> +	 */
-> +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (val & LUCID_EVO_ENABLE_VOTE_RUN)
-> +		return 0;
-> +
-> +	if (!pll->post_div_table) {
-> +		pr_err("Missing the post_div_table for the PLL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	div = DIV_ROUND_UP_ULL((u64)parent_rate, rate);
-> +	for (i = 0; i < pll->num_post_div; i++) {
-> +		if (pll->post_div_table[i].div == div) {
-> +			val = pll->post_div_table[i].val;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll),
-> +			(BIT(pll->width) - 1) << pll->post_div_shift,
-> +			val << pll->post_div_shift);
-> +}
-
-clk_lucid_5lpe_pll_postdiv_set_rate() looks similar?
+Yup, totally right. Thanks! I've fixed the example now for v2.
 
 -- 
-~Vinod
+Kees Cook
