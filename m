@@ -2,93 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63023DBEBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AA53DBEBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhG3THR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbhG3THP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:07:15 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC109C06175F;
-        Fri, 30 Jul 2021 12:07:09 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id hs10so9925366ejc.0;
-        Fri, 30 Jul 2021 12:07:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e8f4lcsPiJ3HGD4KPSWDS3ppWYq9M+P3wkpoyc+VO8w=;
-        b=VzNCpodjTbGJ1h3RWJ4m7xZ0UvZI+Qk7PN1WqC8uE1LMFt1elPjP2OFe3tLRuyNdnE
-         3z2j1nfPaTGY2n6tTyZn2MhgpX6B2Gx4WPV3is5QXHCOUOAYHA0pfSjW1aSKmwvFX0cD
-         GZmKWnkVxtaj40+n51S8Edx7eFmJBYNYV4NPqfI+R3tFa2sNrFtoZ606NZk4E58U42cM
-         //03VjkkcXuMg7ipYDa7kkp7i7z1QPeeySFPn5BAGBicX0bCVM1Wb+ZXzbmeL8gCnn2A
-         CtmIcNJkXWWeKEqi7cWRxvlRH4k4a1TTLG/3CP6QqGkQGKQjPQ59P3uqzu3wWji00cQw
-         ZqsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e8f4lcsPiJ3HGD4KPSWDS3ppWYq9M+P3wkpoyc+VO8w=;
-        b=r+B/rmS3tOc3el6TK3z6zA966wZyjG9AFD5kB1pcPuqLONr5Sv2OanlrNJqVzGGCB+
-         O6hE/TJjAoJookM9cJhIlsCvsuXN0BWcQvVV3+cAtKbbH+SrN8p9sVvf0Sgpk9SobX13
-         oO2CK9IRgMfQkXFyPhK1u25LpqXeC3DJSxsEhQAvSIZKIjhSa/ZbMB2pbAuZEKz1UOQw
-         HC4bnlcWAhp8nr9maEisv+7aOwuhcs4UJxk436Il4S6HM6jC1SkK5pZgb/4r7050ebdx
-         10nQs9zUPTtWqPZfk4TQZoib9weUdPsJVBal/HclJo9ViL5Div4bO5x8GNBBdEQ/M188
-         elZw==
-X-Gm-Message-State: AOAM5319JH9sSoz9eJMt/htr9l4zI7Dfrov/tUsWszcypWeW6hWrFSiw
-        WTrac3OAd368NwkUQ1lDEcI=
-X-Google-Smtp-Source: ABdhPJw7sKiaK516UBNTL6irnVQE7OfE7dl0ZV5DJI/pu6FmwyKwV5ypwy5U+LfXesW1jZecq43tkg==
-X-Received: by 2002:a17:907:1b02:: with SMTP id mp2mr4139238ejc.196.1627672028400;
-        Fri, 30 Jul 2021 12:07:08 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id br3sm858993ejb.103.2021.07.30.12.07.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 12:07:08 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 22:07:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 1/2] net: dsa: tag_mtk: skip address learning on
- transmit to standalone ports
-Message-ID: <20210730190706.jm7uizyqltmle2bi@skbuf>
-References: <20210728175327.1150120-1-dqfext@gmail.com>
- <20210728175327.1150120-2-dqfext@gmail.com>
- <20210728183705.4gea64qlbe64kkpl@skbuf>
- <20210730162403.p2dnwvwwgsxttomg@skbuf>
- <20210730190020.638409-1-dqfext@gmail.com>
+        id S230496AbhG3TJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:09:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230335AbhG3TJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 15:09:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F30A360F00;
+        Fri, 30 Jul 2021 19:09:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627672152;
+        bh=00uKcfkCA0b/QBJBHFd/NCx0VSTJMUeiq41umtW8K/o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tgKBp5fC17GSQ9dnb6fsykoMRDRPkNPxQTRdLSmyvpP8lRnOSwTXiMP1ScyMpVPd3
+         q+QQ/4/Te76EHAG/7DWuwPCCI+8Wwm1ykpVd8WprTuR0FJwYULb6DXaEz1lok9KcOd
+         hXXMbwwyTH5B9WjOE1M+BzBhO4Pylz57h0ajj01Lpz1xEatNvw9arBq/8xeJifrbQu
+         HeMy59T7kSH8HuLIyWAG0zip7dD+AAnwm/vn+2Vpey4XYhZBpjdFO0xC2bKTrnS80y
+         PpF6mkC62NXr+0+EHZlBbd4lF8Yq765l5EEv6vT0oBrFTuHw77IKsuYXrG+BhjA0fj
+         aNPbfbJdeRDSA==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] f2fs: show sbi status in debugfs/f2f/sstatus
+Date:   Fri, 30 Jul 2021 12:09:07 -0700
+Message-Id: <20210730190907.2072122-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730190020.638409-1-dqfext@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 03:00:20AM +0800, DENG Qingfang wrote:
-> On Fri, Jul 30, 2021 at 07:24:03PM +0300, Vladimir Oltean wrote:
-> > Considering that you also have the option of setting
-> > ds->assisted_learning_on_cpu_port = true and this will have less false
-> > positives, what are the reasons why you did not choose that approach?
-> 
-> After enabling it, I noticed .port_fdb_{add,del} are called with VID=0
-> (which it does not use now) unless I turn on VLAN filtering. Is that
-> normal?
+We need to get sbi->s_flag to understand the current f2fs status as well.
+One example is SBI_NEED_FSCK.
 
-They are called with the VID from the learned packet.
-If the bridge is VLAN-unaware, the MAC SA is learned with VID 0.
-Generally, VID 0 is always used for VLAN-unaware bridging. You can
-privately translate VID 0 to whatever VLAN ID you use in VLAN-unaware
-mode.
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ fs/f2fs/debug.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+index 53ed1e9191f0..473ad04d1891 100644
+--- a/fs/f2fs/debug.c
++++ b/fs/f2fs/debug.c
+@@ -333,11 +333,12 @@ static int stat_show(struct seq_file *s, void *v)
+ 	list_for_each_entry(si, &f2fs_stat_list, stat_list) {
+ 		update_general_status(si->sbi);
+ 
+-		seq_printf(s, "\n=====[ partition info(%pg). #%d, %s, CP: %s]=====\n",
++		seq_printf(s, "\n=====[ partition info(%pg). #%d, %s, CP: %s (sbi: 0x%lx)]=====\n",
+ 			si->sbi->sb->s_bdev, i++,
+ 			f2fs_readonly(si->sbi->sb) ? "RO": "RW",
+ 			is_set_ckpt_flags(si->sbi, CP_DISABLED_FLAG) ?
+-			"Disabled": (f2fs_cp_error(si->sbi) ? "Error": "Good"));
++			"Disabled": (f2fs_cp_error(si->sbi) ? "Error": "Good"),
++			si->sbi->s_flag);
+ 		seq_printf(s, "[SB: 1] [CP: 2] [SIT: %d] [NAT: %d] ",
+ 			   si->sit_area_segs, si->nat_area_segs);
+ 		seq_printf(s, "[SSA: %d] [MAIN: %d",
+-- 
+2.32.0.554.ge1b32706d8-goog
+
