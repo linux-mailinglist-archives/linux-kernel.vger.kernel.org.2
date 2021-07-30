@@ -2,293 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791173DC168
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FB53DC16E
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbhG3W76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233942AbhG3W7y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:59:54 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D03C061765
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:49 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d19-20020a170902c193b029012c5a07a983so8721626pld.1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=h3wR/inEshwcepNJ/0RKSZbSm/G4aslO5vxWa90kRF0=;
-        b=nVvTNb4HFHJ3Sfs7k2PdcrbJM77NFSFEcNh9a0ZRiMyIBsIoK95ugVB/UqGCk2+kro
-         yEbd2KGQw/6sAJbWdUPhQg6qkOXU20lj0fWbbrxm4QjZGMW/xIJc1G0F4wMfc7yhs3uQ
-         3yCMTCuQLu2tU3t4y9eUVcursWBAPTkBFXYF8qTcArrDNkJJNt+ReM93mqHyGhbsHQfh
-         5mQgfDlGzQjxRTI8ILkb7rxxRmkr8CZNFebPfJoFYhYeCNfypicwZ0gZIhTY4+NDkpnX
-         HaZQC5uVfqbpSskuValdgNA/hHXHHfdP3xT6l/WeyITNDgCRzx7Tf1rWA3tDt/cmfL7z
-         DsUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=h3wR/inEshwcepNJ/0RKSZbSm/G4aslO5vxWa90kRF0=;
-        b=Tj6Bs4hW780nt+7/bqddIkI19dDP2ZAZLqaEp1pt4ZhBr3GQ+SukZ3GATfUKXvR8nM
-         00NMCGd1Ae9obpd2PGm1XRz77aefY6hbBuabsD6u/+MgoAaGKHHMiArk/FcOrw5Jn+ea
-         hn3+0mP9RdTQPABnGogsOIMPdHVn908fpp99/RCZX4iRsmrMPSowgj0qOOhZh+Pg0jq3
-         1d2+CTtVe11bIf0YSx9XnCX0Iv9eyCpktgqexG8IqNdwKUX+96dfmPvmicxdNnCfHuVD
-         LzQTj/y0G6nzPsqd/wrghToWpf7dTmj5Zq+xNwoPMVf7FBnwjmZWRS/6190FOJBpIS8f
-         pAUQ==
-X-Gm-Message-State: AOAM530J4pvDavouyQTmVQS56TvD1rwFzgUuKltyHz5M9mGHrG6wa+ya
-        SYiigSnM2u27aDquXQwBRDPZZixWapnE
-X-Google-Smtp-Source: ABdhPJwdxli16B09pU9KfhARf6lWY2wP2fyrzdyyP1RhntfSq+I2SNI/DmdZogdrWsnU6g3Db46r2xdOnrx4
-X-Received: from mihenry-linux-desktop.kir.corp.google.com ([2620:15c:29:204:a198:4c3e:b951:58e3])
- (user=mizhang job=sendgmr) by 2002:a05:6a00:91:b029:330:8ab3:d7d9 with SMTP
- id c17-20020a056a000091b02903308ab3d7d9mr4850465pfj.22.1627685989283; Fri, 30
- Jul 2021 15:59:49 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Fri, 30 Jul 2021 15:59:39 -0700
-In-Reply-To: <20210730225939.3852712-1-mizhang@google.com>
-Message-Id: <20210730225939.3852712-4-mizhang@google.com>
-Mime-Version: 1.0
-References: <20210730225939.3852712-1-mizhang@google.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v3 3/3] KVM: x86/mmu: Add detailed page size stats
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S233643AbhG3XIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 19:08:30 -0400
+Received: from phobos.denx.de ([85.214.62.61]:33364 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231189AbhG3XI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 19:08:29 -0400
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 3CE7A82EE5;
+        Sat, 31 Jul 2021 01:08:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1627686502;
+        bh=Lsvzgm2/bT0i1czDftPYuhBl4C3X6EAaoI8Ypn/Y24Q=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=Z42tDgf07XHT/9mOTJf+62fdat1v5vk/m9m9hDad08sXf+upYlW982iIDFPQSLiRi
+         Ca2zlqd3b6fhipDCh5ojqRkBnI90zEpTJfjFdSSN2/euAItgZUzoFysgNsq/JB8+8H
+         C321XnT3AdBvmNoEmnkaBQDUsvGOAk4RaFZhZD8VqJZiQKsp9CHj1y2uFqB38spGYy
+         Lqw9krc8A/KY4dgsb23kwKgOJhFClQtvNO1i0TciRBdXnbsdIkHD558cfuhpuC7OHB
+         FwPWX+k94y6iJ7/x2dG5muCTrp/UvcQjdC3INAgH/SQOHwGbQuk7viC20Je3RKX6bc
+         ZS7xWZ9kjVExg==
+Subject: Re: [PATCH v2] net: phy: micrel: Fix detection of ksz87xx switch
+To:     Steve Bennett <steveb@workware.net.au>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
+References: <20210730105120.93743-1-steveb@workware.net.au>
+ <20210730225750.98849-1-steveb@workware.net.au>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <932a0c80-db3c-77ac-6bbe-101804329e02@denx.de>
+Date:   Sat, 31 Jul 2021 01:08:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210730225750.98849-1-steveb@workware.net.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Existing KVM code tracks the number of large pages regardless of their
-sizes. Therefore, when large page of 1GB (or larger) is adopted, the
-information becomes less useful because lpages counts a mix of 1G and 2M
-pages.
+On 7/31/21 12:57 AM, Steve Bennett wrote:
+> The logic for discerning between KSZ8051 and KSZ87XX PHYs is incorrect
+> such that the that KSZ87XX switch is not identified correctly.
+> 
+> ksz8051_ksz8795_match_phy_device() uses the parameter ksz_phy_id
+> to discriminate whether it was called from ksz8051_match_phy_device()
+> or from ksz8795_match_phy_device() but since PHY_ID_KSZ87XX is the
+> same value as PHY_ID_KSZ8051, this doesn't work.
+> 
+> Instead use a bool to discriminate the caller.
+> 
+> Without this patch, the KSZ8795 switch port identifies as:
+> 
+> ksz8795-switch spi3.1 ade1 (uninitialized): PHY [dsa-0.1:03] driver [Generic PHY]
+> 
+> With the patch, it identifies correctly:
+> 
+> ksz8795-switch spi3.1 ade1 (uninitialized): PHY [dsa-0.1:03] driver [Micrel KSZ87XX Switch]
+> 
+> Fixes: 8b95599c55ed24b36cf4 ("net: phy: micrel: Discern KSZ8051 and KSZ8795 PHYs")
+> Signed-off-by: Steve Bennett <steveb@workware.net.au>
 
-So remove the lpages since it is easy for user space to aggregate the info.
-Instead, provide a comprehensive page stats of all sizes from 4K to 512G.
+Looks obviously correct to me, and yes, this reinstates behavior before 
+V3 of the original patch. Thanks!
 
-Suggested-by: Ben Gardon <bgardon@google.com>
-Reviewed-by: Ben Gardon <bgardon@google.com>
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
-Cc: Jing Zhang <jingzhangos@google.com>
-Cc: David Matlack <dmatlack@google.com>
-Cc: Sean Christopherson <seanjc@google.com>
----
- arch/x86/include/asm/kvm_host.h | 10 +++++++++-
- arch/x86/kvm/mmu.h              |  4 ++++
- arch/x86/kvm/mmu/mmu.c          | 26 +++++++++++++-------------
- arch/x86/kvm/mmu/tdp_mmu.c      | 15 ++-------------
- arch/x86/kvm/x86.c              |  7 +++++--
- 5 files changed, 33 insertions(+), 29 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 974cbfb1eefe..eb6edc36b3ed 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1206,9 +1206,17 @@ struct kvm_vm_stat {
- 	u64 mmu_recycled;
- 	u64 mmu_cache_miss;
- 	u64 mmu_unsync;
--	u64 lpages;
- 	u64 nx_lpage_splits;
- 	u64 max_mmu_page_hash_collisions;
-+	union {
-+		struct {
-+			atomic64_t pages_4k;
-+			atomic64_t pages_2m;
-+			atomic64_t pages_1g;
-+			atomic64_t pages_512g;
-+		};
-+		atomic64_t pages[4];
-+	};
- };
- 
- struct kvm_vcpu_stat {
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 83e6c6965f1e..2883789fb5fb 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -240,4 +240,8 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
- 	return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
- }
- 
-+static inline void kvm_update_page_stats(struct kvm *kvm, int level, int count)
-+{
-+	atomic64_add(count, &kvm->stat.pages[level - 1]);
-+}
- #endif
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 442cc554ebd6..2308537b1807 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -594,10 +594,11 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
-  * state bits, it is used to clear the last level sptep.
-  * Returns non-zero if the PTE was previously valid.
-  */
--static int mmu_spte_clear_track_bits(u64 *sptep)
-+static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
- {
- 	kvm_pfn_t pfn;
- 	u64 old_spte = *sptep;
-+	int level = sptep_to_sp(sptep)->role.level;
- 
- 	if (!spte_has_volatile_bits(old_spte))
- 		__update_clear_spte_fast(sptep, 0ull);
-@@ -607,6 +608,8 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
- 	if (!is_shadow_present_pte(old_spte))
- 		return 0;
- 
-+	kvm_update_page_stats(kvm, level, -1);
-+
- 	pfn = spte_to_pfn(old_spte);
- 
- 	/*
-@@ -984,9 +987,10 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
- 	}
- }
- 
--static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
-+static void pte_list_remove(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-+			    u64 *sptep)
- {
--	mmu_spte_clear_track_bits(sptep);
-+	mmu_spte_clear_track_bits(kvm, sptep);
- 	__pte_list_remove(sptep, rmap_head);
- }
- 
-@@ -1119,7 +1123,7 @@ static u64 *rmap_get_next(struct rmap_iterator *iter)
- 
- static void drop_spte(struct kvm *kvm, u64 *sptep)
- {
--	if (mmu_spte_clear_track_bits(sptep))
-+	if (mmu_spte_clear_track_bits(kvm, sptep))
- 		rmap_remove(kvm, sptep);
- }
- 
-@@ -1129,7 +1133,6 @@ static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
- 	if (is_large_pte(*sptep)) {
- 		WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
- 		drop_spte(kvm, sptep);
--		--kvm->stat.lpages;
- 		return true;
- 	}
- 
-@@ -1386,7 +1389,7 @@ static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 	while ((sptep = rmap_get_first(rmap_head, &iter))) {
- 		rmap_printk("spte %p %llx.\n", sptep, *sptep);
- 
--		pte_list_remove(rmap_head, sptep);
-+		pte_list_remove(kvm, rmap_head, sptep);
- 		flush = true;
- 	}
- 
-@@ -1421,13 +1424,13 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 		need_flush = 1;
- 
- 		if (pte_write(pte)) {
--			pte_list_remove(rmap_head, sptep);
-+			pte_list_remove(kvm, rmap_head, sptep);
- 			goto restart;
- 		} else {
- 			new_spte = kvm_mmu_changed_pte_notifier_make_spte(
- 					*sptep, new_pfn);
- 
--			mmu_spte_clear_track_bits(sptep);
-+			mmu_spte_clear_track_bits(kvm, sptep);
- 			mmu_spte_set(sptep, new_spte);
- 		}
- 	}
-@@ -2232,8 +2235,6 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
- 	if (is_shadow_present_pte(pte)) {
- 		if (is_last_spte(pte, sp->role.level)) {
- 			drop_spte(kvm, spte);
--			if (is_large_pte(pte))
--				--kvm->stat.lpages;
- 		} else {
- 			child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
- 			drop_parent_pte(child, spte);
-@@ -2692,8 +2693,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 	trace_kvm_mmu_set_spte(level, gfn, sptep);
- 
- 	if (!was_rmapped) {
--		if (is_large_pte(*sptep))
--			++vcpu->kvm->stat.lpages;
-+		kvm_update_page_stats(vcpu->kvm, level, 1);
- 		rmap_count = rmap_add(vcpu, sptep, gfn);
- 		if (rmap_count > RMAP_RECYCLE_THRESHOLD)
- 			rmap_recycle(vcpu, sptep, gfn);
-@@ -5669,7 +5669,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
- 		if (sp->role.direct && !kvm_is_reserved_pfn(pfn) &&
- 		    sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
- 							       pfn, PG_LEVEL_NUM)) {
--			pte_list_remove(rmap_head, sptep);
-+			pte_list_remove(kvm, rmap_head, sptep);
- 
- 			if (kvm_available_flush_tlb_with_range())
- 				kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index cba2ab5db2a0..eae404c15364 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -413,7 +413,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 	bool was_leaf = was_present && is_last_spte(old_spte, level);
- 	bool is_leaf = is_present && is_last_spte(new_spte, level);
- 	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
--	bool was_large, is_large;
- 
- 	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
- 	WARN_ON(level < PG_LEVEL_4K);
-@@ -472,18 +471,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 		return;
- 	}
- 
--	/*
--	 * Update large page stats if a large page is being zapped, created, or
--	 * is replacing an existing shadow page.
--	 */
--	was_large = was_leaf && is_large_pte(old_spte);
--	is_large = is_leaf && is_large_pte(new_spte);
--	if (was_large != is_large) {
--		if (was_large)
--			atomic64_sub(1, (atomic64_t *)&kvm->stat.lpages);
--		else
--			atomic64_add(1, (atomic64_t *)&kvm->stat.lpages);
--	}
-+	if (is_leaf != was_leaf)
-+		kvm_update_page_stats(kvm, level, is_leaf ? 1 : -1);
- 
- 	if (was_leaf && is_dirty_spte(old_spte) &&
- 	    (!is_present || !is_dirty_spte(new_spte) || pfn_changed))
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 8166ad113fb2..e4dfcd5d83ad 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -235,9 +235,12 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
- 	STATS_DESC_COUNTER(VM, mmu_recycled),
- 	STATS_DESC_COUNTER(VM, mmu_cache_miss),
- 	STATS_DESC_ICOUNTER(VM, mmu_unsync),
--	STATS_DESC_ICOUNTER(VM, lpages),
- 	STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
--	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
-+	STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions),
-+	STATS_DESC_ICOUNTER(VM, pages_4k),
-+	STATS_DESC_ICOUNTER(VM, pages_2m),
-+	STATS_DESC_ICOUNTER(VM, pages_1g),
-+	STATS_DESC_ICOUNTER(VM, pages_512g)
- };
- static_assert(ARRAY_SIZE(kvm_vm_stats_desc) ==
- 		sizeof(struct kvm_vm_stat) / sizeof(u64));
--- 
-2.32.0.554.ge1b32706d8-goog
-
+Reviewed-by: Marek Vasut <marex@denx.de>
