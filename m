@@ -2,114 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAAF3DC139
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227F33DC13B
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhG3Wm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
+        id S233559AbhG3Wmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbhG3Wm1 (ORCPT
+        with ESMTP id S231189AbhG3Wml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:42:27 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306EEC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:42:21 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id h11so14442486ljo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:42:21 -0700 (PDT)
+        Fri, 30 Jul 2021 18:42:41 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97D1C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:42:35 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id mt6so17321874pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:42:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MvaRlaXK64PpiXVCxXFWPZrJ6CRVJKhlEggaPSUWrrw=;
-        b=CamcDOtb4w32+Iwghtae/iPJ4AawESCpvZfWvezZMZ2GmChsXM+D5S/WHRuAsK/sol
-         k/QhziJbAl+EIxdK2SdZbk3RdfRUppMIsuc5kTQMewaCPzJw4aKEI3Eu9wRyh11Drmrd
-         FHMc6zK2PGlNcCN+FurZ+iWO7OY7901V6GveTFJszVCrRN+K7AfRjSRkqJDeDBdmVZSU
-         raKAAS798S1kv0LiK803/HbxaTWfj5vPSmOpNDyid0UXwxTPdpQepcngNnOntz5HsaOY
-         0piJrOFdPamO6NdoWP36W+lhaXKHPRPzIbxZjEHwznYdw4lSsxaaWgv8LKp2PquT/SOl
-         OoZA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m4d9ZD9p7GoqrvGaiugJJi1dtX5ER6dFXKneRi0unZQ=;
+        b=UD+a7OHG6R6O1/v3XLdigN6MDc2FUkFXi8AJqiXtL/E14oNXaLlRshONH4ZEV3U+2l
+         O+FzXhy3YiQv+j4no8ejXyA6qCG/BbE0OuzfWVYJOTMwDIotwWFqUQUQbBd3T5DPGMSF
+         5iPGQsZVmTereOWIZlj3lJLfB/t9OU1fBzXXyuzxnV5O4y5+GR2wmZ824olLGhYcqMkt
+         E93R50vJJPqYgYn7QQLQWVtvwHr9P+fVXsYDY1SeyAqQ9+CWTTX/I6WqGr0+IR6ZayAB
+         b3TfGwNivuG/xRxTkOXgXhJ1+wvMpC744swkcitnGwK5utnhKiWijfQde9qagLVzSfIq
+         ULgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MvaRlaXK64PpiXVCxXFWPZrJ6CRVJKhlEggaPSUWrrw=;
-        b=CUih9i1WSrYtD4WZ2RsiGrWUt1e8scJy2G9RiuCuLLyC+JTbGXPB5rLA3IKGDCTt/h
-         VQZ729lCDDd+X5/Y5Sh/UTfbTQY/x6P7SJnzfE7W+ppSxtuHELo84OJoWFSdu4DYG9Fr
-         /5gYQwvpZfGZC89RW9M2lEx3aknZnx1XQrKuytQ70V/ZZuu4AT7ctf2Thu45wKq9TX8Y
-         H3hYQSDI1LX/oFHET9/dvs0mKpPRWUg/nkLhJaedZRq6MLzYo1ezY0TUni+fpmMZG4EB
-         H4D6oUxTwqnr3QAe7uTIPCz9ZxcN2E238yt2slWn+on3EpXHfIAvOephjDVgyXS6e1zn
-         XIPw==
-X-Gm-Message-State: AOAM533xp2flFNyzcJ6ux+szY0TDSE4A0fZeb1CeB5dEBD+gkciFcefG
-        M9kiPRnf0E+pjMv7SlSJc5sPghmD7uZcdpVjYHQ9Ng==
-X-Google-Smtp-Source: ABdhPJyYcoAlBscQqMvEJrhnjGcd6z5rpKgZtxpVVf0dTcdK3fafeVwt6xvkwGgxYlTtM9T4m9li4Zp+sJzl9DmJwXA=
-X-Received: by 2002:a2e:a911:: with SMTP id j17mr3212666ljq.341.1627684939283;
- Fri, 30 Jul 2021 15:42:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m4d9ZD9p7GoqrvGaiugJJi1dtX5ER6dFXKneRi0unZQ=;
+        b=gNSHvs/ZTfXsyCnvCRN/mWfonKUcZUHF7CbuJgpCvex8Grg66KVu+UTxaQ/k5Ad9bs
+         2oBhDkPzpRPRNlHBtyYxdOYmM9Wl0UcNbti2AiVbwKrNFnHGTy56xCPAPP1WcIQyK2tr
+         HEqQl3WrAttvZGNYnHWVGg4xdL9ZEYefE0rCVpn/S18HvGChPjgsc/whDETDzT+SjNHf
+         +/Mo51FE9wy4Ko3KeDAxelBpKR6jlOJBJK6cy2zjwBEnTGOPWMA+YbcE/cOfFufIL+EL
+         KzeLh+zgv8CH5spne119D2DqlP4i0Qe7xkFHy7kmKx3Iz6l0NkKhpaI8jzTafYyKllpn
+         nDhw==
+X-Gm-Message-State: AOAM532YH94qv6NKX3XWgqHSm7pPtDNuQdIN344YF2Q+mSmAtxnW2TQ8
+        cAXpKxjj9kRfv+5etwi2h+WGgQ==
+X-Google-Smtp-Source: ABdhPJxk7W+2sIVLDSmSMOXUC11qCNLIDPGNOd/xxKNg/QQ+ueW+7XNXlkhxJYUWIL4woVvOFDCobg==
+X-Received: by 2002:a62:bd15:0:b029:31c:a584:5f97 with SMTP id a21-20020a62bd150000b029031ca5845f97mr4921999pff.33.1627684955184;
+        Fri, 30 Jul 2021 15:42:35 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id n23sm3926800pgv.76.2021.07.30.15.42.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 15:42:34 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 22:42:30 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Eric Biederman <ebiederm@xmission.com>,
+        kexec@lists.infradead.org, Joerg Roedel <jroedel@suse.de>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 11/12] x86/sev: Handle CLFLUSH MMIO events
+Message-ID: <YQSAVo0CXUKHXdLF@google.com>
+References: <20210721142015.1401-1-joro@8bytes.org>
+ <20210721142015.1401-12-joro@8bytes.org>
 MIME-Version: 1.0
-References: <20210730223815.1382706-1-nathan@kernel.org>
-In-Reply-To: <20210730223815.1382706-1-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 30 Jul 2021 15:42:08 -0700
-Message-ID: <CAKwvOdnJ9VMZfZrZprD6k0oWxVJVSNePUM7fbzFTJygXfO24Pw@mail.gmail.com>
-Subject: Re: [PATCH] vmlinux.lds.h: Handle clang's module.{c,d}tor sections
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Fangrui Song <maskray@google.com>,
-        Marco Elver <elver@google.com>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210721142015.1401-12-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 3:38 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> A recent change in LLVM causes module_{c,d}tor sections to appear when
-> CONFIG_K{A,C}SAN are enabled, which results in orphan section warnings
-> because these are not handled anywhere:
->
-> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_ctor) is being placed in '.text.asan.module_ctor'
-> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.asan.module_dtor) is being placed in '.text.asan.module_dtor'
-> ld.lld: warning: arch/x86/pci/built-in.a(legacy.o):(.text.tsan.module_ctor) is being placed in '.text.tsan.module_ctor'
+On Wed, Jul 21, 2021, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> Handle CLFLUSH instruction to MMIO memory in the #VC handler. The
+                               ^
+			       |- emulated
 
-^ .text.tsan.*
-
->
-> Place them in the TEXT_TEXT section so that these technologies continue
-> to work with the newer compiler versions. All of the KASAN and KCSAN
-> KUnit tests continue to pass after this change.
->
-> Cc: stable@vger.kernel.org
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1432
-> Link: https://github.com/llvm/llvm-project/commit/7b789562244ee941b7bf2cefeb3fc08a59a01865
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> instruction is ignored by the handler, as the Hypervisor is
+> responsible for cache management of emulated MMIO memory.
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
 > ---
->  include/asm-generic/vmlinux.lds.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 17325416e2de..3b79b1e76556 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -586,6 +586,7 @@
->                 NOINSTR_TEXT                                            \
->                 *(.text..refcount)                                      \
->                 *(.ref.text)                                            \
-> +               *(.text.asan .text.asan.*)                              \
+>  arch/x86/kernel/sev-shared.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+> index a7a0793c4f98..682fa202444f 100644
+> --- a/arch/x86/kernel/sev-shared.c
+> +++ b/arch/x86/kernel/sev-shared.c
+> @@ -632,6 +632,15 @@ static enum es_result vc_handle_mmio_twobyte_ops(struct ghcb *ghcb,
+>  	long *reg_data;
+>  
+>  	switch (insn->opcode.bytes[1]) {
+> +		/* CLFLUSH */
+> +	case 0xae:
+> +		/*
+> +		 * Ignore CLFLUSHes - those go to emulated MMIO anyway and the
+> +		 * hypervisor is responsible for cache management.
 
-Will this match .text.tsan.module_ctor?
+This wording can be misread as "the hypervisor is responsible for _all_ cache
+management".  Maybe just:
 
-Do we want to add these conditionally on
-CONFIG_KASAN_GENERIC/CONFIG_KCSAN like we do for SANITIZER_DISCARDS?
+		/*
+		 * Ignore CLFLUSHes - the hyperivsor is responsible for cache
+		 * management of emulated MMIO.
+		 */
 
->                 TEXT_CFI_JT                                             \
->         MEM_KEEP(init.text*)                                            \
->         MEM_KEEP(exit.text*)                                            \
->
-> base-commit: 4669e13cd67f8532be12815ed3d37e775a9bdc16
-> --
+Side topic, out of curisoity, what's mapping/accessing emulated MMIO as non-UC?
 
-
--- 
-Thanks,
-~Nick Desaulniers
+> +		 */
+> +		ret = ES_OK;
+> +		break;
+> +
+>  		/* MMIO Read w/ zero-extension */
+>  	case 0xb6:
+>  		bytes = 1;
+> -- 
+> 2.31.1
+> 
