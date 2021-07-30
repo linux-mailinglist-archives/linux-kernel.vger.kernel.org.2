@@ -2,112 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10873DBE54
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7073DBE5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 20:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhG3SZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 14:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
+        id S231197AbhG3SaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 14:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhG3SZH (ORCPT
+        with ESMTP id S230094AbhG3S2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 14:25:07 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D39BC0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:25:02 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id x15-20020a05683000cfb02904d1f8b9db81so10440873oto.12
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:25:02 -0700 (PDT)
+        Fri, 30 Jul 2021 14:28:10 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209FFC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:28:05 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id i39-20020a9d17270000b02904cf73f54f4bso254469ota.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 11:28:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=cloudflare.com; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=XpB+LNmPBgnS5Lf6x+b5cG5d1sMq85HwbCnNpZE2zYo=;
-        b=FLU28j8+ohjlgupR219GFzrIl9IH9/YzqxQJSUxHtE5VtGLhrgsFSje8to6mUj/aga
-         x8nInA/4b1SZwqh/E285vMfeKvkbUkoZiHeV5oxS8JUVQLxRozEbb1HUzzi845CHrDBt
-         bH1RLWLP2fGKQKmFMPdNozclJavXJ1RtQ9W1Ruat6YfxfmKna0mnbxpgJnpnz+MApimw
-         JFI1/pM187pK04w61eo5JjNf2ZlDqDzDfs7YLwOWOmHFCAK24b6vFe2/nSOx/nPPc7fP
-         IASY8hUWbtG53IMu3z7y0g2dS8huQ1EQq2BfmjIjTt84iWoT2Jk2MUoYLWoy37YbYT79
-         fwaA==
+        bh=y9TywsCPTkQ01Aqth2yeOqnyofLdA25ZI+98/Vypw6I=;
+        b=qNMIkqKD1bjsRrkxyRJe4zI/03JXHuA4mcluLEP2d1kw+6jKM7sdTlYKDui7fL2Ndu
+         wDEXoo3Mv4RONKBVwRNoTmIJ/XvJpoKJL78/VQ1UwloLsTxh8h6zoEKNuh/gpEmhP+nT
+         cP2lCUTzfsfkl25AJ+grlQlCSLtK9jZuihBEc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=XpB+LNmPBgnS5Lf6x+b5cG5d1sMq85HwbCnNpZE2zYo=;
-        b=L7QjOVtAKBPpYGj1ccCzl+j6YGswMuf1Lvg51e61gYHcKzUegIqujml3fPVqxkvhSN
-         NdWBzdilNH0pn40HD7aq5tnFgwQVnSAcA/d2ivOJRTQg+PAN6bGoLnjn/YRt57ZIrs9W
-         BnObdJgHJL2rI9c4RCDWPwWFscOLJIQmkQaO8HqmjcmWHKk2pg9rzkmFke1G31Jfg1SF
-         Q6Ec10+gJ0MShDta+0L0kLqjbdJt+OBF4SC7r0MpYsE9amJfZ/pGXvk088oUHVfS5Uc4
-         vN8/1MW/HwLmY3ZZ0tJdGTqdzIAbpWymT9b0v+cDj0GY0U2j9axlh7wDrvHpSWRNEJXA
-         7UXQ==
-X-Gm-Message-State: AOAM530w5DUOWzQzA23J8HP03dpeGotlgayQIE6XuaMw72YW3/Vd1Zy3
-        52EbsOzwRyOahPBDNiwKcU99zw==
-X-Google-Smtp-Source: ABdhPJx4vNZHT6X7wQKRFb2JUuvmKANycbmxpNeZfUiQDWntbLArDTfaRDIDFIss/nuk9dA3LyoMKw==
-X-Received: by 2002:a05:6830:25c6:: with SMTP id d6mr3126063otu.226.1627669501571;
-        Fri, 30 Jul 2021 11:25:01 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i10sm357103ood.48.2021.07.30.11.25.00
+        bh=y9TywsCPTkQ01Aqth2yeOqnyofLdA25ZI+98/Vypw6I=;
+        b=qJYSgjRAaKQIE5vhiLaj8MAOvf58vIZYplBFqojR5aNqqLsadZLJ6gcasovVXVrSLC
+         wJveLBW4AcsC/7F3G+hisyb6nsp0WtpireA0gOwJ177EO/xK2Lktqb8wriqcd6ppopEK
+         zeHhW5b4wOO7Ktw3m4D2kThGAGmpcniAkwoQDgvt8YwP131PjXM7z4mzU+pJ5Coj0cPW
+         LkY+zlWVgk9wSVGhqvoidUaK8+qjm2UyGuhU+/4ZlvW+2SYWzvLxoKiHudktkaFCPjLk
+         q/otNnRutFCpSncq1/88Cjo/qFTdsdl5tWheqwBX8g8vMq3e+k1RMK1vnOUMtwBoINfq
+         hshw==
+X-Gm-Message-State: AOAM530qv91u5PT4r0hkYGU3s9nQky3ADdWYlujYlUEfQ/Bul0NPfGfG
+        92JvzEsu2yN49jg2hxoQd8GgLw==
+X-Google-Smtp-Source: ABdhPJwrPasDFY8VkuQFDjE1ErkRicWyG/xCwyn9fMZ2NM1ygqIJTH7ZH/Ucz2Fgep23M9R1T/Alfg==
+X-Received: by 2002:a9d:7010:: with SMTP id k16mr2968262otj.298.1627669684382;
+        Fri, 30 Jul 2021 11:28:04 -0700 (PDT)
+Received: from C02XR1NRJGH8 (65-36-81-87.static.grandenetworks.net. [65.36.81.87])
+        by smtp.gmail.com with ESMTPSA id n202sm412934oig.10.2021.07.30.11.28.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 11:25:01 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 13:24:58 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>, robh+dt@kernel.org,
-        will@kernel.org, saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 6/9] arm64: dts: qcom: sc7280: Update reserved memory map
-Message-ID: <YQRD+va2mn9e+QKJ@builder.lan>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-7-git-send-email-sibis@codeaurora.org>
- <YNoQ1d1hUyIh/qxz@google.com>
- <f74c03b939dfd83a1013906e1c771666@codeaurora.org>
+        Fri, 30 Jul 2021 11:28:03 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 13:27:49 -0500
+From:   Kyle Bowman <kbowman@cloudflare.com>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     Alex Forster <aforster@cloudflare.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [netfilter-core] [PATCH] netfilter: xt_NFLOG: allow 128
+ character log prefixes
+Message-ID: <YQREpVNFRUKtBliI@C02XR1NRJGH8>
+References: <20210727190001.914-1-kbowman@cloudflare.com>
+ <20210727195459.GA15181@salvia>
+ <CAKxSbF0tjY7EV=OOyfND8CxSmusfghvURQYnBxMz=DoNtGrfSg@mail.gmail.com>
+ <20210727211029.GA17432@salvia>
+ <CAKxSbF1bMzTc8sTQLFZpeY5XsymL+njKaTJOCb93RT6aj2NPVw@mail.gmail.com>
+ <20210727212730.GA20772@salvia>
+ <CAKxSbF3ZLjFo2TaWATCA8L-xQOEppUOhveybgtQrma=SjVoCeg@mail.gmail.com>
+ <20210727215240.GA25043@salvia>
+ <CAKxSbF1cxKOLTFNZG40HLN-gAYnYM+8dXH_04vQ8+v3KXdAq8Q@mail.gmail.com>
+ <20210728014347.GM3673@orbyte.nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f74c03b939dfd83a1013906e1c771666@codeaurora.org>
+In-Reply-To: <20210728014347.GM3673@orbyte.nwl.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30 Jun 15:02 CDT 2021, Sibi Sankar wrote:
+Hi Phil,
 
-> On 2021-06-28 23:41, Matthias Kaehlcke wrote:
-> > On Fri, Jun 25, 2021 at 01:17:35AM +0530, Sibi Sankar wrote:
-> > 
-> > > Subject: arm64: dts: qcom: sc7280: Update reserved memory map
-> > 
-> > That's very vague. Also personally I'm not a fan of patches that touch
-> > SoC and board files with a commit message that only mentions the SoC, as
-> > is frequently done for IDP boards. Why not split this in (at least) two,
-> > one for adding the missing memory regions to the SoC, and one for the
-> > IDP.
-> > 
-> 
-> sure will split this up.
-> 
-> > > Add missing regions and remove unused regions from the reserved memory
-> > > map, as described in version 1.
-> > 
-> > What is this 'version 1'?
-> 
-> lol, it's the memory map version number
-> and it's not entirely internal to qc so
-> we have been mentioning them in commit
-> messages from older SoCs. I'll just drop
-> it when I re-spin the series since it
-> doesn't add much value.
-> 
+On Wed, Jul 28, 2021 at 03:43:47AM +0200, Phil Sutter wrote:
+> You might want to check iptables commit ccf154d7420c0 ("xtables: Don't
+> use native nftables comments") for reference, it does the opposite of
+> what you want to do.
 
-Every now and then we run into issues with the reserved-memory layout,
-where knowing were the numbers comes from is useful information to have
-in order to characterize the issue and come up with a fix.
+I went ahead and looked through this commit and also found found the
+code that initially added this functionality; commit d64ef34a9961
+("iptables-compat: use nft built-in comments support ").
 
-So including information about where those numbers came from is useful,
-even if it's referencing a version of a document that's not public.
+Additionally I found some other commits that moved code to nft native
+implementations of the xtables counterpart so that proved helpful.
 
-Regards,
-Bjorn
+After a couple days of research I did end up figuring out what to do
+and have added a (mostly complete) native nft log support in
+iptables-nft. It all seems to work without any kernel changes
+required. The only problem I'm now faced with is that since we want to
+take the string passed into the iptables-nft command and add it to the
+nftnl expression (`NFTNL_EXPR_LOG_PREFIX`) I'm not entirely sure where
+to get the original sized string from aside from `argv` in the `struct
+iptables_command_state`. I would get it from the `struct
+xt_nflog_info`, but that's going to store the truncated version and we
+would like to be able to store 128 characters of the string as opposed
+to 64.
+
+Any recommendations about how I might do this safely?
+
+An example of the program running with my patch:
+
+kyle@debian:~/netfilter/iptables$ sudo /usr/local/sbin/iptables-nft -S
+
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-N test-chain
+
+kyle@debian:~/netfilter/iptables$ sudo /usr/local/sbin/iptables-nft -A
+test-chain -j NFLOG --nflog-prefix "this string is hard coded for
+testing so what I put here doesn't end up in the prefix"
+
+kyle@debian:~/netfilter/iptables$ sudo /usr/local/sbin/iptables-nft -S
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-N test-chain
+-A test-chain -j NFLOG --nflog-prefix  "iff the value at the end is 12
+then this string is truncated 12"
+
+kyle@debian:~/netfilter/iptables$ sudo nft list ruleset
+table ip filter {
+	chain test-chain {
+    counter packets 0 bytes 0 log prefix "iff the value at the end is
+    12 then this string is truncated 123"
+}
+
+	[...]
+}
+
+See below for the patch:
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kbowman <kbowman@cloudflare.com>
+Date: Thu, 29 Jul 2021 15:12:28 -0500
+Subject: [PATCH] iptables-nft: use nft built-in logging instead of xt_NFLOG
+
+Replaces the use of xt_NFLOG with the nft built-in log statement.
+
+This additionally adds support for using longer log prefixes of 128
+characters in size. A caveat to this is that the string will be
+truncated when the rule is printed via iptables-nft but will remain
+untruncated in nftables.
+
+Some changes have also been made to nft_is_expr_compatible() since
+xt_NFLOG does not support log level or log flags. With the new changes
+this means that when a log is used and sets either NFTNL_EXPR_LOG_LEVEL
+or NFTNL_LOG_FLAGS to a value aside from their default (log level
+defaults to 4, log flags will not be set) this will produce a
+compatibility error.
+---
+ iptables/nft-shared.c | 45 +++++++++++++++++++++++++++++++++++++++++++
+ iptables/nft.c        | 38 ++++++++++++++++++++++++++++++++++++
+ iptables/nft.h        |  1 +
+ 3 files changed, 84 insertions(+)
+
+diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
+index 4253b081..b5259db0 100644
+--- a/iptables/nft-shared.c
++++ b/iptables/nft-shared.c
+@@ -22,6 +22,7 @@
+ 
+ #include <linux/netfilter/xt_comment.h>
+ #include <linux/netfilter/xt_limit.h>
++#include <linux/netfilter/xt_NFLOG.h>
+ 
+ #include <libmnl/libmnl.h>
+ #include <libnftnl/rule.h>
+@@ -595,6 +596,48 @@ static void nft_parse_limit(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 		ctx->h->ops->parse_match(match, ctx->cs);
+ }
+ 
++static void nft_parse_log(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
++{
++    __u16 group =  nftnl_expr_get_u16(e, NFTNL_EXPR_LOG_GROUP);
++    __u16 qthreshold = nftnl_expr_get_u16(e, NFTNL_EXPR_LOG_QTHRESHOLD);
++    __u32 snaplen = nftnl_expr_get_u32(e, NFTNL_EXPR_LOG_SNAPLEN);
++    const char *prefix = nftnl_expr_get_str(e, NFTNL_EXPR_LOG_PREFIX);
++    struct xtables_target *target;
++    struct xt_entry_target *t;
++    size_t target_size;
++
++    void *data = ctx->cs;
++
++    target = xtables_find_target("NFLOG", XTF_TRY_LOAD);
++    if (target == NULL)
++        return;
++
++    target_size = XT_ALIGN(sizeof(struct xt_entry_target)) + target->size;
++
++    t = xtables_calloc(1, target_size);
++    t->u.target_size = target_size;
++    strcpy(t->u.user.name, target->name);
++    t->u.user.revision = target->revision;
++
++    target->t = t;
++
++    struct xt_nflog_info *info = xtables_malloc(sizeof(struct xt_nflog_info));
++    info->group = group;
++    info->len = snaplen;
++    info->threshold = qthreshold;
++
++    /* Here, because we allow 128 characters in nftables but only 64
++     * characters in xtables (in xt_nflog_info specifically), we may
++     * end up truncating the string when parsing it.
++     */
++    strncpy(info->prefix, prefix, sizeof(info->prefix));
++    info->prefix[sizeof(info->prefix) - 1] = '\0';
++
++    memcpy(&target->t->data, info, target->size);
++
++    ctx->h->ops->parse_target(target, data);
++}
++
+ static void nft_parse_lookup(struct nft_xt_ctx *ctx, struct nft_handle *h,
+ 			     struct nftnl_expr *e)
+ {
+@@ -644,6 +687,8 @@ void nft_rule_to_iptables_command_state(struct nft_handle *h,
+ 			nft_parse_limit(&ctx, expr);
+ 		else if (strcmp(name, "lookup") == 0)
+ 			nft_parse_lookup(&ctx, h, expr);
++		else if (strcmp(name, "log") == 0)
++		    nft_parse_log(&ctx, expr);
+ 
+ 		expr = nftnl_expr_iter_next(iter);
+ 	}
+diff --git a/iptables/nft.c b/iptables/nft.c
+index f1deb82f..dce8fe0b 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -39,6 +39,7 @@
+ #include <linux/netfilter/nf_tables_compat.h>
+ 
+ #include <linux/netfilter/xt_limit.h>
++#include <linux/netfilter/xt_NFLOG.h>
+ 
+ #include <libmnl/libmnl.h>
+ #include <libnftnl/gen.h>
+@@ -1340,6 +1341,8 @@ int add_action(struct nftnl_rule *r, struct iptables_command_state *cs,
+ 		       ret = add_verdict(r, NF_DROP);
+ 	       else if (strcmp(cs->jumpto, XTC_LABEL_RETURN) == 0)
+ 		       ret = add_verdict(r, NFT_RETURN);
++	       else if (strcmp(cs->jumpto, "NFLOG") == 0)
++	           ret = add_log(r, cs);
+ 	       else
+ 		       ret = add_target(r, cs->target->t);
+        } else if (strlen(cs->jumpto) > 0) {
+@@ -1352,6 +1355,36 @@ int add_action(struct nftnl_rule *r, struct iptables_command_state *cs,
+        return ret;
+ }
+ 
++int add_log(struct nftnl_rule *r, struct iptables_command_state *cs)
++{
++    struct nftnl_expr *expr;
++    struct xt_nflog_info *info = (struct xt_nflog_info *)cs->target->t->data;
++
++    expr = nftnl_expr_alloc("log");
++    if (!expr)
++        return -ENOMEM;
++
++    if (info->prefix != NULL) {
++        //char prefix[NF_LOG_PREFIXLEN] = {};
++
++        // get prefix here from somewhere...
++        // maybe in cs->argv?
++        nftnl_expr_set_str(expr, NFTNL_EXPR_LOG_PREFIX, "iff the value at the end is 12 then this string is truncated 123");
++    }
++    if (info->group) {
++        nftnl_expr_set_u16(expr, NFTNL_EXPR_LOG_GROUP, info->group);
++        if (info->flags & XT_NFLOG_F_COPY_LEN)
++            nftnl_expr_set_u32(expr, NFTNL_EXPR_LOG_SNAPLEN,
++                               info->len);
++        if (info->threshold)
++            nftnl_expr_set_u16(expr, NFTNL_EXPR_LOG_QTHRESHOLD,
++                               info->threshold);
++    }
++
++    nftnl_rule_add_expr(r, expr);
++    return 0;
++}
++
+ static void nft_rule_print_debug(struct nftnl_rule *r, struct nlmsghdr *nlh)
+ {
+ #ifdef NLDEBUG
+@@ -3487,6 +3520,11 @@ static int nft_is_expr_compatible(struct nftnl_expr *expr, void *data)
+ 	    nftnl_expr_get_u32(expr, NFTNL_EXPR_LIMIT_FLAGS) == 0)
+ 		return 0;
+ 
++	if (!strcmp(name, "log") &&
++	    nftnl_expr_get_u32(expr, NFTNL_EXPR_LOG_LEVEL) == 4 &&
++	    !nftnl_expr_is_set(expr, NFTNL_EXPR_LOG_FLAGS))
++	    return 0;
++
+ 	return -1;
+ }
+ 
+diff --git a/iptables/nft.h b/iptables/nft.h
+index 4ac7e009..28dc81b7 100644
+--- a/iptables/nft.h
++++ b/iptables/nft.h
+@@ -193,6 +193,7 @@ int add_match(struct nft_handle *h, struct nftnl_rule *r, struct xt_entry_match
+ int add_target(struct nftnl_rule *r, struct xt_entry_target *t);
+ int add_jumpto(struct nftnl_rule *r, const char *name, int verdict);
+ int add_action(struct nftnl_rule *r, struct iptables_command_state *cs, bool goto_set);
++int add_log(struct nftnl_rule *r, struct iptables_command_state *cs);
+ char *get_comment(const void *data, uint32_t data_len);
+ 
+ enum nft_rule_print {
+-- 
+2.32.0
+
