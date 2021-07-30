@@ -2,319 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9509D3DB4AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FD03DB4B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237898AbhG3Hsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 03:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhG3Hsm (ORCPT
+        id S237929AbhG3Huf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:50:35 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:63288 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237851AbhG3Hud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:48:42 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9899C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:48:37 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id t18so5826138qta.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:48:37 -0700 (PDT)
+        Fri, 30 Jul 2021 03:50:33 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U7fgTn019641;
+        Fri, 30 Jul 2021 07:50:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2021-07-09;
+ bh=/kiHSFOTYyn91SCFA57fQuvL/wkvvlbAcrp9n3babMg=;
+ b=uhPDJ5fysVzVFg3uVm7ZG+jhcBlsEKeTA7Y2mkSO8BKUvxHschn99WBjxQmeES+cqyu7
+ a3cvrHVxgbg8kycp3yOWnhHa6qncLxZBtBKI8Sa7AvaOlprEI016yQuLxbqzzOAOL+bk
+ haCfW43Xy92h928P9nZUdQdk2ZuevVqXGtDKKso9bJUTLB5+HkJojXTlUJFV6nFK5fhW
+ fDNsSz/4rZPPNB53mUarK//yOTv1nWfyYe0OAGaL6dO2aI6HtWchJNXmIVklaOepLOpx
+ G0Wt475XHaa3E7TmgO1kK9i/O6KhYc2jB6BGBjRbJc+53gRnM8NlTPPvD2Q4a3Z2OxPN hA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2020-01-29;
+ bh=/kiHSFOTYyn91SCFA57fQuvL/wkvvlbAcrp9n3babMg=;
+ b=owc1aY4DuTCOYqnWEfz/tWWrSx+MSNOd/nRnkUGBVVNpZtUei00Kuczu7SVKEUkDeyUp
+ n8fcv5dvtMKbPYotL4GWlwAJDSngpJvVLKUkWDIC5B8Or765e3DpNZlOfg8OkRigUQ30
+ zV17iK6v7FZ1CpbtZEX6ISQYg+VTYO9qPMTrWgm5nX17hHA7M36Mn6J3Y+owJguv9P/W
+ ZG/754C34R+6WpwDnb9cpl7b8JEVDFm20QUk6OJiAtovoreQiHT+H/g2eF1AqjMZQToB
+ /FeiaSUnSmLVCWZjxs/XiREks12VWxmnaFj1oEOytDsYY9eTmgE1NQjlMfzuCarAzCqV IQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a3uuja599-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Jul 2021 07:50:18 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16U7fOsb174244;
+        Fri, 30 Jul 2021 07:50:17 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
+        by userp3020.oracle.com with ESMTP id 3a2352j214-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Jul 2021 07:50:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ElT2bqqI8XJbTwLqwx4Xz08wp1TTpnnHDzmWX/XoZiVbIWSTyYVN7EgB1J5D4cdG2WJSFPSBfF7rft+rco73VW4iPL51C8o73tTgSXc0F5AACmaKX0XTgG4jvhJJnq3s89qcbh7i8+epHrDSctRMYgy09Ku2edM5WWllWYYVVdVcIIG6j1M5QHtCj3fyUDz5l/FYheoLm6BvbGok9VtimDn1f6iAAF8GhjKW2WSDkttBEMkw78rIh+cO91hUSUGvm05nTAhJN2QZU8swn/aMkW/BTEP/gv+re3dXPvmfyZsBrviUfSKohksqW/8WNkd5HFj97o8GhCMWNqrR84ShAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/kiHSFOTYyn91SCFA57fQuvL/wkvvlbAcrp9n3babMg=;
+ b=bPaixhDgRFupGHTMQrGO6nkGrC0RFRdpo6gylxLceyBZCNx0FTjvOhM6wqUS4vR1hequZn/vSHjG8DoSomV4vkzgy5W5ZbCFCfh68ifnrnrzi0/CzNeWUrPiXgYWsN4YRe6yU9g3Y7ulnLhDjNLDCh3oPD4KKYPNUr1JrJPzaLM+71dM6A5a3Y5sZI7SsnjourI31vM2ms2PwrCeGiQc8W9BJWmaXhiVad4POGuBw2i54WQN6WOrI3mR7aB/dg9X2yyN7qysck3HFewlJ+pVwq99BPkAXzrlfxPufjFpcKi+L4+blf27SkZ+ilp3/EwFt2XShErKsbhz4vGWCO78pw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=EDpc0/d9Oj/hIds1HKJj7zYeYPkeXWmfcCU40dY3+sw=;
-        b=mulBDyHU6yp0zs2CFm2s/qF8ZQrZf+J2EM92FJ7UD86JWzy6+B+y02mYtGpoe/bymr
-         FulZ9jgWv8TSoZG2zmk+sh3BcGjARG5wTNH9RMKlhHCPgTdQ9t44NZmIsEgGqSX7T2eD
-         ZPciAH+CbJ+bJ8Qkv/+dK/eJ6h2fJkahljPWaWbVMl0NaQvNAZyCdL6QRkftIXIxCfru
-         FCfAjzrflmygFr09VLHPRLI4xj5kDYcsZ0yTrpmH6LR/6BSPrUqUw76Pt5G0B1yewiOt
-         i3ppecxRxcCkJ1xMFXsBjQ7uC+2vG3bqwdqVS5Kk5oCB3p3WZ+BiUnt7eoup6ZDTLsQC
-         H9JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=EDpc0/d9Oj/hIds1HKJj7zYeYPkeXWmfcCU40dY3+sw=;
-        b=TUodVHzNhGOGp1ngfFbvHvanpmkHgszJomrLA4Z2SiH3SrI+lFUS/MzyJqWWhtvtvL
-         UwRXoepyMNF3x3k9kEvImQNURcTSkG+w9aIp9PlLakw9JImMHEuOX8Hp1Pt7ijgEOOdc
-         HqhiN6ZV1BpGgZA8YILcWYHiNPqVAmuKuGnyP7nubNZM5diGGKgjorsu5reDJckNkCa6
-         QonhrrFC7JwnrhSX2aCBv1zeajXVgdrQT4qjF/3jSi8WTxJE5PVtOiXGUloylEFxg2nB
-         c4osvHB2LuUsj03MaS1k31T0e1Mz4a4uad4+/gRlKuV2AJ4NLoSLCzICA11RBJg9WG/y
-         u3oQ==
-X-Gm-Message-State: AOAM532/N7ksMK7m87E/e3XrrfABHzvtWBHI5OGXASl1PlviIwaymCej
-        QN0ibJ+DFgeuN871hvioYEqEag==
-X-Google-Smtp-Source: ABdhPJxpjf8WwHJfSjqtA9nxku8loLDko6+6MLVcrUnY5FWupM5kOcvLXGpW+9Cz0tLmMtD8aDa0vA==
-X-Received: by 2002:ac8:a84:: with SMTP id d4mr1172505qti.109.1627631316774;
-        Fri, 30 Jul 2021 00:48:36 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id l4sm304571qtr.62.2021.07.30.00.48.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 00:48:35 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 00:48:33 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 08/16] huge tmpfs: fcntl(fd, F_HUGEPAGE) and fcntl(fd,
- F_NOHUGEPAGE)
-In-Reply-To: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
-Message-ID: <1c32c75b-095-22f0-aee3-30a44d4a4744@google.com>
-References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/kiHSFOTYyn91SCFA57fQuvL/wkvvlbAcrp9n3babMg=;
+ b=HubzLI3GJ7ROI9H2DOLwKaydum0Mq1J/Nng3YkQ6xs23sTVYLNn/w75HyE3RmRymnuaz1dR8j95LzZjo3zt7v3BEAk0QCqr7Sl7oDZgIIZqcP+Hv8FgMVoCKhudoL3tDOOIejXaZwYwRL3As9IJxFI77jN8fnK7NVUEubl9GtaY=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1565.namprd10.prod.outlook.com
+ (2603:10b6:300:24::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.25; Fri, 30 Jul
+ 2021 07:50:12 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4352.035; Fri, 30 Jul 2021
+ 07:50:12 +0000
+Date:   Fri, 30 Jul 2021 10:49:50 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 2/2][next] media: staging/intel-ipu3: css: Replace
+ one-element array and use struct_size() helper
+Message-ID: <20210730074950.GW1931@kadam>
+References: <cover.1627600430.git.gustavoars@kernel.org>
+ <8db90c8f5124bbeab20af9c1314439da8f033184.1627600430.git.gustavoars@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8db90c8f5124bbeab20af9c1314439da8f033184.1627600430.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0006.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::11)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (102.222.70.252) by JNAP275CA0006.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Fri, 30 Jul 2021 07:50:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 31c96527-bfb6-41bf-11af-08d9532ea8eb
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1565:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1565E5E0D95AD03A17FF8C7E8EEC9@MWHPR10MB1565.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zAT1w92sKmiEg+bMDMBT1nHx0QroN5/bKV1mBQdbWlhbERMbyorJncCJCCdBDMIIN3lMjoe+9p5C/Eo0v1TdYPke/60NPgsVxB5PmKy8IiWbSAIwLfwATj0U/VxqVET/h3lqPtm4Q9+uvifd2G2Eg/E0H/Cl8GQvAfB1mXZWv/+zwgdoyuXBRMIkgGUEEl0tuwWDmp0Se7QGlL5bx5j9XlBfAkG6tUVUA9u5Y1yKe7yAB691YCy5y7X5OLKosOa4JhOIlu8vwAil3zAaocjApkQhLZ9xny/lDus8dQGPO8HFT78CqgGQNM0BcVd3sm9JQQjj+1BP0Db5hkR9AmhxsOjif42Oe42QZBOD5ks14ysX9mg0Xgw6UBzf3Pv5GARAkd07Bq2HUK6AxVvqS5DifcoOpqV+VUaCPzMV2oWuriV+ZIE2eMEGN2qth9IufZ6TMTPSSw0OGWbhjxwSOzWez0vUEtrXJa8DckC8kswquHLMcb/94MI5MYaQVYlV02ArFGLQqEmQRQrhwyd8chUhSwo3zdyCj5K0DtkrrisRZTI68l/zRz2s2b02GFhVvgBCaktfZbhNvVpCnHvjJ2fyumcaczeRH5aA9+rsUN4lxbFoXe9L56UN8fjhO1SYDKwis+h/RJ98/gvKuz2a7VIiiv+geyp7PveA+BTAzSdRo4lfjM6//cJa4TozVgxqalfv/3KuoS0/vX+y4NXanCSwjaeK0sC8jTozoI6nSLmpP0Z8YJktnmuyZw2Tx3cYpuROu06GdziDgdGl5MPJvYWvrp1T+EoCXeo/Taa2aRnvLlmfvO5XC4MQid+y9DVyDr2s
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(2906002)(26005)(966005)(316002)(38100700002)(38350700002)(9576002)(508600001)(5660300002)(55016002)(1076003)(186003)(6666004)(6916009)(8676002)(54906003)(66476007)(33656002)(956004)(44832011)(4326008)(9686003)(83380400001)(86362001)(7416002)(8936002)(66556008)(66946007)(6496006)(33716001)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z3lOVmxtSkhTNFNuRWxMWXJ5TUVLMXVGV2s3RTJ0MUN3MUEzZFVlbnFWTEdH?=
+ =?utf-8?B?WWlGUW8xNGkyd05xelN1K2ZkUW9YVXM0Vm9NNU95Q2dQZk1yWE9ZdDlBbmpl?=
+ =?utf-8?B?WlRMWVdIMUFPazBaZmV6bFBLc1AxYTZZTEhzMHU5NXJ5ZytjclEyL3M0NEJt?=
+ =?utf-8?B?MDlOQUhSN3RVQlY0WDEzblZZQUFhN0JaREJ0M2VFeEtOd3kzQzRwN2hzTDRz?=
+ =?utf-8?B?MlJpR3o5YTFrb0tsN0dJTXhXVVdoSnIwM1RKV0ZBUWFKcDZxamZ3WWc3aldp?=
+ =?utf-8?B?ak5vWEp2RVRTbTZPZHhUc0dLckdiUXlGZHQxejB6elpIS2FYU05obnlqR05O?=
+ =?utf-8?B?Mmlka0VjUFk0MlJqby94bUZzdVZ3WWZwbk9PWlNJa2hwM2ZLT1RRQzFuUXlr?=
+ =?utf-8?B?UzNVaCtZSms3Q2tkR25mNWRRRmFJTnQ1UXpIMC80VjRJV0FXbkJGQVVNNEVB?=
+ =?utf-8?B?WXEvT2loS0x4Mlg1VmI4V0hnZUhTWXJGTDk2TUpjYlk2RjIzSnh6UEJwMzZo?=
+ =?utf-8?B?TlpJdVVuek1aUlRSL296ZjBlOVJvVGtiZGs1bzhtS2diU1ZYZmxsUXhVVWtp?=
+ =?utf-8?B?RnROdnlZVE1GcWpBM0t0ZWFxRXhwZFg3dFArOFU5dkp6S1BRQlV0K3hBRWJl?=
+ =?utf-8?B?blRmbTViSzFybjFML0hLWm1JYWU0eThmLzJERFJkWDI5RlV2N1VSbUMvUC8r?=
+ =?utf-8?B?eWYreVI4TDlhc2J1RlhMcUFEbWM4V2dUajh0S0EzSlRJaWM1QkdDKzhMcVZo?=
+ =?utf-8?B?WVlvT21pN0IwaFRwS0JyTGdJMEZKRzNscEdlSHdjK1E0YlZHaldlRmFyUEZJ?=
+ =?utf-8?B?ZHpzQnU2ejY2WW5GRkVXMktZZEpLa2dScnZOMlNobVlZaUlmNjlmOWwxYUN2?=
+ =?utf-8?B?bUJNell6Z2k3U3Jlc3c2ckVoOHpGdXF3SVhMOVA3eVgwTk1xZWswTC9FWWNR?=
+ =?utf-8?B?UG9yRjN3R1Q0UGV0RFJ0SCtRMDhKUDJrQVpNTVdpT1pOR2ZqamlXeFE2ZnJq?=
+ =?utf-8?B?ZmpwdkwwaXFpZERaendvMzBtTDlXNFk0SUhtbU1maVYzQStHQ0d0SDAzNmdr?=
+ =?utf-8?B?My93MzlCdnh6eHFNdlJqZUxoM25TWjY4VENMUXVuZVhjVkdBT29tUndYOGpI?=
+ =?utf-8?B?K3owNVVuR2J1M2hVZ1RKRG5PTnUrVkNTM0NYbFZyaXlHNDZwbjB6MW9xTnk5?=
+ =?utf-8?B?dHR0V0tWMXQ4RWdkSnFBKzIvamdwYXNTSU1tRnUvY0RUeVpOQUI2aSt3TndY?=
+ =?utf-8?B?bEl5RzN5RGVvWjllQkphZE4zSUhKMVViRFZGS1k0YlpObCtseHNVS3psaytt?=
+ =?utf-8?B?NmFhRmM2SFZJNWZaQnZIcm1lTnFZTkdldFplcTdORVJqWkxwUWV1aUZKMGY3?=
+ =?utf-8?B?UzBmS0ZYR2FuejNrcE8vQ2dRWXJKR0RGL21WTkpBV0tGUUtvMm9lL1BHd1dP?=
+ =?utf-8?B?OXR4K2t5UFpWdURuem8yZkF4NmUwaSsvWTk1VXE3c2wycjdwV3k1RThWR0dY?=
+ =?utf-8?B?R2hOYllqY1Rhd2dKRk15djVTclFHaldlTjRneEtpZXF1Q0hFa245L2hFZjdB?=
+ =?utf-8?B?a3JJczdKL21WR1Y0dVptYlJJdy93SVhMRmhWaGtGb3JTYVhUaEs2TE9QVkhI?=
+ =?utf-8?B?ejBUOS9UYm5zU1RFOUVZRXZFM0U2NE41dzlSdFB3NHVGK1VzdHNyM1hndXpy?=
+ =?utf-8?B?cm8wb1QvMzVIZ2wwd0VKelIrOFFtTjR3a0xqdHdUVmg2eTBzV2VwSVd1LzUr?=
+ =?utf-8?Q?ZDQPB7VvV7NAhvdsamIUti5Kt6a4Q/y936erfw2?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31c96527-bfb6-41bf-11af-08d9532ea8eb
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 07:50:12.2571
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LgMWlILOwt132Yn7oBQGTQ5R65+QIsBQsz41u+B97YHWd0N+i68XirdBvElfnr/vJtYo4wd7VQhR7lJW4pcJWIZNS1t2w4NYPMk0At8gi+s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1565
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10060 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107300046
+X-Proofpoint-ORIG-GUID: sbjLJHPanGNJFhLt0EGFEVfpn02exs2M
+X-Proofpoint-GUID: sbjLJHPanGNJFhLt0EGFEVfpn02exs2M
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for fcntl(fd, F_HUGEPAGE) and fcntl(fd, F_NOHUGEPAGE), to
-select hugeness per file: useful to override the default hugeness of the
-shmem mount, when occasionally needing to store a hugepage file in a
-smallpage mount or vice versa.
+On Thu, Jul 29, 2021 at 06:22:40PM -0500, Gustavo A. R. Silva wrote:
+> There is a regular need in the kernel to provide a way to declare having
+> a dynamically sized set of trailing elements in a structure. Kernel code
+> should always use “flexible array members”[1] for these cases. The older
+> style of one-element or zero-length arrays should no longer be used[2].
+> 
+> Replace a one-element array with a flexible-array member in struct
+> imgu_fw_header and use the struct_size() helper.
+> 
+> This also helps with the ongoing efforts to globally enable
+> -Warray-bounds and get us closer to being able to tighten the
+> FORTIFY_SOURCE routines on memcpy().
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+> 
+> Link: https://github.com/KSPP/linux/issues/79
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/staging/media/ipu3/ipu3-css-fw.c | 5 ++---
+>  drivers/staging/media/ipu3/ipu3-css-fw.h | 2 +-
+>  2 files changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/media/ipu3/ipu3-css-fw.c b/drivers/staging/media/ipu3/ipu3-css-fw.c
+> index ab021afff954..3b7df1128840 100644
+> --- a/drivers/staging/media/ipu3/ipu3-css-fw.c
+> +++ b/drivers/staging/media/ipu3/ipu3-css-fw.c
+> @@ -127,9 +127,8 @@ int imgu_css_fw_init(struct imgu_css *css)
+>  	if (css->fw->size < sizeof(struct imgu_fw_header) ||
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Originally this was sizeof() the pointer which is clearly wrong.  Then
+patch 1 changed it to force that binary_header[] had at least one
+element, but now it's changed again to say that binary_header[] can have
+zero elements.  So either patch 1 or patch 2 is wrong.
 
-These fcntls just specify whether or not to try for huge pages when
-allocating to the object later: F_HUGEPAGE does not touch small pages
-already allocated (though khugepaged may do so when the file is mapped
-afterwards), F_NOHUGEPAGE does not split huge pages already allocated.
+I feel like the probably the correct fix is to just fold these two
+patches together and say that binary_header[] with zero elements is
+allowed.  But I don't know this code well.
 
-Why fcntl?  Because it's already in use (for sealing) on memfds; and I'm
-anxious to keep this simple, just applying it to whole files: fallocate,
-madvise and posix_fadvise each involve a range, which would need a new
-kind of tree attached to the inode for proper support.  Any application
-needing range support should be able to provide that from userspace, by
-issuing the respective fcntl prior to instantiating each range.
+regards,
+dan carpenter
 
-Do not allow it when the file is open read-only (EBADF).  Do not permit
-a PR_SET_THP_DISABLE (MMF_DISABLE_THP) task to interfere with the flags,
-and do not let VM_HUGEPAGE be set if THPs are not allowed at all (EPERM).
-
-Note that transparent_hugepage_allowed(), used to validate F_HUGEPAGE,
-accepts (anon) transparent_hugepage_flags in addition to mount option.
-This is to overcome the limitation of the "huge=advise" option, which
-applies hugepage alignment (reducing ASLR) to all mappings, because
-madvise(address,len,MADV_HUGEPAGE) needs address before it can be used.
-So mount option "huge=never" gives a default which can be overridden by
-fcntl(fd, F_HUGEPAGE) when /sys/kernel/mm/transparent_hugepage/enabled
-is not "never" too.  (We could instead add a "huge=fcntl" mount option
-between "never" and "advise", but I lack the enthusiasm for that.)
-
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- fs/fcntl.c                 |  5 +++
- include/linux/shmem_fs.h   |  8 +++++
- include/uapi/linux/fcntl.h |  9 +++++
- mm/shmem.c                 | 70 ++++++++++++++++++++++++++++++++++----
- 4 files changed, 85 insertions(+), 7 deletions(-)
-
-diff --git a/fs/fcntl.c b/fs/fcntl.c
-index f946bec8f1f1..9cfff87c3332 100644
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -23,6 +23,7 @@
- #include <linux/rcupdate.h>
- #include <linux/pid_namespace.h>
- #include <linux/user_namespace.h>
-+#include <linux/shmem_fs.h>
- #include <linux/memfd.h>
- #include <linux/compat.h>
- #include <linux/mount.h>
-@@ -434,6 +435,10 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
- 	case F_SET_FILE_RW_HINT:
- 		err = fcntl_rw_hint(filp, cmd, arg);
- 		break;
-+	case F_HUGEPAGE:
-+	case F_NOHUGEPAGE:
-+		err = shmem_fcntl(filp, cmd, arg);
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-index 3b05a28e34c4..51b75d74ce89 100644
---- a/include/linux/shmem_fs.h
-+++ b/include/linux/shmem_fs.h
-@@ -67,6 +67,14 @@ extern int shmem_zero_setup(struct vm_area_struct *);
- extern unsigned long shmem_get_unmapped_area(struct file *, unsigned long addr,
- 		unsigned long len, unsigned long pgoff, unsigned long flags);
- extern int shmem_lock(struct file *file, int lock, struct ucounts *ucounts);
-+#ifdef CONFIG_TMPFS
-+extern long shmem_fcntl(struct file *file, unsigned int cmd, unsigned long arg);
-+#else
-+static inline long shmem_fcntl(struct file *f, unsigned int c, unsigned long a)
-+{
-+	return -EINVAL;
-+}
-+#endif /* CONFIG_TMPFS */
- #ifdef CONFIG_SHMEM
- extern const struct address_space_operations shmem_aops;
- static inline bool shmem_mapping(struct address_space *mapping)
-diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-index 2f86b2ad6d7e..10f82b223642 100644
---- a/include/uapi/linux/fcntl.h
-+++ b/include/uapi/linux/fcntl.h
-@@ -73,6 +73,15 @@
-  */
- #define RWF_WRITE_LIFE_NOT_SET	RWH_WRITE_LIFE_NOT_SET
- 
-+/*
-+ * Allocate hugepages when available: useful on a tmpfs which was not mounted
-+ * with the "huge=always" option, as for memfds.  And, do not allocate hugepages
-+ * even when available: useful to cancel the above request, or make an exception
-+ * on a tmpfs mounted with "huge=always" (without splitting existing hugepages).
-+ */
-+#define F_HUGEPAGE		(F_LINUX_SPECIFIC_BASE + 15)
-+#define F_NOHUGEPAGE		(F_LINUX_SPECIFIC_BASE + 16)
-+
- /*
-  * Types of directory notifications that may be requested.
-  */
-diff --git a/mm/shmem.c b/mm/shmem.c
-index e2bcf3313686..67a4b7a4849b 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -448,9 +448,9 @@ static bool shmem_confirm_swap(struct address_space *mapping,
-  *	enables huge pages for the mount;
-  * SHMEM_HUGE_WITHIN_SIZE:
-  *	only allocate huge pages if the page will be fully within i_size,
-- *	also respect fadvise()/madvise() hints;
-+ *	also respect fcntl()/madvise() hints;
-  * SHMEM_HUGE_ADVISE:
-- *	only allocate huge pages if requested with fadvise()/madvise();
-+ *	only allocate huge pages if requested with fcntl()/madvise().
-  */
- 
- #define SHMEM_HUGE_NEVER	0
-@@ -477,13 +477,13 @@ static bool shmem_confirm_swap(struct address_space *mapping,
- static int shmem_huge __read_mostly = SHMEM_HUGE_NEVER;
- 
- /*
-- * Does either /sys/kernel/mm/transparent_hugepage/shmem_enabled or
-+ * Does either tmpfs mount option (or transparent_hugepage/shmem_enabled) or
-  * /sys/kernel/mm/transparent_hugepage/enabled allow transparent hugepages?
-  * (Can only return true when the machine has_transparent_hugepage() too.)
-  */
--static bool transparent_hugepage_allowed(void)
-+static bool transparent_hugepage_allowed(struct shmem_sb_info *sbinfo)
- {
--	return	shmem_huge > SHMEM_HUGE_NEVER ||
-+	return	sbinfo->huge > SHMEM_HUGE_NEVER ||
- 		test_bit(TRANSPARENT_HUGEPAGE_FLAG,
- 			&transparent_hugepage_flags) ||
- 		test_bit(TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG,
-@@ -500,6 +500,8 @@ bool shmem_is_huge(struct vm_area_struct *vma,
- 	if (vma && ((vma->vm_flags & VM_NOHUGEPAGE) ||
- 	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags)))
- 		return false;
-+	if (SHMEM_I(inode)->flags & VM_NOHUGEPAGE)
-+		return false;
- 	if (SHMEM_I(inode)->flags & VM_HUGEPAGE)
- 		return true;
- 	if (shmem_huge == SHMEM_HUGE_FORCE)
-@@ -692,7 +694,7 @@ static long shmem_unused_huge_count(struct super_block *sb,
- 
- #define shmem_huge SHMEM_HUGE_DENY
- 
--bool transparent_hugepage_allowed(void)
-+bool transparent_hugepage_allowed(struct shmem_sb_info *sbinfo)
- {
- 	return false;
- }
-@@ -2197,6 +2199,8 @@ unsigned long shmem_get_unmapped_area(struct file *file,
- 		if (file) {
- 			VM_BUG_ON(file->f_op != &shmem_file_operations);
- 			inode = file_inode(file);
-+			if (SHMEM_I(inode)->flags & VM_NOHUGEPAGE)
-+				return addr;
- 			if (SHMEM_I(inode)->flags & VM_HUGEPAGE)
- 				goto huge;
- 			sb = inode->i_sb;
-@@ -2211,6 +2215,11 @@ unsigned long shmem_get_unmapped_area(struct file *file,
- 		}
- 		if (SHMEM_SB(sb)->huge == SHMEM_HUGE_NEVER)
- 			return addr;
-+		/*
-+		 * Note that SHMEM_HUGE_ADVISE has to give out huge-aligned
-+		 * addresses to everyone, because madvise(,,MADV_HUGEPAGE)
-+		 * needs the address-chicken on which to advise if huge-egg.
-+		 */
- 	}
- huge:
- 	offset = (pgoff << PAGE_SHIFT) & (HPAGE_PMD_SIZE-1);
-@@ -2334,7 +2343,7 @@ static struct inode *shmem_get_inode(struct super_block *sb, const struct inode
- 		info->seals = F_SEAL_SEAL;
- 		info->flags = flags & VM_NORESERVE;
- 		if ((flags & VM_HUGEPAGE) &&
--		    transparent_hugepage_allowed() &&
-+		    transparent_hugepage_allowed(sbinfo) &&
- 		    !test_bit(MMF_DISABLE_THP, &current->mm->flags))
- 			info->flags |= VM_HUGEPAGE;
- 		INIT_LIST_HEAD(&info->shrinklist);
-@@ -2674,6 +2683,53 @@ static loff_t shmem_file_llseek(struct file *file, loff_t offset, int whence)
- 	return offset;
- }
- 
-+static int shmem_huge_fcntl(struct file *file, unsigned int cmd)
-+{
-+	struct inode *inode = file_inode(file);
-+	struct shmem_inode_info *info = SHMEM_I(inode);
-+
-+	if (!(file->f_mode & FMODE_WRITE))
-+		return -EBADF;
-+	if (test_bit(MMF_DISABLE_THP, &current->mm->flags))
-+		return -EPERM;
-+	if (cmd == F_HUGEPAGE &&
-+	    !transparent_hugepage_allowed(SHMEM_SB(inode->i_sb)))
-+		return -EPERM;
-+
-+	inode_lock(inode);
-+	if (cmd == F_HUGEPAGE) {
-+		info->flags &= ~VM_NOHUGEPAGE;
-+		info->flags |= VM_HUGEPAGE;
-+	} else {
-+		info->flags &= ~VM_HUGEPAGE;
-+		info->flags |= VM_NOHUGEPAGE;
-+	}
-+	inode_unlock(inode);
-+	return 0;
-+}
-+
-+long shmem_fcntl(struct file *file, unsigned int cmd, unsigned long arg)
-+{
-+	long error = -EINVAL;
-+
-+	if (file->f_op != &shmem_file_operations)
-+		return error;
-+
-+	switch (cmd) {
-+	/*
-+	 * case F_ADD_SEALS:
-+	 * case F_GET_SEALS:
-+	 *	are handled by memfd_fcntl().
-+	 */
-+	case F_HUGEPAGE:
-+	case F_NOHUGEPAGE:
-+		error = shmem_huge_fcntl(file, cmd);
-+		break;
-+	}
-+
-+	return error;
-+}
-+
- static long shmem_fallocate(struct file *file, int mode, loff_t offset,
- 							 loff_t len)
- {
--- 
-2.26.2
 
