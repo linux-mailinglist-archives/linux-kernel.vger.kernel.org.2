@@ -2,104 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C96B3DB5D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5D03DB5D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238180AbhG3JWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:22:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44340 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230336AbhG3JW3 (ORCPT
+        id S238201AbhG3JYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238103AbhG3JX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:22:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627636944;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hztfF3mk+w2hTp5cK9vPRcBqwpAjiT5aSw+6qCP4+BI=;
-        b=cl1XIBjYiKTZ0JhyWAKUKgSUKWNENyWvr6DXUeB7zOKkX+5ewBnBiUdykCSZUSnMqQPQcs
-        8xigh23+Uk7gRZo11GJOuv1ZmUeCaRlamxWsnII6ZQ/3UoI3dsQ22uynDC0sWj55qtvfDg
-        /dQaBRPVM+d8FJ4P6acFZLQpjx6C5iU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-yvw0Kr7GNWi0W1lSyEZwXg-1; Fri, 30 Jul 2021 05:22:23 -0400
-X-MC-Unique: yvw0Kr7GNWi0W1lSyEZwXg-1
-Received: by mail-wr1-f72.google.com with SMTP id d14-20020adfe2ce0000b029013a357d7bdcso3028069wrj.18
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:22:22 -0700 (PDT)
+        Fri, 30 Jul 2021 05:23:59 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7465DC061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:23:54 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id qk33so15575760ejc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 02:23:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tIXbRWKq/HQmFBOdGZTzkl5HeUujMUi2hLQdEOwR0u4=;
+        b=esn5HBbLaOhJyIi7lkzeS9GlpFThHxHEyTJVL35YeFv8sISxKfpRQJiAmg5G6TOyAO
+         ocjzm9TeZIeNnawd8T24+SE6OBWPoAEljgz95pYy9slXdVWbOpOvrPM5D61MO3FXBBRc
+         lPqV0hvtzb0aozwPI9wSa5HxJ50oQU7nKv9BLkK0Q0vHjAyVcT+MSiwjSG5NxYyyliw2
+         9BTpZyCnAttWoaXXosIXvvppJ+kCtlXryaLLurzg0Du8fikzBAf36O6/HMj/4S3s9cL1
+         mvbZd4sI5Q7S6hMFeNHTYmiGQqYf+/fE8DHWpgC++4YAvGFeh8tLjV0k0zDncMLa2QMX
+         q4Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=hztfF3mk+w2hTp5cK9vPRcBqwpAjiT5aSw+6qCP4+BI=;
-        b=BA8JyCDiiVbFqfM9759yBJ4blB4tc7Hs7NeUlL3dJZJsk/ODsRO8e6/Vl0lTLDXpK6
-         cfXDAdjXm9jEY/9bN3Ed8k7ScuMCy54VZ5ftsa3TM67tnBnUxdGMVrj6vmv3S6CeZ5k0
-         CI3qxGabVBv6epAJujnoRiippVxaKOOQrHoFjQO9/BEQB872EYK644NNVUJZoeQiDk2G
-         OGyhE4zz89a1fo/tNDFtjOWBFfNWbPxmAX3u+viZBq4f2swD7gSw6rwL9iShkhPxBZtA
-         xY8jw0TN1GmugQkQnA51e1Ru4wogpfSCtizNbLUfiT38lHtcRvFtSzzatgzlbu5v3f7T
-         f5Vg==
-X-Gm-Message-State: AOAM531nt+OpFrRvY6bco50W6Bf+eynqUsg/w1PJ9ClRGCrL1iAamPpG
-        /MfAqn7Y5z+X/+XukAluQbdKrxqa4b/uxoyIK5L/DOInQI1RusC5r0ANtgaVIo/5Ayg5p1prOdQ
-        WAaUAZxP1eoMmlSroSRHMgeK/
-X-Received: by 2002:a1c:e90f:: with SMTP id q15mr1918316wmc.175.1627636941776;
-        Fri, 30 Jul 2021 02:22:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzbEAF/ThGMLMAsvCjLHbMjEFNweJvQ4f+e8wqit8PSMTV0Ug0oXt+ANrnNKwMhQMUcAKgjzA==
-X-Received: by 2002:a1c:e90f:: with SMTP id q15mr1918301wmc.175.1627636941567;
-        Fri, 30 Jul 2021 02:22:21 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.58.124])
-        by smtp.gmail.com with ESMTPSA id p8sm1014945wrn.79.2021.07.30.02.22.20
+        bh=tIXbRWKq/HQmFBOdGZTzkl5HeUujMUi2hLQdEOwR0u4=;
+        b=RT21406uNG98IPStLKPDRbmwUBJNnxrUdSDediwOnz9TmnYx69r0utx5CRsND9SxS7
+         8UknHfXuFj0UnCl7Va+q1SasaXXgbloPpvasnCuz9eQqH44nH4peWM42UvKuhPRVNHcx
+         yEw7dnoM5i0mxGSqbBytD/irxedar0Iqvn8QYQOc+iPA4E0lhBWzQW2zjwQZlATuEu3u
+         RzVuaMEpBrMdbAf6AewD6ljqznnnh//K7ZqAGZWYYccRajsCcc3pEFFK2uu7ncCR8lbt
+         X/FF/1IPg/0R7uwZPeg7lOaS8f4jcGwu2WGwoHWLIB4dOMRLrEq7dv96tEzHxft1jUby
+         14PA==
+X-Gm-Message-State: AOAM532x8CnUdDSkeD8eOrzQMa9f7F60fdmEymiEZH4zdRZ+wmcniAAs
+        LQ+uPMpZ5VMgVddMpWGC1rNOsg==
+X-Google-Smtp-Source: ABdhPJynsCHmX81/7BzyCdDUBvueFL3Lg7KUrCN/UbxNdRr1Y+fMWhOHzIlvS1iHz3WiQRGTjywO9g==
+X-Received: by 2002:a17:907:9871:: with SMTP id ko17mr1655599ejc.179.1627637033019;
+        Fri, 30 Jul 2021 02:23:53 -0700 (PDT)
+Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
+        by smtp.gmail.com with ESMTPSA id lw22sm359494ejb.74.2021.07.30.02.23.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 02:22:20 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 11:22:18 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v2] sched/deadline: Fix sched_getattr() for DL tasks
-Message-ID: <YQPEygMj5ObRDLHG@localhost.localdomain>
-References: <20210729175214.294142-1-qperret@google.com>
+        Fri, 30 Jul 2021 02:23:52 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 11:23:32 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     joro@8bytes.org, will@kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 14/24] iommu: Introduce explicit type for non-strict
+ DMA domains
+Message-ID: <YQPFFCnYDtmQkdvM@myrica>
+References: <cover.1627468308.git.robin.murphy@arm.com>
+ <59a4d350c32a83e21de5dcfe6f041f38b0c35b82.1627468309.git.robin.murphy@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729175214.294142-1-qperret@google.com>
+In-Reply-To: <59a4d350c32a83e21de5dcfe6f041f38b0c35b82.1627468309.git.robin.murphy@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 29/07/21 18:52, Quentin Perret wrote:
-> In its current state, sched_getattr() can report incorrect sched_flags
-> if called on a deadline task.
+On Wed, Jul 28, 2021 at 04:58:35PM +0100, Robin Murphy wrote:
+> Promote the difference between strict and non-strict DMA domains from an
+> internal detail to a distinct domain feature and type, to pave the road
+> for exposing it through the sysfs default domain interface.
 > 
-> Firstly, if the reset_on_fork flag is set on a deadline task using
-> sched_setattr() with SCHED_FLAG_RESET_ON_FORK | SCHED_FLAG_KEEP_PARAMS,
-> p->sched_reset_on_fork will be set but __setscheduler() will bail out
-> early without updating the dl_se->flags. Consequently, if sched_getattr
-> is then called on the same task, __getparam_dl() will override
-> kattr.sched_flags with the now out-of-date copy in dl_se->flags and
-> report a stale reset_on_fork value to userspace.
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+
+> ---
+>  drivers/iommu/dma-iommu.c |  2 +-
+>  drivers/iommu/iommu.c     |  8 ++++++--
+>  include/linux/iommu.h     | 11 +++++++++++
+>  3 files changed, 18 insertions(+), 3 deletions(-)
 > 
-> And secondly, sched_getattr() currently reports SCHED_FLAG_SUGOV as set
-> if called on a schedutil worker, despite this flag being a kernel-only
-> value that is not exposed in UAPI headers.
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index e28396cea6eb..8b3545c01077 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -1311,7 +1311,7 @@ void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit)
+>  	 * The IOMMU core code allocates the default DMA domain, which the
+>  	 * underlying IOMMU driver needs to support via the dma-iommu layer.
+>  	 */
+> -	if (domain->type == IOMMU_DOMAIN_DMA) {
+> +	if (iommu_is_dma_domain(domain)) {
+>  		if (iommu_dma_init_domain(domain, dma_base, dma_limit, dev))
+>  			goto out_err;
+>  		dev->dma_ops = &iommu_dma_ops;
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index fa8109369f74..982545234cf3 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -115,6 +115,7 @@ static const char *iommu_domain_type_str(unsigned int t)
+>  	case IOMMU_DOMAIN_UNMANAGED:
+>  		return "Unmanaged";
+>  	case IOMMU_DOMAIN_DMA:
+> +	case IOMMU_DOMAIN_DMA_FQ:
+>  		return "Translated";
+>  	default:
+>  		return "Unknown";
+> @@ -552,6 +553,9 @@ static ssize_t iommu_group_show_type(struct iommu_group *group,
+>  		case IOMMU_DOMAIN_DMA:
+>  			type = "DMA\n";
+>  			break;
+> +		case IOMMU_DOMAIN_DMA_FQ:
+> +			type = "DMA-FQ\n";
+> +			break;
+>  		}
+>  	}
+>  	mutex_unlock(&group->mutex);
+> @@ -765,7 +769,7 @@ static int iommu_create_device_direct_mappings(struct iommu_group *group,
+>  	unsigned long pg_size;
+>  	int ret = 0;
+>  
+> -	if (!domain || domain->type != IOMMU_DOMAIN_DMA)
+> +	if (!domain || !iommu_is_dma_domain(domain))
+>  		return 0;
+>  
+>  	BUG_ON(!domain->pgsize_bitmap);
+> @@ -1947,7 +1951,7 @@ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
+>  	/* Assume all sizes by default; the driver may override this later */
+>  	domain->pgsize_bitmap  = bus->iommu_ops->pgsize_bitmap;
+>  
+> -	if (type == IOMMU_DOMAIN_DMA && iommu_get_dma_cookie(domain)) {
+> +	if (iommu_is_dma_domain(domain) && iommu_get_dma_cookie(domain)) {
+>  		iommu_domain_free(domain);
+>  		domain = NULL;
+>  	}
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 141779d76035..046ba4d54cd2 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -61,6 +61,7 @@ struct iommu_domain_geometry {
+>  #define __IOMMU_DOMAIN_DMA_API	(1U << 1)  /* Domain for use in DMA-API
+>  					      implementation              */
+>  #define __IOMMU_DOMAIN_PT	(1U << 2)  /* Domain is identity mapped   */
+> +#define __IOMMU_DOMAIN_DMA_FQ	(1U << 3)  /* DMA-API uses flush queue    */
+>  
+>  /*
+>   * This are the possible domain-types
+> @@ -73,12 +74,17 @@ struct iommu_domain_geometry {
+>   *	IOMMU_DOMAIN_DMA	- Internally used for DMA-API implementations.
+>   *				  This flag allows IOMMU drivers to implement
+>   *				  certain optimizations for these domains
+> + *	IOMMU_DOMAIN_DMA_FQ	- As above, but definitely using batched TLB
+> + *				  invalidation.
+>   */
+>  #define IOMMU_DOMAIN_BLOCKED	(0U)
+>  #define IOMMU_DOMAIN_IDENTITY	(__IOMMU_DOMAIN_PT)
+>  #define IOMMU_DOMAIN_UNMANAGED	(__IOMMU_DOMAIN_PAGING)
+>  #define IOMMU_DOMAIN_DMA	(__IOMMU_DOMAIN_PAGING |	\
+>  				 __IOMMU_DOMAIN_DMA_API)
+> +#define IOMMU_DOMAIN_DMA_FQ	(__IOMMU_DOMAIN_PAGING |	\
+> +				 __IOMMU_DOMAIN_DMA_API |	\
+> +				 __IOMMU_DOMAIN_DMA_FQ)
+>  
+>  struct iommu_domain {
+>  	unsigned type;
+> @@ -90,6 +96,11 @@ struct iommu_domain {
+>  	struct iommu_dma_cookie *iova_cookie;
+>  };
+>  
+> +static inline bool iommu_is_dma_domain(struct iommu_domain *domain)
+> +{
+> +	return domain->type & __IOMMU_DOMAIN_DMA_API;
+> +}
+> +
+>  enum iommu_cap {
+>  	IOMMU_CAP_CACHE_COHERENCY,	/* IOMMU can enforce cache coherent DMA
+>  					   transactions */
+> -- 
+> 2.25.1
 > 
-> To fix both of these problems, make sure to only copy the flags that are
-> relevant to sched_deadline to dl_se->flags, and filter them out when
-> reporting them back to userspace.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-
-Looks good to me.
-
-Acked-by: Juri Lelli <juri.lelli@redhat.com>
-
-Thanks!
-Juri
-
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
