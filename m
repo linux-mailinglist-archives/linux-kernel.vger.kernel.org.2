@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CF43DB80E
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2733DB80D
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238707AbhG3Lw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 07:52:27 -0400
-Received: from mx1.emlix.com ([136.243.223.33]:42206 "EHLO mx1.emlix.com"
+        id S238681AbhG3LwU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 30 Jul 2021 07:52:20 -0400
+Received: from mx1.emlix.com ([136.243.223.33]:42190 "EHLO mx1.emlix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238659AbhG3LwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 07:52:25 -0400
+        id S238660AbhG3LwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 07:52:19 -0400
 Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
         (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id D26EE5FCF2;
+        by mx1.emlix.com (Postfix) with ESMTPS id C9B575F82D;
         Fri, 30 Jul 2021 13:52:05 +0200 (CEST)
 From:   Rolf Eike Beer <eb@emlix.com>
 To:     linux-acpi@vger.kernel.org
@@ -24,70 +24,73 @@ Cc:     Zhang Rui <rui.zhang@intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH][RESEND] tools/thermal/tmon: simplify Makefile and fix cross build
-Date:   Fri, 30 Jul 2021 13:47:20 +0200
-Message-ID: <2149399.oOxd0sxVbX@devpool47>
+Subject: [PATCH 1/2] tools/thermal: tmon: simplify Makefile
+Date:   Fri, 30 Jul 2021 13:49:04 +0200
+Message-ID: <1951386.ZPQrlMDjM2@devpool47>
 Organization: emlix GmbH
+In-Reply-To: <2149399.oOxd0sxVbX@devpool47>
+References: <2149399.oOxd0sxVbX@devpool47>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1627647755.ozqCpXpxaW"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart1627647755.ozqCpXpxaW
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Rolf Eike Beer <eb@emlix.com>
-To: linux-acpi@vger.kernel.org
-Cc: Zhang Rui <rui.zhang@intel.com>, Markus Mayer <mmayer@broadcom.com>, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@redhat.com>, Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH][RESEND] tools/thermal/tmon: simplify Makefile and fix cross build
-Date: Fri, 30 Jul 2021 13:47:20 +0200
-Message-ID: <2149399.oOxd0sxVbX@devpool47>
-Organization: emlix GmbH
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+---
+ tools/thermal/tmon/Makefile | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-Hi,
+diff --git a/tools/thermal/tmon/Makefile b/tools/thermal/tmon/Makefile
+index 9db867df76794..3e650878ea824 100644
+--- a/tools/thermal/tmon/Makefile
++++ b/tools/thermal/tmon/Makefile
+@@ -13,7 +13,6 @@ CC?= $(CROSS_COMPILE)gcc
+ PKG_CONFIG?= pkg-config
+ 
+ override CFLAGS+=-D VERSION=\"$(VERSION)\"
+-LDFLAGS+=
+ TARGET=tmon
+ 
+ INSTALL_PROGRAM=install -m 755 -p
+@@ -33,7 +32,6 @@ override CFLAGS += $(shell $(PKG_CONFIG) --cflags $(STATIC) panelw ncursesw 2> /
+ 		     $(PKG_CONFIG) --cflags $(STATIC) panel ncurses 2> /dev/null)
+ 
+ OBJS = tmon.o tui.o sysfs.o pid.o
+-OBJS +=
+ 
+ tmon: $(OBJS) Makefile tmon.h
+ 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS)  -o $(TARGET) $(TMON_LIBS)
+@@ -42,15 +40,13 @@ valgrind: tmon
+ 	 sudo valgrind -v --track-origins=yes --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ./$(TARGET)  1> /dev/null
+ 
+ install:
+-	- mkdir -p $(INSTALL_ROOT)/$(BINDIR)
+-	- $(INSTALL_PROGRAM) "$(TARGET)" "$(INSTALL_ROOT)/$(BINDIR)/$(TARGET)"
++	- $(INSTALL_PROGRAM) -D "$(TARGET)" "$(INSTALL_ROOT)/$(BINDIR)/$(TARGET)"
+ 
+ uninstall:
+ 	$(DEL_FILE) "$(INSTALL_ROOT)/$(BINDIR)/$(TARGET)"
+ 
+ clean:
+-	find . -name "*.o" | xargs $(DEL_FILE)
+-	rm -f $(TARGET)
++	rm -f $(TARGET) $(OBJS)
+ 
+ dist:
+ 	git tag v$(VERSION)
+-- 
+2.32.0
 
-cross-building tmon can fail because it uses the non-prefixed, i.e. host, p=
-kg-
-config.
-
-If you prefer a merge the code is also available at:
-
-   https://github.com/emlix/linux thermal-makefile
-
-Would be nice if someone could finally pick this up, it's almost 3 years no=
-w=E2=80=A6
-
-If someone knows anyone who better fits into these reviews please add CC's,=
-=20
-sadly tools/thermal/ is not covered in MAINTAINERS.
-
-Eike
-=2D-=20
+-- 
 Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-=46on +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
-Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
-Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
-=2E: DE 205 198 055
+Fon +49 551 30664-0, Fax +49 551 30664-11
+Gothaer Platz 3, 37083 Göttingen, Germany
+Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
+Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
 
 emlix - smart embedded open source
-
---nextPart1627647755.ozqCpXpxaW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYQPmyAAKCRCr5FH7Xu2t
-/KiQA/9XUdQ7eHdvuapPVi/2sSmpiKJLcHuP6Fr52fB14b3f9Ssi1PuMht1fhkyy
-JoesrKMRsxZJ0PBVNpUKshgRtZqKnvvDcb4lAdhWYCR2Qm/udbqpA3UwNLXO1H29
-8M4RPfXxPjuxH+Q/PG/dGvNRKdHXJp9nKcIsU5tC1SkiFGc13w==
-=XbLH
------END PGP SIGNATURE-----
-
---nextPart1627647755.ozqCpXpxaW--
 
 
 
