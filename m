@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1707B3DB4C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E8D3DB4CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 10:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237936AbhG3H6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 03:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55286 "EHLO
+        id S237998AbhG3IA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 04:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237851AbhG3H6F (ORCPT
+        with ESMTP id S237922AbhG3IAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 03:58:05 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D97CC0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:58:01 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id a5-20020a05683012c5b029036edcf8f9a6so8674091otq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 00:58:01 -0700 (PDT)
+        Fri, 30 Jul 2021 04:00:25 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8D1C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:00:21 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id 184so8663811qkh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 01:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :mime-version;
-        bh=Ah5+LqI1Dziut4yM0LH3jQhWAKB3EiOL6LUittwAvkA=;
-        b=PZSsLjQhcjyWAqzvgQshw7+5wZKOaT84MH5jTXoLyyI/aOKDQwtjaOC8rspyuwR40D
-         CPEzyuE2oY1RLOrSY1DwOaWdrUFxPFQ7XZxVb/F45EKbtlDPwmk9NYUTYdHB6voKCv5J
-         NWAVxgTmbC9AIVv1MulyF6w3VltvV+ZvFpaXGQ40tgHDAWtuqSTyD73X4oPShh5dvZ9o
-         rh5oQ96rSEvCqs5JDkjnxTOZuAlSHA10NF8NHIR43vAsccP9TdV7QGyC2MwgJMJL/+Lv
-         JQMF3kva96grq5CFt8QuFkcc04skiTeWZ44uu8EtK40TUyhev/AUzfBrw9bMK1QGwlha
-         SMkg==
+        bh=Y7HX5YFqqvflWtOAFdHp5v6MXY/OcEeQOaBTkBgwruM=;
+        b=u8YUNlG7+lu5Is9eMpdvivobPs3T+0kbTL+S17t5SgHQK7ZI42wPzwim0p5Qj9MV7u
+         2bU9YmpRo2bxZv0e7RZC0bKrCIrL2hx3bFOEZ6pFcNGTALYst0tCHVstlt4tlGIRQQdX
+         YBJkVxUcLZYwRKs5+DEOoB5RT6WXu3viAXutpX6d0PengNqn+KpyfxmeUiJktHHuDf9S
+         wz6YT+4+y452/F7EFITeaClRAPZZk6ry5z+Bi8M8uGzUp3dTwWg0eb8/yMP9X5qjqoH0
+         P/262T7dGLXaXcsIuhno7w4OQvYVMVnVrxPySbDDf0a4bY6qGegqMAGl1aNtMhFP5DZ/
+         8ibw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:mime-version;
-        bh=Ah5+LqI1Dziut4yM0LH3jQhWAKB3EiOL6LUittwAvkA=;
-        b=ujumYpE9OAsMVsWdrSc7rAAFPfhym7qxsthXu6br7EhgSiZdnzVbQWWwDJg2ZuxfMn
-         wP3lGuIv48TdH/WdHgOfvLCq8kyHKI+TzFbCZcAzeXR3VuP+akd2LmEJwHI+Z8O0+Dvo
-         RUz8b7ktkfoJs25SKw6MMZpQijpmRhxATEn8RpUbustjMN3i1IPB++ELqeHIUJIhYC2T
-         FvvUilAvu04bslB/fxA/CMoP/n1bzD3O1uNkuuVOyaKI5jEr260Z6NmphDlXrwApoClT
-         Bj0+Z06QW3oY8WQ6b0zop3k1mgXQaVcSZOtFzDOI0OA/fyyv1b1S/nTPHQ8vtlUQ8gqp
-         a+Qg==
-X-Gm-Message-State: AOAM531CY1j+PmN2PD9bqvsVXnO4+51gWR0U6Llr74LFZQKhEclgiZ6Z
-        JvM3wE+wqJPDZCt79ugwzsmz0g==
-X-Google-Smtp-Source: ABdhPJyC6TATMzaci6gPPfYcCgBGVbL7XqE2Ve5WDt3z2Ltgzz9z2ISDZBfr8b91jrb3S/yU1QEXWA==
-X-Received: by 2002:a9d:6f99:: with SMTP id h25mr1064541otq.113.1627631880857;
-        Fri, 30 Jul 2021 00:58:00 -0700 (PDT)
+        bh=Y7HX5YFqqvflWtOAFdHp5v6MXY/OcEeQOaBTkBgwruM=;
+        b=Z/RcAv7lEZ0RRtQ4JF0QoKSwCTmuC3cymAjyFH4edaW9aGN7vcClC4+DhWrL9Ml6YV
+         oK46hcRRVTQROTfER5lJvpUUTCNtjAw+PzYTflBjhKVz0DyeL48Vtiu6vmXdOaANYIaG
+         4t06AJF4EnVWkkVFFCT4JzpqyoXUWENpxwjRiBX+hOX6YZeumPNzTnuTJIKEEKDAyJp/
+         LsvSlTIyp+dwrLIIxTm83rKLE6SvLm66yP1JyoMcixAdEoEebq8wOTZ2BCJZx3Oor3ZQ
+         vynu/4WggJFG+L1s6v8RXU32NXIe51HCQRdMxhjoEwFWb1jWrNeTzzKbECMOKMItD2Gy
+         071Q==
+X-Gm-Message-State: AOAM530cxdUSBNVrLqyBsNhohrdwU7CrHTfJtK/aTkU59VgMAVHYPuYw
+        Bb903Y7azVRrTrtUaW2dwOYBYQ==
+X-Google-Smtp-Source: ABdhPJxX+FZqmUvFbB6LFhFizDSmok15mmV3G7aae8zfjyp+xlKCEmRsFFggV9F2XDQhme81TddiHg==
+X-Received: by 2002:a05:620a:13a1:: with SMTP id m1mr1061123qki.91.1627632020050;
+        Fri, 30 Jul 2021 01:00:20 -0700 (PDT)
 Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y19sm179786oia.22.2021.07.30.00.57.58
+        by smtp.gmail.com with ESMTPSA id m80sm536727qke.98.2021.07.30.01.00.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 00:57:59 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 00:57:56 -0700 (PDT)
+        Fri, 30 Jul 2021 01:00:18 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 01:00:16 -0700 (PDT)
 From:   Hugh Dickins <hughd@google.com>
 X-X-Sender: hugh@ripple.anvils
 To:     Andrew Morton <akpm@linux-foundation.org>
@@ -68,9 +68,9 @@ cc:     Hugh Dickins <hughd@google.com>,
         Matthew Auld <matthew.auld@intel.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-api@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 11/16] tmpfs: fcntl(fd, F_MEM_LOCKED) to test if memlocked
+Subject: [PATCH 12/16] tmpfs: refuse memlock when fallocated beyond i_size
 In-Reply-To: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
-Message-ID: <a4f03e42-14a3-8e1b-387e-6f18b57f1eb@google.com>
+Message-ID: <3e5b2999-a27d-3590-46d9-80841b9427a9@google.com>
 References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -78,64 +78,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Though we have not yet found a compelling need to make the locked status
-of a tmpfs file visible, and offer no tool to show it, the kernel ought
-to be able to support such a tool: add the F_MEM_LOCKED fcntl, returning
--1 on failure (not tmpfs), 0 when not F_MEM_LOCKED, 1 when F_MEM_LOCKED.
+F_MEM_LOCK is accounted by i_size, but fallocate(,FALLOC_FL_KEEP_SIZE,,)
+could have added many pages beyond i_size, which would also be held as
+Unevictable from memory. The mlock_ucounts check in shmem_fallocate() is
+fine, but shmem_memlock_fcntl() needs to check fallocend too. We could
+change F_MEM_LOCK accounting to use the max of i_size and fallocend, but
+fallocend is obscure: I think it's better just to refuse the F_MEM_LOCK
+(with EPERM) if fallocend exceeds (page-rounded) i_size.
 
 Signed-off-by: Hugh Dickins <hughd@google.com>
 ---
- fs/fcntl.c                 | 1 +
- include/uapi/linux/fcntl.h | 1 +
- mm/shmem.c                 | 4 ++++
- 3 files changed, 6 insertions(+)
+ mm/shmem.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/fs/fcntl.c b/fs/fcntl.c
-index a3534764b50e..0d8dc723732d 100644
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -439,6 +439,7 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
- 	case F_NOHUGEPAGE:
- 	case F_MEM_LOCK:
- 	case F_MEM_UNLOCK:
-+	case F_MEM_LOCKED:
- 		err = shmem_fcntl(filp, cmd, arg);
- 		break;
- 	default:
-diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-index 21dc969df0fd..012585e8c9ab 100644
---- a/include/uapi/linux/fcntl.h
-+++ b/include/uapi/linux/fcntl.h
-@@ -88,6 +88,7 @@
-  */
- #define F_MEM_LOCK		(F_LINUX_SPECIFIC_BASE + 17)
- #define F_MEM_UNLOCK		(F_LINUX_SPECIFIC_BASE + 18)
-+#define F_MEM_LOCKED		(F_LINUX_SPECIFIC_BASE + 19)
- 
- /*
-  * Types of directory notifications that may be requested.
 diff --git a/mm/shmem.c b/mm/shmem.c
-index ba9b9900287b..6e53dabe658b 100644
+index 6e53dabe658b..35c0f5c7120e 100644
 --- a/mm/shmem.c
 +++ b/mm/shmem.c
-@@ -2299,6 +2299,9 @@ static int shmem_memlock_fcntl(struct file *file, unsigned int cmd)
- 	bool cleanup_mapping = false;
- 	int retval = 0;
+@@ -2304,7 +2304,10 @@ static int shmem_memlock_fcntl(struct file *file, unsigned int cmd)
  
-+	if (cmd == F_MEM_LOCKED)
-+		return !!info->mlock_ucounts;
-+
  	inode_lock(inode);
  	if (cmd == F_MEM_LOCK) {
- 		if (!info->mlock_ucounts) {
-@@ -2762,6 +2765,7 @@ long shmem_fcntl(struct file *file, unsigned int cmd, unsigned long arg)
- 		break;
- 	case F_MEM_LOCK:
- 	case F_MEM_UNLOCK:
-+	case F_MEM_LOCKED:
- 		error = shmem_memlock_fcntl(file, cmd);
- 		break;
- 	}
+-		if (!info->mlock_ucounts) {
++		if (info->fallocend > DIV_ROUND_UP(inode->i_size, PAGE_SIZE)) {
++			/* locking is accounted by i_size: disallow excess */
++			retval = -EPERM;
++		} else if (!info->mlock_ucounts) {
+ 			struct ucounts *ucounts = current_ucounts();
+ 			/* capability/rlimit check is down in user_shm_lock */
+ 			retval = shmem_lock(file, 1, ucounts);
+@@ -2854,9 +2857,10 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+ 	spin_unlock(&inode->i_lock);
+ 
+ 	/*
+-	 * info->fallocend is only relevant when huge pages might be
++	 * info->fallocend is mostly relevant when huge pages might be
+ 	 * involved: to prevent split_huge_page() freeing fallocated
+ 	 * pages when FALLOC_FL_KEEP_SIZE committed beyond i_size.
++	 * But it is also checked in F_MEM_LOCK validation.
+ 	 */
+ 	undo_fallocend = info->fallocend;
+ 	if (info->fallocend < end)
 -- 
 2.26.2
 
