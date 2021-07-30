@@ -2,105 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C073DC103
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8907A3DC116
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233281AbhG3WU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232745AbhG3WUy (ORCPT
+        id S233266AbhG3WbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:31:00 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:41216 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229604AbhG3Wa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:20:54 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40BEC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:20:48 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id k7so10886964qki.11
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X/ut0W8QWQzgc3+TFp0Zpab3f8ktnZebi671B/GRa1s=;
-        b=MyagQMiCCsM3Rrn6I1WUv92/Bb4Hoxpt54pGqOpfWtDctdM1tQkL6ciLcbY6UdDKg+
-         CHPIMI68YD94tESmrEfcGANjj5Cl0XwRrXRcwNL9k1ZbXaHmbVZH7THGiL7zV/RxUQ1c
-         g511pq+mPaWbOHjDMSUZoOWqY8Uja0Hq1ANig=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X/ut0W8QWQzgc3+TFp0Zpab3f8ktnZebi671B/GRa1s=;
-        b=msJ1ejttT3+T3W3Sn6q3jDZIEgWBMyAk1lsHN6KaDCyh7TgE/HlG35+fBUSpmi0TfJ
-         ysg4PF9LgRQkla93LKI8B1E6IbiQt2wVC5N/grLWKX9kIH6V4sQFnNq6RHRclK4TXSkr
-         phIA74qrK8cGCIuJ9Ats/1yR2tzu5A8rn3z0lOmNRwg3p2KI132p65SPtKkDmmfomvxA
-         JJYWWXiEn5QE+74p5URFW19VOr/YmF13CAGUdfyns3lB2ceVE88kVk7ca/JOgpO6ZotS
-         mlIU7zZJTnwetq3px9eUW00xyyDDJEpeto0hLrSrCimMvdkMK+oOMPugAKYgKX3zKIhE
-         dBSQ==
-X-Gm-Message-State: AOAM530CBL5MEvd7CP06ZiLqNXzmrSLWFJsMRQm9sxLstWHDSTJZijUI
-        XKpfROngW8UZNoxAM4cGwm6yi75CvrFcGg==
-X-Google-Smtp-Source: ABdhPJwBUYhtrEn3zSQwhiJLkHY29TP1fFG8Y97WcTMrZIYaeHzdgfz/kdoOCsf/XvGAmYzHPV4qZQ==
-X-Received: by 2002:a05:620a:64c:: with SMTP id a12mr249265qka.377.1627683647690;
-        Fri, 30 Jul 2021 15:20:47 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id k15sm1653430qko.84.2021.07.30.15.20.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 15:20:46 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id z18so3506281ybg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:20:46 -0700 (PDT)
-X-Received: by 2002:a25:2904:: with SMTP id p4mr6090679ybp.276.1627683645881;
- Fri, 30 Jul 2021 15:20:45 -0700 (PDT)
+        Fri, 30 Jul 2021 18:30:59 -0400
+X-Greylist: delayed 468 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Jul 2021 18:30:58 EDT
+Received: from dispatch1-us1.ppe-hosted.com (localhost.localdomain [127.0.0.1])
+        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 758C7227D0C
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 22:23:05 +0000 (UTC)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mx1-us1.ppe-hosted.com (unknown [10.110.51.166])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 30A552A0064
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 22:23:04 +0000 (UTC)
+Received: from mail3.candelatech.com (mail2.candelatech.com [208.74.158.173])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 05C4B900026
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 22:23:03 +0000 (UTC)
+Received: from [192.168.100.195] (50-251-239-81-static.hfc.comcastbusiness.net [50.251.239.81])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail3.candelatech.com (Postfix) with ESMTPSA id 5F75C13C2B1
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:23:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 5F75C13C2B1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
+        s=default; t=1627683783;
+        bh=pRBhLHGtPtvHLvpf59xbGmGBd1CtA0sjUl4NNDMctBg=;
+        h=Subject:From:To:References:Date:In-Reply-To:From;
+        b=l39zOg/64DoODvHBImNzLFQ0Uw+p+IhyxumyKbSFn/SLk1ebXCbsc6pIPccRWgZRQ
+         3OSasTxzpTxGr8NhGviniP5J5rRuS2B6nAoO9OrhtmIf7BfNqoXvkPvVGVch0n+iBs
+         AiGee+S42MyRmIuNISGmvlCIIDWLJF+Ilz15UlWI=
+Subject: Re: kasan warning related to hwmon/acpi, 5.13.5+
+From:   Ben Greear <greearb@candelatech.com>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <84eb3a9d-5f94-1136-f94e-c04ff6b0d1b9@candelatech.com>
+Organization: Candela Technologies
+Message-ID: <1f667b64-0360-ecef-0de0-79810a2f096c@candelatech.com>
+Date:   Fri, 30 Jul 2021 15:23:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <1620807083-5451-1-git-send-email-sibis@codeaurora.org> <1620807083-5451-3-git-send-email-sibis@codeaurora.org>
-In-Reply-To: <1620807083-5451-3-git-send-email-sibis@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 30 Jul 2021 15:20:34 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VfvW1PqJiR7Lh5RNyR6EQ1E8JK0N+KqJiB8DK49oUZ4A@mail.gmail.com>
-Message-ID: <CAD=FV=VfvW1PqJiR7Lh5RNyR6EQ1E8JK0N+KqJiB8DK49oUZ4A@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <84eb3a9d-5f94-1136-f94e-c04ff6b0d1b9@candelatech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-MDID: 1627683784-LxibXajwSqqz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 7/28/21 12:29 PM, Ben Greear wrote:
+> Hello,
+> 
+> I'm seeing this warning often right after/during boot, but not always.
+> I am pretty sure this is not some regression I've added to my tree, but
+> of course that is possible.
+> 
+> If someone has already got a fix for this or debugged it, please let me know.
 
-On Wed, May 12, 2021 at 1:11 AM Sibi Sankar <sibis@codeaurora.org> wrote:
->
-> Add OPP tables required to scale DDR/L3 per freq-domain on SC7280 SoCs.
->
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->
-> V3:
->  * Rename cpu opp table nodes [Matthias]
->  * Rename opp phandles [Doug]
->
-> Depends on the following patch series:
-> L3 Provider Support: https://lore.kernel.org/lkml/1618556290-28303-1-git-send-email-okukatla@codeaurora.org/
-> CPUfreq Support: https://lore.kernel.org/lkml/1618020280-5470-2-git-send-email-tdas@codeaurora.org/
-> RPMH Provider Support: https://lore.kernel.org/lkml/1619517059-12109-1-git-send-email-okukatla@codeaurora.org/
->
-> It also depends on L3 and cpufreq dt nodes from the ^^ series to not have
-> overlapping memory regions.
->
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 215 +++++++++++++++++++++++++++++++++++
->  1 file changed, 215 insertions(+)
+Root cause of this was mt7915 driver, a fix has been posted...
 
-I see patch #1 in mainline now. Does that mean it's time to land patch
-#2 in the Qualcomm tree now? ...or maybe it needs to be re-posted?
+Thanks,
+Ben
 
--Doug
