@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C993DB14B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B373E3DB14F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 04:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236273AbhG3Cnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 22:43:33 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:33446 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235692AbhG3Cnc (ORCPT
+        id S236127AbhG3Cqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 22:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhG3Cqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 22:43:32 -0400
-X-UUID: 179bba23a14a47bcaa44ccb0c7f09b58-20210730
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MhJjzMJaCLiOt7zZ1oxqTMuNoTCEa6P7XqQdm1VKRgY=;
-        b=HByxBdsrKL93WmMu1OctRxGSmIK64pUkldii6iD0JWUVP5w6714xwV6/7x4q7AmBy9sk/0pop9QL30bhHVCRMe4iiOmze7MuUpuVr1kRMm7ukytuirbSWT4IerTK0raDDHiHhl+YMJtyXHhXfZwFwaDlmdqYegulEi1QnzYGF8g=;
-X-UUID: 179bba23a14a47bcaa44ccb0c7f09b58-20210730
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1010988491; Fri, 30 Jul 2021 10:43:25 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 30 Jul 2021 10:43:23 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 30 Jul 2021 10:43:23 +0800
-Message-ID: <a48525422d4c953a2dac2a907895c20b9fd6d232.camel@mediatek.com>
-Subject: Re: [v6 2/2] arm64: dts: mediatek: Correct UART0 bus clock of MT8192
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Ikjoon Jang <ikjn@chromium.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Fri, 30 Jul 2021 10:43:23 +0800
-In-Reply-To: <CAATdQgC-X6pijkgTBsWJJKp__J6N=7JNKHQJmOMvTAjivwPM5w@mail.gmail.com>
-References: <20210727023205.20319-1-chun-jie.chen@mediatek.com>
-         <20210727023205.20319-3-chun-jie.chen@mediatek.com>
-         <CAATdQgC-X6pijkgTBsWJJKp__J6N=7JNKHQJmOMvTAjivwPM5w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 29 Jul 2021 22:46:36 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB57C061765
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 19:46:32 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so18665760pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 19:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/jHaRzrwnTkxPzzhIATQChLO4eAJDANBxVXBTRmfZAk=;
+        b=fZlZQgziymRz1laziR3iwWKBzmjbHYQ8liIi0u84sJ48v2MNxxDmryQtfDukedle+2
+         qW/J7DMJRzRyH9gr6v4UtpVrmBkJxToUANPCUPi8DDjMUFYlEyz58wQrLwIvuvcanJ0y
+         XJR7g5UdDDskSy46lOChLTjmmNoTQqPzMRXyJCnYqdg59Y83fSn3D9yxEZUgOCKXGC99
+         46JjKgn6MlCQV6pbGfMwNr1XcDo9rjJaCcCa342yX4zuqVblyYbtzWfo4HB5p40mP6OE
+         8eYCmeUNC+U7elM7zTdOKwt95x+avFctu+m9n8/S8pCa0FS1e1ZXSQLYE1a/Xn0LjpWz
+         C/sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/jHaRzrwnTkxPzzhIATQChLO4eAJDANBxVXBTRmfZAk=;
+        b=Y+55Hav2YTuZqTBq09/n/t5JetiTJTuID72Eqm+deVQ2BciqWwIbAhP3clLOB6XOYD
+         /5a/NCtQYO6au32qvkD66EwFCm0Cqb7j+hDGtPbde5aiNnugTGjP/XVoImiy/QcxtNOQ
+         fxphf+bS7Dk0a+psORjMzq9QSPkHMexkqMRxfOROTBBvWOppu/pGWJZZCuWUWBilk7r4
+         JkyWEdxN6EIvBHjKFqC2oWFeD5/y10E6XfhNlR3HmjQCZ6/Ldpz7t3OdvZEdmArdOMjK
+         MYlSxo5/+VSkqhrkoO/DMW1g9xXNEsensFmsgcIxVx1rtJoI7u2C+mYdPBmxfuTvU0He
+         9RwA==
+X-Gm-Message-State: AOAM5333z/yIYWjm70ZKT9FvGatFI4WBC2ttpa4ipmNeAdziqmBBo/Rz
+        w1UMly0fnt3NVZ/dUu9DEqQ0HcL0CZ5OsIOlLdfYNg==
+X-Google-Smtp-Source: ABdhPJzn37CezuT/IcB54RiqyDYSXciG7d8blI3sEMoNDk7ag9zYF4JK9IpSWEhADYoftegpT4o7cnrTMDl3DcMlQIw=
+X-Received: by 2002:a05:6a00:d6f:b029:398:74ba:4cdc with SMTP id
+ n47-20020a056a000d6fb029039874ba4cdcmr614697pfv.49.1627613192067; Thu, 29 Jul
+ 2021 19:46:32 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210729092831.38106-1-ligang.bdlg@bytedance.com>
+In-Reply-To: <20210729092831.38106-1-ligang.bdlg@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 30 Jul 2021 10:45:51 +0800
+Message-ID: <CAMZfGtXC0o0bWepzPqPFa9NMYsn5A=Xo=jS02SrYjG4UhhkOZQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mm: mmap_lock: remove redundant "\n" in TP_printk
+To:     Gang Li <ligang.bdlg@bytedance.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA3LTI4IGF0IDE0OjE0ICswODAwLCBJa2pvb24gSmFuZyB3cm90ZToNCj4g
-SGksDQo+IA0KPiBPbiBUdWUsIEp1bCAyNywgMjAyMSBhdCAxMDo0MyBBTSBDaHVuLUppZSBDaGVu
-DQo+IDxjaHVuLWppZS5jaGVuQG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4gDQo+ID4gaW5mcmFf
-dWFydDAgY2xvY2sgaXMgdGhlIHJlYWwgb25lIHdoYXQgdWFydDAgdXNlcyBhcyBidXMgY2xvY2su
-DQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogV2VpeWkgTHUgPHdlaXlpLmx1QG1lZGlhdGVrLmNv
-bT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVuLUppZSBDaGVuIDxjaHVuLWppZS5jaGVuQG1lZGlh
-dGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgx
-OTIuZHRzaSB8IDIgKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRl
-bGV0aW9uKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVk
-aWF0ZWsvbXQ4MTkyLmR0c2kNCj4gPiBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4
-MTkyLmR0c2kNCj4gPiBpbmRleCBjN2M3ZDRlMDE3YWUuLjk4MTBmMWQ0NDFkYSAxMDA2NDQNCj4g
-PiAtLS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpDQo+ID4gKysr
-IGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaQ0KPiA+IEBAIC0zMjcs
-NyArMzI3LDcgQEANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIm1l
-ZGlhdGVrLG10NjU3Ny11YXJ0IjsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICByZWcgPSA8
-MCAweDExMDAyMDAwIDAgMHgxMDAwPjsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBpbnRl
-cnJ1cHRzID0gPEdJQ19TUEkgMTA5DQo+ID4gSVJRX1RZUEVfTEVWRUxfSElHSCAwPjsNCj4gPiAt
-ICAgICAgICAgICAgICAgICAgICAgICBjbG9ja3MgPSA8JmNsazI2bT4sIDwmY2xrMjZtPjsNCj4g
-PiArICAgICAgICAgICAgICAgICAgICAgICBjbG9ja3MgPSA8JmNsazI2bT4sIDwmaW5mcmFjZmcN
-Cj4gPiBDTEtfSU5GUkFfVUFSVDA+Ow0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIGNsb2Nr
-LW5hbWVzID0gImJhdWQiLCAiYnVzIjsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0
-dXMgPSAiZGlzYWJsZWQiOw0KPiA+ICAgICAgICAgICAgICAgICB9Ow0KPiANCj4gVGhlcmUncmUg
-bWFueSBvdGhlciBub2RlcyBzdGlsbCBoYXZpbmcgb25seSBjbGsyNm0uIFdpbGwgeW91IHVwZGF0
-ZQ0KPiB0aGVtIHRvbz8NCj4gDQoNCk90aGVycyB3aWxsIGJlIHVwZGF0ZWQgYnkgSVAgb3duZXIu
-DQoNCkJlc3QgUmVnYXJkcywNCkNodW4tSmllDQoNCj4gPiAtLQ0KPiA+IDIuMTguMA0KPiA+IF9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4gTGludXgt
-bWVkaWF0ZWsgbWFpbGluZyBsaXN0DQo+ID4gTGludXgtbWVkaWF0ZWtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZw0KPiA+IA0KaHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbWVkaWF0ZWtfXzshIUNUUk5LQTl3TWcw
-QVJidyExYkl6NlgyRWlGYmlnQ0ltelFtYnF0ZXpJRmZsMUxSQnVQT1lUcUJkbDV3Zng4Yi16cDB6
-UVA2OFI3UmhhSWNBQVhYRiQNCj4gPiAgDQo=
+On Thu, Jul 29, 2021 at 5:28 PM Gang Li <ligang.bdlg@bytedance.com> wrote:
+>
+> Ftrace core will add "\n" automatically on print. "\n" in TP_printk
+> will create blank line, so remove it.
+>
+> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
 
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
