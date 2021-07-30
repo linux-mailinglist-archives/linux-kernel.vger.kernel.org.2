@@ -2,341 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246CB3DB3F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A333DB427
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 09:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237725AbhG3GwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:52:16 -0400
-Received: from mail-bn8nam08on2046.outbound.protection.outlook.com ([40.107.100.46]:32352
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        id S237757AbhG3HCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 03:02:09 -0400
+Received: from mail-vi1eur05on2132.outbound.protection.outlook.com ([40.107.21.132]:17345
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230040AbhG3GwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:52:15 -0400
+        id S237598AbhG3HCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 03:02:08 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IVIVUBlV78n8Of33lSdnAIpxifFeiKreG18xsCD+bpcBwZJzBhKdOKXF/Gs8PSk10OFYEWGOhxgMepfjRVtl00GmCa4iJAp0f4M5T6iQiitkKSqGn1k+2an40laz+IAI56sdOqRdYGELjk/5C7fOgJR3Udz/N/HwmkdOzm8+e9pxTDgRN6iOVvv9VTiG3b5BxXP/X73Jw7CkboJNXKz+9HZtODwmlzx5ztxCN2hx+1HkS6ZSQflxrFOyfqrMfWAzYPIhPwJfXlT5AcgXBzVqDfuiMeLxIlCuhZQfYjEfJlpVAX9wknJv952YegNxkYWWQ5NfNAUHRhUoWUrO4wLwcg==
+ b=M4o3ENdmHQGMJtpP1w7ypLciN2G2v6QrntL3zIpX3HsPlqt9UOIw06ajqN+EaO/MwANjyfthw4QxymUlCuIAanG+d1hWpFkKczhg1DfFFRwr/DTQD8l22OEJ7vK4yD72AaYNJZlpW3xtSf7uE4iIoXWcXbhB9f8Mse1wrV+ZvHgyl0aR2cfW2xdjaFOXTI+GbbyNSQKDianp3FXebWyIaXX2kAbBoV7drNwfY9OLZVd9nq55GX/Qcl9zzCdOqWy5gNTEEDu2HFJgffOGqs4I7pNYu5VK43yv3XE57P8lKSwiRiMwkjftwolx6SeVFCH2hrDEhBvXDdnh+7jzDUTyFA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PMvEaSZtVVvIxG0xUufuxfkHE0FiE7BnuAsQNsX4DC0=;
- b=VS0yJ85pQgpjlpadNiYU7ezoN6fhaa73iG5mL/zA5z4RExsQcfIi2+dfM6+rOJe3A0xorb2CwMYgIllSDYLSzf19AH0TNo01EuEJuRb/j6HyxdTc4k5RStWUJhPzOyT2C9qd2UQ3MepQROhZ31Cb9LblmTS62/y18JwYhpHUtRk+rhfsESVOIPBT6A6lwmIzhnQS+76BhFIAagG2vzP3XqYZEvCXhmxBuDcuGhicQ6glPAGN+TILZoZlNv4hI6xsBeYR/q0IAWXCcgxUsWD/6qogvFa+YafaJKZYhGXFIXmLH13OHAEYYqO4UyW3LPVUe/cTipEvYieUN4Nlnvesbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ bh=opJEfooEsNOy/14bWJZ6IiMAgebqXK7B7at4IrMX/wE=;
+ b=bG+9oyqcwEei20qPVTgYBB15jkPGxMMon9p0zI9kJSNVcDyjVjOaDLjFKJR5xxM8EEb86FV4LK24nrF6sQTNbU29FAB7axbL/MrcTXmHT5X/dGA0VFtL0TCvyJjxrp9wZh+/Eyw7+WoF+UH/EovC5276S7KG3uD/SKkz3QeLckhDq6mV34HBpwDQXGGRb8YzIPVB8+ZufDij9wfGouLMlesnyrsUj/dIbS5sgK4y/YzKg6ru8SNxSgxrNocDX2RYK2+ChZ8noyzf4vW54xTveYbF+RzMNX5BPK/jWW6bsK3b452L0cPqILovQfYhsX0IFLBYCtM2g6hwv4+3KpW1Fg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PMvEaSZtVVvIxG0xUufuxfkHE0FiE7BnuAsQNsX4DC0=;
- b=lZpfQXiNytQ4X7bkN3tZe7rpWYumCm71kDymSnVRHbdMPHpimLxg/5T1LXtI+8kvPCELRJGWDjxta2FrBCqJgRZb8GXPWB737QRIxLcdQc3tWr3pJbHL/Hk2zBbE/egwNo5hIK4m81op25kYt2278ejpmkRwidyCQs1buwESQqVI6HwFemb05nRbPoiTMOiecI5LSOHMEFSye2Hsfu358QiCMyPUHnuW2Ii1p2Nq826nZwuusRwNPqP0czvnpQPfo+to90EAsE0ZHC0iFNDkn6DkJW+iXQuOG34inCPWLzwIcv490+uRi04e46vAdiIKT7YaGQBB6T8946RGbPUUaA==
-Received: from DM6PR17CA0028.namprd17.prod.outlook.com (2603:10b6:5:1b3::41)
- by MWHPR12MB1632.namprd12.prod.outlook.com (2603:10b6:301:10::21) with
+ bh=opJEfooEsNOy/14bWJZ6IiMAgebqXK7B7at4IrMX/wE=;
+ b=LX9l4tPPMN75IFNt08+2VrUFUCQcEwuyFHvYOfkbrKW3FpPG6vV/CTAX0/zO1oW6wTabN8esz/QReNjYtu/bvS++YO8fPSKznghhwtq6YxHIymT/m3auX3J/uVNeTqF00yzAqRUVD4E7a7BU6knkB9G5QN9/IqHlrRIM2JgMys8=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB7PR02MB3930.eurprd02.prod.outlook.com (2603:10a6:10:40::26) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19; Fri, 30 Jul
- 2021 06:52:08 +0000
-Received: from DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1b3:cafe::77) by DM6PR17CA0028.outlook.office365.com
- (2603:10b6:5:1b3::41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend
- Transport; Fri, 30 Jul 2021 06:52:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT053.mail.protection.outlook.com (10.13.173.74) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4373.18 via Frontend Transport; Fri, 30 Jul 2021 06:52:08 +0000
-Received: from [172.17.173.69] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 30 Jul
- 2021 06:52:07 +0000
-Subject: Re: [RFC 03/11] hte: Add tegra194 HTE kernel provider
-From:   Dipen Patel <dipenp@nvidia.com>
-To:     Kent Gibson <warthog618@gmail.com>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linus.walleij@linaro.org>,
-        <bgolaszewski@baylibre.com>, <devicetree@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <robh+dt@kernel.org>
-References: <20210625235532.19575-1-dipenp@nvidia.com>
- <20210625235532.19575-4-dipenp@nvidia.com> <20210701142156.GA34285@sol>
- <52768891-6c01-7588-e557-5c9eae5375b6@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <928b9d68-c0be-49d7-96be-5f12aa699402@nvidia.com>
-Date:   Fri, 30 Jul 2021 00:01:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Fri, 30 Jul
+ 2021 07:02:00 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::14ca:a41:2218:3578]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::14ca:a41:2218:3578%6]) with mapi id 15.20.4373.021; Fri, 30 Jul 2021
+ 07:02:00 +0000
+Subject: Re: [PATCH v6 05/13] iio: afe: rescale: add INT_PLUS_{MICRO,NANO}
+ support
+From:   Peter Rosin <peda@axentia.se>
+To:     Liam Beguin <liambeguin@gmail.com>, jic23@kernel.org,
+        lars@metafoo.de, pmeerw@pmeerw.net
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+References: <20210721030613.3105327-1-liambeguin@gmail.com>
+ <20210721030613.3105327-6-liambeguin@gmail.com>
+ <c9d77dc0-7f4c-0df0-cce1-8cb30074e115@axentia.se>
+ <CD4CE5OQT5TJ.2BFPBRYK7FCOW@shaak>
+ <18f749be-284f-3342-a6d2-b42aa39fc13a@axentia.se>
+ <CD5QWB9MW1H5.3SSPWGD5DR6J5@shaak>
+ <a77e7a18-67dc-5bc5-427b-89d6b1e82b85@axentia.se>
+Organization: Axentia Technologies AB
+Message-ID: <8448cecb-16b3-96ff-dfa8-3933325ef946@axentia.se>
+Date:   Fri, 30 Jul 2021 09:01:52 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <52768891-6c01-7588-e557-5c9eae5375b6@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <a77e7a18-67dc-5bc5-427b-89d6b1e82b85@axentia.se>
+Content-Type: text/plain; charset=utf-8
+Content-Language: sv-SE
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: AM5PR0602CA0018.eurprd06.prod.outlook.com
+ (2603:10a6:203:a3::28) To DB8PR02MB5482.eurprd02.prod.outlook.com
+ (2603:10a6:10:eb::29)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.13.3] (85.229.94.233) by AM5PR0602CA0018.eurprd06.prod.outlook.com (2603:10a6:203:a3::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19 via Frontend Transport; Fri, 30 Jul 2021 07:01:59 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a1411abd-046d-4f4e-1512-08d953268ca7
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1632:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB163250E1EFFB5F2F05EA015AAEEC9@MWHPR12MB1632.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 4c5cc2fd-e244-4bcc-fd39-08d95327ed8b
+X-MS-TrafficTypeDiagnostic: DB7PR02MB3930:
+X-Microsoft-Antispam-PRVS: <DB7PR02MB3930BB0A6A182EA29F98567BBCEC9@DB7PR02MB3930.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7VyOajw+fXpfoFYsSrDSZSHbia8IPS2rCO6geQ17wdIpnDl8x/pHJ/ZkPceP+iE6IAUnqw6QCQDRPNuI80i1kQMwhyHBftUOFguTG+O/9fAYFSgVlOsYpsIuieu5QeA+gCvMVqBoNTdaL08LsVXECAd+91ez/RvM8NHYCET29I1TUp803mnBnm1E3bjA57jLYNpcXOf9RzmpfKTbxSQYq+uRwxuYV8XKxlS9jA+G7+gBO6iAS9RRNY9s6mnmPNuCKALv/dHKtf6nwKfw7NFqFXkixpPWDL6e68h0ccyRBszq8FxrATBkWsrxHDFw6MPXSN1bC8JsYCCrRmB0+/rRXGHY63MbukCEkxbTw8F8Lp3xDF2vL/7knQICAC1cAbFGptEksjAPpKe10SjeKpEBOg5bC34ynJDIQEztxmvAw4VDscEbvhBUXCST5PbVffC0BvJF5wXUc/pGlj/Jt9s2tJ+Ep+pjXbElOrbLEIfZQPNRNFfdgqpAMHHpCdH9FSJr3Ntvkndkt9PZvx8D12idMFn7+qO+5gnoEZDMS7MG/jPPYBJAk4rZzOcULIoOSiMWLCuyXQbfA0qXEJPpuLkMo/TibJNNAsPX3aO8qIc0Nq2QtH5y96djOgB1drVwNYmmmf1uarViy/mIqc0i//7uHN/RgZIbf4OHdhZ3Rxb4M+eEYeaT9j2y3q2bVgRGHTUlrJJ3fk3Gp86XZll88KywoNK8IhMhhZVb/B1Ru2vvCuM=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(2616005)(36756003)(356005)(8676002)(336012)(5660300002)(6916009)(8936002)(426003)(70206006)(4326008)(508600001)(31696002)(70586007)(16526019)(47076005)(53546011)(86362001)(186003)(16576012)(82310400003)(26005)(54906003)(36860700001)(83380400001)(31686004)(316002)(2906002)(7636003)(7416002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 06:52:08.2249
+X-Microsoft-Antispam-Message-Info: LdGtxRBSXsIO8bLscj2jXMnhGsFlFA8iNJEZqjmtPGRM2+bnvyGp1UboXg53GACyR2XvVaOyg8/nXLBf6EwBER03jmNVYEL2Th8EauBNhZ4wLBNoMzAN7M20Xel3XAX3iDLraTnc+YOtKls4V/FymN/XaaAfsz6Mezx+tTv0ZeoMLoaOtXqaQ5H2xeTPLKDcmkHxEjIKvLaKdaoN8IByu9iaryB+NGZG6QIoic6OsbcUh+YbPRc1FYK/cti0KFCsmsuXaMifEk/8irXdzf0HSqnF4YlqBs1K9KndpVaDiperm1VGUfyJ6jK4j2g+jQ+hShLiXnd4OLr2vyMt+boBeHY4znw9D3XJVGaYZDRUfJIUPqUz/AkYu7NYT8M/TBDy7eJnTCkpvn65c3hcr4tsYS1f3qye3Jfzz+PpsHvbGPODSjGL+rIjO8Q60COm4yg9jd+A4upiURA2TTEPE+zx1Lqhr3cbHxsQ4xIYqM0SQNiIpB15I2zKzSn+p89EORKNzNNIH3cdDfkIizONCNfSC29AZxUH3kZqnrW2D1iHyKnMnKTiMbnyRcr6X+PV2BX7lIAawRf815lbZYdrhoKAQnx+tAPo8ChpCURN0vdwCCuHtLLknkOcNY46Dg8dzwlfjIeeYc8QA0ud8teHCIClnZC/vUeWo9fUxKF4iZorSPJaWWNkC4tSPQ6xhdejeq2VzE8H/RZofl1a11sJs+6AUS1/xzGwLc36E7T3lA80GH0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39830400003)(366004)(346002)(376002)(136003)(36916002)(31686004)(86362001)(36756003)(26005)(66556008)(8676002)(6486002)(66476007)(53546011)(31696002)(66946007)(2906002)(8936002)(186003)(956004)(316002)(2616005)(16576012)(5660300002)(478600001)(38100700002)(6666004)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SDAzZEFPOUhQN0hvZEFSY2xhdFhGOE1qOWNkZmtTUkJSZzVaU1RxUUNqWldx?=
+ =?utf-8?B?LzNma1o0NXdmTkpFaVZ0c2p5cS9TdUw0MG9UY2tyUXdQNElrWUNpbGRabWhj?=
+ =?utf-8?B?TFBnbzA5bmVDbWVaenoxSDQwNExMMmNiTVNSaENNTnVGNlZES0k3TU5USFEw?=
+ =?utf-8?B?bWVIa29Vc0V1TnBxTXBhK0kyejJYaCtHWjBZUFJpbmM0MjRkcllPSllpK1Bi?=
+ =?utf-8?B?ZjQ0c053dFBLOVdVNWNZaEFURUdQdFdmaElsZHIvQy9aY1dRWXQ4cCtDb2JD?=
+ =?utf-8?B?WXRrRlNaSGpqNWMvMWYySWh2L2tGR09tcEc1a3ZOTVhjcDM0M0NHQWNYWVl0?=
+ =?utf-8?B?ajBsTnVYMVJ2eHc4RExIWEpxbW5DVDVIbDJUa0RHbERudnV4c2kzZEN4dWcw?=
+ =?utf-8?B?UCtiSHp5Z291bUZUcGxkL3NOWjJzeVVKZmcrYXVJMTMzU0lWZmdqbjhEVFdv?=
+ =?utf-8?B?Q1NXcXpqZjhyN0M4QXdDNUxoWmJXRlA1ZGMwVkFjc3MvaTlGcEVqNERxTHZQ?=
+ =?utf-8?B?anlYMzhpbDhCSzh5OXpNZFdRNkVoK2dZRnJpdkdDbE1LaVFUQVZGR3Fwc2JL?=
+ =?utf-8?B?akx2dHR3dTc3MnVrd3lPVzZ2L1Q5VVlMeGtFVVZtOVZxb3ZNc2pMbjByVkxV?=
+ =?utf-8?B?cmJGMzlTdUxYQzdjb2JabEgyQWFDRnJNZEtZVUhZQWhMZ2J5SzlQZ1JKaDl4?=
+ =?utf-8?B?Vi85NzF4ZGMzQ2lvVmFqMmdIcVFrbytiSnRqRUtYYVlDMU9vc3lENi9XVm1X?=
+ =?utf-8?B?YUF1VUVxVldGYVJqb1RrVlNXdyt0MUpUaUk2ZWFjbTA5QUJENFJlRWhPb3U2?=
+ =?utf-8?B?b3pNSkV0OEV6Qzg5czN2T2V6VWJ0bnZyZlRXbU9hWVRwQi9GUFNPMEpnRzh5?=
+ =?utf-8?B?RTNNWVJUekUwY3lPMjlEaWc0UUxFNTdMbk5vOTR2ems5eDBuVG0xNWhVcXl1?=
+ =?utf-8?B?WGlEeXJVejhmdUovQXRRRDR2eHFUNFVkSFQ4OGRUOUpPMkY0Z1NML01Cd3lU?=
+ =?utf-8?B?K2lSNmhMUTR6aEU3bjNqTmtuZkxJcVhLVTlHTUVpTmFCSnE0WmRFa1ArcjRG?=
+ =?utf-8?B?TWd3cWhHOWtZMWVITzV0dm9LSEZjQUx6Y2RoVE5Uam84dHNEc1ljU05wMjJz?=
+ =?utf-8?B?N0dkMWc0cGIyQ1YvTmVVcGJpVXB6NTMwamVtaDVNVWJXZTJZNGJKdXBkUmUv?=
+ =?utf-8?B?ZW0wUVBZSW1KVmQxTVNlRDIwUHprb1N0a3RoSlUrOWg4MkhXZjdpV2RDL2dD?=
+ =?utf-8?B?cVNOUmM4eDNwdmxOa0s4am9Nekh5WkFYRk1ucW9yKzVtK1VVVk16czFwYnBk?=
+ =?utf-8?B?MGlKTTJZYm1BSjV2Z29hRkFHb0xPUmRCZWoyWWdqdGVENDg5V1pJYXY5OFJJ?=
+ =?utf-8?B?bUExVWM4YU5kZU94WU54NjhLWHBkK0FvRk1tL3BVT1lsRzRuTW1xMlh0Sis2?=
+ =?utf-8?B?TkhSbExVdmRyVm8rZlJiSWtYMEY3UFNwdURITnlOK3ZBOXVKSWhTeFJ3TUpW?=
+ =?utf-8?B?WDZaVktUbE9tbm1BV2Y3SXNLRHdHYzRZdEI1aUZLdStSeTM2RzkvWkEwVlY2?=
+ =?utf-8?B?bnJPL2F4TFdDT2N4OG5SanVtMUd4RXJROWt0UExvb0tsT0tLeE10TFlrMnlO?=
+ =?utf-8?B?aVdPSlpqSFJzVlBkMFV4TzVJUnJ0aXpwV1E0UkJOVVErMFBCa25MZ2VsWFVW?=
+ =?utf-8?B?d01LMXo1eXdSUTUyMEhRTWVMays4bGRHcWFJOTVLd1hqKzNuODRvL2hUdTdK?=
+ =?utf-8?Q?mhR+RLrZ8/zjWyoMRgrbjoJ4/bA0kRwMlm1nBYO?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c5cc2fd-e244-4bcc-fd39-08d95327ed8b
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 07:02:00.4869
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1411abd-046d-4f4e-1512-08d953268ca7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1632
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ja/q2l7TUp4+GtMOQ3gn7BAfcQi6BcK5uTG32NqT7hbQLyKQNNPrLrEj7pBFM8iA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB3930
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/28/21 4:59 PM, Dipen Patel wrote:
-> Thanks Kent for the review comment. My responses inline.
->
-> On 7/1/21 7:21 AM, Kent Gibson wrote:
->> On Fri, Jun 25, 2021 at 04:55:24PM -0700, Dipen Patel wrote:
->>> Tegra194 device has multiple HTE instances also known as GTE
->>> (Generic hardware Timestamping Engine) which can timestamp subset of
->>> SoC lines/signals. This provider driver focuses on IRQ and GPIO lines
->>> and exposes timestamping ability on those lines to the consumers
->>> through HTE subsystem.
->>>
->>> Also, with this patch, added:
->>> - documentation about this provider and its capabilities at
->>> Documentation/hte.
->>> - Compilation support in Makefile and Kconfig
->>>
->>> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
->>> ---
->>>  Documentation/hte/index.rst        |  21 ++
->>>  Documentation/hte/tegra194-hte.rst |  65 ++++
->>>  Documentation/index.rst            |   1 +
->>>  drivers/hte/Kconfig                |  12 +
->>>  drivers/hte/Makefile               |   1 +
->>>  drivers/hte/hte-tegra194.c         | 554 +++++++++++++++++++++++++++++
->>>  6 files changed, 654 insertions(+)
->>>  create mode 100644 Documentation/hte/index.rst
->>>  create mode 100644 Documentation/hte/tegra194-hte.rst
->>>  create mode 100644 drivers/hte/hte-tegra194.c
->>>
->>> diff --git a/Documentation/hte/index.rst b/Documentation/hte/index.rst
->>> new file mode 100644
->>> index 000000000000..f311ebec6b47
->>> --- /dev/null
->>> +++ b/Documentation/hte/index.rst
->>> @@ -0,0 +1,21 @@
->>> +.. SPDX-License-Identifier: GPL-2.0
->>> +
->>> +============================================
->>> +The Linux Hardware Timestamping Engine (HTE)
->>> +============================================
->>> +
->>> +The HTE Subsystem
->>> +=================
->>> +
->>> +.. toctree::
->>> +   :maxdepth: 1
->>> +
->>> +   hte
->>> +
->>> +HTE Tegra Provider
->>> +==================
->>> +
->>> +.. toctree::
->>> +   :maxdepth: 1
->>> +
->>> +   tegra194-hte
->>> \ No newline at end of file
->>> diff --git a/Documentation/hte/tegra194-hte.rst b/Documentation/hte/tegra194-hte.rst
->>> new file mode 100644
->>> index 000000000000..c23eaafcf080
->>> --- /dev/null
->>> +++ b/Documentation/hte/tegra194-hte.rst
->>> @@ -0,0 +1,65 @@
->>> +HTE Kernel provider driver
->>> +==========================
->>> +
->>> +Description
->>> +-----------
->>> +The Nvidia tegra194 chip has many hardware timestamping engine (HTE) instances
->>> +known as generic timestamping engine (GTE). This provider driver implements
->>> +two GTE instances 1) GPIO GTE and 2) IRQ GTE. The both GTEs instances get the
->>> +timestamp from the system counter TSC which has 31.25MHz clock rate, and the
->>> +driver converts clock tick rate to nano seconds before storing it as timestamp
->>> +value.
->>> +
->>> +GPIO GTE
->>> +--------
->>> +
->>> +This GTE instance help timestamps GPIO in real time, for that to happen GPIO
->>> +needs to be configured as input and IRQ needs to ba enabled as well. The only
->>> +always on (AON) gpio controller instance supports timestamping GPIOs in
->>> +realtime and it has 39 GPIO lines. There is also a dependency on AON GPIO
->>> +controller as it requires very specific bits to be set in GPIO config register.
->>> +It in a way creates cyclic dependency between GTE and GPIO controller. The GTE
->>> +GPIO functionality is accessed from the GPIOLIB. It can support both the in
->>> +kernel and userspace consumers. In the later case, requests go through GPIOLIB
->>> +CDEV framework. The below APIs are added in GPIOLIB framework to access HTE
->>> +subsystem and GPIO GTE for in kernel consumers.
->>> +
->>> +.. c:function:: int gpiod_hw_timestamp_control( struct gpio_desc *desc, bool enable )
->>> +
->>> +	To enable HTE on given GPIO line.
->>> +
->>> +.. c:function:: u64 gpiod_get_hw_timestamp( struct gpio_desc *desc, bool block )
->>> +
->>> +	To retrieve hardwre timestamp in nano seconds.
->>> +
->>> +.. c:function:: bool gpiod_is_hw_timestamp_enabled( const struct gpio_desc *desc )
->>> +
->>> +	To query if HTE is enabled on the given GPIO.
->>> +
->>> +There is hte-tegra194-gpio-test.c, located in ``drivers/hte/`` directory, test
->>> +driver which demonstrates above APIs for the Jetson AGX platform. For userspace
->>> +consumers, GPIO_V2_LINE_FLAG_EVENT_CLOCK_HARDWARE flag must be specifed during
->>> +IOCTL calls, refer ``tools/gpio/gpio-event-mon.c``, which returns the timestamp
->>> +in nano second.
->>> +
->> <snip>
+On 2021-07-30 08:49, Peter Rosin wrote:
+> On 2021-07-29 17:56, Liam Beguin wrote:
+>> On Wed Jul 28, 2021 at 3:19 AM EDT, Peter Rosin wrote:
+>>> On 2021-07-28 02:21, Liam Beguin wrote:
+>>>> On Fri Jul 23, 2021 at 5:16 PM EDT, Peter Rosin wrote:
+>>>>> On 2021-07-21 05:06, Liam Beguin wrote:
+>>>>>> From: Liam Beguin <lvb@xiphos.com>
+>>>>>>
+>>>>>> Some ADCs use IIO_VAL_INT_PLUS_{NANO,MICRO} scale types.
+>>>>>> Add support for these to allow using the iio-rescaler with them.
+>>>>>>
+>>>>>> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+>>>>>> ---
+>>>>>>  drivers/iio/afe/iio-rescale.c | 14 ++++++++++++++
+>>>>>>  1 file changed, 14 insertions(+)
+>>>>>>
+>>>>>> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
+>>>>>> index d0669fd8eac5..2b73047365cc 100644
+>>>>>> --- a/drivers/iio/afe/iio-rescale.c
+>>>>>> +++ b/drivers/iio/afe/iio-rescale.c
+>>>>>> @@ -41,6 +41,20 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
+>>>>>>  		do_div(tmp, 1000000000LL);
+>>>>>>  		*val = tmp;
+>>>>>>  		return scale_type;
+>>>>>> +	case IIO_VAL_INT_PLUS_NANO:
+>>>>>> +		tmp = ((s64)*val * 1000000000LL + *val2) * rescale->numerator;
+>>>>>> +		tmp = div_s64(tmp, rescale->denominator);
+>>>>>> +
+>>>>>> +		*val = div_s64(tmp, 1000000000LL);
+>>>>>> +		*val2 = tmp - *val * 1000000000LL;
+>>>>>> +		return scale_type;
+>>>>
+>>>> Hi Peter,
+>>>>
+>>>>>
+>>>>> Hi!
+>>>>>
+>>>>> My objection from v5 still stands. Did you forget or did you simply send
+>>>>> the
+>>>>> wrong patch?
+>>>>
+>>>> Apologies, again I didn't mean to make it seem like I ignored your comments.
+>>>> I tried your suggestion, but had issues when *val2 would overflow into
+>>>> the integer part.
 >>
->>> +
->>> +static void tegra_hte_read_fifo(struct tegra_hte_soc *gs)
->>> +{
->>> +	u32 tsh, tsl, src, pv, cv, acv, slice, bit_index, line_id;
->>> +	u64 tsc;
->>> +	int dir;
->>> +	struct hte_ts_data el;
->>> +
->>> +	while ((tegra_hte_readl(gs, HTE_TESTATUS) >>
->>> +		HTE_TESTATUS_OCCUPANCY_SHIFT) &
->>> +		HTE_TESTATUS_OCCUPANCY_MASK) {
->>> +		tsh = tegra_hte_readl(gs, HTE_TETSCH);
->>> +		tsl = tegra_hte_readl(gs, HTE_TETSCL);
->>> +		tsc = (((u64)tsh << 32) | tsl);
->>> +
->>> +		src = tegra_hte_readl(gs, HTE_TESRC);
->>> +		slice = (src >> HTE_TESRC_SLICE_SHIFT) &
->>> +			    HTE_TESRC_SLICE_DEFAULT_MASK;
->>> +
->>> +		pv = tegra_hte_readl(gs, HTE_TEPCV);
->>> +		cv = tegra_hte_readl(gs, HTE_TECCV);
->>> +		acv = pv ^ cv;
->>> +		while (acv) {
->>> +			bit_index = __builtin_ctz(acv);
->>> +			if ((pv >> bit_index) & BIT(0))
->>> +				dir = HTE_EVENT_RISING_EDGE;
->>> +			else
->>> +				dir = HTE_EVENT_FALLING_EDGE;
->>> +
->>> +			line_id = bit_index + (slice << 5);
->>> +			el.dir = dir;
->>> +			el.tsc = tsc << HTE_TS_NS_SHIFT;
->>> +			hte_push_ts_ns_atomic(gs->chip, line_id, &el,
->>> +					      sizeof(el));
->>> +			acv &= ~BIT(bit_index);
->>> +		}
->>> +		tegra_hte_writel(gs, HTE_TECMD, HTE_TECMD_CMD_POP);
->>> +	}
->>> +}
->> What happens when the hte_push_ts_ns_atomic() fails?
->> The timestamp will be quietly dropped?
->> What happens when the interrupt corresponding to that dropped timestamp
->> asks for it?  The irq handler thread will block until it can get a
->> timestamp from the subsequent interrupt?
-> Two things happen, 1) at the push, HTE core increments seq counter
->
-> 2) If the consumer has provided callback, it will either call that callback
->
-> with HTE_TS_DROPPED or HTE_TS_AVAIL. The seq counter gives indirect
->
-> view of dropped ts. However, I see the problem with the consumers not
->
-> providing callback, in that case, push_ts* API just wakes up process without
->
-> indicating why (assuming notify variable is true or else there is a chance for
->
-> the thread to block forever). One easy approach I can think of for now is to
->
-> make callback mandatory (which is optional right now), I will have to rethink
->
-> that scenario and will push corrected version next RFC version.
->
-> Thanks for pointing out.
->
->> Which brings me back to the concern I have with the approach used in
->> the hte/gpiolib integration - how do you guarantee that the timestamp
->> returned by gpiod_get_hw_timestamp() corresponds to the irq interrupt
->> being handled, particularly in the face of errors such as:
->>  - overflows of the timestamp FIFO in the chip
-> I currently do not have any indication mechanism as the providers
->
-> I am dealing with right now does not have overflow hardware detection
->
-> support. If the chip supports, it should be easy to integrate that feature.
->
-> I will provide some hook function or change in push_* API to accommodate
->
-> this in next version of RFC.
->
->>  - overflows of software FIFOs as here
-> HTE core records sequence counter as well it callsback the consumer with
->
-> HTE_TS_DROPPED.
->
->>  - lost interupts (if the hw generates interrupts faster than the CPU
->>    can service them)
-> For this, I have no idea unless hardware supports some sort of mechanism
->
-> to catch that. For the current providers, as soon as it detects changes on lines
->
-> it captures TS in its hw fifo. Its interrupt gets generated based on threshold
->
-> set in that hw fifo. This interrupt is different than the lines of actual device
->
-> that is why I said I have no idea how we can tackle that. Let me know if there
->
-> is any idea or reference of the codes which does tackle this.
->
->
-> Regarding HTE/GPIOLIB integration comment:
->
-> You are right, currently, I have only tsc field returned from struct hte_ts_data
->
-> to gpiolib. If I can extend that to return hte_ts_data structure which has seq
->
-> counter, which I believe can be used to track the overflow situation. The
-
-The reason I only return timestamp and not other details like its seq
-
-counter, is because to comply with line_event_timestamp since it returns
-
-only u64. Not sure which is the best way to extend and bring out its seq.
-
->
-> dropped scenario can be easily tracked if gpiolib can be notified with above
->
-> mentioned DROP event through callback. If that is the case, is it ok to have
->
-> some sort of callback per gpio in gpiolib?
->
->
-> Any idea how I can integrate callback notification with gpiolib if you do not agree on
->
-> above callback suggestion?
->
->> ?
+>> Hi Peter,
 >>
->> Cheers,
->> Kent.
+>>>
+>>> Not saying anything about it not working does indeed make it seem like
+>>> you
+>>> ignored it :-) Or did I just miss where you said this? Anyway, no
+>>> problem,
+>>> it can be a mess dealing with a string of commits when there are
+>>> numerous
+>>> things to take care of between each iteration. And it's very easy to
+>>> burn
+>>> out and just back away. Please don't do that!
 >>
+>> It was my mistake. Thanks for the encouragement :-)
+>>
+>>>
+>>>> Even though what I has was more prone to integer overflow with the first
+>>>> multiplication, I thought it was still a valid solution as it passed the
+>>>> tests.
+>>>
+>>> I did state that you'd need to add overflow handling from the fraction
+>>> calculation and handling for negative values, so it was no surprise that
+>>> my original sketchy suggestion didn't work as-is.
+>>>
+>>>>
+>>>>>
+>>>>> Untested suggestion, this time handling negative values and
+>>>>> canonicalizing any
+>>>>> overflow from the fraction calculation.
+>>>>>
+>>>>> neg = *val < 0 || *val2 < 0;
+>>>>> tmp = (s64)abs(*val) * rescale->numerator;
+>>>>> rem = do_div(tmp, rescale->denominator);
+>>>>> *val = tmp;
+>>>>> tmp = rem * 1000000000LL + (s64)abs(*val2) * rescale->numerator;
+>>>>> do_div(tmp, rescale->denominator);
+>>>>> *val2 = do_div(tmp, 1000000000LL);
+>>>>> *val += tmp;
+>>>>> if (neg) {
+>>>>> if (*val < 0)
+>>>>> *val = -*val;
+>>>>> else
+>>>>> *val2 = -*val;
+>>>
+>>> This last line should of course be *val2 = -*val2;
+>>> Sorry.
+>>>
+>>>>
+>>>> I'll look into this suggestion.
+>>>
+>>> Thanks!
+>>>
+>>
+>> Starting from what you suggested, here's what I came up with.
+>> I also added a few test cases to cover corner cases.
+>>
+>> 	if (scale_type == IIO_VAL_INT_PLUS_NANO)
+>> 		mult = 1000000000LL;
+>> 	else
+>> 		mult = 1000000LL;
+>> 	/*
+>> 	 * For IIO_VAL_INT_PLUS_{MICRO,NANO} scale types if *val OR
+>> 	 * *val2 is negative the schan scale is negative
+>> 	 */
+>> 	neg = *val < 0 || *val2 < 0;
+>>
+>> 	tmp = (s64)abs(*val) * (s32)abs(rescale->numerator);
+> 
+> Small nit, but I think abs() returns a signed type compatible
+> with the argument type. I.e. (s32)abs(rescale->...) where both
+> numerator and denominator are already s32 could just as well
+> be written without the cast as plain old abs(rescale->...)
+> 
+> 
+>> 	*val = div_s64_rem(tmp, (s32)abs(rescale->denominator), &rem);
+>>
+>> 	tmp = (s64)rem * mult +
+>> 		(s64)abs(*val2) * (s32)abs(rescale->numerator);
+>> 	tmp = div_s64(tmp, (s32)abs(rescale->denominator));
+>>
+>> 	*val += div_s64_rem(tmp, mult, val2);
+>>
+>> 	/*
+>> 	 * If the schan scale or only one of the rescaler elements is
+>> 	 * negative, the combined scale is negative.
+>> 	 */
+>> 	if (neg || ((rescale->numerator < 0) ^ (rescale->denominator < 0)))
+
+Hang on, that's not right. If the value and only one of the rescaler
+elements is negative, the result is positive. || is not the correct
+logical operation.
+
+>> 		*val = -*val;
+> 
+> Unconditionally negating *val doesn't negate the combined value when
+> *val is zero and *val2 isn't. My test "if (*val < 0)" above attempting
+> to take care of this case is clearly not right. It should of course be
+> "if (*val > 0)" since *val is not yet negated. Duh!
+> 
+> In fact, I think a few tests scaling to/from the [-1,1] interval
+> would be benefitial for this exact reason.
+
+So, with both these issues taken care of:
+
+ 	if (neg ^ ((rescale->numerator < 0) ^ (rescale->denominator < 0))) {
+		if (*val > 0)
+			*val = -*val;
+		else
+			*val2 = -*val2;
+	}
+
+(bitwise ^ is safe since all operands come from logical operations, i.e.
+they are either zero or one and nothing else)
+
+Cheers,
+Peter
+
