@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51A33DB027
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF57C3DB035
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235366AbhG3ALC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 20:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60190 "EHLO
+        id S235411AbhG3ATX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 20:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235124AbhG3ALA (ORCPT
+        with ESMTP id S235353AbhG3ATV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 20:11:00 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E3DC061765;
-        Thu, 29 Jul 2021 17:10:56 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so18177589pjb.3;
-        Thu, 29 Jul 2021 17:10:56 -0700 (PDT)
+        Thu, 29 Jul 2021 20:19:21 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB442C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 17:19:16 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id b21so9795134ljo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 17:19:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KvNrFVgss6eSO6kUoQ3VU0X35CeoRY7KVDc86f4fQm4=;
-        b=kOZQR14Uy3g//5gbl3xlpGsDHTkZtnRt2eygeLvJGcHjKB5XzT7Ldokpq0NHg1qAFQ
-         xrUuJh8cOjV96IFiAb3OEqVzDWXY9A9Iz4H+WomwEZv8pWvjbfnAGH/WBA0megaHfwAb
-         FrZmi2FAWLjncp47tvP1GZz6eGYY3U0P/lCKl8QgOFdgFjhPely2k0UWryrc85QzoocQ
-         nxpsUlu9rex7WQydEd8E2OP286Wjz5qgZt5sbHFjX6+q3MgLSpSZBwlrr445ZibTmdHB
-         qMvuvtM3WGGw1NEYtucOdcPeFgMgOFEVG362GtLpgC47HKmy1NEok10Kr4JNtYkChDnx
-         FZaw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sdWfDCJ/BnpSi88/sBE0t81V5bfAq7zpAMM0ZeL7bXw=;
+        b=BALfDfaIU52dOkdhgi3958ygiyewSiZd/p8RdUrdIdjC7JUVLSCp9mAqns3CxtyQy2
+         5/3UMJlV79lCh6/AmihvIf0trZeBHtj0u1ZY/h/U7moLru0kPv1zQx0Y31kegPyqyAqL
+         ufFEsb5tdT9yxFSQe7zP5D4pZ21JcFyXueEyrL637FX1N2n6E5boqpbioyyaNljfbFxM
+         7T6NbO2kcddZnJwbfeUfO4ooO6V2BSP9Wy/ilwC8qzfVklYMYIkaxzjVJfHQrmkhOdN2
+         4lf0lgsHQUCsgdReykUspUj9qS/jnLx39Fh/71sZM7S/8F9l3xrtYnFYAIYk9oetEiYe
+         vdEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KvNrFVgss6eSO6kUoQ3VU0X35CeoRY7KVDc86f4fQm4=;
-        b=kNjqOfQn9RyZNWaeWDtzz2ncEeCOKi0Wb2wusHK0StHso0yGJmW9HItrvHwbf7vDcn
-         9QK2fTjYTA6lN5ABXonMWmusvnDoPpFgaCoF2NkRsRLQSg17AMFvlQgGNFkeVOc5JRZm
-         caYoTQjhWyj4foz452/QKUP6rZFvyczJCy4BHXhmBUawfYfkFuK5AA+byVLYDaON/UOF
-         l+SCS4O1dgEFZ4/W9zh6RJQPKkzxT1jFTPa+lOixr0+LzMZrzpviTidzxcoKKh3PdusY
-         0jM4uFUlmH5wDVdusDUoYO87lqTuIdNLXOuTm0WvwAsdQfWshVr9a6+P43ZRTEIn3LV9
-         z3Aw==
-X-Gm-Message-State: AOAM532hpkQyqiD1AcmGkZ/d/zQ09jZtPHPWwwpD5mQr8mXv6qkfSP+K
-        bAxBVoG16n2oiUSB27LTD74urXV/wSU=
-X-Google-Smtp-Source: ABdhPJwE/niSh5UdF+w0QQdfBSjFatj+JALFmIVOdTcLe3nO62DxPf2VNDgpH154QI9H1E+xrQvSqA==
-X-Received: by 2002:a65:42c3:: with SMTP id l3mr698563pgp.377.1627603855087;
-        Thu, 29 Jul 2021 17:10:55 -0700 (PDT)
-Received: from [10.67.49.140] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id f15sm5154339pgv.92.2021.07.29.17.10.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 17:10:54 -0700 (PDT)
-Subject: Re: [RFC-PATCH] net: stmmac: Add KR port support.
-To:     Daniel Walker <danielwa@cisco.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Balamurugan Selvarajan <balamsel@cisco.com>,
-        xe-linux-external@cisco.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210729234443.1713722-1-danielwa@cisco.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <81fca68f-e0c4-ce02-6b2b-e5c22a0c3152@gmail.com>
-Date:   Thu, 29 Jul 2021 17:10:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sdWfDCJ/BnpSi88/sBE0t81V5bfAq7zpAMM0ZeL7bXw=;
+        b=ZbqBneG4TQ3/QSRzvcZ5nzDyRGDGKT7G00n+NsDCHGKuIrbT2YKVI5QZQB4ngG1ZGZ
+         A5IhkHAwhoj38FYhUqGmwanKrNri9g7N8G3n1nJFFQPs5hoBF1KpoM4RWkmtv0goM35K
+         AyPltGth5RPUfmyi+pbtHlDraz02P5eQViAUxjZryLyTQXk1DZ/lHV7le3zMmZ3nkEdS
+         NPefDgVFhodTG1e5O6kzjZBHuRS9v0bdNaPWdaWUDHedXa/HDcmEADHmxCTmhjDdnj8r
+         MTxOp/mzcZV8SGElpjkQxQ/4xws6eqUj6PH5I3vqV8DfBfPqPMxwVGFiqqO11R1NvgO2
+         kImA==
+X-Gm-Message-State: AOAM53283SV2NerREBdmoKbDAlgoRcJxB+tVy83ss/iCxEkKcaN/02pw
+        JJ4EEhySOxqVNSoEd5R76RFP0lJ53HOYZmaJ4JVYgQ==
+X-Google-Smtp-Source: ABdhPJwWmH5ArkOIqPVwVZuQtBaUrWYJbCFYb7NadmZtZmLpwGWzD5SzE0Mjkl/u0ZFGg6RB4CGp6ZdoGY6dQ1gaIvU=
+X-Received: by 2002:a05:651c:329:: with SMTP id b9mr4549340ljp.116.1627604354847;
+ Thu, 29 Jul 2021 17:19:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210729234443.1713722-1-danielwa@cisco.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210729165039.23896-1-ndesaulniers@google.com>
+ <20210729165039.23896-3-ndesaulniers@google.com> <44117d0c-51b7-1f68-f752-ba53de503b14@kernel.org>
+In-Reply-To: <44117d0c-51b7-1f68-f752-ba53de503b14@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 29 Jul 2021 17:19:03 -0700
+Message-ID: <CAKwvOdm0xs4ikb0K0_b8Az0T=Kxu_-6AHjWHOhjsKZb3hTrH2A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ CC=clang LLVM_IAS=1
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/21 4:44 PM, Daniel Walker wrote:
-> From: Balamurugan Selvarajan <balamsel@cisco.com>
-> 
-> For KR port the mii interface is a chip-to-chip
-> interface without a mechanical connector. So PHY
-> inits are not applicable. In this case MAC is
-> configured to operate at forced speed(1000Mbps)
-> and full duplex. Modified driver to accommodate
-> PHY and NON-PHY mode.
-> 
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Balamurugan Selvarajan <balamsel@cisco.com>
-> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+On Thu, Jul 29, 2021 at 2:00 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> While I understand that the LLVM=1 LLVM_IAS=1 case works perfectly fine
+> with this series, I am of the belief that making it work for CC=clang
+> LLVM_IAS=1 is a mistake because there is no way for that configuration
+> to work for cross compiling without CROSS_COMPILE.
 
-You are not adding KR support per-se, you are just hacking the driver so
-it is happy with an unspecified phy_interface_t value and assuming
-1000Mbits/sec, this is not going to work.
+So with v3 of this change, rather than:
 
-Just add KR/backplane properly or use a fixed-link property hardcoded
-for 1000Mbits/sec and be done with it with no hacking, which would be
-just way better than what is proposed here.
+$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang -j72
+
+If you wanted to omit CROSS_COMPILE, you'd need:
+
+$ ARCH=arm64 make CC=clang LLVM_IAS=1 LD=ld.lld OBJCOPY=llvm-objcopy
+STRIP=llvm-strip
+
+or
+
+$ ARCH=arm64 make CC=clang LLVM_IAS=1 LD=aarch64-linux-gnu-ld
+OBJCOPY=aarch64-linux-gnu-objcopy STRIP=aarch64-linux-gnu-strip
+
+That's straight up worse IMO and defeats the purpose of "shortening
+the command line," which should be the goal.  Not "making CC=clang
+maximally flexible."  We don't want folks generally using CC=clang;
+preferably they'd use LLVM=1.  I need to rewrite our docs to make that
+more explicit and straightforward.  And if folks would prefer to use
+CC=clang for whatever reason, let them explicitly state CROSS_COMPILE
+then.
+
+So I agree with Nathan, and hope Masahiro will reconsider that perhaps
+the v2 variant that required LLVM=1 maybe makes more sense.
+
+Either way, I need to fix the comment in the new script, commit
+message, and docs, so v4 is necessary.
+
+I'm tempted to add a rewrite of our docs to say "just use LLVM=1"
+front and center, then get into finer grain details below, moving this
+second patch to be the third in a series.  Let's see what Masahiro's
+thoughts are though first. (I do appreciate them, even when I
+disagree).
 -- 
-Florian
+Thanks,
+~Nick Desaulniers
