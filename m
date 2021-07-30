@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AA03DB81F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F093DB821
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 13:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238633AbhG3L6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 07:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
+        id S238677AbhG3L7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 07:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238275AbhG3L6g (ORCPT
+        with ESMTP id S238617AbhG3L7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 07:58:36 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D06AC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 04:58:32 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id y34so17399538lfa.8
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 04:58:32 -0700 (PDT)
+        Fri, 30 Jul 2021 07:59:40 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31710C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 04:59:35 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id m9so11985332ljp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 04:59:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TUMiykQNfMbAmHAwrv+rEI/bGM+ClnUap5p0JH7cDWk=;
-        b=nOEuMX16PEbcv7Ku8Wq0OOJf4JaQLloyxnXX69y4ciEH+9JpQLa5sHl8FFzp6P+HZN
-         A3TPw0IuNgRaZBkIBzQUZSVSAUhQtNi/3TR98vof2uhGG45DmUck1crDb0YJ1jPjO1rQ
-         BAdKrrooSGJhQRwqoWTg6r/dM6D2V43cVZdH5WQAMTVgj6gyp9iAj8RMflYWtJ+InJfx
-         oeOarek4Cip/AJVkDOOfFxfUteS6BH1V17sl7k/G1qR6RgusjFS7P2A7538buW5i0twT
-         3lyBoozMlsRPrBYb9rBoPox7Or6Yi5dwoxKO1x/2PnOH3xYFitQBJ9fbvcJ0/5+MMvXg
-         JJYQ==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yz5kF6DMmS/F2Ek3OiwjPMR6AkCQ12zzDtN+t3btcmY=;
+        b=nNzA7G+QrYsKDtYPp4WacLy0pohEOxM30ACTb4XbKW3I2FXUAj+/KdwmBEpqXmjgtX
+         us0taLYD9bRwfc04SPEVa1FZmAHS3nK2tTlIEbcskWXKB2fNDETxxI17Fkh1bNiCy5NJ
+         N5Nu2jjxXzXUc3B5JYuBvCwwA+bYaTcWp2fMtGzfVS93tTPtUilFf7GQG9EtvyImsUVE
+         toTUBQeriz6HYnC7LtywE4XQcFkK92FXgIki5Lf1Gw1WqYGinguxOF/Ws1W+fFs2+46s
+         ptfWooud7RXcYVe5oly8+zK2FlpbjY5Ghj+YUncF4XboU4DOGB4wPhlh/3o/M/xtavhQ
+         TxKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TUMiykQNfMbAmHAwrv+rEI/bGM+ClnUap5p0JH7cDWk=;
-        b=ECIESUM47xS+XW0Fcg61M2JNIC44VB7zmIdw506a12ZpJ2JKo29IMbuaJfKbm6m2MS
-         h4nQLe/HjLMYjL3b4KNGkx+6Nl30I24QPAZiY0wu4d3BaojuAiSm97Sub3UFLpQPQq+L
-         2HW86JbcHVAVltRNyYAF2vs9k2BqlFBA3j+fRi8gdDO7Y7Df13oC62/D3/Sf24MbPoTQ
-         UTis4e9rZha6z8/PpFYuSx0qT8I68cUopHAjlRBpq5YyQkzb2TQdv0BYxqj/yp1Q6JEL
-         263+v/MiEsd8JRsU4DZ5NZh9YhaY1+0uVHMIxNmZ2cUAHJgb41irQh8eaLKtZ8AyHigo
-         LCUw==
-X-Gm-Message-State: AOAM533hIJYskqTd/D/tVQHwn3HM/kbrJU2cQXTIuRo4V4Z/l322pXGn
-        H80Rwy93mqvWWUPxhK8oNNJdoM93Li+b1tABdbXohw==
-X-Google-Smtp-Source: ABdhPJwEx3oEbRgthFsX8r5lKXXApepAFs4jKYkBuxT5GrK36PWVmz/RO1TegRk5uc5YVBYD9kcProL40+fEW37UOkI=
-X-Received: by 2002:ac2:4c4c:: with SMTP id o12mr1587755lfk.157.1627646310474;
- Fri, 30 Jul 2021 04:58:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yz5kF6DMmS/F2Ek3OiwjPMR6AkCQ12zzDtN+t3btcmY=;
+        b=G1bIlZC+uhN2AOcvi/kH7z917TkMfYPJcdrCEqojHNQIr5/vTfvtm3L36sdakxLtsq
+         LdUYyfW98v+bQAikn89x7ETSY+mHLxdp1yqB+5LZKGZc9wusiTeAe/cbXU7zWTBI42Nc
+         a2ZZF/ABEiE4+TkraszfEjlCBILwAK/VEZu6wYx3UToS42ar8HsXYSshMrfjGecmECjn
+         LU3+sY1ave19ExnSzB9l9o8FV6OI+n2YwQ3Sjo9wSJlr2mZfR8WKqgh9HEqRMiw8iDC5
+         v2MeZi7CBUwU3I73UnJ/EorOKQvFk58iqhyVZwk+HZAaGbmMN4oEFU61zCxvUaFIpmbk
+         14rQ==
+X-Gm-Message-State: AOAM5314ap+RjfRNWNwbelLKPoK6r5q4cu1/xKWre3Qdu0rOScU1Mr3z
+        0PB9Woc8G+xDx+5FTZ+RSyv4LA==
+X-Google-Smtp-Source: ABdhPJxdLp3s/e9v5mAJRhkjnsGH+Ro2Aomhtvu0FFU8OH3ojilQ7WiMkXMAIcyREE+yS4IO3qKGOg==
+X-Received: by 2002:a2e:a817:: with SMTP id l23mr1441919ljq.86.1627646373566;
+        Fri, 30 Jul 2021 04:59:33 -0700 (PDT)
+Received: from lmajczak1-l.roam.corp.google.com ([83.142.187.84])
+        by smtp.gmail.com with ESMTPSA id p16sm134034lfr.122.2021.07.30.04.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 04:59:32 -0700 (PDT)
+From:   Lukasz Majczak <lma@semihalf.com>
+To:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     upstream@semihalf.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Lukasz Majczak <lma@semihalf.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v1] ASoC: Intel: kbl_da7219_max98357a: fix drv_name
+Date:   Fri, 30 Jul 2021 13:59:06 +0200
+Message-Id: <20210730115906.144300-1-lma@semihalf.com>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 MIME-Version: 1.0
-References: <20210716162724.26047-1-lakshmi.sowjanya.d@intel.com>
- <20210716162724.26047-2-lakshmi.sowjanya.d@intel.com> <CACRpkdZdK38iwwCQKqUQ1Xbd-5kf8NFjAxT8pvq+e7jT+wiThA@mail.gmail.com>
- <YQPis1mVrVNwplKY@smile.fi.intel.com>
-In-Reply-To: <YQPis1mVrVNwplKY@smile.fi.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 30 Jul 2021 13:58:19 +0200
-Message-ID: <CACRpkdb+N_FFqZpk9fsECM5q+T9UPzZoCpKzDX5T5f5F_QuWtQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: Add bindings for Intel
- Keembay pinctrl driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Saha, Tamal" <tamal.saha@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 1:30 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> On Fri, Jul 30, 2021 at 11:05:43AM +0200, Linus Walleij wrote:
-> > Since this is one of those "Intel but Arm" things I don't know how
-> > Andy feels about picking up the patch to his Intel pinctrl tree
-> > (I think we discussed it in the past) so I need to know how to handle
-> > this. It'd be great if Andy queues "all Intel stuff" but I don't want
-> > to force unfamiliar stuff on him either.
-> >
-> > Andy? Do you pick this (when finished) or should I?
->
-> I think it's for you. Mika and I are about Intel pin controllers on x86.
+platform_id for kbl_da7219_max98357a was shrunk for kbl_da7219_mx98357a,
+but the drv_name was changed for kbl_da7219_max98373. Tested on a
+Pixelbook (Atlas).
 
-OK I'll deal with it, I do have some experience with some
-other funny Intel-Arm silicon like XScale IXP4xx etc.
+Fixes: 94efd726b947 ("ASoC: Intel: kbl_da7219_max98357a: shrink platform_id below 20 characters")
+Cc: <stable@vger.kernel.org> # 5.4+
+Reported-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Tested-by: Lukasz Majczak <lma@semihalf.com>
+Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+---
+ sound/soc/intel/common/soc-acpi-intel-kbl-match.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+index ba5ff468c265..8cab91a00b1a 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+@@ -87,7 +87,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 	},
+ 	{
+ 		.id = "DLGS7219",
+-		.drv_name = "kbl_da7219_max98357a",
++		.drv_name = "kbl_da7219_mx98357a",
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_7219_98357_codecs,
+@@ -113,7 +113,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 	},
+ 	{
+ 		.id = "DLGS7219",
+-		.drv_name = "kbl_da7219_mx98373",
++		.drv_name = "kbl_da7219_max98373",
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_7219_98373_codecs,
+-- 
+2.32.0.554.ge1b32706d8-goog
+
