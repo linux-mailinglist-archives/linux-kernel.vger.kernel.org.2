@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2073DB6EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EC73DB6ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 12:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238507AbhG3KKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 06:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59860 "EHLO
+        id S238515AbhG3KK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 06:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238400AbhG3KKC (ORCPT
+        with ESMTP id S238400AbhG3KKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 06:10:02 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F1CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:09:56 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id l17so11640874ljn.2
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:09:56 -0700 (PDT)
+        Fri, 30 Jul 2021 06:10:25 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2D3C061765
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:10:19 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id l17so11642188ljn.2
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 03:10:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WZt2R133aCx7XeK6whLxqaGJp1CckD0/+/JHAVnXBII=;
-        b=qXXjWCTvb7bQswrtZtIPf67p5nwps+22Uk47mCX0d5Jje6qrncObzeMkX5+n2mbKkd
-         UdL4cdVrFa0m4DSDbjTjeBTVJChl0GbQmB3ho95UZFvhF5yt2y6DM9o9qn0TAsNQBzPg
-         xm0mbJwIJlCtUKpzjqCDoG5xFNRiE7pAng9biymgmIj5rWzkCqwrI5C8gs6Wt7WlmNIu
-         APE1Rdm3HxkZngH1pqovpSywdHFK1rYyd4mgL9XDxk/4tCJMeZhIIlha4C2Q+0Mgs/1V
-         f7dtsX91a1OTkIFyIxEeCVs1HY+7bdbyluWeya+Qra7hAmClRJcx5o92LIpGwJIVRPM9
-         PS7w==
+        bh=sFJWAT6+yMXBU3J+rhlr9bsyK6eGtQ9oxA2zJ2Hz9Us=;
+        b=yacaUotO0pAuhrSnK8U7CsNGg8eT108HSb6UUXyeFRlA1hD2cL8Yx3LsJbhn2jKnRR
+         40m2ECOdR3mX/RLMjn+N0vksVfdKYEA9m6mweSt8CKk8pH9osHcguKrx+Qk5Si7EuG57
+         Rv7tYKEExZwBeyCg5DFFStN21IKrCm8ZR5wVu/8MFn8vXS6gCbg3Ud27IA3j+0nIQC3m
+         +RmSdrpycP6z4aVNJSx8K59CP73QrsR3V5CeXRNE+f0cthnm8wFGMdCt+fvFzHmspBJK
+         zd0vV5lSY277z3IxnvAolc4xBIoSLL2G2lWzW+g+j4On5txYMFNI1IuXRYlZEHFqJwcr
+         owBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WZt2R133aCx7XeK6whLxqaGJp1CckD0/+/JHAVnXBII=;
-        b=Kb9Us/H4HqQsh5VSHYA3a71bpm0+5/zSUp+LkSsgGgZDBEPVWoy2SYtYb6051DfXm5
-         7WCCPZwD+MHtLu+nFjnLdIfXmpiW/SY+Wsyr5vMmOWtLu+dff3kd2HJQeIhSxlQkissz
-         nXR0WZPVyvRX0fsDZRzpvMoIPqzRAbzEaqjNcpAxK2mp1q83EQMZ6nLn5LbsxXuaJiV2
-         Kn+UNaZ0+0R7Qd+dls5qW3mh+wHC+cRMxRE7onxygbGUSsiwYubBhXXhFMLYV6bh3b1h
-         2/EKD8kYlZZU5FM44CgqQEDIXTmfGChuuy2WEvKW/xI9g9JvOeJrNJy6+jgDyWxpO1ms
-         vaEg==
-X-Gm-Message-State: AOAM531yB55qAArVHByzhvxG4A6SmE+P8saVVnfrCBGA9d3r90smZ/vi
-        8TX+AClv55txIVMAR32koJ2nmIWmpWCxJGjamin9nw==
-X-Google-Smtp-Source: ABdhPJwxkks+ITUepWrL1L3hw7VwcJL4sVJlR7cMf5SD/e9d6hShbDT1dkUClPs1CHg5QtZfiCHJvce2hoLfjU3iPUs=
-X-Received: by 2002:a2e:950:: with SMTP id 77mr1164198ljj.438.1627639794915;
- Fri, 30 Jul 2021 03:09:54 -0700 (PDT)
+        bh=sFJWAT6+yMXBU3J+rhlr9bsyK6eGtQ9oxA2zJ2Hz9Us=;
+        b=ESGQ/hUC3Rg6kgwUbpz43FDUX8BgXsJ6M9f1k2RMBVxLgpy4yTmM+6N+R39N2wf5NV
+         FrysDj/b39/b+5no4UxQ/0NvVDyzXlSX9OmNGUYYs/BjUvTD3ngsQPZtWcuCtkeLujrF
+         vnfzcwahRuF4f5w1pJSm/IDLrbmCQa3gWLip7/s2Tthfk6lwhAWZXWYFmtEhEYrZ/PVP
+         c89o5RQJmEFOxCmFDkKWBFTAO80VlbwDEYLT/7JY3ZIP7q/D5r5Hi0Wtoaaij/KoMMEv
+         dEViWR71xv+4qeg5yB7AR10zGr5A7ghsljD/GJbQ4j1Ue2dg5ttfiKGysqVTFpgVeWMa
+         ju/A==
+X-Gm-Message-State: AOAM533XGlu+g8XEfBMgKJUQEtjlJe505udfD69v9KpHUwGnxc848to3
+        7ZwJpkda0bNSj678rNHcHVQGmivcEuVnNvoqR49jjw==
+X-Google-Smtp-Source: ABdhPJwuivHtX33drvirx0EUGhFWd7FU9b9FPwibFhbzPtrz6ATn/2Lusr18tOPv36nla21F5HPy85DL4diBaQ2TMPo=
+X-Received: by 2002:a2e:7c04:: with SMTP id x4mr1152070ljc.273.1627639818222;
+ Fri, 30 Jul 2021 03:10:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210717045627.1739959-1-daniel@0x0f.com> <20210717045627.1739959-3-daniel@0x0f.com>
-In-Reply-To: <20210717045627.1739959-3-daniel@0x0f.com>
+References: <20210717045627.1739959-1-daniel@0x0f.com> <20210717045627.1739959-4-daniel@0x0f.com>
+In-Reply-To: <20210717045627.1739959-4-daniel@0x0f.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 30 Jul 2021 12:09:44 +0200
-Message-ID: <CACRpkdYtnvwwStSpyhy=ZakkLviMJbLoW8QQNPhJRJaN=gF+Dw@mail.gmail.com>
-Subject: Re: [PATCH 02/10] dt-bindings: gpio: msc313: Add offsets for ssd20xd
+Date:   Fri, 30 Jul 2021 12:10:07 +0200
+Message-ID: <CACRpkdbiQpNCK0fXE3A=05UqYP_LSuJJM38antzpWkf29j+upA@mail.gmail.com>
+Subject: Re: [PATCH 03/10] gpio: msc313: Code clean ups
 To:     Daniel Palmer <daniel@0x0f.com>
 Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
@@ -66,7 +66,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sat, Jul 17, 2021 at 6:56 AM Daniel Palmer <daniel@0x0f.com> wrote:
 
-> Add the gpio offsets for the SSD201 and SSD202D chips.
+> - Remove the unneeded assignment of ret before returning it.
+> - Remove an unneeded blank line
 >
 > Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 
