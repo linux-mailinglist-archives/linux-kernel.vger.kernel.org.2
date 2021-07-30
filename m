@@ -2,111 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F124C3DB602
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857623DB603
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 11:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238326AbhG3Jdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 05:33:33 -0400
-Received: from out28-51.mail.aliyun.com ([115.124.28.51]:60641 "EHLO
-        out28-51.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238156AbhG3Jdc (ORCPT
+        id S238342AbhG3Jd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 05:33:57 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3538 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238156AbhG3Jd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:33:32 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07529395|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.126289-0.000848962-0.872862;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.Kt0Ea8-_1627637603;
-Received: from 192.168.88.131(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Kt0Ea8-_1627637603)
-          by smtp.aliyun-inc.com(10.147.41.120);
-          Fri, 30 Jul 2021 17:33:25 +0800
-Subject: Re: [PATCH 1/2] dt-bindings: dwc2: Add bindings for new Ingenic SoCs.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        hminas@synopsys.com, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-References: <1627116521-124612-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1627116521-124612-2-git-send-email-zhouyanjie@wanyeetech.com>
- <CLWQWQ.DBCX3I00Y95T2@crapouillou.net>
- <ad64396d-d7ab-b8dd-4086-f565e91edb00@wanyeetech.com>
- <TKQSWQ.K11YHBO0B4FM2@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <0bffb545-212c-2711-43ac-39efc1074c8b@wanyeetech.com>
-Date:   Fri, 30 Jul 2021 17:33:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Fri, 30 Jul 2021 05:33:56 -0400
+Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gbhf73wM6z6JBCT;
+        Fri, 30 Jul 2021 17:18:39 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Jul 2021 11:33:51 +0200
+Received: from [10.47.25.95] (10.47.25.95) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 30 Jul
+ 2021 10:33:50 +0100
+Subject: Re: [PATCH v2 20/24] iommu: Merge strictness and domain type configs
+To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <will@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <suravee.suthikulpanit@amd.com>,
+        <baolu.lu@linux.intel.com>, <dianders@chromium.org>
+References: <cover.1627468308.git.robin.murphy@arm.com>
+ <992b2952f0b173411c7b6f221dce82e8e082c0b8.1627468310.git.robin.murphy@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <a30a4d50-e798-c2d1-73a3-5b53fef2f75f@huawei.com>
+Date:   Fri, 30 Jul 2021 10:33:31 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <TKQSWQ.K11YHBO0B4FM2@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <992b2952f0b173411c7b6f221dce82e8e082c0b8.1627468310.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.25.95]
+X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On 28/07/2021 16:58, Robin Murphy wrote:
+>   
+> -config IOMMU_DEFAULT_LAZY
+> -	bool "lazy"
+> +	  Untrusted devices always use this mode, with an additional layer of
+> +	  bounce-buffering such that they cannot gain access to any unrelated
+> +	  data within a mapped page.
+> +
+> +config IOMMU_DEFAULT_DMA_LAZY
+> +	bool "Translated - Lazy"
+>   	help
 
-On 2021/7/25 下午6:31, Paul Cercueil wrote:
-> Hi Zhou,
->
-> Le sam., juil. 24 2021 at 20:52:30 +0800, Zhou Yanjie 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> Hi Paul,
->>
->> On 2021/7/24 下午6:46, Paul Cercueil wrote:
->>> Hi Zhou,
->>>
->>> Le sam., juil. 24 2021 at 16:48:40 +0800, 周琰杰 (Zhou Yanjie) 
->>> <zhouyanjie@wanyeetech.com> a écrit :
->>>> Add the dwc2 bindings for the JZ4775 SoC, the JZ4780 SoC, the X1000 
->>>> SoC,
->>>> the X1600 SoC, the X1830 SoC, and the X2000 SoC from Ingenic.
->>>>
->>>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->>>> ---
->>>>  Documentation/devicetree/bindings/usb/dwc2.yaml | 6 ++++++
->>>>  1 file changed, 6 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml 
->>>> b/Documentation/devicetree/bindings/usb/dwc2.yaml
->>>> index 10c7d9b..e779d33 100644
->>>> --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
->>>> +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
->>>> @@ -14,6 +14,12 @@ properties:
->>>>      oneOf:
->>>>        - const: brcm,bcm2835-usb
->>>>        - const: hisilicon,hi6220-usb
->>>> +      - const: ingenic,jz4775-otg
->>>> +      - const: ingenic,jz4780-otg
->>>> +      - const: ingenic,x1000-otg
->>>> +      - const: ingenic,x1600-otg
->>>> +      - const: ingenic,x1830-otg
->>>> +      - const: ingenic,x2000-otg
->>>
->>> I don't know if all these IPs are the exact same, but if they are, 
->>> they all should have "ingenic,jz4775-otg" as the fallback.
->>
->>
->> I'm not too sure whether they are exactly the same, but comparing the 
->> code in Ingenics SDK,
->>
->> the code of the USB part of jz4775, jz4780, and x1000 are the same, 
->> the code of the USB part
->>
->> of x1600 and x1830 are the same, and the USB part code of X2000 are 
->> different from all of them.
->
-> In doubt - it's better to keep separate compatible strings, so this is 
-> OK.
+Since these are being renamed, can you update the kernel-parameters.txt:
 
 
-Sure.
+	iommu.strict=	[ARM64, X86] Configure TLB invalidation behaviour
 
 
-Thanks and best regards!
+....
+		  DMA unmap operations invalidate IOMMU hardware TLBs
+		  synchronously.
+		unset - Use value of CONFIG_IOMMU_DEFAULT_{LAZY,STRICT}.
 
+					^^^^^
 
->
-> Cheers,
-> -Paul
->
+Thanks
