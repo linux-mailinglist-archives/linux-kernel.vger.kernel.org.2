@@ -2,111 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A6E3DC0CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E1D3DC0C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233493AbhG3WG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhG3WGZ (ORCPT
+        id S233100AbhG3WGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:06:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44958 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232564AbhG3WGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:06:25 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F010C0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:06:20 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id h14so20657874lfv.7
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hRvMxRopOfk4wfDLGrvSeXWbdrziagZNRb9gSwqHbig=;
-        b=fTtEbfGJErUIEPLddkT7tQyhajByiXgFt5iXayW/HiQx8Dz9DZMcdwPNxxqNYehVe7
-         hJZPw2H7EiB5LE9kx1MOr25zYr/xlEHqZYCVytn+vE6iaIqTJ3K0bTNFYUZwOZUEOrj4
-         o1BXtaR3EvlPz3z2x5EKHntoIKuG8VQ5rDkII=
+        Fri, 30 Jul 2021 18:06:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627682766;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k6/TIj2oL2PuBNwoGj29exdxyYSlXcamNRrMDM9CcnI=;
+        b=F8H/jvahyjTGlrmq06swTtRxjVDQx1xpoIi8dTpwAfrMBTUIdVM19mzW2uqNkQ1Pd+1QwP
+        EJ9pa7Bs4XcwS8Spij1w2qeQ8u+vZ0j+NwceOzHNAfW3YoSxD/QA9T3NUNU4eTnSSKvqde
+        pAoSR91U8ukc35R4Uq/YhMLjylQQtmo=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-0kmO_wfhOAinm8O9eU0O9g-1; Fri, 30 Jul 2021 18:06:05 -0400
+X-MC-Unique: 0kmO_wfhOAinm8O9eU0O9g-1
+Received: by mail-qt1-f199.google.com with SMTP id q10-20020a05622a04cab0290267bc0213a9so5169108qtx.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:06:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hRvMxRopOfk4wfDLGrvSeXWbdrziagZNRb9gSwqHbig=;
-        b=pSKmJwLy13cjmf1C0x3VoDBhNpC0N33uWtnRNqcM9hwyBv4dGXIQ+tps825Esot/af
-         QW03CWYcEx8vUCjxs4nEGr280im9WwBFXHIa0w+Xt0b417Or090VnHPjIwqpJFDOiRSJ
-         IzHbQxvumYQts1suu3Jp8JuV1M6dNm2n8uFWd36W4lNSJHqg5k19TGcOldSioxA4l4TH
-         hGCHJlympezFx63MyORLChhgECQIq9IKGEqnsVyeA+x6b4c/xiRVlF6E8r9Ot6q3dXGT
-         0699Avq6wxmIswG6W0aBM3vhgz+Fna4g9G0XMuf6J7BlydxvmjVTnZp0LAgX5rns6Oab
-         SajQ==
-X-Gm-Message-State: AOAM531GLXinYV5j0L+mkf+hYvFS8Tih7btVPsbWhqSXpltVY2D8isjE
-        37SSuHoMvwRKaKX1Mxrktsd7VeiK7mqFXdRM/y4=
-X-Google-Smtp-Source: ABdhPJxlZsW7MX3U4V5lmvsWJS+6g94gCigCqEyund1qmHePNgFG3F6FlEybFtR9ExDj4JrDj2T5kg==
-X-Received: by 2002:a05:6512:2023:: with SMTP id s3mr3532230lfs.587.1627682778077;
-        Fri, 30 Jul 2021 15:06:18 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id u9sm246389lfc.278.2021.07.30.15.06.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 15:06:16 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id h2so20714205lfu.4
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:06:16 -0700 (PDT)
-X-Received: by 2002:ac2:4475:: with SMTP id y21mr3384042lfl.487.1627682776227;
- Fri, 30 Jul 2021 15:06:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=k6/TIj2oL2PuBNwoGj29exdxyYSlXcamNRrMDM9CcnI=;
+        b=p1dViBhS+BEArkOblR8VJ5GTfu59NvoBdfbhpppAiMNBEkZmCW4ZAHwjFHyTcb6hE2
+         IDu2ZIRChURnE9Dm+byXD1wRPsdML2ovU2tdH5Bo0KJifWESoSNN6ZEQevD6crbksNxG
+         qO2eSnRqWiTNh0ArWYnGmcaRWvTWm1YCJeYI+N5K2sleEY67Us3i8vPJhuCaZ9Fr0owE
+         jmjtfENrAC61VonMvD/1a2399M96ECOZjZUND7Jty87a2DQgpMLvftPaboTai6EKmRQT
+         Tar9c9IZ+8RnPTEsQsemuwPsVMPgDNtTeJXf1YZHDfgvK0qKp7b3eom4NiH21lgHR61P
+         e7ow==
+X-Gm-Message-State: AOAM530URlD9SMbmxmFlnouo743BRXYDx/QHaaHhXUhbwbaT+je/E73d
+        m9HpfxvjCITdBfl/vgE+yKeUjkB7YEPh4VWSkuQQJSTGehAmWioAzCgBuC6mLPHya/em/3GXqwM
+        DlvCEGxTiZuNrdF0c7SVW0xvBTCeo5o4a80j3E2JQXefYeJ8lTJVNhQChy0OqBh1X0HWKqdM53g
+        ==
+X-Received: by 2002:a0c:be8e:: with SMTP id n14mr5098413qvi.16.1627682764568;
+        Fri, 30 Jul 2021 15:06:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcw83DgDJNDOwVMK+xRgEPO3B9UIXdU/pUAOXMNnInpKpTdAOBSEDfC1apcAufJ0N+exEV0Q==
+X-Received: by 2002:a0c:be8e:: with SMTP id n14mr5098393qvi.16.1627682764334;
+        Fri, 30 Jul 2021 15:06:04 -0700 (PDT)
+Received: from t490s.. (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id o186sm1622893qke.44.2021.07.30.15.06.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 15:06:03 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, peterx@redhat.com,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH v3 6/7] KVM: X86: Optimize pte_list_desc with per-array counter
+Date:   Fri, 30 Jul 2021 18:06:02 -0400
+Message-Id: <20210730220602.26327-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210730220455.26054-1-peterx@redhat.com>
+References: <20210730220455.26054-1-peterx@redhat.com>
 MIME-Version: 1.0
-References: <20210729222635.2937453-1-sspatil@android.com> <20210729222635.2937453-2-sspatil@android.com>
- <CAHk-=wh-DWvsFykwAy6uwyv24nasJ39d7SHT+15x+xEXBtSm_Q@mail.gmail.com>
- <cee514d6-8551-8838-6d61-098d04e226ca@android.com> <CAHk-=wjStQurUzSAPVajL6Rj=CaPuSSgwaMO=0FJzFvSD66ACw@mail.gmail.com>
- <b1688f32-cb0e-04e1-3c91-aa8cddbcf41d@android.com>
-In-Reply-To: <b1688f32-cb0e-04e1-3c91-aa8cddbcf41d@android.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 30 Jul 2021 15:06:00 -0700
-X-Gmail-Original-Message-ID: <CAHk-=witY33b-vqqp=ApqyoFDpx9p+n4PwG9N-TvF8bq7-tsHw@mail.gmail.com>
-Message-ID: <CAHk-=witY33b-vqqp=ApqyoFDpx9p+n4PwG9N-TvF8bq7-tsHw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] fs: pipe: wakeup readers everytime new data written
- is to pipe
-To:     Sandeep Patil <sspatil@android.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable <stable@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:47 PM Sandeep Patil <sspatil@android.com> wrote:
->
-> aren't we supposed to wakeup on each write in level-triggered (default)
-> case though?
+Add a counter field into pte_list_desc, so as to simplify the add/remove/loop
+logic.  E.g., we don't need to loop over the array any more for most reasons.
 
-No.
+This will make more sense after we've switched the array size to be larger
+otherwise the counter will be a waste.
 
-The thing about level triggered is that if the condition was already
-true, it would not need a wakeup in the first place.
+Initially I wanted to store a tail pointer at the head of the array list so we
+don't need to traverse the list at least for pushing new ones (if without the
+counter we traverse both the list and the array).  However that'll need
+slightly more change without a huge lot benefit, e.g., after we grow entry
+numbers per array the list traversing is not so expensive.
 
-Put another way: select() and poll() are both fundamentally
-level-triggered. If the condition was already true, they will return
-success immediately, and don't need any extraneous wakeups.
+So let's be simple but still try to get as much benefit as we can with just
+these extra few lines of changes (not to mention the code looks easier too
+without looping over arrays).
 
-This is literally an epoll() confusion about what an "edge" is.
+I used the same a test case to fork 500 child and recycle them ("./rmap_fork
+500" [1]), this patch further speeds up the total fork time of about 4%, which
+is a total of 33% of vanilla kernel:
 
-An edge is not "somebody wrote more data". An edge is "there was no
-data, now there is data".
+        Vanilla:      473.90 (+-5.93%)
+        3->15 slots:  366.10 (+-4.94%)
+        Add counter:  351.00 (+-3.70%)
 
-And a level triggered event is *also* not "somebody wrote more data".
-A level-triggered signal is simply "there is data".
+[1] https://github.com/xzpeter/clibs/commit/825436f825453de2ea5aaee4bdb1c92281efe5b3
 
-Notice how neither edge nor level are about "more data". One is about
-the edge of "no data" -> "some data", and the other is just a "data is
-available".
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 40 ++++++++++++++++++++++++----------------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
-Sadly, it seems that our old "we'll wake things up whether needed or
-not" implementation ended up being something that people thought was
-edge-triggered semantics.
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index c0b452bb5dd9..111c37141dbe 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -138,11 +138,21 @@ module_param(dbg, bool, 0644);
+ #include <trace/events/kvm.h>
+ 
+ /* make pte_list_desc fit well in cache lines */
+-#define PTE_LIST_EXT 15
++#define PTE_LIST_EXT 14
+ 
++/*
++ * Slight optimization of cacheline layout, by putting `more' and `spte_count'
++ * at the start; then accessing it will only use one single cacheline for
++ * either full (entries==PTE_LIST_EXT) case or entries<=6.
++ */
+ struct pte_list_desc {
+-	u64 *sptes[PTE_LIST_EXT];
+ 	struct pte_list_desc *more;
++	/*
++	 * Stores number of entries stored in the pte_list_desc.  No need to be
++	 * u64 but just for easier alignment.  When PTE_LIST_EXT, means full.
++	 */
++	u64 spte_count;
++	u64 *sptes[PTE_LIST_EXT];
+ };
+ 
+ struct kvm_shadow_walk_iterator {
+@@ -901,7 +911,7 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
+ 			struct kvm_rmap_head *rmap_head)
+ {
+ 	struct pte_list_desc *desc;
+-	int i, count = 0;
++	int count = 0;
+ 
+ 	if (!rmap_head->val) {
+ 		rmap_printk("%p %llx 0->1\n", spte, *spte);
+@@ -911,24 +921,24 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
+ 		desc = mmu_alloc_pte_list_desc(vcpu);
+ 		desc->sptes[0] = (u64 *)rmap_head->val;
+ 		desc->sptes[1] = spte;
++		desc->spte_count = 2;
+ 		rmap_head->val = (unsigned long)desc | 1;
+ 		++count;
+ 	} else {
+ 		rmap_printk("%p %llx many->many\n", spte, *spte);
+ 		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
+-		while (desc->sptes[PTE_LIST_EXT-1]) {
++		while (desc->spte_count == PTE_LIST_EXT) {
+ 			count += PTE_LIST_EXT;
+-
+ 			if (!desc->more) {
+ 				desc->more = mmu_alloc_pte_list_desc(vcpu);
+ 				desc = desc->more;
++				desc->spte_count = 0;
+ 				break;
+ 			}
+ 			desc = desc->more;
+ 		}
+-		for (i = 0; desc->sptes[i]; ++i)
+-			++count;
+-		desc->sptes[i] = spte;
++		count += desc->spte_count;
++		desc->sptes[desc->spte_count++] = spte;
+ 	}
+ 	return count;
+ }
+@@ -938,13 +948,12 @@ pte_list_desc_remove_entry(struct kvm_rmap_head *rmap_head,
+ 			   struct pte_list_desc *desc, int i,
+ 			   struct pte_list_desc *prev_desc)
+ {
+-	int j;
++	int j = desc->spte_count - 1;
+ 
+-	for (j = PTE_LIST_EXT - 1; !desc->sptes[j] && j > i; --j)
+-		;
+ 	desc->sptes[i] = desc->sptes[j];
+ 	desc->sptes[j] = NULL;
+-	if (j != 0)
++	desc->spte_count--;
++	if (desc->spte_count)
+ 		return;
+ 	if (!prev_desc && !desc->more)
+ 		rmap_head->val = 0;
+@@ -977,7 +986,7 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
+ 		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
+ 		prev_desc = NULL;
+ 		while (desc) {
+-			for (i = 0; i < PTE_LIST_EXT && desc->sptes[i]; ++i) {
++			for (i = 0; i < desc->spte_count; ++i) {
+ 				if (desc->sptes[i] == spte) {
+ 					pte_list_desc_remove_entry(rmap_head,
+ 							desc, i, prev_desc);
+@@ -1001,7 +1010,7 @@ static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
+ unsigned int pte_list_count(struct kvm_rmap_head *rmap_head)
+ {
+ 	struct pte_list_desc *desc;
+-	unsigned int i, count = 0;
++	unsigned int count = 0;
+ 
+ 	if (!rmap_head->val)
+ 		return 0;
+@@ -1011,8 +1020,7 @@ unsigned int pte_list_count(struct kvm_rmap_head *rmap_head)
+ 	desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
+ 
+ 	while (desc) {
+-		for (i = 0; (i < PTE_LIST_EXT) && desc->sptes[i]; i++)
+-			count++;
++		count += desc->spte_count;
+ 		desc = desc->more;
+ 	}
+ 
+-- 
+2.31.1
 
-But we have the policy that regressions aren't about documentation or
-even sane behavior.
-
-Regressions are about whether a user application broke in a noticeable way.
-
-                     Linus
