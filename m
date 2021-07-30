@@ -2,116 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185283DBEC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AD23DBECD
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhG3TLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhG3TK5 (ORCPT
+        id S231394AbhG3TLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:11:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59898 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231143AbhG3TL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:10:57 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9963AC061799
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:10:44 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m9Xu7-00068n-0J; Fri, 30 Jul 2021 21:10:43 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m9Xu6-0005yt-GC; Fri, 30 Jul 2021 21:10:42 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m9Xu6-0007L0-FS; Fri, 30 Jul 2021 21:10:42 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH v2 4/4] zorro: Drop useless (and hardly used) .driver member in struct zorro_dev
-Date:   Fri, 30 Jul 2021 21:10:35 +0200
-Message-Id: <20210730191035.1455248-5-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de>
-References: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de>
+        Fri, 30 Jul 2021 15:11:29 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16UJ4XvQ155898;
+        Fri, 30 Jul 2021 15:11:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=aCvQ/zlOFEmWQJR05jB5BMz1wTvrloq8ZnJNoFyxCgA=;
+ b=V/SnNDT/aGi/sMiEOokM2ekMamcQy0RLeeIiVZMZFrWO4O48mozPYBmM7QceGF/kMjoF
+ DMRH1CMMcD1prddxzZSc2osDyLb2koTOn63pL/bJHCC0NVbvu0GjZucRAbi3VY1jzgiX
+ k2U0vlOBcuDq7xKB9HtUvSgt0ZeERnZYsi6MQ2f4pcAiBtvZfadmwm7p9jG4aoLhWf+s
+ r61lhWE5Pm+dFsZBkjM2lLXem1NOgsRbAguI2TxxRxHJhsgAE0TBuURSwD9idolC0zj1
+ YudaNTxlJCF4XJhOzk7/sNz3XehoVufKcyPnDECxYOXBiam7FZWRehMBo9IHIwCK0wAb Jw== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a4pnc953r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Jul 2021 15:11:09 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16UJ7IfF029591;
+        Fri, 30 Jul 2021 19:11:08 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma03wdc.us.ibm.com with ESMTP id 3a235rncgm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Jul 2021 19:11:08 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16UJB7a410879584
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Jul 2021 19:11:07 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B8D352806A;
+        Fri, 30 Jul 2021 19:11:06 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5186A28067;
+        Fri, 30 Jul 2021 19:11:03 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.21.31])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Jul 2021 19:11:03 +0000 (GMT)
+Subject: Re: [PATCH 36/64] scsi: ibmvscsi: Avoid multi-field memset() overflow
+ by aiming at srp
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Brian King <brking@linux.vnet.ibm.com>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-37-keescook@chromium.org>
+ <yq135rzp79c.fsf@ca-mkp.ca.oracle.com> <202107281152.515A3BA@keescook>
+ <yq1k0l9oktw.fsf@ca-mkp.ca.oracle.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <3ffbcf75-166e-5802-1d8e-9c7739961b80@linux.ibm.com>
+Date:   Fri, 30 Jul 2021 12:11:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Patch-Hashes: v=1; h=sha256; i=pmjSFJgiGq+U+H3CBWUtkP58VVEoLG7cpjdWHdR3CZ8=; m=FwdYfuXhIdRMPqSe3OwjYngIShcXM10vmffUOUO3sq8=; p=BqkauY1Zj1byJtFkCzSN5UR2hPpa5BAO6PtAQB2p6Aw=; g=c7bb075638575448decef685c2188fa5a39a619a
-X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEETqgACgkQwfwUeK3K7Alv2ggAnkL HrzmiL+TmZP0QiWw2CkEMmEvBNZJ4Sjm+RSSLfd6BtkYNkWy5czU1iIDfSMs8UHfuTQ94NASPdyeM hWmDVFTeKEDzn5UlEk5y2e8W4wiY9y4ARv6xR2BVWwaZmjhgd3oEr0Ve+8Jy78HSnAT1+B1tsvcsn Mx1LjRhxB2GxJoQF5cwEcqiNE/5lnGt6YcHDydbJSQTcG2tkZXKHFmducgGEBfZpCIlyAllLTPMbW p6AUMexqpx9/eH2cWp699/xGGeMkX/lG/9UAKX7AzJ6uzmidT6ssI78aXAfjEa9ZZsNdnEy+YiPam SygG3WmdvPkK80TOVrMeOdeUhZivPpA==
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <yq1k0l9oktw.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: FY4mG5iTa3n7SX9d8VHWXVbFzyl_6wEi
+X-Proofpoint-GUID: FY4mG5iTa3n7SX9d8VHWXVbFzyl_6wEi
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-30_11:2021-07-30,2021-07-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
+ adultscore=0 phishscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107300129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only actual use is to check in zorro_device_probe() that the device
-isn't already bound. The driver core already ensures this however so the
-check can go away which allows to drop the then assigned-only member
-from struct zorro_dev.
+On 7/28/21 8:35 PM, Martin K. Petersen wrote:
+> 
+> Kees,
+> 
+>> For example, change it to:
+>>
+>> +	BUILD_BUG_ON(sizeof(evt_struct->iu.srp) != SRP_MAX_IU_LEN);
+>> +	memset(&evt_struct->iu.srp, 0x00, sizeof(evt_struct->iu.srp));
+>>  	srp_cmd = &evt_struct->iu.srp.cmd;
+>> -	memset(srp_cmd, 0x00, SRP_MAX_IU_LEN);
+> 
+>> For the moment, I'll leave the patch as-is unless you prefer having
+>> the BUILD_BUG_ON(). :)
+> 
+> I'm OK with the BUILD_BUG_ON(). Hopefully Tyrel or Brian will chime in.
+> 
 
-If the value was indeed needed somewhere it can always be calculated by
+All the other srp structs are at most 64 bytes and the size of the union is
+explicitly set to SRP_MAX_IU_LEN by the last field of the union.
 
-	to_zorro_driver(z->dev.driver)
+union srp_iu {
+        struct srp_login_req login_req;
+        struct srp_login_rsp login_rsp;
+        struct srp_login_rej login_rej;
+        struct srp_i_logout i_logout;
+        struct srp_t_logout t_logout;
+        struct srp_tsk_mgmt tsk_mgmt;
+        struct srp_cmd cmd;
+        struct srp_rsp rsp;
+        u8 reserved[SRP_MAX_IU_LEN];
+};
 
-.
+So, in my mind if SRP_MAX_IU_LEN ever changes so does the size of the union
+making the BUILD_BUG_ON() superfluous. But it doesn't really hurt anything either.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/zorro/zorro-driver.c | 7 ++-----
- include/linux/zorro.h        | 1 -
- 2 files changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/zorro/zorro-driver.c b/drivers/zorro/zorro-driver.c
-index ab06c9ce2c78..96f068830549 100644
---- a/drivers/zorro/zorro-driver.c
-+++ b/drivers/zorro/zorro-driver.c
-@@ -47,16 +47,14 @@ static int zorro_device_probe(struct device *dev)
- 	struct zorro_driver *drv = to_zorro_driver(dev->driver);
- 	struct zorro_dev *z = to_zorro_dev(dev);
- 
--	if (!z->driver && drv->probe) {
-+	if (drv->probe) {
- 		const struct zorro_device_id *id;
- 
- 		id = zorro_match_device(drv->id_table, z);
- 		if (id)
- 			error = drv->probe(z, id);
--		if (error >= 0) {
--			z->driver = drv;
-+		if (error >= 0)
- 			error = 0;
--		}
- 	}
- 	return error;
- }
-@@ -69,7 +67,6 @@ static void zorro_device_remove(struct device *dev)
- 
- 	if (drv->remove)
- 		drv->remove(z);
--	z->driver = NULL;
- }
- 
- 
-diff --git a/include/linux/zorro.h b/include/linux/zorro.h
-index e2e4de188d84..db7416ed6057 100644
---- a/include/linux/zorro.h
-+++ b/include/linux/zorro.h
-@@ -29,7 +29,6 @@
- struct zorro_dev {
-     struct ExpansionRom rom;
-     zorro_id id;
--    struct zorro_driver *driver;	/* which driver has allocated this device */
-     struct device dev;			/* Generic device interface */
-     u16 slotaddr;
-     u16 slotsize;
--- 
-2.30.2
-
+-Tyrel
