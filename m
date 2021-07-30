@@ -2,143 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08A73DB05B
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3AF53DB05F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhG3Aiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 20:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhG3Aip (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 20:38:45 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BEFEC061765
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 17:38:41 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 68-20020a9d0f4a0000b02904b1f1d7c5f4so7723358ott.9
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Jul 2021 17:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LQLHGvx8YzeIRk/lHZsyHMerPZm/rTK4XW2X0TgOuaE=;
-        b=LPLGvRJCSV7j3Q9FR+FA9zgfT+9lrriHwbs/cjHWEn7PNSCOJC8M/5yP9Ncbh5KxEt
-         QSUqB8zQ0S0yGHR9wDAIXSXBIZa+xox8iHQx/Y3frHpuOx06fvlfDS+fBBwTfrafC/hE
-         fMc1BZvuCWQnHsRJcXZeF51yiYA7H/OH1QZq5Sp9+3B17mp4Us9X6Kh2KhS4JE+LXwOl
-         pE9ayQBEQz/LLVbTIohmoOJQuFYAmLSKePGA3ymvJTV8lxTxAPmrGYskPmQrdWPrvAi4
-         6rrUxe4dpWSDobZ3hNM3szAUt8T7DyUlGc3ORjorOeoJT3dPwjMecK2sQdXkwNggFOqG
-         1p8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=LQLHGvx8YzeIRk/lHZsyHMerPZm/rTK4XW2X0TgOuaE=;
-        b=CgIzDhkiYF+QjJ9eLj/iU8hSLwgOuWX9x+Ru28pYS1wrQdRHJTZy0XVt0F0RwjHJcK
-         hyj78fc5Vye8+aZZCrezbcrH3CzzbC6FKUqL9J+Fc04/zSSXq0BSzBwYtCpAhThe6d7z
-         XTgn16u/KoMovhbHxiEjp0QzGOPcWGsiVRrkKZwTUIaean+C576nLCPJry4WEhPEScUY
-         iHHIcKiQNvazVgTVcCXQ1mywHn/oWayIWPen+omv3udZt1bO5I+VwLIv38VtxgH6n6hz
-         T/J3FMfi3bw3HeO37nH1LmvEy+GnvwIasijRxuD3gHW2dYJsvlCQJz9VbkupAMsYE0UF
-         iJug==
-X-Gm-Message-State: AOAM532WBpDDxmtZVRWq0VXmRVsNPnGUw9raObp1il9+MyGqKPU1dlt4
-        SiRMRaf6EI+qBrUXvVpbr4ASGA+GThM=
-X-Google-Smtp-Source: ABdhPJyGo0BXwTDleEqjxV3kPtvQHWnEUvyPVlOv3kTnjob55wtZMRRfSUU4/7mASzbnPYSbGokgkA==
-X-Received: by 2002:a9d:7dcf:: with SMTP id k15mr68348otn.201.1627605520907;
-        Thu, 29 Jul 2021 17:38:40 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100f.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-100f.res6.spectrum.com. [2603:8090:2005:39b3::100f])
-        by smtp.gmail.com with ESMTPSA id a21sm15205otf.36.2021.07.29.17.38.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 17:38:40 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-To:     gregkh@linuxfoundation.org
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: [PATCH] staging: r8188eu: Fix sleeping function called from invalid context
-Date:   Thu, 29 Jul 2021 19:38:22 -0500
-Message-Id: <20210730003822.12471-1-Larry.Finger@lwfinger.net>
-X-Mailer: git-send-email 2.32.0
+        id S231760AbhG3AlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 20:41:21 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45703 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229788AbhG3AlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Jul 2021 20:41:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627605676; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=9Ht7O+OhLLBTUmV8+k/svqIkYNmGUynD6YgQBlzccK0=; b=pf7fIIxlz9JwfA2BX0sTNBAf63O4IyBG02IfDetXB+WiVq5Tvc+XfFxGODfomqh6JjSr8YOJ
+ GO4PR2NGR+Cd2S40wJ7p/YT0TiIP6RR/Eo0LFl758R0mc7bjfCDmnq2DfrvDs8QzTjbAgve4
+ fvrPpFoBLvAx5V2bHTjZsqyUdbk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 61034aab38fa9bfe9c4f0843 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 30 Jul 2021 00:41:15
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2F595C433D3; Fri, 30 Jul 2021 00:41:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.101] (unknown [49.204.183.90])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF7D2C433F1;
+        Fri, 30 Jul 2021 00:41:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DF7D2C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+Subject: Re: [PATCH v2 5/6] clk: qcom: Add support for SDX65 RPMh clocks
+To:     quic_vamslank@quicinc.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org, tglx@linutronix.de,
+        maz@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1626986805.git.quic_vamslank@quicinc.com>
+ <fed310806d011c704955306a9768512b0bcc7cd4.1626986805.git.quic_vamslank@quicinc.com>
+From:   Taniya Das <tdas@codeaurora.org>
+Message-ID: <bc97c696-03b5-9772-cf76-c8c2e3df36b3@codeaurora.org>
+Date:   Fri, 30 Jul 2021 06:11:07 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <fed310806d011c704955306a9768512b0bcc7cd4.1626986805.git.quic_vamslank@quicinc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver can call rtw_addbareq_cmd() from an interrupt routine. resulting
-in the following splat:
 
-[21760.582207] BUG: sleeping function called from invalid context at include/linux/sched/mm.h:201
-[21760.582219] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 0, name: swapper/0
-[21760.582224] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G         C O      5.14.0-rc2-00135-g774ba5f0db67 #3
-[21760.582228] Hardware name: TOSHIBA TECRA A50-A/TECRA A50-A, BIOS Version 4.50   09/29/2014
-[21760.582230] Call Trace:
-[21760.582232]  <IRQ>
-[21760.582233]  dump_stack_lvl+0x34/0x44
-[21760.582245]  ? rtw_addbareq_cmd+0x2a/0xba [r8188eu]
-[21760.582306]  ___might_sleep.cold+0x88/0x95
-[21760.582311]  kmem_cache_alloc_trace+0x25a/0x2d0
-[21760.582315]  rtw_addbareq_cmd+0x2a/0xba [r8188eu]
-[21760.582368]  rtw_issue_addbareq_cmd+0xda/0x17f [r8188eu]
-[21760.582404]  rtw_dump_xframe+0xa6/0x266 [r8188eu]
-[21760.582433]  xmitframe_direct+0x40/0x57 [r8188eu]
-[21760.582459]  pre_xmitframe+0x72/0x110 [r8188eu]
-[21760.582485]  rtl8188eu_hal_xmit+0xa/0xb [r8188eu]
-[21760.582508]  rtw_hal_xmit+0x1b/0x1c [r8188eu]
-[21760.582539]  rtw_xmit+0xd6/0x1cb [r8188eu]
-[21760.582564]  rtw_xmit_entry+0xe4/0x1d2 [r8188eu]
-[21760.582584]  xmit_one.constprop.0+0x98/0x170
-[21760.582588]  dev_hard_start_xmit+0x40/0x90
-[21760.582591]  sch_direct_xmit+0xfa/0x230
-[21760.582596]  __dev_xmit_skb+0x27c/0x530
-[21760.582598]  __dev_queue_xmit+0x327/0x4e0
-[21760.582602]  ip_finish_output2+0x279/0x5c0
-[21760.582605]  __ip_queue_xmit+0x167/0x3f0
-[21760.582607]  __tcp_transmit_skb+0x4ff/0x9a0
-[21760.582610]  tcp_rcv_established+0x5c1/0x6f0
-[21760.582613]  tcp_v4_do_rcv+0x13e/0x240
-[21760.582616]  tcp_v4_rcv+0xbad/0xc70
-[21760.582618]  ? ip_rcv_finish_core.constprop.0+0x13c/0x2f0
-[21760.582621]  ip_protocol_deliver_rcu+0x30/0x1f0
-[21760.582623]  ip_local_deliver_finish+0x4b/0x60
-[21760.582625]  __netif_receive_skb_one_core+0x63/0x90
-[21760.582628]  process_backlog+0x8f/0x140
-[21760.582631]  __napi_poll+0x2e/0x180
-[21760.582634]  net_rx_action+0x11b/0x260
-[21760.582637]  __do_softirq+0xcb/0x2f5
-[21760.582640]  irq_exit_rcu+0x9e/0xc0
-[21760.582643]  common_interrupt+0x83/0xa0
-[21760.582647]  </IRQ>
-[21760.582647]  asm_common_interrupt+0x1e/0x40
-[21760.582650] RIP: 0010:cpuidle_enter_state+0xdf/0x5c0
-[21760.582655] Code: 49 89 c6 0f 1f 44 00 00 31 ff e8 4c a1 98 ff 45 84 ff 74 12 9c 58 f6 c4 02 0f 85 10 03 00 00 31 ff e8 d5 73 9f ff fb 45 85 ed <0f> 88 59 01 00 00 4d 63 e5 49 83 fc 09 0f 87 05 04 00 00 4b 8d 04
 
-Fix by changing kmalloc() flags argument from GFP_KERNEL to GFP_ATOMIC.
+On 7/23/2021 2:39 AM, quic_vamslank@quicinc.com wrote:
+> From: Vamsi krishna Lanka <quic_vamslank@quicinc.com>
+> 
+> Add support for clocks maintained by RPMh in SDX65 SoCs.
+> 
+> Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>   drivers/clk/qcom/clk-rpmh.c | 27 +++++++++++++++++++++++++++
+>   1 file changed, 27 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
+> index 91dc390a583b..f3769b86e5d0 100644
+> --- a/drivers/clk/qcom/clk-rpmh.c
+> +++ b/drivers/clk/qcom/clk-rpmh.c
+> @@ -477,6 +477,32 @@ static const struct clk_rpmh_desc clk_rpmh_sm8250 = {
+>   	.num_clks = ARRAY_SIZE(sm8250_rpmh_clocks),
+>   };
+>   
+> +DEFINE_CLK_RPMH_ARC(sdx65, bi_tcxo, bi_tcxo_ao, "xo.lvl", 0x3, 4);
+please re-use "sc7280" resources.
+> +DEFINE_CLK_RPMH_VRM(sdx65, ln_bb_clk1, ln_bb_clk1_ao, "lnbclka1", 4);
+> +DEFINE_CLK_RPMH_VRM(sdx65, rf_clk4, rf_clk4_ao, "rfclka4", 1);
+please re-use "sm8350" resources.
+> +
+> +static struct clk_hw *sdx65_rpmh_clocks[] = {
+> +	[RPMH_CXO_CLK]          = &sdx65_bi_tcxo.hw,
+> +	[RPMH_CXO_CLK_A]        = &sdx65_bi_tcxo_ao.hw,
+you can re-use sc7280 resources.
+> +	[RPMH_LN_BB_CLK1]       = &sdx65_ln_bb_clk1.hw,
+> +	[RPMH_LN_BB_CLK1_A]     = &sdx65_ln_bb_clk1_ao.hw,
+> +	[RPMH_RF_CLK1]          = &sdm845_rf_clk1.hw,
+> +	[RPMH_RF_CLK1_A]        = &sdm845_rf_clk1_ao.hw,
+> +	[RPMH_RF_CLK2]          = &sdm845_rf_clk2.hw,
+> +	[RPMH_RF_CLK2_A]        = &sdm845_rf_clk2_ao.hw,
+> +	[RPMH_RF_CLK3]          = &sdm845_rf_clk3.hw,
+> +	[RPMH_RF_CLK3_A]        = &sdm845_rf_clk3_ao.hw,
+> +	[RPMH_RF_CLK4]          = &sdx65_rf_clk4.hw,
+> +	[RPMH_RF_CLK4_A]        = &sdx65_rf_clk4_ao.hw,
+"sm8350"
+> +	[RPMH_IPA_CLK]          = &sdm845_ipa.hw,
+> +	[RPMH_QPIC_CLK]         = &sdx55_qpic_clk.hw,
+> +};
+> +
+> +static const struct clk_rpmh_desc clk_rpmh_sdx65 = {
+> +	.clks = sdx65_rpmh_clocks,
+> +	.num_clks = ARRAY_SIZE(sdx65_rpmh_clocks),
+> +};
+> +
+>   DEFINE_CLK_RPMH_VRM(sm8350, div_clk1, div_clk1_ao, "divclka1", 2);
+>   DEFINE_CLK_RPMH_VRM(sm8350, rf_clk4, rf_clk4_ao, "rfclka4", 1);
+>   DEFINE_CLK_RPMH_VRM(sm8350, rf_clk5, rf_clk5_ao, "rfclka5", 1);
+> @@ -618,6 +644,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
+>   	{ .compatible = "qcom,sc8180x-rpmh-clk", .data = &clk_rpmh_sc8180x},
+>   	{ .compatible = "qcom,sdm845-rpmh-clk", .data = &clk_rpmh_sdm845},
+>   	{ .compatible = "qcom,sdx55-rpmh-clk",  .data = &clk_rpmh_sdx55},
+> +	{ .compatible = "qcom,sdx65-rpmh-clk",  .data = &clk_rpmh_sdx65},
+>   	{ .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
+>   	{ .compatible = "qcom,sm8250-rpmh-clk", .data = &clk_rpmh_sm8250},
+>   	{ .compatible = "qcom,sm8350-rpmh-clk", .data = &clk_rpmh_sm8350},
+> 
 
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
----
- drivers/staging/r8188eu/core/rtw_cmd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index 0302aa101de6..159346d97110 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -1240,13 +1240,13 @@ u8 rtw_addbareq_cmd(struct adapter *padapter, u8 tid, u8 *addr)
- 	struct addBaReq_parm *paddbareq_parm;
- 	u8	res = _SUCCESS;
- 
--	ph2c = kzalloc(sizeof(struct cmd_obj), GFP_KERNEL);
-+	ph2c = kzalloc(sizeof(struct cmd_obj), GFP_ATOMIC);
- 	if (ph2c == NULL) {
- 		res = _FAIL;
- 		goto exit;
- 	}
- 
--	paddbareq_parm = kzalloc(sizeof(struct addBaReq_parm), GFP_KERNEL);
-+	paddbareq_parm = kzalloc(sizeof(struct addBaReq_parm), GFP_ATOMIC);
- 	if (paddbareq_parm == NULL) {
- 		kfree(ph2c);
- 		res = _FAIL;
 -- 
-2.32.0
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
 
+--
