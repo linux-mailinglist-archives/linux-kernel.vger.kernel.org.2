@@ -2,138 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321F33DC15A
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D048D3DC162
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233780AbhG3W6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57546 "EHLO
+        id S233833AbhG3W7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232817AbhG3W6J (ORCPT
+        with ESMTP id S233602AbhG3W7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:58:09 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82EEC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:58:04 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so22886167pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:58:04 -0700 (PDT)
+        Fri, 30 Jul 2021 18:59:50 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7413AC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:44 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id f17-20020a170902ab91b029012c3bac8d81so8719298plr.23
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=workware-net-au.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YVFNv/nJzPFLIKlkRvy7UBoWXkQ2+gaA9RIm68msr/k=;
-        b=NTj5WuC7VBzOEvsgIDQyhYVHPtwEDZMYcoRo53rEa1PGSDeWByZ2DAswqLVQbjYvTg
-         YZzyHQEUXHqaHQSGnrZFD1LtNWDrJUt/a6cYq4GB/jpPCJXEBpCqbN1XxPI+tw8jTjBD
-         z0sDFa3eETVYyp10gw8Fivmq+5SiQ1lNliIXZGJnUiPTBiBtPO7lXYfkgwAxKp0GhwKH
-         4BubNh1FJ+RCyMdT05YFDjyYVWXwSyHU1UjE9jZyqp6b+Cs59xnanSBV1W6ojuh7u4ko
-         lJLhNED9IrtPZ/MWxI1hGUgw6pgYDM2CitXy4vZnhdX0nF0FGIJeEwQFoO8TiumkLrOd
-         NImQ==
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=Lbc7sqdkn0ZF7q/zL1zy+BZt85TGXNNC6j+dLXsHB30=;
+        b=ABuyA90o4Rfv0gzWABXk1bFOn0wAMNeb7lswrtyy4kTA8yKt04WtaVefJfFSfKWBd+
+         U/lNa9oIrhkWA883+nSUV6HbAUTFAmvDdD0/j7vmGvCO0/WoEv2vYAu6tJIx5xrVsVak
+         3gUSVJFJ6193JwCZeXc+CnLLNiVuNBMG5vP/WRUPMxHkR88+I/52GlVZIzjij1bWuOJS
+         +Ky/Svl/BLJQus7AX0lDBgKtHyojq49tQCDTXREOjxCSEXkNgiViRd3Ub0s+LBnwocAV
+         eiAfHXKreb3xeWqWI3dDZr+QuEV0RLUrPTuZ+SbIk4b/kJJ5v+TGGPVcVIawdvEOw9tD
+         +kXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YVFNv/nJzPFLIKlkRvy7UBoWXkQ2+gaA9RIm68msr/k=;
-        b=bFITZ/iE8dbrxUJWInM/ixRq9r3LTrO5izi1vzQkVSnqp12TWLQc2k0FfBANyNAQjN
-         1vLrUxyPYRKFDGQW8k9AOliq55pTDaHlYBQyhPl9TS7fVQUtRGsxJ0hjTKCb7LptV2Gv
-         er7nbWzcKFrR6jXunMLL3Ud2XeCngDSdqq2H8XB/PMNpfPQYZhmMVcEKZpgdRlfdnVCH
-         jb0PVtwGNDcoyJyMN9UvVDS10SM9I9w0aOYGiJEdhelUkLJ7m3Gheo539TzuXsAz//Bt
-         VHdqvhsQ/MFK8kF++CZzhTQySh4ry/sphWsO3wx/xfo96ifIRzSCI/9roRj5uKxQKgAb
-         /AQA==
-X-Gm-Message-State: AOAM5337+SmwWk7psAtS2pnAZhN8noS90XUvBy2DRAKOvDi0cC8LoY3Q
-        U3eKiiN9vrdcDeyQzgTeQDM/pA==
-X-Google-Smtp-Source: ABdhPJzBF4R7be2jKsTzcGhAItmUSMyV319KYORwEht+h4ehzvZ4rERnKRDiE/PD79by7SBXDNPIWw==
-X-Received: by 2002:a63:ff4d:: with SMTP id s13mr2849739pgk.237.1627685884319;
-        Fri, 30 Jul 2021 15:58:04 -0700 (PDT)
-Received: from workware.net.au (117-20-69-228.751445.bne.nbn.aussiebb.net. [117.20.69.228])
-        by smtp.gmail.com with ESMTPSA id w3sm3389178pjq.12.2021.07.30.15.58.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 15:58:03 -0700 (PDT)
-From:   Steve Bennett <steveb@workware.net.au>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, marex@denx.de
-Cc:     Steve Bennett <steveb@workware.net.au>
-Subject: [PATCH v2] net: phy: micrel: Fix detection of ksz87xx switch
-Date:   Sat, 31 Jul 2021 08:57:50 +1000
-Message-Id: <20210730225750.98849-1-steveb@workware.net.au>
-X-Mailer: git-send-email 2.24.2 (Apple Git-127)
-In-Reply-To: <20210730105120.93743-1-steveb@workware.net.au>
-References: <20210730105120.93743-1-steveb@workware.net.au>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=Lbc7sqdkn0ZF7q/zL1zy+BZt85TGXNNC6j+dLXsHB30=;
+        b=s8X+y/IRjNGvMBnFRr9DYOCjuYtItg2jJtFjlf6J69hzK+hqYT2KQNxa+seBAiXBv6
+         1s8M1vHFjZZD3j3X33yRmjPbNID3pqGsXZoxDvyudi64WVEzcVpzqTCGAVYam6flBBIw
+         lodLTVM1QCXHK2IPlectUDeOgoSBuC4qh2nlLC603ED2KlnT1hrrOMJNiMMQzMpx/9XG
+         1DWzUGmJzi8/1P7LXW68As2i9uH1JvVY2twBbIJJ/NA0rXt2AgFuItibJdvQ549l8nej
+         QJwrWong4Nzdg/Y3a5PC3NlM5WZnErVIT3MGnPjIrVy4Ip8l36B0ghfl8R3Hhk5sesxA
+         DJow==
+X-Gm-Message-State: AOAM5301jCH1gT93MHzeHoUmuHqrSiIf4Tv+aUIZkJF3TF+Sp4u/X7xm
+        8PTIUwdZOJey3t7//J+lZmkgmDaaFqlk
+X-Google-Smtp-Source: ABdhPJwvSUjcF/nenM4qr4VcNEtPQB86OCURhK9iR4YwszYBEH9gvVxRbSJBpcXzw85ov8SxlvX8BiCdEDvA
+X-Received: from mihenry-linux-desktop.kir.corp.google.com ([2620:15c:29:204:a198:4c3e:b951:58e3])
+ (user=mizhang job=sendgmr) by 2002:aa7:8148:0:b029:31b:10b4:f391 with SMTP id
+ d8-20020aa781480000b029031b10b4f391mr4714934pfn.69.1627685984030; Fri, 30 Jul
+ 2021 15:59:44 -0700 (PDT)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date:   Fri, 30 Jul 2021 15:59:36 -0700
+Message-Id: <20210730225939.3852712-1-mizhang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v3 0/3] Add detailed page size stats in KVM stats
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The logic for discerning between KSZ8051 and KSZ87XX PHYs is incorrect
-such that the that KSZ87XX switch is not identified correctly.
+This commit basically adds detailed (large and regular) page size info to
+KVM stats and deprecate the old one: lpages.
 
-ksz8051_ksz8795_match_phy_device() uses the parameter ksz_phy_id
-to discriminate whether it was called from ksz8051_match_phy_device()
-or from ksz8795_match_phy_device() but since PHY_ID_KSZ87XX is the
-same value as PHY_ID_KSZ8051, this doesn't work.
+To support legacy MMU and TDP mmu, we use atomic type for all page stats.
 
-Instead use a bool to discriminate the caller.
+v2 -> v3:
+ - move kvm_update_page_stats to mmu.h as a static inline function. [sean]
+ - remove is_last_spte check in mmu_spte_clear_track_bits. [bgardon]
+ - change page_stats union by making it anonymous. [dmatlack]
 
-Without this patch, the KSZ8795 switch port identifies as:
+v1 -> v2:
+ - refactor kvm_update_page_stats and remove 'spte' argument. [sean]
+ - remove 'lpages' as it can be aggregated by user level [sean]
+ - fix lpages stats update issue in __handle_change_pte [sean]
+ - fix style issues and typos. [ben/sean]
 
-ksz8795-switch spi3.1 ade1 (uninitialized): PHY [dsa-0.1:03] driver [Generic PHY]
+pre-v1 (internal reviewers):
+ - use atomic in all page stats and use 'level' as index. [sean]
+ - use an extra argument in kvm_update_page_stats for atomic/non-atomic.
+   [bgardon]
+ - should be careful on the difference between legacy mmu and tdp mmu.
+   [jingzhangos]
 
-With the patch, it identifies correctly:
 
-ksz8795-switch spi3.1 ade1 (uninitialized): PHY [dsa-0.1:03] driver [Micrel KSZ87XX Switch]
+Mingwei Zhang (3):
+  kvm: mmu/x86: Remove redundant spte present check in mmu_set_spte
+  KVM: x86/mmu: Avoid collision with !PRESENT SPTEs in TDP MMU lpage
+    stats
+  kvm: mmu/x86: Add detailed page size stats
 
-Fixes: 8b95599c55ed24b36cf4 ("net: phy: micrel: Discern KSZ8051 and KSZ8795 PHYs")
-Signed-off-by: Steve Bennett <steveb@workware.net.au>
----
- drivers/net/phy/micrel.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/kvm_host.h | 10 +++++++-
+ arch/x86/kvm/mmu.h              |  2 ++
+ arch/x86/kvm/mmu/mmu.c          | 42 ++++++++++++++++++---------------
+ arch/x86/kvm/mmu/tdp_mmu.c      |  9 ++-----
+ arch/x86/kvm/x86.c              |  7 ++++--
+ 5 files changed, 41 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 4d53886f7d51..53bdd673ae56 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -401,11 +401,11 @@ static int ksz8041_config_aneg(struct phy_device *phydev)
- }
- 
- static int ksz8051_ksz8795_match_phy_device(struct phy_device *phydev,
--					    const u32 ksz_phy_id)
-+					    const bool ksz_8051)
- {
- 	int ret;
- 
--	if ((phydev->phy_id & MICREL_PHY_ID_MASK) != ksz_phy_id)
-+	if ((phydev->phy_id & MICREL_PHY_ID_MASK) != PHY_ID_KSZ8051)
- 		return 0;
- 
- 	ret = phy_read(phydev, MII_BMSR);
-@@ -418,7 +418,7 @@ static int ksz8051_ksz8795_match_phy_device(struct phy_device *phydev,
- 	 * the switch does not.
- 	 */
- 	ret &= BMSR_ERCAP;
--	if (ksz_phy_id == PHY_ID_KSZ8051)
-+	if (ksz_8051)
- 		return ret;
- 	else
- 		return !ret;
-@@ -426,7 +426,7 @@ static int ksz8051_ksz8795_match_phy_device(struct phy_device *phydev,
- 
- static int ksz8051_match_phy_device(struct phy_device *phydev)
- {
--	return ksz8051_ksz8795_match_phy_device(phydev, PHY_ID_KSZ8051);
-+	return ksz8051_ksz8795_match_phy_device(phydev, true);
- }
- 
- static int ksz8081_config_init(struct phy_device *phydev)
-@@ -535,7 +535,7 @@ static int ksz8061_config_init(struct phy_device *phydev)
- 
- static int ksz8795_match_phy_device(struct phy_device *phydev)
- {
--	return ksz8051_ksz8795_match_phy_device(phydev, PHY_ID_KSZ87XX);
-+	return ksz8051_ksz8795_match_phy_device(phydev, false);
- }
- 
- static int ksz9021_load_values_from_of(struct phy_device *phydev,
--- 
-2.24.2 (Apple Git-127)
+--
+2.32.0.432.gabb21c7263-goog
 
