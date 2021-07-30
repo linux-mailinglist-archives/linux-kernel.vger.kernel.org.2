@@ -2,51 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F84D3DC18E
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8703DC18A
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 01:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbhG3X3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 19:29:35 -0400
-Received: from pv50p00im-zteg10011501.me.com ([17.58.6.42]:59799 "EHLO
-        pv50p00im-zteg10011501.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233500AbhG3X3d (ORCPT
+        id S233832AbhG3XZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 19:25:08 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:38584
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233500AbhG3XZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 19:29:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1627687396;
-        bh=4/aQNK88t2BegMqzsfndPfebMdjLWEajP+tB9Yr6Z2g=;
-        h=Content-Type:From:Mime-Version:Date:Subject:Message-Id:To;
-        b=XyR8IvcWh2Yfli0tViLdMK1yH+61H/FNyC8h5qwo1FXK6ogVFPIPZCHAKQKGFFddq
-         lYQhtIUey/B0nG1sdLePg1Licp9DcDhCuw1k6ZBoDOWWnpGD0zWwX6xuGZ90tSbUjg
-         NQ8nnP3PrLb5udE57J/qnf2wbzNKgOunCFXBDZ49DsS22VHagwJSLdvE/bC9WQ8eU6
-         V8lxpXaFxv4qqVO/L9HP2gdNZoyLsJWWSyeBlcZdoXw+EDD8lwcfanHqSeRbzMxOU+
-         io4QzuldoswUF8SYbn/tQZqeAGMviU1TtDJ5vfPo79n+TOuzzztKfqXgmgaGinJTCT
-         hn/3dDdbtvz2A==
-Received: from smtpclient.apple (075-142-087-102.res.spectrum.com [75.142.87.102])
-        by pv50p00im-zteg10011501.me.com (Postfix) with ESMTPSA id E24B1B003A7;
-        Fri, 30 Jul 2021 23:23:15 +0000 (UTC)
-Content-Type: text/plain; charset=us-ascii
+        Fri, 30 Jul 2021 19:25:06 -0400
+Received: from [192.168.192.153] (unknown [50.53.57.186])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id BD8333F0B9;
+        Fri, 30 Jul 2021 23:24:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627687499;
+        bh=R2NzCKKbyRjZX2qftJHyl3+a3Qvsi60rhgsy0EBiLdU=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=qCjCqQe+AR3SYMVkzD5FHOL3Hgcyd2Gmjtcbk6UTTQqFajgm+oF26shEi4YFCMntw
+         WuvcZG9ULRWh2yHqtybWEj0Lp6eT8JyN7hkJckTUTZX0mslW2yzR1pt18TmwpWgrfF
+         RhFzUr/dxsxa1aazt1X9VxFcVoV7xwe5GO339bfuQYp7SmNjrNz40RMotnhegRqUwt
+         TGQKyBedoJ8p4AkzUSE21wD1ywyO0O9K681Qa2FMI779q6Y4Ri3sLOpa+c3ImdIjAF
+         csOhu7j5Z+uP6wV8qP19hzZNsQm+ID4TLSvzaZs1HczbV3DEmeY9SnZV3i5zfhmvS6
+         dA7oh3n+nxn5g==
+Subject: Re: [PATCH] apparmor: use per file locks for transactional queries
+To:     Hamza Mahfooz <someguy@effective-light.com>,
+        linux-kernel@vger.kernel.org
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org
+References: <20210730052355.77289-1-someguy@effective-light.com>
+From:   John Johansen <john.johansen@canonical.com>
+Organization: Canonical
+Message-ID: <de92defa-13f5-6226-10f7-8f182efcfd8e@canonical.com>
+Date:   Fri, 30 Jul 2021 16:24:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210730052355.77289-1-someguy@effective-light.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-From:   Dillan Jackson <a1.jackson@icloud.com>
-Mime-Version: 1.0 (1.0)
-Date:   Fri, 30 Jul 2021 16:22:55 -0700
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-Id: <3B1B0473-00F1-46A4-9C5A-06EAF7FA8340@icloud.com>
-Cc:     gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, peterz@infradead.org,
-        rust-for-linux@vger.kernel.org, torvalds@linux-foundation.org,
-        wedsonaf@google.com
-To:     linus.walleij@linaro.org
-X-Mailer: iPhone Mail (18G82)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-30_11:2021-07-30,2021-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=530 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2107300157
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Monies?
+On 7/29/21 10:23 PM, Hamza Mahfooz wrote:
+> As made mention of in commit 1dea3b41e84c5 ("apparmor: speed up
+> transactional queries"), a single lock is currently used to synchronize
+> transactional queries. We can, use the lock allocated for each file by
+> VFS instead.
+> 
+> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+
+Acked-by: John Johansen <john.johansen@canonical.com>
+
+I'll pull this into my tree asap
+
+> ---
+>  security/apparmor/apparmorfs.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
+> index 2ee3b3d29f10..c0b626a271a0 100644
+> --- a/security/apparmor/apparmorfs.c
+> +++ b/security/apparmor/apparmorfs.c
+> @@ -812,8 +812,6 @@ struct multi_transaction {
+>  };
+>  
+>  #define MULTI_TRANSACTION_LIMIT (PAGE_SIZE - sizeof(struct multi_transaction))
+> -/* TODO: replace with per file lock */
+> -static DEFINE_SPINLOCK(multi_transaction_lock);
+>  
+>  static void multi_transaction_kref(struct kref *kref)
+>  {
+> @@ -847,10 +845,10 @@ static void multi_transaction_set(struct file *file,
+>  	AA_BUG(n > MULTI_TRANSACTION_LIMIT);
+>  
+>  	new->size = n;
+> -	spin_lock(&multi_transaction_lock);
+> +	spin_lock(&file->f_lock);
+>  	old = (struct multi_transaction *) file->private_data;
+>  	file->private_data = new;
+> -	spin_unlock(&multi_transaction_lock);
+> +	spin_unlock(&file->f_lock);
+>  	put_multi_transaction(old);
+>  }
+>  
+> @@ -879,9 +877,10 @@ static ssize_t multi_transaction_read(struct file *file, char __user *buf,
+>  	struct multi_transaction *t;
+>  	ssize_t ret;
+>  
+> -	spin_lock(&multi_transaction_lock);
+> +	spin_lock(&file->f_lock);
+>  	t = get_multi_transaction(file->private_data);
+> -	spin_unlock(&multi_transaction_lock);
+> +	spin_unlock(&file->f_lock);
+> +
+>  	if (!t)
+>  		return 0;
+>  
+> 
+
