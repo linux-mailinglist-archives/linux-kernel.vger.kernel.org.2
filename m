@@ -2,218 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F013DB021
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51A33DB027
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 02:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbhG3AE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Jul 2021 20:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58724 "EHLO
+        id S235366AbhG3ALC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Jul 2021 20:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235124AbhG3AE1 (ORCPT
+        with ESMTP id S235124AbhG3ALA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Jul 2021 20:04:27 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E89CC061765;
-        Thu, 29 Jul 2021 17:04:22 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id b11so3586029wrx.6;
-        Thu, 29 Jul 2021 17:04:22 -0700 (PDT)
+        Thu, 29 Jul 2021 20:11:00 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E3DC061765;
+        Thu, 29 Jul 2021 17:10:56 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so18177589pjb.3;
+        Thu, 29 Jul 2021 17:10:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6YU4gr4JLAH79FQY1Mi8gwnDKyTILc7bVIjh7qm7FDU=;
-        b=MqG8qOYtjM2cKzT/ShaVzrAwzlCuFLRrG9X3Ym1zcT1I3XwKuyV7I7QnmCJtRCquoZ
-         D2rBMuHhCA4GfNHrj14ywnxWaXGUl4EBnKvpkJLPocRDngL+/oTZP8kfOSAzaCOWpG2l
-         dZVVrVLl9w+EHN9SEesB5+AtcBaPkK5lbRUuKbex2OU3HAU61FV58LOGh26UY4GMX+wX
-         4IfJmWBtaSHUq4QAZGfkvZH6uvVFHOV0/2qFlEyzKd6FrQKq0taQMN95C8ZzXABMpq5O
-         iy3/e3HJgYJ3GqpBh0ruc3Q8/menfLSHHvASzYPGaYz7F+Su/72GmJg/1MFmiEP4xujl
-         mvHg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KvNrFVgss6eSO6kUoQ3VU0X35CeoRY7KVDc86f4fQm4=;
+        b=kOZQR14Uy3g//5gbl3xlpGsDHTkZtnRt2eygeLvJGcHjKB5XzT7Ldokpq0NHg1qAFQ
+         xrUuJh8cOjV96IFiAb3OEqVzDWXY9A9Iz4H+WomwEZv8pWvjbfnAGH/WBA0megaHfwAb
+         FrZmi2FAWLjncp47tvP1GZz6eGYY3U0P/lCKl8QgOFdgFjhPely2k0UWryrc85QzoocQ
+         nxpsUlu9rex7WQydEd8E2OP286Wjz5qgZt5sbHFjX6+q3MgLSpSZBwlrr445ZibTmdHB
+         qMvuvtM3WGGw1NEYtucOdcPeFgMgOFEVG362GtLpgC47HKmy1NEok10Kr4JNtYkChDnx
+         FZaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6YU4gr4JLAH79FQY1Mi8gwnDKyTILc7bVIjh7qm7FDU=;
-        b=mR3pSQrxfgKm2cLsGp0y75jFDYoY+CxKoVqkL9V32rX1dROlzkmtkuZT6tgRymHOvw
-         2Bm55q2KTH9rkO9AgUROv1c7MDfCXEDHQEnGn5c2ne3jmxGuR4ReRmFm8A2UQIssYRy9
-         ubzuu0fgERU9tZ9gXiXQtzPtXO/6W73RdWdvhcoQtHKKzAZwRvelc1ODMF5GYx+/E/W2
-         +s+ksjekPxAyghiZuoC+fKl3Y45HIbVxPl6r9e6NBLr9WFci2/FEqnzw1l5t+g209CH9
-         5xiCMdoY9nexqFCmCckrZdyPJO94xF/ClGsu4GW0d/stKuIPct3ZJ2o0xMIzIO4ACiz1
-         Bq0w==
-X-Gm-Message-State: AOAM533+qrrm3x2KyIclz9Nncw0vHwLMWBK6HAzW+dU0EdfkQe4XO9Tu
-        6ediOkFCuXINTnwFI/V7n6npjOA/JZ2vWv5ujIY=
-X-Google-Smtp-Source: ABdhPJzVxMoQelwSuCARcI4vG5jeNvmbeM2Fr3Veb5gPC48Ooi8AoPVU6Kz9wLmiX0dohW521AXMHnUwmH2evWHxWUw=
-X-Received: by 2002:a5d:4348:: with SMTP id u8mr35748wrr.28.1627603461037;
- Thu, 29 Jul 2021 17:04:21 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KvNrFVgss6eSO6kUoQ3VU0X35CeoRY7KVDc86f4fQm4=;
+        b=kNjqOfQn9RyZNWaeWDtzz2ncEeCOKi0Wb2wusHK0StHso0yGJmW9HItrvHwbf7vDcn
+         9QK2fTjYTA6lN5ABXonMWmusvnDoPpFgaCoF2NkRsRLQSg17AMFvlQgGNFkeVOc5JRZm
+         caYoTQjhWyj4foz452/QKUP6rZFvyczJCy4BHXhmBUawfYfkFuK5AA+byVLYDaON/UOF
+         l+SCS4O1dgEFZ4/W9zh6RJQPKkzxT1jFTPa+lOixr0+LzMZrzpviTidzxcoKKh3PdusY
+         0jM4uFUlmH5wDVdusDUoYO87lqTuIdNLXOuTm0WvwAsdQfWshVr9a6+P43ZRTEIn3LV9
+         z3Aw==
+X-Gm-Message-State: AOAM532hpkQyqiD1AcmGkZ/d/zQ09jZtPHPWwwpD5mQr8mXv6qkfSP+K
+        bAxBVoG16n2oiUSB27LTD74urXV/wSU=
+X-Google-Smtp-Source: ABdhPJwE/niSh5UdF+w0QQdfBSjFatj+JALFmIVOdTcLe3nO62DxPf2VNDgpH154QI9H1E+xrQvSqA==
+X-Received: by 2002:a65:42c3:: with SMTP id l3mr698563pgp.377.1627603855087;
+        Thu, 29 Jul 2021 17:10:55 -0700 (PDT)
+Received: from [10.67.49.140] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id f15sm5154339pgv.92.2021.07.29.17.10.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Jul 2021 17:10:54 -0700 (PDT)
+Subject: Re: [RFC-PATCH] net: stmmac: Add KR port support.
+To:     Daniel Walker <danielwa@cisco.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Balamurugan Selvarajan <balamsel@cisco.com>,
+        xe-linux-external@cisco.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210729234443.1713722-1-danielwa@cisco.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <81fca68f-e0c4-ce02-6b2b-e5c22a0c3152@gmail.com>
+Date:   Thu, 29 Jul 2021 17:10:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210725032002.3961691-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20210725032002.3961691-1-bjorn.andersson@linaro.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 29 Jul 2021 17:08:30 -0700
-Message-ID: <CAF6AEGvADHz7YmOZQTX8g+ZRG1rp7sk9wevgBQsknQytH+eFSA@mail.gmail.com>
-Subject: Re: [PATCH] drm: msm: Add 680 gpu to the adreno gpu list
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210729234443.1713722-1-danielwa@cisco.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 8:21 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> This patch adds a Adreno 680 entry to the gpulist.
+On 7/29/21 4:44 PM, Daniel Walker wrote:
+> From: Balamurugan Selvarajan <balamsel@cisco.com>
+> 
+> For KR port the mii interface is a chip-to-chip
+> interface without a mechanical connector. So PHY
+> inits are not applicable. In this case MAC is
+> configured to operate at forced speed(1000Mbps)
+> and full duplex. Modified driver to accommodate
+> PHY and NON-PHY mode.
+> 
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Balamurugan Selvarajan <balamsel@cisco.com>
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
 
-Looks reasonable, but I wonder if we should just go ahead and add
-adreno_is_a640_family() in a similar vein to
-adreno_is_a650_familiy()/adreno_is_a660_family().. I think most of the
-'if (a640) ...' should also apply to a680?
+You are not adding KR support per-se, you are just hacking the driver so
+it is happy with an unspecified phy_interface_t value and assuming
+1000Mbits/sec, this is not going to work.
 
-BR,
--R
-
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a6xx_gmu.c      |  5 +++--
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 12 +++++++-----
->  drivers/gpu/drm/msm/adreno/a6xx_hfi.c      |  2 +-
->  drivers/gpu/drm/msm/adreno/adreno_device.c | 13 +++++++++++++
->  drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  5 +++++
->  5 files changed, 29 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> index b349692219b7..1c0d75e1189f 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> @@ -521,7 +521,8 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
->
->         if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu))
->                 pdc_in_aop = true;
-> -       else if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu))
-> +       else if (adreno_is_a618(adreno_gpu) || adreno_is_a640(adreno_gpu) ||
-> +                adreno_is_a680(adreno_gpu))
->                 pdc_address_offset = 0x30090;
->         else
->                 pdc_address_offset = 0x30080;
-> @@ -1522,7 +1523,7 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
->                         SZ_16M - SZ_16K, 0x04000);
->                 if (ret)
->                         goto err_memory;
-> -       } else if (adreno_is_a640(adreno_gpu)) {
-> +       } else if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu)) {
->                 ret = a6xx_gmu_memory_alloc(gmu, &gmu->icache,
->                         SZ_256K - SZ_16K, 0x04000);
->                 if (ret)
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index 9c5e4618aa0a..5cdafc6c8bb0 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -683,7 +683,7 @@ static void a6xx_set_ubwc_config(struct msm_gpu *gpu)
->         if (adreno_is_a618(adreno_gpu))
->                 return;
->
-> -       if (adreno_is_a640(adreno_gpu))
-> +       if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu))
->                 amsbc = 1;
->
->         if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu)) {
-> @@ -757,7 +757,7 @@ static bool a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
->          * a660 targets have all the critical security fixes from the start
->          */
->         if (adreno_is_a618(adreno_gpu) || adreno_is_a630(adreno_gpu) ||
-> -               adreno_is_a640(adreno_gpu)) {
-> +           adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu)) {
->                 /*
->                  * If the lowest nibble is 0xa that is an indication that this
->                  * microcode has been patched. The actual version is in dword
-> @@ -897,7 +897,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
->         a6xx_set_hwcg(gpu, true);
->
->         /* VBIF/GBIF start*/
-> -       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu)) {
-> +       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu) ||
-> +           adreno_is_a680(adreno_gpu)) {
->                 gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE0, 0x00071620);
->                 gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE1, 0x00071620);
->                 gpu_write(gpu, REG_A6XX_GBIF_QSB_SIDE2, 0x00071620);
-> @@ -935,7 +936,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
->         gpu_write(gpu, REG_A6XX_UCHE_FILTER_CNTL, 0x804);
->         gpu_write(gpu, REG_A6XX_UCHE_CACHE_WAYS, 0x4);
->
-> -       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu))
-> +       if (adreno_is_a640(adreno_gpu) || adreno_is_a650_family(adreno_gpu) ||
-> +           adreno_is_a680(adreno_gpu))
->                 gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_2, 0x02000140);
->         else
->                 gpu_write(gpu, REG_A6XX_CP_ROQ_THRESHOLDS_2, 0x010000c0);
-> @@ -952,7 +954,7 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
->         */
->         if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu))
->                 gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00300200);
-> -       else if (adreno_is_a640(adreno_gpu))
-> +       else if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu))
->                 gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00200200);
->         else
->                 gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00180000);
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
-> index 919433732b43..df8af237cf6a 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_hfi.c
-> @@ -428,7 +428,7 @@ static int a6xx_hfi_send_bw_table(struct a6xx_gmu *gmu)
->
->         if (adreno_is_a618(adreno_gpu))
->                 a618_build_bw_table(&msg);
-> -       else if (adreno_is_a640(adreno_gpu))
-> +       else if (adreno_is_a640(adreno_gpu) || adreno_is_a680(adreno_gpu))
->                 a640_build_bw_table(&msg);
->         else if (adreno_is_a650(adreno_gpu))
->                 a650_build_bw_table(&msg);
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> index 6dad8015c9a1..799e4a35ca44 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> @@ -300,6 +300,19 @@ static const struct adreno_info gpulist[] = {
->                 .init = a6xx_gpu_init,
->                 .zapfw = "a660_zap.mdt",
->                 .hwcg = a660_hwcg,
-> +       }, {
-> +               .rev = ADRENO_REV(6, 8, 0, ANY_ID),
-> +               .revn = 680,
-> +               .name = "A680",
-> +               .fw = {
-> +                       [ADRENO_FW_SQE] = "a630_sqe.fw",
-> +                       [ADRENO_FW_GMU] = "a640_gmu.bin",
-> +               },
-> +               .gmem = SZ_2M,
-> +               .inactive_period = DRM_MSM_INACTIVE_PERIOD,
-> +               .init = a6xx_gpu_init,
-> +               .zapfw = "a640_zap.mdt",
-> +               .hwcg = a640_hwcg,
->         },
->  };
->
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> index 8dbe0d157520..a7e843e81b1e 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> @@ -258,6 +258,11 @@ static inline int adreno_is_a650_family(struct adreno_gpu *gpu)
->         return gpu->revn == 650 || gpu->revn == 620 || gpu->revn == 660;
->  }
->
-> +static inline int adreno_is_a680(struct adreno_gpu *gpu)
-> +{
-> +       return gpu->revn == 680;
-> +}
-> +
->  int adreno_get_param(struct msm_gpu *gpu, uint32_t param, uint64_t *value);
->  const struct firmware *adreno_request_fw(struct adreno_gpu *adreno_gpu,
->                 const char *fwname);
-> --
-> 2.29.2
->
+Just add KR/backplane properly or use a fixed-link property hardcoded
+for 1000Mbits/sec and be done with it with no hacking, which would be
+just way better than what is proposed here.
+-- 
+Florian
