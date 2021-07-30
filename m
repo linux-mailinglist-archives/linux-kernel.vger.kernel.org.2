@@ -2,446 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4EF3DC0B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084DD3DC0B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 31 Jul 2021 00:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbhG3WER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 18:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhG3WEQ (ORCPT
+        id S232719AbhG3WFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 18:05:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60687 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229709AbhG3WFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:04:16 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E99D6C06175F;
-        Fri, 30 Jul 2021 15:04:09 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id y16-20020a4ad6500000b0290258a7ff4058so2835790oos.10;
-        Fri, 30 Jul 2021 15:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wUP1BgseC6tSB6JNAuINIIrW5cUErVIle+viqWt4Iuo=;
-        b=P9UdE1XewAPggorFpMw/zMxUcpbk8l+M4UkKvLqGtLkEIAO1MbXAOpBRuLFHmu6d42
-         eJY33J9aFqgEQf9ZkmM2bv/V3s9WWJsfRkmNJFV6YIQXnskuayz+A44w5vh33P8HYyMk
-         /1UM0ZQfrCLSvunbXMbMWoGrMforyQiiqCpHrIaMI2z6tOc8PWg0+ha0TIyA5QxZOqMc
-         hsDn/t/uhcqziPMcJCyWQ67AdlYi38rfIbySGl+8QuuqluHHQsyqza6Tfi/eTVI5L+t8
-         tRpFly3VGC7hukiXkwyy2RkkmRSzAtGsvGvdIlACazq4Y8EYfU4bgUWK+LgCpb7V2CMI
-         PnJg==
+        Fri, 30 Jul 2021 18:05:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627682699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MBGBDXfJrYcoK/QqjYITo2GK0WNlQOndEHlJrBe9l38=;
+        b=CPsYZ1Q45CwenMWgxSsUYKBr0c8IhHsOzlwny0EtbLkc6GQLcoM4LBiwfPVAB7DejMEKi/
+        pApxYJ7BlpE7rqnScwtU+3NaRj6FKIonET8Ffa39WspBEap4Pt00Qp6tEc+VCktqLCuLN3
+        7YOzCIKwF3JTjB5W+fwGpikKY+TolB0=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-MqIpmyhWOMOKWyuTTPLpEg-1; Fri, 30 Jul 2021 18:04:58 -0400
+X-MC-Unique: MqIpmyhWOMOKWyuTTPLpEg-1
+Received: by mail-qt1-f197.google.com with SMTP id q10-20020a05622a04cab0290267bc0213a9so5167753qtx.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 15:04:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=wUP1BgseC6tSB6JNAuINIIrW5cUErVIle+viqWt4Iuo=;
-        b=oEWHLtZ6JE60gJWYxkbD6FQsPHlobyRo10pY4FGqSjqRHrf2rZPyyh7W4QV4KEMA4E
-         HIY0j0MBlFAem0qm/cwKIosh6MzSpzDRsdmHFcxUTVrJXIIQglApcp8TSzfTx0ry+Zz1
-         pPps0A8BN3N+g7Zj66y/zAI5uu0h4YTfyef6SaI48zsfve0NRmViz01bxUMzGZxN/Rc2
-         xfBJgPDriIEx9CwUFEmcx396wImL4U2XH7g7b6HmWaWgxSpxvzIdG/dRWuI3MqDGAI1O
-         SKrmsmIAoq9WWUoyK8YZHRvIjn6i423v33tk4nKlT2e10h5rk2H/3jNqP8CtFQ7D8Swf
-         aAvQ==
-X-Gm-Message-State: AOAM532rYBsAENKUcKn8DycGxPQE8uUuJuZ1b0kBku1Nfc56ZxgmVzns
-        PcHdm55MreTIPW4HxnJo7tc=
-X-Google-Smtp-Source: ABdhPJyMBvekK204B3pdaOAubKIaxxGLbkUU6FXTQw39m6gYKgcRxNFKnFTk2O3560uAR2Mtl9SU3w==
-X-Received: by 2002:a4a:3f01:: with SMTP id e1mr3349644ooa.86.1627682649248;
-        Fri, 30 Jul 2021 15:04:09 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c11sm518006otm.37.2021.07.30.15.04.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 15:04:08 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 11/14] hwmon: peci: Add cputemp driver
-To:     "Winiarska, Iwona" <iwona.winiarska@intel.com>,
-        "zweiss@equinix.com" <zweiss@equinix.com>
-Cc:     "corbet@lwn.net" <corbet@lwn.net>,
-        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-References: <20210712220447.957418-1-iwona.winiarska@intel.com>
- <20210712220447.957418-12-iwona.winiarska@intel.com>
- <20210727070651.GP8018@packtop>
- <fb4ace5c357832e8b5131a5e6f8e07ed42c7f634.camel@intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <5613c531-5c6a-c2ec-9081-63db50a108b3@roeck-us.net>
-Date:   Fri, 30 Jul 2021 15:04:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=MBGBDXfJrYcoK/QqjYITo2GK0WNlQOndEHlJrBe9l38=;
+        b=ZTzBUv1Pv2nZP17OWRr+b79t/qVXVbV/oA3snmpBE1ElTgp2a6sGH9ztZZvCAkDCom
+         qppaWLd4v2CRiwyw8pjCsqSnLYS4t6H2gkdjVMkkP9B5tSTeghIRelO0w0yembbyhnw+
+         VmuoCHmOKDCW+sYw/X0vbnTaBQ2gg/RK0Pr0xoJGbzfKCfdmvaotsdclMdryWnXduvpo
+         G/uWymQTBkyIBVt7wM+HGaK2Hapanb6O+Ir0ygU6d/QmHVLH81s+ZDLkmu4b1R2D7eA8
+         D6II8az/S7a2z5+ZmfxSLvrCFQY1hK83x+ZE9yGh/hQnKvOe433iRv3nUA/gk5Lqt5M4
+         G6LA==
+X-Gm-Message-State: AOAM53011EWQR3WfcLPYmKiUbJ0XWpd4w47aK99OLLRPj+fkspa2JZPo
+        QdjRhbmjum+lkHndNYT1ygHLsqBkwr68p9qm5LAhEtw5OBZXpulGA3U4zvDghTUD5qOUgTdBSXr
+        5uNAkmppbiwlal21kWe2uhF+9
+X-Received: by 2002:a37:a907:: with SMTP id s7mr4426103qke.247.1627682697640;
+        Fri, 30 Jul 2021 15:04:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2VCrDGvftm5L4TvkacltSQIYM1l6sE/2yJgSmuDyiEDf3IhZDUxwILuRPsvD5f5MfbbEaXg==
+X-Received: by 2002:a37:a907:: with SMTP id s7mr4426079qke.247.1627682697338;
+        Fri, 30 Jul 2021 15:04:57 -0700 (PDT)
+Received: from t490s.. (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id l12sm1199651qtx.45.2021.07.30.15.04.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 15:04:56 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, peterx@redhat.com,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH v3 0/7] KVM: X86: Some light optimizations on rmap logic
+Date:   Fri, 30 Jul 2021 18:04:48 -0400
+Message-Id: <20210730220455.26054-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <fb4ace5c357832e8b5131a5e6f8e07ed42c7f634.camel@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/21 2:51 PM, Winiarska, Iwona wrote:
-> On Tue, 2021-07-27 at 07:06 +0000, Zev Weiss wrote:
->> On Mon, Jul 12, 2021 at 05:04:44PM CDT, Iwona Winiarska wrote:
->>> Add peci-cputemp driver for Digital Thermal Sensor (DTS) thermal
->>> readings of the processor package and processor cores that are
->>> accessible via the PECI interface.
->>>
->>> The main use case for the driver (and PECI interface) is out-of-band
->>> management, where we're able to obtain the DTS readings from an external
->>> entity connected with PECI, e.g. BMC on server platforms.
->>>
->>> Co-developed-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->>> Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->>> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
->>> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>> ---
->>> MAINTAINERS                  |   7 +
->>> drivers/hwmon/Kconfig        |   2 +
->>> drivers/hwmon/Makefile       |   1 +
->>> drivers/hwmon/peci/Kconfig   |  18 ++
->>> drivers/hwmon/peci/Makefile  |   5 +
->>> drivers/hwmon/peci/common.h  |  46 ++++
->>> drivers/hwmon/peci/cputemp.c | 503 +++++++++++++++++++++++++++++++++++
->>> 7 files changed, 582 insertions(+)
->>> create mode 100644 drivers/hwmon/peci/Kconfig
->>> create mode 100644 drivers/hwmon/peci/Makefile
->>> create mode 100644 drivers/hwmon/peci/common.h
->>> create mode 100644 drivers/hwmon/peci/cputemp.c
->>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index f47b5f634293..35ba9e3646bd 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -14504,6 +14504,13 @@ L:     platform-driver-x86@vger.kernel.org
->>> S:      Maintained
->>> F:      drivers/platform/x86/peaq-wmi.c
->>>
->>> +PECI HARDWARE MONITORING DRIVERS
->>> +M:     Iwona Winiarska <iwona.winiarska@intel.com>
->>> +R:     Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->>> +L:     linux-hwmon@vger.kernel.org
->>> +S:     Supported
->>> +F:     drivers/hwmon/peci/
->>> +
->>> PECI SUBSYSTEM
->>> M:      Iwona Winiarska <iwona.winiarska@intel.com>
->>> R:      Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->>> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
->>> index e3675377bc5d..61c0e3404415 100644
->>> --- a/drivers/hwmon/Kconfig
->>> +++ b/drivers/hwmon/Kconfig
->>> @@ -1507,6 +1507,8 @@ config SENSORS_PCF8591
->>>            These devices are hard to detect and rarely found on mainstream
->>>            hardware. If unsure, say N.
->>>
->>> +source "drivers/hwmon/peci/Kconfig"
->>> +
->>> source "drivers/hwmon/pmbus/Kconfig"
->>>
->>> config SENSORS_PWM_FAN
->>> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
->>> index d712c61c1f5e..f52331f212ed 100644
->>> --- a/drivers/hwmon/Makefile
->>> +++ b/drivers/hwmon/Makefile
->>> @@ -202,6 +202,7 @@ obj-$(CONFIG_SENSORS_WM8350)        += wm8350-hwmon.o
->>> obj-$(CONFIG_SENSORS_XGENE)     += xgene-hwmon.o
->>>
->>> obj-$(CONFIG_SENSORS_OCC)       += occ/
->>> +obj-$(CONFIG_SENSORS_PECI)     += peci/
->>> obj-$(CONFIG_PMBUS)             += pmbus/
->>>
->>> ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
->>> diff --git a/drivers/hwmon/peci/Kconfig b/drivers/hwmon/peci/Kconfig
->>> new file mode 100644
->>> index 000000000000..e10eed68d70a
->>> --- /dev/null
->>> +++ b/drivers/hwmon/peci/Kconfig
->>> @@ -0,0 +1,18 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only
->>> +
->>> +config SENSORS_PECI_CPUTEMP
->>> +       tristate "PECI CPU temperature monitoring client"
->>> +       depends on PECI
->>> +       select SENSORS_PECI
->>> +       select PECI_CPU
->>> +       help
->>> +         If you say yes here you get support for the generic Intel PECI
->>> +         cputemp driver which provides Digital Thermal Sensor (DTS) thermal
->>> +         readings of the CPU package and CPU cores that are accessible via
->>> +         the processor PECI interface.
->>> +
->>> +         This driver can also be built as a module. If so, the module
->>> +         will be called peci-cputemp.
->>> +
->>> +config SENSORS_PECI
->>> +       tristate
->>> diff --git a/drivers/hwmon/peci/Makefile b/drivers/hwmon/peci/Makefile
->>> new file mode 100644
->>> index 000000000000..e8a0ada5ab1f
->>> --- /dev/null
->>> +++ b/drivers/hwmon/peci/Makefile
->>> @@ -0,0 +1,5 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only
->>> +
->>> +peci-cputemp-y := cputemp.o
->>> +
->>> +obj-$(CONFIG_SENSORS_PECI_CPUTEMP)     += peci-cputemp.o
->>> diff --git a/drivers/hwmon/peci/common.h b/drivers/hwmon/peci/common.h
->>> new file mode 100644
->>> index 000000000000..54580c100d06
->>> --- /dev/null
->>> +++ b/drivers/hwmon/peci/common.h
->>> @@ -0,0 +1,46 @@
->>> +/* SPDX-License-Identifier: GPL-2.0-only */
->>> +/* Copyright (c) 2021 Intel Corporation */
->>> +
->>> +#include <linux/types.h>
->>> +
->>> +#ifndef __PECI_HWMON_COMMON_H
->>> +#define __PECI_HWMON_COMMON_H
->>> +
->>> +#define UPDATE_INTERVAL_DEFAULT                HZ
->>> +
->>> +/**
->>> + * struct peci_sensor_data - PECI sensor information
->>> + * @valid: flag to indicate the sensor value is valid
->>> + * @value: sensor value in milli units
->>> + * @last_updated: time of the last update in jiffies
->>> + */
->>> +struct peci_sensor_data {
->>> +       unsigned int valid;
->>
->>  From what I can see it looks like the 'valid' member here is strictly a
->> one-shot has-this-value-ever-been-set indicator, which seems a bit
->> wasteful to keep around forever post initialization; couldn't the same
->> information be inferred from checking last_updated != 0 or something?
-> 
-> That's just expressed in jiffies, which means it can overflow (we're just
-> unlikely to hit it - but IIUC it can happen).
-> Doing it this way would require making sure that last_updated is never set to 0
-> in code that does the update. I don't think it's worth to add more complexity
-> there just to save a couple of bytes.
-> 
-
-Correct. There are ways around that (eg by setting 'last_updated' to some time
-in the past), but that isn't really worth the trouble.
-
-'valid' should be bool, though, not "unsigned int".
-
-Guenter
-
->>
->>> +       s32 value;
->>> +       unsigned long last_updated;
->>> +};
->>> +
->>> +/**
->>> + * peci_sensor_need_update() - check whether sensor update is needed or not
->>> + * @sensor: pointer to sensor data struct
->>> + *
->>> + * Return: true if update is needed, false if not.
->>> + */
->>> +
->>> +static inline bool peci_sensor_need_update(struct peci_sensor_data *sensor)
->>> +{
->>> +       return !sensor->valid ||
->>> +              time_after(jiffies, sensor->last_updated +
->>> UPDATE_INTERVAL_DEFAULT);
->>> +}
->>> +
->>> +/**
->>> + * peci_sensor_mark_updated() - mark the sensor is updated
->>> + * @sensor: pointer to sensor data struct
->>> + */
->>> +static inline void peci_sensor_mark_updated(struct peci_sensor_data
->>> *sensor)
->>> +{
->>> +       sensor->valid = 1;
->>> +       sensor->last_updated = jiffies;
->>> +}
->>> +
->>> +#endif /* __PECI_HWMON_COMMON_H */
->>> diff --git a/drivers/hwmon/peci/cputemp.c b/drivers/hwmon/peci/cputemp.c
->>> new file mode 100644
->>> index 000000000000..56a526471687
->>> --- /dev/null
->>> +++ b/drivers/hwmon/peci/cputemp.c
->>> @@ -0,0 +1,503 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +// Copyright (c) 2018-2021 Intel Corporation
->>> +
->>> +#include <linux/auxiliary_bus.h>
->>> +#include <linux/bitfield.h>
->>> +#include <linux/bitops.h>
->>> +#include <linux/hwmon.h>
->>> +#include <linux/jiffies.h>
->>> +#include <linux/module.h>
->>> +#include <linux/peci.h>
->>> +#include <linux/peci-cpu.h>
->>> +#include <linux/units.h>
->>> +#include <linux/x86/intel-family.h>
->>> +
->>> +#include "common.h"
->>> +
->>> +#define CORE_NUMS_MAX          64
->>> +
->>> +#define DEFAULT_CHANNEL_NUMS   5
->>
->> DEFAULT_ seems like a slightly odd prefix for this (it's not something
->> that can really be overridden or anything); would BASE_ perhaps be a bit
->> more appropriate?
-> 
-> Ack.
-> 
->>
->>> +#define CORETEMP_CHANNEL_NUMS  CORE_NUMS_MAX
->>> +#define CPUTEMP_CHANNEL_NUMS   (DEFAULT_CHANNEL_NUMS +
->>> CORETEMP_CHANNEL_NUMS)
->>> +
->>> +#define TEMP_TARGET_FAN_TEMP_MASK      GENMASK(15, 8)
->>> +#define TEMP_TARGET_REF_TEMP_MASK      GENMASK(23, 16)
->>> +#define TEMP_TARGET_TJ_OFFSET_MASK     GENMASK(29, 24)
->>> +
->>> +#define DTS_MARGIN_MASK                GENMASK(15, 0)
->>> +#define PCS_MODULE_TEMP_MASK   GENMASK(15, 0)
->>> +
->>> +#define DTS_FIXED_POINT_FRACTION       64
->>> +
->>> +struct resolved_cores_reg {
->>> +       u8 bus;
->>> +       u8 dev;
->>> +       u8 func;
->>> +       u8 offset;
->>> +};
->>> +
->>> +struct cpu_info {
->>> +       struct resolved_cores_reg *reg;
->>> +       u8 min_peci_revision;
->>
->> As with the dimmtemp driver, min_peci_revision appears unused here,
->> though in this case if it were removed there'd only be one (pointer)
->> member left in struct cpu_info, so we could perhaps remove it as well
->> and then also a level of indirection in peci_cputemp_ids/cpu_{hsx,icx}
->> too?
-> 
-> As I mentioned in reply to previous patch comment, it'll be used to validate if
-> PECI device revision matches driver requirements.
-> 
->>
->>> +};
->>> +
->>> +struct peci_cputemp {
->>> +       struct peci_device *peci_dev;
->>> +       struct device *dev;
->>> +       const char *name;
->>> +       const struct cpu_info *gen_info;
->>> +       struct {
->>> +               struct peci_sensor_data die;
->>> +               struct peci_sensor_data dts;
->>> +               struct peci_sensor_data tcontrol;
->>> +               struct peci_sensor_data tthrottle;
->>> +               struct peci_sensor_data tjmax;
->>> +               struct peci_sensor_data core[CORETEMP_CHANNEL_NUMS];
->>> +       } temp;
->>> +       const char **coretemp_label;
->>> +       DECLARE_BITMAP(core_mask, CORE_NUMS_MAX);
->>> +};
->>> +
->>> +enum cputemp_channels {
->>> +       channel_die,
->>> +       channel_dts,
->>> +       channel_tcontrol,
->>> +       channel_tthrottle,
->>> +       channel_tjmax,
->>> +       channel_core,
->>> +};
->>> +
->>> +static const char *cputemp_label[DEFAULT_CHANNEL_NUMS] = {
->>
->> static const char * const cputemp_label?  (That is, const pointer to
->> const char, rather than non-const pointer to const char.)
-> 
-> Ack.
-> 
->>
->>> +       "Die",
->>> +       "DTS",
->>> +       "Tcontrol",
->>> +       "Tthrottle",
->>> +       "Tjmax",
->>> +};
->>> +
->>> +static int get_temp_targets(struct peci_cputemp *priv)
->>> +{
->>> +       s32 tthrottle_offset, tcontrol_margin;
->>> +       u32 pcs;
->>> +       int ret;
->>> +
->>> +       /*
->>> +        * Just use only the tcontrol marker to determine if target values
->>> need
->>> +        * update.
->>> +        */
->>> +       if (!peci_sensor_need_update(&priv->temp.tcontrol))
->>> +               return 0;
->>> +
->>> +       ret = peci_pcs_read(priv->peci_dev, PECI_PCS_TEMP_TARGET, 0, &pcs);
->>> +       if (ret)
->>> +               return ret;
->>> +
->>> +       priv->temp.tjmax.value = FIELD_GET(TEMP_TARGET_REF_TEMP_MASK, pcs) *
->>> MILLIDEGREE_PER_DEGREE;
->>> +
->>> +       tcontrol_margin = FIELD_GET(TEMP_TARGET_FAN_TEMP_MASK, pcs);
->>> +       tcontrol_margin = sign_extend32(tcontrol_margin, 7) *
->>> MILLIDEGREE_PER_DEGREE;
->>> +       priv->temp.tcontrol.value = priv->temp.tjmax.value -
->>> tcontrol_margin;
->>> +
->>> +       tthrottle_offset = FIELD_GET(TEMP_TARGET_TJ_OFFSET_MASK, pcs) *
->>> MILLIDEGREE_PER_DEGREE;
->>> +       priv->temp.tthrottle.value = priv->temp.tjmax.value -
->>> tthrottle_offset;
->>> +
->>> +       peci_sensor_mark_updated(&priv->temp.tcontrol);
->>> +
->>> +       return 0;
->>> +}
->>> +
->>> +/*
->>> + * Processors return a value of DTS reading in S10.6 fixed point format
->>> + * (sign, 10 bits signed integer value, 6 bits fractional).
->>
->> This parenthetical reads to me like it's describing 17 bits -- I'm not a
->> PECI expert, but from my reading of the (somewhat skimpy) docs I've got
->> on it I'd suggest a description more like "sign, 9-bit magnitude, 6-bit
->> fraction".
-> 
-> You're right, adding "sign" here was not intentional.
-> I'll change it to:
-> "16 bits: sign, 9-bit magnitude, 6-bit fraction"
-> or
-> "16 bits: 10-bit signed magnitude, 6-bit fraction"
-> 
-> Thanks
-> -Iwona
-> 
+Major change to v3 is to address comments from Sean.=0D
+=0D
+Since I retested the two relevant patches and the numbers changed slightly,=
+ I=0D
+updated the numbers in the two optimization patches to reflect that.  In th=
+e=0D
+latest measurement the 3->15 slots change showed more effect on the speedup=
+.=0D
+Summary:=0D
+=0D
+        Vanilla:      473.90 (+-5.93%)=0D
+        3->15 slots:  366.10 (+-4.94%)=0D
+        Add counter:  351.00 (+-3.70%)=0D
+=0D
+All the numbers are also updated in the commit messages.=0D
+=0D
+To apply the series upon kvm/queue, below patches should be replaced by the=
+=0D
+corresponding patches in this v3:=0D
+=0D
+        KVM: X86: MMU: Tune PTE_LIST_EXT to be bigger=0D
+        KVM: X86: Optimize pte_list_desc with per-array counter=0D
+        KVM: X86: Optimize zapping rmap=0D
+=0D
+The 1st oneliner patch needs to be replaced because the commit message is=0D
+updated with the new numbers so to align all the numbers, the 2nd-3rd patch=
+es=0D
+are for addressing Sean's comments and also with the new numbers.=0D
+=0D
+I didn't repost the initial two patches because they're already in kvm/queu=
+e=0D
+and they'll be identical in content.  Please have a look, thanks.=0D
+=0D
+v2: https://lore.kernel.org/kvm/20210625153214.43106-1-peterx@redhat.com/=0D
+v1: https://lore.kernel.org/kvm/20210624181356.10235-1-peterx@redhat.com/=0D
+=0D
+-- original cover letter --=0D
+=0D
+All things started from patch 1, which introduced a new statistic to keep "=
+max=0D
+rmap entry count per vm".  At that time I was just curious about how many r=
+map=0D
+is there normally for a guest, and it surprised me a bit.=0D
+=0D
+For TDP mappings it's all fine as mostly rmap of a page is either 0 or 1=0D
+depending on faulted or not.  It turns out with EPT=3DN there seems to be a=
+ huge=0D
+number of pages that can have tens or hundreds of rmap entries even for an =
+idle=0D
+guest.  Then I continued with the rest.=0D
+=0D
+To understand better on "how much of those pages", I did patch 2-6 which=0D
+introduced the idea of per-arch per-vm debugfs nodes, and added a debug fil=
+e to=0D
+do statistics for rmap, which is similar to kvm_arch_create_vcpu_debugfs() =
+but=0D
+for vm not vcpu.=0D
+=0D
+I did notice this should be the clean approach as I also see other archs=0D
+randomly create some per-vm debugfs nodes there:=0D
+=0D
+---8<---=0D
+*** arch/arm64/kvm/vgic/vgic-debug.c:=0D
+vgic_debug_init[274]           debugfs_create_file("vgic-state", 0444, kvm-=
+>debugfs_dentry, kvm,=0D
+=0D
+*** arch/powerpc/kvm/book3s_64_mmu_hv.c:=0D
+kvmppc_mmu_debugfs_init[2115]  debugfs_create_file("htab", 0400, kvm->arch.=
+debugfs_dir, kvm,=0D
+=0D
+*** arch/powerpc/kvm/book3s_64_mmu_radix.c:=0D
+kvmhv_radix_debugfs_init[1434] debugfs_create_file("radix", 0400, kvm->arch=
+.debugfs_dir, kvm,=0D
+=0D
+*** arch/powerpc/kvm/book3s_hv.c:=0D
+debugfs_vcpu_init[2395]        debugfs_create_file("timings", 0444, vcpu->a=
+rch.debugfs_dir, vcpu,=0D
+=0D
+*** arch/powerpc/kvm/book3s_xics.c:=0D
+xics_debugfs_init[1027]        xics->dentry =3D debugfs_create_file(name, 0=
+444, powerpc_debugfs_root,=0D
+=0D
+*** arch/powerpc/kvm/book3s_xive.c:=0D
+xive_debugfs_init[2236]        xive->dentry =3D debugfs_create_file(name, S=
+_IRUGO, powerpc_debugfs_root,=0D
+=0D
+*** arch/powerpc/kvm/timing.c:=0D
+kvmppc_create_vcpu_debugfs[214] debugfs_file =3D debugfs_create_file(dbg_fn=
+ame, 0666, kvm_debugfs_dir,=0D
+---8<---=0D
+=0D
+PPC even has its own per-vm dir for that.  I think if patch 2-6 can be=0D
+considered to be accepted then the next thing to consider is to merge all t=
+hese=0D
+usages to be under the same existing per-vm dentry with their per-arch hook=
+s=0D
+introduced.=0D
+=0D
+The last 3 patches (patch 7-9) are a few optimizations of existing rmap log=
+ic.=0D
+The major test case I used is rmap_fork [1], however it's not really the id=
+eal=0D
+one to show their effect for sure as that test I wrote covers both=0D
+rmap_add/remove, while I don't have good idea on optimizing rmap_remove wit=
+hout=0D
+changing the array structure or adding much overhead (e.g. sort the array, =
+or=0D
+making a tree-like structure somehow to replace the array list).  However i=
+t=0D
+already shows some benefit with those changes, so I post them out.=0D
+=0D
+Applying patch 7-8 will bring a summary of 38% perf boost when I fork 500=0D
+childs with the test I used.  Didn't run perf test on patch 9.  More in the=
+=0D
+commit log.=0D
+=0D
+Please review, thanks.=0D
+=0D
+[1] https://github.com/xzpeter/clibs/commit/825436f825453de2ea5aaee4bdb1c92=
+281efe5b3=0D
+=0D
+Peter Xu (7):=0D
+  KVM: Allow to have arch-specific per-vm debugfs files=0D
+  KVM: X86: Introduce pte_list_count() helper=0D
+  KVM: X86: Introduce kvm_mmu_slot_lpages() helpers=0D
+  KVM: X86: Introduce mmu_rmaps_stat per-vm debugfs file=0D
+  KVM: X86: MMU: Tune PTE_LIST_EXT to be bigger=0D
+  KVM: X86: Optimize pte_list_desc with per-array counter=0D
+  KVM: X86: Optimize zapping rmap=0D
+=0D
+ arch/x86/kvm/mmu/mmu.c          |  98 +++++++++++++++++-------=0D
+ arch/x86/kvm/mmu/mmu_internal.h |   1 +=0D
+ arch/x86/kvm/x86.c              | 130 +++++++++++++++++++++++++++++++-=0D
+ include/linux/kvm_host.h        |   1 +=0D
+ virt/kvm/kvm_main.c             |  20 ++++-=0D
+ 5 files changed, 221 insertions(+), 29 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
 
