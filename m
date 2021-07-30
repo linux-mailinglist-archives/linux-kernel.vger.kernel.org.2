@@ -2,267 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B818B3DBA84
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907693DBA83
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 16:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239575AbhG3OY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 10:24:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:42702 "EHLO foss.arm.com"
+        id S239790AbhG3OYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 10:24:05 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:10649 "EHLO smtp2.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239594AbhG3OXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:23:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7C106D;
-        Fri, 30 Jul 2021 07:23:43 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.13.245])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 34B513F70D;
-        Fri, 30 Jul 2021 07:23:42 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 15:23:36 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Yuchen Wei <weiyuchen3@huawei.com>, catalin.marinas@arm.com,
-        vincenzo.frascino@arm.com, keescook@chromium.org, pcc@google.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        He Zhe <zhe.he@windriver.com>
-Subject: Re: [PATCH] arm64: audit: fix return value high 32bit truncation
- problem
-Message-ID: <20210730142336.GA19569@C02TD0UTHF1T.local>
-References: <20210722060707.531-1-weiyuchen3@huawei.com>
- <20210730122236.GE23589@willie-the-truck>
+        id S239471AbhG3OV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 10:21:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1627654913;
+  x=1659190913;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=GHPMChsYrdUbgtvP/8bEvC7/AuXf6mJFF5tzdRVyFJY=;
+  b=F94ZFbFosgw96/lWy8zwyYP/PMHK5uMhRMOlYjx9S8DJtbBsRGEQwfBG
+   uhEqeDd191JjgQ4IxFTwj2wVTaitpqH7sx+wu+SLfshGQVavCoNrEi7+z
+   HszfNadaxHGWOM1bI49X1jTYyx941SeYaRO0SFAhdAhfqH/Wlrrp1GnfO
+   Duzrc3KM76jZTEm3yIA5YySZ+7l+G8T3Rbg38J3gSfrgp4X4UzV91E4Ag
+   XIkszCVeMsdsOsnbYUBzpfrLgy3TdtNyyOkwXQ5+KsLL/Vs+W9h8QkmIH
+   CUYoAfuj9FpMKuFUSMHBH+WF9My3OS/2OicKRKzgXsM6jSM9sPVJ9ZlOX
+   Q==;
+Subject: Re: [PATCH v2] tpm: Add Upgrade/Reduced mode support for TPM2 modules
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Borys Movchan <Borys.Movchan@axis.com>
+CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        kernel <kernel@axis.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210728105730.10170-1-borysmn@axis.com>
+ <20210728215819.vsdwh2fbct7wxwsu@kernel.org>
+From:   Borys Movchan <borysmn@axis.com>
+Message-ID: <b12dad90-c9ed-2331-7e96-78ca5c3994e8@axis.com>
+Date:   Fri, 30 Jul 2021 16:24:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730122236.GE23589@willie-the-truck>
+In-Reply-To: <20210728215819.vsdwh2fbct7wxwsu@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail07w.axis.com
+ (10.20.40.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 7/28/21 11:58 PM, Jarkko Sakkinen wrote:
+ > On Wed, Jul 28, 2021 at 12:57:30PM +0200, Borys Movchan wrote:
+ > > If something went wrong during the TPM firmware upgrade,
+ > > like power failure or the firmware image file get corrupted,
+ > > the TPM might end up in Upgrade or Failure mode upon the
+ > > next start. The state is persistent between the TPM power
+ > > cycle/restart.
+ > >
+ > > According to TPM specification:
+ > >  * If the TPM is in Upgrade mode, it will answer with
+ > >    TPM2_RC_UPGRADE to all commands except Field Upgrade
+ > >    related ones.
+ > >  * If the TPM is in Failure mode, it will allow performing
+ > >    TPM initialization but will not provide any crypto
+ > >    operations. Will happily respond to Field Upgrade calls.
+ > >
+ > > The fix adds the possibility to detect an active state of
+ > > the TPM and gives the user-space a chance to finish the
+ > > firmware upgrade/recover the TPM.
+ >
+ > This is different than telling what the patch does. It's just
+ > describing a goal, but does not describe how the driver is
+ > changed, and reasons for doing that.
+ >
+ > For instance, you check 'limited_mode' flag in a few sites.
+ > How can I know that those are exactly the locations where this
+ > needs to be done?
+ >
 
-[adding He Zhe]
+Seems like I got what you are looking for. Let me try to explain the 
+reasoning
+and doubts regarding what I meant under my change.
 
-On Fri, Jul 30, 2021 at 01:22:37PM +0100, Will Deacon wrote:
-> On Thu, Jul 22, 2021 at 02:07:07PM +0800, Yuchen Wei wrote:
-> > From: weiyuchen <weiyuchen3@huawei.com>
-> > 
-> > Add error code judgment in invoke_syscall() to prevent kernel
-> > components such as audit and tracepoint from obtaining incorrect
-> > return values. For example:
-> > 
-> > type=SYSCALL msg=audit(342.780:69): arch=40000028 syscall=235
-> > success=yes exit=4294967235
-> > 
-> > The syscall return value is -61, but due to the following process in
-> > invoke_syscall():
-> > 
-> > 	if (is_compat_task())
-> > 		ret = lower_32_bits(ret);
-> > 	regs->regs[0] = ret;
-> > 
-> > The return value audit or tracepoint get from regs[0] is 4294967235,
-> > which is an incorrect return value.
-> > 
-> > Signed-off-by: weiyuchen <weiyuchen3@huawei.com>
-> > ---
-> >  arch/arm64/kernel/syscall.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-> > index 263d6c1a525f..f9f042d9a088 100644
-> > --- a/arch/arm64/kernel/syscall.c
-> > +++ b/arch/arm64/kernel/syscall.c
-> > @@ -54,7 +54,7 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
-> >  		ret = do_ni_syscall(regs, scno);
-> >  	}
-> >  
-> > -	if (is_compat_task())
-> > +	if (is_compat_task() && !IS_ERR_VALUE(ret))
-> >  		ret = lower_32_bits(ret);
-> 
-> Hmm, I'm worried this might break other users who don't expect to see
-> non-zero bits for the upper 32-bits of a compat task.
-> 
-> Mark -- I remember you looking into this relatively recently. Where did you
-> get to with it?
+According to my previous comments the reason of the change is to provide 
+a way
+to user-space application to safely perform the TPM firmware update and 
+cover
+all corner cases like power failure, corrupted firmware image, bad
+communication channel and so on.
 
-Sorry, I've been meaning to chase this up for a bit.
+In original implementation, if TPM is in Upgrade or Failure (some 
+vendors call
+it Reduced) mode the driver will simple fail during initialization and 
+will not
+provide any conventional way for the user-space application to address the
+situation.
 
-There are a few problems here, but I think we can solve them all (patch
-below).
+So the fix changes the behavior of `tpm_chip_start` function in a way 
+that it
+will try to distinguish between actual TPM start failure and  having TPM in
+Upgrade/Failure mode.
 
-Generally, syscall_get_return_value() should be used to get syscall
-return values, and this *should* always sign-extend compat values to 64
-bits (but arm64's implementation currently doesn't).
+The Upgrade mode is easy to distinguish. According to the TPM 
+specification, in
+this mode the TPM will answer to only 2 calls: 
+`TPM_CC_FieldUpgradeStart` and
+`TPM_CC_FieldUpgradeData`. It will respond `TPM_RC_UPGRADE` to any other 
+call.
 
-Audit currently uses regs_return_value() rather than
-syscall_get_return_value(). That's mostly for historical reasons, but
-some architectures don't implement syscall_get_return_value() at the
-moment, so we'll have to bodge regs_return_value() on arm64 for now. On
-32-bit arm regs_return_value() returns a long, and so is sign-extended.
+Failure mode, as mentioned earlier, a bit trickier, but possible to detect.
+In this mode very limited functionality is supported as TPM runs some 
+form of
+fallback firmware or in fallback mode due to failure of upgrade. Different
+vendors implement it slightly different. The way how the fix tries to 
+address
+this mode is by making sure that `TPM_CC_SelfTest` and `TPM_CC_Startup` are
+executed correctly but all the consequent calls to address crypto 
+functionality
+of the TPM are failing. In other words, functions like 
+`tpm2_get_cc_attrs_tbl`,
+`tpm_add_hwrng` and `tpm_get_pcr_allocation` will fail.
 
-On 32-bit arm, since syscall_get_return_value() returns a long, it'll
-get sign-extended (whether returning an errno or a pointer in the high
-2GiB), and we should do the same for compat. We can shuffle
-syscall_get_return_value() and syscall_get_error() to handle that.
+Below you also can find more detailed comments inline regarding every 
+part of
+the change.
 
-There are a few places we directly assign to the regs where we need to
-truncate the assignment. We can use syscall_set_return_value() to do
-that for us.
+Important to note that the fix addresses only TPM2.0 compatible devices 
+as that
+is what I am working with.
 
-I think for now, the below should be sufficient for arm64, and we can
-chase that up with some cleanup to the core audit code to use
-syscall_get_return_value().
+ > > Signed-off-by: Borys Movchan <borysmn@axis.com>
+ > > ---
+ > >
+ > > Notes:
+ > >     v2: The terms are changed to match the ones used in the TPM 
+specification.
+ > >     Rework the commit message to provide more details regarding TPM
+ > >     behavior in Failure/Upgrade mode.
+ > >
+ > >     The TPM specification describes TPM behavior in Upgrade mode 
+very clearly.
+ > >     Things are a bit more complex if we are talking about Failure mode.
+ > >     The TPM behavior in this mode is highly vendor-specific. 
+Although, there
+ > >     is one thing clearly described in the TPM specification and can 
+be relied
+ > >     on to detect the Failure state: in Failure mode, the TPM 
+doesn't provide
+ > >     any crypto operations. Including access to attributes and 
+configuration
+ > >     registers.
+ > >     It seems persistent between different TPM manufacturers, at 
+least to the
+ > >     degree I was able to verify.
+ > >
+ > >  drivers/char/tpm/tpm-chip.c | 23 +++++++++++++++--------
+ > >  drivers/char/tpm/tpm2-cmd.c | 12 ++++++++++--
+ > >  include/linux/tpm.h         |  1 +
+ > >  3 files changed, 26 insertions(+), 10 deletions(-)
+ > >
+ > > diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+ > > index ddaeceb7e109..ff2367c447fb 100644
+ > > --- a/drivers/char/tpm/tpm-chip.c
+ > > +++ b/drivers/char/tpm/tpm-chip.c
+ > > @@ -574,20 +574,25 @@ static int tpm_get_pcr_allocation(struct 
+tpm_chip *chip)
+ > >  int tpm_chip_register(struct tpm_chip *chip)
+ > >  {
+ > >        int rc;
+ > > +     bool limited_mode = false;
 
-Thanks,
-Mark.
----->8----
-From 20131e3e51e4b6034e11df044ae916a853be43de Mon Sep 17 00:00:00 2001
-From: Mark Rutland <mark.rutland@arm.com>
-Date: Fri, 30 Jul 2021 15:12:41 +0100
-Subject: [PATCH] arm64: fix compat syscall return truncation
+Introduce this flat to mark that TPM is in Upgrade/Failure mode and the
+functionality is limited.
 
-TODO: explain this.
+ > >
+ > >        rc = tpm_chip_start(chip);
+ > >        if (rc)
+ > >                return rc;
+ > >        rc = tpm_auto_startup(chip);
+ > > -     if (rc) {
+ > > +     if (rc == -EIO) {
+ > > +             limited_mode = true;
+ > > +     } else if (rc) {
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: He Zhe <zhe.he@windriver.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: weiyuchen <weiyuchen3@huawei.com>
----
- arch/arm64/include/asm/ptrace.h  | 12 +++++++++++-
- arch/arm64/include/asm/syscall.h | 19 ++++++++++---------
- arch/arm64/kernel/ptrace.c       |  2 +-
- arch/arm64/kernel/signal.c       |  3 ++-
- arch/arm64/kernel/syscall.c      |  9 +++------
- 5 files changed, 27 insertions(+), 18 deletions(-)
+As described earlier, during startup we can distinguish what mode TPM is
+running in.
 
-diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
-index e58bca832dff..41b332c054ab 100644
---- a/arch/arm64/include/asm/ptrace.h
-+++ b/arch/arm64/include/asm/ptrace.h
-@@ -320,7 +320,17 @@ static inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
- 
- static inline unsigned long regs_return_value(struct pt_regs *regs)
- {
--	return regs->regs[0];
-+	unsigned long val = regs->regs[0];
-+
-+	/*
-+	 * Audit currently uses regs_return_value() instead of
-+	 * syscall_get_return_value(). Apply the same sign-extension here until
-+	 * audit is updated to use syscall_get_return_value().
-+	 */
-+	if (compat_user_mode(regs))
-+		val = sign_extend64(val, 31);
-+
-+	return val;
- }
- 
- static inline void regs_set_return_value(struct pt_regs *regs, unsigned long rc)
-diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
-index cfc0672013f6..03e20895453a 100644
---- a/arch/arm64/include/asm/syscall.h
-+++ b/arch/arm64/include/asm/syscall.h
-@@ -29,22 +29,23 @@ static inline void syscall_rollback(struct task_struct *task,
- 	regs->regs[0] = regs->orig_x0;
- }
- 
--
--static inline long syscall_get_error(struct task_struct *task,
--				     struct pt_regs *regs)
-+static inline long syscall_get_return_value(struct task_struct *task,
-+					    struct pt_regs *regs)
- {
--	unsigned long error = regs->regs[0];
-+	unsigned long val = regs->regs[0];
- 
- 	if (is_compat_thread(task_thread_info(task)))
--		error = sign_extend64(error, 31);
-+		val = sign_extend64(val, 31);
- 
--	return IS_ERR_VALUE(error) ? error : 0;
-+	return val;
- }
- 
--static inline long syscall_get_return_value(struct task_struct *task,
--					    struct pt_regs *regs)
-+static inline long syscall_get_error(struct task_struct *task,
-+				     struct pt_regs *regs)
- {
--	return regs->regs[0];
-+	unsigned long error = syscall_get_return_value(task, regs);
-+
-+	return IS_ERR_VALUE(error) ? error : 0;
- }
- 
- static inline void syscall_set_return_value(struct task_struct *task,
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 499b6b2f9757..b381a1ee9ea7 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1862,7 +1862,7 @@ void syscall_trace_exit(struct pt_regs *regs)
- 	audit_syscall_exit(regs);
- 
- 	if (flags & _TIF_SYSCALL_TRACEPOINT)
--		trace_sys_exit(regs, regs_return_value(regs));
-+		trace_sys_exit(regs, syscall_get_return_value(current, regs));
- 
- 	if (flags & (_TIF_SYSCALL_TRACE | _TIF_SINGLESTEP))
- 		tracehook_report_syscall(regs, PTRACE_SYSCALL_EXIT);
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index 53c2c85efb34..62e273b2d83f 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -29,6 +29,7 @@
- #include <asm/unistd.h>
- #include <asm/fpsimd.h>
- #include <asm/ptrace.h>
-+#include <asm/syscall.h>
- #include <asm/signal32.h>
- #include <asm/traps.h>
- #include <asm/vdso.h>
-@@ -890,7 +891,7 @@ static void do_signal(struct pt_regs *regs)
- 		     retval == -ERESTART_RESTARTBLOCK ||
- 		     (retval == -ERESTARTSYS &&
- 		      !(ksig.ka.sa.sa_flags & SA_RESTART)))) {
--			regs->regs[0] = -EINTR;
-+			syscall_set_return_value(current, regs, -EINTR, 0);
- 			regs->pc = continue_addr;
- 		}
- 
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index 263d6c1a525f..50a0f1a38e84 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -54,10 +54,7 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- 		ret = do_ni_syscall(regs, scno);
- 	}
- 
--	if (is_compat_task())
--		ret = lower_32_bits(ret);
--
--	regs->regs[0] = ret;
-+	syscall_set_return_value(current, regs, 0, ret);
- 
- 	/*
- 	 * Ultimately, this value will get limited by KSTACK_OFFSET_MAX(),
-@@ -115,7 +112,7 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
- 		 * syscall. do_notify_resume() will send a signal to userspace
- 		 * before the syscall is restarted.
- 		 */
--		regs->regs[0] = -ERESTARTNOINTR;
-+		syscall_set_return_value(current, regs, -ERESTARTNOINTR, 0);
- 		return;
- 	}
- 
-@@ -136,7 +133,7 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
- 		 * anyway.
- 		 */
- 		if (scno == NO_SYSCALL)
--			regs->regs[0] = -ENOSYS;
-+			syscall_set_return_value(current, regs, -ENOSYS, 0);
- 		scno = syscall_trace_enter(regs);
- 		if (scno == NO_SYSCALL)
- 			goto trace_exit;
--- 
-2.11.0
+So check the return value here and set limited_mode flag accordingly.
+
+I am not sure that returning one of the errno values here is good choice
+as it might correlate with legit error returned by hardware 
+communication layer.
+Any comments/suggestions are welcome.
+
+ > >                tpm_chip_stop(chip);
+ > >                return rc;
+ > >        }
+ > >
+ > > -     rc = tpm_get_pcr_allocation(chip);
+ > > -     tpm_chip_stop(chip);
+ > > -     if (rc)
+ > > -             return rc;
+ > > +     if (!limited_mode) {
+ > > +             rc = tpm_get_pcr_allocation(chip);
+ > > +             tpm_chip_stop(chip);
+ > > +             if (rc)
+ > > +                     return rc;
+ > > +     }
+
+As mentioned above, if TPM is in Upgrade/Failure mode, the call to
+tpm_get_pcr_allocation will 100% fail, so avoid calling it.
+
+ > >
+ > >        tpm_sysfs_add_device(chip);
+ > >
+ > > @@ -595,9 +600,11 @@ int tpm_chip_register(struct tpm_chip *chip)
+ > >
+ > >        tpm_add_ppi(chip);
+ > >
+ > > -     rc = tpm_add_hwrng(chip);
+ > > -     if (rc)
+ > > -             goto out_ppi;
+ > > +     if (!limited_mode) {
+ > > +             rc = tpm_add_hwrng(chip);
+ > > +             if (rc)
+ > > +                     goto out_ppi;
+ > > +     }
+
+Same as with tpm_get_pcr_allocation. Call to tpm_add_hwrng will fail when
+limited_mode is set to true;
+
+ > >
+ > >        rc = tpm_add_char_device(chip);
+ > >        if (rc)
+ > > diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
+ > > index a25815a6f625..7468353ed67d 100644
+ > > --- a/drivers/char/tpm/tpm2-cmd.c
+ > > +++ b/drivers/char/tpm/tpm2-cmd.c
+ > > @@ -718,7 +718,8 @@ static int tpm2_startup(struct tpm_chip *chip)
+ > >   *                     sequence
+ > >   * @chip: TPM chip to use
+ > >   *
+ > > - * Returns 0 on success, < 0 in case of fatal error.
+ > > + * Returns 0 on success, -ENODEV in case of fatal error,
+ > > + *       -EIO in case of Reduced/Upgrade mode
+ > >   */
+ > >  int tpm2_auto_startup(struct tpm_chip *chip)
+ > >  {
+ > > @@ -729,7 +730,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
+ > >                goto out;
+ > >
+ > >        rc = tpm2_do_selftest(chip);
+ > > -     if (rc && rc != TPM2_RC_INITIALIZE)
+ > > +     if (rc == TPM2_RC_UPGRADE) {
+ > > +             rc = -EIO;
+ > > +             goto out;
+ > > +     } else if (rc && rc != TPM2_RC_INITIALIZE)
+
+Checking explicitly if TPM is in Upgrade mode. If it is, return immediately
+as all other calls (except Firmware upgrade ones) to TPM will be failing.
+
+ > >                goto out;
+ > >
+ > >        if (rc == TPM2_RC_INITIALIZE) {
+ > > @@ -743,6 +747,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
+ > >        }
+ > >
+ > >        rc = tpm2_get_cc_attrs_tbl(chip);
+ > > +     if (rc) { /* Succeeded until here, but failed -> reduced mode */
+ > > +             rc = -EIO;
+ > > +             goto out;
+ > > +     }
+
+If execution context reaches this point but fails here, the conclusion 
+can be
+drawn that that TPM is in Failure mode and needs recovery. Indicate it by
+settings appropriate return value and exit.
+
+ > >
+ > >  out:
+ > >        if (rc > 0)
+ > > diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+ > > index aa11fe323c56..e873c42907f0 100644
+ > > --- a/include/linux/tpm.h
+ > > +++ b/include/linux/tpm.h
+ > > @@ -207,6 +207,7 @@ enum tpm2_return_codes {
+ > >        TPM2_RC_INITIALIZE      = 0x0100, /* RC_VER1 */
+ > >        TPM2_RC_FAILURE         = 0x0101,
+ > >        TPM2_RC_DISABLED        = 0x0120,
+ > > +     TPM2_RC_UPGRADE         = 0x012D,
+ > >        TPM2_RC_COMMAND_CODE    = 0x0143,
+ > >        TPM2_RC_TESTING         = 0x090A, /* RC_WARN */
+ > >        TPM2_RC_REFERENCE_H0    = 0x0910,
+ > > --
+ > > 2.20.1
+ > >
+ > >
+
+Hope that's give a bit more light to what is it all about. Let me know 
+if you
+have any other questions, I would be glad to help.
+
+ >
+ > /Jarkko
+
+Kind regards,
+Borys
 
