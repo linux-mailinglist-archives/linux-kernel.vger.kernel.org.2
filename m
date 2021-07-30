@@ -2,243 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78443DBD8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FDC3DBD8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhG3RRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 13:17:03 -0400
-Received: from smtp-36.italiaonline.it ([213.209.10.36]:48425 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229761AbhG3RRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:17:01 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([79.45.223.112])
-        by smtp-36.iol.local with ESMTPA
-        id 9W7tmvxuai9pC9W7xmkmuu; Fri, 30 Jul 2021 19:16:55 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1627665415; bh=byHMCPhGZ+GTEHiz8XqPFAP8SrcBPUm0jTW9VfwGYOY=;
-        h=From;
-        b=Ben7FH+9T6DVWKZOGqC/MWsm5wIS4XKn54DitfWke9aeyEojXFhEOlqu6M20AM1KD
-         JbaQpdOfxOOtpfYwpdVj6iAuGXyjI/sOsP5TLWWvxRX21XXXNeqTPesIQIs5Mf5g6C
-         dBfoUipL16tuJVLA4s4f41C22AG9Hgzx0ccmDmmEITY58HZ7aDS1AygE8P6QXJgh+u
-         R19WwlxWx6OqGbv3Dom87u8fiBRjPKvs+QioXHKh2GGhyR2X+84WwVa0bVLpJ1bo8/
-         T86nSLUksveG3sBao4pJxCMBCcdCHRzqR+jlE6QDD9cn97q8MDVqHqnNt5tEwqGkq3
-         Uz/G1pyd1V5Bg==
-X-CNFS-Analysis: v=2.4 cv=RqYAkAqK c=1 sm=1 tr=0 ts=61043407 cx=a_exe
- a=bNRYHniHET+FA3QFAnazSw==:117 a=bNRYHniHET+FA3QFAnazSw==:17 a=gEfo2CItAAAA:8
- a=faqJUPsDrVUeZvGr8DYA:9 a=Sf5sUmNcCa837iNl:21 a=jsU-foglF0TQYXlV:21
- a=sptkURWiP4Gy88Gu7hUp:22
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v3] dt-bindings: net: can: c_can: convert to json-schema
-Date:   Fri, 30 Jul 2021 19:16:46 +0200
-Message-Id: <20210730171646.2406-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfNEl38DIm46sYo5x2RN/cpQMMGVk1GQcqlOmoXyZIRQM6+rUaKxqIilWxWW/3wXJxChimr3dTLjccutauXzSnJAjrrRuLYRd3JVRHgy1Fk4JF5iIS1EJ
- h/lqDBxiHdDd2u5G5X643k8ag0Z/i9+CGmL+uoSfsPXKk5Nc8JoOiFVRfPDH1OYTmK+g9C1S+vBlgeWSnHznmYukabZUXwr0JuSrxaP+zbK5L5LBCdf9qXp1
- Ysp6yUTRuXjXlT3Yk9Mgp5Ypl+olmWHnxUJhPyfmf5AZEuGln+LIL0t0zuxBaxrM+M6WlIhh1nwzUQqdZ23BfxMe3bLtMifsPRgMqy9piR8kOAzX6od1+MO1
- VrODlPpaYpYxUX1GOhb51aMVtAVXsNPjKh7h/nfwjB87YsAu0w9m8w+hmebudyyoYhY2HXr8lO3xVv76wY0vV6xGy9JdNgd00czyZrrKRK4S2J/EtUienJik
- 4dlaMUzLTYXvMo3OYYobGFG21BAfVDGr6UtkiGdg1DdneSu31vv+8VD+yxo=
+        id S230177AbhG3RSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 13:18:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229761AbhG3RSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 13:18:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A979A60E93;
+        Fri, 30 Jul 2021 17:18:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627665480;
+        bh=DRo2yjn7ZjhRYqZjBVZhU9wmXQ2e5A7P6sYXN+gy2Xg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=N17uVNCC1eq49CzR7MVriN7QvmU63JmO5hqP3lk3ENc7HGl7UOTrzM/J3BB1/0CNA
+         XwlWfguUdZfibXW1vjVTBbZEnAXJxcEK4uRvY4CR86XIbkZlHe9jQ8NZB8FNjRHpL7
+         Ox7KkqAYH6e97+hh+IjgYmolXJKHk/igJTHSXYa6D9/84Qroe7/crM7VCg6Lr2fsWo
+         QRyZpL9JLkMivb1XoKOCDij/lN6PvhW68wPRE97hGcc34d4qI0/gpXAeoTxaSafOn6
+         fegTw0jArKf/Q3mzD2EDvOIDGItEtpk0ae54QwdCHOYWcc9G3adFut8WWK9PXX+9mI
+         IqzhSBwFflGcg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 72B6E5C06D1; Fri, 30 Jul 2021 10:18:00 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 10:18:00 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH rcu 04/18] rcu: Weaken ->dynticks accesses and updates
+Message-ID: <20210730171800.GH4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-4-paulmck@kernel.org>
+ <YQJfjFv8lOnkUkhs@boqun-archlinux>
+ <20210729105331.GA301667@lothringen>
+ <YQOUmZmAZQIhjEWC@boqun-archlinux>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQOUmZmAZQIhjEWC@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Bosch C_CAN/D_CAN controller device tree binding
-documentation to json-schema.
+On Fri, Jul 30, 2021 at 01:56:41PM +0800, Boqun Feng wrote:
+> On Thu, Jul 29, 2021 at 12:53:31PM +0200, Frederic Weisbecker wrote:
+> > On Thu, Jul 29, 2021 at 03:58:04PM +0800, Boqun Feng wrote:
+> > > > The following litmus test, also adapted from the one supplied off-list
+> > > > by Frederic Weisbecker, models the RCU grace-period kthread detecting
+> > > > a non-idle CPU that is concurrently transitioning to idle:
+> > > > 
+> > > > 	C dynticks-into-idle
+> > > > 
+> > > > 	{
+> > > > 		DYNTICKS=1; (* Initially non-idle. *)
+> > > > 	}
+> > > > 
+> > > > 	P0(int *X, int *DYNTICKS)
+> > > > 	{
+> > > > 		int dynticks;
+> > > > 
+> > > > 		// Non-idle.
+> > > > 		WRITE_ONCE(*X, 1);
+> > > > 		dynticks = READ_ONCE(*DYNTICKS);
+> > > > 		smp_store_release(DYNTICKS, dynticks + 1);
+> > > > 		smp_mb();
+> > > 
+> > > this smp_mb() is not needed, as we rely on the release-acquire pair to
+> > > provide the ordering.
+> > > 
+> > > This means that if we use different implementations (one w/ smp_mb(),
+> > > another w/o) rcu_dynticks_inc() for idle-to-nonidle and nonidle-to-idle,
+> > > we could save a smp_mb(). Thoughts?
+> > 
+> > That's exactly what I wanted to propose but everybody was sober. Namely order
+> > only the RCU read side critical sections before/after idle together:
+> > 
+> >      READ side critical section
+> >      //enter idle
+> >      //exit idle
+> >      smp_mb()
+> >      READ side critical section
+> > 
+> > instead of ordering the RCU read side critical section before idle - with the RCU
+> > idle extended quiescent state - with the RCU read side critical section after idle:
+> > 
+> >      READ side critical section
+> >      //enter idle
+> >      smp_mb();
+> >      //exit idle
+> >      smp_mb()
+> >      READ side critical section
+> > 
+> > So the side effect now is that if the write side waits for the reader to
+> > report a quiescent state and scans its dynticks state and see it's not yet in
+> > RCU idle mode, then later on when the read side enters in RCU idle mode we
+> > expect it to see the write side updates.
+> > But after the barrier removal the reader will only see the write side update
+> > once we exit RCU idle mode.
+> > 
+> > So the following may happen:
+> > 
+> > 	P0(int *X, int *Y, int *DYNTICKS)
+> > 	{
+> > 		int y;
+> > 
+> > 		WRITE_ONCE(*X, 1);
+> > 		smp_store_release(DYNTICKS, 1); // rcu_eqs_enter
+> > 		//smp_mb() not there anymore
+> > 		y = READ_ONCE(*Y);
+> > 		smp_store_release(DYNTICKS, 2); // rcu_eqs_exit()
+> > 		smp_mb();
+> > 	}
+> > 
+> > 	P1(int *X, int *Y, int *DYNTICKS)
+> > 	{
+> > 		int x;
+> > 		int dynticks;
+> > 		
+> > 		WRITE_ONCE(*Y, 1);
+> > 		smp_mb();
+> > 		dynticks = smp_load_acquire(DYNTICKS);
+> > 		x = READ_ONCE(*X);
+> > 	}
+> > 
+> > 	exists (1:x=0 /\ 0:y=0)
+> > 
+> 
+> Thanks for the detailed explanation ;-)
+> 
+> > Theoretically it shouldn't matter because the RCU idle mode isn't
+> > supposed to perform RCU reads. But theoretically again once a CPU
+> 
+> Right, in LOCKDEP=y kernel, rcu_read_lock_held() requires
+> rcu_is_watching(), so rcu_dereference() is not allowed in idle mode,
+> unless using RCU_NONIDLE() or rcu_irq_enter_irqson() to temporarily exit
+> the idle mode.
+> 
+> > has reported a quiescent state, any further read is expected to see
+> > the latest updates from the write side.
+> 
+> Yes, but in your above case, doesn't P0 already reach to a quiescent
+> state even before WRITE_ONCE()? IOW, that case is similar to the
+> following:
+> 
+> 	P0(int *X, int *Y)
+> 	{
+> 		// in QS
+> 
+> 		WRITE_ONCE(*X, 1);
+> 		y = READ_ONCE(*Y);
+> 	}
+> 
+> 	P1(int *X, int *Y)
+> 	{
+> 		WRITE_ONCE(*Y, 1);
+> 		synchronize_rcu();
+> 		x = READ_ONCE(*X);
+> 	}
+> 
+> 	exists (1:x=0 /\ 0:y=0)
+> 
+> And RCU doesn't guarantee the READ_ONCE() on P0 sees the WRITE_ONCE() on
+> P1.
+> 
+> > 
+> > So I don't know what to think. In practice I believe it's not a big deal
+> > because RCU idle mode code is usually a fragile path that just handles
+> > cpuidle code to put the CPU in/out low power mode. But what about dragons...
+> 
+> My current thought is that if the cpuidle code requires some ordering
+> with synchronize_rcu(), RCU_NONIDLE() should be used, and ordering can
+> be guaranteed in this case (RCU_NONIDLE() has a rcu_eqs_exit() in it).
+> Otherwise, it's a bug.
+> 
+> So looks like we can drop that smp_mb() in rcu_eqs_enter()? At least, we
+> can say something in the doc to prevent people from relying on the
+> ordering between normal reads in RCU idle mode and synchronize_rcu().
+> 
+> Thoughts?
 
-Document missing properties.
-Remove "ti,hwmods" as it is no longer used in TI dts.
-Make "clocks" required as it is used in all dts.
-Correct nodename in the example.
+Is there a benchmark that can show a system-level difference?  My
+guess is that the realtime interrupt-latency and scheduler-latency
+benchmarks would have the best chance of seeing this.
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
-
----
-
-Changes in v3:
- - Add type (phandle-array) and size (maxItems: 2) to syscon-raminit
-   property.
-
-Changes in v2:
- - Drop Documentation references.
-
- .../bindings/net/can/bosch,c_can.yaml         | 85 +++++++++++++++++++
- .../devicetree/bindings/net/can/c_can.txt     | 65 --------------
- 2 files changed, 85 insertions(+), 65 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
-
-diff --git a/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
-new file mode 100644
-index 000000000000..416db97fbf9d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
-@@ -0,0 +1,85 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/bosch,c_can.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Bosch C_CAN/D_CAN controller Device Tree Bindings
-+
-+description: Bosch C_CAN/D_CAN controller for CAN bus
-+
-+maintainers:
-+  - Dario Binacchi <dariobin@libero.it>
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - bosch,c_can
-+          - bosch,d_can
-+          - ti,dra7-d_can
-+          - ti,am3352-d_can
-+      - items:
-+          - enum:
-+              - ti,am4372-d_can
-+          - const: ti,am3352-d_can
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  power-domains:
-+    description: |
-+      Should contain a phandle to a PM domain provider node and an args
-+      specifier containing the DCAN device id value. It's mandatory for
-+      Keystone 2 66AK2G SoCs only.
-+    maxItems: 1
-+
-+  clocks:
-+    description: |
-+      CAN functional clock phandle.
-+    maxItems: 1
-+
-+  clock-names:
-+    maxItems: 1
-+
-+  syscon-raminit:
-+    description: |
-+      Handle to system control region that contains the RAMINIT register,
-+      register offset to the RAMINIT register and the CAN instance number (0
-+      offset).
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    maxItems: 2
-+
-+required:
-+ - compatible
-+ - reg
-+ - interrupts
-+ - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    can@481d0000 {
-+        compatible = "bosch,d_can";
-+        reg = <0x481d0000 0x2000>;
-+        interrupts = <55>;
-+        interrupt-parent = <&intc>;
-+        status = "disabled";
-+    };
-+  - |
-+    can@0 {
-+        compatible = "ti,am3352-d_can";
-+        reg = <0x0 0x2000>;
-+        clocks = <&dcan1_fck>;
-+        clock-names = "fck";
-+        syscon-raminit = <&scm_conf 0x644 1>;
-+        interrupts = <55>;
-+        status = "disabled";
-+    };
-diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
-deleted file mode 100644
-index 366479806acb..000000000000
---- a/Documentation/devicetree/bindings/net/can/c_can.txt
-+++ /dev/null
-@@ -1,65 +0,0 @@
--Bosch C_CAN/D_CAN controller Device Tree Bindings
---------------------------------------------------
--
--Required properties:
--- compatible		: Should be "bosch,c_can" for C_CAN controllers and
--			  "bosch,d_can" for D_CAN controllers.
--			  Can be "ti,dra7-d_can", "ti,am3352-d_can" or
--			  "ti,am4372-d_can".
--- reg			: physical base address and size of the C_CAN/D_CAN
--			  registers map
--- interrupts		: property with a value describing the interrupt
--			  number
--
--The following are mandatory properties for DRA7x, AM33xx and AM43xx SoCs only:
--- ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
--			  instance number
--
--The following are mandatory properties for Keystone 2 66AK2G SoCs only:
--- power-domains		: Should contain a phandle to a PM domain provider node
--			  and an args specifier containing the DCAN device id
--			  value. This property is as per the binding,
--			  Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
--- clocks		: CAN functional clock phandle. This property is as per the
--			  binding,
--			  Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
--
--Optional properties:
--- syscon-raminit	: Handle to system control region that contains the
--			  RAMINIT register, register offset to the RAMINIT
--			  register and the CAN instance number (0 offset).
--
--Note: "ti,hwmods" field is used to fetch the base address and irq
--resources from TI, omap hwmod data base during device registration.
--Future plan is to migrate hwmod data base contents into device tree
--blob so that, all the required data will be used from device tree dts
--file.
--
--Example:
--
--Step1: SoC common .dtsi file
--
--	dcan1: d_can@481d0000 {
--		compatible = "bosch,d_can";
--		reg = <0x481d0000 0x2000>;
--		interrupts = <55>;
--		interrupt-parent = <&intc>;
--		status = "disabled";
--	};
--
--(or)
--
--	dcan1: d_can@481d0000 {
--		compatible = "bosch,d_can";
--		ti,hwmods = "d_can1";
--		reg = <0x481d0000 0x2000>;
--		interrupts = <55>;
--		interrupt-parent = <&intc>;
--		status = "disabled";
--	};
--
--Step 2: board specific .dts file
--
--	&dcan1 {
--		status = "okay";
--	};
--- 
-2.17.1
-
+							Thanx, Paul
