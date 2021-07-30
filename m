@@ -2,451 +2,587 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050B93DB97F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81AD3DB978
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239163AbhG3Nky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 09:40:54 -0400
-Received: from mail-eopbgr20123.outbound.protection.outlook.com ([40.107.2.123]:37764
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239011AbhG3NkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 09:40:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gED3MwAEtKex1k0B+oitjSYKmEWrXNp7AP6kNeOFVK+ttkTQZ7mKSEkv8K5tiee+3bCFQbc9RMMp/m8j0UUIjErs74GOL796lp4BAeeHUrTiVdSaSmrkAKYH3fMy+e49hDsVr4jhvTtJSaQenVx4jfh+BpISq11JSzPPJ3EsjJ1iD73suihKH+VzTrPD2QaFcQ1hmUCiqBNJMhH+81Lo9RYZ+ZcS4QZd77KydYEGGVaxIN3yCkWiBhvUdd1SjGyFpRcyPdKL+nyuaNWgi0eHWn/+1NlvRPmklokhU+fZN1YPW9zbRbyxTbiyifpZrpxkSit4Tt0UOaw0lokU7Qn1iw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vddhFZWo8GTPMKr7Gb4+5GIgWUP3/r0dzf8NPUO8yZ8=;
- b=Fd7VTVdJiT1w1BV9zvoMGBq4KwaLBZ/+6lnWwKih4krJrDUG4zaGjIz6/a1+lDV+4eI3XjOZo5OeoC2kNMD+o5B7+I3WNL+sLrj043v4oNsjICfy+deHei2HRQ3nA3Jbq02mB/y4AytC7ZEN5/KxfLBEvkSzP4M20l3Suzl6EIYltWuCkFL13JzfWD1Shs24N2gnECFUyPjz9FQMTjRKBSU4y5xRrAqZ2zkrd34gL0P5z7zy/Gl3ZDpuAZxl/TI1bQ6vJONVNY4VjHbC7U7Zxj5LZDIM9kQ4zV/RP6In1jHiF1gEJA7qI72GIRGmolqjZRlU9FN8HKzzSBQlrTbo8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vddhFZWo8GTPMKr7Gb4+5GIgWUP3/r0dzf8NPUO8yZ8=;
- b=jtS2yD/Dl31RlslKQheNdWllQyGZ7qMA2/3glrrS2TBqGZmJty2rXwWhmZIOXCWaM3BLFZHiMvqWb7srxKhCacTzk8sr4nIjWwJj54ikOBpMbE01sBXAsnfCzkWjHvAJqIWbyL1EwxeM6dVa+ugIIyRJG5bjL6YTlzH5HA5ScA8=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=plvision.eu;
-Received: from AS8P190MB1063.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:2e4::5)
- by AS8P190MB1271.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:2b6::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Fri, 30 Jul
- 2021 13:39:45 +0000
-Received: from AS8P190MB1063.EURP190.PROD.OUTLOOK.COM
- ([fe80::380c:126f:278d:b230]) by AS8P190MB1063.EURP190.PROD.OUTLOOK.COM
- ([fe80::380c:126f:278d:b230%9]) with mapi id 15.20.4373.025; Fri, 30 Jul 2021
- 13:39:45 +0000
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Mickey Rachamim <mickeyr@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Volodymyr Mytnyk <vmytnyk@marvell.com>,
-        Vadym Kochan <vkochan@marvell.com>
-Subject: [PATCH net-next 4/4] net: marvell: prestera: Offload FLOW_ACTION_POLICE
-Date:   Fri, 30 Jul 2021 16:39:25 +0300
-Message-Id: <20210730133925.18851-5-vadym.kochan@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210730133925.18851-1-vadym.kochan@plvision.eu>
-References: <20210730133925.18851-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain
-X-ClientProxiedBy: AM6P194CA0012.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:209:90::25) To AS8P190MB1063.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:2e4::5)
+        id S239043AbhG3NkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 09:40:24 -0400
+Received: from relay03.th.seeweb.it ([5.144.164.164]:33163 "EHLO
+        relay03.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239060AbhG3Njo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 09:39:44 -0400
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id E408020134;
+        Fri, 30 Jul 2021 15:39:31 +0200 (CEST)
+Subject: Re: [PATCH 1/5] interconnect: qcom: sdm660: Commonize RPM-QoS
+To:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <tBji8z2BZb2uc4O2OP7PyUJqbxLiWwoKnR7Ybshs@cp3-web-050.plabs.ch>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <d65fa810-403f-29f3-ec18-16bcdfb68a85@somainline.org>
+Date:   Fri, 30 Jul 2021 15:39:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM6P194CA0012.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:90::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Fri, 30 Jul 2021 13:39:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 25ad0637-7040-45a6-90ab-08d9535f7e3c
-X-MS-TrafficTypeDiagnostic: AS8P190MB1271:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AS8P190MB1271D0861D5B191177FB1A9595EC9@AS8P190MB1271.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WhbAsttMKcFvzkb+UkLqDIZauDyTh6XIeRAeJ7GUYq/dj9KWiGoZBDYqbNNxVHwhO8PGVlFVWE/CI131pJdAEjKBFReK2CBUxibLynSTxwSkK1aOHJ+N8Mil898z30BPADMVx/GW9cX3tUwmgiSUzoXVN9hibcUkIMsb3HWjOjCKKxp8u+WCYQPuYS53us56C3pvAUsBkCrm58mDgBAkRY+C2wMZTR4fcN+vJk/+5ke3qKu4UpZEjZz4eMy5gsUUtfYyXE7BWkwKqRFgA9JvJ+RizkWpsfxUeJdbqkeQ18CCr4V/tVe31Io415VCRdfyWu7VPMMkOBLxd6BR2Rv7YF+nhtY5Mc9BtitiT0WPSwyGz6iM1YeT8khxHIiJNXClPEH9MLM80bwnbStJA7qxjj11hTDXm6B4ICc3R+5m1xz6eqTANKWELcI6j8eJn3KUc0KuHBu9RMX/mSEBtE7oTgZsAsgRZSl7rL963lD1WAi1MO+c8VGMW227WcTJCC4wJ/MDoMF1Mfk9neSRSIAoZ2E36WHAJxzc+Sw04pZlZ+Rq766Zi8vtSDyBrCISiXwKJzDzDhW6m6Pcc5lMv6PpVWhpc2Dn9mPOjcoi+sKJs9TYu52s4lpbFFXNaEJqugHazGW6YXeNhgBCVcYcFVy4ZemvsYOdEFiKs3d4DzlmjSUOQ4F5kRR8cygWIFbVUoFi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8P190MB1063.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(136003)(39830400003)(366004)(396003)(376002)(52116002)(8676002)(83380400001)(5660300002)(36756003)(54906003)(26005)(186003)(110136005)(6636002)(6666004)(8936002)(44832011)(2616005)(956004)(478600001)(6486002)(2906002)(6506007)(1076003)(6512007)(38100700002)(86362001)(38350700002)(66946007)(66556008)(7416002)(316002)(4326008)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MkK6CIaxksJaZp3ARtXSDoyXc1Ua62ubZ/h2HsnshihsoRtx7S6+JRfCbGyS?=
- =?us-ascii?Q?MO0JxxfQF1EfCZdXvOcdvarhP2eyz9XKBLHf/1r6u2/PR8wvoRml4F2WnBgm?=
- =?us-ascii?Q?bk6dy0ey3RJu88VYmBuYohV+vBmCqJoBR6cR7ldSmIzBa4WNg6q9FpM9TZm8?=
- =?us-ascii?Q?kp47Xn302qDKBUiau1zEZtUOS2u4NAwvQA8TDBi2IR3zLDkqwTMoYPdSTMon?=
- =?us-ascii?Q?kiF9oxGVuf+24ThxNYBr1VbJRsP16P/u3Lr5xPxUo5A/vvvaZp+N2OzGQphh?=
- =?us-ascii?Q?rk35RGcCTjqj/bwGxFEJgPP1OWZfKZy4mqTGKAo3qXDy3Yw+wiyv2BGbv69/?=
- =?us-ascii?Q?g1zwHoi0ZaToDDGaQk+Xs3Stq4vVumr39MDjQmXYR/izNat4ULV1PkN3bpny?=
- =?us-ascii?Q?vfC5dpNVuxAiBHPkBHuNd1bQRidjq4l9tKDLqkJzQ04Bsht6h7mRC7f/sf/u?=
- =?us-ascii?Q?GH73C1PHN0H3//sMVCoKvT5PjqJ3BLNXaNobfkbAxtggydnhk1vkJ0ETfVoD?=
- =?us-ascii?Q?zwFxNtGVu5xN+CgMsE8BLUnXQYKOY3mBkds0sa5/6isWx8qch7W7hzU6du5I?=
- =?us-ascii?Q?J8gqLKtNfBPhlCs1he+YyafeMZRoFr02+Nk8Hi2fBg7w9/SeCeM/c0SW88AJ?=
- =?us-ascii?Q?bL0IQNAzy03dcupyU1Sxxv0siE7IxJTo2rA4URTIU3Yeu79saqGp7xJgq3Lv?=
- =?us-ascii?Q?gHP+v3EXyS/AABimQQudfq0lu+daGZXW5lwG+8uytPX4WM7d9/N+3a4vj0kq?=
- =?us-ascii?Q?5PgXxRhNtspv94OWDlZrE1Of24LBbKRViFdVxCItJy9cbIEwApKi3QgsFNGE?=
- =?us-ascii?Q?iBCIM59aapIiyyezV0PgvnqS4dIqi3s5t3baG6KCZVtdyc0AnuXrHFcAL94K?=
- =?us-ascii?Q?/leZsq3sJyax9VeJ0H97zr+zDPfM27+XY2SPgtwJ8DOADpzSAu/4WBSNoO5j?=
- =?us-ascii?Q?6RrU9IHNAePBw1yXAGcbOCEdWu2lHuiF3Bn5MC5c1HbvxaR1ytKTb/J09xeQ?=
- =?us-ascii?Q?KSI+D/cV5gD5cnKiN9+cONlkyvlfvR3mninurL+W5v74wG3qXvLzlKzqskqg?=
- =?us-ascii?Q?QEm6c6TLql3PhX/uU7eTKj0E0X2CKynwO/Cbs0ZCxCMRXXFx5gk9IP9Iz19m?=
- =?us-ascii?Q?QoValar5dhqakTzwlNJVm6tC530C5vY1EZ5m9qKAeTV1YnkLv3427j0ojQD1?=
- =?us-ascii?Q?0hxE5vNWA1tPGeOqQXWhwPhTAleTnVJd0mgysGKoVOq9l749t354WVt+s2yU?=
- =?us-ascii?Q?KYc8EHoR5qdFEUPMWmpzDU0W9U2xGd4ql8m+bjU/tO1jykT5a9tLqQ/9dgOk?=
- =?us-ascii?Q?bZJ8zt4h5NZXNgFHU354E7L9?=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25ad0637-7040-45a6-90ab-08d9535f7e3c
-X-MS-Exchange-CrossTenant-AuthSource: AS8P190MB1063.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 13:39:45.5936
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kW/RdWYAlvTtpY5uGYOvYPkMJ38m0MtC5sJfBX1qSt90RrAwebquQUVeU2vjSS9H/1fCCXR8kl1lgZU+IW1JVfew+jFV68OfEauQv/St9FI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P190MB1271
+In-Reply-To: <tBji8z2BZb2uc4O2OP7PyUJqbxLiWwoKnR7Ybshs@cp3-web-050.plabs.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serhiy Boiko <serhiy.boiko@plvision.eu>
+Il 30/07/21 14:06, Yassine Oudjana ha scritto:
+> SoCs such as MSM8996 also control bus QoS in a similar fashion to SDM660,
+> with some paths being controlled by RPM and others directly by the AP.
+> Move relevant functions and defines to a new object so that they can be used
+> in multiple drivers.
+> 
+> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
 
-Offload action police when keyed to a flower classifier.
-Only rate and burst is supported for now. The conform-exceed
-drop is assumed as a default value.
+Hello Yassine,
+thanks for the patch! However, I think there are a few things to improve:
 
-Policer support requires FW 3.1 version. Still to make a backward
-compatibility with ACL of FW 3.0 introduced separate FW msg structs for
-ACL calls which have different field layout.
+> ---
+>   drivers/interconnect/qcom/Kconfig       |   5 +-
+>   drivers/interconnect/qcom/Makefile      |   2 +
+>   drivers/interconnect/qcom/icc-rpm-qos.c | 237 ++++++++++++++++
+>   drivers/interconnect/qcom/icc-rpm-qos.h | 133 +++++++++
+>   drivers/interconnect/qcom/icc-rpmh.c    |   6 +-
+>   drivers/interconnect/qcom/icc-rpmh.h    |   2 +-
+>   drivers/interconnect/qcom/sc7180.c      |   2 +-
+>   drivers/interconnect/qcom/sc7280.c      |   2 +-
+>   drivers/interconnect/qcom/sdm660.c      | 346 +-----------------------
+>   drivers/interconnect/qcom/sdm845.c      |   2 +-
+>   drivers/interconnect/qcom/sdx55.c       |   2 +-
+>   drivers/interconnect/qcom/sm8150.c      |   2 +-
+>   drivers/interconnect/qcom/sm8250.c      |   2 +-
+>   drivers/interconnect/qcom/sm8350.c      |   2 +-
+>   14 files changed, 391 insertions(+), 354 deletions(-)
+>   create mode 100644 drivers/interconnect/qcom/icc-rpm-qos.c
+>   create mode 100644 drivers/interconnect/qcom/icc-rpm-qos.h
+> 
+> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qcom/Kconfig
+> index 0d7a2500d0b8..ad16224f1720 100644
+> --- a/drivers/interconnect/qcom/Kconfig
+> +++ b/drivers/interconnect/qcom/Kconfig
+> @@ -87,7 +87,7 @@ config INTERCONNECT_QCOM_SDM660
+>   	tristate "Qualcomm SDM660 interconnect driver"
+>   	depends on INTERCONNECT_QCOM
+>   	depends on QCOM_SMD_RPM
+> -	select INTERCONNECT_QCOM_SMD_RPM
+> +	select INTERCONNECT_QCOM_SMD_RPM_QOS
+>   	help
+>   	  This is a driver for the Qualcomm Network-on-Chip on sdm660-based
+>   	  platforms.
+> @@ -139,3 +139,6 @@ config INTERCONNECT_QCOM_SM8350
+>   
+>   config INTERCONNECT_QCOM_SMD_RPM
+>   	tristate
+> +
+> +config INTERCONNECT_QCOM_SMD_RPM_QOS	
+> +	tristate
+> diff --git a/drivers/interconnect/qcom/Makefile b/drivers/interconnect/qcom/Makefile
+> index 2880129a6fe4..2d04d024f46e 100644
+> --- a/drivers/interconnect/qcom/Makefile
+> +++ b/drivers/interconnect/qcom/Makefile
+> @@ -16,6 +16,7 @@ qnoc-sm8150-objs			:= sm8150.o
+>   qnoc-sm8250-objs			:= sm8250.o
+>   qnoc-sm8350-objs			:= sm8350.o
+>   icc-smd-rpm-objs			:= smd-rpm.o icc-rpm.o
+> +icc-smd-rpm-qos-objs			:= smd-rpm.o icc-rpm-qos.o
+>   
+>   obj-$(CONFIG_INTERCONNECT_QCOM_BCM_VOTER) += icc-bcm-voter.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_MSM8916) += qnoc-msm8916.o
+> @@ -33,3 +34,4 @@ obj-$(CONFIG_INTERCONNECT_QCOM_SM8150) += qnoc-sm8150.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_SM8250) += qnoc-sm8250.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_SM8350) += qnoc-sm8350.o
+>   obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM) += icc-smd-rpm.o
+> +obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM_QOS) += icc-smd-rpm-qos.o
+> diff --git a/drivers/interconnect/qcom/icc-rpm-qos.c b/drivers/interconnect/qcom/icc-rpm-qos.c
+> new file mode 100644
+> index 000000000000..678b347375d8
+> --- /dev/null
+> +++ b/drivers/interconnect/qcom/icc-rpm-qos.c
+> @@ -0,0 +1,237 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020, AngeloGioacchino Del Regno <kholk11@gmail.com>
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/device.h>
+> +#include <linux/interconnect-provider.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/slab.h>
+> +
+> +#include "smd-rpm.h"
+> +#include "icc-rpm-qos.h"
+> +
+> +static int qcom_icc_bimc_set_qos_health(struct regmap *rmap,
+> +					struct qcom_icc_qos *qos,
+> +					int regnum)
+> +{
+> +	u32 val;
+> +	u32 mask;
+> +
+> +	val = qos->prio_level;
+> +	mask = M_BKE_HEALTH_CFG_PRIOLVL_MASK;
+> +
+> +	val |= qos->areq_prio << M_BKE_HEALTH_CFG_AREQPRIO_SHIFT;
+> +	mask |= M_BKE_HEALTH_CFG_AREQPRIO_MASK;
+> +
+> +	/* LIMITCMDS is not present on M_BKE_HEALTH_3 */
+> +	if (regnum != 3) {
+> +		val |= qos->limit_commands << M_BKE_HEALTH_CFG_LIMITCMDS_SHIFT;
+> +		mask |= M_BKE_HEALTH_CFG_LIMITCMDS_MASK;
+> +	}
+> +
+> +	return regmap_update_bits(rmap,
+> +				  M_BKE_HEALTH_CFG_ADDR(regnum, qos->qos_port),
+> +				  mask, val);
+> +}
+> +
+> +static int qcom_icc_set_bimc_qos(struct icc_node *src, u64 max_bw,
+> +				 bool bypass_mode)
+> +{
+> +	struct qcom_icc_provider *qp;
+> +	struct qcom_icc_node *qn;
+> +	struct icc_provider *provider;
+> +	u32 mode = NOC_QOS_MODE_BYPASS;
+> +	u32 val = 0;
+> +	int i, rc = 0;
+> +
+> +	qn = src->data;
+> +	provider = src->provider;
+> +	qp = to_qcom_provider(provider);
+> +
+> +	if (qn->qos.qos_mode != -1)
+> +		mode = qn->qos.qos_mode;
+> +
+> +	/* QoS Priority: The QoS Health parameters are getting considered
+> +	 * only if we are NOT in Bypass Mode.
+> +	 */
+> +	if (mode != NOC_QOS_MODE_BYPASS) {
+> +		for (i = 3; i >= 0; i--) {
+> +			rc = qcom_icc_bimc_set_qos_health(qp->regmap,
+> +							  &qn->qos, i);
+> +			if (rc)
+> +				return rc;
+> +		}
+> +
+> +		/* Set BKE_EN to 1 when Fixed, Regulator or Limiter Mode */
+> +		val = 1;
+> +	}
+> +
+> +	return regmap_update_bits(qp->regmap, M_BKE_EN_ADDR(qn->qos.qos_port),
+> +				  M_BKE_EN_EN_BMASK, val);
+> +}
+> +
+> +static int qcom_icc_noc_set_qos_priority(struct regmap *rmap,
+> +					 struct qcom_icc_qos *qos)
+> +{
+> +	u32 val;
+> +	int rc;
+> +
+> +	/* Must be updated one at a time, P1 first, P0 last */
+> +	val = qos->areq_prio << NOC_QOS_PRIORITY_P1_SHIFT;
+> +	rc = regmap_update_bits(rmap, NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
+> +				NOC_QOS_PRIORITY_MASK, val);
+> +	if (rc)
+> +		return rc;
+> +
+> +	val = qos->prio_level << NOC_QOS_PRIORITY_P0_SHIFT;
+> +	return regmap_update_bits(rmap, NOC_QOS_PRIORITYn_ADDR(qos->qos_port),
+> +				  NOC_QOS_PRIORITY_MASK, val);
+> +}
+> +
+> +static int qcom_icc_set_noc_qos(struct icc_node *src, u64 max_bw)
+> +{
+> +	struct qcom_icc_provider *qp;
+> +	struct qcom_icc_node *qn;
+> +	struct icc_provider *provider;
+> +	u32 mode = NOC_QOS_MODE_BYPASS;
+> +	int rc = 0;
+> +
+> +	qn = src->data;
+> +	provider = src->provider;
+> +	qp = to_qcom_provider(provider);
+> +
+> +	if (qn->qos.qos_port < 0) {
+> +		dev_dbg(src->provider->dev,
+> +			"NoC QoS: Skipping %s: vote aggregated on parent.\n",
+> +			qn->name);
+> +		return 0;
+> +	}
+> +
+> +	if (qn->qos.qos_mode != -1)
+> +		mode = qn->qos.qos_mode;
+> +
+> +	if (mode == NOC_QOS_MODE_FIXED) {
+> +		dev_dbg(src->provider->dev, "NoC QoS: %s: Set Fixed mode\n",
+> +			qn->name);
+> +		rc = qcom_icc_noc_set_qos_priority(qp->regmap, &qn->qos);
+> +		if (rc)
+> +			return rc;
+> +	} else if (mode == NOC_QOS_MODE_BYPASS) {
+> +		dev_dbg(src->provider->dev, "NoC QoS: %s: Set Bypass mode\n",
+> +			qn->name);
+> +	}
+> +
+> +	return regmap_update_bits(qp->regmap,
+> +				  NOC_QOS_MODEn_ADDR(qn->qos.qos_port),
+> +				  NOC_QOS_MODEn_MASK, mode);
+> +}
+> +
+> +static int qcom_icc_qos_set(struct icc_node *node, u64 sum_bw)
+> +{
+> +	struct qcom_icc_provider *qp = to_qcom_provider(node->provider);
+> +	struct qcom_icc_node *qn = node->data;
+> +
+> +	dev_dbg(node->provider->dev, "Setting QoS for %s\n", qn->name);
+> +
+> +	if (qp->is_bimc_node)
+> +		return qcom_icc_set_bimc_qos(node, sum_bw,
+> +				(qn->qos.qos_mode == NOC_QOS_MODE_BYPASS));
+> +
+> +	return qcom_icc_set_noc_qos(node, sum_bw);
+> +}
+> +
+> +static int qcom_icc_rpm_set(int mas_rpm_id, int slv_rpm_id, u64 sum_bw)
+> +{
+> +	int ret = 0;
+> +
+> +	if (mas_rpm_id != -1) {
+> +		ret = qcom_icc_rpm_smd_send(QCOM_SMD_RPM_ACTIVE_STATE,
+> +					    RPM_BUS_MASTER_REQ,
+> +					    mas_rpm_id,
+> +					    sum_bw);
+> +		if (ret) {
+> +			pr_err("qcom_icc_rpm_smd_send mas %d error %d\n",
+> +			       mas_rpm_id, ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	if (slv_rpm_id != -1) {
+> +		ret = qcom_icc_rpm_smd_send(QCOM_SMD_RPM_ACTIVE_STATE,
+> +					    RPM_BUS_SLAVE_REQ,
+> +					    slv_rpm_id,
+> +					    sum_bw);
+> +		if (ret) {
+> +			pr_err("qcom_icc_rpm_smd_send slv %d error %d\n",
+> +			       slv_rpm_id, ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +int qcom_icc_rpm_qos_set(struct icc_node *src, struct icc_node *dst)
+> +{
+> +	struct qcom_icc_provider *qp;
+> +	struct qcom_icc_node *qn;
+> +	struct icc_provider *provider;
+> +	struct icc_node *n;
+> +	u64 sum_bw;
+> +	u64 max_peak_bw;
+> +	u64 rate;
+> +	u32 agg_avg = 0;
+> +	u32 agg_peak = 0;
+> +	int ret, i;
+> +
+> +	qn = src->data;
+> +	provider = src->provider;
+> +	qp = to_qcom_provider(provider);
+> +
+> +	list_for_each_entry(n, &provider->nodes, node_list)
+> +		provider->aggregate(n, 0, n->avg_bw, n->peak_bw,
+> +				    &agg_avg, &agg_peak);
+> +
+> +	sum_bw = icc_units_to_bps(agg_avg);
+> +	max_peak_bw = icc_units_to_bps(agg_peak);
+> +
+> +	if (!qn->qos.ap_owned) {
+> +		/* send bandwidth request message to the RPM processor */
+> +		ret = qcom_icc_rpm_set(qn->mas_rpm_id, qn->slv_rpm_id, sum_bw);
+> +		if (ret)
+> +			return ret;
+> +	} else if (qn->qos.qos_mode != -1) {
+> +		/* set bandwidth directly from the AP */
+> +		ret = qcom_icc_qos_set(src, sum_bw);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	rate = max(sum_bw, max_peak_bw);
+> +
+> +	do_div(rate, qn->buswidth);
+> +
+> +	if (qn->rate == rate)
+> +		return 0;
+> +
+> +	for (i = 0; i < qp->num_clks; i++) {
+> +		ret = clk_set_rate(qp->bus_clks[i].clk, rate);
+> +		if (ret) {
+> +			pr_err("%s clk_set_rate error: %d\n",
+> +			       qp->bus_clks[i].id, ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	qn->rate = rate;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_icc_rpm_qos_set);
+> diff --git a/drivers/interconnect/qcom/icc-rpm-qos.h b/drivers/interconnect/qcom/icc-rpm-qos.h
+> new file mode 100644
+> index 000000000000..625ac5f84ebc
+> --- /dev/null
+> +++ b/drivers/interconnect/qcom/icc-rpm-qos.h
+> @@ -0,0 +1,133 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020, AngeloGioacchino Del Regno <kholk11@gmail.com>
+> + */
+> +
+> +#ifndef __DRIVERS_INTERCONNECT_QCOM_ICC_RPM_QOS_H__
+> +#define __DRIVERS_INTERCONNECT_QCOM_ICC_RPM_QOS_H__
+> +
+> +#define RPM_BUS_MASTER_REQ	0x73616d62
+> +#define RPM_BUS_SLAVE_REQ	0x766c7362
+> +
+> +/* BIMC QoS */
+> +#define M_BKE_REG_BASE(n)		(0x300 + (0x4000 * n))
+> +#define M_BKE_EN_ADDR(n)		(M_BKE_REG_BASE(n))
+> +#define M_BKE_HEALTH_CFG_ADDR(i, n)	(M_BKE_REG_BASE(n) + 0x40 + (0x4 * i))
+> +
+> +#define M_BKE_HEALTH_CFG_LIMITCMDS_MASK	0x80000000
+> +#define M_BKE_HEALTH_CFG_AREQPRIO_MASK	0x300
+> +#define M_BKE_HEALTH_CFG_PRIOLVL_MASK	0x3
+> +#define M_BKE_HEALTH_CFG_AREQPRIO_SHIFT	0x8
+> +#define M_BKE_HEALTH_CFG_LIMITCMDS_SHIFT 0x1f
+> +
+> +#define M_BKE_EN_EN_BMASK		0x1
+> +
+> +/* Valid for both NoC and BIMC */
+> +#define NOC_QOS_MODE_FIXED		0x0
+> +#define NOC_QOS_MODE_LIMITER		0x1
+> +#define NOC_QOS_MODE_BYPASS		0x2
+> +
+> +/* NoC QoS */
+> +#define NOC_PERM_MODE_FIXED		1
+> +#define NOC_PERM_MODE_BYPASS		(1 << NOC_QOS_MODE_BYPASS)
+> +
+> +#define NOC_QOS_PRIORITYn_ADDR(n)	(0x8 + (n * 0x1000))
+> +#define NOC_QOS_PRIORITY_MASK		0xf
+> +#define NOC_QOS_PRIORITY_P1_SHIFT	0x2
+> +#define NOC_QOS_PRIORITY_P0_SHIFT	0x3
+> +
+> +#define NOC_QOS_MODEn_ADDR(n)		(0xc + (n * 0x1000))
+> +#define NOC_QOS_MODEn_MASK		0x3
+> +
+> +#define to_qcom_provider(_provider) \
+> +	container_of(_provider, struct qcom_icc_provider, provider)
+> +
+> +/**
+> + * struct qcom_icc_provider - Qualcomm specific interconnect provider
+> + * @provider: generic interconnect provider
+> + * @bus_clks: the clk_bulk_data table of bus clocks
+> + * @num_clks: the total number of clk_bulk_data entries
+> + * @is_bimc_node: indicates whether to use bimc specific setting
+> + * @regmap: regmap for QoS registers read/write access
+> + * @mmio: NoC base iospace
+> + */
+> +struct qcom_icc_provider {
+> +	struct icc_provider provider;
+> +	struct clk_bulk_data *bus_clks;
+> +	int num_clks;
+> +	bool is_bimc_node;
+> +	struct regmap *regmap;
+> +	void __iomem *mmio;
+> +};
+> +
+> +/**
+> + * struct qcom_icc_qos - Qualcomm specific interconnect QoS parameters
+> + * @areq_prio: node requests priority
+> + * @prio_level: priority level for bus communication
+> + * @limit_commands: activate/deactivate limiter mode during runtime
+> + * @ap_owned: indicates if the node is owned by the AP or by the RPM
+> + * @qos_mode: default qos mode for this node
+> + * @qos_port: qos port number for finding qos registers of this node
+> + */
+> +struct qcom_icc_qos {
+> +	u32 areq_prio;
+> +	u32 prio_level;
+> +	bool limit_commands;
+> +	bool ap_owned;
+> +	int qos_mode;
+> +	int qos_port;
+> +};
+> +
+> +/**
+> + * struct qcom_icc_node - Qualcomm specific interconnect nodes
+> + * @name: the node name used in debugfs
+> + * @id: a unique node identifier
+> + * @links: an array of nodes where we can go next while traversing
+> + * @num_links: the total number of @links
+> + * @buswidth: width of the interconnect between a node and the bus (bytes)
+> + * @mas_rpm_id: RPM id for devices that are bus masters
+> + * @slv_rpm_id: RPM id for devices that are bus slaves
+> + * @qos: NoC QoS setting parameters
+> + * @rate: current bus clock rate in Hz
+> + */
+> +
+> +#define MAX_LINKS	38
+> +
+> +struct qcom_icc_node {
+> +	unsigned char *name;
+> +	u16 id;
+> +	u16 links[MAX_LINKS];
+> +	u16 num_links;
+> +	u16 buswidth;
+> +	int mas_rpm_id;
+> +	int slv_rpm_id;
+> +	struct qcom_icc_qos qos;
+> +	u64 rate;
+> +};
+> +
+> +struct qcom_icc_desc {
+> +	struct qcom_icc_node **nodes;
+> +	size_t num_nodes;
+> +	const struct regmap_config *regmap_cfg;
+> +};
+> +
+> +#define DEFINE_QNODE(_name, _id, _buswidth, _mas_rpm_id, _slv_rpm_id,	\
+> +		     _ap_owned, _qos_mode, _qos_prio, _qos_port, ...)	\
+> +		static struct qcom_icc_node _name = {			\
+> +		.name = #_name,						\
+> +		.id = _id,						\
+> +		.buswidth = _buswidth,					\
+> +		.mas_rpm_id = _mas_rpm_id,				\
+> +		.slv_rpm_id = _slv_rpm_id,				\
+> +		.qos.ap_owned = _ap_owned,				\
+> +		.qos.qos_mode = _qos_mode,				\
+> +		.qos.areq_prio = _qos_prio,				\
+> +		.qos.prio_level = _qos_prio,				\
+> +		.qos.qos_port = _qos_port,				\
+> +		.num_links = ARRAY_SIZE(((int[]){ __VA_ARGS__ })),	\
+> +		.links = { __VA_ARGS__ },				\
+> +	}
+> +
+> +int qcom_icc_rpm_qos_set(struct icc_node *src, struct icc_node *dst);
+> +
+> +#endif
+> diff --git a/drivers/interconnect/qcom/icc-rpmh.c b/drivers/interconnect/qcom/icc-rpmh.c
+> index bf01d09dba6c..6f93273109a3 100644
+> --- a/drivers/interconnect/qcom/icc-rpmh.c
+> +++ b/drivers/interconnect/qcom/icc-rpmh.c
+> @@ -70,13 +70,13 @@ int qcom_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
+>   EXPORT_SYMBOL_GPL(qcom_icc_aggregate);
+>   
+>   /**
+> - * qcom_icc_set - set the constraints based on path
+> + * qcom_icc_rpmh_set - set the constraints based on path
+>    * @src: source node for the path to set constraints on
+>    * @dst: destination node for the path to set constraints on
+>    *
+>    * Return: 0 on success, or an error code otherwise
+>    */
+> -int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
+> +int qcom_icc_rpmh_set(struct icc_node *src, struct icc_node *dst)
 
-Co-developed-by: Volodymyr Mytnyk <vmytnyk@marvell.com>
-Signed-off-by: Volodymyr Mytnyk <vmytnyk@marvell.com>
-Signed-off-by: Serhiy Boiko <serhiy.boiko@plvision.eu>
-Co-developed-by: Vadym Kochan <vkochan@marvell.com>
-Signed-off-by: Vadym Kochan <vkochan@marvell.com>
----
- .../ethernet/marvell/prestera/prestera_acl.c  |  14 ++
- .../ethernet/marvell/prestera/prestera_acl.h  |  11 +-
- .../marvell/prestera/prestera_flower.c        |  18 +++
- .../ethernet/marvell/prestera/prestera_hw.c   | 125 +++++++++++++++++-
- .../ethernet/marvell/prestera/prestera_pci.c  |   1 +
- 5 files changed, 165 insertions(+), 4 deletions(-)
+This change should be splitted to a different commit, as it is not part of any
+commonization of the RPM QoS functions. This is a "global" rename, so you should
+create a preparation commit for this change.
 
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_acl.c b/drivers/net/ethernet/marvell/prestera/prestera_acl.c
-index 83c75ffb1a1c..9a473f94fab0 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_acl.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_acl.c
-@@ -8,6 +8,8 @@
- #include "prestera_acl.h"
- #include "prestera_span.h"
- 
-+#define PRESTERA_ACL_DEF_HW_TC		3
-+
- struct prestera_acl {
- 	struct prestera_switch *sw;
- 	struct list_head rules;
-@@ -29,6 +31,7 @@ struct prestera_acl_rule {
- 	u32 priority;
- 	u8 n_actions;
- 	u8 n_matches;
-+	u8 hw_tc;
- 	u32 id;
- };
- 
-@@ -203,6 +206,7 @@ prestera_acl_rule_create(struct prestera_flow_block *block,
- 	INIT_LIST_HEAD(&rule->action_list);
- 	rule->cookie = cookie;
- 	rule->block = block;
-+	rule->hw_tc = PRESTERA_ACL_DEF_HW_TC;
- 
- 	return rule;
- }
-@@ -251,6 +255,16 @@ void prestera_acl_rule_priority_set(struct prestera_acl_rule *rule,
- 	rule->priority = priority;
- }
- 
-+u8 prestera_acl_rule_hw_tc_get(struct prestera_acl_rule *rule)
-+{
-+	return rule->hw_tc;
-+}
-+
-+void prestera_acl_rule_hw_tc_set(struct prestera_acl_rule *rule, u8 hw_tc)
-+{
-+	rule->hw_tc = hw_tc;
-+}
-+
- int prestera_acl_rule_match_add(struct prestera_acl_rule *rule,
- 				struct prestera_acl_rule_match_entry *entry)
- {
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_acl.h b/drivers/net/ethernet/marvell/prestera/prestera_acl.h
-index 39b7869be659..2a2fbae1432a 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_acl.h
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_acl.h
-@@ -25,7 +25,8 @@ enum prestera_acl_rule_match_entry_type {
- enum prestera_acl_rule_action {
- 	PRESTERA_ACL_RULE_ACTION_ACCEPT,
- 	PRESTERA_ACL_RULE_ACTION_DROP,
--	PRESTERA_ACL_RULE_ACTION_TRAP
-+	PRESTERA_ACL_RULE_ACTION_TRAP,
-+	PRESTERA_ACL_RULE_ACTION_POLICE,
- };
- 
- struct prestera_switch;
-@@ -50,6 +51,12 @@ struct prestera_flow_block {
- struct prestera_acl_rule_action_entry {
- 	struct list_head list;
- 	enum prestera_acl_rule_action id;
-+	union {
-+		struct {
-+			u64 rate;
-+			u64 burst;
-+		} police;
-+	};
- };
- 
- struct prestera_acl_rule_match_entry {
-@@ -120,5 +127,7 @@ void prestera_acl_rule_del(struct prestera_switch *sw,
- int prestera_acl_rule_get_stats(struct prestera_switch *sw,
- 				struct prestera_acl_rule *rule,
- 				u64 *packets, u64 *bytes, u64 *last_use);
-+u8 prestera_acl_rule_hw_tc_get(struct prestera_acl_rule *rule);
-+void prestera_acl_rule_hw_tc_set(struct prestera_acl_rule *rule, u8 hw_tc);
- 
- #endif /* _PRESTERA_ACL_H_ */
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_flower.c b/drivers/net/ethernet/marvell/prestera/prestera_flower.c
-index e571ba09ec08..76f30856ac98 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_flower.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_flower.c
-@@ -5,6 +5,8 @@
- #include "prestera_acl.h"
- #include "prestera_flower.h"
- 
-+#define PRESTERA_HW_TC_NUM	8
-+
- static int prestera_flower_parse_actions(struct prestera_flow_block *block,
- 					 struct prestera_acl_rule *rule,
- 					 struct flow_action *flow_action,
-@@ -30,6 +32,11 @@ static int prestera_flower_parse_actions(struct prestera_flow_block *block,
- 		case FLOW_ACTION_TRAP:
- 			a_entry.id = PRESTERA_ACL_RULE_ACTION_TRAP;
- 			break;
-+		case FLOW_ACTION_POLICE:
-+			a_entry.id = PRESTERA_ACL_RULE_ACTION_POLICE;
-+			a_entry.police.rate = act->police.rate_bytes_ps;
-+			a_entry.police.burst = act->police.burst;
-+			break;
- 		default:
- 			NL_SET_ERR_MSG_MOD(extack, "Unsupported action");
- 			pr_err("Unsupported action\n");
-@@ -110,6 +117,17 @@ static int prestera_flower_parse(struct prestera_flow_block *block,
- 		return -EOPNOTSUPP;
- 	}
- 
-+	if (f->classid) {
-+		int hw_tc = __tc_classid_to_hwtc(PRESTERA_HW_TC_NUM, f->classid);
-+
-+		if (hw_tc < 0) {
-+			NL_SET_ERR_MSG_MOD(f->common.extack, "Unsupported HW TC");
-+			return hw_tc;
-+		}
-+
-+		prestera_acl_rule_hw_tc_set(rule, hw_tc);
-+	}
-+
- 	prestera_acl_rule_priority_set(rule, f->common.prio);
- 
- 	if (flow_rule_match_key(f_rule, FLOW_DISSECTOR_KEY_META)) {
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_hw.c b/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-index c1297859e471..2d1dfb52aca4 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_hw.c
-@@ -91,6 +91,7 @@ enum {
- enum {
- 	PRESTERA_CMD_SWITCH_ATTR_MAC = 1,
- 	PRESTERA_CMD_SWITCH_ATTR_AGEING = 2,
-+	PRESTERA_SWITCH_ATTR_TRAP_POLICER = 3,
- };
- 
- enum {
-@@ -319,6 +320,19 @@ struct prestera_msg_acl_action {
- 	u32 id;
- };
- 
-+struct prestera_msg_acl_action_ext {
-+	u32 id;
-+	union {
-+		struct {
-+			u64 rate;
-+			u64 burst;
-+		} police;
-+		struct {
-+			u64 res[3];
-+		} reserv;
-+	} __packed;
-+};
-+
- struct prestera_msg_acl_match {
- 	u32 type;
- 	union {
-@@ -354,6 +368,16 @@ struct prestera_msg_acl_rule_req {
- 	u8 n_matches;
- };
- 
-+struct prestera_msg_acl_rule_ext_req {
-+	struct prestera_msg_cmd cmd;
-+	u32 id;
-+	u32 priority;
-+	u16 ruleset_id;
-+	u8 n_actions;
-+	u8 n_matches;
-+	u8 hw_tc;
-+};
-+
- struct prestera_msg_acl_rule_resp {
- 	struct prestera_msg_ret ret;
- 	u32 id;
-@@ -908,6 +932,36 @@ static int prestera_hw_acl_actions_put(struct prestera_msg_acl_action *action,
- 	return 0;
- }
- 
-+static int prestera_hw_acl_actions_ext_put(struct prestera_msg_acl_action_ext *action,
-+					   struct prestera_acl_rule *rule)
-+{
-+	struct list_head *a_list = prestera_acl_rule_action_list_get(rule);
-+	struct prestera_acl_rule_action_entry *a_entry;
-+	int i = 0;
-+
-+	list_for_each_entry(a_entry, a_list, list) {
-+		action[i].id = a_entry->id;
-+
-+		switch (a_entry->id) {
-+		case PRESTERA_ACL_RULE_ACTION_ACCEPT:
-+		case PRESTERA_ACL_RULE_ACTION_DROP:
-+		case PRESTERA_ACL_RULE_ACTION_TRAP:
-+			/* just rule action id, no specific data */
-+			break;
-+		case PRESTERA_ACL_RULE_ACTION_POLICE:
-+			action[i].police.rate = a_entry->police.rate;
-+			action[i].police.burst = a_entry->police.burst;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+
-+		i++;
-+	}
-+
-+	return 0;
-+}
-+
- static int prestera_hw_acl_matches_put(struct prestera_msg_acl_match *match,
- 				       struct prestera_acl_rule *rule)
- {
-@@ -963,9 +1017,9 @@ static int prestera_hw_acl_matches_put(struct prestera_msg_acl_match *match,
- 	return 0;
- }
- 
--int prestera_hw_acl_rule_add(struct prestera_switch *sw,
--			     struct prestera_acl_rule *rule,
--			     u32 *rule_id)
-+int __prestera_hw_acl_rule_add(struct prestera_switch *sw,
-+			       struct prestera_acl_rule *rule,
-+			       u32 *rule_id)
- {
- 	struct prestera_msg_acl_action *actions;
- 	struct prestera_msg_acl_match *matches;
-@@ -1017,6 +1071,71 @@ int prestera_hw_acl_rule_add(struct prestera_switch *sw,
- 	return err;
- }
- 
-+int __prestera_hw_acl_rule_ext_add(struct prestera_switch *sw,
-+				   struct prestera_acl_rule *rule,
-+				   u32 *rule_id)
-+{
-+	struct prestera_msg_acl_action_ext *actions;
-+	struct prestera_msg_acl_rule_ext_req *req;
-+	struct prestera_msg_acl_match *matches;
-+	struct prestera_msg_acl_rule_resp resp;
-+	u8 n_actions;
-+	u8 n_matches;
-+	void *buff;
-+	u32 size;
-+	int err;
-+
-+	n_actions = prestera_acl_rule_action_len(rule);
-+	n_matches = prestera_acl_rule_match_len(rule);
-+
-+	size = sizeof(*req) + sizeof(*actions) * n_actions +
-+		sizeof(*matches) * n_matches;
-+
-+	buff = kzalloc(size, GFP_KERNEL);
-+	if (!buff)
-+		return -ENOMEM;
-+
-+	req = buff;
-+	actions = buff + sizeof(*req);
-+	matches = buff + sizeof(*req) + sizeof(*actions) * n_actions;
-+
-+	/* put acl actions into the message */
-+	err = prestera_hw_acl_actions_ext_put(actions, rule);
-+	if (err)
-+		goto free_buff;
-+
-+	/* put acl matches into the message */
-+	err = prestera_hw_acl_matches_put(matches, rule);
-+	if (err)
-+		goto free_buff;
-+
-+	req->ruleset_id = prestera_acl_rule_ruleset_id_get(rule);
-+	req->priority = prestera_acl_rule_priority_get(rule);
-+	req->n_actions = prestera_acl_rule_action_len(rule);
-+	req->n_matches = prestera_acl_rule_match_len(rule);
-+	req->hw_tc = prestera_acl_rule_hw_tc_get(rule);
-+
-+	err = prestera_cmd_ret(sw, PRESTERA_CMD_TYPE_ACL_RULE_ADD,
-+			       &req->cmd, size, &resp.ret, sizeof(resp));
-+	if (err)
-+		goto free_buff;
-+
-+	*rule_id = resp.id;
-+free_buff:
-+	kfree(buff);
-+	return err;
-+}
-+
-+int prestera_hw_acl_rule_add(struct prestera_switch *sw,
-+			     struct prestera_acl_rule *rule,
-+			     u32 *rule_id)
-+{
-+	if (sw->dev->fw_rev.maj == 3 && sw->dev->fw_rev.min == 0)
-+		return __prestera_hw_acl_rule_add(sw, rule, rule_id);
-+
-+	return __prestera_hw_acl_rule_ext_add(sw, rule, rule_id);
-+};
-+
- int prestera_hw_acl_rule_del(struct prestera_switch *sw, u32 rule_id)
- {
- 	struct prestera_msg_acl_rule_req req = {
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_pci.c b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-index ce4cf51dba5a..f988603af1b6 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-@@ -15,6 +15,7 @@
- #define PRESTERA_MSG_MAX_SIZE 1500
- 
- static struct prestera_fw_rev prestera_fw_supp[] = {
-+	{ 3, 1 },
- 	{ 3, 0 },
- 	{ 2, 0 }
- };
--- 
-2.17.1
+>   {
+>   	struct qcom_icc_provider *qp;
+>   	struct qcom_icc_node *qn;
+> @@ -99,7 +99,7 @@ int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
+>   
+>   	return 0;
+>   }
+> -EXPORT_SYMBOL_GPL(qcom_icc_set);
+> +EXPORT_SYMBOL_GPL(qcom_icc_rpmh_set);
+>   
+>   struct icc_node_data *qcom_icc_xlate_extended(struct of_phandle_args *spec, void *data)
+>   {
+> diff --git a/drivers/interconnect/qcom/icc-rpmh.h b/drivers/interconnect/qcom/icc-rpmh.h
+> index e5f61ab989e7..5dc1049dc065 100644
+> --- a/drivers/interconnect/qcom/icc-rpmh.h
+> +++ b/drivers/interconnect/qcom/icc-rpmh.h
+> @@ -130,7 +130,7 @@ struct qcom_icc_desc {
+>   
+>   int qcom_icc_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
+>   		       u32 peak_bw, u32 *agg_avg, u32 *agg_peak);
+> -int qcom_icc_set(struct icc_node *src, struct icc_node *dst);
+> +int qcom_icc_rpmh_set(struct icc_node *src, struct icc_node *dst);
 
+Same for this.
+
+>   struct icc_node_data *qcom_icc_xlate_extended(struct of_phandle_args *spec, void *data);
+>   int qcom_icc_bcm_init(struct qcom_icc_bcm *bcm, struct device *dev);
+>   void qcom_icc_pre_aggregate(struct icc_node *node);
+> diff --git a/drivers/interconnect/qcom/sc7180.c b/drivers/interconnect/qcom/sc7180.c
+> index 8d9044ed18ab..40232b41c080 100644
+> --- a/drivers/interconnect/qcom/sc7180.c
+> +++ b/drivers/interconnect/qcom/sc7180.c
+> @@ -532,7 +532,7 @@ static int qnoc_probe(struct platform_device *pdev)
+>   
+>   	provider = &qp->provider;
+>   	provider->dev = &pdev->dev;
+> -	provider->set = qcom_icc_set;
+> +	provider->set = qcom_icc_rpmh_set;
+
+And for this ... etc :))
+
+>   	provider->pre_aggregate = qcom_icc_pre_aggregate;
+>   	provider->aggregate = qcom_icc_aggregate;
+>   	provider->xlate_extended = qcom_icc_xlate_extended;
+> diff --git a/drivers/interconnect/qcom/sc7280.c b/drivers/interconnect/qcom/sc7280.c
+> index 8d1b55c3705c..b84742debc13 100644
+> --- a/drivers/interconnect/qcom/sc7280.c
+> +++ b/drivers/interconnect/qcom/sc7280.c
+> @@ -1830,7 +1830,7 @@ static int qnoc_probe(struct platform_device *pdev)
+>   
+>   	provider = &qp->provider;
+>   	provider->dev = &pdev->dev;
+> -	provider->set = qcom_icc_set;
+> +	provider->set = qcom_icc_rpmh_set;
+>   	provider->pre_aggregate = qcom_icc_pre_aggregate;
+>   	provider->aggregate = qcom_icc_aggregate;
+>   	provider->xlate_extended = qcom_icc_xlate_extended;
+> diff --git a/drivers/interconnect/qcom/sdm660.c b/drivers/interconnect/qcom/sdm660.c
+> index 632dbdd21915..acd026ecd17f 100644
+> --- a/drivers/interconnect/qcom/sdm660.c
+> +++ b/drivers/interconnect/qcom/sdm660.c
+> @@ -4,7 +4,6 @@
+>    * Copyright (C) 2020, AngeloGioacchino Del Regno <kholk11@gmail.com>
+>    */
+>   
+> -#include <dt-bindings/interconnect/qcom,sdm660.h>
+
+Why did you move this header down?
+If you have a reason, this is also not part of the RPM-QoS commonization.
+
+Thanks!
+- Angelo
