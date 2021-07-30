@@ -2,128 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DBE3DB420
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C38C3DB422
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 08:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237771AbhG3G5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 02:57:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:38180 "EHLO foss.arm.com"
+        id S237702AbhG3G70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 02:59:26 -0400
+Received: from ni.piap.pl ([195.187.100.5]:36172 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238009AbhG3G5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:57:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5DA631B;
-        Thu, 29 Jul 2021 23:57:29 -0700 (PDT)
-Received: from [10.163.66.9] (unknown [10.163.66.9])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 032513F66F;
-        Thu, 29 Jul 2021 23:57:26 -0700 (PDT)
-Subject: Re: [PATCH v2 10/10] coresight: trbe: Prohibit trace before disabling
- TRBE
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        jinlmao@qti.qualcomm.com
-References: <20210723124611.3828908-1-suzuki.poulose@arm.com>
- <20210723124611.3828908-11-suzuki.poulose@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <bca52780-a66e-5dda-eb4f-0f2f3f9ad78c@arm.com>
-Date:   Fri, 30 Jul 2021 12:28:15 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230040AbhG3G7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 02:59:25 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        by ni.piap.pl (Postfix) with ESMTPSA id F18B4C369544;
+        Fri, 30 Jul 2021 08:59:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl F18B4C369544
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1627628360; bh=EvNhfYWKLymJayuYfVc/qIYv9daUfJfLGMVFt9At18I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Lk7gigju05tzNJ4igJ/BcjTcaco8QgNnrl/4ZSJM+oA3FJtli54vGvPCuMJymbRGh
+         ervdOCqnhyPCFfcDCVYocTed5s+xfIqFObrKjbjcjSznNEfyJjE0kvSQGfI9Gc50SM
+         5LKiXO1whWthF0OLAhH/gRDSzEwvr4//dPFflQD4=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] TDA1997x: fix tda1997x_remove()
+Sender: khalasa@piap.pl
+Date:   Fri, 30 Jul 2021 08:59:19 +0200
+Message-ID: <m3tukc9tiw.fsf@t19.piap.pl>
 MIME-Version: 1.0
-In-Reply-To: <20210723124611.3828908-11-suzuki.poulose@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 165318 [Jul 30 2021]
+X-KLMS-AntiSpam-Version: 5.9.20.0
+X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
+X-KLMS-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4, {Tracking_Text_ENG_RU_Has_Extended_Latin_Letters, eng}, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, piap.pl:7.1.1;127.0.0.199:7.1.2;t19.piap.pl:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2021/07/30 05:50:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/30 04:15:00 #16998356
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+TDA1997x driver tried to hold two values in a single variable:
+device's "client data" pointer was first set to "sd" in
+v4l2_i2c_subdev_init(), then it was overwritten explicitly
+using dev_set_drvdata() with "state". This caused
+tda1997x_remove() to fail badly.
 
+Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
 
-On 7/23/21 6:16 PM, Suzuki K Poulose wrote:
-> We must prohibit the CPU from tracing before we disable
-> the TRBE and only re-enable it when we are sure the TRBE
-> has been enabled back. Otherwise, leave the CPU in
-> prohibited state.
-> 
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  .../hwtracing/coresight/coresight-self-hosted-trace.h    | 4 +++-
->  drivers/hwtracing/coresight/coresight-trbe.c             | 9 +++++++++
->  2 files changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
-> index 586d26e0cba3..34372482a3cd 100644
-> --- a/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
-> +++ b/drivers/hwtracing/coresight/coresight-self-hosted-trace.h
-> @@ -22,11 +22,13 @@ static inline void write_trfcr(u64 val)
->  	isb();
->  }
->  
-> -static inline void cpu_prohibit_trace(void)
-> +static inline u64 cpu_prohibit_trace(void)
->  {
->  	u64 trfcr = read_trfcr();
->  
->  	/* Prohibit tracing at EL0 & the kernel EL */
->  	write_trfcr(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE));
-> +	/* Return the original value of the TRFCR */
-> +	return trfcr;
->  }
->  #endif			/*  __CORESIGHT_SELF_HOSTED_TRACE_H */
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index e7567727e8fc..b8586c170889 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -16,6 +16,7 @@
->  #define pr_fmt(fmt) DRVNAME ": " fmt
->  
->  #include <asm/barrier.h>
-> +#include "coresight-self-hosted-trace.h"
->  #include "coresight-trbe.h"
->  
->  #define PERF_IDX2OFF(idx, buf) ((idx) % ((buf)->nr_pages << PAGE_SHIFT))
-> @@ -764,6 +765,7 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->  	enum trbe_fault_action act;
->  	u64 status;
->  	bool truncated = false;
-> +	u64 trfcr;
->  
->  	/* Reads to TRBSR_EL1 is fine when TRBE is active */
->  	status = read_sysreg_s(SYS_TRBSR_EL1);
-> @@ -774,6 +776,8 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->  	if (!is_trbe_irq(status))
->  		return IRQ_NONE;
->  
-> +	/* Prohibit the CPU from tracing before we disable the TRBE */
-> +	trfcr = cpu_prohibit_trace();
->  	/*
->  	 * Ensure the trace is visible to the CPUs and
->  	 * any external aborts have been resolved.
-> @@ -805,9 +809,14 @@ static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->  	/*
->  	 * If the buffer was truncated, ensure perf callbacks
->  	 * have completed, which will disable the event.
-> +	 *
-> +	 * Otherwise, restore the trace filter controls to
-> +	 * allow the tracing.
->  	 */
->  	if (truncated)
->  		irq_work_run();
-> +	else
-> +		write_trfcr(trfcr);
->  
->  	return IRQ_HANDLED;
->  }
-> 
+diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+index 17be95c0dcb3..fb37918b7fb5 100644
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -2490,7 +2490,8 @@ static const struct media_entity_operations tda1997x_=
+media_ops =3D {
+ static int tda1997x_pcm_startup(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+-	struct tda1997x_state *state =3D snd_soc_dai_get_drvdata(dai);
++	struct v4l2_subdev *sd =3D snd_soc_dai_get_drvdata(dai);
++	struct tda1997x_state *state =3D to_state(sd);
+ 	struct snd_soc_component *component =3D dai->component;
+ 	struct snd_pcm_runtime *rtd =3D substream->runtime;
+ 	int rate, err;
+@@ -2799,7 +2800,6 @@ static int tda1997x_probe(struct i2c_client *client,
+ 			dev_err(&client->dev, "register audio codec failed\n");
+ 			goto err_free_media;
+ 		}
+-		dev_set_drvdata(&state->client->dev, state);
+ 		v4l_info(state->client, "registered audio codec\n");
+ 	}
+=20
 
-The change LGTM. But the commit message needs to add some more details
-like that in V2 which explained how traces from ETE could be routed to
-ATB if not put in trace prohibited state, for all exception levels etc.
+--=20
+Krzysztof "Chris" Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
