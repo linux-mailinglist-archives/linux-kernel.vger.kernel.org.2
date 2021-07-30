@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967803DBEFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0D13DBF04
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 21:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhG3TbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 15:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
+        id S231195AbhG3Tbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 15:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbhG3TbF (ORCPT
+        with ESMTP id S230475AbhG3Tbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:31:05 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4F8C06175F;
-        Fri, 30 Jul 2021 12:31:00 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id f13so14603522edq.13;
-        Fri, 30 Jul 2021 12:31:00 -0700 (PDT)
+        Fri, 30 Jul 2021 15:31:35 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5D1C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:31:30 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id j19so6063549vso.0
+        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 12:31:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zxmFnKmrbzC01vibbcZbCwfThDgwyJDKO9mjaDJdf4Q=;
-        b=klZjUNFrmqh5cLgy/VXo6hou9+QrP5pePgd9SLL+4SDgA3y6GAOaSxd+DfADIerLWZ
-         quXYnuiIrIqh52hZ2AwKn4e7TF5llnKebULpa7ny0C/lliSiZwdkmvesZOBefQzsHbKb
-         MntKTtjxs/ydSHgQ8nRuahv1ZgfCgLCA+WlI9Alrkv6bCuxdhGd93q/XeT/rR7DG82Qg
-         LquVD2d8Tmb/TkN1QnmaMqV1MWEagEOoALqLZpy0t25N6Mdu5iVGbaRLuMagnoqg/f7U
-         CSKU089Is04zsMwWdtCGOMxb9JwJ+sOAUfTUmMvwcI+kjO2+0iVgVv5cc3Ovc3rAXe8m
-         Ze9Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sTwg3ftZdEkrZwjfbTZZgZqiWtz0ELEQs7iMOHDjt2g=;
+        b=HKmhgCdKit1ByfXm1vUXRBJaKei6NULPm63n6c2KVb9iuaElf59ZwnTL02wsd6NPws
+         QwRQhNvHf0+lQ+Gm8OYtFYztLcHhEC+X0QX5nkGRcXiFgCUyLlQdcPISgIvUJVytwgqD
+         kN8qBrat9s/S8OIvWKC1rRafR+WObVT5PuMa0/KFpXCOMnsGoimMqXEDfc9tWsKVSKMB
+         UEjF9O0ttCakSUWYdn/aWrDLBqz4LMcniW8wFEmsPP+JYrt/ghGxsyAclVeZYeGWMwlq
+         iEiN5NyiTS+2U5zr5EW3zLCTojChAVdXNSQzzW81jX1zjIBUVtdn8WQ66U3w5Q5Pm0M0
+         CvCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zxmFnKmrbzC01vibbcZbCwfThDgwyJDKO9mjaDJdf4Q=;
-        b=HnyLtsbsxgQnXSjg/iIrqlm9tAjRK8bEgH6Zjdq5SjgYw1Tw1XiCgd+cPY53+WNgbp
-         nFIrpQttC9p83k6BQDBZyVNy2mWYBNW7NCICva5whPlnIeIGbKVPjam6sowMHOhyA7Mj
-         MkjSGLRfa2VnXySU9V2cIrG7cTjLuVQagdLZdnwgInLOH/gWwxnTHobWDULINpu+mlAZ
-         Se6lCYCGsHOlOf5MOEaziWRyUl6evWLYsur3Bu2HESlBl8S25Y36l+wtqB6jzlygPenS
-         kMAi0IMCPoSVkNesdO/H1q/zb/WRoazbPlKzOpvZrTzEfFWlQurMlgtauXj+1nUc38Ta
-         VHZA==
-X-Gm-Message-State: AOAM533Su18sHwInCMt7IIgNVwEIx9elRG+2L8lxyD/hyc+eCppu+00S
-        oOjlYtnBuLUUoGT6FhDB99w=
-X-Google-Smtp-Source: ABdhPJwmaQpRc62eWEILeOk95XVTegm2+paD53ybnJ7M0WRyCXpfkE7Y+duCEOXbhFOpsyQ6lXHEpw==
-X-Received: by 2002:a50:c092:: with SMTP id k18mr2544420edf.361.1627673458891;
-        Fri, 30 Jul 2021 12:30:58 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id b5sm886286ejq.56.2021.07.30.12.30.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 12:30:58 -0700 (PDT)
-Date:   Fri, 30 Jul 2021 22:30:57 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next 1/2] net: dsa: tag_mtk: skip address learning on
- transmit to standalone ports
-Message-ID: <20210730193057.k7su2njgdakhsnah@skbuf>
-References: <20210728175327.1150120-1-dqfext@gmail.com>
- <20210728175327.1150120-2-dqfext@gmail.com>
- <20210728183705.4gea64qlbe64kkpl@skbuf>
- <20210730162403.p2dnwvwwgsxttomg@skbuf>
- <20210730190020.638409-1-dqfext@gmail.com>
- <20210730190706.jm7uizyqltmle2bi@skbuf>
- <20210730192555.638774-1-dqfext@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sTwg3ftZdEkrZwjfbTZZgZqiWtz0ELEQs7iMOHDjt2g=;
+        b=krQ5AvZKu4cEqQhNjgGIl6U3k+boGcVMIrR0zsV+Yx2TRc1PGt5OYxqDA1CdD6RALF
+         /0w5sj4NIoQAIZSMXam44ytN/YJIkl+toHZdsMSXiiTsOy0uMbJxYJZajBOz4IfYDZNt
+         h9xzTMDyYhzPJonC2PwelJTigs6vCFx8F7fdWIh1jZkKMpNKctpJMtops4FxxI7+W2Sz
+         JSytEfQLnzd6rv9LjYRxM/D3jU7FwswZ6JepSNp1QI2DwXDXyIqmio+OVJgit6lKytn3
+         pnrKvakFoLhOI1EHV+4uPBSg9TadjZ5eKombK/ppIlunk0YSOMOUA5vfuJlqhVz8v4/+
+         sd4g==
+X-Gm-Message-State: AOAM531gPFymaQulbYL7Xe/IUaY6OSN8i+mpMHwNgvNTC8KncjRq2cXj
+        oPOOO5WsvA7zgDjMdftZH5C7QCeYfcGmpSvKI3ipfw==
+X-Google-Smtp-Source: ABdhPJwzN5k9K9wcPdG8qks1LUn6IIYRhNxortw/xuZYWjsFGojdp/CFbFwlotzlaZrTcQ0+7fQjW+AwzT3YGLiK5+Y=
+X-Received: by 2002:a67:16c1:: with SMTP id 184mr3619118vsw.14.1627673489430;
+ Fri, 30 Jul 2021 12:31:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730192555.638774-1-dqfext@gmail.com>
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-4-semen.protsenko@linaro.org> <61a6c636-6f72-d086-79b8-e87dbab6b456@canonical.com>
+In-Reply-To: <61a6c636-6f72-d086-79b8-e87dbab6b456@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 30 Jul 2021 22:31:18 +0300
+Message-ID: <CAPLW+4kCuFGYdrkTuXFaGgPy-EyENkBZMGV-BaY6qn2_j+ABTw@mail.gmail.com>
+Subject: Re: [PATCH 03/12] dt-bindings: pinctrl: samsung: Add Exynos850 doc
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 03:25:55AM +0800, DENG Qingfang wrote:
-> On Fri, Jul 30, 2021 at 10:07:06PM +0300, Vladimir Oltean wrote:
-> > > After enabling it, I noticed .port_fdb_{add,del} are called with VID=0
-> > > (which it does not use now) unless I turn on VLAN filtering. Is that
-> > > normal?
-> > 
-> > They are called with the VID from the learned packet.
-> > If the bridge is VLAN-unaware, the MAC SA is learned with VID 0.
-> > Generally, VID 0 is always used for VLAN-unaware bridging. You can
-> > privately translate VID 0 to whatever VLAN ID you use in VLAN-unaware
-> > mode.
-> 
-> Now the issue is PVID is always set to the bridge's vlan_default_pvid,
-> regardless of VLAN awareless.
+On Fri, 30 Jul 2021 at 18:25, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 30/07/2021 16:49, Sam Protsenko wrote:
+> > Document compatible string for Exynos850 SoC. Nothing else is changed,
+> > as Exynos850 SoC uses already existing samsung pinctrl driver.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  Documentation/devicetree/bindings/pinctrl/samsung-pinctrl.txt | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+>
+> The patch should be first in the series - dt-bindings go at beginning.
+> Although no need to resend just for this.
+> If the resend happens, the fix ("pinctrl: samsung: Fix pinctrl bank pin
+> count") should be sent separately (no mixing fixes and new features)
+> because they are independent and usually easier for review.
+>
 
-Then change that, sja1105 and ocelot/felix are good examples of how to
-set a pvid in VLAN-unaware mode that is independent of what the bridge
-asks for.
+Thanks, will be done in v2. Also, just re-sent ("pinctrl: samsung: Fix
+pinctrl bank pin count") fix separately, as you recommended.
+
+>
+> Best regards,
+> Krzysztof
