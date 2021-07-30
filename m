@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B013DBDC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655093DBDCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 19:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbhG3RdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 13:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
+        id S230203AbhG3RfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 13:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhG3RdJ (ORCPT
+        with ESMTP id S229761AbhG3RfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:33:09 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8604C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:33:04 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id n15so4278956uao.6
-        for <linux-kernel@vger.kernel.org>; Fri, 30 Jul 2021 10:33:04 -0700 (PDT)
+        Fri, 30 Jul 2021 13:35:21 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B4FC06175F;
+        Fri, 30 Jul 2021 10:35:15 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id v21so18182294ejg.1;
+        Fri, 30 Jul 2021 10:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JaBel+Wk+Pmj/m/QWG3pSV0rzgtGPwsESburA6QnpC0=;
-        b=FhUt38mUtFIiLDdQIxIQoXNxNSSACz3P74Pvf9/7tfNd8lCP3n5L4F56oUZaI/XE5V
-         VcqKCElVfJuA/8oM6UGQK6sz7nMLW0t2jyS8v2hTI9ATj9QJ1Mm5j0IdoPtG8WGUTHri
-         bHCYKViNYMOvw9g/VW7ic19rZqIkUI4xxqyM0rO8XMhuczGIv7VRf2mcRAgVM7P9Gso2
-         OUkF/iq1VjVvWMFYpIS5oktLhycz5Jh6/HVhTj23eOvlu1NziMVqzv//yRtE05spLPIr
-         btZhS+eZkiePZdnRCNd74CRuy5GcuaHwzmLrhulokA1WpsDAY1yVDhkurmc+Nt7dKDHA
-         Z7yA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Doj/dcye763oRah83vvNs5pzHAb0NoOee/TncGZwApU=;
+        b=BQg7DckksWodBw0VQ7WPS4t2HMmrgZ+HfNAu/6WhoBRD0YwS2xvVFwP59v6wjDZcxe
+         wKQO2DB9rWXR5UyTuC3T+0KaypDyuZAhGPyEk0webhsBW4dcFfoSO0ZSGtilfWKtwXwd
+         fw5Fd7AMIFWvsSPXKtQyob0xfiO+S925Xz05Y+jD0w3V2XEYJvDHteBWvxp/Fx0AzMtf
+         0hZpqnuIP1KH22HtnuX0kz36ulXHzIOYribAhl8SjjtkFWzX0eGuExK6LfsJZ+m70Imp
+         x2EBmf0dpQnKwtkrMZHhBycAkUjA2+el5Iac1fepoQjWZUg2z/lC89lIeEIBTM8g/t42
+         uToA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JaBel+Wk+Pmj/m/QWG3pSV0rzgtGPwsESburA6QnpC0=;
-        b=LDmWb+8SHM5xLI/95N4ctgWgWpkOpigVbXohRRRnlnQ7sLkBok2UY0BbZaGDdfbafh
-         BsPOItUI/+M15fBLp3C/zKokKbjNcLdT77dQAxmh/Nj18nxeO8yOMuqhABmP59kLtqcr
-         4QridVu6B23htwGAq8TKq3O6fJxsPEyofgz4ePsWay+q7iijeXbr5XDnIFBwp91avy7G
-         eN8ThHfu+k9vHEa9dJhzHlHXK73MZtUyPISB4QgHewXOx70pu6JJwGXqeBdO4uRkQH7V
-         QTQNBspiu1DA+JGEwV3Gy5omGrt1bHKXG48vQ+yW44r4q9hHW26iR4619CL/9u7HWe7s
-         hD9g==
-X-Gm-Message-State: AOAM532Q/BKLkIg9z6gw5zBTfcsb9I72oQRPa16CRRhbmJYr8JuID87C
-        r74zZyZeNdZ34bZy1sZzgDzBpXRDRH1yR42F7jj5Sg==
-X-Google-Smtp-Source: ABdhPJw43II2PhFksB0jmNqxACJZWx9bpShJeIvnmuKr7qKhtUKe+219lDwvOwfyXr4EiYyBAsjydof5yY2K1WxqSb8=
-X-Received: by 2002:ab0:6392:: with SMTP id y18mr3251539uao.139.1627666384076;
- Fri, 30 Jul 2021 10:33:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Doj/dcye763oRah83vvNs5pzHAb0NoOee/TncGZwApU=;
+        b=B0vyQ1kpPHN7bshIAO7bnBc0jY8xLH8AHiphyPFJ0wkpPQMUm/ocfeXcFdQuSMTm8x
+         MOBY15kIw8Z/ajcFP6ONXl9OFFOS3x7oFBEJi/uFresscUrby4ibqja5OTjUWPwpnv7U
+         DgUyyI1k2UFmtpOHEszJHqsI8J/Am3JdjAiSf5mokzOYdAy4VZNWemsT1e5Fbqp2wO2C
+         OG06Tw1dfBk1QTjUOhRNRbAsPnbo72y+Y+Vye5BlYZ5iusPZNPwneV/opdT0/64B3qAD
+         vosRXl/wvyP5V/emIvR9xGuKzPhIfdnDUAXRhvFx7tX0BWve6mmsc0abhXwpC65bLzG6
+         uA9Q==
+X-Gm-Message-State: AOAM532u0kFHbvLGqFr7+S30QwTRHnypkQrOSxpruluNxvTmyroxIbTV
+        HcXyDQoWx00QCOZq6AwnWko=
+X-Google-Smtp-Source: ABdhPJyOwdP7JUP0KwB6OY34dpeaov8/WjtVtdb0zSBQ4iypGBdQsBLuQqvFN1QpHl2aLsLMa1Bnag==
+X-Received: by 2002:a17:906:5509:: with SMTP id r9mr3748176ejp.74.1627666513708;
+        Fri, 30 Jul 2021 10:35:13 -0700 (PDT)
+Received: from skbuf ([82.76.66.29])
+        by smtp.gmail.com with ESMTPSA id ha26sm778371ejb.87.2021.07.30.10.35.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 10:35:13 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 20:35:11 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC net-next 2/2] net: dsa: mt7530: trap packets from
+ standalone ports to the CPU
+Message-ID: <20210730173511.ulsv7wfogk5cpx5j@skbuf>
+References: <20210728175327.1150120-1-dqfext@gmail.com>
+ <20210728175327.1150120-3-dqfext@gmail.com>
+ <20210729152805.o2pur7pp2kpxvvnq@skbuf>
+ <CALW65jbHwRhekX=7xoFvts2m7xTRM4ti9zpTiah8ed0n0fCrRg@mail.gmail.com>
+ <20210729165027.okmfa3ulpd3e6gte@skbuf>
+ <CALW65jYYmpnDou0dC3=1AjL9tmo_9jqLSWmusJkeqRb4mSwCGQ@mail.gmail.com>
+ <20210730161852.4weylgdkcyacxhci@skbuf>
+ <20210730171935.GA517710@haswell-ubuntu20>
 MIME-Version: 1.0
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-9-semen.protsenko@linaro.org> <CAHp75VcugLnV6D8xhkMHuW-X6LCtHDDnghD2G+vqwYmRvFP9Nw@mail.gmail.com>
- <8202e9f9-06f4-f1ba-4f30-e1a0c8340450@canonical.com>
-In-Reply-To: <8202e9f9-06f4-f1ba-4f30-e1a0c8340450@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Fri, 30 Jul 2021 20:32:52 +0300
-Message-ID: <CAPLW+4mB1NpswMDVThEiOgn0ce29xckV5ZHo=85+ia9d5=x-6A@mail.gmail.com>
-Subject: Re: [PATCH 08/12] MAINTAINERS: Cover Samsung clock YAML bindings
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730171935.GA517710@haswell-ubuntu20>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 at 18:25, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 30/07/2021 17:06, Andy Shevchenko wrote:
-> > On Fri, Jul 30, 2021 at 5:50 PM Sam Protsenko
-> > <semen.protsenko@linaro.org> wrote:
-> >>
-> >> New device tree bindings are usually added in YAML format. Fix "SAMSUNG
-> >> SOC CLOCK DRIVERS" entry to cover both txt and yaml docs for Exynos
-> >> clock drivers.
-> >
-> > Fixes tag?
->
-> No need because the pattern is correct at the moment. The patch does not
-> make sense on its own and should be squashed with the next one.
->
+On Sat, Jul 31, 2021 at 01:21:14AM +0800, DENG Qingfang wrote:
+> I just found a cleaner solution: Leaving standalone ports in port matrix
+> mode. As all bridges use independent VLAN learning, standalone ports'
+> FDB lookup with FID 0 won't hit.
 
-Nice catch. Will do in v2, thanks!
+So standalone ports are completely VLAN-unaware and always use a FID of
+0, ports under a VLAN-unaware bridge are in fallback mode (look up the
+VLAN table but don't drop on miss), use a FID of 1-7, and ports under a
+VLAN-aware bridge are in the security mode and use the CVID instead of
+the FID for VLAN classification?
 
->
-> Best regards,
-> Krzysztof
+Make sure to test a mix of standalone, VLAN-unaware bridge and
+VLAN-aware bridge with the same MAC address in all 3 domains. If that
+works well this should be really good.
