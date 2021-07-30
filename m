@@ -2,142 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FD93DB90F
-	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4213E3DB917
+	for <lists+linux-kernel@lfdr.de>; Fri, 30 Jul 2021 15:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238942AbhG3NLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 30 Jul 2021 09:11:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238893AbhG3NLN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 30 Jul 2021 09:11:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFDF760462;
-        Fri, 30 Jul 2021 13:11:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627650668;
-        bh=dCPVqim+3QLsfYnttxB0ASgmRObsONjZkZ9VkM4UMZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YRmmKBxntTjK6srQwnni3UZ1ku7RqG9OCZSgjIgPkKxdxzbKcEHnjt5qO++TlplUW
-         bHNVzY6wzSMTntl5eF+8RU7L32sdKysWQfa+UCGrzlf0PKDKmsfHrdn26DiQVyJmfP
-         +GyoQSuIuIgCuG+zUi5lJb97/6wYrh94i/+Vy2SR8ZMsnzvXGWZJOh14jQYNgMzGnR
-         X0+oF97+vle8eTXlYuW4uw7VFzE21pHS8AcU+FtEqoD/ivoz5m4T1riIgHaUr+v5eF
-         FbxXGurZZJEGmNg3ZXivybbt+XAoKlM1hKHXIhfCqbYoQSmrPqPtN4n+/L0rKzCKE8
-         fFT+yqgfRfiyQ==
-Date:   Fri, 30 Jul 2021 14:11:03 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qperret@google.com, dbrazdil@google.com,
-        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 07/16] KVM: arm64: Wire MMIO guard hypercalls
-Message-ID: <20210730131103.GD23756@willie-the-truck>
-References: <20210715163159.1480168-1-maz@kernel.org>
- <20210715163159.1480168-8-maz@kernel.org>
- <20210727181145.GF19173@willie-the-truck>
- <87v94ud8av.wl-maz@kernel.org>
+        id S238897AbhG3NNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 30 Jul 2021 09:13:04 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54828 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238745AbhG3NND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 30 Jul 2021 09:13:03 -0400
+Date:   Fri, 30 Jul 2021 15:12:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627650778;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=BWcVGmbWyWcoDB2biQikuWjpg7PJH7JnLeQSr4fcBOg=;
+        b=DaEvOh7YBqxJ+XBiAlMmoj4cwx0qHJfc1k0o40j77w6yquj3Jpu1FKh6yd9b7SqxrquO4Y
+        PZEu1yNjA10HdhanONlMulyKCIMuI4pKvmbEzELMcOlBeDRfUluNMVYeuZzSlPfzHmWGgw
+        +15wG9GBI4My0hJZdS08EGXyL5es9c9DLfoM0iueckZ/xnpSbchSQPC3+0+W4+8vT9uNUA
+        jUcL7DUPENvOFbXEclGmS6VGCYyXe0uFRd5uKPxujcR4kH9b/tJhUmJMFIDP06WW4MLdLW
+        LFpOKnQI29I+/da2v33CVywEdhSaQARzxew8V40/J9XkI+GX+B7MX2J55OZgIg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627650778;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=BWcVGmbWyWcoDB2biQikuWjpg7PJH7JnLeQSr4fcBOg=;
+        b=F5JpWNEHN/KAgXKk89pnOpY2SJ0NP5pnxj/X2jgZSGx5XR//BorHTZTXH4q0Opam8Fqjeb
+        O0uS4Wl7AcYCmjAA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.14-rc3-rt2
+Message-ID: <20210730131256.7d3jccmpuiw5pr4o@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87v94ud8av.wl-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 11:47:20AM +0100, Marc Zyngier wrote:
-> On Tue, 27 Jul 2021 19:11:46 +0100,
-> Will Deacon <will@kernel.org> wrote:
-> > 
-> > On Thu, Jul 15, 2021 at 05:31:50PM +0100, Marc Zyngier wrote:
-> > > Plumb in the hypercall interface to allow a guest to discover,
-> > > enroll, map and unmap MMIO regions.
-> > > 
-> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > > ---
-> > >  arch/arm64/kvm/hypercalls.c | 20 ++++++++++++++++++++
-> > >  include/linux/arm-smccc.h   | 28 ++++++++++++++++++++++++++++
-> > >  2 files changed, 48 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-> > > index 30da78f72b3b..a3deeb907fdd 100644
-> > > --- a/arch/arm64/kvm/hypercalls.c
-> > > +++ b/arch/arm64/kvm/hypercalls.c
-> > > @@ -5,6 +5,7 @@
-> > >  #include <linux/kvm_host.h>
-> > >  
-> > >  #include <asm/kvm_emulate.h>
-> > > +#include <asm/kvm_mmu.h>
-> > >  
-> > >  #include <kvm/arm_hypercalls.h>
-> > >  #include <kvm/arm_psci.h>
-> > > @@ -129,10 +130,29 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
-> > >  	case ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID:
-> > >  		val[0] = BIT(ARM_SMCCC_KVM_FUNC_FEATURES);
-> > >  		val[0] |= BIT(ARM_SMCCC_KVM_FUNC_PTP);
-> > > +		val[0] |= BIT(ARM_SMCCC_KVM_FUNC_MMIO_GUARD_INFO);
-> > > +		val[0] |= BIT(ARM_SMCCC_KVM_FUNC_MMIO_GUARD_ENROLL);
-> > > +		val[0] |= BIT(ARM_SMCCC_KVM_FUNC_MMIO_GUARD_MAP);
-> > > +		val[0] |= BIT(ARM_SMCCC_KVM_FUNC_MMIO_GUARD_UNMAP);
-> > >  		break;
-> > >  	case ARM_SMCCC_VENDOR_HYP_KVM_PTP_FUNC_ID:
-> > >  		kvm_ptp_get_time(vcpu, val);
-> > >  		break;
-> > > +	case ARM_SMCCC_VENDOR_HYP_KVM_MMIO_GUARD_INFO_FUNC_ID:
-> > > +		val[0] = PAGE_SIZE;
-> > > +		break;
-> > 
-> > I get the nagging feeling that querying the stage-2 page-size outside of
-> > MMIO guard is going to be useful once we start looking at memory sharing,
-> > so perhaps rename this to something more generic?
-> 
-> At this stage, why not follow the architecture and simply expose it as
-> ID_AA64MMFR0_EL1.TGran{4,64,16}_2? That's exactly what it is for, and
-> we already check for this in KVM itself.
+Dear RT folks!
 
-Nice, I hadn't thought of that. On reflection, though, I don't agree that
-it's "exactly what it is for" -- the ID register talks about the supported
-stage-2 page-sizes, whereas we want to advertise the one page size that
-we're currently using. In other words, it's important that we only ever
-populate one of the fields and I wonder if that could bite us in future
-somehow?
+I'm pleased to announce the v5.14-rc3-rt2 patch set. 
 
-Up to you, you've definitely got a better feel for this than me.
+Changes since v5.14-rc3-rt1:
 
-> > > +	case ARM_SMCCC_VENDOR_HYP_KVM_MMIO_GUARD_ENROLL_FUNC_ID:
-> > > +		set_bit(KVM_ARCH_FLAG_MMIO_GUARD, &vcpu->kvm->arch.flags);
-> > > +		val[0] = SMCCC_RET_SUCCESS;
-> > > +		break;
-> > > +	case ARM_SMCCC_VENDOR_HYP_KVM_MMIO_GUARD_MAP_FUNC_ID:
-> > > +		if (kvm_install_ioguard_page(vcpu, vcpu_get_reg(vcpu, 1)))
-> > > +			val[0] = SMCCC_RET_SUCCESS;
-> > > +		break;
-> > > +	case ARM_SMCCC_VENDOR_HYP_KVM_MMIO_GUARD_UNMAP_FUNC_ID:
-> > > +		if (kvm_remove_ioguard_page(vcpu, vcpu_get_reg(vcpu, 1)))
-> > > +			val[0] = SMCCC_RET_SUCCESS;
-> > > +		break;
-> > 
-> > I think there's a slight discrepancy between MAP and UNMAP here in that
-> > calling UNMAP on something that hasn't been mapped will fail, whereas
-> > calling MAP on something that's already been mapped will succeed. I think
-> > that might mean you can't reason about the final state of the page if two
-> > vCPUs race to call these functions in some cases (and both succeed).
-> 
-> I'm not sure that's the expected behaviour for ioremap(), for example
-> (you can ioremap two portions of the same page successfully).
+  - To cope with SLUB based hackbench regression adaptive spinning has
+    been introduced for all rtmutex based locks. This improves the
+    hackbench time significantly.
 
-Hmm, good point. Does that mean we should be refcounting the stage-2?
-Otherwise if we do something like:
+Known issues
+     - netconsole triggers WARN.
 
-	foo = ioremap(page, 0x100);
-	bar = ioremap(page+0x100, 0x100);
-	iounmap(foo);
+     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
 
-then bar will break. Or did I miss something in the series?
+The delta patch against v5.14-rc3-rt1 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/incr/patch-5.14-rc3-rt1-rt2.patch.xz
 
-Will
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.14-rc3-rt2
+
+The RT patch against v5.14-rc3 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patch-5.14-rc3-rt2.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patches-5.14-rc3-rt2.tar.xz
+
+Sebastian
+
+
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 58762a3970ed7..e347bbc12641d 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -1277,6 +1277,43 @@ static __always_inline void __rt_mutex_unlock(struct rt_mutex_base *lock)
+ 	rt_mutex_slowunlock(lock);
+ }
+ 
++#ifdef CONFIG_SMP
++/*
++ * Note that owner is a speculative pointer and dereferencing relies
++ * on rcu_read_lock() and the check against the lock owner.
++ */
++static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
++				     struct task_struct *owner)
++{
++	bool res = true;
++
++	rcu_read_lock();
++	for (;;) {
++		/* Owner changed. Trylock again */
++		if (owner != rt_mutex_owner(lock))
++			break;
++		/*
++		 * Ensure that owner->on_cpu is dereferenced _after_
++		 * checking the above to be valid.
++		 */
++		barrier();
++		if (!owner->on_cpu) {
++			res = false;
++			break;
++		}
++		cpu_relax();
++	}
++	rcu_read_unlock();
++	return res;
++}
++#else
++static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
++				     struct task_struct *owner)
++{
++	return false;
++}
++#endif
++
+ #ifdef RT_MUTEX_BUILD_MUTEX
+ /*
+  * Functions required for:
+@@ -1361,6 +1398,7 @@ static int __sched rt_mutex_slowlock_block(struct rt_mutex_base *lock,
+ 					   struct rt_mutex_waiter *waiter)
+ {
+ 	struct rt_mutex *rtm = container_of(lock, struct rt_mutex, rtmutex);
++	struct task_struct *owner;
+ 	int ret = 0;
+ 
+ 	for (;;) {
+@@ -1383,9 +1421,14 @@ static int __sched rt_mutex_slowlock_block(struct rt_mutex_base *lock,
+ 				break;
+ 		}
+ 
++		if (waiter == rt_mutex_top_waiter(lock))
++			owner = rt_mutex_owner(lock);
++		else
++			owner = NULL;
+ 		raw_spin_unlock_irq(&lock->wait_lock);
+ 
+-		schedule();
++		if (!owner || !rtmutex_adaptive_spinwait(lock, owner))
++			schedule();
+ 
+ 		raw_spin_lock_irq(&lock->wait_lock);
+ 		set_current_state(state);
+@@ -1534,43 +1577,6 @@ static __always_inline int __rt_mutex_lock(struct rt_mutex_base *lock,
+  * Functions required for spin/rw_lock substitution on RT kernels
+  */
+ 
+-#ifdef CONFIG_SMP
+-/*
+- * Note that owner is a speculative pointer and dereferencing relies
+- * on rcu_read_lock() and the check against the lock owner.
+- */
+-static bool rtlock_adaptive_spinwait(struct rt_mutex_base *lock,
+-				     struct task_struct *owner)
+-{
+-	bool res = true;
+-
+-	rcu_read_lock();
+-	for (;;) {
+-		/* Owner changed. Trylock again */
+-		if (owner != rt_mutex_owner(lock))
+-			break;
+-		/*
+-		 * Ensure that owner->on_cpu is dereferenced _after_
+-		 * checking the above to be valid.
+-		 */
+-		barrier();
+-		if (!owner->on_cpu) {
+-			res = false;
+-			break;
+-		}
+-		cpu_relax();
+-	}
+-	rcu_read_unlock();
+-	return res;
+-}
+-#else
+-static bool rtlock_adaptive_spinwait(struct rt_mutex_base *lock,
+-				     struct task_struct *owner)
+-{
+-	return false;
+-}
+-#endif
+-
+ /**
+  * rtlock_slowlock_locked - Slow path lock acquisition for RT locks
+  * @lock:	The underlying rt mutex
+@@ -1603,7 +1609,7 @@ static void __sched rtlock_slowlock_locked(struct rt_mutex_base *lock)
+ 			owner = NULL;
+ 		raw_spin_unlock_irq(&lock->wait_lock);
+ 
+-		if (!owner || !rtlock_adaptive_spinwait(lock, owner))
++		if (!owner || !rtmutex_adaptive_spinwait(lock, owner))
+ 			schedule_rtlock();
+ 
+ 		raw_spin_lock_irq(&lock->wait_lock);
+diff --git a/localversion-rt b/localversion-rt
+index 6f206be67cd28..c3054d08a1129 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt1
++-rt2
